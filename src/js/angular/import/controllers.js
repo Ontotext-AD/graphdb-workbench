@@ -678,6 +678,7 @@ importCtrl.controller('TextCtrl', ['$scope', '$uibModalInstance', 'text', 'forma
     $scope.importFormats = [
         {name: 'RDF/JSON', type: 'application/rdf+json'},
         {name: 'JSON-LD', type: 'application/ld+json'},
+        {name: 'NDJSON-LD', type: 'application/x-ld+ndjson'},
         {name: 'RDF/XML', type: 'application/rdf+xml'},
         {name: 'N3', type: 'text/rdf+n3'},
         {name: 'N-Triples', type: 'text/plain'},

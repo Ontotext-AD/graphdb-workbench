@@ -86,7 +86,7 @@ module.exports = require('./main.js');
 	 */
 	var DataTable;
 
-
+	
 	/*
 	 * It is useful to have variables which are scoped locally so only the
 	 * DataTables functions can access them and they don't leak into global space.
@@ -95,43 +95,43 @@ module.exports = require('./main.js');
 	 * by DataTables as private variables here. This also ensures that there is no
 	 * clashing of variable names and that they can easily referenced for reuse.
 	 */
-
-
+	
+	
 	// Defined else where
 	//  _selector_run
 	//  _selector_opts
 	//  _selector_first
 	//  _selector_row_indexes
-
+	
 	var _ext; // DataTable.ext
 	var _Api; // DataTable.Api
 	var _api_register; // DataTable.Api.register
 	var _api_registerPlural; // DataTable.Api.registerPlural
-
+	
 	var _re_dic = {};
 	var _re_new_lines = /[\r\n]/g;
 	var _re_html = /<.*?>/g;
 	var _re_date_start = /^[\w\+\-]/;
 	var _re_date_end = /[\w\+\-]$/;
-
+	
 	// Escape regular expression special characters
 	var _re_escape_regex = new RegExp( '(\\' + [ '/', '.', '*', '+', '?', '|', '(', ')', '[', ']', '{', '}', '\\', '$', '^', '-' ].join('|\\') + ')', 'g' );
-
+	
 	// U+2009 is thin space and U+202F is narrow no-break space, both used in many
 	// standards as thousands separators
 	var _re_formatted_numeric = /[',$£€¥%\u2009\u202F]/g;
-
-
+	
+	
 	var _empty = function ( d ) {
 		return !d || d === true || d === '-' ? true : false;
 	};
-
-
+	
+	
 	var _intVal = function ( s ) {
 		var integer = parseInt( s, 10 );
 		return !isNaN(integer) && isFinite(s) ? integer : null;
 	};
-
+	
 	// Convert from a formatted number with characters other than `.` as the
 	// decimal place, to a Javascript number
 	var _numToDecimal = function ( num, decimalPoint ) {
@@ -143,34 +143,34 @@ module.exports = require('./main.js');
 			num.replace( /\./g, '' ).replace( _re_dic[ decimalPoint ], '.' ) :
 			num;
 	};
-
-
+	
+	
 	var _isNumber = function ( d, decimalPoint, formatted ) {
 		var strType = typeof d === 'string';
-
+	
 		if ( decimalPoint && strType ) {
 			d = _numToDecimal( d, decimalPoint );
 		}
-
+	
 		if ( formatted && strType ) {
 			d = d.replace( _re_formatted_numeric, '' );
 		}
-
+	
 		return _empty( d ) || (!isNaN( parseFloat(d) ) && isFinite( d ));
 	};
-
-
+	
+	
 	// A string without HTML in it can be considered to be HTML still
 	var _isHtml = function ( d ) {
 		return _empty( d ) || typeof d === 'string';
 	};
-
-
+	
+	
 	var _htmlNumeric = function ( d, decimalPoint, formatted ) {
 		if ( _empty( d ) ) {
 			return true;
 		}
-
+	
 		var html = _isHtml( d );
 		return ! html ?
 			null :
@@ -178,12 +178,12 @@ module.exports = require('./main.js');
 				true :
 				null;
 	};
-
-
+	
+	
 	var _pluck = function ( a, prop, prop2 ) {
 		var out = [];
 		var i=0, ien=a.length;
-
+	
 		// Could have the test in the loop for slightly smaller code, but speed
 		// is essential here
 		if ( prop2 !== undefined ) {
@@ -200,18 +200,18 @@ module.exports = require('./main.js');
 				}
 			}
 		}
-
+	
 		return out;
 	};
-
-
+	
+	
 	// Basically the same as _pluck, but rather than looping over `a` we use `order`
 	// as the indexes to pick from `a`
 	var _pluck_order = function ( a, order, prop, prop2 )
 	{
 		var out = [];
 		var i=0, ien=order.length;
-
+	
 		// Could have the test in the loop for slightly smaller code, but speed
 		// is essential here
 		if ( prop2 !== undefined ) {
@@ -224,16 +224,16 @@ module.exports = require('./main.js');
 				out.push( a[ order[i] ][ prop ] );
 			}
 		}
-
+	
 		return out;
 	};
-
-
+	
+	
 	var _range = function ( len, start )
 	{
 		var out = [];
 		var end;
-
+	
 		if ( start === undefined ) {
 			start = 0;
 			end = len;
@@ -242,20 +242,20 @@ module.exports = require('./main.js');
 			end = start;
 			start = len;
 		}
-
+	
 		for ( var i=start ; i<end ; i++ ) {
 			out.push( i );
 		}
-
+	
 		return out;
 	};
-
-
+	
+	
 	var _stripHtml = function ( d ) {
 		return d.replace( _re_html, '' );
 	};
-
-
+	
+	
 	/**
 	 * Find the unique elements in a source array.
 	 *
@@ -274,25 +274,25 @@ module.exports = require('./main.js');
 			val,
 			i, ien=src.length,
 			j, k=0;
-
+	
 		again: for ( i=0 ; i<ien ; i++ ) {
 			val = src[i];
-
+	
 			for ( j=0 ; j<k ; j++ ) {
 				if ( out[j] === val ) {
 					continue again;
 				}
 			}
-
+	
 			out.push( val );
 			k++;
 		}
-
+	
 		return out;
 	};
-
-
-
+	
+	
+	
 	/**
 	 * Create a mapping object that allows camel case parameters to be looked up
 	 * for their Hungarian counterparts. The mapping is stored in a private
@@ -307,15 +307,15 @@ module.exports = require('./main.js');
 			match,
 			newKey,
 			map = {};
-
+	
 		$.each( o, function (key, val) {
 			match = key.match(/^([^A-Z]+?)([A-Z])/);
-
+	
 			if ( match && hungarian.indexOf(match[1]+' ') !== -1 )
 			{
 				newKey = key.replace( match[0], match[2].toLowerCase() );
 				map[ newKey ] = key;
-
+	
 				//console.log( key, match );
 				if ( match[1] === 'o' )
 				{
@@ -323,11 +323,11 @@ module.exports = require('./main.js');
 				}
 			}
 		} );
-
+	
 		o._hungarianMap = map;
 	}
-
-
+	
+	
 	/**
 	 * Convert from camel case parameters to Hungarian, based on a Hungarian map
 	 * created by _fnHungarianMap.
@@ -344,12 +344,12 @@ module.exports = require('./main.js');
 		if ( ! src._hungarianMap ) {
 			_fnHungarianMap( src );
 		}
-
+	
 		var hungarianKey;
-
+	
 		$.each( user, function (key, val) {
 			hungarianKey = src._hungarianMap[ key ];
-
+	
 			if ( hungarianKey !== undefined && (force || user[hungarianKey] === undefined) )
 			{
 				// For objects, we need to buzz down into the object to copy parameters
@@ -360,7 +360,7 @@ module.exports = require('./main.js');
 						user[ hungarianKey ] = {};
 					}
 					$.extend( true, user[hungarianKey], user[key] );
-
+	
 					_fnCamelToHungarian( src[hungarianKey], user[hungarianKey], force );
 				}
 				else {
@@ -369,8 +369,8 @@ module.exports = require('./main.js');
 			}
 		} );
 	}
-
-
+	
+	
 	/**
 	 * Language compatibility - when certain options are given, and others aren't, we
 	 * need to duplicate the values over, in order to provide backwards compatibility
@@ -382,7 +382,7 @@ module.exports = require('./main.js');
 	{
 		var defaults = DataTable.defaults.oLanguage;
 		var zeroRecords = lang.sZeroRecords;
-
+	
 		/* Backwards compatibility - if there is no sEmptyTable given, then use the same as
 		 * sZeroRecords - assuming that is given.
 		 */
@@ -391,26 +391,26 @@ module.exports = require('./main.js');
 		{
 			_fnMap( lang, lang, 'sZeroRecords', 'sEmptyTable' );
 		}
-
+	
 		/* Likewise with loading records */
 		if ( ! lang.sLoadingRecords && zeroRecords &&
 			defaults.sLoadingRecords === "yasr.loading.label" )
 		{
 			_fnMap( lang, lang, 'sZeroRecords', 'sLoadingRecords' );
 		}
-
+	
 		// Old parameter name of the thousands separator mapped onto the new
 		if ( lang.sInfoThousands ) {
 			lang.sThousands = lang.sInfoThousands;
 		}
-
+	
 		var decimal = lang.sDecimal;
 		if ( decimal ) {
 			_addNumericSort( decimal );
 		}
 	}
-
-
+	
+	
 	/**
 	 * Map one parameter onto another
 	 *  @param {object} o Object to map
@@ -422,8 +422,8 @@ module.exports = require('./main.js');
 			o[ old ] = o[ knew ];
 		}
 	};
-
-
+	
+	
 	/**
 	 * Provide backwards compatibility for the main DT options. Note that the new
 	 * options are mapped onto the old parameters, so this is an external interface
@@ -442,11 +442,11 @@ module.exports = require('./main.js');
 		_fnCompatMap( init, 'pagingType',    'sPaginationType' );
 		_fnCompatMap( init, 'pageLength',    'iDisplayLength' );
 		_fnCompatMap( init, 'searching',     'bFilter' );
-
+	
 		// Column search objects are in an array, so it needs to be converted
 		// element by element
 		var searchCols = init.aoSearchCols;
-
+	
 		if ( searchCols ) {
 			for ( var i=0, ien=searchCols.length ; i<ien ; i++ ) {
 				if ( searchCols[i] ) {
@@ -455,8 +455,8 @@ module.exports = require('./main.js');
 			}
 		}
 	}
-
-
+	
+	
 	/**
 	 * Provide backwards compatibility for column options. Note that the new options
 	 * are mapped onto the old parameters, so this is an external interface change
@@ -470,8 +470,8 @@ module.exports = require('./main.js');
 		_fnCompatMap( init, 'orderSequence', 'asSorting' );
 		_fnCompatMap( init, 'orderDataType', 'sortDataType' );
 	}
-
-
+	
+	
 	/**
 	 * Browser feature detection for capabilities, quirks
 	 *  @param {object} settings dataTables settings object
@@ -480,7 +480,7 @@ module.exports = require('./main.js');
 	function _fnBrowserDetect( settings )
 	{
 		var browser = settings.oBrowser;
-
+	
 		// Scrolling feature / quirks detection
 		var n = $('<div/>')
 			.css( {
@@ -509,22 +509,22 @@ module.exports = require('./main.js');
 					)
 			)
 			.appendTo( 'body' );
-
+	
 		var test = n.find('.test');
-
+	
 		// IE6/7 will oversize a width 100% element inside a scrolling element, to
 		// include the width of the scrollbar, while other browsers ensure the inner
 		// element is contained without forcing scrolling
 		browser.bScrollOversize = test[0].offsetWidth === 100;
-
+	
 		// In rtl text layout, some browsers (most, but not all) will place the
 		// scrollbar on the left, rather than the right.
 		browser.bScrollbarLeft = test.offset().left !== 1;
-
+	
 		n.remove();
 	}
-
-
+	
+	
 	/**
 	 * Array.prototype reduce[Right] method, used for browsers which don't support
 	 * JS 1.6. Done this way to reduce code size, since we iterate either way
@@ -537,28 +537,28 @@ module.exports = require('./main.js');
 			i = start,
 			value,
 			isSet = false;
-
+	
 		if ( init !== undefined ) {
 			value = init;
 			isSet = true;
 		}
-
+	
 		while ( i !== end ) {
 			if ( ! that.hasOwnProperty(i) ) {
 				continue;
 			}
-
+	
 			value = isSet ?
 				fn( value, that[i], i, that ) :
 				that[i];
-
+	
 			isSet = true;
 			i += inc;
 		}
-
+	
 		return value;
 	}
-
+	
 	/**
 	 * Add a column to the list used for the table with default values
 	 *  @param {object} oSettings dataTables settings object
@@ -578,18 +578,18 @@ module.exports = require('./main.js');
 			idx: iCol
 		} );
 		oSettings.aoColumns.push( oCol );
-
+	
 		// Add search object for column specific search. Note that the `searchCols[ iCol ]`
 		// passed into extend can be undefined. This allows the user to give a default
 		// with only some of the parameters defined, and also not give a default
 		var searchCols = oSettings.aoPreSearchCols;
 		searchCols[ iCol ] = $.extend( {}, DataTable.models.oSearch, searchCols[ iCol ] );
-
+	
 		// Use the default column options function to initialise classes etc
 		_fnColumnOptions( oSettings, iCol, null );
 	}
-
-
+	
+	
 	/**
 	 * Apply options for a column
 	 *  @param {object} oSettings dataTables settings object
@@ -602,50 +602,50 @@ module.exports = require('./main.js');
 		var oCol = oSettings.aoColumns[ iCol ];
 		var oClasses = oSettings.oClasses;
 		var th = $(oCol.nTh);
-
+	
 		// Try to get width information from the DOM. We can't get it from CSS
 		// as we'd need to parse the CSS stylesheet. `width` option can override
 		if ( ! oCol.sWidthOrig ) {
 			// Width attribute
 			oCol.sWidthOrig = th.attr('width') || null;
-
+	
 			// Style attribute
 			var t = (th.attr('style') || '').match(/width:\s*(\d+[pxem%]+)/);
 			if ( t ) {
 				oCol.sWidthOrig = t[1];
 			}
 		}
-
+	
 		/* User specified column options */
 		if ( oOptions !== undefined && oOptions !== null )
 		{
 			// Backwards compatibility
 			_fnCompatCols( oOptions );
-
+	
 			// Map camel case parameters to their Hungarian counterparts
 			_fnCamelToHungarian( DataTable.defaults.column, oOptions );
-
+	
 			/* Backwards compatibility for mDataProp */
 			if ( oOptions.mDataProp !== undefined && !oOptions.mData )
 			{
 				oOptions.mData = oOptions.mDataProp;
 			}
-
+	
 			if ( oOptions.sType )
 			{
 				oCol._sManualType = oOptions.sType;
 			}
-
+	
 			// `class` is a reserved word in Javascript, so we need to provide
 			// the ability to use a valid name for the camel case input
 			if ( oOptions.className && ! oOptions.sClass )
 			{
 				oOptions.sClass = oOptions.className;
 			}
-
+	
 			$.extend( oCol, oOptions );
 			_fnMap( oCol, oOptions, "sWidth", "sWidthOrig" );
-
+	
 			/* iDataSort to be applied (backwards compatibility), but aDataSort will take
 			 * priority if defined
 			 */
@@ -655,22 +655,22 @@ module.exports = require('./main.js');
 			}
 			_fnMap( oCol, oOptions, "aDataSort" );
 		}
-
+	
 		/* Cache the data get and set functions for speed */
 		var mDataSrc = oCol.mData;
 		var mData = _fnGetObjectDataFn( mDataSrc );
 		var mRender = oCol.mRender ? _fnGetObjectDataFn( oCol.mRender ) : null;
-
+	
 		var attrTest = function( src ) {
 			return typeof src === 'string' && src.indexOf('@') !== -1;
 		};
 		oCol._bAttrSrc = $.isPlainObject( mDataSrc ) && (
 			attrTest(mDataSrc.sort) || attrTest(mDataSrc.type) || attrTest(mDataSrc.filter)
 		);
-
+	
 		oCol.fnGetData = function (rowData, type, meta) {
 			var innerData = mData( rowData, type, undefined, meta );
-
+	
 			return mRender && type ?
 				mRender( innerData, type, rowData, meta ) :
 				innerData;
@@ -678,14 +678,14 @@ module.exports = require('./main.js');
 		oCol.fnSetData = function ( rowData, val, meta ) {
 			return _fnSetObjectDataFn( mDataSrc )( rowData, val, meta );
 		};
-
+	
 		/* Feature sorting overrides column specific when off */
 		if ( !oSettings.oFeatures.bSort )
 		{
 			oCol.bSortable = false;
 			th.addClass( oClasses.sSortableNone ); // Have to add class here as order event isn't called
 		}
-
+	
 		/* Check that the class assignment is correct for sorting */
 		var bAsc = $.inArray('asc', oCol.asSorting) !== -1;
 		var bDesc = $.inArray('desc', oCol.asSorting) !== -1;
@@ -710,8 +710,8 @@ module.exports = require('./main.js');
 			oCol.sSortingClassJUI = oClasses.sSortJUI;
 		}
 	}
-
-
+	
+	
 	/**
 	 * Adjust the table column widths for new data. Note: you would probably want to
 	 * do a redraw after calling this function!
@@ -724,24 +724,24 @@ module.exports = require('./main.js');
 		if ( settings.oFeatures.bAutoWidth !== false )
 		{
 			var columns = settings.aoColumns;
-
+	
 			_fnCalculateColumnWidths( settings );
 			for ( var i=0 , iLen=columns.length ; i<iLen ; i++ )
 			{
 				columns[i].nTh.style.width = columns[i].sWidth;
 			}
 		}
-
+	
 		var scroll = settings.oScroll;
 		if ( scroll.sY !== '' || scroll.sX !== '')
 		{
 			_fnScrollDraw( settings );
 		}
-
+	
 		_fnCallbackFire( settings, null, 'column-sizing', [settings] );
 	}
-
-
+	
+	
 	/**
 	 * Covert the index of a visible column to the index in the data array (take account
 	 * of hidden columns)
@@ -753,13 +753,13 @@ module.exports = require('./main.js');
 	function _fnVisibleToColumnIndex( oSettings, iMatch )
 	{
 		var aiVis = _fnGetColumns( oSettings, 'bVisible' );
-
+	
 		return typeof aiVis[iMatch] === 'number' ?
 			aiVis[iMatch] :
 			null;
 	}
-
-
+	
+	
 	/**
 	 * Covert the index of an index in the data array and convert it to the visible
 	 *   column index (take account of hidden columns)
@@ -772,11 +772,11 @@ module.exports = require('./main.js');
 	{
 		var aiVis = _fnGetColumns( oSettings, 'bVisible' );
 		var iPos = $.inArray( iMatch, aiVis );
-
+	
 		return iPos !== -1 ? iPos : null;
 	}
-
-
+	
+	
 	/**
 	 * Get the number of visible columns
 	 *  @param {object} oSettings dataTables settings object
@@ -787,8 +787,8 @@ module.exports = require('./main.js');
 	{
 		return _fnGetColumns( oSettings, 'bVisible' ).length;
 	}
-
-
+	
+	
 	/**
 	 * Get an array of column indexes that match a given property
 	 *  @param {object} oSettings dataTables settings object
@@ -800,17 +800,17 @@ module.exports = require('./main.js');
 	function _fnGetColumns( oSettings, sParam )
 	{
 		var a = [];
-
+	
 		$.map( oSettings.aoColumns, function(val, i) {
 			if ( val[sParam] ) {
 				a.push( i );
 			}
 		} );
-
+	
 		return a;
 	}
-
-
+	
+	
 	/**
 	 * Calculate the 'type' of a column
 	 *  @param {object} settings dataTables settings object
@@ -823,12 +823,12 @@ module.exports = require('./main.js');
 		var types = DataTable.ext.type.detect;
 		var i, ien, j, jen, k, ken;
 		var col, cell, detectedType, cache;
-
-		// For each column, spin over the
+	
+		// For each column, spin over the 
 		for ( i=0, ien=columns.length ; i<ien ; i++ ) {
 			col = columns[i];
 			cache = [];
-
+	
 			if ( ! col.sType && col._sManualType ) {
 				col.sType = col._sManualType;
 			}
@@ -840,9 +840,9 @@ module.exports = require('./main.js');
 						if ( cache[k] === undefined ) {
 							cache[k] = _fnGetCellData( settings, k, i, 'type' );
 						}
-
+	
 						detectedType = types[j]( cache[k], settings );
-
+	
 						// Doesn't match, so break early, since this type can't
 						// apply to this column. Also, HTML is a special case since
 						// it is so similar to `string`. Just a single match is
@@ -851,7 +851,7 @@ module.exports = require('./main.js');
 							break;
 						}
 					}
-
+	
 					// Type is valid for all data points in the column - use this
 					// type
 					if ( detectedType ) {
@@ -859,7 +859,7 @@ module.exports = require('./main.js');
 						break;
 					}
 				}
-
+	
 				// Fall back - if no type was detected, always use string
 				if ( ! col.sType ) {
 					col.sType = 'string';
@@ -867,8 +867,8 @@ module.exports = require('./main.js');
 			}
 		}
 	}
-
-
+	
+	
 	/**
 	 * Take the column definitions and static columns arrays and calculate how
 	 * they relate to column indexes. The callback function will then apply the
@@ -884,7 +884,7 @@ module.exports = require('./main.js');
 	{
 		var i, iLen, j, jLen, k, kLen, def;
 		var columns = oSettings.aoColumns;
-
+	
 		// Column definitions with aTargets
 		if ( aoColDefs )
 		{
@@ -892,17 +892,17 @@ module.exports = require('./main.js');
 			for ( i=aoColDefs.length-1 ; i>=0 ; i-- )
 			{
 				def = aoColDefs[i];
-
+	
 				/* Each definition can target multiple columns, as it is an array */
 				var aTargets = def.targets !== undefined ?
 					def.targets :
 					def.aTargets;
-
+	
 				if ( ! $.isArray( aTargets ) )
 				{
 					aTargets = [ aTargets ];
 				}
-
+	
 				for ( j=0, jLen=aTargets.length ; j<jLen ; j++ )
 				{
 					if ( typeof aTargets[j] === 'number' && aTargets[j] >= 0 )
@@ -912,7 +912,7 @@ module.exports = require('./main.js');
 						{
 							_fnAddColumn( oSettings );
 						}
-
+	
 						/* Integer, basic index */
 						fn( aTargets[j], def );
 					}
@@ -936,7 +936,7 @@ module.exports = require('./main.js');
 				}
 			}
 		}
-
+	
 		// Statically defined columns array
 		if ( aoCols )
 		{
@@ -946,7 +946,7 @@ module.exports = require('./main.js');
 			}
 		}
 	}
-
+	
 	/**
 	 * Add a data array to the table, creating DOM node etc. This is the parallel to
 	 * _fnGatherData, but for adding rows from a Javascript source, rather than a
@@ -967,10 +967,10 @@ module.exports = require('./main.js');
 		var oData = $.extend( true, {}, DataTable.models.oRow, {
 			src: nTr ? 'dom' : 'data'
 		} );
-
+	
 		oData._aData = aDataIn;
 		oSettings.aoData.push( oData );
-
+	
 		/* Create the cells */
 		var nTd, sThisType;
 		var columns = oSettings.aoColumns;
@@ -984,20 +984,20 @@ module.exports = require('./main.js');
 			}
 			columns[i].sType = null;
 		}
-
+	
 		/* Add to the display array */
 		oSettings.aiDisplayMaster.push( iRow );
-
+	
 		/* Create the DOM information, or register it if already present */
 		if ( nTr || ! oSettings.oFeatures.bDeferRender )
 		{
 			_fnCreateTr( oSettings, iRow, nTr, anTds );
 		}
-
+	
 		return iRow;
 	}
-
-
+	
+	
 	/**
 	 * Add one or more TR elements to the table. Generally we'd expect to
 	 * use this for reading data from a DOM sourced table, but it could be
@@ -1011,19 +1011,19 @@ module.exports = require('./main.js');
 	function _fnAddTr( settings, trs )
 	{
 		var row;
-
+	
 		// Allow an individual node to be passed in
 		if ( ! (trs instanceof $) ) {
 			trs = $(trs);
 		}
-
+	
 		return trs.map( function (i, el) {
 			row = _fnGetRowElements( settings, el );
 			return _fnAddData( settings, row.data, el, row.cells );
 		} );
 	}
-
-
+	
+	
 	/**
 	 * Take a TR element and convert it to an index in aoData
 	 *  @param {object} oSettings dataTables settings object
@@ -1035,8 +1035,8 @@ module.exports = require('./main.js');
 	{
 		return (n._DT_RowIndex!==undefined) ? n._DT_RowIndex : null;
 	}
-
-
+	
+	
 	/**
 	 * Take a TD element and convert it into a column data index (not the visible index)
 	 *  @param {object} oSettings dataTables settings object
@@ -1049,8 +1049,8 @@ module.exports = require('./main.js');
 	{
 		return $.inArray( n, oSettings.aoData[ iRow ].anCells );
 	}
-
-
+	
+	
 	/**
 	 * Get the data for a given cell from the internal cache, taking into account data mapping
 	 *  @param {object} settings dataTables settings object
@@ -1071,7 +1071,7 @@ module.exports = require('./main.js');
 			row:      rowIdx,
 			col:      colIdx
 		} );
-
+	
 		if ( cellData === undefined ) {
 			if ( settings.iDrawError != draw && defaultContent === null ) {
 				_fnLog( settings, 0, "Requested unknown parameter "+
@@ -1081,7 +1081,7 @@ module.exports = require('./main.js');
 			}
 			return defaultContent;
 		}
-
+	
 		/* When the data source is null, we can use default column data */
 		if ( (cellData === rowData || cellData === null) && defaultContent !== null ) {
 			cellData = defaultContent;
@@ -1091,14 +1091,14 @@ module.exports = require('./main.js');
 			// executing in the scope of the data object (for instances)
 			return cellData.call( rowData );
 		}
-
+	
 		if ( cellData === null && type == 'display' ) {
 			return '';
 		}
 		return cellData;
 	}
-
-
+	
+	
 	/**
 	 * Set the value for a specific cell, into the internal data cache
 	 *  @param {object} settings dataTables settings object
@@ -1111,19 +1111,19 @@ module.exports = require('./main.js');
 	{
 		var col     = settings.aoColumns[colIdx];
 		var rowData = settings.aoData[rowIdx]._aData;
-
+	
 		col.fnSetData( rowData, val, {
 			settings: settings,
 			row:      rowIdx,
 			col:      colIdx
 		}  );
 	}
-
-
+	
+	
 	// Private variable that is used to match action syntax in the data property object
 	var __reArray = /\[.*?\]$/;
 	var __reFn = /\(\)$/;
-
+	
 	/**
 	 * Split string on periods, taking into account escaped periods
 	 * @param  {string} str String to split
@@ -1135,8 +1135,8 @@ module.exports = require('./main.js');
 			return s.replace(/\\./g, '.');
 		} );
 	}
-
-
+	
+	
 	/**
 	 * Return a function that can be used to get data from a source object, taking
 	 * into account the ability to use nested objects as a source
@@ -1155,7 +1155,7 @@ module.exports = require('./main.js');
 					o[key] = _fnGetObjectDataFn( val );
 				}
 			} );
-
+	
 			return function (data, type, row, meta) {
 				var t = o[type] || o._;
 				return t !== undefined ?
@@ -1187,42 +1187,42 @@ module.exports = require('./main.js');
 			 */
 			var fetchData = function (data, type, src) {
 				var arrayNotation, funcNotation, out, innerSrc;
-
+	
 				if ( src !== "" )
 				{
 					var a = _fnSplitObjNotation( src );
-
+	
 					for ( var i=0, iLen=a.length ; i<iLen ; i++ )
 					{
 						// Check if we are dealing with special notation
 						arrayNotation = a[i].match(__reArray);
 						funcNotation = a[i].match(__reFn);
-
+	
 						if ( arrayNotation )
 						{
 							// Array notation
 							a[i] = a[i].replace(__reArray, '');
-
+	
 							// Condition allows simply [] to be passed in
 							if ( a[i] !== "" ) {
 								data = data[ a[i] ];
 							}
 							out = [];
-
+	
 							// Get the remainder of the nested object to get
 							a.splice( 0, i+1 );
 							innerSrc = a.join('.');
-
+	
 							// Traverse each entry in the array getting the properties requested
 							for ( var j=0, jLen=data.length ; j<jLen ; j++ ) {
 								out.push( fetchData( data[j], type, innerSrc ) );
 							}
-
+	
 							// If a string is given in between the array notation indicators, that
 							// is used to join the strings together, otherwise an array is returned
 							var join = arrayNotation[0].substring(1, arrayNotation[0].length-1);
 							data = (join==="") ? out : out.join(join);
-
+	
 							// The inner call to fetchData has already traversed through the remainder
 							// of the source requested, so we exit from the loop
 							break;
@@ -1234,7 +1234,7 @@ module.exports = require('./main.js');
 							data = data[ a[i] ]();
 							continue;
 						}
-
+	
 						if ( data === null || data[ a[i] ] === undefined )
 						{
 							return undefined;
@@ -1242,10 +1242,10 @@ module.exports = require('./main.js');
 						data = data[ a[i] ];
 					}
 				}
-
+	
 				return data;
 			};
-
+	
 			return function (data, type) { // row and meta also passed, but not used
 				return fetchData( data, type, mSource );
 			};
@@ -1258,8 +1258,8 @@ module.exports = require('./main.js');
 			};
 		}
 	}
-
-
+	
+	
 	/**
 	 * Return a function that can be used to set data from a source object, taking
 	 * into account the ability to use nested objects as a source
@@ -1297,23 +1297,23 @@ module.exports = require('./main.js');
 				var a = _fnSplitObjNotation( src ), b;
 				var aLast = a[a.length-1];
 				var arrayNotation, funcNotation, o, innerSrc;
-
+	
 				for ( var i=0, iLen=a.length-1 ; i<iLen ; i++ )
 				{
 					// Check if we are dealing with an array notation request
 					arrayNotation = a[i].match(__reArray);
 					funcNotation = a[i].match(__reFn);
-
+	
 					if ( arrayNotation )
 					{
 						a[i] = a[i].replace(__reArray, '');
 						data[ a[i] ] = [];
-
+	
 						// Get the remainder of the nested object to set so we can recurse
 						b = a.slice();
 						b.splice( 0, i+1 );
 						innerSrc = b.join('.');
-
+	
 						// Traverse each entry in the array setting the properties requested
 						for ( var j=0, jLen=val.length ; j<jLen ; j++ )
 						{
@@ -1321,7 +1321,7 @@ module.exports = require('./main.js');
 							setData( o, val[j], innerSrc );
 							data[ a[i] ].push( o );
 						}
-
+	
 						// The inner call to setData has already traversed through the remainder
 						// of the source and has set the data, thus we can exit here
 						return;
@@ -1332,7 +1332,7 @@ module.exports = require('./main.js');
 						a[i] = a[i].replace(__reFn, '');
 						data = data[ a[i] ]( val );
 					}
-
+	
 					// If the nested object doesn't currently exist - since we are
 					// trying to set the value - create it
 					if ( data[ a[i] ] === null || data[ a[i] ] === undefined )
@@ -1341,7 +1341,7 @@ module.exports = require('./main.js');
 					}
 					data = data[ a[i] ];
 				}
-
+	
 				// Last item in the input - i.e, the actual set
 				if ( aLast.match(__reFn ) )
 				{
@@ -1355,7 +1355,7 @@ module.exports = require('./main.js');
 					data[ aLast.replace(__reArray, '') ] = val;
 				}
 			};
-
+	
 			return function (data, val) { // meta is also passed in, but not used
 				return setData( data, val, mSource );
 			};
@@ -1368,8 +1368,8 @@ module.exports = require('./main.js');
 			};
 		}
 	}
-
-
+	
+	
 	/**
 	 * Return an array with the full table data
 	 *  @param {object} oSettings dataTables settings object
@@ -1380,8 +1380,8 @@ module.exports = require('./main.js');
 	{
 		return _pluck( settings.aoData, '_aData' );
 	}
-
-
+	
+	
 	/**
 	 * Nuke the table
 	 *  @param {object} oSettings dataTables settings object
@@ -1393,8 +1393,8 @@ module.exports = require('./main.js');
 		settings.aiDisplayMaster.length = 0;
 		settings.aiDisplay.length = 0;
 	}
-
-
+	
+	
 	 /**
 	 * Take an array of integers (index array) and remove a target integer (value - not
 	 * the key!)
@@ -1405,7 +1405,7 @@ module.exports = require('./main.js');
 	function _fnDeleteIndex( a, iTarget, splice )
 	{
 		var iTargetIndex = -1;
-
+	
 		for ( var i=0, iLen=a.length ; i<iLen ; i++ )
 		{
 			if ( a[i] == iTarget )
@@ -1417,14 +1417,14 @@ module.exports = require('./main.js');
 				a[i]--;
 			}
 		}
-
+	
 		if ( iTargetIndex != -1 && splice === undefined )
 		{
 			a.splice( iTargetIndex, 1 );
 		}
 	}
-
-
+	
+	
 	/**
 	 * Mark cached data as invalid such that a re-read of the data will occur when
 	 * the cached data is next requested. Also update from the data source object.
@@ -1441,7 +1441,7 @@ module.exports = require('./main.js');
 	{
 		var row = settings.aoData[ rowIdx ];
 		var i, ien;
-
+	
 		// Are we reading last data from DOM or the data object?
 		if ( src === 'dom' || ((! src || src === 'auto') && row.src === 'dom') ) {
 			// Read the data from the DOM
@@ -1451,26 +1451,26 @@ module.exports = require('./main.js');
 			// Reading from data object, update the DOM
 			var cells = row.anCells;
 			var cell;
-
+	
 			if ( cells ) {
 				for ( i=0, ien=cells.length ; i<ien ; i++ ) {
 					cell = cells[i];
-
+	
 					// This is very frustrating, but in IE if you just write directly
 					// to innerHTML, and elements that are overwritten are GC'ed,
 					// even if there is a reference to them elsewhere
 					while ( cell.childNodes.length ) {
 						cell.removeChild( cell.firstChild );
 					}
-
+	
 					cells[i].innerHTML = _fnGetCellData( settings, rowIdx, i, 'display' );
 				}
 			}
 		}
-
+	
 		row._aSortData = null;
 		row._aFilterData = null;
-
+	
 		// Invalidate the type for a specific column (if given) or all columns since
 		// the data might have changed
 		var cols = settings.aoColumns;
@@ -1482,12 +1482,12 @@ module.exports = require('./main.js');
 				cols[i].sType = null;
 			}
 		}
-
+	
 		// Update DataTables special `DT_*` attributes for the row
 		_fnRowAttributes( row );
 	}
-
-
+	
+	
 	/**
 	 * Build a data source object from an HTML row, reading the contents of the
 	 * cells that are in the row.
@@ -1509,62 +1509,62 @@ module.exports = require('./main.js');
 			td = row.firstChild,
 			name, col, o, i=0, contents,
 			columns = settings.aoColumns;
-
+	
 		var attr = function ( str, data, td  ) {
 			if ( typeof str === 'string' ) {
 				var idx = str.indexOf('@');
-
+	
 				if ( idx !== -1 ) {
 					var src = str.substring( idx+1 );
 					o[ '@'+src ] = td.getAttribute( src );
 				}
 			}
 		};
-
+	
 		var cellProcess = function ( cell ) {
 			col = columns[i];
 			contents = $.trim(cell.innerHTML);
-
+	
 			if ( col && col._bAttrSrc ) {
 				o = {
 					display: contents
 				};
-
+	
 				attr( col.mData.sort, o, cell );
 				attr( col.mData.type, o, cell );
 				attr( col.mData.filter, o, cell );
-
+	
 				d.push( o );
 			}
 			else {
 				d.push( contents );
 			}
-
+	
 			i++;
 		};
-
+	
 		if ( td ) {
 			// `tr` element passed in
 			while ( td ) {
 				name = td.nodeName.toUpperCase();
-
+	
 				if ( name == "TD" || name == "TH" ) {
 					cellProcess( td );
 					tds.push( td );
 				}
-
+	
 				td = td.nextSibling;
 			}
 		}
 		else {
 			// Existing row object passed in
 			tds = row.anCells;
-
+			
 			for ( var j=0, jen=tds.length ; j<jen ; j++ ) {
 				cellProcess( tds[j] );
 			}
 		}
-
+	
 		return {
 			data: d,
 			cells: tds
@@ -1588,42 +1588,42 @@ module.exports = require('./main.js');
 			cells = [],
 			nTr, nTd, oCol,
 			i, iLen;
-
+	
 		if ( row.nTr === null )
 		{
 			nTr = nTrIn || document.createElement('tr');
-
+	
 			row.nTr = nTr;
 			row.anCells = cells;
-
+	
 			/* Use a private property on the node to allow reserve mapping from the node
 			 * to the aoData array for fast look up
 			 */
 			nTr._DT_RowIndex = iRow;
-
+	
 			/* Special parameters can be given by the data source to be used on the row */
 			_fnRowAttributes( row );
-
+	
 			/* Process each column */
 			for ( i=0, iLen=oSettings.aoColumns.length ; i<iLen ; i++ )
 			{
 				oCol = oSettings.aoColumns[i];
-
+	
 				nTd = nTrIn ? anTds[i] : document.createElement( oCol.sCellType );
 				cells.push( nTd );
-
+	
 				// Need to create the HTML if new, or if a rendering function is defined
 				if ( !nTrIn || oCol.mRender || oCol.mData !== i )
 				{
 					nTd.innerHTML = _fnGetCellData( oSettings, iRow, i, 'display' );
 				}
-
+	
 				/* Add user defined class */
 				if ( oCol.sClass )
 				{
 					nTd.className += ' '+oCol.sClass;
 				}
-
+	
 				// Visibility - add or remove as required
 				if ( oCol.bVisible && ! nTrIn )
 				{
@@ -1633,7 +1633,7 @@ module.exports = require('./main.js');
 				{
 					nTd.parentNode.removeChild( nTd );
 				}
-
+	
 				if ( oCol.fnCreatedCell )
 				{
 					oCol.fnCreatedCell.call( oSettings.oInstance,
@@ -1641,16 +1641,16 @@ module.exports = require('./main.js');
 					);
 				}
 			}
-
+	
 			_fnCallbackFire( oSettings, 'aoRowCreatedCallback', null, [nTr, rowData, iRow] );
 		}
-
+	
 		// Remove once webkit bug 131819 and Chromium bug 365619 have been resolved
 		// and deployed
 		row.nTr.setAttribute( 'role', 'row' );
 	}
-
-
+	
+	
 	/**
 	 * Add attributes to a row based on the special `DT_*` parameters in a data
 	 * source object.
@@ -1661,31 +1661,31 @@ module.exports = require('./main.js');
 	{
 		var tr = row.nTr;
 		var data = row._aData;
-
+	
 		if ( tr ) {
 			if ( data.DT_RowId ) {
 				tr.id = data.DT_RowId;
 			}
-
+	
 			if ( data.DT_RowClass ) {
 				// Remove any classes added by DT_RowClass before
 				var a = data.DT_RowClass.split(' ');
 				row.__rowc = row.__rowc ?
 					_unique( row.__rowc.concat( a ) ) :
 					a;
-
+	
 				$(tr)
 					.removeClass( row.__rowc.join(' ') )
 					.addClass( data.DT_RowClass );
 			}
-
+	
 			if ( data.DT_RowData ) {
 				$(tr).data( data.DT_RowData );
 			}
 		}
 	}
-
-
+	
+	
 	/**
 	 * Create the HTML header for the table
 	 *  @param {object} oSettings dataTables settings object
@@ -1699,71 +1699,71 @@ module.exports = require('./main.js');
 		var createHeader = $('th, td', thead).length === 0;
 		var classes = oSettings.oClasses;
 		var columns = oSettings.aoColumns;
-
+	
 		if ( createHeader ) {
 			row = $('<tr/>').appendTo( thead );
 		}
-
+	
 		for ( i=0, ien=columns.length ; i<ien ; i++ ) {
 			column = columns[i];
 			cell = $( column.nTh ).addClass( column.sClass );
-
+	
 			if ( createHeader ) {
 				cell.appendTo( row );
 			}
-
+	
 			// 1.11 move into sorting
 			if ( oSettings.oFeatures.bSort ) {
 				cell.addClass( column.sSortingClass );
-
+	
 				if ( column.bSortable !== false ) {
 					cell
 						.attr( 'tabindex', oSettings.iTabIndex )
 						.attr( 'aria-controls', oSettings.sTableId );
-
+	
 					_fnSortAttachListener( oSettings, column.nTh, i );
 				}
 			}
-
+	
 			if ( column.sTitle != cell.html() ) {
 				cell.html( column.sTitle );
 			}
-
+	
 			_fnRenderer( oSettings, 'header' )(
 				oSettings, cell, column, classes
 			);
 		}
-
+	
 		if ( createHeader ) {
 			_fnDetectHeader( oSettings.aoHeader, thead );
 		}
-
+		
 		/* ARIA role for the rows */
 	 	$(thead).find('>tr').attr('role', 'row');
-
+	
 		/* Deal with the footer - add classes if required */
 		$(thead).find('>tr>th, >tr>td').addClass( classes.sHeaderTH );
 		$(tfoot).find('>tr>th, >tr>td').addClass( classes.sFooterTH );
-
+	
 		// Cache the footer cells. Note that we only take the cells from the first
 		// row in the footer. If there is more than one row the user wants to
 		// interact with, they need to use the table().foot() method. Note also this
 		// allows cells to be used for multiple columns using colspan
 		if ( tfoot !== null ) {
 			var cells = oSettings.aoFooter[0];
-
+	
 			for ( i=0, ien=cells.length ; i<ien ; i++ ) {
 				column = columns[i];
 				column.nTf = cells[i].cell;
-
+	
 				if ( column.sClass ) {
 					$(column.nTf).addClass( column.sClass );
 				}
 			}
 		}
 	}
-
-
+	
+	
 	/**
 	 * Draw the header (or footer) element based on the column visibility states. The
 	 * methodology here is to use the layout array from _fnDetectHeader, modified for
@@ -1784,23 +1784,23 @@ module.exports = require('./main.js');
 		var aApplied = [];
 		var iColumns = oSettings.aoColumns.length;
 		var iRowspan, iColspan;
-
+	
 		if ( ! aoSource )
 		{
 			return;
 		}
-
+	
 		if (  bIncludeHidden === undefined )
 		{
 			bIncludeHidden = false;
 		}
-
+	
 		/* Make a copy of the master layout array, but without the visible columns in it */
 		for ( i=0, iLen=aoSource.length ; i<iLen ; i++ )
 		{
 			aoLocal[i] = aoSource[i].slice();
 			aoLocal[i].nTr = aoSource[i].nTr;
-
+	
 			/* Remove any columns which are currently hidden */
 			for ( j=iColumns-1 ; j>=0 ; j-- )
 			{
@@ -1809,15 +1809,15 @@ module.exports = require('./main.js');
 					aoLocal[i].splice( j, 1 );
 				}
 			}
-
+	
 			/* Prep the applied array - it needs an element for each row */
 			aApplied.push( [] );
 		}
-
+	
 		for ( i=0, iLen=aoLocal.length ; i<iLen ; i++ )
 		{
 			nLocalTr = aoLocal[i].nTr;
-
+	
 			/* All cells are going to be replaced, so empty out the row */
 			if ( nLocalTr )
 			{
@@ -1826,12 +1826,12 @@ module.exports = require('./main.js');
 					nLocalTr.removeChild( n );
 				}
 			}
-
+	
 			for ( j=0, jLen=aoLocal[i].length ; j<jLen ; j++ )
 			{
 				iRowspan = 1;
 				iColspan = 1;
-
+	
 				/* Check to see if there is already a cell (row/colspan) covering our target
 				 * insert point. If there is, then there is nothing to do.
 				 */
@@ -1839,7 +1839,7 @@ module.exports = require('./main.js');
 				{
 					nLocalTr.appendChild( aoLocal[i][j].cell );
 					aApplied[i][j] = 1;
-
+	
 					/* Expand the cell to cover as many rows as needed */
 					while ( aoLocal[i+iRowspan] !== undefined &&
 					        aoLocal[i][j].cell == aoLocal[i+iRowspan][j].cell )
@@ -1847,7 +1847,7 @@ module.exports = require('./main.js');
 						aApplied[i+iRowspan][j] = 1;
 						iRowspan++;
 					}
-
+	
 					/* Expand the cell to cover as many columns as needed */
 					while ( aoLocal[i][j+iColspan] !== undefined &&
 					        aoLocal[i][j].cell == aoLocal[i][j+iColspan].cell )
@@ -1859,7 +1859,7 @@ module.exports = require('./main.js');
 						}
 						iColspan++;
 					}
-
+	
 					/* Do the actual expansion in the DOM */
 					$(aoLocal[i][j].cell)
 						.attr('rowspan', iRowspan)
@@ -1868,8 +1868,8 @@ module.exports = require('./main.js');
 			}
 		}
 	}
-
-
+	
+	
 	/**
 	 * Insert the required TR nodes into the table for display
 	 *  @param {object} oSettings dataTables settings object
@@ -1884,7 +1884,7 @@ module.exports = require('./main.js');
 			_fnProcessingDisplay( oSettings, false );
 			return;
 		}
-
+	
 		var i, iLen, n;
 		var anRows = [];
 		var iRowCount = 0;
@@ -1895,9 +1895,9 @@ module.exports = require('./main.js');
 		var iInitDisplayStart = oSettings.iInitDisplayStart;
 		var bServerSide = _fnDataSource( oSettings ) == 'ssp';
 		var aiDisplay = oSettings.aiDisplay;
-
+	
 		oSettings.bDrawing = true;
-
+	
 		/* Check and see if we have an initial draw position from state saving */
 		if ( iInitDisplayStart !== undefined && iInitDisplayStart !== -1 )
 		{
@@ -1906,13 +1906,13 @@ module.exports = require('./main.js');
 				iInitDisplayStart >= oSettings.fnRecordsDisplay() ?
 					0 :
 					iInitDisplayStart;
-
+	
 			oSettings.iInitDisplayStart = -1;
 		}
-
+	
 		var iDisplayStart = oSettings._iDisplayStart;
 		var iDisplayEnd = oSettings.fnDisplayEnd();
-
+	
 		/* Server-side processing draw intercept */
 		if ( oSettings.bDeferLoading )
 		{
@@ -1928,12 +1928,12 @@ module.exports = require('./main.js');
 		{
 			return;
 		}
-
+	
 		if ( aiDisplay.length !== 0 )
 		{
 			var iStart = bServerSide ? 0 : iDisplayStart;
 			var iEnd = bServerSide ? oSettings.aoData.length : iDisplayEnd;
-
+	
 			for ( var j=iStart ; j<iEnd ; j++ )
 			{
 				var iDataIndex = aiDisplay[j];
@@ -1942,9 +1942,9 @@ module.exports = require('./main.js');
 				{
 					_fnCreateTr( oSettings, iDataIndex );
 				}
-
+	
 				var nRow = aoData.nTr;
-
+	
 				/* Remove the old striping classes and then add the new one */
 				if ( iStripes !== 0 )
 				{
@@ -1955,11 +1955,11 @@ module.exports = require('./main.js');
 						aoData._sRowStripe = sStripe;
 					}
 				}
-
+	
 				/* Row callback functions - might want to manipulate the row */
 				_fnCallbackFire( oSettings, 'aoRowCallback', null,
 					[nRow, aoData._aData, iRowCount, j] );
-
+	
 				anRows.push( nRow );
 				iRowCount++;
 			}
@@ -1976,7 +1976,7 @@ module.exports = require('./main.js');
 			{
 				sZero = oLang.sEmptyTable;
 			}
-
+	
 			anRows[ 0 ] = $( '<tr/>', { 'class': iStripes ? asStripeClasses[0] : '' } )
 				.append( $('<td />', {
 					'valign':  'top',
@@ -1984,29 +1984,29 @@ module.exports = require('./main.js');
 					'class':   oSettings.oClasses.sRowEmpty
 				} ).html( oSettings.translate(sZero) ) )[0];
 		}
-
+	
 		/* Header and footer callbacks */
 		_fnCallbackFire( oSettings, 'aoHeaderCallback', 'header', [ $(oSettings.nTHead).children('tr')[0],
 			_fnGetDataMaster( oSettings ), iDisplayStart, iDisplayEnd, aiDisplay ] );
-
+	
 		_fnCallbackFire( oSettings, 'aoFooterCallback', 'footer', [ $(oSettings.nTFoot).children('tr')[0],
 			_fnGetDataMaster( oSettings ), iDisplayStart, iDisplayEnd, aiDisplay ] );
-
+	
 		var body = $(oSettings.nTBody);
-
+	
 		body.children().detach();
 		body.append( $(anRows) );
-
+	
 		/* Call all required callback functions for the end of a draw */
 		_fnCallbackFire( oSettings, 'aoDrawCallback', 'draw', [oSettings] );
-
+	
 		/* Draw is complete, sorting and filtering must be as well */
 		oSettings.bSorted = false;
 		oSettings.bFiltered = false;
 		oSettings.bDrawing = false;
 	}
-
-
+	
+	
 	/**
 	 * Redraw the table - taking account of the various features which are enabled
 	 *  @param {object} oSettings dataTables settings object
@@ -2020,11 +2020,11 @@ module.exports = require('./main.js');
 			features = settings.oFeatures,
 			sort     = features.bSort,
 			filter   = features.bFilter;
-
+	
 		if ( sort ) {
 			_fnSort( settings );
 		}
-
+	
 		if ( filter ) {
 			_fnFilterComplete( settings, settings.oPreviousSearch );
 		}
@@ -2032,21 +2032,21 @@ module.exports = require('./main.js');
 			// No filtering, so we want to just use the display master
 			settings.aiDisplay = settings.aiDisplayMaster.slice();
 		}
-
+	
 		if ( holdPosition !== true ) {
 			settings._iDisplayStart = 0;
 		}
-
+	
 		// Let any modules know about the draw hold position state (used by
 		// scrolling internally)
 		settings._drawHold = holdPosition;
-
+	
 		_fnDraw( settings );
-
+	
 		settings._drawHold = false;
 	}
-
-
+	
+	
 	/**
 	 * Add the options to the page HTML for the table
 	 *  @param {object} oSettings dataTables settings object
@@ -2058,17 +2058,17 @@ module.exports = require('./main.js');
 		var table = $(oSettings.nTable);
 		var holding = $('<div/>').insertBefore( table ); // Holding element for speed
 		var features = oSettings.oFeatures;
-
+	
 		// All DataTables are wrapped in a div
 		var insert = $('<div/>', {
 			id:      oSettings.sTableId+'_wrapper',
 			'class': classes.sWrapper + (oSettings.nTFoot ? '' : ' '+classes.sNoFooter)
 		} );
-
+	
 		oSettings.nHolding = holding[0];
 		oSettings.nTableWrapper = insert[0];
 		oSettings.nTableReinsertBefore = oSettings.nTable.nextSibling;
-
+	
 		/* Loop over the user set positioning and place the elements as needed */
 		var aDom = oSettings.sDom.split('');
 		var featureNode, cOption, nNewNode, cNext, sAttr, j;
@@ -2076,12 +2076,12 @@ module.exports = require('./main.js');
 		{
 			featureNode = null;
 			cOption = aDom[i];
-
+	
 			if ( cOption == '<' )
 			{
 				/* New container div */
 				nNewNode = $('<div/>')[0];
-
+	
 				/* Check to see if we should append an id and/or a class name to the container */
 				cNext = aDom[i+1];
 				if ( cNext == "'" || cNext == '"' )
@@ -2093,7 +2093,7 @@ module.exports = require('./main.js');
 						sAttr += aDom[i+j];
 						j++;
 					}
-
+	
 					/* Replace jQuery UI constants @todo depreciated */
 					if ( sAttr == "H" )
 					{
@@ -2103,7 +2103,7 @@ module.exports = require('./main.js');
 					{
 						sAttr = classes.sJUIFooter;
 					}
-
+	
 					/* The attribute can be in the format of "#id.class", "#id" or "class" This logic
 					 * breaks the string into parts and applies them as needed
 					 */
@@ -2121,10 +2121,10 @@ module.exports = require('./main.js');
 					{
 						nNewNode.className = sAttr;
 					}
-
+	
 					i += j; /* Move along the position array */
 				}
-
+	
 				insert.append( nNewNode );
 				insert = $(nNewNode);
 			}
@@ -2177,27 +2177,27 @@ module.exports = require('./main.js');
 					}
 				}
 			}
-
+	
 			/* Add to the 2D features array */
 			if ( featureNode )
 			{
 				var aanFeatures = oSettings.aanFeatures;
-
+	
 				if ( ! aanFeatures[cOption] )
 				{
 					aanFeatures[cOption] = [];
 				}
-
+	
 				aanFeatures[cOption].push( featureNode );
 				insert.append( featureNode );
 			}
 		}
-
+	
 		/* Built our DOM structure - replace the holding div with what we want */
 		holding.replaceWith( insert );
 	}
-
-
+	
+	
 	/**
 	 * Use the DOM source to create up an array of header cells. The idea here is to
 	 * create a layout grid (array) of rows x columns, which contains a reference
@@ -2220,21 +2220,21 @@ module.exports = require('./main.js');
 			}
 			return j;
 		};
-
+	
 		aLayout.splice( 0, aLayout.length );
-
+	
 		/* We know how many rows there are in the layout - so prep it */
 		for ( i=0, iLen=nTrs.length ; i<iLen ; i++ )
 		{
 			aLayout.push( [] );
 		}
-
+	
 		/* Calculate a layout array */
 		for ( i=0, iLen=nTrs.length ; i<iLen ; i++ )
 		{
 			nTr = nTrs[i];
 			iColumn = 0;
-
+	
 			/* For every cell in the row... */
 			nCell = nTr.firstChild;
 			while ( nCell ) {
@@ -2246,15 +2246,15 @@ module.exports = require('./main.js');
 					iRowspan = nCell.getAttribute('rowspan') * 1;
 					iColspan = (!iColspan || iColspan===0 || iColspan===1) ? 1 : iColspan;
 					iRowspan = (!iRowspan || iRowspan===0 || iRowspan===1) ? 1 : iRowspan;
-
+	
 					/* There might be colspan cells already in this row, so shift our target
 					 * accordingly
 					 */
 					iColShifted = fnShiftCol( aLayout, i, iColumn );
-
+	
 					/* Cache calculation for unique columns */
 					bUnique = iColspan === 1 ? true : false;
-
+	
 					/* If there is col / rowspan, copy the information into the layout grid */
 					for ( l=0 ; l<iColspan ; l++ )
 					{
@@ -2272,8 +2272,8 @@ module.exports = require('./main.js');
 			}
 		}
 	}
-
-
+	
+	
 	/**
 	 * Get an array of unique th elements, one for each column
 	 *  @param {object} oSettings dataTables settings object
@@ -2294,7 +2294,7 @@ module.exports = require('./main.js');
 				_fnDetectHeader( aLayout, nHeader );
 			}
 		}
-
+	
 		for ( var i=0, iLen=aLayout.length ; i<iLen ; i++ )
 		{
 			for ( var j=0, jLen=aLayout[i].length ; j<jLen ; j++ )
@@ -2306,12 +2306,12 @@ module.exports = require('./main.js');
 				}
 			}
 		}
-
+	
 		return aReturn;
 	}
-
-
-
+	
+	
+	
 	/**
 	 * Create an Ajax call based on the table's settings, taking into account that
 	 * parameters can have multiple forms, and backwards compatibility.
@@ -2325,20 +2325,20 @@ module.exports = require('./main.js');
 	{
 		// Compatibility with 1.9-, allow fnServerData and event to manipulate
 		_fnCallbackFire( oSettings, 'aoServerParams', 'serverParams', [data] );
-
+	
 		// Convert to object based for 1.10+ if using the old array scheme which can
 		// come from server-side processing or serverParams
 		if ( data && $.isArray(data) ) {
 			var tmp = {};
 			var rbracket = /(.*?)\[\]$/;
-
+	
 			$.each( data, function (key, val) {
 				var match = val.name.match(rbracket);
-
+	
 				if ( match ) {
 					// Support for arrays
 					var name = match[0];
-
+	
 					if ( ! tmp[ name ] ) {
 						tmp[ name ] = [];
 					}
@@ -2350,29 +2350,29 @@ module.exports = require('./main.js');
 			} );
 			data = tmp;
 		}
-
+	
 		var ajaxData;
 		var ajax = oSettings.ajax;
 		var instance = oSettings.oInstance;
-
+	
 		if ( $.isPlainObject( ajax ) && ajax.data )
 		{
 			ajaxData = ajax.data;
-
+	
 			var newData = $.isFunction( ajaxData ) ?
 				ajaxData( data ) :  // fn can manipulate data or return an object
 				ajaxData;           // object or array to merge
-
+	
 			// If the function returned an object, use that alone
 			data = $.isFunction( ajaxData ) && newData ?
 				newData :
 				$.extend( true, data, newData );
-
+	
 			// Remove the data property as we've resolved it already and don't want
 			// jQuery to do it again (it is restored at the end of the function)
 			delete ajax.data;
 		}
-
+	
 		var baseAjax = {
 			"data": data,
 			"success": function (json) {
@@ -2380,7 +2380,7 @@ module.exports = require('./main.js');
 				if ( error ) {
 					oSettings.oApi._fnLog( oSettings, 0, error );
 				}
-
+	
 				oSettings.json = json;
 				_fnCallbackFire( oSettings, null, 'xhr', [oSettings, json] );
 				fn( json );
@@ -2390,24 +2390,24 @@ module.exports = require('./main.js');
 			"type": oSettings.sServerMethod,
 			"error": function (xhr, error, thrown) {
 				var log = oSettings.oApi._fnLog;
-
+	
 				if ( error == "parsererror" ) {
 					log( oSettings, 0, 'Invalid JSON response', 1 );
 				}
 				else if ( xhr.readyState === 4 ) {
 					log( oSettings, 0, 'Ajax error', 7 );
 				}
-
+	
 				_fnProcessingDisplay( oSettings, false );
 			}
 		};
-
+	
 		// Store the data submitted for the API
 		oSettings.oAjaxData = data;
-
+	
 		// Allow plug-ins and external processes to modify the data
 		_fnCallbackFire( oSettings, null, 'preXhr', [oSettings, data] );
-
+	
 		if ( oSettings.fnServerData )
 		{
 			// DataTables 1.9- compatibility
@@ -2436,13 +2436,13 @@ module.exports = require('./main.js');
 		{
 			// Object to extend the base settings
 			oSettings.jqXHR = $.ajax( $.extend( baseAjax, ajax ) );
-
+	
 			// Restore for next time around
 			ajax.data = ajaxData;
 		}
 	}
-
-
+	
+	
 	/**
 	 * Update the table using an Ajax call
 	 *  @param {object} settings dataTables settings object
@@ -2454,7 +2454,7 @@ module.exports = require('./main.js');
 		if ( settings.bAjaxDataGet ) {
 			settings.iDraw++;
 			_fnProcessingDisplay( settings, true );
-
+	
 			_fnBuildAjax(
 				settings,
 				_fnAjaxParameters( settings ),
@@ -2462,13 +2462,13 @@ module.exports = require('./main.js');
 					_fnAjaxUpdateDraw( settings, json );
 				}
 			);
-
+	
 			return false;
 		}
 		return true;
 	}
-
-
+	
+	
 	/**
 	 * Build up the parameters in an object needed for a server-side processing
 	 * request. Note that this is basically done twice, is different ways - a modern
@@ -2494,18 +2494,18 @@ module.exports = require('./main.js');
 			displayLength = features.bPaginate !== false ?
 				settings._iDisplayLength :
 				-1;
-
+	
 		var param = function ( name, value ) {
 			data.push( { 'name': name, 'value': value } );
 		};
-
+	
 		// DataTables 1.9- compatible method
 		param( 'sEcho',          settings.iDraw );
 		param( 'iColumns',       columnCount );
 		param( 'sColumns',       _pluck( columns, 'sName' ).join(',') );
 		param( 'iDisplayStart',  displayStart );
 		param( 'iDisplayLength', displayLength );
-
+	
 		// DataTables 1.10+ method
 		var d = {
 			draw:    settings.iDraw,
@@ -2518,12 +2518,12 @@ module.exports = require('./main.js');
 				regex: preSearch.bRegex
 			}
 		};
-
+	
 		for ( i=0 ; i<columnCount ; i++ ) {
 			column = columns[i];
 			columnSearch = preColSearch[i];
 			dataProp = typeof column.mData=="function" ? 'function' : column.mData ;
-
+	
 			d.columns.push( {
 				data:       dataProp,
 				name:       column.sName,
@@ -2534,49 +2534,49 @@ module.exports = require('./main.js');
 					regex: columnSearch.bRegex
 				}
 			} );
-
+	
 			param( "mDataProp_"+i, dataProp );
-
+	
 			if ( features.bFilter ) {
 				param( 'sSearch_'+i,     columnSearch.sSearch );
 				param( 'bRegex_'+i,      columnSearch.bRegex );
 				param( 'bSearchable_'+i, column.bSearchable );
 			}
-
+	
 			if ( features.bSort ) {
 				param( 'bSortable_'+i, column.bSortable );
 			}
 		}
-
+	
 		if ( features.bFilter ) {
 			param( 'sSearch', preSearch.sSearch );
 			param( 'bRegex', preSearch.bRegex );
 		}
-
+	
 		if ( features.bSort ) {
 			$.each( sort, function ( i, val ) {
 				d.order.push( { column: val.col, dir: val.dir } );
-
+	
 				param( 'iSortCol_'+i, val.col );
 				param( 'sSortDir_'+i, val.dir );
 			} );
-
+	
 			param( 'iSortingCols', sort.length );
 		}
-
+	
 		// If the legacy.ajax parameter is null, then we automatically decide which
 		// form to use, based on sAjaxSource
 		var legacy = DataTable.ext.legacy.ajax;
 		if ( legacy === null ) {
 			return settings.sAjaxSource ? data : d;
 		}
-
+	
 		// Otherwise, if legacy has been specified then we use that to decide on the
 		// form
 		return legacy ? data : d;
 	}
-
-
+	
+	
 	/**
 	 * Data the data from the server (nuking the old) and redraw the table
 	 *  @param {object} oSettings dataTables settings object
@@ -2595,11 +2595,11 @@ module.exports = require('./main.js');
 		var compat = function ( old, modern ) {
 			return json[old] !== undefined ? json[old] : json[modern];
 		};
-
+	
 		var draw            = compat( 'sEcho',                'draw' );
 		var recordsTotal    = compat( 'iTotalRecords',        'recordsTotal' );
 		var rocordsFiltered = compat( 'iTotalDisplayRecords', 'recordsFiltered' );
-
+	
 		if ( draw ) {
 			// Protect against out of sequence returns
 			if ( draw*1 < settings.iDraw ) {
@@ -2607,29 +2607,29 @@ module.exports = require('./main.js');
 			}
 			settings.iDraw = draw * 1;
 		}
-
+	
 		_fnClearTable( settings );
 		settings._iRecordsTotal   = parseInt(recordsTotal, 10);
 		settings._iRecordsDisplay = parseInt(rocordsFiltered, 10);
-
+	
 		var data = _fnAjaxDataSrc( settings, json );
 		for ( var i=0, ien=data.length ; i<ien ; i++ ) {
 			_fnAddData( settings, data[i] );
 		}
 		settings.aiDisplay = settings.aiDisplayMaster.slice();
-
+	
 		settings.bAjaxDataGet = false;
 		_fnDraw( settings );
-
+	
 		if ( ! settings._bInitComplete ) {
 			_fnInitComplete( settings, json );
 		}
-
+	
 		settings.bAjaxDataGet = true;
 		_fnProcessingDisplay( settings, false );
 	}
-
-
+	
+	
 	/**
 	 * Get the data from the JSON data source to use for drawing a table. Using
 	 * `_fnGetObjectDataFn` allows the data to be sourced from a property of the
@@ -2643,19 +2643,19 @@ module.exports = require('./main.js');
 		var dataSrc = $.isPlainObject( oSettings.ajax ) && oSettings.ajax.dataSrc !== undefined ?
 			oSettings.ajax.dataSrc :
 			oSettings.sAjaxDataProp; // Compatibility with 1.9-.
-
+	
 		// Compatibility with 1.9-. In order to read from aaData, check if the
 		// default has been changed, if not, check for aaData
 		if ( dataSrc === 'data' ) {
 			return json.aaData || json[dataSrc];
 		}
-
+	
 		return dataSrc !== "" ?
 			_fnGetObjectDataFn( dataSrc )( json ) :
 			json;
 	}
-
-
+	
+	
 	/**
 	 * Generate the node required for filtering text
 	 *  @returns {node} Filter control element
@@ -2670,23 +2670,23 @@ module.exports = require('./main.js');
 		var previousSearch = settings.oPreviousSearch;
 		var features = settings.aanFeatures;
 		var input = '<input type="search" class="'+classes.sFilterInput+'"/>';
-
+	
 		var str = language.sSearch;
 		str = str.match(/_INPUT_/) ?
 			str.replace('_INPUT_', input) :
 			str+input;
-
+	
 		var filter = $('<div/>', {
 				'id': ! features.f ? tableId+'_filter' : null,
 				'class': classes.sFilter
 			} )
 			.append( $('<label/>' ).append( str ) );
-
+	
 		var searchFn = function() {
 			/* Update all other filter input elements for the new display */
 			var n = features.f;
 			var val = !this.value ? "" : this.value; // mental IE8 fix :-(
-
+	
 			/* Now do the filter */
 			if ( val != previousSearch.sSearch ) {
 				_fnFilterComplete( settings, {
@@ -2695,7 +2695,7 @@ module.exports = require('./main.js');
 					"bSmart": previousSearch.bSmart ,
 					"bCaseInsensitive": previousSearch.bCaseInsensitive
 				} );
-
+	
 				// Need to redraw, without resorting
 				settings._iDisplayStart = 0;
 				_fnDraw( settings );
@@ -2717,7 +2717,7 @@ module.exports = require('./main.js');
 				}
 			} )
 			.attr('aria-controls', tableId);
-
+	
 		// Update the input elements whenever the table is filtered
 		$(settings.nTable).on( 'search.dt.DT', function ( ev, s ) {
 			if ( settings === s ) {
@@ -2731,11 +2731,11 @@ module.exports = require('./main.js');
 				catch ( e ) {}
 			}
 		} );
-
+	
 		return filter[0];
 	}
-
-
+	
+	
 	/**
 	 * Filter the table using both the global filter and column based filtering
 	 *  @param {object} oSettings dataTables settings object
@@ -2758,25 +2758,25 @@ module.exports = require('./main.js');
 			// Backwards compatibility with the bEscapeRegex option
 			return o.bEscapeRegex !== undefined ? !o.bEscapeRegex : o.bRegex;
 		};
-
+	
 		// Resolve any column types that are unknown due to addition or invalidation
 		// @todo As per sort - can this be moved into an event handler?
 		_fnColumnTypes( oSettings );
-
+	
 		/* In server-side processing all filtering is done by the server, so no point hanging around here */
 		if ( _fnDataSource( oSettings ) != 'ssp' )
 		{
 			/* Global filter */
 			_fnFilter( oSettings, oInput.sSearch, iForce, fnRegex(oInput), oInput.bSmart, oInput.bCaseInsensitive );
 			fnSaveFilter( oInput );
-
+	
 			/* Now do the individual column filter */
 			for ( var i=0 ; i<aoPrevSearch.length ; i++ )
 			{
 				_fnFilterColumn( oSettings, aoPrevSearch[i].sSearch, i, fnRegex(aoPrevSearch[i]),
 					aoPrevSearch[i].bSmart, aoPrevSearch[i].bCaseInsensitive );
 			}
-
+	
 			/* Custom filtering */
 			_fnFilterCustom( oSettings );
 		}
@@ -2784,13 +2784,13 @@ module.exports = require('./main.js');
 		{
 			fnSaveFilter( oInput );
 		}
-
+	
 		/* Tell the draw function we have been filtering */
 		oSettings.bFiltered = true;
 		_fnCallbackFire( oSettings, null, 'search', [oSettings] );
 	}
-
-
+	
+	
 	/**
 	 * Apply custom filtering functions
 	 *  @param {object} oSettings dataTables settings object
@@ -2801,28 +2801,28 @@ module.exports = require('./main.js');
 		var filters = DataTable.ext.search;
 		var displayRows = settings.aiDisplay;
 		var row, rowIdx;
-
+	
 		for ( var i=0, ien=filters.length ; i<ien ; i++ ) {
 			var rows = [];
-
+	
 			// Loop over each row and see if it should be included
 			for ( var j=0, jen=displayRows.length ; j<jen ; j++ ) {
 				rowIdx = displayRows[ j ];
 				row = settings.aoData[ rowIdx ];
-
+	
 				if ( filters[i]( settings, row._aFilterData, rowIdx, row._aData, j ) ) {
 					rows.push( rowIdx );
 				}
 			}
-
+	
 			// So the array reference doesn't break set the results into the
 			// existing array
 			displayRows.length = 0;
 			displayRows.push.apply( displayRows, rows );
 		}
 	}
-
-
+	
+	
 	/**
 	 * Filter the table on a per-column basis
 	 *  @param {object} oSettings dataTables settings object
@@ -2838,21 +2838,21 @@ module.exports = require('./main.js');
 		if ( searchStr === '' ) {
 			return;
 		}
-
+	
 		var data;
 		var display = settings.aiDisplay;
 		var rpSearch = _fnFilterCreateSearch( searchStr, regex, smart, caseInsensitive );
-
+	
 		for ( var i=display.length-1 ; i>=0 ; i-- ) {
 			data = settings.aoData[ display[i] ]._aFilterData[ colIdx ];
-
+	
 			if ( ! rpSearch.test( data ) ) {
 				display.splice( i, 1 );
 			}
 		}
 	}
-
-
+	
+	
 	/**
 	 * Filter the data table based on user input and draw the table
 	 *  @param {object} settings dataTables settings object
@@ -2869,15 +2869,15 @@ module.exports = require('./main.js');
 		var prevSearch = settings.oPreviousSearch.sSearch;
 		var displayMaster = settings.aiDisplayMaster;
 		var display, invalidated, i;
-
+	
 		// Need to take account of custom filtering functions - always filter
 		if ( DataTable.ext.search.length !== 0 ) {
 			force = true;
 		}
-
+	
 		// Check if any of the rows were invalidated
 		invalidated = _fnFilterData( settings );
-
+	
 		// If the input is blank - we just want the full data set
 		if ( input.length <= 0 ) {
 			settings.aiDisplay = displayMaster.slice();
@@ -2893,10 +2893,10 @@ module.exports = require('./main.js');
 			) {
 				settings.aiDisplay = displayMaster.slice();
 			}
-
+	
 			// Search the display array
 			display = settings.aiDisplay;
-
+	
 			for ( i=display.length-1 ; i>=0 ; i-- ) {
 				if ( ! rpSearch.test( settings.aoData[ display[i] ]._sFilterRow ) ) {
 					display.splice( i, 1 );
@@ -2904,8 +2904,8 @@ module.exports = require('./main.js');
 			}
 		}
 	}
-
-
+	
+	
 	/**
 	 * Build a regular expression object suitable for searching a table
 	 *  @param {string} sSearch string to search for
@@ -2920,13 +2920,13 @@ module.exports = require('./main.js');
 		search = regex ?
 			search :
 			_fnEscapeRegex( search );
-
+		
 		if ( smart ) {
 			/* For smart filtering we want to allow the search to work regardless of
 			 * word order. We also want double quoted text to be preserved, so word
 			 * order is important - a la google. So this is what we want to
 			 * generate:
-			 *
+			 * 
 			 * ^(?=.*?\bone\b)(?=.*?\btwo three\b)(?=.*?\bfour\b).*$
 			 */
 			var a = $.map( search.match( /"[^"]+"|[^ ]+/g ) || '', function ( word ) {
@@ -2934,14 +2934,14 @@ module.exports = require('./main.js');
 					word.match( /^"(.*)"$/ )[1] :
 					word;
 			} );
-
+	
 			search = '^(?=.*?'+a.join( ')(?=.*?' )+').*$';
 		}
-
+	
 		return new RegExp( search, caseInsensitive ? 'i' : '' );
 	}
-
-
+	
+	
 	/**
 	 * scape a string such that it can be used in a regular expression
 	 *  @param {string} sVal string to escape
@@ -2952,12 +2952,12 @@ module.exports = require('./main.js');
 	{
 		return sVal.replace( _re_escape_regex, '\\$1' );
 	}
-
-
-
+	
+	
+	
 	var __filter_div = $('<div>')[0];
 	var __filter_div_textContent = __filter_div.textContent !== undefined;
-
+	
 	// Update the filtering data for each row if needed (by invalidation or first run)
 	function _fnFilterData ( settings )
 	{
@@ -2966,29 +2966,29 @@ module.exports = require('./main.js');
 		var i, j, ien, jen, filterData, cellData, row;
 		var fomatters = DataTable.ext.type.search;
 		var wasInvalidated = false;
-
+	
 		for ( i=0, ien=settings.aoData.length ; i<ien ; i++ ) {
 			row = settings.aoData[i];
-
+	
 			if ( ! row._aFilterData ) {
 				filterData = [];
-
+	
 				for ( j=0, jen=columns.length ; j<jen ; j++ ) {
 					column = columns[j];
-
+	
 					if ( column.bSearchable ) {
 						cellData = _fnGetCellData( settings, i, j, 'filter' );
-
+	
 						if ( fomatters[ column.sType ] ) {
 							cellData = fomatters[ column.sType ]( cellData );
 						}
-
+	
 						// Search in DataTables 1.10 is string based. In 1.11 this
 						// should be altered to also allow strict type checking.
 						if ( cellData === null ) {
 							cellData = '';
 						}
-
+	
 						if ( typeof cellData !== 'string' && cellData.toString ) {
 							cellData = cellData.toString();
 						}
@@ -2996,7 +2996,7 @@ module.exports = require('./main.js');
 					else {
 						cellData = '';
 					}
-
+	
 					// If it looks like there is an HTML entity in the string,
 					// attempt to decode it so sorting works as expected. Note that
 					// we could use a single line of jQuery to do this, but the DOM
@@ -3007,24 +3007,24 @@ module.exports = require('./main.js');
 							__filter_div.textContent :
 							__filter_div.innerText;
 					}
-
+	
 					if ( cellData.replace ) {
 						cellData = cellData.replace(/[\r\n]/g, '');
 					}
-
+	
 					filterData.push( cellData );
 				}
-
+	
 				row._aFilterData = filterData;
 				row._sFilterRow = filterData.join('  ');
 				wasInvalidated = true;
 			}
 		}
-
+	
 		return wasInvalidated;
 	}
-
-
+	
+	
 	/**
 	 * Convert from the internal Hungarian notation to camelCase for external
 	 * interaction
@@ -3041,9 +3041,9 @@ module.exports = require('./main.js');
 			caseInsensitive: obj.bCaseInsensitive
 		};
 	}
-
-
-
+	
+	
+	
 	/**
 	 * Convert from camelCase notation to the internal Hungarian. We could use the
 	 * Hungarian convert function here, but this is cleaner
@@ -3060,7 +3060,7 @@ module.exports = require('./main.js');
 			bCaseInsensitive: obj.caseInsensitive
 		};
 	}
-
+	
 	/**
 	 * Generate the node required for the info display
 	 *  @param {object} oSettings dataTables settings object
@@ -3076,26 +3076,26 @@ module.exports = require('./main.js');
 				'class': settings.oClasses.sInfo,
 				'id': ! nodes ? tid+'_info' : null
 			} );
-
+	
 		if ( ! nodes ) {
 			// Update display on each draw
 			settings.aoDrawCallback.push( {
 				"fn": _fnUpdateInfo,
 				"sName": "information"
 			} );
-
+	
 			n
 				.attr( 'role', 'status' )
 				.attr( 'aria-live', 'polite' );
-
+	
 			// Table is described by our info div
 			$(settings.nTable).attr( 'aria-describedby', tid+'_info' );
 		}
-
+	
 		return n[0];
 	}
-
-
+	
+	
 	/**
 	 * Update the information elements in the display
 	 *  @param {object} settings dataTables settings object
@@ -3108,7 +3108,7 @@ module.exports = require('./main.js');
 		if ( nodes.length === 0 ) {
 			return;
 		}
-
+	
 		var
 			lang  = settings.oLanguage,
 			start = settings._iDisplayStart+1,
@@ -3118,27 +3118,27 @@ module.exports = require('./main.js');
 			out   = total ?
 				lang.sInfo :
 				lang.sInfoEmpty;
-
+	
 		if ( total !== max ) {
 			/* Record set after filtering */
 			out += ' ' + lang.sInfoFiltered;
 		}
-
+	
 		// Convert the macros
 		out += lang.sInfoPostFix;
 		out = _fnInfoMacros( settings, out );
-
+	
 		var callback = lang.fnInfoCallback;
 		if ( callback !== null ) {
 			out = callback.call( settings.oInstance,
 				settings, start, end, max, total, out
 			);
 		}
-
+	
 		$(nodes).html( out );
 	}
-
-
+	
+	
 	function _fnInfoMacros ( settings, str )
 	{
 		// When infinite scrolling, we are always starting at 1. _iDisplayStart is used only
@@ -3149,7 +3149,7 @@ module.exports = require('./main.js');
 			len        = settings._iDisplayLength,
 			vis        = settings.fnRecordsDisplay(),
 			all        = len === -1;
-
+	
 		return str.
 			replace(/_START_/g, formatter.call( settings, start ) ).
 			replace(/_END_/g,   formatter.call( settings, settings.fnDisplayEnd() ) ).
@@ -3158,9 +3158,9 @@ module.exports = require('./main.js');
 			replace(/_PAGE_/g,  formatter.call( settings, all ? 1 : Math.ceil( start / len ) ) ).
 			replace(/_PAGES_/g, formatter.call( settings, all ? 1 : Math.ceil( vis / len ) ) );
 	}
-
-
-
+	
+	
+	
 	/**
 	 * Draw the table for the first time, adding all required features
 	 *  @param {object} settings dataTables settings object
@@ -3171,43 +3171,43 @@ module.exports = require('./main.js');
 		var i, iLen, iAjaxStart=settings.iInitDisplayStart;
 		var columns = settings.aoColumns, column;
 		var features = settings.oFeatures;
-
+	
 		/* Ensure that the table data is fully initialised */
 		if ( ! settings.bInitialised ) {
 			setTimeout( function(){ _fnInitialise( settings ); }, 200 );
 			return;
 		}
-
+	
 		/* Show the display HTML options */
 		_fnAddOptionsHtml( settings );
-
+	
 		/* Build and draw the header / footer for the table */
 		_fnBuildHead( settings );
 		_fnDrawHead( settings, settings.aoHeader );
 		_fnDrawHead( settings, settings.aoFooter );
-
+	
 		/* Okay to show that something is going on now */
 		_fnProcessingDisplay( settings, true );
-
+	
 		/* Calculate sizes for columns */
 		if ( features.bAutoWidth ) {
 			_fnCalculateColumnWidths( settings );
 		}
-
+	
 		for ( i=0, iLen=columns.length ; i<iLen ; i++ ) {
 			column = columns[i];
-
+	
 			if ( column.sWidth ) {
 				column.nTh.style.width = _fnStringToCss( column.sWidth );
 			}
 		}
-
+	
 		// If there is default sorting required - let's do it. The sort function
 		// will do the drawing for us. Otherwise we draw the table regardless of the
 		// Ajax source - this allows the table to look initialised for Ajax sourcing
 		// data (show 'loading' message possibly)
 		_fnReDraw( settings );
-
+	
 		// Server-side processing init complete is done by _fnAjaxUpdateDraw
 		var dataSrc = _fnDataSource( settings );
 		if ( dataSrc != 'ssp' ) {
@@ -3215,19 +3215,19 @@ module.exports = require('./main.js');
 			if ( dataSrc == 'ajax' ) {
 				_fnBuildAjax( settings, [], function(json) {
 					var aData = _fnAjaxDataSrc( settings, json );
-
+	
 					// Got the data - add it to the table
 					for ( i=0 ; i<aData.length ; i++ ) {
 						_fnAddData( settings, aData[i] );
 					}
-
+	
 					// Reset the init display for cookie saving. We've already done
 					// a filter, and therefore cleared it before. So we need to make
 					// it appear 'fresh'
 					settings.iInitDisplayStart = iAjaxStart;
-
+	
 					_fnReDraw( settings );
-
+	
 					_fnProcessingDisplay( settings, false );
 					_fnInitComplete( settings, json );
 				}, settings );
@@ -3238,8 +3238,8 @@ module.exports = require('./main.js');
 			}
 		}
 	}
-
-
+	
+	
 	/**
 	 * Draw the table for the first time, adding all required features
 	 *  @param {object} oSettings dataTables settings object
@@ -3250,29 +3250,29 @@ module.exports = require('./main.js');
 	function _fnInitComplete ( settings, json )
 	{
 		settings._bInitComplete = true;
-
+	
 		// On an Ajax load we now have data and therefore want to apply the column
 		// sizing
 		if ( json ) {
 			_fnAdjustColumnSizing( settings );
 		}
-
+	
 		_fnCallbackFire( settings, 'aoInitComplete', 'init', [settings, json] );
 	}
-
-
+	
+	
 	function _fnLengthChange ( settings, val )
 	{
 		var len = parseInt( val, 10 );
 		settings._iDisplayLength = len;
-
+	
 		_fnLengthOverflow( settings );
-
+	
 		// Fire length change event
 		_fnCallbackFire( settings, null, 'length', [settings, len] );
 	}
-
-
+	
+	
 	/**
 	 * Generate the node required for user display length changing
 	 *  @param {object} settings dataTables settings object
@@ -3288,26 +3288,26 @@ module.exports = require('./main.js');
 			d2       = $.isArray( menu[0] ),
 			lengths  = d2 ? menu[0] : menu,
 			language = d2 ? menu[1] : menu;
-
+	
 		var select = $('<select/>', {
 			'name':          tableId+'_length',
 			'aria-controls': tableId,
 			'class':         classes.sLengthSelect
 		} );
-
+	
 		for ( var i=0, ien=lengths.length ; i<ien ; i++ ) {
 			select[0][ i ] = new Option( language[i], lengths[i] );
 		}
-
+	
 		var div = $('<div><label/></div>').addClass( classes.sLength );
 		if ( ! settings.aanFeatures.l ) {
 			div[0].id = tableId+'_length';
 		}
-
+	
 		div.children().append(
 			settings.oLanguage.sLengthMenu.replace( '_MENU_', select[0].outerHTML )
 		);
-
+	
 		// Can't use `select` variable as user might provide their own and the
 		// reference is broken by the use of outerHTML
 		$('select', div)
@@ -3316,24 +3316,24 @@ module.exports = require('./main.js');
 				_fnLengthChange( settings, $(this).val() );
 				_fnDraw( settings );
 			} );
-
+	
 		// Update node value whenever anything changes the table's length
 		$(settings.nTable).bind( 'length.dt.DT', function (e, s, len) {
 			if ( settings === s ) {
 				$('select', div).val( len );
 			}
 		} );
-
+	
 		return div[0];
 	}
-
-
-
+	
+	
+	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * Note that most of the paging logic is done in
 	 * DataTable.ext.pager
 	 */
-
+	
 	/**
 	 * Generate the node required for default pagination
 	 *  @param {object} oSettings dataTables settings object
@@ -3351,16 +3351,16 @@ module.exports = require('./main.js');
 			},
 			node = $('<div/>').addClass( settings.oClasses.sPaging + type )[0],
 			features = settings.aanFeatures;
-
+	
 		if ( ! modern ) {
 			plugin.fnInit( settings, node, redraw );
 		}
-
+	
 		/* Add a draw callback for the pagination on first instance, to update the paging display */
 		if ( ! features.p )
 		{
 			node.id = settings.sTableId+'_paginate';
-
+	
 			settings.aoDrawCallback.push( {
 				"fn": function( settings ) {
 					if ( modern ) {
@@ -3373,7 +3373,7 @@ module.exports = require('./main.js');
 							pages = all ? 1 : Math.ceil( visRecords / len ),
 							buttons = plugin(page, pages),
 							i, ien;
-
+	
 						for ( i=0, ien=features.p.length ; i<ien ; i++ ) {
 							_fnRenderer( settings, 'pageButton' )(
 								settings, features.p[i], i, buttons, page, pages
@@ -3387,11 +3387,11 @@ module.exports = require('./main.js');
 				"sName": "pagination"
 			} );
 		}
-
+	
 		return node;
 	}
-
-
+	
+	
 	/**
 	 * Alter the display settings to change the page
 	 *  @param {object} settings DataTables settings object
@@ -3407,7 +3407,7 @@ module.exports = require('./main.js');
 			start     = settings._iDisplayStart,
 			len       = settings._iDisplayLength,
 			records   = settings.fnRecordsDisplay();
-
+	
 		if ( records === 0 || len === -1 )
 		{
 			start = 0;
@@ -3415,7 +3415,7 @@ module.exports = require('./main.js');
 		else if ( typeof action === "number" )
 		{
 			start = action * len;
-
+	
 			if ( start > records )
 			{
 				start = 0;
@@ -3430,7 +3430,7 @@ module.exports = require('./main.js');
 			start = len >= 0 ?
 				start - len :
 				0;
-
+	
 			if ( start < 0 )
 			{
 			  start = 0;
@@ -3451,23 +3451,23 @@ module.exports = require('./main.js');
 		{
 			_fnLog( settings, 0, "Unknown paging action: "+action, 5 );
 		}
-
+	
 		var changed = settings._iDisplayStart !== start;
 		settings._iDisplayStart = start;
-
+	
 		if ( changed ) {
 			_fnCallbackFire( settings, null, 'page', [settings] );
-
+	
 			if ( redraw ) {
 				_fnDraw( settings );
 			}
 		}
-
+	
 		return changed;
 	}
-
-
-
+	
+	
+	
 	/**
 	 * Generate the node required for the processing node
 	 *  @param {object} settings dataTables settings object
@@ -3483,8 +3483,8 @@ module.exports = require('./main.js');
 			.html( settings.oLanguage.sProcessing )
 			.insertBefore( settings.nTable )[0];
 	}
-
-
+	
+	
 	/**
 	 * Display or hide the processing indicator
 	 *  @param {object} settings dataTables settings object
@@ -3496,10 +3496,10 @@ module.exports = require('./main.js');
 		if ( settings.oFeatures.bProcessing ) {
 			$(settings.aanFeatures.r).css( 'display', show ? 'block' : 'none' );
 		}
-
+	
 		_fnCallbackFire( settings, null, 'processing', [settings, show] );
 	}
-
+	
 	/**
 	 * Add any control elements for the table - specifically scrolling
 	 *  @param {object} settings dataTables settings object
@@ -3509,17 +3509,17 @@ module.exports = require('./main.js');
 	function _fnFeatureHtmlTable ( settings )
 	{
 		var table = $(settings.nTable);
-
+	
 		// Add the ARIA grid role to the table
 		table.attr( 'role', 'grid' );
-
+	
 		// Scrolling from here on in
 		var scroll = settings.oScroll;
-
+	
 		if ( scroll.sX === '' && scroll.sY === '' ) {
 			return settings.nTable;
 		}
-
+	
 		var scrollX = scroll.sX;
 		var scrollY = scroll.sY;
 		var classes = settings.oClasses;
@@ -3532,7 +3532,7 @@ module.exports = require('./main.js');
 		var size = function ( s ) {
 			return !s ? null : _fnStringToCss( s );
 		};
-
+	
 		// This is fairly messy, but with x scrolling enabled, if the table has a
 		// width attribute, regardless of any width applied using the column width
 		// options, the browser will shrink or grow the table as needed to fit into
@@ -3543,11 +3543,11 @@ module.exports = require('./main.js');
 		if ( scroll.sX && table.attr('width') === '100%' ) {
 			table.removeAttr('width');
 		}
-
+	
 		if ( ! footer.length ) {
 			footer = null;
 		}
-
+	
 		/*
 		 * The HTML structure that we want to generate in this function is:
 		 *  div - scroller
@@ -3599,7 +3599,7 @@ module.exports = require('./main.js');
 					} )
 					.append( table )
 			);
-
+	
 		if ( footer ) {
 			scroller.append(
 				$(_div, { 'class': classes.sScrollFoot } )
@@ -3622,40 +3622,40 @@ module.exports = require('./main.js');
 					.append( captionSide === 'bottom' ? caption : null )
 			);
 		}
-
+	
 		var children = scroller.children();
 		var scrollHead = children[0];
 		var scrollBody = children[1];
 		var scrollFoot = footer ? children[2] : null;
-
+	
 		// When the body is scrolled, then we also want to scroll the headers
 		if ( scrollX ) {
 			$(scrollBody).scroll( function (e) {
 				var scrollLeft = this.scrollLeft;
-
+	
 				scrollHead.scrollLeft = scrollLeft;
-
+	
 				if ( footer ) {
 					scrollFoot.scrollLeft = scrollLeft;
 				}
 			} );
 		}
-
+	
 		settings.nScrollHead = scrollHead;
 		settings.nScrollBody = scrollBody;
 		settings.nScrollFoot = scrollFoot;
-
+	
 		// On redraw - align columns
 		settings.aoDrawCallback.push( {
 			"fn": _fnScrollDraw,
 			"sName": "scrolling"
 		} );
-
+	
 		return scroller[0];
 	}
-
-
-
+	
+	
+	
 	/**
 	 * Update the header, footer and body tables for resizing - i.e. column
 	 * alignment.
@@ -3712,31 +3712,31 @@ module.exports = require('./main.js');
 				style.borderBottomWidth = "0";
 				style.height = 0;
 			};
-
+	
 		/*
 		 * 1. Re-create the table inside the scrolling div
 		 */
-
+	
 		// Remove the old minimised thead and tfoot elements in the inner table
 		table.children('thead, tfoot').remove();
-
+	
 		// Clone the current header and footer elements and then place it into the inner table
 		headerCopy = header.clone().prependTo( table );
 		headerTrgEls = header.find('tr'); // original header is in its own table
 		headerSrcEls = headerCopy.find('tr');
 		headerCopy.find('th, td').removeAttr('tabindex');
-
+	
 		if ( footer ) {
 			footerCopy = footer.clone().prependTo( table );
 			footerTrgEls = footer.find('tr'); // the original tfoot is in its own table and must be sized
 			footerSrcEls = footerCopy.find('tr');
 		}
-
-
+	
+	
 		/*
 		 * 2. Take live measurements from the DOM - do not alter the DOM itself!
 		 */
-
+	
 		// Remove old sizing and apply the calculated column widths
 		// Get the unique column headers in the newly created (cloned) header. We want to apply the
 		// calculated sizes to this header
@@ -3745,31 +3745,31 @@ module.exports = require('./main.js');
 			divBodyStyle.width = '100%';
 			divHeader[0].style.width = '100%';
 		}
-
+	
 		$.each( _fnGetUniqueThs( settings, headerCopy ), function ( i, el ) {
 			idx = _fnVisibleToColumnIndex( settings, i );
 			el.style.width = settings.aoColumns[idx].sWidth;
 		} );
-
+	
 		if ( footer ) {
 			_fnApplyToChildren( function(n) {
 				n.style.width = "";
 			}, footerSrcEls );
 		}
-
+	
 		// If scroll collapse is enabled, when we put the headers back into the body for sizing, we
 		// will end up forcing the scrollbar to appear, making our measurements wrong for when we
 		// then hide it (end of this function), so add the header height to the body scroller.
 		if ( scroll.bCollapse && scrollY !== "" ) {
 			divBodyStyle.height = (divBody[0].offsetHeight + header[0].offsetHeight)+"px";
 		}
-
+	
 		// Size the table as a whole
 		sanityWidth = table.outerWidth();
 		if ( scrollX === "" ) {
 			// No x scrolling
 			tableStyle.width = "100%";
-
+	
 			// IE7 will make the width of the table when 100% include the scrollbar
 			// - which is shouldn't. When there is a scrollbar we need to take this
 			// into account.
@@ -3799,52 +3799,52 @@ module.exports = require('./main.js');
 				tableStyle.width = _fnStringToCss( sanityWidth );
 			}
 		}
-
+	
 		// Recalculate the sanity width - now that we've applied the required width,
 		// before it was a temporary variable. This is required because the column
 		// width calculation is done before this table DOM is created.
 		sanityWidth = table.outerWidth();
-
+	
 		// Hidden header should have zero height, so remove padding and borders. Then
 		// set the width based on the real headers
-
+	
 		// Apply all styles in one pass
 		_fnApplyToChildren( zeroOut, headerSrcEls );
-
+	
 		// Read all widths in next pass
 		_fnApplyToChildren( function(nSizer) {
 			headerContent.push( nSizer.innerHTML );
 			headerWidths.push( _fnStringToCss( $(nSizer).css('width') ) );
 		}, headerSrcEls );
-
+	
 		// Apply all widths in final pass
 		_fnApplyToChildren( function(nToSize, i) {
 			nToSize.style.width = headerWidths[i];
 		}, headerTrgEls );
-
+	
 		$(headerSrcEls).height(0);
-
+	
 		/* Same again with the footer if we have one */
 		if ( footer )
 		{
 			_fnApplyToChildren( zeroOut, footerSrcEls );
-
+	
 			_fnApplyToChildren( function(nSizer) {
 				footerWidths.push( _fnStringToCss( $(nSizer).css('width') ) );
 			}, footerSrcEls );
-
+	
 			_fnApplyToChildren( function(nToSize, i) {
 				nToSize.style.width = footerWidths[i];
 			}, footerTrgEls );
-
+	
 			$(footerSrcEls).height(0);
 		}
-
-
+	
+	
 		/*
 		 * 3. Apply the measurements
 		 */
-
+	
 		// "Hide" the header and footer that we used for the sizing. We need to keep
 		// the content of the cell so that the width applied to the header and body
 		// both match, but we want to hide it completely. We want to also fix their
@@ -3853,7 +3853,7 @@ module.exports = require('./main.js');
 			nSizer.innerHTML = '<div class="dataTables_sizing" style="height:0;overflow:hidden;">'+headerContent[i]+'</div>';
 			nSizer.style.width = headerWidths[i];
 		}, headerSrcEls );
-
+	
 		if ( footer )
 		{
 			_fnApplyToChildren( function(nSizer, i) {
@@ -3861,7 +3861,7 @@ module.exports = require('./main.js');
 				nSizer.style.width = footerWidths[i];
 			}, footerSrcEls );
 		}
-
+	
 		// Sanity check that the table is of a sensible width. If not then we are going to get
 		// misalignment - try to prevent this by not allowing the table to shrink below its min width
 		if ( table.outerWidth() < sanityWidth )
@@ -3871,14 +3871,14 @@ module.exports = require('./main.js');
 				divBody.css('overflow-y') == "scroll")) ?
 					sanityWidth+barWidth :
 					sanityWidth;
-
+	
 			// IE6/7 are a law unto themselves...
 			if ( ie67 && (divBodyEl.scrollHeight >
 				divBodyEl.offsetHeight || divBody.css('overflow-y') == "scroll")
 			) {
 				tableStyle.width = _fnStringToCss( correction-barWidth );
 			}
-
+	
 			// And give the user a warning that we've stopped the table getting too small
 			if ( scrollX === "" || scrollXInner !== "" ) {
 				_fnLog( settings, 1, 'Possible column misalignment', 6 );
@@ -3888,16 +3888,16 @@ module.exports = require('./main.js');
 		{
 			correction = '100%';
 		}
-
+	
 		// Apply to the container elements
 		divBodyStyle.width = _fnStringToCss( correction );
 		divHeaderStyle.width = _fnStringToCss( correction );
-
+	
 		if ( footer ) {
 			settings.nScrollFoot.style.width = _fnStringToCss( correction );
 		}
-
-
+	
+	
 		/*
 		 * 4. Clean up
 		 */
@@ -3910,48 +3910,48 @@ module.exports = require('./main.js');
 				divBodyStyle.height = _fnStringToCss( tableEl.offsetHeight+barWidth );
 			}
 		}
-
+	
 		if ( scrollY && scroll.bCollapse ) {
 			divBodyStyle.height = _fnStringToCss( scrollY );
-
+	
 			var iExtra = (scrollX && tableEl.offsetWidth > divBodyEl.offsetWidth) ?
 				barWidth :
 				0;
-
+	
 			if ( tableEl.offsetHeight < divBodyEl.offsetHeight ) {
 				divBodyStyle.height = _fnStringToCss( tableEl.offsetHeight+iExtra );
 			}
 		}
-
+	
 		/* Finally set the width's of the header and footer tables */
 		var iOuterWidth = table.outerWidth();
 		divHeaderTable[0].style.width = _fnStringToCss( iOuterWidth );
 		divHeaderInnerStyle.width = _fnStringToCss( iOuterWidth );
-
+	
 		// Figure out if there are scrollbar present - if so then we need a the header and footer to
 		// provide a bit more space to allow "overflow" scrolling (i.e. past the scrollbar)
 		var bScrolling = table.height() > divBodyEl.clientHeight || divBody.css('overflow-y') == "scroll";
 		var padding = 'padding' + (browser.bScrollbarLeft ? 'Left' : 'Right' );
 		divHeaderInnerStyle[ padding ] = bScrolling ? barWidth+"px" : "0px";
-
+	
 		if ( footer ) {
 			divFooterTable[0].style.width = _fnStringToCss( iOuterWidth );
 			divFooterInner[0].style.width = _fnStringToCss( iOuterWidth );
 			divFooterInner[0].style[padding] = bScrolling ? barWidth+"px" : "0px";
 		}
-
+	
 		/* Adjust the position of the header in case we loose the y-scrollbar */
 		divBody.scroll();
-
+	
 		// If sorting or filtering has occurred, jump the scrolling back to the top
 		// only if we aren't holding the position
 		if ( (settings.bSorted || settings.bFiltered) && ! settings._drawHold ) {
 			divBodyEl.scrollTop = 0;
 		}
 	}
-
-
-
+	
+	
+	
 	/**
 	 * Apply a given function to the display child nodes of an element array (typically
 	 * TD children of TR rows
@@ -3964,11 +3964,11 @@ module.exports = require('./main.js');
 	{
 		var index=0, i=0, iLen=an1.length;
 		var nNode1, nNode2;
-
+	
 		while ( i < iLen ) {
 			nNode1 = an1[i].firstChild;
 			nNode2 = an2 ? an2[i].firstChild : null;
-
+	
 			while ( nNode1 ) {
 				if ( nNode1.nodeType === 1 ) {
 					if ( an2 ) {
@@ -3977,23 +3977,23 @@ module.exports = require('./main.js');
 					else {
 						fn( nNode1, index );
 					}
-
+	
 					index++;
 				}
-
+	
 				nNode1 = nNode1.nextSibling;
 				nNode2 = an2 ? nNode2.nextSibling : null;
 			}
-
+	
 			i++;
 		}
 	}
-
-
-
+	
+	
+	
 	var __re_html_remove = /<.*?>/g;
-
-
+	
+	
 	/**
 	 * Calculate the width of columns for the table
 	 *  @param {object} oSettings dataTables settings object
@@ -4015,18 +4015,18 @@ module.exports = require('./main.js');
 			tableContainer = table.parentNode,
 			userInputs = false,
 			i, column, columnIdx, width, outerWidth;
-
+	
 		/* Convert any user input sizes into pixel sizes */
 		for ( i=0 ; i<visibleColumns.length ; i++ ) {
 			column = columns[ visibleColumns[i] ];
-
+	
 			if ( column.sWidth !== null ) {
 				column.sWidth = _fnConvertToWidth( column.sWidthOrig, tableContainer );
-
+	
 				userInputs = true;
 			}
 		}
-
+	
 		/* If the number of columns in the DOM equals the number that we have to
 		 * process in DataTables, then we can use the offsets that are created by
 		 * the web- browser. No custom sizes can be set in order for this to happen,
@@ -4052,40 +4052,40 @@ module.exports = require('./main.js');
 				.append( $(oSettings.nTHead).clone( false ) )
 				.append( $(oSettings.nTFoot).clone( false ) )
 				.append( $('<tbody><tr/></tbody>') );
-
+	
 			// Remove any assigned widths from the footer (from scrolling)
 			tmpTable.find('tfoot th, tfoot td').css('width', '');
-
+	
 			var tr = tmpTable.find( 'tbody tr' );
-
+	
 			// Apply custom sizing to the cloned header
 			headerCells = _fnGetUniqueThs( oSettings, tmpTable.find('thead')[0] );
-
+	
 			for ( i=0 ; i<visibleColumns.length ; i++ ) {
 				column = columns[ visibleColumns[i] ];
-
+	
 				headerCells[i].style.width = column.sWidthOrig !== null && column.sWidthOrig !== '' ?
 					_fnStringToCss( column.sWidthOrig ) :
 					'';
 			}
-
+	
 			// Find the widest cell for each column and put it into the table
 			if ( oSettings.aoData.length ) {
 				for ( i=0 ; i<visibleColumns.length ; i++ ) {
 					columnIdx = visibleColumns[i];
 					column = columns[ columnIdx ];
-
+	
 					$( _fnGetWidestNode( oSettings, columnIdx ) )
 						.clone( false )
 						.append( column.sContentPadding )
 						.appendTo( tr );
 				}
 			}
-
+	
 			// Table has been built, attach to the document so we can work with it
 			tmpTable.appendTo( tableContainer );
-
-			// When scrolling (X or Y) we want to set the width of the table as
+	
+			// When scrolling (X or Y) we want to set the width of the table as 
 			// appropriate. However, when not scrolling leave the table width as it
 			// is. This results in slightly different, but I think correct behaviour
 			if ( scrollX && scrollXInner ) {
@@ -4093,7 +4093,7 @@ module.exports = require('./main.js');
 			}
 			else if ( scrollX ) {
 				tmpTable.css( 'width', 'auto' );
-
+	
 				if ( tmpTable.width() < tableContainer.offsetWidth ) {
 					tmpTable.width( tableContainer.offsetWidth );
 				}
@@ -4104,10 +4104,10 @@ module.exports = require('./main.js');
 			else if ( tableWidthAttr ) {
 				tmpTable.width( tableWidthAttr );
 			}
-
+	
 			// Take into account the y scrollbar
 			_fnScrollingWidthAdjust( oSettings, tmpTable[0] );
-
+	
 			// Browsers need a bit of a hand when a width is assigned to any columns
 			// when x-scrolling as they tend to collapse the table to the min-width,
 			// even if we sent the column widths. So we need to keep track of what
@@ -4116,36 +4116,36 @@ module.exports = require('./main.js');
 			if ( scrollX )
 			{
 				var total = 0;
-
+	
 				for ( i=0 ; i<visibleColumns.length ; i++ ) {
 					column = columns[ visibleColumns[i] ];
 					outerWidth = $(headerCells[i]).outerWidth();
-
+	
 					total += column.sWidthOrig === null ?
 						outerWidth :
 						parseInt( column.sWidth, 10 ) + outerWidth - $(headerCells[i]).width();
 				}
-
+	
 				tmpTable.width( _fnStringToCss( total ) );
 				table.style.width = _fnStringToCss( total );
 			}
-
+	
 			// Get the width of each column in the constructed table
 			for ( i=0 ; i<visibleColumns.length ; i++ ) {
 				column = columns[ visibleColumns[i] ];
 				width = $(headerCells[i]).width();
-
+	
 				if ( width ) {
 					column.sWidth = _fnStringToCss( width );
 				}
 			}
-
+	
 			table.style.width = _fnStringToCss( tmpTable.css('width') );
-
+	
 			// Finished with the table - ditch it
 			tmpTable.remove();
 		}
-
+	
 		// If there is a width attr, we want to attach an event listener which
 		// allows the table sizing to automatically adjust when the window is
 		// resized. Use the width attr rather than CSS, since we can't know if the
@@ -4153,17 +4153,17 @@ module.exports = require('./main.js');
 		if ( tableWidthAttr ) {
 			table.style.width = _fnStringToCss( tableWidthAttr );
 		}
-
+	
 		if ( (tableWidthAttr || scrollX) && ! oSettings._reszEvt ) {
 			$(window).bind('resize.DT-'+oSettings.sInstance, _fnThrottle( function () {
 				_fnAdjustColumnSizing( oSettings );
 			} ) );
-
+	
 			oSettings._reszEvt = true;
 		}
 	}
-
-
+	
+	
 	/**
 	 * Throttle the calls to a function. Arguments and context are maintained for
 	 * the throttled function
@@ -4177,16 +4177,16 @@ module.exports = require('./main.js');
 			frequency = freq || 200,
 			last,
 			timer;
-
+	
 		return function () {
 			var
 				that = this,
 				now  = +new Date(),
 				args = arguments;
-
+	
 			if ( last && now < last + frequency ) {
 				clearTimeout( timer );
-
+	
 				timer = setTimeout( function () {
 					last = undefined;
 					fn.apply( that, args );
@@ -4201,8 +4201,8 @@ module.exports = require('./main.js');
 			}
 		};
 	}
-
-
+	
+	
 	/**
 	 * Convert a CSS unit width to pixels (e.g. 2em)
 	 *  @param {string} width width to be converted
@@ -4215,29 +4215,29 @@ module.exports = require('./main.js');
 		if ( ! width ) {
 			return 0;
 		}
-
+	
 		var n = $('<div/>')
 			.css( 'width', _fnStringToCss( width ) )
 			.appendTo( parent || document.body );
-
+	
 		var val = n[0].offsetWidth;
 		n.remove();
-
+	
 		return val;
 	}
-
-
+	
+	
 	/**
 	 * Adjust a table's width to take account of vertical scroll bar
 	 *  @param {object} oSettings dataTables settings object
 	 *  @param {node} n table node
 	 *  @memberof DataTable#oApi
 	 */
-
+	
 	function _fnScrollingWidthAdjust ( settings, n )
 	{
 		var scroll = settings.oScroll;
-
+	
 		if ( scroll.sX || scroll.sY ) {
 			// When y-scrolling only, we want to remove the width of the scroll bar
 			// so the table + scroll bar will fit into the area available, otherwise
@@ -4246,8 +4246,8 @@ module.exports = require('./main.js');
 			n.style.width = _fnStringToCss( $(n).outerWidth() - correction );
 		}
 	}
-
-
+	
+	
 	/**
 	 * Get the widest node
 	 *  @param {object} settings dataTables settings object
@@ -4261,14 +4261,14 @@ module.exports = require('./main.js');
 		if ( idx < 0 ) {
 			return null;
 		}
-
+	
 		var data = settings.aoData[ idx ];
 		return ! data.nTr ? // Might not have been created when deferred rendering
 			$('<td/>').html( _fnGetCellData( settings, idx, colIdx, 'display' ) )[0] :
 			data.anCells[ colIdx ];
 	}
-
-
+	
+	
 	/**
 	 * Get the maximum strlen for each data column
 	 *  @param {object} settings dataTables settings object
@@ -4279,21 +4279,21 @@ module.exports = require('./main.js');
 	function _fnGetMaxLenString( settings, colIdx )
 	{
 		var s, max=-1, maxIdx = -1;
-
+	
 		for ( var i=0, ien=settings.aoData.length ; i<ien ; i++ ) {
 			s = _fnGetCellData( settings, i, colIdx, 'display' )+'';
 			s = s.replace( __re_html_remove, '' );
-
+	
 			if ( s.length > max ) {
 				max = s.length;
 				maxIdx = i;
 			}
 		}
-
+	
 		return maxIdx;
 	}
-
-
+	
+	
 	/**
 	 * Append a CSS unit (only if required) to a string
 	 *  @param {string} value to css-ify
@@ -4305,20 +4305,20 @@ module.exports = require('./main.js');
 		if ( s === null ) {
 			return '0px';
 		}
-
+	
 		if ( typeof s == 'number' ) {
 			return s < 0 ?
 				'0px' :
 				s+'px';
 		}
-
+	
 		// Check it has a unit character already
 		return s.match(/\d$/) ?
 			s+'px' :
 			s;
 	}
-
-
+	
+	
 	/**
 	 * Get the width of a scroll bar in this browser being used
 	 *  @returns {int} width in pixels
@@ -4334,7 +4334,7 @@ module.exports = require('./main.js');
 				height: 200,
 				padding: 0
 			} )[0];
-
+	
 			var outer = $('<div/>')
 				.css( {
 					position: 'absolute',
@@ -4348,25 +4348,25 @@ module.exports = require('./main.js');
 				} )
 				.append( inner )
 				.appendTo( 'body' );
-
+	
 			var w1 = inner.offsetWidth;
 			outer.css( 'overflow', 'scroll' );
 			var w2 = inner.offsetWidth;
-
+	
 			if ( w1 === w2 ) {
 				w2 = outer[0].clientWidth;
 			}
-
+	
 			outer.remove();
-
+	
 			DataTable.__scrollbarWidth = w1 - w2;
 		}
-
+	
 		return DataTable.__scrollbarWidth;
 	}
-
-
-
+	
+	
+	
 	function _fnSortFlatten ( settings )
 	{
 		var
@@ -4388,33 +4388,33 @@ module.exports = require('./main.js');
 					nestedSort.push.apply( nestedSort, a );
 				}
 			};
-
+	
 		// Build the sort array, with pre-fix and post-fix options if they have been
 		// specified
 		if ( $.isArray( fixed ) ) {
 			add( fixed );
 		}
-
+	
 		if ( fixedObj && fixed.pre ) {
 			add( fixed.pre );
 		}
-
+	
 		add( settings.aaSorting );
-
+	
 		if (fixedObj && fixed.post ) {
 			add( fixed.post );
 		}
-
+	
 		for ( i=0 ; i<nestedSort.length ; i++ )
 		{
 			srcCol = nestedSort[i][0];
 			aDataSort = aoColumns[ srcCol ].aDataSort;
-
+	
 			for ( k=0, kLen=aDataSort.length ; k<kLen ; k++ )
 			{
 				iCol = aDataSort[k];
 				sType = aoColumns[ iCol ].sType || 'string';
-
+	
 				aSort.push( {
 					src:       srcCol,
 					col:       iCol,
@@ -4425,10 +4425,10 @@ module.exports = require('./main.js');
 				} );
 			}
 		}
-
+	
 		return aSort;
 	}
-
+	
 	/**
 	 * Change the order of the table
 	 *  @param {object} oSettings dataTables settings object
@@ -4449,26 +4449,26 @@ module.exports = require('./main.js');
 			sortCol,
 			displayMaster = oSettings.aiDisplayMaster,
 			aSort;
-
+	
 		// Resolve any column types that are unknown due to addition or invalidation
 		// @todo Can this be moved into a 'data-ready' handler which is called when
 		//   data is going to be used in the table?
 		_fnColumnTypes( oSettings );
-
+	
 		aSort = _fnSortFlatten( oSettings );
-
+	
 		for ( i=0, ien=aSort.length ; i<ien ; i++ ) {
 			sortCol = aSort[i];
-
+	
 			// Track if we can use the fast sort algorithm
 			if ( sortCol.formatter ) {
 				formatters++;
 			}
-
+	
 			// Load the data needed for the sort, for each cell
 			_fnSortData( oSettings, sortCol.col );
 		}
-
+	
 		/* No sorting required if server-side or no sorting array */
 		if ( _fnDataSource( oSettings ) != 'ssp' && aSort.length !== 0 )
 		{
@@ -4477,7 +4477,7 @@ module.exports = require('./main.js');
 			for ( i=0, iLen=displayMaster.length ; i<iLen ; i++ ) {
 				aiOrig[ displayMaster[i] ] = i;
 			}
-
+	
 			/* Do the sort - here we want multi-column sorting based on a given data source (column)
 			 * and sorting function (from oSort) in a certain direction. It's reasonably complex to
 			 * follow on it's own, but this is what we want (example two column sorting):
@@ -4507,10 +4507,10 @@ module.exports = require('./main.js');
 						len=aSort.length,
 						dataA = aoData[a]._aSortData,
 						dataB = aoData[b]._aSortData;
-
+	
 					for ( k=0 ; k<len ; k++ ) {
 						sort = aSort[k];
-
+	
 						x = dataA[ sort.col ];
 						y = dataB[ sort.col ];
 
@@ -4530,7 +4530,7 @@ module.exports = require('./main.js');
 							return sort.dir === 'asc' ? test : -test;
 						}
 					}
-
+	
 					x = aiOrig[a];
 					y = aiOrig[b];
 					return x<y ? -1 : x>y ? 1 : 0;
@@ -4546,27 +4546,27 @@ module.exports = require('./main.js');
 						len=aSort.length,
 						dataA = aoData[a]._aSortData,
 						dataB = aoData[b]._aSortData;
-
+	
 					for ( k=0 ; k<len ; k++ ) {
 						sort = aSort[k];
-
+	
 						x = dataA[ sort.col ];
 						y = dataB[ sort.col ];
-
+	
 						fn = oExtSort[ sort.type+"-"+sort.dir ] || oExtSort[ "string-"+sort.dir ];
 						test = fn( x, y );
 						if ( test !== 0 ) {
 							return test;
 						}
 					}
-
+	
 					x = aiOrig[a];
 					y = aiOrig[b];
 					return x<y ? -1 : x>y ? 1 : 0;
 				} );
 			}
 		}
-
+	
 		/* Tell the draw function that we have sorted the data */
 		oSettings.bSorted = true;
 	}
@@ -4644,7 +4644,7 @@ module.exports = require('./main.js');
 		var columns = settings.aoColumns;
 		var aSort = _fnSortFlatten( settings );
 		var oAria = settings.oLanguage.oAria;
-
+	
 		// ARIA attributes - need to loop all columns, to update all (removing old
 		// attributes as needed)
 		for ( var i=0, iLen=columns.length ; i<iLen ; i++ )
@@ -4653,11 +4653,11 @@ module.exports = require('./main.js');
 			var asSorting = col.asSorting;
 			var sTitle = col.sTitle.replace( /<.*?>/g, "" );
 			var th = col.nTh;
-
+	
 			// IE7 is throwing an error when setting these properties with jQuery's
 			// attr() and removeAttr() methods...
 			th.removeAttribute('aria-sort');
-
+	
 			/* In ARIA only the first sorting column can be marked as sorting - no multi-sort option */
 			if ( col.bSortable ) {
 				if ( aSort.length > 0 && aSort[0].col == i ) {
@@ -4667,7 +4667,7 @@ module.exports = require('./main.js');
 				else {
 					nextSort = asSorting[0];
 				}
-
+	
 				label = sTitle + ( nextSort === "asc" ?
 					oAria.sSortAscending :
 					oAria.sSortDescending
@@ -4676,12 +4676,12 @@ module.exports = require('./main.js');
 			else {
 				label = sTitle;
 			}
-
+	
 			th.setAttribute('aria-label', label);
 		}
 	}
-
-
+	
+	
 	/**
 	 * Function to run on user sort request
 	 *  @param {object} settings dataTables settings object
@@ -4703,24 +4703,24 @@ module.exports = require('./main.js');
 			if ( idx === undefined ) {
 				idx = $.inArray( a[1], asSorting );
 			}
-
+	
 			return idx+1 >= asSorting.length ? 0 : idx+1;
 		};
-
+	
 		// Convert to 2D array if needed
 		if ( typeof sorting[0] === 'number' ) {
 			sorting = settings.aaSorting = [ sorting ];
 		}
-
+	
 		// If appending the sort then we are multi-column sorting
 		if ( append && settings.oFeatures.bSortMulti ) {
 			// Are we already doing some kind of sort on this column?
 			var sortIdx = $.inArray( colIdx, _pluck(sorting, '0') );
-
+	
 			if ( sortIdx !== -1 ) {
 				// Yes, modify the sort
 				nextSortIdx = next( sorting[sortIdx] );
-
+	
 				sorting[sortIdx][1] = asSorting[ nextSortIdx ];
 				sorting[sortIdx]._idx = nextSortIdx;
 			}
@@ -4733,7 +4733,7 @@ module.exports = require('./main.js');
 		else if ( sorting.length && sorting[0][0] == colIdx ) {
 			// Single column - already sorting on this column, modify the sort
 			nextSortIdx = next( sorting[0] );
-
+	
 			sorting.length = 1;
 			sorting[0][1] = asSorting[ nextSortIdx ];
 			sorting[0]._idx = nextSortIdx;
@@ -4744,17 +4744,17 @@ module.exports = require('./main.js');
 			sorting.push( [ colIdx, asSorting[0] ] );
 			sorting[0]._idx = 0;
 		}
-
+	
 		// Run the sort by calling a full redraw
 		_fnReDraw( settings );
-
+	
 		// callback used for async user interaction
 		if ( typeof callback == 'function' ) {
 			callback( settings );
 		}
 	}
-
-
+	
+	
 	/**
 	 * Attach a sort handler (click) to a node
 	 *  @param {object} settings dataTables settings object
@@ -4766,21 +4766,21 @@ module.exports = require('./main.js');
 	function _fnSortAttachListener ( settings, attachTo, colIdx, callback )
 	{
 		var col = settings.aoColumns[ colIdx ];
-
+	
 		_fnBindAction( attachTo, {}, function (e) {
 			/* If the column is not sortable - don't to anything */
 			if ( col.bSortable === false ) {
 				return;
 			}
-
+	
 			// If processing is enabled use a timeout to allow the processing
 			// display to be shown - otherwise to it synchronously
 			if ( settings.oFeatures.bProcessing ) {
 				_fnProcessingDisplay( settings, true );
-
+	
 				setTimeout( function() {
 					_fnSortListener( settings, colIdx, e.shiftKey, callback );
-
+	
 					// In server-side processing, the draw callback will remove the
 					// processing display
 					if ( _fnDataSource( settings ) !== 'ssp' ) {
@@ -4793,8 +4793,8 @@ module.exports = require('./main.js');
 			}
 		} );
 	}
-
-
+	
+	
 	/**
 	 * Set the sorting classes on table's body, Note: it is safe to call this function
 	 * when bSort and bSortClasses are false
@@ -4808,30 +4808,30 @@ module.exports = require('./main.js');
 		var sort = _fnSortFlatten( settings );
 		var features = settings.oFeatures;
 		var i, ien, colIdx;
-
+	
 		if ( features.bSort && features.bSortClasses ) {
 			// Remove old sorting classes
 			for ( i=0, ien=oldSort.length ; i<ien ; i++ ) {
 				colIdx = oldSort[i].src;
-
+	
 				// Remove column sorting
 				$( _pluck( settings.aoData, 'anCells', colIdx ) )
 					.removeClass( sortClass + (i<2 ? i+1 : 3) );
 			}
-
+	
 			// Add new column sorting
 			for ( i=0, ien=sort.length ; i<ien ; i++ ) {
 				colIdx = sort[i].src;
-
+	
 				$( _pluck( settings.aoData, 'anCells', colIdx ) )
 					.addClass( sortClass + (i<2 ? i+1 : 3) );
 			}
 		}
-
+	
 		settings.aLastSort = sort;
 	}
-
-
+	
+	
 	// Get the data to sort a column, be it from cache, fresh (populating the
 	// cache), or from a sort formatter
 	function _fnSortData( settings, idx )
@@ -4840,38 +4840,38 @@ module.exports = require('./main.js');
 		var column = settings.aoColumns[ idx ];
 		var customSort = DataTable.ext.order[ column.sSortDataType ];
 		var customData;
-
+	
 		if ( customSort ) {
 			customData = customSort.call( settings.oInstance, settings, idx,
 				_fnColumnIndexToVisible( settings, idx )
 			);
 		}
-
+	
 		// Use / populate cache
 		var row, cellData;
 		var formatter = DataTable.ext.type.order[ column.sType+"-pre" ];
-
+	
 		for ( var i=0, ien=settings.aoData.length ; i<ien ; i++ ) {
 			row = settings.aoData[i];
-
+	
 			if ( ! row._aSortData ) {
 				row._aSortData = [];
 			}
-
+	
 			if ( ! row._aSortData[idx] || customSort ) {
 				cellData = customSort ?
 					customData[i] : // If there was a custom sort function, use data from there
 					_fnGetCellData( settings, i, idx, 'sort' );
-
+	
 				row._aSortData[ idx ] = formatter ?
 					formatter( cellData ) :
 					cellData;
 			}
 		}
 	}
-
-
-
+	
+	
+	
 	/**
 	 * Save the state of a table
 	 *  @param {object} oSettings dataTables settings object
@@ -4883,7 +4883,7 @@ module.exports = require('./main.js');
 		{
 			return;
 		}
-
+	
 		/* Store the interesting variables */
 		var state = {
 			time:    +new Date(),
@@ -4898,14 +4898,14 @@ module.exports = require('./main.js');
 				};
 			} )
 		};
-
+	
 		_fnCallbackFire( settings, "aoStateSaveParams", 'stateSaveParams', [settings, state] );
-
+	
 		settings.oSavedState = state;
 		settings.fnStateSaveCallback.call( settings.oInstance, settings, state );
 	}
-
-
+	
+	
 	/**
 	 * Attempt to load a saved table state
 	 *  @param {object} oSettings dataTables settings object
@@ -4916,16 +4916,16 @@ module.exports = require('./main.js');
 	{
 		var i, ien;
 		var columns = settings.aoColumns;
-
+	
 		if ( ! settings.oFeatures.bStateSave ) {
 			return;
 		}
-
+	
 		var state = settings.fnStateLoadCallback.call( settings.oInstance, settings );
 		if ( ! state || ! state.time ) {
 			return;
 		}
-
+	
 		/* Allow custom and plug-in manipulation functions to alter the saved data set and
 		 * cancelling of loading by returning false
 		 */
@@ -4933,28 +4933,28 @@ module.exports = require('./main.js');
 		if ( $.inArray( false, abStateLoad ) !== -1 ) {
 			return;
 		}
-
+	
 		/* Reject old data */
 		var duration = settings.iStateDuration;
 		if ( duration > 0 && state.time < +new Date() - (duration*1000) ) {
 			return;
 		}
-
+	
 		// Number of columns have changed - all bets are off, no restore of settings
 		if ( columns.length !== state.columns.length ) {
 			return;
 		}
-
+	
 		// Store the saved state so it might be accessed at any time
 		settings.oLoadedState = $.extend( true, {}, state );
-
+	
 		// Restore key features - todo - for 1.11 this needs to be done by
 		// subscribed events
 		settings._iDisplayStart    = state.start;
 		settings.iInitDisplayStart = state.start;
 		settings._iDisplayLength   = state.length;
 		settings.aaSorting = [];
-
+	
 		// Order
 		$.each( state.order, function ( i, col ) {
 			settings.aaSorting.push( col[0] >= columns.length ?
@@ -4962,25 +4962,25 @@ module.exports = require('./main.js');
 				col
 			);
 		} );
-
+	
 		// Search
 		$.extend( settings.oPreviousSearch, _fnSearchToHung( state.search ) );
-
+	
 		// Columns
 		for ( i=0, ien=state.columns.length ; i<ien ; i++ ) {
 			var col = state.columns[i];
-
+	
 			// Visibility
 			columns[i].bVisible = col.visible;
-
+	
 			// Search
 			$.extend( settings.aoPreSearchCols[i], _fnSearchToHung( col.search ) );
 		}
-
+	
 		_fnCallbackFire( settings, 'aoStateLoaded', 'stateLoaded', [settings, state] );
 	}
-
-
+	
+	
 	/**
 	 * Return the settings object for a particular table
 	 *  @param {node} table table we are using as a dataTable
@@ -4991,13 +4991,13 @@ module.exports = require('./main.js');
 	{
 		var settings = DataTable.settings;
 		var idx = $.inArray( table, _pluck( settings, 'nTable' ) );
-
+	
 		return idx !== -1 ?
 			settings[ idx ] :
 			null;
 	}
-
-
+	
+	
 	/**
 	 * Log an error message
 	 *  @param {object} settings dataTables settings object
@@ -5010,17 +5010,17 @@ module.exports = require('./main.js');
 	{
 		msg = 'DataTables warning: '+
 			(settings!==null ? 'table id='+settings.sTableId+' - ' : '')+msg;
-
+	
 		if ( tn ) {
 			msg += '. For more information about this error, please see '+
 			'http://datatables.net/tn/'+tn;
 		}
-
+	
 		if ( ! level  ) {
 			// Backwards compatibility pre 1.10
 			var ext = DataTable.ext;
 			var type = ext.sErrMode || ext.errMode;
-
+	
 			if ( type == 'alert' ) {
 				alert( msg );
 			}
@@ -5032,8 +5032,8 @@ module.exports = require('./main.js');
 			console.log( msg );
 		}
 	}
-
-
+	
+	
 	/**
 	 * See if a property is defined on one object, if so assign it to the other object
 	 *  @param {object} ret target object
@@ -5053,20 +5053,20 @@ module.exports = require('./main.js');
 					_fnMap( ret, src, val );
 				}
 			} );
-
+	
 			return;
 		}
-
+	
 		if ( mappedName === undefined ) {
 			mappedName = name;
 		}
-
+	
 		if ( src[name] !== undefined ) {
 			ret[mappedName] = src[name];
 		}
 	}
-
-
+	
+	
 	/**
 	 * Extend objects - very similar to jQuery.extend, but deep copy objects, and
 	 * shallow copy arrays. The reason we need to do this, is that we don't want to
@@ -5087,11 +5087,11 @@ module.exports = require('./main.js');
 	function _fnExtend( out, extender, breakRefs )
 	{
 		var val;
-
+	
 		for ( var prop in extender ) {
 			if ( extender.hasOwnProperty(prop) ) {
 				val = extender[prop];
-
+	
 				if ( $.isPlainObject( val ) ) {
 					if ( ! $.isPlainObject( out[prop] ) ) {
 						out[prop] = {};
@@ -5106,11 +5106,11 @@ module.exports = require('./main.js');
 				}
 			}
 		}
-
+	
 		return out;
 	}
-
-
+	
+	
 	/**
 	 * Bind an event handers to allow a click or return key to activate the callback.
 	 * This is good for accessibility since a return on the keyboard will have the
@@ -5138,8 +5138,8 @@ module.exports = require('./main.js');
 					return false;
 				} );
 	}
-
-
+	
+	
 	/**
 	 * Register a callback function. Easily allows a callback function to be added to
 	 * an array store of callback functions that can then all be called together.
@@ -5159,8 +5159,8 @@ module.exports = require('./main.js');
 			} );
 		}
 	}
-
-
+	
+	
 	/**
 	 * Fire callback functions and trigger events. Note that the loop over the
 	 * callback array store is done backwards! Further note that you do not want to
@@ -5178,48 +5178,48 @@ module.exports = require('./main.js');
 	function _fnCallbackFire( settings, callbackArr, e, args )
 	{
 		var ret = [];
-
+	
 		if ( callbackArr ) {
 			ret = $.map( settings[callbackArr].slice().reverse(), function (val, i) {
 				return val.fn.apply( settings.oInstance, args );
 			} );
 		}
-
+	
 		if ( e !== null ) {
 			$(settings.nTable).trigger( e+'.dt', args );
 		}
-
+	
 		return ret;
 	}
-
-
+	
+	
 	function _fnLengthOverflow ( settings )
 	{
 		var
 			start = settings._iDisplayStart,
 			end = settings.fnDisplayEnd(),
 			len = settings._iDisplayLength;
-
+	
 		/* If we have space to show extra rows (backing up from the end point - then do so */
 		if ( end === settings.fnRecordsDisplay() )
 		{
 			start = end - len;
 		}
-
+	
 		if ( len === -1 || start < 0 )
 		{
 			start = 0;
 		}
-
+	
 		settings._iDisplayStart = start;
 	}
-
-
+	
+	
 	function _fnRenderer( settings, type )
 	{
 		var renderer = settings.renderer;
 		var host = DataTable.ext.renderer[type];
-
+	
 		if ( $.isPlainObject( renderer ) && renderer[type] ) {
 			// Specific renderer for this type. If available use it, otherwise use
 			// the default.
@@ -5230,12 +5230,12 @@ module.exports = require('./main.js');
 			// otherwise use the default
 			return host[renderer] || host._;
 		}
-
+	
 		// Use the default
 		return host._;
 	}
-
-
+	
+	
 	/**
 	 * Detect the data source being used for the table. Used to simplify the code
 	 * a little (ajax) and to make it compress a little smaller.
@@ -5254,7 +5254,7 @@ module.exports = require('./main.js');
 		}
 		return 'dom';
 	}
-
+	
 
 	DataTable = function( options )
 	{
@@ -5298,8 +5298,8 @@ module.exports = require('./main.js');
 		{
 			return this.api(true).$( sSelector, oOpts );
 		};
-
-
+		
+		
 		/**
 		 * Almost identical to $ in operation, but in this case returns the data for the matched
 		 * rows - as such, the jQuery selector used should match TR row nodes or TD/TH cell nodes
@@ -5352,8 +5352,8 @@ module.exports = require('./main.js');
 		{
 			return this.api(true).rows( sSelector, oOpts ).data();
 		};
-
-
+		
+		
 		/**
 		 * Create a DataTables Api instance, with the currently selected tables for
 		 * the Api's context.
@@ -5371,8 +5371,8 @@ module.exports = require('./main.js');
 				) :
 				new _Api( this );
 		};
-
-
+		
+		
 		/**
 		 * Add a single new row or multiple rows of data to the table. Please note
 		 * that this is suitable for client-side processing only - if you are using
@@ -5414,20 +5414,20 @@ module.exports = require('./main.js');
 		this.fnAddData = function( data, redraw )
 		{
 			var api = this.api( true );
-
+		
 			/* Check if we want to add multiple rows or not */
 			var rows = $.isArray(data) && ( $.isArray(data[0]) || $.isPlainObject(data[0]) ) ?
 				api.rows.add( data ) :
 				api.row.add( data );
-
+		
 			if ( redraw === undefined || redraw ) {
 				api.draw();
 			}
-
+		
 			return rows.flatten().toArray();
 		};
-
-
+		
+		
 		/**
 		 * This function will make DataTables recalculate the column sizes, based on the data
 		 * contained in the table and the sizes applied to the columns (in the DOM, CSS or
@@ -5454,7 +5454,7 @@ module.exports = require('./main.js');
 			var api = this.api( true ).columns.adjust();
 			var settings = api.settings()[0];
 			var scroll = settings.oScroll;
-
+		
 			if ( bRedraw === undefined || bRedraw ) {
 				api.draw( false );
 			}
@@ -5463,8 +5463,8 @@ module.exports = require('./main.js');
 				_fnScrollDraw( settings );
 			}
 		};
-
-
+		
+		
 		/**
 		 * Quickly and simply clear a table
 		 *  @param {bool} [bRedraw=true] redraw the table or not
@@ -5482,13 +5482,13 @@ module.exports = require('./main.js');
 		this.fnClearTable = function( bRedraw )
 		{
 			var api = this.api( true ).clear();
-
+		
 			if ( bRedraw === undefined || bRedraw ) {
 				api.draw();
 			}
 		};
-
-
+		
+		
 		/**
 		 * The exact opposite of 'opening' a row, this function will close any rows which
 		 * are currently 'open'.
@@ -5517,8 +5517,8 @@ module.exports = require('./main.js');
 		{
 			this.api( true ).row( nTr ).child.hide();
 		};
-
-
+		
+		
 		/**
 		 * Remove a row for the table
 		 *  @param {mixed} target The index of the row from aoData to be deleted, or
@@ -5543,21 +5543,21 @@ module.exports = require('./main.js');
 			var rows = api.rows( target );
 			var settings = rows.settings()[0];
 			var data = settings.aoData[ rows[0][0] ];
-
+		
 			rows.remove();
-
+		
 			if ( callback ) {
 				callback.call( this, settings, data );
 			}
-
+		
 			if ( redraw === undefined || redraw ) {
 				api.draw();
 			}
-
+		
 			return data;
 		};
-
-
+		
+		
 		/**
 		 * Restore the table to it's original state in the DOM by removing all of DataTables
 		 * enhancements, alterations to the DOM structure of the table and event listeners.
@@ -5576,8 +5576,8 @@ module.exports = require('./main.js');
 		{
 			this.api( true ).destroy( remove );
 		};
-
-
+		
+		
 		/**
 		 * Redraw the table
 		 *  @param {bool} [complete=true] Re-filter and resort (if enabled) the table before the draw.
@@ -5598,8 +5598,8 @@ module.exports = require('./main.js');
 			// into account the new data, but can old position.
 			this.api( true ).draw( ! complete );
 		};
-
-
+		
+		
 		/**
 		 * Filter the input based on data
 		 *  @param {string} sInput String to filter the table on
@@ -5622,18 +5622,18 @@ module.exports = require('./main.js');
 		this.fnFilter = function( sInput, iColumn, bRegex, bSmart, bShowGlobal, bCaseInsensitive )
 		{
 			var api = this.api( true );
-
+		
 			if ( iColumn === null || iColumn === undefined ) {
 				api.search( sInput, bRegex, bSmart, bCaseInsensitive );
 			}
 			else {
 				api.column( iColumn ).search( sInput, bRegex, bSmart, bCaseInsensitive );
 			}
-
+		
 			api.draw();
 		};
-
-
+		
+		
 		/**
 		 * Get the data for the whole table, an individual row or an individual cell based on the
 		 * provided parameters.
@@ -5674,19 +5674,19 @@ module.exports = require('./main.js');
 		this.fnGetData = function( src, col )
 		{
 			var api = this.api( true );
-
+		
 			if ( src !== undefined ) {
 				var type = src.nodeName ? src.nodeName.toLowerCase() : '';
-
+		
 				return col !== undefined || type == 'td' || type == 'th' ?
 					api.cell( src, col ).data() :
 					api.row( src ).data() || null;
 			}
-
+		
 			return api.data().toArray();
 		};
-
-
+		
+		
 		/**
 		 * Get an array of the TR nodes that are used in the table's body. Note that you will
 		 * typically want to use the '$' API method in preference to this as it is more
@@ -5708,13 +5708,13 @@ module.exports = require('./main.js');
 		this.fnGetNodes = function( iRow )
 		{
 			var api = this.api( true );
-
+		
 			return iRow !== undefined ?
 				api.row( iRow ).node() :
 				api.rows().nodes().flatten().toArray();
 		};
-
-
+		
+		
 		/**
 		 * Get the array indexes of a particular cell from it's DOM element
 		 * and column index including hidden columns
@@ -5747,13 +5747,13 @@ module.exports = require('./main.js');
 		{
 			var api = this.api( true );
 			var nodeName = node.nodeName.toUpperCase();
-
+		
 			if ( nodeName == 'TR' ) {
 				return api.row( node ).index();
 			}
 			else if ( nodeName == 'TD' || nodeName == 'TH' ) {
 				var cell = api.cell( node ).index();
-
+		
 				return [
 					cell.row,
 					cell.columnVisible,
@@ -5762,8 +5762,8 @@ module.exports = require('./main.js');
 			}
 			return null;
 		};
-
-
+		
+		
 		/**
 		 * Check to see if a row is 'open' or not.
 		 *  @param {node} nTr the table row to check
@@ -5791,8 +5791,8 @@ module.exports = require('./main.js');
 		{
 			return this.api( true ).row( nTr ).child.isShown();
 		};
-
-
+		
+		
 		/**
 		 * This function will place a new row directly after a row which is currently
 		 * on display on the page, with the HTML contents that is passed into the
@@ -5831,8 +5831,8 @@ module.exports = require('./main.js');
 				.show()
 				.child()[0];
 		};
-
-
+		
+		
 		/**
 		 * Change the pagination - provides the internal logic for pagination in a simple API
 		 * function. With this function you can have a DataTables table go to the next,
@@ -5852,13 +5852,13 @@ module.exports = require('./main.js');
 		this.fnPageChange = function ( mAction, bRedraw )
 		{
 			var api = this.api( true ).page( mAction );
-
+		
 			if ( bRedraw === undefined || bRedraw ) {
 				api.draw(false);
 			}
 		};
-
-
+		
+		
 		/**
 		 * Show a particular column
 		 *  @param {int} iCol The column whose display should be changed
@@ -5878,13 +5878,13 @@ module.exports = require('./main.js');
 		this.fnSetColumnVis = function ( iCol, bShow, bRedraw )
 		{
 			var api = this.api( true ).column( iCol ).visible( bShow );
-
+		
 			if ( bRedraw === undefined || bRedraw ) {
 				api.columns.adjust().draw();
 			}
 		};
-
-
+		
+		
 		/**
 		 * Get the settings for a particular table for external manipulation
 		 *  @returns {object} DataTables settings object. See
@@ -5905,8 +5905,8 @@ module.exports = require('./main.js');
 		{
 			return _fnSettingsFromNode( this[_ext.iApiIndex] );
 		};
-
-
+		
+		
 		/**
 		 * Sort the table by a particular column
 		 *  @param {int} iCol the data index to sort on. Note that this will not match the
@@ -5926,8 +5926,8 @@ module.exports = require('./main.js');
 		{
 			this.api( true ).order( aaSort ).draw();
 		};
-
-
+		
+		
 		/**
 		 * Attach a sort listener to an element for a given column
 		 *  @param {node} nNode the element to attach the sort listener to
@@ -5948,8 +5948,8 @@ module.exports = require('./main.js');
 		{
 			this.api( true ).order.listener( nNode, iColumn, fnCallback );
 		};
-
-
+		
+		
 		/**
 		 * Update a table cell or row - this method will accept either a single value to
 		 * update the cell with, an array of values with one element for each column or
@@ -5975,25 +5975,25 @@ module.exports = require('./main.js');
 		this.fnUpdate = function( mData, mRow, iColumn, bRedraw, bAction )
 		{
 			var api = this.api( true );
-
+		
 			if ( iColumn === undefined || iColumn === null ) {
 				api.row( mRow ).data( mData );
 			}
 			else {
 				api.cell( mRow, iColumn ).data( mData );
 			}
-
+		
 			if ( bAction === undefined || bAction ) {
 				api.columns.adjust();
 			}
-
+		
 			if ( bRedraw === undefined || bRedraw ) {
 				api.draw();
 			}
 			return 0;
 		};
-
-
+		
+		
 		/**
 		 * Provide a common method for plug-ins to check the version of DataTables being used, in order
 		 * to ensure compatibility.
@@ -6012,7 +6012,7 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		this.fnVersionCheck = _ext.fnVersionCheck;
-
+		
 
 		var _that = this;
 		var emptyInit = options === undefined;
@@ -6044,26 +6044,26 @@ module.exports = require('./main.js');
 			var sId = this.getAttribute( 'id' );
 			var bInitHandedOff = false;
 			var defaults = DataTable.defaults;
-
-
+			
+			
 			/* Sanity check */
 			if ( this.nodeName.toLowerCase() != 'table' )
 			{
 				_fnLog( null, 0, 'Non-table node initialisation ('+this.nodeName+')', 2 );
 				return;
 			}
-
+			
 			/* Backwards compatibility for the defaults */
 			_fnCompatOpts( defaults );
 			_fnCompatCols( defaults.column );
-
+			
 			/* Convert the camel-case defaults to Hungarian */
 			_fnCamelToHungarian( defaults, defaults, true );
 			_fnCamelToHungarian( defaults.column, defaults.column, true );
-
+			
 			/* Setting up the initialisation object */
 			_fnCamelToHungarian( defaults, oInit );
-
+			
 			/* Check to see if we are re-initialising a table */
 			var allSettings = DataTable.settings;
 			for ( i=0, iLen=allSettings.length ; i<iLen ; i++ )
@@ -6073,7 +6073,7 @@ module.exports = require('./main.js');
 				{
 					var bRetrieve = oInit.bRetrieve !== undefined ? oInit.bRetrieve : defaults.bRetrieve;
 					var bDestroy = oInit.bDestroy !== undefined ? oInit.bDestroy : defaults.bDestroy;
-
+			
 					if ( emptyInit || bRetrieve )
 					{
 						return allSettings[i].oInstance;
@@ -6089,7 +6089,7 @@ module.exports = require('./main.js');
 						return;
 					}
 				}
-
+			
 				/* If the element we are initialising has the same ID as a table which was previously
 				 * initialised, but the table nodes don't match (from before) then we destroy the old
 				 * instance by simply deleting it. This is under the assumption that the table has been
@@ -6101,14 +6101,14 @@ module.exports = require('./main.js');
 					break;
 				}
 			}
-
+			
 			/* Ensure the table has an ID - required for accessibility */
 			if ( sId === null || sId === "" )
 			{
 				sId = "DataTables_Table_"+(DataTable.ext._unique++);
 				this.id = sId;
 			}
-
+			
 			/* Create the settings object for this table and set some of the default parameters */
 			var oSettings = $.extend( true, {}, DataTable.models.oSettings, {
 				"nTable":        this,
@@ -6119,31 +6119,31 @@ module.exports = require('./main.js');
 				"sTableId":      sId
 			} );
 			allSettings.push( oSettings );
-
+			
 			// Need to add the instance after the instance after the settings object has been added
 			// to the settings array, so we can self reference the table instance if more than one
 			oSettings.oInstance = (_that.length===1) ? _that : $(this).dataTable();
-
+			
 			// Backwards compatibility, before we apply all the defaults
 			_fnCompatOpts( oInit );
-
+			
 			if ( oInit.oLanguage )
 			{
 				_fnLanguageCompat( oInit.oLanguage );
 			}
-
+			
 			// If the length menu is given, but the init display length is not, use the length menu
 			if ( oInit.aLengthMenu && ! oInit.iDisplayLength )
 			{
 				oInit.iDisplayLength = $.isArray( oInit.aLengthMenu[0] ) ?
 					oInit.aLengthMenu[0][0] : oInit.aLengthMenu[0];
 			}
-
+			
 			// Apply the defaults and init options to make a single init object will all
 			// options defined from defaults and instance options.
 			oInit = _fnExtend( $.extend( true, {}, defaults ), oInit );
-
-
+			
+			
 			// Map the initialisation options onto the settings object
 			_fnMap( oSettings.oFeatures, oInit, [
 				"bPaginate",
@@ -6190,7 +6190,7 @@ module.exports = require('./main.js');
 				[ "bScrollCollapse", "bCollapse" ]
 			] );
 			_fnMap( oSettings.oLanguage, oInit, "fnInfoCallback" );
-
+			
 			/* Callback functions which are array driven */
 			_fnCallbackReg( oSettings, 'aoDrawCallback',       oInit.fnDrawCallback,      'user' );
 			_fnCallbackReg( oSettings, 'aoServerParams',       oInit.fnServerParams,      'user' );
@@ -6203,10 +6203,10 @@ module.exports = require('./main.js');
 			_fnCallbackReg( oSettings, 'aoFooterCallback',     oInit.fnFooterCallback,    'user' );
 			_fnCallbackReg( oSettings, 'aoInitComplete',       oInit.fnInitComplete,      'user' );
 			_fnCallbackReg( oSettings, 'aoPreDrawCallback',    oInit.fnPreDrawCallback,   'user' );
-
+			
 			var oClasses = oSettings.oClasses;
 			oSettings.translate = options.translate;
-
+			
 			// @todo Remove in 1.11
 			if ( oInit.bJQueryUI )
 			{
@@ -6214,13 +6214,13 @@ module.exports = require('./main.js');
 				 * you want to have multiple tables with multiple independent classes
 				 */
 				$.extend( oClasses, DataTable.ext.oJUIClasses, oInit.oClasses );
-
+			
 				if ( oInit.sDom === defaults.sDom && defaults.sDom === "lfrtip" )
 				{
 					/* Set the DOM to use a layout suitable for jQuery UI's theming */
 					oSettings.sDom = '<"H"lfr>t<"F"ip>';
 				}
-
+			
 				if ( ! oSettings.renderer ) {
 					oSettings.renderer = 'jqueryui';
 				}
@@ -6233,7 +6233,7 @@ module.exports = require('./main.js');
 				$.extend( oClasses, DataTable.ext.classes, oInit.oClasses );
 			}
 			$(this).addClass( oClasses.sTable );
-
+			
 			/* Calculate the scroll bar width and cache it for use later on */
 			if ( oSettings.oScroll.sX !== "" || oSettings.oScroll.sY !== "" )
 			{
@@ -6242,14 +6242,14 @@ module.exports = require('./main.js');
 			if ( oSettings.oScroll.sX === true ) { // Easy initialisation of x-scrolling
 				oSettings.oScroll.sX = '100%';
 			}
-
+			
 			if ( oSettings.iInitDisplayStart === undefined )
 			{
 				/* Display start point, taking into account the save saving */
 				oSettings.iInitDisplayStart = oInit.iDisplayStart;
 				oSettings._iDisplayStart = oInit.iDisplayStart;
 			}
-
+			
 			if ( oInit.iDeferLoading !== null )
 			{
 				oSettings.bDeferLoading = true;
@@ -6257,7 +6257,7 @@ module.exports = require('./main.js');
 				oSettings._iRecordsDisplay = tmp ? oInit.iDeferLoading[0] : oInit.iDeferLoading;
 				oSettings._iRecordsTotal = tmp ? oInit.iDeferLoading[1] : oInit.iDeferLoading;
 			}
-
+			
 			/* Language definitions */
 			if ( oInit.oLanguage.sUrl !== "" )
 			{
@@ -6278,8 +6278,8 @@ module.exports = require('./main.js');
 			{
 				$.extend( true, oSettings.oLanguage, oInit.oLanguage );
 			}
-
-
+			
+			
 			/*
 			 * Stripes
 			 */
@@ -6290,7 +6290,7 @@ module.exports = require('./main.js');
 					oClasses.sStripeEven
 				];
 			}
-
+			
 			/* Remove row stripe classes if they are already on the table row */
 			var stripeClasses = oSettings.asStripeClasses;
 			var rowOne = $('tbody tr:eq(0)', this);
@@ -6300,7 +6300,7 @@ module.exports = require('./main.js');
 				$('tbody tr', this).removeClass( stripeClasses.join(' ') );
 				oSettings.asDestroyStripes = stripeClasses.slice();
 			}
-
+			
 			/*
 			 * Columns
 			 * See if we should load columns automatically or use defined ones
@@ -6313,7 +6313,7 @@ module.exports = require('./main.js');
 				_fnDetectHeader( oSettings.aoHeader, nThead[0] );
 				anThs = _fnGetUniqueThs( oSettings );
 			}
-
+			
 			/* If not given a column array, generate one with nulls */
 			if ( oInit.aoColumns === null )
 			{
@@ -6327,18 +6327,18 @@ module.exports = require('./main.js');
 			{
 				aoColumnsInit = oInit.aoColumns;
 			}
-
+			
 			/* Add the columns */
 			for ( i=0, iLen=aoColumnsInit.length ; i<iLen ; i++ )
 			{
 				_fnAddColumn( oSettings, anThs ? anThs[i] : null );
 			}
-
+			
 			/* Apply the column definitions */
 			_fnApplyColumnDefs( oSettings, oInit.aoColumnDefs, aoColumnsInit, function (iCol, oDef) {
 				_fnColumnOptions( oSettings, iCol, oDef );
 			} );
-
+			
 			/* HTML5 attribute detection - build an mData object automatically if the
 			 * attributes are found
 			 */
@@ -6346,14 +6346,14 @@ module.exports = require('./main.js');
 				var a = function ( cell, name ) {
 					return cell.getAttribute( 'data-'+name ) ? name : null;
 				};
-
+			
 				$.each( _fnGetRowElements( oSettings, rowOne[0] ).cells, function (i, cell) {
 					var col = oSettings.aoColumns[i];
-
+			
 					if ( col.mData === i ) {
 						var sort = a( cell, 'sort' ) || a( cell, 'order' );
 						var filter = a( cell, 'filter' ) || a( cell, 'search' );
-
+			
 						if ( sort !== null || filter !== null ) {
 							col.mData = {
 								_:      i+'.display',
@@ -6361,15 +6361,15 @@ module.exports = require('./main.js');
 								type:   sort !== null   ? i+'.@data-'+sort   : undefined,
 								filter: filter !== null ? i+'.@data-'+filter : undefined
 							};
-
+			
 							_fnColumnOptions( oSettings, i );
 						}
 					}
 				} );
 			}
-
+			
 			var features = oSettings.oFeatures;
-
+			
 			/* Must be done after everything which can be overridden by the state saving! */
 			if ( oInit.bStateSave )
 			{
@@ -6377,13 +6377,13 @@ module.exports = require('./main.js');
 				_fnLoadState( oSettings, oInit );
 				_fnCallbackReg( oSettings, 'aoDrawCallback', _fnSaveState, 'state_save' );
 			}
-
-
+			
+			
 			/*
 			 * Sorting
 			 * @todo For modularisation (1.11) this needs to do into a sort start up handler
 			 */
-
+			
 			// If aaSorting is not defined, then we use the first indicator in asSorting
 			// in case that has been altered, so the default sort reflects that option
 			if ( oInit.aaSorting === undefined )
@@ -6394,63 +6394,63 @@ module.exports = require('./main.js');
 					sorting[i][1] = oSettings.aoColumns[ i ].asSorting[0];
 				}
 			}
-
+			
 			/* Do a first pass on the sorting classes (allows any size changes to be taken into
 			 * account, and also will apply sorting disabled classes if disabled
 			 */
 			_fnSortingClasses( oSettings );
-
+			
 			if ( features.bSort )
 			{
 				_fnCallbackReg( oSettings, 'aoDrawCallback', function () {
 					if ( oSettings.bSorted ) {
 						var aSort = _fnSortFlatten( oSettings );
 						var sortedColumns = {};
-
+			
 						$.each( aSort, function (i, val) {
 							sortedColumns[ val.src ] = val.dir;
 						} );
-
+			
 						_fnCallbackFire( oSettings, null, 'order', [oSettings, aSort, sortedColumns] );
 						_fnSortAria( oSettings );
 					}
 				} );
 			}
-
+			
 			_fnCallbackReg( oSettings, 'aoDrawCallback', function () {
 				if ( oSettings.bSorted || _fnDataSource( oSettings ) === 'ssp' || features.bDeferRender ) {
 					_fnSortingClasses( oSettings );
 				}
 			}, 'sc' );
-
-
+			
+			
 			/*
 			 * Final init
 			 * Cache the header, body and footer as required, creating them if needed
 			 */
-
+			
 			/* Browser support detection */
 			_fnBrowserDetect( oSettings );
-
+			
 			// Work around for Webkit bug 83867 - store the caption-side before removing from doc
 			var captions = $(this).children('caption').each( function () {
 				this._captionSide = $(this).css('caption-side');
 			} );
-
+			
 			var thead = $(this).children('thead');
 			if ( thead.length === 0 )
 			{
 				thead = $('<thead/>').appendTo(this);
 			}
 			oSettings.nTHead = thead[0];
-
+			
 			var tbody = $(this).children('tbody');
 			if ( tbody.length === 0 )
 			{
 				tbody = $('<tbody/>').appendTo(this);
 			}
 			oSettings.nTBody = tbody[0];
-
+			
 			var tfoot = $(this).children('tfoot');
 			if ( tfoot.length === 0 && captions.length > 0 && (oSettings.oScroll.sX !== "" || oSettings.oScroll.sY !== "") )
 			{
@@ -6458,7 +6458,7 @@ module.exports = require('./main.js');
 				// a tfoot element for the caption element to be appended to
 				tfoot = $('<tfoot/>').appendTo(this);
 			}
-
+			
 			if ( tfoot.length === 0 || tfoot.children().length === 0 ) {
 				$(this).addClass( oClasses.sNoFooter );
 			}
@@ -6466,7 +6466,7 @@ module.exports = require('./main.js');
 				oSettings.nTFoot = tfoot[0];
 				_fnDetectHeader( oSettings.aoFooter, oSettings.nTFoot );
 			}
-
+			
 			/* Check if there is data passing into the constructor */
 			if ( oInit.aaData )
 			{
@@ -6483,13 +6483,13 @@ module.exports = require('./main.js');
 				 */
 				_fnAddTr( oSettings, $(oSettings.nTBody).children('tr') );
 			}
-
+			
 			/* Copy the data index array */
 			oSettings.aiDisplay = oSettings.aiDisplayMaster.slice();
-
+			
 			/* Initialisation complete - table can be drawn */
 			oSettings.bInitialised = true;
-
+			
 			/* Check if we need to initialise the table (it might not have been handed off to the
 			 * language processor)
 			 */
@@ -6502,8 +6502,8 @@ module.exports = require('./main.js');
 		return this;
 	};
 
-
-
+	
+	
 	/**
 	 * Computed structure of the DataTables API, defined by the options passed to
 	 * `DataTable.Api.register()` when building the API.
@@ -6541,8 +6541,8 @@ module.exports = require('./main.js');
 	 * @ignore
 	 */
 	var __apiStruct = [];
-
-
+	
+	
 	/**
 	 * `Array.prototype` reference.
 	 *
@@ -6550,8 +6550,8 @@ module.exports = require('./main.js');
 	 * @ignore
 	 */
 	var __arrayProto = Array.prototype;
-
-
+	
+	
 	/**
 	 * Abstraction for `context` parameter of the `Api` constructor to allow it to
 	 * take several different forms for ease of use.
@@ -6579,7 +6579,7 @@ module.exports = require('./main.js');
 		var tables = $.map( settings, function (el, i) {
 			return el.nTable;
 		} );
-
+	
 		if ( ! mixed ) {
 			return [];
 		}
@@ -6603,7 +6603,7 @@ module.exports = require('./main.js');
 			// jQuery object (also DataTables instance)
 			jq = mixed;
 		}
-
+	
 		if ( jq ) {
 			return jq.map( function(i) {
 				idx = $.inArray( this, tables );
@@ -6611,8 +6611,8 @@ module.exports = require('./main.js');
 			} ).toArray();
 		}
 	};
-
-
+	
+	
 	/**
 	 * DataTables API class - used to control and interface with  one or more
 	 * DataTables enhanced tables.
@@ -6674,7 +6674,7 @@ module.exports = require('./main.js');
 			// or should it do the 'new' for the caller?
 			// return new _Api.apply( this, arguments );
 		}
-
+	
 		var settings = [];
 		var ctxSettings = function ( o ) {
 			var a = _toSettings( o );
@@ -6682,7 +6682,7 @@ module.exports = require('./main.js');
 				settings.push.apply( settings, a );
 			}
 		};
-
+	
 		if ( $.isArray( context ) ) {
 			for ( var i=0, ien=context.length ; i<ien ; i++ ) {
 				ctxSettings( context[i] );
@@ -6691,27 +6691,27 @@ module.exports = require('./main.js');
 		else {
 			ctxSettings( context );
 		}
-
+	
 		// Remove duplicates
 		this.context = _unique( settings );
-
+	
 		// Initial data
 		if ( data ) {
 			this.push.apply( this, data.toArray ? data.toArray() : data );
 		}
-
+	
 		// selector
 		this.selector = {
 			rows: null,
 			cols: null,
 			opts: null
 		};
-
+	
 		_Api.extend( this, this, __apiStruct );
 	};
-
+	
 	DataTable.Api = _Api;
-
+	
 	_Api.prototype = /** @lends DataTables.Api */{
 		/**
 		 * Return a new Api instance, comprised of the data held in the current
@@ -6726,35 +6726,35 @@ module.exports = require('./main.js');
 		 *   array.
 		 */
 		concat:  __arrayProto.concat,
-
-
+	
+	
 		context: [], // array of table settings objects
-
-
+	
+	
 		each: function ( fn )
 		{
 			for ( var i=0, ien=this.length ; i<ien; i++ ) {
 				fn.call( this, this[i], i, this );
 			}
-
+	
 			return this;
 		},
-
-
+	
+	
 		eq: function ( idx )
 		{
 			var ctx = this.context;
-
+	
 			return ctx.length > idx ?
 				new _Api( ctx[idx], this[idx] ) :
 				null;
 		},
-
-
+	
+	
 		filter: function ( fn )
 		{
 			var a = [];
-
+	
 			if ( __arrayProto.filter ) {
 				a = __arrayProto.filter.call( this, fn, this );
 			}
@@ -6766,21 +6766,21 @@ module.exports = require('./main.js');
 					}
 				}
 			}
-
+	
 			return new _Api( this.context, a );
 		},
-
-
+	
+	
 		flatten: function ()
 		{
 			var a = [];
 			return new _Api( this.context, a.concat.apply( a, this.toArray() ) );
 		},
-
-
+	
+	
 		join:    __arrayProto.join,
-
-
+	
+	
 		indexOf: __arrayProto.indexOf || function (obj, start)
 		{
 			for ( var i=(start || 0), ien=this.length ; i<ien ; i++ ) {
@@ -6790,7 +6790,7 @@ module.exports = require('./main.js');
 			}
 			return -1;
 		},
-
+	
 		// Internal only at the moment - relax?
 		iterator: function ( flatten, type, fn ) {
 			var
@@ -6799,18 +6799,18 @@ module.exports = require('./main.js');
 				context = this.context,
 				rows, items, item,
 				selector = this.selector;
-
+	
 			// Argument shifting
 			if ( typeof flatten === 'string' ) {
 				fn = type;
 				type = flatten;
 				flatten = false;
 			}
-
+	
 			for ( i=0, ien=context.length ; i<ien ; i++ ) {
 				if ( type === 'table' ) {
 					ret = fn( context[i], i );
-
+	
 					if ( ret !== undefined ) {
 						a.push( ret );
 					}
@@ -6818,7 +6818,7 @@ module.exports = require('./main.js');
 				else if ( type === 'columns' || type === 'rows' ) {
 					// this has same length as context - one entry for each table
 					ret = fn( context[i], this[i], i );
-
+	
 					if ( ret !== undefined ) {
 						a.push( ret );
 					}
@@ -6827,28 +6827,28 @@ module.exports = require('./main.js');
 					// columns and rows share the same structure.
 					// 'this' is an array of column indexes for each context
 					items = this[i];
-
+	
 					if ( type === 'column-rows' ) {
 						rows = _selector_row_indexes( context[i], selector.opts );
 					}
-
+	
 					for ( j=0, jen=items.length ; j<jen ; j++ ) {
 						item = items[j];
-
+	
 						if ( type === 'cell' ) {
 							ret = fn( context[i], item.row, item.column, i, j );
 						}
 						else {
 							ret = fn( context[i], item, i, j, rows );
 						}
-
+	
 						if ( ret !== undefined ) {
 							a.push( ret );
 						}
 					}
 				}
 			}
-
+	
 			if ( a.length ) {
 				var api = new _Api( context, flatten ? a.concat.apply( [], a ) : a );
 				var apiSelector = api.selector;
@@ -6859,22 +6859,22 @@ module.exports = require('./main.js');
 			}
 			return this;
 		},
-
-
+	
+	
 		lastIndexOf: __arrayProto.lastIndexOf || function (obj, start)
 		{
 			// Bit cheeky...
 			return this.indexOf.apply( this.toArray.reverse(), arguments );
 		},
-
-
+	
+	
 		length:  0,
-
-
+	
+	
 		map: function ( fn )
 		{
 			var a = [];
-
+	
 			if ( __arrayProto.map ) {
 				a = __arrayProto.map.call( this, fn, this );
 			}
@@ -6884,88 +6884,88 @@ module.exports = require('./main.js');
 					a.push( fn.call( this, this[i], i ) );
 				}
 			}
-
+	
 			return new _Api( this.context, a );
 		},
-
-
+	
+	
 		pluck: function ( prop )
 		{
 			return this.map( function ( el ) {
 				return el[ prop ];
 			} );
 		},
-
+	
 		pop:     __arrayProto.pop,
-
-
+	
+	
 		push:    __arrayProto.push,
-
-
+	
+	
 		// Does not return an API instance
 		reduce: __arrayProto.reduce || function ( fn, init )
 		{
 			return _fnReduce( this, fn, init, 0, this.length, 1 );
 		},
-
-
+	
+	
 		reduceRight: __arrayProto.reduceRight || function ( fn, init )
 		{
 			return _fnReduce( this, fn, init, this.length-1, -1, -1 );
 		},
-
-
+	
+	
 		reverse: __arrayProto.reverse,
-
-
+	
+	
 		// Object with rows, columns and opts
 		selector: null,
-
-
+	
+	
 		shift:   __arrayProto.shift,
-
-
+	
+	
 		sort:    __arrayProto.sort, // ? name - order?
-
-
+	
+	
 		splice:  __arrayProto.splice,
-
-
+	
+	
 		toArray: function ()
 		{
 			return __arrayProto.slice.call( this );
 		},
-
-
+	
+	
 		to$: function ()
 		{
 			return $( this );
 		},
-
-
+	
+	
 		toJQuery: function ()
 		{
 			return $( this );
 		},
-
-
+	
+	
 		unique: function ()
 		{
 			return new _Api( this.context, _unique(this) );
 		},
-
-
+	
+	
 		unshift: __arrayProto.unshift
 	};
-
-
+	
+	
 	_Api.extend = function ( scope, obj, ext )
 	{
 		// Only extend API instances and static properties of the API
 		if ( ! obj || ( ! (obj instanceof _Api) && ! obj.__dt_wrapper ) ) {
 			return;
 		}
-
+	
 		var
 			i, ien,
 			j, jen,
@@ -6973,41 +6973,41 @@ module.exports = require('./main.js');
 			methodScoping = function ( scope, fn, struc ) {
 				return function () {
 					var ret = fn.apply( scope, arguments );
-
+	
 					// Method extension
 					_Api.extend( ret, ret, struc.methodExt );
 					return ret;
 				};
 			};
-
+	
 		for ( i=0, ien=ext.length ; i<ien ; i++ ) {
 			struct = ext[i];
-
+	
 			// Value
 			obj[ struct.name ] = typeof struct.val === 'function' ?
 				methodScoping( scope, struct.val, struct ) :
 				$.isPlainObject( struct.val ) ?
 					{} :
 					struct.val;
-
+	
 			obj[ struct.name ].__dt_wrapper = true;
-
+	
 			// Property extension
 			_Api.extend( scope, obj[ struct.name ], struct.propExt );
 		}
 	};
-
-
+	
+	
 	// @todo - Is there need for an augment function?
 	// _Api.augment = function ( inst, name )
 	// {
 	// 	// Find src object in the structure from the name
 	// 	var parts = name.split('.');
-
+	
 	// 	_Api.extend( inst, obj );
 	// };
-
-
+	
+	
 	//     [
 	//       {
 	//         name:      'data'                -- string   - Property name
@@ -7030,7 +7030,7 @@ module.exports = require('./main.js');
 	//         ]
 	//       }
 	//     ]
-
+	
 	_Api.register = _api_register = function ( name, val )
 	{
 		if ( $.isArray( name ) ) {
@@ -7039,13 +7039,13 @@ module.exports = require('./main.js');
 			}
 			return;
 		}
-
+	
 		var
 			i, ien,
 			heir = name.split('.'),
 			struct = __apiStruct,
 			key, method;
-
+	
 		var find = function ( src, name ) {
 			for ( var i=0, ien=src.length ; i<ien ; i++ ) {
 				if ( src[i].name === name ) {
@@ -7054,13 +7054,13 @@ module.exports = require('./main.js');
 			}
 			return null;
 		};
-
+	
 		for ( i=0, ien=heir.length ; i<ien ; i++ ) {
 			method = heir[i].indexOf('()') !== -1;
 			key = method ?
 				heir[i].replace('()', '') :
 				heir[i];
-
+	
 			var src = find( struct, key );
 			if ( ! src ) {
 				src = {
@@ -7071,7 +7071,7 @@ module.exports = require('./main.js');
 				};
 				struct.push( src );
 			}
-
+	
 			if ( i === ien-1 ) {
 				src.val = val;
 			}
@@ -7082,14 +7082,14 @@ module.exports = require('./main.js');
 			}
 		}
 	};
-
-
+	
+	
 	_Api.registerPlural = _api_registerPlural = function ( pluralName, singularName, val ) {
 		_Api.register( pluralName, val );
-
+	
 		_Api.register( singularName, function () {
 			var ret = val.apply( this, arguments );
-
+	
 			if ( ret === this ) {
 				// Returned item is the API instance that was passed in, return it
 				return this;
@@ -7103,13 +7103,13 @@ module.exports = require('./main.js');
 						ret[0] :
 					undefined;
 			}
-
+	
 			// Non-API return - just fire it back
 			return ret;
 		} );
 	};
-
-
+	
+	
 	/**
 	 * Selector for HTML tables. Apply the given selector to the give array of
 	 * DataTables settings objects.
@@ -7125,12 +7125,12 @@ module.exports = require('./main.js');
 		if ( typeof selector === 'number' ) {
 			return [ a[ selector ] ];
 		}
-
+	
 		// Perform a jQuery selector on the table nodes
 		var nodes = $.map( a, function (el, i) {
 			return el.nTable;
 		} );
-
+	
 		return $(nodes)
 			.filter( selector )
 			.map( function (i) {
@@ -7140,9 +7140,9 @@ module.exports = require('./main.js');
 			} )
 			.toArray();
 	};
-
-
-
+	
+	
+	
 	/**
 	 * Context selector for the API's context (i.e. the tables the API instance
 	 * refers to.
@@ -7160,55 +7160,55 @@ module.exports = require('./main.js');
 			new _Api( __table_selector( selector, this.context ) ) :
 			this;
 	} );
-
-
+	
+	
 	_api_register( 'table()', function ( selector ) {
 		var tables = this.tables( selector );
 		var ctx = tables.context;
-
+	
 		// Truncate to the first matched table
 		return ctx.length ?
 			new _Api( ctx[0] ) :
 			tables;
 	} );
-
-
+	
+	
 	_api_registerPlural( 'tables().nodes()', 'table().node()' , function () {
 		return this.iterator( 'table', function ( ctx ) {
 			return ctx.nTable;
 		} );
 	} );
-
-
+	
+	
 	_api_registerPlural( 'tables().body()', 'table().body()' , function () {
 		return this.iterator( 'table', function ( ctx ) {
 			return ctx.nTBody;
 		} );
 	} );
-
-
+	
+	
 	_api_registerPlural( 'tables().header()', 'table().header()' , function () {
 		return this.iterator( 'table', function ( ctx ) {
 			return ctx.nTHead;
 		} );
 	} );
-
-
+	
+	
 	_api_registerPlural( 'tables().footer()', 'table().footer()' , function () {
 		return this.iterator( 'table', function ( ctx ) {
 			return ctx.nTFoot;
 		} );
 	} );
-
-
+	
+	
 	_api_registerPlural( 'tables().containers()', 'table().container()' , function () {
 		return this.iterator( 'table', function ( ctx ) {
 			return ctx.nTableWrapper;
 		} );
 	} );
-
-
-
+	
+	
+	
 	/**
 	 * Redraw the tables in the current context.
 	 *
@@ -7222,9 +7222,9 @@ module.exports = require('./main.js');
 			_fnReDraw( settings, resetPaging===false );
 		} );
 	} );
-
-
-
+	
+	
+	
 	/**
 	 * Get the current page index.
 	 *
@@ -7248,14 +7248,14 @@ module.exports = require('./main.js');
 		if ( action === undefined ) {
 			return this.page.info().page; // not an expensive call
 		}
-
+	
 		// else, have an action to take on all tables
 		return this.iterator( 'table', function ( settings ) {
 			_fnPageChange( settings, action );
 		} );
 	} );
-
-
+	
+	
 	/**
 	 * Paging information for the first table in the current context.
 	 *
@@ -7278,14 +7278,14 @@ module.exports = require('./main.js');
 		if ( this.context.length === 0 ) {
 			return undefined;
 		}
-
+	
 		var
 			settings   = this.context[0],
 			start      = settings._iDisplayStart,
 			len        = settings._iDisplayLength,
 			visRecords = settings.fnRecordsDisplay(),
 			all        = len === -1;
-
+	
 		return {
 			"page":           all ? 0 : Math.floor( start / len ),
 			"pages":          all ? 1 : Math.ceil( visRecords / len ),
@@ -7296,8 +7296,8 @@ module.exports = require('./main.js');
 			"recordsDisplay": visRecords
 		};
 	} );
-
-
+	
+	
 	/**
 	 * Get the current page length.
 	 *
@@ -7318,15 +7318,15 @@ module.exports = require('./main.js');
 				this.context[0]._iDisplayLength :
 				undefined;
 		}
-
+	
 		// else, set the page length
 		return this.iterator( 'table', function ( settings ) {
 			_fnLengthChange( settings, len );
 		} );
 	} );
-
-
-
+	
+	
+	
 	var __reload = function ( settings, holdPosition, callback ) {
 		if ( _fnDataSource( settings ) == 'ssp' ) {
 			_fnReDraw( settings, holdPosition );
@@ -7334,32 +7334,32 @@ module.exports = require('./main.js');
 		else {
 			// Trigger xhr
 			_fnProcessingDisplay( settings, true );
-
+	
 			_fnBuildAjax( settings, [], function( json ) {
 				_fnClearTable( settings );
-
+	
 				var data = _fnAjaxDataSrc( settings, json );
 				for ( var i=0, ien=data.length ; i<ien ; i++ ) {
 					_fnAddData( settings, data[i] );
 				}
-
+	
 				_fnReDraw( settings, holdPosition );
 				_fnProcessingDisplay( settings, false );
 			} );
 		}
-
+	
 		// Use the draw event to trigger a callback, regardless of if it is an async
 		// or sync draw
 		if ( callback ) {
 			var api = new _Api( settings );
-
+	
 			api.one( 'draw', function () {
 				callback( api.ajax.json() );
 			} );
 		}
 	};
-
-
+	
+	
 	/**
 	 * Get the JSON response from the last Ajax request that DataTables made to the
 	 * server. Note that this returns the JSON from the first table in the current
@@ -7369,29 +7369,29 @@ module.exports = require('./main.js');
 	 */
 	_api_register( 'ajax.json()', function () {
 		var ctx = this.context;
-
+	
 		if ( ctx.length > 0 ) {
 			return ctx[0].json;
 		}
-
+	
 		// else return undefined;
 	} );
-
-
+	
+	
 	/**
 	 * Get the data submitted in the last Ajax request
 	 */
 	_api_register( 'ajax.params()', function () {
 		var ctx = this.context;
-
+	
 		if ( ctx.length > 0 ) {
 			return ctx[0].oAjaxData;
 		}
-
+	
 		// else return undefined;
 	} );
-
-
+	
+	
 	/**
 	 * Reload tables from the Ajax data source. Note that this function will
 	 * automatically re-draw the table when the remote data has been loaded.
@@ -7406,8 +7406,8 @@ module.exports = require('./main.js');
 			__reload( settings, resetPaging===false, callback );
 		} );
 	} );
-
-
+	
+	
 	/**
 	 * Get the current Ajax URL. Note that this returns the URL from the first
 	 * table in the current context.
@@ -7422,21 +7422,21 @@ module.exports = require('./main.js');
 	 */
 	_api_register( 'ajax.url()', function ( url ) {
 		var ctx = this.context;
-
+	
 		if ( url === undefined ) {
 			// get
 			if ( ctx.length === 0 ) {
 				return undefined;
 			}
 			ctx = ctx[0];
-
+	
 			return ctx.ajax ?
 				$.isPlainObject( ctx.ajax ) ?
 					ctx.ajax.url :
 					ctx.ajax :
 				ctx.sAjaxSource;
 		}
-
+	
 		// set
 		return this.iterator( 'table', function ( settings ) {
 			if ( $.isPlainObject( settings.ajax ) ) {
@@ -7450,8 +7450,8 @@ module.exports = require('./main.js');
 			// value of `sAjaxSource` redundant.
 		} );
 	} );
-
-
+	
+	
 	/**
 	 * Load data from the newly set Ajax URL. Note that this method is only
 	 * available when `ajax.url()` is used to set a URL. Additionally, this method
@@ -7468,60 +7468,60 @@ module.exports = require('./main.js');
 			__reload( ctx, resetPaging===false, callback );
 		} );
 	} );
-
-
-
-
+	
+	
+	
+	
 	var _selector_run = function ( selector, select )
 	{
 		var
 			out = [], res,
 			a, i, ien, j, jen;
-
+	
 		// Can't just check for isArray here, as an API or jQuery instance might be
 		// given with their array like look
 		if ( ! selector || typeof selector === 'string' || selector.length === undefined ) {
 			selector = [ selector ];
 		}
-
+	
 		for ( i=0, ien=selector.length ; i<ien ; i++ ) {
 			a = selector[i] && selector[i].split ?
 				selector[i].split(',') :
 				[ selector[i] ];
-
+	
 			for ( j=0, jen=a.length ; j<jen ; j++ ) {
 				res = select( typeof a[j] === 'string' ? $.trim(a[j]) : a[j] );
-
+	
 				if ( res && res.length ) {
 					out.push.apply( out, res );
 				}
 			}
 		}
-
+	
 		return out;
 	};
-
-
+	
+	
 	var _selector_opts = function ( opts )
 	{
 		if ( ! opts ) {
 			opts = {};
 		}
-
+	
 		// Backwards compatibility for 1.9- which used the terminology filter rather
 		// than search
 		if ( opts.filter && ! opts.search ) {
 			opts.search = opts.filter;
 		}
-
+	
 		return {
 			search: opts.search || 'none',
 			order:  opts.order  || 'current',
 			page:   opts.page   || 'all'
 		};
 	};
-
-
+	
+	
 	var _selector_first = function ( inst )
 	{
 		// Reduce the API instance to the first item found
@@ -7532,29 +7532,29 @@ module.exports = require('./main.js');
 				inst[0] = inst[i];
 				inst.length = 1;
 				inst.context = [ inst.context[i] ];
-
+	
 				return inst;
 			}
 		}
-
+	
 		// Not found - return an empty instance
 		inst.length = 0;
 		return inst;
 	};
-
-
+	
+	
 	var _selector_row_indexes = function ( settings, opts )
 	{
 		var
 			i, ien, tmp, a=[],
 			displayFiltered = settings.aiDisplay,
 			displayMaster = settings.aiDisplayMaster;
-
+	
 		var
 			search = opts.search,  // none, applied, removed
 			order  = opts.order,   // applied, current, index (original - compatibility with 1.9)
 			page   = opts.page;    // all, current
-
+	
 		if ( _fnDataSource( settings ) == 'ssp' ) {
 			// In server-side processing mode, most options are irrelevant since
 			// rows not shown don't exist and the index order is the applied order
@@ -7588,7 +7588,7 @@ module.exports = require('./main.js');
 				}
 				else { // applied | removed
 					tmp = $.inArray( i, displayFiltered );
-
+	
 					if ((tmp === -1 && search == 'removed') ||
 						(tmp >= 0   && search == 'applied') )
 					{
@@ -7597,11 +7597,11 @@ module.exports = require('./main.js');
 				}
 			}
 		}
-
+	
 		return a;
 	};
-
-
+	
+	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * Rows
 	 *
@@ -7612,22 +7612,22 @@ module.exports = require('./main.js');
 	 * {array}     - jQuery array of nodes, or simply an array of TR nodes
 	 *
 	 */
-
-
+	
+	
 	var __row_selector = function ( settings, selector, opts )
 	{
 		return _selector_run( selector, function ( sel ) {
 			var selInt = _intVal( sel );
-
+	
 			// Short cut - selector is a number and no options provided (default is
 			// all records, so no need to check if the index is in there, since it
 			// must be - dev error if the index doesn't exist).
 			if ( selInt !== null && ! opts ) {
 				return [ selInt ];
 			}
-
+	
 			var rows = _selector_row_indexes( settings, opts );
-
+	
 			if ( selInt !== null && $.inArray( selInt, rows ) !== -1 ) {
 				// Selector - integer
 				return [ selInt ];
@@ -7636,13 +7636,13 @@ module.exports = require('./main.js');
 				// Selector - none
 				return rows;
 			}
-
+	
 			// Get nodes in the order from the `rows` array (can't use `pluck`) @todo - use pluck_order
 			var nodes = [];
 			for ( var i=0, ien=rows.length ; i<ien ; i++ ) {
 				nodes.push( settings.aoData[ rows[i] ].nTr );
 			}
-
+	
 			if ( sel.nodeName ) {
 				// Selector - node
 				if ( $.inArray( sel, nodes ) !== -1 ) {
@@ -7650,7 +7650,7 @@ module.exports = require('./main.js');
 											// and DataTables adds a prop for fast lookup
 				}
 			}
-
+	
 			// Selector - jQuery selector string, array of nodes or jQuery object/
 			// As jQuery's .filter() allows jQuery objects to be passed in filter,
 			// it also allows arrays, so this will cope with all three options
@@ -7662,8 +7662,8 @@ module.exports = require('./main.js');
 				.toArray();
 		} );
 	};
-
-
+	
+	
 	/**
 	 *
 	 */
@@ -7676,89 +7676,89 @@ module.exports = require('./main.js');
 			opts = selector;
 			selector = '';
 		}
-
+	
 		opts = _selector_opts( opts );
-
+	
 		var inst = this.iterator( 'table', function ( settings ) {
 			return __row_selector( settings, selector, opts );
 		} );
-
+	
 		// Want argument shifting here and in __row_selector?
 		inst.selector.rows = selector;
 		inst.selector.opts = opts;
-
+	
 		return inst;
 	} );
-
-
+	
+	
 	_api_register( 'rows().nodes()', function () {
 		return this.iterator( 'row', function ( settings, row ) {
 			return settings.aoData[ row ].nTr || undefined;
 		} );
 	} );
-
+	
 	_api_register( 'rows().data()', function () {
 		return this.iterator( true, 'rows', function ( settings, rows ) {
 			return _pluck_order( settings.aoData, rows, '_aData' );
 		} );
 	} );
-
+	
 	_api_registerPlural( 'rows().cache()', 'row().cache()', function ( type ) {
 		return this.iterator( 'row', function ( settings, row ) {
 			var r = settings.aoData[ row ];
 			return type === 'search' ? r._aFilterData : r._aSortData;
 		} );
 	} );
-
+	
 	_api_registerPlural( 'rows().invalidate()', 'row().invalidate()', function ( src ) {
 		return this.iterator( 'row', function ( settings, row ) {
 			_fnInvalidateRow( settings, row, src );
 		} );
 	} );
-
+	
 	_api_registerPlural( 'rows().indexes()', 'row().index()', function () {
 		return this.iterator( 'row', function ( settings, row ) {
 			return row;
 		} );
 	} );
-
+	
 	_api_registerPlural( 'rows().remove()', 'row().remove()', function () {
 		var that = this;
-
+	
 		return this.iterator( 'row', function ( settings, row, thatIdx ) {
 			var data = settings.aoData;
-
+	
 			data.splice( row, 1 );
-
+	
 			// Update the _DT_RowIndex parameter on all rows in the table
 			for ( var i=0, ien=data.length ; i<ien ; i++ ) {
 				if ( data[i].nTr !== null ) {
 					data[i].nTr._DT_RowIndex = i;
 				}
 			}
-
+	
 			// Remove the target row from the search array
 			var displayIndex = $.inArray( row, settings.aiDisplay );
-
+	
 			// Delete from the display arrays
 			_fnDeleteIndex( settings.aiDisplayMaster, row );
 			_fnDeleteIndex( settings.aiDisplay, row );
 			_fnDeleteIndex( that[ thatIdx ], row, false ); // maintain local indexes
-
+	
 			// Check for an 'overflow' they case for displaying the table
 			_fnLengthOverflow( settings );
 		} );
 	} );
-
-
+	
+	
 	_api_register( 'rows.add()', function ( rows ) {
 		var newRows = this.iterator( 'table', function ( settings ) {
 				var row, i, ien;
 				var out = [];
-
+	
 				for ( i=0, ien=rows.length ; i<ien ; i++ ) {
 					row = rows[i];
-
+	
 					if ( row.nodeName && row.nodeName.toUpperCase() === 'TR' ) {
 						out.push( _fnAddTr( settings, row )[0] );
 					}
@@ -7766,79 +7766,79 @@ module.exports = require('./main.js');
 						out.push( _fnAddData( settings, row ) );
 					}
 				}
-
+	
 				return out;
 			} );
-
+	
 		// Return an Api.rows() extended instance, so rows().nodes() etc can be used
 		var modRows = this.rows( -1 );
 		modRows.pop();
 		modRows.push.apply( modRows, newRows.toArray() );
-
+	
 		return modRows;
 	} );
-
-
-
-
-
+	
+	
+	
+	
+	
 	/**
 	 *
 	 */
 	_api_register( 'row()', function ( selector, opts ) {
 		return _selector_first( this.rows( selector, opts ) );
 	} );
-
-
+	
+	
 	_api_register( 'row().data()', function ( data ) {
 		var ctx = this.context;
-
+	
 		if ( data === undefined ) {
 			// Get
 			return ctx.length && this.length ?
 				ctx[0].aoData[ this[0] ]._aData :
 				undefined;
 		}
-
+	
 		// Set
 		ctx[0].aoData[ this[0] ]._aData = data;
-
+	
 		// Automatically invalidate
 		_fnInvalidateRow( ctx[0], this[0], 'data' );
-
+	
 		return this;
 	} );
-
-
+	
+	
 	_api_register( 'row().node()', function () {
 		var ctx = this.context;
-
+	
 		return ctx.length && this.length ?
 			ctx[0].aoData[ this[0] ].nTr || null :
 			null;
 	} );
-
-
+	
+	
 	_api_register( 'row.add()', function ( row ) {
 		// Allow a jQuery object to be passed in - only a single row is added from
 		// it though - the first element in the set
 		if ( row instanceof $ && row.length ) {
 			row = row[0];
 		}
-
+	
 		var rows = this.iterator( 'table', function ( settings ) {
 			if ( row.nodeName && row.nodeName.toUpperCase() === 'TR' ) {
 				return _fnAddTr( settings, row )[0];
 			}
 			return _fnAddData( settings, row );
 		} );
-
+	
 		// Return an Api.rows() extended instance, with the newly added row selected
 		return this.row( rows[0] );
 	} );
-
-
-
+	
+	
+	
 	var __details_add = function ( ctx, row, data, klass )
 	{
 		// Convert to array of TR elements
@@ -7856,11 +7856,11 @@ module.exports = require('./main.js');
 					.addClass( k )
 					.html( r )
 					[0].colSpan = _fnVisbleColumns( ctx );
-
+	
 				rows.push( created[0] );
 			}
 		};
-
+	
 		if ( $.isArray( data ) || data instanceof $ ) {
 			for ( var i=0, ien=data.length ; i<ien ; i++ ) {
 				addRow( data[i], klass );
@@ -7869,59 +7869,59 @@ module.exports = require('./main.js');
 		else {
 			addRow( data, klass );
 		}
-
+	
 		if ( row._details ) {
 			row._details.remove();
 		}
-
+	
 		row._details = $(rows);
-
+	
 		// If the children were already shown, that state should be retained
 		if ( row._detailsShow ) {
 			row._details.insertAfter( row.nTr );
 		}
 	};
-
-
+	
+	
 	var __details_remove = function ( api )
 	{
 		var ctx = api.context;
-
+	
 		if ( ctx.length && api.length ) {
 			var row = ctx[0].aoData[ api[0] ];
-
+	
 			if ( row._details ) {
 				row._details.remove();
-
+	
 				row._detailsShow = undefined;
 				row._details = undefined;
 			}
 		}
 	};
-
-
+	
+	
 	var __details_display = function ( api, show ) {
 		var ctx = api.context;
-
+	
 		if ( ctx.length && api.length ) {
 			var row = ctx[0].aoData[ api[0] ];
-
+	
 			if ( row._details ) {
 				row._detailsShow = show;
-
+	
 				if ( show ) {
 					row._details.insertAfter( row.nTr );
 				}
 				else {
 					row._details.detach();
 				}
-
+	
 				__details_events( ctx[0] );
 			}
 		}
 	};
-
-
+	
+	
 	var __details_events = function ( settings )
 	{
 		var api = new _Api( settings );
@@ -7930,51 +7930,51 @@ module.exports = require('./main.js');
 		var colvisEvent = 'column-visibility'+namespace;
 		var destroyEvent = 'destroy'+namespace;
 		var data = settings.aoData;
-
+	
 		api.off( drawEvent +' '+ colvisEvent +' '+ destroyEvent );
-
+	
 		if ( _pluck( data, '_details' ).length > 0 ) {
 			// On each draw, insert the required elements into the document
 			api.on( drawEvent, function ( e, ctx ) {
 				if ( settings !== ctx ) {
 					return;
 				}
-
+	
 				api.rows( {page:'current'} ).eq(0).each( function (idx) {
 					// Internal data grab
 					var row = data[ idx ];
-
+	
 					if ( row._detailsShow ) {
 						row._details.insertAfter( row.nTr );
 					}
 				} );
 			} );
-
+	
 			// Column visibility change - update the colspan
 			api.on( colvisEvent, function ( e, ctx, idx, vis ) {
 				if ( settings !== ctx ) {
 					return;
 				}
-
+	
 				// Update the colspan for the details rows (note, only if it already has
 				// a colspan)
 				var row, visible = _fnVisbleColumns( ctx );
-
+	
 				for ( var i=0, ien=data.length ; i<ien ; i++ ) {
 					row = data[i];
-
+	
 					if ( row._details ) {
 						row._details.children('td[colspan]').attr('colspan', visible );
 					}
 				}
 			} );
-
+	
 			// Table destroyed - nuke any child rows
 			api.on( destroyEvent, function ( e, ctx ) {
 				if ( settings !== ctx ) {
 					return;
 				}
-
+	
 				for ( var i=0, ien=data.length ; i<ien ; i++ ) {
 					if ( data[i]._details ) {
 						__details_remove( data[i] );
@@ -7983,19 +7983,19 @@ module.exports = require('./main.js');
 			} );
 		}
 	};
-
+	
 	// Strings for the method names to help minification
 	var _emp = '';
 	var _child_obj = _emp+'row().child';
 	var _child_mth = _child_obj+'()';
-
+	
 	// data can be:
 	//  tr
 	//  string
 	//  jQuery or array of any of the above
 	_api_register( _child_mth, function ( data, klass ) {
 		var ctx = this.context;
-
+	
 		if ( data === undefined ) {
 			// get
 			return ctx.length && this.length ?
@@ -8014,11 +8014,11 @@ module.exports = require('./main.js');
 			// set
 			__details_add( ctx[0], ctx[0].aoData[ this[0] ], data, klass );
 		}
-
+	
 		return this;
 	} );
-
-
+	
+	
 	_api_register( [
 		_child_obj+'.show()',
 		_child_mth+'.show()' // only when `child()` was called with parameters (without
@@ -8026,8 +8026,8 @@ module.exports = require('./main.js');
 		__details_display( this, true );
 		return this;
 	} );
-
-
+	
+	
 	_api_register( [
 		_child_obj+'.hide()',
 		_child_mth+'.hide()' // only when `child()` was called with parameters (without
@@ -8035,8 +8035,8 @@ module.exports = require('./main.js');
 		__details_display( this, false );
 		return this;
 	} );
-
-
+	
+	
 	_api_register( [
 		_child_obj+'.remove()',
 		_child_mth+'.remove()' // only when `child()` was called with parameters (without
@@ -8044,20 +8044,20 @@ module.exports = require('./main.js');
 		__details_remove( this );
 		return this;
 	} );
-
-
+	
+	
 	_api_register( _child_obj+'.isShown()', function () {
 		var ctx = this.context;
-
+	
 		if ( ctx.length && this.length ) {
 			// _detailsShown as false or undefined will fall through to return false
 			return ctx[0].aoData[ this[0] ]._detailsShow || false;
 		}
 		return false;
 	} );
-
-
-
+	
+	
+	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * Columns
 	 *
@@ -8068,22 +8068,22 @@ module.exports = require('./main.js');
 	 * "{string}"          - jQuery selector on column header nodes
 	 *
 	 */
-
+	
 	// can be an array of these items, comma separated list, or an array of comma
 	// separated lists
-
+	
 	var __re_column_selector = /^(.+):(name|visIdx|visible)$/;
-
+	
 	var __column_selector = function ( settings, selector, opts )
 	{
 		var
 			columns = settings.aoColumns,
 			names = _pluck( columns, 'sName' ),
 			nodes = _pluck( columns, 'nTh' );
-
+	
 		return _selector_run( selector, function ( s ) {
 			var selInt = _intVal( s );
-
+	
 			if ( s === '' ) {
 				// All columns
 				return _range( columns.length );
@@ -8099,7 +8099,7 @@ module.exports = require('./main.js');
 				var match = typeof s === 'string' ?
 					s.match( __re_column_selector ) :
 					'';
-
+	
 				if ( match ) {
 					switch( match[2] ) {
 						case 'visIdx':
@@ -8115,7 +8115,7 @@ module.exports = require('./main.js');
 							}
 							// Counting from the left
 							return [ _fnVisibleToColumnIndex( settings, idx ) ];
-
+	
 						case 'name':
 							// match by name. `names` is column index complete and in order
 							return $.map( names, function (name, i) {
@@ -8135,38 +8135,38 @@ module.exports = require('./main.js');
 			}
 		} );
 	};
-
-
-
-
-
+	
+	
+	
+	
+	
 	var __setColumnVis = function ( settings, column, vis, recalc ) {
 		var
 			cols = settings.aoColumns,
 			col  = cols[ column ],
 			data = settings.aoData,
 			row, cells, i, ien, tr;
-
+	
 		// Get
 		if ( vis === undefined ) {
 			return col.bVisible;
 		}
-
+	
 		// Set
 		// No change
 		if ( col.bVisible === vis ) {
 			return;
 		}
-
+	
 		if ( vis ) {
 			// Insert column
 			// Need to decide if we should use appendChild or insertBefore
 			var insertBefore = $.inArray( true, _pluck(cols, 'bVisible'), column+1 );
-
+	
 			for ( i=0, ien=data.length ; i<ien ; i++ ) {
 				tr = data[i].nTr;
 				cells = data[i].anCells;
-
+	
 				if ( tr ) {
 					// insertBefore can act like appendChild if 2nd arg is null
 					tr.insertBefore( cells[ column ], cells[ insertBefore ] || null );
@@ -8177,28 +8177,28 @@ module.exports = require('./main.js');
 			// Remove column
 			$( _pluck( settings.aoData, 'anCells', column ) ).detach();
 		}
-
+	
 		// Common actions
 		col.bVisible = vis;
 		_fnDrawHead( settings, settings.aoHeader );
 		_fnDrawHead( settings, settings.aoFooter );
-
+	
 		if ( recalc === undefined || recalc ) {
 			// Automatically adjust column sizing
 			_fnAdjustColumnSizing( settings );
-
+	
 			// Realign columns for scrolling
 			if ( settings.oScroll.sX || settings.oScroll.sY ) {
 				_fnScrollDraw( settings );
 			}
 		}
-
+	
 		_fnCallbackFire( settings, null, 'column-visibility', [settings, column, vis] );
-
+	
 		_fnSaveState( settings );
 	};
-
-
+	
+	
 	/**
 	 *
 	 */
@@ -8211,21 +8211,21 @@ module.exports = require('./main.js');
 			opts = selector;
 			selector = '';
 		}
-
+	
 		opts = _selector_opts( opts );
-
+	
 		var inst = this.iterator( 'table', function ( settings ) {
 			return __column_selector( settings, selector, opts );
 		} );
-
+	
 		// Want argument shifting here and in _row_selector?
 		inst.selector.cols = selector;
 		inst.selector.opts = opts;
-
+	
 		return inst;
 	} );
-
-
+	
+	
 	/**
 	 *
 	 */
@@ -8234,8 +8234,8 @@ module.exports = require('./main.js');
 			return settings.aoColumns[column].nTh;
 		} );
 	} );
-
-
+	
+	
 	/**
 	 *
 	 */
@@ -8244,8 +8244,8 @@ module.exports = require('./main.js');
 			return settings.aoColumns[column].nTf;
 		} );
 	} );
-
-
+	
+	
 	/**
 	 *
 	 */
@@ -8258,8 +8258,8 @@ module.exports = require('./main.js');
 			return a;
 		} );
 	} );
-
-
+	
+	
 	_api_registerPlural( 'columns().cache()', 'column().cache()', function ( type ) {
 		return this.iterator( 'column-rows', function ( settings, column, i, j, rows ) {
 			return _pluck_order( settings.aoData, rows,
@@ -8267,16 +8267,16 @@ module.exports = require('./main.js');
 			);
 		} );
 	} );
-
-
+	
+	
 	_api_registerPlural( 'columns().nodes()', 'column().nodes()', function () {
 		return this.iterator( 'column-rows', function ( settings, column, i, j, rows ) {
 			return _pluck_order( settings.aoData, rows, 'anCells', column ) ;
 		} );
 	} );
-
-
-
+	
+	
+	
 	_api_registerPlural( 'columns().visible()', 'column().visible()', function ( vis, calc ) {
 		return this.iterator( 'column', function ( settings, column ) {
 			return vis === undefined ?
@@ -8284,9 +8284,9 @@ module.exports = require('./main.js');
 				__setColumnVis( settings, column, vis, calc );
 		} );
 	} );
-
-
-
+	
+	
+	
 	_api_registerPlural( 'columns().indexes()', 'column().index()', function ( type ) {
 		return this.iterator( 'column', function ( settings, column ) {
 			return type === 'visible' ?
@@ -8294,33 +8294,33 @@ module.exports = require('./main.js');
 				column;
 		} );
 	} );
-
-
+	
+	
 	// _api_register( 'columns().show()', function () {
 	// 	var selector = this.selector;
 	// 	return this.columns( selector.cols, selector.opts ).visible( true );
 	// } );
-
-
+	
+	
 	// _api_register( 'columns().hide()', function () {
 	// 	var selector = this.selector;
 	// 	return this.columns( selector.cols, selector.opts ).visible( false );
 	// } );
-
-
-
+	
+	
+	
 	_api_register( 'columns.adjust()', function () {
 		return this.iterator( 'table', function ( settings ) {
 			_fnAdjustColumnSizing( settings );
 		} );
 	} );
-
-
+	
+	
 	// Convert from one column index type, to another type
 	_api_register( 'column.index()', function ( type, idx ) {
 		if ( this.context.length !== 0 ) {
 			var ctx = this.context[0];
-
+	
 			if ( type === 'fromVisible' || type === 'toData' ) {
 				return _fnVisibleToColumnIndex( ctx, idx );
 			}
@@ -8329,15 +8329,15 @@ module.exports = require('./main.js');
 			}
 		}
 	} );
-
-
+	
+	
 	_api_register( 'column()', function ( selector, opts ) {
 		return _selector_first( this.columns( selector, opts ) );
 	} );
-
-
-
-
+	
+	
+	
+	
 	var __cell_selector = function ( settings, selector, opts )
 	{
 		var data = settings.aoData;
@@ -8347,15 +8347,15 @@ module.exports = require('./main.js');
 		var row;
 		var columns = settings.aoColumns.length;
 		var a, i, ien, j;
-
+	
 		return _selector_run( selector, function ( s ) {
 			if ( s === null || s === undefined ) {
 				// All cells
 				a = [];
-
+	
 				for ( i=0, ien=rows.length ; i<ien ; i++ ) {
 					row = rows[i];
-
+	
 					for ( j=0 ; j<columns ; j++ ) {
 						a.push( {
 							row: row,
@@ -8363,19 +8363,19 @@ module.exports = require('./main.js');
 						} );
 					}
 				}
-
+	
 				return a;
 			}
 			else if ( $.isPlainObject( s ) ) {
 				return [s];
 			}
-
+	
 			// jQuery filtered cells
 			return allCells
 				.filter( s )
 				.map( function (i, el) {
 					row = el.parentNode._DT_RowIndex;
-
+	
 					return {
 						row: row,
 						column: $.inArray( el, data[ row ].anCells )
@@ -8384,10 +8384,10 @@ module.exports = require('./main.js');
 				.toArray();
 		} );
 	};
-
-
-
-
+	
+	
+	
+	
 	_api_register( 'cells()', function ( rowSelector, columnSelector, opts ) {
 		// Argument shifting
 		if ( $.isPlainObject( rowSelector ) ) {
@@ -8405,22 +8405,22 @@ module.exports = require('./main.js');
 			opts = columnSelector;
 			columnSelector = null;
 		}
-
+	
 		// Cell selector
 		if ( columnSelector === null || columnSelector === undefined ) {
 			return this.iterator( 'table', function ( settings ) {
 				return __cell_selector( settings, rowSelector, _selector_opts( opts ) );
 			} );
 		}
-
+	
 		// Row + column selector
 		var columns = this.columns( columnSelector, opts );
 		var rows = this.rows( rowSelector, opts );
 		var a, i, ien, j, jen;
-
+	
 		var cells = this.iterator( 'table', function ( settings, idx ) {
 			a = [];
-
+	
 			for ( i=0, ien=rows[idx].length ; i<ien ; i++ ) {
 				for ( j=0, jen=columns[idx].length ; j<jen ; j++ ) {
 					a.push( {
@@ -8429,43 +8429,43 @@ module.exports = require('./main.js');
 					} );
 				}
 			}
-
+	
 			return a;
 		} );
-
+	
 		$.extend( cells.selector, {
 			cols: columnSelector,
 			rows: rowSelector,
 			opts: opts
 		} );
-
+	
 		return cells;
 	} );
-
-
+	
+	
 	_api_registerPlural( 'cells().nodes()', 'cell().node()', function () {
 		return this.iterator( 'cell', function ( settings, row, column ) {
 			return settings.aoData[ row ].anCells[ column ];
 		} );
 	} );
-
-
+	
+	
 	_api_register( 'cells().data()', function () {
 		return this.iterator( 'cell', function ( settings, row, column ) {
 			return _fnGetCellData( settings, row, column );
 		} );
 	} );
-
-
+	
+	
 	_api_registerPlural( 'cells().cache()', 'cell().cache()', function ( type ) {
 		type = type === 'search' ? '_aFilterData' : '_aSortData';
-
+	
 		return this.iterator( 'cell', function ( settings, row, column ) {
 			return settings.aoData[ row ][ type ][ column ];
 		} );
 	} );
-
-
+	
+	
 	_api_registerPlural( 'cells().indexes()', 'cell().index()', function () {
 		return this.iterator( 'cell', function ( settings, row, column ) {
 			return {
@@ -8475,51 +8475,51 @@ module.exports = require('./main.js');
 			};
 		} );
 	} );
-
-
+	
+	
 	_api_register( [
 		'cells().invalidate()',
 		'cell().invalidate()'
 	], function ( src ) {
 		var selector = this.selector;
-
+	
 		// Use the rows method of the instance to perform the invalidation, rather
 		// than doing it here. This avoids needing to handle duplicate rows from
 		// the cells.
 		this.rows( selector.rows, selector.opts ).invalidate( src );
-
+	
 		return this;
 	} );
-
-
-
-
+	
+	
+	
+	
 	_api_register( 'cell()', function ( rowSelector, columnSelector, opts ) {
 		return _selector_first( this.cells( rowSelector, columnSelector, opts ) );
 	} );
-
-
-
+	
+	
+	
 	_api_register( 'cell().data()', function ( data ) {
 		var ctx = this.context;
 		var cell = this[0];
-
+	
 		if ( data === undefined ) {
 			// Get
 			return ctx.length && cell.length ?
 				_fnGetCellData( ctx[0], cell[0].row, cell[0].column ) :
 				undefined;
 		}
-
+	
 		// Set
 		_fnSetCellData( ctx[0], cell[0].row, cell[0].column, data );
 		_fnInvalidateRow( ctx[0], cell[0].row, 'data', cell[0].column );
-
+	
 		return this;
 	} );
-
-
-
+	
+	
+	
 	/**
 	 * Get current ordering (sorting) that has been applied to the table.
 	 *
@@ -8550,14 +8550,14 @@ module.exports = require('./main.js');
 	 */
 	_api_register( 'order()', function ( order, dir ) {
 		var ctx = this.context;
-
+	
 		if ( order === undefined ) {
 			// get
 			return ctx.length !== 0 ?
 				ctx[0].aaSorting :
 				undefined;
 		}
-
+	
 		// set
 		if ( typeof order === 'number' ) {
 			// Simple column / direction passed in
@@ -8568,13 +8568,13 @@ module.exports = require('./main.js');
 			order = Array.prototype.slice.call( arguments );
 		}
 		// otherwise a 2D array was passed in
-
+	
 		return this.iterator( 'table', function ( settings ) {
 			settings.aaSorting = order.slice();
 		} );
 	} );
-
-
+	
+	
 	/**
 	 * Attach a sort listener to an element for a given column
 	 *
@@ -8590,44 +8590,44 @@ module.exports = require('./main.js');
 			_fnSortAttachListener( settings, node, column, callback );
 		} );
 	} );
-
-
+	
+	
 	// Order by the selected column(s)
 	_api_register( [
 		'columns().order()',
 		'column().order()'
 	], function ( dir ) {
 		var that = this;
-
+	
 		return this.iterator( 'table', function ( settings, i ) {
 			var sort = [];
-
+	
 			$.each( that[i], function (j, col) {
 				sort.push( [ col, dir ] );
 			} );
-
+	
 			settings.aaSorting = sort;
 		} );
 	} );
-
-
-
+	
+	
+	
 	_api_register( 'search()', function ( input, regex, smart, caseInsen ) {
 		var ctx = this.context;
-
+	
 		if ( input === undefined ) {
 			// get
 			return ctx.length !== 0 ?
 				ctx[0].oPreviousSearch.sSearch :
 				undefined;
 		}
-
+	
 		// set
 		return this.iterator( 'table', function ( settings ) {
 			if ( ! settings.oFeatures.bFilter ) {
 				return;
 			}
-
+	
 			_fnFilterComplete( settings, $.extend( {}, settings.oPreviousSearch, {
 				"sSearch": input+"",
 				"bRegex":  regex === null ? false : regex,
@@ -8636,71 +8636,71 @@ module.exports = require('./main.js');
 			} ), 1 );
 		} );
 	} );
-
-
+	
+	
 	_api_registerPlural(
 		'columns().search()',
 		'column().search()',
 		function ( input, regex, smart, caseInsen ) {
 			return this.iterator( 'column', function ( settings, column ) {
 				var preSearch = settings.aoPreSearchCols;
-
+	
 				if ( input === undefined ) {
 					// get
 					return preSearch[ column ].sSearch;
 				}
-
+	
 				// set
 				if ( ! settings.oFeatures.bFilter ) {
 					return;
 				}
-
+	
 				$.extend( preSearch[ column ], {
 					"sSearch": input+"",
 					"bRegex":  regex === null ? false : regex,
 					"bSmart":  smart === null ? true  : smart,
 					"bCaseInsensitive": caseInsen === null ? true : caseInsen
 				} );
-
+	
 				_fnFilterComplete( settings, settings.oPreviousSearch, 1 );
 			} );
 		}
 	);
-
+	
 	/*
 	 * State API methods
 	 */
-
+	
 	_api_register( 'state()', function () {
 		return this.context.length ?
 			this.context[0].oSavedState :
 			null;
 	} );
-
-
+	
+	
 	_api_register( 'state.clear()', function () {
 		return this.iterator( 'table', function ( settings ) {
 			// Save an empty object
 			settings.fnStateSaveCallback.call( settings.oInstance, settings, {} );
 		} );
 	} );
-
-
+	
+	
 	_api_register( 'state.loaded()', function () {
 		return this.context.length ?
 			this.context[0].oLoadedState :
 			null;
 	} );
-
-
+	
+	
 	_api_register( 'state.save()', function () {
 		return this.iterator( 'table', function ( settings ) {
 			_fnSaveState( settings );
 		} );
 	} );
-
-
-
+	
+	
+	
 	/**
 	 * Provide a common method for plug-ins to check the version of DataTables being
 	 * used, in order to ensure compatibility.
@@ -8721,24 +8721,24 @@ module.exports = require('./main.js');
 		var aThis = DataTable.version.split('.');
 		var aThat = version.split('.');
 		var iThis, iThat;
-
+	
 		for ( var i=0, iLen=aThat.length ; i<iLen ; i++ ) {
 			iThis = parseInt( aThis[i], 10 ) || 0;
 			iThat = parseInt( aThat[i], 10 ) || 0;
-
+	
 			// Parts are the same, keep comparing
 			if (iThis === iThat) {
 				continue;
 			}
-
+	
 			// Parts are different, return immediately
 			return iThis > iThat;
 		}
-
+	
 		return true;
 	};
-
-
+	
+	
 	/**
 	 * Check if a `<table>` node is a DataTable table already or not.
 	 *
@@ -8758,17 +8758,17 @@ module.exports = require('./main.js');
 	{
 		var t = $(table).get(0);
 		var is = false;
-
+	
 		$.each( DataTable.settings, function (i, o) {
 			if ( o.nTable === t || o.nScrollHead === t || o.nScrollFoot === t ) {
 				is = true;
 			}
 		} );
-
+	
 		return is;
 	};
-
-
+	
+	
 	/**
 	 * Get all DataTable tables that have been initialised - optionally you can
 	 * select to get only currently visible tables.
@@ -8793,8 +8793,8 @@ module.exports = require('./main.js');
 			}
 		} );
 	};
-
-
+	
+	
 	/**
 	 * Convert from camel case parameters to Hungarian notation. This is made public
 	 * for the extensions to provide the same ability as DataTables core to accept
@@ -8809,9 +8809,9 @@ module.exports = require('./main.js');
 	 *    won't be.
 	 */
 	DataTable.camelToHungarian = _fnCamelToHungarian;
-
-
-
+	
+	
+	
 	/**
 	 *
 	 */
@@ -8819,53 +8819,53 @@ module.exports = require('./main.js');
 		var
 			rows   = this.rows( opts ).nodes(), // Get all rows
 			jqRows = $(rows);
-
+	
 		return $( [].concat(
 			jqRows.filter( selector ).toArray(),
 			jqRows.find( selector ).toArray()
 		) );
 	} );
-
-
+	
+	
 	// jQuery functions to operate on the tables
 	$.each( [ 'on', 'one', 'off' ], function (i, key) {
 		_api_register( key+'()', function ( /* event, handler */ ) {
 			var args = Array.prototype.slice.call(arguments);
-
+	
 			// Add the `dt` namespace automatically if it isn't already present
 			if ( ! args[0].match(/\.dt\b/) ) {
 				args[0] += '.dt';
 			}
-
+	
 			var inst = $( this.tables().nodes() );
 			inst[key].apply( inst, args );
 			return this;
 		} );
 	} );
-
-
+	
+	
 	_api_register( 'clear()', function () {
 		return this.iterator( 'table', function ( settings ) {
 			_fnClearTable( settings );
 		} );
 	} );
-
-
+	
+	
 	_api_register( 'settings()', function () {
 		return new _Api( this.context, this.context );
 	} );
-
-
+	
+	
 	_api_register( 'data()', function () {
 		return this.iterator( 'table', function ( settings ) {
 			return _pluck( settings.aoData, '_aData' );
 		} ).flatten();
 	} );
-
-
+	
+	
 	_api_register( 'destroy()', function ( remove ) {
 		remove = remove || false;
-
+	
 		return this.iterator( 'table', function ( settings ) {
 			var orig      = settings.nTableWrapper.parentNode;
 			var classes   = settings.oClasses;
@@ -8878,50 +8878,50 @@ module.exports = require('./main.js');
 			var jqWrapper = $(settings.nTableWrapper);
 			var rows      = $.map( settings.aoData, function (r) { return r.nTr; } );
 			var i, ien;
-
+	
 			// Flag to note that the table is currently being destroyed - no action
 			// should be taken
 			settings.bDestroying = true;
-
+	
 			// Fire off the destroy callbacks for plug-ins etc
 			_fnCallbackFire( settings, "aoDestroyCallback", "destroy", [settings] );
-
+	
 			// If not being removed from the document, make all columns visible
 			if ( ! remove ) {
 				new _Api( settings ).columns().visible( true );
 			}
-
+	
 			// Blitz all `DT` namespaced events (these are internal events, the
 			// lowercase, `dt` events are user subscribed and they are responsible
 			// for removing them
 			jqWrapper.unbind('.DT').find(':not(tbody *)').unbind('.DT');
 			$(window).unbind('.DT-'+settings.sInstance);
-
+	
 			// When scrolling we had to break the table up - restore it
 			if ( table != thead.parentNode ) {
 				jqTable.children('thead').detach();
 				jqTable.append( thead );
 			}
-
+	
 			if ( tfoot && table != tfoot.parentNode ) {
 				jqTable.children('tfoot').detach();
 				jqTable.append( tfoot );
 			}
-
+	
 			// Remove the DataTables generated nodes, events and classes
 			jqTable.detach();
 			jqWrapper.detach();
-
+	
 			settings.aaSorting = [];
 			settings.aaSortingFixed = [];
 			_fnSortingClasses( settings );
-
+	
 			$( rows ).removeClass( settings.asStripeClasses.join(' ') );
-
+	
 			$('th, td', thead).removeClass( classes.sSortable+' '+
 				classes.sSortableAsc+' '+classes.sSortableDesc+' '+classes.sSortableNone
 			);
-
+	
 			if ( settings.bJUI ) {
 				$('th span.'+classes.sSortIcon+ ', td span.'+classes.sSortIcon, thead).detach();
 				$('th, td', thead).each( function () {
@@ -8930,33 +8930,33 @@ module.exports = require('./main.js');
 					wrapper.detach();
 				} );
 			}
-
+	
 			if ( ! remove && orig ) {
 				// insertBefore acts like appendChild if !arg[1]
 				orig.insertBefore( table, settings.nTableReinsertBefore );
 			}
-
+	
 			// Add the TR elements back into the table in their original order
 			jqTbody.children().detach();
 			jqTbody.append( rows );
-
+	
 			// Restore the width of the original table - was read from the style property,
 			// so we can restore directly to that
 			jqTable
 				.css( 'width', settings.sDestroyWidth )
 				.removeClass( classes.sTable );
-
+	
 			// If the were originally stripe classes - then we add them back here.
 			// Note this is not fool proof (for example if not all rows had stripe
 			// classes - but it's a good effort without getting carried away
 			ien = settings.asDestroyStripes.length;
-
+	
 			if ( ien ) {
 				jqTbody.children().each( function (i) {
 					$(this).addClass( settings.asDestroyStripes[i % ien] );
 				} );
 			}
-
+	
 			/* Remove the settings object from the settings array */
 			var idx = $.inArray( settings, DataTable.settings );
 			if ( idx !== -1 ) {
@@ -8964,7 +8964,7 @@ module.exports = require('./main.js');
 			}
 		} );
 	} );
-
+	
 
 	/**
 	 * Version string for plug-ins to check compatibility. Allowed format is
@@ -8997,9 +8997,9 @@ module.exports = require('./main.js');
 	 *  @namespace
 	 */
 	DataTable.models = {};
-
-
-
+	
+	
+	
 	/**
 	 * Template object for the way in which DataTables holds information about
 	 * search information for the global filter and individual column filters.
@@ -9012,14 +9012,14 @@ module.exports = require('./main.js');
 		 *  @default true
 		 */
 		"bCaseInsensitive": true,
-
+	
 		/**
 		 * Applied search term
 		 *  @type string
 		 *  @default <i>Empty string</i>
 		 */
 		"sSearch": "",
-
+	
 		/**
 		 * Flag to indicate if the search term should be interpreted as a
 		 * regular expression (true) or not (false) and therefore and special
@@ -9028,7 +9028,7 @@ module.exports = require('./main.js');
 		 *  @default false
 		 */
 		"bRegex": false,
-
+	
 		/**
 		 * Flag to indicate if DataTables is to use its smart filtering or not.
 		 *  @type boolean
@@ -9036,10 +9036,10 @@ module.exports = require('./main.js');
 		 */
 		"bSmart": true
 	};
-
-
-
-
+	
+	
+	
+	
 	/**
 	 * Template object for the way in which DataTables holds information about
 	 * each individual row. This is the object format used for the settings
@@ -9053,7 +9053,7 @@ module.exports = require('./main.js');
 		 *  @default null
 		 */
 		"nTr": null,
-
+	
 		/**
 		 * Array of TD elements for each row. This is null until the row has been
 		 * created.
@@ -9061,7 +9061,7 @@ module.exports = require('./main.js');
 		 *  @default []
 		 */
 		"anCells": null,
-
+	
 		/**
 		 * Data object from the original data source for the row. This is either
 		 * an array if using the traditional form of DataTables, or an object if
@@ -9072,7 +9072,7 @@ module.exports = require('./main.js');
 		 *  @default []
 		 */
 		"_aData": [],
-
+	
 		/**
 		 * Sorting data cache - this array is ostensibly the same length as the
 		 * number of columns (although each index is generated only as it is
@@ -9086,7 +9086,7 @@ module.exports = require('./main.js');
 		 *  @private
 		 */
 		"_aSortData": null,
-
+	
 		/**
 		 * Per cell filtering data cache. As per the sort data cache, used to
 		 * increase the performance of the filtering in DataTables
@@ -9095,7 +9095,7 @@ module.exports = require('./main.js');
 		 *  @private
 		 */
 		"_aFilterData": null,
-
+	
 		/**
 		 * Filtering data cache. This is the same as the cell filtering cache, but
 		 * in this case a string rather than an array. This is easily computed with
@@ -9106,7 +9106,7 @@ module.exports = require('./main.js');
 		 *  @private
 		 */
 		"_sFilterRow": null,
-
+	
 		/**
 		 * Cache of the class name that DataTables has applied to the row, so we
 		 * can quickly look at this variable rather than needing to do a DOM check
@@ -9116,7 +9116,7 @@ module.exports = require('./main.js');
 		 *  @private
 		 */
 		"_sRowStripe": "",
-
+	
 		/**
 		 * Denote if the original data source was from the DOM, or the data source
 		 * object. This is used for invalidating data, so DataTables can
@@ -9128,8 +9128,8 @@ module.exports = require('./main.js');
 		 */
 		"src": null
 	};
-
-
+	
+	
 	/**
 	 * Template object for the column information object in DataTables. This object
 	 * is held in the settings aoColumns array and contains all the information that
@@ -9149,7 +9149,7 @@ module.exports = require('./main.js');
 		 *  @default null
 		 */
 		"idx": null,
-
+	
 		/**
 		 * A list of the columns that sorting should occur on when this column
 		 * is sorted. That this property is an array allows multi-column sorting
@@ -9160,7 +9160,7 @@ module.exports = require('./main.js');
 		 *  @type array
 		 */
 		"aDataSort": null,
-
+	
 		/**
 		 * Define the sorting directions that are applied to the column, in sequence
 		 * as the column is repeatedly sorted upon - i.e. the first value is used
@@ -9170,26 +9170,26 @@ module.exports = require('./main.js');
 		 *  @type array
 		 */
 		"asSorting": null,
-
+	
 		/**
 		 * Flag to indicate if the column is searchable, and thus should be included
 		 * in the filtering or not.
 		 *  @type boolean
 		 */
 		"bSearchable": null,
-
+	
 		/**
 		 * Flag to indicate if the column is sortable or not.
 		 *  @type boolean
 		 */
 		"bSortable": null,
-
+	
 		/**
 		 * Flag to indicate if the column is currently visible in the table or not
 		 *  @type boolean
 		 */
 		"bVisible": null,
-
+	
 		/**
 		 * Store for manual type assignment using the `column.type` option. This
 		 * is held in store so we can manipulate the column's `sType` property.
@@ -9198,7 +9198,7 @@ module.exports = require('./main.js');
 		 *  @private
 		 */
 		"_sManualType": null,
-
+	
 		/**
 		 * Flag to indicate if HTML5 data attributes should be used as the data
 		 * source for filtering or sorting. True is either are.
@@ -9207,7 +9207,7 @@ module.exports = require('./main.js');
 		 *  @private
 		 */
 		"_bAttrSrc": false,
-
+	
 		/**
 		 * Developer definable function that is called whenever a cell is created (Ajax source,
 		 * etc) or processed for input (DOM source). This can be used as a compliment to mRender
@@ -9221,7 +9221,7 @@ module.exports = require('./main.js');
 		 *  @default null
 		 */
 		"fnCreatedCell": null,
-
+	
 		/**
 		 * Function to get data from a cell in a column. You should <b>never</b>
 		 * access data directly through _aData internally in DataTables - always use
@@ -9237,7 +9237,7 @@ module.exports = require('./main.js');
 		 *  @default null
 		 */
 		"fnGetData": null,
-
+	
 		/**
 		 * Function to set data for a cell in the column. You should <b>never</b>
 		 * set the data directly to _aData internally in DataTables - always use
@@ -9250,7 +9250,7 @@ module.exports = require('./main.js');
 		 *  @default null
 		 */
 		"fnSetData": null,
-
+	
 		/**
 		 * Property to read the value for the cells in the column from the data
 		 * source array / object. If null, then the default content is used, if a
@@ -9259,7 +9259,7 @@ module.exports = require('./main.js');
 		 *  @default null
 		 */
 		"mData": null,
-
+	
 		/**
 		 * Partner property to mData which is used (only when defined) to get
 		 * the data - i.e. it is basically the same as mData, but without the
@@ -9269,7 +9269,7 @@ module.exports = require('./main.js');
 		 *  @default null
 		 */
 		"mRender": null,
-
+	
 		/**
 		 * Unique header TH/TD element for this column - this is what the sorting
 		 * listener is attached to (if sorting is enabled.)
@@ -9277,7 +9277,7 @@ module.exports = require('./main.js');
 		 *  @default null
 		 */
 		"nTh": null,
-
+	
 		/**
 		 * Unique footer TH/TD element for this column (if there is one). Not used
 		 * in DataTables as such, but can be used for plug-ins to reference the
@@ -9286,14 +9286,14 @@ module.exports = require('./main.js');
 		 *  @default null
 		 */
 		"nTf": null,
-
+	
 		/**
 		 * The class to apply to all TD elements in the table's TBODY for the column
 		 *  @type string
 		 *  @default null
 		 */
 		"sClass": null,
-
+	
 		/**
 		 * When DataTables calculates the column widths to assign to each column,
 		 * it finds the longest string in each column and then constructs a
@@ -9306,7 +9306,7 @@ module.exports = require('./main.js');
 		 *  @type string
 		 */
 		"sContentPadding": null,
-
+	
 		/**
 		 * Allows a default value to be given for a column's data, and will be used
 		 * whenever a null data source is encountered (this can be because mData
@@ -9315,14 +9315,14 @@ module.exports = require('./main.js');
 		 *  @default null
 		 */
 		"sDefaultContent": null,
-
+	
 		/**
 		 * Name for the column, allowing reference to the column by name as well as
 		 * by index (needs a lookup to work by name).
 		 *  @type string
 		 */
 		"sName": null,
-
+	
 		/**
 		 * Custom sorting data type - defines which of the available plug-ins in
 		 * afnSortData the custom sorting will use - if any is defined.
@@ -9330,14 +9330,14 @@ module.exports = require('./main.js');
 		 *  @default std
 		 */
 		"sSortDataType": 'std',
-
+	
 		/**
 		 * Class to be applied to the header element when sorting on this column
 		 *  @type string
 		 *  @default null
 		 */
 		"sSortingClass": null,
-
+	
 		/**
 		 * Class to be applied to the header element when sorting on this column -
 		 * when jQuery UI theming is used.
@@ -9345,27 +9345,27 @@ module.exports = require('./main.js');
 		 *  @default null
 		 */
 		"sSortingClassJUI": null,
-
+	
 		/**
 		 * Title of the column - what is seen in the TH element (nTh).
 		 *  @type string
 		 */
 		"sTitle": null,
-
+	
 		/**
 		 * Column sorting and filtering type
 		 *  @type string
 		 *  @default null
 		 */
 		"sType": null,
-
+	
 		/**
 		 * Width of the column
 		 *  @type string
 		 *  @default null
 		 */
 		"sWidth": null,
-
+	
 		/**
 		 * Width of the column when it was first "encountered"
 		 *  @type string
@@ -9373,8 +9373,8 @@ module.exports = require('./main.js');
 		 */
 		"sWidthOrig": null
 	};
-
-
+	
+	
 	/*
 	 * Developer note: The properties of the object below are given in Hungarian
 	 * notation, that was used as the interface for DataTables prior to v1.10, however
@@ -9390,7 +9390,7 @@ module.exports = require('./main.js');
 	 * completely, but that is a massive amount of work and will break current
 	 * installs (therefore is on-hold until v2).
 	 */
-
+	
 	/**
 	 * Initialisation options that can be given to DataTables at initialisation
 	 * time.
@@ -9457,8 +9457,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"aaData": null,
-
-
+	
+	
 		/**
 		 * If ordering is enabled, then DataTables will perform a first pass sort on
 		 * initialisation. You can define which column(s) the sort is performed
@@ -9487,8 +9487,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"aaSorting": [[0,'asc']],
-
-
+	
+	
 		/**
 		 * This parameter is basically identical to the `sorting` parameter, but
 		 * cannot be overridden by user interaction with the table. What this means
@@ -9510,8 +9510,8 @@ module.exports = require('./main.js');
 		 *    } )
 		 */
 		"aaSortingFixed": [],
-
-
+	
+	
 		/**
 		 * DataTables can be instructed to load data to display in the table from a
 		 * Ajax source. This option defines how that Ajax call is made and where to.
@@ -9667,8 +9667,8 @@ module.exports = require('./main.js');
 		 *   } );
 		 */
 		"ajax": null,
-
-
+	
+	
 		/**
 		 * This parameter allows you to readily specify the entries in the length drop
 		 * down menu that DataTables shows when pagination is enabled. It can be
@@ -9693,8 +9693,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"aLengthMenu": [ 10, 25, 50, 100 ],
-
-
+	
+	
 		/**
 		 * The `columns` option in the initialisation parameter allows you to define
 		 * details about the way individual columns behave. For a full list of
@@ -9708,7 +9708,7 @@ module.exports = require('./main.js');
 		 *  @name DataTable.defaults.column
 		 */
 		"aoColumns": null,
-
+	
 		/**
 		 * Very similar to `columns`, `columnDefs` allows you to target a specific
 		 * column, multiple columns, or all columns, using the `targets` property of
@@ -9729,8 +9729,8 @@ module.exports = require('./main.js');
 		 *  @name DataTable.defaults.columnDefs
 		 */
 		"aoColumnDefs": null,
-
-
+	
+	
 		/**
 		 * Basically the same as `search`, this parameter defines the individual column
 		 * filtering state at initialisation time. The array must be of the same size
@@ -9756,8 +9756,8 @@ module.exports = require('./main.js');
 		 *    } )
 		 */
 		"aoSearchCols": [],
-
-
+	
+	
 		/**
 		 * An array of CSS classes that should be applied to displayed rows. This
 		 * array may be of any length, and DataTables will apply each class
@@ -9777,8 +9777,8 @@ module.exports = require('./main.js');
 		 *    } )
 		 */
 		"asStripeClasses": null,
-
-
+	
+	
 		/**
 		 * Enable or disable automatic column width calculation. This can be disabled
 		 * as an optimisation (it takes some time to calculate the widths) if the
@@ -9797,8 +9797,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"bAutoWidth": true,
-
-
+	
+	
 		/**
 		 * Deferred rendering can provide DataTables with a huge speed boost when you
 		 * are using an Ajax or JS data source for the table. This option, when set to
@@ -9820,8 +9820,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"bDeferRender": false,
-
-
+	
+	
 		/**
 		 * Replace a DataTable which matches the given selector and replace it with
 		 * one which has the properties of the new initialisation object passed. If no
@@ -9848,8 +9848,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"bDestroy": false,
-
-
+	
+	
 		/**
 		 * Enable or disable filtering of data. Filtering in DataTables is "smart" in
 		 * that it allows the end user to input multiple words (space separated) and
@@ -9872,8 +9872,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"bFilter": true,
-
-
+	
+	
 		/**
 		 * Enable or disable the table information display. This shows information
 		 * about the data that is currently visible on the page, including information
@@ -9892,8 +9892,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"bInfo": true,
-
-
+	
+	
 		/**
 		 * Enable jQuery UI ThemeRoller support (required as ThemeRoller requires some
 		 * slightly different and additional mark-up from what DataTables has
@@ -9912,8 +9912,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"bJQueryUI": false,
-
-
+	
+	
 		/**
 		 * Allows the end user to select the size of a formatted page from a select
 		 * menu (sizes are 10, 25, 50 and 100). Requires pagination (`paginate`).
@@ -9931,8 +9931,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"bLengthChange": true,
-
-
+	
+	
 		/**
 		 * Enable or disable pagination.
 		 *  @type boolean
@@ -9949,8 +9949,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"bPaginate": true,
-
-
+	
+	
 		/**
 		 * Enable or disable the display of a 'processing' indicator when the table is
 		 * being processed (e.g. a sort). This is particularly useful for tables with
@@ -9970,8 +9970,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"bProcessing": false,
-
-
+	
+	
 		/**
 		 * Retrieve the DataTables object for the given selector. Note that if the
 		 * table has already been initialised, this parameter will cause DataTables
@@ -10008,8 +10008,8 @@ module.exports = require('./main.js');
 		 *    }
 		 */
 		"bRetrieve": false,
-
-
+	
+	
 		/**
 		 * When vertical (y) scrolling is enabled, DataTables will force the height of
 		 * the table's viewport to the given height at all times (useful for layout).
@@ -10032,8 +10032,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"bScrollCollapse": false,
-
-
+	
+	
 		/**
 		 * Configure DataTables to use server-side processing. Note that the
 		 * `ajax` parameter must also be given in order to give DataTables a
@@ -10054,8 +10054,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"bServerSide": false,
-
-
+	
+	
 		/**
 		 * Enable or disable sorting of columns. Sorting of individual columns can be
 		 * disabled by the `sortable` option for each column.
@@ -10073,8 +10073,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"bSort": true,
-
-
+	
+	
 		/**
 		 * Enable or display DataTables' ability to sort multiple columns at the
 		 * same time (activated by shift-click by the user).
@@ -10093,8 +10093,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"bSortMulti": true,
-
-
+	
+	
 		/**
 		 * Allows control over whether DataTables should use the top (true) unique
 		 * cell that is found for a single column, or the bottom (false - default).
@@ -10113,8 +10113,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"bSortCellsTop": false,
-
-
+	
+	
 		/**
 		 * Enable or disable the addition of the classes `sorting\_1`, `sorting\_2` and
 		 * `sorting\_3` to the columns which are currently being sorted on. This is
@@ -10135,8 +10135,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"bSortClasses": true,
-
-
+	
+	
 		/**
 		 * Enable or disable state saving. When enabled HTML5 `localStorage` will be
 		 * used to save table display information such as pagination information,
@@ -10160,8 +10160,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"bStateSave": false,
-
-
+	
+	
 		/**
 		 * This function is called when a TR element is created (and all TD child
 		 * elements have been inserted), or registered if using a DOM source, allowing
@@ -10188,8 +10188,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"fnCreatedRow": null,
-
-
+	
+	
 		/**
 		 * This function is called on every 'draw' event, and allows you to
 		 * dynamically modify any aspect you want about the created DOM.
@@ -10209,8 +10209,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"fnDrawCallback": null,
-
-
+	
+	
 		/**
 		 * Identical to fnHeaderCallback() but for the table footer this function
 		 * allows you to modify the table footer on every 'draw' event.
@@ -10237,8 +10237,8 @@ module.exports = require('./main.js');
 		 *    } )
 		 */
 		"fnFooterCallback": null,
-
-
+	
+	
 		/**
 		 * When rendering large numbers in the information element for the table
 		 * (i.e. "Showing 1 to 10 of 57 entries") DataTables will render large numbers
@@ -10272,8 +10272,8 @@ module.exports = require('./main.js');
 				this.oLanguage.sThousands
 			);
 		},
-
-
+	
+	
 		/**
 		 * This function is called on every 'draw' event, and allows you to
 		 * dynamically modify the header row. This can be used to calculate and
@@ -10301,8 +10301,8 @@ module.exports = require('./main.js');
 		 *    } )
 		 */
 		"fnHeaderCallback": null,
-
-
+	
+	
 		/**
 		 * The information element can be used to convey information about the current
 		 * state of the table. Although the internationalisation options presented by
@@ -10331,8 +10331,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"fnInfoCallback": null,
-
-
+	
+	
 		/**
 		 * Called when the table has been initialised. Normally DataTables will
 		 * initialise sequentially and there will be no need for this function,
@@ -10356,8 +10356,8 @@ module.exports = require('./main.js');
 		 *    } )
 		 */
 		"fnInitComplete": null,
-
-
+	
+	
 		/**
 		 * Called at the very start of each table draw and can be used to cancel the
 		 * draw by returning false, any other return (including undefined) results in
@@ -10382,8 +10382,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"fnPreDrawCallback": null,
-
-
+	
+	
 		/**
 		 * This function allows you to 'post process' each row after it have been
 		 * generated for each table draw, but before it is rendered on screen. This
@@ -10411,8 +10411,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"fnRowCallback": null,
-
-
+	
+	
 		/**
 		 * __Deprecated__ The functionality provided by this parameter has now been
 		 * superseded by that provided through `ajax`, which should be used instead.
@@ -10437,8 +10437,8 @@ module.exports = require('./main.js');
 		 *  @deprecated 1.10. Please use `ajax` for this functionality now.
 		 */
 		"fnServerData": null,
-
-
+	
+	
 		/**
 		 * __Deprecated__ The functionality provided by this parameter has now been
 		 * superseded by that provided through `ajax`, which should be used instead.
@@ -10464,8 +10464,8 @@ module.exports = require('./main.js');
 		 *  @deprecated 1.10. Please use `ajax` for this functionality now.
 		 */
 		"fnServerParams": null,
-
-
+	
+	
 		/**
 		 * Load the table state. With this function you can define from where, and how, the
 		 * state of a table is loaded. By default DataTables will load from `localStorage`
@@ -10510,8 +10510,8 @@ module.exports = require('./main.js');
 				);
 			} catch (e) {}
 		},
-
-
+	
+	
 		/**
 		 * Callback which allows modification of the saved state prior to loading that state.
 		 * This callback is called when the table is loading state from the stored data, but
@@ -10548,8 +10548,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"fnStateLoadParams": null,
-
-
+	
+	
 		/**
 		 * Callback that is called when the state has been loaded from the state saving method
 		 * and the DataTables settings object has been modified as a result of the loaded state.
@@ -10572,8 +10572,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"fnStateLoaded": null,
-
-
+	
+	
 		/**
 		 * Save the table state. This function allows you to define where and how the state
 		 * information for the table is stored By default DataTables will use `localStorage`
@@ -10611,8 +10611,8 @@ module.exports = require('./main.js');
 				);
 			} catch (e) {}
 		},
-
-
+	
+	
 		/**
 		 * Callback which allows modification of the state to be saved. Called when the table
 		 * has changed state a new state save is required. This method allows modification of
@@ -10638,8 +10638,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"fnStateSaveParams": null,
-
-
+	
+	
 		/**
 		 * Duration for which the saved state information is considered valid. After this period
 		 * has elapsed the state will be returned to the default.
@@ -10658,8 +10658,8 @@ module.exports = require('./main.js');
 		 *    } )
 		 */
 		"iStateDuration": 7200,
-
-
+	
+	
 		/**
 		 * When enabled DataTables will not make a request to the server for the first
 		 * page draw - rather it will use the data already on the page (no sorting etc
@@ -10702,8 +10702,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"iDeferLoading": null,
-
-
+	
+	
 		/**
 		 * Number of rows to display on a single page when using pagination. If
 		 * feature enabled (`lengthChange`) then the end user will be able to override
@@ -10722,8 +10722,8 @@ module.exports = require('./main.js');
 		 *    } )
 		 */
 		"iDisplayLength": 10,
-
-
+	
+	
 		/**
 		 * Define the starting point for data display when using DataTables with
 		 * pagination. Note that this parameter is the number of records, rather than
@@ -10743,8 +10743,8 @@ module.exports = require('./main.js');
 		 *    } )
 		 */
 		"iDisplayStart": 0,
-
-
+	
+	
 		/**
 		 * By default DataTables allows keyboard navigation of the table (sorting, paging,
 		 * and filtering) by adding a `tabindex` attribute to the required elements. This
@@ -10766,8 +10766,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"iTabIndex": 0,
-
-
+	
+	
 		/**
 		 * Classes that DataTables assigns to the various components and features
 		 * that it adds to the HTML table. This allows classes to be configured
@@ -10777,8 +10777,8 @@ module.exports = require('./main.js');
 		 *  @name DataTable.defaults.classes
 		 */
 		"oClasses": {},
-
-
+	
+	
 		/**
 		 * All strings that DataTables uses in the user interface that it creates
 		 * are defined in this object, allowing you to modified them individually or
@@ -10817,7 +10817,7 @@ module.exports = require('./main.js');
 				 *    } );
 				 */
 				"sSortAscending": ": activate to sort column ascending",
-
+	
 				/**
 				 * ARIA label that is added to the table headers when the column may be
 				 * sorted descending by activing the column (click or return when focused).
@@ -10841,7 +10841,7 @@ module.exports = require('./main.js');
 				 */
 				"sSortDescending": ": activate to sort column descending"
 			},
-
+	
 			/**
 			 * Pagination string used by DataTables for the built-in pagination
 			 * control types.
@@ -10870,8 +10870,8 @@ module.exports = require('./main.js');
 				 *    } );
 				 */
 				"sFirst": "First",
-
-
+	
+	
 				/**
 				 * Text to use when using the 'full_numbers' type of pagination for the
 				 * button to take the user to the last page.
@@ -10893,8 +10893,8 @@ module.exports = require('./main.js');
 				 *    } );
 				 */
 				"sLast": "Last",
-
-
+	
+	
 				/**
 				 * Text to use for the 'next' pagination button (to take the user to the
 				 * next page).
@@ -10916,8 +10916,8 @@ module.exports = require('./main.js');
 				 *    } );
 				 */
 				"sNext": "Next",
-
-
+	
+	
 				/**
 				 * Text to use for the 'previous' pagination button (to take the user to
 				 * the previous page).
@@ -10940,7 +10940,7 @@ module.exports = require('./main.js');
 				 */
 				"sPrevious": "Previous"
 			},
-
+	
 			/**
 			 * This string is shown in preference to `zeroRecords` when the table is
 			 * empty of data (regardless of filtering). Note that this is an optional
@@ -10962,8 +10962,8 @@ module.exports = require('./main.js');
 			 *    } );
 			 */
 			"sEmptyTable": "yasr.empty.table",
-
-
+	
+	
 			/**
 			 * This string gives information to the end user about the information
 			 * that is current on display on the page. The following tokens can be
@@ -10994,8 +10994,8 @@ module.exports = require('./main.js');
 			 *    } );
 			 */
 			"sInfo": "Showing _START_ to _END_ of _TOTAL_ entries",
-
-
+	
+	
 			/**
 			 * Display information string for when the table is empty. Typically the
 			 * format of this string should match `info`.
@@ -11015,8 +11015,8 @@ module.exports = require('./main.js');
 			 *    } );
 			 */
 			"sInfoEmpty": "Showing 0 to 0 of 0 entries",
-
-
+	
+	
 			/**
 			 * When a user filters the information in a table, this string is appended
 			 * to the information (`info`) to give an idea of how strong the filtering
@@ -11037,8 +11037,8 @@ module.exports = require('./main.js');
 			 *    } );
 			 */
 			"sInfoFiltered": "(filtered from _MAX_ total entries)",
-
-
+	
+	
 			/**
 			 * If can be useful to append extra information to the info string at times,
 			 * and this variable does exactly that. This information will be appended to
@@ -11060,8 +11060,8 @@ module.exports = require('./main.js');
 			 *    } );
 			 */
 			"sInfoPostFix": "",
-
-
+	
+	
 			/**
 			 * This decimal place operator is a little different from the other
 			 * language options since DataTables doesn't output floating point
@@ -11075,7 +11075,7 @@ module.exports = require('./main.js');
 			 * However, multiple different tables on the page can use different
 			 * decimal place characters.
 			 *  @type string
-			 *  @default
+			 *  @default 
 			 *
 			 *  @dtopt Language
 			 *  @name DataTable.defaults.language.decimal
@@ -11091,8 +11091,8 @@ module.exports = require('./main.js');
 			 *    } );
 			 */
 			"sDecimal": "",
-
-
+	
+	
 			/**
 			 * DataTables has a build in number formatter (`formatNumber`) which is
 			 * used to format large numbers that are used in the table information.
@@ -11114,8 +11114,8 @@ module.exports = require('./main.js');
 			 *    } );
 			 */
 			"sThousands": ",",
-
-
+	
+	
 			/**
 			 * Detail the action that will be taken when the drop down menu for the
 			 * pagination length option is changed. The '_MENU_' variable is replaced
@@ -11155,8 +11155,8 @@ module.exports = require('./main.js');
 			 *    } );
 			 */
 			"sLengthMenu": "Show _MENU_ entries",
-
-
+	
+	
 			/**
 			 * When using Ajax sourced data and during the first draw when DataTables is
 			 * gathering the data, this message is shown in an empty row in the table to
@@ -11179,8 +11179,8 @@ module.exports = require('./main.js');
 			 *    } );
 			 */
 			"sLoadingRecords": "yasr.loading.label",
-
-
+	
+	
 			/**
 			 * Text which is displayed when the table is processing a user action
 			 * (usually a sort command or similar).
@@ -11200,8 +11200,8 @@ module.exports = require('./main.js');
 			 *    } );
 			 */
 			"sProcessing": "Processing...",
-
-
+	
+	
 			/**
 			 * Details the actions that will be taken when the user types into the
 			 * filtering input text box. The variable "_INPUT_", if used in the string,
@@ -11235,19 +11235,19 @@ module.exports = require('./main.js');
 			 *    } );
 			 */
 			"sSearch": "Search:",
-
-
+	
+	
 			/**
 			 * Assign a `placeholder` attribute to the search `input` element
 			 *  @type string
-			 *  @default
+			 *  @default 
 			 *
 			 *  @dtopt Language
 			 *  @name DataTable.defaults.language.searchPlaceholder
 			 */
 			"sSearchPlaceholder": "",
-
-
+	
+	
 			/**
 			 * All of the language information can be stored in a file on the
 			 * server-side, which DataTables will look up if this parameter is passed.
@@ -11271,8 +11271,8 @@ module.exports = require('./main.js');
 			 *    } );
 			 */
 			"sUrl": "",
-
-
+	
+	
 			/**
 			 * Text shown inside the table records when the is no information to be
 			 * displayed after filtering. `emptyTable` is shown when there is simply no
@@ -11294,8 +11294,8 @@ module.exports = require('./main.js');
 			 */
 			"sZeroRecords": "No matching records found"
 		},
-
-
+	
+	
 		/**
 		 * This parameter allows you to have define the global filtering state at
 		 * initialisation time. As an object the `search` parameter must be
@@ -11318,8 +11318,8 @@ module.exports = require('./main.js');
 		 *    } )
 		 */
 		"oSearch": $.extend( {}, DataTable.models.oSearch ),
-
-
+	
+	
 		/**
 		 * __Deprecated__ The functionality provided by this parameter has now been
 		 * superseded by that provided through `ajax`, which should be used instead.
@@ -11339,8 +11339,8 @@ module.exports = require('./main.js');
 		 *  @deprecated 1.10. Please use `ajax` for this functionality now.
 		 */
 		"sAjaxDataProp": "data",
-
-
+	
+	
 		/**
 		 * __Deprecated__ The functionality provided by this parameter has now been
 		 * superseded by that provided through `ajax`, which should be used instead.
@@ -11358,8 +11358,8 @@ module.exports = require('./main.js');
 		 *  @deprecated 1.10. Please use `ajax` for this functionality now.
 		 */
 		"sAjaxSource": null,
-
-
+	
+	
 		/**
 		 * This initialisation variable allows you to specify exactly where in the
 		 * DOM you want DataTables to inject the various controls it adds to the page
@@ -11412,8 +11412,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"sDom": "lfrtip",
-
-
+	
+	
 		/**
 		 * DataTables features four different built-in options for the buttons to
 		 * display for pagination control:
@@ -11423,7 +11423,7 @@ module.exports = require('./main.js');
 		 * * `full` - 'First', 'Previous', 'Next' and 'Last' buttons
 		 * * `full_numbers` - 'First', 'Previous', 'Next' and 'Last' buttons, plus
 		 *   page numbers
-		 *
+		 *  
 		 * Further methods can be added using {@link DataTable.ext.oPagination}.
 		 *  @type string
 		 *  @default simple_numbers
@@ -11439,8 +11439,8 @@ module.exports = require('./main.js');
 		 *    } )
 		 */
 		"sPaginationType": "simple_numbers",
-
-
+	
+	
 		/**
 		 * Enable horizontal scrolling. When a table is too wide to fit into a
 		 * certain layout, or you have a large number of columns in the table, you
@@ -11464,8 +11464,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"sScrollX": "",
-
-
+	
+	
 		/**
 		 * This property can be used to force a DataTable to use more width than it
 		 * might otherwise do when x-scrolling is enabled. For example if you have a
@@ -11488,8 +11488,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"sScrollXInner": "",
-
-
+	
+	
 		/**
 		 * Enable vertical scrolling. Vertical scrolling will constrain the DataTable
 		 * to the given height, and enable scrolling for any data which overflows the
@@ -11512,8 +11512,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"sScrollY": "",
-
-
+	
+	
 		/**
 		 * __Deprecated__ The functionality provided by this parameter has now been
 		 * superseded by that provided through `ajax`, which should be used instead.
@@ -11530,8 +11530,8 @@ module.exports = require('./main.js');
 		 *  @deprecated 1.10. Please use `ajax` for this functionality now.
 		 */
 		"sServerMethod": "GET",
-
-
+	
+	
 		/**
 		 * DataTables makes use of renderers when displaying HTML elements for
 		 * a table. These renderers can be added or modified by plug-ins to
@@ -11549,16 +11549,16 @@ module.exports = require('./main.js');
 		 */
 		"renderer": null
 	};
-
+	
 	_fnHungarianMap( DataTable.defaults );
-
-
-
+	
+	
+	
 	/*
 	 * Developer note - See note in model.defaults.js about the use of Hungarian
 	 * notation and camel case.
 	 */
-
+	
 	/**
 	 * Column options that can be given to DataTables at initialisation time.
 	 *  @namespace
@@ -11604,8 +11604,8 @@ module.exports = require('./main.js');
 		 */
 		"aDataSort": null,
 		"iDataSort": -1,
-
-
+	
+	
 		/**
 		 * You can control the default ordering direction, and even alter the
 		 * behaviour of the sort handler (i.e. only allow ascending ordering etc)
@@ -11643,8 +11643,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"asSorting": [ 'asc', 'desc' ],
-
-
+	
+	
 		/**
 		 * Enable or disable filtering on the data in this column.
 		 *  @type boolean
@@ -11676,8 +11676,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"bSearchable": true,
-
-
+	
+	
 		/**
 		 * Enable or disable ordering on this column.
 		 *  @type boolean
@@ -11709,8 +11709,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"bSortable": true,
-
-
+	
+	
 		/**
 		 * Enable or disable the display of this column.
 		 *  @type boolean
@@ -11742,8 +11742,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"bVisible": true,
-
-
+	
+	
 		/**
 		 * Developer definable function that is called whenever a cell is created (Ajax source,
 		 * etc) or processed for input (DOM source). This can be used as a compliment to mRender
@@ -11774,8 +11774,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"fnCreatedCell": null,
-
-
+	
+	
 		/**
 		 * This parameter has been replaced by `data` in DataTables to ensure naming
 		 * consistency. `dataProp` can still be used, as there is backwards
@@ -11783,8 +11783,8 @@ module.exports = require('./main.js');
 		 * recommended that you use `data` in preference to `dataProp`.
 		 *  @name DataTable.defaults.column.dataProp
 		 */
-
-
+	
+	
 		/**
 		 * This property can be used to read data from any data source property,
 		 * including deeply nested objects / properties. `data` can be given in a
@@ -11955,8 +11955,8 @@ module.exports = require('./main.js');
 		 *
 		 */
 		"mData": null,
-
-
+	
+	
 		/**
 		 * This property is the rendering partner to `data` and it is suggested that
 		 * when you want to manipulate data for display (including filtering,
@@ -12077,8 +12077,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"mRender": null,
-
-
+	
+	
 		/**
 		 * Change the cell type created for the column - either TD cells or TH cells. This
 		 * can be useful as TH cells have semantic meaning in the table body, allowing them
@@ -12101,8 +12101,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"sCellType": "td",
-
-
+	
+	
 		/**
 		 * Class to give to each cell in this column.
 		 *  @type string
@@ -12136,7 +12136,7 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"sClass": "",
-
+	
 		/**
 		 * When DataTables calculates the column widths to assign to each column,
 		 * it finds the longest string in each column and then constructs a
@@ -12169,8 +12169,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"sContentPadding": "",
-
-
+	
+	
 		/**
 		 * Allows a default value to be given for a column's data, and will be used
 		 * whenever a null data source is encountered (this can be because `data`
@@ -12212,8 +12212,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"sDefaultContent": null,
-
-
+	
+	
 		/**
 		 * This parameter is only used in DataTables' server-side processing. It can
 		 * be exceptionally useful to know what columns are being displayed on the
@@ -12256,8 +12256,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"sName": "",
-
-
+	
+	
 		/**
 		 * Defines a data source type for the ordering which can be used to read
 		 * real-time information from the table (updating the internally cached
@@ -12298,8 +12298,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"sSortDataType": "std",
-
-
+	
+	
 		/**
 		 * The title of this column.
 		 *  @type string
@@ -12334,8 +12334,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"sTitle": null,
-
-
+	
+	
 		/**
 		 * The type allows you to specify how the data for this column will be
 		 * ordered. Four types (string, numeric, date and html (which will strip
@@ -12375,8 +12375,8 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		"sType": null,
-
-
+	
+	
 		/**
 		 * Defining the width of the column, this parameter may take any CSS value
 		 * (3em, 20px etc). DataTables applies 'smart' widths to columns which have not
@@ -12414,11 +12414,11 @@ module.exports = require('./main.js');
 		 */
 		"sWidth": null
 	};
-
+	
 	_fnHungarianMap( DataTable.defaults.column );
-
-
-
+	
+	
+	
 	/**
 	 * DataTables settings object - this holds all the information needed for a
 	 * given table, including configuration, data and current application of the
@@ -12447,7 +12447,7 @@ module.exports = require('./main.js');
 		 *  @namespace
 		 */
 		"oFeatures": {
-
+	
 			/**
 			 * Flag to say if DataTables should automatically try to calculate the
 			 * optimum table and columns widths (true) or not (false).
@@ -12456,7 +12456,7 @@ module.exports = require('./main.js');
 			 *  @type boolean
 			 */
 			"bAutoWidth": null,
-
+	
 			/**
 			 * Delay the creation of TR and TD elements until they are actually
 			 * needed by a driven page draw. This can give a significant speed
@@ -12467,7 +12467,7 @@ module.exports = require('./main.js');
 			 *  @type boolean
 			 */
 			"bDeferRender": null,
-
+	
 			/**
 			 * Enable filtering on the table or not. Note that if this is disabled
 			 * then there is no filtering at all on the table, including fnFilter.
@@ -12477,7 +12477,7 @@ module.exports = require('./main.js');
 			 *  @type boolean
 			 */
 			"bFilter": null,
-
+	
 			/**
 			 * Table information element (the 'Showing x of y records' div) enable
 			 * flag.
@@ -12486,7 +12486,7 @@ module.exports = require('./main.js');
 			 *  @type boolean
 			 */
 			"bInfo": null,
-
+	
 			/**
 			 * Present a user control allowing the end user to change the page size
 			 * when pagination is enabled.
@@ -12495,7 +12495,7 @@ module.exports = require('./main.js');
 			 *  @type boolean
 			 */
 			"bLengthChange": null,
-
+	
 			/**
 			 * Pagination enabled or not. Note that if this is disabled then length
 			 * changing must also be disabled.
@@ -12504,7 +12504,7 @@ module.exports = require('./main.js');
 			 *  @type boolean
 			 */
 			"bPaginate": null,
-
+	
 			/**
 			 * Processing indicator enable flag whenever DataTables is enacting a
 			 * user request - typically an Ajax request for server-side processing.
@@ -12513,7 +12513,7 @@ module.exports = require('./main.js');
 			 *  @type boolean
 			 */
 			"bProcessing": null,
-
+	
 			/**
 			 * Server-side processing enabled flag - when enabled DataTables will
 			 * get all data from the server for every draw - there is no filtering,
@@ -12523,7 +12523,7 @@ module.exports = require('./main.js');
 			 *  @type boolean
 			 */
 			"bServerSide": null,
-
+	
 			/**
 			 * Sorting enablement flag.
 			 * Note that this parameter will be set by the initialisation routine. To
@@ -12531,7 +12531,7 @@ module.exports = require('./main.js');
 			 *  @type boolean
 			 */
 			"bSort": null,
-
+	
 			/**
 			 * Multi-column sorting
 			 * Note that this parameter will be set by the initialisation routine. To
@@ -12539,7 +12539,7 @@ module.exports = require('./main.js');
 			 *  @type boolean
 			 */
 			"bSortMulti": null,
-
+	
 			/**
 			 * Apply a class to the columns which are being sorted to provide a
 			 * visual highlight or not. This can slow things down when enabled since
@@ -12549,7 +12549,7 @@ module.exports = require('./main.js');
 			 *  @type boolean
 			 */
 			"bSortClasses": null,
-
+	
 			/**
 			 * State saving enablement flag.
 			 * Note that this parameter will be set by the initialisation routine. To
@@ -12558,8 +12558,8 @@ module.exports = require('./main.js');
 			 */
 			"bStateSave": null
 		},
-
-
+	
+	
 		/**
 		 * Scrolling settings for a table.
 		 *  @namespace
@@ -12573,7 +12573,7 @@ module.exports = require('./main.js');
 			 *  @type boolean
 			 */
 			"bCollapse": null,
-
+	
 			/**
 			 * Width of the scrollbar for the web-browser's platform. Calculated
 			 * during table initialisation.
@@ -12581,7 +12581,7 @@ module.exports = require('./main.js');
 			 *  @default 0
 			 */
 			"iBarWidth": 0,
-
+	
 			/**
 			 * Viewport width for horizontal scrolling. Horizontal scrolling is
 			 * disabled if an empty string.
@@ -12590,7 +12590,7 @@ module.exports = require('./main.js');
 			 *  @type string
 			 */
 			"sX": null,
-
+	
 			/**
 			 * Width to expand the table to when using x-scrolling. Typically you
 			 * should not need to use this.
@@ -12600,7 +12600,7 @@ module.exports = require('./main.js');
 			 *  @deprecated
 			 */
 			"sXInner": null,
-
+	
 			/**
 			 * Viewport height for vertical scrolling. Vertical scrolling is disabled
 			 * if an empty string.
@@ -12610,7 +12610,7 @@ module.exports = require('./main.js');
 			 */
 			"sY": null
 		},
-
+	
 		/**
 		 * Language information for the table.
 		 *  @namespace
@@ -12625,7 +12625,7 @@ module.exports = require('./main.js');
 			 */
 			"fnInfoCallback": null
 		},
-
+	
 		/**
 		 * Browser support parameters
 		 *  @namespace
@@ -12638,7 +12638,7 @@ module.exports = require('./main.js');
 			 *  @default false
 			 */
 			"bScrollOversize": false,
-
+	
 			/**
 			 * Determine if the vertical scrollbar is on the right or left of the
 			 * scrolling container - needed for rtl language layout, although not
@@ -12648,11 +12648,11 @@ module.exports = require('./main.js');
 			 */
 			"bScrollbarLeft": false
 		},
-
-
+	
+	
 		"ajax": null,
-
-
+	
+	
 		/**
 		 * Array referencing the nodes which are used for the features. The
 		 * parameters of this object match what is allowed by sDom - i.e.
@@ -12668,7 +12668,7 @@ module.exports = require('./main.js');
 		 *  @default []
 		 */
 		"aanFeatures": [],
-
+	
 		/**
 		 * Store data information - see {@link DataTable.models.oRow} for detailed
 		 * information.
@@ -12676,42 +12676,42 @@ module.exports = require('./main.js');
 		 *  @default []
 		 */
 		"aoData": [],
-
+	
 		/**
 		 * Array of indexes which are in the current display (after filtering etc)
 		 *  @type array
 		 *  @default []
 		 */
 		"aiDisplay": [],
-
+	
 		/**
 		 * Array of indexes for display - no filtering
 		 *  @type array
 		 *  @default []
 		 */
 		"aiDisplayMaster": [],
-
+	
 		/**
 		 * Store information about each column that is in use
 		 *  @type array
 		 *  @default []
 		 */
 		"aoColumns": [],
-
+	
 		/**
 		 * Store information about the table's header
 		 *  @type array
 		 *  @default []
 		 */
 		"aoHeader": [],
-
+	
 		/**
 		 * Store information about the table's footer
 		 *  @type array
 		 *  @default []
 		 */
 		"aoFooter": [],
-
+	
 		/**
 		 * Store the applied global search information in case we want to force a
 		 * research or compare the old search to a new one.
@@ -12721,7 +12721,7 @@ module.exports = require('./main.js');
 		 *  @extends DataTable.models.oSearch
 		 */
 		"oPreviousSearch": {},
-
+	
 		/**
 		 * Store the applied search for each column - see
 		 * {@link DataTable.models.oSearch} for the format that is used for the
@@ -12730,7 +12730,7 @@ module.exports = require('./main.js');
 		 *  @default []
 		 */
 		"aoPreSearchCols": [],
-
+	
 		/**
 		 * Sorting that is applied to the table. Note that the inner arrays are
 		 * used in the following manner:
@@ -12744,7 +12744,7 @@ module.exports = require('./main.js');
 		 *  @todo These inner arrays should really be objects
 		 */
 		"aaSorting": null,
-
+	
 		/**
 		 * Sorting that is always applied to the table (i.e. prefixed in front of
 		 * aaSorting).
@@ -12754,7 +12754,7 @@ module.exports = require('./main.js');
 		 *  @default []
 		 */
 		"aaSortingFixed": [],
-
+	
 		/**
 		 * Classes to use for the striping of a table.
 		 * Note that this parameter will be set by the initialisation routine. To
@@ -12763,56 +12763,56 @@ module.exports = require('./main.js');
 		 *  @default []
 		 */
 		"asStripeClasses": null,
-
+	
 		/**
 		 * If restoring a table - we should restore its striping classes as well
 		 *  @type array
 		 *  @default []
 		 */
 		"asDestroyStripes": [],
-
+	
 		/**
 		 * If restoring a table - we should restore its width
 		 *  @type int
 		 *  @default 0
 		 */
 		"sDestroyWidth": 0,
-
+	
 		/**
 		 * Callback functions array for every time a row is inserted (i.e. on a draw).
 		 *  @type array
 		 *  @default []
 		 */
 		"aoRowCallback": [],
-
+	
 		/**
 		 * Callback functions for the header on each draw.
 		 *  @type array
 		 *  @default []
 		 */
 		"aoHeaderCallback": [],
-
+	
 		/**
 		 * Callback function for the footer on each draw.
 		 *  @type array
 		 *  @default []
 		 */
 		"aoFooterCallback": [],
-
+	
 		/**
 		 * Array of callback functions for draw callback functions
 		 *  @type array
 		 *  @default []
 		 */
 		"aoDrawCallback": [],
-
+	
 		/**
 		 * Array of callback functions for row created function
 		 *  @type array
 		 *  @default []
 		 */
 		"aoRowCreatedCallback": [],
-
+	
 		/**
 		 * Callback functions for just before the table is redrawn. A return of
 		 * false will be used to cancel the draw.
@@ -12820,15 +12820,15 @@ module.exports = require('./main.js');
 		 *  @default []
 		 */
 		"aoPreDrawCallback": [],
-
+	
 		/**
 		 * Callback functions for when the table has been initialised.
 		 *  @type array
 		 *  @default []
 		 */
 		"aoInitComplete": [],
-
-
+	
+	
 		/**
 		 * Callbacks for modifying the settings to be stored for state saving, prior to
 		 * saving state.
@@ -12836,7 +12836,7 @@ module.exports = require('./main.js');
 		 *  @default []
 		 */
 		"aoStateSaveParams": [],
-
+	
 		/**
 		 * Callbacks for modifying the settings that have been stored for state saving
 		 * prior to using the stored values to restore the state.
@@ -12844,7 +12844,7 @@ module.exports = require('./main.js');
 		 *  @default []
 		 */
 		"aoStateLoadParams": [],
-
+	
 		/**
 		 * Callbacks for operating on the settings object once the saved state has been
 		 * loaded
@@ -12852,49 +12852,49 @@ module.exports = require('./main.js');
 		 *  @default []
 		 */
 		"aoStateLoaded": [],
-
+	
 		/**
 		 * Cache the table ID for quick access
 		 *  @type string
 		 *  @default <i>Empty string</i>
 		 */
 		"sTableId": "",
-
+	
 		/**
 		 * The TABLE node for the main table
 		 *  @type node
 		 *  @default null
 		 */
 		"nTable": null,
-
+	
 		/**
 		 * Permanent ref to the thead element
 		 *  @type node
 		 *  @default null
 		 */
 		"nTHead": null,
-
+	
 		/**
 		 * Permanent ref to the tfoot element - if it exists
 		 *  @type node
 		 *  @default null
 		 */
 		"nTFoot": null,
-
+	
 		/**
 		 * Permanent ref to the tbody element
 		 *  @type node
 		 *  @default null
 		 */
 		"nTBody": null,
-
+	
 		/**
 		 * Cache the wrapper node (contains all DataTables controlled elements)
 		 *  @type node
 		 *  @default null
 		 */
 		"nTableWrapper": null,
-
+	
 		/**
 		 * Indicate if when using server-side processing the loading of data
 		 * should be deferred until the second draw.
@@ -12904,14 +12904,14 @@ module.exports = require('./main.js');
 		 *  @default false
 		 */
 		"bDeferLoading": false,
-
+	
 		/**
 		 * Indicate if all required information has been read in
 		 *  @type boolean
 		 *  @default false
 		 */
 		"bInitialised": false,
-
+	
 		/**
 		 * Information about open rows. Each object in the array has the parameters
 		 * 'nTr' and 'nParent'
@@ -12919,7 +12919,7 @@ module.exports = require('./main.js');
 		 *  @default []
 		 */
 		"aoOpenRows": [],
-
+	
 		/**
 		 * Dictate the positioning of DataTables' control elements - see
 		 * {@link DataTable.model.oInit.sDom}.
@@ -12929,7 +12929,7 @@ module.exports = require('./main.js');
 		 *  @default null
 		 */
 		"sDom": null,
-
+	
 		/**
 		 * Which type of pagination should be used.
 		 * Note that this parameter will be set by the initialisation routine. To
@@ -12938,7 +12938,7 @@ module.exports = require('./main.js');
 		 *  @default two_button
 		 */
 		"sPaginationType": "two_button",
-
+	
 		/**
 		 * The state duration (for `stateSave`) in seconds.
 		 * Note that this parameter will be set by the initialisation routine. To
@@ -12947,7 +12947,7 @@ module.exports = require('./main.js');
 		 *  @default 0
 		 */
 		"iStateDuration": 0,
-
+	
 		/**
 		 * Array of callback functions for state saving. Each array element is an
 		 * object with the following parameters:
@@ -12962,7 +12962,7 @@ module.exports = require('./main.js');
 		 *  @default []
 		 */
 		"aoStateSave": [],
-
+	
 		/**
 		 * Array of callback functions for state loading. Each array element is an
 		 * object with the following parameters:
@@ -12975,21 +12975,21 @@ module.exports = require('./main.js');
 		 *  @default []
 		 */
 		"aoStateLoad": [],
-
+	
 		/**
 		 * State that was saved. Useful for back reference
 		 *  @type object
 		 *  @default null
 		 */
 		"oSavedState": null,
-
+	
 		/**
 		 * State that was loaded. Useful for back reference
 		 *  @type object
 		 *  @default null
 		 */
 		"oLoadedState": null,
-
+	
 		/**
 		 * Source url for AJAX data for the table.
 		 * Note that this parameter will be set by the initialisation routine. To
@@ -12998,7 +12998,7 @@ module.exports = require('./main.js');
 		 *  @default null
 		 */
 		"sAjaxSource": null,
-
+	
 		/**
 		 * Property from a given object from which to read the table data from. This
 		 * can be an empty string (when not server-side processing), in which case
@@ -13008,14 +13008,14 @@ module.exports = require('./main.js');
 		 *  @type string
 		 */
 		"sAjaxDataProp": null,
-
+	
 		/**
 		 * Note if draw should be blocked while getting data
 		 *  @type boolean
 		 *  @default true
 		 */
 		"bAjaxDataGet": true,
-
+	
 		/**
 		 * The last jQuery XHR object that was used for server-side data gathering.
 		 * This can be used for working with the XHR information in one of the
@@ -13024,21 +13024,21 @@ module.exports = require('./main.js');
 		 *  @default null
 		 */
 		"jqXHR": null,
-
+	
 		/**
 		 * JSON returned from the server in the last Ajax request
 		 *  @type object
 		 *  @default undefined
 		 */
 		"json": undefined,
-
+	
 		/**
 		 * Data submitted as part of the last Ajax request
 		 *  @type object
 		 *  @default undefined
 		 */
 		"oAjaxData": undefined,
-
+	
 		/**
 		 * Function to get the server-side data.
 		 * Note that this parameter will be set by the initialisation routine. To
@@ -13046,7 +13046,7 @@ module.exports = require('./main.js');
 		 *  @type function
 		 */
 		"fnServerData": null,
-
+	
 		/**
 		 * Functions which are called prior to sending an Ajax request so extra
 		 * parameters can easily be sent to the server
@@ -13054,7 +13054,7 @@ module.exports = require('./main.js');
 		 *  @default []
 		 */
 		"aoServerParams": [],
-
+	
 		/**
 		 * Send the XHR HTTP method - GET or POST (could be PUT or DELETE if
 		 * required).
@@ -13063,7 +13063,7 @@ module.exports = require('./main.js');
 		 *  @type string
 		 */
 		"sServerMethod": null,
-
+	
 		/**
 		 * Format numbers for display.
 		 * Note that this parameter will be set by the initialisation routine. To
@@ -13071,7 +13071,7 @@ module.exports = require('./main.js');
 		 *  @type function
 		 */
 		"fnFormatNumber": null,
-
+	
 		/**
 		 * List of options that can be used for the user selectable length menu.
 		 * Note that this parameter will be set by the initialisation routine. To
@@ -13080,7 +13080,7 @@ module.exports = require('./main.js');
 		 *  @default []
 		 */
 		"aLengthMenu": null,
-
+	
 		/**
 		 * Counter for the draws that the table does. Also used as a tracker for
 		 * server-side processing
@@ -13088,35 +13088,35 @@ module.exports = require('./main.js');
 		 *  @default 0
 		 */
 		"iDraw": 0,
-
+	
 		/**
 		 * Indicate if a redraw is being done - useful for Ajax
 		 *  @type boolean
 		 *  @default false
 		 */
 		"bDrawing": false,
-
+	
 		/**
 		 * Draw index (iDraw) of the last error when parsing the returned data
 		 *  @type int
 		 *  @default -1
 		 */
 		"iDrawError": -1,
-
+	
 		/**
 		 * Paging display length
 		 *  @type int
 		 *  @default 10
 		 */
 		"_iDisplayLength": 10,
-
+	
 		/**
 		 * Paging start point - aiDisplay index
 		 *  @type int
 		 *  @default 0
 		 */
 		"_iDisplayStart": 0,
-
+	
 		/**
 		 * Server-side processing - number of records in the result set
 		 * (i.e. before filtering), Use fnRecordsTotal rather than
@@ -13127,7 +13127,7 @@ module.exports = require('./main.js');
 		 *  @private
 		 */
 		"_iRecordsTotal": 0,
-
+	
 		/**
 		 * Server-side processing - number of records in the current display set
 		 * (i.e. after filtering). Use fnRecordsDisplay rather than
@@ -13138,7 +13138,7 @@ module.exports = require('./main.js');
 		 *  @private
 		 */
 		"_iRecordsDisplay": 0,
-
+	
 		/**
 		 * Flag to indicate if jQuery UI marking and classes should be used.
 		 * Note that this parameter will be set by the initialisation routine. To
@@ -13146,14 +13146,14 @@ module.exports = require('./main.js');
 		 *  @type boolean
 		 */
 		"bJUI": null,
-
+	
 		/**
 		 * The classes to use for the table
 		 *  @type object
 		 *  @default {}
 		 */
 		"oClasses": {},
-
+	
 		/**
 		 * Flag attached to the settings object so you can check in the draw
 		 * callback if filtering has been done in the draw. Deprecated in favour of
@@ -13163,7 +13163,7 @@ module.exports = require('./main.js');
 		 *  @deprecated
 		 */
 		"bFiltered": false,
-
+	
 		/**
 		 * Flag attached to the settings object so you can check in the draw
 		 * callback if sorting has been done in the draw. Deprecated in favour of
@@ -13173,7 +13173,7 @@ module.exports = require('./main.js');
 		 *  @deprecated
 		 */
 		"bSorted": false,
-
+	
 		/**
 		 * Indicate that if multiple rows are in the header and there is more than
 		 * one unique cell per column, if the top one (true) or bottom one (false)
@@ -13183,14 +13183,14 @@ module.exports = require('./main.js');
 		 *  @type boolean
 		 */
 		"bSortCellsTop": null,
-
+	
 		/**
 		 * Initialisation object that is used for the table
 		 *  @type object
 		 *  @default null
 		 */
 		"oInit": null,
-
+	
 		/**
 		 * Destroy callback functions - for plug-ins to attach themselves to the
 		 * destroy so they can clean up markup and events.
@@ -13198,8 +13198,8 @@ module.exports = require('./main.js');
 		 *  @default []
 		 */
 		"aoDestroyCallback": [],
-
-
+	
+	
 		/**
 		 * Get the number of records in the current record set, before filtering
 		 *  @type function
@@ -13210,7 +13210,7 @@ module.exports = require('./main.js');
 				this._iRecordsTotal * 1 :
 				this.aiDisplayMaster.length;
 		},
-
+	
 		/**
 		 * Get the number of records in the current record set, after filtering
 		 *  @type function
@@ -13221,7 +13221,7 @@ module.exports = require('./main.js');
 				this._iRecordsDisplay * 1 :
 				this.aiDisplay.length;
 		},
-
+	
 		/**
 		 * Get the display end point - aiDisplay index
 		 *  @type function
@@ -13235,7 +13235,7 @@ module.exports = require('./main.js');
 				records  = this.aiDisplay.length,
 				features = this.oFeatures,
 				paginate = features.bPaginate;
-
+	
 			if ( features.bServerSide ) {
 				return paginate === false || len === -1 ?
 					start + records :
@@ -13247,14 +13247,14 @@ module.exports = require('./main.js');
 					calc;
 			}
 		},
-
+	
 		/**
 		 * The DataTables object for this table
 		 *  @type object
 		 *  @default null
 		 */
 		"oInstance": null,
-
+	
 		/**
 		 * Unique identifier for each instance of the DataTables object. If there
 		 * is an ID on the table node, then it takes that value, otherwise an
@@ -13263,30 +13263,30 @@ module.exports = require('./main.js');
 		 *  @default null
 		 */
 		"sInstance": null,
-
+	
 		/**
 		 * tabindex attribute value that is added to DataTables control elements, allowing
 		 * keyboard navigation of the table and its controls.
 		 */
 		"iTabIndex": 0,
-
+	
 		/**
 		 * DIV container for the footer scrolling table if scrolling
 		 */
 		"nScrollHead": null,
-
+	
 		/**
 		 * DIV container for the footer scrolling table if scrolling
 		 */
 		"nScrollFoot": null,
-
+	
 		/**
 		 * Last applied sort
 		 *  @type array
 		 *  @default []
 		 */
 		"aLastSort": [],
-
+	
 		/**
 		 * Stored plug-in instances
 		 *  @type object
@@ -13305,11 +13305,11 @@ module.exports = require('./main.js');
 	 *  @namespace
 	 *  @extends DataTable.models.ext
 	 */
-
-
+	
+	
 	/**
 	 * DataTables extensions
-	 *
+	 * 
 	 * This namespace acts as a collection area for plug-ins that can be used to
 	 * extend DataTables capabilities. Indeed many of the build in methods
 	 * use this method to provide their own capabilities (sorting methods for
@@ -13328,11 +13328,11 @@ module.exports = require('./main.js');
 		 *  @default {}
 		 */
 		classes: {},
-
-
+	
+	
 		/**
 		 * Error reporting.
-		 *
+		 * 
 		 * How should DataTables report an error. Can take the value 'alert' or
 		 * 'throw'
 		 *
@@ -13340,18 +13340,18 @@ module.exports = require('./main.js');
 		 *  @default alert
 		 */
 		errMode: "alert",
-
-
+	
+	
 		/**
 		 * Feature plug-ins.
-		 *
+		 * 
 		 * This is an array of objects which describe the feature plug-ins that are
 		 * available to DataTables. These feature plug-ins are then available for
 		 * use through the `dom` initialisation option.
-		 *
+		 * 
 		 * Each feature plug-in is described by an object which must have the
 		 * following properties:
-		 *
+		 * 
 		 * * `fnInit` - function that is used to initialise the plug-in,
 		 * * `cFeature` - a character so the feature can be enabled by the `dom`
 		 *   instillation option. This is case sensitive.
@@ -13362,7 +13362,7 @@ module.exports = require('./main.js');
 		 *    {@link DataTable.models.oSettings}
 		 *
 		 * And the following return is expected:
-		 *
+		 * 
 		 * * {node|null} The element which contains your feature. Note that the
 		 *   return may also be void if your plug-in does not require to inject any
 		 *   DOM elements into DataTables control (`dom`) - for example this might
@@ -13380,11 +13380,11 @@ module.exports = require('./main.js');
 		 *    } );
 		 */
 		feature: [],
-
-
+	
+	
 		/**
 		 * Row searching.
-		 *
+		 * 
 		 * This method of searching is complimentary to the default type based
 		 * searching, and a lot more comprehensive as it allows you complete control
 		 * over the searching logic. Each element in this array is a function
@@ -13441,11 +13441,11 @@ module.exports = require('./main.js');
 		 *    );
 		 */
 		search: [],
-
-
+	
+	
 		/**
 		 * Internal functions, exposed for used in plug-ins.
-		 *
+		 * 
 		 * Please note that you should not need to use the internal methods for
 		 * anything other than a plug-in (and even then, try to avoid if possible).
 		 * The internal function may change between releases.
@@ -13454,8 +13454,8 @@ module.exports = require('./main.js');
 		 *  @default {}
 		 */
 		internal: {},
-
-
+	
+	
 		/**
 		 * Legacy configuration options. Enable and disable legacy options that
 		 * are available in DataTables.
@@ -13472,11 +13472,11 @@ module.exports = require('./main.js');
 			 */
 			ajax: null
 		},
-
-
+	
+	
 		/**
 		 * Pagination plug-in methods.
-		 *
+		 * 
 		 * Each entry in this object is a function and defines which buttons should
 		 * be shown by the pagination rendering method that is used for the table:
 		 * {@link DataTable.ext.renderer.pageButton}. The renderer addresses how the
@@ -13520,26 +13520,26 @@ module.exports = require('./main.js');
 		 *    };
 		 */
 		pager: {},
-
-
+	
+	
 		renderer: {
 			pageButton: {},
 			header: {}
 		},
-
-
+	
+	
 		/**
 		 * Ordering plug-ins - custom data source
-		 *
+		 * 
 		 * The extension options for ordering of data available here is complimentary
 		 * to the default type based ordering that DataTables typically uses. It
 		 * allows much greater control over the the data that is being used to
 		 * order a column, but is necessarily therefore more complex.
-		 *
+		 * 
 		 * This type of ordering is useful if you want to do ordering based on data
 		 * live from the DOM (for example the contents of an 'input' element) rather
 		 * than just the static string that DataTables knows of.
-		 *
+		 * 
 		 * The way these plug-ins work is that you create an array of the values you
 		 * wish to be ordering for the column in question and then return that
 		 * array. The data in the array much be in the index order of the rows in
@@ -13569,8 +13569,8 @@ module.exports = require('./main.js');
 		 *    }
 		 */
 		order: {},
-
-
+	
+	
 		/**
 		 * Type based plug-ins.
 		 *
@@ -13623,8 +13623,8 @@ module.exports = require('./main.js');
 			 *    );
 			 */
 			detect: [],
-
-
+	
+	
 			/**
 			 * Type based search formatting.
 			 *
@@ -13634,7 +13634,7 @@ module.exports = require('./main.js');
 			 *
 			 * Note that is a search is not defined for a column of a given type,
 			 * no search formatting will be performed.
-			 *
+			 * 
 			 * Pre-processing of searching data plug-ins - When you assign the sType
 			 * for a column (or have it automatically detected for you by DataTables
 			 * or a type detection plug-in), you will typically be using this for
@@ -13662,8 +13662,8 @@ module.exports = require('./main.js');
 			 *    }
 			 */
 			search: {},
-
-
+	
+	
 			/**
 			 * Type based ordering.
 			 *
@@ -13704,7 +13704,7 @@ module.exports = require('./main.js');
 			 *   than the second parameter, ===0 if the two parameters are equal and
 			 *   >0 if the first parameter should be sorted height than the second
 			 *   parameter.
-			 *
+			 * 
 			 *  @type object
 			 *  @default {}
 			 *
@@ -13730,7 +13730,7 @@ module.exports = require('./main.js');
 			 */
 			order: {}
 		},
-
+	
 		/**
 		 * Unique DataTables instance counter
 		 *
@@ -13738,39 +13738,39 @@ module.exports = require('./main.js');
 		 * @private
 		 */
 		_unique: 0,
-
-
+	
+	
 		//
 		// Depreciated
 		// The following properties are retained for backwards compatiblity only.
 		// The should not be used in new projects and will be removed in a future
 		// version
 		//
-
+	
 		/**
 		 * Version check function.
 		 *  @type function
 		 *  @depreciated Since 1.10
 		 */
 		fnVersionCheck: DataTable.fnVersionCheck,
-
-
+	
+	
 		/**
 		 * Index for what 'this' index API functions should use
 		 *  @type int
 		 *  @deprecated Since v1.10
 		 */
 		iApiIndex: 0,
-
-
+	
+	
 		/**
 		 * jQuery UI class container
 		 *  @type object
 		 *  @deprecated Since v1.10
 		 */
 		oJUIClasses: {},
-
-
+	
+	
 		/**
 		 * Software version
 		 *  @type string
@@ -13778,8 +13778,8 @@ module.exports = require('./main.js');
 		 */
 		sVersion: DataTable.version
 	};
-
-
+	
+	
 	//
 	// Backwards compatibility. Alias to pre 1.10 Hungarian notation counter parts
 	//
@@ -13794,24 +13794,24 @@ module.exports = require('./main.js');
 		oStdClasses:  _ext.classes,
 		oPagination:  _ext.pager
 	} );
-
-
+	
+	
 	$.extend( DataTable.ext.classes, {
 		"sTable": "dataTable",
 		"sNoFooter": "no-footer",
-
+	
 		/* Paging buttons */
 		"sPageButton": "paginate_button",
 		"sPageButtonActive": "current",
 		"sPageButtonDisabled": "disabled",
-
+	
 		/* Striping classes */
 		"sStripeOdd": "odd",
 		"sStripeEven": "even",
-
+	
 		/* Empty row */
 		"sRowEmpty": "dataTables_empty",
-
+	
 		/* Features */
 		"sWrapper": "dataTables_wrapper",
 		"sFilter": "dataTables_filter",
@@ -13819,7 +13819,7 @@ module.exports = require('./main.js');
 		"sPaging": "dataTables_paginate paging_", /* Note that the type is postfixed */
 		"sLength": "dataTables_length",
 		"sProcessing": "dataTables_processing",
-
+	
 		/* Sorting */
 		"sSortAsc": "sorting_asc",
 		"sSortDesc": "sorting_desc",
@@ -13828,13 +13828,13 @@ module.exports = require('./main.js');
 		"sSortableDesc": "sorting_desc_disabled",
 		"sSortableNone": "sorting_disabled",
 		"sSortColumn": "sorting_", /* Note that an int is postfixed for the sorting order */
-
+	
 		/* Filtering */
 		"sFilterInput": "",
-
+	
 		/* Page length */
 		"sLengthSelect": "",
-
+	
 		/* Scrolling */
 		"sScrollWrapper": "dataTables_scroll",
 		"sScrollHead": "dataTables_scrollHead",
@@ -13842,11 +13842,11 @@ module.exports = require('./main.js');
 		"sScrollBody": "dataTables_scrollBody",
 		"sScrollFoot": "dataTables_scrollFoot",
 		"sScrollFootInner": "dataTables_scrollFootInner",
-
+	
 		/* Misc */
 		"sHeaderTH": "",
 		"sFooterTH": "",
-
+	
 		// Deprecated
 		"sSortJUIAsc": "",
 		"sSortJUIDesc": "",
@@ -13858,31 +13858,31 @@ module.exports = require('./main.js');
 		"sJUIHeader": "",
 		"sJUIFooter": ""
 	} );
-
-
+	
+	
 	(function() {
-
+	
 	// Reused strings for better compression. Closure compiler appears to have a
 	// weird edge case where it is trying to expand strings rather than use the
 	// variable version. This results in about 200 bytes being added, for very
 	// little preference benefit since it this run on script load only.
 	var _empty = '';
 	_empty = '';
-
+	
 	var _stateDefault = _empty + 'ui-state-default';
 	var _sortIcon     = _empty + 'css_right ui-icon ui-icon-';
 	var _headerFooter = _empty + 'fg-toolbar ui-toolbar ui-widget-header ui-helper-clearfix';
-
+	
 	$.extend( DataTable.ext.oJUIClasses, DataTable.ext.classes, {
 		/* Full numbers paging buttons */
 		"sPageButton":         "fg-button ui-button "+_stateDefault,
 		"sPageButtonActive":   "ui-state-disabled",
 		"sPageButtonDisabled": "ui-state-disabled",
-
+	
 		/* Features */
 		"sPaging": "dataTables_paginate fg-buttonset ui-buttonset fg-buttonset-multi "+
 			"ui-buttonset-multi paging_", /* Note that the type is postfixed */
-
+	
 		/* Sorting */
 		"sSortAsc":            _stateDefault+" sorting_asc",
 		"sSortDesc":           _stateDefault+" sorting_desc",
@@ -13897,31 +13897,31 @@ module.exports = require('./main.js');
 		"sSortJUIDescAllowed": _sortIcon+"carat-1-s",
 		"sSortJUIWrapper":     "DataTables_sort_wrapper",
 		"sSortIcon":           "DataTables_sort_icon",
-
+	
 		/* Scrolling */
 		"sScrollHead": "dataTables_scrollHead "+_stateDefault,
 		"sScrollFoot": "dataTables_scrollFoot "+_stateDefault,
-
+	
 		/* Misc */
 		"sHeaderTH":  _stateDefault,
 		"sFooterTH":  _stateDefault,
 		"sJUIHeader": _headerFooter+" ui-corner-tl ui-corner-tr",
 		"sJUIFooter": _headerFooter+" ui-corner-bl ui-corner-br"
 	} );
-
+	
 	}());
-
-
-
+	
+	
+	
 	var extPagination = DataTable.ext.pager;
-
+	
 	function _numbers ( page, pages ) {
 		var
 			numbers = [],
 			buttons = extPagination.numbers_length,
 			half = Math.floor( buttons / 2 ),
 			i = 1;
-
+	
 		if ( pages <= buttons ) {
 			numbers = _range( 0, pages );
 		}
@@ -13942,51 +13942,51 @@ module.exports = require('./main.js');
 			numbers.splice( 0, 0, 'ellipsis' );
 			numbers.splice( 0, 0, 0 );
 		}
-
+	
 		numbers.DT_el = 'span';
 		return numbers;
 	}
-
-
+	
+	
 	$.extend( extPagination, {
 		simple: function ( page, pages ) {
 			return [ 'previous', 'next' ];
 		},
-
+	
 		full: function ( page, pages ) {
 			return [  'first', 'previous', 'next', 'last' ];
 		},
-
+	
 		simple_numbers: function ( page, pages ) {
 			return [ 'previous', _numbers(page, pages), 'next' ];
 		},
-
+	
 		full_numbers: function ( page, pages ) {
 			return [ 'first', 'previous', _numbers(page, pages), 'next', 'last' ];
 		},
-
+	
 		// For testing and plug-ins to use
 		_numbers: _numbers,
 		numbers_length: 7
 	} );
-
-
+	
+	
 	$.extend( true, DataTable.ext.renderer, {
 		pageButton: {
 			_: function ( settings, host, idx, buttons, page, pages ) {
 				var classes = settings.oClasses;
 				var lang = settings.oLanguage.oPaginate;
 				var btnDisplay, btnClass, counter=0;
-
+	
 				var attach = function( container, buttons ) {
 					var i, ien, node, button;
 					var clickHandler = function ( e ) {
 						_fnPageChange( settings, e.data.action, true );
 					};
-
+	
 					for ( i=0, ien=buttons.length ; i<ien ; i++ ) {
 						button = buttons[i];
-
+	
 						if ( $.isArray( button ) ) {
 							var inner = $( '<'+(button.DT_el || 'div')+'/>' )
 								.appendTo( container );
@@ -13995,43 +13995,43 @@ module.exports = require('./main.js');
 						else {
 							btnDisplay = '';
 							btnClass = '';
-
+	
 							switch ( button ) {
 								case 'ellipsis':
 									container.append('<span>&hellip;</span>');
 									break;
-
+	
 								case 'first':
 									btnDisplay = lang.sFirst;
 									btnClass = button + (page > 0 ?
 										'' : ' '+classes.sPageButtonDisabled);
 									break;
-
+	
 								case 'previous':
 									btnDisplay = lang.sPrevious;
 									btnClass = button + (page > 0 ?
 										'' : ' '+classes.sPageButtonDisabled);
 									break;
-
+	
 								case 'next':
 									btnDisplay = lang.sNext;
 									btnClass = button + (page < pages-1 ?
 										'' : ' '+classes.sPageButtonDisabled);
 									break;
-
+	
 								case 'last':
 									btnDisplay = lang.sLast;
 									btnClass = button + (page < pages-1 ?
 										'' : ' '+classes.sPageButtonDisabled);
 									break;
-
+	
 								default:
 									btnDisplay = button + 1;
 									btnClass = page === button ?
 										classes.sPageButtonActive : '';
 									break;
 							}
-
+	
 							if ( btnDisplay ) {
 								node = $('<a>', {
 										'class': classes.sPageButton+' '+btnClass,
@@ -14044,17 +14044,17 @@ module.exports = require('./main.js');
 									} )
 									.html( btnDisplay )
 									.appendTo( container );
-
+	
 								_fnBindAction(
 									node, {action: button}, clickHandler
 								);
-
+	
 								counter++;
 							}
 						}
 					}
 				};
-
+	
 				// IE9 throws an 'unknown error' if document.activeElement is used
 				// inside an iframe or frame. Try / catch the error. Not good for
 				// accessibility, but neither are frames.
@@ -14064,9 +14064,9 @@ module.exports = require('./main.js');
 					// accessibility. So we want to restore focus once the draw has
 					// completed
 					var activeEl = $(document.activeElement).data('dt-idx');
-
+	
 					attach( $(host).empty(), buttons );
-
+	
 					if ( activeEl !== null ) {
 						$(host).find( '[data-dt-idx='+activeEl+']' ).focus();
 					}
@@ -14075,35 +14075,35 @@ module.exports = require('./main.js');
 			}
 		}
 	} );
-
-
-
+	
+	
+	
 	var __numericReplace = function ( d, decimalPlace, re1, re2 ) {
 		if ( !d || d === '-' ) {
 			return -Infinity;
 		}
-
+	
 		// If a decimal place other than `.` is used, it needs to be given to the
 		// function so we can detect it and replace with a `.` which is the only
 		// decimal place Javascript recognises - it is not locale aware.
 		if ( decimalPlace ) {
 			d = _numToDecimal( d, decimalPlace );
 		}
-
+	
 		if ( d.replace ) {
 			if ( re1 ) {
 				d = d.replace( re1, '' );
 			}
-
+	
 			if ( re2 ) {
 				d = d.replace( re2, '' );
 			}
 		}
-
+	
 		return d * 1;
 	};
-
-
+	
+	
 	// Add the numeric 'deformatting' functions for sorting. This is done in a
 	// function to provide an easy ability for the language options to add
 	// additional methods if a non-period decimal place is used.
@@ -14114,17 +14114,17 @@ module.exports = require('./main.js');
 				"num": function ( d ) {
 					return __numericReplace( d, decimalPlace );
 				},
-
+	
 				// Formatted numbers
 				"num-fmt": function ( d ) {
 					return __numericReplace( d, decimalPlace, _re_formatted_numeric );
 				},
-
+	
 				// HTML numeric
 				"html-num": function ( d ) {
 					return __numericReplace( d, decimalPlace, _re_html );
 				},
-
+	
 				// HTML numeric, formatted
 				"html-num-fmt": function ( d ) {
 					return __numericReplace( d, decimalPlace, _re_html, _re_formatted_numeric );
@@ -14135,15 +14135,15 @@ module.exports = require('./main.js');
 			}
 		);
 	}
-
-
+	
+	
 	// Default sort methods
 	$.extend( _ext.type.order, {
 		// Dates
 		"date-pre": function ( d ) {
 			return Date.parse( d ) || 0;
 		},
-
+	
 		// html
 		"html-pre": function ( a ) {
 			return _empty(a) ?
@@ -14152,7 +14152,7 @@ module.exports = require('./main.js');
 					a.replace( /<.*?>/g, "" ).toLowerCase() :
 					a+'';
 		},
-
+	
 		// string
 		"string-pre": function ( a ) {
 			// This is a little complex, but faster than always calling toString,
@@ -14165,23 +14165,23 @@ module.exports = require('./main.js');
 						'' :
 						a.toString();
 		},
-
+	
 		// string-asc and -desc are retained only for compatibility with the old
 		// sort methods
 		"string-asc": function ( x, y ) {
 			return ((x < y) ? -1 : ((x > y) ? 1 : 0));
 		},
-
+	
 		"string-desc": function ( x, y ) {
 			return ((x < y) ? 1 : ((x > y) ? -1 : 0));
 		}
 	} );
-
-
+	
+	
 	// Numeric sorting types - order doesn't matter here
 	_addNumericSort( '' );
-
-
+	
+	
 	// Built in type detection. See model.ext.aTypes for information about
 	// what is required from this methods.
 	$.extend( DataTable.ext.type.detect, [
@@ -14192,7 +14192,7 @@ module.exports = require('./main.js');
 			var decimal = settings.oLanguage.sDecimal;
 			return _isNumber( d, decimal ) ? 'num'+decimal : null;
 		},
-
+	
 		// Dates (only those recognised by the browser's Date.parse)
 		function ( d, settings )
 		{
@@ -14205,28 +14205,28 @@ module.exports = require('./main.js');
 			var parsed = Date.parse(d);
 			return (parsed !== null && !isNaN(parsed)) || _empty(d) ? 'date' : null;
 		},
-
+	
 		// Formatted numbers
 		function ( d, settings )
 		{
 			var decimal = settings.oLanguage.sDecimal;
 			return _isNumber( d, decimal, true ) ? 'num-fmt'+decimal : null;
 		},
-
+	
 		// HTML numeric
 		function ( d, settings )
 		{
 			var decimal = settings.oLanguage.sDecimal;
 			return _htmlNumeric( d, decimal ) ? 'html-num'+decimal : null;
 		},
-
+	
 		// HTML numeric, formatted
 		function ( d, settings )
 		{
 			var decimal = settings.oLanguage.sDecimal;
 			return _htmlNumeric( d, decimal, true ) ? 'html-num-fmt'+decimal : null;
 		},
-
+	
 		// HTML (this is strict checking - there must be html)
 		function ( d, settings )
 		{
@@ -14234,13 +14234,13 @@ module.exports = require('./main.js');
 				'html' : null;
 		}
 	] );
-
-
-
+	
+	
+	
 	// Filter formatting functions. See model.ext.ofnSearch for information about
 	// what is required from these methods.
-
-
+	
+	
 	$.extend( DataTable.ext.type.search, {
 		html: function ( data ) {
 			return _empty(data) ?
@@ -14251,7 +14251,7 @@ module.exports = require('./main.js');
 						.replace( _re_html, "" ) :
 					'';
 		},
-
+	
 		string: function ( data ) {
 			return _empty(data) ?
 				data :
@@ -14260,9 +14260,9 @@ module.exports = require('./main.js');
 					data;
 		}
 	} );
-
-
-
+	
+	
+	
 	$.extend( true, DataTable.ext.renderer, {
 		header: {
 			_: function ( settings, cell, column, classes ) {
@@ -14275,9 +14275,9 @@ module.exports = require('./main.js');
 					if ( settings !== ctx ) { // need to check this this is the host
 						return;               // table, not a nested one
 					}
-
+	
 					var colIdx = column.idx;
-
+	
 					cell
 						.removeClass(
 							column.sSortingClass +' '+
@@ -14291,10 +14291,10 @@ module.exports = require('./main.js');
 						);
 				} );
 			},
-
+	
 			jqueryui: function ( settings, cell, column, classes ) {
 				var colIdx = column.idx;
-
+	
 				$('<div/>')
 					.addClass( classes.sSortJUIWrapper )
 					.append( cell.contents() )
@@ -14302,13 +14302,13 @@ module.exports = require('./main.js');
 						.addClass( classes.sSortIcon+' '+column.sSortingClassJUI )
 					)
 					.appendTo( cell );
-
+	
 				// Attach a sort listener to update on sort
 				$(settings.nTable).on( 'order.dt.DT', function ( e, ctx, sorting, columns ) {
 					if ( settings !== ctx ) {
 						return;
 					}
-
+	
 					cell
 						.removeClass( classes.sSortAsc +" "+classes.sSortDesc )
 						.addClass( columns[ colIdx ] == 'asc' ?
@@ -14316,7 +14316,7 @@ module.exports = require('./main.js');
 								classes.sSortDesc :
 								column.sSortingClass
 						);
-
+	
 					cell
 						.find( 'span.'+classes.sSortIcon )
 						.removeClass(
@@ -14335,14 +14335,14 @@ module.exports = require('./main.js');
 			}
 		}
 	} );
-
+	
 	/*
 	 * Public helper functions. These aren't used internally by DataTables, or
 	 * called by any of the options passed into DataTables, but they can be used
 	 * externally by developers working with DataTables. They are helper functions
 	 * to make working with DataTables a little bit easier.
 	 */
-
+	
 	/**
 	 * Helpers for `columns.render`.
 	 *
@@ -14372,12 +14372,12 @@ module.exports = require('./main.js');
 				display: function ( d ) {
 					var negative = d < 0 ? '-' : '';
 					d = Math.abs( parseFloat( d ) );
-
+	
 					var intPart = parseInt( d, 10 );
 					var floatPart = precision ?
 						decimal+(d - intPart).toFixed( precision ).substring( 2 ):
 						'';
-
+	
 					return negative + (prefix||'') +
 						intPart.toString().replace(
 							/\B(?=(\d{3})+(?!\d))/g, thousands
@@ -14387,14 +14387,14 @@ module.exports = require('./main.js');
 			};
 		}
 	};
-
-
+	
+	
 	/*
 	 * This is really a good bit rubbish this method of exposing the internal methods
 	 * publicly... - To be fixed in 2.0 using methods on the prototype
 	 */
-
-
+	
+	
 	/**
 	 * Create a wrapper function for exporting an internal functions to an external API.
 	 *  @param {string} fn API function name
@@ -14410,8 +14410,8 @@ module.exports = require('./main.js');
 			return DataTable.ext.internal[fn].apply( this, args );
 		};
 	}
-
-
+	
+	
 	/**
 	 * Reference to internal functions for use by plug-in developers. Note that
 	 * these methods are references to internal functions and are considered to be
@@ -14514,7 +14514,7 @@ module.exports = require('./main.js');
 		                                // in 1.10, so this dead-end function is
 		                                // added to prevent errors
 	} );
-
+	
 
 	// jQuery access
 	$.fn.dataTable = DataTable;
@@ -14706,59 +14706,59 @@ module.exports = require('./main.js');
 
 },{"jquery":18}],3:[function(require,module,exports){
 /**
-               _ _____           _          _     _
-              | |  __ \         (_)        | |   | |
-      ___ ___ | | |__) |___  ___ _ ______ _| |__ | | ___
+               _ _____           _          _     _      
+              | |  __ \         (_)        | |   | |     
+      ___ ___ | | |__) |___  ___ _ ______ _| |__ | | ___ 
      / __/ _ \| |  _  // _ \/ __| |_  / _` | '_ \| |/ _ \
     | (_| (_) | | | \ \  __/\__ \ |/ / (_| | |_) | |  __/
      \___\___/|_|_|  \_\___||___/_/___\__,_|_.__/|_|\___|
-
+	 
 	v 1.4 - a jQuery plugin by Alvaro Prieto Lauroba
-
+	
 	Licences: MIT & GPL
-	Feel free to use or modify this plugin as far as my full name is kept
-
-	If you are going to use this plugin in production environments it is
+	Feel free to use or modify this plugin as far as my full name is kept	
+	
+	If you are going to use this plugin in production environments it is 
 	strongly recomended to use its minified version: colResizable.min.js
 
 */
 
-var $ = require('jquery');
+var $ = require('jquery');	
 	var d = $(document); 		//window object
 	var h = $("head");			//head object
 	var drag = null;			//reference to the current grip that is being dragged
 	var tables = [];			//array of the already processed tables (table.id as key)
-	var	count = 0;				//internal count to create unique IDs when needed.
-
+	var	count = 0;				//internal count to create unique IDs when needed.	
+	
 	//common strings for minification	(in the minified version there are plenty more)
-	var ID = "id";
+	var ID = "id";	
 	var PX = "px";
 	var SIGNATURE ="JColResizer";
-
+	
 	//shortcuts
 	var I = parseInt;
 	var M = Math;
 	var ie = navigator.userAgent.indexOf('Trident/4.0')>0;
 	var S;
 	try{S = sessionStorage;}catch(e){}	//Firefox crashes when executed as local file system
-
-	//append required CSS rules
+	
+	//append required CSS rules  
 	h.append("<style type='text/css'>  .JColResizer{table-layout:fixed;} .JColResizer td, .JColResizer th{overflow:hidden;padding-left:0!important; padding-right:0!important;}  .JCLRgrips{ height:0px; position:relative;} .JCLRgrip{margin-left:-5px; position:absolute; z-index:5; } .JCLRgrip .JColResizer{position:absolute;background-color:red;filter:alpha(opacity=1);opacity:0;width:10px;height:100%;top:0px} .JCLRLastGrip{position:absolute; width:1px; } .JCLRgripDrag{ border-left:1px dotted black;	}</style>");
 
-
+	
 	/**
 	 * Function to allow column resizing for table objects. It is the starting point to apply the plugin.
 	 * @param {DOM node} tb - refrence to the DOM table object to be enhanced
 	 * @param {Object} options	- some customization values
 	 */
-	var init = function( tb, options){
+	var init = function( tb, options){	
 		var t = $(tb);										//the table object is wrapped
 		if(options.disable) return destroy(t);				//the user is asking to destroy a previously colResized table
-		var	id = t.id = t.attr(ID) || SIGNATURE+count++;	//its id is obtained, if null new one is generated
-		t.p = options.postbackSafe; 						//shortcut to detect postback safe
+		var	id = t.id = t.attr(ID) || SIGNATURE+count++;	//its id is obtained, if null new one is generated		
+		t.p = options.postbackSafe; 						//shortcut to detect postback safe 		
 		if(!t.is("table") || tables[id]) return; 			//if the object is not a table or if it was already processed then it is ignored.
 		t.addClass(SIGNATURE).attr(ID, id).before('<div class="JCLRgrips"/>');	//the grips container object is added. Signature class forces table rendering in fixed-layout mode to prevent column's min-width
-		t.opt = options; t.g = []; t.c = []; t.w = t.width(); t.gc = t.prev();	//t.c and t.g are arrays of columns and grips respectively
+		t.opt = options; t.g = []; t.c = []; t.w = t.width(); t.gc = t.prev();	//t.c and t.g are arrays of columns and grips respectively				
 		if(options.marginLeft) t.gc.css("marginLeft", options.marginLeft);  	//if the table contains margins, it must be specified
 		if(options.marginRight) t.gc.css("marginRight", options.marginRight);  	//since there is no (direct) way to obtain margin values in its original units (%, em, ...)
 		t.cs = I(ie? tb.cellSpacing || tb.currentStyle.borderSpacing :t.css('border-spacing'))||2;	//table cellspacing (not even jQuery is fully cross-browser)
@@ -14770,7 +14770,7 @@ var $ = require('jquery');
             t.w = t.width();
 			createGrips(t);		//grips are created
         }, 0);
-
+	
 	};
 
 
@@ -14780,46 +14780,46 @@ var $ = require('jquery');
 	 */
 	var destroy = function(t){
 		var id=t.attr(ID), t=tables[id];		//its table object is found
-		if(!t||!t.is("table")) return;			//if none, then it wasnt processed
+		if(!t||!t.is("table")) return;			//if none, then it wasnt processed	 
 		t.removeClass(SIGNATURE).gc.remove();	//class and grips are removed
 		delete tables[id];						//clean up data
 	};
 
 
 	/**
-	 * Function to create all the grips associated with the table given by parameters
+	 * Function to create all the grips associated with the table given by parameters 
 	 * @param {jQuery ref} t - table object
 	 */
-	var createGrips = function(t){
-
+	var createGrips = function(t){	
+	
 		var th = t.find(">thead>tr>th,>thead>tr>td");	//if table headers are specified in its semantically correct tag, are obtained
 		if(!th.length) th = t.find(">tbody>tr:first>th,>tr:first>th,>tbody>tr:first>td, >tr:first>td");	 //but headers can also be included in different ways
-		t.cg = t.find("col"); 						//a table can also contain a colgroup with col elements
-		t.ln = th.length;							//table length is stored
+		t.cg = t.find("col"); 						//a table can also contain a colgroup with col elements		
+		t.ln = th.length;							//table length is stored	
 		if(t.p && S && S[t.id])memento(t,th);		//if 'postbackSafe' is enabled and there is data for the current table, its coloumn layout is restored
-		th.each(function(i){						//iterate through the table column headers
-			var c = $(this); 						//jquery wrap for the current column
+		th.each(function(i){						//iterate through the table column headers			
+			var c = $(this); 						//jquery wrap for the current column			
 			var g = $(t.gc.append('<div class="JCLRgrip"></div>')[0].lastChild); //add the visual node to be used as grip
 			g.t = t; g.i = i; g.c = c;	c.w =c.width();		//some values are stored in the grip's node data
 			t.g.push(g); t.c.push(c);						//the current grip and column are added to its table object
 			// Ontotext: we don't want it set this way
 			//c.width(c.w).removeAttr("width");				//the width of the column is converted into pixel-based measurements
 			if (i < t.ln-1) {
-				g.bind('touchstart mousedown', onGripMouseDown).append(t.opt.gripInnerHtml).append('<div class="'+SIGNATURE+'" style="cursor:'+t.opt.hoverCursor+'"></div>'); //bind the mousedown event to start dragging
-			} else g.addClass("JCLRLastGrip").removeClass("JCLRgrip");	//the last grip is used only to store data
-			g.data(SIGNATURE, {i:i, t:t.attr(ID)});						//grip index and its table name are stored in the HTML
-		});
+				g.bind('touchstart mousedown', onGripMouseDown).append(t.opt.gripInnerHtml).append('<div class="'+SIGNATURE+'" style="cursor:'+t.opt.hoverCursor+'"></div>'); //bind the mousedown event to start dragging 
+			} else g.addClass("JCLRLastGrip").removeClass("JCLRgrip");	//the last grip is used only to store data			
+			g.data(SIGNATURE, {i:i, t:t.attr(ID)});						//grip index and its table name are stored in the HTML 												
+		}); 	
 		t.cg.removeAttr("width");	//remove the width attribute from elements in the colgroup (in any)
-		syncGrips(t); 				//the grips are positioned according to the current table layout
-		//there is a small problem, some cells in the table could contain dimension values interfering with the
+		syncGrips(t); 				//the grips are positioned according to the current table layout			
+		//there is a small problem, some cells in the table could contain dimension values interfering with the 
 		//width value set by this plugin. Those values are removed
-		t.find('td, th').not(th).not('table th, table td').each(function(){
+		t.find('td, th').not(th).not('table th, table td').each(function(){  
 			$(this).removeAttr('width');	//the width attribute is removed from all table cells which are not nested in other tables and dont belong to the header
-		});
+		});		
 
-
+		
 	};
-
+	
 
 	/**
 	 * Function to allow the persistence of columns dimensions after a browser postback. It is based in
@@ -14827,7 +14827,7 @@ var $ = require('jquery');
 	 * @param {jQuery ref} t - table object
 	 * @param {jQuery ref} th - reference to the first row elements (only set in deserialization)
 	 */
-	var memento = function(t, th){
+	var memento = function(t, th){ 
 		var w,m=0,i=0,aux =[];
 		if(th){										//in deserialization mode (after a postback)
 			t.cg.removeAttr("width");
@@ -14836,113 +14836,113 @@ var $ = require('jquery');
 			for(;i<t.ln;i++){						//for each column
 				aux.push(100*w[i]/w[t.ln]+"%"); 	//width is stored in an array since it will be required again a couple of lines ahead
 				th.eq(i).css("width", aux[i] ); 	//each column width in % is resotred
-			}
+			}			
 			for(i=0;i<t.ln;i++)
 				t.cg.eq(i).css("width", aux[i]);	//this code is required in order to create an inline CSS rule with higher precedence than an existing CSS class in the "col" elements
 		}else{							//in serialization mode (after resizing a column)
 			S[t.id] ="";				//clean up previous data
 			for(;i < t.c.length; i++){		//iterate through columns
-
+			
 				w = t.c[i].width();		//width is obtained
 				S[t.id] += w+";";		//width is appended to the sessionStorage object using ID as key
 				m+=w;					//carriage is updated to obtain the full size used by columns
 			}
-			S[t.id]+=m;					//the last item of the serialized string is the table's active area (width),
+			S[t.id]+=m;					//the last item of the serialized string is the table's active area (width), 
 										//to be able to obtain % width value of each columns while deserializing
-		}
+		}	
 	};
-
-
+	
+	
 	/**
-	 * Function that places each grip in the correct position according to the current table layout	 *
+	 * Function that places each grip in the correct position according to the current table layout	 * 
 	 * @param {jQuery ref} t - table object
 	 */
-	var syncGrips = function (t){
-		t.gc.width(t.w);			//the grip's container width is updated
+	var syncGrips = function (t){	
+		t.gc.width(t.w);			//the grip's container width is updated				
 		for(var i=0; i<t.ln; i++){	//for each column
-			var c = t.c[i];
+			var c = t.c[i]; 			
 			t.g[i].css({			//height and position of the grip is updated according to the table layout
 				left: c.offset().left - t.offset().left + c.outerWidth(false) + t.cs / 2 + PX,
-				height: t.opt.headerOnly? t.c[0].outerHeight(false) : t.outerHeight(false)
-			});
-		}
+				height: t.opt.headerOnly? t.c[0].outerHeight(false) : t.outerHeight(false)				
+			});			
+		} 	
 	};
-
-
-
+	
+	
+	
 	/**
 	* This function updates column's width according to the horizontal position increment of the grip being
 	* dragged. The function can be called while dragging if liveDragging is enabled and also from the onGripDragOver
 	* event handler to synchronize grip's position with their related columns.
 	* @param {jQuery ref} t - table object
 	* @param {nunmber} i - index of the grip being dragged
-	* @param {bool} isOver - to identify when the function is being called from the onGripDragOver event
+	* @param {bool} isOver - to identify when the function is being called from the onGripDragOver event	
 	*/
 	var syncCols = function(t,i,isOver){
-		var inc = drag.x-drag.l, c = t.c[i], c2 = t.c[i+1];
-		var w = c.w + inc;	var w2= c2.w- inc;	//their new width is obtained
-		c.width( w + PX);	c2.width(w2 + PX);	//and set
+		var inc = drag.x-drag.l, c = t.c[i], c2 = t.c[i+1]; 			
+		var w = c.w + inc;	var w2= c2.w- inc;	//their new width is obtained					
+		c.width( w + PX);	c2.width(w2 + PX);	//and set	
 		t.cg.eq(i).width( w + PX); t.cg.eq(i+1).width( w2 + PX);
 		if(isOver){c.w=w; c2.w=w2;}
 	};
 
-
+	
 	/**
-	 * Event handler used while dragging a grip. It checks if the next grip's position is valid and updates it.
+	 * Event handler used while dragging a grip. It checks if the next grip's position is valid and updates it. 
 	 * @param {event} e - mousemove event binded to the window object
 	 */
-	var onGripDrag = function(e){
-		if(!drag) return; var t = drag.t;		//table object reference
-
+	var onGripDrag = function(e){	
+		if(!drag) return; var t = drag.t;		//table object reference 
+		
 		if (e.originalEvent.touches) {
 			var x = e.originalEvent.touches[0].pageX - drag.ox + drag.l;		//next position according to horizontal mouse position increment
 		} else {
 			var x = e.pageX - drag.ox + drag.l;		//next position according to horizontal mouse position increment
 		}
-
-
-
+		
+		
+			
 		var mw = t.opt.minWidth, i = drag.i ;	//cell's min width
 		var l = t.cs*1.5 + mw + t.b;
 
 		var max = i == t.ln-1? t.w-l: t.g[i+1].position().left-t.cs-mw; //max position according to the contiguous cells
 		var min = i? t.g[i-1].position().left+t.cs+mw: l;				//min position according to the contiguous cells
-
-		x = M.max(min, M.min(max, x));						//apply boundings
-		drag.x = x;	 drag.css("left",  x + PX); 			//apply position increment
-
+		
+		x = M.max(min, M.min(max, x));						//apply boundings		
+		drag.x = x;	 drag.css("left",  x + PX); 			//apply position increment		
+			
 		if(t.opt.liveDrag){ 								//if liveDrag is enabled
 			syncCols(t,i); syncGrips(t);					//columns and grips are synchronized
 			var cb = t.opt.onDrag;							//check if there is an onDrag callback
-			if (cb) { e.currentTarget = t[0]; cb(e); }		//if any, it is fired
+			if (cb) { e.currentTarget = t[0]; cb(e); }		//if any, it is fired			
 		}
-
-		return false; 	//prevent text selection
+		
+		return false; 	//prevent text selection				
 	};
-
+	
 
 	/**
 	 * Event handler fired when the dragging is over, updating table layout
 	 */
-	var onGripDragOver = function(e){
-
+	var onGripDragOver = function(e){	
+		
 		d.unbind('touchend.'+SIGNATURE+' mouseup.'+SIGNATURE).unbind('touchmove.'+SIGNATURE+' mousemove.'+SIGNATURE);
-		$("head :last-child").remove(); 				//remove the dragging cursor style
+		$("head :last-child").remove(); 				//remove the dragging cursor style	
 		if(!drag) return;
 		drag.removeClass(drag.t.opt.draggingClass);		//remove the grip's dragging css-class
 		var t = drag.t;
-		var cb = t.opt.onResize; 			//get some values
+		var cb = t.opt.onResize; 			//get some values	
 		if(drag.x){ 									//only if the column width has been changed
 			syncCols(t,drag.i, true);	syncGrips(t);	//the columns and grips are updated
 			if (cb) { e.currentTarget = t[0]; cb(e); }	//if there is a callback function, it is fired
 		}
 		if(t.p && S) memento(t); 						//if postbackSafe is enabled and there is sessionStorage support, the new layout is serialized and stored
-		drag = null;									//since the grip's dragging is over
-	};
-
+		drag = null;									//since the grip's dragging is over									
+	};	
+	
 
 	/**
-	 * Event handler fired when the grip's dragging is about to start. Its main goal is to set up events
+	 * Event handler fired when the grip's dragging is about to start. Its main goal is to set up events 
 	 * and store some values used while dragging.
 	 * @param {event} e - grip's mousedown event
 	 */
@@ -14957,19 +14957,19 @@ var $ = require('jquery');
 		g.l = g.position().left;
 		d.bind('touchmove.'+SIGNATURE+' mousemove.'+SIGNATURE, onGripDrag).bind('touchend.'+SIGNATURE+' mouseup.'+SIGNATURE,onGripDragOver);	//mousemove and mouseup events are bound
 		h.append("<style type='text/css'>*{cursor:"+ t.opt.dragCursor +"!important}</style>"); 	//change the mouse cursor
-		g.addClass(t.opt.draggingClass); 	//add the dragging class (to allow some visual feedback)
+		g.addClass(t.opt.draggingClass); 	//add the dragging class (to allow some visual feedback)				
 		drag = g;							//the current grip is stored as the current dragging object
-		if(t.c[o.i].l) for(var i=0,c; i<t.ln; i++){ c=t.c[i]; c.l = false; c.w= c.width(); } 	//if the colum is locked (after browser resize), then c.w must be updated
+		if(t.c[o.i].l) for(var i=0,c; i<t.ln; i++){ c=t.c[i]; c.l = false; c.w= c.width(); } 	//if the colum is locked (after browser resize), then c.w must be updated		
 		return false; 	//prevent text selection
 	};
-
+	
 	/**
 	 * Event handler fired when the browser is resized. The main purpose of this function is to update
-	 * table layout according to the browser's size synchronizing related grips
+	 * table layout according to the browser's size synchronizing related grips 
 	 */
 	var onResize = function(){
-		for(t in tables){
-			var t = tables[t], i, mw=0;
+		for(t in tables){		
+			var t = tables[t], i, mw=0;				
 			t.removeClass(SIGNATURE);						//firefox doesnt like layout-fixed in some cases
 			if (t.w != t.width()) {							//if the the table's width has changed
 				t.w = t.width();							//its new value is kept
@@ -14977,50 +14977,50 @@ var $ = require('jquery');
 				// for(i=0; i<t.ln; i++) mw+= t.c[i].w;		//the active cells area is obtained
 				//cell rendering is not as trivial as it might seem, and it is slightly different for
 				//each browser. In the begining i had a big switch for each browser, but since the code
-				//was extremelly ugly now I use a different approach with several reflows. This works
+				//was extremelly ugly now I use a different approach with several reflows. This works 
 				//pretty well but it's a bit slower. For now, lets keep things simple...
 				// Ontotext: no need to do this
 				// for(i=0; i<t.ln; i++) t.c[i].css("width", M.round(1000*t.c[i].w/mw)/10 + "%").l=true;
-				//c.l locks the column, telling us that its c.w is outdated
+				//c.l locks the column, telling us that its c.w is outdated									
 			}
 			syncGrips(t.addClass(SIGNATURE));
 		}
-	};
+	};		
 
 
-	//bind resize event, to update grips position
-	$(window).bind('resize.'+SIGNATURE, onResize);
+	//bind resize event, to update grips position 
+	$(window).bind('resize.'+SIGNATURE, onResize); 
 
 
 	/**
 	 * The plugin is added to the jQuery library
-	 * @param {Object} options -  an object containg some basic customization values
+	 * @param {Object} options -  an object containg some basic customization values 
 	 */
-    $.fn.extend({
-        colResizable: function(options) {
+    $.fn.extend({  
+        colResizable: function(options) {           
             var defaults = {
-
+			
 				//attributes:
                 draggingClass: 'JCLRgripDrag',	//css-class used when a grip is being dragged (for visual feedback purposes)
-				gripInnerHtml: '',				//if it is required to use a custom grip it can be done using some custom HTML
-				liveDrag: false,				//enables table-layout updaing while dragging
-				minWidth: 15, 					//minimum width value in pixels allowed for a column
-				headerOnly: false,				//specifies that the size of the the column resizing anchors will be bounded to the size of the first row
+				gripInnerHtml: '',				//if it is required to use a custom grip it can be done using some custom HTML				
+				liveDrag: false,				//enables table-layout updaing while dragging			
+				minWidth: 15, 					//minimum width value in pixels allowed for a column 
+				headerOnly: false,				//specifies that the size of the the column resizing anchors will be bounded to the size of the first row 
 				hoverCursor: "e-resize",  		//cursor to be used on grip hover
 				dragCursor: "e-resize",  		//cursor to be used while dragging
-				postbackSafe: false, 			//when it is enabled, table layout can persist after postback. It requires browsers with sessionStorage support (it can be emulated with sessionStorage.js). Some browsers ony
-				flush: false, 					//when postbakSafe is enabled, and it is required to prevent layout restoration after postback, 'flush' will remove its associated layout data
+				postbackSafe: false, 			//when it is enabled, table layout can persist after postback. It requires browsers with sessionStorage support (it can be emulated with sessionStorage.js). Some browsers ony 
+				flush: false, 					//when postbakSafe is enabled, and it is required to prevent layout restoration after postback, 'flush' will remove its associated layout data 
 				marginLeft: null,				//in case the table contains any margins, colResizable needs to know the values used, e.g. "10%", "15em", "5px" ...
 				marginRight: null, 				//in case the table contains any margins, colResizable needs to know the values used, e.g. "10%", "15em", "5px" ...
-				disable: false,					//disables all the enhancements performed in a previously colResized table
-
+				disable: false,					//disables all the enhancements performed in a previously colResized table	
+				
 				//events:
 				onDrag: null, 					//callback function to be fired during the column resizing process if liveDrag is enabled
 				onResize: null					//callback function fired when the dragging process is over
-            }
-			var options =  $.extend(defaults, options);
-            return this.each(function() {
-             	init( this, options);
+            }			
+			var options =  $.extend(defaults, options);			
+            return this.each(function() {				
+             	init( this, options);             
             });
         }
     });
@@ -15128,7 +15128,7 @@ RegExp.escape= function(s) {
             options.state.colNum = 1;
             return;
           }
-
+          
           if(options.onParseEntry === undefined) {
             // onParseEntry hook not set
             data.push(entry);
@@ -15140,7 +15140,7 @@ RegExp.escape= function(s) {
             }
           }
           //console.log('entry:' + entry);
-
+          
           // cleanup
           entry = [];
 
@@ -15148,7 +15148,7 @@ RegExp.escape= function(s) {
           if(options.end && options.state.rowNum >= options.end) {
             exit = true;
           }
-
+          
           // update global state
           options.state.rowNum++;
           options.state.colNum = 1;
@@ -15314,10 +15314,10 @@ RegExp.escape= function(s) {
         var entry = '';
         var exit = false;
 
-        function endOfLine() {
+        function endOfLine() {          
           // reset the state
           state = 0;
-
+          
           // if 'start' hasn't been met, don't output
           if(options.start && options.state.rowNum < options.start) {
             // update global state
@@ -15325,7 +15325,7 @@ RegExp.escape= function(s) {
             options.state.rowNum++;
             return;
           }
-
+          
           if(options.onParseEntry === undefined) {
             // onParseEntry hook not set
             entries.push(entry);
@@ -15344,7 +15344,7 @@ RegExp.escape= function(s) {
           if(options.end && options.state.rowNum >= options.end) {
             exit = true;
           }
-
+          
           // update global state
           options.state.rowNum++;
         }
@@ -15359,7 +15359,7 @@ RegExp.escape= function(s) {
         matchSrc = matchSrc.replace(/S/g, escSeparator);
         matchSrc = matchSrc.replace(/D/g, escDelimiter);
         match = RegExp(matchSrc, 'gm');
-
+        
         // put on your fancy pants...
         // process control chars individually, use look-ahead on non-control chars
         csv.replace(match, function (m0) {
@@ -15479,7 +15479,7 @@ RegExp.escape= function(s) {
         // cache settings
         var separator = options.separator;
         var delimiter = options.delimiter;
-
+        
         // set initial state if it's missing
         if(!options.state.rowNum) {
           options.state.rowNum = 1;
@@ -15516,7 +15516,7 @@ RegExp.escape= function(s) {
           // escape regex-specific control chars
           var escSeparator = RegExp.escape(separator);
           var escDelimiter = RegExp.escape(delimiter);
-
+          
           // compile the regEx str using the custom delimiter/separator
           var match = /(D|S|\n|\r|[^DS\r\n]+)/;
           var matchSrc = match.source;
@@ -15673,7 +15673,7 @@ RegExp.escape= function(s) {
       config.callback = ((callback !== undefined && typeof(callback) === 'function') ? callback : false);
       config.separator = 'separator' in options ? options.separator : $.csv.defaults.separator;
       config.delimiter = 'delimiter' in options ? options.delimiter : $.csv.defaults.delimiter;
-
+      
       // setup
       var data = [];
       var options = {
@@ -15720,7 +15720,7 @@ RegExp.escape= function(s) {
       config.delimiter = 'delimiter' in options ? options.delimiter : $.csv.defaults.delimiter;
       config.headers = 'headers' in options ? options.headers : $.csv.defaults.headers;
       options.start = 'start' in options ? options.start : 1;
-
+      
       // account for headers
       if(config.headers) {
         options.start++;
@@ -15728,11 +15728,11 @@ RegExp.escape= function(s) {
       if(options.end && config.headers) {
         options.end++;
       }
-
+      
       // setup
       var lines = [];
       var data = [];
-
+      
       var options = {
         delimiter: config.delimiter,
         separator: config.separator,
@@ -15763,7 +15763,7 @@ RegExp.escape= function(s) {
 
       // fetch the data
       var lines = $.csv.parsers.splitLines(csv, options);
-
+      
       // reset the state for re-use
       options.state.colNum = 1;
       if(headers){
@@ -15771,7 +15771,7 @@ RegExp.escape= function(s) {
       } else {
         options.state.rowNum = 1;
       }
-
+      
       // convert data to objects
       for(var i=0, len=lines.length; i<len; i++) {
         var entry = $.csv.toArray(lines[i], options);
@@ -15780,7 +15780,7 @@ RegExp.escape= function(s) {
           object[headers[j]] = entry[j];
         }
         data.push(object);
-
+        
         // update row state
         options.state.rowNum++;
       }
@@ -53396,7 +53396,7 @@ module.exports = {
 var storeAPI = {
 	version: '2.0.12',
 	enabled: false,
-
+	
 	// get returns the value of the given key. If that value
 	// is undefined, it returns optionalDefaultValue instead.
 	get: function(key, optionalDefaultValue) {
@@ -53447,11 +53447,11 @@ var storeAPI = {
 	createStore: function() {
 		return createStore.apply(this, arguments)
 	},
-
+	
 	addPlugin: function(plugin) {
 		this._addPlugin(plugin)
 	},
-
+	
 	namespace: function(namespace) {
 		return createStore(this.storage, this.plugins, namespace)
 	}
@@ -53481,7 +53481,7 @@ function createStore(storages, plugins, namespace) {
 	if (!legalNamespaces.test(namespace)) {
 		throw new Error('store.js namespaces can only have alphanumerics + underscores and dashes')
 	}
-
+	
 	var _privateStoreProps = {
 		_namespacePrefix: namespacePrefix,
 		_namespaceRegexp: namespaceRegexp,
@@ -53539,7 +53539,7 @@ function createStore(storages, plugins, namespace) {
 
 			return (val !== undefined ? val : defaultVal)
 		},
-
+		
 		_addStorage: function(storage) {
 			if (this.enabled) { return }
 			if (this._testStorage(storage)) {
@@ -53588,10 +53588,10 @@ function createStore(storages, plugins, namespace) {
 				self._assignPluginFnProp(pluginFnProp, propName)
 			})
 		},
-
+		
 		// Put deprecated properties in the private API, so as to not expose it to accidential
 		// discovery through inspection of the store object.
-
+		
 		// Deprecated: addStorage
 		addStorage: function(storage) {
 			_warn('store.addStorage(storage) is deprecated. Use createStore([storages])')
@@ -53605,7 +53605,7 @@ function createStore(storages, plugins, namespace) {
 	store.raw = {}
 	each(store, function(prop, propName) {
 		if (isFunction(prop)) {
-			store.raw[propName] = bind(store, prop)
+			store.raw[propName] = bind(store, prop)			
 		}
 	})
 	each(storages, function(storage) {
@@ -53648,7 +53648,7 @@ function make_assign() {
 				each(Object(arguments[i]), function(val, key) {
 					obj[key] = val
 				})
-			}
+			}			
 			return obj
 		}
 	}
@@ -54121,7 +54121,7 @@ module.exports={
         "spec": ">=1.4.1 <2.0.0",
         "type": "range"
       },
-      "/home/boyan/Git/YASR-Ontotext"
+      "/home/yordan/dev/ontotext/YASR-Ontotext"
     ]
   ],
   "_from": "yasgui-utils@>=1.4.1 <2.0.0",
@@ -54155,7 +54155,7 @@ module.exports={
   "_shasum": "2bcfc5a315688de3ae6057883d9ae342b205f267",
   "_shrinkwrap": null,
   "_spec": "yasgui-utils@^1.4.1",
-  "_where": "/home/boyan/Git/YASR-Ontotext",
+  "_where": "/home/yordan/dev/ontotext/YASR-Ontotext",
   "author": {
     "name": "Laurens Rietveld"
   },
@@ -54338,7 +54338,7 @@ module.exports = {
 			var parser = new DOMParser();
 			var dom = parser.parseFromString(svgString, "text/xml");
 			var svg = dom.documentElement;
-
+			
 			var svgContainer = document.createElement("div");
 			svgContainer.className = 'svgImg';
 			svgContainer.appendChild(svg);
@@ -54471,27 +54471,27 @@ module.exports = function(result) {
 	var quote = "\"";
 	var delimiter = ",";
 	var lineBreak= "\n";
-
+	
 	var variables = result.head.vars;
-
+	
 	var querySolutions= result.results.bindings;
-
-
-
+	
+	
+	
 	var createHeader = function() {
 		for (var i = 0; i < variables.length; i++) {
 			addValueToString(variables[i]);
 		}
 		csvString += lineBreak;
 	};
-
+	
 	var createBody = function() {
 		for (var i = 0; i < querySolutions.length; i++) {
 			addQuerySolutionToString(querySolutions[i]);
 			csvString += lineBreak;
 		}
 	};
-
+	
 	var addQuerySolutionToString = function(querySolution) {
 		for (var i = 0; i < variables.length; i++) {
 			var variable = variables[i];
@@ -54510,7 +54510,7 @@ module.exports = function(result) {
 		}
 		csvString += " " + value + " " + delimiter;
 	};
-
+	
 	var needToQuoteString = function(value) {
 		//quote when it contains whitespace or the delimiter
 		var needQuoting = false;
@@ -54519,7 +54519,7 @@ module.exports = function(result) {
 		}
 		return needQuoting;
 	};
-
+	
 	var csvString = "";
 	createHeader();
 	createBody();
@@ -54531,13 +54531,13 @@ var $ = require("jquery");
 
 /**
  * Constructor of plugin which displays boolean info
- *
+ * 
  * @param yasr {object}
  * @param parent {DOM element}
  * @param options {object}
  * @class YASR.plugins.boolean
  * @return yasr-boolean (doc)
- *
+ * 
  */
 var root = module.exports = function(yasr) {
     // load and register the translation service providing the locale config
@@ -54555,7 +54555,7 @@ var root = module.exports = function(yasr) {
 	plugin.draw = function() {
 		container.empty().appendTo(yasr.resultsContainer);
 		var booleanVal = yasr.results.getBoolean();
-
+		
 		var imgId = null;
 		var textVal = null;
 		if (booleanVal === true) {
@@ -54568,10 +54568,10 @@ var root = module.exports = function(yasr) {
 			container.width("140");
 			textVal = yasr.translate('yasr.boolean.no_boolean');
 		}
-
+		
 		//add icon
 		if (imgId) require("yasgui-utils").svg.draw(container, require('./imgs.js')[imgId]);
-
+		
 		$("<span></span>").text(textVal).appendTo(container);
 	};
 
@@ -54592,13 +54592,13 @@ var $ = require("jquery");
 
 /**
  * Constructor of plugin which displays boolean info
- *
+ * 
  * @param yasr {object}
  * @param parent {DOM element}
  * @param options {object}
  * @class YASR.plugins.boolean
  * @return yasr-boolean (doc)
- *
+ * 
  */
 var root = module.exports = function(yasr) {
     // load and register the translation service providing the locale config
@@ -54616,7 +54616,7 @@ var root = module.exports = function(yasr) {
 	plugin.draw = function() {
 		container.empty().appendTo(yasr.resultsContainer);
 		var booleanVal = yasr.results.getBoolean();
-
+		
 		var alert = null;
 		if (booleanVal === true) {
 			alert = $("<div class='boolRes alert alert-success no-icon'><span class='boolResTex'>" + yasr.translate('yasr.boolean.alert.yes') + "</span></div>");
@@ -54626,7 +54626,7 @@ var root = module.exports = function(yasr) {
 			container.width("140");
 			textVal = yasr.translate('yasr.boolean.no_boolean');
 		}
-
+			
 		alert.appendTo(container);
 	};
 
@@ -54747,13 +54747,13 @@ var $ = require("jquery");
 
 /**
  * Constructor of plugin which displays SPARQL errors
- *
+ * 
  * @param yasr {object}
  * @param parent {DOM element}
  * @param options {object}
  * @class YASR.plugins.boolean
  * @return yasr-erro (doc)
- *
+ * 
  */
 var root = module.exports = function(yasr) {
     // load and register the translation service providing the locale config
@@ -54784,12 +54784,12 @@ var root = module.exports = function(yasr) {
 		}
 		return $tryBtn;
 	}
-
+	
 	plugin.draw = function() {
 		var error = yasr.results.getException();
 		$container.empty().appendTo(yasr.resultsContainer);
 		var $header = $("<div>", {class:'errorHeader'}).appendTo($container);
-
+		
 		if (error.status !== 0) {
 			var statusText = 'Error';
 			if (error.statusText && error.statusText.length < 100) {
@@ -54797,14 +54797,14 @@ var root = module.exports = function(yasr) {
 				statusText = error.statusText;
 			}
 			statusText += ' (#' + error.status + ')';
-
+			
 			$header
 				.append(
 					$("<span>", {class:'exception'})
 					.text(statusText)
 				)
 				.append(getTryBtn());
-
+			
 			var responseText = null;
 			if (error.responseText) {
 				responseText = error.responseText;
@@ -54822,7 +54822,7 @@ var root = module.exports = function(yasr) {
 					.append(options.corsMessage)
 			);
 		}
-
+		
 	};
 
 	plugin.canHandleResults = function(yasr){return yasr.results.getException() || false;};
@@ -54831,7 +54831,7 @@ var root = module.exports = function(yasr) {
 
 /**
  * Defaults for error plugin
- *
+ * 
  * @type object
  * @attribute YASR.plugins.error.defaults
  */
@@ -54906,6 +54906,9 @@ function getGraphSaveAsDropDown() {
                     '</li>' +
                     '<li>' +
                         '<a class="format dropdown-item" data-accepts="application/ld+json" href="#">JSON-LD</a>' +
+                    '</li>' +
+                    '<li>' +
+                        '<a class="format dropdown-item" data-accepts="application/x-ld+ndjson" href="#">NDJSON-LD</a>' +
                     '</li>' +
                     '<li>' +
                         '<a class="format dropdown-item" data-accepts="application/rdf+xml" href="#">RDF-XML</a>' +
@@ -55065,7 +55068,7 @@ module.exports = new loader();
 'use strict';
 /**
  * todo: chart height as option
- *
+ * 
  */
 var $ = require('jquery'),
 	utils = require('./utils.js'),
@@ -55088,10 +55091,10 @@ var root = module.exports = function(yasr){
 	if (yasr.options.gchart.chartConfig == null) {
 		yasr.options.gchart.chartConfig = yUtils.storage.get(persistencyIdChartConfig);
 	}
-
-
+	
+	
 	var editor = null;
-
+	
 	var initEditor = function(callback) {
 		var google = (typeof window !== "undefined" ? window['google'] : typeof global !== "undefined" ? global['google'] : null);
 		editor = new google.visualization.ChartEditor();
@@ -55103,7 +55106,7 @@ var root = module.exports = function(yasr){
 
 					yUtils.storage.set(persistencyIdMotionChart, yasr.options.gchart.motionChartState);
 					chartWrapper.setOption("state", yasr.options.gchart.motionChartState);
-
+					
 					google.visualization.events.addListener(chartWrapper, 'ready', function(){
 						var motionChart;
 						motionChart = chartWrapper.getChart();
@@ -55116,7 +55119,7 @@ var root = module.exports = function(yasr){
 				tmp = chartWrapper.getDataTable();
 				chartWrapper.setDataTable(null);
 				yasr.options.gchart.chartConfig = chartWrapper.toJSON();
-
+				
 				yUtils.storage.set(persistencyIdChartConfig, yasr.options.gchart.chartConfig);
 				chartWrapper.setDataTable(tmp);
 				// Fix for OWLIM-1971
@@ -55141,7 +55144,7 @@ var root = module.exports = function(yasr){
 			if (!yasr.results) return null;
 			var svgEl = yasr.resultsContainer.find('svg');
 			if (svgEl.length > 0) {
-
+			
 				return {
 					getContent: function(){
 						if (svgEl[0].outerHTML) {
@@ -55167,16 +55170,16 @@ var root = module.exports = function(yasr){
 					contentType: "text/csv",
 					buttonTitle: yasr.translate('yasr.btn.title.csv')
 				};
-			}
+			} 
 		},
 		getEmbedHtml: function() {
 			if (!yasr.results) return null;
-
+			
 			var svgEl = yasr.resultsContainer.find('svg')
 				.clone()//create clone, as we'd like to remove height/width attributes
 				.css('height', '').css('width','');
 			if (svgEl.length == 0) return null;
-
+			
 			var htmlString = svgEl[0].outerHTML;
 			if (!htmlString) {
 				//outerHTML not supported. use workaround
@@ -55213,7 +55216,7 @@ var root = module.exports = function(yasr){
 				);
 				var dataTable = new google.visualization.DataTable();
 				var jsonResults = yasr.results.getAsJson();
-
+				
 				jsonResults.head.vars.forEach(function(variable) {
 					var type = 'string';
 					try {
@@ -55242,7 +55245,7 @@ var root = module.exports = function(yasr){
 				if (yasr.options.gchart.chartConfig) {
 
 					wrapper = new google.visualization.ChartWrapper(yasr.options.gchart.chartConfig);
-
+					
 					if (wrapper.getChartType() === "MotionChart" && yasr.options.gchart.motionChartState != null) {
 						wrapper.setOption("state", yasr.options.gchart.motionChartState);
 						google.visualization.events.addListener(wrapper, 'ready', function(){
@@ -55267,7 +55270,7 @@ var root = module.exports = function(yasr){
 				wrapper.draw();
 				yasr.updateHeader();
 			}
-
+			
 			if (!(typeof window !== "undefined" ? window['google'] : typeof global !== "undefined" ? global['google'] : null) || !(typeof window !== "undefined" ? window['google'] : typeof global !== "undefined" ? global['google'] : null).visualization || !editor) {
 				require('./gChartLoader.js')
 					.on('done', function() {
@@ -55486,10 +55489,10 @@ $.fn.tableToCsv = function(config) {
 		delimiter: ",",
 		lineBreak: "\n",
 	}, config)
-
-
-
-
+	
+	
+	
+	
 	var needToQuoteString = function(value) {
 		//quote when it contains whitespace or the delimiter
 		var needQuoting = false;
@@ -55506,7 +55509,7 @@ $.fn.tableToCsv = function(config) {
 		}
 		csvString += " " + value + " " + config.delimiter;
 	};
-
+	
 	var addRowToString = function(rowArray) {
 		rowArray.forEach(function(val) {
 			addValueToString(val);
@@ -55517,9 +55520,9 @@ $.fn.tableToCsv = function(config) {
 	var tableArrays = [];
 	var $el = $(this);
 	var rowSpans = {};
-
-
-
+	
+	
+	
     var colCount = 0;
     $el.find('tr:first *').each(function () {
         if ($(this).attr('colspan')) {
@@ -55528,14 +55531,14 @@ $.fn.tableToCsv = function(config) {
             colCount++;
         }
     });
-
+	
 	$el.find('tr').each(function(rowId, tr) {
 		var $tr = $(tr);
 		var rowArray = []
-
+		
 		var skippedCols = 0;
 		for (var colId = 0; (colId + skippedCols) < colCount; colId++) {
-
+			
 			//for col Id, do we have a rowspan attr left? Then first add this one to rowArray
 			if (rowSpans[colId]) {
 				rowArray.push(rowSpans[colId].text);
@@ -55543,10 +55546,10 @@ $.fn.tableToCsv = function(config) {
 				if (!rowSpans[colId].rowSpan) delete rowSpans[colId];
 				continue;
 			}
-
+			
 			var $cell = $tr.find(':nth-child(' + (colId+1) + ')');
 			console.log($cell);
-
+			
 			var colspan = $cell.attr('colspan');
 			var rowspan = $cell.attr('rowspan');
 			if (colspan && !isNaN(colspan)) {
@@ -55566,10 +55569,10 @@ $.fn.tableToCsv = function(config) {
 			}
 		}
 		addRowToString(rowArray);
-
-
+		
+		
 	})
-
+	
 	return csvString;
 }
 
@@ -56125,7 +56128,7 @@ var root = module.exports = function(queryResponse, separator) {
 			return null;
 		}
 	};
-
+	
 	var getBoolean = function() {
 		if (arrays.length == 2 && arrays[0].length == 1 && arrays[1].length == 1
 				&& arrays[0][0] == "boolean" && (arrays[1][0] == "1" || arrays[1][0] == "0")) {
@@ -56134,7 +56137,7 @@ var root = module.exports = function(queryResponse, separator) {
 		}
 		return false;
 	};
-
+	
 	var getVariables = function() {
 		if (arrays.length > 0 && arrays[0].length > 0) {
 			json.head = {vars: arrays[0]};
@@ -56142,7 +56145,7 @@ var root = module.exports = function(queryResponse, separator) {
 		}
 		return false;
 	};
-
+	
 	var getBindings = function() {
 		if (arrays.length > 1) {
 			json.results = {bindings: []};
@@ -56157,7 +56160,7 @@ var root = module.exports = function(queryResponse, separator) {
 						if (detectedType) binding[varName].type = detectedType;
 					}
 				}
-
+				
 				json.results.bindings.push(binding);
 			}
 			json.head = {vars: arrays[0]};
@@ -56170,7 +56173,7 @@ var root = module.exports = function(queryResponse, separator) {
 		var varsFetched = getVariables();
 		if (varsFetched) getBindings();
 	}
-
+	
 	return json;
 };
 },{"../../lib/jquery.csv-0.71.js":4,"jquery":18}],57:[function(require,module,exports){
@@ -56267,7 +56270,7 @@ var root = module.exports = function(queryResponse) {
 		return queryResponse;
 	}
 	return false;
-
+	
 };
 },{"jquery":18}],59:[function(require,module,exports){
 'use strict';
@@ -56306,7 +56309,7 @@ var root = module.exports = function(dataOrJqXhr, textStatus, jqXhrOrErrorString
 	var json = null;
 	var type = null;//json, xml, csv, or tsv
 	var exception = null;
-
+	
 	var init = function() {
 		if (typeof dataOrJqXhr == "object") {
 			/**
@@ -56322,7 +56325,7 @@ var root = module.exports = function(dataOrJqXhr, textStatus, jqXhrOrErrorString
 				if (dataOrJqXhr.responseText) exception.responseText = dataOrJqXhr.responseText;
 				if (dataOrJqXhr.statusText) exception.statusText = dataOrJqXhr.statusText;
 			}
-
+			
 			/**
 			 * Extract content type info (if there is any)
 			 */
@@ -56333,7 +56336,7 @@ var root = module.exports = function(dataOrJqXhr, textStatus, jqXhrOrErrorString
 				var ct = dataOrJqXhr.getResponseHeader("content-type").trim().toLowerCase();
 				if (ct.length > 0) contentType = ct;
 			}
-
+			
 			/**
 			 * extract original response
 			 */
@@ -56360,7 +56363,7 @@ var root = module.exports = function(dataOrJqXhr, textStatus, jqXhrOrErrorString
 
 	var getRawJson = function() {
 		return rawJson;
-	}
+	} 
 
 	var getAsJson = function() {
 		if (json) {
@@ -56369,7 +56372,7 @@ var root = module.exports = function(dataOrJqXhr, textStatus, jqXhrOrErrorString
 		    }
 		    return json;
 		}
-		if (json === false || exception) return false;//already tried parsing this, and failed. do not try again...
+		if (json === false || exception) return false;//already tried parsing this, and failed. do not try again... 
 		var getParserFromContentType = function() {
 			if (contentType) {
 				if (contentType.indexOf("json") > -1) {
@@ -56407,7 +56410,7 @@ var root = module.exports = function(dataOrJqXhr, textStatus, jqXhrOrErrorString
 				}
 			}
 		};
-
+		
 
 		var doLuckyGuess = function() {
 			json = parsers.json(origResponse);
@@ -56421,7 +56424,7 @@ var root = module.exports = function(dataOrJqXhr, textStatus, jqXhrOrErrorString
 			}
 		};
 
-
+		
 		getParserFromContentType();
 		if (!json) {
 			doLuckyGuess();
@@ -56471,7 +56474,7 @@ var root = module.exports = function(dataOrJqXhr, textStatus, jqXhrOrErrorString
 	var getShortOriginalResponseAsJSON = function(limit) {
 		if (rawJson.results && rawJson.results.bindings && rawJson.results.bindings.length > limit) {
 				var shortJson = jQuery.extend(true, {}, rawJson);
-				shortJson.results.bindings = rawJson.results.bindings.slice(0, limit);
+				shortJson.results.bindings = rawJson.results.bindings.slice(0, limit);				
 		}
 		else {
 			var keys = _.keys(rawJson).slice(0, limit);
@@ -56498,7 +56501,7 @@ var root = module.exports = function(dataOrJqXhr, textStatus, jqXhrOrErrorString
 		if (type == null) getAsJson();//detects type as well
 		return type;
 	};
-
+	
 	//process the input parameters in such a way that we can store it in local storage (i.e., no function)
 	//and, make sure we can easily pass it on back to this wrapper function when loading it again from storage
 	var getAsStoreObject = function() {
@@ -56514,20 +56517,20 @@ var root = module.exports = function(dataOrJqXhr, textStatus, jqXhrOrErrorString
 			//the other instances of this param (whether it is a json, xml, or exception object), we can normally store
 			arg1 = dataOrJqXhr;
 		}
-
-
+		
+		
 		var arg2 = textStatus;
 		var arg3 = undefined;
 		if (typeof jqXhrOrErrorString == "string") arg3 = jqXhrOrErrorString;
-
+		
 		return [arg1, arg2, arg3];
 	};
-
-
-
+	
+	
+	
 	init();
 	json = getAsJson();
-
+	
 	return {
 		getAsStoreObject: getAsStoreObject,
 		getRawJson: getRawJson,
@@ -56553,8 +56556,8 @@ var root = module.exports = function(dataOrJqXhr, textStatus, jqXhrOrErrorString
 var $ = require("jquery");
 var root = module.exports = function(xml) {
 
-
-
+	
+	
 	/**
 	 * head
 	 */
@@ -56569,14 +56572,14 @@ var root = module.exports = function(xml) {
 			}
 		}
 	};
-
+	
 	var parseResults = function(node) {
 		json.results = {};
 		json.results.bindings = [];
 		for (var resultIt = 0; resultIt < node.childNodes.length; resultIt++) {
 			var resultNode = node.childNodes[resultIt];
 			var jsonResult = null;
-
+			
 			for (var bindingIt = 0; bindingIt < resultNode.childNodes.length; bindingIt++) {
 				var bindingNode = resultNode.childNodes[bindingIt];
 				if (bindingNode.nodeName == "binding") {
@@ -56592,7 +56595,7 @@ var root = module.exports = function(xml) {
 							jsonResult[varName].value = bindingInf.innerHTML;
 							var dataType = bindingInf.getAttribute("datatype");
 							if (dataType) jsonResult[varName].datatype = dataType;
-
+							
 						}
 					}
 				}
@@ -56600,7 +56603,7 @@ var root = module.exports = function(xml) {
 			if (jsonResult) json.results.bindings.push(jsonResult);
 		}
 	};
-
+	
 	var parseBoolean = function(node) {
 		if (node.innerHTML == "true") {
 			json.boolean = true;
@@ -56622,15 +56625,15 @@ var root = module.exports = function(xml) {
 		return null;
 	}
 	var json = {};
-
-
+	
+	
     for(var i = 0; i < xml.childNodes.length; i++) {
     	var node = xml.childNodes[i];
     	if (node.nodeName == "head") parseHead(node);
     	if (node.nodeName == "results") parseResults(node);
     	if (node.nodeName == "boolean") parseBoolean(node);
     }
-
+    
 	return json;
 };
 
@@ -56675,7 +56678,7 @@ var root = module.exports = function(yasr) {
 		var variables = yasr.results.getVariables();
 		if (!options.mergeLabelsWithUris) return variables;
 		var shownVariables = [];
-
+		
 		mergeLabelPostfix = (typeof options.mergeLabelsWithUris == "string"? options.mergeLabelsWithUris: "Label");
 		variables.forEach(function(variable){
 			if (variable.indexOf(mergeLabelPostfix, variable.length - mergeLabelPostfix.length) !== -1) {
@@ -56689,7 +56692,7 @@ var root = module.exports = function(yasr) {
 		});
 		return shownVariables;
 	};
-
+	
 	var formatForPivot = function(callback) {
 		var vars = getShownVariables();
 		var usedPrefixes = null;
@@ -56713,10 +56716,10 @@ var root = module.exports = function(yasr) {
 			});
 			callback(rowObj);
 		});
-	}
-
+	} 
+	
 	var persistencyId = yasr.getPersistencyId(options.persistencyId);
-
+	
 	var getStoredSettings = function() {
 		var settings = yUtils.storage.get(persistencyId);
 		//validate settings. we may have different variables, or renderers might be gone
@@ -56724,11 +56727,11 @@ var root = module.exports = function(yasr) {
 			var vars = yasr.results.getVariables();
 			var keepColsAndRows = true;
 			settings.cols.forEach(function(variable) {
-				if (vars.indexOf(variable) < 0) keepColsAndRows = false;
+				if (vars.indexOf(variable) < 0) keepColsAndRows = false; 
 			});
 			if (keepColsAndRows) {
 				settings.rows.forEach(function(variable) {
-					if (vars.indexOf(variable) < 0) keepColsAndRows = false;
+					if (vars.indexOf(variable) < 0) keepColsAndRows = false; 
 				});
 			}
 			if (!keepColsAndRows) {
@@ -56762,17 +56765,17 @@ var root = module.exports = function(yasr) {
 				}
 				yasr.updateHeader();
 			};
-
-
+			
+			
 			var openGchartBtn = $('<button>', {class: 'openPivotGchart yasr_btn'})
 			.text(yasr.translate('yasr.chart.config'))
 			.click(function() {
 				$pivotWrapper.find('div[dir="ltr"]').dblclick();
 			}).appendTo(yasr.resultsContainer);
 			$pivotWrapper = $('<div>', {class: 'pivotTable'}).appendTo($(yasr.resultsContainer));
-
+			
 			var settings = $.extend(true, {}, getStoredSettings(), root.defaults.pivotTable);
-
+			
 			settings.onRefresh = (function() {
 			    var originalRefresh = settings.onRefresh;
 			    return function(pivotObj) {
@@ -56780,27 +56783,27 @@ var root = module.exports = function(yasr) {
 			    	if (originalRefresh) originalRefresh(pivotObj);
 			    };
 			})();
-
+			
 			window.pivot = $pivotWrapper.pivotUI(formatForPivot, settings);
-
+	
 			/**
 			 * post process
 			 */
 			//use 'move' handler for variables. This removes the 'filter' button though. Might want to re-enable this in the future
 			var icon = $(yUtils.svg.getElement(imgs.move));
 			$pivotWrapper.find('.pvtTriangle').replaceWith(icon);
-
+			
 			//add headers to selector rows
 			$('.pvtCols').prepend($('<div>', {class: 'containerHeader'}).text(yasr.translate('yasr.headers.columns')));
 			$('.pvtRows').prepend($('<div>', {class: 'containerHeader'}).text(yasr.translate('yasr.headers.rows')));
 			$('.pvtUnused').prepend($('<div>', {class: 'containerHeader'}).text(yasr.translate('yasr.headers.variables')));
 			$('.pvtVals').prepend($('<div>', {class: 'containerHeader'}).text(yasr.translate('yasr.headers.cells')));
-
+			
 			//hmmm, directly after the callback finishes (i.e., directly after this line), the svg is draw.
 			//just use a short timeout to update the header
 			setTimeout(yasr.updateHeader, 400);
 		}
-
+		
 		if (yasr.options.useGoogleCharts && options.useGoogleCharts && !$.pivotUtilities.gchart_renderers) {
 			require('./gChartLoader.js')
 				.on('done', function() {
@@ -56828,12 +56831,12 @@ var root = module.exports = function(yasr) {
 	plugin.canHandleResults = function(){
 		return yasr.results && yasr.results.getVariables && yasr.results.getVariables() && yasr.results.getVariables().length > 0;
 	};
-
+	
 	plugin.getDownloadInfo =  function() {
 		if (!yasr.results) return null;
 		var svgEl = yasr.resultsContainer.find('.pvtRendererArea svg');
 		if (svgEl.length > 0) {
-
+		
 			return {
 				getContent: function(){
 					if (svgEl[0].outerHTML) {
@@ -56843,13 +56846,13 @@ var root = module.exports = function(yasr) {
 						return $('<div>').append(svgEl.clone()).html();
 					}
 				},
-
+				
 				filename: "queryResults.svg",
 				contentType: "image/svg+xml",
 				buttonTitle: yasr.translate('yasr.btn.title.svg')
 			};
-		}
-
+		} 
+		
 		//ok, not a svg. is it a table?
 		var $table = yasr.resultsContainer.find('.pvtRendererArea table');
 		if ($table.length > 0) {
@@ -56861,18 +56864,18 @@ var root = module.exports = function(yasr) {
 				contentType: "text/csv",
 				buttonTitle: yasr.translate('yasr.btn.title.csv')
 			};
-		}
-
+		} 
+		
 	};
 
 	plugin.getEmbedHtml = function() {
 		if (!yasr.results) return null;
-
+		
 		var svgEl = yasr.resultsContainer.find('.pvtRendererArea svg')
 			.clone()//create clone, as we'd like to remove height/width attributes
 			.css('height', '').css('width','');
 		if (svgEl.length == 0) return null;
-
+		
 		var htmlString = svgEl[0].outerHTML;
 		if (!htmlString) {
 			//outerHTML not supported. use workaround
@@ -56931,7 +56934,7 @@ var root = module.exports = function(yasr) {
 	plugin.draw = function() {
 		var cmOptions = options.CodeMirror;
 		cmOptions.value = yasr.results.getShortOriginalResponse(options.limit);
-
+		
 		var mode = yasr.results.getType();
 		if (mode) {
 			if (mode === "json") {
@@ -56939,9 +56942,9 @@ var root = module.exports = function(yasr) {
 			}
 			cmOptions.mode = mode;
 		}
-
+		
 		cm = CodeMirror(yasr.resultsContainer.get()[0], cmOptions);
-
+		
 		//CM has some issues with folding and unfolding (blank parts in the codemirror area, which are only filled after clicking it)
 		//so, refresh cm after folding/unfolding
 		cm.on('fold', function() {
@@ -56971,7 +56974,7 @@ var root = module.exports = function(yasr) {
 			buttonTitle: yasr.translate('yasr.btn.title.raw')
 		};
 	};
-
+	
 	return plugin;
 };
 
@@ -57705,12 +57708,12 @@ module.exports = {
 			throw new GoogleTypeException(types, varName);
 		}
 	},
-
+	
 	castGoogleType: function(binding, prefixes, googleType) {
 		if (binding == null) {
 			return null;
 		}
-
+		
 		if (googleType != 'string' && binding.type != null && (binding.type === 'typed-literal' || binding.type === 'literal')) {
 			switch (binding.datatype) {
 				case 'http://www.w3.org/2001/XMLSchema#float':
