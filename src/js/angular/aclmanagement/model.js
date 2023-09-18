@@ -11,6 +11,14 @@ export class ACListModel {
         return this.aclRules.length;
     }
 
+    addRule(index) {
+        this.aclRules.splice(index, 0, new ACRuleModel());
+    }
+
+    removeRule(index) {
+        this.aclRules.splice(index, 1);
+    }
+
     moveUp(index) {
         const previousRule = this.aclRules[index - 1];
         this.aclRules[index - 1] = this.aclRules[index];
@@ -42,7 +50,7 @@ export class ACRuleModel {
      * @param {string} role
      * @param {string} policy
      */
-    constructor(subject, predicate, object, context, role, policy) {
+    constructor(subject = '', predicate = '', object= '', context= '', role= '', policy= ACL_POLICY.ALLOW) {
         this._subject = subject;
         this._predicate = predicate;
         this._object = object;
