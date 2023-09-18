@@ -12,9 +12,9 @@ angular
     .module('graphdb.framework.aclmanagement.controllers', modules)
     .controller('AclManagementCtrl', AclManagementCtrl);
 
-AclManagementCtrl.$inject = ['$scope', 'toastr', 'AclManagementRestService', '$repositories', '$translate'];
+AclManagementCtrl.$inject = ['$scope', 'toastr', 'AclManagementRestService', '$repositories', '$translate', 'ModalService'];
 
-function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositories, $translate) {
+function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositories, $translate, ModalService) {
 
     //
     // Public fields
@@ -82,7 +82,12 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
      * @param {number} index
      */
     $scope.deleteRule= (index) => {
-        // TODO: implement
+        ModalService.openConfirmation(
+            $translate.instant('common.confirm'),
+            $translate.instant('acl_management.rulestable.messages.delete_rule_confirmation', {index}),
+            () => {
+                $scope.rulesModel.removeRule(index);
+            });
     };
 
     /**

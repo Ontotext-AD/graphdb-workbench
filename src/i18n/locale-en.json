@@ -159,7 +159,8 @@
             },
             "messages": {
                 "no_data": "There are no rules defined in current repository",
-                "invalid_form": "Fill in valid data in all fields before saving rule"
+                "invalid_form": "Fill in valid data in all fields before saving rule",
+                "delete_rule_confirmation": "Are you sure you want to delete the selected rule #{{index}}?"
             }
         },
         "errors": {

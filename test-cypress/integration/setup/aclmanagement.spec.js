@@ -1,4 +1,5 @@
 import {AclManagementSteps} from "../../steps/setup/acl-management-steps";
+import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 
 describe('ACL Management page', () => {
 
@@ -68,7 +69,7 @@ describe('ACL Management page', () => {
             AclManagementSteps.getAclRules().should('have.length', 5);
         });
 
-        it('Should hide all unnecessary actions during rule editing', () => {
+        it('Should hide all unnecessary actions during rule creation', () => {
             // When there is no rule opened for edit
             // Then I expect that move up, move down, edit rule, create rule, delete rule buttons to be visible
             AclManagementSteps.getMoveUpButtons().should('have.length', 4);
@@ -130,6 +131,28 @@ describe('ACL Management page', () => {
                 "moveDown": true
             };
             checkRules([ACL[0], ACL[1], newRule, ACL[2], ACL[3], ACL[4]]);
+        });
+
+        it('Should be able to delete rule', () => {
+            // When I try to remove a rule
+            AclManagementSteps.getAclRules().should('have.length', 5);
+            AclManagementSteps.deleteRule(0);
+            // Then I expect a confirmation dialog
+            ModalDialogSteps.getDialog().should('be.visible');
+            ModalDialogSteps.getDialogBody().should('contain', 'Are you sure you want to delete the selected rule #0?');
+            // When I cancel operation
+            ModalDialogSteps.clickOnCancelButton();
+            // Then I expect the rule to remain in the list
+            ModalDialogSteps.getDialog().should('not.exist');
+            AclManagementSteps.getAclRules().should('have.length', 5);
+            // When I try remove it again and confirm the operation
+            AclManagementSteps.deleteRule(4);
+            ModalDialogSteps.getDialogBody().should('contain', 'Are you sure you want to delete the selected rule #4?');
+            ModalDialogSteps.clickOnConfirmButton();
+            // Then I expect the rule to be removed from the list
+            ModalDialogSteps.getDialog().should('not.exist');
+            AclManagementSteps.getAclRules().should('have.length', 4);
+            checkRules([ACL[0], ACL[1], ACL[2], ACL[3]]);
         });
     });
 });
