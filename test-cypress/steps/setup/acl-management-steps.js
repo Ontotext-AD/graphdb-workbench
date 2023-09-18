@@ -41,12 +41,12 @@ export class AclManagementSteps {
         return this.getAclRules().eq(index).find('td:nth-child(2) .move-up-btn');
     }
 
-    static getMoveDownButton(index) {
-        return this.getAclRules().eq(index).find('td:nth-child(2) .move-down-btn');
-    }
-
     static moveRuleUp(index) {
         this.getMoveUpButton(index).click();
+    }
+
+    static getMoveDownButton(index) {
+        return this.getAclRules().eq(index).find('td:nth-child(2) .move-down-btn');
     }
 
     static moveRuleDown(index) {
@@ -67,6 +67,22 @@ export class AclManagementSteps {
 
     static addRule(index) {
         this.getAddRuleButton(index).click();
+    }
+
+    static getEditRuleButton(index) {
+        return this.getRule(index).find('.add-rule-btn');
+    }
+
+    static editRule(index) {
+        this.getEditRuleButton(index).click();
+    }
+
+    static getDeleteRuleButton(index) {
+        return this.getRule(index).find('.delete-rule-btn');
+    }
+
+    static deleteRule(index) {
+        this.getDeleteRuleButton(index).click();
     }
 
     static getCancelRuleEditingButton(index) {
