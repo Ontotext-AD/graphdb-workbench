@@ -48,7 +48,8 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
 
         $scope.getAppData();
 
-        $scope.fileFormats = ['ttl', 'ttls',  'rdf', 'rj', 'n3', 'nt', 'nq', 'trig', 'trigs', 'trix', 'brf', 'owl', 'jsonld'];
+        $scope.fileFormats = ['ttl', 'ttls', 'rdf', 'rj', 'n3', 'nt', 'nq', 'trig', 'trigs', 'trix', 'brf', 'owl', 'jsonld', 'xml', 'rdfs',
+            'ndjsonld', 'ndjson', 'jsonl'];
 
         {
             const gzs = _.map($scope.fileFormats, function (f) {
