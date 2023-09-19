@@ -70,7 +70,7 @@ export class AclManagementSteps {
     }
 
     static getEditRuleButton(index) {
-        return this.getRule(index).find('.add-rule-btn');
+        return this.getRule(index).find('.edit-rule-btn');
     }
 
     static editRule(index) {
@@ -110,7 +110,7 @@ export class AclManagementSteps {
     }
 
     static fillSubject(index, value) {
-        this.getSubjectField(index).type(value);
+        this.getSubjectField(index).clear().type(value);
     }
 
     static getPredicateField(index) {
@@ -118,7 +118,7 @@ export class AclManagementSteps {
     }
 
     static fillPredicate(index, value) {
-        this.getPredicateField(index).type(value);
+        this.getPredicateField(index).clear().type(value);
     }
 
     static getObjectField(index) {
@@ -126,7 +126,7 @@ export class AclManagementSteps {
     }
 
     static fillObject(index, value) {
-        this.getObjectField(index).type(value);
+        this.getObjectField(index).clear().type(value);
     }
 
     static getContextField(index) {
@@ -134,7 +134,7 @@ export class AclManagementSteps {
     }
 
     static fillContext(index, value) {
-        this.getContextField(index).type(value);
+        this.getContextField(index).clear().type(value);
     }
 
     static getRoleField(index) {
@@ -142,7 +142,7 @@ export class AclManagementSteps {
     }
 
     static fillRole(index, value) {
-        this.getRoleField(index).type(value);
+        this.getRoleField(index).clear().type(value);
     }
 
     static getPolicySelectorField(index) {

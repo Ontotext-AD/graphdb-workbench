@@ -50,7 +50,7 @@ export class ACRuleModel {
      * @param {string} role
      * @param {string} policy
      */
-    constructor(subject = '', predicate = '', object= '', context= '', role= '', policy= ACL_POLICY.ALLOW) {
+    constructor(subject = '*', predicate = '*', object= '*', context= '*', role= '', policy= ACL_POLICY.ALLOW) {
         this._subject = subject;
         this._predicate = predicate;
         this._object = object;

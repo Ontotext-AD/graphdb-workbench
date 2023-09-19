@@ -87,24 +87,46 @@ describe('ACL Management page', () => {
             AclManagementSteps.createRuleButtons().should('have.length', 0);
         });
 
+        it('Should hide all unnecessary actions during rule editing', () => {
+            // When there is no rule opened for edit
+            // Then I expect that move up, move down, edit rule, create rule, delete rule buttons to be visible
+            AclManagementSteps.getMoveUpButtons().should('have.length', 4);
+            AclManagementSteps.getMoveDownButtons().should('have.length', 4);
+            AclManagementSteps.deleteRuleButtons().should('have.length', 5);
+            AclManagementSteps.editRuleButtons().should('have.length', 5);
+            AclManagementSteps.createRuleButtons().should('have.length', 6);
+            // When a rule is in edit mode
+            AclManagementSteps.editRule(1);
+            // Then I expect that move up, move down, edit rule, create rule, delete rule buttons to be hidden
+            AclManagementSteps.getMoveUpButtons().should('have.length', 0);
+            AclManagementSteps.getMoveDownButtons().should('have.length', 0);
+            AclManagementSteps.deleteRuleButtons().should('have.length', 0);
+            AclManagementSteps.editRuleButtons().should('have.length', 0);
+            AclManagementSteps.createRuleButtons().should('have.length', 0);
+        });
+
         it('Should add a new rule in the list', () => {
             // When I add a new rule
             AclManagementSteps.addRule(1);
             // Then I expect that the save rule button should be disabled because there mandatory fields in the new rule form
             checkIfRuleSavingIsForbidden(2);
             // When I fill in the subject field
+            AclManagementSteps.getSubjectField(2).should('have.value', '*');
             AclManagementSteps.fillSubject(2, '<urn:John>');
             // Then I expect that the save rule button should still be disabled
             checkIfRuleSavingIsForbidden(2);
             // When I fill in the predicate field
+            AclManagementSteps.getPredicateField(2).should('have.value', '*');
             AclManagementSteps.fillPredicate(2, '*');
             // Then I expect that the save rule button should still be disabled
             checkIfRuleSavingIsForbidden(2);
             // When I fill in the object field
+            AclManagementSteps.getObjectField(2).should('have.value', '*');
             AclManagementSteps.fillObject(2, '*');
             // Then I expect that the save rule button should still be disabled
             checkIfRuleSavingIsForbidden(2);
             // When I fill in the context field
+            AclManagementSteps.getContextField(2).should('have.value', '*');
             AclManagementSteps.fillContext(2, '*');
             // Then I expect that the save rule button should still be disabled
             checkIfRuleSavingIsForbidden(2);
@@ -131,6 +153,48 @@ describe('ACL Management page', () => {
                 "moveDown": true
             };
             checkRules([ACL[0], ACL[1], newRule, ACL[2], ACL[3], ACL[4]]);
+        });
+
+        it('Should be able to edit rule', () => {
+            // When I edit a rule
+            AclManagementSteps.getAclRules().should('have.length', 5);
+            AclManagementSteps.editRule(2);
+            // Then I expect rule edit form to be opened
+            AclManagementSteps.getAclRules().should('have.length', 5);
+            checkRuleEditForm(2, {
+                subject: '<<<http://example.com/test> <http://www.w3.org/2000/01/rdf-schema#label> "test aber auf Deutsch"@de>>',
+                predicate: '*',
+                object: '"test aber auf Deutsch"@en',
+                context: '<http://example.com/graph1>',
+                role: 'CUSTOM_ROLE3',
+                policy: 'deny'
+            });
+            checkIfRuleSavingIsAllowed(2);
+            // When I cancel the edit operation
+            AclManagementSteps.cancelRuleEditing(2);
+            // Then I expect that the rule will be opened in preview mode again with the same values
+            AclManagementSteps.getAclRules().should('have.length', 5);
+            checkRules(ACL);
+            // When I edit the rule again
+            AclManagementSteps.editRule(2);
+            AclManagementSteps.fillSubject(2, '<urn:Me>');
+            AclManagementSteps.fillPredicate(2, 'rdf:type');
+            AclManagementSteps.fillObject(2, '*');
+            AclManagementSteps.fillContext(2, '*');
+            AclManagementSteps.fillRole(2, 'TEST');
+            AclManagementSteps.selectPolicy(2, 'allow');
+            // And I save the rule
+            AclManagementSteps.saveRule(2);
+            // Then I expect the rule to be saved with the new data
+            const editedRule = {
+                subject: '<urn:Me>',
+                predicate: 'rdf:type',
+                object: '*',
+                context: '*',
+                role: 'TEST',
+                policy: 'allow'
+            };
+            checkRules([ACL[0], ACL[1], editedRule, ACL[3], ACL[4]]);
         });
 
         it('Should be able to delete rule', () => {
@@ -165,6 +229,15 @@ function checkIfRuleSavingIsForbidden(index) {
 function checkIfRuleSavingIsAllowed(index) {
     AclManagementSteps.getSaveRuleButton(index).should('be.visible');
     AclManagementSteps.getSaveRuleDisabledButton(index).should('not.exist');
+}
+
+function checkRuleEditForm(index, ruleData) {
+    AclManagementSteps.getSubjectField(index).should('have.value', ruleData.subject);
+    AclManagementSteps.getPredicateField(index).should('have.value', ruleData.predicate);
+    AclManagementSteps.getObjectField(index).should('have.value', ruleData.object);
+    AclManagementSteps.getContextField(index).should('have.value', ruleData.context);
+    AclManagementSteps.getRoleField(index).should('have.value', ruleData.role);
+    AclManagementSteps.getPolicySelectorField(index).should('have.value', ruleData.policy);
 }
 
 function checkRules(rules = []) {
