@@ -56,6 +56,12 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
      */
     $scope.editedRuleIndex = undefined;
 
+    /**
+     * Flag showing if currently edited rule is a new one or not.
+     * @type {boolean}
+     */
+    $scope.isNewRule = false;
+
     //
     // Public functions
     //
@@ -67,6 +73,7 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
     $scope.addRule= (index) => {
         $scope.rulesModel.addRule(index);
         $scope.editedRuleIndex = index;
+        $scope.isNewRule = true;
     };
 
     /**
@@ -74,7 +81,8 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
      * @param {number} index
      */
     $scope.editRule= (index) => {
-        // TODO: implement
+        $scope.editedRuleIndex = index;
+        $scope.isNewRule = false;
     };
 
     /**
@@ -95,6 +103,7 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
      */
     $scope.saveRule= () => {
         $scope.editedRuleIndex = undefined;
+        $scope.isNewRule = false;
     };
 
     /**
@@ -102,7 +111,10 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
      * @param {number} index
      */
     $scope.cancelEditing = (index) => {
-        $scope.rulesModel.removeRule(index);
+        if ($scope.isNewRule) {
+            $scope.rulesModel.removeRule(index);
+            $scope.isNewRule = false;
+        }
         $scope.editedRuleIndex = undefined;
     };
 
