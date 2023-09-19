@@ -138,15 +138,28 @@
                 "role": "Rôle",
                 "policy": "Politique"
             },
+            "field_placeholders": {
+                "subject": "Sujet",
+                "predicate": "Prédicat",
+                "object": "Objet",
+                "context": "Contexte",
+                "role": "Politique"
+            },
             "actions": {
                 "move_up": "Déplacer la règle vers le haut",
                 "move_down": "Déplacer la règle vers le bas",
                 "delete_rule": "Supprimer la règle",
                 "add_rule": "Ajouter une nouvelle règle",
-                "edit_rule": "Modifier la règle"
+                "edit_rule": "Modifier la règle",
+                "save_rule": "Enregistrer la règle",
+                "cancel_rule_editing": "Annuler la modification des règles",
+                "save_acl": "Enregistrer la ACL",
+                "cancel_acl_saving": "Annuler"
             },
             "messages": {
-                "no_data": "Aucune règle n'est définie dans le référentiel actuel"
+                "no_data": "Aucune règle n'est définie dans le référentiel actuel",
+                "invalid_form": "Remplissez des données valides dans tous les champs avant d'enregistrer la règle",
+                "delete_rule_confirmation": "Êtes-vous sûr de vouloir supprimer la règle sélectionnée #{{index}}?"
             }
         },
         "errors": {
@@ -608,7 +621,7 @@
     "view.resource.monitoring.helpInfo": "La vue de surveillance du système montre l'utilisation de diverses ressources du système, telles que la mémoire, le CPU, les descripteurs de fichiers et l'espace de stockage. Elle présente également certaines mesures de performance qui vous permettent de diagnostiquer divers problèmes, ainsi qu'un aperçu de la santé du cluster",
     "view.users.access.title": "Utilisateurs et accès",
     "view.users.access.helpInfo": "La vue Utilisateurs et accès est utilisée pour gérer les utilisateurs et leur accès aux dépôts GraphDB. Vous pouvez également activer ou désactiver la sécurité de l'ensemble du GraphDB. Lorsque la sécurité est désactivée, tout le monde a un accès complet aux dépôts et à la fonctionnalité d'administration.",
-    "view.aclmanagement.title": "Vue de gestion ACL",
+    "view.aclmanagement.title": "Gestion ACL",
     "view.aclmanagement.helpInfo": "La vue de gestion ACL est utilisée pour gérer la liste de contrôle d’accès (ACL), un mécanisme de contrôle précis du niveau d’accès au niveau du quadruple du dépôt. Chaque règle ACL se compose du quadruple (sujet, prédicat, objet, contexte, y compris les caractères génériques) dont le niveau doit être contrôlé, de l’appartenance au rôle applicable et de la politique (autoriser ou refuser) de la règle.",
     "view.create.user.title": "Créer un nouvel utilisateur",
     "view.edit.user.title": "Modifier un utilisateur : {{userId}}",
@@ -663,7 +676,7 @@
     "menu.lab.label": "Laboratoire",
     "menu.ttyg.label": "Parlez à votre graphe",
     "menu.repositories.label": "Dépôts",
-    "menu.aclmanagement.label": "Vue de gestion ACL",
+    "menu.aclmanagement.label": "Gestion ACL",
     "menu.users.and.access.label": "Utilisateurs et accès",
     "menu.my.settings.label": "Mes paramètres",
     "menu.cluster.label": "Cluster",

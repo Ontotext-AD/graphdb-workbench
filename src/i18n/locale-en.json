@@ -138,15 +138,29 @@
                 "role": "Role",
                 "policy": "Policy"
             },
+            "field_placeholders": {
+                "subject": "Subject",
+                "predicate": "Predicate",
+                "object": "Object",
+                "context": "Context",
+                "role": "Role"
+            },
             "actions": {
                 "move_up": "Move the rule up",
                 "move_down": "Move the rule down",
                 "delete_rule": "Delete rule",
                 "add_rule": "Add new rule",
-                "edit_rule": "Edit rule"
+                "edit_rule": "Edit rule",
+                "save_rule": "Save rule",
+                "cancel_rule_editing": "Cancel rule editing",
+                "save_acl": "Save ACL",
+                "cancel_acl_saving": "Cancel"
+
             },
             "messages": {
-                "no_data": "There are no rules defined in current repository"
+                "no_data": "There are no rules defined in current repository",
+                "invalid_form": "Fill in valid data in all fields before saving rule",
+                "delete_rule_confirmation": "Are you sure you want to delete the selected rule #{{index}}?"
             }
         },
         "errors": {

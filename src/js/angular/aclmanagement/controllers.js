@@ -12,13 +12,19 @@ angular
     .module('graphdb.framework.aclmanagement.controllers', modules)
     .controller('AclManagementCtrl', AclManagementCtrl);
 
-AclManagementCtrl.$inject = ['$scope', 'toastr', 'AclManagementRestService', '$repositories', '$translate'];
+AclManagementCtrl.$inject = ['$scope', 'toastr', 'AclManagementRestService', '$repositories', '$translate', 'ModalService'];
 
-function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositories, $translate) {
+function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositories, $translate, ModalService) {
 
     //
     // Public fields
     //
+
+    /**
+     * The model for the rule editing form.
+     * @type {Object} The edited rule form model.
+     */
+    $scope.ruleData = {};
 
     /**
      * Flag controlling the loading indicator while some http operation is in progress.
@@ -31,6 +37,7 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
      * @type {undefined|ACListModel}
      */
     $scope.rulesModel = undefined;
+
     /**
      * A copy of the list with ACL rules that will be managed in this view. This is needed for restoring functionality.
      * @type {undefined|ACListModel}
@@ -43,16 +50,23 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
      */
     $scope.selectedRule = undefined;
 
+    /**
+     * The index of a rule which is opened for edit or create.
+     * @type {undefined|number}
+     */
+    $scope.editedRuleIndex = undefined;
+
     //
     // Public functions
     //
 
     /**
-     * Adds a new rule at a given index.
+     * Adds a new rule at a given index in the rulesModel.
      * @param {number} index
      */
     $scope.addRule= (index) => {
-        // TODO: implement
+        $scope.rulesModel.addRule(index);
+        $scope.editedRuleIndex = index;
     };
 
     /**
@@ -68,7 +82,28 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
      * @param {number} index
      */
     $scope.deleteRule= (index) => {
-        // TODO: implement
+        ModalService.openConfirmation(
+            $translate.instant('common.confirm'),
+            $translate.instant('acl_management.rulestable.messages.delete_rule_confirmation', {index}),
+            () => {
+                $scope.rulesModel.removeRule(index);
+            });
+    };
+
+    /**
+     * Saves a rule at a given index in the rulesModel.
+     */
+    $scope.saveRule= () => {
+        $scope.editedRuleIndex = undefined;
+    };
+
+    /**
+     * Cancels the editing operation of a rule at a given index.
+     * @param {number} index
+     */
+    $scope.cancelEditing = (index) => {
+        $scope.rulesModel.removeRule(index);
+        $scope.editedRuleIndex = undefined;
     };
 
     /**
@@ -87,6 +122,14 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
     $scope.moveDown = (index) => {
         $scope.rulesModel.moveDown(index);
         $scope.selectedRule = index + 1;
+    };
+
+    $scope.saveAcl = () => {
+        // TODO: implement
+    };
+
+    $scope.cancelAclSave = () => {
+        // TODO: implement
     };
 
     //
@@ -115,7 +158,6 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
 
     /**
      * Watching for repository changes and reload the rules, because they are stored per repository.
-     * TODO: later when we have the create/edit operations we would need a confirmation before repo change in order to prevent data loss for the user.
      */
     $scope.$watch(function () {
         return $repositories.getActiveRepository();

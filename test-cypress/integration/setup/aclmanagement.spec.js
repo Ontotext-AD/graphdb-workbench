@@ -1,4 +1,5 @@
 import {AclManagementSteps} from "../../steps/setup/acl-management-steps";
+import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 
 describe('ACL Management page', () => {
 
@@ -53,8 +54,118 @@ describe('ACL Management page', () => {
             AclManagementSteps.moveRuleDown(1);
             checkRules([ACL[0], ACL[2], ACL[1], ACL[3], ACL[4]]);
         });
+
+        it('Should add a new rule in the beginning of the list and cancel operation', () => {
+            AclManagementSteps.addRuleInBeginning();
+            AclManagementSteps.getAclRules().should('have.length', 6);
+            AclManagementSteps.cancelRuleEditing(0);
+            AclManagementSteps.getAclRules().should('have.length', 5);
+        });
+
+        it('Should add a new rule in the list and cancel operation', () => {
+            AclManagementSteps.addRule(1);
+            AclManagementSteps.getAclRules().should('have.length', 6);
+            AclManagementSteps.cancelRuleEditing(2);
+            AclManagementSteps.getAclRules().should('have.length', 5);
+        });
+
+        it('Should hide all unnecessary actions during rule creation', () => {
+            // When there is no rule opened for edit
+            // Then I expect that move up, move down, edit rule, create rule, delete rule buttons to be visible
+            AclManagementSteps.getMoveUpButtons().should('have.length', 4);
+            AclManagementSteps.getMoveDownButtons().should('have.length', 4);
+            AclManagementSteps.deleteRuleButtons().should('have.length', 5);
+            AclManagementSteps.editRuleButtons().should('have.length', 5);
+            AclManagementSteps.createRuleButtons().should('have.length', 6);
+            // When a rule is in edit mode
+            AclManagementSteps.addRule(1);
+            // Then I expect that move up, move down, edit rule, create rule, delete rule buttons to be hidden
+            AclManagementSteps.getMoveUpButtons().should('have.length', 0);
+            AclManagementSteps.getMoveDownButtons().should('have.length', 0);
+            AclManagementSteps.deleteRuleButtons().should('have.length', 0);
+            AclManagementSteps.editRuleButtons().should('have.length', 0);
+            AclManagementSteps.createRuleButtons().should('have.length', 0);
+        });
+
+        it('Should add a new rule in the list', () => {
+            // When I add a new rule
+            AclManagementSteps.addRule(1);
+            // Then I expect that the save rule button should be disabled because there mandatory fields in the new rule form
+            checkIfRuleSavingIsForbidden(2);
+            // When I fill in the subject field
+            AclManagementSteps.fillSubject(2, '<urn:John>');
+            // Then I expect that the save rule button should still be disabled
+            checkIfRuleSavingIsForbidden(2);
+            // When I fill in the predicate field
+            AclManagementSteps.fillPredicate(2, '*');
+            // Then I expect that the save rule button should still be disabled
+            checkIfRuleSavingIsForbidden(2);
+            // When I fill in the object field
+            AclManagementSteps.fillObject(2, '*');
+            // Then I expect that the save rule button should still be disabled
+            checkIfRuleSavingIsForbidden(2);
+            // When I fill in the context field
+            AclManagementSteps.fillContext(2, '*');
+            // Then I expect that the save rule button should still be disabled
+            checkIfRuleSavingIsForbidden(2);
+            // When I fill in the role field
+            AclManagementSteps.fillRole(2, 'ROLE1');
+            // Then I expect that the save rule button should be enabled
+            checkIfRuleSavingIsAllowed(2);
+            // When I change the policy
+            AclManagementSteps.selectPolicy(2, 'deny');
+            // Then I expect that the save rule button should be enabled
+            checkIfRuleSavingIsAllowed(2);
+            // When I save the rule
+            AclManagementSteps.saveRule(2);
+            // Then the rule should be saved
+            AclManagementSteps.getAclRules().should('have.length', 6);
+            const newRule = {
+                "subject": "<urn:John>",
+                "predicate": "*",
+                "object": "*",
+                "context": "*",
+                "role": "ROLE1",
+                "policy": "deny",
+                "moveUp": true,
+                "moveDown": true
+            };
+            checkRules([ACL[0], ACL[1], newRule, ACL[2], ACL[3], ACL[4]]);
+        });
+
+        it('Should be able to delete rule', () => {
+            // When I try to remove a rule
+            AclManagementSteps.getAclRules().should('have.length', 5);
+            AclManagementSteps.deleteRule(0);
+            // Then I expect a confirmation dialog
+            ModalDialogSteps.getDialog().should('be.visible');
+            ModalDialogSteps.getDialogBody().should('contain', 'Are you sure you want to delete the selected rule #0?');
+            // When I cancel operation
+            ModalDialogSteps.clickOnCancelButton();
+            // Then I expect the rule to remain in the list
+            ModalDialogSteps.getDialog().should('not.exist');
+            AclManagementSteps.getAclRules().should('have.length', 5);
+            // When I try remove it again and confirm the operation
+            AclManagementSteps.deleteRule(4);
+            ModalDialogSteps.getDialogBody().should('contain', 'Are you sure you want to delete the selected rule #4?');
+            ModalDialogSteps.clickOnConfirmButton();
+            // Then I expect the rule to be removed from the list
+            ModalDialogSteps.getDialog().should('not.exist');
+            AclManagementSteps.getAclRules().should('have.length', 4);
+            checkRules([ACL[0], ACL[1], ACL[2], ACL[3]]);
+        });
     });
 });
+
+function checkIfRuleSavingIsForbidden(index) {
+    AclManagementSteps.getSaveRuleButton(index).should('not.exist');
+    AclManagementSteps.getSaveRuleDisabledButton(index).should('be.visible');
+}
+
+function checkIfRuleSavingIsAllowed(index) {
+    AclManagementSteps.getSaveRuleButton(index).should('be.visible');
+    AclManagementSteps.getSaveRuleDisabledButton(index).should('not.exist');
+}
 
 function checkRules(rules = []) {
     rules.forEach((rule, index) => {
