@@ -1,4 +1,9 @@
+.acl-management-view .acl-rules {
+    table-layout: fixed;
+}
+
 .acl-management-view .acl-rules .toolbar {
+    height: 35px;
     padding: 0;
     position: relative;
 }
@@ -8,13 +13,66 @@
     background-color: var(--color-info-light);
 }
 
-.acl-management-view .acl-rules .actions-column {
-    min-width: 107px;
+.acl-management-view .acl-rules .preview-rule-row td.data {
+    overflow-wrap: break-word;
+}
+
+.acl-management-view .acl-rules .index-column {
+    width: 2%;
+}
+
+.acl-management-view .acl-rules .reorder-column {
+    width: 25px;
 }
 
 .acl-management-view .acl-rules .reorder-cell button {
     padding: 0;
     cursor: pointer;
+}
+
+.acl-management-view .acl-rules .data input {
+    width: 95%;
+    display: inline-block;
+}
+
+.acl-management-view .acl-rules .data input.ng-invalid ~ em:after {
+    content: "*";
+    color: red;
+    display: inline;
+    position: absolute;
+    margin: 4px 0 0 3px;
+}
+
+.acl-management-view .acl-rules .subject-column {
+    width: 18%;
+}
+
+.acl-management-view .acl-rules .predicate-column {
+    width: 18%;
+}
+
+.acl-management-view .acl-rules .object-column {
+    width: 18%;
+}
+
+.acl-management-view .acl-rules .context-column {
+    width: 18%;
+}
+
+.acl-management-view .acl-rules .role-column {
+    width: 18%;
+}
+
+.acl-management-view .acl-rules .policy-column {
+    width: 100px;
+}
+
+.acl-management-view .acl-rules .actions-column {
+    width: 107px;
+}
+
+.acl-management-view .acl-rules .actions-cell {
+    text-align: right;
 }
 
 .acl-management-view .acl-rules .actions-cell button {
@@ -23,5 +81,14 @@
 }
 
 .acl-management-view .acl-rules .selected {
-    outline: 1px solid var(--secondary-color);
+    animation: highlight 2s 1;
+}
+
+@keyframes highlight {
+    0% {
+        background-color: rgba(255, 255, 153, .8);
+    }
+    100% {
+        background-color: rgba(255, 255, 255, 0);
+    }
 }
