@@ -1,4 +1,8 @@
-svg {
+.cluster-view {
+  position: relative;
+}
+
+.cluster-view svg {
   background-color: #FFF;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -7,7 +11,7 @@ svg {
   user-select: none;
 }
 
-path.link {
+.cluster-view path.link {
   stroke-width: 3px;
 }
 
@@ -155,10 +159,6 @@ div.nodetooltip {
   background: rgba(235, 235, 235, 0.9);
   width: 40%;
   max-width: 400px;
-}
-
-.nodes {
-  position: relative;
 }
 
 .main-menu.collapsed ~ div .legend-container {
