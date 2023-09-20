@@ -30,29 +30,6 @@
 
         <operations-statuses class="active-operation btn" active-operations="activeOperations"></operations-statuses>
 
-        <div class="btn btn-info imports-queries"
-                ng-if="queryCount > 0 || numberOfActiveImports > 0">
-            <span class="icon-reload text-primary loader"></span>
-            <span class="dot-separator" ng-if="queryCount > 0">
-                <a class="btn btn-link" href="./monitor/queries" rel="noopener" target="_blank">
-                    <strong>{{queryCount}}</strong>
-                    <ng-pluralize count="queryCount"
-                                  when="{'one': 'query/update',
-                                         'other': 'queries/updates'}">
-                    </ng-pluralize>
-                </a>
-            </span>
-            <span class="dot-separator" ng-if="numberOfActiveImports > 0">
-                <a class="btn btn-link" href="./import" rel="noopener" target="_blank">
-                    <strong>{{numberOfActiveImports}}</strong>
-                    <ng-pluralize count="numberOfActiveImports"
-                                  when="{'one': 'import',
-                                         'other': 'imports'}">
-                    </ng-pluralize>
-                </a>
-            </span>
-        </div>
-
         <div id="guideResume" class="btn-group" role="group" ng-if="guidePaused" gdb-tooltip="{{'guide.button.guide-resume' | translate}}" tooltip-placement="bottom">
             <a class="btn btn-lg btn-secondary" ng-click="resumeGuide()"><span class="icon-play text-primary"></span> {{'guide.button.guide-paused' | translate}}</a>
         </div>
