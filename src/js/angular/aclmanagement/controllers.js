@@ -1,7 +1,6 @@
 import 'angular/rest/plugins.rest.service';
 import 'angular/rest/aclmanagement.rest.service';
 import {mapAclRulesResponse} from "../rest/mappers/aclmanagement-mapper";
-import {ACListModel} from "./model";
 
 const modules = [
     'graphdb.framework.rest.plugins.service',
@@ -39,12 +38,6 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
     $scope.rulesModel = undefined;
 
     /**
-     * A copy of the list with ACL rules that will be managed in this view. This is needed for restoring functionality.
-     * @type {undefined|ACListModel}
-     */
-    $scope.rulesModelCopy = undefined;
-
-    /**
      * The index of the rule which is currently moved up/down.
      * @type {undefined|number}
      */
@@ -55,6 +48,12 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
      * @type {undefined|number}
      */
     $scope.editedRuleIndex = undefined;
+
+    /**
+     * A copy of the currently edited rule. This is used for reverting an edited rule.
+     * @type {undefined|ACRuleModel}
+     */
+    $scope.editedRuleCopy = undefined;
 
     /**
      * Flag showing if currently edited rule is a new one or not.
@@ -83,6 +82,7 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
     $scope.editRule= (index) => {
         $scope.editedRuleIndex = index;
         $scope.isNewRule = false;
+        $scope.editedRuleCopy = $scope.rulesModel.getRule(index)
     };
 
     /**
@@ -114,6 +114,9 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
         if ($scope.isNewRule) {
             $scope.rulesModel.removeRule(index);
             $scope.isNewRule = false;
+        } else {
+            $scope.rulesModel.replaceRule(index, $scope.editedRuleCopy);
+            $scope.editedRuleCopy = undefined;
         }
         $scope.editedRuleIndex = undefined;
     };
@@ -136,12 +139,34 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
         $scope.selectedRule = index + 1;
     };
 
+    /**
+     * Saves the entire ACL list into the DB.
+     */
     $scope.saveAcl = () => {
-        // TODO: implement
+        $scope.loading = true;
+        const repositoryId = getActiveRepository();
+        AclManagementRestService.updateAcl(repositoryId, $scope.rulesModel.toJSON()).then(() => {
+            toastr.success($translate.instant('acl_management.rulestable.messages.rules_updated'));
+        })
+        .catch((data) => {
+            const msg = getError(data);
+            toastr.error(msg, $translate.instant('acl_management.errors.updating_rules'));
+        }).finally(() => {
+            $scope.loading = false;
+        });
     };
 
+    /**
+     * Performs a complete revert of the ACL list by reloading it from the DB.
+     */
     $scope.cancelAclSave = () => {
-        // TODO: implement
+        ModalService.openConfirmation(
+            $translate.instant('common.confirm'),
+            $translate.instant('acl_management.rulestable.messages.revert_acl_list'),
+            () => {
+                loadRules();
+                toastr.success($translate.instant('acl_management.rulestable.messages.rules_reverted'));
+            });
     };
 
     //
@@ -152,9 +177,8 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
         if ($repositories.getActiveRepository()) {
             $scope.loading = true;
             const repositoryId = getActiveRepository();
-            AclManagementRestService.getRules(repositoryId).then((response) => {
+            AclManagementRestService.getAcl(repositoryId).then((response) => {
                 $scope.rulesModel = mapAclRulesResponse(response);
-                $scope.rulesModelCopy = new ACListModel([...$scope.rulesModel.aclRules]);
             }).catch((data) => {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('acl_management.errors.loading_rules'));
@@ -176,13 +200,4 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
     }, function () {
         loadRules();
     });
-
-    //
-    // initialization
-    //
-    const init = () => {
-        loadRules();
-    };
-
-    init();
 }
