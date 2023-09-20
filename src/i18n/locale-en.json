@@ -979,6 +979,7 @@
     "export.clear.graph.msg": "Failed to clear the {{longName}}",
     "export.warning.clear.graph.msg": "Are you sure you want to clear the selected graphs?",
     "export.cleared.graph.msg": "Cleared the selected graphs",
+    "namespace.saved": "Namespace saved",
     "namespace.confirm.replace": "Confirm replace",
     "namespace.already.exists.msg": "This namespace prefix already exists. Do you want to replace it?",
     "namespace.warning.delete.msg": "Are you sure you want to delete the namespace '{{prefix}}'?",
