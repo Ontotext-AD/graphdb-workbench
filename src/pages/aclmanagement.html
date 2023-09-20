@@ -129,8 +129,8 @@
                             <em></em>
                         </td>
                         <td class="data role-cell">
-                            <input type="text" name="role" required autocomplete="off" ng-model="rule.role"
-                                   class="form-control form-control-sm"
+                            <input type="text" name="role" required ng-model="rule.role" uppercased
+                                   autocomplete="off" class="form-control form-control-sm"
                                    placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}"/>
                             <em></em>
                         </td>
@@ -161,7 +161,7 @@
             </form>
         </div>
 
-        <div class="text-right">
+        <div ng-if="editedRuleIndex === undefined && rulesModel" class="text-right">
             <button class="btn btn-secondary cancel-acl-save-btn"
                     ng-click="cancelAclSave()">
                 {{'acl_management.rulestable.actions.cancel_acl_saving' | translate}}
