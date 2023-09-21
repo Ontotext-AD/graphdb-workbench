@@ -36,15 +36,22 @@
 }
 
 .operations-statuses .operation-status-content {
-    padding: 10px;
     display: flex;
     background-color: #D4D4D4;
-    margin: 10px;
+    margin: 5px 10px;
     align-items: center;
     justify-content: space-around;
     cursor: pointer;
     text-decoration: none;
     width: auto;
+}
+
+.operations-statuses .last-operation {
+    margin-bottom: 10px;
+}
+
+.operations-statuses .first-operation {
+    margin-top: 10px;
 }
 
 .operations-statuses .operation-status-content:hover {

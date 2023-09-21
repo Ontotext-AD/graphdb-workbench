@@ -17,9 +17,11 @@
         </div>
         <span class="caret"></span>
     </button>
-    <ul role="menu" class="operations-statuses-content dropdown-menu dropdown-menu-right">
+    <ul role="menu" class="operations-statuses-content dropdown-menu dropdown-menu-center">
         <li ng-repeat="operationStatus in activeOperations.operations">
-            <a class="operation-status-content btn" target="_blank" ng-attr-href="{{operationStatus.monitoringViewUrl}}">
+            <a class="operation-status-content btn" target="_blank" ng-attr-href="{{operationStatus.monitoringViewUrl}}"
+               ng-class="{ 'last-operation': $last,
+                           'first-operation': $first}">
                 <div ng-class="{
                    'icon-exchange': OPERATION_TYPE.QUERIES === operationStatus.type || OPERATION_TYPE.UPDATES === operationStatus.type || OPERATION_TYPE.IMPORTS === operationStatus.type,
                    'fa fa-archive': OPERATION_TYPE.BACKUP_RESTORE === operationStatus.type,
