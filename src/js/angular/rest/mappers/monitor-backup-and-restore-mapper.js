@@ -4,6 +4,9 @@ import {SnapshotOptionInfo} from "../../models/monitoring/snapshot-option-info";
 export const mapBackupAndRestoreResponseToModel = ((backupAndRestoreResponseData) => {
     const backupAndRestoreInfos = [];
     const backupAndRestoreInfo = new BackupAndRestoreInfo();
+    if (Object.keys(backupAndRestoreResponseData).length === 0) {
+        return backupAndRestoreInfos;
+    }
     backupAndRestoreInfo.id = backupAndRestoreResponseData.id;
     backupAndRestoreInfo.username = backupAndRestoreResponseData.username;
     backupAndRestoreInfo.operation = backupAndRestoreResponseData.operation;
