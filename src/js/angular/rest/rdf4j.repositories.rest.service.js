@@ -119,19 +119,19 @@ function RDF4JRepositoriesRestService($http, $repositories, $translate) {
 
     /**
      * Downloads sparql results as a file in given format provided by the accept header parameter.
-     * @param {Repository} repoInfo
+     * @param {string} repositoryId
      * @param {*} data
      * @param {string} acceptHeader
      * @return {Promise<any>}
      */
-    function downloadResultsAsFile(repoInfo, data, acceptHeader) {
+    function downloadResultsAsFile(repositoryId, data, acceptHeader) {
         const properties = Object.entries(data)
             .filter(([property, value]) => value !== undefined)
             .map(([property, value]) => `${property}=${value}`);
         const payloadString = properties.join('&');
         return $http({
             method: 'POST',
-            url: `/repositories/${repoInfo.id}`,
+            url: `/repositories/${repositoryId}`,
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
                 'Accept': acceptHeader
