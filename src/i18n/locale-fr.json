@@ -33,7 +33,7 @@
                 "building_snapshot": "Créer un instantané pour {{node}}",
                 "waiting_for_snapshot": "En attente d'un instantané du nœud {{node}}",
                 "sending_snapshot": "Envoi d'un instantané au nœud {{node}}",
-                "recording_snapshot": "Enregistrement d'un instantané du nœud {{node}}"
+                "receiving_snapshot": "Réception d'un instantané du nœud {{node}}"
             }
         },
         "cluster_configuration": {
@@ -159,11 +159,15 @@
             "messages": {
                 "no_data": "Aucune règle n'est définie dans le référentiel actuel",
                 "invalid_form": "Remplissez des données valides dans tous les champs avant d'enregistrer la règle",
-                "delete_rule_confirmation": "Êtes-vous sûr de vouloir supprimer la règle sélectionnée #{{index}}?"
+                "delete_rule_confirmation": "Êtes-vous sûr de vouloir supprimer la règle sélectionnée #{{index}}?",
+                "revert_acl_list": "Cette opération annulera toutes les modifications apportées à l'ACL. Êtes-vous sur de vouloir continuer?",
+                "rules_updated": "L'ACL a été mise à jour avec succès",
+                "rules_reverted": "L'ACL a été rétablie avec succès"
             }
         },
         "errors": {
-            "loading_rules": "Erreur lors du chargement des règles ACL"
+            "loading_rules": "Erreur lors du chargement des règles ACL",
+            "updating_rules": "Erreur lors de la mise à jour des règles ACL"
         }
     },
     "config.name.label": "Nom de configuration",

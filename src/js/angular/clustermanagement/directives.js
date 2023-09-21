@@ -35,7 +35,7 @@ const translationsMap = {
     recovery_state: {
         searching_for_node: "Searching for node",
         waiting_for_snapshot: "Waiting for snapshot from node",
-        recording_snapshot: "Recording a snapshot from node",
+        receiving_snapshot: "Receiving a snapshot from node",
         applying_snapshot: "Applying a snapshot",
         building_snapshot: "Building a snapshot for node",
         sending_snapshot: "Sending a snapshot to node"
@@ -337,7 +337,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 function createNodes(nodes) {
                     nodes.forEach((node) => {
                         node.hostname = UriUtils.shortenIri(node.endpoint);
-                        if (node.recoveryStatus) {
+                        if (!_.isEmpty(node.recoveryStatus)) {
                             const messageLabelKey = 'cluster_management.cluster_graphical_view.recovery_state.' + node.recoveryStatus.state.toLowerCase();
                             node.recoveryStatus.message = $translate.instant(messageLabelKey, {node: node.recoveryStatus.affectedNodes.join(', ')});
                         }
@@ -447,7 +447,7 @@ const getLegendNodes = function () {
     legendNodes.push({nodeState: NodeState.RESTRICTED, customText: 'node_state_restricted'});
     legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.searching_for_node', recoveryStatus: {state: RecoveryState.SEARCHING_FOR_NODE}});
     legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.waiting_for_snapshot', recoveryStatus: {state: RecoveryState.WAITING_FOR_SNAPSHOT}});
-    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.recording_snapshot', recoveryStatus: {state: RecoveryState.RECORDING_SNAPSHOT}});
+    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.receiving_snapshot', recoveryStatus: {state: RecoveryState.RECEIVING_SNAPSHOT}});
     legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.applying_snapshot', recoveryStatus: {state: RecoveryState.APPLYING_SNAPSHOT}});
     legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.building_snapshot', recoveryStatus: {state: RecoveryState.BUILDING_SNAPSHOT}});
     legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.sending_snapshot', recoveryStatus: {state: RecoveryState.SENDING_SNAPSHOT}});
