@@ -33,6 +33,7 @@
     align-content: space-around;
     justify-content: space-around;
     background-color: #EBEBEB;
+    margin:0;
 }
 
 .operations-statuses .operation-status-content {
