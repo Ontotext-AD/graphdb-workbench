@@ -1,8 +1,8 @@
-<link href="css/operations-statuses.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+<link href="css/operations-statuses-monitor.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
 <div ng-if="activeOperations && activeOperations.operations && activeOperations.operations.length > 0" class="operations-statuses btn-group btn-group-lg">
     <button type="button" class="btn operations-statuses-dropdown-toggle dropdown-toggle" data-toggle="dropdown">
-        <div class="operation-status-header" ng-repeat="operationGroup in operationsSummary" ng-if="operationGroup.runningOperations">
+        <div class="operation-status-header" ng-repeat="operationGroup in operationsSummary" ng-if="operationsSummary && operationsSummary.length > 0 && operationGroup.runningOperations">
             <div ng-class="{
             'icon-exchange': OPERATION_GROUP_TYPE.QUERIES_OPERATION === operationGroup.type,
             'fa fa-archive': OPERATION_GROUP_TYPE.BACKUP_AND_RESTORE_OPERATION === operationGroup.type,
@@ -19,7 +19,7 @@
     </button>
     <ul role="menu" class="operations-statuses-content dropdown-menu dropdown-menu-right">
         <li ng-repeat="operationStatus in activeOperations.operations">
-            <a class="operation-status-content btn" target="_blank" ng-attr-href="{{getOperationUrl(operationStatus.operationGroup)}}">
+            <a class="operation-status-content btn" target="_blank" ng-attr-href="{{operationStatus.monitoringViewUrl}}">
                 <div ng-class="{
                    'icon-exchange': OPERATION_TYPE.QUERIES === operationStatus.type || OPERATION_TYPE.UPDATES === operationStatus.type || OPERATION_TYPE.IMPORTS === operationStatus.type,
                    'fa fa-archive': OPERATION_TYPE.BACKUP_RESTORE === operationStatus.type,
@@ -30,8 +30,8 @@
                 </div>
                 <div class="operation-status-label">
                     <ng-pluralize count="operationStatus.runningOperationCount || 1"
-                                  when="{'one': '{{(&quot;global.operations_statuses.&quot; + operationStatus.titleLableKey + &quot;.title&quot;) | translate}}',
-                                         'other': '{{(&quot;global.operations_statuses.&quot; + operationStatus.titleLableKey + &quot;.title.plural&quot;) | translate}}'}">
+                                  when="{'one': '{{(&quot;global.operations_statuses.&quot; + operationStatus.titleLabelKey + &quot;.title&quot;) | translate}}',
+                                         'other': '{{(&quot;global.operations_statuses.&quot; + operationStatus.titleLabelKey + &quot;.title.plural&quot;) | translate}}'}">
                     </ng-pluralize>
                 </div>
                 <div ng-if="OPERATION_TYPE.CLUSTER_STATUS !== operationStatus.type" class="operation-status-running-operation-count tag-info">

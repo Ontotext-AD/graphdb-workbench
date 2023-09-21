@@ -2,6 +2,7 @@ import {OPERATION_TYPE} from "../../models/monitoring/operations/operation-type"
 import {ActiveOperationModel} from "../../models/monitoring/operations/active-operation-model";
 import {OPERATION_GROUP_TYPE} from "../../models/monitoring/operations/operation-group";
 import {ActiveOperationsModel} from "../../models/monitoring/operations/active-operations-model";
+import {OPERATION_MONITORING_CONSTANTS} from "../../models/monitoring/operations/operation-monitoring-constants";
 
 /**
  * Transforms the backend representation of active operations: count of run queries, count of run imports, back and restore ... to UI model.
@@ -61,7 +62,8 @@ export const mapQueriesActiveOperationToActiveOperationInfoModel = (activeOperat
     operation.runningOperationCount = parseInt(activeOperation.value, 10);
     operation.status = activeOperation.status;
     operation.type = activeOperation.type;
-    operation.titleLableKey = activeOperation.type;
+    operation.titleLabelKey = activeOperation.type;
+    operation.monitoringViewUrl = OPERATION_MONITORING_CONSTANTS.QUERIES_MONITORING_URL;
     return operation;
 };
 
@@ -77,7 +79,8 @@ export const mapBackupAndRestoreActiveOperationToActiveOperationInfoModel = (act
     operation.operationGroup = OPERATION_GROUP_TYPE.BACKUP_AND_RESTORE_OPERATION;
     operation.status = activeOperation.status;
     operation.type = activeOperation.type;
-    operation.titleLableKey = activeOperation.value;
+    operation.titleLabelKey = activeOperation.value;
+    operation.monitoringViewUrl = OPERATION_MONITORING_CONSTANTS.BACKUP_AND_RESTORE_MONITORING_URL;
     return operation;
 };
 
@@ -93,6 +96,7 @@ export const mapClusterActiveOperationToActiveOperationInfoModel = (activeOperat
     operation.operationGroup = OPERATION_GROUP_TYPE.CLUSTER_OPERATION;
     operation.status = activeOperation.status;
     operation.type = activeOperation.type;
-    operation.titleLableKey = activeOperation.value;
+    operation.titleLabelKey = activeOperation.value;
+    operation.monitoringViewUrl = OPERATION_MONITORING_CONSTANTS.CLUSTER_MONITORING_URL;
     return operation;
 };

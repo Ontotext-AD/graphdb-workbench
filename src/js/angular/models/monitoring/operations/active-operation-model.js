@@ -12,6 +12,7 @@ export class ActiveOperationModel {
         this.runningOperationCount = 0;
         this.status = OPERATION_STATUS.INFORMATION;
         this.type = undefined;
-        this.titleLableKey = '';
+        this.titleLabelKey = '';
+        this.monitoringViewUrl = '';
     }
 }
