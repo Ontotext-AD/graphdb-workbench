@@ -136,7 +136,11 @@ describe('=> NamespacesCtrl tests', function () {
     });
 
     describe('$scope.addNamespace()', function () {
-        it('should call $scope.saveNamespace() if prefix exist', function () {
+        it('should call $scope.saveNamespace() if prefix exist', function() {
+            $scope.form = {
+                $setUntouched: () => {},
+                $setPristine: () => {}
+            };
             $httpBackend.flush();
 
             $scope.namespace = {prefix: 'prefix', namespace: 'newNamespace'};
@@ -147,20 +151,24 @@ describe('=> NamespacesCtrl tests', function () {
             $scope.addNamespace();
             modalInstance.close();
             expect(saveNamespace).toEqual({prefix: 'prefix', namespace: 'newNamespace'});
-            expect($scope.namespace).toEqual({});
+            expect($scope.namespace).toEqual({prefix: '', namespace: ''});
         });
 
         it('should call $scope.saveNamespace() if prefix not exist', function () {
+            $scope.form = {
+                $setUntouched: () => {},
+                $setPristine: () => {}
+            };
             $httpBackend.flush();
             $scope.namespace = {prefix: 'prefix2', namespace: 'newNamespace'};
             var saveNamespace = {};
             $scope.saveNamespace = function (prefix, namespace) {
-                saveNamespace = {prefix: prefix, namespace: namespace}
+                saveNamespace = {prefix: prefix, namespace: namespace};
             };
             $scope.addNamespace();
             modalInstance.close();
             expect(saveNamespace).toEqual({prefix: 'prefix2', namespace: 'newNamespace'});
-            expect($scope.namespace).toEqual({});
+            expect($scope.namespace).toEqual({prefix: '', namespace: ''});
         });
     });
 

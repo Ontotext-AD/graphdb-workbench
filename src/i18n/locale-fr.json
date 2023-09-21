@@ -979,6 +979,7 @@
     "export.clear.graph.msg": "Impossible d'effacer le {{longName}}",
     "export.warning.clear.graph.msg": "Êtes-vous sûr de vouloir effacer les graphes sélectionnés?",
     "export.cleared.graph.msg": "Effacé les graphes sélectionnés",
+    "namespace.saved": "Espace de noms sauvegardé",
     "namespace.confirm.replace": "Confirmer le remplacement",
     "namespace.already.exists.msg": "Ce préfixe d'espace de noms existe déjà. Voulez-vous le remplacer?",
     "namespace.warning.delete.msg": "Êtes-vous sûr de vouloir supprimer l'espace de noms '{{prefix}}'?",
