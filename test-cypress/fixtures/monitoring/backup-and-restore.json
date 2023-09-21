@@ -1,69 +1,19 @@
-[
-    {
-        "id": "1",
-        "username": "admin",
-        "operation": "CREATE_CLOUD_BACKUP",
-        "affectedRepositories": [
-            "1"
-        ],
-        "msSinceCreated": 23416,
-        "snapshotOptions": {
-            "withRepositoryData": true,
-            "withSystemData": false,
-            "withClusterData": false,
-            "cleanDataDir": true,
-            "removeCluster": false,
-            "repositories": null,
-            "replicationTimeoutMs": null
-        },
-        "nodePerformingClusterBackup": null
+{
+    "id": "1",
+    "username": "admin",
+    "operation": "CREATE_CLOUD_BACKUP",
+    "affectedRepositories": [
+        "1"
+    ],
+    "msSinceCreated": 23416,
+    "snapshotOptions": {
+        "withRepositoryData": true,
+        "withSystemData": false,
+        "withClusterData": false,
+        "cleanDataDir": true,
+        "removeCluster": false,
+        "repositories": null,
+        "replicationTimeoutMs": null
     },
-    {
-        "id": "2",
-        "username": "admin",
-        "operation": "CREATE_CLOUD_BACKUP",
-        "affectedRepositories": [
-            "1",
-            "test Repository 2"
-        ],
-        "msSinceCreated": 3423,
-        "snapshotOptions": {
-            "withRepositoryData": true,
-            "withSystemData": false,
-            "withClusterData": false,
-            "cleanDataDir": true,
-            "removeCluster": false,
-            "repositories": null,
-            "replicationTimeoutMs": null
-        },
-        "nodePerformingClusterBackup": "node Performing Cluster Backup"
-    },
-    {
-        "id": "3",
-        "username": "admin",
-        "operation": "CREATE_CLOUD_BACKUP",
-        "affectedRepositories": [
-            "1",
-            "test Repository 2",
-            "test Repository 3",
-            "test Repository 4",
-            "test Repository 5",
-            "test Repository 6",
-            "test Repository 7",
-            "test Repository 8",
-            "test Repository 9",
-            "test Repository 10"
-        ],
-        "msSinceCreated": 12334,
-        "snapshotOptions": {
-            "withRepositoryData": true,
-            "withSystemData": false,
-            "withClusterData": false,
-            "cleanDataDir": true,
-            "removeCluster": false,
-            "repositories": null,
-            "replicationTimeoutMs": null
-        },
-        "nodePerformingClusterBackup": "node Performing Cluster Backup"
-    }
-]
+    "nodePerformingClusterBackup": null
+}

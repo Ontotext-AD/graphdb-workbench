@@ -16,6 +16,6 @@ describe("Monitoring 'Backup And Restore'", () => {
         BackupAndRestoreStubs.stubBackupAndRestoreResponse();
 
         // Then I expect to see information for all run operations.
-        BackupAndRestoreSteps.getBackupAndRestoreResults().should('have.length', 3);
+        BackupAndRestoreSteps.getBackupAndRestoreResults().should('have.length', 1);
     });
 });
