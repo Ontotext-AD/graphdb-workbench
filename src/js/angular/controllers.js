@@ -21,9 +21,6 @@ import {decodeHTML} from "../../app";
 import './guides/guides.service';
 import './guides/directives';
 import {GUIDE_PAUSE} from './guides/tour-lib-services/shepherd.service';
-import {SequenceGeneratorUtil} from "./utils/sequence-generator-util";
-
-const UPDATE_ACTIVE_OPERATION_TIME_INTERVAL = 2000;
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -137,11 +134,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.embedded = $location.search().embedded;
     $scope.productInfo = productInfo;
     $scope.guidePaused = 'true' === LocalStorageAdapter.get(GUIDE_PAUSE);
-
-    $scope.activeOperations = undefined;
-    let updateActiveOperationsTimer = undefined;
-    let updateActiveRepositoryRun = false;
-    $scope.skipUpdateActiveOperationsTimes = 0;
 
     const setYears = function () {
         const date = new Date();
@@ -840,50 +832,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
         return $filter('date')(time, ("'" + $translate.instant('timestamp.on') + "' yyyy-MM-dd '" + $translate.instant('timestamp.at') + "' HH:mm"));
     };
-
-    // =========================
-    // Private functions
-    // =========================
-    const fibonacciGenerator = SequenceGeneratorUtil.getFibonacciSequenceGenerator();
-    const updateActiveOperations = () => {
-        if (updateActiveRepositoryRun) {
-            return;
-        }
-
-        if ($scope.skipUpdateActiveOperationsTimes > 0) {
-            // Requested to skip this run, the number of skips is a Fibonacci sequence when errors are consecutive.
-            $scope.skipUpdateActiveOperationsTimes--;
-            return;
-        }
-
-        const activeRepository = $repositories.getActiveRepository();
-        if (!activeRepository) {
-            return;
-        }
-        MonitoringRestService.monitorActiveOperations(activeRepository)
-            .then((activeOperations) => {
-                $scope.activeOperations = activeOperations;
-                fibonacciGenerator.reset();
-                $scope.skipUpdateActiveOperationsTimes = 0;
-            })
-            .catch(() => $scope.skipUpdateActiveOperationsTimes = fibonacciGenerator.next())
-            .finally(() => updateActiveRepositoryRun = false);
-
-    };
-
-    const removeAllListeners = () => {
-        if (updateActiveOperationsTimer) {
-            $interval.cancel(updateActiveOperationsTimer);
-        }
-    };
-
-    // =========================
-    // Event handlers
-    // =========================
-    $scope.$on('$destroy', removeAllListeners);
-
-    updateActiveOperations();
-    updateActiveOperationsTimer = $interval(() => updateActiveOperations(), UPDATE_ACTIVE_OPERATION_TIME_INTERVAL);
 }
 
 repositorySizeCtrl.$inject = ['$scope', '$http', 'RepositoriesRestService'];

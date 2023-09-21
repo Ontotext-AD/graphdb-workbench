@@ -1,53 +1,34 @@
 import {OPERATION_GROUP_TYPE} from "../../../models/monitoring/operations/operation-group";
 import {OPERATION_STATUS} from "../../../models/monitoring/operations/operation-status";
 import {OPERATION_TYPE} from "../../../models/monitoring/operations/operation-type";
-import {OPERATION_MONITORING_CONSTANTS} from "../../../models/monitoring/operations/operation-monitoring-constants";
+import {SequenceGeneratorUtil} from "../../../utils/sequence-generator-util";
 
-angular.module('graphdb.framework.core.directives.operationsstatuses', [])
-    .directive('operationsStatuses', operationsStatusesDirectives);
+const UPDATE_ACTIVE_OPERATION_TIME_INTERVAL = 2000;
 
-operationsStatusesDirectives.$inject = ['$location'];
+angular.module('graphdb.framework.core.directives.operationsstatusesmonitor', [])
+    .directive('operationsStatusesMonitor', operationsStatusesMonitorDirectives);
 
-function operationsStatusesDirectives($location) {
+operationsStatusesMonitorDirectives.$inject = ['$interval', '$repositories', 'MonitoringRestService'];
+
+function operationsStatusesMonitorDirectives($interval, $repositories, MonitoringRestService) {
 
     return {
         restrict: 'E',
-        templateUrl: 'js/angular/core/directives/operations-statuses/templates/operations-statuses.html',
-        link: linkFunc,
-        scope: {
-            activeOperations: '='
-        }
+        templateUrl: 'js/angular/core/directives/operations-statuses-monitor/templates/operations-statuses-monitor.html',
+        link: linkFunc
     };
 
     function linkFunc(scope) {
         scope.OPERATION_STATUS = OPERATION_STATUS;
         scope.OPERATION_GROUP_TYPE = OPERATION_GROUP_TYPE;
         scope.OPERATION_TYPE = OPERATION_TYPE;
-        scope.operationsSummary = {};
+        scope.operationsSummary = undefined;
+        scope.activeOperations = undefined;
 
-        // =========================
-        // Public functions
-        // =========================
-        /**
-         * Getters for monitoring view url depending on <code>operationGroupType</code>.
-
-         * @param {string} operationGroupType - the value must be one of {@see OPERATION_GROUP_TYPE} options.
-         *
-         * @return {string} the url of the monitoring view.
-         */
-        scope.getOperationUrl = (operationGroupType) => {
-            if (OPERATION_GROUP_TYPE.QUERIES_OPERATION === operationGroupType) {
-                return OPERATION_MONITORING_CONSTANTS.QUERIES_MONITORING_URL;
-            }
-
-            if (OPERATION_GROUP_TYPE.BACKUP_AND_RESTORE_OPERATION === operationGroupType) {
-                return OPERATION_MONITORING_CONSTANTS.BACKUP_AND_RESTORE_MONITORING_URL;
-            }
-
-            if (OPERATION_GROUP_TYPE.CLUSTER_OPERATION === operationGroupType) {
-                return OPERATION_MONITORING_CONSTANTS.CLUSTER_MONITORING_URL;
-            }
-        };
+        let updateActiveOperationsTimer = undefined;
+        let updateActiveRepositoryRun = false;
+        let skipUpdateActiveOperationsTimes = 0;
+        const fibonacciGenerator = SequenceGeneratorUtil.getFibonacciSequenceGenerator();
 
         // =========================
         // Private functions
@@ -84,20 +65,15 @@ function operationsStatusesDirectives($location) {
             }
         };
 
-        // =========================
-        // Subscriptions
-        // =========================
-
         /**
-         * Handler of active operation changes.
          *
-         * @param {ActiveOperationsModel} newValue
-         * @param {ActiveOperationsModel} oldValue
+         * @param {ActiveOperationsModel} newActiveOperations - new active operations.
          */
-        const activeOperationsHandler = (newValue, oldValue) => {
-            if (angular.equals(newValue, oldValue)) {
+        const updateActiveOperations = (newActiveOperations) => {
+            if (angular.equals(scope.activeOperations, newActiveOperations)) {
                 return;
             }
+            scope.activeOperations = newActiveOperations;
             const operationsStatusesSummary = [];
             operationsStatusesSummary.push(getOperationGroupSummary(OPERATION_GROUP_TYPE.QUERIES_OPERATION));
             operationsStatusesSummary.push(getOperationGroupSummary(OPERATION_GROUP_TYPE.BACKUP_AND_RESTORE_OPERATION));
@@ -105,15 +81,47 @@ function operationsStatusesDirectives($location) {
             scope.operationsSummary = operationsStatusesSummary;
         };
 
-        const subscriptions = [];
-        subscriptions.push(scope.$watch('activeOperations', activeOperationsHandler));
+        const reloadActiveOperations = () => {
+            if (updateActiveRepositoryRun) {
+                return;
+            }
+
+            if (skipUpdateActiveOperationsTimes > 0) {
+                // Requested to skip this run, the number of skips is a Fibonacci sequence when errors are consecutive.
+                skipUpdateActiveOperationsTimes--;
+                return;
+            }
+
+            const activeRepository = $repositories.getActiveRepository();
+            if (!activeRepository) {
+                return;
+            }
+            MonitoringRestService.monitorActiveOperations(activeRepository)
+                .then((activeOperations) => {
+                    updateActiveOperations(activeOperations);
+                    fibonacciGenerator.reset();
+                    skipUpdateActiveOperationsTimes = 0;
+                })
+                .catch(() => skipUpdateActiveOperationsTimes = fibonacciGenerator.next())
+                .finally(() => updateActiveRepositoryRun = false);
+
+        };
+
+        // =========================
+        // Subscriptions
+        // =========================
 
         const removeAllSubscribers = () => {
-            subscriptions.forEach((subscription) => subscription());
+            if (updateActiveOperationsTimer) {
+                $interval.cancel(updateActiveOperationsTimer);
+            }
         };
 
         // Deregister the watcher when the scope/directive is destroyed
         scope.$on('$destroy', removeAllSubscribers);
+
+        reloadActiveOperations();
+        updateActiveOperationsTimer = $interval(() => reloadActiveOperations(), UPDATE_ACTIVE_OPERATION_TIME_INTERVAL);
     }
 }
 

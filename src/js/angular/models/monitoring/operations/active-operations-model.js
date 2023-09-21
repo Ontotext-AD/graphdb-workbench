@@ -4,7 +4,7 @@ export class ActiveOperationsModel {
     constructor() {
         /**
          *
-         * @type {ActiveOperationsModel[]}
+         * @type {ActiveOperationModel[]}
          */
         this.operations = [];
         this.status = OPERATION_STATUS.INFORMATION;

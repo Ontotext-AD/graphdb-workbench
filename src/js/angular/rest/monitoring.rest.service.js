@@ -1,5 +1,5 @@
 import {mapBackupAndRestoreResponseToModel} from "./mappers/monitor-backup-and-restore-mapper";
-import {mapActiveOperationResponseToModel, mapActiveOperationToActiveOperationInfoModel} from "./mappers/active-operations-mapper";
+import {mapActiveOperationResponseToModel} from "./mappers/active-operations-mapper";
 
 angular
     .module('graphdb.framework.rest.monitoring.service', [])
