@@ -548,11 +548,29 @@ a:focus, a:hover {
     height: 26px !important;
 }
 
+.active-operation {
+    position: fixed;
+    top: 0;
+    left: 50vw;
+}
+
+.dropdown-menu-center {
+    left: 50% !important;
+    right: auto !important;
+    text-align: center !important;
+    transform: translate(-50%, 0) !important;
+}
+
+@media (max-width: 1000px) {
+    .active-operation {
+        left: 30vw;
+    }
+}
+
 .btn.active-operation {
     padding: 0 !important;
     border: 0 !important;
 }
-
 
 /*-------------------------------------------------------------
 	Headings

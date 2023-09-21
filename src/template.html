@@ -20,6 +20,7 @@
 <body>
 
 <div class="status-bar bg-white" ng-hide="isSecurityEnabled() && !isUserLoggedIn() && !isFreeAccessEnabled()" ng-cloak>
+    <operations-statuses-monitor class="active-operation btn"></operations-statuses-monitor>
     <div class="btn-group btn-group-lg" role="group" aria-label="Button group with nested dropdown">
 
         <div class="btn alert alert-warning no-icon" ng-if="!getLicense().valid && showLicense()"
@@ -27,8 +28,6 @@
             <span class="icon-warning"></span> {{'no.valid.license.warning' | translate}}
             <a ng-show="!isLicenseHardcoded()" href="license/register" class="btn btn-secondary btn-sm" style="margin: -5px 0 -5px 0">{{'set.label' | translate}}</a>
         </div>
-
-        <operations-statuses-monitor class="active-operation btn"></operations-statuses-monitor>
 
         <div id="guideResume" class="btn-group" role="group" ng-if="guidePaused" gdb-tooltip="{{'guide.button.guide-resume' | translate}}" tooltip-placement="bottom">
             <a class="btn btn-lg btn-secondary" ng-click="resumeGuide()"><span class="icon-play text-primary"></span> {{'guide.button.guide-paused' | translate}}</a>
