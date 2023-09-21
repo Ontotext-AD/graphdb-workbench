@@ -19,6 +19,22 @@ export class ACListModel {
         this.aclRules.splice(index, 1);
     }
 
+    replaceRule(index, rule) {
+        this.aclRules.splice(index, 1, rule);
+    }
+
+    getRule(index) {
+        const rule = this.aclRules[index];
+        return {
+            subject: rule.subject,
+            predicate: rule.predicate,
+            object: rule.object,
+            context: rule.context,
+            role: rule.role,
+            policy: rule.policy
+        };
+    }
+
     moveUp(index) {
         const previousRule = this.aclRules[index - 1];
         this.aclRules[index - 1] = this.aclRules[index];
@@ -29,6 +45,17 @@ export class ACListModel {
         const nextRule = this.aclRules[index + 1];
         this.aclRules[index + 1] = this.aclRules[index];
         this.aclRules[index] = nextRule;
+    }
+
+    toJSON() {
+        return this.aclRules.map((rule) => ({
+            subject: rule.subject,
+            predicate: rule.predicate,
+            object: rule.object,
+            context: rule.context,
+            role: rule.role,
+            policy: rule.policy
+        }));
     }
 
     get aclRules() {
@@ -50,7 +77,7 @@ export class ACRuleModel {
      * @param {string} role
      * @param {string} policy
      */
-    constructor(subject = '*', predicate = '*', object= '*', context= '*', role= '', policy= ACL_POLICY.ALLOW) {
+    constructor(subject = '*', predicate = '*', object= '*', context= '*', role= 'CUSTOM_', policy= ACL_POLICY.ALLOW) {
         this._subject = subject;
         this._predicate = predicate;
         this._object = object;
