@@ -1,7 +1,7 @@
+<link href="css/backup-and-restore.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 <div>
     <title>${messages.app.title} : ${messages.jmx.QueryMonitoringPage.title}</title>
 
-    <link href="css/backup-and-restore.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
     <h1>
         {{title}}
@@ -15,10 +15,17 @@
         </span>
     </h1>
 
-    <div core-errors ontop></div>
-
     <div ng-if="initialized" class="backup-and-restore">
-        <table ng-if="backupAndRestoreInfos && backupAndRestoreInfos.length > 0" class="table table-striped table-bordered"
+        <div ng-if="backupAndRestoreInfos && backupAndRestoreInfos.length > 0">
+            <div class="pause-bar">
+                <button type="button" class="btn pull-right pause-btn" ng-click="togglePause()"  ng-class="paused ? 'btn-primary' : 'btn-secondary'"
+                        gdb-tooltip="{{'temp.pause.backup_and_restore' | translate}}"
+                        tooltip-placement="left">
+                    {{paused ? 'paused.btn' : 'pause.btn' | translate}}
+                </button>
+            </div>
+
+            <table class="table table-striped table-bordered"
                aria-describedby="Monitor backup and restore">
             <thead>
             <tr>
@@ -57,7 +64,7 @@
             </tr>
             </tbody>
         </table>
-
+        </div>
         <div class="alert alert-info no-icon no-running-backup-and-restore-alert"
              ng-if="!backupAndRestoreInfos || !backupAndRestoreInfos.length || backupAndRestoreInfos.length === 0">
             {{'view.monitoring.backup_and_restore.no_running_backup_and_restore' | translate}}

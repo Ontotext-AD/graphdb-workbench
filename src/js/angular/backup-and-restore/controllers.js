@@ -17,6 +17,7 @@ function BackupAndRestoreCtrl($scope, $interval, MonitoringRestService) {
      */
     $scope.backupAndRestoreInfos = undefined;
     $scope.hasClusterOperation = false;
+    $scope.paused = false;
     let timer = undefined;
 
     // =========================
@@ -29,11 +30,15 @@ function BackupAndRestoreCtrl($scope, $interval, MonitoringRestService) {
         return !!value;
     };
 
+    $scope.togglePause = () => {
+        $scope.paused = !$scope.paused;
+    };
+
     // =========================
     // Private functions
     // =========================
     const loadBackupAndRestoreData = () => {
-        if ($scope.loading) {
+        if ($scope.loading || $scope.paused) {
             return;
         }
         $scope.loading = true;
