@@ -172,9 +172,65 @@ export class AclManagementSteps {
     static createRuleButtons() {
         return this.getAclTable().find('.add-rule-btn');
     }
+
+    static getSaveAclButton() {
+        return this.getPage().find('.save-acl-btn');
+    }
+
+    static saveAcl() {
+        this.getSaveAclButton().click();
+    }
+
+    static getCancelAclSavingButton() {
+        return this.getPage().find('.cancel-acl-save-btn');
+    }
+
+    static cancelAclSaving() {
+        this.getCancelAclSavingButton().click();
+    }
+
+    static checkRules(rules = []) {
+        rules.forEach((rule, index) => {
+            AclManagementSteps.getRule(index).within(() => {
+                cy.get('td:nth-child(1)').should('contain.text', index);
+                const moveUpVisibilityCommand = index > 0 ? 'be.visible' : 'not.exist';
+                cy.get('td:nth-child(2)').scrollIntoView().find('.move-up-btn').should(moveUpVisibilityCommand);
+                const moveDownVisibilityCommand = index < rules.length - 1 ? 'be.visible' : 'not.exist';
+                cy.get('td:nth-child(2)').scrollIntoView().find('.move-down-btn').should(moveDownVisibilityCommand);
+                cy.get('td:nth-child(3)').should('contain.text', rule.subject);
+                cy.get('td:nth-child(4)').should('contain.text', rule.predicate);
+                cy.get('td:nth-child(5)').should('contain.text', rule.object);
+                cy.get('td:nth-child(6)').should('contain.text', rule.context);
+                cy.get('td:nth-child(7)').should('contain.text', rule.role);
+                cy.get('td:nth-child(8)').should('contain.text', rule.policy);
+                cy.get('td:nth-child(9)').scrollIntoView().find('.delete-rule-btn').should('be.visible');
+                cy.get('td:nth-child(9)').scrollIntoView().find('.edit-rule-btn').should('be.visible');
+                cy.get('td:nth-child(9)').scrollIntoView().find('.add-rule-btn').should('be.visible');
+            });
+        });
+    }
+
+    static checkRuleEditForm(index, ruleData) {
+        AclManagementSteps.getSubjectField(index).should('have.value', ruleData.subject);
+        AclManagementSteps.getPredicateField(index).should('have.value', ruleData.predicate);
+        AclManagementSteps.getObjectField(index).should('have.value', ruleData.object);
+        AclManagementSteps.getContextField(index).should('have.value', ruleData.context);
+        AclManagementSteps.getRoleField(index).should('have.value', ruleData.role);
+        AclManagementSteps.getPolicySelectorField(index).should('have.value', ruleData.policy);
+    }
+
+    static checkIfRuleSavingIsForbidden(index) {
+        AclManagementSteps.getSaveRuleButton(index).should('not.exist');
+        AclManagementSteps.getSaveRuleDisabledButton(index).should('be.visible');
+    }
+
+    static checkIfRuleSavingIsAllowed(index) {
+        AclManagementSteps.getSaveRuleButton(index).should('be.visible');
+        AclManagementSteps.getSaveRuleDisabledButton(index).should('not.exist');
+    }
 }
 
-const ACL = [
+export const ACL = [
     {
         "subject": "<urn:Mary>",
         "predicate": "*",

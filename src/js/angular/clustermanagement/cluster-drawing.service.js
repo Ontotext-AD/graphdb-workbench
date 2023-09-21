@@ -161,27 +161,27 @@ function updateNodesIcon(nodes) {
 }
 
 function hasRecoveryState(node) {
-    return !!node.recoveryStatus;
+    return !_.isEmpty(node.recoveryStatus);
 }
 
 function getNodeInfoIconType(node) {
-    if (!node.recoveryStatus) {
+    if (_.isEmpty(node.recoveryStatus)) {
         return '';
     }
 
     switch (node.recoveryStatus.state) {
         case RecoveryState.SEARCHING_FOR_NODE:
-            return '\uf002';
+            return '\uf29c';
         case RecoveryState.WAITING_FOR_SNAPSHOT:
             return '\uf017';
-        case RecoveryState.RECORDING_SNAPSHOT:
-            return '\uf0c7';
+        case RecoveryState.RECEIVING_SNAPSHOT:
+            return '\uf0ed';
         case RecoveryState.APPLYING_SNAPSHOT:
-            return '\uf110';
+            return '\uf050';
         case RecoveryState.BUILDING_SNAPSHOT:
-            return '\uf085';
+            return '\uf187';
         case RecoveryState.SENDING_SNAPSHOT:
-            return '\uf093';
+            return '\uf0ee';
         default:
             return '';
     }
@@ -232,7 +232,7 @@ function updateNodesInfoText(nodes) {
             return d3.select(d.infoNode).node().getBBox().y - 5;
         })
         .classed('hidden', function (d) {
-            return !d.recoveryStatus;
+            return _.isEmpty(d.recoveryStatus);
         });
 }
 
