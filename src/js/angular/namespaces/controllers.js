@@ -133,6 +133,7 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
             return RDF4JRepositoriesRestService.updateNamespacePrefix($repositories.getActiveRepository(), namespace, prefix)
                 .success(function () {
                     $scope.getNamespaces();
+                    toastr.success($translate.instant('namespace.saved'));
                     $scope.loader = false;
                 }).error(function (data) {
                     const msg = getError(data);
@@ -217,11 +218,21 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
             if (prefixExist) {
                 $scope.confirmReplace(function () {
                     $scope.saveNamespace($scope.namespace.prefix, $scope.namespace.namespace);
-                    $scope.namespace = {};
+                    $scope.namespace.namespace = '';
+                    $scope.namespace.prefix = '';
+                    setTimeout(() => {
+                        $scope.form.$setUntouched();
+                        $scope.form.$setPristine();
+                    });
                 });
             } else {
                 $scope.saveNamespace($scope.namespace.prefix, $scope.namespace.namespace);
-                $scope.namespace = {};
+                $scope.namespace.namespace = '';
+                $scope.namespace.prefix = '';
+                setTimeout(() => {
+                    $scope.form.$setUntouched();
+                    $scope.form.$setPristine();
+                });
             }
         };
 
