@@ -1,3 +1,7 @@
 .backup-and-restore table td {
     vertical-align: top;
 }
+
+.backup-and-restore .pause-bar {
+    height: 3rem;
+}
