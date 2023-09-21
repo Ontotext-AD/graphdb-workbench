@@ -12,17 +12,9 @@ export class OperationsStatusesComponentSteps {
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().click();
     }
 
-    static clickOnOperationStatus(operationIndex = 0) {
+    static checkOperationElementUrl(expectedUrl, operationIndex = 0) {
         OperationsStatusesComponentSteps.getOperationStatuses().eq(operationIndex).then(($operationElement) => {
             expect($operationElement).to.have.attr('target', '_blank');
-            // update attr to open in same tab
-            $operationElement.attr('target', '_self');
-        })
-            .click();
-    }
-
-    static clickOnOperationAndVerifyUrl(expectedUrl, operationIndex = 0) {
-        OperationsStatusesComponentSteps.clickOnOperationStatus(operationIndex);
-        cy.url().should('include', expectedUrl);
+        });
     }
 }
