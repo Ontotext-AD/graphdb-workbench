@@ -33,7 +33,7 @@
                 "building_snapshot": "Créer un instantané pour {{node}}",
                 "waiting_for_snapshot": "En attente d'un instantané du nœud {{node}}",
                 "sending_snapshot": "Envoi d'un instantané au nœud {{node}}",
-                "recording_snapshot": "Enregistrement d'un instantané du nœud {{node}}"
+                "receiving_snapshot": "Réception d'un instantané du nœud {{node}}"
             }
         },
         "cluster_configuration": {
