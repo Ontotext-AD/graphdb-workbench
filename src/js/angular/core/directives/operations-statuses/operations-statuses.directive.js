@@ -1,6 +1,7 @@
 import {OPERATION_GROUP_TYPE} from "../../../models/monitoring/operations/operation-group";
 import {OPERATION_STATUS} from "../../../models/monitoring/operations/operation-status";
 import {OPERATION_TYPE} from "../../../models/monitoring/operations/operation-type";
+import {OPERATION_MONITORING_CONSTANTS} from "../../../models/monitoring/operations/operation-monitoring-constants";
 
 angular.module('graphdb.framework.core.directives.operationsstatuses', [])
     .directive('operationsStatuses', operationsStatusesDirectives);
@@ -36,15 +37,15 @@ function operationsStatusesDirectives($location) {
          */
         scope.getOperationUrl = (operationGroupType) => {
             if (OPERATION_GROUP_TYPE.QUERIES_OPERATION === operationGroupType) {
-                return 'monitor/queries';
+                return OPERATION_MONITORING_CONSTANTS.QUERIES_MONITORING_URL;
             }
 
             if (OPERATION_GROUP_TYPE.BACKUP_AND_RESTORE_OPERATION === operationGroupType) {
-                return 'monitor/backup-and-restore';
+                return OPERATION_MONITORING_CONSTANTS.BACKUP_AND_RESTORE_MONITORING_URL;
             }
 
             if (OPERATION_GROUP_TYPE.CLUSTER_OPERATION === operationGroupType) {
-                return 'cluster';
+                return OPERATION_MONITORING_CONSTANTS.CLUSTER_MONITORING_URL;
             }
         };
 
