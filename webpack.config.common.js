@@ -177,6 +177,11 @@ module.exports = {
                 transform: replaceVersion
             },
             {
+                from: 'src/js/angular/core/directives/operations-statuses-monitor/templates',
+                to: 'js/angular/core/directives/operations-statuses-monitor/templates',
+                transform: replaceVersion
+            },
+            {
                 from: 'src/js/angular/templates',
                 to: 'js/angular/templates'
             }

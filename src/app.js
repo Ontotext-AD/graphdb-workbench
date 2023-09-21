@@ -9,6 +9,7 @@ import 'angular/core/directives/rdfresourcesearch/rdf-resource-search.directive'
 import 'angular/core/directives/languageselector/language-selector.directive';
 import 'angular/core/directives/angulartooltips/angular-tooltips.js';
 import 'angular/core/directives/uppercased.directive';
+import 'angular/core/directives/operations-statuses-monitor/operations-statuses-monitor.directive'
 
 // $translate.instant converts <b> from strings to &lt;b&gt
 // and $sce.trustAsHtml could not recognise that this is valid html
@@ -30,7 +31,8 @@ const modules = [
     'graphdb.framework.core.directives.languageselector.languageselector',
     'graphdb.framework.core.directives.angular-tooltips',
     'graphdb.framework.core.directives.uppercased',
-    'graphdb.framework.guides.services'
+    'graphdb.framework.guides.services',
+    'graphdb.framework.core.directives.operationsstatusesmonitor'
 ];
 
 const providers = [
