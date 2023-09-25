@@ -8,9 +8,9 @@ const UPDATE_ACTIVE_OPERATION_TIME_INTERVAL = 2000;
 angular.module('graphdb.framework.core.directives.operationsstatusesmonitor', [])
     .directive('operationsStatusesMonitor', operationsStatusesMonitorDirectives);
 
-operationsStatusesMonitorDirectives.$inject = ['$interval', '$repositories', 'MonitoringRestService'];
+operationsStatusesMonitorDirectives.$inject = ['$interval', '$repositories', 'MonitoringRestService', '$jwtAuth'];
 
-function operationsStatusesMonitorDirectives($interval, $repositories, MonitoringRestService) {
+function operationsStatusesMonitorDirectives($interval, $repositories, MonitoringRestService, $jwtAuth) {
 
     return {
         restrict: 'E',
@@ -82,7 +82,7 @@ function operationsStatusesMonitorDirectives($interval, $repositories, Monitorin
         };
 
         const reloadActiveOperations = () => {
-            if (updateActiveRepositoryRun) {
+            if (!$jwtAuth.isAuthenticated() || updateActiveRepositoryRun) {
                 return;
             }
 
