@@ -475,10 +475,10 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
                     columns: $scope.currentQuery.columns || []
                 });
                 JdbcRestService.getNewSqlTablePreview(sqlView)
-                    .done(successCallback).fail(failCallback);
+                    .then(successCallback).catch(failCallback);
             } else {
                 JdbcRestService.getExistingSqlTablePreview($scope.currentQuery.name)
-                    .done(successCallback).fail(failCallback);
+                    .then(successCallback).catch(failCallback);
             }
         }
     };

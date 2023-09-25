@@ -209,10 +209,10 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
 
     function getGraph() {
         const headers = {Accept: 'application/x-graphdb-table-results+json'};
-        $.ajax({
+        $http({
             method: 'GET',
             url: 'rest/explore/graph',
-            data: {
+            params: {
                 uri: $scope.uriParam,
                 triple: $scope.tripleParam,
                 inference: $scope.inference,
@@ -222,17 +222,17 @@ function ExploreCtrl($scope, $http, $location, toastr, $routeParams, $repositori
                 context: $scope.context
             },
             headers: headers
-        }).done(function (data, textStatus, jqXhr) {
+        }).then(function({data, status}) {
             toggleOntoLoader(false);
             // Pass the xhr argument first as the yasr expects it that way. See https://ontotext.atlassian.net/browse/GDB-3939
-            yasr.setResponse(jqXhr, textStatus);
-        }).fail(function (data) {
+            yasr.setResponse(data, status);
+        }).catch(function(data) {
             toastr.error($translate.instant('explore.error.resource', {data: getError(data)}));
             toggleOntoLoader(false);
         });
     }
 
-    $scope.downloadExport = function (format) {
+  $scope.downloadExport = function(format) {
         let param;
         let encodedURI;
         if ($scope.uriParam) {

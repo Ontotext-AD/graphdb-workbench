@@ -151,7 +151,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                                     // The variable justLoggedIn will be set to true if this is
                                     // a new login that just happened.
                                     that.auth = $openIDAuth.authHeaderGraphDB();
-                                    jwtAuth.setAuthHeaders();
                                     console.log('oidc: set id/access token as GraphDB auth');
                                     // When logging via OpenID we may get a token that doesn't have
                                     // rights in GraphDB, this should be considered invalid.
@@ -269,20 +268,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 }
             };
 
-            this.setAuthHeaders = function () {
-                return new Promise((resolve) => {
-                    const auth = AuthTokenService.getAuthToken();
-                    $.ajaxSetup()['headers'] = $.ajaxSetup()['headers'] || {};
-                    $.ajaxSetup()['headers']['Authorization'] = auth;
-                    // jQuery seems to send the header by default but it doesn't hurt to be explicit
-                    $.ajaxSetup()['headers']['X-Requested-With'] = 'XMLHttpRequest';
-                    setTimeout(() => {
-                        resolve(true);
-                    });
-                });
-            };
-            this.setAuthHeaders();
-
             this.authenticate = function (data, authHeaderValue) {
                 return new Promise((resolve) => {
                     AuthTokenService.clearAuthToken();
@@ -295,13 +280,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     $rootScope.deniedPermissions = {};
                     this.securityInitialized = true;
 
-                    // Should guarantee that the authentication headers are set before broadcasting 'securityInit',
-                    // to avoid race conditions, because on 'securityInit' in repositories.service is called getRepositories,
-                    // which has access="IS_AUTHENTICATED_FULLY" in GDB security-config.xml
-                    that.setAuthHeaders()
-                        .then(() => {
-                            $rootScope.$broadcast('securityInit', this.securityEnabled, that.hasExplicitAuthentication(), this.freeAccess);
-                        });
+                    $rootScope.$broadcast('securityInit', this.securityEnabled, that.hasExplicitAuthentication(), this.freeAccess);
                     setTimeout(() => {
                         resolve(true);
                     });
@@ -341,7 +320,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 $openIDAuth.softLogout();
                 this.principal = this.freeAccessPrincipal;
                 AuthTokenService.clearAuthToken();
-                this.setAuthHeaders();
             };
 
             this.clearAuthentication = function () {

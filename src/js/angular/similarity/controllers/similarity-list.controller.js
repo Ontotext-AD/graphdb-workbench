@@ -6,9 +6,9 @@ angular
     .module('graphdb.framework.similarity.controllers.list', [])
     .controller('SimilarityCtrl', SimilarityCtrl);
 
-SimilarityCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', 'ModalService', '$uibModal', 'SimilarityRestService', 'AutocompleteRestService', 'productInfo', 'RDF4JRepositoriesRestService', '$translate'];
+SimilarityCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', 'ModalService', '$uibModal', 'SimilarityRestService', 'AutocompleteRestService', 'productInfo', 'RDF4JRepositoriesRestService', '$translate', '$http'];
 
-function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseService, ModalService, $uibModal, SimilarityRestService, AutocompleteRestService, productInfo, RDF4JRepositoriesRestService, $translate) {
+function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseService, ModalService, $uibModal, SimilarityRestService, AutocompleteRestService, productInfo, RDF4JRepositoriesRestService, $translate, $http) {
 
     const PREFIX = 'http://www.ontotext.com/graphdb/similarity/';
     const PREFIX_PREDICATION = 'http://www.ontotext.com/graphdb/similarity/psi/';
@@ -230,15 +230,15 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
             sendData.$searchSubject = iriForQuery(uri);
         }
 
-        $.ajax({
+        $http({
             method: 'GET',
             url: 'repositories/' + $repositories.getActiveRepository(),
-            data: sendData,
+            params: sendData,
             headers: headers
-        }).done(function (data, textStatus, jqXhrOrErrorString) {
+        }).then(function ({data, textStatus, jqXhrOrErrorString}) {
             toggleOntoLoader(false);
             yasr.setResponse(data, textStatus, jqXhrOrErrorString);
-        }).fail(function (data) {
+        }).catch(function (data) {
             toastr.error(getError(data), $translate.instant('similarity.get.resource.error'));
             toggleOntoLoader(false);
         });
