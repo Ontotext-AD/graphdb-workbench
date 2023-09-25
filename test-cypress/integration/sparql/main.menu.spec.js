@@ -109,12 +109,11 @@ describe('Main menu tests', function () {
                         visible: false,
                         redirect: '/cluster'
                     },
-                    // I wonder, why this sometimes works and others don't.
-                    // {
-                    //     name: 'Plugins',
-                    //     visible: false,
-                    //     redirect: '/plugins'
-                    // },
+                    {
+                        name: 'Plugins',
+                        visible: false,
+                        redirect: '/plugins'
+                    },
                     {
                         name: 'Namespaces',
                         visible: false,

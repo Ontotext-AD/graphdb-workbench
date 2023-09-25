@@ -21,7 +21,7 @@ PluginRegistry.add('main.menu', {
             guideSelector: 'menu-setup'
         },
         {
-            label: 'Plugins',
+            label: 'ACL Management',
             labelKey: 'menu.aclmanagement.label',
             href: 'aclmanagement',
             order: 6,
