@@ -25,7 +25,8 @@ angular
     .module('graphdb.framework.core', modules)
     .provider('$menuItems', MenuItemsProvider)
     .factory('ModalService', ModalService)
-    .factory('ClassInstanceDetailsService', ClassInstanceDetailsService);
+    .factory('ClassInstanceDetailsService', ClassInstanceDetailsService)
+    .factory('AuthTokenService', AuthTokenService);
 
 function MenuItemsProvider() {
     const findParent = function (items, parent) {
@@ -284,5 +285,27 @@ function ClassInstanceDetailsService($http) {
             }
             return uri.toString().substring(Math.max(idxDiaz, idxSlash) + 1);
         }
+    }
+}
+
+function AuthTokenService() {
+    const authStorageName = 'com.ontotext.graphdb.auth';
+
+    return {
+        getAuthToken: getAuthToken,
+        setAuthToken: setAuthToken,
+        clearAuthToken: clearAuthToken
+    };
+
+    function setAuthToken(token) {
+        localStorage.setItem(authStorageName, token);
+    }
+
+    function getAuthToken() {
+        return localStorage.getItem(authStorageName);
+    }
+
+    function clearAuthToken() {
+        localStorage.removeItem(authStorageName);
     }
 }

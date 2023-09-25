@@ -17,8 +17,10 @@ const modules = [
 const exportCtrl = angular.module('graphdb.framework.impex.export.controllers', modules);
 
 exportCtrl.controller('ExportCtrl',
-    ['$scope', '$http', '$location', '$timeout', 'ModalService', 'filterFilter', '$repositories', 'toastr', 'RDF4JRepositoriesRestService', 'FileTypes', '$translate',
-        function ($scope, $http, $location, $timeout, ModalService, filterFilter, $repositories, toastr, RDF4JRepositoriesRestService, FileTypes, $translate) {
+  ['$scope', '$http', '$location', '$timeout', 'ModalService', 'filterFilter', '$repositories', 'toastr', 'RDF4JRepositoriesRestService',
+      'FileTypes', '$translate', 'AuthTokenService',
+      function($scope, $http, $location, $timeout, ModalService, filterFilter, $repositories, toastr, RDF4JRepositoriesRestService,
+        FileTypes, $translate, AuthTokenService) {
 
             $scope.getActiveRepository = function () {
                 return $repositories.getActiveRepository();
@@ -122,7 +124,7 @@ exportCtrl.controller('ExportCtrl',
 
             $scope.downloadExport = function (downloadUrl, format) {
                 let url = downloadUrl + '&Accept=' + encodeURIComponent(format.type);
-                const auth = localStorage.getItem('com.ontotext.graphdb.auth');
+                const auth = AuthTokenService.getAuthToken();
                 if (auth) {
                     url = url + '&authToken=' + encodeURIComponent(auth);
                 }

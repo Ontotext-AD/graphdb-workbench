@@ -2,8 +2,8 @@ import 'angular/core/services';
 
 const adminInfoApp = angular.module('graphdb.framework.stats', ['toastr']);
 
-adminInfoApp.controller('AdminInfoCtrl', ['$scope', '$http', 'toastr', '$timeout', '$jwtAuth', '$translate',
-    function ($scope, $http, toastr, $timeout, $jwtAuth, $translate) {
+adminInfoApp.controller('AdminInfoCtrl', ['$scope', '$http', 'toastr', '$timeout', '$translate', 'AuthTokenService',
+    function ($scope, $http, toastr, $timeout, $translate, AuthTokenService) {
 
         $http.get('rest/info/data')
             .success(function (data) {
@@ -39,7 +39,7 @@ adminInfoApp.controller('AdminInfoCtrl', ['$scope', '$http', 'toastr', '$timeout
         $scope.getReport = function () {
             let url = 'rest/report';
             if ($jwtAuth.isAuthenticated()) {
-                url = url + '?authToken=' + encodeURIComponent($jwtAuth.getAuthToken());
+                url = url + '?authToken=' + encodeURIComponent(AuthTokenService.getAuthToken());
             }
 
             window.open(url);

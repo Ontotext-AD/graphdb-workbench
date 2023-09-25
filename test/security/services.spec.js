@@ -10,14 +10,15 @@ beforeEach(angular.mock.module('graphdb.framework.core.interceptors.unauthorized
 
 describe('$jwtAuth tests', function () {
 
-    var $jwtAuth, $httpBackend, $rootScope, $location, httpSecurity, httpGetAdmin;
+    var $jwtAuth, $httpBackend, $rootScope, $location, httpSecurity, httpGetAdmin, AuthTokenService;
 
-    beforeEach(angular.mock.inject(function (_$jwtAuth_, _$httpBackend_, _$rootScope_, _$location_) {
+    beforeEach(angular.mock.inject(function (_$jwtAuth_, _$httpBackend_, _$rootScope_, _$location_, _AuthTokenService_) {
         // The injector unwraps the underscores (_) from around the parameter names when matching
         $jwtAuth = _$jwtAuth_;
         $httpBackend = _$httpBackend_;
         $rootScope = _$rootScope_;
         $location = _$location_;
+        AuthTokenService = _AuthTokenService_;
 
         httpSecurity = $httpBackend.when('GET', 'rest/security/all').respond(200, {
             enabled: true,
@@ -110,7 +111,9 @@ describe('$jwtAuth tests', function () {
         }, "1234");
 
         expect($jwtAuth.securityEnabled).toEqual(true);
-        expect($jwtAuth.auth).toBeDefined();
+        const token = AuthTokenService.getAuthToken();
+        expect(token).toBeDefined();
+        expect(token).toEqual('1234');
     });
 
     it('$jwtAuth.clearAuthentication should set auth to null', function () {
@@ -119,7 +122,8 @@ describe('$jwtAuth tests', function () {
         $jwtAuth.clearAuthentication();
 
         expect($jwtAuth.securityEnabled).toEqual(true);
-        expect($jwtAuth.auth).toBeNull();
+        const token = AuthTokenService.getAuthToken();
+        expect(token).toBeNull();
         // freeAccessPrincipal is either undefined or the principal for free access if that's enabled
         expect($jwtAuth.principal).toEqual($jwtAuth.freeAccessPrincipal)
     });
@@ -375,7 +379,7 @@ describe('$jwtAuth tests', function () {
             expect($rootScope.setPermissionDenied('/login')).toEqual(false);
             expect($rootScope.setPermissionDenied('/differentUrl')).toEqual(false);
 
-            $jwtAuth.auth = {};
+            AuthTokenService.setAuthToken('1234');
             expect($rootScope.setPermissionDenied('/')).toEqual(false);
             expect($rootScope.setPermissionDenied('/login')).toEqual(false);
             expect($rootScope.setPermissionDenied('/differentUrl')).toEqual(true);
