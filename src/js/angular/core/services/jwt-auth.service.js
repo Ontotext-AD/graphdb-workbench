@@ -8,8 +8,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
     'graphdb.framework.rest.security.service',
     'graphdb.framework.core.services.openIDService'
 ])
-    .service('$jwtAuth', ['$http', 'toastr', '$location', '$rootScope', 'SecurityRestService', '$openIDAuth', '$translate', '$q',
-        function ($http, toastr, $location, $rootScope, SecurityRestService, $openIDAuth, $translate, $q) {
+    .service('$jwtAuth', ['$http', 'toastr', '$location', '$rootScope', 'SecurityRestService', '$openIDAuth', '$translate', '$q', 'AuthTokenService',
+        function ($http, toastr, $location, $rootScope, SecurityRestService, $openIDAuth, $translate, $q, AuthTokenService) {
             const jwtAuth = this;
 
             $rootScope.deniedPermissions = {};
@@ -67,8 +67,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return jwtAuth.hasExternalAuthUser();
             };
 
-            this.authStorageName = 'com.ontotext.graphdb.auth';
-
             this.securityEnabled = true;
             this.freeAccess = false;
             this.hasOverrideAuth = false;
@@ -76,10 +74,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             this.securityInitialized = false;
 
             const that = this;
-
-            this.clearStorage = function () {
-                localStorage.removeItem(that.authStorageName);
-            };
 
             /**
              * Determines the currently authenticated user from the backend's point-of-view
@@ -93,16 +87,17 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             this.getAuthenticatedUserFromBackend = function(noFreeAccessFallback, justLoggedIn) {
                 SecurityRestService.getAuthenticatedUser().
                 success(function(data, status, headers) {
-                    if (that.auth && that.auth.startsWith('GDB')) {
+                    const token = AuthTokenService.getAuthToken();
+                    if (token && token.startsWith('GDB')) {
                         // There is a previous authentication via JWT, it's still valid
                         // so refresh the principal
                         that.externalAuthUser = false;
                         that.principal = data;
                         $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.freeAccess);
                         // console.log('previous JWT authentication ok');
-                    } else if (that.openIDEnabled && that.auth && that.auth.startsWith('Bearer')) {
+                    } else if (that.openIDEnabled && token && token.startsWith('Bearer')) {
                         // The auth was obtained from OpenID, we need to authenticate with the returned user
-                        that.authenticate(data, that.auth);
+                        that.authenticate(data, token);
                     } else {
                         // There is no previous authentication but we got a principal via
                         // an external authentication mechanism (e.g. Kerberos)
@@ -125,7 +120,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.initSecurity = function () {
                 this.securityInitialized = false;
-                this.auth = localStorage.getItem(this.authStorageName);
 
                 SecurityRestService.getSecurityConfig().then(function (res) {
                     that.securityEnabled = res.data.enabled;
@@ -157,7 +151,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                                     // The variable justLoggedIn will be set to true if this is
                                     // a new login that just happened.
                                     that.auth = $openIDAuth.authHeaderGraphDB();
-                                    jwtAuth.setAuthHeaders();
                                     console.log('oidc: set id/access token as GraphDB auth');
                                     // When logging via OpenID we may get a token that doesn't have
                                     // rights in GraphDB, this should be considered invalid.
@@ -179,7 +172,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                             that.getAuthenticatedUserFromBackend();
                         }
                     } else {
-                        that.clearStorage();
+                        AuthTokenService.clearAuthToken();
                         const overrideAuthData = res.data.overrideAuth;
                         that.hasOverrideAuth = overrideAuthData.enabled;
                         if (that.hasOverrideAuth) {
@@ -228,12 +221,9 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return this.hasOverrideAuth && this.principal && this.principal.username === 'overrideauth';
             };
 
-            this.getAuthToken = function () {
-                return this.auth;
-            };
-
             this.authTokenIsType = function (type) {
-                return this.auth && this.auth.startsWith(type);
+                const token = AuthTokenService.getAuthToken();
+                return token && token.startsWith(type);
             };
 
             this.loginOpenID = function () {
@@ -245,7 +235,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     this.securityEnabled = enabled;
                     SecurityRestService.toggleSecurity(enabled).then(function () {
                         toastr.success($translate.instant('jwt.auth.security.status', {status: ($translate.instant(enabled ? 'enabled.status' : 'disabled.status'))}));
-                        that.clearStorage();
+                        AuthTokenService.clearAuthToken();
                         that.initSecurity();
                     }, function (err) {
                         toastr.error(err.data.error.message, $translate.instant('common.error'));
@@ -278,30 +268,11 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 }
             };
 
-            this.setAuthHeaders = function () {
-                return new Promise(resolve => {
-                    const auth = this.auth ? this.auth : undefined;
-                    $http.defaults.headers.common['Authorization'] = auth;
-                    // Angular doesn't send this header by default and we need it to detect XHR requests
-                    // so that we don't advertise Basic auth with them.
-                    $http.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-                    $.ajaxSetup()['headers'] = $.ajaxSetup()['headers'] || {};
-                    $.ajaxSetup()['headers']['Authorization'] = auth;
-                    // jQuery seems to send the header by default but it doesn't hurt to be explicit
-                    $.ajaxSetup()['headers']['X-Requested-With'] = 'XMLHttpRequest';
-                    setTimeout(() => {
-                        resolve(true);
-                    })
-                });
-            };
-            this.setAuthHeaders();
-
             this.authenticate = function (data, authHeaderValue) {
-                return new Promise(resolve => {
-                    that.clearStorage();
+                return new Promise((resolve) => {
+                    AuthTokenService.clearAuthToken();
                     if (authHeaderValue) {
-                        this.auth = authHeaderValue;
-                        localStorage.setItem(that.authStorageName, this.auth);
+                        AuthTokenService.setAuthToken(authHeaderValue);
                         this.externalAuthUser = false;
                     }
 
@@ -309,34 +280,28 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     $rootScope.deniedPermissions = {};
                     this.securityInitialized = true;
 
-                    // Should guarantee that the authentication headers are set before broadcasting 'securityInit',
-                    // to avoid race conditions, because on 'securityInit' in repositories.service is called getRepositories,
-                    // which has access="IS_AUTHENTICATED_FULLY" in GDB security-config.xml
-                    that.setAuthHeaders()
-                        .then(() => {
-                            $rootScope.$broadcast('securityInit', this.securityEnabled, that.hasExplicitAuthentication(), this.freeAccess);
-                        });
+                    $rootScope.$broadcast('securityInit', this.securityEnabled, that.hasExplicitAuthentication(), this.freeAccess);
                     setTimeout(() => {
                         resolve(true);
-                    })
+                    });
                 });
             };
 
             this.authenticateOpenID = function(authHeader) {
-                this.clearStorage();
+                AuthTokenService.clearAuthToken();
                 if (authHeader) {
-                    this.auth = authHeader;
-                    localStorage.setItem(this.authStorageName, this.auth);
+                    AuthTokenService.setAuthToken(authHeader);
                     this.externalAuthUser = false;
                 }
-            }
+            };
 
             this.hasExternalAuthUser = function () {
                 return this.externalAuthUser;
             };
 
             this.hasExplicitAuthentication = function () {
-                return this.auth != null || this.externalAuthUser;
+                const token = AuthTokenService.getAuthToken();
+                return token != null || this.externalAuthUser;
             };
 
             // Returns a promise of the principal object if already fetched or a promise which resolves after security initialization
@@ -353,10 +318,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.clearAuthenticationInternal = function () {
                 $openIDAuth.softLogout();
-                this.auth = null;
                 this.principal = this.freeAccessPrincipal;
-                this.clearStorage();
-                this.setAuthHeaders();
+                AuthTokenService.clearAuthToken();
             };
 
             this.clearAuthentication = function () {

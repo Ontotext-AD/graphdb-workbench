@@ -140,10 +140,10 @@ angular.module('graphdb.framework.repositories.controllers', modules)
     .controller('EditRepositoryFileCtrl', EditRepositoryFileCtrl)
     .controller('UploadRepositoryConfigCtrl', UploadRepositoryConfigCtrl);
 
-LocationsAndRepositoriesCtrl.$inject = ['$scope', '$rootScope', '$uibModal', 'toastr', '$repositories', 'ModalService', '$jwtAuth', 'LocationsRestService',
+LocationsAndRepositoriesCtrl.$inject = ['$scope', '$rootScope', '$uibModal', 'toastr', '$repositories', 'ModalService', 'AuthTokenService', 'LocationsRestService',
     'LocalStorageAdapter', '$interval', '$translate', '$q', 'GuidesService'];
 
-function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $repositories, ModalService, $jwtAuth, LocationsRestService,
+function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $repositories, ModalService, AuthTokenService, LocationsRestService,
     LocalStorageAdapter, $interval, $translate, $q, GuidesService) {
     $scope.loader = true;
 
@@ -332,7 +332,7 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
     $scope.getRepositoryDownloadLink = function (repository) {
         let url = `rest/repositories/${repository.id}${(repository.type === REPOSITORY_TYPES.ontop ? '/download-zip'
             : '/download-ttl')}?location=${repository.location}`;
-        const token = $jwtAuth.getAuthToken();
+        const token = AuthTokenService.getAuthToken();
         if (token) {
             url = `${url}&authToken=${encodeURIComponent(token)}`;
         }

@@ -60,21 +60,24 @@ function RDF4JRepositoriesRestService($http, $repositories, $translate) {
     }
 
     function activatePlugin(pluginName) {
-        return $.ajax({
+        return $http({
             method: 'POST',
             url: `${REPOSITORIES_ENDPOINT}/${$repositories.getActiveRepository()}/statements`,
-            data: {
+            params: {
                 update: ACTIVATE_PLUGIN_QUERY.replace('{{pluginName}}', pluginName)
             }
         });
     }
 
     function checkPluginIsActive(pluginName) {
-        return $.ajax({
+        return $http({
             method: 'GET',
             url: `${REPOSITORIES_ENDPOINT}/${$repositories.getActiveRepository()}`,
-            data: {
+            params: {
                 query: CHECK_PLUGIN_ACTIVE_QUERY.replace('{{pluginName}}', pluginName)
+            },
+            headers: {
+                'Accept': '*/*'
             }
         });
     }

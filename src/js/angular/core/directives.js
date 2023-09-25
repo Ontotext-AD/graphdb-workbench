@@ -812,11 +812,11 @@ function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalServ
                 return;
             }
             return RDF4JRepositoriesRestService.checkPluginIsActive($scope.pluginName)
-                .done(function (data) {
+                .then(function ({data}) {
                     $scope.pluginIsActive = data.indexOf('true') > 0;
                     $scope.setPluginActive({isPluginActive: $scope.pluginIsActive});
                 })
-                .fail(function (data) {
+                .catch(function (data) {
                     toastr.error(getError(data), $translate.instant('check.active.plugin.failure'));
                 });
         }
@@ -830,12 +830,12 @@ function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalServ
             }).result
                 .then(function () {
                     RDF4JRepositoriesRestService.activatePlugin($scope.pluginName)
-                        .done(function () {
+                        .then(function () {
                             $scope.pluginIsActive = true;
                             $scope.setPluginActive({isPluginActive: $scope.pluginIsActive});
                             $scope.loadSaved();
                         })
-                        .fail(function (data) {
+                        .catch(function (data) {
                             toastr.error(getError(data), $translate.instant('activate.plugin.failure'));
                         });
                 });

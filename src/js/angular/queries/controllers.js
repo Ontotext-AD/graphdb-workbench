@@ -7,8 +7,9 @@ const queriesCtrl = angular.module('graphdb.framework.jmx.queries.controllers', 
     'graphdb.framework.rest.monitoring.service'
 ]);
 
-queriesCtrl.controller('QueriesCtrl', ['$scope', '$uibModal', 'toastr', '$interval', '$repositories', '$jwtAuth', 'ModalService', 'MonitoringRestService', '$translate',
-    function ($scope, $uibModal, toastr, $interval, $repositories, $jwtAuth, ModalService, MonitoringRestService, $translate) {
+queriesCtrl.controller('QueriesCtrl', ['$scope', '$uibModal', 'toastr', '$interval', '$repositories', '$jwtAuth', 'ModalService',
+    'MonitoringRestService', '$translate', 'AuthTokenService',
+    function ($scope, $uibModal, toastr, $interval, $repositories, $jwtAuth, ModalService, MonitoringRestService, $translate, AuthTokenService) {
 
         $scope.loader = true;
         $scope.stringLimit = 500;
@@ -130,7 +131,7 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$uibModal', 'toastr', '$interv
                 + '/query/download?query=' + encodeURIComponent(queryId)
                 + '&filename=' + encodeURIComponent(filename);
             if ($jwtAuth.isAuthenticated()) {
-                link = link + '&authToken=' + encodeURIComponent($jwtAuth.getAuthToken());
+                link = link + '&authToken=' + encodeURIComponent(AuthTokenService.getAuthToken());
             }
 
             window.open(link, '_blank');

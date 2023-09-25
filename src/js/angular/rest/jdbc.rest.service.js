@@ -82,18 +82,18 @@ function JdbcRestService($http, $translate) {
     }
     function getExistingSqlTablePreview(name, limit) {
         // Limit in preview is optional. On backend default value is set to 100
-        return $.ajax({
+        return $http({
             method: 'GET',
             url: `rest/sql-views/preview/${name}`,
             params: {
                 limit
             }
-        })
+        });
     }
 
     function getNewSqlTablePreview(sqlView, limit) {
         // Limit in preview is optional. On backend default value is set to 100
-        return $.ajax({
+        return $http({
             method: 'POST',
             url: "rest/sql-views/preview",
             contentType: "application/json; charset=utf-8",
@@ -103,6 +103,6 @@ function JdbcRestService($http, $translate) {
                 limit
             },
             headers: {Accept: 'application/sparql-results+json'}
-        })
+        });
     }
 }

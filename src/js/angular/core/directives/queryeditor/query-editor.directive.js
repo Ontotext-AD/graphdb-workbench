@@ -17,14 +17,13 @@ angular
     ])
     .directive('queryEditor', queryEditorDirective);
 
-queryEditorDirective.$inject = ['$timeout', '$location', 'toastr', '$repositories',
-    'SparqlRestService', 'ModalService',
-    '$uibModal', '$jwtAuth', 'RDF4JRepositoriesRestService', 'ConnectorsRestService', 'LocalStorageAdapter', 'LSKeys', '$translate',
-    '$languageService', 'GuidesService'];
+queryEditorDirective.$inject = ['$timeout', '$location', 'toastr', '$repositories', 'SparqlRestService', 'ModalService', '$uibModal',
+  '$jwtAuth', 'AuthTokenService', 'RDF4JRepositoriesRestService', 'ConnectorsRestService', 'LocalStorageAdapter', 'LSKeys', '$translate',
+  '$languageService', 'GuidesService'];
 
-function queryEditorDirective($timeout, $location, toastr, $repositories, SparqlRestService,
-    ModalService, $uibModal, $jwtAuth,
-    RDF4JRepositoriesRestService, ConnectorsRestService, LocalStorageAdapter, LSKeys, $translate, $languageService, GuidesService) {
+function queryEditorDirective($timeout, $location, toastr, $repositories, SparqlRestService, ModalService, $uibModal, $jwtAuth,
+  AuthTokenService, RDF4JRepositoriesRestService, ConnectorsRestService, LocalStorageAdapter, LSKeys, $translate, $languageService,
+  GuidesService) {
 
     let callbackOnChange;
 
@@ -296,6 +295,8 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
             scope.currentTrackAlias = newTrackAlias();
             cm.options.sparql.headers['X-GraphDB-Track-Alias'] = scope.currentTrackAlias;
             cm.options.sparql.headers['X-GraphDB-Repository-Location'] = $repositories.getActiveRepositoryObject().location;
+            cm.options.sparql.headers['X-GraphDB-Repository'] = $repositories.getActiveRepositoryObject().id;
+
             scope.countTimeouted = false;
             if (cm.getQueryMode() === 'query') {
                 cm.options.sparql.endpoint = 'repositories/' + $repositories.getActiveRepository();
@@ -460,7 +461,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
         YASQE.getAjaxConfig = function (yasqe, callbackOrConfig) {
             const config = originalGetAjaxConfig(yasqe, callbackOrConfig);
 
-            const auth = $jwtAuth.getAuthToken();
+            const auth = AuthTokenService.getAuthToken();
             if (auth) {
                 _.extend(config.headers, {
                     'Authorization': auth
@@ -600,7 +601,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
                     query: scope.currentQuery.query,
                     infer: scope.currentQuery.inference,
                     sameAs: scope.currentQuery.sameAs,
-                    auth: localStorage.getItem('com.ontotext.graphdb.auth')
+                    auth: AuthTokenService.getAuthToken()
                 };
                 const accept = downloadFormat;
 
@@ -983,7 +984,7 @@ function queryEditorDirective($timeout, $location, toastr, $repositories, Sparql
         function updateRepositoryAndSecurity() {
             scope.getNamespaces();
             YASQE.signal(window.editor, "repositoryOrAuthorizationChanged",
-                $repositories.getActiveRepository(), $jwtAuth.getAuthToken());
+                $repositories.getActiveRepository(), AuthTokenService.getAuthToken());
             addTabWithQueryIfNeeded();
         }
 
