@@ -41,11 +41,11 @@
                 </li>
             </ul>
         </div>
-            <button class="btn btn-link p-0 remove-all-classes-btn" type="button"
-                    ng-show="allNotFilteredClasses.length > 0"
-                    ng-click="removeAllClasses()"
-                    gdb-tooltip="{{'remove.classes.label' | translate}}"
-                    tooltip-placement="bottom">
+        <button class="btn btn-link p-0 remove-all-classes-btn" type="button"
+                ng-show="allNotFilteredClasses.length > 0"
+                ng-click="removeAllClasses()"
+                gdb-tooltip="{{'remove.classes.label' | translate}}"
+                tooltip-placement="bottom">
              <em class="icon-close icon-2x"></em>
          </button>
         <button class="btn btn-link p-0 reload-diagram-btn" type="button"
@@ -204,12 +204,9 @@
         </div>
 
         <div class="col-sm-7 col-lg-8 text-center">
-            <div dependencies-chord
+            <div dependencies-chord class="dependencies-chord"
                  dependencies-data="dependenciesData"
                  ng-show="status == 'READY' && selectedClasses.length > 1 && dependenciesData.hasLinks"></div>
         </div>
-
     </div>
-
-
 </div>
