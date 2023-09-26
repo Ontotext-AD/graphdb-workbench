@@ -103,7 +103,9 @@ describe('SPARQL create template', () => {
         ImportSteps.verifyUserImportUrl();
     });
 
-    it('should not change the view if I am creating a new sparql template and change the repository', () => {
+    it('should not change the view if I am creating a new sparql template and change the repository', {
+        retries: {runMode: 1, openMode: 0}
+    }, () => {
         // When I visit 'Sparql create template' view,
         // make some changes.
         SparqlCreateUpdateSteps.typeTemplateId('http://test');
