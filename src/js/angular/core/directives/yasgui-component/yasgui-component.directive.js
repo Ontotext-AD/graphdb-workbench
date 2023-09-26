@@ -24,7 +24,7 @@ yasguiComponentDirective.$inject = [
     '$translate',
     '$location',
     '$languageService',
-    '$jwtAuth',
+    'AuthTokenService',
     '$interval',
     'toastr',
     'TranslationService',
@@ -41,7 +41,7 @@ function yasguiComponentDirective(
     $translate,
     $location,
     $languageService,
-    $jwtAuth,
+    AuthTokenService,
     $interval,
     toastr,
     TranslationService,
@@ -281,7 +281,7 @@ function yasguiComponentDirective(
                 const infer = downloadAsEvent.infer;
                 const sameAs = downloadAsEvent.sameAs;
                 const accept = downloadAsEvent.contentType;
-                const authToken = $jwtAuth.getAuthToken() || '';
+                const authToken = AuthTokenService.getAuthToken() || '';
 
                 // TODO change it
                 // Simple cross-browser download with a form
@@ -422,7 +422,7 @@ function yasguiComponentDirective(
                     'X-Requested-With': 'XMLHttpRequest'
                 };
 
-                const authToken = $jwtAuth.getAuthToken();
+                const authToken = AuthTokenService.getAuthToken();
                 if (authToken) {
                     headers['Authorization'] = authToken;
                 }
