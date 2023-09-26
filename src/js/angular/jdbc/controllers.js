@@ -293,9 +293,9 @@ function JdbcCreateCtrl(
                 query: $scope.jdbcConfigurationInfo.query,
                 columns: $scope.jdbcConfigurationInfo.columns || []
             });
-            return Promise.all([JdbcRestService.getNewSqlTablePreview(sqlView), Promise.resolve(jdbcConfigurationInfo)]);
+            return Promise.all([JdbcRestService.getNewSqlTablePreview(sqlView).then((response) => response.data), Promise.resolve(jdbcConfigurationInfo)]);
         } else {
-            return Promise.all([JdbcRestService.getExistingSqlTablePreview($scope.jdbcConfigurationInfo.jdbcConfigurationName), Promise.resolve(jdbcConfigurationInfo)]);
+            return Promise.all([JdbcRestService.getExistingSqlTablePreview($scope.jdbcConfigurationInfo.jdbcConfigurationName).then((response) => response.data), Promise.resolve(jdbcConfigurationInfo)]);
         }
     };
 
