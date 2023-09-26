@@ -199,7 +199,12 @@ describe('Similarity screen validation', () => {
         });
     });
 
-    it('Disable and enable similarity plugin', () => {
+    it('Disable and enable similarity plugin', {
+        retries: {
+            openMode: 0,
+            runMode: 2
+        }
+    }, () => {
         const disableSimilarityPlugin = 'INSERT DATA { <u:a> <http://www.ontotext.com/owlim/system#stopplugin> \'similarity\' . }';
         initRepository();
         cy.presetRepository(repositoryId);

@@ -158,20 +158,13 @@ function ModalService($uibModal, $timeout, $sce) {
      * @param {Function} onConfirm
      * @param {Function} onCancel
      */
-    function openConfirmation(title, message, onConfirm, onCancel) {
-        openSimpleModal({
+    function openConfirmation(title, message, onConfirm = () => {}, onCancel = () => {}) {
+        const dialogConfig = {
             title,
             message,
             warning: true
-        }).result.then(function () {
-            if (angular.isFunction(onConfirm)) {
-                onConfirm();
-            }
-        }, function () {
-            if (angular.isFunction(onCancel)) {
-                onCancel();
-            }
-        });
+        };
+        openSimpleModal(dialogConfig).result.then(onConfirm, onCancel);
     }
 
     function openSimpleModal(config) {

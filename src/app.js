@@ -35,8 +35,7 @@ const modules = [
     'graphdb.framework.core.directives.angular-tooltips',
     'graphdb.framework.core.directives.uppercased',
     'graphdb.framework.guides.services',
-    'graphdb.framework.core.directives.operationsstatusesmonitor'
-    'graphdb.framework.guides.services',
+    'graphdb.framework.core.directives.operationsstatusesmonitor',
     'ngCustomElement'
 ];
 
