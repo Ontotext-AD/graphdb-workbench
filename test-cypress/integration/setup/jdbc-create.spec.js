@@ -2,7 +2,6 @@ import {JdbcSteps} from "../../steps/setup/jdbc-steps";
 import {JdbcCreateSteps} from "../../steps/setup/jdbc-create-steps";
 import {ToasterSteps} from "../../steps/toaster-steps";
 import {YasrSteps} from "../../steps/yasgui/yasr-steps";
-import {LoaderSteps} from "../../steps/loader-steps";
 import {ModalDialogSteps, VerifyConfirmationDialogOptions} from "../../steps/modal-dialog-steps";
 import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
 import {MainMenuSteps} from "../../steps/main-menu-steps";
