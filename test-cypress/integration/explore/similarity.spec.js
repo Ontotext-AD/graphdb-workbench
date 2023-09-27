@@ -193,7 +193,7 @@ describe('Similarity screen validation', () => {
 
         cy.visit('/sparql', {
             onBeforeLoad: (win) => {
-                win.localStorage.setItem('com.ontotext.graphdb.repository', repositoryId);
+                win.localStorage.setItem('ls.repository-id', repositoryId);
             }
         });
         cy.window();
@@ -244,7 +244,7 @@ describe('Similarity screen validation', () => {
         initRepository();
         cy.visit('/similarity', {
             onBeforeLoad: (win) => {
-                win.localStorage.setItem('com.ontotext.graphdb.repository', repositoryId);
+                win.localStorage.setItem('ls.repository-id', repositoryId);
             }
         });
         cy.window()

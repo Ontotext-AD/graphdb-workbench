@@ -15,20 +15,15 @@ const modules = [
 
 const repositories = angular.module('graphdb.framework.core.services.repositories', modules);
 
-repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth',
-    'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService', '$translate', '$q',
-    function ($http, toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth,
-        RepositoriesRestService, LocationsRestService, LicenseRestService, $translate, $q) {
-        this.repositoryStorageName = 'com.ontotext.graphdb.repository';
-        this.repositoryStorageLocationName = 'com.ontotext.graphdb.repository.location';
+repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth',
+    'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService', '$translate', '$q', 'LocalStorageAdapter', 'LSKeys',
+    function (toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth,
+        RepositoriesRestService, LocationsRestService, LicenseRestService, $translate, $q, LocalStorageAdapter, LSKeys) {
 
         this.location = {uri: '', label: 'Local', local: true, isInCluster: false};
         this.locationError = '';
         this.loading = true;
-        this.repository = {
-            id: localStorage.getItem(this.repositoryStorageName) || '',
-            location: localStorage.getItem(this.repositoryStorageLocationName) || ''
-        };
+
         this.locations = [this.location];
         this.repositories = new Map();
         this.locationsShouldReload = true;
@@ -57,13 +52,17 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         };
 
         this.resetActiveRepository = function () {
-            let repositoriesFromLocation = that.repositories.get(this.repository.location);
+            const repository = {
+                id: LocalStorageAdapter.get(LSKeys.REPOSITORY_ID) || '',
+                location: LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION) || ''
+            };
+            const repositoriesFromLocation = that.repositories.get(repository.location);
             let existsActiveRepo = false;
             if (repositoriesFromLocation) {
-                existsActiveRepo = repositoriesFromLocation.find(repo => this.repository && repo.id === this.repository.id);
+                existsActiveRepo = repositoriesFromLocation.find((repo) => repo.id === repository.id);
             }
             if (existsActiveRepo) {
-                if (!$jwtAuth.canReadRepo(this.repository)) {
+                if (!$jwtAuth.canReadRepo(repository)) {
                     this.setRepository('');
                 } else {
                     $rootScope.$broadcast('repositoryIsSet', {newRepo: false});
@@ -75,7 +74,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         };
 
         this.checkLocationsDegraded = function (quick) {
-            this.locations.forEach(currentLocation => {
+            this.locations.forEach((currentLocation) => {
                 // local locations are always fully supported
                 if (currentLocation.local) {
                     return;
@@ -110,7 +109,8 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         };
 
         this.getDegradedReason = function () {
-            let activeRepoLocation = this.locations.find(loc => loc.uri === this.repository.location);
+            const repositoryLocation = LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION) || '';
+            const activeRepoLocation = this.locations.find((loc) => loc.uri === repositoryLocation);
             if (activeRepoLocation) {
                 return activeRepoLocation.degradedReason;
             }
@@ -118,7 +118,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         };
 
         this.clearLocationErrorMsg = function (locationUri) {
-            let location = this.locations.find(loc => loc.uri === locationUri);
+            const location = this.locations.find((loc) => loc.uri === locationUri);
             if (location && location.errorMsg) {
                 location.errorMsg = null;
             }
@@ -136,12 +136,13 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             if (!quick) {
                 this.locationsShouldReload = true;
             }
-            return LocationsRestService.getActiveLocation().then(
-                function (res) {
+            return LocationsRestService.getActiveLocation()
+                .then(function(res) {
                     if (res.data) {
                         const location = res.data;
                         if (location.active) {
-                            return RepositoriesRestService.getRepositories().then(function (result) {
+                            return RepositoriesRestService.getRepositories()
+                                .then(function(result) {
                                     that.location = location;
                                     Object.entries(result.data).forEach(([key, value]) => {
                                         that.clearLocationErrorMsg(key);
@@ -156,8 +157,8 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                                     if (successCallback) {
                                         successCallback();
                                     }
-                                }).catch(
-                                function (err) {
+                                })
+                                .catch(function(err) {
                                     loadingDone(err);
                                     if (errorCallback) {
                                         errorCallback();
@@ -176,8 +177,8 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
                     }
                     $rootScope.globalLocation = that.location;
                     $rootScope.globalRepositories = that.getRepositories();
-                }).catch(
-                function (err) {
+                })
+                .catch(function(err) {
                     loadingDone(err);
                     if (errorCallback) {
                         errorCallback();
@@ -238,8 +239,8 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         };
 
         this.getRepositories = function () {
-            let repos = [];
-            this.repositories.forEach(value => repos.push.apply(repos, value));
+            const repos = [];
+            this.repositories.forEach((value) => repos.push.apply(repos, value));
             return repos;
         };
 
@@ -257,20 +258,23 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         };
 
         this.getActiveRepository = function () {
-            return this.repository.id;
+            return LocalStorageAdapter.get(LSKeys.REPOSITORY_ID) || undefined;
         };
 
         this.getActiveRepositoryObject = function () {
             const copyThis = this;
-            let repositoriesFromLocation = copyThis.repositories.get(copyThis.repository.location);
+            const repositoryId = LocalStorageAdapter.get(LSKeys.REPOSITORY_ID) || '';
+            const repositoryLocation = LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION) || '';
+            const repositoriesFromLocation = copyThis.repositories.get(repositoryLocation);
             if (repositoriesFromLocation) {
-                return repositoriesFromLocation.find(repo => repo.id === copyThis.repository.id);
+                return repositoriesFromLocation.find((repo) => repo.id === repositoryId);
             }
             return null;
         };
 
         this.isSystemRepository = function () {
-            return this.repository.id === 'SYSTEM';
+            const repositoryId = LocalStorageAdapter.get(LSKeys.REPOSITORY_ID);
+            return repositoryId === 'SYSTEM';
         };
 
         this.isActiveRepoOntopType = function (repo) {
@@ -280,7 +284,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             }
             let activeRepo;
             if (repo) {
-                activeRepo = that.repositories.get(repo.location).find(current => current.id === repo.id);
+                activeRepo = that.repositories.get(repo.location).find((current) => current.id === repo.id);
                 if (activeRepo) {
                     return activeRepo.sesameType === ONTOP_REPOSITORY_LABEL;
                 }
@@ -294,10 +298,10 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
 
         this.isActiveRepoFedXType = function () {
             const that = this;
-            let repo = that.getActiveRepositoryObject();
+            const repo = that.getActiveRepositoryObject();
             let activeRepo;
             if (repo) {
-                activeRepo = that.repositories.get(repo.location).find(current => current.id === repo.id);
+                activeRepo = that.repositories.get(repo.location).find((current) => current.id === repo.id);
                 if (activeRepo) {
                     return activeRepo.sesameType === FEDX_REPOSITORY_LABEL;
                 }
@@ -313,23 +317,14 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
             return this.locations.find((location) => location.uri === locationUri);
         };
 
-        this.setRepositoryHeaders = function () {
-            $http.defaults.headers.common['X-GraphDB-Repository'] = this.repository ? this.repository.id : undefined;
-            $http.defaults.headers.common['X-GraphDB-Repository-Location'] = this.repository ? this.repository.location : undefined;
-        };
-
-        that.setRepositoryHeaders();
-
         this.setRepository = function (repo) {
-            this.repository = repo;
             if (repo) {
-                localStorage.setItem(that.repositoryStorageName, this.repository.id);
-                localStorage.setItem(that.repositoryStorageLocationName, this.repository.location);
+                LocalStorageAdapter.set(LSKeys.REPOSITORY_ID, repo.id);
+                LocalStorageAdapter.set(LSKeys.REPOSITORY_LOCATION, repo.location);
             } else {
-                localStorage.removeItem(that.repositoryStorageName);
-                localStorage.removeItem(that.repositoryStorageLocationName);
+                LocalStorageAdapter.remove(LSKeys.REPOSITORY_ID);
+                LocalStorageAdapter.remove(LSKeys.REPOSITORY_LOCATION);
             }
-            that.setRepositoryHeaders();
             $rootScope.$broadcast('repositoryIsSet', {newRepo: true});
 
             // if the current repo is unreadable by the currently logged in user (or free access user)
@@ -365,7 +360,7 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         this.deleteLocation = function (uri) {
             return LocationsRestService.deleteLocation(encodeURIComponent(uri))
                 .success(function () {
-                    let activeRepo = that.getActiveRepositoryObject();
+                    const activeRepo = that.getActiveRepositoryObject();
                     //Reload locations and repositories
                     if (activeRepo && activeRepo.location === uri) {
                         that.location = '';
@@ -407,16 +402,14 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
         };
 
         this.getRepositoryTurtleConfig = function (repository) {
-            return $http.get('rest/repositories/' + repository.id, {
-                headers: {
-                    'Accept': 'text/turtle'
-                }
-            });
+            return RepositoriesRestService.getRepositoryTurtleConfig(repository);
         };
 
         this.isRepoActive = function (repo) {
-            if (this.repository) {
-                return repo.id === this.repository.id && repo.location === this.repository.location;
+            const repositoryId = LocalStorageAdapter.get(LSKeys.REPOSITORY_ID);
+            const repositoryLocation = LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION) || '';
+            if (repositoryId) {
+                return repo.id === repositoryId && repo.location === repositoryLocation;
             }
             return false;
         };
@@ -427,7 +420,10 @@ repositories.service('$repositories', ['$http', 'toastr', '$rootScope', '$timeou
 
         $rootScope.$on('securityInit', function (scope, securityEnabled, userLoggedIn, freeAccess) {
             if (!securityEnabled || userLoggedIn || freeAccess) {
-                that.init();
+                // This has to happen in a separate cycle because otherwise some properties in init() are undefined
+                $timeout(function () {
+                    that.init();
+                });
             }
         });
         $rootScope.$on('reloadLocations', function () {

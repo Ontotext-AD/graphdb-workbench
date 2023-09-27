@@ -54,7 +54,7 @@ class SparqlSteps {
                         win.sessionStorage.clear();
                     }
                 }
-                win.localStorage.setItem('com.ontotext.graphdb.repository', repositoryId);
+                win.localStorage.setItem('ls.repository-id', repositoryId);
             }
         });
         this.waitUntilSparqlPageIsLoaded();

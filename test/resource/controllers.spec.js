@@ -55,6 +55,33 @@ describe('=> ExploreCtrl tests', function () {
 
         $httpBackend.when('GET', 'rest/security/authenticated-user').respond(401, 'Authentication required');
         $httpBackend.when('GET', 'rest/locations').respond(200, {});
+        $httpBackend.when('GET', 'repositories/activeRepository/namespaces').respond(200, {
+            "head": {
+                "vars": ["prefix", "namespace"]
+            },
+            "results": {
+                "bindings": [{
+                    "prefix": {
+                        "type": "literal",
+                        "value": "prefix"
+                    },
+                    "namespace": {
+                        "type": "literal",
+                        "value": "namespace"
+                    }
+                }, {
+                    "prefix": {
+                        "type": "literal",
+                        "value": "prefix2"
+                    },
+                    "namespace": {
+                        "type": "literal",
+                        "value": "namespace2"
+                    }
+                }]
+            }
+        });
+        $httpBackend.when('GET', 'rest/explore/details?context=&uri=http:%2F%2Fserver%2F').respond(200, {});
     }));
 
     afterEach(function () {
@@ -64,6 +91,7 @@ describe('=> ExploreCtrl tests', function () {
 
     describe('$scope.changeRole()', function () {
         it('should set $scope.role correct nad call $scope.exploreResource()', function () {
+            $timeout.flush();
             $httpBackend.flush();
             $scope.role = '';
             spyOn($scope, 'exploreResource').and.callThrough();
@@ -166,6 +194,61 @@ describe('=> EditResourceCtrl', function () {
         });
 
         $httpBackend.when('GET', 'rest/security/authenticated-user').respond(401, 'Authentication required');
+
+        $httpBackend.when('GET', 'repositories/activeRepository/namespaces').respond(200, {
+            "head": {
+                "vars": ["prefix", "namespace"]
+            },
+            "results": {
+                "bindings": [{
+                    "prefix": {
+                        "type": "literal",
+                        "value": "prefix"
+                    },
+                    "namespace": {
+                        "type": "literal",
+                        "value": "namespace"
+                    }
+                }, {
+                    "prefix": {
+                        "type": "literal",
+                        "value": "prefix2"
+                    },
+                    "namespace": {
+                        "type": "literal",
+                        "value": "namespace2"
+                    }
+                }]
+            }
+        });
+        $httpBackend.when('GET', 'rest/explore/details').respond(200, {});
+        $httpBackend.when('GET', 'repositories/activeRepository/namespaces').respond(200, {
+            "head": {
+                "vars": ["prefix", "namespace"]
+            },
+            "results": {
+                "bindings": [{
+                    "prefix": {
+                        "type": "literal",
+                        "value": "prefix"
+                    },
+                    "namespace": {
+                        "type": "literal",
+                        "value": "namespace"
+                    }
+                }, {
+                    "prefix": {
+                        "type": "literal",
+                        "value": "prefix2"
+                    },
+                    "namespace": {
+                        "type": "literal",
+                        "value": "namespace2"
+                    }
+                }]
+            }
+        });
+        $httpBackend.when('GET', 'rest/explore/graph?uri=undefined&role=subject').respond(200, {});
     }));
 
     afterEach(function () {

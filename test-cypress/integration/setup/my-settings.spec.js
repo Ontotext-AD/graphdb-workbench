@@ -293,7 +293,7 @@ describe('My Settings', () => {
     function visitSettingsView() {
         cy.visit('/settings', {
             onBeforeLoad: (win) => {
-                win.localStorage.setItem('com.ontotext.graphdb.repository', repositoryId);
+                win.localStorage.setItem('ls.repository-id', repositoryId);
             }
         });
         cy.window()

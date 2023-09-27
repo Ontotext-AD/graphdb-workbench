@@ -157,6 +157,7 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
         return $repositories.getLocations(getLocationsAbortRequestPromise)
             .then((locations) => {
                 $scope.locations = locations;
+                return locations;
             })
             .finally(() => $scope.loader = false);
     }

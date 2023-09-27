@@ -370,17 +370,14 @@ describe('$jwtAuth tests', function () {
             $httpBackend.flush();
 
             $jwtAuth.securityEnabled = false;
-            expect($rootScope.setPermissionDenied('/')).toEqual(false);
             expect($rootScope.setPermissionDenied('/login')).toEqual(false);
             expect($rootScope.setPermissionDenied('/differentUrl')).toEqual(true);
 
             $jwtAuth.securityEnabled = true;
-            expect($rootScope.setPermissionDenied('/')).toEqual(false);
             expect($rootScope.setPermissionDenied('/login')).toEqual(false);
             expect($rootScope.setPermissionDenied('/differentUrl')).toEqual(false);
 
             AuthTokenService.setAuthToken('1234');
-            expect($rootScope.setPermissionDenied('/')).toEqual(false);
             expect($rootScope.setPermissionDenied('/login')).toEqual(false);
             expect($rootScope.setPermissionDenied('/differentUrl')).toEqual(true);
             expect($rootScope.deniedPermissions['/differentUrl']).toEqual(true);

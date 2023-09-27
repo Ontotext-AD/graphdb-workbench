@@ -325,23 +325,23 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
 
             $scope.$watch('namespacespromise', function () {
                 if (angular.isDefined($scope.namespacespromise)) {
-                    $scope.namespacespromise.success(function (data) {
-                        element.namespaces = data.results.bindings.map(function (e) {
+                    $scope.namespacespromise.then(function({data}) {
+                        element.namespaces = data.results.bindings.map(function(e) {
                             return {
                                 prefix: e.prefix.value,
                                 uri: e.namespace.value
                             };
                         });
-                    }).error(function (data) {
+                    }).catch(function(data) {
                         const msg = getError(data);
                         toastr.error(msg, $translate.instant('error.getting.namespaces.for.repo'));
                     });
                 }
             });
 
-            $scope.$watch('autocompletepromisestatus', function () {
+            $scope.$watch('autocompletepromisestatus', function() {
                 if (!$repositories.isActiveRepoFedXType() && angular.isDefined($scope.autocompletepromisestatus)) {
-                    $scope.autocompletepromisestatus.success(function (response) {
+                    $scope.autocompletepromisestatus.success(function(response) {
                         element.autoCompleteStatus = !!response;
                         if ($scope.searchInput !== '') {
                             $scope.onChange();
