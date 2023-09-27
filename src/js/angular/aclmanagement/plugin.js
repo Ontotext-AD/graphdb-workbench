@@ -26,7 +26,7 @@ PluginRegistry.add('main.menu', {
             href: 'aclmanagement',
             order: 6,
             parent: 'Setup',
-            role: "IS_AUTHENTICATED_FULLY",
+            role: "ROLE_ADMIN",
             guideSelector: 'sub-menu-aclmanagement'
         }
     ]
