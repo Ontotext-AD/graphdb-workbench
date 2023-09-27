@@ -7,7 +7,7 @@
 
 .operations-statuses .operation-status-header {
     display: flex;
-    padding-right: 5px;
+    padding-right: 7px;
 }
 
 .operations-statuses .operation-status-header img {
@@ -15,16 +15,16 @@
 }
 
 .operations-statuses .running-operation-count {
-    padding-left: 2px;
+    padding-left: 1px;
 }
 
 .operations-statuses .running-operation-count sup {
     color: white;
     border-radius: 2px;
-    padding-bottom: 2px;
-    padding-left: 5px;
-    padding-right: 5px;
-    top: -0.8em;
+    padding-left: 2px;
+    padding-right: 2px;
+    top: -1em;
+    font-size: 60%;
 }
 
 .operations-statuses .operations-statuses-content {

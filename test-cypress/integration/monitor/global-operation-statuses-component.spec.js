@@ -67,7 +67,7 @@ describe('Operations Status Component', () => {
         OperationsStatusesComponentSteps.openOperationStatusesDialog();
         // When I click on "Running imports" operation element.
         // Then I expect to be redirected to "Query and Update monitoring" view.
-        OperationsStatusesComponentSteps.checkOperationElementUrl('monitor/queries', 2);
+        OperationsStatusesComponentSteps.checkOperationElementUrl('import', 2);
         // Then I expect "Global Operations Component" to still be displayed.
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().should('exist');
     });

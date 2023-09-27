@@ -15,6 +15,7 @@ export class OperationsStatusesComponentSteps {
     static checkOperationElementUrl(expectedUrl, operationIndex = 0) {
         OperationsStatusesComponentSteps.getOperationStatuses().eq(operationIndex).then(($operationElement) => {
             expect($operationElement).to.have.attr('target', '_blank');
+            expect($operationElement).to.have.attr('href', expectedUrl);
         });
     }
 }

@@ -4,6 +4,7 @@
     <button type="button" class="btn operations-statuses-dropdown-toggle dropdown-toggle" data-toggle="dropdown">
         <div class="operation-status-header" ng-repeat="operationGroup in operationsSummary" ng-if="operationsSummary && operationsSummary.length > 0 && operationGroup.runningOperations">
             <div ng-class="{
+            'icon-import': OPERATION_GROUP_TYPE.IMPORT_OPERATION === operationGroup.type,
             'icon-exchange': OPERATION_GROUP_TYPE.QUERIES_OPERATION === operationGroup.type,
             'fa fa-archive': OPERATION_GROUP_TYPE.BACKUP_AND_RESTORE_OPERATION === operationGroup.type,
             'fa fa-sitemap': OPERATION_GROUP_TYPE.CLUSTER_OPERATION === operationGroup.type,
@@ -17,30 +18,33 @@
         </div>
         <span class="caret"></span>
     </button>
-    <ul role="menu" class="operations-statuses-content dropdown-menu dropdown-menu-center">
-        <li ng-repeat="operationStatus in activeOperations.operations">
-            <a class="operation-status-content btn" target="_blank" ng-attr-href="{{operationStatus.monitoringViewUrl}}"
-               ng-class="{ 'last-operation': $last,
+    <ul role="menu" class="dropdown-menu dropdown-menu-center">
+        <div class="operations-statuses-content">
+            <li ng-repeat="operationStatus in activeOperations.operations">
+                <a class="operation-status-content btn" target="_blank" ng-attr-href="{{operationStatus.monitoringViewUrl}}"
+                   ng-class="{ 'last-operation': $last,
                            'first-operation': $first}">
-                <div ng-class="{
-                   'icon-exchange': OPERATION_TYPE.QUERIES === operationStatus.type || OPERATION_TYPE.UPDATES === operationStatus.type || OPERATION_TYPE.IMPORTS === operationStatus.type,
+                    <div ng-class="{
+                   'icon-import': OPERATION_TYPE.IMPORTS === operationStatus.type,
+                   'icon-exchange': OPERATION_TYPE.QUERIES === operationStatus.type || OPERATION_TYPE.UPDATES === operationStatus.type,
                    'fa fa-archive': OPERATION_TYPE.BACKUP_RESTORE === operationStatus.type,
                    'fa fa-sitemap': OPERATION_TYPE.CLUSTER_STATUS === operationStatus.type,
                    'text-danger': OPERATION_STATUS.CRITICAL === operationStatus.status,
                    'text-info': OPERATION_STATUS.INFORMATION === operationStatus.status,
                    'text-warning': OPERATION_STATUS.WARNING === operationStatus.status}">
-                </div>
-                <div class="operation-status-label">
-                    <ng-pluralize count="operationStatus.runningOperationCount || 1"
-                                  when="{'one': '{{(&quot;global.operations_statuses.&quot; + operationStatus.titleLabelKey + &quot;.title&quot;) | translate}}',
+                    </div>
+                    <div class="operation-status-label">
+                        <ng-pluralize count="operationStatus.runningOperationCount || 1"
+                                      when="{'one': '{{(&quot;global.operations_statuses.&quot; + operationStatus.titleLabelKey + &quot;.title&quot;) | translate}}',
                                          'other': '{{(&quot;global.operations_statuses.&quot; + operationStatus.titleLabelKey + &quot;.title.plural&quot;) | translate}}'}">
-                    </ng-pluralize>
-                </div>
-                <div ng-if="OPERATION_TYPE.CLUSTER_STATUS !== operationStatus.type" class="operation-status-running-operation-count tag-info">
-                    {{operationStatus.runningOperationCount || 1}}
-                </div>
-                <div class="icon-external"></div>
-            </a>
-        </li>
+                        </ng-pluralize>
+                    </div>
+                    <div ng-if="OPERATION_TYPE.CLUSTER_STATUS !== operationStatus.type" class="operation-status-running-operation-count tag-info">
+                        {{operationStatus.runningOperationCount || 1}}
+                    </div>
+                    <div class="icon-external"></div>
+                </a>
+            </li>
+        </div>
     </ul>
 </div>

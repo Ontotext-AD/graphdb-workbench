@@ -36,9 +36,10 @@ const getOperations = (activeOperations = []) =>{
  *
  * @return {ActiveOperationModel}
  */
-export const mapActiveOperationToActiveOperationInfoModel = (activeOperation = []) => {
+export const mapActiveOperationToActiveOperationInfoModel = (activeOperation) => {
     switch (activeOperation.type) {
         case OPERATION_TYPE.IMPORTS:
+            return mapImportActiveOperationToActiveOperationInfoModel(activeOperation);
         case OPERATION_TYPE.QUERIES:
         case OPERATION_TYPE.UPDATES:
             return mapQueriesActiveOperationToActiveOperationInfoModel(activeOperation);
@@ -47,6 +48,24 @@ export const mapActiveOperationToActiveOperationInfoModel = (activeOperation = [
         case OPERATION_TYPE.CLUSTER_STATUS:
             return mapClusterActiveOperationToActiveOperationInfoModel(activeOperation);
     }
+};
+
+/**
+ * Transforms the backend representation of аn import active operation to {@see ActiveOperationModel}.
+ *
+ * @param {ActiveOperationInput} activeOperation
+ *
+ * @return {ActiveOperationModel}
+ */
+export const mapImportActiveOperationToActiveOperationInfoModel = (activeOperation) => {
+    const operation = new ActiveOperationModel();
+    operation.operationGroup = OPERATION_GROUP_TYPE.IMPORT_OPERATION;
+    operation.runningOperationCount = parseInt(activeOperation.value, 10);
+    operation.status = activeOperation.status;
+    operation.type = activeOperation.type;
+    operation.titleLabelKey = activeOperation.type;
+    operation.monitoringViewUrl = OPERATION_MONITORING_CONSTANTS.IMPORT_MONITORING_URL;
+    return operation;
 };
 
 /**

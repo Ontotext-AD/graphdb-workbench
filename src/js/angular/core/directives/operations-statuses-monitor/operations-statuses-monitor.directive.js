@@ -56,7 +56,7 @@ function operationsStatusesMonitorDirectives($interval, $repositories, Monitorin
                         return runningOperation;
                     }
 
-                    if (OPERATION_GROUP_TYPE.QUERIES_OPERATION === operationStatus.operationGroup) {
+                    if (OPERATION_GROUP_TYPE.QUERIES_OPERATION === operationStatus.operationGroup || OPERATION_GROUP_TYPE.IMPORT_OPERATION === operationStatus.operationGroup) {
                         return runningOperation + operationStatus.runningOperationCount;
                     } else {
                         return runningOperation + 1;
@@ -75,6 +75,7 @@ function operationsStatusesMonitorDirectives($interval, $repositories, Monitorin
             }
             scope.activeOperations = newActiveOperations;
             const operationsStatusesSummary = [];
+            operationsStatusesSummary.push(getOperationGroupSummary(OPERATION_GROUP_TYPE.IMPORT_OPERATION));
             operationsStatusesSummary.push(getOperationGroupSummary(OPERATION_GROUP_TYPE.QUERIES_OPERATION));
             operationsStatusesSummary.push(getOperationGroupSummary(OPERATION_GROUP_TYPE.BACKUP_AND_RESTORE_OPERATION));
             operationsStatusesSummary.push(getOperationGroupSummary(OPERATION_GROUP_TYPE.CLUSTER_OPERATION));
