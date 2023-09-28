@@ -1706,6 +1706,7 @@
     "target.label": "Target",
     "show.blank.nodes.label": "Show Blank Nodes",
     "download.as.label": "Download as",
+    "download.as.progress.msg": "Downloading SPARQL result",
     "visual.graph.label": "Visual graph",
     "explore.graph.visually.popover": "Click to explore the graph visually",
     "pred.label": "Predicate",
