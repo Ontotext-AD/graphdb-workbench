@@ -25,9 +25,18 @@
     width: 25px;
 }
 
+.acl-management-view .acl-rules .reorder-cell {
+    padding: 0;
+}
+
 .acl-management-view .acl-rules .reorder-cell button {
     padding: 0;
     cursor: pointer;
+}
+
+.acl-management-view .acl-rules .reorder-cell button em {
+    font-size: 20px;
+    width: 20px;
 }
 
 .acl-management-view .acl-rules .data input {
