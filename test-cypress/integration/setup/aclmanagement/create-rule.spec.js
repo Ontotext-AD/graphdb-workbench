@@ -1,5 +1,7 @@
 import {AclManagementSteps} from "../../../steps/setup/acl-management-steps";
 import {ACL} from "../../../steps/setup/acl-management-steps";
+import {ToasterSteps} from "../../../steps/toaster-steps";
+import {ApplicationSteps} from "../../../steps/application-steps";
 
 describe('ACL Management: create rule', () => {
 
@@ -102,6 +104,22 @@ describe('ACL Management: create rule', () => {
         AclManagementSteps.deleteRuleButtons().should('have.length', 0);
         AclManagementSteps.editRuleButtons().should('have.length', 0);
         AclManagementSteps.createRuleButtons().should('have.length', 0);
+    });
+
+    it('should not allow creating of a new rule if it is not unique', () => {
+        // When I am on "ACL Management" page and create a rule that exist,
+        AclManagementSteps.addRuleInBeginning();
+        AclManagementSteps.fillSubject(0, '<urn:Mary>');
+        AclManagementSteps.fillPredicate(0, '*');
+        AclManagementSteps.fillObject(0, '*');
+        AclManagementSteps.fillContext(0, '*');
+        AclManagementSteps.fillRole(0, '!CUSTOM_ROLE2');
+        AclManagementSteps.selectPolicy(0, 'allow');
+        // and try to save it.
+        AclManagementSteps.saveRule(0);
+
+        // Then I expect an error notification to be displayed that describe me that ACL have to be unique.
+        ApplicationSteps.getErrorNotifications().contains('Every ACL rule should be unique.');
     });
 });
 

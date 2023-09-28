@@ -168,7 +168,8 @@
         },
         "errors": {
             "loading_rules": "Error during ACL rules",
-            "updating_rules": "Error during ACL rules update"
+            "updating_rules": "Error during ACL rules update",
+            "duplicated_rules": "Every ACL rule should be unique."
         }
     },
     "config.name.label": "Config name",
