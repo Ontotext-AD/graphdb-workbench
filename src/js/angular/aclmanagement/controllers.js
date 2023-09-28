@@ -107,7 +107,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
     $scope.editRule = (index) => {
         $scope.editedRuleIndex = index;
         $scope.isNewRule = false;
-        $scope.editedRuleCopy = $scope.rulesModel.getRule(index);
+        $scope.editedRuleCopy = $scope.rulesModel.getRuleCopy(index);
         setModelDirty();
     };
 
@@ -129,6 +129,10 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
      * Saves a rule at a given index in the rulesModel.
      */
     $scope.saveRule = () => {
+        if (hasDuplication()) {
+            notifyDuplication();
+            return;
+        }
         $scope.editedRuleIndex = undefined;
         $scope.isNewRule = false;
         setModelDirty();
@@ -174,6 +178,11 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
      * Saves the entire ACL list into the DB.
      */
     $scope.saveAcl = () => {
+        if (hasDuplication()) {
+            notifyDuplication();
+            return;
+        }
+
         $scope.loading = true;
         updateAcl()
             .then(fetchAcl)
@@ -247,6 +256,16 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
      */
     const getActiveRepositoryId = () => {
         return $repositories.getActiveRepository();
+    };
+
+    const hasDuplication = () => {
+        const rule = $scope.rulesModel.getRule($scope.editedRuleIndex);
+        const countOccurrences = $scope.rulesModel.countOccurrences(rule);
+        return countOccurrences > 1;
+    };
+
+    const notifyDuplication = () => {
+        toastr.error($translate.instant('acl_management.errors.duplicated_rules'));
     };
 
     /**

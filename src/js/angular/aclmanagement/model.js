@@ -40,7 +40,20 @@ export class ACListModel {
         this.aclRules.splice(index, 1, rule);
     }
 
+    countOccurrences(ruleToCheck) {
+        return this.aclRules.reduce((countOccurrences, rule) => {
+            if (angular.equals(ruleToCheck, rule)) {
+                countOccurrences += 1;
+            }
+            return countOccurrences;
+        }, 0);
+    }
+
     getRule(index) {
+        return this.aclRules[index];
+    }
+
+    getRuleCopy(index) {
         const rule = this.aclRules[index];
         return {
             subject: rule.subject,
