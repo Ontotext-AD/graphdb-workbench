@@ -40,17 +40,23 @@ export class ACListModel {
         this.aclRules.splice(index, 1, rule);
     }
 
-    countOccurrences(ruleToCheck) {
-        return this.aclRules.reduce((countOccurrences, rule) => {
-            if (angular.equals(ruleToCheck, rule)) {
-                countOccurrences += 1;
-            }
-            return countOccurrences;
-        }, 0);
-    }
-
     getRule(index) {
         return this.aclRules[index];
+    }
+
+    /**
+     * Checks if the rule at <code>index</code> is duplicated.
+     * @param {number} indexRuleToBeChecked - the index of the rule to be checked.
+     * @return {boolean} true if the model has a duplication of the rule at <code>index</code>.
+     */
+    isRuleDuplicated(indexRuleToBeChecked) {
+        const checkedRule = this.aclRules[indexRuleToBeChecked];
+        return this.aclRules.some((rule, index) => {
+            if (indexRuleToBeChecked !== index) {
+                return angular.equals(checkedRule, rule);
+            }
+            return false;
+        });
     }
 
     getRuleCopy(index) {
@@ -107,7 +113,7 @@ export class ACRuleModel {
      * @param {string} role
      * @param {string} policy
      */
-    constructor(subject = '*', predicate = '*', object= '*', context= '*', role= 'CUSTOM_', policy= ACL_POLICY.ALLOW) {
+    constructor(subject = '*', predicate = '*', object = '*', context = '*', role = 'CUSTOM_', policy = ACL_POLICY.ALLOW) {
         this._subject = subject;
         this._predicate = predicate;
         this._object = object;
