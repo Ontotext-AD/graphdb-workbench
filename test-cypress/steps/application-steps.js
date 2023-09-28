@@ -19,4 +19,9 @@ export class ApplicationSteps {
     static getWarningNotification() {
         return this.getNotifications().find('.toast-warning');
     }
+
+    // navigation via main menu
+    static openImportPage() {
+        cy.get('.main-menu .menu-element-root[href=import]').click();
+    }
 }
