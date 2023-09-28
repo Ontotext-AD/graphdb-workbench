@@ -162,7 +162,8 @@
                 "delete_rule_confirmation": "Êtes-vous sûr de vouloir supprimer la règle sélectionnée #{{index}}?",
                 "revert_acl_list": "Cette opération annulera toutes les modifications apportées à l'ACL. Êtes-vous sur de vouloir continuer?",
                 "rules_updated": "L'ACL a été mise à jour avec succès",
-                "rules_reverted": "L'ACL a été rétablie avec succès"
+                "rules_reverted": "L'ACL a été rétablie avec succès",
+                "unsaved_changes_confirmation": "Vous avez des modifications non sauvegardées. Etes-vous sûr de vouloir quitter?"
             }
         },
         "errors": {

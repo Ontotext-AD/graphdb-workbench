@@ -3,17 +3,18 @@
  * @param {Object} response
  * @return {ACListModel}
  */
-import {ACListModel, ACRuleModel} from "../../aclmanagement/model";
+import {ACListModel} from "../../aclmanagement/model";
 
 /**
  * Maps the ACL rules response to ACListModel.
  * @param {Object} response
- * @return {*[]|ACListModel}
+ * @return {ACListModel}
  */
 export const mapAclRulesResponse = (response) => {
+    const aclModel = new ACListModel();
     if (response && response.data) {
-        const rules = response.data.map((rule) => {
-            return new ACRuleModel(
+        response.data.forEach((rule) => {
+            aclModel.appendNewRule(
                 rule.subject,
                 rule.predicate,
                 rule.object,
@@ -22,7 +23,6 @@ export const mapAclRulesResponse = (response) => {
                 rule.policy
             );
         });
-        return new ACListModel(rules);
     }
-  return [];
+    return aclModel;
 };

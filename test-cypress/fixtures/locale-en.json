@@ -162,7 +162,8 @@
                 "delete_rule_confirmation": "Are you sure you want to delete the selected rule #{{index}}?",
                 "revert_acl_list": "This operation will revert all the changes done in the ACL. Are you sure you want to proceed?",
                 "rules_updated": "ACL was updated successfully",
-                "rules_reverted": "ACL was reverted successfully"
+                "rules_reverted": "ACL was reverted successfully",
+                "unsaved_changes_confirmation": "You have unsaved changes. Are you sure that you want to exit?"
             }
         },
         "errors": {
