@@ -250,15 +250,6 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
     };
 
     /**
-     * Watching for repository changes and reload the rules, because they are stored per repository.
-     */
-    $scope.$watch(function () {
-        return $repositories.getActiveRepository();
-    }, function () {
-        loadRules();
-    });
-
-    /**
      * Should warn the user if he tries to close the browser tab while there are unsaved changes.
      * @param {{returnValue: boolean}} event
      */
@@ -294,8 +285,6 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
                 const path = newPath.substring(baseLen);
                 $location.path(path);
             }, function () {});
-        } else {
-            unsubscribeListeners();
         }
     };
 
@@ -303,7 +292,13 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
      * Initialized the view controller.
      */
     const init = () => {
+        // Watching for repository changes and reload the rules, because they are stored per repository.
+        subscriptions.push($scope.$watch(getActiveRepositoryId, loadRules));
+        // Watching for url changes
         subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
+        // Watching for component destroy
+        subscriptions.push($scope.$on('$destroy', unsubscribeListeners));
+        // Listening for event fired when browser window is going to be closed
         window.addEventListener('beforeunload', beforeUnloadHandler);
     };
 
