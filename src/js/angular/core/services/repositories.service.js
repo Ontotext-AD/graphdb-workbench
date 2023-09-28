@@ -52,10 +52,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         };
 
         this.resetActiveRepository = function () {
-            const repository = {
-                id: LocalStorageAdapter.get(LSKeys.REPOSITORY_ID) || '',
-                location: LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION) || ''
-            };
+            const repository = this.getActiveRepositoryObjectFromStorage();
             const repositoriesFromLocation = that.repositories.get(repository.location);
             let existsActiveRepo = false;
             if (repositoriesFromLocation) {
@@ -109,8 +106,8 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         };
 
         this.getDegradedReason = function () {
-            const repositoryLocation = LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION) || '';
-            const activeRepoLocation = this.locations.find((loc) => loc.uri === repositoryLocation);
+            const repository = this.getActiveRepositoryObjectFromStorage();
+            const activeRepoLocation = this.locations.find((loc) => loc.uri === repository.location);
             if (activeRepoLocation) {
                 return activeRepoLocation.degradedReason;
             }
@@ -257,24 +254,30 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             });
         };
 
+        this.getActiveRepositoryObjectFromStorage = function() {
+            return {
+                id: LocalStorageAdapter.get(LSKeys.REPOSITORY_ID) || '',
+                location: LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION) || ''
+            };
+        };
+
         this.getActiveRepository = function () {
             return LocalStorageAdapter.get(LSKeys.REPOSITORY_ID) || undefined;
         };
 
         this.getActiveRepositoryObject = function () {
             const copyThis = this;
-            const repositoryId = LocalStorageAdapter.get(LSKeys.REPOSITORY_ID) || '';
-            const repositoryLocation = LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION) || '';
-            const repositoriesFromLocation = copyThis.repositories.get(repositoryLocation);
+            const repository = this.getActiveRepositoryObjectFromStorage();
+            const repositoriesFromLocation = copyThis.repositories.get(repository.location);
             if (repositoriesFromLocation) {
-                return repositoriesFromLocation.find((repo) => repo.id === repositoryId);
+                return repositoriesFromLocation.find((repo) => repo.id === repository.id);
             }
             return null;
         };
 
         this.isSystemRepository = function () {
-            const repositoryId = LocalStorageAdapter.get(LSKeys.REPOSITORY_ID);
-            return repositoryId === 'SYSTEM';
+            const repository = this.getActiveRepositoryObjectFromStorage();
+            return repository.id === 'SYSTEM';
         };
 
         this.isActiveRepoOntopType = function (repo) {
@@ -406,10 +409,9 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         };
 
         this.isRepoActive = function (repo) {
-            const repositoryId = LocalStorageAdapter.get(LSKeys.REPOSITORY_ID);
-            const repositoryLocation = LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION) || '';
-            if (repositoryId) {
-                return repo.id === repositoryId && repo.location === repositoryLocation;
+            const repository = this.getActiveRepositoryObjectFromStorage();
+            if (repository.id) {
+                return repo.id === repository.id && repo.location === repository.location;
             }
             return false;
         };

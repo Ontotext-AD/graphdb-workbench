@@ -286,7 +286,12 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     };
 
                     if (!jwtAuth.canReadRepo(selectedRepo)) {
+                        // if the current repo is unreadable by the currently logged-in user (or free access user)
+                        // we unset the repository
                         LocalStorageAdapter.remove(LSKeys.REPOSITORY_ID);
+                        LocalStorageAdapter.remove(LSKeys.REPOSITORY_LOCATION);
+                        // reset denied permissions (different repo, different rights)
+                        $rootScope.deniedPermissions = {};
                     }
 
                     $rootScope.$broadcast('securityInit', this.securityEnabled, that.hasExplicitAuthentication(), this.freeAccess);
