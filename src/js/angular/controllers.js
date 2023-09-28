@@ -74,8 +74,9 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
     function refreshRepositoryInfo() {
         if ($scope.getActiveRepository()) {
             $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
-                .success(function () {
+                .then(function(result) {
                     checkAutocompleteStatus();
+                    return result;
                 });
             // Getting the repository size should not be related to license
             $scope.getActiveRepositorySize();
