@@ -1,6 +1,7 @@
 import {AclManagementSteps} from "../../../steps/setup/acl-management-steps";
 import {ACL} from "../../../steps/setup/acl-management-steps";
 import {ToasterSteps} from "../../../steps/toaster-steps";
+import {ApplicationSteps} from "../../../steps/application-steps";
 
 describe('ACL Management: create rule', () => {
 
@@ -118,7 +119,7 @@ describe('ACL Management: create rule', () => {
         AclManagementSteps.saveRule(0);
 
         // Then I expect an error notification to be displayed that describe me that ACL have to be unique.
-        ToasterSteps.verifyError('Every ACL rule should be unique.');
+        ApplicationSteps.getErrorNotifications().contains('Every ACL rule should be unique.');
     });
 });
 
