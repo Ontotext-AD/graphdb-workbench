@@ -24,7 +24,8 @@ function RepositoriesRestService($http) {
         getSupportedDriversData,
         updatePropertiesFile,
         loadPropertiesFile,
-        getRepositoriesFromKnownLocation
+        getRepositoriesFromKnownLocation,
+        getRepositoryTurtleConfig
     };
 
     function getRepository(repoInfo) {
@@ -138,6 +139,14 @@ function RepositoriesRestService($http) {
                 fileLocation,
                 location,
                 driverType
+            }
+        });
+    }
+
+    function getRepositoryTurtleConfig(repository) {
+        return $http.get('rest/repositories/' + repository.id, {
+            headers: {
+                'Accept': 'text/turtle'
             }
         });
     }

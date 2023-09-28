@@ -105,6 +105,7 @@ describe('==> Repository module controllers tests', function () {
         describe('$scope.editLocationHttp()', function () {
             it('should call $repositories.init() on success', function () {
                 $httpBackend.flush();
+                $timeout.flush();
                 var test = false;
                 $repositories.init = function () {
                     test = true
@@ -198,14 +199,16 @@ describe('==> Repository module controllers tests', function () {
             let createController;
             let $translate;
             let $q;
+            let $timeout;
 
-            beforeEach(angular.mock.inject(function (_toastr_, _$repositories_, _$httpBackend_, _$controller_, $rootScope, _$translate_, _$q_) {
+            beforeEach(angular.mock.inject(function (_toastr_, _$repositories_, _$httpBackend_, _$controller_, $rootScope, _$translate_, _$q_, _$timeout_) {
                 toastr = _toastr_;
                 $repositories = _$repositories_;
                 $httpBackend = _$httpBackend_;
                 $controller = _$controller_;
                 $translate = _$translate_;
                 $q = _$q_;
+                $timeout = _$timeout_;
                 $translate.instant = function (key) {
                     return bundle[key];
                 };
@@ -253,14 +256,14 @@ describe('==> Repository module controllers tests', function () {
             });
 
             it('should call $scope.getConfig with "graphdb" when isEnterprise()', function () {
-                $httpBackend.when('GET', 'rest/locations/active').respond(200, {locationUri: ''});
-                $httpBackend.when('GET', 'rest/repositories/default-config/graphdb').respond(200, {
-                    params: { param1: 'param1'},
-                    type: 'graphdb'
-                });
-
                 $httpBackend.expectGET('rest/security/all');
+                $httpBackend.expectGET('rest/repositories/default-config/graphdb').respond(200, {
+                        params: { param1: 'param1'},
+                        type: 'graphdb'
+                    });
+                $httpBackend.flush();
                 $httpBackend.expectGET('rest/locations/active').respond(200, {locationUri: ''});
+                $timeout.flush();
 
                 $httpBackend.flush();
 
@@ -287,7 +290,9 @@ describe('==> Repository module controllers tests', function () {
             it('$scope.createRepoHttp() should call $repositories.init() and change location to /repository', function () {
                 $httpBackend.expectGET('rest/security/all');
                 $httpBackend.expectGET('rest/repositories/default-config/graphdb').respond(200, '');
+                $httpBackend.flush();
                 $httpBackend.expectGET('rest/locations/active').respond(200, {locationUri: ''});
+                $timeout.flush();
                 $httpBackend.flush();
                 $scope.repositoryInfo = {};
                 $httpBackend.expectPOST('rest/repositories', {}).respond(200, '');
@@ -314,10 +319,12 @@ describe('==> Repository module controllers tests', function () {
                 routeParamsMock,
                 httpDefaultUser,
                 httpSecurity;
+            let $timeout;
 
-            beforeEach(angular.mock.inject(function (_$httpBackend_, _$controller_, $rootScope) {
+            beforeEach(angular.mock.inject(function (_$httpBackend_, _$controller_, $rootScope, _$timeout_) {
                 $httpBackend = _$httpBackend_;
                 $controller = _$controller_;
+                $timeout = _$timeout_;
 
                 $httpBackend.when('GET', 'rest/locations?filterClusterLocations=true').respond(200, [{}]);
 
@@ -355,7 +362,9 @@ describe('==> Repository module controllers tests', function () {
             it('should call $scope.getConfig with "graphdb" when !isEnterprise()', function () {
                 $httpBackend.expectGET('rest/security/all');
                 $httpBackend.expectGET('rest/repositories/default-config/graphdb').respond(200, '');
+                expect($httpBackend.flush).not.toThrow();
                 $httpBackend.expectGET('rest/locations/active').respond(200, {locationUri: ''});
+                $timeout.flush();
                 expect($httpBackend.flush).not.toThrow();
             });
         });

@@ -10,6 +10,7 @@ const modules = [
     'ngRoute',
     'graphdb.framework.security.controllers',
     'graphdb.framework.core.interceptors.unauthorized',
+    'graphdb.framework.core.interceptors.authentication',
     'graphdb.framework.core.services.jwtauth'
 ];
 

@@ -5,6 +5,7 @@ import 'oclazyload';
 import 'angular-translate';
 import 'angular-translate-loader-static-files';
 import 'angular/core/interceptors/unauthorized.interceptor';
+import 'angular/core/interceptors/authentication.interceptor';
 import 'angular/core/directives/rdfresourcesearch/rdf-resource-search.directive';
 import 'angular/core/directives/languageselector/language-selector.directive';
 import 'angular/core/directives/angulartooltips/angular-tooltips.js';
@@ -27,6 +28,7 @@ const modules = [
     'oc.lazyLoad',
     'pascalprecht.translate',
     'graphdb.framework.core.interceptors.unauthorized',
+    'graphdb.framework.core.interceptors.authentication',
     'graphdb.framework.core.directives.rdfresourcesearch.rdfresourcesearch',
     'graphdb.framework.core.directives.languageselector.languageselector',
     'graphdb.framework.core.directives.angular-tooltips',
@@ -146,6 +148,7 @@ const moduleDefinition = function (productInfo) {
             });
 
             $httpProvider.interceptors.push('$unauthorizedInterceptor');
+            $httpProvider.interceptors.push('$authenticationInterceptor');
 
             // Hack the template request provider to add a version parameter to templates that
             // are fetched via HTTP to avoid cache issues. Those that are in the templateCache

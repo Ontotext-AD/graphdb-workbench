@@ -36,7 +36,7 @@ describe('SPARQL Templates', () => {
     beforeEach(() => {
         cy.visit('/sparql-templates', {
             onBeforeLoad: (win) => {
-                win.localStorage.setItem('com.ontotext.graphdb.repository', repositoryId);
+                win.localStorage.setItem('ls.repository-id', repositoryId);
             }
         });
         cy.window()

@@ -3,18 +3,9 @@ import 'angular/core/services';
 angular.module('graphdb.framework.core.interceptors.unauthorized', [
     'ngCookies'
 ])
-    .factory('$unauthorizedInterceptor', ['$q', '$location', '$rootScope', '$translate', 'AuthTokenService',
-        function($q, $location, $rootScope, $translate, AuthTokenService) {
+    .factory('$unauthorizedInterceptor', ['$q', '$location', '$rootScope', '$translate',
+        function($q, $location, $rootScope, $translate) {
             return {
-                'request': function(config) {
-                    const headers = config.headers || {};
-                    // Angular doesn't send this header by default, and we need it to detect XHR requests
-                    // so that we don't advertise Basic auth with them.
-                    headers['X-Requested-With'] = 'XMLHttpRequest';
-                    headers.Authorization = AuthTokenService.getAuthToken();
-                    config.headers = headers;
-                    return config;
-                },
                 'responseError': function(response) {
                     let redirect = false;
 

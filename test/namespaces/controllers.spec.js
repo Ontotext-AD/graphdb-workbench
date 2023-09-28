@@ -124,6 +124,7 @@ describe('=> NamespacesCtrl tests', function () {
     describe('$scope.saveNamespace()', function () {
         it('should call $scope.getNamespaces()', function () {
             $httpBackend.flush();
+            $timeout.flush();
             $httpBackend.expectPUT('repositories/activeRepository/namespaces/prefix', 'namespace').respond(200, '');
             var getNamespaces = false;
             $scope.getNamespaces = function () {

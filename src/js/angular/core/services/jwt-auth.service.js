@@ -8,13 +8,13 @@ angular.module('graphdb.framework.core.services.jwtauth', [
     'graphdb.framework.rest.security.service',
     'graphdb.framework.core.services.openIDService'
 ])
-    .service('$jwtAuth', ['$http', 'toastr', '$location', '$rootScope', 'SecurityRestService', '$openIDAuth', '$translate', '$q', 'AuthTokenService',
-        function ($http, toastr, $location, $rootScope, SecurityRestService, $openIDAuth, $translate, $q, AuthTokenService) {
+    .service('$jwtAuth', ['$http', 'toastr', '$location', '$rootScope', 'SecurityRestService', '$openIDAuth', '$translate', '$q', 'AuthTokenService', 'LSKeys', 'LocalStorageAdapter',
+        function ($http, toastr, $location, $rootScope, SecurityRestService, $openIDAuth, $translate, $q, AuthTokenService, LSKeys, LocalStorageAdapter) {
             const jwtAuth = this;
 
             $rootScope.deniedPermissions = {};
             $rootScope.setPermissionDenied = function (path) {
-                if (path === '/' || path === '/login' || !jwtAuth.isAuthenticated()) {
+                if (path === '/login' || !jwtAuth.isAuthenticated()) {
                     return false;
                 }
                 $rootScope.deniedPermissions[path] = true;
@@ -279,6 +279,20 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     this.principal = data;
                     $rootScope.deniedPermissions = {};
                     this.securityInitialized = true;
+
+                    const selectedRepo = {
+                        id: LocalStorageAdapter.get(LSKeys.REPOSITORY_ID) || '',
+                        location: LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION) || ''
+                    };
+
+                    if (!jwtAuth.canReadRepo(selectedRepo)) {
+                        // if the current repo is unreadable by the currently logged-in user (or free access user)
+                        // we unset the repository
+                        LocalStorageAdapter.remove(LSKeys.REPOSITORY_ID);
+                        LocalStorageAdapter.remove(LSKeys.REPOSITORY_LOCATION);
+                        // reset denied permissions (different repo, different rights)
+                        $rootScope.deniedPermissions = {};
+                    }
 
                     $rootScope.$broadcast('securityInit', this.securityEnabled, that.hasExplicitAuthentication(), this.freeAccess);
                     setTimeout(() => {
