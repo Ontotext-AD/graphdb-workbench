@@ -3,7 +3,7 @@ export class ACListModel {
      * Constructs the ACListModel.
      * @param {ACRuleModel[]} aclRules
      */
-    constructor(aclRules) {
+    constructor(aclRules = []) {
         this._aclRules = aclRules;
     }
 
@@ -11,6 +11,23 @@ export class ACListModel {
         return this.aclRules.length;
     }
 
+    /**
+     * Creates a new ACRuleModel using provided values and appends it at the end of the list.
+     * @param {string} subject
+     * @param {string} predicate
+     * @param {string} object
+     * @param {string} context
+     * @param {string} role
+     * @param {string} policy
+     */
+    appendNewRule(subject, predicate, object, context, role, policy) {
+        this.aclRules.push(new ACRuleModel(subject, predicate, object, context, role, policy));
+    }
+
+    /**
+     * Creates a new ACRuleModel with default values and inserts it into specified index.
+     * @param {number} index
+     */
     addRule(index) {
         this.aclRules.splice(index, 0, new ACRuleModel());
     }

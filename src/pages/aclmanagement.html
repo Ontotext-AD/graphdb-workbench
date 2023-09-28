@@ -161,7 +161,7 @@
             </form>
         </div>
 
-        <div ng-if="editedRuleIndex === undefined && rulesModel" class="text-right">
+        <div ng-if="editedRuleIndex === undefined && rulesModel && modelIsDirty" class="text-right">
             <button class="btn btn-secondary cancel-acl-save-btn"
                     ng-click="cancelAclSave()">
                 {{'acl_management.rulestable.actions.cancel_acl_saving' | translate}}

@@ -1,6 +1,7 @@
 import 'angular/rest/plugins.rest.service';
 import 'angular/rest/aclmanagement.rest.service';
 import {mapAclRulesResponse} from "../rest/mappers/aclmanagement-mapper";
+import {isEqual} from 'lodash';
 
 const modules = [
     'graphdb.framework.rest.plugins.service',
@@ -11,9 +12,19 @@ angular
     .module('graphdb.framework.aclmanagement.controllers', modules)
     .controller('AclManagementCtrl', AclManagementCtrl);
 
-AclManagementCtrl.$inject = ['$scope', 'toastr', 'AclManagementRestService', '$repositories', '$translate', 'ModalService'];
+AclManagementCtrl.$inject = ['$scope', '$location', 'toastr', 'AclManagementRestService', '$repositories', '$translate', 'ModalService'];
 
-function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositories, $translate, ModalService) {
+function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, $repositories, $translate, ModalService) {
+
+    //
+    // Private fields
+    //
+
+    /**
+     * Holds a list of event handler subscriptions which to be cleaned up on page leave.
+     * @type {*[]}
+     */
+    const subscriptions = [];
 
     //
     // Public fields
@@ -36,6 +47,12 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
      * @type {undefined|ACListModel}
      */
     $scope.rulesModel = undefined;
+
+    /**
+     * A copy of the model needed for revert or dirty check operations.
+     * @type {undefined}
+     */
+    $scope.rulesModelCopy = undefined;
 
     /**
      * The index of the rule which is currently moved up/down.
@@ -61,6 +78,13 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
      */
     $scope.isNewRule = false;
 
+    /**
+     * Flag showing if the model has been changed. This controls the action buttons availability and prevents leaving
+     * the page without confirmation when the model has changes.
+     * @type {boolean}
+     */
+    $scope.modelIsDirty = false;
+
     //
     // Public functions
     //
@@ -69,41 +93,45 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
      * Adds a new rule at a given index in the rulesModel.
      * @param {number} index
      */
-    $scope.addRule= (index) => {
+    $scope.addRule = (index) => {
         $scope.rulesModel.addRule(index);
         $scope.editedRuleIndex = index;
         $scope.isNewRule = true;
+        setModelDirty();
     };
 
     /**
      * Edits a rule at a given index.
      * @param {number} index
      */
-    $scope.editRule= (index) => {
+    $scope.editRule = (index) => {
         $scope.editedRuleIndex = index;
         $scope.isNewRule = false;
-        $scope.editedRuleCopy = $scope.rulesModel.getRule(index)
+        $scope.editedRuleCopy = $scope.rulesModel.getRule(index);
+        setModelDirty();
     };
 
     /**
      * Deletes a rule at a given index.
      * @param {number} index
      */
-    $scope.deleteRule= (index) => {
+    $scope.deleteRule = (index) => {
         ModalService.openConfirmation(
             $translate.instant('common.confirm'),
             $translate.instant('acl_management.rulestable.messages.delete_rule_confirmation', {index}),
             () => {
                 $scope.rulesModel.removeRule(index);
+                setModelDirty();
             });
     };
 
     /**
      * Saves a rule at a given index in the rulesModel.
      */
-    $scope.saveRule= () => {
+    $scope.saveRule = () => {
         $scope.editedRuleIndex = undefined;
         $scope.isNewRule = false;
+        setModelDirty();
     };
 
     /**
@@ -119,6 +147,7 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
             $scope.editedRuleCopy = undefined;
         }
         $scope.editedRuleIndex = undefined;
+        setModelDirty();
     };
 
     /**
@@ -128,6 +157,7 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
     $scope.moveUp = (index) => {
         $scope.rulesModel.moveUp(index);
         $scope.selectedRule = index - 1;
+        setModelDirty();
     };
 
     /**
@@ -137,6 +167,7 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
     $scope.moveDown = (index) => {
         $scope.rulesModel.moveDown(index);
         $scope.selectedRule = index + 1;
+        setModelDirty();
     };
 
     /**
@@ -144,16 +175,11 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
      */
     $scope.saveAcl = () => {
         $scope.loading = true;
-        const repositoryId = getActiveRepository();
-        AclManagementRestService.updateAcl(repositoryId, $scope.rulesModel.toJSON()).then(() => {
-            toastr.success($translate.instant('acl_management.rulestable.messages.rules_updated'));
-        })
-        .catch((data) => {
-            const msg = getError(data);
-            toastr.error(msg, $translate.instant('acl_management.errors.updating_rules'));
-        }).finally(() => {
-            $scope.loading = false;
-        });
+        updateAcl()
+            .then(fetchAcl)
+            .finally(() => {
+                $scope.loading = false;
+            });
     };
 
     /**
@@ -173,22 +199,53 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
     // Private functions
     //
 
-    const loadRules = () => {
-        if ($repositories.getActiveRepository()) {
-            $scope.loading = true;
-            const repositoryId = getActiveRepository();
-            AclManagementRestService.getAcl(repositoryId).then((response) => {
-                $scope.rulesModel = mapAclRulesResponse(response);
+    const fetchAcl = () => {
+        const repositoryId = getActiveRepositoryId();
+        return AclManagementRestService.getAcl(repositoryId).then((response) => {
+            $scope.rulesModel = mapAclRulesResponse(response);
+            $scope.rulesModelCopy = mapAclRulesResponse(response);
+            setModelDirty();
+        }).catch((data) => {
+            const msg = getError(data);
+            toastr.error(msg, $translate.instant('acl_management.errors.loading_rules'));
+        });
+    };
+
+    const updateAcl = () => {
+        const repositoryId = getActiveRepositoryId();
+        return AclManagementRestService.updateAcl(repositoryId, $scope.rulesModel.toJSON())
+            .then(() => {
+                toastr.success($translate.instant('acl_management.rulestable.messages.rules_updated'));
             }).catch((data) => {
                 const msg = getError(data);
-                toastr.error(msg, $translate.instant('acl_management.errors.loading_rules'));
-            }).finally(() => {
+                toastr.error(msg, $translate.instant('acl_management.errors.updating_rules'));
+            });
+    };
+
+    /**
+     * Loads ACL if there is an active repository.
+     */
+    const loadRules = () => {
+        if (getActiveRepositoryId()) {
+            $scope.loading = true;
+            fetchAcl().finally(() => {
                 $scope.loading = false;
             });
         }
     };
 
-    const getActiveRepository = () => {
+    /**
+     * Updates the modelIsDirty flag by comparing the model with its copy created after it was loaded initially.
+     */
+    const setModelDirty = () => {
+        $scope.modelIsDirty = !isEqual($scope.rulesModel, $scope.rulesModelCopy);
+    };
+
+    /**
+     * Gets the currently active repository id.
+     * @return {string}
+     */
+    const getActiveRepositoryId = () => {
         return $repositories.getActiveRepository();
     };
 
@@ -200,4 +257,55 @@ function AclManagementCtrl($scope, toastr, AclManagementRestService, $repositori
     }, function () {
         loadRules();
     });
+
+    /**
+     * Should warn the user if he tries to close the browser tab while there are unsaved changes.
+     * @param {{returnValue: boolean}} event
+     */
+    const beforeUnloadHandler = (event) => {
+        if ($scope.modelIsDirty) {
+            event.returnValue = true;
+        }
+    };
+
+    /**
+     * Cleanup all subscriptions and listeners.
+     */
+    const unsubscribeListeners = () => {
+        window.removeEventListener('beforeunload', beforeUnloadHandler);
+        subscriptions.forEach((subscription) => subscription());
+    };
+
+    /**
+     * Handles location change and asks the user to confirm if there are unsaved changes in the model.
+     * @param {Object} event
+     * @param {string} newPath
+     */
+    const locationChangedHandler = (event, newPath) => {
+        if ($scope.modelIsDirty) {
+            event.preventDefault();
+            ModalService.openSimpleModal({
+                title: $translate.instant('common.confirm'),
+                message: $translate.instant('acl_management.rulestable.messages.unsaved_changes_confirmation'),
+                warning: true
+            }).result.then(function () {
+                unsubscribeListeners();
+                const baseLen = $location.absUrl().length - $location.url().length;
+                const path = newPath.substring(baseLen);
+                $location.path(path);
+            }, function () {});
+        } else {
+            unsubscribeListeners();
+        }
+    };
+
+    /**
+     * Initialized the view controller.
+     */
+    const init = () => {
+        subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
+        window.addEventListener('beforeunload', beforeUnloadHandler);
+    };
+
+    init();
 }

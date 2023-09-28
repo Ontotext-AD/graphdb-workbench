@@ -52,5 +52,9 @@ describe('ACL Management: revert rules', () => {
         ApplicationSteps.getSuccessNotifications().should('be.visible');
         AclManagementSteps.getAclRules().should('have.length', 5);
         AclManagementSteps.checkRules(ACL);
+        // And the model should become pristine again after the revert
+        // I should be able to navigate away from the page without any confirmation
+        ApplicationSteps.openImportPage();
+        cy.url().should('contain', '/import');
     });
 });

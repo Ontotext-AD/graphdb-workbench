@@ -72,4 +72,61 @@ describe('ACL Management: update rules', () => {
         };
         AclManagementSteps.checkRules([ACL[0], newRule, editedRule, ACL[2], ACL[3]]);
     });
+
+    it('Should prevent leaving the page when there is new rule added', () => {
+        // Given I have opened ACL management page
+        // When I don't change anything and try to leave the page
+        ApplicationSteps.openImportPage();
+        // Then I expect to be redirected to the new page without confirmation
+        cy.url().should('contain', '/import');
+        // When I add a new rule
+        AclManagementSteps.visit();
+        AclManagementSteps.addRule(1);
+        ApplicationSteps.openImportPage();
+        // Then I expect a confirmation dialog
+        ModalDialogSteps.getDialog().should('be.visible');
+        // When I cancel confirmation
+        ModalDialogSteps.clickOnCancelButton();
+        // Then I expect dialog to be closed and to stay on the current page
+        ModalDialogSteps.getDialog().should('not.exist');
+        cy.url().should('contain', '/aclmanagement');
+        // When I try to leave the page and I confirm the operation
+        ApplicationSteps.openImportPage();
+        ModalDialogSteps.clickOnConfirmButton();
+        // Then I expect to be redirected to the new page
+        cy.url().should('contain', '/import');
+    });
+
+    it('Should prevent leaving the page when there is an edited rule', () => {
+        // Given I have opened ACL management page
+        // When I edit a rule
+        AclManagementSteps.editRule(1);
+        AclManagementSteps.fillSubject(1, '<urn:Me>');
+        AclManagementSteps.saveRule(1);
+        // And I try to leave the page
+        ApplicationSteps.openImportPage();
+        // Then I expect a confirmation dialog
+        ModalDialogSteps.getDialog().should('be.visible');
+    });
+
+    it('Should prevent leaving the page when there is a deleted rule', () => {
+        // Given I have opened ACL management page
+        // When I delete a rule
+        AclManagementSteps.deleteRule(1);
+        ModalDialogSteps.clickOnConfirmButton();
+        // And I try to leave the page
+        ApplicationSteps.openImportPage();
+        // Then I expect a confirmation dialog
+        ModalDialogSteps.getDialog().should('be.visible');
+    });
+
+    it('Should prevent leaving the page when there is a moved rule', () => {
+        // Given I have opened ACL management page
+        // When I move a rule
+        AclManagementSteps.moveRuleDown(1);
+        // And I try to leave the page
+        ApplicationSteps.openImportPage();
+        // Then I expect a confirmation dialog
+        ModalDialogSteps.getDialog().should('be.visible');
+    });
 });
