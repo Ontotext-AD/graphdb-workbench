@@ -13,7 +13,9 @@
     <div core-errors></div>
 
     <div class="acl-management-container">
-        <div ng-if="rulesModel" class="table-responsive">
+        <div ng-if="loading" onto-loader-new size="100" style="height: 75vh; display: flex;"></div>
+
+        <div ng-if="rulesModel && !loading" class="table-responsive">
             <form name="ruleData" novalidate>
                 <table class="acl-rules table table-striped table-hover" aria-describedby="ACL rules table">
                     <thead>
@@ -49,12 +51,6 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-hide="!loading">
-                        <td colspan="9">
-                            <div onto-loader-new size="100" style="height: 75vh; display: flex;">
-                            </div>
-                        </td>
-                    </tr>
                     <tr ng-if="!rulesModel.size()">
                         <td colspan="9" class="no-data">
                             {{'acl_management.rulestable.messages.no_data' | translate}}
