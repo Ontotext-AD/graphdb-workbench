@@ -121,11 +121,11 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
 
 mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$licenseService', '$rootScope',
     'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService',
-    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils', '$q', 'GuidesService'];
+    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils', '$q', 'GuidesService', '$route', '$window', 'AuthTokenService'];
 
 function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $licenseService, $rootScope,
                   productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService,
-                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q, GuidesService) {
+                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q, GuidesService, $route, $window, AuthTokenService) {
     $scope.descr = $translate.instant('main.gdb.description');
     $scope.documentation = '';
     $scope.menu = $menuItems;
@@ -461,11 +461,52 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             // if it's free access check if we still can access the current repo
             // if not, a new default repo will be set or the current repo will be unset
             $repositories.resetActiveRepository();
+            $rootScope.updateReturnUrl();
         } else if ($jwtAuth.isSecurityEnabled()) {
             // otherwise show login screen if security is on
             $rootScope.redirectToLogin();
         }
     };
+
+    $scope.showMainManuAndStatusBar = () => {
+        return $jwtAuth.isAuthenticated() || $scope.isSecurityEnabled() && $scope.isFreeAccessEnabled();
+    };
+
+    let isAuthenticated = undefined;
+
+    const reloadPageOutsideAngularScope = () => {
+        setTimeout(() => {
+            $window.location.reload();
+        }, 0);
+    };
+
+    const localStoreChangeHandler = (localStoreEvent) => {
+        if (AuthTokenService.AUTH_STORAGE_NAME === localStoreEvent.key) {
+            const newAuthenticationState = $jwtAuth.isAuthenticated();
+            $rootScope.updateReturnUrl();
+            if (isAuthenticated !== newAuthenticationState) {
+                isAuthenticated = newAuthenticationState;
+                if (isAuthenticated) {
+                    $location.url($rootScope.returnToUrl || '/');
+                    $route.reload();
+                    reloadPageOutsideAngularScope();
+                } else {
+                    $rootScope.redirectToLogin();
+                    reloadPageOutsideAngularScope();
+                }
+            }
+        }
+    };
+
+    /**
+     * Add a listener for the browser's local store change event. This event will be fired in all tabs of the current domain
+     * EXPECT FOR THE ONE where the local store changed.
+     */
+    window.addEventListener('storage', localStoreChangeHandler);
+
+    $scope.$on('$destroy', () => {
+        window.removeEventListener('storage', localStoreChangeHandler);
+    });
 
     $scope.isAdmin = function () {
         return $scope.hasRole(UserRole.ROLE_ADMIN);

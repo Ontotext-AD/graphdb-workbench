@@ -25,6 +25,12 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return !$rootScope.deniedPermissions[path];
             };
 
+            $rootScope.updateReturnUrl = () => {
+                if ($location.url().indexOf('/login') !== 0) {
+                    $rootScope.returnToUrl = $location.url();
+                }
+            };
+
             /**
              * Redirects to the login page.
              *
@@ -42,11 +48,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     expired = true;
                 }
                 jwtAuth.clearAuthenticationInternal();
-
-                if ($location.url().indexOf('/login') !== 0) {
-                    // remember where we were so we can return there
-                    $rootScope.returnToUrl = $location.url();
-                }
+                // remember where we were so we can return there
+                $rootScope.updateReturnUrl();
 
                 $location.path('/login');
                 if (noaccess) {

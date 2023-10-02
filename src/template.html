@@ -19,7 +19,7 @@
 
 <body>
 
-<div class="status-bar bg-white" ng-hide="isSecurityEnabled() && !isUserLoggedIn() && !isFreeAccessEnabled()" ng-cloak>
+<div class="status-bar bg-white" ng-hide="!showMainManuAndStatusBar()" ng-cloak>
     <operations-statuses-monitor class="active-operation"></operations-statuses-monitor>
     <div class="btn-group btn-group-lg" role="group" aria-label="Button group with nested dropdown">
 
@@ -98,7 +98,7 @@
             </svg>
         </a>
     </li>
-    <li ng-repeat="item in menu track by $index" ng-if="hasRole(item.role)"
+    <li ng-repeat="item in menu track by $index" ng-if="showMainManuAndStatusBar() && hasRole(item.role)"
         ng-class="{open: $index === selected, clicked: clicked && $index === selected}"
         class="menu-element" ng-click="checkSubMenuPosition($index)" guide-selector="{{item.guideSelector}}">
         <div class="menu-element-root" ng-if="item.children.length" ng-click="select($index, $event, clicked);">
