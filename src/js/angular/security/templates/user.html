@@ -210,7 +210,7 @@
                         <h3>{{'security.user.custom_role' | translate}}</h3>
                         <div class="input-group">
                             <tags-input class="wb-tags-input" ng-model="customRoles" min-length="2"
-                                        ng-disabled="!isUser()"
+                                        ng-disabled="!isUser() || mode === 'settings'"
                                         use-strings="true"
                                         add-on-space="true"
                                         add-on-comma="true"
