@@ -762,6 +762,10 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
             return true;
         };
 
+        $scope.isUser = function () {
+            return $scope.userType === UserType.USER;
+        };
+
         $scope.goBack = function () {
             const timer = $timeout(function () {
                 $window.history.back();
