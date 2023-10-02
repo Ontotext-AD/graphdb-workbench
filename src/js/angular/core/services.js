@@ -292,6 +292,7 @@ function AuthTokenService() {
     const authStorageName = 'com.ontotext.graphdb.auth';
 
     return {
+        AUTH_STORAGE_NAME: authStorageName,
         getAuthToken: getAuthToken,
         setAuthToken: setAuthToken,
         clearAuthToken: clearAuthToken
