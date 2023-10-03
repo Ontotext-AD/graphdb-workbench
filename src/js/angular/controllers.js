@@ -461,7 +461,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             // if it's free access check if we still can access the current repo
             // if not, a new default repo will be set or the current repo will be unset
             $repositories.resetActiveRepository();
-            $rootScope.updateReturnUrl();
+            $jwtAuth.updateReturnUrl();
         } else if ($jwtAuth.isSecurityEnabled()) {
             // otherwise show login screen if security is on
             $rootScope.redirectToLogin();
@@ -472,18 +472,23 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $jwtAuth.isAuthenticated() || $scope.isSecurityEnabled() && $scope.isFreeAccessEnabled();
     };
 
-    let isAuthenticated = undefined;
-
     const reloadPageOutsideAngularScope = () => {
         setTimeout(() => {
             $window.location.reload();
         }, 0);
     };
 
+    /**
+     * Initialized as 'undefined' to guarantee that when the 'localStoreChangeHandler' function is called for the first time, it will be processed properly.
+     * If we set it to "false" and when the $jwtAuth.isAuthenticated() is called for first time it can return "false" as example, then the page will not
+     * be reloaded or redirected to the login page.
+     * @type {undefined | boolean}
+     */
+    let isAuthenticated = undefined;
     const localStoreChangeHandler = (localStoreEvent) => {
         if (AuthTokenService.AUTH_STORAGE_NAME === localStoreEvent.key) {
             const newAuthenticationState = $jwtAuth.isAuthenticated();
-            $rootScope.updateReturnUrl();
+            $jwtAuth.updateReturnUrl();
             if (isAuthenticated !== newAuthenticationState) {
                 isAuthenticated = newAuthenticationState;
                 if (isAuthenticated) {
