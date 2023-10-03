@@ -2,8 +2,8 @@ import 'angular/core/services';
 
 const adminInfoApp = angular.module('graphdb.framework.stats', ['toastr']);
 
-adminInfoApp.controller('AdminInfoCtrl', ['$scope', '$http', 'toastr', '$timeout', '$translate', 'AuthTokenService',
-    function ($scope, $http, toastr, $timeout, $translate, AuthTokenService) {
+adminInfoApp.controller('AdminInfoCtrl', ['$scope', '$http', 'toastr', '$timeout', '$jwtAuth', '$translate', 'AuthTokenService',
+    function ($scope, $http, toastr, $timeout, $jwtAuth, $translate, AuthTokenService) {
 
         $http.get('rest/info/data')
             .success(function (data) {
