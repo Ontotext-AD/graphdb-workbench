@@ -25,7 +25,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return !$rootScope.deniedPermissions[path];
             };
 
-            $rootScope.updateReturnUrl = () => {
+            this.updateReturnUrl = () => {
                 if ($location.url().indexOf('/login') !== 0) {
                     $rootScope.returnToUrl = $location.url();
                 }
@@ -49,7 +49,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 }
                 jwtAuth.clearAuthenticationInternal();
                 // remember where we were so we can return there
-                $rootScope.updateReturnUrl();
+                jwtAuth.updateReturnUrl();
 
                 $location.path('/login');
                 if (noaccess) {
