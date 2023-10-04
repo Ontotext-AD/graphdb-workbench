@@ -181,6 +181,10 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
         $scope.loading = true;
         updateAcl()
             .then(fetchAcl)
+            .catch((data) => {
+                const msg = getError(data);
+                toastr.error(msg, $translate.instant('acl_management.errors.updating_rules'));
+            })
             .finally(() => {
                 $scope.loading = false;
             });
@@ -220,9 +224,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
         return AclManagementRestService.updateAcl(repositoryId, $scope.rulesModel.toJSON())
             .then(() => {
                 toastr.success($translate.instant('acl_management.rulestable.messages.rules_updated'));
-            }).catch((data) => {
-                const msg = getError(data);
-                toastr.error(msg, $translate.instant('acl_management.errors.updating_rules'));
+                return true;
             });
     };
 
