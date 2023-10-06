@@ -38,10 +38,12 @@ function StatementsService() {
             for (let j = 0; j < value.length; j++) {
                 const statement = value[j];
                 data += '\n\t<' + statement.subject + '> <' + statement.predicate + '> ';
+                let statementObjectValue = statement.object.value;
                 if (statement.object.type === 'uri') {
-                    data += '<' + statement.object.value + '> .';
+                    data += '<' + statementObjectValue + '> .';
                 } else {
-                    data += '"""' + statement.object.value + '"""' + (statement.object.datatype ? '^^<' + statement.object.datatype + '>' : (statement.object.lang ? '@' + statement.object.lang : '')) + ' .';
+                    statementObjectValue = statementObjectValue.replace(/"/g, '\\"');
+                    data += '"""' + statementObjectValue + '"""' + (statement.object.datatype ? '^^<' + statement.object.datatype + '>' : (statement.object.lang ? '@' + statement.object.lang : '')) + ' .';
                 }
             }
 
