@@ -156,7 +156,7 @@
             <div class="card">
                 <h4 class="card-header">GraphDB {{getProductTypeHuman()}} {{'edition' | translate}}</h4>
                 <!-- appears only when there is a problem with the license -->
-                <div class="alert alert-warning" role="alert" ng-hide="getLicense().valid">
+                <div class="alert alert-danger" role="alert" ng-hide="getLicense().valid">
                     <p>
                         <strong>{{getLicense().message}}</strong><br>
                         {{'supply.license.or.contact.us.warning' | translate}}
