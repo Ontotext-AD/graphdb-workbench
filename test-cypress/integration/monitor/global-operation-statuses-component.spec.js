@@ -37,7 +37,7 @@ describe('Operations Status Component', () => {
         OperationsStatusesComponentSteps.openOperationStatusesDialog();
         // When I click on "Running query" operation element.
         // Then I expect to be redirected to "Query and Update monitoring" view.
-        OperationsStatusesComponentSteps.checkOperationElementUrl('monitor/queries', 0);
+        OperationsStatusesComponentSteps.checkOperationElementUrl('monitor/queries', 3);
         // Then I expect "Global Operations Component" to still be displayed.
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().should('exist');
     });
@@ -52,7 +52,7 @@ describe('Operations Status Component', () => {
         OperationsStatusesComponentSteps.openOperationStatusesDialog();
         // When I click on "Running updates" operation element.
         // Then I expect to be redirected to "Query and Update monitoring" view.
-        OperationsStatusesComponentSteps.checkOperationElementUrl('monitor/queries', 1);
+        OperationsStatusesComponentSteps.checkOperationElementUrl('monitor/queries', 4);
         // Then I expect "Global Operations Component" to still be displayed.
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().should('exist');
     });
@@ -82,7 +82,7 @@ describe('Operations Status Component', () => {
         OperationsStatusesComponentSteps.openOperationStatusesDialog();
         // When I click on "Creating backup" operation element.
         // Then I expect to be redirected to "Backup and Restore" view.
-        OperationsStatusesComponentSteps.checkOperationElementUrl('monitor/backup-and-restore', 3);
+        OperationsStatusesComponentSteps.checkOperationElementUrl('monitor/backup-and-restore', 1);
         // Then I expect "Global Operations Component" to still be displayed.
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().should('exist');
 
@@ -98,7 +98,7 @@ describe('Operations Status Component', () => {
         OperationsStatusesComponentSteps.openOperationStatusesDialog();
         // When I click on "Unavailable nodes" operation element.
         // Then I expect to be redirected to "Cluster Monitoring" view.
-        OperationsStatusesComponentSteps.checkOperationElementUrl('cluster', 4);
+        OperationsStatusesComponentSteps.checkOperationElementUrl('cluster', 0);
         // Then I expect "Global Operations Component" to still be displayed.
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().should('exist');
 

@@ -10,6 +10,7 @@ export class ActiveOperationModel {
          */
         this.operationGroup = undefined;
         this.runningOperationCount = 0;
+        this.groupRunningOperationCount = 0;
         this.status = OPERATION_STATUS.INFORMATION;
         this.type = undefined;
         this.titleLabelKey = '';

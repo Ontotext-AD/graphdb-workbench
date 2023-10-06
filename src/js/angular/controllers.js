@@ -220,7 +220,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     };
 
     $scope.$on("$locationChangeSuccess", function () {
-        $scope.showFooter = $location.url() === '/';
+        $scope.showFooter = true;
     });
 
     $scope.$on("repositoryIsSet", function () {
@@ -664,16 +664,19 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     function collapsedMenuLogicOnInit() {
         if ($(window).width() <= 720) {
             $('.container-fluid.main-container').addClass("expanded");
+            $('.status-bar').addClass("expanded");
             $('.main-menu').addClass('collapsed');
             $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
             $('.toggle-menu').hide();
         } else if ($(window).width() > 720 && LocalStorageAdapter.get(LSKeys.MENU_STATE) === 'collapsedMenu') {
             $('.container-fluid.main-container').addClass("expanded");
+            $('.status-bar').addClass("expanded");
             $('.main-menu').addClass('collapsed');
             $('.toggle-menu').show();
             $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
         } else {
             $('.container-fluid.main-container').removeClass("expanded");
+            $('.status-bar').removeClass("expanded");
             $('.main-menu').removeClass('collapsed');
             $('.toggle-menu').show();
             $('.main-menu .icon-caret-right').toggleClass('icon-caret-right').toggleClass('icon-caret-left');
@@ -730,6 +733,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                 $scope.selected = -1;
             }
             $('.container-fluid.main-container').addClass("expanded");
+            $('.status-bar').addClass("expanded");
             $mainMenu.addClass("collapsed");
             $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
             $('.main-menu.collapsed .menu-element.clicked').removeClass('clicked');
@@ -741,6 +745,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                 $activeSubmenu.parents('.menu-element').children('.menu-element-root').removeClass('active');
             }
             $('.container-fluid.main-container').removeClass("expanded");
+            $('.status-bar').removeClass("expanded");
             $mainMenu.removeClass("collapsed");
             $('.main-menu .icon-caret-right').toggleClass('icon-caret-right').toggleClass('icon-caret-left');
             $rootScope.$broadcast("onToggleNavWidth", false);

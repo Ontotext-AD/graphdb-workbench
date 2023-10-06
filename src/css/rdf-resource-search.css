@@ -1,5 +1,10 @@
 .search-rdf-btn {
   display: block;
+  border: 0;
+}
+
+.search-rdf-btn .icon-search {
+  font-size: 1.7em;
 }
 
 .close-rdf-search-btn{
