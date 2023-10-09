@@ -8,7 +8,7 @@ const BASIC_STEP = {
     maxWaitTime: 3,
     canBePaused: true,
     onNextClick: undefined,
-    onNextValidate: undefined,
+    onNextValidate: () => Promise.resolve(true),
     onPreviousClick: undefined,
     skipPoint: false
 };

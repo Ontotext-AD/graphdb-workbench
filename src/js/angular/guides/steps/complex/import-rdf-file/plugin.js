@@ -56,9 +56,9 @@ PluginRegistry.add('guide.step', [
                             if (!$(GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile)).length) {
                                 GuideUtils.noNextErrorToast(toastr, $translate, $interpolate,
                                     'guide.step_plugin.import_rdf_file.file-must-be-uploaded', options);
-                                return false;
+                                return Promise.resolve(false);
                             } else {
-                                return true;
+                                return Promise.resolve(true);
                             }
                         }
                     }, options)
