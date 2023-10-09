@@ -45,12 +45,15 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.execute-sparql-query.query-editor.content',
                         url: '/sparql',
                         elementSelector: GuideUtils.CONSTANTS.SPARQL_EDITOR_SELECTOR,
-                        beforeShowPromise: () => YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(SPARQL_DIRECTIVE_SELECTOR)
-                            .then(() => GuideUtils.waitFor(GuideUtils.CONSTANTS.SPARQL_EDITOR_SELECTOR, 3))
-                            .catch((error) => {
-                                services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
-                                throw error;
-                            }),
+                        class: 'yasgui-query-editor-guide-dialog',
+                        beforeShowPromise: () => {
+                            return YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(SPARQL_DIRECTIVE_SELECTOR)
+                                .then(() => GuideUtils.waitFor(GuideUtils.CONSTANTS.SPARQL_EDITOR_SELECTOR, 3))
+                                .catch((error) => {
+                                    services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
+                                    throw error;
+                                });
+                        },
                         onNextValidate: () => {
                             return YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(SPARQL_DIRECTIVE_SELECTOR)
                                 .then((yasgui) => yasgui.getQuery().then((query) => ({yasgui, queryFromEditor: query})))
@@ -105,6 +108,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.execute-sparql-query.run-sparql-query.content',
                         url: '/sparql',
                         elementSelector: GuideUtils.CONSTANTS.SPARQL_RUN_BUTTON_SELECTOR,
+                        class: 'yasgui-run-button-guide-dialog',
                         onNextClick: (guide) => YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(SPARQL_DIRECTIVE_SELECTOR)
                                 .then((yasgui) => {
                                     yasgui.query();
@@ -137,6 +141,7 @@ PluginRegistry.add('guide.step', [
                         url: '/sparql',
                         placement: 'top',
                         elementSelector: GuideUtils.CONSTANTS.SPARQL_RESULTS_SELECTOR,
+                        class: 'yasgui-query-results-guide-dialog',
                         fileName: options.fileName,
                         scrollToHandler: GuideUtils.scrollToTop,
                         extraContent: queryDef.resultExtraContent,

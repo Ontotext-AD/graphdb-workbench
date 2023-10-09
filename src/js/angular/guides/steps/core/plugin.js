@@ -10,7 +10,8 @@ const BASIC_STEP = {
     onNextClick: undefined,
     onNextValidate: () => Promise.resolve(true),
     onPreviousClick: undefined,
-    skipPoint: false
+    skipPoint: false,
+    class: ''
 };
 
 /**
