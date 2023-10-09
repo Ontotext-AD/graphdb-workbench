@@ -93,7 +93,7 @@
                 <form>
                     <div class="mb-2 d-flex">
                         <input class="form-control" ng-model="question" type="text">
-                        <button class="btn btn-primary" ng-click="ask()">{{ 'ttyg.ask.button' | translate }}</button>
+                        <button class="btn btn-primary" ng-disabled="loading" ng-click="ask()">{{ 'ttyg.ask.button' | translate }}</button>
                     </div>
                 </form>
             </div>
