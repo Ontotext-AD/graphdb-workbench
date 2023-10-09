@@ -749,7 +749,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             advanceOn: stepDescription.advanceOn,
             showOn: stepDescription.showOn,
             scrollToHandler: stepDescription.scrollToHandler,
-            classes: 'guide-dialog',
+            classes: 'guide-dialog ' + stepDescription.class,
             beforeShowPromise: stepDescription.beforeShowPromise,
             canClickTarget: clickable,
             keyboardNavigation: false,

@@ -37,6 +37,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.import_rdf_file.content',
                         url: '/import',
                         elementSelector: GuideUtils.getGuideElementSelector('uploadRdfFileButton'),
+                        class: 'upload-rdf-file-button-guide-dialog',
                         // Disable default behavior of service when element is clicked.
                         advanceOn: undefined,
                         show: (guide) => () => {
@@ -70,6 +71,7 @@ PluginRegistry.add('guide.step', [
                         elementSelector: GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile),
                         url: '/import',
                         placement: 'left',
+                        class: 'import-file-button-guide-dialog',
                         onNextClick: () => GuideUtils.clickOnGuideElement('import-file-' + options.resourceFile)()
                     }, options)
                 },
@@ -79,6 +81,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.import_rdf_file.import-settings.import.button.content',
                         elementSelector: importSettingsButtonSelector,
                         placement: 'top',
+                        class: 'import-settings-import-file-button-guide-dialog',
                         onPreviousClick: () => new Promise(function (resolve) {
                             GuideUtils.clickOnGuideElement('import-settings-cancel-button')()
                                 .then(() => resolve());
@@ -106,6 +109,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.import_status_info.content',
                         url: '/import',
                         elementSelector: GuideUtils.getGuideElementSelector('import-status-info'),
+                        class: 'import-status-info-guide-dialog',
                         onPreviousClick: () => new Promise(function (resolve) {
                             GuideUtils.clickOnGuideElement('import-file-' + options.resourceFile)()
                                 .then(() => resolve());

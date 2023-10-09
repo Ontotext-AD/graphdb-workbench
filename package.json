@@ -107,7 +107,7 @@
         "ng-tags-input": "^3.2.0",
         "oclazyload": "^1.1.0",
         "ontotext-yasgui-web-component": "1.0.8",
-        "shepherd.js": "^10.0.1"
+        "shepherd.js": "^11.1.1"
     },
     "resolutions": {
         "minimist": "^1.2.5"

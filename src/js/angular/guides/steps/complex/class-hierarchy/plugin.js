@@ -44,6 +44,7 @@ PluginRegistry.add('guide.step', [
                         extraContent: options.introExtraContent,
                         url: '/hierarchy',
                         elementSelector: '#classChart #main-group',
+                        class: 'clas-hierarchy-intro-guide-dialog',
                         placement: 'left'
                     }, options)
                 });
@@ -59,6 +60,7 @@ PluginRegistry.add('guide.step', [
                             url: '/hierarchy',
                             placement: 'left',
                             elementSelector: selector,
+                            class: 'class-hierarchy-zoom-content-guide-dialog',
                             onNextClick: (guide, step) => {
                                 GuideUtils.classHierarchyZoom(step.elementSelector);
                                 guide.next();
@@ -74,7 +76,8 @@ PluginRegistry.add('guide.step', [
                                 url: '/hierarchy',
                                 placement: 'left',
                                 beforeShowPromise: GuideUtils.deferredShow(800),
-                                elementSelector: selector
+                                elementSelector: selector,
+                                class: 'class-hierarchy-instances-guide-dialog'
                             }, options)
                         });
                     }
@@ -100,6 +103,8 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.class-hierarchy-instances.content',
                         url: '/hierarchy',
                         elementSelector: clasInstanceSelector,
+                        class: 'class-hierarchy-instance-guide-dialog',
+                        placement: 'top',
                         onNextClick: (guide) => {
                             GuideUtils.classHierarchyFocus(clasInstanceSelector);
                             guide.next();
@@ -119,6 +124,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.class-hierarchy-instances-side-panel.content',
                         url: '/hierarchy',
                         elementSelector: '.rdf-info-side-panel div',
+                        class: 'class-hierarchy-side-panel-info-guide-dialog',
                         canBePaused: false,
                         placement: 'left',
                         beforeShowPromise: GuideUtils.deferredShow(800),
@@ -145,6 +151,7 @@ PluginRegistry.add('guide.step', [
                             url: '/hierarchy',
                             canBePaused: false,
                             elementSelector: GuideUtils.getGuideElementSelector('instance-' + focusInstance.instance),
+                            class: 'class-hierarchy-side-bar-instance-info-guide-dialog',
                             focusInstance: focusInstance.instance,
                             extraContent: focusInstance.message
                         }, options)
@@ -161,6 +168,7 @@ PluginRegistry.add('guide.step', [
                         url: '/hierarchy',
                         canBePaused: false,
                         elementSelector: instanceCountSelector,
+                        class: 'class-hierarchy-side-panel-instances-count-guide-dialog',
                         onNextClick: (guide, step) => {
                             GuideUtils.waitFor(step.elementSelector, 3)
                                 .then(() => $(step.elementSelector).trigger('click'));
@@ -175,6 +183,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.class-hierarchy-instances-query.content',
                         url: '/sparql',
                         elementSelector: GuideUtils.CONSTANTS.SPARQL_EDITOR_SELECTOR,
+                        class: 'class-hierarchy-instances-query-guide-dialog',
                         scrollToHandler: GuideUtils.scrollToTop
                     }, options)
                 });
@@ -187,6 +196,7 @@ PluginRegistry.add('guide.step', [
                         url: '/sparql',
                         placement: 'top',
                         elementSelector: GuideUtils.CONSTANTS.SPARQL_RESULTS_SELECTOR,
+                        class: 'class-hierarchy-instances-results-guide-dialog',
                         fileName: options.fileName,
                         scrollToHandler: GuideUtils.scrollToTop,
                         onNextClick: (guide) => {
@@ -205,6 +215,7 @@ PluginRegistry.add('guide.step', [
                     url: '/hierarchy',
                     canBePaused: false,
                     elementSelector: closeButtonSelector,
+                    class: 'class-hierarchy-side-panel-close-guide-dialog',
                     placement: 'left',
                     // If we followed the count link we come back here from another view
                     // and the side panel needs time to open
