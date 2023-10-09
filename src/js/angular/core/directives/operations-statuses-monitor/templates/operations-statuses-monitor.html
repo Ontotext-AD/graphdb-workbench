@@ -14,9 +14,9 @@
             'icon-exchange': OPERATION_GROUP_TYPE.QUERIES_OPERATION === operation.operationGroup,
             'fa fa-archive': OPERATION_GROUP_TYPE.BACKUP_AND_RESTORE_OPERATION === operation.operationGroup,
             'fa fa-sitemap': OPERATION_GROUP_TYPE.CLUSTER_OPERATION === operation.operationGroup,
-            'text-danger': OPERATION_STATUS.CRITICAL === operation.status,
-            'text-info': OPERATION_STATUS.INFORMATION === operation.status,
-            'text-warning': OPERATION_STATUS.WARNING === operation.status}">
+            'status-critical': OPERATION_STATUS.CRITICAL === operation.status,
+            'status-information': OPERATION_STATUS.INFORMATION === operation.status,
+            'status-warning': OPERATION_STATUS.WARNING === operation.status}">
             </div>
             <span ng-if="operation.groupRunningOperationCount" class="running-operation-count">
                 <sup class="tag-info">{{operation.groupRunningOperationCount}}</sup>
@@ -27,11 +27,11 @@
     <ul role="menu" class="dropdown-menu dropdown-menu-right">
         <div class="operations-statuses-content">
             <li ng-repeat="operationStatus in activeOperations.operations">
-                <div class="operation-status-content btn btn-secondary row" target="_blank" ng-attr-href="{{operationStatus.monitoringViewUrl}}"
+                <a class="operation-status-content btn btn-secondary row" target="_blank" ng-attr-href="{{operationStatus.monitoringViewUrl}}"
                    ng-class="{
-                   'text-danger': OPERATION_STATUS.CRITICAL === operationStatus.status,
-                   'text-info': OPERATION_STATUS.INFORMATION === operationStatus.status,
-                   'text-warning': OPERATION_STATUS.WARNING === operationStatus.status
+                   'status-critical': OPERATION_STATUS.CRITICAL === operationStatus.status,
+                   'status-information': OPERATION_STATUS.INFORMATION === operationStatus.status,
+                   'status-warning': OPERATION_STATUS.WARNING === operationStatus.status
                    }">
                     <div class="operation-icon col-sm-1" ng-style="noPadding">
                         <div ng-class="{
@@ -49,7 +49,7 @@
                             {{operationStatus.runningOperationCount}}
                         </div>
                     </div>
-                </div>
+                </a>
             </li>
         </div>
     </ul>
