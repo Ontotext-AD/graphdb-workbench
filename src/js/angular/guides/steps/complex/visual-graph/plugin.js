@@ -29,6 +29,7 @@ PluginRegistry.add('guide.step', [
                         forceReload: true,
                         url: '/graphs-visualizations',
                         elementSelector: GuideUtils.getGuideElementSelector('graphVisualisationSearchInputNotConfigured', ' input'),
+                        class: 'visual-graph-input-iri-guide-dialog',
                         onNextValidate: (step) => Promise.resolve(GuideUtils.validateTextInput(step.elementSelector, step.easyGraphInputText))
                     }, options)
                 }, {
@@ -37,6 +38,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.visual_graph_show_autocomplete.content',
                         url: '/graphs-visualizations',
                         elementSelector: GuideUtils.getGuideElementSelector(`autocomplete-${options.iri}`),
+                        class: 'visual-graph-show-autocomplete-guide-dialog',
                         onNextClick: (guide, step) => GuideUtils.waitFor(step.elementSelector, 3).then(() => $(step.elementSelector).trigger('click')),
                         canBePaused: false,
                         forceReload: true
@@ -104,6 +106,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.visual-graph-expand.content',
                         url: '/graphs-visualizations',
                         canBePaused: false,
+                        class: 'visual-graph-expand-node-guide-dialog',
                         elementSelector,
                         // Disable default behavior of service when element is clicked.
                         advanceOn: undefined,
@@ -193,6 +196,7 @@ PluginRegistry.add('guide.step', [
                         title: 'guide.step_plugin.visual-graph-properties.title',
                         content: 'guide.step_plugin.visual-graph-properties.content',
                         url: '/graphs-visualizations',
+                        class: 'visual-graph-show-properties-intro-guide-dialog',
                         elementSelector,
                         canBePaused: false,
                         // Disable default behavior of service when element is clicked.
@@ -220,6 +224,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.visual-graph-properties-side-panel.content',
                         url: '/graphs-visualizations',
                         elementSelector: '.rdf-side-panel-content',
+                        class: 'visual-graph-side-panel-content-guide-dialog',
                         canBePaused: false,
                         placement: 'left',
                         beforeShowPromise: GuideUtils.deferredShow(500),
@@ -250,6 +255,7 @@ PluginRegistry.add('guide.step', [
                             title: 'guide.step_plugin.visual-graph-properties-focus' + translationIdSuffix + '.title',
                             content: content,
                             url: '/graphs-visualizations',
+                            class: 'visual-graph-properties-focus-guide-dialog',
                             canBePaused: false,
                             placement: 'left',
                             elementSelector: GuideUtils.getGuideElementSelector('graph-visualization-node-info-' + focusProperty.property),
@@ -269,6 +275,7 @@ PluginRegistry.add('guide.step', [
                     url: '/graphs-visualizations',
                     canBePaused: false,
                     placement: 'left',
+                    class: 'visual-graph-properties-side-panel-close-guide-dialog',
                     elementSelector: closeButtonSelector,
                     advanceOn: {
                         selector: closeButtonSelector,
@@ -302,7 +309,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.visual-graph-link-focus.content',
                         url: '/graphs-visualizations',
                         canBePaused: false,
-                        extraPadding: 40,
+                        class: 'visual-graph-link-focus-guide-dialog',
                         elementSelector,
                         show: disableAllNodes,
                         hide: enableAllNodes,
@@ -326,8 +333,8 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.visual-graph-node-focus.content',
                         url: '/graphs-visualizations',
                         canBePaused: false,
-                        extraPadding: 10,
                         elementSelector,
+                        class: 'visual-graph-node-focus-guide-dialog',
                         show: disableAllNodes,
                         hide: enableAllNodes,
                         beforeShowPromise: GuideUtils.awaitAlphaDropD3(elementSelector, $rootScope),

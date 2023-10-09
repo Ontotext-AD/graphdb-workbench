@@ -14,6 +14,8 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step-intro.table-graph',
                         scrollToHandler: GuideUtils.scrollToTop,
                         elementSelector: GuideUtils.getSparqlResultsSelectorForIri(options.iri),
+                        class: 'table-graph-instance-guide-dialog',
+                        placement: 'top',
                         onNextClick: (guide, step) => {
                             GuideUtils.waitFor(step.elementSelector, 3)
                                 .then(() => $(step.elementSelector).trigger('click'))
@@ -41,6 +43,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.table-graph-overview',
                         scrollToHandler: GuideUtils.scrollToTop,
                         elementSelector: GuideUtils.CONSTANTS.SPARQL_RESULTS_ROWS_SELECTOR,
+                        class: 'table-graph-overview-guide-dialog',
                         placement: 'top',
                         initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
                             const currentStepId = services.ShepherdService.getCurrentStepId();
@@ -73,6 +76,7 @@ PluginRegistry.add('guide.step', [
                                 options: angular.extend({}, {
                                     content: 'guide.step_plugin.table-graph-link',
                                     elementSelector: GuideUtils.getSparqlResultsSelectorForIri(subStep.iri),
+                                    class: 'table-graph-link-guide-dialog',
                                     onNextClick: (guide, step) => {
                                         GuideUtils.waitFor(step.elementSelector, 3)
                                             .then(() => $(step.elementSelector).trigger('click'))
@@ -109,6 +113,7 @@ PluginRegistry.add('guide.step', [
                                 options: angular.extend({}, {
                                     content: 'guide.step_plugin.table-graph-role',
                                     elementSelector: GuideUtils.getGuideElementSelector('role-' + subStep.role),
+                                    class: 'visual_graph-role-guide-dialog',
                                     onNextClick: (guide, step) => {
                                         GuideUtils.waitFor(step.elementSelector, 3)
                                             .then(() => $(step.elementSelector).trigger('click'))
@@ -145,6 +150,7 @@ PluginRegistry.add('guide.step', [
                                 options: angular.extend({}, {
                                     content: 'guide.step_plugin.table-graph-visual',
                                     elementSelector: GuideUtils.getGuideElementSelector('explore-visual'),
+                                    class: 'table-graph-visual-button-guide-dialog',
                                     onNextClick: (guide, step) => {
                                         GuideUtils.waitFor(step.elementSelector, 3)
                                             .then(() => $(step.elementSelector).trigger('click'));
@@ -181,7 +187,8 @@ PluginRegistry.add('guide.step', [
                             steps.push({
                                 guideBlockName: 'read-only-element',
                                 options: angular.extend({}, {
-                                    elementSelector: GuideUtils.getSparqlResultsSelectorForRow(subStep.row)
+                                    elementSelector: GuideUtils.getSparqlResultsSelectorForRow(subStep.row),
+                                    class: 'visual_graph-row-guide-dialog'
                                 }, angular.extend({}, options, subStep))
                             });
                             break;
@@ -189,7 +196,9 @@ PluginRegistry.add('guide.step', [
                             steps.push({
                                 guideBlockName: 'read-only-element',
                                 options: angular.extend({}, {
-                                    elementSelector: GuideUtils.CONSTANTS.SPARQL_RESULTS_ROWS_SELECTOR
+                                    elementSelector: GuideUtils.CONSTANTS.SPARQL_RESULTS_ROWS_SELECTOR,
+                                    class: 'visual_graph-table-guide-dialog',
+                                    placement: 'top'
                                 }, angular.extend({}, options, subStep))
                             });
                             break;

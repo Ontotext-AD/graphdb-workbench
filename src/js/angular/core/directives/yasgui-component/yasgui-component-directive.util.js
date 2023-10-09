@@ -22,6 +22,7 @@ export const YasguiComponentDirectiveUtil = (function () {
      *
      * @param {string} directiveSelector - the unique selector of the yasgui component directive.
      *
+     * @param {number} timeoutInSeconds - how many times to looking for the directive.
      * @return {Promise<YasguiComponent>}
      */
     const getOntotextYasguiElementAsync = (directiveSelector, timeoutInSeconds = 1) => {
@@ -41,6 +42,7 @@ export const YasguiComponentDirectiveUtil = (function () {
                     iteration -= waitTime;
                     if (iteration < 0) {
                         clearInterval(interval);
+                        console.log('YASGUI component is not found', directiveSelector);
                         reject(new Error('Element is not found: ' + directiveSelector));
                     }
                 }
