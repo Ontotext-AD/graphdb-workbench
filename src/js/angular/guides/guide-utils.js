@@ -37,7 +37,7 @@ const GuideUtils = (function () {
                             if (iteration < 0) {
                                 clearInterval(elementExist);
                                 console.log('Element is not visible: ' + selector);
-                                reject();
+                                reject(new Error('Element is not visible: ' + selector));
                             }
                         }
                     } else {
@@ -45,7 +45,7 @@ const GuideUtils = (function () {
                         if (iteration < 0) {
                             clearInterval(elementExist);
                             console.log('Element is not found: ' + selector);
-                            reject();
+                            reject(new Error('Element is not found: ' + selector));
                         }
                     }
                 } catch (error) {
@@ -252,23 +252,12 @@ const GuideUtils = (function () {
         return GUIDES_DOWNLOAD_URL + options.resourcePath + '/' + options.resourceFile;
     };
 
-    const getSparqlEditorSelector = (postSelector) => {
-        if (postSelector) {
-            return getGuideElementSelector('queryEditor', '.CodeMirror-code ' + postSelector);
-        }
-        return getGuideElementSelector('queryEditor', '.CodeMirror-code');
-    };
-
-    const getSparqlResultsSelector = (postSelector) => {
-        return getGuideElementSelector('yasrResults', postSelector);
-    };
-
     const getSparqlResultsSelectorForIri = (iri) => {
-        return getSparqlResultsSelector("a[title='" + iri + "']");
+        return `${GuideUtils.CONSTANTS.SPARQL_RESULTS_SELECTOR} a[title='${iri}']`;
     };
 
     const getSparqlResultsSelectorForRow = (row) => {
-        return getSparqlResultsSelector('tbody tr:nth-child(' + row + ')');
+        return `${GuideUtils.CONSTANTS.SPARQL_RESULTS_SELECTOR} tbody tr:nth-child(${row})`;
     };
 
     const isChecked = (selector) => {
@@ -294,37 +283,12 @@ const GuideUtils = (function () {
         return angular.isFunction(elementSelector) ? elementSelector() : elementSelector;
     };
 
-    /**
-     * Executes a sparql query.
-     * @param {*} $location - the locations service.
-     * @param {*} $route
-     * @param {string} query - sparql query to be executed.
-     * @param {boolean} reload - if true sparql page will be loaded before execution of query.
-     * @return {Promise<unknown>}
-     */
-    const executeSparqlQuery = ($location, $route, query, reload = false) => new Promise((resolve, reject) => {
-        if (reload) {
-            $location.url('/sparql');
-            $route.reload();
-            waitFor(getSparqlEditorSelector())
-                .then(() => {
-                    waitFor('.no-query-run')
-                        .then(() => {
-                            window.editor.setValue(query);
-                            clickOnGuideElement('runSparqlQuery')()
-                                .then(() => resolve())
-                                .catch((error) => reject(error));
-                        })
-                        .catch((error) => reject(error));
-                })
-                .catch((error) => reject(error));
-        } else {
-            window.editor.setValue(query);
-            clickOnGuideElement('runSparqlQuery')()
-                .then(() => resolve())
-                .catch((error) => reject(error));
-        }
-    });
+    const CONSTANTS = {
+        SPARQL_EDITOR_SELECTOR: '.tabPanel.active .yasqe .CodeMirror-code',
+        SPARQL_RESULTS_SELECTOR: '.tabPanel.active .yasr_results',
+        SPARQL_RESULTS_ROWS_SELECTOR: '.tabPanel.active .yasr_results tbody',
+        SPARQL_RUN_BUTTON_SELECTOR: '.tabPanel.active .yasqe .yasqe_queryButton'
+    };
 
     return {
         GUIDES_LIST_URL,
@@ -348,15 +312,13 @@ const GuideUtils = (function () {
         scrollToTop,
         removeWhiteSpaces,
         toResourceDownloadUrl,
-        getSparqlEditorSelector,
-        getSparqlResultsSelector,
         getSparqlResultsSelectorForIri,
         getSparqlResultsSelectorForRow,
         isChecked,
         isGuideElementChecked,
         defaultInitPreviousStep,
         getElementSelector,
-        executeSparqlQuery
+        CONSTANTS
     };
 })();
 
