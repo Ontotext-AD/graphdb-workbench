@@ -34,6 +34,10 @@ PluginRegistry.add('themes', {
         'color-warning-light': 'hsla(var(--primary-color-hsl), 0.07)',
         'color-info-light': 'hsla(var(--tertiary-color-hsl), 0.15)',
         'color-help-light': 'hsla(var(--secondary-color-hsl), 0.1)',
+        // Colors for fading danger/warning buttons, these are intermediate in intensity between dark and light,
+        // and they should not use alpha channel because that doesn't play nice with border color
+        'color-danger-medium': 'hsl(353, 78%, 83%)',
+        'color-warning-medium': 'hsl(var(--primary-color-hue), var(--primary-color-saturation), 83%)',
         // Colors for the logo - logo proper, text in logo, logo background
         'logo-color': 'var(--primary-color-light)',
         'logo-text-color': 'white',

@@ -21,14 +21,17 @@ Cypress.Commands.add('createRepository', (options = {}) => {
 Cypress.Commands.add('deleteRepository', (id) => {
     // Note: Going through /rest/repositories because it would not fail if the repo is missing
     const url = REPOSITORIES_URL + id;
+
+    // Navigates to the home view => helps by cancelling any pending requests
+    // if a test completes too fast and the tested view was about to load something
+    // that needs the just deleted repo.
+    cy.visit('/', {failOnStatusCode: false});
+
     cy.request({
             method: 'DELETE',
             url: url,
         // Prevent Cypress from failing the test on non-2xx status codes
             failOnStatusCode: false
-        })
-        .then((response) => {
-            cy.waitUntil(() => response && response.status === 200);
         });
 });
 

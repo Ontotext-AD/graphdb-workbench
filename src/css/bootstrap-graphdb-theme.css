@@ -7,6 +7,18 @@
     --autocomplete-background: hsla(var(--tertiary-color-hsl), 0.3);
     --autocomplete-background-selected: hsla(var(--tertiary-color-hsl), 0.5);
     --autocomplete-match: var(--secondary-color);
+    /* width of menu 15 + margin left 1 + margin right 2 => 18rem */
+    --menu-width-expanded: 18rem;
+    /* width of menu 4.375 + margin left 1 + margin right 2 => 7.375 */
+    --menu-width-collapsed: 7.375rem;
+    /* menu width in general */
+    --menu-width: var(--menu-width-expanded);
+    /* max usable content width not considering the menu and margins */
+    --max-width-minus-menu: calc(100% - var(--menu-width));
+}
+
+:root.menu-collapsed {
+    --menu-width: var(--menu-width-collapsed);
 }
 
 /*-------------------------------------------------------------
@@ -512,7 +524,7 @@ a:focus, a:hover {
 
 .main-container {
     margin-left: 15rem;
-    padding: 3rem 2rem 0 2rem;
+    padding: 0 2rem 3rem 2rem;
     /*max-width: 1600px; Removed because of the collapse of the menu*/
     /*-moz-transition: margin-left 0.2s ease-in;  !* FF4+ *!*/
     /*-o-transition: margin-left 0.2s ease-in;  !* Opera 10.5+ *!*/
@@ -548,28 +560,11 @@ a:focus, a:hover {
     height: 26px !important;
 }
 
-.active-operation {
-    position: fixed;
-    top: 0;
-    left: 50vw;
-}
-
 .dropdown-menu-center {
     left: 50% !important;
     right: auto !important;
     text-align: center !important;
     transform: translate(-50%, 0) !important;
-}
-
-@media (max-width: 1000px) {
-    .active-operation {
-        left: 30vw;
-    }
-}
-
-.btn.active-operation {
-    padding: 0 !important;
-    border: 0 !important;
 }
 
 /*-------------------------------------------------------------
@@ -595,6 +590,7 @@ h1 .btn {
 .main-menu {
     width: 15rem;
     position: fixed;
+    top: 0;
     font-weight: 400;
     z-index: 1010;
     margin: 0;
@@ -818,11 +814,13 @@ main menu height*/
 }
 
 .small-logo {
-    height: auto;
+    width: 50px;
+    height: 50px;
 }
 
 .big-logo {
-    height: auto;
+    width: 180px;
+    height: 50px;
 }
 
 .container-fluid.main-container.expanded {
@@ -1047,8 +1045,7 @@ main menu height*/
 
 .btn [class^="icon-"] {
     font-size: 1.4em;
-    vertical-align: -0.25em;
-    line-height: 0.8;
+    line-height: 0.75;
     display: inline-block;
 }
 
@@ -1094,6 +1091,10 @@ main menu height*/
     right: 3px;
 }
 
+.status-bar .dropdown-menu-right {
+    right: 0;
+}
+
 /* collapse button */
 .btn.collapsed [class^=icon-]{
     transform: rotate(180deg);
@@ -1113,15 +1114,37 @@ h3 [class^=icon-] {
 	status bar
 -------------------------------------------------------------*/
 .status-bar {
-    position: fixed;
+    display: flex;
+    flex-wrap: wrap-reverse;
+    justify-content: flex-end;
+    gap: 0.25em;
+    position: sticky;
     top: 0;
-    right: 2rem;
-    font-size: 0.9em;
-    z-index: 1015;
+    padding-bottom: 0.5em;
+    width: max-content;
+    max-width: var(--max-width-minus-menu);
+    margin-left: auto;
+    margin-right: 2em;
+    font-size: 1.1em;
+    /* below pageslide (position: absolute, z-index: 1000) */
+    z-index: 999;
     -moz-transition: all 0.1s ease-out; /* FF4+ */
     -o-transition: all 0.1s ease-out; /* Opera 10.5+ */
     -webkit-transition: all 0.1s ease-out; /* Saf3.2+, Chrome */
     transition: all 0.1s ease-out;
+}
+
+/* Hides gap when no monitoring, this doesn't work with :empty */
+.status-bar operations-statuses-monitor:not(:has(div)) {
+    display: none;
+}
+
+.status-bar .btn {
+    font-size: inherit;
+}
+
+.status-bar .btn-group .dropdown-toggle {
+    margin-right: 0;
 }
 
 /*-------------------------------------------------------------
@@ -1161,7 +1184,7 @@ footer.footer .container-fluid.main-container p {
 }
 
 .open > .btn-secondary.dropdown-toggle [class^="icon-"] {
-    color: var(--icon-on-primary-color) !important;
+    color: var(--icon-on-primary-color);
 }
 
 .btn-secondary.dropdown-toggle [class^="icon-"] {
@@ -2794,4 +2817,40 @@ input[name=namespace] {
 
 .rzslider .rz-selection {
     background: var(--secondary-color) !important;
+}
+
+.login-form {
+    max-width: 600px;
+    padding-top: 4em;
+    margin: auto;
+}
+
+.btn-fade-warning {
+    animation: fade-button 2s infinite;
+    --fade-color: var(--color-warning-medium);
+}
+
+.btn-fade-danger {
+    animation: fade-button 2s infinite;
+    --fade-color: var(--color-danger-medium);
+}
+
+.btn-fade-warning:hover, .btn-fade-danger:hover {
+    background-color: var(--fade-color) !important;
+    border-color: var(--fade-color) !important;
+}
+
+@keyframes fade-button {
+    from {
+        background-color: #EBEBEB;
+        border-color: #EBEBEB;
+    }
+    50% {
+        background-color: var(--fade-color);
+        border-color: var(--fade-color);
+    }
+    to {
+        background-color: #EBEBEB;
+        border-color: #EBEBEB;
+    }
 }

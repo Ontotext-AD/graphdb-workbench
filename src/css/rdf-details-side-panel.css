@@ -5,6 +5,13 @@
     box-shadow: -1px 3px 10px 0 rgba(0, 0, 0, 0.3);
     /* force it because pageslide sets the top:0 property inline and we need to override it */
     top: 45px !important;
+    /* adapt to view width but at least 300px, menu size ignored for all practical screen sizes */
+    max-width: max(300px, 25vw);
+}
+
+.rdf-info-side-panel-expanded {
+    /* adapt width according to available space but not more than 800px */
+    max-width: min(800px, 100% - var(--menu-width));
 }
 
 .rdf-list {
