@@ -46,7 +46,7 @@
             ng-keyup="saveQueryToLocal(currentQuery)"
             nocount="{{skipCountQuery}}" enable-column-resizing-on-window-width>
     </query-editor>
-    <form id="wb-download" method="GET" action="" target="_self">
+    <form id="wb-download" method="POST" action="" target="_self">
         <input id="wb-download-query" name="query" type="hidden"/>
         <input id="wb-download-infer" name="infer" type="hidden"/>
         <input id="wb-download-sameAs" name="sameAs" type="hidden"/>
