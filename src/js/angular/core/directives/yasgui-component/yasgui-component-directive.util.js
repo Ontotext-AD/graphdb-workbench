@@ -24,28 +24,64 @@ export const YasguiComponentDirectiveUtil = (function () {
      *
      * @return {Promise<YasguiComponent>}
      */
-    const getOntotextYasguiElementAsync = (directiveSelector) => {
+    const getOntotextYasguiElementAsync = (directiveSelector, timeoutInSeconds = 1) => {
         return new Promise((resolve, reject) => {
             let directive = getOntotextYasguiElementController(directiveSelector);
             if (directive) {
                 resolve(directive.getOntotextYasguiElement());
             }
-            // TODO add max interval time.
-
+            let iteration = timeoutInSeconds * 1000 | 1000;
+            const waitTime = 100;
             const interval = setInterval(() => {
                 directive = getOntotextYasguiElementController(directiveSelector);
                 if (directive) {
                     clearInterval(interval);
                     resolve(directive.getOntotextYasguiElement());
+                } else {
+                    iteration -= waitTime;
+                    if (iteration < 0) {
+                        clearInterval(interval);
+                        reject(new Error('Element is not found: ' + directiveSelector));
+                    }
                 }
-            }, 100);
+            }, waitTime);
         });
+    };
+
+    /**
+     * Executes a <code>query</code>
+     * @param {string} directiveSelector
+     * @param {string} query
+     * @return {Promise<YasguiComponent>}
+     */
+    const executeSparqlQuery = (directiveSelector, query) => {
+        return setQuery(directiveSelector, query)
+            .then((yasgui) => {
+                yasgui.query(query)
+                    .then(() => yasgui);
+            });
+    };
+
+    /**
+     * Set the <code>query</code> to editor.
+     * @param {string} directiveSelector
+     * @param {string} query
+     * @return {Promise<YasguiComponent>}
+     */
+    const setQuery = (directiveSelector, query) => {
+        return getOntotextYasguiElementAsync(directiveSelector)
+            .then((yasgui) => {
+                return yasgui.setQuery(query)
+                    .then(() => yasgui);
+            });
     };
 
     return {
         getOntotextYasguiElementController,
         getOntotextYasguiElement,
-        getOntotextYasguiElementAsync
+        getOntotextYasguiElementAsync,
+        executeSparqlQuery,
+        setQuery
     };
 })();
 

@@ -40,7 +40,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.table-graph-overview',
                         scrollToHandler: GuideUtils.scrollToTop,
-                        elementSelector: GuideUtils.getSparqlResultsSelector() + ' tbody',
+                        elementSelector: GuideUtils.CONSTANTS.SPARQL_RESULTS_ROWS_SELECTOR,
                         placement: 'top',
                         initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
                             const currentStepId = services.ShepherdService.getCurrentStepId();
@@ -51,7 +51,7 @@ PluginRegistry.add('guide.step', [
                                 if (url !== decodeURIComponent($location.url())) {
                                     $location.url(url);
                                     $route.reload();
-                                    GuideUtils.waitFor(GuideUtils.getSparqlResultsSelector(' tbody'))
+                                    GuideUtils.waitFor(GuideUtils.CONSTANTS.SPARQL_RESULTS_ROWS_SELECTOR)
                                         .then(() => resolve())
                                         .catch((error) => reject(error));
                                 } else {
@@ -95,7 +95,7 @@ PluginRegistry.add('guide.step', [
                                             // this case is from second link we have to reload
                                             $location.url(linkUrl);
                                             $route.reload();
-                                            GuideUtils.waitFor(GuideUtils.getSparqlResultsSelector(' tbody'))
+                                            GuideUtils.waitFor(GuideUtils.CONSTANTS.SPARQL_RESULTS_ROWS_SELECTOR)
                                                 .then(() => resolve())
                                                 .catch((error) => reject(error));
                                         }
@@ -127,7 +127,7 @@ PluginRegistry.add('guide.step', [
                                                     url += subStep.role;
                                                     $location.url(url);
                                                     $route.reload();
-                                                    GuideUtils.waitFor(GuideUtils.getSparqlResultsSelector(' tbody'))
+                                                    GuideUtils.waitFor(GuideUtils.CONSTANTS.SPARQL_RESULTS_ROWS_SELECTOR)
                                                         .then(() => resolve())
                                                         .catch((error) => reject(error));
                                                 })
@@ -189,7 +189,7 @@ PluginRegistry.add('guide.step', [
                             steps.push({
                                 guideBlockName: 'read-only-element',
                                 options: angular.extend({}, {
-                                    elementSelector: GuideUtils.getSparqlResultsSelector() + ' tbody'
+                                    elementSelector: GuideUtils.CONSTANTS.SPARQL_RESULTS_ROWS_SELECTOR
                                 }, angular.extend({}, options, subStep))
                             });
                             break;
