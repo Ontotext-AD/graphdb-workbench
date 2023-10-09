@@ -2,7 +2,9 @@ PluginRegistry.add('guide.step', [
     {
         guideBlockName: 'execute-sparql-query',
         getSteps: (options, services) => {
+            const SPARQL_DIRECTIVE_SELECTOR = '#query-editor';
             const GuideUtils = services.GuideUtils;
+            const YasguiComponentDirectiveUtil = services.YasguiComponentDirectiveUtil;
             const toastr = services.toastr;
             const $translate = services.$translate;
             const $interpolate = services.$interpolate;
@@ -37,57 +39,63 @@ PluginRegistry.add('guide.step', [
                 code.innerText = query;
                 options.queryAsHtmlCodeElement = '<div class="shepherd-code">' + code.outerHTML + copy.outerHTML + '</div>';
 
-                const queryEditorSelector = GuideUtils.getSparqlEditorSelector();
                 steps.push({
                     guideBlockName: 'input-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.execute-sparql-query.query-editor.content',
                         url: '/sparql',
-                        elementSelector: queryEditorSelector,
-                        beforeShowPromise: () => new Promise(function (resolve, reject) {
-                            GuideUtils.deferredShow(10)()
-                                .then(() => {
-                                    GuideUtils.waitFor(queryEditorSelector, 3)
-                                        .then(() => resolve())
-                                        .catch((error) => {
-                                            services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
-                                            reject(error);
-                                        });
-                                });
-                        }),
+                        elementSelector: GuideUtils.CONSTANTS.SPARQL_EDITOR_SELECTOR,
+                        beforeShowPromise: () => YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(SPARQL_DIRECTIVE_SELECTOR)
+                            .then(() => GuideUtils.waitFor(GuideUtils.CONSTANTS.SPARQL_EDITOR_SELECTOR, 3))
+                            .catch((error) => {
+                                services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
+                                throw error;
+                            }),
                         onNextValidate: () => {
-                            const editorQuery = GuideUtils.removeWhiteSpaces(window.editor.getValue());
-                            const stepQuery = GuideUtils.removeWhiteSpaces(query);
-                            if (editorQuery !== stepQuery) {
-                                if (editorQuery === 'select*where{?s?p?o.}limit100' || overwriteQuery) {
-                                    // The query is the default query OR we previously overwrote it => we can overwrite it
-                                    window.editor.setValue(query);
-                                } else {
-                                    GuideUtils.noNextErrorToast(toastr, $translate, $interpolate,
-                                        'guide.step_plugin.execute-sparql-query.query-not-same.error', options);
-                                    return false;
-                                }
-                            }
-                            overwriteQuery = true;
-                            return true;
+                            return YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(SPARQL_DIRECTIVE_SELECTOR)
+                                .then((yasgui) => yasgui.getQuery().then((query) => ({yasgui, queryFromEditor: query})))
+                                .then(({yasgui, queryFromEditor}) => {
+                                    const editorQuery = GuideUtils.removeWhiteSpaces(queryFromEditor);
+                                    const stepQuery = GuideUtils.removeWhiteSpaces(query);
+                                    if (editorQuery !== stepQuery) {
+                                        if (editorQuery === 'select*where{?s?p?o.}limit100' || overwriteQuery) {
+                                            // The query is the default query OR we previously overwrote it => we can overwrite it
+                                            yasgui.setQuery(query);
+                                        } else {
+                                            GuideUtils.noNextErrorToast(toastr, $translate, $interpolate,
+                                                'guide.step_plugin.execute-sparql-query.query-not-same.error', options);
+                                            return false;
+                                        }
+                                    }
+                                    overwriteQuery = true;
+                                    return true;
+                                });
                         },
                         initPreviousStep: () => new Promise((resolve, reject) => {
                             if (index === 0) {
-                                window.editor.setValue(defaultQuery);
-                                resolve();
+                                YasguiComponentDirectiveUtil.setQuery(SPARQL_DIRECTIVE_SELECTOR, defaultQuery)
+                                    .then(() => resolve());
                             } else {
                                 const haveToReload = '/sparql' !== $location.url();
-                                GuideUtils.executeSparqlQuery($location, $route, query, haveToReload)
-                                    .then(() => resolve())
-                                    .catch((error) => reject(error));
+
+                                if (haveToReload) {
+                                    $location.url('/sparql');
+                                    $route.reload();
+                                }
+                                GuideUtils.waitFor(GuideUtils.CONSTANTS.SPARQL_EDITOR_SELECTOR)
+                                    .then(() => {
+                                        YasguiComponentDirectiveUtil.executeSparqlQuery("#query-editor", query)
+                                            .then(() => {
+                                                resolve();
+                                            })
+                                            .catch((error) => reject(error));
+                                    });
                             }
                         }),
                         scrollToHandler: GuideUtils.scrollToTop,
                         extraContent: queryDef.queryExtraContent,
                         onScope: (scope) => {
-                            scope.copyQuery = () => {
-                                window.editor.setValue(query);
-                            };
+                            scope.copyQuery = () => YasguiComponentDirectiveUtil.setQuery(SPARQL_DIRECTIVE_SELECTOR, query).then(() => {});
                         }
                     }, options)
                 });
@@ -96,8 +104,12 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.execute-sparql-query.run-sparql-query.content',
                         url: '/sparql',
-                        elementSelector: GuideUtils.getGuideElementSelector('runSparqlQuery'),
-                        onNextClick: (guide) => GuideUtils.clickOnGuideElement('runSparqlQuery')().then(() => guide.next()),
+                        elementSelector: GuideUtils.CONSTANTS.SPARQL_RUN_BUTTON_SELECTOR,
+                        onNextClick: (guide) => YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(SPARQL_DIRECTIVE_SELECTOR)
+                                .then((yasgui) => {
+                                    yasgui.query();
+                                    guide.next();
+                                }),
                         scrollToHandler: GuideUtils.scrollToTop,
                         canBePaused: false,
                         initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
@@ -109,7 +121,9 @@ PluginRegistry.add('guide.step', [
                                     if (currentStepId === stepId) {
                                         resolve();
                                     } else {
-                                        GuideUtils.clickOnGuideElement('runSparqlQuery')().then(() => resolve()).catch((error) => reject(error));
+                                        YasguiComponentDirectiveUtil.executeSparqlQuery("#query-editor", query)
+                                            .then(() => resolve())
+                                            .catch((error) => reject(error));
                                     }
                                 })
                                 .catch((error) => reject(error));
@@ -122,22 +136,28 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.execute-sparql-query.result-explain.content',
                         url: '/sparql',
                         placement: 'top',
-                        elementSelector: GuideUtils.getSparqlResultsSelector(),
+                        elementSelector: GuideUtils.CONSTANTS.SPARQL_RESULTS_SELECTOR,
                         fileName: options.fileName,
                         scrollToHandler: GuideUtils.scrollToTop,
                         extraContent: queryDef.resultExtraContent,
                         canBePaused: false,
                         initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
                             if ('/sparql' !== $location.url()) {
-                                GuideUtils.executeSparqlQuery($location, $route, query, true)
-                                    .then(() => resolve())
-                                    .catch((error) => reject(error));
+                                $location.url('/sparql');
+                                $route.reload();
+                                GuideUtils.waitFor(GuideUtils.CONSTANTS.SPARQL_EDITOR_SELECTOR)
+                                    .then(() => {
+                                        YasguiComponentDirectiveUtil.executeSparqlQuery("#query-editor", query)
+                                            .then(() => {
+                                                resolve();
+                                            })
+                                            .catch((error) => reject(error));
+                                    });
                             } else {
                                 const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
                                 previousStep.options.initPreviousStep(services, previousStep.options.id)
                                     .then(() => {
-                                        window.editor.setValue(query);
-                                        resolve();
+                                        YasguiComponentDirectiveUtil.setQuery(SPARQL_DIRECTIVE_SELECTOR, query).then(() => resolve());
                                     })
                                     .catch((error) => reject(error));
                             }

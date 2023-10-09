@@ -37,7 +37,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.create_repository.repository_id.content',
                         url: '/repository/create/graphdb',
                         elementSelector: repositoryIdInputSelector,
-                        onNextValidate: () => GuideUtils.validateTextInput(repositoryIdInputSelector, repositoryId)
+                        onNextValidate: () => Promise.resolve(GuideUtils.validateTextInput(repositoryIdInputSelector, repositoryId))
                     }, options)
                 }
             ];
