@@ -11,13 +11,17 @@ PluginRegistry.add('guide.step', [
             let submenuTitle;
             let viewName;
             let helpInfo;
+            let menuDialogClass = '';
+            let submenuDialogClass = '';
 
             switch (options.menu) {
                 case "repositories":
                     menuSelector = 'menu-setup';
                     menuTitle = 'menu.setup.label';
+                    menuDialogClass = 'menu-setup-guide-dialog';
                     submenuSelector = 'sub-menu-repositories';
                     submenuTitle = 'menu.repositories.label';
+                    submenuDialogClass = 'sub-menu-repositories-guide-dialog';
                     viewName = 'menu.repositories.label';
                     helpInfo = 'view.repositories.helpInfo';
 
@@ -25,6 +29,7 @@ PluginRegistry.add('guide.step', [
                 case "import":
                     menuSelector = 'menu-import';
                     menuTitle = 'common.import';
+                    menuDialogClass = 'menu-import-guide-dialog';
                     viewName = 'common.import';
                     helpInfo = 'view.import.helpInfo';
 
@@ -32,8 +37,10 @@ PluginRegistry.add('guide.step', [
                 case "autocomplete":
                     menuSelector = 'menu-setup';
                     menuTitle = 'menu.setup.label';
+                    menuDialogClass = 'menu-setup-guide-dialog';
                     submenuSelector = 'sub-menu-autocomplete';
                     submenuTitle = 'menu.autocomplete.label';
+                    submenuDialogClass = 'sub-menu-autocomplete-guide-dialog';
                     viewName = 'view.autocomplete.title';
                     helpInfo = 'view.autocomplete.helpInfo';
 
@@ -41,8 +48,10 @@ PluginRegistry.add('guide.step', [
                 case "visual-graph":
                     menuSelector = 'menu-explore';
                     menuTitle = 'menu.explore.label';
+                    menuDialogClass = 'menu-explore-guide-dialog';
                     submenuSelector = 'sub-menu-visual-graph';
                     submenuTitle = 'visual.graph.label';
+                    submenuDialogClass = 'sub-menu-visual-graph-guide-dialog';
                     viewName = 'visual.graph.label';
                     helpInfo = 'view.visual.graph.helpInfo';
 
@@ -50,6 +59,7 @@ PluginRegistry.add('guide.step', [
                 case "sparql":
                     menuSelector = 'menu-sparql';
                     menuTitle = 'menu.sparql.label';
+                    menuDialogClass = 'menu-sparql-guide-dialog';
                     viewName = 'view.sparql.title';
                     helpInfo = 'view.sparql.helpInfo';
 
@@ -57,8 +67,10 @@ PluginRegistry.add('guide.step', [
                 case "class-hierarchy":
                     menuSelector = 'menu-explore';
                     menuTitle = 'menu.explore.label';
+                    menuDialogClass = 'menu-explore-guide-dialog';
                     submenuSelector = 'menu-class-hierarchy';
                     submenuTitle = 'menu.class.hierarchy.label';
+                    submenuDialogClass = 'sub-menu-class-hierarchy-guide-dialog';
                     viewName = 'view.class.hierarchy.title';
                     helpInfo = 'view.class.hierarchy.helpInfo';
 
@@ -87,6 +99,7 @@ PluginRegistry.add('guide.step', [
                 options: angular.extend({}, {
                     content: 'guide.step-menu.click-menu',
                     menuLabelKey: menuTitle,
+                    class: menuDialogClass,
                     elementSelector: GuideUtils.getGuideElementSelector(menuSelector),
                     showOn: () => {
                         // If submenu is visible this mean that we have to close menu.
@@ -121,6 +134,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step-menu.click-menu',
                         menuLabelKey: submenuTitle,
+                        class: submenuDialogClass,
                         elementSelector: GuideUtils.getGuideElementSelector(submenuSelector),
                         placement: 'right',
                         canBePaused: false,
