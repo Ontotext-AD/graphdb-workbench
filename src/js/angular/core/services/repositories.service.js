@@ -421,6 +421,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         };
 
         $rootScope.$on('securityInit', function (scope, securityEnabled, userLoggedIn, freeAccess) {
+            locationsRequestPromise = null;
             if (!securityEnabled || userLoggedIn || freeAccess) {
                 // This has to happen in a separate cycle because otherwise some properties in init() are undefined
                 $timeout(function () {
