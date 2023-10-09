@@ -29,7 +29,7 @@ PluginRegistry.add('guide.step', [
                         forceReload: true,
                         url: '/graphs-visualizations',
                         elementSelector: GuideUtils.getGuideElementSelector('graphVisualisationSearchInputNotConfigured', ' input'),
-                        onNextValidate: (step) => GuideUtils.validateTextInput(step.elementSelector, step.easyGraphInputText)
+                        onNextValidate: (step) => Promise.resolve(GuideUtils.validateTextInput(step.elementSelector, step.easyGraphInputText))
                     }, options)
                 }, {
                     guideBlockName: 'clickable-element',
