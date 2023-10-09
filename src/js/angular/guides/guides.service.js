@@ -1,6 +1,7 @@
 import 'angular/utils/local-storage-adapter';
 import 'angular/guides/tour-lib-services/shepherd.service';
 import {GuideUtils} from "./guide-utils";
+import {YasguiComponentDirectiveUtil} from "../core/directives/yasgui-component/yasgui-component-directive.util";
 
 const modules = [
     'graphdb.framework.guides.shepherd.services'
@@ -399,7 +400,7 @@ function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdServ
      * @private
      */
     this._getSteps = (complexStep, parentOptions) => {
-        const services = {$translate, $interpolate, GuideUtils, $rootScope, toastr, $location, $route, $timeout, ShepherdService, $repositories};
+        const services = {$translate, $interpolate, GuideUtils, $rootScope, toastr, $location, $route, $timeout, ShepherdService, $repositories, YasguiComponentDirectiveUtil};
         let steps = [];
         if (angular.isArray(complexStep)) {
             complexStep.forEach((stepDescription) => {
