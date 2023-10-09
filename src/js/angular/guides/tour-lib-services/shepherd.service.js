@@ -580,27 +580,25 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
 
     const _getNextButtonAction = (guide, currentStepDescription, nextStepDescription) => {
         return () => {
-            let valid = true;
-            if (angular.isFunction(currentStepDescription.onNextValidate)) {
-                valid = currentStepDescription.onNextValidate(currentStepDescription);
-            }
-            if (valid) {
-                if (angular.isFunction(currentStepDescription.onNextClick)) {
-                    const onNextResult = currentStepDescription.onNextClick(guide, currentStepDescription);
-                    if (onNextResult instanceof Promise) {
-                        onNextResult.catch((error) => {
-                            console.log(error);
-                            toastr.error($translate.instant('guide.unexpected.error.message'));
-                            this._cancelGuide(guide, false);
-                        });
+            currentStepDescription.onNextValidate(currentStepDescription)
+                .then((valid) => {
+                    if (valid) {
+                        if (angular.isFunction(currentStepDescription.onNextClick)) {
+                            const onNextResult = currentStepDescription.onNextClick(guide, currentStepDescription);
+                            if (onNextResult instanceof Promise) {
+                                onNextResult.catch((error) => {
+                                    toastr.error($translate.instant('guide.unexpected.error.message'));
+                                    this._cancelGuide(guide, false);
+                                });
+                            }
+                        } else {
+                            if (nextStepDescription.forceReload || nextStepDescription.url && nextStepDescription.url !== currentStepDescription.url) {
+                                $location.path(nextStepDescription.url);
+                            }
+                            guide.next();
+                        }
                     }
-                } else {
-                    if (nextStepDescription.forceReload || nextStepDescription.url && nextStepDescription.url !== currentStepDescription.url) {
-                        $location.path(nextStepDescription.url);
-                    }
-                    guide.next();
-                }
-            }
+                });
         };
     };
 
