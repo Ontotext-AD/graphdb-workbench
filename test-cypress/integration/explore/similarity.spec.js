@@ -365,12 +365,9 @@ describe('Similarity screen validation', () => {
         cy.url().should('eq', Cypress.config('baseUrl') + '/similarity');
         cy.get('.clone-index-btn').click()
             .then(() => cy.url().should('contain', `${Cypress.config('baseUrl')}/similarity/index/create`));
-        cy.window();
-        // This is just an implicit wait in order to allow the view to catch up with the rendering
-        // before trying to click the button. Its needed because the button doesn't always accept
-        // the click most likely due to some async behavior
-        cy.contains('Sample queries:').next('.list-group').should('be.visible');
 
+        // Makes sure YASQE has loaded before we click the Create button
+        cy.waitUntilQueryIsVisible();
         getCreateIndexButton().should('be.visible').click();
 
         getExistingIndexesPanel();

@@ -20,66 +20,78 @@
 <body>
 
 <div class="status-bar bg-white" ng-hide="!showMainManuAndStatusBar()" ng-cloak>
-    <operations-statuses-monitor class="active-operation"></operations-statuses-monitor>
-    <div class="btn-group btn-group-lg" role="group" aria-label="Button group with nested dropdown">
+    <!-- Looking glass search icon -->
+    <rdf-resource-search></rdf-resource-search>
 
-        <div class="btn alert alert-warning no-icon" ng-if="!getLicense().valid && showLicense()"
+    <!-- Invalid/expired license notification -->
+    <div ng-if="!getLicense().valid && showLicense()">
+        <a class="btn btn-fade-danger no-icon" ng-href="license"
              gdb-tooltip="{{getLicense().message}}" tooltip-placement="bottom">
             <span class="icon-warning"></span> {{'no.valid.license.warning' | translate}}
-            <a ng-show="!isLicenseHardcoded()" href="license/register" class="btn btn-secondary btn-sm" style="margin: -5px 0 -5px 0">{{'set.label' | translate}}</a>
-        </div>
-
-        <div id="guideResume" class="btn-group" role="group" ng-if="guidePaused" gdb-tooltip="{{'guide.button.guide-resume' | translate}}" tooltip-placement="bottom">
-            <a class="btn btn-lg btn-secondary" ng-click="resumeGuide()"><span class="icon-play text-primary"></span> {{'guide.button.guide-paused' | translate}}</a>
-        </div>
-        <rdf-resource-search class="float-xs-left p-0"></rdf-resource-search>
-        <div id="repositorySelectDropdown" class="btn-group" role="group" ng-show="!embedded">
-            <button id="btnReposGroup" type="button" class="btn btn-lg btn-secondary dropdown-toggle"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" guide-selector="repositoriesGroupButton">
-                <span ng-mouseover="setPopoverRepo(getActiveRepositoryObject())" popover-popup-delay="1000" popover-trigger="mouseenter" popover-placement="left-bottom"
-                      uib-popover-template="popoverTemplate" popover-title="{{'security.repository.title' | translate}} {{getActiveRepositoryObject().id}}" ng-if="getActiveRepository()"
-                      guide-selector="repository-{{getActiveRepositoryObject().id}}-button"
-                      class="active-repository">
-                    <em ng-class="'icon-repo-' + getActiveRepositoryObject().type" class="icon-1-5x"></em>
-                    {{getActiveRepository()}}{{ getActiveRepositoryShortLocation() }}
-                </span>
-                <span class="no-selected-repository" ng-if="!getActiveRepository() && getReadableRepositories().length">{{'choose.repo' | translate}}</span>
-                <span class="no-repositories" ng-if="!getActiveRepository() && !getReadableRepositories().length">{{'no.accessible.repos.warning' | translate}}</span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-right pre-scrollable" aria-labelledby="dropdownMenuButton">
-                <li ng-repeat="repository in getReadableRepositories() | orderBy: ['location', 'id']"
-                    ng-if="!isRepoActive(repository)"
-                    ng-mouseover="setPopoverRepo(repository)" popover-popup-delay="500"
-                    popover-trigger="mouseenter" popover-placement="left"
-                    uib-popover-template="popoverTemplate" popover-title="{{'security.repository.title' | translate}} {{repository.id}}">
-                    <a class="dropdown-item" ng-click="setRepository(repository)" guide-selector="repository-{{repository.id}}-button">
-                        <em ng-class="'icon-repo-' + repository.type" class="icon-1-5x"></em>
-                        <span class="multiline-text">
-						    {{repository.id}} <br/>
-						    <small ng-show="!isLoadingLocation() && hasActiveLocation() && (!isSecurityEnabled() || isUserLoggedIn() || isFreeAccessEnabled())">{{repository.location ? repository.location : 'Local'}}</small>
-					    </span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <div class="btn-group" role="group" ng-if="isSecurityEnabled() && isUserLoggedIn()">
-            <button id="btnGroupDrop2" type="button" class="btn btn-lg btn-secondary dropdown-toggle"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="icon-user text-primary"></span>
-                {{principal.username}}
-            </button>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnUserGroup">
-                <a class="dropdown-item" href="settings">{{'menu.my.settings.label' | translate}}</a>
-                <a class="dropdown-item" ng-click="logout()" title="{{'sign.out.label' | translate}}" ng-href="./login" ng-if="!hasExternalAuthUser()">{{'logout.label' | translate}}</a>
-            </div>
-        </div>
-        <div class="btn-group" ng-show="isSecurityEnabled() && !isUserLoggedIn() && !isCurrentPath('login')">
-            <a class="btn btn-lg btn-secondary" href="./login" ng-href="./login">
-                <span class="icon-arrow-right text-primary"></span> {{'view.login.title' | translate}}
-            </a>
-        </div>
-        <language-selector></language-selector>
+        </a>
     </div>
+
+    <!-- Guide pause/resume -->
+    <div id="guideResume" class="btn-group" role="group" ng-if="guidePaused" gdb-tooltip="{{'guide.button.guide-resume' | translate}}" tooltip-placement="bottom">
+        <a class="btn btn-secondary" ng-click="resumeGuide()"><span class="icon-play"></span> {{'guide.button.guide-paused' | translate}}</a>
+    </div>
+
+    <!-- Monitoring overview and monitoring details dropdown -->
+    <operations-statuses-monitor></operations-statuses-monitor>
+
+    <!-- Current repository and repository selection dropdown -->
+    <div id="repositorySelectDropdown" class="btn-group" role="group" ng-show="!embedded">
+        <button id="btnReposGroup" type="button" class="btn btn-secondary dropdown-toggle"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" guide-selector="repositoriesGroupButton">
+            <span ng-mouseover="setPopoverRepo(getActiveRepositoryObject())" popover-popup-delay="1000" popover-trigger="mouseenter" popover-placement="left-bottom"
+                  uib-popover-template="popoverTemplate" popover-title="{{'security.repository.title' | translate}} {{getActiveRepositoryObject().id}}" ng-if="getActiveRepository()"
+                  guide-selector="repository-{{getActiveRepositoryObject().id}}-button"
+                  class="active-repository">
+                <em ng-class="'icon-repo-' + getActiveRepositoryObject().type"></em>
+                {{getActiveRepository()}}{{ getActiveRepositoryShortLocation() }}
+            </span>
+            <span class="no-selected-repository" ng-if="!getActiveRepository() && getReadableRepositories().length">{{'choose.repo' | translate}}</span>
+            <span class="no-repositories" ng-if="!getActiveRepository() && !getReadableRepositories().length">{{'no.accessible.repos.warning' | translate}}</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right pre-scrollable" aria-labelledby="dropdownMenuButton">
+            <li ng-repeat="repository in getReadableRepositories() | orderBy: ['location', 'id']"
+                ng-if="!isRepoActive(repository)"
+                ng-mouseover="setPopoverRepo(repository)" popover-popup-delay="500"
+                popover-trigger="mouseenter" popover-placement="left"
+                uib-popover-template="popoverTemplate" popover-title="{{'security.repository.title' | translate}} {{repository.id}}">
+                <a class="dropdown-item" ng-click="setRepository(repository)" guide-selector="repository-{{repository.id}}-button">
+                    <em ng-class="'icon-repo-' + repository.type" class="icon-1-5x"></em>
+                    <span class="multiline-text">
+                        {{repository.id}} <br/>
+                        <small ng-show="!isLoadingLocation() && hasActiveLocation() && (!isSecurityEnabled() || isUserLoggedIn() || isFreeAccessEnabled())">{{repository.location ? repository.location : 'Local'}}</small>
+                    </span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Logged user and settings/logout dropdown -->
+    <div class="btn-group" role="group" ng-if="isSecurityEnabled() && isUserLoggedIn()">
+        <button id="btnGroupDrop2" type="button" class="btn btn-secondary dropdown-toggle"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="icon-user"></span>
+            {{principal.username}}
+        </button>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnUserGroup">
+            <a class="dropdown-item" href="settings">{{'menu.my.settings.label' | translate}}</a>
+            <a class="dropdown-item" ng-click="logout()" title="{{'sign.out.label' | translate}}" ng-href="./login" ng-if="!hasExternalAuthUser()">{{'logout.label' | translate}}</a>
+        </div>
+    </div>
+
+    <!-- Login button -->
+    <div ng-if="isSecurityEnabled() && !isUserLoggedIn() && !isCurrentPath('login')">
+        <a class="btn btn-secondary" href="./login" ng-href="./login">
+            <span class="icon-arrow-right"></span> {{'view.login.title' | translate}}
+        </a>
+    </div>
+
+    <!-- Current language and language selection dropdown -->
+    <language-selector></language-selector>
 </div>
 
 <ul class="main-menu" ng-cloak ng-show="!embedded">
@@ -88,11 +100,11 @@
             <em class="icon-caret-left"></em>
         </span>
         <a class="menu-element-root" ng-href="./" href="./" ng-click="selected = -1">
-            <svg class="big-logo" width="180" height="50">
+            <svg class="big-logo">
                 <desc>GraphDB logo</desc>
                 <use href="img/graphdb-logo.svg#Layer_1"></use>
             </svg>
-            <svg class="small-logo" width="58" height="58">
+            <svg class="small-logo">
                 <desc>GraphDB logo</desc>
                 <use href="img/graphdb-logo-sq.svg#Layer_1"></use>
             </svg>

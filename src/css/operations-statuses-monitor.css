@@ -1,13 +1,30 @@
 .operations-statuses .operations-statuses-dropdown-toggle {
     display: flex;
-    background-color: #EBEBEB;
-    border-radius: 0;
-    border: 0;
+    gap: 0.75em;
+}
+
+.operations-statuses .operations-statuses-dropdown-toggle .caret {
+    margin-left: -0.75em;
+}
+
+.operations-statuses .operations-statuses-dropdown-toggle[aria-expanded="true"] {
+    background-color: #bbb !important;
+    border-color: #bbb !important;
 }
 
 .operations-statuses .operation-status-header {
     display: flex;
-    padding-right: 7px;
+}
+
+/* FontAwesome icons are different size, scale/pad them a bit */
+.operations-statuses div.fa {
+    padding-left: 3px;
+    padding-right: 3px;
+    font-size: 1.1em;
+}
+
+.operations-statuses-content .operation-status-content.row > * {
+    padding: 0;
 }
 
 .operations-statuses .operation-status-header img {
@@ -20,7 +37,6 @@
 
 .operations-statuses .running-operation-count sup {
     color: white;
-    border-radius: 2px;
     padding-left: 2px;
     padding-right: 2px;
     top: -1em;
@@ -32,27 +48,27 @@
     flex-direction: column;
     align-content: space-around;
     justify-content: space-around;
-    background-color: #EBEBEB;
+    background-color: #bbb;
     margin:0;
 }
 
 .operations-statuses .operation-status-content {
     display: flex;
-    background-color: #D4D4D4;
     margin: 5px 10px;
     align-items: center;
     justify-content: space-around;
     cursor: pointer;
     text-decoration: none;
     width: auto;
+    gap: 0.5em;
 }
 
-.operations-statuses .last-operation {
-    margin-bottom: 10px;
+.operations-statuses-content li:last-child {
+    margin-bottom: 5px;
 }
 
-.operations-statuses .first-operation {
-    margin-top: 10px;
+.operations-statuses li:first-child {
+    margin-top: 5px;
 }
 
 .operations-statuses .operation-status-content:hover {
@@ -64,10 +80,13 @@
 }
 
 .operations-statuses .operation-status-label {
-    min-width: 250px;
     padding: 5px;
     line-height: 0;
     text-align: start;
+}
+
+.operations-statuses .operation-number {
+    min-width: 50px;
 }
 
 .operations-statuses .operation-status-running-operation-count {
@@ -79,6 +98,14 @@
     font-size: 75%;
 }
 
-.operations-statuses .operation-status-content .icon-external {
-    padding: 4px;
+.status-information {
+    color: var(--color-info-dark) !important;
+}
+
+.status-warning {
+    color: var(--color-warning-dark) !important;
+}
+
+.status-critical {
+    color: var(--color-danger-dark) !important;
 }
