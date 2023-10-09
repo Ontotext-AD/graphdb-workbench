@@ -70,8 +70,6 @@ function operationsStatusesMonitorDirectives($interval, $repositories, Monitorin
             scope.activeOperations.operations.sort((a, b) => {
                 return OPERATION_TYPE_SORT_ORDER[a.type] - OPERATION_TYPE_SORT_ORDER[b.type];
             });
-
-            console.log(scope.activeOperations);
         };
 
         const reloadActiveOperations = () => {

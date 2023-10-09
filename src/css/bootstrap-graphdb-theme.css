@@ -7,6 +7,18 @@
     --autocomplete-background: hsla(var(--tertiary-color-hsl), 0.3);
     --autocomplete-background-selected: hsla(var(--tertiary-color-hsl), 0.5);
     --autocomplete-match: var(--secondary-color);
+    /* width of menu 15 + margin left 1 + margin right 2 => 18rem */
+    --menu-width-expanded: 18rem;
+    /* width of menu 4.375 + margin left 1 + margin right 2 => 7.375 */
+    --menu-width-collapsed: 7.375rem;
+    /* menu width in general */
+    --menu-width: var(--menu-width-expanded);
+    /* max usable content width not considering the menu and margins */
+    --max-width-minus-menu: calc(100% - var(--menu-width));
+}
+
+:root.menu-collapsed {
+    --menu-width: var(--menu-width-collapsed);
 }
 
 /*-------------------------------------------------------------
@@ -1110,21 +1122,16 @@ h3 [class^=icon-] {
     top: 0;
     padding-bottom: 0.5em;
     width: max-content;
-    /* width of menu 15 + margin left 1 + margin right 2 => 18rem */
-    max-width: calc(100% - 18rem);
+    max-width: var(--max-width-minus-menu);
     margin-left: auto;
     margin-right: 2em;
     font-size: 1.1em;
-    z-index: 1015;
+    /* below pageslide (position: absolute, z-index: 1000) */
+    z-index: 999;
     -moz-transition: all 0.1s ease-out; /* FF4+ */
     -o-transition: all 0.1s ease-out; /* Opera 10.5+ */
     -webkit-transition: all 0.1s ease-out; /* Saf3.2+, Chrome */
     transition: all 0.1s ease-out;
-}
-
-.status-bar.expanded {
-    /* width of menu 4.375 + margin left 1 + margin right 2 => 7.375 */
-    max-width: calc(100% - 7.375rem);
 }
 
 /* Hides gap when no monitoring, this doesn't work with :empty */

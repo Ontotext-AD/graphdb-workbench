@@ -213,7 +213,8 @@
         ps-side="right"
         ps-click-outside="false"
         ps-custom-height="calc(100vh - 55px)"
-        ps-size="{{pageslideExpanded ? '80vw' : '25vw'}}">
+        ps-size="80vw"
+        ng-class="{'rdf-info-side-panel-expanded': pageslideExpanded}">
     <div class="rdf-side-panel-content break-word-alt p-1 pt-2">
         <span class="toggle-sidepanel" title="{{'visual.collapse.sidepanel' | translate}}" ng-click="toggleSidePanel()">
             <em ng-class="pageslideExpanded ? 'icon-caret-right' : 'icon-caret-left'"></em>

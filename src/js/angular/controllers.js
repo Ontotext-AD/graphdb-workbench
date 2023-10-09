@@ -661,22 +661,30 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     });
 
+    function setMenuCollapsed(menuCollapsed) {
+        if (menuCollapsed) {
+            $(":root").addClass("menu-collapsed");
+        } else {
+            $(":root").removeClass("menu-collapsed");
+        }
+    }
+
     function collapsedMenuLogicOnInit() {
         if ($(window).width() <= 720) {
             $('.container-fluid.main-container').addClass("expanded");
-            $('.status-bar').addClass("expanded");
+            setMenuCollapsed(true);
             $('.main-menu').addClass('collapsed');
             $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
             $('.toggle-menu').hide();
         } else if ($(window).width() > 720 && LocalStorageAdapter.get(LSKeys.MENU_STATE) === 'collapsedMenu') {
             $('.container-fluid.main-container').addClass("expanded");
-            $('.status-bar').addClass("expanded");
+            setMenuCollapsed(true);
             $('.main-menu').addClass('collapsed');
             $('.toggle-menu').show();
             $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
         } else {
             $('.container-fluid.main-container').removeClass("expanded");
-            $('.status-bar').removeClass("expanded");
+            setMenuCollapsed(false);
             $('.main-menu').removeClass('collapsed');
             $('.toggle-menu').show();
             $('.main-menu .icon-caret-right').toggleClass('icon-caret-right').toggleClass('icon-caret-left');
@@ -687,6 +695,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         if (angular.isDefined($scope.menuState)) {
             if ($(window).width() <= 720) {
                 $('.container-fluid.main-container').addClass("expanded");
+                setMenuCollapsed(true);
                 $('.main-menu').addClass('collapsed');
                 $('.toggle-menu').hide();
                 $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
@@ -694,6 +703,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                 $('.toggle-menu').show();
             } else {
                 $('.container-fluid.main-container').removeClass("expanded");
+                setMenuCollapsed(false);
                 $('.main-menu').removeClass('collapsed');
                 $('.toggle-menu').show();
                 $('.main-menu .icon-caret-right').toggleClass('icon-caret-right').toggleClass('icon-caret-left');
@@ -733,7 +743,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                 $scope.selected = -1;
             }
             $('.container-fluid.main-container').addClass("expanded");
-            $('.status-bar').addClass("expanded");
+            setMenuCollapsed(true);
             $mainMenu.addClass("collapsed");
             $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
             $('.main-menu.collapsed .menu-element.clicked').removeClass('clicked');
@@ -745,7 +755,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                 $activeSubmenu.parents('.menu-element').children('.menu-element-root').removeClass('active');
             }
             $('.container-fluid.main-container').removeClass("expanded");
-            $('.status-bar').removeClass("expanded");
+            setMenuCollapsed(false);
             $mainMenu.removeClass("collapsed");
             $('.main-menu .icon-caret-right').toggleClass('icon-caret-right').toggleClass('icon-caret-left');
             $rootScope.$broadcast("onToggleNavWidth", false);
