@@ -20,6 +20,7 @@ PluginRegistry.add('guide.step', [
                     skipPoint: true,
                     content: 'guide.step_plugin.choose-repository.content',
                     elementSelector: GuideUtils.getGuideElementSelector('repositoriesGroupButton'),
+                    class: 'repositories-group-button-guide-dialog',
                     onNextClick: (guide) => GuideUtils.clickOnGuideElement('repositoriesGroupButton')().then(() => guide.next())
                 }, options)
             }, {
@@ -29,6 +30,7 @@ PluginRegistry.add('guide.step', [
                     elementSelector: () => {
                         return getRepositoryElementSelector(services, options);
                     },
+                    class: 'repository-select-button-guide-dialog',
                     advanceOn: undefined,
                     beforeShowPromise: () => new Promise(function (resolve, reject) {
                         services.GuideUtils.waitFor(getRepositoryElementSelector(services, options), 1)
