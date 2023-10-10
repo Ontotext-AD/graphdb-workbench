@@ -290,12 +290,14 @@ function ClassInstanceDetailsService($http) {
 
 function AuthTokenService() {
     const authStorageName = 'com.ontotext.graphdb.auth';
+    const OPENID_CONFIG = {};
 
     return {
         AUTH_STORAGE_NAME: authStorageName,
         getAuthToken: getAuthToken,
         setAuthToken: setAuthToken,
-        clearAuthToken: clearAuthToken
+        clearAuthToken: clearAuthToken,
+        OPENID_CONFIG: OPENID_CONFIG
     };
 
     function setAuthToken(token) {
