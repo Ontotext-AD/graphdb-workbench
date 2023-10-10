@@ -153,7 +153,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                                     // so keep it clean of other logic.
                                     // The variable justLoggedIn will be set to true if this is
                                     // a new login that just happened.
-                                    that.auth = $openIDAuth.authHeaderGraphDB();
+                                    AuthTokenService.setAuthToken($openIDAuth.authHeaderGraphDB());
                                     console.log('oidc: set id/access token as GraphDB auth');
                                     // When logging via OpenID we may get a token that doesn't have
                                     // rights in GraphDB, this should be considered invalid.

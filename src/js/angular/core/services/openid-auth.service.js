@@ -13,8 +13,8 @@ const openIDReqHeaders = {headers: {
 
 
 angular.module('graphdb.framework.core.services.openIDService', modules)
-    .service('$openIDAuth', ['$http', '$location', '$window', 'toastr', '$translate',
-        function ($http, $location, $window, toastr, $translate) {
+    .service('$openIDAuth', ['$http', '$location', '$window', 'toastr', '$translate', 'AuthTokenService',
+        function ($http, $location, $window, toastr, $translate, AuthTokenService) {
             const storagePrefix = 'com.ontotext.graphdb.openid.';
             const that = this;
 
@@ -132,9 +132,9 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
              */
             this.withOpenIdKeys = function(openIdKeysUri, callback) {
                 $http.get(openIdKeysUri, openIDReqHeaders).success(function(jwks) {
-                    that.openIdKeys = {};
+                    AuthTokenService.OPENID_CONFIG.openIdKeys = {};
                     jwks['keys'].forEach(function(k) {
-                        that.openIdKeys[k.kid] = k
+                        AuthTokenService.OPENID_CONFIG.openIdKeys[k.kid] = k
                     });
                     callback();
                 });
@@ -162,21 +162,21 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                 that.accessTokenIssuer = openIDConfig.tokenIssuer;
 
                 // Set the token and keys url properly depending on a proxy
-                that.openIdTokenUrl = openIDConfig.oidcTokenEndpoint;
-                let openIdKeysUri = openIDConfig.oidcJwksUri;
+                AuthTokenService.OPENID_CONFIG.openIdTokenUrl = openIDConfig.oidcTokenEndpoint;
+                AuthTokenService.OPENID_CONFIG.openIdKeysUri = openIDConfig.oidcJwksUri;
                 if (openIDConfig.proxyOidc) {
-                    openIdKeysUri = 'rest/openid/jwks';
-                    that.openIdTokenUrl = 'rest/openid/token';
+                    AuthTokenService.OPENID_CONFIG.openIdKeysUri = 'rest/openid/jwks';
+                    AuthTokenService.OPENID_CONFIG.openIdTokenUrl = 'rest/openid/token';
                 }
-                that.openIdEndSessionUrl = openIDConfig.oidcEndSessionEndpoint;
-                that.supportsOfflineAccess = openIDConfig.oidcScopesSupported.includes('offline_access');
+                AuthTokenService.OPENID_CONFIG.openIdEndSessionUrl = openIDConfig.oidcEndSessionEndpoint;
+                AuthTokenService.OPENID_CONFIG.supportsOfflineAccess = openIDConfig.oidcScopesSupported.includes('offline_access');
 
                 if (openIDConfig.oracleDomain) {
                     // Oracle OAM deviates from the spec and requires this as well
                     openIDReqHeaders['headers']['X-OAuth-Identity-Domain-Name'] = openIDConfig.oracleDomain;
                 }
 
-                that.withOpenIdKeys(openIdKeysUri, function() {
+                that.withOpenIdKeys(AuthTokenService.OPENID_CONFIG.openIdKeysUri, function() {
                     that.isLoggedIn = that.hasValidIdToken();
                     if (that.isLoggedIn) {
                         that.setupTokensRefresh(false, successCallback, errorCallback);
@@ -252,9 +252,9 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
              */
             this.hardLogout = function(redirectUrl) {
                 that.softLogout();
-                if (that.openIdEndSessionUrl) {
+                if (AuthTokenService.OPENID_CONFIG.openIdEndSessionUrl) {
                     $window.location.href =
-                        `${that.openIdEndSessionUrl}?client_id=${encodeURIComponent(that.clientId)}&post_logout_redirect_uri=${encodeURIComponent(redirectUrl)}`;
+                        `${AuthTokenService.OPENID_CONFIG.openIdEndSessionUrl}?client_id=${encodeURIComponent(that.clientId)}&post_logout_redirect_uri=${encodeURIComponent(redirectUrl)}`;
                 }
             }
 
@@ -339,7 +339,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                         return false;
                     }
                 }
-                const jwk = that.openIdKeys[headerObj.kid];
+                const jwk = AuthTokenService.OPENID_CONFIG.openIdKeys[headerObj.kid];
                 if (!jwk) {
                     console.log('oidc: no key to verify JWT token (token considered invalid)');
                     return false;
@@ -479,7 +479,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
 
                 $http({
                     method: 'POST',
-                    url: that.openIdTokenUrl,
+                    url: AuthTokenService.OPENID_CONFIG.openIdTokenUrl,
                     headers: headers,
                     transformRequest: transformURLEncodedRequest,
                     data: params
@@ -509,7 +509,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
                     const headers = {...openIDReqHeaders['headers'], ...{'Content-type': 'application/x-www-form-urlencoded; charset=utf-8'}};
                     $http({
                         method: 'POST',
-                        url: that.openIdTokenUrl,
+                        url: AuthTokenService.OPENID_CONFIG.openIdTokenUrl,
                         headers: headers,
                         transformRequest: transformURLEncodedRequest,
                         data: params
