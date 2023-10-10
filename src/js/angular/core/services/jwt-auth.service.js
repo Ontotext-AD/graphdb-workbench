@@ -230,6 +230,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.loginOpenID = function () {
+                // FIX: This causes the workbench to always return to this.gdbUrl after login, which breaks the logic for multitab login
                 $openIDAuth.login(this.openIDConfig, this.gdbUrl);
             };
 
@@ -273,10 +274,11 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.authenticate = function (data, authHeaderValue) {
                 return new Promise((resolve) => {
-                    AuthTokenService.clearAuthToken();
                     if (authHeaderValue) {
                         AuthTokenService.setAuthToken(authHeaderValue);
                         this.externalAuthUser = false;
+                    } else {
+                        AuthTokenService.clearAuthToken();
                     }
 
                     this.principal = data;
