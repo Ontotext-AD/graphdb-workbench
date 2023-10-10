@@ -634,7 +634,7 @@ angular.module('graphdb.framework.core.services.openIDService', modules)
              * @returns {string} The OpenID scope to request.
              */
             this.getScope = function(extraScopes) {
-                let scope = 'openid' + (that.supportsOfflineAccess ? ' offline_access' : '');
+                let scope = 'openid' + (AuthTokenService.OPENID_CONFIG.supportsOfflineAccess ? ' offline_access' : '');
                 if (extraScopes) {
                     scope += ' ' + extraScopes;
                 }
