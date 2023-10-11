@@ -2,6 +2,12 @@
     table-layout: fixed;
 }
 
+.acl-management-view .acl-rules .labels-row th {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;;
+}
+
 .acl-management-view .acl-rules .toolbar {
     height: 35px;
     padding: 0;
@@ -18,11 +24,16 @@
 }
 
 .acl-management-view .acl-rules .index-column {
-    width: 2%;
+    width: 4ch;
 }
 
 .acl-management-view .acl-rules .reorder-column {
     width: 25px;
+}
+
+.acl-management-view .acl-rules .index-cell {
+    padding: 0;
+    text-align: center;
 }
 
 .acl-management-view .acl-rules .reorder-cell {
