@@ -153,7 +153,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                                     // so keep it clean of other logic.
                                     // The variable justLoggedIn will be set to true if this is
                                     // a new login that just happened.
-                                    that.auth = $openIDAuth.authHeaderGraphDB();
+                                    AuthTokenService.setAuthToken($openIDAuth.authHeaderGraphDB());
                                     console.log('oidc: set id/access token as GraphDB auth');
                                     // When logging via OpenID we may get a token that doesn't have
                                     // rights in GraphDB, this should be considered invalid.
@@ -230,6 +230,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.loginOpenID = function () {
+                // FIX: This causes the workbench to always return to this.gdbUrl after login, which breaks the logic for multitab login
                 $openIDAuth.login(this.openIDConfig, this.gdbUrl);
             };
 
@@ -273,10 +274,11 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.authenticate = function (data, authHeaderValue) {
                 return new Promise((resolve) => {
-                    AuthTokenService.clearAuthToken();
                     if (authHeaderValue) {
                         AuthTokenService.setAuthToken(authHeaderValue);
                         this.externalAuthUser = false;
+                    } else {
+                        AuthTokenService.clearAuthToken();
                     }
 
                     this.principal = data;

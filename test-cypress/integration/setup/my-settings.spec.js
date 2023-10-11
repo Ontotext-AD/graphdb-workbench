@@ -128,12 +128,12 @@ describe('My Settings', () => {
 
                 //clear default query and paste a new one that will generate more than 1000 results
                 cy.get('#queryEditor .CodeMirror').find('textarea')
-                    .type(Cypress.env('modifierKey') + 'a{backspace}', {force: true})
-                    .then(() => {
-                        cy.get('#queryEditor .CodeMirror').find('textarea')
-                            .invoke('val', testResultCountQuery).trigger('change', {force: true})
-                            .then(() => cy.verifyQueryAreaContains(testResultCountQuery));
-                    });
+                    .type(Cypress.env('modifierKey') + 'a{backspace}', {force: true});
+
+                cy.get('#queryEditor .CodeMirror').find('textarea')
+                    .invoke('val', testResultCountQuery).trigger('change', {force: true})
+                cy.waitUntilQueryIsVisible();
+                cy.verifyQueryAreaContains(testResultCountQuery);
 
                 cy.get('#wb-sparql-runQuery')
                     .should('be.visible')
