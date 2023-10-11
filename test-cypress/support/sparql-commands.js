@@ -20,8 +20,8 @@ Cypress.Commands.add('verifyResultsPageLength', (resultLength) => {
 
 Cypress.Commands.add('verifyResultsMessage', (msg) => {
     cy.waitUntil(() =>
-        getResultsMessage()
-            .then((resultInfo) => resultInfo && resultInfo.text().trim().indexOf(msg) > -1));
+        getResultsMessage().then((resultInfo) => resultInfo && resultInfo.text().trim().length > 0));
+    getResultsMessage().should('contain', msg);
 });
 
 Cypress.Commands.add('getResultsMessage', () => {
@@ -60,10 +60,11 @@ function waitUntilQueryIsVisible() {
 }
 
 function verifyQueryAreaContains(query) {
-    // Using the CodeMirror instance because getting the value from the DOM is very cumbersome
     cy.waitUntil(() =>
         getQueryArea()
-            .then(codeMirrorEl => codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue().trim().indexOf(query) > -1));
+            .then(codeMirrorEl => codeMirrorEl && typeof codeMirrorEl[0].CodeMirror.getValue() === 'string'));
+    // Using the CodeMirror instance because getting the value from the DOM is very cumbersome
+    getQueryArea().should('contain', query);
 }
 
 function getRunQueryButton() {

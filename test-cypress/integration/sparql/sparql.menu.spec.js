@@ -225,6 +225,7 @@ describe('SPARQL screen validation', () => {
 
             let describeQuery = 'describe ?t {bind (<<?s ?p ?o>> as ?t) .}';
 
+            cy.waitUntilQueryIsVisible();
             cy.pasteQuery(describeQuery);
 
             SparqlSteps.executeQuery();
@@ -305,6 +306,7 @@ describe('SPARQL screen validation', () => {
         it('Test execute (Describe) query', () => {
             let describeQuery = 'DESCRIBE <http://www.ontotext.com/SYSINFO> FROM <http://www.ontotext.com/SYSINFO>';
 
+            cy.waitUntilQueryIsVisible();
             cy.pasteQuery(describeQuery);
 
             SparqlSteps.executeQuery();
@@ -332,6 +334,7 @@ describe('SPARQL screen validation', () => {
         it('Test execute (ASK) query', () => {
             let askQuery = 'ASK WHERE { ?s ?p ?o .FILTER (regex(?o, "ontotext.com")) }';
 
+            cy.waitUntilQueryIsVisible();
             cy.pasteQuery(askQuery);
             SparqlSteps.executeQuery();
 
@@ -347,6 +350,7 @@ describe('SPARQL screen validation', () => {
         // This test depends on external service http://factforge.net/repositories/ff-news which can occasionally fail.
         it.skip('Test execute (CONSTRUCT) query', () => {
             cy.fixture('queries/construct-query.sparql').then(constructQuery => {
+                cy.waitUntilQueryIsVisible();
                 cy.pasteQuery(constructQuery);
             });
 
@@ -367,8 +371,7 @@ describe('SPARQL screen validation', () => {
         });
 
         it('should test text mining plugin', () => {
-            cy.pasteQuery(GATE_CLIENT_CREATE_QUERY);
-            cy.executeQuery();
+            cy.waitUntilQueryIsVisible();
             cy.pasteQuery(GATE_CLIENT_SEARCH_QUERY);
             cy.executeQuery();
             getResultPages().should('have.length', 1);
@@ -412,6 +415,7 @@ describe('SPARQL screen validation', () => {
                 '\t?s ?p ?o .\n' +
                 '}';
 
+            cy.waitUntilQueryIsVisible();
             cy.pasteQuery(defaultQueryWithoutLimit);
             SparqlSteps.executeQuery();
 
@@ -446,6 +450,7 @@ describe('SPARQL screen validation', () => {
                 '  :a ?p ?o .\n' +
                 '}';
 
+            cy.waitUntilQueryIsVisible();
             cy.pasteQuery(updateToExecute);
             SparqlSteps.executeQuery();
             getUpdateMessage()
@@ -687,6 +692,7 @@ describe('SPARQL screen validation', () => {
         it('Test create, edit and delete saved query', () => {
             let savedQueryName = 'Saved query - ' + Date.now();
 
+            cy.waitUntilQueryIsVisible();
             cy.pasteQuery(QUERY_FOR_SAVING);
 
             saveQuery();
@@ -885,6 +891,7 @@ describe('SPARQL screen validation', () => {
 
         it('Test URL to current query', () => {
             const query = 'SELECT ?sub ?pred ?obj WHERE {?sub ?pred ?obj .} LIMIT 100';
+            cy.waitUntilQueryIsVisible();
             cy.pasteQuery(query);
 
             // Press the link icon to generate a link for a query
