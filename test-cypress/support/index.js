@@ -20,6 +20,7 @@ import './commands';
 // require('./commands')
 
 import 'cypress-real-events';
+import 'cypress-file-upload';
 
 // Configures an environment variable with the key used for common actions (cmd on mac, ctrl on other OS).
 // This variable must be used in all actions that type e.g. ctrl-a to select text.
