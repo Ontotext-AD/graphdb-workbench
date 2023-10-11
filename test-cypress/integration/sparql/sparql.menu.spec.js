@@ -372,6 +372,8 @@ describe('SPARQL screen validation', () => {
 
         it('should test text mining plugin', () => {
             cy.waitUntilQueryIsVisible();
+            cy.pasteQuery(GATE_CLIENT_CREATE_QUERY);
+            cy.executeQuery();
             cy.pasteQuery(GATE_CLIENT_SEARCH_QUERY);
             cy.executeQuery();
             getResultPages().should('have.length', 1);

@@ -64,7 +64,7 @@ function verifyQueryAreaContains(query) {
         getQueryArea()
             .then(codeMirrorEl => codeMirrorEl && typeof codeMirrorEl[0].CodeMirror.getValue() === 'string'));
     // Using the CodeMirror instance because getting the value from the DOM is very cumbersome
-    getQueryArea().should('contain', query);
+    getQueryArea().then(codeMirrorEl => codeMirrorEl && codeMirrorEl[0].CodeMirror.getValue()).should('contain', query);
 }
 
 function getRunQueryButton() {
