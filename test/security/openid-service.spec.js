@@ -1,5 +1,5 @@
 describe('$openIDAuth tests', function () {
-    let $openIDAuth, $httpBackend, $window;
+    let $openIDAuth, $httpBackend, $window, AuthTokenService;
 
     const graphdbUrl = 'http://localhost:7200/';
     let openIdConfig;
@@ -45,11 +45,12 @@ describe('$openIDAuth tests', function () {
         });
     }));
 
-    beforeEach(angular.mock.inject(function (_$openIDAuth_, _$httpBackend_, _$window_) {
+    beforeEach(angular.mock.inject(function (_$openIDAuth_, _$httpBackend_, _$window_, _AuthTokenService_) {
         // The injector unwraps the underscores (_) from around the parameter names when matching
         $openIDAuth = _$openIDAuth_;
         $httpBackend = _$httpBackend_;
         $window = _$window_;
+        AuthTokenService = _AuthTokenService_;
 
         // The client ID and the issuer need to stay the same as the JWT token contains them
         // and they are used for validation.
@@ -184,10 +185,10 @@ describe('$openIDAuth tests', function () {
         console.log('$openIDAuth initial state');
         initOpenId(false, false);
         expectEmptyTokens();
-        expect($openIDAuth.supportsOfflineAccess)
+        expect(AuthTokenService.OPENID_CONFIG.supportsOfflineAccess)
             .toBe(openIdConfig.oidcScopesSupported.includes('offline_access'));
         expect($openIDAuth.getScope())
-            .toBe($openIDAuth.supportsOfflineAccess ? 'openid offline_access' : 'openid');
+            .toBe(AuthTokenService.OPENID_CONFIG.supportsOfflineAccess ? 'openid offline_access' : 'openid');
         expect($openIDAuth.getLoginUrl('some state/foo', 'some challenge/bar',
             graphdbUrl, openIdConfig)).toBe(expectedUrl);
 

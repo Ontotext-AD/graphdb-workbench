@@ -8,6 +8,14 @@ angular.module('graphdb.framework.core.interceptors.authentication', [
             return {
                 'request': function(config) {
                     const headers = config.headers || {};
+
+                    // When using OpenID, during authentication process, the additional headers modification must be skipped
+                    const openIDUrls = [AuthTokenService.OPENID_CONFIG.openIdKeysUri, AuthTokenService.OPENID_CONFIG.openIdTokenUrl];
+                    const isOpenIdUrl = openIDUrls.some((url) => config.url.indexOf(url) > -1);
+                    if (isOpenIdUrl) {
+                        return config;
+                    }
+
                     // Angular doesn't send this header by default, and we need it to detect XHR requests
                     // so that we don't advertise Basic auth with them.
                     headers['X-Requested-With'] = 'XMLHttpRequest';
