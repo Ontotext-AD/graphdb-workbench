@@ -87,8 +87,24 @@ export class VisualGraphSteps {
         return cy.get('.rdf-info-side-panel .tab-content');
     }
 
+    static getCircleOfNodeByNodeId(nodeId) {
+        return cy.get(`[id="${nodeId}"] circle`);
+    }
+
+    static getLineBetweenNodesById(narrowId) {
+        return cy.get(`[id="${narrowId}"] line`);
+    }
+
     static getSettingsPanel() {
         return cy.get('.rdf-info-side-panel .filter-sidepanel');
+    }
+
+    static getSidePanelCloseButton() {
+        return cy.get('');
+    }
+
+    static getSidePanelContent() {
+        return cy.get('.rdf-side-panel-content');
     }
 
     // Visual graph settings form field access
@@ -331,7 +347,11 @@ export class VisualGraphSteps {
     }
 
     static getStartNodeSelectorField() {
-        return this.getStartNodeSelectorComponent().find('.view-res-input');
+        return cy.get('.view-res-input');
+    }
+
+    static getResultItemField() {
+        return cy.get('#auto-complete-results-wrapper .result-item');
     }
 
     static selectStartNode(uri, index) {
@@ -362,5 +382,9 @@ export class VisualGraphSteps {
 
     static revertQuery() {
         this.getRevertQueryButton().click();
+    }
+
+    static getMainGroupElement() {
+         return cy.get('#classChart #main-group');
     }
 }

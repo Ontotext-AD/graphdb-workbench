@@ -102,6 +102,18 @@ class ImportSteps {
         return ImportSteps;
     }
 
+    static getImportRdfFileElement() {
+        return cy.get('#import-user');
+    }
+
+    static getImportStatusMessage() {
+        return cy.get('.import-status-message');
+    }
+
+    static getImportFileRow(fileName) {
+        return cy.contains('tr', fileName);
+    }
+
     static getSnippetTextarea() {
         return cy.get('#wb-import-textarea');
     }

@@ -97,6 +97,10 @@ export class RepositorySteps {
         RepositorySteps.getRepositoryTypeButton(type).click();
     }
 
+    static getGDBRepositoryTypeButton() {
+       return RepositorySteps.getRepositoryTypeButton('gdb');
+    }
+
     static getRepositoryCreateForm() {
         return cy.get('#newRepoForm').should('be.visible');
     }

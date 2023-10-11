@@ -1,0 +1,629 @@
+@prefix imdb: <http://academy.ontotext.com/imdb/> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+
+imdb:leadActor a owl:ObjectProperty;
+  rdfs:domain schema:Movie;
+  dc:label "Leading actor";
+  dc:comment "A leading actor, leading actress, or simply lead, plays the role of the protagonist of a film, television show or play";
+  rdfs:subPropertyOf schema:actor .
+
+imdb:ColorMovie rdfs:subClassOf schema:Movie;
+  schema:name "Color Movie" .
+
+  imdb:BlackandWhiteMovie rdfs:subClassOf schema:Movie;
+  schema:name "Black and White Movie" .
+
+  <http://academy.ontotext.com/imdb/title/Superman> a imdb:ColorMovie;
+  schema:genre "Action", "Adventure", "Drama", "Romance", "Sci-Fi";
+  schema:name "Superman";
+  schema:commentCount 169;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/RichardDonner>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/MarlonBrando>;
+  schema:actor <http://academy.ontotext.com/imdb/person/MargotKidder>, <http://academy.ontotext.com/imdb/person/NedBeatty> .
+
+
+  <http://academy.ontotext.com/imdb/title/BenHur> a imdb:ColorMovie;
+  schema:genre "Adventure", "Drama", "History";
+  schema:name "Ben-Hur";
+  schema:commentCount 1;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/TimurBekmambetov>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/MorganFreeman>;
+  schema:actor <http://academy.ontotext.com/imdb/person/AyeletZurer>, <http://academy.ontotext.com/imdb/person/MoisesArias> .
+
+  <http://academy.ontotext.com/imdb/title/Mulan> a imdb:ColorMovie;
+  schema:genre "Adventure", "Animation", "Family", "Fantasy", "Musical", "War";
+  schema:name "Mulan";
+  schema:commentCount 143;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/TonyBancroft>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/MingNaWen>;
+  schema:actor <http://academy.ontotext.com/imdb/person/HarveyFierstein>, <http://academy.ontotext.com/imdb/person/JuneForay> .
+
+  <http://academy.ontotext.com/imdb/title/PiratesoftheCaribbeanAtWorldsEnd> a imdb:ColorMovie;
+  schema:genre "Action", "Adventure", "Fantasy";
+  schema:name "Pirates of the Caribbean: At World's End";
+  schema:commentCount 302;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/GoreVerbinski>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/JohnnyDepp>;
+  schema:actor <http://academy.ontotext.com/imdb/person/OrlandoBloom>, <http://academy.ontotext.com/imdb/person/JackDavenport> .
+
+  <http://academy.ontotext.com/imdb/title/TheDarkKnightRises> a imdb:ColorMovie;
+  schema:genre "Action", "Thriller";
+  schema:name "The Dark Knight Rises";
+  schema:commentCount 813;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/ChristopherNolan>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/TomHardy>;
+  schema:actor <http://academy.ontotext.com/imdb/person/ChristianBale>, <http://academy.ontotext.com/imdb/person/JosephGordonLevitt> .
+
+  <http://academy.ontotext.com/imdb/title/DjangoUnchained> a imdb:ColorMovie;
+  schema:genre "Drama", "Western";
+  schema:name "Django Unchained";
+  schema:commentCount 765;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/QuentinTarantino>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/LeonardoDiCaprio>;
+  schema:actor <http://academy.ontotext.com/imdb/person/ChristophWaltz>, <http://academy.ontotext.com/imdb/person/AtoEssandoh> .
+
+  <http://academy.ontotext.com/imdb/person/QuentinTarantino> schema:name "Quentin Tarantino" .
+
+  <http://academy.ontotext.com/imdb/title/InglouriousBasterds> a imdb:ColorMovie;
+  schema:genre "Adventure", "Drama", "War";
+  schema:name "Inglourious Basterds";
+  schema:commentCount 486;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/QuentinTarantino>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/MichaelFassbender>;
+  schema:actor <http://academy.ontotext.com/imdb/person/BradPitt>, <http://academy.ontotext.com/imdb/person/ChristophWaltz> .
+
+  <http://academy.ontotext.com/imdb/title/TheHatefulEight> a imdb:ColorMovie;
+  schema:genre "Crime", "Drama", "Mystery", "Thriller", "Western";
+  schema:name "The Hateful Eight";
+  schema:commentCount 596;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/QuentinTarantino>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/CraigStark>;
+  schema:actor <http://academy.ontotext.com/imdb/person/JenniferJasonLeigh>, <http://academy.ontotext.com/imdb/person/ZoBell> .
+
+  <http://academy.ontotext.com/imdb/title/KillBillVol1> a imdb:BlackandWhiteMovie;
+  schema:genre "Action";
+  schema:name "Kill Bill: Vol. 1";
+  schema:commentCount 354;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/QuentinTarantino>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/DavidCarradine>;
+  schema:actor <http://academy.ontotext.com/imdb/person/VivicaAFox>, <http://academy.ontotext.com/imdb/person/ChiakiKuriyama> .
+
+  <http://academy.ontotext.com/imdb/title/KillBillVol2> a imdb:BlackandWhiteMovie;
+  schema:genre "Action", "Crime", "Drama", "Thriller";
+  schema:name "Kill Bill: Vol. 2";
+  schema:commentCount 304;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/QuentinTarantino>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/VivicaAFox>;
+  schema:actor <http://academy.ontotext.com/imdb/person/MichaelParks>, <http://academy.ontotext.com/imdb/person/MichaelBowen> .
+
+  <http://academy.ontotext.com/imdb/title/Grindhouse> a imdb:ColorMovie;
+  schema:genre "Action", "Horror", "Thriller";
+  schema:name "Grindhouse";
+  schema:commentCount 250;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/RobertRodriguez>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/QuentinTarantino>;
+  schema:actor <http://academy.ontotext.com/imdb/person/RosarioDawson>, <http://academy.ontotext.com/imdb/person/ZoBell> .
+
+  <http://academy.ontotext.com/imdb/title/FromDuskTillDawn> a imdb:ColorMovie;
+  schema:genre "Crime", "Fantasy", "Horror";
+  schema:name "From Dusk Till Dawn";
+  schema:commentCount 165;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/RobertRodriguez>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/QuentinTarantino>;
+  schema:actor <http://academy.ontotext.com/imdb/person/SalmaHayek>, <http://academy.ontotext.com/imdb/person/CheechMarin> .
+
+  <http://academy.ontotext.com/imdb/title/FromDuskTillDawn> a imdb:ColorMovie;
+  schema:genre "Crime", "Fantasy", "Horror";
+  schema:name "From Dusk Till Dawn";
+  schema:commentCount 165;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/RobertRodriguez>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/QuentinTarantino>;
+  schema:actor <http://academy.ontotext.com/imdb/person/SalmaHayek>, <http://academy.ontotext.com/imdb/person/CheechMarin> .
+
+  <http://academy.ontotext.com/imdb/title/JackieBrown> a imdb:ColorMovie;
+  schema:genre "Crime", "Thriller";
+  schema:name "Jackie Brown";
+  schema:commentCount 140;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/QuentinTarantino>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/RobertDeNiro>;
+  schema:actor <http://academy.ontotext.com/imdb/person/SidHaig>, <http://academy.ontotext.com/imdb/person/RobertForster> .
+
+  <http://academy.ontotext.com/imdb/title/PulpFiction> a imdb:ColorMovie;
+  schema:genre "Crime", "Drama";
+  schema:name "Pulp Fiction";
+  schema:commentCount 215;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/QuentinTarantino>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/BruceWillis>;
+  schema:actor <http://academy.ontotext.com/imdb/person/EricStoltz>, <http://academy.ontotext.com/imdb/person/PhilLaMarr> .
+
+  <http://academy.ontotext.com/imdb/title/Desperado> a imdb:ColorMovie;
+  schema:genre "Action", "Crime", "Thriller";
+  schema:name "Desperado";
+  schema:commentCount 93;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/RobertRodriguez>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/QuentinTarantino>;
+  schema:actor <http://academy.ontotext.com/imdb/person/SteveBuscemi>, <http://academy.ontotext.com/imdb/person/SalmaHayek> .
+
+  <http://academy.ontotext.com/imdb/title/TheGreatestMovieEverSold> a imdb:ColorMovie;
+  schema:genre "Comedy", "Documentary";
+  schema:name "The Greatest Movie Ever Sold";
+  schema:commentCount 130;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/MorganSpurlock>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/QuentinTarantino>;
+  schema:actor <http://academy.ontotext.com/imdb/person/JJAbrams>, <http://academy.ontotext.com/imdb/person/DonaldTrump> .
+
+  <http://academy.ontotext.com/imdb/title/ReservoirDogs> a imdb:ColorMovie;
+  schema:genre "Crime", "Drama", "Thriller";
+  schema:name "Reservoir Dogs";
+  schema:commentCount 173;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/QuentinTarantino>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/QuentinTarantino>;
+  schema:actor <http://academy.ontotext.com/imdb/person/SteveBuscemi>, <http://academy.ontotext.com/imdb/person/ChrisPenn> .
+
+  <http://academy.ontotext.com/imdb/title/SpaceCowboys> a imdb:BlackandWhiteMovie;
+  schema:genre "Action", "Adventure", "Thriller";
+  schema:name "Space Cowboys";
+  schema:commentCount 169;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  schema:actor <http://academy.ontotext.com/imdb/person/CourtneyBVance>, <http://academy.ontotext.com/imdb/person/WilliamDevane> .
+
+  <http://academy.ontotext.com/imdb/person/ClintEastwood> schema:name "Clint Eastwood" .
+
+  <http://academy.ontotext.com/imdb/title/Invictus> a imdb:ColorMovie;
+  schema:genre "Biography", "Drama", "History", "Sport";
+  schema:name "Invictus";
+  schema:commentCount 306;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/MattDamon>;
+  schema:actor <http://academy.ontotext.com/imdb/person/MorganFreeman>, <http://academy.ontotext.com/imdb/person/LeletiKhumalo> .
+
+  <http://academy.ontotext.com/imdb/title/TroublewiththeCurve> a imdb:ColorMovie;
+  schema:genre "Drama", "Sport";
+  schema:name "Trouble with the Curve";
+  schema:commentCount 239;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/RobertLorenz>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  schema:actor <http://academy.ontotext.com/imdb/person/EdLauter>, <http://academy.ontotext.com/imdb/person/BobGunton> .
+
+  <http://academy.ontotext.com/imdb/title/AmericanSniper> a imdb:ColorMovie;
+  schema:genre "Action", "Biography", "Drama", "History", "Thriller", "War";
+  schema:name "American Sniper";
+  schema:commentCount 490;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/BradleyCooper>;
+  schema:actor <http://academy.ontotext.com/imdb/person/LeonardRoberts>, <http://academy.ontotext.com/imdb/person/KeirODonnell> .
+
+  <http://academy.ontotext.com/imdb/title/Changeling> a imdb:ColorMovie;
+  schema:genre "Crime", "Drama", "Mystery", "Thriller";
+  schema:name "Changeling";
+  schema:commentCount 264;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/AngelinaJoliePitt>;
+  schema:actor <http://academy.ontotext.com/imdb/person/MichaelKelly>, <http://academy.ontotext.com/imdb/person/ColmFeore> .
+
+  <http://academy.ontotext.com/imdb/title/FlagsofOurFathers> a imdb:ColorMovie;
+  schema:genre "Drama", "History", "War";
+  schema:name "Flags of Our Fathers";
+  schema:commentCount 279;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/PaulWalker>;
+  schema:actor <http://academy.ontotext.com/imdb/person/ChrisBauer>, <http://academy.ontotext.com/imdb/person/TomMcCarthy> .
+
+  <http://academy.ontotext.com/imdb/title/AbsolutePower> a imdb:ColorMovie;
+  schema:genre "Action", "Crime", "Drama", "Thriller";
+  schema:name "Absolute Power";
+  schema:commentCount 76;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  schema:actor <http://academy.ontotext.com/imdb/person/MarkMargolis>, <http://academy.ontotext.com/imdb/person/ScottGlenn> .
+
+  <http://academy.ontotext.com/imdb/title/Hereafter> a imdb:ColorMovie;
+  schema:genre "Drama", "Fantasy";
+  schema:name "Hereafter";
+  schema:commentCount 315;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/MattDamon>;
+  schema:actor <http://academy.ontotext.com/imdb/person/JayMohr>, <http://academy.ontotext.com/imdb/person/CcileDeFrance> .
+  <http://academy.ontotext.com/imdb/title/BloodWork> a imdb:ColorMovie;
+  schema:genre "Action", "Crime", "Drama", "Mystery", "Thriller";
+  schema:name "Blood Work";
+  schema:commentCount 146;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  schema:actor <http://academy.ontotext.com/imdb/person/AnjelicaHuston>, <http://academy.ontotext.com/imdb/person/RickHoffman> .
+
+  <http://academy.ontotext.com/imdb/title/JerseyBoys> a imdb:ColorMovie;
+  schema:genre "Biography", "Drama", "Music", "Musical";
+  schema:name "Jersey Boys";
+  schema:commentCount 249;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/JohnnyCannizzaro>;
+  schema:actor <http://academy.ontotext.com/imdb/person/SteveSchirripa>, <http://academy.ontotext.com/imdb/person/ScottVance> .
+
+  <http://academy.ontotext.com/imdb/title/JEdgar> a imdb:ColorMovie;
+  schema:genre "Biography";
+  schema:name "J. Edgar";
+  schema:commentCount 392;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/LeonardoDiCaprio>;
+  schema:actor <http://academy.ontotext.com/imdb/person/NaomiWatts>, <http://academy.ontotext.com/imdb/person/KaitlynDever>;
+  schema:genre "Crime", "Drama" .
+
+  <http://academy.ontotext.com/imdb/title/MidnightintheGardenofGoodandEvil> a imdb:ColorMovie;
+  schema:genre "Crime", "Drama", "Mystery", "Thriller";
+  schema:name "Midnight in the Garden of Good and Evil";
+  schema:commentCount 91;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/KevinSpacey>;
+  schema:actor <http://academy.ontotext.com/imdb/person/BobGunton>, <http://academy.ontotext.com/imdb/person/LeonRippy> .
+
+  <http://academy.ontotext.com/imdb/title/MysticRiver> a imdb:ColorMovie;
+  schema:genre "Crime", "Drama", "Mystery", "Thriller";
+  schema:name "Mystic River";
+  schema:commentCount 229;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/JohnDoman>;
+  schema:actor <http://academy.ontotext.com/imdb/person/SpencerTreatClark>, <http://academy.ontotext.com/imdb/person/TomGuiry> .
+
+  <http://academy.ontotext.com/imdb/title/MillionDollarBaby> a imdb:ColorMovie;
+  schema:genre "Drama", "Sport";
+  schema:name "Million Dollar Baby";
+  schema:commentCount 268;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  schema:actor <http://academy.ontotext.com/imdb/person/MorganFreeman>, <http://academy.ontotext.com/imdb/person/MikeColter> .
+
+  <http://academy.ontotext.com/imdb/title/GranTorino> a imdb:ColorMovie;
+  schema:genre "Drama";
+  schema:name "Gran Torino";
+  schema:commentCount 366;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  schema:actor <http://academy.ontotext.com/imdb/person/DreamaWalker>, <http://academy.ontotext.com/imdb/person/AhneyHer> .
+
+  <http://academy.ontotext.com/imdb/title/TheBridgesofMadisonCounty> a imdb:ColorMovie;
+  schema:genre "Drama", "Romance";
+  schema:name "The Bridges of Madison County";
+  schema:commentCount 69;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  schema:actor <http://academy.ontotext.com/imdb/person/MerylStreep>, <http://academy.ontotext.com/imdb/person/DebraMonk> .
+
+  <http://academy.ontotext.com/imdb/title/Firefox> a imdb:ColorMovie;
+  schema:genre "Action", "Adventure", "Thriller";
+  schema:name "Firefox";
+  schema:commentCount 43;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  schema:actor <http://academy.ontotext.com/imdb/person/WarrenClarke>, <http://academy.ontotext.com/imdb/person/KennethColley> .
+
+  <http://academy.ontotext.com/imdb/title/PaintYourWagon> a imdb:ColorMovie;
+  schema:genre "Comedy", "Drama", "Musical", "Romance", "Western";
+  schema:name "Paint Your Wagon";
+  schema:commentCount 20;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/JoshuaLogan>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  schema:actor <http://academy.ontotext.com/imdb/person/LeeMarvin>, <http://academy.ontotext.com/imdb/person/RayWalston> .
+
+  <http://academy.ontotext.com/imdb/title/Unforgiven> a imdb:ColorMovie;
+  schema:genre "Drama", "Western";
+  schema:name "Unforgiven";
+  schema:commentCount 131;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  schema:actor <http://academy.ontotext.com/imdb/person/MorganFreeman>, <http://academy.ontotext.com/imdb/person/FrancesFisher> .
+
+  <http://academy.ontotext.com/imdb/title/LettersfromIwoJima> a imdb:ColorMovie;
+  schema:genre "Drama", "History", "War";
+  schema:name "Letters from Iwo Jima";
+  schema:commentCount 251;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/YukiMatsuzaki>;
+  schema:actor <http://academy.ontotext.com/imdb/person/KazunariNinomiya>, <http://academy.ontotext.com/imdb/person/ShidNakamura> .
+
+  <http://academy.ontotext.com/imdb/title/EscapefromAlcatraz> a imdb:ColorMovie;
+  schema:genre "Biography", "Crime", "Drama";
+  schema:name "Escape from Alcatraz";
+  schema:commentCount 53;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/DonSiegel>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  schema:actor <http://academy.ontotext.com/imdb/person/PatrickMcGoohan>, <http://academy.ontotext.com/imdb/person/FredWard> .
+
+  <http://academy.ontotext.com/imdb/title/PaleRider> a imdb:ColorMovie;
+  schema:genre "Western";
+  schema:name "Pale Rider";
+  schema:commentCount 38;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  schema:actor <http://academy.ontotext.com/imdb/person/ChrisPenn>, <http://academy.ontotext.com/imdb/person/SydneyPenny> .
+
+  <http://academy.ontotext.com/imdb/title/HighPlainsDrifter> a imdb:ColorMovie;
+  schema:genre "Mystery", "Western";
+  schema:name "High Plains Drifter";
+  schema:commentCount 72;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  schema:actor <http://academy.ontotext.com/imdb/person/RichardBull>, <http://academy.ontotext.com/imdb/person/JohnHillerman> .
+
+  <http://academy.ontotext.com/imdb/title/HangEmHigh> a imdb:ColorMovie;
+  schema:genre "Western";
+  schema:name "Hang 'Em High";
+  schema:commentCount 26;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/TedPost>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  schema:actor <http://academy.ontotext.com/imdb/person/BruceDern>, <http://academy.ontotext.com/imdb/person/AlanHaleJr> .
+
+  <http://academy.ontotext.com/imdb/title/TheGoodtheBadandtheUgly> a imdb:ColorMovie;
+  schema:genre "Western";
+  schema:name "The Good, the Bad and the Ugly";
+  schema:commentCount 181;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/Italy>;
+  schema:director <http://academy.ontotext.com/imdb/person/SergioLeone>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  schema:actor <http://academy.ontotext.com/imdb/person/LuigiPistilli>, <http://academy.ontotext.com/imdb/person/EnzoPetito> .
+
+  <http://academy.ontotext.com/imdb/title/AFistfulofDollars> a imdb:ColorMovie;
+  schema:genre "Action", "Drama", "Western";
+  schema:name "A Fistful of Dollars";
+  schema:commentCount 122;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/Italy>;
+  schema:director <http://academy.ontotext.com/imdb/person/SergioLeone>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/ClintEastwood>;
+  schema:actor <http://academy.ontotext.com/imdb/person/GianMariaVolont>, <http://academy.ontotext.com/imdb/person/AldoSambrell> .
+
+  <http://academy.ontotext.com/imdb/title/Antz> a imdb:ColorMovie;
+  schema:genre "Adventure", "Animation", "Comedy", "Family";
+  schema:name "Antz";
+  schema:commentCount 131;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/EricDarnell>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/SylvesterStallone>;
+  schema:actor <http://academy.ontotext.com/imdb/person/WoodyAllen>, <http://academy.ontotext.com/imdb/person/AnneBancroft> .
+
+<http://academy.ontotext.com/imdb/person/WoodyAllen> schema:name "Woody Allen" .
+
+<http://academy.ontotext.com/imdb/title/MidnightinParis> a imdb:ColorMovie;
+  schema:genre "Comedy", "Fantasy", "Romance";
+  schema:name "Midnight in Paris";
+  schema:commentCount 487;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/Spain>;
+  schema:director <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/KurtFuller>;
+  schema:actor <http://academy.ontotext.com/imdb/person/AudreyFleurot>, <http://academy.ontotext.com/imdb/person/NinaArianda> .
+
+  <http://academy.ontotext.com/imdb/title/TheCurseoftheJadeScorpion> a imdb:ColorMovie;
+  schema:genre "Comedy", "Crime", "Mystery", "Romance";
+  schema:name "The Curse of the Jade Scorpion";
+  schema:commentCount 116;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  schema:actor <http://academy.ontotext.com/imdb/person/ElizabethBerkley>, <http://academy.ontotext.com/imdb/person/PeterGerety> .
+
+  <http://academy.ontotext.com/imdb/title/ToRomewithLove> a imdb:ColorMovie;
+  schema:genre "Comedy", "Romance";
+  schema:name "To Rome with Love";
+  schema:commentCount 275;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/OrnellaMuti>;
+  schema:actor <http://academy.ontotext.com/imdb/person/JudyDavis>, <http://academy.ontotext.com/imdb/person/AlessandraMastronardi> .
+
+  <http://academy.ontotext.com/imdb/title/BulletsOverBroadway> a imdb:ColorMovie;
+  schema:genre "Comedy", "Crime";
+  schema:name "Bullets Over Broadway";
+  schema:commentCount 67;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/JimBroadbent>;
+  schema:actor <http://academy.ontotext.com/imdb/person/ChazzPalminteri>, <http://academy.ontotext.com/imdb/person/DianneWiest> .
+
+  <http://academy.ontotext.com/imdb/title/DeconstructingHarry> a imdb:ColorMovie;
+  schema:genre "Comedy";
+  schema:name "Deconstructing Harry";
+  schema:commentCount 104;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  schema:actor <http://academy.ontotext.com/imdb/person/LynnCohen>, <http://academy.ontotext.com/imdb/person/JudyDavis> .
+
+  <http://academy.ontotext.com/imdb/title/EveryoneSaysILoveYou> a imdb:ColorMovie;
+  schema:genre "Comedy", "Musical", "Romance";
+  schema:name "Everyone Says I Love You";
+  schema:commentCount 69;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/NatashaLyonne>;
+  schema:actor <http://academy.ontotext.com/imdb/person/GabyHoffmann>, <http://academy.ontotext.com/imdb/person/JeffDeRocker> .
+
+  <http://academy.ontotext.com/imdb/title/BlueJasmine> a imdb:ColorMovie;
+  schema:genre "Drama";
+  schema:name "Blue Jasmine";
+  schema:commentCount 415;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/SallyHawkins>;
+  schema:actor <http://academy.ontotext.com/imdb/person/CharlieTahan>, <http://academy.ontotext.com/imdb/person/AndrewDiceClay> .
+
+  <http://academy.ontotext.com/imdb/title/SmallTimeCrooks> a imdb:ColorMovie;
+  schema:genre "Comedy", "Crime";
+  schema:name "Small Time Crooks";
+  schema:commentCount 128;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  schema:actor <http://academy.ontotext.com/imdb/person/JonLovitz>, <http://academy.ontotext.com/imdb/person/MichaelRapaport> .
+
+  <http://academy.ontotext.com/imdb/title/AnythingElse> a imdb:ColorMovie;
+  schema:genre "Comedy", "Romance";
+  schema:name "Anything Else";
+  schema:commentCount 128;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  schema:actor <http://academy.ontotext.com/imdb/person/StockardChanning>, <http://academy.ontotext.com/imdb/person/FisherStevens> .
+
+  <http://academy.ontotext.com/imdb/title/VickyCristinaBarcelona> a imdb:ColorMovie;
+  schema:genre "Drama", "Romance";
+  schema:name "Vicky Cristina Barcelona";
+  schema:commentCount 275;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/Spain>;
+  schema:director <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/ScarlettJohansson>;
+  schema:actor <http://academy.ontotext.com/imdb/person/KevinDunn>, <http://academy.ontotext.com/imdb/person/ChristopherEvanWelch> .
+
+  <http://academy.ontotext.com/imdb/title/RadioDays> a imdb:ColorMovie;
+  schema:genre "Comedy";
+  schema:name "Radio Days";
+  schema:commentCount 64;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/MikeStarr>;
+  schema:actor <http://academy.ontotext.com/imdb/person/DonPardo>, <http://academy.ontotext.com/imdb/person/JulieKavner> .
+
+  <http://academy.ontotext.com/imdb/title/HollywoodEnding> a imdb:ColorMovie;
+  schema:genre "Comedy", "Romance";
+  schema:name "Hollywood Ending";
+  schema:commentCount 109;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  schema:actor <http://academy.ontotext.com/imdb/person/DebraMessing>, <http://academy.ontotext.com/imdb/person/TreatWilliams> .
+
+  <http://academy.ontotext.com/imdb/title/MatchPoint> a imdb:ColorMovie;
+  schema:genre "Drama", "Romance", "Thriller";
+  schema:name "Match Point";
+  schema:commentCount 278;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/UK>;
+  schema:director <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/ScarlettJohansson>;
+  schema:actor <http://academy.ontotext.com/imdb/person/MarkGatiss>, <http://academy.ontotext.com/imdb/person/PenelopeWilton> .
+
+  <http://academy.ontotext.com/imdb/title/NewYorkStories> a imdb:ColorMovie;
+  schema:genre "Comedy", "Drama", "Romance";
+  schema:name "New York Stories";
+  schema:commentCount 42;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  schema:actor <http://academy.ontotext.com/imdb/person/LarryDavid>, <http://academy.ontotext.com/imdb/person/MiaFarrow> .
+
+  <http://academy.ontotext.com/imdb/title/WhateverWorks> a imdb:ColorMovie;
+  schema:genre "Comedy", "Romance";
+  schema:name "Whatever Works";
+  schema:commentCount 218;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/LarryDavid>;
+  schema:actor <http://academy.ontotext.com/imdb/person/MichaelMcKean>, <http://academy.ontotext.com/imdb/person/ConlethHill> .
+
+  <http://academy.ontotext.com/imdb/title/YouWillMeetaTallDarkStranger> a imdb:ColorMovie;
+  schema:genre "Comedy", "Drama", "Romance";
+  schema:name "You Will Meet a Tall Dark Stranger";
+  schema:commentCount 223;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/AnthonyHopkins>;
+  schema:actor <http://academy.ontotext.com/imdb/person/NaomiWatts>, <http://academy.ontotext.com/imdb/person/EwenBremner> .
+
+  <http://academy.ontotext.com/imdb/title/Celebrity> a imdb:BlackandWhiteMovie;
+  schema:genre "Comedy", "Drama";
+  schema:name "Celebrity";
+  schema:commentCount 114;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/MelanieGriffith>;
+  schema:actor <http://academy.ontotext.com/imdb/person/AleksaPalladino>, <http://academy.ontotext.com/imdb/person/GregMottola> .
+
+  <http://academy.ontotext.com/imdb/title/AnnieHall> a imdb:ColorMovie;
+  schema:genre "Comedy", "Romance";
+  schema:name "Annie Hall";
+  schema:commentCount 154;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  schema:actor <http://academy.ontotext.com/imdb/person/CarolKane>, <http://academy.ontotext.com/imdb/person/ShelleyDuvall> .
+
+  <http://academy.ontotext.com/imdb/title/Scoop> a imdb:ColorMovie;
+  schema:genre "Comedy", "Crime", "Mystery";
+  schema:name "Scoop";
+  schema:commentCount 177;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/UK>;
+  schema:director <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/ScarlettJohansson>;
+  schema:actor <http://academy.ontotext.com/imdb/person/KevinMcNally>, <http://academy.ontotext.com/imdb/person/GeoffBell> .
+
+  <http://academy.ontotext.com/imdb/title/Sleeper> a imdb:ColorMovie;
+  schema:genre "Comedy", "Sci-Fi";
+  schema:name "Sleeper";
+  schema:commentCount 66;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  schema:actor <http://academy.ontotext.com/imdb/person/JohnBeck>, <http://academy.ontotext.com/imdb/person/MewsSmall> .
+
+  <http://academy.ontotext.com/imdb/title/EverythingYouAlwaysWantedtoKnowAboutSexButWereAfraidtoAsk>
+  a imdb:BlackandWhiteMovie;
+  schema:genre "Comedy";
+  schema:name "Everything You Always Wanted to Know About Sex * But Were Afraid to Ask";
+  schema:commentCount 50;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  schema:actor <http://academy.ontotext.com/imdb/person/JohnCarradine>, <http://academy.ontotext.com/imdb/person/LynnRedgrave> .
+
+  <http://academy.ontotext.com/imdb/title/Bananas> a imdb:ColorMovie;
+  schema:genre "Comedy";
+  schema:name "Bananas";
+  schema:commentCount 40;
+  schema:countryOfOrigin <http://academy.ontotext.com/imdb/country/USA>;
+  schema:director <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  imdb:leadActor <http://academy.ontotext.com/imdb/person/WoodyAllen>;
+  schema:actor <http://academy.ontotext.com/imdb/person/CharlotteRae>, <http://academy.ontotext.com/imdb/person/LouiseLasser> .
