@@ -125,7 +125,9 @@
 .guide-dialog.shepherd-element.class-hierarchy-instances-query-guide-dialog,
 .guide-dialog.shepherd-element.table-graph-link-guide-dialog,
 .guide-dialog.shepherd-element.visual_graph-role-guide-dialog,
-.guide-dialog.shepherd-element.table-graph-visual-button-guide-dialog
+.guide-dialog.shepherd-element.table-graph-visual-button-guide-dialog,
+.guide-dialog.shepherd-element.table-graph-instance-guide-dialog,
+.guide-dialog.shepherd-element.class-hierarchy-instance-guide-dialog
 {
     margin-top: 12px;
 }
@@ -135,9 +137,7 @@
 .guide-dialog.shepherd-element.visual-graph-show-properties-intro-guide-dialog,
 .guide-dialog.shepherd-element.visual-graph-expand-node-guide-dialog,
 .guide-dialog.shepherd-element.yasgui-query-results-guide-dialog,
-.guide-dialog.shepherd-element.class-hierarchy-instance-guide-dialog,
 .guide-dialog.shepherd-element.class-hierarchy-instances-results-guide-dialog,
-.guide-dialog.shepherd-element.table-graph-instance-guide-dialog,
 .guide-dialog.shepherd-element.table-graph-overview-guide-dialog,
 .guide-dialog.shepherd-element.visual_graph-table-guide-dialog,
 .guide-dialog.shepherd-element.class-hierarchy-instance-guide-dialog,

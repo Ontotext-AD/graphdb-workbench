@@ -202,7 +202,7 @@ describe.skip('Resource view', () => {
             YasrSteps.getNoDataElement().should('exist');
 
             // When I click on "all" tab.
-            ResourceSteps.selectAlRole();
+            ResourceSteps.selectAllRole();
 
             // Then I expect to see all triples of subject without mater of its role.
             YasrSteps.getResults().should('have.length', 2);
@@ -244,7 +244,7 @@ describe.skip('Resource view', () => {
             YasrSteps.getNoDataElement().should('be.visible');
 
             // When I click on "all" tab.
-            ResourceSteps.selectAlRole();
+            ResourceSteps.selectAllRole();
 
             // Then I expect to see all triples of subject without mater of its role.
             YasrSteps.getResults().should('have.length', 6);
@@ -276,7 +276,7 @@ describe.skip('Resource view', () => {
             YasrSteps.getNoDataElement().should('exist');
 
             // When I click on "all" tab.
-            ResourceSteps.selectAlRole();
+            ResourceSteps.selectAllRole();
 
             // Then I expect to see all triples of resource without mater of its role.
             YasrSteps.getResults().should('have.length', 6);
@@ -308,7 +308,7 @@ describe.skip('Resource view', () => {
             YasrSteps.getResults().should('have.length', 86);
 
             // When I click on "all" tab.
-            ResourceSteps.selectAlRole();
+            ResourceSteps.selectAllRole();
 
             // Then I expect to see all triples of resource without mater of its role.
             YasrSteps.getResults().should('have.length', 86);

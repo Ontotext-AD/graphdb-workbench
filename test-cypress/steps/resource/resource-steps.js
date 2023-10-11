@@ -116,8 +116,12 @@ export class ResourceSteps {
         ResourceSteps.selectRole('context');
     }
 
-    static selectAlRole() {
-        ResourceSteps.selectRole('all');
+    static getAllRoleTab() {
+        return ResourceSteps.getRoleTab('all');
+    }
+
+    static selectAllRole() {
+        ResourceSteps.getAllRoleTab().click();
     }
 
     static verifyActiveRoleTab(activeRole = 'subject') {
