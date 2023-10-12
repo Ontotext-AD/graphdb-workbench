@@ -269,6 +269,7 @@ describe('Similarity screen validation', () => {
 
     function disableSimilarityPlugin() {
         const disableSimilarityPluginQuery = 'INSERT DATA { <u:a> <http://www.ontotext.com/owlim/system#stopplugin> \'similarity\' . }';
+        cy.waitUntilQueryIsVisible();
         cy.pasteQuery(disableSimilarityPluginQuery);
         cy.executeQuery();
     }
@@ -411,6 +412,7 @@ describe('Similarity screen validation', () => {
         let shouldAnalogicalTabBeVisible = (isPredication ? '' : 'not.') + 'be.visible';
         getAnalogicalQueryTab().should(shouldAnalogicalTabBeVisible);
         if (isPredication) {
+            cy.waitUntilQueryIsVisible();
             cy.verifyQueryAreaContains('SELECT ?entity ?score {');
         }
     }
@@ -421,6 +423,7 @@ describe('Similarity screen validation', () => {
             'filter(isLiteral(?documentText)) \n' +
             '}order by asc(str(?documentID))';
 
+        cy.waitUntilQueryIsVisible();
         cy.pasteQuery(MODIFIED_DATA_QUERY);
         cy.get('.test-query-btn').click();
         cy.get('.sparql-loader').should('not.exist');
@@ -430,6 +433,7 @@ describe('Similarity screen validation', () => {
 
     function changeSearchQuery() {
         getSearchQueryTab().scrollIntoView().should('be.visible').click();
+        cy.waitUntilQueryIsVisible();
         cy.pasteQuery(MODIFIED_SEARCH_QUERY);
     }
 
@@ -438,6 +442,7 @@ describe('Similarity screen validation', () => {
             .scrollIntoView()
             .should('be.visible').click()
             .then(() => {
+                cy.waitUntilQueryIsVisible();
                 cy.pasteQuery(MODIFIED_ANALOGICAL_QUERY);
             });
     }
@@ -476,6 +481,7 @@ describe('Similarity screen validation', () => {
 
     function verifyQueryIsChanged() {
         const query = 'OPTIONAL { ?result <http://dbpedia.org/ontology/birthPlace> ?birthDate .';
+        cy.waitUntilQueryIsVisible();
         cy.verifyQueryAreaContains(query);
     }
 });
