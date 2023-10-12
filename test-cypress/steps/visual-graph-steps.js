@@ -355,7 +355,7 @@ export class VisualGraphSteps {
     }
 
     static selectStartNode(uri, index) {
-        this.getStartNodeSelectorField().type(uri)
+        cy.get('.graph-config-wizard-body .view-res-input').type(uri)
             .closest('.start-node-selector')
             .find('#auto-complete-results-wrapper .result-item').eq(index).click();
     }
