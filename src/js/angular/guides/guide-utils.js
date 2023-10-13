@@ -253,11 +253,11 @@ const GuideUtils = (function () {
     };
 
     const getSparqlResultsSelectorForIri = (iri) => {
-        return `${GuideUtils.CONSTANTS.SPARQL_RESULTS_SELECTOR} a[title='${iri}']`;
+        return `${GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_SELECTOR} a[title='${iri}']`;
     };
 
     const getSparqlResultsSelectorForRow = (row) => {
-        return `${GuideUtils.CONSTANTS.SPARQL_RESULTS_SELECTOR} tbody tr:nth-child(${row})`;
+        return `${GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_SELECTOR} tbody tr:nth-child(${row})`;
     };
 
     const isChecked = (selector) => {
@@ -283,7 +283,7 @@ const GuideUtils = (function () {
         return angular.isFunction(elementSelector) ? elementSelector() : elementSelector;
     };
 
-    const CONSTANTS = {
+    const CSS_SELECTORS = {
         SPARQL_EDITOR_SELECTOR: '.tabPanel.active .yasqe .CodeMirror-code',
         SPARQL_RESULTS_SELECTOR: '.tabPanel.active .yasr_results',
         SPARQL_RESULTS_ROWS_SELECTOR: '.tabPanel.active .yasr_results tbody',
@@ -318,7 +318,7 @@ const GuideUtils = (function () {
         isGuideElementChecked,
         defaultInitPreviousStep,
         getElementSelector,
-        CONSTANTS
+        CSS_SELECTORS
     };
 })();
 
