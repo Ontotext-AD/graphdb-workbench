@@ -182,7 +182,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.class-hierarchy-instances-query.content',
                         url: '/sparql',
-                        elementSelector: GuideUtils.CONSTANTS.SPARQL_EDITOR_SELECTOR,
+                        elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR,
                         class: 'class-hierarchy-instances-query-guide-dialog',
                         scrollToHandler: GuideUtils.scrollToTop
                     }, options)
@@ -195,7 +195,7 @@ PluginRegistry.add('guide.step', [
                             'guide.step_plugin.class-hierarchy-instances-results.extraContent' : null,
                         url: '/sparql',
                         placement: 'top',
-                        elementSelector: GuideUtils.CONSTANTS.SPARQL_RESULTS_SELECTOR,
+                        elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_SELECTOR,
                         class: 'class-hierarchy-instances-results-guide-dialog',
                         fileName: options.fileName,
                         scrollToHandler: GuideUtils.scrollToTop,
@@ -234,7 +234,7 @@ PluginRegistry.add('guide.step', [
                             GuideUtils.waitFor(instanceCountSelector, 3)
                                 .then(() => {
                                     $(instanceCountSelector).trigger('click');
-                                    GuideUtils.waitFor(GuideUtils.CONSTANTS.SPARQL_RESULTS_SELECTOR, 3)
+                                    GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_SELECTOR, 3)
                                         .then(() => {
                                             GuideUtils.deferredShow(50)()
                                                 .then(() => resolve())

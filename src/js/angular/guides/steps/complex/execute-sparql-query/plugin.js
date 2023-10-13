@@ -44,11 +44,11 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.execute-sparql-query.query-editor.content',
                         url: '/sparql',
-                        elementSelector: GuideUtils.CONSTANTS.SPARQL_EDITOR_SELECTOR,
+                        elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR,
                         class: 'yasgui-query-editor-guide-dialog',
                         beforeShowPromise: () => {
                             return YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(SPARQL_DIRECTIVE_SELECTOR)
-                                .then(() => GuideUtils.waitFor(GuideUtils.CONSTANTS.SPARQL_EDITOR_SELECTOR, 3))
+                                .then(() => GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR, 3))
                                 .catch((error) => {
                                     services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
                                     throw error;
@@ -85,7 +85,7 @@ PluginRegistry.add('guide.step', [
                                     $location.url('/sparql');
                                     $route.reload();
                                 }
-                                GuideUtils.waitFor(GuideUtils.CONSTANTS.SPARQL_EDITOR_SELECTOR)
+                                GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR)
                                     .then(() => {
                                         YasguiComponentDirectiveUtil.executeSparqlQuery("#query-editor", query)
                                             .then(() => {
@@ -107,7 +107,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.execute-sparql-query.run-sparql-query.content',
                         url: '/sparql',
-                        elementSelector: GuideUtils.CONSTANTS.SPARQL_RUN_BUTTON_SELECTOR,
+                        elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_RUN_BUTTON_SELECTOR,
                         class: 'yasgui-run-button-guide-dialog',
                         onNextClick: (guide) => YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(SPARQL_DIRECTIVE_SELECTOR)
                                 .then((yasgui) => {
@@ -140,7 +140,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.execute-sparql-query.result-explain.content',
                         url: '/sparql',
                         placement: 'top',
-                        elementSelector: GuideUtils.CONSTANTS.SPARQL_RESULTS_SELECTOR,
+                        elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_SELECTOR,
                         class: 'yasgui-query-results-guide-dialog',
                         fileName: options.fileName,
                         scrollToHandler: GuideUtils.scrollToTop,
@@ -150,7 +150,7 @@ PluginRegistry.add('guide.step', [
                             if ('/sparql' !== $location.url()) {
                                 $location.url('/sparql');
                                 $route.reload();
-                                GuideUtils.waitFor(GuideUtils.CONSTANTS.SPARQL_EDITOR_SELECTOR)
+                                GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR)
                                     .then(() => {
                                         YasguiComponentDirectiveUtil.executeSparqlQuery("#query-editor", query)
                                             .then(() => {
