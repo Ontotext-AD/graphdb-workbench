@@ -42,7 +42,7 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.table-graph-overview',
                         scrollToHandler: GuideUtils.scrollToTop,
-                        elementSelector: GuideUtils.CONSTANTS.SPARQL_RESULTS_ROWS_SELECTOR,
+                        elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_ROWS_SELECTOR,
                         class: 'table-graph-overview-guide-dialog',
                         placement: 'top',
                         initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
@@ -54,7 +54,7 @@ PluginRegistry.add('guide.step', [
                                 if (url !== decodeURIComponent($location.url())) {
                                     $location.url(url);
                                     $route.reload();
-                                    GuideUtils.waitFor(GuideUtils.CONSTANTS.SPARQL_RESULTS_ROWS_SELECTOR)
+                                    GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_ROWS_SELECTOR)
                                         .then(() => resolve())
                                         .catch((error) => reject(error));
                                 } else {
@@ -99,7 +99,7 @@ PluginRegistry.add('guide.step', [
                                             // this case is from second link we have to reload
                                             $location.url(linkUrl);
                                             $route.reload();
-                                            GuideUtils.waitFor(GuideUtils.CONSTANTS.SPARQL_RESULTS_ROWS_SELECTOR)
+                                            GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_ROWS_SELECTOR)
                                                 .then(() => resolve())
                                                 .catch((error) => reject(error));
                                         }
@@ -132,7 +132,7 @@ PluginRegistry.add('guide.step', [
                                                     url += subStep.role;
                                                     $location.url(url);
                                                     $route.reload();
-                                                    GuideUtils.waitFor(GuideUtils.CONSTANTS.SPARQL_RESULTS_ROWS_SELECTOR)
+                                                    GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_ROWS_SELECTOR)
                                                         .then(() => resolve())
                                                         .catch((error) => reject(error));
                                                 })
@@ -196,7 +196,7 @@ PluginRegistry.add('guide.step', [
                             steps.push({
                                 guideBlockName: 'read-only-element',
                                 options: angular.extend({}, {
-                                    elementSelector: GuideUtils.CONSTANTS.SPARQL_RESULTS_ROWS_SELECTOR,
+                                    elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_ROWS_SELECTOR,
                                     class: 'visual_graph-table-guide-dialog',
                                     placement: 'top'
                                 }, angular.extend({}, options, subStep))
