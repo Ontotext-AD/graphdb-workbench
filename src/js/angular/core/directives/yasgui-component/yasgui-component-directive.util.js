@@ -58,10 +58,7 @@ export const YasguiComponentDirectiveUtil = (function () {
      */
     const executeSparqlQuery = (directiveSelector, query) => {
         return setQuery(directiveSelector, query)
-            .then((yasgui) => {
-                yasgui.query(query)
-                    .then(() => yasgui);
-            });
+            .then(executeYasguiQuery);
     };
 
     /**
@@ -72,10 +69,16 @@ export const YasguiComponentDirectiveUtil = (function () {
      */
     const setQuery = (directiveSelector, query) => {
         return getOntotextYasguiElementAsync(directiveSelector)
-            .then((yasgui) => {
-                return yasgui.setQuery(query)
-                    .then(() => yasgui);
-            });
+            .then((yasgui) => ({yasgui, query}))
+            .then(setYasguiQuery);
+    };
+
+    const setYasguiQuery = ({yasgui, query}) => {
+        return yasgui.setQuery(query).then(() => yasgui);
+    };
+
+    const executeYasguiQuery = (yasgui) => {
+        return yasgui.query().then(() => yasgui);
     };
 
     return {
