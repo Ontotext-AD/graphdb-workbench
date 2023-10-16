@@ -180,9 +180,9 @@ export class SimilarityIndexInfo {
         return RenderingMode.YASR === this.getSelectedYasguiRenderMode();
     }
 
-    ////////////////////////////
-    // Similarity index getters
-    ////////////////////////////
+    ///////////////////////////////////////
+    // Similarity index getters and setters
+    ///////////////////////////////////////
 
     getName() {
         return this.similarityIndex.name;
@@ -230,6 +230,10 @@ export class SimilarityIndexInfo {
 
     getType() {
         return this.similarityIndex.type;
+    }
+
+    setOptions(options) {
+        this.similarityIndex.options = options;
     }
 
     getOptions() {
