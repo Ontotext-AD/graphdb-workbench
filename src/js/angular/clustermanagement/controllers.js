@@ -218,6 +218,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             resolve: {
                 data: function () {
                     return {
+                        deleteLocation: deleteLocation,
                         clusterModel: $scope.clusterModel
                     };
                 }
@@ -310,6 +311,15 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             });
     }
 
+    //Delete location
+    const deleteLocation = function (location) {
+        return ModalService.openSimpleModal({
+            title: $translate.instant('location.confirm.detach'),
+            message: $translate.instant('location.confirm.detach.warning', {uri: location.endpoint}),
+            warning: true
+        }).result.then(() => $repositories.deleteLocation(location.endpoint));
+    };
+
     $scope.showAddNodeToClusterDialog = () => {
         const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/clustermanagement/templates/modal/add-nodes-dialog.html',
@@ -318,6 +328,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             resolve: {
                 data: function () {
                     return {
+                        deleteLocation: deleteLocation,
                         clusterModel: $scope.clusterModel,
                         clusterConfiguration: $scope.clusterConfiguration
                     };
@@ -465,6 +476,12 @@ function CreateClusterCtrl($scope, $uibModalInstance, $timeout, ClusterRestServi
     $scope.selectedLocations = data.clusterModel.locations.filter((location) => location.isLocal);
 
     $scope.loader = false;
+
+    $scope.deleteLocation = function (event, location) {
+        event.preventDefault();
+        event.stopPropagation();
+        data.deleteLocation(location).then(() => $scope.locations = $scope.locations.filter((loc) => loc.endpoint !== location.endpoint));
+    };
 
     $scope.getAdvancedOptionsClass = getAdvancedOptionsClass;
 
@@ -792,6 +809,12 @@ function AddNodesDialogCtrl($scope, $uibModalInstance, data, $uibModal, RemoteLo
     $scope.clusterNodes = clusterModel.nodes.map((node) => ({rpcAddress: node.address, endpoint: node.endpoint}));
     $scope.locations = clusterModel.locations.filter((location) => !clusterConfiguration.nodes.includes(location.rpcAddress));
     $scope.locations.forEach((location) => location.isNew = true);
+
+    $scope.deleteLocation = function (event, location) {
+        event.preventDefault();
+        event.stopPropagation();
+        data.deleteLocation(location).then(() => $scope.locations = $scope.locations.filter((loc) => loc.endpoint !== location.endpoint));
+    };
 
     $scope.addNodeToList = function (location) {
         if (!location.rpcAddress) {
