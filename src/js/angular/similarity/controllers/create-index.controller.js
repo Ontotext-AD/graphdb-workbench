@@ -437,9 +437,9 @@ function CreateSimilarityIdxCtrl(
         similarityIndexInfo.setSelectedQueryType($scope.isEditViewMode() ? SimilarityQueryType.SEARCH : SimilarityQueryType.DATA);
         const options = $location.search().options;
         if (options) {
-            similarityIndexInfo.options = options;
+            similarityIndexInfo.setOptions(options);
         } else {
-            similarityIndexInfo.options = similarityIndexInfo.isTextType() ? textDefaultOptions : predDefaultOptions
+            similarityIndexInfo.setOptions(similarityIndexInfo.isTextType() ? textDefaultOptions : predDefaultOptions);
         }
 
         setDefaultQueries(similarityIndexInfo);
