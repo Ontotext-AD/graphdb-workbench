@@ -57,8 +57,14 @@ export const YasguiComponentDirectiveUtil = (function () {
      * @return {Promise<YasguiComponent>}
      */
     const executeSparqlQuery = (directiveSelector, query) => {
+        let yasguiComponent = undefined;
         return setQuery(directiveSelector, query)
-            .then(executeYasguiQuery);
+            .then((yasgui) => {
+                yasguiComponent = yasgui;
+                return yasgui;
+            })
+            .then(() => yasguiComponent.query())
+            .then(() => yasguiComponent);
     };
 
     /**
@@ -68,17 +74,14 @@ export const YasguiComponentDirectiveUtil = (function () {
      * @return {Promise<YasguiComponent>}
      */
     const setQuery = (directiveSelector, query) => {
+        let yasguiComponent = undefined;
         return getOntotextYasguiElementAsync(directiveSelector)
-            .then((yasgui) => ({yasgui, query}))
-            .then(setYasguiQuery);
-    };
-
-    const setYasguiQuery = ({yasgui, query}) => {
-        return yasgui.setQuery(query).then(() => yasgui);
-    };
-
-    const executeYasguiQuery = (yasgui) => {
-        return yasgui.query().then(() => yasgui);
+            .then((yasgui) => {
+                yasguiComponent = yasgui;
+                return yasgui;
+            })
+            .then(() => yasguiComponent.setQuery(query))
+            .then(() => yasguiComponent);
     };
 
     return {
