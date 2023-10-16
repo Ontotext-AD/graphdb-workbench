@@ -75,78 +75,22 @@
     right: 5px;
 }
 
-.guide-dialog.shepherd-element.menu-setup-guide-dialog {
-    margin-top: 12px;
-    margin-left: 5px;
+.guide-dialog.shepherd-element[data-popper-placement="top"] {
+    margin-top: -12px;
 }
 
-.guide-dialog.shepherd-element.sub-menu-repositories-guide-dialog,
-.guide-dialog.shepherd-element.sub-menu-autocomplete-guide-dialog,
-.guide-dialog.shepherd-element.sub-menu-visual-graph-guide-dialog,
-.guide-dialog.shepherd-element.sub-menu-class-hierarchy-guide-dialog
-{
+.guide-dialog.shepherd-element[data-popper-placement="right"] {
     margin-left: 12px;
 }
 
-.guide-dialog.shepherd-element.import-file-button-guide-dialog,
-.guide-dialog.shepherd-element.visual-graph-side-panel-content-guide-dialog,
-.guide-dialog.shepherd-element.visual-graph-properties-focus-guide-dialog,
-.guide-dialog.shepherd-element.visual-graph-properties-side-panel-close-guide-dialog,
-.guide-dialog.shepherd-element.clas-hierarchy-intro-guide-dialog,
-.guide-dialog.shepherd-element.class-hierarchy-zoom-content-guide-dialog,
-.guide-dialog.shepherd-element.class-hierarchy-instances-guide-dialog,
-.guide-dialog.shepherd-element.class-hierarchy-side-panel-info-guide-dialog,
-.guide-dialog.shepherd-element.class-hierarchy-side-panel-close-guide-dialog
-{
+.guide-dialog.shepherd-element[data-popper-placement="bottom"] {
+    margin-top: 12px;
+}
+
+.guide-dialog.shepherd-element[data-popper-placement="left"] {
     margin-left: -12px;
 }
 
 .guide-dialog.shepherd-element.visual-graph-link-focus-guide-dialog {
     margin-top: -52px;
-}
-
-.guide-dialog.shepherd-element.create-repository-guide-dialog, .guide-dialog.shepherd-element.create-gdb-repository-guide-dialog,
-.guide-dialog.shepherd-element.gdb-repository-id-input-guide-dialog, .guide-dialog.shepherd-element.repositories-group-button-guide-dialog,
-.guide-dialog.shepherd-element.gdb-repository-ruleset-select-guide-dialog, .guide-dialog.shepherd-element.repository-select-button-guide-dialog,
-.guide-dialog.shepherd-element.enable-autocomplete-checkbox-guide-dialog,
-.guide-dialog.shepherd-element.autocomplete-status-info-guide-dialog,
-.guide-dialog.shepherd-element.menu-import-guide-dialog,
-.guide-dialog.shepherd-element.upload-rdf-file-button-guide-dialog,
-.guide-dialog.shepherd-element.import-status-info-guide-dialog,
-.guide-dialog.shepherd-element.menu-explore-guide-dialog,
-.guide-dialog.shepherd-element.visual-graph-input-iri-guide-dialog,
-.guide-dialog.shepherd-element.visual-graph-show-autocomplete-guide-dialog,
-.guide-dialog.shepherd-element.visual-graph-node-focus-guide-dialog,
-.guide-dialog.shepherd-element.menu-sparql-guide-dialog,
-.guide-dialog.shepherd-element.yasgui-query-editor-guide-dialog,
-.guide-dialog.shepherd-element.yasgui-run-button-guide-dialog,
-.guide-dialog.shepherd-element.class-hierarchy-side-bar-instance-info-guide-dialog,
-.guide-dialog.shepherd-element.class-hierarchy-side-panel-instances-count-guide-dialog,
-.guide-dialog.shepherd-element.class-hierarchy-instances-query-guide-dialog,
-.guide-dialog.shepherd-element.table-graph-link-guide-dialog,
-.guide-dialog.shepherd-element.visual_graph-role-guide-dialog,
-.guide-dialog.shepherd-element.table-graph-visual-button-guide-dialog,
-.guide-dialog.shepherd-element.table-graph-instance-guide-dialog,
-.guide-dialog.shepherd-element.class-hierarchy-instance-guide-dialog
-{
-    margin-top: 12px;
-}
-
-.guide-dialog.shepherd-element.create-repository-button-guide-dialog,
-.guide-dialog.shepherd-element.import-settings-import-file-button-guide-dialog,
-.guide-dialog.shepherd-element.visual-graph-show-properties-intro-guide-dialog,
-.guide-dialog.shepherd-element.visual-graph-expand-node-guide-dialog,
-.guide-dialog.shepherd-element.yasgui-query-results-guide-dialog,
-.guide-dialog.shepherd-element.class-hierarchy-instances-results-guide-dialog,
-.guide-dialog.shepherd-element.table-graph-overview-guide-dialog,
-.guide-dialog.shepherd-element.visual_graph-table-guide-dialog,
-.guide-dialog.shepherd-element.class-hierarchy-instance-guide-dialog,
-.guide-dialog.shepherd-element.table-graph-instance-guide-dialog
-{
-    margin-top: -12px;
-}
-
-.guide-dialog.shepherd-element.visual_graph-row-guide-dialog
-{
-    margin: 12px;
 }
