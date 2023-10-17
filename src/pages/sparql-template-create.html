@@ -59,7 +59,7 @@
                 uib-popover="{{'save.sparql.template.tooltip' | translate}}"
                 popover-placement="top"
                 popover-trigger="mouseenter"
-                ng-if="canEditActiveRepo" ng-disabled="!isDirty">
+                ng-if="canEditActiveRepo" ng-disabled="!isDirty && !sparqlTemplateInfo.isNewTemplate">
             {{'common.save.btn' | translate}}
         </button>
         <a ng-href="sparql-templates" class="btn btn-lg btn-secondary cancel-query-btn"
