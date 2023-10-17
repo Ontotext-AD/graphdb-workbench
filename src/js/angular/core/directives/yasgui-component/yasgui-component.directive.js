@@ -320,8 +320,13 @@ function yasguiComponentDirective(
 
             const init = (newVal, oldValue) => {
                 if (!$scope.ontotextYasguiConfig && newVal || newVal && !isEqual(newVal, oldValue)) {
+                    const virtualRepository = $repositories.isActiveRepoOntopType();
                     const config = {
-                        isVirtualRepository: $repositories.isActiveRepoOntopType(),
+                        isVirtualRepository: virtualRepository,
+                        infer: virtualRepository || newVal.infer,
+                        immutableInfer: virtualRepository,
+                        sameAs: virtualRepository || newVal.sameAs,
+                        immutableSameAs: virtualRepository,
                         yasqeAutocomplete: {
                             LocalNamesAutocompleter: (term) => {
                                 const canceler = $q.defer();
