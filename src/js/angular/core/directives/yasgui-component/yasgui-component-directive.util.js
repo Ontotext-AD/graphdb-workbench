@@ -122,6 +122,10 @@ export class YasqeButtonsBuilder {
         return this;
     }
 
+    /**
+     *
+     * @return {YasqeActionButtonDefinition[]}
+     */
     build() {
         return [
             {
