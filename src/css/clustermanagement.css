@@ -203,6 +203,10 @@ div.nodetooltip {
   overflow: auto;
 }
 
+.locations-list .location-item {
+  justify-content: space-between;
+}
+
 .location-item {
   padding: 2px;
   -webkit-user-select: none;
