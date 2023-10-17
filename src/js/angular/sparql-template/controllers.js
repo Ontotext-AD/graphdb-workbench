@@ -463,11 +463,19 @@ function SparqlTemplateCreateCtrl(
         }
     };
 
+    const queryChangeHandler = (evt, queryState) => {
+        if (queryState.dirty) {
+            $scope.markDirty();
+        } else {
+            $scope.markPristine();
+        }
+    };
+
     // =========================
     // Subscriptions
     // =========================
     const subscriptions = [];
-
+    subscriptions.push($scope.$on('queryChanged', queryChangeHandler));
     subscriptions.push($rootScope.$on('$translateChangeSuccess', languageChangedHandler));
     subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
     subscriptions.push(eventEmitterService.subscribe('repositoryWillChangeEvent', repositoryWillChangedHandler));

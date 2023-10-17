@@ -112,8 +112,8 @@ function SparqlRestService($http) {
         return $http.delete(`${SAVED_QUERIES_ENDPOINT}?name=${encodeURIComponent(savedQueryName)}`);
     }
 
-    function addKnownPrefixes(prefixes) {
-        return $http.post(`${SPARQL_ENDPOINT}/add-known-prefixes`, prefixes);
+    function addKnownPrefixes(query) {
+        return $http.post(`${SPARQL_ENDPOINT}/add-known-prefixes`, query);
     }
 
     function getQueryResult(repositoryId, sendData, accept) {
