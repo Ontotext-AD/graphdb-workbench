@@ -51,6 +51,9 @@ function SparqlEditorCtrl($scope,
                           ModalService) {
     this.repository = '';
 
+    /**
+     * @type {YasguiConfig}
+     */
     $scope.yasguiConfig = undefined;
     $scope.savedQueryConfig = undefined;
     $scope.prefixes = {};
