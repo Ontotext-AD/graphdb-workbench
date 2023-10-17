@@ -1,6 +1,6 @@
 const PACKAGE = require('./package.json');
 const path = require('path');
-const merge = require('webpack-merge');
+const {merge} = require('webpack-merge');
 const commonConfig = require('./webpack.config.common');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
@@ -17,8 +17,8 @@ module.exports = merge(commonConfig, {
         }
     },
     output: {
-        filename: '[name].[contentHash].bundle.js',
-        chunkFilename: '[name].[contentHash].bundle.js',
+        filename: '[name].[contenthash].bundle.js',
+        chunkFilename: '[name].[contenthash].bundle.js',
         path: path.resolve(__dirname, 'dist')
     },
     module: {

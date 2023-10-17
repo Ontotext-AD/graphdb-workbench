@@ -1,6 +1,6 @@
 const PACKAGE = require('./package.json');
 const path = require('path');
-const merge = require('webpack-merge');
+const {merge} = require('webpack-merge');
 const commonConfig = require('./webpack.config.common');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -21,6 +21,7 @@ module.exports = merge(commonConfig, {
         rules: [
             {
                 test: /\.css$/,
+                type: "javascript/auto",
                 use: ['style-loader', 'css-loader']
             },
             {
@@ -40,9 +41,10 @@ module.exports = merge(commonConfig, {
         new CleanWebpackPlugin()
     ],
     devServer: {
-        disableHostCheck: true,
-        contentBase: path.join(__dirname, 'dist/'),
-        compress: true,
+        static: {
+            directory: path.join(__dirname, 'dist/')
+        },
+        allowedHosts: "all",
         port: portHere,
         host: host,
         // needed to handle urls sent by open id providers that contain dots

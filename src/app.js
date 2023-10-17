@@ -118,7 +118,7 @@ const moduleDefinition = function (productInfo) {
                             if (!route.path) {
                                 return $q.defer().resolve();
                             }
-                            return import(`angular/${route.path}`).then(module => {
+                            return import(`./js/angular//${route.path}`).then(module => {
                                 $ocLazyLoad.inject(route.module);
                             })
                         }]
