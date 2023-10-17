@@ -13,6 +13,10 @@ yasgui-component .custom-button {
     color: var(--primary-color) !important;
 }
 
+yasgui-component .custom-button:disabled:hover, yasgui-component .custom-button:disabled:focus {
+    color: #818a91 !important;
+}
+
 yasgui-component .yasqe_queryButton {
     background-color: var(--primary-color) !important;
 }
