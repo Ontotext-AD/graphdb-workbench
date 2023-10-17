@@ -9,4 +9,3 @@ import 'jquery';
 import 'lib/angularjs/1.3.8/angular.js';
 import 'lib/bootstrap/bootstrap.min';
 import 'angular/core/loading-hint.js';
-import 'bootstrap-switch/dist/js/bootstrap-switch.min';

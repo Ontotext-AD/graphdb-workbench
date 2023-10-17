@@ -18,7 +18,6 @@ angularCancelOnNavigateModule.js	MIT	https://github.com/AlbertBrand/angular-canc
 animate.css	MIT	https://github.com/daneden/animate.css/tree/3.5.2	MODIFIED
 animate.css	MIT	https://github.com/daneden/animate.css/tree/3.5.2
 autofill-event.js	MIT	https://github.com/iamjoetaylor/vanilla-autofill-event#readme
-bootstrap-switch	Apache 2.0	http://www.bootstrap-switch.org
 bootstrap.min.js	Apache 2.0	https://github.com/twbs/bootstrap/blob/master/LICENSE
 circle-packing.js	MIT
 d3js	BSD 3-Clause	d3-ONTO-chord-patch.js MODIFIED from https://github.com/d3/d3/releases/tag/v3.5.12	MODIFIED

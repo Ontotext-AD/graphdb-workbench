@@ -76,10 +76,6 @@ module.exports = {
                 to: 'css/lib/angular-xeditable/xeditable.min.css'
             },
             {
-                from: 'node_modules/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css',
-                to: 'css/lib/bootstrap-switch/bootstrap-switch.min.css'
-            },
-            {
                 from: 'src/js/lib/bootstrap/bootstrap.min.css',
                 to: 'js/lib/bootstrap/bootstrap.min.css'
             },
