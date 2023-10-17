@@ -33,8 +33,15 @@
                              ng-class="location.error ? 'list-group-item-danger' : ''"
                              gdb-tooltip="{{location.error ? ('cluster_management.cluster_page.errors.no_rpc_address' | translate: {error: location.error}) : '' }}"
                              ng-click="addNodeToList(location)">
-                            <div class="logo-image"></div>
-                            {{location.endpoint}}
+                            <div class="location d-flex">
+                                <div class="logo-image"></div>
+                                {{location.endpoint}}
+                            </div>
+                            <button class="btn btn-link p-0 secondary"
+                                    gdb-tooltip="{{'detach.location' | translate}}" tooltip-placement="top"
+                                    ng-click="deleteLocation($event, location)">
+                                <em class="icon-close"></em>
+                            </button>
                         </div>
                     </div>
                     <button type="button" id="addLocation" ng-click="addLocation()" class="btn btn-primary"><span class="icon-plus"></span>{{'attach.remote.location' | translate}}</button>
