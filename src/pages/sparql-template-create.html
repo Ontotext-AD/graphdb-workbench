@@ -41,7 +41,7 @@
                     </div>
                 </div>
 
-                <yasgui-component id="query-editor" class="pt-1" yasgui-config="yasguiConfig" query-changed="markDirty()"></yasgui-component>
+                <yasgui-component id="query-editor" class="pt-1" yasgui-config="yasguiConfig"></yasgui-component>
 
                 <div ng-if="!sparqlTemplateInfo.isValidQuery"
                      class="idError alert alert-danger  invalid-query"
@@ -59,7 +59,7 @@
                 uib-popover="{{'save.sparql.template.tooltip' | translate}}"
                 popover-placement="top"
                 popover-trigger="mouseenter"
-                ng-if="canEditActiveRepo">
+                ng-if="canEditActiveRepo" ng-disabled="!isDirty">
             {{'common.save.btn' | translate}}
         </button>
         <a ng-href="sparql-templates" class="btn btn-lg btn-secondary cancel-query-btn"

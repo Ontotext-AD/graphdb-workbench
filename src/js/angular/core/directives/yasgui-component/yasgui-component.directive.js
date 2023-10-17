@@ -8,7 +8,6 @@ import {QueryMode} from "../../../models/ontotext-yasgui/query-mode";
 import {YasrPluginName} from "../../../models/ontotext-yasgui/yasr-plugin-name";
 import {isEqual} from "lodash/lang";
 import {QueryType} from "../../../models/ontotext-yasgui/query-type";
-import {saveAs} from 'lib/FileSaver-patch';
 import {YasguiComponent} from "../../../models/yasgui-component";
 
 const modules = [
@@ -35,6 +34,21 @@ yasguiComponentDirective.$inject = [
     'ShareQueryLinkService'
 ];
 
+/**
+ * Implements a facade in front of ontotext-yasgui custom component allowing all complexities related with its
+ * configuration and the default implementations to be hidden behind it. This makes the component integration easier
+ * and with minimal code duplication and coupling.
+ *
+ * Directive attributes:
+ * @attr yasguiConfig The directive configuration. TODO: add type def
+ *
+ * @attr afterInit Event handler function which will be invoked immediately after the component gets initialized.
+ *
+ * @attr queryChanged Event handler function which will be invoked every time the query in the yasqe editor
+ * gets changed. This doesn't tell if the query value is actually different than the initial value, but only that the
+ * user typed or pasted something in the editor. For watching if the query is actually changed as value, then subscribe
+ * for the `queryChanged` event.
+ */
 function yasguiComponentDirective(
     $q,
     $repositories,
@@ -64,6 +78,9 @@ function yasguiComponentDirective(
             $scope.classToApply = attrs.class || '';
             const downloadAsPluginNameToEventHandler = new Map();
             const outputHandlers = new Map();
+            // The initial query value which is set in the yasqe editor. This is used for dirty checking while the user
+            // changes the query.
+            let initialQueryValue = undefined;
 
             // =========================
             // Public function
@@ -320,6 +337,8 @@ function yasguiComponentDirective(
 
                     $scope.ontotextYasguiConfig = config;
 
+                    setInitialQueryState();
+
                     if (angular.isFunction($scope.afterInit)) {
                         $scope.afterInit();
                     }
@@ -329,15 +348,31 @@ function yasguiComponentDirective(
                 }
             };
 
+            const setInitialQueryState = () => {
+                $scope.getOntotextYasguiElement().getQuery()
+                    .then((query) => {
+                        initialQueryValue = JSON.stringify(query);
+                    });
+            };
+
             subscriptions.push($scope.$watch('yasguiConfig', init));
 
             const codeMirrorPasteHandler = () => {
+                let queryString;
                 const ontotextYasguiElement = $scope.getOntotextYasguiElement();
                 ontotextYasguiElement.getQuery()
-                    .then((query) => JSON.stringify(query))
+                    .then((query) => {
+                        queryString = JSON.stringify(query);
+                        return queryString;
+                    })
                     .then(SparqlRestService.addKnownPrefixes)
-                    .then((response) => ontotextYasguiElement.setQuery(response.data))
-                    .then(() => $scope.queryChanged())
+                    .then((response) => {
+                        queryString = response.data;
+                        ontotextYasguiElement.setQuery(queryString);
+                    })
+                    .then(() => {
+                        emitQueryChanged(JSON.stringify(queryString));
+                    })
                     .catch((data) => {
                         const msg = getError(data);
                         toastr.error(msg, $translate.instant('common.add.known.prefixes.error'));
@@ -349,10 +384,24 @@ function yasguiComponentDirective(
                     const ontotextYasguiElements = $scope.getOntotextYasguiElements();
                     if (ontotextYasguiElements) {
                         ontotextYasguiElements.on('paste.sparqlQuery', '.CodeMirror', codeMirrorPasteHandler);
-                        ontotextYasguiElements.on('keyup.sparqlQuery', '.CodeMirror textarea', $scope.queryChanged);
+                        ontotextYasguiElements.on('keyup.sparqlQuery', '.CodeMirror textarea', onQueryChange);
                         $interval.cancel(waitOntotextInitialized);
                     }
                 });
+            };
+
+            const onQueryChange = (evt) => {
+                $scope.getOntotextYasguiElement().getQuery()
+                    .then((query) => {
+                        emitQueryChanged(JSON.stringify(query));
+                    });
+            };
+
+            const emitQueryChanged = (queryString) => {
+                $scope.queryChanged(queryString);
+                // the above function which is bound via directive attribute doesn't allow passing parameters so we emit
+                // this event to allow more control for the directive client
+                $scope.$emit('queryChanged', {dirty: initialQueryValue !== queryString});
             };
 
             subscriptions.push(
