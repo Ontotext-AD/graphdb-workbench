@@ -337,19 +337,19 @@ function yasguiComponentDirective(
 
                     $scope.ontotextYasguiConfig = config;
 
-                    setInitialQueryState();
-
-                    if (angular.isFunction($scope.afterInit)) {
-                        $scope.afterInit();
-                    }
-
                     addDirtyCheckHandlers();
                     $scope.language = $languageService.getLanguage();
+
+                    setInitialQueryState().then(() => {
+                        if (angular.isFunction($scope.afterInit)) {
+                            $scope.afterInit();
+                        }
+                    });
                 }
             };
 
             const setInitialQueryState = () => {
-                $scope.getOntotextYasguiElement().getQuery()
+                return $scope.getOntotextYasguiElement().getQuery()
                     .then((query) => {
                         initialQueryValue = JSON.stringify(query);
                     });
