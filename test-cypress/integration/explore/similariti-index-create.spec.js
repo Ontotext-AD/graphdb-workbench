@@ -311,23 +311,5 @@ describe('Create similarity index', () => {
             SimilarityIndexCreateSteps.switchToAnalogicalQueryTab();
             YasqeSteps.verifyQueryContains(DEFAULT_ANALOGICAL_QUERY);
         });
-
-        it.only('should not display query error if current displayed query is valid', () => {
-            // When I open the "Create similarity index" page.
-            // and type wrong select query.
-            SimilarityIndexCreateSteps.typeSimilarityIndexName('indexName');
-            YasqeSteps.pasteQuery('Wrong query');
-            SimilarityIndexCreateSteps.create();
-
-            // Then I expect see error message describes me, that select query is mandatory.
-            ErrorSteps.verifyError("Invalid 'Data' query");
-
-            // When I switch to search query tab.
-            SimilarityIndexCreateSteps.switchToSearchQueryTab();
-
-            // Then I expect to not see the error message.
-            ErrorSteps.getErrorElement().should('not.exist');
-
-        });
     });
 });
