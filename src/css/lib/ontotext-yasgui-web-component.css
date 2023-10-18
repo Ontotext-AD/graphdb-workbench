@@ -174,12 +174,12 @@ yasgui-component .page-selector {
 
 .keyboard-shortcuts-dialog-wrapper {
     height: 20px;
-    line-height: 20px;
+    line-height: 18px;
     font-size: 90%;
 }
 
 .keyboard-shortcuts-dialog-wrapper.resizeable-on {
-    margin-top: -30px;
+    margin-top: -31px;
 }
 
 .keyboard-shortcuts-dialog-button {
