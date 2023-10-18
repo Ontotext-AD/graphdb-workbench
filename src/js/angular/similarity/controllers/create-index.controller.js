@@ -282,21 +282,9 @@ function CreateSimilarityIdxCtrl(
     }
 
     $scope.hasQueryError = () => {
-        const similarityQueryType = $scope.similarityIndexInfo.getSelectedQueryType();
-
-        if (SimilarityQueryType.DATA === similarityQueryType) {
-            return $scope.hasSelectQueryError();
-        }
-
-        if (SimilarityQueryType.SEARCH === similarityQueryType) {
-            return $scope.hasSearchQueryError();
-        }
-
-        if (SimilarityQueryType.ANALOGICAL === similarityQueryType) {
-            return $scope.hasAnalogicalQueryError();
-        }
-
-        return false;
+        return $scope.hasSelectQueryError() ||
+            $scope.hasSearchQueryError() ||
+            $scope.hasAnalogicalQueryError()
     }
 
     $scope.hasSelectQueryError = () => {
