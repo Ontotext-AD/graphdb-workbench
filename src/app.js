@@ -11,6 +11,7 @@ import 'angular/core/directives/languageselector/language-selector.directive';
 import 'angular/core/directives/angulartooltips/angular-tooltips.js';
 import 'angular/core/directives/uppercased.directive';
 import 'angular/core/directives/operations-statuses-monitor/operations-statuses-monitor.directive'
+import 'angular/core/directives/autocomplete/autocomplete.directive'
 
 // $translate.instant converts <b> from strings to &lt;b&gt
 // and $sce.trustAsHtml could not recognise that this is valid html
@@ -34,7 +35,8 @@ const modules = [
     'graphdb.framework.core.directives.angular-tooltips',
     'graphdb.framework.core.directives.uppercased',
     'graphdb.framework.guides.services',
-    'graphdb.framework.core.directives.operationsstatusesmonitor'
+    'graphdb.framework.core.directives.operationsstatusesmonitor',
+    'graphdb.framework.core.directives.autocomplete'
 ];
 
 const providers = [

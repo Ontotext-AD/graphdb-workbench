@@ -1,0 +1,62 @@
+.autocomplete-select-wrapper {
+    position: relative;
+}
+
+.autocomplete-select-wrapper .autocomplete-results-wrapper {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    max-height: 204px;
+    margin-bottom: 0;
+    overflow: auto;
+    background-color: #fff;
+}
+
+.autocomplete-select-wrapper .autocomplete-results-wrapper div:hover {
+    background-color: var(--autocomplete-background);
+    cursor: pointer;
+}
+
+.autocomplete-select-wrapper .autocomplete-results-wrapper div.active {
+    background-color: var(--autocomplete-background);
+    cursor: pointer;
+}
+
+.autocomplete-select-wrapper .autocomplete-results-wrapper div.selected {
+    background-color: var(--autocomplete-background-selected);
+    cursor: pointer;
+}
+
+.autocomplete-select-wrapper .autocomplete-results-wrapper div p b,
+.autocomplete-select-wrapper .autocomplete-results-wrapper div.active p b {
+    color: var(--autocomplete-match);
+}
+
+.autocomplete-select-wrapper .autocomplete-results-wrapper div p {
+    margin-bottom: 0;
+    padding: 5px 25px;
+    white-space: nowrap;
+}
+
+.autocomplete-select-wrapper .autocomplete-select {
+    color: red;
+}
+
+.templates .tag {
+    cursor: pointer;
+    font-size: 100%;
+}
+
+.autocomplete-loader {
+    position: relative;
+    z-index: 100000;
+}
+
+.autocomplete-loader .ot-loader-new-content {
+    position: absolute;
+    z-index: 100000;
+    width: 100%;
+    height: calc(100vh - 120px);
+    padding-top: calc((100vh - 300px) / 2);
+    background-color: rgba(255,255,255,0.66);
+}

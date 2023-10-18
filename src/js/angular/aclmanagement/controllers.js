@@ -2,6 +2,7 @@ import 'angular/rest/plugins.rest.service';
 import 'angular/rest/aclmanagement.rest.service';
 import {mapAclRulesResponse} from "../rest/mappers/aclmanagement-mapper";
 import {isEqual} from 'lodash';
+import {mapNamespacesResponse} from "../rest/mappers/namespaces-mapper";
 
 const modules = [
     'graphdb.framework.rest.plugins.service',
@@ -12,9 +13,11 @@ angular
     .module('graphdb.framework.aclmanagement.controllers', modules)
     .controller('AclManagementCtrl', AclManagementCtrl);
 
-AclManagementCtrl.$inject = ['$scope', '$location', 'toastr', 'AclManagementRestService', '$repositories', '$translate', 'ModalService'];
+AclManagementCtrl.$inject = ['$scope', '$location', 'toastr', 'AclManagementRestService', '$repositories', '$translate', 'ModalService', 'RDF4JRepositoriesRestService', 'AutocompleteRestService'];
 
-function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, $repositories, $translate, ModalService) {
+function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, $repositories, $translate, ModalService, RDF4JRepositoriesRestService, AutocompleteRestService) {
+
+    $scope.contextValue = undefined;
 
     //
     // Private fields
@@ -41,6 +44,12 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
      * @type {boolean}
      */
     $scope.loading = false;
+
+    /**
+     * Namespaces model loaded in advance and passed to all autocomplete fields.
+     * @type {{uri: string, prefix: string}[]}
+     */
+    $scope.namespaces = [];
 
     /**
      * A list with ACL rules that will be managed in this view.
@@ -224,7 +233,6 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
         return AclManagementRestService.updateAcl(repositoryId, $scope.rulesModel.toJSON())
             .then(() => {
                 toastr.success($translate.instant('acl_management.rulestable.messages.rules_updated'));
-                return true;
             });
     };
 
@@ -238,6 +246,13 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
                 $scope.loading = false;
             });
         }
+    };
+
+    const resetPageState = () => {
+        loadRules();
+        $scope.editedRuleIndex = undefined;
+        $scope.modelIsDirty = false;
+        $scope.editedRuleCopy = undefined;
     };
 
     /**
@@ -257,6 +272,18 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
 
     const notifyDuplication = () => {
         toastr.error($translate.instant('acl_management.errors.duplicated_rules'));
+    };
+
+    const loadNamespaces = () => {
+        RDF4JRepositoriesRestService.getNamespaces($repositories.getActiveRepository())
+            .then(mapNamespacesResponse)
+            .then((namespacesModel) => {
+                $scope.namespaces = namespacesModel;
+            })
+            .catch((response) => {
+                const msg = getError(response);
+                toastr.error(msg, $translate.instant('error.getting.namespaces.for.repo'));
+            });
     };
 
     /**
@@ -298,12 +325,18 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
         }
     };
 
+    const checkAutocompleteStatus = () => {
+        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+    };
+
     /**
      * Initialized the view controller.
      */
     const init = () => {
-        // Watching for repository changes and reload the rules, because they are stored per repository.
-        subscriptions.push($scope.$watch(getActiveRepositoryId, loadRules));
+        loadNamespaces();
+        subscriptions.push($scope.$on('autocompleteStatus', checkAutocompleteStatus));
+        // Watching for repository changes and reload the rules, because they are stored per repository and reset page state.
+        subscriptions.push($scope.$watch(getActiveRepositoryId, resetPageState));
         // Watching for url changes
         subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
         // Watching for component destroy

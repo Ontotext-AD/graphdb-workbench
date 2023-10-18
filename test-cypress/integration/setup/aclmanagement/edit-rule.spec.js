@@ -14,6 +14,7 @@ describe('ACL Management: edit rule', () => {
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
         cy.initializeRepository(repositoryId);
+        cy.enableAutocomplete(repositoryId);
         AclManagementSteps.importRules(repositoryId);
         AclManagementSteps.visit();
         // ensure rules are rendered
@@ -61,7 +62,8 @@ describe('ACL Management: edit rule', () => {
         // When I edit the rule again
         AclManagementSteps.editRule(2);
         AclManagementSteps.fillSubject(2, '<urn:Me>');
-        AclManagementSteps.fillPredicate(2, 'rdf:type');
+        // this will be autocompleted to "<http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
+        AclManagementSteps.fillPredicate(2, 'rdf:');
         AclManagementSteps.fillObject(2, '*');
         AclManagementSteps.fillContext(2, '*');
         AclManagementSteps.fillRole(2, 'TEST');
@@ -71,7 +73,7 @@ describe('ACL Management: edit rule', () => {
         // Then I expect the rule to be saved with the new data
         const editedRule = {
             subject: '<urn:Me>',
-            predicate: 'rdf:type',
+            predicate: '<http://www.w3.org/1999/02/22-rdf-syntax-ns#>',
             object: '*',
             context: '*',
             role: 'TEST',

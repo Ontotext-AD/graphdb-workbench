@@ -15,6 +15,7 @@ describe('ACL Management: update rules', () => {
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
         cy.initializeRepository(repositoryId);
+        cy.enableAutocomplete(repositoryId);
         AclManagementSteps.importRules(repositoryId);
         AclManagementSteps.visit();
         // ensure rules are rendered
