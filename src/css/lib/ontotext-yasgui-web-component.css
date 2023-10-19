@@ -18,8 +18,9 @@ yasgui-component .yasqe_queryButton {
 }
 
 yasgui-component .ontotext-dropdown-button,
-yasgui-component .ontotext-dropdown-menu-item {
+yasgui-component .ontotext-dropdown-menu.open .ontotext-dropdown-menu-item {
     background-color: var(--primary-color) !important;
+    color: #fff !important;
 }
 yasgui-component .ontotext-dropdown-button.icon-caret-down-after:after,
 yasgui-component .ontotext-dropdown-button.icon-caret-up-after:after {
