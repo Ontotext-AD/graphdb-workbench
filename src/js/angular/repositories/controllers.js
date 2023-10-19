@@ -762,15 +762,16 @@ function EditRepositoryFileCtrl($scope, $uibModalInstance, RepositoriesRestServi
 }
 
 EditRepositoryCtrl.$inject = ['$rootScope', '$scope', '$routeParams', 'toastr', '$repositories', '$location', 'ModalService', 'RepositoriesRestService',
-    '$translate'];
+    '$translate', 'MonitoringRestService'];
 
-function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositories, $location, ModalService, RepositoriesRestService, $translate) {
+function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositories, $location, ModalService, RepositoriesRestService, $translate, MonitoringRestService) {
 
     $scope.rulesets = STATIC_RULESETS.slice();
     $scope.repositoryTypes = REPOSITORY_TYPES;
 
     $scope.editRepoPage = true;
     $scope.canEditRepoId = false;
+    $scope.isRepoInCluster = true;
     $scope.params = $routeParams;
     $scope.loader = true;
     $scope.repositoryInfo = {};
@@ -794,14 +795,19 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
         return $repositories.hasActiveLocation();
     };
 
+    const loadRepositoryData = () => {
+        return getFilteredLocations($repositories).then((locations) => {
+            $scope.locations = locations;
+            return RepositoriesRestService.getRepository($scope.repositoryInfo);
+        });
+    };
+
     $scope.$watch($scope.hasActiveLocation, function () {
         if ($scope.hasActiveLocation) {
             // Should get locations before getting repository info
-            getFilteredLocations($repositories).then((locations) => {
-                $scope.locations = locations;
-                return RepositoriesRestService.getRepository($scope.repositoryInfo);
-            })
-                .then(function (response) {
+            Promise.all([loadRepositoryData(), MonitoringRestService.monitorActiveOperations($scope.repositoryInfo.id)])
+                .then(([response, monitoringResponse]) => {
+                    $scope.isRepoInCluster = monitoringResponse.hasClusterOperation();
                     const data = response.data;
                     if (angular.isDefined(data.params.ruleset)) {
                         let ifRulesetExists = false;
@@ -904,6 +910,9 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
     };
 
     $scope.editRepositoryId = function () {
+        if ($scope.isRepoInCluster) {
+            return;
+        }
         let msg = decodeHTML($translate.instant('edit.repo.id.warning.msg'));
         if ($scope.isEnterprise()) {
             msg += decodeHTML($translate.instant('edit.repo.id.cluster.warning.msg'));
