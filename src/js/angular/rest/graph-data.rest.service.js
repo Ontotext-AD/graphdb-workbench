@@ -147,12 +147,13 @@ function GraphDataRestService($http) {
     }
 
     function updateGraph(payload) {
-        return $http.post(`${EXPORE_GRAPH_ENDPOINT}/graph`, {
+        let data = {
             headers: {
                 'Content-Type': 'application/json'
-            },
-            data: payload
-        });
+            }
+        };
+        data = Object.assign(data, payload);
+        return $http.post(`${EXPORE_GRAPH_ENDPOINT}/graph`, data);
     }
 
     function getRdfsLabelAndComment(targetUri, languages, extraParams) {
