@@ -333,6 +333,7 @@ function yasguiComponentDirective(
                                 return autocompleteLocalNames(term, canceler);
                             }
                         },
+                        language: $languageService.getLanguage(),
                         i18n: TranslationService.getTranslations(),
                         getRepositoryStatementsCount: getRepositoryStatementsCount,
                         onQueryAborted: onQueryAborted
@@ -343,7 +344,6 @@ function yasguiComponentDirective(
                     $scope.ontotextYasguiConfig = config;
 
                     addDirtyCheckHandlers();
-                    $scope.language = $languageService.getLanguage();
 
                     setInitialQueryState().then(() => {
                         if (angular.isFunction($scope.afterInit)) {
