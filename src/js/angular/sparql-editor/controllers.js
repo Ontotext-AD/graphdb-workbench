@@ -224,7 +224,7 @@ function SparqlEditorCtrl($scope,
         createElement: (yasr) => {
             const buttonName = document.createElement('span');
             buttonName.classList.add("explore-visual-graph-button-name");
-            const exploreVisualButtonWrapperElement = document.createElement('div');
+            const exploreVisualButtonWrapperElement = document.createElement('button');
             exploreVisualButtonWrapperElement.classList.add("explore-visual-graph-button");
             exploreVisualButtonWrapperElement.classList.add("icon-data");
             exploreVisualButtonWrapperElement.onclick = function () {
