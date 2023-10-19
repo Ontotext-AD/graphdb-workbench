@@ -22,9 +22,45 @@ yasgui-component .ontotext-dropdown-menu.open .ontotext-dropdown-menu-item {
     background-color: var(--primary-color) !important;
     color: #fff !important;
 }
+
+yasgui-component .ontotext-dropdown-button:hover,
+yasgui-component .ontotext-dropdown-menu .ontotext-dropdown-menu-item:hover,
+yasgui-component .ontotext-dropdown-button.icon-caret-up-after {
+    background-color: var(--primary-color-dark) !important;
+}
+
 yasgui-component .ontotext-dropdown-button.icon-caret-down-after:after,
 yasgui-component .ontotext-dropdown-button.icon-caret-up-after:after {
     color: #fff !important;
+}
+
+yasgui-component .ontotext-download-as .ontotext-dropdown-button {
+    height: 38px;
+}
+
+yasgui-component .yasr-toolbar {
+    align-items: stretch !important;
+    padding-left: 10px;
+    font-size: 16px;
+    line-height: 1.25;
+}
+
+yasgui-component .yasr-toolbar .explore-visual-graph-button {
+    display: flex;
+    align-items: center;
+    border: none;
+    outline: none;
+    color: #fff;
+    background-color: var(--primary-color);
+}
+
+yasgui-component .yasr-toolbar .explore-visual-graph-button:hover {
+    cursor: pointer;
+    background-color: var(--primary-color-dark) !important;
+}
+
+yasgui-component .yasr-toolbar .explore-visual-graph-button-name {
+    padding-left: 5px;
 }
 
 yasgui-component .ok-button,
@@ -190,28 +226,6 @@ yasgui-component .page-selector {
 
 .hidden {
     display: none;
-}
-.explore-visual-graph-button {
-    font-size: 1.2em;
-    font-weight: 400;
-    padding: 6px;
-    border: none;
-    outline: none;
-    color: #FFFFFF;
-    background-color: var(--primary-color);
-}
-.explore-visual-graph-button:hover {
-    cursor: pointer;
-}
-
-.yasr-toolbar {
-    padding-left: 10px;
-    font-size: 16px;
-    line-height: 1.25;
-}
-
-.explore-visual-graph-button-name {
-    padding-left: 5px;
 }
 
 @media (max-width: 768px) {
