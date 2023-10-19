@@ -4,6 +4,11 @@
     z-index: 1;
 }
 
+.sparql-editor-view div[core-errors] {
+    /* compensate for the negative margin on the title above */
+    margin-top: calc(47px + 0.5em);
+}
+
 .sparql-editor-view #sparql-query-update-title-label .btn-link {
     position: relative;
     z-index: 100;
