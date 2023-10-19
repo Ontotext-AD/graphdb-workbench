@@ -37,8 +37,11 @@
                         <label for="id" class="col-md-3 col-lg-2 col-form-label">{{'repo.id.label' | translate}}</label>
                         <div class="col-md-7 col-lg-6 col-xl-5" gdb-tooltip="{{'repoTooltips.id' | translate}}">
                             <a class="btn btn-link ot-edit-input" ng-click="editRepositoryId()"
+                               ng-class="{'edit-repository-denied': isRepoInCluster}"
                                ng-if="!canEditRepoId && editRepoPage"
-                               gdb-tooltip="{{'edit.repo.id.tooltip' | translate}}" tooltip-placement="right"><span class="icon-edit"></span></a>
+                               gdb-tooltip="{{(isRepoInCluster ? 'edit.repo.id.cannot_edit_in_cluster.tooltip' : 'edit.repo.id.tooltip') | translate}}" tooltip-placement="right">
+                                <span class="icon-edit"></span>
+                            </a>
                             <input name="id" id="id" class="form-control" ng-disabled="!canEditRepoId && editRepoPage"
                                    placeholder="{{'required.field' | translate}}" type="text" ng-model="repositoryInfo.id"
                                    required ng-attr-autofocus="{{ autofocusId }}" guide-selector="graphDBRepositoryIdInput">

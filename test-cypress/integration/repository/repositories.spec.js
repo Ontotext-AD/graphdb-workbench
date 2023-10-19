@@ -2,6 +2,8 @@ import HomeSteps from "../../steps/home-steps";
 import ImportSteps from "../../steps/import-steps";
 import {RepositorySteps} from "../../steps/repository-steps";
 import {ToasterSteps} from "../../steps/toaster-steps";
+import {GlobalOperationsStatusesStub} from "../../stubs/global-operations-statuses-stub";
+import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 
 describe('Repositories', () => {
 
@@ -447,6 +449,35 @@ describe('Repositories', () => {
             .clickImportTextSnippetButton()
             .importFromSettingsDialog()
             .verifyImportStatus('Text snippet', 'org.eclipse.rdf4j.sail.shacl.GraphDBShaclSailValidationException: Failed SHACL validation');
+    });
+
+    it('should not allow editing of repository name if repository is in cluster', () => {
+        // When I create a repository,
+        cy.createRepository({id: repositoryId});
+        // set the repository be in a cluster.
+        GlobalOperationsStatusesStub.stubGlobalOperationsStatusesResponse(repositoryId);
+        // and go to the edit repository page.
+        RepositorySteps.visitEditPage(repositoryId);
+
+        // When I try to edit the repository id.
+        RepositorySteps.editRepositoryId();
+
+        // Then I expect the repository name can't be edited.
+        ModalDialogSteps.getDialog().should('not.exist');
+        RepositorySteps.getRepositoryIdEditElement().should('have.css', 'cursor').and('match', /not-allowed/);
+    });
+
+    it('should allow editing of repository name if repository is not in cluster', () => {
+        // When I create a repository,
+        cy.createRepository({id: repositoryId});
+        // and go to edit the repository page.
+        RepositorySteps.visitEditPage(repositoryId);
+
+        // When I try to edit the repository id.
+        RepositorySteps.editRepositoryId();
+
+        // Then I expect to see a confirmation dialog.
+        ModalDialogSteps.verifyDialogBody('Changing the repository ID is a dangerous operation since it renames the repository folder and enforces repository shutdown.');
     });
 
     function assertRepositoryStatus(repositoryId, status) {
