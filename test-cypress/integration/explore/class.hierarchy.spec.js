@@ -242,7 +242,7 @@ describe('Class hierarchy screen validation', () => {
         cy.get(CLASS_LABEL_SELECTOR)
             .each(($element) => {
                 let data = $element.prop('__data__');
-                if (data.name === className) {
+                if (data.data.name === className) {
                     cy.wrap($element).as('classInHierarchy');
                 }
             });

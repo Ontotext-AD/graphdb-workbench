@@ -231,9 +231,7 @@ describe('Visual graph screen validation', () => {
 
             // Double click on collapsed node
             // This is ugly but unfortunately I couldn't make cypress's dblclick to work reliably here
-            getTargetNodeElement().click().then(() => {
-                getTargetNodeElement().click();
-            });
+            getTargetNodeElement().dblclick()
 
             // Verify that all links to the USRegion node are expanded
             getPredicates().should('have.length', 3);

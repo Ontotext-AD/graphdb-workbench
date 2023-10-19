@@ -29,7 +29,7 @@ CirclePacking.SingleChild = function () {
         for (var i = nodes.length - 1; i >= 0; i--) {
             var node = nodes[i];
 
-            if (node.name === 'placeholder') {
+            if (node.data.name === 'placeholder') {
                 nodes.splice(i, 1);
             } else {
                 if (node.children) {
