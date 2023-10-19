@@ -16,7 +16,6 @@ SVG.Export = function () {
         if (!svgSelectorClass) {
             svgSelectorClass = "svg";
         }
-        console.log(svgSelectorClass);
         // add needed xml namespace
         const exportSvg = d3.selectAll(svgSelectorClass)
             .attr("version", "1.1")
