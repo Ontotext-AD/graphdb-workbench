@@ -400,6 +400,7 @@ describe('==> Repository module controllers tests', function () {
             };
 
             $httpBackend.when('GET', 'rest/locations?filterClusterLocations=true').respond(200, [{}]);
+            $httpBackend.when('GET', 'rest/monitor/repo/operations').respond(200, {});
             routeParamsMock = {repositoryId: 'repo'};
             locationMock = {path: jasmine.createSpy('locationMock.path')};
 
