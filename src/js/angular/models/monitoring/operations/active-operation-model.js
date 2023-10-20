@@ -6,7 +6,7 @@ import {OPERATION_STATUS} from "./operation-status";
 export class ActiveOperationModel {
     constructor() {
         /**
-         * @type {string} - the value must be one of the {@see OPERATION_GROUP} option.
+         * @type {string} - the value must be one of the {@see OPERATION_GROUP_TYPE} option.
          */
         this.operationGroup = undefined;
         this.runningOperationCount = 0;

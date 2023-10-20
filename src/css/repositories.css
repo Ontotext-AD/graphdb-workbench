@@ -257,6 +257,11 @@ span.required {
     color: #c53e3e
 }
 
+.edit-repository-denied {
+    cursor: not-allowed;
+    opacity: .65;
+}
+
 .ot-edit-input {
     position: absolute;
     right: 5px
