@@ -15,6 +15,8 @@
     --menu-width: var(--menu-width-expanded);
     /* max usable content width not considering the menu and margins */
     --max-width-minus-menu: calc(100% - var(--menu-width));
+    --link-decoration-thickness: clamp(1px, 6%, 10px);
+    --link-underline-offset: clamp(1px, 6%, 10px);
 }
 
 :root.menu-collapsed {
@@ -380,6 +382,14 @@
     content: "\e92f";
 }
 
+.icon-hbars:before {
+    content: "\e953";
+}
+
+.icon-phone:before {
+    content: "\e954";
+}
+
 .icon-tick:before {
     content: "\e956";
 }
@@ -504,9 +514,12 @@ a {
     color: var(--secondary-color);
 }
 
-/* Actual links that lead to an external site */
-a[href^="http"] {
-    text-decoration: underline;
+/* General links on hover and actual links that lead to an external site */
+a:hover, a:active, a[href^="http"], a[href^="http"]:hover, a[href^="http"]:active {
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-decoration-thickness: var(--link-decoration-thickness);
+    text-underline-offset: var(--link-underline-offset);
 }
 
 a:focus, a:hover {
@@ -1005,8 +1018,13 @@ main menu height*/
 .btn-link, .btn-link a {
     color: var(--primary-color);
     padding: .5em .8em;
-    text-decoration: underline;
-    text-decoration-style: dotted !important;
+}
+
+.btn-link, .btn-link:hover, .btn-link:focus {
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-thickness: var(--link-decoration-thickness);
+    text-underline-offset: var(--link-underline-offset);
 }
 
 .btn-link.secondary {
@@ -1028,6 +1046,10 @@ main menu height*/
 .btn-link.active, .btn-link:hover.active, .btn-link:focus.active, .btn-link:active.active {
     background-color: var(--primary-color-dark);
     color: #fff;
+}
+
+.btn-link-text {
+    padding-left: 0.2em;
 }
 
 /* button groups */
