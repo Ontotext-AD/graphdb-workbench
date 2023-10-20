@@ -15,6 +15,7 @@
     --menu-width: var(--menu-width-expanded);
     /* max usable content width not considering the menu and margins */
     --max-width-minus-menu: calc(100% - var(--menu-width));
+    /* Link decoration, see GDB-9013 before you touch these */
     --link-decoration-thickness: clamp(1px, 6%, 10px);
     --link-underline-offset: clamp(1px, 6%, 10px);
 }
