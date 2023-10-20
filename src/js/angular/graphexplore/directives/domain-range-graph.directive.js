@@ -145,7 +145,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
             $("defs").append('<style type="text/css"><![CDATA[' + cssRules + ']]></style>');
 
             // convert selected html to base64
-            var imgSrc = SVG.Export.generateBase64ImageSource();
+            var imgSrc = SVG.Export.generateBase64ImageSource("#domain-range svg");
 
             // set the binary image and a name for the downloadable file on the export button
             d3.select(this).attr({

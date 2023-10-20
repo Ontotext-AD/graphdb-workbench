@@ -106,7 +106,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                 .style("opacity", 1);
 
             // convert selected html to base64
-            var imgSrc = SVG.Export.generateBase64ImageSource();
+            var imgSrc = SVG.Export.generateBase64ImageSource("#classChart svg");
 
             // set the binary image and a name for the downloadable file on the export button
             d3.select(this).attr({
