@@ -806,9 +806,9 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
         if ($scope.hasActiveLocation) {
             // Should get locations before getting repository info
             Promise.all([loadRepositoryData(), MonitoringRestService.monitorActiveOperations($scope.repositoryInfo.id)])
-                .then(([response, monitoringResponse]) => {
+                .then(([repositoryInfo, monitoringResponse]) => {
                     $scope.isRepoInCluster = monitoringResponse.hasClusterOperation();
-                    const data = response.data;
+                    const data = repositoryInfo.data;
                     if (angular.isDefined(data.params.ruleset)) {
                         let ifRulesetExists = false;
                         angular.forEach($scope.rulesets, function (item) {
