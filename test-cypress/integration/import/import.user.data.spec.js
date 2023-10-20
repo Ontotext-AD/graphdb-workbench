@@ -290,6 +290,8 @@ describe('Import screen validation - user data', () => {
     //verifies that the data has been inserted in the given graph and that the new data has replaced the old one.
     function verifyGraphData(graphName, s, p, o, c, checkForReplacedData, oldData) {
         cy.visit('/graphs');
+        // wait a bit to give chance page loaded.
+        cy.wait(1000);
         cy.get(`#export-graphs td a:contains(${graphName})`).click();
         cy.get(`.uri-cell:contains(${s})`).should('be.visible');
         cy.get(`.uri-cell:contains(${p})`).should('be.visible');

@@ -219,7 +219,7 @@ describe('Similarity screen validation', () => {
         YasrSteps.getResponseInfo().should('be.visible').and('contain', 'The number of statements did not change.');
 
         // When I try to disable it while it's disabled.
-        YasqeSteps.executeQuery();
+        YasqeSteps.executeErrorQuery();
 
         // Then I expect an error message to be displayed informing me that the plugin has been already disabled.
         YasrSteps.getErrorBody().should('be.visible').and('contain', 'Plugin similarity has been already disabled');
@@ -230,7 +230,7 @@ describe('Similarity screen validation', () => {
 
         // Then I expect a message to be displayed informing me that the plugin is disabled.
         cy.get('.plugin-not-active-warning').should('be.visible').and('contain', 'Similarity Plugin is not active for this repository.');
-
+        // cy.pause()
         // When I enable the plugin
         cy.get('.confirm-btn')
             .should('be.visible')
@@ -242,6 +242,7 @@ describe('Similarity screen validation', () => {
                     .click()
                     .then(() => {
                         // Then I expect default similarity view with no indexes available
+                        // cy.pause()
                         checkSimilarityPageDefaultState();
                     });
         });
@@ -477,7 +478,7 @@ describe('Similarity screen validation', () => {
             .then(() => cy.url().should('contain', `${Cypress.config('baseUrl')}/similarity/index/create`));
 
         // Makes sure YASQE has loaded before we click the Create button
-        cy.waitUntilQueryIsVisible();
+        YasqeSteps.waitUntilQueryIsVisible();
         getCreateIndexButton().should('be.visible').click();
 
         getExistingIndexesPanel();
