@@ -52,7 +52,7 @@ function SparqlEditorCtrl($scope,
     this.repository = '';
 
     /**
-     * @type {YasguiConfig}
+     * @type {OntotextYasguiConfig}
      */
     $scope.yasguiConfig = undefined;
     $scope.savedQueryConfig = undefined;
