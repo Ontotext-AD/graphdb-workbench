@@ -7,7 +7,7 @@ import {YasrPluginName} from "./yasr-plugin-name";
 /**
  * Holds all configurations related with ontotext-yasgui-web-component.
  */
-export class YasguiConfig {
+export class OntotextYasguiConfig {
     constructor() {
 
         /**
@@ -77,7 +77,7 @@ export class YasguiConfig {
         /**
          * The sparql endpoint which will be used when a query request is made.
          * It is important to note that if the endpoint configuration is passed as string, it will be persisted when first time initializes
-         * the instance with specific {@link YasguiConfig#componentId}. Subsequent query executions will
+         * the instance with specific {@link OntotextYasguiConfig#componentId}. Subsequent query executions will
          * use the endpoint stored in the persistence regardless if the configuration is changed.
          * If the endpoint is defined as a function, it will be called before each query execution.
          *

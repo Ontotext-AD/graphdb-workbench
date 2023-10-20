@@ -40,7 +40,9 @@ yasguiComponentDirective.$inject = [
  * and with minimal code duplication and coupling.
  *
  * Directive attributes:
- * @attr yasguiConfig The directive configuration. TODO: add type def
+ *
+ * @attr yasguiConfig The directive configuration.
+ * @type {OntotextYasguiConfig}
  *
  * @attr afterInit Event handler function which will be invoked immediately after the component gets initialized.
  *
