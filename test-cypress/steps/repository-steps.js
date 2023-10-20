@@ -12,6 +12,10 @@ export class RepositorySteps {
         RepositorySteps.waitUntilRepositoriesPageIsLoaded();
     }
 
+    static visitEditPage(repositoryId) {
+        cy.visit(`repository/edit/${repositoryId}?location=`);
+    }
+
     static getCreateRepositoryButton() {
         return cy.get('#wb-repositories-addRepositoryLink');
     }
@@ -107,6 +111,14 @@ export class RepositorySteps {
 
     static getRepositoryTitleField() {
         return RepositorySteps.getRepositoryCreateForm().find('#title');
+    }
+
+    static getRepositoryIdEditElement() {
+        return cy.get('.ot-edit-input');
+    }
+
+    static editRepositoryId() {
+        this.getRepositoryIdEditElement().click();
     }
 
     static typeRepositoryTitle(title) {
