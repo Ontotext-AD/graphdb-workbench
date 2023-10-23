@@ -192,10 +192,6 @@ yasgui-component .yasr_plugin_control label .label {
     margin-right: 5px;
 }
 
-yasgui-component .CodeMirror-gutter-elt {
-    color: var(--secondary-color) !important;
-}
-
 yasgui-component .saved-queries-container .saved-queries-popup {
     overflow-y: auto;
 }
