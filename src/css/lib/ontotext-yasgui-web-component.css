@@ -105,6 +105,14 @@ yasgui-component .yasr .yasr_btnGroup .yasr_btn.selected {
     background-color: #fff;
 }
 
+yasgui-component .yasr .extended-boolean-plugin .response-error {
+    background-color: var(--color-danger-light) !important;
+}
+
+yasgui-component .yasr .extended-boolean-plugin .response-success {
+    background-color: var(--color-success-light) !important;
+}
+
 yasgui-component .yasr .dataTable a {
     font-size: 16px;
 }
