@@ -210,6 +210,21 @@ yasgui-component .saved-queries-container .saved-queries-popup {
     overflow-y: auto;
 }
 
+yasgui-component .saved-queries-container .saved-queries-popup .saved-query {
+    padding: 0;
+}
+
+yasgui-component .saved-queries-container .saved-queries-popup .saved-query a {
+    color: var(--secondary-color);
+    font-size: 14px;
+    font-weight: bolder;
+}
+
+yasgui-component .saved-queries-container .saved-queries-popup .saved-query-actions .saved-query-action {
+    color: var(--primary-color);
+    font-size: 1.25em;
+}
+
 yasgui-component .abort-button {
     background-color: var(--primary-color) !important;
 }
