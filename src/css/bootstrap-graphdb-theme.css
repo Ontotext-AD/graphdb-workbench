@@ -2723,10 +2723,6 @@ yasgui-component .yasr_plugin_control label .label {
     margin-right: 5px;
 }
 
-yasgui-component .CodeMirror-gutter-elt {
-    color: var(--secondary-color) !important;
-}
-
 /* End of yasgui-component style overrides */
 .dialog .dialog-footer .confirm-button {
     background-color: var(--primary-color) !important;
