@@ -9,8 +9,14 @@ yasgui-component .btn-orientation {
     color: var(--primary-color) !important;
 }
 
+yasgui-component .yasqe .yasqe_buttons {
+    right: 12px;
+}
+
 yasgui-component .custom-button {
     color: var(--primary-color) !important;
+    font-size: 2.9em !important;
+    height: 48px;
 }
 
 yasgui-component .custom-button:disabled:hover, yasgui-component .custom-button:disabled:focus {
