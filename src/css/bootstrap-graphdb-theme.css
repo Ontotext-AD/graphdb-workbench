@@ -1162,10 +1162,6 @@ h3 [class^=icon-] {
     display: none;
 }
 
-.status-bar .btn {
-    font-size: inherit;
-}
-
 .status-bar .btn-group .dropdown-toggle {
     margin-right: 0;
 }
