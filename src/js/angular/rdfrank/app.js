@@ -26,7 +26,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
 
         $scope.setPluginIsActive = function (isPluginActive) {
             $scope.pluginIsActive = isPluginActive;
-        }
+        };
 
         const refreshStatus = function () {
             RdfRankRestService.getStatus()
@@ -91,11 +91,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
             Object.values($scope.filterLists).forEach(function (list) {
                 RdfRankRestService.filter(list.predicate)
                     .success(function (data) {
-                        list.elements = data;
-
-                        list.elements = list.elements.map(function (elem) {
-                            return foldPrefix(elem, $scope.namespaces);
-                        });
+                        return list.elements = data;
                     }).error(function (data) {
                         toastr.error(getError(data));
                     });
@@ -248,8 +244,10 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
         };
 
         $scope.addToList = function (list, iri) {
-            if (UriUtils.isValidIri(iri.text)) {
-                _addToList(list, expandPrefix(iri.text, $scope.namespaces));
+            let iriText = iri.text.toString();
+            iriText = UriUtils.expandPrefix(iriText, $scope.namespaces);
+            if (UriUtils.isValidIri(iri, iriText) && iriText !== "") {
+                _addToList(list, iriText);
             } else {
                 refreshFilteringConfig();
                 toastr.error($translate.instant('not.valid.iri', {value: iri.text}));
@@ -270,7 +268,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
         };
 
         $scope.deleteFromList = function (list, iri) {
-            _deleteFromList(list, expandPrefix(iri.text, $scope.namespaces));
+            _deleteFromList(list, iri.text, $scope.namespaces);
         };
 
         const pullStatus = function () {
@@ -285,30 +283,6 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
         $scope.$on('$destroy', function () {
             cancelTimer();
         });
-
-        function expandPrefix(str, namespaces) {
-            const ABS_URI_REGEX = /^<?(http|urn).*>?/;
-            if (!ABS_URI_REGEX.test(str)) {
-                const uriParts = str.split(':');
-                const uriPart = uriParts[0];
-                const localName = uriParts[1];
-                if (!angular.isUndefined(localName)) {
-                    const expandedUri = ClassInstanceDetailsService.getNamespaceUriForPrefix(namespaces, uriPart);
-                    if (expandedUri) {
-                        return expandedUri + localName;
-                    }
-                }
-            }
-            return str;
-        }
-
-        function foldPrefix(iri, namespaces) {
-            const localPart = ClassInstanceDetailsService.getLocalName(iri);
-            const iriPart = iri.replace(new RegExp(localPart + '$', 'i'), '');
-            const folded = ClassInstanceDetailsService.getNamespacePrefixForUri(namespaces, iriPart);
-
-            return folded === '' ? iri : folded + ':' + localPart;
-        }
 
         const init = function () {
             if (!$licenseService.isLicenseValid() ||

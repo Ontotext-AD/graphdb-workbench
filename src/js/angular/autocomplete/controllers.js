@@ -10,9 +10,9 @@ angular
     .controller('AutocompleteCtrl', AutocompleteCtrl)
     .controller('AddLabelCtrl', AddLabelCtrl);
 
-AutocompleteCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', '$uibModal', '$timeout', 'AutocompleteRestService', '$autocompleteStatus', '$translate'];
+AutocompleteCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', '$uibModal', '$timeout', 'RDF4JRepositoriesRestService', 'UriUtils', 'AutocompleteRestService', '$autocompleteStatus', '$translate'];
 
-function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseService, $uibModal, $timeout, AutocompleteRestService, $autocompleteStatus, $translate) {
+function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseService, $uibModal, $timeout, RDF4JRepositoriesRestService, UriUtils, AutocompleteRestService, $autocompleteStatus, $translate) {
 
     let timer;
 
@@ -68,17 +68,22 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
 
     const addLabelConfig = function (label) {
         $scope.setLoader(true, $translate.instant('autocomplete.update'));
-
-
-        AutocompleteRestService.addLabelConfig(label)
-            .success(function () {
-                refreshLabelConfig();
-                refreshIndexStatus();
-            }).error(function (data) {
-            toastr.error(getError(data));
-        }).finally(function () {
+        const labelIriText = label.labelIri;
+        label.labelIri = UriUtils.expandPrefix(label.labelIri, $scope.namespaces);
+        if (UriUtils.isValidIri(label, label.labelIri) && label.labelIri !== "") {
+            AutocompleteRestService.addLabelConfig(label)
+                .success(function () {
+                    refreshLabelConfig();
+                    refreshIndexStatus();
+                }).error(function (data) {
+                toastr.error(getError(data));
+            }).finally(function () {
+                $scope.setLoader(false);
+            });
+        } else {
+            toastr.error($translate.instant('not.valid.iri', {value: labelIriText}));
             $scope.setLoader(false);
-        });
+        }
     };
 
     const removeLabelConfig = function (label) {
@@ -104,6 +109,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
             .success(function (data) {
                 $scope.pluginFound = data === true;
                 if ($scope.pluginFound) {
+                    initNamespaces();
                     refreshEnabledStatus();
                     refreshIndexIRIs();
                     refreshIndexStatus();
@@ -256,6 +262,20 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
         $scope.checkForPlugin();
         pullStatus();
     });
+
+    const initNamespaces = function () {
+        RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
+            .success(function (data) {
+                const nss = _.map(data.results.bindings, function (o) {
+                    return {'uri': o.namespace.value, 'prefix': o.prefix.value};
+                });
+                $scope.namespaces = _.sortBy(nss, function (n) {
+                    return n.uri.length;
+                });
+            }).error(function (data) {
+            toastr.error($translate.instant('get.namespaces.error.msg', {error: getError(data)}));
+        });
+    };
 
     init();
 }
