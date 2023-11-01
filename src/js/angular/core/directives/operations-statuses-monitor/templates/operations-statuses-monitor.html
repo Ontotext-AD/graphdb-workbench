@@ -2,24 +2,25 @@
 
 <div ng-if="activeOperations && activeOperations.operations && activeOperations.operations.length > 0"
      class="operations-statuses btn-group">
-    <button type="button" class="btn btn-secondary operations-statuses-dropdown-toggle dropdown-toggle" data-toggle="dropdown"
+    <button type="button"
+            class="btn btn-secondary operations-statuses-dropdown-toggle dropdown-toggle" data-toggle="dropdown"
+            ng-if="operationsSummary && operationsSummary.length > 0"
             ng-class="{
             'btn-fade-danger': OPERATION_STATUS.CRITICAL === activeOperations.status,
             'btn-fade-warning': OPERATION_STATUS.WARNING === activeOperations.status
             }">
-        <div class="operation-status-header" ng-repeat="operation in activeOperations.operations"
-             ng-if="OPERATION_TYPE.UPDATES !== operation.type">
+        <div class="operation-status-header" ng-repeat="operationGroup in operationsSummary">
             <div ng-class="{
-            'icon-import': OPERATION_GROUP_TYPE.IMPORT_OPERATION === operation.operationGroup,
-            'icon-exchange': OPERATION_GROUP_TYPE.QUERIES_OPERATION === operation.operationGroup,
-            'fa fa-archive': OPERATION_GROUP_TYPE.BACKUP_AND_RESTORE_OPERATION === operation.operationGroup,
-            'fa fa-sitemap': OPERATION_GROUP_TYPE.CLUSTER_OPERATION === operation.operationGroup,
-            'status-critical': OPERATION_STATUS.CRITICAL === operation.status,
-            'status-information': OPERATION_STATUS.INFORMATION === operation.status,
-            'status-warning': OPERATION_STATUS.WARNING === operation.status}">
+            'icon-import': OPERATION_GROUP_TYPE.IMPORT_OPERATION === operationGroup.type,
+            'icon-exchange': OPERATION_GROUP_TYPE.QUERIES_OPERATION === operationGroup.type,
+            'fa fa-archive': OPERATION_GROUP_TYPE.BACKUP_AND_RESTORE_OPERATION === operationGroup.type,
+            'fa fa-sitemap': OPERATION_GROUP_TYPE.CLUSTER_OPERATION === operationGroup.type,
+            'status-critical': OPERATION_STATUS.CRITICAL === operationGroup.status,
+            'status-information': OPERATION_STATUS.INFORMATION === operationGroup.status,
+            'status-warning': OPERATION_STATUS.WARNING === operationGroup.status}">
             </div>
-            <span ng-if="operation.groupRunningOperationCount" class="running-operation-count">
-                <sup class="tag-info">{{operation.groupRunningOperationCount}}</sup>
+            <span ng-if="operationGroup.runningOperations" class="running-operation-count">
+                <sup class="tag-info">{{operationGroup.runningOperations}}</sup>
             </span>
         </div>
         <span class="caret"></span>
