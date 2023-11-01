@@ -1,5 +1,5 @@
 import {OPERATION_GROUP_TYPE} from "../../../models/monitoring/operations/operation-group";
-import {OPERATION_STATUS} from "../../../models/monitoring/operations/operation-status";
+import {OPERATION_STATUS, OPERATION_STATUS_SORT_ORDER} from "../../../models/monitoring/operations/operation-status";
 import {
     OPERATION_TYPE,
     OPERATION_TYPE_SORT_ORDER
@@ -25,6 +25,7 @@ function operationsStatusesMonitorDirectives($interval, $repositories, Monitorin
         scope.OPERATION_STATUS = OPERATION_STATUS;
         scope.OPERATION_GROUP_TYPE = OPERATION_GROUP_TYPE;
         scope.OPERATION_TYPE = OPERATION_TYPE;
+        scope.operationsSummary = undefined;
         scope.activeOperations = undefined;
 
         let updateActiveOperationsTimer = undefined;
@@ -35,22 +36,49 @@ function operationsStatusesMonitorDirectives($interval, $repositories, Monitorin
         // =========================
         // Private functions
         // =========================
+        /**
+         *
+         * @param {string} operationGroupType - the value must be one of {@see OPERATION_GROUP_TYPE} options.
+         * @return {OperationGroupSummary}
+         */
+        const getOperationGroupSummary = (operationGroupType) => {
+            const runningOperations = getOperationRunningCount(operationGroupType);
+            return new OperationGroupSummary(operationGroupType, runningOperations, getSummaryGroupOperationStatus(operationGroupType));
+        };
 
         /**
-         * Calculates count of active operations in the entire group depending on <code>operationGroupType</code>.
+         * Calculates count of active operations depending on <code>operationGroupType</code>.
          * @param {string} operationGroupType - the value must be one of {@see OPERATION_GROUP_TYPE} options.
          * @return {number}
          */
-        const getOperationGroupRunningCount = (operationGroupType) => {
+        const getOperationRunningCount = (operationGroupType) => {
             if (scope.activeOperations.operations) {
                 return scope.activeOperations.operations.reduce((runningOperation, operationStatus) => {
-                    if (operationGroupType !== operationStatus.operationGroup) {
+                    // we skip the cluster and backup_and_restore operations because we do not support multiple operations of that type.
+                    if (operationGroupType !== operationStatus.operationGroup || OPERATION_GROUP_TYPE.CLUSTER_OPERATION === operationStatus.operationGroup || OPERATION_GROUP_TYPE.BACKUP_AND_RESTORE_OPERATION === operationStatus.operationGroup) {
                         return runningOperation;
                     }
 
-                    return runningOperation + operationStatus.runningOperationCount;
+                    if (OPERATION_GROUP_TYPE.QUERIES_OPERATION === operationStatus.operationGroup || OPERATION_GROUP_TYPE.IMPORT_OPERATION === operationStatus.operationGroup) {
+                        return runningOperation + operationStatus.runningOperationCount;
+                    } else {
+                        return runningOperation + 1;
+                    }
                 }, 0);
             }
+        };
+
+        const getSummaryGroupOperationStatus = (operationGroupType) => {
+            return scope.activeOperations.operations.reduce((groupStatus, operationStatus) => {
+                if (operationGroupType !== operationStatus.operationGroup) {
+                    return groupStatus;
+                }
+
+                if (OPERATION_STATUS_SORT_ORDER.getOrder(operationStatus.status) > OPERATION_STATUS_SORT_ORDER.getOrder(groupStatus)) {
+                    return operationStatus.status;
+                }
+               return groupStatus;
+            }, OPERATION_STATUS.INFORMATION);
         };
 
         /**
@@ -63,13 +91,21 @@ function operationsStatusesMonitorDirectives($interval, $repositories, Monitorin
             }
             scope.activeOperations = newActiveOperations;
 
-            scope.activeOperations.operations.forEach((op) => {
-                op.groupRunningOperationCount = getOperationGroupRunningCount(op.operationGroup);
-            });
-
             scope.activeOperations.operations.sort((a, b) => {
                 return OPERATION_TYPE_SORT_ORDER[a.type] - OPERATION_TYPE_SORT_ORDER[b.type];
             });
+
+            const operationsStatusesSummary = [];
+            const processedGroup = [];
+            scope.activeOperations.operations.forEach((operation) => {
+                const groupType = operation.operationGroup;
+                if (!processedGroup.includes(groupType)) {
+                    processedGroup.push(groupType);
+                    operationsStatusesSummary.push(getOperationGroupSummary(groupType));
+                }
+            });
+            scope.operationsSummary = operationsStatusesSummary;
+
         };
 
         const reloadActiveOperations = () => {
@@ -114,5 +150,13 @@ function operationsStatusesMonitorDirectives($interval, $repositories, Monitorin
 
         reloadActiveOperations();
         updateActiveOperationsTimer = $interval(() => reloadActiveOperations(), UPDATE_ACTIVE_OPERATION_TIME_INTERVAL);
+    }
+}
+
+class OperationGroupSummary {
+    constructor(operationGroup, runningOperations, status) {
+        this.type = operationGroup;
+        this.runningOperations = runningOperations;
+        this.status = status;
     }
 }
