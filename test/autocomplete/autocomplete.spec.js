@@ -43,6 +43,8 @@ describe('Autocomplete', function () {
         let $timeout;
         let $controller;
         let AutocompleteRestService;
+        let RDF4JRepositoriesRestService;
+        let UriUtils;
         let $httpBackend;
         let createController;
         let modalInstance;
@@ -51,7 +53,7 @@ describe('Autocomplete', function () {
 
         beforeEach(angular.mock.module('Mocks'));
 
-        beforeEach(angular.mock.inject(function (_$rootScope_, _$http_, _$interval_, _toastr_, _$repositories_, _$licenseService_, _$timeout_, _$controller_, _AutocompleteRestService_, _$httpBackend_, $q, _$autocompleteStatus_, _$translate_) {
+        beforeEach(angular.mock.inject(function (_$rootScope_, _$http_, _$interval_, _toastr_, _$repositories_, _$licenseService_, _$timeout_, _$controller_, _AutocompleteRestService_, _RDF4JRepositoriesRestService_, _UriUtils_, _$httpBackend_, $q, _$autocompleteStatus_, _$translate_) {
             $scope = _$rootScope_.$new();
             $http = _$http_;
             $interval = _$interval_;
@@ -63,6 +65,8 @@ describe('Autocomplete', function () {
             $timeout = _$timeout_;
             $controller = _$controller_;
             AutocompleteRestService = _AutocompleteRestService_;
+            RDF4JRepositoriesRestService = _RDF4JRepositoriesRestService_;
+            UriUtils = _UriUtils_;
             $httpBackend = _$httpBackend_;
             $autocompleteStatus = _$autocompleteStatus_;
             $translate = _$translate_;
@@ -102,9 +106,10 @@ describe('Autocomplete', function () {
             $httpBackend.when('POST', 'rest/autocomplete/interrupt').respond(200);
 
             $httpBackend.when('GET', 'rest/autocomplete/labels').respond(200);
-            $httpBackend.when('PUT', 'rest/autocomplete/labels', {}).respond(200);
+            $httpBackend.when('GET', 'rest/autocomplete/labels').respond(200);
+            $httpBackend.when('GET', 'repositories/repo/namespaces').respond(200, {results: {bindings: []}});
             $httpBackend.when('DELETE', 'rest/autocomplete/labels', {
-                'Content-Type': 'application/json;charset=utf-8',
+                'Content-Type': 'application/json;charset=utf-8'
             }).respond(200);
         }));
 
@@ -391,7 +396,7 @@ describe('Autocomplete', function () {
                 $scope.loader = false;
                 // expect labels service to be called
                 $httpBackend.expectPUT('rest/autocomplete/labels', {
-                    labelIri: '',
+                    labelIri: 'http://test',
                     languages: ''
                 }).respond(200);
                 // should refresh labels config.
@@ -405,7 +410,7 @@ describe('Autocomplete', function () {
                 expect(argument.templateUrl).toEqual('js/angular/autocomplete/templates/modal/add-label.html');
                 expect(argument.controller).toEqual('AddLabelCtrl');
 
-                modalInstance.close({labelIri: '', languages: ''});
+                modalInstance.close({labelIri: 'http://test', languages: ''});
                 $timeout.flush();
                 $httpBackend.flush();
 
@@ -419,7 +424,7 @@ describe('Autocomplete', function () {
                 $scope.loader = false;
                 // expect labels service to be called
                 $httpBackend.expectPUT('rest/autocomplete/labels', {
-                    labelIri: '',
+                    labelIri: 'http://test',
                     languages: ''
                 }).respond(200);
                 // should refresh labels config.
@@ -433,7 +438,7 @@ describe('Autocomplete', function () {
                 expect(argument.templateUrl).toEqual('js/angular/autocomplete/templates/modal/add-label.html');
                 expect(argument.controller).toEqual('AddLabelCtrl');
 
-                modalInstance.close({labelIri: '', languages: ''});
+                modalInstance.close({labelIri: 'http://test', languages: ''});
                 $timeout.flush();
                 $httpBackend.flush();
 
@@ -446,7 +451,7 @@ describe('Autocomplete', function () {
                 $scope.loader = false;
                 // expect labels service to be called and respond with an error
                 $httpBackend.expectPUT('rest/autocomplete/labels', {
-                    labelIri: '',
+                    labelIri: 'http://test',
                     languages: ''
                 }).respond(500, {
                     error: {
@@ -456,7 +461,7 @@ describe('Autocomplete', function () {
 
                 $scope.editLabel({labelIri: 'label/iri', languages: 'en'}, true);
 
-                modalInstance.close({labelIri: '', languages: ''});
+                modalInstance.close({labelIri: 'http://test', languages: ''});
                 $timeout.flush();
                 $httpBackend.flush();
 
@@ -471,7 +476,7 @@ describe('Autocomplete', function () {
                 $scope.loader = false;
                 // expect labels service to be called and respond with an error
                 $httpBackend.expectPUT('rest/autocomplete/labels', {
-                    labelIri: '',
+                    labelIri: 'http://test',
                     languages: ''
                 }).respond(200);
                 $httpBackend.expectGET('rest/autocomplete/labels').respond(500, {
@@ -482,7 +487,7 @@ describe('Autocomplete', function () {
 
                 $scope.editLabel({labelIri: 'label/iri', languages: 'en'}, true);
 
-                modalInstance.close({labelIri: '', languages: ''});
+                modalInstance.close({labelIri: 'http://test', languages: ''});
                 $timeout.flush();
                 $httpBackend.flush();
 
@@ -553,6 +558,8 @@ describe('Autocomplete', function () {
                 $httpBackend.when('GET', 'rest/autocomplete/plugin-found').respond(200, true);
                 // should check for the plugin
                 $httpBackend.expectGET('rest/autocomplete/plugin-found');
+                // should call namespaces
+                $httpBackend.expectGET('repositories/repo/namespaces');
                 // should refresh autocomplete status.
                 $httpBackend.expectGET('rest/autocomplete/enabled');
                 // should refresh iris status.
@@ -592,6 +599,8 @@ describe('Autocomplete', function () {
                 $httpBackend.when('GET', 'rest/autocomplete/plugin-found').respond(200, true);
                 // should check for the plugin
                 $httpBackend.expectGET('rest/autocomplete/plugin-found');
+                // should call namespaces
+                $httpBackend.expectGET('repositories/repo/namespaces');
                 // should refresh autocomplete status.
                 $httpBackend.expectGET('rest/autocomplete/enabled');
                 // should refresh iris status.
