@@ -10,8 +10,10 @@ export class ActiveOperationModel {
          */
         this.operationGroup = undefined;
         this.runningOperationCount = 0;
-        this.groupRunningOperationCount = 0;
         this.status = OPERATION_STATUS.INFORMATION;
+        /**
+         * @type {string} - the value must be one of the {@see OPERATION_TYPE} option.
+         */
         this.type = undefined;
         this.titleLabelKey = '';
         this.monitoringViewUrl = '';
