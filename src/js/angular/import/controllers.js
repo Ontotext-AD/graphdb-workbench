@@ -789,7 +789,7 @@ importCtrl.controller('SettingsModalCtrl', ['$scope', '$uibModalInstance', 'toas
     $scope.addReplaceGraph = function (graph) {
         let valid = true;
         if (graph !== 'default') {
-            valid = UriUtils.isValidIri(graph);
+            valid = UriUtils.isValidIri(graph, graph.toString());
         }
         $scope.settingsForm.replaceGraph.$setTouched();
         $scope.settingsForm.replaceGraph.$setValidity('replaceGraph', valid);
