@@ -264,7 +264,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
     });
 
     const initNamespaces = function () {
-        RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
+        RDF4JRepositoriesRestService.getNamespaces($repositories.getActiveRepository())
             .success(function (data) {
                 const nss = _.map(data.results.bindings, function (o) {
                     return {'uri': o.namespace.value, 'prefix': o.prefix.value};
