@@ -38,10 +38,15 @@ function StatementsService() {
             for (let j = 0; j < value.length; j++) {
                 const statement = value[j];
                 data += '\n\t<' + statement.subject + '> <' + statement.predicate + '> ';
+                const statementObjectValue = statement.object.value;
                 if (statement.object.type === 'uri') {
-                    data += '<' + statement.object.value + '> .';
+                    data += '<' + statementObjectValue + '> .';
                 } else {
-                    data += '"""' + statement.object.value + '"""' + (statement.object.datatype ? '^^<' + statement.object.datatype + '>' : (statement.object.lang ? '@' + statement.object.lang : '')) + ' .';
+                    if (statementObjectValue.toString().includes('"')) {
+                        data += "'''" + statementObjectValue + "'''" + (statement.object.datatype ? '^^<' + statement.object.datatype + '>' : (statement.object.lang ? '@' + statement.object.lang : '')) + ' .';
+                    } else {
+                        data += '"""' + statementObjectValue + '"""' + (statement.object.datatype ? '^^<' + statement.object.datatype + '>' : (statement.object.lang ? '@' + statement.object.lang : '')) + ' .';
+                    }
                 }
             }
 
