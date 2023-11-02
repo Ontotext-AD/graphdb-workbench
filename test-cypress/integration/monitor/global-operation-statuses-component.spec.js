@@ -27,6 +27,41 @@ describe('Operations Status Component', () => {
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().should('not.exist');
     });
 
+    it('should display icons with ongoing operations', () => {
+        // When I visit some page and there are running operations.
+        GlobalOperationsStatusesStub.stubGlobalOperationsStatusesResponse(repositoryId);
+        HomeSteps.visitAndWaitLoader();
+        // Then I expect "Global Operations Component" to be displayed.
+        OperationsStatusesComponentSteps.getOperationsStatusesComponent().should('exist');
+
+        OperationsStatusesComponentSteps.getImportOperationStatusHeaderElement()
+            .should('have.length', 1)
+            .parent()
+            .find('.running-operation-count')
+            .should('exist')
+            .contains('1');
+
+        OperationsStatusesComponentSteps.getQueriesOperationStatusHeaderElement()
+            .should('have.length', 1)
+            .parent()
+            .find('.running-operation-count')
+            .should('exist')
+            .contains('26');
+
+        OperationsStatusesComponentSteps.getBackupAndRestoreOperationStatusHeaderElement()
+            .should('have.length', 1)
+            .parent()
+            .find('.running-operation-count')
+            .should('not.exist');
+
+        OperationsStatusesComponentSteps.getClusterOperationStatusHeaderElement()
+            .should('have.length', 1)
+            .parent()
+            .find('.running-operation-count')
+            .should('not.exist');
+
+    });
+
     it('should redirect to query and update view wen click on queries operation element', () => {
         // When I visit some page and there are running operations.
         GlobalOperationsStatusesStub.stubGlobalOperationsStatusesResponse(repositoryId);
