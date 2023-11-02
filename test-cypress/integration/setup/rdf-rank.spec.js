@@ -136,7 +136,7 @@ describe('Setup / RDF Rank', () => {
             .find('.tag-list .tag-item')
             .should('have.length', 1)
             // The form automatically converts it to short IRI
-            .and('contain', 'rdf:type');
+            .and('contain', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
         getComputeFullButton().click();
 
         // All should be OK
