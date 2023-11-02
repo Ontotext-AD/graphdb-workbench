@@ -1212,8 +1212,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         }
     };
 
-    const forceX = d3.forceX(width / 2).strength(0.015)
-    const forceY = d3.forceY(height / 2).strength(0.015)
+    const forceX = d3.forceX(width / 2).strength(0.005)
+    const forceY = d3.forceY(height / 2).strength(0.005)
 
     const force = d3.forceSimulation()
         .force('x', forceX)
@@ -1400,10 +1400,14 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         let link = svg.selectAll(".link");
         let node = svg.selectAll(".node");
 
+        const collisionForce = d3.forceCollide((d) => d.size + 5).strength(0.5)
+        const chargeForce = d3.forceManyBody().strength(-300);
+        const centerForce = d3.forceCenter(width/2,  height/2)
+
         force.nodes(graph.nodes)
-            .force("charge", d3.forceManyBody().strength(-300))
-            .force("collide", d3.forceCollide((d) => d.size + 5))
-            .force("center", d3.forceCenter(width/2,  height/2))
+            .force("charge", chargeForce)
+            .force("collide", collisionForce)
+            .force("center", centerForce)
             .force("link", d3.forceLink(graph.links).distance(function (l) {
                 if (l.source.isTriple || l.target.isTriple) {
                     return 0;
@@ -1844,6 +1848,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         });
 
         d3.selectAll('.d3-actions-tip').remove();
+
+        force.alpha(1).restart();
     }
 
 

@@ -7,7 +7,6 @@
 //
 // Returns a tip
 var d3tip = function () {
-    console.log(d3.version);
     var direction = d3_tip_direction,
         offset = d3_tip_offset,
         html = d3_tip_html,
