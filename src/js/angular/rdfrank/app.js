@@ -39,15 +39,13 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
         };
 
         const initNamespaces = function () {
-            RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
-                .success(function (data) {
-                    const nss = mapNamespacesResponse(data);
-                    $scope.namespaces = _.sortBy(nss, function (n) {
-                        return n.uri.length;
-                    });
+            RDF4JRepositoriesRestService.getNamespaces($repositories.getActiveRepository())
+                .then(mapNamespacesResponse)
+                .then((namespacesModel) => {
+                    $scope.namespaces = namespacesModel;
                 }).error(function (data) {
-                    toastr.error($translate.instant('get.namespaces.error.msg', {error: getError(data)}));
-                });
+                toastr.error($translate.instant('get.namespaces.error.msg', {error: getError(data)}));
+            });
         };
 
         const refreshPage = function () {
