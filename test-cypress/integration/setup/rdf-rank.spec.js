@@ -135,7 +135,6 @@ describe('Setup / RDF Rank', () => {
         getIncludedPredicatesFilter()
             .find('.tag-list .tag-item')
             .should('have.length', 1)
-            // The form automatically converts it to short IRI
             .and('contain', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
         getComputeFullButton().click();
 

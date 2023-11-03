@@ -1,4 +1,5 @@
 import 'angular/rest/autocomplete.rest.service';
+import {mapNamespacesResponse} from "../rest/mappers/namespaces-mapper";
 
 const modules = [
     'toastr',
@@ -266,9 +267,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
     const initNamespaces = function () {
         RDF4JRepositoriesRestService.getNamespaces($repositories.getActiveRepository())
             .success(function (data) {
-                const nss = _.map(data.results.bindings, function (o) {
-                    return {'uri': o.namespace.value, 'prefix': o.prefix.value};
-                });
+                const nss = mapNamespacesResponse(data);
                 $scope.namespaces = _.sortBy(nss, function (n) {
                     return n.uri.length;
                 });

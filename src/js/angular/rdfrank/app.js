@@ -3,6 +3,7 @@ import 'angular/core/directives';
 import 'angular/utils/uri-utils';
 import 'angular/rest/rdfrank.rest.service';
 import 'ng-tags-input/build/ng-tags-input.min';
+import {mapNamespacesResponse} from "../rest/mappers/namespaces-mapper";
 
 const rdfRankApp = angular.module('graphdb.framework.rdfrank', [
     'ngRoute',
@@ -40,9 +41,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
         const initNamespaces = function () {
             RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
                 .success(function (data) {
-                    const nss = _.map(data.results.bindings, function (o) {
-                        return {'uri': o.namespace.value, 'prefix': o.prefix.value};
-                    });
+                    const nss = mapNamespacesResponse(data);
                     $scope.namespaces = _.sortBy(nss, function (n) {
                         return n.uri.length;
                     });
