@@ -266,13 +266,11 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
 
     const initNamespaces = function () {
         RDF4JRepositoriesRestService.getNamespaces($repositories.getActiveRepository())
-            .success(function (data) {
-                const nss = mapNamespacesResponse(data);
-                $scope.namespaces = _.sortBy(nss, function (n) {
-                    return n.uri.length;
-                });
+            .then(mapNamespacesResponse)
+            .then((namespacesModel) => {
+                $scope.namespaces = namespacesModel;
             }).error(function (data) {
-            toastr.error($translate.instant('get.namespaces.error.msg', {error: getError(data)}));
+                toastr.error($translate.instant('get.namespaces.error.msg', {error: getError(data)}));
         });
     };
 
