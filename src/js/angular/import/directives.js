@@ -14,7 +14,7 @@ importDirectives.directive('validateUri', ['UriUtils', function (UriUtils) {
                 let valid = true;
 
                 if (scope.target === 'named') {
-                    valid = UriUtils.isValidIri(value);
+                    valid = UriUtils.isValidIri(value, value.toString());
                 }
 
                 ctrl.$setValidity('validateUri', valid);

@@ -366,7 +366,7 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
     }
 
     function validateTemplateID() {
-        $scope.isInvalidTemplateId = !UriUtils.isValidIri($scope.currentQuery.templateID);
+        $scope.isInvalidTemplateId = !UriUtils.isValidIri($scope.currentQuery.templateID, $scope.currentQuery.templateID.toString());
     }
 
     function saveNewTemplate() {
