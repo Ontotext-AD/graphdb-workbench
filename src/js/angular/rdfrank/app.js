@@ -38,14 +38,16 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
                 });
         };
 
-        const initNamespaces = function () {
+        const loadNamespaces = () => {
             RDF4JRepositoriesRestService.getNamespaces($repositories.getActiveRepository())
                 .then(mapNamespacesResponse)
                 .then((namespacesModel) => {
                     $scope.namespaces = namespacesModel;
-                }).error(function (data) {
-                toastr.error($translate.instant('get.namespaces.error.msg', {error: getError(data)}));
-            });
+                })
+                .catch((response) => {
+                    const msg = getError(response);
+                    toastr.error(msg, $translate.instant('error.getting.namespaces.for.repo'));
+                });
         };
 
         const refreshPage = function () {
@@ -62,7 +64,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
                 .success(function (data) {
                     $scope.pluginFound = (data === true);
                     if ($scope.pluginFound) {
-                        initNamespaces();
+                        loadNamespaces();
                         refreshPage();
                     } else {
                         $scope.loading = false;
