@@ -1652,7 +1652,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                 d.fx =null;
                 d.fy =null;
                 showPinAnimation(d, 'up');
-                force.alphaTarget(1).restart();
+                force.alpha(1).restart();
             } else {
                 // pin down
                 $scope.numberOfPinnedNodes++;
@@ -1849,7 +1849,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
         d3.selectAll('.d3-actions-tip').remove();
 
-        force.alpha(1).restart();
+        force.alpha(0.3).restart();
     }
 
 
@@ -2973,7 +2973,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             }
         });
 
-        force.alphaTarget(1).restart();
+        force.alpha(1).restart();
     };
 
     // event for capturing left and right arrows used for rotation

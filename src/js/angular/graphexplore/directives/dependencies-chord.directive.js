@@ -199,9 +199,10 @@ function dependenciesChordDirective($repositories, GraphDataRestService) {
                 // convert selected html to base64
                 const imgSrc = SVG.Export.generateBase64ImageSource('.dependencies-chord svg');
                 // set the binary image and a name for the downloadable file on the export button
-                d3.select(this)
-                    .attr("href", imgSrc)
-                    .attr("download", "dependencies-" + $repositories.getActiveRepository() + ".svg");
+                d3.select(this).attrs({
+                    href: imgSrc,
+                    download: "dependencies-" + $repositories.getActiveRepository() + ".svg"
+                });
             }
 
             d3.select("#download-svg")

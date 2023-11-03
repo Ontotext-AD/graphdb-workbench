@@ -61,8 +61,10 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
 
         function appendMainGroup() {
             return svg.append("svg:g")
-                .attr("id", "main-group")
-                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+                .attrs({
+                    id: "main-group",
+                    transform: "translate(" + width / 2 + "," + height / 2 + ")"
+                });
         }
 
         function savePrefixesState(hidePrefixes) {
@@ -95,9 +97,10 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
             var imgSrc = SVG.Export.generateBase64ImageSource("#classChart svg");
 
             // set the binary image and a name for the downloadable file on the export button
-            d3.select(this)
-                .attr("href", imgSrc)
-                .attr("download", "class-hierarchy-" + $repositories.getActiveRepository() + ".svg");
+            d3.select(this).attrs({
+                href: imgSrc,
+                download: "class-hierarchy-" + $repositories.getActiveRepository() + ".svg"
+            });
         }
 
         scope.hidePrefixes = getPrefixesState();
