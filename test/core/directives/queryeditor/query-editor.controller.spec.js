@@ -188,7 +188,6 @@ describe('QueryEditor', function () {
 
         describe('querySelected', () => {
             it('should select tab', () => {
-                $scope.showSampleQueries = true;
                 $scope.tabsData = [
                     {id: 'tab-0', name: 'first tab', query: 'query-0', inference: false, sameAs: false},
                     {id: 'tab-1', name: 'second tab', query: 'query-1', inference: false, sameAs: false}
@@ -200,6 +199,7 @@ describe('QueryEditor', function () {
                 spyOn(window, '$').and.returnValue(elementMock);
                 $httpBackend.when('GET', 'rest/security/all').respond(200);
                 $httpBackend.when('GET', 'rest/locations', {}).respond(200);
+                $httpBackend.when('GET', 'rest/sparql/saved-queries', {}).respond(200, []);
 
                 $scope.querySelected({
                     name: 'second tab',
@@ -207,12 +207,10 @@ describe('QueryEditor', function () {
                 });
                 $timeout.flush();
 
-                expect(elementMock.collapse).toHaveBeenCalled();
                 expect(elementMock.tab).toHaveBeenCalledWith('show');
             });
 
             it('should add new tab', async () => {
-                $scope.showSampleQueries = true;
                 let elementMock = {
                     collapse: jasmine.createSpy(),
                     tab: jasmine.createSpy(),
