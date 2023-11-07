@@ -397,31 +397,15 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $uibModal, Mod
     });
 
     function toggleSampleQueries() {
-        $scope.showSampleQueries = !$scope.showSampleQueries;
-        if ($scope.showSampleQueries) {
-            SparqlRestService.getSavedQueries()
-                .success(function (data) {
-                    $scope.sampleQueries = data;
-                    $('#sampleQueriesCollapse').collapse('show').width('300px');
-                })
-                .error(function (data) {
-                    const msg = getError(data);
-                    toastr.error(msg, $translate.instant('query.editor.get.saved.queries.error'));
-                });
-        } else {
-            $('#sampleQueriesCollapse').collapse('hide');
-        }
+        SparqlRestService.getSavedQueries()
+            .success(function (savedQueries) {
+                $scope.sampleQueries = savedQueries.filter((savedQuery) => !$scope.ignoreSharedQueries || savedQuery.owner !== $scope.principal.username);
+            })
+            .error(function (data) {
+                const msg = getError(data);
+                toastr.error(msg, $translate.instant('query.editor.get.saved.queries.error'));
+            });
     }
-
-    // Hide the sample queries when the user clicks somewhere else in the UI.
-    $(document).mouseup(function (event) {
-        const container = $('#sampleQueriesCollapse');
-        if (!container.is(event.target) // if the target of the click isn't the container..
-            && container.has(event.target).length === 0 //... nor a descendant of the container
-            && $scope.showSampleQueries) {
-            toggleSampleQueries();
-        }
-    });
 
     // Add known prefixes
     function addKnownPrefixes() {
@@ -821,8 +805,6 @@ function QueryEditorCtrl($scope, $timeout, toastr, $repositories, $uibModal, Mod
     // end of query tab operations
 
     $scope.currentQuery = {};
-    // $scope.state = {};
-    $scope.showSampleQueries = false;
     $scope.savedQuery = {};
     $scope.sampleQueries = {};
     $scope.editQueryModal = showModal('#editQueryContainer');

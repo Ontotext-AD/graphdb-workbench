@@ -57,9 +57,39 @@
   cursor: pointer;
 }
 
-#wb-sparql-queryInSampleQueries{
+#wb-sparql-queryInSampleQueries {
+    width: 300px;
     max-height: 170px;
     overflow-y: auto;
+    position: relative;
+}
+
+#wb-sparql-queryInSampleQueries .saved-query {
+    height: 22px;
+    position: relative;
+}
+
+#wb-sparql-queryInSampleQueries .saved-query a {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#wb-sparql-queryInSampleQueries .saved-query .actions-bar {
+    display: none;
+}
+
+#wb-sparql-queryInSampleQueries .saved-query .actions-bar .not-user-query {
+    display: none;
+}
+
+#wb-sparql-queryInSampleQueries .saved-query:hover .actions-bar {
+    display: inline;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: #fff;
 }
 
 .CodeMirror {
