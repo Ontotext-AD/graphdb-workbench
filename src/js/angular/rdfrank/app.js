@@ -4,6 +4,7 @@ import 'angular/utils/uri-utils';
 import 'angular/rest/rdfrank.rest.service';
 import 'ng-tags-input/build/ng-tags-input.min';
 import {mapNamespacesResponse} from "../rest/mappers/namespaces-mapper";
+import {decodeHTML} from "../../../app";
 
 const rdfRankApp = angular.module('graphdb.framework.rdfrank', [
     'ngRoute',
@@ -249,7 +250,8 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
                 _addToList(list, iriText);
             } else {
                 refreshFilteringConfig();
-                toastr.error($translate.instant('not.valid.iri', {value: iri.text}));
+                const errorMessage = decodeHTML($translate.instant('not.valid.iri', {value: iriText}));
+                toastr.error(errorMessage);
             }
         };
 
