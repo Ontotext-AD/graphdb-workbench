@@ -44,7 +44,8 @@ var d3tip = function () {
             .style('pointer-events', 'all')
 
         while (i--) nodel.classed(directions[i], false)
-        coords = direction_callbacks.get(dir).apply(this)
+        const event = args.filter((arg) => arg instanceof Event);
+        coords = direction_callbacks.get(dir).apply(this, event)
 
         if (customPos) {
             Object.keys(customPos).forEach(function (key) {
@@ -172,7 +173,7 @@ var d3tip = function () {
         return ' '
     }
 
-    var direction_callbacks = d3.map({
+    var direction_callbacks = new Map(Object.entries({
             n: direction_n,
             s: direction_s,
             e: direction_e,
@@ -181,68 +182,67 @@ var d3tip = function () {
             ne: direction_ne,
             sw: direction_sw,
             se: direction_se
-        }),
-
+        })),
         directions = direction_callbacks.keys()
 
-    function direction_n() {
-        var bbox = getScreenBBox()
+    function direction_n(event) {
+        var bbox = getScreenBBox(event)
         return {
             top: bbox.n.y - node.offsetHeight,
             left: bbox.n.x - node.offsetWidth / 2
         }
     }
 
-    function direction_s() {
-        var bbox = getScreenBBox()
+    function direction_s(event) {
+        var bbox = getScreenBBox(event)
         return {
             top: bbox.s.y,
             left: bbox.s.x - node.offsetWidth / 2
         }
     }
 
-    function direction_e() {
-        var bbox = getScreenBBox()
+    function direction_e(event) {
+        var bbox = getScreenBBox(event)
         return {
             top: bbox.e.y - node.offsetHeight / 2,
             left: bbox.e.x
         }
     }
 
-    function direction_w() {
-        var bbox = getScreenBBox()
+    function direction_w(event) {
+        var bbox = getScreenBBox(event)
         return {
             top: bbox.w.y - node.offsetHeight / 2,
             left: bbox.w.x - node.offsetWidth
         }
     }
 
-    function direction_nw() {
-        var bbox = getScreenBBox()
+    function direction_nw(event) {
+        var bbox = getScreenBBox(event)
         return {
             top: bbox.nw.y - node.offsetHeight,
             left: bbox.nw.x - node.offsetWidth
         }
     }
 
-    function direction_ne() {
-        var bbox = getScreenBBox()
+    function direction_ne(event) {
+        var bbox = getScreenBBox(event)
         return {
             top: bbox.ne.y - node.offsetHeight,
             left: bbox.ne.x
         }
     }
 
-    function direction_sw() {
-        var bbox = getScreenBBox()
+    function direction_sw(event) {
+        var bbox = getScreenBBox(event)
         return {
             top: bbox.sw.y,
             left: bbox.sw.x - node.offsetWidth
         }
     }
 
-    function direction_se() {
-        var bbox = getScreenBBox()
+    function direction_se(event) {
+        var bbox = getScreenBBox(event)
         return {
             top: bbox.se.y,
             left: bbox.e.x
@@ -291,8 +291,8 @@ var d3tip = function () {
     //    +-+-+
     //
     // Returns an Object {n, s, e, w, nw, sw, ne, se}
-    function getScreenBBox() {
-        var targetel = target || d3.event.target;
+    function getScreenBBox(event) {
+        var targetel = target || event.target;
 
         while ('undefined' === typeof targetel.getScreenCTM && 'undefined' === targetel.parentNode) {
             targetel = targetel.parentNode;

@@ -1,4 +1,4 @@
-define(['d3/build/d3'],
+define(['d3'],
     function() {
         /* nvd3 version 1.8.6 (https://github.com/novus/nvd3) 2017-08-23 */
         (function() {
