@@ -236,17 +236,17 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                         .text(getLabelFor('link_state'));
 
                     const legendNodeData = legendGroup.selectAll('#node-group').data(legendNodes);
-                    CDS.createNodes(legendNodeData, legendNodeRadius, true);
-                    CDS.updateNodes(legendNodeData);
+                    const legendNodesElements = CDS.createNodes(legendNodeData, legendNodeRadius, true);
+                    CDS.updateNodes(legendNodesElements);
 
-                    legendNodeData.select('.node.member')
-                        .on("mouseover", function (d) {
-                            d3.event.stopPropagation();
+                    legendNodesElements.select('.node.member')
+                        .on("mouseover", function (event, d) {
+                            event.stopPropagation();
                             showLegendTooltip(d, this);
                         })
                         .on('mouseout', hideLegendTooltip);
 
-                    legendNodeData
+                    legendNodesElements
                         .attr('transform', function (d) {
                             const row = Math.floor(d.id / legendColumns);
                             const column = d.id % legendColumns;
@@ -257,8 +257,8 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                         });
 
                     legendGroup
-                        .call(function () {
-                            legendWidth = this.node().getBBox().width;
+                        .call(function (d) {
+                            legendWidth = d.node().getBBox().width;
                         });
 
                     // Position node/link state labels
@@ -307,8 +307,8 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                             .html(link.linkTypeText);
 
                         linkG
-                            .on('mouseover', function () {
-                                d3.event.stopPropagation();
+                            .on('mouseover', function (event) {
+                                event.stopPropagation();
                                 showLegendTooltip(link, this);
                             })
                             .on('mouseout', hideLegendTooltip);
@@ -317,8 +317,8 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
 
                     legendGroup
                         .call(function (d) {
-                            legendHeight = this.node().getBBox().height;
-                            legendWidth = this.node().getBBox().width;
+                            legendHeight = d.node().getBBox().height;
+                            legendWidth = d.node().getBBox().width;
                         });
 
                     legendGroup.select('.legend-background')
@@ -343,27 +343,28 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                         }
                     });
                     const nodeData = nodesGroup.selectAll('#node-group').data(nodes, (node) => node.address);
-                    nodeData
-                        .on('click', (d) => {
+                    const nodesElements = CDS.createNodes(nodeData, nodeRadius);
+
+                    nodesElements
+                        .on('click', (event, d) => {
                             scope.childContext.selectNode(d);
 
                             // position the tooltip according to the node!
                             const tooltip = d3.select('.nodetooltip');
                             const windowWidth = $(window).width();
-                            if (d3.event.pageX < windowWidth / 2) {
+                            if (event.pageX < windowWidth / 2) {
                                 // left
-                                tooltip.style("left", d3.event.pageX + "px");
+                                tooltip.style("left", event.pageX + "px");
                                 tooltip.style("right", "");
                             } else {
                                 // right
                                 tooltip.style("left", "");
-                                tooltip.style("right", (windowWidth - d3.event.pageX) + "px");
+                                tooltip.style("right", (windowWidth - event.pageX) + "px");
                             }
-                            tooltip.style("top", (d3.event.pageY - 28) + "px");
+                            tooltip.style("top", (event.pageY - 28) + "px");
                         });
-                    CDS.createNodes(nodeData, nodeRadius);
-                    CDS.updateNodes(nodeData);
-                    CDS.positionNodesOnClusterZone(nodeData, clusterZoneX, clusterZoneY, clusterZoneRadius);
+                    CDS.updateNodes(nodesElements);
+                    CDS.positionNodesOnClusterZone(nodesElements, clusterZoneX, clusterZoneY, clusterZoneRadius);
                 }
 
                 function drawLinks(links, nodes) {

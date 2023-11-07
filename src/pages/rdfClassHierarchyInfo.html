@@ -152,9 +152,9 @@
                    ng-click="toggleClassInfoSidePanel(); $event.stopPropagation();" guide-selector="close-info-panel"></button>
 
 				<h3 class="hovered-parent">
-					<a class="uri" href="resource?uri={{encodedUri}}">{{selectedClass.name}}</a>
+					<a class="uri" href="resource?uri={{encodedUri}}">{{selectedClass.data.name}}</a>
 					<button class="btn btn-link btn-sm px-0 hovered-item"
-						ng-click="copyToClipboard(selectedClass.fullName)"
+						ng-click="copyToClipboard(selectedClass.data.fullName)"
 						title="{{'copy.to.clipboard.modal.ok.btn' | translate}}">
 						<span class="icon-link"></span>
 					</button>
@@ -171,17 +171,17 @@
                         expanded="expanded">
                 </rdfs-comment-label>
 
-                <div ng-switch on="selectedClass.instancesCount">
+                <div ng-switch on="selectedClass.data.instancesCount">
                     <p class="alert alert-warning" ng-switch-when="0">
                     	{{'no.instances.for.selected.class.type' | translate}}
                     </p>
 					<p ng-switch-when="1"><a class="btn btn-link px-0" href={{viewInstancesUri}} guide-selector="instances-count">{{'view.instance.in.sparql.label' | translate}}</a></p>
-                    <p ng-switch-default><a class="btn btn-link px-0" href={{viewInstancesUri}} guide-selector="instances-count">{{'view.all.label' | translate}} {{selectedClass.instancesCount | number}} {{'instances.in.sparql' | translate}}</a></p>
+                    <p ng-switch-default><a class="btn btn-link px-0" href={{viewInstancesUri}} guide-selector="instances-count">{{'view.all.label' | translate}} {{selectedClass.data.instancesCount | number}} {{'instances.in.sparql' | translate}}</a></p>
                 </div>
 
                 <div class="ot-loader ot-main-loader" onto-loader size="100" ng-show="instancesLoader"></div>
 
-                <div ng-hide="selectedClass.instancesCount == 0 || instancesLoader">
+                <div ng-hide="selectedClass.data.instancesCount == 0 || instancesLoader">
                     <list-items-search-filter
                         filter-query-obj="instancesQueryObj"
                         filter-function="instancesFilterFunc"

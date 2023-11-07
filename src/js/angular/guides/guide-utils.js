@@ -78,10 +78,10 @@ const GuideUtils = (function () {
      * @param {string | null} elementSelector - a node selector.
      * @param {*}scope scope where the d3alpha property is set
      * @param {number} timeoutInSeconds maximum wait time for the alpha value to settle, the default is 2 seconds
-     * @param {number} alphaThreshold alpha value threshold, the default is 0.02
+     * @param {number} alphaThreshold alpha value threshold, the default is 0.1
      * @return {function(): Promise<unknown>}
      */
-    const awaitAlphaDropD3 = function (elementSelector, scope, timeoutInSeconds = 2, alphaThreshold = 0.02) {
+    const awaitAlphaDropD3 = function (elementSelector, scope, timeoutInSeconds = 2, alphaThreshold = 0.1) {
         return () => new Promise(function(resolve) {
             if (isVisible(elementSelector)) {
                 resolve();

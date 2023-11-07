@@ -920,7 +920,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
         function dragStart() {
             const event = d3.event;
 
-            force.alphaTarget(1).restart();
+            force.stop();
             event.subject.fx = event.x;
             event.subject.fy = event.y;
             d3.select(this).classed("selected", true);
@@ -929,6 +929,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
 
         // Update the subject (dragged node) position during drag.
         function dragged() {
+            force.alphaTarget(0).restart();
             const event = d3.event;
             event.subject.fx = event.x;
             event.subject.fy = event.y;
@@ -939,10 +940,10 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
         function dragEnd() {
             const event = d3.event;
 
-            force.alphaTarget(0)
             event.subject.fx = null;
             event.subject.fy = null;
             d3.select(this).classed("selected", false);
+            force.alphaTarget(1).restart();
         }
 
     }

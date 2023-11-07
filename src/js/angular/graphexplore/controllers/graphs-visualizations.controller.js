@@ -1555,9 +1555,13 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         };
 
         const expandEventHandler = function (d, i, parentNode) {
+            let parent = parentNode || this.parentNode;
+            if (Array.isArray(parentNode)) {
+                parent = parentNode[i]
+            }
             const shownLinks = graph.countLinks(d, graph.links);
             if (shownLinks <= getSettings()['linksLimit']) {
-                expandNode(d, false, parentNode ? parentNode : this.parentNode);
+                expandNode(d, false, parent);
             } else {
                 toastr.info($translate.instant('graphexplore.increase.limit'), $translate.instant('graphexplore.node.at.max'));
             }
@@ -1923,9 +1927,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
         // If nodes are still rearranging result of force.alpha() is more than 0.02
         // and we don't want to show node's icons on mouse over and stop rearrangement.
-        // The chosen value 0.02 is somewhat magic and works well with 0.02 in awaitAlphaDropD3()
+        // The chosen value 0.1 is somewhat magic and works well with 0.02 in awaitAlphaDropD3()
         // in the guides code.
-        if (force.alpha() < 0.02) {
+        if (force.alpha() < 0.1) {
             menuEvents.initIcons(d, element.parentNode);
             force.stop();
             updateAlphaInScope();
@@ -2760,7 +2764,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         removeMenuIfVisible();
 
         // compute common rotation math such as the angle, its sine and cosine and the pivot point
-        const theta = (isLeft ? 1 : -1) * 2 * Math.PI / 180; // + rotates left, - rotates right
+        const theta = (isLeft ? 1 : -1) * 10 * Math.PI / 180; // + rotates left, - rotates right
         const cos = Math.cos(theta);
         const sin = Math.sin(theta);
         const pivotX = width / 2; // i.e. centre of viewport
