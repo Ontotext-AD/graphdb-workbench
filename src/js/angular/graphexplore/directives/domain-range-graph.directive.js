@@ -930,6 +930,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
         // Update the subject (dragged node) position during drag.
         function dragged(event, d) {
             isDragged = true;
+
             force.alphaTarget(0).restart();
             d.fx = event.x;
             d.fy = event.y;
