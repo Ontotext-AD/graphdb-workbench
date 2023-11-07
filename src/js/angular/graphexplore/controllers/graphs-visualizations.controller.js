@@ -72,12 +72,12 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     var container;
     var INITIAL_CONTAINER_TRANSFORM = d3.zoomIdentity.translate(0, -70).scale(1);
 
-    function zoomed() {
+    function zoomed(event) {
         if (GuidesService.isActive()) {
             // disable zooming if a guide is active.
             return;
         }
-        transformValues = d3.event.transform;
+        transformValues = event.transform;
         container.attr("transform", transformValues);
     }
 
@@ -1232,8 +1232,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         .style("fill", "none")
         .style("pointer-events", "all")
         .call(zoomLayout)
-        .on("click", function () {
-            d3.event.stopPropagation();
+        .on("click", function (event) {
+            event.stopPropagation();
             removeMenuIfVisible();
             // Clicking outside the graph stops the layout
             force.stop();
@@ -1378,9 +1378,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         svg.call(tip);
 
         // Shows like tooltip list of predicates but with a slight delay
-        const showPredicateToolTip = function (d) {
+        const showPredicateToolTip = function (event, d) {
             $timeout.cancel(tipPredicateTimer);
-            const thisPredicateTipElement = tipPredicateElement = d3.event.target;
+            const thisPredicateTipElement = tipPredicateElement = event.target;
             $timeout(function () {
                 if (tipPredicateElement === thisPredicateTipElement && d.predicates.length > 1) {
                     tipPredicates.show(d, tipPredicateElement);
@@ -1468,14 +1468,14 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             .attr("dy", "-0.5em")
             .style("text-anchor", "middle")
             .style("display", getSettings()['showLinksText'] ? "" : "none")
-            .on("mouseover", function (d) {
-                d3.event.stopPropagation();
-                showPredicateToolTip(d);
+            .on("mouseover", function (event, d) {
+                event.stopPropagation();
+                showPredicateToolTip(event, d);
             })
             .on('mouseout', hidePredicateToolTip)
-            .on("click", function (d) {
-                d3.event.stopPropagation();
-                linkActions(d);
+            .on("click", function (event, d) {
+                event.stopPropagation();
+                linkActions(event, d);
             });
 
         // node events and variables
@@ -1486,12 +1486,11 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         let clickTarget = null;
 
         // track single and double click events
-        const clickEventHandler = function (d) {
-            if (d3.event.button && d3.event.button !== 0) {
+        const clickEventHandler = function (event, d) {
+            if (event.button && event.button !== 0) {
                 return;
             }
 
-            const event = d3.event;
             const element = this;
 
             if (singleClickTimer && clickTarget === element) {
@@ -1542,9 +1541,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             moveEventCount++;
         };
 
-        const showNodeTipAndIcons = function (d) {
+        const showNodeTipAndIcons = function (event, d) {
             if (!d.isBeingDragged) {
-                const event = d3.event;
                 $timeout.cancel(removeIconsTimer);
                 showNodeTipAndIconsTimer = $timeout(() => {
                     if (expandNodeIcons(d, this)) {
@@ -1638,13 +1636,13 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         }
 
         // Unfixes nodes that were dragged previously
-        const rightClickHandler = function (d) {
-            if (d3.event.shiftKey) {
+        const rightClickHandler = function (event, d) {
+            if (event.shiftKey) {
                 // Do nothing with shift key, use to access context menu
                 return;
             }
 
-            d3.event.preventDefault();
+            event.preventDefault();
 
             removeMenuIfVisible();
             $scope.closeInfoPanel();
@@ -1676,12 +1674,12 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             .on("end", dragended);
 
 
-        function dragstarted(d) {
+        function dragstarted(event, d) {
             if (GuidesService.isActive()) {
                 // disable dragging if a guide is active.
                 return;
             }
-            if (d3.event.sourceEvent.button === 0) {
+            if (event.sourceEvent.button === 0) {
                 d.fixedBeforeDrag = d.fixed;
                 d.isBeingDragged = true;
                 d.beginDragging = true;
@@ -1691,10 +1689,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             }
         }
 
-        function dragged(d) {
+        function dragged(event, d) {
             if (d.isBeingDragged) {
-                d.fx = d3.event.x;
-                d.fy = d3.event.y;
+                d.fx = event.x;
+                d.fy = event.y;
                 if (!d.fixed) {
                     $scope.numberOfPinnedNodes++;
                     d.fixed = true;
@@ -1707,7 +1705,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             }
         }
 
-        function dragended(d) {
+        function dragended(event, d) {
             if (d.isBeingDragged) {
                 if (d.pinWasFixed) {
                     d.pinWasFixed = null;
@@ -2161,8 +2159,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             // init action tips on hover of the icons
             const actionsTip = d3tip()
                 .attr('class', 'd3-tip d3-actions-tip')
-                .customPosition(function () {
-                    const bbox = d3.event.target.getBoundingClientRect();
+                .customPosition(function (d, event) {
+                    const bbox = event.target.getBoundingClientRect();
                     return {
                         top: (bbox.top - 20) + 'px',
                         left: (bbox.right + 10) + 'px'
@@ -2191,8 +2189,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
                 this.collapseIcon.on("click", function () {
                     collapseNode(node);
-                }).on('mouseover', function () {
-                    actionsTip.show(this.getAttribute("name"));
+                }).on('mouseover', function (event) {
+                    actionsTip.show(this.getAttribute("name"), event);
                     $timeout.cancel(showNodeTipAndIconsTimer);
                     $timeout.cancel(removeIconsTimer);
                 }).on('mouseout', function () {
@@ -2219,8 +2217,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
                 this.expandIcon.on("click", function () {
                     expandNode(node, false, parentNode);
-                }).on('mouseover', function () {
-                    actionsTip.show(this.getAttribute("name"));
+                }).on('mouseover', function (event) {
+                    actionsTip.show(this.getAttribute("name"), event);
                     $timeout.cancel(removeIconsTimer);
                     $timeout.cancel(showNodeTipAndIconsTimer);
                 }).on('mouseout', function () {
@@ -2249,8 +2247,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
             this.focusIcon.on("click", function () {
                 $rootScope.$broadcast("onRootNodeChange", node.iri);
-            }).on('mouseover', function () {
-                actionsTip.show(this.getAttribute("name"));
+            }).on('mouseover', function (event) {
+                actionsTip.show(this.getAttribute("name"), event);
                 $timeout.cancel(removeIconsTimer);
                 $timeout.cancel(showNodeTipAndIconsTimer);
             }).on('mouseout', function () {
@@ -2279,8 +2277,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                 copyToClipboard(node.iri);
                 removeMenuIfVisible();
                 actionsTip.hide();
-            }).on('mouseover', function () {
-                actionsTip.show("<div style='text-align: center;'><b>Copy to ClipBoard</b><br>" + node.iri + "</div>");
+            }).on('mouseover', function (event) {
+                actionsTip.show("<div style='text-align: center;'><b>Copy to ClipBoard</b><br>" + node.iri + "</div>", event);
                 $timeout.cancel(removeIconsTimer);
                 $timeout.cancel(showNodeTipAndIconsTimer);
             }).on('mouseout', function () {
@@ -2307,8 +2305,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
             this.closeIcon.on("click", function () {
                 hideNode(node);
-            }).on('mouseover', function () {
-                actionsTip.show(this.getAttribute("name"));
+            }).on('mouseover', function (event) {
+                actionsTip.show(this.getAttribute("name"), event);
                 $timeout.cancel(removeIconsTimer);
                 $timeout.cancel(showNodeTipAndIconsTimer);
             }).on('mouseout', function () {
@@ -2650,14 +2648,14 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         }
     }
 
-    function linkActions(d) {
+    function linkActions(event, d) {
         revertElementsStyleToDefault();
         let linkId = convertLinkDataToLinkId(d);
         if (d.predicates.length === 1 && graph.tripleNodes.has(linkId)) {
             openedLink = null;
             let tripleNode = graph.tripleNodes.get(linkId)[0];
             // If there is a triple in this link, show its properties
-            if (clickedNode(tripleNode, this, d3.event.button)) {
+            if (clickedNode(tripleNode, this, event.button)) {
                 let nodeCopy = {};
                 nodeCopy.iri = tripleNode.iri;
                 nodeCopy.pred = getShortPredicate(tripleNode.iri.split(' ')[1]);
