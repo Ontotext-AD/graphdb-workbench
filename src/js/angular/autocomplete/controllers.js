@@ -1,5 +1,6 @@
 import 'angular/rest/autocomplete.rest.service';
 import {mapNamespacesResponse} from "../rest/mappers/namespaces-mapper";
+import {decodeHTML} from "../../../app";
 
 const modules = [
     'toastr',
@@ -82,7 +83,8 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
                 $scope.setLoader(false);
             });
         } else {
-            toastr.error($translate.instant('not.valid.iri', {value: labelIriText}));
+            const errorMessage = decodeHTML($translate.instant('not.valid.iri', {value: labelIriText}));
+            toastr.error(errorMessage);
             $scope.setLoader(false);
         }
     };
