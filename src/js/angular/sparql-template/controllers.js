@@ -151,7 +151,7 @@ function SparqlTemplateCreateCtrl(
     };
 
     $scope.isTemplateIdValid = (templateID) => {
-        return UriUtils.isValidIri(templateID);
+        return UriUtils.isValidIri(templateID, templateID.toString());
     };
 
     $scope.markDirty = () => {
