@@ -250,7 +250,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
                 _addToList(list, iriText);
             } else {
                 refreshFilteringConfig();
-                const errorMessage = decodeHTML($translate.instant('not.valid.iri', {value: iriText}));
+                const errorMessage = decodeHTML($translate.instant('not.valid.iri', {value: iri.text.toString()}));
                 toastr.error(errorMessage);
             }
         };
