@@ -70,9 +70,10 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
 
     const addLabelConfig = function (label) {
         $scope.setLoader(true, $translate.instant('autocomplete.update'));
-        const labelIriText = label.labelIri;
-        label.labelIri = UriUtils.expandPrefix(label.labelIri, $scope.namespaces);
-        if (UriUtils.isValidIri(label, label.labelIri) && label.labelIri !== "") {
+        let labelIriText = label.labelIri.toString();
+        labelIriText = UriUtils.expandPrefix(labelIriText, $scope.namespaces);
+        if (UriUtils.isValidIri(label, labelIriText) && labelIriText !== "") {
+            label.labelIri = labelIriText;
             AutocompleteRestService.addLabelConfig(label)
                 .success(function () {
                     refreshLabelConfig();
@@ -83,7 +84,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
                 $scope.setLoader(false);
             });
         } else {
-            const errorMessage = decodeHTML($translate.instant('not.valid.iri', {value: labelIriText}));
+            const errorMessage = decodeHTML($translate.instant('not.valid.iri', {value: label.labelIri.toString()}));
             toastr.error(errorMessage);
             $scope.setLoader(false);
         }
