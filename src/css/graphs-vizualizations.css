@@ -76,7 +76,7 @@
 }
 
 .graph-visualization {
-    height: calc(100vh - 120px);
+    height: calc(100vh - 190px);
 }
 
 .graph-visualization svg {

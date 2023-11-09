@@ -38,21 +38,6 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
     }
 
     function renderDomainRangeGraph(scope) {
-        d3.selection.prototype.moveToFront = function () {
-            return this.each(function () {
-                d3.select(this.parentNode.appendChild(this));
-            });
-        };
-
-        d3.selection.prototype.moveToBack = function () {
-            return this.each(function () {
-                const firstChild = this.parentNode.firstChild;
-                if (firstChild) {
-                    this.parentNode.insertBefore(this, firstChild);
-                }
-            });
-        };
-
         var width = 1200,
             height = 600;
 
@@ -63,75 +48,80 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
             basicArrowStrokeWidth = width / 1000,
             collapsedArrowStrokeWidth = width / 600;
 
-
-        var force = d3.layout.force()
-            .size([width, height])
-            .charge(-900);
-
-        var drag = force.drag()
-            .on("dragstart", dragstart);
-
         var svg = d3.select("#domain-range")
             .append("svg")
             .attr("viewBox", "0 0 " + width + " " + height)
             .attr("preserveAspectRatio", "xMidYMid meet")
             .on("dblclick.zoom", null);
 
+        var force = d3.forceSimulation();
+
+        var drag = d3.drag()
+            .subject(function (d) {
+                return d;
+            })
+            .on("start", dragStart)
+            .on("end", dragEnd)
+            .on("drag", dragged);
+
         var defs = svg.append("defs");
+        generateMarkers(defs);
 
-        defs.append("marker")
-            .attr({
-                id: "arrow",
-                viewBox: "0 -5 10 10",
-                refX: 10,
-                refY: 0,
-                markerUnits: "strokeWidth",
-                markerWidth: 5,
-                markerHeight: 5,
-                orient: "auto",
-                fill: ONTO_BLUE
-            })
-            .append("path")
-            .attr({
-                d: "M0,-5L10,0L0,5",
-                class: "arrowHead"
-            });
+        function generateMarkers(defElement) {
+            defs.append("marker")
+                .attrs({
+                    id: "arrow",
+                    viewBox: "0 -5 10 10",
+                    refX: 10,
+                    refY: 0,
+                    markerUnits: "strokeWidth",
+                    markerWidth: 5,
+                    markerHeight: 5,
+                    orient: "auto",
+                    fill: ONTO_BLUE
+                })
+                .append("path")
+                .attrs({
+                    d: "M0,-5L10,0L0,5",
+                    class: "arrowHead"
+                });
 
-        defs.append("marker")
-            .attr({
-                id: "collapsed-arrow",
-                viewBox: "0 -5 10 10",
-                refX: 9,
-                refY: 0,
-                markerUnits: "strokeWidth",
-                markerWidth: 4,
-                markerHeight: 4,
-                orient: "auto",
-                fill: ONTO_BLUE
-            })
-            .append("path")
-            .attr({
-                d: "M0,-5L10,0L0,5",
-                class: "arrowHead"
-            });
+            defs.append("marker")
+                .attrs({
+                    id: "collapsed-arrow",
+                    viewBox: "0 -5 10 10",
+                    refX: 9,
+                    refY: 0,
+                    markerUnits: "strokeWidth",
+                    markerWidth: 4,
+                    markerHeight: 4,
+                    orient: "auto",
+                    fill: ONTO_BLUE
+                })
+                .append("path")
+                .attrs({
+                    d: "M0,-5L10,0L0,5",
+                    class: "arrowHead"
+                });
 
-        defs.append("marker")
-            .attr({
-                id: "arrow-loop",
-                viewBox: "0 -5 10 10",
-                refX: 7,
-                refY: 0,
-                markerUnits: "strokeWidth",
-                markerWidth: 5,
-                markerHeight: 5,
-                orient: "auto",
-                fill: ONTO_BLUE
-            })
-            .append("path")
-            .attr({
-                d: "M0,-5L10,0L0,5",
-                class: "arrowHead"
-            });
+            defs.append("marker")
+                .attrs({
+                    id: "arrow-loop",
+                    viewBox: "0 -5 10 10",
+                    refX: 7,
+                    refY: 0,
+                    markerUnits: "strokeWidth",
+                    markerWidth: 5,
+                    markerHeight: 5,
+                    orient: "auto",
+                    fill: ONTO_BLUE
+                })
+                .append("path")
+                .attrs({
+                    d: "M0,-5L10,0L0,5",
+                    class: "arrowHead"
+                });
+        }
 
         /*
          * Prepares SVG document image export by adding xml namespaces and
@@ -148,7 +138,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
             var imgSrc = SVG.Export.generateBase64ImageSource("#domain-range svg");
 
             // set the binary image and a name for the downloadable file on the export button
-            d3.select(this).attr({
+            d3.select(this).attrs({
                 href: imgSrc,
                 download: "domain-range-graph-" + $repositories.getActiveRepository() + ".svg"
             });
@@ -157,173 +147,178 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
         d3.select("#download-svg")
             .on("mouseover", prepareForSVGImageExport);
 
-        // start of code for legend
-        var legendBackgroundWidth = width / 7;
-        var legendBackgroundHeight = legendBackgroundWidth * 1.2;
+        generateLegend();
 
-        var svgLegend = d3.select(".legend-container")
-            .append("svg")
-            .attr("viewBox", "0 0 " + legendBackgroundWidth + " " + legendBackgroundHeight)
-            .attr("preserveAspectRatio", "xMidYMid meet");
+        function generateLegend() {
+            // start of code for legend
 
-        var legendCellGroup = svgLegend;
+            var legendBackgroundWidth = width / 7;
+            var legendBackgroundHeight = legendBackgroundWidth * 1.2;
 
-        legendCellGroup.append("rect")
-            .attr({
-                width: legendBackgroundWidth,
-                height: legendBackgroundHeight
-            })
-            .style("fill", "rgba(235, 235, 235, 0.9)");
+            var svgLegend = d3.select(".legend-container")
+                .append("svg")
+                .attr("viewBox", "0 0 " + legendBackgroundWidth + " " + legendBackgroundHeight)
+                .attr("preserveAspectRatio", "xMidYMid meet");
 
-        var sourceX = width / 75;
-        var sourceY = width / 40;
-        var targetX = sourceX + mainClassSize / 2.5;
-        var targetY = sourceY;
+            var legendCellGroup = svgLegend;
 
-        var legendTextX = targetX + width / 90;
-        var legendLabelFontSize = labelFontSize / 1.1;
+            legendCellGroup.append("rect")
+                .attrs({
+                    width: legendBackgroundWidth,
+                    height: legendBackgroundHeight
+                })
+                .style("fill", "rgba(235, 235, 235, 0.9)");
 
-        var classNodeY = sourceY;
-        var legendClassNode = legendCellGroup
-            .append("circle")
-            .attr({
-                class: "legend-class-node",
-                cx: (sourceX + targetX) / 2,
-                cy: classNodeY,
-                r: mainClassSize / 4.5
-            });
+            var sourceX = width / 75;
+            var sourceY = width / 40;
+            var targetX = sourceX + mainClassSize / 2.5;
+            var targetY = sourceY;
 
-        var classNodeTextY = targetY + width / 370;
-        legendCellGroup
-            .append("text")
-            .attr({
-                x: legendTextX,
-                y: classNodeTextY
-            })
-            .style('font-size', legendLabelFontSize + 'px')
-            .text("main class node");
+            var legendTextX = targetX + width / 90;
+            var legendLabelFontSize = labelFontSize / 1.1;
 
-        var objectNodeY = classNodeY + width / 30;
-        legendCellGroup
-            .append("circle")
-            .attr({
-                class: "legend-object-node",
-                cx: (sourceX + targetX) / 2,
-                cy: objectNodeY,
-                r: otherClassSize / 1.25
-            });
+            var classNodeY = sourceY;
+            var legendClassNode = legendCellGroup
+                .append("circle")
+                .attrs({
+                    class: "legend-class-node",
+                    cx: (sourceX + targetX) / 2,
+                    cy: classNodeY,
+                    r: mainClassSize / 4.5
+                });
 
-        var objectNodeTextY = classNodeTextY + width / 30;
-        legendCellGroup
-            .append("text")
-            .attr({
-                x: legendTextX,
-                y: objectNodeTextY
-            })
-            .style('font-size', legendLabelFontSize + 'px')
-            .text("class node");
+            var classNodeTextY = targetY + width / 370;
+            legendCellGroup
+                .append("text")
+                .attrs({
+                    x: legendTextX,
+                    y: classNodeTextY
+                })
+                .style('font-size', legendLabelFontSize + 'px')
+                .text("main class node");
 
-        var datatypeNodeY = objectNodeY + width / 45;
-        legendCellGroup
-            .append("circle")
-            .attr({
-                class: "legend-datatype-node",
-                cx: (sourceX + targetX) / 2,
-                cy: datatypeNodeY,
-                r: datatypeSize
-            });
+            var objectNodeY = classNodeY + width / 30;
+            legendCellGroup
+                .append("circle")
+                .attrs({
+                    class: "legend-object-node",
+                    cx: (sourceX + targetX) / 2,
+                    cy: objectNodeY,
+                    r: otherClassSize / 1.25
+                });
 
-        var datatypeNodeTextY = objectNodeTextY + width / 45;
-        legendCellGroup
-            .append("text")
-            .attr({
-                x: legendTextX,
-                y: datatypeNodeTextY
-            })
-            .style('font-size', legendLabelFontSize + 'px')
-            .text("datatype node");
+            var objectNodeTextY = classNodeTextY + width / 30;
+            legendCellGroup
+                .append("text")
+                .attrs({
+                    x: legendTextX,
+                    y: objectNodeTextY
+                })
+                .style('font-size', legendLabelFontSize + 'px')
+                .text("class node");
 
-        var basicPropertyArrowY = datatypeNodeY + width / 45;
-        var classNodeSel = d3.select('.legend-class-node');
-        legendCellGroup
-            .append("line")
-            .attr({
-                class: "property-arrow",
-                x1: sourceX,
-                y1: basicPropertyArrowY,
-                x2: targetX,
-                y2: basicPropertyArrowY
-            })
-            .style("stroke-width", basicArrowStrokeWidth)
-            .attr("marker-end", "url(" + $location.absUrl() + "#arrow)");
+            var datatypeNodeY = objectNodeY + width / 45;
+            legendCellGroup
+                .append("circle")
+                .attrs({
+                    class: "legend-datatype-node",
+                    cx: (sourceX + targetX) / 2,
+                    cy: datatypeNodeY,
+                    r: datatypeSize
+                });
 
-        legendCellGroup
-            .append("text")
-            .attr({
-                x: legendTextX,
-                y: basicPropertyArrowY + (width / 370)
-            })
-            .style('font-size', legendLabelFontSize + 'px')
-            .text("explicit property");
+            var datatypeNodeTextY = objectNodeTextY + width / 45;
+            legendCellGroup
+                .append("text")
+                .attrs({
+                    x: legendTextX,
+                    y: datatypeNodeTextY
+                })
+                .style('font-size', legendLabelFontSize + 'px')
+                .text("datatype node");
 
-        var implicitPropArrowY = basicPropertyArrowY + width / 45;
-        legendCellGroup
-            .append("line")
-            .attr({
-                class: "implicit-property-arrow",
-                x1: sourceX,
-                y1: implicitPropArrowY,
-                x2: targetX,
-                y2: implicitPropArrowY
-            })
-            .style("stroke-width", basicArrowStrokeWidth)
-            .attr("marker-end", "url(" + $location.absUrl() + "#arrow)");
+            var basicPropertyArrowY = datatypeNodeY + width / 45;
+            legendCellGroup
+                .append("line")
+                .attrs({
+                    class: "property-arrow",
+                    x1: sourceX,
+                    y1: basicPropertyArrowY,
+                    x2: targetX,
+                    y2: basicPropertyArrowY
+                })
+                .style("stroke-width", basicArrowStrokeWidth)
+                .attr("marker-end", "url(" + $location.absUrl() + "#arrow)");
 
-        legendCellGroup
-            .append("text")
-            .attr({
-                x: legendTextX,
-                y: implicitPropArrowY + (width / 370)
-            })
-            .style('font-size', legendLabelFontSize + 'px')
-            .text("implicit property");
+            legendCellGroup
+                .append("text")
+                .attrs({
+                    x: legendTextX,
+                    y: basicPropertyArrowY + (width / 370)
+                })
+                .style('font-size', legendLabelFontSize + 'px')
+                .text("explicit property");
 
-        var collapsedPropArrowY = implicitPropArrowY + width / 45;
-        legendCellGroup
-            .append("line")
-            .attr({
-                class: "collapsed-property-arrow",
-                x1: sourceX,
-                y1: collapsedPropArrowY,
-                x2: targetX,
-                y2: collapsedPropArrowY
-            })
-            .style("stroke-width", collapsedArrowStrokeWidth)
-            .attr("marker-end", "url(" + $location.absUrl() + "#collapsed-arrow)");
+            var implicitPropArrowY = basicPropertyArrowY + width / 45;
+            legendCellGroup
+                .append("line")
+                .attrs({
+                    class: "implicit-property-arrow",
+                    x1: sourceX,
+                    y1: implicitPropArrowY,
+                    x2: targetX,
+                    y2: implicitPropArrowY
+                })
+                .style("stroke-width", basicArrowStrokeWidth)
+                .attr("marker-end", "url(" + $location.absUrl() + "#arrow)");
 
-        legendCellGroup
-            .append("text")
-            .attr({
-                x: legendTextX,
-                y: collapsedPropArrowY + (width / 370)
-            })
-            .style('font-size', legendLabelFontSize + 'px')
-            .text("collapsed property");
-        // end of code for legend
+            legendCellGroup
+                .append("text")
+                .attrs({
+                    x: legendTextX,
+                    y: implicitPropArrowY + (width / 370)
+                })
+                .style('font-size', legendLabelFontSize + 'px')
+                .text("implicit property");
 
-        // there doesn't seem to be a need for a separate group
-        var g = svg; //svg.append("g");
+            var collapsedPropArrowY = implicitPropArrowY + width / 45;
+            legendCellGroup
+                .append("line")
+                .attrs({
+                    class: "collapsed-property-arrow",
+                    x1: sourceX,
+                    y1: collapsedPropArrowY,
+                    x2: targetX,
+                    y2: collapsedPropArrowY
+                })
+                .style("stroke-width", collapsedArrowStrokeWidth)
+                .attr("marker-end", "url(" + $location.absUrl() + "#collapsed-arrow)");
+
+            legendCellGroup
+                .append("text")
+                .attrs({
+                    x: legendTextX,
+                    y: collapsedPropArrowY + (width / 370)
+                })
+                .style('font-size', legendLabelFontSize + 'px')
+                .text("collapsed property");
+            // end of code for legend
+        }
 
         var selectedRdfUri = $location.search().uri;
         var classNodeLabel = $location.search().name;
-        var collapsed = $location.search().collapsed;
+        const collapsed = $location.search().collapsed;
 
-        GraphDataRestService.getDomainRangeData(selectedRdfUri, collapsed)
-            .success(function (response, status, headers) {
-                scope.domainRangeGraphData = response;
-            }).error(function (response) {
-            toastr.error("Request for " + classNodeLabel + " failed!");
-        });
+        getDomainRangeData(selectedRdfUri, collapsed);
+
+        function getDomainRangeData(selectedRdfUri, collapsed) {
+            GraphDataRestService.getDomainRangeData(selectedRdfUri, collapsed)
+                .success(function (response, status, headers) {
+                    scope.domainRangeGraphData = response;
+                }).error(function (response) {
+                toastr.error("Request for " + classNodeLabel + " failed!");
+            });
+        }
 
         function switchEdgeMode(collapsed) {
             $rootScope.$broadcast('switchEdgeMode', {
@@ -365,12 +360,17 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
             if (scope.domainRangeGraphData) {
                 var graph = angular.copy(scope.domainRangeGraphData);
 
-                force
-                    .nodes(graph.nodes)
-                    .links(graph.links);
+                const nodes = graph.nodes;
+                const links = graph.links;
 
-                var linkGroup = g.selectAll(".link")
-                    .data(graph.links)
+                force.nodes(nodes)
+                    .force('x', d3.forceX(width / 2))
+                    .force('y', d3.forceY(height / 2))
+                    .force("charge", d3.forceManyBody().strength(-800))
+                    .force("link", d3.forceLink(links).distance(width / 3.5))
+
+                var linkGroup = svg.selectAll(".link")
+                    .data(links)
                     .enter()
                     .append("g");
 
@@ -390,7 +390,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                         if (d.objectPropNodeClassUri !== selectedRdfUri) {
                             link = linkGroup
                                 .append("line")
-                                .attr({
+                                .attrs({
                                     class: "link",
                                     // absolute url needed because angular inserts a <base> tag
                                     "marker-end": "url(" + $location.absUrl() + "#arrow)"
@@ -422,7 +422,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                                 var loopLinkSize = mainClassSize / 2;
                                 loopLink = d3.select(this)
                                     .append("path")
-                                    .attr({
+                                    .attrs({
                                         d: "M 0 0 A " + loopLinkSize + " " + loopLinkSize + " 0 1 1 0 " + loopLinkSize,
                                         class: "loop-link",
                                         fill: "none",
@@ -535,8 +535,8 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                     });
 
 
-                var nodeGroup = g.selectAll(".node")
-                    .data(graph.nodes)
+                var nodeGroup = svg.selectAll(".node")
+                    .data(nodes)
                     .enter()
                     .append("g");
 
@@ -548,18 +548,18 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                     .each(function (d) {
                         var sel = d3.select(this);
                         if (d.classPosition === "main") {
-                            sel.attr({
+                            sel.attrs({
                                 class: "class-node",
                                 r: mainClassSize
                             })
                                 .attr("marker-end", "url(" + $location.absUrl() + "#loop-link)");
                         } else if (d.objectPropClassName === null) {
-                            sel.attr({
+                            sel.attrs({
                                 class: "datatype-node",
                                 r: datatypeSize
                             });
                         } else {
-                            sel.attr({
+                            sel.attrs({
                                 class: "object-prop-node",
                                 r: otherClassSize
                             });
@@ -596,7 +596,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
 
                 var objectPropClassName = nodeGroup.select("text");
 
-                g.select(".class-node")
+                svg.select(".class-node")
                     .each(function () {
                         d3.select(this.parentNode)
                             .append("text")
@@ -611,7 +611,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                     });
 
 
-                var rdfClassName = g.select(".class-node + text"),
+                var rdfClassName = svg.select(".class-node + text"),
                     classNode = d3.select(".class-node"),
                     loopLinkBackgroundSel = d3.selectAll(".loop-link-background"),
                     loopLinkPropertyName = d3.selectAll(".loop-link-property-name");
@@ -632,7 +632,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                 }
 
                 function tick(e) {
-                    var k = 8 * e.alpha;
+                    var k = 8 * force.alpha();
 
                     function pushEdgesToLeftAndRight(d) {
                         if (d.propertyType === "objectLeft") {
@@ -690,7 +690,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                                 loopLinkLabelY = d.y - mainClassSize * 2.1 - currentBackgroundHeight;
 
                             sel
-                                .attr({
+                                .attrs({
                                     x: loopLinkLabelX,
                                     y: loopLinkLabelY
                                 })
@@ -764,7 +764,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                             }
 
                             sel
-                                .attr({
+                                .attrs({
                                     transform: "rotate(270, " + d.x + "," + d.y + ") translate(" + loopLinkBackgroundY + "," + loopLinkBackgroundX + ")",
                                     width: foundLoopLinkBackgroundProps[0].height,
                                     height: foundLoopLinkBackgroundProps[0].width
@@ -781,7 +781,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                         function adjustViewMorePredicatesLabel(allLoopLinkEdges) {
                             var viewMoreTextWidth;
                             d3.select(".view-more-preds-label")
-                            // make label bold to resemble a collapsed label
+                                // make label bold to resemble a collapsed label
                                 .style("font-weight", "bold")
                                 .each(function (d) {
                                     // attach all reflexive links to the "view more" collapsed predicate
@@ -794,8 +794,8 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                                 .on("click", onCollapsedPropertyNameClick);
 
                             d3.select(".view-more-preds-rect")
-                            // we modify height property instead of width because they are reversed
-                            // when we repositioned loop link labels
+                                // we modify height property instead of width because they are reversed
+                                // when we repositioned loop link labels
                                 .attr("height", viewMoreTextWidth + 2 * textPadding);
                         }
 
@@ -912,18 +912,48 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                         .moveToFront();
                 }
 
-
-                force
-                    .on("tick", tick)
-                    .linkDistance(width / 3.5)
-                    .start();
+                force.on("tick", tick)
 
             }
         });
 
-        function dragstart(d) {
-            d3.select(this)
-                .classed("selected", d.selected = true);
+        let isDragged = false;
+
+        function dragStart() {
+            const event = d3.event;
+
+            force.stop();
+            event.subject.fx = event.x;
+            event.subject.fy = event.y;
+            d3.select(this).classed("selected", true);
+
         }
+
+        // Update the subject (dragged node) position during drag.
+        function dragged() {
+            isDragged = true;
+
+            force.alphaTarget(0).restart();
+            const event = d3.event;
+            event.subject.fx = event.x;
+            event.subject.fy = event.y;
+        }
+
+        // Restore the target alpha so the simulation cools after dragging ends.
+        // Unfix the subject position now that it’s no longer being dragged.
+        function dragEnd() {
+            const event = d3.event;
+
+            event.subject.fx = null;
+            event.subject.fy = null;
+            d3.select(this).classed("selected", false);
+            if (isDragged) {
+                force.alpha(0.2).restart();
+                isDragged = false;
+            } else {
+                force.restart();
+            }
+        }
+
     }
 }

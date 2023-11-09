@@ -42,25 +42,13 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
             height = 800,
             diameter = height,
             margin = 20,
-            node,
-            root;
+            tip,
+            rootHierarchy;
 
-        var pack = d3.layout.pack()
-            .size([diameter - margin, diameter - margin])
-            .value(function (d) {
-                return d.size;
-            });
+        var packLayout = d3.pack()
+            .size([diameter - margin, diameter - margin]);
 
-        var colors = [
-            "hsl(33, 75%, 75%)",
-            "hsl(213, 75%, 75%)",
-            "hsl(333, 75%, 75%)",
-            "hsl(153, 75%, 75%)",
-            "hsl(273, 75%, 75%)",
-            "hsl(93, 75%, 75%)"
-        ];
-
-        var color = d3.scale.linear()
+        var color = d3.scaleLinear()
             .domain([0, 4])
             .range(["hsl(19, 70%, 90%)", "hsl(19, 70%, 50%)"])
             .interpolate(d3.interpolateHcl);
@@ -73,7 +61,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
 
         function appendMainGroup() {
             return svg.append("svg:g")
-                .attr({
+                .attrs({
                     id: "main-group",
                     transform: "translate(" + width / 2 + "," + height / 2 + ")"
                 });
@@ -109,7 +97,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
             var imgSrc = SVG.Export.generateBase64ImageSource("#classChart svg");
 
             // set the binary image and a name for the downloadable file on the export button
-            d3.select(this).attr({
+            d3.select(this).attrs({
                 href: imgSrc,
                 download: "class-hierarchy-" + $repositories.getActiveRepository() + ".svg"
             });
@@ -145,8 +133,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
         var autoZoomToPreviousState,
             doFocus;
 
-        var oldRoot,
-            focus,
+        var focus,
             rootFocusEvent,
             classSearchEvent,
             flattenedClassData = {};
@@ -162,9 +149,16 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
 
             // fix for single child classes
             CirclePacking.SingleChild.addPlaceholders(root, true);
-            focus = newFocus ? newFocus : root;
 
-            var nodes = pack.nodes(root),
+            rootHierarchy = d3.hierarchy(root);
+            rootHierarchy.sum(function (d) {
+                return d.size;
+            })
+            focus = newFocus ? newFocus : rootHierarchy;
+
+            packLayout(rootHierarchy)
+
+            var nodes = rootHierarchy.descendants(),
                 view;
 
             focus.isInFocusTransitive = true;
@@ -174,21 +168,21 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
             CirclePacking.SingleChild.centerNodes(nodes);
             CirclePacking.SingleChild.makePositionsRelativeToZero(nodes);
 
-            var tip = d3tip()
-                .attr('class', 'd3-tip')
-                //.offset([-10, 0])
-                .customPosition(function (d) {
-                    return {
-                        top: 'inherit',
-                        bottom: ($window.innerHeight - d3.event.clientY) + 'px',
-                        right: ($window.innerWidth - d3.event.clientX) + 'px'
-                    };
-                })
-                .html(function (d) {
-                    return d.name;
-                });
-
-            svg.call(tip);
+            if (!tip) {
+                tip = d3tip()
+                    .attr('class', 'd3-tip')
+                    .customPosition(function (d) {
+                        return {
+                            top: 'inherit',
+                            bottom: ($window.innerHeight - d3.event.clientY) + 'px',
+                            right: ($window.innerWidth - d3.event.clientX) + 'px'
+                        };
+                    })
+                    .html(function (d) {
+                        return d.data.name;
+                    });
+                svg.call(tip);
+            }
 
             var circleGroup = g.selectAll("circle")
                 .data(nodes)
@@ -205,10 +199,10 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
             var circle = circleGroup
                 .append("circle")
                 .attr("class", function (d) {
-                    return d.role;
+                    return d.data.role;
                 })
                 .attr("guide-selector", function (d) {
-                    return "class-" + d.name;
+                    return "class-" + d.data.name;
                 })
                 .style("fill", function (d) {
                     //return colors[d.depth % 6];
@@ -216,8 +210,8 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                 })
                 .each(function (d) {
                     d.circle = d3.select(this);
-                    if (d.name !== ROOT_OBJ_NAME) {
-                        var key = d.name;
+                    if (d.data.name !== ROOT_OBJ_NAME) {
+                        var key = d.data.name;
                         flattenedClassNames.push({name: key});
                         flattenedClassData[[key]] = d;
 
@@ -266,13 +260,13 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
             }
 
             var clickCancel = D3.Click.delayDblClick();
-            var parentCircles = d3.selectAll(".parent, .topLevelParent, .child, .root")
+            d3.selectAll(".parent, .topLevelParent, .child, .root")
                 .call(clickCancel);
 
             doFocus = function (obj) {
                 zoom(obj);
 
-                if (obj.name === ROOT_OBJ_NAME) {
+                if (obj.data.name === ROOT_OBJ_NAME) {
                     closeClassInfoPanel();
                     d3.selectAll(".selected").classed("selected", false);
                 } else {
@@ -291,8 +285,8 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
 
             clickCancel.on("click", function (obj) {
                 // add clicked class to browser history
-                if (obj.id) {
-                    $window.history.pushState({id: obj.id}, "classHierarchyPage" + obj.id, "hierarchy#" + obj.id);
+                if (obj.data.id) {
+                    $window.history.pushState({id: obj.data.id}, "classHierarchyPage" + obj.data.id, "hierarchy#" + obj.data.id);
                 }
 
                 //hide current d3-tip tooltip
@@ -386,7 +380,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                     }
                 }
 
-                if (focus.name === ROOT_OBJ_NAME) {
+                if (focus.data.name === ROOT_OBJ_NAME) {
                     $window.history.replaceState({id: 1}, "classHierarchyPage1", "hierarchy#1");
                 }
 
@@ -405,22 +399,18 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                 });
 
             function trimPrefixes(d) {
-                var idx = d.name.indexOf(":");
-                var absUriIdx = d.name.indexOf("http://");
+                var idx = d.data.name.indexOf(":");
+                var absUriIdx = d.data.name.indexOf("http://");
                 if (absUriIdx > -1) {
                     // if we have no prefix available ignore
-                    d.noPrefixName = d.name;
+                    d.noPrefixName = d.data.name;
                 } else if (idx > -1) {
-                    d.noPrefixName = d.name.substring(idx + 1);
+                    d.noPrefixName = d.data.name.substring(idx + 1);
                 }
             }
 
             if (config.noPrefixes) {
-                if (oldRoot !== root) {
-                    text.each(trimPrefixes);
-                    oldRoot = root;
-                }
-
+                text.each(trimPrefixes);
                 text
                     .style("font-size", function (d) {
                         return D3.Text.calcFontSize(d.noPrefixName, d.r);
@@ -431,16 +421,16 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
             } else {
                 text
                     .style("font-size", function (d) {
-                        return D3.Text.calcFontSize(d.name, d.r);
+                        return D3.Text.calcFontSize(d.data.name, d.r);
                     })
                     .text(function (d) {
-                        return D3.Text.getTextWithElipsisIfNeeded(d.name, d.r / 3);
+                        return D3.Text.getTextWithElipsisIfNeeded(d.data.name, d.r / 3);
                     })
             }
 
             // TODO: make this use the full version (same as zoom)
             text.style("display", function (d) {
-                if (d.parent === root) {
+                if (d.parent && d.parent.data === focus.data) {
                     d.textHidden = this.textContent.indexOf("...") + 3 === this.textContent.length;
                     return null;
                 } else {
@@ -459,7 +449,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                 function focusOnCurrentClass(focusHistoryId) {
                     if (focusHistoryId) {
                         circle.each(function (d) {
-                            if (focusHistoryId == d.id) {
+                            if (+focusHistoryId === d.data.id) {
                                 doFocus(d);
                             }
                         });
@@ -497,7 +487,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                     // or your focus is a top level parent hide its label and if it is not
                     // a child element show all of its child labels. If it is a child element
                     // only show its label.
-                    if (d.fullName === focus.topLevelParentUri || focus.topLevelParentUri === ROOT_OBJ_NAME) {
+                    if (d.data.fullName === focus.data.topLevelParentUri || focus.data.topLevelParentUri === ROOT_OBJ_NAME) {
                         d.textSel.style("display", "none");
                         if (focus.children && focus.children.length) {
                             _.each(focus.children, function (c) {
@@ -513,7 +503,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                         // its children
                         if (focus.parent) {
                             _.each(focus.parent.children, function (c) {
-                                if (c.name !== focus.name) {
+                                if (c.data.name !== focus.data.name) {
                                     c.textSel.style("display", "inline");
                                 }
                             });
@@ -530,13 +520,13 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                         if (config.noPrefixes) {
                             return D3.Text.calcFontSize(d.noPrefixName, d.r * k);
                         }
-                        return D3.Text.calcFontSize(d.name, d.r * k);
+                        return D3.Text.calcFontSize(d.data.name, d.r * k);
                     })
                     .text(function (d) {
                         if (config.noPrefixes) {
                             return D3.Text.getTextWithElipsisIfNeeded(d.noPrefixName, d.r * k / 3);
                         }
-                        return D3.Text.getTextWithElipsisIfNeeded(d.name, d.r * k / 3);
+                        return D3.Text.getTextWithElipsisIfNeeded(d.data.name, d.r * k / 3);
                     });
             }
 
@@ -552,18 +542,11 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
 
             zoomTo([focus.x, focus.y, adjustRadius(focus.r)], switchPrefixes);
 
-            function textUpdateStart(d) {
+            function textUpdate(d) {
                 if (d.isInFocusTransitive || !(d.parent && d.parent.isInFocusTransitive)) {
                     // hide labels of classes that are in focus (including children) OR whose parents aren't in focus
                     d.textHidden = true;
                     this.style.display = "none";
-                }
-            }
-
-            function textUpdateEnd(d) {
-                if (d.isInFocusTransitive || !(d.parent && d.parent.isInFocusTransitive)) {
-                    // hide labels of classes that are in focus (including children) OR whose parents aren't in focus
-                    // this.style.display = "none";
                 } else {
                     // show all other labels
                     d.textHidden = this.textContent.indexOf("...") + 3 === this.textContent.length;
@@ -575,7 +558,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                 // use empty timeout to force the following code to be executed on the next $digest cycle
                 // in order to avoid '$digest in progress' error
                 $timeout(function () {
-                    scope.showExternalElements = (d.name === ROOT_OBJ_NAME);
+                    scope.showExternalElements = (d.data.name === ROOT_OBJ_NAME);
                 });
 
                 if (focus === d) {
@@ -584,8 +567,8 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                     return;
                 }
 
-                if (d.id) {
-                    $window.history.replaceState({id: d.id}, "classHierarchyPage" + d.id, "hierarchy#" + d.id);
+                if (d.data.id) {
+                    $window.history.replaceState({id: d.data.id}, "classHierarchyPage" + d.data.id, "hierarchy#" + d.data.id);
                 }
 
                 if (!d.children) {
@@ -612,7 +595,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
 
                 var p = d;
                 while (p) {
-                    p.isInFocusTransitive = p.children;
+                    p.isInFocusTransitive = !!p.children;
                     p = p.parent;
                 }
 
@@ -625,8 +608,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                     zoomTo([focus.x, focus.y, adjustRadius(focus.r)]);
 
                     text.each(function (d) {
-                        textUpdateStart.call(this, d);
-                        textUpdateEnd.call(this, d);
+                        textUpdate.call(this, d)
                     });
                 } else {
                     // the fancy version for faster browsers
@@ -641,14 +623,13 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
 
                     transition.selectAll("text")
                     // Experimental: hide texts to be hidden on "start", show texts to be shown on "end"
-                        .each("start", textUpdateStart)
-                        .each("end", textUpdateEnd);
+                        .each(textUpdate)
                 }
             }
 
             rootFocusEvent = scope.$on('rootFocus', function () {
                 $window.history.pushState({id: 1}, "classHierarchyPage1", "hierarchy#1");
-                doFocus(root);
+                doFocus(rootHierarchy);
             });
 
             classSearchEvent = scope.$on('classSearch', function (selectedClass) {
@@ -657,7 +638,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
         }
 
         function sendSliderData() {
-            var currentClassCount = scope.classHierarchyData.classCount;
+            const currentClassCount = scope.classHierarchyData.classCount;
             let currentSliderValue = LocalStorageAdapter.get(LSKeys.CLASS_HIERARCHY_CURRENT_SLIDER_VALUE);
 
             if (!currentSliderValue || currentSliderValue > currentClassCount) {
@@ -696,21 +677,23 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
             if (scope.classHierarchyData.classCount) {
                 sendSliderData();
 
-                var root = angular.copy(scope.classHierarchyData);
+                var rootData = angular.copy(scope.classHierarchyData);
+
+                var root = d3.hierarchy(rootData);
 
                 function sortRoot(root) {
                     // add all classes to a flat array, add parent information
                     // and sort according to instancesCount DESC, depth ASC
-                    return pack
-                        .nodes(root)
+
+                    return root.descendants()
                         .sort(function (a, b) {
-                            if (a.sortingRank > b.sortingRank) {
+                            if (a.data.sortingRank > b.data.sortingRank) {
                                 return -1;
-                            } else if (a.sortingRank < b.sortingRank) {
+                            } else if (a.data.sortingRank < b.data.sortingRank) {
                                 return 1;
-                            } else if (a.depth > b.depth) {
+                            } else if (a.data.depth > b.data.depth) {
                                 return 1;
-                            } else if (a.depth < b.depth) {
+                            } else if (a.data.depth < b.data.depth) {
                                 return -1;
                             } else {
                                 return 0;
@@ -718,15 +701,15 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                         });
                 }
 
-                var sorted = sortRoot(root);
+                var sortedChildren = sortRoot(root);
 
-                // we start with an empty new root
-                var newRoot;
+                // we start with an empty new rootData
+                var filteredRootData;
                 var noPrefixesGlobal;
 
 
-                function restoreDiagramState(currentRoot, switchPrefixes) {
-                    var prefixesConfig = {
+                function restoreDiagramState(currentRootData, switchPrefixes) {
+                    const prefixesConfig = {
                         keepPrevState: true,
                         noPrefixes: getPrefixesState()
                     };
@@ -734,10 +717,10 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                     // get noPrefixes flag from drawDiagram configuration params
                     noPrefixesGlobal = prefixesConfig.noPrefixes;
 
-                    if (newRoot) {
-                        drawDiagram(newRoot, prefixesConfig, focus, true);
+                    if (filteredRootData) {
+                        drawDiagram(filteredRootData, prefixesConfig, focus, true);
                     } else {
-                        drawDiagram(currentRoot, prefixesConfig, focus, true);
+                        drawDiagram(currentRootData, prefixesConfig, focus, true);
                     }
 
                     $timeout(function () {
@@ -746,76 +729,76 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                     }, 70);
                 }
 
-                function redrawFilteredDiagram(currentSliderValue, sortedRoot, useSlider) {
+                function redrawFilteredDiagram(currentSliderValue, sortedChildrenArray, useSlider) {
                     if (!currentSliderValue) {
                         return;
                     }
 
                     LocalStorageAdapter.set(LSKeys.CLASS_HIERARCHY_CURRENT_SLIDER_VALUE, currentSliderValue);
 
-                    newRoot = {
+                    filteredRootData = {
                         name: ROOT_OBJ_NAME,
                         children: []
                     };
 
-                    // walk through the given count of (sorted) classes
+                    // walk through the given count of (sortedChildrenArray) classes
                     // - record the id of each class we've seen
-                    // - add the root level classes to the new root
-                    var addedIds = new Set();
-                    for (var k = 1; k <= currentSliderValue; k++) {
-                        addedIds.add(sortedRoot[k].id);
-                        if (sortedRoot[k].parent === sortedRoot[0]) { // i.e. the parent is the "class hierarchy"
-                            newRoot.children.push(sortedRoot[k]);
+                    // - add the rootData level classes to the new rootData
+                    const addedIds = new Set();
+                    for (let k = 1; k <= currentSliderValue; k++) {
+                        addedIds.add(sortedChildrenArray[k].data.id);
+                        if (sortedChildrenArray[k].parent === sortedChildrenArray[0]) { // i.e. the parent is the "class hierarchy"
+                            filteredRootData.children.push(sortedChildrenArray[k].data);
                         }
                     }
 
-                    // walk through all the classes in the new root and only keep those that have an "added id"
+                    // walk through all the classes in the new rootData and only keep those that have an "added id"
                     // we create separate copies of the arrays in order not to contaminate the original data
                     // we also copy each class's object ($.extend ...) for the same reason
                     function fixChildren(node) {
                         if (!node.children) {
                             return;
                         }
-                        var newChildren = [];
-                        for (var i = 0; i < node.children.length; i++) {
-                            if (addedIds.has(node.children[i].id)) {
-                                newChildren.push($.extend({}, node.children[i]));
+                        const newChildren = [];
+                        for (const child of node.children) {
+                            if (addedIds.has(child.id)) {
+                                newChildren.push($.extend({}, child));
                             }
                         }
                         node.children = newChildren;
-                        for (var i = 0; i < node.children.length; i++) {
-                            fixChildren(node.children[i]);
+                        for (const child of node.children) {
+                            fixChildren(child);
                         }
                     }
 
-                    fixChildren(newRoot);
+                    fixChildren(filteredRootData);
 
                     if (useSlider) {
                         // redraw diagram when slider value changes and persist current state
                         // in local storage
                         noPrefixesGlobal = angular.isUndefined(noPrefixesGlobal) ? getPrefixesState() : noPrefixesGlobal;
-                        var redrawConfig = {
+                        const redrawConfig = {
                             noPrefixes: noPrefixesGlobal
                         };
-                        drawDiagram(newRoot, redrawConfig);
+                        drawDiagram(filteredRootData, redrawConfig);
                     } else {
                         // if the user returns to the diagram with back browser button
                         // read the saved state (show/hide prefixes, current slider value)
                         // from local storage and render the diagram according to the saved metrics
-                        restoreDiagramState(root);
+                        restoreDiagramState(rootData);
                     }
                 }
 
                 var currentSliderValue = LocalStorageAdapter.get(LSKeys.CLASS_HIERARCHY_CURRENT_SLIDER_VALUE);
                 if (currentSliderValue) {
-                    redrawFilteredDiagram(currentSliderValue, sorted);
+                    redrawFilteredDiagram(currentSliderValue, sortedChildren);
                 } else {
                     var basicConfig = {
                         doFade: true,
                         keepPrevState: true,
                         noPrefixes: getPrefixesState()
                     };
-                    drawDiagram(root, basicConfig);
+                    drawDiagram(rootData, basicConfig);
                     autoZoomToPreviousState();
                 }
 
@@ -827,12 +810,12 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                     // if digest overflows a possible fix might be wrapping this in $timeout
                     $timeout(function () {
                         savePrefixesState(hidePrefixes);
-                        restoreDiagramState(root, true);
+                        restoreDiagramState(rootData, true);
                     }, 50);
                 }, true);
 
                 currentClassCountWatch = scope.$watch('currentSliderValue', function (currentSliderValue) {
-                    redrawFilteredDiagram(currentSliderValue, sorted, true);
+                    redrawFilteredDiagram(currentSliderValue, sortedChildren, true);
                 }, true);
 
                 // we handle this event for the cases where we already have searched for a given class and
