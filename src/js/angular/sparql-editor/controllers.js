@@ -95,14 +95,7 @@ function SparqlEditorCtrl($scope,
             // this can happen if open saprql view for first time (browser local store is clear);
             return;
         }
-        const queryMode = yasqe.getQueryMode();
-        // if query mode is 'query' -> '/repositories/repo-name'
-        // if query mode is 'update' -> '/repositories/repo-name/statements'
-        if (queryMode === QueryMode.UPDATE) {
-            return `/repositories/${$repositories.getActiveRepository()}/statements`;
-        } else if (queryMode === QueryMode.QUERY) {
-            return `/repositories/${$repositories.getActiveRepository()}`;
-        }
+        return $repositories.resolveSparqlEndpoint(yasqe.getQueryMode());
     };
 
     const initViewFromUrlParams = () => {
