@@ -9,6 +9,7 @@ import {YasrPluginName} from "../../../models/ontotext-yasgui/yasr-plugin-name";
 import {isEqual} from "lodash/lang";
 import {QueryType} from "../../../models/ontotext-yasgui/query-type";
 import {YasguiComponent} from "../../../models/yasgui-component";
+import {YasguiComponentDirectiveUtil} from "./yasgui-component-directive.util";
 
 const modules = [
     'graphdb.framework.core.services.translation-service',
@@ -302,16 +303,21 @@ function yasguiComponentDirective(
                 const accept = downloadAsEvent.contentType;
                 const authToken = AuthTokenService.getAuthToken() || '';
 
-                // TODO change it
-                // Simple cross-browser download with a form
-                const $wbDownload = $('#wb-download');
-                $wbDownload.attr('action', $scope.ontotextYasguiConfig.endpoint);
-                $('#wb-download-query').val(query);
-                $('#wb-download-infer').val(infer);
-                $('#wb-download-sameAs').val(sameAs);
-                $('#wb-auth-token').val(authToken);
-                $('#wb-download-accept').val(accept);
-                $wbDownload.submit();
+                YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync('#query-editor')
+                    .then((yasguiComponent) => {
+                        return yasguiComponent.getQueryMode();
+                    }).then((queryMode) => {
+                        const endpoint = $repositories.resolveSparqlEndpoint(queryMode);
+                        // Simple cross-browser download with a form
+                        const $wbDownload = $('#wb-download');
+                        $wbDownload.attr('action', endpoint);
+                        $('#wb-download-query').val(query);
+                        $('#wb-download-infer').val(infer);
+                        $('#wb-download-sameAs').val(sameAs);
+                        $('#wb-auth-token').val(authToken);
+                        $('#wb-download-accept').val(accept);
+                        $wbDownload.submit();
+                    });
             };
             downloadAsPluginNameToEventHandler.set(YasrPluginName.EXTENDED_TABLE, downloadThroughServer);
 
