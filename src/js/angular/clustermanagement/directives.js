@@ -240,8 +240,8 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     CDS.updateNodes(legendNodesElements);
 
                     legendNodesElements.select('.node.member')
-                        .on("mouseover", function (event, d) {
-                            event.stopPropagation();
+                        .on("mouseover", function (d) {
+                            d3.event.stopPropagation();
                             showLegendTooltip(d, this);
                         })
                         .on('mouseout', hideLegendTooltip);
@@ -307,8 +307,8 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                             .html(link.linkTypeText);
 
                         linkG
-                            .on('mouseover', function (event) {
-                                event.stopPropagation();
+                            .on('mouseover', function () {
+                                d3.event.stopPropagation();
                                 showLegendTooltip(link, this);
                             })
                             .on('mouseout', hideLegendTooltip);
@@ -346,22 +346,22 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     const nodesElements = CDS.createNodes(nodeData, nodeRadius);
 
                     nodesElements
-                        .on('click', (event, d) => {
+                        .on('click', (d) => {
                             scope.childContext.selectNode(d);
 
                             // position the tooltip according to the node!
                             const tooltip = d3.select('.nodetooltip');
                             const windowWidth = $(window).width();
-                            if (event.pageX < windowWidth / 2) {
+                            if (d3.event.pageX < windowWidth / 2) {
                                 // left
-                                tooltip.style("left", event.pageX + "px");
+                                tooltip.style("left", d3.event.pageX + "px");
                                 tooltip.style("right", "");
                             } else {
                                 // right
                                 tooltip.style("left", "");
-                                tooltip.style("right", (windowWidth - event.pageX) + "px");
+                                tooltip.style("right", (windowWidth - d3.event.pageX) + "px");
                             }
-                            tooltip.style("top", (event.pageY - 28) + "px");
+                            tooltip.style("top", (d3.event.pageY - 28) + "px");
                         });
                     CDS.updateNodes(nodesElements);
                     CDS.positionNodesOnClusterZone(nodesElements, clusterZoneX, clusterZoneY, clusterZoneRadius);
