@@ -5,6 +5,7 @@ import 'angular/rest/license.rest.service';
 import 'ng-file-upload/dist/ng-file-upload.min';
 import 'ng-file-upload/dist/ng-file-upload-shim.min';
 import 'angular/core/services/event-emitter-service';
+import {QueryMode} from "../../models/ontotext-yasgui/query-mode";
 
 const modules = [
     'ngCookies',
@@ -438,6 +439,21 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                 });
         };
 
+        /**
+         * Resolve the endpoint which should be used for issuing sparql queries based on the query mode.
+         * @param {'query'|'update'} queryMode
+         * @return {string} The resolved REST endpoint for sparql queries.
+         */
+        this.resolveSparqlEndpoint = (queryMode) => {
+            // if query mode is 'query' -> '/repositories/repo-name'
+            // if query mode is 'update' -> '/repositories/repo-name/statements'
+            if (queryMode === QueryMode.UPDATE) {
+                return `/repositories/${this.getActiveRepository()}/statements`;
+            } else if (queryMode === QueryMode.QUERY) {
+                return `/repositories/${this.getActiveRepository()}`;
+            }
+        };
+
         $rootScope.$on('securityInit', function (scope, securityEnabled, userLoggedIn, freeAccess) {
             locationsRequestPromise = null;
             if (!securityEnabled || userLoggedIn || freeAccess) {
@@ -447,6 +463,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                 });
             }
         });
+
         $rootScope.$on('reloadLocations', function () {
             // the event is emitted when cluster is created/deleted
             that.locationsShouldReload = true;
