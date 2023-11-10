@@ -452,6 +452,12 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
         $scope.executedQueryTab = $scope.currentQuery;
 
         if (!$scope.queryIsRunning) {
+            // set proper headers because on page reload these might not be present until active repository is not
+            // changed via the menu
+            $.ajaxSetup()['headers'] = $.ajaxSetup()['headers'] || {};
+            const repositoryConfig = $repositories.getActiveRepositoryObject();
+            $.ajaxSetup()['headers']['X-GraphDB-Repository'] = repositoryConfig ? repositoryConfig.id : undefined;
+            $.ajaxSetup()['headers']['X-GraphDB-Repository-Location'] = repositoryConfig ? repositoryConfig.location : undefined;
             $scope.currentQuery.outputType = 'table';
             $scope.resetCurrentTabConfig();
 
@@ -475,10 +481,10 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
                     columns: $scope.currentQuery.columns || []
                 });
                 JdbcRestService.getNewSqlTablePreview(sqlView)
-                    .then(successCallback).catch(failCallback);
+                    .done(successCallback).fail(failCallback);
             } else {
                 JdbcRestService.getExistingSqlTablePreview($scope.currentQuery.name)
-                    .then(successCallback).catch(failCallback);
+                    .done(successCallback).fail(failCallback);
             }
         }
     };
