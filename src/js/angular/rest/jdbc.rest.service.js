@@ -82,7 +82,7 @@ function JdbcRestService($http, $translate) {
     }
     function getExistingSqlTablePreview(name, limit) {
         // Limit in preview is optional. On backend default value is set to 100
-        return $http({
+        return $.ajax({
             method: 'GET',
             url: `rest/sql-views/preview/${name}`,
             params: {
@@ -93,7 +93,7 @@ function JdbcRestService($http, $translate) {
 
     function getNewSqlTablePreview(sqlView, limit) {
         // Limit in preview is optional. On backend default value is set to 100
-        return $http({
+        return $.ajax({
             method: 'POST',
             url: "rest/sql-views/preview",
             contentType: "application/json; charset=utf-8",

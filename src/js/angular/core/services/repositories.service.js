@@ -320,6 +320,12 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             return this.locations.find((location) => location.uri === locationUri);
         };
 
+        this.setRepositoryHeaders = function (repository) {
+            $.ajaxSetup()['headers'] = $.ajaxSetup()['headers'] || {};
+            $.ajaxSetup()['headers']['X-GraphDB-Repository'] = repository ? repository.id : undefined;
+            $.ajaxSetup()['headers']['X-GraphDB-Repository-Location'] = repository ? repository.location : undefined;
+        };
+
         this.setRepository = function (repo) {
             if (repo) {
                 LocalStorageAdapter.set(LSKeys.REPOSITORY_ID, repo.id);
@@ -328,6 +334,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                 LocalStorageAdapter.remove(LSKeys.REPOSITORY_ID);
                 LocalStorageAdapter.remove(LSKeys.REPOSITORY_LOCATION);
             }
+            this.setRepositoryHeaders(repo);
             $rootScope.$broadcast('repositoryIsSet', {newRepo: true});
 
             // if the current repo is unreadable by the currently logged in user (or free access user)
