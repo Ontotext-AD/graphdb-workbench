@@ -14,8 +14,9 @@ const PREDICATE_SOURCE = 'http:%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23subCl
 const CONTEXT_EXPLICIT = 'http://www.ontotext.com/explicit';
 const OBJECT_RESOURCE = 'http:%2F%2Fexample.com%2Fontology%23Metric';
 const IMPLICIT_EXPLICIT_RESOURCE = 'http:%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23type';
+const TRIPLE_RESOURCE = '%3C%3C%3Chttp:%2F%2Fexample.com%2Fresource%2Fperson%2FW6J1827%3E%20%3Chttp:%2F%2Fexample.com%2Fontology%23hasAddress%3E%20%3Chttp:%2F%2Fexample.com%2Fresource%2Fperson%2FW6J1827%2Faddress%3E%3E%3E';
 
-describe.skip('Resource view', () => {
+describe('Resource view', () => {
     let repositoryId;
     beforeEach(() => {
         repositoryId = 'repository-' + Date.now();
