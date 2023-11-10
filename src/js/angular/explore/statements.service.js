@@ -42,8 +42,17 @@ function StatementsService() {
                 if (statement.object.type === 'uri') {
                     data += '<' + statementObjectValue + '> .';
                 } else {
-                    statementObjectValue = statementObjectValue.replace(/"/g, '\\"');
-                    data += '"""' + statementObjectValue + '"""' + (statement.object.datatype ? '^^<' + statement.object.datatype + '>' : (statement.object.lang ? '@' + statement.object.lang : '')) + ' .';
+                    if (statementObjectValue.toString().includes('"')) {
+                        if (statementObjectValue[0] === "'") {
+                            statementObjectValue = '"' + statementObjectValue.slice(1, statementObjectValue.length);
+                        }
+                        if (statementObjectValue[statementObjectValue.length - 1]) {
+                            statementObjectValue = statementObjectValue.slice(0, -1) + '"';
+                        }
+                        data += "'''" + statementObjectValue + "'''" + (statement.object.datatype ? '^^<' + statement.object.datatype + '>' : (statement.object.lang ? '@' + statement.object.lang : '')) + ' .';
+                    } else {
+                        data += '"""' + statementObjectValue + '"""' + (statement.object.datatype ? '^^<' + statement.object.datatype + '>' : (statement.object.lang ? '@' + statement.object.lang : '')) + ' .';
+                    }
                 }
             }
 

@@ -80,6 +80,11 @@ export function createNodes(nodesDataBinding, nodeRadius, isLegend) {
         .attr('id', 'node-group')
         .classed('legend', isLegend);
 
+    const nodeUpdateElements = nodeGroup
+        .merge(nodesDataBinding)
+        .attr('id', 'node-group')
+        .classed('legend', isLegend);
+
     createHexagon(nodeGroup, nodeRadius);
     nodesDataBinding.exit().remove();
 
@@ -88,6 +93,7 @@ export function createNodes(nodesDataBinding, nodeRadius, isLegend) {
         .attr('class', 'icon-any node-icon');
 
     addHostnameToNodes(nodeGroup, nodeRadius, isLegend);
+    return nodeUpdateElements
 }
 
 function addHostnameToNodes(nodeElements, nodeRadius, isLegend) {
@@ -314,14 +320,14 @@ function getLinkCoordinates(link, nodes) {
     return 'M' + sourceX + ',' + sourceY + 'L' + targetX + ',' + targetY;
 }
 
-export function positionNodesOnClusterZone(nodes, clusterZoneX, clusterZoneY, clusterZoneRadius) {
-    nodes
+export function positionNodesOnClusterZone(nodeElements, clusterZoneX, clusterZoneY, clusterZoneRadius) {
+    nodeElements
         .attr('transform', (node, index) => {
             // Calculate initial positions for the new nodes based on
             // spreading them evenly on a circle around the center of the page.
-            const theta = 2 * Math.PI * index / nodes[0].length;
-            var x = clusterZoneX + Math.cos(theta) * clusterZoneRadius;
-            var y = clusterZoneY + Math.sin(theta) * clusterZoneRadius;
+            const theta = 2 * Math.PI * index / nodeElements.size();
+            const x = clusterZoneX + Math.cos(theta) * clusterZoneRadius;
+            const y = clusterZoneY + Math.sin(theta) * clusterZoneRadius;
             node.x = x;
             node.y = y;
             return `translate(${x}, ${y})`;
@@ -342,5 +348,5 @@ function createHexagon(nodeGroup, radius) {
         .enter()
         .append("path")
         .attr('class', 'node member')
-        .attr("d", d3.svg.line());
+        .attr("d", d3.line());
 }

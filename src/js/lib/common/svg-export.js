@@ -1,4 +1,4 @@
-import * as d3 from "d3/build/d3";
+import 'lib/d3.patch.js'
 
 var SVG = SVG || {};
 

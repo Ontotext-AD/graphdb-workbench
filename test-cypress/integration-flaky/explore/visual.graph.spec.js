@@ -33,12 +33,13 @@ describe('Visual graph screen validation', () => {
         cy.visit('graphs-visualizations');
         getCreateCustomGraphLink().click();
         cy.url().should('include', '/config/save');
-        getGraphConfigName().type(graphConfigName);
         cy.get('[data-cy="graph-config-by-graph-query-checkbox"]').check();
-        cy.pasteQuery('CONSTRUCT WHERE {?s ?p ?o} LIMIT 10').then( () => {
-                getSaveConfig().click();
-            }
-        );
+        getGraphConfigName().type(graphConfigName, {force: true});
+
+        cy.waitUntil(() => getGraphConfigName().should('have.value', graphConfigName));
+        cy.pasteQuery('CONSTRUCT WHERE {?s ?p ?o} LIMIT 10');
+        cy.waitUntilQueryIsVisible();
+
         getSaveConfig().click();
         cy.url().should('include', 'graphs-visualizations');
         cy.contains('td', graphConfigName).should('be.visible').parent().within(() => {

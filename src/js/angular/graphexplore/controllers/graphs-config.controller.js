@@ -653,6 +653,10 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, Spa
     }
 
     function loadTab() {
+        if (!window.editor) {
+            $timeout(() => loadTab());
+            return;
+        }
         $scope.tabsData = [$scope.currentQuery];
 
         let tab = $scope.currentQuery;

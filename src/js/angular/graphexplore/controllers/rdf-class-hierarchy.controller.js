@@ -251,8 +251,8 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     }
 
     function goToDomainRangeGraphView(selectedClass) {
-        const uri = selectedClass.fullName;
-        const name = selectedClass.name;
+        const uri = selectedClass.data.fullName;
+        const name = selectedClass.data.name;
 
         GraphDataRestService.checkDomainRangeData(uri)
             .success(function (response, status) {
@@ -281,8 +281,8 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
 
     function prepareDataForClassInfoSidePanel(selectedClass) {
         // generate SPARQL query for listing class instances in sparql view
-        const uri = selectedClass.fullName;
-        let name = selectedClass.name;
+        const uri = selectedClass.data.fullName;
+        let name = selectedClass.data.name;
 
         // in case of no prefix available both name and uri are the same
         // so only take the local name of the uri a tab name for the SPARQL view

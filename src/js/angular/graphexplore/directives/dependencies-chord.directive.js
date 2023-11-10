@@ -30,7 +30,7 @@ function dependenciesChordDirective($repositories, GraphDataRestService) {
                 return;
             }
 
-            const fill = d3.scale.category20();
+            const fill = d3.scaleOrdinal(d3.schemeCategory20);
 
             const tooltip = d3.select("body").append("div")
                 .attr("class", "tooltip")
@@ -44,16 +44,16 @@ function dependenciesChordDirective($repositories, GraphDataRestService) {
             const outerRadius = Math.min(width, height) / 2.8;
             const innerRadius = outerRadius - 24;
 
-            const arc = d3.svg.arc()
+            const arc = d3.arc()
                 .innerRadius(innerRadius)
                 .outerRadius(outerRadius);
 
-            const layout = d3.layout.chord()
-                .padding(.04)
+            const chordGraph = d3.chord()
+                .padAngle(.04)
                 .sortSubgroups(d3.descending)
                 .sortChords(d3.ascending);
 
-            const path = d3.svg.chord()
+            const path = d3.ribbon()
                 .radius(innerRadius);
 
             const svg = d3.select("#dependencies-chord").append("svg")
@@ -69,7 +69,7 @@ function dependenciesChordDirective($repositories, GraphDataRestService) {
                 .style("fill", "none");
 
             // Compute the chord layout.
-            layout.matrix(matrix);
+            const layout = chordGraph(matrix);
 
             // Add a group per neighborhood.
             const group = svg.selectAll(".group")
@@ -112,7 +112,7 @@ function dependenciesChordDirective($repositories, GraphDataRestService) {
 
             // Add the chords.
             const chord = svg.selectAll(".chord")
-                .data(layout.chords)
+                .data(layout)
                 .enter().append("path")
                 .attr("class", "chord")
                 .style("fill", function (d) {
@@ -125,11 +125,11 @@ function dependenciesChordDirective($repositories, GraphDataRestService) {
                 .attr("d", path);
 
             chord.on("mouseover", function () {
-                d3.select(this).style({"fill-opacity": "1"});
+                d3.select(this).style("fill-opacity", "1");
             });
 
             chord.on("mouseout", function () {
-                d3.select(this).style({"fill-opacity": ".67"});
+                d3.select(this).style("fill-opacity", ".67");
             });
 
             chord.on("click", function (d) {
@@ -199,7 +199,7 @@ function dependenciesChordDirective($repositories, GraphDataRestService) {
                 // convert selected html to base64
                 const imgSrc = SVG.Export.generateBase64ImageSource('.dependencies-chord svg');
                 // set the binary image and a name for the downloadable file on the export button
-                d3.select(this).attr({
+                d3.select(this).attrs({
                     href: imgSrc,
                     download: "dependencies-" + $repositories.getActiveRepository() + ".svg"
                 });

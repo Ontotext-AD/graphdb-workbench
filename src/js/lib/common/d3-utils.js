@@ -1,3 +1,5 @@
+import 'lib/d3.patch.js'
+
 var D3 = D3 || {};
 
 D3.Text = function () {
@@ -110,11 +112,11 @@ D3.Click = function () {
                     if (wait) {
                         window.clearTimeout(wait);
                         wait = null;
-                        event.dblclick(d);
+                        event.call('dblclick', d3.event, d);
                     } else {
                         wait = window.setTimeout((function (e) {
                             return function () {
-                                event.click(d);
+                                event.call('click', e, d)
                                 wait = null;
                             };
                         })(d3.event), 250);
@@ -123,7 +125,27 @@ D3.Click = function () {
             });
         }
 
-        return d3.rebind(cc, event, 'on');
+        return rebind(cc, event, 'on');
+    }
+
+    // Copies a variable number of methods from source to target.
+    const rebind = function (target, source) {
+        let i = 1, n = arguments.length, method;
+        while (++i < n) {
+            method = arguments[i]
+            target[method] = d3_rebind(target, source, source[method]);
+        }
+        return target;
+    }
+
+    // Method is assumed to be a standard D3 getter-setter:
+    // If passed with no arguments, gets the value.
+    // If passed with arguments, sets the value and returns the target.
+    function d3_rebind(target, source, method) {
+        return function () {
+            var value = method.apply(source, arguments);
+            return value === source ? target : value;
+        };
     }
 
     return {

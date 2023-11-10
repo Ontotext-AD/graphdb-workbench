@@ -3,6 +3,8 @@ import 'angular/core/directives';
 import 'angular/utils/uri-utils';
 import 'angular/rest/rdfrank.rest.service';
 import 'ng-tags-input/build/ng-tags-input.min';
+import {mapNamespacesResponse} from "../rest/mappers/namespaces-mapper";
+import {decodeHTML} from "../../../app";
 
 const rdfRankApp = angular.module('graphdb.framework.rdfrank', [
     'ngRoute',
@@ -26,7 +28,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
 
         $scope.setPluginIsActive = function (isPluginActive) {
             $scope.pluginIsActive = isPluginActive;
-        }
+        };
 
         const refreshStatus = function () {
             RdfRankRestService.getStatus()
@@ -37,17 +39,15 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
                 });
         };
 
-        const initNamespaces = function () {
-            RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
-                .success(function (data) {
-                    const nss = _.map(data.results.bindings, function (o) {
-                        return {'uri': o.namespace.value, 'prefix': o.prefix.value};
-                    });
-                    $scope.namespaces = _.sortBy(nss, function (n) {
-                        return n.uri.length;
-                    });
-                }).error(function (data) {
-                    toastr.error($translate.instant('get.namespaces.error.msg', {error: getError(data)}));
+        const loadNamespaces = () => {
+            RDF4JRepositoriesRestService.getNamespaces($repositories.getActiveRepository())
+                .then(mapNamespacesResponse)
+                .then((namespacesModel) => {
+                    $scope.namespaces = namespacesModel;
+                })
+                .catch((response) => {
+                    const msg = getError(response);
+                    toastr.error(msg, $translate.instant('error.getting.namespaces.for.repo'));
                 });
         };
 
@@ -65,7 +65,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
                 .success(function (data) {
                     $scope.pluginFound = (data === true);
                     if ($scope.pluginFound) {
-                        initNamespaces();
+                        loadNamespaces();
                         refreshPage();
                     } else {
                         $scope.loading = false;
@@ -91,11 +91,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
             Object.values($scope.filterLists).forEach(function (list) {
                 RdfRankRestService.filter(list.predicate)
                     .success(function (data) {
-                        list.elements = data;
-
-                        list.elements = list.elements.map(function (elem) {
-                            return foldPrefix(elem, $scope.namespaces);
-                        });
+                        return list.elements = data;
                     }).error(function (data) {
                         toastr.error(getError(data));
                     });
@@ -248,11 +244,14 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
         };
 
         $scope.addToList = function (list, iri) {
-            if (UriUtils.isValidIri(iri.text)) {
-                _addToList(list, expandPrefix(iri.text, $scope.namespaces));
+            let iriText = iri.text.toString();
+            iriText = UriUtils.expandPrefix(iriText, $scope.namespaces);
+            if (UriUtils.isValidIri(iri, iriText) && iriText !== "") {
+                _addToList(list, iriText);
             } else {
                 refreshFilteringConfig();
-                toastr.error($translate.instant('not.valid.iri', {value: iri.text}));
+                const errorMessage = decodeHTML($translate.instant('not.valid.iri', {value: iri.text.toString()}));
+                toastr.error(errorMessage);
             }
         };
 
@@ -270,7 +269,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
         };
 
         $scope.deleteFromList = function (list, iri) {
-            _deleteFromList(list, expandPrefix(iri.text, $scope.namespaces));
+            _deleteFromList(list, iri.text, $scope.namespaces);
         };
 
         const pullStatus = function () {
@@ -285,30 +284,6 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
         $scope.$on('$destroy', function () {
             cancelTimer();
         });
-
-        function expandPrefix(str, namespaces) {
-            const ABS_URI_REGEX = /^<?(http|urn).*>?/;
-            if (!ABS_URI_REGEX.test(str)) {
-                const uriParts = str.split(':');
-                const uriPart = uriParts[0];
-                const localName = uriParts[1];
-                if (!angular.isUndefined(localName)) {
-                    const expandedUri = ClassInstanceDetailsService.getNamespaceUriForPrefix(namespaces, uriPart);
-                    if (expandedUri) {
-                        return expandedUri + localName;
-                    }
-                }
-            }
-            return str;
-        }
-
-        function foldPrefix(iri, namespaces) {
-            const localPart = ClassInstanceDetailsService.getLocalName(iri);
-            const iriPart = iri.replace(new RegExp(localPart + '$', 'i'), '');
-            const folded = ClassInstanceDetailsService.getNamespacePrefixForUri(namespaces, iriPart);
-
-            return folded === '' ? iri : folded + ':' + localPart;
-        }
 
         const init = function () {
             if (!$licenseService.isLicenseValid() ||

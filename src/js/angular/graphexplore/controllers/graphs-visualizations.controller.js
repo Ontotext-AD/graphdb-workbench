@@ -68,9 +68,22 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     let colorIndex = 0;
     const nodeLabelMinFontSize = 16; // pixels
     // define zoom and drag behavior; keep this out of draw() to preserve state when nodes are added/removed
-    const panAndZoom = d3.behavior.zoom()
-        .scaleExtent([0.5, 10]);
-    let transformValues;
+    var zoomLayout = d3.zoom().scaleExtent([0.5, 10]);
+    var container;
+    var INITIAL_CONTAINER_TRANSFORM = d3.zoomIdentity.translate(0, -70).scale(1);
+
+    function zoomed() {
+        if (GuidesService.isActive()) {
+            // disable zooming if a guide is active.
+            return;
+        }
+        transformValues = d3.event.transform;
+        container.attr("transform", transformValues);
+    }
+
+    zoomLayout.on("zoom", zoomed);
+
+    let transformValues = INITIAL_CONTAINER_TRANSFORM;
     // build svg element
     const width = 1000;
     const height = 1000;
@@ -811,8 +824,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                 tripleLinksCopy: tripleLinksCopy,
                 colorIndex: colorIndex,
                 type2color: type2color,
-                scale: panAndZoom.scale(),
-                translate: panAndZoom.translate()
+                transform: transformValues
             };
         };
 
@@ -838,10 +850,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                 type2color = angular.copy(state.type2color);
             }
 
-            if (angular.isDefined(state.translate) && angular.isDefined(state.scale)) {
-                transformValues = "translate(" + state.translate[0] + ", " + state.translate[1] + ") scale(" + state.scale + ")";
-                panAndZoom.translate(state.translate);
-                panAndZoom.scale(state.scale);
+            if (angular.isDefined(state.transform)) {
+                transformValues = d3.zoomIdentity.translate(state.transform.x, state.transform.y).scale(state.transform.k)
             }
 
             draw();
@@ -991,9 +1001,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                         graph = new Graph();
                         const rootNode = graph.addNode(response.data, width / 2, height / 2);
 
-                        transformValues = "translate(0, -70) scale(1)";
-                        panAndZoom.translate([0, -70]);
-                        panAndZoom.scale(1);
+                        transformValues = INITIAL_CONTAINER_TRANSFORM;
 
                         expandNode(rootNode, true);
                     }).catch(function (err) {
@@ -1178,12 +1186,12 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
     const nodeLabelRectScaleX = 1.75;
 
-    const color1 = d3.scale.linear()
+    const color1 = d3.scaleLinear()
         .domain([0, 9])
         .range(["hsl(0, 100%, 75%)", "hsl(360, 90%, 82%)"])
         .interpolate(d3.interpolateHslLong);
 
-    const color2 = d3.scale.linear()
+    const color2 = d3.scaleLinear()
         .domain([0, 9])
         .range(["hsl(180, 50%, 75%)", "hsl(540, 40%, 82%)"])
         .interpolate(d3.interpolateHslLong);
@@ -1204,13 +1212,32 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         }
     };
 
-    const force = d3.layout.force()
-        .gravity(0.07)
-        .size([width, height]);
+    const forceX = d3.forceX(width / 2).strength(0.005)
+    const forceY = d3.forceY(height / 2).strength(0.005)
+
+    const force = d3.forceSimulation()
+        .force('x', forceX)
+        .force('y',  forceY);
 
     const svg = d3.select(".main-container .graph-visualization").append("svg")
         .attr("viewBox", "0 0 " + width + " " + height)
         .attr("preserveAspectRatio", "xMidYMid meet");
+
+    // building rectangular so we can bind zoom and drag effects
+    svg.append("rect")
+        .attr("width", width * 10)
+        .attr("height", height * 10)
+        .attr("x", -(width * 10 - width) / 2)
+        .attr("y", -(height * 10 - height) / 2)
+        .style("fill", "none")
+        .style("pointer-events", "all")
+        .call(zoomLayout)
+        .on("click", function () {
+            d3.event.stopPropagation();
+            removeMenuIfVisible();
+            // Clicking outside the graph stops the layout
+            force.stop();
+        });
 
     let showNodeTipAndIconsTimer = 0;
     let removeIconsTimer = 0;
@@ -1220,31 +1247,11 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     function draw(resetRootNode) {
         // remove all group elements and rec to rebuild the graph when the user clicks on it
         d3.selectAll("svg g").remove();
-        d3.selectAll("svg rect").remove();
         d3.selectAll('.d3-tip').remove();
         d3.selectAll('.menu-events').remove();
 
-        // zoom and drag event
-        panAndZoom.on("zoom", panAndZoomed);
 
-        // building rectangular so we can bind zoom and drag effects
-        svg.append("rect")
-            .attr("width", width * 10)
-            .attr("height", height * 10)
-            .attr("x", -(width * 10 - width) / 2)
-            .attr("y", -(height * 10 - height) / 2)
-            .style("fill", "none")
-            .style("pointer-events", "all")
-            .call(panAndZoom)
-            .on("click", function () {
-                d3.event.stopPropagation();
-                removeMenuIfVisible();
-                // Clicking outside the graph stops the layout
-                force.stop();
-            });
-
-
-        const container = svg.append("g").attr("class", "nodes-container")
+        container = svg.append("g").attr("class", "nodes-container")
             .attr("transform", function () {
                 if (angular.isDefined(transformValues) && !resetRootNode) {
                     return transformValues;
@@ -1393,20 +1400,26 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         let link = svg.selectAll(".link");
         let node = svg.selectAll(".node");
 
-        force.nodes(graph.nodes).charge(-3000);
+        const collisionForce = d3.forceCollide((d) => d.size + 5).strength(0.5)
+        const chargeForce = d3.forceManyBody().strength(-300);
+        const centerForce = d3.forceCenter(width/2,  height/2)
 
-        force.links(graph.links).linkDistance(function (l) {
-            if (l.source.isTriple || l.target.isTriple) {
-                return 0;
-            }
-            // link distance depends on length of text with an added bonus for strongly connected nodes,
-            // i.e. they will be pushed further from each other so that their common nodes can cluster up
-            return getPredicateTextLength(l) + 30 * l.connectedness;
-        });
+        force.nodes(graph.nodes)
+            .force("charge", chargeForce)
+            .force("collide", collisionForce)
+            .force("center", centerForce)
+            .force("link", d3.forceLink(graph.links).distance(function (l) {
+                if (l.source.isTriple || l.target.isTriple) {
+                    return 0;
+                }
+                // link distance depends on length of text with an added bonus for strongly connected nodes,
+                // i.e. they will be pushed further from each other so that their common nodes can cluster up
+                return getPredicateTextLength(l) + 30 * l.connectedness;
+            }));
 
         // arrow markers
         container.append("defs").selectAll("marker")
-            .data(force.links())
+            .data(graph.links)
             .enter().append("marker")
             .attr("class", "arrow-marker")
             .attr("id", function (d) {
@@ -1466,47 +1479,62 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             });
 
         // node events and variables
-        let mouseEventTimer;
+        let touchHoldEventTimer;
         let upEventLast = 0;
-        let virtualClickEventTimer = 0;
         let moveEventCount = 0;
+        let singleClickTimer = null;
+        let clickTarget = null;
 
-        // tracks mousedown and touchstart events in order to count single or double click
-        // (checked in upEventHandler)
-        const downEventHandler = function () {
+        // track single and double click events
+        const clickEventHandler = function (d) {
             if (d3.event.button && d3.event.button !== 0) {
                 return;
             }
 
-            hideTipForNode();
-            $timeout.cancel(mouseEventTimer);
-            $scope.showPredicates = false;
-            if (d3.event.timeStamp - upEventLast < multiClickDelay) {
-                virtualClickEventTimer++;
-            } else {
-                virtualClickEventTimer = 1;
+            const event = d3.event;
+            const element = this;
+
+            if (singleClickTimer && clickTarget === element) {
+                $timeout.cancel(singleClickTimer);
+                singleClickTimer = null;
+                // expand node
+                expandEventHandler(d, 0, element.parentNode);
+                return;
             }
 
-            upEventLast = d3.event.timeStamp;
+            clickTarget = element;
 
-            d3.event.preventDefault();
+
+            hideTipForNode();
+            $scope.showPredicates = false;
+
+            if (!GuidesService.isActive()) {
+                $timeout.cancel(singleClickTimer);
+                // Show node info
+                singleClickTimer = $timeout(function () {
+                    clickedNode(d, element, event);
+                    singleClickTimer = null;
+                }, 40 + multiClickDelay)
+            }
         };
 
-        // builds upon downEventHandler and adds additional functionality for touch devices
+        // builds upon clickEventHandler and adds additional functionality for touch devices
         const touchStartEventHandler = function (d) {
-            downEventHandler();
-
             // for touch devices we track touch and hold for 1s in order to remove a node
             moveEventCount = 0;
-            mouseEventTimer = $timeout(function () {
+            touchHoldEventTimer = $timeout(function () {
                 if (moveEventCount < 5) {
                     // remove the node only if not many move events were fired,
                     // this avoids conflict with dragging nodes
                     hideNode(d);
                 }
-                mouseEventTimer = null;
-                virtualClickEventTimer = 0;
+                touchHoldEventTimer = null;
             }, 1000);
+        };
+
+        const touchEndEventHandler = function (d) {
+            $timeout.cancel(touchHoldEventTimer);
+            touchHoldEventTimer = null;
         };
 
         // tracks the number of move events (checked in the touchend event handler)
@@ -1527,38 +1555,17 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         };
 
         const expandEventHandler = function (d, i, parentNode) {
+            let parent = parentNode || this.parentNode;
+            if (Array.isArray(parentNode)) {
+                parent = parentNode[i]
+            }
             const shownLinks = graph.countLinks(d, graph.links);
             if (shownLinks <= getSettings()['linksLimit']) {
-                expandNode(d, false, parentNode ? parentNode : this.parentNode);
+                expandNode(d, false, parent);
             } else {
                 toastr.info($translate.instant('graphexplore.increase.limit'), $translate.instant('graphexplore.node.at.max'));
             }
             $scope.closeInfoPanel();
-        };
-
-        const upEventHandler = function (d) {
-            if (d3.event.button && d3.event.button !== 0) {
-                return;
-            }
-
-            $timeout.cancel(mouseEventTimer);
-
-            const event = d3.event;
-            const element = this;
-            if (!GuidesService.isActive()) {
-                if (d3.event.timeStamp - upEventLast < multiClickDelay) {
-                    if (virtualClickEventTimer === 1) {
-                        mouseEventTimer = $timeout(function () {
-                            clickedNode(d, element, event);
-                        }, 40 + multiClickDelay - (d3.event.timeStamp - upEventLast));
-                    } else if (virtualClickEventTimer === 2) {
-                        // expand node
-                        expandEventHandler(d, 0, element.parentNode);
-                    }
-                }
-            }
-
-            d3.event.preventDefault();
         };
 
         // Shows growing or shrinking pin animation
@@ -1646,8 +1653,10 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                 // unpin
                 $scope.numberOfPinnedNodes--;
                 d.fixed = false;
+                d.fx =null;
+                d.fy =null;
                 showPinAnimation(d, 'up');
-                force.resume();
+                force.alpha(1).restart();
             } else {
                 // pin down
                 $scope.numberOfPinnedNodes++;
@@ -1658,13 +1667,13 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             updateTipForNode(d);
         };
 
-        const drag = d3.behavior.drag()
-            .origin(function (d) {
+        const drag = d3.drag()
+            .subject(function (d) {
                 return d;
             })
-            .on("dragstart", dragstarted)
+            .on("start", dragstarted)
             .on("drag", dragged)
-            .on("dragend", dragended);
+            .on("end", dragended);
 
 
         function dragstarted(d) {
@@ -1677,18 +1686,15 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                 d.isBeingDragged = true;
                 d.beginDragging = true;
                 removeMenuIfVisible();
-                d3.event.sourceEvent.stopPropagation();
                 d3.select(this).classed("dragging", true);
+                force.alphaTarget(0.3).restart();
             }
         }
 
         function dragged(d) {
             if (d.isBeingDragged) {
-                // reset click counter to avoid conflicts between clicks and drags
-                virtualClickEventTimer = 0;
-
-                d.px = d3.event.x;
-                d.py = d3.event.y;
+                d.fx = d3.event.x;
+                d.fy = d3.event.y;
                 if (!d.fixed) {
                     $scope.numberOfPinnedNodes++;
                     d.fixed = true;
@@ -1698,8 +1704,6 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                 }
                 d.pinWasFixed = true;
                 d.beginDragging = null;
-
-                force.resume();
             }
         }
 
@@ -1712,6 +1716,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                 d.isBeingDragged = false;
                 d3.select(this).classed("dragging", false);
             }
+            force.alphaTarget(0)
         }
 
         node = container.selectAll(".node")
@@ -1732,20 +1737,19 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                 }
                 return $scope.getColor(d.types[0]);
             })
-            .call(drag)
             .on('mouseover', showNodeTipAndIcons)
             .on('mouseout', hideTipForNode)
-            .on("mousedown", downEventHandler)
+            .on("click", clickEventHandler)
             .on("touchstart", touchStartEventHandler)
             // no need to track move for mouse
             .on("touchmove", moveEventHandler)
-            .on("mouseup", upEventHandler)
-            .on("touchend", upEventHandler)
+            .on("touchend", touchEndEventHandler)
             .on("contextmenu", rightClickHandler)
             // custom event used when user is following a guide
             .on("gdb-expand-node", expandEventHandler)
             // custom event used when user is following a guide
-            .on("gdb-show-node-info", showNodeInfo);
+            .on("gdb-show-node-info", showNodeInfo)
+            .call(drag);
 
         const nodeLabels = container.selectAll(".node-wrapper").append("foreignObject")
             .style("pointer-events", "none")
@@ -1759,12 +1763,6 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         updateNodeLabels(nodeLabels);
 
         force.on("tick", function () {
-            // recalculate nodes positions and repel them if they collide
-            let q = d3.geom.quadtree(graph.nodes);
-            let i = 0;
-            const n = graph.nodes.length;
-            // FIXME while (++i < n) q.visit(collide(graph.nodes[i]));
-
             // recalculate links attributes
             link.attr("x1", function (d) {
                 return getNodeX(d.source);
@@ -1828,15 +1826,6 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             updateAlphaInScope();
         });
 
-        function panAndZoomed() {
-            if (GuidesService.isActive()) {
-                // disable zooming if a guide is active.
-                return;
-            }
-            transformValues = "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")";
-            container.attr("transform", transformValues);
-        }
-
         if (angular.isDefined(loader)) {
             loader.setLoadingState(false);
         }
@@ -1864,7 +1853,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
         d3.selectAll('.d3-actions-tip').remove();
 
-        force.start();
+        force.alpha(0.3).restart();
     }
 
 
@@ -1872,30 +1861,6 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         // other code can use the value of d3alpha to determine when the force layout has settled
         $rootScope.d3alpha = force.alpha();
     }
-
-    /* FIXME
-    // check for collision of the nodes
-    function collide(node, bigger) {
-        return function (quad, x1, y1, x2, y2) {
-            if (quad.point && (quad.point !== node)) {
-                var x = node.x - quad.point.x,
-                    y = node.y - quad.point.y,
-                    l = Math.sqrt(x * x + y * y),
-                    r = node.size + quad.point.size;
-                if (l < r) {
-                    l = (l - r) / l * .5;
-                    node.x -= x *= l;
-                    node.y -= y *= l;
-                    quad.point.x += x;
-                    quad.point.y += y;
-                }
-            }
-            return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
-        };
-    }
-    */
-
-    draw();
 
     // find angle between pair of nodes so we can position predicates
     function findAngleBetweenNodes(linkedNodes, direction) {
@@ -1962,9 +1927,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
         // If nodes are still rearranging result of force.alpha() is more than 0.02
         // and we don't want to show node's icons on mouse over and stop rearrangement.
-        // The chosen value 0.02 is somewhat magic and works well with 0.02 in awaitAlphaDropD3()
+        // The chosen value 0.1 is somewhat magic and works well with 0.02 in awaitAlphaDropD3()
         // in the guides code.
-        if (force.alpha() < 0.02) {
+        if (force.alpha() < 0.1) {
             menuEvents.initIcons(d, element.parentNode);
             force.stop();
             updateAlphaInScope();
@@ -1992,9 +1957,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             response.data.types = "greyColor";
         }
         graph = new Graph();
-        transformValues = "translate(0, -70) scale(1)";
-        panAndZoom.translate([0, -70]);
-        panAndZoom.scale(1);
+        transformValues =  INITIAL_CONTAINER_TRANSFORM;
     }
 
     function initGraphFromResponse(response) {
@@ -2360,8 +2323,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
         this.animateMenu = function (node) {
             const animationDuration = 100;
-            const easeEffects = ["linear", "quad", "cubic", "sin", "exp", "circle", "elastic", "back", "bounce"]; // https://github.com/d3/d3-3.x-api-reference/blob/master/Transitions.md#easing
-            const easeEffect = easeEffects[3];
+            const easeEffect = d3.easeSin;
             let delay = 0;
             const dellayAddition = 35;
             let angle = 20; // angle of the first icon 0 is at 12 o'clock
@@ -2802,7 +2764,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         removeMenuIfVisible();
 
         // compute common rotation math such as the angle, its sine and cosine and the pivot point
-        const theta = (isLeft ? 1 : -1) * 2 * Math.PI / 180; // + rotates left, - rotates right
+        const theta = (isLeft ? 1 : -1) * 10 * Math.PI / 180; // + rotates left, - rotates right
         const cos = Math.cos(theta);
         const sin = Math.sin(theta);
         const pivotX = width / 2; // i.e. centre of viewport
@@ -2815,12 +2777,12 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                 d.y = pivotY + (-sin * (d.x - pivotX) + cos * (d.y - pivotY));
                 if (d.fixed) {
                     // Fixed nodes need their px and py updated too
-                    d.px = d.x;
-                    d.py = d.y;
+                    d.fx = d.x;
+                    d.fy = d.y;
                 }
             });
 
-        force.resume();
+        force.alpha(1).restart();
     };
 
     $scope.openUri = function (uri, noHistory) {
@@ -3000,17 +2962,22 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     $scope.togglePinAllNodes = function () {
         removeMenuIfVisible();
 
-        const value = $scope.numberOfPinnedNodes <= 0;
+        const value = angular.isUndefined($scope.numberOfPinnedNodes) || $scope.numberOfPinnedNodes <= 0;
 
         $scope.numberOfPinnedNodes = 0;
         d3.selectAll('.node').each(function (d) {
             d.fixed = value;
             if (value) {
                 $scope.numberOfPinnedNodes++;
+                d.fx = d.x;
+                d.fy = d.y;
+            } else {
+                d.fx = null;
+                d.fy = null;
             }
         });
 
-        force.resume();
+        force.alpha(1).restart();
     };
 
     // event for capturing left and right arrows used for rotation

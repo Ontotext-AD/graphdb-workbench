@@ -20,21 +20,19 @@
 
             <script type="text/ng-template" id="sampleQueriesPopoverTemplate.html">
                 <ul id="wb-sparql-queryInSampleQueries" class="list-unstyled">
-                    <li ng-repeat="query in sampleQueries" ng-hide="ignoreSharedQueries && query.owner != principal.username" class="hovered-parent saved-query">
-                        <a href ng-click="querySelected(query)">{{query.name}}</a>
+                    <li ng-repeat="query in sampleQueries" class="saved-query">
+                        <a href ng-click="querySelected(query)" title="{{query.name}}">{{query.name}}</a>
                         &nbsp;
                         <em class="icon-warning" ng-show="query.owner != principal.username && isUser()"
                            uib-popover="{{'core.popover.shared.query.warning' | translate}}"
                            popover-trigger="mouseenter"></em>
                         <span class="actions-bar hovered-item">
-							<button class="btn btn-link btn-sm"
-                                    ng-show="query.owner == principal.username && isUser()"
+							<button class="btn btn-link btn-sm" ng-class="{'not-user-query': !isUser()}"
                                     uib-popover="{{'core.edit.query' | translate}}" popover-trigger="mouseenter"
                                     ng-click="editQuery(query)">
 								<span class="icon-edit"></span>
 							</button>
-							<button class="btn btn-link btn-sm"
-                                    ng-show="query.owner == principal.username && isUser()"
+							<button class="btn btn-link btn-sm" ng-class="{'not-user-query': !isUser()}"
                                     uib-popover="{{'core.delete.query' | translate}}" popover-trigger="mouseenter"
                                     ng-click="deleteQuery(query.name)">
 								<span class="icon-trash"></span>
@@ -48,23 +46,6 @@
                     </li>
                 </ul>
             </script>
-
-            <!--
-                        <div class="collapse width pull-right well" id="sampleQueriesCollapse">
-                            <div class="list-group-item-heading">Select saved query from the list</div>
-                            <ul id="wb-sparql-queryInSampleQueries" class="queries list-unstyled">
-                                <li ng-repeat="query in sampleQueries">
-
-                                    <a href="#" ng-click="querySelected(query.body)"><i class="fa fa-1x fa-caret-right"></i>{{query.name}}</a>
-                                    <span>
-                                        <i ng-show="canWriteActiveRepo()" gdb-tooltip="Edit query" href="#" class="fa fa-pencil-square-o fa-1x editSampleQuery" ng-click="editQuery(query)"></i>
-                                        <i ng-show="canWriteActiveRepo()" gdb-tooltip="Delete query" href="#" class="fa fa-trash-o fa-1x deleteSampleQuery" ng-click="deleteQuery(query.name)"></i>
-                                        <i gdb-tooltip="Get URL to query" href="#" class="fa fa-link fa-1x" ng-click="copyToClipboardQuery(query.name)"></i>
-                                    </span>
-                                </li>
-                            </ul>
-                        </div>
-            -->
 
             <div id="queryEditor" guide-selector="queryEditor">
                 <textarea ng-model="query" id="query" rows="16" cols="100" guide-selector="inputQuery"></textarea>

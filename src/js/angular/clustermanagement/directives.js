@@ -236,17 +236,17 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                         .text(getLabelFor('link_state'));
 
                     const legendNodeData = legendGroup.selectAll('#node-group').data(legendNodes);
-                    CDS.createNodes(legendNodeData, legendNodeRadius, true);
-                    CDS.updateNodes(legendNodeData);
+                    const legendNodesElements = CDS.createNodes(legendNodeData, legendNodeRadius, true);
+                    CDS.updateNodes(legendNodesElements);
 
-                    legendNodeData.select('.node.member')
+                    legendNodesElements.select('.node.member')
                         .on("mouseover", function (d) {
                             d3.event.stopPropagation();
                             showLegendTooltip(d, this);
                         })
                         .on('mouseout', hideLegendTooltip);
 
-                    legendNodeData
+                    legendNodesElements
                         .attr('transform', function (d) {
                             const row = Math.floor(d.id / legendColumns);
                             const column = d.id % legendColumns;
@@ -257,8 +257,8 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                         });
 
                     legendGroup
-                        .call(function () {
-                            legendWidth = this.node().getBBox().width;
+                        .call(function (d) {
+                            legendWidth = d.node().getBBox().width;
                         });
 
                     // Position node/link state labels
@@ -317,8 +317,8 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
 
                     legendGroup
                         .call(function (d) {
-                            legendHeight = this.node().getBBox().height;
-                            legendWidth = this.node().getBBox().width;
+                            legendHeight = d.node().getBBox().height;
+                            legendWidth = d.node().getBBox().width;
                         });
 
                     legendGroup.select('.legend-background')
@@ -343,7 +343,9 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                         }
                     });
                     const nodeData = nodesGroup.selectAll('#node-group').data(nodes, (node) => node.address);
-                    nodeData
+                    const nodesElements = CDS.createNodes(nodeData, nodeRadius);
+
+                    nodesElements
                         .on('click', (d) => {
                             scope.childContext.selectNode(d);
 
@@ -361,9 +363,8 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                             }
                             tooltip.style("top", (d3.event.pageY - 28) + "px");
                         });
-                    CDS.createNodes(nodeData, nodeRadius);
-                    CDS.updateNodes(nodeData);
-                    CDS.positionNodesOnClusterZone(nodeData, clusterZoneX, clusterZoneY, clusterZoneRadius);
+                    CDS.updateNodes(nodesElements);
+                    CDS.positionNodesOnClusterZone(nodesElements, clusterZoneX, clusterZoneY, clusterZoneRadius);
                 }
 
                 function drawLinks(links, nodes) {
