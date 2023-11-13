@@ -101,6 +101,7 @@ yasgui-component .yasr a {
 
 yasgui-component .yasr .yasr_btnGroup .yasr_btn {
     margin-left: 0;
+    margin-right: .2rem;
     font-size: 16px;
     font-weight: 400;
     color: var(--secondary-color) !important;
