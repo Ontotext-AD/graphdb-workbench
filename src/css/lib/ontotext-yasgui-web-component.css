@@ -27,6 +27,11 @@ yasgui-component .yasqe_queryButton {
     background-color: var(--primary-color) !important;
 }
 
+yasgui-component .ontotext-dropdown-menu .ontotext-dropdown-menu-item {
+    padding: .5em 1.2em;
+    font-size: 1rem;
+}
+
 yasgui-component .ontotext-dropdown-button,
 yasgui-component .ontotext-dropdown-menu.open .ontotext-dropdown-menu-item {
     background-color: var(--primary-color) !important;
