@@ -6,7 +6,6 @@ angular-bowser.js	MIT	https://github.com/jacqueslareau/angular-bowser/
 angular-cookie.min.js	MIT	https://github.com/ivpusic/angular-cookie
 angular-cookies.min.js	MIT	https://docs.angularjs.org/api/ngCookies
 angular-local-storage	MIT	https://github.com/grevory/angular-local-storage
-angular-nvd3.js	MIT	http://krispo.github.io/angular-nvd3
 angular-pageslide-directive.js	MIT	https://github.com/dpiccone/ng-pageslide
 angular-sanitize	MIT	https://docs.angularjs.org/api/ngSanitize
 angular-toastr	MIT	https://github.com/Foxandxss/angular-toastr#readme
@@ -17,6 +16,7 @@ angular.js	MIT	https://angularjs.org/
 angularCancelOnNavigateModule.js	MIT	https://github.com/AlbertBrand/angular-cancel-on-navigate
 animate.css	MIT	https://github.com/daneden/animate.css/tree/3.5.2	MODIFIED
 animate.css	MIT	https://github.com/daneden/animate.css/tree/3.5.2
+Apache Echarts	Apache 2.0	https://github.com/apache/echarts/blob/master/LICENSE
 autofill-event.js	MIT	https://github.com/iamjoetaylor/vanilla-autofill-event#readme
 bootstrap.min.js	Apache 2.0	https://github.com/twbs/bootstrap/blob/master/LICENSE
 circle-packing.js	MIT

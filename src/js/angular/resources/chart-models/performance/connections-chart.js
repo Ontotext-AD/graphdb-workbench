@@ -1,27 +1,53 @@
 import {ChartData} from "../chart-data";
 
 export class ConnectionsChart extends ChartData {
-    constructor(translateService) {
-        super(translateService, false, false);
-    }
-    chartSetup(chartOptions) {
-        chartOptions.chart.yAxis.tickValues = () => {
-            return ConnectionsChart.getIntegerRangeForValues(this.dataHolder);
-        };
+    constructor($translate, ThemeService) {
+        super($translate, ThemeService, false, false);
     }
 
     createDataHolder() {
         return [{
-            key: this.translateService.instant('resource.connections.active'),
-            values: []
+            name: this.translateService.instant('resource.connections.active'),
+            type: 'line',
+            showSymbol: false,
+            smooth: true,
+            data: []
         }, {
-            key: this.translateService.instant('resource.connections.open'),
-            values: []
+            name: this.translateService.instant('resource.connections.open'),
+            type: 'line',
+            showSymbol: false,
+            smooth: true,
+            data: []
         }];
     }
+
+    translateLabels() {
+        const [activeTransactionsSeries, openConnectionsSeries] = this.dataHolder;
+        activeTransactionsSeries.name = this.translateService.instant('resource.connections.active');
+        openConnectionsSeries.name = this.translateService.instant('resource.connections.open');
+    }
+
     addNewData(dataHolder, timestamp, data) {
-        const performanceData = data.performanceData;
-        dataHolder[0].values.push([timestamp, performanceData.activeTransactions]);
-        dataHolder[1].values.push([timestamp, performanceData.openConnections]);
+        const [activeTransactionsSeries, openConnectionsSeries] = dataHolder;
+        const {activeTransactions, openConnections} = data.performanceData;
+
+        activeTransactionsSeries.data.push({
+            value: [
+                timestamp,
+                activeTransactions
+            ]
+        });
+        openConnectionsSeries.data.push({
+            value: [
+                timestamp,
+                openConnections
+            ]
+        });
+    }
+
+    updateRange(dataHolder, multiplier) {
+        const [max, minInterval] = ChartData.getIntegerRangeForValues(dataHolder, this.selectedSeries)
+        this.chartOptions.yAxis.max = max;
+        this.chartOptions.yAxis.minInterval = minInterval;
     }
 }

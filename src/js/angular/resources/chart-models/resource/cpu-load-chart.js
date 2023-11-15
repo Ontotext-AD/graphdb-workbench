@@ -1,30 +1,58 @@
 import {ChartData} from "../chart-data";
 
 export class CpuLoadChart extends ChartData {
-    constructor(translateService) {
-        super(translateService, false, false);
+    constructor(translateService, themeService) {
+        super(translateService, themeService, false, false);
     }
+
     chartSetup(chartOptions) {
-        chartOptions.chart.yAxis.tickFormat = function (d) {
-            return d + '%';
-        };
+        const cpuLoadChartOptions = {
+            yAxis: {
+                axisLabel: {
+                    formatter: '{value} %'
+                },
+                min: 0,
+                max: function (value) {
+                    return Math.round(value.max > 50 ? 100 : value.max * 2);
+                }
+            },
+            tooltip: {
+                valueFormatter: function (value) {
+                    return value + '%'
+                }
+            }
+        }
+        _.merge(chartOptions, cpuLoadChartOptions);
     }
 
     createDataHolder() {
         return [{
-            key: this.translateService.instant('resource.system.cpu_load.label'),
-            values: []
+            name: this.translateService.instant('resource.system.cpu_load.label'),
+            type: 'line',
+            showSymbol: false,
+            smooth: true,
+            data: []
         }];
     }
+
+    translateLabels() {
+        const [cpuSeries] = this.dataHolder;
+        cpuSeries.name = this.translateService.instant('resource.system.cpu_load.label');
+    }
+
     addNewData(dataHolder, timestamp, data) {
-        dataHolder[0].values.push([timestamp, this.formatValue(data.cpuLoad)]);
+        dataHolder[0].data.push({
+            value: [
+                timestamp,
+                this.formatValue(data.cpuLoad)
+            ]
+        });
     }
+
     formatValue(cpuLoad) {
-        return parseFloat(cpuLoad).toFixed(4);
+        return +parseFloat(cpuLoad).toFixed(4);
     }
+
     updateRange(dataHolder) {
-        const maxChartValue = Math.max(...dataHolder[0].values.flatMap((data) => data[1]));
-        const domainUpperBound = maxChartValue > 50 ? 100 : maxChartValue * 2;
-        this.chartOptions.chart.yDomain = [0, domainUpperBound];
     }
 }
