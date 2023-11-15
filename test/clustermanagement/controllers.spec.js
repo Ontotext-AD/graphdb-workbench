@@ -1,12 +1,12 @@
 import "angular/core/services";
 import 'angular/core/services/repositories.service';
 import "angular/clustermanagement/app";
-import "angular/clustermanagement/controllers";
+import "angular/clustermanagement/controllers/cluster-management.controller";
 import "angular/clustermanagement/directives";
 
 describe('==> Cluster management module controllers tests', function () {
 
-    beforeEach(angular.mock.module('graphdb.framework.clustermanagement.controllers', function ($provide) {
+    beforeEach(angular.mock.module('graphdb.framework.clustermanagement', function ($provide) {
         $provide.constant("productInfo", {
             "productType": "standard", "productVersion": "7.0", "sesame": "2.9.0", "connectors": "5.0.0"
         });

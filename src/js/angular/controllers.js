@@ -37,7 +37,6 @@ angular
         'graphdb.framework.rest.autocomplete.service',
         'graphdb.framework.rest.repositories.service',
         'graphdb.framework.rest.sparql.service',
-        'graphdb.framework.rest.autocomplete.service',
         'graphdb.framework.rest.plugins.service',
         'graphdb.framework.rest.monitoring.service',
         'graphdb.framework.rest.rdf4j.repositories.service',

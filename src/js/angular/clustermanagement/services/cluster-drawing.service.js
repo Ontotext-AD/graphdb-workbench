@@ -1,4 +1,4 @@
-import {LinkState, NodeState, RecoveryState} from "./controllers";
+import {LinkState, NodeState, RecoveryState} from "../controllers/cluster-management.controller";
 
 export const clusterColors = {
     ontoOrange: 'var(--primary-color)',
