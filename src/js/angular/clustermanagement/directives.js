@@ -1,6 +1,6 @@
 import 'angular/utils/local-storage-adapter';
-import * as CDS from "./cluster-drawing.service";
-import {LinkState, NodeState, RecoveryState} from "./controllers";
+import * as CDS from "./services/cluster-drawing.service";
+import {LinkState, NodeState, RecoveryState} from "./controllers/cluster-management.controller";
 import d3tip from 'lib/d3-tip/d3-tip-patch';
 
 
