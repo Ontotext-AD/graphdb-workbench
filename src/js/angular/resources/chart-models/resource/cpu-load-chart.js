@@ -29,6 +29,7 @@ export class CpuLoadChart extends ChartData {
         return [{
             name: this.translateService.instant('resource.system.cpu_load.label'),
             type: 'line',
+            smoothMonotone: 'x',
             showSymbol: false,
             smooth: true,
             data: []

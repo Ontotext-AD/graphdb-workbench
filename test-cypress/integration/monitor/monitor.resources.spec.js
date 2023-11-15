@@ -63,7 +63,7 @@ describe('Monitor Resources', () => {
     function verifyCharts(charts) {
         charts.forEach((chart) => {
             getChart(chart.id).scrollIntoView().find('.title').should('contain', chart.label);
-            getChart(chart.id).scrollIntoView().find(`.${chart.type}`).should('be.visible');
+            getChart(chart.id).scrollIntoView().find(`svg`).should('be.visible');
         });
     }
 

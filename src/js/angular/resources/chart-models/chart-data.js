@@ -161,7 +161,7 @@ export class ChartData {
         return this.firstLoad;
     }
 
-    getDefaultChartOptions(translateService) {
+    getDefaultChartOptions() {
         return {
             title: {
                 show: false,
