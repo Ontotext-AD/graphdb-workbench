@@ -10,6 +10,8 @@ angular
 
 ChatGptCtrl.$inject = ['$scope', '$http', '$timeout', '$translate', '$uibModal', '$repositories', 'toastr', 'ModalService', 'LocalStorageAdapter'];
 
+const CHATGPTRETRIEVAL_ENDPOINT = 'rest/chat/retrieval';
+
 function ChatGptCtrl($scope, $http, $timeout, $translate, $uibModal, $repositories, toastr, ModalService, LocalStorageAdapter) {
     function scrollToEnd() {
         $timeout(() => {
@@ -82,7 +84,7 @@ function ChatGptCtrl($scope, $http, $timeout, $translate, $uibModal, $repositori
 
         const questionMsg = {"role": "question", "content": $scope.question};
 
-        $http.post(`/rest/chat/retrieval?repositoryID=${$repositories.getActiveRepository()}`, chatRequest).then((response) => {
+        $http.post(`${CHATGPTRETRIEVAL_ENDPOINT}?repositoryID=${$repositories.getActiveRepository()}`, chatRequest).then((response) => {
             $scope.history.pop();
             response.data.forEach((e) => $scope.history.push(e));
         }).catch((error) => {
