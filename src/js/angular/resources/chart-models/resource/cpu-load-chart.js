@@ -9,7 +9,9 @@ export class CpuLoadChart extends ChartData {
         const cpuLoadChartOptions = {
             yAxis: {
                 axisLabel: {
-                    formatter: '{value} %'
+                    formatter: (value) => {
+                        return `${value}%`
+                    }
                 },
                 min: 0,
                 max: function (value) {
@@ -18,7 +20,7 @@ export class CpuLoadChart extends ChartData {
             },
             tooltip: {
                 valueFormatter: function (value) {
-                    return value + '%'
+                    return `${value}%`
                 }
             }
         }
