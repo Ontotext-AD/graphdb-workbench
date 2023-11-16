@@ -267,7 +267,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
 
     function setQueryFromTabConfig() {
         $scope.tabsData = $scope.tabs = [defaultTabConfig];
-        $scope.currentQuery = angular.copy(defaultTabConfig);
+        $scope.currentQuery = _.cloneDeep(defaultTabConfig);
 
         resetYasqeYasr();
 

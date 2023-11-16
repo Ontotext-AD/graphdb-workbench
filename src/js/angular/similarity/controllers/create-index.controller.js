@@ -165,7 +165,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
             defaultTabConfig.inference = !($location.search().infer === 'false');
             defaultTabConfig.sameAs = !($location.search().sameAs === 'false');
             $scope.tabsData = $scope.tabs = [defaultTabConfig];
-            $scope.currentQuery = angular.copy(defaultTabConfig);
+            $scope.currentQuery = _.cloneDeep(defaultTabConfig);
             $scope.allSamples = samples;
             initForViewType();
         });
@@ -725,8 +725,7 @@ function CreateSimilarityIdxCtrl($scope, toastr, $uibModal, $timeout, Similarity
     });
     // end of query tab operations
 
-    $scope.currentQuery = angular.copy(defaultTabConfig);
-    // $scope.state = {};
+    $scope.currentQuery = _.cloneDeep(defaultTabConfig);
     $scope.showSampleQueries = false;
     $scope.savedQuery = {};
     $scope.sampleQueries = {};

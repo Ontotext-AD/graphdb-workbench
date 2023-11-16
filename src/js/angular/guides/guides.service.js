@@ -410,11 +410,11 @@ function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdServ
             if (predefinedStepDescription) {
                 const options = angular.extend({}, predefinedStepDescription.options, complexStep.options, parentOptions);
                 if (predefinedStepDescription.getSteps) {
-                    steps = steps.concat(this._getSteps(angular.copy(predefinedStepDescription.getSteps(options, services)), parentOptions));
+                    steps = steps.concat(this._getSteps(_.cloneDeep(predefinedStepDescription.getSteps(options, services)), parentOptions));
                 } else if (predefinedStepDescription.getStep) {
-                    steps.push(angular.copy(predefinedStepDescription.getStep(options, services)));
+                    steps.push(_.cloneDeep(predefinedStepDescription.getStep(options, services)));
                 } else {
-                    steps = steps.concat(this._getSteps(angular.copy(predefinedStepDescription, predefinedStepDescription.options), parentOptions));
+                    steps = steps.concat(this._getSteps(_.cloneDeep(predefinedStepDescription, predefinedStepDescription.options), parentOptions));
                 }
             }
         }

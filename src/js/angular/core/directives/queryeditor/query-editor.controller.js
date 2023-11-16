@@ -918,7 +918,7 @@ function QuerySampleModalCtrl($scope, $uibModalInstance, data, $sce) {
     if (data.queryExists) {
         $scope.queryExists = true;
     }
-    $scope.query = angular.copy(data.query);
+    $scope.query = _.cloneDeep(data.query);
     $scope.title = data.title;
     $scope.edit = data.edit;
     $scope.okButtonText = data.okButtonText;

@@ -125,7 +125,7 @@ function createConnectorQuery(name, prefix, fields, options, reportError) {
                         newObject[option.__name].push(sortObject(childOption, option.__childOptions));
                     });
                 } else {
-                    newObject[option.__name] = angular.copy(obj[option.__name]);
+                    newObject[option.__name] = _.cloneDeep(obj[option.__name]);
                 }
             }
         });
@@ -437,7 +437,7 @@ function ConnectorsCtrl($scope, $http, $repositories, $uibModal, toastr, ModalSe
     $scope.copyConnector = function (connector, values) {
         let newValues;
         if (!angular.isUndefined(values)) {
-            newValues = angular.copy(values);
+            newValues = _.cloneDeep(values);
             newValues.name = newValues.name + '-copy';
         }
         const modal = $uibModal.open({
@@ -595,7 +595,7 @@ function ExtendNewConnectorCtrl($scope, $uibModalInstance, connector, $uibModal,
     $scope.connector = connector;
 
     $scope.addField = function (index, optionName) {
-        const newField = angular.copy($scope.defaultValues[optionName][0]);
+        const newField = _.cloneDeep($scope.defaultValues[optionName][0]);
         $scope.values[optionName].splice(index + 1, 0, newField);
     };
 
@@ -668,7 +668,7 @@ function CreateConnectorCtrl($scope, $controller, $http, $uibModalInstance, conn
     if (!values.skipConversion) {
         $scope.values = mapCreateValuesToUiValues($scope.values, $scope.options);
     }
-    $scope.defaultValues = angular.copy($scope.values);
+    $scope.defaultValues = _.cloneDeep($scope.values);
 }
 
 // Note that this is a fancy controller: it's used both for a modal and for a directive.

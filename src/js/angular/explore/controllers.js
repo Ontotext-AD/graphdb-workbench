@@ -549,7 +549,7 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibM
         $scope.newRowObject.$setSubmitted();
         $scope.newRowContext.$setSubmitted();
         if ($scope.newRowPredicate.$valid && $scope.newRowObject.$valid && $scope.newRowContext.$valid) {
-            $scope.statements.push(angular.copy($scope.newRow));
+            $scope.statements.push(_.cloneDeep($scope.newRow));
             $scope.newRow = {
                 subject: $scope.uriParam,
                 object: {

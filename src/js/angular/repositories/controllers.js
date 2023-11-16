@@ -467,7 +467,7 @@ EditLocationCtrl.$inject = ['$scope', '$uibModalInstance', 'location', 'productI
 
 function EditLocationCtrl($scope, $uibModalInstance, location, productInfo) {
 
-    $scope.editedLocation = angular.copy(location);
+    $scope.editedLocation = _.cloneDeep(location);
     $scope.docBase = getDocBase(productInfo);
 
     $scope.ok = function () {

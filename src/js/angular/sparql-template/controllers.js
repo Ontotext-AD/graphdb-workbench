@@ -260,7 +260,7 @@ function SparqlTemplateCreateCtrl($scope, $location, toastr, $repositories, $win
 
     function setQueryFromTabConfig() {
         $scope.tabsData = $scope.tabs = [defaultTabConfig];
-        $scope.currentQuery = angular.copy(defaultTabConfig);
+        $scope.currentQuery = _.cloneDeep(defaultTabConfig);
 
         if (window.editor) {
             $scope.setQuery($scope.currentQuery.query);

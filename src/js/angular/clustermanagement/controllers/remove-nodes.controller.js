@@ -5,7 +5,7 @@ angular
 RemoveNodesDialogCtrl.$inject = ['$scope', '$uibModalInstance', 'data'];
 
 function RemoveNodesDialogCtrl($scope, $uibModalInstance, data) {
-    const clusterModel = angular.copy(data.clusterModel);
+    const clusterModel = _.cloneDeep(data.clusterModel);
 
     $scope.clusterNodes = clusterModel.nodes;
     $scope.clusterNodes.forEach((node) => node.shouldRemove = false);
