@@ -358,7 +358,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
 
         scope.$watch('domainRangeGraphData', function () {
             if (scope.domainRangeGraphData) {
-                var graph = angular.copy(scope.domainRangeGraphData);
+                var graph = _.cloneDeep(scope.domainRangeGraphData);
 
                 const nodes = graph.nodes;
                 const links = graph.links;

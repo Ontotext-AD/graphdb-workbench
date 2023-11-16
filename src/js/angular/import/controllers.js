@@ -182,7 +182,7 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
             if (!withDefaultSettings && !_.isEmpty(fileName) && !_.isEmpty($scope.savedSettings[fileName])) {
                 return $scope.savedSettings[fileName];
             } else {
-                return angular.copy($scope.defaultSettings);
+                return _.cloneDeep($scope.defaultSettings);
             }
         };
 
@@ -195,7 +195,7 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
                 controller: 'SettingsModalCtrl',
                 resolve: {
                     settings: function () {
-                        return angular.copy($scope.settings);
+                        return _.cloneDeep($scope.settings);
                     },
                     hasParserSettings: $scope.isLocalLocation,
                     defaultSettings: function () {
@@ -782,7 +782,7 @@ importCtrl.controller('SettingsModalCtrl', ['$scope', '$uibModalInstance', 'toas
     };
 
     $scope.reset = function () {
-        $scope.settings = angular.copy(defaultSettings);
+        $scope.settings = _.cloneDeep(defaultSettings);
         $scope.target = 'data';
     };
 

@@ -159,7 +159,7 @@ angular.mock.$Browser.prototype = {
     if (url) {
       this.$$url = url;
       // Native pushState serializes & copies the object; simulate it.
-      this.$$state = angular.copy(state);
+      this.$$state = _.cloneDeep(state);
       return this;
     }
 
@@ -182,8 +182,8 @@ angular.mock.$Browser.prototype = {
       }
     } else {
       if (!angular.equals(this.cookieHash, this.lastCookieHash)) {
-        this.lastCookieHash = angular.copy(this.cookieHash);
-        this.cookieHash = angular.copy(this.cookieHash);
+        this.lastCookieHash = _.cloneDeep(this.cookieHash);
+        this.cookieHash = _.cloneDeep(this.cookieHash);
       }
       return this.cookieHash;
     }
@@ -1141,7 +1141,7 @@ function createHttpBackendMock($rootScope, $timeout, $delegate, $browser) {
       expectations = [],
       responses = [],
       responsesPush = angular.bind(responses, responses.push),
-      copy = angular.copy;
+      copy = _.cloneDeep;
 
   function createResponse(status, data, headers, statusText) {
     if (angular.isFunction(status)) return status;

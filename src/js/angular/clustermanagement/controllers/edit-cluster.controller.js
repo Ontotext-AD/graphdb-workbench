@@ -9,7 +9,7 @@ EditClusterCtrl.$inject = ['$scope', '$uibModalInstance', '$timeout', 'ClusterRe
 function EditClusterCtrl($scope, $uibModalInstance, $timeout, ClusterRestService, toastr, $translate, data) {
     $scope.pageTitle = $translate.instant('cluster_management.cluster_page.edit_page_title');
     $scope.errors = [];
-    $scope.clusterConfiguration = angular.copy(data.clusterConfiguration);
+    $scope.clusterConfiguration = _.cloneDeep(data.clusterConfiguration);
     $scope.loader = false;
 
     $scope.updateCluster = function () {

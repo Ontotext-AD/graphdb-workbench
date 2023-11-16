@@ -285,7 +285,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
 AddLabelCtrl.$inject = ['$scope', '$uibModalInstance', '$timeout', 'data'];
 
 function AddLabelCtrl($scope, $uibModalInstance, $timeout, data) {
-    $scope.label = angular.copy(data.label);
+    $scope.label = _.cloneDeep(data.label);
     $scope.isNew = data.isNew;
 
     $scope.ok = function () {

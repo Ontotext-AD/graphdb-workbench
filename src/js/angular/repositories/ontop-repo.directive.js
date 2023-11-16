@@ -72,7 +72,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
             $scope.selectedDriver = $scope.supportedDriversData.find((driver) => driver.driverType === driverType);
             $scope.isGenericDriver = OntopDriverData.isGenericDriver($scope.selectedDriver.driverType);
             if ($scope.editRepoPage && $scope.currentOntopRepoInfo && $scope.currentOntopRepoInfo.connectionInformation.driverType === driverType) {
-                $scope.formData = angular.copy($scope.currentOntopRepoInfo);
+                $scope.formData = _.cloneDeep($scope.currentOntopRepoInfo);
             } else {
                 clearFormData();
                 $scope.formData.connectionInformation.driverType = $scope.selectedDriver.driverType;
@@ -405,7 +405,7 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
                                 ontopFile.fileName = getFileName(ontopFileInfo.value);
                             }
                         });
-                    $scope.currentOntopRepoInfo = angular.copy($scope.formData);
+                    $scope.currentOntopRepoInfo = _.cloneDeep($scope.formData);
                 })
                 .error((data) => {
                     showErrorMsg($translate.instant('common.error'), data);

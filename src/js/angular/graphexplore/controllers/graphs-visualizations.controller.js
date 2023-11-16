@@ -274,7 +274,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         includeSchema: true
     };
     // Static defaults before we do the actual dynamic default settings in initSettings
-    $scope.saveSettings = angular.copy($scope.defaultSettings);
+    $scope.saveSettings = _.cloneDeep($scope.defaultSettings);
 
     function initSettings(principal) {
         const settingsFromPrincipal = principal.appSettings;
@@ -295,11 +295,11 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                     $scope.saveSettings['rejectedPredicates'] = [...$scope.saveSettings['rejectedPredicates'], ...$scope.defaultSettings['rejectedPredicates']].unique();
                 }
             } catch (e) {
-                $scope.saveSettings = angular.copy($scope.defaultSettings);
+                $scope.saveSettings = _.cloneDeep($scope.defaultSettings);
                 LocalStorageAdapter.set(LSKeys.GRAPHS_VIZ, $scope.saveSettings);
             }
         } else {
-            $scope.saveSettings = angular.copy($scope.defaultSettings);
+            $scope.saveSettings = _.cloneDeep($scope.defaultSettings);
         }
     }
 
@@ -330,7 +330,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
     }
 
     $scope.resetSettings = function () {
-        $scope.settings = angular.copy($scope.defaultSettings);
+        $scope.settings = _.cloneDeep($scope.defaultSettings);
         $scope.validateLinksLimit();
         renderSettings();
     };
@@ -356,9 +356,9 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
         $scope.showNodeInfo = false;
         $scope.showPredicates = false;
         if (!$scope.saveSettings) {
-            $scope.settings = angular.copy($scope.defaultSettings);
+            $scope.settings = _.cloneDeep($scope.defaultSettings);
         } else {
-            $scope.settings = angular.copy($scope.saveSettings);
+            $scope.settings = _.cloneDeep($scope.saveSettings);
         }
         renderSettings();
     };
@@ -795,8 +795,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                     iri: node.iri,
                     isTriple: node.isTriple,
                     size: node.size,
-                    labels: angular.copy(node.labels),
-                    types: angular.copy(node.types),
+                    labels: _.cloneDeep(node.labels),
+                    types: _.cloneDeep(node.types),
                     rdfRank: node.rdfRank,
                     x: node.x,
                     y: node.y,
@@ -832,7 +832,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             $scope.nodeSelected = true;
             $scope.searchVisible = false;
 
-            this.nodes = angular.copy(state.nodes);
+            this.nodes = _.cloneDeep(state.nodes);
             // check if triples exists is needed for old configs
             this.tripleNodes = state.tripleNodes ? new Map(JSON.parse(state.tripleNodes)) : new Map();
             this.links = [];
@@ -847,7 +847,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
             if (angular.isDefined(state.colorIndex) && angular.isDefined(state.type2color)) {
                 colorIndex = state.colorIndex;
-                type2color = angular.copy(state.type2color);
+                type2color = _.cloneDeep(state.type2color);
             }
 
             if (angular.isDefined(state.transform)) {
@@ -3004,7 +3004,7 @@ SaveGraphModalCtrl.$inject = ['$scope', '$uibModalInstance', 'data', '$translate
 
 function SaveGraphModalCtrl($scope, $uibModalInstance, data, $translate) {
     $scope.mode = data.mode;
-    $scope.graph = angular.copy(data.graph);
+    $scope.graph = _.cloneDeep(data.graph);
     $scope.graphExists = data.graphExists;
 
     switch ($scope.mode) {
