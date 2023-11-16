@@ -18,20 +18,13 @@ export class ChartData {
     }
 
     constructor(translateService, themeService, disableRangeUpdate, disableOldDataRemoval, filter) {
-        this.secondaryColor = this.extractSecondaryColorFromTheme(themeService);
+        this.secondaryColor = themeService.getSecondaryColorAsString();
         this.filter = filter;
         this.disableRangeUpdate = disableRangeUpdate;
         this.disableOldDataRemoval = disableOldDataRemoval;
         this.translateService = translateService;
         this.refreshHandlers = [];
         this.initialChartSetup();
-    }
-
-    extractSecondaryColorFromTheme(themeService) {
-        const hue = themeService.getThemeDefinition().variables['secondary-color-hue'];
-        const lightness = themeService.getThemeDefinition().variables['secondary-color-lightness'];
-        const saturation = themeService.getThemeDefinition().variables['secondary-color-saturation'];
-        return `hsl(${hue}, ${saturation}, ${lightness})`;
     }
 
     registerRefreshHandler(eventHandler) {
