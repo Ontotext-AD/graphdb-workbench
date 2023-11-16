@@ -677,7 +677,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
             if (scope.classHierarchyData.classCount) {
                 sendSliderData();
 
-                var rootData = angular.copy(scope.classHierarchyData);
+                var rootData = _.cloneDeep(scope.classHierarchyData);
 
                 var root = d3.hierarchy(rootData);
 

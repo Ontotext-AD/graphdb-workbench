@@ -705,7 +705,7 @@ function GraphConfigCtrl($scope, $timeout, $location, toastr, $repositories, Spa
     });
     // end of query tab operations
 
-    $scope.currentQuery = angular.copy(defaultTabConfig);
+    $scope.currentQuery = _.cloneDeep(defaultTabConfig);
     // $scope.state = {};
     $scope.showSampleQueries = false;
     $scope.savedQuery = {};

@@ -779,7 +779,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
         $scope.getPrincipal = function () {
             return $jwtAuth.getPrincipal()
                 .then((principal) => {
-                    $scope.currentUserData = angular.copy(principal);
+                    $scope.currentUserData = _.cloneDeep(principal);
                 });
         };
 
@@ -803,7 +803,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
 
         const initUserData = function (scope) {
             // Copy needed so that Cancel would work correctly, need to call updateCurrentUserData on OK
-            scope.userData = angular.copy(scope.currentUserData);
+            scope.userData = _.cloneDeep(scope.currentUserData);
             scope.user = {username: scope.userData.username};
             scope.user.password = '';
             scope.user.confirmpassword = '';
