@@ -20,7 +20,7 @@ Apache Echarts	Apache 2.0	https://github.com/apache/echarts/blob/master/LICENSE
 autofill-event.js	MIT	https://github.com/iamjoetaylor/vanilla-autofill-event#readme
 bootstrap.min.js	Apache 2.0	https://github.com/twbs/bootstrap/blob/master/LICENSE
 circle-packing.js	MIT
-d3js	BSD 3-Clause	d3-ONTO-chord-patch.js MODIFIED from https://github.com/d3/d3/releases/tag/v3.5.12	MODIFIED
+d3js	ISC from https://github.com/d3/d3/releases/tag/v7.8.5
 d3-tip.js	MIT	https://github.com/caged/d3-tip
 d3-utils.js	ISC	https://github.com/emilbayes/d3-utils
 FileSaver.js	X11/MIT
