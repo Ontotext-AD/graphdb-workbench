@@ -453,7 +453,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                     $("#domain-range").bind("click", disableCollapsedPredicateLabelHightlighting);
                 });
 
-                function onCollapsedPropertyNameClick(d) {
+                function onCollapsedPropertyNameClick(event, d) {
                     disableCollapsedPredicateLabelHightlighting();
                     previousPropertyNameSelection.text = d3.select(this);
 
@@ -465,7 +465,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                         scope.showPredicatesInfoPanel = true;
                         scope.selectedPredicate = d;
                     });
-                    d3.event.stopPropagation();
+                    event.stopPropagation();
                 }
 
 
@@ -501,7 +501,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                         } else {
                             // for regular predicate labels just attach a link to the "Resources" view
                             // for more helpful information regarding them
-                            sel.on("click", function (d) {
+                            sel.on("click", function (event, d) {
                                 $window.open("resource?uri=" + encodeURIComponent(d.uri), "_blank");
                             });
                         }
@@ -530,8 +530,8 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                         }
                         return "translate(-" + translateX + ",-" + (textPadding + d.calculatedHeight / 2) + ")";
                     })
-                    .on("click", function (d) {
-                        d3.event.stopPropagation();
+                    .on("click", function (event) {
+                        event.stopPropagation();
                     });
 
 
@@ -568,7 +568,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                     .call(drag);
 
 
-                function reloadDomainRangeGraphView(d, collapsed) {
+                function reloadDomainRangeGraphView(event, d, collapsed) {
                     scope.$apply(function () {
                         $rootScope.$broadcast('reloadDomainRangeGraphView', d, collapsed);
                     });
@@ -590,7 +590,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                     .text(function (d) {
                         return d.objectPropClassName;
                     })
-                    .on("click", function (d) {
+                    .on("click", function (event, d) {
                         $window.open("resource?uri=" + encodeURIComponent(d.objectPropClassUri), "_blank");
                     });
 
@@ -605,7 +605,7 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
                                 return D3.Text.calcFontSize(classNodeLabel, mainClassSize)
                             })
                             .text(classNodeLabel)
-                            .on("click", function (d) {
+                            .on("click", function () {
                                 $window.open("resource?uri=" + encodeURIComponent(selectedRdfUri), "_blank");
                             });
                     });
@@ -919,33 +919,28 @@ function domainRangeGraphDirective($rootScope, $window, $repositories, GraphData
 
         let isDragged = false;
 
-        function dragStart() {
-            const event = d3.event;
-
+        function dragStart(event, d) {
             force.stop();
-            event.subject.fx = event.x;
-            event.subject.fy = event.y;
+            d.fx = event.x;
+            d.fy = event.y;
             d3.select(this).classed("selected", true);
 
         }
 
         // Update the subject (dragged node) position during drag.
-        function dragged() {
+        function dragged(event, d) {
             isDragged = true;
 
             force.alphaTarget(0).restart();
-            const event = d3.event;
-            event.subject.fx = event.x;
-            event.subject.fy = event.y;
+            d.fx = event.x;
+            d.fy = event.y;
         }
 
         // Restore the target alpha so the simulation cools after dragging ends.
         // Unfix the subject position now that it’s no longer being dragged.
-        function dragEnd() {
-            const event = d3.event;
-
-            event.subject.fx = null;
-            event.subject.fy = null;
+        function dragEnd(event, d) {
+            d.fx = null;
+            d.fy = null;
             d3.select(this).classed("selected", false);
             if (isDragged) {
                 force.alpha(0.2).restart();
