@@ -171,11 +171,11 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
             if (!tip) {
                 tip = d3tip()
                     .attr('class', 'd3-tip')
-                    .customPosition(function (d) {
+                    .customPosition(function (d, event) {
                         return {
                             top: 'inherit',
-                            bottom: ($window.innerHeight - d3.event.clientY) + 'px',
-                            right: ($window.innerWidth - d3.event.clientX) + 'px'
+                            bottom: ($window.innerHeight - event.clientY) + 'px',
+                            right: ($window.innerWidth - event.clientX) + 'px'
                         };
                     })
                     .html(function (d) {
@@ -216,13 +216,13 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                         flattenedClassData[[key]] = d;
 
                         d.circle.classed("rdf-class", true);
-                        d.circle.on('mouseover', function () {
+                        d.circle.on('mouseover', function (event) {
                             if (config.noPrefixes) {
-                                tip.show(d);
+                                tip.show(d, event);
                             } else if (!d.textHidden) {
                                 tip.hide(d);
                             } else {
-                                tip.show(d);
+                                tip.show(d, event);
                             }
                         });
                         d.circle.on('mouseout', tip.hide);
@@ -283,7 +283,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                 //do not stop event propagation here
             };
 
-            clickCancel.on("click", function (obj) {
+            clickCancel.on("click", function (event, obj) {
                 // add clicked class to browser history
                 if (obj.data.id) {
                     $window.history.pushState({id: obj.data.id}, "classHierarchyPage" + obj.data.id, "hierarchy#" + obj.data.id);
@@ -295,7 +295,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                 doFocus(obj);
             });
 
-            clickCancel.on("dblclick", function (obj) {
+            clickCancel.on("dblclick", function (event, obj) {
                 if (obj === root) {
                     return;
                 }
@@ -304,17 +304,16 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                 getCurrentClassDataAndMarkSelected(obj);
                 goToDomainRangeGraphView();
 
-                d3.event.stopPropagation();
+                event.stopPropagation();
             });
 
             var lastTimeWheel = 0;
-            svg.on('wheel', function () {
+            svg.on('wheel', function (event) {
                 // hide current d3-tip tooltip
                 tip.hide();
 
-                var e = d3.event;
-                e.preventDefault();
-                e.stopPropagation();
+                event.preventDefault();
+                event.stopPropagation();
 
                 // at least 100ms must have passed since last time we updated
                 var now = new Date().getTime();
@@ -325,13 +324,13 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                 }
 
                 var direction = '';
-                if (e.deltaY <= -1) {
+                if (event.deltaY <= -1) {
                     direction = 'in';
-                } else if (e.deltaY >= 1) {
+                } else if (event.deltaY >= 1) {
                     direction = 'out';
                 }
 
-                var obj = e.target.__data__;
+                var obj = event.target.__data__;
 
                 if (!obj) {
                     // scroll outside the big circle

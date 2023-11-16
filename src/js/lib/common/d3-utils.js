@@ -88,7 +88,7 @@ D3.Transition = function () {
 
 D3.Click = function () {
     function delayDblClick() {
-        var event = d3.dispatch('click', 'dblclick');
+        var dispatchedEvent = d3.dispatch('click', 'dblclick');
 
         function cc(selection) {
             var down,
@@ -102,30 +102,30 @@ D3.Click = function () {
             }
 
             selection.on('mousedown', function () {
-                down = d3.mouse(document.body);
+                down = d3.pointer(document.body);
                 last = +new Date();
             });
-            selection.on('mouseup', function (d) {
-                if (dist(down, d3.mouse(document.body)) > tolerance) {
+            selection.on('mouseup', function (event, d) {
+                if (dist(down, d3.pointer(document.body)) > tolerance) {
                     return;
                 } else {
                     if (wait) {
                         window.clearTimeout(wait);
                         wait = null;
-                        event.call('dblclick', d3.event, d);
+                        dispatchedEvent.call('dblclick', event, event, d);
                     } else {
                         wait = window.setTimeout((function (e) {
                             return function () {
-                                event.call('click', e, d)
+                                dispatchedEvent.call('click', e, e, d)
                                 wait = null;
                             };
-                        })(d3.event), 250);
+                        })(event), 250);
                     }
                 }
             });
         }
 
-        return rebind(cc, event, 'on');
+        return rebind(cc, dispatchedEvent, 'on');
     }
 
     // Copies a variable number of methods from source to target.

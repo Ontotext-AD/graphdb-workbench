@@ -30,7 +30,7 @@ function dependenciesChordDirective($repositories, GraphDataRestService) {
                 return;
             }
 
-            const fill = d3.scaleOrdinal(d3.schemeCategory20);
+            const fill = d3.scaleOrdinal(d3.schemeCategory10);
 
             const tooltip = d3.select("body").append("div")
                 .attr("class", "tooltip")
@@ -132,11 +132,11 @@ function dependenciesChordDirective($repositories, GraphDataRestService) {
                 d3.select(this).style("fill-opacity", ".67");
             });
 
-            chord.on("click", function (d) {
+            chord.on("click", function (event, d) {
                 const sourceClass = nodes[d.source.index];
                 const destinationClass = nodes[d.target.index];
-                const px = d3.event.pageX;
-                const py = d3.event.pageY;
+                const px = event.pageX;
+                const py = event.pageY;
 
                 GraphDataRestService.getPredicates(sourceClass, destinationClass, scope.selectedGraph && scope.selectedGraph.contextID.uri)
                     .success(function (predicatesData) {
@@ -162,7 +162,9 @@ function dependenciesChordDirective($repositories, GraphDataRestService) {
                     .style("opacity", 1);
             });
 
-            function mouseover(d, i) {
+            function mouseover() {
+                const nodes = group.nodes();
+                const i = nodes.indexOf(this);
                 chord.classed("fade", function (p) {
                     return p.source.index !== i
                         && p.target.index !== i;
