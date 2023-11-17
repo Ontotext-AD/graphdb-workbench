@@ -1,8 +1,8 @@
 import {ChartData} from "../chart-data";
 
 export class CpuLoadChart extends ChartData {
-    constructor(translateService, themeService) {
-        super(translateService, themeService, false, false);
+    constructor(translateService) {
+        super(translateService, false, false);
     }
 
     chartSetup(chartOptions) {

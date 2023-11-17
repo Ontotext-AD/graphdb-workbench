@@ -24,6 +24,7 @@ const ThemeDefinitionModel = {
         'tertiary-color-lightness': null,
         'icon-on-primary-color': null,
         'gray-color': null,
+        'gray-color-dark': null,
         'color-danger-dark': null,
         'color-success-dark': null,
         'color-warning-dark': null,
@@ -261,29 +262,6 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
         `;
     };
 
-    const getPrimaryColorAsString = () => {
-        const themeDefinition = getThemeDefinition();
-        const hue = themeDefinition.variables['primary-color-hue'];
-        const lightness = themeDefinition.variables['primary-color-lightness'];
-        const saturation = themeDefinition.variables['primary-color-saturation'];
-        return `hsl(${hue}, ${saturation}, ${lightness})`;
-    }
-
-    const getSecondaryColorAsString = () => {
-        const themeDefinition = getThemeDefinition();
-        const hue = themeDefinition.variables['secondary-color-hue'];
-        const lightness = themeDefinition.variables['secondary-color-lightness'];
-        const saturation = themeDefinition.variables['secondary-color-saturation'];
-        return `hsl(${hue}, ${saturation}, ${lightness})`;
-    }
-    const getTertiaryColorAsString = () => {
-        const themeDefinition = getThemeDefinition();
-        const hue = themeDefinition.variables['tertiary-color-hue'];
-        const lightness = themeDefinition.variables['tertiary-color-lightness'];
-        const saturation = themeDefinition.variables['tertiary-color-saturation'];
-        return `hsl(${hue}, ${saturation}, ${lightness})`;
-    }
-
     return {
         applyDarkThemeMode,
         toggleThemeMode,
@@ -291,10 +269,7 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
         getThemeDefinition,
         getTheme,
         getThemes,
-        applyTheme,
-        getPrimaryColorAsString,
-        getSecondaryColorAsString,
-        getTertiaryColorAsString
+        applyTheme
     };
 }
 

@@ -1,8 +1,8 @@
 import {ChartData} from "../chart-data";
 
 export class EpoolChart extends ChartData {
-    constructor($translate, ThemeService) {
-        super($translate, ThemeService, false, false);
+    constructor($translate) {
+        super($translate, false, false);
     }
 
     chartSetup(chartOptions) {

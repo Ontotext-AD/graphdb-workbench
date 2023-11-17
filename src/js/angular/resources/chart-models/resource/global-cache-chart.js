@@ -1,8 +1,8 @@
 import {ChartData} from '../chart-data';
 
 export class GlobalCacheChart extends ChartData {
-    constructor(translateService, themeService, filter) {
-        super(translateService, themeService, false, false, filter);
+    constructor(translateService, filter) {
+        super(translateService, false, false, filter);
     }
 
     chartSetup(chartOptions) {

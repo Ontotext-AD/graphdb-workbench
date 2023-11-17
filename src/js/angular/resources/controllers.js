@@ -22,8 +22,8 @@ const modules = [
 
 const resourcesCtrl = angular.module('graphdb.framework.jmx.resources.controllers', modules);
 
-resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRestService', '$translate', '$repositories', '$q', 'ClusterRestService', '$filter', 'ThemeService',
-    function($scope, $timeout, MonitoringRestService, $translate, $repositories, $q, ClusterRestService, $filter, ThemeService) {
+resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRestService', '$translate', '$repositories', '$q', 'ClusterRestService', '$filter',
+    function($scope, $timeout, MonitoringRestService, $translate, $repositories, $q, ClusterRestService, $filter) {
         const POLLING_INTERVAL = 2000;
         const MAX_RETRIES = 3;
 
@@ -44,11 +44,11 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
                 retries: 0
             },
             charts: {
-                cpuLoad: new CpuLoadChart($translate, ThemeService),
-                fileDescriptors: new FileDescriptorsChart($translate, ThemeService, $filter),
-                heapMemory: new HeapMemoryChart($translate, ThemeService),
-                offHeapMemory: new NonHeapMemoryChart($translate, ThemeService),
-                diskStorage: new DiskStorageChart($translate, ThemeService)
+                cpuLoad: new CpuLoadChart($translate),
+                fileDescriptors: new FileDescriptorsChart($translate, $filter),
+                heapMemory: new HeapMemoryChart($translate),
+                offHeapMemory: new NonHeapMemoryChart($translate),
+                diskStorage: new DiskStorageChart($translate)
             }
         };
         $scope.performanceMonitorData = {
@@ -58,9 +58,9 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
                 retries: 0
             },
             charts: {
-                connectionsChart: new ConnectionsChart($translate, ThemeService),
-                epoolChart: new EpoolChart($translate, ThemeService),
-                queriesChart: new QueriesChart($translate, ThemeService)
+                connectionsChart: new ConnectionsChart($translate),
+                epoolChart: new EpoolChart($translate),
+                queriesChart: new QueriesChart($translate)
             }
         };
         $scope.structuresMonitorData = {
@@ -70,7 +70,7 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
                 retries: 0
             },
             charts: {
-                globalCacheChart: new GlobalCacheChart($translate, ThemeService, $filter)
+                globalCacheChart: new GlobalCacheChart($translate, $filter)
             }
         };
         $scope.clusterHealthData = {
@@ -80,7 +80,7 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
                 retries: 0
             },
             charts: {
-                clusterHealthChart: new ClusterHealthChart($translate, ThemeService)
+                clusterHealthChart: new ClusterHealthChart($translate)
             }
         };
 

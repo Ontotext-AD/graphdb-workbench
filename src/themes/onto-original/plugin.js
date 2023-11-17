@@ -13,6 +13,7 @@ PluginRegistry.add('themes', {
         'tertiary-color-lightness': '33.5%',
         'icon-on-primary-color': 'rgba(255, 255, 255, 0.8)',
         'gray-color': '#97999C',
+        'gray-color-dark': '#575757',
         'color-danger-dark': '#bd362f',
         'color-success-dark': '#51a351',
         'color-warning-dark': '#f89406',
