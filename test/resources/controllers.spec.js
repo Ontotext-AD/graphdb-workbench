@@ -13,15 +13,19 @@ mocks.service('$repositories', function () {
 });
 
 mocks.service('ThemeService', function () {
-    this.getThemeDefinition = function () {
-        return {
+    this.getSecondaryColorAsString = () => {
+        const themeDefinition = {
             variables: {
                 "secondary-color-hue": "207.3",
                 "secondary-color-saturation": "100%",
                 "secondary-color-lightness": "19.4%",
             }
         };
-    };
+        const hue = themeDefinition.variables['secondary-color-hue'];
+        const lightness = themeDefinition.variables['secondary-color-lightness'];
+        const saturation = themeDefinition.variables['secondary-color-saturation'];
+        return `hsl(${hue}, ${saturation}, ${lightness})`;
+    }
 });
 
 beforeEach(angular.mock.module('graphdb.framework.jmx.resources.controllers', function ($provide) {
