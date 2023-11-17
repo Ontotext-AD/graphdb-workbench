@@ -1,50 +1,62 @@
 import {ChartData} from '../chart-data';
 
 export class ClusterHealthChart extends ChartData {
-    constructor(translateService) {
-        super(translateService, true, false);
+    constructor($translate, ThemeService) {
+        super($translate, ThemeService, true, false);
         this.nodesCount = 0;
-    }
-    chartSetup(chartOptions) {
-        const clusterHealthChartOptions = {
-            type: 'stackedAreaChart',
-            interpolate: 'step-after',
-            stacked: true,
-            yAxis: {
-                showMaxMin: false,
-                tickFormat: function (d) {
-                    return d;
-                },
-                tickValues: () => {
-                    return d3.range(0, this.nodesCount + 1, 1);
-                }
-            }
-        };
-        Object.assign(chartOptions.chart, clusterHealthChartOptions);
-    }
-
-    getTitle() {
-        return this.translateService.instant('resources.cluster_health.label');
     }
 
     createDataHolder() {
         const [blue, orange, green, grey] = ClusterHealthChart.COLORS;
         return [{
-            key: this.translateService.instant('resources.cluster_health.in_sync'),
+            name: this.translateService.instant('resources.cluster_health.in_sync'),
+            type: 'line',
+            stack: 'nodes',
+            showSymbol: false,
+            step: 'middle',
+            areaStyle: {},
+            lineStyle: {
+                width: 0
+            },
             color: blue,
-            values: []
-        }, {
-            key: this.translateService.instant('resources.cluster_health.syncing'),
+            data: []
+        },{
+            name: this.translateService.instant('resources.cluster_health.syncing'),
+            type: 'line',
+            stack: 'nodes',
+            showSymbol: false,
+            step: 'middle',
+
+            areaStyle: {},
+            lineStyle: {
+                width: 0
+            },
             color: green,
-            values: []
-        }, {
-            key: this.translateService.instant('resources.cluster_health.out_sync'),
+            data: []
+        },{
+            name: this.translateService.instant('resources.cluster_health.out_sync'),
+            type: 'line',
+            stack: 'nodes',
+            showSymbol: false,
+            step: 'middle',
+            areaStyle: {},
+            lineStyle: {
+                width: 0
+            },
             color: orange,
-            values: []
-        }, {
-            key: this.translateService.instant('resources.cluster_health.disconnected'),
+            data: []
+        },{
+            name: this.translateService.instant('resources.cluster_health.disconnected'),
+            type: 'line',
+            stack: 'nodes',
+            showSymbol: false,
+            step: 'middle',
+            areaStyle: {},
+            lineStyle: {
+                width: 0
+            },
             color: grey,
-            values: []
+            data: []
         }];
     }
     addNewData(dataHolder, timestamp, data) {
@@ -52,22 +64,70 @@ export class ClusterHealthChart extends ChartData {
         this.nodesCount = nodesStatus.nodesInCluster;
         const [nodesInSync, nodesSyncing, nodesOutOfSync, nodesDisconnected] = dataHolder;
 
-        nodesInSync.values.push([timestamp, nodesStatus.nodesInSync]);
-        nodesOutOfSync.values.push([timestamp, nodesStatus.nodesOutOfSync]);
-        nodesDisconnected.values.push([timestamp, nodesStatus.nodesDisconnected]);
-        nodesSyncing.values.push([timestamp, nodesStatus.nodesSyncing]);
+        this.latestData = {
+            nodesInSync: nodesStatus.nodesInCluster,
+            nodesOutOfSync: nodesStatus.nodesOutOfSync,
+            nodesDisconnected: nodesStatus.nodesDisconnected,
+            nodesSyncing: nodesStatus.nodesSyncing,
+            term: data.term,
+            failureRecoveriesCount: data.failureRecoveriesCount,
+            failedTransactionsCount: data.failedTransactionsCount
+        }
 
+        nodesInSync.data.push({
+            value: [
+                timestamp,
+                nodesStatus.nodesInSync
+            ]
+        });
+        nodesOutOfSync.data.push({
+            value: [
+                timestamp,
+                nodesStatus.nodesOutOfSync
+            ]
+        })
+        nodesDisconnected.data.push({
+            value: [
+                timestamp,
+                nodesStatus.nodesDisconnected
+            ]
+        })
+        nodesSyncing.data.push({
+            value: [
+                timestamp,
+                nodesStatus.nodesSyncing
+            ]
+        })
+
+        this.configureSubtitle();
+    }
+
+    translateLabels() {
+        const [nodesInSync, nodesSyncing, nodesOutOfSync, nodesDisconnected] = this.dataHolder;
+        nodesInSync.name = this.translateService.instant('resources.cluster_health.in_sync');
+        nodesSyncing.name = this.translateService.instant('resources.cluster_health.syncing');
+        nodesOutOfSync.name = this.translateService.instant('resources.cluster_health.out_sync');
+        nodesDisconnected.name = this.translateService.instant('resources.cluster_health.disconnected');
+        this.configureSubtitle();
+    }
+
+    updateRange(dataHolder, multiplier) {
+        this.chartOptions.yAxis.max = this.nodesCount;
+        this.chartOptions.yAxis.splitNumber = this.nodesCount;
+    }
+
+    configureSubtitle() {
         const subTitleKeyValues = [{
             label: this.translateService.instant('resource.cluster_health.leader_elections'),
-            value: data.term
+            value: this.latestData.term
         }, {
             label: this.translateService.instant('resource.cluster_health.recoveries'),
-            value: data.failureRecoveriesCount
+            value: this.latestData.failureRecoveriesCount
         }, {
             label: this.translateService.instant('resource.cluster_health.failed_transactions'),
-            value: data.failedTransactionsCount
+            value: this.latestData.failedTransactionsCount
         }];
 
-        this.setSubTitle(subTitleKeyValues);
+        this.setSubTitle(subTitleKeyValues, false);
     }
 }

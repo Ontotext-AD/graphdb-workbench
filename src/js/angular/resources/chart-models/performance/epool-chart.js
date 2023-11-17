@@ -1,83 +1,99 @@
 import {ChartData} from "../chart-data";
 
 export class EpoolChart extends ChartData {
-    constructor(translateService) {
-        super(translateService, false, false);
-    }
-    chartSetup(chartOptions) {
-        const customChartOptions = {
-            type: 'multiChart',
-            yAxis1: {
-                showMaxMin: false,
-                axisLabel: this.translateService.instant('resource.epool.reads'),
-                axisLabelDistance: -10,
-                rotateYLabel: true,
-                tickFormat: function(d) {
-                    return d;
-                },
-                tickValues: () => {
-                    return EpoolChart.getIntegerRangeForValues(this.dataHolder[0]);
-                }
-            },
-            yAxis2: {
-                showMaxMin: false,
-                axisLabel: this.translateService.instant('resource.epool.writes'),
-                axisLabelDistance: -10,
-                rotateYLabel: true,
-                tickFormat: function(d) {
-                    return d;
-                },
-                tickValues: () => {
-                    return EpoolChart.getIntegerRangeForValues(this.dataHolder[1]);
-                }
-            },
-            y1Domain: [0, 1],
-            y2Domain: [0, 1]
-        };
-        Object.assign(chartOptions.chart, customChartOptions);
+    constructor($translate, ThemeService) {
+        super($translate, ThemeService, false, false);
     }
 
-    getTitle() {
-        return this.translateService.instant('resource.epool.label');
+    chartSetup(chartOptions) {
+        const epoolChartOptions = {
+            grid: {
+                containLabel: true,
+                left: 40
+            },
+            yAxis: [
+                {
+                    name: this.translateService.instant('resource.epool.reads'),
+                    nameLocation: 'middle',
+                    type: 'value',
+                    nameGap: 40,
+
+                },
+                {
+                    name: this.translateService.instant('resource.epool.writes'),
+                    nameLocation: 'middle',
+                    type: 'value',
+                    nameGap: 40,
+
+                }
+            ],
+        };
+        _.merge(chartOptions, epoolChartOptions);
     }
 
     createDataHolder() {
         return [{
-            key: this.translateService.instant('resource.epool.reads'),
+            name: this.translateService.instant('resource.epool.reads'),
             type: 'line',
-            yAxis: 1,
-            values: []
+            showSymbol: false,
+            smooth: true,
+            yAxisIndex: 0,
+            data: []
         }, {
-            key: this.translateService.instant('resource.epool.writes'),
+            name: this.translateService.instant('resource.epool.writes'),
             type: 'line',
-            yAxis: 2,
-            values: []
+            showSymbol: false,
+            smooth: true,
+            yAxisIndex: 1,
+            data: []
         }];
     }
+
+    translateLabels() {
+        const [readsData, writesData] = this.dataHolder;
+        readsData.name = this.translateService.instant('resource.epool.reads');
+        writesData.name = this.translateService.instant('resource.epool.writes');
+        this.chartSetup(this.chartOptions);
+    }
+
     addNewData(dataHolder, timestamp, data, isFirstLoad) {
         const performanceData = data.performanceData;
         const [readsData, writesData] = dataHolder;
+
         let readsDiff = 0;
         let writesDiff = 0;
         const currentReads = performanceData.entityPool.epoolReads;
         const currentWrites = performanceData.entityPool.epoolWrites;
 
         if (!isFirstLoad) {
-            const lastReadsEntry = readsData.values[readsData.values.length - 1][2];
-            const lastWritesEntry = writesData.values[readsData.values.length - 1][2];
-            readsDiff = currentReads - lastReadsEntry;
-            writesDiff = currentWrites - lastWritesEntry;
+            readsDiff = currentReads - this.lastestData.reads ;
+            writesDiff = currentWrites - this.lastestData.writes;
         }
 
-        readsData.values.push([timestamp, readsDiff, currentReads]);
-        writesData.values.push([timestamp, writesDiff, currentWrites]);
+        this.lastestData = {
+            reads: currentReads,
+            writes: currentWrites
+        }
+
+        readsData.data.push({
+            value: [
+                timestamp,
+                readsDiff
+            ]
+        });
+        writesData.data.push({
+            value: [
+                timestamp,
+                writesDiff
+            ]
+        });
     }
+
     updateRange(dataHolder) {
-        this.chartOptions.chart.yDomain1 = this.getAxisDomain(dataHolder[0]);
-        this.chartOptions.chart.yDomain2 = this.getAxisDomain(dataHolder[1]);
-    }
-    getAxisDomain(dataHolder) {
-        const [domainUpperBound] = EpoolChart.calculateMaxChartValueAndDivisions(dataHolder);
-        return [0, domainUpperBound];
+        dataHolder.forEach((data, i) => {
+            const [max, minInterval] = ChartData.getIntegerRangeForValues(data, this.selectedSeries)
+            this.chartOptions.yAxis[i].max = max;
+            this.chartOptions.yAxis[i].minInterval = minInterval;
+        })
     }
 }

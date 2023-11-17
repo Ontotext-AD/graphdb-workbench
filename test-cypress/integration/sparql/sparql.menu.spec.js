@@ -854,10 +854,10 @@ describe('SPARQL screen validation', () => {
             SparqlSteps.getQueryArea().should('contain', 'SELECT');
             SparqlSteps.executeQuery();
             getUpdateMessage().should('not.be.visible');
-            cy.verifyResultsMessage('Showing results from 1 to 74 of 74');
+            cy.verifyResultsMessage('Showing results from 1 to 72 of 72');
             cy.verifyResultsMessage('Query took');
 
-            verifyResultsPageLength(74);
+            verifyResultsPageLength(72);
         });
 
         it('Test saved query link', () => {

@@ -17,55 +17,65 @@ export class ChartData {
         return ['#003663', '#E84E0F', '#02A99A', '#999999'];
     }
 
-    constructor(translateService, disableRangeUpdate, disableOldDataRemoval, filter) {
+    constructor(translateService, themeService, disableRangeUpdate, disableOldDataRemoval, filter) {
+        this.secondaryColor = themeService.getSecondaryColorAsString();
         this.filter = filter;
-        this.initialChartSetup(translateService, disableRangeUpdate, disableOldDataRemoval);
-    }
-
-    initialChartSetup(translateService, disableRangeUpdate, disableOldDataRemoval, resetData = true) {
         this.disableRangeUpdate = disableRangeUpdate;
         this.disableOldDataRemoval = disableOldDataRemoval;
         this.translateService = translateService;
-        this.range = 150;
-        this.chartOptions = this.getDefaultChartOptions(translateService);
-        this.chartSetup(this.chartOptions);
-        if (resetData) {
-            this.dataHolder = this.createDataHolder();
-            this.firstLoad = true;
+        this.refreshHandlers = [];
+        this.initialChartSetup();
+    }
+
+    registerRefreshHandler(eventHandler) {
+        this.refreshHandlers.push(eventHandler);
+    }
+
+    unregisterRefreshHandler(eventHandler) {
+        const eventHandlerIndex = this.refreshHandlers.indexOf(eventHandler);
+        if (eventHandlerIndex > -1) {
+            this.refreshHandlers.splice(eventHandlerIndex, 1);
         }
     }
 
-    refresh() {
-        this.initialChartSetup(this.translateService, this.disableRangeUpdate, this.disableOldDataRemoval, false);
-        this.translateLabels(this.dataHolder);
-        this.updateRange(this.dataHolder);
+    initialChartSetup(resetData = true) {
+        this.range = 150;
+        this.chartOptions = this.getDefaultChartOptions(this.translateService);
+        if (resetData) {
+            this.dataHolder = this.createDataHolder()
+            this.chartOptions.series = this.dataHolder;
+            this.firstLoad = true;
+        }
+        this.chartSetup(this.chartOptions);
     }
 
-
-    /**
-     * Hook used to translate all labels. Default implementation translates dataHolder series keys
-     * @param dataHolder
-     */
-    translateLabels(dataHolder) {
-        this.createDataHolder().forEach((series, index) => {
-            if (dataHolder[index].originalKey) {
-                dataHolder[index].originalKey = series.key;
-            } else {
-                dataHolder[index].key = series.key;
-            }
-        });
+    refresh(dataOnly = false) {
+        if (!dataOnly) {
+            this.chartSetup(this.chartOptions);
+            this.updateRange(this.dataHolder);
+        }
+        this.refreshHandlers.forEach((handler) => handler(this.chartOptions));
     }
 
-    setSubTitle(keyValues) {
-        this.chartOptions.title.enable = true;
-        const subTitleElements = keyValues.map((keyValue) => {
+    setSubTitle(keyValues, splitAtThird = true) {
+        this.chartOptions.title.show = true;
+        let subTitleText = '';
+        keyValues.forEach((keyValue, i) => {
             if (Array.isArray(keyValue.value) && !keyValue.value.length) {
                 return;
             }
             const values = Array.isArray(keyValue.value) ? keyValue.value.join('/') : keyValue.value;
-            return keyValue.label + (values !== undefined ? `<span class="data-value">${values}</span>` : '');
+            subTitleText += `{a|${keyValue.label}}`
+            if (values !== undefined) {
+                subTitleText += `{b|${values}}`
+            }
+            if (splitAtThird && i === 1) {
+                subTitleText += '\n';
+            } else {
+                subTitleText += ' ';
+            }
         });
-        this.chartOptions.title.html = subTitleElements.map((subTitleElement) => `<span class="info-element">${subTitleElement}</span>`);
+        this.chartOptions.title.text = subTitleText;
     }
 
     /**
@@ -95,6 +105,7 @@ export class ChartData {
         if (this.firstLoad) {
             this.firstLoad = false;
         }
+        this.refresh(true);
     }
 
     /**
@@ -106,8 +117,8 @@ export class ChartData {
         if (this.disableOldDataRemoval) {
             return;
         }
-        if (dataHolder[0].values.length > range) {
-            dataHolder.forEach((data) => data.values.shift());
+        if (dataHolder[0].data.length > range) {
+            dataHolder.forEach((data) => data.data.shift());
         }
     }
 
@@ -122,6 +133,10 @@ export class ChartData {
     addNewData(dataHolder, timestamp, data, isFirstLoad) {
     }
 
+    setSelectedSeries(selectedSeries) {
+        this.selectedSeries = selectedSeries;
+    }
+
     /**
      * Updates the chart axis range, based on maximum value in data holder
      * @param dataHolder
@@ -131,57 +146,89 @@ export class ChartData {
         if (this.disableRangeUpdate) {
             return;
         }
-        const [domainUpperBound] = ChartData.calculateMaxChartValueAndDivisions(dataHolder, multiplier);
-        this.chartOptions.chart.yDomain = [0, domainUpperBound];
+        const [domainUpperBound] = ChartData.calculateMaxChartValueAndDivisions(dataHolder, multiplier, this.selectedSeries);
+        this.chartOptions.yAxis.max = domainUpperBound;
     }
 
     isFirstLoad() {
         return this.firstLoad;
     }
 
-    getDefaultChartOptions(translateService) {
+    getDefaultChartOptions() {
         return {
-            chart: {
-                interpolate: 'monotone',
-                type: 'lineChart',
-                height: 500,
-                margin: {
-                    left: 80,
-                    right: 80
-                },
-                x: function (d) {
-                    return d[0];
-                },
-                y: function (d) {
-                    return d[1];
-                },
-                clipEdge: true,
-                noData: translateService.instant('resource.no_data'),
-                showControls: false,
-                duration: 0,
-                rightAlignYAxis: false,
-                useInteractiveGuideline: true,
-                xAxis: {
-                    showMaxMin: false,
-                    tickFormat: function (d) {
-                        return d3.time.format('%X')(new Date(d));
-                    }
-                },
-                yAxis: {
-                    showMaxMin: false,
-                    tickFormat: function (d) {
-                        return d;
-                    }
-                },
-                legend: {
-                    maxKeyLength: 100
-                },
-                color: ChartData.COLORS
-            },
             title: {
-                enable: true,
-                className: 'chart-additional-info',
-                html: ' '
+                show: false,
+                text: '',
+                right: '10%',
+                textStyle: {
+                    overflow: 'breakAll',
+                    rich: {
+                        lineHeight: 24,
+                        overflow: 'breakAll',
+                        a: {
+                            align: 'right;',
+                            fontWeight: 400,
+                            fontSize: 14
+                        },
+                        b: {
+                            color: this.secondaryColor,
+                            fontSize: 14,
+                            fontWeight: 400
+                        },
+                    }
+                }
+            },
+            animation: false,
+            color: ChartData.COLORS,
+            legend: {
+                right: '15%',
+                top: '6%',
+                textStyle: {
+                    overflow: 'truncate',
+                },
+                tooltip: {
+                    show: true
+                },
+                icon: 'circle'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    animation: false,
+                    label: {
+                        formatter: function (params) {
+                            return new Date(params.value).toLocaleTimeString();
+                        },
+                    }
+                }
+            },
+            grid: {
+                containLabel: true,
+                left: 40
+            },
+            xAxis: {
+                type: 'time',
+                splitLine: {
+                    show: true
+                },
+                axisLabel: {
+                    hideOverlap: true,
+                    padding: 8,
+                    formatter: function (value) {
+                        return new Date(value).toLocaleTimeString();
+                    }
+                }
+            },
+            yAxis: {
+                type: 'value',
+                splitLine: {
+                    show: true
+                },
+                axisTick: {
+                    lineStyle: {
+                        type: 'solid'
+                    }
+                }
             }
         };
     }
@@ -189,10 +236,13 @@ export class ChartData {
     /**
      * Returns the maximum value in data holder
      * @param dataHolder
+     * @param selectedSeries
      * @return {number}
      */
-    static getMaxValueFromDataHolder(dataHolder) {
-        return Math.max(...dataHolder.filter((data) => !data.disabled).flatMap((data) => ChartData.getMaxValueForDataSeries(data)));
+    static getMaxValueFromDataHolder(dataHolder, selectedSeries) {
+        return Math.max(...dataHolder.filter((data) => {
+            return !selectedSeries || (angular.isUndefined(selectedSeries[data.name]) || selectedSeries[data.name] === true);
+        }).map((data) => ChartData.getMaxValueForDataSeries(data)));
     }
 
     /**
@@ -201,44 +251,45 @@ export class ChartData {
      * @return {number}
      */
     static getMaxValueForDataSeries(dataSeries) {
-        return Math.max(...dataSeries.values.map((data) => data[1]));
+        return Math.max(...dataSeries.data.map((data) => data.value[1]));
     }
 
     /**
      * Calculated maximum value for chart axis and divisions width
      * @param dataHolder
      * @param multiplier
+     * @param selectedSeries
      * @return {(number|number)[]}
      */
-    static calculateMaxChartValueAndDivisions(dataHolder, multiplier) {
+    static calculateMaxChartValueAndDivisions(dataHolder, multiplier, selectedSeries) {
         let maxDataValue;
 
         if (Array.isArray(dataHolder)) {
-            maxDataValue = ChartData.getMaxValueFromDataHolder(dataHolder);
+            maxDataValue = ChartData.getMaxValueFromDataHolder(dataHolder, selectedSeries);
         } else {
             maxDataValue = ChartData.getMaxValueForDataSeries(dataHolder);
         }
-
-        const maxChartValue = Math.round(maxDataValue * (multiplier || ChartData.DEFAULT_MULTIPLIER)) || 1;
+        const maxChartValue = Math.ceil(maxDataValue * (multiplier || ChartData.DEFAULT_MULTIPLIER)) || 1;
         const div = Math.ceil(maxChartValue / ChartData.MAXIMUM_DIVISIONS);
         return [maxChartValue, div];
     }
 
     /**
-     * Returnes a D3 range for chart axis based on maximum value and divisions width
+     * Returns a D3 range for chart axis based on maximum value and divisions width
      * @param dataHolder
      * @param multiplier
+     * @param selectedSeries
      * @return {*}
      */
-    static getIntegerRangeForValues(dataHolder, multiplier) {
-        const [maxChartValue, divisions] = ChartData.calculateMaxChartValueAndDivisions(dataHolder, multiplier);
-        return d3.range(0, maxChartValue + 1, divisions);
+    static getIntegerRangeForValues(dataHolder, multiplier, selectedSeries) {
+        const [maxChartValue, divisions] = ChartData.calculateMaxChartValueAndDivisions(dataHolder, multiplier, selectedSeries);
+        return [maxChartValue, divisions];
     }
 
-    static formatBytesValue(value, dataHolder) {
+    static formatBytesValue(value, dataHolder, selectedSeries) {
         let maxChartValue = value;
         if (dataHolder) {
-            maxChartValue = Math.max(...dataHolder.filter((data)=> !data.disabled).flatMap((data) => data.values).flatMap((data) => data[1]));
+            maxChartValue = ChartData.getMaxValueFromDataHolder(dataHolder, selectedSeries)
         }
 
         const k = 1024;
@@ -250,7 +301,7 @@ export class ChartData {
     }
 
     formatNumber(value) {
-        if (!value || !this.filter) {
+        if (angular.isUndefined(value) || !this.filter) {
             return;
         }
         // This may look strange, but I made it like this for consistency. When/if fixing it will be easier to find.

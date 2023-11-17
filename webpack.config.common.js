@@ -88,10 +88,6 @@ module.exports = {
                 to: 'font/font-awesome/4.3.0/fonts'
             },
             {
-                from: 'src/js/lib/nvd3/nv.d3.css',
-                to: 'js/lib/nvd3/nv.d3.css'
-            },
-            {
                 from: 'src/css',
                 to: 'css'
             },
@@ -200,6 +196,15 @@ module.exports = {
                     {
                         loader: 'expose-loader',
                         options: '$'
+                    }
+                ]
+            },
+            {
+                test: /d3.js/,
+                use: [
+                    {
+                        loader: 'expose-loader',
+                        options: 'd3'
                     }
                 ]
             },
