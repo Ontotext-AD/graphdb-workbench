@@ -170,7 +170,7 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
 
     /**
      * Gets a theme definition. If there is a saved theme, then theme definition with that name loaded from
-     * PluginRegistry and returned. Otherwise the default theme definition is returned.
+     * PluginRegistry and returned. Otherwise, the default theme definition is returned.
      * @return {ThemeDefinitionModel}
      */
     const getThemeDefinition = () => {
@@ -187,7 +187,7 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
      * @param {ThemeDefinitionModel} themeDefinition
      * @return {CSSStyleSheet}
      */
-    const buildStylheet = (themeDefinition) => {
+    const buildStylesheet = (themeDefinition) => {
         const stylesheetContent = themeTag(themeDefinition);
         const stylesheet = new CSSStyleSheet();
         stylesheet.title = themeDefinition.name;
@@ -202,7 +202,7 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
      */
     const applyTheme = (themeName) => {
       const themeDefinition = getThemeDefinitionByName(themeName);
-      const stylesheet = buildStylheet(themeDefinition);
+      const stylesheet = buildStylesheet(themeDefinition);
       document.adoptedStyleSheets = [stylesheet];
     };
 

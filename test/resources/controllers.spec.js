@@ -3,29 +3,11 @@ import 'angular/core/services/repositories.service';
 import "angular/resources/controllers";
 import {bundle} from "../test-main";
 
-const mocks = angular.module('MocksForResourceMonitor', [
-    'graphdb.framework.utils.workbenchsettingsstorageservice',
-    'graphdb.framework.core.services.theme-service']);
+const mocks = angular.module('MocksForResourceMonitor', ['graphdb.framework.utils.workbenchsettingsstorageservice']);
 mocks.service('$repositories', function () {
     this.getActiveRepository = function () {
         return 'activeRepository';
     };
-});
-
-mocks.service('ThemeService', function () {
-    this.getSecondaryColorAsString = () => {
-        const themeDefinition = {
-            variables: {
-                "secondary-color-hue": "207.3",
-                "secondary-color-saturation": "100%",
-                "secondary-color-lightness": "19.4%",
-            }
-        };
-        const hue = themeDefinition.variables['secondary-color-hue'];
-        const lightness = themeDefinition.variables['secondary-color-lightness'];
-        const saturation = themeDefinition.variables['secondary-color-saturation'];
-        return `hsl(${hue}, ${saturation}, ${lightness})`;
-    }
 });
 
 beforeEach(angular.mock.module('graphdb.framework.jmx.resources.controllers', function ($provide) {
@@ -43,12 +25,11 @@ describe('=> ResourcesCtrl tests', function () {
         MonitoringRestService,
         $jwtAuth,
         httpGetResourcesData,
-        ThemeService;
-        let $translate;
+        $translate;
 
     beforeEach(angular.mock.module('MocksForResourceMonitor'));
 
-    beforeEach(angular.mock.inject(function (_$httpBackend_, _$repositories_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, _$translate_, _MonitoringRestService_, _$jwtAuth_, _ThemeService_) {
+    beforeEach(angular.mock.inject(function (_$httpBackend_, _$repositories_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, _$translate_, _MonitoringRestService_, _$jwtAuth_) {
 
         $httpBackend = _$httpBackend_;
         $controller = _$controller_;
@@ -57,7 +38,6 @@ describe('=> ResourcesCtrl tests', function () {
         $translate = _$translate_;
         MonitoringRestService = _MonitoringRestService_;
         $jwtAuth = _$jwtAuth_;
-        ThemeService = _ThemeService_;
 
         $translate.instant = function (key, modification) {
             if (modification) {
@@ -158,7 +138,7 @@ describe('=> ResourcesCtrl tests', function () {
         });
 
         $scope = $rootScope.$new();
-        $controller('ResourcesCtrl', {$scope: $scope, $timeout, MonitoringRestService, $translate, $repositories, $jwtAuth, ThemeService});
+        $controller('ResourcesCtrl', {$scope: $scope, $timeout, MonitoringRestService, $translate, $repositories, $jwtAuth});
 
         jasmine.clock().install();
     }));
@@ -220,24 +200,26 @@ describe('=> ResourcesCtrl tests', function () {
             })])
             expect($scope.resourceMonitorData.charts.fileDescriptors.dataHolder).toEqual([joc({
                 name: "Open file descriptors",
-                areaStyle: {},
+                areaStyle: {
+                    opacity: 0.5
+                },
                 data: [{value: [today, 550]}]
             })])
             expect($scope.resourceMonitorData.charts.heapMemory.dataHolder).toEqual([joc({
                 name: "Committed memory",
                 data: [{value: [today, 703594496]}]
-            }), joc({name: 'Used memory', areaStyle: {}, data: [{value: [today, 212264560]}]})])
+            }), joc({name: 'Used memory', areaStyle: {opacity: 0.5}, data: [{value: [today, 212264560]}]})])
             expect($scope.resourceMonitorData.charts.offHeapMemory.dataHolder).toEqual([joc({
                 name: "Committed memory",
                 data: [{value: [today, 124477440]}]
-            }), joc({name: 'Used memory', areaStyle: {}, data: [{value: [today, 122066392]}]})])
+            }), joc({name: 'Used memory', areaStyle: {opacity: 0.5}, data: [{value: [today, 122066392]}]})])
             expect($scope.resourceMonitorData.charts.diskStorage.dataHolder).toEqual([joc({
                 name: "Used",
-                color: '#E84E0F',
+                color: '',
                 data: [0.9574564407462561, 0.9574564407462561, 0.9574564407462561]
             }), joc({
                 name: 'Free',
-                color: '#003663',
+                color: '',
                 data: [0.042543559253743896, 0.042543559253743896, 0.042543559253743896]
             })])
             $timeout.flush(2000);
@@ -248,24 +230,24 @@ describe('=> ResourcesCtrl tests', function () {
             })])
             expect($scope.resourceMonitorData.charts.fileDescriptors.dataHolder).toEqual([joc({
                 name: "Open file descriptors",
-                areaStyle: {},
+                areaStyle: {opacity: 0.5},
                 data: [{value: [today, 550]}, {value: [today, 550]}]
             })])
             expect($scope.resourceMonitorData.charts.heapMemory.dataHolder).toEqual([joc({
                 name: "Committed memory",
                 data: [{value: [today, 703594496]}, {value: [today, 703594496]}]
-            }), joc({name: 'Used memory', areaStyle: {}, data: [{value: [today, 212264560]}, {value: [today, 212264560]}]})])
+            }), joc({name: 'Used memory', areaStyle: {opacity: 0.5}, data: [{value: [today, 212264560]}, {value: [today, 212264560]}]})])
             expect($scope.resourceMonitorData.charts.offHeapMemory.dataHolder).toEqual([joc({
                 name: "Committed memory",
                 data: [{value: [today, 124477440]}, {value: [today, 124477440]}]
-            }), joc({name: 'Used memory', areaStyle: {}, data: [{value: [today, 122066392]}, {value: [today, 122066392]}]})])
+            }), joc({name: 'Used memory', areaStyle: {opacity: 0.5}, data: [{value: [today, 122066392]}, {value: [today, 122066392]}]})])
             expect($scope.resourceMonitorData.charts.diskStorage.dataHolder).toEqual([joc({
                 name: "Used",
-                color: '#E84E0F',
+                color: '',
                 data: [0.9574564407462561, 0.9574564407462561, 0.9574564407462561, 0.9574564407462561, 0.9574564407462561, 0.9574564407462561]
             }), joc({
                 name: 'Free',
-                color: '#003663',
+                color: '',
                 data: [0.042543559253743896, 0.042543559253743896, 0.042543559253743896, 0.042543559253743896, 0.042543559253743896, 0.042543559253743896]
             })])
         });
@@ -363,19 +345,19 @@ describe('=> ResourcesCtrl tests', function () {
 
             $httpBackend.flush();
             expect($scope.clusterHealthData.charts.clusterHealthChart.dataHolder).toEqual([
-                joc({name: 'In sync', color: '#003663', data: [{value: [today, 3]}]}),
-                joc({name: 'Syncing', color: '#02A99A', data: [{value: [today, 0]}]}),
-                joc({name: 'Out of sync', color: '#E84E0F', data: [{value: [today, 0]}]}),
-                joc({name: 'Disconnected', color: '#999999', data: [{value: [today, 0]}]})
+                joc({name: 'In sync', data: [{value: [today, 3]}]}),
+                joc({name: 'Syncing', data: [{value: [today, 0]}]}),
+                joc({name: 'Out of sync', data: [{value: [today, 0]}]}),
+                joc({name: 'Disconnected', data: [{value: [today, 0]}]})
             ]);
             $timeout.flush(2001);
             $httpBackend.flush();
 
             expect($scope.clusterHealthData.charts.clusterHealthChart.dataHolder).toEqual([
-                joc({name: 'In sync', color: '#003663', data: [{value: [today, 3]}, {value: [today, 3]}]}),
-                joc({name: 'Syncing', color: '#02A99A', data: [{value: [today, 0]}, {value: [today, 0]}]}),
-                joc({name: 'Out of sync', color: '#E84E0F', data: [{value: [today, 0]}, {value: [today, 0]}]}),
-                joc({name: 'Disconnected', color: '#999999', data: [{value: [today, 0]}, {value: [today, 0]}]})
+                joc({name: 'In sync', data: [{value: [today, 3]}, {value: [today, 3]}]}),
+                joc({name: 'Syncing', data: [{value: [today, 0]}, {value: [today, 0]}]}),
+                joc({name: 'Out of sync', data: [{value: [today, 0]}, {value: [today, 0]}]}),
+                joc({name: 'Disconnected', data: [{value: [today, 0]}, {value: [today, 0]}]})
             ]);
         });
 

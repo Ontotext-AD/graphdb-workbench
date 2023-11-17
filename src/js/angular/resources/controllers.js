@@ -107,7 +107,7 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
         const getQueryMonitor = function() {
             const activeRepository = $scope.getActiveRepository();
             if (!activeRepository) {
-                return Promise.resolve();
+                return Promise.resolve({});
             }
             return $q.all([getPerformanceMonitorData(activeRepository), getActiveQueryMonitor(activeRepository)])
                 .then((response) => {
@@ -130,7 +130,7 @@ resourcesCtrl.controller('ResourcesCtrl', ['$scope', '$timeout', 'MonitoringRest
         const getStructuresMonitorData = function() {
             const activeRepository = $scope.getActiveRepository();
             if (!activeRepository) {
-                return Promise.resolve();
+                return Promise.resolve({});
             }
 
             return MonitoringRestService.monitorStructures(activeRepository);
