@@ -5,6 +5,8 @@
             "delete_cluster_tooltip": "Delete existing cluster",
             "add_nodes_btn": "Add nodes",
             "add_nodes_btn_tooltip": "Add nodes to existing cluster",
+            "replace_nodes_btn": "Replace nodes",
+            "replace_nodes_btn_tooltip": "Replace nodes in cluster",
             "remove_nodes_btn": "Remove nodes",
             "remove_nodes_btn_tooltip": "Remove nodes from existing cluster",
             "edit_cluster": "Edit configuration",
@@ -68,6 +70,7 @@
             "edit_page_title": "Edit cluster configuration",
             "creating_cluster_loader": "Creating cluster...",
             "add_nodes_loader": "Adding nodes to cluster...",
+            "replace_nodes_loader": "Replacing nodes in cluster...",
             "remove_nodes_loader": "Removing nodes from cluster...",
             "updating_cluster_loader": "Updating cluster...",
             "cluster_nodes_list": "Cluster nodes list",
@@ -82,6 +85,7 @@
                 "only_positive_integers": "Enter only positive integers",
                 "small_transaction_log_max_size": "Transaction log maximum size must be at least 1 GB or a negative number",
                 "at_least_two_nodes": "Must have at least two nodes",
+                "cant_replace_majority_of_nodes": "Can't replace majority of cluster nodes",
                 "no_rpc_address": "Error retrieving RPC address: {{error}}",
                 "nodes_status_label": "Nodes status",
                 "preconditions_failed": {
@@ -102,6 +106,8 @@
                 "form_invalid": "The form data is invalid",
                 "add_nodes_success": "Nodes added successfully",
                 "add_nodes_fail": "Adding nodes failed",
+                "replace_nodes_success": "Nodes replaced successfully",
+                "replace_nodes_fail": "Replacing nodes failed",
                 "remove_nodes_success": "Nodes removed successfully",
                 "remove_nodes_fail": "Removing nodes failed"
             }
@@ -117,6 +123,10 @@
                 "success_delete_partial": "Not all nodes were deleted",
                 "fail_delete": "Can not delete cluster"
             }
+        },
+        "replace_nodes_dialog": {
+            "title": "Replace nodes in cluster",
+            "nodes_to_replace_label": "Replacement nodes list"
         },
         "add_nodes_dialog": {
             "title": "Add nodes to cluster",

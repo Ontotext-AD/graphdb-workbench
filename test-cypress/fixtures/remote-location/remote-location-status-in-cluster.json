@@ -1,0 +1,13 @@
+{
+    "uri": "",
+    "label": "Local",
+    "username": null,
+    "password": null,
+    "authType": null,
+    "active": true,
+    "local": true,
+    "system": true,
+    "errorMsg": null,
+    "defaultRepository": null,
+    "isInCluster": true
+}
