@@ -1,8 +1,8 @@
 import {ChartData} from "../chart-data";
 
 export class ConnectionsChart extends ChartData {
-    constructor($translate, ThemeService) {
-        super($translate, ThemeService, false, false);
+    constructor($translate) {
+        super($translate, false, false);
     }
 
     createDataHolder() {

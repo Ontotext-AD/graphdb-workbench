@@ -1,8 +1,8 @@
 import {ChartData} from '../chart-data';
 
 export class ClusterHealthChart extends ChartData {
-    constructor($translate, ThemeService) {
-        super($translate, ThemeService, true, false);
+    constructor($translate) {
+        super($translate, true, false);
         this.nodesCount = 0;
     }
 
@@ -128,6 +128,6 @@ export class ClusterHealthChart extends ChartData {
             value: this.latestData.failedTransactionsCount
         }];
 
-        this.setSubTitle(subTitleKeyValues, false);
+        this.setSubTitle(subTitleKeyValues);
     }
 }

@@ -1,8 +1,8 @@
 import {ChartData} from "../chart-data";
 
 export class HeapMemoryChart extends ChartData {
-    constructor(translateService, themeService) {
-        super(translateService, themeService, false, false);
+    constructor(translateService) {
+        super(translateService, false, false);
     }
 
     chartSetup(chartOptions) {
@@ -34,7 +34,9 @@ export class HeapMemoryChart extends ChartData {
         }, {
             name: this.translateService.instant('resource.memory.used'),
             type: 'line',
-            areaStyle: {},
+            areaStyle: {
+                opacity: ChartData.AREA_BAR_OPACITY
+            },
             showSymbol: false,
             smooth: true,
             data: []

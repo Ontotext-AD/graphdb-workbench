@@ -1,8 +1,8 @@
 import {ChartData} from "../chart-data";
 
 export class DiskStorageChart extends ChartData {
-    constructor($translate, ThemeService) {
-        super($translate, ThemeService, true, true);
+    constructor($translate) {
+        super($translate, true, true);
     }
 
     chartSetup(chartOptions) {
@@ -15,7 +15,7 @@ export class DiskStorageChart extends ChartData {
                     label: null
                 },
                 valueFormatter: function (value) {
-                    return (value * 100).toFixed(2) + '%'
+                    return (value * 100).toFixed(2) + '%';
                 }
             },
             xAxis: {
@@ -25,7 +25,7 @@ export class DiskStorageChart extends ChartData {
                 splitNumber: 2,
                 axisLabel: {
                     formatter: function (value) {
-                        return (value * 100).toFixed(2) + '%'
+                        return (value * 100).toFixed(2) + '%';
                     }
                 }
             },
@@ -33,49 +33,64 @@ export class DiskStorageChart extends ChartData {
                 type: 'category',
                 data: [this.translateService.instant('resource.storage.logs'),
                     this.translateService.instant('resource.storage.work'),
-                    this.translateService.instant('resource.storage.data')],
+                    this.translateService.instant('resource.storage.data')]
             },
-        }
+            legend: {
+                itemStyle: {
+                    // Keeps the colors in the legend solid
+                    opacity: 1
+                }
+            }
+        };
         _.merge(chartOptions, diskStorageChart);
     }
 
     createDataHolder() {
-        return [{
-            name: this.translateService.instant('resource.storage.used'),
+        return [
+            this.createDataHolderForItem('resource.storage.used', ChartData.COLORS[1]),
+            this.createDataHolderForItem('resource.storage.free', ChartData.COLORS[0])
+        ];
+    }
+
+    /**
+     * Creates an item for the data holder.
+     * @param {string} translationKey the translation key of the item
+     * @param {string} color the color of the item
+     * @return {object} the item data object
+     */
+    createDataHolderForItem(translationKey, color) {
+        return {
+            name: this.translateService.instant(translationKey),
             type: 'bar',
             stack: true,
             showSymbol: false,
             smooth: true,
             barCategoryGap: '10%',
-            emphasis: {
-                focus: 'series',
+            color: color,
+            itemStyle: {
+                // Semi-transparent color of the bar
+                opacity: ChartData.AREA_BAR_OPACITY
             },
             label: {
                 show: true,
+                color: 'black',
+                opacity: 1,
                 formatter: function ({value}) {
-                    return (value * 100).toFixed(2) + '%'
-                }
-            },
-            color: ChartData.COLORS[1],
-            data: []
-        }, {
-            name: this.translateService.instant('resource.storage.free'),
-            type: 'bar',
-            stack: true,
-            showSymbol: false,
-            smooth: true,
-            label: {
-                show: true,
-                formatter: function ({value}) {
-                    return (value * 100).toFixed(2) + '%'
+                    return (value * 100).toFixed(2) + '%';
                 }
             },
             emphasis: {
-                focus: 'series'
+                // Solid color of the bar and white text on hover (emphasis)
+                itemStyle: {
+                    color: color,
+                    opacity: 1
+                },
+                label: {
+                    color: 'white'
+                }
             },
-            color: ChartData.COLORS[0],
             data: []
-        }];
+        };
     }
 
     translateLabels() {

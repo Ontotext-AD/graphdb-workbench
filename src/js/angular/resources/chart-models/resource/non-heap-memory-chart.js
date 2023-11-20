@@ -1,8 +1,8 @@
 import {HeapMemoryChart} from "./heap-memory-chart";
 
 export class NonHeapMemoryChart extends HeapMemoryChart {
-    constructor(translateService, themeService) {
-        super(translateService, themeService, false, false);
+    constructor(translateService) {
+        super(translateService, false, false);
     }
 
     parseData(data) {

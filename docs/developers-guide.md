@@ -222,6 +222,7 @@ PluginRegistry.add('themes', {
         // A color used for the font/svg icons when placed on a primary color background.
         'icon-on-primary-color': 'rgba(255, 255, 255, 0.8)',
         'gray-color': '#97999C',
+        'gray-color-dark': '#575757',
         // Colors for the toastr notifications, the tag-xxx and the text-xxx classes in any of their four states
         // (i.e. dark colored things)
         'color-danger-dark': 'hsl(353, 78%, 36%)',

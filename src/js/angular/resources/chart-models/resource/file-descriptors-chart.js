@@ -1,8 +1,8 @@
 import {ChartData} from "../chart-data";
 
 export class FileDescriptorsChart extends ChartData {
-    constructor(translateService, themeService, filter) {
-        super(translateService, themeService, false, false, filter);
+    constructor(translateService, filter) {
+        super(translateService, false, false, filter);
     }
 
     chartSetup(chartOptions) {
@@ -28,7 +28,9 @@ export class FileDescriptorsChart extends ChartData {
         return [{
             name: this.translateService.instant('resource.system.file_descriptors.open'),
             type: 'line',
-            areaStyle: {},
+            areaStyle: {
+                opacity: ChartData.AREA_BAR_OPACITY
+            },
             showSymbol: false,
             smooth: true,
             color: ChartData.COLORS[1],

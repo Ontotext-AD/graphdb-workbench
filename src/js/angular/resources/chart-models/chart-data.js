@@ -1,3 +1,5 @@
+import * as echarts from "echarts";
+
 export class ChartData {
     /**
      * Defines the default multiplier for chart overhead. The space above the maximum value.
@@ -14,11 +16,29 @@ export class ChartData {
     }
 
     static get COLORS() {
-        return ['#003663', '#E84E0F', '#02A99A', '#999999'];
+        // Using the variables, e.g. 'var(--primary-color)' directly confuses some echarts color calculations
+        return [
+            ChartData.cssVar('--secondary-color'),
+            ChartData.cssVar('--primary-color'),
+            ChartData.cssVar('--tertiary-color'),
+            ChartData.cssVar('--gray-color')
+        ];
     }
 
-    constructor(translateService, themeService, disableRangeUpdate, disableOldDataRemoval, filter) {
-        this.secondaryColor = themeService.getSecondaryColorAsString();
+    static get AREA_BAR_OPACITY() {
+        return 0.5;
+    }
+
+    /**
+     * Retrieve the value of a CSS variable.
+     * @param varName variable name, including the -- prefix
+     * @returns {string} current value of the variable
+     */
+    static cssVar(varName) {
+        return getComputedStyle(document.documentElement).getPropertyValue(varName);
+    }
+
+    constructor(translateService, disableRangeUpdate, disableOldDataRemoval, filter) {
         this.filter = filter;
         this.disableRangeUpdate = disableRangeUpdate;
         this.disableOldDataRemoval = disableOldDataRemoval;
@@ -57,7 +77,12 @@ export class ChartData {
         this.refreshHandlers.forEach((handler) => handler(this.chartOptions));
     }
 
-    setSubTitle(keyValues, splitAtThird = true) {
+    /**
+     * Sets the subtitle from a list of items that have a label and a value.
+     * @param keyValues the values to set
+     * @param itemsPerLine maximum items per line, 0 (the default) means unlimited
+     */
+    setSubTitle(keyValues, itemsPerLine = 0) {
         this.chartOptions.title.show = true;
         let subTitleText = '';
         keyValues.forEach((keyValue, i) => {
@@ -65,14 +90,16 @@ export class ChartData {
                 return;
             }
             const values = Array.isArray(keyValue.value) ? keyValue.value.join('/') : keyValue.value;
-            subTitleText += `{a|${keyValue.label}}`
+            subTitleText += `{a|${keyValue.label}}`;
             if (values !== undefined) {
-                subTitleText += `{b|${values}}`
+                subTitleText += `{b|${values}}`;
             }
-            if (splitAtThird && i === 1) {
-                subTitleText += '\n';
-            } else {
-                subTitleText += ' ';
+            if (i + 1 < keyValues.length) {
+                if (itemsPerLine > 0 && (i + 1) % itemsPerLine === 0) {
+                    subTitleText += '\n';
+                } else {
+                    subTitleText += '{a| \u00B7 }'; // middle dot
+                }
             }
         });
         this.chartOptions.title.text = subTitleText;
@@ -159,22 +186,19 @@ export class ChartData {
             title: {
                 show: false,
                 text: '',
-                right: '10%',
+                left: 'center',
                 textStyle: {
                     overflow: 'breakAll',
                     rich: {
-                        lineHeight: 24,
-                        overflow: 'breakAll',
                         a: {
-                            align: 'right;',
                             fontWeight: 400,
                             fontSize: 14
                         },
                         b: {
-                            color: this.secondaryColor,
-                            fontSize: 14,
-                            fontWeight: 400
-                        },
+                            color: ChartData.cssVar('--secondary-color'),
+                            fontWeight: 400,
+                            fontSize: 14
+                        }
                     }
                 }
             },
@@ -184,10 +208,7 @@ export class ChartData {
                 right: '15%',
                 top: '6%',
                 textStyle: {
-                    overflow: 'truncate',
-                },
-                tooltip: {
-                    show: true
+                    overflow: 'truncate'
                 },
                 icon: 'circle'
             },
@@ -197,8 +218,8 @@ export class ChartData {
                     animation: false,
                     label: {
                         formatter: function (params) {
-                            return new Date(params.value).toLocaleTimeString();
-                        },
+                            return echarts.time.format(params.value, '{HH}:{mm}:{ss}', false);
+                        }
                     }
                 }
             },
@@ -214,8 +235,16 @@ export class ChartData {
                 axisLabel: {
                     hideOverlap: true,
                     padding: 8,
-                    formatter: function (value) {
-                        return new Date(value).toLocaleTimeString();
+                    formatter: {
+                        hour: '{bold|{HH}:{mm}}',
+                        minute: '{bold|{HH}:{mm}}',
+                        second: '{HH}:{mm}:{ss}'
+                    },
+                    color: ChartData.cssVar('--gray-color-dark'),
+                    rich: {
+                        bold: {
+                            fontWeight: 500
+                        }
                     }
                 }
             },
@@ -224,11 +253,19 @@ export class ChartData {
                 splitLine: {
                     show: true
                 },
+                axisLabel: {
+                    color: ChartData.cssVar('--gray-color-dark')
+                },
                 axisTick: {
                     lineStyle: {
                         type: 'solid'
                     }
                 }
+            },
+            textStyle: {
+                // Using the variable 'var(--main-font)' directly confuses echarts' font metrics algorithms
+                fontFamily: ChartData.cssVar('--main-font'),
+                fontWeight: 400
             }
         };
     }
