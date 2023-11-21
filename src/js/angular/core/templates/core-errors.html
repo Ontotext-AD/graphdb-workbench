@@ -13,16 +13,17 @@
                         <strong ng-if="isActiveRepoOntopType()">{{getActiveRepository()}}</strong>
                         <span ng-if="canWriteActiveRepo() && isActiveRepoOntopType()">{{'core.errors.read.only.repository.warning.msg' | translate}}</span>
                         <span ng-if="canWriteActiveRepo() && isActiveRepoFedXType()"> <strong>{{title | translate}}</strong>{{'core.errors.fedx.repository.warning.msg' | translate}}</span></div>
-                    <small>
-                        <span ng-if="getAccessibleRepositories().length && isLicenseValid()">
-                            {{'core.errors.select.repository.warning.msg' | translate}}<span ng-if="canManageRepositories()">{{'core.errors.or.create.repository.warning.msg' | translate}}</span>.
-                        </span>
+                        <small>
+                            <span ng-if="getAccessibleRepositories().length && isLicenseValid()">
+                                {{'core.errors.select.repository.warning.msg' | translate}}<span ng-if="canManageRepositories()">{{'core.errors.or.create.repository.warning.msg' | translate}}</span>.
+                            </span>
 
-                        <span ng-hide="getAccessibleRepositories().length">
-                            {{'core.errors.no.accessible.warning.msg' | translate}}<span ng-if="isRestricted">{{'core.errors.writable' | translate}}
-                        </span>{{'core.errors.repositories' | translate}}<span ng-if="canManageRepositories()">{{'core.errors.create.repository.warning.msg' | translate}}</span>.
-                        </span>
-                    </small>
+                            <span ng-hide="getAccessibleRepositories().length">
+                                <span ng-if="isRestricted">{{'core.errors.no.accessible.writable.repositories.warning.msg' | translate}}</span>
+                                <span ng-if="!isRestricted">{{'core.errors.no.accessible.repositories.warning.msg' | translate}}</span>
+                                <span ng-if="canManageRepositories()">{{'core.errors.create.repository.warning.msg' | translate}}</span>.
+                            </span>
+                        </small>
                 </div>
                 <div ng-if="!getActiveRepository()">
                     <button class="btn btn-link" ng-click="toggleShowRemoteLocations()">
