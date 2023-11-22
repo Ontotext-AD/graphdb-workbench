@@ -5,7 +5,7 @@
     <h3 class="modal-title">{{'cluster_management.replace_nodes_dialog.title' | translate}}</h3>
 </div>
 
-<div class="modal-body">
+<div class="modal-body replace-cluster-nodes-dialog">
     <div class="row">
         <div class="col-lg-6">
             <h4>{{'cluster_management.cluster_page.cluster_nodes_list' | translate}}</h4>
@@ -32,7 +32,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-6 remote-locations">
             <h4>{{'cluster_management.cluster_page.remote_locations' | translate}}</h4>
             <div class="locations-list mb-1">
                 <div class="location-item hoverable" ng-repeat="location in locations | orderBy: ['endpoint']"
@@ -58,7 +58,7 @@
     <div class="row">
         <div class="col-xs-12 mb-1 mt-1">
             <h5>{{'cluster_management.replace_nodes_dialog.nodes_to_replace_label' | translate}}</h5>
-            <ul ng-if="replacementNodes.length" class="list-group nodes-list">
+            <ul ng-if="replacementNodes.length" class="selected-remote-locations list-group nodes-list">
                 <li ng-repeat="node in replacementNodes" class="list-group-item list-group-item-action list-group-item-node">
                     <a ng-click="removeNodeFromList($index, node)"
                        class="d-flex justify-content-between align-items-center"

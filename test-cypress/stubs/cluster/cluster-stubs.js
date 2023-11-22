@@ -56,4 +56,12 @@ export class ClusterStubs extends Stubs {
             method: 'DELETE'
         }).as('delete-cluster');
     }
+
+    static stubReplaceNodes() {
+        cy.intercept('/rest/cluster/config/node', {
+            fixture: '/cluster/replace-nodes.json',
+            statusCode: 200,
+            method: 'PATCH'
+        }).as('replace-nodes');
+    }
 }

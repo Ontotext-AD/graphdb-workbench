@@ -5,6 +5,8 @@ import {CreateClusterDialogSteps} from "../../steps/cluster/create-cluster-dialo
 import {AddRemoteLocationDialogSteps} from "../../steps/cluster/add-remote-location-dialog-steps";
 import {RemoteLocationStubs} from "../../stubs/cluster/remote-location-stubs";
 import {DeleteClusterDialogSteps} from "../../steps/cluster/delete-cluster-dialog-steps";
+import {ReplaceNodesDialogSteps} from "../../steps/cluster/replace-nodes-dialog-steps";
+import {ApplicationSteps} from "../../steps/application-steps";
 
 describe('Cluster management', () => {
 
@@ -125,6 +127,54 @@ describe('Cluster management', () => {
         ClusterPageSteps.getReplaceNodesButton().should('not.exist');
         ClusterPageSteps.getPreviewClusterConfigButton().should('not.exist');
         ClusterPageSteps.getCreateClusterButton().should('have.class', 'no-cluster');
+    });
+
+    it('Should be able to replace nodes in cluster', () => {
+        // Given there is an existing cluster created
+        ClusterStubs.stubClusterConfig();
+        ClusterStubs.stubClusterGroupStatus();
+        ClusterStubs.stubClusterNodeStatus();
+        RemoteLocationStubs.stubRemoteLocationFilter();
+        RemoteLocationStubs.stubRemoteLocationStatusInCluster();
+        RemoteLocationStubs.stubGetRemoteLocations(0);
+        ClusterPageSteps.getClusterPage().should('be.visible');
+        ClusterPageSteps.getCreateClusterButton().should('not.have.class', 'no-cluster');
+        // When I click on replace nodes button
+        ClusterPageSteps.replaceNodes();
+        // Then I expect a replace nodes dialog to appear
+        ReplaceNodesDialogSteps.getDialog().should('be.visible');
+        ReplaceNodesDialogSteps.getClusterNodes().should('have.length', 3);
+        ReplaceNodesDialogSteps.getRemoteLocations().should('have.length', 0);
+        ReplaceNodesDialogSteps.getReplaceNodesButton().should('be.disabled');
+        // When I add a new remote location
+        RemoteLocationStubs.stubAddRemoteLocation();
+        RemoteLocationStubs.stubRemoteLocationCheck();
+        addRemoteLocation('http://localhost:7203', 3);
+        ClusterPageSteps.getClusterPage().should('be.visible');
+        ClusterPageSteps.getCreateClusterButton().should('not.have.class', 'no-cluster');
+        // And I select the new location as replacement node
+        ReplaceNodesDialogSteps.selectRemoteLocation(0);
+        ReplaceNodesDialogSteps.getSelectedRemoteLocations().should('have.length', 1);
+        // And I select a node from the cluster to be replaced
+        ReplaceNodesDialogSteps.selectClusterNode(2);
+        // Then I expect the replace nodes button to become enabled
+        ReplaceNodesDialogSteps.getReplaceNodesButton().should('not.be.disabled');
+        // When I click on replace nodes button
+        ClusterStubs.stubReplaceNodes();
+        ReplaceNodesDialogSteps.replaceNodes();
+        // Then I expect nodes to be replaced
+        cy.wait('@replace-nodes').then((interception) => {
+            expect(interception.request.body).to.deep.equal({
+                "addNodes": [
+                    "pc-desktop:7301\n"
+                ],
+                "removeNodes": [
+                    "pc-desktop:7302"
+                ]
+            });
+        });
+        ReplaceNodesDialogSteps.getDialog().should('not.exist');
+        ApplicationSteps.getSuccessNotifications().should('be.visible');
     });
 });
 
