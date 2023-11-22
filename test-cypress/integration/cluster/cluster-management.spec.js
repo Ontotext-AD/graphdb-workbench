@@ -15,11 +15,12 @@ describe('Cluster management', () => {
     beforeEach(() => {
         repositoryId = 'cluster-repo' + Date.now();
         GlobalOperationsStatusesStub.stubNoOperationsResponse(repositoryId);
-        // Given I have opened the cluster management page
-        ClusterPageSteps.visit();
     });
 
     it('Should be able to open a create cluster dialog', () => {
+        // Given I have opened the cluster management page
+        ClusterPageSteps.visit();
+
         ClusterStubs.stubNoClusterGroupStatus();
         ClusterStubs.stubNoClusterNodeStatus();
         ClusterStubs.stubNoClusterConfig();
@@ -50,6 +51,9 @@ describe('Cluster management', () => {
     });
 
     it('Should be able to create a cluster', () => {
+        // Given I have opened the cluster management page
+        ClusterPageSteps.visit();
+
         // When there is no cluster configured yet
         ClusterStubs.stubNoClusterGroupStatus();
         ClusterStubs.stubNoClusterNodeStatus();
@@ -100,6 +104,9 @@ describe('Cluster management', () => {
     });
 
     it('Should be able to delete cluster', () => {
+        // Given I have opened the cluster management page
+        ClusterPageSteps.visit();
+
         // Given there is an existing cluster created
         ClusterStubs.stubClusterConfig();
         ClusterStubs.stubClusterGroupStatus();
@@ -130,13 +137,16 @@ describe('Cluster management', () => {
     });
 
     it('Should be able to replace nodes in cluster', () => {
+        // Given I have opened the cluster management page
+        RemoteLocationStubs.stubGetRemoteLocations();
+        ClusterPageSteps.visit();
+
         // Given there is an existing cluster created
         ClusterStubs.stubClusterConfig();
         ClusterStubs.stubClusterGroupStatus();
         ClusterStubs.stubClusterNodeStatus();
         RemoteLocationStubs.stubRemoteLocationFilter();
         RemoteLocationStubs.stubRemoteLocationStatusInCluster();
-        RemoteLocationStubs.stubGetRemoteLocations(0);
         ClusterPageSteps.getClusterPage().should('be.visible');
         ClusterPageSteps.getCreateClusterButton().should('not.have.class', 'no-cluster');
         // When I click on replace nodes button

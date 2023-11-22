@@ -7,7 +7,7 @@ export class RemoteLocationStubs extends Stubs {
         }).as('add-remote-location');
     }
 
-    static stubGetRemoteLocations(count) {
+    static stubGetRemoteLocations(count = 'no') {
         cy.intercept('GET', '/rest/locations', {
             fixture: `/remote-location/get-${count}-remote-locations.json`,
             statusCode: 200
