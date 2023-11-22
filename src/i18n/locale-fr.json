@@ -7,6 +7,8 @@
             "add_nodes_btn_tooltip": "Ajouter des nœuds à un cluster existant",
             "remove_nodes_btn": "Supprimer les nœuds",
             "remove_nodes_btn_tooltip": "Supprimer des nœuds du cluster existant",
+            "replace_nodes_btn": "Remplacer les nœuds",
+            "replace_nodes_btn_tooltip": "Remplacer les nœuds dans le cluster",
             "edit_cluster": "Modifier la configuration",
             "edit_cluster_tooltip": "Modifier la configuration du cluster",
             "show_cluster_settings_tooltip": "Afficher la configuration du cluster"
@@ -68,6 +70,7 @@
             "edit_page_title": "Modifier le cluster",
             "creating_cluster_loader": "Création d'un cluster...",
             "add_nodes_loader": "Ajout de nœuds au cluster...",
+            "replace_nodes_loader": "Remplacement des nœuds dans le cluster...",
             "remove_nodes_loader": "Suppression des nœuds du cluster...",
             "updating_cluster_loader": "Mise à jour du cluster...",
             "cluster_nodes_list": "Liste des nœuds du cluster",
@@ -82,6 +85,7 @@
                 "only_positive_integers": "Saisissez uniquement des nombres entiers positifs",
                 "small_transaction_log_max_size": "La taille maximale du journal des transactions doit être d'au moins 1 Go ou un nombre négatif",
                 "at_least_two_nodes": "Doit avoir au moins deux nœuds",
+                "cant_replace_majority_of_nodes": "Impossible de remplacer la majorité des nœuds du cluster",
                 "no_rpc_address": "Error retrieving RPC address: {{error}}",
                 "nodes_status_label": "Statut des noeuds",
                 "preconditions_failed": {
@@ -102,6 +106,8 @@
                 "form_invalid": "Les données du formulaire ne sont pas valides",
                 "add_nodes_success": "Nœuds ajoutés avec succès",
                 "add_nodes_fail": "L'ajout de nœuds a échoué",
+                "replace_nodes_success": "Nœuds remplacés avec succès",
+                "replace_nodes_fail": "Le remplacement des nœuds a échoué",
                 "remove_nodes_success": "Nœuds supprimés avec succès",
                 "remove_nodes_fail": "La suppression des nœuds a échoué"
             }
@@ -117,6 +123,10 @@
                 "success_delete_partial": "Tous les nœuds n'ont pas été supprimés",
                 "fail_delete": "Impossible de supprimer le cluster"
             }
+        },
+        "replace_nodes_dialog": {
+            "title": "Remplacer les nœuds dans le cluster",
+            "nodes_to_replace_label": "Liste des nœuds de remplacement"
         },
         "add_nodes_dialog": {
             "title": "Ajouter des nœuds au cluster",

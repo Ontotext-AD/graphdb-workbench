@@ -5,11 +5,11 @@
     <h3 class="modal-title">{{pageTitle}}</h3>
 </div>
 
-<div class="modal-body">
+<div class="modal-body create-cluster-dialog">
     <form novalidate id="clusterConfigurationForm" name="clusterConfigurationForm">
         <div class="form-horizontal">
             <div class="container mb-1">
-                <div class="col-lg-6">
+                <div class="col-lg-6 cluster-nodes">
                     <h4>{{'cluster_management.cluster_page.cluster_nodes_list' | translate}}</h4>
                     <ul ng-if="selectedLocations && selectedLocations.length" class="list-group nodes-list">
                         <li ng-repeat="node in selectedLocations" class="list-group-item list-group-item-action" ng-class="{'list-group-item-node': !node.isLocal}">
@@ -26,7 +26,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-6 remote-locations">
                     <h4>{{'cluster_management.cluster_page.remote_locations' | translate}}</h4>
                     <div class="locations-list mb-1">
                         <div class="location-item hoverable" ng-repeat="location in locations | orderBy: ['endpoint']"
@@ -135,7 +135,7 @@
             </div>
 
             <div class="form-group">
-                <div ng-if="selectedLocations.length < 2" class="alert alert-warning mt-1">
+                <div ng-if="selectedLocations.length < 2" class="alert alert-warning mt-1 no-selected-nodes">
                     {{'cluster_management.cluster_page.select_from_locations_hint' | translate}}
                 </div>
                 <div ng-repeat="error in errors" class="cluster-properties-error alert alert-danger mt-1">
@@ -167,7 +167,7 @@
     </form>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
+    <button type="button" class="btn btn-secondary cancel-btn" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
     <button type="submit" ng-disabled="!isClusterConfigurationValid()" ng-click="ok()" form="clusterConfigurationForm"
-            class="btn btn-primary create-connector-btn">{{'cluster_management.cluster_page.create_btn' | translate}}</button>
+            class="btn btn-primary create-cluster-btn">{{'cluster_management.cluster_page.create_btn' | translate}}</button>
 </div>

@@ -1,0 +1,12 @@
+[
+    {
+        "address": "pc-desktop:7300",
+        "nodeState": "NO_CLUSTER",
+        "term": 0,
+        "syncStatus": {},
+        "lastLogTerm": 0,
+        "lastLogIndex": 0,
+        "endpoint": "http://pc-desktop:7200",
+        "recoveryStatus": {}
+    }
+]

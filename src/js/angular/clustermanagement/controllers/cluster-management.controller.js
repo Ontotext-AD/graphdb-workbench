@@ -6,6 +6,7 @@ import 'angular/clustermanagement/controllers/edit-cluster.controller';
 import 'angular/clustermanagement/controllers/delete-cluster.controller';
 import 'angular/clustermanagement/controllers/add-location.controller';
 import 'angular/clustermanagement/controllers/add-nodes.controller';
+import 'angular/clustermanagement/controllers/replace-nodes.controller';
 import {isString} from "lodash";
 
 const modules = [
@@ -20,6 +21,7 @@ const modules = [
     'graphdb.framework.clustermanagement.controllers.delete-cluster',
     'graphdb.framework.clustermanagement.controllers.add-location',
     'graphdb.framework.clustermanagement.controllers.add-nodes',
+    'graphdb.framework.clustermanagement.controllers.replace-nodes',
     'toastr',
     'pageslide-directive'
 ];
@@ -317,7 +319,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             });
     }
 
-    //Delete location
+    // Delete location
     const deleteLocation = function (location) {
         return ModalService.openSimpleModal({
             title: $translate.instant('location.confirm.detach'),
@@ -363,6 +365,46 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
                 });
         })
             .finally(() => getLocationsWithRpcAddresses());
+    };
+
+    $scope.showReplaceNodesDialog = () => {
+        const modalInstance = $uibModal.open({
+            templateUrl: 'js/angular/clustermanagement/templates/modal/replace-nodes-dialog.html',
+            controller: 'ReplaceNodesDialogCtrl',
+            size: 'lg',
+            resolve: {
+                data: function () {
+                    return {
+                        deleteLocation: deleteLocation,
+                        clusterModel: $scope.clusterModel,
+                        clusterConfiguration: $scope.clusterConfiguration
+                    };
+                }
+            }
+        });
+
+        modalInstance.result.then((nodes) => {
+            const loaderMessage = $translate.instant('cluster_management.cluster_page.replace_nodes_loader');
+            $scope.setLoader(true, loaderMessage);
+
+            const newNodesRpcAddress = nodes.newNodes.map((node) => node.rpcAddress);
+            const oldNodesRpcAddress = nodes.oldNodes.map((node) => node.rpcAddress);
+            const payload = {addNodes: newNodesRpcAddress, removeNodes: oldNodesRpcAddress};
+            ClusterRestService.replaceNodesInCluster(payload)
+                .then(() => {
+                    const successMessage = $translate.instant(
+                        'cluster_management.cluster_page.notifications.replace_nodes_success');
+                    onAddRemoveSuccess(successMessage);
+                })
+                .catch((error) => {
+                    const failMessageTitle = $translate.instant('cluster_management.cluster_page.notifications.replace_nodes_fail');
+                    handleErrors(error.data, error.status, failMessageTitle);
+                })
+                .finally(() => {
+                    $scope.setLoader(false);
+                    updateCluster(true);
+                });
+           }).finally(() => getLocationsWithRpcAddresses());
     };
 
     $scope.showRemoveNodesFromClusterDialog = () => {

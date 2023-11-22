@@ -21,8 +21,8 @@ function LocationsRestService($http) {
     };
 
     function getLocations(abortRequestPromise, filterClusterLocations) {
-        return $http.get(LOCATIONS_ENDPOINT, { params: { filterClusterLocations: filterClusterLocations} },
-                        { timeout: abortRequestPromise ? abortRequestPromise.promise : null });
+        return $http.get(LOCATIONS_ENDPOINT, {params: {filterClusterLocations: filterClusterLocations}},
+            {timeout: abortRequestPromise ? abortRequestPromise.promise : null});
     }
 
     function addLocation(data) {

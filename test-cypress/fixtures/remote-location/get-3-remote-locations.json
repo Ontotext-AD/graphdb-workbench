@@ -1,0 +1,54 @@
+[
+    {
+        "uri": "",
+        "label": "Local",
+        "username": null,
+        "password": null,
+        "authType": "none",
+        "active": true,
+        "local": true,
+        "system": true,
+        "errorMsg": null,
+        "defaultRepository": null,
+        "isInCluster": true
+    },
+    {
+        "uri": "http://localhost:7201",
+        "label": "Remote (http://localhost:7201)",
+        "username": "",
+        "password": "",
+        "authType": "signature",
+        "active": false,
+        "local": false,
+        "system": false,
+        "errorMsg": null,
+        "defaultRepository": null,
+        "isInCluster": true
+    },
+    {
+        "uri": "http://localhost:7202",
+        "label": "Remote (http://localhost:7202)",
+        "username": "",
+        "password": "",
+        "authType": "signature",
+        "active": false,
+        "local": false,
+        "system": false,
+        "errorMsg": null,
+        "defaultRepository": null,
+        "isInCluster": true
+    },
+    {
+        "uri": "http://localhost:7203",
+        "label": "Remote (http://localhost:7203)",
+        "username": "",
+        "password": "",
+        "authType": "signature",
+        "active": false,
+        "local": false,
+        "system": false,
+        "errorMsg": null,
+        "defaultRepository": null,
+        "isInCluster": false
+    }
+]

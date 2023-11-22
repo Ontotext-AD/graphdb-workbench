@@ -13,10 +13,20 @@ function ClusterRestService($http) {
         updateCluster,
         deleteCluster,
         addNodesToCluster,
+        replaceNodesInCluster,
         removeNodesFromCluster,
         getClusterStatus,
         getNodeStatus
     };
+
+    /**
+     * Invokes service to replace nodes in a running cluster.
+     * @param {{addNodes: string[], removeNodes: string[]}} payload
+     * @return {*}
+     */
+    function replaceNodesInCluster(payload) {
+        return $http.patch(`${CLUSTER_GROUP_ENDPOINT}/config/node`, payload);
+    }
 
     function getClusterConfig() {
         return $http.get(`${CLUSTER_GROUP_ENDPOINT}/config`);

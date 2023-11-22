@@ -1,0 +1,86 @@
+<div onto-loader-new ng-if="loader" class="create-cluster-loader" message="getLoaderMessage" size="75"></div>
+
+<div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()"></button>
+    <h3 class="modal-title">{{'cluster_management.replace_nodes_dialog.title' | translate}}</h3>
+</div>
+
+<div class="modal-body replace-cluster-nodes-dialog">
+    <div class="row">
+        <div class="col-lg-6">
+            <h4>{{'cluster_management.cluster_page.cluster_nodes_list' | translate}}</h4>
+            <ul ng-if="clusterNodes && clusterNodes.length" class="list-group nodes-list">
+                <li ng-repeat="node in clusterNodes"
+                    ng-class="{'list-group-item-danger': node.shouldReplace}"
+                    class="list-group-item list-group-item-action list-group-item-node">
+                    <a ng-click="toggleNode($index, node)" class="d-flex justify-content-between align-items-center">
+                        <div class="location-item">
+                            <div class="logo-image"></div>
+                            {{node.endpoint}}
+                        </div>
+                        <div ng-if="node.isLocal">
+                            {{'cluster_management.cluster_page.current_node' | translate}}
+                        </div>
+                    </a>
+                </li>
+            </ul>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div ng-if="leftNodesMajority" class="not-enough-nodes-error alert alert-danger mt-1">
+                        {{'cluster_management.cluster_page.errors.cant_replace_majority_of_nodes' | translate}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 remote-locations">
+            <h4>{{'cluster_management.cluster_page.remote_locations' | translate}}</h4>
+            <div class="locations-list mb-1">
+                <div class="location-item hoverable" ng-repeat="location in locations | orderBy: ['endpoint']"
+                     ng-class="location.error ? 'list-group-item-danger' : ''"
+                     gdb-tooltip="{{location.error ? ('cluster_management.cluster_page.errors.no_rpc_address' | translate: {error: location.error}) : '' }}"
+                     ng-click="addNodeToList(location)">
+                    <div class="location d-flex">
+                        <div class="logo-image"></div>
+                        {{location.endpoint}}
+                    </div>
+                    <button class="btn btn-link p-0 secondary"
+                            gdb-tooltip="{{'detach.location' | translate}}" tooltip-placement="top"
+                            ng-click="deleteLocation($event, location)">
+                        <em class="icon-close"></em>
+                    </button>
+                </div>
+            </div>
+            <button type="button" id="addLocation" ng-click="addLocation()" class="btn btn-primary"><span
+                class="icon-plus"></span>{{'attach.remote.location' | translate}}
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 mb-1 mt-1">
+            <h5>{{'cluster_management.replace_nodes_dialog.nodes_to_replace_label' | translate}}</h5>
+            <ul ng-if="replacementNodes.length" class="selected-remote-locations list-group nodes-list">
+                <li ng-repeat="node in replacementNodes" class="list-group-item list-group-item-action list-group-item-node">
+                    <a ng-click="removeNodeFromList($index, node)"
+                       class="d-flex justify-content-between align-items-center"
+                       gdb-tooltip="{{'cluster_management.cluster_page.remove_node_btn_tooltip' | translate}}"
+                       tooltip-placement="top">
+                        <div class="location-item">
+                            <div class="logo-image"></div>
+                            {{node.endpoint}}
+                        </div>
+                    </a>
+                </li>
+            </ul>
+            <div ng-if="!replacementNodes.length" class="at-least-one-error alert alert-warning mt-1">
+                {{'cluster_management.cluster_page.select_from_locations_hint' | translate}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
+    <button id="wb-replace-nodes-in-cluster-submit" class="btn btn-primary" ng-disabled="!permitNodesReplace()" ng-click="ok()">
+        {{'common.ok.btn' | translate}}
+    </button>
+</div>
