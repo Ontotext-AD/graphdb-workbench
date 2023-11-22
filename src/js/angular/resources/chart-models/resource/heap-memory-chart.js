@@ -10,7 +10,10 @@ export class HeapMemoryChart extends ChartData {
             yAxis: {
                 axisLabel: {
                     formatter: (value) => {
-                        return HeapMemoryChart.formatBytesValue(value, this.dataHolder, this.selectedSeries)
+                        if (this.hasSelectedSeries()) {
+                            return HeapMemoryChart.formatBytesValue(value, this.dataHolder, this.selectedSeries)
+                        }
+                        return HeapMemoryChart.formatBytesValue(value, this.dataHolder)
                     }
                 },
                 min: 0

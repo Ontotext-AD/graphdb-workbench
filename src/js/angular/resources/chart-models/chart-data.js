@@ -126,13 +126,24 @@ export class ChartData {
      * @param newData the new data
      */
     addData(timestamp, newData) {
-        this.removeOldData(this.dataHolder, this.range);
-        this.addNewData(this.dataHolder, timestamp, newData, this.isFirstLoad());
-        this.updateRange(this.dataHolder);
-        if (this.firstLoad) {
-            this.firstLoad = false;
+            this.removeOldData(this.dataHolder, this.range);
+            this.addNewData(this.dataHolder, timestamp, newData, this.isFirstLoad());
+
+        if (this.hasSelectedSeries()) {
+            this.updateRange(this.dataHolder);
+            if (this.firstLoad) {
+                this.firstLoad = false;
+            }
+            this.refresh(true);
         }
-        this.refresh(true);
+    }
+
+    /**
+     * Checks whether there is at least one series selected
+     * @return true if there is at least one series selected
+     */
+    hasSelectedSeries() {
+        return !this.selectedSeries || Object.values(this.selectedSeries).some((value) => value === true);
     }
 
     /**
@@ -277,9 +288,10 @@ export class ChartData {
      * @return {number}
      */
     static getMaxValueFromDataHolder(dataHolder, selectedSeries) {
-        return Math.max(...dataHolder.filter((data) => {
-            return !selectedSeries || (angular.isUndefined(selectedSeries[data.name]) || selectedSeries[data.name] === true);
-        }).map((data) => ChartData.getMaxValueForDataSeries(data)));
+        const valuesArray = dataHolder
+            .filter((data) => !selectedSeries || (angular.isUndefined(selectedSeries[data.name]) || selectedSeries[data.name] === true))
+            .map((data) => ChartData.getMaxValueForDataSeries(data))
+        return Math.max(1, ...valuesArray);
     }
 
     /**
