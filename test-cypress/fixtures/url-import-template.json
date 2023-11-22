@@ -3,6 +3,7 @@
     "status": "NONE",
     "message": "",
     "context": null,
+    "contextLink": null,
     "replaceGraphs": [],
     "baseURI": null,
     "forceSerial": false,
