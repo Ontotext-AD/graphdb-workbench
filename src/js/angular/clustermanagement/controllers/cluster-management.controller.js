@@ -389,7 +389,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
 
             const newNodesRpcAddress = nodes.newNodes.map((node) => node.rpcAddress);
             const oldNodesRpcAddress = nodes.oldNodes.map((node) => node.rpcAddress);
-            const payload = {newNodes: newNodesRpcAddress, oldNodes: oldNodesRpcAddress};
+            const payload = {addNodes: newNodesRpcAddress, removeNodes: oldNodesRpcAddress};
             ClusterRestService.replaceNodesInCluster(payload)
                 .then(() => {
                     const successMessage = $translate.instant(

@@ -21,7 +21,7 @@ function ClusterRestService($http) {
 
     /**
      * Invokes service to replace nodes in a running cluster.
-     * @param {{newNodes: string[], oldNodes: string[]}} payload
+     * @param {{addNodes: string[], removeNodes: string[]}} payload
      * @return {*}
      */
     function replaceNodesInCluster(payload) {
