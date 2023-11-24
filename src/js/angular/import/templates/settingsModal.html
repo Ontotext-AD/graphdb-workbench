@@ -18,8 +18,7 @@
                 <div class="col-lg-9">
                     <input validate-uri name="baseURI" type="text" ng-model="settings['baseURI']" class="form-control"
                            placeholder="http://exampleuri.com/examplepath">
-                    <div class="alert alert-danger" ng-show="hasError(settingsForm.$error.validateUri, 'baseURI')">
-                        {{'import.alert.not.valid.iri' | translate}}
+                    <div class="alert alert-danger" ng-show="hasError(settingsForm.$error.validateUri, 'baseURI')">{{'import.alert.not.valid.iri' | translate}}
                     </div>
                 </div>
             </div>
@@ -51,15 +50,13 @@
                         &nbsp;
                         <label uib-popover="{{'import.into.user.graph' | translate}}"
                                popover-trigger="mouseenter">
-                            <input type="radio" class="named-graph-btn" ng-model="target" value="named"
-                                   class="named-graph-option">
+                            <input type="radio" class="named-graph-btn" ng-model="target" value="named" class="named-graph-option">
                             {{'import.named.graph' | translate}}
                         </label>
                     </div>
                     <div>
                         <input validate-uri name="context" type="text" ng-required="target === 'named'"
-                               ng-disabled="target !== 'named'" ng-model="settings.context"
-                               class="form-control named-graph-input"
+                               ng-disabled="target !== 'named'" ng-model="settings.context" class="form-control named-graph-input"
                                placeholder="http://example.com/graph...">
                     </div>
                 </div>
@@ -70,8 +67,7 @@
                            uib-popover="{{isMultiple ? 'import.mode.not.supported.constraint' : 'import.enable.replace.option' | translate}}"
                            popover-trigger="mouseenter"
                            popover-placement="top">
-                        <input type="checkbox" class="existing-data-replacement" ng-model="enableReplace"
-                               ng-disabled="isMultiple">
+                        <input type="checkbox" class="existing-data-replacement" ng-model="enableReplace" ng-disabled="isMultiple">
                         {{'import.enter.replacement' | translate}}
                     </label>
                 </div>
@@ -94,8 +90,7 @@
                 <div class="col-lg-9" ng-show="target === 'data'">
                     <div class="row">
                         <div class="col-lg-9">
-                            <input name="replaceGraph" ng-model="replaceGraph" type="text"
-                                   class="replaced-graphs-input form-control"
+                            <input name="replaceGraph" ng-model="replaceGraph" type="text" class="replaced-graphs-input form-control"
                                    placeholder="http://example.com/graph..."
                                    ng-keypress="checkEnterReplaceGraph($event, replaceGraph)"
                                    uib-popover="{{'import.graph.wildcard' | translate}}"
@@ -104,8 +99,7 @@
                         </div>
                         <div class="col-lg-3 col-lg-no-padding">
                             <div class="btn-group" uib-dropdown>
-                                <button type="button" class="btn btn-primary add-graph-btn"
-                                        ng-click="addReplaceGraph(replaceGraph)">
+                                <button type="button" class="btn btn-primary add-graph-btn" ng-click="addReplaceGraph(replaceGraph)">
                                     <span class="icon-plus"></span> {{'import.add.graph' | translate}}
                                 </button>
                                 <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle"
@@ -115,8 +109,7 @@
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
                                         <button type="button" class="dropdown-item"
-                                                ng-click="addReplaceGraph('default')">
-                                            {{'import.add.default.graph' | translate}}
+                                                ng-click="addReplaceGraph('default')">{{'import.add.default.graph' | translate}}
                                         </button>
                                     </li>
                                 </ul>
@@ -127,10 +120,8 @@
                         <table aria-describedby="Replaced graphs table">
                             <tr>
                                 <th id="graphsColumn">
-                                    <span
-                                        ng-show="settings.replaceGraphs.length">{{'import.replaced.graphs' | translate}}</span>
-                                    <span
-                                        ng-show="!settings.replaceGraphs.length">{{'import.no.replaced.graphs.added' | translate}}</span>
+                                    <span ng-show="settings.replaceGraphs.length">{{'import.replaced.graphs' | translate}}</span>
+                                    <span ng-show="!settings.replaceGraphs.length">{{'import.no.replaced.graphs.added' | translate}}</span>
                                 </th>
                             </tr>
                             <tr ng-repeat="g in settings.replaceGraphs">
@@ -148,19 +139,15 @@
                 </div>
                 <div class="col-lg-9 offset-lg-3">
                     <label class="col-form-label">
-                        <input type="checkbox" class="graph-replace-confirm-checkbox" ng-model="agree"
-                               ng-required="enableReplace">
+                        <input type="checkbox" class="graph-replace-confirm-checkbox" ng-model="agree" ng-required="enableReplace">
                         <strong>{{'import.data.cleared.before.import' | translate}}</strong>
                     </label>
                 </div>
             </div>
             <div class="text-xs-center">
-                <button type="button" ng-click="switchParserSettings()"
-                        class="btn btn-link btn-sm toggle-advanced-settings">
-                    <span ng-hide="showAdvancedSettings">{{'import.show.advance.settings' | translate}}<em
-                        class="icon-caret-down"></em></span>
-                    <span ng-show="showAdvancedSettings">{{'import.hide.advance.settings' | translate}}<em
-                        class="icon-caret-up"></em></span>
+                <button type="button" ng-click="switchParserSettings()" class="btn btn-link btn-sm toggle-advanced-settings">
+                    <span ng-hide="showAdvancedSettings">{{'import.show.advance.settings' | translate}}<em class="icon-caret-down"></em></span>
+                    <span ng-show="showAdvancedSettings">{{'import.hide.advance.settings' | translate}}<em class="icon-caret-up"></em></span>
                 </button>
             </div>
 
@@ -271,21 +258,21 @@
             </div>
 
             <div ng-show="showAdvancedSettings" class="form-group row">
-                <label class="col-lg-3 col-form-label">
-                    {{'import.context.link' | translate}}
-                    <span class="btn btn-link p-0"
-                          uib-popover="{{'import.popover.context.link' | translate}}"
-                          popover-trigger="mouseenter"
-                          popover-placement="right">
+                <div class="col-lg-9 col-form-label">
+                    <label class="col-lg-3 col-form-label">
+                        {{'import.context.link' | translate}}
+                        <span class="btn btn-link p-0"
+                              uib-popover="{{'import.popover.context.link' | translate}}"
+                              popover-trigger="mouseenter"
+                              popover-placement="right">
                                 <em class="icon icon-info"></em>
                             </span>
-                </label>
-                <div class="col-lg-9">
-                    <input validate-uri name="contextLink" type="text"
-                           ng-model="settings['parserSettings']['contextLink']" class="form-control"
-                           placeholder="http://example.com/example.jsonld">
-                    <div class="alert alert-danger" ng-show="hasError(settingsForm.$error.validateUri, 'contextLink')">
-                        {{'import.alert.not.valid.iri' | translate}}
+                    </label>
+                    <div class="col-lg-9">
+                        <input validate-uri name="contextLink" type="text" ng-model="settings['contextLink']" class="form-control"
+                               placeholder="http://exampleuri.com/examplepath">
+                        <div class="alert alert-danger" ng-show="hasError(settingsForm.$error.validateUri, 'contextLink')">{{'import.alert.not.valid.iri' | translate}}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -293,13 +280,7 @@
     </form>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-link pull-left" ng-click="reset()">
-        {{'import.restore.defaults.btn' | translate}}
-    </button>
-    <button type="button" class="btn btn-secondary" ng-click="cancel()" guide-selector="import-settings-cancel-button">
-        {{'common.cancel.btn' | translate}}
-    </button>
-    <button type="submit" class="btn btn-primary import-settings-import-button" form="settingsForm" ng-click="ok()"
-            guide-selector="import-settings-import-button"><span class="import"></span> {{'common.import' | translate}}
-    </button>
+    <button type="button" class="btn btn-link pull-left" ng-click="reset()">{{'import.restore.defaults.btn' | translate}}</button>
+    <button type="button" class="btn btn-secondary" ng-click="cancel()" guide-selector="import-settings-cancel-button">{{'common.cancel.btn' | translate}}</button>
+    <button type="submit" class="btn btn-primary import-settings-import-button" form="settingsForm" ng-click="ok()" guide-selector="import-settings-import-button"><span class="import"></span> {{'common.import' | translate}}</button>
 </div>
