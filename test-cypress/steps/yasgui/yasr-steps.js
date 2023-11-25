@@ -91,7 +91,7 @@ export class YasrSteps {
     }
 
     static getVisualButton() {
-        return YasrSteps.getYasrToolbar().find('.explore-visual-graph-button-name');
+        return YasrSteps.getYasrToolbar().find('.explore-visual-graph-button');
     }
 
     static getNoDataElement() {
