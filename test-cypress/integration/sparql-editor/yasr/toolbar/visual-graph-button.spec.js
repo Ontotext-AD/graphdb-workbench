@@ -3,8 +3,9 @@ import {YasqeSteps} from "../../../../steps/yasgui/yasqe-steps";
 import {YasrSteps} from "../../../../steps/yasgui/yasr-steps";
 import {QueryStubs} from "../../../../stubs/yasgui/query-stubs";
 
-describe('Visual button when user execute a CONSTRUCT query.', () => {
+describe('Visual graph button when user execute a CONSTRUCT query', () => {
     let repositoryId;
+
     beforeEach(() => {
         repositoryId = 'sparql-editor-' + Date.now();
         QueryStubs.stubQueryCountResponse();
@@ -18,7 +19,7 @@ describe('Visual button when user execute a CONSTRUCT query.', () => {
         cy.deleteRepository(repositoryId);
     });
 
-    it('should display a "Visual" button configured by user .', {
+    it('Should display a "Visual" graph button configured by user', {
         retries: {
             runMode: 1,
             openMode: 0
