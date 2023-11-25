@@ -1,5 +1,16 @@
 @import "../common.css";
 
+/* Resets the default font-size for every tag in the yasgui */
+yasgui-component * {
+    font-size: 16px !important;
+}
+
+/* And scale it down on given viewport width */
+@media (max-width: 1439px) {
+    yasgui-component * {
+        font-size: 14px !important;
+    }
+}
 
 yasgui-component .yasgui-btn.btn-selected {
     background-color: var(--primary-color) !important;
@@ -100,6 +111,14 @@ yasgui-component .yasr a {
     color: var(--secondary-color) !important;
 }
 
+yasgui-component .yasr .yasr_header .yasr_response_chip {
+    background-color: unset !important;
+}
+
+yasgui-component .yasr .yasr_header {
+    background-color: var(--color-info-light) !important;
+}
+
 yasgui-component .yasr .yasr_btnGroup .yasr_btn {
     margin-left: 0;
     margin-right: .2rem;
@@ -129,6 +148,10 @@ yasgui-component .yasr .extended-boolean-plugin .response-error {
 
 yasgui-component .yasr .extended-boolean-plugin .response-success {
     background-color: var(--color-success-light) !important;
+}
+
+.yasr .dataTables_wrapper .dataTable thead tr th {
+    font-weight: 500;
 }
 
 yasgui-component .yasr .dataTable a {
@@ -273,8 +296,20 @@ yasgui-component .page-selector {
     display: none;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
+    .ontotext-dropdown .ontotext-dropdown-button:after {
+        padding-left: 0 !important;
+    }
+
+    .ontotext-dropdown .button-name {
+        display: none;
+    }
+
     .explore-visual-graph-button-name {
+        display: none;
+    }
+
+    .yasr_btn span {
         display: none;
     }
 }
