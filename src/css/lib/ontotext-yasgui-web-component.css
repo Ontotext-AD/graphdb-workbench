@@ -63,6 +63,7 @@ yasgui-component .yasr-toolbar {
 yasgui-component .yasr-toolbar .explore-visual-graph-button {
     display: flex;
     align-items: center;
+    gap: 5px;
     border: none;
     outline: none;
     color: #fff;
