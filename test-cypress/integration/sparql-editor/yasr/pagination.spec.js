@@ -151,7 +151,7 @@ describe('Yasr result pagination', () => {
             YasrSteps.getResultLink(0, 2).should('have.text', 'ontogen:page_1-row_1-column_2');
         });
 
-        it('should have two more page around selected page', {
+        it('should should render pages in pager properly', {
             retries: {
                 runMode: 1,
                 openMode: 1
@@ -170,11 +170,11 @@ describe('Yasr result pagination', () => {
             PaginationSteps.getPageNumberButton(1).should('have.class', 'selected-page');
             PaginationSteps.getPageNumberButton(2).should('be.visible');
             PaginationSteps.getPageNumberButton(3).should('be.visible');
-            PaginationSteps.getPageNumberButton(4).should('not.exist');
-            PaginationSteps.getPageNumberButton(4).should('not.exist');
-            PaginationSteps.getPageNumberButton(5).should('not.exist');
+            PaginationSteps.getPageNumberButton(4).should('be.visible');
+            PaginationSteps.getPageNumberButton(5).should('be.visible');
             PaginationSteps.getPageNumberButton(6).should('not.exist');
-            PaginationSteps.getNextPageButton().should('not.be.disabled');
+            PaginationSteps.getPageNumberButton(7).should('not.exist');
+            PaginationSteps.getNextPageButton().should('be.enabled');
 
             // When select second page
             PaginationSteps.clickOnPageNumberButton(2);
@@ -185,45 +185,45 @@ describe('Yasr result pagination', () => {
             PaginationSteps.getPageNumberButton(2).should('have.class', 'selected-page');
             PaginationSteps.getPageNumberButton(3).should('be.visible');
             PaginationSteps.getPageNumberButton(4).should('be.visible');
-            PaginationSteps.getPageNumberButton(5).should('not.exist');
+            PaginationSteps.getPageNumberButton(5).should('be.visible');
             PaginationSteps.getPageNumberButton(6).should('not.exist');
-            PaginationSteps.getNextPageButton().should('not.be.disabled');
+            PaginationSteps.getNextPageButton().should('be.enabled');
 
             // When select third page
             PaginationSteps.clickOnPageNumberButton(3);
             PaginationSteps.waitPageSelected(3);
 
-            PaginationSteps.getPreviousPageButton().should('not.be.disabled');
+            PaginationSteps.getPreviousPageButton().should('be.enabled');
             PaginationSteps.getPageNumberButton(1).should('be.visible');
             PaginationSteps.getPageNumberButton(2).should('be.visible');
             PaginationSteps.getPageNumberButton(3).should('have.class', 'selected-page');
             PaginationSteps.getPageNumberButton(4).should('be.visible');
             PaginationSteps.getPageNumberButton(5).should('be.visible');
             PaginationSteps.getPageNumberButton(6).should('not.exist');
-            PaginationSteps.getNextPageButton().should('not.be.disabled');
+            PaginationSteps.getNextPageButton().should('be.enabled');
 
             // When select fifth page
             PaginationSteps.clickOnPageNumberButton(5);
             PaginationSteps.waitPageSelected(5);
 
-            PaginationSteps.getPreviousPageButton().should('not.be.disabled');
+            PaginationSteps.getPreviousPageButton().should('be.enabled');
             PaginationSteps.getPageNumberButton(1).should('not.exist');
-            PaginationSteps.getPageNumberButton(2).should('not.exist');
+            PaginationSteps.getPageNumberButton(2).should('be.visible');
             PaginationSteps.getPageNumberButton(3).should('be.visible');
             PaginationSteps.getPageNumberButton(4).should('be.visible');
             PaginationSteps.getPageNumberButton(5).should('have.class', 'selected-page');
             PaginationSteps.getPageNumberButton(6).should('be.visible');
             PaginationSteps.getPageNumberButton(7).should('not.exist');
-            PaginationSteps.getNextPageButton().should('not.be.disabled');
+            PaginationSteps.getNextPageButton().should('be.enabled');
 
             // When select last page
             PaginationSteps.clickOnPageNumberButton(6);
             PaginationSteps.waitPageSelected(6);
 
-            PaginationSteps.getPreviousPageButton().should('not.be.disabled');
+            PaginationSteps.getPreviousPageButton().should('be.enabled');
             PaginationSteps.getPageNumberButton(1).should('not.exist');
-            PaginationSteps.getPageNumberButton(2).should('not.exist');
-            PaginationSteps.getPageNumberButton(3).should('not.exist');
+            PaginationSteps.getPageNumberButton(2).should('be.visible');
+            PaginationSteps.getPageNumberButton(3).should('be.visible');
             PaginationSteps.getPageNumberButton(4).should('be.visible');
             PaginationSteps.getPageNumberButton(5).should('be.visible');
             PaginationSteps.getPageNumberButton(6).should('have.class', 'selected-page');
