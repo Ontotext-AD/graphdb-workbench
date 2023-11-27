@@ -162,6 +162,10 @@ yasgui-component .yasr .dataTable a {
     font-size: 16px;
 }
 
+yasgui-component .yasr #explainPlanQuery {
+    font-family: var(--mono-font);
+}
+
 yasgui-component .tabsList .tab .closeTab {
     color: var(--secondary-color-light) !important;
     opacity: .8 !important;
@@ -269,7 +273,6 @@ yasgui-component .saved-queries-container .saved-queries-popup .saved-query-acti
 }
 
 yasgui-component .abort-button {
-    background-color: var(--primary-color) !important;
 }
 
 yasgui-component .page-button.selected-page {
