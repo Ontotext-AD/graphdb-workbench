@@ -134,7 +134,7 @@ function RDF4JRepositoriesRestService($http, $repositories, $translate) {
         const payloadString = properties.join('&');
         return $http({
             method: 'POST',
-            url: `/repositories/${repositoryId}`,
+            url: `repositories/${repositoryId}`,
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
                 'Accept': acceptHeader
