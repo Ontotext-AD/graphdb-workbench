@@ -119,6 +119,10 @@ yasgui-component .yasr .yasr_header {
     background-color: var(--color-info-light) !important;
 }
 
+yasgui-component .yasr .dataTable .triple-cell .triple-link {
+    color: #708 !important;
+}
+
 yasgui-component .yasr .yasr_btnGroup .yasr_btn {
     margin-left: 0;
     margin-right: .2rem;
