@@ -707,15 +707,14 @@ function CreateSimilarityIdxCtrl(
     const validateSimilarityIndexNameExistence = (similarityIndexInfo) => {
         return SimilarityRestService.getIndexes()
             .then((response) => {
-                response.data.forEach((index) => {
-                    if (index.name === similarityIndexInfo.getName()) {
-                        similarityIndexInfo.isNameExist = true;
-                        return Promise.reject(new SimilarityIndexError('Similarity index name exist.'))
-                    }
-                });
-                return similarityIndexInfo
+                if (response.data.some((index) => index.name === similarityIndexInfo.getName())) {
+                    similarityIndexInfo.isNameExist = true;
+                    return Promise.reject(new SimilarityIndexError('Similarity index name exists.'));
+                }
+
+                return similarityIndexInfo;
             });
-    }
+    };
 
     /**
      * Check if similarity index name is filed and if is filled if it's value is correct.
