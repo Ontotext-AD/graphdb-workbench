@@ -66,7 +66,7 @@ export class YasrSteps {
             .find('.copy-resource-link-button a');
     }
 
-    static clickOnCopyResourceLink(rowNumber, cellNumber) {
+    static copyResourceLink(rowNumber, cellNumber) {
         this.showSharedResourceLink(rowNumber, cellNumber).realClick();
     }
 
