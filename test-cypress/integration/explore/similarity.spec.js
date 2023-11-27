@@ -5,6 +5,7 @@ import {SimilarityIndexCreateSteps} from "../../steps/explore/similarity-index-c
 import {SimilarityIndexesSteps} from "../../steps/explore/similarity-indexes-steps";
 import {ModalDialogSteps, VerifyConfirmationDialogOptions} from "../../steps/modal-dialog-steps";
 import {RepositorySelectorSteps} from "../../steps/repository-selector-steps";
+import {ErrorSteps} from "../../steps/error-steps";
 
 const INDEX_NAME = 'index-' + Date.now();
 const FILE_TO_IMPORT = 'people.zip';
@@ -100,6 +101,20 @@ describe('Similarity screen validation', () => {
             clickMoreOptionsMenu();
             checkLiteralIndex();
             createSimilarityIndex();
+        });
+
+        it('Should not allow create similarity index with name that already exist', () => {
+            // If we have a similarity index.
+            openCreateNewIndexForm();
+            setIndexName();
+            createSimilarityIndex();
+
+            // When I try to create a similarity index with same name.
+            openCreateNewIndexForm();
+            setIndexName();
+            getCreateIndexButton().click();
+            // Then I expect an error message to be displayed that describes me, that name is mandatory.
+            ErrorSteps.verifyError('Index with this name already exists.');
         });
     });
 
