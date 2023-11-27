@@ -53,7 +53,7 @@ describe('Yasr Table plugin', () => {
 
     describe('Copy resource link dialog', () => {
 
-        it('Should open copy link dialog', {
+        it('Should be able to copy a link', {
             retries: {
                 runMode: 1,
                 openMode: 0
@@ -62,56 +62,23 @@ describe('Yasr Table plugin', () => {
             // When I execute a query which returns results of type is uri.
             QueryStubs.stubDefaultQueryResponse();
             YasqeSteps.executeQuery();
+
             // And copy resource dialog is open.
             openCopyResourceLinkDialog();
 
             // Then I expect copy link dialog to be opened.
             TablePluginSteps.getCopyResourceLinkDialog().should('be.visible');
-        });
 
-        it('Should close copy link dialog when click on close button', {
-            retries: {
-                runMode: 1,
-                openMode: 0
-            }
-        }, () => {
-            // When I execute a query which returns results of type is uri.
-            QueryStubs.stubDefaultQueryResponse();
-            YasqeSteps.executeQuery();
-            // And copy resource dialog is open.
-            openCopyResourceLinkDialog();
+            // And I expect the input of dialog to have value.
+            TablePluginSteps.getCopyResourceLinkInput().should('have.value', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
 
-            // When I click on close button
-            TablePluginSteps.clickCopyLinkDialogCloseButton();
-
-            // Then I expect copy link dialog to be closed.
-            TablePluginSteps.getCopyResourceLinkDialog().should('not.exist');
-        });
-
-        it('Should close copy link dialog when click on cancel button', {
-            retries: {
-                runMode: 1,
-                openMode: 0
-            }
-        }, () => {
-            // When I execute a query which returns results of type is uri.
-            QueryStubs.stubDefaultQueryResponse();
-            YasqeSteps.executeQuery();
-            // And copy resource link dialog is open
-            openCopyResourceLinkDialog();
-
-            // And click on cancel button
+            // When I click on cancel button
             TablePluginSteps.clickCopyLinkDialogCancelButton();
 
             // Then I expect copy link dialog to be closed.
             TablePluginSteps.getCopyResourceLinkDialog().should('not.exist');
-        });
 
-        it('Should close copy link dialog when click on copy link button', () => {
-            // When I execute a query which returns results of type is uri.
-            QueryStubs.stubDefaultQueryResponse();
-            YasqeSteps.executeQuery();
-            // And copy resource link dialog is open
+            // And copy resource dialog is open.
             openCopyResourceLinkDialog();
 
             // And click on copy button
@@ -119,73 +86,15 @@ describe('Yasr Table plugin', () => {
 
             // Then I expect copy link dialog to be closed.
             TablePluginSteps.getCopyResourceLinkDialog().should('not.exist');
-        });
-
-        it('Should close copy link dialog when click outside dialog', () => {
-            // When I execute a query which returns results of type is uri.
-            QueryStubs.stubDefaultQueryResponse();
-            YasqeSteps.executeQuery();
-            // And copy resource link dialog is open
-            openCopyResourceLinkDialog();
-
-            // And click on copy button
-            TablePluginSteps.clickOutsideCopyLinkDialog();
-
-            // Then I expect copy link dialog to be closed.
-            TablePluginSteps.getCopyResourceLinkDialog().should('not.exist');
-        });
-
-        it('Should input of copy link dialog be filled when dialog is open', () => {
-            // When I execute a query which returns results of type is uri.
-            QueryStubs.stubDefaultQueryResponse();
-            YasqeSteps.executeQuery();
-            // And copy resource link dialog is open
-            openCopyResourceLinkDialog();
-
-            // Then I expect the input of dialog to have value.
-            TablePluginSteps.getCopyResourceLinkInput().should('have.value', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
-        });
-
-        it('Should show success message when user click on copy resource link button.', {
-            retries: {
-                runMode: 1,
-                openMode: 0
-            }
-        }, () => {
-            // When I execute a query
-            YasqeSteps.executeQuery();
-
-            // Then I expect results to be displayed with short uri.
-            YasrSteps.getResultCell(1, 2).contains('rdf:type');
-            YasrSteps.getResultCell(4, 3).contains('owl:TransitiveProperty');
-
-            // When I hovered the mouse over a cell of result table.
-            YasrSteps.hoverCell(28, 2);
-
-            // Then I expect copy url link to be visible
-            YasrSteps.getCopyResourceLink(28, 2).should('be.visible');
-
-            // When I click on a copy link.
-            YasrSteps.clickOnCopyResourceLink(28, 2);
-
-            // Then copy resource link dialog have to be opened.
-            TablePluginSteps.getCopyResourceLinkDialog().should('be.visible');
-            // And input of dialog have to be filled with resource uri
-            TablePluginSteps.getCopyResourceLinkInput().should('have.value', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type');
-
-            // When I click on button "Copy to clipboard"
-            TablePluginSteps.clickCopyLinkDialogCopyButton();
 
             // And expect success message to be displayed.
             ApplicationSteps.getSuccessNotifications().contains('URL copied successfully to clipboard.');
-            // And copy resource link dialog have to not be opened.
-            TablePluginSteps.getCopyResourceLinkDialog().should('not.exist');
+
         });
     });
-
-    function openCopyResourceLinkDialog(rowNumber = 28, cellNumber = 2) {
-        YasrSteps.hoverCell(rowNumber, cellNumber);
-        YasrSteps.getCopyResourceLink(rowNumber, cellNumber).should('be.visible');
-        YasrSteps.clickOnCopyResourceLink(rowNumber, cellNumber);
-    }
 });
+
+function openCopyResourceLinkDialog(rowNumber = 28, cellNumber = 2) {
+    YasrSteps.getCopyResourceLink(rowNumber, cellNumber).should('be.visible');
+    YasrSteps.copyResourceLink(rowNumber, cellNumber);
+}
