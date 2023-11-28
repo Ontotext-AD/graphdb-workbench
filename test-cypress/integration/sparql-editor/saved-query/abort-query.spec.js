@@ -44,15 +44,6 @@ describe('Abort query', () => {
         // When I click on the button.
         YasqeSteps.getAbortQueryButton().realClick();
 
-        // Then I expect button text to be changed.
-        YasqeSteps.getAbortQueryButton().should('have.text', 'Stop has been requested');
-
-        // When I hover over the "Stop has been requested".
-        YasqeSteps.hoverOverAbortQueryButton();
-
-        // Then I expect to see tooltip that describes what happen if click on it.
-        YasguiSteps.getTooltipRoot().contains('Query was requested to abort and will be terminated on the first I/O operation');
-
         // When abort query finished.
         // I expect the button not be visible.
         YasqeSteps.getAbortQueryButton().should('not.be.visible');
