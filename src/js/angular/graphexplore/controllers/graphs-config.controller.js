@@ -173,6 +173,9 @@ function GraphConfigCtrl(
      * @return {string|*}
      */
     $scope.getSampleName = (sample, property) => {
+        if (!sample) {
+            return '';
+        }
         const propertyDescription = sample.getPropertyDescription(property);
         if (propertyDescription) {
             // Sample has description, use it
