@@ -34,7 +34,7 @@ describe('Error handling', () => {
         // and time when the query is executed,
         ErrorPluginSteps.getErrorPluginErrorTimeMessage().contains(/Query took \d{1}\.\d{1}s, moments ago\./);
         // and error message sent by server,
-        ErrorPluginSteps.getErrorPluginBody().invoke('text').should('eq', SHORT_ERROR_BODY);
+        ErrorPluginSteps.getErrorPluginBody().should('have.text', SHORT_ERROR_BODY);
         // and toolbar with plugins to not be visible,
         YasrSteps.getResultHeader().should('not.be.visible');
         // and message info to not be visible,
@@ -56,7 +56,7 @@ describe('Error handling', () => {
         // and time when the query is executed,
         ErrorPluginSteps.getErrorPluginErrorTimeMessage().contains(/Query took \d{1}\.\d{1}s, moments ago\./);
         // and error message sent by server,
-        ErrorPluginSteps.getErrorPluginBody().invoke('text').should('eq', LESS_MESSAGE);
+        ErrorPluginSteps.getErrorPluginBody().should('have.text', LESS_MESSAGE);
         // and toolbar with plugins to not be visible,
         YasrSteps.getResultHeader().should('not.be.visible');
         // and message info to not be visible,
@@ -68,7 +68,7 @@ describe('Error handling', () => {
         ErrorPluginSteps.getShowFullErrorMessage().click();
 
         // Then I expect to see full message
-        ErrorPluginSteps.getErrorPluginBody().invoke('text').should('eq', LONG_ERROR_BODY);
+        ErrorPluginSteps.getErrorPluginBody().should('have.text', LONG_ERROR_BODY);
         ErrorPluginSteps.getShowFullErrorMessage().should('not.exist');
         ErrorPluginSteps.getShowLessErrorMessage().should('be.visible');
 
@@ -76,7 +76,7 @@ describe('Error handling', () => {
         ErrorPluginSteps.getShowLessErrorMessage().click();
 
         // Then I expect to see first 160 characters of the error message
-        ErrorPluginSteps.getErrorPluginBody().invoke('text').should('eq', LESS_MESSAGE);
+        ErrorPluginSteps.getErrorPluginBody().should('have.text', LESS_MESSAGE);
         ErrorPluginSteps.getShowFullErrorMessage().should('be.visible');
         ErrorPluginSteps.getShowLessErrorMessage().should('not.exist');
     });
