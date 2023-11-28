@@ -124,7 +124,7 @@
 
                     <p>{{'the.sentence.start' | translate}} <code>?node</code> {{'variable.required' | translate}}</p>
 
-                    <p>{{'optional.query' | translate}} <em>{{getSampleName(samples[0], 'expandQuery')}}</em>
+                    <p>{{'optional.query' | translate}} <em ng-if="samples && samples.length > 0">{{getSampleName(samples[0], 'expandQuery')}}</em>
                         {{'sample.query.used' | translate}}</p>
                 </div>
                 <div>
@@ -152,7 +152,7 @@
 
                     <p>{{'the.sentence.start' | translate}} <code>?node</code> {{'variable.required' | translate}}</p>
 
-                    <p>{{'optional.query' | translate}} <em>{{getSampleName(samples[0], 'resourceQuery')}}</em>
+                    <p>{{'optional.query' | translate}} <em ng-if="samples && samples.length > 0">{{getSampleName(samples[0], 'resourceQuery')}}</em>
                         {{'sample.query.used' | translate}}</p>
                 </div>
                 <div>
@@ -207,7 +207,7 @@
                         {{'variable.required.viewed.node' | translate}}</p>
 
                     <p>{{'optional.query' | translate}}
-                        <em>{{getSampleName(samples[0], 'resourcePropertiesQuery')}}</em>
+                        <em ng-if="samples && samples.length > 0">{{getSampleName(samples[0], 'resourcePropertiesQuery')}}</em>
                         {{'sample.query.used' | translate}}</p>
                 </div>
                 <div>
