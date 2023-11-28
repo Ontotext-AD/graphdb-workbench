@@ -22,7 +22,7 @@ describe('Error handling', () => {
         cy.deleteRepository(repositoryId);
     });
 
-    it('should show error without show full message button when error message is les than 160 characters.', () => {
+    it('should show error without show full message button when error message is less than 160 characters.', () => {
         // When I visit a page with "ontotext-yasgui-web-component" in it,
         // and execute wrong query that returns short error message (less thant 160).
         QueryStubs.stubQueryErrorResponse(repositoryId, 500, SHORT_ERROR_BODY);
