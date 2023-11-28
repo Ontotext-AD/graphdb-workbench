@@ -20,6 +20,10 @@ yasgui-component .btn-orientation {
     color: var(--primary-color) !important;
 }
 
+yasgui-component .yasqe .CodeMirror {
+    font-family: var(--mono-font) !important;
+}
+
 yasgui-component .yasqe .yasqe_buttons {
     right: 21px;
 }
