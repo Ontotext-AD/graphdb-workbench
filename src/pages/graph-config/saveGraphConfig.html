@@ -261,12 +261,16 @@
         </label>
     </div>
     <div class="pull-left">
-        <a href ng-click="saveGraphConfig()" class="btn btn-lg btn-primary btn-save-config"
-           uib-popover="{{'closes.config.save' | translate}}"
-           popover-placement="top"
-           popover-trigger="mouseenter">
-            {{'common.save.btn' | translate}}
-        </a>
+        <button href ng-show="page > 1" ng-click="goToPreviousPage()" class="btn btn-lg btn-secondary btn-previous-page"
+                uib-popover="{{'previous.config.step' | translate}}"
+                popover-placement="top"
+                popover-trigger="mouseenter"><span class="icon-arrow-left"></span> {{'previous.btn' | translate}}
+        </button>
+        <button href ng-show="page < totalPages" ng-click="goToNextPage()" class="btn btn-lg btn-secondary btn-next-page"
+                uib-popover="{{'next.config.step' | translate}}"
+                popover-placement="top"
+                popover-trigger="mouseenter"> {{'next.btn' | translate}} <span class="icon-arrow-right"></span>
+        </button>
         <button class="btn btn-lg btn-secondary btn-preview-query-results" ng-click="showPreview()"
                 ng-hide="viewMode == 'editor' || (page == 1 && newConfig.startMode != 'query')"
                 uib-popover="{{'preview.results' | translate}}"
@@ -290,22 +294,17 @@
         </button>
     </div>
     <div class="pull-right">
-        <button href ng-show="page > 1" ng-click="goToPreviousPage()" class="btn btn-lg btn-secondary btn-previous-page"
-                uib-popover="{{'previous.config.step' | translate}}"
-                popover-placement="top"
-                popover-trigger="mouseenter"><span class="icon-arrow-left"></span> {{'previous.btn' | translate}}
-        </button>
-
-        <button href ng-show="page < totalPages" ng-click="goToNextPage()" class="btn btn-lg btn-secondary btn-next-page"
-                uib-popover="{{'next.config.step' | translate}}"
-                popover-placement="top"
-                popover-trigger="mouseenter"> {{'next.btn' | translate}} <span class="icon-arrow-right"></span></button>
-
         <a ng-href="graphs-visualizations/" class="btn btn-lg btn-secondary btn-cancel-save-config"
            uib-popover="{{'closes.config.no.save' | translate}}"
            popover-placement="top"
            popover-trigger="mouseenter">
             {{'common.cancel.btn' | translate}}
+        </a>
+        <a href ng-click="saveGraphConfig()" class="btn btn-lg btn-primary btn-save-config"
+           uib-popover="{{'closes.config.save' | translate}}"
+           popover-placement="top"
+           popover-trigger="mouseenter">
+            {{'common.save.btn' | translate}}
         </a>
     </div>
 </div>
