@@ -183,6 +183,14 @@ class ImportSteps {
         return ImportSteps;
     }
 
+    static setContextLinkToBeVisible() {
+        ImportSteps.getSettingsForm().within(() => {
+            cy.get('.contextLinkRow').invoke('attr', 'style', 'display: block !important');
+        });
+
+        return ImportSteps;
+    }
+
     static resetStatusOfUploadedFiles() {
         // Button should disappear
         cy.get('#import-server #wb-import-clearStatuses')

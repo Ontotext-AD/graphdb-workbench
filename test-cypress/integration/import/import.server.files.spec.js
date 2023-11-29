@@ -45,13 +45,14 @@ describe('Import screen validation - server files', () => {
     });
 
     // for this test it is necessary to set up a whitelist to GraphDB in this way: -Dgraphdb.jsonld.whitelist=<absolute_path_to_fixtures/graphdb-import>
-    it('Test import Server files successfully with JSONLD context link settings', () => {
+    it.only('Test import Server files successfully with JSONLD context link settings', () => {
         ImportSteps.selectServerFile(JSONLD_FILE_FOR_IMPORT)
             .importServerFiles(true)
             .fillBaseURI(BASE_URI)
             .selectNamedGraph()
             .fillNamedGraph(CONTEXT)
             .expandAdvancedSettings()
+            .setContextLinkToBeVisible()
             .enablePreserveBNodes()
             .fillContextLink(JSONLD_CONTEXT)
             .importFromSettingsDialog()
