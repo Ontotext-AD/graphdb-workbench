@@ -257,7 +257,7 @@
             </div>
         </div>
 
-            <div ng-show="showAdvancedSettings" class="form-group row">
+            <div ng-show="showAdvancedSettings && !settings.isJSONLDFile" class="form-group row">
                 <label class="col-lg-3 col-form-label">
                     {{'import.context.link' | translate}}
                     <span class="btn btn-link p-0"
