@@ -46,7 +46,8 @@ function ReplaceNodesDialogCtrl($scope, $uibModalInstance, $timeout, toastr, $tr
     };
 
     $scope.permitNodesReplace = () => {
-        return !$scope.leftNodesMajority && $scope.nodesToReplace.length > 0 && $scope.replacementNodes.length > 0;
+        // Allow nodes to be only removed or added without real replacement.
+        return !$scope.leftNodesMajority && ($scope.nodesToReplace.length > 0 || $scope.replacementNodes.length > 0);
     };
 
     $scope.addNodeToList = (location) => {

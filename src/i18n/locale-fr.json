@@ -126,7 +126,8 @@
         },
         "replace_nodes_dialog": {
             "title": "Remplacer les nœuds dans le cluster",
-            "nodes_to_replace_label": "Liste des nœuds de remplacement"
+            "nodes_to_replace_label": "Nœuds à ajouter au cluster",
+            "cluster_nodes_list": "Sélectionnez les nœuds à supprimer du cluster existant"
         },
         "add_nodes_dialog": {
             "title": "Ajouter des nœuds au cluster",

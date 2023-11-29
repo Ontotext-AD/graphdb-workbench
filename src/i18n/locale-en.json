@@ -126,7 +126,8 @@
         },
         "replace_nodes_dialog": {
             "title": "Replace nodes in cluster",
-            "nodes_to_replace_label": "Replacement nodes list"
+            "nodes_to_replace_label": "Nodes to add to cluster",
+            "cluster_nodes_list": "Select nodes to be removed from existing cluster"
         },
         "add_nodes_dialog": {
             "title": "Add nodes to cluster",
