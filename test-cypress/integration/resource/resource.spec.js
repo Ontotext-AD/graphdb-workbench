@@ -348,7 +348,7 @@ describe('Resource view', () => {
             YasguiSteps.getTabs().should('have.length', 2);
             // and a describe query to be present
             YasqeSteps.getActiveTabQuery().should('contain', 'describe <<<http://example.com/resource/person/W6J1827> <http://example.com/ontology#hasAddress> <http://example.com/resource/person/W6J1827/address>>>');
-            YasguiSteps.getCurrentTab().should('contain', 'Unnamed 2');
+            YasguiSteps.getCurrentTab().should('contain', 'Unnamed 1');
         });
     });
 });
