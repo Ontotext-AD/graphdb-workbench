@@ -1531,7 +1531,7 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             }, 1000);
         };
 
-        const touchEndEventHandler = function (d) {
+        const touchEndEventHandler = function () {
             $timeout.cancel(touchHoldEventTimer);
             touchHoldEventTimer = null;
         };
@@ -1738,15 +1738,15 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
             .on('mouseover', showNodeTipAndIcons)
             .on('mouseout', hideTipForNode)
             .on("click", clickEventHandler)
-            .on("touchstart", touchStartEventHandler)
+            .on("touchstart", (event, d) => touchStartEventHandler(d))
             // no need to track move for mouse
             .on("touchmove", moveEventHandler)
             .on("touchend", touchEndEventHandler)
             .on("contextmenu", rightClickHandler)
             // custom event used when user is following a guide
-            .on("gdb-expand-node", expandEventHandler)
+            .on("gdb-expand-node", (event, d) => expandEventHandler(d, 0, event.srcElement.parentNode))
             // custom event used when user is following a guide
-            .on("gdb-show-node-info", showNodeInfo)
+            .on("gdb-show-node-info", (event, d) => showNodeInfo(d))
             .call(drag);
 
         const nodeLabels = container.selectAll(".node-wrapper").append("foreignObject")
