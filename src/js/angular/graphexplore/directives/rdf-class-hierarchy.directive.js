@@ -229,8 +229,8 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                     }
                 })
                 // custom event used when user is following a guide
-                .on("gdb-focus", doFocus)
-                .on("gdb-zoom", zoom);
+                .on("gdb-focus", (event, d) => doFocus(d))
+                .on("gdb-zoom", (event, d) => zoom(d));
 
 
             if (flattenedClassNames) {
