@@ -307,7 +307,10 @@ yasgui-component .page-selector {
     display: none;
 }
 
-@media (max-width: 1200px) {
+/* =================================================================================
+    Media queries ensuring proper responsive layout on different screen resolutions
+   ================================================================================= */
+@media (max-width: 1400px) {
     .ontotext-dropdown .ontotext-dropdown-button:after {
         padding-left: 0 !important;
     }
@@ -315,7 +318,9 @@ yasgui-component .page-selector {
     .ontotext-dropdown .button-name {
         display: none;
     }
+}
 
+@media (max-width: 1200px) {
     .explore-visual-graph-button-name {
         display: none;
     }
