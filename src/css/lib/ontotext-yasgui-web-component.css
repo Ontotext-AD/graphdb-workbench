@@ -278,6 +278,11 @@ yasgui-component .saved-queries-container .saved-queries-popup .saved-query-acti
 }
 
 yasgui-component .abort-button {
+    background-color: var(--primary-color) !important;
+}
+
+yasgui-component .abort-button:hover {
+    background-color: var(--primary-color-dark) !important;
 }
 
 yasgui-component .page-button.selected-page {
