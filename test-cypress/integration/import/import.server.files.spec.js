@@ -44,7 +44,7 @@ describe('Import screen validation - server files', () => {
             .verifyImportStatusDetails(FILE_FOR_IMPORT, [CONTEXT, BASE_URI, '"preserveBNodeIds": true,']);
     });
 
-    // for this test it is necessary to set up a whitelist to GraphDB in this way: -Dgraphdb.jsonld.whitelist=<absolute_path_to_fixtures/graphdb-import>
+    // for this test it is necessary to set up a whitelist to GraphDB in this way: -Dgraphdb.jsonld.whitelist=https://w3c.github.io/json-ld-api/tests/*
     it('Test import Server files successfully with JSONLD context link settings', () => {
         ImportSteps.selectServerFile(JSONLD_FILE_FOR_IMPORT)
             .importServerFiles(true)
