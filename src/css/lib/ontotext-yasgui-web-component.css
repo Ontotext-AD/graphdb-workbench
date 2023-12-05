@@ -84,6 +84,8 @@ yasgui-component .yasr-toolbar .explore-visual-graph-button {
     outline: none;
     color: #fff;
     background-color: var(--primary-color);
+    padding-left: 16px;
+    padding-right: 16px;
 }
 
 yasgui-component .yasr-toolbar .explore-visual-graph-button:hover {
