@@ -18,9 +18,9 @@ const exportCtrl = angular.module('graphdb.framework.impex.export.controllers', 
 
 exportCtrl.controller('ExportCtrl',
   ['$scope', '$http', '$location', '$timeout', 'ModalService', 'filterFilter', '$repositories', 'toastr', 'RDF4JRepositoriesRestService',
-      'FileTypes', '$translate', 'AuthTokenService',
+      'FileTypes', '$translate', 'AuthTokenService', '$uibModal',
       function($scope, $http, $location, $timeout, ModalService, filterFilter, $repositories, toastr, RDF4JRepositoriesRestService,
-        FileTypes, $translate, AuthTokenService) {
+        FileTypes, $translate, AuthTokenService, $uibModal) {
 
             $scope.getActiveRepository = function () {
                 return $repositories.getActiveRepository();
@@ -128,7 +128,7 @@ exportCtrl.controller('ExportCtrl',
                 if (auth) {
                     url = url + '&authToken=' + encodeURIComponent(auth);
                 }
-                let win = window.open(url);
+                const win = window.open(url);
                 $timeout(function () {
                     if (win.document.location.href !== 'about:blank') {
                         win.close();
@@ -168,6 +168,28 @@ exportCtrl.controller('ExportCtrl',
                 } else {
                     $scope.startDownload(format, contextID);
                 }
+            };
+
+            $scope.openExportSettings = function (format, currentMode, frameLink, contextLink) {
+                const modalInstance = $uibModal.open({
+                    templateUrl: 'js/angular/import/templates/exportSettingsModal.html',
+                    controller: 'ExportSettingsCtrl',
+                    resolve: {
+                        currentMode: function () {
+                            return currentMode;
+                        },
+                        frameLink: function () {
+                            return frameLink;
+                        },
+                        contextLink: function () {
+                            return contextLink;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function (data) {
+
+                });
             };
 
             $scope.startDownload = function (format, contextID) {
@@ -406,3 +428,40 @@ exportCtrl.controller('ExportCtrl',
                 }
             };
         }]);
+
+// exportCtrl.controller("ExportSettingsCtrl",
+//     [function () {
+//
+//     }]);
+
+exportCtrl.controller("ExportSettingsCtrl",
+    ['$scope', '$uibModalInstance', 'currentMode', 'frameLink', 'contextLink', function ($scope, $uibModalInstance, currentMode, frameLink, contextLink) {
+        $scope.JSONLDModes = [
+            {name: "frame", link: "http://www.w3.org/ns/json-ld#frame"},
+            {name: "framed", link: "http://www.w3.org/ns/json-ld#framed"},
+            {name: "context", link: "http://www.w3.org/ns/json-ld#context"},
+            {name: "expanded", link: "http://www.w3.org/ns/json-ld#expanded"},
+            {name: "flattened", link: "http://www.w3.org/ns/json-ld#flattened"},
+            {name: "compacted", link: "http://www.w3.org/ns/json-ld#compacted"}
+        ];
+
+        $scope.currentMode = _.find($scope.JSONLDModes, {link: currentMode});
+        $scope.frameLink = frameLink;
+        $scope.contextLink = contextLink;
+
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss();
+        };
+
+        $scope.reset = function () {
+            $scope.currentMode = _.find($scope.JSONLDModes, {name: "expanded"});
+        };
+
+        $scope.ok = function () {
+            $uibModalInstance.close({
+                currentMode: $scope.currentMode,
+                frameLink: $scope.frameLink,
+                contextLink: $scope.contextLink
+            });
+        };
+    }]);

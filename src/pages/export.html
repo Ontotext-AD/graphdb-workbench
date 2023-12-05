@@ -62,6 +62,12 @@
                         </button>
                         <ul class="dropdown-menu">
                             <li ng-repeat="format in exportFormats" class="export-repo-format-{{format.name}}"
+                                ng-if="format.name == 'JSON-LD';"
+                                ng-click="openExportSettings(format, false);">
+                                <span class="dropdown-item">{{format.name}}</span>
+                            </li>
+                            <li ng-repeat="format in exportFormats" class="export-repo-format-{{format.name}}"
+                                ng-if="format.name != 'JSON-LD';"
                                 ng-click="exportRepo(format, false);">
                                 <span class="dropdown-item">{{format.name}}</span>
                             </li>
