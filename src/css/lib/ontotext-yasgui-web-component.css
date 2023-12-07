@@ -95,11 +95,7 @@ yasgui-component .yasr-toolbar .explore-visual-graph-button:hover {
 
 yasgui-component .yasr-toolbar .chart-download-as-button,
 yasgui-component .yasr-toolbar .pivot-table-download-as-button {
-    background-color: var(--primary-color-dark) !important;
-}
-
-yasgui-component .yasr-toolbar .chart-download-as-button {
-    padding-left: 5px;
+    background-color: var(--primary-color) !important;
 }
 
 yasgui-component .ok-button,
