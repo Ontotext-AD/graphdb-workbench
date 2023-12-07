@@ -1,15 +1,23 @@
 @import "../common.css";
 
 /* Resets the default font-size for every tag in the yasgui */
-yasgui-component * {
+/* Omit the heading  tags */
+yasgui-component :not(h3):not(h4) {
     font-size: 16px !important;
 }
 
 /* And scale it down on given viewport width */
 @media (max-width: 1439px) {
-    yasgui-component * {
+    /* Omit the heading  tags */
+    yasgui-component :not(h3):not(h4) {
         font-size: 14px !important;
     }
+}
+
+yasgui-component .dialog .dialog-footer .cancel-button {
+    margin-right: 3px;
+    background-color: #ebebeb;
+    border-color: #ebebeb;
 }
 
 yasgui-component .yasgui-btn.btn-selected {
@@ -102,6 +110,7 @@ yasgui-component .ok-button,
 yasgui-component .primary-button,
 yasgui-component .confirm-button {
     background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
 }
 
 yasgui-component .yasr a,
