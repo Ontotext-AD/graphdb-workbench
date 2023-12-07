@@ -10,6 +10,7 @@ import {isEqual} from "lodash/lang";
 import {QueryType} from "../../../models/ontotext-yasgui/query-type";
 import {YasguiComponent} from "../../../models/yasgui-component";
 import {YasguiComponentDirectiveUtil} from "./yasgui-component-directive.util";
+import {KeyboardShortcutName} from "../../../models/ontotext-yasgui/keyboard-shortcut-name";
 
 const modules = [
     'graphdb.framework.core.services.translation-service',
@@ -348,6 +349,24 @@ function yasguiComponentDirective(
                     };
 
                     angular.extend(config, getDefaultConfig(), $scope.yasguiConfig);
+
+                    if (config.showQueryButton !== undefined && !config.showQueryButton) {
+                        const keyboardShortcutConfiguration = config.keyboardShortcutConfiguration || {};
+                        keyboardShortcutConfiguration[KeyboardShortcutName.EXECUTE_QUERY_OR_UPDATE] = false;
+                        keyboardShortcutConfiguration[KeyboardShortcutName.EXECUTE_EXPLAIN_PLAN_FOR_QUERY] = false;
+                        keyboardShortcutConfiguration[KeyboardShortcutName.EXECUTE_CHAT_GPT_EXPLAIN_PLAN_FOR_QUERY] = false;
+                        keyboardShortcutConfiguration[KeyboardShortcutName.CREATE_TAB] = false;
+                        keyboardShortcutConfiguration[KeyboardShortcutName.CREATE_SAVE_QUERY] = false;
+                        keyboardShortcutConfiguration[KeyboardShortcutName.SWITCH_NEXT_TAB] = false;
+                        keyboardShortcutConfiguration[KeyboardShortcutName.SWITCH_PREVIOUS_TAB] = false;
+                        keyboardShortcutConfiguration[KeyboardShortcutName.CLOSES_ALL_TABS] = false;
+                        config.keyboardShortcutConfiguration = keyboardShortcutConfiguration;
+                    } else {
+                        const keyboardShortcutConfiguration = config.keyboardShortcutConfiguration || {};
+                        keyboardShortcutConfiguration[KeyboardShortcutName.EXECUTE_EXPLAIN_PLAN_FOR_QUERY] = true;
+                        keyboardShortcutConfiguration[KeyboardShortcutName.EXECUTE_CHAT_GPT_EXPLAIN_PLAN_FOR_QUERY] = true;
+                        config.keyboardShortcutConfiguration = keyboardShortcutConfiguration;
+                    }
 
                     $scope.ontotextYasguiConfig = config;
 
