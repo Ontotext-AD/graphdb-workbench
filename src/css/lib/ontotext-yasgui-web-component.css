@@ -31,6 +31,22 @@ yasgui-component .btn-orientation {
 
 yasgui-component .yasqe .CodeMirror {
     font-family: var(--mono-font) !important;
+    font-size: 16px;
+}
+
+/* Unset the font-family so that it can inherit from workbench */
+yasgui-component .CodeMirror-hints {
+    font-family: unset;
+}
+
+yasgui-component li.CodeMirror-hint-active {
+    background: var(--autocomplete-background);
+    color: inherit;
+}
+
+yasgui-component .CodeMirror-hint b, .CodeMirror-hint-active b {
+    color: var(--autocomplete-match);
+    font-weight: 400;
 }
 
 yasgui-component .yasqe .yasqe_buttons {
