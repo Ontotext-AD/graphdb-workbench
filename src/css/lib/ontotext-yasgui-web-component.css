@@ -113,6 +113,14 @@ yasgui-component .confirm-button {
     border-color: var(--primary-color) !important;
 }
 
+yasgui-component .yasr .alert-box {
+    padding-right: 35px;
+}
+
+yasgui-component .yasr .alert-box .close-button {
+    font-size: 21px !important;
+}
+
 yasgui-component .yasr a,
 yasgui-component .yasr .overlay_content .yasr_btn,
 yasgui-component .yasr .yasr_btn.selected {
