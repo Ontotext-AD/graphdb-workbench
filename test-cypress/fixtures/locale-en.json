@@ -30,10 +30,14 @@
             "recovery_state": {
                 "searching_for_node": "Searching for node",
                 "applying_snapshot": "Applying a snapshot",
-                "building_snapshot": "Building a snapshot for {{node}}",
-                "waiting_for_snapshot": "Waiting for snapshot from node {{node}}",
-                "sending_snapshot": "Sending a snapshot to node {{node}}",
-                "receiving_snapshot": "Receiving a snapshot from node {{node}}"
+                "building_snapshot": "Building a snapshot",
+                "building_snapshot_for_node": "Building a snapshot for {{node}}",
+                "waiting_for_snapshot": "Waiting for snapshot",
+                "waiting_for_snapshot_from_node": "Waiting for snapshot from node {{node}}",
+                "sending_snapshot": "Sending a snapshot",
+                "sending_snapshot_to_node": "Sending a snapshot to node {{node}}",
+                "receiving_snapshot": "Receiving a snapshot",
+                "receiving_snapshot_from_node": "Receiving a snapshot from node {{node}}"
             }
         },
         "cluster_configuration": {

@@ -2,6 +2,7 @@ import 'angular/utils/local-storage-adapter';
 import * as CDS from "./services/cluster-drawing.service";
 import {LinkState, NodeState, RecoveryState} from "./controllers/cluster-management.controller";
 import d3tip from 'lib/d3-tip/d3-tip-patch';
+import {RecoveryStatusState} from "../models/clustermanagement/recovery-status-state";
 
 
 const navigationBarWidthFull = 240;
@@ -338,7 +339,33 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     nodes.forEach((node) => {
                         node.hostname = UriUtils.shortenIri(node.endpoint);
                         if (!_.isEmpty(node.recoveryStatus)) {
-                            const messageLabelKey = 'cluster_management.cluster_graphical_view.recovery_state.' + node.recoveryStatus.state.toLowerCase();
+                            let messageLabelKey = 'cluster_management.cluster_graphical_view.recovery_state.';
+                            const hasAffectedNodes = node.recoveryStatus.affectedNodes && node.recoveryStatus.affectedNodes.length > 0;
+                            const nodeRecoveryState = node.recoveryStatus.state;
+
+                            if (hasAffectedNodes) {
+                                switch (nodeRecoveryState) {
+                                    case RecoveryStatusState.BUILDING_SNAPSHOT:
+                                        messageLabelKey+= nodeRecoveryState.toLowerCase() + '_for_node';
+                                        break;
+                                    case RecoveryStatusState.WAITING_FOR_SNAPSHOT:
+                                        messageLabelKey+= nodeRecoveryState.toLowerCase() + '_from_node';
+                                        break;
+                                    case RecoveryStatusState.SENDING_SNAPSHOT:
+                                        messageLabelKey+= nodeRecoveryState.toLowerCase() + '_to_node';
+                                        break;
+                                    case RecoveryStatusState.RECEIVING_SNAPSHOT:
+                                        messageLabelKey+= nodeRecoveryState.toLowerCase() + '_from_node';
+                                        break;
+                                    case RecoveryStatusState.APPLYING_SNAPSHOT:
+                                        messageLabelKey+= nodeRecoveryState.toLowerCase();
+                                        break;
+                                    default:
+                                        messageLabelKey += nodeRecoveryState.toLowerCase();
+                                }
+                            } else {
+                                messageLabelKey += nodeRecoveryState.toLowerCase();
+                            }
                             node.recoveryStatus.message = $translate.instant(messageLabelKey, {node: node.recoveryStatus.affectedNodes.join(', ')});
                         }
                     });
