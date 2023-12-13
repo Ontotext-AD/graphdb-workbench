@@ -15,6 +15,13 @@ export class ClusterStubs extends Stubs {
         }).as('3-nodes-cluster-group-status');
     }
 
+    static stubClusterWithRecoveryStatusGroupStatus(recoveryStatus) {
+        cy.intercept('/rest/cluster/group/status', {
+            fixture: `/cluster/3-nodes-cluster-group-status-${recoveryStatus}`,
+            statusCode: 200
+        }).as('3-nodes-cluster-group-status');
+    }
+
     static stubNoClusterNodeStatus() {
         cy.intercept('/rest/cluster/node/status', {
             fixture: '/cluster/no-cluster-node-status.json',
