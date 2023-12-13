@@ -339,32 +339,10 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     nodes.forEach((node) => {
                         node.hostname = UriUtils.shortenIri(node.endpoint);
                         if (!_.isEmpty(node.recoveryStatus)) {
-                            let messageLabelKey = 'cluster_management.cluster_graphical_view.recovery_state.';
+                            let messageLabelKey = `cluster_management.cluster_graphical_view.recovery_state.${node.recoveryStatus.state.toLowerCase()}`;
                             const hasAffectedNodes = node.recoveryStatus.affectedNodes && node.recoveryStatus.affectedNodes.length > 0;
-                            const nodeRecoveryState = node.recoveryStatus.state;
-
                             if (hasAffectedNodes) {
-                                switch (nodeRecoveryState) {
-                                    case RecoveryStatusState.BUILDING_SNAPSHOT:
-                                        messageLabelKey+= nodeRecoveryState.toLowerCase() + '_for_node';
-                                        break;
-                                    case RecoveryStatusState.WAITING_FOR_SNAPSHOT:
-                                        messageLabelKey+= nodeRecoveryState.toLowerCase() + '_from_node';
-                                        break;
-                                    case RecoveryStatusState.SENDING_SNAPSHOT:
-                                        messageLabelKey+= nodeRecoveryState.toLowerCase() + '_to_node';
-                                        break;
-                                    case RecoveryStatusState.RECEIVING_SNAPSHOT:
-                                        messageLabelKey+= nodeRecoveryState.toLowerCase() + '_from_node';
-                                        break;
-                                    case RecoveryStatusState.APPLYING_SNAPSHOT:
-                                        messageLabelKey+= nodeRecoveryState.toLowerCase();
-                                        break;
-                                    default:
-                                        messageLabelKey += nodeRecoveryState.toLowerCase();
-                                }
-                            } else {
-                                messageLabelKey += nodeRecoveryState.toLowerCase();
+                                messageLabelKey += '_with_affected_node';
                             }
                             node.recoveryStatus.message = $translate.instant(messageLabelKey, {node: node.recoveryStatus.affectedNodes.join(', ')});
                         }
