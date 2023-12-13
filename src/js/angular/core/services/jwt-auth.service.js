@@ -240,7 +240,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         toastr.success($translate.instant('jwt.auth.security.status', {status: ($translate.instant(enabled ? 'enabled.status' : 'disabled.status'))}));
                         AuthTokenService.clearAuthToken();
                         that.initSecurity();
-                        this.securityEnabled = enabled;
+                        that.securityEnabled = enabled;
                     }, function (err) {
                         toastr.error(err.data, $translate.instant('common.error'));
                     });
