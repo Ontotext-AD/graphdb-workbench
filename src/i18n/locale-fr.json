@@ -32,10 +32,14 @@
             "recovery_state": {
                 "searching_for_node": "Recherche de nœud",
                 "applying_snapshot": "Appliquer un instantané",
-                "building_snapshot": "Créer un instantané pour {{node}}",
-                "waiting_for_snapshot": "En attente d'un instantané du nœud {{node}}",
-                "sending_snapshot": "Envoi d'un instantané au nœud {{node}}",
-                "receiving_snapshot": "Réception d'un instantané du nœud {{node}}"
+                "building_snapshot": "Créer un instantané",
+                "building_snapshot_with_affected_node": "Créer un instantané pour {{node}}",
+                "waiting_for_snapshot": "En attente d'un instantané",
+                "waiting_for_snapshot_with_affected_node": "En attente d'un instantané du nœud {{node}}",
+                "sending_snapshot": "Envoi d'un instantané",
+                "sending_snapshot_with_affected_node": "Envoi d'un instantané au nœud {{node}}",
+                "receiving_snapshot": "Réception d'un instantané",
+                "receiving_snapshot_with_affected_node": "Réception d'un instantané du nœud {{node}}"
             }
         },
         "cluster_configuration": {
