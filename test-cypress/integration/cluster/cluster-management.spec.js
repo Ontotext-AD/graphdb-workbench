@@ -9,7 +9,8 @@ import {ReplaceNodesDialogSteps} from "../../steps/cluster/replace-nodes-dialog-
 import {ApplicationSteps} from "../../steps/application-steps";
 import {ClusterViewSteps} from "../../steps/cluster/cluster-view-steps";
 
-describe('Cluster management', () => {
+// TODO: removed for GDB10.5 version due to instability of the cluster in the backend
+describe.skip('Cluster management', () => {
 
     let repositoryId;
 

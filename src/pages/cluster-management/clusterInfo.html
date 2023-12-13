@@ -40,11 +40,12 @@
                     gdb-tooltip="{{'cluster_management.buttons.add_nodes_btn_tooltip' | translate}}" tooltip-placement="bottom">
                 <span class="icon-plus"></span> {{'cluster_management.buttons.add_nodes_btn' | translate}}
             </button>
-            <button type="button" class="btn btn-primary replace-nodes-btn mr-2" ng-if="currentLeader"
-                    ng-click="showReplaceNodesDialog()"
-                    gdb-tooltip="{{'cluster_management.buttons.replace_nodes_btn_tooltip' | translate}}" tooltip-placement="bottom">
-                <span class="icon-exchange"></span> {{'cluster_management.buttons.replace_nodes_btn' | translate}}
-            </button>
+<!--            TODO: removed for GDB10.5 version due to instability of the cluster in the backend -->
+<!--            <button type="button" class="btn btn-primary replace-nodes-btn mr-2" ng-if="currentLeader"-->
+<!--                    ng-click="showReplaceNodesDialog()"-->
+<!--                    gdb-tooltip="{{'cluster_management.buttons.replace_nodes_btn_tooltip' | translate}}" tooltip-placement="bottom">-->
+<!--                <span class="icon-exchange"></span> {{'cluster_management.buttons.replace_nodes_btn' | translate}}-->
+<!--            </button>-->
         </div>
     </div>
     <button class="btn btn-link preview-cluster-config-btn"
