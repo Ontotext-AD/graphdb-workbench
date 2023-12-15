@@ -25,7 +25,7 @@ export class YasguiSteps {
     }
 
     static getCurrentTabTitle() {
-        return this.getCurrentTab().find('[role=tab] > span');
+        return this.getCurrentTab().find('[role=tab] > div');
     }
 
     static openTab(index) {
