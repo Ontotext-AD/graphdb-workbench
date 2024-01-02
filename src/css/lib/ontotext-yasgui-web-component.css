@@ -3,13 +3,18 @@
 /* Resets the default font-size for every tag in the yasgui */
 /* Omit the heading  tags */
 yasgui-component :not(h3):not(h4) {
-    font-size: 16px !important;
+    font-size: 1rem !important;
+}
+
+/* Dialog body should have slightly bigger font-size */
+yasgui-component .dialog-body {
+    font-size: 1.25rem !important;
 }
 
 /* And scale it down on given viewport width */
 @media (max-width: 1439px) {
     /* Omit the heading  tags */
-    yasgui-component :not(h3):not(h4) {
+    yasgui-component :not(h3):not(h4):not(.dialog-body) {
         font-size: 14px !important;
     }
 }
