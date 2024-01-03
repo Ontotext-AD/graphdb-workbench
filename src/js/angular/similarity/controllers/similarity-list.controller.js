@@ -102,7 +102,8 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
         // Don't try to get namespaces for ontop or fedx repository
         if ($scope.getActiveRepository() && !$scope.isActiveRepoOntopType() && !$scope.isActiveRepoFedXType()) {
             $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
-                .success(function (data) {
+                .then(function (result) {
+                    const {data} = result;
                     checkAutocompleteStatus();
                     $scope.usedPrefixes = {};
                     data.results.bindings.forEach(function (e) {
@@ -120,7 +121,8 @@ function SimilarityCtrl($scope, $interval, toastr, $repositories, $licenseServic
                         hideHeader: true,
                         pluginsOptions: YasrUtils.getYasrConfiguration()
                     });
-                }).error(function (data) {
+                    return result;
+                }).catch(function (data) {
                     toastr.error(getError(data), $translate.instant('get.namespaces.error.msg'));
                 });
         }

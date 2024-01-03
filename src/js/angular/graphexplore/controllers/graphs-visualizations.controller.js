@@ -1132,7 +1132,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
 
         // Inits namespaces for repo
         $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
-            .success(function (data) {
+            .then(function (result) {
+                const {data} = result;
                 const nss = _.map(data.results.bindings, function (o) {
                     return {"uri": o.namespace.value, "prefix": o.prefix.value};
                 });
@@ -1141,7 +1142,8 @@ function GraphsVisualizationsCtrl($scope, $rootScope, $repositories, $licenseSer
                 });
 
                 checkAutocompleteStatus();
-            }).error(function (data) {
+                return result;
+            }).catch(function (data) {
                 toastr.error(getError(data), $translate.instant('graphexplore.error.view.will.not.work'));
             });
     }

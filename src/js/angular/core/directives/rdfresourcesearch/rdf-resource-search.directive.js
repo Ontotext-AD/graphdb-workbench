@@ -20,10 +20,10 @@ function rdfResourceSearchDirective($rootScope, $timeout,
 
             function refreshRepositoryInfo() {
                 if ($scope.getActiveRepository()) {
-                    $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces(
-                        $scope.getActiveRepository())
-                        .success(function () {
+                    $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
+                        .then(function (result) {
                             checkAutocompleteStatus();
+                            return result;
                         });
                 }
             }
