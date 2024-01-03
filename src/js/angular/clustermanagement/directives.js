@@ -338,7 +338,11 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     nodes.forEach((node) => {
                         node.hostname = UriUtils.shortenIri(node.endpoint);
                         if (!_.isEmpty(node.recoveryStatus)) {
-                            const messageLabelKey = 'cluster_management.cluster_graphical_view.recovery_state.' + node.recoveryStatus.state.toLowerCase();
+                            let messageLabelKey = `cluster_management.cluster_graphical_view.recovery_state.${node.recoveryStatus.state.toLowerCase()}`;
+                            const hasAffectedNodes = node.recoveryStatus.affectedNodes && node.recoveryStatus.affectedNodes.length > 0;
+                            if (hasAffectedNodes) {
+                                messageLabelKey += '_with_affected_node';
+                            }
                             node.recoveryStatus.message = $translate.instant(messageLabelKey, {node: node.recoveryStatus.affectedNodes.join(', ')});
                         }
                     });
