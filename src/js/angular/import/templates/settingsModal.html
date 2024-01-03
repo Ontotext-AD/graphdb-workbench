@@ -257,7 +257,23 @@
             </div>
         </div>
 
-
+            <div ng-show="showAdvancedSettings && settings.isJSONLDFile" class="form-group row contextLinkRow">
+                <label class="col-lg-3 col-form-label">
+                    {{'import.context.link' | translate}}
+                    <span class="btn btn-link p-0"
+                          uib-popover="{{'import.popover.context.link' | translate}}"
+                          popover-trigger="mouseenter"
+                          popover-placement="right"><em class="icon icon-info"></em></span>
+                </label>
+                <div class="col-lg-9">
+                    <input validate-uri name="contextLink" type="text"
+                           ng-model="settings['parserSettings']['contextLink']" class="form-control"
+                           placeholder="http://example.com/example.jsonld">
+                    <div class="alert alert-danger" ng-if="hasError(settingsForm.$error.validateUri, 'contextLink')">
+                        {{'import.alert.not.valid.iri' | translate}}
+                    </div>
+                </div>
+            </div>
     </div>
     </form>
 </div>
