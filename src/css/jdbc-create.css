@@ -2,3 +2,7 @@
     /* unset it to prevent yasgui inner controls misalignment */
     position: unset;
 }
+
+yasgui-component .CodeMirror {
+    height: 498px !important;
+}
