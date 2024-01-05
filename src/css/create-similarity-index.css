@@ -6,3 +6,7 @@
     max-height: 345px;
     overflow-y: auto;
 }
+
+yasgui-component .CodeMirror {
+    height: 330px !important;
+}

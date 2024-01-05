@@ -8,6 +8,10 @@
     overflow-y: auto;
 }
 
+yasgui-component .CodeMirror {
+    height: 330px !important;
+}
+
 /* Centers loader vertically within the space occupied by the editor */
 #sparql-content .ot-loader-new-content {
     margin-top: 121px;
