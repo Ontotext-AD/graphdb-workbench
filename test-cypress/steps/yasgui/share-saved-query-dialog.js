@@ -8,7 +8,7 @@ export class ShareSavedQueryDialog {
     }
 
     static getShareLinkField() {
-        return this.getDialog().find('#shareLink');
+        return this.getDialog().find('[name=shareLink]');
     }
 
     static getShareLink() {
