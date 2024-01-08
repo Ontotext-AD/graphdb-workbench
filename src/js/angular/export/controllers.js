@@ -2,6 +2,8 @@ import 'angular/core/services';
 import 'angular/core/services/repositories.service';
 import 'angular/core/services/jwt-auth.service';
 import 'angular/utils/file-types';
+import 'angular/rest/export.rest.service';
+import {saveAs} from 'lib/FileSaver-patch';
 import {decodeHTML} from "../../../app";
 import {cloneDeep} from "lodash";
 
@@ -11,7 +13,8 @@ const modules = [
     'toastr',
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.core.services.jwtauth',
-    'graphdb.workbench.utils.filetypes'
+    'graphdb.workbench.utils.filetypes',
+    'graphdb.framework.rest.export.service'
 ];
 
 const exportCtrl = angular.module('graphdb.framework.impex.export.controllers', modules);
@@ -139,32 +142,22 @@ exportCtrl.controller('ExportCtrl',
             };
 
             $scope.downloadExportJSONLD = function (contextID, repo, graphsByValue, format, JSONLDMode, link) {
-                // let url;
-                // if (link !== undefined) {
-                //     url = downloadUrl + '&Accept=' + encodeURIComponent(format.type) + ';profile=' + encodeURIComponent(JSONLDMode.link) + '&Link:' + encodeURIComponent(link);
-                // } else {
-                //     url = downloadUrl + '&Accept=' + encodeURIComponent(format.type) + ';profile=' + encodeURIComponent(JSONLDMode.link);
-                // }
-                //
-                // const auth = AuthTokenService.getAuthToken();
-                // if (auth) {
-                //     url = url + '&authToken=' + encodeURIComponent(auth);
-                // }
-                // const win = window.open(url);
-                // $timeout(function () {
-                //     if (win.document.location.href !== 'about:blank') {
-                //         win.close();
-                //         toastr.error('Could not export graph. Check GraphDB logs for detailed reason.');
-                //     }
-                // }, 100);
-
-                const acceptHeader = format + ';profile=' + JSONLDMode.link;
-                let linkHeader = undefined;
-                if (link !== undefined) {
-                    linkHeader = link;
-                }
-
-                ExportRestService.getExportedStatementsAsJSONLD(contextID, repo, graphsByValue, acceptHeader, linkHeader);
+                const acceptHeader = format.type + ';profile=' + JSONLDMode.link;
+                ExportRestService.getExportedStatementsAsJSONLD(contextID, repo, graphsByValue, acceptHeader, link, AuthTokenService.getAuthToken())
+                    .then(function ({data, filename}) {
+                        saveAs(data, filename);
+                    })
+                    .catch(function (res) {
+                    // data is received as blob
+                    res.data.text()
+                        .then((message) => {
+                            if (res.status === 431) {
+                                toastr.error(res.statusText, $translate.instant('common.error'));
+                            } else {
+                                toastr.error(message, $translate.instant('common.error'));
+                            }
+                        });
+                    });
             };
 
             /// <summary>Trigger the custom event for DD tooltip.</summary>
