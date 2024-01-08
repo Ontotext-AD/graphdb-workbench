@@ -6,41 +6,41 @@
 <div class="modal-body">
     <form name="exportSettingsForm" id="exportSettingsForm" class="export-settings-form">
         <div class="form-horizontal">
-            <div class="form-group">
-                <div class="form-group row">
-                    <label class="col-lg-3 col-form-label" for="wb-JSONLD-mode">
-                        {{'jsonld.mode' | translate}}
-                        <span class="btn btn-link p-0"
-                              uib-popover="{{'jsonld.mode.info' | translate}}"
-                              popover-trigger="mouseenter"
-                              popover-placement="right"><em class="icon icon-info"></em></span>
-                    </label>
-                    <div class="col-lg-9">
-                        <select class="form-control" id="wb-JSONLD-mode"
-                                ng-model="currentMode"
-                                ng-options="mode.link for mode in JSONLDModes">
-                        </select>
-                    </div>
+            <div class="form-group row">
+                <label class="col-lg-3 col-form-label" for="wb-JSONLD-mode">
+                    {{'jsonld.mode' | translate}}
+                    <span class="btn btn-link p-0"
+                          uib-popover="{{'jsonld.mode.info' | translate}}"
+                          popover-trigger="mouseenter"
+                          popover-placement="right"><em class="icon icon-info"></em></span>
+                </label>
+                <div class="col-lg-9">
+                    <select class="form-control" id="wb-JSONLD-mode"
+                            ng-model="currentMode"
+                            ng-options="mode.link for mode in JSONLDModes">
+                    </select>
                 </div>
+            </div>
 
-                <div class="form-group row" ng-if="currentMode.name == 'framed' || currentMode.name == 'frame'">
-                    <label class="col-lg-3 col-form-label" for="wb-JSONLD-frame">
-                        {{'jsonld.frame.link' | translate}}
-                    </label>
-                    <div class="col-lg-9">
-                        <input class="form-control" id="wb-JSONLD-frame" type="text"
-                               ng-model="frameLink" placeholder= "{{'jsonld.frame.uri.placeholder' | translate}}" autofocus/>
-                    </div>
+            <div class="form-group row" ng-if="currentMode.name == 'framed' || currentMode.name == 'frame'">
+                <label class="col-lg-3 col-form-label" for="wb-JSONLD-frame">
+                    {{'jsonld.frame.link' | translate}}
+                </label>
+                <div class="col-lg-9">
+                    <input class="form-control" id="wb-JSONLD-frame" type="text"
+                           ng-model="$parent.link" placeholder="{{'jsonld.frame.uri.placeholder' | translate}}" autofocus/>
                 </div>
+            </div>
 
-                <div class="form-group row" ng-if="currentMode.name == 'context' || currentMode.name == 'compacted' || currentMode.name == 'flattened'">
-                    <label class="col-lg-3 col-form-label" for="wb-JSONLD-context">
-                        {{'jsonld.context.link' | translate}}
-                    </label>
-                    <div class="col-lg-9">
-                        <input class="form-control" id="wb-JSONLD-context" type="text"
-                               ng-model="contextLink" placeholder= "{{'jsonld.context.uri.placeholder' | translate}}" autofocus/>
-                    </div>
+            <div class="form-group row"
+                 ng-if="currentMode.name == 'context' || currentMode.name == 'compacted' || currentMode.name == 'flattened'">
+                <label class="col-lg-3 col-form-label" for="wb-JSONLD-context">
+                    {{'jsonld.context.link' | translate}}
+                </label>
+                <div class="col-lg-9">
+                    <input class="form-control" id="wb-JSONLD-context" type="text"
+                           ng-model="$parent.link" placeholder="{{'jsonld.context.uri.placeholder' | translate}}"
+                           autofocus/>
                 </div>
             </div>
         </div>
@@ -51,7 +51,7 @@
     <button type="button" class="btn btn-link pull-left" ng-click="reset()">{{'import.restore.defaults.btn' | translate}}</button>
     <button type="button" ng-click="cancel()" class="btn btn-secondary">{{'common.cancel.btn' | translate}}</button>
     <button id="wb-export-JSONLD" class="btn btn-primary" type="button"
-            ng-click="">
+            ng-click="exportJsonLD()">
         {{'export' | translate}}
     </button>
 </div>

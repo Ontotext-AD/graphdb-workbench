@@ -144,6 +144,11 @@
 											ng-disabled="!graph.contextID.uri">
 										<span class="icon-export"></span></button>
 									<ul class="dropdown-menu" role="menu">
+                                        <li ng-repeat="format in exportFormats" class="export-repo-format-{{format.name}}"
+                                            ng-if="format.name == 'JSON-LD';"
+                                            ng-click="openExportSettings(format, graph.contextID);">
+                                            <span class="dropdown-item">{{format.name}}</span>
+                                        </li>
 										<li ng-repeat="format in exportFormats"
 											ng-click="exportRepo(format, graph.contextID);">
 											<span class="dropdown-item">{{format.name}}</span>

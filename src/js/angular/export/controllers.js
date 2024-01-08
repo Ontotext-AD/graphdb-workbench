@@ -17,9 +17,9 @@ const modules = [
 const exportCtrl = angular.module('graphdb.framework.impex.export.controllers', modules);
 
 exportCtrl.controller('ExportCtrl',
-  ['$scope', '$http', '$location', '$timeout', 'ModalService', 'filterFilter', '$repositories', 'toastr', 'RDF4JRepositoriesRestService',
+  ['$scope', '$http', '$location', '$timeout', 'ModalService', 'filterFilter', '$repositories', 'toastr', 'ExportRestService', 'RDF4JRepositoriesRestService',
       'FileTypes', '$translate', 'AuthTokenService', '$uibModal',
-      function($scope, $http, $location, $timeout, ModalService, filterFilter, $repositories, toastr, RDF4JRepositoriesRestService,
+      function($scope, $http, $location, $timeout, ModalService, filterFilter, $repositories, toastr, ExportRestService, RDF4JRepositoriesRestService,
         FileTypes, $translate, AuthTokenService, $uibModal) {
 
             $scope.getActiveRepository = function () {
@@ -138,6 +138,35 @@ exportCtrl.controller('ExportCtrl',
 
             };
 
+            $scope.downloadExportJSONLD = function (contextID, repo, graphsByValue, format, JSONLDMode, link) {
+                // let url;
+                // if (link !== undefined) {
+                //     url = downloadUrl + '&Accept=' + encodeURIComponent(format.type) + ';profile=' + encodeURIComponent(JSONLDMode.link) + '&Link:' + encodeURIComponent(link);
+                // } else {
+                //     url = downloadUrl + '&Accept=' + encodeURIComponent(format.type) + ';profile=' + encodeURIComponent(JSONLDMode.link);
+                // }
+                //
+                // const auth = AuthTokenService.getAuthToken();
+                // if (auth) {
+                //     url = url + '&authToken=' + encodeURIComponent(auth);
+                // }
+                // const win = window.open(url);
+                // $timeout(function () {
+                //     if (win.document.location.href !== 'about:blank') {
+                //         win.close();
+                //         toastr.error('Could not export graph. Check GraphDB logs for detailed reason.');
+                //     }
+                // }, 100);
+
+                const acceptHeader = format + ';profile=' + JSONLDMode.link;
+                let linkHeader = undefined;
+                if (link !== undefined) {
+                    linkHeader = link;
+                }
+
+                ExportRestService.getExportedStatementsAsJSONLD(contextID, repo, graphsByValue, acceptHeader, linkHeader);
+            };
+
             /// <summary>Trigger the custom event for DD tooltip.</summary>
             $scope.openExportDDTooltip = function () {
                 if ($scope.showExportDDTooltip) {
@@ -170,25 +199,20 @@ exportCtrl.controller('ExportCtrl',
                 }
             };
 
-            $scope.openExportSettings = function (format, currentMode, frameLink, contextLink) {
+            $scope.exportRepoJSONLD = function (format, contextID, JSONLDMode, link) {
+                $scope.startDownloadJSONLD(format, contextID, JSONLDMode, link);
+            };
+
+            $scope.openExportSettings = function (format, contextID) {
                 const modalInstance = $uibModal.open({
                     templateUrl: 'js/angular/import/templates/exportSettingsModal.html',
                     controller: 'ExportSettingsCtrl',
-                    resolve: {
-                        currentMode: function () {
-                            return currentMode;
-                        },
-                        frameLink: function () {
-                            return frameLink;
-                        },
-                        contextLink: function () {
-                            return contextLink;
-                        }
-                    }
+                    scope: $scope
                 });
 
                 modalInstance.result.then(function (data) {
-
+                    $scope.exportRepoJSONLD(format, contextID, data.currentMode, data.link);
+                    $scope.downloadExportJSONLD(contextID, $repositories.getActiveRepositoryObject(), $scope.graphsByValue, format, data.currentMode, data.link);
                 });
             };
 
@@ -202,6 +226,18 @@ exportCtrl.controller('ExportCtrl',
                     downloadUrl = `repositories/${repo.id}/statements?infer=false&location=${encodeURIComponent(repo.location)}`;
                 }
                 $scope.downloadExport(downloadUrl, format);
+            };
+
+            $scope.startDownloadJSONLD = function (format, contextID, JSONLDMode, link) {
+                // let downloadUrl;
+                // const repo = $repositories.getActiveRepositoryObject();
+
+                // if (contextID) {
+                //     downloadUrl = `repositories/${repo.id}/statements?infer=false&context=${$scope.graphsByValue[contextID.value].exportUri}&location=${encodeURIComponent(repo.location)}`;
+                // } else {
+                //     downloadUrl = `repositories/${repo.id}/statements?infer=false&location=${encodeURIComponent(repo.location)}`;
+                // }
+                $scope.downloadExportJSONLD(contextID, $repositories.getActiveRepositoryObject(), $scope.graphsByValue, format, JSONLDMode, link);
             };
 
             $scope.hasMultipleSelected = function () {
@@ -429,13 +465,8 @@ exportCtrl.controller('ExportCtrl',
             };
         }]);
 
-// exportCtrl.controller("ExportSettingsCtrl",
-//     [function () {
-//
-//     }]);
-
 exportCtrl.controller("ExportSettingsCtrl",
-    ['$scope', '$uibModalInstance', 'currentMode', 'frameLink', 'contextLink', function ($scope, $uibModalInstance, currentMode, frameLink, contextLink) {
+    ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {
         $scope.JSONLDModes = [
             {name: "frame", link: "http://www.w3.org/ns/json-ld#frame"},
             {name: "framed", link: "http://www.w3.org/ns/json-ld#framed"},
@@ -445,9 +476,7 @@ exportCtrl.controller("ExportSettingsCtrl",
             {name: "compacted", link: "http://www.w3.org/ns/json-ld#compacted"}
         ];
 
-        $scope.currentMode = _.find($scope.JSONLDModes, {link: currentMode});
-        $scope.frameLink = frameLink;
-        $scope.contextLink = contextLink;
+        $scope.currentMode = _.find($scope.JSONLDModes, {name: "expanded"});
 
         $scope.cancel = function () {
             $uibModalInstance.dismiss();
@@ -457,11 +486,10 @@ exportCtrl.controller("ExportSettingsCtrl",
             $scope.currentMode = _.find($scope.JSONLDModes, {name: "expanded"});
         };
 
-        $scope.ok = function () {
+        $scope.exportJsonLD = function () {
             $uibModalInstance.close({
                 currentMode: $scope.currentMode,
-                frameLink: $scope.frameLink,
-                contextLink: $scope.contextLink
+                link: $scope.link
             });
         };
     }]);
