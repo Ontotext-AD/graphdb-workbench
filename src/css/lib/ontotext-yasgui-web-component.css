@@ -6,8 +6,10 @@ yasgui-component :not(h3,h4,sup) {
     font-size: 1rem !important;
 }
 
-/* Dialog body should have slightly bigger font-size */
-yasgui-component .dialog-body {
+/* Dialog body should have slightly bigger font-size. */
+yasgui-component .dialog-body,
+/* When it is attached directly to the html body. */
+.confirmation-dialog .dialog-body {
     font-size: 1.25rem !important;
 }
 
