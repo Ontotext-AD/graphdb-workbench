@@ -199,10 +199,6 @@ exportCtrl.controller('ExportCtrl',
                 }
             };
 
-            $scope.exportRepoJSONLD = function (format, contextID, JSONLDMode, link) {
-                $scope.startDownloadJSONLD(format, contextID, JSONLDMode, link);
-            };
-
             $scope.openExportSettings = function (format, contextID) {
                 const modalInstance = $uibModal.open({
                     templateUrl: 'js/angular/import/templates/exportSettingsModal.html',
@@ -211,7 +207,6 @@ exportCtrl.controller('ExportCtrl',
                 });
 
                 modalInstance.result.then(function (data) {
-                    $scope.exportRepoJSONLD(format, contextID, data.currentMode, data.link);
                     $scope.downloadExportJSONLD(contextID, $repositories.getActiveRepositoryObject(), $scope.graphsByValue, format, data.currentMode, data.link);
                 });
             };
@@ -226,18 +221,6 @@ exportCtrl.controller('ExportCtrl',
                     downloadUrl = `repositories/${repo.id}/statements?infer=false&location=${encodeURIComponent(repo.location)}`;
                 }
                 $scope.downloadExport(downloadUrl, format);
-            };
-
-            $scope.startDownloadJSONLD = function (format, contextID, JSONLDMode, link) {
-                // let downloadUrl;
-                // const repo = $repositories.getActiveRepositoryObject();
-
-                // if (contextID) {
-                //     downloadUrl = `repositories/${repo.id}/statements?infer=false&context=${$scope.graphsByValue[contextID.value].exportUri}&location=${encodeURIComponent(repo.location)}`;
-                // } else {
-                //     downloadUrl = `repositories/${repo.id}/statements?infer=false&location=${encodeURIComponent(repo.location)}`;
-                // }
-                $scope.downloadExportJSONLD(contextID, $repositories.getActiveRepositoryObject(), $scope.graphsByValue, format, JSONLDMode, link);
             };
 
             $scope.hasMultipleSelected = function () {
