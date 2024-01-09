@@ -21,7 +21,8 @@ yasgui-component .dialog-body,
     }
 }
 
-yasgui-component .dialog .dialog-footer .cancel-button {
+yasgui-component .dialog .dialog-footer .cancel-button,
+.confirmation-dialog .dialog-footer .cancel-button {
     margin-right: 3px;
     background-color: #ebebeb;
     border-color: #ebebeb;
