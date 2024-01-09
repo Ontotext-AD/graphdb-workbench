@@ -454,9 +454,7 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
         if (!$scope.queryIsRunning) {
             // set proper headers because on page reload these might not be present until active repository is not
             // changed via the menu
-            let ajaxSetupElement = $.ajaxSetup()['headers'];
-            console.log(`ajax headers`, ajaxSetupElement);
-            $.ajaxSetup()['headers'] = ajaxSetupElement || {};
+            $.ajaxSetup()['headers'] = $.ajaxSetup()['headers'] || {};
             const repositoryConfig = $repositories.getActiveRepositoryObject();
             const authToken = AuthTokenService.getAuthToken();
             if (authToken) {
