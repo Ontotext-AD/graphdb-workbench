@@ -54,6 +54,12 @@ class HomeSteps {
             .click();
     }
 
+    static selectRepoFromEverywhere(repositoryId) {
+        cy.get('#btnReposGroup').click();
+        cy.get('.dropdown-menu').should('be.visible');
+        cy.get('.dropdown-menu').contains(repositoryId).click();
+    }
+
     static createRepo() {
         let repositoryId = 'home-repository-' + Date.now();
         cy.createRepository({id: repositoryId});
