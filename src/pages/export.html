@@ -57,11 +57,11 @@
 						<span class="icon-trash"></span> {{'clear.repo.label' | translate}}
 					</button>
                     <div class="btn-group" uib-dropdown>
-                        <button type="button" class="btn btn-primary dropdown-toggle" uib-dropdown-toggle>
+                        <button type="button" class="btn btn-primary dropdown-toggle export-repository-btn" uib-dropdown-toggle>
                             <span class="icon-export"></span> {{'export.repository.label' | translate}}
                         </button>
                         <ul class="dropdown-menu">
-                            <li ng-repeat="format in exportFormats" class="export-repo-format-{{format.name}}"
+                            <li ng-repeat="format in exportFormats" class="export-repo-format-JSONLD"
                                 ng-if="format.name == 'JSON-LD';"
                                 ng-click="openExportSettings(format, false);">
                                 <span class="dropdown-item">{{format.name}}</span>

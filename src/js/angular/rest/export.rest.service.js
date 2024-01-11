@@ -26,7 +26,7 @@ function ExportRestService($http, $repositories, $translate) {
             linkHeader = "";
         }
 
-        return $http.get({
+        return $http({
             url: url,
             method: 'GET',
             headers: {
