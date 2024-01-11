@@ -60,9 +60,9 @@ function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalServi
     };
 }
 
-JdbcCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositories', '$window', '$timeout', 'JdbcRestService', 'RDF4JRepositoriesRestService', 'SparqlRestService', 'ModalService', '$translate'];
+JdbcCreateCtrl.$inject = ['$scope', '$location', 'toastr', '$repositories', '$window', '$timeout', 'JdbcRestService', 'RDF4JRepositoriesRestService', 'SparqlRestService', 'ModalService', 'AuthTokenService', '$translate'];
 
-function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $timeout, JdbcRestService, RDF4JRepositoriesRestService, SparqlRestService, ModalService, $translate) {
+function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $timeout, JdbcRestService, RDF4JRepositoriesRestService, SparqlRestService, ModalService, AuthTokenService, $translate) {
 
     $scope.name = $location.search().name || '';
     $scope.getNamespaces = getNamespaces;
@@ -456,6 +456,10 @@ function JdbcCreateCtrl($scope, $location, toastr, $repositories, $window, $time
             // changed via the menu
             $.ajaxSetup()['headers'] = $.ajaxSetup()['headers'] || {};
             const repositoryConfig = $repositories.getActiveRepositoryObject();
+            const authToken = AuthTokenService.getAuthToken();
+            if (authToken) {
+                $.ajaxSetup()['headers']['Authorization'] = authToken;
+            }
             $.ajaxSetup()['headers']['X-GraphDB-Repository'] = repositoryConfig ? repositoryConfig.id : undefined;
             $.ajaxSetup()['headers']['X-GraphDB-Repository-Location'] = repositoryConfig ? repositoryConfig.location : undefined;
             $scope.currentQuery.outputType = 'table';
