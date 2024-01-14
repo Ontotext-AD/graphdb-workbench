@@ -141,9 +141,9 @@ exportCtrl.controller('ExportCtrl',
 
             };
 
-            $scope.downloadExportJSONLD = function (contextID, repo, graphsByValue, format, JSONLDMode, link) {
+            $scope.downloadExportJSONLD = function (context, repo, graphsByValue, format, JSONLDMode, link, forSelectedGraphs) {
                 const acceptHeader = format.type + ';profile=' + JSONLDMode.link;
-                ExportRestService.getExportedStatementsAsJSONLD(contextID, repo, graphsByValue, acceptHeader, link, AuthTokenService.getAuthToken())
+                ExportRestService.getExportedStatementsAsJSONLD(context, repo, graphsByValue, acceptHeader, link, AuthTokenService.getAuthToken(), forSelectedGraphs)
                     .then(function ({data, filename}) {
                         saveAs(data, filename);
                     })
@@ -192,7 +192,7 @@ exportCtrl.controller('ExportCtrl',
                 }
             };
 
-            $scope.openExportSettings = function (format, contextID) {
+            $scope.openExportSettings = function (format, context, forSelectedGraphs) {
                 const modalInstance = $uibModal.open({
                     templateUrl: 'js/angular/import/templates/exportSettingsModal.html',
                     controller: 'ExportSettingsCtrl',
@@ -200,7 +200,7 @@ exportCtrl.controller('ExportCtrl',
                 });
 
                 modalInstance.result.then(function (data) {
-                    $scope.downloadExportJSONLD(contextID, $repositories.getActiveRepositoryObject(), $scope.graphsByValue, format, data.currentMode, data.link);
+                    $scope.downloadExportJSONLD(context, $repositories.getActiveRepositoryObject(), $scope.graphsByValue, format, data.currentMode, data.link, forSelectedGraphs);
                 });
             };
 
@@ -226,6 +226,26 @@ exportCtrl.controller('ExportCtrl',
                         }
                     }
                     return false;
+                }
+            };
+
+            $scope.openExportSettingsForSelectedGraphs = function (format) {
+                let contextStr = '';
+                for (const index in $scope.selectedGraphs.exportGraphs) {
+                    if ($scope.selectedGraphs.exportGraphs[index]) {
+                        contextStr += 'context=' + $scope.graphsByValue[index].exportUri + '&';
+                    }
+                }
+
+                if (contextStr) {
+                    contextStr = contextStr.substring(0, contextStr.length - 1);
+                    $scope.openExportSettings(format, contextStr, true);
+                } else {
+                    ModalService.openSimpleModal({
+                        title: $translate.instant('export.multiple.graph'),
+                        message: $translate.instant('export.check.graphs.msg'),
+                        warning: true
+                    });
                 }
             };
 

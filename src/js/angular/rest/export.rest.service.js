@@ -10,12 +10,16 @@ function ExportRestService($http, $repositories, $translate) {
         getExportedStatementsAsJSONLD
     };
 
-    function getExportedStatementsAsJSONLD(contextID, repo, graphsByValue, acceptHeader, linkHeader, auth) {
+    function getExportedStatementsAsJSONLD(context, repo, graphsByValue, acceptHeader, linkHeader, auth, forSelectedGraphs) {
         let url;
-        if (contextID) {
-            url = `${REPOSITORIES_ENDPOINT}/${repo.id}/statements?infer=false&context=${graphsByValue[contextID.value].exportUri}&location=${encodeURIComponent(repo.location)}`;
+        if (forSelectedGraphs) {
+            url = `${REPOSITORIES_ENDPOINT}/${repo.id}/statements?infer=false&${context}`;
         } else {
-            url = `${REPOSITORIES_ENDPOINT}/${repo.id}/statements?infer=false&location=${encodeURIComponent(repo.location)}`;
+            if (context) {
+                url = `${REPOSITORIES_ENDPOINT}/${repo.id}/statements?infer=false&context=${graphsByValue[context.value].exportUri}&location=${encodeURIComponent(repo.location)}`;
+            } else {
+                url = `${REPOSITORIES_ENDPOINT}/${repo.id}/statements?infer=false&location=${encodeURIComponent(repo.location)}`;
+            }
         }
 
         if (auth) {
