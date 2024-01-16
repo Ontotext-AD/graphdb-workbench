@@ -130,9 +130,10 @@ function CreateSimilarityIdxCtrl(
             })
             .finally(() => {
                 const ontotextYasgui = getOntotextYasgui();
+                $scope.similarityIndexInfo.setSelectedYasguiRenderMode(RenderingMode.YASQE);
+                ontotextYasgui.changeRenderMode($scope.similarityIndexInfo.getSelectedYasguiRenderMode());
                 if ($scope.similarityIndexInfo.isDataQueryTypeSelected()) {
                     ontotextYasgui.showYasqeActionButton([YasqeButtonName.INFER_STATEMENTS, YasqeButtonName.EXPANDS_RESULTS]);
-                    ontotextYasgui.changeRenderMode(RenderingMode.YASQE);
                 } else {
                     ontotextYasgui.hideYasqeActionButton([YasqeButtonName.INFER_STATEMENTS, YasqeButtonName.EXPANDS_RESULTS]);
                 }
