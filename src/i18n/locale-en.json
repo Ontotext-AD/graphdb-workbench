@@ -1117,6 +1117,7 @@
     "required.field": "This field is required",
     "created.repo.success.msg": "The repository {{repoId}} has been created.",
     "empty.repoid.warning": "Repository ID cannot be empty",
+    "empty.context.or.frame.link": "Link cannot be empty",
     "invalid.ruleset.file.error": "Invalid rule-set file. Please upload a valid one.",
     "wrong.repo.name.error": "Wrong repo name",
     "edit.system.repo.warning": "<b>System</b> repository can't be edited",

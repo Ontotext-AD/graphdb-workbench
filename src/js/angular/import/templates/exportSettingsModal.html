@@ -4,7 +4,7 @@
 </div>
 
 <div class="modal-body">
-    <form name="exportSettingsForm" id="exportSettingsForm" class="export-settings-form">
+    <form name="exportSettingsForm" class="export-settings-form">
         <div class="form-horizontal">
             <div class="form-group row">
                 <label class="col-lg-3 col-form-label" for="wb-JSONLD-mode">
@@ -17,30 +17,30 @@
                 <div class="col-lg-9">
                     <select class="form-control" id="wb-JSONLD-mode"
                             ng-model="currentMode"
-                            ng-options="mode.link for mode in JSONLDModes">
+                            ng-options="mode.link for mode in JSONLDModes track by mode.link">
                     </select>
                 </div>
             </div>
 
-            <div class="form-group row" ng-if="currentMode.name == 'framed' || currentMode.name == 'frame'">
+            <div class="form-group row" ng-if="JSONLDFramedModes.indexOf(currentMode.name) > -1">
                 <label class="col-lg-3 col-form-label" for="wb-JSONLD-frame">
                     {{'jsonld.frame.link' | translate}}
                 </label>
                 <div class="col-lg-9">
                     <input class="form-control" id="wb-JSONLD-frame" type="text"
-                           ng-model="$parent.link" placeholder="{{'jsonld.frame.uri.placeholder' | translate}}" autofocus/>
+                           ng-model="$parent.link" placeholder="{{'jsonld.frame.uri.placeholder' | translate}}" autofocus="autofocus" required/>
                 </div>
             </div>
 
             <div class="form-group row"
-                 ng-if="currentMode.name == 'context' || currentMode.name == 'compacted' || currentMode.name == 'flattened'">
+                 ng-if="JSONLDContextModes.indexOf(currentMode.name) > -1">
                 <label class="col-lg-3 col-form-label" for="wb-JSONLD-context">
                     {{'jsonld.context.link' | translate}}
                 </label>
                 <div class="col-lg-9">
                     <input class="form-control" id="wb-JSONLD-context" type="text"
                            ng-model="$parent.link" placeholder="{{'jsonld.context.uri.placeholder' | translate}}"
-                           autofocus/>
+                           autofocus="autofocus" required/>
                 </div>
             </div>
         </div>

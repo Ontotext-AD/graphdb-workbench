@@ -10,15 +10,25 @@ function ExportRestService($http, $repositories, $translate) {
         getExportedStatementsAsJSONLD
     };
 
-    function getExportedStatementsAsJSONLD(context, repo, graphsByValue, acceptHeader, linkHeader, auth, forSelectedGraphs) {
-        let url;
+    /*
+     *
+     * @method getExportedStatementsAsJSONLD
+     * @param {String} data format
+     * @param {Boolean} true if the method is invoked for export of multiple selected graphs
+     * @param {Object} current repository
+     * @param {Object} graphsByValue
+     * @param {Object} authentication token
+     * @param {Object} request Accept and Link headers
+     */
+    function getExportedStatementsAsJSONLD(context, forSelectedGraphs, repo, graphsByValue, auth, headers) {
+        let url = `${REPOSITORIES_ENDPOINT}/${repo.id}/statements?infer=false`;
         if (forSelectedGraphs) {
-            url = `${REPOSITORIES_ENDPOINT}/${repo.id}/statements?infer=false&${context}`;
+            url += `&${context}`;
         } else {
             if (context) {
-                url = `${REPOSITORIES_ENDPOINT}/${repo.id}/statements?infer=false&context=${graphsByValue[context.value].exportUri}&location=${encodeURIComponent(repo.location)}`;
+                url += `&context=${graphsByValue[context.value].exportUri}&location=${encodeURIComponent(repo.location)}`;
             } else {
-                url = `${REPOSITORIES_ENDPOINT}/${repo.id}/statements?infer=false&location=${encodeURIComponent(repo.location)}`;
+                url += `&location=${encodeURIComponent(repo.location)}`;
             }
         }
 
@@ -26,19 +36,19 @@ function ExportRestService($http, $repositories, $translate) {
             url = url + '&authToken=' + encodeURIComponent(auth);
         }
 
-        if (linkHeader === undefined) {
-            linkHeader = "";
+        if (headers.link === undefined) {
+            headers.link = "";
         }
 
         return $http({
             url: url,
             method: 'GET',
             headers: {
-                'Accept': acceptHeader,
-                'Link': linkHeader
+                'Accept': headers.accept,
+                'Link': headers.link
             },
             responseType: "blob"
-        }, {timeout: 100}).then(function (res) {
+        }).then(function (res) {
             const data = res.data;
             const headers = res.headers();
             const contentDisposition = headers['content-disposition'];

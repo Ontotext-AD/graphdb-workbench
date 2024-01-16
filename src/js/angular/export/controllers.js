@@ -5,7 +5,7 @@ import 'angular/utils/file-types';
 import 'angular/rest/export.rest.service';
 import {saveAs} from 'lib/FileSaver-patch';
 import {decodeHTML} from "../../../app";
-import {cloneDeep} from "lodash";
+import {cloneDeep, find} from "lodash";
 
 const modules = [
     'ngCookies',
@@ -141,9 +141,24 @@ exportCtrl.controller('ExportCtrl',
 
             };
 
-            $scope.downloadExportJSONLD = function (context, repo, graphsByValue, format, JSONLDMode, link, forSelectedGraphs) {
+            /*
+            *
+            * @method downloadJSONLDExport
+            * @param {String} data format
+            * @param {String} string context if there is any (or string from multiple contexts if there are multiple selected graphs)
+            * @param {String} context/frame link
+            * @param {Boolean} true if the method is invoked for export of multiple selected graphs
+            * @param {Object} current repository
+            * @param {Object} graphsByValue
+            * @param {Object} JSONLDMode (name and mode link)
+            */
+            const downloadJSONLDExport = function (format, context, link, forSelectedGraphs, repo, graphsByValue, JSONLDMode) {
                 const acceptHeader = format.type + ';profile=' + JSONLDMode.link;
-                ExportRestService.getExportedStatementsAsJSONLD(context, repo, graphsByValue, acceptHeader, link, AuthTokenService.getAuthToken(), forSelectedGraphs)
+                const headers = {
+                    'accept': acceptHeader,
+                    'link': link
+                };
+                ExportRestService.getExportedStatementsAsJSONLD(context, forSelectedGraphs, repo, graphsByValue, AuthTokenService.getAuthToken(), headers)
                     .then(function ({data, filename}) {
                         saveAs(data, filename);
                     })
@@ -192,15 +207,24 @@ exportCtrl.controller('ExportCtrl',
                 }
             };
 
-            $scope.openExportSettings = function (format, context, forSelectedGraphs) {
+            /*
+            * Open a dialog with additional export settings for JSONLD format.
+            *
+            * @method openJSONLDExportSettings
+            * @param {String} data format
+            * @param {String} string context if there is any (or string from multiple contexts if there are multiple selected graphs for export)
+            * @param {Boolean} true if the method is invoked for multiple selected graphs export
+            */
+            $scope.openJSONLDExportSettings = function (format, context, forSelectedGraphs) {
                 const modalInstance = $uibModal.open({
                     templateUrl: 'js/angular/import/templates/exportSettingsModal.html',
                     controller: 'ExportSettingsCtrl',
+                    size: 'lg',
                     scope: $scope
                 });
 
                 modalInstance.result.then(function (data) {
-                    $scope.downloadExportJSONLD(context, $repositories.getActiveRepositoryObject(), $scope.graphsByValue, format, data.currentMode, data.link, forSelectedGraphs);
+                    downloadJSONLDExport(format, context, data.link, forSelectedGraphs, $repositories.getActiveRepositoryObject(), $scope.graphsByValue, data.currentMode);
                 });
             };
 
@@ -229,17 +253,13 @@ exportCtrl.controller('ExportCtrl',
                 }
             };
 
-            $scope.openExportSettingsForSelectedGraphs = function (format) {
-                let contextStr = '';
-                for (const index in $scope.selectedGraphs.exportGraphs) {
-                    if ($scope.selectedGraphs.exportGraphs[index]) {
-                        contextStr += 'context=' + $scope.graphsByValue[index].exportUri + '&';
-                    }
-                }
+            $scope.openJSONLDExportSettingsForSelectedGraphs = function (format) {
+                const contextStr = Object.keys($scope.selectedGraphs.exportGraphs)
+                    .map((index) => 'context=' + $scope.graphsByValue[index].exportUri)
+                    .join('&');
 
                 if (contextStr) {
-                    contextStr = contextStr.substring(0, contextStr.length - 1);
-                    $scope.openExportSettings(format, contextStr, true);
+                    $scope.openJSONLDExportSettings(format, contextStr, true);
                 } else {
                     ModalService.openSimpleModal({
                         title: $translate.instant('export.multiple.graph'),
@@ -462,7 +482,7 @@ exportCtrl.controller('ExportCtrl',
         }]);
 
 exportCtrl.controller("ExportSettingsCtrl",
-    ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {
+    ['$scope', '$uibModalInstance', '$translate', 'toastr', function ($scope, $uibModalInstance, $translate, toastr) {
         $scope.JSONLDModes = [
             {name: "frame", link: "http://www.w3.org/ns/json-ld#frame"},
             {name: "framed", link: "http://www.w3.org/ns/json-ld#framed"},
@@ -472,17 +492,30 @@ exportCtrl.controller("ExportSettingsCtrl",
             {name: "compacted", link: "http://www.w3.org/ns/json-ld#compacted"}
         ];
 
-        $scope.currentMode = _.find($scope.JSONLDModes, {name: "expanded"});
+        $scope.JSONLDModesNames = $scope.JSONLDModes.reduce(function (acc, cur) {
+            acc[cur.name] = cur.name;
+            return acc;
+        }, {});
+
+        $scope.JSONLDFramedModes = [$scope.JSONLDModesNames.framed, $scope.JSONLDModesNames.frame];
+        $scope.JSONLDContextModes = [$scope.JSONLDModesNames.context, $scope.JSONLDModesNames.compacted, $scope.JSONLDModesNames.flattened];
+        $scope.defaultMode = find($scope.JSONLDModes, {name: "expanded"});
+        $scope.currentMode = $scope.defaultMode;
 
         $scope.cancel = function () {
             $uibModalInstance.dismiss();
         };
 
         $scope.reset = function () {
-            $scope.currentMode = _.find($scope.JSONLDModes, {name: "expanded"});
+            $scope.currentMode = $scope.defaultMode;
         };
 
         $scope.exportJsonLD = function () {
+            if ($scope.currentMode !== $scope.defaultMode && !$scope.link) {
+                toastr.error($translate.instant('empty.context.or.frame.link'));
+                return;
+            }
+
             $uibModalInstance.close({
                 currentMode: $scope.currentMode,
                 link: $scope.link

@@ -62,12 +62,12 @@
                         </button>
                         <ul class="dropdown-menu">
                             <li ng-repeat="format in exportFormats" class="export-repo-format-JSONLD"
-                                ng-if="format.name == 'JSON-LD';"
-                                ng-click="openExportSettings(format, false, false);">
-                                <span class="dropdown-item">{{format.name}}</span>
+                                ng-if="format.name === 'JSON-LD';"
+                                ng-click="openJSONLDExportSettings(format, false, false);">
+                                <span class="dropdown-item">{{format.name}}<em class="icon-edit icon-lg pull-right"></em></span>
                             </li>
                             <li ng-repeat="format in exportFormats" class="export-repo-format-{{format.name}}"
-                                ng-if="format.name != 'JSON-LD';"
+                                ng-if="format.name !== 'JSON-LD';"
                                 ng-click="exportRepo(format, false);">
                                 <span class="dropdown-item">{{format.name}}</span>
                             </li>
@@ -99,12 +99,12 @@
 											<span class="icon-export"></span></button>
 										<ul class="dropdown-menu" role="menu">
                                             <li ng-repeat="format in exportFormats" class="export-repo-format-{{format.name}}"
-                                                ng-if="format.name == 'JSON-LD';"
-                                                ng-click="openExportSettingsForSelectedGraphs(format);">
-                                                <span class="dropdown-item">{{format.name}}</span>
+                                                ng-if="format.name === 'JSON-LD';"
+                                                ng-click="openJSONLDExportSettingsForSelectedGraphs(format);">
+                                                <span class="dropdown-item">{{format.name}}<em class="icon-edit icon-lg pull-right"></em></span>
                                             </li>
 											<li ng-repeat="format in exportFormats"
-                                                ng-if="format.name != 'JSON-LD';"
+                                                ng-if="format.name !== 'JSON-LD';"
 												ng-click="exportSelectedGraphs(format)">
 												<span class="dropdown-item">{{format.name}}</span>
 											</li>
@@ -151,12 +151,12 @@
 										<span class="icon-export"></span></button>
 									<ul class="dropdown-menu" role="menu">
                                         <li ng-repeat="format in exportFormats" class="export-repo-format-{{format.name}}"
-                                            ng-if="format.name == 'JSON-LD';"
-                                            ng-click="openExportSettings(format, graph.contextID, false);">
-                                            <span class="dropdown-item">{{format.name}}</span>
+                                            ng-if="format.name === 'JSON-LD';"
+                                            ng-click="openJSONLDExportSettings(format, graph.contextID, false);">
+                                            <span class="dropdown-item">{{format.name}}<em class="icon-edit icon-lg pull-right"></em></span>
                                         </li>
 										<li ng-repeat="format in exportFormats"
-                                            ng-if="format.name != 'JSON-LD';"
+                                            ng-if="format.name !== 'JSON-LD';"
 											ng-click="exportRepo(format, graph.contextID);">
 											<span class="dropdown-item">{{format.name}}</span>
 										</li>

@@ -1114,6 +1114,7 @@
     "required.field": "Ce champ est requis",
     "created.repo.success.msg": "Le dépôt {{repoId}} a été créé.",
     "empty.repoid.warning": "L'identifiant du dépôt ne peut pas être vide",
+    "empty.context.or.frame.link": "Lien vers le cadre",
     "invalid.ruleset.file.error": "Fichier de jeu de règles invalide. Veuillez en télécharger un valide.",
     "wrong.repo.name.error": "Mauvais nom de repo",
     "edit.system.repo.warning": "Le dépôt <b>System</b> ne peut pas être modifié.",
