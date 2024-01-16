@@ -30,14 +30,14 @@ export class YasguiComponent {
     }
 
     /**
-     * Executes the yasqe query. If
+     * Executes the YASQE query from the currently opened tab and switches to the specified <code>renderingMode</code> when the query is executed.
      *
-     * @param {RenderingMode} viewModeAfterQuery - Set the view mode of YASGUI after executing the query.
+     * @param {RenderingMode} renderingMode - specifies the new view mode of the component when the query is executed.
      *
-     * @return {Promise<any>}
+     * @return {*}
      */
-    query(viewModeAfterQuery) {
-        return this.yasguiComponent.query(viewModeAfterQuery);
+    query(renderingMode) {
+        return this.yasguiComponent.query(renderingMode);
     }
 
     /**
