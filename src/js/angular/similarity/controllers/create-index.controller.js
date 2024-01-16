@@ -179,8 +179,7 @@ function CreateSimilarityIdxCtrl(
             .then(() => {
                 const ontotextYasgui = getOntotextYasgui();
                 $scope.similarityIndexInfo.setSelectedYasguiRenderMode(RenderingMode.YASR);
-                ontotextYasgui.changeRenderMode($scope.similarityIndexInfo.getSelectedYasguiRenderMode());
-                ontotextYasgui.query();
+                ontotextYasgui.query($scope.similarityIndexInfo.getSelectedYasguiRenderMode());
             });
     }
 

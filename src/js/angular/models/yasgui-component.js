@@ -1,4 +1,5 @@
 import {YasguiComponentDirectiveUtil} from "../core/directives/yasgui-component/yasgui-component-directive.util";
+import {RenderingMode} from "./ontotext-yasgui/rendering-mode";
 
 export class YasguiComponent {
 
@@ -29,12 +30,14 @@ export class YasguiComponent {
     }
 
     /**
-     * Executes the yasqe query.
+     * Executes the yasqe query. If
+     *
+     * @param {RenderingMode} viewModeAfterQuery - Set the view mode of YASGUI after executing the query.
      *
      * @return {Promise<any>}
      */
-    query() {
-        return this.yasguiComponent.query();
+    query(viewModeAfterQuery) {
+        return this.yasguiComponent.query(viewModeAfterQuery);
     }
 
     /**
