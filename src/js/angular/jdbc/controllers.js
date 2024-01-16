@@ -118,7 +118,7 @@ function JdbcCreateCtrl(
     $scope.isQueryRunning = false;
     $scope.canEditActiveRepo = false;
 
-    // This flag is used to prevent loading of the controller resources on consecutive repository change events after
+    // This flag is used to prevent loading of the yasgui on consecutive repository change events after
     // the first.
     let initialRepoInitialization = true;
 
