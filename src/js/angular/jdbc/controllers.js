@@ -8,7 +8,7 @@ import {YasqeMode} from "../models/ontotext-yasgui/yasqe-mode";
 import {JdbcConfigurationError} from "../models/jdbc/jdbc-configuration-error";
 import {RenderingMode} from "../models/ontotext-yasgui/rendering-mode";
 import {toJDBCColumns, updateColumn} from "../models/jdbc/jdbc-column";
-import {YasguiComponentDirectiveUtil} from "../core/directives/yasgui-component/yasgui-component-directive.util";
+import {DISABLE_YASQE_BUTTONS_CONFIGURATION, YasguiComponentDirectiveUtil} from "../core/directives/yasgui-component/yasgui-component-directive.util";
 
 const modules = [
     'ui.bootstrap',
@@ -372,6 +372,7 @@ function JdbcCreateCtrl(
             render: RenderingMode.YASQE,
             getCellContent: getCellContent,
             sparqlResponse: $scope.emptySparqlResponse,
+            yasqeActionButtons: DISABLE_YASQE_BUTTONS_CONFIGURATION,
             yasqeMode: $scope.canEditActiveRepo ? YasqeMode.WRITE : YasqeMode.PROTECTED
         };
     };
