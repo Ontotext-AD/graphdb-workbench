@@ -161,9 +161,7 @@ yasgui-component .yasr .alert-box .close-button {
     font-size: 21px !important;
 }
 
-yasgui-component .yasr a,
-yasgui-component .yasr .overlay_content .yasr_btn,
-yasgui-component .yasr .yasr_btn.selected {
+yasgui-component .yasr a {
     color: var(--secondary-color-light) !important;
 }
 
@@ -188,13 +186,15 @@ yasgui-component .yasr .yasr_btnGroup .yasr_btn {
     margin-right: .2rem;
     font-size: 16px;
     font-weight: 400;
-    color: var(--secondary-color) !important;
+    color: #55595c !important;
     background-color: #eee;
-    border-bottom: 2px solid transparent;
+    border-bottom: 1px solid transparent;
 }
 
 yasgui-component .yasr .yasr_btnGroup .yasr_btn:hover {
-    border-bottom: 2px solid #9fc4e4;
+    fill: #55595c !important;
+    border-bottom-width: 1px;
+    border-color: #eceeef #eceeef #ddd;
 }
 
 yasgui-component .yasr .yasr_btnGroup .yasr_btn.selected {
@@ -202,7 +202,6 @@ yasgui-component .yasr .yasr_btnGroup .yasr_btn.selected {
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
     border-bottom: none;
-    color: var(--secondary-color-dark) !important;
     background-color: #fff;
 }
 
