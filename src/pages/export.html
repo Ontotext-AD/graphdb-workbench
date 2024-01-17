@@ -64,7 +64,7 @@
                             <li ng-repeat="format in exportFormats" class="export-repo-format-JSONLD"
                                 ng-if="format.name === 'JSON-LD';"
                                 ng-click="openJSONLDExportSettings(format, false, false);">
-                                <span class="dropdown-item">{{format.name}}<em class="icon-edit icon-lg pull-right"></em></span>
+                                <span class="dropdown-item">{{format.name}}</span>
                             </li>
                             <li ng-repeat="format in exportFormats" class="export-repo-format-{{format.name}}"
                                 ng-if="format.name !== 'JSON-LD';"
@@ -101,7 +101,7 @@
                                             <li ng-repeat="format in exportFormats" class="export-repo-format-{{format.name}}"
                                                 ng-if="format.name === 'JSON-LD';"
                                                 ng-click="openJSONLDExportSettingsForSelectedGraphs(format);">
-                                                <span class="dropdown-item">{{format.name}}<em class="icon-edit icon-lg pull-right"></em></span>
+                                                <span class="dropdown-item">{{format.name}}</span>
                                             </li>
 											<li ng-repeat="format in exportFormats"
                                                 ng-if="format.name !== 'JSON-LD';"
@@ -153,7 +153,7 @@
                                         <li ng-repeat="format in exportFormats" class="export-repo-format-{{format.name}}"
                                             ng-if="format.name === 'JSON-LD';"
                                             ng-click="openJSONLDExportSettings(format, graph.contextID, false);">
-                                            <span class="dropdown-item">{{format.name}}<em class="icon-edit icon-lg pull-right"></em></span>
+                                            <span class="dropdown-item">{{format.name}}</span>
                                         </li>
 										<li ng-repeat="format in exportFormats"
                                             ng-if="format.name !== 'JSON-LD';"
