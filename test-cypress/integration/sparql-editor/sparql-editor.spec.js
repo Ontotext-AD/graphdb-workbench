@@ -49,5 +49,7 @@ describe('Sparql editor', () => {
         YasrSteps.getYasrResultsContainer().should('be.empty');
         // And I should see a warning message that there are no results
         YasrSteps.getNoResultsMessage().should('be.visible');
+        // And yasr tabs should not be visible
+        YasrSteps.getResultHeader().should('not.be.visible');
     });
 });
