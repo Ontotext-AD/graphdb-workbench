@@ -875,6 +875,10 @@ function CreateSimilarityIdxCtrl(
     };
 
     const repositoryChangedHandler = () => {
+        // when repository is changed we have to switch yasgui back to editor mode
+        if ($scope.isYasrShown() && $scope.similarityIndexInfo.isDataQueryTypeSelected()) {
+            $scope.showEditor();
+        }
         $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
         const config = {...$scope.yasguiConfig, yasqeMode: $scope.canWriteActiveRepo()};
         updateYasguiComponent(config);
@@ -936,13 +940,13 @@ function CreateSimilarityIdxCtrl(
                     usedPrefixes = usedPrefixesResponse;
                     init();
                 }).catch((error) => {
-                console.log(error)
-                $scope.repositoryError = getError(error);
-            }).finally(() => {
-                subscriptions.push($scope.$on('repositoryIsSet', repositoryChangedHandler));
-                repoIsInitialized();
-                $scope.loadingControllerResources = false;
-            });
+                    console.log(error)
+                    $scope.repositoryError = getError(error);
+                }).finally(() => {
+                    subscriptions.push($scope.$on('repositoryIsSet', repositoryChangedHandler));
+                    repoIsInitialized();
+                    $scope.loadingControllerResources = false;
+                });
         }
     });
 }
