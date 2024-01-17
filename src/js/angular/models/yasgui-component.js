@@ -146,4 +146,13 @@ export class YasguiComponent {
     abortQuery() {
         return this.yasguiComponent.abortQuery();
     }
+
+    /**
+     * Resets the YASR results.
+     *
+     * @return {Promise<void>}
+     */
+    resetYasrResults() {
+        return this.yasguiComponent.resetResults();
+    }
 }
