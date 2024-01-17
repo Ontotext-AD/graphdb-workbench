@@ -152,7 +152,7 @@ exportCtrl.controller('ExportCtrl',
             * @param {Object} graphsByValue
             * @param {Object} JSONLDMode (name and mode link)
             */
-            const downloadJSONLDExport = function (format, context, link, forSelectedGraphs, repo, graphsByValue, JSONLDMode) {
+            function downloadJSONLDExport(format, context, link, forSelectedGraphs, repo, graphsByValue, JSONLDMode) {
                 const acceptHeader = format.type + ';profile=' + JSONLDMode.link;
                 const headers = {
                     'accept': acceptHeader,
