@@ -124,6 +124,10 @@ function SparqlTemplateCreateCtrl(
     $scope.language = $languageService.getLanguage();
     $scope.canEditActiveRepo = false;
 
+    // This flag is used to prevent loading of the yasgui on consecutive repository change events after
+    // the first.
+    let initialRepoInitialization = true;
+
 
     // =========================
     // Public functions
@@ -459,7 +463,12 @@ function SparqlTemplateCreateCtrl(
     const repositoryChangedHandler = (activeRepo) => {
         if (activeRepo) {
             $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
-            loadOntotextYasgui();
+            if (initialRepoInitialization) {
+                loadOntotextYasgui();
+                initialRepoInitialization = false;
+            } else {
+                goToSparqlTemplatesView();
+            }
         }
     };
 

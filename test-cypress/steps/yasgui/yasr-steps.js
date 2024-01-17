@@ -19,6 +19,10 @@ export class YasrSteps {
         return YasrSteps.getResultHeader().get('.error-response-plugin-body');
     }
 
+    static getYasrResultsContainer() {
+        return YasrSteps.getYasr().find('.yasr_results');
+    }
+
     static getResults() {
         return YasrSteps.getYasr().find('.yasr_results tbody').find('tr');
     }
@@ -96,5 +100,9 @@ export class YasrSteps {
 
     static getNoDataElement() {
         return cy.get('.dataTables_empty');
+    }
+
+    static getNoResultsMessage() {
+        return YasrSteps.getYasr().find('.alert-success');
     }
 }

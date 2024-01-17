@@ -338,18 +338,17 @@ function GraphConfigCtrl(
             // setLoader(true, $translate.instant('evaluating.query.msg'));
 
             executeYasqeQuery();
-            switchToYasr();
         }
     };
 
     const executeYasqeQuery = async () => {
         const yasguiInstance = await getYasguiInstance();
-        yasguiInstance.query();
+        yasguiInstance.query(RenderingMode.YASR);
     }
 
     const switchToYasqe = async () => {
         const yasguiInstance = await getYasguiInstance()
-        yasguiInstance.changeRenderMode(RenderingMode.YASQE);
+        return yasguiInstance.changeRenderMode(RenderingMode.YASQE);
     }
 
     const switchToYasr = async () => {
@@ -364,7 +363,7 @@ function GraphConfigCtrl(
 
     const abortQuery = async () => {
         const yasguiInstance = await getYasguiInstance()
-        yasguiInstance.abortQuery();
+        return yasguiInstance.abortQuery();
     }
 
     const getNamespaces = () => {
@@ -591,6 +590,16 @@ function GraphConfigCtrl(
         }
     };
 
+    const repositoryChangedHandler = () => {
+        // Switch yasgui to editor mode only if the start mode is query or not on the first  tab. Only in these cases
+        // the yasgui is visible.
+        if ($scope.newConfig.isStartMode(StartMode.QUERY) || $scope.page > 1) {
+            // this should be set to `yasr` in order to switch the buttons for preview and editor
+            $scope.viewMode = 'yasr';
+            abortQuery().then(switchToYasqe);
+        }
+    };
+
     // =========================
     // Event handlers
     // =========================
@@ -599,6 +608,7 @@ function GraphConfigCtrl(
     subscriptions.push($scope.$on('autocompleteStatus', checkAutocompleteStatus));
     subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
     subscriptions.push($scope.$on('$destroy', unsubscribeListeners));
+    subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, repositoryChangedHandler));
     window.addEventListener('beforeunload', beforeunloadHandler);
 
     // Trigger for showing the editor and moving it to the right position

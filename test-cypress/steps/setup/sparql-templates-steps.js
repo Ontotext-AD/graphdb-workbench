@@ -8,6 +8,10 @@ export class SparqlTemplatesSteps {
         cy.url().should('include', '/sparql-templates');
     }
 
+    static getSparqlTemplatesListContainer() {
+        return cy.get('.sparql-templates-list');
+    }
+
     static getCreateSparqlTemplateButton() {
         return cy.get('.create-sparql-template');
     }

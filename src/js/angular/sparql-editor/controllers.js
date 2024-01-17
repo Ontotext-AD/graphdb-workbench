@@ -51,6 +51,12 @@ function SparqlEditorCtrl($scope,
                           ModalService) {
     this.repository = '';
 
+    const QUERY_EDITOR_ID = '#query-editor';
+    const VIEW_NAME = 'graphdb-workbench-sparql-editor';
+    // When the view is loaded the repository change watcher will be triggered. We need to have this flag to prevent
+    // resetting the yasgui on the first load. This flag will be set to false after the first repository change.
+    let initialRepoInitialization = true;
+
     /**
      * @type {OntotextYasguiConfig}
      */
@@ -68,7 +74,7 @@ function SparqlEditorCtrl($scope,
     $scope.updateConfig = () => {
         $scope.yasguiConfig = {
             endpoint: getEndpoint,
-            componentId: 'graphdb-workbench-sparql-editor',
+            componentId: VIEW_NAME,
             prefixes: $scope.prefixes,
             infer: $scope.inferUserSetting,
             sameAs: $scope.sameAsUserSetting,
@@ -168,7 +174,7 @@ function SparqlEditorCtrl($scope,
      * @param {boolean} executeWhenOpen
      */
     const openNewTab = (sparqlQuery, executeWhenOpen = false) => {
-        YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync('#query-editor')
+        YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(QUERY_EDITOR_ID)
             .then((yasguiComponent) => yasguiComponent.openTab(sparqlQuery));
 
         if (executeWhenOpen) {
@@ -179,7 +185,7 @@ function SparqlEditorCtrl($scope,
     const autoExecuteQueryIfRequested = () => {
         const isRequested = toBoolean($location.search().execute);
         if (isRequested) {
-            YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync('#query-editor')
+            YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(QUERY_EDITOR_ID)
                 .then(getQueryMode)
                 .then(confirmAndExecuteQuery)
                 .finally(() => {
@@ -354,7 +360,6 @@ function SparqlEditorCtrl($scope,
                 setInferAndSameAs(principal);
                 // check is there is a saved query or query url parameter and init the editor
                 initViewFromUrlParams();
-
             });
         // TODO: we should also watch for changes in namespaces
         // scope.$watch('namespaces', function () {});
@@ -365,9 +370,23 @@ function SparqlEditorCtrl($scope,
     // =========================
     const subscriptions = [];
 
+    const resetYasrResults = () => {
+        YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(QUERY_EDITOR_ID)
+            .then((yasguiComponent) => {
+                return yasguiComponent.resetYasrResults();
+            })
+            .catch(() => {
+                console.error('Failed to reset yasr results');
+            });
+    };
+
     const repositoryChangedHandler = (activeRepo) => {
         if (activeRepo) {
+            if (!initialRepoInitialization) {
+                resetYasrResults();
+            }
             init();
+            initialRepoInitialization = false;
         }
     };
 
