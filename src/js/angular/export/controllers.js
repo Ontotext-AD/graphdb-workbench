@@ -217,7 +217,7 @@ exportCtrl.controller('ExportCtrl',
             */
             $scope.openJSONLDExportSettings = function (format, context, forSelectedGraphs) {
                 const modalInstance = $uibModal.open({
-                    templateUrl: 'js/angular/import/templates/exportSettingsModal.html',
+                    templateUrl: 'js/angular/export/templates/exportSettingsModal.html',
                     controller: 'ExportSettingsCtrl',
                     size: 'lg',
                     scope: $scope
