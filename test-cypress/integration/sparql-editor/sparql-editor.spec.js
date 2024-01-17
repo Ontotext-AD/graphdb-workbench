@@ -2,7 +2,7 @@ import {SparqlEditorSteps} from "../../steps/sparql-editor-steps";
 import {YasguiSteps} from "../../steps/yasgui/yasgui-steps";
 import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
 import {YasrSteps} from "../../steps/yasgui/yasr-steps";
-import HomeSteps from "../../steps/home-steps";
+import {RepositorySelectorSteps} from "../../steps/repository-selector-steps";
 
 describe('Sparql editor', () => {
     let repositoryId;
@@ -42,7 +42,7 @@ describe('Sparql editor', () => {
         YasqeSteps.executeQuery();
         YasrSteps.getResults().should('be.visible');
         // When I change the repository
-        HomeSteps.selectRepoFromEverywhere(secondRepositoryId);
+        RepositorySelectorSteps.selectRepository(secondRepositoryId);
         // Then I expect yasgui to be visible
         YasguiSteps.getYasgui().should('be.visible');
         // And yasr results and plugins should not be visible

@@ -103,18 +103,25 @@ describe('SPARQL create template', () => {
         ImportSteps.verifyUserImportUrl();
     });
 
-    it('should not change the view if I am creating a new sparql template and change the repository', {
-        retries: {runMode: 1, openMode: 0}
-    }, () => {
+    it('should not change the view if I am creating a new sparql template and change the repository', () => {
         // When I visit 'Sparql create template' view,
         // make some changes.
         SparqlCreateUpdateSteps.typeTemplateId('http://test');
-
         // When I change the repository.
         RepositorySelectorSteps.selectRepository(secondRepositoryId);
-
         // Then I expect the view not changed
         SparqlCreateUpdateSteps.verifyUrl();
+        // And I expect to see a confirmation dialog.
+        ModalDialogSteps.getDialog().should('be.visible');
+    });
+
+    it('Should redirect to templates catalog view when repository is changed', () => {
+        // When I visit 'Sparql create template' view
+        // When I change the repository.
+        RepositorySelectorSteps.selectRepository(secondRepositoryId);
+        // Then I expect to be redirected to templates catalog view.
+        SparqlTemplatesSteps.verifyUrl();
+        SparqlTemplatesSteps.getSparqlTemplatesListContainer().should('be.visible');
     });
 
     it('should ask for confirmation when try to save sparql template with already existing template id', () => {
