@@ -257,10 +257,12 @@ function CreateSimilarityIdxCtrl(
 
     $scope.showEditor = () => {
         const ontotextYasgui = getOntotextYasgui();
-        ontotextYasgui.abortQuery();
-        ontotextYasgui.setQuery($scope.similarityIndexInfo.getQuery());
-        $scope.similarityIndexInfo.setSelectedYasguiRenderMode(RenderingMode.YASQE);
-        ontotextYasgui.changeRenderMode($scope.similarityIndexInfo.getSelectedYasguiRenderMode());
+        ontotextYasgui.abortQuery().then(() => {
+            return ontotextYasgui.setQuery($scope.similarityIndexInfo.getQuery());
+        }).then(() => {
+            $scope.similarityIndexInfo.setSelectedYasguiRenderMode(RenderingMode.YASQE);
+            return ontotextYasgui.changeRenderMode($scope.similarityIndexInfo.getSelectedYasguiRenderMode());
+        });
     };
 
     $scope.toggleHelp = (value) => {

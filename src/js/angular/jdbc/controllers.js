@@ -617,7 +617,7 @@ function JdbcCreateCtrl(
                 loadOntotextYasgui();
                 initialRepoInitialization = false;
             } else {
-                goToJdbcView();
+                getOntotextYasgui().abortQuery().then(goToJdbcView);
             }
         }
     };
