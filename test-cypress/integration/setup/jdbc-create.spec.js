@@ -21,10 +21,13 @@ const DEFAULT_QUERY = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n' +
 describe('JDBC configuration', () => {
 
     let repositoryId;
+    let secondRepositoryId;
 
     beforeEach(() => {
         repositoryId = 'jdbc-repo-' + Date.now();
+        secondRepositoryId = repositoryId + '-second';
         cy.createRepository({id: repositoryId});
+        cy.createRepository({id: secondRepositoryId});
         cy.presetRepository(repositoryId);
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
         JdbcCreateSteps.visit();
@@ -32,6 +35,17 @@ describe('JDBC configuration', () => {
 
     afterEach(() => {
         cy.deleteRepository(repositoryId);
+        cy.deleteRepository(secondRepositoryId);
+    });
+
+    it('Should open saved jdbc configs catalog when repository is changed', () => {
+        // Given I have opened the jdbc configurations page
+        // When I change the repository
+        RepositorySelectorSteps.selectRepository(secondRepositoryId);
+        // Then I expect to see the jdbc config catalog page
+        JdbcSteps.verifyUrl();
+        // And the jdbc config catalog should be empty
+        JdbcSteps.getJDBCConfigurations().should('be.visible');
     });
 
     it('should not allow preview if query is invalid or column are not selected', () => {
@@ -288,29 +302,29 @@ describe('JDBC configuration', () => {
 
         cy.deleteRepository(secondRepositoryId);
     });
-
-    function createConfigurationAndOpenInEdit(tableName) {
-        JdbcSteps.visit();
-        // Creates a configuration.
-        JdbcSteps.clickOnCreateJdbcConfigurationButton();
-        YasqeSteps.waitUntilQueryIsVisible();
-        JdbcCreateSteps.typeTableName(tableName);
-        JdbcCreateSteps.openColumnTypesTab();
-        // waite selected column to be loaded.
-        JdbcCreateSteps.getColumnSuggestionRows().should('have.length', 2);
-        JdbcCreateSteps.clickOnSave();
-
-        ToasterSteps.verifySuccess('SQL table configuration saved');
-
-        // Opens created configuration for edit.
-        JdbcSteps.clickOnEditButton(0);
-    }
-
-    function createVerifyConfirmationDialogOptions() {
-        return new VerifyConfirmationDialogOptions()
-            .setChangePageFunction(() => MainMenuSteps.clickOnMenuImport())
-            .setConfirmationMessage('You have unsaved changes. Are you sure that you want to exit?')
-            .setVerifyCurrentUrl(() => cy.url().should('eq', `${Cypress.config('baseUrl')}/jdbc/configuration/create`))
-            .setVerifyRedirectedUrl(() => cy.url().should('eq', `${Cypress.config('baseUrl')}/import#user`));
-    }
 });
+
+function createConfigurationAndOpenInEdit(tableName) {
+    JdbcSteps.visit();
+    // Creates a configuration.
+    JdbcSteps.clickOnCreateJdbcConfigurationButton();
+    YasqeSteps.waitUntilQueryIsVisible();
+    JdbcCreateSteps.typeTableName(tableName);
+    JdbcCreateSteps.openColumnTypesTab();
+    // waite selected column to be loaded.
+    JdbcCreateSteps.getColumnSuggestionRows().should('have.length', 2);
+    JdbcCreateSteps.clickOnSave();
+
+    ToasterSteps.verifySuccess('SQL table configuration saved');
+
+    // Opens created configuration for edit.
+    JdbcSteps.clickOnEditButton(0);
+}
+
+function createVerifyConfirmationDialogOptions() {
+    return new VerifyConfirmationDialogOptions()
+        .setChangePageFunction(() => MainMenuSteps.clickOnMenuImport())
+        .setConfirmationMessage('You have unsaved changes. Are you sure that you want to exit?')
+        .setVerifyCurrentUrl(() => cy.url().should('eq', `${Cypress.config('baseUrl')}/jdbc/configuration/create`))
+        .setVerifyRedirectedUrl(() => cy.url().should('eq', `${Cypress.config('baseUrl')}/import#user`));
+}
