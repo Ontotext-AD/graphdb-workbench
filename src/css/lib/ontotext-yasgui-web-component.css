@@ -59,7 +59,7 @@ yasgui-component .yasqe .yasqe_buttons {
 
 yasgui-component .custom-button {
     color: var(--primary-color) !important;
-    font-size: 2.9em !important;
+    font-size: 2.5em !important;
     height: 48px;
 }
 
