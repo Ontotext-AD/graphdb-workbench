@@ -80,19 +80,28 @@ yasgui-component .yasgui .tabsList .tab {
     font-weight: 400;
 }
 
-yasgui-component .editable-text-field-wrapper, yasgui-component .yasgui .tabsList .tab .closeTab {
-    color: var(--secondary-color);
+yasgui-component .yasgui .tabsList .tab .closeTab,
+yasgui-component .yasgui .tabsList .addTab {
+    color: rgba(0, 0, 0, 0.66) !important;
 }
 
-yasgui-component .yasgui .tabsList .tab .closeTab:hover {
+yasgui-component .yasgui .tabsList .tab .closeTab .icon-close,
+yasgui-component .yasgui .tabsList .addTab .icon-plus {
+    font-size: 1.225em !important;
+}
+
+yasgui-component .yasgui .tabsList .tab .closeTab:hover,
+yasgui-component .yasgui .tabsList .addTab:hover {
     color: var(--primary-color-dark) !important;
 }
 
-yasgui-component .editable-text-field-wrapper .save-btn, yasgui-component .editable-text-field-wrapper .save-btn:hover {
+yasgui-component .editable-text-field-wrapper .save-btn,
+yasgui-component .editable-text-field-wrapper .save-btn:hover {
     background-color: var(--primary-color);
 }
 
-yasgui-component .editable-text-field-wrapper .save-btn span, yasgui-component .editable-text-field-wrapper .close-btn span {
+yasgui-component .editable-text-field-wrapper .save-btn span,
+yasgui-component .editable-text-field-wrapper .close-btn span {
     font-weight: 900;
 }
 
