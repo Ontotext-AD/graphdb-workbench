@@ -47,6 +47,10 @@ yasgui-component .CodeMirror-hints {
     font-family: unset;
 }
 
+yasgui-component .CodeMirror-linenumber {
+    color: rgba(0, 0, 0, .66) !important;
+}
+
 yasgui-component li.CodeMirror-hint-active {
     background: var(--autocomplete-background);
     color: inherit;
@@ -213,8 +217,12 @@ yasgui-component .yasr .extended-boolean-plugin .response-success {
     background-color: var(--color-success-light) !important;
 }
 
-.yasr .dataTables_wrapper .dataTable thead tr th {
+yasgui-component .yasr .dataTables_wrapper .dataTable thead tr th {
     font-weight: 500;
+}
+
+yasgui-component .yasr .dataTables_wrapper .dataTable .rowNumber {
+    color: rgba(0, 0, 0, .66) !important;
 }
 
 yasgui-component .yasr .dataTable a {
