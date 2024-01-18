@@ -74,6 +74,12 @@ yasgui-component .yasqe_queryButton {
     height: 38px !important;
 }
 
+yasgui-component .editable-text-field-wrapper,
+yasgui-component .yasgui .tabsList .tab {
+    color: inherit;
+    font-weight: 400;
+}
+
 yasgui-component .editable-text-field-wrapper, yasgui-component .yasgui .tabsList .tab .closeTab {
     color: var(--secondary-color);
 }
