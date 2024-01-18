@@ -123,12 +123,19 @@ coreErrors.$inject = ['$timeout'];
 
 function coreErrors($timeout) {
     return {
-        // FIXME: Why doesn't require find mainCtrl?
-        // require: '^^mainCtrl',
         restrict: 'EA',
         transclude: true,
         templateUrl: 'js/angular/core/templates/core-errors.html',
         link: function (scope, element, attrs) {
+            // watch for changes in the active repository hide host element of this directive
+            scope.$watch('getActiveRepository()', function (newValue) {
+                if (newValue && !scope.isRestricted) {
+                    element.hide();
+                } else {
+                    element.show();
+                }
+            });
+
             scope.setAttrs(attrs);
 
             scope.setRestricted();
