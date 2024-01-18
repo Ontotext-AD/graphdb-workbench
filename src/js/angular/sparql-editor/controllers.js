@@ -84,6 +84,10 @@ function SparqlEditorCtrl($scope,
         };
     };
 
+    $scope.getActiveRepositoryNoError = () => {
+        return $repositories.getActiveRepository();
+    };
+
     // =========================
     // Private functions
     // =========================
