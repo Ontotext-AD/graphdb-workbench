@@ -12,7 +12,8 @@
 
     <div core-errors></div>
 
-    <yasgui-component id="query-editor" yasgui-config="yasguiConfig" ng-if="yasguiConfig"
+    <yasgui-component id="query-editor" yasgui-config="yasguiConfig"
+                      ng-if="yasguiConfig && getActiveRepositoryNoError()"
                       after-init="initViewFromUrlParams()"></yasgui-component>
 
     <form id="wb-download" method="POST" action="" target="_self">
