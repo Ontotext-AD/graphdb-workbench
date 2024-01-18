@@ -77,6 +77,8 @@ yasgui-component .custom-button:disabled:hover, yasgui-component .custom-button:
 
 yasgui-component .yasqe_queryButton {
     background-color: var(--primary-color) !important;
+    font-family: var(--main-font);
+    font-weight: 400;
 }
 
 yasgui-component .editable-text-field-wrapper, yasgui-component .yasgui .tabsList .tab .closeTab {
