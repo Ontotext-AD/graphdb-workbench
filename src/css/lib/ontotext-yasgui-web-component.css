@@ -13,14 +13,6 @@ yasgui-component .dialog-body,
     font-size: 1.25rem !important;
 }
 
-/* And scale it down on given viewport width */
-@media (max-width: 1439px) {
-    /* Omit the heading  tags */
-    yasgui-component :not(h3,h4,.dialog-body,.custom-button,.btn-orientation,sup) {
-        font-size: 14px !important;
-    }
-}
-
 yasgui-component .dialog .dialog-footer .cancel-button,
 .confirmation-dialog .dialog-footer .cancel-button {
     margin-right: 3px;
@@ -79,6 +71,7 @@ yasgui-component .yasqe_queryButton {
     background-color: var(--primary-color) !important;
     font-family: var(--main-font);
     font-weight: 400;
+    height: 38px !important;
 }
 
 yasgui-component .editable-text-field-wrapper, yasgui-component .yasgui .tabsList .tab .closeTab {
@@ -319,6 +312,18 @@ yasgui-component .page-selector {
 /* =================================================================================
     Media queries ensuring proper responsive layout on different screen resolutions
    ================================================================================= */
+/* And scale it down on given viewport width */
+@media (max-width: 1439px) {
+    /* Omit the heading  tags */
+    yasgui-component :not(h3,h4,.dialog-body,.custom-button,.btn-orientation,sup) {
+        font-size: 14px !important;
+    }
+
+    yasgui-component .yasqe_queryButton {
+        height: 33px !important;
+    }
+}
+
 @media (max-width: 1400px) {
     .ontotext-dropdown .ontotext-dropdown-button:after {
         padding-left: 0 !important;
