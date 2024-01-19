@@ -287,6 +287,7 @@ describe('Resource view', () => {
             // When I load resource that is used as context.
             ResourceSteps.visit(`uri=${CONTEXT_EXPLICIT}&role=subject`);
 
+
             // Then I expect to see empty results because this resource has not triples as subject.
             YasrSteps.getNoDataElement().should('be.visible');
 
@@ -305,8 +306,10 @@ describe('Resource view', () => {
             // When I click on "context" tab.
             ResourceSteps.selectContextRole();
 
-            // Then I expect to see all triples of resource without mater of its role.
+            // Then I expect to see all triples of resource without mater of its role,
             YasrSteps.getResults().should('have.length', 86);
+            // and inference dropdown should be disabled.
+            ResourceSteps.getInferenceSelectElement().should('be.disabled');
 
             // When I click on "all" tab.
             ResourceSteps.selectAllRole();
