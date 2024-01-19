@@ -62,7 +62,7 @@
                     class="form-control form-control-sm"
                     ng-model="currentContextType"
                     ng-change="changeInference(currentContextType)"
-                    ng-disabled="loading || role === 'context' || getActiveRepository() === 'SYSTEM'">
+                    ng-disabled="loading || resourceInfo.role === 'context' || getActiveRepository() === 'SYSTEM'">
                 <option ng-repeat="contextType in contextTypes"
                         value="{{contextType.id}}"
                         ng-selected="resourceInfo.contextType.id === contextType.id">
