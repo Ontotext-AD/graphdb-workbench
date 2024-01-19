@@ -110,10 +110,19 @@ yasgui-component .ontotext-dropdown-menu .ontotext-dropdown-menu-item {
     font-size: 1rem;
 }
 
+yasgui-component .ontotext-dropdown-button {
+    height: 40px;
+}
+
 yasgui-component .ontotext-dropdown-button,
 yasgui-component .ontotext-dropdown-menu.open .ontotext-dropdown-menu-item {
     background-color: var(--primary-color) !important;
     color: #fff !important;
+}
+
+yasgui-component .ontotext-download-as .ontotext-dropdown-button .button-name {
+    font-family: var(--main-font);
+    font-weight: 400;
 }
 
 yasgui-component .ontotext-dropdown-button:hover,
@@ -334,27 +343,24 @@ yasgui-component .page-selector {
         font-size: 14px !important;
     }
 
-    yasgui-component .yasqe_queryButton {
+    yasgui-component .yasqe_queryButton,
+    yasgui-component .ontotext-dropdown-button {
         height: 33px !important;
     }
 }
 
-@media (max-width: 1400px) {
-    .ontotext-dropdown .ontotext-dropdown-button:after {
-        padding-left: 0 !important;
-    }
-
-    .ontotext-dropdown .button-name {
+@media (max-width: 1200px) {
+    .yasr_btn span {
         display: none;
     }
 }
 
-@media (max-width: 1200px) {
-    .explore-visual-graph-button-name {
-        display: none;
+@media (max-width: 768px) {
+    .ontotext-dropdown .button-name {
+        display: inline;
     }
 
-    .yasr_btn span {
-        display: none;
+    .ontotext-dropdown .ontotext-dropdown-button:after {
+        padding-left: 10px !important;
     }
 }
