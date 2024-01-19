@@ -57,6 +57,16 @@ yasgui-component .yasqe .yasqe_buttons {
     right: 21px;
 }
 
+yasgui-component .tabPanel .yasqe  .yasqe-footer-buttons {
+    padding-top: 15px;
+}
+
+yasgui-component .tabPanel .yasqe  .yasqe-footer-buttons .abort-button {
+    font-family: var(--main-font);
+    font-weight: 400;
+    height: 38px;
+}
+
 yasgui-component .custom-button {
     color: var(--primary-color) !important;
     font-size: 2.5em !important;
@@ -348,7 +358,8 @@ yasgui-component .page-selector {
     }
 
     yasgui-component .yasqe_queryButton,
-    yasgui-component .ontotext-dropdown-button {
+    yasgui-component .ontotext-dropdown-button,
+    yasgui-component .tabPanel .yasqe  .yasqe-footer-buttons .abort-button {
         height: 33px !important;
     }
 }
