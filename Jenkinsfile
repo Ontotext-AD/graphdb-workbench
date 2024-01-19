@@ -39,7 +39,7 @@ pipeline {
     stage('Sonar') {
       steps {
         withSonarQubeEnv('SonarCloud') {
-          sh "node sonar-project.js --branch='${env.ghprbSourceBranch}' --target-branch='${env.ghprbTargetBranch}' --pull-request-id='${env.ghprbPullId}'"
+//           sh "node sonar-project.js --branch='${env.ghprbSourceBranch}' --target-branch='${env.ghprbTargetBranch}' --pull-request-id='${env.ghprbPullId}'"
         }
       }
     }
