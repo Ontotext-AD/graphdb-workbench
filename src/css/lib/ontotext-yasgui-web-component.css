@@ -228,6 +228,10 @@ yasgui-component .yasr .yasr_btnGroup .yasr_btn.selected {
     background-color: #fff;
 }
 
+yasgui-component .yasr .error-response-plugin {
+    background-color: var(--color-danger-light) !important;
+}
+
 yasgui-component .yasr .extended-boolean-plugin > * {
     font-size: 3rem !important;
 }
