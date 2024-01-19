@@ -24,9 +24,16 @@ yasgui-component .yasgui-btn.btn-selected {
     background-color: var(--primary-color) !important;
 }
 
-yasgui-component .btn-orientation {
+yasgui-component .yasgui-toolbar .yasgui-btn {
+    font-size: 14px !important;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+yasgui-component .yasgui-toolbar .btn-orientation {
     color: var(--primary-color) !important;
-    font-size: 2em !important;
+    font-size: 28px !important;
+    margin-left: 1rem;
 }
 
 yasgui-component .yasqe .CodeMirror {
@@ -355,6 +362,15 @@ yasgui-component .page-selector {
     /* Omit the heading  tags */
     yasgui-component :not(h3,h4,.dialog-body,.custom-button,.btn-orientation,sup) {
         font-size: 14px !important;
+    }
+
+    yasgui-component .yasgui-toolbar .yasgui-btn {
+        font-size: 12px !important;
+        height: 24px !important;
+    }
+
+    yasgui-component .yasgui-toolbar .btn-orientation {
+        font-size: 24px !important;
     }
 
     yasgui-component .yasqe_queryButton,
