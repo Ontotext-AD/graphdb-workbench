@@ -11,7 +11,6 @@ import {BeforeUpdateQueryResult, BeforeUpdateQueryResultStatus} from "../models/
 import {EventDataType} from "../models/ontotext-yasgui/event-data-type";
 import {decodeHTML} from "../../../app";
 import {toBoolean} from "../utils/string-utils";
-import {QueryMode} from "../models/ontotext-yasgui/query-mode";
 
 const modules = [
     'ui.bootstrap',
@@ -179,7 +178,10 @@ function SparqlEditorCtrl($scope,
      */
     const openNewTab = (sparqlQuery, executeWhenOpen = false) => {
         YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(QUERY_EDITOR_ID)
-            .then((yasguiComponent) => yasguiComponent.openTab(sparqlQuery));
+            .then((yasguiComponent) => {
+                yasguiComponent.openTab(sparqlQuery)
+                    .then((tab) => YasguiComponentDirectiveUtil.highlightTabName(tab));
+            });
 
         if (executeWhenOpen) {
             autoExecuteQueryIfRequested();
