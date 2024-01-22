@@ -3,6 +3,7 @@ import 'angular/rest/aclmanagement.rest.service';
 import {mapAclRulesResponse} from "../rest/mappers/aclmanagement-mapper";
 import {isEqual} from 'lodash';
 import {mapNamespacesResponse} from "../rest/mappers/namespaces-mapper";
+import {ACL_SCOPE} from "./model";
 
 const modules = [
     'graphdb.framework.rest.plugins.service',
@@ -59,7 +60,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
 
     /**
      * A copy of the model needed for revert or dirty check operations.
-     * @type {undefined}
+     * @type {undefined|ACListModel}
      */
     $scope.rulesModelCopy = undefined;
 
@@ -74,6 +75,12 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
      * @type {undefined|number}
      */
     $scope.editedRuleIndex = undefined;
+
+    /**
+     * Represents the scope of the edited rule.
+     * @type {undefined|string}
+     */
+    $scope.editedRuleScope = undefined;
 
     /**
      * A copy of the currently edited rule. This is used for reverting an edited rule.
@@ -94,93 +101,125 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
      */
     $scope.modelIsDirty = false;
 
+    /**
+     * Indicates whether the scope is dirty or not.
+     *
+     * @type {Set<string>}
+     */
+    $scope.dirtyScope = new Set();
+
+    /**
+     * Represents the scope of the active tab in a web application.
+     *
+     * @type {string}
+     */
+    $scope.activeTabScope = ACL_SCOPE.STATEMENT;
+
+    /**
+     * Represents the ACL scope
+     * @type {{STATEMENT: string, SYSTEM: string, PLUGIN: string, CLEAR_GRAPH: string}}
+     */
+    $scope.ACL_SCOPE = ACL_SCOPE;
+
+
     //
     // Public functions
     //
 
     /**
      * Adds a new rule at a given index in the rulesModel.
+     * @param {string} scope
      * @param {number} index
      */
-    $scope.addRule = (index) => {
-        $scope.rulesModel.addRule(index);
+    $scope.addRule = (scope, index) => {
+        $scope.rulesModel.addRule(scope, index);
         $scope.editedRuleIndex = index;
+        $scope.editedRuleScope = scope;
         $scope.isNewRule = true;
-        setModelDirty();
+        setModelDirty(scope);
     };
 
     /**
      * Edits a rule at a given index.
+     * @param {string} scope
      * @param {number} index
      */
-    $scope.editRule = (index) => {
+    $scope.editRule = (scope, index) => {
         $scope.editedRuleIndex = index;
+        $scope.editedRuleScope = scope;
         $scope.isNewRule = false;
-        $scope.editedRuleCopy = $scope.rulesModel.getRuleCopy(index);
-        setModelDirty();
+        $scope.editedRuleCopy = $scope.rulesModel.getRuleCopy(scope, index);
+        setModelDirty(scope);
     };
 
     /**
      * Deletes a rule at a given index.
+     * @param {string} scope
      * @param {number} index
      */
-    $scope.deleteRule = (index) => {
+    $scope.deleteRule = (scope, index) => {
         ModalService.openConfirmation(
             $translate.instant('common.confirm'),
             $translate.instant('acl_management.rulestable.messages.delete_rule_confirmation', {index}),
             () => {
-                $scope.rulesModel.removeRule(index);
-                setModelDirty();
+                $scope.rulesModel.removeRule(scope, index);
+                setModelDirty(scope);
             });
     };
 
     /**
      * Saves a rule at a given index in the rulesModel.
+     * @param {string} scope
      */
-    $scope.saveRule = () => {
-        if ($scope.rulesModel.isRuleDuplicated($scope.editedRuleIndex)) {
+    $scope.saveRule = (scope) => {
+        if ($scope.rulesModel.isRuleDuplicated($scope.editedRuleScope, $scope.editedRuleIndex)) {
             notifyDuplication();
             return;
         }
         $scope.editedRuleIndex = undefined;
+        $scope.editedRuleScope = undefined;
         $scope.isNewRule = false;
-        setModelDirty();
+        setModelDirty(scope);
     };
 
     /**
      * Cancels the editing operation of a rule at a given index.
+     * @param {string} scope
      * @param {number} index
      */
-    $scope.cancelEditing = (index) => {
+    $scope.cancelEditing = (scope, index) => {
         if ($scope.isNewRule) {
-            $scope.rulesModel.removeRule(index);
+            $scope.rulesModel.removeRule(scope, index);
             $scope.isNewRule = false;
         } else {
-            $scope.rulesModel.replaceRule(index, $scope.editedRuleCopy);
+            $scope.rulesModel.replaceRule(scope, index, $scope.editedRuleCopy);
             $scope.editedRuleCopy = undefined;
         }
         $scope.editedRuleIndex = undefined;
-        setModelDirty();
+        $scope.editedRuleScope = undefined;
+        setModelDirty(scope);
     };
 
     /**
      * Moves a rule on the given index in the rulesModel one position up by swapping it with the rule above.
+     * @param {string} scope
      * @param {number} index
      */
-    $scope.moveUp = (index) => {
-        $scope.rulesModel.moveUp(index);
+    $scope.moveUp = (scope, index) => {
+        $scope.rulesModel.moveUp(scope, index);
         $scope.selectedRule = index - 1;
-        setModelDirty();
+        setModelDirty(scope);
     };
 
     /**
      * Moves a rule on the given index in the rulesModel one position down by swapping it with the rule below.
+     * @param {string} scope
      * @param {number} index
      */
-    $scope.moveDown = (index) => {
-        $scope.rulesModel.moveDown(index);
+    $scope.moveDown = (scope, index) => {
+        $scope.rulesModel.moveDown(scope, index);
         $scope.selectedRule = index + 1;
-        setModelDirty();
+        setModelDirty(scope);
     };
 
     /**
@@ -212,6 +251,20 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
             });
     };
 
+
+    /**
+     * Function to switch between tabs in the user interface.
+     *
+     * @param {string} scope
+     */
+    $scope.switchTab = (scope) => {
+        if ($scope.editedRuleIndex !== undefined) {
+            $scope.cancelEditing($scope.activeTabScope, $scope.editedRuleIndex)
+        }
+        $scope.activeTabScope = scope;
+        $scope.ruleKeys = Object.keys($scope.rulesModel.filterByScope($scope.activeTabScope)[0] || {});
+    };
+
     //
     // Private functions
     //
@@ -221,7 +274,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
         return AclManagementRestService.getAcl(repositoryId).then((response) => {
             $scope.rulesModel = mapAclRulesResponse(response);
             $scope.rulesModelCopy = mapAclRulesResponse(response);
-            setModelDirty();
+            setModelDirty(ACL_SCOPE.STATEMENT);
         }).catch((data) => {
             const msg = getError(data);
             toastr.error(msg, $translate.instant('acl_management.errors.loading_rules'));
@@ -251,6 +304,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
     const resetPageState = () => {
         loadRules();
         $scope.editedRuleIndex = undefined;
+        $scope.editedRuleScope = undefined;
         $scope.modelIsDirty = false;
         $scope.editedRuleCopy = undefined;
     };
@@ -258,8 +312,14 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
     /**
      * Updates the modelIsDirty flag by comparing the model with its copy created after it was loaded initially.
      */
-    const setModelDirty = () => {
-        $scope.modelIsDirty = !isEqual($scope.rulesModel, $scope.rulesModelCopy);
+    const setModelDirty = (scope) => {
+        const scopeIsDirty= !isEqual($scope.rulesModel.filterByScope(scope), $scope.rulesModelCopy.filterByScope(scope));
+        if (scopeIsDirty) {
+            $scope.dirtyScope.add(scope);
+        } else {
+            $scope.dirtyScope.delete(scope);
+        }
+        $scope.modelIsDirty = $scope.dirtyScope.size > 0;
     };
 
     /**

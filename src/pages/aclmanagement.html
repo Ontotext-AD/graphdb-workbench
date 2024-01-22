@@ -14,155 +14,552 @@
 
     <div class="acl-management-container">
         <div ng-if="loading" onto-loader-new size="100" style="height: 75vh; display: flex;"></div>
-
-        <form name="ruleData" novalidate ng-if="rulesModel && !loading">
-            <table class="acl-rules table table-striped table-hover" aria-describedby="ACL rules table">
-                <thead>
-                <tr class="labels-row">
-                    <th scope="col" class="index-column">{{'acl_management.rulestable.column.index' | translate}}
-                    </th>
-                    <th scope="col" class="reorder-column"></th>
-                    <th scope="col" class="subject-column">{{'acl_management.rulestable.column.subject' | translate}}
-                    </th>
-                    <th scope="col" class="predicate-column">
-                        {{'acl_management.rulestable.column.predicate' | translate}}
-                    </th>
-                    <th scope="col" class="object-column">
-                        {{'acl_management.rulestable.column.object' | translate}}
-                    </th>
-                    <th scope="col" class="context-column">{{'acl_management.rulestable.column.context' | translate}}
-                    </th>
-                    <th scope="col" class="role-column">{{'acl_management.rulestable.column.role' | translate}}</th>
-                    <th scope="col" class="policy-column">
-                        {{'acl_management.rulestable.column.policy' | translate}}
-                    </th>
-                    <th scope="col" class="actions-column"></th>
-                </tr>
-                <tr>
-                    <th scope="colgroup" colspan="9" class="toolbar">
-                        <div ng-if="editedRuleIndex === undefined" class="pull-right">
-                            <button ng-click="addRule(0)" class="btn btn-link add-rule-btn"
-                                    gdb-tooltip="{{'acl_management.rulestable.actions.add_rule' | translate}}">
-                                <em class="icon-plus"></em>
-                            </button>
-                        </div>
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-if="!rulesModel.size()">
-                    <td colspan="9" class="no-data">
-                        {{'acl_management.rulestable.messages.no_data' | translate}}
-                    </td>
-                </tr>
-                <tr ng-repeat-start="rule in rulesModel.aclRules track by $index" ng-if="0"></tr>
-                <tr ng-if="$index !== editedRuleIndex" class="acl-rule preview-rule-row"
-                    ng-class="{'selected': $index === selectedRule || $index === editedRuleIndex}">
-                    <td class="index-cell">{{$index}}</td>
-                    <td class="reorder-cell">
-                            <span ng-if="editedRuleIndex === undefined" class="reorder-actions-group">
-                                <button ng-click="moveUp($index)" ng-if="$index > 0" class="btn btn-link move-up-btn"
-                                        gdb-tooltip="{{'acl_management.rulestable.actions.move_up' | translate}}">
-                                    <em class="fa fa-caret-up"></em>
-                                </button>
-                                <button ng-click="moveDown($index)" ng-if="$index < rulesModel.size() - 1"
-                                        class="btn btn-link move-down-btn"
-                                        gdb-tooltip="{{'acl_management.rulestable.actions.move_down' | translate}}">
-                                    <em class="fa fa-caret-down"></em>
-                                </button>
-                            </span>
-                    </td>
-                    <td class="subject-cell data">{{rule.subject}}</td>
-                    <td class="predicate-cell data">{{rule.predicate}}</td>
-                    <td class="object-cell data">{{rule.object}}</td>
-                    <td class="context-cell data">{{rule.context}}</td>
-                    <td class="role-cell data">{{rule.role}}</td>
-                    <td class="policy-cell data">{{rule.policy}}</td>
-                    <td class="actions-cell">
-                        <div ng-if="editedRuleIndex === undefined" class="crud-actions-group">
-                            <button ng-click="deleteRule($index)" class="btn btn-link delete-rule-btn"
-                                    gdb-tooltip="{{'acl_management.rulestable.actions.delete_rule' | translate}}">
-                                <em class="icon-trash"></em>
-                            </button>
-                            <button ng-click="editRule($index)" class="btn btn-link edit-rule-btn"
-                                    gdb-tooltip="{{'acl_management.rulestable.actions.edit_rule' | translate}}">
-                                <em class="icon-edit"></em>
-                            </button>
-                            <button ng-click="addRule($index + 1)" class="btn btn-link add-rule-btn"
-                                    gdb-tooltip="{{'acl_management.rulestable.actions.add_rule' | translate}}">
-                                <em class="icon-plus"></em>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <tr ng-if="$index === editedRuleIndex" class="acl-rule edit-rule-row"
-                    ng-class="{'selected table-info': $index === editedRuleIndex}">
-                    <td>{{$index}}</td>
-                    <td class="reorder-cell"></td>
-                    <td class="data subject-cell">
-                        <autocomplete ng-model="rule.subject" name="subject" required
-                                      style-class="form-control form-control-sm"
-                                      namespaces="namespaces"
-                                      autocomplete-status-loader="getAutocompletePromise"
-                                      placeholder="{{'acl_management.rulestable.field_placeholders.subject' | translate}}"></autocomplete>
-                        <em></em>
-                    </td>
-                    <td class="data predicate-cell">
-                        <autocomplete ng-model="rule.predicate" name="predicate" required
-                                      style-class="form-control form-control-sm"
-                                      namespaces="namespaces"
-                                      autocomplete-status-loader="getAutocompletePromise"
-                                      placeholder="{{'acl_management.rulestable.field_placeholders.predicate' | translate}}"></autocomplete>
-                        <em></em>
-                    </td>
-                    <td class="data object-cell">
-                        <autocomplete ng-model="rule.object" name="object" required
-                                      style-class="form-control form-control-sm"
-                                      namespaces="namespaces"
-                                      autocomplete-status-loader="getAutocompletePromise"
-                                      placeholder="{{'acl_management.rulestable.field_placeholders.object' | translate}}"></autocomplete>
-                        <em></em>
-                    </td>
-                    <td class="data context-cell">
-                        <autocomplete ng-model="rule.context" name="context" required
-                                      style-class="form-control form-control-sm"
-                                      namespaces="namespaces"
-                                      autocomplete-status-loader="getAutocompletePromise"
-                                      placeholder="{{'acl_management.rulestable.field_placeholders.context' | translate}}"></autocomplete>
-                        <em></em>
-                    </td>
-                    <td class="data role-cell">
-                        <input type="text" name="role" required ng-model="rule.role" uppercased
-                               autocomplete="off" class="form-control form-control-sm"
-                               placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}"/>
-                        <em></em>
-                    </td>
-                    <td class="data policy-cell">
-                        <select ng-model="rule.policy" class="form-control form-control-sm">
-                            <option selected>allow</option>
-                            <option>deny</option>
-                        </select>
-                    </td>
-                    <td class="actions-cell">
-                        <button ng-click="cancelEditing($index)" class="btn btn-link cancel-rule-editing-btn"
-                                gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
-                            <em class="icon-close"></em>
-                        </button>
-                        <button ng-if="ruleData.$valid" ng-click="saveRule()"
-                                class="btn btn-link save-rule-btn"
-                                ng-disabled="!ruleData.$valid"
-                                gdb-tooltip="{{'acl_management.rulestable.actions.save_rule' | translate}}">
-                            <em class="icon-save"></em>
-                        </button>
-                        <em ng-if="!ruleData.$valid" class="icon-save icon-lg save-rule-disabled-btn"
-                            gdb-tooltip="{{'acl_management.rulestable.messages.invalid_form' | translate}}"></em>
-                    </td>
-                </tr>
-                <tr ng-repeat-end ng-if="0"></tr>
-                </tbody>
-            </table>
-        </form>
-
+        <div class="acl-management-container">
+            <ul class="nav nav-tabs">
+                <li class="resource-tab nav-item">
+                    <span class="nav-link" ng-click="switchTab(ACL_SCOPE.STATEMENT)" ng-class="activeTabScope === ACL_SCOPE.STATEMENT ? 'active':''">{{'acl_management.rulestable.tab.statement' | translate}} <span class="dirty-scope" ng-if="dirtyScope.has(ACL_SCOPE.STATEMENT)">*</span></span>
+                </li>
+                <li class="performance-tab nav-item">
+                    <span class="nav-link" ng-click="switchTab(ACL_SCOPE.CLEAR_GRAPH)" ng-class="activeTabScope === ACL_SCOPE.CLEAR_GRAPH ? 'active':''">{{'acl_management.rulestable.tab.clear_graph' | translate}} <span class="dirty-scope" ng-if="dirtyScope.has(ACL_SCOPE.CLEAR_GRAPH)">*</span></span>
+                </li>
+                <li class="cluster-tab nav-item">
+                    <span class="nav-link" ng-click="switchTab(ACL_SCOPE.PLUGIN)" ng-class="activeTabScope === ACL_SCOPE.PLUGIN ? 'active':''">{{'acl_management.rulestable.tab.plugin' | translate}} <span class="dirty-scope" ng-if="dirtyScope.has(ACL_SCOPE.PLUGIN)">*</span></span>
+                </li>
+                <li class="cluster-tab nav-item">
+                    <span class="nav-link" ng-click="switchTab(ACL_SCOPE.SYSTEM)" ng-class="activeTabScope === ACL_SCOPE.SYSTEM ? 'active':''">{{'acl_management.rulestable.tab.system' | translate}} <span class="dirty-scope" ng-if="dirtyScope.has(ACL_SCOPE.SYSTEM)">*</span></span>
+                </li>
+            </ul>
+            <div class="tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.STATEMENT" id="statementTab">
+                <form name="ruleData" novalidate ng-if="rulesModel.filterByScope(activeTabScope) && !loading">
+                    <table class="acl-rules table table-striped table-hover" aria-describedby="ACL rules table">
+                        <thead>
+                            <tr class="labels-row">
+                                <th scope="col" class="index-column">
+                                    {{'acl_management.rulestable.column.index' | translate}}
+                                </th>
+                                <th scope="col" class="reorder-column"></th>
+                                <th scope="col" class="policy-column">
+                                    {{'acl_management.rulestable.column.policy' | translate}}
+                                </th>
+                                <th scope="col" class="role-column">
+                                    {{'acl_management.rulestable.column.role' | translate}}
+                                </th>
+                                <th scope="col" class="operation-column">
+                                    {{'acl_management.rulestable.column.operation' | translate}}
+                                </th>
+                                <th scope="col" class="subject-column">
+                                    {{'acl_management.rulestable.column.subject' | translate}}
+                                </th>
+                                <th scope="col" class="predicate-column">
+                                    {{'acl_management.rulestable.column.predicate' | translate}}
+                                </th>
+                                <th scope="col" class="object-column">
+                                    {{'acl_management.rulestable.column.object' | translate}}
+                                </th>
+                                <th scope="col" class="context-column">
+                                    {{'acl_management.rulestable.column.context' | translate}}
+                                </th>
+                                <th scope="col" class="actions-column"></th>
+                            </tr>
+                            <tr>
+                                <th scope="colgroup" colspan="11" class="toolbar">
+                                    <div ng-if="editedRuleIndex === undefined" class="pull-right">
+                                        <button ng-click="addRule(activeTabScope, 0)" class="btn btn-link add-rule-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.actions.add_rule' | translate}}">
+                                            <em class="icon-plus"></em>
+                                        </button>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-if="!rulesModel.size(activeTabScope)">
+                                <td colspan="12" class="no-data">
+                                    {{'acl_management.rulestable.messages.no_data' | translate}}
+                                </td>
+                            </tr>
+                            <tr ng-repeat-start="rule in rulesModel.filterByScope(activeTabScope) track by $index" ng-if="0"></tr>
+                            <tr ng-if="$index !== editedRuleIndex" class="acl-rule preview-rule-row"
+                                ng-class="{'selected': $index === selectedRule || $index === editedRuleIndex}">
+                                <td class="index-cell">{{$index}}</td>
+                                <td class="reorder-cell">
+                                    <span ng-if="editedRuleIndex === undefined" class="reorder-actions-group">
+                                        <button ng-click="moveUp(activeTabScope, $index)" ng-if="$index > 0" class="btn btn-link move-up-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.actions.move_up' | translate}}">
+                                            <em class="fa fa-caret-up"></em>
+                                        </button>
+                                        <button ng-click="moveDown(activeTabScope, $index)" ng-if="$index < rulesModel.filterByScope(activeTabScope).length - 1"
+                                                class="btn btn-link move-down-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.actions.move_down' | translate}}">
+                                            <em class="fa fa-caret-down"></em>
+                                        </button>
+                                    </span>
+                                </td>
+                                <td class="policy-cell data">{{rule.policy}}</td>
+                                <td class="role-cell data">{{rule.role}}</td>
+                                <td class="operation-cell data">{{rule.operation}}</td>
+                                <td class="subject-cell data">{{rule.subject}}</td>
+                                <td class="predicate-cell data">{{rule.predicate}}</td>
+                                <td class="object-cell data">{{rule.object}}</td>
+                                <td class="context-cell data">{{rule.context}}</td>
+                                <td class="actions-cell">
+                                    <div ng-if="editedRuleIndex === undefined" class="crud-actions-group">
+                                        <button ng-click="deleteRule(activeTabScope, $index)" class="btn btn-link delete-rule-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.actions.delete_rule' | translate}}">
+                                            <em class="icon-trash"></em>
+                                        </button>
+                                        <button ng-click="editRule(activeTabScope, $index)" class="btn btn-link edit-rule-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.actions.edit_rule' | translate}}">
+                                            <em class="icon-edit"></em>
+                                        </button>
+                                        <button ng-click="addRule(activeTabScope, $index + 1)" class="btn btn-link add-rule-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.actions.add_rule' | translate}}">
+                                            <em class="icon-plus"></em>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr ng-if="$index === editedRuleIndex" class="acl-rule edit-rule-row"
+                                ng-class="{'selected table-info': $index === editedRuleIndex}">
+                                <td>{{$index}}</td>
+                                <td class="reorder-cell"></td>
+                                <td class="data policy-cell">
+                                    <select ng-model="rule.policy" class="form-control form-control-sm">
+                                        <option selected>allow</option>
+                                        <option>deny</option>
+                                    </select>
+                                </td>
+                                <td class="data role-cell">
+                                    <input type="text" name="role" required ng-model="rule.role" uppercased
+                                           autocomplete="off" class="form-control form-control-sm"
+                                           placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}"/>
+                                    <em></em>
+                                </td>
+                                <td class="data operation-cell">
+                                    <select ng-model="rule.operation" class="form-control form-control-sm">
+                                        <option selected>read</option>
+                                        <option>write</option>
+                                    </select>
+                                </td>
+                                <td class="data subject-cell">
+                                    <autocomplete ng-model="rule.subject" name="subject" required
+                                                  style-class="form-control form-control-sm"
+                                                  namespaces="namespaces"
+                                                  autocomplete-status-loader="getAutocompletePromise"
+                                                  placeholder="{{'acl_management.rulestable.field_placeholders.subject' | translate}}"></autocomplete>
+                                    <em></em>
+                                </td>
+                                <td class="data predicate-cell">
+                                    <autocomplete ng-model="rule.predicate" name="predicate" required
+                                                  style-class="form-control form-control-sm"
+                                                  namespaces="namespaces"
+                                                  autocomplete-status-loader="getAutocompletePromise"
+                                                  placeholder="{{'acl_management.rulestable.field_placeholders.predicate' | translate}}"></autocomplete>
+                                    <em></em>
+                                </td>
+                                <td class="data object-cell">
+                                    <autocomplete ng-model="rule.object" name="object" required
+                                                  style-class="form-control form-control-sm"
+                                                  namespaces="namespaces"
+                                                  autocomplete-status-loader="getAutocompletePromise"
+                                                  placeholder="{{'acl_management.rulestable.field_placeholders.object' | translate}}"></autocomplete>
+                                    <em></em>
+                                </td>
+                                <td class="data context-cell">
+                                    <autocomplete ng-model="rule.context" name="context" required
+                                                  style-class="form-control form-control-sm"
+                                                  namespaces="namespaces"
+                                                  autocomplete-status-loader="getAutocompletePromise"
+                                                  placeholder="{{'acl_management.rulestable.field_placeholders.context' | translate}}"></autocomplete>
+                                    <em></em>
+                                </td>
+                                <td class="actions-cell">
+                                    <button ng-click="cancelEditing(activeTabScope, $index)"
+                                            class="btn btn-link cancel-rule-editing-btn"
+                                            gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
+                                        <em class="icon-close"></em>
+                                    </button>
+                                    <button ng-if="ruleData.$valid" ng-click="saveRule(activeTabScope)"
+                                            class="btn btn-link save-rule-btn"
+                                            ng-disabled="!ruleData.$valid"
+                                            gdb-tooltip="{{'acl_management.rulestable.actions.save_rule' | translate}}">
+                                        <em class="icon-save"></em>
+                                    </button>
+                                    <em ng-if="!ruleData.$valid" class="icon-save icon-lg save-rule-disabled-btn"
+                                        gdb-tooltip="{{'acl_management.rulestable.messages.invalid_form' | translate}}"></em>
+                                </td>
+                            </tr>
+                            <tr ng-repeat-end ng-if="0"></tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.CLEAR_GRAPH" id="graphTab">
+                <form name="ruleData" novalidate ng-if="rulesModel && !loading">
+                    <table class="acl-rules table table-striped table-hover" aria-describedby="ACL rules table">
+                        <thead>
+                            <tr class="labels-row">
+                                <th scope="col" class="index-column">
+                                    {{'acl_management.rulestable.column.index' | translate}}
+                                </th>
+                                <th scope="col" class="reorder-column"></th>
+                                <th scope="col" class="policy-column">
+                                    {{'acl_management.rulestable.column.policy' | translate}}
+                                </th>
+                                <th scope="col" class="role-column">
+                                    {{'acl_management.rulestable.column.role' | translate}}
+                                </th>
+                                <th scope="col" class="context-column">
+                                    {{'acl_management.rulestable.column.context' | translate}}
+                                </th>
+                                <th scope="col" class="actions-column"></th>
+                            </tr>
+                            <tr>
+                                <th scope="colgroup" colspan="6" class="toolbar">
+                                    <div ng-if="editedRuleIndex === undefined" class="pull-right">
+                                        <button ng-click="addRule(activeTabScope, 0)" class="btn btn-link add-rule-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.actions.add_rule' | translate}}">
+                                            <em class="icon-plus"></em>
+                                        </button>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-if="!rulesModel.size(activeTabScope)">
+                                <td colspan="12" class="no-data">
+                                    {{'acl_management.rulestable.messages.no_data' | translate}}
+                                </td>
+                            </tr>
+                            <tr ng-repeat-start="rule in rulesModel.filterByScope(activeTabScope) track by $index" ng-if="0"></tr>
+                            <tr ng-if="$index !== editedRuleIndex" class="acl-rule preview-rule-row"
+                                ng-class="{'selected': $index === selectedRule || $index === editedRuleIndex}">
+                                <td class="index-cell">{{$index}}</td>
+                                <td class="reorder-cell">
+                                    <span ng-if="editedRuleIndex === undefined" class="reorder-actions-group">
+                                        <button ng-click="moveUp(activeTabScope, $index)" ng-if="$index > 0" class="btn btn-link move-up-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.actions.move_up' | translate}}">
+                                            <em class="fa fa-caret-up"></em>
+                                        </button>
+                                        <button ng-click="moveDown(activeTabScope, $index)" ng-if="$index < rulesModel.size(activeTabScope) - 1"
+                                                class="btn btn-link move-down-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.actions.move_down' | translate}}">
+                                            <em class="fa fa-caret-down"></em>
+                                        </button>
+                                    </span>
+                                </td>
+                                <td class="policy-cell data">{{rule.policy}}</td>
+                                <td class="role-cell data">{{rule.role}}</td>
+                                <td class="context-cell data">{{rule.context}}</td>
+                                <td class="actions-cell">
+                                    <div ng-if="editedRuleIndex === undefined" class="crud-actions-group">
+                                        <button ng-click="deleteRule(activeTabScope, $index)" class="btn btn-link delete-rule-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.actions.delete_rule' | translate}}">
+                                            <em class="icon-trash"></em>
+                                        </button>
+                                        <button ng-click="editRule(activeTabScope, $index)" class="btn btn-link edit-rule-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.actions.edit_rule' | translate}}">
+                                            <em class="icon-edit"></em>
+                                        </button>
+                                        <button ng-click="addRule(activeTabScope, $index + 1)" class="btn btn-link add-rule-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.actions.add_rule' | translate}}">
+                                            <em class="icon-plus"></em>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr ng-if="$index === editedRuleIndex" class="acl-rule edit-rule-row"
+                                ng-class="{'selected table-info': $index === editedRuleIndex}">
+                                <td>{{$index}}</td>
+                                <td class="reorder-cell"></td>
+                                <td class="data policy-cell">
+                                    <select ng-model="rule.policy" class="form-control form-control-sm">
+                                        <option selected>allow</option>
+                                        <option>deny</option>
+                                    </select>
+                                </td>
+                                <td class="data role-cell">
+                                    <input type="text" name="role" required ng-model="rule.role" uppercased
+                                           autocomplete="off" class="form-control form-control-sm"
+                                           placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}"/>
+                                    <em></em>
+                                </td>
+                                <td class="data context-cell">
+                                    <autocomplete ng-model="rule.context" name="context" required
+                                                  style-class="form-control form-control-sm"
+                                                  namespaces="namespaces"
+                                                  autocomplete-status-loader="getAutocompletePromise"
+                                                  placeholder="{{'acl_management.rulestable.field_placeholders.context' | translate}}"></autocomplete>
+                                    <em></em>
+                                </td>
+                                <td class="actions-cell">
+                                    <button ng-click="cancelEditing(activeTabScope, $index)"
+                                            class="btn btn-link cancel-rule-editing-btn"
+                                            gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
+                                        <em class="icon-close"></em>
+                                    </button>
+                                    <button ng-if="ruleData.$valid" ng-click="saveRule(activeTabScope)"
+                                            class="btn btn-link save-rule-btn"
+                                            ng-disabled="!ruleData.$valid"
+                                            gdb-tooltip="{{'acl_management.rulestable.actions.save_rule' | translate}}">
+                                        <em class="icon-save"></em>
+                                    </button>
+                                    <em ng-if="!ruleData.$valid" class="icon-save icon-lg save-rule-disabled-btn"
+                                        gdb-tooltip="{{'acl_management.rulestable.messages.invalid_form' | translate}}"></em>
+                                </td>
+                            </tr>
+                            <tr ng-repeat-end ng-if="0"></tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.PLUGIN" id="pluginTab">
+                <form name="ruleData" novalidate ng-if="rulesModel && !loading">
+                    <table class="acl-rules table table-striped table-hover" aria-describedby="ACL rules table">
+                        <thead>
+                            <tr class="labels-row">
+                                <th scope="col" class="index-column">
+                                    {{'acl_management.rulestable.column.index' | translate}}
+                                </th>
+                                <th scope="col" class="reorder-column"></th>
+                                <th scope="col" class="policy-column">
+                                    {{'acl_management.rulestable.column.policy' | translate}}
+                                </th>
+                                <th scope="col" class="role-column">
+                                    {{'acl_management.rulestable.column.role' | translate}}
+                                </th>
+                                <th scope="col" class="operation-column">
+                                    {{'acl_management.rulestable.column.operation' | translate}}
+                                </th>
+                                <th scope="col" class="plugin-column">
+                                    {{'acl_management.rulestable.column.plugin' | translate}}
+                                </th>
+                                <th scope="col" class="actions-column"></th>
+                            </tr>
+                            <tr>
+                                <th scope="colgroup" colspan="7" class="toolbar">
+                                    <div ng-if="editedRuleIndex === undefined" class="pull-right">
+                                        <button ng-click="addRule(activeTabScope, 0)" class="btn btn-link add-rule-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.actions.add_rule' | translate}}">
+                                            <em class="icon-plus"></em>
+                                        </button>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-if="!rulesModel.size(activeTabScope)">
+                                <td colspan="7" class="no-data">
+                                    {{'acl_management.rulestable.messages.no_data' | translate}}
+                                </td>
+                            </tr>
+                            <tr ng-repeat-start="rule in rulesModel.filterByScope(activeTabScope) track by $index" ng-if="0"></tr>
+                            <tr ng-if="$index !== editedRuleIndex" class="acl-rule preview-rule-row"
+                                ng-class="{'selected': $index === selectedRule || $index === editedRuleIndex}">
+                                <td class="index-cell">{{$index}}</td>
+                                <td class="reorder-cell">
+                                    <span ng-if="editedRuleIndex === undefined" class="reorder-actions-group">
+                                        <button ng-click="moveUp(activeTabScope, $index)" ng-if="$index > 0" class="btn btn-link move-up-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.actions.move_up' | translate}}">
+                                            <em class="fa fa-caret-up"></em>
+                                        </button>
+                                        <button ng-click="moveDown(activeTabScope, $index)" ng-if="$index < rulesModel.size(activeTabScope) - 1"
+                                                class="btn btn-link move-down-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.actions.move_down' | translate}}">
+                                            <em class="fa fa-caret-down"></em>
+                                        </button>
+                                    </span>
+                                </td>
+                                <td class="policy-cell data">{{rule.policy}}</td>
+                                <td class="role-cell data">{{rule.role}}</td>
+                                <td class="operation-cell data">{{rule.operation}}</td>
+                                <td class="context-cell data">{{rule.plugin}}</td>
+                                <td class="actions-cell">
+                                    <div ng-if="editedRuleIndex === undefined" class="crud-actions-group">
+                                        <button ng-click="deleteRule(activeTabScope, $index)" class="btn btn-link delete-rule-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.actions.delete_rule' | translate}}">
+                                            <em class="icon-trash"></em>
+                                        </button>
+                                        <button ng-click="editRule(activeTabScope, $index)" class="btn btn-link edit-rule-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.actions.edit_rule' | translate}}">
+                                            <em class="icon-edit"></em>
+                                        </button>
+                                        <button ng-click="addRule(activeTabScope, $index + 1)" class="btn btn-link add-rule-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.actions.add_rule' | translate}}">
+                                            <em class="icon-plus"></em>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr ng-if="$index === editedRuleIndex" class="acl-rule edit-rule-row"
+                                ng-class="{'selected table-info': $index === editedRuleIndex}">
+                                <td>{{$index}}</td>
+                                <td class="reorder-cell"></td>
+                                <td class="data policy-cell">
+                                    <select ng-model="rule.policy" class="form-control form-control-sm">
+                                        <option selected>allow</option>
+                                        <option>deny</option>
+                                    </select>
+                                </td>
+                                <td class="data role-cell">
+                                    <input type="text" name="role" required ng-model="rule.role" uppercased
+                                           autocomplete="off" class="form-control form-control-sm"
+                                           placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}"/>
+                                    <em></em>
+                                </td>
+                                <td class="data operation-cell">
+                                    <select ng-model="rule.operation" class="form-control form-control-sm">
+                                        <option selected>read</option>
+                                        <option>write</option>
+                                    </select>
+                                </td>
+                                <td class="data plugin-cell">
+                                    <autocomplete ng-model="rule.plugin" name="plugin" required
+                                                  style-class="form-control form-control-sm"
+                                                  namespaces="namespaces"
+                                                  autocomplete-status-loader="getAutocompletePromise"
+                                                  placeholder="{{'acl_management.rulestable.field_placeholders.plugin' | translate}}"></autocomplete>
+                                    <em></em>
+                                </td>
+                                <td class="actions-cell">
+                                    <button ng-click="cancelEditing(activeTabScope, $index)"
+                                            class="btn btn-link cancel-rule-editing-btn"
+                                            gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
+                                        <em class="icon-close"></em>
+                                    </button>
+                                    <button ng-if="ruleData.$valid" ng-click="saveRule(activeTabScope)"
+                                            class="btn btn-link save-rule-btn"
+                                            ng-disabled="!ruleData.$valid"
+                                            gdb-tooltip="{{'acl_management.rulestable.actions.save_rule' | translate}}">
+                                        <em class="icon-save"></em>
+                                    </button>
+                                    <em ng-if="!ruleData.$valid" class="icon-save icon-lg save-rule-disabled-btn"
+                                        gdb-tooltip="{{'acl_management.rulestable.messages.invalid_form' | translate}}"></em>
+                                </td>
+                            </tr>
+                            <tr ng-repeat-end ng-if="0"></tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.SYSTEM" id="systemTab">
+                <form name="ruleData" novalidate ng-if="rulesModel && !loading">
+                    <table class="acl-rules table table-striped table-hover" aria-describedby="ACL rules table">
+                        <thead>
+                            <tr class="labels-row">
+                                <th scope="col" class="index-column">
+                                    {{'acl_management.rulestable.column.index' | translate}}
+                                </th>
+                                <th scope="col" class="reorder-column"></th>
+                                <th scope="col" class="policy-column">
+                                    {{'acl_management.rulestable.column.policy' | translate}}
+                                </th>
+                                <th scope="col" class="role-column">
+                                    {{'acl_management.rulestable.column.role' | translate}}
+                                </th>
+                                <th scope="col" class="operation-column">
+                                    {{'acl_management.rulestable.column.operation' | translate}}
+                                </th>
+                                <th scope="col" class="actions-column"></th>
+                            </tr>
+                            <tr>
+                                <th scope="colgroup" colspan="6" class="toolbar">
+                                    <div ng-if="editedRuleIndex === undefined" class="pull-right">
+                                        <button ng-click="addRule(activeTabScope, 0)" class="btn btn-link add-rule-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.actions.add_rule' | translate}}">
+                                            <em class="icon-plus"></em>
+                                        </button>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-if="!rulesModel.size(activeTabScope)">
+                                <td colspan="12" class="no-data">
+                                    {{'acl_management.rulestable.messages.no_data' | translate}}
+                                </td>
+                            </tr>
+                            <tr ng-repeat-start="rule in rulesModel.filterByScope(activeTabScope) track by $index" ng-if="0"></tr>
+                            <tr ng-if="$index !== editedRuleIndex" class="acl-rule preview-rule-row"
+                                ng-class="{'selected': $index === selectedRule || $index === editedRuleIndex}">
+                                <td class="index-cell">{{$index}}</td>
+                                <td class="reorder-cell">
+                                    <span ng-if="editedRuleIndex === undefined" class="reorder-actions-group">
+                                        <button ng-click="moveUp(activeTabScope, $index)" ng-if="$index > 0" class="btn btn-link move-up-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.actions.move_up' | translate}}">
+                                            <em class="fa fa-caret-up"></em>
+                                        </button>
+                                        <button ng-click="moveDown(activeTabScope, $index)" ng-if="$index < rulesModel.size(activeTabScope) - 1"
+                                                class="btn btn-link move-down-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.actions.move_down' | translate}}">
+                                            <em class="fa fa-caret-down"></em>
+                                        </button>
+                                    </span>
+                                </td>
+                                <td class="policy-cell data">{{rule.policy}}</td>
+                                <td class="role-cell data">{{rule.role}}</td>
+                                <td class="subject-cell data">{{rule.operation}}</td>
+                                <td class="actions-cell">
+                                    <div ng-if="editedRuleIndex === undefined" class="crud-actions-group">
+                                        <button ng-click="deleteRule(activeTabScope, $index)" class="btn btn-link delete-rule-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.actions.delete_rule' | translate}}">
+                                            <em class="icon-trash"></em>
+                                        </button>
+                                        <button ng-click="editRule(activeTabScope, $index)" class="btn btn-link edit-rule-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.actions.edit_rule' | translate}}">
+                                            <em class="icon-edit"></em>
+                                        </button>
+                                        <button ng-click="addRule(activeTabScope, $index + 1)" class="btn btn-link add-rule-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.actions.add_rule' | translate}}">
+                                            <em class="icon-plus"></em>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr ng-if="$index === editedRuleIndex" class="acl-rule edit-rule-row"
+                                ng-class="{'selected table-info': $index === editedRuleIndex}">
+                                <td>{{$index}}</td>
+                                <td class="reorder-cell"></td>
+                                <td class="data policy-cell">
+                                    <select ng-model="rule.policy" class="form-control form-control-sm">
+                                        <option selected>allow</option>
+                                        <option>deny</option>
+                                    </select>
+                                </td>
+                                <td class="data role-cell">
+                                    <input type="text" name="role" required ng-model="rule.role" uppercased
+                                           autocomplete="off" class="form-control form-control-sm"
+                                           placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}"/>
+                                    <em></em>
+                                </td>
+                                <td class="data operation-cell">
+                                    <select ng-model="rule.operation" class="form-control form-control-sm">
+                                        <option selected>read</option>
+                                        <option>write</option>
+                                    </select>
+                                </td>
+                                <td class="actions-cell">
+                                    <button ng-click="cancelEditing(activeTabScope, $index)"
+                                            class="btn btn-link cancel-rule-editing-btn"
+                                            gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
+                                        <em class="icon-close"></em>
+                                    </button>
+                                    <button ng-if="ruleData.$valid" ng-click="saveRule(activeTabScope)"
+                                            class="btn btn-link save-rule-btn"
+                                            ng-disabled="!ruleData.$valid"
+                                            gdb-tooltip="{{'acl_management.rulestable.actions.save_rule' | translate}}">
+                                        <em class="icon-save"></em>
+                                    </button>
+                                    <em ng-if="!ruleData.$valid" class="icon-save icon-lg save-rule-disabled-btn"
+                                        gdb-tooltip="{{'acl_management.rulestable.messages.invalid_form' | translate}}"></em>
+                                </td>
+                            </tr>
+                            <tr ng-repeat-end ng-if="0"></tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
         <div ng-if="editedRuleIndex === undefined && rulesModel && modelIsDirty" class="text-right">
             <button class="btn btn-secondary cancel-acl-save-btn"
                     ng-click="cancelAclSave()">

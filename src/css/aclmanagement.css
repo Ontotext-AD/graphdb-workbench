@@ -63,6 +63,10 @@
     margin: 4px 0 0 3px;
 }
 
+.acl-management-view .acl-rules .operation-column {
+    width: 18%;
+}
+
 .acl-management-view .acl-rules .subject-column {
     width: 18%;
 }
