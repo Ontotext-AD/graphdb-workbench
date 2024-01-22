@@ -178,10 +178,8 @@ function SparqlEditorCtrl($scope,
      */
     const openNewTab = (sparqlQuery, executeWhenOpen = false) => {
         YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(QUERY_EDITOR_ID)
-            .then((yasguiComponent) => {
-                yasguiComponent.openTab(sparqlQuery)
-                    .then((tab) => YasguiComponentDirectiveUtil.highlightTabName(tab));
-            });
+            .then((yasguiComponent) => yasguiComponent.openTab(sparqlQuery))
+            .then((tab) => YasguiComponentDirectiveUtil.highlightTabName(tab));
 
         if (executeWhenOpen) {
             autoExecuteQueryIfRequested();
