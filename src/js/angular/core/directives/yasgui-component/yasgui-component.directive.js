@@ -81,7 +81,7 @@ function yasguiComponentDirective(
         link: ($scope, element, attrs) => {
             $scope.classToApply = attrs.class || '';
             const downloadAsPluginNameToEventHandler = new Map();
-            const outputHandlers = new Map();
+            const outputHandlers = $scope.yasguiConfig && $scope.yasguiConfig.outputHandlers ? new Map($scope.yasguiConfig.outputHandlers) : new Map();
             // The initial query value which is set in the yasqe editor. This is used for dirty checking while the user
             // changes the query.
             let initialQueryValue = undefined;
