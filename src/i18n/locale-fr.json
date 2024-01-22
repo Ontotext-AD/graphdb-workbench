@@ -144,21 +144,30 @@
     },
     "acl_management": {
         "rulestable": {
+            "tab": {
+                "statement": "Déclaration",
+                "clear_graph": "Graphique clair",
+                "plugin": "Brancher",
+                "system": "Système"
+            },
             "column": {
                 "index": "#",
+                "policy": "Politique",
+                "role": "Rôle",
+                "operation": "Opération",
                 "subject": "Sujet",
                 "predicate": "Prédicat",
                 "object": "Objet",
                 "context": "Contexte",
-                "role": "Rôle",
-                "policy": "Politique"
+                "plugin": "Brancher"
             },
             "field_placeholders": {
                 "subject": "Sujet",
                 "predicate": "Prédicat",
                 "object": "Objet",
                 "context": "Contexte",
-                "role": "Politique"
+                "role": "Politique",
+                "plugin": "Brancher"
             },
             "actions": {
                 "move_up": "Déplacer la règle vers le haut",

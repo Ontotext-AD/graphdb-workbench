@@ -15,12 +15,15 @@ export const mapAclRulesResponse = (response) => {
     if (response && response.data) {
         response.data.forEach((rule) => {
             aclModel.appendNewRule(
+                rule.scope,
+                rule.policy,
+                rule.role,
+                rule.operation,
                 rule.subject,
                 rule.predicate,
                 rule.object,
                 rule.context,
-                rule.role,
-                rule.policy
+                rule.plugin
             );
         });
     }

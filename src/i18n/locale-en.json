@@ -144,21 +144,30 @@
     },
     "acl_management": {
         "rulestable": {
+            "tab": {
+                "statement": "Statement",
+                "clear_graph": "Clear graph",
+                "plugin": "Plugin",
+                "system": "System"
+            },
             "column": {
                 "index": "#",
+                "policy": "Policy",
+                "role": "Role",
+                "operation": "Operation",
                 "subject": "Subject",
                 "predicate": "Predicate",
                 "object": "Object",
                 "context": "Context",
-                "role": "Role",
-                "policy": "Policy"
+                "plugin": "Plugin"
             },
             "field_placeholders": {
                 "subject": "Subject",
                 "predicate": "Predicate",
                 "object": "Object",
                 "context": "Context",
-                "role": "Role"
+                "role": "Role",
+                "plugin": "Plugin"
             },
             "actions": {
                 "move_up": "Move the rule up",
