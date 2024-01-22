@@ -262,6 +262,10 @@ yasgui-component .yasr .extended-boolean-plugin .response-success {
     background-color: var(--color-success-light) !important;
 }
 
+yasgui-component .yasr .dataTables_wrapper .dataTable {
+    border-collapse: collapse;
+}
+
 yasgui-component .yasr .dataTables_wrapper .dataTable thead tr th {
     font-weight: 500;
 }
