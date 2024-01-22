@@ -35,6 +35,7 @@ yasgui-component .CodeMirror {
 }
 
 .image-label {
+    flex: 1;
     border: 1px solid rgba(0, 0, 0, .125);
     padding: 1rem;
     margin: 0 1rem 0 0;
