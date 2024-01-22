@@ -227,6 +227,7 @@ yasgui-component .yasr .yasr_btnGroup .yasr_btn {
     font-size: 16px;
     font-weight: 400;
     color: #55595c !important;
+    fill: #55595c !important;
     background-color: #eee;
     border-bottom: 1px solid transparent;
 }
