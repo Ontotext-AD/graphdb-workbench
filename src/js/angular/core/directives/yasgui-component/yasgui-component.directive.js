@@ -195,6 +195,10 @@ function yasguiComponentDirective(
                 });
             };
 
+            $scope.saveQueryOpened = (saveQueryOpenedEvent) => {
+                YasguiComponentDirectiveUtil.highlightTabName(toYasguiOutputModel(saveQueryOpenedEvent).getTab());
+            };
+
             /**
              * Handles the ontotext-yasgui component output events.
              *
