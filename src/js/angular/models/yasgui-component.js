@@ -64,7 +64,7 @@ export class YasguiComponent {
      * initialized using the provided query model.
      * @param {TabQueryModel} queryModel The query model.
      *
-     * @return {Promise<void>}
+     * @return {Promise<Tab>}
      */
     openTab(queryModel) {
         // While this does the job in this particular method, we definitely need a more general approach

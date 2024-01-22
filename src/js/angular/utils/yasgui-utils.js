@@ -6,6 +6,7 @@ import {CountQueryRequestEvent} from "../models/ontotext-yasgui/count-query-requ
 import {DownloadAsEvent} from "../models/ontotext-yasgui/download-as-event";
 import {NotificationMessageEvent} from "../models/ontotext-yasgui/notification-message-event";
 import {QueryExecutedEvent} from "../models/ontotext-yasgui/query-executed-event";
+import {SaveQueryOpened} from "../models/ontotext-yasgui/save-query-opened";
 
 export const toEventData = ($event) => {
     return new EventData($event.detail.TYPE, $event.detail.payload);
@@ -26,6 +27,8 @@ export const toYasguiOutputModel = ($event) => {
             return new QueryRequestEvent(eventData);
         case EventDataType.QUERY_EXECUTED:
             return new QueryExecutedEvent(eventData);
+        case EventDataType.SAVE_QUERY_OPENED:
+            return new SaveQueryOpened(eventData);
         default:
             return eventData;
     }
