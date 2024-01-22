@@ -1,3 +1,15 @@
+/**
+ * Defines the colors in which the tab name has to be changed.
+ * @type {string[]} - Array of valid CSS values for the color property.
+ */
+const HIGHLIGHT_TAB_NAME_COLORS = ['var(--primary-color)', '', 'var(--primary-color)'];
+/**
+ * Defines the time when the tab name color has to change.
+ *
+ * @type {number} - Time in milliseconds.
+ */
+const COLOR_CHANGES_INTERVAL = 400;
+
 export const YasguiComponentDirectiveUtil = (function () {
 
     const getOntotextYasguiElementController = (directiveSelector) => {
@@ -84,12 +96,55 @@ export const YasguiComponentDirectiveUtil = (function () {
             .then(() => yasguiComponent);
     };
 
+    /**
+     * Makes the <code>tab</code> name to blinks for a while. The color of the name is changes every 400 milliseconds.
+     * The colors are defined in <code>HIGHLIGHT_TAB_NAME_COLORS</code>;
+     *
+     * @param {Tab} tab - the tab which name have to be highlighted.
+     */
+    const highlightTabName = (tab) => {
+        const tabElement = getTabElement(tab);
+        if (!tabElement) {
+            return;
+        }
+
+        let index = 0;
+        let interval = undefined;
+
+        const highlightFun = () => {
+            tabElement.style.color = HIGHLIGHT_TAB_NAME_COLORS[index++];
+            if (index > HIGHLIGHT_TAB_NAME_COLORS.length) {
+                tabElement.style.color = '';
+                clearInterval(interval);
+            }
+        };
+
+        interval = setInterval(highlightFun, COLOR_CHANGES_INTERVAL);
+        highlightFun();
+    };
+
+    // =========================
+    // Private function
+    // =========================
+    const getTabElement = (tab) => {
+        if (!tab || !tab.yasgui || !tab.yasgui.tabElements) {
+            return;
+        }
+        const tabElements = tab.yasgui.tabElements;
+        const tabElement = tabElements.get(tab.getId());
+
+        if (tabElement) {
+            return tabElement.tabEl;
+        }
+    };
+
     return {
         getOntotextYasguiElementController,
         getOntotextYasguiElement,
         getOntotextYasguiElementAsync,
         executeSparqlQuery,
-        setQuery
+        setQuery,
+        highlightTabName
     };
 })();
 
