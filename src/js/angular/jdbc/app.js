@@ -4,9 +4,6 @@ import 'angular/resources/controllers';
 import 'angular/core/services/repositories.service';
 import 'angular/jdbc/controllers';
 import 'angular/rest/jdbc.rest.service';
-import 'angular/core/directives/queryeditor/sparql-tab.directive';
-import 'angular/core/directives/queryeditor/query-editor.controller';
-import 'angular/core/directives/queryeditor/query-editor.directive';
 import 'angular/core/directives/yasgui-component/yasgui-component.directive';
 
 const modules = [
@@ -16,9 +13,6 @@ const modules = [
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.core.directives',
     'graphdb.framework.rest.jdbc.service',
-    'graphdb.framework.core.directives.queryeditor.controllers',
-    'graphdb.framework.core.directives.queryeditor.sparqltab',
-    'graphdb.framework.core.directives.queryeditor.queryeditor',
     'graphdb.framework.core.directives.yasgui-component'
 ];
 

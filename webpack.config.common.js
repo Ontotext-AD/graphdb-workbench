@@ -159,10 +159,6 @@ module.exports = {
                 to: 'js/angular/settings/modal'
             },
             {
-                from: 'src/js/angular/core/directives/queryeditor/templates',
-                to: 'js/angular/core/directives/queryeditor/templates'
-            },
-            {
                 from: 'src/js/angular/core/directives/rdfresourcesearch/templates',
                 to: 'js/angular/core/directives/rdfresourcesearch/templates',
                 transform: replaceVersion
