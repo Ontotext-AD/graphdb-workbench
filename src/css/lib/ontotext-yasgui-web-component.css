@@ -39,6 +39,7 @@ yasgui-component .yasgui-toolbar .btn-orientation {
 yasgui-component .yasqe .CodeMirror {
     font-family: var(--mono-font) !important;
     font-size: 16px;
+    border-color: #ddd !important;
 }
 
 /* Unset the font-family so that it can inherit from workbench */
