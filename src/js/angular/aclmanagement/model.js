@@ -16,7 +16,7 @@ export class ACListModel {
 
 
     size(scope) {
-        return this._aclRules.get(scope).length;
+        return this._aclRules.get(scope) && this._aclRules.get(scope).length;
     }
 
     /**
