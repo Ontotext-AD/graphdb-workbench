@@ -274,7 +274,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
         return AclManagementRestService.getAcl(repositoryId).then((response) => {
             $scope.rulesModel = mapAclRulesResponse(response);
             $scope.rulesModelCopy = mapAclRulesResponse(response);
-            setModelDirty(ACL_SCOPE.STATEMENT);
+            $scope.dirtyScope.clear();
         }).catch((data) => {
             const msg = getError(data);
             toastr.error(msg, $translate.instant('acl_management.errors.loading_rules'));

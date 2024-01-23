@@ -48,6 +48,8 @@ export class ACListModel {
         const ruleList = this._aclRules.get(scope);
         if (ruleList) {
             ruleList.splice(index, 0, ACRuleFactory.createRule(scope));
+        } else {
+            this._aclRules.set(scope, [ACRuleFactory.createRule(scope)]);
         }
     }
 
@@ -226,13 +228,13 @@ export class StatementACRuleModel extends ACRuleModel {
      * @param {string} context - The context associated with the statement.
      * @param {string} operation - The operation associated with the statement.
      */
-    constructor(role, policy, subject, predicate, object, context, operation) {
+    constructor(role = 'CUSTOM_', policy = ACL_POLICY.ALLOW, subject, predicate, object, context, operation) {
         super(ACL_SCOPE.STATEMENT, role, policy);
-        this._subject = subject;
-        this._predicate = predicate;
-        this._object = object;
-        this._context = context;
-        this._operation = operation;
+        this._subject = subject || '*';
+        this._predicate = predicate || '*';
+        this._object = object || '*';
+        this._context = context || '*';
+        this._operation = operation || ACL_OPERATION.READ;
     }
 
     get subject() {

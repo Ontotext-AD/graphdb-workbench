@@ -58,7 +58,7 @@ describe('ACL Management: edit rule', () => {
         AclManagementSteps.cancelRuleEditing(2);
         // Then I expect that the rule will be opened in preview mode again with the same values
         AclManagementSteps.getAclRules().should('have.length', 5);
-        AclManagementSteps.checkRules(ACL);
+        AclManagementSteps.checkStatementRules(ACL);
         // When I edit the rule again
         AclManagementSteps.editRule(2);
         AclManagementSteps.fillSubject(2, '<urn:Me>');
@@ -68,18 +68,21 @@ describe('ACL Management: edit rule', () => {
         AclManagementSteps.fillContext(2, '*');
         AclManagementSteps.fillRole(2, 'TEST');
         AclManagementSteps.selectPolicy(2, 'allow');
+        AclManagementSteps.selectOperation(2, 'write');
         // And I save the rule
         AclManagementSteps.saveRule(2);
         // Then I expect the rule to be saved with the new data
         const editedRule = {
+            scope: "statement",
+            policy: 'allow',
+            role: 'TEST',
+            operation: "write",
             subject: '<urn:Me>',
             predicate: '<http://www.w3.org/1999/02/22-rdf-syntax-ns#>',
             object: '*',
             context: '*',
-            role: 'TEST',
-            policy: 'allow'
         };
-        AclManagementSteps.checkRules([ACL[0], ACL[1], editedRule, ACL[3], ACL[4]]);
+        AclManagementSteps.checkStatementRules([ACL[0], ACL[1], editedRule, ACL[3], ACL[4]]);
     });
 });
 

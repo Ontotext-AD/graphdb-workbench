@@ -57,6 +57,18 @@ export class AclManagementSteps {
         return this.getAclTable().find('.no-data');
     }
 
+    static getAclTabs() {
+        return cy.get('.nav-tabs.acl-tabs .nav-item');
+    }
+
+    static getActiveTab() {
+        return this.getAclTabs().find('.active');
+    }
+
+    static selectTab(index) {
+        return this.getAclTabs().eq(index).click();
+    }
+
     static addRuleInBeginning() {
         this.getAddFirstRuleButton().click();
     }
@@ -145,12 +157,28 @@ export class AclManagementSteps {
         this.getRoleField(index).clear().type(value);
     }
 
+    static getPluginField(index) {
+        return this.getRule(index).find('.plugin-cell input');
+    }
+
+    static fillPlugin(index, value) {
+        this.getPluginField(index).clear().type(value);
+    }
+
     static getPolicySelectorField(index) {
         return this.getRule(index).find('.policy-cell select');
     }
 
     static selectPolicy(index, value) {
         this.getPolicySelectorField(index).select(value);
+    }
+
+    static getOperationSelectorField(index) {
+        return this.getRule(index).find('.operation-cell select');
+    }
+
+    static selectOperation(index, value) {
+        this.getOperationSelectorField(index).select(value);
     }
 
     static getMoveUpButtons() {
@@ -189,7 +217,7 @@ export class AclManagementSteps {
         this.getCancelAclSavingButton().click();
     }
 
-    static checkRules(rules = []) {
+    static checkStatementRules(rules = []) {
         rules.forEach((rule, index) => {
             AclManagementSteps.getRule(index).within(() => {
                 cy.get('td:nth-child(1)').should('contain.text', index);
@@ -197,15 +225,71 @@ export class AclManagementSteps {
                 cy.get('td:nth-child(2)').scrollIntoView().find('.move-up-btn').should(moveUpVisibilityCommand);
                 const moveDownVisibilityCommand = index < rules.length - 1 ? 'be.visible' : 'not.exist';
                 cy.get('td:nth-child(2)').scrollIntoView().find('.move-down-btn').should(moveDownVisibilityCommand);
-                cy.get('td:nth-child(3)').should('contain.text', rule.subject);
-                cy.get('td:nth-child(4)').should('contain.text', rule.predicate);
-                cy.get('td:nth-child(5)').should('contain.text', rule.object);
-                cy.get('td:nth-child(6)').should('contain.text', rule.context);
-                cy.get('td:nth-child(7)').should('contain.text', rule.role);
-                cy.get('td:nth-child(8)').should('contain.text', rule.policy);
-                cy.get('td:nth-child(9)').scrollIntoView().find('.delete-rule-btn').should('be.visible');
-                cy.get('td:nth-child(9)').scrollIntoView().find('.edit-rule-btn').should('be.visible');
-                cy.get('td:nth-child(9)').scrollIntoView().find('.add-rule-btn').should('be.visible');
+                cy.get('td:nth-child(3)').should('contain.text', rule.policy);
+                cy.get('td:nth-child(4)').should('contain.text', rule.role);
+                cy.get('td:nth-child(5)').should('contain.text', rule.operation);
+                cy.get('td:nth-child(6)').should('contain.text', rule.subject);
+                cy.get('td:nth-child(7)').should('contain.text', rule.predicate);
+                cy.get('td:nth-child(8)').should('contain.text', rule.object);
+                cy.get('td:nth-child(9)').should('contain.text', rule.context);
+                cy.get('td:nth-child(10)').scrollIntoView().find('.delete-rule-btn').should('be.visible');
+                cy.get('td:nth-child(10)').scrollIntoView().find('.edit-rule-btn').should('be.visible');
+                cy.get('td:nth-child(10)').scrollIntoView().find('.add-rule-btn').should('be.visible');
+            });
+        });
+    }
+
+    static checkClearGraphRules(rules = []) {
+        rules.forEach((rule, index) => {
+            AclManagementSteps.getRule(index).within(() => {
+                cy.get('td:nth-child(1)').should('contain.text', index);
+                const moveUpVisibilityCommand = index > 0 ? 'be.visible' : 'not.exist';
+                cy.get('td:nth-child(2)').scrollIntoView().find('.move-up-btn').should(moveUpVisibilityCommand);
+                const moveDownVisibilityCommand = index < rules.length - 1 ? 'be.visible' : 'not.exist';
+                cy.get('td:nth-child(2)').scrollIntoView().find('.move-down-btn').should(moveDownVisibilityCommand);
+                cy.get('td:nth-child(3)').should('contain.text', rule.policy);
+                cy.get('td:nth-child(4)').should('contain.text', rule.role);
+                cy.get('td:nth-child(5)').should('contain.text', rule.context);
+                cy.get('td:nth-child(6)').scrollIntoView().find('.delete-rule-btn').should('be.visible');
+                cy.get('td:nth-child(6)').scrollIntoView().find('.edit-rule-btn').should('be.visible');
+                cy.get('td:nth-child(6)').scrollIntoView().find('.add-rule-btn').should('be.visible');
+            });
+        });
+    }
+
+    static checkPluginRules(rules = []) {
+        rules.forEach((rule, index) => {
+            AclManagementSteps.getRule(index).within(() => {
+                cy.get('td:nth-child(1)').should('contain.text', index);
+                const moveUpVisibilityCommand = index > 0 ? 'be.visible' : 'not.exist';
+                cy.get('td:nth-child(2)').scrollIntoView().find('.move-up-btn').should(moveUpVisibilityCommand);
+                const moveDownVisibilityCommand = index < rules.length - 1 ? 'be.visible' : 'not.exist';
+                cy.get('td:nth-child(2)').scrollIntoView().find('.move-down-btn').should(moveDownVisibilityCommand);
+                cy.get('td:nth-child(3)').should('contain.text', rule.policy);
+                cy.get('td:nth-child(4)').should('contain.text', rule.role);
+                cy.get('td:nth-child(5)').should('contain.text', rule.operation);
+                cy.get('td:nth-child(6)').should('contain.text', rule.plugin);
+                cy.get('td:nth-child(7)').scrollIntoView().find('.delete-rule-btn').should('be.visible');
+                cy.get('td:nth-child(7)').scrollIntoView().find('.edit-rule-btn').should('be.visible');
+                cy.get('td:nth-child(7)').scrollIntoView().find('.add-rule-btn').should('be.visible');
+            });
+        });
+    }
+
+    static checkSystemRules(rules = []) {
+        rules.forEach((rule, index) => {
+            AclManagementSteps.getRule(index).within(() => {
+                cy.get('td:nth-child(1)').should('contain.text', index);
+                const moveUpVisibilityCommand = index > 0 ? 'be.visible' : 'not.exist';
+                cy.get('td:nth-child(2)').scrollIntoView().find('.move-up-btn').should(moveUpVisibilityCommand);
+                const moveDownVisibilityCommand = index < rules.length - 1 ? 'be.visible' : 'not.exist';
+                cy.get('td:nth-child(2)').scrollIntoView().find('.move-down-btn').should(moveDownVisibilityCommand);
+                cy.get('td:nth-child(3)').should('contain.text', rule.policy);
+                cy.get('td:nth-child(4)').should('contain.text', rule.role);
+                cy.get('td:nth-child(5)').should('contain.text', rule.operation);
+                cy.get('td:nth-child(6)').scrollIntoView().find('.delete-rule-btn').should('be.visible');
+                cy.get('td:nth-child(6)').scrollIntoView().find('.edit-rule-btn').should('be.visible');
+                cy.get('td:nth-child(6)').scrollIntoView().find('.add-rule-btn').should('be.visible');
             });
         });
     }
@@ -232,43 +316,53 @@ export class AclManagementSteps {
 
 export const ACL = [
     {
+        "scope": "statement",
+        "policy": "allow",
+        "role": "!CUSTOM_ROLE2",
+        "operation": "write",
         "subject": "<urn:Mary>",
         "predicate": "*",
         "object": "*",
-        "context": "*",
-        "role": "!CUSTOM_ROLE2",
-        "policy": "allow"
+        "context": "*"
     },
     {
+        "scope": "statement",
+        "policy": "deny",
+        "role": "CUSTOM_ROLE1",
+        "operation": "read",
         "subject": "*",
         "predicate": "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
         "object": "*",
-        "context": "*",
-        "role": "CUSTOM_ROLE1",
-        "policy": "deny"
+        "context": "*"
     },
     {
+        "scope": "statement",
+        "policy": "deny",
+        "role": "CUSTOM_ROLE3",
+        "operation": "read",
         "subject": "<<<http://example.com/test> <http://www.w3.org/2000/01/rdf-schema#label> \"test aber auf Deutsch\"@de>>",
         "predicate": "*",
         "object": "\"test aber auf Deutsch\"@en",
-        "context": "<http://example.com/graph1>",
-        "role": "CUSTOM_ROLE3",
-        "policy": "deny"
+        "context": "<http://example.com/graph1>"
     },
     {
+        "scope": "statement",
+        "policy": "allow",
+        "role": "CUSTOM_ROLE3",
+        "operation": "write",
         "subject": "*",
         "predicate": "*",
         "object": "\"15\"^^<http://www.w3.org/2001/XMLSchema#int>",
-        "context": "*",
-        "role": "CUSTOM_ROLE3",
-        "policy": "allow"
+        "context": "*"
     },
     {
+        "scope": "statement",
+        "policy": "deny",
+        "role": "CUSTOM_ROLE4",
+        "operation": "write",
         "subject": "<urn:Cat>",
         "predicate": "*",
         "object": "<<<http://example.com/test> <http://www.w3.org/2000/01/rdf-schema#label> \"test aber auf Deutsch\"@de>>",
-        "context": "*",
-        "role": "CUSTOM_ROLE4",
-        "policy": "deny"
+        "context": "*"
     }
 ];

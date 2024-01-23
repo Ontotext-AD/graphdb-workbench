@@ -1,6 +1,5 @@
 import {AclManagementSteps} from "../../../steps/setup/acl-management-steps";
 import {ACL} from "../../../steps/setup/acl-management-steps";
-import {ToasterSteps} from "../../../steps/toaster-steps";
 import {ApplicationSteps} from "../../../steps/application-steps";
 
 describe('ACL Management: create rule', () => {
@@ -72,21 +71,27 @@ describe('ACL Management: create rule', () => {
         AclManagementSteps.selectPolicy(2, 'deny');
         // Then I expect that the save rule button should be enabled
         AclManagementSteps.checkIfRuleSavingIsAllowed(2);
+        // When I change the operation
+        AclManagementSteps.selectOperation(2, 'write');
+        // Then I expect that the save rule button should be enabled
+        AclManagementSteps.checkIfRuleSavingIsAllowed(2);
         // When I save the rule
         AclManagementSteps.saveRule(2);
         // Then the rule should be saved
         AclManagementSteps.getAclRules().should('have.length', 6);
         const newRule = {
+            "scope": "statement",
+            "policy": "deny",
+            "role": "CUSTOM_ROLE1",
             "subject": "<urn:John>",
             "predicate": "*",
             "object": "*",
             "context": "*",
-            "role": "CUSTOM_ROLE1",
-            "policy": "deny",
+            "operation": "write",
             "moveUp": true,
             "moveDown": true
         };
-        AclManagementSteps.checkRules([ACL[0], ACL[1], newRule, ACL[2], ACL[3], ACL[4]]);
+        AclManagementSteps.checkStatementRules([ACL[0], ACL[1], newRule, ACL[2], ACL[3], ACL[4]]);
     });
 
     it('Should hide all unnecessary actions during rule creation', () => {
@@ -110,12 +115,13 @@ describe('ACL Management: create rule', () => {
     it('should not allow creating of a new rule if it is not unique', () => {
         // When I am on "ACL Management" page and create a rule that exist,
         AclManagementSteps.addRuleInBeginning();
+        AclManagementSteps.selectPolicy(0, 'allow');
+        AclManagementSteps.fillRole(0, '!CUSTOM_ROLE2');
+        AclManagementSteps.selectOperation(0, 'write')
         AclManagementSteps.fillSubject(0, '<urn:Mary>');
         AclManagementSteps.fillPredicate(0, '*');
         AclManagementSteps.fillObject(0, '*');
         AclManagementSteps.fillContext(0, '*');
-        AclManagementSteps.fillRole(0, '!CUSTOM_ROLE2');
-        AclManagementSteps.selectPolicy(0, 'allow');
         // and try to save it.
         AclManagementSteps.saveRule(0);
 
