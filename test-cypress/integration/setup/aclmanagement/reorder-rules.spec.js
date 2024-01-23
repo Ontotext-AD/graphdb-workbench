@@ -22,11 +22,11 @@ describe('ACL Management: reorder rules', () => {
 
     it('Should move rule up', () => {
         AclManagementSteps.moveRuleUp(1);
-        AclManagementSteps.checkRules([ACL[1], ACL[0], ACL[2], ACL[3], ACL[4]]);
+        AclManagementSteps.checkStatementRules([ACL[1], ACL[0], ACL[2], ACL[3], ACL[4]]);
     });
 
     it('Should move rule down', () => {
         AclManagementSteps.moveRuleDown(1);
-        AclManagementSteps.checkRules([ACL[0], ACL[2], ACL[1], ACL[3], ACL[4]]);
+        AclManagementSteps.checkStatementRules([ACL[0], ACL[2], ACL[1], ACL[3], ACL[4]]);
     });
 });

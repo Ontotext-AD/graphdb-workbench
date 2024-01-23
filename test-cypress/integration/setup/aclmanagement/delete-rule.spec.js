@@ -41,6 +41,6 @@ describe('ACL Management: delete rule', () => {
         // Then I expect the rule to be removed from the list
         ModalDialogSteps.getDialog().should('not.exist');
         AclManagementSteps.getAclRules().should('have.length', 4);
-        AclManagementSteps.checkRules([ACL[0], ACL[1], ACL[2], ACL[3]]);
+        AclManagementSteps.checkStatementRules([ACL[0], ACL[1], ACL[2], ACL[3]]);
     });
 });

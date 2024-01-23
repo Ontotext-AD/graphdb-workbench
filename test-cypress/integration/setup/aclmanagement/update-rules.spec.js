@@ -24,7 +24,7 @@ describe('ACL Management: update rules', () => {
 
     it('Should be able to edit and save ACL', () => {
         // Given I have opened ACL management page
-        AclManagementSteps.checkRules(ACL);
+        AclManagementSteps.checkStatementRules(ACL);
         // When I add a new rule
         AclManagementSteps.addRule(1);
         AclManagementSteps.fillSubject(2, '<urn:John>');
@@ -33,6 +33,7 @@ describe('ACL Management: update rules', () => {
         AclManagementSteps.fillContext(2, '*');
         AclManagementSteps.fillRole(2, 'CUSTOM_ROLE1');
         AclManagementSteps.selectPolicy(2, 'deny');
+        AclManagementSteps.selectOperation(2, 'write')
         AclManagementSteps.saveRule(2);
         // And I edit an existing rule
         AclManagementSteps.editRule(1);
@@ -42,6 +43,7 @@ describe('ACL Management: update rules', () => {
         AclManagementSteps.fillContext(1, '*');
         AclManagementSteps.fillRole(1, 'CUSTOM_TEST');
         AclManagementSteps.selectPolicy(1, 'allow');
+        AclManagementSteps.selectOperation(1, 'write')
         AclManagementSteps.saveRule(1);
         // And I delete an existing rule
         AclManagementSteps.deleteRule(5);
@@ -52,26 +54,30 @@ describe('ACL Management: update rules', () => {
         ApplicationSteps.getSuccessNotifications().should('be.visible');
         AclManagementSteps.getAclRules().should('have.length', 5);
         const editedRule = {
+            "scope": "statement",
+            "policy": "deny",
+            "role": "CUSTOM_ROLE1",
+            "operation": "write",
             "subject": "<urn:John>",
             "predicate": "*",
             "object": "*",
             "context": "*",
-            "role": "CUSTOM_ROLE1",
-            "policy": "deny",
             "moveUp": true,
             "moveDown": true
         };
         const newRule = {
+            "scope": "statement",
+            "policy": "allow",
+            "role": "CUSTOM_TEST",
+            "operation": "write",
             "subject": "<urn:Me>",
             "predicate": "*",
             "object": "*",
             "context": "*",
-            "role": "CUSTOM_TEST",
-            "policy": "allow",
             "moveUp": true,
             "moveDown": true
         };
-        AclManagementSteps.checkRules([ACL[0], newRule, editedRule, ACL[2], ACL[3]]);
+        AclManagementSteps.checkStatementRules([ACL[0], newRule, editedRule, ACL[2], ACL[3]]);
     });
 
     it('Should prevent leaving the page when there is new rule added', () => {

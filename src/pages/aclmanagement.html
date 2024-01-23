@@ -15,7 +15,7 @@
     <div class="acl-management-container">
         <div ng-if="loading" onto-loader-new size="100" style="height: 75vh; display: flex;"></div>
         <div class="acl-management-container">
-            <ul class="nav nav-tabs">
+            <ul class="nav nav-tabs acl-tabs">
                 <li class="resource-tab nav-item">
                     <span class="nav-link" ng-click="switchTab(ACL_SCOPE.STATEMENT)" ng-class="activeTabScope === ACL_SCOPE.STATEMENT ? 'active':''">{{'acl_management.rulestable.tab.statement' | translate}} <span class="dirty-scope" ng-if="dirtyScope.has(ACL_SCOPE.STATEMENT)">*</span></span>
                 </li>
