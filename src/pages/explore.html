@@ -60,8 +60,8 @@
         <label for="inference-select" class="mb-0">
             <select id="inference-select"
                     class="form-control form-control-sm"
-                    ng-model="currentContextType"
-                    ng-change="changeInference(currentContextType)"
+                    ng-model="currentContextTypeId"
+                    ng-change="changeInference(currentContextTypeId)"
                     ng-disabled="loading || resourceInfo.role === 'context' || getActiveRepository() === 'SYSTEM'">
                 <option ng-repeat="contextType in contextTypes"
                         value="{{contextType.id}}"

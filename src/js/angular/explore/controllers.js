@@ -59,7 +59,7 @@ function ExploreCtrl(
 
     $scope.ContextTypes = ContextTypes;
     $scope.contextTypes = ContextType.getAllType();
-    $scope.currentContextType = ContextTypes.EXPLICIT;
+    $scope.currentContextTypeId = ContextTypes.EXPLICIT.id;
     $scope.roles = [RoleType.SUBJECT, RoleType.PREDICATE, RoleType.OBJECT, RoleType.CONTEXT, RoleType.ALL];
 
     $scope.resourceInfo = undefined;
