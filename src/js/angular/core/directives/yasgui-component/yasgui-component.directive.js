@@ -11,6 +11,7 @@ import {QueryType} from "../../../models/ontotext-yasgui/query-type";
 import {YasguiComponent} from "../../../models/yasgui-component";
 import {YasguiComponentDirectiveUtil} from "./yasgui-component-directive.util";
 import {KeyboardShortcutName} from "../../../models/ontotext-yasgui/keyboard-shortcut-name";
+import {YasguiPersistenceMigrationService} from "./yasgui-persistence-migration.service";
 
 const modules = [
     'graphdb.framework.core.services.translation-service',
@@ -33,7 +34,8 @@ yasguiComponentDirective.$inject = [
     'RDF4JRepositoriesRestService',
     'MonitoringRestService',
     'SparqlRestService',
-    'ShareQueryLinkService'
+    'ShareQueryLinkService',
+    'ModalService'
 ];
 
 /**
@@ -67,7 +69,8 @@ function yasguiComponentDirective(
     RDF4JRepositoriesRestService,
     MonitoringRestService,
     SparqlRestService,
-    ShareQueryLinkService
+    ShareQueryLinkService,
+    ModalService
 ) {
 
     return {
@@ -372,10 +375,12 @@ function yasguiComponentDirective(
                         config.keyboardShortcutConfiguration = keyboardShortcutConfiguration;
                     }
 
+                    if (YasguiPersistenceMigrationService.isMigrationNeeded()) {
+                        YasguiPersistenceMigrationService.migrateYasguiPersistence($translate.instant('sparql.tab.directive.unnamed.tab.title'));
+                    }
+
                     $scope.ontotextYasguiConfig = config;
-
                     addDirtyCheckHandlers();
-
                     setInitialQueryState().then(() => {
                         if (angular.isFunction($scope.afterInit)) {
                             $scope.afterInit();

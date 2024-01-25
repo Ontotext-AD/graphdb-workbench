@@ -5,6 +5,8 @@
             "delete_cluster_tooltip": "Delete existing cluster",
             "add_nodes_btn": "Add nodes",
             "add_nodes_btn_tooltip": "Add nodes to existing cluster",
+            "replace_nodes_btn": "Replace nodes",
+            "replace_nodes_btn_tooltip": "Replace nodes in cluster",
             "remove_nodes_btn": "Remove nodes",
             "remove_nodes_btn_tooltip": "Remove nodes from existing cluster",
             "edit_cluster": "Edit configuration",
@@ -72,6 +74,7 @@
             "edit_page_title": "Edit cluster configuration",
             "creating_cluster_loader": "Creating cluster...",
             "add_nodes_loader": "Adding nodes to cluster...",
+            "replace_nodes_loader": "Replacing nodes in cluster...",
             "remove_nodes_loader": "Removing nodes from cluster...",
             "updating_cluster_loader": "Updating cluster...",
             "cluster_nodes_list": "Cluster nodes list",
@@ -86,6 +89,7 @@
                 "only_positive_integers": "Enter only positive integers",
                 "small_transaction_log_max_size": "Transaction log maximum size must be at least 1 GB or a negative number",
                 "at_least_two_nodes": "Must have at least two nodes",
+                "cant_replace_majority_of_nodes": "Can't replace majority of cluster nodes",
                 "no_rpc_address": "Error retrieving RPC address: {{error}}",
                 "nodes_status_label": "Nodes status",
                 "preconditions_failed": {
@@ -106,6 +110,8 @@
                 "form_invalid": "The form data is invalid",
                 "add_nodes_success": "Nodes added successfully",
                 "add_nodes_fail": "Adding nodes failed",
+                "replace_nodes_success": "Nodes replaced successfully",
+                "replace_nodes_fail": "Replacing nodes failed",
                 "remove_nodes_success": "Nodes removed successfully",
                 "remove_nodes_fail": "Removing nodes failed"
             }
@@ -121,6 +127,11 @@
                 "success_delete_partial": "Not all nodes were deleted",
                 "fail_delete": "Can not delete cluster"
             }
+        },
+        "replace_nodes_dialog": {
+            "title": "Replace nodes in cluster",
+            "nodes_to_replace_label": "Nodes to add to cluster",
+            "cluster_nodes_list": "Select nodes to be removed from existing cluster"
         },
         "add_nodes_dialog": {
             "title": "Add nodes to cluster",
@@ -319,6 +330,7 @@
     "new.sentence.start": "New",
     "no.connectors.available": "No connectors available",
     "current.repo.no.connector.support": "The current repository does not support any connectors. Please check the type of the repository or select another one.",
+    "edit.select.query": "Edit select query",
     "edit.search.query": "Edit search query",
     "edit.analogical.query": "Edit analogical query",
     "current.repo.error": "The currently selected repository cannot be used for queries due to an error:",
@@ -1327,7 +1339,7 @@
     "similarity.could.not.get.indexes.error": "Could not get indexes",
     "similarity.empty.index.name.error": "Index name cannot be empty",
     "similarity.index.name.constraint": "Index name can contain only letters (a-z, A-Z), numbers (0-9), \"-\" and \"_\"",
-    "similarity.query.type.DATA.name": "Select",
+    "similarity.query.type.DATA.name": "Data",
     "similarity.query.type.SEARCH.name": "Search",
     "similarity.query.type.ANALOGICAL.name": "Analogical",
     "similarity.error.query.empty": "The '{{queryType}}' query cannot be empty.",
@@ -1351,6 +1363,7 @@
     "similarity.get.resource.error": "Could not get resource!",
     "similarity.delete.index.warning": "Are you sure you want to delete the index '{{name}}'?",
     "similarity.rebuild.index.warning": "Are you sure you want to rebuild the whole index '{{name}}'?<br>You will still be able to use the latest successful build!",
+    "similarity.copy_of.prefix": "Copy_of",
     "similarity.warning.unsaved.changes": "You have unsaved changes. Are you sure that you want to exit?",
     "sparql.template.get.templates.error": "Could not get SPARQL templates",
     "sparql.template.delete.template.warning": "Are you sure you want to delete the SPARQL template '{{templateID}}'?",
@@ -1362,11 +1375,11 @@
     "update.sparql.template.success.msg": "Updated SPARQL template",
     "save.sparql.template.failure.msg": "Could not save {{templateID}} template",
     "sparql.template.query.constraint": "The template query must be an UPDATE query",
+    "sparql.template.query.invalid": "Invalid query",
     "save.sparql.template.success.msg": "Saved SPARQL template",
     "attach.remote.gdb.instance": "Attach a remote GraphDB instance",
     "remote.location.url": "Location URL*",
     "remote.location.enter.url.msg": "Enter a URL to a remote GraphDB instance",
-    "similarity.copy_of.prefix": "Copy_of",
     "valid.remote.location.warning": "Note that the location should be a URL that points to a remote GraphDB installation, e.g.",
     "auth.type.header": "Authentication type",
     "remote.location.no.auth.used.tooltip": "No authentication used with remote location",
@@ -1464,7 +1477,6 @@
     "index.building.interrupted.tooltip": "Index build interrupted.",
     "index.obsolete.tooltip": "Index cannot be recovered. Please, rebuild.",
     "edit.search.analogical.query.title": "Edit Search, Analogical queries",
-    "edit.select.query": "Edit select query",
     "edit.search.query.title": "Edit Search query",
     "create.index.from.existing.tooltip": "Create index from existing one.",
     "rebuild.index.tooltip": "Rebuild index",
@@ -1662,6 +1674,7 @@
     "visual.config.search.box.starting.point": "Starting point - Search box",
     "visual.config.query.results.starting.point": "Starting point - Query results",
     "visual.config.fixed.resource.starting.point": "Starting point - Fixed resource",
+    "visual.config.warning.unsaved.changes": "You have unsaved changes. Are you sure that you want to exit?",
     "visual.edit.config": "Edit configuration",
     "visual.delete.config": "Delete configuration",
     "visual.saved.graphs": "Saved graphs",
@@ -1950,5 +1963,7 @@
     "global.operations_statuses.IN_SYNC.title": "In sync",
     "global.operations_statuses.RECOVERING.title": "Recovering",
     "global.operations_statuses.OUT_OF_SYNC.title": "Out of sync",
-    "global.operations_statuses.UNAVAILABLE_NODES.title": "Unavailable nodes"
+    "global.operations_statuses.UNAVAILABLE_NODES.title": "Unavailable nodes",
+    "view.sparql-editor.title": "Ontotext Yasgui SPARQL Query & Update",
+    "view.sparql-editor.helpInfo": "The SPARQL Query & Update view is a unified editor for queries and updates. Enter any SPARQL query or update and click Run to execute it. The view also allows you to save queries for future retrieval and execution in the SPARQL editor."
 }
