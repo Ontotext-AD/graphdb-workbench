@@ -11,6 +11,7 @@ import {BeforeUpdateQueryResult, BeforeUpdateQueryResultStatus} from "../models/
 import {EventDataType} from "../models/ontotext-yasgui/event-data-type";
 import {decodeHTML} from "../../../app";
 import {toBoolean} from "../utils/string-utils";
+import {VIEW_SPARQL_EDITOR} from "../models/sparql/constants";
 
 const modules = [
     'ui.bootstrap',
@@ -51,7 +52,6 @@ function SparqlEditorCtrl($scope,
     this.repository = '';
 
     const QUERY_EDITOR_ID = '#query-editor';
-    const VIEW_NAME = 'graphdb-workbench-sparql-editor';
     // When the view is loaded the repository change watcher will be triggered. We need to have this flag to prevent
     // resetting the yasgui on the first load. This flag will be set to false after the first repository change.
     let initialRepoInitialization = true;
@@ -73,7 +73,7 @@ function SparqlEditorCtrl($scope,
     $scope.updateConfig = () => {
         $scope.yasguiConfig = {
             endpoint: getEndpoint,
-            componentId: VIEW_NAME,
+            componentId: VIEW_SPARQL_EDITOR,
             prefixes: $scope.prefixes,
             infer: $scope.inferUserSetting,
             sameAs: $scope.sameAsUserSetting,
