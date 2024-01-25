@@ -47,7 +47,3 @@
 .sparql-editor-view #query-editor .yasgui-toolbar .btn-selected {
     color: #fff;
 }
-
-.sparql-editor-view #query-editor .dataTables_wrapper {
-    overflow-x: auto;
-}
