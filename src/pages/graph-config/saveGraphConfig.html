@@ -237,7 +237,7 @@
                 </div>
 
                 <p class="mt-1">{{'user.queries' | translate}} </p>
-                <div ng-repeat="tab in tabsViewModel track by tab.page" ng-if="tab.page == 1"
+                <div ng-repeat="tab in tabsViewModel track by tab.page" ng-if="tab.page === page"
                      class="user-queries list-group">
                     <div ng-repeat="sample in samples | filter:isUserGraph">
                         <a href="#" ng-if="sample[tab.type]" ng-click="setQuery(sample[tab.type])"
