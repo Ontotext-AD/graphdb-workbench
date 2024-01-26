@@ -31,7 +31,7 @@ export class AclManagementSteps {
         return cy.request({
             method: 'POST',
             url: `/rest/repositories/${repositoryId}/acl`,
-            body: ACL_VIEW
+            body: ACL
         }).then((response) => {
             cy.waitUntil(() => response && response.status === 201);
         });
@@ -359,6 +359,58 @@ export const ACL_VIEW = [
         "scope": "statement",
         "policy": "deny",
         "role": "ROLE4",
+        "operation": "write",
+        "subject": "<urn:Cat>",
+        "predicate": "*",
+        "object": "<<<http://example.com/test> <http://www.w3.org/2000/01/rdf-schema#label> \"test aber auf Deutsch\"@de>>",
+        "context": "*"
+    }
+];
+export const ACL = [
+    {
+        "scope": "statement",
+        "policy": "allow",
+        "role": "!CUSTOM_ROLE2",
+        "operation": "write",
+        "subject": "<urn:Mary>",
+        "predicate": "*",
+        "object": "*",
+        "context": "*"
+    },
+    {
+        "scope": "statement",
+        "policy": "deny",
+        "role": "CUSTOM_ROLE1",
+        "operation": "read",
+        "subject": "*",
+        "predicate": "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
+        "object": "*",
+        "context": "*"
+    },
+    {
+        "scope": "statement",
+        "policy": "deny",
+        "role": "CUSTOM_ROLE3",
+        "operation": "read",
+        "subject": "<<<http://example.com/test> <http://www.w3.org/2000/01/rdf-schema#label> \"test aber auf Deutsch\"@de>>",
+        "predicate": "*",
+        "object": "\"test aber auf Deutsch\"@en",
+        "context": "<http://example.com/graph1>"
+    },
+    {
+        "scope": "statement",
+        "policy": "allow",
+        "role": "CUSTOM_ROLE3",
+        "operation": "write",
+        "subject": "*",
+        "predicate": "*",
+        "object": "\"15\"^^<http://www.w3.org/2001/XMLSchema#int>",
+        "context": "*"
+    },
+    {
+        "scope": "statement",
+        "policy": "deny",
+        "role": "CUSTOM_ROLE4",
         "operation": "write",
         "subject": "<urn:Cat>",
         "predicate": "*",

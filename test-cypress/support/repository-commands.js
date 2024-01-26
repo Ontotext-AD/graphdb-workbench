@@ -71,12 +71,12 @@ Cypress.Commands.add('getNamespaces', (id) => {
     });
 });
 
-let toggleAutocomplete = (repositoryId, enable) => {
+const toggleAutocomplete = (repositoryId, enable) => {
     cy.request({
         method: 'POST',
         url: `${AUTOCOMPLETE_URL}enabled?enabled=${enable}`,
         headers: {
-            'X-GraphDB-Repository': repositoryId,
+            'X-GraphDB-Repository': repositoryId
         }
     }).then((response) => {
         cy.waitUntil(() => response && response.body === `Autocomplete was ${enable ? 'enabled' : 'disabled'}`);
@@ -84,13 +84,13 @@ let toggleAutocomplete = (repositoryId, enable) => {
     waitAutocomplete(repositoryId);
 };
 
-let waitAutocomplete = function (repositoryId) {
+const waitAutocomplete = function (repositoryId) {
     cy.waitUntil(() =>
         cy.request({
             method: 'GET',
             url: AUTOCOMPLETE_URL + 'status',
             headers: {
                 'X-GraphDB-Repository': repositoryId
-            },
-        }).then(response => response.status === 200 && (response.body === 'READY' || response.body === 'NONE')));
+            }
+        }).then((response) => response.status === 200 && (response.body === 'READY' || response.body === 'NONE')));
 };
