@@ -1,5 +1,3 @@
-import {mapAclRulesResponse} from "./mappers/aclmanagement-mapper";
-
 angular
     .module('graphdb.framework.rest.aclmanagement.service', [])
     .factory('AclManagementRestService', AclManagementRestService);
@@ -26,7 +24,7 @@ function AclManagementRestService($http) {
     /**
      * Updates the ACL for provided repository by replacing the whole list with the provided one.
      * @param {string} repositoryId The repository id for which the ACL to be updated.
-     * @param {ACListModel} data The ACListModel serialized to JSON.
+     * @param {string[]} data The ACListModel serialized to JSON.
      * @return {*}
      */
     function updateAcl(repositoryId, data) {

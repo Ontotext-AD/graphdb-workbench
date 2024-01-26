@@ -16,7 +16,10 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
             namespaces: '=',
             autocompleteStatusLoader: '=',
             placeholder: '@',
-            styleClass: '@'
+            styleClass: '@',
+            multiline: '@',
+            defaultresults: '='
+
         },
         templateUrl: 'js/angular/core/directives/autocomplete/templates/autocomplete.html',
         link: linkFunction
@@ -37,7 +40,7 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
         /**
          * An instance of the input field wrapped by this component.
          */
-        const SEARCH_INPUT_FIELD = element.find('.autocomplete-input');
+        let SEARCH_INPUT_FIELD = element.find('.autocomplete-input');
 
         /**
          * Keeps the old uri in order to change it when a new one appears.
@@ -141,6 +144,9 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
                 $scope.searchInput = expandPrefix(resource.value + ':');
                 SEARCH_INPUT_FIELD.focus();
                 $scope.onChange();
+            } else if (resource.type === 'default') {
+                $scope.searchInput = resource.value;
+                SEARCH_INPUT_FIELD.focus();
             } else {
                 $scope.searchInput = '<' + resource.value + '>';
                 $scope.autoCompleteUriResults = [];
@@ -250,7 +256,15 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
                     .then(mapUriAsNtripleAutocompleteResponse)
                     .then((suggestions) => {
                         canceler = null;
-                        $scope.autoCompleteUriResults = suggestions;
+                        if ($scope.defaultresults && $scope.defaultresults.length > 0) {
+                            $scope.autoCompleteUriResults = filterAndCombineDefaultResults(
+                                $scope.defaultresults,
+                                $scope.searchInput,
+                                suggestions
+                            );
+                        } else {
+                            $scope.autoCompleteUriResults = suggestions;
+                        }
                         $scope.activeSearchElm = 0;
                     });
             }
@@ -294,6 +308,9 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
         };
 
         const ngModelUpdater = (newValue) => {
+            if ($scope.autoexpand) {
+                $scope.adjustTextareaHeight();
+            }
             $scope.ngModel = newValue;
         };
 
@@ -304,10 +321,48 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
         //
         // Watchers
         //
-
         const subscriptions = [];
         subscriptions.push($scope.$watch('autocompleteStatusLoader', autocompletePromiseHandler));
         subscriptions.push($scope.$watch('searchInput', ngModelUpdater));
         subscriptions.push($scope.$on('$destroy', unsubscribeListeners));
+
+        $scope.isMultiline = attrs.multiline === 'true';
+        if ($scope.isMultiline) {
+            SEARCH_INPUT_FIELD = element.find('.autocomplete-textarea');
+        }
+        $scope.initialRows = attrs.initialRows || 1;
+        $scope.autoexpand = attrs.autoexpand || false;
+
+        // Auto-expand logic
+        $scope.adjustTextareaHeight = () => {
+            if ($scope.isMultiline) {
+                const textarea = SEARCH_INPUT_FIELD[0];
+                textarea.style.height = 'auto';
+                textarea.style.height = textarea.scrollHeight + 'px';
+                textarea.focus();
+            }
+        };
+
+        const filterAndCombineDefaultResults = (defaultResults, currentInput, backendSuggestions) => {
+            // Filter default words based on current input
+            const filteredDefaultResults = defaultResults.filter((word) =>
+                word.toLowerCase().includes(currentInput.toLowerCase())
+            ).map((word) => ({
+                type: 'default',
+                value: word,
+                description: highlightMatch(word, currentInput)
+            }));
+
+            // Concatenate filtered default words with backend suggestions
+            return filteredDefaultResults.concat(backendSuggestions);
+        };
+
+        const highlightMatch = (word, match) => {
+            const matchStart = word.toLowerCase().indexOf(match.toLowerCase());
+            if (matchStart === -1) return word; // If no match found, return word as is
+
+            const matchEnd = matchStart + match.length;
+            return word.substring(0, matchStart) + '<b>' + word.substring(matchStart, matchEnd) + '</b>' + word.substring(matchEnd);
+        };
     }
 }

@@ -16,19 +16,17 @@ export const mapAclRulesResponse = (response) => {
     const aclModel = new ACListModel();
     if (response && response.data) {
         response.data.forEach((rule) => {
-            if (rule.scope) {
-                aclModel.appendNewRule(
-                    rule.scope,
-                    rule.policy,
-                    rule.role,
-                    rule.operation,
-                    rule.subject,
-                    rule.predicate,
-                    rule.object,
-                    rule.context,
-                    rule.plugin
-                );
-            }
+            aclModel.appendNewRule(
+                rule.scope,
+                rule.policy,
+                rule.role,
+                rule.operation,
+                rule.subject,
+                rule.predicate,
+                rule.object,
+                rule.context,
+                rule.plugin
+            );
         });
     }
     return aclModel;

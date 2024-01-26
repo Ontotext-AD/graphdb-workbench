@@ -1,4 +1,4 @@
-import {ACL, AclManagementSteps} from "../../../steps/setup/acl-management-steps";
+import {ACL_VIEW, AclManagementSteps} from "../../../steps/setup/acl-management-steps";
 import {ApplicationSteps} from "../../../steps/application-steps";
 import {ModalDialogSteps} from "../../../steps/modal-dialog-steps";
 
@@ -24,16 +24,16 @@ describe('ACL Management: update rules', () => {
 
     it('Should be able to edit and save ACL', () => {
         // Given I have opened ACL management page
-        AclManagementSteps.checkStatementRules(ACL);
+        AclManagementSteps.checkStatementRules(ACL_VIEW);
         // When I add a new rule
         AclManagementSteps.addRule(1);
         AclManagementSteps.fillSubject(2, '<urn:John>');
         AclManagementSteps.fillPredicate(2, '*');
         AclManagementSteps.fillObject(2, '*');
         AclManagementSteps.fillContext(2, '*');
-        AclManagementSteps.fillRole(2, 'CUSTOM_ROLE1');
+        AclManagementSteps.fillRole(2, 'ROLE1');
         AclManagementSteps.selectPolicy(2, 'deny');
-        AclManagementSteps.selectOperation(2, 'write')
+        AclManagementSteps.selectOperation(2, 'write');
         AclManagementSteps.saveRule(2);
         // And I edit an existing rule
         AclManagementSteps.editRule(1);
@@ -41,9 +41,9 @@ describe('ACL Management: update rules', () => {
         AclManagementSteps.fillPredicate(1, '*');
         AclManagementSteps.fillObject(1, '*');
         AclManagementSteps.fillContext(1, '*');
-        AclManagementSteps.fillRole(1, 'CUSTOM_TEST');
+        AclManagementSteps.fillRole(1, 'TEST');
         AclManagementSteps.selectPolicy(1, 'allow');
-        AclManagementSteps.selectOperation(1, 'write')
+        AclManagementSteps.selectOperation(1, 'write');
         AclManagementSteps.saveRule(1);
         // And I delete an existing rule
         AclManagementSteps.deleteRule(5);
@@ -56,7 +56,7 @@ describe('ACL Management: update rules', () => {
         const editedRule = {
             "scope": "statement",
             "policy": "deny",
-            "role": "CUSTOM_ROLE1",
+            "role": "ROLE1",
             "operation": "write",
             "subject": "<urn:John>",
             "predicate": "*",
@@ -68,7 +68,7 @@ describe('ACL Management: update rules', () => {
         const newRule = {
             "scope": "statement",
             "policy": "allow",
-            "role": "CUSTOM_TEST",
+            "role": "TEST",
             "operation": "write",
             "subject": "<urn:Me>",
             "predicate": "*",
@@ -77,7 +77,7 @@ describe('ACL Management: update rules', () => {
             "moveUp": true,
             "moveDown": true
         };
-        AclManagementSteps.checkStatementRules([ACL[0], newRule, editedRule, ACL[2], ACL[3]]);
+        AclManagementSteps.checkStatementRules([ACL_VIEW[0], newRule, editedRule, ACL_VIEW[2], ACL_VIEW[3]]);
     });
 
     it('Should prevent leaving the page when there is new rule added', () => {

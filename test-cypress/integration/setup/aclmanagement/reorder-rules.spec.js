@@ -1,5 +1,5 @@
 import {AclManagementSteps} from "../../../steps/setup/acl-management-steps";
-import {ACL} from "../../../steps/setup/acl-management-steps";
+import {ACL_VIEW} from "../../../steps/setup/acl-management-steps";
 
 describe('ACL Management: reorder rules', () => {
 
@@ -22,11 +22,11 @@ describe('ACL Management: reorder rules', () => {
 
     it('Should move rule up', () => {
         AclManagementSteps.moveRuleUp(1);
-        AclManagementSteps.checkStatementRules([ACL[1], ACL[0], ACL[2], ACL[3], ACL[4]]);
+        AclManagementSteps.checkStatementRules([ACL_VIEW[1], ACL_VIEW[0], ACL_VIEW[2], ACL_VIEW[3], ACL_VIEW[4]]);
     });
 
     it('Should move rule down', () => {
         AclManagementSteps.moveRuleDown(1);
-        AclManagementSteps.checkStatementRules([ACL[0], ACL[2], ACL[1], ACL[3], ACL[4]]);
+        AclManagementSteps.checkStatementRules([ACL_VIEW[0], ACL_VIEW[2], ACL_VIEW[1], ACL_VIEW[3], ACL_VIEW[4]]);
     });
 });

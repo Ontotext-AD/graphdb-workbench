@@ -31,7 +31,7 @@ export class AclManagementSteps {
         return cy.request({
             method: 'POST',
             url: `/rest/repositories/${repositoryId}/acl`,
-            body: ACL
+            body: ACL_VIEW
         }).then((response) => {
             cy.waitUntil(() => response && response.status === 201);
         });
@@ -118,7 +118,7 @@ export class AclManagementSteps {
     }
 
     static getSubjectField(index) {
-        return this.getRule(index).find('.subject-cell input');
+        return this.getRule(index).find('.subject-cell textarea');
     }
 
     static fillSubject(index, value) {
@@ -126,7 +126,7 @@ export class AclManagementSteps {
     }
 
     static getPredicateField(index) {
-        return this.getRule(index).find('.predicate-cell input');
+        return this.getRule(index).find('.predicate-cell textarea');
     }
 
     static fillPredicate(index, value) {
@@ -134,7 +134,7 @@ export class AclManagementSteps {
     }
 
     static getObjectField(index) {
-        return this.getRule(index).find('.object-cell input');
+        return this.getRule(index).find('.object-cell textarea');
     }
 
     static fillObject(index, value) {
@@ -142,7 +142,7 @@ export class AclManagementSteps {
     }
 
     static getContextField(index) {
-        return this.getRule(index).find('.context-cell input');
+        return this.getRule(index).find('.context-cell textarea');
     }
 
     static fillContext(index, value) {
@@ -158,7 +158,7 @@ export class AclManagementSteps {
     }
 
     static getPluginField(index) {
-        return this.getRule(index).find('.plugin-cell input');
+        return this.getRule(index).find('.plugin-cell textarea');
     }
 
     static fillPlugin(index, value) {
@@ -314,11 +314,11 @@ export class AclManagementSteps {
     }
 }
 
-export const ACL = [
+export const ACL_VIEW = [
     {
         "scope": "statement",
         "policy": "allow",
-        "role": "!CUSTOM_ROLE2",
+        "role": "!ROLE2",
         "operation": "write",
         "subject": "<urn:Mary>",
         "predicate": "*",
@@ -328,7 +328,7 @@ export const ACL = [
     {
         "scope": "statement",
         "policy": "deny",
-        "role": "CUSTOM_ROLE1",
+        "role": "ROLE1",
         "operation": "read",
         "subject": "*",
         "predicate": "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
@@ -338,7 +338,7 @@ export const ACL = [
     {
         "scope": "statement",
         "policy": "deny",
-        "role": "CUSTOM_ROLE3",
+        "role": "ROLE3",
         "operation": "read",
         "subject": "<<<http://example.com/test> <http://www.w3.org/2000/01/rdf-schema#label> \"test aber auf Deutsch\"@de>>",
         "predicate": "*",
@@ -348,7 +348,7 @@ export const ACL = [
     {
         "scope": "statement",
         "policy": "allow",
-        "role": "CUSTOM_ROLE3",
+        "role": "ROLE3",
         "operation": "write",
         "subject": "*",
         "predicate": "*",
@@ -358,7 +358,7 @@ export const ACL = [
     {
         "scope": "statement",
         "policy": "deny",
-        "role": "CUSTOM_ROLE4",
+        "role": "ROLE4",
         "operation": "write",
         "subject": "<urn:Cat>",
         "predicate": "*",

@@ -3,7 +3,7 @@ import 'angular/rest/aclmanagement.rest.service';
 import {mapAclRulesResponse} from "../rest/mappers/aclmanagement-mapper";
 import {isEqual} from 'lodash';
 import {mapNamespacesResponse} from "../rest/mappers/namespaces-mapper";
-import {ACL_SCOPE} from "./model";
+import {ACL_SCOPE, DEFAULT_CONTEXT_VALUES, DEFAULT_URI_VALUES} from "./model";
 
 const modules = [
     'graphdb.framework.rest.plugins.service',
@@ -120,6 +120,19 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
      * @type {{STATEMENT: string, SYSTEM: string, PLUGIN: string, CLEAR_GRAPH: string}}
      */
     $scope.ACL_SCOPE = ACL_SCOPE;
+
+    /**
+     * Represents the default context values used in the scope.
+     * These values are used as initial values for the scope variables.
+     * @type {string[]}
+     */
+    $scope.DEFAULT_CONTEXT_VALUES = DEFAULT_CONTEXT_VALUES;
+
+    /**
+     * The default URI values for the scope.
+     * @type {string[]}*
+     */
+    $scope.DEFAULT_URI_VALUES = DEFAULT_URI_VALUES;
 
 
     //
@@ -259,10 +272,11 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
      */
     $scope.switchTab = (scope) => {
         if ($scope.editedRuleIndex !== undefined) {
-            $scope.cancelEditing($scope.activeTabScope, $scope.editedRuleIndex)
+            $scope.cancelEditing($scope.activeTabScope, $scope.editedRuleIndex);
         }
         $scope.activeTabScope = scope;
-        $scope.ruleKeys = Object.keys($scope.rulesModel.filterByScope($scope.activeTabScope)[0] || {});
+        $scope.ruleKeys = $scope.rulesModel.getRuleKeysByScope($scope.activeTabScope);
+
     };
 
     //
@@ -274,7 +288,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
         return AclManagementRestService.getAcl(repositoryId).then((response) => {
             $scope.rulesModel = mapAclRulesResponse(response);
             $scope.rulesModelCopy = mapAclRulesResponse(response);
-            $scope.dirtyScope.clear();
+            resetPageState();
         }).catch((data) => {
             const msg = getError(data);
             toastr.error(msg, $translate.instant('acl_management.errors.loading_rules'));
@@ -302,18 +316,19 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
     };
 
     const resetPageState = () => {
-        loadRules();
         $scope.editedRuleIndex = undefined;
         $scope.editedRuleScope = undefined;
         $scope.modelIsDirty = false;
         $scope.editedRuleCopy = undefined;
+        $scope.dirtyScope.clear();
     };
 
     /**
      * Updates the modelIsDirty flag by comparing the model with its copy created after it was loaded initially.
+     * @param {string} scope
      */
     const setModelDirty = (scope) => {
-        const scopeIsDirty= !isEqual($scope.rulesModel.filterByScope(scope), $scope.rulesModelCopy.filterByScope(scope));
+        const scopeIsDirty= !isEqual($scope.rulesModel.getRulesByScope(scope), $scope.rulesModelCopy.getRulesByScope(scope));
         if (scopeIsDirty) {
             $scope.dirtyScope.add(scope);
         } else {
@@ -396,7 +411,10 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
         loadNamespaces();
         subscriptions.push($scope.$on('autocompleteStatus', checkAutocompleteStatus));
         // Watching for repository changes and reload the rules, because they are stored per repository and reset page state.
-        subscriptions.push($scope.$watch(getActiveRepositoryId, resetPageState));
+        subscriptions.push($scope.$watch(getActiveRepositoryId, () => {
+            resetPageState();
+            loadRules();
+        }));
         // Watching for url changes
         subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
         // Watching for component destroy

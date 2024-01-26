@@ -1,5 +1,5 @@
 import {AclManagementSteps} from "../../../steps/setup/acl-management-steps";
-import {ACL} from "../../../steps/setup/acl-management-steps";
+import {ACL_VIEW} from "../../../steps/setup/acl-management-steps";
 import {ModalDialogSteps} from "../../../steps/modal-dialog-steps";
 
 describe('ACL Management: delete rule', () => {
@@ -41,6 +41,6 @@ describe('ACL Management: delete rule', () => {
         // Then I expect the rule to be removed from the list
         ModalDialogSteps.getDialog().should('not.exist');
         AclManagementSteps.getAclRules().should('have.length', 4);
-        AclManagementSteps.checkStatementRules([ACL[0], ACL[1], ACL[2], ACL[3]]);
+        AclManagementSteps.checkStatementRules([ACL_VIEW[0], ACL_VIEW[1], ACL_VIEW[2], ACL_VIEW[3]]);
     });
 });
