@@ -1,5 +1,5 @@
 import {AclManagementSteps} from "../../../steps/setup/acl-management-steps";
-import {ACL} from "../../../steps/setup/acl-management-steps";
+import {ACL_VIEW} from "../../../steps/setup/acl-management-steps";
 
 describe('ACL Management: render rules', () => {
 
@@ -42,7 +42,7 @@ describe('ACL Management: render rules', () => {
         it('Should render ACL rules in a table', () => {
             AclManagementSteps.getAclRules().should('have.length', 5);
             AclManagementSteps.getAddFirstRuleButton().should('be.visible');
-            AclManagementSteps.checkStatementRules(ACL);
+            AclManagementSteps.checkStatementRules(ACL_VIEW);
         });
     });
 });

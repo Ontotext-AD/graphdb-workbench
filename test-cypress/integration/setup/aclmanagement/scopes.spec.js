@@ -21,7 +21,7 @@ describe('ACL Management: rule scopes', () => {
 
     it('Should render empty tabs', () => {
         // I expect 4 tabs
-        AclManagementSteps.getAclTabs().should('have.length', 4)
+        AclManagementSteps.getAclTabs().should('have.length', 4);
         // I expect empty rules table
         AclManagementSteps.getAclTable().should('be.visible');
         AclManagementSteps.getAclTabs().should('be.visible');
@@ -56,7 +56,7 @@ describe('ACL Management: rule scopes', () => {
         // I fill the policy
         AclManagementSteps.selectPolicy(0, 'deny');
         // I fill in the role field
-        AclManagementSteps.fillRole(0, 'CUSTOM_ROLE1');
+        AclManagementSteps.fillRole(0, 'ROLE1');
         // I fill in the context field
         AclManagementSteps.fillContext(0, '*');
         // I save the rule
@@ -72,7 +72,7 @@ describe('ACL Management: rule scopes', () => {
         // I fill the policy
         AclManagementSteps.selectPolicy(0, 'deny');
         // I fill in the role field
-        AclManagementSteps.fillRole(0, 'CUSTOM_ROLE2');
+        AclManagementSteps.fillRole(0, 'ROLE2');
         // I select the operation
         AclManagementSteps.selectOperation(0, 'write');
         // I fill in the plugin field
@@ -90,7 +90,7 @@ describe('ACL Management: rule scopes', () => {
         // I fill the policy
         AclManagementSteps.selectPolicy(0, 'allow');
         // I fill in the role field
-        AclManagementSteps.fillRole(0, 'CUSTOM_ROLE3');
+        AclManagementSteps.fillRole(0, 'ROLE3');
         // I select the operation
         AclManagementSteps.selectOperation(0, 'write');
         // I save the rule
@@ -106,7 +106,7 @@ describe('ACL Management: rule scopes', () => {
         // I fill the policy
         AclManagementSteps.selectPolicy(0, 'deny');
         // I fill in the role field
-        AclManagementSteps.fillRole(0, 'CUSTOM_ROLE4');
+        AclManagementSteps.fillRole(0, 'ROLE4');
         // I select the operation
         AclManagementSteps.selectOperation(0, 'write');
         // I fill in the subject field
@@ -134,7 +134,7 @@ describe('ACL Management: rule scopes', () => {
         const expectedStatementRule = {
             "scope": "statement",
             "policy": "deny",
-            "role": "CUSTOM_ROLE4",
+            "role": "ROLE4",
             "operation": "write",
             "subject": "*",
             "predicate": "*",
@@ -149,7 +149,7 @@ describe('ACL Management: rule scopes', () => {
         const expectedClearGraphRule = {
             "scope": "clear_graph",
             "policy": "deny",
-            "role": "CUSTOM_ROLE1",
+            "role": "ROLE1",
             "context": "*"
         };
         AclManagementSteps.checkClearGraphRules([expectedClearGraphRule]);
@@ -160,7 +160,7 @@ describe('ACL Management: rule scopes', () => {
         const expectedPluginRule = {
             "scope": "plugin",
             "policy": "deny",
-            "role": "CUSTOM_ROLE2",
+            "role": "ROLE2",
             "operation": "write",
             "plugin": "*"
         };
@@ -172,10 +172,9 @@ describe('ACL Management: rule scopes', () => {
         const expectedSystemRule = {
             "scope": "system",
             "policy": "allow",
-            "role": "CUSTOM_ROLE3",
+            "role": "ROLE3",
             "operation": "write"
         };
         AclManagementSteps.checkSystemRules([expectedSystemRule]);
-
     });
 });

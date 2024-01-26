@@ -60,3 +60,7 @@
     padding-top: calc((100vh - 300px) / 2);
     background-color: rgba(255,255,255,0.66);
 }
+
+.autocomplete-textarea {
+    overflow: hidden;
+}

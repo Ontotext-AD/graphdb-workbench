@@ -153,7 +153,7 @@
             "column": {
                 "index": "#",
                 "policy": "Politique",
-                "role": "Rôle",
+                "role": "Rôle personnalisé",
                 "operation": "Opération",
                 "subject": "Sujet",
                 "predicate": "Prédicat",
@@ -166,7 +166,7 @@
                 "predicate": "Prédicat",
                 "object": "Objet",
                 "context": "Contexte",
-                "role": "Politique",
+                "role": "Rôle personnalisé",
                 "plugin": "Brancher"
             },
             "actions": {

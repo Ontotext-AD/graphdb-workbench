@@ -1,5 +1,5 @@
 import {AclManagementSteps} from "../../../steps/setup/acl-management-steps";
-import {ACL} from "../../../steps/setup/acl-management-steps";
+import {ACL_VIEW} from "../../../steps/setup/acl-management-steps";
 
 describe('ACL Management: edit rule', () => {
 
@@ -50,7 +50,7 @@ describe('ACL Management: edit rule', () => {
             predicate: '*',
             object: '"test aber auf Deutsch"@en',
             context: '<http://example.com/graph1>',
-            role: 'CUSTOM_ROLE3',
+            role: 'ROLE3',
             policy: 'deny'
         });
         AclManagementSteps.checkIfRuleSavingIsAllowed(2);
@@ -58,7 +58,7 @@ describe('ACL Management: edit rule', () => {
         AclManagementSteps.cancelRuleEditing(2);
         // Then I expect that the rule will be opened in preview mode again with the same values
         AclManagementSteps.getAclRules().should('have.length', 5);
-        AclManagementSteps.checkStatementRules(ACL);
+        AclManagementSteps.checkStatementRules(ACL_VIEW);
         // When I edit the rule again
         AclManagementSteps.editRule(2);
         AclManagementSteps.fillSubject(2, '<urn:Me>');
@@ -80,9 +80,9 @@ describe('ACL Management: edit rule', () => {
             subject: '<urn:Me>',
             predicate: '<http://www.w3.org/1999/02/22-rdf-syntax-ns#>',
             object: '*',
-            context: '*',
+            context: '*'
         };
-        AclManagementSteps.checkStatementRules([ACL[0], ACL[1], editedRule, ACL[3], ACL[4]]);
+        AclManagementSteps.checkStatementRules([ACL_VIEW[0], ACL_VIEW[1], editedRule, ACL_VIEW[3], ACL_VIEW[4]]);
     });
 });
 

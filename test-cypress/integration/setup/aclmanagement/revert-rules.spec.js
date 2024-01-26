@@ -1,4 +1,4 @@
-import {ACL, AclManagementSteps} from "../../../steps/setup/acl-management-steps";
+import {ACL_VIEW, AclManagementSteps} from "../../../steps/setup/acl-management-steps";
 import {ApplicationSteps} from "../../../steps/application-steps";
 import {ModalDialogSteps} from "../../../steps/modal-dialog-steps";
 
@@ -24,7 +24,7 @@ describe('ACL Management: revert rules', () => {
 
     it('Should be able to revert changes in the ACL', () => {
         // Given I have opened ACL management page
-        AclManagementSteps.checkStatementRules(ACL);
+        AclManagementSteps.checkStatementRules(ACL_VIEW);
         // When I add a new rule
         AclManagementSteps.addRule(1);
         AclManagementSteps.fillSubject(2, '<urn:John>');
@@ -52,7 +52,7 @@ describe('ACL Management: revert rules', () => {
         // Then I expect that all changes in the ACL should be reverted
         ApplicationSteps.getSuccessNotifications().should('be.visible');
         AclManagementSteps.getAclRules().should('have.length', 5);
-        AclManagementSteps.checkStatementRules(ACL);
+        AclManagementSteps.checkStatementRules(ACL_VIEW);
         // And the model should become pristine again after the revert
         // I should be able to navigate away from the page without any confirmation
         ApplicationSteps.openImportPage();

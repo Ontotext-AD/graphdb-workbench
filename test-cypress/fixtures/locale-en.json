@@ -166,7 +166,7 @@
                 "predicate": "Predicate",
                 "object": "Object",
                 "context": "Context",
-                "role": "Role",
+                "role": "Custom role",
                 "plugin": "Plugin"
             },
             "actions": {
