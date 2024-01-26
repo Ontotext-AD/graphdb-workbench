@@ -122,8 +122,45 @@ describe('ACL Management: rule scopes', () => {
         // Then the tab label is changed
         AclManagementSteps.getActiveTab().should('contain', '*');
 
+        cy.intercept('PUT', '/rest/repositories/acl-management-*/acl').as('putCall');
+
         // And I save the ACL
         AclManagementSteps.saveAcl();
+        // Then wait for the PUT call to occur and assert the request body
+        cy.wait('@putCall').then((interception) => {
+            const expectedPayload = [
+                {
+                    "scope": "clear_graph",
+                    "policy": "deny",
+                    "role": "CUSTOM_ROLE1",
+                    "context": "*"
+                },
+                {
+                    "scope": "plugin",
+                    "policy": "deny",
+                    "role": "CUSTOM_ROLE2",
+                    "operation": "write",
+                    "plugin": "*"
+                },
+                {
+                    "scope": "system",
+                    "policy": "allow",
+                    "role": "CUSTOM_ROLE3",
+                    "operation": "write"
+                },
+                {
+                    "scope": "statement",
+                    "policy": "deny",
+                    "role": "CUSTOM_ROLE4",
+                    "operation": "write",
+                    "subject": "*",
+                    "predicate": "*",
+                    "object": "*",
+                    "context": "*"
+                }
+            ];
+            expect(interception.request.body).to.deep.eq(expectedPayload);
+        });
         // Then I expect the ACL to be saved
         ApplicationSteps.getSuccessNotifications().should('be.visible');
 
