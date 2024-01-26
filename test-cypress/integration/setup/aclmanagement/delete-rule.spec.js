@@ -1,6 +1,7 @@
 import {AclManagementSteps} from "../../../steps/setup/acl-management-steps";
 import {ACL_VIEW} from "../../../steps/setup/acl-management-steps";
 import {ModalDialogSteps} from "../../../steps/modal-dialog-steps";
+import {ApplicationSteps} from "../../../steps/application-steps";
 
 describe('ACL Management: delete rule', () => {
 
@@ -18,6 +19,7 @@ describe('ACL Management: delete rule', () => {
         cy.enableAutocomplete(repositoryId);
         AclManagementSteps.importRules(repositoryId);
         AclManagementSteps.visit();
+        ApplicationSteps.geLoader().should('not.exist');
         // ensure rules are rendered
         AclManagementSteps.getAclRules().should('have.length.gt', 0);
     });

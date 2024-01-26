@@ -1,5 +1,6 @@
 import {AclManagementSteps} from "../../../steps/setup/acl-management-steps";
 import {ACL_VIEW} from "../../../steps/setup/acl-management-steps";
+import {ApplicationSteps} from "../../../steps/application-steps";
 
 describe('ACL Management: reorder rules', () => {
 
@@ -16,6 +17,7 @@ describe('ACL Management: reorder rules', () => {
         cy.initializeRepository(repositoryId);
         AclManagementSteps.importRules(repositoryId);
         AclManagementSteps.visit();
+        ApplicationSteps.geLoader().should('not.exist');
         // ensure rules are rendered
         AclManagementSteps.getAclRules().should('have.length.gt', 0);
     });

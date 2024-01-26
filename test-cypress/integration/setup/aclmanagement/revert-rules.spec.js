@@ -18,6 +18,7 @@ describe('ACL Management: revert rules', () => {
         cy.enableAutocomplete(repositoryId);
         AclManagementSteps.importRules(repositoryId);
         AclManagementSteps.visit();
+        ApplicationSteps.geLoader().should('not.exist');
         // ensure rules are rendered
         AclManagementSteps.getAclRules().should('have.length.gt', 0);
     });

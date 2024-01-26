@@ -1,5 +1,6 @@
 import {AclManagementSteps} from "../../../steps/setup/acl-management-steps";
 import {ACL_VIEW} from "../../../steps/setup/acl-management-steps";
+import {ApplicationSteps} from "../../../steps/application-steps";
 
 describe('ACL Management: render rules', () => {
 
@@ -16,6 +17,7 @@ describe('ACL Management: render rules', () => {
             cy.presetRepository(repositoryId);
             cy.initializeRepository(repositoryId);
             AclManagementSteps.visit();
+            ApplicationSteps.geLoader().should('not.exist');
         });
 
         it('Should render empty ACL rules table', () => {
