@@ -25,4 +25,8 @@ export class ApplicationSteps {
     static openImportPage() {
         cy.get('.main-menu .menu-element-root[href=import]').click();
     }
+
+    static geLoader() {
+        return cy.get('.ot-loader-new-content');
+    }
 }
