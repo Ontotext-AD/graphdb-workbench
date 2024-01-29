@@ -6,20 +6,6 @@ yasgui-component :not(h3,h4,sup) {
     font-size: 1rem !important;
 }
 
-/* Dialog body should have slightly bigger font-size. */
-yasgui-component .dialog-body,
-/* When it is attached directly to the html body. */
-.confirmation-dialog .dialog-body {
-    font-size: 1.25rem !important;
-}
-
-yasgui-component .dialog .dialog-footer .cancel-button,
-.confirmation-dialog .dialog-footer .cancel-button {
-    margin-right: 3px;
-    background-color: #ebebeb;
-    border-color: #ebebeb;
-}
-
 yasgui-component .yasgui-btn.btn-selected {
     background-color: var(--primary-color) !important;
 }
@@ -187,11 +173,40 @@ yasgui-component .yasr-toolbar .pivot-table-download-as-button {
     background-color: var(--primary-color) !important;
 }
 
+/* Dialog body should have slightly bigger font-size. */
+yasgui-component .dialog-body,
+    /* When it is attached directly to the html body. */
+.confirmation-dialog .dialog-body {
+    font-size: 1.25rem !important;
+}
+
+yasgui-component .dialog .dialog-footer .cancel-button,
+.confirmation-dialog .dialog-footer .cancel-button {
+    margin-right: 3px;
+    background-color: #ebebeb;
+    border-color: #ebebeb;
+}
+
 yasgui-component .ok-button,
 yasgui-component .primary-button,
-yasgui-component .confirm-button {
+yasgui-component .confirm-button,
+.confirmation-dialog .dialog-footer .confirm-button {
     background-color: var(--primary-color) !important;
     border-color: var(--primary-color) !important;
+}
+
+yasgui-component .confirm-button:focus,
+yasgui-component .confirm-button:hover,
+.confirmation-dialog .dialog-footer .confirm-button:focus,
+.confirmation-dialog .dialog-footer .confirm-button:hover {
+    background-color: var(--primary-color-dark) !important;
+    border-color: var(--primary-color-dark) !important;
+}
+
+yasgui-component .cancel-button:focus,
+yasgui-component .cancel-button:hover {
+    background-color: #d4d4d4 !important;
+    border-color: #d4d4d4 !important;
 }
 
 yasgui-component .yasr .alert-box {
