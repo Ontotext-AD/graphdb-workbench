@@ -8,7 +8,10 @@
     <div class="top-offset row" ng-if="repositoryInfo.type === 'fedx'">
         <p class="alert alert-warning">{{'fedex.experimental.feature.warning' | translate}}</p>
     </div>
-    <div ng-show="hasActiveLocation()">
+    <div ng-if="!repositoryInfo" class="alert alert-warning">
+        {{'repo.page.repository.info.loading.error' | translate}}
+    </div>
+    <div ng-show="hasActiveLocation() && repositoryInfo">
         <div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
         <div ng-hide="loader">
             <form id="newRepoForm" class="form-horizontal" novalidate="novalidate">
