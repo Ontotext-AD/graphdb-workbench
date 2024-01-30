@@ -7,6 +7,7 @@ export const EventDataType = {
     'QUERY': 'query',
     'COUNT_QUERY': 'countQuery',
     'COUNT_QUERY_RESPONSE': 'countQueryResponse',
+    'COUNT_QUERY_ABORTED': 'countQueryAborted',
     'QUERY_EXECUTED': 'queryExecuted',
     'SAVE_QUERY_OPENED': 'saveQueryOpened'
 };

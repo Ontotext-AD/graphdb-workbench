@@ -148,6 +148,15 @@ export class YasguiComponent {
     }
 
     /**
+     * Aborts the running count queries if any.
+     *
+     * @return {Promise<void>}
+     */
+    abortAllCountQuery() {
+        return this.yasguiComponent.abortAllCountQuery();
+    }
+
+    /**
      * Resets the YASR results.
      *
      * @return {Promise<void>}
