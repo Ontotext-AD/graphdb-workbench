@@ -54,8 +54,8 @@ function customRolePrefixDirective() {
                 return negated ? '!' + value.replace(prefix, '') : value.replace(prefix, '');
             }
 
-            // Check if the element is an input and has ngModel associated with it
-            if (element[0].tagName === 'INPUT' && attrs.ngModel) {
+            // Check if the element is an input or textarea and has ngModel associated with it
+            if ((element[0].tagName === 'INPUT' || element[0].tagName === 'TEXTAREA') && attrs.ngModel) {
                 const ngModelCtrl = element.controller('ngModel');
 
                 // Set up ngModel formatters and parsers for input element
