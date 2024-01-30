@@ -14,7 +14,8 @@ angular
     .directive('multiRequired', multiRequired)
     .directive('searchResourceInput', searchResourceInput)
     .directive('keyboardShortcuts', keyboardShortcutsDirective)
-    .directive('inactivePluginDirective', inactivePluginDirective);
+    .directive('inactivePluginDirective', inactivePluginDirective)
+    .directive('autoGrow', autoGrowDirective);
 
 ontoLoader.$inject = [];
 
@@ -598,7 +599,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             };
 
             function isAutocompleteResultsLoaded() {
-                return new Promise(resolve => {
+                return new Promise((resolve) => {
                     const dropDown = document.getElementById('auto-complete-results-wrapper');
                     const rect = dropDown.getBoundingClientRect();
                     setTimeout(() => {
@@ -633,7 +634,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 let index = -1;
                 const focused = LocalStorageAdapter.get(LSKeys.RDF_RESOURCE_DESCRIPTION);
                 if (focused && $scope.autoCompleteUriResults) {
-                    index = $scope.autoCompleteUriResults.findIndex(el => el.description === focused);
+                    index = $scope.autoCompleteUriResults.findIndex((el) => el.description === focused);
                     $scope.selectedElementIndex = index;
 
                     isAutocompleteResultsLoaded()
@@ -863,4 +864,33 @@ function inactivePluginDirective(toastr, RDF4JRepositoriesRestService, ModalServ
 
         checkPluginIsActive();
     }
+}
+
+function autoGrowDirective() {
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: function(scope, element, attrs, ngModelCtrl) {
+            const updateHeight = function() {
+                const value = ngModelCtrl.$viewValue;
+                if (!value || value.trim() === '') {
+                    element[0].style.height = '26px';
+                } else {
+                    element[0].style.height = '0px'; // Reset height to calculate new scrollHeight
+                    element[0].style.height = element[0].scrollHeight + 'px';
+                }
+                element[0].style.overflow = 'hidden';
+            };
+
+            scope.$watch(function() {
+                return ngModelCtrl.$viewValue;
+            }, function() {
+                updateHeight();
+            });
+
+            element.bind('input change', function() {
+                updateHeight();
+            });
+        }
+    };
 }
