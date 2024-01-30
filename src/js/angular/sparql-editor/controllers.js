@@ -24,6 +24,7 @@ angular
     .controller('SparqlEditorCtrl', SparqlEditorCtrl);
 
 SparqlEditorCtrl.$inject = [
+    '$rootScope',
     '$scope',
     '$q',
     '$location',
@@ -35,9 +36,11 @@ SparqlEditorCtrl.$inject = [
     'SparqlRestService',
     'ConnectorsRestService',
     'GuidesService',
-    'ModalService'];
+    'ModalService',
+    'MonitoringRestService'];
 
-function SparqlEditorCtrl($scope,
+function SparqlEditorCtrl($rootScope,
+                          $scope,
                           $q,
                           $location,
                           $jwtAuth,
@@ -48,7 +51,8 @@ function SparqlEditorCtrl($scope,
                           SparqlRestService,
                           ConnectorsRestService,
                           GuidesService,
-                          ModalService) {
+                          ModalService,
+                          MonitoringRestService) {
     this.repository = '';
 
     const QUERY_EDITOR_ID = '#query-editor';
@@ -79,7 +83,10 @@ function SparqlEditorCtrl($scope,
             sameAs: $scope.sameAsUserSetting,
             yasrToolbarPlugins: [exploreVisualGraphYasrToolbarElementBuilder],
             beforeUpdateQuery: getBeforeUpdateQueryHandler(),
-            outputHandlers: new Map([[EventDataType.QUERY_EXECUTED, queryExecutedHandler]])
+            outputHandlers: new Map([
+                [EventDataType.QUERY_EXECUTED, queryExecutedHandler],
+                [EventDataType.COUNT_QUERY_ABORTED, abortCountQueryHandler]
+            ])
         };
     };
 
@@ -133,6 +140,21 @@ function SparqlEditorCtrl($scope,
         if (connectorProgressModal) {
             connectorProgressModal.dismiss();
             tabIdToConnectorProgressModalMapping.delete(queryExecutedRequest.tabId);
+        }
+    };
+
+    /**
+     * Handles the "countQueryAborted" event emitted by the ontotext-yasgui. The event is fired when a count query is aborted.
+     *
+     * @param {CountQueryAbortedEvent} countQueryAbortedEvent the event payload containing the request object of the count query.
+     */
+    const abortCountQueryHandler = (countQueryAbortedEvent) => {
+        if (countQueryAbortedEvent) {
+            const repository = countQueryAbortedEvent.getRepository();
+            const currentTrackAlias = countQueryAbortedEvent.getQueryTrackAlias();
+            if (repository && currentTrackAlias) {
+                MonitoringRestService.deleteQuery(currentTrackAlias, repository);
+            }
         }
     };
 
@@ -394,8 +416,29 @@ function SparqlEditorCtrl($scope,
         }
     };
 
+    let queriesAreCanceled = undefined;
+
+    const cancelAllCountQueries = () => {
+        const ontotextYasguiElement = YasguiComponentDirectiveUtil.getOntotextYasguiElement(QUERY_EDITOR_ID);
+        if (!ontotextYasguiElement || queriesAreCanceled) {
+            return;
+
+        }
+        var newPath = $location.path();
+        ontotextYasguiElement.abortAllCountQuery()
+            .then(() => {
+                queriesAreCanceled = true;
+                $location.path(newPath);
+            });
+    };
+
+    window.addEventListener('beforeunload', cancelAllCountQueries);
+
+    subscriptions.push($rootScope.$on('$locationChangeStart', cancelAllCountQueries));
+
     const removeAllListeners = () => {
         subscriptions.forEach((subscription) => subscription());
+        window.removeEventListener('beforeunload', cancelAllCountQueries);
     };
 
     // Deregister the watcher when the scope/directive is destroyed
