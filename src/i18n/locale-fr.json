@@ -1838,6 +1838,7 @@
     "clear.tooltip": "Clair",
     "repo.page.location.label": "Localisation",
     "repo.page.location.input.field.tooltip": "L'emplacement où créer le dépôt. Par défaut, il s'agit de l'emplacement local.",
+    "repo.page.repository.info.loading.error": "Le référentiel actuellement sélectionné ne peut pas être modifié en raison d'une erreur lors du chargement des métadonnées du référentiel.",
     "guide.button.guide-paused": "Guide en pause",
     "guide.button.guide-resume": "Continuer le guide",
     "guide.validate.no-next": "Impossible de passer au suivant",
