@@ -175,7 +175,7 @@
                 "delete_rule": "Delete rule",
                 "add_rule": "Add new rule",
                 "edit_rule": "Edit rule",
-                "save_rule": "Save rule",
+                "apply_rule": "Apply rule",
                 "cancel_rule_editing": "Cancel rule editing",
                 "save_acl": "Save ACL",
                 "cancel_acl_saving": "Cancel"

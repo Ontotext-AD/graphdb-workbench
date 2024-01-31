@@ -83,16 +83,16 @@
     width: 15%;
 }
 
+.acl-management-view .acl-rules .plugin-column {
+    width: 15%;
+}
+
 .acl-management-view .acl-rules .policy-column {
     width: 10%;
 }
 
 .acl-management-view .acl-rules .role-column {
     width: 10%;
-}
-
-.acl-management-view .acl-rules .actions-column {
-    width: 107px;
 }
 
 .acl-management-view .acl-rules .actions-cell {
@@ -121,8 +121,12 @@ input::placeholder {
     text-transform: initial;
 }
 
-.acl-rules td, .acl-rules th {
-    padding: 0.5em;
+.acl-rules.preview-rule-row td, .acl-rules.preview-rule-row th {
+    padding: 12px 16px;
+}
+
+.table.acl-rules th {
+    border-top: none;
 }
 
 .wildcard-cell {
@@ -199,8 +203,23 @@ input::placeholder {
 
 .textarea-edit {
     padding: 4px 8px;
+    min-height: 29px;
 }
 
-.auto-width {
-    width: auto !important;
+.autocomplete-textarea {
+    min-height: 29px;
+}
+
+.crud-actions-group {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.select-rule {
+    height: 29px !important;
+}
+
+tr.acl-rule.edit-rule-row .form-control{
+    font-family: var(--mono-font);
+    font-size: 100%;
 }

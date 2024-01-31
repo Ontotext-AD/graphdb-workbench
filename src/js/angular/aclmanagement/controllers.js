@@ -134,6 +134,8 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
      */
     $scope.DEFAULT_URI_VALUES = DEFAULT_URI_VALUES;
 
+    $scope.rowHeights = {};
+
 
     //
     // Public functions
@@ -162,6 +164,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
         $scope.editedRuleScope = scope;
         $scope.isNewRule = false;
         $scope.editedRuleCopy = $scope.rulesModel.getRuleCopy(scope, index);
+        $scope.getRowHeight = 'height: ' + $scope.rowHeights[$scope.editedRuleIndex];
         setModelDirty(scope);
     };
 
@@ -277,6 +280,17 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
         $scope.activeTabScope = scope;
         $scope.ruleKeys = $scope.rulesModel.getRuleKeysByScope($scope.activeTabScope);
 
+    };
+
+    /**
+     * Sets the dirty flag on the current scope.
+     * This flag is used to indicate that there has been a change on the scope and it needs to be saved or updated.
+     *
+     * @param {string} scope
+     * @return {void}
+     */
+    $scope.setDirty = function(scope) {
+        setModelDirty(scope);
     };
 
     //

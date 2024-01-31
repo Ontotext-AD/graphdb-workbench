@@ -15,7 +15,8 @@ angular
     .directive('searchResourceInput', searchResourceInput)
     .directive('keyboardShortcuts', keyboardShortcutsDirective)
     .directive('inactivePluginDirective', inactivePluginDirective)
-    .directive('autoGrow', autoGrowDirective);
+    .directive('autoGrow', autoGrowDirective)
+    .directive('captureHeight', captureHeightDirective);
 
 ontoLoader.$inject = [];
 
@@ -890,6 +891,23 @@ function autoGrowDirective() {
 
             element.bind('input change', function() {
                 updateHeight();
+            });
+        }
+    };
+}
+
+function captureHeightDirective() {
+    return {
+        restrict: 'A',
+        scope: {
+            rowIndex: '=captureHeight'
+        },
+        link: function(scope, element, attrs) {
+            scope.$watch(function() {
+                return element[0].offsetHeight;
+            }, function(newHeight) {
+                // Use the rowIndex to store the height for each row specifically
+                scope.$parent.rowHeights[scope.rowIndex] = newHeight + 'px!important';
             });
         }
     };

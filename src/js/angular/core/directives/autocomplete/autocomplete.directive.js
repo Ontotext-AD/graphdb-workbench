@@ -18,8 +18,8 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
             placeholder: '@',
             styleClass: '@',
             multiline: '@',
-            defaultresults: '='
-
+            defaultresults: '=',
+            onModelChange: '&'
         },
         templateUrl: 'js/angular/core/directives/autocomplete/templates/autocomplete.html',
         link: linkFunction
@@ -312,6 +312,7 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
                 $scope.adjustTextareaHeight();
             }
             $scope.ngModel = newValue;
+            $scope.onModelChange();
         };
 
         const unsubscribeListeners = () => {
