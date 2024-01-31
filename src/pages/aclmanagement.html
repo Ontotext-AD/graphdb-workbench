@@ -17,7 +17,7 @@
         <div class="acl-management-container">
             <div class="pull-right">
                 <button ng-click="addRule(activeTabScope, 0)" ng-disabled="editedRuleIndex !== undefined"
-                        class="btn btn-primary add-rule-btn"
+                        class="btn btn-primary add-first-rule-btn"
                         gdb-tooltip="{{'acl_management.rulestable.actions.add_rule' | translate}}">
                     <em class="icon-plus"></em> Create rule
                 </button>
@@ -263,11 +263,11 @@
                                     <td class="index-cell">{{$index + 1}}</td>
                                     <td class="reorder-cell">
                                         <span ng-if="editedRuleIndex === undefined" class="reorder-actions-group">
-                                            <button ng-click="moveUp(activeTabScope, $index)" ng-show="$index > 0" class="btn btn-link move-up-btn"
+                                            <button ng-click="moveUp(activeTabScope, $index)" ng-if="$index > 0" class="btn btn-link move-up-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.move_up' | translate}}">
                                                 <em class="fa fa-caret-up"></em>
                                             </button>
-                                            <button ng-click="moveDown(activeTabScope, $index)" ng-show="$index < rulesModel.size(activeTabScope) - 1"
+                                            <button ng-click="moveDown(activeTabScope, $index)" ng-if="$index < rulesModel.size(activeTabScope) - 1"
                                                     class="btn btn-link move-down-btn"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.move_down' | translate}}">
                                                 <em class="fa fa-caret-down"></em>
