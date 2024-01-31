@@ -207,19 +207,21 @@
                                         <em></em>
                                     </td>
                                     <td class="actions-cell">
-                                        <button ng-click="cancelEditing(activeTabScope, $index)"
-                                                class="btn btn-link cancel-rule-editing-btn"
-                                                gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
-                                            <em class="icon-close"></em>
-                                        </button>
-                                        <button ng-if="ruleData.$valid" ng-click="saveRule(activeTabScope)"
-                                                class="btn btn-link save-rule-btn"
-                                                ng-disabled="!ruleData.$valid"
-                                                gdb-tooltip="{{'acl_management.rulestable.actions.apply_rule' | translate}}">
-                                            <em class="icon-check"></em>
-                                        </button>
-                                        <em ng-if="!ruleData.$valid" class="icon-check icon-lg save-rule-disabled-btn"
-                                            gdb-tooltip="{{'acl_management.rulestable.messages.invalid_form' | translate}}"></em>
+                                        <div class="crud-actions-group">
+                                            <button ng-click="cancelEditing(activeTabScope, $index)"
+                                                    class="btn btn-link cancel-rule-editing-btn"
+                                                    gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
+                                                <em class="icon-close"></em>
+                                            </button>
+                                            <button ng-if="ruleData.$valid" ng-click="saveRule(activeTabScope)"
+                                                    class="btn btn-link save-rule-btn"
+                                                    ng-disabled="!ruleData.$valid"
+                                                    gdb-tooltip="{{'acl_management.rulestable.actions.apply_rule' | translate}}">
+                                                <em class="icon-check"></em>
+                                            </button>
+                                            <em ng-if="!ruleData.$valid" class="icon-check icon-lg save-rule-disabled-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.messages.invalid_form' | translate}}"></em>
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr ng-repeat-end ng-if="0"></tr>
@@ -339,19 +341,21 @@
                                     </td>
                                     <td class="empty-cell"></td>
                                     <td class="actions-cell">
-                                        <button ng-click="cancelEditing(activeTabScope, $index)"
-                                                class="btn btn-link cancel-rule-editing-btn"
-                                                gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
-                                            <em class="icon-close"></em>
-                                        </button>
-                                        <button ng-if="ruleData.$valid" ng-click="saveRule(activeTabScope)"
-                                                class="btn btn-link save-rule-btn"
-                                                ng-disabled="!ruleData.$valid"
-                                                gdb-tooltip="{{'acl_management.rulestable.actions.apply_rule' | translate}}">
-                                            <em class="icon-check"></em>
-                                        </button>
-                                        <em ng-if="!ruleData.$valid" class="icon-check icon-lg save-rule-disabled-btn"
-                                            gdb-tooltip="{{'acl_management.rulestable.messages.invalid_form' | translate}}"></em>
+                                        <div class="crud-actions-group">
+                                            <button ng-click="cancelEditing(activeTabScope, $index)"
+                                                    class="btn btn-link cancel-rule-editing-btn"
+                                                    gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
+                                                <em class="icon-close"></em>
+                                            </button>
+                                            <button ng-if="ruleData.$valid" ng-click="saveRule(activeTabScope)"
+                                                    class="btn btn-link save-rule-btn"
+                                                    ng-disabled="!ruleData.$valid"
+                                                    gdb-tooltip="{{'acl_management.rulestable.actions.apply_rule' | translate}}">
+                                                <em class="icon-check"></em>
+                                            </button>
+                                            <em ng-if="!ruleData.$valid" class="icon-check icon-lg save-rule-disabled-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.messages.invalid_form' | translate}}"></em>
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr ng-repeat-end ng-if="0"></tr>
@@ -487,19 +491,21 @@
                                     </td>
                                     <td class="empty-cell"></td>
                                     <td class="actions-cell">
-                                        <button ng-click="cancelEditing(activeTabScope, $index)"
-                                                class="btn btn-link cancel-rule-editing-btn"
-                                                gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
-                                            <em class="icon-close"></em>
-                                        </button>
-                                        <button ng-if="ruleData.$valid" ng-click="saveRule(activeTabScope)"
-                                                class="btn btn-link save-rule-btn"
-                                                ng-disabled="!ruleData.$valid"
-                                                gdb-tooltip="{{'acl_management.rulestable.actions.apply_rule' | translate}}">
-                                            <em class="icon-check"></em>
-                                        </button>
-                                        <em ng-if="!ruleData.$valid" class="icon-check icon-lg save-rule-disabled-btn"
-                                            gdb-tooltip="{{'acl_management.rulestable.messages.invalid_form' | translate}}"></em>
+                                        <div class="crud-actions-group">
+                                            <button ng-click="cancelEditing(activeTabScope, $index)"
+                                                    class="btn btn-link cancel-rule-editing-btn"
+                                                    gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
+                                                <em class="icon-close"></em>
+                                            </button>
+                                            <button ng-if="ruleData.$valid" ng-click="saveRule(activeTabScope)"
+                                                    class="btn btn-link save-rule-btn"
+                                                    ng-disabled="!ruleData.$valid"
+                                                    gdb-tooltip="{{'acl_management.rulestable.actions.apply_rule' | translate}}">
+                                                <em class="icon-check"></em>
+                                            </button>
+                                            <em ng-if="!ruleData.$valid" class="icon-check icon-lg save-rule-disabled-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.messages.invalid_form' | translate}}"></em>
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr ng-repeat-end ng-if="0"></tr>
@@ -618,19 +624,21 @@
                                     </td>
                                     <td class="empty-cell"></td>
                                     <td class="actions-cell">
-                                        <button ng-click="cancelEditing(activeTabScope, $index)"
-                                                class="btn btn-link cancel-rule-editing-btn"
-                                                gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
-                                            <em class="icon-close"></em>
-                                        </button>
-                                        <button ng-if="ruleData.$valid" ng-click="saveRule(activeTabScope)"
-                                                class="btn btn-link save-rule-btn"
-                                                ng-disabled="!ruleData.$valid"
-                                                gdb-tooltip="{{'acl_management.rulestable.actions.apply_rule' | translate}}">
-                                            <em class="icon-check"></em>
-                                        </button>
-                                        <em ng-if="!ruleData.$valid" class="icon-check icon-lg save-rule-disabled-btn"
-                                            gdb-tooltip="{{'acl_management.rulestable.messages.invalid_form' | translate}}"></em>
+                                        <div class="crud-actions-group">
+                                            <button ng-click="cancelEditing(activeTabScope, $index)"
+                                                    class="btn btn-link cancel-rule-editing-btn"
+                                                    gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
+                                                <em class="icon-close"></em>
+                                            </button>
+                                            <button ng-if="ruleData.$valid" ng-click="saveRule(activeTabScope)"
+                                                    class="btn btn-link save-rule-btn"
+                                                    ng-disabled="!ruleData.$valid"
+                                                    gdb-tooltip="{{'acl_management.rulestable.actions.apply_rule' | translate}}">
+                                                <em class="icon-check"></em>
+                                            </button>
+                                            <em ng-if="!ruleData.$valid" class="icon-check icon-lg save-rule-disabled-btn"
+                                                gdb-tooltip="{{'acl_management.rulestable.messages.invalid_form' | translate}}"></em>
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr ng-repeat-end ng-if="0"></tr>
