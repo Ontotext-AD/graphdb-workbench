@@ -78,6 +78,10 @@ yasgui-component .yasqe_queryButton {
     height: 38px !important;
 }
 
+yasgui-component .yasgui .tabsList .tab {
+    padding: 0.46em !important;
+}
+
 yasgui-component .editable-text-field-wrapper,
 yasgui-component .yasgui .tabsList .tab {
     color: inherit;
@@ -238,6 +242,7 @@ yasgui-component .yasr .dataTable .triple-cell .triple-link {
 }
 
 yasgui-component .yasr .yasr_btnGroup .yasr_btn {
+    padding: .52em;
     margin-left: 0;
     margin-right: .2rem;
     font-size: 16px;
@@ -402,6 +407,10 @@ yasgui-component .page-selector {
 }
 
 @media (max-width: 1200px) {
+    yasgui-component .yasr .yasr_btnGroup .yasr_btn {
+        padding: .73em;
+    }
+
     .yasr_btn span {
         display: none;
     }
