@@ -200,7 +200,6 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
     };
 
     //Add new location
-
     $scope.addLocationHttp = function (dataAddLocation) {
         $scope.loader = true;
         LocationsRestService.addLocation(dataAddLocation)
@@ -802,56 +801,70 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
         });
     };
 
+    const initView = (repositoryInfoResponse) => {
+        const repositoryInfo = repositoryInfoResponse.data;
+        if (angular.isDefined(repositoryInfo.params.ruleset)) {
+            let ifRulesetExists = false;
+            angular.forEach($scope.rulesets, function (item) {
+                if (item.id === repositoryInfo.params.ruleset.value) {
+                    ifRulesetExists = true;
+                }
+            });
+            if (repositoryInfo.params.ruleset && !ifRulesetExists) {
+                const name = getFileName(repositoryInfo.params.ruleset.value);
+                $scope.rulesets.unshift({id: repositoryInfo.params.ruleset.value, name: 'Custom: ' + name});
+            }
+        }
+        $scope.repositoryInfo = repositoryInfo;
+        $scope.setRepositoryType(repositoryInfo.type);
+        parseNumberParamsIfNeeded($scope.repositoryInfo.params);
+        $scope.repositoryInfo.saveId = $scope.saveRepoId;
+        $scope.loader = false;
+    };
+
     $scope.$watch($scope.hasActiveLocation, function () {
         if ($scope.hasActiveLocation) {
             // Should get locations before getting repository info
-            Promise.all([loadRepositoryData(), MonitoringRestService.monitorActiveOperations($scope.repositoryInfo.id)])
-                .then(([repositoryInfo, monitoringResponse]) => {
-                    $scope.isRepoInCluster = monitoringResponse.hasClusterOperation();
-                    const data = repositoryInfo.data;
-                    if (angular.isDefined(data.params.ruleset)) {
-                        let ifRulesetExists = false;
-                        angular.forEach($scope.rulesets, function (item) {
-                            if (item.id === data.params.ruleset.value) {
-                                ifRulesetExists = true;
-                            }
-                        });
-                        if (data.params.ruleset && !ifRulesetExists) {
-                            const name = getFileName(data.params.ruleset.value);
-                            $scope.rulesets.unshift({id: data.params.ruleset.value, name: 'Custom: ' + name});
-                        }
-                    }
-                    $scope.repositoryInfo = data;
-                    $scope.setRepositoryType(data.type);
-                    parseNumberParamsIfNeeded($scope.repositoryInfo.params);
-                    $scope.repositoryInfo.saveId = $scope.saveRepoId;
-                    $scope.loader = false;
-                })
-                .catch(function (response) {
-                    const data = response.data;
-                    const status = response.status;
-                    const repositoryId = $routeParams.repositoryId;
-                    let toastrMsg;
+            let repositoryInfoResponse;
+            loadRepositoryData().then((repositoryInfo) => {
+                repositoryInfoResponse = repositoryInfo;
+                return MonitoringRestService.monitorActiveOperations($scope.repositoryInfo.id);
+            }).then((monitoringResponse) => {
+                $scope.isRepoInCluster = monitoringResponse.hasClusterOperation();
+            }).catch((error) => {
+                if (!repositoryInfoResponse) {
+                    $scope.repositoryInfo = undefined;
+                    return Promise.reject(error);
+                }
+                // the monitoring request failed, but we can still continue
+                return Promise.resolve();
+            }).then(() => {
+                initView(repositoryInfoResponse);
+            }).catch((response) => {
+                const data = response.data;
+                const status = response.status;
+                const repositoryId = $routeParams.repositoryId;
+                let toastrMsg;
 
-                    if (status === 404 && repositoryId !== 'system') {
-                        toastrMsg = decodeHTML($translate.instant('edit.repo.error.not.exists', {repositoryId}));
-                    } else if (status === 404 && repositoryId === 'system') {
-                        toastrMsg = decodeHTML($translate.instant('edit.system.repo.warning'));
-                    } else {
-                        toastrMsg = getError(data);
-                    }
+                if (status === 404 && repositoryId !== 'system') {
+                    toastrMsg = decodeHTML($translate.instant('edit.repo.error.not.exists', {repositoryId}));
+                } else if (status === 404 && repositoryId === 'system') {
+                    toastrMsg = decodeHTML($translate.instant('edit.system.repo.warning'));
+                } else {
+                    toastrMsg = getError(data);
+                }
 
-                    toastr.error(toastrMsg, $translate.instant('common.error'), {allowHtml: true});
+                toastr.error(toastrMsg, $translate.instant('common.error'), {allowHtml: true});
 
-                    if (status === 404) {
-                        setTimeout(function () {
-                            $scope.loader = false;
-                            $location.path('repository');
-                        }, 1000);
-                    } else {
+                if (status === 404) {
+                    setTimeout(function () {
                         $scope.loader = false;
-                    }
-                });
+                        $location.path('repository');
+                    }, 1000);
+                } else {
+                    $scope.loader = false;
+                }
+            });
         }
     });
 

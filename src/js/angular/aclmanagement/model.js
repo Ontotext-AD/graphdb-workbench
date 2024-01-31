@@ -200,7 +200,9 @@ export class ACRuleModel {
     }
 
     get roleWithoutCustomPrefix() {
-        return this._role.replace('CUSTOM_', '');
+        return this._role.startsWith('!') ?
+            this._role.replace('CUSTOM_', '\u00A0') : // Replace 'CUSTOM_' with non-breaking space
+            this._role.replace('CUSTOM_', '');
     }
 
     get role() {
@@ -246,7 +248,7 @@ export class StatementACRuleModel extends ACRuleModel {
         this._predicate = predicate || '*';
         this._object = object || '*';
         this._context = context || '*';
-        this._operation = operation || ACL_OPERATION.READ;
+        this._operation = operation || ACL_OPERATION.ALL;
     }
 
     get subject() {
@@ -323,7 +325,7 @@ export class PluginACRuleModel extends ACRuleModel {
     constructor(role, policy, plugin, operation) {
         super(ACL_SCOPE.PLUGIN, role, policy);
         this._plugin = plugin || '*';
-        this._operation = operation || ACL_OPERATION.READ;
+        this._operation = operation || ACL_OPERATION.ALL;
     }
 
     get plugin() {
@@ -406,7 +408,7 @@ export class ClearGraphACRuleModel extends ACRuleModel {
 export class SystemACRuleModel extends ACRuleModel {
     constructor(role, policy, operation) {
         super(ACL_SCOPE.SYSTEM, role, policy);
-        this._operation = operation || ACL_OPERATION.READ;
+        this._operation = operation || ACL_OPERATION.ALL;
     }
 
     get operation() {
@@ -466,7 +468,8 @@ export const ACL_POLICY = {
 
 export const ACL_OPERATION = {
     READ: 'read',
-    WRITE: 'write'
+    WRITE: 'write',
+    ALL: '*'
 };
 
 export const ACL_SCOPE = {

@@ -18,8 +18,8 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
             placeholder: '@',
             styleClass: '@',
             multiline: '@',
-            defaultresults: '='
-
+            defaultresults: '=',
+            onModelChange: '&'
         },
         templateUrl: 'js/angular/core/directives/autocomplete/templates/autocomplete.html',
         link: linkFunction
@@ -312,6 +312,7 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
                 $scope.adjustTextareaHeight();
             }
             $scope.ngModel = newValue;
+            $scope.onModelChange();
         };
 
         const unsubscribeListeners = () => {
@@ -336,10 +337,13 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
         // Auto-expand logic
         $scope.adjustTextareaHeight = () => {
             if ($scope.isMultiline) {
-                const textarea = SEARCH_INPUT_FIELD[0];
-                textarea.style.height = 'auto';
-                textarea.style.height = textarea.scrollHeight + 'px';
-                textarea.focus();
+                // run after DOM updates
+                $timeout(() => {
+                    const textarea = SEARCH_INPUT_FIELD[0];
+                    textarea.style.overflow = 'hidden';
+                    textarea.style.height = '0px';
+                    textarea.style.height = textarea.scrollHeight + 'px';
+                }, 0);
             }
         };
 

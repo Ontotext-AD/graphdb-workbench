@@ -175,7 +175,7 @@
                 "delete_rule": "Delete rule",
                 "add_rule": "Add new rule",
                 "edit_rule": "Edit rule",
-                "save_rule": "Save rule",
+                "apply_rule": "Apply rule",
                 "cancel_rule_editing": "Cancel rule editing",
                 "save_acl": "Save ACL",
                 "cancel_acl_saving": "Cancel"
@@ -1845,6 +1845,7 @@
     "clear.tooltip": "Clear",
     "repo.page.location.label": "Location",
     "repo.page.location.input.field.tooltip": "The location where to create repository. The default is the local one.",
+    "repo.page.repository.info.loading.error": "Currently selected repository cannot be edited due to an error during repository metadata loading.",
     "guide.button.guide-paused": "Guide paused",
     "guide.button.guide-resume": "Continue the guide",
     "guide.validate.no-next": "Cannot continue to next",

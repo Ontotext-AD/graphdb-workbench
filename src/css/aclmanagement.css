@@ -5,7 +5,7 @@
 .acl-management-view .acl-rules .labels-row th {
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;;
+    text-overflow: ellipsis;
 }
 
 .acl-management-view .acl-rules .toolbar {
@@ -64,35 +64,38 @@
 }
 
 .acl-management-view .acl-rules .operation-column {
-    width: 18%;
+    width: 10%;
 }
 
 .acl-management-view .acl-rules .subject-column {
-    width: 18%;
+    width: 15%;
 }
 
 .acl-management-view .acl-rules .predicate-column {
-    width: 18%;
+    width: 15%;
 }
 
 .acl-management-view .acl-rules .object-column {
-    width: 18%;
+    width: 15%;
 }
 
 .acl-management-view .acl-rules .context-column {
-    width: 18%;
+    width: 15%;
 }
 
-.acl-management-view .acl-rules .role-column {
-    width: 18%;
+.acl-management-view .acl-rules .plugin-column {
+    width: 15%;
 }
 
 .acl-management-view .acl-rules .policy-column {
-    width: 100px;
+    width: 10%;
 }
 
+.acl-management-view .acl-rules .role-column {
+    width: 10%;
+}
 .acl-management-view .acl-rules .actions-column {
-    width: 107px;
+    width: 8%;
 }
 
 .acl-management-view .acl-rules .actions-cell {
@@ -119,4 +122,107 @@
 
 input::placeholder {
     text-transform: initial;
+}
+
+.acl-rules.preview-rule-row td, .acl-rules.preview-rule-row th {
+    padding: 12px 16px;
+}
+
+.table.acl-rules th {
+    border-top: none;
+}
+
+.wildcard-cell {
+    font-family: var(--mono-font);
+    font-weight: bold !important;
+    color: rgba(0, 0, 0, 0.5) !important
+}
+
+.subject-cell, .predicate-cell, .object-cell, .context-cell {
+    font-family: var(--mono-font);
+    font-size: 90%;
+}
+
+.context-cell-special {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 500;
+}
+
+.acl-tag {
+    padding: 0.25em 0.5em;
+    font-weight: 500;
+}
+
+.acl-tag .fa {
+    font-size: 90%;
+}
+
+.acl-tag-allow {
+    background-color: var(--color-success-light);
+    color: var(--color-success-dark);
+}
+
+.acl-tag-deny {
+    background-color: var(--color-danger-light);
+    color: var(--color-danger-dark);
+}
+
+.acl-tag-read {
+    background-color: var(--color-help-light);
+    color: var(--color-info-dark);
+}
+
+.acl-tag-write {
+    background-color: var(--color-warning-light);
+    color: var(--color-warning-dark);
+}
+
+.acl-tag-role {
+    color: inherit;
+    padding: 0;
+}
+
+.acl-tag-role-negated {
+    background-color: #ddd;
+    color: var(--gray-color-dark);
+    padding: 0;
+}
+
+.nav-link{
+    position: relative;
+}
+
+.dirty-scope {
+    position: absolute;
+    right: 0.3em;
+}
+
+.reorder-cell {
+    display: table-cell;
+    vertical-align: middle;
+    min-height: 50px;
+}
+
+.textarea-edit {
+    padding: 4px 8px;
+    min-height: 29px;
+}
+
+.autocomplete-textarea {
+    min-height: 29px;
+}
+
+.crud-actions-group {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.select-rule {
+    height: 29px !important;
+}
+
+tr.acl-rule.edit-rule-row .form-control{
+    font-family: var(--mono-font);
+    font-size: 100%;
 }
