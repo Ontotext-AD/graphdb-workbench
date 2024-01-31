@@ -482,7 +482,7 @@ exportCtrl.controller('ExportCtrl',
         }]);
 
 exportCtrl.controller("ExportSettingsCtrl",
-    ['$scope', '$uibModalInstance', '$translate', 'toastr', function ($scope, $uibModalInstance, $translate, toastr) {
+    ['$scope', '$uibModalInstance', '$translate', function ($scope, $uibModalInstance, $translate) {
         $scope.JSONLDModes = [
             {name: "frame", link: "http://www.w3.org/ns/json-ld#frame"},
             {name: "framed", link: "http://www.w3.org/ns/json-ld#framed"},
@@ -511,11 +511,6 @@ exportCtrl.controller("ExportSettingsCtrl",
         };
 
         $scope.exportJsonLD = function () {
-            if ($scope.currentMode !== $scope.defaultMode && !$scope.link) {
-                toastr.error($translate.instant('empty.context.or.frame.link'));
-                return;
-            }
-
             $uibModalInstance.close({
                 currentMode: $scope.currentMode,
                 link: $scope.link
