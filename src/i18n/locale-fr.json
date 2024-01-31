@@ -175,7 +175,7 @@
                 "delete_rule": "Supprimer la règle",
                 "add_rule": "Ajouter une nouvelle règle",
                 "edit_rule": "Modifier la règle",
-                "save_rule": "Enregistrer la règle",
+                "apply_rule": "Appliquer la règle",
                 "cancel_rule_editing": "Annuler la modification des règles",
                 "save_acl": "Enregistrer la ACL",
                 "cancel_acl_saving": "Annuler"
