@@ -172,7 +172,7 @@ describe('ACL Management: create rule', () => {
         AclManagementSteps.getMoveDownButtons().should('have.length', 4);
         AclManagementSteps.deleteRuleButtons().should('have.length', 5);
         AclManagementSteps.editRuleButtons().should('have.length', 5);
-        AclManagementSteps.createRuleButtons().should('have.length', 6);
+        AclManagementSteps.createRuleButtons().should('have.length', 5);
         // When a rule is in edit mode
         AclManagementSteps.addRule(1);
         // Then I expect that move up, move down, edit rule, create rule, delete rule buttons to be hidden

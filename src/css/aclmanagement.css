@@ -94,6 +94,9 @@
 .acl-management-view .acl-rules .role-column {
     width: 10%;
 }
+.acl-management-view .acl-rules .actions-column {
+    width: 8%;
+}
 
 .acl-management-view .acl-rules .actions-cell {
     text-align: right;
