@@ -1846,6 +1846,7 @@
     "clear.tooltip": "Clear",
     "repo.page.location.label": "Location",
     "repo.page.location.input.field.tooltip": "The location where to create repository. The default is the local one.",
+    "repo.page.repository.info.loading.error": "Currently selected repository cannot be edited due to an error during repository metadata loading.",
     "guide.button.guide-paused": "Guide paused",
     "guide.button.guide-resume": "Continue the guide",
     "guide.validate.no-next": "Cannot continue to next",
