@@ -27,31 +27,31 @@ describe('ACL Management: rule scopes', () => {
         AclManagementSteps.getAclTable().should('be.visible');
         AclManagementSteps.getAclTabs().should('be.visible');
         AclManagementSteps.getNoDataMessage().should('be.visible');
-        AclManagementSteps.getActiveTab().should('have.text', 'Statement ');
+        AclManagementSteps.getActiveTab().should('have.text', 'Statement');
         // When I select Clear graph tab
         AclManagementSteps.selectTab(1);
         // I expect empty rules table
         AclManagementSteps.getAclTabs().should('be.visible');
         AclManagementSteps.getNoDataMessage().should('be.visible');
-        AclManagementSteps.getActiveTab().should('have.text', 'Clear graph ');
+        AclManagementSteps.getActiveTab().should('have.text', 'Clear graph');
         // When I select Plugins tab
         AclManagementSteps.selectTab(2);
         // I expect empty rules table
         AclManagementSteps.getAclTabs().should('be.visible');
         AclManagementSteps.getNoDataMessage().should('be.visible');
-        AclManagementSteps.getActiveTab().should('have.text', 'Plugin ');
+        AclManagementSteps.getActiveTab().should('have.text', 'Plugin');
         // When I select System tab
         AclManagementSteps.selectTab(3);
         // I expect empty rules table
         AclManagementSteps.getAclTabs().should('be.visible');
         AclManagementSteps.getNoDataMessage().should('be.visible');
-        AclManagementSteps.getActiveTab().should('have.text', 'System ');
+        AclManagementSteps.getActiveTab().should('have.text', 'System');
     });
 
     it('Should create rules', () => {
         // I select Clear graph tab
         AclManagementSteps.selectTab(1);
-        AclManagementSteps.getActiveTab().should('have.text', 'Clear graph ');
+        AclManagementSteps.getActiveTab().should('have.text', 'Clear graph');
         // I can create rule
         AclManagementSteps.addRuleInBeginning();
         // I fill the policy
@@ -67,7 +67,7 @@ describe('ACL Management: rule scopes', () => {
 
         // I select Plugin tab
         AclManagementSteps.selectTab(2);
-        AclManagementSteps.getActiveTab().should('have.text', 'Plugin ');
+        AclManagementSteps.getActiveTab().should('have.text', 'Plugin');
         // I can create rule
         AclManagementSteps.addRuleInBeginning();
         // I fill the policy
@@ -85,7 +85,7 @@ describe('ACL Management: rule scopes', () => {
 
         // I select System tab
         AclManagementSteps.selectTab(3);
-        AclManagementSteps.getActiveTab().should('have.text', 'System ');
+        AclManagementSteps.getActiveTab().should('have.text', 'System');
         // I can create rule
         AclManagementSteps.addRuleInBeginning();
         // I fill the policy
@@ -101,7 +101,7 @@ describe('ACL Management: rule scopes', () => {
 
         // I select Statement tab
         AclManagementSteps.selectTab(0);
-        AclManagementSteps.getActiveTab().should('have.text', 'Statement ');
+        AclManagementSteps.getActiveTab().should('have.text', 'Statement');
         // I can create rule
         AclManagementSteps.addRuleInBeginning();
         // I fill the policy
@@ -168,7 +168,7 @@ describe('ACL Management: rule scopes', () => {
         ApplicationSteps.getSuccessNotifications().should('be.visible');
 
         // I expect to be on Statement tab
-        AclManagementSteps.getActiveTab().should('have.text', 'Statement ');
+        AclManagementSteps.getActiveTab().should('have.text', 'Statement');
         // I expect to have one statement rule
         AclManagementSteps.getAclRules().should('have.length', 1);
         const expectedStatementRule = {
@@ -185,7 +185,7 @@ describe('ACL Management: rule scopes', () => {
 
         // I visit Clear graph tab
         AclManagementSteps.selectTab(1);
-        AclManagementSteps.getActiveTab().should('have.text', 'Clear graph ');
+        AclManagementSteps.getActiveTab().should('have.text', 'Clear graph');
         const expectedClearGraphRule = {
             "scope": "clear_graph",
             "policy": "deny",
@@ -196,7 +196,7 @@ describe('ACL Management: rule scopes', () => {
 
         // I visit Plugin tab
         AclManagementSteps.selectTab(2);
-        AclManagementSteps.getActiveTab().should('have.text', 'Plugin ');
+        AclManagementSteps.getActiveTab().should('have.text', 'Plugin');
         const expectedPluginRule = {
             "scope": "plugin",
             "policy": "deny",
@@ -208,7 +208,7 @@ describe('ACL Management: rule scopes', () => {
 
         // I visit System tab
         AclManagementSteps.selectTab(3);
-        AclManagementSteps.getActiveTab().should('have.text', 'System ');
+        AclManagementSteps.getActiveTab().should('have.text', 'System');
         const expectedSystemRule = {
             "scope": "system",
             "policy": "allow",
