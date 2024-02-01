@@ -148,6 +148,7 @@
                                         <textarea type="text" name="role" required
                                                   ng-model="rule.role"
                                                   ng-change="setDirty(activeTabScope)"
+                                                  ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
                                                   uppercased uppercase-placeholder="false"
                                                   custom-role-prefix auto-grow
                                                   autocomplete="off"
@@ -164,10 +165,12 @@
                                         </select>
                                     </td>
                                     <td class="data subject-cell">
-                                        <autocomplete ng-model="rule.subject" on-model-change="setDirty(activeTabScope)" name="subject" required
+                                        <autocomplete ng-model="rule.subject" on-model-change="setDirty(activeTabScope)" name="subject"
+                                                      keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
                                                       multiline="true"
                                                       autoexpand="true"
                                                       defaultresults="DEFAULT_URI_VALUES"
+                                                      required="true"
                                                       style-class="form-control form-control-sm"
                                                       namespaces="namespaces"
                                                       autocomplete-status-loader="getAutocompletePromise"
@@ -175,10 +178,12 @@
                                         <em></em>
                                     </td>
                                     <td class="data predicate-cell">
-                                        <autocomplete ng-model="rule.predicate" on-model-change="setDirty(activeTabScope)" name="predicate" required
+                                        <autocomplete ng-model="rule.predicate" on-model-change="setDirty(activeTabScope)" name="predicate"
+                                                      keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
                                                       multiline="true"
                                                       autoexpand="true"
                                                       defaultresults="DEFAULT_URI_VALUES"
+                                                      required="true"
                                                       style-class="form-control form-control-sm"
                                                       namespaces="namespaces"
                                                       autocomplete-status-loader="getAutocompletePromise"
@@ -186,10 +191,12 @@
                                         <em></em>
                                     </td>
                                     <td class="data object-cell">
-                                        <autocomplete ng-model="rule.object" on-model-change="setDirty(activeTabScope)" name="object" required
+                                        <autocomplete ng-model="rule.object" on-model-change="setDirty(activeTabScope)" name="object"
+                                                      keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
                                                       multiline="true"
                                                       autoexpand="true"
                                                       defaultresults="DEFAULT_URI_VALUES"
+                                                      required="true"
                                                       style-class="form-control form-control-sm"
                                                       namespaces="namespaces"
                                                       autocomplete-status-loader="getAutocompletePromise"
@@ -197,10 +204,12 @@
                                         <em></em>
                                     </td>
                                     <td class="data context-cell">
-                                        <autocomplete ng-model="rule.context" on-model-change="setDirty(activeTabScope)" name="context" required
+                                        <autocomplete ng-model="rule.context" on-model-change="setDirty(activeTabScope)" name="context"
+                                                      keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
                                                       multiline="true"
                                                       autoexpand="true"
                                                       defaultresults="DEFAULT_CONTEXT_VALUES"
+                                                      required="true"
                                                       style-class="form-control form-control-sm"
                                                       namespaces="namespaces"
                                                       autocomplete-status-loader="getAutocompletePromise"
@@ -319,6 +328,7 @@
                                         <textarea type="text" name="role" required
                                                   ng-model="rule.role"
                                                   ng-change="setDirty(activeTabScope)"
+                                                  ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
                                                   uppercased uppercase-placeholder="false"
                                                   custom-role-prefix auto-grow
                                                   autocomplete="off" class="form-control form-control-sm textarea-edit"
@@ -328,10 +338,12 @@
                                         <em></em>
                                     </td>
                                     <td class="data context-cell">
-                                        <autocomplete ng-model="rule.context" on-model-change="setDirty(activeTabScope)" name="context" required
+                                        <autocomplete ng-model="rule.context" on-model-change="setDirty(activeTabScope)" name="context"
+                                                      keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
                                                       multiline="true"
                                                       autoexpand="true"
                                                       defaultresults="DEFAULT_CONTEXT_VALUES"
+                                                      required="true"
                                                       style-class="form-control form-control-sm"
                                                       namespaces="namespaces"
                                                       autocomplete-status-loader="getAutocompletePromise"
@@ -460,6 +472,7 @@
                                         <textarea type="text" name="role" required
                                                   ng-model="rule.role"
                                                   ng-change="setDirty(activeTabScope)"
+                                                  ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
                                                   uppercased uppercase-placeholder="false"
                                                   custom-role-prefix auto-grow
                                                   autocomplete="off"
@@ -479,6 +492,7 @@
                                         <textarea type="text" name="plugin" required
                                                   ng-model="rule.plugin"
                                                   ng-change="setDirty(activeTabScope)"
+                                                  ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
                                                   auto-grow
                                                   autocomplete="off"
                                                   class="form-control form-control-sm textarea-edit"
@@ -602,6 +616,7 @@
                                         <textarea type="text" name="role" required
                                                   ng-model="rule.role"
                                                   ng-change="setDirty(activeTabScope)"
+                                                  ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
                                                   uppercased uppercase-placeholder="false"
                                                   custom-role-prefix auto-grow
                                                   autocomplete="off"

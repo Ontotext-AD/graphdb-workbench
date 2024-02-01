@@ -176,7 +176,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
     $scope.deleteRule = (scope, index) => {
         ModalService.openConfirmation(
             $translate.instant('common.confirm'),
-            $translate.instant('acl_management.rulestable.messages.delete_rule_confirmation', {index}),
+            $translate.instant('acl_management.rulestable.messages.delete_rule_confirmation', {index: index + 1}),
             () => {
                 $scope.rulesModel.removeRule(scope, index);
                 setModelDirty(scope);
@@ -293,6 +293,42 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
         setModelDirty(scope);
     };
 
+    /**
+     * Handles event when the "Enter" key is pressed.
+     *
+     * When "Enter" is pressed, the function first stops the event from propagating and prevents
+     * the default form submission behavior.
+     * It then triggers a validation process on the entire form.
+     * If the form is valid, a save operation is initiated for the current rule associated with the provided scope.
+     *
+     * @param {Object} event - The keypress event object.
+     * @param {string} scope - The affected scope
+     * @param {FormController} form - The form object.
+     */
+    $scope.performSearchActionOnEnter = function (event, scope, form) {
+        if (event.keyCode === 13) {
+            event.stopPropagation();
+            event.preventDefault();
+            $scope.triggerValidation(form);
+            if (form.$valid) {
+                $scope.saveRule(scope);
+            }
+        }
+    };
+
+    /**
+     * Triggers the validation of a form or input fields.
+     *
+     * @param {FormController} form - The form object.
+     */
+    $scope.triggerValidation = function(form) {
+        angular.forEach(form, function(control) {
+            if (typeof control === 'object' && control.hasOwnProperty('$modelValue')) {
+                control.$setTouched();
+            }
+        });
+    };
+
     //
     // Private functions
     //
@@ -364,6 +400,10 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
     };
 
     const loadNamespaces = () => {
+        if (!$repositories.getActiveRepository()) {
+            return;
+        }
+
         RDF4JRepositoriesRestService.getNamespaces($repositories.getActiveRepository())
             .then(mapNamespacesResponse)
             .then((namespacesModel) => {
