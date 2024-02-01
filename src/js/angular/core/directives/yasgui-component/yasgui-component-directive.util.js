@@ -26,7 +26,10 @@ export const YasguiComponentDirectiveUtil = (function () {
      * @return {YasguiComponent}
      */
     const getOntotextYasguiElement = (directiveSelector) => {
-        return YasguiComponentDirectiveUtil.getOntotextYasguiElementController(directiveSelector).getOntotextYasguiElement();
+        const ontotextYasguiElementController = YasguiComponentDirectiveUtil.getOntotextYasguiElementController(directiveSelector);
+        if (ontotextYasguiElementController) {
+            return ontotextYasguiElementController.getOntotextYasguiElement();
+        }
     };
 
     /**
