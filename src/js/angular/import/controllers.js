@@ -623,12 +623,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
                 file.format = data.format;
                 $scope.updateTextImport(file);
             } else {
-                if (data.format === 'application/ld+json' || data.format === 'application/x-ld+ndjson') {
-                    file = {type: 'text', name: 'Text snippet ' + formattedDate() + ".jsonld", format: data.format, data: data.text};
-                } else {
-                    file = {type: 'text', name: 'Text snippet ' + formattedDate(), format: data.format, data: data.text};
-                }
-
+                file = {type: 'text', name: 'Text snippet ' + formattedDate(), format: data.format, data: data.text};
                 $scope.files.unshift(file);
                 $scope.updateImport(file.name);
             }
