@@ -189,7 +189,6 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
         $scope.setSettingsFor = function (fileName, withDefaultSettings) {
             $scope.settingsFor = fileName;
             $scope.settings = $scope.getSettingsFor(fileName, withDefaultSettings);
-            $scope.settings.isJSONLDFile = fileName.endsWith("jsonld");
 
             const options = {
                 templateUrl: 'js/angular/import/templates/settingsModal.html',

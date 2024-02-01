@@ -20,8 +20,7 @@
         "normalizeLanguageTags": false,
         "verifyURISyntax": true,
         "verifyRelativeURIs": true,
-        "stopOnError": true,
-        "contextLink": null
+        "stopOnError": true
     },
     "xRequestIdHeaders": null
 }
