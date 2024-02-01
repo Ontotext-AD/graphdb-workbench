@@ -24,24 +24,16 @@
             </div>
             <ul class="nav nav-tabs acl-tabs">
                 <li class="resource-tab nav-item">
-                    <span class="nav-link" ng-click="switchTab(ACL_SCOPE.STATEMENT)" ng-class="activeTabScope === ACL_SCOPE.STATEMENT ? 'active':''">
-                        <span class="dirty-scope text-primary" ng-if="dirtyScope.has(ACL_SCOPE.STATEMENT)">*</span> {{'acl_management.rulestable.tab.statement' | translate}}
-                    </span>
+                    <span class="nav-link" ng-click="switchTab(ACL_SCOPE.STATEMENT)" ng-class="activeTabScope === ACL_SCOPE.STATEMENT ? 'active':''"><span class="dirty-scope text-primary" ng-if="dirtyScope.has(ACL_SCOPE.STATEMENT)">*</span>{{'acl_management.rulestable.tab.statement' | translate}}</span>
                 </li>
                 <li class="performance-tab nav-item">
-                    <span class="nav-link" ng-click="switchTab(ACL_SCOPE.CLEAR_GRAPH)" ng-class="activeTabScope === ACL_SCOPE.CLEAR_GRAPH ? 'active':''">
-                        <span class="dirty-scope text-primary" ng-if="dirtyScope.has(ACL_SCOPE.CLEAR_GRAPH)">*</span>{{'acl_management.rulestable.tab.clear_graph' | translate}}
-                    </span>
+                    <span class="nav-link" ng-click="switchTab(ACL_SCOPE.CLEAR_GRAPH)" ng-class="activeTabScope === ACL_SCOPE.CLEAR_GRAPH ? 'active':''"><span class="dirty-scope text-primary" ng-if="dirtyScope.has(ACL_SCOPE.CLEAR_GRAPH)">*</span>{{'acl_management.rulestable.tab.clear_graph' | translate}}</span>
                 </li>
                 <li class="cluster-tab nav-item">
-                    <span class="nav-link" ng-click="switchTab(ACL_SCOPE.PLUGIN)" ng-class="activeTabScope === ACL_SCOPE.PLUGIN ? 'active':''">
-                        <span class="dirty-scope text-primary" ng-if="dirtyScope.has(ACL_SCOPE.PLUGIN)">*</span>{{'acl_management.rulestable.tab.plugin' | translate}}
-                    </span>
+                    <span class="nav-link" ng-click="switchTab(ACL_SCOPE.PLUGIN)" ng-class="activeTabScope === ACL_SCOPE.PLUGIN ? 'active':''"><span class="dirty-scope text-primary" ng-if="dirtyScope.has(ACL_SCOPE.PLUGIN)">*</span>{{'acl_management.rulestable.tab.plugin' | translate}}</span>
                 </li>
                 <li class="cluster-tab nav-item">
-                    <span class="nav-link" ng-click="switchTab(ACL_SCOPE.SYSTEM)" ng-class="activeTabScope === ACL_SCOPE.SYSTEM ? 'active':''">
-                        <span class="dirty-scope text-primary" ng-if="dirtyScope.has(ACL_SCOPE.SYSTEM)">*</span>{{'acl_management.rulestable.tab.system' | translate}}
-                    </span>
+                    <span class="nav-link" ng-click="switchTab(ACL_SCOPE.SYSTEM)" ng-class="activeTabScope === ACL_SCOPE.SYSTEM ? 'active':''"><span class="dirty-scope text-primary" ng-if="dirtyScope.has(ACL_SCOPE.SYSTEM)">*</span>{{'acl_management.rulestable.tab.system' | translate}}</span>
                 </li>
             </ul>
             <div ng-if="loading" onto-loader-new size="100" style="height: 75vh; display: flex;"></div>
