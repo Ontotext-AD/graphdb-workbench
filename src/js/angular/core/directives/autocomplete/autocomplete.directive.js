@@ -19,7 +19,9 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
             styleClass: '@',
             multiline: '@',
             defaultresults: '=',
-            onModelChange: '&'
+            onModelChange: '&',
+            keypress: '&',
+            required: '=?'
         },
         templateUrl: 'js/angular/core/directives/autocomplete/templates/autocomplete.html',
         link: linkFunction
@@ -98,8 +100,12 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
         $scope.onKeyDown = (event) => {
             if (event.key === 'Enter') {
                 event.preventDefault();
-                checkIfValidAndSearch();
-            } else if ($scope.searchInput.length > MIN_CHAR_LEN && !element.autoCompleteWarning && !element.autoCompleteStatus) {
+                if (isAutocomplete()) {
+                    checkIfValidAndSearch();
+                } else {
+                    $scope.keypress({$event: event});
+                }
+            } else if ($scope.searchInput && $scope.searchInput.length > MIN_CHAR_LEN && !element.autoCompleteWarning && !element.autoCompleteStatus) {
                 element.autoCompleteWarning = true;
                 const warningMsg = decodeHTML($translate.instant('explore.autocomplete.warning.msg'));
                 toastr.warning('', `<div class="autocomplete-toast"><a href="autocomplete">${warningMsg}</a></div>`,
@@ -111,17 +117,14 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
             }
             if (event.key === 'ArrowDown' && $scope.activeSearchElm < $scope.autoCompleteUriResults.length - 1) {
                 $scope.activeSearchElm++;
-                $scope.searchInput = $scope.autoCompleteUriResults[$scope.activeSearchElm].value;
                 scrollContentToBottom();
             }
             if (event.key === 'ArrowUp' && $scope.activeSearchElm > 0) {
                 event.preventDefault();
                 $scope.activeSearchElm--;
-                $scope.searchInput = $scope.autoCompleteUriResults[$scope.activeSearchElm].value;
                 scrollContentToTop();
             }
             if (event.key === 'Escape') {
-                $scope.searchInput = '';
                 $scope.autoCompleteUriResults = [];
             }
 
@@ -146,11 +149,15 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
                 $scope.onChange();
             } else if (resource.type === 'default') {
                 $scope.searchInput = resource.value;
+                $scope.autoCompleteUriResults = [];
                 SEARCH_INPUT_FIELD.focus();
+            } else if (resource && typeof resource === 'string' && validateRdfUri(resource)) {
+                $scope.searchInput = resource;
+                $scope.autoCompleteUriResults = [];
             } else {
                 $scope.searchInput = '<' + resource.value + '>';
                 $scope.autoCompleteUriResults = [];
-            }
+        }
         };
 
         $scope.setActiveItemIndex = (index) => {
@@ -159,6 +166,42 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
             }
             $scope.activeSearchElm = index;
         };
+
+        /**
+         * Adjusts the position of the autocomplete dropdown based on the viewport's width.
+         *
+         * This function calculates the position of the `.autocomplete-results-wrapper` element
+         * relative to the body of the document. If the right edge of the dropdown extends
+         * beyond the width of the viewport, it adjusts the CSS to align the dropdown right
+         * edge with the right edge of the input field. Otherwise, it aligns the dropdown left
+         * edge with the left edge of the input field. This ensures that the dropdown is fully
+         * visible within the current viewport.
+         *
+         * The function is wrapped inside a `$timeout` to ensure that the DOM has finished
+         * updating before calculating the positions and applying any adjustments.
+         *
+         * Additionally, an angular watch is set up on `autoCompleteUriResults` to reposition
+         * the dropdown whenever the autocomplete results change.
+         */
+        $scope.positionAutocompleteWrapper = function() {
+            $timeout(() => {
+                const bodyRect = document.body.getBoundingClientRect();
+                const dropdown = element.find('.autocomplete-results-wrapper').get(0);
+                const dropdownRect = dropdown.getBoundingClientRect();
+
+                if (dropdown && dropdownRect.right > bodyRect.width) {
+                    dropdown.style.left = 'auto';
+                    dropdown.style.right = '0px';
+                } else {
+                    dropdown.style.right = 'auto';
+                    dropdown.style.left = '0px';
+                }
+            }, 0);
+        };
+
+        $scope.$watch('autoCompleteUriResults', function() {
+            $scope.positionAutocompleteWrapper();
+        });
 
         //
         // Private methods
@@ -182,6 +225,9 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
         };
 
         const expandPrefix = (str) => {
+            if (!str) {
+                return;
+            }
             const ABS_URI_REGEX = /^<?(http|urn).*>?/;
             if (!ABS_URI_REGEX.test(str)) {
                 const uriParts = str.split(':');
@@ -206,8 +252,7 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
         };
 
         const checkIfValidAndSearch = () => {
-            // autocomplete is enabled and autocomplete results are loaded
-            if (element.autoCompleteStatus && $scope.autoCompleteUriResults && $scope.autoCompleteUriResults.length > 0) {
+            if (isAutocomplete()) {
                 if ($scope.autoCompleteUriResults[$scope.activeSearchElm].type === 'prefix') {
                     $scope.searchInput = expandPrefix($scope.autoCompleteUriResults[$scope.activeSearchElm].value + ':');
                     $scope.autoCompleteUriResults = [];
@@ -229,6 +274,9 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
             }
         };
 
+        // autocomplete is enabled and autocomplete results are loaded
+        const isAutocomplete = () => element.autoCompleteStatus && $scope.autoCompleteUriResults && $scope.autoCompleteUriResults.length > 0;
+
         const handleAbsUris = (absUri) => {
             let uri = absUri;
             if (uri.indexOf(';') === -1 && validateRdfUri(uri)) {
@@ -241,6 +289,9 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
         };
 
         const checkUriAutocomplete = (searchInput) => {
+            if (!searchInput) {
+                return;
+            }
             // add semicolon after the expanded uri in order to filter only by local names for this uri
             let search = searchInput.replace(expandedUri, expandedUri + ';');
             if (element.autoCompleteStatus) {

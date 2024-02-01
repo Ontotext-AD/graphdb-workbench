@@ -5,11 +5,12 @@
 .autocomplete-select-wrapper .autocomplete-results-wrapper {
     position: absolute;
     top: 100%;
-    left: 0;
     max-height: 204px;
     margin-bottom: 0;
     overflow: auto;
     background-color: #fff;
+    right: auto;
+    left: auto;
 }
 
 .autocomplete-select-wrapper .autocomplete-results-wrapper div:hover {
