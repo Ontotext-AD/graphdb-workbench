@@ -166,16 +166,17 @@
                 "predicate": "Predicate",
                 "object": "Object",
                 "context": "Context",
-                "role": "Custom role",
+                "role": "ROLE1",
                 "plugin": "Plugin"
             },
             "actions": {
                 "move_up": "Move the rule up",
                 "move_down": "Move the rule down",
                 "delete_rule": "Delete rule",
-                "add_rule": "Add new rule",
+                "add_rule_first": "Add new rule in the beginning of the list",
+                "add_rule_next": "Add new rule after current rule",
                 "edit_rule": "Edit rule",
-                "apply_rule": "Apply rule",
+                "apply_rule": "Confirm rule editing",
                 "cancel_rule_editing": "Cancel rule editing",
                 "save_acl": "Save ACL",
                 "cancel_acl_saving": "Cancel"

@@ -166,16 +166,17 @@
                 "predicate": "Prédicat",
                 "object": "Objet",
                 "context": "Contexte",
-                "role": "Rôle personnalisé",
+                "role": "ROLE1",
                 "plugin": "Brancher"
             },
             "actions": {
                 "move_up": "Déplacer la règle vers le haut",
                 "move_down": "Déplacer la règle vers le bas",
                 "delete_rule": "Supprimer la règle",
-                "add_rule": "Ajouter une nouvelle règle",
+                "add_rule_first": "Ajouter une nouvelle règle au début de la liste",
+                "add_rule_next": "Ajouter une nouvelle règle après la règle actuelle",
                 "edit_rule": "Modifier la règle",
-                "apply_rule": "Appliquer la règle",
+                "apply_rule": "Confirmer la modification de la règle",
                 "cancel_rule_editing": "Annuler la modification des règles",
                 "save_acl": "Enregistrer la ACL",
                 "cancel_acl_saving": "Annuler"

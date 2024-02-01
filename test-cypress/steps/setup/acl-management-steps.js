@@ -110,7 +110,7 @@ export class AclManagementSteps {
     }
 
     static getSaveRuleDisabledButton(index) {
-        return this.getRule(index).find('.save-rule-disabled-btn');
+        return this.getRule(index).find('.save-rule-btn');
     }
 
     static saveRule(index) {
@@ -317,12 +317,12 @@ export class AclManagementSteps {
 
     static checkIfRuleSavingIsForbidden(index) {
         AclManagementSteps.getSaveRuleButton(index).should('not.exist');
-        AclManagementSteps.getSaveRuleDisabledButton(index).should('be.visible');
+        AclManagementSteps.getSaveRuleDisabledButton(index).should('be.disabled');
     }
 
     static checkIfRuleSavingIsAllowed(index) {
         AclManagementSteps.getSaveRuleButton(index).should('be.visible');
-        AclManagementSteps.getSaveRuleDisabledButton(index).should('not.exist');
+        AclManagementSteps.getSaveRuleDisabledButton(index).should('be.enabled');
     }
 }
 
