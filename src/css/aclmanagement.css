@@ -149,6 +149,12 @@ input::placeholder {
     font-weight: 500;
 }
 
+.plugin-cell:not(.wildcard-cell) {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 500;
+}
+
 .acl-tag {
     padding: 0.25em 0.5em;
     font-weight: 500;
@@ -194,7 +200,7 @@ input::placeholder {
 
 .dirty-scope {
     position: absolute;
-    right: 0.3em;
+    left: 0.4em;
 }
 
 .reorder-cell {
