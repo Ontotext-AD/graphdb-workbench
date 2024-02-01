@@ -186,7 +186,6 @@ input::placeholder {
 .acl-tag-role-negated {
     background-color: #ddd;
     color: var(--gray-color-dark);
-    padding: 0;
 }
 
 .nav-link{
