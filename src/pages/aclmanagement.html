@@ -656,7 +656,8 @@
                 </div>
             </div>
         </div>
-        <div ng-if="editedRuleIndex === undefined && rulesModel && modelIsDirty && dirtyScope.size > 0" class="text-right">
+        <div ng-if="editedRuleIndex === undefined && rulesModel && modelIsDirty && dirtyScope.size > 0" class="acl-actions text-right">
+            <span class="message">{{'acl_management.rulestable.messages.save_acl_to_apply_rules' | translate}}</span>
             <button class="btn btn-secondary cancel-acl-save-btn"
                     ng-click="cancelAclSave()">
                 {{'acl_management.rulestable.actions.cancel_acl_saving' | translate}}

@@ -188,7 +188,8 @@
                 "revert_acl_list": "Cette opération annulera toutes les modifications apportées à l'ACL. Êtes-vous sur de vouloir continuer?",
                 "rules_updated": "L'ACL a été mise à jour avec succès",
                 "rules_reverted": "L'ACL a été rétablie avec succès",
-                "unsaved_changes_confirmation": "Vous avez des modifications non sauvegardées. Etes-vous sûr de vouloir quitter?"
+                "unsaved_changes_confirmation": "Vous avez des modifications non sauvegardées. Etes-vous sûr de vouloir quitter?",
+                "save_acl_to_apply_rules": "Les règles ne sont pas appliquées tant qu'elles ne sont pas enregistrées"
             }
         },
         "errors": {

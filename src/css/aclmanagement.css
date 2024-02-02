@@ -2,6 +2,18 @@
     table-layout: fixed;
 }
 
+.acl-management-view .acl-actions {
+    position: sticky;
+    bottom: 20px;
+    padding: .5em;
+    /* opaque version of the color-warning-light */
+    background-color: #F8F0EE;
+}
+
+.acl-management-view .acl-actions .message {
+    margin-right: 1em;
+}
+
 .acl-management-view .acl-rules .labels-row th {
     white-space: nowrap;
     overflow: hidden;
