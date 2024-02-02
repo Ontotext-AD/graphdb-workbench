@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench",
-    "version": "2.6.0-TR7",
+    "version": "2.6.0-TR8",
     "description": "The web application for GraphDB APIs",
     "scripts": {
         "build": "webpack --config=webpack.config.prod.js",
