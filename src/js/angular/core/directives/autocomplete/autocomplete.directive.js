@@ -168,39 +168,57 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
         };
 
         /**
-         * Adjusts the position of the autocomplete dropdown based on the viewport's width.
+         * Adjusts the position of the autocomplete dropdown based on the viewport's width or resets it.
          *
          * This function calculates the position of the `.autocomplete-results-wrapper` element
-         * relative to the body of the document. If the right edge of the dropdown extends
-         * beyond the width of the viewport, it adjusts the CSS to align the dropdown right
-         * edge with the right edge of the input field. Otherwise, it aligns the dropdown left
-         * edge with the left edge of the input field. This ensures that the dropdown is fully
+         * relative to the body of the document. If the `reset` parameter is true, it will clear
+         * any inline styles for the 'left' and 'right' properties of the dropdown, effectively
+         * resetting its position. If `reset` is false or not provided, the function will check
+         * if the right edge of the dropdown extends beyond the width of the viewport, and if so,
+         * it adjusts the CSS to align the dropdown right edge with the right edge of the input
+         * field.
+         *
+         * If there's enough space in the viewport, it aligns the dropdown left edge
+         * with the left edge of the input field. This ensures that the dropdown is fully
          * visible within the current viewport.
          *
          * The function is wrapped inside a `$timeout` to ensure that the DOM has finished
          * updating before calculating the positions and applying any adjustments.
          *
          * Additionally, an angular watch is set up on `autoCompleteUriResults` to reposition
-         * the dropdown whenever the autocomplete results change.
+         * the dropdown or reset its position based on the presence or absence of autocomplete results.
+         *
+         * @param {boolean} reset - if we should reset position;
          */
-        $scope.positionAutocompleteWrapper = function() {
+        $scope.positionAutocompleteWrapper = function(reset) {
             $timeout(() => {
-                const bodyRect = document.body.getBoundingClientRect();
                 const dropdown = element.find('.autocomplete-results-wrapper').get(0);
+                if (reset) {
+                    dropdown.style.left = 'auto';
+                    dropdown.style.right = 'auto';
+                    return;
+                }
+
+                if (dropdown && dropdown.style.right === '0px') {
+                    return;
+                }
+
+                const bodyRect = document.body.getBoundingClientRect();
                 const dropdownRect = dropdown.getBoundingClientRect();
 
-                if (dropdown && dropdownRect.right > bodyRect.width) {
+                if (dropdown && dropdownRect.right >= bodyRect.width) {
                     dropdown.style.left = 'auto';
                     dropdown.style.right = '0px';
-                } else {
+                } else if (dropdown && dropdownRect.right < bodyRect.width) {
                     dropdown.style.right = 'auto';
                     dropdown.style.left = '0px';
                 }
             }, 0);
         };
 
-        $scope.$watch('autoCompleteUriResults', function() {
-            $scope.positionAutocompleteWrapper();
+        $scope.$watch('autoCompleteUriResults', function(results) {
+            const shouldReset = !results || results && results.length === 0;
+            $scope.positionAutocompleteWrapper(shouldReset);
         });
 
         //
@@ -401,7 +419,7 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
         const filterAndCombineDefaultResults = (defaultResults, currentInput, backendSuggestions) => {
             // Filter default words based on current input
             const filteredDefaultResults = defaultResults.filter((word) =>
-                word.toLowerCase().includes(currentInput.toLowerCase())
+                word && word.toLowerCase().includes(currentInput.toLowerCase())
             ).map((word) => ({
                 type: 'default',
                 value: word,

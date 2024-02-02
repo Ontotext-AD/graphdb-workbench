@@ -140,7 +140,7 @@ input::placeholder {
 
 .subject-cell, .predicate-cell, .object-cell, .context-cell {
     font-family: var(--mono-font);
-    font-size: 90%;
+    font-size: 100%;
 }
 
 .context-cell-special {
@@ -158,10 +158,6 @@ input::placeholder {
 .acl-tag {
     padding: 0.25em 0.5em;
     font-weight: 500;
-}
-
-.acl-tag .fa {
-    font-size: 90%;
 }
 
 .acl-tag-allow {
@@ -225,9 +221,14 @@ input::placeholder {
 
 .select-rule {
     height: 29px !important;
+    font-size: 100%;
 }
 
-tr.acl-rule.edit-rule-row .form-control{
+tr.acl-rule.edit-rule-row .form-control:not(.select-rule){
     font-family: var(--mono-font);
     font-size: 100%;
+}
+
+.autocomplete-results-wrapper {
+    z-index: 1000;
 }

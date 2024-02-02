@@ -30,7 +30,7 @@ describe('ACL Management: delete rule', () => {
         AclManagementSteps.deleteRule(0);
         // Then I expect a confirmation dialog
         ModalDialogSteps.getDialog().should('be.visible');
-        ModalDialogSteps.getDialogBody().should('contain', 'Are you sure you want to delete the selected rule #0?');
+        ModalDialogSteps.getDialogBody().should('contain', 'Are you sure you want to delete the selected rule #1?');
         // When I cancel operation
         ModalDialogSteps.clickOnCancelButton();
         // Then I expect the rule to remain in the list
@@ -38,7 +38,7 @@ describe('ACL Management: delete rule', () => {
         AclManagementSteps.getAclRules().should('have.length', 5);
         // When I try remove it again and confirm the operation
         AclManagementSteps.deleteRule(4);
-        ModalDialogSteps.getDialogBody().should('contain', 'Are you sure you want to delete the selected rule #4?');
+        ModalDialogSteps.getDialogBody().should('contain', 'Are you sure you want to delete the selected rule #5?');
         ModalDialogSteps.clickOnConfirmButton();
         // Then I expect the rule to be removed from the list
         ModalDialogSteps.getDialog().should('not.exist');
