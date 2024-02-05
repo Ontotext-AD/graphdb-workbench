@@ -168,47 +168,53 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
         };
 
         /**
-         * Adjusts the position of the autocomplete dropdown based on the viewport's width or resets it.
+         * Adjusts the position of the autocomplete dropdown relative to the viewport's width,
+         * or resets its position based on the `reset` parameter.
          *
-         * This function calculates the position of the `.autocomplete-results-wrapper` element
-         * relative to the body of the document. If the `reset` parameter is true, it will clear
-         * any inline styles for the 'left' and 'right' properties of the dropdown, effectively
-         * resetting its position. If `reset` is false or not provided, the function will check
-         * if the right edge of the dropdown extends beyond the width of the viewport, and if so,
-         * it adjusts the CSS to align the dropdown right edge with the right edge of the input
-         * field.
+         * When `reset` is true, the function clears any inline styles for the 'left' and 'right'
+         * properties of the dropdown, effectively resetting its position to default. If `reset` is false
+         * or not provided, and if the dropdown's current style for the 'right' property is not set to 'auto',
+         * the function exits early to avoid repositioning elements unnecessarily.
          *
-         * If there's enough space in the viewport, it aligns the dropdown left edge
-         * with the left edge of the input field. This ensures that the dropdown is fully
-         * visible within the current viewport.
+         * If repositioning is needed, the function calculates the position of the `.autocomplete-results-wrapper`
+         * element by comparing the right edges of the dropdown and the viewport. If the dropdown extends
+         * beyond the viewport, it adjusts the CSS to align the dropdown's right edge with the right edge
+         * of the `edit-rule-row` element, taking into account the relative position of the `autocomplete-select`
+         * input. This adjustment ensures that the dropdown does not extend outside the viewport.
          *
-         * The function is wrapped inside a `$timeout` to ensure that the DOM has finished
-         * updating before calculating the positions and applying any adjustments.
+         * If there's sufficient space in the viewport, the dropdown's left edge is aligned with the left edge
+         * of its container. This logic ensures the dropdown is fully visible within the current viewport,
+         * enhancing the user interface experience.
          *
-         * Additionally, an angular watch is set up on `autoCompleteUriResults` to reposition
-         * the dropdown or reset its position based on the presence or absence of autocomplete results.
+         * This function is executed within a `$timeout` to ensure that any DOM updates are completed
+         * before calculating positions and applying adjustments. Additionally, an angular watch
+         * on `autoCompleteUriResults` triggers this function to either reposition the dropdown or
+         * reset its position, depending on the presence or absence of autocomplete results.
          *
-         * @param {boolean} reset - if we should reset position;
+         * @param {boolean} reset - Indicates whether to reset the dropdown's position.
          */
         $scope.positionAutocompleteWrapper = function(reset) {
             $timeout(() => {
-                const dropdown = element.find('.autocomplete-results-wrapper').get(0);
+                const dropdownElement = element.find('.autocomplete-results-wrapper');
+                const dropdown = dropdownElement.get(0);
                 if (reset) {
                     dropdown.style.left = 'auto';
                     dropdown.style.right = 'auto';
                     return;
                 }
-
-                if (dropdown && dropdown.style.right === '0px') {
+                if (dropdown && dropdown.style.right !== 'auto') {
                     return;
                 }
 
+                const autocompleteInputRect = dropdownElement.prevObject[0].getElementsByClassName('autocomplete-select')[0].getBoundingClientRect();
+                const rowRect = document.body.getElementsByClassName('edit-rule-row')[0].getBoundingClientRect();
                 const bodyRect = document.body.getBoundingClientRect();
                 const dropdownRect = dropdown.getBoundingClientRect();
 
                 if (dropdown && dropdownRect.right >= bodyRect.width) {
+                    const offset = rowRect.right - autocompleteInputRect.right;
                     dropdown.style.left = 'auto';
-                    dropdown.style.right = '0px';
+                    dropdown.style.right = `-${offset}px`;
                 } else if (dropdown && dropdownRect.right < bodyRect.width) {
                     dropdown.style.right = 'auto';
                     dropdown.style.left = '0px';
