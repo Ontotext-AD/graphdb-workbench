@@ -2,7 +2,10 @@ import 'angular/utils/notifications';
 import 'angular/utils/local-storage-adapter';
 import {YasqeMode} from "../../models/ontotext-yasgui/yasqe-mode";
 import {RenderingMode} from "../../models/ontotext-yasgui/rendering-mode";
-import {YasguiComponentDirectiveUtil} from "../../core/directives/yasgui-component/yasgui-component-directive.util";
+import {
+    INFERRED_AND_SAME_AS_BUTTONS_CONFIGURATION,
+    YasguiComponentDirectiveUtil
+} from "../../core/directives/yasgui-component/yasgui-component-directive.util";
 import {GraphsConfig, StartMode} from "../../models/graphs/graphs-config";
 import {mapGraphConfigSamplesToGraphConfigs} from "../../rest/mappers/graphs-config-mapper";
 
@@ -488,7 +491,7 @@ function GraphConfigCtrl(
         showToolbar: false,
         showResultTabs: false,
         showYasqeActionButtons: false,
-        yasqeActionButtons: DISABLE_YASQE_BUTTONS_CONFIGURATION,
+        yasqeActionButtons: INFERRED_AND_SAME_AS_BUTTONS_CONFIGURATION,
         showQueryButton: false,
         initialQuery: ' ',
         componentId: 'graphs-config',
