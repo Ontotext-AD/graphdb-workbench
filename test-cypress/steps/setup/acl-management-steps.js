@@ -69,6 +69,10 @@ export class AclManagementSteps {
         return this.getAclTabs().eq(index).click();
     }
 
+    static getActiveTabDirtyIcon() {
+        return this.getActiveTab().find('.icon-exclamation');
+    }
+
     static addRuleInBeginning() {
         this.getAddFirstRuleButton().click();
     }
