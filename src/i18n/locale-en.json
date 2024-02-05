@@ -196,6 +196,12 @@
             "loading_rules": "Error during ACL rules",
             "updating_rules": "Error during ACL rules update",
             "duplicated_rules": "Every ACL rule should be unique."
+        },
+        "defaults": {
+            "asterisk": "* - Any RDF value",
+            "default": "default - The default graph",
+            "named": "named - Any named graph",
+            "all": "all - CLEAR ALL graphs"
         }
     },
     "config.name.label": "Config name",
