@@ -52,6 +52,7 @@ describe('ACL Management: rule scopes', () => {
         // I select Clear graph tab
         AclManagementSteps.selectTab(1);
         AclManagementSteps.getActiveTab().should('have.text', 'Clear graph');
+        AclManagementSteps.getActiveTabDirtyIcon().should('not.exist');
         // I can create rule
         AclManagementSteps.addRuleInBeginning();
         // I fill the policy
@@ -63,11 +64,12 @@ describe('ACL Management: rule scopes', () => {
         // I save the rule
         AclManagementSteps.saveRule(0);
         // Then the tab label is changed
-        AclManagementSteps.getActiveTab().should('contain', '*');
+        AclManagementSteps.getActiveTabDirtyIcon().should('be.visible');
 
         // I select Plugin tab
         AclManagementSteps.selectTab(2);
         AclManagementSteps.getActiveTab().should('have.text', 'Plugin');
+        AclManagementSteps.getActiveTabDirtyIcon().should('not.exist');
         // I can create rule
         AclManagementSteps.addRuleInBeginning();
         // I fill the policy
@@ -81,11 +83,12 @@ describe('ACL Management: rule scopes', () => {
         // I save the rule
         AclManagementSteps.saveRule(0);
         // Then the tab label is changed
-        AclManagementSteps.getActiveTab().should('contain', '*');
+        AclManagementSteps.getActiveTabDirtyIcon().should('be.visible');
 
         // I select System tab
         AclManagementSteps.selectTab(3);
         AclManagementSteps.getActiveTab().should('have.text', 'System');
+        AclManagementSteps.getActiveTabDirtyIcon().should('not.exist');
         // I can create rule
         AclManagementSteps.addRuleInBeginning();
         // I fill the policy
@@ -97,11 +100,12 @@ describe('ACL Management: rule scopes', () => {
         // I save the rule
         AclManagementSteps.saveRule(0);
         // Then the tab label is changed
-        AclManagementSteps.getActiveTab().should('contain', '*');
+        AclManagementSteps.getActiveTabDirtyIcon().should('be.visible');
 
         // I select Statement tab
         AclManagementSteps.selectTab(0);
         AclManagementSteps.getActiveTab().should('have.text', 'Statement');
+        AclManagementSteps.getActiveTabDirtyIcon().should('not.exist');
         // I can create rule
         AclManagementSteps.addRuleInBeginning();
         // I fill the policy
@@ -121,7 +125,7 @@ describe('ACL Management: rule scopes', () => {
         // I save the rule
         AclManagementSteps.saveRule(0);
         // Then the tab label is changed
-        AclManagementSteps.getActiveTab().should('contain', '*');
+        AclManagementSteps.getActiveTabDirtyIcon().should('be.visible');
 
         cy.intercept('PUT', '/rest/repositories/acl-management-*/acl').as('putCall');
 
@@ -169,6 +173,7 @@ describe('ACL Management: rule scopes', () => {
 
         // I expect to be on Statement tab
         AclManagementSteps.getActiveTab().should('have.text', 'Statement');
+        AclManagementSteps.getActiveTabDirtyIcon().should('not.exist');
         // I expect to have one statement rule
         AclManagementSteps.getAclRules().should('have.length', 1);
         const expectedStatementRule = {
@@ -186,6 +191,7 @@ describe('ACL Management: rule scopes', () => {
         // I visit Clear graph tab
         AclManagementSteps.selectTab(1);
         AclManagementSteps.getActiveTab().should('have.text', 'Clear graph');
+        AclManagementSteps.getActiveTabDirtyIcon().should('not.exist');
         const expectedClearGraphRule = {
             "scope": "clear_graph",
             "policy": "deny",
@@ -197,6 +203,7 @@ describe('ACL Management: rule scopes', () => {
         // I visit Plugin tab
         AclManagementSteps.selectTab(2);
         AclManagementSteps.getActiveTab().should('have.text', 'Plugin');
+        AclManagementSteps.getActiveTabDirtyIcon().should('not.exist');
         const expectedPluginRule = {
             "scope": "plugin",
             "policy": "deny",
@@ -209,6 +216,7 @@ describe('ACL Management: rule scopes', () => {
         // I visit System tab
         AclManagementSteps.selectTab(3);
         AclManagementSteps.getActiveTab().should('have.text', 'System');
+        AclManagementSteps.getActiveTabDirtyIcon().should('not.exist');
         const expectedSystemRule = {
             "scope": "system",
             "policy": "allow",

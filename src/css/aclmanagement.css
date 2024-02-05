@@ -36,7 +36,7 @@
 }
 
 .acl-management-view .acl-rules .index-column {
-    width: 4ch;
+    width: 5ch;
 }
 
 .acl-management-view .acl-rules .reorder-column {
@@ -44,7 +44,6 @@
 }
 
 .acl-management-view .acl-rules .index-cell {
-    padding: 0.8rem;
     text-align: center;
 }
 
@@ -244,7 +243,7 @@ tr.acl-rule.edit-rule-row .form-control:not(.select-rule){
     z-index: 1000;
 }
 
-input.ng-invalid.ng-touched, select.ng-invalid.ng-touched, textarea.ng-invalid.ng-touched, form.ng-submitted .ng-invalid {
+input.ng-invalid.ng-touched, select.ng-invalid.ng-touched, textarea.ng-invalid.ng-touched, form.ng-submitted .ng-invalid, .autocomplete-editable.invalid {
     border: 2px solid #FA787E;
 }
 
@@ -256,7 +255,7 @@ table td {
     background-color: var(--color-warning-light) !important;
 }
 
-.resource-tab .nav-link > span,
-.resource-tab .nav-link > i {
+.nav-item .nav-link > span,
+.nav-item .nav-link > i {
     vertical-align: middle;
 }

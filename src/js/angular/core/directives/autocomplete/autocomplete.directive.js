@@ -21,13 +21,16 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
             defaultresults: '=',
             onModelChange: '&',
             keypress: '&',
-            required: '=?'
+            required: '=?',
+            validateUri: '=?',
+            validateLiteralValue: '=?',
+            validateDefaultValue: '=?'
         },
         templateUrl: 'js/angular/core/directives/autocomplete/templates/autocomplete.html',
         link: linkFunction
     };
 
-    function linkFunction($scope, element, attrs) {
+    function linkFunction($scope, element, attrs, ngModel) {
 
         //
         // Private variables
@@ -206,7 +209,7 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
                     return;
                 }
 
-                const autocompleteInputRect = dropdownElement.prevObject[0].getElementsByClassName('autocomplete-select')[0].getBoundingClientRect();
+                const autocompleteInputRect = dropdownElement.parent().find('.autocomplete-select')[0].getBoundingClientRect();
                 const rowRect = document.body.getElementsByClassName('edit-rule-row')[0].getBoundingClientRect();
                 const bodyRect = document.body.getBoundingClientRect();
                 const dropdownRect = dropdown.getBoundingClientRect();
@@ -226,6 +229,30 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
             const shouldReset = !results || results && results.length === 0;
             $scope.positionAutocompleteWrapper(shouldReset);
         });
+
+        //
+        // Validators
+        //
+        ngModel.$validators.custom = function(modelValue) {
+            if (!$scope.validateUri && !$scope.validateLiteralValue && !$scope.validateDefaultValue) {
+                return true;
+            }
+
+            if ($scope.validateUri && validateRdfUri(modelValue)) {
+                element.find('.autocomplete-editable').removeClass('invalid');
+                return true;
+            }
+            if ($scope.validateLiteralValue && validateLiteral(modelValue)) {
+                element.find('.autocomplete-editable').removeClass('invalid');
+                return true;
+            }
+            if ($scope.validateDefaultValue && validateDefault(modelValue)) {
+                element.find('.autocomplete-editable').removeClass('invalid');
+                return true;
+            }
+            element.find('.autocomplete-editable').addClass('invalid');
+            return false;
+        };
 
         //
         // Private methods
@@ -267,6 +294,15 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
                 }
             }
             return str;
+        };
+
+        const validateDefault = (value) => {
+            return $scope.defaultresults.some((element) => element === value);
+        };
+
+        const validateLiteral = (value) => {
+            const rdfLiteralRegex = /^"([^"\\]*(?:\\.[^"\\]*)*)"(@[a-zA-Z]+(-[a-zA-Z0-9]+)*)?(\^\^[^\s]+)?$/;
+            return rdfLiteralRegex.test(value);
         };
 
         const clearInput = () => {
