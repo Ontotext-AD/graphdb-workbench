@@ -3,7 +3,7 @@ import 'angular/rest/aclmanagement.rest.service';
 import {mapAclRulesResponse} from "../rest/mappers/aclmanagement-mapper";
 import {isEqual} from 'lodash';
 import {mapNamespacesResponse} from "../rest/mappers/namespaces-mapper";
-import {ACL_SCOPE, DEFAULT_CONTEXT_VALUES, DEFAULT_URI_VALUES} from "./model";
+import {ACL_SCOPE, DEFAULT_CONTEXT_VALUES, DEFAULT_URI_VALUES, DEFAULT_CLEAR_GRAPH_CONTEXT_VALUES} from "./model";
 
 const modules = [
     'graphdb.framework.rest.plugins.service',
@@ -127,6 +127,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
      * @type {string[]}
      */
     $scope.DEFAULT_CONTEXT_VALUES = DEFAULT_CONTEXT_VALUES;
+    $scope.DEFAULT_CLEAR_GRAPH_CONTEXT_VALUES = DEFAULT_CLEAR_GRAPH_CONTEXT_VALUES;
 
     /**
      * The default URI values for the scope.

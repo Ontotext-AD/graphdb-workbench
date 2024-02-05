@@ -23,6 +23,7 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
             keypress: '&',
             required: '=?',
             validateUri: '=?',
+            validateSimpleRdfStarValue: '=?',
             validateLiteralValue: '=?',
             validateDefaultValue: '=?'
         },
@@ -242,6 +243,10 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
                 element.find('.autocomplete-editable').removeClass('invalid');
                 return true;
             }
+            if ($scope.validateSimpleRdfStarValue && validateSimpleRdfStar(modelValue)) {
+                element.find('.autocomplete-editable').removeClass('invalid');
+                return true;
+            }
             if ($scope.validateLiteralValue && validateLiteral(modelValue)) {
                 element.find('.autocomplete-editable').removeClass('invalid');
                 return true;
@@ -296,8 +301,22 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
             return str;
         };
 
+
+        /**
+         * Validates if the given value is a RDF* (RDF Star) statement.
+         * This function checks whether the value strictly starts with '<<' and ends with '>>',
+         * indicating a basic RDF* pattern. It does not validate the internal structure of the RDF* statement.
+         *
+         * @param {string} value - The string value to be validated as a simple RDF* statement.
+         * @return {boolean} Returns `true` if the value matches the simple RDF* pattern, otherwise `false`.
+         */
+        const validateSimpleRdfStar = (value) => {
+            const rdfStarWrapper = /^<<.*>>$/;
+            return rdfStarWrapper.test(value);
+        };
+
         const validateDefault = (value) => {
-            return $scope.defaultresults.some((element) => element === value);
+            return $scope.defaultresults.some((element) => element.value === value);
         };
 
         const validateLiteral = (value) => {
@@ -460,12 +479,12 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
 
         const filterAndCombineDefaultResults = (defaultResults, currentInput, backendSuggestions) => {
             // Filter default words based on current input
-            const filteredDefaultResults = defaultResults.filter((word) =>
-                word && word.toLowerCase().includes(currentInput.toLowerCase())
-            ).map((word) => ({
-                type: 'default',
-                value: word,
-                description: highlightMatch(word, currentInput)
+            const filteredDefaultResults = defaultResults.filter((result) =>
+                result && result.value.toLowerCase().includes(currentInput.toLowerCase())
+            ).map((result) => ({
+                type: result.type,
+                value: result.value,
+                description: highlightMatch($translate.instant(result.description), currentInput)
             }));
 
             // Concatenate filtered default words with backend suggestions
