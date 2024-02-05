@@ -270,12 +270,15 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
 
     /**
      * Function to switch between tabs in the user interface.
+     * If scope is dirty, the event is prevented.
      *
+     * @param {jQuery.Event} event
      * @param {string} scope
      */
-    $scope.switchTab = (scope) => {
+    $scope.switchTab = (event, scope) => {
         if ($scope.editedRuleIndex !== undefined) {
-            $scope.cancelEditing($scope.activeTabScope, $scope.editedRuleIndex);
+            event.preventDefault();
+            return;
         }
         $scope.activeTabScope = scope;
         $scope.ruleKeys = $scope.rulesModel.getRuleKeysByScope($scope.activeTabScope);

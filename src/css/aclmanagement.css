@@ -44,7 +44,7 @@
 }
 
 .acl-management-view .acl-rules .index-cell {
-    padding: 0;
+    padding: 0.8rem;
     text-align: center;
 }
 
@@ -206,9 +206,8 @@ input::placeholder {
     position: relative;
 }
 
-.dirty-scope {
-    position: absolute;
-    left: 0.4em;
+.nav-link.disabled {
+    cursor: not-allowed;
 }
 
 .reorder-cell {
@@ -243,4 +242,21 @@ tr.acl-rule.edit-rule-row .form-control:not(.select-rule){
 
 .autocomplete-results-wrapper {
     z-index: 1000;
+}
+
+input.ng-invalid.ng-touched, select.ng-invalid.ng-touched, textarea.ng-invalid.ng-touched, form.ng-submitted .ng-invalid {
+    border: 2px solid #FA787E;
+}
+
+table td {
+    vertical-align: top !important;
+}
+
+.table-info, .table-info > td, .table-info > th {
+    background-color: var(--color-warning-light) !important;
+}
+
+.resource-tab .nav-link > span,
+.resource-tab .nav-link > i {
+    vertical-align: middle;
 }
