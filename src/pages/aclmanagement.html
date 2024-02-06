@@ -24,22 +24,22 @@
             </div>
             <ul class="nav nav-tabs acl-tabs">
                 <li class="statement-tab nav-item">
-                    <span class="nav-link"
+                    <a href="#" class="nav-link"
                           ng-click="switchTab($event, ACL_SCOPE.STATEMENT)"
-                          ng-class="{'active': activeTabScope === ACL_SCOPE.STATEMENT, 'disabled': editedRuleIndex !== undefined}"><span>{{'acl_management.rulestable.tab.statement' | translate}}</span><i class="text-primary icon-exclamation" ng-if="dirtyScope.has(ACL_SCOPE.STATEMENT)"></i></span>
+                          ng-class="{'active': activeTabScope === ACL_SCOPE.STATEMENT, 'disabled': editedRuleIndex !== undefined}"><span>{{'acl_management.rulestable.tab.statement' | translate}}</span><i class="text-primary icon-exclamation" ng-if="dirtyScope.has(ACL_SCOPE.STATEMENT)"></i></a>
                 </li>
                 <li class="clear-graph-tab nav-item">
-                    <span class="nav-link"
+                    <a href="#" class="nav-link"
                           ng-click="switchTab($event, ACL_SCOPE.CLEAR_GRAPH)"
-                          ng-class="{'active': activeTabScope === ACL_SCOPE.CLEAR_GRAPH, 'disabled': editedRuleIndex !== undefined}"><span>{{'acl_management.rulestable.tab.clear_graph' | translate}}</span><i class="text-primary icon-exclamation" ng-if="dirtyScope.has(ACL_SCOPE.CLEAR_GRAPH)"></i></span>
+                          ng-class="{'active': activeTabScope === ACL_SCOPE.CLEAR_GRAPH, 'disabled': editedRuleIndex !== undefined}"><span>{{'acl_management.rulestable.tab.clear_graph' | translate}}</span><i class="text-primary icon-exclamation" ng-if="dirtyScope.has(ACL_SCOPE.CLEAR_GRAPH)"></i></a>
                 </li>
                 <li class="plugin-tab nav-item">
-                    <span class="nav-link" ng-click="switchTab($event, ACL_SCOPE.PLUGIN)"
-                          ng-class="{'active': activeTabScope === ACL_SCOPE.PLUGIN, 'disabled': editedRuleIndex !== undefined}"><span>{{'acl_management.rulestable.tab.plugin' | translate}}</span><i class="text-primary icon-exclamation" ng-if="dirtyScope.has(ACL_SCOPE.PLUGIN)"></i></span>
+                    <a href="#" class="nav-link" ng-click="switchTab($event, ACL_SCOPE.PLUGIN)"
+                          ng-class="{'active': activeTabScope === ACL_SCOPE.PLUGIN, 'disabled': editedRuleIndex !== undefined}"><span>{{'acl_management.rulestable.tab.plugin' | translate}}</span><i class="text-primary icon-exclamation" ng-if="dirtyScope.has(ACL_SCOPE.PLUGIN)"></i></a>
                 </li>
                 <li class="system-tab nav-item">
-                    <span class="nav-link" ng-click="switchTab($event, ACL_SCOPE.SYSTEM)"
-                          ng-class="{'active': activeTabScope === ACL_SCOPE.SYSTEM, 'disabled': editedRuleIndex !== undefined}"><span>{{'acl_management.rulestable.tab.system' | translate}}</span><i class="text-primary icon-exclamation" ng-if="dirtyScope.has(ACL_SCOPE.SYSTEM)"></i></span>
+                    <a href="#" class="nav-link" ng-click="switchTab($event, ACL_SCOPE.SYSTEM)"
+                          ng-class="{'active': activeTabScope === ACL_SCOPE.SYSTEM, 'disabled': editedRuleIndex !== undefined}"><span>{{'acl_management.rulestable.tab.system' | translate}}</span><i class="text-primary icon-exclamation" ng-if="dirtyScope.has(ACL_SCOPE.SYSTEM)"></i></a>
                 </li>
             </ul>
             <div ng-if="loading" onto-loader-new size="100" style="height: 75vh; display: flex;"></div>

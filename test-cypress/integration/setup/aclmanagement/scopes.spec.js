@@ -60,7 +60,7 @@ describe('ACL Management: rule scopes', () => {
         // I fill in the role field
         AclManagementSteps.fillRole(0, 'ROLE1');
         // I fill in the context field
-        AclManagementSteps.fillContext(0, '*');
+        AclManagementSteps.fillContext(0, 'all');
         // I save the rule
         AclManagementSteps.saveRule(0);
         // Then the tab label is changed
@@ -138,7 +138,7 @@ describe('ACL Management: rule scopes', () => {
                     "scope": "clear_graph",
                     "policy": "deny",
                     "role": "CUSTOM_ROLE1",
-                    "context": "*"
+                    "context": "all"
                 },
                 {
                     "scope": "plugin",
@@ -196,7 +196,7 @@ describe('ACL Management: rule scopes', () => {
             "scope": "clear_graph",
             "policy": "deny",
             "role": "ROLE1",
-            "context": "*"
+            "context": "all"
         };
         AclManagementSteps.checkClearGraphRules([expectedClearGraphRule]);
 
