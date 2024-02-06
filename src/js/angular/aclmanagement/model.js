@@ -499,6 +499,11 @@ export const DEFAULT_CONTEXT_VALUES = [
 export const DEFAULT_CLEAR_GRAPH_CONTEXT_VALUES = [
     {
         type: 'default',
+        value: "*",
+        description: "acl_management.defaults.asterisk"
+    },
+    {
+        type: 'default',
         value: "all",
         description: "acl_management.defaults.all"
     },
