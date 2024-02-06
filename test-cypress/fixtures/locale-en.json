@@ -182,7 +182,7 @@
                 "cancel_acl_saving": "Cancel"
             },
             "messages": {
-                "no_data": "There are no rules defined in current repository",
+                "no_data": "There are no rules defined in current scope",
                 "invalid_form": "Fill in valid data in all fields before saving rule",
                 "delete_rule_confirmation": "Are you sure you want to delete the selected rule #{{index}}?",
                 "revert_acl_list": "This operation will revert all the changes done in the ACL. Are you sure you want to proceed?",
@@ -196,6 +196,12 @@
             "loading_rules": "Error during ACL rules",
             "updating_rules": "Error during ACL rules update",
             "duplicated_rules": "Every ACL rule should be unique."
+        },
+        "defaults": {
+            "asterisk": "* - Any RDF value",
+            "default": "default - The default graph",
+            "named": "named - Any named graph",
+            "all": "all - CLEAR ALL graphs"
         }
     },
     "config.name.label": "Config name",

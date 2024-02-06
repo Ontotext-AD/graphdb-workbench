@@ -23,23 +23,29 @@
                 </button>
             </div>
             <ul class="nav nav-tabs acl-tabs">
-                <li class="resource-tab nav-item">
-                    <span class="nav-link" ng-click="switchTab(ACL_SCOPE.STATEMENT)" ng-class="activeTabScope === ACL_SCOPE.STATEMENT ? 'active':''"><span class="dirty-scope text-primary" ng-if="dirtyScope.has(ACL_SCOPE.STATEMENT)">*</span>{{'acl_management.rulestable.tab.statement' | translate}}</span>
+                <li class="statement-tab nav-item">
+                    <a href="#" class="nav-link"
+                          ng-click="switchTab($event, ACL_SCOPE.STATEMENT)"
+                          ng-class="{'active': activeTabScope === ACL_SCOPE.STATEMENT, 'disabled': editedRuleIndex !== undefined}"><span>{{'acl_management.rulestable.tab.statement' | translate}}</span><i class="text-primary icon-exclamation" ng-if="dirtyScope.has(ACL_SCOPE.STATEMENT)"></i></a>
                 </li>
-                <li class="performance-tab nav-item">
-                    <span class="nav-link" ng-click="switchTab(ACL_SCOPE.CLEAR_GRAPH)" ng-class="activeTabScope === ACL_SCOPE.CLEAR_GRAPH ? 'active':''"><span class="dirty-scope text-primary" ng-if="dirtyScope.has(ACL_SCOPE.CLEAR_GRAPH)">*</span>{{'acl_management.rulestable.tab.clear_graph' | translate}}</span>
+                <li class="clear-graph-tab nav-item">
+                    <a href="#" class="nav-link"
+                          ng-click="switchTab($event, ACL_SCOPE.CLEAR_GRAPH)"
+                          ng-class="{'active': activeTabScope === ACL_SCOPE.CLEAR_GRAPH, 'disabled': editedRuleIndex !== undefined}"><span>{{'acl_management.rulestable.tab.clear_graph' | translate}}</span><i class="text-primary icon-exclamation" ng-if="dirtyScope.has(ACL_SCOPE.CLEAR_GRAPH)"></i></a>
                 </li>
-                <li class="cluster-tab nav-item">
-                    <span class="nav-link" ng-click="switchTab(ACL_SCOPE.PLUGIN)" ng-class="activeTabScope === ACL_SCOPE.PLUGIN ? 'active':''"><span class="dirty-scope text-primary" ng-if="dirtyScope.has(ACL_SCOPE.PLUGIN)">*</span>{{'acl_management.rulestable.tab.plugin' | translate}}</span>
+                <li class="plugin-tab nav-item">
+                    <a href="#" class="nav-link" ng-click="switchTab($event, ACL_SCOPE.PLUGIN)"
+                          ng-class="{'active': activeTabScope === ACL_SCOPE.PLUGIN, 'disabled': editedRuleIndex !== undefined}"><span>{{'acl_management.rulestable.tab.plugin' | translate}}</span><i class="text-primary icon-exclamation" ng-if="dirtyScope.has(ACL_SCOPE.PLUGIN)"></i></a>
                 </li>
-                <li class="cluster-tab nav-item">
-                    <span class="nav-link" ng-click="switchTab(ACL_SCOPE.SYSTEM)" ng-class="activeTabScope === ACL_SCOPE.SYSTEM ? 'active':''"><span class="dirty-scope text-primary" ng-if="dirtyScope.has(ACL_SCOPE.SYSTEM)">*</span>{{'acl_management.rulestable.tab.system' | translate}}</span>
+                <li class="system-tab nav-item">
+                    <a href="#" class="nav-link" ng-click="switchTab($event, ACL_SCOPE.SYSTEM)"
+                          ng-class="{'active': activeTabScope === ACL_SCOPE.SYSTEM, 'disabled': editedRuleIndex !== undefined}"><span>{{'acl_management.rulestable.tab.system' | translate}}</span><i class="text-primary icon-exclamation" ng-if="dirtyScope.has(ACL_SCOPE.SYSTEM)"></i></a>
                 </li>
             </ul>
             <div ng-if="loading" onto-loader-new size="100" style="height: 75vh; display: flex;"></div>
 
-            <div ng-if="!loading" class="acl-scope-tabs">
-                <div class="tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.STATEMENT" id="statementTab">
+            <div ng-if="!loading" class="acl-scope-tabs" ng-class="isEditMode() ? 'edit-mode': 'preview-mode'">
+                <div class="table-responsive tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.STATEMENT" id="statementTab">
                     <form name="ruleData" novalidate ng-if="rulesModel.getRulesByScope(activeTabScope) && !loading">
                         <table class="acl-rules table table-striped table-hover" aria-describedby="ACL rules table">
                             <thead>
@@ -171,6 +177,9 @@
                                                       autoexpand="true"
                                                       defaultresults="DEFAULT_URI_VALUES"
                                                       required="true"
+                                                      validate-uri="true"
+                                                      validate-default-value="true"
+                                                      validate-simple-rdf-star-value="true"
                                                       style-class="form-control form-control-sm"
                                                       namespaces="namespaces"
                                                       autocomplete-status-loader="getAutocompletePromise"
@@ -184,6 +193,9 @@
                                                       autoexpand="true"
                                                       defaultresults="DEFAULT_URI_VALUES"
                                                       required="true"
+                                                      validate-uri="true"
+                                                      validate-default-value="true"
+                                                      validate-simple-rdf-star-value="true"
                                                       style-class="form-control form-control-sm"
                                                       namespaces="namespaces"
                                                       autocomplete-status-loader="getAutocompletePromise"
@@ -197,6 +209,9 @@
                                                       autoexpand="true"
                                                       defaultresults="DEFAULT_URI_VALUES"
                                                       required="true"
+                                                      validate-uri="true"
+                                                      validate-default-value="true"
+                                                      validate-literal-value="true"
                                                       style-class="form-control form-control-sm"
                                                       namespaces="namespaces"
                                                       autocomplete-status-loader="getAutocompletePromise"
@@ -210,6 +225,8 @@
                                                       autoexpand="true"
                                                       defaultresults="DEFAULT_CONTEXT_VALUES"
                                                       required="true"
+                                                      validate-uri="true"
+                                                      validate-default-value="true"
                                                       style-class="form-control form-control-sm"
                                                       namespaces="namespaces"
                                                       autocomplete-status-loader="getAutocompletePromise"
@@ -219,7 +236,7 @@
                                     <td class="actions-cell">
                                         <div class="crud-actions-group">
                                             <button ng-click="cancelEditing(activeTabScope, $index)"
-                                                    class="btn btn-link cancel-rule-editing-btn"
+                                                    class="btn btn-link cancel-rule-editing-btn secondary"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
                                                 <em class="icon-close"></em>
                                             </button>
@@ -237,7 +254,7 @@
                         </table>
                     </form>
                 </div>
-                <div class="tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.CLEAR_GRAPH" id="graphTab">
+                <div class="table-responsive tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.CLEAR_GRAPH" id="graphTab">
                     <form name="ruleData" novalidate ng-if="rulesModel && !loading">
                         <table class="acl-rules table table-striped table-hover" aria-describedby="ACL rules table">
                             <thead>
@@ -261,7 +278,7 @@
                             </thead>
                             <tbody>
                                 <tr ng-if="!rulesModel.size(activeTabScope)">
-                                    <td colspan="6" class="no-data">
+                                    <td colspan="7" class="no-data">
                                         {{'acl_management.rulestable.messages.no_data' | translate}}
                                     </td>
                                 </tr>
@@ -342,8 +359,10 @@
                                                       keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
                                                       multiline="true"
                                                       autoexpand="true"
-                                                      defaultresults="DEFAULT_CONTEXT_VALUES"
+                                                      defaultresults="DEFAULT_CLEAR_GRAPH_CONTEXT_VALUES"
                                                       required="true"
+                                                      validate-uri="true"
+                                                      validate-default-value="true"
                                                       style-class="form-control form-control-sm"
                                                       namespaces="namespaces"
                                                       autocomplete-status-loader="getAutocompletePromise"
@@ -354,7 +373,7 @@
                                     <td class="actions-cell">
                                         <div class="crud-actions-group">
                                             <button ng-click="cancelEditing(activeTabScope, $index)"
-                                                    class="btn btn-link cancel-rule-editing-btn"
+                                                    class="btn btn-link cancel-rule-editing-btn secondary"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
                                                 <em class="icon-close"></em>
                                             </button>
@@ -372,7 +391,7 @@
                         </table>
                     </form>
                 </div>
-                <div class="tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.PLUGIN" id="pluginTab">
+                <div class="table-responsive tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.PLUGIN" id="pluginTab">
                     <form name="ruleData" novalidate ng-if="rulesModel && !loading">
                         <table class="acl-rules table table-striped table-hover" aria-describedby="ACL rules table">
                             <thead>
@@ -399,7 +418,7 @@
                             </thead>
                             <tbody>
                                 <tr ng-if="!rulesModel.size(activeTabScope)">
-                                    <td colspan="7" class="no-data">
+                                    <td colspan="8" class="no-data">
                                         {{'acl_management.rulestable.messages.no_data' | translate}}
                                     </td>
                                 </tr>
@@ -504,7 +523,7 @@
                                     <td class="actions-cell">
                                         <div class="crud-actions-group">
                                             <button ng-click="cancelEditing(activeTabScope, $index)"
-                                                    class="btn btn-link cancel-rule-editing-btn"
+                                                    class="btn btn-link cancel-rule-editing-btn secondary"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
                                                 <em class="icon-close"></em>
                                             </button>
@@ -522,7 +541,7 @@
                         </table>
                     </form>
                 </div>
-                <div class="tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.SYSTEM" id="systemTab">
+                <div class="table-responsive tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.SYSTEM" id="systemTab">
                     <form name="ruleData" novalidate ng-if="rulesModel && !loading">
                         <table class="acl-rules table table-striped table-hover" aria-describedby="ACL rules table">
                             <thead>
@@ -636,7 +655,7 @@
                                     <td class="actions-cell">
                                         <div class="crud-actions-group">
                                             <button ng-click="cancelEditing(activeTabScope, $index)"
-                                                    class="btn btn-link cancel-rule-editing-btn"
+                                                    class="btn btn-link cancel-rule-editing-btn secondary"
                                                     gdb-tooltip="{{'acl_management.rulestable.actions.cancel_rule_editing' | translate}}">
                                                 <em class="icon-close"></em>
                                             </button>
@@ -656,7 +675,7 @@
                 </div>
             </div>
         </div>
-        <div ng-if="editedRuleIndex === undefined && rulesModel && modelIsDirty && dirtyScope.size > 0" class="acl-actions text-right">
+        <div ng-if="isEditMode()" class="acl-actions text-right">
             <span class="message">{{'acl_management.rulestable.messages.save_acl_to_apply_rules' | translate}}</span>
             <button class="btn btn-secondary cancel-acl-save-btn"
                     ng-click="cancelAclSave()">
