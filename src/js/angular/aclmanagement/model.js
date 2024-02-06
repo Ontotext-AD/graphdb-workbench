@@ -479,5 +479,50 @@ export const ACL_SCOPE = {
     SYSTEM: 'system'
 };
 
-export const DEFAULT_CONTEXT_VALUES = ["*", "default", "named"];
-export const DEFAULT_URI_VALUES = ["*"];
+export const DEFAULT_CONTEXT_VALUES = [
+    {
+        type: 'default',
+        value: "*",
+        description: "acl_management.defaults.asterisk"
+    },
+    {
+        type: 'default',
+        value: "default",
+        description: "acl_management.defaults.default"
+    },
+    {
+        type: 'default',
+        value: "named",
+        description: "acl_management.defaults.named"
+    }
+];
+export const DEFAULT_CLEAR_GRAPH_CONTEXT_VALUES = [
+    {
+        type: 'default',
+        value: "*",
+        description: "acl_management.defaults.asterisk"
+    },
+    {
+        type: 'default',
+        value: "all",
+        description: "acl_management.defaults.all"
+    },
+    {
+        type: 'default',
+        value: "default",
+        description: "acl_management.defaults.default"
+    },
+    {
+        type: 'default',
+        value: "named",
+        description: "acl_management.defaults.named"
+    }
+];
+export const DEFAULT_URI_VALUES = [
+    {
+        type: 'default',
+        value: "*",
+        description: "acl_management.defaults.asterisk"
+    }
+];
+
