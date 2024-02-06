@@ -205,7 +205,7 @@ input::placeholder {
     position: relative;
 }
 
-.nav-link.disabled {
+.nav-link.disabled:not(.active) {
     cursor: not-allowed;
     background-color: #eee!important;
 }
