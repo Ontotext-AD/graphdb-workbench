@@ -207,6 +207,7 @@ input::placeholder {
 
 .nav-link.disabled {
     cursor: not-allowed;
+    background-color: #eee!important;
 }
 
 .reorder-cell {
