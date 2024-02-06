@@ -1,10 +1,22 @@
-.acl-management-view .acl-rules {
-    table-layout: fixed;
+html, body {
+    height: 100%;
+}
+
+.page-content,
+.page-content .container-fluid {
+    height: calc(100% - 70px);
+    padding-bottom: 1rem !important;
+}
+
+.acl-management-view,
+.acl-management-view .acl-management-container,
+.acl-management-view .acl-management-container .acl-scope-tabs {
+    height: 100%;
 }
 
 .acl-management-view .acl-actions {
     position: sticky;
-    bottom: 20px;
+    bottom: 35px;
     padding: .5em;
     /* opaque version of the color-warning-light */
     background-color: #F8F0EE;
@@ -12,6 +24,19 @@
 
 .acl-management-view .acl-actions .message {
     margin-right: 1em;
+}
+
+.acl-management-view .edit-mode .table-responsive {
+    max-height: 88%;
+}
+
+.acl-management-view .preview-mode .table-responsive {
+    max-height: 95%;
+}
+
+.acl-management-view .acl-rules {
+    table-layout: fixed;
+    margin-bottom: 40px;
 }
 
 .acl-management-view .acl-rules .labels-row th {

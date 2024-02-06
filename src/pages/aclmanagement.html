@@ -44,8 +44,8 @@
             </ul>
             <div ng-if="loading" onto-loader-new size="100" style="height: 75vh; display: flex;"></div>
 
-            <div ng-if="!loading" class="acl-scope-tabs">
-                <div class="tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.STATEMENT" id="statementTab">
+            <div ng-if="!loading" class="acl-scope-tabs" ng-class="isEditMode() ? 'edit-mode': 'preview-mode'">
+                <div class="table-responsive tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.STATEMENT" id="statementTab">
                     <form name="ruleData" novalidate ng-if="rulesModel.getRulesByScope(activeTabScope) && !loading">
                         <table class="acl-rules table table-striped table-hover" aria-describedby="ACL rules table">
                             <thead>
@@ -254,7 +254,7 @@
                         </table>
                     </form>
                 </div>
-                <div class="tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.CLEAR_GRAPH" id="graphTab">
+                <div class="table-responsive tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.CLEAR_GRAPH" id="graphTab">
                     <form name="ruleData" novalidate ng-if="rulesModel && !loading">
                         <table class="acl-rules table table-striped table-hover" aria-describedby="ACL rules table">
                             <thead>
@@ -391,7 +391,7 @@
                         </table>
                     </form>
                 </div>
-                <div class="tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.PLUGIN" id="pluginTab">
+                <div class="table-responsive tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.PLUGIN" id="pluginTab">
                     <form name="ruleData" novalidate ng-if="rulesModel && !loading">
                         <table class="acl-rules table table-striped table-hover" aria-describedby="ACL rules table">
                             <thead>
@@ -541,7 +541,7 @@
                         </table>
                     </form>
                 </div>
-                <div class="tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.SYSTEM" id="systemTab">
+                <div class="table-responsive tab-pane fade in" ng-if="activeTabScope === ACL_SCOPE.SYSTEM" id="systemTab">
                     <form name="ruleData" novalidate ng-if="rulesModel && !loading">
                         <table class="acl-rules table table-striped table-hover" aria-describedby="ACL rules table">
                             <thead>
@@ -675,7 +675,7 @@
                 </div>
             </div>
         </div>
-        <div ng-if="editedRuleIndex === undefined && rulesModel && modelIsDirty && dirtyScope.size > 0" class="acl-actions text-right">
+        <div ng-if="isEditMode()" class="acl-actions text-right">
             <span class="message">{{'acl_management.rulestable.messages.save_acl_to_apply_rules' | translate}}</span>
             <button class="btn btn-secondary cancel-acl-save-btn"
                     ng-click="cancelAclSave()">

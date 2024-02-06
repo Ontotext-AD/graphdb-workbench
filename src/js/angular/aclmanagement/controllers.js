@@ -142,6 +142,10 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
     // Public functions
     //
 
+    $scope.isEditMode = () => {
+        return $scope.editedRuleIndex === undefined && $scope.rulesModel && $scope.modelIsDirty && $scope.dirtyScope.size > 0;
+    };
+
     /**
      * Adds a new rule at a given index in the rulesModel.
      * @param {string} scope
