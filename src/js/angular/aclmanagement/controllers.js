@@ -3,7 +3,7 @@ import 'angular/rest/aclmanagement.rest.service';
 import {mapAclRulesResponse} from "../rest/mappers/aclmanagement-mapper";
 import {isEqual} from 'lodash';
 import {mapNamespacesResponse} from "../rest/mappers/namespaces-mapper";
-import {ACL_SCOPE, DEFAULT_CONTEXT_VALUES, DEFAULT_URI_VALUES} from "./model";
+import {ACL_SCOPE, DEFAULT_CONTEXT_VALUES, DEFAULT_URI_VALUES, DEFAULT_CLEAR_GRAPH_CONTEXT_VALUES} from "./model";
 
 const modules = [
     'graphdb.framework.rest.plugins.service',
@@ -127,6 +127,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
      * @type {string[]}
      */
     $scope.DEFAULT_CONTEXT_VALUES = DEFAULT_CONTEXT_VALUES;
+    $scope.DEFAULT_CLEAR_GRAPH_CONTEXT_VALUES = DEFAULT_CLEAR_GRAPH_CONTEXT_VALUES;
 
     /**
      * The default URI values for the scope.
@@ -140,6 +141,10 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
     //
     // Public functions
     //
+
+    $scope.isEditMode = () => {
+        return $scope.editedRuleIndex === undefined && $scope.rulesModel && $scope.modelIsDirty && $scope.dirtyScope.size > 0;
+    };
 
     /**
      * Adds a new rule at a given index in the rulesModel.
@@ -270,12 +275,15 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
 
     /**
      * Function to switch between tabs in the user interface.
+     * If scope is dirty, the event is prevented.
      *
+     * @param {jQuery.Event} event
      * @param {string} scope
      */
-    $scope.switchTab = (scope) => {
+    $scope.switchTab = (event, scope) => {
         if ($scope.editedRuleIndex !== undefined) {
-            $scope.cancelEditing($scope.activeTabScope, $scope.editedRuleIndex);
+            event.preventDefault();
+            return;
         }
         $scope.activeTabScope = scope;
         $scope.ruleKeys = $scope.rulesModel.getRuleKeysByScope($scope.activeTabScope);

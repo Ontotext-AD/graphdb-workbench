@@ -442,6 +442,9 @@
 .icon-follower:before {
     content: "\e962";
 }
+.icon-exclamation:before {
+    content: "\e955";
+}
 /*
 [class^="icon-"]:before, [class*=" icon-"]:before {
 	display: inline-block;

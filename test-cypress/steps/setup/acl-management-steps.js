@@ -69,6 +69,10 @@ export class AclManagementSteps {
         return this.getAclTabs().eq(index).click();
     }
 
+    static getActiveTabDirtyIcon() {
+        return this.getActiveTab().find('.icon-exclamation');
+    }
+
     static addRuleInBeginning() {
         this.getAddFirstRuleButton().click();
     }
@@ -122,7 +126,7 @@ export class AclManagementSteps {
     }
 
     static fillSubject(index, value) {
-        this.getSubjectField(index).clear().type(value);
+        this.getSubjectField(index).clear({force: true}).scrollIntoView().type(value);
     }
 
     static getPredicateField(index) {
@@ -130,7 +134,7 @@ export class AclManagementSteps {
     }
 
     static fillPredicate(index, value) {
-        this.getPredicateField(index).clear().type(value);
+        this.getPredicateField(index).clear({force: true}).scrollIntoView().type(value);
     }
 
     static getObjectField(index) {
@@ -138,7 +142,7 @@ export class AclManagementSteps {
     }
 
     static fillObject(index, value) {
-        this.getObjectField(index).clear().type(value);
+        this.getObjectField(index).clear({force: true}).scrollIntoView().type(value);
     }
 
     static getContextField(index) {
@@ -146,7 +150,7 @@ export class AclManagementSteps {
     }
 
     static fillContext(index, value) {
-        this.getContextField(index).clear().type(value);
+        this.getContextField(index).clear({force: true}).scrollIntoView().type(value);
     }
 
     static getRoleField(index) {

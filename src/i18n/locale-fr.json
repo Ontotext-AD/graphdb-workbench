@@ -182,7 +182,7 @@
                 "cancel_acl_saving": "Annuler"
             },
             "messages": {
-                "no_data": "Aucune règle n'est définie dans le référentiel actuel",
+                "no_data": "Aucune règle n'est définie dans le champ d'application actuel",
                 "invalid_form": "Remplissez des données valides dans tous les champs avant d'enregistrer la règle",
                 "delete_rule_confirmation": "Êtes-vous sûr de vouloir supprimer la règle sélectionnée #{{index}}?",
                 "revert_acl_list": "Cette opération annulera toutes les modifications apportées à l'ACL. Êtes-vous sur de vouloir continuer?",
@@ -196,6 +196,12 @@
             "loading_rules": "Erreur lors du chargement des règles ACL",
             "updating_rules": "Erreur lors de la mise à jour des règles ACL",
             "duplicated_rules": "Chaque règle ACL doit être unique."
+        },
+        "defaults": {
+            "asterisk": "* - Toute valeur RDF",
+            "default": "default - Le graphique par défaut",
+            "named": "named - Tout graphe nommé",
+            "all": "all - EFFACER TOUS les graphiques"
         }
     },
     "config.name.label": "Nom de configuration",

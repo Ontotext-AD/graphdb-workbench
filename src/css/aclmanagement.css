@@ -1,10 +1,22 @@
-.acl-management-view .acl-rules {
-    table-layout: fixed;
+html, body {
+    height: 100%;
+}
+
+.page-content,
+.page-content .container-fluid {
+    height: calc(100% - 70px);
+    padding-bottom: 1rem !important;
+}
+
+.acl-management-view,
+.acl-management-view .acl-management-container,
+.acl-management-view .acl-management-container .acl-scope-tabs {
+    height: 100%;
 }
 
 .acl-management-view .acl-actions {
     position: sticky;
-    bottom: 20px;
+    bottom: 35px;
     padding: .5em;
     /* opaque version of the color-warning-light */
     background-color: #F8F0EE;
@@ -12,6 +24,19 @@
 
 .acl-management-view .acl-actions .message {
     margin-right: 1em;
+}
+
+.acl-management-view .edit-mode .table-responsive {
+    max-height: 88%;
+}
+
+.acl-management-view .preview-mode .table-responsive {
+    max-height: 95%;
+}
+
+.acl-management-view .acl-rules {
+    table-layout: fixed;
+    margin-bottom: 40px;
 }
 
 .acl-management-view .acl-rules .labels-row th {
@@ -36,7 +61,7 @@
 }
 
 .acl-management-view .acl-rules .index-column {
-    width: 4ch;
+    width: 5ch;
 }
 
 .acl-management-view .acl-rules .reorder-column {
@@ -44,7 +69,6 @@
 }
 
 .acl-management-view .acl-rules .index-cell {
-    padding: 0;
     text-align: center;
 }
 
@@ -206,9 +230,9 @@ input::placeholder {
     position: relative;
 }
 
-.dirty-scope {
-    position: absolute;
-    left: 0.4em;
+.nav-link.disabled:not(.active) {
+    cursor: not-allowed;
+    background-color: #eee!important;
 }
 
 .reorder-cell {
@@ -243,4 +267,21 @@ tr.acl-rule.edit-rule-row .form-control:not(.select-rule){
 
 .autocomplete-results-wrapper {
     z-index: 1000;
+}
+
+input.ng-invalid.ng-touched, select.ng-invalid.ng-touched, textarea.ng-invalid.ng-touched, form.ng-submitted .ng-invalid, .autocomplete-editable.invalid {
+    border: 2px solid #FA787E;
+}
+
+table td {
+    vertical-align: top !important;
+}
+
+.table-info, .table-info > td, .table-info > th {
+    background-color: var(--color-warning-light) !important;
+}
+
+.nav-item .nav-link > span,
+.nav-item .nav-link > i {
+    vertical-align: middle;
 }
