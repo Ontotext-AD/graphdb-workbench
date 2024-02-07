@@ -264,7 +264,7 @@
     "next.btn": "Next",
     "closes.config.no.save": "Closes the configuration without saving the changes.",
     "refresh.to.retry": "Refresh the page to retry.",
-    "temp.pause": "Temporarily pauses query monitoring so you can copy text",
+    "temp.pause": "Temporarily pauses query monitoring, so you can copy text",
     "monitoring.restart": "Unpauses query monitoring, so you you can see query status updates",
     "temp.pause.backup_and_restore": "Temporarily pauses backup and restore monitoring so you can copy text",
     "paused.btn": "Paused",
