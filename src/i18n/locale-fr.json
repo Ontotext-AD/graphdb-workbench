@@ -266,6 +266,7 @@
     "closes.config.no.save": "Ferme la configuration sans enregistrer les modifications.",
     "refresh.to.retry": "Actualiser la page pour réessayer.",
     "temp.pause": "Met temporairement en pause le suivi des requêtes afin que vous puissiez copier du texte.",
+    "monitoring.restart": "Réactive le suivi des requêtes afin que vous puissiez voir les mises à jour de l'état des requêtes",
     "temp.pause.backup_and_restore": "Met en pause temporairement la surveillance de la sauvegarde et de la restauration pour que vous puissiez copier du texte",
     "paused.btn": "En pause",
     "pause.btn": "Pause",
