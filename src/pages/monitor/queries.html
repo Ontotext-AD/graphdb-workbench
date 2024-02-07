@@ -31,7 +31,7 @@
 			<div ng-hide="loader || error">
 				<div class="pause-bar">
 					<button type="button" class="btn pull-right pause-btn" ng-click="togglePause()"  ng-class="paused ? 'btn-primary' : 'btn-secondary'"
-							gdb-tooltip="{{'temp.pause' | translate}}"
+							gdb-tooltip="{{paused ? 'monitoring.restart' : 'temp.pause' | translate}}"
 						tooltip-placement="left">
 						{{paused ? 'paused.btn' : 'pause.btn' | translate}}
 					</button>
