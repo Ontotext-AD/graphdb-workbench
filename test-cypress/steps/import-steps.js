@@ -193,6 +193,12 @@ class ImportSteps {
         return ImportSteps;
     }
 
+    static fillContextLink(contextLink) {
+        ImportSteps.getSettingsForm().find('input[name="contextLink"]').type(contextLink).should('have.value', contextLink);
+
+        return ImportSteps;
+    }
+
     static resetStatusOfUploadedFiles() {
         // Button should disappear
         cy.get('#import-server #wb-import-clearStatuses')
