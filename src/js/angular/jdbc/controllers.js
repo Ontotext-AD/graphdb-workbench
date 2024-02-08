@@ -9,6 +9,7 @@ import {JdbcConfigurationError} from "../models/jdbc/jdbc-configuration-error";
 import {RenderingMode} from "../models/ontotext-yasgui/rendering-mode";
 import {toJDBCColumns, updateColumn} from "../models/jdbc/jdbc-column";
 import {DISABLE_YASQE_BUTTONS_CONFIGURATION, YasguiComponentDirectiveUtil} from "../core/directives/yasgui-component/yasgui-component-directive.util";
+import {decodeHTML} from "../../../app";
 
 const modules = [
     'ui.bootstrap',
@@ -305,10 +306,10 @@ function JdbcCreateCtrl(
 
     const notifyColumnTypeChanged = (currentColumnType, prevColumnType) => {
         if (currentColumnType === prevColumnType) {
-            toastr.info($translate.instant('jdbc.same.suggested.sql.type', {type: currentColumnType}),
+            toastr.info(decodeHTML($translate.instant('jdbc.same.suggested.sql.type', {type: currentColumnType})),
                 $translate.instant('jdbc.suggest.sql.type'), {allowHtml: true});
         } else {
-            toastr.success($translate.instant('jdbc.suggested.sql.type', {type: currentColumnType}),
+            toastr.success(decodeHTML($translate.instant('jdbc.suggested.sql.type', {type: currentColumnType})),
                 $translate.instant('jdbc.suggest.sql.type'), {allowHtml: true});
         }
     };
