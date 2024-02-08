@@ -951,6 +951,7 @@
     "import.last.import.settings": "Paramètres de la dernière importation",
     "import.mode.not.supported.constraint": "Ce mode n'est pas pris en charge lors de l'importation de plusieurs éléments.",
     "import.enable.replace.option": "Activez cette option pour remplacer les données d'un ou plusieurs graphes par les données importées.",
+    "import.context.link": "Contexte JSON-LD",
     "text.snippet.text.aria.placeholder": "# Exemple : rdf:predicate a rdf:Property .",
     "url.import.input.placeholder": "URL des données",
     "filesTable.interrupt.import": "Interrompre l'importation",

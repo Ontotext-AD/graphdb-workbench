@@ -20,7 +20,8 @@
         "normalizeLanguageTags": false,
         "verifyURISyntax": true,
         "verifyRelativeURIs": true,
-        "stopOnError": true
+        "stopOnError": true,
+        "JSONLDContext": null
     },
     "xRequestIdHeaders": null
 }

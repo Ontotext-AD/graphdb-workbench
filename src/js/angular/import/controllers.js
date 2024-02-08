@@ -186,9 +186,14 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
             }
         };
 
-        $scope.setSettingsFor = function (fileName, withDefaultSettings) {
+        $scope.setSettingsFor = function (fileName, withDefaultSettings, format) {
             $scope.settingsFor = fileName;
             $scope.settings = $scope.getSettingsFor(fileName, withDefaultSettings);
+            if (format === "application/ld+json" || fileName.endsWith("jsonld") || fileName.endsWith("zip")
+                || fileName.endsWith("gz")) {
+                $scope.settings.isJSONLD = true;
+                $scope.defaultSettings.isJSONLD = true;
+            }
 
             const options = {
                 templateUrl: 'js/angular/import/templates/settingsModal.html',
@@ -479,7 +484,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
         $scope.files = _.uniqBy(
             _.union(
                 _.map($scope.currentFiles, function (file) {
-                    return {name: file.name, type: 'file', file: file}
+                    return {name: file.name, type: 'file', file: file};
                 }),
                 $scope.files
             ),
@@ -627,7 +632,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
                 $scope.updateImport(file.name);
             }
             if (data.startImport) {
-                $scope.setSettingsFor(file.name);
+                $scope.setSettingsFor(file.name, undefined, file.format);
             }
         });
     };
@@ -649,7 +654,7 @@ importCtrl.controller('UploadCtrl', ['$scope', 'Upload', '$http', 'toastr', '$co
             }
             $scope.updateImport(data.url, true);
             if (data.startImport) {
-                $scope.setSettingsFor(data.url, true);
+                $scope.setSettingsFor(data.url, true, data.format);
             }
         });
     };
@@ -687,7 +692,7 @@ importCtrl.controller('TextCtrl', ['$scope', '$uibModalInstance', 'text', 'forma
         {name: 'Turtle*', type: 'application/x-turtlestar'},
         {name: 'TriX', type: 'application/trix'},
         {name: 'TriG', type: 'application/x-trig'},
-        {name: 'TriG*', type: 'application/x-trigstar'},
+        {name: 'TriG*', type: 'application/x-trigstar'}
     ];
 
     $scope.rdfText = text;

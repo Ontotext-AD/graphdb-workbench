@@ -77,7 +77,8 @@ if ! "$GDB_TMPDIR/graphdb-${GDB_VERSION}/bin/graphdb" -d \
     -Denable.cypress.hack=true \
     -Dgraphdb.workbench.home="$(pwd)/dist/" \
     -Dgraphdb.stats.default=disabled \
-    -Dgraphdb.workbench.importDirectory="$(pwd)/test-cypress/fixtures/graphdb-import/"; then
+    -Dgraphdb.workbench.importDirectory="$(pwd)/test-cypress/fixtures/graphdb-import/" \
+    -Dgraphdb.jsonld.whitelist="https://w3c.github.io/json-ld-api/tests/*" ; then
     echo "Unable to start GraphDB"
     cleanup 1
 fi
