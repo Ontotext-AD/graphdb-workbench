@@ -182,6 +182,10 @@ module.exports = {
             {
                 from: 'src/js/angular/templates',
                 to: 'js/angular/templates'
+            },
+            {
+                from: 'src/templates',
+                to: 'templates'
             }
         ])
     ],
