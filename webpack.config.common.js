@@ -1,5 +1,6 @@
 const PACKAGE = require('./package.json');
 const path = require('path');
+const jsonld = require('jsonld');
 const CopyPlugin = require('copy-webpack-plugin');
 const MergeIntoSingleFilePlugin = require('webpack-merge-and-include-globally');
 const WebpackAutoInject = require('webpack-auto-inject-version');
@@ -180,8 +181,8 @@ module.exports = {
                 transform: replaceVersion
             },
             {
-                from: 'src/js/angular/templates',
-                to: 'js/angular/templates'
+                from: 'src/js/angular/core/components/export-settings-modal',
+                to: 'js/angular/core/components/export-settings-modal'
             }
         ])
     ],

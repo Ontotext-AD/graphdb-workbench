@@ -26,9 +26,10 @@ function ExploreRestService($http) {
      *
      * @param {ResourceInfo} resourceInfo - holds information about the resource.
      * @param {string} accept - specifies the content type of response.
+     * @param {String} link - specifies JSON-LD context/frame link
      * @return {ResourceGraphResponse}
      */
-    const getGraph = (resourceInfo, accept) => {
+    const getGraph = (resourceInfo, accept, link) => {
         return $http.get(`${EXPLORE_ENDPOINT}/graph`, {
             params: {
                 uri: resourceInfo.uri,
@@ -40,7 +41,8 @@ function ExploreRestService($http) {
                 context: resourceInfo.context
             },
             headers: {
-                'Accept': accept || 'application/x-graphdb-table-results+json'
+                'Accept': accept || 'application/x-graphdb-table-results+json',
+                'Link': link ? '<' + link + '>' : ""
             }
         })
             .then((response) => response.data);
