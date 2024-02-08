@@ -143,9 +143,6 @@
         }
     },
     "acl_management": {
-        "buttons": {
-            "create_rule": "Créer une règle"
-        },
         "rulestable": {
             "tab": {
                 "statement": "Déclaration",
@@ -182,7 +179,8 @@
                 "apply_rule": "Confirmer la modification de la règle",
                 "cancel_rule_editing": "Annuler la modification des règles",
                 "save_acl": "Enregistrer la ACL",
-                "cancel_acl_saving": "Annuler"
+                "cancel_acl_saving": "Annuler",
+                "create_rule": "Créer une règle"
             },
             "messages": {
                 "no_data": "Aucune règle n'est définie dans le champ d'application actuel",
