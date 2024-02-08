@@ -143,6 +143,9 @@
         }
     },
     "acl_management": {
+        "buttons": {
+            "create_rule": "Create rule"
+        },
         "rulestable": {
             "tab": {
                 "statement": "Statement",
