@@ -2,8 +2,11 @@ import 'angular/core/services';
 import 'angular/core/services/repositories.service';
 import 'angular/core/services/jwt-auth.service';
 import 'angular/utils/file-types';
+import 'angular/rest/export.rest.service';
+import {saveAs} from 'lib/FileSaver-patch';
 import {decodeHTML} from "../../../app";
 import {cloneDeep} from "lodash";
+import {ExportSettingsCtrl} from "../core/components/export-settings-modal/controller";
 
 const modules = [
     'ngCookies',
@@ -11,16 +14,17 @@ const modules = [
     'toastr',
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.core.services.jwtauth',
-    'graphdb.workbench.utils.filetypes'
+    'graphdb.workbench.utils.filetypes',
+    'graphdb.framework.rest.export.service'
 ];
 
 const exportCtrl = angular.module('graphdb.framework.impex.export.controllers', modules);
 
 exportCtrl.controller('ExportCtrl',
-  ['$scope', '$http', '$location', '$timeout', 'ModalService', 'filterFilter', '$repositories', 'toastr', 'RDF4JRepositoriesRestService',
-      'FileTypes', '$translate', 'AuthTokenService',
-      function($scope, $http, $location, $timeout, ModalService, filterFilter, $repositories, toastr, RDF4JRepositoriesRestService,
-        FileTypes, $translate, AuthTokenService) {
+  ['$scope', '$http', '$location', '$timeout', 'ModalService', 'filterFilter', '$repositories', 'toastr', 'ExportRestService', 'RDF4JRepositoriesRestService',
+      'FileTypes', '$translate', 'AuthTokenService', '$uibModal',
+      function($scope, $http, $location, $timeout, ModalService, filterFilter, $repositories, toastr, ExportRestService, RDF4JRepositoriesRestService,
+        FileTypes, $translate, AuthTokenService, $uibModal) {
 
             $scope.getActiveRepository = function () {
                 return $repositories.getActiveRepository();
@@ -138,6 +142,40 @@ exportCtrl.controller('ExportCtrl',
 
             };
 
+            /*
+             *
+             * @method downloadJSONLDExport
+             * @param {String} data format
+             * @param {String} string context if there is any (or string from multiple contexts if there are multiple selected graphs)
+             * @param {String} context/frame link
+             * @param {Boolean} true if the method is invoked for export of multiple selected graphs
+             * @param {Object} current repository
+             * @param {Object} graphsByValue
+             * @param {Object} JSONLDMode (name and mode link)
+             */
+            function downloadJSONLDExport(format, context, link, forSelectedGraphs, repo, graphsByValue, JSONLDMode) {
+                const acceptHeader = format.type + ';profile=' + JSONLDMode.link;
+                const headers = {
+                    'accept': acceptHeader,
+                    'link': link
+                };
+                ExportRestService.getExportedStatementsAsJSONLD(context, forSelectedGraphs, repo, graphsByValue, AuthTokenService.getAuthToken(), headers)
+                    .then(function ({data, filename}) {
+                        saveAs(data, filename);
+                    })
+                    .catch(function (res) {
+                        // data is received as blob
+                        res.data.text()
+                            .then((message) => {
+                                if (res.status === 431) {
+                                    toastr.error(res.statusText, $translate.instant('common.error'));
+                                } else {
+                                    toastr.error(message, $translate.instant('common.error'));
+                                }
+                            });
+                    });
+            }
+
             /// <summary>Trigger the custom event for DD tooltip.</summary>
             $scope.openExportDDTooltip = function () {
                 if ($scope.showExportDDTooltip) {
@@ -170,6 +208,28 @@ exportCtrl.controller('ExportCtrl',
                 }
             };
 
+            /*
+             * Open a dialog with additional export settings for JSONLD format.
+             *
+             * @method openJSONLDExportSettings
+             * @param {String} data format
+             * @param {String} string context if there is any (or string from multiple contexts if there are multiple selected graphs for export)
+             * @param {Boolean} true if the method is invoked for multiple selected graphs export
+             */
+            $scope.openJSONLDExportSettings = function (format, context, forSelectedGraphs) {
+                const modalInstance = $uibModal.open({
+                    templateUrl: 'js/angular/core/components/export-settings-modal/exportSettingsModal.html',
+                    controller: ExportSettingsCtrl,
+                    size: 'lg',
+                    scope: $scope
+                });
+
+                modalInstance.result.then(function (data) {
+                    const linkHeader = data.link ? '<' + data.link + '>' : '';
+                    downloadJSONLDExport(format, context, linkHeader, forSelectedGraphs, $repositories.getActiveRepositoryObject(), $scope.graphsByValue, data.currentMode);
+                });
+            };
+
             $scope.startDownload = function (format, contextID) {
                 //If it's graph set the url for ?context=
                 let downloadUrl;
@@ -192,6 +252,22 @@ exportCtrl.controller('ExportCtrl',
                         }
                     }
                     return false;
+                }
+            };
+
+            $scope.openJSONLDExportSettingsForSelectedGraphs = function (format) {
+                const contextStr = Object.keys($scope.selectedGraphs.exportGraphs)
+                    .map((index) => 'context=' + $scope.graphsByValue[index].exportUri)
+                    .join('&');
+
+                if (contextStr) {
+                    $scope.openJSONLDExportSettings(format, contextStr, true);
+                } else {
+                      ModalService.openSimpleModal({
+                          title: $translate.instant('export.multiple.graph'),
+                          message: $translate.instant('export.check.graphs.msg'),
+                          warning: true
+                      });
                 }
             };
 

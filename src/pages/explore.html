@@ -101,7 +101,8 @@
             </button>
             <ul class="dropdown-menu small" role="menu">
                 <li ng-repeat="fileType in fileTypes">
-                    <a href="javascript:" ng-click="downloadExport(fileType)" class="dropdown-item">{{fileType.name}}</a>
+                    <a href="javascript:" ng-click="openJSONLDExportSettings(fileType)" ng-if="fileType.name === 'JSON-LD'" class="dropdown-item">{{fileType.name}}</a>
+                    <a href="javascript:" ng-click="downloadExport(fileType)" ng-if="fileType.name !== 'JSON-LD'" class="dropdown-item">{{fileType.name}}</a>
                 </li>
             </ul>
         </div>

@@ -25,7 +25,8 @@ angular
         'PREFERRED_LANG': 'preferred-language',
         'WORKBENCH_SETTINGS': 'workbench-settings',
         'REPOSITORY_ID': 'repository-id',
-        'REPOSITORY_LOCATION': 'repository-location'
+        'REPOSITORY_LOCATION': 'repository-location',
+        'JSONLD_EXPORT_SETTINGS': 'jsonld-export-settings'
     });
 
 LocalStorageAdapter.$inject = ['localStorageService', 'LSKeys'];
