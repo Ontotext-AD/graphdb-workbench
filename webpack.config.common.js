@@ -181,12 +181,8 @@ module.exports = {
                 transform: replaceVersion
             },
             {
-                from: 'src/js/angular/core/templates/modal',
-                to: 'js/angular/core/templates/modal'
-            },
-            {
-                from: 'src/js/angular/templates',
-                to: 'js/angular/templates'
+                from: 'src/js/angular/core/components/export-settings-modal',
+                to: 'js/angular/core/components/export-settings-modal'
             }
         ])
     ],

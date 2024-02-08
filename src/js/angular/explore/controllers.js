@@ -8,8 +8,7 @@ import {RoleType} from "../models/resource/role-type";
 import {RenderingMode} from "../models/ontotext-yasgui/rendering-mode";
 import {DISABLE_YASQE_BUTTONS_CONFIGURATION} from "../core/directives/yasgui-component/yasgui-component-directive.util";
 import * as jsonld from 'jsonld';
-import {find} from "lodash";
-import {ExportSettingsCtrl} from "../core/controllers";
+import {ExportSettingsCtrl} from "../core/components/export-settings-modal/controller";
 
 const modules = [
     'ngCookies',
@@ -190,7 +189,7 @@ function ExploreCtrl(
 
     $scope.openJSONLDExportSettings = function (format) {
         const modalInstance = $uibModal.open({
-            templateUrl: 'js/angular/core/templates/modal/exportSettingsModal.html',
+            templateUrl: 'js/angular/core/components/export-settings-modal/exportSettingsModal.html',
             controller: ExportSettingsCtrl,
             size: 'lg',
             scope: $scope

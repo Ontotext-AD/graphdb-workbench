@@ -21,33 +21,41 @@ function ExportRestService($http, $repositories, $translate) {
      * @param {Object} request Accept and Link headers
      */
     function getExportedStatementsAsJSONLD(context, forSelectedGraphs, repo, graphsByValue, auth, headers) {
-        let url = `${REPOSITORIES_ENDPOINT}/${repo.id}/statements?infer=false`;
+        const url = `${REPOSITORIES_ENDPOINT}/${repo.id}/statements?infer=false`;
+        let contextParam = null;
+        let locationParam = null;
+        let authTokenParam = null;
+
         if (forSelectedGraphs) {
-            url += `&${context}`;
+            contextParam += context;
         } else {
             if (context) {
-                url += `&context=${graphsByValue[context.value].exportUri}&location=${encodeURIComponent(repo.location)}`;
-            } else {
-                url += `&location=${encodeURIComponent(repo.location)}`;
+                contextParam = graphsByValue[context.value].exportUri;
             }
+            locationParam = encodeURIComponent(repo.location);
         }
 
         if (auth) {
-            url = url + '&authToken=' + encodeURIComponent(auth);
+            authTokenParam = encodeURIComponent(auth);
         }
 
         if (headers.link === undefined) {
-            headers.link = "";
+            headers.link = '';
         }
 
         return $http({
             url: url,
             method: 'GET',
+            params: {
+                context: contextParam,
+                location: locationParam,
+                authToken: authTokenParam
+            },
             headers: {
                 'Accept': headers.accept,
                 'Link': headers.link
             },
-            responseType: "blob"
+            responseType: 'blob'
         }).then(function (res) {
             const data = res.data;
             const headers = res.headers();

@@ -13,7 +13,7 @@ import {YasguiComponent} from "../../../models/yasgui-component";
 import {YasguiComponentDirectiveUtil} from "./yasgui-component-directive.util";
 import {KeyboardShortcutName} from "../../../models/ontotext-yasgui/keyboard-shortcut-name";
 import {YasguiPersistenceMigrationService} from "./yasgui-persistence-migration.service";
-import {ExportSettingsCtrl} from "../../controllers";
+import {ExportSettingsCtrl} from "../../components/export-settings-modal/controller";
 
 const modules = [
     'graphdb.framework.core.services.translation-service',
@@ -341,17 +341,19 @@ function yasguiComponentDirective(
 
                 if (downloadAsEvent.contentType === "application/ld+json" || downloadAsEvent.contentType === "application/x-ld+ndjson") {
                     const modalInstance = $uibModal.open({
-                        templateUrl: 'js/angular/core/templates/modal/exportSettingsModal.html',
+                        templateUrl: 'js/angular/core/components/export-settings-modal/exportSettingsModal.html',
                         controller: ExportSettingsCtrl,
                         size: 'lg',
                         scope: $scope
                     });
 
                     modalInstance.result.then(function (data) {
-                        downloadAs(query, infer, sameAs, authToken, accept + ';profile=' + data.currentMode.link, data.link ? '<' + data.link + '>' : "");
+                        const acceptHeader = accept + ';profile=' + data.currentMode.link;
+                        const linkHeader = data.link ? '<' + data.link + '>' : '';
+                        downloadAs(query, infer, sameAs, authToken, acceptHeader, linkHeader);
                     });
                 } else {
-                    downloadAs(query, infer, sameAs, authToken, accept, "");
+                    downloadAs(query, infer, sameAs, authToken, accept, '');
                 }
             };
             downloadAsPluginNameToEventHandler.set(YasrPluginName.EXTENDED_TABLE, downloadThroughServer);

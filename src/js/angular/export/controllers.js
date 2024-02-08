@@ -5,8 +5,8 @@ import 'angular/utils/file-types';
 import 'angular/rest/export.rest.service';
 import {saveAs} from 'lib/FileSaver-patch';
 import {decodeHTML} from "../../../app";
-import {cloneDeep, find} from "lodash";
-import {ExportSettingsCtrl} from "../core/controllers";
+import {cloneDeep} from "lodash";
+import {ExportSettingsCtrl} from "../core/components/export-settings-modal/controller";
 
 const modules = [
     'ngCookies',
@@ -218,14 +218,15 @@ exportCtrl.controller('ExportCtrl',
              */
             $scope.openJSONLDExportSettings = function (format, context, forSelectedGraphs) {
                 const modalInstance = $uibModal.open({
-                    templateUrl: 'js/angular/core/templates/modal/exportSettingsModal.html',
+                    templateUrl: 'js/angular/core/components/export-settings-modal/exportSettingsModal.html',
                     controller: ExportSettingsCtrl,
                     size: 'lg',
                     scope: $scope
                 });
 
                 modalInstance.result.then(function (data) {
-                    downloadJSONLDExport(format, context, data.link ? '<' + data.link + '>' : "", forSelectedGraphs, $repositories.getActiveRepositoryObject(), $scope.graphsByValue, data.currentMode);
+                    const linkHeader = data.link ? '<' + data.link + '>' : '';
+                    downloadJSONLDExport(format, context, linkHeader, forSelectedGraphs, $repositories.getActiveRepositoryObject(), $scope.graphsByValue, data.currentMode);
                 });
             };
 
