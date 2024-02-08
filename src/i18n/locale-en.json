@@ -143,9 +143,6 @@
         }
     },
     "acl_management": {
-        "buttons": {
-            "create_rule": "Create rule"
-        },
         "rulestable": {
             "tab": {
                 "statement": "Statement",
@@ -182,7 +179,8 @@
                 "apply_rule": "Confirm rule editing",
                 "cancel_rule_editing": "Cancel rule editing",
                 "save_acl": "Save ACL",
-                "cancel_acl_saving": "Cancel"
+                "cancel_acl_saving": "Cancel",
+                "create_rule": "Create rule"
             },
             "messages": {
                 "no_data": "There are no rules defined in current scope",
