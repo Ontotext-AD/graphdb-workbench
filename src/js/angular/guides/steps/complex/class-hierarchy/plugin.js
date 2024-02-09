@@ -183,6 +183,8 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.class-hierarchy-instances-query.content',
                         url: '/sparql',
                         elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR,
+                        beforeShowPromise: () => GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR, 3)
+                            .then(() => GuideUtils.deferredShow(500)()),
                         class: 'class-hierarchy-instances-query-guide-dialog',
                         scrollToHandler: GuideUtils.scrollToTop
                     }, options)
