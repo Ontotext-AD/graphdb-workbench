@@ -46,14 +46,13 @@ PluginRegistry.add('guide.step', [
                         url: '/sparql',
                         elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR,
                         class: 'yasgui-query-editor-guide-dialog',
-                        beforeShowPromise: () => {
-                            return YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(SPARQL_DIRECTIVE_SELECTOR)
-                                .then(() => GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR, 3))
-                                .catch((error) => {
-                                    services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
-                                    throw error;
-                                });
-                        },
+                        beforeShowPromise: () => YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(SPARQL_DIRECTIVE_SELECTOR)
+                            .then(() => GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR, 3))
+                            .then(() => GuideUtils.deferredShow(500)())
+                            .catch((error) => {
+                                services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
+                                throw error;
+                            }),
                         onNextValidate: () => {
                             return YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(SPARQL_DIRECTIVE_SELECTOR)
                                 .then((yasgui) => yasgui.getQuery().then((query) => ({yasgui, queryFromEditor: query})))
@@ -146,27 +145,19 @@ PluginRegistry.add('guide.step', [
                         scrollToHandler: GuideUtils.scrollToTop,
                         extraContent: queryDef.resultExtraContent,
                         canBePaused: false,
-                        initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
+                        initPreviousStep: (services, stepId) => {
                             if ('/sparql' !== $location.url()) {
                                 $location.url('/sparql');
                                 $route.reload();
-                                GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR)
-                                    .then(() => {
-                                        YasguiComponentDirectiveUtil.executeSparqlQuery("#query-editor", query)
-                                            .then(() => {
-                                                resolve();
-                                            })
-                                            .catch((error) => reject(error));
-                                    });
+                                return GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR)
+                                    .then(() => GuideUtils.deferredShow(500)())
+                                    .then(() => YasguiComponentDirectiveUtil.executeSparqlQuery("#query-editor", query));
                             } else {
                                 const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
-                                previousStep.options.initPreviousStep(services, previousStep.options.id)
-                                    .then(() => {
-                                        YasguiComponentDirectiveUtil.setQuery(SPARQL_DIRECTIVE_SELECTOR, query).then(() => resolve());
-                                    })
-                                    .catch((error) => reject(error));
+                                return previousStep.options.initPreviousStep(services, previousStep.options.id)
+                                    .then(() => YasguiComponentDirectiveUtil.setQuery(SPARQL_DIRECTIVE_SELECTOR, query));
                             }
-                        })
+                        }
                     }, options)
                 });
             });
