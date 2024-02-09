@@ -7,6 +7,8 @@ import {ContextType, ContextTypes} from "../models/resource/context-type";
 import {RoleType} from "../models/resource/role-type";
 import {RenderingMode} from "../models/ontotext-yasgui/rendering-mode";
 import {DISABLE_YASQE_BUTTONS_CONFIGURATION} from "../core/directives/yasgui-component/yasgui-component-directive.util";
+import * as jsonld from 'jsonld';
+import {find} from "lodash";
 
 const modules = [
     'ngCookies',
@@ -25,7 +27,8 @@ angular
     .controller('FindResourceCtrl', FindResourceCtrl)
     .controller('ExploreCtrl', ExploreCtrl)
     .controller('EditResourceCtrl', EditResourceCtrl)
-    .controller('ViewTrigCtrl', ViewTrigCtrl);
+    .controller('ViewTrigCtrl', ViewTrigCtrl)
+    .controller('ExportSettingsCtrl', ExportSettingsCtrl);
 
 ExploreCtrl.$inject = [
     '$scope',
@@ -33,6 +36,7 @@ ExploreCtrl.$inject = [
     'toastr',
     '$routeParams',
     '$repositories',
+    '$uibModal',
     'ClassInstanceDetailsService',
     'ModalService',
     'RDF4JRepositoriesRestService',
@@ -48,6 +52,7 @@ function ExploreCtrl(
     toastr,
     $routeParams,
     $repositories,
+    $uibModal,
     ClassInstanceDetailsService,
     ModalService,
     RDF4JRepositoriesRestService,
@@ -180,6 +185,69 @@ function ExploreCtrl(
             })
             .finally(() => {
                 toggleOntoLoader(false);
+            });
+    };
+
+    $scope.openJSONLDExportSettings = function (format) {
+        const modalInstance = $uibModal.open({
+            templateUrl: 'templates/exportSettingsModal.html',
+            controller: 'ExportSettingsCtrl',
+            size: 'lg',
+            scope: $scope
+        });
+
+        modalInstance.result.then(function (data) {
+            $scope.downloadJSONLDExport(format, data.link, data.currentMode);
+        });
+    };
+
+    $scope.downloadJSONLDExport = function (format, link, mode) {
+        ExploreRestService.getGraph($scope.resourceInfo, format.type)
+            .then(async function (data) {
+                if (format.name === "JSON") {
+                    data = JSON.stringify(data);
+                }
+
+                if (format.name === 'JSON-LD') {
+                    switch (mode.name) {
+                        case "expanded":
+                            data = await jsonld.expand(data);
+                            data = JSON.stringify(data);
+                            break;
+                        case "flattened":
+                            data = await jsonld.flatten(data, link);
+                            data = JSON.stringify(data);
+                            break;
+                        case "compacted":
+                            data = await jsonld.compact(data, link);
+                            data = JSON.stringify(data);
+                            break;
+                        case "context":
+                            data = await jsonld.context(data, link);
+                            data = JSON.stringify(data);
+                            break;
+                        case "frame":
+                            data = await jsonld.frame(data, link);
+                            data = JSON.stringify(data);
+                            break;
+                        case "framed":
+                            data = await jsonld.compact(data, link);
+                            data = JSON.stringify(data);
+                            break;
+                    }
+
+                }
+                // TODO: Use bowser library to get the browser type
+                const ua = navigator.userAgent.toLowerCase();
+                if (ua.indexOf('safari') !== -1 && ua.indexOf('chrome') === -1) {
+                    window.open('data:attachment/csv;filename="statements.' + format.extension + '",' + encodeURIComponent(data), 'statements.' + format.extension);
+                } else {
+                    const file = new Blob([data], {type: format.type});
+                    saveAs(file, 'statements' + format.extension);
+                }
+            }).error(function (data) {
+                const msg = getError(data);
+                toastr.error(msg, $translate.instant('common.error'));
             });
     };
 
@@ -628,5 +696,43 @@ function ViewTrigCtrl($scope, $uibModalInstance, data) {
 
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
+    };
+}
+
+ViewTrigCtrl.$inject = ['$scope', '$uibModalInstance', '$translate'];
+
+function ExportSettingsCtrl($scope, $uibModalInstance, $translate) {
+    $scope.JSONLDModes = [
+        {name: "frame", link: "http://www.w3.org/ns/json-ld#frame"},
+        {name: "framed", link: "http://www.w3.org/ns/json-ld#framed"},
+        {name: "context", link: "http://www.w3.org/ns/json-ld#context"},
+        {name: "expanded", link: "http://www.w3.org/ns/json-ld#expanded"},
+        {name: "flattened", link: "http://www.w3.org/ns/json-ld#flattened"},
+        {name: "compacted", link: "http://www.w3.org/ns/json-ld#compacted"}
+    ];
+
+    $scope.JSONLDModesNames = $scope.JSONLDModes.reduce(function (acc, cur) {
+        acc[cur.name] = cur.name;
+        return acc;
+    }, {});
+
+    $scope.JSONLDFramedModes = [$scope.JSONLDModesNames.framed, $scope.JSONLDModesNames.frame];
+    $scope.JSONLDContextModes = [$scope.JSONLDModesNames.context, $scope.JSONLDModesNames.compacted, $scope.JSONLDModesNames.flattened];
+    $scope.defaultMode = find($scope.JSONLDModes, {name: "expanded"});
+    $scope.currentMode = $scope.defaultMode;
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss();
+    };
+
+    $scope.reset = function () {
+        $scope.currentMode = $scope.defaultMode;
+    };
+
+    $scope.exportJsonLD = function () {
+        $uibModalInstance.close({
+            currentMode: $scope.currentMode,
+            link: $scope.link
+        });
     };
 }

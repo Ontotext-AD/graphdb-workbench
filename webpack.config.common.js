@@ -1,5 +1,6 @@
 const PACKAGE = require('./package.json');
 const path = require('path');
+const jsonld = require('jsonld');
 const CopyPlugin = require('copy-webpack-plugin');
 const MergeIntoSingleFilePlugin = require('webpack-merge-and-include-globally');
 const WebpackAutoInject = require('webpack-auto-inject-version');
