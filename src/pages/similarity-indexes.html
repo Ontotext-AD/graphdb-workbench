@@ -65,21 +65,22 @@
                                   gdb-tooltip="{{'view.sparql.query.title' | translate}}">
 									<em class="icon-sparql"></em>
 							</span>
-                            <span class="actions-bar hovered-item">
-								<a class="btn btn-link edit-query-btn"
-                                   ng-if="canEditRepo && !similarityIndex.isBuildingStatus() && !similarityIndex.isRebuildingStatus() && !similarityIndex.isCreatingStatus()"
-                                   ng-click="editSimilarityIndex(similarityIndex)"
-                                        gdb-tooltip="{{similarityIndex.isPredicationType() ? 'edit.search.analogical.query.title' : 'edit.search.query.title' | translate}}">
-									<em class="icon-edit"></em>
-								</a>
-							</span>
 
-							<a class="btn btn-link clone-index-btn"
-                               ng-if="similarityIndex.selectQuery && (similarityIndex.isTextType() || similarityIndex.isPredicationType() || similarityIndex.isTextLiteralType())"
-                               ng-click="cloneSimilataryIndex(similarityIndex)"
-							   gdb-tooltip="{{'create.index.from.existing.tooltip' | translate}}">
-									<em class="icon-copy"></em>
-							</a>
+                            <span class="actions-bar hovered-item">
+                                <button class="btn btn-link edit-query-btn"
+                                        ng-if="canEditRepo && !similarityIndex.isBuildingStatus() && !similarityIndex.isRebuildingStatus() && !similarityIndex.isCreatingStatus()"
+                                        ng-click="editSimilarityIndex(similarityIndex)"
+                                        gdb-tooltip="{{similarityIndex.isPredicationType() ? 'edit.search.analogical.query.title' : 'edit.search.query.title' | translate}}">
+                                    <span class="icon-edit"></span>
+                                </button>
+                            </span>
+
+                            <button class="btn btn-link clone-index-btn"
+                                    ng-if="similarityIndex.selectQuery && (similarityIndex.isTextType() || similarityIndex.isPredicationType() || similarityIndex.isTextLiteralType())"
+                                    ng-click="cloneSimilataryIndex(similarityIndex)"
+                                    gdb-tooltip="{{'create.index.from.existing.tooltip' | translate}}">
+                                <span class="icon-copy"></span>
+                            </button>
 
 							<button type="button" ng-if="canEditRepo && !similarityIndex.isBuildingStatus() && !similarityIndex.isRebuildingStatus() && !similarityIndex.isCreatingStatus() && (similarityIndex.isTextType() || similarityIndex.isPredicationType() || similarityIndex.isTextLiteralType())" ng-disabled="!similarityIndex.selectQuery"
 									ng-click="rebuildIndex(similarityIndex)" class="btn btn-link reload-index-btn" gdb-tooltip="{{'rebuild.index.tooltip' | translate}}"><span
