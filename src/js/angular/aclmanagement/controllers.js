@@ -228,8 +228,12 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
      */
     $scope.moveUp = (scope, index) => {
         $scope.rulesModel.moveUp(scope, index);
-        $scope.selectedRule = index - 1;
         setModelDirty(scope);
+        if ($scope.modelIsDirty) {
+            $scope.selectedRule = index - 1;
+        } else {
+            $scope.selectedRule = undefined;
+        }
     };
 
     /**
@@ -239,8 +243,12 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
      */
     $scope.moveDown = (scope, index) => {
         $scope.rulesModel.moveDown(scope, index);
-        $scope.selectedRule = index + 1;
         setModelDirty(scope);
+        if ($scope.modelIsDirty) {
+            $scope.selectedRule = index + 1;
+        } else {
+            $scope.selectedRule = undefined;
+        }
     };
 
     /**
@@ -285,9 +293,9 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
             event.preventDefault();
             return;
         }
+        $scope.selectedRule = undefined;
         $scope.activeTabScope = scope;
         $scope.ruleKeys = $scope.rulesModel.getRuleKeysByScope($scope.activeTabScope);
-
     };
 
     /**
@@ -374,6 +382,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
     };
 
     const resetPageState = () => {
+        $scope.selectedRule = undefined;
         $scope.editedRuleIndex = undefined;
         $scope.editedRuleScope = undefined;
         $scope.modelIsDirty = false;
