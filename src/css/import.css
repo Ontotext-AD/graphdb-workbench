@@ -12,14 +12,14 @@
     text-overflow: ellipsis;
 }
 
-.grid-container {
-    display: grid;
-    grid-template-rows: 40px;
-    align-items: flex-start;
-}
-
 .text-and-icon {
     display: flex;
+}
+
+.text {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
 }
 
 .ng-hide.ng-hide-animate {

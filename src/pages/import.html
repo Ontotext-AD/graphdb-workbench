@@ -52,12 +52,13 @@
                                 <div class="grid-container">
                                     <div class="text-and-icon">
                                         <em class="icon-upload icon-lg"></em>
-                                        <div>{{'upload.rdf.files.label' | translate}}</div>
-                                    </div>
-                                    <div>
-                                        <small
-                                            class="text-muted">{{'all.rdf.formats.label' | translate}}{{'up.to' | translate}}
-                                            {{maxUploadFileSizeMB | number}} MB</small>
+                                        <div class="text">
+                                            <div>{{'upload.rdf.files.label' | translate}}</div>
+                                            <small
+                                                class="text-muted">{{'all.rdf.formats.label' | translate}}{{'up.to' | translate}}
+                                                {{maxUploadFileSizeMB | number}} MB
+                                            </small>
+                                        </div>
                                     </div>
                                 </div>
                             </a>
@@ -72,10 +73,10 @@
                             <div class="grid-container">
                                 <div class="text-and-icon">
                                     <em class="icon-link icon-lg"></em>
-                                    <div>{{'rdf.data.from.url.label' | translate}}</div>
-                                </div>
-                                <div>
-                                    <small class="text-muted">{{'all.rdf.formats.label' | translate}}</small>
+                                    <div class="text">
+                                        <span>{{'rdf.data.from.url.label' | translate}}</span>
+                                        <small class="text-muted">{{'all.rdf.formats.label' | translate}}</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -89,10 +90,10 @@
                             <div class="grid-container">
                                 <div class="text-and-icon">
                                     <em class="icon-edit icon-lg"></em>
-                                    <div>{{'import.rdf.text.snippet.label' | translate}}</div>
-                                </div>
-                                <div>
-                                    <small class="text-muted">{{'type.paste.data.label' | translate}}</small>
+                                    <div class="text">
+                                        <div>{{'import.rdf.text.snippet.label' | translate}}</div>
+                                        <small class="text-muted">{{'type.paste.data.label' | translate}}</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
