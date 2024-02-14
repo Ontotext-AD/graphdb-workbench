@@ -6,6 +6,7 @@ import 'angular/rest/export.rest.service';
 import {saveAs} from 'lib/FileSaver-patch';
 import {decodeHTML} from "../../../app";
 import {cloneDeep, find} from "lodash";
+import {ExportSettingsCtrl} from "../core/controllers";
 
 const modules = [
     'ngCookies',
@@ -217,8 +218,8 @@ exportCtrl.controller('ExportCtrl',
              */
             $scope.openJSONLDExportSettings = function (format, context, forSelectedGraphs) {
                 const modalInstance = $uibModal.open({
-                    templateUrl: 'templates/exportSettingsModal.html',
-                    controller: 'ExportSettingsCtrl',
+                    templateUrl: 'js/angular/core/templates/modal/exportSettingsModal.html',
+                    controller: ExportSettingsCtrl,
                     size: 'lg',
                     scope: $scope
                 });
@@ -480,40 +481,3 @@ exportCtrl.controller('ExportCtrl',
                 }
             };
         }]);
-
-exportCtrl.controller("ExportSettingsCtrl",
-    ['$scope', '$uibModalInstance', '$translate', function ($scope, $uibModalInstance, $translate) {
-        $scope.JSONLDModes = [
-            {name: "frame", link: "http://www.w3.org/ns/json-ld#frame"},
-            {name: "framed", link: "http://www.w3.org/ns/json-ld#framed"},
-            {name: "context", link: "http://www.w3.org/ns/json-ld#context"},
-            {name: "expanded", link: "http://www.w3.org/ns/json-ld#expanded"},
-            {name: "flattened", link: "http://www.w3.org/ns/json-ld#flattened"},
-            {name: "compacted", link: "http://www.w3.org/ns/json-ld#compacted"}
-        ];
-
-        $scope.JSONLDModesNames = $scope.JSONLDModes.reduce(function (acc, cur) {
-            acc[cur.name] = cur.name;
-            return acc;
-        }, {});
-
-        $scope.JSONLDFramedModes = [$scope.JSONLDModesNames.framed, $scope.JSONLDModesNames.frame];
-        $scope.JSONLDContextModes = [$scope.JSONLDModesNames.context, $scope.JSONLDModesNames.compacted, $scope.JSONLDModesNames.flattened];
-        $scope.defaultMode = find($scope.JSONLDModes, {name: "expanded"});
-        $scope.currentMode = $scope.defaultMode;
-
-        $scope.cancel = function () {
-            $uibModalInstance.dismiss();
-        };
-
-        $scope.reset = function () {
-            $scope.currentMode = $scope.defaultMode;
-        };
-
-        $scope.exportJsonLD = function () {
-            $uibModalInstance.close({
-                currentMode: $scope.currentMode,
-                link: $scope.link
-            });
-        };
-    }]);

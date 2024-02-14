@@ -12,6 +12,7 @@ import {YasguiComponent} from "../../../models/yasgui-component";
 import {YasguiComponentDirectiveUtil} from "./yasgui-component-directive.util";
 import {KeyboardShortcutName} from "../../../models/ontotext-yasgui/keyboard-shortcut-name";
 import {YasguiPersistenceMigrationService} from "./yasgui-persistence-migration.service";
+import {ExportSettingsCtrl} from "../../controllers";
 
 const modules = [
     'graphdb.framework.core.services.translation-service',
@@ -26,6 +27,7 @@ yasguiComponentDirective.$inject = [
     '$translate',
     '$location',
     '$languageService',
+    '$uibModal',
     'AuthTokenService',
     '$interval',
     'toastr',
@@ -61,6 +63,7 @@ function yasguiComponentDirective(
     $translate,
     $location,
     $languageService,
+    $uibModal,
     AuthTokenService,
     $interval,
     toastr,
@@ -311,6 +314,21 @@ function yasguiComponentDirective(
                 const accept = downloadAsEvent.contentType;
                 const authToken = AuthTokenService.getAuthToken() || '';
 
+                let modalInstance;
+                let exportData;
+                if (downloadAsEvent.contentType === "application/ld+json") {
+                    modalInstance = $uibModal.open({
+                        templateUrl: 'js/angular/core/templates/modal/exportSettingsModal.html',
+                        controller: ExportSettingsCtrl,
+                        size: 'lg',
+                        scope: $scope
+                    });
+
+                    modalInstance.result.then(function (data) {
+                        exportData = data;
+                    });
+                }
+
                 YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync('#query-editor')
                     .then((yasguiComponent) => {
                         return yasguiComponent.getQueryMode();
@@ -323,7 +341,8 @@ function yasguiComponentDirective(
                         $('#wb-download-infer').val(infer);
                         $('#wb-download-sameAs').val(sameAs);
                         $('#wb-auth-token').val(authToken);
-                        $('#wb-download-accept').val(accept);
+                        $('#wb-download-accept').val(accept + ";profile=" + exportData.currentMode.name);
+                        $('#wb-download-link').val(exportData.link);
                         $wbDownload.submit();
                     });
             };

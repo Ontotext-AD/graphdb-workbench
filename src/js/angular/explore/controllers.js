@@ -9,6 +9,7 @@ import {RenderingMode} from "../models/ontotext-yasgui/rendering-mode";
 import {DISABLE_YASQE_BUTTONS_CONFIGURATION} from "../core/directives/yasgui-component/yasgui-component-directive.util";
 import * as jsonld from 'jsonld';
 import {find} from "lodash";
+import {ExportSettingsCtrl} from "../core/controllers";
 
 const modules = [
     'ngCookies',
@@ -27,8 +28,7 @@ angular
     .controller('FindResourceCtrl', FindResourceCtrl)
     .controller('ExploreCtrl', ExploreCtrl)
     .controller('EditResourceCtrl', EditResourceCtrl)
-    .controller('ViewTrigCtrl', ViewTrigCtrl)
-    .controller('ExportSettingsCtrl', ExportSettingsCtrl);
+    .controller('ViewTrigCtrl', ViewTrigCtrl);
 
 ExploreCtrl.$inject = [
     '$scope',
@@ -190,8 +190,8 @@ function ExploreCtrl(
 
     $scope.openJSONLDExportSettings = function (format) {
         const modalInstance = $uibModal.open({
-            templateUrl: 'templates/exportSettingsModal.html',
-            controller: 'ExportSettingsCtrl',
+            templateUrl: 'js/angular/core/templates/modal/exportSettingsModal.html',
+            controller: ExportSettingsCtrl,
             size: 'lg',
             scope: $scope
         });
@@ -696,43 +696,5 @@ function ViewTrigCtrl($scope, $uibModalInstance, data) {
 
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
-    };
-}
-
-ViewTrigCtrl.$inject = ['$scope', '$uibModalInstance', '$translate'];
-
-function ExportSettingsCtrl($scope, $uibModalInstance, $translate) {
-    $scope.JSONLDModes = [
-        {name: "frame", link: "http://www.w3.org/ns/json-ld#frame"},
-        {name: "framed", link: "http://www.w3.org/ns/json-ld#framed"},
-        {name: "context", link: "http://www.w3.org/ns/json-ld#context"},
-        {name: "expanded", link: "http://www.w3.org/ns/json-ld#expanded"},
-        {name: "flattened", link: "http://www.w3.org/ns/json-ld#flattened"},
-        {name: "compacted", link: "http://www.w3.org/ns/json-ld#compacted"}
-    ];
-
-    $scope.JSONLDModesNames = $scope.JSONLDModes.reduce(function (acc, cur) {
-        acc[cur.name] = cur.name;
-        return acc;
-    }, {});
-
-    $scope.JSONLDFramedModes = [$scope.JSONLDModesNames.framed, $scope.JSONLDModesNames.frame];
-    $scope.JSONLDContextModes = [$scope.JSONLDModesNames.context, $scope.JSONLDModesNames.compacted, $scope.JSONLDModesNames.flattened];
-    $scope.defaultMode = find($scope.JSONLDModes, {name: "expanded"});
-    $scope.currentMode = $scope.defaultMode;
-
-    $scope.cancel = function () {
-        $uibModalInstance.dismiss();
-    };
-
-    $scope.reset = function () {
-        $scope.currentMode = $scope.defaultMode;
-    };
-
-    $scope.exportJsonLD = function () {
-        $uibModalInstance.close({
-            currentMode: $scope.currentMode,
-            link: $scope.link
-        });
     };
 }

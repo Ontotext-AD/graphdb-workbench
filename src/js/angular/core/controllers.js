@@ -1,8 +1,11 @@
+import {find} from "lodash";
+
 angular
     .module('graphdb.framework.core.controllers', [])
     .controller('CopyToClipboardModalCtrl', CopyToClipboardModalCtrl)
     .controller('SimpleModalCtrl', SimpleModalCtrl)
-    .controller('ViewQueryCtrl', ViewQueryCtrl);
+    .controller('ViewQueryCtrl', ViewQueryCtrl)
+    .controller('ExportSettingsCtrl', ExportSettingsCtrl);
 
 SimpleModalCtrl.$inject = ['$scope', '$uibModalInstance', 'title', 'message'];
 
@@ -85,5 +88,43 @@ function ViewQueryCtrl($scope, $uibModalInstance, query, toastr, $translate) {
                 textRange.select();
             }
         }
+    };
+}
+
+ExportSettingsCtrl.$inject = ['$scope', '$uibModalInstance'];
+
+export function ExportSettingsCtrl($scope, $uibModalInstance) {
+    $scope.JSONLDModes = [
+        {name: "frame", link: "http://www.w3.org/ns/json-ld#frame"},
+        {name: "framed", link: "http://www.w3.org/ns/json-ld#framed"},
+        {name: "context", link: "http://www.w3.org/ns/json-ld#context"},
+        {name: "expanded", link: "http://www.w3.org/ns/json-ld#expanded"},
+        {name: "flattened", link: "http://www.w3.org/ns/json-ld#flattened"},
+        {name: "compacted", link: "http://www.w3.org/ns/json-ld#compacted"}
+    ];
+
+    $scope.JSONLDModesNames = $scope.JSONLDModes.reduce(function (acc, cur) {
+        acc[cur.name] = cur.name;
+        return acc;
+    }, {});
+
+    $scope.JSONLDFramedModes = [$scope.JSONLDModesNames.framed, $scope.JSONLDModesNames.frame];
+    $scope.JSONLDContextModes = [$scope.JSONLDModesNames.context, $scope.JSONLDModesNames.compacted, $scope.JSONLDModesNames.flattened];
+    $scope.defaultMode = find($scope.JSONLDModes, {name: "expanded"});
+    $scope.currentMode = $scope.defaultMode;
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss();
+    };
+
+    $scope.reset = function () {
+        $scope.currentMode = $scope.defaultMode;
+    };
+
+    $scope.exportJsonLD = function () {
+        $uibModalInstance.close({
+            currentMode: $scope.currentMode,
+            link: $scope.link
+        });
     };
 }
