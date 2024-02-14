@@ -26,6 +26,11 @@ html, body {
     margin-right: 1em;
 }
 
+.acl-management-view .table-responsive {
+    /* override this from bootstrap to allow autocomplete menu appear on top of the table and not to be cut off */
+    overflow-x: visible !important;
+}
+
 .acl-management-view .edit-mode .table-responsive {
     max-height: 88%;
 }
