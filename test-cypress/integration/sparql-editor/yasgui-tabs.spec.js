@@ -1,9 +1,10 @@
 import {SparqlEditorSteps} from "../../steps/sparql-editor-steps";
 import {TabContextMenu, YasguiSteps} from "../../steps/yasgui/yasgui-steps";
 import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
-import {YasrSteps} from "../../steps/yasgui/yasr-steps";
 import {ConfirmationDialogSteps} from "../../steps/yasgui/confirmation-dialog-steps";
 import {QueryStubs} from "../../stubs/yasgui/query-stubs";
+import {MainMenuSteps} from "../../steps/main-menu-steps";
+import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 
 describe('Yasgui tabs', () => {
 
@@ -96,6 +97,19 @@ describe('Yasgui tabs', () => {
         // Then I expect that the tab will be closed
         YasguiSteps.getTabs().should('have.length', 1);
         YasguiSteps.getCurrentTabTitle().should('have.text', 'Unnamed 1');
+    });
+
+    it('Should display information about ongoing requests if try to navigate to other page when there is a tab with ongoing request', () => {
+        // When I execute a long-running query,
+        QueryStubs.stubLongRunningQuery(repositoryId);
+        SparqlEditorSteps.visitSparqlEditorPage();
+        YasqeSteps.executeQueryWithoutWaiteResult();
+        // and try to navigate to other page.
+        MainMenuSteps.clickOnMenuImport();
+
+        // Then I expect to see confirm dialog that explain me about ongoing query.
+        ModalDialogSteps.getDialog().should('be.visible');
+        ModalDialogSteps.getDialogBody().contains('You have running 1 query, that will be aborted.');
     });
 });
 

@@ -1,5 +1,9 @@
 class HomeSteps {
 
+    static visit() {
+        cy.visit('/');
+    }
+
     static visitAndWaitLoader(stubNewWindow) {
         if (stubNewWindow) {
             cy.visit('/', {

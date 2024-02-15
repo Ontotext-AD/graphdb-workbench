@@ -1,5 +1,4 @@
 import {YasguiComponentDirectiveUtil} from "../core/directives/yasgui-component/yasgui-component-directive.util";
-import {RenderingMode} from "./ontotext-yasgui/rendering-mode";
 
 export class YasguiComponent {
 
@@ -148,12 +147,21 @@ export class YasguiComponent {
     }
 
     /**
-     * Aborts the running count queries if any.
+     * Fetches info about ongoing requests.
+     *
+     * @return {Promise<OngoingRequestsInfo>}
+     */
+    getOngoingRequestsInfo() {
+        return this.yasguiComponent.getOngoingRequestsInfo();
+    }
+
+    /**
+     * Aborts all ongoing requests.
      *
      * @return {Promise<void>}
      */
-    abortAllCountQuery() {
-        return this.yasguiComponent.abortAllCountQuery();
+    abortAllRequests() {
+        return this.yasguiComponent.abortAllRequests();
     }
 
     /**

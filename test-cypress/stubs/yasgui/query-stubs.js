@@ -14,6 +14,10 @@ export class QueryStubs {
         QueryStubs.stubQueryResponse(repositoryId, '/graphql-editor/default-query-response.json', withDelay);
     }
 
+    static stubLongRunningQuery(repositoryId, delay = 3000) {
+        QueryStubs.stubQueryResponse(repositoryId, '/graphql-editor/default-query-response.json', delay);
+    }
+
     static stubEmptyQueryResponse(repositoryId, withDelay = 0) {
         QueryStubs.stubQueryResponse(repositoryId, '/queries/empty-query-response.json', withDelay);
     }
