@@ -13,21 +13,22 @@
     <div ng-controller="TabCtrl" ng-show="!isRestricted && canWriteActiveRepo()">
 
         <button type="button" ng-click="isCollapsed = !isCollapsed" class="btn btn-link pull-right"><span
-                class="icon-help"></span><span class="btn-link-text">{{'menu.help.label' | translate}}</span>
+            class="icon-help"></span><span class="btn-link-text">{{'menu.help.label' | translate}}</span>
         </button>
 
         <ul class="nav nav-tabs mb-2">
             <li class="nav-item" id="wb-import-tabUpload" ng-click="changeHelpTemplate('uploadInfo.html')"><a
-                    class="nav-link" ng-class="viewType == 'user' ? 'active' : ''" href ng-click="viewType = 'user'"
-                    data-toggle="tab">{{'user.data' | translate}}</a></li>
+                class="nav-link" ng-class="viewType == 'user' ? 'active' : ''" href ng-click="viewType = 'user'"
+                data-toggle="tab">{{'user.data' | translate}}</a></li>
             <li class="nav-item" id="wb-import-tabServer" ng-hide="isS4()"
                 ng-click="changeHelpTemplate('importInfo.html')">
                 <a class="nav-link"
-                    ng-class="viewType == 'server' ? 'active' : ''" href
-                    ng-click="viewType = 'server'" data-toggle="tab">{{'server.files' | translate}}</a></li>
+                   ng-class="viewType == 'server' ? 'active' : ''" href
+                   ng-click="viewType = 'server'" data-toggle="tab">{{'server.files' | translate}}</a></li>
         </ul>
         <div uib-collapse="!isCollapsed" id="ot-help-text" class="alert alert-info">
-            <button type="button" ng-click="isCollapsed = false" gdb-tooltip="{{'common.close' | translate}}" class="close"
+            <button type="button" ng-click="isCollapsed = false" gdb-tooltip="{{'common.close' | translate}}"
+                    class="close"
                     aria-label="Close"></button>
             <div ng-include="templateUrl"></div>
         </div>
@@ -48,40 +49,46 @@
                                accept="{{fileFormatsExtended}}"
                                ngf-change="fileSelected($files, $file, $newFiles, $duplicateFiles, $invalidFiles, $event)"
                                ngf-max-size="maxUploadFileSizeMB + 'MB'">
-                                <em class="icon-upload icon-lg pull-left"></em>
-                                <div>
-                                    <span>{{'upload.rdf.files.label' | translate}}</span>
-                                    <br>
-                                    <small class="text-muted">{{'all.rdf.formats.label' | translate}}{{'up.to' | translate}} {{maxUploadFileSizeMB | number}} MB</small>
+                                <div class="grid-container">
+                                    <em class="icon-upload icon-lg"></em>
+                                    <div class="text">
+                                        <div>{{'upload.rdf.files.label' | translate}}</div>
+                                        <small
+                                            class="text-muted">{{'all.rdf.formats.label' | translate}}{{'up.to' | translate}}
+                                            {{maxUploadFileSizeMB | number}} MB
+                                        </small>
+                                    </div>
                                 </div>
                             </a>
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-6 col-lg-4 mb-1">
-                        <div class="btn btn-outline-primary btn-lg text-xs-left d-block import-from-url-btn" role="button" ng-click="rdfDataFromURL()"
+                        <div class="btn btn-outline-primary btn-lg text-xs-left d-block import-from-url-btn"
+                             role="button" ng-click="rdfDataFromURL()"
                              uib-popover="{{'supported.import.formats.label' | translate}} {{fileFormatsHuman}}"
                              popover-trigger="mouseenter"
                              popover-placement="bottom">
-                            <em class="icon-link icon-lg pull-left"></em>
-                            <div>
-                                <span>{{'rdf.data.from.url.label' | translate}}</span>
-                                <br>
-                                <small class="text-muted">{{'all.rdf.formats.label' | translate}}</span>
-                                </small>
+                            <div class="grid-container">
+                                <em class="icon-link icon-lg"></em>
+                                <div class="text">
+                                    <span>{{'rdf.data.from.url.label' | translate}}</span>
+                                    <small class="text-muted">{{'all.rdf.formats.label' | translate}}</small>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-6 col-lg-4 mb-1">
-                        <div class="btn btn-outline-primary btn-lg text-xs-left d-block import-rdf-snippet-btn" role="button" ng-click="pasteData()"
+                        <div class="btn btn-outline-primary btn-lg text-xs-left d-block import-rdf-snippet-btn"
+                             role="button" ng-click="pasteData()"
                              uib-popover="{{'supported.import.formats.label' | translate}} {{textFileFormatsHuman}}"
                              popover-trigger="mouseenter"
                              popover-placement="bottom">
-                        <em class="icon-edit icon-lg pull-left"></em>
-                            <div>
-                                <span>{{'import.rdf.text.snippet.label' | translate}}</span>
-                                <br>
-                                <small class="text-muted">{{'type.paste.data.label' | translate}}</span>
-                                </small>
+                            <div class="grid-container">
+                                <em class="icon-edit icon-lg"></em>
+                                <div class="text">
+                                    <div>{{'import.rdf.text.snippet.label' | translate}}</div>
+                                    <small class="text-muted">{{'type.paste.data.label' | translate}}</small>
+                                </div>
                             </div>
                         </div>
                     </div>
