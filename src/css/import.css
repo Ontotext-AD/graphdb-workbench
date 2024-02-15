@@ -12,7 +12,7 @@
     text-overflow: ellipsis;
 }
 
-.text-and-icon {
+.grid-container {
     display: flex;
 }
 
