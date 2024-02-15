@@ -12,6 +12,16 @@
     text-overflow: ellipsis;
 }
 
+.grid-container {
+    display: flex;
+}
+
+.text {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
 .ng-hide.ng-hide-animate {
     display: none !important;
 }
