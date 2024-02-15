@@ -12,6 +12,8 @@ import {EventDataType} from "../models/ontotext-yasgui/event-data-type";
 import {decodeHTML} from "../../../app";
 import {toBoolean} from "../utils/string-utils";
 import {VIEW_SPARQL_EDITOR} from "../models/sparql/constants";
+import {CancelAbortingQuery} from "../models/sparql/cancel-aborting-query";
+import {QueryMode} from "../models/ontotext-yasgui/query-mode";
 
 const modules = [
     'ui.bootstrap',
@@ -85,7 +87,7 @@ function SparqlEditorCtrl($rootScope,
             beforeUpdateQuery: getBeforeUpdateQueryHandler(),
             outputHandlers: new Map([
                 [EventDataType.QUERY_EXECUTED, queryExecutedHandler],
-                [EventDataType.COUNT_QUERY_ABORTED, abortCountQueryHandler]
+                [EventDataType.REQUEST_ABORTED, requestAbortedHandler]
             ])
         };
     };
@@ -144,14 +146,14 @@ function SparqlEditorCtrl($rootScope,
     };
 
     /**
-     * Handles the "countQueryAborted" event emitted by the ontotext-yasgui. The event is fired when a count query is aborted.
+     * Handles the "requestAborted" event emitted by the ontotext-yasgui. The event is fired when a request is aborted.
      *
-     * @param {CountQueryAbortedEvent} countQueryAbortedEvent the event payload containing the request object of the count query.
+     * @param {RequestAbortedEvent} requestAbortedEvent the event payload containing the request object and the query mode.
      */
-    const abortCountQueryHandler = (countQueryAbortedEvent) => {
-        if (countQueryAbortedEvent) {
-            const repository = countQueryAbortedEvent.getRepository();
-            const currentTrackAlias = countQueryAbortedEvent.getQueryTrackAlias();
+    const requestAbortedHandler = (requestAbortedEvent) => {
+        if (requestAbortedEvent && QueryMode.UPDATE !== requestAbortedEvent.queryMode) {
+            const repository = requestAbortedEvent.getRepository();
+            const currentTrackAlias = requestAbortedEvent.getQueryTrackAlias();
             if (repository && currentTrackAlias) {
                 MonitoringRestService.deleteQuery(currentTrackAlias, repository);
             }
@@ -378,6 +380,32 @@ function SparqlEditorCtrl($rootScope,
             });
     };
 
+    const getExitPageConfirmMessage = (ongoingRequestsInfo) => {
+        let exitPageConfirmMessage = "yasqe.leave_page.run_queries.confirmation.";
+        if (!ongoingRequestsInfo || ongoingRequestsInfo.queriesCount < 1) {
+            exitPageConfirmMessage += "none_queries_";
+        } else if (ongoingRequestsInfo.queriesCount === 1) {
+            exitPageConfirmMessage += "one_query_";
+        } else {
+            exitPageConfirmMessage += "queries_";
+        }
+
+        if (!ongoingRequestsInfo.updatesCount || ongoingRequestsInfo.updatesCount === 0) {
+            exitPageConfirmMessage += "non_updates";
+        } else if (ongoingRequestsInfo.updatesCount === 1) {
+            exitPageConfirmMessage += "one_update";
+        } else {
+            exitPageConfirmMessage += "updates";
+        }
+
+        exitPageConfirmMessage += ".message";
+        const params= {
+                queriesCount: ongoingRequestsInfo.queriesCount,
+                updatesCount: ongoingRequestsInfo.updatesCount
+            };
+        return $translate.instant(exitPageConfirmMessage, params);
+    };
+
     // Initialization and bootstrap
     const init = () => {
         Promise.all([$jwtAuth.getPrincipal(), $repositories.getPrefixes($repositories.getActiveRepository())])
@@ -416,29 +444,70 @@ function SparqlEditorCtrl($rootScope,
         }
     };
 
-    let queriesAreCanceled = undefined;
-
-    const cancelAllCountQueries = () => {
+    const beforeunloadHandler = (event) => {
         const ontotextYasguiElement = YasguiComponentDirectiveUtil.getOntotextYasguiElement(QUERY_EDITOR_ID);
-        if (!ontotextYasguiElement || queriesAreCanceled) {
+        if (!ontotextYasguiElement) {
             return;
 
         }
-        var newPath = $location.path();
-        ontotextYasguiElement.abortAllCountQuery()
+        // If we set event.returnValue, the browser will prompt the user for confirmation to leave the page,
+        // but we don't have a way to handle the user's choice.
+        // Therefore, we can't take any action, so we simply proceed to abort all requests.
+        ontotextYasguiElement.abortAllRequests().then(() => {});
+    };
+
+    window.addEventListener('beforeunload', beforeunloadHandler);
+
+    const confirmIfHaveRunQuery = (ongoingRequestsInfo) => new Promise((resolve, reject) => {
+
+        if (!ongoingRequestsInfo || ongoingRequestsInfo.queriesCount < 1 && ongoingRequestsInfo.updatesCount < 1) {
+            resolve();
+            return;
+        }
+
+        const title = $translate.instant('common.confirm');
+        const message = decodeHTML(getExitPageConfirmMessage(ongoingRequestsInfo));
+        ModalService.openSimpleModal({
+            title,
+            message,
+            warning: true
+        }).result.then(function () {
+            resolve();
+        }, function () {
+            reject(new CancelAbortingQuery());
+        });
+    });
+    let queriesAreCanceled = undefined;
+    const locationChangeHandler = (event) => {
+        const ontotextYasguiElement = YasguiComponentDirectiveUtil.getOntotextYasguiElement(QUERY_EDITOR_ID);
+        if (!ontotextYasguiElement || queriesAreCanceled) {
+            return;
+        }
+        event.preventDefault();
+        const newPath = $location.path();
+        // First, we check if there are any ongoing requests initiated by the user.
+        // If the user has ongoing requests, we request confirmation to abort them.
+        // If the user confirms or there are no ongoing requests, we call the "abortAllRequests" method. This method will abort all requests.
+        ontotextYasguiElement
+            .getOngoingRequestsInfo()
+            .then((hasRunQuery) => confirmIfHaveRunQuery(hasRunQuery))
+            .then(() => ontotextYasguiElement.abortAllRequests())
             .then(() => {
                 queriesAreCanceled = true;
                 $location.path(newPath);
+            })
+            .catch((error) => {
+                if (!(error instanceof CancelAbortingQuery)) {
+                    throw error;
+                }
             });
     };
 
-    window.addEventListener('beforeunload', cancelAllCountQueries);
-
-    subscriptions.push($rootScope.$on('$locationChangeStart', cancelAllCountQueries));
+    subscriptions.push($rootScope.$on('$locationChangeStart', locationChangeHandler));
 
     const removeAllListeners = () => {
         subscriptions.forEach((subscription) => subscription());
-        window.removeEventListener('beforeunload', cancelAllCountQueries);
+        window.removeEventListener('beforeunload', beforeunloadHandler);
     };
 
     // Deregister the watcher when the scope/directive is destroyed

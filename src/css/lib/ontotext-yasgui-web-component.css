@@ -325,6 +325,10 @@ yasgui-component .yasr_plugin_control label {
     margin-bottom: 0;
 }
 
+.run_query_confirmation {
+    margin-bottom: 20px;
+}
+
 yasgui-component .yasr_plugin_control label .label {
     margin-right: 5px;
 }
