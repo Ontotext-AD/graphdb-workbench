@@ -157,7 +157,7 @@ exportCtrl.controller('ExportCtrl',
                 const acceptHeader = format.type + ';profile=' + JSONLDMode.link;
                 const headers = {
                     'accept': acceptHeader,
-                    'link': link
+                    'link': '<' + link + '>'
                 };
                 ExportRestService.getExportedStatementsAsJSONLD(context, forSelectedGraphs, repo, graphsByValue, AuthTokenService.getAuthToken(), headers)
                     .then(function ({data, filename}) {

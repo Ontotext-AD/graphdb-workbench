@@ -307,6 +307,29 @@ function yasguiComponentDirective(
             };
             downloadAsPluginNameToEventHandler.set('extended_response', downloadCurrentResults);
 
+            const downloadAs = (query, infer, sameAs, authToken, accept, currentModeLink, link) => {
+                YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync('#query-editor')
+                    .then((yasguiComponent) => {
+                        return yasguiComponent.getQueryMode();
+                    }).then((queryMode) => {
+                    const endpoint = $repositories.resolveSparqlEndpoint(queryMode);
+                    // Simple cross-browser download with a form
+                    const $wbDownload = $('#wb-download');
+                    $wbDownload.attr('action', endpoint);
+                    $('#wb-download-query').val(query);
+                    $('#wb-download-infer').val(infer);
+                    $('#wb-download-sameAs').val(sameAs);
+                    $('#wb-auth-token').val(authToken);
+                    if (currentModeLink) {
+                        $('#wb-download-accept').val(accept + ";profile=" + currentModeLink);
+                        $('#wb-download-link').val('<' + link + '>');
+                    } else {
+                        $('#wb-download-accept').val(accept);
+                    }
+                    $wbDownload.submit();
+                });
+            };
+
             const downloadThroughServer = (downloadAsEvent) => {
                 const query = downloadAsEvent.query;
                 const infer = downloadAsEvent.infer;
@@ -314,10 +337,8 @@ function yasguiComponentDirective(
                 const accept = downloadAsEvent.contentType;
                 const authToken = AuthTokenService.getAuthToken() || '';
 
-                let modalInstance;
-                let exportData;
                 if (downloadAsEvent.contentType === "application/ld+json") {
-                    modalInstance = $uibModal.open({
+                    const modalInstance = $uibModal.open({
                         templateUrl: 'js/angular/core/templates/modal/exportSettingsModal.html',
                         controller: ExportSettingsCtrl,
                         size: 'lg',
@@ -325,26 +346,11 @@ function yasguiComponentDirective(
                     });
 
                     modalInstance.result.then(function (data) {
-                        exportData = data;
+                        downloadAs(query, infer, sameAs, authToken, accept, data.currentMode.link, data.link);
                     });
+                } else {
+                    downloadAs(query, infer, sameAs, authToken, accept);
                 }
-
-                YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync('#query-editor')
-                    .then((yasguiComponent) => {
-                        return yasguiComponent.getQueryMode();
-                    }).then((queryMode) => {
-                        const endpoint = $repositories.resolveSparqlEndpoint(queryMode);
-                        // Simple cross-browser download with a form
-                        const $wbDownload = $('#wb-download');
-                        $wbDownload.attr('action', endpoint);
-                        $('#wb-download-query').val(query);
-                        $('#wb-download-infer').val(infer);
-                        $('#wb-download-sameAs').val(sameAs);
-                        $('#wb-auth-token').val(authToken);
-                        $('#wb-download-accept').val(accept + ";profile=" + exportData.currentMode.name);
-                        $('#wb-download-link').val(exportData.link);
-                        $wbDownload.submit();
-                    });
             };
             downloadAsPluginNameToEventHandler.set(YasrPluginName.EXTENDED_TABLE, downloadThroughServer);
 
