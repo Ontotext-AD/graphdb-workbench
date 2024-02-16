@@ -9,11 +9,11 @@
                 <label class="col-lg-3 col-form-label">
                     Base IRI
                     <span class="btn btn-link p-0"
-                          popover="RDF data may contain relative IRIs. In order to make sense of them, they need to be resolved against a Base IRI. Typically data does not contain relative IRIs and this field may be left empty."
+                          uib-popover="RDF data may contain relative IRIs. In order to make sense of them, they need to be resolved against a Base IRI. Typically data does not contain relative IRIs and this field may be left empty."
                           popover-trigger="mouseenter"
                           popover-placement="right">
                                     <em class="icon icon-info"></em>
-                                </span>
+                    </span>
                 </label>
                 <div class="col-lg-9">
                     <input validate-uri name="baseURI" type="text" ng-model="settings['baseURI']" class="form-control"
@@ -27,7 +27,7 @@
                 <label class="col-lg-3 col-form-label">
                     Target graphs
                     <span class="btn btn-link p-0"
-                          popover="Data is imported into one or more graphs. Some RDF formats may specify graphs, while others do not support that. The latter are treated as if they specify the default graph."
+                          uib-popover="Data is imported into one or more graphs. Some RDF formats may specify graphs, while others do not support that. The latter are treated as if they specify the default graph."
                           popover-trigger="mouseenter"
                           popover-placement="right">
                                     <em class="icon icon-info"></em>
@@ -35,21 +35,21 @@
                 </label>
                 <div class="col-lg-9">
                     <div>
-                        <label popover="Import into the graph(s) specified by the data source."
+                        <label uib-popover="Import into the graph(s) specified by the data source."
                                popover-trigger="mouseenter">
                             <input type="radio" class="from-data-btn" ng-model="target" value="data"
                                    ng-change="settingsForm.context.$setValidity('validateUri', true)">
                             From data
                         </label>
                         &nbsp;
-                        <label popover="Import everything into the default graph."
+                        <label uib-popover="Import everything into the default graph."
                                popover-trigger="mouseenter">
                             <input type="radio" class="default-graph-btn" ng-model="target" value="default"
                                    ng-change="settingsForm.context.$setValidity('validateUri', true)">
                             The default graph
                         </label>
                         &nbsp;
-                        <label popover="Import everything into a user-specified named graph."
+                        <label uib-popover="Import everything into a user-specified named graph."
                                popover-trigger="mouseenter">
                             <input type="radio" class="named-graph-btn" ng-model="target" value="named" class="named-graph-option">
                             Named graph
@@ -65,7 +65,7 @@
             <div class="form-group row">
                 <div class="col-lg-9 offset-lg-3">
                     <label class="col-form-label"
-                           popover="{{isMultiple ? 'This mode is not supported when importing multiple items.' : 'Enable this to replace the data in one or more graphs with the imported data.'}}"
+                           uib-popover="{{isMultiple ? 'This mode is not supported when importing multiple items.' : 'Enable this to replace the data in one or more graphs with the imported data.'}}"
                            popover-trigger="mouseenter"
                            popover-placement="top">
                         <input type="checkbox" class="existing-data-replacement" ng-model="enableReplace" ng-disabled="isMultiple">
@@ -77,7 +77,7 @@
                 <label class="col-lg-3 col-form-label">
                     Replaced graphs
                     <span class="btn btn-link p-0"
-                          popover="Replaced graphs provide an easy way to update one or more graphs with a new version of the data. All specified graphs will be cleared before the import is run. This option provides the most flexibility when the target graphs are determined from data."
+                          uib-popover="Replaced graphs provide an easy way to update one or more graphs with a new version of the data. All specified graphs will be cleared before the import is run. This option provides the most flexibility when the target graphs are determined from data."
                           popover-trigger="mouseenter"
                           popover-placement="right">
                                     <em class="icon icon-info"></em>
@@ -94,7 +94,7 @@
                             <input name="replaceGraph" ng-model="replaceGraph" type="text" class="replaced-graphs-input form-control"
                                    placeholder="http://example.com/graph..."
                                    ng-keypress="checkEnterReplaceGraph($event, replaceGraph)"
-                                   popover="If a graph ends in *, it will be treated as a prefix matching all named graphs starting with that prefix excluding the *."
+                                   uib-popover="If a graph ends in *, it will be treated as a prefix matching all named graphs starting with that prefix excluding the *."
                                    popover-placement="top"
                                    popover-trigger="mouseenter">
                         </div>
@@ -160,7 +160,7 @@
                             <label>
                                 <input name="preserveBNodeIDs" type="checkbox"
                                        ng-model="settings['parserSettings']['preserveBNodeIds']"
-                                       popover="Assign its own internal blank node identifiers or use the blank node ids it finds in the file."
+                                       uib-popover="Assign its own internal blank node identifiers or use the blank node ids it finds in the file."
                                        popover-trigger="mouseenter"
                                        popover-placement="bottom"> Preserve BNode IDs
                             </label>
@@ -174,7 +174,7 @@
                             <label>
                                 <input name="failOnUnknownDataTypes" type="checkbox"
                                        ng-model="settings['parserSettings']['failOnUnknownDataTypes']"
-                                       popover="Fail on unknown datatypes"
+                                       uib-popover="Fail on unknown datatypes"
                                        popover-trigger="mouseenter"
                                        popover-placement="bottom"> Fail parsing if datatypes are not recognised
                             </label>
@@ -183,7 +183,7 @@
                             <label>
                                 <input name="verifyDataTypeValues" type="checkbox"
                                        ng-model="settings['parserSettings']['verifyDataTypeValues']"
-                                       popover="Validate recognised datatype values"
+                                       uib-popover="Validate recognised datatype values"
                                        popover-trigger="mouseenter"
                                        popover-placement="bottom"> Verify recognised datatypes
                             </label>
@@ -192,7 +192,7 @@
                             <label>
                                 <input name="normalizeDataTypeValues" type="checkbox"
                                        ng-model="settings['parserSettings']['normalizeDataTypeValues']"
-                                       popover="Normalize recognised datatype values"
+                                       uib-popover="Normalize recognised datatype values"
                                        popover-trigger="mouseenter"
                                        popover-placement="bottom"> Normalize recognised datatypes values
                             </label>
@@ -207,7 +207,7 @@
                             <label>
                                 <input name="failOnUnknownLanguageTags" type="checkbox"
                                        ng-model="settings['parserSettings']['failOnUnknownLanguageTags']"
-                                       popover="Fail on unknown languages"
+                                       uib-popover="Fail on unknown languages"
                                        popover-trigger="mouseenter"
                                        popover-placement="bottom"> Fail parsing if languages are not recognised
                             </label>
@@ -216,7 +216,7 @@
                             <label>
                                 <input name="verifyLanguageTags" type="checkbox"
                                        ng-model="settings['parserSettings']['verifyLanguageTags']"
-                                       popover="Validate recognised language tags"
+                                       uib-popover="Validate recognised language tags"
                                        popover-trigger="mouseenter"
                                        popover-placement="bottom"> Verify language based on a given set of definitions
                                 for valid languages
@@ -226,7 +226,7 @@
                             <label>
                                 <input name="normalizeLanguageTags" type="checkbox"
                                        ng-model="settings['parserSettings']['normalizeLanguageTags']"
-                                       popover="Normalize language tags"
+                                       uib-popover="Normalize language tags"
                                        popover-trigger="mouseenter"
                                        popover-placement="bottom"> Normalize recognised language tags
                             </label>
@@ -240,7 +240,7 @@
                         <label>
                             <input name="stopOnError" type="checkbox"
                                    ng-model="settings['parserSettings']['stopOnError']"
-                                   popover="By default parser stops on error. When set on false errors are reported in the log and parsing continues."
+                                   uib-popover="By default parser stops on error. When set on false errors are reported in the log and parsing continues."
                                    popover-trigger="mouseenter"
                                    popover-placement="bottom"> Should stop on error
                         </label>
@@ -253,7 +253,7 @@
                 <div class="col-lg-9 col-form-label">
                     <input type="checkbox" ng-model="settings['forceSerial']" id="force-serial">
                     <label for="force-serial"
-                           popover="Forces the use of the serial statements pipeline. Not recommended. Use for debugging only."
+                           uib-popover="Forces the use of the serial statements pipeline. Not recommended. Use for debugging only."
                            popover-placement="bottom"
                            popover-trigger="mouseenter">Force serial pipeline</label>
                 </div>

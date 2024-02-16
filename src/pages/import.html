@@ -35,56 +35,45 @@
         <div class="tab-content">
             <div id="import-user" class="tab-pane" ng-controller="UploadCtrl"
                  ng-class="$parent.viewType == 'user' ? 'active' : ''">
-                <div class="row mb-2 upload-buttons">
-                    <div class="col-xs-12 col-md-6 col-lg-4 mb-1">
-                        <div class="btn btn-outline-primary btn-lg text-xs-left d-block upload-rdf-files-btn"
-                             popover="The supported RDF formats are {{fileFormatsHuman}}"
-                             popover-trigger="mouseenter"
-                             popover-placement="bottom">
-                            <a id="wb-import-uploadFile" ngf-select="showToast(rejFiles)" ng-model="currentFiles"
-                               ngf-multiple="true"
-                               class="pointer clearfix"
-                               accept="{{fileFormatsExtended}}"
-                               ngf-change="fileSelected($files, $file, $newFiles, $duplicateFiles, $invalidFiles, $event)"
-                               ngf-max-size="maxUploadFileSizeMB + 'MB'">
-                                <em class="icon-upload icon-lg pull-left"></em>
-                                <div>
-                                    <span>Upload RDF files</span>
-                                    <br>
-                                    <small class="text-muted">All RDF formats, up to {{maxUploadFileSizeMB | number}} MB</small>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-md-6 col-lg-4 mb-1">
-                        <div class="btn btn-outline-primary btn-lg text-xs-left d-block import-from-url-btn" role="button" ng-click="rdfDataFromURL()"
-                             popover="The supported RDF formats are {{fileFormatsHuman}}"
-                             popover-trigger="mouseenter"
-                             popover-placement="bottom">
-                            <em class="icon-link icon-lg pull-left"></em>
-                            <div>
-                                <span>Get RDF data from a URL</span>
-                                <br>
-                                <small class="text-muted">All RDF formats</span>
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-md-6 col-lg-4 mb-1">
-                        <div class="btn btn-outline-primary btn-lg text-xs-left d-block import-rdf-snippet-btn" role="button" ng-click="pasteData()"
-                             popover="The supported RDF formats are {{textFileFormatsHuman}}"
-                             popover-trigger="mouseenter"
-                             popover-placement="bottom">
-                        <em class="icon-edit icon-lg pull-left"></em>
-                            <div>
-                                <span>Import RDF text snippet</span>
-                                <br>
-                                <small class="text-muted">Type or paste RDF data</span>
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                 <div class="container-fluid">
+                  <div class="row upload-buttons">
+                      <!-- Upload RDF Files Button -->
+                      <div class="col-xs-12 col-sm-6 col-md-4 mb-3">
+                          <div class="btn btn-outline-primary btn-lg text-xs-left d-block upload-rdf-files-btn">
+                              <a id="wb-import-uploadFile" ngf-select="showToast(rejFiles)" ng-model="currentFiles" ngf-multiple="true" class="pointer clearfix" accept="{{fileFormatsExtended}}" ngf-change="fileSelected($files, $file, $newFiles, $duplicateFiles, $invalidFiles, $event)" ngf-max-size="maxUploadFileSizeMB + 'MB'">
+                                  <em class="icon-upload icon-lg pull-left"></em>
+                                  <div>
+                                      <span>Upload RDF files</span>
+                                      <br>
+                                      <small class="text-muted">All RDF formats, up to {{maxUploadFileSizeMB | number}} MB</small>
+                                  </div>
+                              </a>
+                          </div>
+                      </div>
+                      <!-- Get RDF Data from URL Button -->
+                      <div class="col-xs-12 col-sm-6 col-md-4 mb-3">
+                          <div class="btn btn-outline-primary btn-lg text-xs-left d-block import-from-url-btn" role="button" ng-click="rdfDataFromURL()">
+                              <em class="icon-link icon-lg pull-left"></em>
+                              <div>
+                                  <span>Get RDF data from a URL</span>
+                                  <br>
+                                  <small class="text-muted">All RDF formats</small>
+                              </div>
+                          </div>
+                      </div>
+                      <!-- Import RDF Text Snippet Button -->
+                      <div class="col-xs-12 col-sm-6 col-md-4 mb-3">
+                          <div class="btn btn-outline-primary btn-lg text-xs-left d-block import-rdf-snippet-btn" role="button" ng-click="pasteData()">
+                              <em class="icon-edit icon-lg pull-left"></em>
+                              <div>
+                                  <span>Import RDF text snippet</span>
+                                  <br>
+                                  <small class="text-muted">Type or paste RDF data</small>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
                 <div files-table></div>
             </div>
             <div id="import-server" ng-hide="isS4()" class="tab-pane" ng-controller="ImportCtrl"
