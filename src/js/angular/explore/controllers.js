@@ -235,7 +235,6 @@ function ExploreCtrl(
                             data = JSON.stringify(data);
                             break;
                     }
-
                 }
                 // TODO: Use bowser library to get the browser type
                 const ua = navigator.userAgent.toLowerCase();

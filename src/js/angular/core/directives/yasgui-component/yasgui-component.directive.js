@@ -2,6 +2,7 @@ import 'angular/core/services/translation.service';
 import 'angular/sparql-editor/share-query-link.service';
 import {queryPayloadFromEvent, savedQueriesResponseMapper} from "../../../rest/mappers/saved-query-mapper";
 import {isFunction, merge} from "lodash";
+import {saveAs} from 'lib/FileSaver-patch';
 import {downloadAsFile, toYasguiOutputModel} from "../../../utils/yasgui-utils";
 import {EventDataType} from "../../../models/ontotext-yasgui/event-data-type";
 import {QueryMode} from "../../../models/ontotext-yasgui/query-mode";
@@ -307,27 +308,28 @@ function yasguiComponentDirective(
             };
             downloadAsPluginNameToEventHandler.set('extended_response', downloadCurrentResults);
 
-            const downloadAs = (query, infer, sameAs, authToken, accept, currentModeLink, link) => {
-                YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync('#query-editor')
-                    .then((yasguiComponent) => {
-                        return yasguiComponent.getQueryMode();
-                    }).then((queryMode) => {
-                    const endpoint = $repositories.resolveSparqlEndpoint(queryMode);
-                    // Simple cross-browser download with a form
-                    const $wbDownload = $('#wb-download');
-                    $wbDownload.attr('action', endpoint);
-                    $('#wb-download-query').val(query);
-                    $('#wb-download-infer').val(infer);
-                    $('#wb-download-sameAs').val(sameAs);
-                    $('#wb-auth-token').val(authToken);
-                    if (currentModeLink) {
-                        $('#wb-download-accept').val(accept + ";profile=" + currentModeLink);
-                        $('#wb-download-link').val('<' + link + '>');
-                    } else {
-                        $('#wb-download-accept').val(accept);
-                    }
-                    $wbDownload.submit();
-                });
+            const downloadAs = (query, infer, sameAs, authToken, accept, link) => {
+                const queryParams = {
+                    query: query,
+                    infer: infer,
+                    sameAs: sameAs,
+                    authToken: authToken
+                };
+                RDF4JRepositoriesRestService.downloadResultsAsFile($repositories.getActiveRepository(), queryParams, accept, link)
+                    .then(function ({data, filename}) {
+                        saveAs(data, filename);
+                    }).catch(function (res) {
+                        res.data.text()
+                            .then((message) => {
+                                if (res.status === 431) {
+                                    toastr.error(res.statusText, $translate.instant('common.error'));
+                                } else {
+                                    toastr.error(message, $translate.instant('common.error'));
+                                }
+                            });
+                    }).finally(() => {
+                        $scope.setLoader(false);
+                    });
             };
 
             const downloadThroughServer = (downloadAsEvent) => {
@@ -346,10 +348,10 @@ function yasguiComponentDirective(
                     });
 
                     modalInstance.result.then(function (data) {
-                        downloadAs(query, infer, sameAs, authToken, accept, data.currentMode.link, data.link);
+                        downloadAs(query, infer, sameAs, authToken, accept + ';profile=' + data.currentMode.link, data.link ? '<' + data.link + '>' : "");
                     });
                 } else {
-                    downloadAs(query, infer, sameAs, authToken, accept);
+                    downloadAs(query, infer, sameAs, authToken, accept, "");
                 }
             };
             downloadAsPluginNameToEventHandler.set(YasrPluginName.EXTENDED_TABLE, downloadThroughServer);
