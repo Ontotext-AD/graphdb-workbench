@@ -157,7 +157,7 @@ exportCtrl.controller('ExportCtrl',
                 const acceptHeader = format.type + ';profile=' + JSONLDMode.link;
                 const headers = {
                     'accept': acceptHeader,
-                    'link': '<' + link + '>'
+                    'link': link
                 };
                 ExportRestService.getExportedStatementsAsJSONLD(context, forSelectedGraphs, repo, graphsByValue, AuthTokenService.getAuthToken(), headers)
                     .then(function ({data, filename}) {
@@ -225,7 +225,7 @@ exportCtrl.controller('ExportCtrl',
                 });
 
                 modalInstance.result.then(function (data) {
-                    downloadJSONLDExport(format, context, data.link, forSelectedGraphs, $repositories.getActiveRepositoryObject(), $scope.graphsByValue, data.currentMode);
+                    downloadJSONLDExport(format, context, data.link ? '<' + data.link + '>' : "", forSelectedGraphs, $repositories.getActiveRepositoryObject(), $scope.graphsByValue, data.currentMode);
                 });
             };
 
