@@ -452,12 +452,12 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
          * @return {string} The resolved REST endpoint for sparql queries.
          */
         this.resolveSparqlEndpoint = (queryMode) => {
-            // if query mode is 'query' -> '/repositories/repo-name'
-            // if query mode is 'update' -> '/repositories/repo-name/statements'
+            // if query mode is 'query' -> 'repositories/repo-name'
+            // if query mode is 'update' -> 'repositories/repo-name/statements'
             if (queryMode === QueryMode.UPDATE) {
-                return `/repositories/${this.getActiveRepository()}/statements`;
+                return `repositories/${this.getActiveRepository()}/statements`;
             } else if (queryMode === QueryMode.QUERY) {
-                return `/repositories/${this.getActiveRepository()}`;
+                return `repositories/${this.getActiveRepository()}`;
             }
         };
 
