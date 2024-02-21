@@ -12,7 +12,7 @@
             <a href="#">Non-link 2</a>
             <a href="https://graphdb.ontotext.com/" target="_blank">GraphDB Website</a>
         </div>
-
+        <h2>Texts and toasts</h2>
         <div>This is normal text, <span class="text-muted">with something muted</span> and then back to normal again.
         </div>
 
@@ -41,6 +41,7 @@
 
         <div class="row">
             <div class="col-md-6">
+                <h2>Alerts (short) and text colors</h2>
                 <div class="alert alert-success">Lorem ipsum dolor sit amet.</div>
                 <div class="alert alert-info">Lorem ipsum dolor sit amet.</div>
                 <div class="alert alert-help">Lorem ipsum dolor sit amet.</div>
@@ -58,6 +59,7 @@
                 </div>
             </div>
             <div class="col-md-6 lead">
+                <h2>Alerts (long) and text colors</h2>
                 <div class="alert alert-success">
                     <div>Lorem ipsum dolor sit amet.</div>
                     <div class="small">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque volutpat
@@ -108,7 +110,177 @@
             </div>
         </div>
 
-        <br>
+        <div style="width: 60%;">
+            <!--Inputs and forms-->
+            <div class="inputs-container"
+                 style="justify-content: space-between; display: flex;gap: 10px; flex-direction: column;">
+                <h2>Inputs and forms</h2>
+                <label for="input1">Input</label>
+                <input gdb-tooltip="Input tooltip"
+                       tooltip-placement="top"
+                       class="form-control" type="text" name="title"
+                       id="input1">
+                <label for="input2">Disabled</label>
+                <input gdb-tooltip="Input tooltip"
+                       tooltip-placement="top"
+                       class="form-control" type="text" name="title"
+                       id="input2"
+                       ng-disabled="true">
+                <label for="readonly">Readonly</label>
+                <input class="form-control" type="text" readonly value="Lorem ipsum" id="readonly"/>
+                <div style="display: flex; align-items: baseline; gap: 5px;">
+                    <form name="testForm" id="testForm" novalidate>
+                        <label for="invalidInput"> Invalid
+                            <input required name="invalidInput"
+                                   class="form-control ng-invalid"
+                                   id="invalidInput"
+                                   type="text"
+                                   placeholder="Lorem ipsum">
+                        </label>
+                    </form>
+                    <button type="submit" form="testForm" class="btn btn-primary create-connector-btn">Invalidate field
+                    </button>
+                </div>
+                <label for="numberField">Number field</label>
+                <input class="form-control" placeholder="Number field" type="number" value="1234567890"
+                       required id="numberField" pattern="-?[1-9][0-9]*(\.[0-9]+)?">
+                <label for="password">Password</label>
+                <input id="password" type="password" placeholder="Password" class="form-control form-control-lg"
+                       required value="qwerty">
+                <label> Text area (expandable) and <strong>popover</strong>
+                    <textarea type="text" class="form-control" placeholder="Hover for popover"
+                              uib-popover="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque volutpat
+                                            facilisis erat a ornare.
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque volutpat
+                                            facilisis erat a ornare.
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque volutpat
+                                            facilisis erat a ornare."
+                              popover-trigger="mouseenter"
+                              popover-placement="bottom"></textarea>
+                </label>
+            </div>
+            <br/>
+
+            <!--Buttons and toggles-->
+            <div class="buttons-container"
+                 style="justify-content: space-between; display: flex;gap: 10px; flex-direction: column;">
+                <h2>Buttons and toggles</h2>
+                <h3>Icon buttons</h3>
+                <div class="icon-buttons">
+                    <button class="btn btn-link p-0" type="button"
+                            gdb-tooltip="Copy">
+                        <em class="icon-copy"></em>
+                    </button>
+                    <button class="btn btn-link p-0" type="button"
+                            gdb-tooltip="Disabled" disabled>
+                        <em class="icon-copy"></em>
+                    </button>
+                    <button class="btn btn-link p-0" type="button"
+                            gdb-tooltip="Repair">
+                        <em class="icon-reload"></em>
+                    </button>
+                    <button class="btn btn-link secondary p-0" type="button"
+                            gdb-tooltip="Delete">
+                        <em class="icon-trash"></em>
+                    </button>
+                </div>
+                <br/>
+                <h3>Icon buttons with text</h3>
+                <div class="icon-buttons">
+                    <button type="button" class="btn btn-link pull-right">
+                    <span class="icon-help" uib-popover="Help button" popover-placement="top"
+                          popover-trigger="mouseenter"></span>
+                        <span class="hidden-lg-down">Help</span>
+                    </button>
+                    <button class="btn btn-primary add-first-rule-btn"
+                            gdb-tooltip="Tooltip">
+                        <em class="icon-plus"></em>Button text
+                    </button>
+                    <div class="btn btn-outline-primary btn-sm">
+                        <div ngf-select ngf-multiple="false"
+                             class="selectFiles pointer clearfix"
+                             gdb-tooltip="Tooltip">
+                            <em ng-hide="false" class="fa fa-upload fa-2x"></em>&nbsp;
+                            <span class="pageInfo" style="vertical-align: super; color: #8a8a8a;">Button text</span>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-md-6 col-lg-4 mb-1">
+                        <div class="btn btn-outline-primary btn-lg text-xs-left d-block"
+                             role="button"
+                             uib-popover="Tooltip"
+                             popover-trigger="mouseenter"
+                             popover-placement="bottom">
+                            <div class="grid-container">
+                                <em class="icon-link icon-lg"></em>
+                                <div class="text">
+                                    <span>Button label</span>
+                                    <small class="text-muted">Small text</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+
+                <h3>Radio buttons and checkboxes</h3>
+                <form name="myForm" class="radio">
+                    <label class="padding-label" gdb-tooltip="tooltip">
+                        <input type="radio" ng-model="color.name" value="red">
+                        Red
+                    </label><br/>
+                    <label class="padding-label" gdb-tooltip="tooltip">
+                        <input type="radio" ng-model="color.name" ng-value="specialValue">
+                        Green
+                    </label><br/>
+                    <label class="padding-label" gdb-tooltip="tooltip">
+                        <input type="radio" ng-model="color.name" value="blue">
+                        Blue
+                    </label><br/>
+                    <label class="padding-label" gdb-tooltip="tooltip">
+                        <input id="disabled" type="radio" value="disabled" ng-disabled="true"/>
+                        Disabled option
+                    </label>
+                </form>
+                <br>
+                <span gdb-tooltip="{{color.name}}"
+                      popover-trigger="mouseenter"
+                      popover-placement="top"
+                      ng-repeat="color in colors">
+                    <input id="color.name" type="checkbox" ng-model="checkedItem"/>
+                    <label for="color.name">{{color.name}}</label>
+                    <br>
+                </span>
+                <div>
+                    <label>
+                        <input type="checkbox"
+                               disabled
+                               gdb-tooltip="Disabled"
+                               popover-trigger="mouseenter"
+                               popover-placement="bottom"> Disabled option
+                    </label>
+                </div>
+                <br/>
+                <h3>Toggle and slider</h3>
+                <div>
+                    <span gdb-tooltip="Toggle" tooltip-placement="top" class="switch">
+                        <input id="toggle" type="checkbox" class="switch" ng-checked="true"/>
+                        <label for="toggle"></label>
+                    </span>
+                </div>
+                <br/>
+                <div class="class-cnt-slider animate-show">
+                    <rzslider id="ux-test-slider"
+                              rz-slider-model="slider.value"
+                              rz-slider-options="slider.options"></rzslider>
+                </div>
+            </div>
+        </div>
+        <br/>
+    </div>
+
+    <!--Dropdowns-->
+    <div class="dropdowns-container" style="width: 60%;">
+        <h2>Dropdown menus</h2>
         <select class="form-control" ng-model="myColor" ng-options="color.name for color in colors">
             <option value="">-- choose color --</option>
         </select>
@@ -153,272 +325,137 @@
                 </li>
             </ul>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                <label for="input1">Input</label>
-                <input gdb-tooltip="Input tooltip"
-                       tooltip-placement="top"
-                       class="form-control" type="text" name="title"
-                       id="input1">
-                <label for="input2">Disabled</label>
-                <input gdb-tooltip="Input tooltip"
-                       tooltip-placement="top"
-                       class="form-control" type="text" name="title"
-                       id="input2"
-                       ng-disabled="true">
-                <label for="readonly">Readonly</label>
-                <input class="form-control" type="text" readonly value="Lorem ipsum" id="readonly"/>
-                <br>
-                <form name="myForm" class="radio">
-                    <label class="padding-label" gdb-tooltip="tooltip">
-                        <input type="radio" ng-model="color.name" value="red">
-                        Red
-                    </label><br/>
-                    <label class="padding-label" gdb-tooltip="tooltip">
-                        <input type="radio" ng-model="color.name" ng-value="specialValue">
-                        Green
-                    </label><br/>
-                    <label class="padding-label" gdb-tooltip="tooltip">
-                        <input type="radio" ng-model="color.name" value="blue">
-                        Blue
-                    </label><br/>
-                    <label class="padding-label" gdb-tooltip="tooltip">
-                        <input id="disabled" type="radio" value="disabled" ng-disabled="true"/>
-                        Disabled option
-                    </label>
-                </form>
-                <br>
-                <span gdb-tooltip="{{color.name}}"
-                      popover-trigger="mouseenter"
-                      popover-placement="top"
-                      ng-repeat="color in colors">
-                    <input id="color.name" type="checkbox" ng-model="checkedItem"/>
-                    <label for="color.name">{{color.name}}</label>
-                    <br>
-                </span>
-                <div>
-                    <label>
-                        <input type="checkbox"
-                               disabled
-                               gdb-tooltip="Disabled"
-                               popover-trigger="mouseenter"
-                               popover-placement="bottom"> Disabled option
-                    </label>
-                </div>
+    </div>
 
-                <div class="card">
-                    <div class="card-block">
-                        <h6>Active repo</h6>
-                        <div class="actions-bar pull-right">
-                            Card content
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque volutpat
-                            facilisis erat a ornare.
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque volutpat
-                            facilisis erat a ornare.
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque volutpat
-                            facilisis erat a ornare.
-                            <button type="button" gdb-tooltip="Tooltip" class="btn btn-link"><span
-                                class="icon-link"></span>
-                            </button>
-                            <button type="button" class="btn btn-link" gdb-tooltip="Button tooltip">
-                                <span class="icon-edit"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+    <br/>
+    <br/>
 
-                <div uib-collapse="helpHidden" class="wizard-help alert alert-info no-icon p-1 mb-2">
-                    <div class="help-box d-flex">
-                        <button class="close absolute"></button>
-                        <div class="alert alert-help">
-                            <p class="lead">{{'this.is.a' | translate}} <span class="small-caps">CONSTRUCT</span>
-                                {{'construct.query.explanation' | translate}}</p>
+    <!--Action buttons-->
+    <div>
+        <h2>Action buttons</h2>
+        <button class="btn btn-primary" ng-click="openModal()">Click to open modal</button>
 
-                            <p>{{'the.sentence.start' | translate}} <code>?node</code> {{'variable.required' | translate}}
-                            </p>
+        <button class="btn btn-primary add-first-rule-btn" ng-click="showInfoPanel()">Click to show side-panel</button>
+        <br/>
+        <br/>
+        <div>
+            <pageslide
+                ps-class="rdf-info-side-panel"
+                ps-open="openInfoPanel"
+                onopen="onopen"
+                onclose="onclose"
+                ps-side="right"
+                ps-click-outside="false"
+                ps-custom-height="calc(100vh - 55px)"
+                ps-size="25vw">
+                <div class="rdf-side-panel-content break-word-alt p-1 pt-2">
+                    <button class="close mb-1 ml-1"
+                            ng-click="closeInfoPanel(); $event.stopPropagation();"
+                            guide-selector="close-info-panel"></button>
 
-                            <p>{{'optional.query' | translate}} <em
-                                ng-if="samples && samples.length > 0">{{getSampleName(samples[0], 'expandQuery')}}</em>
-                                {{'sample.query.used' | translate}}</p>
-                        </div>
-                        <div>
-                            <img src="css/images/expand.png?v=[AIV]{version}[/AIV]" class="info-box-img" height="220"
-                                 alt="expand image">
-                        </div>
-                    </div>
+                    <h3 class="hovered-parent">
+                        <a class="uri">Title</a>
+                        <button class="btn btn-link btn-sm px-0 hovered-item"
+                                title="Panel">
+                            <span class="icon-link"></span>
+                        </button>
+                    </h3>
+                    <p>
+                        <button class="btn btn-sm btn-primary">Button</button>
+                    </p>
+                    <ul class="rdf-list tab-content">
+                        <li class="item clearfix break-word-alt">Item 1</li>
+                        <li class="item clearfix break-word-alt">Item 2</li>
+                        <li class="item clearfix break-word-alt">Item 3</li>
+                        <li class="item clearfix break-word-alt">Item 4</li>
+                    </ul>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <form name="testForm" id="testForm" novalidate>
-                    <label for="invalidInput"> Invalid
-                        <input required name="invalidInput"
-                               class="form-control ng-invalid"
-                               id="invalidInput"
-                               type="text"
-                               placeholder="Lorem ipsum">
-                    </label>
-                </form>
-                <button type="submit" form="testForm" class="btn btn-primary create-connector-btn">Invalidate field</button>
-                <br/>
-                <br/>
-                <label for="numberField">Number field</label>
-                <input class="form-control" placeholder="Number field" type="number" value="1234567890"
-                       required id="numberField" pattern="-?[1-9][0-9]*(\.[0-9]+)?">
-                <label for="password">Password</label>
-                <input id="password" type="password" placeholder="Password" class="form-control form-control-lg"
-                       required
-                       value="qwerty">
-                <br/>
-                <label> Text area (expandable) and popover
-                    <textarea type="text" class="form-control" placeholder="Hover for popover"
-                              uib-popover="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque volutpat
-                                            facilisis erat a ornare.
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque volutpat
-                                            facilisis erat a ornare.
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque volutpat
-                                            facilisis erat a ornare."
-                              popover-trigger="mouseenter"
-                              popover-placement="bottom"></textarea>
-                </label>
-                <br>
-                <div>
-                    <span gdb-tooltip="Toggle" tooltip-placement="top" class="switch">
-                        <input id="toggle" type="checkbox" class="switch" ng-checked="true"/>
-                        <label for="toggle"></label>
-                    </span>
-                </div>
-                <br>
-                <button class="btn btn-link p-0" type="button"
-                        gdb-tooltip="Copy">
-                    <em class="icon-copy"></em>
-                </button>
-                <button class="btn btn-link p-0" type="button"
-                        gdb-tooltip="Disabled" disabled>
-                    <em class="icon-copy"></em>
-                </button>
-                <button class="btn btn-link p-0" type="button"
-                        gdb-tooltip="Repair">
-                    <em class="icon-reload"></em>
-                </button>
-                <button class="btn btn-link secondary p-0" type="button"
-                        gdb-tooltip="Delete">
-                    <em class="icon-trash"></em>
-                </button>
-                <button type="button" class="btn btn-link pull-right">
-                <span class="icon-help" uib-popover="Help button" popover-placement="top"
-                      popover-trigger="mouseenter"></span>
-                    <span class="hidden-lg-down">Help</span>
-                </button>
-                <button class="btn btn-primary add-first-rule-btn"
-                        gdb-tooltip="Tooltip">
-                    <em class="icon-plus"></em>Button text
-                </button>
-                <div class="btn btn-outline-primary btn-sm">
-                    <div ngf-select ngf-multiple="false"
-                         class="selectFiles pointer clearfix"
-                         gdb-tooltip="Tooltip">
-                        <em ng-hide="false" class="fa fa-upload fa-2x"></em>&nbsp;
-                        <span class="pageInfo" style="vertical-align: super; color: #8a8a8a;">Button text</span>
-                    </div>
-                </div>
-                <br/>
-                <br/>
-                Spinner
-                <div ng-show="true" onto-loader size="50"
-                     class="spinner-container ot-loader"></div>
-                <br/>
-
-                <div class="col-xs-12 col-md-6 col-lg-4 mb-1">
-                    <div class="btn btn-outline-primary btn-lg text-xs-left d-block"
-                         role="button"
-                         uib-popover="Tooltip"
-                         popover-trigger="mouseenter"
-                         popover-placement="bottom">
-                        <div class="grid-container">
-                            <em class="icon-link icon-lg"></em>
-                            <div class="text">
-                                <span>Button label</span>
-                                <small class="text-muted">Small text</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <br/>
-            <div class="class-cnt-slider animate-show">
-                <label>Slider</label>
-                <br/>
-                <rzslider id="ux-test-slider"
-                          rz-slider-model="slider.value"
-                          rz-slider-options="slider.options"></rzslider>
-            </div>
-            <br/>
-            <button class="btn btn-primary" ng-click="openModal()">Click to open modal</button>
+            </pageslide>
         </div>
     </div>
-</div>
 
-<button class="btn btn-primary add-first-rule-btn" ng-click="showInfoPanel()">Click to show side-panel</button>
-<br/>
-<br/>
-<div>
-    <pageslide
-        ps-class="rdf-info-side-panel"
-        ps-open="openInfoPanel"
-        onopen="onopen"
-        onclose="onclose"
-        ps-side="right"
-        ps-click-outside="false"
-        ps-custom-height="calc(100vh - 55px)"
-        ps-size="25vw">
-        <div class="rdf-side-panel-content break-word-alt p-1 pt-2">
-            <button class="close mb-1 ml-1"
-                    ng-click="closeInfoPanel(); $event.stopPropagation();" guide-selector="close-info-panel"></button>
+    <br/>
 
-            <h3 class="hovered-parent">
-                <a class="uri">Title</a>
-                <button class="btn btn-link btn-sm px-0 hovered-item"
-                        title="Panel">
-                    <span class="icon-link"></span>
-                </button>
-            </h3>
-            <p>
-                <button class="btn btn-sm btn-primary">Button</button>
-            </p>
-            <ul class="rdf-list tab-content">
-                <li class="item clearfix break-word-alt">Item 1</li>
-                <li class="item clearfix break-word-alt">Item 2</li>
-                <li class="item clearfix break-word-alt">Item 3</li>
-                <li class="item clearfix break-word-alt">Item 4</li>
-            </ul>
-        </div>
-    </pageslide>
-</div>
-
-<div role="tablist" aria-multiselectable="true">
-    <div class="card" ng-repeat="item in ['item1', 'item2', 'item3']">
-        <div class="card-header" role="tab">
-            <div class="pull-right">
-                <button class="btn btn-link p-0" type="button"
-                        gdb-tooltip="Tooltip">
-                    <em class="icon-copy"></em>
-                </button>
-                <button class="btn btn-link p-0" type="button"
-                        gdb-tooltip="Tooltip">
-                    <em class="icon-reload"></em>
-                </button>
-                <button class="btn btn-link secondary p-0" type="button"
-                        gdb-tooltip="Tooltip">
-                    <em class="icon-trash"></em>
-                </button>
+    <!--Tabs and cards-->
+    <div>
+        <h2>Tabs and cards</h2>
+        <div role="tablist" aria-multiselectable="true">
+            <div class="card" ng-repeat="item in ['item1', 'item2', 'item3']">
+                <div class="card-header" role="tab">
+                    <div class="pull-right">
+                        <button class="btn btn-link p-0" type="button"
+                                gdb-tooltip="Tooltip">
+                            <em class="icon-copy"></em>
+                        </button>
+                        <button class="btn btn-link p-0" type="button"
+                                gdb-tooltip="Tooltip">
+                            <em class="icon-reload"></em>
+                        </button>
+                        <button class="btn btn-link secondary p-0" type="button"
+                                gdb-tooltip="Tooltip">
+                            <em class="icon-trash"></em>
+                        </button>
+                    </div>
+                    <h5 class="mb-0">
+                        <a class="collapsed" data-toggle="collapse"
+                           aria-expanded="false">
+                            {{item}}
+                        </a>
+                    </h5>
+                </div>
             </div>
-            <h5 class="mb-0">
-                <a class="collapsed" data-toggle="collapse"
-                   aria-expanded="false">
-                    {{item}}
-                </a>
-            </h5>
         </div>
+
+        <div class="card">
+            <div class="card-block">
+                <h6>Active repo</h6>
+                <div class="actions-bar pull-right">
+                    Card content
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque volutpat
+                    facilisis erat a ornare.
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque volutpat
+                    facilisis erat a ornare.
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque volutpat
+                    facilisis erat a ornare.
+                    <button type="button" gdb-tooltip="Tooltip" class="btn btn-link"><span
+                        class="icon-link"></span>
+                    </button>
+                    <button type="button" class="btn btn-link" gdb-tooltip="Button tooltip">
+                        <span class="icon-edit"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div uib-collapse="helpHidden" class="wizard-help alert alert-info no-icon p-1 mb-2">
+            <div class="help-box d-flex">
+                <button class="close absolute"></button>
+                <div class="alert alert-help">
+                    <p class="lead">{{'this.is.a' | translate}} <span class="small-caps">CONSTRUCT</span>
+                        {{'construct.query.explanation' | translate}}</p>
+
+                    <p>{{'the.sentence.start' | translate}} <code>?node</code> {{'variable.required' | translate}}
+                    </p>
+
+                    <p>{{'optional.query' | translate}} <em
+                        ng-if="samples && samples.length > 0">{{getSampleName(samples[0], 'expandQuery')}}</em>
+                        {{'sample.query.used' | translate}}</p>
+                </div>
+                <div>
+                    <img src="css/images/expand.png?v=[AIV]{version}[/AIV]" class="info-box-img" height="220"
+                         alt="expand image">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br/>
+
+    <!--Other-->
+    <div class="other-elements-container">
+        <h2>Other</h2>
+        <h3>Spinner</h3>
+        <div ng-show="true" onto-loader size="50"
+             class="spinner-container ot-loader"></div>
     </div>
 </div>
