@@ -21,7 +21,7 @@ const sonarOptions = {
 if (pullRequestId) {
   sonarOptions['sonar.pullrequest.key'] = `${pullRequestId}`;
   sonarOptions['sonar.pullrequest.branch'] = `${branch}`;
-  sonarOptions['sonar.pullrequest.base'] = `${targetBranch}`;
+  // sonarOptions['sonar.pullrequest.base'] = `${targetBranch}`;
 } else {
   sonarOptions["sonar.branch.name"] = branch;
 }
