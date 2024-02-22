@@ -3,7 +3,7 @@ The web application for GraphDB APIs
 
 [![Build Status](https://jenkins.ontotext.com/buildStatus/icon?job=graphdb-workbench-pipeline)]
 ### Setup Environment
-
+test
 * Checkout or clone the project.
 * Enter the project directory and execute `npm install` in order to install all 
 needed dependencies locally.
