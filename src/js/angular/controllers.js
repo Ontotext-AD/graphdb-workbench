@@ -21,6 +21,8 @@ import {decodeHTML} from "../../app";
 import './guides/guides.service';
 import './guides/directives';
 import {GUIDE_PAUSE} from './guides/tour-lib-services/shepherd.service';
+import 'angular-pageslide-directive/dist/angular-pageslide-directive';
+import 'angularjs-slider/dist/rzslider.min';
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -45,7 +47,9 @@ angular
         'graphdb.framework.core.services.autocompleteStatus',
         'graphdb.framework.utils.uriutils',
         'graphdb.framework.guides.directives',
-        'graphdb.framework.guides.services'
+        'graphdb.framework.guides.services',
+        'pageslide-directive',
+        'rzSlider'
     ])
     .controller('mainCtrl', mainCtrl)
     .controller('homeCtrl', homeCtrl)
@@ -904,9 +908,71 @@ function repositorySizeCtrl($scope, $http, RepositoriesRestService) {
     };
 }
 
-uxTestCtrl.$inject = ['$scope', '$repositories', 'toastr'];
+uxTestCtrl.$inject = ['$scope', '$repositories', 'toastr', 'ModalService'];
 
-function uxTestCtrl($scope, $repositories, toastr) {
+function uxTestCtrl($scope, $repositories, toastr, ModalService) {
+    $scope.colors = [
+        {name: 'black', shade: 'dark'},
+        {name: 'white', shade: 'light'},
+        {name: 'red', shade: 'dark'},
+        {name: 'blue', shade: 'dark'},
+        {name: 'yellow', shade: 'light'}
+    ];
+    $scope.myColor = $scope.colors[2];
+
+    $scope.specialValue = {
+        "id": "12345",
+        "value": "green"
+    };
+
+    $scope.checkedItem = {name: 'black', shade: 'dark'};
+
+    $scope.toggleOn = true;
+    $scope.toggleSwitch = function () {
+        $scope.toggleOn = !$scope.toggleOn;
+    };
+
+    $scope.repositories = ['Repo1', 'Repo2', 'Repo3'];
+    $scope.formats = ['JSON', 'JSON-LD', 'Turtle'];
+
+    $scope.onopen = $scope.onclose = () => angular.noop();
+    $scope.openInfoPanel = false;
+    $scope.showInfoPanel = function () {
+        $scope.openInfoPanel = true;
+    };
+    $scope.closeInfoPanel = function () {
+        $scope.openInfoPanel = false;
+    };
+
+    $scope.slideOpen = false;
+
+    $scope.toggleSlide = function () {
+        $scope.slideOpen = !$scope.slideOpen;
+    };
+
+    $scope.slider = {
+        value: 10,
+        minValue: 10,
+        maxValue: 90,
+        options: {
+            floor: 0,
+            ceil: 100,
+            step: 1
+        }
+    };
+
+    $scope.openModal = function () {
+        const modal = ModalService.openSimpleModal({
+            title: 'Confirm',
+            message: 'Lorem ipsum dolor sit amet.',
+            warning: true
+        });
+
+        modal.result.then(function () {
+            modal.dismiss('cancel');
+        });
+    };
+
     $scope.demoToast = function(alertType, secondArg=true) {
         toastr[alertType]('Consectetur adipiscing elit. Sic transit gloria mundi.',
             secondArg ? 'Lorem ipsum dolor sit amet' : undefined,
@@ -915,10 +981,9 @@ function uxTestCtrl($scope, $repositories, toastr) {
 
     $scope.clearToasts = function() {
         toastr.clear();
-    }
+    };
 
     $scope.clearRepo = function() {
         $repositories.setRepository('');
     };
 }
-
