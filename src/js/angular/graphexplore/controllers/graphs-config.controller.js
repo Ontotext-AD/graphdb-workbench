@@ -497,6 +497,7 @@ function GraphConfigCtrl(
         componentId: 'graphs-config',
         render: RenderingMode.YASQE,
         maxPersistentResponseSize: 0,
+        showYasqeResizer: false,
         yasqeMode: YasqeMode.PROTECTED,
         infer: $scope.newConfig.startQueryIncludeInferred,
         sameAs: $scope.newConfig.startQuerySameAs
