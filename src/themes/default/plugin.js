@@ -58,7 +58,8 @@ PluginRegistry.add('themes', {
             'primary-color-lightness': '60%',
             'secondary-color-saturation': '70%',
             'color-warning-light': 'hsla(var(--primary-color-hsl), 0.15)',
-            'logo-color': 'var(--primary-color-dark)'
+            'logo-color': 'var(--primary-color-dark)',
+            'keyboard-shortcuts': 'var(--secondary-color)'
         },
         // CSS properties, "foo: bar" becomes "foo: bar"
         'properties': {

@@ -38,3 +38,7 @@ option {
     background-color: var(--html-background);
     color: var(--gray-color);
 }
+
+.hotkeys-text, .keyboard-shortcut-description-item-description {
+    color: var(--keyboard-shortcuts);
+}
