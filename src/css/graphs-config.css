@@ -70,6 +70,10 @@ yasgui-component .CodeMirror {
     background-color:  hsla(var(--primary-color-hsl), 0.15)
 }
 
+.keyboard-shortcuts-dialog-wrapper {
+    margin-top: -21px;
+}
+
 @media (max-width: 1270px) {
     .image-label {
         flex-direction: column;
