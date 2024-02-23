@@ -526,6 +526,7 @@ function CreateSimilarityIdxCtrl(
             showQueryButton: false,
             downloadAsOn: false,
             showResultInfo: false,
+            showYasqeResizer: false,
             pageSize: 100,
             prefixes: usedPrefixes,
             render: $scope.similarityIndexInfo.getSelectedYasguiRenderMode(),
