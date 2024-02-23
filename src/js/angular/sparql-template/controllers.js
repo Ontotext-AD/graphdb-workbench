@@ -179,6 +179,7 @@ function SparqlTemplateCreateCtrl(
             showToolbar: false,
             showResultTabs: false,
             showYasqeActionButtons: false,
+            showYasqeResizer: false,
             yasqeActionButtons: DISABLE_YASQE_BUTTONS_CONFIGURATION,
             showQueryButton: false,
             initialQuery: $scope.sparqlTemplateInfo.query,
