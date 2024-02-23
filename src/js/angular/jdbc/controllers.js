@@ -369,6 +369,7 @@ function JdbcCreateCtrl(
             showQueryButton: false,
             showResultInfo: false,
             downloadAsOn: false,
+            showYasqeResizer: false,
             initialQuery: $scope.jdbcConfigurationInfo.query,
             componentId: 'jdbc-component',
             prefixes: $scope.prefixes,
