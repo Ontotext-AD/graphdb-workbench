@@ -5,6 +5,7 @@
     "context": null,
     "replaceGraphs": [],
     "baseURI": null,
+    "contextLink": null,
     "forceSerial": false,
     "type": "url",
     "format": "",
@@ -20,8 +21,7 @@
         "normalizeLanguageTags": false,
         "verifyURISyntax": true,
         "verifyRelativeURIs": true,
-        "stopOnError": true,
-        "JSONLDContext": null
+        "stopOnError": true
     },
     "xRequestIdHeaders": null
 }

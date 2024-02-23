@@ -202,7 +202,7 @@ function ExploreCtrl(
     };
 
     $scope.downloadJSONLDExport = function (format, link, mode) {
-        ExploreRestService.getGraph($scope.resourceInfo, format.type)
+        ExploreRestService.getGraph($scope.resourceInfo, format.type, link)
             .then(async function (data) {
                 if (format.name === "JSON") {
                     data = JSON.stringify(data);
@@ -244,7 +244,7 @@ function ExploreCtrl(
                     const file = new Blob([data], {type: format.type});
                     saveAs(file, 'statements' + format.extension);
                 }
-            }).error(function (data) {
+            }).catch(function (data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
             });

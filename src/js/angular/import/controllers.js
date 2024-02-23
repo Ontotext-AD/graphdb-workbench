@@ -189,10 +189,18 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
         $scope.setSettingsFor = function (fileName, withDefaultSettings, format) {
             $scope.settingsFor = fileName;
             $scope.settings = $scope.getSettingsFor(fileName, withDefaultSettings);
-            if (format === "application/ld+json" || fileName.endsWith("jsonld") || fileName.endsWith("zip")
-                || fileName.endsWith("gz")) {
+            if (fileName === "" ||
+                format === "application/ld+json" ||
+                format === "application/x-ld+ndjson" ||
+                fileName.endsWith("jsonld") ||
+                fileName.endsWith("zip") ||
+                fileName.endsWith("gz") ||
+                $scope.settings.type === "directory") {
                 $scope.settings.isJSONLD = true;
                 $scope.defaultSettings.isJSONLD = true;
+            } else {
+                $scope.settings.isJSONLD = false;
+                $scope.defaultSettings.isJSONLD = false;
             }
 
             const options = {

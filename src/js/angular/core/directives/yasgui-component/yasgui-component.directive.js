@@ -339,7 +339,7 @@ function yasguiComponentDirective(
                 const accept = downloadAsEvent.contentType;
                 const authToken = AuthTokenService.getAuthToken() || '';
 
-                if (downloadAsEvent.contentType === "application/ld+json") {
+                if (downloadAsEvent.contentType === "application/ld+json" || downloadAsEvent.contentType === "application/x-ld+ndjson") {
                     const modalInstance = $uibModal.open({
                         templateUrl: 'js/angular/core/templates/modal/exportSettingsModal.html',
                         controller: ExportSettingsCtrl,

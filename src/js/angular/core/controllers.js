@@ -95,9 +95,7 @@ ExportSettingsCtrl.$inject = ['$scope', '$uibModalInstance'];
 
 export function ExportSettingsCtrl($scope, $uibModalInstance) {
     $scope.JSONLDModes = [
-        {name: "frame", link: "http://www.w3.org/ns/json-ld#frame"},
         {name: "framed", link: "http://www.w3.org/ns/json-ld#framed"},
-        {name: "context", link: "http://www.w3.org/ns/json-ld#context"},
         {name: "expanded", link: "http://www.w3.org/ns/json-ld#expanded"},
         {name: "flattened", link: "http://www.w3.org/ns/json-ld#flattened"},
         {name: "compacted", link: "http://www.w3.org/ns/json-ld#compacted"}
@@ -108,10 +106,23 @@ export function ExportSettingsCtrl($scope, $uibModalInstance) {
         return acc;
     }, {});
 
-    $scope.JSONLDFramedModes = [$scope.JSONLDModesNames.framed, $scope.JSONLDModesNames.frame];
-    $scope.JSONLDContextModes = [$scope.JSONLDModesNames.context, $scope.JSONLDModesNames.compacted, $scope.JSONLDModesNames.flattened];
+    $scope.JSONLDFramedModes = [$scope.JSONLDModesNames.framed];
+    $scope.JSONLDContextModes = [$scope.JSONLDModesNames.compacted, $scope.JSONLDModesNames.flattened];
     $scope.defaultMode = find($scope.JSONLDModes, {name: "expanded"});
     $scope.currentMode = $scope.defaultMode;
+
+    if (localStorage.getItem("ls.jsonld-form")) {
+        $scope.currentMode = find($scope.JSONLDModes, {name: JSON.parse(localStorage.getItem("ls.jsonld-form")).jsonldFormName});
+        $scope.link = JSON.parse(localStorage.getItem("ls.jsonld-form")).jsonldLink;
+    }
+
+    $scope.setJSONLDSettingsToLocalStorage = function (formName, formLink, link) {
+        localStorage.setItem("ls.jsonld-form", JSON.stringify({
+            jsonldFormName: formName,
+            jsonldFormLink: formLink,
+            jsonldLink: link
+        }));
+    };
 
     $scope.cancel = function () {
         $uibModalInstance.dismiss();
@@ -119,9 +130,17 @@ export function ExportSettingsCtrl($scope, $uibModalInstance) {
 
     $scope.reset = function () {
         $scope.currentMode = $scope.defaultMode;
+        $scope.link = "";
+        $scope.setJSONLDSettingsToLocalStorage($scope.currentMode.name, $scope.currentMode.link, $scope.link);
+    };
+
+    $scope.clearLinkInput = function () {
+        $scope.link = "";
+        $scope.setJSONLDSettingsToLocalStorage($scope.currentMode.name, $scope.currentMode.link, $scope.link);
     };
 
     $scope.exportJsonLD = function () {
+        $scope.setJSONLDSettingsToLocalStorage($scope.currentMode.name, $scope.currentMode.link, $scope.link);
         $uibModalInstance.close({
             currentMode: $scope.currentMode,
             link: $scope.link
