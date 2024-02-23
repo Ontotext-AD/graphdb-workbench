@@ -38,7 +38,8 @@
                         <form name="newRowPredicate" novalidate>
                             <input required uri name="value"
                                    placeholder="{{'example.label' | translate}}: &quot;http://exampleuri.com/examplepath&quot;, &quot;namespaceprefix:exampleproperty&quot;"
-                                   class="form-control predicate-input" type="text" ng-model="newRow.predicate">
+                                   class="form-control predicate-input" type="text" ng-model="newRow.predicate"
+                                   autocomplete="off">
 
                             <div ng-show="predicate_new.$submitted || predicate_new.value.$touched">
                                 <p ng-show="predicate_new.value.$error.required"
@@ -64,7 +65,8 @@
                             </select>
                             <input required name="value" id="objectUriText" class="form-control" type="text"
                                    ng-model="newRow.object.value" auto-complete uiItems="namespaces"
-                                   value="exampleObjectValueText" placeholder="{{'value.label' | translate}}">
+                                   value="exampleObjectValueText" placeholder="{{'value.label' | translate}}"
+                                   autocomplete="off">
 
                             <div ng-show="object_new.$submitted || object_new.value.$touched">
                                 <p ng-show="newRow.object.type == 'uri' && !validateUri(newRow.object.value)"
@@ -89,14 +91,15 @@
                             </select>
                             <input ng-show="newRow.object.datatype == '' && newRow.object.type == 'literal'"
                                    name="languageText" id="languageText" class="form-control" type="text"
-                                   ng-model="newRow.object.lang">
+                                   ng-model="newRow.object.lang" autocomplete="off">
                         </form>
                     </td>
                     <td style="vertical-align: top;">
                         <form name="newRowContext" novalidate>
                             <input name="" uri
                                    placeholder="{{'example.label' | translate}}: &quot;http://exampleuri.com/examplepath&quot;, &quot;namespaceprefix:exampleproperty&quot;"
-                                   class="form-control context-input" type="text" ng-model="newRow.context">
+                                   class="form-control context-input" type="text" ng-model="newRow.context"
+                                   autocomplete="off">
 
                             <p ng-show="newRow.context && !validateUri(newRow.context)"
                                class="alert alert-info completeUriAlert">
