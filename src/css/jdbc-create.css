@@ -6,3 +6,7 @@
 yasgui-component .CodeMirror {
     height: 330px !important;
 }
+
+.keyboard-shortcuts-dialog-wrapper {
+    margin-top: -21px;
+}
