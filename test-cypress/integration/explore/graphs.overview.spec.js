@@ -127,7 +127,7 @@ describe('Graphs overview screen validation', () => {
     it('Export repository in JSONLD format', () => {
         cy.get('.export-repository-btn').click();
         cy.get('.export-repo-format-JSONLD').click();
-        cy.get('[id=wb-JSONLD-mode]').select(5);
+        cy.get('[id=wb-JSONLD-mode]').select("http://www.w3.org/ns/json-ld#compacted");
         cy.get('[id=wb-JSONLD-context]').type('https://w3c.github.io/json-ld-api/tests/compact/0007-context.jsonld');
         cy.get('[id=wb-export-JSONLD]').click();
         cy.get('.modal-content').should('not.exist');
