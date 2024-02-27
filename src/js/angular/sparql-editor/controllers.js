@@ -381,7 +381,7 @@ function SparqlEditorCtrl($rootScope,
     };
 
     const getExitPageConfirmMessage = (ongoingRequestsInfo) => {
-        let exitPageConfirmMessage = "yasqe.leave_page.run_queries.confirmation.";
+        let exitPageConfirmMessage = "view.sparql-editor.leave_page.run_queries.confirmation.";
         if (!ongoingRequestsInfo || ongoingRequestsInfo.queriesCount < 1) {
             exitPageConfirmMessage += "none_queries_";
         } else if (ongoingRequestsInfo.queriesCount === 1) {
