@@ -13,6 +13,7 @@ pipeline {
     NEXUS_CREDENTIALS = credentials('nexus-kim-user')
     // Needed for our version of webpack + newer nodejs
     NODE_OPTIONS = "--openssl-legacy-provider"
+    // Tells NPM and co. not to use color output (looks like garbage in Jenkins)
     NO_COLOR = "1"
   }
 
@@ -54,7 +55,7 @@ pipeline {
         }
           sh "ls ./test-cypress/fixtures/"
           sh "docker-compose build --force-rm --no-cache --parallel"
-          sh "docker-compose up --abort-on-container-exit --exit-code-from cypress-tests"
+          sh "docker-compose up --abort-on-container-exit --exit-code-from --no-color cypress-tests"
 
           // Fix coverage permissions
           sh "sudo chown -R \$(id -u):\$(id -g) coverage/"
