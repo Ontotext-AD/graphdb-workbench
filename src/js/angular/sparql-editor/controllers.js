@@ -491,6 +491,7 @@ function SparqlEditorCtrl($rootScope,
         }
         event.preventDefault();
         const newPath = $location.path();
+        const searches = $location.search();
         // First, we check if there are any ongoing requests initiated by the user.
         // If the user has ongoing requests, we request confirmation to abort them.
         // If the user confirms or there are no ongoing requests, we call the "abortAllRequests" method. This method will abort all requests.
@@ -500,7 +501,7 @@ function SparqlEditorCtrl($rootScope,
             .then(() => ontotextYasguiElement.abortAllRequests())
             .then(() => {
                 queriesAreCanceled = true;
-                $location.path(newPath);
+                $location.path(newPath).search(searches);
             })
             .catch((error) => {
                 if (!(error instanceof CancelAbortingQuery)) {
