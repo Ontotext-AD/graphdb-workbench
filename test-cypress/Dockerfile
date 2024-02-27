@@ -4,6 +4,8 @@ COPY . /workbench/tests-cypress/
 
 WORKDIR /workbench/tests-cypress/
 
+ENV NO_COLOR=1
+
 RUN npm ci
 
-CMD ["npm", "test"]
+CMD ["npm", "run", "test:core"]
