@@ -5,7 +5,7 @@ pipeline {
   }
 
   tools {
-    nodejs 'nodejs-18.9.0'
+    nodejs 'nodejs-20.11.1'
   }
 
   environment {
@@ -13,6 +13,7 @@ pipeline {
     NEXUS_CREDENTIALS = credentials('nexus-kim-user')
     // Needed for our version of webpack + newer nodejs
     NODE_OPTIONS = "--openssl-legacy-provider"
+    NO_COLOR = "1"
   }
 
   stages {

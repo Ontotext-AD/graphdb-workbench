@@ -1,7 +1,7 @@
 pipeline {
 
   tools {
-    nodejs 'nodejs-18.9.0'
+    nodejs 'nodejs-20.11.1'
   }
 
   parameters {

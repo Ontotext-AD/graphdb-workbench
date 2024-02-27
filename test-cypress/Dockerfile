@@ -8,4 +8,4 @@ ENV NO_COLOR=1
 
 RUN npm ci
 
-CMD ["npm", "run", "test:core"]
+CMD ["npm", "run", "test:partial"]
