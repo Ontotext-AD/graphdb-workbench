@@ -47,13 +47,9 @@ if ! mkdir -p "$DOWNLOADS"; then
 fi
 
 if [ ! -f "$GDB_ZIP" ]; then
-    if [ -z "${NEXUS_CREDENTIALS:-}" ]; then
-        echo "No credentials to download GraphDB. You can download GraphDB Free $GDB_VERSION and put it in $GDB_ZIP or set the NEXUS_CREDENTIALS environment variable"
-        cleanup 1
-    fi
     echo "Downloading GraphDB from $DOWNLOAD_URL"
     # Clean previous runs
-    if ! curl -sSL -u "${NEXUS_CREDENTIALS}" "${DOWNLOAD_URL}" -o "$GDB_ZIP"; then
+    if ! curl -sSL "${DOWNLOAD_URL}" -o "$GDB_ZIP"; then
         echo "Could not download GraphDB"
         cleanup 1
     fi
@@ -81,7 +77,7 @@ if ! "$GDB_TMPDIR/graphdb-${GDB_VERSION}/bin/graphdb" -d \
     -Denable.cypress.hack=true \
     -Dgraphdb.workbench.home="$(pwd)/dist/" \
     -Dgraphdb.stats.default=disabled \
-    -Dgraphdb.workbench.importDirectory="$(pwd)/test-cypress/fixtures/graphdb-import/" ]; then
+    -Dgraphdb.workbench.importDirectory="$(pwd)/test-cypress/fixtures/graphdb-import/"; then
     echo "Unable to start GraphDB"
     cleanup 1
 fi
@@ -89,7 +85,7 @@ fi
 cd test-cypress
 
 echo "Installing Cypress tests module"
-if ! npm install; then
+if ! npm ci; then
     echo "Could not install tests module"
     cleanup 1
 fi
