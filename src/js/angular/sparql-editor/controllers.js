@@ -72,6 +72,7 @@ function SparqlEditorCtrl($rootScope,
     $scope.sameAsUserSetting = true;
 
     const tabIdToConnectorProgressModalMapping = new Map();
+    let internallyReloaded = false;
 
     // =========================
     // Public functions
@@ -217,6 +218,7 @@ function SparqlEditorCtrl($rootScope,
                 .then(getQueryMode)
                 .then(confirmAndExecuteQuery)
                 .finally(() => {
+                    internallyReloaded = true;
                     $location.search({});
                     // Replace current URL without adding a new history entry
                     $location.replace();
@@ -479,6 +481,10 @@ function SparqlEditorCtrl($rootScope,
     });
     let queriesAreCanceled = undefined;
     const locationChangeHandler = (event) => {
+        if (internallyReloaded) {
+            internallyReloaded = false;
+            return;
+        }
         const ontotextYasguiElement = YasguiComponentDirectiveUtil.getOntotextYasguiElement(QUERY_EDITOR_ID);
         if (!ontotextYasguiElement || queriesAreCanceled) {
             return;
