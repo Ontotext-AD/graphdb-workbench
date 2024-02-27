@@ -60,8 +60,8 @@ PluginRegistry.add('guide.step', [
                     menuSelector = 'menu-sparql';
                     menuTitle = 'menu.sparql.label';
                     menuDialogClass = 'menu-sparql-guide-dialog';
-                    viewName = 'view.sparql.title';
-                    helpInfo = 'view.sparql.helpInfo';
+                    viewName = 'view.sparql-editor.title';
+                    helpInfo = 'view.sparql-editor.helpInfo';
 
                     break;
                 case "class-hierarchy":
