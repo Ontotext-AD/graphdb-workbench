@@ -38,7 +38,8 @@ const translationsMap = {
         receiving_snapshot: "Receiving a snapshot from node",
         applying_snapshot: "Applying a snapshot",
         building_snapshot: "Building a snapshot for node",
-        sending_snapshot: "Sending a snapshot to node"
+        sending_snapshot: "Sending a snapshot to node",
+        recovery_operation_failure_warning: "Node unable to recover. Action required"
     }
 };
 
