@@ -1,8 +1,10 @@
-FROM cypress/base:16.18.1
+FROM cypress/base:20.11.0
 
 COPY . /workbench/tests-cypress/
 
 WORKDIR /workbench/tests-cypress/
+
+ENV NO_COLOR=1
 
 RUN npm ci
 

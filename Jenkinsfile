@@ -5,7 +5,7 @@ pipeline {
   }
 
   tools {
-    nodejs 'nodejs-18.9.0'
+    nodejs 'nodejs-20.11.1'
   }
 
   environment {
@@ -13,6 +13,8 @@ pipeline {
     NEXUS_CREDENTIALS = credentials('nexus-kim-user')
     // Needed for our version of webpack + newer nodejs
     NODE_OPTIONS = "--openssl-legacy-provider"
+    // Tells NPM and co. not to use color output (looks like garbage in Jenkins)
+    NO_COLOR = "1"
   }
 
   stages {
@@ -26,7 +28,8 @@ pipeline {
     stage('Test') {
       steps {
 //         sh "sudo apt-get install libgbm1 gconf-service libasound2 libatk1.0-0 libatk-bridge2.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget --assume-yes"
-        sh "npm run test:coverage"
+        // passing --no-colors to karma to suppress color output that shows as garbage in Jenkins
+        sh "npm run test:coverage -- --no-colors"
       }
     }
 
@@ -52,8 +55,9 @@ pipeline {
           sh 'cp graphdb.license ./test-cypress/fixtures/'
         }
           sh "ls ./test-cypress/fixtures/"
-          sh "docker-compose build --force-rm --no-cache --parallel"
-          sh "docker-compose up --abort-on-container-exit --exit-code-from cypress-tests"
+          // --no-ansi suppresses color output that shows as garbage in Jenkins
+          sh "docker-compose --no-ansi build --force-rm --no-cache --parallel"
+          sh "docker-compose --no-ansi up --abort-on-container-exit --exit-code-from cypress-tests"
 
           // Fix coverage permissions
           sh "sudo chown -R \$(id -u):\$(id -g) coverage/"
@@ -76,7 +80,8 @@ pipeline {
       junit allowEmptyResults: true, testResults: 'cypress/results/**/*.xml'
       archiveArtifacts allowEmptyArchive: true, artifacts: 'report/screenshots/**/*.png, report/videos/**/*.mp4, cypress/logs/*.log'
 
-      sh "docker-compose down -v --remove-orphans --rmi=local || true"
+      // --no-ansi suppresses color output that shows as garbage in Jenkins
+      sh "docker-compose --no-ansi down -v --remove-orphans --rmi=local || true"
       // clean root owned resources from docker volumes, just in case
       sh "sudo rm -rf ./coverage"
       sh "sudo rm -rf ./cypress"
