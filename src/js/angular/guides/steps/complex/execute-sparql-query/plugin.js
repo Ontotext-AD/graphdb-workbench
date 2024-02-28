@@ -9,7 +9,6 @@ PluginRegistry.add('guide.step', [
             const $translate = services.$translate;
             const $interpolate = services.$interpolate;
             const $location = services.$location;
-            const $route = services.$route;
             options.mainAction = 'execute-sparql-query';
 
             const code = document.createElement('code');
@@ -81,8 +80,7 @@ PluginRegistry.add('guide.step', [
                                 const haveToReload = '/sparql' !== $location.url();
 
                                 if (haveToReload) {
-                                    $location.url('/sparql');
-                                    $route.reload();
+                                    $location.path('/sparql').search({});
                                 }
                                 GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR)
                                     .then(() => {
@@ -147,8 +145,7 @@ PluginRegistry.add('guide.step', [
                         canBePaused: false,
                         initPreviousStep: (services, stepId) => {
                             if ('/sparql' !== $location.url()) {
-                                $location.url('/sparql');
-                                $route.reload();
+                                $location.path('/sparql').search({});
                                 return GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR)
                                     .then(() => GuideUtils.deferredShow(500)())
                                     .then(() => YasguiComponentDirectiveUtil.executeSparqlQuery("#query-editor", query));

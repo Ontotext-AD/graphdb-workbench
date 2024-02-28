@@ -52,6 +52,7 @@ PluginRegistry.add('guide.step', [
                         placement: 'left',
                         onPreviousClick: () => new Promise(function (resolve, reject) {
                             $location.url('/graphs-visualizations');
+                            // the page have to be reloaded because the "Search RDF resource..." input have to be visible, due to implementation
                             $route.reload();
                             const searchInputSelector = GuideUtils.getGuideElementSelector('graphVisualisationSearchInputNotConfigured', ' input');
                             GuideUtils.waitFor(searchInputSelector, 3)
@@ -64,8 +65,7 @@ PluginRegistry.add('guide.step', [
                         initPreviousStep: () => new Promise(function (resolve, reject) {
                             const url = '/graphs-visualizations?uri=' + options.iri;
                             if (url !== decodeURIComponent($location.url())) {
-                                $location.url(url);
-                                $route.reload();
+                                $location.path('/graphs-visualizations').search({uri: options.iri});
                                 GuideUtils.waitFor(`.node-wrapper[id^="${options.iri}"] circle`, 3)
                                     .then(() => resolve())
                                     .catch((error) => reject(error));
