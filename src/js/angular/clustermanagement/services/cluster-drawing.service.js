@@ -7,6 +7,13 @@ export const clusterColors = {
     ontoGrey: 'var(--gray-color)'
 };
 
+export const font = {
+    FONT_AWESOME: 'FONT_AWESOME',
+    ICOMOON: 'ICOMOON'
+};
+
+export const shortMessageLimit = 40;
+
 export function createClusterSvgElement(element) {
     return d3.select(element)
         .append('svg');
@@ -41,7 +48,7 @@ export function setCreateClusterZone(hasCluster, clusterZone, translationsMap, h
             .attr('y', -50)
             .classed('h2', true)
             .style('text-anchor', "middle");
-        if (hasAccess ){
+        if (hasAccess) {
             textGroup.append('text')
                 .attr('id', 'create-cluster-label')
                 .classed('h3', true)
@@ -93,7 +100,7 @@ export function createNodes(nodesDataBinding, nodeRadius, isLegend) {
         .attr('class', 'icon-any node-icon');
 
     addHostnameToNodes(nodeGroup, nodeRadius, isLegend);
-    return nodeUpdateElements
+    return nodeUpdateElements;
 }
 
 function addHostnameToNodes(nodeElements, nodeRadius, isLegend) {
@@ -115,14 +122,14 @@ function addHostnameToNodes(nodeElements, nodeRadius, isLegend) {
             .attr('rx', 6);
 
         nodeTextHost
-            .append('text')
-            .attr('y', nodeRadius + 15)
-            .attr('class', 'id id-host');
-
-        nodeTextHost
             .append('rect')
             .attr('class', 'node-info-background')
             .attr('rx', 6);
+
+        nodeTextHost
+            .append('text')
+            .attr('y', nodeRadius + 15)
+            .attr('class', 'id id-host');
 
         nodeTextHost
             .append('text')
@@ -153,16 +160,12 @@ function updateNodesClasses(nodes) {
 
 function updateNodesIcon(nodes) {
     nodes.select('.node-icon')
-        .classed('icon-any', function (d) {
-            return !hasRecoveryState(d);
-        })
-        .classed('fa-d3', hasRecoveryState)
-        .text(function (d) {
-            if (hasRecoveryState(d)) {
-                return getNodeInfoIconType(d);
-            } else {
-                return getNodeIconType(d);
-            }
+        .each(function (d) {
+            const iconType = hasRecoveryState(d) ? getNodeInfoIconType(d) : getNodeIconType(d);
+            d3.select(this)
+                .classed('icon-any', iconType.font === font.ICOMOON)
+                .classed('fa-d3', iconType.font === font.FONT_AWESOME)
+                .text(iconType.icon);
         });
 }
 
@@ -177,68 +180,149 @@ function getNodeInfoIconType(node) {
 
     switch (node.recoveryStatus.state) {
         case RecoveryState.SEARCHING_FOR_NODE:
-            return '\uf29c';
+            return {icon: '\uf29c', font: font.FONT_AWESOME};
         case RecoveryState.WAITING_FOR_SNAPSHOT:
-            return '\uf017';
+            return {icon: '\uf017', font: font.FONT_AWESOME};
         case RecoveryState.RECEIVING_SNAPSHOT:
-            return '\uf0ed';
+            return {icon: '\uf0ed', font: font.FONT_AWESOME};
         case RecoveryState.APPLYING_SNAPSHOT:
-            return '\uf050';
+            return {icon: '\uf050', font: font.FONT_AWESOME};
         case RecoveryState.BUILDING_SNAPSHOT:
-            return '\uf187';
+            return {icon: '\uf187', font: font.FONT_AWESOME};
         case RecoveryState.SENDING_SNAPSHOT:
-            return '\uf0ee';
+            return {icon: '\uf0ee', font: font.FONT_AWESOME};
+        case RecoveryState.RECOVERY_OPERATION_FAILURE_WARNING:
+            return {icon: '\ue920', font: font.ICOMOON};
         default:
-            return '';
+            return {icon: '', font: ''};
     }
 }
 
 function getNodeIconType(node) {
     if (node.nodeState === NodeState.LEADER) {
-        return '\ue935';
+        return {icon: '\ue935', font: font.ICOMOON};
     } else if (node.nodeState === NodeState.FOLLOWER) {
-        return '\ue963';
+        return {icon: '\ue963', font: font.ICOMOON};
     } else if (node.nodeState === NodeState.CANDIDATE) {
-        return '\ue914';
+        return {icon: '\ue914', font: font.ICOMOON};
     } else if (node.nodeState === NodeState.NO_CONNECTION) {
-        return '\ue931';
+        return {icon: '\ue931', font: font.ICOMOON};
     } else if (node.nodeState === NodeState.OUT_OF_SYNC) {
-        return '\ue920';
+        return {icon: '\ue920', font: font.ICOMOON};
     } else if (node.nodeState === NodeState.READ_ONLY) {
-        return '\ue95c';
+        return {icon: '\ue95c', font: font.ICOMOON};
     } else if (node.nodeState === NodeState.RESTRICTED) {
-        return '\ue933';
+        return {icon: '\ue933', font: font.ICOMOON};
     }
-    return '';
+    return {icon: '', font: ''};
 }
 
 function updateNodesInfoText(nodes) {
-    nodes
-        .select('.node-info-text')
+    let objectHeight;
+    let objectWidth;
+    nodes.select('.node-info-text')
         .each(function (d) {
             d.infoNode = this;
         })
-        .text(function (d) {
-            return d.recoveryStatus && d.recoveryStatus.message;
-        });
-
-    // Add padding styling to text background. left/right/top/bottom +5
-    nodes
-        .select('.node-info-background')
+        .select(function () {
+            return this.parentNode;
+        })
+        .append('foreignObject')
         .attr('width', function (d) {
-            return d3.select(d.infoNode).node().getBBox().width + 10;
+            if (_.isEmpty(d.recoveryStatus)) {
+                return 0;
+            }
+            const shortMessage = extractShortMessageFromNode(d);
+            const rect = calculateElementSizeByText(shortMessage);
+            objectHeight = rect.height;
+            objectWidth = rect.width;
+            return objectWidth;
         })
         .attr('height', function (d) {
-            return d3.select(d.infoNode).node().getBBox().height + 10;
+            if (_.isEmpty(d.recoveryStatus)) {
+                return 0;
+            }
+            return objectHeight;
         })
         .attr('x', function (d) {
-            return d3.select(d.infoNode).node().getBBox().x - 5;
+            return - (objectWidth / 2);
         })
         .attr('y', function (d) {
-            return d3.select(d.infoNode).node().getBBox().y - 5;
+            return 78;
         })
         .classed('hidden', function (d) {
             return _.isEmpty(d.recoveryStatus);
+        })
+        .style('font-size', '12px')
+        .style('font-weight', '400')
+        .style('text-align', 'center')
+        .style('padding', '4px')
+        .style('background', '#EEEEEE')
+        .style('border-radius', '6px')
+        .attr('class', 'node-info-fo')
+        .append('xhtml:div')
+        .html(function (d) {
+            return extractShortMessageFromNode(d);
+        });
+
+    // Remove the original text elements, as they are now replaced by foreignObjects
+    nodes.select('.node-info-text').remove();
+
+    addEventListeners(nodes);
+}
+
+function extractShortMessageFromNode(node) {
+    return node.recoveryStatus.message && node.recoveryStatus.message.length > shortMessageLimit ?
+        node.recoveryStatus.message.substring(0, shortMessageLimit) + '...' : node.recoveryStatus.message;
+}
+
+function calculateElementSizeByText(text) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = text;
+    tmp.style.padding = '4px';
+    tmp.style.position = 'absolute';
+    tmp.style.visibility = 'hidden';
+    tmp.style.fontSize = '12px';
+    tmp.style.fontWeight = '400';
+    tmp.style.textAlign = 'center';
+    tmp.style.height = 'auto';
+    tmp.style.width = 'auto';
+    tmp.style.whiteSpace = 'nowrap';
+
+    document.body.appendChild(tmp);
+    const rect = tmp.getBoundingClientRect();
+    const height = rect.height;
+    const width = rect.width;
+    document.body.removeChild(tmp);
+
+    return {height, width};
+}
+
+function addEventListeners(nodes) {
+    nodes.select('.node-info-fo')
+        .on('click', null)
+        .on('click', function (event, d) {
+            event.preventDefault();
+            event.stopPropagation();
+            const message = extractShortMessageFromNode(d);
+            const object = d3.select(this);
+            const isShorten = d.recoveryStatus.message && d.recoveryStatus.message.length > shortMessageLimit && object.text() !== d.recoveryStatus.message;
+
+            let width;
+            if (isShorten) {
+                width = calculateElementSizeByText(d.recoveryStatus.message).width;
+            } else {
+                width = calculateElementSizeByText(message).width;
+            }
+
+            object
+                .attr('width', function (d) {
+                    return width;
+                })
+                .attr('x', function (d) {
+                    return - (width / 2);
+                })
+                .html(`<div>${isShorten ? d.recoveryStatus.message : message}</div>`);
         });
 }
 

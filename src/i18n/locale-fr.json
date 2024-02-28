@@ -39,7 +39,8 @@
                 "sending_snapshot": "Envoi d'un instantané",
                 "sending_snapshot_with_affected_node": "Envoi d'un instantané au nœud {{node}}",
                 "receiving_snapshot": "Réception d'un instantané",
-                "receiving_snapshot_with_affected_node": "Réception d'un instantané du nœud {{node}}"
+                "receiving_snapshot_with_affected_node": "Réception d'un instantané du nœud {{node}}",
+                "recovery_operation_failure_warning_with_affected_node": "Nœud incapable de récupérer. Action requise. Espace disque insuffisant pour créer un instantané sur les nœuds '{{node}}'"
             }
         },
         "cluster_configuration": {
