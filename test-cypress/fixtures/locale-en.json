@@ -39,7 +39,8 @@
                 "sending_snapshot": "Sending a snapshot",
                 "sending_snapshot_with_affected_node": "Sending a snapshot to node {{node}}",
                 "receiving_snapshot": "Receiving a snapshot",
-                "receiving_snapshot_with_affected_node": "Receiving a snapshot from node {{node}}"
+                "receiving_snapshot_with_affected_node": "Receiving a snapshot from node {{node}}",
+                "recovery_operation_failure_warning_with_affected_node": "Node unable to recover. Action required. Insufficient disk space to create snapshot on nodes '{{node}}'"
             }
         },
         "cluster_configuration": {
