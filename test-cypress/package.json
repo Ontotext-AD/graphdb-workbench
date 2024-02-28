@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench-tests",
-    "version": "2.6.0-TR8",
+    "version": "2.7.0-TR1",
     "description": "Cypress tests for GraphDB workbench",
     "scripts": {
         "prepack": "npm shrinkwrap",
@@ -25,8 +25,7 @@
         "type": "git",
         "url": "git+https://github.com/Ontotext-AD/graphdb-workbench.git"
     },
-    "dependencies": {
-    },
+    "dependencies": {},
     "devDependencies": {
         "cypress": "^13.3.1",
         "cypress-failed-log": "^2.10.0",
