@@ -303,6 +303,10 @@ yasgui-component .yasr .dataTable .nonUri sup {
     color: #666666;
 }
 
+yasgui-component .yasr .dataTables_wrapper .dataTable tbody tr {
+    vertical-align: top;
+}
+
 yasgui-component .yasr #explainPlanQuery {
     font-family: var(--mono-font);
 }
