@@ -45,6 +45,13 @@ PluginRegistry.add('guide.step', [
                         elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_ROWS_SELECTOR,
                         class: 'table-graph-overview-guide-dialog',
                         placement: 'top',
+                        beforeShowPromise: () => new Promise((resolve) => {
+                            GuideUtils.waitFor(`.resource-info a.source-link[href="${options.iri}"]`, 3)
+                                .then(() => {
+                                    GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_ROWS_SELECTOR, 3)
+                                        .then(() => resolve());
+                                });
+                        }),
                         initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
                             const currentStepId = services.ShepherdService.getCurrentStepId();
                             if (currentStepId === stepId) {
@@ -52,9 +59,8 @@ PluginRegistry.add('guide.step', [
                             } else {
                                 const url = `/resource?uri=${options.iri}&role=subject`;
                                 if (url !== decodeURIComponent($location.url())) {
-                                    $location.url(url);
-                                    $route.reload();
-                                    GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_ROWS_SELECTOR)
+                                    $location.path('/resource').search({uri: options.iri, role: 'subject'});
+                                    GuideUtils.waitFor(`.resource-info a.source-link[href="${options.iri}"]`, 3)
                                         .then(() => resolve())
                                         .catch((error) => reject(error));
                                 } else {
@@ -92,7 +98,7 @@ PluginRegistry.add('guide.step', [
                                         if (currentStepId === stepId && tableGraphLinkUrl === url) {
                                             // this case is first link in the sequence before click the link, so we have to resolve it.
                                             resolve();
-                                        } else if (currentStepId !== stepId && linkUrl === url) {
+                                        } else if (linkUrl === url) {
                                             // this case is first link in the sequence after click the link, so we have to call previous step.
                                             GuideUtils.defaultInitPreviousStep(services, stepId).then(() => resolve()).catch((error) => reject(error));
                                         } else {

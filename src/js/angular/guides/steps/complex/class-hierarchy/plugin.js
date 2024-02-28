@@ -1,14 +1,11 @@
 const reloadAndOpenInfoPanel = (services, clasInstanceSelector, resolve, reject) => {
-    services.$location.url('/hierarchy');
-    services.$route.reload();
-    services.GuideUtils.waitFor(clasInstanceSelector, 3)
+    services.$location.path('/hierarchy').search({});
+    return services.GuideUtils.waitFor(clasInstanceSelector, 3)
         .then(() => {
             services.GuideUtils.classHierarchyFocus(clasInstanceSelector);
             // Wait a little time animation to complete.
-            services.GuideUtils.deferredShow(500)()
-                .then(() => resolve());
-        })
-        .catch((error) => reject(error));
+            return services.GuideUtils.deferredShow(500)();
+        });
 };
 
 PluginRegistry.add('guide.step', [
@@ -109,13 +106,12 @@ PluginRegistry.add('guide.step', [
                             GuideUtils.classHierarchyFocus(clasInstanceSelector);
                             guide.next();
                         },
-                        initPreviousStep: () => new Promise((resolve, reject) => {
+                        initPreviousStep: () => {
                             if (!GuideUtils.isVisible(closeButtonSelector)) {
-                                reloadAndOpenInfoPanel({$location, $route, GuideUtils}, clasInstanceSelector, resolve, reject);
-                            } else {
-                                resolve();
+                                return reloadAndOpenInfoPanel({$location, $route, GuideUtils}, clasInstanceSelector);
                             }
-                        })
+                            return Promise.resolve();
+                        }
                     }, options)
                 },
                 {
@@ -228,29 +224,21 @@ PluginRegistry.add('guide.step', [
                     },
                     onNextClick: () => GuideUtils.waitFor(closeButtonSelector, 3)
                         .then(() => $(closeButtonSelector).trigger('click')),
-                    initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
+                    initPreviousStep: (services, stepId) => {
 
                         const currentStepId = services.ShepherdService.getCurrentStepId();
                         // If method is called from same step just click count link
                         if (currentStepId === stepId && options.followCountLink) {
-                            GuideUtils.waitFor(instanceCountSelector, 3)
+                            return GuideUtils.waitFor(instanceCountSelector, 3)
                                 .then(() => {
                                     $(instanceCountSelector).trigger('click');
-                                    GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_SELECTOR, 3)
-                                        .then(() => {
-                                            GuideUtils.deferredShow(50)()
-                                                .then(() => resolve())
-                                                .catch((error) => reject(error));
-                                        })
-                                        .catch((error) => reject(error));
-                                    resolve();
-                                })
-                                .catch((error) => reject(error));
-                        } else {
-                            // If is called from other step we have to reload and open the info panel.
-                            reloadAndOpenInfoPanel({$location, $route, GuideUtils}, clasInstanceSelector, resolve, reject);
+                                    return GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_SELECTOR, 3)
+                                        .then(() => GuideUtils.deferredShow(50)());
+                                });
                         }
-                    })
+                        // If is called from other step we have to reload and open the info panel.
+                        return reloadAndOpenInfoPanel({$location, $route, GuideUtils}, clasInstanceSelector);
+                    }
                 }, options)
             });
 
