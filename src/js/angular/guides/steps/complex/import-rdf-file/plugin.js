@@ -58,9 +58,9 @@ PluginRegistry.add('guide.step', [
                                 GuideUtils.noNextErrorToast(toastr, $translate, $interpolate,
                                     'guide.step_plugin.import_rdf_file.file-must-be-uploaded', options);
                                 return Promise.resolve(false);
-                            } else {
-                                return Promise.resolve(true);
                             }
+
+                            return Promise.resolve(true);
                         }
                     }, options)
                 },
@@ -86,19 +86,12 @@ PluginRegistry.add('guide.step', [
                             GuideUtils.clickOnGuideElement('import-settings-cancel-button')()
                                 .then(() => resolve());
                         }),
-                        beforeShowPromise: () => new Promise(function (resolve, reject) {
-                            services.GuideUtils.deferredShow(300)()
-                                .then(() => {
-                                    services.GuideUtils.waitFor(importSettingsButtonSelector, 3)
-                                        .then(() => {
-                                            resolve();
-                                        })
-                                        .catch((error) => {
-                                            services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
-                                            reject(error);
-                                        });
-                                });
-                        }),
+                        beforeShowPromise: () => services.GuideUtils.deferredShow(300)()
+                            .then(() => services.GuideUtils.waitFor(importSettingsButtonSelector, 3)
+                                .catch((error) => {
+                                    services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
+                                    return Promise.reject(error);
+                                    })),
                         onNextClick: () => GuideUtils.clickOnGuideElement('import-settings-import-button')(),
                         canBePaused: false
                     }, options)
@@ -110,10 +103,7 @@ PluginRegistry.add('guide.step', [
                         url: '/import',
                         elementSelector: GuideUtils.getGuideElementSelector('import-status-info'),
                         class: 'import-status-info-guide-dialog',
-                        onPreviousClick: () => new Promise(function (resolve) {
-                            GuideUtils.clickOnGuideElement('import-file-' + options.resourceFile)()
-                                .then(() => resolve());
-                        })
+                        onPreviousClick: () => GuideUtils.clickOnGuideElement('import-file-' + options.resourceFile)()
                     }, options)
                 }
             ]);

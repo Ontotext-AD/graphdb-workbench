@@ -22,6 +22,7 @@ PluginRegistry.add('guide.step', [
                         class: 'enable-autocomplete-checkbox-guide-dialog',
                         // Disable default behavior of service when element is clicked.
                         advanceOn: undefined,
+                        beforeShowPromise: () => GuideUtils.deferredShow(500)(),
                         show: (guide) => () => {
                             // Added listener to the element.
                             $(autocompleteCheckboxSelector)

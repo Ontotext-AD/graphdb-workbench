@@ -50,29 +50,24 @@ PluginRegistry.add('guide.step', [
                         url: '/graphs-visualizations',
                         elementSelector: '.graph-visualization',
                         placement: 'left',
-                        onPreviousClick: () => new Promise(function (resolve, reject) {
+                        onPreviousClick: () => {
                             $location.url('/graphs-visualizations');
                             // the page have to be reloaded because the "Search RDF resource..." input have to be visible, due to implementation
                             $route.reload();
                             const searchInputSelector = GuideUtils.getGuideElementSelector('graphVisualisationSearchInputNotConfigured', ' input');
-                            GuideUtils.waitFor(searchInputSelector, 3)
+                            return GuideUtils.waitFor(searchInputSelector, 3)
                                 .then(() => {
                                     GuideUtils.validateTextInput(searchInputSelector, options.easyGraphInputText);
-                                    resolve();
-                                })
-                                .catch((error) => reject(error));
-                        }),
-                        initPreviousStep: () => new Promise(function (resolve, reject) {
+                                });
+                        },
+                        initPreviousStep: () => {
                             const url = '/graphs-visualizations?uri=' + options.iri;
                             if (url !== decodeURIComponent($location.url())) {
                                 $location.path('/graphs-visualizations').search({uri: options.iri});
-                                GuideUtils.waitFor(`.node-wrapper[id^="${options.iri}"] circle`, 3)
-                                    .then(() => resolve())
-                                    .catch((error) => reject(error));
-                            } else {
-                                resolve();
+                                return GuideUtils.waitFor(`.node-wrapper[id^="${options.iri}"] circle`, 3);
                             }
-                        }),
+                            return Promise.resolve();
+                        },
                         canBePaused: false,
                         forceReload: true
                     }, options)
@@ -127,35 +122,30 @@ PluginRegistry.add('guide.step', [
                             // Remove the "dblclick" listener of element. It is important when step is hided.
                             $(elementSelector).off('dblclick.onNodeDbClicked');
                         },
-                        beforeShowPromise: () => new Promise(function (resolve, reject) {
+                        beforeShowPromise: () => {
                             $route.reload();
-                            GuideUtils.deferredShow(50)()
+                            return GuideUtils.deferredShow(50)()
                                 .then(() => {
-                                    GuideUtils.awaitAlphaDropD3(elementSelector, $rootScope)()
-                                        .then(() => resolve())
-                                        .catch((error) => reject(error));
+                                    GuideUtils.awaitAlphaDropD3(elementSelector, $rootScope)();
                                 });
-                        }),
-                        initPreviousStep: (services, stepId) => new Promise(function (resolve, reject) {
+                        },
+                        initPreviousStep: (services, stepId) => {
                             const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
-                            previousStep.options.initPreviousStep(services, previousStep.id)
+                            return previousStep.options.initPreviousStep(services, previousStep.id)
                                 .then(() => {
                                     const currentStepId = services.ShepherdService.getCurrentStepId();
                                     // Skip expanding of node if last step is "visual-graph-expand"
                                     if (currentStepId === stepId) {
-                                        resolve();
-                                    } else {
-                                        GuideUtils.graphVizExpandNode(elementSelector);
-                                        GuideUtils.deferredShow(50)()
-                                            .then(() => {
-                                                GuideUtils.awaitAlphaDropD3(null, $rootScope)()
-                                                    .then(() => resolve())
-                                                    .catch((error) => reject(error));
-                                            });
+                                        return Promise.resolve;
                                     }
-                                })
-                                .catch((error) => reject(error));
-                        })
+
+                                    GuideUtils.graphVizExpandNode(elementSelector);
+                                    return GuideUtils.deferredShow(50)()
+                                        .then(() => {
+                                            return GuideUtils.awaitAlphaDropD3(null, $rootScope)();
+                                        });
+                                });
+                        }
                     }, options)
                 }
             ];
@@ -281,13 +271,12 @@ PluginRegistry.add('guide.step', [
                         selector: closeButtonSelector,
                         event: 'click'
                     },
-                    beforeShowPromise: () => new Promise(function (resolve) {
+                    beforeShowPromise: () => {
                         // We have to be sure that node info sidebar is open. It is needed when this step is loaded when next step "Previous"
                         // button is clicked.
                         GuideUtils.graphVizShowNodeInfo(elementSelector);
-                        GuideUtils.deferredShow(500)()
-                            .then(() => resolve());
-                    }),
+                        return GuideUtils.deferredShow(500)();
+                    },
                     onNextClick: () => GuideUtils.waitFor(closeButtonSelector, 3).then(() => $(closeButtonSelector).trigger('click'))
                 }, options)
             });
@@ -338,16 +327,14 @@ PluginRegistry.add('guide.step', [
                         show: disableAllNodes,
                         hide: enableAllNodes,
                         beforeShowPromise: GuideUtils.awaitAlphaDropD3(elementSelector, $rootScope),
-                        initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
+                        initPreviousStep: (services, stepId) => {
                             if (GuideUtils.isVisible(elementSelector)) {
-                                resolve();
-                            } else {
-                                const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
-                                previousStep.options.initPreviousStep(services, previousStep.id)
-                                    .then(() => resolve())
-                                    .catch((error) => reject(error));
+                                return Promise.resolve();
                             }
-                        })
+
+                            const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
+                            return previousStep.options.initPreviousStep(services, previousStep.id);
+                        }
                     }, options)
                 }
             ];

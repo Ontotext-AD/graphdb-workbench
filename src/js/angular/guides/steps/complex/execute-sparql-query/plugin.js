@@ -52,46 +52,37 @@ PluginRegistry.add('guide.step', [
                                 services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
                                 throw error;
                             }),
-                        onNextValidate: () => {
-                            return YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(SPARQL_DIRECTIVE_SELECTOR)
-                                .then((yasgui) => yasgui.getQuery().then((query) => ({yasgui, queryFromEditor: query})))
-                                .then(({yasgui, queryFromEditor}) => {
-                                    const editorQuery = GuideUtils.removeWhiteSpaces(queryFromEditor);
-                                    const stepQuery = GuideUtils.removeWhiteSpaces(query);
-                                    if (editorQuery !== stepQuery) {
-                                        if (editorQuery === 'select*where{?s?p?o.}limit100' || overwriteQuery) {
-                                            // The query is the default query OR we previously overwrote it => we can overwrite it
-                                            yasgui.setQuery(query);
-                                        } else {
-                                            GuideUtils.noNextErrorToast(toastr, $translate, $interpolate,
-                                                'guide.step_plugin.execute-sparql-query.query-not-same.error', options);
-                                            return false;
-                                        }
+                        onNextValidate: () => YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(SPARQL_DIRECTIVE_SELECTOR)
+                            .then((yasgui) => yasgui.getQuery().then((query) => ({yasgui, queryFromEditor: query})))
+                            .then(({yasgui, queryFromEditor}) => {
+                                const editorQuery = GuideUtils.removeWhiteSpaces(queryFromEditor);
+                                const stepQuery = GuideUtils.removeWhiteSpaces(query);
+                                if (editorQuery !== stepQuery) {
+                                    if (editorQuery === 'select*where{?s?p?o.}limit100' || overwriteQuery) {
+                                        // The query is the default query OR we previously overwrote it => we can overwrite it
+                                        yasgui.setQuery(query);
+                                    } else {
+                                        GuideUtils.noNextErrorToast(toastr, $translate, $interpolate,
+                                            'guide.step_plugin.execute-sparql-query.query-not-same.error', options);
+                                        return false;
                                     }
-                                    overwriteQuery = true;
-                                    return true;
-                                });
-                        },
-                        initPreviousStep: () => new Promise((resolve, reject) => {
-                            if (index === 0) {
-                                YasguiComponentDirectiveUtil.setQuery(SPARQL_DIRECTIVE_SELECTOR, defaultQuery)
-                                    .then(() => resolve());
-                            } else {
-                                const haveToReload = '/sparql' !== $location.url();
-
-                                if (haveToReload) {
-                                    $location.path('/sparql').search({});
                                 }
-                                GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR)
-                                    .then(() => {
-                                        YasguiComponentDirectiveUtil.executeSparqlQuery("#query-editor", query)
-                                            .then(() => {
-                                                resolve();
-                                            })
-                                            .catch((error) => reject(error));
-                                    });
+                                overwriteQuery = true;
+                                return true;
+                                }),
+                        initPreviousStep: () => {
+                            if (index === 0) {
+                                return YasguiComponentDirectiveUtil.setQuery(SPARQL_DIRECTIVE_SELECTOR, defaultQuery);
                             }
-                        }),
+
+                            const haveToReload = '/sparql' !== $location.url();
+                            if (haveToReload) {
+                                $location.path('/sparql').search({});
+                            }
+
+                            return GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR)
+                                .then(() => YasguiComponentDirectiveUtil.executeSparqlQuery("#query-editor", query));
+                        },
                         scrollToHandler: GuideUtils.scrollToTop,
                         extraContent: queryDef.queryExtraContent,
                         onScope: (scope) => {
@@ -113,22 +104,19 @@ PluginRegistry.add('guide.step', [
                                 }),
                         scrollToHandler: GuideUtils.scrollToTop,
                         canBePaused: false,
-                        initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
+                        initPreviousStep: (services, stepId) => {
                             const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
-                            previousStep.options.initPreviousStep(services, previousStep.options.id)
+                            return previousStep.options.initPreviousStep(services, previousStep.options.id)
                                 .then(() => {
                                     const currentStepId = services.ShepherdService.getCurrentStepId();
                                     // Skip expanding of node if last step is "visual-graph-expand"
                                     if (currentStepId === stepId) {
-                                        resolve();
-                                    } else {
-                                        YasguiComponentDirectiveUtil.executeSparqlQuery("#query-editor", query)
-                                            .then(() => resolve())
-                                            .catch((error) => reject(error));
+                                        return Promise.resolve();
                                     }
-                                })
-                                .catch((error) => reject(error));
-                        })
+
+                                    return YasguiComponentDirectiveUtil.executeSparqlQuery("#query-editor", query);
+                                });
+                        }
                     }, options)
                 });
                 steps.push({
@@ -149,11 +137,11 @@ PluginRegistry.add('guide.step', [
                                 return GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_EDITOR_SELECTOR)
                                     .then(() => GuideUtils.deferredShow(500)())
                                     .then(() => YasguiComponentDirectiveUtil.executeSparqlQuery("#query-editor", query));
-                            } else {
-                                const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
-                                return previousStep.options.initPreviousStep(services, previousStep.options.id)
-                                    .then(() => YasguiComponentDirectiveUtil.setQuery(SPARQL_DIRECTIVE_SELECTOR, query));
                             }
+
+                            const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
+                            return previousStep.options.initPreviousStep(services, previousStep.options.id)
+                                .then(() => YasguiComponentDirectiveUtil.setQuery(SPARQL_DIRECTIVE_SELECTOR, query));
                         }
                     }, options)
                 });

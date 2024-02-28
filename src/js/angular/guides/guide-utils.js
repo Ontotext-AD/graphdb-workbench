@@ -4,7 +4,9 @@ const GuideUtils = (function () {
 
     const clickOnElement = function (elementSelector) {
         return () => waitFor(elementSelector)
-            .then((element) => element.click());
+            .then((element) => {
+                element.click();
+            });
     };
 
     const clickOnGuideElement = function (elementSelector, postSelector) {

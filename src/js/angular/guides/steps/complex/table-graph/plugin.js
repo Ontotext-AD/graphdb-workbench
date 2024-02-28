@@ -21,21 +21,14 @@ PluginRegistry.add('guide.step', [
                                 .then(() => $(step.elementSelector).trigger('click'))
                                 .then(() => guide.next());
                         },
-                        initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
+                        initPreviousStep: (services, stepId) => {
                             const currentStepId = services.ShepherdService.getCurrentStepId();
                             if (currentStepId === stepId) {
-                                resolve();
-                            } else {
-                                const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
-                                previousStep.options.initPreviousStep(services, previousStep.options.id)
-                                    .then(() => {
-                                        resolve();
-                                    })
-                                    .catch((error) => {
-                                        reject(error);
-                                    });
+                                return Promise.resolve();
                             }
-                        })
+                            const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
+                            return previousStep.options.initPreviousStep(services, previousStep.options.id);
+                        }
                     }, options)
                 }, {
                     guideBlockName: 'read-only-element',
@@ -45,29 +38,20 @@ PluginRegistry.add('guide.step', [
                         elementSelector: GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_ROWS_SELECTOR,
                         class: 'table-graph-overview-guide-dialog',
                         placement: 'top',
-                        beforeShowPromise: () => new Promise((resolve) => {
-                            GuideUtils.waitFor(`.resource-info a.source-link[href="${options.iri}"]`, 3)
-                                .then(() => {
-                                    GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_ROWS_SELECTOR, 3)
-                                        .then(() => resolve());
-                                });
-                        }),
-                        initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
+                        beforeShowPromise: () => GuideUtils.waitFor(`.resource-info a.source-link[href="${options.iri}"]`, 3)
+                            .then(() => GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_ROWS_SELECTOR, 3)),
+                        initPreviousStep: (services, stepId) => {
                             const currentStepId = services.ShepherdService.getCurrentStepId();
                             if (currentStepId === stepId) {
-                                GuideUtils.defaultInitPreviousStep(services, stepId).then(() => resolve()).catch((error) => reject(error));
-                            } else {
-                                const url = `/resource?uri=${options.iri}&role=subject`;
-                                if (url !== decodeURIComponent($location.url())) {
-                                    $location.path('/resource').search({uri: options.iri, role: 'subject'});
-                                    GuideUtils.waitFor(`.resource-info a.source-link[href="${options.iri}"]`, 3)
-                                        .then(() => resolve())
-                                        .catch((error) => reject(error));
-                                } else {
-                                    resolve();
-                                }
+                                return GuideUtils.defaultInitPreviousStep(services, stepId);
                             }
-                        })
+                            const url = `/resource?uri=${options.iri}&role=subject`;
+                            if (url !== decodeURIComponent($location.url())) {
+                                $location.path('/resource').search({uri: options.iri, role: 'subject'});
+                                return GuideUtils.waitFor(`.resource-info a.source-link[href="${options.iri}"]`, 3);
+                            }
+                            return Promise.resolve();
+                        }
                     }, options)
                 }
             ];
@@ -88,28 +72,27 @@ PluginRegistry.add('guide.step', [
                                             .then(() => $(step.elementSelector).trigger('click'))
                                             .then(() => guide.next());
                                     },
-                                    initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
+                                    initPreviousStep: (services, stepId) => {
                                         const linkUrl = `/resource?uri=${subStep.iri}&role=subject`;
                                         const tableGraphLinkUrl = `/resource?uri=${options.iri}&role=subject`;
                                         const url = decodeURIComponent($location.url());
 
                                         const currentStepId = services.ShepherdService.getCurrentStepId();
-
                                         if (currentStepId === stepId && tableGraphLinkUrl === url) {
                                             // this case is first link in the sequence before click the link, so we have to resolve it.
-                                            resolve();
-                                        } else if (linkUrl === url) {
-                                            // this case is first link in the sequence after click the link, so we have to call previous step.
-                                            GuideUtils.defaultInitPreviousStep(services, stepId).then(() => resolve()).catch((error) => reject(error));
-                                        } else {
-                                            // this case is from second link we have to reload
-                                            $location.url(linkUrl);
-                                            $route.reload();
-                                            GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_ROWS_SELECTOR)
-                                                .then(() => resolve())
-                                                .catch((error) => reject(error));
+                                            return Promise.resolve();
                                         }
-                                    })
+
+                                        if (linkUrl === url) {
+                                            // this case is first link in the sequence after click the link, so we have to call previous step.
+                                            return GuideUtils.defaultInitPreviousStep(services, stepId);
+                                        }
+
+                                        // this case is from second link we have to reload
+                                        $location.url(linkUrl);
+                                        $route.reload();
+                                        return GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_ROWS_SELECTOR);
+                                    }
                                 }, angular.extend({}, options, subStep))
                             });
                             break;
@@ -125,28 +108,23 @@ PluginRegistry.add('guide.step', [
                                             .then(() => $(step.elementSelector).trigger('click'))
                                             .then(() => guide.next());
                                     },
-                                    initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
+                                    initPreviousStep: (services, stepId) => {
                                         const currentStepId = services.ShepherdService.getCurrentStepId();
                                         if (currentStepId === stepId) {
-                                            resolve();
-                                        } else {
-                                            const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
-                                            previousStep.options.initPreviousStep(services, previousStep.options.id)
-                                                .then(() => {
-                                                    let url = $location.url();
-                                                    url = url.substring(0, url.indexOf('role=') + 5);
-                                                    url += subStep.role;
-                                                    $location.url(url);
-                                                    $route.reload();
-                                                    GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_ROWS_SELECTOR)
-                                                        .then(() => resolve())
-                                                        .catch((error) => reject(error));
-                                                })
-                                                .catch((error) => {
-                                                    reject(error);
-                                                });
+                                            return Promise.resolve();
                                         }
-                                    })
+
+                                        const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
+                                        return previousStep.options.initPreviousStep(services, previousStep.options.id)
+                                            .then(() => {
+                                                let url = $location.url();
+                                                url = url.substring(0, url.indexOf('role=') + 5);
+                                                url += subStep.role;
+                                                $location.url(url);
+                                                $route.reload();
+                                                return GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_ROWS_SELECTOR);
+                                            });
+                                    }
                                 }, angular.extend({}, options, subStep))
                             });
                             break;
@@ -161,15 +139,14 @@ PluginRegistry.add('guide.step', [
                                         GuideUtils.waitFor(step.elementSelector, 3)
                                             .then(() => $(step.elementSelector).trigger('click'));
                                     },
-                                    initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
+                                    initPreviousStep: (services, stepId) => {
                                         const currentStepId = services.ShepherdService.getCurrentStepId();
-
                                         if (currentStepId === stepId) {
-                                            resolve();
-                                        } else {
-                                            GuideUtils.defaultInitPreviousStep(services, stepId).then(() => resolve()).catch((error) => reject(error));
+                                            return Promise.resolve();
                                         }
-                                    })
+
+                                        return GuideUtils.defaultInitPreviousStep(services, stepId);
+                                    }
                                 }, angular.extend({}, options, subStep))
                             });
                             steps.push({
