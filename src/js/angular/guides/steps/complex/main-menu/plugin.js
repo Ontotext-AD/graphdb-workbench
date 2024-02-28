@@ -115,16 +115,14 @@ PluginRegistry.add('guide.step', [
                                     guide.next();
                                 }
                             }),
-                    initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
+                    initPreviousStep: (services, stepId) => {
                         const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
                         if (previousStep) {
-                            previousStep.options.initPreviousStep(services, previousStep.options.id)
-                                .then(() => resolve())
-                                .catch((error) => reject(error));
-                        } else {
-                            resolve();
+                            return previousStep.options.initPreviousStep(services, previousStep.options.id);
                         }
-                    })
+
+                        return Promise.resolve();
+                    }
                 }, options)
             });
 
@@ -146,16 +144,14 @@ PluginRegistry.add('guide.step', [
                             return true;
                         },
                         onNextClick: (guide) => GuideUtils.clickOnGuideElement(submenuSelector, ' a')().then(() => guide.next()),
-                        initPreviousStep: (services, stepId) => new Promise((resolve, reject) => {
+                        initPreviousStep: (services, stepId) => {
                             const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
                             if (previousStep) {
-                                previousStep.options.initPreviousStep(services, previousStep.options.id)
-                                    .then(() => resolve())
-                                    .catch((error) => reject(error));
-                            } else {
-                                resolve();
+                                return previousStep.options.initPreviousStep(services, previousStep.options.id);
                             }
-                        })
+
+                            return Promise.resolve();
+                        }
                     }, options)
                 });
             }

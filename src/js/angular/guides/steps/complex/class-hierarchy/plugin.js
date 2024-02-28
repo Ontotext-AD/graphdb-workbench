@@ -1,4 +1,4 @@
-const reloadAndOpenInfoPanel = (services, clasInstanceSelector, resolve, reject) => {
+const reloadAndOpenInfoPanel = (services, clasInstanceSelector) => {
     services.$location.path('/hierarchy').search({});
     return services.GuideUtils.waitFor(clasInstanceSelector, 3)
         .then(() => {
@@ -110,6 +110,7 @@ PluginRegistry.add('guide.step', [
                             if (!GuideUtils.isVisible(closeButtonSelector)) {
                                 return reloadAndOpenInfoPanel({$location, $route, GuideUtils}, clasInstanceSelector);
                             }
+
                             return Promise.resolve();
                         }
                     }, options)

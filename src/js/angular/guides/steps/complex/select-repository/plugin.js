@@ -32,14 +32,11 @@ PluginRegistry.add('guide.step', [
                     },
                     class: 'repository-select-button-guide-dialog',
                     advanceOn: undefined,
-                    beforeShowPromise: () => new Promise(function (resolve, reject) {
-                        services.GuideUtils.waitFor(getRepositoryElementSelector(services, options), 1)
-                            .then(() => resolve())
-                            .catch((error) => {
-                                services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
-                                reject(error);
-                            });
-                    }),
+                    beforeShowPromise: () => services.GuideUtils.waitFor(getRepositoryElementSelector(services, options), 1)
+                        .catch((error) => {
+                            services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
+                            throw (error);
+                        }),
                     show: (guide) => () => {
                         $('#repositorySelectDropdown').addClass('autoCloseOff');
                         // Added listener to the element.
