@@ -182,7 +182,8 @@ module.exports = {
             },
             {
                 from: 'src/js/angular/core/components/export-settings-modal',
-                to: 'js/angular/core/components/export-settings-modal'
+                to: 'js/angular/core/components/export-settings-modal',
+                transform: replaceVersion
             }
         ])
     ],
