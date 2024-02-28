@@ -9,6 +9,6 @@ export class ClusterViewSteps {
     }
 
     static getNodeInfoText(host) {
-        return ClusterViewSteps.getNode(host).find('.node-info-text');
+        return ClusterViewSteps.getNode(host).find('.node-info-fo');
     }
 }

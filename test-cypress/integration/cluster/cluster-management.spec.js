@@ -154,7 +154,7 @@ describe('Cluster management', () => {
         // The first, with corresponding for "waiting-for-snapshot" status message without affected nodes,
         ClusterViewSteps.getNodeInfoText('pc-desktop:7200').should('have.text', 'Waiting for snapshot');
         // The second, with corresponding for "waiting-for-snapshot" status message followed with affected nodes,
-        ClusterViewSteps.getNodeInfoText('pc-desktop:7201').should('have.text', 'Waiting for snapshot from node http://pc-desktop:7200');
+        ClusterViewSteps.getNodeInfoText('pc-desktop:7201').should('have.text', 'Waiting for snapshot from node http://pc...');
         // The third, without message,
         ClusterViewSteps.getNodeInfoText('pc-desktop:7202').should('have.text', '');
     });
@@ -176,7 +176,7 @@ describe('Cluster management', () => {
         // The first, with corresponding for "building-snapshot" status message without affected nodes,
         ClusterViewSteps.getNodeInfoText('pc-desktop:7200').should('have.text', 'Building a snapshot');
         // The second, with corresponding for "building-snapshot" status message followed with affected nodes,
-        ClusterViewSteps.getNodeInfoText('pc-desktop:7201').should('have.text', 'Building a snapshot for http://pc-desktop:7200, http://pc-desktop:7204');
+        ClusterViewSteps.getNodeInfoText('pc-desktop:7201').should('have.text', 'Building a snapshot for http://pc-deskto...');
         // The third, without message,
         ClusterViewSteps.getNodeInfoText('pc-desktop:7202').should('have.text', '');
     });
@@ -198,7 +198,7 @@ describe('Cluster management', () => {
         // The first, with corresponding for "sending-snapshot" status message without affected nodes,
         ClusterViewSteps.getNodeInfoText('pc-desktop:7200').should('have.text', 'Sending a snapshot');
         // The second, with corresponding for "sending-snapshot" status message followed with affected nodes,
-        ClusterViewSteps.getNodeInfoText('pc-desktop:7201').should('have.text', 'Sending a snapshot to node http://pc-desktop:7200');
+        ClusterViewSteps.getNodeInfoText('pc-desktop:7201').should('have.text', 'Sending a snapshot to node http://pc-des...');
         // The third, without message,
         ClusterViewSteps.getNodeInfoText('pc-desktop:7202').should('have.text', '');
     });
@@ -220,7 +220,7 @@ describe('Cluster management', () => {
         // The first, with corresponding for "receiving-snapshot" status message without affected nodes,
         ClusterViewSteps.getNodeInfoText('pc-desktop:7200').should('have.text', 'Receiving a snapshot');
         // The second, with corresponding for "receiving-snapshot" status message followed with affected nodes,
-        ClusterViewSteps.getNodeInfoText('pc-desktop:7201').should('have.text', 'Receiving a snapshot from node http://pc-desktop:7200');
+        ClusterViewSteps.getNodeInfoText('pc-desktop:7201').should('have.text', 'Receiving a snapshot from node http://pc...');
         // The third, without message,
         ClusterViewSteps.getNodeInfoText('pc-desktop:7202').should('have.text', '');
     });
