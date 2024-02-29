@@ -273,7 +273,7 @@ function updateNodesInfoText(nodes) {
 
 function extractShortMessageFromNode(node) {
     return node.recoveryStatus.message && node.recoveryStatus.message.length > shortMessageLimit ?
-        node.recoveryStatus.message.substring(0, shortMessageLimit) + '...' : node.recoveryStatus.message;
+        node.recoveryStatus.message.substring(0, shortMessageLimit) + '...' : node.recoveryStatus.message || '';
 }
 
 function calculateElementSizeByText(text) {
