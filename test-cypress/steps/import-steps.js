@@ -70,7 +70,7 @@ class ImportSteps {
     }
 
     static fillRDFTextSnippet(snippet) {
-        ImportSteps.getSnippetTextarea().type(snippet, { parseSpecialCharSequences: false }).should('have.value', snippet);
+        ImportSteps.getSnippetTextarea().type(snippet, {parseSpecialCharSequences: false}).should('have.value', snippet);
 
         return ImportSteps;
     }
@@ -145,6 +145,12 @@ class ImportSteps {
         return ImportSteps;
     }
 
+    static clickImportOnRow(row) {
+        this.getImportFileRow(row).find('.pull-right').contains('Import').click();
+
+        return ImportSteps;
+    }
+
     static importFromSettingsDialog() {
         // Dialog should disappear
         ImportSteps.getModal().
@@ -213,7 +219,7 @@ class ImportSteps {
             .click()
             .then((el) => {
                 cy.waitUntil(() => cy.wrap(el).should('not.be.visible'));
-            })
+            });
 
         return ImportSteps;
     }
@@ -230,16 +236,16 @@ class ImportSteps {
     }
 
     static verifyImportStatusDetails(fileToSelect, details) {
-        ImportSteps.getServerFileElement(fileToSelect).find('.import-status .import-status-info').then(infoIconEl => {
+        ImportSteps.getServerFileElement(fileToSelect).find('.import-status .import-status-info').then((infoIconEl) => {
             cy.wrap(infoIconEl).should('be.visible');
             cy.wrap(infoIconEl).trigger('mouseenter');
 
-            cy.get('.popover-content').then(content => {
+            cy.get('.popover-content').then((content) => {
                 cy.wrap(content).should('be.visible');
                 if (details instanceof Array) {
-                    details.forEach(text => {
+                    details.forEach((text) => {
                         cy.wrap(content).should('contain', text);
-                    })
+                    });
                 } else {
                     cy.wrap(content).should('contain', details);
                 }
