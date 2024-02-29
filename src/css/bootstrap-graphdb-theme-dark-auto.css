@@ -34,3 +34,7 @@ input[type="checkbox"] {
     filter: var(--checkbox-filter);
 }
 
+option {
+    background-color: var(--html-background);
+    color: var(--gray-color);
+}
