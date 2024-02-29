@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench-tests",
-    "version": "2.6.2-TR3",
+    "version": "2.6.2-RC1",
     "description": "Cypress tests for GraphDB workbench",
     "scripts": {
         "start": "cypress open",
