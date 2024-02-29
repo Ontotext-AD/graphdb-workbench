@@ -52,7 +52,7 @@ module.exports = merge(commonConfig, {
         proxy: [{
             context: ['/rest', '/repositories', '/protocol', '/rdf-bridge'],
             target: 'http://' + host + ':' + portThere,
-            onProxyRes: proxyRes => {
+            onProxyRes: (proxyRes) => {
                 var key = 'www-authenticate';
                 if (proxyRes.headers[key]) {
                     proxyRes.headers[key] = proxyRes.headers[key].split(', ');
