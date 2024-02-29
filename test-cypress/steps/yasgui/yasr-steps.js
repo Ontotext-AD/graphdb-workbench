@@ -86,6 +86,11 @@ export class YasrSteps {
         return this.getDownloadAsDropdown().find('.ontotext-dropdown-menu-item').eq(number);
     }
 
+    static selectDownloadAsOption(number) {
+        // Click with force: true, because the repository dropdown at the top of the page hides the option
+        this.getDownloadAsOption(number).click({force: true});
+    }
+
     static getPagination() {
         return YasrSteps.getYasr().find('.ontotext-pagination');
     }
