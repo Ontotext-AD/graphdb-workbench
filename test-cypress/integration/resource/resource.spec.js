@@ -6,6 +6,7 @@ import {SparqlEditorSteps} from "../../steps/sparql-editor-steps";
 import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
 import {YasrSteps} from "../../steps/yasgui/yasr-steps";
 import {YasguiSteps} from "../../steps/yasgui/yasgui-steps";
+import {JsonLdModalSteps} from "../../steps/json-ld-modal-steps";
 
 const FILE_TO_IMPORT = 'resource-test-data.ttl';
 const SUBJECT_RESOURCE = 'http:%2F%2Fexample.com%2Fontology%23CustomerLoyalty';
@@ -357,6 +358,43 @@ describe('Resource view', () => {
             // and a describe query to be present
             YasqeSteps.getActiveTabQuery().should('contain', 'describe <<<http://example.com/resource/person/W6J1827> <http://example.com/ontology#hasAddress> <http://example.com/resource/person/W6J1827/address>>>');
             YasguiSteps.getCurrentTab().should('contain', 'Unnamed 1');
+        });
+    });
+
+    context('Download as', () => {
+        it('should download as JSON-LD and then restore defaults', () => {
+            // Given I am in the Resource view
+            ResourceSteps.visit(`uri=${SUBJECT_RESOURCE}&role=subject`);
+            ResourceSteps.verifyActiveRoleTab('subject');
+
+            // When I download as JSON-LD
+            ResourceSteps.clickDownloadAsOption(1);
+
+            // Then I should see a dialog appear
+            JsonLdModalSteps.getJSONLDModal().should('be.visible');
+
+            // And I type some example data into the form
+            JsonLdModalSteps.selectJSONLDMode(0);
+            JsonLdModalSteps.typeJSONLDFrame('https://w3c.github.io/json-ld-api/tests/compact/0007-context.jsonld');
+
+            // And export a file
+            JsonLdModalSteps.clickExportJSONLD();
+
+            // Then the dialog should disappear
+            JsonLdModalSteps.getJSONLDModal().should('not.exist');
+
+            // And the file should have downloaded
+            JsonLdModalSteps.verifyFileExists('statements.jsonld');
+
+            // When I select the same download as option again and the dialog appears with the prior data
+            ResourceSteps.clickDownloadAsOption(1);
+            JsonLdModalSteps.getJSONLDModal().should('be.visible');
+            JsonLdModalSteps.getSelectedJSONLDModeField().should('have.value', 'http://www.w3.org/ns/json-ld#framed');
+            JsonLdModalSteps.getJSONLDFrame().should('have.value', 'https://w3c.github.io/json-ld-api/tests/compact/0007-context.jsonld');
+
+            // Then clicking the 'Restore defaults' button should reset the data in the form
+            JsonLdModalSteps.clickRestoreDefaultsJSONLD();
+            JsonLdModalSteps.getSelectedJSONLDModeField().should('have.value', 'http://www.w3.org/ns/json-ld#expanded');
         });
     });
 });
