@@ -152,11 +152,11 @@ describe('Cluster management', () => {
         // Then I expect to see cluster view with 3 nodes,
         ClusterViewSteps.getNodes().should('have.length', 3);
         // The first, with corresponding for "waiting-for-snapshot" status message without affected nodes,
-        ClusterViewSteps.getExpandedNodeInfoText('pc-desktop:7200').should('have.text', 'Waiting for snapshot');
+        ClusterViewSteps.getNodeInfoText('pc-desktop:7200').should('have.text', 'Waiting for snapshot');
         // The second, with corresponding for "waiting-for-snapshot" status message followed with affected nodes,
-        ClusterViewSteps.getExpandedNodeInfoText('pc-desktop:7201').should('have.text', 'Waiting for snapshot from node http://pc-desktop:7200');
+        ClusterViewSteps.getNodeInfoText('pc-desktop:7201').should('have.text', 'Waiting for snapshot from node http://pc...');
         // The third, without message,
-        ClusterViewSteps.getExpandedNodeInfoText('pc-desktop:7202').should('have.text', '');
+        ClusterViewSteps.getNodeInfoText('pc-desktop:7202').should('have.text', '');
     });
 
     it('Should be display correct message for "building-snapshot" recovery state', () => {
@@ -174,11 +174,11 @@ describe('Cluster management', () => {
         // Then I expect to see cluster view with 3 nodes,
         ClusterViewSteps.getNodes().should('have.length', 3);
         // The first, with corresponding for "building-snapshot" status message without affected nodes,
-        ClusterViewSteps.getExpandedNodeInfoText('pc-desktop:7200').should('have.text', 'Building a snapshot');
+        ClusterViewSteps.getNodeInfoText('pc-desktop:7200').should('have.text', 'Building a snapshot');
         // The second, with corresponding for "building-snapshot" status message followed with affected nodes,
-        ClusterViewSteps.getExpandedNodeInfoText('pc-desktop:7201').should('have.text', 'Building a snapshot for http://pc-desktop:7200, http://pc-desktop:7204');
+        ClusterViewSteps.getNodeInfoText('pc-desktop:7201').should('have.text', 'Building a snapshot for http://pc-deskto...');
         // The third, without message,
-        ClusterViewSteps.getExpandedNodeInfoText('pc-desktop:7202').should('have.text', '');
+        ClusterViewSteps.getNodeInfoText('pc-desktop:7202').should('have.text', '');
     });
 
     it('Should be display correct message for "sending-snapshot" recovery state', () => {
@@ -196,11 +196,11 @@ describe('Cluster management', () => {
         // Then I expect to see cluster view with 3 nodes,
         ClusterViewSteps.getNodes().should('have.length', 3);
         // The first, with corresponding for "sending-snapshot" status message without affected nodes,
-        ClusterViewSteps.getExpandedNodeInfoText('pc-desktop:7200').should('have.text', 'Sending a snapshot');
+        ClusterViewSteps.getNodeInfoText('pc-desktop:7200').should('have.text', 'Sending a snapshot');
         // The second, with corresponding for "sending-snapshot" status message followed with affected nodes,
-        ClusterViewSteps.getExpandedNodeInfoText('pc-desktop:7201').should('have.text', 'Sending a snapshot to node http://pc-desktop:7200');
+        ClusterViewSteps.getNodeInfoText('pc-desktop:7201').should('have.text', 'Sending a snapshot to node http://pc-des...');
         // The third, without message,
-        ClusterViewSteps.getExpandedNodeInfoText('pc-desktop:7202').should('have.text', '');
+        ClusterViewSteps.getNodeInfoText('pc-desktop:7202').should('have.text', '');
     });
 
     it('Should be display correct message for "receiving-snapshot" recovery state', () => {
@@ -218,11 +218,11 @@ describe('Cluster management', () => {
         // Then I expect to see cluster view with 3 nodes,
         ClusterViewSteps.getNodes().should('have.length', 3);
         // The first, with corresponding for "receiving-snapshot" status message without affected nodes,
-        ClusterViewSteps.getExpandedNodeInfoText('pc-desktop:7200').should('have.text', 'Receiving a snapshot');
+        ClusterViewSteps.getNodeInfoText('pc-desktop:7200').should('have.text', 'Receiving a snapshot');
         // The second, with corresponding for "receiving-snapshot" status message followed with affected nodes,
-        ClusterViewSteps.getExpandedNodeInfoText('pc-desktop:7201').should('have.text', 'Receiving a snapshot from node http://pc-desktop:7200');
+        ClusterViewSteps.getNodeInfoText('pc-desktop:7201').should('have.text', 'Receiving a snapshot from node http://pc...');
         // The third, without message,
-        ClusterViewSteps.getExpandedNodeInfoText('pc-desktop:7202').should('have.text', '');
+        ClusterViewSteps.getNodeInfoText('pc-desktop:7202').should('have.text', '');
     });
 
     it('Should be able to replace nodes in cluster', () => {
