@@ -8,7 +8,7 @@ export class ClusterViewSteps {
        return ClusterViewSteps.getNodes().contains(host).parent().parent();
     }
 
-    static getExpandedNodeInfoText(host) {
-        return ClusterViewSteps.getNode(host).find('.node-info-fo').click({force:true});
+    static getNodeInfoText(host) {
+        return ClusterViewSteps.getNode(host).find('.node-info-fo');
     }
 }
