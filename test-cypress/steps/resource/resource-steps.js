@@ -53,7 +53,12 @@ export class ResourceSteps {
     }
 
     static getDownloadAsDropdown() {
-        return cy.get('.dropdown-toggle');
+        return cy.get('.download-as');
+    }
+
+    static clickDownloadAsOption(option) {
+        this.getDownloadAsDropdown().click();
+        cy.get('.download-options li').eq(option).click();
     }
 
     static getVisualGraphButton() {
@@ -97,7 +102,7 @@ export class ResourceSteps {
     }
 
     static selectRole(role) {
-        ResourceSteps.getRoleTab(role).click();
+        ResourceSteps.getRoleTab(role).click({force: false});
     }
 
     static selectSubjectRole() {

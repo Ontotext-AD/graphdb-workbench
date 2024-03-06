@@ -145,6 +145,12 @@ class ImportSteps {
         return ImportSteps;
     }
 
+    static clickImportOnRow(row) {
+        this.getImportFileRow(row).find('.pull-right').contains('Import').click();
+
+        return ImportSteps;
+    }
+
     static importFromSettingsDialog() {
         // Dialog should disappear
         ImportSteps.getModal().
@@ -199,13 +205,21 @@ class ImportSteps {
         return ImportSteps;
     }
 
+    static setContextLinkToBeVisible() {
+        ImportSteps.getSettingsForm().within(() => {
+            cy.get('.contextLinkRow').invoke('attr', 'style', 'display: block !important');
+        });
+
+        return ImportSteps;
+    }
+
     static resetStatusOfUploadedFiles() {
         // Button should disappear
         cy.get('#import-server #wb-import-clearStatuses')
             .click()
             .then((el) => {
                 cy.waitUntil(() => cy.wrap(el).should('not.be.visible'));
-            })
+            });
 
         return ImportSteps;
     }
