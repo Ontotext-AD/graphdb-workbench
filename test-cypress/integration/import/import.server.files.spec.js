@@ -59,6 +59,30 @@ describe('Import screen validation - server files', () => {
             .verifyImportStatusDetails(JSONLD_FILE_FOR_IMPORT, [CONTEXT, BASE_URI, '"preserveBNodeIds": true,', JSONLD_CONTEXT]);
     });
 
+    it('Test import Server files successfully with JSONLD default settings', () => {
+        ImportSteps.selectServerFile(JSONLD_FILE_FOR_IMPORT)
+            .importServerFiles(true)
+            .fillBaseURI(BASE_URI)
+            .selectNamedGraph()
+            .fillNamedGraph(CONTEXT)
+            .expandAdvancedSettings()
+            .setContextLinkToBeVisible()
+            .enablePreserveBNodes()
+            .importFromSettingsDialog()
+            .verifyImportStatus(JSONLD_FILE_FOR_IMPORT, SUCCESS_MESSAGE)
+            .verifyImportStatusDetails(JSONLD_FILE_FOR_IMPORT, [CONTEXT, BASE_URI, '"preserveBNodeIds": true,']);
+    });
+
+    it('Test import Server file successfully with JSONLD, button on row, with settings', () => {
+        ImportSteps.clickImportOnRow(0)
+            .fillBaseURI(BASE_URI)
+            .expandAdvancedSettings()
+            .fillContextLink(JSONLD_CONTEXT)
+            .importFromSettingsDialog()
+            .verifyImportStatus(JSONLD_FILE_FOR_IMPORT, SUCCESS_MESSAGE)
+            .verifyImportStatusDetails(JSONLD_FILE_FOR_IMPORT, [BASE_URI, '"preserveBNodeIds": false,', JSONLD_CONTEXT]);
+    });
+
     it('Test import with resetting status of imported file', () => {
         ImportSteps
             .selectServerFile(FILE_FOR_IMPORT)
