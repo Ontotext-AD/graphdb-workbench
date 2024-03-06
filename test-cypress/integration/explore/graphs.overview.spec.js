@@ -1,4 +1,6 @@
 import {YasrSteps} from "../../steps/yasgui/yasr-steps";
+import {GraphsOverviewSteps} from "../../steps/explore/graphs-overview-steps";
+import {JsonLdModalSteps} from "../../steps/json-ld-modal-steps";
 
 const EXPORT_GRAPHS_TABLE_ID = '#export-graphs';
 const ROWS_PER_PAGE_20 = '1';
@@ -124,12 +126,63 @@ describe('Graphs overview screen validation', () => {
         YasrSteps.getResultTableHeaderColumns().should('have.length', 5);
     });
 
-    it('Export repository in JSONLD format', () => {
-        cy.get('.export-repository-btn').click();
-        cy.get('.export-repo-format-JSONLD').click();
-        cy.get('[id=wb-JSONLD-mode]').select("http://www.w3.org/ns/json-ld#compacted");
-        cy.get('[id=wb-JSONLD-context]').type('https://w3c.github.io/json-ld-api/tests/compact/0007-context.jsonld');
-        cy.get('[id=wb-export-JSONLD]').click();
-        cy.get('.modal-content').should('not.exist');
+    it('Should be able to export repository in JSONLD format and restore defaults', () => {
+        // Given I select to export the repository as JSON-LD
+        GraphsOverviewSteps.selectRow(1);
+        GraphsOverviewSteps.exportRepository();
+        GraphsOverviewSteps.selectJSONLDOption();
+
+        // Then I select the 'compact' mode option and add context, and export
+        GraphsOverviewSteps.selectJSONLDMode(3);
+        JsonLdModalSteps.typeJSONLDContext('https://w3c.github.io/json-ld-api/tests/compact/0007-context.jsonld');
+        JsonLdModalSteps.clickExportJSONLD();
+
+        // Then the dialog should disappear
+        JsonLdModalSteps.getJSONLDModal().should('not.exist');
+        // And the file should have downloaded
+        JsonLdModalSteps.verifyFileExists('statements.jsonld');
+
+        // When I select the same download as option again and the dialog appears with the prior data
+        GraphsOverviewSteps.exportRepository();
+        GraphsOverviewSteps.selectJSONLDOption();
+        JsonLdModalSteps.getJSONLDModal().should('be.visible');
+        JsonLdModalSteps.getSelectedJSONLDModeField().should('have.value', 'http://www.w3.org/ns/json-ld#compacted');
+        JsonLdModalSteps.getJSONLDContext().should('have.value', 'https://w3c.github.io/json-ld-api/tests/compact/0007-context.jsonld');
+
+        // Then clicking the 'Restore defaults' button should reset the data in the form
+        JsonLdModalSteps.clickRestoreDefaultsJSONLD();
+        JsonLdModalSteps.getSelectedJSONLDModeField().should('have.value', 'http://www.w3.org/ns/json-ld#expanded');
+    });
+
+    it('Should be able to export repository in JSONLD format with default settings', () => {
+        // Given I select to export the repository as JSON-LD
+        GraphsOverviewSteps.exportRepository();
+        GraphsOverviewSteps.selectJSONLDOption();
+
+        // Then I select the 'flattened' mode option and export
+        GraphsOverviewSteps.selectJSONLDMode(2);
+        JsonLdModalSteps.clickExportJSONLD();
+
+        // Then the dialog should disappear
+        JsonLdModalSteps.getJSONLDModal().should('not.exist');
+
+        // And the file should have downloaded
+        JsonLdModalSteps.verifyFileExists('statements.jsonld');
+    });
+
+    it('Should be able to export repository in JSONLD format using row download button', () => {
+        // Given I select to export the repository as JSON-LD
+        GraphsOverviewSteps.downloadAsFromRowButton(0);
+        GraphsOverviewSteps.selectJSONLDFromRowDropdown();
+
+        // Then I select the 'expanded' mode option and export
+        GraphsOverviewSteps.selectJSONLDMode(1);
+        JsonLdModalSteps.clickExportJSONLD();
+
+        // Then the dialog should disappear
+        JsonLdModalSteps.getJSONLDModal().should('not.exist');
+
+        // And the file should have downloaded
+        JsonLdModalSteps.verifyFileExists('statements.jsonld');
     });
 });

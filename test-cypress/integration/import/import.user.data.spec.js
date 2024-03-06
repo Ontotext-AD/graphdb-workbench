@@ -38,12 +38,24 @@ describe('Import screen validation - user data', () => {
         '    <<<http://example.org/a>ex:b ex:c>>ex:valid "1999-08-16"^^xsd:date .\n' +
         '}';
 
+    const JSONLD_TEXT_SNIPPET = '[\n' +
+        '    {\n' +
+        '        "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",\n' +
+        '        "@type": [\n' +
+        '            "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property",\n' +
+        '            "http://www.w3.org/2000/01/rdf-schema#Datatype",\n' +
+        '            "http://www.w3.org/2000/01/rdf-schema#ContainerMembershipProperty"\n' +
+        '        ]\n' +
+        '    }' +
+        ']';
+
     const BASE_URI = 'http://purl.org/dc/elements/1.1/';
     const CONTEXT = 'http://example.org/graph';
 
     const IMPORT_URL = 'https://www.w3.org/TR/owl-guide/wine.rdf';
+    const IMPORT_JSONLD_URL = 'https://example.com/0007-context.jsonld';
     const TEXT_SNIPPET = 'Text snippet';
-    const INVALID_URL_RDF_FORMAT = 'JSON-LD';
+    const JSONLD_FORMAT = 'JSON-LD';
     const VALID_URL_RDF_FORMAT = 'RDF/XML';
     const VALID_SNIPPET_TURTLESTAR_FORMAT = 'Turtle*';
     const VALID_SNIPPET_TRIGSTAR_FORMAT = 'TriG*';
@@ -73,7 +85,7 @@ describe('Import screen validation - user data', () => {
     it('Test import file via URL with invalid RDF format selected', () => {
         ImportSteps
             .openImportURLDialog(IMPORT_URL)
-            .selectRDFFormat(INVALID_URL_RDF_FORMAT)
+            .selectRDFFormat(JSONLD_FORMAT)
             .clickImportUrlButton()
             .importFromSettingsDialog()
             .verifyImportStatus(IMPORT_URL, RDF_ERROR_MESSAGE);
@@ -101,7 +113,7 @@ describe('Import screen validation - user data', () => {
         ImportSteps
             .openImportTextSnippetDialog()
             .fillRDFTextSnippet(RDF_TEXT_SNIPPET_1)
-            .selectRDFFormat(INVALID_URL_RDF_FORMAT)
+            .selectRDFFormat(JSONLD_FORMAT)
             .clickImportTextSnippetButton()
             .importFromSettingsDialog()
             .verifyImportStatus(TEXT_SNIPPET, RDF_ERROR_MESSAGE);
@@ -243,6 +255,74 @@ describe('Import screen validation - user data', () => {
         verifyGraphData("http://graph1", "urn:replaced-s1", "urn:replaced-p1", "urn:replaced-o1", "http://graph1", true, "urn:s1");
     });
 
+    it('should import JSON-LD text snippet successfully without URI', () => {
+        ImportSteps
+            .openImportTextSnippetDialog()
+            .fillRDFTextSnippet(JSONLD_TEXT_SNIPPET)
+            .selectRDFFormat(JSONLD_FORMAT)
+            .clickImportTextSnippetButton()
+            .selectNamedGraph()
+            .fillNamedGraph(CONTEXT)
+            .importFromSettingsDialog()
+            .verifyImportStatus(TEXT_SNIPPET, SUCCESS_MESSAGE);
+
+        // Go to Graphs overview
+        cy.visit('/graphs');
+        cy.get('.ot-splash').should('not.be.visible');
+
+        const graphName = CONTEXT.slice(0, CONTEXT.lastIndexOf('.'));
+
+        // Verify that created graph can be found
+        cy.get('.search-graphs').type(graphName).should('have.value', graphName);
+        cy.get('#export-graphs').should('be.visible').should('contain', graphName);
+    });
+
+    it('should import JSON-LD text snippet successfully with URI and context', () => {
+        ImportSteps
+            .openImportTextSnippetDialog()
+            .fillRDFTextSnippet(JSONLD_TEXT_SNIPPET)
+            .selectRDFFormat(JSONLD_FORMAT)
+            .clickImportTextSnippetButton()
+            .fillBaseURI(BASE_URI)
+            .selectNamedGraph()
+            .fillNamedGraph(CONTEXT)
+            .fillContextLink('https://w3c.github.io/json-ld-api/tests/compact/0007-context.jsonld')
+            .importFromSettingsDialog()
+            .verifyImportStatus(TEXT_SNIPPET, SUCCESS_MESSAGE);
+        const graphName = CONTEXT.slice(0, CONTEXT.lastIndexOf('.'));
+        // Verify that created graph can be found
+        verifyGraphData(graphName, "rdf:Property", "rdf:Property", "rdf:Property", "http://example.org/graph", false);
+    });
+
+    it('should import JSON-LD file via URL with correct request body', () => {
+        stubPostJSONLDFromURL();
+        ImportSteps
+            .openImportURLDialog(IMPORT_JSONLD_URL)
+            .selectRDFFormat(JSONLD_FORMAT)
+            .clickImportUrlButton()
+            .importFromSettingsDialog();
+        cy.wait('@postJsonldUrl').then((xhr) => {
+            expect(xhr.request.body.name).to.eq('https://example.com/0007-context.jsonld');
+            expect(xhr.request.body.data).to.eq('https://example.com/0007-context.jsonld');
+            expect(xhr.request.body.type).to.eq('url');
+            expect(xhr.request.body.isJSONLD).to.be.true;
+        });
+    });
+
+    it('should show error on invalid JSON-LD URL', () => {
+        stubPostJSONLDFromURL();
+        ImportSteps
+            .openImportURLDialog(IMPORT_JSONLD_URL)
+            .selectRDFFormat(JSONLD_FORMAT)
+            .clickImportUrlButton()
+            .importFromSettingsDialog()
+            .verifyImportStatus(IMPORT_JSONLD_URL, 'https://example.com/0007-context.jsonld');
+    });
+
+    function stubPostJSONLDFromURL() {
+        cy.intercept('POST', `/rest/repositories/${repositoryId}/import/upload/url`).as('postJsonldUrl');
+    }
+
     function getImportFromDataRadioButton() {
         return cy.get('.from-data-btn');
     }
@@ -287,7 +367,7 @@ describe('Import screen validation - user data', () => {
         return cy.get('.icon-trash');
     }
 
-    //verifies that the data has been inserted in the given graph and that the new data has replaced the old one.
+//verifies that the data has been inserted in the given graph and that the new data has replaced the old one.
     function verifyGraphData(graphName, s, p, o, c, checkForReplacedData, oldData) {
         cy.visit('/graphs');
         // wait a bit to give chance page loaded.

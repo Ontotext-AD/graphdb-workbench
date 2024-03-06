@@ -170,11 +170,9 @@ function SparqlEditorCtrl($rootScope,
         const savedQueryOwner = queryParams[RouteConstants.savedQueryOwner];
         SparqlRestService.getSavedQuery(savedQueryName, savedQueryOwner).then((res) => {
             const savedQuery = savedQueryResponseMapper(res);
-            // * Check if there is an open tab with the same query already. If there is one, then open it.
-            // * Otherwise open a new tab and load the query in the editor.
-            // TODO: Before opening a new tab: check if there is a running query or update and prevent opening it.
-            // Same as the above should be checked on tab switching for existing tab too.
-            openNewTab(savedQuery, true);
+            openNewTab(savedQuery)
+                .then(autoExecuteQueryIfRequested)
+                .finally(clearUrlParameters);
         }).catch((err) => {
             toastr.error($translate.instant('query.editor.missing.saved.query.data.error', {
                 savedQueryName: savedQueryName,
@@ -188,42 +186,39 @@ function SparqlEditorCtrl($rootScope,
         const query = queryParams[RouteConstants.query];
         const queryOwner = queryParams[RouteConstants.owner];
         const sharedQueryModel = buildQueryModel(query, queryName, queryOwner, true);
-        // * Check if there is an open tab with the same query already. If there is one, then open it.
-        // * Otherwise open a new tab and load the query in the editor.
-        // TODO: Before opening a new tab: check if there is a running query or update and prevent opening it.
-        // Same as the above should be checked on tab switching for existing tab too.
-        openNewTab(sharedQueryModel, true);
+        openNewTab(sharedQueryModel)
+            .then(autoExecuteQueryIfRequested)
+            .finally(clearUrlParameters);
     };
 
     /**
      * Open a new tab with query described in <code>sparqlQuery</code>.
      *
      * @param {TabQueryModel} sparqlQuery
-     * @param {boolean} executeWhenOpen
+     *
+     * @return {Promise<void>}
      */
-    const openNewTab = (sparqlQuery, executeWhenOpen = false) => {
-        YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(QUERY_EDITOR_ID)
+    const openNewTab = (sparqlQuery) => {
+        return YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(QUERY_EDITOR_ID)
             .then((yasguiComponent) => yasguiComponent.openTab(sparqlQuery))
             .then((tab) => YasguiComponentDirectiveUtil.highlightTabName(tab));
+    };
 
-        if (executeWhenOpen) {
-            autoExecuteQueryIfRequested();
-        }
+    const clearUrlParameters = () => {
+        internallyReloaded = true;
+        $location.search({});
+        // Replace current URL without adding a new history entry
+        $location.replace();
     };
 
     const autoExecuteQueryIfRequested = () => {
         const isRequested = toBoolean($location.search().execute);
         if (isRequested) {
-            YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(QUERY_EDITOR_ID)
+            return YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(QUERY_EDITOR_ID)
                 .then(getQueryMode)
-                .then(confirmAndExecuteQuery)
-                .finally(() => {
-                    internallyReloaded = true;
-                    $location.search({});
-                    // Replace current URL without adding a new history entry
-                    $location.replace();
-                });
+                .then(confirmAndExecuteQuery);
         }
+        return Promise.resolve();
     };
 
     const getQueryMode = (yasguiComponent) => {
@@ -234,17 +229,15 @@ function SparqlEditorCtrl($rootScope,
     };
 
     const confirmAndExecuteQuery = ({yasguiComponent, queryMode}) => {
-        const runQuery = () => {
-            yasguiComponent.query().then();
-        };
+        if (queryMode !== 'update') {
+            return yasguiComponent.query();
+        }
 
-        if (queryMode === 'update') {
+        return new Promise((resolve) => {
             const title = $translate.instant('confirm.execute');
             const message = decodeHTML($translate.instant('query.editor.automatically.execute.update.warning'));
-            ModalService.openConfirmation(title, message, runQuery);
-        } else {
-            runQuery();
-        }
+            ModalService.openConfirmation(title, message, () => resolve(yasguiComponent.query()), () => resolve());
+        });
     };
 
     const setInferAndSameAs = (principal) => {
