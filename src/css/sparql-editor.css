@@ -47,3 +47,7 @@
 .sparql-editor-view #query-editor .yasgui-toolbar .btn-selected {
     color: #fff;
 }
+
+#toast-container .toast {
+    width: 470px;
+}
