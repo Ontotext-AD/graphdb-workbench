@@ -79,8 +79,9 @@
     width: 24px;
 }
 
-.operations-statuses .operation-status-label {
-    padding: 5px;
+
+.operations-statuses-content .operation-status-content .operation-status-label {
+    padding-left: 5px;
     line-height: 0;
     text-align: start;
 }
