@@ -130,7 +130,7 @@ function RDF4JRepositoriesRestService($http, $translate) {
     function downloadResultsAsFile(repositoryId, data, acceptHeader, linkHeader) {
         const properties = Object.entries(data)
             .filter(([property, value]) => value !== undefined)
-            .map(([property, value]) => `${property}=${value}`);
+            .map(([property, value]) => `${property}=${encodeURIComponent(value)}`);
         const payloadString = properties.join('&');
         return $http({
             method: 'POST',
