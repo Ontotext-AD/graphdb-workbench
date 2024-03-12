@@ -124,8 +124,8 @@
 					<div class="btn-group">
 						<div class="dropdown">
 						  <button class="btn btn-link dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								<span ng-if="similarityResultType.TERM_RESULT === resultType">{{'term' | translate}}</span>
-								<span ng-if="similarityResultType.DOCUMENT_RESULT === resultType">{{'document' | translate}}</span>
+								<span ng-if="similarityResultType.isResultTermType(resultType)">{{'term' | translate}}</span>
+								<span ng-if="similarityResultType.isResultDocumentType(resultType)">{{'document' | translate}}</span>
 						  </button>
 						  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 						    <a class="dropdown-item" ng-click="updateResultType(similarityResultType.TERM_RESULT)">{{'term' | translate}}</a>
