@@ -229,6 +229,10 @@ function SimilarityCtrl(
         $scope.searchType = searchType;
     };
 
+    $scope.updateResultType = (resultType) => {
+        $scope.resultType = resultType;
+    };
+
     $scope.editSimilarityIndex = (similarityIndex) => {
         navigateToEditPage(similarityIndex);
     };
