@@ -107,11 +107,11 @@
 					<strong>{{'similarity.search.type' | translate}} </strong>
 					<div class="btn-group">
 						<div class="dropdown">
-						  <button class="btn btn-link dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						  <button class="btn btn-link dropdown-toggle search-type-btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						    <span ng-if="similaritySearchType.isSearchTermType(searchType)">{{'term' | translate}}</span>
 						    <span ng-if="similaritySearchType.isSearchDocumentType(searchType)">{{'document' | translate}}</span>
 						  </button>
-						  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						  <div class="dropdown-menu dropdown-search-type" aria-labelledby="dropdownMenuButton">
 						    <a class="dropdown-item" ng-click="updateSearchType(similaritySearchType.SEARCH_TERM)">{{'term' | translate}}</a>
 						    <a class="dropdown-item" ng-click="updateSearchType(similaritySearchType.SEARCH_DOCUMENT)">{{'document' | translate}}</a>
 						  </div>
@@ -123,13 +123,13 @@
 					<strong>{{'similarity.result.type' | translate}} </strong>
 					<div class="btn-group">
 						<div class="dropdown">
-						  <button class="btn btn-link dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								<span ng-if="similarityResultType.TERM_RESULT === resultType">{{'term' | translate}}</span>
-								<span ng-if="similarityResultType.DOCUMENT_RESULT === resultType">{{'document' | translate}}</span>
+						  <button class="btn btn-link dropdown-toggle result-type-btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span ng-if="similarityResultType.isResultTermType(resultType)">{{'term' | translate}}</span>
+                            <span ng-if="similarityResultType.isResultDocumentType(resultType)">{{'document' | translate}}</span>
 						  </button>
-						  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-						    <a class="dropdown-item" ng-click="updateSearchType(similarityResultType.TERM_RESULT)">{{'term' | translate}}</a>
-						    <a class="dropdown-item" ng-click="updateSearchType(similarityResultType.DOCUMENT_RESULT)">{{'document' | translate}}</a>
+						  <div class="dropdown-menu dropdown-result-type" aria-labelledby="dropdownMenuButton">
+						    <a class="dropdown-item" ng-click="updateResultType(similarityResultType.TERM_RESULT)">{{'term' | translate}}</a>
+						    <a class="dropdown-item" ng-click="updateResultType(similarityResultType.DOCUMENT_RESULT)">{{'document' | translate}}</a>
 						  </div>
 						</div>
 					</div>
