@@ -204,6 +204,9 @@ describe('Similarity screen validation', () => {
             cy.get('.index-search-panel').should('be.visible');
             cy.get('.selected-index').should('be.visible').and('contain', `Search in ${INDEX_NAME}`);
             getSearchIndexInput().should('be.visible');
+            // The search and result types should both be set to Term
+            SimilarityIndexesSteps.getSearchTypeButton().should('contain.text', 'Term');
+            SimilarityIndexesSteps.getResultTypeButton().should('contain.text', 'Term');
 
             // When I search for "Neal" in the index
             searchIndex('Neal');
@@ -211,6 +214,21 @@ describe('Similarity screen validation', () => {
             // Then I expect search results to be displayed
             // And showing 20 results
             YasrSteps.getResults().should('have.length', 20);
+
+            // When I select Document as the search type
+            SimilarityIndexesSteps.selectSearchTypeOption('Document');
+
+            // The result type should remain Term
+            SimilarityIndexesSteps.getResultTypeButton().should('contain.text', 'Term');
+
+            // When I select Document as the result type
+            SimilarityIndexesSteps.selectResultTypeOption('Document');
+
+            // The search type should remain Document
+            SimilarityIndexesSteps.getSearchTypeButton().should('contain.text', 'Document');
+
+            // The result type should be Document
+            SimilarityIndexesSteps.getResultTypeButton().should('contain.text', 'Document');
         });
     });
 
@@ -468,7 +486,7 @@ describe('Similarity screen validation', () => {
                 getIndexLinks().should('be.visible');
                 cy.waitUntil(() =>
                     cy.get('.edit-query-btn')
-                            .then(editBtn => editBtn));
+                            .then((editBtn) => editBtn));
             });
     }
 
@@ -501,7 +519,7 @@ describe('Similarity screen validation', () => {
         cy.waitUntil(() =>
             cy.get('#indexes-table')
                 .find('.index-row')
-                .then(indexes => indexes.length === 2))
+                .then((indexes) => indexes.length === 2));
 
         cy.url().should('contain', Cypress.config('baseUrl') + '/similarity'); //Should change the 'contain' method to 'eq' once GDB-3699 is resolved
     }
