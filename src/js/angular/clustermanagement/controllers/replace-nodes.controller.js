@@ -8,7 +8,6 @@ angular
 ReplaceNodesDialogCtrl.$inject = ['$scope', '$uibModalInstance', '$timeout', 'toastr', '$translate', 'data', '$uibModal', '$rootScope', 'RemoteLocationsService'];
 
 function ReplaceNodesDialogCtrl($scope, $uibModalInstance, $timeout, toastr, $translate, data, $uibModal, $rootScope, RemoteLocationsService) {
-    const clusterConfiguration = _.cloneDeep(data.clusterConfiguration);
     const clusterModel = _.cloneDeep(data.clusterModel);
     // Nodes to be used as replacements
     $scope.replacementNodes = [];
@@ -20,7 +19,8 @@ function ReplaceNodesDialogCtrl($scope, $uibModalInstance, $timeout, toastr, $tr
     $scope.leftNodesMajority = false;
 
     $scope.clusterNodes = clusterModel.nodes.map((node) => ({rpcAddress: node.address, endpoint: node.endpoint, shouldReplace: false}));
-    $scope.locations = clusterModel.locations.filter((location) => !clusterConfiguration.nodes.includes(location.rpcAddress));
+    const clusterEndpoints = $scope.clusterNodes.map((node) => node.endpoint);
+    $scope.locations = clusterModel.locations.filter((location) => !clusterEndpoints.includes(location.endpoint));
     $scope.locations.forEach((location) => location.isNew = true);
 
     $scope.addLocation = () => {
