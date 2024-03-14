@@ -7,12 +7,12 @@ angular
 AddNodesDialogCtrl.$inject = ['$scope', '$uibModalInstance', 'data', '$uibModal', 'RemoteLocationsService'];
 
 function AddNodesDialogCtrl($scope, $uibModalInstance, data, $uibModal, RemoteLocationsService) {
-    const clusterConfiguration = _.cloneDeep(data.clusterConfiguration);
     const clusterModel = _.cloneDeep(data.clusterModel);
     $scope.nodes = [];
 
     $scope.clusterNodes = clusterModel.nodes.map((node) => ({rpcAddress: node.address, endpoint: node.endpoint}));
-    $scope.locations = clusterModel.locations.filter((location) => !clusterConfiguration.nodes.includes(location.rpcAddress));
+    const clusterEndpoints = $scope.clusterNodes.map((node) => node.endpoint);
+    $scope.locations = clusterModel.locations.filter((location) => !clusterEndpoints.includes(location.endpoint));
     $scope.locations.forEach((location) => location.isNew = true);
 
     $scope.deleteLocation = function (event, location) {
