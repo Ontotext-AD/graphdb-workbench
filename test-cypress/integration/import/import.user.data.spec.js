@@ -305,7 +305,7 @@ describe('Import screen validation - user data', () => {
             expect(xhr.request.body.name).to.eq('https://example.com/0007-context.jsonld');
             expect(xhr.request.body.data).to.eq('https://example.com/0007-context.jsonld');
             expect(xhr.request.body.type).to.eq('url');
-            expect(xhr.request.body.isJSONLD).to.be.true;
+            expect(xhr.request.body.hasContextLink).to.be.true;
         });
     });
 

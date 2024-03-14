@@ -196,11 +196,11 @@ importCtrl.controller('CommonCtrl', ['$scope', '$http', 'toastr', '$interval', '
                 fileName.endsWith("zip") ||
                 fileName.endsWith("gz") ||
                 $scope.settings.type === "directory") {
-                $scope.settings.isJSONLD = true;
-                $scope.defaultSettings.isJSONLD = true;
+                $scope.settings.hasContextLink = true;
+                $scope.defaultSettings.hasContextLink = true;
             } else {
-                $scope.settings.isJSONLD = false;
-                $scope.defaultSettings.isJSONLD = false;
+                $scope.settings.hasContextLink = false;
+                $scope.defaultSettings.hasContextLink = false;
             }
 
             const options = {
