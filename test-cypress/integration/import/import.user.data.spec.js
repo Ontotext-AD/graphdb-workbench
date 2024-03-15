@@ -74,21 +74,19 @@ describe('Import screen validation - user data', () => {
     });
 
     it('Test import file via URL successfully with Auto format selected', () => {
-        ImportSteps
-            .openImportURLDialog(IMPORT_URL)
-            .clickImportUrlButton()
-            // Without changing settings
-            .importFromSettingsDialog()
-            .verifyImportStatus(IMPORT_URL, SUCCESS_MESSAGE);
+        ImportSteps.openImportURLDialog(IMPORT_URL);
+        ImportSteps.clickImportUrlButton();
+        // Without changing settings
+        ImportSteps.importFromSettingsDialog();
+        ImportSteps.verifyImportStatus(IMPORT_URL, SUCCESS_MESSAGE);
     });
 
     it('Test import file via URL with invalid RDF format selected', () => {
-        ImportSteps
-            .openImportURLDialog(IMPORT_URL)
-            .selectRDFFormat(JSONLD_FORMAT)
-            .clickImportUrlButton()
-            .importFromSettingsDialog()
-            .verifyImportStatus(IMPORT_URL, RDF_ERROR_MESSAGE);
+        ImportSteps.openImportURLDialog(IMPORT_URL);
+        ImportSteps.selectRDFFormat(JSONLD_FORMAT);
+        ImportSteps.clickImportUrlButton();
+        ImportSteps.importFromSettingsDialog();
+        ImportSteps.verifyImportStatus(IMPORT_URL, RDF_ERROR_MESSAGE);
     });
 
     it('Test import file via URL successfully with valid RDF format selected', () => {

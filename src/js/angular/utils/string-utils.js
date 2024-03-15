@@ -1,3 +1,5 @@
+import {upperFirst} from "lodash";
+
 /**
  *  Removes brackets and serial commas from IRIs
  *  when used to create ids for links and markers,
@@ -11,7 +13,6 @@ const removeSpecialChars = (string) => {
     return string.replace(/[()']/g, "");
 };
 
-
 const toBoolean = (value) => {
     if (typeof value === 'string') {
         return value === 'true';
@@ -19,8 +20,16 @@ const toBoolean = (value) => {
     return Boolean(value);
 };
 
+const toTitleCase = (text) => {
+    if (!text) {
+        return text;
+    }
+    return upperFirst(text.toLowerCase());
+};
+
 export {
     removeSpecialChars,
-    toBoolean
+    toBoolean,
+    toTitleCase
 };
 

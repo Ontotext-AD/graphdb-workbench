@@ -949,6 +949,7 @@
     "import.enable.replace.option": "Enable this to replace the data in one or more graphs with the imported data.",
     "import.context.link": "JSON-LD context",
     "import.context.link.info": "Specifies external JSON-LD context as a URL. Only whitelisted URLs can be used.",
+    "import.file.upload.progress": "{{progress}} % uploaded",
     "text.snippet.text.aria.placeholder": "# Example: rdf:predicate a rdf:Property .",
     "url.import.input.placeholder": "Data URL",
     "filesTable.interrupt.import": "Interrupt import",

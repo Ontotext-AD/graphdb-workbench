@@ -949,6 +949,7 @@
     "import.enable.replace.option": "Enable this to replace the data in one or more graphs with the imported data.",
     "import.context.link": "JSON-LD context",
     "import.context.link.info": "Specifies external JSON-LD context as a URL. Only whitelisted URLs can be used.",
+    "import.file.upload.progress": "{{progress}} % uploaded",
     "text.snippet.text.aria.placeholder": "# Example: rdf:predicate a rdf:Property .",
     "url.import.input.placeholder": "Data URL",
     "filesTable.interrupt.import": "Interrupt import",
@@ -2008,5 +2009,5 @@
     "yasgui.tab_list.close_other_tabs.confirmation.queries_one_update.message": "<div class=\"run_query_confirmation alert alert-warning\">You have running {{queriesCount}} queries and 1 update. The queries will be aborted</div><div>Are you sure you want to close all other query tabs?</div>",
     "yasgui.tab_list.close_other_tabs.confirmation.queries_updates.message": "<div class=\"run_query_confirmation alert alert-warning\">You have running {{queriesCount}} queries and {{updatesCount}} updates. The queries will be aborted.</div><div>Are you sure you want to close all other query tabs?</div>",
     "yasgui.tab_list.close_tab.confirmation.not_query_update.message": "<div class=\"run_query_confirmation alert alert-warning\">You have running 1 update.</div><div>Are you sure you want to close this query tab?</div>",
-    "yasgui.tab_list.close_tab.confirmation.query_non_updates.message": "<div class=\"run_query_confirmation alert alert-warning\">You have running 1 query, that will be aborted.</div><div>Are you sure you want to close this query tab?</div>",
+    "yasgui.tab_list.close_tab.confirmation.query_non_updates.message": "<div class=\"run_query_confirmation alert alert-warning\">You have running 1 query, that will be aborted.</div><div>Are you sure you want to close this query tab?</div>"
 }
