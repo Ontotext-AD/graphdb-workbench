@@ -23,7 +23,7 @@ export function ExportSettingsCtrl($scope, $uibModalInstance, LocalStorageAdapte
     $scope.defaultMode = $scope.JSONLDModes.find((mode) => mode.name === 'expanded');
     $scope.currentMode = $scope.defaultMode;
     $scope.link = null;
-
+    $scope.fileFormat = $scope.$parent.format.toLowerCase();
     $scope.setJSONLDSettingsToLocalStorage = function (formName, formLink, link) {
         LocalStorageAdapter.set(LSKeys.JSONLD_EXPORT_SETTINGS, JSON.stringify({
             jsonldFormName: formName,

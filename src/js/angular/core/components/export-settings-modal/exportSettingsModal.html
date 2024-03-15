@@ -1,6 +1,6 @@
 <div class="modal-header">
     <button type="button" class="close" ng-click="cancel()"></button>
-    <h4 class="modal-title">{{'export.settings' | translate}}</h4>
+    <h4 class="modal-title">{{'export.settings.' + fileFormat | translate}}</h4>
 </div>
 
 <div class="modal-body">
@@ -8,9 +8,9 @@
         <div class="form-horizontal">
             <div class="form-group row">
                 <label class="col-lg-3 col-form-label" for="wb-JSONLD-mode">
-                    {{'jsonld.form' | translate}}
+                    {{fileFormat + '.form' | translate}}
                     <span class="btn btn-link p-0"
-                          uib-popover="{{'jsonld.form.info' | translate}}"
+                          uib-popover="{{fileFormat + '.form.info' | translate}}"
                           popover-trigger="mouseenter"
                           popover-placement="right"><em class="icon icon-info"></em></span>
                 </label>
@@ -25,30 +25,30 @@
 
             <div class="form-group row" ng-if="JSONLDFramedModes.indexOf(currentMode.name) > -1">
                 <label class="col-lg-3 col-form-label" for="wb-JSONLD-frame">
-                    {{'jsonld.frame.link' | translate}}
+                    {{fileFormat + '.frame.link' | translate}}
                     <span class="btn btn-link p-0"
-                          uib-popover="{{'jsonld.frame.link.info' | translate}}"
+                          uib-popover="{{fileFormat + '.frame.link.info' | translate}}"
                           popover-trigger="mouseenter"
                           popover-placement="right"><em class="icon icon-info"></em></span>
                 </label>
                 <div class="col-lg-9">
                     <input class="form-control" id="wb-JSONLD-frame" type="text"
-                           ng-model="$parent.link" placeholder="{{'jsonld.frame.uri.placeholder' | translate}}" autofocus="autofocus" />
+                           ng-model="$parent.link" placeholder="{{fileFormat + '.frame.uri.placeholder' | translate}}" autofocus="autofocus" />
                 </div>
             </div>
 
             <div class="form-group row"
                  ng-if="JSONLDContextModes.indexOf(currentMode.name) > -1">
                 <label class="col-lg-3 col-form-label" for="wb-JSONLD-context">
-                    {{'jsonld.context.link' | translate}}
+                    {{fileFormat + '.context.link' | translate}}
                     <span class="btn btn-link p-0"
-                          uib-popover="{{'jsonld.context.link.info' | translate}}"
+                          uib-popover="{{fileFormat + '.context.link.info' | translate}}"
                           popover-trigger="mouseenter"
                           popover-placement="right"><em class="icon icon-info"></em></span>
                 </label>
                 <div class="col-lg-9">
                     <input class="form-control" id="wb-JSONLD-context" type="text"
-                           ng-model="$parent.link" placeholder="{{'jsonld.context.uri.placeholder' | translate}}"
+                           ng-model="$parent.link" placeholder="{{fileFormat + '.context.uri.placeholder' | translate}}"
                            autofocus="autofocus" />
                 </div>
             </div>
