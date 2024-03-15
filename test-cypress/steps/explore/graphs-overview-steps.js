@@ -35,7 +35,7 @@ export class GraphsOverviewSteps {
     }
 
     static selectJSONLDFromRowDropdown() {
-        cy.get('.dropdown-menu').find('.export-repo-format-JSON-LD').eq(1).click();
+        cy.get('.export-repo-format-JSON-LD-row').contains('JSON-LD').click();
     }
 
     static getExportRepositoryButton() {
@@ -47,7 +47,7 @@ export class GraphsOverviewSteps {
     }
 
     static selectJSONLDOption() {
-        cy.get('.export-repo-format-JSONLD').click();
+        cy.get('.export-repo-format-JSON-LD').eq(0).click();
     }
 
     static selectJSONLDMode(option) {
