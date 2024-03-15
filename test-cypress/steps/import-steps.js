@@ -17,6 +17,10 @@ class ImportSteps {
         ImportSteps.visitImport('server', repository);
     }
 
+    static getImportUrlInput() {
+        return ImportSteps.getModal().find('.url-import-form input[name="dataUrl"]');
+    }
+
     static visitImport(type, repository) {
         if (repository) {
             cy.presetRepository(repository);
@@ -33,15 +37,16 @@ class ImportSteps {
         return ImportSteps;
     }
 
+    static closePopover() {
+        cy.get('.popover.in').click();
+    }
+
     static openImportURLDialog(importURL) {
         cy.get('#import-user .import-from-url-btn').click()
-            // Forces the popover to disappear as it covers the modal and Cypress refuses to continue
-            .trigger('mouseleave', {force: true});
-        ImportSteps.getModal()
-            .find('.url-import-form input[name="dataUrl"]')
-            .type(importURL)
-            .should('have.value', importURL);
-
+        // Forces the popover to disappear as it covers the modal and Cypress refuses to continue
+        this.closePopover();
+        this.getImportUrlInput().type(importURL).should('have.value', importURL);
+        this.closePopover();
         return ImportSteps;
     }
 

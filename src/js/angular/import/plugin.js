@@ -3,7 +3,7 @@ PluginRegistry.add('route', {
     'module': 'graphdb.framework.impex.import',
     'path': 'import/app',
     'chunk': 'import',
-    'controller': 'CommonCtrl',
+    'controller': 'ImportViewCtrl',
     'templateUrl': 'pages/import.html',
     'title': 'common.import',
     'reloadOnSearch': false,

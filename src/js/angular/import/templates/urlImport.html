@@ -7,7 +7,7 @@
     <form name="urlForm" class="url-import-form" ng-submit="importUrlForm($event)" ng-hide="loader" novalidate>
         <div class="input-group mb-1">
             <input required validate-uri id="dataUrl" name="dataUrl" placeholder="{{'url.import.input.placeholder' | translate}}"
-                   ng-model="dataUrl" class="form-control"
+                   ng-model="dataUrl" class="form-control" autocomplete="off"
                    uib-popover="{{'import.supported.url.with.rdf' | translate}} {{fileFormatsHuman}}. "
                    popover-placement="bottom"
                    popover-trigger="focus">
