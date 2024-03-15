@@ -217,12 +217,16 @@ exportCtrl.controller('ExportCtrl',
              * @param {Boolean} true if the method is invoked for multiple selected graphs export
              */
             $scope.openJSONLDExportSettings = function (format, context, forSelectedGraphs) {
-                $scope.format = format.name;
                 const modalInstance = $uibModal.open({
                     templateUrl: 'js/angular/core/components/export-settings-modal/exportSettingsModal.html',
                     controller: ExportSettingsCtrl,
                     size: 'lg',
-                    scope: $scope
+                    scope: $scope,
+                    resolve: {
+                        format: function () {
+                            return format.name;
+                        }
+                    }
                 });
 
                 modalInstance.result.then(function (data) {

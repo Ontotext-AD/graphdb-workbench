@@ -344,7 +344,12 @@ function yasguiComponentDirective(
                         templateUrl: 'js/angular/core/components/export-settings-modal/exportSettingsModal.html',
                         controller: ExportSettingsCtrl,
                         size: 'lg',
-                        scope: $scope
+                        scope: $scope,
+                        resolve: {
+                            format: function () {
+                                return downloadAsEvent.contentType === "application/ld+json" ? 'JSON-LD' : 'NDJSON-LD';
+                            }
+                        }
                     });
 
                     modalInstance.result.then(function (data) {
