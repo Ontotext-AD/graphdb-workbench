@@ -192,7 +192,12 @@ function ExploreCtrl(
             templateUrl: 'js/angular/core/components/export-settings-modal/exportSettingsModal.html',
             controller: ExportSettingsCtrl,
             size: 'lg',
-            scope: $scope
+            scope: $scope,
+            resolve: {
+                format: function () {
+                    return format.name;
+                }
+            }
         });
 
         modalInstance.result.then(function (data) {
