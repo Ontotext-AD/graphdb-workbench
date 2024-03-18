@@ -13,6 +13,8 @@ import 'angular/core/directives/uppercased.directive';
 import 'angular/core/directives/operations-statuses-monitor/operations-statuses-monitor.directive';
 import 'angular/core/directives/autocomplete/autocomplete.directive';
 import {defineCustomElements} from 'ontotext-yasgui-web-component/loader';
+import SwaggerUI from 'swagger-ui';
+import 'swagger-ui/dist/swagger-ui.css';
 
 // $translate.instant converts <b> from strings to &lt;b&gt
 // and $sce.trustAsHtml could not recognise that this is valid html
@@ -214,6 +216,22 @@ const moduleDefinition = function (productInfo) {
             var s = "" + input;
             return s.charAt(0).toUpperCase() + s.slice(1);
         };
+    });
+
+    const swaggerUiWb = SwaggerUI({
+        url: '../../../rest/api/workbench',
+        dom_id: 'swagger-ui-container-graphdb',
+    });
+    swaggerUiWb.initOAuth({
+        useBasicAuthenticationWithAccessCodeGrant: true
+    });
+
+    const swaggerUiRdf4j = SwaggerUI({
+        url: '../../../rest/api/rdf4j',
+        dom_id: 'swagger-ui-container-rdf4j',
+    });
+    swaggerUiRdf4j.initOAuth({
+        useBasicAuthenticationWithAccessCodeGrant: true
     });
 
     angular.bootstrap(document, ['graphdb.workbench']);

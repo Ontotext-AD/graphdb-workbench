@@ -189,6 +189,11 @@ module.exports = {
                 to: 'js/angular/templates'
             }
         ])
+        /*, {
+        patterns: [{
+                from: require.resolve('swagger-ui/dist/oauth2-redirect.html'),
+                to: './'
+            }*/
     ],
     module: {
         rules: [
