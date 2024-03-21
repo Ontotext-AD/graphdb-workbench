@@ -4,7 +4,8 @@
     flex-flow: row wrap;
 }
 
-.upload-buttons div.btn {
+.upload-buttons .btn {
+    display: flex;
     height: 100%;
     max-height: 100px;
     white-space: normal;
@@ -14,6 +15,7 @@
 
 .grid-container {
     display: flex;
+    align-items: center;
 }
 
 .text {
@@ -36,4 +38,26 @@
 
 .impex-popover pre {
     white-space: pre-wrap;
+}
+
+.file-size-prop,
+.server-import-directory-prop {
+    border-bottom: 1px dotted var(--secondary-color);
+}
+
+.copy-btn {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 0;
+    color: var(--secondary-color);
+}
+
+.copy-btn:hover {
+    transform: scale(1.1);
+    transition: all 0.1s ease-out;
+}
+
+.copy-btn:focus {
+    outline: none;
 }
