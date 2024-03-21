@@ -1,12 +1,12 @@
 <div class="ot-view-info">
-    <h4>{{'import.from.server' | translate}}</h4>
+    <h4>{{'import.help.on_server_import.import_from_server' | translate}}</h4>
     <p>
-        {{'import.put.files.into' | translate}}<strong>{{appData.properties['graphdb.workbench.importDirectory'].value}}</strong>.
+        {{'import.help.on_server_import.open_directory' | translate}}
+        <strong>{{appData.properties['graphdb.workbench.importDirectory'].value}}</strong>
+        {{'import.help.on_server_import.put_files_into' | translate}}.<br>
+        {{'import.help.on_server_import.directory_can_be_changed' | translate}}
+        <strong class="server-import-directory-prop copyable">graphdb.workbench.importDirectory</strong>
+        <copy-to-clipboard tooltip-text="import.help.buttons.copy_file_size_prop.tooltip"></copy-to-clipboard>
+        {{'import.help.on_server_import.the_property' | translate}}.
     </p>
-
-    <p>
-        {{'import.directory.setting' | translate}}<em>graphdb.workbench.importDirectory</em>{{'import.property' | translate}}.
-    </p>
-    <div ng-include="commonUrl">
-    </div>
 </div>

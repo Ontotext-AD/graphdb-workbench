@@ -12,10 +12,12 @@ const modules = [
     'ui.bootstrap',
     'toastr',
     'graphdb.framework.core.services.repositories',
+    'graphdb.framework.utils.localstorageadapter',
     'graphdb.framework.utils.uriutils',
     'graphdb.framework.guides.services',
     'graphdb.framework.rest.import.service',
-    'graphdb.framework.rest.upload.service'
+    'graphdb.framework.rest.upload.service',
+    'graphdb.framework.core.directives'
 ];
 
 const importViewModule = angular.module('graphdb.framework.impex.import.controllers', modules);
@@ -780,15 +782,14 @@ importViewModule.controller('TextCtrl', ['$scope', '$uibModalInstance', 'text', 
     };
 }]);
 
-importViewModule.controller('TabCtrl', ['$scope', '$location', function ($scope, $location) {
+importViewModule.controller('TabCtrl', ['$scope', '$location', 'LocalStorageAdapter', 'LSKeys', function ($scope, $location, LocalStorageAdapter, LSKeys) {
 
     // =========================
     // Public variables
     // =========================
 
     $scope.viewType = $location.hash();
-    $scope.isCollapsed = false;
-    $scope.commonUrl = 'js/angular/import/templates/commonInfo.html';
+    $scope.isHelpVisible = true;
 
     // =========================
     // Public functions
@@ -796,6 +797,17 @@ importViewModule.controller('TabCtrl', ['$scope', '$location', function ($scope,
 
     $scope.changeHelpTemplate = function (templateFile) {
         $scope.templateUrl = 'js/angular/import/templates/' + templateFile;
+    };
+
+    $scope.toggleHelp = () => {
+        const helpShown = LocalStorageAdapter.get(LSKeys.IMPORT_HELP_SHOWN);
+        if (helpShown) {
+            LocalStorageAdapter.set(LSKeys.IMPORT_HELP_SHOWN, false);
+            $scope.isHelpVisible = false;
+        } else {
+            LocalStorageAdapter.set(LSKeys.IMPORT_HELP_SHOWN, true);
+            $scope.isHelpVisible = true;
+        }
     };
 
     // =========================
@@ -811,6 +823,12 @@ importViewModule.controller('TabCtrl', ['$scope', '$location', function ($scope,
             $scope.templateUrl = 'js/angular/import/templates/uploadInfo.html';
         } else {
             $scope.templateUrl = 'js/angular/import/templates/importInfo.html';
+        }
+
+        $scope.isHelpVisible = LocalStorageAdapter.get(LSKeys.IMPORT_HELP_SHOWN);
+        if ($scope.isHelpVisible === null) {
+            LocalStorageAdapter.set(LSKeys.IMPORT_HELP_SHOWN, true);
+            $scope.isHelpVisible = true;
         }
     };
     init();

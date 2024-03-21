@@ -14,10 +14,6 @@
 
     <div ng-controller="TabCtrl" ng-show="!isRestricted && canWriteActiveRepo()">
 
-        <button type="button" ng-click="isCollapsed = !isCollapsed" class="btn btn-link pull-right"><span
-            class="icon-help"></span><span class="btn-link-text">{{'menu.help.label' | translate}}</span>
-        </button>
-
         <ul class="nav nav-tabs mb-2">
             <li class="nav-item" id="wb-import-tabUpload" ng-click="changeHelpTemplate('uploadInfo.html')">
                 <a class="nav-link" ng-class="viewType == 'user' ? 'active' : ''" href ng-click="viewType = 'user'"
@@ -28,14 +24,14 @@
                 <a class="nav-link" ng-class="viewType == 'server' ? 'active' : ''" href
                    ng-click="viewType = 'server'" data-toggle="tab">{{'server.files' | translate}}</a>
             </li>
+            <li class="nav-item">
+                <button type="button" ng-click="toggleHelp()"
+                        gdb-tooltip="{{'import.help.buttons.toggle_help.tooltip' | translate}}"
+                        class="btn btn-link toggle-help-btn pull-right">
+                    <span class="icon-help text-tertiary"></span>
+                </button>
+            </li>
         </ul>
-
-        <div uib-collapse="!isCollapsed" id="ot-help-text" class="alert alert-info">
-            <button type="button" ng-click="isCollapsed = false" gdb-tooltip="{{'common.close' | translate}}"
-                    class="close"
-                    aria-label="Close"></button>
-            <div ng-include="templateUrl"></div>
-        </div>
 
         <div class="tab-content">
             <div id="import-user" class="tab-pane" ng-controller="UploadCtrl"
@@ -90,7 +86,7 @@
                              popover-trigger="mouseenter"
                              popover-placement="bottom">
                             <div class="grid-container">
-                                <em class="icon-edit icon-lg"></em>
+                                <em class="icon-sparql icon-lg"></em>
                                 <div class="text">
                                     <div>{{'import.rdf.text.snippet.label' | translate}}</div>
                                     <small class="text-muted">{{'type.paste.data.label' | translate}}</small>
@@ -99,10 +95,25 @@
                         </div>
                     </div>
                 </div>
+
+                <div uib-collapse="files.length || !isHelpVisible" class="alert alert-help">
+                    <button type="button" ng-click="toggleHelp()" gdb-tooltip="{{'common.close' | translate}}"
+                            class="close"
+                            aria-label="Close"></button>
+                    <div ng-include="templateUrl"></div>
+                </div>
+
                 <div files-table></div>
             </div>
             <div id="import-server" ng-hide="isS4()" class="tab-pane" ng-controller="ImportCtrl"
                  ng-class="$parent.viewType == 'server' ? 'active' : ''">
+
+                <div uib-collapse="files.length && !isHelpVisible" class="alert alert-help">
+                    <button type="button" ng-click="toggleHelp()" gdb-tooltip="{{'common.close' | translate}}"
+                            class="close"
+                            aria-label="Close"></button>
+                    <div ng-include="templateUrl"></div>
+                </div>
 
                 <div files-table></div>
             </div>
