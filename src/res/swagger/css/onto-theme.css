@@ -1,8 +1,0 @@
-body {
-    font-family: var(--main-font);
-    font-weight: var(--main-font-weight);
-}
-
-code, pre, kbd, samp, textarea {
-    font-family: var(--mono-font);
-}
