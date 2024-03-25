@@ -971,9 +971,9 @@
                 "the_property": "propriété"
             },
             "on_file_size_limit": {
-                "file_size_limit_info": "To import larger than {{fileSizeLimit}} files, use the ",
-                "server_files_link": "Server files",
-                "import_or_use": "import or use the",
+                "file_size_limit_info": "Pour importer plus de {{fileSizeLimit}} Mo, utilisez l'importation de ",
+                "server_files_link": "Fichiers du serveur",
+                "import_or_use": "ou utilisez l'",
                 "api_link": "API"
             }
         }

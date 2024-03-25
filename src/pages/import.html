@@ -3,7 +3,7 @@
 <div id="wb-import">
     <h1>
         {{title}}
-        <span class="btn btn-link"
+        <span class="btn btn-link page-info-icon"
               uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
               popover-trigger="mouseenter"
               popover-placement="bottom-right"
@@ -95,13 +95,11 @@
                     </div>
                 </div>
 
-                <div uib-collapse="false" class="alert alert-warning mb-0">
-                    <button type="button" ng-click="toggleFilesizeLimit()" gdb-tooltip="{{'common.close' | translate}}"
-                            class="close" aria-label="Close"></button>
+                <div uib-collapse="false" class="alert alert-warning file-size-limit-warning mb-0">
                     <div ng-include="fileSizeLimitInfoTemplateUrl"></div>
                 </div>
 
-                <div uib-collapse="!isHelpVisible" class="alert alert-help mt-2">
+                <div uib-collapse="!isHelpVisible" class="alert alert-help user-data-import-help mt-2">
                     <button type="button" ng-click="toggleHelp()" gdb-tooltip="{{'common.close' | translate}}"
                             class="close"
                             aria-label="Close"></button>
