@@ -2,6 +2,8 @@ import 'angular/core/services';
 import 'angular/utils/uri-utils';
 import 'angular/rest/import.rest.service';
 import 'angular/rest/upload.rest.service';
+import 'angular/import/import-context.service';
+import 'angular/import/import-view-storage.service';
 import {FILE_STATUS} from "../models/import/file-status";
 import {FileFormats} from "../models/import/file-formats";
 import * as stringUtils from "../utils/string-utils";
@@ -17,7 +19,9 @@ const modules = [
     'graphdb.framework.guides.services',
     'graphdb.framework.rest.import.service',
     'graphdb.framework.rest.upload.service',
-    'graphdb.framework.core.directives'
+    'graphdb.framework.core.directives',
+    'graphdb.framework.importcontext.service',
+    'graphdb.framework.import.importviewstorageservice'
 ];
 
 const importViewModule = angular.module('graphdb.framework.impex.import.controllers', modules);
@@ -33,13 +37,14 @@ const USER_DATA_TYPE = {
     URL: 'url'
 };
 
-importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', '$repositories', '$uibModal', '$filter', '$jwtAuth', '$location', '$translate', 'LicenseRestService', 'GuidesService', 'ModalService', 'ImportRestService',
-    function ($scope, toastr, $interval, $repositories, $uibModal, $filter, $jwtAuth, $location, $translate, LicenseRestService, GuidesService, ModalService, ImportRestService) {
+importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', '$repositories', '$uibModal', '$filter', '$jwtAuth', '$location', '$translate', 'LicenseRestService', 'GuidesService', 'ModalService', 'ImportRestService', 'ImportContextService', 'ImportViewStorageService',
+    function ($scope, toastr, $interval, $repositories, $uibModal, $filter, $jwtAuth, $location, $translate, LicenseRestService, GuidesService, ModalService, ImportRestService, ImportContextService, ImportViewStorageService) {
 
         // =========================
         // Private variables
         // =========================
 
+        const subscriptions = [];
         let listPollingHandler = null;
         const LIST_POLLING_INTERVAL = 4000;
 
@@ -55,6 +60,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         $scope.fileFormatsExtended = FileFormats.getFileFormatsExtended();
         $scope.fileFormatsHuman = FileFormats.getFileFormatsHuman() + $translate.instant('import.gz.zip');
         $scope.textFileFormatsHuman = FileFormats.getTextFileFormatsHuman();
+        $scope.maxUploadFileSizeMB = 0;
 
         // =========================
         // Public functions
@@ -302,7 +308,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             if (!$($scope.tabId).is(':visible')) {
                 return;
             }
-            updateListHttp(force);
+            $scope.updateListHttp(force);
         };
 
         // This should be public because it's used by the upload and import controllers
@@ -320,11 +326,13 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         // Private functions
         // =========================
 
-        const updateListHttp = (force) => {
+        // TODO: temporary exposed in the scope because it is called via scope.parent from the child TabsCtrl which should be changed
+        $scope.updateListHttp = (force) => {
             const loader = $scope.viewUrl === OPERATION.UPLOAD ? ImportRestService.getUploadedFiles : ImportRestService.getServerFiles;
             loader($repositories.getActiveRepository()).success(function (data) {
                 if ($scope.files.length === 0 || force) {
                     $scope.files = data;
+                    ImportContextService.updateFiles($scope.files);
                     $scope.files.forEach(function (f) {
                         if (!f.type) {
                             f.type = $scope.defaultType;
@@ -347,6 +355,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                     $scope.files = _.filter($scope.files, function (f) {
                         return f.status !== undefined;
                     });
+                    ImportContextService.updateFiles($scope.files);
                 }
                 $scope.showClearStatuses = _.filter($scope.files, function (file) {
                     return file.status === FILE_STATUS.DONE || file.status === FILE_STATUS.ERROR;
@@ -371,7 +380,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                         value: data[i].value
                     };
                 }
-                $scope.maxUploadFileSizeMB = $scope.appData.properties['graphdb.workbench.maxUploadSize'].value / (1024 * 1024);
+                $scope.maxUploadFileSizeMB = FileUtils.convertBytesToMegabytes($scope.appData.properties['graphdb.workbench.maxUploadSize'].value);
             }).error(function (data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
@@ -382,38 +391,29 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             subscriptions.forEach((subscription) => subscription());
         };
 
-        const isTabOpened = () => {
-            return $($scope.tabId).is(':visible');
+        const initPersistence = () => {
+            ImportViewStorageService.initImportViewSettings();
         };
 
-        const onTabOpened = () => {
-            if (isTabOpened()) {
-                updateListHttp(false);
-                $location.hash($scope.viewType);
-            }
+        const initSubscribtions = () => {
+            subscriptions.push($scope.$on('repositoryIsSet', $scope.onRepositoryChange));
+            subscriptions.push($scope.$on('$destroy', () => $interval.cancel(listPollingHandler)));
+            $scope.$on('$destroy', removeAllListeners);
         };
-
-        // =========================
-        // Watchers and event handlers
-        // =========================
-
-        const subscriptions = [];
-
-        subscriptions.push($scope.$on('repositoryIsSet', $scope.onRepositoryChange));
-
-        // update the list instantly when the tab is changed
-        subscriptions.push($scope.$watch(isTabOpened, onTabOpened));
-
-        subscriptions.push($scope.$on('$destroy', () => $interval.cancel(listPollingHandler)));
-
-        $scope.$on('$destroy', removeAllListeners);
 
         // =========================
         // Initialization
         // =========================
 
         const init = () => {
+            initSubscribtions();
             getAppData();
+            initPersistence();
+
+            // subscribe to file changes
+            ImportContextService.onFilesUpdated(function (files) {
+                // setIsHelpVisible();
+            });
         };
         init();
     }]);
@@ -790,10 +790,18 @@ importViewModule.controller('TabCtrl', ['$scope', '$location', 'LocalStorageAdap
 
     $scope.viewType = $location.hash();
     $scope.isHelpVisible = true;
+    $scope.fileSizeLimitInfoTemplateUrl = 'js/angular/import/templates/fileSizeLimitInfo.html';
 
     // =========================
     // Public functions
     // =========================
+
+    $scope.openTab = (tab) => {
+        $scope.viewType = tab;
+        $scope.$parent.viewUrl = tab === 'server' ? OPERATION.SERVER : OPERATION.UPLOAD;
+        $location.hash($scope.viewType);
+        $scope.updateListHttp(true);
+    };
 
     $scope.changeHelpTemplate = function (templateFile) {
         $scope.templateUrl = 'js/angular/import/templates/' + templateFile;
@@ -830,6 +838,8 @@ importViewModule.controller('TabCtrl', ['$scope', '$location', 'LocalStorageAdap
             LocalStorageAdapter.set(LSKeys.IMPORT_HELP_SHOWN, true);
             $scope.isHelpVisible = true;
         }
+
+        $scope.openTab($scope.viewType || 'user');
     };
     init();
 }]);
