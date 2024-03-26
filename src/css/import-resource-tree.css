@@ -1,0 +1,95 @@
+.import-resource-table {
+    width: 100%;
+}
+
+.import-resource-table .import-resource-row.even-row-start:hover,
+.import-resource-table .import-resource-row.even-row-start:hover + .import-resource-row,
+.import-resource-table .import-resource-row.odd-row-start:hover,
+.import-resource-table .import-resource-row.odd-row-start:hover + .import-resource-row {
+    background-color: rgba(0, 0, 0, .075);
+}
+
+.import-resource-table .even-row-start,
+.import-resource-table .even-row-end {
+    background-color: rgba(0, 0, 0, .05);
+}
+
+.import-resource-table .import-resource-header-cell {
+    padding: 8px;
+}
+
+.import-resource-table .import-resource-cell {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.import-resource-table .even-row-end .import-resource-cell,
+.import-resource-table .odd-row-end .import-resource-cell {
+    padding-bottom: 8px;
+}
+
+.import-resource-table .even-row-end .import-resource-cell {
+    border-bottom: 1px solid #dddddd;
+}
+
+.import-resource-table .even-row-start .import-resource-cell,
+.import-resource-table .odd-row-start .import-resource-cell {
+    border-top: 1px solid #dddddd;
+    padding-top: 8px;
+}
+
+.import-resource-tree .import-resource-table .import-resource-header-cell {
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 24px;
+}
+
+.import-resource-tree .import-resource-table .import-resource-cell.import-resource-cell-select,
+.import-resource-tree .import-resource-table .import-resource-header-cell.import-resource-cell-select {
+    width: 20px;
+}
+
+.import-resource-tree .import-resource-table .import-resource-cell {
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 18px;
+}
+
+.import-resource-tree .import-resource-table .import-resource-title {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 18px;
+}
+
+.import-resource-tree .import-resource-table .import-resource-title em {
+    padding-right: 10px
+}
+
+.import-resource-tree .import-resource-table .import-resource-actions {
+    display: flex;
+    align-items: stretch;
+    justify-content: end;
+}
+
+.import-resource-tree .import-resource-table .import-resource-actions .import-resource-action-import {
+    border: none;
+}
+
+.import-resource-tree .import-resource-table .import-resource-actions .import-resource-action-info {
+    font-size: 1.5em;
+    align-content: center;
+    padding-top: 6px;
+}
+
+.import-resource-tree .import-resource-table .import-resource-modified,
+.import-resource-tree .import-resource-table .import-resource-imported,
+.import-resource-tree .import-resource-table .import-resource-import-resource-size {
+    width: 120px;
+}
+
+.import-resource-tree .import-resource-cell .import-resource-message,
+.import-resource-tree .import-resource-cell .import-resource-name {
+    width: 40%;
+}
