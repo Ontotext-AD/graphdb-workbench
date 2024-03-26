@@ -41,9 +41,6 @@ pipeline {
 
     stage('Sonar') {
       steps {
-        sh "sudo chown -R \$(id -u):\$(id -g) coverage/"
-        sh "sudo chown -R \$(id -u):\$(id -g) cypress/"
-        sh "sudo chown -R \$(id -u):\$(id -g) report/"
         withSonarQubeEnv('SonarCloud') {
           sh "node sonar-project.js --branch='${env.ghprbSourceBranch}' --target-branch='${env.ghprbTargetBranch}' --pull-request-id='${env.ghprbPullId}'"
         }
