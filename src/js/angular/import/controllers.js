@@ -9,6 +9,8 @@ import {FileFormats} from "../models/import/file-formats";
 import * as stringUtils from "../utils/string-utils";
 import {FileUtils} from "../utils/file-utils";
 import {DateUtils} from "../utils/date-utils";
+import {toImportServerResource} from "../rest/mappers/import-mapper";
+import {ImportResourceTreeElement} from "../models/import/import-resource-tree-element";
 
 const modules = [
     'ui.bootstrap',
@@ -325,11 +327,26 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         // =========================
         // Private functions
         // =========================
+        $scope.serverImportTree = new ImportResourceTreeElement();
+
+        $scope.onImport = (importResource) => {
+          console.log('The resource ', importResource, 'have to be imported');
+        };
+
+        $scope.onDelete = (importResource) => {
+            console.log('The resource ', importResource, 'have to be deleted');
+        };
 
         // TODO: temporary exposed in the scope because it is called via scope.parent from the child TabsCtrl which should be changed
         $scope.updateListHttp = (force) => {
             const filesLoader = $scope.viewUrl === OPERATION.UPLOAD ? ImportRestService.getUploadedFiles : ImportRestService.getServerFiles;
             filesLoader($repositories.getActiveRepository()).success(function (data) {
+
+                // Commented during development. When evrething is ready this functionality have to change current one.
+                // if (OPERATION.SERVER === $scope.viewType) {
+                //     $scope.serverImportTree = toImportServerResource(data);
+                // }
+
                 if ($scope.files.length === 0 || force) {
                     $scope.files = data;
                     ImportContextService.updateFiles($scope.files);

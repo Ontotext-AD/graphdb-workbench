@@ -143,7 +143,10 @@
                         </p>
                     </div>
                 </div>
-
+                <import-resource-tree ng-if="serverImportTree"
+                                      import-resources="serverImportTree"
+                                      on-delete="onDelete(resource)"
+                                      on-import="onImport(resource)"></import-resource-tree>
                 <div class="mt-2" files-table></div>
             </div>
         </div>

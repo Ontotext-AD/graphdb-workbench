@@ -976,6 +976,15 @@
                 "import_or_use": "ou utilisez l'",
                 "api_link": "API"
             }
+        },
+        "import_resource_tree": {
+            "header": {
+                "name": "Nom",
+                "size": "Taille",
+                "modified": "Modifié",
+                "imported": "Importé",
+                "context": "Contexte"
+            }
         }
     },
     "text.snippet.text.aria.placeholder": "# Exemple : rdf:predicate a rdf:Property .",
