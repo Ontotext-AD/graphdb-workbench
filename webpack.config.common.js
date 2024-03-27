@@ -249,7 +249,7 @@ module.exports = {
                     loader: "file-loader",
                     options: {
                         name: '[name].[ext]',
-                        outputPath: 'res/swagger5/fonts'
+                        outputPath: 'res/swagger/fonts'
                     }
                 }
             }, {
