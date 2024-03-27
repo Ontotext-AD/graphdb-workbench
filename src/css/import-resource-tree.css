@@ -1,13 +1,10 @@
 :root {
-    /* Define fixed widths */
     --select-import-resource-width: 30px;
     --time-cell-width: 140px;
     --actions-width: 60px;
-
-    /* Calculate percentages */
-    --message-width: calc((100% - var(--select-import-resource-width) - var(--time-cell-width) - var(--actions-width)) * 0.3);
-    --size-width: calc((100% - var(--select-import-resource-width) - var(--time-cell-width) - var(--actions-width)) * 0.1);
-    --context-cell-width: calc((100% - var(--select-import-resource-width) - var(--time-cell-width) - var(--actions-width)) * 0.3);
+    --size-width: 100px;
+    --message-width: calc((100% - var(--select-import-resource-width) - var(--time-cell-width) - var(--actions-width) - var(--size-width)) * 0.3);
+    --context-cell-width: calc((100% - var(--select-import-resource-width) - var(--time-cell-width) - var(--actions-width)- var(--size-width)) * 0.3);
 }
 
 .import-resource-row,
@@ -38,6 +35,8 @@
 .import-resource-row .import-resource-info .import-resource-meta-info .import-resource-modified,
 .import-resource-row .import-resource-info .import-resource-meta-info .import-resource-imported {
     max-width: var(--time-cell-width);
+    flex-grow: 1;
+    flex-shrink: 0;
 }
 
 .import-resource-row-header .import-resource-context,

@@ -978,6 +978,15 @@
             }
         }
     },
+    "import_resource_tree": {
+        "header": {
+            "name": "Name",
+            "size": "Size",
+            "modified": "Modified",
+            "imported": "Imported",
+            "context": "Context"
+        }
+    },
     "text.snippet.text.aria.placeholder": "# Example: rdf:predicate a rdf:Property .",
     "url.import.input.placeholder": "Data URL",
     "filesTable.interrupt.import": "Interrupt import",
