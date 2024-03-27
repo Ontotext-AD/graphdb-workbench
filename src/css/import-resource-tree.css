@@ -20,7 +20,7 @@
 
 .import-resource-row-header .import-resource-name,
 .import-resource-row .import-resource-info .import-resource-meta-info .import-resource-message {
-    width: var(--message-width);
+    min-width: var(--message-width);
     flex-grow: 0;
 }
 
