@@ -13,6 +13,17 @@
     text-overflow: ellipsis;
 }
 
+/* Remove the padding from the large button and move it to the nested link below . This allows the click over the button
+   to work in the entire button area. */
+.upload-buttons .upload-rdf-files-btn {
+    padding: 0;
+}
+
+.upload-buttons .upload-rdf-files-btn > a {
+    width: 100%;
+    padding: 0.75em 1.2em;
+}
+
 .grid-container {
     display: flex;
     align-items: center;

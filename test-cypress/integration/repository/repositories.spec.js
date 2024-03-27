@@ -1,5 +1,5 @@
 import HomeSteps from "../../steps/home-steps";
-import ImportSteps from "../../steps/import-steps";
+import ImportSteps from "../../steps/import/import-steps";
 import {RepositorySteps} from "../../steps/repository-steps";
 import {ToasterSteps} from "../../steps/toaster-steps";
 import {GlobalOperationsStatusesStub} from "../../stubs/global-operations-statuses-stub";

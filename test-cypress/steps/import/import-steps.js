@@ -1,9 +1,18 @@
-import {ModalDialogSteps} from "./modal-dialog-steps";
+import {ModalDialogSteps} from "../modal-dialog-steps";
 
 /**
  * Reusable functions for interacting with the import page.
  */
 class ImportSteps {
+
+    static createFile(filename, content) {
+        return {
+            contents: Cypress.Buffer.from(content),
+            fileName: filename,
+            mimeType: 'text/plain',
+            lastModified: Date.now()
+        };
+    }
 
     static visit() {
         cy.visit('/import');
@@ -71,6 +80,7 @@ class ImportSteps {
     }
 
     static openUserDataTab() {
+        cy.get('.ot-loader').should('not.be.visible');
         return ImportSteps.getTabs().eq(0).click();
     }
 
@@ -80,6 +90,11 @@ class ImportSteps {
 
     static getServerFilesTab() {
         return ImportSteps.getView().find('#import-server');
+    }
+
+    static openServerFilesTab() {
+        cy.get('.ot-loader').should('not.be.visible');
+        return ImportSteps.getTabs().eq(1).click();
     }
 
     static getUploadRdfFilesButton() {
@@ -123,7 +138,7 @@ class ImportSteps {
     }
 
     static getUserDataUploadedFilesTable() {
-        return ImportSteps.getView().find('#wb-import-fileInFiles');
+        return ImportSteps.getView().find('#import-user table');
     }
 
     static getUserDataUploadedFiles() {
@@ -136,6 +151,37 @@ class ImportSteps {
 
     static deleteUploadedFile(index) {
         ImportSteps.getUserDataUploadedFile(index).find('.remove-file-btn').click();
+    }
+
+    static getServerFilesTable() {
+        return ImportSteps.getView().find('#import-server table');
+    }
+
+    static getServerFiles() {
+        return ImportSteps.getServerFilesTable().find('.import-file-row');
+    }
+
+    static getServerFile(index) {
+        return ImportSteps.getServerFiles().eq(index);
+    }
+
+    static openFileUploadDialog() {
+        this.getUploadRdfFilesButton().find('#wb-import-uploadFile').click();
+    }
+
+    static selectFile(files) {
+        cy.get('input[type=file]').selectFile(files, {force: true});
+    }
+
+    static uploadFile(filePath) {
+        const filePathsList = Array.isArray(filePath)? filePath : [filePath];
+        // cy.fixture(`/graphdb-import/${fileName}`).as('file1');
+        cy.fixtures(filePathsList).then((files) => {
+            const aliases = filePathsList.map((filePath, i) => `@file-${i}`);
+            console.log(`%cfixture files:`, 'background: plum', files, aliases);
+            // with force because the field is hidden
+            cy.get('input[type=file]').selectFile(aliases, {force: true});
+        });
     }
 
     static openImportURLDialog(importURL) {

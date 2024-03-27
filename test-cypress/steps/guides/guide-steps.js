@@ -3,7 +3,7 @@ import {MainMenuSteps} from "../main-menu-steps";
 import {RepositorySteps} from "../repository-steps";
 import {RepositorySelectorSteps} from "../repository-selector-steps";
 import {AutocompleteSteps} from "../autocomplete-steps";
-import ImportSteps from "../import-steps";
+import ImportSteps from "../import/import-steps";
 
 export class GuideSteps {
     static visit() {

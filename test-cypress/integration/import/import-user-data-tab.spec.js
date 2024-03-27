@@ -1,4 +1,4 @@
-import ImportSteps from '../../steps/import-steps';
+import ImportSteps from "../../steps/import/import-steps";
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 
 const RDF_TEXT_SNIPPET = '@prefix ab:<http://learningsparql.com/ns/addressbook#>.\n\n' +

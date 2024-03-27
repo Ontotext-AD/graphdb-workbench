@@ -1,4 +1,4 @@
-import ImportSteps from '../../steps/import-steps';
+import ImportSteps from "../../steps/import/import-steps";
 
 describe('Import user data: URL import', () => {
 
