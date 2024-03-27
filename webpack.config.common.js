@@ -142,6 +142,11 @@ module.exports = {
                 to: 'js/angular/import/templates'
             },
             {
+                from: 'src/js/angular/core/directives/import-resource-tree/templates',
+                to: 'js/angular/core/directives/import-resource-tree/templates',
+                transform: replaceVersion
+            },
+            {
                 from: 'src/js/angular/rdfrank/templates',
                 to: 'js/angular/rdfrank/templates'
             },

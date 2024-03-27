@@ -1,0 +1,81 @@
+<link href="css/import-resource-tree.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
+
+<div class="import-resource-tree" ng-if="resources && !resources.isEmpty()">
+    <div class="import-resource-row-header">
+        <div class="import-resource-cell import-resource-cell-checkbox">
+        </div>
+        <div class="import-resource-info">
+            <div class="import-resource-cell import-resource-name">
+                Name
+            </div>
+            <div class="import-resource-cell import-resource-size">
+                Size
+            </div>
+            <div class="import-resource-cell import-resource-modified">
+                Modified
+            </div>
+            <div class="import-resource-cell import-resource-imported">
+                Imported
+            </div>
+            <div class="import-resource-cell import-resource-context">
+                Context
+            </div>
+            <div class="import-resource-cell import-resource-action">
+            </div>
+        </div>
+    </div>
+
+    <div class="import-resource-row" ng-repeat="resource in resources">
+        <div class="import-resource-cell import-resource-cell-checkbox">
+            <input type="checkbox" ng-model="resource.selected"/>
+        </div>
+        <div class="import-resource-info">
+            <div class="import-resource-cell import-resource-name">
+                {{resource.name}}
+            </div>
+            <div class="import-resource-meta-info">
+                <div class="import-resource-cell import-resource-message">
+                    {{resource.importResource.message || 'RDF Parser Error'}}
+                </div>
+                <div class="import-resource-cell import-resource-size">
+                    {{resource.importResource.size || 0}}
+                </div>
+                <div class="import-resource-cell import-resource-modified">
+                    {{1288323623006 | date: 'yyyy-MM-dd HH:mm'}}
+                </div>
+                <div class="import-resource-cell import-resource-imported">
+                    {{resource.importResource.timestamp | date: 'yyyy-MM-dd HH:mm'}}
+                </div>
+                <div class="import-resource-cell import-resource-context">
+                    {{resource.importResource.context || 0}}
+                </div>
+                <div class="import-resource-cell import-resource-action">
+                    Actions
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--<link href="css/import-resource-tree.css?v=[AIV]{version}[/AIV]" rel="stylesheet">-->
+
+<!--<div class="import-resource-tree" ng-if="importResources && !importResources.isEmpty()">-->
+<!--    <div class="check-box">Check box</div>-->
+<!--    <div class="import-info">-->
+<!--        <div ng-repeat="directory in importResources.directories">-->
+<!--            <div class="directory-name">{{directory.name}}  </div>-->
+<!--            <div class="inner-directory">-->
+<!--                <recursive>-->
+<!--                    <import-resource-tree import-resources="directory"></import-resource-tree>-->
+<!--                </recursive>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div ng-repeat="file in importResources.files">-->
+<!--            <div class="file-name">{{file.name}}   </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="actions">-->
+<!--        Actions-->
+<!--    </div>-->
+<!--</div>-->

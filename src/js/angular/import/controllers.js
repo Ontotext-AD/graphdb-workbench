@@ -9,6 +9,8 @@ import {FileFormats} from "../models/import/file-formats";
 import * as stringUtils from "../utils/string-utils";
 import {FileUtils} from "../utils/file-utils";
 import {DateUtils} from "../utils/date-utils";
+import {toImportServerResource} from "../rest/mappers/import-mapper";
+import {ImportServerResource} from "../models/import/import-server-resource";
 
 const modules = [
     'ui.bootstrap',
@@ -325,11 +327,16 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         // =========================
         // Private functions
         // =========================
-
+        $scope.serverImportTree = new ImportServerResource();
         // TODO: temporary exposed in the scope because it is called via scope.parent from the child TabsCtrl which should be changed
         $scope.updateListHttp = (force) => {
             const filesLoader = $scope.viewUrl === OPERATION.UPLOAD ? ImportRestService.getUploadedFiles : ImportRestService.getServerFiles;
             filesLoader($repositories.getActiveRepository()).success(function (data) {
+
+                if (OPERATION.SERVER === $scope.viewType && $scope.serverImportTree.isEmpty()) {
+                    $scope.serverImportTree = toImportServerResource(data);
+                }
+
                 if ($scope.files.length === 0 || force) {
                     $scope.files = data;
                     ImportContextService.updateFiles($scope.files);
