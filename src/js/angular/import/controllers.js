@@ -11,6 +11,8 @@ import {FileUtils} from "../utils/file-utils";
 import {DateUtils} from "../utils/date-utils";
 import {toImportResource, toImportServerResource} from "../rest/mappers/import-mapper";
 import {ImportResourceTreeElement} from "../models/import/import-resource-tree-element";
+import {decodeHTML} from "../../../app";
+import {FilePrefixRegistry} from "./file-prefix-registry";
 
 const modules = [
     'ui.bootstrap',
@@ -338,6 +340,9 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         };
 
         // TODO: temporary exposed in the scope because it is called via scope.parent from the child TabsCtrl which should be changed
+        /**
+         * @param {boolean} force - Force the files list to be replaced with the new data
+         */
         $scope.updateListHttp = (force) => {
             const filesLoader = $scope.viewUrl === OPERATION.UPLOAD ? ImportRestService.getUploadedFiles : ImportRestService.getServerFiles;
             filesLoader($repositories.getActiveRepository()).success(function (data) {
@@ -347,6 +352,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                 //     $scope.serverImportTree = toImportServerResource(toImportResource(data));
                 // }
 
+                // reload all files
                 if ($scope.files.length === 0 || force) {
                     $scope.files = data;
                     ImportContextService.updateFiles($scope.files);
@@ -357,6 +363,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                     });
                     $scope.rebatch();
                 } else {
+                    // update the status of the files using the response from the server
                     $scope.files.forEach(function (f) {
                         const remoteStatus = _.find(data, _.matches({'name': f.name}));
                         if (f.status && remoteStatus) {
@@ -492,7 +499,7 @@ importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$
     init();
 }]);
 
-importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$uibModal', '$translate', '$repositories', 'ImportRestService', 'UploadRestService', function ($scope, toastr, $controller, $uibModal, $translate, $repositories, ImportRestService, UploadRestService) {
+importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$uibModal', '$translate', '$repositories', 'ImportRestService', 'UploadRestService', 'ModalService', 'ImportContextService', function ($scope, toastr, $controller, $uibModal, $translate, $repositories, ImportRestService, UploadRestService, ModalService, ImportContextService) {
 
     // =========================
     // Private variables
@@ -507,8 +514,21 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     $scope.viewUrl = OPERATION.UPLOAD;
     $scope.defaultType = USER_DATA_TYPE.FILE;
     $scope.tabId = '#import-user';
+    // A list with all files that were uploaded or currently selected for uploading by the user.
+    // This list is being watched by the controller. When it finds a change, it updates the $scope.files and tries to
+    // upload the new files.
+    // This is similar to the $scope.files which is used for the table rendering, but the files in the later have
+    // different nested models. See the watcher for more details.
     $scope.currentFiles = [];
+    // A flag to indicate if the list is initialized for the first time on load. This is needed in order to prevent
+    // the watcher for $scope.currentFiles to try to update the $scope.files and to re-upload them on load.
+    let isFileListInitialized = false;
     $scope.pastedDataIdx = 1;
+    // A registry to keep track of the current index for each file name. The registry is created on page load and
+    // updated when a new file is selected by the user with the option to preserve the original file.
+    const filesPrefixRegistry = new FilePrefixRegistry();
+    // Keeps track of any subscription that needs to be removed when the controller is destroyed.
+    const subscriptions = [];
 
     // =========================
     // Public functions
@@ -519,13 +539,28 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     };
 
     $scope.fileSelected = function ($files, $file, $newFiles, $duplicateFiles, $invalidFiles) {
-        if ($invalidFiles.length > 0) {
-            $invalidFiles.forEach(function (file) {
-                toastr.warning($translate.instant('import.large.file', {
-                    name: file.name,
-                    size: FileUtils.convertBytesToMegabytes(file.size)
-                }));
-            });
+        notifyForTooLargeFiles($invalidFiles);
+        const newFiles = $newFiles || [];
+        // RDF4J does not support decompressing .bz2 files, so we want to reject importing them
+        removeBZip2Files(newFiles);
+
+        const duplicatedFiles = [];
+        const uniqueFiles = [];
+        newFiles.forEach((file) => {
+            const isDuplicated = $scope.files.some((currentFile) => currentFile.name === file.name);
+            if (isDuplicated) {
+                duplicatedFiles.push(file);
+            } else {
+                uniqueFiles.push(file);
+            }
+        });
+
+        if (duplicatedFiles.length > 0) {
+            // ask the user if he wants to keep the original files or overwrite them.
+            openDuplicatedFilesConfirmDialog(duplicatedFiles, uniqueFiles);
+        } else {
+            $scope.currentFiles = [...$scope.currentFiles, ...newFiles];
+            isFileListInitialized = true;
         }
     };
 
@@ -609,6 +644,17 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     // Private functions
     // =========================
 
+    const notifyForTooLargeFiles = (invalidFiles) => {
+        if (invalidFiles.length > 0) {
+            invalidFiles.forEach(function (file) {
+                toastr.warning($translate.instant('import.large.file', {
+                    name: file.name,
+                    size: FileUtils.convertBytesToMegabytes(file.size)
+                }));
+            });
+        }
+    };
+
     const importTextSnippet = (file, startImport, nextCallback) => {
         $scope.settings.name = file.name;
         $scope.settings.type = file.type;
@@ -666,23 +712,47 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         }).finally(nextCallback || function () {});
     };
 
-    const disallowBZip2Files = () => {
-        $scope.currentFiles.forEach(function (f) {
+    const removeBZip2Files = (files) => {
+        files.forEach(function (f) {
             if (f.name.substr(f.name.lastIndexOf('.') + 1) === 'bz2') {
-                const fileIdx = $scope.currentFiles.indexOf(f);
+                const fileIdx = files.indexOf(f);
                 if (fileIdx > -1) {
-                    $scope.currentFiles.splice(fileIdx, 1);
+                    files.splice(fileIdx, 1);
                 }
                 toastr.error($translate.instant('import.could.not.upload', {name: f.name}));
             }
         });
     };
 
+    const openDuplicatedFilesConfirmDialog = (duplicatedFiles, uniqueFiles) => {
+        const existingFilenames = duplicatedFiles.map((file) => file.name).join('<br/>');
+        return ModalService.openSimpleModal({
+            title: $translate.instant('import.user_data.duplicates_confirmation.title'),
+            message: decodeHTML($translate.instant('import.user_data.duplicates_confirmation.message', {duplicatedFiles: existingFilenames})),
+            warning: true
+        }).result.then(
+            () => {
+                // override current files with new files
+                $scope.currentFiles = $scope.currentFiles.map((currentFile) => {
+                    const duplicated = duplicatedFiles.find((duplicateFile) => duplicateFile.name === currentFile.name);
+                    if (duplicated) {
+                        return duplicated;
+                    }
+                    return currentFile;
+                });
+                $scope.currentFiles.push(...uniqueFiles);
+                isFileListInitialized = true;
+            },
+            () => {
+                // override rejected
+                const prefixedDuplicates = filesPrefixRegistry.prefixDuplicates(duplicatedFiles);
+                $scope.currentFiles = [...$scope.currentFiles, ...prefixedDuplicates, ...uniqueFiles];
+                isFileListInitialized = true;
+            }
+        );
+    };
+
     const uploadedFilesValidator = () => {
-        if ($scope.currentFiles) {
-            // RDF4J does not support decompressing .bz2 files so we want to reject importing them
-            disallowBZip2Files();
-        }
         $scope.files = _.uniqBy(
             _.union(
                 _.map($scope.currentFiles, function (file) {
@@ -695,9 +765,11 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
             }
         );
         $scope.savedSettings = _.mapKeys(_.filter($scope.files, 'parserSettings'), 'name');
-        _.each($scope.currentFiles, function (file) {
-            $scope.updateImport(file.name);
-        });
+        if (isFileListInitialized) {
+            _.each($scope.currentFiles, function (file) {
+                $scope.updateImport(file.name);
+            });
+        }
     };
 
     const removeAllListeners = () => {
@@ -708,7 +780,6 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     // Watchers and event handlers
     // =========================
 
-    const subscriptions = [];
     subscriptions.push($scope.$watchCollection('currentFiles', uploadedFilesValidator));
 
     $scope.$on('$destroy', removeAllListeners);
@@ -720,6 +791,9 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     const init = function () {
         $scope.pollList();
         $scope.onRepositoryChange();
+        ImportContextService.onFilesUpdated((files) => {
+            filesPrefixRegistry.buildPrefixesRegistry(files);
+        });
     };
     init();
 }]);

@@ -6,6 +6,29 @@ import './settings-commands';
 import './visual-graph-commands';
 import 'cypress-wait-until';
 
+/**
+ * Loads fixtures from the given paths recursively and returns them as an array.
+ *
+ * Emits an alias in form file-0, file-1, file-2, etc. for each fixture file loaded.
+ *
+ * @param {[string]} remainingPaths - file paths to load
+ * @param {[object]} loadedContents - array of already loaded contents
+ * @return {Cypress.Chainable<unknown>}
+ */
+function loadFixtures(remainingPaths, loadedContents) {
+    return cy.fixture(remainingPaths[0]).as(`file-${loadedContents.length}`).then((contents) => {
+        loadedContents.push(contents);
+        if (remainingPaths.length > 1) {
+            return loadFixtures(remainingPaths.slice(1), loadedContents);
+        }
+        return cy.wrap(loadedContents);
+    });
+}
+
+// defined as: fixtures<Contents = unknown>(paths: string[]): Chainable<Contents[]>;
+Cypress.Commands.add('fixtures', (paths) => {
+    return loadFixtures(paths, []);
+});
 
 /**
  * Cypress cannot directly work with iframes due to https://github.com/cypress-io/cypress/issues/136

@@ -1,6 +1,6 @@
 import HomeSteps from "../../steps/home-steps";
 import {OperationsStatusesComponentSteps} from "../../steps/operations-statuses-component-steps";
-import ImportSteps from "../../steps/import-steps";
+import ImportSteps from "../../steps/import/import-steps";
 import {GlobalOperationsStatusesStub} from "../../stubs/global-operations-statuses-stub";
 
 describe('Operations Status Component', () => {

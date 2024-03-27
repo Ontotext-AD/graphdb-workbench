@@ -42,11 +42,12 @@
                              popover-trigger="mouseenter"
                              popover-placement="bottom"
                              guide-selector="uploadRdfFileButton">
-                            <a id="wb-import-uploadFile" ngf-select="showToast(rejFiles)" ng-model="currentFiles"
-                               ngf-multiple="true"
-                               class="pointer clearfix"
+                            <a id="wb-import-uploadFile" class="pointer clearfix"
                                accept="{{fileFormatsExtended}}"
-                               ngf-change="fileSelected($files, $file, $newFiles, $duplicateFiles, $invalidFiles, $event)"
+                               ngf-multiple="true"
+                               ngf-select
+                               ngf-keep="false"
+                               ngf-change="fileSelected($files, $file, $newFiles, $duplicateFiles, $invalidFiles)"
                                ngf-max-size="maxUploadFileSizeMB + 'MB'">
                                 <div class="grid-container">
                                     <em class="icon-upload icon-lg"></em>
@@ -138,7 +139,7 @@
                             {{'import.help.on_server_import.put_files_into' | translate}}.<br>
                             {{'import.help.on_server_import.directory_can_be_changed' | translate}}
                             <strong class="server-import-directory-prop copyable">graphdb.workbench.importDirectory</strong>
-                            <copy-to-clipboard tooltip-text="import.help.buttons.copy_file_size_prop.tooltip"></copy-to-clipboard>
+                            <copy-to-clipboard tooltip-text="import.help.buttons.copy_import_directory_prop.tooltip"></copy-to-clipboard>
                             {{'import.help.on_server_import.the_property' | translate}}.
                         </p>
                     </div>

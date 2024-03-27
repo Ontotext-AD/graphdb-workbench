@@ -1,6 +1,6 @@
 import {SparqlCreateUpdateSteps} from "../../steps/setup/sparql-create-update-steps";
 import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
-import ImportSteps from "../../steps/import-steps";
+import ImportSteps from "../../steps/import/import-steps";
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 import {MainMenuSteps} from "../../steps/main-menu-steps";
 import {RepositorySelectorSteps} from "../../steps/repository-selector-steps";

@@ -941,6 +941,12 @@
         "context.link": "Contexte JSON-LD",
         "context.link.info": "Spécifie le contexte JSON-LD externe en tant qu'URL. Seules les URL figurant sur la liste blanche peuvent être utilisées",
         "file.upload.progress": "{{progress}} % téléchargé",
+        "user_data": {
+            "duplicates_confirmation": {
+                "title": "Confirmer l'écrasement des fichiers",
+                "message": "Les fichiers suivants sont déjà téléchargés: <br/>{{duplicatedFiles}}<br/>Voulez-vous les écraser"
+            }
+        },
         "help": {
             "buttons": {
                 "toggle_help": {
@@ -948,6 +954,9 @@
                 },
                 "copy_file_size_prop": {
                     "tooltip": "Copier la propriété de taille maximale du fichier"
+                },
+                "copy_import_directory_prop": {
+                    "tooltip": "Copier la propriété du répertoire d'importation"
                 }
             },
             "messages": {

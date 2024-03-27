@@ -941,6 +941,12 @@
         "context.link": "JSON-LD context",
         "context.link.info": "Specifies external JSON-LD context as a URL. Only whitelisted URLs can be used.",
         "file.upload.progress": "{{progress}} % uploaded",
+        "user_data": {
+            "duplicates_confirmation": {
+                "title": "Confirm files overwrite",
+                "message": "Following files are already uploaded: <br/>{{duplicatedFiles}}<br/>Do you want to overwrite them?"
+            }
+        },
         "help": {
             "buttons": {
                 "toggle_help": {
@@ -948,6 +954,9 @@
                 },
                 "copy_file_size_prop": {
                     "tooltip": "Copy max file size property"
+                },
+                "copy_import_directory_prop": {
+                    "tooltip": "Copy import directory property"
                 }
             },
             "messages": {
@@ -971,7 +980,7 @@
                 "the_property": "property"
             },
             "on_file_size_limit": {
-                "file_size_limit_info": "To import larger than {{fileSizeLimit}} files, use the ",
+                "file_size_limit_info": "To import larger than {{fileSizeLimit}} MB, use the ",
                 "server_files_link": "Server files",
                 "import_or_use": "import or use the",
                 "api_link": "API"

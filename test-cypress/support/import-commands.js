@@ -32,6 +32,16 @@ Cypress.Commands.add('importServerFile', (repositoryId, fileName, importSettings
     waitServerOperation(SERVER_URL, repositoryId, fileName);
 });
 
+Cypress.Commands.add('deleteUploadedFile', (repositoryId, fileName) => {
+    const fileNames = Array.isArray(fileName)? fileName : [fileName];
+    cy.request({
+        method: 'DELETE',
+        url: `${REPOSITORIES_URL}${repositoryId}/import/upload/status?remove=true`,
+        body: fileNames,
+        headers: {'Content-type': 'application/json;charset=utf-8'}
+    }).should((response) => expect(response.status).to.equal(200));
+});
+
 function waitServerOperation(url, repositoryId, fileName) {
     cy.request({
         method: 'GET',
