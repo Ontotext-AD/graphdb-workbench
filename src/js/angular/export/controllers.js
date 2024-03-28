@@ -146,9 +146,8 @@ exportCtrl.controller('ExportCtrl',
              *
              * @method downloadJSONLDExport
              * @param {String} data format
-             * @param {String} string context if there is any (or string from multiple contexts if there are multiple selected graphs)
+             * @param [String] array of string contexts if multiple graphs were selected or single graph object
              * @param {String} context/frame link
-             * @param {Boolean} true if the method is invoked for export of multiple selected graphs
              * @param {Object} current repository
              * @param {Object} graphsByValue
              * @param {Object} JSONLDMode (name and mode link)
