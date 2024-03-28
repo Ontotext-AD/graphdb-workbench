@@ -146,20 +146,19 @@ exportCtrl.controller('ExportCtrl',
              *
              * @method downloadJSONLDExport
              * @param {String} data format
-             * @param {String} string context if there is any (or string from multiple contexts if there are multiple selected graphs)
+             * @param [String] array of string contexts if multiple graphs were selected or single graph object
              * @param {String} context/frame link
-             * @param {Boolean} true if the method is invoked for export of multiple selected graphs
              * @param {Object} current repository
              * @param {Object} graphsByValue
              * @param {Object} JSONLDMode (name and mode link)
              */
-            function downloadJSONLDExport(format, context, link, forSelectedGraphs, repo, graphsByValue, JSONLDMode) {
+            function downloadJSONLDExport(format, context, link, repo, graphsByValue, JSONLDMode) {
                 const acceptHeader = format.type + ';profile=' + JSONLDMode.link;
                 const headers = {
                     'accept': acceptHeader,
                     'link': link
                 };
-                ExportRestService.getExportedStatementsAsJSONLD(context, forSelectedGraphs, repo, graphsByValue, AuthTokenService.getAuthToken(), headers)
+                ExportRestService.getExportedStatementsAsJSONLD(context, repo, graphsByValue, AuthTokenService.getAuthToken(), headers)
                     .then(function ({data, filename}) {
                         saveAs(data, filename);
                     })
@@ -216,7 +215,7 @@ exportCtrl.controller('ExportCtrl',
              * @param {String} string context if there is any (or string from multiple contexts if there are multiple selected graphs for export)
              * @param {Boolean} true if the method is invoked for multiple selected graphs export
              */
-            $scope.openJSONLDExportSettings = function (format, context, forSelectedGraphs) {
+            $scope.openJSONLDExportSettings = function (format, context) {
                 const modalInstance = $uibModal.open({
                     templateUrl: 'js/angular/core/components/export-settings-modal/exportSettingsModal.html',
                     controller: ExportSettingsCtrl,
@@ -231,7 +230,7 @@ exportCtrl.controller('ExportCtrl',
 
                 modalInstance.result.then(function (data) {
                     const linkHeader = data.link ? '<' + data.link + '>' : '';
-                    downloadJSONLDExport(format, context, linkHeader, forSelectedGraphs, $repositories.getActiveRepositoryObject(), $scope.graphsByValue, data.currentMode);
+                    downloadJSONLDExport(format, context, linkHeader, $repositories.getActiveRepositoryObject(), $scope.graphsByValue, data.currentMode);
                 });
             };
 
@@ -261,12 +260,11 @@ exportCtrl.controller('ExportCtrl',
             };
 
             $scope.openJSONLDExportSettingsForSelectedGraphs = function (format) {
-                const contextStr = Object.keys($scope.selectedGraphs.exportGraphs)
-                    .map((index) => 'context=' + $scope.graphsByValue[index].exportUri)
-                    .join('&');
+                const contextsArray = Object.keys($scope.selectedGraphs.exportGraphs)
+                    .map((index) => $scope.graphsByValue[index].exportUri);
 
-                if (contextStr) {
-                    $scope.openJSONLDExportSettings(format, contextStr, true);
+                if (contextsArray) {
+                    $scope.openJSONLDExportSettings(format, contextsArray);
                 } else {
                       ModalService.openSimpleModal({
                           title: $translate.instant('export.multiple.graph'),

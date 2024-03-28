@@ -20,41 +20,37 @@ function ExportRestService($http, $repositories, $translate) {
      * @param {Object} authentication token
      * @param {Object} request Accept and Link headers
      */
-    function getExportedStatementsAsJSONLD(context, forSelectedGraphs, repo, graphsByValue, auth, headers) {
+    function getExportedStatementsAsJSONLD(context, repo, graphsByValue, auth, headers) {
         const url = `${REPOSITORIES_ENDPOINT}/${repo.id}/statements?infer=false`;
-        let contextParam = null;
-        let locationParam = null;
-        let authTokenParam = null;
+        const params = {
+            location: repo.location
+        };
 
-        if (forSelectedGraphs) {
-            contextParam += context;
+        const httpHeaders = {
+            accept: headers.accept
+        };
+
+        if (Array.isArray(context)) {
+            params.context = context.map((value) => decodeURIComponent(value));
         } else {
             if (context) {
-                contextParam = graphsByValue[context.value].exportUri;
+                params.context = decodeURIComponent(graphsByValue[context.value].exportUri);
             }
-            locationParam = encodeURIComponent(repo.location);
         }
 
         if (auth) {
-            authTokenParam = encodeURIComponent(auth);
+            params.authToken = auth;
         }
 
-        if (headers.link === undefined) {
-            headers.link = '';
+        if (headers.link && headers.link !== '') {
+            httpHeaders.link = headers.link;
         }
 
         return $http({
             url: url,
             method: 'GET',
-            params: {
-                context: contextParam,
-                location: locationParam,
-                authToken: authTokenParam
-            },
-            headers: {
-                'Accept': headers.accept,
-                'Link': headers.link
-            },
+            params: params,
+            headers: httpHeaders,
             responseType: 'blob'
         }).then(function (res) {
             const data = res.data;
