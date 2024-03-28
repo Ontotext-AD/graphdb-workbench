@@ -1,85 +1,114 @@
-:root {
-    --select-import-resource-width: 30px;
-    --time-cell-width: 140px;
-    --actions-width: 60px;
-    --size-width: 100px;
-    --message-width: calc((100% - var(--select-import-resource-width) - var(--time-cell-width) - var(--actions-width) - var(--size-width)) * 0.3);
-    --context-cell-width: calc((100% - var(--select-import-resource-width) - var(--time-cell-width) - var(--actions-width)- var(--size-width)) * 0.3);
-}
-
-.import-resource-row,
-.import-resource-row-header {
-    display: flex;
-}
-
-.import-resource-row-header .import-resource-cell-checkbox,
-.import-resource-row .import-resource-cell-checkbox {
-    width: var(--select-import-resource-width);
-    flex-grow: 0;
-}
-
-.import-resource-row-header .import-resource-name,
-.import-resource-row .import-resource-info .import-resource-meta-info .import-resource-message {
-    min-width: var(--message-width);
-    flex-grow: 0;
-}
-
-.import-resource-row-header .import-resource-size,
-.import-resource-row .import-resource-info .import-resource-meta-info .import-resource-size {
-    width: var(--size-width);
-    flex-grow: 0;
-}
-
-.import-resource-row-header .import-resource-modified,
-.import-resource-row-header .import-resource-imported,
-.import-resource-row .import-resource-info .import-resource-meta-info .import-resource-modified,
-.import-resource-row .import-resource-info .import-resource-meta-info .import-resource-imported {
-    max-width: var(--time-cell-width);
-    flex-grow: 1;
-    flex-shrink: 0;
-}
-
-.import-resource-row-header .import-resource-context,
-.import-resource-row .import-resource-info .import-resource-meta-info .import-resource-context {
-    width: var(--context-cell-width);
-    flex-grow: 1;
-}
-
-.import-resource-row-header .import-resource-action,
-.import-resource-row .import-resource-info .import-resource-meta-info .import-resource-action {
-    width: var(--actions-width);
-    flex-grow: 0;
-}
-
-.import-resource-info {
-    display: flex;
-    flex-grow: 1;
-}
-
-.import-resource-row .import-resource-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.import-resource-meta-info {
-    display: flex;
-}
-
-
-.import-resource-row:nth-child(even) {
-    background-color: rgba(0, 0, 0, .05)
-}
-
-.import-resource-cell.import-resource-cell-checkbox {
-    flex-grow: 0;
-}
-
-.import-resource-cell {
-    padding: 8px;
-    flex-grow: 1;
-}
-
-
-/*.import-resource-row .import-resource-cell.import-resource-cell-checkbox {*/
-/*    width: var(--select-import-resource-width);*/
+/*:root {*/
+/*    --select-import-resource-width: 30px;*/
+/*    --time-cell-width: 140px;*/
+/*    --actions-width: 60px;*/
+/*    --size-width: 100px;*/
+/*    --message-width: calc((100% - var(--select-import-resource-width) - var(--time-cell-width) - var(--actions-width) - var(--size-width)) * 0.3);*/
+/*    --context-cell-width: calc((100% - var(--select-import-resource-width) - var(--time-cell-width) - var(--actions-width)- var(--size-width)) * 0.3);*/
 /*}*/
+
+.import-resource-table {
+    width: 100%;
+}
+
+.import-resource-table .even-row-start,
+.import-resource-table .even-row-end {
+    background-color: rgba(0, 0, 0, .05);
+}
+
+.import-resource-table .even-row-end .import-resource-cell {
+    padding: 4px 8px 8px;
+}
+
+.import-resource-table .even-row-start .import-resource-cell {
+    padding: 8px 8px 4px;
+}
+
+/*.import-resource-selected-checkbox-new {*/
+/*    width: var(--select-import-resource-width);*/
+/*    min-width: var(--select-import-resource-width);*/
+/*}*/
+
+/*.import-resource-name-new {*/
+/*    width: 30%;*/
+/*}*/
+
+
+
+
+/*.import-resource-row,*/
+/*.import-resource-row-header {*/
+/*    display: flex;*/
+/*}*/
+
+/*.import-resource-row-header .import-resource-cell-checkbox,*/
+/*.import-resource-row .import-resource-cell-checkbox {*/
+/*    width: var(--select-import-resource-width);*/
+/*    flex-grow: 0;*/
+/*}*/
+
+/*.import-resource-row-header .import-resource-name,*/
+/*.import-resource-row .import-resource-info .import-resource-meta-info .import-resource-message {*/
+/*    min-width: var(--message-width);*/
+/*    flex-grow: 0;*/
+/*}*/
+
+/*.import-resource-row-header .import-resource-size,*/
+/*.import-resource-row .import-resource-info .import-resource-meta-info .import-resource-size {*/
+/*    width: var(--size-width);*/
+/*    flex-grow: 0;*/
+/*}*/
+
+/*.import-resource-row-header .import-resource-modified,*/
+/*.import-resource-row-header .import-resource-imported,*/
+/*.import-resource-row .import-resource-info .import-resource-meta-info .import-resource-modified,*/
+/*.import-resource-row .import-resource-info .import-resource-meta-info .import-resource-imported {*/
+/*    max-width: var(--time-cell-width);*/
+/*    flex-grow: 1;*/
+/*    flex-shrink: 0;*/
+/*}*/
+
+/*.import-resource-row-header .import-resource-context,*/
+/*.import-resource-row .import-resource-info .import-resource-meta-info .import-resource-context {*/
+/*    width: var(--context-cell-width);*/
+/*    flex-grow: 1;*/
+/*}*/
+
+/*.import-resource-row-header .import-resource-action,*/
+/*.import-resource-row .import-resource-info .import-resource-meta-info .import-resource-action {*/
+/*    width: var(--actions-width);*/
+/*    flex-grow: 0;*/
+/*}*/
+
+/*.import-resource-info {*/
+/*    display: flex;*/
+/*    flex-grow: 1;*/
+/*}*/
+
+/*.import-resource-row .import-resource-info {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*}*/
+
+/*.import-resource-meta-info {*/
+/*    display: flex;*/
+/*}*/
+
+
+/*.import-resource-row:nth-child(even) {*/
+/*    background-color: rgba(0, 0, 0, .05)*/
+/*}*/
+
+/*.import-resource-cell.import-resource-cell-checkbox {*/
+/*    flex-grow: 0;*/
+/*}*/
+
+/*.import-resource-cell {*/
+/*    padding: 8px;*/
+/*    flex-grow: 1;*/
+/*}*/
+
+
+/*!*.import-resource-row .import-resource-cell.import-resource-cell-checkbox {*!*/
+/*!*    width: var(--select-import-resource-width);*!*/
+/*!*}*!*/
