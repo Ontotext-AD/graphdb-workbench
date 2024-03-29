@@ -62,7 +62,7 @@
                         </button>
                         <ul class="dropdown-menu">
                             <li ng-repeat="format in exportFormats">
-                                <a href="javascript:" ng-click="openJSONLDExportSettings(format, false, false)"
+                                <a href="javascript:" ng-click="openJSONLDExportSettings(format, false)"
                                    ng-if="format.name === 'JSON-LD' || format.name === 'NDJSON-LD'"
                                    class="dropdown-item export-repo-format-{{format.name}}">{{format.name}}</a>
                                 <a href="javascript:" ng-click="exportRepo(format, false)"
