@@ -89,8 +89,8 @@
     width: 120px;
 }
 
-.import-resource-tree .import-resource-cell .import-resource-message,
-.import-resource-tree .import-resource-cell .import-resource-name {
+.import-resource-tree .import-resource-table .import-resource-cell.import-resource-message,
+.import-resource-tree .import-resource-table .import-resource-header-cell.import-resource-name {
     width: 40%;
 }
 
