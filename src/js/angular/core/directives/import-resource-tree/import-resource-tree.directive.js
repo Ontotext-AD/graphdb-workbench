@@ -1,7 +1,5 @@
-import 'angular/core/directives/import-resource-tree/recursive.directive';
 
-const modules = [
-    'graphdb.framework.core.directives.recursive'];
+const modules = [];
 
 angular
     .module('graphdb.framework.core.directives.import-resource-tree', modules)
