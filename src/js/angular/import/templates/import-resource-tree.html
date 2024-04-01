@@ -3,9 +3,9 @@
 <div class="import-resource-tree mt-2" ng-if="resources && !resources.isEmpty()">
     <div class="import-resource-tree-header">
         <div class="import-resources-actions">
-
+Imports will be here
         </div>
-        <div class="import-resource-filter">
+        <div class="import-resource-tree-filter btn-group">
             <button class="btn btn-secondary"
                     ng-click="changeTypeFilter(TYPE_FILTER_OPTIONS.FILE)"
                     ng-class="{'active': TYPE_FILTER_OPTIONS.FILE === filterByType}">
@@ -22,6 +22,13 @@
                     ng-class="{'active': TYPE_FILTER_OPTIONS.DIRECTORY === filterByType}">
                 <em class="icon-folder"></em>
             </button>
+            <div class="input-group ml-1">
+                <label class="input-group-addon" for="fileQuery">
+                    <span class="icon-search icon-lg text-muted"></span>
+                </label>
+                <input id="fileQuery" class="form-control" type="text" ng-model="filterByFileName"  ng-change="handleInputChange(filterByFileName)"
+                       placeholder="{{'import.type.to.filter' | translate}}">
+            </div>
         </div>
     </div>
     <table class="import-resource-table">

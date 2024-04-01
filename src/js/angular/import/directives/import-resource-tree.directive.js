@@ -10,7 +10,9 @@ angular
     .module('graphdb.framework.import.import-resource-tree', modules)
     .directive('importResourceTree', importResourceTreeDirective);
 
-function importResourceTreeDirective() {
+importResourceTreeDirective.$inject = ['$timeout'];
+
+function importResourceTreeDirective($timeout) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/import/templates/import-resource-tree.html',
@@ -28,8 +30,9 @@ function importResourceTreeDirective() {
             // Public variables
             // =========================
             $scope.displayResources = [];
-            $scope.filterByType = TYPE_FILTER_OPTIONS.ALL;
             $scope.TYPE_FILTER_OPTIONS = TYPE_FILTER_OPTIONS;
+            $scope.filterByType = TYPE_FILTER_OPTIONS.ALL;
+            $scope.filterByFileName = '';
 
             // =========================
             // Private variables
@@ -49,6 +52,11 @@ function importResourceTreeDirective() {
                 updateListedImportResources();
             };
 
+            $scope.handleInputChange = function (filterByFileName) {
+                $scope.filterByFileName = filterByFileName;
+                debounce(updateListedImportResources, 100);
+            };
+
             // =========================
             // Private functions
             // =========================
@@ -64,7 +72,8 @@ function importResourceTreeDirective() {
                     }
                 });
                 $scope.displayResources = $scope.resources.toList()
-                    .filter(filterByType);
+                    .filter(filterByType)
+                    .filter(filterByName);
             };
 
             const filterByType = (resource) => {
@@ -81,6 +90,32 @@ function importResourceTreeDirective() {
                 }
 
                 return false;
+            };
+
+            const filterByName = (resource) => {
+                if (!$scope.filterByFileName) {
+                    return true;
+                }
+
+                if ($scope.filterByType === TYPE_FILTER_OPTIONS.DIRECTORY) {
+                    return resource.hasTextInDirectoriesName($scope.filterByFileName);
+                }
+
+                if ($scope.filterByType === TYPE_FILTER_OPTIONS.FILE) {
+                    return resource.hasTextInFilesName($scope.filterByFileName);
+                }
+                return resource.hasTextInResourcesName($scope.filterByFileName);
+            };
+
+            let debounceTimeout;
+            const debounce = (func, delay) => {
+                // Clear previous timeout
+                if (debounceTimeout) {
+                    $timeout.cancel(debounceTimeout);
+                }
+
+                // Set new timeout
+                debounceTimeout = $timeout(func, delay);
             };
 
             // =========================

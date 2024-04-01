@@ -137,4 +137,54 @@ export class ImportResourceTreeElement {
         }
         return null;
     }
+
+    hasTextInResourcesName(searchText) {
+        if (this.importResource.name.includes(searchText)) {
+            return true;
+        }
+        if (this.files.some((file) => file.importResource.name.includes(searchText))) {
+            return true;
+        }
+        for (const directory of this.directories) {
+            const foundResource = directory.hasTextInResourcesName(searchText);
+            if (foundResource) {
+                return foundResource;
+            }
+        }
+
+        return false;
+    }
+
+    hasTextInDirectoriesName(searchText) {
+        if (this.isDirectory() && this.name.includes(searchText)) {
+            return true;
+        }
+
+        for (const directory of this.directories) {
+            const foundResource = directory.hasTextInDirectoriesName(searchText);
+            if (foundResource) {
+                return foundResource;
+            }
+        }
+
+        return false;
+    }
+
+    hasTextInFilesName(searchText) {
+        if (this.isFile() &&this.name.includes(searchText)) {
+            return true;
+        }
+
+        if (this.files.some((file) => file.importResource.name.includes(searchText))) {
+            return true;
+        }
+
+        for (const directory of this.directories) {
+            const foundResource = directory.hasTextInFilesName(searchText);
+            if (foundResource) {
+                return foundResource;
+            }
+        }
+        return false;
+    }
 }
