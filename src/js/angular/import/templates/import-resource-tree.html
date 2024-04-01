@@ -1,6 +1,29 @@
 <link href="css/import-resource-tree.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
 
-<div class="import-resource-tree" ng-if="resources && !resources.isEmpty()">
+<div class="import-resource-tree mt-2" ng-if="resources && !resources.isEmpty()">
+    <div class="import-resource-tree-header">
+        <div class="import-resources-actions">
+
+        </div>
+        <div class="import-resource-filter">
+            <button class="btn btn-secondary"
+                    ng-click="changeTypeFilter(TYPE_FILTER_OPTIONS.FILE)"
+                    ng-class="{'active': TYPE_FILTER_OPTIONS.FILE === filterByType}">
+                <em class="icon-file"></em>
+            </button>
+            <button class="btn btn-secondary"
+                    ng-click="changeTypeFilter(TYPE_FILTER_OPTIONS.ALL)"
+                    ng-class="{'active': TYPE_FILTER_OPTIONS.ALL === filterByType}">
+                <em class="icon-file"></em>
+                <em class="icon-folder"></em>
+            </button>
+            <button class="btn btn-secondary"
+                    ng-click="changeTypeFilter(TYPE_FILTER_OPTIONS.DIRECTORY)"
+                    ng-class="{'active': TYPE_FILTER_OPTIONS.DIRECTORY === filterByType}">
+                <em class="icon-folder"></em>
+            </button>
+        </div>
+    </div>
     <table class="import-resource-table">
         <thead>
         <tr class="import-resource-row">
@@ -21,7 +44,7 @@
                 <input type="checkbox" ng-model="resource.selected" ng-click="selectionChanged($event, resource)">
             </td>
             <td colspan="5"
-                ng-style="{'padding-left': resource.indent}"
+                ng-style="{'padding-left': (filterByType !== TYPE_FILTER_OPTIONS.FILE ? resource.indent : '8px')}"
                 class="import-resource-cell">
                 <span class="import-resource-title">
                     <em ng-class="{'icon-folder': resource.isDirectory(), 'icon-file': resource.isFile()}"></em>
@@ -42,7 +65,7 @@
         </tr>
         <tr ng-repeat-end class="import-resource-row" ng-class="{ 'even-row-end': $even, 'odd-row-end': $odd}">
             <td class="import-resource-cell import-resource-cell-select"></td>
-            <td ng-style="{'padding-left': resource.indent}"
+            <td ng-style="{'padding-left': (filterByType !== TYPE_FILTER_OPTIONS.FILE ? resource.indent : '8px')}"
                 class="import-resource-cell import-resource-message">
                 {{ resource.importResource.message || ''}}
             </td>

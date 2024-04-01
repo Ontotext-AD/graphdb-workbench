@@ -93,3 +93,12 @@
 .import-resource-tree .import-resource-cell .import-resource-name {
     width: 40%;
 }
+
+.import-resource-tree-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.import-resource-tree-filter {
+    display: flex;
+}
