@@ -1,3 +1,9 @@
+const TYPE_FILTER_OPTIONS = {
+    'FILE': 'FILE',
+    'DIRECTORY': 'DIRECTORY',
+    'ALL': 'ALL'
+};
+
 const modules = [];
 
 angular
@@ -22,6 +28,8 @@ function importResourceTreeDirective() {
             // Public variables
             // =========================
             $scope.displayResources = [];
+            $scope.filterByType = TYPE_FILTER_OPTIONS.ALL;
+            $scope.TYPE_FILTER_OPTIONS = TYPE_FILTER_OPTIONS;
 
             // =========================
             // Private variables
@@ -29,23 +37,51 @@ function importResourceTreeDirective() {
             let selectedResources = [];
 
             // =========================
+            // Public functions
+            // =========================
+            $scope.selectionChanged = (($event, resource) => {
+                resource.setSelection(resource.selected);
+                selectedResources = $scope.resources.getAllSelected();
+            });
+
+            $scope.changeTypeFilter = (newType) => {
+                $scope.filterByType = newType;
+                updateListedImportResources();
+            };
+
+            // =========================
             // Private functions
             // =========================
             const init = () => {
+                updateListedImportResources();
+            };
+
+            const updateListedImportResources = () => {
                 selectedResources.forEach((resource) => {
                     const resourceByFullPath = $scope.resources.getResourceByName(resource.importResource.name);
                     if (resourceByFullPath) {
                         resourceByFullPath.selected = true;
                     }
                 });
-
-                $scope.displayResources = $scope.resources.toList();
+                $scope.displayResources = $scope.resources.toList()
+                    .filter(filterByType);
             };
 
-            $scope.selectionChanged = (($event, resource) => {
-                resource.setSelection(resource.selected);
-                selectedResources = $scope.resources.getAllSelected();
-            });
+            const filterByType = (resource) => {
+                if (TYPE_FILTER_OPTIONS.ALL === $scope.filterByType) {
+                    return true;
+                }
+
+                if ($scope.filterByType === TYPE_FILTER_OPTIONS.FILE) {
+                    return resource.isFile();
+                }
+
+                if ($scope.filterByType === TYPE_FILTER_OPTIONS.DIRECTORY) {
+                    return resource.isDirectory();
+                }
+
+                return false;
+            };
 
             // =========================
             // Subscriptions
