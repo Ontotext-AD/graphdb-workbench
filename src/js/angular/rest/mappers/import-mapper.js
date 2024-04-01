@@ -1,6 +1,11 @@
 import {ImportResourceTreeElement} from "../../models/import/import-resource-tree-element";
-import {ImportResourceType} from "../../models/import/import-resource-type";
-const path = require('path');
+import {ImportResource} from "../../models/import/import-resource";
+
+export const toImportResource = (importResourcesServerData) => {
+    return importResourcesServerData.map((importResourceServerData) => new ImportResource(importResourceServerData));
+};
+
+export const INDENT = 30;
 
 /**
  * Convert list with {@link ImportResource} to {@link ImportResourceTreeElement} tree.
@@ -12,6 +17,7 @@ const path = require('path');
 export const toImportServerResource = (importResources) => {
     const root = new ImportResourceTreeElement();
     importResources.forEach((resource) => addResourceToTree(root, resource));
+    calculateElementIndent(root);
     return root;
 };
 
@@ -23,7 +29,7 @@ export const toImportServerResource = (importResources) => {
 const addResourceToTree = (root, resource) => {
     const path = getPath(resource);
     let directoryPath = [];
-    if (ImportResourceType.DIRECTORY === resource.type) {
+    if (resource.isDirectory()) {
         directoryPath = path;
     } else {
         directoryPath = path.slice(0, path.length - 1);
@@ -31,7 +37,7 @@ const addResourceToTree = (root, resource) => {
 
     const resourceParent = getOrCreateParent(root, directoryPath);
 
-    if (ImportResourceType.FILE === resource.type) {
+    if (resource.isFile()) {
         const importServerResource = new ImportResourceTreeElement();
         importServerResource.parent = resourceParent;
         importServerResource.importResource = resource;
@@ -67,4 +73,24 @@ const getPath = (resource) => {
     } else {
         return [resource.name];
     }
+};
+
+const calculateElementIndent = (importResourceElement) => {
+    importResourceElement.indent = (8 + getParentsCount(importResourceElement) * INDENT) + 'px';
+    importResourceElement.directories.forEach((directory) => calculateElementIndent(directory));
+    importResourceElement.files.forEach((file) => calculateElementIndent(file));
+};
+
+const getParentsCount = (importResourceElement) => {
+    let parentCount = 0;
+    if (importResourceElement.parent === undefined) {
+        return parentCount;
+    }
+
+    let parent = importResourceElement.parent;
+    while (parent) {
+        parent = parent.parent;
+        parentCount++;
+    }
+    return parentCount - 1;
 };

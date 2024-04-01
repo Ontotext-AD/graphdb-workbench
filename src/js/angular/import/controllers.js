@@ -9,7 +9,7 @@ import {FileFormats} from "../models/import/file-formats";
 import * as stringUtils from "../utils/string-utils";
 import {FileUtils} from "../utils/file-utils";
 import {DateUtils} from "../utils/date-utils";
-import {toImportServerResource} from "../rest/mappers/import-mapper";
+import {toImportResource, toImportServerResource} from "../rest/mappers/import-mapper";
 import {ImportResourceTreeElement} from "../models/import/import-resource-tree-element";
 
 const modules = [
@@ -344,7 +344,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
 
                 // Commented during development. When evrething is ready this functionality have to change current one.
                 // if (OPERATION.SERVER === $scope.viewType) {
-                //     $scope.serverImportTree = toImportServerResource(data);
+                //     $scope.serverImportTree = toImportServerResource(toImportResource(data));
                 // }
 
                 if ($scope.files.length === 0 || force) {
