@@ -1,23 +1,19 @@
-
 const modules = [];
 
 angular
-    .module('graphdb.framework.core.directives.import-resource-tree', modules)
+    .module('graphdb.framework.import.import-resource-tree', modules)
     .directive('importResourceTree', importResourceTreeDirective);
-
-
-importResourceTreeDirective.$inject = [];
 
 function importResourceTreeDirective() {
     return {
         restrict: 'E',
-        templateUrl: 'js/angular/core/directives/import-resource-tree/templates/import-resource-tree.html',
+        templateUrl: 'js/angular/import/templates/import-resource-tree.html',
         scope: {
 
             /**
              * @type {ImportResourceTreeElement}
              */
-            importResources: '=',
+            resources: '=',
             onImport: '&',
             onDelete: '&'
         },
@@ -25,7 +21,7 @@ function importResourceTreeDirective() {
             // =========================
             // Public variables
             // =========================
-            $scope.indent = 30;
+            $scope.displayResources = [];
 
             // =========================
             // Private variables
@@ -37,18 +33,18 @@ function importResourceTreeDirective() {
             // =========================
             const init = () => {
                 selectedResources.forEach((resource) => {
-                    const resourceByFullPath = $scope.importResources.getResourceName(resource.importResource.name);
+                    const resourceByFullPath = $scope.resources.getResourceByName(resource.importResource.name);
                     if (resourceByFullPath) {
                         resourceByFullPath.selected = true;
                     }
                 });
 
-                $scope.resources = $scope.importResources.toList();
+                $scope.displayResources = $scope.resources.toList();
             };
 
             $scope.selectionChanged = (($event, resource) => {
                 resource.setSelection(resource.selected);
-                selectedResources = $scope.importResources.getAllSelected();
+                selectedResources = $scope.resources.getAllSelected();
             });
 
             // =========================
@@ -56,7 +52,7 @@ function importResourceTreeDirective() {
             // =========================
             const subscriptions = [];
 
-            subscriptions.push($scope.$watch('importResources', init));
+            subscriptions.push($scope.$watch('resources', init));
 
             const removeAllSubscribers = () => {
                 subscriptions.forEach((subscription) => subscription());

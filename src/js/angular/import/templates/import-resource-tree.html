@@ -1,27 +1,27 @@
 <link href="css/import-resource-tree.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
 
-<div class="import-resource-tree" ng-if="importResources && !importResources.isEmpty()">
+<div class="import-resource-tree" ng-if="resources && !resources.isEmpty()">
     <table class="import-resource-table">
         <thead>
         <tr class="import-resource-row">
             <th class="import-resource-header-cell import-resource-cell-select"></th>
-            <th class="import-resource-header-cell import-resource-name">{{'import_resource_tree.header.name' | translate}}</th>
-            <th class="import-resource-header-cell import-resource-size">{{'import_resource_tree.header.size' | translate}}</th>
-            <th class="import-resource-header-cell import-resource-modified">{{'import_resource_tree.header.modified' | translate}}</th>
-            <th class="import-resource-header-cell import-resource-imported">{{'import_resource_tree.header.imported' | translate}}</th>
-            <th class="import-resource-header-cell import-resource-context">{{'import_resource_tree.header.context' | translate}}</th>
+            <th class="import-resource-header-cell import-resource-name">{{'import.import_resource_tree.header.name' | translate}}</th>
+            <th class="import-resource-header-cell import-resource-size">{{'import.import_resource_tree.header.size' | translate}}</th>
+            <th class="import-resource-header-cell import-resource-modified">{{'import.import_resource_tree.header.modified' | translate}}</th>
+            <th class="import-resource-header-cell import-resource-imported">{{'import.import_resource_tree.header.imported' | translate}}</th>
+            <th class="import-resource-header-cell import-resource-context">{{'import.import_resource_tree.header.context' | translate}}</th>
             <th class="import-resource-header-cell import-resource-action"></th>
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat-start="resource in resources track by resource.importResource.name"
+        <tr ng-repeat-start="resource in displayResources track by resource.importResource.name"
             class="import-resource-row"
             ng-class="{ 'even-row-start': $even, 'odd-row-start': $odd}">
             <td class="import-resource-cell import-resource-cell-select">
                 <input type="checkbox" ng-model="resource.selected" ng-click="selectionChanged($event, resource)">
             </td>
             <td colspan="5"
-                ng-style="{'padding-left': (8 + resource.getParentsCount() * indent) + 'px'}"
+                ng-style="{'padding-left': resource.indent}"
                 class="import-resource-cell">
                 <span class="import-resource-title">
                     <em ng-class="{'icon-folder': resource.isDirectory(), 'icon-file': resource.isFile()}"></em>
@@ -42,7 +42,7 @@
         </tr>
         <tr ng-repeat-end class="import-resource-row" ng-class="{ 'even-row-end': $even, 'odd-row-end': $odd}">
             <td class="import-resource-cell import-resource-cell-select"></td>
-            <td ng-style="{'padding-left': (8 + resource.getParentsCount() * indent) + 'px'}"
+            <td ng-style="{'padding-left': resource.indent}"
                 class="import-resource-cell import-resource-message">
                 {{ resource.importResource.message || ''}}
             </td>

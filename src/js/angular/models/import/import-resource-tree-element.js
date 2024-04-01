@@ -7,6 +7,7 @@ export class ImportResourceTreeElement {
     constructor() {
         this.importResource = undefined;
         this.parent = undefined;
+        this.indent = 0;
         this.name = '';
         this.selected = false;
         this.directories = [];
@@ -62,7 +63,7 @@ export class ImportResourceTreeElement {
      * @return {boolean} true if the resource contains other resources.
      */
     isDirectory() {
-        return ImportResourceType.DIRECTORY === this.importResource.type;
+        return this.importResource.isDirectory();
     }
 
     /**
@@ -71,7 +72,7 @@ export class ImportResourceTreeElement {
      * @return {boolean} true if the resource contains rdf data.
      */
     isFile() {
-        return ImportResourceType.FILE === this.importResource.type;
+        return this.importResource.isFile();
     }
 
     /**
@@ -101,20 +102,6 @@ export class ImportResourceTreeElement {
         return result;
     }
 
-    getParentsCount() {
-        let parentCount = 0;
-        if (this.parent === undefined) {
-            return parentCount;
-        }
-
-        let parent = this.parent;
-        while (parent) {
-            parent = parent.parent;
-            parentCount++;
-        }
-        return parentCount - 1;
-    }
-
     setSelection(selected) {
         this.selected = selected;
         this.files.forEach((file) => file.setSelection(selected));
@@ -133,7 +120,7 @@ export class ImportResourceTreeElement {
         return allSelected;
     }
 
-    getResourceName(resourceName) {
+    getResourceByName(resourceName) {
         if (this.importResource && this.importResource.name === resourceName) {
             return this;
         }
@@ -143,7 +130,7 @@ export class ImportResourceTreeElement {
         }
 
         for (const directory of this.directories) {
-            const foundResource = directory.getResourceName(resourceName);
+            const foundResource = directory.getResourceByName(resourceName);
             if (foundResource) {
                 return foundResource;
             }
