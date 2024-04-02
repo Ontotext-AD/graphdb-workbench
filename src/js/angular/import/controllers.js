@@ -347,6 +347,10 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             console.log('The resources ', selectedResources, 'have to be reset');
         };
 
+        $scope.importAll = (selectedResources, withoutChangingSettings) => {
+            console.log('The resources ', selectedResources, ' have to be imported withoutChangingSettings: ' + withoutChangingSettings);
+        };
+
         // TODO: temporary exposed in the scope because it is called via scope.parent from the child TabsCtrl which should be changed
         /**
          * @param {boolean} force - Force the files list to be replaced with the new data

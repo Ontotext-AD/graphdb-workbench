@@ -4,6 +4,25 @@
     <div class="import-resource-tree-header">
         <div class="import-resources-actions">
             <div ng-if="selectedResources && selectedResources.length > 0">
+                <div class="btn-group" uib-dropdown
+                     uib-popover="{{'import.selected.items' | translate}}"
+                     popover-trigger="mouseenter"
+                     popover-placement="top">
+                    <button type="button" class="btn btn-primary" ng-click="importAll(false)">
+                        <span class="icon-import"></span>
+                        {{'common.import' | translate}}
+                    </button>
+                    <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle" uib-dropdown-toggle>
+                        <span class="sr-only"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li>
+                            <button type="button" class="dropdown-item import-without-change-btn" ng-click="importAll(true)">
+                                {{'import.without.changing.settings' | translate}}
+                            </button>
+                        </li>
+                    </ul>
+                </div>
                 <button class="btn btn-secondary" type="button" ng-click="onResetStatus()"
                         uib-popover="{{'import.reset.last.imported' | translate}}"
                         popover-trigger="mouseenter"
