@@ -7,18 +7,18 @@ Imports will be here
         </div>
         <div class="import-resource-tree-filter btn-group">
             <button class="btn btn-secondary"
-                    ng-click="changeTypeFilter(TYPE_FILTER_OPTIONS.FILE)"
+                    ng-click="filterByTypeChanged(TYPE_FILTER_OPTIONS.FILE)"
                     ng-class="{'active': TYPE_FILTER_OPTIONS.FILE === filterByType}">
                 <em class="icon-file"></em>
             </button>
             <button class="btn btn-secondary"
-                    ng-click="changeTypeFilter(TYPE_FILTER_OPTIONS.ALL)"
+                    ng-click="filterByTypeChanged(TYPE_FILTER_OPTIONS.ALL)"
                     ng-class="{'active': TYPE_FILTER_OPTIONS.ALL === filterByType}">
                 <em class="icon-file"></em>
                 <em class="icon-folder"></em>
             </button>
             <button class="btn btn-secondary"
-                    ng-click="changeTypeFilter(TYPE_FILTER_OPTIONS.DIRECTORY)"
+                    ng-click="filterByTypeChanged(TYPE_FILTER_OPTIONS.DIRECTORY)"
                     ng-class="{'active': TYPE_FILTER_OPTIONS.DIRECTORY === filterByType}">
                 <em class="icon-folder"></em>
             </button>
@@ -26,7 +26,7 @@ Imports will be here
                 <label class="input-group-addon" for="fileQuery">
                     <span class="icon-search icon-lg text-muted"></span>
                 </label>
-                <input id="fileQuery" class="form-control" type="text" ng-model="filterByFileName"  ng-change="handleInputChange(filterByFileName)"
+                <input id="fileQuery" class="form-control" type="text" ng-model="filterByFileName"  ng-change="filterByFileNameChanged(filterByFileName)"
                        placeholder="{{'import.type.to.filter' | translate}}">
             </div>
         </div>
@@ -48,7 +48,7 @@ Imports will be here
             class="import-resource-row"
             ng-class="{ 'even-row-start': $even, 'odd-row-start': $odd}">
             <td class="import-resource-cell import-resource-cell-select">
-                <input type="checkbox" ng-model="resource.selected" ng-click="selectionChanged($event, resource)">
+                <input type="checkbox" ng-model="resource.selected" ng-click="selectionChanged(resource)">
             </td>
             <td colspan="5"
                 ng-style="{'padding-left': (filterByType !== TYPE_FILTER_OPTIONS.FILE ? resource.indent : '8px')}"

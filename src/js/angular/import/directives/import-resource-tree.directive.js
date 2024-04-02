@@ -42,17 +42,17 @@ function importResourceTreeDirective($timeout) {
             // =========================
             // Public functions
             // =========================
-            $scope.selectionChanged = (($event, resource) => {
+            $scope.selectionChanged = ((resource) => {
                 resource.setSelection(resource.selected);
                 selectedResources = $scope.resources.getAllSelected();
             });
 
-            $scope.changeTypeFilter = (newType) => {
+            $scope.filterByTypeChanged = (newType) => {
                 $scope.filterByType = newType;
                 updateListedImportResources();
             };
 
-            $scope.handleInputChange = function (filterByFileName) {
+            $scope.filterByFileNameChanged = (filterByFileName) => {
                 $scope.filterByFileName = filterByFileName;
                 debounce(updateListedImportResources, 100);
             };
