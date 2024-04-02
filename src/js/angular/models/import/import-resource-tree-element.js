@@ -1,5 +1,3 @@
-import {ImportResourceType} from "./import-resource-type";
-
 /**
  * Resources have parent-child relations. This class represents one resource element from the parent-child relation tree.
  */
@@ -139,52 +137,34 @@ export class ImportResourceTreeElement {
     }
 
     hasTextInResourcesName(searchText) {
-        if (this.importResource.name.includes(searchText)) {
+        if (this.importResource.name.toLowerCase().includes(searchText.toLowerCase())) {
             return true;
-        }
-        if (this.files.some((file) => file.importResource.name.includes(searchText))) {
-            return true;
-        }
-        for (const directory of this.directories) {
-            const foundResource = directory.hasTextInResourcesName(searchText);
-            if (foundResource) {
-                return foundResource;
-            }
         }
 
-        return false;
+        if (this.files.some((file) => file.importResource.name.toLowerCase().includes(searchText.toLowerCase()))) {
+            return true;
+        }
+
+        return this.directories.some((directory) => directory.hasTextInDirectoriesName(searchText));
     }
 
     hasTextInDirectoriesName(searchText) {
-        if (this.isDirectory() && this.name.includes(searchText)) {
+        if (this.isDirectory() && this.name.toLowerCase().includes(searchText.toLowerCase())) {
             return true;
         }
 
-        for (const directory of this.directories) {
-            const foundResource = directory.hasTextInDirectoriesName(searchText);
-            if (foundResource) {
-                return foundResource;
-            }
-        }
-
-        return false;
+        return this.directories.some((directory) => directory.hasTextInDirectoriesName(searchText));
     }
 
     hasTextInFilesName(searchText) {
-        if (this.isFile() &&this.name.includes(searchText)) {
+        if (this.isFile() &&this.name.toLowerCase().includes(searchText.toLowerCase())) {
             return true;
         }
 
-        if (this.files.some((file) => file.importResource.name.includes(searchText))) {
+        if (this.files.some((file) => file.importResource.name.toLowerCase().includes(searchText.toLowerCase()))) {
             return true;
         }
 
-        for (const directory of this.directories) {
-            const foundResource = directory.hasTextInFilesName(searchText);
-            if (foundResource) {
-                return foundResource;
-            }
-        }
-        return false;
+        return this.directories.some((directory) => directory.hasTextInFilesName(searchText));
     }
 }
