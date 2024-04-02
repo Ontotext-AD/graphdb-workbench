@@ -3,7 +3,20 @@
 <div class="import-resource-tree mt-2" ng-if="resources && !resources.isEmpty()">
     <div class="import-resource-tree-header">
         <div class="import-resources-actions">
-Imports will be here
+            <div ng-if="selectedResources && selectedResources.length > 0">
+                <button class="btn btn-secondary" type="button" ng-click="onResetStatus()"
+                        uib-popover="{{'import.reset.last.imported' | translate}}"
+                        popover-trigger="mouseenter"
+                        popover-placement="top">
+                    {{'import.reset.status' | translate}}
+                </button>
+                <button class="btn btn-secondary" type="button" ng-click="onRemoveResources()"
+                        uib-popover="{{'import.remove.selected' | translate}}"
+                        popover-trigger="mouseenter"
+                        popover-placement="top">
+                    {{'import.remove.btn' | translate}}
+                </button>
+            </div>
         </div>
         <div class="import-resource-tree-filter btn-group">
             <button class="btn btn-secondary"

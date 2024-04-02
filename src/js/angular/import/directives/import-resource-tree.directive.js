@@ -23,28 +23,27 @@ function importResourceTreeDirective($timeout) {
              */
             resources: '=',
             onImport: '&',
-            onDelete: '&'
+            onDelete: '&',
+            onReset: '&',
+            onRemove: '&'
         },
         link: ($scope, element, attrs) => {
             // =========================
             // Public variables
             // =========================
             $scope.displayResources = [];
+            $scope.selectedResources = [];
             $scope.TYPE_FILTER_OPTIONS = TYPE_FILTER_OPTIONS;
             $scope.filterByType = TYPE_FILTER_OPTIONS.ALL;
             $scope.filterByFileName = '';
 
-            // =========================
-            // Private variables
-            // =========================
-            let selectedResources = [];
 
             // =========================
             // Public functions
             // =========================
             $scope.selectionChanged = ((resource) => {
                 resource.setSelection(resource.selected);
-                selectedResources = $scope.resources.getAllSelected();
+                $scope.selectedResources = $scope.resources.getAllSelected();
             });
 
             $scope.filterByTypeChanged = (newType) => {
@@ -57,6 +56,18 @@ function importResourceTreeDirective($timeout) {
                 debounce(updateListedImportResources, 100);
             };
 
+            $scope.onResetStatus = () => {
+                if ($scope.selectedResources && $scope.selectedResources.length > 0) {
+                    $scope.onReset({selectedResources: $scope.selectedResources});
+                }
+            };
+
+            $scope.onRemoveResources = () => {
+                if ($scope.selectedResources && $scope.selectedResources.length > 0) {
+                    $scope.onRemove({selectedResources: $scope.selectedResources()});
+                }
+            };
+
             // =========================
             // Private functions
             // =========================
@@ -65,7 +76,7 @@ function importResourceTreeDirective($timeout) {
             };
 
             const updateListedImportResources = () => {
-                selectedResources.forEach((resource) => {
+                $scope.selectedResources.forEach((resource) => {
                     const resourceByFullPath = $scope.resources.getResourceByName(resource.importResource.name);
                     if (resourceByFullPath) {
                         resourceByFullPath.selected = true;
