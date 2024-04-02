@@ -149,6 +149,10 @@ class ImportSteps {
         return ImportSteps.getUserDataUploadedFiles().eq(index);
     }
 
+    static getUserDataUploadedFileStatus(index) {
+        return ImportSteps.getUserDataUploadedFile(index).find('.import-status');
+    }
+
     static deleteUploadedFile(index) {
         ImportSteps.getUserDataUploadedFile(index).find('.remove-file-btn').click();
     }
@@ -439,6 +443,10 @@ class ImportSteps {
             .should('be.visible')
             .and('not.have.class', 'ng-animate')
             .and('have.class', 'in');
+    }
+
+    static getLoaderElement() {
+        return cy.get('.ot-loader.ot-main-loader');
     }
 }
 

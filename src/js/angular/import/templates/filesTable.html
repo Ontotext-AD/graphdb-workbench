@@ -31,7 +31,7 @@
                  uib-popover="{{'import.selected.items' | translate}}"
                  popover-trigger="mouseenter"
                  popover-placement="top">
-                <button type="button" class="btn btn-primary import-btn" ng-click="setSettingsFor('')"><span class="icon-import"></span> {{'common.import' | translate}}</button>
+                <button type="button" class="btn btn-primary import-btn" ng-click="setSettingsFor('', false, undefined)"><span class="icon-import"></span> {{'common.import' | translate}}</button>
                 <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle import-dropdown-btn" uib-dropdown-toggle>
                     <span class="sr-only"></span>
                 </button>
@@ -92,7 +92,7 @@
                         <em class="icon-link" ng-show="file.type === 'url'"></em>
                         <em class="icon-edit" ng-show="file.type === 'text'"></em>
                         <strong ng-show="file.type !== 'text'">{{file.name}}</strong>
-                        <strong ng-show="file.type === 'text'"><a href="#" ng-click="pasteData(file)">{{file.name}}</a></strong>
+                        <strong ng-show="file.type === 'text'"><a href="#" ng-click="openTextSnippetDialog(file)">{{file.name}}</a></strong>
                     </div>
                     <div class="import-status" guide-selector="import-status-info">
                         <button role="button" class="btn btn-link btn-inline secondary b-0 p-0 import-status-reset"
@@ -137,8 +137,8 @@
                 </button>
             </td>
             <td width="100">
-                <button class="btn btn-primary btn-sm pull-right"
-                        ng-click="setSettingsFor(file.name, undefined, file.format)"
+                <button class="btn btn-primary btn-sm pull-right import-file-btn"
+                        ng-click="setSettingsFor(file.name, false, file.format)"
                         ng-disabled="batch"
                         ng-cloak
                         ng-hide="!importable(file) || file.status === 'IMPORTING' || file.status === 'UPLOADING' || file.status === 'PENDING' || file.status === 'INTERRUPTING'"

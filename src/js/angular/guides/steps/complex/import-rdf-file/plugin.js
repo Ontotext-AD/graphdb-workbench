@@ -61,18 +61,39 @@ PluginRegistry.add('guide.step', [
                             }
 
                             return Promise.resolve(true);
+                        },
+                        onNextClick: (guide) => {
+                            GuideUtils.waitFor(importSettingsButtonSelector)
+                                .then(() => guide.next())
+                                .catch(() => {
+                                    // if we have file uploaded but import dialog is not opened, we have to click the
+                                    // import button manually. This can be happened when the guide is started more than one time or
+                                    // user was already uploaded rdf file before start the guide.
+                                    GuideUtils.clickOnGuideElement('import-file-' + options.resourceFile)();
+                                    guide.next();
+                                });
                         }
                     }, options)
                 },
+                // This step is optional and will only appear if the file we want to upload has already been uploaded.
+                // If the file is already uploaded, a confirmation dialog will be opened, and this step will display the confirm button of the dialog.
                 {
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
-                        content: 'guide.step_plugin.import_rdf_file.import-file.button.content',
-                        elementSelector: GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile),
+                        content: 'guide.step_plugin.import_rdf_file.confirm_duplicate_files_dialog.content',
+                        elementSelector: GuideUtils.getElementSelector('.confirm-duplicate-files-dialog .confirm-btn'),
                         url: '/import',
-                        placement: 'left',
+                        placement: 'bottom',
                         class: 'import-file-button-guide-dialog',
-                        onNextClick: () => GuideUtils.clickOnGuideElement('import-file-' + options.resourceFile)()
+                        // Checks whether the confirm dialog is currently open.
+                        showOn: () => GuideUtils.isVisible(GuideUtils.getElementSelector('.confirm-duplicate-files-dialog')),
+                        onNextClick: () => GuideUtils.clickOnElement('.confirm-duplicate-files-dialog .confirm-btn')(),
+                        onPreviousClick: () => {
+                            if (GuideUtils.isVisible(GuideUtils.getElementSelector('.confirm-duplicate-files-dialog'))) {
+                                return GuideUtils.clickOnElement('.confirm-duplicate-files-dialog .cancel-btn');
+                            }
+                            return Promise.resolve();
+                        }
                     }, options)
                 },
                 {
@@ -103,6 +124,13 @@ PluginRegistry.add('guide.step', [
                         url: '/import',
                         elementSelector: GuideUtils.getGuideElementSelector('import-status-info'),
                         class: 'import-status-info-guide-dialog',
+                        beforeShowPromise: () => {
+                            const statusInfoElement = GuideUtils.getGuideElementSelector('import-status-info');
+                            if (GuideUtils.isVisible(statusInfoElement)) {
+                                return Promise.resolve();
+                            }
+                            return GuideUtils.waitFor(statusInfoElement, 10);
+                        },
                         onPreviousClick: () => GuideUtils.clickOnGuideElement('import-file-' + options.resourceFile)()
                     }, options)
                 }

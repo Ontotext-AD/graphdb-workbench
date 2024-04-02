@@ -15,6 +15,7 @@ describe('Describes "Starwars" interactive guide', () => {
     });
 
     afterEach(() => {
+        cy.deleteUploadedFile(repositoryId, STAR_WARS_FILE_FOR_IMPORT);
         cy.deleteRepository(repositoryId);
     });
 

@@ -5,7 +5,7 @@ const RDF_TEXT_SNIPPET = '@prefix ab:<http://learningsparql.com/ns/addressbook#>
     'ab:richard ab:homeTel "(229)276-5135".\n' +
     'ab:richard ab:email "richard491@hotmail.com".';
 
-describe('Import user data tab: initial state', () => {
+describe('Import user data', () => {
 
     let repositoryId;
 

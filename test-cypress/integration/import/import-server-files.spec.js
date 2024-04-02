@@ -1,6 +1,6 @@
 import ImportSteps from "../../steps/import/import-steps";
 
-describe('Import screen validation - server files', () => {
+describe('Import server files', () => {
 
     let repositoryId;
 
