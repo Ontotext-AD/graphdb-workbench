@@ -132,7 +132,7 @@
                 </div>
             </td>
             <td width="25" ng-show="viewType === 'user'">
-                <button class="btn btn-link secondary" ng-click="removeEntry([file.name])" ng-disabled="batch || file.status === 'IMPORTING' || file.status === 'UPLOADING' || file.status === 'PENDING' || file.status === 'INTERRUPTING'">
+                <button class="btn btn-link secondary remove-file-btn" ng-click="removeEntry([file.name])" ng-disabled="batch || file.status === 'IMPORTING' || file.status === 'UPLOADING' || file.status === 'PENDING' || file.status === 'INTERRUPTING'">
                     <em class="icon-trash"></em>
                 </button>
             </td>

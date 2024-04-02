@@ -2,20 +2,28 @@ import 'angular/core/services';
 import 'angular/utils/uri-utils';
 import 'angular/rest/import.rest.service';
 import 'angular/rest/upload.rest.service';
+import 'angular/import/import-context.service';
+import 'angular/import/import-view-storage.service';
 import {FILE_STATUS} from "../models/import/file-status";
 import {FileFormats} from "../models/import/file-formats";
 import * as stringUtils from "../utils/string-utils";
 import {FileUtils} from "../utils/file-utils";
 import {DateUtils} from "../utils/date-utils";
+import {toImportResource, toImportServerResource} from "../rest/mappers/import-mapper";
+import {ImportResourceTreeElement} from "../models/import/import-resource-tree-element";
 
 const modules = [
     'ui.bootstrap',
     'toastr',
     'graphdb.framework.core.services.repositories',
+    'graphdb.framework.utils.localstorageadapter',
     'graphdb.framework.utils.uriutils',
     'graphdb.framework.guides.services',
     'graphdb.framework.rest.import.service',
-    'graphdb.framework.rest.upload.service'
+    'graphdb.framework.rest.upload.service',
+    'graphdb.framework.core.directives',
+    'graphdb.framework.importcontext.service',
+    'graphdb.framework.import.importviewstorageservice'
 ];
 
 const importViewModule = angular.module('graphdb.framework.impex.import.controllers', modules);
@@ -31,13 +39,14 @@ const USER_DATA_TYPE = {
     URL: 'url'
 };
 
-importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', '$repositories', '$uibModal', '$filter', '$jwtAuth', '$location', '$translate', 'LicenseRestService', 'GuidesService', 'ModalService', 'ImportRestService',
-    function ($scope, toastr, $interval, $repositories, $uibModal, $filter, $jwtAuth, $location, $translate, LicenseRestService, GuidesService, ModalService, ImportRestService) {
+importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', '$repositories', '$uibModal', '$filter', '$jwtAuth', '$location', '$translate', 'LicenseRestService', 'GuidesService', 'ModalService', 'ImportRestService', 'ImportContextService', 'ImportViewStorageService',
+    function ($scope, toastr, $interval, $repositories, $uibModal, $filter, $jwtAuth, $location, $translate, LicenseRestService, GuidesService, ModalService, ImportRestService, ImportContextService, ImportViewStorageService) {
 
         // =========================
         // Private variables
         // =========================
 
+        const subscriptions = [];
         let listPollingHandler = null;
         const LIST_POLLING_INTERVAL = 4000;
 
@@ -53,6 +62,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         $scope.fileFormatsExtended = FileFormats.getFileFormatsExtended();
         $scope.fileFormatsHuman = FileFormats.getFileFormatsHuman() + $translate.instant('import.gz.zip');
         $scope.textFileFormatsHuman = FileFormats.getTextFileFormatsHuman();
+        $scope.maxUploadFileSizeMB = 0;
 
         // =========================
         // Public functions
@@ -300,7 +310,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             if (!$($scope.tabId).is(':visible')) {
                 return;
             }
-            updateListHttp(force);
+            $scope.updateListHttp(force);
         };
 
         // This should be public because it's used by the upload and import controllers
@@ -317,12 +327,29 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         // =========================
         // Private functions
         // =========================
+        $scope.serverImportTree = new ImportResourceTreeElement();
 
-        const updateListHttp = (force) => {
-            const loader = $scope.viewUrl === OPERATION.UPLOAD ? ImportRestService.getUploadedFiles : ImportRestService.getServerFiles;
-            loader($repositories.getActiveRepository()).success(function (data) {
+        $scope.onImport = (importResource) => {
+          console.log('The resource ', importResource, 'have to be imported');
+        };
+
+        $scope.onDelete = (importResource) => {
+            console.log('The resource ', importResource, 'have to be deleted');
+        };
+
+        // TODO: temporary exposed in the scope because it is called via scope.parent from the child TabsCtrl which should be changed
+        $scope.updateListHttp = (force) => {
+            const filesLoader = $scope.viewUrl === OPERATION.UPLOAD ? ImportRestService.getUploadedFiles : ImportRestService.getServerFiles;
+            filesLoader($repositories.getActiveRepository()).success(function (data) {
+
+                // Commented during development. When evrething is ready this functionality have to change current one.
+                // if (OPERATION.SERVER === $scope.viewType) {
+                //     $scope.serverImportTree = toImportServerResource(toImportResource(data));
+                // }
+
                 if ($scope.files.length === 0 || force) {
                     $scope.files = data;
+                    ImportContextService.updateFiles($scope.files);
                     $scope.files.forEach(function (f) {
                         if (!f.type) {
                             f.type = $scope.defaultType;
@@ -345,16 +372,16 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                     $scope.files = _.filter($scope.files, function (f) {
                         return f.status !== undefined;
                     });
+                    ImportContextService.updateFiles($scope.files);
                 }
                 $scope.showClearStatuses = _.filter($scope.files, function (file) {
                     return file.status === FILE_STATUS.DONE || file.status === FILE_STATUS.ERROR;
                 }).length > 0;
 
                 $scope.savedSettings = _.mapKeys(_.filter($scope.files, 'parserSettings'), 'name');
-
-                $scope.loader = false;
             }).error(function (data) {
                 toastr.warning($translate.instant('import.error.could.not.get.files', {data: getError(data)}));
+            }).finally(() => {
                 $scope.loader = false;
             });
         };
@@ -369,7 +396,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                         value: data[i].value
                     };
                 }
-                $scope.maxUploadFileSizeMB = $scope.appData.properties['graphdb.workbench.maxUploadSize'].value / (1024 * 1024);
+                $scope.maxUploadFileSizeMB = FileUtils.convertBytesToMegabytes($scope.appData.properties['graphdb.workbench.maxUploadSize'].value);
             }).error(function (data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
@@ -380,38 +407,25 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             subscriptions.forEach((subscription) => subscription());
         };
 
-        const isTabOpened = () => {
-            return $($scope.tabId).is(':visible');
+        const initPersistence = () => {
+            ImportViewStorageService.initImportViewSettings();
         };
 
-        const onTabOpened = () => {
-            if (isTabOpened()) {
-                updateListHttp(false);
-                $location.hash($scope.viewType);
-            }
+        const initSubscribtions = () => {
+            subscriptions.push($scope.$on('repositoryIsSet', $scope.onRepositoryChange));
+            subscriptions.push($scope.$on('$destroy', () => $interval.cancel(listPollingHandler)));
+            $scope.$on('$destroy', removeAllListeners);
         };
-
-        // =========================
-        // Watchers and event handlers
-        // =========================
-
-        const subscriptions = [];
-
-        subscriptions.push($scope.$on('repositoryIsSet', $scope.onRepositoryChange));
-
-        // update the list instantly when the tab is changed
-        subscriptions.push($scope.$watch(isTabOpened, onTabOpened));
-
-        subscriptions.push($scope.$on('$destroy', () => $interval.cancel(listPollingHandler)));
-
-        $scope.$on('$destroy', removeAllListeners);
 
         // =========================
         // Initialization
         // =========================
 
+        // TODO: Beware that this init is called tree times due to the child controllers which extends this one. We should refactor this.
         const init = () => {
+            initSubscribtions();
             getAppData();
+            initPersistence();
         };
         init();
     }]);
@@ -425,8 +439,9 @@ importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$
     // =========================
     // Public variables
     // =========================
-    angular.extend(this, $controller('ImportViewCtrl', {$scope: $scope}));
+
     $scope.loader = true;
+    angular.extend(this, $controller('ImportViewCtrl', {$scope: $scope}));
     $scope.viewUrl = OPERATION.SERVER;
     $scope.defaultType = 'server';
     $scope.tabId = '#import-server';
@@ -487,8 +502,8 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     // Public variables
     // =========================
 
-    angular.extend(this, $controller('ImportViewCtrl', {$scope: $scope}));
     $scope.loader = true;
+    angular.extend(this, $controller('ImportViewCtrl', {$scope: $scope}));
     $scope.viewUrl = OPERATION.UPLOAD;
     $scope.defaultType = USER_DATA_TYPE.FILE;
     $scope.tabId = '#import-user';
@@ -780,22 +795,67 @@ importViewModule.controller('TextCtrl', ['$scope', '$uibModalInstance', 'text', 
     };
 }]);
 
-importViewModule.controller('TabCtrl', ['$scope', '$location', function ($scope, $location) {
+importViewModule.controller('TabCtrl', ['$scope', '$location', 'ImportViewStorageService', 'ImportContextService', function ($scope, $location, ImportViewStorageService, ImportContextService) {
+
+    // =========================
+    // Private variables
+    // =========================
+
+    // flag to reset help visibility on empty state in initial load of the view
+    let shouldResetHelpVisibility = true;
 
     // =========================
     // Public variables
     // =========================
 
     $scope.viewType = $location.hash();
-    $scope.isCollapsed = false;
-    $scope.commonUrl = 'js/angular/import/templates/commonInfo.html';
+    $scope.isHelpVisible = true;
+    $scope.fileSizeLimitInfoTemplateUrl = 'js/angular/import/templates/fileSizeLimitInfo.html';
 
     // =========================
     // Public functions
     // =========================
 
+    $scope.openTab = (tab) => {
+        $scope.viewType = tab;
+        $scope.$parent.viewUrl = tab === 'server' ? OPERATION.SERVER : OPERATION.UPLOAD;
+        $location.hash($scope.viewType);
+        $scope.updateListHttp(true);
+    };
+
     $scope.changeHelpTemplate = function (templateFile) {
         $scope.templateUrl = 'js/angular/import/templates/' + templateFile;
+    };
+
+    $scope.toggleHelp = () => {
+        const viewPersistance = ImportViewStorageService.getImportViewSettings();
+        ImportViewStorageService.toggleHelpVisibility();
+        $scope.isHelpVisible = !viewPersistance.isHelpVisible;
+    };
+
+    // =========================
+    // Private functions
+    // =========================
+
+    const onFilesUpdated = (files) => {
+        // reset help visibility on empty state in initial load
+        if (shouldResetHelpVisibility && files.length === 0) {
+            ImportViewStorageService.setHelpVisibility(true);
+            shouldResetHelpVisibility = false;
+        }
+        const viewPersistance = ImportViewStorageService.getImportViewSettings();
+        let isVisible = viewPersistance.isHelpVisible;
+        if (files.length === 0 && viewPersistance.isHelpVisible) {
+            isVisible = true;
+        } else if (files.length === 0 && !viewPersistance.isHelpVisible) {
+            isVisible = false;
+        } else if (viewPersistance.isHelpVisible) {
+            isVisible = true;
+        } else if (!viewPersistance.isHelpVisible) {
+            isVisible = false;
+        }
+        ImportViewStorageService.setHelpVisibility(isVisible);
+        $scope.isHelpVisible = isVisible;
     };
 
     // =========================
@@ -803,6 +863,8 @@ importViewModule.controller('TabCtrl', ['$scope', '$location', function ($scope,
     // =========================
 
     const init = function () {
+        ImportContextService.onFilesUpdated(onFilesUpdated);
+
         if ($scope.viewType !== 'user' && $scope.viewType !== 'server') {
             $scope.viewType = 'user';
         }
@@ -812,6 +874,8 @@ importViewModule.controller('TabCtrl', ['$scope', '$location', function ($scope,
         } else {
             $scope.templateUrl = 'js/angular/import/templates/importInfo.html';
         }
+
+        $scope.openTab($scope.viewType || 'user');
     };
     init();
 }]);
