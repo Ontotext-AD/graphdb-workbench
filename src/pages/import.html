@@ -147,7 +147,10 @@
                 <import-resource-tree ng-if="serverImportTree"
                                       resources="serverImportTree"
                                       on-delete="onDelete(resource)"
-                                      on-import="onImport(resource)"></import-resource-tree>
+                                      on-import="onImport(resource)"
+                                      on-remove="onRemove(selectedResources)"
+                                      on-reset="onReset(selectedResources)">
+                </import-resource-tree>
                 <div class="mt-2" files-table></div>
             </div>
         </div>

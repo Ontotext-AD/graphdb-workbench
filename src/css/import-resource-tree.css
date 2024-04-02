@@ -67,6 +67,10 @@
     padding-right: 10px
 }
 
+.import-resources-actions {
+    display: flex;
+}
+
 .import-resource-tree .import-resource-table .import-resource-actions {
     display: flex;
     align-items: stretch;

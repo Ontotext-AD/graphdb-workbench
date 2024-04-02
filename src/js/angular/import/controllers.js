@@ -339,6 +339,14 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             console.log('The resource ', importResource, 'have to be deleted');
         };
 
+        $scope.onRemove = (selectedResources) => {
+            console.log('The resources ', selectedResources, 'have to be removed');
+        };
+
+        $scope.onReset = (selectedResources) => {
+            console.log('The resources ', selectedResources, 'have to be reset');
+        };
+
         // TODO: temporary exposed in the scope because it is called via scope.parent from the child TabsCtrl which should be changed
         /**
          * @param {boolean} force - Force the files list to be replaced with the new data
