@@ -1,3 +1,5 @@
+import {ImportResourceStatus} from "./import-resource-status";
+
 /**
  * Resources have parent-child relations. This class represents one resource element from the parent-child relation tree.
  */
@@ -104,6 +106,21 @@ export class ImportResourceTreeElement {
         this.selected = selected;
         this.files.forEach((file) => file.setSelection(selected));
         this.directories.forEach((directory) => directory.setSelection(selected));
+    }
+
+    selectAllWithStatus(statuses) {
+
+        if (this.importResource) {
+            console.log(statuses);
+            console.log(this.importResource.status);
+            console.log(statuses.indexOf(this.importResource.status) > -1);
+        }
+
+        if (this.importResource && statuses.indexOf(this.importResource.status) > -1) {
+            this.selected = true;
+        }
+        this.files.forEach((file) => file.selectAllWithStatus(statuses));
+        this.directories.forEach((directory) => directory.selectAllWithStatus(statuses));
     }
 
     getAllSelected() {

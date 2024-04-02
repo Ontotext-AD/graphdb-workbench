@@ -3,7 +3,29 @@
 <div class="import-resource-tree mt-2" ng-if="resources && !resources.isEmpty()">
     <div class="import-resource-tree-header">
         <div class="import-resources-actions">
-            <div ng-if="selectedResources && selectedResources.length > 0">
+            <div class="import-resource-status-dropdown btn-group" uib-dropdown>
+                <button type="button" class="btn btn-secondary dropdown-toggle" uib-dropdown-toggle>
+                    <input type="checkbox">
+                    {{selectedByStatus ? (('import.import_resource_tree.status.' + selectedByStatus) | translate) : ' '}}
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li>
+                        <button type="button" class="dropdown-item" ng-click="selectResourceWithStatus(STATUS_OPTIONS.ALL)">
+                            {{'import.import_resource_tree.status.ALL' | translate}}
+                        </button>
+                        <button type="button" class="dropdown-item" ng-click="selectResourceWithStatus(STATUS_OPTIONS.NONE)">
+                            {{'import.import_resource_tree.status.NONE' | translate}}
+                        </button>
+                        <button type="button" class="dropdown-item" ng-click="selectResourceWithStatus(STATUS_OPTIONS.IMPORTED)">
+                            {{'import.import_resource_tree.status.IMPORTED' | translate}}
+                        </button>
+                        <button type="button" class="dropdown-item" ng-click="selectResourceWithStatus(STATUS_OPTIONS.NOT_IMPORTED)">
+                            {{'import.import_resource_tree.status.NOT_IMPORTED' | translate}}
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <div class="import-resource-selected-actions btn-group" ng-if="selectedResources && selectedResources.length > 0">
                 <div class="btn-group" uib-dropdown
                      uib-popover="{{'import.selected.items' | translate}}"
                      popover-trigger="mouseenter"
