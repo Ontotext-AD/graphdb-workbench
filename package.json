@@ -62,7 +62,7 @@
         "karma-jasmine": "^2.0.1",
         "karma-jasmine-matchers": "^4.0.2",
         "karma-sourcemap-loader": "^0.3.7",
-        "karma-webpack": "^4.0.2",
+        "karma-webpack": "^5.0.1",
         "less": "^3.10.3",
         "less-loader": "^5.0.0",
         "license-checker": "^25.0.1",
@@ -76,7 +76,7 @@
         "webpack": "^4.41.2",
         "webpack-auto-inject-version": "^1.2.2",
         "webpack-cli": "^3.3.10",
-        "webpack-dev-server": "^3.11.0",
+        "webpack-dev-server": "^5.0.4",
         "webpack-merge": "^4.2.1",
         "webpack-merge-and-include-globally": "^2.1.20"
     },
