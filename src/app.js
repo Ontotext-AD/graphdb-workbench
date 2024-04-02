@@ -8,6 +8,7 @@ import 'angular/core/interceptors/unauthorized.interceptor';
 import 'angular/core/interceptors/authentication.interceptor';
 import 'angular/core/directives/rdfresourcesearch/rdf-resource-search.directive';
 import 'angular/core/directives/languageselector/language-selector.directive';
+import 'angular/core/directives/copy-to-clipboard/copy-to-clipboard.directive';
 import 'angular/core/directives/angulartooltips/angular-tooltips.js';
 import 'angular/core/directives/uppercased.directive';
 import 'angular/core/directives/operations-statuses-monitor/operations-statuses-monitor.directive';
@@ -33,6 +34,7 @@ const modules = [
     'graphdb.framework.core.interceptors.authentication',
     'graphdb.framework.core.directives.rdfresourcesearch.rdfresourcesearch',
     'graphdb.framework.core.directives.languageselector.languageselector',
+    'graphdb.framework.core.directives.copytoclipboard.copytoclipboard',
     'graphdb.framework.core.directives.angular-tooltips',
     'graphdb.framework.core.directives.uppercased',
     'graphdb.framework.guides.services',

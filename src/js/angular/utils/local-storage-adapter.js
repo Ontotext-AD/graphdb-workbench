@@ -26,7 +26,8 @@ angular
         'WORKBENCH_SETTINGS': 'workbench-settings',
         'REPOSITORY_ID': 'repository-id',
         'REPOSITORY_LOCATION': 'repository-location',
-        'JSONLD_EXPORT_SETTINGS': 'jsonld-export-settings'
+        'JSONLD_EXPORT_SETTINGS': 'jsonld-export-settings',
+        'IMPORT_VIEW': 'import-view'
     });
 
 LocalStorageAdapter.$inject = ['localStorageService', 'LSKeys'];

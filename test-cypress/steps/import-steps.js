@@ -5,6 +5,27 @@ import {ModalDialogSteps} from "./modal-dialog-steps";
  */
 class ImportSteps {
 
+    static visit() {
+        cy.visit('/import');
+        cy.url().should('include', '/import');
+    }
+
+    static getView() {
+        return cy.get('#wb-import');
+    }
+
+    static getPageInfoIcon() {
+        return this.getView().find('.page-info-icon');
+    }
+
+    static showPageInfoPopover() {
+        ImportSteps.getPageInfoIcon().realHover();
+    }
+
+    static getPageInfoPopover() {
+        return cy.get('.help-info');
+    }
+
     static visitUserImport(repository) {
         ImportSteps.visitImport('user', repository);
     }
@@ -41,8 +62,84 @@ class ImportSteps {
         cy.get('.popover.in').click();
     }
 
+    static getTabs() {
+        return ImportSteps.getView().find('.nav-tabs .nav-item');
+    }
+
+    static getActiveTab() {
+        return ImportSteps.getTabs().find('.nav-link.active');
+    }
+
+    static openUserDataTab() {
+        return ImportSteps.getTabs().eq(0).click();
+    }
+
+    static getUserDataTab() {
+        return ImportSteps.getView().find('#import-user');
+    }
+
+    static getServerFilesTab() {
+        return ImportSteps.getView().find('#import-server');
+    }
+
+    static getUploadRdfFilesButton() {
+        return ImportSteps.getView().find('.upload-rdf-files-btn');
+    }
+
+    static getUploadFromUrlButton() {
+        return ImportSteps.getView().find('.import-from-url-btn');
+    }
+
+    static getUploadTextSnippetButton() {
+        return ImportSteps.getView().find('.import-from-url-btn');
+    }
+
+    static getFileSizeLimitWarning() {
+        return ImportSteps.getView().find('.file-size-limit-warning');
+    }
+
+    static openServerFilesTabFromWarning() {
+        this.getFileSizeLimitWarning().find('.server-files-tab-link').click();
+    }
+
+    static openAPIViewFromWarning() {
+        this.getFileSizeLimitWarning().find('.api-link').click();
+    }
+
+    static getImportUserDataHelp() {
+        return ImportSteps.getView().find('.user-data-import-help');
+    }
+
+    static copyMaxFileSizeLimitProperty() {
+        return this.getImportUserDataHelp().find('.copy-btn').click();
+    }
+
+    static getClipboardTextContent() {
+        return cy.window().its('navigator.clipboard').invoke('readText').then((text) => text);
+    }
+
+    static closeImportUserDataHelp() {
+        return ImportSteps.getImportUserDataHelp().find('button.close').click();
+    }
+
+    static getUserDataUploadedFilesTable() {
+        return ImportSteps.getView().find('#wb-import-fileInFiles');
+    }
+
+    static getUserDataUploadedFiles() {
+        return ImportSteps.getUserDataUploadedFilesTable().find('.import-file-row');
+    }
+
+    static getUserDataUploadedFile(index) {
+        return ImportSteps.getUserDataUploadedFiles().eq(index);
+    }
+
+    static deleteUploadedFile(index) {
+        ImportSteps.getUserDataUploadedFile(index).find('.remove-file-btn').click();
+    }
+
     static openImportURLDialog(importURL) {
-        cy.get('#import-user .import-from-url-btn').click()
+        cy.get('#import-user .import-from-url-btn').click();
         // Forces the popover to disappear as it covers the modal and Cypress refuses to continue
         this.closePopover();
         this.getImportUrlInput().type(importURL).should('have.value', importURL);

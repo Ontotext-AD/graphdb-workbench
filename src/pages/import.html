@@ -3,7 +3,7 @@
 <div id="wb-import">
     <h1>
         {{title}}
-        <span class="btn btn-link"
+        <span class="btn btn-link page-info-icon"
               uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
               popover-trigger="mouseenter"
               popover-placement="bottom-right"
@@ -14,35 +14,30 @@
 
     <div ng-controller="TabCtrl" ng-show="!isRestricted && canWriteActiveRepo()">
 
-        <button type="button" ng-click="isCollapsed = !isCollapsed" class="btn btn-link pull-right"><span
-            class="icon-help"></span><span class="btn-link-text">{{'menu.help.label' | translate}}</span>
-        </button>
-
         <ul class="nav nav-tabs mb-2">
-            <li class="nav-item" id="wb-import-tabUpload" ng-click="changeHelpTemplate('uploadInfo.html')">
-                <a class="nav-link" ng-class="viewType == 'user' ? 'active' : ''" href ng-click="viewType = 'user'"
+            <li class="nav-item" id="wb-import-tabUpload">
+                <a class="nav-link" ng-class="viewType == 'user' ? 'active' : ''" href ng-click="openTab('user')"
                    data-toggle="tab">{{'user.data' | translate}}</a>
             </li>
-            <li class="nav-item" id="wb-import-tabServer" ng-hide="isS4()"
-                ng-click="changeHelpTemplate('importInfo.html')">
+            <li class="nav-item" id="wb-import-tabServer" ng-hide="isS4()">
                 <a class="nav-link" ng-class="viewType == 'server' ? 'active' : ''" href
-                   ng-click="viewType = 'server'" data-toggle="tab">{{'server.files' | translate}}</a>
+                   ng-click="openTab('server')" data-toggle="tab">{{'server.files' | translate}}</a>
+            </li>
+            <li class="nav-item">
+                <button type="button" ng-click="toggleHelp()"
+                        gdb-tooltip="{{'import.help.buttons.toggle_help.tooltip' | translate}}"
+                        class="btn btn-link toggle-help-btn pull-right">
+                    <span class="icon-help text-tertiary"></span>
+                </button>
             </li>
         </ul>
-
-        <div uib-collapse="!isCollapsed" id="ot-help-text" class="alert alert-info">
-            <button type="button" ng-click="isCollapsed = false" gdb-tooltip="{{'common.close' | translate}}"
-                    class="close"
-                    aria-label="Close"></button>
-            <div ng-include="templateUrl"></div>
-        </div>
 
         <div class="tab-content">
             <div id="import-user" class="tab-pane" ng-controller="UploadCtrl"
                  ng-class="$parent.viewType == 'user' ? 'active' : ''">
-                <div class="row mb-2 upload-buttons">
-                    <div class="col-xs-12 col-md-6 col-lg-4 mb-1">
-                        <div class="btn btn-outline-primary btn-lg text-xs-left d-block upload-rdf-files-btn"
+                <div class="row upload-buttons">
+                    <div class="col-xs-12 col-md-6 col-lg-4 mb-2 fat-btn">
+                        <div class="btn btn-outline-primary btn-lg text-xs-left upload-rdf-files-btn"
                              uib-popover="{{'supported.import.formats.label' | translate}} {{fileFormatsHuman}}"
                              popover-trigger="mouseenter"
                              popover-placement="bottom"
@@ -67,8 +62,8 @@
                         </div>
                     </div>
 
-                    <div class="col-xs-12 col-md-6 col-lg-4 mb-1">
-                        <div class="btn btn-outline-primary btn-lg text-xs-left d-block import-from-url-btn"
+                    <div class="col-xs-12 col-md-6 col-lg-4 mb-2 fat-btn">
+                        <div class="btn btn-outline-primary btn-lg text-xs-left import-from-url-btn"
                              role="button" ng-click="rdfDataFromURL()"
                              uib-popover="{{'supported.import.formats.label' | translate}} {{fileFormatsHuman}}"
                              popover-trigger="mouseenter"
@@ -83,14 +78,14 @@
                         </div>
                     </div>
 
-                    <div class="col-xs-12 col-md-6 col-lg-4 mb-1">
-                        <div class="btn btn-outline-primary btn-lg text-xs-left d-block import-rdf-snippet-btn"
+                    <div class="col-xs-12 col-md-6 col-lg-4 mb-2 fat-btn">
+                        <div class="btn btn-outline-primary btn-lg text-xs-left import-rdf-snippet-btn"
                              role="button" ng-click="pasteData()"
                              uib-popover="{{'supported.import.formats.label' | translate}} {{textFileFormatsHuman}}"
                              popover-trigger="mouseenter"
                              popover-placement="bottom">
                             <div class="grid-container">
-                                <em class="icon-edit icon-lg"></em>
+                                <em class="icon-sparql icon-lg"></em>
                                 <div class="text">
                                     <div>{{'import.rdf.text.snippet.label' | translate}}</div>
                                     <small class="text-muted">{{'type.paste.data.label' | translate}}</small>
@@ -99,12 +94,60 @@
                         </div>
                     </div>
                 </div>
-                <div files-table></div>
+
+                <div uib-collapse="false" class="alert alert-warning file-size-limit-warning mb-0">
+                    <div ng-include="fileSizeLimitInfoTemplateUrl"></div>
+                </div>
+
+                <div ng-if="isHelpVisible" class="alert alert-help user-data-import-help mt-2">
+                    <button type="button" ng-click="toggleHelp()" gdb-tooltip="{{'common.close' | translate}}"
+                            class="close"
+                            aria-label="Close"></button>
+                    <div class="ot-view-info">
+                        <h4>{{'import.help.on_upload.import_user_data' | translate}}</h4>
+                        <p>
+                            {{'import.help.on_upload.to_reimport_again' | translate}}<br>
+                            {{'import.help.on_upload.file_size_limit_can_be_changed' | translate}}
+                            <strong class="file-size-prop copyable">graphdb.workbench.maxUploadSize</strong>
+                            <copy-to-clipboard tooltip-text="import.help.buttons.copy_file_size_prop.tooltip"></copy-to-clipboard>
+                            {{'import.help.on_upload.the_property' | translate}}.
+                        </p>
+
+                        <h4>{{'import.help.on_upload.execution' | translate}}</h4>
+                        <ul>
+                            <li>{{'import.help.on_upload.work_in_background' | translate}}</li>
+                            <li>{{'import.help.on_upload.interrupt_support' | translate}}</li>
+                            <li>{{'import.help.on_upload.parser_config' | translate}}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-2" files-table></div>
             </div>
             <div id="import-server" ng-hide="isS4()" class="tab-pane" ng-controller="ImportCtrl"
                  ng-class="$parent.viewType == 'server' ? 'active' : ''">
 
-                <div files-table></div>
+                <div uib-collapse="!isHelpVisible" class="alert alert-help mb-0">
+                    <button type="button" ng-click="toggleHelp()" gdb-tooltip="{{'common.close' | translate}}"
+                            class="close" aria-label="Close"></button>
+                    <div class="ot-view-info">
+                        <h4>{{'import.help.on_server_import.import_from_server' | translate}}</h4>
+                        <p>
+                            {{'import.help.on_server_import.open_directory' | translate}}
+                            <strong>{{appData.properties['graphdb.workbench.importDirectory'].value}}</strong>
+                            {{'import.help.on_server_import.put_files_into' | translate}}.<br>
+                            {{'import.help.on_server_import.directory_can_be_changed' | translate}}
+                            <strong class="server-import-directory-prop copyable">graphdb.workbench.importDirectory</strong>
+                            <copy-to-clipboard tooltip-text="import.help.buttons.copy_file_size_prop.tooltip"></copy-to-clipboard>
+                            {{'import.help.on_server_import.the_property' | translate}}.
+                        </p>
+                    </div>
+                </div>
+                <import-resource-tree ng-if="serverImportTree"
+                                      resources="serverImportTree"
+                                      on-delete="onDelete(resource)"
+                                      on-import="onImport(resource)"></import-resource-tree>
+                <div class="mt-2" files-table></div>
             </div>
         </div>
     </div>
