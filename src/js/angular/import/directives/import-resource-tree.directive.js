@@ -1,7 +1,16 @@
+import {ImportResourceStatus} from "../../models/import/import-resource-status";
+
 const TYPE_FILTER_OPTIONS = {
     'FILE': 'FILE',
     'DIRECTORY': 'DIRECTORY',
     'ALL': 'ALL'
+};
+
+const STATUS_OPTIONS = {
+    'ALL': 'ALL',
+    'NONE': 'NONE',
+    'IMPORTED': 'IMPORTED',
+    'NOT_IMPORTED': 'NOT_IMPORTED',
 };
 
 const modules = [];
@@ -37,6 +46,8 @@ function importResourceTreeDirective($timeout) {
             $scope.TYPE_FILTER_OPTIONS = TYPE_FILTER_OPTIONS;
             $scope.filterByType = TYPE_FILTER_OPTIONS.ALL;
             $scope.filterByFileName = '';
+            $scope.STATUS_OPTIONS = STATUS_OPTIONS;
+            $scope.selectedByStatus = undefined;
 
 
             // =========================
@@ -46,6 +57,22 @@ function importResourceTreeDirective($timeout) {
                 resource.setSelection(resource.selected);
                 $scope.selectedResources = $scope.resources.getAllSelected();
             });
+
+            $scope.selectResourceWithStatus = (resourceStatus) => {
+                $scope.selectedByStatus = resourceStatus;
+                $scope.resources.setSelection(false);
+
+                if (STATUS_OPTIONS.ALL === $scope.selectedByStatus) {
+                    $scope.resources.setSelection(true);
+                } else if (STATUS_OPTIONS.IMPORTED === $scope.selectedByStatus) {
+                    $scope.resources.selectAllWithStatus([ImportResourceStatus.DONE]);
+                } else if (STATUS_OPTIONS.NOT_IMPORTED === $scope.selectedByStatus) {
+                    $scope.resources.selectAllWithStatus([ImportResourceStatus.IMPORTING, ImportResourceStatus.NONE, ImportResourceStatus.ERROR, ImportResourceStatus.PENDING, ImportResourceStatus.INTERRUPTING]);
+                }
+
+                $scope.selectedResources = $scope.resources.getAllSelected();
+                updateListedImportResources();
+            };
 
             $scope.filterByTypeChanged = (newType) => {
                 $scope.filterByType = newType;

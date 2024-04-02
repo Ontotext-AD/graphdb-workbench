@@ -67,7 +67,16 @@
     padding-right: 10px
 }
 
-.import-resources-actions {
+.import-resource-tree .import-resources-actions {
+    display: flex;
+}
+
+.import-resource-tree .import-resources-actions .import-resource-status-dropdown .import-resource-status-checkbox {
+    pointer-events: none;
+}
+
+.import-resource-tree .import-resources-actions .import-resource-status-dropdown,
+.import-resource-tree .import-resources-actions .import-resource-selected-actions {
     display: flex;
 }
 

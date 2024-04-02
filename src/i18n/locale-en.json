@@ -993,6 +993,12 @@
                 "modified": "Modified",
                 "imported": "Imported",
                 "context": "Context"
+            },
+            "status": {
+                "ALL": "All",
+                "NONE": "None",
+                "IMPORTED": "Imported",
+                "NOT_IMPORTED": "Not imported"
             }
         }
     },
