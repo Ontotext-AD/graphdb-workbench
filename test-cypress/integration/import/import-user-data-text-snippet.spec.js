@@ -1,6 +1,6 @@
 import ImportSteps from "../../steps/import/import-steps";
 
-describe('Import user data: Import text snippet', () => {
+describe('Import user data: Text snippet', () => {
 
     let repositoryId;
     const INITIAL_DATA = "<urn:s1> <urn:p1> <urn:o1>.";

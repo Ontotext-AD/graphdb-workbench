@@ -1,4 +1,5 @@
 import ImportSteps from "../../steps/import/import-steps";
+import {ImportSettingsDialogSteps} from "../../steps/import/import-settings-dialog-steps";
 
 const bnodes = `_:node0 <http://purl.org/dc/elements/1.1/title> "A new book" ;
                     \t<http://purl.org/dc/elements/1.1/creator> "A.N.Other" .`;
@@ -27,6 +28,7 @@ describe('Import view', () => {
         // Given I have opened the user data tab and uploaded a single file
         ImportSteps.getUserDataUploadedFilesTable().should('be.hidden');
         ImportSteps.selectFile(ImportSteps.createFile(testFiles[0], bnodes));
+        ImportSettingsDialogSteps.import();
         ImportSteps.getUserDataUploadedFiles().should('have.length', 1);
         ImportSteps.getUserDataUploadedFile(0).should('contain', 'bnodes.ttl');
         // When I switch to the server files tab

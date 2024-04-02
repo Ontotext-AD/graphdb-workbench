@@ -1,4 +1,3 @@
-import {GuideDialogSteps} from "../../steps/guides/guide-dialog-steps";
 import {GuideSteps} from "../../steps/guides/guide-steps";
 import {MoviesGuideSteps} from "../../steps/guides/movies-guide-steps";
 
@@ -16,6 +15,7 @@ describe('Interactive guides', () => {
     });
 
     afterEach(() => {
+        cy.deleteUploadedFile(repositoryId, MOVIES_FILE_FOR_IMPORT);
         cy.deleteRepository(repositoryId);
     });
 

@@ -1954,7 +1954,7 @@
     "guide.step_plugin.choose-repository.content": "Cliquez sur la liste déroulante de sélection du dépôt.",
     "guide.step_plugin.select-repository.content": "Cliquez sur le bouton de dépôt <b>{{getRepositoryId()}}</b>.",
     "guide.step_plugin.select-repository-plug.content": "Cliquez sur l'icône de prise du dépôt <b>{{repositoryId}}</b>.",
-    "guide.step_plugin.import_rdf_file.import-file.button.content": "Cliquez sur le bouton <b>{{'common.import'|translate}}</b>.",
+    "guide.step_plugin.import_rdf_file.confirm_duplicate_files_dialog.content": "Cliquez sur le bouton <b>{{'common.yes.btn'|translate}}</b> pour remplacer le fichier existant.",
     "guide.step_plugin.import_rdf_file.import-settings.import.button.content": "Cliquez sur le bouton <b>{{'common.import'|translate}}</b>.",
     "guide.step_plugin.import_rdf_file.file-must-be-uploaded": "Téléchargez d'abord le fichier <b>{{resourceFile}}</b>",
     "guide.step_plugin.import_status_info.content": "Attendez la fin de l'importation.",

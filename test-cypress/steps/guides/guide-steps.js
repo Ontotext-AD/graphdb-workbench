@@ -26,13 +26,6 @@ export class GuideSteps {
         cy.get(selector).should('be.visible');
     }
 
-    static uploadFile(fileName) {
-        cy.get('#ngf-wb-import-uploadFile')
-            .attachFile(`guides/${fileName}`);
-        // Wait until import button appeared.
-        cy.get(`[guide-selector="import-file-${fileName}"]`);
-    }
-
     static assertPageNotInteractive() {
         cy.get('.shepherd-modal-is-visible');
     }
@@ -199,11 +192,6 @@ export class GuideSteps {
         ImportSteps.getImportRdfFileElement().should('be.visible');
     }
 
-    static assertImportFileStep5(fileToImport) {
-        GuideDialogSteps.assertDialogWithTitleIsVisible('Import file — 5/7');
-        GuideSteps.assertIsElementInteractable('[guide-selector="import-file-' + fileToImport + '"]');
-    }
-
     static assertImportFileStep6() {
         GuideSteps.assertPageNotInteractive();
         GuideDialogSteps.assertDialogWithTitleIsVisible('Import file — 6/7');
@@ -226,14 +214,15 @@ export class GuideSteps {
         GuideDialogSteps.clickOnNextButton();
         GuideSteps.assertImportFileStep3();
 
+        ImportSteps.getLoaderElement().should('exist');
+        ImportSteps.getLoaderElement().should('not.be.visible');
+
         // Step click Upload RDF files button.
         GuideDialogSteps.clickOnNextButton();
         GuideSteps.assertImportFileStep4();
 
-        GuideSteps.uploadFile(fileToImport);
-        GuideSteps.assertImportFileStep5(fileToImport);
+        ImportSteps.selectFile(`fixtures/guides/${fileToImport}`);
 
-        GuideDialogSteps.clickOnNextButton();
         GuideSteps.assertImportFileStep6();
 
         // Step click on Import button.

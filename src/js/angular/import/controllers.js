@@ -99,17 +99,18 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             });
         };
 
-        $scope.getSettingsFor = (fileName, withDefaultSettings) => {
-            if (!withDefaultSettings && !_.isEmpty(fileName) && !_.isEmpty($scope.savedSettings[fileName])) {
-                return $scope.savedSettings[fileName];
-            } else {
-                return _.cloneDeep($scope.defaultSettings);
-            }
-        };
-
-        $scope.setSettingsFor = (fileName, withDefaultSettings, format) => {
+        /**
+         * Sets the settings for the given file and triggers import process.
+         * TODO: this function should be refactored because it does too much.
+         *
+         * @param {string} fileName - Name of the file.
+         * @param {boolean} withDefaultSettings - Whether to use default settings or not.
+         * @param {string|undefined} format - Format of the file. This is applicable for single files only.
+         * @param {Function|undefined} onImportRejectHandler - Function to call when import is rejected.
+         */
+        $scope.setSettingsFor = (fileName, withDefaultSettings, format, onImportRejectHandler = () => {}) => {
             $scope.settingsFor = fileName;
-            $scope.settings = $scope.getSettingsFor(fileName, withDefaultSettings);
+            $scope.settings = getSettingsFor(fileName, withDefaultSettings);
             if (fileName === "" ||
                 format === "application/ld+json" ||
                 format === "application/x-ld+ndjson" ||
@@ -143,30 +144,39 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             };
 
             if (GuidesService.isActive()) {
-                // Prevents closing dialog when user click outside the if.
+                // Prevents closing dialog when user click outside the dialog.
                 options.backdrop = 'static';
                 options.keyboard = false;
             }
 
-            const modalInstance = $uibModal.open(options);
-            modalInstance.result.then(function (settings) {
-                $scope.settings = settings;
-                if ($scope.settingsFor === '') {
-                    $scope.importSelected();
-                } else {
-                    $scope.importFile($scope.settingsFor, true);
-                }
-
-            }, function (settings) {
-                $scope.settings = settings;
-            });
+            $uibModal.open(options).result.then(
+                (settings) => {
+                    $scope.settings = settings;
+                    if ($scope.settingsFor === '') {
+                        $scope.importSelected();
+                    } else {
+                        $scope.importFile($scope.settingsFor, true);
+                    }
+                },
+                (settings) => {
+                    $scope.settings = settings;
+                    if (onImportRejectHandler) {
+                        onImportRejectHandler();
+                    }
+                });
         };
 
-        $scope.updateImport = (fileName, withDefaultSettings) => {
+        /**
+         * TODO: this is just some ugly proxy function. It should be refactored.
+         * @param {string} fileName - Name of the file.
+         * @param {boolean} withDefaultSettings - Whether to use default settings or not.
+         * @param {boolean} startImport - Whether to start the import process or not.
+         */
+        $scope.updateImport = (fileName, withDefaultSettings, startImport) => {
             $scope.settingsFor = fileName;
-            $scope.settings = $scope.getSettingsFor(fileName, withDefaultSettings);
+            $scope.settings = getSettingsFor(fileName, withDefaultSettings);
 
-            $scope.importFile(fileName, false);
+            $scope.importFile(fileName, startImport);
         };
 
         $scope.stopImport = (file) => {
@@ -230,26 +240,17 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             const selectedFileNames = $scope.getSelectedFiles();
 
             // Calls the REST API sequentially for the selected files
-            const importNext = function () {
+            const importNext = () => {
                 const fileName = selectedFileNames.shift();
                 if (fileName) {
                     if (overrideSettings) {
-                        $scope.settings = $scope.getSettingsFor(fileName);
+                        $scope.settings = getSettingsFor(fileName);
                     }
                     $scope.importFile(fileName, true, importNext);
                 }
             };
 
             importNext();
-        };
-
-        const resetStatusOrRemoveEntry = (names, remove) => {
-            const resetService = $scope.viewUrl === OPERATION.UPLOAD ? ImportRestService.resetUserDataStatus : ImportRestService.resetServerFileStatus;
-            resetService($repositories.getActiveRepository(), names, remove).success(function () {
-                $scope.updateList(true);
-            }).error(function (data) {
-                toastr.warning($translate.instant('import.error.could.not.clear', {data: getError(data)}));
-            });
         };
 
         $scope.resetStatus = (names) => {
@@ -326,17 +327,25 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             $scope.getSettings();
         };
 
+        $scope.onImport = (importResource) => {
+            console.log('The resource ', importResource, 'have to be imported');
+        };
+
+        $scope.onDelete = (importResource) => {
+            console.log('The resource ', importResource, 'have to be deleted');
+        };
+
         // =========================
         // Private functions
         // =========================
         $scope.serverImportTree = new ImportResourceTreeElement();
 
-        $scope.onImport = (importResource) => {
-          console.log('The resource ', importResource, 'have to be imported');
-        };
-
-        $scope.onDelete = (importResource) => {
-            console.log('The resource ', importResource, 'have to be deleted');
+        const getSettingsFor = (fileName, withDefaultSettings) => {
+            if (!withDefaultSettings && !_.isEmpty(fileName) && !_.isEmpty($scope.savedSettings[fileName])) {
+                return $scope.savedSettings[fileName];
+            } else {
+                return _.cloneDeep($scope.defaultSettings);
+            }
         };
 
         $scope.onRemove = (selectedResources) => {
@@ -402,6 +411,15 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                 toastr.warning($translate.instant('import.error.could.not.get.files', {data: getError(data)}));
             }).finally(() => {
                 $scope.loader = false;
+            });
+        };
+
+        const resetStatusOrRemoveEntry = (names, remove) => {
+            const resetService = $scope.viewUrl === OPERATION.UPLOAD ? ImportRestService.resetUserDataStatus : ImportRestService.resetServerFileStatus;
+            resetService($repositories.getActiveRepository(), names, remove).success(function () {
+                $scope.updateList(true);
+            }).error(function (data) {
+                toastr.warning($translate.instant('import.error.could.not.clear', {data: getError(data)}));
             });
         };
 
@@ -571,17 +589,16 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
             // ask the user if he wants to keep the original files or overwrite them.
             openDuplicatedFilesConfirmDialog(duplicatedFiles, uniqueFiles);
         } else {
-            $scope.currentFiles = [...$scope.currentFiles, ...newFiles];
+            $scope.currentFiles = [...newFiles];
             isFileListInitialized = true;
         }
     };
 
-    $scope.importFile = function (fileName, startImport, nextCallback) {
-        const fileIndex = _.findIndex($scope.files, {name: fileName});
-        if (fileIndex < 0) {
+    $scope.importFile = (fileName, startImport, nextCallback) => {
+        const file = $scope.files.find((currentFile) => currentFile.name === fileName);
+        if (!file) {
             toastr.warning($translate.instant('import.no.such.file', {name: fileName}));
         } else {
-            const file = $scope.files[fileIndex];
             if (file.type === USER_DATA_TYPE.TEXT) {
                 importTextSnippet(file, startImport, nextCallback);
             } else if (file.type === USER_DATA_TYPE.URL) {
@@ -592,7 +609,11 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         }
     };
 
-    $scope.pasteData = function (file) {
+    /**
+     * Opens a modal dialog where the user can paste a rdf text snippet and import it.
+     * @param {{object}|undefined} file
+     */
+    $scope.openTextSnippetDialog = (file) => {
         const scope = {};
         if (file) {
             scope.rdfText = file.data;
@@ -610,7 +631,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
             }
         });
 
-        modalInstance.result.then(function (data) {
+        modalInstance.result.then((data) => {
             if (file) {
                 if ((file.data !== data.text || file.format !== data.format) && file.status !== FILE_STATUS.NONE) {
                     file.status = FILE_STATUS.NONE;
@@ -622,10 +643,10 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
             } else {
                 file = {type: 'text', name: 'Text snippet ' + DateUtils.formatCurrentDateTime(), format: data.format, data: data.text};
                 $scope.files.unshift(file);
-                $scope.updateImport(file.name);
+                $scope.updateImport(file.name, false, false);
             }
             if (data.startImport) {
-                $scope.setSettingsFor(file.name, undefined, file.format);
+                $scope.setSettingsFor(file.name, false, file.format);
             }
         });
     };
@@ -645,7 +666,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
             } else {
                 $scope.files.unshift({type: 'url', name: data.url, format: data.format, data: data.url});
             }
-            $scope.updateImport(data.url, true);
+            $scope.updateImport(data.url, true, false);
             if (data.startImport) {
                 $scope.setSettingsFor(data.url, true, data.format);
             }
@@ -679,10 +700,10 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
             .success(function () {
                 $scope.updateList();
             }).error(function (data) {
-            toastr.error($translate.instant('import.could.not.send.data', {data: getError(data)}));
-            file.status = FILE_STATUS.ERROR;
-            file.message = getError(data);
-        }).finally(nextCallback || function () {});
+                toastr.error($translate.instant('import.could.not.send.data', {data: getError(data)}));
+                file.status = FILE_STATUS.ERROR;
+                file.message = getError(data);
+            }).finally(nextCallback || function () {});
     };
 
     const updateTextImport = (settings) => {
@@ -715,9 +736,9 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         $scope.settings.name = file.name;
         const data = UploadRestService.createUploadPayload(file, $scope.settings);
         const uploader = startImport ? UploadRestService.uploadUserDataFile : UploadRestService.updateUserDataFile;
-        uploader($repositories.getActiveRepository(), file, data).success(function () {
+        uploader($repositories.getActiveRepository(), file, data).then(() => {
             $scope.updateList();
-        }).error(function (data) {
+        }).catch((data) => {
             toastr.error($translate.instant('import.could.not.upload.file', {data: getError(data)}));
             file.status = FILE_STATUS.ERROR;
             file.message = getError(data);
@@ -741,18 +762,18 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         return ModalService.openSimpleModal({
             title: $translate.instant('import.user_data.duplicates_confirmation.title'),
             message: decodeHTML($translate.instant('import.user_data.duplicates_confirmation.message', {duplicatedFiles: existingFilenames})),
+            dialogClass: "confirm-duplicate-files-dialog",
             warning: true
         }).result.then(
             () => {
-                // override current files with new files
-                $scope.currentFiles = $scope.currentFiles.map((currentFile) => {
-                    const duplicated = duplicatedFiles.find((duplicateFile) => duplicateFile.name === currentFile.name);
-                    if (duplicated) {
-                        return duplicated;
-                    }
-                    return currentFile;
-                });
-                $scope.currentFiles.push(...uniqueFiles);
+                // on first upload, currentFiles would be empty
+                if (!$scope.currentFiles.length) {
+                    $scope.currentFiles.push(...duplicatedFiles, ...uniqueFiles);
+                } else {
+                    // while staying on the import view, each upload after the first should override existing files with
+                    // newer versions if file names are equal
+                    $scope.currentFiles = [...duplicatedFiles, ...uniqueFiles];
+                }
                 isFileListInitialized = true;
             },
             () => {
@@ -778,10 +799,26 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         );
         $scope.savedSettings = _.mapKeys(_.filter($scope.files, 'parserSettings'), 'name');
         if (isFileListInitialized) {
-            _.each($scope.currentFiles, function (file) {
-                $scope.updateImport(file.name);
-            });
+            // Mark the new files so that they can all be collected and imported.
+            if ($scope.currentFiles.length > 0) {
+                deselectAllFiles();
+                $scope.currentFiles.forEach((file) => {
+                    $scope.fileChecked[file.name] = true;
+                });
+                // Provide an import rejected callback and do the upload instead.
+                $scope.setSettingsFor('', false, undefined, () => {
+                    $scope.currentFiles.forEach((file) => {
+                        $scope.updateImport(file.name, false, false);
+                    });
+                });
+            }
         }
+    };
+
+    const deselectAllFiles = () => {
+        Object.keys($scope.fileChecked).forEach((key) => {
+            $scope.fileChecked[key] = false;
+        });
     };
 
     const removeAllListeners = () => {

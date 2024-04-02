@@ -175,6 +175,7 @@ function ModalService($uibModal, $timeout, $sce) {
             templateUrl: config.warning ? warningTemplate : simpleTemplate,
             controller: 'SimpleModalCtrl',
             size: config.size,
+            windowClass: config.dialogClass,
             resolve: {
                 title: function () {
                     return config.title;

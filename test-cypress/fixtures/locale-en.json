@@ -1962,7 +1962,7 @@
     "guide.step_plugin.choose-repository.content": "Click on the repository selection dropdown.",
     "guide.step_plugin.select-repository.content": "Click on the <b>{{getRepositoryId()}}</b> repository button.",
     "guide.step_plugin.select-repository-plug.content": "Click on the plug icon of the <b>{{repositoryId}}</b> repository.",
-    "guide.step_plugin.import_rdf_file.import-file.button.content": "Click on the <b>{{'common.import'|translate}}</b> button.",
+    "guide.step_plugin.import_rdf_file.confirm_duplicate_files_dialog.content": "Click on the <b>{{'common.yes.btn'|translate}}</b> button to override the existing file.",
     "guide.step_plugin.import_rdf_file.import-settings.import.button.content": "Click on the <b>{{'common.import'|translate}}</b> button.",
     "guide.step_plugin.import_rdf_file.file-must-be-uploaded": "Upload the file <b>{{resourceFile}}</b> first",
     "guide.step_plugin.import_status_info.content": "Wait until import finished.",
