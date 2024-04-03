@@ -118,6 +118,7 @@ describe('Import user data: Import text snippet', () => {
         ImportSteps.openImportTextSnippetDialog();
         ImportSteps.fillRDFTextSnippet(RDF_TEXT_SNIPPET_2);
         ImportSteps.clickImportTextSnippetButton();
+        ImportSteps.expandAdvancedSettings();
         ImportSteps.fillBaseURI(BASE_URI);
         ImportSteps.selectNamedGraph();
         ImportSteps.fillNamedGraph(CONTEXT);
@@ -229,6 +230,7 @@ describe('Import user data: Import text snippet', () => {
         ImportSteps.fillRDFTextSnippet(JSONLD_TEXT_SNIPPET);
         ImportSteps.selectRDFFormat(JSONLD_FORMAT);
         ImportSteps.clickImportTextSnippetButton();
+        ImportSteps.expandAdvancedSettings();
         ImportSteps.fillBaseURI(BASE_URI);
         ImportSteps.selectNamedGraph();
         ImportSteps.fillNamedGraph(CONTEXT);

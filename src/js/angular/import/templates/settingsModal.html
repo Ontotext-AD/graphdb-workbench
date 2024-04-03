@@ -5,281 +5,314 @@
 <div class="modal-body">
     <form name="settingsForm" id="settingsForm" class="settings-form">
         <div class="form-horizontal">
-        <div class="form-group row">
-            <label class="col-lg-3 col-form-label">
-                {{'import.label.base.iri' | translate}}
-                <span class="btn btn-link p-0"
-                      uib-popover="{{'import.popover.relative.iri' | translate}}"
-                      popover-trigger="mouseenter"
-                      popover-placement="right">
+
+            <div class="form-group row">
+                <label class="col-lg-3">
+                    {{'import.target.graphs' | translate}}
+                    <span class="btn btn-link p-0"
+                          uib-popover="{{'import.into.graphs' | translate}}"
+                          popover-trigger="mouseenter"
+                          popover-placement="right">
                                 <em class="icon icon-info"></em>
                             </span>
-            </label>
-            <div class="col-lg-9">
-                <input validate-uri name="baseURI" type="text" ng-model="settings['baseURI']" class="form-control"
-                       placeholder="http://exampleuri.com/examplepath">
-                <div class="alert alert-danger" ng-show="hasError(settingsForm.$error.validateUri, 'baseURI')">{{'import.alert.not.valid.iri' | translate}}
-                </div>
-            </div>
-        </div>
-        <div class="form-group row">
-            <label class="col-lg-3 col-form-label">
-                {{'import.target.graphs' | translate}}
-                <span class="btn btn-link p-0"
-                      uib-popover="{{'import.into.graphs' | translate}}"
-                      popover-trigger="mouseenter"
-                      popover-placement="right">
-                                <em class="icon icon-info"></em>
-                            </span>
-            </label>
-            <div class="col-lg-9">
-                <div>
-                    <label uib-popover="{{'import.by.data.source' | translate}}"
-                           popover-trigger="mouseenter">
-                        <input type="radio" class="from-data-btn" ng-model="target" value="data"
-                               ng-change="settingsForm.context.$setValidity('validateUri', true)">
-                        {{'import.from.data' | translate}}
-                    </label>
-                    &nbsp;
-                    <label uib-popover="{{'import.into.default.graph' | translate}}"
-                           popover-trigger="mouseenter">
-                        <input type="radio" class="default-graph-btn" ng-model="target" value="default"
-                               ng-change="settingsForm.context.$setValidity('validateUri', true)">
-                        {{'import.default.graph' | translate}}
-                    </label>
-                    &nbsp;
-                    <label uib-popover="{{'import.into.user.graph' | translate}}"
-                           popover-trigger="mouseenter">
-                        <input type="radio" class="named-graph-btn" ng-model="target" value="named" class="named-graph-option">
-                        {{'import.named.graph' | translate}}
-                    </label>
-                </div>
-                <div>
-                    <input validate-uri name="context" type="text" ng-required="target === 'named'"
-                           ng-disabled="target !== 'named'" ng-model="settings.context" class="form-control named-graph-input"
-                           placeholder="http://example.com/graph...">
-                </div>
-            </div>
-        </div>
-        <div class="form-group row">
-            <div class="col-lg-9 offset-lg-3">
-                <label class="col-form-label"
-                       uib-popover="{{isMultiple ? 'import.mode.not.supported.constraint' : 'import.enable.replace.option' | translate}}"
-                       popover-trigger="mouseenter"
-                       popover-placement="top">
-                    <input type="checkbox" class="existing-data-replacement" ng-model="enableReplace" ng-disabled="isMultiple">
-                    {{'import.enter.replacement' | translate}}
                 </label>
-            </div>
-        </div>
-        <div ng-show="settings.hasContextLink" class="form-group row contextLinkRow">
-            <label class="col-lg-3 col-form-label">
-                {{'import.context.link' | translate}}
-                <span class="btn btn-link p-0"
-                      uib-popover="{{'import.context.link.info' | translate}}"
-                      popover-trigger="mouseenter"
-                      popover-placement="right">
-                    <em class="icon icon-info"></em>
-                </span>
-            </label>
-            <div class="col-lg-9">
-                <input validate-uri name="contextLink" type="text"
-                       ng-model="settings['contextLink']" class="form-control"
-                       placeholder="http://example.com/example.jsonld">
-                <div class="alert alert-danger" ng-if="hasError(settingsForm.$error.validateUri, 'contextLink')">
-                    {{'import.alert.not.valid.iri' | translate}}
-                </div>
-            </div>
-        </div>
-        <div class="form-group row" ng-show="enableReplace">
-            <label class="col-lg-3 col-form-label">
-                {{'import.replaced.graphs' | translate}}
-                <span class="btn btn-link p-0"
-                      uib-popover="{{'import.replaced.graphs.for.update' | translate}}"
-                      popover-trigger="mouseenter"
-                      popover-placement="right">
-                                <em class="icon icon-info"></em>
-                            </span>
-            </label>
-            <label class="col-lg-9 col-form-label" ng-show="target === 'default' || target === 'named'">
-                <span ng-show="target === 'default'">{{'import.default.graph' | translate}}</span>
-                <span ng-show="target === 'named'">{{settings.context}}</span>
-                <span class="text-muted">{{'import.same.as.target' | translate}}</span>
-            </label>
-            <div class="col-lg-9" ng-show="target === 'data'">
-                <div class="row">
-                    <div class="col-lg-9">
-                        <input name="replaceGraph" ng-model="replaceGraph" type="text" class="replaced-graphs-input form-control"
-                               placeholder="http://example.com/graph..."
-                               ng-keypress="checkEnterReplaceGraph($event, replaceGraph)"
-                               uib-popover="{{'import.graph.wildcard' | translate}}"
-                               popover-placement="top"
+                <div class="col-lg-9">
+                    <div>
+                        <label uib-popover="{{'import.by.data.source' | translate}}"
                                popover-trigger="mouseenter">
+                            <input type="radio" class="from-data-btn" ng-model="target" value="data"
+                                   ng-change="settingsForm.context.$setValidity('validateUri', true)">
+                            {{'import.from.data' | translate}}
+                        </label>
+                        &nbsp;
+                        <label uib-popover="{{'import.into.default.graph' | translate}}"
+                               popover-trigger="mouseenter">
+                            <input type="radio" class="default-graph-btn" ng-model="target" value="default"
+                                   ng-change="settingsForm.context.$setValidity('validateUri', true)">
+                            {{'import.default.graph' | translate}}
+                        </label>
+                        &nbsp;
+                        <label uib-popover="{{'import.into.user.graph' | translate}}"
+                               popover-trigger="mouseenter">
+                            <input type="radio" class="named-graph-btn" ng-model="target" value="named"
+                                   class="named-graph-option">
+                            {{'import.named.graph' | translate}}
+                        </label>
                     </div>
-                    <div class="col-lg-3 col-lg-no-padding">
-                        <div class="btn-group" uib-dropdown>
-                            <button type="button" class="btn btn-primary add-graph-btn" ng-click="addReplaceGraph(replaceGraph)">
-                                <span class="icon-plus"></span> {{'import.add.graph' | translate}}
-                            </button>
-                            <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle"
-                                    uib-dropdown-toggle>
-                                <span class="sr-only"></span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu">
-                                <li>
-                                    <button type="button" class="dropdown-item"
-                                            ng-click="addReplaceGraph('default')">{{'import.add.default.graph' | translate}}
-                                    </button>
-                                </li>
-                            </ul>
+                    <div>
+                        <input validate-uri name="context" type="text" ng-required="target === 'named'"
+                               ng-disabled="target !== 'named'" ng-model="settings.context"
+                               class="form-control named-graph-input"
+                               placeholder="http://example.com/graph...">
+                        <div class="alert alert-danger"
+                             ng-if="settingsForm.context.$dirty && settingsForm.context.$error.validateUri">
+                            {{'import.alert.not.valid.iri' | translate}}
+                        </div>
+                        <div class="alert alert-danger" ng-if="settingsForm.context.$error.required">
+                            {{'required.field' | translate}}
                         </div>
                     </div>
                 </div>
-                <div>
-                    <table aria-describedby="Replaced graphs table">
-                        <tr>
-                            <th id="graphsColumn">
-                                <span ng-show="settings.replaceGraphs.length">{{'import.replaced.graphs' | translate}}</span>
-                                <span ng-show="!settings.replaceGraphs.length">{{'import.no.replaced.graphs.added' | translate}}</span>
-                            </th>
-                        </tr>
-                        <tr ng-repeat="g in settings.replaceGraphs">
-                            <td>
-                                <span ng-show="g !== 'default'">{{g}}</span>
-                                <span ng-show="g === 'default'">{{'import.default.graph' | translate}}</span>
-                                <button type="button" class="btn btn-link btn-sm secondary"
-                                        ng-click="settings.replaceGraphs.splice($index, 1)">
-                                    <em class="icon icon-trash"></em>
-                                </button>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-            <div class="col-lg-9 offset-lg-3">
-                <label class="col-form-label">
-                    <input type="checkbox" class="graph-replace-confirm-checkbox" ng-model="agree" ng-required="enableReplace">
-                    <strong>{{'import.data.cleared.before.import' | translate}}</strong>
-                </label>
-            </div>
-        </div>
-        <div class="text-xs-center">
-            <button type="button" ng-click="switchParserSettings()" class="btn btn-link btn-sm toggle-advanced-settings">
-                <span ng-hide="showAdvancedSettings">{{'import.show.advance.settings' | translate}}<em class="icon-caret-down"></em></span>
-                <span ng-show="showAdvancedSettings">{{'import.hide.advance.settings' | translate}}<em class="icon-caret-up"></em></span>
-            </button>
-        </div>
-
-        <div ng-show="hasParserSettings && showAdvancedSettings" class="advanced-settings">
-            <div class="form-group row">
-                <label class="col-lg-3 col-form-label">{{'import.label.bnodes' | translate}}</label>
-                <div class="col-lg-9">
-                    <div>
-                        <label>
-                            <input name="preserveBNodeIDs" type="checkbox"
-                                   ng-model="settings['parserSettings']['preserveBNodeIds']"
-                                   uib-popover="{{'import.assign.own.bnode.ids' | translate}}"
-                                   popover-trigger="mouseenter"
-                                   popover-placement="bottom"> {{'import.preserve.bnode.ids' | translate}}
-                        </label>
-                    </div>
-                </div>
             </div>
             <div class="form-group row">
-                <label class="col-lg-3 col-form-label">{{'import.label.datatype' | translate}}</label>
-                <div class="col-lg-9">
-                    <div>
-                        <label>
-                            <input name="failOnUnknownDataTypes" type="checkbox"
-                                   ng-model="settings['parserSettings']['failOnUnknownDataTypes']"
-                                   uib-popover="{{'import.fail.unknown.datatype' | translate}}"
-                                   popover-trigger="mouseenter"
-                                   popover-placement="bottom"> {{'import.fail.parsing.if.unrecognised' | translate}}
-                        </label>
-                    </div>
-                    <div>
-                        <label>
-                            <input name="verifyDataTypeValues" type="checkbox"
-                                   ng-model="settings['parserSettings']['verifyDataTypeValues']"
-                                   uib-popover="{{'import.validate.recognised' | translate}}"
-                                   popover-trigger="mouseenter"
-                                   popover-placement="bottom"> {{'import.verify.recognised' | translate}}
-                        </label>
-                    </div>
-                    <div>
-                        <label>
-                            <input name="normalizeDataTypeValues" type="checkbox"
-                                   ng-model="settings['parserSettings']['normalizeDataTypeValues']"
-                                   uib-popover="{{'import.normalize.recognised' | translate}}"
-                                   popover-trigger="mouseenter"
-                                   popover-placement="bottom"> {{'import.normalize.recognised' | translate}}
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-lg-3 col-form-label">{{'import.language.tags' | translate}}</label>
-                <div class="col-lg-9">
-                    <div>
-                        <label>
-                            <input name="failOnUnknownLanguageTags" type="checkbox"
-                                   ng-model="settings['parserSettings']['failOnUnknownLanguageTags']"
-                                   uib-popover="{{'import.fail.lang.unknown' | translate}}"
-                                   popover-trigger="mouseenter"
-                                   popover-placement="bottom"> {{'import.fail.parsing.lang.unknown' | translate}}
-                        </label>
-                    </div>
-                    <div>
-                        <label>
-                            <input name="verifyLanguageTags" type="checkbox"
-                                   ng-model="settings['parserSettings']['verifyLanguageTags']"
-                                   uib-popover="{{'import.validate.lang.tags' | translate}}"
-                                   popover-trigger="mouseenter"
-                                   popover-placement="bottom"> {{'import.verify.language' | translate}}
-                        </label>
-                    </div>
-                    <div>
-                        <label>
-                            <input name="normalizeLanguageTags" type="checkbox"
-                                   ng-model="settings['parserSettings']['normalizeLanguageTags']"
-                                   uib-popover="{{'import.normalize.lang.tags' | translate}}"
-                                   popover-trigger="mouseenter"
-                                   popover-placement="bottom"> {{'import.normalize.recognized.tags' | translate}}
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-lg-3 col-form-label">{{'import.error.handling' | translate}}</label>
-                <div class="col-lg-9">
-                    <label>
-                        <input name="stopOnError" type="checkbox"
-                               ng-model="settings['parserSettings']['stopOnError']"
-                               uib-popover="{{'import.parser.stops.on.error' | translate}}"
-                               popover-trigger="mouseenter"
-                               popover-placement="bottom"> {{'import.should.stop.on.error' | translate}}
+                <div class="col-lg-9 offset-lg-3">
+                    <label class="col-form-label"
+                           uib-popover="{{isMultiple ? 'import.mode.not.supported.constraint' : 'import.enable.replace.option' | translate}}"
+                           popover-trigger="mouseenter"
+                           popover-placement="top">
+                        <input type="checkbox" class="existing-data-replacement" ng-model="enableReplace"
+                               ng-disabled="isMultiple">
+                        {{'import.enter.replacement' | translate}}
                     </label>
                 </div>
             </div>
-        </div>
+            <div ng-show="settings.hasContextLink" class="form-group row contextLinkRow">
+                <label class="col-lg-3 col-form-label">
+                    {{'import.context.link' | translate}}
+                    <span class="btn btn-link p-0"
+                          uib-popover="{{'import.context.link.info' | translate}}"
+                          popover-trigger="mouseenter"
+                          popover-placement="right">
+                    <em class="icon icon-info"></em>
+                </span>
+                </label>
+                <div class="col-lg-9">
+                    <input validate-uri name="contextLink" type="text"
+                           ng-model="settings['contextLink']" class="form-control"
+                           placeholder="http://example.com/example.jsonld">
+                    <div class="alert alert-danger"
+                         ng-if="settingsForm.contextLink.$dirty && settingsForm.contextLink.$error.validateUri">
+                        {{'import.alert.not.valid.iri' | translate}}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row" ng-show="enableReplace">
+                <label class="col-lg-3 col-form-label">
+                    {{'import.replaced.graphs' | translate}}
+                    <span class="btn btn-link p-0"
+                          uib-popover="{{'import.replaced.graphs.for.update' | translate}}"
+                          popover-trigger="mouseenter"
+                          popover-placement="right">
+                                <em class="icon icon-info"></em>
+                            </span>
+                </label>
+                <label class="col-lg-9 col-form-label" ng-show="target === 'default' || target === 'named'">
+                    <span ng-show="target === 'default'">{{'import.default.graph' | translate}}</span>
+                    <span ng-show="target === 'named'">{{settings.context}}</span>
+                    <span class="text-muted">{{'import.same.as.target' | translate}}</span>
+                </label>
+                <div class="col-lg-9" ng-show="target === 'data'">
+                    <div class="row">
+                        <div class="col-lg-9">
+                            <input name="replaceGraph" ng-model="replaceGraph" type="text"
+                                   class="replaced-graphs-input form-control"
+                                   placeholder="http://example.com/graph..."
+                                   ng-keypress="checkEnterReplaceGraph($event, replaceGraph)"
+                                   uib-popover="{{'import.graph.wildcard' | translate}}"
+                                   popover-placement="top"
+                                   popover-trigger="mouseenter">
+                        </div>
+                        <div class="col-lg-3 col-lg-no-padding">
+                            <div class="btn-group" uib-dropdown>
+                                <button type="button" class="btn btn-primary add-graph-btn"
+                                        ng-click="addReplaceGraph(replaceGraph)">
+                                    <span class="icon-plus"></span> {{'import.add.graph' | translate}}
+                                </button>
+                                <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle"
+                                        uib-dropdown-toggle>
+                                    <span class="sr-only"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li>
+                                        <button type="button" class="dropdown-item"
+                                                ng-click="addReplaceGraph('default')">
+                                            {{'import.add.default.graph' | translate}}
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <table aria-describedby="Replaced graphs table">
+                            <tr>
+                                <th id="graphsColumn">
+                                    <span
+                                        ng-show="settings.replaceGraphs.length">{{'import.replaced.graphs' | translate}}</span>
+                                    <span
+                                        ng-show="!settings.replaceGraphs.length">{{'import.no.replaced.graphs.added' | translate}}</span>
+                                </th>
+                            </tr>
+                            <tr ng-repeat="g in settings.replaceGraphs">
+                                <td>
+                                    <span ng-show="g !== 'default'">{{g}}</span>
+                                    <span ng-show="g === 'default'">{{'import.default.graph' | translate}}</span>
+                                    <button type="button" class="btn btn-link btn-sm secondary"
+                                            ng-click="settings.replaceGraphs.splice($index, 1)">
+                                        <em class="icon icon-trash"></em>
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-lg-9 offset-lg-3">
+                    <label class="col-form-label">
+                        <input type="checkbox" class="graph-replace-confirm-checkbox" ng-model="agree"
+                               ng-required="enableReplace">
+                        <strong>{{'import.data.cleared.before.import' | translate}}</strong>
+                    </label>
+                </div>
+            </div>
 
-        <div ng-show="showAdvancedSettings" class="form-group row">
-            <label class="col-lg-3 col-form-label">{{'import.debug.label' | translate}}</label>
-            <div class="col-lg-9 col-form-label">
-                <input type="checkbox" ng-model="settings['forceSerial']" id="force-serial">
-                <label for="force-serial"
-                       uib-popover="{{'import.forces.serial.statements' | translate}}"
-                       popover-placement="bottom"
-                       popover-trigger="mouseenter">{{'import.force.serial.pipeline' | translate}}</label>
+            <div class="text-xs-center">
+                <button type="button" ng-click="switchParserSettings()"
+                        class="btn btn-link btn-sm toggle-advanced-settings">
+                    <span ng-hide="showAdvancedSettings">{{'import.show.advance.settings' | translate}}<em
+                        class="icon-caret-down"></em></span>
+                    <span ng-show="showAdvancedSettings">{{'import.hide.advance.settings' | translate}}<em
+                        class="icon-caret-up"></em></span>
+                </button>
+            </div>
+
+            <div ng-show="hasParserSettings && showAdvancedSettings" class="advanced-settings">
+                <div class="form-group row mt-1">
+                    <label class="col-lg-3 col-form-label">
+                        {{'import.label.base.iri' | translate}}
+                        <span class="btn btn-link p-0"
+                              uib-popover="{{'import.popover.relative.iri' | translate}}"
+                              popover-trigger="mouseenter"
+                              popover-placement="right">
+                                <em class="icon icon-info"></em>
+                            </span>
+                    </label>
+                    <div class="col-lg-9">
+                        <input validate-uri name="baseURI" type="text" ng-model="settings['baseURI']"
+                               class="form-control"
+                               placeholder="http://exampleuri.com/examplepath">
+                        <div class="alert alert-danger"
+                             ng-if="settingsForm.baseURI.$dirty && settingsForm.baseURI.$error.validateUri">
+                            {{'import.alert.not.valid.iri' | translate}}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-lg-3">{{'import.label.bnodes' | translate}}</label>
+                    <div class="col-lg-9">
+                        <div>
+                            <label>
+                                <input name="preserveBNodeIDs" type="checkbox"
+                                       ng-model="settings['parserSettings']['preserveBNodeIds']"
+                                       uib-popover="{{'import.assign.own.bnode.ids' | translate}}"
+                                       popover-trigger="mouseenter"
+                                       popover-placement="bottom"> {{'import.preserve.bnode.ids' | translate}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-lg-3">{{'import.label.datatype' | translate}}</label>
+                    <div class="col-lg-9">
+                        <div>
+                            <label>
+                                <input name="failOnUnknownDataTypes" type="checkbox"
+                                       ng-model="settings['parserSettings']['failOnUnknownDataTypes']"
+                                       uib-popover="{{'import.fail.unknown.datatype' | translate}}"
+                                       popover-trigger="mouseenter"
+                                       popover-placement="bottom"> {{'import.fail.parsing.if.unrecognised' | translate}}
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input name="verifyDataTypeValues" type="checkbox"
+                                       ng-model="settings['parserSettings']['verifyDataTypeValues']"
+                                       uib-popover="{{'import.validate.recognised' | translate}}"
+                                       popover-trigger="mouseenter"
+                                       popover-placement="bottom"> {{'import.verify.recognised' | translate}}
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input name="normalizeDataTypeValues" type="checkbox"
+                                       ng-model="settings['parserSettings']['normalizeDataTypeValues']"
+                                       uib-popover="{{'import.normalize.recognised' | translate}}"
+                                       popover-trigger="mouseenter"
+                                       popover-placement="bottom"> {{'import.normalize.recognised' | translate}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-lg-3">{{'import.language.tags' | translate}}</label>
+                    <div class="col-lg-9">
+                        <div>
+                            <label>
+                                <input name="failOnUnknownLanguageTags" type="checkbox"
+                                       ng-model="settings['parserSettings']['failOnUnknownLanguageTags']"
+                                       uib-popover="{{'import.fail.lang.unknown' | translate}}"
+                                       popover-trigger="mouseenter"
+                                       popover-placement="bottom"> {{'import.fail.parsing.lang.unknown' | translate}}
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input name="verifyLanguageTags" type="checkbox"
+                                       ng-model="settings['parserSettings']['verifyLanguageTags']"
+                                       uib-popover="{{'import.validate.lang.tags' | translate}}"
+                                       popover-trigger="mouseenter"
+                                       popover-placement="bottom"> {{'import.verify.language' | translate}}
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input name="normalizeLanguageTags" type="checkbox"
+                                       ng-model="settings['parserSettings']['normalizeLanguageTags']"
+                                       uib-popover="{{'import.normalize.lang.tags' | translate}}"
+                                       popover-trigger="mouseenter"
+                                       popover-placement="bottom"> {{'import.normalize.recognized.tags' | translate}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-lg-3">{{'import.error.handling' | translate}}</label>
+                    <div class="col-lg-9">
+                        <label>
+                            <input name="stopOnError" type="checkbox"
+                                   ng-model="settings['parserSettings']['stopOnError']"
+                                   uib-popover="{{'import.parser.stops.on.error' | translate}}"
+                                   popover-trigger="mouseenter"
+                                   popover-placement="bottom"> {{'import.should.stop.on.error' | translate}}
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-show="showAdvancedSettings" class="form-group row">
+                <label class="col-lg-3 col-form-label">{{'import.debug.label' | translate}}</label>
+                <div class="col-lg-9 col-form-label">
+                    <input type="checkbox" ng-model="settings['forceSerial']" id="force-serial">
+                    <label for="force-serial"
+                           uib-popover="{{'import.forces.serial.statements' | translate}}"
+                           popover-placement="bottom"
+                           popover-trigger="mouseenter">{{'import.force.serial.pipeline' | translate}}</label>
+                </div>
             </div>
         </div>
-    </div>
     </form>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-link pull-left" ng-click="reset()">{{'import.restore.defaults.btn' | translate}}</button>
-    <button type="button" class="btn btn-secondary" ng-click="cancel()" guide-selector="import-settings-cancel-button">{{'common.cancel.btn' | translate}}</button>
-    <button type="submit" class="btn btn-primary import-settings-import-button" form="settingsForm" ng-click="ok()" guide-selector="import-settings-import-button"><span class="import"></span> {{'common.import' | translate}}</button>
+    <button type="button" class="btn btn-link pull-left" ng-click="reset()">
+        {{'import.restore.defaults.btn' | translate}}
+    </button>
+    <button type="button" class="btn btn-secondary" ng-click="cancel()" guide-selector="import-settings-cancel-button">
+        {{'common.cancel.btn' | translate}}
+    </button>
+    <button type="submit" form="settingsForm" ng-click="ok()" ng-disabled="settingsForm.$invalid"
+            class="btn btn-primary import-settings-import-button"
+            guide-selector="import-settings-import-button"><span class="import"></span> {{'common.import' | translate}}
+    </button>
 </div>

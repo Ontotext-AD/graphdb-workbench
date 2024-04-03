@@ -31,80 +31,76 @@ describe('Import screen validation - server files', () => {
     });
 
     it('Test import Server files successfully with changing settings', () => {
-        ImportSteps.selectServerFile(FILE_FOR_IMPORT)
-            .importServerFiles(true)
-            .fillBaseURI(BASE_URI)
-            .selectNamedGraph()
-            .fillNamedGraph(CONTEXT)
-            .expandAdvancedSettings()
-            .enablePreserveBNodes()
-            .importFromSettingsDialog()
-            .verifyImportStatus(FILE_FOR_IMPORT, SUCCESS_MESSAGE)
-            .verifyImportStatusDetails(FILE_FOR_IMPORT, [CONTEXT, BASE_URI, '"preserveBNodeIds": true,']);
+        ImportSteps.selectServerFile(FILE_FOR_IMPORT);
+        ImportSteps.importServerFiles(true);
+        ImportSteps.expandAdvancedSettings();
+        ImportSteps.fillBaseURI(BASE_URI);
+        ImportSteps.selectNamedGraph();
+        ImportSteps.fillNamedGraph(CONTEXT);
+        ImportSteps.enablePreserveBNodes();
+        ImportSteps.importFromSettingsDialog();
+        ImportSteps.verifyImportStatus(FILE_FOR_IMPORT, SUCCESS_MESSAGE);
+        ImportSteps.verifyImportStatusDetails(FILE_FOR_IMPORT, [CONTEXT, BASE_URI, '"preserveBNodeIds": true,']);
     });
 
     // for this test it is necessary to set up a whitelist to GraphDB in this way: -Dgraphdb.jsonld.whitelist=https://w3c.github.io/json-ld-api/tests/*
     it('Test import Server files successfully with JSONLD context link settings', () => {
-        ImportSteps.selectServerFile(JSONLD_FILE_FOR_IMPORT)
-            .importServerFiles(true)
-            .fillBaseURI(BASE_URI)
-            .fillContextLink(JSONLD_CONTEXT)
-            .selectNamedGraph()
-            .fillNamedGraph(CONTEXT)
-            .expandAdvancedSettings()
-            .enablePreserveBNodes()
-            .importFromSettingsDialog()
-            .verifyImportStatus(JSONLD_FILE_FOR_IMPORT, SUCCESS_MESSAGE)
-            .verifyImportStatusDetails(JSONLD_FILE_FOR_IMPORT, [CONTEXT, BASE_URI, '"preserveBNodeIds": true,', JSONLD_CONTEXT]);
+        ImportSteps.selectServerFile(JSONLD_FILE_FOR_IMPORT);
+        ImportSteps.importServerFiles(true);
+        ImportSteps.expandAdvancedSettings();
+        ImportSteps.fillBaseURI(BASE_URI);
+        ImportSteps.fillContextLink(JSONLD_CONTEXT);
+        ImportSteps.selectNamedGraph();
+        ImportSteps.fillNamedGraph(CONTEXT);
+        ImportSteps.enablePreserveBNodes();
+        ImportSteps.importFromSettingsDialog();
+        ImportSteps.verifyImportStatus(JSONLD_FILE_FOR_IMPORT, SUCCESS_MESSAGE);
+        ImportSteps.verifyImportStatusDetails(JSONLD_FILE_FOR_IMPORT, [CONTEXT, BASE_URI, '"preserveBNodeIds": true,', JSONLD_CONTEXT]);
     });
 
     it('Test import Server files successfully with JSONLD default settings', () => {
-        ImportSteps.selectServerFile(JSONLD_FILE_FOR_IMPORT)
-            .importServerFiles(true)
-            .fillBaseURI(BASE_URI)
-            .selectNamedGraph()
-            .fillNamedGraph(CONTEXT)
-            .expandAdvancedSettings()
-            .setContextLinkToBeVisible()
-            .enablePreserveBNodes()
-            .importFromSettingsDialog()
-            .verifyImportStatus(JSONLD_FILE_FOR_IMPORT, SUCCESS_MESSAGE)
-            .verifyImportStatusDetails(JSONLD_FILE_FOR_IMPORT, [CONTEXT, BASE_URI, '"preserveBNodeIds": true,']);
+        ImportSteps.selectServerFile(JSONLD_FILE_FOR_IMPORT);
+        ImportSteps.importServerFiles(true);
+        ImportSteps.expandAdvancedSettings();
+        ImportSteps.fillBaseURI(BASE_URI);
+        ImportSteps.selectNamedGraph();
+        ImportSteps.fillNamedGraph(CONTEXT);
+        ImportSteps.setContextLinkToBeVisible();
+        ImportSteps.enablePreserveBNodes();
+        ImportSteps.importFromSettingsDialog();
+        ImportSteps.verifyImportStatus(JSONLD_FILE_FOR_IMPORT, SUCCESS_MESSAGE);
+        ImportSteps.verifyImportStatusDetails(JSONLD_FILE_FOR_IMPORT, [CONTEXT, BASE_URI, '"preserveBNodeIds": true,']);
     });
 
     it('Test import Server file successfully with JSONLD, button on row, with settings', () => {
-        ImportSteps.clickImportOnRow(0)
-            .fillBaseURI(BASE_URI)
-            .expandAdvancedSettings()
-            .fillContextLink(JSONLD_CONTEXT)
-            .importFromSettingsDialog()
-            .verifyImportStatus(JSONLD_FILE_FOR_IMPORT, SUCCESS_MESSAGE)
-            .verifyImportStatusDetails(JSONLD_FILE_FOR_IMPORT, [BASE_URI, '"preserveBNodeIds": false,', JSONLD_CONTEXT]);
+        ImportSteps.clickImportOnRow(0);
+        ImportSteps.expandAdvancedSettings();
+        ImportSteps.fillBaseURI(BASE_URI);
+        ImportSteps.fillContextLink(JSONLD_CONTEXT);
+        ImportSteps.importFromSettingsDialog();
+        ImportSteps.verifyImportStatus(JSONLD_FILE_FOR_IMPORT, SUCCESS_MESSAGE);
+        ImportSteps.verifyImportStatusDetails(JSONLD_FILE_FOR_IMPORT, [BASE_URI, '"preserveBNodeIds": false,', JSONLD_CONTEXT]);
     });
 
     it('Test import with resetting status of imported file', () => {
-        ImportSteps
-            .selectServerFile(FILE_FOR_IMPORT)
-            .importServerFiles()
-            .verifyImportStatus(FILE_FOR_IMPORT, SUCCESS_MESSAGE)
-            .resetStatusOfUploadedFile(FILE_FOR_IMPORT)
-            .verifyNoImportStatus(FILE_FOR_IMPORT);
+        ImportSteps.selectServerFile(FILE_FOR_IMPORT);
+        ImportSteps.importServerFiles();
+        ImportSteps.verifyImportStatus(FILE_FOR_IMPORT, SUCCESS_MESSAGE);
+        ImportSteps.resetStatusOfUploadedFile(FILE_FOR_IMPORT);
+        ImportSteps.verifyNoImportStatus(FILE_FOR_IMPORT);
     });
 
     it('Test import turtlestar from Server files successfully without changing settings', () => {
-        ImportSteps
-            .selectServerFile(TTLS_FOR_IMPORT)
-            .importServerFiles()
-            .verifyImportStatus(TTLS_FOR_IMPORT, SUCCESS_MESSAGE)
-            .verifyImportStatusDetails(TTLS_FOR_IMPORT, '"preserveBNodeIds": false,');
+        ImportSteps.selectServerFile(TTLS_FOR_IMPORT);
+        ImportSteps.importServerFiles();
+        ImportSteps.verifyImportStatus(TTLS_FOR_IMPORT, SUCCESS_MESSAGE);
+        ImportSteps.verifyImportStatusDetails(TTLS_FOR_IMPORT, '"preserveBNodeIds": false,');
     });
 
     it('Test import trigstar from Server files successfully without changing settings', () => {
-        ImportSteps
-            .selectServerFile(TRIGS_FOR_IMPORT)
-            .importServerFiles()
-            .verifyImportStatus(TRIGS_FOR_IMPORT, SUCCESS_MESSAGE)
-            .verifyImportStatusDetails(TRIGS_FOR_IMPORT, '"preserveBNodeIds": false,');
+        ImportSteps.selectServerFile(TRIGS_FOR_IMPORT);
+        ImportSteps.importServerFiles();
+        ImportSteps.verifyImportStatus(TRIGS_FOR_IMPORT, SUCCESS_MESSAGE);
+        ImportSteps.verifyImportStatusDetails(TRIGS_FOR_IMPORT, '"preserveBNodeIds": false,');
     });
-
 });

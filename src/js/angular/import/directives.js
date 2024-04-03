@@ -11,14 +11,8 @@ importDirectives.directive('validateUri', ['UriUtils', function (UriUtils) {
         require: 'ngModel',
         link: function (scope, element, attr, ctrl) {
             ctrl.$parsers.unshift(function (value) {
-                let valid = true;
-
-                if (scope.target === 'named') {
-                    valid = UriUtils.isValidIri(value, value.toString());
-                }
-
+                const valid = UriUtils.isValidIri(value, value.toString());
                 ctrl.$setValidity('validateUri', valid);
-
                 return value;
             });
         }
