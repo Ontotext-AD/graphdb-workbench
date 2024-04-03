@@ -173,29 +173,24 @@ function hasRecoveryState(node) {
     return !_.isEmpty(node.recoveryStatus);
 }
 
+const iconMap = {
+    [RecoveryState.SEARCHING_FOR_NODE]: {icon: '\uf29c', font: font.FONT_AWESOME},
+    [RecoveryState.WAITING_FOR_SNAPSHOT]: {icon: '\uf017', font: font.FONT_AWESOME},
+    [RecoveryState.RECEIVING_SNAPSHOT]: {icon: '\uf0ed', font: font.FONT_AWESOME},
+    [RecoveryState.APPLYING_SNAPSHOT]: {icon: '\uf050', font: font.FONT_AWESOME},
+    [RecoveryState.BUILDING_SNAPSHOT]: {icon: '\uf187', font: font.FONT_AWESOME},
+    [RecoveryState.SENDING_SNAPSHOT]: {icon: '\uf0ee', font: font.FONT_AWESOME},
+    [RecoveryState.RECOVERY_OPERATION_FAILURE_WARNING]: {icon: '\ue920', font: font.ICOMOON}
+};
+
 function getNodeInfoIconType(node) {
-    if (_.isEmpty(node.recoveryStatus)) {
-        return '';
+    const status = node.recoveryStatus;
+
+    if (!status || !status.state) {
+        return {icon: '', font: ''};
     }
 
-    switch (node.recoveryStatus.state) {
-        case RecoveryState.SEARCHING_FOR_NODE:
-            return {icon: '\uf29c', font: font.FONT_AWESOME};
-        case RecoveryState.WAITING_FOR_SNAPSHOT:
-            return {icon: '\uf017', font: font.FONT_AWESOME};
-        case RecoveryState.RECEIVING_SNAPSHOT:
-            return {icon: '\uf0ed', font: font.FONT_AWESOME};
-        case RecoveryState.APPLYING_SNAPSHOT:
-            return {icon: '\uf050', font: font.FONT_AWESOME};
-        case RecoveryState.BUILDING_SNAPSHOT:
-            return {icon: '\uf187', font: font.FONT_AWESOME};
-        case RecoveryState.SENDING_SNAPSHOT:
-            return {icon: '\uf0ee', font: font.FONT_AWESOME};
-        case RecoveryState.RECOVERY_OPERATION_FAILURE_WARNING:
-            return {icon: '\ue920', font: font.ICOMOON};
-        default:
-            return {icon: '', font: ''};
-    }
+    return iconMap[status.state] || {icon: '', font: ''};
 }
 
 function getNodeIconType(node) {
@@ -220,6 +215,7 @@ function getNodeIconType(node) {
 function updateNodesInfoText(nodes) {
     let objectHeight;
     let objectWidth;
+    // Set initial text element
     nodes.select('.node-info-text')
         .each(function (d) {
             d.infoNode = this;
@@ -268,7 +264,7 @@ function updateNodesInfoText(nodes) {
     // Remove the original text elements, as they are now replaced by foreignObjects
     nodes.select('.node-info-text').remove();
 
-    addEventListeners(nodes);
+    resizeLabelDynamic(nodes);
 }
 
 function extractShortMessageFromNode(node) {
@@ -298,31 +294,24 @@ function calculateElementSizeByText(text) {
     return {height, width};
 }
 
-function addEventListeners(nodes) {
+function resizeLabelDynamic(nodes) {
     nodes.select('.node-info-fo')
-        .on('click', null)
-        .on('click', function (event, d) {
-            event.preventDefault();
-            event.stopPropagation();
-            const message = extractShortMessageFromNode(d);
+        .each(function (d) {
             const object = d3.select(this);
-            const isShorten = d.recoveryStatus.message && d.recoveryStatus.message.length > shortMessageLimit && object.text() !== d.recoveryStatus.message;
-
-            let width;
-            if (isShorten) {
-                width = calculateElementSizeByText(d.recoveryStatus.message).width;
-            } else {
-                width = calculateElementSizeByText(message).width;
+            if (_.isEmpty(d.recoveryStatus)) {
+                object.attr('width', 0);
+                return;
             }
-
+            const message = extractShortMessageFromNode(d);
+            const isShorten = d.recoveryStatus.message && d.recoveryStatus.message.length > shortMessageLimit && message !== d.recoveryStatus.message;
+            const displayMessage = isShorten ? message : d.recoveryStatus.message;
+            const width = calculateElementSizeByText(displayMessage).width;
+            const height = calculateElementSizeByText(displayMessage).height;
             object
-                .attr('width', function (d) {
-                    return width;
-                })
-                .attr('x', function (d) {
-                    return - (width / 2);
-                })
-                .html(`<div>${isShorten ? d.recoveryStatus.message : message}</div>`);
+                .attr('width', width)
+                .attr('height', height)
+                .attr('x', -width / 2)
+                .html(`<div>${displayMessage}</div>`);
         });
 }
 
