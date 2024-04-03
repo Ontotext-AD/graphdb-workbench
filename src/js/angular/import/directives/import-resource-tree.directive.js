@@ -10,7 +10,7 @@ const STATUS_OPTIONS = {
     'ALL': 'ALL',
     'NONE': 'NONE',
     'IMPORTED': 'IMPORTED',
-    'NOT_IMPORTED': 'NOT_IMPORTED',
+    'NOT_IMPORTED': 'NOT_IMPORTED'
 };
 
 const modules = [];
@@ -116,6 +116,7 @@ function importResourceTreeDirective($timeout) {
                         resourceByFullPath.selected = true;
                     }
                 });
+                $scope.resources.getRoot().updateSelectionState();
                 $scope.displayResources = $scope.resources.toList()
                     .filter(filterByType)
                     .filter(filterByName);
