@@ -31,10 +31,17 @@ function UriUtils(ClassInstanceDetailsService) {
         return validProtocol && validPath;
     }
 
+    /**
+     * Validates if the given text is a valid IRI.
+     * @param {object} value
+     * @param {string} valueText
+     * @return {boolean} Returns true if the value is a valid IRI and false otherwise.
+     */
     function isValidIri(value, valueText) {
         if (value !== undefined && valueText !==undefined && (validateRdfUri(valueText) || !!valueText.match(iriRegExp))) {
             return true;
         }
+        return false;
     }
 
     function shortenIri(iri) {
