@@ -1312,7 +1312,7 @@
     "common.running.operation": "Opération en cours... {{timeHuman}}",
     "common.refreshing.namespaces": "Rafraîchir les espaces de noms",
     "common.extra.message": "Normalement, cette opération est rapide, mais elle peut prendre plus de temps si un dépôt plus important doit d'abord être initialisé.",
-    "common.save.btn": "Sauver",
+    "common.save.btn": "Enregistrer",
     "common.confirm": "Confirmer",
     "common.create.btn": "Créer",
     "common.add.known.prefixes.error": "Erreur! Impossible d'ajouter des préfixes connus",
