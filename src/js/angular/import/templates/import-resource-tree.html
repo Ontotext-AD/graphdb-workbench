@@ -102,7 +102,7 @@
             class="import-resource-row"
             ng-class="{ 'even-row-start': $even, 'odd-row-start': $odd}">
             <td class="import-resource-cell import-resource-cell-select">
-                <input type="checkbox" ng-model="resource.selected" ng-click="selectionChanged(resource)">
+                <input type="checkbox" ng-model="resource.selected" ng-click="selectionChanged(resource)" prop-indeterminate="resource.partialSelected">
             </td>
             <td colspan="5"
                 ng-style="{'padding-left': (filterByType !== TYPE_FILTER_OPTIONS.FILE ? resource.indent : '8px')}"

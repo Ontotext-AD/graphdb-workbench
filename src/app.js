@@ -13,6 +13,7 @@ import 'angular/core/directives/angulartooltips/angular-tooltips.js';
 import 'angular/core/directives/uppercased.directive';
 import 'angular/core/directives/operations-statuses-monitor/operations-statuses-monitor.directive';
 import 'angular/core/directives/autocomplete/autocomplete.directive';
+import 'angular/core/directives/prop-indeterminate/prop-indeterminate.directive';
 import {defineCustomElements} from 'ontotext-yasgui-web-component/loader';
 
 // $translate.instant converts <b> from strings to &lt;b&gt
@@ -37,6 +38,7 @@ const modules = [
     'graphdb.framework.core.directives.copytoclipboard.copytoclipboard',
     'graphdb.framework.core.directives.angular-tooltips',
     'graphdb.framework.core.directives.uppercased',
+    'graphdb.framework.core.directives.prop-indeterminate',
     'graphdb.framework.guides.services',
     'graphdb.framework.core.directives.operationsstatusesmonitor',
     'graphdb.framework.core.directives.autocomplete',

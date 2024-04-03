@@ -1,5 +1,3 @@
-import {ImportResourceStatus} from "./import-resource-status";
-
 /**
  * Resources have parent-child relations. This class represents one resource element from the parent-child relation tree.
  */
@@ -7,6 +5,7 @@ export class ImportResourceTreeElement {
     constructor() {
         this.importResource = undefined;
         this.parent = undefined;
+        this.partialSelected = false;
         this.indent = 0;
         this.name = '';
         this.selected = false;
@@ -54,7 +53,7 @@ export class ImportResourceTreeElement {
         if (this.parent === undefined) {
             return this;
         }
-        return this.getRoot(this.parent);
+        return this.parent.getRoot();
     }
 
     /**
@@ -102,20 +101,55 @@ export class ImportResourceTreeElement {
         return result;
     }
 
-    setSelection(selected) {
+    /**
+     * Recursively updates the selected value of the current element and its children.
+     *
+     * @param {boolean} selected - Indicates whether the element and its children should be marked as selected.
+     * @param {boolean} isStartPoint - If true, marks the current node as the initial point of recursion. Subsequent
+     *      calls to the function will have isStartPoint set to false. After recursion is complete, the
+     *      updatePartialSelected function of the root element will be called to update the partialSelected
+     *      property of every element. This reduces the calculation of partialSelected by performing
+     *      it once when all elements are updated.
+     */
+    setSelection(selected, isStartPoint = true) {
         this.selected = selected;
-        this.files.forEach((file) => file.setSelection(selected));
-        this.directories.forEach((directory) => directory.setSelection(selected));
+        this.files.forEach((file) => file.setSelection(selected, false));
+        this.directories.forEach((directory) => directory.setSelection(selected, false));
+        if (isStartPoint) {
+            this.getRoot().updateSelectionState();
+        }
+    }
+
+    /**
+     * Recursively updates "selected" and "partialSelected" state of the current element and its children.
+     */
+    updateSelectionState() {
+        this.directories.forEach((directory) => directory.updateSelectionState());
+        if (this.parent && this.isDirectory()) {
+            const hasUnselectedChildren = this.hasUnselectedChildren();
+            const hasSelectedChildren = this.hasSelectedChildren();
+            this.selected = hasSelectedChildren && !hasUnselectedChildren;
+            this.partialSelected = hasSelectedChildren && hasUnselectedChildren;
+        }
+    }
+
+    /**
+     * Checks if there is at least one unselected child.
+     * @return {boolean} - True if there is at least one unselected child, or false otherwise.
+     */
+    hasUnselectedChildren() {
+        return this.files.some((file) => !file.selected) || this.directories.some((directory) => !directory.selected || directory.hasUnselectedChildren());
+    }
+
+    /**
+     * Checks if there is at least one selected child.
+     * @return {boolean} - True if there is at least one selected child, or false otherwise.
+     */
+    hasSelectedChildren() {
+        return this.files.some((file) => file.selected) || this.directories.some((directory) => directory.selected || directory.hasSelectedChildren());
     }
 
     selectAllWithStatus(statuses) {
-
-        if (this.importResource) {
-            console.log(statuses);
-            console.log(this.importResource.status);
-            console.log(statuses.indexOf(this.importResource.status) > -1);
-        }
-
         if (this.importResource && statuses.indexOf(this.importResource.status) > -1) {
             this.selected = true;
         }
