@@ -323,6 +323,10 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             $scope.setSettingsFor(resource.importResource.name, false, resource.importResource.format);
         };
 
+        $scope.onStopImport = (resource) => {
+            $scope.stopImport(resource.importResource);
+        };
+
         $scope.onDelete = (importResource) => {
             console.log('The resource ', importResource, 'have to be deleted');
         };

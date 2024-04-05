@@ -40,7 +40,8 @@ function importResourceTreeDirective($timeout) {
             onImportAll: '&',
             onDelete: '&',
             onReset: '&',
-            onRemove: '&'
+            onRemove: '&',
+            onStopImport: '&'
         },
         link: ($scope, element, attrs) => {
 
@@ -117,6 +118,10 @@ function importResourceTreeDirective($timeout) {
                 if ($scope.selectedResources && $scope.selectedResources.length > 0) {
                     $scope.onImportAll({selectedResources: $scope.selectedResources, withoutChangingSettings});
                 }
+            };
+
+            $scope.stopImport = (importResource) => {
+                $scope.onStopImport({resource: importResource});
             };
 
             // =========================
