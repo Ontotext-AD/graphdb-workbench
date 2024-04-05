@@ -59,7 +59,7 @@
                         popover-placement="top">
                     {{'import.reset.status' | translate}}
                 </button>
-                <button class="btn btn-secondary remove-resources-btn" type="button" ng-click="onRemoveResources()"
+                <button ng-if="canRemoveResource" class="btn btn-secondary remove-resources-btn" type="button" ng-click="onRemoveResources()"
                         uib-popover="{{'import.remove.selected' | translate}}"
                         popover-trigger="mouseenter"
                         popover-placement="top">
@@ -149,8 +149,8 @@
                             gdb-tooltip="{{'import.reset.status' | translate}}">
                         <span class="icon-close"></span>
                     </button>
-                    <button class="btn btn-link btn-sm secondary import-resource-action-remove"
-                            ng-click="onDelete({resource: resource})">
+                    <button ng-if="canRemoveResource" class="btn btn-link btn-sm secondary import-resource-action-remove"
+                            ng-click="removeResource(resource)">
                         <em class="icon-trash"></em>
                     </button>
                     <button class="btn btn-primary btn-sm import-resource-action-import"

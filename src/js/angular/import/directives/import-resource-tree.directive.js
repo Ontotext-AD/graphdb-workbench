@@ -38,7 +38,6 @@ function importResourceTreeDirective($timeout) {
             showTypeFilter: '=',
             onImport: '&',
             onImportAll: '&',
-            onDelete: '&',
             onReset: '&',
             onRemove: '&',
             onStopImport: '&'
@@ -59,6 +58,7 @@ function importResourceTreeDirective($timeout) {
             $scope.STATUS_OPTIONS = STATUS_OPTIONS;
             $scope.selectedByStatus = undefined;
             $scope.ImportResourceStatus = ImportResourceStatus;
+            $scope.canRemoveResource = angular.isDefined(attrs.onRemove);
 
             // =========================
             // Public functions
@@ -110,8 +110,12 @@ function importResourceTreeDirective($timeout) {
 
             $scope.onRemoveResources = () => {
                 if ($scope.selectedResources && $scope.selectedResources.length > 0) {
-                    $scope.onRemove({selectedResources: $scope.selectedResources});
+                    $scope.onRemove({resources: $scope.selectedResources});
                 }
+            };
+
+            $scope.removeResource = (resource) => {
+                $scope.onRemove({resources: [resource]});
             };
 
             $scope.importAll = (withoutChangingSettings) => {

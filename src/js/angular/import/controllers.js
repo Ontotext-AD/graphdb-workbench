@@ -327,16 +327,12 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             $scope.stopImport(resource.importResource);
         };
 
-        $scope.onDelete = (importResource) => {
-            console.log('The resource ', importResource, 'have to be deleted');
-        };
-
         /**
          * Triggers a remove operation in the backend for selected resources.
-         * @param {ImportResourceTreeElement[]} selectedResources - The resources to be removed.
+         * @param {ImportResourceTreeElement[]} resources - The resources to be removed.
          */
-        $scope.onRemove = (selectedResources) => {
-            const resourceNames = selectedResources.map((resource) => resource.name);
+        $scope.onRemove = (resources) => {
+            const resourceNames = resources.map((resource) => resource.name);
             removeEntry(resourceNames);
         };
 
