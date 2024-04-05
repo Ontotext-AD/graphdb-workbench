@@ -319,8 +319,8 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             $scope.getSettings();
         };
 
-        $scope.onImport = (importResource) => {
-            console.log('The resource ', importResource, 'have to be imported');
+        $scope.onImport = (resource) => {
+            $scope.setSettingsFor(resource.importResource.name, false, resource.importResource.format);
         };
 
         $scope.onDelete = (importResource) => {

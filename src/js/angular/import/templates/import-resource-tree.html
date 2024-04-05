@@ -154,6 +154,7 @@
                         <em class="icon-trash"></em>
                     </button>
                     <button class="btn btn-primary btn-sm import-resource-action-import"
+                            ng-if="resource.isFile() && resource.importResource.status !== ImportResourceStatus.IMPORTING && resource.importResource.status !== ImportResourceStatus.UPLOADING && resource.importResource.status !== ImportResourceStatus.PENDING && resource.importResource.status !== ImportResourceStatus.INTERRUPTING"
                             ng-click="onImport({resource: resource})">
                         <span class="icon-import"></span>
                     </button>
