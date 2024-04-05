@@ -115,6 +115,13 @@
             <td class="import-resource-cell">
                 <div class="import-resource-actions">
                     <div class="icon-info text-tertiary import-resource-action-info"></div>
+                    <button role="button" class="btn btn-link btn-inline secondary pr-0"
+                            ng-click="resetStatus(resource)"
+                            ng-show="resource.importResource.status === ImportResourceStatus.DONE || resource.importResource.status === ImportResourceStatus.ERROR"
+                            ng-disabled="selectedResources.length > 1"
+                            gdb-tooltip="{{'import.reset.status' | translate}}">
+                        <span class="icon-close"></span>
+                    </button>
                     <button class="btn btn-link secondary import-resource-action-remove" ng-click="onDelete({resource: resource})">
                         <em class="icon-trash"></em>
                     </button>

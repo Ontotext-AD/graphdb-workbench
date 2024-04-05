@@ -91,6 +91,10 @@ function importResourceTreeDirective($timeout) {
                 }
             };
 
+            $scope.resetStatus = (importResource) => {
+                $scope.onReset({selectedResources: [importResource]});
+            };
+
             $scope.onRemoveResources = () => {
                 if ($scope.selectedResources && $scope.selectedResources.length > 0) {
                     $scope.onRemove({selectedResources: $scope.selectedResources()});
