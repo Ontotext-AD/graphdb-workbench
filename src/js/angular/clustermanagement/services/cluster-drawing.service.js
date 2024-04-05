@@ -294,6 +294,23 @@ function calculateElementSizeByText(text) {
     return {height, width};
 }
 
+function addRecoveryLabelListeners(object, message, width, height, displayMessage) {
+    object.on('mouseover.tooltip', () => {
+        object
+            .attr('width', calculateElementSizeByText(message).width)
+            .attr('height', calculateElementSizeByText(message).height)
+            .attr('x', -calculateElementSizeByText(message).width / 2)
+            .html(`<div>${message}</div>`);
+    });
+    object.on('mouseout.tooltip', () => {
+        object
+            .attr('width', width)
+            .attr('height', height)
+            .attr('x', -width / 2)
+            .html(`<div>${displayMessage}</div>`);
+    });
+}
+
 function resizeLabelDynamic(nodes) {
     nodes.select('.node-info-fo')
         .each(function (d) {
@@ -307,6 +324,12 @@ function resizeLabelDynamic(nodes) {
             const displayMessage = isShorten ? message : d.recoveryStatus.message;
             const width = calculateElementSizeByText(displayMessage).width;
             const height = calculateElementSizeByText(displayMessage).height;
+            object.on('.tooltip', null);
+            if (isShorten) {
+                addRecoveryLabelListeners(object, d.recoveryStatus.message, width, height, displayMessage);
+            }
+
+            // Set initial size and text
             object
                 .attr('width', width)
                 .attr('height', height)
@@ -422,4 +445,8 @@ function createHexagon(nodeGroup, radius) {
         .append("path")
         .attr('class', 'node member')
         .attr("d", d3.line());
+}
+
+export function removeEventListeners() {
+    d3.select(document).selectAll('.node-info-fo').on('.tooltip', null);
 }
