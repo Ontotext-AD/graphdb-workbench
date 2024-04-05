@@ -19,12 +19,18 @@ importDirectives.directive('validateUri', ['UriUtils', function (UriUtils) {
     };
 }]);
 
-importDirectives.directive('filesTable', function () {
+importDirectives.directive('filesTable', ['ImportContextService', function (ImportContextService) {
     return {
         restrict: 'A',
-        templateUrl: 'js/angular/import/templates/filesTable.html'
+        templateUrl: 'js/angular/import/templates/filesTable.html',
+        link: function ($scope, element, attr) {
+            $scope.ImportContextService = ImportContextService;
+            ImportContextService.onFilesUpdated((files) => {
+                $scope.files = files;
+            });
+        }
     };
-});
+}]);
 
 importDirectives.directive('filesOntoLoader', function () {
     return {

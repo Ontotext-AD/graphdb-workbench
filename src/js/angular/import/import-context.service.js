@@ -1,3 +1,8 @@
+/**
+ * The import service is implemented using many controllers and directives that share common variables.
+ * The purpose of the ImportContextService is to hold data shared between them.
+ */
+
 import {cloneDeep} from "lodash";
 
 angular
@@ -7,6 +12,8 @@ angular
 ImportContextService.$inject = ['EventEmitterService'];
 
 function ImportContextService(EventEmitterService) {
+
+    this.loader = false;
     /**
      * @type {*[]}
      * @private
@@ -17,7 +24,8 @@ function ImportContextService(EventEmitterService) {
         getFiles,
         addFile,
         updateFiles,
-        onFilesUpdated
+        onFilesUpdated,
+        addToFront
     };
 
     /**
@@ -47,6 +55,15 @@ function ImportContextService(EventEmitterService) {
      */
     function addFile(file) {
         _files.push(file);
+        EventEmitterService.emit('fileAdded', cloneDeep(file));
+    }
+
+    /**
+     * Inserts new elements at the start of an array.
+     * @param {object} file
+     */
+    function addToFront(file) {
+        _files.unshift(file);
         EventEmitterService.emit('fileAdded', cloneDeep(file));
     }
 

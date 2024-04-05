@@ -56,7 +56,6 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         // Public variables
         // =========================
 
-        $scope.files = []; // should be private
         $scope.fileChecked = {};
         $scope.checkAll = false;
         $scope.popoverTemplateUrl = 'settingsPopoverTemplate.html';
@@ -82,7 +81,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         };
 
         $scope.getVisibleFiles = () => {
-            return $filter('filter')($scope.files, {name: $scope.fileQuery, type: $scope.getTypeFilter()});
+            return $filter('filter')(ImportContextService.getFiles(), {name: $scope.fileQuery, type: $scope.getTypeFilter()});
         };
 
         $scope.getTypeFilter = () => {
@@ -193,11 +192,11 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         };
 
         $scope.hasImportable = () =>{
-            return $scope.files.some((file) => $scope.importable(file));
+            return ImportContextService.getFiles().some((file) => $scope.importable(file));
         };
 
         $scope.showTable = () => {
-            const showTable = $scope.files.length > 0 && ('user' === $scope.viewType || 'server' === $scope.viewType);
+            const showTable = ImportContextService.getFiles().length > 0 && ('user' === $scope.viewType || 'server' === $scope.viewType);
             if ($scope.checkAll) {
                 $scope.switchBatch(true);
             }
@@ -212,7 +211,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                     $scope.checkAll = false;
                 }
             }
-            $scope.batch = _.map(_.filter($scope.files, function (f) {
+            $scope.batch = _.map(_.filter(ImportContextService.getFiles(), function (f) {
                 return $scope.fileChecked[f.name] && $scope.importable(f);
             }), 'name').length > 0;
         };
@@ -220,7 +219,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         $scope.rebatch = () => {
             const newFileChecked = {};
             $scope.batch = false;
-            _.each($scope.files, function (file) {
+            _.each(ImportContextService.getFiles(), function (file) {
                 newFileChecked[file.name] = $scope.fileChecked[file.name];
                 $scope.batch |= $scope.fileChecked[file.name];
             });
@@ -374,18 +373,19 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                 // }
 
                 // reload all files
-                if ($scope.files.length === 0 || force) {
-                    $scope.files = data;
-                    ImportContextService.updateFiles($scope.files);
-                    $scope.files.forEach(function (f) {
+                let files = ImportContextService.getFiles();
+                if (files.length === 0 || force) {
+                    files = data;
+                    files.forEach(function (f) {
                         if (!f.type) {
                             f.type = $scope.defaultType;
                         }
                     });
+                    ImportContextService.updateFiles(files);
                     $scope.rebatch();
                 } else {
                     // update the status of the files using the response from the server
-                    $scope.files.forEach(function (f) {
+                    files.forEach(function (f) {
                         const remoteStatus = _.find(data, _.matches({'name': f.name}));
                         if (f.status && remoteStatus) {
                             _.assign(f, remoteStatus);
@@ -394,23 +394,24 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                             f.type = $scope.defaultType;
                         }
                     });
+                    ImportContextService.updateFiles(files);
                 }
                 // Need new status here
                 if (force && 'user' === $scope.viewType) {
-                    $scope.files = _.filter($scope.files, function (f) {
+                    files = _.filter(files, function (f) {
                         return f.status !== undefined;
                     });
-                    ImportContextService.updateFiles($scope.files);
+                    ImportContextService.updateFiles(files);
                 }
-                $scope.showClearStatuses = _.filter($scope.files, function (file) {
+                $scope.showClearStatuses = _.filter(files, function (file) {
                     return file.status === FILE_STATUS.DONE || file.status === FILE_STATUS.ERROR;
                 }).length > 0;
 
-                $scope.savedSettings = _.mapKeys(_.filter($scope.files, 'parserSettings'), 'name');
+                $scope.savedSettings = _.mapKeys(_.filter(files, 'parserSettings'), 'name');
             }).error(function (data) {
                 toastr.warning($translate.instant('import.error.could.not.get.files', {data: getError(data)}));
             }).finally(() => {
-                $scope.loader = false;
+                ImportContextService.loader = false;
             });
         };
 
@@ -477,7 +478,6 @@ importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$
     // Public variables
     // =========================
 
-    $scope.loader = true;
     angular.extend(this, $controller('ImportViewCtrl', {$scope: $scope}));
     $scope.viewUrl = OPERATION.SERVER;
     $scope.defaultType = 'server';
@@ -539,19 +539,18 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     // Public variables
     // =========================
 
-    $scope.loader = true;
     angular.extend(this, $controller('ImportViewCtrl', {$scope: $scope}));
     $scope.viewUrl = OPERATION.UPLOAD;
     $scope.defaultType = USER_DATA_TYPE.FILE;
     $scope.tabId = '#import-user';
     // A list with all files that were uploaded or currently selected for uploading by the user.
-    // This list is being watched by the controller. When it finds a change, it updates the $scope.files and tries to
+    // This list is being watched by the controller. When it finds a change, it updates the ImportContextService._files and tries to
     // upload the new files.
-    // This is similar to the $scope.files which is used for the table rendering, but the files in the later have
+    // This is similar to the ImportContextService._files which is used for the table rendering, but the files in the later have
     // different nested models. See the watcher for more details.
     $scope.currentFiles = [];
     // A flag to indicate if the list is initialized for the first time on load. This is needed in order to prevent
-    // the watcher for $scope.currentFiles to try to update the $scope.files and to re-upload them on load.
+    // the watcher for $scope.currentFiles to try to update the ImportContextService._files and to re-upload them on load.
     let isFileListInitialized = false;
     $scope.pastedDataIdx = 1;
     // A registry to keep track of the current index for each file name. The registry is created on page load and
@@ -577,7 +576,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         const duplicatedFiles = [];
         const uniqueFiles = [];
         newFiles.forEach((file) => {
-            const isDuplicated = $scope.files.some((currentFile) => currentFile.name === file.name);
+            const isDuplicated = ImportContextService.getFiles().some((currentFile) => currentFile.name === file.name);
             if (isDuplicated) {
                 duplicatedFiles.push(file);
             } else {
@@ -589,13 +588,13 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
             // ask the user if he wants to keep the original files or overwrite them.
             openDuplicatedFilesConfirmDialog(duplicatedFiles, uniqueFiles);
         } else {
-            $scope.currentFiles = [...newFiles];
+            $scope.currentFiles = [...$scope.currentFiles, ...newFiles];
             isFileListInitialized = true;
         }
     };
 
     $scope.importFile = (fileName, startImport, nextCallback) => {
-        const file = $scope.files.find((currentFile) => currentFile.name === fileName);
+        const file = ImportContextService.getFiles().find((currentFile) => currentFile.name === fileName);
         if (!file) {
             toastr.warning($translate.instant('import.no.such.file', {name: fileName}));
         } else {
@@ -642,7 +641,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                 updateTextImport(file);
             } else {
                 file = {type: 'text', name: 'Text snippet ' + DateUtils.formatCurrentDateTime(), format: data.format, data: data.text};
-                $scope.files.unshift(file);
+                ImportContextService.addToFront(file);
                 $scope.updateImport(file.name, false, false);
             }
             if (data.startImport) {
@@ -660,11 +659,11 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
 
         modalInstance.result.then(function (data) {
             // URL may already exist
-            const existing = _.find($scope.files, {type: 'url', name: data.url});
+            const existing = _.find(ImportContextService.getFiles(), {type: 'url', name: data.url});
             if (existing) {
                 existing.format = data.format;
             } else {
-                $scope.files.unshift({type: 'url', name: data.url, format: data.format, data: data.url});
+                ImportContextService.addToFront({type: 'url', name: data.url, format: data.format, data: data.url});
             }
             $scope.updateImport(data.url, true, false);
             if (data.startImport) {
@@ -786,18 +785,19 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     };
 
     const uploadedFilesValidator = () => {
-        $scope.files = _.uniqBy(
+        const files = _.uniqBy(
             _.union(
                 _.map($scope.currentFiles, function (file) {
                     return {name: file.name, type: 'file', file: file};
                 }),
-                $scope.files
+                ImportContextService.getFiles()
             ),
             function (file) {
                 return file.name;
             }
         );
-        $scope.savedSettings = _.mapKeys(_.filter($scope.files, 'parserSettings'), 'name');
+        ImportContextService.updateFiles(files);
+        $scope.savedSettings = _.mapKeys(_.filter(files, 'parserSettings'), 'name');
         if (isFileListInitialized) {
             // Mark the new files so that they can all be collected and imported.
             if ($scope.currentFiles.length > 0) {
