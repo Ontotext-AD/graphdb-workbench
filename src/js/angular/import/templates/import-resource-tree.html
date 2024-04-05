@@ -6,26 +6,32 @@
             <div class="import-resource-status-dropdown btn-group" uib-dropdown>
                 <button type="button" class="btn btn-secondary dropdown-toggle" uib-dropdown-toggle>
                     <input type="checkbox">
-                    {{selectedByStatus ? (('import.import_resource_tree.status.' + selectedByStatus) | translate) : ' '}}
+                    {{selectedByStatus ? (('import.import_resource_tree.status.' + selectedByStatus) | translate) : '
+                    '}}
                 </button>
                 <ul class="dropdown-menu" role="menu">
                     <li>
-                        <button type="button" class="dropdown-item" ng-click="selectResourceWithStatus(STATUS_OPTIONS.ALL)">
+                        <button type="button" class="dropdown-item"
+                                ng-click="selectResourceWithStatus(STATUS_OPTIONS.ALL)">
                             {{'import.import_resource_tree.status.ALL' | translate}}
                         </button>
-                        <button type="button" class="dropdown-item" ng-click="selectResourceWithStatus(STATUS_OPTIONS.NONE)">
+                        <button type="button" class="dropdown-item"
+                                ng-click="selectResourceWithStatus(STATUS_OPTIONS.NONE)">
                             {{'import.import_resource_tree.status.NONE' | translate}}
                         </button>
-                        <button type="button" class="dropdown-item" ng-click="selectResourceWithStatus(STATUS_OPTIONS.IMPORTED)">
+                        <button type="button" class="dropdown-item"
+                                ng-click="selectResourceWithStatus(STATUS_OPTIONS.IMPORTED)">
                             {{'import.import_resource_tree.status.IMPORTED' | translate}}
                         </button>
-                        <button type="button" class="dropdown-item" ng-click="selectResourceWithStatus(STATUS_OPTIONS.NOT_IMPORTED)">
+                        <button type="button" class="dropdown-item"
+                                ng-click="selectResourceWithStatus(STATUS_OPTIONS.NOT_IMPORTED)">
                             {{'import.import_resource_tree.status.NOT_IMPORTED' | translate}}
                         </button>
                     </li>
                 </ul>
             </div>
-            <div class="import-resource-selected-actions btn-group" ng-if="selectedResources && selectedResources.length > 0">
+            <div class="import-resource-selected-actions btn-group"
+                 ng-if="selectedResources && selectedResources.length > 0">
                 <div class="btn-group" uib-dropdown
                      uib-popover="{{'import.selected.items' | translate}}"
                      popover-trigger="mouseenter"
@@ -34,24 +40,26 @@
                         <span class="icon-import"></span>
                         {{'common.import' | translate}}
                     </button>
-                    <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle" uib-dropdown-toggle>
+                    <button type="button" class="btn btn-primary dropdown-toggle-split dropdown-toggle"
+                            uib-dropdown-toggle>
                         <span class="sr-only"></span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
                         <li>
-                            <button type="button" class="dropdown-item import-without-change-btn" ng-click="importAll(true)">
+                            <button type="button" class="dropdown-item import-without-change-btn"
+                                    ng-click="importAll(true)">
                                 {{'import.without.changing.settings' | translate}}
                             </button>
                         </li>
                     </ul>
                 </div>
-                <button class="btn btn-secondary" type="button" ng-click="onResetStatus()"
+                <button class="btn btn-secondary reset-status-btn" type="button" ng-click="onResetStatus()"
                         uib-popover="{{'import.reset.last.imported' | translate}}"
                         popover-trigger="mouseenter"
                         popover-placement="top">
                     {{'import.reset.status' | translate}}
                 </button>
-                <button class="btn btn-secondary" type="button" ng-click="onRemoveResources()"
+                <button class="btn btn-secondary remove-resources-btn" type="button" ng-click="onRemoveResources()"
                         uib-popover="{{'import.remove.selected' | translate}}"
                         popover-trigger="mouseenter"
                         popover-placement="top">
@@ -60,49 +68,66 @@
             </div>
         </div>
         <div class="import-resource-tree-filter btn-group">
-            <button class="btn btn-secondary"
-                    ng-click="filterByTypeChanged(TYPE_FILTER_OPTIONS.FILE)"
-                    ng-class="{'active': TYPE_FILTER_OPTIONS.FILE === filterByType}">
-                <em class="icon-file"></em>
-            </button>
-            <button class="btn btn-secondary"
-                    ng-click="filterByTypeChanged(TYPE_FILTER_OPTIONS.ALL)"
-                    ng-class="{'active': TYPE_FILTER_OPTIONS.ALL === filterByType}">
-                <em class="icon-file"></em>
-                <em class="icon-folder"></em>
-            </button>
-            <button class="btn btn-secondary"
-                    ng-click="filterByTypeChanged(TYPE_FILTER_OPTIONS.DIRECTORY)"
-                    ng-class="{'active': TYPE_FILTER_OPTIONS.DIRECTORY === filterByType}">
-                <em class="icon-folder"></em>
-            </button>
-            <div class="input-group ml-1">
-                <label class="input-group-addon" for="fileQuery">
-                    <span class="icon-search icon-lg text-muted"></span>
-                </label>
-                <input id="fileQuery" class="form-control" type="text" ng-model="filterByFileName"  ng-change="filterByFileNameChanged(filterByFileName)"
-                       placeholder="{{'import.type.to.filter' | translate}}">
+            <div ng-if="showTypeFilter" class="import-resource-type-filter mr-1">
+                <button class="btn btn-secondary"
+                        ng-click="filterByTypeChanged(TYPE_FILTER_OPTIONS.FILE)"
+                        ng-class="{'active': TYPE_FILTER_OPTIONS.FILE === filterByType}">
+                    <em class="icon-file"></em>
+                </button>
+                <button class="btn btn-secondary"
+                        ng-click="filterByTypeChanged(TYPE_FILTER_OPTIONS.ALL)"
+                        ng-class="{'active': TYPE_FILTER_OPTIONS.ALL === filterByType}">
+                    <em class="icon-file"></em>
+                    <em class="icon-folder"></em>
+                </button>
+                <button class="btn btn-secondary"
+                        ng-click="filterByTypeChanged(TYPE_FILTER_OPTIONS.DIRECTORY)"
+                        ng-class="{'active': TYPE_FILTER_OPTIONS.DIRECTORY === filterByType}">
+                    <em class="icon-folder"></em>
+                </button>
+            </div>
+
+            <div class="import-resource-filter btn-group">
+                <div class="input-group">
+                    <input id="fileQuery" class="form-control" type="text" ng-model="filterByFileName"
+                           ng-change="filterByFileNameChanged(filterByFileName)"
+                           placeholder="{{'import.type.to.filter' | translate}}">
+                    <label class="input-group-addon" for="fileQuery">
+                        <span class="icon-search icon-lg text-muted"></span>
+                    </label>
+                </div>
             </div>
         </div>
     </div>
     <table class="import-resource-table">
         <thead>
-        <tr class="import-resource-row">
+        <tr>
             <th class="import-resource-header-cell import-resource-cell-select"></th>
-            <th class="import-resource-header-cell import-resource-name">{{'import.import_resource_tree.header.name' | translate}}</th>
-            <th class="import-resource-header-cell import-resource-size">{{'import.import_resource_tree.header.size' | translate}}</th>
-            <th class="import-resource-header-cell import-resource-modified">{{'import.import_resource_tree.header.modified' | translate}}</th>
-            <th class="import-resource-header-cell import-resource-imported">{{'import.import_resource_tree.header.imported' | translate}}</th>
-            <th class="import-resource-header-cell import-resource-context">{{'import.import_resource_tree.header.context' | translate}}</th>
+            <th class="import-resource-header-cell import-resource-name">{{'import.import_resource_tree.header.name' |
+                translate}}
+            </th>
+            <th class="import-resource-header-cell import-resource-size">{{'import.import_resource_tree.header.size' |
+                translate}}
+            </th>
+            <th class="import-resource-header-cell import-resource-modified">
+                {{'import.import_resource_tree.header.modified' | translate}}
+            </th>
+            <th class="import-resource-header-cell import-resource-imported">
+                {{'import.import_resource_tree.header.imported' | translate}}
+            </th>
+            <th class="import-resource-header-cell import-resource-context">
+                {{'import.import_resource_tree.header.context' | translate}}
+            </th>
             <th class="import-resource-header-cell import-resource-action"></th>
         </tr>
         </thead>
         <tbody>
         <tr ng-repeat-start="resource in displayResources track by resource.importResource.name"
-            class="import-resource-row"
+            class="import-resource-row title-row"
             ng-class="{ 'even-row-start': $even, 'odd-row-start': $odd}">
             <td class="import-resource-cell import-resource-cell-select">
-                <input type="checkbox" ng-model="resource.selected" ng-click="selectionChanged(resource)" prop-indeterminate="resource.partialSelected">
+                <input type="checkbox" ng-model="resource.selected" ng-click="selectionChanged(resource)"
+                       prop-indeterminate="resource.partialSelected">
             </td>
             <td colspan="5"
                 ng-style="{'padding-left': (filterByType !== TYPE_FILTER_OPTIONS.FILE ? resource.indent : '8px')}"
@@ -114,7 +139,9 @@
             </td>
             <td class="import-resource-cell">
                 <div class="import-resource-actions">
-                    <div class="icon-info text-tertiary import-resource-action-info"></div>
+                    <button class="btn btn-link btn-sm import-resource-action-info">
+                        <span class="icon-info text-tertiary"></span>
+                    </button>
                     <button role="button" class="btn btn-link btn-inline secondary pr-0"
                             ng-click="resetStatus(resource)"
                             ng-show="resource.importResource.status === ImportResourceStatus.DONE || resource.importResource.status === ImportResourceStatus.ERROR"
@@ -122,16 +149,18 @@
                             gdb-tooltip="{{'import.reset.status' | translate}}">
                         <span class="icon-close"></span>
                     </button>
-                    <button class="btn btn-link secondary import-resource-action-remove" ng-click="onDelete({resource: resource})">
+                    <button class="btn btn-link btn-sm secondary import-resource-action-remove"
+                            ng-click="onDelete({resource: resource})">
                         <em class="icon-trash"></em>
                     </button>
-                    <button class="btn btn-primary btn-sm import-resource-action-import" ng-click="onImport({resource: resource})">
+                    <button class="btn btn-primary btn-sm import-resource-action-import"
+                            ng-click="onImport({resource: resource})">
                         <span class="icon-import"></span>
                     </button>
                 </div>
             </td>
         </tr>
-        <tr ng-repeat-end class="import-resource-row" ng-class="{ 'even-row-end': $even, 'odd-row-end': $odd}">
+        <tr ng-repeat-end class="import-resource-row info-row" ng-class="{ 'even-row-end': $even, 'odd-row-end': $odd}">
             <td class="import-resource-cell import-resource-cell-select"></td>
             <td ng-style="{'padding-left': (filterByType !== TYPE_FILTER_OPTIONS.FILE ? resource.indent : '8px')}"
                 class="import-resource-cell">
@@ -141,10 +170,10 @@
                 {{ resource.importResource.size || ''}}
             </td>
             <td class="import-resource-cell import-resource-modified">
-                {{ resource.importResource.timestamp | date:'yyyy-MM-dd, HH:mm' }}
+                {{ resource.importResource.modifiedOn | date:'yyyy-MM-dd, HH:mm' }}
             </td>
             <td class="import-resource-cell import-resource-imported">
-                {{ resource.importResource.timestamp | date:'yyyy-MM-dd, HH:mm' }}
+                {{ resource.importResource.importedOn | date:'yyyy-MM-dd, HH:mm' }}
             </td>
             <td class="import-resource-cell">
                 {{ resource.importResource.context || ''}}

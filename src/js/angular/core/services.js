@@ -154,7 +154,7 @@ function ModalService($uibModal, $timeout, $sce) {
      * Opens a confirmation dialog with provided translated title and message. If provided onConfirm and onCancel
      * handler functions then they will be executed.
      * @param {string} title
-     * @param {message} message
+     * @param {string} message
      * @param {Function} onConfirm
      * @param {Function} onCancel
      */

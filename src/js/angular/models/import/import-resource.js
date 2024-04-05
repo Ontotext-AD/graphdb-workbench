@@ -39,7 +39,12 @@ export class ImportResource {
         /**
          * @type {number | undefined}
          */
-        this.timestamp = importResourceServerData ? importResourceServerData.timestamp : undefined;
+        this.modifiedOn = importResourceServerData ? importResourceServerData.timestamp : undefined;
+
+        /**
+         * @type {number | undefined}
+         */
+        this.importedOn = importResourceServerData ? importResourceServerData.timestamp : undefined;
 
         /**
          * The property is used when importing JSONLD files only
@@ -62,5 +67,9 @@ export class ImportResource {
 
     isFile() {
         return ImportResourceType.FILE === this.type || ImportResourceType.URL === this.type || ImportResourceType.TEXT === this.type;
+    }
+
+    isURL() {
+        return ImportResourceType.URL === this.type;
     }
 }

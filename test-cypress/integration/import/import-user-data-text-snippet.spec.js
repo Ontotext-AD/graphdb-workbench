@@ -58,7 +58,6 @@ describe('Import user data: Text snippet', () => {
     const VALID_SNIPPET_TRIGSTAR_FORMAT = 'TriG*';
     const VALID_SNIPPET_RDF_FORMAT = 'Turtle';
     const RDF_ERROR_MESSAGE = 'RDF Parse Error:';
-    const SUCCESS_MESSAGE = 'Imported successfully';
 
     beforeEach(() => {
         repositoryId = 'user-import-' + Date.now();
@@ -75,7 +74,7 @@ describe('Import user data: Text snippet', () => {
         ImportSteps.fillRDFTextSnippet(RDF_TEXT_SNIPPET_1);
         ImportSteps.clickImportTextSnippetButton();
         ImportSteps.importFromSettingsDialog();
-        ImportSteps.verifyImportStatus(TEXT_SNIPPET, SUCCESS_MESSAGE);
+        ImportSteps.checkUserDataImportedResource(0, TEXT_SNIPPET);
     });
 
     it('Should import RDF text snippet with invalid RDF format selected', () => {
@@ -84,7 +83,7 @@ describe('Import user data: Text snippet', () => {
         ImportSteps.selectRDFFormat(JSONLD_FORMAT);
         ImportSteps.clickImportTextSnippetButton();
         ImportSteps.importFromSettingsDialog();
-        ImportSteps.verifyImportStatus(TEXT_SNIPPET, RDF_ERROR_MESSAGE);
+        ImportSteps.checkUserDataImportedResource(0, TEXT_SNIPPET, RDF_ERROR_MESSAGE);
     });
 
     it('Should import RDF text snippet successfully with valid RDF format selected', () => {
@@ -93,7 +92,7 @@ describe('Import user data: Text snippet', () => {
         ImportSteps.selectRDFFormat(VALID_SNIPPET_RDF_FORMAT);
         ImportSteps.clickImportTextSnippetButton();
         ImportSteps.importFromSettingsDialog();
-        ImportSteps.verifyImportStatus(TEXT_SNIPPET, SUCCESS_MESSAGE);
+        ImportSteps.checkUserDataImportedResource(0, TEXT_SNIPPET);
     });
 
     it('Should import Turtle* text snippet successfully with valid RDF star format selected', () => {
@@ -102,7 +101,7 @@ describe('Import user data: Text snippet', () => {
         ImportSteps.selectRDFFormat(VALID_SNIPPET_TURTLESTAR_FORMAT);
         ImportSteps.clickImportTextSnippetButton();
         ImportSteps.importFromSettingsDialog();
-        ImportSteps.verifyImportStatus(TEXT_SNIPPET, SUCCESS_MESSAGE);
+        ImportSteps.checkUserDataImportedResource(0, TEXT_SNIPPET);
     });
 
     it('Should import TriG* text snippet successfully with valid RDF star format selected', () => {
@@ -111,7 +110,7 @@ describe('Import user data: Text snippet', () => {
         ImportSteps.selectRDFFormat(VALID_SNIPPET_TRIGSTAR_FORMAT);
         ImportSteps.clickImportTextSnippetButton();
         ImportSteps.importFromSettingsDialog();
-        ImportSteps.verifyImportStatus(TEXT_SNIPPET, SUCCESS_MESSAGE);
+        ImportSteps.checkUserDataImportedResource(0, TEXT_SNIPPET);
     });
 
     it('Should import RDF text snippet successfully with filled base URI and context', () => {
@@ -123,7 +122,7 @@ describe('Import user data: Text snippet', () => {
         ImportSteps.selectNamedGraph();
         ImportSteps.fillNamedGraph(CONTEXT);
         ImportSteps.importFromSettingsDialog();
-        ImportSteps.verifyImportStatus(TEXT_SNIPPET, SUCCESS_MESSAGE);
+        ImportSteps.checkUserDataImportedResource(0, TEXT_SNIPPET);
 
         // Go to Graphs overview
         cy.visit('/graphs');
@@ -149,7 +148,7 @@ describe('Import user data: Text snippet', () => {
         ImportSteps.fillRDFTextSnippet(REPLACEMENT_DATA);
         ImportSteps.selectRDFFormat("TriG");
         ImportSteps.clickImportTextSnippetButton();
-        importFromData(true, "http://www.openrdf.org/schema/sesame#nil")
+        importFromData(true, "http://www.openrdf.org/schema/sesame#nil");
         verifyGraphData("The default graph", "urn:replaced-s1", "urn:replaced-p1", "urn:replaced-o1", "http://www.ontotext.com/explicit", true, "urn:s1");
     });
 
@@ -212,7 +211,7 @@ describe('Import user data: Text snippet', () => {
         ImportSteps.selectNamedGraph();
         ImportSteps.fillNamedGraph(CONTEXT);
         ImportSteps.importFromSettingsDialog();
-        ImportSteps.verifyImportStatus(TEXT_SNIPPET, SUCCESS_MESSAGE);
+        ImportSteps.checkUserDataImportedResource(0, TEXT_SNIPPET);
 
         // Go to Graphs overview
         cy.visit('/graphs');
@@ -236,7 +235,7 @@ describe('Import user data: Text snippet', () => {
         ImportSteps.fillNamedGraph(CONTEXT);
         ImportSteps.fillContextLink('https://w3c.github.io/json-ld-api/tests/compact/0007-context.jsonld');
         ImportSteps.importFromSettingsDialog();
-        ImportSteps.verifyImportStatus(TEXT_SNIPPET, SUCCESS_MESSAGE);
+        ImportSteps.checkUserDataImportedResource(0, TEXT_SNIPPET);
         const graphName = CONTEXT.slice(0, CONTEXT.lastIndexOf('.'));
         // Verify that created graph can be found
         verifyGraphData(graphName, "rdf:Property", "rdf:Property", "rdf:Property", "http://example.org/graph", false);

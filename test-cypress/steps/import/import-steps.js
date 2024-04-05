@@ -138,11 +138,11 @@ class ImportSteps {
     }
 
     static getUserDataUploadedFilesTable() {
-        return ImportSteps.getView().find('#import-user table');
+        return ImportSteps.getView().find('#import-user import-resource-tree');
     }
 
     static getUserDataUploadedFiles() {
-        return ImportSteps.getUserDataUploadedFilesTable().find('.import-file-row');
+        return ImportSteps.getUserDataUploadedFilesTable().find('.import-resource-row.title-row');
     }
 
     static getUserDataUploadedFile(index) {
@@ -150,7 +150,35 @@ class ImportSteps {
     }
 
     static getUserDataUploadedFileStatus(index) {
-        return ImportSteps.getUserDataUploadedFile(index).find('.import-status');
+        return ImportSteps.getUserDataUploadedFile(index).next().find('import-resource-message');
+    }
+
+    static checkUserDataImportedResource(index, resourceName, expectedStatus) {
+        const status = expectedStatus || 'Imported successfully';
+        ImportSteps.getUserDataUploadedFile(index).should('contain', resourceName);
+        ImportSteps.getUserDataUploadedFileStatus(index).should('contain', status);
+    }
+
+    static getStatusSelectMenu() {
+        return ImportSteps.getUserDataUploadedFilesTable().find('.import-resource-status-dropdown');
+    }
+
+    static selectAllFiles() {
+        this.getStatusSelectMenu().click()
+            .find('.dropdown-menu .dropdown-item').contains('All').click();
+    }
+
+    static selectNoneFiles() {
+        this.getStatusSelectMenu().click()
+            .find('.dropdown-menu .dropdown-item').contains('None').click();
+    }
+
+    static getRemoveResourcesButton() {
+        return this.getUserDataUploadedFilesTable().find('.remove-resources-btn');
+    }
+
+    static removeSelectedResources() {
+        ImportSteps.getRemoveResourcesButton().click();
     }
 
     static deleteUploadedFile(index) {

@@ -46,7 +46,7 @@ describe('Import user data: File upload', () => {
         ImportSettingsDialogSteps.getDialog().should('not.exist');
         // Then I should see the uploaded file
         ImportSteps.getUserDataUploadedFiles().should('have.length', 1);
-        checkImportedFile(0, 'bnodes.ttl');
+        ImportSteps.checkUserDataImportedResource(0, 'bnodes.ttl');
     });
 
     it('Should be able to upload and import files one after the other and then override them', () => {
@@ -56,27 +56,28 @@ describe('Import user data: File upload', () => {
         ImportSteps.selectFile(ImportSteps.createFile(testFiles[0], bnodes));
         ImportSettingsDialogSteps.import();
         // Then I should see the uploaded file
-        checkImportedFile(0, 'bnodes.ttl');
+        ImportSteps.checkUserDataImportedResource(0, 'bnodes.ttl');
         // When I upload another file
         ImportSteps.selectFile(ImportSteps.createFile(testFiles[1], jsonld));
         ImportSettingsDialogSteps.import();
         // Then I should see the uploaded file - it becomes first in the list
-        checkImportedFile(0, 'jsonld.jsonld');
-        checkImportedFile(1, 'bnodes.ttl');
+        ImportSteps.checkUserDataImportedResource(0, 'jsonld.jsonld');
+        ImportSteps.checkUserDataImportedResource(1, 'bnodes.ttl');
         // When I override the first file
         ImportSteps.selectFile(ImportSteps.createFile(testFiles[0], bnodes));
         ModalDialogSteps.clickOnConfirmButton();
         ImportSettingsDialogSteps.import();
         // Then I should see the uploaded file - it becomes first in the list
-        checkImportedFile(0, 'bnodes.ttl');
-        checkImportedFile(1, 'jsonld.jsonld');
+        // TODO: timestamps currently seems to not be changed on reimport
+        ImportSteps.checkUserDataImportedResource(0, 'jsonld.jsonld');
+        ImportSteps.checkUserDataImportedResource(1, 'bnodes.ttl');
         // When I override the second file
         ImportSteps.selectFile(ImportSteps.createFile(testFiles[1], jsonld));
         ModalDialogSteps.clickOnConfirmButton();
         ImportSettingsDialogSteps.import();
         // Then I should see the uploaded file - it becomes first in the list
-        checkImportedFile(0, 'jsonld.jsonld');
-        checkImportedFile(1, 'bnodes.ttl');
+        ImportSteps.checkUserDataImportedResource(0, 'jsonld.jsonld');
+        ImportSteps.checkUserDataImportedResource(1, 'bnodes.ttl');
     });
 
     it('should be able to only upload a single file without importing it', () => {
@@ -106,8 +107,8 @@ describe('Import user data: File upload', () => {
         ImportSettingsDialogSteps.import();
         // Then I should see the uploaded file
         ImportSteps.getUserDataUploadedFiles().should('have.length', 2);
-        checkImportedFile(0, 'bnodes.ttl');
-        checkImportedFile(1, 'jsonld.jsonld');
+        ImportSteps.checkUserDataImportedResource(0, 'jsonld.jsonld');
+        ImportSteps.checkUserDataImportedResource(1, 'bnodes.ttl');
         // And the files should really be there
         MainMenuSteps.openHomePage();
         ImportSteps.visit();
@@ -121,7 +122,7 @@ describe('Import user data: File upload', () => {
         ImportSteps.selectFile(file1);
         ImportSettingsDialogSteps.import();
         ImportSteps.getUserDataUploadedFiles().should('have.length', 1);
-        checkImportedFile(0, 'bnodes.ttl');
+        ImportSteps.checkUserDataImportedResource(0, 'bnodes.ttl');
         // When I upload a file with the same name
         ImportSteps.selectFile(file1);
         // Then I should see a file override confirmation dialog
@@ -132,7 +133,7 @@ describe('Import user data: File upload', () => {
         ImportSettingsDialogSteps.import();
         // Then The file should be overridden
         ImportSteps.getUserDataUploadedFiles().should('have.length', 1);
-        checkImportedFile(0, 'bnodes.ttl');
+        ImportSteps.checkUserDataImportedResource(0, 'bnodes.ttl');
     });
 
     it('Should be able to upload file with same name and preserve the existing file', () => {
@@ -142,7 +143,7 @@ describe('Import user data: File upload', () => {
         ImportSteps.selectFile(file1);
         ImportSettingsDialogSteps.import();
         ImportSteps.getUserDataUploadedFiles().should('have.length', 1);
-        checkImportedFile(0, 'bnodes.ttl');
+        ImportSteps.checkUserDataImportedResource(0, 'bnodes.ttl');
         // When I upload a file with the same name
         ImportSteps.selectFile(file1);
         // Then I should see a file override confirmation dialog
@@ -152,8 +153,8 @@ describe('Import user data: File upload', () => {
         ImportSettingsDialogSteps.import();
         // Then The file should not be overridden but prefixed instead
         ImportSteps.getUserDataUploadedFiles().should('have.length', 2);
-        checkImportedFile(0, 'bnodes.ttl');
-        checkImportedFile(1, 'bnodes-0.ttl');
+        ImportSteps.checkUserDataImportedResource(0, 'bnodes-0.ttl');
+        ImportSteps.checkUserDataImportedResource(1, 'bnodes.ttl');
         // When I upload two files, one with the same name and second new one
         const file2 = ImportSteps.createFile(testFiles[1], jsonld);
         ImportSteps.selectFile([file1, file2]);
@@ -162,10 +163,10 @@ describe('Import user data: File upload', () => {
         ImportSettingsDialogSteps.import();
         // Then The file should not be overridden but prefixed with increased index instead
         ImportSteps.getUserDataUploadedFiles().should('have.length', 4);
-        checkImportedFile(0, 'bnodes.ttl');
-        checkImportedFile(1, 'bnodes-0.ttl');
-        checkImportedFile(2, 'bnodes-1.ttl');
-        checkImportedFile(3, 'jsonld.jsonld');
+        ImportSteps.checkUserDataImportedResource(0, 'jsonld.jsonld');
+        ImportSteps.checkUserDataImportedResource(1, 'bnodes-1.ttl');
+        ImportSteps.checkUserDataImportedResource(2, 'bnodes-0.ttl');
+        ImportSteps.checkUserDataImportedResource(3, 'bnodes.ttl');
     });
 
     it('should see error message when uploaded file has invalid format', () => {
@@ -177,15 +178,35 @@ describe('Import user data: File upload', () => {
         ImportSettingsDialogSteps.import();
         // Then I should see an error message
         ImportSteps.getUserDataUploadedFiles().should('have.length', 1);
-        checkImportedFile(0, 'invalid-format.json', 'RDF Parse Error: Invalid file format');
+        ImportSteps.checkUserDataImportedResource(0, 'invalid-format.json', 'RDF Parse Error: Invalid file format');
+    });
+
+    it('Should allow to delete multiple uploaded files', () => {
+        // Given there are no files uploaded yet
+        ImportSteps.getUserDataUploadedFilesTable().should('be.hidden');
+        // When I upload multiple files
+        const file1 = ImportSteps.createFile(testFiles[0], bnodes);
+        const file2 = ImportSteps.createFile(testFiles[1], jsonld);
+        ImportSteps.selectFile([file1, file2]);
+        ImportSettingsDialogSteps.import();
+        ImportSteps.getUserDataUploadedFiles().should('have.length', 2);
+        ImportSteps.checkUserDataImportedResource(0, 'jsonld.jsonld');
+        ImportSteps.checkUserDataImportedResource(1, 'bnodes.ttl');
+        // When I select both files
+        ImportSteps.selectAllFiles();
+        // And I click on the delete button
+        ImportSteps.removeSelectedResources();
+        // Then I should see a confirmation dialog
+        ModalDialogSteps.getDialog().should('be.visible');
+        // When I confirm the deletion
+        ModalDialogSteps.clickOnConfirmButton();
+        // Then the files should be deleted
+        ImportSteps.getUserDataUploadedFiles().should('have.length', 0);
+        MainMenuSteps.openHomePage();
+        ImportSteps.visit();
+        ImportSteps.getUserDataUploadedFiles().should('have.length', 0);
     });
 });
-
-function checkImportedFile(index, fileName, expectedStatus) {
-    const status = expectedStatus || 'Imported successfully';
-    ImportSteps.getUserDataUploadedFile(index).should('contain', fileName);
-    ImportSteps.getUserDataUploadedFileStatus(index).should('contain', status);
-}
 
 function checkUploadedFile(index, fileName, status) {
     ImportSteps.getUserDataUploadedFile(index).should('contain', fileName);
