@@ -50,16 +50,12 @@
 }
 
 .import-resource-tree .import-resource-table .import-resource-cell {
-    font-size: 13px;
-    font-weight: 400;
     line-height: 18px;
 }
 
 .import-resource-tree .import-resource-table .import-resource-title {
     display: flex;
     align-items: center;
-    font-size: 14px;
-    font-weight: 400;
     line-height: 18px;
 }
 
@@ -99,7 +95,7 @@
 .import-resource-tree .import-resource-table .import-resource-modified,
 .import-resource-tree .import-resource-table .import-resource-imported,
 .import-resource-tree .import-resource-table .import-resource-import-resource-size {
-    width: 120px;
+    min-width: 120px;
 }
 
 .import-resource-tree .import-resource-table .import-resource-cell.import-resource-message,

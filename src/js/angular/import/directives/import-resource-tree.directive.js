@@ -1,4 +1,5 @@
 import {ImportResourceStatus} from "../../models/import/import-resource-status";
+import 'angular/import/directives/import-resource-message.directive';
 
 const TYPE_FILTER_OPTIONS = {
     'FILE': 'FILE',
@@ -13,7 +14,7 @@ const STATUS_OPTIONS = {
     'NOT_IMPORTED': 'NOT_IMPORTED'
 };
 
-const modules = [];
+const modules = ['graphdb.framework.import.import-resource-message'];
 
 angular
     .module('graphdb.framework.import.import-resource-tree', modules)

@@ -8,6 +8,7 @@ export const ImportResourceStatus = {
      * Initial state. The rdf resources in this state are available in the server, but its data is not inserted into GraphDB.
      */
     'NONE': 'NONE',
+    'UPLOADING': 'UPLOADING',
     /**
      * The import of rdf resources in this state was not started because GraphDB was stopped.
      */

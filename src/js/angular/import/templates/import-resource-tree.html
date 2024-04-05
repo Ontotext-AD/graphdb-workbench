@@ -109,7 +109,7 @@
                 class="import-resource-cell">
                 <span class="import-resource-title">
                     <em ng-class="{'icon-folder': resource.isDirectory(), 'icon-file': resource.isFile()}"></em>
-                    <span>{{resource.name}}</span>
+                    <strong>{{resource.name}}</strong>
                 </span>
             </td>
             <td class="import-resource-cell">
@@ -127,8 +127,8 @@
         <tr ng-repeat-end class="import-resource-row" ng-class="{ 'even-row-end': $even, 'odd-row-end': $odd}">
             <td class="import-resource-cell import-resource-cell-select"></td>
             <td ng-style="{'padding-left': (filterByType !== TYPE_FILTER_OPTIONS.FILE ? resource.indent : '8px')}"
-                class="import-resource-cell import-resource-message">
-                {{ resource.importResource.message || ''}}
+                class="import-resource-cell">
+                <import-resource-message resource="resource"></import-resource-message>
             </td>
             <td class="import-resource-cell import-resource-size">
                 {{ resource.importResource.size || ''}}
