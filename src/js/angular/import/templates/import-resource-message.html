@@ -1,0 +1,19 @@
+<div class="import-resource-message">
+    <span ng-if="resource.importResource.status === ImportResourceStatus.NONE && resource.importResource.message"
+          class="text-info">
+                    <small>{{resource.importResource.message || ''}}</small>
+                </span>
+    <span ng-if="resource.importResource.status === ImportResourceStatus.DONE" class="text-success">
+                    <em class="icon-check"></em>
+                    <small>{{resource.importResource.message || ''}}</small>
+                </span>
+    <span ng-show="resource.importResource.status === ImportResourceStatus.ERROR" class="text-danger">
+                    <em class="icon-warning"></em>
+                    <small>{{resource.importResource.message || ''}}</small>
+                </span>
+    <span class="text-secondary import-status-loader"
+          ng-show="resource.importResource.status === ImportResourceStatus.IMPORTING || resource.importResource.status === ImportResourceStatus.UPLOADING || resource.importResource.status === ImportResourceStatus.PENDING || resource.importResource.status === ImportResourceStatus.INTERRUPTING">
+                    <em class="icon-reload loader"></em>
+                    <small>{{toTitleCase(resource.importResource.status)}}...</small>
+                </span>
+</div>
