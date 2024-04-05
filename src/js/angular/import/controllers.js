@@ -336,8 +336,8 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             removeEntry(resourceNames);
         };
 
-        $scope.onReset = (selectedResources) => {
-            console.log('The resources ', selectedResources, 'have to be reset');
+        $scope.onReset = (resources = []) => {
+            resetStatusOrRemoveEntry(resources.map((resource) => resource.importResource.name), false);
         };
 
         $scope.importAll = (selectedResources, withoutChangingSettings) => {
@@ -429,6 +429,9 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         };
 
         const resetStatusOrRemoveEntry = (names, remove) => {
+            if (!names || names.length < 1) {
+                return;
+            }
             const resetService = $scope.viewUrl === OPERATION.UPLOAD ? ImportRestService.resetUserDataStatus : ImportRestService.resetServerFileStatus;
             resetService($repositories.getActiveRepository(), names, remove).success(function () {
                 $scope.updateList(true);
