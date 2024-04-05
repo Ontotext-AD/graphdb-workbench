@@ -158,6 +158,14 @@
                             ng-click="onImport({resource: resource})">
                         <span class="icon-import"></span>
                     </button>
+                    <button class="btn btn-sm"
+                            ng-click="stopImport(resource)"
+                            ng-disabled="resource.importResource.status === ImportResourceStatus.INTERRUPTING"
+                            ng-show="resource.importResource.status === ImportResourceStatus.IMPORTING || resource.importResource.status === ImportResourceStatus.UPLOADING || resource.importResource.status === ImportResourceStatus.PENDING || resource.importResource.status === ImportResourceStatus.INTERRUPTING"
+                            gdb-tooltip="{{'import.import_resource_tree.action.interrupt_import' | translate}}">
+                        <span class="icon-close"></span>
+                        {{'import.import_resource_tree.action.abort' | translate}}
+                    </button>
                 </div>
             </td>
         </tr>

@@ -999,6 +999,10 @@
                 "NONE": "None",
                 "IMPORTED": "Imported",
                 "NOT_IMPORTED": "Not imported"
+            },
+            "action": {
+                "interrupt_import": "Interrupt import",
+                "abort": "Abort"
             }
         }
     },
