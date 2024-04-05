@@ -32,6 +32,10 @@ function importResourceTreeDirective($timeout) {
              * @type {ImportResourceTreeElement}
              */
             resources: '=',
+            /**
+             * If the type filter buttons should be visible.
+             */
+            showTypeFilter: '=',
             onImport: '&',
             onImportAll: '&',
             onDelete: '&',
@@ -39,17 +43,20 @@ function importResourceTreeDirective($timeout) {
             onRemove: '&'
         },
         link: ($scope, element, attrs) => {
+
             // =========================
             // Public variables
             // =========================
             $scope.displayResources = [];
+            /**
+             * @type {ImportResourceTreeElement[]}
+             */
             $scope.selectedResources = [];
             $scope.TYPE_FILTER_OPTIONS = TYPE_FILTER_OPTIONS;
             $scope.filterByType = TYPE_FILTER_OPTIONS.ALL;
             $scope.filterByFileName = '';
             $scope.STATUS_OPTIONS = STATUS_OPTIONS;
             $scope.selectedByStatus = undefined;
-
 
             // =========================
             // Public functions
@@ -97,7 +104,7 @@ function importResourceTreeDirective($timeout) {
 
             $scope.onRemoveResources = () => {
                 if ($scope.selectedResources && $scope.selectedResources.length > 0) {
-                    $scope.onRemove({selectedResources: $scope.selectedResources()});
+                    $scope.onRemove({selectedResources: $scope.selectedResources});
                 }
             };
 

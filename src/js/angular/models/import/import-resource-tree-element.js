@@ -3,13 +3,37 @@
  */
 export class ImportResourceTreeElement {
     constructor() {
+        /**
+         * @type {ImportResource}
+         */
         this.importResource = undefined;
+        /**
+         * @type {ImportResourceTreeElement}
+         */
         this.parent = undefined;
+        /**
+         * @type {boolean}
+         */
         this.partialSelected = false;
+        /**
+         * @type {number}
+         */
         this.indent = 0;
+        /**
+         * @type {string}
+         */
         this.name = '';
+        /**
+         * @type {boolean}
+         */
         this.selected = false;
+        /**
+         * @type {ImportResourceTreeElement[]}
+         */
         this.directories = [];
+        /**
+         * @type {ImportResourceTreeElement[]}
+         */
         this.files = [];
     }
 
@@ -54,6 +78,10 @@ export class ImportResourceTreeElement {
             return this;
         }
         return this.parent.getRoot();
+    }
+
+    isRoot() {
+        return this.parent === undefined;
     }
 
     /**
@@ -159,7 +187,7 @@ export class ImportResourceTreeElement {
 
     getAllSelected() {
         const allSelected = [];
-        if (this.selected) {
+        if (!this.isRoot() && this.selected) {
             allSelected.push(this);
         }
 

@@ -94,7 +94,11 @@ describe('Import user data', () => {
         // Then the help should not appear because I have closed it explicitly
         ImportSteps.getImportUserDataHelp().should('not.exist');
         // When I delete the uploaded file
-        ImportSteps.deleteUploadedFile(0);
+        // ImportSteps.deleteUploadedFile(0);
+        // TODO: use batch remove until single file delete is ready
+        ImportSteps.selectAllFiles();
+        ImportSteps.removeSelectedResources();
+        ModalDialogSteps.getDialog().should('be.visible');
         ModalDialogSteps.clickOnConfirmButton();
         ModalDialogSteps.getDialog().should('not.exist');
         // Then the help should appear again

@@ -424,7 +424,7 @@ describe('Repositories', () => {
         RepositorySteps.saveRepository();
         RepositorySteps.selectRepoFromDropdown(repositoryId);
 
-        //Import a shape in the SHACL graph
+        // Import a shape in the SHACL graph
         ImportSteps.visitUserImport(repositoryId);
         ImportSteps
             .openImportTextSnippetDialog()
@@ -432,23 +432,25 @@ describe('Repositories', () => {
             .selectRDFFormat("TriG")
             .clickImportTextSnippetButton()
             .importFromSettingsDialog()
-            .verifyImportStatus('Text snippet', 'Imported successfully');
-        //Import data that conforms with the shape - import is successfull
+            .checkUserDataImportedResource(0, 'Text snippet');
+        // Import data that conforms with the shape - import is successfully
+        // The newly imported file is first in the list
         ImportSteps
             .openImportTextSnippetDialog()
             .fillRDFTextSnippet(SHACL_CORRECT_DATA)
             .selectRDFFormat("Turtle")
             .clickImportTextSnippetButton()
             .importFromSettingsDialog()
-            .verifyImportStatus('Text snippet', 'Imported successfully');
-        //Import data that does not conform with the shape - GraphDBShaclSailValidationException
+            .checkUserDataImportedResource(0, 'Text snippet');
+        // Import data that does not conform with the shape - GraphDBShaclSailValidationException
+        // The newly imported file is first in the list
         ImportSteps
             .openImportTextSnippetDialog()
             .fillRDFTextSnippet(SHACL_INCORRECT_DATA)
             .selectRDFFormat("Turtle")
             .clickImportTextSnippetButton()
             .importFromSettingsDialog()
-            .verifyImportStatus('Text snippet', 'org.eclipse.rdf4j.sail.shacl.GraphDBShaclSailValidationException: Failed SHACL validation');
+            .checkUserDataImportedResource(0, 'Text snippet', 'org.eclipse.rdf4j.sail.shacl.GraphDBShaclSailValidationException: Failed SHACL validation');
     });
 
     it('should not allow editing of repository name if repository is in cluster', () => {

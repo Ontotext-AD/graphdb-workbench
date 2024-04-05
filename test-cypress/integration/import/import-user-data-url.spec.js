@@ -26,7 +26,7 @@ describe('Import user data: URL import', () => {
         ImportSteps.clickImportUrlButton();
         // Without changing settings
         ImportSteps.importFromSettingsDialog();
-        ImportSteps.verifyImportStatus(IMPORT_URL, SUCCESS_MESSAGE);
+        ImportSteps.checkUserDataImportedResource(0, IMPORT_URL);
     });
 
     it('Test import file via URL with invalid RDF format selected', () => {
@@ -34,7 +34,7 @@ describe('Import user data: URL import', () => {
         ImportSteps.selectRDFFormat(JSONLD_FORMAT);
         ImportSteps.clickImportUrlButton();
         ImportSteps.importFromSettingsDialog();
-        ImportSteps.verifyImportStatus(IMPORT_URL, RDF_ERROR_MESSAGE);
+        ImportSteps.checkUserDataImportedResource(0, IMPORT_URL, RDF_ERROR_MESSAGE);
     });
 
     it('Test import file via URL successfully with valid RDF format selected', () => {
@@ -42,7 +42,7 @@ describe('Import user data: URL import', () => {
         ImportSteps.selectRDFFormat(VALID_URL_RDF_FORMAT);
         ImportSteps.clickImportUrlButton();
         ImportSteps.importFromSettingsDialog();
-        ImportSteps.verifyImportStatus(IMPORT_URL, SUCCESS_MESSAGE);
+        ImportSteps.checkUserDataImportedResource(0, IMPORT_URL);
     });
 
     it('should import JSON-LD file via URL with correct request body', () => {
@@ -65,15 +65,7 @@ describe('Import user data: URL import', () => {
         ImportSteps.selectRDFFormat(JSONLD_FORMAT);
         ImportSteps.clickImportUrlButton();
         ImportSteps.importFromSettingsDialog();
-        ImportSteps.verifyImportStatus(IMPORT_JSONLD_URL, 'https://example.com/0007-context.jsonld');
-    });
-
-    it('should allow to delete uploaded files', () => {
-        ImportSteps.openImportURLDialog(IMPORT_URL);
-        ImportSteps.clickImportUrlButton();
-        ImportSteps.importFromSettingsDialog();
-        ImportSteps.verifyImportStatus(IMPORT_URL, SUCCESS_MESSAGE);
-        ImportSteps.removeUploadedFiles();
+        ImportSteps.checkUserDataImportedResource(0, IMPORT_JSONLD_URL, 'https://example.com/0007-context.jsonld');
     });
 });
 

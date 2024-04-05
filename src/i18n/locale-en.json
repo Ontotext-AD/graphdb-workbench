@@ -934,7 +934,7 @@
         "reset.status": "Reset status",
         "remove.selected": "Remove the selected items from the list",
         "remove.btn": "Remove",
-        "remove.confirm.msg": "Are you sure you want to remove selected files: '{{name}}'?",
+        "remove.confirm.msg": "Are you sure you want to remove selected files: {{name}}",
         "last.import.settings": "Last import settings",
         "mode.not.supported.constraint": "This mode is not supported when importing multiple items.",
         "enable.replace.option": "Enable this to replace the data in one or more graphs with the imported data.",

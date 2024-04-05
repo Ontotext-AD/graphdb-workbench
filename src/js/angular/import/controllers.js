@@ -9,7 +9,7 @@ import {FileFormats} from "../models/import/file-formats";
 import * as stringUtils from "../utils/string-utils";
 import {FileUtils} from "../utils/file-utils";
 import {DateUtils} from "../utils/date-utils";
-import {toImportResource, toImportServerResource} from "../rest/mappers/import-mapper";
+import {toImportResource, toImportServerResource, toImportUserDataResource} from "../rest/mappers/import-mapper";
 import {ImportResourceTreeElement} from "../models/import/import-resource-tree-element";
 import {decodeHTML} from "../../../app";
 import {FilePrefixRegistry} from "./file-prefix-registry";
@@ -33,6 +33,11 @@ const importViewModule = angular.module('graphdb.framework.impex.import.controll
 const OPERATION = {
     UPLOAD: 'upload',
     SERVER: 'server'
+};
+
+const TABS = {
+    USER: 'user',
+    SERVER:'server'
 };
 
 const USER_DATA_TYPE = {
@@ -65,6 +70,8 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         $scope.fileFormatsHuman = FileFormats.getFileFormatsHuman() + $translate.instant('import.gz.zip');
         $scope.textFileFormatsHuman = FileFormats.getTextFileFormatsHuman();
         $scope.maxUploadFileSizeMB = 0;
+        $scope.serverImportTree = new ImportResourceTreeElement();
+        $scope.userData = new ImportResourceTreeElement();
 
         // =========================
         // Public functions
@@ -184,8 +191,8 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                 .success(function () {
                     $scope.updateList();
                 }).error(function (data) {
-                    toastr.warning($translate.instant('import.error.could.not.stop', {data: getError(data)}));
-                });
+                toastr.warning($translate.instant('import.error.could.not.stop', {data: getError(data)}));
+            });
         };
 
         $scope.importable = () => {
@@ -261,25 +268,10 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             $scope.resetStatus($scope.getSelectedFiles());
         };
 
-        $scope.removeEntry = (names = []) => {
-            ModalService.openConfirmation(
-                $translate.instant('common.confirm'),
-                $translate.instant('import.remove.confirm.msg', {name: names.join(', ')}),
-                () => {
-                    resetStatusOrRemoveEntry(names, true);
-                });
-        };
-
-        $scope.removeEntrySelected = () => {
-            $scope.removeEntry($scope.getSelectedFiles());
-        };
-
         $scope.isLocalLocation = () => {
             const location = $repositories.getActiveLocation();
             return location && location.local;
         };
-
-        // Settings
 
         $scope.filterSettings = (fileName) => {
             let filtered = _.omitBy($scope.savedSettings[fileName], _.isNull);
@@ -298,8 +290,8 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                 .success(function (data) {
                     $scope.defaultSettings = data;
                 }).error(function (data) {
-                    toastr.warning($translate.instant('import.error.default.settings', {data: getError(data)}));
-                });
+                toastr.warning($translate.instant('import.error.default.settings', {data: getError(data)}));
+            });
         };
 
         $scope.pritifySettings = (settings) => {
@@ -335,21 +327,13 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             console.log('The resource ', importResource, 'have to be deleted');
         };
 
-        // =========================
-        // Private functions
-        // =========================
-        $scope.serverImportTree = new ImportResourceTreeElement();
-
-        const getSettingsFor = (fileName, withDefaultSettings) => {
-            if (!withDefaultSettings && !_.isEmpty(fileName) && !_.isEmpty($scope.savedSettings[fileName])) {
-                return $scope.savedSettings[fileName];
-            } else {
-                return _.cloneDeep($scope.defaultSettings);
-            }
-        };
-
+        /**
+         * Triggers a remove operation in the backend for selected resources.
+         * @param {ImportResourceTreeElement[]} selectedResources - The resources to be removed.
+         */
         $scope.onRemove = (selectedResources) => {
-            console.log('The resources ', selectedResources, 'have to be removed');
+            const resourceNames = selectedResources.map((resource) => resource.name);
+            removeEntry(resourceNames);
         };
 
         $scope.onReset = (selectedResources) => {
@@ -360,6 +344,34 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             console.log('The resources ', selectedResources, ' have to be imported withoutChangingSettings: ' + withoutChangingSettings);
         };
 
+        // =========================
+        // Private functions
+        // =========================
+
+        /**
+         * Opens a confirmation dialog to confirm the removal of the selected resources. If removal is confirmed, a
+         * request is sent to the backend with the selected file names to be removed.
+         * @param {string[]} names - The names of the resources to be removed.
+         */
+        const removeEntry = (names = []) => {
+            const namesString = `<br/>${names.join('<br/>')}`;
+            const message = decodeHTML($translate.instant('import.remove.confirm.msg', {name: namesString}));
+            ModalService.openConfirmation(
+                $translate.instant('common.confirm'),
+                message,
+                () => {
+                    resetStatusOrRemoveEntry(names, true);
+                });
+        };
+
+        const getSettingsFor = (fileName, withDefaultSettings) => {
+            if (!withDefaultSettings && !_.isEmpty(fileName) && !_.isEmpty($scope.savedSettings[fileName])) {
+                return $scope.savedSettings[fileName];
+            } else {
+                return _.cloneDeep($scope.defaultSettings);
+            }
+        };
+
         // TODO: temporary exposed in the scope because it is called via scope.parent from the child TabsCtrl which should be changed
         /**
          * @param {boolean} force - Force the files list to be replaced with the new data
@@ -368,10 +380,12 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             const filesLoader = $scope.viewUrl === OPERATION.UPLOAD ? ImportRestService.getUploadedFiles : ImportRestService.getServerFiles;
             filesLoader($repositories.getActiveRepository()).success(function (data) {
 
-                // Commented during development. When evrething is ready this functionality have to change current one.
-                // if (OPERATION.SERVER === $scope.viewType) {
-                //     $scope.serverImportTree = toImportServerResource(toImportResource(data));
-                // }
+                // Commented during development. When everything is ready this functionality have to change current one.
+                if (TABS.SERVER === $scope.viewType) {
+                    $scope.serverImportTree = toImportServerResource(toImportResource(data));
+                } else if (TABS.USER === $scope.viewType) {
+                    $scope.userData = toImportUserDataResource(toImportResource(data));
+                }
 
                 // reload all files
                 if ($scope.files.length === 0 || force) {
@@ -700,10 +714,10 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
             .success(function () {
                 $scope.updateList();
             }).error(function (data) {
-                toastr.error($translate.instant('import.could.not.send.data', {data: getError(data)}));
-                file.status = FILE_STATUS.ERROR;
-                file.message = getError(data);
-            }).finally(nextCallback || function () {});
+            toastr.error($translate.instant('import.could.not.send.data', {data: getError(data)}));
+            file.status = FILE_STATUS.ERROR;
+            file.message = getError(data);
+        }).finally(nextCallback || function () {});
     };
 
     const updateTextImport = (settings) => {

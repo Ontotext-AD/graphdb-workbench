@@ -8,6 +8,20 @@ export const toImportResource = (importResourcesServerData) => {
 export const INDENT = 30;
 
 /**
+ * Convert list with {@link ImportResource} to a list of {@link ImportResourceTreeElement}.
+ * @param {ImportResource[]} importResources list of {@link ImportResource}
+ * @return {ImportResourceTreeElement} the root of the import user resource tree.
+ */
+export const toImportUserDataResource = (importResources) => {
+    const root = new ImportResourceTreeElement();
+    importResources
+        .toSorted((a, b) => b.modifiedOn - a.modifiedOn)
+        .forEach((resource) => addResourceToTree(root, resource));
+    calculateElementIndent(root);
+    return root;
+};
+
+/**
  * Convert list with {@link ImportResource} to {@link ImportResourceTreeElement} tree.
  *
  * @param {ImportResource[]} importResources
@@ -65,7 +79,15 @@ const getOrCreateParent = (importServerResource, directoryPath) => {
     return parent;
 };
 
+/**
+ * Returns the path of the resource.
+ * @param {ImportResource} resource
+ * @return {string[]}
+ */
 const getPath = (resource) => {
+    if (resource.isURL()) {
+        return [resource.name];
+    }
     // Matches either '/' or '\'.
     const pathSeparatorRegex = /[/\\]/;
     if (pathSeparatorRegex.test(resource.name)) {
