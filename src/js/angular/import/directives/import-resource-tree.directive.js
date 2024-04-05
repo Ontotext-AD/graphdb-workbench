@@ -57,6 +57,7 @@ function importResourceTreeDirective($timeout) {
             $scope.filterByFileName = '';
             $scope.STATUS_OPTIONS = STATUS_OPTIONS;
             $scope.selectedByStatus = undefined;
+            $scope.ImportResourceStatus = ImportResourceStatus;
 
             // =========================
             // Public functions
@@ -93,13 +94,17 @@ function importResourceTreeDirective($timeout) {
             };
 
             $scope.onResetStatus = () => {
-                if ($scope.selectedResources && $scope.selectedResources.length > 0) {
-                    $scope.onReset({selectedResources: $scope.selectedResources});
+                if (!$scope.selectedResources) {
+                    return;
+                }
+                const files = $scope.selectedResources.filter((resource) => !resource.isDirectory());
+                if (files.length > 0) {
+                    $scope.onReset({resources: files});
                 }
             };
 
             $scope.resetStatus = (importResource) => {
-                $scope.onReset({selectedResources: [importResource]});
+                $scope.onReset({resources: [importResource]});
             };
 
             $scope.onRemoveResources = () => {

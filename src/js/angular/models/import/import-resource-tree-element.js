@@ -74,7 +74,7 @@ export class ImportResourceTreeElement {
      * @return {ImportResourceTreeElement} - the root resource of the paren-child tree.
      */
     getRoot() {
-        if (this.parent === undefined) {
+        if (this.isRoot()) {
             return this;
         }
         return this.parent.getRoot();
@@ -183,6 +183,10 @@ export class ImportResourceTreeElement {
         }
         this.files.forEach((file) => file.selectAllWithStatus(statuses));
         this.directories.forEach((directory) => directory.selectAllWithStatus(statuses));
+    }
+
+    isRoot() {
+        return this.parent === undefined;
     }
 
     getAllSelected() {
