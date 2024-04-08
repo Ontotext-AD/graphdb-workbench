@@ -19,6 +19,19 @@ export class ImportResourceTreeElement {
          * @type {number}
          */
         this.indent = 0;
+
+        /**
+         * @type {boolean}
+         */
+        this.isImportable = false;
+        /**
+         * @type {boolean}
+         */
+        this.hasOngoingImport = false;
+        /**
+         * @type {boolean}
+         */
+        this.canResetStatus = false;
         /**
          * @type {string}
          */
@@ -99,7 +112,7 @@ export class ImportResourceTreeElement {
      * @return {boolean} true if the resource contains rdf data.
      */
     isFile() {
-        return this.importResource.isFile();
+        return !this.isRoot() && this.importResource.isFile();
     }
 
     /**
