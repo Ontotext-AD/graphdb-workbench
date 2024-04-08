@@ -380,9 +380,9 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             const filesLoader = $scope.viewUrl === OPERATION.UPLOAD ? ImportRestService.getUploadedFiles : ImportRestService.getServerFiles;
             filesLoader($repositories.getActiveRepository()).success(function (data) {
 
-                // Commented during development. When everything is ready this functionality have to change current one.
                 if (TABS.SERVER === $scope.viewType) {
-                    $scope.serverImportTree = toImportServerResource(toImportResource(data));
+                    // Commented during development. When everything is ready this functionality have to change current one.
+                    // $scope.serverImportTree = toImportServerResource(toImportResource(data));
                 } else if (TABS.USER === $scope.viewType) {
                     $scope.userData = toImportUserDataResource(toImportResource(data));
                 }
