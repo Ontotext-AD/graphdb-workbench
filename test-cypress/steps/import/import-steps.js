@@ -326,7 +326,7 @@ class ImportSteps {
     }
 
     static clickImportOnRow(row) {
-        this.getImportFileRow(row).find('.pull-right').contains('Import').click();
+        cy.get('.import-file-btn').contains('Import').click();
 
         return ImportSteps;
     }
