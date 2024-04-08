@@ -32,11 +32,11 @@
             </div>
             <div class="import-resource-selected-actions btn-group"
                  ng-if="selectedResources && selectedResources.length > 0">
-                <div class="btn-group" uib-dropdown
+                <div class="btn-group batch-import-dropdown" uib-dropdown
                      uib-popover="{{'import.selected.items' | translate}}"
                      popover-trigger="mouseenter"
                      popover-placement="top">
-                    <button type="button" class="btn btn-primary" ng-click="importAll(false)">
+                    <button type="button" class="btn btn-primary batch-import-btn" ng-click="importAll(false)">
                         <span class="icon-import"></span>
                         {{'common.import' | translate}}
                     </button>
@@ -46,14 +46,15 @@
                     </button>
                     <ul class="dropdown-menu" role="menu">
                         <li>
-                            <button type="button" class="dropdown-item import-without-change-btn"
+                            <button type="button" class="dropdown-item import-without-change-btn batch-import-without-change-btn"
                                     ng-click="importAll(true)">
                                 {{'import.without.changing.settings' | translate}}
                             </button>
                         </li>
                     </ul>
                 </div>
-                <button class="btn btn-secondary reset-status-btn" type="button" ng-click="onResetStatus()"
+                <button class="btn btn-secondary reset-status-btn batch-reset-btn" type="button" ng-click="onResetStatus()"
+                        ng-if="canResetSelectedResources"
                         uib-popover="{{'import.reset.last.imported' | translate}}"
                         popover-trigger="mouseenter"
                         popover-placement="top">
@@ -127,7 +128,7 @@
             ng-class="{ 'even-row-start': $even, 'odd-row-start': $odd}">
             <td class="import-resource-cell import-resource-cell-select">
                 <input type="checkbox" ng-model="resource.selected" ng-click="selectionChanged(resource)"
-                       prop-indeterminate="resource.partialSelected">
+                       prop-indeterminate="resource.partialSelected" class="resource-select-checkbox">
             </td>
             <td colspan="5"
                 ng-style="{'padding-left': (filterByType !== TYPE_FILTER_OPTIONS.FILE ? resource.indent : '8px')}"

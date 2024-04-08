@@ -63,6 +63,13 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
 
         $scope.files = []; // should be private
         $scope.fileChecked = {};
+        /**
+         * Contains a mapping of file names to flags indicating whether the file is selected or not.
+         * The selected files from this mapping are synchronized in the resources model each time it is refreshed from
+         * the server.
+         * @type {{[string]:boolean}}
+         */
+        $scope.selectedForImportFiles = {};
         $scope.checkAll = false;
         $scope.popoverTemplateUrl = 'settingsPopoverTemplate.html';
         $scope.fileQuery = '';
@@ -70,8 +77,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         $scope.fileFormatsHuman = FileFormats.getFileFormatsHuman() + $translate.instant('import.gz.zip');
         $scope.textFileFormatsHuman = FileFormats.getTextFileFormatsHuman();
         $scope.maxUploadFileSizeMB = 0;
-        $scope.serverImportTree = new ImportResourceTreeElement();
-        $scope.userData = new ImportResourceTreeElement();
+        $scope.resources = new ImportResourceTreeElement();
 
         // =========================
         // Public functions
@@ -237,14 +243,17 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             $scope.fileChecked = newFileChecked;
         };
 
+        /**
+         * Get selection from the resource tree.
+         * @return {string[]}
+         */
         $scope.getSelectedFiles = () => {
-            return _.map(_.filter($scope.getVisibleFiles(), function (f) {
-                return $scope.fileChecked[f.name] && $scope.importable(f);
-            }), 'name');
+            return $scope.resources.getAllSelectedFilesNames();
         };
 
         $scope.importSelected = (overrideSettings) => {
-            const selectedFileNames = $scope.getSelectedFiles();
+            const selected = new Set([...Object.keys($scope.selectedForImportFiles), ...$scope.getSelectedFiles()]);
+            const selectedFileNames = Array.from(selected);
 
             // Calls the REST API sequentially for the selected files
             const importNext = () => {
@@ -262,10 +271,6 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
 
         $scope.resetStatus = (names) => {
             resetStatusOrRemoveEntry(names, false);
-        };
-
-        $scope.resetStatusSelected = () => {
-            $scope.resetStatus($scope.getSelectedFiles());
         };
 
         $scope.isLocalLocation = () => {
@@ -336,12 +341,16 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             removeEntry(resourceNames);
         };
 
-        $scope.onReset = (resources = []) => {
-            resetStatusOrRemoveEntry(resources.map((resource) => resource.importResource.name), false);
+        /**
+         * Resets the status of the selected resources.
+         * @param {string[]} selectedResourcesNames - The names of the resources to be reset.
+         */
+        $scope.onReset = (selectedResourcesNames) => {
+            resetStatusOrRemoveEntry(selectedResourcesNames, false);
         };
 
         $scope.importAll = (selectedResources, withoutChangingSettings) => {
-            console.log('The resources ', selectedResources, ' have to be imported withoutChangingSettings: ' + withoutChangingSettings);
+            $scope.setSettingsFor('', withoutChangingSettings, undefined);
         };
 
         // =========================
@@ -382,9 +391,9 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
 
                 if (TABS.SERVER === $scope.viewType) {
                     // Commented during development. When everything is ready this functionality have to change current one.
-                    // $scope.serverImportTree = toImportServerResource(toImportResource(data));
+                    // $scope.resources = toImportServerResource(toImportResource(data));
                 } else if (TABS.USER === $scope.viewType) {
-                    $scope.userData = toImportUserDataResource(toImportResource(data));
+                    $scope.resources = toImportUserDataResource(toImportResource(data));
                 }
 
                 // reload all files
@@ -819,13 +828,18 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
             // Mark the new files so that they can all be collected and imported.
             if ($scope.currentFiles.length > 0) {
                 deselectAllFiles();
+                // TODO: Get the selection from the tree where the user might have selected a file before and add it to
+                // the list of currentFiles files to be imported.
                 $scope.currentFiles.forEach((file) => {
                     $scope.fileChecked[file.name] = true;
+                    $scope.selectedForImportFiles[file.name] = true;
                 });
                 // Provide an import rejected callback and do the upload instead.
                 $scope.setSettingsFor('', false, undefined, () => {
                     $scope.currentFiles.forEach((file) => {
                         $scope.updateImport(file.name, false, false);
+                        // reset these as we are just uploading here
+                        $scope.selectedForImportFiles = {};
                     });
                 });
             }
@@ -836,6 +850,8 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         Object.keys($scope.fileChecked).forEach((key) => {
             $scope.fileChecked[key] = false;
         });
+        // TODO: The above should be removed
+        $scope.selectedForImportFiles = {};
     };
 
     const removeAllListeners = () => {

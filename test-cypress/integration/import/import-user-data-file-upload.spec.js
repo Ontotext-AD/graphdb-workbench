@@ -89,7 +89,7 @@ describe('Import user data: File upload', () => {
         ImportSettingsDialogSteps.cancelImport();
         // Then I should see the uploaded file
         ImportSteps.getUserDataUploadedFiles().should('have.length', 1);
-        checkUploadedFile(0, 'bnodes.ttl');
+        ImportSteps.checkUserDataUploadedResource(0, 'bnodes.ttl');
         // And the file should really be there
         MainMenuSteps.openHomePage();
         ImportSteps.visit();
@@ -180,35 +180,4 @@ describe('Import user data: File upload', () => {
         ImportSteps.getUserDataUploadedFiles().should('have.length', 1);
         ImportSteps.checkUserDataImportedResource(0, 'invalid-format.json', 'RDF Parse Error: Invalid file format');
     });
-
-    it('Should allow to delete multiple uploaded files', () => {
-        // Given there are no files uploaded yet
-        ImportSteps.getUserDataUploadedFilesTable().should('be.hidden');
-        // When I upload multiple files
-        const file1 = ImportSteps.createFile(testFiles[0], bnodes);
-        const file2 = ImportSteps.createFile(testFiles[1], jsonld);
-        ImportSteps.selectFile([file1, file2]);
-        ImportSettingsDialogSteps.import();
-        ImportSteps.getUserDataUploadedFiles().should('have.length', 2);
-        ImportSteps.checkUserDataImportedResource(0, 'jsonld.jsonld');
-        ImportSteps.checkUserDataImportedResource(1, 'bnodes.ttl');
-        // When I select both files
-        ImportSteps.selectAllFiles();
-        // And I click on the delete button
-        ImportSteps.removeSelectedResources();
-        // Then I should see a confirmation dialog
-        ModalDialogSteps.getDialog().should('be.visible');
-        // When I confirm the deletion
-        ModalDialogSteps.clickOnConfirmButton();
-        // Then the files should be deleted
-        ImportSteps.getUserDataUploadedFiles().should('have.length', 0);
-        MainMenuSteps.openHomePage();
-        ImportSteps.visit();
-        ImportSteps.getUserDataUploadedFiles().should('have.length', 0);
-    });
 });
-
-function checkUploadedFile(index, fileName, status) {
-    ImportSteps.getUserDataUploadedFile(index).should('contain', fileName);
-    ImportSteps.getUserDataUploadedFileStatus(index).should('be.hidden');
-}

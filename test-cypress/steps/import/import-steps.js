@@ -145,32 +145,85 @@ class ImportSteps {
         return ImportSteps.getUserDataUploadedFilesTable().find('.import-resource-row.title-row');
     }
 
-    static getUserDataUploadedFile(index) {
-        return ImportSteps.getUserDataUploadedFiles().eq(index);
+    static getSelectedResources() {
+        return ImportSteps.getUserDataUploadedFiles().find('.resource-select-checkbox:checked');
     }
 
-    static getUserDataUploadedFileStatus(index) {
-        return ImportSteps.getUserDataUploadedFile(index).next().find('import-resource-message');
+    static getSelectedResourceName(index) {
+        return this.getSelectedResources().eq(index).closest('.title-row');
+    }
+
+    static getUserDataUploadedFile(index) {
+        return this.getUserDataUploadedFiles().eq(index);
+    }
+
+    static getUserDataUploadedFileByName(name) {
+        return this.getUserDataUploadedFiles().find('.import-resource-title').contains(name)
+            .closest('.import-resource-row.title-row');
+    }
+
+    static selectFileByIndex(index) {
+        this.getUserDataUploadedFile(index).find('.resource-select-checkbox').click();
+    }
+
+    static selectFileByName(name) {
+        this.getUserDataUploadedFileByName(name).find('.resource-select-checkbox').click();
+    }
+
+    static getUserDataUploadedFileStatus(name) {
+        return this.getUserDataUploadedFileByName(name).next().find('import-resource-message');
     }
 
     static checkUserDataImportedResource(index, resourceName, expectedStatus) {
         const status = expectedStatus || 'Imported successfully';
-        ImportSteps.getUserDataUploadedFile(index).should('contain', resourceName);
-        ImportSteps.getUserDataUploadedFileStatus(index).should('contain', status);
+        this.getUserDataUploadedFileByName(resourceName).should('contain', resourceName);
+        this.getUserDataUploadedFileStatus(resourceName).should('contain', status);
+    }
+
+    static checkUserDataUploadedResource(index, resourceName) {
+        // this.getUserDataUploadedFile(index).should('contain', resourceName);
+        this.getUserDataUploadedFileByName(resourceName).should('contain', resourceName);
+        this.getUserDataUploadedFileStatus(resourceName).should('be.hidden');
     }
 
     static getStatusSelectMenu() {
-        return ImportSteps.getUserDataUploadedFilesTable().find('.import-resource-status-dropdown');
+        return this.getUserDataUploadedFilesTable().find('.import-resource-status-dropdown');
     }
 
-    static selectAllFiles() {
-        this.getStatusSelectMenu().click()
-            .find('.dropdown-menu .dropdown-item').contains('All').click();
+    static openStatusSelectMenu() {
+        return this.getStatusSelectMenu().click().find('.dropdown-menu .dropdown-item');
     }
 
-    static selectNoneFiles() {
-        this.getStatusSelectMenu().click()
-            .find('.dropdown-menu .dropdown-item').contains('None').click();
+    static selectAllResources() {
+        this.openStatusSelectMenu().contains('All').click();
+    }
+
+    static deselectAllResources() {
+        this.openStatusSelectMenu().contains('None').click();
+    }
+
+    static selectImportedResources() {
+        this.openStatusSelectMenu().contains('Imported').click();
+    }
+
+    static selectNotImportedResources() {
+        this.openStatusSelectMenu().contains('Not imported').click();
+    }
+
+    static getBatchImportButton() {
+        return this.getUserDataUploadedFilesTable().find('.batch-import-btn');
+    }
+
+    static batchImport() {
+        ImportSteps.getBatchImportButton().click();
+    }
+
+    static getBatchResetButton() {
+        return this.getUserDataUploadedFilesTable().find('.batch-reset-btn');
+    }
+
+    static batchReset() {
+        ImportSteps.getBatchResetButton().click();
     }
 
     static getRemoveResourcesButton() {

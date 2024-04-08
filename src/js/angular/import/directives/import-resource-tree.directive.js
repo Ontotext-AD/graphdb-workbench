@@ -63,13 +63,20 @@ function importResourceTreeDirective($timeout) {
             $scope.selectedByStatus = undefined;
             $scope.ImportResourceStatus = ImportResourceStatus;
             $scope.canRemoveResource = angular.isDefined(attrs.onRemove);
+            $scope.canResetSelectedResources = false;
 
             // =========================
             // Public functions
             // =========================
+
+            /**
+             * Updates the selection model when a resource is selected or unselected.
+             * @param {ImportResourceTreeElement} resource The resource that was selected or unselected.
+             */
             $scope.selectionChanged = ((resource) => {
                 resource.setSelection(resource.selected);
                 $scope.selectedResources = $scope.resources.getAllSelected();
+                setCanResetResourcesFlag();
             });
 
             $scope.selectResourceWithStatus = (resourceStatus) => {
@@ -86,6 +93,7 @@ function importResourceTreeDirective($timeout) {
 
                 $scope.selectedResources = $scope.resources.getAllSelected();
                 updateListedImportResources();
+                setCanResetResourcesFlag();
             };
 
             $scope.filterByTypeChanged = (newType) => {
@@ -98,18 +106,27 @@ function importResourceTreeDirective($timeout) {
                 debounce(updateListedImportResources, 100);
             };
 
+            /**
+             * Resets the status of the selected resources.
+             */
             $scope.onResetStatus = () => {
                 if (!$scope.selectedResources) {
                     return;
                 }
-                const files = $scope.selectedResources.filter((resource) => !resource.isDirectory());
-                if (files.length > 0) {
-                    $scope.onReset({resources: files});
+                const resourcesNames = $scope.selectedResources
+                    .filter((resource) => !resource.isDirectory())
+                    .map((resource) => resource.importResource.name);
+                if (resourcesNames.length > 0) {
+                    $scope.onReset({resources: resourcesNames});
                 }
             };
 
+            /**
+             * Resets the status of the given resource.
+             * @param {ImportResourceTreeElement} importResource
+             */
             $scope.resetStatus = (importResource) => {
-                $scope.onReset({resources: [importResource]});
+                $scope.onReset({resources: [importResource.name]});
             };
 
             $scope.onRemoveResources = () => {
@@ -135,8 +152,18 @@ function importResourceTreeDirective($timeout) {
             // =========================
             // Private functions
             // =========================
+
             const init = () => {
                 updateListedImportResources();
+            };
+
+            /**
+             * Sets the flag showing if any of the selected resources is already imported
+             * and can have their states reset.
+             */
+            const setCanResetResourcesFlag = () => {
+                $scope.canResetSelectedResources = $scope.selectedResources
+                    .some((treeResource) => treeResource.importResource.status === ImportResourceStatus.DONE);
             };
 
             const updateListedImportResources = () => {
