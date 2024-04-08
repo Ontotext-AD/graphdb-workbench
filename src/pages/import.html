@@ -122,8 +122,8 @@
                         </ul>
                     </div>
                 </div>
-                <import-resource-tree ng-if="userData"
-                                      resources="userData"
+                <import-resource-tree ng-if="resources"
+                                      resources="resources"
                                       show-type-filter="false"
                                       on-import="onImport(resource)"
                                       on-remove="onRemove(resources)"
@@ -131,7 +131,6 @@
                                       on-reset="onReset(resources)"
                                       on-import-all="importAll(selectedResources, withoutChangingSettings)">
                 </import-resource-tree>
-<!--                <div class="mt-2" files-table></div>-->
             </div>
             <div id="import-server" ng-hide="isS4()" class="tab-pane" ng-controller="ImportCtrl"
                  ng-class="$parent.viewType == 'server' ? 'active' : ''">
@@ -152,8 +151,8 @@
                         </p>
                     </div>
                 </div>
-                <import-resource-tree ng-if="serverImportTree"
-                                      resources="serverImportTree"
+                <import-resource-tree ng-if="resources"
+                                      resources="resources"
                                       show-type-filter="true"
                                       on-import="onImport(resource)"
                                       on-stop-import="onStopImport(resource)"

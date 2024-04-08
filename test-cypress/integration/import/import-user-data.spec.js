@@ -96,7 +96,7 @@ describe('Import user data', () => {
         // When I delete the uploaded file
         // ImportSteps.deleteUploadedFile(0);
         // TODO: use batch remove until single file delete is ready
-        ImportSteps.selectAllFiles();
+        ImportSteps.selectAllResources();
         ImportSteps.removeSelectedResources();
         ModalDialogSteps.getDialog().should('be.visible');
         ModalDialogSteps.clickOnConfirmButton();

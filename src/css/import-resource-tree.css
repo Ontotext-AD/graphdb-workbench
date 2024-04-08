@@ -63,6 +63,10 @@
     padding-right: 10px
 }
 
+.import-resource-tree .import-resources-actions .batch-import-dropdown {
+    margin-right: .5rem;
+}
+
 .import-resource-tree .import-resources-actions .import-resource-status-dropdown .import-resource-status-checkbox {
     pointer-events: none;
 }

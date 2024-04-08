@@ -202,10 +202,6 @@ export class ImportResourceTreeElement {
         this.directories.forEach((directory) => directory.selectAllWithStatus(statuses));
     }
 
-    isRoot() {
-        return this.parent === undefined;
-    }
-
     getAllSelected() {
         const allSelected = [];
         if (!this.isRoot() && this.selected) {
@@ -216,6 +212,32 @@ export class ImportResourceTreeElement {
         this.directories.forEach((directory) => allSelected.push(...directory.getAllSelected()));
 
         return allSelected;
+    }
+
+    deselectAll() {
+        this.files.forEach((file) => file.deselectAll());
+        this.directories.forEach((directory) => directory.deselectAll());
+        this.selected = false;
+        this.partialSelected = false;
+    }
+
+    getAllSelectedFiles() {
+        const allSelected = [];
+        if (!this.isRoot() && this.selected) {
+            allSelected.push(this.importResource);
+        }
+
+        this.files.forEach((file) => allSelected.push(...file.getAllSelectedFiles()));
+
+        return allSelected;
+    }
+
+    /**
+     * Returns the names of all selected files.
+     * @return {string[]}
+     */
+    getAllSelectedFilesNames() {
+        return this.getAllSelectedFiles().map((file) => file.name);
     }
 
     getResourceByName(resourceName) {
