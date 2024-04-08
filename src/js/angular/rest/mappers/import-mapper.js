@@ -1,5 +1,6 @@
 import {ImportResourceTreeElement} from "../../models/import/import-resource-tree-element";
 import {ImportResource} from "../../models/import/import-resource";
+import {ImportResourceStatus} from "../../models/import/import-resource-status";
 
 export const toImportResource = (importResourcesServerData) => {
     return importResourcesServerData.map((importResourceServerData) => new ImportResource(importResourceServerData));
@@ -18,6 +19,7 @@ export const toImportUserDataResource = (importResources) => {
         .toSorted((a, b) => b.modifiedOn - a.modifiedOn)
         .forEach((resource) => addResourceToTree(root, resource));
     calculateElementIndent(root);
+    setupAfterTreeInitProperties(root);
     return root;
 };
 
@@ -32,6 +34,7 @@ export const toImportServerResource = (importResources) => {
     const root = new ImportResourceTreeElement();
     importResources.forEach((resource) => addResourceToTree(root, resource));
     calculateElementIndent(root);
+    setupAfterTreeInitProperties(root);
     return root;
 };
 
@@ -101,6 +104,28 @@ const calculateElementIndent = (importResourceElement) => {
     importResourceElement.indent = (8 + getParentsCount(importResourceElement) * INDENT) + 'px';
     importResourceElement.directories.forEach((directory) => calculateElementIndent(directory));
     importResourceElement.files.forEach((file) => calculateElementIndent(file));
+};
+
+const setupAfterTreeInitProperties = (importResourceElement) => {
+    if (!importResourceElement.isRoot()) {
+        importResourceElement.isImportable = isImportable(importResourceElement.importResource);
+        importResourceElement.hasOngoingImport = hasOngoingImport(importResourceElement.importResource);
+        importResourceElement.canResetStatus = canResetStatus(importResourceElement.importResource);
+    }
+    importResourceElement.directories.forEach((directory) => setupAfterTreeInitProperties(directory));
+    importResourceElement.files.forEach((file) => setupAfterTreeInitProperties(file));
+};
+
+const isImportable = (importResource) => {
+    return importResource.isFile() && importResource.status !== ImportResourceStatus.IMPORTING && importResource.status !== ImportResourceStatus.UPLOADING && importResource.status !== ImportResourceStatus.PENDING && importResource.status !== ImportResourceStatus.INTERRUPTING;
+};
+
+const hasOngoingImport = (importResource) => {
+    return importResource.status === ImportResourceStatus.IMPORTING || importResource.status === ImportResourceStatus.UPLOADING || importResource.status === ImportResourceStatus.PENDING || importResource.status === ImportResourceStatus.INTERRUPTING;
+};
+
+const canResetStatus = (importResource) => {
+    return importResource.status === ImportResourceStatus.DONE || importResource.status === ImportResourceStatus.ERROR;
 };
 
 const getParentsCount = (importResourceElement) => {
