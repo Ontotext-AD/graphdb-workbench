@@ -294,6 +294,23 @@ function calculateElementSizeByText(text) {
     return {height, width};
 }
 
+function addRecoveryLabelListeners(object, message, truncatedSize, displayMessage, fullSize) {
+    object.on('mouseover.tooltip', () => {
+        object
+            .attr('width', fullSize.width)
+            .attr('height', fullSize.height)
+            .attr('x', -fullSize.width / 2)
+            .html(`<div>${message}</div>`);
+    });
+    object.on('mouseout.tooltip', () => {
+        object
+            .attr('width', truncatedSize.width)
+            .attr('height', truncatedSize.height)
+            .attr('x', -truncatedSize.width / 2)
+            .html(`<div>${displayMessage}</div>`);
+    });
+}
+
 function resizeLabelDynamic(nodes) {
     nodes.select('.node-info-fo')
         .each(function (d) {
@@ -302,15 +319,22 @@ function resizeLabelDynamic(nodes) {
                 object.attr('width', 0);
                 return;
             }
-            const message = extractShortMessageFromNode(d);
-            const isShorten = d.recoveryStatus.message && d.recoveryStatus.message.length > shortMessageLimit && message !== d.recoveryStatus.message;
-            const displayMessage = isShorten ? message : d.recoveryStatus.message;
-            const width = calculateElementSizeByText(displayMessage).width;
-            const height = calculateElementSizeByText(displayMessage).height;
+            const shortMessage = extractShortMessageFromNode(d);
+            const isShorten = d.recoveryStatus.message && d.recoveryStatus.message.length > shortMessageLimit && shortMessage !== d.recoveryStatus.message;
+            const displayMessage = isShorten ? shortMessage : d.recoveryStatus.message;
+            const truncatedSize = calculateElementSizeByText(shortMessage);
+            const fullSize = calculateElementSizeByText(d.recoveryStatus.message);
+            object.on('.tooltip', null);
+
+            if (isShorten) {
+                addRecoveryLabelListeners(object, d.recoveryStatus.message, truncatedSize, displayMessage, fullSize);
+            }
+
+            // Set initial size and text
             object
-                .attr('width', width)
-                .attr('height', height)
-                .attr('x', -width / 2)
+                .attr('width', truncatedSize.width)
+                .attr('height', truncatedSize.height)
+                .attr('x', -truncatedSize.width / 2)
                 .html(`<div>${displayMessage}</div>`);
         });
 }
@@ -422,4 +446,8 @@ function createHexagon(nodeGroup, radius) {
         .append("path")
         .attr('class', 'node member')
         .attr("d", d3.line());
+}
+
+export function removeEventListeners() {
+    d3.select(document).selectAll('.node-info-fo').on('.tooltip', null);
 }

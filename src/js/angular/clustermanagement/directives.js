@@ -62,6 +62,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 });
                 scope.$on("$destroy", function () {
                     legendTooltip.destroy();
+                    CDS.removeEventListeners();
                 });
                 function updateTranslations(translationMapObject, translationAppend = '') {
                     Object.keys(translationMapObject).forEach((key) => {
