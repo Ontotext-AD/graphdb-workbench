@@ -139,10 +139,10 @@
             </td>
             <td class="import-resource-cell">
                 <div class="import-resource-actions">
-                    <button class="btn btn-link btn-sm import-resource-action-info">
-                        <span class="icon-info text-tertiary"></span>
-                    </button>
-                    <button role="button" class="btn btn-link btn-inline secondary pr-0"
+                    <import-resource-status-info class="btn btn-sm import"
+                                                 ng-if="resource.hasStatusInfo"
+                                                 resource="resource"></import-resource-status-info>
+                    <button role="button" class="btn btn-link btn-sm secondary"
                             ng-click="resetStatus(resource)"
                             ng-if="resource.canResetStatus"
                             ng-disabled="selectedResources.length > 1"

@@ -220,6 +220,8 @@ const moduleDefinition = function (productInfo) {
         };
     });
 
+    workbench.filter('prettyJSON', () => (json) => angular.toJson(json, true));
+
     angular.bootstrap(document, ['graphdb.workbench']);
 };
 

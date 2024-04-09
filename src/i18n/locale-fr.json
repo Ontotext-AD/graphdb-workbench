@@ -935,7 +935,6 @@
         "remove.selected": "Supprimer les éléments sélectionnés de la liste",
         "remove.btn": "Supprimer",
         "remove.confirm.msg": "Êtes-vous sûr de vouloir supprimer les fichiers sélectionnés: {{name}}",
-        "last.import.settings": "Paramètres de la dernière importation",
         "mode.not.supported.constraint": "Ce mode n'est pas pris en charge lors de l'importation de plusieurs éléments.",
         "enable.replace.option": "Activez cette option pour remplacer les données d'un ou plusieurs graphes par les données importées.",
         "context.link": "Contexte JSON-LD",
@@ -1004,6 +1003,15 @@
                 "interrupt_import": "Interrompre l'importation",
                 "abort": "Abandonner"
             }
+        },
+        "status-info": {
+            "last_import_settings": "Paramètres de la dernière importation",
+            "context": "Contexte",
+            "replaced_graphs": "Graphes remplacés",
+            "base_iri": "Base IRI",
+            "debug": "Débogage",
+            "imported": "Importé le",
+            "parser_settings": "Paramètres du parseur"
         }
     },
     "text.snippet.text.aria.placeholder": "# Exemple : rdf:predicate a rdf:Property .",

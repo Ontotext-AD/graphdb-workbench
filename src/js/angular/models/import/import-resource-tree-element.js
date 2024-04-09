@@ -31,6 +31,10 @@ export class ImportResourceTreeElement {
         /**
          * @type {boolean}
          */
+        this.hasStatusInfo = false;
+        /**
+         * @type {boolean}
+         */
         this.canResetStatus = false;
         /**
          * @type {string}
