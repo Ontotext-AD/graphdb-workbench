@@ -111,6 +111,7 @@ const setupAfterTreeInitProperties = (importResourceElement) => {
         importResourceElement.isImportable = isImportable(importResourceElement.importResource);
         importResourceElement.hasOngoingImport = hasOngoingImport(importResourceElement.importResource);
         importResourceElement.canResetStatus = canResetStatus(importResourceElement.importResource);
+        importResourceElement.hasStatusInfo = importResourceElement.importResource.status === 'DONE' || importResourceElement.importResource.status === 'ERROR';
     }
     importResourceElement.directories.forEach((directory) => setupAfterTreeInitProperties(directory));
     importResourceElement.files.forEach((file) => setupAfterTreeInitProperties(file));

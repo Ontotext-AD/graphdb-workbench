@@ -122,3 +122,25 @@
 .import-resource-tree .import-resource-type-filter {
     display: flex;
 }
+
+
+.import-status-info-popover {
+    max-width: 80vw;
+}
+
+.import-status-info-popover table {
+    width: max-content;
+}
+
+.import-status-info-popover .import-resource-status-info-row {
+    border-top: 1px solid #ddd;
+}
+
+.import-status-info-popover .import-resource-status-info-row .import-resource-status-info-label {
+    width: max-content;
+    font-weight: bolder;
+}
+
+.bold-text {
+    font-weight: bolder;
+}

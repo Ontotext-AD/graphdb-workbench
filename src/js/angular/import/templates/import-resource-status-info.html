@@ -1,0 +1,86 @@
+<span class="icon-info text-tertiary import-status-info"
+      uib-popover-template="popoverTemplate"
+      popover-class="import-status-info-popover"
+      popover-trigger="none"
+      popover-is-open="popoverIsOpen"
+      popover-placement="left"
+      ng-mouseover="openPopover()"
+      ng-mouseleave="closePopover()"
+      popover-append-to-body="true">
+</span>
+
+
+<script type="text/ng-template" id="resourceStatusInfoTemplate.html">
+    <div class="import-resource-status-info-popover" ng-mouseleave="closePopover()" ng-mouseover="openPopover()">
+        <h4>{{'import.status-info.last_import_settings' | translate}}</h4>
+
+        <table class="table table-sm m-0">
+            <tbody>
+            <tr class="import-resource-status-info-row">
+                <td class="import-resource-status-info-label">
+                    {{'import.status-info.context' | translate}}
+                </td>
+                <td class="break-word">
+                    <div class="import-resource-status-info-value">
+                        {{context}}
+                    </div>
+                </td>
+            </tr>
+            <tr class="import-resource-status-info-row">
+                <td class="import-resource-status-info-label">
+                    {{'import.status-info.replaced_graphs' | translate}}
+                </td>
+                <td class="break-word">
+                    <div class="import-resource-status-info-value" ng-repeat="replaceGraph in replaceGraphs">
+                        {{replaceGraph}}
+                    </div>
+                </td>
+            </tr>
+            <tr class="import-resource-status-info-row">
+                <td class="import-resource-status-info-label">
+                    <div>
+                        {{'import.status-info.base_iri' | translate}}
+                    </div>
+                </td>
+                <td class="break-word">
+                    <div class="import-resource-status-info-value">
+                        {{baseUrl}}
+                    </div>
+                </td>
+            </tr>
+            <tr class="import-resource-status-info-row">
+                <td class="import-resource-status-info-label">
+                    <div>
+                        {{'import.status-info.debug' | translate}}
+                    </div>
+                </td>
+                <td class="break-word">
+                    <div class="import-resource-status-info-value">
+                        {{forceSerial}}
+                    </div>
+                </td>
+            </tr>
+            <tr class="import-resource-status-info-row">
+                <td class="import-resource-status-info-label">
+                    {{'import.status-info.imported' | translate}}
+                </td>
+                <td class="break-word">
+                    <div class="import-resource-status-info-value">
+                        {{importedOn | date:'yyyy-MM-dd, HH:mm' }}
+                    </div>
+                </td>
+            </tr>
+            <tr ng-if="parserSettings" class="import-resource-status-info-row">
+                <td class="import-resource-status-info-label">
+                    {{'import.status-info.parser_settings' | translate}}
+                </td>
+                <td class="break-word">
+                    <div class="import-resource-status-info-value">
+                        <pre>{{parserSettings | prettyJSON}}</pre>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</script>
