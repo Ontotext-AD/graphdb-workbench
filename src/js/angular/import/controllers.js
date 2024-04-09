@@ -13,6 +13,7 @@ import {toImportResource, toImportServerResource, toImportUserDataResource} from
 import {ImportResourceTreeElement} from "../models/import/import-resource-tree-element";
 import {decodeHTML} from "../../../app";
 import {FilePrefixRegistry} from "./file-prefix-registry";
+import {SortingType} from "../models/import/sorting-type";
 
 const modules = [
     'ui.bootstrap',
@@ -78,6 +79,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         $scope.textFileFormatsHuman = FileFormats.getTextFileFormatsHuman();
         $scope.maxUploadFileSizeMB = 0;
         $scope.resources = new ImportResourceTreeElement();
+        $scope.SORTING_TYPES = SortingType;
 
         // =========================
         // Public functions
@@ -390,7 +392,6 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             filesLoader($repositories.getActiveRepository()).success(function (data) {
 
                 if (TABS.SERVER === $scope.viewType) {
-                    // Commented during development. When everything is ready this functionality have to change current one.
                     // $scope.resources = toImportServerResource(toImportResource(data));
                 } else if (TABS.USER === $scope.viewType) {
                     $scope.resources = toImportUserDataResource(toImportResource(data));

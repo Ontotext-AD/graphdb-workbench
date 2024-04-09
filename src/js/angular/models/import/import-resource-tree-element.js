@@ -289,4 +289,10 @@ export class ImportResourceTreeElement {
 
         return this.directories.some((directory) => directory.hasTextInFilesName(searchText));
     }
+
+    sort(compareFunction) {
+        this.directories.sort(compareFunction);
+        this.files.sort(compareFunction);
+        this.directories.forEach((directory) => directory.sort(compareFunction));
+    }
 }

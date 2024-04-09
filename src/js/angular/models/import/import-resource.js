@@ -10,8 +10,8 @@ export class ImportResource {
     constructor(importResourceServerData) {
         this.name = importResourceServerData ? importResourceServerData.name : undefined;
         this.status = importResourceServerData ? importResourceServerData.status : ImportResourceStatus.NONE;
-        this.message = importResourceServerData ? importResourceServerData.message : undefined;
-        this.context = importResourceServerData ? importResourceServerData.context : undefined;
+        this.message = importResourceServerData && importResourceServerData.message ? importResourceServerData.message : '';
+        this.context = importResourceServerData && importResourceServerData.context ? importResourceServerData.context : '';
         /**
          *
          * @type {string[]}
@@ -45,6 +45,11 @@ export class ImportResource {
          * @type {number | undefined}
          */
         this.importedOn = importResourceServerData ? importResourceServerData.timestamp : undefined;
+
+        /**
+         * @type {number | undefined}
+         */
+        this.size = undefined;
 
         /**
          * The property is used when importing JSONLD files only

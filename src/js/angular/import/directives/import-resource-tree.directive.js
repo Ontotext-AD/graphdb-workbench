@@ -1,6 +1,7 @@
 import {ImportResourceStatus} from "../../models/import/import-resource-status";
 import 'angular/import/directives/import-resource-message.directive';
 import 'angular/import/directives/import-resource-status-info.directive';
+import {SortingType} from "../../models/import/sorting-type";
 
 const TYPE_FILTER_OPTIONS = {
     'FILE': 'FILE',
@@ -40,6 +41,11 @@ function importResourceTreeDirective($timeout) {
              * If the type filter buttons should be visible.
              */
             showTypeFilter: '=',
+            /**
+             * The default field to sort the resources by.
+             */
+            sortBy: '=',
+            asc: '=',
             onImport: '&',
             onImportAll: '&',
             onReset: '&',
@@ -64,6 +70,9 @@ function importResourceTreeDirective($timeout) {
             $scope.ImportResourceStatus = ImportResourceStatus;
             $scope.canRemoveResource = angular.isDefined(attrs.onRemove);
             $scope.canResetSelectedResources = false;
+            $scope.SORTING_TYPES = SortingType;
+            $scope.sortAsc = angular.isDefined(attrs.asc) ? $scope.asc : true;
+            $scope.sortedBy = $scope.sortBy;
 
             // =========================
             // Public functions
@@ -149,6 +158,20 @@ function importResourceTreeDirective($timeout) {
                 $scope.onStopImport({resource: importResource});
             };
 
+            /**
+             * Sorts resources by provided sorting type.
+             * @param {SortingType} sortedBy The sorting type to use.
+             */
+            $scope.sort = (sortedBy) => {
+                if ($scope.sortedBy === sortedBy) {
+                    $scope.sortAsc = !$scope.sortAsc;
+                } else {
+                    $scope.sortAsc = true;
+                }
+                $scope.sortedBy = sortedBy;
+                updateListedImportResources();
+            };
+
             // =========================
             // Private functions
             // =========================
@@ -174,9 +197,50 @@ function importResourceTreeDirective($timeout) {
                     }
                 });
                 $scope.resources.getRoot().updateSelectionState();
+                sortResources();
                 $scope.displayResources = $scope.resources.toList()
                     .filter(filterByType)
                     .filter(filterByName);
+            };
+
+            const sortResources = () => {
+                if (SortingType.NAME === $scope.sortedBy) {
+                    $scope.resources.sort(compareByName($scope.sortAsc));
+                } else if (SortingType.SIZE === $scope.sortedBy) {
+                    $scope.resources.sort(compareBySize($scope.sortAsc));
+                } else if (SortingType.MODIFIED === $scope.sortedBy) {
+                    $scope.resources.sort(compareByModified($scope.sortAsc));
+                } else if (SortingType.IMPORTED === $scope.sortedBy) {
+                    $scope.resources.sort(compareByImportedOn($scope.sortAsc));
+                } else if (SortingType.CONTEXT === $scope.sortedBy) {
+                    $scope.resources.sort(compareByContext($scope.sortAsc));
+                }
+            };
+
+            const compareByName = (acs) => (r1, r2) => {
+                return acs ? r1.importResource.name.localeCompare(r2.importResource.name) : r2.importResource.name.localeCompare(r1.importResource.name);
+            };
+
+            const compareBySize = (acs) => (r1, r2) => {
+                const r1Size = r1.importResource.size | 0;
+                const r2Size = r2.importResource.size | 0;
+                return acs ? r1Size - r2Size : r2Size - r1Size;
+            };
+
+            const compareByModified = (acs) => (r1, r2) => {
+                const r1ModifiedOn = r1.importResource.modifiedOn | 0;
+                const r2ModifiedOn = r2.importResource.modifiedOn | 0;
+                return acs ? r1ModifiedOn - r2ModifiedOn : r2ModifiedOn - r1ModifiedOn;
+            };
+
+            const compareByImportedOn = (acs) => (r1, r2) => {
+                const r1ImportedOn = r1.importResource.importedOn | 0;
+                const r2ImportedOn = r2.importResource.importedOn | 0;
+                return acs ? r1ImportedOn - r2ImportedOn : r2ImportedOn - r1ImportedOn;
+            };
+
+            const compareByContext = (acs) => (r1, r2) => {
+                return acs ? r1.importResource.context.localeCompare(r2.importResource.context) : r2.importResource.context.localeCompare(r1.importResource.context);
             };
 
             const filterByType = (resource) => {
