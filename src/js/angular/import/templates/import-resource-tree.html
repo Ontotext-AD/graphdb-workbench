@@ -215,10 +215,14 @@
             <td class="import-resource-cell import-resource-imported">
                 {{ resource.importResource.importedOn | date:'yyyy-MM-dd, HH:mm' }}
             </td>
-            <td class="import-resource-cell">
-                {{ resource.importResource.context || ''}}
+            <td colspan="2" class="import-resource-cell">
+                <a if="resource.importResource.context"
+                   title="{{resource.importResource.context}}"
+                   class="uri-link"
+                   href="{{'resource?uri=' + resource.importResource.context + '&role=context'}}">
+                    {{resource.shorthedContext ? resource.shorthedContext : resource.importResource.context}}
+                </a>
             </td>
-            <td class="import-resource-cell import-resource-cell-action"></td>
         </tr>
         </tbody>
     </table>
