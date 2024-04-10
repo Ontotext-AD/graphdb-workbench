@@ -209,10 +209,12 @@
             <td class="import-resource-cell import-resource-size">
                 {{ resource.importResource.size || ''}}
             </td>
-            <td class="import-resource-cell import-resource-modified">
+            <td class="import-resource-cell import-resource-modified"
+                ng-class="{'font-weight-bold': resource.isImportedBiggerThanModified}">
                 {{ resource.importResource.modifiedOn | date:'yyyy-MM-dd, HH:mm' }}
             </td>
-            <td class="import-resource-cell import-resource-imported">
+            <td class="import-resource-cell import-resource-imported"
+                ng-class="{'font-weight-bold': resource.isModifiedBiggerThanImported}">
                 {{ resource.importResource.importedOn | date:'yyyy-MM-dd, HH:mm' }}
             </td>
             <td colspan="2" class="import-resource-cell">
