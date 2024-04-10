@@ -7,6 +7,8 @@ export const toImportResource = (importResourcesServerData) => {
 };
 
 export const INDENT = 30;
+const PREFIX_AND_SUFFIX_CONTEXT_LENGTH = 30;
+const MAX_CONTEXT_LENGTH = PREFIX_AND_SUFFIX_CONTEXT_LENGTH * 2 + 3;
 
 /**
  * Convert list with {@link ImportResource} to a list of {@link ImportResourceTreeElement}.
@@ -45,7 +47,7 @@ export const toImportServerResource = (importResources) => {
  */
 const addResourceToTree = (root, resource) => {
     const path = getPath(resource);
-    let directoryPath = [];
+    let directoryPath;
     if (resource.isDirectory()) {
         directoryPath = path;
     } else {
@@ -112,9 +114,21 @@ const setupAfterTreeInitProperties = (importResourceElement) => {
         importResourceElement.hasOngoingImport = hasOngoingImport(importResourceElement.importResource);
         importResourceElement.canResetStatus = canResetStatus(importResourceElement.importResource);
         importResourceElement.hasStatusInfo = importResourceElement.importResource.status === 'DONE' || importResourceElement.importResource.status === 'ERROR';
+        setupShortedContext(importResourceElement);
     }
     importResourceElement.directories.forEach((directory) => setupAfterTreeInitProperties(directory));
     importResourceElement.files.forEach((file) => setupAfterTreeInitProperties(file));
+};
+
+/**
+ * Setts shortedContext property if context is too long.
+ * @param {ImportResourceTreeElement} importResourceElement
+ */
+const setupShortedContext = (importResourceElement) => {
+    const context = importResourceElement.importResource ? importResourceElement.importResource.context : '' || '';
+    if (context.length > MAX_CONTEXT_LENGTH) {
+        importResourceElement.shorthedContext = context.substring(0, PREFIX_AND_SUFFIX_CONTEXT_LENGTH) + '...' + context.substring(context.length - PREFIX_AND_SUFFIX_CONTEXT_LENGTH);
+    }
 };
 
 const isImportable = (importResource) => {

@@ -85,7 +85,8 @@
 }
 
 .import-resource-tree .import-resource-table .import-resource-actions {
-    text-align: end;
+    display: flex;
+    justify-content: flex-end;
 }
 
 .import-resource-tree .import-resource-table .import-resource-actions .import-resource-action-import {
@@ -100,7 +101,7 @@
 
 .import-resource-tree .import-resource-table .import-resource-modified,
 .import-resource-tree .import-resource-table .import-resource-imported,
-.import-resource-tree .import-resource-table .import-resource-import-resource-size {
+.import-resource-tree .import-resource-table .import-resource-size {
     min-width: 120px;
 }
 
