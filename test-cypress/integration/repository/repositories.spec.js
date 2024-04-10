@@ -1,9 +1,9 @@
 import HomeSteps from "../../steps/home-steps";
-import ImportSteps from "../../steps/import/import-steps";
 import {RepositorySteps} from "../../steps/repository-steps";
 import {ToasterSteps} from "../../steps/toaster-steps";
 import {GlobalOperationsStatusesStub} from "../../stubs/global-operations-statuses-stub";
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
+import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
 
 describe('Repositories', () => {
 
@@ -425,32 +425,32 @@ describe('Repositories', () => {
         RepositorySteps.selectRepoFromDropdown(repositoryId);
 
         // Import a shape in the SHACL graph
-        ImportSteps.visitUserImport(repositoryId);
-        ImportSteps
+        ImportUserDataSteps.visitUserImport(repositoryId);
+        ImportUserDataSteps
             .openImportTextSnippetDialog()
             .fillRDFTextSnippet(SHACL_SHAPE_DATA)
             .selectRDFFormat("TriG")
             .clickImportTextSnippetButton()
             .importFromSettingsDialog()
-            .checkUserDataImportedResource(0, 'Text snippet');
+            .checkImportedResource(0, 'Text snippet');
         // Import data that conforms with the shape - import is successfully
         // The newly imported file is first in the list
-        ImportSteps
+        ImportUserDataSteps
             .openImportTextSnippetDialog()
             .fillRDFTextSnippet(SHACL_CORRECT_DATA)
             .selectRDFFormat("Turtle")
             .clickImportTextSnippetButton()
             .importFromSettingsDialog()
-            .checkUserDataImportedResource(0, 'Text snippet');
+            .checkImportedResource(0, 'Text snippet');
         // Import data that does not conform with the shape - GraphDBShaclSailValidationException
         // The newly imported file is first in the list
-        ImportSteps
+        ImportUserDataSteps
             .openImportTextSnippetDialog()
             .fillRDFTextSnippet(SHACL_INCORRECT_DATA)
             .selectRDFFormat("Turtle")
             .clickImportTextSnippetButton()
             .importFromSettingsDialog()
-            .checkUserDataImportedResource(0, 'Text snippet', 'org.eclipse.rdf4j.sail.shacl.GraphDBShaclSailValidationException: Failed SHACL validation');
+            .checkImportedResource(0, 'Text snippet', 'org.eclipse.rdf4j.sail.shacl.GraphDBShaclSailValidationException: Failed SHACL validation');
     });
 
     it('should not allow editing of repository name if repository is in cluster', () => {

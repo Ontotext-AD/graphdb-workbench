@@ -89,13 +89,13 @@
     justify-content: flex-end;
 }
 
-.import-resource-tree .import-resource-table .import-resource-actions .import-resource-action-import {
+.import-resource-tree .import-resource-table .import-resource-actions .import-resource-action-import-btn {
     border: none;
     padding: .25em .25em;
     margin: 0 .25em;
 }
 
-.import-resource-tree .import-resource-table .import-resource-actions .import-resource-action-import .icon-import {
+.import-resource-tree .import-resource-table .import-resource-actions .import-resource-action-import-btn .icon-import {
     line-height: 1;
 }
 

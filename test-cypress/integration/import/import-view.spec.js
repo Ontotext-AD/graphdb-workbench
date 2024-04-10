@@ -1,5 +1,6 @@
-import ImportSteps from "../../steps/import/import-steps";
 import {ImportSettingsDialogSteps} from "../../steps/import/import-settings-dialog-steps";
+import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
+import {ImportServerFilesSteps} from "../../steps/import/import-server-files-steps";
 
 const bnodes = `_:node0 <http://purl.org/dc/elements/1.1/title> "A new book" ;
                     \t<http://purl.org/dc/elements/1.1/creator> "A.N.Other" .`;
@@ -16,7 +17,7 @@ describe('Import view', () => {
         repositoryId = 'user-import-' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
-        ImportSteps.visitImport('user', repositoryId);
+        ImportUserDataSteps.visitImport('user', repositoryId);
     });
 
     afterEach(() => {
@@ -26,19 +27,19 @@ describe('Import view', () => {
 
     it('Should be able to toggle between user data and server files tabs', () => {
         // Given I have opened the user data tab and uploaded a single file
-        ImportSteps.getUserDataUploadedFilesTable().should('be.hidden');
-        ImportSteps.selectFile(ImportSteps.createFile(testFiles[0], bnodes));
+        ImportUserDataSteps.getResourcesTable().should('be.hidden');
+        ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[0], bnodes));
         ImportSettingsDialogSteps.import();
-        ImportSteps.getUserDataUploadedFiles().should('have.length', 1);
-        ImportSteps.getUserDataUploadedFile(0).should('contain', 'bnodes.ttl');
+        ImportUserDataSteps.getResources().should('have.length', 1);
+        ImportUserDataSteps.getResourceByName('bnodes.ttl').should('be.visible');
         // When I switch to the server files tab
-        ImportSteps.openServerFilesTab();
+        ImportUserDataSteps.openServerFilesTab();
         // Then I should see the server files only
-        ImportSteps.getServerFiles().should('have.length', 11);
+        ImportServerFilesSteps.getResources().should('have.length', 14);
         // When I switch back to the user data tab
-        ImportSteps.openUserDataTab();
+        ImportServerFilesSteps.openUserDataTab();
         // Then I should see the uploaded file
-        ImportSteps.getUserDataUploadedFiles().should('have.length', 1);
-        ImportSteps.getUserDataUploadedFile(0).should('contain', 'bnodes.ttl');
+        ImportUserDataSteps.getResources().should('have.length', 1);
+        ImportUserDataSteps.getResourceByName('bnodes.ttl').should('be.visible');
     });
 });

@@ -1,4 +1,5 @@
-import ImportSteps from "../../steps/import/import-steps";
+import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
+import {ImportSettingsDialogSteps} from "../../steps/import/import-settings-dialog-steps";
 
 describe('Import user data: Text snippet', () => {
 
@@ -62,7 +63,7 @@ describe('Import user data: Text snippet', () => {
     beforeEach(() => {
         repositoryId = 'user-import-' + Date.now();
         cy.createRepository({id: repositoryId});
-        ImportSteps.visitUserImport(repositoryId);
+        ImportUserDataSteps.visitUserImport(repositoryId);
     });
 
     afterEach(() => {
@@ -70,65 +71,65 @@ describe('Import user data: Text snippet', () => {
     });
 
     it('Should import RDF text snippet successfully with Auto format selected', () => {
-        ImportSteps.openImportTextSnippetDialog();
-        ImportSteps.fillRDFTextSnippet(RDF_TEXT_SNIPPET_1);
-        ImportSteps.clickImportTextSnippetButton();
-        ImportSteps.importFromSettingsDialog();
-        ImportSteps.checkUserDataImportedResource(0, TEXT_SNIPPET);
+        ImportUserDataSteps.openImportTextSnippetDialog();
+        ImportUserDataSteps.fillRDFTextSnippet(RDF_TEXT_SNIPPET_1);
+        ImportUserDataSteps.clickImportTextSnippetButton();
+        ImportUserDataSteps.importFromSettingsDialog();
+        ImportUserDataSteps.checkImportedResource(0, TEXT_SNIPPET);
     });
 
     it('Should import RDF text snippet with invalid RDF format selected', () => {
-        ImportSteps.openImportTextSnippetDialog();
-        ImportSteps.fillRDFTextSnippet(RDF_TEXT_SNIPPET_1);
-        ImportSteps.selectRDFFormat(JSONLD_FORMAT);
-        ImportSteps.clickImportTextSnippetButton();
-        ImportSteps.importFromSettingsDialog();
-        ImportSteps.checkUserDataImportedResource(0, TEXT_SNIPPET, RDF_ERROR_MESSAGE);
+        ImportUserDataSteps.openImportTextSnippetDialog();
+        ImportUserDataSteps.fillRDFTextSnippet(RDF_TEXT_SNIPPET_1);
+        ImportUserDataSteps.selectRDFFormat(JSONLD_FORMAT);
+        ImportUserDataSteps.clickImportTextSnippetButton();
+        ImportUserDataSteps.importFromSettingsDialog();
+        ImportUserDataSteps.checkImportedResource(0, TEXT_SNIPPET, RDF_ERROR_MESSAGE);
     });
 
     it('Should import RDF text snippet successfully with valid RDF format selected', () => {
-        ImportSteps.openImportTextSnippetDialog();
-        ImportSteps.fillRDFTextSnippet(RDF_TEXT_SNIPPET_1);
-        ImportSteps.selectRDFFormat(VALID_SNIPPET_RDF_FORMAT);
-        ImportSteps.clickImportTextSnippetButton();
-        ImportSteps.importFromSettingsDialog();
-        ImportSteps.checkUserDataImportedResource(0, TEXT_SNIPPET);
+        ImportUserDataSteps.openImportTextSnippetDialog();
+        ImportUserDataSteps.fillRDFTextSnippet(RDF_TEXT_SNIPPET_1);
+        ImportUserDataSteps.selectRDFFormat(VALID_SNIPPET_RDF_FORMAT);
+        ImportUserDataSteps.clickImportTextSnippetButton();
+        ImportUserDataSteps.importFromSettingsDialog();
+        ImportUserDataSteps.checkImportedResource(0, TEXT_SNIPPET);
     });
 
     it('Should import Turtle* text snippet successfully with valid RDF star format selected', () => {
-        ImportSteps.openImportTextSnippetDialog();
-        ImportSteps.fillRDFTextSnippet(TURTLESTAR_SNIPPET);
-        ImportSteps.selectRDFFormat(VALID_SNIPPET_TURTLESTAR_FORMAT);
-        ImportSteps.clickImportTextSnippetButton();
-        ImportSteps.importFromSettingsDialog();
-        ImportSteps.checkUserDataImportedResource(0, TEXT_SNIPPET);
+        ImportUserDataSteps.openImportTextSnippetDialog();
+        ImportUserDataSteps.fillRDFTextSnippet(TURTLESTAR_SNIPPET);
+        ImportUserDataSteps.selectRDFFormat(VALID_SNIPPET_TURTLESTAR_FORMAT);
+        ImportUserDataSteps.clickImportTextSnippetButton();
+        ImportUserDataSteps.importFromSettingsDialog();
+        ImportUserDataSteps.checkImportedResource(0, TEXT_SNIPPET);
     });
 
     it('Should import TriG* text snippet successfully with valid RDF star format selected', () => {
-        ImportSteps.openImportTextSnippetDialog();
-        ImportSteps.fillRDFTextSnippet(TRIGSTAR_SNIPPET);
-        ImportSteps.selectRDFFormat(VALID_SNIPPET_TRIGSTAR_FORMAT);
-        ImportSteps.clickImportTextSnippetButton();
-        ImportSteps.importFromSettingsDialog();
-        ImportSteps.checkUserDataImportedResource(0, TEXT_SNIPPET);
+        ImportUserDataSteps.openImportTextSnippetDialog();
+        ImportUserDataSteps.fillRDFTextSnippet(TRIGSTAR_SNIPPET);
+        ImportUserDataSteps.selectRDFFormat(VALID_SNIPPET_TRIGSTAR_FORMAT);
+        ImportUserDataSteps.clickImportTextSnippetButton();
+        ImportUserDataSteps.importFromSettingsDialog();
+        ImportUserDataSteps.checkImportedResource(0, TEXT_SNIPPET);
     });
 
     it('Should import RDF text snippet successfully with filled base URI and context', () => {
-        ImportSteps.openImportTextSnippetDialog();
-        ImportSteps.fillRDFTextSnippet(RDF_TEXT_SNIPPET_2);
-        ImportSteps.clickImportTextSnippetButton();
-        ImportSteps.expandAdvancedSettings();
-        ImportSteps.fillBaseURI(BASE_URI);
-        ImportSteps.selectNamedGraph();
-        ImportSteps.fillNamedGraph(CONTEXT);
-        ImportSteps.importFromSettingsDialog();
-        ImportSteps.checkUserDataImportedResource(0, TEXT_SNIPPET);
+        ImportUserDataSteps.openImportTextSnippetDialog();
+        ImportUserDataSteps.fillRDFTextSnippet(RDF_TEXT_SNIPPET_2);
+        ImportUserDataSteps.clickImportTextSnippetButton();
+        ImportSettingsDialogSteps.expandAdvancedSettings();
+        ImportSettingsDialogSteps.fillBaseURI(BASE_URI);
+        ImportSettingsDialogSteps.selectNamedGraph();
+        ImportSettingsDialogSteps.fillNamedGraph(CONTEXT);
+        ImportSettingsDialogSteps.import();
+        ImportUserDataSteps.checkImportedResource(0, TEXT_SNIPPET);
 
         // Go to Graphs overview
         cy.visit('/graphs');
         cy.get('.ot-splash').should('not.be.visible');
 
-        let graphName = CONTEXT.slice(0, CONTEXT.lastIndexOf('.'));
+        const graphName = CONTEXT.slice(0, CONTEXT.lastIndexOf('.'));
 
         // Verify that created graph can be found
         cy.get('.search-graphs').type(graphName).should('have.value', graphName);
@@ -136,82 +137,82 @@ describe('Import user data: Text snippet', () => {
     });
 
     it('Should import RDF snippet in the default graph (from data) and replace data in the default graph', () => {
-        ImportSteps.openImportTextSnippetDialog();
-        ImportSteps.fillRDFTextSnippet(INITIAL_DATA);
-        ImportSteps.selectRDFFormat("TriG");
-        ImportSteps.clickImportTextSnippetButton();
-        importFromData(false, "http://www.openrdf.org/schema/sesame#nil");
-        getDeleteImportEntryButton().click();
-        verifyGraphData("The default graph", "urn:s1", "urn:p1", "urn:o1", "http://www.ontotext.com/explicit", false, "urn:s1");
-        ImportSteps.visitUserImport(repositoryId);
-        ImportSteps.openImportTextSnippetDialog();
-        ImportSteps.fillRDFTextSnippet(REPLACEMENT_DATA);
-        ImportSteps.selectRDFFormat("TriG");
-        ImportSteps.clickImportTextSnippetButton();
-        importFromData(true, "http://www.openrdf.org/schema/sesame#nil");
-        verifyGraphData("The default graph", "urn:replaced-s1", "urn:replaced-p1", "urn:replaced-o1", "http://www.ontotext.com/explicit", true, "urn:s1");
+        ImportUserDataSteps.openImportTextSnippetDialog();
+        ImportUserDataSteps.fillRDFTextSnippet(INITIAL_DATA);
+        ImportUserDataSteps.selectRDFFormat("TriG");
+        ImportUserDataSteps.clickImportTextSnippetButton();
+        ImportUserDataSteps.importFromData(false, "http://www.openrdf.org/schema/sesame#nil");
+        ImportUserDataSteps.getDeleteImportEntryButton().click();
+        ImportUserDataSteps.verifyGraphData("The default graph", "urn:s1", "urn:p1", "urn:o1", "http://www.ontotext.com/explicit", false, "urn:s1");
+        ImportUserDataSteps.visitUserImport(repositoryId);
+        ImportUserDataSteps.openImportTextSnippetDialog();
+        ImportUserDataSteps.fillRDFTextSnippet(REPLACEMENT_DATA);
+        ImportUserDataSteps.selectRDFFormat("TriG");
+        ImportUserDataSteps.clickImportTextSnippetButton();
+        ImportUserDataSteps.importFromData(true, "http://www.openrdf.org/schema/sesame#nil");
+        ImportUserDataSteps.verifyGraphData("The default graph", "urn:replaced-s1", "urn:replaced-p1", "urn:replaced-o1", "http://www.ontotext.com/explicit", true, "urn:s1");
     });
 
     it('Should import RDF snippet with a custom graph (from data) and replace data in the custom graph', () => {
-        ImportSteps.openImportTextSnippetDialog();
-        ImportSteps.fillRDFTextSnippet(PRE_DEFINED_INITIAL_GRAPH_DATA);
-        ImportSteps.selectRDFFormat("TriG");
-        ImportSteps.clickImportTextSnippetButton();
-        importFromData(false, "http://www.openrdf.org/schema/sesame#nil");
-        getDeleteImportEntryButton().click();
-        verifyGraphData("urn:graph1", "urn:s1-custom", "urn:p1-custom", "urn:o1-custom", "urn:graph1", false, "urn:s1-custom");
-        ImportSteps.visitUserImport(repositoryId);
-        ImportSteps.openImportTextSnippetDialog();
-        ImportSteps.fillRDFTextSnippet(PRE_DEFINED_REPLACED_GRAPH_DATA);
-        ImportSteps.selectRDFFormat("TriG");
-        ImportSteps.clickImportTextSnippetButton();
-        importFromData(true, "urn:graph1");
-        verifyGraphData("urn:graph1", "urn:replaced-s1-custom", "urn:replaced-p1-custom", "urn:replaced-o1-custom", "urn:graph1", true, "urn:s1-custom");
+        ImportUserDataSteps.openImportTextSnippetDialog();
+        ImportUserDataSteps.fillRDFTextSnippet(PRE_DEFINED_INITIAL_GRAPH_DATA);
+        ImportUserDataSteps.selectRDFFormat("TriG");
+        ImportUserDataSteps.clickImportTextSnippetButton();
+        ImportUserDataSteps.importFromData(false, "http://www.openrdf.org/schema/sesame#nil");
+        ImportUserDataSteps.getDeleteImportEntryButton().click();
+        ImportUserDataSteps.verifyGraphData("urn:graph1", "urn:s1-custom", "urn:p1-custom", "urn:o1-custom", "urn:graph1", false, "urn:s1-custom");
+        ImportUserDataSteps.visitUserImport(repositoryId);
+        ImportUserDataSteps.openImportTextSnippetDialog();
+        ImportUserDataSteps.fillRDFTextSnippet(PRE_DEFINED_REPLACED_GRAPH_DATA);
+        ImportUserDataSteps.selectRDFFormat("TriG");
+        ImportUserDataSteps.clickImportTextSnippetButton();
+        ImportUserDataSteps.importFromData(true, "urn:graph1");
+        ImportUserDataSteps.verifyGraphData("urn:graph1", "urn:replaced-s1-custom", "urn:replaced-p1-custom", "urn:replaced-o1-custom", "urn:graph1", true, "urn:s1-custom");
     });
 
     it('Should import RDF snippet in the default graph (The default graph) and replace data in the default graph', () => {
-        ImportSteps.openImportTextSnippetDialog();
-        ImportSteps.fillRDFTextSnippet(INITIAL_DATA);
-        ImportSteps.selectRDFFormat("TriG");
-        ImportSteps.clickImportTextSnippetButton();
-        importInTheDefaultGraph(false);
-        getDeleteImportEntryButton().click();
-        verifyGraphData("The default graph", "urn:s1", "urn:p1", "urn:o1", "http://www.ontotext.com/explicit", false, "urn:s1");
-        ImportSteps.visitUserImport(repositoryId);
-        ImportSteps.openImportTextSnippetDialog();
-        ImportSteps.fillRDFTextSnippet(REPLACEMENT_DATA);
-        ImportSteps.selectRDFFormat("TriG");
-        ImportSteps.clickImportTextSnippetButton();
-        importInTheDefaultGraph(true);
-        verifyGraphData("The default graph", "urn:replaced-s1", "urn:replaced-p1", "urn:replaced-o1", "http://www.ontotext.com/explicit", true, "urn:s1");
+        ImportUserDataSteps.openImportTextSnippetDialog();
+        ImportUserDataSteps.fillRDFTextSnippet(INITIAL_DATA);
+        ImportUserDataSteps.selectRDFFormat("TriG");
+        ImportUserDataSteps.clickImportTextSnippetButton();
+        ImportUserDataSteps.importInTheDefaultGraph(false);
+        ImportUserDataSteps.getDeleteImportEntryButton().click();
+        ImportUserDataSteps.verifyGraphData("The default graph", "urn:s1", "urn:p1", "urn:o1", "http://www.ontotext.com/explicit", false, "urn:s1");
+        ImportUserDataSteps.visitUserImport(repositoryId);
+        ImportUserDataSteps.openImportTextSnippetDialog();
+        ImportUserDataSteps.fillRDFTextSnippet(REPLACEMENT_DATA);
+        ImportUserDataSteps.selectRDFFormat("TriG");
+        ImportUserDataSteps.clickImportTextSnippetButton();
+        ImportUserDataSteps.importInTheDefaultGraph(true);
+        ImportUserDataSteps.verifyGraphData("The default graph", "urn:replaced-s1", "urn:replaced-p1", "urn:replaced-o1", "http://www.ontotext.com/explicit", true, "urn:s1");
     });
 
     it('Should import RDF snippet in a named graph (Named graph) and replace data in the named graph', () => {
-        ImportSteps.openImportTextSnippetDialog();
-        ImportSteps.fillRDFTextSnippet(INITIAL_DATA);
-        ImportSteps.selectRDFFormat("TriG");
-        ImportSteps.clickImportTextSnippetButton();
-        importInNamedGraph(false, "http://graph1");
-        getDeleteImportEntryButton().click();
-        verifyGraphData("http://graph1", "urn:s1", "urn:p1", "urn:o1", "http://graph1", false, "urn:s1");
-        ImportSteps.visitUserImport(repositoryId);
-        ImportSteps.openImportTextSnippetDialog();
-        ImportSteps.fillRDFTextSnippet(REPLACEMENT_DATA);
-        ImportSteps.selectRDFFormat("TriG");
-        ImportSteps.clickImportTextSnippetButton();
-        importInNamedGraph(true, "http://graph1");
-        verifyGraphData("http://graph1", "urn:replaced-s1", "urn:replaced-p1", "urn:replaced-o1", "http://graph1", true, "urn:s1");
+        ImportUserDataSteps.openImportTextSnippetDialog();
+        ImportUserDataSteps.fillRDFTextSnippet(INITIAL_DATA);
+        ImportUserDataSteps.selectRDFFormat("TriG");
+        ImportUserDataSteps.clickImportTextSnippetButton();
+        ImportUserDataSteps.importInNamedGraph(false, "http://graph1");
+        ImportUserDataSteps.getDeleteImportEntryButton().click();
+        ImportUserDataSteps.verifyGraphData("http://graph1", "urn:s1", "urn:p1", "urn:o1", "http://graph1", false, "urn:s1");
+        ImportUserDataSteps.visitUserImport(repositoryId);
+        ImportUserDataSteps.openImportTextSnippetDialog();
+        ImportUserDataSteps.fillRDFTextSnippet(REPLACEMENT_DATA);
+        ImportUserDataSteps.selectRDFFormat("TriG");
+        ImportUserDataSteps.clickImportTextSnippetButton();
+        ImportUserDataSteps.importInNamedGraph(true, "http://graph1");
+        ImportUserDataSteps.verifyGraphData("http://graph1", "urn:replaced-s1", "urn:replaced-p1", "urn:replaced-o1", "http://graph1", true, "urn:s1");
     });
 
     it('Should import JSON-LD text snippet successfully without URI', () => {
-        ImportSteps.openImportTextSnippetDialog();
-        ImportSteps.fillRDFTextSnippet(JSONLD_TEXT_SNIPPET);
-        ImportSteps.selectRDFFormat(JSONLD_FORMAT);
-        ImportSteps.clickImportTextSnippetButton();
-        ImportSteps.selectNamedGraph();
-        ImportSteps.fillNamedGraph(CONTEXT);
-        ImportSteps.importFromSettingsDialog();
-        ImportSteps.checkUserDataImportedResource(0, TEXT_SNIPPET);
+        ImportUserDataSteps.openImportTextSnippetDialog();
+        ImportUserDataSteps.fillRDFTextSnippet(JSONLD_TEXT_SNIPPET);
+        ImportUserDataSteps.selectRDFFormat(JSONLD_FORMAT);
+        ImportUserDataSteps.clickImportTextSnippetButton();
+        ImportUserDataSteps.selectNamedGraph();
+        ImportUserDataSteps.fillNamedGraph(CONTEXT);
+        ImportUserDataSteps.importFromSettingsDialog();
+        ImportUserDataSteps.checkImportedResource(0, TEXT_SNIPPET);
 
         // Go to Graphs overview
         cy.visit('/graphs');
@@ -225,112 +226,21 @@ describe('Import user data: Text snippet', () => {
     });
 
     it('Should import JSON-LD text snippet successfully with URI and context', () => {
-        ImportSteps.openImportTextSnippetDialog();
-        ImportSteps.fillRDFTextSnippet(JSONLD_TEXT_SNIPPET);
-        ImportSteps.selectRDFFormat(JSONLD_FORMAT);
-        ImportSteps.clickImportTextSnippetButton();
-        ImportSteps.expandAdvancedSettings();
-        ImportSteps.fillBaseURI(BASE_URI);
-        ImportSteps.selectNamedGraph();
-        ImportSteps.fillNamedGraph(CONTEXT);
-        ImportSteps.fillContextLink('https://w3c.github.io/json-ld-api/tests/compact/0007-context.jsonld');
-        ImportSteps.importFromSettingsDialog();
-        ImportSteps.checkUserDataImportedResource(0, TEXT_SNIPPET);
+        ImportUserDataSteps.openImportTextSnippetDialog();
+        ImportUserDataSteps.fillRDFTextSnippet(JSONLD_TEXT_SNIPPET);
+        ImportUserDataSteps.selectRDFFormat(JSONLD_FORMAT);
+        ImportUserDataSteps.clickImportTextSnippetButton();
+        ImportSettingsDialogSteps.expandAdvancedSettings();
+        ImportSettingsDialogSteps.fillBaseURI(BASE_URI);
+        ImportSettingsDialogSteps.selectNamedGraph();
+        ImportSettingsDialogSteps.fillNamedGraph(CONTEXT);
+        ImportSettingsDialogSteps.fillContextLink('https://w3c.github.io/json-ld-api/tests/compact/0007-context.jsonld');
+        // ImportUserDataSteps.importFromSettingsDialog();
+        ImportSettingsDialogSteps.import();
+        ImportUserDataSteps.checkImportedResource(0, TEXT_SNIPPET);
         const graphName = CONTEXT.slice(0, CONTEXT.lastIndexOf('.'));
         // Verify that created graph can be found
-        verifyGraphData(graphName, "rdf:Property", "rdf:Property", "rdf:Property", "http://example.org/graph", false);
+        ImportUserDataSteps.verifyGraphData(graphName, "rdf:Property", "rdf:Property", "rdf:Property", "http://example.org/graph", false);
     });
 });
 
-//verifies that the data has been inserted in the given graph and that the new data has replaced the old one.
-function verifyGraphData(graphName, s, p, o, c, checkForReplacedData, oldData) {
-    cy.visit('/graphs');
-    // wait a bit to give chance page loaded.
-    cy.wait(1000);
-    cy.get(`#export-graphs td a:contains(${graphName})`).click();
-    cy.get(`.uri-cell:contains(${s})`).should('be.visible');
-    cy.get(`.uri-cell:contains(${p})`).should('be.visible');
-    cy.get(`.uri-cell:contains(${o})`).should('be.visible');
-    cy.get(`.uri-cell:contains(${c})`).should('be.visible');
-
-    if (checkForReplacedData) {
-        cy.get(`.uri-cell:contains(${oldData})`).should('not.exist');
-    }
-}
-
-function importFromData(shouldReplaceGraph, graphToReplace) {
-    getImportFromDataRadioButton().click();
-    if (shouldReplaceGraph) {
-        getExistingDataReplacementCheckbox().click();
-        getReplacedGraphsInputField().type(graphToReplace);
-        getAddGraphToReplaceButton().click();
-        getReplaceGraphConfirmationCheckbox().click();
-    }
-    getImportSettingsImportButton().click();
-    getImportSuccessMessage().should('be.visible').and('contain', 'Imported successfully in')
-}
-
-function importInTheDefaultGraph(shouldReplaceGraph) {
-    getImportInDefaultGraphRadioButton().click();
-    if (shouldReplaceGraph) {
-        getExistingDataReplacementCheckbox().click();
-        getReplaceGraphConfirmationCheckbox().click();
-    }
-    getImportSettingsImportButton().click();
-    getImportSuccessMessage().should('be.visible').and('contain', 'Imported successfully in')
-}
-
-function importInNamedGraph(shouldReplaceGraph, graph) {
-    getImportInNamedGraphRadioButton().click();
-    getNamedGraphInputField().type(graph);
-    if (shouldReplaceGraph) {
-        getExistingDataReplacementCheckbox().click();
-        getReplaceGraphConfirmationCheckbox().click();
-    }
-    getImportSettingsImportButton().click();
-    getImportSuccessMessage().should('be.visible').and('contain', 'Imported successfully in')
-}
-
-function getImportFromDataRadioButton() {
-    return cy.get('.from-data-btn');
-}
-
-function getImportInDefaultGraphRadioButton() {
-    return cy.get('.default-graph-btn');
-}
-
-function getImportInNamedGraphRadioButton() {
-    return cy.get('.named-graph-btn');
-}
-
-function getExistingDataReplacementCheckbox() {
-    return cy.get('.existing-data-replacement');
-}
-
-function getReplacedGraphsInputField() {
-    return cy.get('.replaced-graphs-input');
-}
-
-function getAddGraphToReplaceButton() {
-    return cy.get('.add-graph-btn');
-}
-
-function getImportSettingsImportButton() {
-    return cy.get('.import-settings-import-button');
-}
-
-function getReplaceGraphConfirmationCheckbox() {
-    return cy.get('.graph-replace-confirm-checkbox');
-}
-
-function getNamedGraphInputField() {
-    return cy.get('.named-graph-input');
-}
-
-function getImportSuccessMessage() {
-    return cy.get('.text-success');
-}
-
-function getDeleteImportEntryButton() {
-    return cy.get('.icon-trash');
-}

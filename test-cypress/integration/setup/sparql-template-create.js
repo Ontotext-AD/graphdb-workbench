@@ -1,10 +1,10 @@
 import {SparqlCreateUpdateSteps} from "../../steps/setup/sparql-create-update-steps";
 import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
-import ImportSteps from "../../steps/import/import-steps";
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 import {MainMenuSteps} from "../../steps/main-menu-steps";
 import {RepositorySelectorSteps} from "../../steps/repository-selector-steps";
 import {SparqlTemplatesSteps} from "../../steps/setup/sparql-templates-steps";
+import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
 
 describe('SPARQL create template', () => {
 
@@ -64,10 +64,10 @@ describe('SPARQL create template', () => {
     it('should navigate to other view if there are no changes', () => {
         // When I visit 'Sparql create template' view,
         // and navigate to other view.
-        ImportSteps.visitUserImport(repositoryId);
+        ImportUserDataSteps.visitUserImport(repositoryId);
 
         // Then I expect to be navigated without confirmation.
-        ImportSteps.verifyUserImportUrl();
+        ImportUserDataSteps.verifyUserImportUrl();
     });
 
     it('should confirm me before navigate when template id is changed', () => {
@@ -100,7 +100,7 @@ describe('SPARQL create template', () => {
         ModalDialogSteps.clickOnConfirmButton();
 
         // Then I expect to be navigated to other view.
-        ImportSteps.verifyUserImportUrl();
+        ImportUserDataSteps.verifyUserImportUrl();
     });
 
     it('should not change the view if I am creating a new sparql template and change the repository', () => {

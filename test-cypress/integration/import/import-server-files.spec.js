@@ -1,107 +1,78 @@
-import ImportSteps from "../../steps/import/import-steps";
+import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
+import {ImportServerFilesSteps} from "../../steps/import/import-server-files-steps";
 
-// the suite will be fixed with the next MR
-describe.skip('Import server files', () => {
+describe('Import server files', () => {
 
     let repositoryId;
 
-    const BASE_URI = 'http://purl.org/dc/elements/1.1/';
-    const CONTEXT = 'http://example.org/context';
-    const SUCCESS_MESSAGE = 'Imported successfully';
-    const FILE_FOR_IMPORT = 'italian_public_schools_links.nt.gz';
-    const TTLS_FOR_IMPORT = 'test_turtlestar.ttls';
-    const TRIGS_FOR_IMPORT = 'test-trigstar.trigs';
     const JSONLD_FILE_FOR_IMPORT = '0007-import-file.jsonld';
-    const JSONLD_CONTEXT = 'https://w3c.github.io/json-ld-api/tests/compact/0007-context.jsonld';
 
     beforeEach(() => {
         repositoryId = 'server-import-' + Date.now();
         cy.createRepository({id: repositoryId});
-        ImportSteps.visitServerImport(repositoryId);
+        ImportServerFilesSteps.visitServerImport(repositoryId);
+        ImportServerFilesSteps.getResources().should('have.length', 14);
     });
 
     afterEach(() => {
         cy.deleteRepository(repositoryId);
     });
 
-    it('Test import Server files successfully without changing settings', () => {
-        ImportSteps.selectServerFile(FILE_FOR_IMPORT);
-        ImportSteps.importServerFiles();
-        ImportSteps.verifyImportStatus(FILE_FOR_IMPORT, SUCCESS_MESSAGE);
-        ImportSteps.verifyImportStatusDetails(FILE_FOR_IMPORT, '"preserveBNodeIds": false,');
+    it('Should be able to open the server files tab through a click on the tab', () => {
+        // Given I have visited the import page
+        ImportUserDataSteps.visit();
+        ImportUserDataSteps.getActiveTab().should('have.text', 'User data');
+        // When I switch to the server files tab
+        ImportUserDataSteps.openServerFilesTab();
+        // Then Server files tab should be active
+        cy.url().should('include', '/import#server');
+        ImportServerFilesSteps.getActiveTab().should('have.text', 'Server files');
+        ImportServerFilesSteps.getResourcesTable().should('be.visible');
     });
 
-    it('Test import Server files successfully with changing settings', () => {
-        ImportSteps.selectServerFile(FILE_FOR_IMPORT);
-        ImportSteps.importServerFiles(true);
-        ImportSteps.expandAdvancedSettings();
-        ImportSteps.fillBaseURI(BASE_URI);
-        ImportSteps.selectNamedGraph();
-        ImportSteps.fillNamedGraph(CONTEXT);
-        ImportSteps.enablePreserveBNodes();
-        ImportSteps.importFromSettingsDialog();
-        ImportSteps.verifyImportStatus(FILE_FOR_IMPORT, SUCCESS_MESSAGE);
-        ImportSteps.verifyImportStatusDetails(FILE_FOR_IMPORT, [CONTEXT, BASE_URI, '"preserveBNodeIds": true,']);
+    it('Should be able to open the server files tab through a link', () => {
+        // When I visit the import page through a direct link to the server files tab
+        cy.visit('/import#server');
+        // Then Server files tab should be active
+        cy.url().should('include', '/import#server');
+        ImportServerFilesSteps.getActiveTab().should('have.text', 'Server files');
+        ImportServerFilesSteps.getResourcesTable().should('be.visible');
     });
 
-    // for this test it is necessary to set up a whitelist to GraphDB in this way: -Dgraphdb.jsonld.whitelist=https://w3c.github.io/json-ld-api/tests/*
-    it('Test import Server files successfully with JSONLD context link settings', () => {
-        ImportSteps.selectServerFile(JSONLD_FILE_FOR_IMPORT);
-        ImportSteps.importServerFiles(true);
-        ImportSteps.expandAdvancedSettings();
-        ImportSteps.fillBaseURI(BASE_URI);
-        ImportSteps.fillContextLink(JSONLD_CONTEXT);
-        ImportSteps.selectNamedGraph();
-        ImportSteps.fillNamedGraph(CONTEXT);
-        ImportSteps.enablePreserveBNodes();
-        ImportSteps.importFromSettingsDialog();
-        ImportSteps.verifyImportStatus(JSONLD_FILE_FOR_IMPORT, SUCCESS_MESSAGE);
-        ImportSteps.verifyImportStatusDetails(JSONLD_FILE_FOR_IMPORT, [CONTEXT, BASE_URI, '"preserveBNodeIds": true,', JSONLD_CONTEXT]);
+    it('Should be able to toggle the server file import help', () => {
+        // When the page is loaded
+        // Then I should see the server files import help
+        ImportServerFilesSteps.getHelpMessage().should('be.visible');
+        // When I close the help
+        ImportServerFilesSteps.closeHelpMessage();
+        // Then the help should disappear
+        ImportServerFilesSteps.getHelpMessage().should('not.exist');
     });
 
-    it('Test import Server files successfully with JSONLD default settings', () => {
-        ImportSteps.selectServerFile(JSONLD_FILE_FOR_IMPORT);
-        ImportSteps.importServerFiles(true);
-        ImportSteps.expandAdvancedSettings();
-        ImportSteps.fillBaseURI(BASE_URI);
-        ImportSteps.selectNamedGraph();
-        ImportSteps.fillNamedGraph(CONTEXT);
-        ImportSteps.setContextLinkToBeVisible();
-        ImportSteps.enablePreserveBNodes();
-        ImportSteps.importFromSettingsDialog();
-        ImportSteps.verifyImportStatus(JSONLD_FILE_FOR_IMPORT, SUCCESS_MESSAGE);
-        ImportSteps.verifyImportStatusDetails(JSONLD_FILE_FOR_IMPORT, [CONTEXT, BASE_URI, '"preserveBNodeIds": true,']);
+    it('Should be able to filter the files', () => {
+        // When the server files tab is loaded
+        // Then I should see all the files
+        ImportServerFilesSteps.getResources().should('have.length', 14);
+        // When I type in the filter filed
+        ImportServerFilesSteps.typeInFilterField('007');
+        // Then I should see only the files matching the filter
+        ImportServerFilesSteps.getResources().should('have.length', 1);
+        ImportServerFilesSteps.getResourceByName(JSONLD_FILE_FOR_IMPORT).should('be.visible');
     });
 
-    it('Test import Server file successfully with JSONLD, button on row, with settings', () => {
-        ImportSteps.clickImportOnRow(0);
-        ImportSteps.expandAdvancedSettings();
-        ImportSteps.fillBaseURI(BASE_URI);
-        ImportSteps.fillContextLink(JSONLD_CONTEXT);
-        ImportSteps.importFromSettingsDialog();
-        ImportSteps.verifyImportStatus(JSONLD_FILE_FOR_IMPORT, SUCCESS_MESSAGE);
-        ImportSteps.verifyImportStatusDetails(JSONLD_FILE_FOR_IMPORT, [BASE_URI, '"preserveBNodeIds": false,', JSONLD_CONTEXT]);
-    });
-
-    it('Test import with resetting status of imported file', () => {
-        ImportSteps.selectServerFile(FILE_FOR_IMPORT);
-        ImportSteps.importServerFiles();
-        ImportSteps.verifyImportStatus(FILE_FOR_IMPORT, SUCCESS_MESSAGE);
-        ImportSteps.resetStatusOfUploadedFile(FILE_FOR_IMPORT);
-        ImportSteps.verifyNoImportStatus(FILE_FOR_IMPORT);
-    });
-
-    it('Test import turtlestar from Server files successfully without changing settings', () => {
-        ImportSteps.selectServerFile(TTLS_FOR_IMPORT);
-        ImportSteps.importServerFiles();
-        ImportSteps.verifyImportStatus(TTLS_FOR_IMPORT, SUCCESS_MESSAGE);
-        ImportSteps.verifyImportStatusDetails(TTLS_FOR_IMPORT, '"preserveBNodeIds": false,');
-    });
-
-    it('Test import trigstar from Server files successfully without changing settings', () => {
-        ImportSteps.selectServerFile(TRIGS_FOR_IMPORT);
-        ImportSteps.importServerFiles();
-        ImportSteps.verifyImportStatus(TRIGS_FOR_IMPORT, SUCCESS_MESSAGE);
-        ImportSteps.verifyImportStatusDetails(TRIGS_FOR_IMPORT, '"preserveBNodeIds": false,');
+    it('Should be able to switch between files, folders and mixed list', () => {
+        // When the server files tab is loaded
+        // Then I should see all the files and folders by default
+        ImportServerFilesSteps.getShowAllResourceTypesButton().should('have.class', 'active');
+        ImportServerFilesSteps.getResources().should('have.length', 14);
+        // When I select the folders only filter
+        ImportServerFilesSteps.selectFoldersOnlyFilter();
+        // Then I should see only the folders
+        ImportServerFilesSteps.getShowOnlyFoldersButton().should('have.class', 'active');
+        ImportServerFilesSteps.getResources().should('have.length', 1);
+        // When I select the files only filter
+        ImportServerFilesSteps.selectFilesOnlyFilter();
+        // Then I should see only the files
+        ImportServerFilesSteps.getResources().should('have.length', 13);
     });
 });

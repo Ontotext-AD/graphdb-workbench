@@ -1,5 +1,4 @@
-import ImportSteps from "../../steps/import/import-steps";
-import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
+import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
 
 const bnodes = `_:node0 <http://purl.org/dc/elements/1.1/title> "A new book" ;
                     \t<http://purl.org/dc/elements/1.1/creator> "A.N.Other" .`;
@@ -24,7 +23,7 @@ describe('Import user data: Import settings dialog', () => {
         repositoryId = 'user-import-' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
-        ImportSteps.visitImport('user', repositoryId);
+        ImportUserDataSteps.visitImport('user', repositoryId);
     });
 
     afterEach(() => {

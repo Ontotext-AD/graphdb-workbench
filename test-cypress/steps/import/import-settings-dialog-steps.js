@@ -16,4 +16,41 @@ export class ImportSettingsDialogSteps extends ModalDialogSteps {
     static cancelImport() {
         this.getCancelImportButton().click();
     }
+
+    static getSettingsForm() {
+        return this.getDialog().find('.settings-form');
+    }
+
+    static expandAdvancedSettings() {
+        this.getSettingsForm().within(() => {
+            cy.get('.toggle-advanced-settings').click();
+            cy.get('.advanced-settings').should('be.visible');
+        });
+    }
+
+    static fillBaseURI(baseURI) {
+        this.getSettingsForm().find('input[name="baseURI"]').type(baseURI).should('have.value', baseURI);
+    }
+
+    static selectNamedGraph() {
+        this.getSettingsForm().find('.named-graph-btn').check();
+    }
+
+    static fillNamedGraph(namedGraph) {
+        this.getSettingsForm().find('.named-graph-input').type(namedGraph).should('have.value', namedGraph);
+    }
+
+    static enablePreserveBNodes() {
+        this.getSettingsForm().find('input[name="preserveBNodeIDs"]').check();
+    }
+
+    static fillContextLink(contextLink) {
+        this.getSettingsForm().find('input[name="contextLink"]').type(contextLink).should('have.value', contextLink);
+    }
+
+    static setContextLinkToBeVisible() {
+        this.getSettingsForm().within(() => {
+            cy.get('.contextLinkRow').invoke('attr', 'style', 'display: block !important');
+        });
+    }
 }

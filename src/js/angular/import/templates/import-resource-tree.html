@@ -70,18 +70,18 @@
         </div>
         <div class="import-resource-tree-filter btn-group">
             <div ng-if="showTypeFilter" class="import-resource-type-filter mr-1">
-                <button class="btn btn-secondary"
+                <button class="btn btn-secondary show-only-files-btn"
                         ng-click="filterByTypeChanged(TYPE_FILTER_OPTIONS.FILE)"
                         ng-class="{'active': TYPE_FILTER_OPTIONS.FILE === filterByType}">
                     <em class="icon-file"></em>
                 </button>
-                <button class="btn btn-secondary"
+                <button class="btn btn-secondary show-all-resources-btn"
                         ng-click="filterByTypeChanged(TYPE_FILTER_OPTIONS.ALL)"
                         ng-class="{'active': TYPE_FILTER_OPTIONS.ALL === filterByType}">
                     <em class="icon-file"></em>
                     <em class="icon-folder"></em>
                 </button>
-                <button class="btn btn-secondary"
+                <button class="btn btn-secondary show-only-folders-btn"
                         ng-click="filterByTypeChanged(TYPE_FILTER_OPTIONS.DIRECTORY)"
                         ng-class="{'active': TYPE_FILTER_OPTIONS.DIRECTORY === filterByType}">
                     <em class="icon-folder"></em>
@@ -178,20 +178,22 @@
                     <import-resource-status-info class="btn btn-sm import"
                                                  ng-if="resource.hasStatusInfo"
                                                  resource="resource"></import-resource-status-info>
-                    <button role="button" class="btn btn-link btn-sm secondary"
+                    <button role="button" class="btn btn-link btn-sm secondary import-resource-action-reset-btn"
                             ng-click="resetStatus(resource)"
                             ng-if="resource.canResetStatus"
                             ng-disabled="selectedResources.length > 1"
                             gdb-tooltip="{{'import.reset.status' | translate}}">
                         <span class="icon-close"></span>
                     </button>
-                    <button ng-if="canRemoveResource" class="btn btn-link btn-sm secondary import-resource-action-remove"
-                            ng-click="removeResource(resource)">
+                    <button ng-if="canRemoveResource" class="btn btn-link btn-sm secondary import-resource-action-remove-btn"
+                            ng-click="removeResource(resource)"
+                            gdb-tooltip="{{'import.remove.btn' | translate}}">
                         <em class="icon-trash"></em>
                     </button>
-                    <button class="btn btn-primary btn-sm import-resource-action-import"
+                    <button class="btn btn-primary btn-sm import-resource-action-import-btn"
                             ng-if="resource.isImportable"
-                            ng-click="onImport({resource: resource})">
+                            ng-click="onImport({resource: resource})"
+                            gdb-tooltip="{{'import.import.btn' | translate}}">
                         <span class="icon-import"></span>
                     </button>
                     <button class="btn btn-sm"
