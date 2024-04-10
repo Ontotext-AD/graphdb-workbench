@@ -4,14 +4,14 @@
       popover-trigger="none"
       popover-is-open="popoverIsOpen"
       popover-placement="left"
-      ng-mouseover="openPopover()"
-      ng-mouseleave="closePopover()"
+      ng-mouseover="open()"
       popover-append-to-body="true">
 </span>
 
 
 <script type="text/ng-template" id="resourceStatusInfoTemplate.html">
-    <div class="import-resource-status-info-popover" ng-mouseleave="closePopover()" ng-mouseover="openPopover()">
+    <sup class="pull-right btn btn-sm close" ng-click="close()"></sup>
+    <div class="import-resource-status-info-popover">
         <h4>{{'import.status-info.last_import_settings' | translate}}</h4>
 
         <table class="table table-sm m-0">
