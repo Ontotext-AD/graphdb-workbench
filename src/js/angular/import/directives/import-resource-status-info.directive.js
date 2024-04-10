@@ -4,9 +4,9 @@ angular
     .module('graphdb.framework.import.import-resource-status-info', modules)
     .directive('importResourceStatusInfo', importResourceStatusInfoDirective);
 
-importResourceStatusInfoDirective.$inject = [];
+importResourceStatusInfoDirective.$inject = ['$rootScope'];
 
-function importResourceStatusInfoDirective() {
+function importResourceStatusInfoDirective($rootScope) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/import/templates/import-resource-status-info.html',
@@ -29,14 +29,29 @@ function importResourceStatusInfoDirective() {
             // =========================
             // Public functions
             // =========================
-            $scope.openPopover = () => {
+            $scope.open = () => {
+                $scope.closeAllDialogs();
                 $scope.popoverIsOpen = true;
             };
 
-            $scope.closePopover = () => {
+            $scope.closeAllDialogs = () => {
+                $rootScope.$broadcast('closePopovers');
+            };
+
+            $scope.close = () => {
                 $scope.popoverIsOpen = false;
             };
 
+            // =========================
+            // Subscriptions
+            // =========================
+            $scope.$on('closePopovers', $scope.close);
+
+            const removeAllSubscribers = () => {
+                $scope.$off('closePopovers', $scope.close);
+            };
+
+            $scope.$on('$destroy', removeAllSubscribers);
         }
     };
 }
