@@ -115,6 +115,7 @@ const setupAfterTreeInitProperties = (importResourceElement) => {
         importResourceElement.canResetStatus = canResetStatus(importResourceElement.importResource);
         importResourceElement.hasStatusInfo = importResourceElement.importResource.status === 'DONE' || importResourceElement.importResource.status === 'ERROR';
         setupShortedContext(importResourceElement);
+        setupImportedAndModifiedComparableProperties(importResourceElement);
     }
     importResourceElement.directories.forEach((directory) => setupAfterTreeInitProperties(directory));
     importResourceElement.files.forEach((file) => setupAfterTreeInitProperties(file));
@@ -128,6 +129,17 @@ const setupShortedContext = (importResourceElement) => {
     const context = importResourceElement.importResource ? importResourceElement.importResource.context : '' || '';
     if (context.length > MAX_CONTEXT_LENGTH) {
         importResourceElement.shorthedContext = context.substring(0, PREFIX_AND_SUFFIX_CONTEXT_LENGTH) + '...' + context.substring(context.length - PREFIX_AND_SUFFIX_CONTEXT_LENGTH);
+    }
+};
+
+const setupImportedAndModifiedComparableProperties = (importResourceElement) => {
+    const importResource = importResourceElement.importResource;
+    if (importResource) {
+        if (importResource.importedOn === importResource.modifiedOn) {
+            return;
+        }
+        importResourceElement.isImportedBiggerThanModified = importResource.importedOn > importResource.modifiedOn;
+        importResourceElement.isModifiedBiggerThanImported = !importResourceElement.isImportedBiggerThanModified;
     }
 };
 

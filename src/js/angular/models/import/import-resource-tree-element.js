@@ -57,6 +57,14 @@ export class ImportResourceTreeElement {
          * @type {ImportResourceTreeElement[]}
          */
         this.files = [];
+        /**
+         * @type {boolean}
+         */
+        this.isImportedBiggerThanModified = false;
+        /**
+         * @type {boolean}
+         */
+        this.isModifiedBiggerThanImported = false;
     }
 
     /**
