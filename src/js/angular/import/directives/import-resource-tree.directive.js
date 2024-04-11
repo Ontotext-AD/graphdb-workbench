@@ -50,7 +50,8 @@ function importResourceTreeDirective($timeout) {
             onImportAll: '&',
             onReset: '&',
             onRemove: '&',
-            onStopImport: '&'
+            onStopImport: '&',
+            onEditResource: '&'
         },
         link: ($scope, element, attrs) => {
 
@@ -170,6 +171,10 @@ function importResourceTreeDirective($timeout) {
                 }
                 $scope.sortedBy = sortedBy;
                 updateListedImportResources();
+            };
+
+            $scope.editResource = (resource) => {
+                $scope.onEditResource({resource});
             };
 
             // =========================

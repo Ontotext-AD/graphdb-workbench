@@ -114,6 +114,7 @@ const setupAfterTreeInitProperties = (importResourceElement) => {
         importResourceElement.hasOngoingImport = hasOngoingImport(importResourceElement.importResource);
         importResourceElement.canResetStatus = canResetStatus(importResourceElement.importResource);
         importResourceElement.hasStatusInfo = importResourceElement.importResource.status === 'DONE' || importResourceElement.importResource.status === 'ERROR';
+        importResourceElement.isEditable = importResourceElement.importResource.isText();
         setupShortedContext(importResourceElement);
         setupImportedAndModifiedComparableProperties(importResourceElement);
     }

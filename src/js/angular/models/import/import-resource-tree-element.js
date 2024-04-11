@@ -65,6 +65,10 @@ export class ImportResourceTreeElement {
          * @type {boolean}
          */
         this.isModifiedBiggerThanImported = false;
+        /**
+         * @type {boolean}
+         */
+        this.isEditable = false;
     }
 
     /**

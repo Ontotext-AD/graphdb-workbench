@@ -165,7 +165,12 @@
                 class="import-resource-cell">
                 <span class="import-resource-title">
                     <em ng-class="{'icon-folder': resource.isDirectory(), 'icon-file': resource.isFile()}"></em>
-                    <strong>{{resource.name}}</strong>
+                    <div ng-if="onEditResource && resource.isEditable">
+                        <a href="#" ng-click="editResource(resource)"><strong>{{resource.name}}</strong></a>
+                    </div>
+                    <div ng-if="!resource.isEditable">
+                        <strong>{{resource.name}}</strong>
+                    </div>
                 </span>
             </td>
             <td class="import-resource-cell">
