@@ -4,7 +4,6 @@ import 'angular/rest/import.rest.service';
 import 'angular/rest/upload.rest.service';
 import 'angular/import/import-context.service';
 import 'angular/import/import-view-storage.service';
-import {FILE_STATUS} from "../models/import/file-status";
 import {FileFormats} from "../models/import/file-formats";
 import * as stringUtils from "../utils/string-utils";
 import {FileUtils} from "../utils/file-utils";
@@ -14,6 +13,7 @@ import {ImportResourceTreeElement} from "../models/import/import-resource-tree-e
 import {decodeHTML} from "../../../app";
 import {FilePrefixRegistry} from "./file-prefix-registry";
 import {SortingType} from "../models/import/sorting-type";
+import {ImportResourceStatus} from "../models/import/import-resource-status";
 
 const modules = [
     'ui.bootstrap',
@@ -427,7 +427,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                     ImportContextService.updateFiles($scope.files);
                 }
                 $scope.showClearStatuses = _.filter($scope.files, function (file) {
-                    return file.status === FILE_STATUS.DONE || file.status === FILE_STATUS.ERROR;
+                    return file.status === ImportResourceStatus.DONE || file.status === ImportResourceStatus.ERROR;
                 }).length > 0;
 
                 $scope.savedSettings = _.mapKeys(_.filter($scope.files, 'parserSettings'), 'name');
@@ -660,8 +660,8 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
 
         modalInstance.result.then((data) => {
             if (file) {
-                if ((file.data !== data.text || file.format !== data.format) && file.status !== FILE_STATUS.NONE) {
-                    file.status = FILE_STATUS.NONE;
+                if ((file.data !== data.text || file.format !== data.format) && file.status !== ImportResourceStatus.NONE) {
+                    file.status = ImportResourceStatus.NONE;
                     file.message = $translate.instant('import.text.snippet.not.imported');
                 }
                 file.data = data.text;
@@ -720,7 +720,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         $scope.settings.type = file.type;
         $scope.settings.data = file.data;
         $scope.settings.format = file.format;
-        file.status = FILE_STATUS.PENDING;
+        file.status = ImportResourceStatus.PENDING;
 
         const importer = startImport ? ImportRestService.importTextSnippet : ImportRestService.updateTextSnippet;
         importer($repositories.getActiveRepository(), $scope.settings)
@@ -728,7 +728,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                 $scope.updateList();
             }).error(function (data) {
             toastr.error($translate.instant('import.could.not.send.data', {data: getError(data)}));
-            file.status = FILE_STATUS.ERROR;
+            file.status = ImportResourceStatus.ERROR;
             file.message = getError(data);
         }).finally(nextCallback || function () {});
     };
@@ -749,7 +749,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         $scope.settings.type = file.type;
         $scope.settings.data = file.data;
         $scope.settings.format = file.format;
-        file.status = FILE_STATUS.PENDING;
+        file.status = ImportResourceStatus.PENDING;
 
         const importer = startImport ? ImportRestService.importFromUrl : ImportRestService.updateFromUrl;
         importer($repositories.getActiveRepository(), $scope.settings).success(function () {
@@ -767,7 +767,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
             $scope.updateList();
         }).catch((data) => {
             toastr.error($translate.instant('import.could.not.upload.file', {data: getError(data)}));
-            file.status = FILE_STATUS.ERROR;
+            file.status = ImportResourceStatus.ERROR;
             file.message = getError(data);
         }).finally(nextCallback || function () {});
     };
