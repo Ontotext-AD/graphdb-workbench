@@ -45,10 +45,11 @@ function importResourceStatusInfoDirective($rootScope) {
             // =========================
             // Subscriptions
             // =========================
-            $scope.$on('closePopovers', $scope.close);
+            const subscribers = [];
+            subscribers.push($scope.$on('closePopovers', $scope.close));
 
             const removeAllSubscribers = () => {
-                $scope.$off('closePopovers', $scope.close);
+                subscribers.forEach((subscriber) => subscriber());
             };
 
             $scope.$on('$destroy', removeAllSubscribers);

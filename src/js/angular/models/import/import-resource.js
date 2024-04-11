@@ -77,4 +77,8 @@ export class ImportResource {
     isURL() {
         return ImportResourceType.URL === this.type;
     }
+
+    isText() {
+        return ImportResourceType.TEXT === this.type;
+    }
 }

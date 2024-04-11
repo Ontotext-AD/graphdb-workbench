@@ -4,7 +4,6 @@ import 'angular/rest/import.rest.service';
 import 'angular/rest/upload.rest.service';
 import 'angular/import/import-context.service';
 import 'angular/import/import-view-storage.service';
-import {FILE_STATUS} from "../models/import/file-status";
 import {FileFormats} from "../models/import/file-formats";
 import * as stringUtils from "../utils/string-utils";
 import {FileUtils} from "../utils/file-utils";
@@ -14,6 +13,7 @@ import {ImportResourceTreeElement} from "../models/import/import-resource-tree-e
 import {decodeHTML} from "../../../app";
 import {FilePrefixRegistry} from "./file-prefix-registry";
 import {SortingType} from "../models/import/sorting-type";
+import {ImportResourceStatus} from "../models/import/import-resource-status";
 
 const modules = [
     'ui.bootstrap',
@@ -355,6 +355,17 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             $scope.setSettingsFor('', withoutChangingSettings, undefined);
         };
 
+        /**
+         * Edits the <code>resource</code>.
+         *
+         * @param {ImportResourceTreeElement} resource - the resource to be edited.
+         */
+        $scope.onEditResource = (resource) => {
+            if (resource.importResource.isText()) {
+                $scope.openTextSnippetDialog(resource.importResource);
+            }
+        };
+
         // =========================
         // Private functions
         // =========================
@@ -427,7 +438,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                     ImportContextService.updateFiles($scope.files);
                 }
                 $scope.showClearStatuses = _.filter($scope.files, function (file) {
-                    return file.status === FILE_STATUS.DONE || file.status === FILE_STATUS.ERROR;
+                    return file.status === ImportResourceStatus.DONE || file.status === ImportResourceStatus.ERROR;
                 }).length > 0;
 
                 $scope.savedSettings = _.mapKeys(_.filter($scope.files, 'parserSettings'), 'name');
@@ -638,42 +649,42 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
 
     /**
      * Opens a modal dialog where the user can paste a rdf text snippet and import it.
-     * @param {{object}|undefined} file
+     * @param {{ImportResource}|undefined} importResource
      */
-    $scope.openTextSnippetDialog = (file) => {
+    $scope.openTextSnippetDialog = (importResource) => {
         const scope = {};
-        if (file) {
-            scope.rdfText = file.data;
+        if (importResource) {
+            scope.rdfText = importResource.data;
         }
         const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/import/templates/textSnippet.html',
             controller: 'TextCtrl',
             resolve: {
                 text: function () {
-                    return file ? file.data : '';
+                    return importResource ? importResource.data : '';
                 },
                 format: function () {
-                    return file ? file.format : 'text/turtle';
+                    return importResource ? importResource.format : 'text/turtle';
                 }
             }
         });
 
         modalInstance.result.then((data) => {
-            if (file) {
-                if ((file.data !== data.text || file.format !== data.format) && file.status !== FILE_STATUS.NONE) {
-                    file.status = FILE_STATUS.NONE;
-                    file.message = $translate.instant('import.text.snippet.not.imported');
+            if (importResource) {
+                if ((importResource.data !== data.text || importResource.format !== data.format) && importResource.status !== ImportResourceStatus.NONE) {
+                    importResource.status = ImportResourceStatus.NONE;
+                    importResource.message = $translate.instant('import.text.snippet.not.imported');
                 }
-                file.data = data.text;
-                file.format = data.format;
-                updateTextImport(file);
+                importResource.data = data.text;
+                importResource.format = data.format;
+                updateTextImport(importResource);
             } else {
-                file = {type: 'text', name: 'Text snippet ' + DateUtils.formatCurrentDateTime(), format: data.format, data: data.text};
-                $scope.files.unshift(file);
-                $scope.updateImport(file.name, false, false);
+                importResource = {type: 'text', name: 'Text snippet ' + DateUtils.formatCurrentDateTime(), format: data.format, data: data.text};
+                $scope.files.unshift(importResource);
+                $scope.updateImport(importResource.name, false, false);
             }
             if (data.startImport) {
-                $scope.setSettingsFor(file.name, false, file.format);
+                $scope.setSettingsFor(importResource.name, false, importResource.format);
             }
         });
     };
@@ -720,7 +731,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         $scope.settings.type = file.type;
         $scope.settings.data = file.data;
         $scope.settings.format = file.format;
-        file.status = FILE_STATUS.PENDING;
+        file.status = ImportResourceStatus.PENDING;
 
         const importer = startImport ? ImportRestService.importTextSnippet : ImportRestService.updateTextSnippet;
         importer($repositories.getActiveRepository(), $scope.settings)
@@ -728,7 +739,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                 $scope.updateList();
             }).error(function (data) {
             toastr.error($translate.instant('import.could.not.send.data', {data: getError(data)}));
-            file.status = FILE_STATUS.ERROR;
+            file.status = ImportResourceStatus.ERROR;
             file.message = getError(data);
         }).finally(nextCallback || function () {});
     };
@@ -749,7 +760,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         $scope.settings.type = file.type;
         $scope.settings.data = file.data;
         $scope.settings.format = file.format;
-        file.status = FILE_STATUS.PENDING;
+        file.status = ImportResourceStatus.PENDING;
 
         const importer = startImport ? ImportRestService.importFromUrl : ImportRestService.updateFromUrl;
         importer($repositories.getActiveRepository(), $scope.settings).success(function () {
@@ -767,7 +778,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
             $scope.updateList();
         }).catch((data) => {
             toastr.error($translate.instant('import.could.not.upload.file', {data: getError(data)}));
-            file.status = FILE_STATUS.ERROR;
+            file.status = ImportResourceStatus.ERROR;
             file.message = getError(data);
         }).finally(nextCallback || function () {});
     };

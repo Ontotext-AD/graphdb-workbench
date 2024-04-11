@@ -131,7 +131,8 @@
                                       on-remove="onRemove(resources)"
                                       on-stop-import="onStopImport(resource)"
                                       on-reset="onReset(resources)"
-                                      on-import-all="importAll(selectedResources, withoutChangingSettings)">
+                                      on-import-all="importAll(selectedResources, withoutChangingSettings)"
+                                      on-edit-resource="onEditResource(resource)">
                 </import-resource-tree>
             </div>
             <div id="import-server" ng-hide="isS4()" class="tab-pane" ng-controller="ImportCtrl"
