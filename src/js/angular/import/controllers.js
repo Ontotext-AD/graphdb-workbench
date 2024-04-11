@@ -355,6 +355,17 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             $scope.setSettingsFor('', withoutChangingSettings, undefined);
         };
 
+        /**
+         * Edits the <code>resource</code>.
+         *
+         * @param {ImportResourceTreeElement} resource - the resource to be edited.
+         */
+        $scope.onEditResource = (resource) => {
+            if (resource.importResource.isText()) {
+                $scope.openTextSnippetDialog(resource.importResource);
+            }
+        };
+
         // =========================
         // Private functions
         // =========================
@@ -638,42 +649,42 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
 
     /**
      * Opens a modal dialog where the user can paste a rdf text snippet and import it.
-     * @param {{object}|undefined} file
+     * @param {{ImportResource}|undefined} importResource
      */
-    $scope.openTextSnippetDialog = (file) => {
+    $scope.openTextSnippetDialog = (importResource) => {
         const scope = {};
-        if (file) {
-            scope.rdfText = file.data;
+        if (importResource) {
+            scope.rdfText = importResource.data;
         }
         const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/import/templates/textSnippet.html',
             controller: 'TextCtrl',
             resolve: {
                 text: function () {
-                    return file ? file.data : '';
+                    return importResource ? importResource.data : '';
                 },
                 format: function () {
-                    return file ? file.format : 'text/turtle';
+                    return importResource ? importResource.format : 'text/turtle';
                 }
             }
         });
 
         modalInstance.result.then((data) => {
-            if (file) {
-                if ((file.data !== data.text || file.format !== data.format) && file.status !== ImportResourceStatus.NONE) {
-                    file.status = ImportResourceStatus.NONE;
-                    file.message = $translate.instant('import.text.snippet.not.imported');
+            if (importResource) {
+                if ((importResource.data !== data.text || importResource.format !== data.format) && importResource.status !== ImportResourceStatus.NONE) {
+                    importResource.status = ImportResourceStatus.NONE;
+                    importResource.message = $translate.instant('import.text.snippet.not.imported');
                 }
-                file.data = data.text;
-                file.format = data.format;
-                updateTextImport(file);
+                importResource.data = data.text;
+                importResource.format = data.format;
+                updateTextImport(importResource);
             } else {
-                file = {type: 'text', name: 'Text snippet ' + DateUtils.formatCurrentDateTime(), format: data.format, data: data.text};
-                $scope.files.unshift(file);
-                $scope.updateImport(file.name, false, false);
+                importResource = {type: 'text', name: 'Text snippet ' + DateUtils.formatCurrentDateTime(), format: data.format, data: data.text};
+                $scope.files.unshift(importResource);
+                $scope.updateImport(importResource.name, false, false);
             }
             if (data.startImport) {
-                $scope.setSettingsFor(file.name, false, file.format);
+                $scope.setSettingsFor(importResource.name, false, importResource.format);
             }
         });
     };
