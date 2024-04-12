@@ -32,11 +32,6 @@ const modules = [
 
 const importViewModule = angular.module('graphdb.framework.impex.import.controllers', modules);
 
-export const OPERATION = {
-    UPLOAD: 'upload',
-    SERVER: 'server'
-};
-
 const USER_DATA_TYPE = {
     FILE: 'file',
     TEXT: 'text',
@@ -462,7 +457,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             if (!names || names.length < 1) {
                 return;
             }
-            const resetService = $scope.activeTabId === OPERATION.UPLOAD ? ImportRestService.resetUserDataStatus : ImportRestService.resetServerFileStatus;
+            const resetService = $scope.activeTabId === TABS.USER ? ImportRestService.resetUserDataStatus : ImportRestService.resetServerFileStatus;
             resetService($repositories.getActiveRepository(), names, remove).success(function () {
                 $scope.updateList(true);
             }).error(function (data) {
@@ -1067,7 +1062,8 @@ importViewModule.controller('TabCtrl', ['$scope', '$location', 'ImportViewStorag
     $scope.$on('$destroy', removeAllListeners);
 
     // Updates the active tab id from tha url.
-    ImportContextService.updateActiveTabId($location.hash() || TABS.USER);
+    const activeTabId = $location.hash() || TABS.USER;
+    $scope.openTab(activeTabId);
 }]);
 
 importViewModule.controller('SettingsModalCtrl', ['$scope', '$uibModalInstance', 'toastr', 'UriUtils', 'settings', 'hasParserSettings', 'defaultSettings', 'isMultiple', '$translate',
