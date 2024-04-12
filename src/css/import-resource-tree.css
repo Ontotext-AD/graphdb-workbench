@@ -79,6 +79,11 @@
     padding-left: 0.5rem;
 }
 
+.import-resource-tree .import-resources-actions .import-resource-status-dropdown .dropdown-toggle:not(.selected) {
+    border: none;
+    background-color: #fff;
+}
+
 .import-resource-tree .import-resources-actions .import-resource-status-dropdown,
 .import-resource-tree .import-resources-actions .import-resource-selected-actions {
     display: flex;

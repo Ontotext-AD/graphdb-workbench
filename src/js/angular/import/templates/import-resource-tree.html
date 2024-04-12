@@ -4,7 +4,9 @@
     <div class="import-resource-tree-header">
         <div class="import-resources-actions">
             <div class="import-resource-status-dropdown btn-group" uib-dropdown>
-                <button type="button" class="btn btn-secondary dropdown-toggle" uib-dropdown-toggle>
+                <button type="button" class="btn btn-secondary dropdown-toggle"
+                        ng-class="{'selected': selectedByStatus}"
+                        uib-dropdown-toggle>
                     <input type="checkbox">
                     {{selectedByStatus ? (('import.import_resource_tree.status.' + selectedByStatus) | translate) : '
                     '}}
