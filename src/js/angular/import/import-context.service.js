@@ -1,4 +1,13 @@
+/**
+ * The import service is implemented using many controllers and directives that share common variables.
+ * The purpose of the ImportContextService is to hold data shared between them.
+ */
 import {cloneDeep} from "lodash";
+
+export const TABS = {
+    USER: 'user',
+    SERVER: 'server'
+};
 
 angular
     .module('graphdb.framework.importcontext.service', [])
@@ -7,6 +16,9 @@ angular
 ImportContextService.$inject = ['EventEmitterService'];
 
 function ImportContextService(EventEmitterService) {
+
+    let _activeTabId = TABS.USER;
+
     /**
      * @type {*[]}
      * @private
@@ -14,11 +26,37 @@ function ImportContextService(EventEmitterService) {
     let _files = [];
 
     return {
+        updateActiveTabId,
+        getActiveTabId,
+        onActiveTabIdUpdated,
         getFiles,
         addFile,
         updateFiles,
         onFilesUpdated
     };
+
+    /**
+     * Updates the active tab id of import page.
+     * @param {string} activeTabId - the new view of import page. Its value have to be one of {@link OPERATION}
+     */
+    function updateActiveTabId(activeTabId) {
+        _activeTabId = activeTabId;
+        EventEmitterService.emit('activeTabIdUpdated', getActiveTabId());
+    }
+
+    function getActiveTabId() {
+        return _activeTabId;
+    }
+
+    /**
+     * Subscribes to the 'activeTabUpdated' event.
+     * @param {function} callback - The callback to be called when the event is fired.
+     *
+     * @return unsubscribe function.
+     */
+    function onActiveTabIdUpdated(callback) {
+        return EventEmitterService.subscribe('activeTabIdUpdated', () => callback(getActiveTabId()));
+    }
 
     /**
      * Updates the list of files.
@@ -34,9 +72,11 @@ function ImportContextService(EventEmitterService) {
     /**
      * Subscribes to the 'filesUpdated' event.
      * @param {function} callback - The callback to be called when the event is fired.
+     *
+     * @return unsubscribe function.
      */
     function onFilesUpdated(callback) {
-        EventEmitterService.subscribe('filesUpdated', () => callback(getFiles()));
+        return EventEmitterService.subscribe('filesUpdated', () => callback(getFiles()));
     }
 
     /**
