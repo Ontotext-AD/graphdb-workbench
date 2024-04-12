@@ -4,9 +4,9 @@ angular
     .module('graphdb.framework.import.import-resource-status-info', modules)
     .directive('importResourceStatusInfo', importResourceStatusInfoDirective);
 
-importResourceStatusInfoDirective.$inject = ['$rootScope'];
+importResourceStatusInfoDirective.$inject = ['$rootScope', '$document'];
 
-function importResourceStatusInfoDirective($rootScope) {
+function importResourceStatusInfoDirective($rootScope, $document) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/import/templates/import-resource-status-info.html',
@@ -14,6 +14,8 @@ function importResourceStatusInfoDirective($rootScope) {
             resource: '='
         },
         link: ($scope) => {
+            const subscribers = [];
+
             // =========================
             // Public variables
             // =========================
@@ -42,17 +44,29 @@ function importResourceStatusInfoDirective($rootScope) {
                 $scope.popoverIsOpen = false;
             };
 
-            // =========================
-            // Subscriptions
-            // =========================
-            const subscribers = [];
-            subscribers.push($scope.$on('closePopovers', $scope.close));
+            const handleEscapeKeyPress = (event) => {
+                if (event.key === 'Escape') {
+                    $scope.$apply(() => {
+                        $scope.close();
+                    });
+                }
+            };
 
             const removeAllSubscribers = () => {
                 subscribers.forEach((subscriber) => subscriber());
             };
 
-            $scope.$on('$destroy', removeAllSubscribers);
+            // =========================
+            // Subscriptions
+            // =========================
+
+            subscribers.push($scope.$on('closePopovers', $scope.close));
+            $document.on('keydown', handleEscapeKeyPress);
+
+            $scope.$on('$destroy', () => {
+                $document.off('keydown', handleEscapeKeyPress);
+                removeAllSubscribers();
+            });
         }
     };
 }

@@ -927,7 +927,7 @@
         "show.files.only": "Show files only",
         "show.files.directories": "Show both files and directories",
         "show.directories.only": "Show directories only",
-        "type.to.filter": "Type to filter",
+        "type.to.filter": "Type to filter by name",
         "selected.items": "Import the selected items",
         "without.changing.settings": "Import without changing settings",
         "reset.last.imported": "Reset the last imported status of the selected items",
@@ -980,7 +980,7 @@
                 "the_property": "property"
             },
             "on_file_size_limit": {
-                "file_size_limit_info": "To import larger than {{fileSizeLimit}} MB, use the ",
+                "file_size_limit_info": "To import larger than {{fileSizeLimit}} MB files, use the ",
                 "server_files_link": "Server files",
                 "import_or_use": "import or use the",
                 "api_link": "API"

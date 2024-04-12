@@ -927,14 +927,15 @@
         "show.files.only": "Show files only",
         "show.files.directories": "Show both files and directories",
         "show.directories.only": "Show directories only",
-        "type.to.filter": "Type to filter",
+        "type.to.filter": "Type to filter by name",
         "selected.items": "Import the selected items",
         "without.changing.settings": "Import without changing settings",
         "reset.last.imported": "Reset the last imported status of the selected items",
         "reset.status": "Reset status",
         "remove.selected": "Remove the selected items from the list",
         "remove.btn": "Remove",
-        "remove.confirm.msg": "Are you sure you want to remove selected files: '{{name}}'?",
+        "import.btn": "Import",
+        "remove.confirm.msg": "Are you sure you want to remove selected files: {{name}}",
         "mode.not.supported.constraint": "This mode is not supported when importing multiple items.",
         "enable.replace.option": "Enable this to replace the data in one or more graphs with the imported data.",
         "context.link": "JSON-LD context",
@@ -979,7 +980,7 @@
                 "the_property": "property"
             },
             "on_file_size_limit": {
-                "file_size_limit_info": "To import larger than {{fileSizeLimit}} MB, use the ",
+                "file_size_limit_info": "To import larger than {{fileSizeLimit}} MB files, use the ",
                 "server_files_link": "Server files",
                 "import_or_use": "import or use the",
                 "api_link": "API"
@@ -1003,7 +1004,8 @@
                 "interrupt_import": "Interrupt import",
                 "abort": "Abort"
             }
-        },"status-info": {
+        },
+        "status-info": {
             "last_import_settings": "Last import settings",
             "context": "Context",
             "replaced_graphs": "Replaced graphs",

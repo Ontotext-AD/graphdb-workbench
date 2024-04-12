@@ -926,7 +926,7 @@
         "show.files.only": "Afficher uniquement les fichiers",
         "show.files.directories": "Afficher à la fois les fichiers et les dépôts",
         "show.directories.only": "Afficher uniquement les dépôts",
-        "type.to.filter": "Type de filtre",
+        "type.to.filter": "Tapez pour filtrer par nom",
         "select.all": "Tout sélectionner",
         "selected.items": "Importer les éléments sélectionnés",
         "without.changing.settings": "Importer sans modifier les paramètres",
@@ -980,7 +980,7 @@
                 "the_property": "propriété"
             },
             "on_file_size_limit": {
-                "file_size_limit_info": "Pour importer plus de {{fileSizeLimit}} Mo, utilisez l'importation de ",
+                "file_size_limit_info": "Pour importer des fichiers de plus de {{fileSizeLimit}} Mo, utilisez l'importation de ",
                 "server_files_link": "Fichiers du serveur",
                 "import_or_use": "ou utilisez l'",
                 "api_link": "API"
