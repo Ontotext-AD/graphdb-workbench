@@ -7,7 +7,7 @@
                 <button type="button" class="btn btn-secondary dropdown-toggle"
                         ng-class="{'selected': selectedByStatus}"
                         uib-dropdown-toggle>
-                    <input type="checkbox">
+                    <input type="checkbox" prop-indeterminate="areAllDisplayedImportResourcesPartialSelected" ng-model="areAllDisplayedImportResourcesSelected">
                     {{selectedByStatus ? (('import.import_resource_tree.status.' + selectedByStatus) | translate) : '
                     '}}
                 </button>

@@ -64,6 +64,8 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             $scope.filterByFileName = '';
             $scope.STATUS_OPTIONS = STATUS_OPTIONS;
             $scope.selectedByStatus = undefined;
+            $scope.areAllDisplayedImportResourcesSelected = false;
+            $scope.areAllDisplayedImportResourcesPartialSelected = false;
             $scope.ImportResourceStatus = ImportResourceStatus;
             $scope.canRemoveResource = angular.isDefined(attrs.onRemove);
             $scope.canResetSelectedResources = false;
@@ -82,6 +84,7 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             $scope.selectionChanged = ((resource) => {
                 resource.setSelection(resource.selected);
                 $scope.selectedResources = $scope.resources.getAllSelected();
+                updateSelectByStateDropdownModel();
                 setCanResetResourcesFlag();
             });
 
@@ -198,6 +201,15 @@ function importResourceTreeDirective($timeout, ImportContextService) {
                 $scope.displayResources = $scope.resources.toList()
                     .filter(filterByType)
                     .filter(filterByName);
+
+                updateSelectByStateDropdownModel();
+            };
+
+            const updateSelectByStateDropdownModel = () => {
+                const hasUnselectedDisplayedImportResource = $scope.displayResources.some((resource) => !resource.selected);
+                const hasSelectedDisplayedImportResource = $scope.displayResources.some((resource) => resource.selected);
+                $scope.areAllDisplayedImportResourcesSelected = hasSelectedDisplayedImportResource && !hasUnselectedDisplayedImportResource;
+                $scope.areAllDisplayedImportResourcesPartialSelected = hasSelectedDisplayedImportResource && hasUnselectedDisplayedImportResource;
             };
 
             const sortResources = () => {
