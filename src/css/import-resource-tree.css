@@ -160,7 +160,7 @@
 }
 
 .sorting {
-    padding-right: 5px;
+    padding-left: 20px;
     background: no-repeat;
     background-position: right center;
     background-size: 0.9em;
@@ -168,7 +168,7 @@
 }
 
 .sorting_asc {
-    padding-right: 5px;
+    padding-left: 20px;
     background: no-repeat;
     background-position: right center;
     background-size: 1em;
@@ -176,7 +176,7 @@
 }
 
 .sorting_desc {
-    padding-right: 5px;
+    padding-left: 20px;
     background: no-repeat;
     background-position: right center;
     background-size: 1em;
