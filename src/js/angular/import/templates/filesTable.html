@@ -3,7 +3,7 @@
 
     <div ng-show="showTable()" class="mb-1 clearfix">
         <div class="pull-right form-inline">
-            <div class="btn-group d-inline mr-1" ng-show="viewType === 'server'">
+            <div class="btn-group d-inline mr-1" ng-show="activeTabId === 'server'">
                 <button type="button" class="btn btn-secondary" ng-model="showItems" uib-btn-radio="'file'" gdb-tooltip="{{'import.show.files.only' | translate}}">
                     <em class="icon-file"></em>
                 </button>
@@ -48,7 +48,7 @@
                 {{'import.reset.status' | translate}}
             </button>
             <button id="wb-import-removeEntries"
-                    ng-show="batch && viewType === 'user'"
+                    ng-show="batch && activeTabId === 'user'"
                     class="btn btn-secondary" type="button" ng-click="removeEntrySelected()"
                     uib-popover="{{'import.remove.selected' | translate}}"
                     popover-trigger="mouseenter"
@@ -86,9 +86,9 @@
                 <div class="d-inline-block" style="overflow: hidden; text-overflow: ellipsis;">
                     <div class="import-file-header">
                         <!-- no icon for server files -->
-                        <em class="icon-file" ng-show="viewType === 'server' && file.type === 'file'"></em>
+                        <em class="icon-file" ng-show="activeTabId === 'server' && file.type === 'file'"></em>
                         <em class="icon-folder" ng-show="file.type === 'directory'"></em>
-                        <em class="icon-upload" ng-show="viewType === 'user' && file.type === 'file'"></em>
+                        <em class="icon-upload" ng-show="activeTabId === 'user' && file.type === 'file'"></em>
                         <em class="icon-link" ng-show="file.type === 'url'"></em>
                         <em class="icon-edit" ng-show="file.type === 'text'"></em>
                         <strong ng-show="file.type !== 'text'">{{file.name}}</strong>
@@ -131,7 +131,7 @@
                     </div>
                 </div>
             </td>
-            <td width="25" ng-show="viewType === 'user'">
+            <td width="25" ng-show="activeTabId === 'user'">
                 <button class="btn btn-link secondary remove-file-btn" ng-click="removeEntry([file.name])" ng-disabled="batch || file.status === 'IMPORTING' || file.status === 'UPLOADING' || file.status === 'PENDING' || file.status === 'INTERRUPTING'">
                     <em class="icon-trash"></em>
                 </button>
@@ -143,7 +143,7 @@
                         ng-cloak
                         ng-hide="!importable(file) || file.status === 'IMPORTING' || file.status === 'UPLOADING' || file.status === 'PENDING' || file.status === 'INTERRUPTING'"
                         guide-selector="import-file-{{file.name}}"
-                        data-target="#{{viewType}}Modal">
+                        data-target="#{{activeTabId}}Modal">
                     <span class="icon-import"></span>
                     {{'common.import' | translate}}
                 </button>
@@ -159,7 +159,7 @@
             </td>
         </tr>
         </tbody>
-        <tbody ng-show="files.length == 0 && viewType == 'server'">
+        <tbody ng-show="files.length == 0 && activeTabId == 'server'">
         <tr>
             <td>{{'import.no.files.found' | translate}}</td>
         </tr>

@@ -16,11 +16,11 @@
 
         <ul class="nav nav-tabs mb-2">
             <li class="nav-item" id="wb-import-tabUpload">
-                <a class="nav-link" ng-class="viewType == 'user' ? 'active' : ''" href ng-click="openTab('user')"
+                <a class="nav-link" ng-class="activeTabId == 'user' ? 'active' : ''" href ng-click="openTab('user')"
                    data-toggle="tab">{{'user.data' | translate}}</a>
             </li>
             <li class="nav-item" id="wb-import-tabServer" ng-hide="isS4()">
-                <a class="nav-link" ng-class="viewType == 'server' ? 'active' : ''" href
+                <a class="nav-link" ng-class="activeTabId == 'server' ? 'active' : ''" href
                    ng-click="openTab('server')" data-toggle="tab">{{'server.files' | translate}}</a>
             </li>
             <li class="nav-item">
@@ -34,7 +34,7 @@
 
         <div class="tab-content">
             <div id="import-user" class="tab-pane" ng-controller="UploadCtrl"
-                 ng-class="$parent.viewType == 'user' ? 'active' : ''">
+                 ng-class="activeTabId == 'user' ? 'active' : ''">
                 <div class="row upload-buttons">
                     <div class="col-xs-12 col-md-6 col-lg-4 mb-2 fat-btn">
                         <div class="btn btn-outline-primary btn-lg text-xs-left upload-rdf-files-btn"
@@ -122,8 +122,8 @@
                         </ul>
                     </div>
                 </div>
-                <import-resource-tree ng-if="resources"
-                                      resources="resources"
+                <div class="ot-loader ot-main-loader" onto-loader size="50" ng-if="loader"></div>
+                <import-resource-tree ng-if ="!loader"
                                       show-type-filter="false"
                                       sort-by="SORTING_TYPES.MODIFIED"
                                       asc="false"
@@ -136,7 +136,7 @@
                 </import-resource-tree>
             </div>
             <div id="import-server" ng-hide="isS4()" class="tab-pane" ng-controller="ImportCtrl"
-                 ng-class="$parent.viewType == 'server' ? 'active' : ''">
+                 ng-class="activeTabId == 'server' ? 'active' : ''">
 
                 <div ng-if="isHelpVisible" class="alert alert-help server-files-import-help mb-0">
                     <button type="button" ng-click="toggleHelp()" gdb-tooltip="{{'common.close' | translate}}"
@@ -154,8 +154,8 @@
                         </p>
                     </div>
                 </div>
-                <import-resource-tree ng-if="resources"
-                                      resources="resources"
+                <div class="ot-loader ot-main-loader" onto-loader size="50" ng-if="loader"></div>
+                <import-resource-tree ng-if ="!loader"
                                       show-type-filter="true"
                                       sort-by="SORTING_TYPES.NAME"
                                       on-import="onImport(resource)"

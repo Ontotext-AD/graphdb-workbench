@@ -25,18 +25,14 @@ angular
     .module('graphdb.framework.import.import-resource-tree', modules)
     .directive('importResourceTree', importResourceTreeDirective);
 
-importResourceTreeDirective.$inject = ['$timeout'];
+importResourceTreeDirective.$inject = ['$timeout', 'ImportContextService'];
 
-function importResourceTreeDirective($timeout) {
+function importResourceTreeDirective($timeout, ImportContextService) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/import/templates/import-resource-tree.html',
         scope: {
 
-            /**
-             * @type {ImportResourceTreeElement}
-             */
-            resources: '=',
             /**
              * If the type filter buttons should be visible.
              */
@@ -181,10 +177,6 @@ function importResourceTreeDirective($timeout) {
             // Private functions
             // =========================
 
-            const init = () => {
-                updateListedImportResources();
-            };
-
             /**
              * Sets the flag showing if any of the selected resources is already imported
              * and can have their states reset.
@@ -291,11 +283,20 @@ function importResourceTreeDirective($timeout) {
             };
 
             // =========================
+            // Subscription handlers
+            // =========================
+
+            const onResourcesUpdatedHandler = (resources) => {
+                $scope.resources = resources;
+                updateListedImportResources();
+            };
+
+            // =========================
             // Subscriptions
             // =========================
             const subscriptions = [];
 
-            subscriptions.push($scope.$watch('resources', init));
+            subscriptions.push(ImportContextService.onResourcesUpdated(onResourcesUpdatedHandler));
 
             const removeAllSubscribers = () => {
                 subscriptions.forEach((subscription) => subscription());
