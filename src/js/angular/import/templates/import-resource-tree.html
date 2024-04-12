@@ -70,11 +70,6 @@
         </div>
         <div class="import-resource-tree-filter btn-group">
             <div ng-if="showTypeFilter" class="import-resource-type-filter mr-1">
-                <button class="btn btn-secondary show-only-files-btn"
-                        ng-click="filterByTypeChanged(TYPE_FILTER_OPTIONS.FILE)"
-                        ng-class="{'active': TYPE_FILTER_OPTIONS.FILE === filterByType}">
-                    <em class="icon-file"></em>
-                </button>
                 <button class="btn btn-secondary show-all-resources-btn"
                         ng-click="filterByTypeChanged(TYPE_FILTER_OPTIONS.ALL)"
                         ng-class="{'active': TYPE_FILTER_OPTIONS.ALL === filterByType}">
@@ -85,6 +80,11 @@
                         ng-click="filterByTypeChanged(TYPE_FILTER_OPTIONS.DIRECTORY)"
                         ng-class="{'active': TYPE_FILTER_OPTIONS.DIRECTORY === filterByType}">
                     <em class="icon-folder"></em>
+                </button>
+                <button class="btn btn-secondary show-only-files-btn"
+                        ng-click="filterByTypeChanged(TYPE_FILTER_OPTIONS.FILE)"
+                        ng-class="{'active': TYPE_FILTER_OPTIONS.FILE === filterByType}">
+                    <em class="icon-file"></em>
                 </button>
             </div>
 
