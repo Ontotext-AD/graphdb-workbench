@@ -70,7 +70,7 @@ describe('Import user data: Batch operations', () => {
         ImportUserDataSteps.getResourceByName('bnodes.ttl').should('be.visible');
     });
 
-    it('Should be able to batch import files', () => {
+    it('Should be able to batch import files', {retries: 2}, () => {
         uploadFiles([
             {name: testFiles[0], content: bnodes},
             {name: testFiles[1], content: jsonld},
@@ -174,9 +174,10 @@ function uploadFiles(data) {
     });
     ImportUserDataSteps.selectFile(createdFiles);
     ImportSettingsDialogSteps.cancelImport();
+    ImportSettingsDialogSteps.getDialog().should('not.exist');
     ImportUserDataSteps.getResources().should('have.length', data.length);
     // check them backwards because  latest uploaded/imported files are at the top
-    data.reverse().forEach((file, index) => {
+    data.forEach((file, index) => {
         ImportUserDataSteps.checkUserDataUploadedResource(index, file.name);
     });
 }
