@@ -357,15 +357,15 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
          * @param {boolean} withoutChangingSettings - Whether to use default settings or not.
          */
         $scope.importAll = (selectedResources, withoutChangingSettings) => {
+            // mark all files as selected locally in order to have them after the import is confirmed via the modal
+            selectedResources
+                .filter((resource) => resource.isFile())
+                .forEach((resource) => {
+                    $scope.selectedForImportFiles[resource.path] = true;
+                });
             if (withoutChangingSettings) {
                 $scope.importSelected(selectedResources, withoutChangingSettings);
             } else {
-                // mark all files as selected locally in order to have them after the import is confirmed via the modal
-                selectedResources
-                    .filter((resource) => resource.isFile())
-                    .forEach((resource) => {
-                    $scope.selectedForImportFiles[resource.path] = true;
-                });
                 $scope.setSettingsFor('', withoutChangingSettings, undefined);
             }
         };

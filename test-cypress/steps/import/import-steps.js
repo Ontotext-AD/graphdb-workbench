@@ -232,6 +232,11 @@ class ImportSteps {
         this.getBatchImportButton().click();
     }
 
+    static batchImportWithoutChangingDefaultSettings() {
+        this.getResourcesTable().find('.batch-import-dropdown .dropdown-toggle').click();
+        this.getResourcesTable().find('.batch-import-without-change-btn').click();
+    }
+
     static getBatchResetButton() {
         return this.getResourcesTable().find('.batch-reset-btn');
     }

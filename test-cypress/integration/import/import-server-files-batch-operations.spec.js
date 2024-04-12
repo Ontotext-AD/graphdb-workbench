@@ -60,7 +60,7 @@ describe('Import server files - Batch operations', () => {
         ImportServerFilesSteps.getSelectedResources().should('have.length', 0);
     });
 
-    it('Should perform batch import and reset of selected server files without changing settings', () => {
+    it('Should perform batch import and reset of selected server files with changing settings', () => {
         // Given I have opened the server files tab
         // When I select couple of files for import
         ImportServerFilesSteps.selectFileByName('more-files');
@@ -78,5 +78,18 @@ describe('Import server files - Batch operations', () => {
         ImportServerFilesSteps.batchReset();
         // Then the files should be reset
         ImportServerFilesSteps.getImportedResourcesStates().should('have.length', 0);
+    });
+
+    it('should perform batch import without changing default settings', () => {
+        // Given I have opened the server files tab
+        // When I select couple of files for import
+        ImportServerFilesSteps.selectFileByName('more-files');
+        // And I click on the batch import button without changing default settings
+        ImportServerFilesSteps.batchImportWithoutChangingDefaultSettings();
+        // Then the files should be imported
+        // We send only the files in the folder for import
+        // ImportServerFilesSteps.checkImportedResource(0, 'more-files');
+        ImportServerFilesSteps.checkImportedResource(0, 'jsonld-file.jsonld');
+        ImportServerFilesSteps.checkImportedResource(0, 'rdfxml.rdf');
     });
 });
