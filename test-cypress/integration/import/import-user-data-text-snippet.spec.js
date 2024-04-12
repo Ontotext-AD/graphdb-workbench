@@ -74,7 +74,7 @@ describe('Import user data: Text snippet', () => {
         ImportUserDataSteps.openImportTextSnippetDialog();
         ImportUserDataSteps.fillRDFTextSnippet(RDF_TEXT_SNIPPET_1);
         ImportUserDataSteps.clickImportTextSnippetButton();
-        ImportUserDataSteps.importFromSettingsDialog();
+        ImportSettingsDialogSteps.import();
         ImportUserDataSteps.checkImportedResource(0, TEXT_SNIPPET);
     });
 
@@ -83,7 +83,7 @@ describe('Import user data: Text snippet', () => {
         ImportUserDataSteps.fillRDFTextSnippet(RDF_TEXT_SNIPPET_1);
         ImportUserDataSteps.selectRDFFormat(JSONLD_FORMAT);
         ImportUserDataSteps.clickImportTextSnippetButton();
-        ImportUserDataSteps.importFromSettingsDialog();
+        ImportSettingsDialogSteps.import();
         ImportUserDataSteps.checkImportedResource(0, TEXT_SNIPPET, RDF_ERROR_MESSAGE);
     });
 
@@ -92,7 +92,7 @@ describe('Import user data: Text snippet', () => {
         ImportUserDataSteps.fillRDFTextSnippet(RDF_TEXT_SNIPPET_1);
         ImportUserDataSteps.selectRDFFormat(VALID_SNIPPET_RDF_FORMAT);
         ImportUserDataSteps.clickImportTextSnippetButton();
-        ImportUserDataSteps.importFromSettingsDialog();
+        ImportSettingsDialogSteps.import();
         ImportUserDataSteps.checkImportedResource(0, TEXT_SNIPPET);
     });
 
@@ -101,7 +101,7 @@ describe('Import user data: Text snippet', () => {
         ImportUserDataSteps.fillRDFTextSnippet(TURTLESTAR_SNIPPET);
         ImportUserDataSteps.selectRDFFormat(VALID_SNIPPET_TURTLESTAR_FORMAT);
         ImportUserDataSteps.clickImportTextSnippetButton();
-        ImportUserDataSteps.importFromSettingsDialog();
+        ImportSettingsDialogSteps.import();
         ImportUserDataSteps.checkImportedResource(0, TEXT_SNIPPET);
     });
 
@@ -110,7 +110,7 @@ describe('Import user data: Text snippet', () => {
         ImportUserDataSteps.fillRDFTextSnippet(TRIGSTAR_SNIPPET);
         ImportUserDataSteps.selectRDFFormat(VALID_SNIPPET_TRIGSTAR_FORMAT);
         ImportUserDataSteps.clickImportTextSnippetButton();
-        ImportUserDataSteps.importFromSettingsDialog();
+        ImportSettingsDialogSteps.import();
         ImportUserDataSteps.checkImportedResource(0, TEXT_SNIPPET);
     });
 
@@ -209,9 +209,9 @@ describe('Import user data: Text snippet', () => {
         ImportUserDataSteps.fillRDFTextSnippet(JSONLD_TEXT_SNIPPET);
         ImportUserDataSteps.selectRDFFormat(JSONLD_FORMAT);
         ImportUserDataSteps.clickImportTextSnippetButton();
-        ImportUserDataSteps.selectNamedGraph();
-        ImportUserDataSteps.fillNamedGraph(CONTEXT);
-        ImportUserDataSteps.importFromSettingsDialog();
+        ImportSettingsDialogSteps.selectNamedGraph();
+        ImportSettingsDialogSteps.fillNamedGraph(CONTEXT);
+        ImportSettingsDialogSteps.import();
         ImportUserDataSteps.checkImportedResource(0, TEXT_SNIPPET);
 
         // Go to Graphs overview

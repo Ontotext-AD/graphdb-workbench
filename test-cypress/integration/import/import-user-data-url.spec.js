@@ -1,4 +1,5 @@
 import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
+import {ImportSettingsDialogSteps} from "../../steps/import/import-settings-dialog-steps";
 
 describe('Import user data: URL import', () => {
 
@@ -24,7 +25,7 @@ describe('Import user data: URL import', () => {
         ImportUserDataSteps.openImportURLDialog(IMPORT_URL);
         ImportUserDataSteps.clickImportUrlButton();
         // Without changing settings
-        ImportUserDataSteps.importFromSettingsDialog();
+        ImportSettingsDialogSteps.import();
         ImportUserDataSteps.checkImportedResource(0, IMPORT_URL);
     });
 
@@ -32,7 +33,7 @@ describe('Import user data: URL import', () => {
         ImportUserDataSteps.openImportURLDialog(IMPORT_URL);
         ImportUserDataSteps.selectRDFFormat(JSONLD_FORMAT);
         ImportUserDataSteps.clickImportUrlButton();
-        ImportUserDataSteps.importFromSettingsDialog();
+        ImportSettingsDialogSteps.import();
         ImportUserDataSteps.checkImportedResource(0, IMPORT_URL, RDF_ERROR_MESSAGE);
     });
 
@@ -40,7 +41,7 @@ describe('Import user data: URL import', () => {
         ImportUserDataSteps.openImportURLDialog(IMPORT_URL);
         ImportUserDataSteps.selectRDFFormat(VALID_URL_RDF_FORMAT);
         ImportUserDataSteps.clickImportUrlButton();
-        ImportUserDataSteps.importFromSettingsDialog();
+        ImportSettingsDialogSteps.import();
         ImportUserDataSteps.checkImportedResource(0, IMPORT_URL);
     });
 
@@ -49,7 +50,7 @@ describe('Import user data: URL import', () => {
         ImportUserDataSteps.openImportURLDialog(IMPORT_JSONLD_URL);
         ImportUserDataSteps.selectRDFFormat(JSONLD_FORMAT);
         ImportUserDataSteps.clickImportUrlButton();
-        ImportUserDataSteps.importFromSettingsDialog();
+        ImportSettingsDialogSteps.import();
         cy.wait('@postJsonldUrl').then((xhr) => {
             expect(xhr.request.body.name).to.eq('https://example.com/0007-context.jsonld');
             expect(xhr.request.body.data).to.eq('https://example.com/0007-context.jsonld');
@@ -63,7 +64,7 @@ describe('Import user data: URL import', () => {
         ImportUserDataSteps.openImportURLDialog(IMPORT_JSONLD_URL);
         ImportUserDataSteps.selectRDFFormat(JSONLD_FORMAT);
         ImportUserDataSteps.clickImportUrlButton();
-        ImportUserDataSteps.importFromSettingsDialog();
+        ImportSettingsDialogSteps.import();
         ImportUserDataSteps.checkImportedResource(0, IMPORT_JSONLD_URL, 'https://example.com/0007-context.jsonld');
     });
 });
