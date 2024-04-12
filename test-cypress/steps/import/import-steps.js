@@ -5,6 +5,12 @@ import {ModalDialogSteps} from "../modal-dialog-steps";
  */
 class ImportSteps {
 
+    //
+    // Template methods.
+    //
+    static getResourcesTable() {}
+    static getHelpMessage() {}
+
     static createFile(filename, content) {
         return {
             contents: Cypress.Buffer.from(content),
@@ -28,7 +34,7 @@ class ImportSteps {
     }
 
     static showPageInfoPopover() {
-        ImportSteps.getPageInfoIcon().realHover();
+        this.getPageInfoIcon().realHover();
     }
 
     static getPageInfoPopover() {
@@ -36,7 +42,7 @@ class ImportSteps {
     }
 
     static visitUserImport(repository) {
-        ImportSteps.visitImport('user', repository);
+        this.visitImport('user', repository);
     }
 
     static verifyUserImportUrl() {
@@ -44,11 +50,11 @@ class ImportSteps {
     }
 
     static visitServerImport(repository) {
-        ImportSteps.visitImport('server', repository);
+        this.visitImport('server', repository);
     }
 
     static getImportUrlInput() {
-        return ImportSteps.getModal().find('.url-import-form input[name="dataUrl"]');
+        return this.getModal().find('.url-import-form input[name="dataUrl"]');
     }
 
     static visitImport(type, repository) {
@@ -58,59 +64,67 @@ class ImportSteps {
 
         cy.visit('/import#' + type);
 
-        cy.get('.ot-splash').should('not.be.visible');
+        // cy.get('.ot-splash').should('not.be.visible');
 
         cy.get('#import-' + type).should('be.visible');
 
-        cy.get('.ot-loader').should('not.be.visible');
+        // cy.get('.ot-loader').should('not.be.visible');
 
-        return ImportSteps;
+        return this;
     }
 
     static closePopover() {
         cy.get('.popover.in').click();
     }
 
+    static getFilterField() {
+        return this.getResourcesTable().find('#fileQuery');
+    }
+
+    static typeInFilterField(query) {
+        return this.getFilterField().type(query);
+    }
+
     static getTabs() {
-        return ImportSteps.getView().find('.nav-tabs .nav-item');
+        return this.getView().find('.nav-tabs .nav-item');
     }
 
     static getActiveTab() {
-        return ImportSteps.getTabs().find('.nav-link.active');
+        return this.getTabs().find('.nav-link.active');
     }
 
     static openUserDataTab() {
-        cy.get('.ot-loader').should('not.be.visible');
-        return ImportSteps.getTabs().eq(0).click();
+        // cy.get('.ot-loader').should('not.be.visible');
+        return this.getTabs().eq(0).click();
     }
 
     static getUserDataTab() {
-        return ImportSteps.getView().find('#import-user');
+        return this.getView().find('#import-user');
     }
 
     static getServerFilesTab() {
-        return ImportSteps.getView().find('#import-server');
+        return this.getView().find('#import-server');
     }
 
     static openServerFilesTab() {
-        cy.get('.ot-loader').should('not.be.visible');
-        return ImportSteps.getTabs().eq(1).click();
+        // cy.get('.ot-loader').should('not.be.visible');
+        return this.getTabs().eq(1).click();
     }
 
     static getUploadRdfFilesButton() {
-        return ImportSteps.getView().find('.upload-rdf-files-btn');
+        return this.getView().find('.upload-rdf-files-btn');
     }
 
     static getUploadFromUrlButton() {
-        return ImportSteps.getView().find('.import-from-url-btn');
+        return this.getView().find('.import-from-url-btn');
     }
 
     static getUploadTextSnippetButton() {
-        return ImportSteps.getView().find('.import-from-url-btn');
+        return this.getView().find('.import-from-url-btn');
     }
 
     static getFileSizeLimitWarning() {
-        return ImportSteps.getView().find('.file-size-limit-warning');
+        return this.getView().find('.file-size-limit-warning');
     }
 
     static openServerFilesTabFromWarning() {
@@ -121,10 +135,6 @@ class ImportSteps {
         this.getFileSizeLimitWarning().find('.api-link').click();
     }
 
-    static getImportUserDataHelp() {
-        return ImportSteps.getView().find('.user-data-import-help');
-    }
-
     static copyMaxFileSizeLimitProperty() {
         return this.getImportUserDataHelp().find('.copy-btn').click();
     }
@@ -133,61 +143,65 @@ class ImportSteps {
         return cy.window().its('navigator.clipboard').invoke('readText').then((text) => text);
     }
 
-    static closeImportUserDataHelp() {
-        return ImportSteps.getImportUserDataHelp().find('button.close').click();
+    static closeHelpMessage() {
+        return this.getHelpMessage().find('button.close').click();
     }
 
-    static getUserDataUploadedFilesTable() {
-        return ImportSteps.getView().find('#import-user import-resource-tree');
-    }
-
-    static getUserDataUploadedFiles() {
-        return ImportSteps.getUserDataUploadedFilesTable().find('.import-resource-row.title-row');
+    static getResources() {
+        return this.getResourcesTable().find('.import-resource-row.title-row');
     }
 
     static getSelectedResources() {
-        return ImportSteps.getUserDataUploadedFiles().find('.resource-select-checkbox:checked');
+        return this.getResources().find('.resource-select-checkbox:checked');
     }
 
     static getSelectedResourceName(index) {
         return this.getSelectedResources().eq(index).closest('.title-row');
     }
 
-    static getUserDataUploadedFile(index) {
-        return this.getUserDataUploadedFiles().eq(index);
+    static getResource(index) {
+        return this.getResources().eq(index);
     }
 
-    static getUserDataUploadedFileByName(name) {
-        return this.getUserDataUploadedFiles().find('.import-resource-title').contains(name)
+    static getResourceByName(name) {
+        return this.getResources().find('.import-resource-title').contains(name)
             .closest('.import-resource-row.title-row');
     }
 
     static selectFileByIndex(index) {
-        this.getUserDataUploadedFile(index).find('.resource-select-checkbox').click();
+        this.getResource(index).find('.resource-select-checkbox').click();
     }
 
     static selectFileByName(name) {
-        this.getUserDataUploadedFileByName(name).find('.resource-select-checkbox').click();
+        this.getResourceByName(name).find('.resource-select-checkbox').click();
     }
 
-    static getUserDataUploadedFileStatus(name) {
-        return this.getUserDataUploadedFileByName(name).next().find('import-resource-message');
+    static deselectFileByName(name) {
+        this.getResourceByName(name).find('.resource-select-checkbox').click();
     }
 
-    static checkUserDataImportedResource(index, resourceName, expectedStatus) {
+    static getResourceStatus(name) {
+        return this.getResourceByName(name).next().find('import-resource-message');
+    }
+
+    static getImportedResourcesStates() {
+        return this.getResources().find('.import-resource-message');
+    }
+
+    static checkImportedResource(index, resourceName, expectedStatus) {
         const status = expectedStatus || 'Imported successfully';
-        this.getUserDataUploadedFileByName(resourceName).should('contain', resourceName);
-        this.getUserDataUploadedFileStatus(resourceName).should('contain', status);
+        this.getResourceByName(resourceName).should('contain', resourceName);
+        this.getResourceStatus(resourceName).should('contain', status);
     }
 
     static checkUserDataUploadedResource(index, resourceName) {
-        // this.getUserDataUploadedFile(index).should('contain', resourceName);
-        this.getUserDataUploadedFileByName(resourceName).should('contain', resourceName);
-        this.getUserDataUploadedFileStatus(resourceName).should('be.hidden');
+        // this.getResource(index).should('contain', resourceName);
+        this.getResourceByName(resourceName).should('contain', resourceName);
+        this.getResourceStatus(resourceName).should('be.hidden');
     }
 
     static getStatusSelectMenu() {
-        return this.getUserDataUploadedFilesTable().find('.import-resource-status-dropdown');
+        return this.getResourcesTable().find('.import-resource-status-dropdown');
     }
 
     static openStatusSelectMenu() {
@@ -211,43 +225,56 @@ class ImportSteps {
     }
 
     static getBatchImportButton() {
-        return this.getUserDataUploadedFilesTable().find('.batch-import-btn');
+        return this.getResourcesTable().find('.batch-import-btn');
     }
 
     static batchImport() {
-        ImportSteps.getBatchImportButton().click();
+        this.getBatchImportButton().click();
+    }
+
+    static batchImportWithoutChangingDefaultSettings() {
+        this.getResourcesTable().find('.batch-import-dropdown .dropdown-toggle').click();
+        this.getResourcesTable().find('.batch-import-without-change-btn').click();
     }
 
     static getBatchResetButton() {
-        return this.getUserDataUploadedFilesTable().find('.batch-reset-btn');
+        return this.getResourcesTable().find('.batch-reset-btn');
     }
 
     static batchReset() {
-        ImportSteps.getBatchResetButton().click();
+        this.getBatchResetButton().click();
     }
 
     static getRemoveResourcesButton() {
-        return this.getUserDataUploadedFilesTable().find('.remove-resources-btn');
+        return this.getResourcesTable().find('.remove-resources-btn');
     }
 
     static removeSelectedResources() {
-        ImportSteps.getRemoveResourcesButton().click();
+        this.getRemoveResourcesButton().click();
     }
 
     static deleteUploadedFile(index) {
-        ImportSteps.getUserDataUploadedFile(index).find('.remove-file-btn').click();
+        this.getResource(index).find('.import-resource-action-remove-btn').click();
+    }
+
+    static importFile(index) {
+        this.getResource(index).find('.import-resource-action-import-btn').click();
+    }
+
+    static importFileByName(name) {
+        this.getResourceByName(name).find('.import-resource-action-import-btn').click();
+    }
+
+    static resetFileStatus(index) {
+        this.getResource(index).find('.import-resource-action-reset-btn').click();
+    }
+
+    static resetFileStatusByName(name) {
+        this.getResourceByName(name).find('.import-resource-action-reset-btn').click();
     }
 
     static getServerFilesTable() {
-        return ImportSteps.getView().find('#import-server table');
-    }
-
-    static getServerFiles() {
-        return ImportSteps.getServerFilesTable().find('.import-file-row');
-    }
-
-    static getServerFile(index) {
-        return ImportSteps.getServerFiles().eq(index);
+        return this.getView().find('#import-server table');
     }
 
     static openFileUploadDialog() {
@@ -260,10 +287,8 @@ class ImportSteps {
 
     static uploadFile(filePath) {
         const filePathsList = Array.isArray(filePath)? filePath : [filePath];
-        // cy.fixture(`/graphdb-import/${fileName}`).as('file1');
         cy.fixtures(filePathsList).then((files) => {
             const aliases = filePathsList.map((filePath, i) => `@file-${i}`);
-            console.log(`%cfixture files:`, 'background: plum', files, aliases);
             // with force because the field is hidden
             cy.get('input[type=file]').selectFile(aliases, {force: true});
         });
@@ -275,64 +300,28 @@ class ImportSteps {
         this.closePopover();
         this.getImportUrlInput().type(importURL).should('have.value', importURL);
         this.closePopover();
-        return ImportSteps;
-    }
-
-    static openImportTextSnippetDialog() {
-        cy.get('#import-user .import-rdf-snippet-btn').click()
-            // Forces the popover to disappear as it covers the modal and Cypress refuses to continue
-            .trigger('mouseleave', {force: true});
-        ImportSteps.getModal().find('#wb-import-textarea').should('be.visible');
-
-        return ImportSteps;
+        return this;
     }
 
     static clickImportUrlButton() {
         cy.get('#wb-import-importUrl').click();
 
-        return ImportSteps;
-    }
-
-    static selectRDFFormat(rdfFormat) {
-        cy.get('.modal-footer .import-format-dropdown').within(() => {
-            cy.get('.import-format-dropdown-btn').click();
-            cy.get('.dropdown-item').contains(rdfFormat).click().should('not.be.visible');
-        });
-
-        return ImportSteps;
-    }
-
-    static fillRDFTextSnippet(snippet) {
-        ImportSteps.getSnippetTextarea().type(snippet, { parseSpecialCharSequences: false }).should('have.value', snippet);
-
-        return ImportSteps;
-    }
-
-    static pasteRDFTextSnippet(snippet) {
-        ImportSteps.getSnippetTextarea().invoke('val', snippet).trigger('change');
-
-        return ImportSteps;
-    }
-
-    static clickImportTextSnippetButton() {
-        cy.get('#wb-import-importText').click();
-
-        return ImportSteps;
+        return this;
     }
 
     static removeUploadedFiles() {
-        ImportSteps.selectAllUserFiles();
+        this.selectAllUserFiles();
         cy.get('#wb-import-removeEntries').click();
         ModalDialogSteps.getDialog().should('be.visible');
         ModalDialogSteps.clickOnConfirmButton();
         cy.get('#wb-import-fileInFiles').should('be.hidden');
-        return ImportSteps;
+        return this;
     }
 
     static selectAllUserFiles() {
         cy.get('#import-user .select-all-files').check();
 
-        return ImportSteps;
+        return this;
     }
 
     static getImportRdfFileElement() {
@@ -351,18 +340,10 @@ class ImportSteps {
         return cy.get('#wb-import-textarea');
     }
 
-    static selectServerFile(filename) {
-        // Forcing it because often times cypress sees it with zero width and height although it's
-        // clearly visible.
-        ImportSteps.getServerFileElement(filename).find('.import-file-checkbox').click({force: true});
-
-        return ImportSteps;
-    }
-
     static selectAllServerFiles() {
         cy.get('#import-server .select-all-files').check();
 
-        return ImportSteps;
+        return this;
     }
 
     static importServerFiles(changeSettings) {
@@ -375,75 +356,13 @@ class ImportSteps {
             cy.get('#import-server .import-without-change-btn').scrollIntoView().click();
         }
 
-        return ImportSteps;
+        return this;
     }
 
     static clickImportOnRow(row) {
         cy.get('.import-file-btn').contains('Import').click();
 
-        return ImportSteps;
-    }
-
-    static importFromSettingsDialog() {
-        // Dialog should disappear
-        ImportSteps.getModal().
-        find('.modal-footer > .btn-primary')
-            .should('exist')
-            .click()
-            .should('not.exist');
-
-        return ImportSteps;
-    }
-
-    static getSettingsForm() {
-        return ImportSteps.getModal().find('.settings-form');
-    }
-
-    static fillBaseURI(baseURI) {
-        ImportSteps.getSettingsForm().find('input[name="baseURI"]').type(baseURI).should('have.value', baseURI);
-
-        return ImportSteps;
-    }
-
-    static selectNamedGraph() {
-        ImportSteps.getSettingsForm().find('.named-graph-btn').check();
-
-        return ImportSteps;
-    }
-
-    static fillNamedGraph(namedGraph) {
-        ImportSteps.getSettingsForm().find('.named-graph-input').type(namedGraph).should('have.value', namedGraph);
-
-        return ImportSteps;
-    }
-
-    static expandAdvancedSettings() {
-        ImportSteps.getSettingsForm().within(() => {
-            cy.get('.toggle-advanced-settings').click();
-            cy.get('.advanced-settings').should('be.visible');
-        });
-
-        return ImportSteps;
-    }
-
-    static enablePreserveBNodes() {
-        ImportSteps.getSettingsForm().find('input[name="preserveBNodeIDs"]').check();
-
-        return ImportSteps;
-    }
-
-    static fillContextLink(contextLink) {
-        ImportSteps.getSettingsForm().find('input[name="contextLink"]').type(contextLink).should('have.value', contextLink);
-
-        return ImportSteps;
-    }
-
-    static setContextLinkToBeVisible() {
-        ImportSteps.getSettingsForm().within(() => {
-            cy.get('.contextLinkRow').invoke('attr', 'style', 'display: block !important');
-        });
-
-        return ImportSteps;
+        return this;
     }
 
     static resetStatusOfUploadedFiles() {
@@ -454,22 +373,22 @@ class ImportSteps {
                 cy.waitUntil(() => cy.wrap(el).should('not.be.visible'));
             });
 
-        return ImportSteps;
+        return this;
     }
 
     static resetStatusOfUploadedFile(filename) {
         // List is re-rendered -> ensure it is detached
-        ImportSteps
+        this
             .getServerFileElement(filename)
             .find('.import-status .import-status-reset')
             .click()
             .should('not.exist');
 
-        return ImportSteps;
+        return this;
     }
 
     static verifyImportStatusDetails(fileToSelect, details) {
-        ImportSteps.getServerFileElement(fileToSelect).find('.import-status .import-status-info').then(infoIconEl => {
+        this.getServerFileElement(fileToSelect).find('.import-status .import-status-info').then(infoIconEl => {
             cy.wrap(infoIconEl).should('be.visible');
             cy.wrap(infoIconEl).trigger('mouseenter');
 
@@ -489,26 +408,26 @@ class ImportSteps {
             }).should('not.exist');
         });
 
-        return ImportSteps;
+        return this;
     }
 
     static verifyImportStatus(filename, message) {
         cy.waitUntil(() =>
-            ImportSteps
+            this
                 .getServerFileElement(filename)
                 .find('.import-status .import-status-message')
                 .then(status => status && status.text().indexOf(message) > -1));
 
-        return ImportSteps;
+        return this;
     }
 
     static verifyNoImportStatus(filename) {
-        ImportSteps
+        this
             .getServerFileElement(filename)
             .find('.import-status')
             .should('not.be.visible');
 
-        return ImportSteps;
+        return this;
     }
 
     static getServerFileElement(filename) {

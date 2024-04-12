@@ -138,7 +138,7 @@
             <div id="import-server" ng-hide="isS4()" class="tab-pane" ng-controller="ImportCtrl"
                  ng-class="$parent.viewType == 'server' ? 'active' : ''">
 
-                <div uib-collapse="!isHelpVisible" class="alert alert-help mb-0">
+                <div ng-if="isHelpVisible" class="alert alert-help server-files-import-help mb-0">
                     <button type="button" ng-click="toggleHelp()" gdb-tooltip="{{'common.close' | translate}}"
                             class="close" aria-label="Close"></button>
                     <div class="ot-view-info">
@@ -163,7 +163,6 @@
                                       on-reset="onReset(resources)"
                                       on-import-all="importAll(selectedResources, withoutChangingSettings)">
                 </import-resource-tree>
-                <div class="mt-2" files-table></div>
             </div>
         </div>
     </div>

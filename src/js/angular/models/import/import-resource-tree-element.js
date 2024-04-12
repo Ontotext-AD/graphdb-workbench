@@ -41,6 +41,10 @@ export class ImportResourceTreeElement {
          */
         this.name = '';
         /**
+         * @type {string}
+         */
+        this.path = '';
+        /**
          * If context link is too long it have to be shorted with ellipses in the middle.
          * @type {string}
          */

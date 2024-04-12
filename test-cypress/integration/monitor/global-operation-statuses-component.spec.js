@@ -1,7 +1,7 @@
 import HomeSteps from "../../steps/home-steps";
 import {OperationsStatusesComponentSteps} from "../../steps/operations-statuses-component-steps";
-import ImportSteps from "../../steps/import/import-steps";
 import {GlobalOperationsStatusesStub} from "../../stubs/global-operations-statuses-stub";
+import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
 
 describe('Operations Status Component', () => {
 
@@ -22,7 +22,7 @@ describe('Operations Status Component', () => {
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().should('not.exist');
 
         // When I visit some page and there are not running operations.
-        ImportSteps.visitUserImport(repositoryId);
+        ImportUserDataSteps.visitUserImport(repositoryId);
         // Then I expect "Global Operations Component" to not be visible.
         OperationsStatusesComponentSteps.getOperationsStatusesComponent().should('not.exist');
     });

@@ -351,8 +351,23 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             resetStatusOrRemoveEntry(selectedResourcesNames, false);
         };
 
+        /**
+         * Imports all selected resources.
+         * @param {ImportResourceTreeElement[]} selectedResources - The resources to be imported.
+         * @param {boolean} withoutChangingSettings - Whether to use default settings or not.
+         */
         $scope.importAll = (selectedResources, withoutChangingSettings) => {
-            $scope.setSettingsFor('', withoutChangingSettings, undefined);
+            // mark all files as selected locally in order to have them after the import is confirmed via the modal
+            selectedResources
+                .filter((resource) => resource.isFile())
+                .forEach((resource) => {
+                    $scope.selectedForImportFiles[resource.path] = true;
+                });
+            if (withoutChangingSettings) {
+                $scope.importSelected(selectedResources, withoutChangingSettings);
+            } else {
+                $scope.setSettingsFor('', withoutChangingSettings, undefined);
+            }
         };
 
         /**
@@ -403,7 +418,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             filesLoader($repositories.getActiveRepository()).success(function (data) {
 
                 if (TABS.SERVER === $scope.viewType) {
-                    // $scope.resources = toImportServerResource(toImportResource(data));
+                    $scope.resources = toImportServerResource(toImportResource(data));
                 } else if (TABS.USER === $scope.viewType) {
                     $scope.resources = toImportUserDataResource(toImportResource(data));
                 }
@@ -526,8 +541,12 @@ importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$
     // Public functions
     // =========================
 
-    $scope.importSelected = function (overrideSettings) {
-        const selectedFileNames = $scope.getSelectedFiles();
+    /**
+     * Triggers import operation for selected files.
+     * @param {boolean} overrideSettings If default settings should be used or not.
+     */
+    $scope.importSelected = (overrideSettings) => {
+        const selectedFileNames = Object.keys($scope.selectedForImportFiles);
         importServerFiles(selectedFileNames, overrideSettings);
     };
 

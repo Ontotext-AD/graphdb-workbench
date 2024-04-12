@@ -60,6 +60,7 @@ const addResourceToTree = (root, resource) => {
         const importServerResource = new ImportResourceTreeElement();
         importServerResource.parent = resourceParent;
         importServerResource.importResource = resource;
+        importServerResource.path = path.join('/');
         importServerResource.name = path[path.length - 1];
         resourceParent.addResource(importServerResource);
     } else {
