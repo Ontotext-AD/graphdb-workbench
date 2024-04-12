@@ -18,6 +18,11 @@ ImportContextService.$inject = ['EventEmitterService'];
 function ImportContextService(EventEmitterService) {
 
     let _activeTabId = TABS.USER;
+    /**
+     * @type {ImportResourceTreeElement}
+     * @private
+     */
+    let _resources = undefined;
 
     /**
      * @type {*[]}
@@ -32,7 +37,10 @@ function ImportContextService(EventEmitterService) {
         getFiles,
         addFile,
         updateFiles,
-        onFilesUpdated
+        onFilesUpdated,
+        updateResources,
+        getResources,
+        onResourcesUpdated
     };
 
     /**
@@ -96,5 +104,34 @@ function ImportContextService(EventEmitterService) {
      */
     function getFiles() {
         return cloneDeep(_files);
+    }
+
+    /**
+     * Updates the resources.
+     * Emits the 'resourcesUpdated' event when the resources are updated.
+     * The 'filesUpdated' event contains the new resources.
+     * @param {ImportResourceTreeElement} resources
+     */
+    function updateResources(resources) {
+        _resources = resources;
+        EventEmitterService.emit('resourcesUpdated', getResources());
+    }
+
+    /**
+     * Gets the resources.
+     * @return {ImportResourceTreeElement} - The resources.
+     */
+    function getResources() {
+        return cloneDeep(_resources);
+    }
+
+    /**
+     * Subscribes to the 'resourcesUpdated' event.
+     * @param {function} callback - The callback to be called when the event is fired.
+     *
+     * @return the unsubscribe function.
+     */
+    function onResourcesUpdated(callback) {
+        return EventEmitterService.subscribe('resourcesUpdated', () => callback(getResources()));
     }
 }

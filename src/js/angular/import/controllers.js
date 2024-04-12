@@ -75,7 +75,6 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         $scope.fileFormatsHuman = FileFormats.getFileFormatsHuman() + $translate.instant('import.gz.zip');
         $scope.textFileFormatsHuman = FileFormats.getTextFileFormatsHuman();
         $scope.maxUploadFileSizeMB = 0;
-        $scope.resources = new ImportResourceTreeElement();
         $scope.SORTING_TYPES = SortingType;
 
         // =========================
@@ -247,7 +246,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
          * @return {string[]}
          */
         $scope.getSelectedFiles = () => {
-            return $scope.resources.getAllSelectedFilesNames();
+            return ImportContextService.getResources().getAllSelectedFilesNames();
         };
 
         $scope.importSelected = (overrideSettings) => {
@@ -415,9 +414,9 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             filesLoader($repositories.getActiveRepository()).success(function (data) {
 
                 if (TABS.SERVER === $scope.activeTabId) {
-                    $scope.resources = toImportServerResource(toImportResource(data));
+                    ImportContextService.updateResources(toImportServerResource(toImportResource(data)));
                 } else if (TABS.USER === $scope.activeTabId) {
-                    $scope.resources = toImportUserDataResource(toImportResource(data));
+                    ImportContextService.updateResources(toImportUserDataResource(toImportResource(data)));
                 }
 
                 // reload all files
@@ -503,7 +502,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             subscriptions.push($scope.$on('$destroy', () => $interval.cancel(listPollingHandler)));
             subscriptions.push(ImportContextService.onActiveTabIdUpdated((newActiveTabId) => {
                 $scope.activeTabId = newActiveTabId;
-                $scope.resources = undefined;
+                ImportContextService.updateResources(new ImportResourceTreeElement());
                 $scope.updateListHttp(true);
             }));
             $scope.$on('$destroy', removeAllListeners);
@@ -1057,9 +1056,7 @@ importViewModule.controller('TabCtrl', ['$scope', '$location', 'ImportViewStorag
 
     subscriptions.push(ImportContextService.onFilesUpdated(onFilesUpdated));
 
-    const removeAllListeners = () => {
-        subscriptions.forEach((subscription) => subscription());
-    };
+    const removeAllListeners = () => subscriptions.forEach((subscription) => subscription());
 
     $scope.$on('$destroy', removeAllListeners);
 
