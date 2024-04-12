@@ -455,8 +455,6 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                 $scope.savedSettings = _.mapKeys(_.filter($scope.files, 'parserSettings'), 'name');
             }).error(function (data) {
                 toastr.warning($translate.instant('import.error.could.not.get.files', {data: getError(data)}));
-            }).finally(() => {
-                $scope.loader = false;
             });
         };
 
@@ -521,7 +519,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         init();
     }]);
 
-importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$translate', '$repositories', 'ImportRestService', function ($scope, toastr, $controller, $translate, $repositories, ImportRestService) {
+importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$translate', '$repositories', 'ImportRestService', 'ImportContextService', function ($scope, toastr, $controller, $translate, $repositories, ImportRestService, ImportContextService) {
 
     // =========================
     // Private variables
@@ -582,6 +580,10 @@ importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$
     const init = function () {
         $scope.pollList();
         $scope.onRepositoryChange();
+        const onFirstResourceUpdatesHandler = ImportContextService.onResourcesUpdated(() => {
+            $scope.loader = false;
+            onFirstResourceUpdatesHandler();
+        });
     };
     init();
 }]);
@@ -906,6 +908,10 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         subscriptions.push(ImportContextService.onFilesUpdated((files) => {
             filesPrefixRegistry.buildPrefixesRegistry(files);
         }));
+        const onFirstResourceUpdatesHandler = ImportContextService.onResourcesUpdated(() => {
+            $scope.loader = false;
+            onFirstResourceUpdatesHandler();
+        });
     };
     init();
 }]);

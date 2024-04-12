@@ -122,7 +122,9 @@
                         </ul>
                     </div>
                 </div>
-                <import-resource-tree show-type-filter="false"
+                <div class="ot-loader ot-main-loader" onto-loader size="50" ng-if="loader"></div>
+                <import-resource-tree ng-if ="!loader"
+                                      show-type-filter="false"
                                       sort-by="SORTING_TYPES.MODIFIED"
                                       asc="false"
                                       on-import="onImport(resource)"
@@ -152,7 +154,9 @@
                         </p>
                     </div>
                 </div>
-                <import-resource-tree show-type-filter="true"
+                <div class="ot-loader ot-main-loader" onto-loader size="50" ng-if="loader"></div>
+                <import-resource-tree ng-if ="!loader"
+                                      show-type-filter="true"
                                       sort-by="SORTING_TYPES.NAME"
                                       on-import="onImport(resource)"
                                       on-stop-import="onStopImport(resource)"
