@@ -4,7 +4,7 @@ import * as stringUtils from "../../utils/string-utils";
 const modules = [];
 
 angular
-    .module('graphdb.framework.import.import-resource-message', modules)
+    .module('graphdb.framework.import.directives.import-resource-message', modules)
     .directive('importResourceMessage', importResourceMessageDirective);
 
 importResourceMessageDirective.$inject = [];

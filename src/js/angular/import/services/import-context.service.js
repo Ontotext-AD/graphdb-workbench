@@ -10,7 +10,7 @@ export const TABS = {
 };
 
 angular
-    .module('graphdb.framework.importcontext.service', [])
+    .module('graphdb.framework.import.services.importcontext', [])
     .factory('ImportContextService', ImportContextService);
 
 ImportContextService.$inject = ['EventEmitterService'];

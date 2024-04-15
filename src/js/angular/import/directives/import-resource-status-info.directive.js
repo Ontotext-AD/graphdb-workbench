@@ -1,7 +1,7 @@
 const modules = [];
 
 angular
-    .module('graphdb.framework.import.import-resource-status-info', modules)
+    .module('graphdb.framework.import.directives.import-resource-status-info', modules)
     .directive('importResourceStatusInfo', importResourceStatusInfoDirective);
 
 importResourceStatusInfoDirective.$inject = ['$rootScope', '$document'];

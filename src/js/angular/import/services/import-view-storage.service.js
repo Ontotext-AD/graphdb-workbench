@@ -1,7 +1,7 @@
-import {ImportViewPersistence} from "../models/import/import-view-persistence";
+import {ImportViewPersistence} from "../../models/import/import-view-persistence";
 
 angular
-    .module('graphdb.framework.import.importviewstorageservice', [])
+    .module('graphdb.framework.import.services.importviewstorageservice', [])
     .factory('ImportViewStorageService', ImportViewStorageService);
 
 ImportViewStorageService.$inject = ['LocalStorageAdapter', 'LSKeys'];

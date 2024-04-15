@@ -1,4 +1,4 @@
-import {FileUtils} from "../utils/file-utils";
+import {FileUtils} from "../../utils/file-utils";
 
 /**
  * This is a stateful utility class which maintains a registry of filenames mapped to numerical indices.
