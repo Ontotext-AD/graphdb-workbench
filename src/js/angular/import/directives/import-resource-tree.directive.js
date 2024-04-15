@@ -17,12 +17,12 @@ const STATUS_OPTIONS = {
 };
 
 const modules = [
-    'graphdb.framework.import.import-resource-message',
-    'graphdb.framework.import.import-resource-status-info'
+    'graphdb.framework.import.directives.import-resource-message',
+    'graphdb.framework.import.directives.import-resource-status-info'
 ];
 
 angular
-    .module('graphdb.framework.import.import-resource-tree', modules)
+    .module('graphdb.framework.import.directives.import-resource-tree', modules)
     .directive('importResourceTree', importResourceTreeDirective);
 
 importResourceTreeDirective.$inject = ['$timeout', 'ImportContextService'];

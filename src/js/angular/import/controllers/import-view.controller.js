@@ -2,19 +2,23 @@ import 'angular/core/services';
 import 'angular/utils/uri-utils';
 import 'angular/rest/import.rest.service';
 import 'angular/rest/upload.rest.service';
-import 'angular/import/import-context.service';
-import 'angular/import/import-view-storage.service';
-import {FileFormats} from "../models/import/file-formats";
-import * as stringUtils from "../utils/string-utils";
-import {FileUtils} from "../utils/file-utils";
-import {DateUtils} from "../utils/date-utils";
-import {toImportResource, toImportServerResource, toImportUserDataResource} from "../rest/mappers/import-mapper";
-import {ImportResourceTreeElement} from "../models/import/import-resource-tree-element";
-import {decodeHTML} from "../../../app";
-import {FilePrefixRegistry} from "./file-prefix-registry";
-import {SortingType} from "../models/import/sorting-type";
-import {ImportResourceStatus} from "../models/import/import-resource-status";
-import {TABS} from "./import-context.service";
+import 'angular/import/services/import-context.service';
+import 'angular/import/services/import-view-storage.service';
+import 'angular/import/controllers/tab.controller';
+import 'angular/import/controllers/settings-modal.controller';
+import 'angular/import/controllers/import-url.controller';
+import 'angular/import/controllers/import-text-snippet.controller';
+import {FileFormats} from "../../models/import/file-formats";
+import * as stringUtils from "../../utils/string-utils";
+import {FileUtils} from "../../utils/file-utils";
+import {DateUtils} from "../../utils/date-utils";
+import {toImportResource, toImportServerResource, toImportUserDataResource} from "../../rest/mappers/import-mapper";
+import {ImportResourceTreeElement} from "../../models/import/import-resource-tree-element";
+import {decodeHTML} from "../../../../app";
+import {FilePrefixRegistry} from "../services/file-prefix-registry";
+import {SortingType} from "../../models/import/sorting-type";
+import {ImportResourceStatus} from "../../models/import/import-resource-status";
+import {TABS} from "../services/import-context.service";
 
 const modules = [
     'ui.bootstrap',
@@ -25,9 +29,12 @@ const modules = [
     'graphdb.framework.guides.services',
     'graphdb.framework.rest.import.service',
     'graphdb.framework.rest.upload.service',
-    'graphdb.framework.core.directives',
-    'graphdb.framework.importcontext.service',
-    'graphdb.framework.import.importviewstorageservice'
+    'graphdb.framework.import.services.importcontext',
+    'graphdb.framework.import.services.importviewstorageservice',
+    'graphdb.framework.impex.import.controllers.tab',
+    'graphdb.framework.impex.import.controllers.settings-modal',
+    'graphdb.framework.impex.import.controllers.import-url',
+    'graphdb.framework.impex.import.controllers.import-text-snippet'
 ];
 
 const importViewModule = angular.module('graphdb.framework.impex.import.controllers', modules);
@@ -133,7 +140,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
 
             const options = {
                 templateUrl: 'js/angular/import/templates/settingsModal.html',
-                controller: 'SettingsModalCtrl',
+                controller: 'SettingsModalController',
                 resolve: {
                     settings: function () {
                         return _.cloneDeep($scope.settings);
@@ -673,7 +680,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         }
         const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/import/templates/textSnippet.html',
-            controller: 'TextCtrl',
+            controller: 'ImportTextSnippetController',
             resolve: {
                 text: function () {
                     return importResource ? importResource.data : '';
@@ -707,7 +714,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     $scope.rdfDataFromURL = function () {
         const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/import/templates/urlImport.html',
-            controller: 'UrlCtrl',
+            controller: 'ImportUrlController',
             scope: $scope
         });
 
@@ -910,269 +917,3 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     };
     init();
 }]);
-
-importViewModule.controller('UrlCtrl', ['$scope', '$uibModalInstance', 'toastr', function ($scope, $uibModalInstance) {
-
-    // =========================
-    // Public variables
-    // =========================
-
-    $scope.importFormat = {name: 'Auto', type: ''};
-    $scope.startImport = true;
-
-    // =========================
-    // Public functions
-    // =========================
-
-    $scope.cancel = function () {
-        $uibModalInstance.dismiss();
-    };
-
-    $scope.ok = function () {
-        $uibModalInstance.close({
-            url: $scope.dataUrl,
-            format: $scope.importFormat.type,
-            startImport: $scope.startImport
-        });
-    };
-}]);
-
-importViewModule.controller('TextCtrl', ['$scope', '$uibModalInstance', 'text', 'format', function ($scope, $uibModalInstance, text, format) {
-
-    // =========================
-    // Public variables
-    // =========================
-
-    $scope.importFormats = [
-        {name: 'RDF/JSON', type: 'application/rdf+json'},
-        {name: 'JSON-LD', type: 'application/ld+json'},
-        {name: 'NDJSON-LD', type: 'application/x-ld+ndjson'},
-        {name: 'RDF/XML', type: 'application/rdf+xml'},
-        {name: 'N3', type: 'text/rdf+n3'},
-        {name: 'N-Triples', type: 'text/plain'},
-        {name: 'N-Quads', type: 'text/x-nquads'},
-        {name: 'Turtle', type: 'text/turtle'},
-        {name: 'Turtle*', type: 'application/x-turtlestar'},
-        {name: 'TriX', type: 'application/trix'},
-        {name: 'TriG', type: 'application/x-trig'},
-        {name: 'TriG*', type: 'application/x-trigstar'}
-    ];
-    $scope.rdfText = text;
-    $scope.importFormat = _.find($scope.importFormats, {type: format});
-    $scope.startImport = true;
-
-    // =========================
-    // Public functions
-    // =========================
-
-    $scope.setFormat = function (format) {
-        $scope.importFormat = format;
-    };
-
-    $scope.cancel = function () {
-        $uibModalInstance.dismiss();
-    };
-
-    $scope.ok = function () {
-        $uibModalInstance.close({
-            text: $scope.rdfText,
-            format: $scope.importFormat.type,
-            startImport: $scope.startImport
-        });
-    };
-}]);
-
-importViewModule.controller('TabCtrl', ['$scope', '$location', 'ImportViewStorageService', 'ImportContextService', function ($scope, $location, ImportViewStorageService, ImportContextService) {
-
-    // =========================
-    // Private variables
-    // =========================
-
-    // flag to reset help visibility on empty state in initial load of the view
-    let shouldResetHelpVisibility = true;
-
-    // =========================
-    // Public variables
-    // =========================
-    $scope.isHelpVisible = true;
-    $scope.fileSizeLimitInfoTemplateUrl = 'js/angular/import/templates/fileSizeLimitInfo.html';
-
-    // =========================
-    // Public functions
-    // =========================
-
-    $scope.openTab = (tab) => {
-        ImportContextService.updateActiveTabId(tab);
-    };
-
-    $scope.changeHelpTemplate = function (templateFile) {
-        $scope.templateUrl = 'js/angular/import/templates/' + templateFile;
-    };
-
-    $scope.toggleHelp = () => {
-        const viewPersistence = ImportViewStorageService.getImportViewSettings();
-        ImportViewStorageService.toggleHelpVisibility();
-        $scope.isHelpVisible = !viewPersistence.isHelpVisible;
-    };
-
-    // =========================
-    // Private functions
-    // =========================
-
-    const onFilesUpdated = (files) => {
-        // reset help visibility on empty state in initial load
-        if (shouldResetHelpVisibility && files.length === 0) {
-            ImportViewStorageService.setHelpVisibility(true);
-            shouldResetHelpVisibility = false;
-        }
-        const viewPersistence = ImportViewStorageService.getImportViewSettings();
-        let isVisible = viewPersistence.isHelpVisible;
-        if (files.length === 0 && viewPersistence.isHelpVisible) {
-            isVisible = true;
-        } else if (files.length === 0 && !viewPersistence.isHelpVisible) {
-            isVisible = false;
-        } else if (viewPersistence.isHelpVisible) {
-            isVisible = true;
-        } else if (!viewPersistence.isHelpVisible) {
-            isVisible = false;
-        }
-        ImportViewStorageService.setHelpVisibility(isVisible);
-        $scope.isHelpVisible = isVisible;
-    };
-
-    // =========================
-    // Watchers and event handlers
-    // =========================
-
-    const subscriptions = [];
-    subscriptions.push(ImportContextService.onActiveTabIdUpdated((newActiveTabId) => {
-        $scope.activeTabId = newActiveTabId;
-        $location.hash($scope.activeTabId);
-        if (TABS.USER === $scope.activeTabId) {
-            $scope.templateUrl = 'js/angular/import/templates/uploadInfo.html';
-        } else {
-            $scope.templateUrl = 'js/angular/import/templates/importInfo.html';
-        }
-    }));
-
-    subscriptions.push(ImportContextService.onFilesUpdated(onFilesUpdated));
-
-    const removeAllListeners = () => subscriptions.forEach((subscription) => subscription());
-
-    $scope.$on('$destroy', removeAllListeners);
-
-    // Updates the active tab id from tha url.
-    const activeTabId = $location.hash() || TABS.USER;
-    $scope.openTab(activeTabId);
-}]);
-
-importViewModule.controller('SettingsModalCtrl', ['$scope', '$uibModalInstance', 'toastr', 'UriUtils', 'settings', 'hasParserSettings', 'defaultSettings', 'isMultiple', '$translate',
-    function ($scope, $uibModalInstance, toastr, UriUtils, settings, hasParserSettings, defaultSettings, isMultiple, $translate) {
-
-        // =========================
-        // Public variables
-        // =========================
-
-        $scope.settings = settings;
-        $scope.hasParserSettings = hasParserSettings;
-        $scope.isMultiple = isMultiple;
-        $scope.enableReplace = !!($scope.settings.replaceGraphs && $scope.settings.replaceGraphs.length);
-        $scope.showAdvancedSettings = false;
-
-        // =========================
-        // Public functions
-        // =========================
-
-        $scope.hasError = function (error, input) {
-            return _.find(error, function (o) {
-                return input === o['$name'];
-            });
-        };
-
-        $scope.ok = function () {
-            // resets the validity of a field only used for temporary things
-            $scope.settingsForm.replaceGraph.$setValidity('replaceGraph', true);
-
-            if ($scope.settingsForm.$valid) {
-                fixSettings();
-                $uibModalInstance.close($scope.settings);
-            }
-        };
-
-        $scope.cancel = function () {
-            fixSettings();
-            $uibModalInstance.dismiss($scope.settings);
-        };
-
-        $scope.reset = function () {
-            $scope.settings = _.cloneDeep(defaultSettings);
-            $scope.target = 'data';
-        };
-
-        $scope.addReplaceGraph = function (graph) {
-            let valid = true;
-            if (graph !== 'default') {
-                valid = UriUtils.isValidIri(graph, graph.toString());
-            }
-            $scope.settingsForm.replaceGraph.$setTouched();
-            $scope.settingsForm.replaceGraph.$setValidity('replaceGraph', valid);
-
-            if ($scope.settingsForm.replaceGraph.$valid) {
-                $scope.settings.replaceGraphs = $scope.settings.replaceGraphs || [];
-                if (_.indexOf($scope.settings.replaceGraphs, graph) === -1) {
-                    $scope.replaceGraph = '';
-                    $scope.settings.replaceGraphs.push(graph);
-                } else {
-                    toastr.warning($translate.instant('import.graph.already.in.list'));
-                }
-            }
-        };
-
-        $scope.checkEnterReplaceGraph = function (event, graph) {
-            if (event.keyCode === 13) {
-                event.preventDefault();
-                $scope.addReplaceGraph(graph);
-            }
-        };
-
-        $scope.switchParserSettings = function () {
-            $scope.showAdvancedSettings = !$scope.showAdvancedSettings;
-        };
-
-        // =========================
-        // Private functions
-        // =========================
-
-        const fixSettings = function () {
-            if ($scope.target === 'default') {
-                $scope.settings.context = 'default';
-            } else if ($scope.target === 'data') {
-                $scope.settings.context = '';
-            }
-            if ($scope.enableReplace) {
-                if ($scope.target === 'default' || $scope.target === 'named') {
-                    $scope.settings.replaceGraphs = [$scope.settings.context];
-                }
-            } else {
-                $scope.settings.replaceGraphs = [];
-            }
-        };
-
-        // =========================
-        // Initialization
-        // =========================
-
-        const init = function () {
-            if ($scope.settings.context) {
-                if ($scope.settings.context === 'default') {
-                    $scope.target = 'default';
-                    $scope.settings.context = '';
-                } else {
-                    $scope.target = 'named';
-                }
-            } else {
-                $scope.target = 'data';
-            }
-        };
-        init();
-    }]);
