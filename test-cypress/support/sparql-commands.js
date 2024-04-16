@@ -45,7 +45,7 @@ function clearQuery() {
 }
 
 function getQueryArea() {
-    return cy.get('#queryEditor .CodeMirror');
+    return cy.get('#query-editor .CodeMirror');
 }
 
 function getQueryTextArea() {

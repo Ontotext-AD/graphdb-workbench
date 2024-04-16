@@ -1,14 +1,15 @@
 import 'angular/utils/local-storage-adapter';
+import 'angular/core/services/event-emitter-service';
 angular
     .module('graphdb.framework.core.directives.languageselector.languageselector', [
-        'graphdb.framework.utils.localstorageadapter'
+        'graphdb.framework.utils.localstorageadapter', 'graphdb.framework.utils.event-emitter-service'
     ])
     .directive('languageSelector', languageSelector)
     .service('$languageService', [languageService]);
 
-languageSelector.$inject = ['$translate', 'LocalStorageAdapter', 'LSKeys', '$languageService'];
+languageSelector.$inject = ['$translate', 'LocalStorageAdapter', 'LSKeys', '$languageService', 'EventEmitterService'];
 
-function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageService) {
+function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageService, eventEmitterService) {
     return {
         templateUrl: 'js/angular/core/directives/languageselector/templates/languageSelector.html',
         restrict: 'E',
@@ -31,12 +32,23 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageServ
             // translated they will be translated in English
             $translate.fallbackLanguage('en');
 
-            $scope.changeLanguage = function (lang) {
-                $scope.selectedLang = lang
+            function setAndPersistLanguage(lang) {
+                $scope.selectedLang = lang;
                 $translate.use(lang.key);
                 LocalStorageAdapter.set(LSKeys.PREFERRED_LANG, lang.key);
                 $languageService.setLanguage($scope.selectedLang.key);
                 $scope.$broadcast('language-changed', {locale: lang.key});
+            }
+
+            $scope.changeLanguage = function (lang) {
+                if ($languageService.getLanguage() !== lang.key) {
+                    const eventData = {locale: lang.key, cancel: false};
+                    eventEmitterService.emit('before-language-change', eventData, (eventData) => {
+                        if (!eventData || !eventData.cancel) {
+                           setAndPersistLanguage(lang);
+                        }
+                    });
+                }
             };
 
             $scope.getLanguageTooltip = function (lang) {
@@ -51,7 +63,7 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageServ
             };
 
             function getPreferredLanguage() {
-                return new Promise(resolve => {
+                return new Promise((resolve) => {
                     // Get user preferred language from local storage adapter
                     if (userPreferredLang) {
                         $scope.selectedLang = $scope.languages.find(lang => lang.key === userPreferredLang);
@@ -66,7 +78,7 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageServ
                     }
                     setTimeout(() => {
                         resolve(true);
-                    })
+                    });
                 });
             }
 
