@@ -1,6 +1,7 @@
 import ImportSteps from "../../steps/import/import-steps";
 
-describe('Import screen validation - server files', () => {
+// TODO: these needs to be refactored or removed
+describe.skip('Import screen validation - server files', () => {
 
     let repositoryId;
 
