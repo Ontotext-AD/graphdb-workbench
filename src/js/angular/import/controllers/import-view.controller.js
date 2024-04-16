@@ -364,7 +364,12 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             if (withoutChangingSettings) {
                 $scope.importSelected(selectedResources, withoutChangingSettings);
             } else {
-                $scope.setSettingsFor('', withoutChangingSettings, undefined);
+                // For single file import we need to pass the name.
+                let fileName = '';
+                if (selectedResources.length === 1) {
+                    fileName = selectedResources[0].importResource.name;
+                }
+                $scope.setSettingsFor(fileName, withoutChangingSettings, undefined);
             }
         };
 
@@ -869,7 +874,11 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                     $scope.selectedForImportFiles[file.name] = true;
                 });
                 // Provide an import rejected callback and do the upload instead.
-                $scope.setSettingsFor('', false, undefined, () => {
+                let fileName = '';
+                if ($scope.currentFiles.length === 1) {
+                    fileName = $scope.currentFiles[0].name;
+                }
+                $scope.setSettingsFor(fileName, false, undefined, () => {
                     $scope.currentFiles.forEach((file) => {
                         $scope.updateImport(file.name, false, false);
                         // reset these as we are just uploading here
