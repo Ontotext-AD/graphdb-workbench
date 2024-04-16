@@ -4,8 +4,10 @@
     <div class="import-resource-tree-header">
         <div class="import-resources-actions">
             <div class="import-resource-status-dropdown btn-group" uib-dropdown>
-                <button type="button" class="btn btn-secondary dropdown-toggle" uib-dropdown-toggle>
-                    <input type="checkbox">
+                <button type="button" uib-dropdown-toggle class="btn btn-secondary dropdown-toggle"
+                        ng-class="{'selected': selectedByStatus}">
+                    <input type="checkbox" prop-indeterminate="areAllDisplayedImportResourcesPartialSelected"
+                           ng-model="areAllDisplayedImportResourcesSelected">
                     {{selectedByStatus ? (('import.import_resource_tree.status.' + selectedByStatus) | translate) : '
                     '}}
                 </button>
@@ -46,21 +48,24 @@
                     </button>
                     <ul class="dropdown-menu" role="menu">
                         <li>
-                            <button type="button" class="dropdown-item import-without-change-btn batch-import-without-change-btn"
+                            <button type="button"
+                                    class="dropdown-item import-without-change-btn batch-import-without-change-btn"
                                     ng-click="importAll(true)">
                                 {{'import.without.changing.settings' | translate}}
                             </button>
                         </li>
                     </ul>
                 </div>
-                <button class="btn btn-secondary reset-status-btn batch-reset-btn" type="button" ng-click="onResetStatus()"
+                <button class="btn btn-secondary reset-status-btn batch-reset-btn" type="button"
+                        ng-click="onResetStatus()"
                         ng-if="canResetSelectedResources"
                         uib-popover="{{'import.reset.last.imported' | translate}}"
                         popover-trigger="mouseenter"
                         popover-placement="top">
                     {{'import.reset.status' | translate}}
                 </button>
-                <button ng-if="canRemoveResource" class="btn btn-secondary remove-resources-btn" type="button" ng-click="onRemoveResources()"
+                <button ng-if="canRemoveResource" class="btn btn-secondary remove-resources-btn" type="button"
+                        ng-click="onRemoveResources()"
                         uib-popover="{{'import.remove.selected' | translate}}"
                         popover-trigger="mouseenter"
                         popover-placement="top">
@@ -70,11 +75,6 @@
         </div>
         <div class="import-resource-tree-filter btn-group">
             <div ng-if="showTypeFilter" class="import-resource-type-filter mr-1">
-                <button class="btn btn-secondary show-only-files-btn"
-                        ng-click="filterByTypeChanged(TYPE_FILTER_OPTIONS.FILE)"
-                        ng-class="{'active': TYPE_FILTER_OPTIONS.FILE === filterByType}">
-                    <em class="icon-file"></em>
-                </button>
                 <button class="btn btn-secondary show-all-resources-btn"
                         ng-click="filterByTypeChanged(TYPE_FILTER_OPTIONS.ALL)"
                         ng-class="{'active': TYPE_FILTER_OPTIONS.ALL === filterByType}">
@@ -86,68 +86,61 @@
                         ng-class="{'active': TYPE_FILTER_OPTIONS.DIRECTORY === filterByType}">
                     <em class="icon-folder"></em>
                 </button>
+                <button class="btn btn-secondary show-only-files-btn"
+                        ng-click="filterByTypeChanged(TYPE_FILTER_OPTIONS.FILE)"
+                        ng-class="{'active': TYPE_FILTER_OPTIONS.FILE === filterByType}">
+                    <em class="icon-file"></em>
+                </button>
             </div>
 
             <div class="import-resource-filter btn-group">
                 <div class="input-group">
                     <input id="fileQuery" class="form-control" type="text" ng-model="filterByFileName"
+                           autocomplete="off"
                            ng-change="filterByFileNameChanged(filterByFileName)"
                            placeholder="{{'import.type.to.filter' | translate}}">
-                    <label class="input-group-addon" for="fileQuery">
-                        <span class="icon-search icon-lg text-muted"></span>
-                    </label>
                 </div>
             </div>
         </div>
     </div>
-    <table class="import-resource-table">
+    <table class="import-resource-table mt-2">
         <thead>
         <tr>
             <th class="import-resource-header-cell import-resource-cell-select"></th>
-            <th class="import-resource-header-cell import-resource-name"
-                ng-class="{
+            <th class="import-resource-header-cell import-resource-name" ng-click="sort(SORTING_TYPES.NAME)">
+                <span ng-class="{
                 'sorting_desc': SORTING_TYPES.NAME === sortedBy &&  !sortAsc,
                 'sorting_asc': SORTING_TYPES.NAME === sortedBy && sortAsc,
                 'sorting': SORTING_TYPES.NAME !== sortedBy
-                }"
-                ng-click="sort(SORTING_TYPES.NAME)">
-                <span>{{'import.import_resource_tree.header.name' | translate}}</span>
+                }">{{'import.import_resource_tree.header.name' | translate}}</span>
             </th>
-            <th class="import-resource-header-cell import-resource-size"
-                ng-class="{
+            <th class="import-resource-header-cell import-resource-size" ng-click="sort(SORTING_TYPES.SIZE)">
+                <span ng-class="{
                 'sorting_desc': SORTING_TYPES.SIZE === sortedBy &&  !sortAsc,
                 'sorting_asc': SORTING_TYPES.SIZE === sortedBy && sortAsc,
                 'sorting': SORTING_TYPES.SIZE !== sortedBy
-                }"
-                ng-click="sort(SORTING_TYPES.SIZE)">
-                {{'import.import_resource_tree.header.size' | translate}}
+                }">{{'import.import_resource_tree.header.size' | translate}}</span>
             </th>
-            <th class="import-resource-header-cell import-resource-modified"
-                ng-class="{
+            <th class="import-resource-header-cell import-resource-modified" ng-click="sort(SORTING_TYPES.MODIFIED)">
+                <span ng-class="{
                 'sorting_desc': SORTING_TYPES.MODIFIED === sortedBy &&  !sortAsc,
                 'sorting_asc': SORTING_TYPES.MODIFIED === sortedBy && sortAsc,
                 'sorting': SORTING_TYPES.MODIFIED !== sortedBy
-                }"
-                ng-click="sort(SORTING_TYPES.MODIFIED)">
-                {{'import.import_resource_tree.header.modified' | translate}}
+                }">{{'import.import_resource_tree.header.modified' | translate}}</span>
             </th>
-            <th class="import-resource-header-cell import-resource-imported"
-                ng-class="{
+            <th class="import-resource-header-cell import-resource-imported" ng-click="sort(SORTING_TYPES.IMPORTED)">
+                <span ng-class="{
                 'sorting_desc': SORTING_TYPES.IMPORTED === sortedBy &&  !sortAsc,
                 'sorting_asc': SORTING_TYPES.IMPORTED === sortedBy && sortAsc,
                 'sorting': SORTING_TYPES.IMPORTED !== sortedBy
-                }"
-                ng-click="sort(SORTING_TYPES.IMPORTED)">
-                {{'import.import_resource_tree.header.imported' | translate}}
+                }">{{'import.import_resource_tree.header.imported' | translate}}</span>
             </th>
-            <th class="import-resource-header-cell import-resource-context"
-                ng-class="{
+            <th class="import-resource-header-cell import-resource-context" ng-click="sort(SORTING_TYPES.CONTEXT)">
+                <span ng-class="{
                 'sorting_desc': SORTING_TYPES.CONTEXT === sortedBy &&  !sortAsc,
                 'sorting_asc': SORTING_TYPES.CONTEXT === sortedBy && sortAsc,
                 'sorting': SORTING_TYPES.CONTEXT !== sortedBy
-                }"
-                ng-click="sort(SORTING_TYPES.CONTEXT)">
-                {{'import.import_resource_tree.header.context' | translate}}
+                }">{{'import.import_resource_tree.header.context' | translate}}</span>
             </th>
             <th class="import-resource-header-cell import-resource-action"></th>
         </tr>
@@ -185,7 +178,8 @@
                             gdb-tooltip="{{'import.reset.status' | translate}}">
                         <span class="icon-close"></span>
                     </button>
-                    <button ng-if="canRemoveResource" class="btn btn-link btn-sm secondary import-resource-action-remove-btn"
+                    <button ng-if="canRemoveResource"
+                            class="btn btn-link btn-sm secondary import-resource-action-remove-btn"
                             ng-click="removeResource(resource)"
                             gdb-tooltip="{{'import.remove.btn' | translate}}">
                         <em class="icon-trash"></em>

@@ -1,13 +1,14 @@
 import {ImportServerFilesSteps} from "../../steps/import/import-server-files-steps";
 import {ImportSettingsDialogSteps} from "../../steps/import/import-settings-dialog-steps";
 
-describe('Import server files - Operations', () => {
+describe('Import server files - Operations', {retries: {runMode: 2}}, () => {
 
     let repositoryId;
 
     const BASE_URI = 'http://purl.org/dc/elements/1.1/';
     const CONTEXT = 'http://example.org/context';
     const FILE_FOR_IMPORT = 'italian_public_schools_links.nt.gz';
+    const FILE_FROM_DIRECTORY_FOR_IMPORT = 'rdfxml.rdf';
     const TTLS_FOR_IMPORT = 'test_turtlestar.ttls';
     const TRIGS_FOR_IMPORT = 'test-trigstar.trigs';
     const JSONLD_FILE_FOR_IMPORT = '0007-import-file.jsonld';
@@ -33,6 +34,15 @@ describe('Import server files - Operations', () => {
         ImportServerFilesSteps.checkImportedResource(0, FILE_FOR_IMPORT);
         // TODO: this and all similar check in the tests below are a checking for the default import settings which we probably should not verify here.
         // ImportServerFilesSteps.verifyImportStatusDetails(FILE_FOR_IMPORT, '"preserveBNodeIds": false,');
+    });
+
+    it('Should import files from directory successfully without changing settings', () => {
+        // Given I have opened the server files tab
+        // When I select to import a file
+        ImportServerFilesSteps.importFileByName(FILE_FROM_DIRECTORY_FOR_IMPORT);
+        ImportSettingsDialogSteps.import();
+        // Then I should see the file imported successfully
+        ImportServerFilesSteps.checkImportedResource(0, FILE_FROM_DIRECTORY_FOR_IMPORT);
     });
 
     it('Should import Server files successfully with changing settings', () => {
@@ -98,6 +108,18 @@ describe('Import server files - Operations', () => {
         ImportServerFilesSteps.getResourceStatus(FILE_FOR_IMPORT).should('be.hidden');
     });
 
+    it('Should be able to reset status of imported file from a directory', () => {
+        // Given I have opened the server files tab
+        // And I have imported a file
+        ImportServerFilesSteps.importFileByName(FILE_FROM_DIRECTORY_FOR_IMPORT);
+        ImportSettingsDialogSteps.import();
+        ImportServerFilesSteps.checkImportedResource(0, FILE_FROM_DIRECTORY_FOR_IMPORT);
+        // When I reset the status of the imported file
+        ImportServerFilesSteps.resetFileStatusByName(FILE_FROM_DIRECTORY_FOR_IMPORT);
+        // Then Import status of the file should not be visible
+        ImportServerFilesSteps.getResourceStatus(FILE_FROM_DIRECTORY_FOR_IMPORT).should('be.hidden');
+    });
+
     it('Should import turtlestar from Server files successfully without changing settings', () => {
         // Given I have opened the server files tab
         ImportServerFilesSteps.importFileByName(TTLS_FOR_IMPORT);
@@ -108,7 +130,7 @@ describe('Import server files - Operations', () => {
         // ImportSteps.verifyImportStatusDetails(TTLS_FOR_IMPORT, '"preserveBNodeIds": false,');
     });
 
-    it('Test import trigstar from Server files successfully without changing settings', () => {
+    it('Should import trigstar from Server files successfully without changing settings', () => {
         // Given I have opened the server files tab
         ImportServerFilesSteps.importFileByName(TRIGS_FOR_IMPORT);
         // When I select to import a trigstar file without changing settings

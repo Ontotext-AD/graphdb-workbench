@@ -14,7 +14,7 @@ const jsonld = JSON.stringify({
     "ab:email": "richard491@hotmail.com"
 });
 
-describe('Import user data: Batch operations', () => {
+describe('Import user data: Batch operations', {retries: {runMode: 2}}, () => {
 
     let repositoryId;
     const testFiles = [
@@ -70,7 +70,7 @@ describe('Import user data: Batch operations', () => {
         ImportUserDataSteps.getResourceByName('bnodes.ttl').should('be.visible');
     });
 
-    it('Should be able to batch import files', {retries: 2}, () => {
+    it('Should be able to batch import files', () => {
         uploadFiles([
             {name: testFiles[0], content: bnodes},
             {name: testFiles[1], content: jsonld},
