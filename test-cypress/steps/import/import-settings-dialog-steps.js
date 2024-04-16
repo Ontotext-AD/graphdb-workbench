@@ -53,4 +53,8 @@ export class ImportSettingsDialogSteps extends ModalDialogSteps {
             cy.get('.contextLinkRow').invoke('attr', 'style', 'display: block !important');
         });
     }
+
+    static getReplaceExistingDataCheckbox() {
+        return this.getSettingsForm().find('input.existing-data-replacement');
+    }
 }

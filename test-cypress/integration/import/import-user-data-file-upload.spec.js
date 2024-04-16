@@ -49,6 +49,17 @@ describe('Import user data: File upload', () => {
         ImportUserDataSteps.checkImportedResource(0, 'bnodes.ttl');
     });
 
+    it('Should allow replacing graph when uploading and importing single file', () => {
+        // Given there are no files uploaded yet
+        ImportUserDataSteps.getResourcesTable().should('be.hidden');
+        // When I start to upload a file
+        ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[0], bnodes));
+        // Then the import settings dialog should open automatically
+        ImportSettingsDialogSteps.getDialog().should('be.visible');
+        // And the option for replace graph should be active
+        ImportSettingsDialogSteps.getReplaceExistingDataCheckbox().should('be.enabled').and('not.be.checked');
+    });
+
     it('Should be able to upload and import files one after the other and then override them', () => {
         // Given there are no files uploaded yet
         ImportUserDataSteps.getResourcesTable().should('be.hidden');
