@@ -29,10 +29,6 @@ function TabController($scope, $location, ImportViewStorageService, ImportContex
         ImportContextService.updateActiveTabId(tab);
     };
 
-    $scope.changeHelpTemplate = function (templateFile) {
-        $scope.templateUrl = 'js/angular/import/templates/' + templateFile;
-    };
-
     $scope.toggleHelp = () => {
         const viewPersistence = ImportViewStorageService.getImportViewSettings();
         ImportViewStorageService.toggleHelpVisibility();
@@ -72,11 +68,6 @@ function TabController($scope, $location, ImportViewStorageService, ImportContex
     subscriptions.push(ImportContextService.onActiveTabIdUpdated((newActiveTabId) => {
         $scope.activeTabId = newActiveTabId;
         $location.hash($scope.activeTabId);
-        if (TABS.USER === $scope.activeTabId) {
-            $scope.templateUrl = 'js/angular/import/templates/uploadInfo.html';
-        } else {
-            $scope.templateUrl = 'js/angular/import/templates/importInfo.html';
-        }
     }));
 
     subscriptions.push(ImportContextService.onFilesUpdated(onFilesUpdated));
