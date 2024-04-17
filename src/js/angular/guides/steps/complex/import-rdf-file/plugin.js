@@ -122,16 +122,16 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.import_status_info.content',
                         url: '/import',
-                        elementSelector: GuideUtils.getGuideElementSelector('import-status-info'),
+                        elementSelector: '.import-resource-message',
                         class: 'import-status-info-guide-dialog',
                         beforeShowPromise: () => {
-                            const statusInfoElement = GuideUtils.getGuideElementSelector('import-status-info');
-                            if (GuideUtils.isVisible(statusInfoElement)) {
+                            if (GuideUtils.isVisible('.import-resource-message')) {
                                 return Promise.resolve();
                             }
-                            return GuideUtils.waitFor(statusInfoElement, 10);
+                            return GuideUtils.waitFor('.import-resource-message', 10);
                         },
-                        onPreviousClick: () => GuideUtils.clickOnGuideElement('import-file-' + options.resourceFile)()
+                        onPreviousClick: () => GuideUtils.getOrWaiteFor(GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile), 10)
+                            .then((element) => element.click())
                     }, options)
                 }
             ]);

@@ -60,6 +60,15 @@ const GuideUtils = (function () {
         });
     };
 
+    const getOrWaiteFor = (elementSelector, timeoutInSeconds = 1, checkVisibility = true) => {
+        const selector = getElementSelector(elementSelector);
+        const element = document.querySelector(selector);
+        if (element != null && (!checkVisibility || angular.element(element).is(':visible'))) {
+            return Promise.resolve(element);
+        }
+        return waitFor(elementSelector, timeoutInSeconds, checkVisibility);
+    };
+
     const isVisible = function (selector) {
         const element = document.querySelector(selector);
         return element && angular.element(element).is(':visible');
@@ -296,6 +305,7 @@ const GuideUtils = (function () {
         GUIDES_LIST_URL,
         GUIDES_DOWNLOAD_URL,
         waitFor,
+        getOrWaiteFor,
         clickOnElement,
         clickOnGuideElement,
         getGuideElementSelector,
