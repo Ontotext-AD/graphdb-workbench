@@ -232,7 +232,9 @@ export class ImportResourceTreeElement {
         this.files.forEach((file) => allSelected.push(...file.getAllSelected()));
         this.directories.forEach((directory) => allSelected.push(...directory.getAllSelected()));
 
-        return allSelected;
+        // clone them to ensure that upcoming from the server changes in the resources
+        // will not interfere with the selected resources list
+        return _.cloneDeep(allSelected);
     }
 
     deselectAll() {
