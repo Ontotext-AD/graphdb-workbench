@@ -639,7 +639,6 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         // Subscribers of the "filesForUploadSelected" event may cancel the event by setting the 'cancel' property to true in the passed 'eventData' object.
         EventEmitterService.emit("filesForUploadSelected", eventData, (eventData) => {
             // Skip uploading of files if some subscriber canceled the uploading.
-            console.log("Uploading is ", eventData.cancel);
             if (!eventData.cancel) {
                 notifyForTooLargeFiles($invalidFiles);
                 const newFiles = $newFiles || [];

@@ -612,6 +612,12 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             return;
         }
         const currentStep = activeTour.getCurrentStep();
+
+        if (currentStep.options.skipFromHistory) {
+            console.log('Current step: ', currentStep.options.skipFromHistory);
+            return;
+        }
+
         const currentStepIndex = activeTour.steps.findIndex((step) => step.id === currentStep.id);
 
         const lastSavedStepId = this.getCurrentStepId();
@@ -754,6 +760,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             canClickTarget: clickable,
             keyboardNavigation: false,
             skipPoint: stepDescription.skipPoint,
+            skipFromHistory: stepDescription.skipFromHistory,
             onPreviousClick: stepDescription.onPreviousClick,
             initPreviousStep: stepDescription.initPreviousStep,
             when: {

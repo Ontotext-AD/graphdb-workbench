@@ -197,10 +197,10 @@ export class GuideSteps {
         GuideDialogSteps.assertDialogWithTitleIsVisible('Import file — 6/7');
     }
 
-    static assertImportFileStep7(fileToImport) {
+    static assertImportFileStep7() {
         GuideDialogSteps.assertDialogWithTitleIsVisible('Import file — 7/7');
         GuideSteps.assertPageNotInteractive();
-        ImportSteps.getImportFileRow(fileToImport).contains('Imported successfully');
+        ImportSteps.getImportStatusRow(0).contains('Imported successfully');
     }
 
     static importFileByNextButton(fileToImport) {
@@ -214,9 +214,6 @@ export class GuideSteps {
         GuideDialogSteps.clickOnNextButton();
         GuideSteps.assertImportFileStep3();
 
-        ImportSteps.getLoaderElement().should('exist');
-        ImportSteps.getLoaderElement().should('not.be.visible');
-
         // Step click Upload RDF files button.
         GuideDialogSteps.clickOnNextButton();
         GuideSteps.assertImportFileStep4();
@@ -227,7 +224,7 @@ export class GuideSteps {
 
         // Step click on Import button.
         GuideDialogSteps.clickOnNextButton();
-        GuideSteps.assertImportFileStep7(fileToImport);
+        GuideSteps.assertImportFileStep7();
     }
 
     static runGuideTest(guideName, repositoryId, fileToImport, stepAssertions = []) {

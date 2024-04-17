@@ -6,6 +6,7 @@ PluginRegistry.add('guide.step', [
             const toastr = services.toastr;
             const $translate = services.$translate;
             const $interpolate = services.$interpolate;
+            const EventEmitterService = services.EventEmitterService;
             options.mainAction = 'import-file';
 
             const steps = [
@@ -30,6 +31,7 @@ PluginRegistry.add('guide.step', [
             }
 
             const importSettingsButtonSelector = GuideUtils.getGuideElementSelector('import-settings-import-button');
+            let filesForUploadSelectedSubscription;
             steps.push(...[
                 {
                     guideBlockName: 'clickable-element',
@@ -41,37 +43,57 @@ PluginRegistry.add('guide.step', [
                         // Disable default behavior of service when element is clicked.
                         advanceOn: undefined,
                         show: (guide) => () => {
-                            // Add "change" listener to the file upload input, it will be triggered when a file is selected.
-                            $('#ngf-wb-import-uploadFile')
-                                .on('change.importRdfFile', function () {
-                                    // Check if expected file is selected, then process to the next step.
-                                    GuideUtils.waitFor(GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile), 2)
-                                        .then(() => guide.next());
-                                });
+                            // Subscribes to event "filesForUploadSelected", when the step is showing, this will give opportunity
+                            // to canceling uploading if user not choose correct file.
+                            filesForUploadSelectedSubscription = EventEmitterService.subscribe('filesForUploadSelected', ((eventData) => {
+                                const uploadedFiles = eventData.files || [];
+                                if (uploadedFiles.some((uploadedFile) => uploadedFile.name === options.resourceFile)) {
+                                    // When tha correct file is selected, the guide can continue.
+
+                                    // Check for duplicated name, if import button for guide rdf data exist.
+                                    if (GuideUtils.isVisible(GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile))) {
+                                        GuideUtils.getOrWaiteFor('.confirm-duplicate-files-dialog')
+                                            .then(() => guide.next());
+                                    } else {
+                                        GuideUtils.getOrWaiteFor(importSettingsButtonSelector)
+                                            .then(() => guide.next());
+                                    }
+                                } else {
+                                    // Canceling the automatically uploading of files because the guide rdf file is not selected.
+                                    eventData.cancel = true;
+                                }
+                            }));
                         },
                         hide: () => () => {
-                            // Remove ths listener from element. It is important when step is hided.
-                            $('#ngf-wb-import-uploadFile').off('change.importRdfFile');
+                            if (filesForUploadSelectedSubscription) {
+                                filesForUploadSelectedSubscription();
+                            }
                         },
                         onNextValidate: () => {
-                            if (!$(GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile)).length) {
-                                GuideUtils.noNextErrorToast(toastr, $translate, $interpolate,
-                                    'guide.step_plugin.import_rdf_file.file-must-be-uploaded', options);
-                                return Promise.resolve(false);
-                            }
-
-                            return Promise.resolve(true);
+                            return Promise.allSettled([GuideUtils.getOrWaiteFor('.confirm-duplicate-files-dialog'), GuideUtils.getOrWaiteFor(GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile))])
+                                .then(([confirmDialogPromise, importButtonPromise]) => {
+                                    // There are two ways to exit this step: if the duplication dialog is opened or if the import button for the guide file is displayed.
+                                    // The first scenario indicates that the user is trying to upload the same file,
+                                    // while the second scenario suggests that the guide has been started more than once.
+                                    if ('rejected' === confirmDialogPromise.status && 'rejected' === importButtonPromise.status) {
+                                        GuideUtils.noNextErrorToast(toastr, $translate, $interpolate, 'guide.step_plugin.import_rdf_file.file-must-be-uploaded', options);
+                                        return false;
+                                    }
+                                    return true;
+                                });
                         },
                         onNextClick: (guide) => {
-                            GuideUtils.waitFor(importSettingsButtonSelector)
-                                .then(() => guide.next())
-                                .catch(() => {
-                                    // if we have file uploaded but import dialog is not opened, we have to click the
-                                    // import button manually. This can be happened when the guide is started more than one time or
-                                    // user was already uploaded rdf file before start the guide.
-                                    GuideUtils.clickOnGuideElement('import-file-' + options.resourceFile)();
-                                    guide.next();
-                                });
+                            GuideUtils.getOrWaiteFor(GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile))
+                                .then((element) => {
+                                    // if we have file import button for the guide rdf file, this indicates that we go through this step for second time.
+                                    // This can happen if user start guide for second time.
+                                    element.click();
+                                })
+                                .catch((error) => {
+                                    // This shouldn't be happening.
+                                    console.log(error);
+                                })
+                                .finally(() => guide.next());
                         }
                     }, options)
                 },
@@ -85,6 +107,7 @@ PluginRegistry.add('guide.step', [
                         url: '/import',
                         placement: 'bottom',
                         class: 'import-file-button-guide-dialog',
+                        skipFromHistory: true,
                         // Checks whether the confirm dialog is currently open.
                         showOn: () => GuideUtils.isVisible(GuideUtils.getElementSelector('.confirm-duplicate-files-dialog')),
                         onNextClick: () => GuideUtils.clickOnElement('.confirm-duplicate-files-dialog .confirm-btn')(),
@@ -108,11 +131,12 @@ PluginRegistry.add('guide.step', [
                                 .then(() => resolve());
                         }),
                         beforeShowPromise: () => services.GuideUtils.deferredShow(300)()
-                            .then(() => services.GuideUtils.waitFor(importSettingsButtonSelector, 3)
-                                .catch((error) => {
-                                    services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
-                                    return Promise.reject(error);
-                                    })),
+                            .then(() => GuideUtils.getOrWaiteFor(importSettingsButtonSelector, 3)
+                                    .catch((error) => {
+                                        services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
+                                        return Promise.reject(error);
+                                    })
+                            ),
                         onNextClick: () => GuideUtils.clickOnGuideElement('import-settings-import-button')(),
                         canBePaused: false
                     }, options)
@@ -131,7 +155,7 @@ PluginRegistry.add('guide.step', [
                             return GuideUtils.waitFor('.import-resource-message', 10);
                         },
                         onPreviousClick: () => GuideUtils.getOrWaiteFor(GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile), 10)
-                            .then((element) => element.click())
+                                .then((element) => { element.click() })
                     }, options)
                 }
             ]);
