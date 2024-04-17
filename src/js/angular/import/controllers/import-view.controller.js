@@ -595,7 +595,7 @@ importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$
     init();
 }]);
 
-importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$uibModal', '$translate', '$repositories', 'ImportRestService', 'UploadRestService', 'ModalService', 'ImportContextService', function ($scope, toastr, $controller, $uibModal, $translate, $repositories, ImportRestService, UploadRestService, ModalService, ImportContextService) {
+importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$uibModal', '$translate', '$repositories', 'ImportRestService', 'UploadRestService', 'ModalService', 'ImportContextService', 'EventEmitterService', function ($scope, toastr, $controller, $uibModal, $translate, $repositories, ImportRestService, UploadRestService, ModalService, ImportContextService, EventEmitterService) {
 
     // =========================
     // Private variables
@@ -634,29 +634,37 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     };
 
     $scope.fileSelected = function ($files, $file, $newFiles, $duplicateFiles, $invalidFiles) {
-        notifyForTooLargeFiles($invalidFiles);
-        const newFiles = $newFiles || [];
-        // RDF4J does not support decompressing .bz2 files, so we want to reject importing them
-        removeBZip2Files(newFiles);
+        const eventData = {files: $newFiles, cancel: false};
+        // Notify that new files have been selected and will be added for uploading.
+        // Subscribers of the "filesForUploadSelected" event may cancel the event by setting the 'cancel' property to true in the passed 'eventData' object.
+        EventEmitterService.emit("filesForUploadSelected", eventData, (eventData) => {
+            // Skip uploading of files if some subscriber canceled the uploading.
+            if (!eventData.cancel) {
+                notifyForTooLargeFiles($invalidFiles);
+                const newFiles = $newFiles || [];
+                // RDF4J does not support decompressing .bz2 files, so we want to reject importing them
+                removeBZip2Files(newFiles);
 
-        const duplicatedFiles = [];
-        const uniqueFiles = [];
-        newFiles.forEach((file) => {
-            const isDuplicated = $scope.files.some((currentFile) => currentFile.name === file.name);
-            if (isDuplicated) {
-                duplicatedFiles.push(file);
-            } else {
-                uniqueFiles.push(file);
+                const duplicatedFiles = [];
+                const uniqueFiles = [];
+                newFiles.forEach((file) => {
+                    const isDuplicated = $scope.files.some((currentFile) => currentFile.name === file.name);
+                    if (isDuplicated) {
+                        duplicatedFiles.push(file);
+                    } else {
+                        uniqueFiles.push(file);
+                    }
+                });
+
+                if (duplicatedFiles.length > 0) {
+                    // ask the user if he wants to keep the original files or overwrite them.
+                    openDuplicatedFilesConfirmDialog(duplicatedFiles, uniqueFiles);
+                } else {
+                    $scope.currentFiles = [...newFiles];
+                    isFileListInitialized = true;
+                }
             }
         });
-
-        if (duplicatedFiles.length > 0) {
-            // ask the user if he wants to keep the original files or overwrite them.
-            openDuplicatedFilesConfirmDialog(duplicatedFiles, uniqueFiles);
-        } else {
-            $scope.currentFiles = [...newFiles];
-            isFileListInitialized = true;
-        }
     };
 
     $scope.importFile = (fileName, startImport, nextCallback) => {

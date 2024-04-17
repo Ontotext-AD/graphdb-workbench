@@ -12,7 +12,7 @@ angular
     .service('GuidesService', GuidesService);
 
 
-GuidesService.$inject = ['$http', '$rootScope', '$translate', '$interpolate', 'ShepherdService', '$repositories', 'toastr', '$location', '$route', '$timeout'];
+GuidesService.$inject = ['$http', '$rootScope', '$translate', '$interpolate', 'ShepherdService', '$repositories', 'toastr', '$location', '$route', '$timeout', 'EventEmitterService'];
 
 /**
  * Service for interaction with guide functionality. A guide is described as sequence of steps.
@@ -149,9 +149,10 @@ GuidesService.$inject = ['$http', '$rootScope', '$translate', '$interpolate', 'S
  * @param {*} $location
  * @param {*} $route
  * @param {*} $timeout
+ * @package {EventEmitterService} EventEmitterService
  * @constructor
  */
-function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdService, $repositories, toastr, $location, $route, $timeout) {
+function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdService, $repositories, toastr, $location, $route, $timeout, EventEmitterService) {
 
     this.guideResumeSubscription = undefined;
     this.languageChangeSubscription = undefined;
@@ -400,7 +401,7 @@ function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdServ
      * @private
      */
     this._getSteps = (complexStep, parentOptions) => {
-        const services = {$translate, $interpolate, GuideUtils, $rootScope, toastr, $location, $route, $timeout, ShepherdService, $repositories, YasguiComponentDirectiveUtil};
+        const services = {$translate, $interpolate, GuideUtils, $rootScope, toastr, $location, $route, $timeout, ShepherdService, $repositories, YasguiComponentDirectiveUtil, EventEmitterService};
         let steps = [];
         if (angular.isArray(complexStep)) {
             complexStep.forEach((stepDescription) => {

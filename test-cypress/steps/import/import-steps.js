@@ -332,8 +332,8 @@ class ImportSteps {
         return cy.get('.import-status-message');
     }
 
-    static getImportFileRow(fileName) {
-        return cy.contains('tr', fileName);
+    static getImportStatusRow(index = 0) {
+        return cy.get('.import-resource-message').eq(index);
     }
 
     static getSnippetTextarea() {
@@ -443,10 +443,6 @@ class ImportSteps {
             .should('be.visible')
             .and('not.have.class', 'ng-animate')
             .and('have.class', 'in');
-    }
-
-    static getLoaderElement() {
-        return cy.get('.ot-loader.ot-main-loader');
     }
 }
 

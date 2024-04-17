@@ -187,6 +187,7 @@
                             ng-if="resource.isImportable"
                             ng-click="onImport({resource: resource})"
                             ng-disabled="selectedResources.length > 0"
+                            guide-selector="import-file-{{resource.name}}"
                             gdb-tooltip="{{'import.import.btn' | translate}}">
                         <span class="icon-import"></span>
                     </button>
