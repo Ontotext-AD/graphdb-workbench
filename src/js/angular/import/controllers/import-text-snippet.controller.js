@@ -25,22 +25,24 @@ function ImportTextSnippetController($scope, $uibModalInstance, text, format) {
         {name: 'TriG*', type: 'application/x-trigstar'}
     ];
     $scope.rdfText = text;
-    $scope.importFormat = _.find($scope.importFormats, {type: format});
+    $scope.importFormat = $scope.importFormats.find((formatModel) => formatModel.type === format);
     $scope.startImport = true;
+    $scope.sizeLimit = 4000;
+
 
     // =========================
     // Public functions
     // =========================
 
-    $scope.setFormat = function (format) {
+    $scope.setFormat = (format) => {
         $scope.importFormat = format;
     };
 
-    $scope.cancel = function () {
+    $scope.cancel = () => {
         $uibModalInstance.dismiss();
     };
 
-    $scope.ok = function () {
+    $scope.ok = () => {
         $uibModalInstance.close({
             text: $scope.rdfText,
             format: $scope.importFormat.type,

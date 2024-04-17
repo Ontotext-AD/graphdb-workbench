@@ -900,14 +900,11 @@
         "restore.defaults.btn": "Restore defaults",
         "abort.btn": "Abort",
         "no.files.found": "No files found",
-        "rdf.from.snippet": "Import RDF data from a text snippet",
-        "rdf.data.here": "Put your RDF data here and select its format.",
         "enable.for.auto.start": "Enable this option to start the import when you click the Import button. If it is disabled the import will be added to the list but not started automatically.",
         "auto.start": "Start import automatically",
         "data.from.url": "Import RDF data from URL",
         "supported.url.with.rdf": "URL with RDF data. Supported formats are",
         "invalid.url": "Not valid url!",
-        "format": "Format",
         "gz.zip": ", as well as their .gz versions and .zip archives",
         "error.could.not.get.files": "Could not get files; {{data}}",
         "error.could.not.stop": "Could not stop import; {{data}}",
@@ -941,6 +938,21 @@
         "context.link": "JSON-LD context",
         "context.link.info": "Specifies external JSON-LD context as a URL. Only whitelisted URLs can be used.",
         "file.upload.progress": "{{progress}} % uploaded",
+        "text_snippet_dialog": {
+            "title": "Import RDF data from a text snippet",
+            "text_snippet": {
+                "label": "Insert your RDF data here and select its format below.",
+                "placeholder": "# Example: rdf:predicate a rdf:Property .",
+                "validation_message": "Maximum length of {{limit}} characters exceeded."
+            },
+            "auto_start": {
+                "tooltip": "Enable this option to start the import when you click the Import button. If it is disabled the import will be added to the list but not started automatically.",
+                "label": "Start import automatically"
+            },
+            "import_format_menu": {
+                "label": "Format"
+            }
+        },
         "user_data": {
             "duplicates_confirmation": {
                 "title": "Confirm files overwrite",
@@ -1015,7 +1027,6 @@
             "parser_settings": "Parser settings"
         }
     },
-    "text.snippet.text.aria.placeholder": "# Example: rdf:predicate a rdf:Property .",
     "url.import.input.placeholder": "Data URL",
     "filesTable.interrupt.import": "Interrupt import",
     "core.errors.no.connected.repository.warning.msg": "Some functionalities are not available because you are not connected to any repository.",

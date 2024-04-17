@@ -899,14 +899,11 @@
         "restore.defaults.btn": "Restaurer les valeurs par défaut",
         "abort.btn": "Abandonner",
         "no.files.found": "Aucun fichier trouvé",
-        "rdf.from.snippet": "Importer des données RDF à partir d'un extrait de texte",
-        "rdf.data.here": "Mettez vos données RDF ici et sélectionnez leur format.",
         "enable.for.auto.start": "Activez cette option pour lancer l'importation lorsque vous cliquez sur le bouton Importer. Si elle est désactivée, l'importation sera ajoutée à la liste mais ne démarrera pas automatiquement.",
         "auto.start": "Démarrer l'importation automatiquement",
         "data.from.url": "Importer des données RDF depuis une URL",
         "supported.url.with.rdf": "URL avec des données RDF. Les formats supportés sont",
         "invalid.url": "URL non valide!",
-        "format": "Format",
         "gz.zip": "ainsi que leurs versions .gz et leurs archives .zip.",
         "error.could.not.get.files": "Impossible de récupérer des fichiers; {{data}}",
         "error.could.not.stop": "Impossible d'arrêter l'importation; {{data}}",
@@ -941,6 +938,20 @@
         "context.link": "Contexte JSON-LD",
         "context.link.info": "Spécifie le contexte JSON-LD externe en tant qu'URL. Seules les URL figurant sur la liste blanche peuvent être utilisées",
         "file.upload.progress": "{{progress}} % téléchargé",
+        "text_snippet_dialog": {
+            "text_snippet": {
+                "label": "Insérez vos données RDF ici et sélectionnez son format ci-dessous.",
+                "placeholder": "# Exemple : rdf:predicate a rdf:Property .",
+                "validation_message": "Longueur maximale de {{limit}} caractères dépassée."
+            },
+            "auto_start": {
+                "tooltip": "Activez cette option pour lancer l'importation lorsque vous cliquez sur le bouton Importer. Si elle est désactivée, l'importation sera ajoutée à la liste mais ne démarrera pas automatiquement.",
+                "label": "Démarrer l'importation automatiquement"
+            },
+            "import_format_menu": {
+                "label": "Format"
+            }
+        },
         "user_data": {
             "duplicates_confirmation": {
                 "title": "Confirmer l'écrasement des fichiers",
@@ -1015,7 +1026,6 @@
             "parser_settings": "Paramètres du parseur"
         }
     },
-    "text.snippet.text.aria.placeholder": "# Exemple : rdf:predicate a rdf:Property .",
     "url.import.input.placeholder": "URL des données",
     "filesTable.interrupt.import": "Interrompre l'importation",
     "core.errors.no.connected.repository.warning.msg": "Certaines fonctionnalités ne sont pas disponibles car vous n'êtes connecté à aucun dépôt.",

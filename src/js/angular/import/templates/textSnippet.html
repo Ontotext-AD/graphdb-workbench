@@ -1,33 +1,41 @@
 <div class="modal-header">
     <button type="button" class="close" ng-click="cancel()"></button>
-    <h4 class="modal-title">{{'import.rdf.from.snippet' | translate}}</h4>
+    <h4 class="modal-title">{{'import.text_snippet_dialog.title' | translate}}</h4>
 </div>
 
 <div class="modal-body">
-    <div class="form-group">
-        <textarea id="wb-import-textarea" class="form-control" rows="10" ng-model="rdfText"
-                  placeholder="{{'text.snippet.text.aria.placeholder' | translate}}"
-                  uib-popover="{{'import.rdf.data.here' | translate}}"
-                  popover-placement="bottom"
-                  popover-trigger="focus"></textarea>
-    </div>
+    <form name="snippetForm" id="snippetForm">
+        <div class="form-group">
+            <label for="wb-import-textarea">{{'import.text_snippet_dialog.text_snippet.label' | translate}}</label>
+            <textarea id="wb-import-textarea" name="rdfSnippet" class="form-control" rows="10" ng-model="rdfText"
+                      ng-maxlength="sizeLimit-1"
+                      placeholder="{{'import.text_snippet_dialog.text_snippet.placeholder' | translate}}"></textarea>
+            <div class="text-right">
+                <sub ng-if="!snippetForm.rdfSnippet.$error.maxlength">{{sizeLimit - rdfText.length}}/{{sizeLimit}}</sub>
+            </div>
+            <div ng-if="snippetForm.rdfSnippet.$error.maxlength" class="alert alert-danger">
+                {{'import.text_snippet_dialog.text_snippet.validation_message' | translate: {limit: sizeLimit} }}
+            </div>
+        </div>
+    </form>
 </div>
 
 <div class="modal-footer">
     <div class="mb-1">
         <span
-            uib-popover="{{'import.enable.for.auto.start' | translate}}"
+            uib-popover="{{'import.text_snippet_dialog.auto_start.tooltip' | translate}}"
             popover-trigger="mouseenter"
             popover-placement="top">
             <input id="import-now-checkbox" type="checkbox" ng-model="startImport"/>
-            <label for="import-now-checkbox">{{'import.auto.start' | translate}}</label>
+            <label for="import-now-checkbox">{{'import.text_snippet_dialog.auto_start.label' | translate}}</label>
         </span>
     </div>
     <div>
         <button type="button" ng-click="cancel()" class="btn btn-secondary">{{'common.cancel.btn' | translate}}</button>
         <div class="btn-group import-format-dropdown" uib-dropdown>
-            <button type="button" class="btn btn-secondary dropdown-toggle import-format-dropdown-btn" uib-dropdown-toggle>
-                {{'import.format' | translate}}: {{importFormat.name}}
+            <button type="button" class="btn btn-secondary dropdown-toggle import-format-dropdown-btn"
+                    uib-dropdown-toggle>
+                {{'import.text_snippet_dialog.import_format_menu.label' | translate}}: {{importFormat.name}}
             </button>
             <ul class="dropdown-menu" role="menu">
                 <li ng-repeat="format in importFormats">
