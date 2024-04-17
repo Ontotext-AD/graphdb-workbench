@@ -415,7 +415,8 @@ describe('Repositories', () => {
         assertRepositoryStatus(repositoryId, "RUNNING");
     });
 
-    it('should create SHACL repo and test shapes validation', () => {
+    // TODO: skip until backend for the import is merged, then we have to fix this
+    it.skip('should create SHACL repo and test shapes validation', () => {
         //Prepare repository by enabling SHACL
         RepositorySteps.createRepository();
         RepositorySteps.chooseRepositoryType(GDB_REPOSITORY_TYPE);
