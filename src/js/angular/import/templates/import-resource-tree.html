@@ -172,12 +172,13 @@
                     <button role="button" class="btn btn-link btn-sm secondary import-resource-action-reset-btn"
                             ng-click="resetStatus(resource)"
                             ng-if="resource.canResetStatus"
-                            ng-disabled="selectedResources.length > 1"
+                            ng-disabled="selectedResources.length > 0"
                             gdb-tooltip="{{'import.reset.status' | translate}}">
                         <span class="icon-close"></span>
                     </button>
                     <button ng-if="canRemoveResource"
                             class="btn btn-link btn-sm secondary import-resource-action-remove-btn"
+                            ng-disabled="selectedResources.length > 0"
                             ng-click="removeResource(resource)"
                             gdb-tooltip="{{'import.remove.btn' | translate}}">
                         <em class="icon-trash"></em>
@@ -185,6 +186,7 @@
                     <button class="btn btn-primary btn-sm import-resource-action-import-btn"
                             ng-if="resource.isImportable"
                             ng-click="onImport({resource: resource})"
+                            ng-disabled="selectedResources.length > 0"
                             gdb-tooltip="{{'import.import.btn' | translate}}">
                         <span class="icon-import"></span>
                     </button>

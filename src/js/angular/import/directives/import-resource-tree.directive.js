@@ -197,6 +197,8 @@ function importResourceTreeDirective($timeout, ImportContextService) {
                     }
                 });
                 $scope.resources.getRoot().updateSelectionState();
+                // update selected resources because we keep cloned resources and not live references
+                $scope.selectedResources = $scope.resources.getAllSelected();
                 sortResources();
                 $scope.displayResources = $scope.resources.toList()
                     .filter(filterByType)
@@ -301,6 +303,7 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             const onResourcesUpdatedHandler = (resources) => {
                 $scope.resources = resources;
                 updateListedImportResources();
+                setCanResetResourcesFlag();
             };
 
             // =========================
