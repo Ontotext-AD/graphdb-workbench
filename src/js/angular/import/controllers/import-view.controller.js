@@ -70,9 +70,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
          * @type {{[string]:boolean}}
          */
         $scope.selectedForImportFiles = {};
-        $scope.checkAll = false;
         $scope.popoverTemplateUrl = 'settingsPopoverTemplate.html';
-        $scope.fileQuery = '';
         $scope.fileFormatsExtended = FileFormats.getFileFormatsExtended();
         $scope.fileFormatsHuman = FileFormats.getFileFormatsHuman() + $translate.instant('import.gz.zip');
         $scope.textFileFormatsHuman = FileFormats.getTextFileFormatsHuman();
@@ -92,24 +90,6 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                     $scope.updateList(false);
                 }
             }, LIST_POLLING_INTERVAL);
-        };
-
-        $scope.getVisibleFiles = () => {
-            return $filter('filter')($scope.files, {name: $scope.fileQuery, type: $scope.getTypeFilter()});
-        };
-
-        $scope.getTypeFilter = () => {
-            if (TABS.SERVER === $scope.activeTabId && ($scope.showItems === 'file' || $scope.showItems === 'directory')) {
-                return $scope.showItems;
-            } else {
-                return '';
-            }
-        };
-
-        $scope.selectAllFiles = () => {
-            $scope.getVisibleFiles().forEach(function (file) {
-                $scope.fileChecked[file.name] = $scope.checkAll && $scope.importable(file);
-            });
         };
 
         /**
@@ -192,57 +172,6 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             $scope.importFile(fileName, startImport);
         };
 
-        $scope.stopImport = (file) => {
-            ImportRestService.stopImport($repositories.getActiveRepository(), {name: file.name, type: file.type})
-                .success(function () {
-                    $scope.updateList();
-                }).error(function (data) {
-                toastr.warning($translate.instant('import.error.could.not.stop', {data: getError(data)}));
-            });
-        };
-
-        $scope.importable = () => {
-            return true;
-        };
-
-        $scope.hasImportable = () =>{
-            return $scope.files.some((file) => $scope.importable(file));
-        };
-
-        $scope.showTable = () => {
-            const showTable = $scope.files.length > 0 && (TABS.USER === $scope.activeTabId || TABS.SERVER === $scope.activeTabId);
-            if ($scope.checkAll) {
-                $scope.switchBatch(true);
-            }
-            return showTable;
-        };
-
-        $scope.switchBatch = (all) => {
-            if (all) {
-                $scope.selectAllFiles();
-            } else {
-                if ($scope.checkAll) {
-                    $scope.checkAll = false;
-                }
-            }
-            $scope.batch = _.map(_.filter($scope.files, function (f) {
-                return $scope.fileChecked[f.name] && $scope.importable(f);
-            }), 'name').length > 0;
-        };
-
-        $scope.rebatch = () => {
-            const newFileChecked = {};
-            $scope.batch = false;
-            _.each($scope.files, function (file) {
-                newFileChecked[file.name] = $scope.fileChecked[file.name];
-                $scope.batch |= $scope.fileChecked[file.name];
-            });
-            if (!$scope.batch) {
-                $scope.checkAll = false;
-            }
-            $scope.fileChecked = newFileChecked;
-        };
-
         /**
          * Get selection from the resource tree.
          * @return {string[]}
@@ -269,38 +198,9 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             importNext();
         };
 
-        $scope.resetStatus = (names) => {
-            resetStatusOrRemoveEntry(names, false);
-        };
-
         $scope.isLocalLocation = () => {
             const location = $repositories.getActiveLocation();
             return location && location.local;
-        };
-
-        $scope.filterSettings = (fileName) => {
-            let filtered = _.omitBy($scope.savedSettings[fileName], _.isNull);
-            filtered = _.omit(filtered, ['repoLocationHash', 'status', 'message', 'name', 'data', 'type', 'format', 'fileNames', '$$hashKey']);
-            return _.map(_.keys(filtered), function (key) {
-                return [key, filtered[key]];
-            });
-        };
-
-        $scope.getSettings = () => {
-            if (!$scope.canWriteActiveRepo()) {
-                return;
-            }
-
-            ImportRestService.getDefaultSettings($repositories.getActiveRepository())
-                .success(function (data) {
-                    $scope.defaultSettings = data;
-                }).error(function (data) {
-                toastr.warning($translate.instant('import.error.default.settings', {data: getError(data)}));
-            });
-        };
-
-        $scope.pritifySettings = (settings) => {
-            return JSON.stringify(settings, null, ' ');
         };
 
         $scope.updateList = (force) => {
@@ -313,7 +213,11 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             $scope.updateListHttp(force);
         };
 
-        // This should be public because it's used by the upload and import controllers
+        /**
+         * Handles the change of the active repository.
+         *
+         * !!!This should be public because it's used by the upload and import controllers
+         */
         $scope.onRepositoryChange = () => {
             // Update restricted on repositoryIsSet
             $scope.setRestricted();
@@ -321,15 +225,29 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                 return;
             }
             $scope.updateList(true);
-            $scope.getSettings();
+            getSettings();
         };
 
+        /**
+         * Handles the import operation triggered by the user.
+         * @param {ImportResourceTreeElement} resource - The resource for which the import should be triggered.
+         */
         $scope.onImport = (resource) => {
             $scope.setSettingsFor(resource.importResource.name, false, resource.importResource.format);
         };
 
+        /**
+         * Triggers a stop operation in the backend for selected resources.
+         * @param {ImportResourceTreeElement} resource - The resource for which the import should be stopped.
+         */
         $scope.onStopImport = (resource) => {
-            $scope.stopImport(resource.importResource);
+            const file = resource.importResource;
+            ImportRestService.stopImport($repositories.getActiveRepository(), {name: file.name, type: file.type})
+                .success(function () {
+                    $scope.updateList();
+                }).error(function (data) {
+                toastr.warning($translate.instant('import.error.could.not.stop', {data: getError(data)}));
+            });
         };
 
         /**
@@ -388,6 +306,19 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         // Private functions
         // =========================
 
+        const getSettings = () => {
+            if (!$scope.canWriteActiveRepo()) {
+                return;
+            }
+
+            ImportRestService.getDefaultSettings($repositories.getActiveRepository())
+                .success(function (data) {
+                    $scope.defaultSettings = data;
+                }).error(function (data) {
+                toastr.warning($translate.instant('import.error.default.settings', {data: getError(data)}));
+            });
+        };
+
         /**
          * Opens a confirmation dialog to confirm the removal of the selected resources. If removal is confirmed, a
          * request is sent to the backend with the selected file names to be removed.
@@ -435,7 +366,6 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                             f.type = $scope.defaultType;
                         }
                     });
-                    $scope.rebatch();
                 } else {
                     // update the status of the files using the response from the server
                     $scope.files.forEach(function (f) {
@@ -455,9 +385,6 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                     });
                     ImportContextService.updateFiles($scope.files);
                 }
-                $scope.showClearStatuses = _.filter($scope.files, function (file) {
-                    return file.status === ImportResourceStatus.DONE || file.status === ImportResourceStatus.ERROR;
-                }).length > 0;
 
                 $scope.savedSettings = _.mapKeys(_.filter($scope.files, 'parserSettings'), 'name');
             }).error(function (data) {
@@ -540,7 +467,6 @@ importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$
     angular.extend(this, $controller('ImportViewCtrl', {$scope: $scope}));
     $scope.defaultType = 'server';
     $scope.tabId = '#import-server';
-    $scope.showItems = 'all';
 
     // =========================
     // Public functions
@@ -573,7 +499,6 @@ importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$
             {importSettings: overrideSettings ? null : $scope.settings, fileNames: selectedFileNames}
         ).success(function () {
             $scope.updateList();
-            $scope.batch = false;
             $scope.fileChecked = {};
         }).error(function (data) {
             toastr.error($translate.instant('import.could.not.send.file', {data: getError(data)}));
@@ -601,6 +526,12 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     // Private variables
     // =========================
 
+    // A registry to keep track of the current index for each file name. The registry is created on page load and
+    // updated when a new file is selected by the user with the option to preserve the original file.
+    const filesPrefixRegistry = new FilePrefixRegistry();
+    // Keeps track of any subscription that needs to be removed when the controller is destroyed.
+    const subscriptions = [];
+
     // =========================
     // Public variables
     // =========================
@@ -619,19 +550,10 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     // the watcher for $scope.currentFiles to try to update the $scope.files and to re-upload them on load.
     let isFileListInitialized = false;
     $scope.pastedDataIdx = 1;
-    // A registry to keep track of the current index for each file name. The registry is created on page load and
-    // updated when a new file is selected by the user with the option to preserve the original file.
-    const filesPrefixRegistry = new FilePrefixRegistry();
-    // Keeps track of any subscription that needs to be removed when the controller is destroyed.
-    const subscriptions = [];
 
     // =========================
     // Public functions
     // =========================
-
-    $scope.importable = function () {
-        return true;
-    };
 
     $scope.fileSelected = function ($files, $file, $newFiles, $duplicateFiles, $invalidFiles) {
         const eventData = {files: $newFiles, cancel: false};
@@ -667,6 +589,12 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         });
     };
 
+    /**
+     * Triggers import operation for selected resource. The resource can be a file, url or a rdf text snippet.
+     * @param {string} fileName The name of the file that was selected.
+     * @param {boolean} startImport If the import should be started immediately.
+     * @param {function} nextCallback A callback that is called when the import is finished.
+     */
     $scope.importFile = (fileName, startImport, nextCallback) => {
         const file = $scope.files.find((currentFile) => currentFile.name === fileName);
         if (!file) {
@@ -724,7 +652,10 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         });
     };
 
-    $scope.rdfDataFromURL = function () {
+    /**
+     * Opens a modal dialog where the user can paste a url and import the data from it.
+     */
+    $scope.rdfDataFromURL = () => {
         const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/import/templates/urlImport.html',
             controller: 'ImportUrlController',
