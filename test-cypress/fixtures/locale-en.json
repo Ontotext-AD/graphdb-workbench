@@ -956,7 +956,11 @@
         "user_data": {
             "duplicates_confirmation": {
                 "title": "Confirm files overwrite",
-                "message": "Following files are already uploaded: <br/>{{duplicatedFiles}}<br/>Do you want to overwrite them?"
+                "message": "Following files are already uploaded: <br/>{{duplicatedFiles}}<br/>Do you want to overwrite them?",
+                "buttons": {
+                    "keep_both": "Keep both",
+                    "overwrite": "Overwrite"
+                }
             }
         },
         "help": {

@@ -44,7 +44,7 @@
             </ul>
         </div>
         <button id="wb-import-importText" class="btn btn-primary" type="button"
-                ng-click="ok()">
+                ng-click="ok()" ng-disabled="snippetForm.$invalid">
             <em class="icon-import"></em>{{'common.import' | translate}}
         </button>
     </div>

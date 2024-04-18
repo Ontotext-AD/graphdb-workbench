@@ -955,7 +955,11 @@
         "user_data": {
             "duplicates_confirmation": {
                 "title": "Confirmer l'écrasement des fichiers",
-                "message": "Les fichiers suivants sont déjà téléchargés: <br/>{{duplicatedFiles}}<br/>Voulez-vous les écraser"
+                "message": "Les fichiers suivants sont déjà téléchargés: <br/>{{duplicatedFiles}}<br/>Voulez-vous les écraser",
+                "buttons": {
+                    "keep_both": "Garde les deux",
+                    "overwrite": "Écraser"
+                }
             }
         },
         "help": {

@@ -103,14 +103,14 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.import_rdf_file.confirm_duplicate_files_dialog.content',
-                        elementSelector: GuideUtils.getElementSelector('.confirm-duplicate-files-dialog .confirm-btn'),
+                        elementSelector: GuideUtils.getElementSelector('.confirm-duplicate-files-dialog .confirm-overwrite-btn'),
                         url: '/import',
                         placement: 'bottom',
                         class: 'import-file-button-guide-dialog',
                         skipFromHistory: true,
                         // Checks whether the confirm dialog is currently open.
                         showOn: () => GuideUtils.isVisible(GuideUtils.getElementSelector('.confirm-duplicate-files-dialog')),
-                        onNextClick: () => GuideUtils.clickOnElement('.confirm-duplicate-files-dialog .confirm-btn')(),
+                        onNextClick: () => GuideUtils.clickOnElement('.confirm-duplicate-files-dialog .confirm-overwrite-btn')(),
                         onPreviousClick: () => {
                             if (GuideUtils.isVisible(GuideUtils.getElementSelector('.confirm-duplicate-files-dialog'))) {
                                 return GuideUtils.clickOnElement('.confirm-duplicate-files-dialog .cancel-btn');
