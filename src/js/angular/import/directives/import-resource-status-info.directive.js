@@ -27,6 +27,9 @@ function importResourceStatusInfoDirective($rootScope, $document) {
             $scope.forceSerial = $scope.resource.importResource.forceSerial;
             $scope.importedOn = $scope.resource.importResource.importedOn;
             $scope.parserSettings = $scope.resource.importResource.parserSettings;
+            $scope.hasReplacedGraphs = $scope.resource.importResource.numReplacedGraphs > 0;
+            $scope.hasAddedStatements = $scope.resource.importResource.addedStatements > 0;
+            $scope.hasRemovedStatements = $scope.resource.importResource.removedStatements > 0;
 
             // =========================
             // Public functions

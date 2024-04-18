@@ -38,6 +38,36 @@
             </tr>
             <tr class="import-resource-status-info-row">
                 <td class="import-resource-status-info-label">
+                    {{'import.status-info.number_of_replaced_graphs' | translate}}
+                </td>
+                <td class="break-word">
+                    <div class="import-resource-status-info-value">
+                        {{resource.importResource.numReplacedGraphs}}
+                    </div>
+                </td>
+            </tr>
+            <tr class="import-resource-status-info-row">
+                <td class="import-resource-status-info-label">
+                    {{'import.status-info.added_statements' | translate}}
+                </td>
+                <td class="break-word">
+                    <div class="import-resource-status-info-value">
+                        {{resource.importResource.addedStatements}}
+                    </div>
+                </td>
+            </tr>
+            <tr class="import-resource-status-info-row">
+                <td class="import-resource-status-info-label">
+                    {{'import.status-info.removed_count_statements' | translate}}
+                </td>
+                <td class="break-word">
+                    <div class="import-resource-status-info-value">
+                        {{resource.importResource.removedStatements}}
+                    </div>
+                </td>
+            </tr>
+            <tr class="import-resource-status-info-row">
+                <td class="import-resource-status-info-label">
                     <div>
                         {{'import.status-info.base_iri' | translate}}
                     </div>

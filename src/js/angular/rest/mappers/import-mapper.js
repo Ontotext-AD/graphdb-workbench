@@ -1,6 +1,7 @@
 import {ImportResourceTreeElement} from "../../models/import/import-resource-tree-element";
 import {ImportResource} from "../../models/import/import-resource";
 import {ImportResourceStatus} from "../../models/import/import-resource-status";
+import {ImportResourceType} from "../../models/import/import-resource-type";
 
 export const toImportResource = (importResourcesServerData) => {
     return importResourcesServerData.map((importResourceServerData) => new ImportResource(importResourceServerData));
@@ -19,7 +20,12 @@ export const toImportUserDataResource = (importResources) => {
     const root = new ImportResourceTreeElement();
     importResources
         .toSorted((a, b) => b.modifiedOn - a.modifiedOn)
-        .forEach((resource) => addResourceToTree(root, resource));
+        .forEach((resource) => {
+            const importResourceElement = addResourceToTree(root, resource);
+            if (ImportResourceType.FILE === resource.type) {
+                importResourceElement.iconClass = 'icon-upload';
+            }
+        });
     calculateElementIndent(root);
     setupAfterTreeInitProperties(root);
     return root;
@@ -44,6 +50,8 @@ export const toImportServerResource = (importResources) => {
  * Adds the <code>resource</code> into the tree with root <code>root</code>.
  * @param {ImportResourceTreeElement} root
  * @param {ImportResource} resource
+ *
+ * @return {ImportResourceTreeElement} added resource tree element.
  */
 const addResourceToTree = (root, resource) => {
     const path = getPath(resource);
@@ -63,8 +71,30 @@ const addResourceToTree = (root, resource) => {
         importServerResource.path = path.join('/');
         importServerResource.name = path[path.length - 1];
         resourceParent.addResource(importServerResource);
+        importServerResource.iconClass = getIconClass(resource);
+        return importServerResource;
     } else {
         resourceParent.importResource = resource;
+        resourceParent.iconClass = getIconClass(resource);
+        return resourceParent;
+    }
+};
+
+const getIconClass = (resource) => {
+    if (ImportResourceType.TEXT === resource.type) {
+        return 'icon-sparql';
+    }
+
+    if (ImportResourceType.URL === resource.type) {
+        return 'icon-link';
+    }
+
+    if (ImportResourceType.FILE === resource.type) {
+        return 'icon-file';
+    }
+
+    if (ImportResourceType.DIRECTORY === resource.type) {
+        return 'icon-folder';
     }
 };
 
@@ -137,7 +167,7 @@ const setupShortedContext = (importResourceElement) => {
 const setupImportedAndModifiedComparableProperties = (importResourceElement) => {
     const importResource = importResourceElement.importResource;
     if (importResource) {
-        if (importResource.importedOn === importResource.modifiedOn) {
+        if (importResource.importedOn === 0 || importResource.modifiedOn === 0 || importResource.importedOn === importResource.modifiedOn) {
             return;
         }
         importResourceElement.isImportedBiggerThanModified = importResource.importedOn > importResource.modifiedOn;

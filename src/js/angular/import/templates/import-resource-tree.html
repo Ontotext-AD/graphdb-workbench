@@ -155,7 +155,7 @@
                 ng-style="{'padding-left': (filterByType !== TYPE_FILTER_OPTIONS.FILE ? resource.indent : '8px')}"
                 class="import-resource-cell">
                 <span class="import-resource-title">
-                    <em ng-class="{'icon-folder': resource.isDirectory(), 'icon-file': resource.isFile()}"></em>
+                    <em ng-class="resource.iconClass"></em>
                     <div ng-if="onEditResource && resource.isEditable">
                         <a href="#" ng-click="editResource(resource)"><strong>{{resource.name}}</strong></a>
                     </div>
@@ -212,12 +212,12 @@
                 {{ resource.importResource.size || ''}}
             </td>
             <td class="import-resource-cell import-resource-modified"
-                ng-class="{'font-weight-bold': resource.isImportedBiggerThanModified}">
-                {{ resource.importResource.modifiedOn | date:'yyyy-MM-dd, HH:mm' }}
+                ng-class="{'font-weight-bold': resource.isModifiedBiggerThanImported}">
+                {{ resource.importResource.modifiedOn ? (resource.importResource.modifiedOn | date:'yyyy-MM-dd, HH:mm') : '' }}
             </td>
             <td class="import-resource-cell import-resource-imported"
-                ng-class="{'font-weight-bold': resource.isModifiedBiggerThanImported}">
-                {{ resource.importResource.importedOn | date:'yyyy-MM-dd, HH:mm' }}
+                ng-class="{'font-weight-bold': resource.isImportedBiggerThanModified}">
+                {{ resource.importResource.importedOn ? (resource.importResource.importedOn | date:'yyyy-MM-dd, HH:mm') : '' }}
             </td>
             <td colspan="2" class="import-resource-cell">
                 <a if="resource.importResource.context"

@@ -55,6 +55,7 @@
 
 .import-resource-tree .import-resource-table .import-resource-cell {
     line-height: 18px;
+    vertical-align: top;
 }
 
 .import-resource-tree .import-resource-table .import-resource-title {
@@ -113,6 +114,23 @@
 .import-resource-tree .import-resource-table .import-resource-cell.import-resource-message,
 .import-resource-tree .import-resource-table .import-resource-header-cell.import-resource-name {
     width: 40%;
+}
+
+.import-resource-tree .import-resource-table .import-resource-cell .import-resource-message .success-messages {
+    display: flex;
+}
+
+.import-resource-tree .import-resource-table .import-resource-cell .import-resource-message .success-messages .success-message {
+    display: flex;
+    flex-direction: column;
+}
+.import-resource-tree .import-resource-table .import-resource-cell .import-resource-message .success-messages .success-message .import-counters {
+    display: flex;
+    flex-wrap: wrap;
+}
+.import-resource-tree .import-resource-table .import-resource-cell .import-resource-message .success-messages .success-message .import-counters .import-counter,
+.import-resource-tree .import-resource-table .import-resource-cell .import-resource-message .success-messages .success-message .text-success {
+    padding-left: 10px;
 }
 
 .import-resource-tree .import-resource-tree-header {
