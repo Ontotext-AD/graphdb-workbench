@@ -16,96 +16,96 @@
 
         <table class="table table-sm m-0">
             <tbody>
-            <tr class="import-resource-status-info-row">
-                <td class="import-resource-status-info-label">
+            <tr class="row">
+                <td class="label">
                     {{'import.status-info.context' | translate}}
                 </td>
                 <td class="break-word">
-                    <div class="import-resource-status-info-value">
+                    <div class="value">
                         {{context}}
                     </div>
                 </td>
             </tr>
-            <tr class="import-resource-status-info-row">
-                <td class="import-resource-status-info-label">
+            <tr class="row">
+                <td class="label">
                     {{'import.status-info.replaced_graphs' | translate}}
                 </td>
                 <td class="break-word">
-                    <div class="import-resource-status-info-value" ng-repeat="replaceGraph in replaceGraphs">
+                    <div class="value" ng-repeat="replaceGraph in replaceGraphs">
                         {{replaceGraph}}
                     </div>
                 </td>
             </tr>
-            <tr class="import-resource-status-info-row">
-                <td class="import-resource-status-info-label">
+            <tr class="row">
+                <td class="label">
                     {{'import.status-info.number_of_replaced_graphs' | translate}}
                 </td>
                 <td class="break-word">
-                    <div class="import-resource-status-info-value">
+                    <div class="value">
                         {{resource.importResource.numReplacedGraphs}}
                     </div>
                 </td>
             </tr>
-            <tr class="import-resource-status-info-row">
-                <td class="import-resource-status-info-label">
+            <tr class="row">
+                <td class="label">
                     {{'import.status-info.added_statements' | translate}}
                 </td>
                 <td class="break-word">
-                    <div class="import-resource-status-info-value">
+                    <div class="value">
                         {{resource.importResource.addedStatements}}
                     </div>
                 </td>
             </tr>
-            <tr class="import-resource-status-info-row">
-                <td class="import-resource-status-info-label">
+            <tr class="row">
+                <td class="label">
                     {{'import.status-info.removed_count_statements' | translate}}
                 </td>
                 <td class="break-word">
-                    <div class="import-resource-status-info-value">
+                    <div class="value">
                         {{resource.importResource.removedStatements}}
                     </div>
                 </td>
             </tr>
-            <tr class="import-resource-status-info-row">
-                <td class="import-resource-status-info-label">
+            <tr class="row">
+                <td class="label">
                     <div>
                         {{'import.status-info.base_iri' | translate}}
                     </div>
                 </td>
                 <td class="break-word">
-                    <div class="import-resource-status-info-value">
+                    <div class="value">
                         {{baseUrl}}
                     </div>
                 </td>
             </tr>
-            <tr class="import-resource-status-info-row">
-                <td class="import-resource-status-info-label">
+            <tr class="row">
+                <td class="label">
                     <div>
                         {{'import.status-info.debug' | translate}}
                     </div>
                 </td>
                 <td class="break-word">
-                    <div class="import-resource-status-info-value">
+                    <div class="value">
                         {{forceSerial}}
                     </div>
                 </td>
             </tr>
-            <tr class="import-resource-status-info-row">
-                <td class="import-resource-status-info-label">
+            <tr class="row">
+                <td class="label">
                     {{'import.status-info.imported' | translate}}
                 </td>
                 <td class="break-word">
-                    <div class="import-resource-status-info-value">
+                    <div class="value">
                         {{importedOn | date:'yyyy-MM-dd, HH:mm' }}
                     </div>
                 </td>
             </tr>
-            <tr ng-if="parserSettings" class="import-resource-status-info-row">
-                <td class="import-resource-status-info-label">
+            <tr ng-if="parserSettings" class="row">
+                <td class="label">
                     {{'import.status-info.parser_settings' | translate}}
                 </td>
                 <td class="break-word">
-                    <div class="import-resource-status-info-value">
+                    <div class="value">
                         <pre>{{parserSettings | prettyJSON}}</pre>
                     </div>
                 </td>

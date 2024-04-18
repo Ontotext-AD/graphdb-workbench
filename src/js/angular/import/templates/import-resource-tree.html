@@ -104,57 +104,57 @@
     <table class="import-resource-table mt-2">
         <thead>
         <tr>
-            <th class="import-resource-header-cell import-resource-cell-select"></th>
-            <th class="import-resource-header-cell import-resource-name" ng-click="sort(SORTING_TYPES.NAME)">
+            <th class="header-cell cell-select"></th>
+            <th class="header-cell cell-name" ng-click="sort(SORTING_TYPES.NAME)">
                 <span ng-class="{
                 'sorting_desc': SORTING_TYPES.NAME === sortedBy &&  !sortAsc,
                 'sorting_asc': SORTING_TYPES.NAME === sortedBy && sortAsc,
                 'sorting': SORTING_TYPES.NAME !== sortedBy
                 }">{{'import.import_resource_tree.header.name' | translate}}</span>
             </th>
-            <th class="import-resource-header-cell import-resource-size" ng-click="sort(SORTING_TYPES.SIZE)">
+            <th class="header-cell cell-size" ng-click="sort(SORTING_TYPES.SIZE)">
                 <span ng-class="{
                 'sorting_desc': SORTING_TYPES.SIZE === sortedBy &&  !sortAsc,
                 'sorting_asc': SORTING_TYPES.SIZE === sortedBy && sortAsc,
                 'sorting': SORTING_TYPES.SIZE !== sortedBy
                 }">{{'import.import_resource_tree.header.size' | translate}}</span>
             </th>
-            <th class="import-resource-header-cell import-resource-modified" ng-click="sort(SORTING_TYPES.MODIFIED)">
+            <th class="header-cell cell-modified" ng-click="sort(SORTING_TYPES.MODIFIED)">
                 <span ng-class="{
                 'sorting_desc': SORTING_TYPES.MODIFIED === sortedBy &&  !sortAsc,
                 'sorting_asc': SORTING_TYPES.MODIFIED === sortedBy && sortAsc,
                 'sorting': SORTING_TYPES.MODIFIED !== sortedBy
                 }">{{'import.import_resource_tree.header.modified' | translate}}</span>
             </th>
-            <th class="import-resource-header-cell import-resource-imported" ng-click="sort(SORTING_TYPES.IMPORTED)">
+            <th class="header-cell cell-imported" ng-click="sort(SORTING_TYPES.IMPORTED)">
                 <span ng-class="{
                 'sorting_desc': SORTING_TYPES.IMPORTED === sortedBy &&  !sortAsc,
                 'sorting_asc': SORTING_TYPES.IMPORTED === sortedBy && sortAsc,
                 'sorting': SORTING_TYPES.IMPORTED !== sortedBy
                 }">{{'import.import_resource_tree.header.imported' | translate}}</span>
             </th>
-            <th class="import-resource-header-cell import-resource-context" ng-click="sort(SORTING_TYPES.CONTEXT)">
+            <th class="header-cell cell-context" ng-click="sort(SORTING_TYPES.CONTEXT)">
                 <span ng-class="{
                 'sorting_desc': SORTING_TYPES.CONTEXT === sortedBy &&  !sortAsc,
                 'sorting_asc': SORTING_TYPES.CONTEXT === sortedBy && sortAsc,
                 'sorting': SORTING_TYPES.CONTEXT !== sortedBy
                 }">{{'import.import_resource_tree.header.context' | translate}}</span>
             </th>
-            <th class="import-resource-header-cell import-resource-action"></th>
+            <th class="header-cell import-resource-action"></th>
         </tr>
         </thead>
         <tbody>
         <tr ng-repeat-start="resource in displayResources track by resource.importResource.name"
-            class="import-resource-row title-row"
+            class="row title-row"
             ng-class="{ 'even-row-start': $even, 'odd-row-start': $odd}">
-            <td class="import-resource-cell import-resource-cell-select">
+            <td class="cell cell-select">
                 <input type="checkbox" ng-model="resource.selected" ng-click="selectionChanged(resource)"
-                       prop-indeterminate="resource.partialSelected" class="resource-select-checkbox">
+                       prop-indeterminate="resource.partialSelected" class="select-checkbox">
             </td>
             <td colspan="5"
                 ng-style="{'padding-left': (filterByType !== TYPE_FILTER_OPTIONS.FILE ? resource.indent : '8px')}"
-                class="import-resource-cell">
-                <span class="import-resource-title">
+                class="cell">
+                <span class="cell-title">
                     <em ng-class="resource.iconClass"></em>
                     <div ng-if="onEditResource && resource.isEditable">
                         <a href="#" ng-click="editResource(resource)"><strong>{{resource.name}}</strong></a>
@@ -164,8 +164,8 @@
                     </div>
                 </span>
             </td>
-            <td class="import-resource-cell">
-                <div class="import-resource-actions">
+            <td class="cell">
+                <div class="cell-actions">
                     <import-resource-status-info class="btn btn-sm import"
                                                  ng-if="resource.hasStatusInfo"
                                                  resource="resource"></import-resource-status-info>
@@ -202,24 +202,24 @@
                 </div>
             </td>
         </tr>
-        <tr ng-repeat-end class="import-resource-row info-row" ng-class="{ 'even-row-end': $even, 'odd-row-end': $odd}">
-            <td class="import-resource-cell import-resource-cell-select"></td>
+        <tr ng-repeat-end class="row info-row" ng-class="{ 'even-row-end': $even, 'odd-row-end': $odd}">
+            <td class="cell cell-select"></td>
             <td ng-style="{'padding-left': (filterByType !== TYPE_FILTER_OPTIONS.FILE ? resource.indent : '8px')}"
-                class="import-resource-cell">
+                class="cell">
                 <import-resource-message resource="resource"></import-resource-message>
             </td>
-            <td class="import-resource-cell import-resource-size">
+            <td class="cell cell-size">
                 {{ resource.importResource.size || ''}}
             </td>
-            <td class="import-resource-cell import-resource-modified"
+            <td class="cell cell-modified"
                 ng-class="{'font-weight-bold': resource.isModifiedBiggerThanImported}">
                 {{ resource.importResource.modifiedOn ? (resource.importResource.modifiedOn | date:'yyyy-MM-dd, HH:mm') : '' }}
             </td>
-            <td class="import-resource-cell import-resource-imported"
+            <td class="cell cell-imported"
                 ng-class="{'font-weight-bold': resource.isImportedBiggerThanModified}">
                 {{ resource.importResource.importedOn ? (resource.importResource.importedOn | date:'yyyy-MM-dd, HH:mm') : '' }}
             </td>
-            <td colspan="2" class="import-resource-cell">
+            <td colspan="2" class="cell">
                 <a if="resource.importResource.context"
                    title="{{resource.importResource.context}}"
                    class="uri-link"

@@ -148,11 +148,11 @@ class ImportSteps {
     }
 
     static getResources() {
-        return this.getResourcesTable().find('.import-resource-row.title-row');
+        return this.getResourcesTable().find('.row.title-row');
     }
 
     static getSelectedResources() {
-        return this.getResources().find('.resource-select-checkbox:checked');
+        return this.getResources().find('.select-checkbox:checked');
     }
 
     static getSelectedResourceName(index) {
@@ -164,20 +164,20 @@ class ImportSteps {
     }
 
     static getResourceByName(name) {
-        return this.getResources().find('.import-resource-title').contains(name)
-            .closest('.import-resource-row.title-row');
+        return this.getResources().find('.cell-title').contains(name)
+            .closest('.row.title-row');
     }
 
     static selectFileByIndex(index) {
-        this.getResource(index).find('.resource-select-checkbox').click();
+        this.getResource(index).find('.select-checkbox').click();
     }
 
     static selectFileByName(name) {
-        this.getResourceByName(name).find('.resource-select-checkbox').click();
+        this.getResourceByName(name).find('.select-checkbox').click();
     }
 
     static deselectFileByName(name) {
-        this.getResourceByName(name).find('.resource-select-checkbox').click();
+        this.getResourceByName(name).find('.select-checkbox').click();
     }
 
     static getResourceStatus(name) {
