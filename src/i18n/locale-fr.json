@@ -995,9 +995,9 @@
                 "the_property": "propriété"
             },
             "on_file_size_limit": {
-                "file_size_limit_info": "Pour importer des fichiers de plus de {{fileSizeLimit}} Mo, utilisez l'importation de ",
-                "server_files_link": "Fichiers du serveur",
-                "import_or_use": "ou utilisez l'",
+                "file_import_options_info_1": "Explorez d'autres options d'importation de fichiers - Importation de ",
+                "file_import_options_info_2": "(ouvre l'onglet Fichiers serveur) ou ",
+                "server_files_link": "Fichiers serveur",
                 "api_link": "API"
             }
         },
