@@ -1,7 +1,7 @@
-import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 import {ImportSettingsDialogSteps} from "../../steps/import/import-settings-dialog-steps";
 import {MainMenuSteps} from "../../steps/main-menu-steps";
 import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
+import {FileOverwriteDialogSteps} from "../../steps/import/file-overwrite-dialog-steps";
 
 const bnodes = `_:node0 <http://purl.org/dc/elements/1.1/title> "A new book" ;
                     \t<http://purl.org/dc/elements/1.1/creator> "A.N.Other" .`;
@@ -76,7 +76,7 @@ describe('Import user data: File upload', () => {
         ImportUserDataSteps.checkImportedResource(1, 'bnodes.ttl');
         // When I override the first file
         ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[0], bnodes));
-        ModalDialogSteps.clickOnConfirmButton();
+        FileOverwriteDialogSteps.overwrite();
         ImportSettingsDialogSteps.import();
         // Then I should see the uploaded file - it becomes first in the list
         // TODO: timestamps currently seems to not be changed on reimport
@@ -84,7 +84,7 @@ describe('Import user data: File upload', () => {
         ImportUserDataSteps.checkImportedResource(1, 'bnodes.ttl');
         // When I override the second file
         ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[1], jsonld));
-        ModalDialogSteps.clickOnConfirmButton();
+        FileOverwriteDialogSteps.overwrite();
         ImportSettingsDialogSteps.import();
         // Then I should see the uploaded file - it becomes first in the list
         ImportUserDataSteps.checkImportedResource(0, 'jsonld.jsonld');
@@ -137,9 +137,9 @@ describe('Import user data: File upload', () => {
         // When I upload a file with the same name
         ImportUserDataSteps.selectFile(file1);
         // Then I should see a file override confirmation dialog
-        ModalDialogSteps.getDialog().should('be.visible');
+        FileOverwriteDialogSteps.getDialog().should('be.visible');
         // When I confirm the file override
-        ModalDialogSteps.clickOnConfirmButton();
+        FileOverwriteDialogSteps.overwrite();
         // Then the import settings dialog should open automatically
         ImportSettingsDialogSteps.import();
         // Then The file should be overridden
@@ -158,9 +158,9 @@ describe('Import user data: File upload', () => {
         // When I upload a file with the same name
         ImportUserDataSteps.selectFile(file1);
         // Then I should see a file override confirmation dialog
-        ModalDialogSteps.getDialog().should('be.visible');
+        FileOverwriteDialogSteps.getDialog().should('be.visible');
         // When I cancel the file override
-        ModalDialogSteps.clickOnCancelButton();
+        FileOverwriteDialogSteps.keepBoth();
         ImportSettingsDialogSteps.import();
         // Then The file should not be overridden but prefixed instead
         ImportUserDataSteps.getResources().should('have.length', 2);
@@ -169,8 +169,8 @@ describe('Import user data: File upload', () => {
         // When I upload two files, one with the same name and second new one
         const file2 = ImportUserDataSteps.createFile(testFiles[1], jsonld);
         ImportUserDataSteps.selectFile([file1, file2]);
-        ModalDialogSteps.getDialog().should('be.visible');
-        ModalDialogSteps.clickOnCancelButton();
+        FileOverwriteDialogSteps.getDialog().should('be.visible');
+        FileOverwriteDialogSteps.keepBoth();
         ImportSettingsDialogSteps.import();
         // Then The file should not be overridden but prefixed with increased index instead
         ImportUserDataSteps.getResources().should('have.length', 4);

@@ -1,0 +1,18 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="cancel()"></button>
+    <h4 class="modal-title">{{'import.user_data.duplicates_confirmation.title' | translate}}</h4>
+</div>
+
+<div class="modal-body" ng-bind-html="message"></div>
+
+<div class="modal-footer">
+    <button type="button" ng-click="cancel()" class="btn btn-link cancel-btn text-muted">
+        {{'common.cancel.btn' | translate}}
+    </button>
+    <button type="button" ng-click="keepBoth()" class="btn btn-secondary keep-both-btn">
+        {{'import.user_data.duplicates_confirmation.buttons.keep_both' | translate}}
+    </button>
+    <button type="button" ng-click="overwrite()" class="btn btn-primary confirm-overwrite-btn">
+        {{'import.user_data.duplicates_confirmation.buttons.overwrite' | translate}}
+    </button>
+</div>
