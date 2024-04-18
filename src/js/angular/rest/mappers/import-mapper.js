@@ -11,6 +11,16 @@ export const INDENT = 30;
 const PREFIX_AND_SUFFIX_CONTEXT_LENGTH = 30;
 const MAX_CONTEXT_LENGTH = PREFIX_AND_SUFFIX_CONTEXT_LENGTH * 2 + 3;
 
+const serverImportResourceTypeToIconMapping = new Map();
+serverImportResourceTypeToIconMapping.set(ImportResourceType.DIRECTORY, 'icon-folder');
+serverImportResourceTypeToIconMapping.set(ImportResourceType.FILE, 'icon-file');
+
+const userImportResourceTypeToIconMapping = new Map();
+userImportResourceTypeToIconMapping.set(ImportResourceType.DIRECTORY, 'icon-folder');
+userImportResourceTypeToIconMapping.set(ImportResourceType.FILE, 'icon-upload');
+userImportResourceTypeToIconMapping.set(ImportResourceType.URL, 'icon-link');
+userImportResourceTypeToIconMapping.set(ImportResourceType.TEXT, 'icon-sparql');
+
 /**
  * Convert list with {@link ImportResource} to a list of {@link ImportResourceTreeElement}.
  * @param {ImportResource[]} importResources list of {@link ImportResource}
@@ -22,9 +32,7 @@ export const toImportUserDataResource = (importResources) => {
         .toSorted((a, b) => b.modifiedOn - a.modifiedOn)
         .forEach((resource) => {
             const importResourceElement = addResourceToTree(root, resource);
-            if (ImportResourceType.FILE === resource.type) {
-                importResourceElement.iconClass = 'icon-upload';
-            }
+            importResourceElement.iconClass = userImportResourceTypeToIconMapping.get(resource.type);
         });
     calculateElementIndent(root);
     setupAfterTreeInitProperties(root);
@@ -40,7 +48,10 @@ export const toImportUserDataResource = (importResources) => {
  */
 export const toImportServerResource = (importResources) => {
     const root = new ImportResourceTreeElement();
-    importResources.forEach((resource) => addResourceToTree(root, resource));
+    importResources.forEach((resource) => {
+        const importResourceElement = addResourceToTree(root, resource);
+        importResourceElement.iconClass = serverImportResourceTypeToIconMapping.get(resource.type);
+    });
     calculateElementIndent(root);
     setupAfterTreeInitProperties(root);
     return root;
@@ -71,30 +82,10 @@ const addResourceToTree = (root, resource) => {
         importServerResource.path = path.join('/');
         importServerResource.name = path[path.length - 1];
         resourceParent.addResource(importServerResource);
-        importServerResource.iconClass = getIconClass(resource);
         return importServerResource;
     } else {
         resourceParent.importResource = resource;
-        resourceParent.iconClass = getIconClass(resource);
         return resourceParent;
-    }
-};
-
-const getIconClass = (resource) => {
-    if (ImportResourceType.TEXT === resource.type) {
-        return 'icon-sparql';
-    }
-
-    if (ImportResourceType.URL === resource.type) {
-        return 'icon-link';
-    }
-
-    if (ImportResourceType.FILE === resource.type) {
-        return 'icon-file';
-    }
-
-    if (ImportResourceType.DIRECTORY === resource.type) {
-        return 'icon-folder';
     }
 };
 
