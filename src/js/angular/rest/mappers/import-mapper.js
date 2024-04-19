@@ -1,6 +1,7 @@
 import {ImportResourceTreeElement} from "../../models/import/import-resource-tree-element";
 import {ImportResource} from "../../models/import/import-resource";
 import {ImportResourceStatus} from "../../models/import/import-resource-status";
+import {ImportResourceType} from "../../models/import/import-resource-type";
 
 export const toImportResource = (importResourcesServerData) => {
     return importResourcesServerData.map((importResourceServerData) => new ImportResource(importResourceServerData));
@@ -9,6 +10,16 @@ export const toImportResource = (importResourcesServerData) => {
 export const INDENT = 30;
 const PREFIX_AND_SUFFIX_CONTEXT_LENGTH = 30;
 const MAX_CONTEXT_LENGTH = PREFIX_AND_SUFFIX_CONTEXT_LENGTH * 2 + 3;
+
+const serverImportResourceTypeToIconMapping = new Map();
+serverImportResourceTypeToIconMapping.set(ImportResourceType.DIRECTORY, 'icon-folder');
+serverImportResourceTypeToIconMapping.set(ImportResourceType.FILE, 'icon-file');
+
+const userImportResourceTypeToIconMapping = new Map();
+userImportResourceTypeToIconMapping.set(ImportResourceType.DIRECTORY, 'icon-folder');
+userImportResourceTypeToIconMapping.set(ImportResourceType.FILE, 'icon-upload');
+userImportResourceTypeToIconMapping.set(ImportResourceType.URL, 'icon-link');
+userImportResourceTypeToIconMapping.set(ImportResourceType.TEXT, 'icon-sparql');
 
 /**
  * Convert list with {@link ImportResource} to a list of {@link ImportResourceTreeElement}.
@@ -19,7 +30,10 @@ export const toImportUserDataResource = (importResources) => {
     const root = new ImportResourceTreeElement();
     importResources
         .toSorted((a, b) => b.modifiedOn - a.modifiedOn)
-        .forEach((resource) => addResourceToTree(root, resource));
+        .forEach((resource) => {
+            const importResourceElement = addResourceToTree(root, resource);
+            importResourceElement.iconClass = userImportResourceTypeToIconMapping.get(resource.type);
+        });
     calculateElementIndent(root);
     setupAfterTreeInitProperties(root);
     return root;
@@ -34,7 +48,10 @@ export const toImportUserDataResource = (importResources) => {
  */
 export const toImportServerResource = (importResources) => {
     const root = new ImportResourceTreeElement();
-    importResources.forEach((resource) => addResourceToTree(root, resource));
+    importResources.forEach((resource) => {
+        const importResourceElement = addResourceToTree(root, resource);
+        importResourceElement.iconClass = serverImportResourceTypeToIconMapping.get(resource.type);
+    });
     calculateElementIndent(root);
     setupAfterTreeInitProperties(root);
     return root;
@@ -44,6 +61,8 @@ export const toImportServerResource = (importResources) => {
  * Adds the <code>resource</code> into the tree with root <code>root</code>.
  * @param {ImportResourceTreeElement} root
  * @param {ImportResource} resource
+ *
+ * @return {ImportResourceTreeElement} added resource tree element.
  */
 const addResourceToTree = (root, resource) => {
     const path = getPath(resource);
@@ -63,8 +82,10 @@ const addResourceToTree = (root, resource) => {
         importServerResource.path = path.join('/');
         importServerResource.name = path[path.length - 1];
         resourceParent.addResource(importServerResource);
+        return importServerResource;
     } else {
         resourceParent.importResource = resource;
+        return resourceParent;
     }
 };
 
@@ -137,7 +158,7 @@ const setupShortedContext = (importResourceElement) => {
 const setupImportedAndModifiedComparableProperties = (importResourceElement) => {
     const importResource = importResourceElement.importResource;
     if (importResource) {
-        if (importResource.importedOn === importResource.modifiedOn) {
+        if (importResource.importedOn === 0 || importResource.modifiedOn === 0 || importResource.importedOn === importResource.modifiedOn) {
             return;
         }
         importResourceElement.isImportedBiggerThanModified = importResource.importedOn > importResource.modifiedOn;

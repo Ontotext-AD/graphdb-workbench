@@ -1,19 +1,44 @@
 <div class="import-resource-message">
     <span ng-if="resource.importResource.status === ImportResourceStatus.NONE && resource.importResource.message"
           class="text-info">
-                    <small>{{resource.importResource.message || ''}}</small>
+        <small>{{resource.importResource.message || ''}}</small>
+    </span>
+    <div ng-if="resource.importResource.status === ImportResourceStatus.DONE"
+         class="success-messages">
+        <em class="icon-check"></em>
+        <div class="success-message">
+            <span class="text-success">
+                <small>{{resource.importResource.message || ''}}</small>
+            </span>
+            <span class="import-counters">
+                <span class="import-counter" ng-if="hasReplacedGraphs">
+                    <small class="mr-0">
+                        {{ 'import.status-info.replaced_count_graphs' | translate: {count: resource.importResource.numReplacedGraphs} }}
+                        {{ (hasAddedStatements || hasRemovedStatements ? ',' : '') }}
+                    </small>
                 </span>
-    <span ng-if="resource.importResource.status === ImportResourceStatus.DONE" class="text-success">
-                    <em class="icon-check"></em>
-                    <small>{{resource.importResource.message || ''}}</small>
+                <span class="import-counter" ng-if="hasAddedStatements">
+                    <small>
+                        {{ 'import.status-info.added_count_statements' | translate: {count: resource.importResource.addedStatements} }}
+                        {{ (hasRemovedStatements ? ',' : '') }}
+                    </small>
                 </span>
-    <span ng-show="resource.importResource.status === ImportResourceStatus.ERROR" class="text-danger">
-                    <em class="icon-warning"></em>
-                    <small>{{resource.importResource.message || ''}}</small>
+                <span class="import-counter" ng-if="hasRemovedStatements">
+                    <small>
+                        {{ 'import.status-info.removed_count_statements' | translate: {count: resource.importResource.removedStatements} }}
+                    </small>
                 </span>
+            </span>
+        </div>
+    </div>
+    <span ng-if="resource.importResource.status === ImportResourceStatus.ERROR"
+          class="text-danger">
+        <em class="icon-warning"></em>
+        <small>{{resource.importResource.message || ''}}</small>
+    </span>
     <span class="text-secondary import-status-loader"
-          ng-show="resource.importResource.status === ImportResourceStatus.IMPORTING || resource.importResource.status === ImportResourceStatus.UPLOADING || resource.importResource.status === ImportResourceStatus.PENDING || resource.importResource.status === ImportResourceStatus.INTERRUPTING">
-                    <em class="icon-reload loader"></em>
-                    <small>{{toTitleCase(resource.importResource.status)}}...</small>
-                </span>
+          ng-if="resource.importResource.status === ImportResourceStatus.IMPORTING || resource.importResource.status === ImportResourceStatus.UPLOADING || resource.importResource.status === ImportResourceStatus.PENDING || resource.importResource.status === ImportResourceStatus.INTERRUPTING">
+        <em class="icon-reload loader"></em>
+        <small>{{toTitleCase(resource.importResource.status)}}...</small>
+    </span>
 </div>
