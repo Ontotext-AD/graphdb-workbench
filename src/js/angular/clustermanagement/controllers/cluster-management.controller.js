@@ -8,6 +8,7 @@ import 'angular/clustermanagement/controllers/add-location.controller';
 import 'angular/clustermanagement/controllers/add-nodes.controller';
 import 'angular/clustermanagement/controllers/replace-nodes.controller';
 import {isString} from "lodash";
+import {LinkState, NodeState} from "../../models/clustermanagement/states";
 
 const modules = [
     'ui.bootstrap',
@@ -30,39 +31,24 @@ angular
     .module('graphdb.framework.clustermanagement.controllers.cluster-management', modules)
     .controller('ClusterManagementCtrl', ClusterManagementCtrl);
 
-export const NodeState = {
-    LEADER: 'LEADER',
-    FOLLOWER: 'FOLLOWER',
-    CANDIDATE: 'CANDIDATE',
-    OUT_OF_SYNC: 'OUT_OF_SYNC',
-    NO_CONNECTION: 'NO_CONNECTION',
-    READ_ONLY: 'READ_ONLY',
-    RESTRICTED: 'RESTRICTED',
-    NO_CLUSTER: 'NO_CLUSTER'
-};
-
-export const RecoveryState = {
-    SEARCHING_FOR_NODE: 'SEARCHING_FOR_NODE',
-    WAITING_FOR_SNAPSHOT: 'WAITING_FOR_SNAPSHOT',
-    RECEIVING_SNAPSHOT: 'RECEIVING_SNAPSHOT',
-    APPLYING_SNAPSHOT: 'APPLYING_SNAPSHOT',
-    BUILDING_SNAPSHOT: 'BUILDING_SNAPSHOT',
-    SENDING_SNAPSHOT: 'SENDING_SNAPSHOT',
-    RECOVERY_OPERATION_FAILURE_WARNING: 'RECOVERY_OPERATION_FAILURE_WARNING'
-};
-
-export const LinkState = {
-    IN_SYNC: 'IN_SYNC',
-    OUT_OF_SYNC: 'OUT_OF_SYNC',
-    SYNCING: 'SYNCING',
-    NO_CONNECTION: 'NO_CONNECTION'
-};
-
 ClusterManagementCtrl.$inject = ['$scope', '$http', '$q', 'toastr', '$repositories', '$uibModal', '$sce', '$jwtAuth',
     '$window', '$interval', 'ModalService', '$timeout', 'ClusterRestService', '$location', '$translate', 'RemoteLocationsService', '$rootScope'];
 
 function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibModal, $sce, $jwtAuth,
     $window, $interval, ModalService, $timeout, ClusterRestService, $location, $translate, RemoteLocationsService, $rootScope) {
+
+    // =========================
+    // Private variables
+    // =========================
+
+    const DELETED_ON_NODE_MESSAGE = 'Cluster was deleted on this node.';
+    const w = angular.element($window);
+    let updateRequest;
+
+    // =========================
+    // Public variables
+    // =========================
+
     $scope.loader = true;
     $scope.isLeader = false;
     $scope.currentNode = null;
@@ -70,17 +56,19 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     $scope.NodeState = NodeState;
     $scope.leaderChanged = false;
     $scope.currentLeader = null;
-
-    $scope.isAdmin = function () {
-        return $jwtAuth.isAuthenticated() && $jwtAuth.isAdmin();
-    };
-
     // Holds child context
     $scope.childContext = {};
-
     $scope.shouldShowClusterSettingsPanel = false;
-    const DELETED_ON_NODE_MESSAGE = 'Cluster was deleted on this node.';
+
+    // =========================
+    // Public functions
+    // =========================
+
     $scope.onopen = $scope.onclose = () => angular.noop();
+
+    $scope.isAdmin = () => {
+        return $jwtAuth.isAuthenticated() && $jwtAuth.isAdmin();
+    };
 
     $scope.toggleSidePanel = () => {
         $scope.shouldShowClusterSettingsPanel = !$scope.shouldShowClusterSettingsPanel;
@@ -92,8 +80,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
         }
     };
 
-    // TODO: Similar function is declared multiple times in different components. Find out how to avoid it!
-    $scope.setLoader = function (loader, message) {
+    $scope.setLoader = (loader, message) => {
         $timeout.cancel($scope.loaderTimeout);
         if (loader) {
             $scope.loaderMessage = message;
@@ -105,56 +92,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
         }
     };
 
-    function selectNode(node) {
-        if ($scope.selectedNode !== node) {
-            $scope.selectedNode = node;
-        } else {
-            $scope.selectedNode = null;
-        }
-        $scope.$apply();
-    }
-
-    $scope.childContext.selectNode = selectNode;
-
-    function initialize() {
-        $scope.loader = true;
-
-        return $scope.getCurrentNodeStatus()
-            .then(() => {
-                return $scope.getClusterConfiguration();
-            })
-            .then(() => {
-                return $scope.getClusterStatus();
-            })
-            .finally(() => {
-                $scope.setLoader(false);
-            });
-    }
-
-    let updateRequest;
-    function updateCluster(force) {
-        if (updateRequest) {
-            return;
-        }
-
-        updateRequest = $scope.getClusterStatus()
-            .then(() => {
-                if (force || !$scope.clusterConfiguration) {
-                    return $scope.getClusterConfiguration();
-                }
-            })
-            .then(() => {
-                if (!$scope.currentNode || $scope.leaderChanged) {
-                    return $scope.getCurrentNodeStatus();
-                }
-            })
-            .finally(() => {
-                updateRequest = null;
-                $scope.childContext.redraw();
-            });
-    }
-
-    $scope.getLoaderMessage = function () {
+    $scope.getLoaderMessage = () => {
         return $scope.loaderMessage || $translate.instant('common.loading');
     };
 
@@ -171,17 +109,9 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             });
     };
 
-    function isLeaderChanged(currentLeader, newLeader) {
-        if (!newLeader) {
-            // If election is in place and there is no leader yet, consider it as leader change
-            return true;
-        }
-        return !currentLeader || currentLeader.address !== newLeader.address;
-    }
-
-    $scope.getClusterStatus = function () {
+    $scope.getClusterStatus = () => {
         return ClusterRestService.getClusterStatus()
-            .then(function (response) {
+            .then((response) => {
                 const nodes = response.data.slice();
                 const leader = nodes.find((node) => node.nodeState === NodeState.LEADER);
 
@@ -209,7 +139,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
                 $scope.clusterModel.nodes = nodes;
                 $scope.clusterModel.links = links;
             })
-            .catch(function (error) {
+            .catch((error) => {
                 if (error.status === 404) {
                     $scope.clusterModel.hasCluster = false;
                     $scope.clusterModel.nodes = [];
@@ -246,7 +176,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             controller: 'DeleteClusterCtrl'
         });
 
-        modalInstance.result.then(function (forceDelete) {
+        modalInstance.result.then((forceDelete) => {
             const loaderMessage = $translate.instant('cluster_management.delete_cluster_dialog.loader_message');
             $scope.setLoader(true, loaderMessage);
             ClusterRestService.deleteCluster(forceDelete)
@@ -308,27 +238,6 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             .then(() => getLocationsWithRpcAddresses());
     };
 
-    function getLocationsWithRpcAddresses() {
-        return RemoteLocationsService.getLocationsWithRpcAddresses()
-            .then((locations) => {
-                const localNode = locations.find((location) => location.isLocal);
-                if (localNode) {
-                    localNode.endpoint = $scope.currentNode.endpoint;
-                    localNode.rpcAddress = $scope.currentNode.address;
-                }
-                $scope.clusterModel.locations = locations;
-            });
-    }
-
-    // Delete location
-    const deleteLocation = function (location) {
-        return ModalService.openSimpleModal({
-            title: $translate.instant('location.confirm.detach'),
-            message: $translate.instant('location.confirm.detach.warning', {uri: location.endpoint}),
-            warning: true
-        }).result.then(() => $repositories.deleteLocation(location.endpoint));
-    };
-
     $scope.showAddNodeToClusterDialog = () => {
         const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/clustermanagement/templates/modal/add-nodes-dialog.html',
@@ -345,7 +254,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             }
         });
 
-        modalInstance.result.then(function (nodes) {
+        modalInstance.result.then((nodes) => {
             const loaderMessage = $translate.instant('cluster_management.cluster_page.add_nodes_loader');
             $scope.setLoader(true, loaderMessage);
 
@@ -443,12 +352,76 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
         });
     };
 
-    function onAddRemoveSuccess(message) {
+    // =========================
+    // Private functions
+    // =========================
+
+    const selectNode = (node) => {
+        if ($scope.selectedNode !== node) {
+            $scope.selectedNode = node;
+        } else {
+            $scope.selectedNode = null;
+        }
+        $scope.$apply();
+    };
+
+    const updateCluster = (force) => {
+        if (updateRequest) {
+            return;
+        }
+
+        updateRequest = $scope.getClusterStatus()
+            .then(() => {
+                if (force || !$scope.clusterConfiguration) {
+                    return $scope.getClusterConfiguration();
+                }
+            })
+            .then(() => {
+                if (!$scope.currentNode || $scope.leaderChanged) {
+                    return $scope.getCurrentNodeStatus();
+                }
+            })
+            .finally(() => {
+                updateRequest = null;
+                $scope.childContext.redraw();
+            });
+    };
+
+    const isLeaderChanged = (currentLeader, newLeader) => {
+        if (!newLeader) {
+            // If election is in place and there is no leader yet, consider it as leader change
+            return true;
+        }
+        return !currentLeader || currentLeader.address !== newLeader.address;
+    };
+
+    const getLocationsWithRpcAddresses = () => {
+        return RemoteLocationsService.getLocationsWithRpcAddresses()
+            .then((locations) => {
+                const localNode = locations.find((location) => location.isLocal);
+                if (localNode) {
+                    localNode.endpoint = $scope.currentNode.endpoint;
+                    localNode.rpcAddress = $scope.currentNode.address;
+                }
+                $scope.clusterModel.locations = locations;
+            });
+    };
+
+    // Delete location
+    const deleteLocation = (location) => {
+        return ModalService.openSimpleModal({
+            title: $translate.instant('location.confirm.detach'),
+            message: $translate.instant('location.confirm.detach.warning', {uri: location.endpoint}),
+            warning: true
+        }).result.then(() => $repositories.deleteLocation(location.endpoint));
+    };
+
+    const onAddRemoveSuccess = (message) => {
         toastr.success(message);
         $scope.getClusterConfiguration();
-    }
+    };
 
-    function handleErrors(data, status, title) {
+    const handleErrors = (data, status, title) => {
         let failMessage = data.message || data;
 
         if (status === 400 && Array.isArray(data)) {
@@ -458,36 +431,68 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
                 .reduce((message, key) => message += `<div>${key} - ${data[key]}</div>`, '');
         }
         toastr.error(failMessage, title, {allowHtml: true});
-    }
+    };
 
-    initialize()
-        .finally(() => {
-            const timer = $interval(function () {
-                updateCluster();
-            }, 1000);
+    const loadInitialData = () => {
+        $scope.loader = true;
 
-            $scope.$on("$destroy", function () {
-                $interval.cancel(timer);
+        return $scope.getCurrentNodeStatus()
+            .then(() => {
+                return $scope.getClusterConfiguration();
+            })
+            .then(() => {
+                return $scope.getClusterStatus();
+            })
+            .finally(() => {
+                $scope.setLoader(false);
             });
-        });
+    };
 
-    // track window resizing and window mousedown
-    const w = angular.element($window);
-    const resize = function () {
+    const resizeHandler = () => {
         $scope.childContext.resize();
     };
-    w.bind('resize', resize);
 
-    const mousedown = function (event) {
+    const mousedownHandler = function (event) {
         const target = event.target;
         const nodeTooltipElement = document.getElementById('nodeTooltip');
         if ($scope.selectedNode && nodeTooltipElement !== target && !nodeTooltipElement.contains(target)) {
             $scope.childContext.selectNode(null);
         }
     };
-    w.bind('mousedown', mousedown);
+
+    // =========================
+    // Events and watchers
+    // =========================
+
+    const subscribeHandlers = () => {
+        // track window resizing and window mousedown
+        w.bind('resize', resizeHandler);
+        w.bind('mousedown', mousedownHandler);
+    };
+
     $scope.$on('$destroy', function () {
-        w.unbind('resize', resize);
-        w.unbind('mousedown', mousedown);
+        w.unbind('resize', resizeHandler);
+        w.unbind('mousedown', mousedownHandler);
     });
+
+    // =========================
+    // Initialization
+    // =========================
+
+    const init = () => {
+        subscribeHandlers();
+        $scope.childContext.selectNode = selectNode;
+
+        loadInitialData()
+            .finally(() => {
+                const timer = $interval(function () {
+                    updateCluster();
+                }, 1000);
+
+                $scope.$on("$destroy", function () {
+                    $interval.cancel(timer);
+                });
+            });
+    };
+    init();
 }

@@ -12,7 +12,7 @@ function RemoveNodesDialogCtrl($scope, $uibModalInstance, data) {
     $scope.nodesToRemoveCount = 0;
     $scope.leftNodesLessThanTwo = false;
 
-    $scope.toggleNode = function (index, node) {
+    $scope.toggleNode = (index, node) => {
         node.shouldRemove = !node.shouldRemove;
         if (node.shouldRemove) {
             $scope.nodesToRemoveCount++;
@@ -22,12 +22,12 @@ function RemoveNodesDialogCtrl($scope, $uibModalInstance, data) {
         $scope.leftNodesLessThanTwo = $scope.clusterNodes.length - $scope.nodesToRemoveCount < 2;
     };
 
-    $scope.ok = function () {
+    $scope.ok = () => {
         const nodesToRemove = $scope.clusterNodes.filter((node) => node.shouldRemove);
         $uibModalInstance.close(nodesToRemove);
     };
 
-    $scope.cancel = function () {
+    $scope.cancel = () => {
         $uibModalInstance.dismiss('cancel');
     };
 }
