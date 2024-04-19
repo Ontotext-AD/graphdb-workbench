@@ -15,14 +15,6 @@ export class ClusterPageSteps {
         this.getCreateClusterButton().click();
     }
 
-    static getClusterDeleteButton() {
-        return cy.get('.delete-cluster-btn');
-    }
-
-    static deleteCluster() {
-        this.getClusterDeleteButton().click();
-    }
-
     static getRemoveNodesButton() {
         return cy.get('.remove-node-btn');
     }
