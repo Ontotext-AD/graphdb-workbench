@@ -1,8 +1,7 @@
 import 'angular/utils/local-storage-adapter';
-import * as CDS from "./services/cluster-drawing.service";
-import {LinkState, NodeState, RecoveryState} from "./controllers/cluster-management.controller";
+import * as CDS from "../services/cluster-drawing.service";
+import {LinkState, NodeState, RecoveryState} from "../../models/clustermanagement/states";
 import d3tip from 'lib/d3-tip/d3-tip-patch';
-
 
 const navigationBarWidthFull = 240;
 const navigationBarWidthCollapsed = 70;
@@ -10,10 +9,6 @@ let navigationBarWidth = navigationBarWidthFull;
 
 const nodeRadius = 50;
 const legendNodeRadius = 25;
-
-const clusterManagementDirectives = angular.module('graphdb.framework.clustermanagement.directives', [
-    'graphdb.framework.utils.localstorageadapter'
-]);
 
 // Labels in translation map is dynamically translated and reassigned. It contains defaults
 const translationsMap = {
@@ -47,6 +42,40 @@ const idTranslationKeyMap = {
     node_state: 'legend_node_state',
     link_state: 'legend_link_state'
 };
+
+const getLegendNodes = function () {
+    const legendNodes = [];
+    legendNodes.push({nodeState: NodeState.LEADER, customText: 'node_state_leader'});
+    legendNodes.push({nodeState: NodeState.FOLLOWER, customText: 'node_state_follower'});
+    legendNodes.push({nodeState: NodeState.CANDIDATE, customText: 'node_state_candidate'});
+    legendNodes.push({nodeState: NodeState.NO_CLUSTER, customText: 'node_state_no_cluster'});
+    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'node_state_out_of_sync'});
+    legendNodes.push({nodeState: NodeState.NO_CONNECTION, customText: 'node_state_no_connection'});
+    legendNodes.push({nodeState: NodeState.READ_ONLY, customText: 'node_state_read_only'});
+    legendNodes.push({nodeState: NodeState.RESTRICTED, customText: 'node_state_restricted'});
+    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.searching_for_node', recoveryStatus: {state: RecoveryState.SEARCHING_FOR_NODE}});
+    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.waiting_for_snapshot', recoveryStatus: {state: RecoveryState.WAITING_FOR_SNAPSHOT}});
+    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.receiving_snapshot', recoveryStatus: {state: RecoveryState.RECEIVING_SNAPSHOT}});
+    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.applying_snapshot', recoveryStatus: {state: RecoveryState.APPLYING_SNAPSHOT}});
+    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.building_snapshot', recoveryStatus: {state: RecoveryState.BUILDING_SNAPSHOT}});
+    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.sending_snapshot', recoveryStatus: {state: RecoveryState.SENDING_SNAPSHOT}});
+
+    legendNodes.forEach((node, index) => node.id = index);
+    return legendNodes;
+};
+
+const getLegendLinks = function () {
+    const links = [];
+    links.push({status: LinkState.IN_SYNC, linkTypeKey: 'link_state_in_sync'});
+    links.push({status: LinkState.SYNCING, linkTypeKey: 'link_state_syncing'});
+    links.push({status: LinkState.OUT_OF_SYNC, linkTypeKey: 'link_state_out_of_sync'});
+    links.forEach((link, index) => link.id = index);
+    return links;
+};
+
+const clusterManagementDirectives = angular.module('graphdb.framework.clustermanagement.directives.cluster-graphical-view', [
+    'graphdb.framework.utils.localstorageadapter'
+]);
 
 clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'LocalStorageAdapter', 'LSKeys', 'UriUtils', '$translate', '$rootScope',
     function ($window, LocalStorageAdapter, LSKeys, UriUtils, $translate, $rootScope) {
@@ -440,34 +469,3 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
         };
     }
 ]);
-
-
-const getLegendNodes = function () {
-    const legendNodes = [];
-    legendNodes.push({nodeState: NodeState.LEADER, customText: 'node_state_leader'});
-    legendNodes.push({nodeState: NodeState.FOLLOWER, customText: 'node_state_follower'});
-    legendNodes.push({nodeState: NodeState.CANDIDATE, customText: 'node_state_candidate'});
-    legendNodes.push({nodeState: NodeState.NO_CLUSTER, customText: 'node_state_no_cluster'});
-    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'node_state_out_of_sync'});
-    legendNodes.push({nodeState: NodeState.NO_CONNECTION, customText: 'node_state_no_connection'});
-    legendNodes.push({nodeState: NodeState.READ_ONLY, customText: 'node_state_read_only'});
-    legendNodes.push({nodeState: NodeState.RESTRICTED, customText: 'node_state_restricted'});
-    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.searching_for_node', recoveryStatus: {state: RecoveryState.SEARCHING_FOR_NODE}});
-    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.waiting_for_snapshot', recoveryStatus: {state: RecoveryState.WAITING_FOR_SNAPSHOT}});
-    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.receiving_snapshot', recoveryStatus: {state: RecoveryState.RECEIVING_SNAPSHOT}});
-    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.applying_snapshot', recoveryStatus: {state: RecoveryState.APPLYING_SNAPSHOT}});
-    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.building_snapshot', recoveryStatus: {state: RecoveryState.BUILDING_SNAPSHOT}});
-    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.sending_snapshot', recoveryStatus: {state: RecoveryState.SENDING_SNAPSHOT}});
-
-    legendNodes.forEach((node, index) => node.id = index);
-    return legendNodes;
-};
-
-const getLegendLinks = function () {
-    const links = [];
-    links.push({status: LinkState.IN_SYNC, linkTypeKey: 'link_state_in_sync'});
-    links.push({status: LinkState.SYNCING, linkTypeKey: 'link_state_syncing'});
-    links.push({status: LinkState.OUT_OF_SYNC, linkTypeKey: 'link_state_out_of_sync'});
-    links.forEach((link, index) => link.id = index);
-    return links;
-};

@@ -1,18 +1,18 @@
-import {LinkState, NodeState, RecoveryState} from "../controllers/cluster-management.controller";
+import {LinkState, NodeState, RecoveryState} from "../../models/clustermanagement/states";
 
-export const clusterColors = {
+const clusterColors = {
     ontoOrange: 'var(--primary-color)',
     ontoBlue: 'var(--secondary-color)',
     ontoGreen: 'var(--tertiary-color)',
     ontoGrey: 'var(--gray-color)'
 };
 
-export const font = {
+const font = {
     FONT_AWESOME: 'FONT_AWESOME',
     ICOMOON: 'ICOMOON'
 };
 
-export const shortMessageLimit = 40;
+const shortMessageLimit = 40;
 
 export function createClusterSvgElement(element) {
     return d3.select(element)

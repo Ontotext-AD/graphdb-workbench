@@ -7,21 +7,20 @@ angular
 AddNodesDialogCtrl.$inject = ['$scope', '$uibModalInstance', 'data', '$uibModal', 'RemoteLocationsService'];
 
 function AddNodesDialogCtrl($scope, $uibModalInstance, data, $uibModal, RemoteLocationsService) {
-    const clusterModel = _.cloneDeep(data.clusterModel);
+    let clusterModel;
+    let clusterEndpoints;
+
     $scope.nodes = [];
+    $scope.clusterNodes = [];
+    $scope.locations = [];
 
-    $scope.clusterNodes = clusterModel.nodes.map((node) => ({rpcAddress: node.address, endpoint: node.endpoint}));
-    const clusterEndpoints = $scope.clusterNodes.map((node) => node.endpoint);
-    $scope.locations = clusterModel.locations.filter((location) => !clusterEndpoints.includes(location.endpoint));
-    $scope.locations.forEach((location) => location.isNew = true);
-
-    $scope.deleteLocation = function (event, location) {
+    $scope.deleteLocation = (event, location) => {
         event.preventDefault();
         event.stopPropagation();
         data.deleteLocation(location).then(() => $scope.locations = $scope.locations.filter((loc) => loc.endpoint !== location.endpoint));
     };
 
-    $scope.addNodeToList = function (location) {
+    $scope.addNodeToList = (location) => {
         if (!location.rpcAddress) {
             return;
         }
@@ -29,12 +28,12 @@ function AddNodesDialogCtrl($scope, $uibModalInstance, data, $uibModal, RemoteLo
         $scope.locations = $scope.locations.filter((loc) => loc.endpoint !== location.endpoint);
     };
 
-    $scope.removeNodeFromList = function (index, node) {
+    $scope.removeNodeFromList = (index, node) => {
         $scope.nodes.splice(index, 1);
         $scope.locations.push(node);
     };
 
-    $scope.addLocation = function () {
+    $scope.addLocation = () => {
         RemoteLocationsService.addLocation()
             .then((newLocation) => {
                 if (newLocation) {
@@ -43,11 +42,20 @@ function AddNodesDialogCtrl($scope, $uibModalInstance, data, $uibModal, RemoteLo
             });
     };
 
-    $scope.ok = function () {
+    $scope.ok = () => {
         $uibModalInstance.close($scope.nodes);
     };
 
-    $scope.cancel = function () {
+    $scope.cancel = () => {
         $uibModalInstance.dismiss('cancel');
     };
+
+    const init = () => {
+        clusterModel = _.cloneDeep(data.clusterModel);
+        $scope.clusterNodes = clusterModel.nodes.map((node) => ({rpcAddress: node.address, endpoint: node.endpoint}));
+        clusterEndpoints = $scope.clusterNodes.map((node) => node.endpoint);
+        $scope.locations = clusterModel.locations.filter((location) => !clusterEndpoints.includes(location.endpoint));
+        $scope.locations.forEach((location) => location.isNew = true);
+    };
+    init();
 }
