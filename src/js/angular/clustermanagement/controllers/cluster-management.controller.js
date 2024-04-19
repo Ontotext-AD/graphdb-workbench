@@ -1,5 +1,6 @@
 import 'angular/rest/cluster.rest.service';
 import 'angular/clustermanagement/services/remote-locations.service';
+import 'angular/clustermanagement/services/cluster-view-context.service';
 import 'angular/clustermanagement/controllers/remove-nodes.controller';
 import 'angular/clustermanagement/controllers/create-cluster.controller';
 import 'angular/clustermanagement/controllers/edit-cluster.controller';
@@ -9,12 +10,14 @@ import 'angular/clustermanagement/controllers/add-nodes.controller';
 import 'angular/clustermanagement/controllers/replace-nodes.controller';
 import {isString} from "lodash";
 import {LinkState, NodeState} from "../../models/clustermanagement/states";
+import {DELETE_CLUSTER, UPDATE_CLUSTER} from "../events";
 
 const modules = [
     'ui.bootstrap',
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.rest.repositories.service',
     'graphdb.framework.rest.cluster.service',
+    'graphdb.framework.clustermanagement.services.cluster-view-context-service',
     'graphdb.framework.clustermanagement.services.remote-locations',
     'graphdb.framework.clustermanagement.controllers.remove-nodes',
     'graphdb.framework.clustermanagement.controllers.create-cluster',
@@ -32,10 +35,10 @@ angular
     .controller('ClusterManagementCtrl', ClusterManagementCtrl);
 
 ClusterManagementCtrl.$inject = ['$scope', '$http', '$q', 'toastr', '$repositories', '$uibModal', '$sce', '$jwtAuth',
-    '$window', '$interval', 'ModalService', '$timeout', 'ClusterRestService', '$location', '$translate', 'RemoteLocationsService', '$rootScope'];
+    '$window', '$interval', 'ModalService', '$timeout', 'ClusterRestService', '$location', '$translate', 'RemoteLocationsService', '$rootScope', 'ClusterViewContextService'];
 
 function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibModal, $sce, $jwtAuth,
-    $window, $interval, ModalService, $timeout, ClusterRestService, $location, $translate, RemoteLocationsService, $rootScope) {
+    $window, $interval, ModalService, $timeout, ClusterRestService, $location, $translate, RemoteLocationsService, $rootScope, ClusterViewContextService) {
 
     // =========================
     // Private variables
@@ -58,7 +61,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     $scope.currentLeader = null;
     // Holds child context
     $scope.childContext = {};
-    $scope.shouldShowClusterSettingsPanel = false;
+    $scope.showClusterConfigurationPanel = false;
 
     // =========================
     // Public functions
@@ -70,8 +73,9 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
         return $jwtAuth.isAuthenticated() && $jwtAuth.isAdmin();
     };
 
-    $scope.toggleSidePanel = () => {
-        $scope.shouldShowClusterSettingsPanel = !$scope.shouldShowClusterSettingsPanel;
+    $scope.openClusterConfigurationPanel = () => {
+        $scope.showClusterConfigurationPanel = true;
+        ClusterViewContextService.showClusterConfigurationPanel();
     };
 
     $scope.toggleLegend = () => {
@@ -166,61 +170,6 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
 
         modalInstance.result.finally(function () {
             getLocationsWithRpcAddresses();
-            updateCluster(true);
-        });
-    };
-
-    $scope.showDeleteDialog = () => {
-        const modalInstance = $uibModal.open({
-            templateUrl: 'js/angular/clustermanagement/templates/modal/cluster-delete-dialog.html',
-            controller: 'DeleteClusterCtrl'
-        });
-
-        modalInstance.result.then((forceDelete) => {
-            const loaderMessage = $translate.instant('cluster_management.delete_cluster_dialog.loader_message');
-            $scope.setLoader(true, loaderMessage);
-            ClusterRestService.deleteCluster(forceDelete)
-                .then((response) => {
-                    const allNodesDeleted = Object.values(response.data).every((resultMsg) => resultMsg === DELETED_ON_NODE_MESSAGE);
-                    if (allNodesDeleted) {
-                        const successMessage = $translate.instant('cluster_management.delete_cluster_dialog.notifications.success_delete');
-                        toastr.success(successMessage);
-                    } else {
-                        const successMessage = $translate.instant(
-                            'cluster_management.delete_cluster_dialog.notifications.success_delete_partial');
-                        const failedNodesList = Object.keys(response.data)
-                            .reduce((message, key) => message += `<div>${key} - ${response.data[key]}</div>`, '');
-                        toastr.warning(failedNodesList, successMessage, {allowHtml: true});
-                    }
-                    $scope.getClusterConfiguration();
-                })
-                .catch((error) => {
-                    const failMessage = $translate.instant('cluster_management.delete_cluster_dialog.notifications.fail_delete');
-                    handleErrors(error.data, error.status, failMessage);
-                })
-                .finally(() => {
-                    $scope.setLoader(false);
-                    updateCluster(true);
-                    $rootScope.$broadcast('reloadLocations');
-                });
-        });
-    };
-
-    $scope.showEditConfigurationDialog = () => {
-        const modalInstance = $uibModal.open({
-            templateUrl: 'js/angular/clustermanagement/templates/modal/cluster-edit-dialog.html',
-            controller: 'EditClusterCtrl',
-            size: 'lg',
-            resolve: {
-                data: function () {
-                    return {
-                        clusterConfiguration: $scope.clusterConfiguration
-                    };
-                }
-            }
-        });
-
-        modalInstance.result.finally(function () {
             updateCluster(true);
         });
     };
@@ -387,6 +336,35 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             });
     };
 
+    const deleteCluster = (forceDelete) => {
+        const loaderMessage = $translate.instant('cluster_management.delete_cluster_dialog.loader_message');
+        $scope.setLoader(true, loaderMessage);
+        ClusterRestService.deleteCluster(forceDelete)
+            .then((response) => {
+                const allNodesDeleted = Object.values(response.data).every((resultMsg) => resultMsg === DELETED_ON_NODE_MESSAGE);
+                if (allNodesDeleted) {
+                    const successMessage = $translate.instant('cluster_management.delete_cluster_dialog.notifications.success_delete');
+                    toastr.success(successMessage);
+                } else {
+                    const successMessage = $translate.instant(
+                        'cluster_management.delete_cluster_dialog.notifications.success_delete_partial');
+                    const failedNodesList = Object.keys(response.data)
+                        .reduce((message, key) => message += `<div>${key} - ${response.data[key]}</div>`, '');
+                    toastr.warning(failedNodesList, successMessage, {allowHtml: true});
+                }
+                $scope.getClusterConfiguration();
+            })
+            .catch((error) => {
+                const failMessage = $translate.instant('cluster_management.delete_cluster_dialog.notifications.fail_delete');
+                handleErrors(error.data, error.status, failMessage);
+            })
+            .finally(() => {
+                $scope.setLoader(false);
+                updateCluster(true);
+                $rootScope.$broadcast('reloadLocations');
+            });
+    };
+
     const isLeaderChanged = (currentLeader, newLeader) => {
         if (!newLeader) {
             // If election is in place and there is no leader yet, consider it as leader change
@@ -464,15 +442,32 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     // Events and watchers
     // =========================
 
+    const subscriptions = [];
+
+    const removeAllListeners = () => {
+        subscriptions.forEach((subscription) => subscription());
+    };
+
     const subscribeHandlers = () => {
         // track window resizing and window mousedown
         w.bind('resize', resizeHandler);
         w.bind('mousedown', mousedownHandler);
+
+        subscriptions.push(ClusterViewContextService.onShowClusterConfigurationPanel((show) => {
+            $scope.showClusterConfigurationPanel = show;
+        }));
+        subscriptions.push($scope.$on(UPDATE_CLUSTER, (event, data) => {
+            updateCluster(data.force);
+        }));
+        subscriptions.push($scope.$on(DELETE_CLUSTER, (event, data) => {
+            deleteCluster(data.force);
+        }));
     };
 
     $scope.$on('$destroy', function () {
         w.unbind('resize', resizeHandler);
         w.unbind('mousedown', mousedownHandler);
+        removeAllListeners();
     });
 
     // =========================
@@ -482,6 +477,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     const init = () => {
         subscribeHandlers();
         $scope.childContext.selectNode = selectNode;
+        $scope.showClusterConfigurationPanel = ClusterViewContextService.getShowClusterConfigurationPanel();
 
         loadInitialData()
             .finally(() => {
