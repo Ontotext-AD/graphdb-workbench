@@ -73,6 +73,10 @@ export class ImportResourceTreeElement {
          * @type {boolean}
          */
         this.isEditable = false;
+        /**
+         * @type {string}
+         */
+        this.iconClass = '';
     }
 
     /**

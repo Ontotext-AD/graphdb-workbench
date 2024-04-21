@@ -7,11 +7,11 @@ DeleteClusterCtrl.$inject = ['$scope', '$uibModalInstance'];
 function DeleteClusterCtrl($scope, $uibModalInstance) {
     $scope.forceDelete = false;
 
-    $scope.ok = function () {
+    $scope.ok = () => {
         $uibModalInstance.close($scope.forceDelete);
     };
 
-    $scope.cancel = function () {
+    $scope.cancel = () => {
         $uibModalInstance.dismiss('cancel');
     };
 }

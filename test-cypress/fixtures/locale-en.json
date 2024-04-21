@@ -956,7 +956,11 @@
         "user_data": {
             "duplicates_confirmation": {
                 "title": "Confirm files overwrite",
-                "message": "Following files are already uploaded: <br/>{{duplicatedFiles}}<br/>Do you want to overwrite them?"
+                "message": "Following files are already uploaded: <br/>{{duplicatedFiles}}<br/>Do you want to overwrite them?",
+                "buttons": {
+                    "keep_both": "Keep both",
+                    "overwrite": "Overwrite"
+                }
             }
         },
         "help": {
@@ -1024,7 +1028,13 @@
             "base_iri": "Base IRI",
             "debug": "Debug",
             "imported": "Imported on",
-            "parser_settings": "Parser settings"
+            "parser_settings": "Parser settings",
+            "added_count_statements": "Added {{count}} statements",
+            "added_statements": "Added statements",
+            "removed_count_statements": "Removed {{count}} statements",
+            "removed_statements": "Removed statements",
+            "replaced_count_graphs": "Replaced {{count}} graphs",
+            "number_of_replaced_graphs": "Number of replaced graphs"
         }
     },
     "url.import.input.placeholder": "Data URL",

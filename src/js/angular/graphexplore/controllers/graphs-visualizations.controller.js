@@ -769,7 +769,7 @@ function GraphsVisualizationsCtrl(
     let colorIndex = 0;
     const nodeLabelMinFontSize = 16; // in pixels
     // define zoom and drag behavior; keep this out of draw() to preserve state when nodes are added/removed
-    const zoomLayout = d3.zoom().scaleExtent([0.5, 10]);
+    const zoomLayout = d3.zoom().scaleExtent([0.1, 10]);
     let container;
     const INITIAL_CONTAINER_TRANSFORM = d3.zoomIdentity.translate(0, -70).scale(1);
 

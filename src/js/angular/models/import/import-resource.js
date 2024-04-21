@@ -39,17 +39,32 @@ export class ImportResource {
         /**
          * @type {number | undefined}
          */
-        this.modifiedOn = importResourceServerData ? importResourceServerData.timestamp : undefined;
+        this.modifiedOn = importResourceServerData ? importResourceServerData.lastModified : undefined;
 
         /**
          * @type {number | undefined}
          */
-        this.importedOn = importResourceServerData ? importResourceServerData.timestamp : undefined;
+        this.importedOn = importResourceServerData ? importResourceServerData.imported : undefined;
 
         /**
-         * @type {number | undefined}
+         * @type {string}
          */
-        this.size = undefined;
+        this.size = importResourceServerData ? importResourceServerData.size : '';
+
+        /**
+         * @type {number}
+         */
+        this.addedStatements = importResourceServerData ? importResourceServerData.addedStatements : 0;
+
+        /**
+         * @type {number}
+         */
+        this.removedStatements = importResourceServerData ? importResourceServerData.removedStatements : 0;
+
+        /**
+         * @type {number}
+         */
+        this.numReplacedGraphs = importResourceServerData ? importResourceServerData.numReplacedGraphs : 0;
 
         /**
          * The property is used when importing JSONLD files only

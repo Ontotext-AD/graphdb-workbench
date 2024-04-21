@@ -8,7 +8,18 @@ angular
 ReplaceNodesDialogCtrl.$inject = ['$scope', '$uibModalInstance', '$timeout', 'toastr', '$translate', 'data', '$uibModal', '$rootScope', 'RemoteLocationsService'];
 
 function ReplaceNodesDialogCtrl($scope, $uibModalInstance, $timeout, toastr, $translate, data, $uibModal, $rootScope, RemoteLocationsService) {
-    const clusterModel = _.cloneDeep(data.clusterModel);
+
+    // =========================
+    // Private variables
+    // =========================
+
+    let clusterModel;
+    let clusterEndpoints;
+
+    // =========================
+    // Public variables
+    // =========================
+
     // Nodes to be used as replacements
     $scope.replacementNodes = [];
     // Nodes from the cluster which should be replaced
@@ -17,11 +28,12 @@ function ReplaceNodesDialogCtrl($scope, $uibModalInstance, $timeout, toastr, $tr
     $scope.nodesToReplaceCount = 0;
     // If selected to be replaced cluster nodes are majority of all nodes or not.
     $scope.leftNodesMajority = false;
+    $scope.clusterNodes = [];
+    $scope.locations = [];
 
-    $scope.clusterNodes = clusterModel.nodes.map((node) => ({rpcAddress: node.address, endpoint: node.endpoint, shouldReplace: false}));
-    const clusterEndpoints = $scope.clusterNodes.map((node) => node.endpoint);
-    $scope.locations = clusterModel.locations.filter((location) => !clusterEndpoints.includes(location.endpoint));
-    $scope.locations.forEach((location) => location.isNew = true);
+    // =========================
+    // Public functions
+    // =========================
 
     $scope.addLocation = () => {
         RemoteLocationsService.addLocation()
@@ -77,9 +89,20 @@ function ReplaceNodesDialogCtrl($scope, $uibModalInstance, $timeout, toastr, $tr
         $uibModalInstance.dismiss('cancel');
     };
 
+    // =========================
     // Private functions
+    // =========================
 
     const calculateClusterNodesMajorityCount = () => {
         return Math.floor($scope.clusterNodes.length / 2) + 1;
     };
+
+    const init = () => {
+        clusterModel = _.cloneDeep(data.clusterModel);
+        $scope.clusterNodes = clusterModel.nodes.map((node) => ({rpcAddress: node.address, endpoint: node.endpoint, shouldReplace: false}));
+        clusterEndpoints = $scope.clusterNodes.map((node) => node.endpoint);
+        $scope.locations = clusterModel.locations.filter((location) => !clusterEndpoints.includes(location.endpoint));
+        $scope.locations.forEach((location) => location.isNew = true);
+    };
+    init();
 }

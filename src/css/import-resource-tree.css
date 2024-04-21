@@ -2,10 +2,10 @@
     width: 100%;
 }
 
-.import-resource-table .import-resource-row.even-row-start:hover,
-.import-resource-table .import-resource-row.even-row-start:hover + .import-resource-row,
-.import-resource-table .import-resource-row.odd-row-start:hover,
-.import-resource-table .import-resource-row.odd-row-start:hover + .import-resource-row {
+.import-resource-table .row.even-row-start:hover,
+.import-resource-table .row.even-row-start:hover + .row,
+.import-resource-table .row.odd-row-start:hover,
+.import-resource-table .row.odd-row-start:hover + .row {
     background-color: rgba(0, 0, 0, .075);
 }
 
@@ -14,56 +14,57 @@
     background-color: rgba(0, 0, 0, .05);
 }
 
-.import-resource-table .import-resource-header-cell {
+.import-resource-table .header-cell {
     padding: 8px;
 }
 
-.import-resource-table .import-resource-header-cell:hover {
+.import-resource-table .header-cell:hover {
     cursor: pointer;
 }
 
-.import-resource-table .import-resource-cell {
+.import-resource-table .cell {
     padding-left: 8px;
     padding-right: 8px;
 }
 
-.import-resource-table .even-row-end .import-resource-cell,
-.import-resource-table .odd-row-end .import-resource-cell {
+.import-resource-table .even-row-end .cell,
+.import-resource-table .odd-row-end .cell {
     padding-bottom: 8px;
 }
 
-.import-resource-table .even-row-end .import-resource-cell {
+.import-resource-table .even-row-end .cell {
     border-bottom: 1px solid #dddddd;
 }
 
-.import-resource-table .even-row-start .import-resource-cell,
-.import-resource-table .odd-row-start .import-resource-cell {
+.import-resource-table .even-row-start .cell,
+.import-resource-table .odd-row-start .cell {
     border-top: 1px solid #dddddd;
     padding-top: 8px;
 }
 
-.import-resource-tree .import-resource-table .import-resource-header-cell {
+.import-resource-tree .import-resource-table .header-cell {
     font-weight: 700;
     font-size: 14px;
     line-height: 24px;
 }
 
-.import-resource-tree .import-resource-table .import-resource-cell.import-resource-cell-select,
-.import-resource-tree .import-resource-table .import-resource-header-cell.import-resource-cell-select {
+.import-resource-tree .import-resource-table .cell.cell-select,
+.import-resource-tree .import-resource-table .header-cell.cell-select {
     width: 20px;
 }
 
-.import-resource-tree .import-resource-table .import-resource-cell {
+.import-resource-tree .import-resource-table .cell {
     line-height: 18px;
+    vertical-align: top;
 }
 
-.import-resource-tree .import-resource-table .import-resource-title {
+.import-resource-tree .import-resource-table .cell-title {
     display: flex;
     align-items: center;
     line-height: 18px;
 }
 
-.import-resource-tree .import-resource-table .import-resource-title em {
+.import-resource-tree .import-resource-table .cell-title em {
     padding-right: 10px
 }
 
@@ -89,30 +90,47 @@
     display: flex;
 }
 
-.import-resource-tree .import-resource-table .import-resource-actions {
+.import-resource-tree .import-resource-table .cell-actions {
     display: flex;
     justify-content: flex-end;
 }
 
-.import-resource-tree .import-resource-table .import-resource-actions .import-resource-action-import-btn {
+.import-resource-tree .import-resource-table .cell-actions .import-resource-action-import-btn {
     border: none;
     padding: .25em .25em;
     margin: 0 .25em;
 }
 
-.import-resource-tree .import-resource-table .import-resource-actions .import-resource-action-import-btn .icon-import {
+.import-resource-tree .import-resource-table .cell-actions .import-resource-action-import-btn .icon-import {
     line-height: 1;
 }
 
-.import-resource-tree .import-resource-table .import-resource-modified,
-.import-resource-tree .import-resource-table .import-resource-imported,
-.import-resource-tree .import-resource-table .import-resource-size {
+.import-resource-tree .import-resource-table .cell-modified,
+.import-resource-tree .import-resource-table .cell-imported,
+.import-resource-tree .import-resource-table .cell-size {
     min-width: 120px;
 }
 
-.import-resource-tree .import-resource-table .import-resource-cell.import-resource-message,
-.import-resource-tree .import-resource-table .import-resource-header-cell.import-resource-name {
+.import-resource-tree .import-resource-table .cell.import-resource-message,
+.import-resource-tree .import-resource-table .header-cell.cell-name {
     width: 40%;
+}
+
+.import-resource-tree .import-resource-table .cell .import-resource-message .success-messages {
+    display: flex;
+}
+
+.import-resource-tree .import-resource-table .cell .import-resource-message .success-messages .success-message {
+    display: flex;
+    flex-direction: column;
+}
+.import-resource-tree .import-resource-table .cell .import-resource-message .success-messages .success-message .import-counters {
+    display: flex;
+    flex-wrap: wrap;
+}
+.import-resource-tree .import-resource-table .cell .import-resource-message .success-messages .success-message .import-counters .import-counter,
+.import-resource-tree .import-resource-table .cell .import-resource-message .success-messages .success-message .text-success {
+    padding-left: 10px;
 }
 
 .import-resource-tree .import-resource-tree-header {
@@ -141,16 +159,15 @@
 .import-status-info-popover {
     max-width: 80vw;
 }
-
 .import-status-info-popover table {
     width: max-content;
 }
 
-.import-status-info-popover .import-resource-status-info-row {
+.import-status-info-popover .row {
     border-top: 1px solid #ddd;
 }
 
-.import-status-info-popover .import-resource-status-info-row .import-resource-status-info-label {
+.import-status-info-popover .row .label {
     width: max-content;
     font-weight: bolder;
 }

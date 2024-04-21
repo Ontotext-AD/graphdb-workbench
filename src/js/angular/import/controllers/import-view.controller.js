@@ -8,6 +8,7 @@ import 'angular/import/controllers/tab.controller';
 import 'angular/import/controllers/settings-modal.controller';
 import 'angular/import/controllers/import-url.controller';
 import 'angular/import/controllers/import-text-snippet.controller';
+import 'angular/import/controllers/file-override-confirmation.controller';
 import {FileFormats} from "../../models/import/file-formats";
 import * as stringUtils from "../../utils/string-utils";
 import {FileUtils} from "../../utils/file-utils";
@@ -34,7 +35,8 @@ const modules = [
     'graphdb.framework.impex.import.controllers.tab',
     'graphdb.framework.impex.import.controllers.settings-modal',
     'graphdb.framework.impex.import.controllers.import-url',
-    'graphdb.framework.impex.import.controllers.import-text-snippet'
+    'graphdb.framework.impex.import.controllers.import-text-snippet',
+    'graphdb.framework.impex.import.controllers.file-override-confirmation'
 ];
 
 const importViewModule = angular.module('graphdb.framework.impex.import.controllers', modules);
@@ -763,13 +765,17 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
 
     const openDuplicatedFilesConfirmDialog = (duplicatedFiles, uniqueFiles) => {
         const existingFilenames = duplicatedFiles.map((file) => file.name).join('<br/>');
-        return ModalService.openSimpleModal({
-            title: $translate.instant('import.user_data.duplicates_confirmation.title'),
-            message: decodeHTML($translate.instant('import.user_data.duplicates_confirmation.message', {duplicatedFiles: existingFilenames})),
-            dialogClass: "confirm-duplicate-files-dialog",
-            warning: true
-        }).result.then(
-            () => {
+        const modalInstance = $uibModal.open({
+            templateUrl: 'js/angular/import/templates/file-override-confirmation.html',
+            controller: 'FileOverrideConfirmationController',
+            windowClass: 'confirm-duplicate-files-dialog',
+            resolve: {
+                duplicatedFiles: () => existingFilenames
+            }
+        });
+
+        modalInstance.result.then((data) => {
+            if (data.overwrite) {
                 // on first upload, currentFiles would be empty
                 if (!$scope.currentFiles.length) {
                     $scope.currentFiles.push(...duplicatedFiles, ...uniqueFiles);
@@ -779,14 +785,13 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                     $scope.currentFiles = [...duplicatedFiles, ...uniqueFiles];
                 }
                 isFileListInitialized = true;
-            },
-            () => {
+            } else {
                 // override rejected
                 const prefixedDuplicates = filesPrefixRegistry.prefixDuplicates(duplicatedFiles);
                 $scope.currentFiles = [...$scope.currentFiles, ...prefixedDuplicates, ...uniqueFiles];
                 isFileListInitialized = true;
             }
-        );
+        });
     };
 
     const uploadedFilesValidator = () => {
