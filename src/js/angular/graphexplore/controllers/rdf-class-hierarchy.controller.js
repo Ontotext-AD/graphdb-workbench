@@ -400,6 +400,10 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     }
 
     function reloadClassHierarchy() {
+        if (!$licenseService.isLicenseValid()) {
+            return;
+        }
+
         refreshDiagramExternalElements();
         $scope.loader = true;
         $scope.hierarchyError = false;

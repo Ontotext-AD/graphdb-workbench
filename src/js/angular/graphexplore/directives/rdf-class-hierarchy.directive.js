@@ -108,6 +108,9 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
         var g = appendMainGroup();
 
         if (!scope.classHierarchyData.classCount && $repositories.getActiveRepository() && !$repositories.isSystemRepository()) {
+            if (!$licenseService.isLicenseValid()) {
+                return;
+            }
             $rootScope.loader = true;
             $rootScope.hierarchyError = false;
             const selGraphFromCache = LocalStorageAdapter.get(`classHierarchy-selectedGraph-${$repositories.getActiveRepository()}`);
