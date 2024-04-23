@@ -22,7 +22,9 @@ const allGraphs = {
     }
 };
 Object.defineProperty(global, 'allGraphs', {
-    get: () => {return allGraphs;}
+    get: () => {
+        return allGraphs;
+    }
 });
 
 angular
@@ -78,7 +80,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
 
     const setSelectedGraphFromCache = function () {
         const selGraphFromCache = LocalStorageAdapter.get(`dependencies-selectedGraph-${$repositories.getActiveRepository()}`);
-        if (selGraphFromCache !== null && $scope.graphsInRepo.some(graph => graph.contextID.uri === selGraphFromCache.contextID.uri)) {
+        if (selGraphFromCache !== null && $scope.graphsInRepo.some((graph) => graph.contextID.uri === selGraphFromCache.contextID.uri)) {
             selectedGraph = selGraphFromCache;
         } else {
             LocalStorageAdapter.set(`dependencies-selectedGraph-${$repositories.getActiveRepository()}`, selectedGraph);
@@ -210,8 +212,8 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     });
 
     $scope.$watch('direction', function () {
-        if (!$repositories.getActiveRepository() ||
-                $scope.isSystemRepository() || $repositories.isActiveRepoFedXType()) {
+        if (!$scope.isLicenseValid() || !$repositories.getActiveRepository() ||
+            $scope.isSystemRepository() || $repositories.isActiveRepoFedXType()) {
             return;
         }
         initView();
@@ -295,6 +297,9 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     };
 
     function onRepositoryIsSet() {
+        if (!$scope.isLicenseValid()) {
+            return;
+        }
         // clear class search on changing the repository
         $scope.classQuery = {};
         $scope.classQuery.query = '';

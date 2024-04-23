@@ -1,8 +1,8 @@
 <link href="css/explore.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-<div core-errors></div>
+<div core-errors license></div>
 <div class="page fit-content-on-mobile">
-    <div class="resource-info" ng-if="resourceInfo && !isTripleResource()">
+    <div class="resource-info" ng-if="resourceInfo && !isTripleResource() && isLicenseValid">
         <div class="thumb" ng-if="resourceInfo.details.img">
             <a href="{{resourceInfo.details.img}}">
                 <img ng-src="{{details.img}}" alt="details image"/>
@@ -55,7 +55,7 @@
         </p>
     </div>
 
-    <div class="pull-right" ng-if="resourceInfo">
+    <div class="pull-right" ng-if="resourceInfo && isLicenseValid">
 
         <label for="inference-select" class="mb-0">
             <select id="inference-select"
@@ -122,7 +122,7 @@
 
     </div>
 
-    <div id="selection" class="selection mb-1" ng-if="resourceInfo">
+    <div id="selection" class="selection mb-1" ng-if="resourceInfo && isLicenseValid">
         <ul class="nav nav-tabs">
             <li ng-repeat="role in roles" class="nav-item">
                 <a class="nav-link" href
@@ -136,7 +136,7 @@
         </ul>
     </div>
 
-    <yasgui-component id="query-editor" yasgui-config="yasguiConfig"></yasgui-component>
+    <yasgui-component id="query-editor" ng-if="isLicenseValid" yasgui-config="yasguiConfig"></yasgui-component>
 
     <loader-component ng-if="isLoading"></loader-component>
 </div>

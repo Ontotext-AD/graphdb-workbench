@@ -14,10 +14,10 @@
 		   popover-append-to-body="true"><span class="icon-info text-tertiary"></span></span>
 	</h1>
 
-    <div core-errors ontop></div>
+    <div core-errors ontop license></div>
 
 	<div id="wb-monitoringQueries" class="ot-owlim-monitoring-queries" ng-if="!isActiveRepoOntopType()">
-		<div ng-show="getActiveRepository()">
+		<div ng-show="getActiveRepository() && isLicenseValid()">
 			<div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
 
 			<div class="ng-scope" ng-show="!loader && error">

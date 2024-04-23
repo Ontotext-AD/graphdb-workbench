@@ -43,7 +43,8 @@ ExploreCtrl.$inject = [
     '$jwtAuth',
     '$translate',
     '$q',
-    'ExploreRestService'];
+    'ExploreRestService',
+    '$licenseService'];
 
 function ExploreCtrl(
     $scope,
@@ -59,13 +60,14 @@ function ExploreCtrl(
     $jwtAuth,
     $translate,
     $q,
-    ExploreRestService) {
+    ExploreRestService,
+    $licenseService) {
 
     $scope.ContextTypes = ContextTypes;
     $scope.contextTypes = ContextType.getAllType();
     $scope.currentContextTypeId = ContextTypes.EXPLICIT.id;
     $scope.roles = [RoleType.SUBJECT, RoleType.PREDICATE, RoleType.OBJECT, RoleType.CONTEXT, RoleType.ALL];
-
+    $scope.isLicenseValid = $licenseService.isLicenseValid();
     $scope.resourceInfo = undefined;
 
     // Defaults
@@ -128,6 +130,9 @@ function ExploreCtrl(
     };
 
     $scope.loadResource = () => {
+        if (!$scope.isLicenseValid) {
+            return;
+        }
         // Get resource details
         ExploreRestService.getResourceDetails($scope.resourceInfo.uri, $scope.resourceInfo.triple, $scope.resourceInfo.context)
             .success((data) => {
@@ -545,6 +550,9 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibM
     $scope.save = save;
 
     function getClassInstancesDetails() {
+        if (!$scope.isLicenseValid()) {
+            return;
+        }
         RDF4JRepositoriesRestService.getNamespaces($scope.activeRepository())
             .success(function (data) {
                 $scope.namespaces = data.results.bindings.map(function (e) {
@@ -579,7 +587,7 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibM
     $scope.$watch(function () {
         return $repositories.getActiveRepository();
     }, function () {
-        if ($scope.activeRepository()) {
+        if ($scope.isLicenseValid && $scope.activeRepository()) {
             $scope.getClassInstancesDetails();
         }
     });

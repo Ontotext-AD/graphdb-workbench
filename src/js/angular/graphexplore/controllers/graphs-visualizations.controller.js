@@ -1198,7 +1198,7 @@ function GraphsVisualizationsCtrl(
     // time but then we'll be called again by the event, so we need the above flag to avoid double
     // initialization and weirdness.
     function initForRepository(newRepo) {
-        if (!$repositories.getActiveRepository() || $scope.hasInitedRepository && !newRepo) {
+        if (!$scope.isLicenseValid() || !$repositories.getActiveRepository() || $scope.hasInitedRepository && !newRepo) {
             return;
         }
 
@@ -1226,7 +1226,7 @@ function GraphsVisualizationsCtrl(
     }
 
     function checkAutocompleteStatus() {
-        if ($licenseService.isLicenseValid()) {
+        if ($scope.isLicenseValid()) {
             $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
         }
     }

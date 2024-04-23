@@ -32,7 +32,8 @@ function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalServi
     $scope.getSqlConfigurations = function () {
         // Only do this if there is an active repo that isn't an Ontop or FedX repo.
         // Ontop and FedX repos don't support JDBC.
-        if ($repositories.getActiveRepository()
+        if ($scope.isLicenseValid()
+            && $repositories.getActiveRepository()
             && !$repositories.isActiveRepoOntopType()
             && !$repositories.isActiveRepoFedXType()) {
             JdbcRestService.getJdbcConfigurations().success(function (data) {
@@ -315,6 +316,9 @@ function JdbcCreateCtrl(
     };
 
     const init = (prefixes, jdbcConfiguration = new JdbcConfigurationInfo()) => {
+        if (!$scope.isLicenseValid()) {
+            return;
+        }
         $scope.jdbcConfigurationInfo.columns = jdbcConfiguration.columns;
         $scope.jdbcConfigurationInfo.query = jdbcConfiguration.query;
         $scope.jdbcConfigurationInfo.jdbcConfigurationName = $location.search().name || '';

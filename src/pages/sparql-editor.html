@@ -10,9 +10,9 @@
               popover-append-to-body="true"><span class="icon-info text-tertiary"></span></span>
     </h1>
 
-    <div core-errors></div>
+    <div core-errors license></div>
 
     <yasgui-component id="query-editor" yasgui-config="yasguiConfig"
-                      ng-if="yasguiConfig && getActiveRepositoryNoError()"
+                      ng-if="yasguiConfig && getActiveRepositoryNoError() && isLicenseValid()"
                       after-init="initViewFromUrlParams()"></yasgui-component>
 </div>

@@ -30,8 +30,8 @@ function validatePrefix(prefix) {
     return prefix === '' || prefix.match(pnPrefixRe);
 }
 
-namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'toastr', '$uibModal', 'ModalService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService', '$translate',
-    function ($scope, $http, $repositories, toastr, $uibModal, ModalService, RepositoriesRestService, RDF4JRepositoriesRestService, $translate) {
+namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'toastr', '$uibModal', 'ModalService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService', '$translate', '$licenseService',
+    function ($scope, $http, $repositories, toastr, $uibModal, ModalService, RepositoriesRestService, RDF4JRepositoriesRestService, $translate, $licenseService) {
         $scope.namespaces = {};
         $scope.namespace = {};
         $scope.loader = false;
@@ -40,9 +40,10 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
         $scope.page = 1;
         $scope.pageSize = $scope.pageSizeOptions[0];
         $scope.displayedNamespaces = [];
+        $scope.isLicenseValid = $licenseService.isLicenseValid();
 
         $scope.getNamespaces = function () {
-            if (!$repositories.getActiveRepository()) {
+            if (!$scope.isLicenseValid || !$repositories.getActiveRepository()) {
                 return;
             }
 
@@ -107,6 +108,12 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
         $scope.$watch(function () {
             return $repositories.getActiveRepository();
         }, function () {
+            $scope.searchNamespaces = '';
+            $scope.getNamespaces();
+            $scope.selectedAll = false;
+        });
+
+        $scope.$on('license.set', function () {
             $scope.searchNamespaces = '';
             $scope.getNamespaces();
             $scope.selectedAll = false;
