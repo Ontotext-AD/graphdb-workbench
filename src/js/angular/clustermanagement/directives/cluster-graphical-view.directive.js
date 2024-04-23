@@ -382,7 +382,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
 
                     nodesElements
                         .on('click', (event, d) => {
-                            scope.childContext.selectNode(d);
+                            scope.$emit('nodeSelected', d);
 
                             // position the tooltip according to the node!
                             const tooltip = d3.select('.nodetooltip');
