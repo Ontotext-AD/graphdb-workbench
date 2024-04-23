@@ -41,14 +41,19 @@ export class ImportResourceTreeElement {
          */
         this.name = '';
         /**
+         * If name is too long it have to be shortened with ellipses in the middle.
+         * @type {string}
+         */
+        this.shortenedName = '';
+        /**
          * @type {string}
          */
         this.path = '';
         /**
-         * If context link is too long it have to be shorted with ellipses in the middle.
+         * If context link is too long it have to be shortened with ellipses in the middle.
          * @type {string}
          */
-        this.shorthedContext = '';
+        this.shortenedContext = '';
         /**
          * @type {boolean}
          */

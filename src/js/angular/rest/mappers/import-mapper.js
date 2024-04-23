@@ -8,8 +8,10 @@ export const toImportResource = (importResourcesServerData) => {
 };
 
 export const INDENT = 30;
-const PREFIX_AND_SUFFIX_CONTEXT_LENGTH = 30;
-const MAX_CONTEXT_LENGTH = PREFIX_AND_SUFFIX_CONTEXT_LENGTH * 2 + 3;
+const PREFIX_AND_SUFFIX_LENGTH = 30;
+const MAX_CONTEXT_LENGTH = PREFIX_AND_SUFFIX_LENGTH * 2 + 3;
+const MAX_NAME_LENGTH = PREFIX_AND_SUFFIX_LENGTH * 4 + 3;
+
 
 const serverImportResourceTypeToIconMapping = new Map();
 serverImportResourceTypeToIconMapping.set(ImportResourceType.DIRECTORY, 'icon-folder');
@@ -137,7 +139,8 @@ const setupAfterTreeInitProperties = (importResourceElement) => {
         importResourceElement.canResetStatus = canResetStatus(importResourceElement.importResource);
         importResourceElement.hasStatusInfo = importResourceElement.importResource.status === 'DONE' || importResourceElement.importResource.status === 'ERROR';
         importResourceElement.isEditable = importResourceElement.importResource.isText();
-        setupShortedContext(importResourceElement);
+        setupShortenedContext(importResourceElement);
+        setupShortenedName(importResourceElement);
         setupImportedAndModifiedComparableProperties(importResourceElement);
     }
     importResourceElement.directories.forEach((directory) => setupAfterTreeInitProperties(directory));
@@ -148,10 +151,21 @@ const setupAfterTreeInitProperties = (importResourceElement) => {
  * Setts shortedContext property if context is too long.
  * @param {ImportResourceTreeElement} importResourceElement
  */
-const setupShortedContext = (importResourceElement) => {
+const setupShortenedContext = (importResourceElement) => {
     const context = importResourceElement.importResource ? importResourceElement.importResource.context : '' || '';
     if (context.length > MAX_CONTEXT_LENGTH) {
-        importResourceElement.shorthedContext = context.substring(0, PREFIX_AND_SUFFIX_CONTEXT_LENGTH) + '...' + context.substring(context.length - PREFIX_AND_SUFFIX_CONTEXT_LENGTH);
+        importResourceElement.shortenedContext = context.substring(0, PREFIX_AND_SUFFIX_LENGTH) + '...' + context.substring(context.length - PREFIX_AND_SUFFIX_LENGTH);
+    }
+};
+
+/**
+ * Setts shortenedName property if name is too long.
+ * @param {ImportResourceTreeElement} importResourceElement
+ */
+const setupShortenedName = (importResourceElement) => {
+    const name = importResourceElement.name || '';
+    if (name.length > MAX_NAME_LENGTH) {
+        importResourceElement.shortenedName = name.substring(0, PREFIX_AND_SUFFIX_LENGTH) + '...' + name.substring(name.length - PREFIX_AND_SUFFIX_LENGTH);
     }
 };
 
