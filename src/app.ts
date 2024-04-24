@@ -1,3 +1,4 @@
+import * as angular from 'angular';
 import 'angular/core/services';
 import 'angular/controllers';
 import 'angular/core/angularCancelOnNavigateModule';
@@ -15,14 +16,6 @@ import 'angular/core/directives/operations-statuses-monitor/operations-statuses-
 import 'angular/core/directives/autocomplete/autocomplete.directive';
 import 'angular/core/directives/prop-indeterminate/prop-indeterminate.directive';
 import {defineCustomElements} from 'ontotext-yasgui-web-component/loader';
-
-// $translate.instant converts <b> from strings to &lt;b&gt
-// and $sce.trustAsHtml could not recognise that this is valid html
-export const decodeHTML = function (html) {
-    let txt = document.createElement('textarea');
-    txt.innerHTML = html;
-    return txt.value;
-};
 
 const modules = [
     'ngRoute',
@@ -111,6 +104,7 @@ const moduleDefinition = function (productInfo) {
             // separated by &. Parameters may come in any order.
             $route.routes['_openid_implicit_'].regexp = /[&/](?:id_token=.*&access_token=|access_token=.*&id_token=)/;
 
+            // @ts-ignore
             let routes = PluginRegistry.get('route');
 
             angular.forEach(routes, function (route) {
@@ -150,6 +144,7 @@ const moduleDefinition = function (productInfo) {
             // to construct version/edition-specific links.
             $menuItemsProvider.setProductInfo(productInfo);
 
+            // @ts-ignore
             let mainMenu = PluginRegistry.get('main.menu');
             mainMenu.forEach(function (menu) {
                 menu.items.forEach(function (item) {
@@ -193,6 +188,12 @@ const moduleDefinition = function (productInfo) {
         $rootScope.$on('$translateChangeSuccess', function () {
             updateTitleAndHelpInfo();
         });
+
+        function decodeHTML(html) {
+            const txt = document.createElement('textarea');
+            txt.innerHTML = html;
+            return txt.value;
+        }
 
         function updateTitleAndHelpInfo() {
             if ($route.current.title) {
