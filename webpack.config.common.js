@@ -15,9 +15,9 @@ function replaceVersion(content) {
 
 module.exports = {
     entry: {
-        vendor: './src/vendor.js',
-        main: './src/main.js',
-        bundle: './src/app.js'
+        vendor: './src/vendor.ts',
+        main: './src/main.ts',
+        bundle: './src/app.ts'
     },
     output: {
         filename: '[name].js',
@@ -192,6 +192,10 @@ module.exports = {
     ],
     module: {
         rules: [
+            {
+              test: /\.tsx?$/,
+                loader: "ts-loader"
+            },
             {
                 test: /jquery.js/,
                 use: [

@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "baseUrl": "",
+        "declaration": false,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "lib": ["es6", "dom"],
+        "mapRoot": "./",
+        "module": "es2022",
+        "moduleResolution": "Node",
+        "outDir": "../dist/out-tsc",
+        "sourceMap": true,
+        "target": "es6",
+        "typeRoots": [
+            "../node_modules/@types"
+        ],
+        "noImplicitAny": false,
+        "removeComments": true,
+        "preserveConstEnums": true
+    }
+}

@@ -37,6 +37,7 @@
     "homepage": "https://github.com/Ontotext-AD/graphdb-workbench#readme",
     "devDependencies": {
         "@babel/runtime": "^7.19.0",
+        "@types/jquery": "^3.5.29",
         "babel-core": "^6.26.3",
         "babel-loader": "^8.1.0",
         "babel-polyfill": "^6.26.0",
@@ -72,6 +73,8 @@
         "puppeteer": "^5.3.1",
         "sonarqube-scanner": "^3.3.0",
         "style-loader": "^0.23.1",
+        "ts-loader": "^8.2.0",
+        "typescript": "^5.4.5",
         "url-loader": "^2.3.0",
         "webpack": "^4.41.2",
         "webpack-auto-inject-version": "^1.2.2",
