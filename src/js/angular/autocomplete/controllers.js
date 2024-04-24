@@ -1,6 +1,6 @@
 import 'angular/rest/autocomplete.rest.service';
 import {mapNamespacesResponse} from "../rest/mappers/namespaces-mapper";
-import {decodeHTML} from "../../../app";
+import {decodeHTML} from "../utils/html-utils";
 
 const modules = [
     'toastr',

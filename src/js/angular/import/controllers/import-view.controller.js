@@ -15,11 +15,11 @@ import {FileUtils} from "../../utils/file-utils";
 import {DateUtils} from "../../utils/date-utils";
 import {toImportResource, toImportServerResource, toImportUserDataResource} from "../../rest/mappers/import-mapper";
 import {ImportResourceTreeElement} from "../../models/import/import-resource-tree-element";
-import {decodeHTML} from "../../../../app";
 import {FilePrefixRegistry} from "../services/file-prefix-registry";
 import {SortingType} from "../../models/import/sorting-type";
 import {ImportResourceStatus} from "../../models/import/import-resource-status";
 import {TABS} from "../services/import-context.service";
+import {decodeHTML} from "../../utils/html-utils";
 
 const modules = [
     'ui.bootstrap',

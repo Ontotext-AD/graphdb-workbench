@@ -9,11 +9,11 @@ import {QueryType} from "../models/ontotext-yasgui/query-type";
 import {ConnectorCommand} from "../models/connectors/connector-command";
 import {BeforeUpdateQueryResult, BeforeUpdateQueryResultStatus} from "../models/ontotext-yasgui/before-update-query-result";
 import {EventDataType} from "../models/ontotext-yasgui/event-data-type";
-import {decodeHTML} from "../../../app";
 import {toBoolean} from "../utils/string-utils";
 import {VIEW_SPARQL_EDITOR} from "../models/sparql/constants";
 import {CancelAbortingQuery} from "../models/sparql/cancel-aborting-query";
 import {QueryMode} from "../models/ontotext-yasgui/query-mode";
+import {decodeHTML} from "../utils/html-utils";
 
 const modules = [
     'ui.bootstrap',

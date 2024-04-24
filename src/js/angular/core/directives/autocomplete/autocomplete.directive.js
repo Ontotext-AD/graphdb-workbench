@@ -1,5 +1,5 @@
-import {decodeHTML} from "../../../../../app";
 import {mapUriAsNtripleAutocompleteResponse} from "../../../rest/mappers/autocomplete-mapper";
+import {decodeHTML} from "../../../utils/html-utils";
 
 angular
     .module('graphdb.framework.core.directives.autocomplete', [])

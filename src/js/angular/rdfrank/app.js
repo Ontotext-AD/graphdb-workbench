@@ -4,7 +4,7 @@ import 'angular/utils/uri-utils';
 import 'angular/rest/rdfrank.rest.service';
 import 'ng-tags-input/build/ng-tags-input.min';
 import {mapNamespacesResponse} from "../rest/mappers/namespaces-mapper";
-import {decodeHTML} from "../../../app";
+import {decodeHTML} from "../utils/html-utils";
 
 const rdfRankApp = angular.module('graphdb.framework.rdfrank', [
     'ngRoute',

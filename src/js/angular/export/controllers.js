@@ -4,9 +4,9 @@ import 'angular/core/services/jwt-auth.service';
 import 'angular/utils/file-types';
 import 'angular/rest/export.rest.service';
 import {saveAs} from 'lib/FileSaver-patch';
-import {decodeHTML} from "../../../app";
 import {cloneDeep} from "lodash";
 import {ExportSettingsCtrl} from "../core/components/export-settings-modal/controller";
+import {decodeHTML} from "../utils/html-utils";
 
 const modules = [
     'ngCookies',

@@ -9,7 +9,7 @@ import {JdbcConfigurationError} from "../models/jdbc/jdbc-configuration-error";
 import {RenderingMode} from "../models/ontotext-yasgui/rendering-mode";
 import {toJDBCColumns, updateColumn} from "../models/jdbc/jdbc-column";
 import {DISABLE_YASQE_BUTTONS_CONFIGURATION, YasguiComponentDirectiveUtil} from "../core/directives/yasgui-component/yasgui-component-directive.util";
-import {decodeHTML} from "../../../app";
+import {decodeHTML} from "../utils/html-utils";
 
 const modules = [
     'ui.bootstrap',

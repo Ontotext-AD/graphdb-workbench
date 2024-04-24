@@ -1,4 +1,3 @@
-import {decodeHTML} from "../../../../app";
 import {SimilaritySearchType} from "../../models/similarity/similarity-search-type";
 import {SimilarityResultType} from "../../models/similarity/similarity-result-type";
 import {SimilarityIndexStatus} from "../../models/similarity/similarity-index-status";
@@ -6,6 +5,7 @@ import {SimilarityIndexType} from "../../models/similarity/similarity-index-type
 import {mapIndexesResponseToSimilarityIndex} from "../../rest/mappers/similarity-index-mapper";
 import {SimilaritySearch} from "../../models/similarity/similarity-search";
 import {RenderingMode} from "../../models/ontotext-yasgui/rendering-mode";
+import {decodeHTML} from "../../utils/html-utils";
 
 angular
     .module('graphdb.framework.similarity.controllers.list', [])

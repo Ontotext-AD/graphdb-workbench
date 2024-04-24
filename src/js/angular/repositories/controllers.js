@@ -4,7 +4,7 @@ import {
     REPOSITORY_TYPES,
     STATIC_RULESETS
 } from "./repository.constants";
-import {decodeHTML} from "../../../app";
+import {decodeHTML} from "../utils/html-utils";
 
 export const getFileName = function (path) {
     let lastIdx = path.lastIndexOf('/');

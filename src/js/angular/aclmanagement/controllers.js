@@ -1,3 +1,4 @@
+import * as angular from 'angular';
 import 'angular/rest/plugins.rest.service';
 import 'angular/rest/aclmanagement.rest.service';
 import {mapAclRulesResponse} from "../rest/mappers/aclmanagement-mapper";

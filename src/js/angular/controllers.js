@@ -17,12 +17,12 @@ import 'angular/utils/local-storage-adapter';
 import 'angular/utils/workbench-settings-storage-service';
 import 'angular/utils/uri-utils';
 import 'angular/core/services/autocomplete-status.service';
-import {decodeHTML} from "../../app";
 import './guides/guides.service';
 import './guides/directives';
 import {GUIDE_PAUSE} from './guides/tour-lib-services/shepherd.service';
 import 'angular-pageslide-directive/dist/angular-pageslide-directive';
 import 'angularjs-slider/dist/rzslider.min';
+import {decodeHTML} from "./utils/html-utils";
 
 angular
     .module('graphdb.workbench.se.controllers', [

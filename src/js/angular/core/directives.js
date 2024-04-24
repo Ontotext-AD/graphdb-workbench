@@ -1,5 +1,5 @@
 import 'angular/utils/local-storage-adapter';
-import {decodeHTML} from "../../../app";
+import {decodeHTML} from "../utils/html-utils";
 
 angular
     .module('graphdb.framework.core.directives', [

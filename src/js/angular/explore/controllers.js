@@ -1,7 +1,6 @@
 import 'angular/utils/file-types';
 import 'angular/rest/explore.rest.service';
 import {saveAs} from 'lib/FileSaver-patch';
-import {decodeHTML} from "../../../app";
 import {ResourceInfo} from "../models/resource/resource-info";
 import {ContextType, ContextTypes} from "../models/resource/context-type";
 import {RoleType} from "../models/resource/role-type";
@@ -9,6 +8,7 @@ import {RenderingMode} from "../models/ontotext-yasgui/rendering-mode";
 import {DISABLE_YASQE_BUTTONS_CONFIGURATION} from "../core/directives/yasgui-component/yasgui-component-directive.util";
 import * as jsonld from 'jsonld';
 import {ExportSettingsCtrl} from "../core/components/export-settings-modal/controller";
+import {decodeHTML} from "../utils/html-utils";
 
 const modules = [
     'ngCookies',
