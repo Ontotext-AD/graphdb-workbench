@@ -184,6 +184,14 @@ const iconMap = {
     [RecoveryState.RECOVERY_OPERATION_FAILURE_WARNING]: {icon: '\ue920', font: font.ICOMOON}
 };
 
+const nodeStateIcons = {
+    [NodeState.CANDIDATE]: {icon: '\ue914', font: font.ICOMOON},
+    [NodeState.NO_CONNECTION]: {icon: '\ue931', font: font.ICOMOON},
+    [NodeState.OUT_OF_SYNC]: {icon: '\ue920', font: font.ICOMOON},
+    [NodeState.READ_ONLY]: {icon: '\ue95c', font: font.ICOMOON},
+    [NodeState.RESTRICTED]: {icon: '\ue933', font: font.ICOMOON}
+};
+
 function getNodeInfoIconType(node) {
     const status = node.recoveryStatus;
 
@@ -195,22 +203,8 @@ function getNodeInfoIconType(node) {
 }
 
 function getNodeIconType(node) {
-    if (node.nodeState === NodeState.LEADER) {
-        return {icon: '\ue935', font: font.ICOMOON};
-    } else if (node.nodeState === NodeState.FOLLOWER) {
-        return {icon: '\ue963', font: font.ICOMOON};
-    } else if (node.nodeState === NodeState.CANDIDATE) {
-        return {icon: '\ue914', font: font.ICOMOON};
-    } else if (node.nodeState === NodeState.NO_CONNECTION) {
-        return {icon: '\ue931', font: font.ICOMOON};
-    } else if (node.nodeState === NodeState.OUT_OF_SYNC) {
-        return {icon: '\ue920', font: font.ICOMOON};
-    } else if (node.nodeState === NodeState.READ_ONLY) {
-        return {icon: '\ue95c', font: font.ICOMOON};
-    } else if (node.nodeState === NodeState.RESTRICTED) {
-        return {icon: '\ue933', font: font.ICOMOON};
-    }
-    return {icon: '', font: ''};
+    const iconType = nodeStateIcons[node.nodeState];
+    return iconType ? iconType : {icon: '', font: ''};
 }
 
 function updateNodesInfoText(nodes) {
@@ -446,6 +440,8 @@ function createHexagon(nodeGroup, radius) {
         .enter()
         .append("path")
         .attr('class', 'node member')
+        .attr("stroke-width", "10")
+        .attr("stroke-linejoin", "round")
         .attr("d", d3.line());
 }
 

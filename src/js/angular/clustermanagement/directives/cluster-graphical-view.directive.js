@@ -8,7 +8,7 @@ import {CLICK_IN_VIEW, MODEL_UPDATED, NODE_SELECTED} from "../events";
 const navigationBarWidthFull = 240;
 const navigationBarWidthCollapsed = 70;
 let navigationBarWidth = navigationBarWidthFull;
-const nodeRadius = 50;
+const nodeRadius = 45;
 const legendNodeRadius = 25;
 
 // Labels in translation map is dynamically translated and reassigned. It contains defaults
