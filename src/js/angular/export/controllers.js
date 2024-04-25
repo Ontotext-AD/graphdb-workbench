@@ -261,6 +261,7 @@ exportCtrl.controller('ExportCtrl',
 
             $scope.openJSONLDExportSettingsForSelectedGraphs = function (format) {
                 const contextsArray = Object.keys($scope.selectedGraphs.exportGraphs)
+                    .filter((index) => $scope.selectedGraphs.exportGraphs[index])
                     .map((index) => $scope.graphsByValue[index].exportUri);
 
                 if (contextsArray) {
