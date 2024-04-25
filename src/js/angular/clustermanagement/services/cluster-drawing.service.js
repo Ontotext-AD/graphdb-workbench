@@ -1,4 +1,5 @@
 import {LinkState, NodeState, RecoveryState} from "../../models/clustermanagement/states";
+import {isEmpty} from "lodash";
 
 const clusterColors = {
     ontoOrange: 'var(--primary-color)',
@@ -170,7 +171,7 @@ function updateNodesIcon(nodes) {
 }
 
 function hasRecoveryState(node) {
-    return !_.isEmpty(node.recoveryStatus);
+    return !isEmpty(node.recoveryStatus);
 }
 
 const iconMap = {
@@ -225,7 +226,7 @@ function updateNodesInfoText(nodes) {
         })
         .append('foreignObject')
         .attr('width', function (d) {
-            if (_.isEmpty(d.recoveryStatus)) {
+            if (isEmpty(d.recoveryStatus)) {
                 return 0;
             }
             const shortMessage = extractShortMessageFromNode(d);
@@ -235,7 +236,7 @@ function updateNodesInfoText(nodes) {
             return objectWidth;
         })
         .attr('height', function (d) {
-            if (_.isEmpty(d.recoveryStatus)) {
+            if (isEmpty(d.recoveryStatus)) {
                 return 0;
             }
             return objectHeight;
@@ -247,7 +248,7 @@ function updateNodesInfoText(nodes) {
             return 78;
         })
         .classed('hidden', function (d) {
-            return _.isEmpty(d.recoveryStatus);
+            return isEmpty(d.recoveryStatus);
         })
         .style('font-size', '12px')
         .style('font-weight', '400')
@@ -315,7 +316,7 @@ function resizeLabelDynamic(nodes) {
     nodes.select('.node-info-fo')
         .each(function (d) {
             const object = d3.select(this);
-            if (_.isEmpty(d.recoveryStatus)) {
+            if (isEmpty(d.recoveryStatus)) {
                 object.attr('width', 0);
                 return;
             }

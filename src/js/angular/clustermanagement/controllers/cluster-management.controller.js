@@ -10,7 +10,7 @@ import 'angular/clustermanagement/controllers/add-nodes.controller';
 import 'angular/clustermanagement/controllers/replace-nodes.controller';
 import {isString} from "lodash";
 import {LinkState, NodeState} from "../../models/clustermanagement/states";
-import {DELETE_CLUSTER, UPDATE_CLUSTER} from "../events";
+import {CLICK_IN_VIEW, DELETE_CLUSTER, MODEL_UPDATED, NODE_SELECTED, UPDATE_CLUSTER} from "../events";
 
 const modules = [
     'ui.bootstrap',
@@ -45,8 +45,8 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     // =========================
 
     const DELETED_ON_NODE_MESSAGE = 'Cluster was deleted on this node.';
-    const w = angular.element($window);
     let updateRequest;
+    const subscriptions = [];
 
     // =========================
     // Public variables
@@ -59,8 +59,6 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     $scope.NodeState = NodeState;
     $scope.leaderChanged = false;
     $scope.currentLeader = null;
-    // Holds child context
-    $scope.childContext = {};
     $scope.showClusterConfigurationPanel = false;
 
     // =========================
@@ -76,12 +74,6 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     $scope.openClusterConfigurationPanel = () => {
         $scope.showClusterConfigurationPanel = true;
         ClusterViewContextService.showClusterConfigurationPanel();
-    };
-
-    $scope.toggleLegend = () => {
-        if ($scope.childContext.toggleLegend) {
-            $scope.childContext.toggleLegend();
-        }
     };
 
     $scope.setLoader = (loader, message) => {
@@ -332,7 +324,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             })
             .finally(() => {
                 updateRequest = null;
-                $scope.childContext.redraw();
+                $scope.$broadcast(MODEL_UPDATED);
             });
     };
 
@@ -426,15 +418,13 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             });
     };
 
-    const resizeHandler = () => {
-        $scope.childContext.resize();
-    };
-
-    const mousedownHandler = function (event) {
-        const target = event.target;
+    /**
+     * @param {HTMLElement} targetEl The element which is the target of the click event.
+     */
+    const mousedownHandler = function (targetEl) {
         const nodeTooltipElement = document.getElementById('nodeTooltip');
-        if ($scope.selectedNode && nodeTooltipElement !== target && !nodeTooltipElement.contains(target)) {
-            $scope.childContext.selectNode(null);
+        if ($scope.selectedNode && nodeTooltipElement !== targetEl && !nodeTooltipElement.contains(targetEl)) {
+            selectNode(null);
         }
     };
 
@@ -442,17 +432,11 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     // Events and watchers
     // =========================
 
-    const subscriptions = [];
-
     const removeAllListeners = () => {
         subscriptions.forEach((subscription) => subscription());
     };
 
     const subscribeHandlers = () => {
-        // track window resizing and window mousedown
-        w.bind('resize', resizeHandler);
-        w.bind('mousedown', mousedownHandler);
-
         subscriptions.push(ClusterViewContextService.onShowClusterConfigurationPanel((show) => {
             $scope.showClusterConfigurationPanel = show;
         }));
@@ -462,11 +446,15 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
         subscriptions.push($scope.$on(DELETE_CLUSTER, (event, data) => {
             deleteCluster(data.force);
         }));
+        subscriptions.push($scope.$on(CLICK_IN_VIEW, (event, data) => {
+            mousedownHandler(data);
+        }));
+        subscriptions.push($scope.$on(NODE_SELECTED, (event, data) => {
+            selectNode(data);
+        }));
     };
 
     $scope.$on('$destroy', function () {
-        w.unbind('resize', resizeHandler);
-        w.unbind('mousedown', mousedownHandler);
         removeAllListeners();
     });
 
@@ -476,7 +464,6 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
 
     const init = () => {
         subscribeHandlers();
-        $scope.childContext.selectNode = selectNode;
         $scope.showClusterConfigurationPanel = ClusterViewContextService.getShowClusterConfigurationPanel();
 
         loadInitialData()

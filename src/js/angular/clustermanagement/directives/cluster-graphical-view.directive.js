@@ -3,6 +3,7 @@ import * as CDS from "../services/cluster-drawing.service";
 import {LinkState, NodeState, RecoveryState} from "../../models/clustermanagement/states";
 import d3tip from 'lib/d3-tip/d3-tip-patch';
 import {cloneDeep, get, isEmpty} from "lodash";
+import {CLICK_IN_VIEW, MODEL_UPDATED, NODE_SELECTED} from "../events";
 
 const navigationBarWidthFull = 240;
 const navigationBarWidthCollapsed = 70;
@@ -77,18 +78,22 @@ const clusterManagementDirectives = angular.module('graphdb.framework.clusterman
     'graphdb.framework.utils.localstorageadapter'
 ]);
 
-clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'LocalStorageAdapter', 'LSKeys', 'UriUtils', '$translate', '$rootScope',
-    function ($window, LocalStorageAdapter, LSKeys, UriUtils, $translate, $rootScope) {
+clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'LocalStorageAdapter', 'LSKeys', 'UriUtils', '$translate', '$jwtAuth', '$rootScope',
+    function ($window, LocalStorageAdapter, LSKeys, UriUtils, $translate, $jwtAuth, $rootScope) {
         return {
-            restrict: 'A',
+            restrict: 'E',
+            scope: {
+                clusterModel: '='
+            },
             link: function (scope, element) {
 
                 // =========================
                 // Private variables
                 // =========================
 
+                const w = angular.element($window);
                 const subscriptions = [];
-                const hasAccess = scope.isAdmin();
+                let hasAccess;
                 let legendGroup;
                 let legendWidth;
                 let legendHeight;
@@ -111,8 +116,6 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 // Public variables
                 // =========================
 
-                scope.showLegend = false;
-
                 // =========================
                 // Public functions
                 // =========================
@@ -125,10 +128,11 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     return height;
                 };
 
-                // Properties and functions that can be used by parent
-                // This is BS ^^. Just use events instead ($scope.broadcast or the EventEmitterService)
-                scope.childContext.redraw = plot;
-                scope.childContext.resize = function () {
+                // =========================
+                // Private functions
+                // =========================
+
+                function resize() {
                     // recalculates with new screen width
                     width = getWindowWidth();
                     height = getWindowHeight();
@@ -136,16 +140,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     svg.attr("height", height);
                     plot();
                     positionLegend();
-                };
-
-                scope.childContext.toggleLegend = () => {
-                    scope.showLegend = !scope.showLegend;
-                    legendGroup.classed('hidden', !scope.showLegend);
-                };
-
-                // =========================
-                // Private functions
-                // =========================
+                }
 
                 function updateTranslations(translationMapObject, translationAppend = '') {
                     Object.keys(translationMapObject).forEach((key) => {
@@ -389,7 +384,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     const nodesElements = CDS.createNodes(nodeData, nodeRadius);
                     nodesElements
                         .on('click', (event, d) => {
-                            scope.childContext.selectNode(d);
+                            scope.$emit(NODE_SELECTED, d);
                             // position the tooltip according to the node!
                             const tooltip = d3.select('.nodetooltip');
                             const windowWidth = $(window).width();
@@ -458,6 +453,10 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     return nodes;
                 }
 
+                function mousedownHandler(event) {
+                    scope.$emit(CLICK_IN_VIEW, event.target);
+                }
+
                 function plot() {
                     resizeClusterComponent();
                     if (hasCluster !== scope.clusterModel.hasCluster) {
@@ -475,9 +474,16 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 // =========================
 
                 const subscribeHandlers = () => {
+                    w.bind('resize', resize);
+                    w.bind('mousedown', mousedownHandler);
+
                     subscriptions.push($rootScope.$on('$translateChangeSuccess', function () {
                         updateTranslations(translationsMap);
                         updateLabels();
+                    }));
+
+                    subscriptions.push(scope.$on(MODEL_UPDATED, function () {
+                        plot();
                     }));
                 };
 
@@ -486,6 +492,8 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 };
 
                 scope.$on("$destroy", function () {
+                    w.unbind('resize', resize);
+                    w.unbind('mousedown', mousedownHandler);
                     legendTooltip.destroy();
                     CDS.removeEventListeners();
                     removeAllListeners();
@@ -496,6 +504,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 // =========================
 
                 function initialize() {
+                    hasAccess = $jwtAuth.isAdmin();
                     subscribeHandlers();
                     updateTranslations(translationsMap);
                     const hasCluster = !!(scope.clusterModel.nodes && scope.clusterModel.nodes.length);
