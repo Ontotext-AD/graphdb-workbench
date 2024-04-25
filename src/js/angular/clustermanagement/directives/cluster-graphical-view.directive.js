@@ -2,11 +2,11 @@ import 'angular/utils/local-storage-adapter';
 import * as CDS from "../services/cluster-drawing.service";
 import {LinkState, NodeState, RecoveryState} from "../../models/clustermanagement/states";
 import d3tip from 'lib/d3-tip/d3-tip-patch';
+import {cloneDeep, get, isEmpty} from "lodash";
 
 const navigationBarWidthFull = 240;
 const navigationBarWidthCollapsed = 70;
 let navigationBarWidth = navigationBarWidthFull;
-
 const nodeRadius = 50;
 const legendNodeRadius = 25;
 
@@ -82,17 +82,71 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
         return {
             restrict: 'A',
             link: function (scope, element) {
+
+                // =========================
+                // Private variables
+                // =========================
+
+                const subscriptions = [];
                 const hasAccess = scope.isAdmin();
+                let legendGroup;
+                let legendWidth;
+                let legendHeight;
+                const legendPadding = 10;
+                let width = getWindowWidth();
+                let height = getWindowHeight();
+                let clusterZoneRadius = Math.min(width, height) / 2 - 100;
+                let clusterZoneX = width / 2;
+                let clusterZoneY = height / 2;
+                let hasCluster;
+                let tooltipElement;
+
+                // SVG components
+                let svg;
+                let clusterZone;
+                let nodesGroup;
+                let linksGroup;
+
+                // =========================
+                // Public variables
+                // =========================
 
                 scope.showLegend = false;
-                $rootScope.$on('$translateChangeSuccess', function () {
-                    updateTranslations(translationsMap);
-                    updateLabels();
-                });
-                scope.$on("$destroy", function () {
-                    legendTooltip.destroy();
-                    CDS.removeEventListeners();
-                });
+
+                // =========================
+                // Public functions
+                // =========================
+
+                scope.width = function () {
+                    return width;
+                };
+
+                scope.height = function () {
+                    return height;
+                };
+
+                // Properties and functions that can be used by parent
+                // This is BS ^^. Just use events instead ($scope.broadcast or the EventEmitterService)
+                scope.childContext.redraw = plot;
+                scope.childContext.resize = function () {
+                    // recalculates with new screen width
+                    width = getWindowWidth();
+                    height = getWindowHeight();
+                    svg.attr("width", width);
+                    svg.attr("height", height);
+                    plot();
+                    positionLegend();
+                };
+
+                scope.childContext.toggleLegend = () => {
+                    scope.showLegend = !scope.showLegend;
+                    legendGroup.classed('hidden', !scope.showLegend);
+                };
+
+                // =========================
+                // Private functions
+                // =========================
+
                 function updateTranslations(translationMapObject, translationAppend = '') {
                     Object.keys(translationMapObject).forEach((key) => {
                         let compoundKey = '';
@@ -121,32 +175,6 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     return Math.max((($window.innerHeight - 250) * 0.95), 600);
                 }
 
-                let legendGroup;
-                let legendWidth;
-                let legendHeight;
-                const legendPadding = 10;
-
-                let width = getWindowWidth();
-                let height = getWindowHeight();
-                let clusterZoneRadius = Math.min(width, height) / 2 - 100;
-                let clusterZoneX = width / 2;
-                let clusterZoneY = height / 2;
-                let hasCluster;
-
-                scope.width = function () {
-                    return width;
-                };
-
-                scope.height = function () {
-                    return height;
-                };
-
-                // SVG components
-                let svg;
-                let clusterZone;
-                let nodesGroup;
-                let linksGroup;
-
                 function updateLabels() {
                     CDS.updateClusterZoneLabels(hasCluster, clusterZone, translationsMap);
                     Object.keys(idTranslationKeyMap).forEach((elementId) => {
@@ -161,7 +189,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
 
                 function translateLegendLinksAndNodes(legendNodes, legendLinks) {
                     legendNodes.forEach((node) => {
-                        const label = _.get(translationsMap, node.customText);
+                        const label = get(translationsMap, node.customText);
                         node.toolTip = node.hostname = label;
                     });
                     legendLinks.forEach((link) => {
@@ -172,14 +200,6 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 function getLabelFor(elementId) {
                     const labelKey = idTranslationKeyMap[elementId];
                     return translationsMap[labelKey];
-                }
-
-                function initialize() {
-                    updateTranslations(translationsMap);
-                    const hasCluster = !!(scope.clusterModel.nodes && scope.clusterModel.nodes.length);
-                    createClusterZone(hasCluster);
-                    createClusterLegend();
-                    plot();
                 }
 
                 function createClusterZone(hasCluster) {
@@ -201,7 +221,6 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                         .classed('legend-group', true);
                 }
 
-                let tooltipElement;
                 const legendTooltip = d3tip()
                     .attr('class', 'd3-tip')
                     .customPosition(function () {
@@ -366,24 +385,11 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 }
 
                 function createNodes(nodes) {
-                    nodes.forEach((node) => {
-                        node.hostname = UriUtils.shortenIri(node.endpoint);
-                        if (!_.isEmpty(node.recoveryStatus)) {
-                            let messageLabelKey = `cluster_management.cluster_graphical_view.recovery_state.${node.recoveryStatus.state.toLowerCase()}`;
-                            const hasAffectedNodes = node.recoveryStatus.affectedNodes && node.recoveryStatus.affectedNodes.length > 0;
-                            if (hasAffectedNodes) {
-                                messageLabelKey += '_with_affected_node';
-                            }
-                            node.recoveryStatus.message = $translate.instant(messageLabelKey, {node: node.recoveryStatus.affectedNodes.join(', ')});
-                        }
-                    });
                     const nodeData = nodesGroup.selectAll('#node-group').data(nodes, (node) => node.address);
                     const nodesElements = CDS.createNodes(nodeData, nodeRadius);
-
                     nodesElements
                         .on('click', (event, d) => {
                             scope.childContext.selectNode(d);
-
                             // position the tooltip according to the node!
                             const tooltip = d3.select('.nodetooltip');
                             const windowWidth = $(window).width();
@@ -407,22 +413,6 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     CDS.createLinks(linksData);
                     CDS.updateLinks(linksData, nodes);
                 }
-
-                // Properties and functions that can be used by parent
-                scope.childContext.redraw = plot;
-                scope.childContext.resize = function () {
-                    // recalculates with new screen width
-                    width = getWindowWidth();
-                    height = getWindowHeight();
-                    svg.attr("width", width);
-                    svg.attr("height", height);
-                    plot();
-                    positionLegend();
-                };
-                scope.childContext.toggleLegend = () => {
-                    scope.showLegend = !scope.showLegend;
-                    legendGroup.classed('hidden', !scope.showLegend);
-                };
 
                 function resizeClusterComponent() {
                     calculateClusterZoneProperties();
@@ -452,18 +442,67 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                         .on('mouseup', mouseupCallback);
                 }
 
+                function getNodesModel() {
+                    const nodes = cloneDeep(scope.clusterModel.nodes) || [];
+                    nodes.forEach((node) => {
+                        node.hostname = UriUtils.shortenIri(node.endpoint);
+                        if (!isEmpty(node.recoveryStatus)) {
+                            let messageLabelKey = `cluster_management.cluster_graphical_view.recovery_state.${node.recoveryStatus.state.toLowerCase()}`;
+                            const hasAffectedNodes = node.recoveryStatus.affectedNodes && node.recoveryStatus.affectedNodes.length > 0;
+                            if (hasAffectedNodes) {
+                                messageLabelKey += '_with_affected_node';
+                            }
+                            node.recoveryStatus.message = $translate.instant(messageLabelKey, {node: node.recoveryStatus.affectedNodes.join(', ')});
+                        }
+                    });
+                    return nodes;
+                }
+
                 function plot() {
                     resizeClusterComponent();
                     if (hasCluster !== scope.clusterModel.hasCluster) {
                         hasCluster = !!scope.clusterModel.hasCluster;
                         setClusterZoneType(hasCluster);
                     }
-                    const nodes = _.cloneDeep(scope.clusterModel.nodes) || [];
-                    const links = _.cloneDeep(scope.clusterModel.links) || [];
+                    const nodes = getNodesModel();
                     createNodes(nodes);
+                    const links = cloneDeep(scope.clusterModel.links) || [];
                     drawLinks(links, nodes);
                 }
 
+                // =========================
+                // Events and watchers
+                // =========================
+
+                const subscribeHandlers = () => {
+                    subscriptions.push($rootScope.$on('$translateChangeSuccess', function () {
+                        updateTranslations(translationsMap);
+                        updateLabels();
+                    }));
+                };
+
+                const removeAllListeners = () => {
+                    subscriptions.forEach((subscription) => subscription());
+                };
+
+                scope.$on("$destroy", function () {
+                    legendTooltip.destroy();
+                    CDS.removeEventListeners();
+                    removeAllListeners();
+                });
+
+                // =========================
+                // Initialization
+                // =========================
+
+                function initialize() {
+                    subscribeHandlers();
+                    updateTranslations(translationsMap);
+                    const hasCluster = !!(scope.clusterModel.nodes && scope.clusterModel.nodes.length);
+                    createClusterZone(hasCluster);
+                    createClusterLegend();
+                    plot();
+                }
                 initialize();
             }
         };
