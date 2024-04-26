@@ -11,6 +11,7 @@ import 'angular/clustermanagement/controllers/replace-nodes.controller';
 import {isString} from "lodash";
 import {LinkState, NodeState} from "../../models/clustermanagement/states";
 import {DELETE_CLUSTER, UPDATE_CLUSTER} from "../events";
+import {nodeStatusInfoMapper} from "../../rest/mappers/cluster-management-mapper";
 
 const modules = [
     'ui.bootstrap',
@@ -55,19 +56,25 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     $scope.loader = true;
     $scope.isLeader = false;
     $scope.currentNode = null;
+    $scope.nodeStatusInfo = [];
     $scope.clusterModel = {};
     $scope.NodeState = NodeState;
     $scope.leaderChanged = false;
     $scope.currentLeader = null;
     // Holds child context
+    // TODO: remove this and replace with events and parameters to the child directive
     $scope.childContext = {};
     $scope.showClusterConfigurationPanel = false;
+    $scope.showNodeInfoPanel = false;
 
     // =========================
     // Public functions
     // =========================
 
-    $scope.onopen = $scope.onclose = () => angular.noop();
+    $scope.onOpenClusterConfig = () => angular.noop();
+    $scope.onCloseClusterConfig = () => angular.noop();
+    $scope.onOpenNodeInfo = () => angular.noop();
+    $scope.onCloseNodeInfo = () => angular.noop();
 
     $scope.isAdmin = () => {
         return $jwtAuth.isAuthenticated() && $jwtAuth.isAdmin();
@@ -103,6 +110,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     $scope.getClusterConfiguration = () => {
         return ClusterRestService.getClusterConfig()
             .then((response) => {
+                // console.log(`CLUSTER CONF`, response);
                 $scope.clusterConfiguration = response.data;
                 if (!$scope.currentNode) {
                     return $scope.getCurrentNodeStatus();
@@ -116,6 +124,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     $scope.getClusterStatus = () => {
         return ClusterRestService.getClusterStatus()
             .then((response) => {
+                // console.log(`CLUSTER STATUS`, response);
                 const nodes = response.data.slice();
                 const leader = nodes.find((node) => node.nodeState === NodeState.LEADER);
 
@@ -177,6 +186,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     $scope.getCurrentNodeStatus = () => {
         return ClusterRestService.getNodeStatus()
             .then((response) => {
+                console.log(`NODE STATUS`, response);
                 $scope.leaderChanged = false;
                 $scope.currentNode = response.data;
             })
@@ -305,13 +315,42 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     // Private functions
     // =========================
 
+    const nodesAreEqual = (node1, node2) => {
+        return node1.address === node2.address;
+    };
+
     const selectNode = (node) => {
-        if ($scope.selectedNode !== node) {
+        // no selected node
+        if (!$scope.selectedNode) {
             $scope.selectedNode = node;
+            $scope.showNodeInfoPanel = true;
+            ClusterViewContextService.showNodeInfoPanel();
+        } else if (!nodesAreEqual(node, $scope.selectedNode)) {
+            // currently selected node and the newly selected node are different: select the newly selected node
+            $scope.selectedNode = node;
+            if (!$scope.showNodeInfoPanel) {
+                $scope.showNodeInfoPanel = true;
+                ClusterViewContextService.showNodeInfoPanel();
+            }
+        } else if (!$scope.showNodeInfoPanel) {
+            // panel was closed and selected node is the same: just reopen it
+            $scope.showNodeInfoPanel = true;
+            ClusterViewContextService.showNodeInfoPanel();
         } else {
+            // close the panel and reset the selected node
             $scope.selectedNode = null;
+            $scope.showNodeInfoPanel = false;
+            ClusterViewContextService.hideNodeInfoPanel();
         }
-        $scope.$apply();
+        ClusterRestService.getNodeStatusHistory($scope.selectedNode.address).then((response) => {
+            const model = nodeStatusInfoMapper(response);
+            console.log(`model`, model);
+            $scope.nodeStatusInfo = model;
+        }).catch((error) => {
+            console.log(`error`, error);
+        });
+        // TODO: probably not needed
+        // $scope.$apply();
     };
 
     const updateCluster = (force) => {
@@ -431,11 +470,10 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     };
 
     const mousedownHandler = function (event) {
-        const target = event.target;
-        const nodeTooltipElement = document.getElementById('nodeTooltip');
-        if ($scope.selectedNode && nodeTooltipElement !== target && !nodeTooltipElement.contains(target)) {
-            $scope.childContext.selectNode(null);
-        }
+        // reimplement this to close the sidebar when clicking outside of it
+        // if ($scope.selectedNode) {
+        //     $scope.childContext.selectNode(null);
+        // }
     };
 
     // =========================
@@ -462,6 +500,14 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
         subscriptions.push($scope.$on(DELETE_CLUSTER, (event, data) => {
             deleteCluster(data.force);
         }));
+
+        subscriptions.push(ClusterViewContextService.onShowNodeInfoPanel((show) => {
+            $scope.showNodeInfoPanel = show;
+        }));
+
+        subscriptions.push($scope.$on('nodeSelected', (event, node) => {
+            selectNode(node);
+        }));
     };
 
     $scope.$on('$destroy', function () {
@@ -476,8 +522,9 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
 
     const init = () => {
         subscribeHandlers();
-        $scope.childContext.selectNode = selectNode;
+        // $scope.childContext.selectNode = selectNode;
         $scope.showClusterConfigurationPanel = ClusterViewContextService.getShowClusterConfigurationPanel();
+        $scope.showNodeInfoPanel = ClusterViewContextService.getShowNodeInfoPanel();
 
         loadInitialData()
             .finally(() => {

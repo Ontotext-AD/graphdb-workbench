@@ -47,31 +47,6 @@
             tooltip-placement="left"><span class="icon-settings settings-icon small"></span></button>
 </div>
 
-<div id="nodeTooltip" class="nodetooltip" ng-hide="selectedNode == null">
-    <a href="{{selectedNode.endpoint}}" class="break-word"><strong>{{selectedNode.endpoint}}</strong></a>
-    <hr style="margin-top: 10px; margin-bottom: 10px"/>
-    <div class="row">
-        <div class="col-sm-6">{{'cluster_management.cluster_status.node.rpc_address' | translate}}</div>
-        <div class="col-sm-6 break-word">{{selectedNode.address}}</div>
-    </div>
-    <div class="row">
-        <div class="col-sm-6">{{'cluster_management.cluster_status.node.state' | translate}}</div>
-        <div class="col-sm-6">{{selectedNode.nodeState}}</div>
-    </div>
-    <div class="row">
-        <div class="col-sm-6">{{'cluster_management.cluster_status.node.term' | translate}}</div>
-        <div class="col-sm-6">{{selectedNode.term}}</div>
-    </div>
-    <div class="row">
-        <div class="col-sm-6">{{'cluster_management.cluster_status.node.last_log_term' | translate}}</div>
-        <div class="col-sm-6">{{selectedNode.lastLogTerm}}</div>
-    </div>
-    <div class="row">
-        <div class="col-sm-6">{{'cluster_management.cluster_status.node.last_log_index' | translate}}</div>
-        <div class="col-sm-6">{{selectedNode.lastLogIndex}}</div>
-    </div>
-</div>
-
 <div ng-if="!loader" class="cluster-view">
     <div cluster-graphical-view></div>
     <div id="toggle-legend-button" class="toggle-legend-btn">
@@ -83,13 +58,26 @@
         </button>
     </div>
 </div>
+showNodeInfoPanel={{showNodeInfoPanel}}
+<pageslide ps-class="node-info-panel rdf-info-side-panel"
+           ps-open="showNodeInfoPanel"
+           onopen="onOpenNodeInfo"
+           onclose="onCloseNodeInfo"
+           ps-side="right"
+           ps-key-listener="true"
+           ps-click-outside="false"
+           ps-custom-height="calc(100vh - 55px)"
+           ps-size="25vw">
+    <node-info current-node="selectedNode" node-status-info="nodeStatusInfo"></node-info>
+</pageslide>
 
 <pageslide ng-show="clusterConfiguration"
            ps-class="cluster-configuration-panel rdf-info-side-panel"
            ps-open="showClusterConfigurationPanel"
-           onopen="onopen"
-           onclose="onclose"
+           onopen="onOpenClusterConfig"
+           onclose="onCloseClusterConfig"
            ps-side="right"
+           ps-key-listener="true"
            ps-custom-height="calc(100vh - 55px)"
            ps-size="25vw">
     <cluster-configuration current-node="currentNode"

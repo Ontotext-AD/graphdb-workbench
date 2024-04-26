@@ -448,6 +448,23 @@ function createHexagon(nodeGroup, radius) {
         .attr("d", d3.line());
 }
 
+
+export function createSingleHexagon(by, radius) {
+    const _s32 = (Math.sqrt(3) / 2);
+    const xDiff = 0;
+    const yDiff = 0;
+    const points = [[radius + xDiff, yDiff], [radius / 2 + xDiff, radius * _s32 + yDiff], [-radius / 2 + xDiff, radius * _s32 + yDiff],
+        [-radius + xDiff, yDiff],
+        [-radius / 2 + xDiff, -radius * _s32 + yDiff], [radius / 2 + xDiff, -radius * _s32 + yDiff], [radius + xDiff, yDiff],
+        [radius / 2 + xDiff, radius * _s32 + yDiff]];
+    const svg = d3.select(by);
+    return svg
+        .data([points])
+        .append("path")
+        .attr('class', 'node member')
+        .attr("d", d3.line());
+}
+
 export function removeEventListeners() {
     d3.select(document).selectAll('.node-info-fo').on('.tooltip', null);
 }

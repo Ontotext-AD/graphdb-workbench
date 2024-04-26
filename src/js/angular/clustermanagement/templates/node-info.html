@@ -1,0 +1,44 @@
+<div class="node-info break-word-alt p-1 pt-2">
+    <button class="close mb-1 ml-1" ng-click="vm.closeNodeInfoPanel()"></button>
+    <h4 class="hovered-parent">
+        <a href="{{vm.currentNode.endpoint}}" class="break-word"><strong>{{vm.currentNode.endpoint}}</strong></a>
+    </h4>
+
+    <div class="node-info-details">
+        <div class="row">
+            <div class="col-sm-6">{{'cluster_management.cluster_status.node.rpc_address' | translate}}</div>
+            <div class="col-sm-6 break-word">{{vm.currentNode.address}}</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">{{'cluster_management.cluster_status.node.state' | translate}}</div>
+            <div class="col-sm-6">{{vm.currentNode.nodeState}}</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">{{'cluster_management.cluster_status.node.term' | translate}}</div>
+            <div class="col-sm-6">{{vm.currentNode.term}}</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">{{'cluster_management.cluster_status.node.last_log_term' | translate}}</div>
+            <div class="col-sm-6">{{vm.currentNode.lastLogTerm}}</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">{{'cluster_management.cluster_status.node.last_log_index' | translate}}</div>
+            <div class="col-sm-6">{{vm.currentNode.lastLogIndex}}</div>
+        </div>
+    </div>
+
+    <div class="node-state-history mt-2">
+        <h5>{{'cluster_management.node_info.node_state_history' | translate}}</h5>
+
+        <div class="node-state-history-list">
+            <div ng-repeat="nodeInfo in vm.nodeStatusInfo" class="item">
+                <hr />
+                <div class="node-{{$index}}">icon: {{nodeInfo.status}}</div>
+                <div class="info">
+                    <div class="timestamp">{{nodeInfo.timestamp}}</div>
+                    <div class="status">{{nodeInfo.message}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

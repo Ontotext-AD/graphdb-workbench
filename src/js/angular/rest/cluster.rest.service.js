@@ -16,7 +16,8 @@ function ClusterRestService($http) {
         replaceNodesInCluster,
         removeNodesFromCluster,
         getClusterStatus,
-        getNodeStatus
+        getNodeStatus,
+        getNodeStatusHistory
     };
 
     /**
@@ -64,5 +65,17 @@ function ClusterRestService($http) {
 
     function getNodeStatus() {
         return $http.get(`${CLUSTER_GROUP_ENDPOINT}/node/status`);
+    }
+
+    function getNodeStatusHistory() {
+        return Promise.resolve({
+            data: [
+                {"address": "svelikov-desktop:7300", "status": "IN_SYNC", "message": "In sync", "timestamp": "1664716800000"},
+                {"address": "svelikov-desktop:7300", "status": "REQUESTING_SNAPSHOT", "message": "Requesting snapshot", "timestamp": "1664713200000"},
+                {"address": "svelikov-desktop:7300", "status": "SEARCHING", "message": "Searching", "timestamp": "1664709600000"},
+                {"address": "svelikov-desktop:7300", "status": "OUT_OF_SYNC", "message": "Out of sync", "timestamp": "1664706000000"},
+                {"address": "svelikov-desktop:7300", "status": "IN_SYNC", "message": "In sync", "timestamp": "1664702400000"}
+            ]
+        });
     }
 }

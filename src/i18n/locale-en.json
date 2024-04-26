@@ -47,6 +47,9 @@
             "label": "Cluster configuration",
             "nodes_list_label": "Nodes list"
         },
+        "node_info": {
+            "node_state_history": "Node state history"
+        },
         "cluster_status": {
             "node": {
                 "rpc_address": "RPC address",
