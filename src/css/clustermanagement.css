@@ -12,11 +12,11 @@
 }
 
 .cluster-view path.link {
-    stroke-width: 3px;
+    stroke-width: 5px;
 }
 
 .cluster-zone {
-    stroke: black;
+    stroke: var(--gray-color);
     fill: transparent;
 }
 

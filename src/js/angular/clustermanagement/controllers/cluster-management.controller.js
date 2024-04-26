@@ -10,7 +10,7 @@ import 'angular/clustermanagement/controllers/add-nodes.controller';
 import 'angular/clustermanagement/controllers/replace-nodes.controller';
 import {isString} from "lodash";
 import {LinkState, NodeState} from "../../models/clustermanagement/states";
-import {CLICK_IN_VIEW, DELETE_CLUSTER, MODEL_UPDATED, NODE_SELECTED, UPDATE_CLUSTER} from "../events";
+import {CLICK_IN_VIEW, CREATE_CLUSTER, DELETE_CLUSTER, MODEL_UPDATED, NODE_SELECTED, UPDATE_CLUSTER} from "../events";
 
 const modules = [
     'ui.bootstrap',
@@ -451,6 +451,9 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
         }));
         subscriptions.push($scope.$on(NODE_SELECTED, (event, data) => {
             selectNode(data);
+        }));
+        subscriptions.push($scope.$on(CREATE_CLUSTER, () => {
+            $scope.showCreateClusterDialog();
         }));
     };
 

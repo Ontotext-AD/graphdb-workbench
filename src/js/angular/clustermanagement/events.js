@@ -16,6 +16,12 @@ export const CLICK_IN_VIEW = 'clickInView';
 export const NODE_SELECTED = 'nodeSelected';
 
 /**
+ * Event fired when the cluster zone visualization is clicked while there is no cluster yet.
+ * @type {string}
+ */
+export const CREATE_CLUSTER = 'createCluster';
+
+/**
  * Event fired from the cluster management view component down to the child visualization informing it that the model
  * was updated.
  * @type {string}

@@ -3,7 +3,7 @@ import * as CDS from "../services/cluster-drawing.service";
 import {LinkState, NodeState, RecoveryState} from "../../models/clustermanagement/states";
 import d3tip from 'lib/d3-tip/d3-tip-patch';
 import {cloneDeep, get, isEmpty} from "lodash";
-import {CLICK_IN_VIEW, MODEL_UPDATED, NODE_SELECTED} from "../events";
+import {CLICK_IN_VIEW, CREATE_CLUSTER, MODEL_UPDATED, NODE_SELECTED} from "../events";
 
 const navigationBarWidthFull = 240;
 const navigationBarWidthCollapsed = 70;
@@ -207,6 +207,19 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
 
                     linksGroup = svg.append('g').attr('id', 'links-group');
                     nodesGroup = svg.append('g').attr('id', 'nodes-group');
+
+                    svg.append("svg:defs").append("svg:marker")
+                        .attr("id", "arrowhead")
+                        .attr("viewBox", "0 0 10 10")
+                        .attr("refX", 5)
+                        .attr("refY", 5)
+                        .attr("markerWidth", 5)
+                        .attr("markerHeight", 5)
+                        .attr("orient", "auto-start-reverse")
+                        .append("path")
+                        .attr("d", "M 0 0 L 10 5 L 0 10 z")
+                        .style("fill", "var(--secondary-color)");
+
                     createLegendGroup();
                 }
 
@@ -309,7 +322,6 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     // Position node/link state labels
                     nodeStateLabel.attr('x', legendPadding + legendWidth / 2);
                     linkStateLabel.attr('x', legendPadding + legendWidth / 2);
-
 
                     const linkWidth = legendWidth / 3;
 
@@ -425,16 +437,11 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
 
                 function setClusterZoneType(hasCluster) {
                     CDS.setCreateClusterZone(hasCluster, clusterZone, translationsMap, hasAccess);
-                    let mouseupCallback;
                     if (!hasCluster && hasAccess) {
-                        mouseupCallback = () => {
-                            scope.$apply(function () {
-                                scope.showCreateClusterDialog();
-                            });
-                        };
+                        clusterZone.on('mouseup', () => {
+                            scope.$emit(CREATE_CLUSTER);
+                        });
                     }
-                    clusterZone
-                        .on('mouseup', mouseupCallback);
                 }
 
                 function getNodesModel() {

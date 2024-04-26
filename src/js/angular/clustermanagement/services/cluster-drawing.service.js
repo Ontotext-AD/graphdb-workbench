@@ -17,7 +17,8 @@ const shortMessageLimit = 40;
 
 export function createClusterSvgElement(element) {
     return d3.select(element)
-        .append('svg');
+        .append('svg')
+        .classed('cluster-diagram', true);
 }
 
 export function createClusterZone(parent) {
@@ -26,7 +27,7 @@ export function createClusterZone(parent) {
         .append("circle")
         .classed('cluster-zone', true)
         .style('fill', 'transparent')
-        .style('stroke-width', '2');
+        .style('stroke-width', '4');
     return clusterZone;
 }
 
@@ -373,12 +374,21 @@ export function updateLinks(linksDataBinding, nodes) {
     linksDataBinding
         .attr('stroke', setLinkColor)
         .style('stroke-dasharray', setLinkStyle)
+        .style("marker-mid", addArrow)
         .attr('d', (link) => getLinkCoordinates(link, nodes));
 }
 
+function addArrow(link) {
+    if (link.status === LinkState.SYNCING) {
+        return "url(#arrowhead)";
+    }
+}
+
 export function setLinkColor(link) {
-    if (link.status === LinkState.IN_SYNC || link.status === LinkState.SYNCING) {
-        return clusterColors.ontoGreen;
+    if (link.status === LinkState.IN_SYNC) {
+        return clusterColors.ontoBlue;
+    } else if (link.status === LinkState.SYNCING) {
+        return clusterColors.ontoBlue;
     } else if (link.status === LinkState.OUT_OF_SYNC) {
         return clusterColors.ontoGrey;
     }
@@ -388,6 +398,8 @@ export function setLinkColor(link) {
 export function setLinkStyle(link) {
     if (link.status === LinkState.OUT_OF_SYNC || link.status === LinkState.SYNCING) {
         return '10 10';
+    } else if (link.status === LinkState.IN_SYNC) {
+        return 'none';
     }
     return 'none';
 }
@@ -395,13 +407,11 @@ export function setLinkStyle(link) {
 function getLinkCoordinates(link, nodes) {
     const source = nodes.find((node) => node.address === link.source);
     const target = nodes.find((node) => node.address === link.target);
-
     const deltaX = target.x - source.x;
     const deltaY = target.y - source.y;
     const dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
     const normX = deltaX / dist;
     const normY = deltaY / dist;
-
     // Padding from node center point
     const sourcePadding = 55;
     const targetPadding = 55;
@@ -409,7 +419,11 @@ function getLinkCoordinates(link, nodes) {
     const sourceY = source.y + (sourcePadding * normY);
     const targetX = target.x - (targetPadding * normX);
     const targetY = target.y - (targetPadding * normY);
-    return 'M' + sourceX + ',' + sourceY + 'L' + targetX + ',' + targetY;
+    // Calculate midpoint
+    const midpointX = (sourceX + targetX) / 2;
+    const midpointY = (sourceY + targetY) / 2;
+    return 'M' + sourceX + ',' + sourceY + 'L' + midpointX + ',' + midpointY +
+        'L' + targetX + ',' + targetY;
 }
 
 export function positionNodesOnClusterZone(nodeElements, clusterZoneX, clusterZoneY, clusterZoneRadius) {
