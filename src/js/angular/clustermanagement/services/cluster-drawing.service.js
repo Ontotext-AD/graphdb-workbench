@@ -8,6 +8,24 @@ const clusterColors = {
     ontoGrey: 'var(--gray-color)'
 };
 
+const linkStateColors = {
+    [LinkState.IN_SYNC]: clusterColors.ontoBlue,
+    [LinkState.SYNCING]: clusterColors.ontoBlue,
+    [LinkState.OUT_OF_SYNC]: clusterColors.ontoGrey,
+    [LinkState.RECEIVING_SNAPSHOT]: clusterColors.ontoBlue
+};
+
+const linkStateStyle = {
+    // solid line
+    [LinkState.IN_SYNC]: 'none',
+    // dashed line
+    [LinkState.SYNCING]: '10 10',
+    // dashed line
+    [LinkState.OUT_OF_SYNC]: '10 10',
+    // dashed line
+    [LinkState.RECEIVING_SNAPSHOT]: '10 10'
+};
+
 const font = {
     FONT_AWESOME: 'FONT_AWESOME',
     ICOMOON: 'ICOMOON'
@@ -372,6 +390,11 @@ export function createLinks(linksDataBinding) {
 
 export function updateLinks(linksDataBinding, nodes) {
     linksDataBinding
+        .attr('class', (link) => {
+            // add the link id as a css class for testing purposes
+            const idClass = link.id.replaceAll(':', '-');
+            return `link ${idClass}`;
+        })
         .attr('stroke', setLinkColor)
         .style('stroke-dasharray', setLinkStyle)
         .style("marker-mid", addArrow)
@@ -379,29 +402,19 @@ export function updateLinks(linksDataBinding, nodes) {
 }
 
 function addArrow(link) {
-    if (link.status === LinkState.SYNCING) {
+    if (link.status === LinkState.RECEIVING_SNAPSHOT) {
         return "url(#arrowhead)";
     }
 }
 
 export function setLinkColor(link) {
-    if (link.status === LinkState.IN_SYNC) {
-        return clusterColors.ontoBlue;
-    } else if (link.status === LinkState.SYNCING) {
-        return clusterColors.ontoBlue;
-    } else if (link.status === LinkState.OUT_OF_SYNC) {
-        return clusterColors.ontoGrey;
-    }
-    return 'none';
+    const linkColor = linkStateColors[link.status];
+    return linkColor || 'none';
 }
 
 export function setLinkStyle(link) {
-    if (link.status === LinkState.OUT_OF_SYNC || link.status === LinkState.SYNCING) {
-        return '10 10';
-    } else if (link.status === LinkState.IN_SYNC) {
-        return 'none';
-    }
-    return 'none';
+    const linkStyle = linkStateStyle[link.status];
+    return linkStyle || 'none';
 }
 
 function getLinkCoordinates(link, nodes) {

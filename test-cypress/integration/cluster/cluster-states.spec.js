@@ -13,7 +13,7 @@ describe('Cluster states', () => {
         GlobalOperationsStatusesStub.stubNoOperationsResponse(repositoryId);
     });
 
-    it('Should be display correct message for "waiting-for-snapshot" recovery state', () => {
+    it('Should display correct message for "waiting-for-snapshot" recovery state', () => {
         // Given I have opened the cluster management page
         ClusterPageSteps.visit();
 
@@ -35,7 +35,7 @@ describe('Cluster states', () => {
         ClusterViewSteps.getNodeInfoText('pc-desktop:7202').should('have.text', '');
     });
 
-    it('Should be display correct message for "building-snapshot" recovery state', () => {
+    it('Should display correct message for "building-snapshot" recovery state', () => {
         // Given I have opened the cluster management page
         ClusterPageSteps.visit();
 
@@ -57,7 +57,7 @@ describe('Cluster states', () => {
         ClusterViewSteps.getNodeInfoText('pc-desktop:7202').should('have.text', '');
     });
 
-    it('Should be display correct message for "sending-snapshot" recovery state', () => {
+    it('Should display correct message for "sending-snapshot" recovery state', () => {
         // Given I have opened the cluster management page
         ClusterPageSteps.visit();
 
@@ -79,7 +79,7 @@ describe('Cluster states', () => {
         ClusterViewSteps.getNodeInfoText('pc-desktop:7202').should('have.text', '');
     });
 
-    it('Should be display correct message for "receiving-snapshot" recovery state', () => {
+    it('Should display correct message for "receiving-snapshot" recovery state', () => {
         // Given I have opened the cluster management page
         ClusterPageSteps.visit();
 
@@ -94,10 +94,24 @@ describe('Cluster states', () => {
         // Then I expect to see cluster view with 3 nodes,
         ClusterViewSteps.getNodes().should('have.length', 3);
         // The first, with corresponding for "receiving-snapshot" status message without affected nodes,
-        ClusterViewSteps.getNodeInfoText('pc-desktop:7200').should('have.text', 'Receiving a snapshot');
+        ClusterViewSteps.getNodeInfoText('pc-desktop:7200').should('have.text', 'Receiving a snapshot from node http://pc...');
         // The second, with corresponding for "receiving-snapshot" status message followed with affected nodes,
-        ClusterViewSteps.getNodeInfoText('pc-desktop:7201').should('have.text', 'Receiving a snapshot from node http://pc...');
+        ClusterViewSteps.getNodeInfoText('pc-desktop:7202').should('have.text', 'Sending a snapshot to node http://pc-des...');
         // The third, without message,
-        ClusterViewSteps.getNodeInfoText('pc-desktop:7202').should('have.text', '');
+        ClusterViewSteps.getNodeInfoText('pc-desktop:7201').should('have.text', '');
+
+        // Then I expect receiving snapshot link between the node which is sending and the one which is receiving a snapshot
+        ClusterViewSteps.getLink('pc-desktop-7300-pc-desktop-7302').should('have.css', 'stroke-dasharray', '10px, 10px')
+            .and('have.css', 'marker-mid', 'url("#arrowhead")')
+            .invoke('attr', 'stroke')
+            .should('eq', 'var(--secondary-color)');
+        // And I expect an out of sync link between the leader and the out of sync node (the one receiving the snapshot)
+        ClusterViewSteps.getLink('pc-desktop-7301-pc-desktop-7300').should('have.css', 'stroke-dasharray', '10px, 10px')
+            .invoke('attr', 'stroke')
+            .should('eq', 'var(--gray-color)');
+        // And I expect to have an in sync link between the leader and the node sending the snapshot
+        ClusterViewSteps.getLink('pc-desktop-7301-pc-desktop-7302').should('have.css', 'stroke-dasharray', 'none')
+            .invoke('attr', 'stroke')
+            .should('eq', 'var(--secondary-color)');
     });
 });

@@ -23,5 +23,7 @@ export const LinkState = {
     IN_SYNC: 'IN_SYNC',
     OUT_OF_SYNC: 'OUT_OF_SYNC',
     SYNCING: 'SYNCING',
-    NO_CONNECTION: 'NO_CONNECTION'
+    NO_CONNECTION: 'NO_CONNECTION',
+    // complimentary state, built based on the recovery state of two nodes when one is receiving snapshot to the other
+    RECEIVING_SNAPSHOT: 'RECEIVING_SNAPSHOT'
 };

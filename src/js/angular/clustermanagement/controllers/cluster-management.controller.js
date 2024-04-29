@@ -9,7 +9,7 @@ import 'angular/clustermanagement/controllers/add-location.controller';
 import 'angular/clustermanagement/controllers/add-nodes.controller';
 import 'angular/clustermanagement/controllers/replace-nodes.controller';
 import {isString} from "lodash";
-import {LinkState, NodeState} from "../../models/clustermanagement/states";
+import {LinkState, NodeState, RecoveryState} from "../../models/clustermanagement/states";
 import {CLICK_IN_VIEW, CREATE_CLUSTER, DELETE_CLUSTER, MODEL_UPDATED, NODE_SELECTED, UPDATE_CLUSTER} from "../events";
 
 const modules = [
@@ -110,27 +110,12 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             .then((response) => {
                 const nodes = response.data.slice();
                 const leader = nodes.find((node) => node.nodeState === NodeState.LEADER);
-
                 if (isLeaderChanged($scope.currentLeader, leader)) {
                     $scope.currentLeader = leader;
                     $scope.leaderChanged = true;
                 }
-                $scope.currentNode = nodes.find((node) => node.address === $scope.currentNode.address);
-
-                const links = [];
-                if (leader) {
-                    Object.keys(leader.syncStatus).forEach((node) => {
-                        const status = leader.syncStatus[node];
-                        if (status !== LinkState.NO_CONNECTION) {
-                            links.push({
-                                id: `${leader.address}-${node}`,
-                                source: leader.address,
-                                target: node,
-                                status
-                            });
-                        }
-                    });
-                }
+                $scope.currentNode = nodes.find((node) => $scope.currentNode && node.address === $scope.currentNode.address);
+                const links = buildLinksModel(leader, nodes);
                 $scope.clusterModel.hasCluster = true;
                 $scope.clusterModel.nodes = nodes;
                 $scope.clusterModel.links = links;
@@ -296,6 +281,44 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     // =========================
     // Private functions
     // =========================
+
+    const buildLinksModel = (leader, nodes) => {
+        const links = [];
+        if (leader) {
+            Object.keys(leader.syncStatus).forEach((nodeAddress) => {
+                const status = leader.syncStatus[nodeAddress];
+                if (status !== LinkState.NO_CONNECTION) {
+                    links.push({
+                        id: `${leader.address}-${nodeAddress}`,
+                        source: leader.address,
+                        target: nodeAddress,
+                        status
+                    });
+                    // If there are nodes that are out of sync, find if some of them are currently receiving
+                    // snapshots and add respective link for them
+                    if (status === LinkState.OUT_OF_SYNC) {
+                        const outOfSyncNode = nodes.find((node) => node.address === nodeAddress);
+                        let nodeEndpointSendingSnapshot;
+                        if (outOfSyncNode.recoveryStatus.state === RecoveryState.RECEIVING_SNAPSHOT) {
+                            // Affected nodes for this node should contain the node endpoints which are sending the snapshot.
+                            // TBD: is it possible to have more than one node sending snapshot?
+                            nodeEndpointSendingSnapshot = outOfSyncNode.recoveryStatus.affectedNodes[0];
+                        }
+                        if (outOfSyncNode && nodeEndpointSendingSnapshot) {
+                            const nodeSendingSnapshot = nodes.find((node) => node.endpoint === nodeEndpointSendingSnapshot);
+                            links.push({
+                                id: `${outOfSyncNode.address}-${nodeSendingSnapshot.address}`,
+                                source: nodeSendingSnapshot.address,
+                                target: outOfSyncNode.address,
+                                status: LinkState.RECEIVING_SNAPSHOT
+                            });
+                        }
+                    }
+                }
+            });
+        }
+        return links;
+    };
 
     const selectNode = (node) => {
         if ($scope.selectedNode !== node) {
