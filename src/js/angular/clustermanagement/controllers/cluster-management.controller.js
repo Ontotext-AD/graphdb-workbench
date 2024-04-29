@@ -419,9 +419,9 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     };
 
     /**
-     * @param {HTMLElement} targetEl The element which is the target of the click event.
+     * @param {HTMLElement} targetEl The element which is the event target.
      */
-    const mousedownHandler = function (targetEl) {
+    const deselectNode = function (targetEl) {
         const nodeTooltipElement = document.getElementById('nodeTooltip');
         if ($scope.selectedNode && nodeTooltipElement !== targetEl && !nodeTooltipElement.contains(targetEl)) {
             selectNode(null);
@@ -447,7 +447,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             deleteCluster(data.force);
         }));
         subscriptions.push($scope.$on(CLICK_IN_VIEW, (event, data) => {
-            mousedownHandler(data);
+            deselectNode(data);
         }));
         subscriptions.push($scope.$on(NODE_SELECTED, (event, data) => {
             selectNode(data);

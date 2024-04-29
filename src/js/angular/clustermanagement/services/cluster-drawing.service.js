@@ -130,12 +130,12 @@ function addHostnameToNodes(nodeElements, nodeRadius, isLegend) {
 
         nodeTextHost
             .append('text')
-            .attr('y', nodeRadius + 15)
+            .attr('y', nodeRadius + 25)
             .attr('class', 'id id-host');
 
         nodeTextHost
             .append('text')
-            .attr('y', nodeRadius + 45)
+            .attr('y', nodeRadius + 55)
             .attr('class', 'node-info-text');
     }
 }
