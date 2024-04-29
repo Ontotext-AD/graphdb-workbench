@@ -46,4 +46,24 @@ export class ClusterPageSteps {
     static previewClusterConfig() {
         this.getPreviewClusterConfigButton().click();
     }
+
+    static openLegend() {
+        return cy.get('.toggle-legend-btn button');
+    }
+
+    static getLegend() {
+        return cy.get('.cluster-legend-group');
+    }
+
+    static getLegendNodes() {
+        return this.getLegend().find('#node-group');
+    }
+
+    static getLegendNodeStates() {
+        return this.getLegend().find('.sync-statuses-group');
+    }
+
+    static getLegendLinkStates() {
+        return this.getLegend().find('.link-state');
+    }
 }

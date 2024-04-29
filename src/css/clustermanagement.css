@@ -256,3 +256,7 @@ div.nodetooltip {
 .advanced-options-toggle {
     margin-right: 6px;
 }
+
+.toggle-legend-btn .btn {
+    text-decoration: none;
+}

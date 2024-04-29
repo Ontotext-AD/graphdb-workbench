@@ -6,6 +6,7 @@ ClusterViewContextService.$inject = ['EventEmitterService'];
 
 function ClusterViewContextService(EventEmitterService) {
     let _showClusterConfigurationPanel = false;
+    let _clusterViewD3Container;
 
     function getShowClusterConfigurationPanel() {
         return _showClusterConfigurationPanel;
@@ -28,7 +29,23 @@ function ClusterViewContextService(EventEmitterService) {
         return EventEmitterService.subscribe('showClusterConfigurationPanel', () => callback(getShowClusterConfigurationPanel()));
     }
 
+    function getClusterViewD3Container() {
+        return _clusterViewD3Container;
+    }
+
+    function onClusterViewD3ContainerUpdated(callback) {
+      return EventEmitterService.subscribe('clusterViewD3ContainerChanged', () => callback(getClusterViewD3Container()));
+    }
+
+    function updateClusterViewD3Container(clusterViewD3Container) {
+        _clusterViewD3Container = clusterViewD3Container;
+        EventEmitterService.emit('clusterViewD3ContainerChanged', getClusterViewD3Container());
+    }
+
     return {
+        updateClusterViewD3Container,
+        getClusterViewD3Container,
+        onClusterViewD3ContainerUpdated,
         getShowClusterConfigurationPanel,
         setShowClusterConfigurationPanel,
         showClusterConfigurationPanel,

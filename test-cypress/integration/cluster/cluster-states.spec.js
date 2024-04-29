@@ -102,7 +102,7 @@ describe('Cluster states', () => {
 
         // Then I expect receiving snapshot link between the node which is sending and the one which is receiving a snapshot
         ClusterViewSteps.getLink('pc-desktop-7300-pc-desktop-7302').should('have.css', 'stroke-dasharray', '10px, 10px')
-            .and('have.css', 'marker-mid', 'url("#arrowhead")')
+            .and('have.css', 'marker-mid', 'url("#arrowhead_big")')
             .invoke('attr', 'stroke')
             .should('eq', 'var(--secondary-color)');
         // And I expect an out of sync link between the leader and the out of sync node (the one receiving the snapshot)

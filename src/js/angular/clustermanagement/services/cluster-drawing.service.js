@@ -119,43 +119,34 @@ export function createNodes(nodesDataBinding, nodeRadius, isLegend) {
         .append('text')
         .attr('class', 'icon-any node-icon');
 
-    addHostnameToNodes(nodeGroup, nodeRadius, isLegend);
+    if (!isLegend) {
+        addHostnameToNodes(nodeGroup, nodeRadius, isLegend);
+    }
     return nodeUpdateElements;
 }
 
-function addHostnameToNodes(nodeElements, nodeRadius, isLegend) {
+function addHostnameToNodes(nodeElements, nodeRadius) {
     const nodeTextHost = nodeElements.append('g');
 
-    if (isLegend) {
-        nodeTextHost.append('foreignObject')
-            .attr('y', nodeRadius)
-            .attr('x', -nodeRadius)
-            .attr('width', nodeRadius * 2)
-            .attr('height', 10)
-            .attr('class', 'label-wrapper')
-            .append('xhtml:div')
-            .attr('class', 'id id-host');
-    } else {
-        nodeTextHost
-            .append('rect')
-            .attr('class', 'id-host-background')
-            .attr('rx', 6);
+    nodeTextHost
+        .append('rect')
+        .attr('class', 'id-host-background')
+        .attr('rx', 6);
 
-        nodeTextHost
-            .append('rect')
-            .attr('class', 'node-info-background')
-            .attr('rx', 6);
+    nodeTextHost
+        .append('rect')
+        .attr('class', 'node-info-background')
+        .attr('rx', 6);
 
-        nodeTextHost
-            .append('text')
-            .attr('y', nodeRadius + 25)
-            .attr('class', 'id id-host');
+    nodeTextHost
+        .append('text')
+        .attr('y', nodeRadius + 25)
+        .attr('class', 'id id-host');
 
-        nodeTextHost
-            .append('text')
-            .attr('y', nodeRadius + 55)
-            .attr('class', 'node-info-text');
-    }
+    nodeTextHost
+        .append('text')
+        .attr('y', nodeRadius + 55)
+        .attr('class', 'node-info-text');
 }
 
 export function updateNodes(nodes) {
@@ -255,7 +246,7 @@ function updateNodesInfoText(nodes) {
             return objectHeight;
         })
         .attr('x', function (d) {
-            return - (objectWidth / 2);
+            return -(objectWidth / 2);
         })
         .attr('y', function (d) {
             return 78;
@@ -397,13 +388,32 @@ export function updateLinks(linksDataBinding, nodes) {
         })
         .attr('stroke', setLinkColor)
         .style('stroke-dasharray', setLinkStyle)
-        .style("marker-mid", addArrow)
+        .style("marker-mid", (link) => setArrowLink(link, ARROW_CONFIG.BIG))
         .attr('d', (link) => getLinkCoordinates(link, nodes));
 }
 
-function addArrow(link) {
+export const ARROW_CONFIG = {
+    SMALL: {name: 'small', size: 3},
+    BIG: {name: 'big', size: 5}
+};
+
+export function addArrowHead(svg, config) {
+    svg.append("svg:defs").append("svg:marker")
+        .attr("id", `arrowhead_${config.name}`)
+        .attr("viewBox", `0 0 ${config.size * 2} ${config.size * 2}`)
+        .attr("refX", config.size)
+        .attr("refY", config.size)
+        .attr("markerWidth", config.size)
+        .attr("markerHeight", config.size)
+        .attr("orient", "auto-start-reverse")
+        .append("path")
+        .attr("d", `M 0 0 L ${config.size * 2} ${config.size} L 0 ${config.size * 2} z`)
+        .style("fill", "var(--secondary-color)");
+}
+
+export function setArrowLink(link, config) {
     if (link.status === LinkState.RECEIVING_SNAPSHOT) {
-        return "url(#arrowhead)";
+        return `url(#arrowhead_${config.name})`;
     }
 }
 
@@ -435,6 +445,8 @@ function getLinkCoordinates(link, nodes) {
     // Calculate midpoint
     const midpointX = (sourceX + targetX) / 2;
     const midpointY = (sourceY + targetY) / 2;
+    // In order to draw an arrowhead in the middle of a line, the line needs to be composed by
+    // two segments, otherwise the arrowhead won't show up.
     return 'M' + sourceX + ',' + sourceY + 'L' + midpointX + ',' + midpointY +
         'L' + targetX + ',' + targetY;
 }
@@ -453,7 +465,7 @@ export function positionNodesOnClusterZone(nodeElements, clusterZoneX, clusterZo
         });
 }
 
-function createHexagon(nodeGroup, radius) {
+export function createHexagon(nodeGroup, radius) {
     const _s32 = (Math.sqrt(3) / 2);
     const xDiff = 0;
     const yDiff = 0;

@@ -1,15 +1,14 @@
 import 'angular/utils/local-storage-adapter';
+import 'angular/clustermanagement/directives/cluster-legend.directive';
 import * as CDS from "../services/cluster-drawing.service";
-import {LinkState, NodeState, RecoveryState} from "../../models/clustermanagement/states";
-import d3tip from 'lib/d3-tip/d3-tip-patch';
-import {cloneDeep, get, isEmpty} from "lodash";
+import {ARROW_CONFIG} from "../services/cluster-drawing.service";
+import {cloneDeep, isEmpty} from "lodash";
 import {CLICK_IN_VIEW, CREATE_CLUSTER, MODEL_UPDATED, NODE_SELECTED} from "../events";
 
 const navigationBarWidthFull = 240;
 const navigationBarWidthCollapsed = 70;
 let navigationBarWidth = navigationBarWidthFull;
 const nodeRadius = 45;
-const legendNodeRadius = 25;
 
 // Labels in translation map is dynamically translated and reassigned. It contains defaults
 const translationsMap = {
@@ -44,42 +43,13 @@ const idTranslationKeyMap = {
     link_state: 'legend_link_state'
 };
 
-const getLegendNodes = function () {
-    const legendNodes = [];
-    legendNodes.push({nodeState: NodeState.LEADER, customText: 'node_state_leader'});
-    legendNodes.push({nodeState: NodeState.FOLLOWER, customText: 'node_state_follower'});
-    legendNodes.push({nodeState: NodeState.CANDIDATE, customText: 'node_state_candidate'});
-    legendNodes.push({nodeState: NodeState.NO_CLUSTER, customText: 'node_state_no_cluster'});
-    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'node_state_out_of_sync'});
-    legendNodes.push({nodeState: NodeState.NO_CONNECTION, customText: 'node_state_no_connection'});
-    legendNodes.push({nodeState: NodeState.READ_ONLY, customText: 'node_state_read_only'});
-    legendNodes.push({nodeState: NodeState.RESTRICTED, customText: 'node_state_restricted'});
-    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.searching_for_node', recoveryStatus: {state: RecoveryState.SEARCHING_FOR_NODE}});
-    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.waiting_for_snapshot', recoveryStatus: {state: RecoveryState.WAITING_FOR_SNAPSHOT}});
-    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.receiving_snapshot', recoveryStatus: {state: RecoveryState.RECEIVING_SNAPSHOT}});
-    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.applying_snapshot', recoveryStatus: {state: RecoveryState.APPLYING_SNAPSHOT}});
-    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.building_snapshot', recoveryStatus: {state: RecoveryState.BUILDING_SNAPSHOT}});
-    legendNodes.push({nodeState: NodeState.OUT_OF_SYNC, customText: 'recovery_state.sending_snapshot', recoveryStatus: {state: RecoveryState.SENDING_SNAPSHOT}});
-
-    legendNodes.forEach((node, index) => node.id = index);
-    return legendNodes;
-};
-
-const getLegendLinks = function () {
-    const links = [];
-    links.push({status: LinkState.IN_SYNC, linkTypeKey: 'link_state_in_sync'});
-    links.push({status: LinkState.SYNCING, linkTypeKey: 'link_state_syncing'});
-    links.push({status: LinkState.OUT_OF_SYNC, linkTypeKey: 'link_state_out_of_sync'});
-    links.forEach((link, index) => link.id = index);
-    return links;
-};
-
 const clusterManagementDirectives = angular.module('graphdb.framework.clustermanagement.directives.cluster-graphical-view', [
-    'graphdb.framework.utils.localstorageadapter'
+    'graphdb.framework.utils.localstorageadapter',
+    'graphdb.framework.clustermanagement.directives.cluster-legend'
 ]);
 
-clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'LocalStorageAdapter', 'LSKeys', 'UriUtils', '$translate', '$jwtAuth', '$rootScope',
-    function ($window, LocalStorageAdapter, LSKeys, UriUtils, $translate, $jwtAuth, $rootScope) {
+clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'LocalStorageAdapter', 'LSKeys', 'UriUtils', '$translate', '$jwtAuth', '$rootScope', 'ClusterViewContextService',
+    function ($window, LocalStorageAdapter, LSKeys, UriUtils, $translate, $jwtAuth, $rootScope, ClusterViewContextService) {
         return {
             restrict: 'E',
             scope: {
@@ -94,20 +64,14 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 const w = angular.element($window);
                 const subscriptions = [];
                 let hasAccess;
-                let legendGroup;
-                let legendWidth;
-                let legendHeight;
-                const legendPadding = 10;
                 let width = getWindowWidth();
                 let height = getWindowHeight();
                 let clusterZoneRadius = Math.min(width, height) / 2 - 100;
                 let clusterZoneX = width / 2;
                 let clusterZoneY = height / 2;
                 let hasCluster;
-                let tooltipElement;
 
                 // SVG components
-                let svg;
                 let clusterZone;
                 let nodesGroup;
                 let linksGroup;
@@ -133,13 +97,13 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 // =========================
 
                 function resize() {
+                    const svg = ClusterViewContextService.getClusterViewD3Container();
                     // recalculates with new screen width
                     width = getWindowWidth();
                     height = getWindowHeight();
                     svg.attr("width", width);
                     svg.attr("height", height);
                     plot();
-                    positionLegend();
                 }
 
                 function updateTranslations(translationMapObject, translationAppend = '') {
@@ -167,28 +131,13 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
 
                 function getWindowHeight() {
                     // 95% avoids horizontal scrollbars and adds some margin
-                    return Math.max((($window.innerHeight - 250) * 0.95), 600);
+                    return Math.max((($window.innerHeight - 250) * 0.95), 675);
                 }
 
                 function updateLabels() {
                     CDS.updateClusterZoneLabels(hasCluster, clusterZone, translationsMap);
                     Object.keys(idTranslationKeyMap).forEach((elementId) => {
                         d3.select(`#${elementId}`).text(getLabelFor(elementId));
-                    });
-                    if (legendGroup) {
-                        legendGroup.remove();
-                    }
-                    createLegendGroup();
-                    createClusterLegend();
-                }
-
-                function translateLegendLinksAndNodes(legendNodes, legendLinks) {
-                    legendNodes.forEach((node) => {
-                        const label = get(translationsMap, node.customText);
-                        node.toolTip = node.hostname = label;
-                    });
-                    legendLinks.forEach((link) => {
-                        link.toolTip = link.linkTypeText = translationsMap[link.linkTypeKey];
                     });
                 }
 
@@ -198,197 +147,19 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 }
 
                 function createClusterZone(hasCluster) {
-                    svg = CDS.createClusterSvgElement(element[0])
+                    const svg = CDS.createClusterSvgElement(element[0])
                         .attr('width', width)
                         .attr('height', height);
-                    svg.call(legendTooltip);
 
                     clusterZone = CDS.createClusterZone(svg, hasCluster);
 
                     linksGroup = svg.append('g').attr('id', 'links-group');
                     nodesGroup = svg.append('g').attr('id', 'nodes-group');
 
-                    svg.append("svg:defs").append("svg:marker")
-                        .attr("id", "arrowhead")
-                        .attr("viewBox", "0 0 10 10")
-                        .attr("refX", 5)
-                        .attr("refY", 5)
-                        .attr("markerWidth", 5)
-                        .attr("markerHeight", 5)
-                        .attr("orient", "auto-start-reverse")
-                        .append("path")
-                        .attr("d", "M 0 0 L 10 5 L 0 10 z")
-                        .style("fill", "var(--secondary-color)");
+                    CDS.addArrowHead(svg, ARROW_CONFIG.BIG);
+                    CDS.addArrowHead(svg, ARROW_CONFIG.SMALL);
 
-                    createLegendGroup();
-                }
-
-                function createLegendGroup() {
-                    legendGroup = svg.append('g').attr('id', 'legend-group')
-                        .classed('hidden', !scope.showLegend)
-                        .classed('legend-group', true);
-                }
-
-                const legendTooltip = d3tip()
-                    .attr('class', 'd3-tip')
-                    .customPosition(function () {
-                        const bbox = tooltipElement.getBoundingClientRect();
-                        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-                        const scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
-
-                        return {
-                            left: bbox.left + scrollLeft + 'px',
-                            top: (bbox.top - 30) + scrollTop + 'px'
-                        };
-                    })
-                    .html(function (d) {
-                        return d.toolTip;
-                    });
-
-                // Shows tooltip with legend node or link state
-                const showLegendTooltip = function (d, element) {
-                    tooltipElement = element;
-                    legendTooltip.show(d, tooltipElement);
-                };
-
-                // Hides the tooltip with legend node or link state
-                const hideLegendTooltip = function () {
-                    tooltipElement = null;
-                    legendTooltip.hide();
-                };
-
-                function createClusterLegend() {
-                    const nodeLinkStateTextHeight = 14;
-
-                    const nodeStateLabelY = legendPadding + nodeLinkStateTextHeight;
-                    const nodesGroupHeight = nodeStateLabelY + legendPadding + legendNodeRadius * 11;
-                    const linkStateLabelY = legendPadding + nodesGroupHeight;
-
-                    const legendColumns = 4;
-                    const nodesXPadding = 15;
-                    const nodesYPadding = 15;
-
-                    const legendNodes = getLegendNodes();
-                    const legendLinks = getLegendLinks();
-                    translateLegendLinksAndNodes(legendNodes, legendLinks);
-
-                    legendGroup.append('rect')
-                        .attr('id', 'legend-background')
-                        .attr('class', 'legend-background')
-                        .attr('fill', '#EEEEEE');
-
-                    const nodeStateLabel = legendGroup
-                        .append('text')
-                        .attr('id', 'node_state')
-                        .attr('class', 'id id-host')
-                        .attr('x', nodeRadius * 4)
-                        .attr('y', nodeStateLabelY)
-                        .text(getLabelFor('node_state'));
-
-                    const linkStateLabel = legendGroup
-                        .append('text')
-                        .attr('id', 'link_state')
-                        .attr('class', 'id id-host')
-                        .attr('x', nodeRadius * 4)
-                        .attr('y', linkStateLabelY)
-                        .text(getLabelFor('link_state'));
-
-                    const legendNodeData = legendGroup.selectAll('#node-group').data(legendNodes);
-                    const legendNodesElements = CDS.createNodes(legendNodeData, legendNodeRadius, true);
-                    CDS.updateNodes(legendNodesElements);
-
-                    legendNodesElements.select('.node.member')
-                        .on("mouseover", function (event, d) {
-                            event.stopPropagation();
-                            showLegendTooltip(d, this);
-                        })
-                        .on('mouseout', hideLegendTooltip);
-
-                    legendNodesElements
-                        .attr('transform', function (d) {
-                            const row = Math.floor(d.id / legendColumns);
-                            const column = d.id % legendColumns;
-                            const x = legendPadding + legendNodeRadius + (nodesXPadding + legendNodeRadius * 2) * column;
-                            const y = legendPadding * 2 + nodeLinkStateTextHeight + legendNodeRadius + (nodesYPadding + legendNodeRadius
-                                * 2) * row;
-                            return `translate(${x}, ${y})`;
-                        });
-
-                    legendGroup
-                        .call(function (d) {
-                            legendWidth = d.node().getBBox().width;
-                        });
-
-                    // Position node/link state labels
-                    nodeStateLabel.attr('x', legendPadding + legendWidth / 2);
-                    linkStateLabel.attr('x', legendPadding + legendWidth / 2);
-
-                    const linkWidth = legendWidth / 3;
-
-                    const linksGroup = legendGroup.append('g').attr('id', 'links-group');
-                    const linksGroupY = linkStateLabelY + legendPadding;
-                    linksGroup.attr('transform', `translate(${legendPadding}, ${linksGroupY})`);
-
-                    legendLinks.forEach((link, index) => {
-                        const linkPadding = 5;
-                        const startX = linkPadding;
-                        const endX = linkWidth - linkPadding;
-
-                        const linkG = linksGroup
-                            .append('g')
-                            .classed('link', true)
-                            .classed('legend', true)
-                            .attr('transform', () => {
-                                const x = index * linkWidth;
-                                return `translate(${x}, 0)`;
-                            });
-
-                        linkG
-                            .append('path')
-                            .classed('link', true)
-                            .attr('stroke-dasharray', () => CDS.setLinkStyle(link))
-                            .attr('stroke', () => CDS.setLinkColor(link))
-                            .attr('d', () => {
-                                return `M${startX},0,${endX},0`;
-                            });
-
-                        linkG.append('foreignObject')
-                            .attr('y', 10)
-                            .attr('x', 5)
-                            .attr('width', linkWidth - 10)
-                            .attr('height', 10)
-                            .attr('class', 'label-wrapper')
-                            .append('xhtml:div')
-                            .attr('class', 'id id-host')
-                            .style("font-size", "9px")
-                            .html(link.linkTypeText);
-
-                        linkG
-                            .on('mouseover', function (event) {
-                                event.stopPropagation();
-                                showLegendTooltip(link, this);
-                            })
-                            .on('mouseout', hideLegendTooltip);
-                    });
-
-
-                    legendGroup
-                        .call(function (d) {
-                            legendHeight = d.node().getBBox().height;
-                            legendWidth = d.node().getBBox().width;
-                        });
-
-                    legendGroup.select('.legend-background')
-                        .attr('height', legendHeight + legendPadding * 5)
-                        .attr('width', legendWidth + legendPadding * 2)
-                        .attr('rx', '6');
-
-                    positionLegend();
-                }
-
-                function positionLegend() {
-                    const y = height - (legendHeight + legendPadding * 4 + 50);
-                    CDS.moveElement(legendGroup, 0, y);
+                    ClusterViewContextService.updateClusterViewD3Container(svg);
                 }
 
                 function createNodes(nodes) {
@@ -501,7 +272,6 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 scope.$on("$destroy", function () {
                     w.unbind('resize', resize);
                     w.unbind('mousedown', mousedownHandler);
-                    legendTooltip.destroy();
                     CDS.removeEventListeners();
                     removeAllListeners();
                 });
@@ -516,7 +286,6 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     updateTranslations(translationsMap);
                     const hasCluster = !!(scope.clusterModel.nodes && scope.clusterModel.nodes.length);
                     createClusterZone(hasCluster);
-                    createClusterLegend();
                     plot();
                 }
                 initialize();

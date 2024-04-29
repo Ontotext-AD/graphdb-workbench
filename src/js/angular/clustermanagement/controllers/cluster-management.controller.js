@@ -300,8 +300,8 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
                         const outOfSyncNode = nodes.find((node) => node.address === nodeAddress);
                         let nodeEndpointSendingSnapshot;
                         if (outOfSyncNode.recoveryStatus.state === RecoveryState.RECEIVING_SNAPSHOT) {
-                            // Affected nodes for this node should contain the node endpoints which are sending the snapshot.
-                            // TBD: is it possible to have more than one node sending snapshot?
+                            // Affected nodes for this node should contain the node endpoint which is sending the snapshot.
+                            // Only single node is possible to send a snapshot.
                             nodeEndpointSendingSnapshot = outOfSyncNode.recoveryStatus.affectedNodes[0];
                         }
                         if (outOfSyncNode && nodeEndpointSendingSnapshot) {

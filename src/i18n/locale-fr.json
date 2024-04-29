@@ -16,6 +16,9 @@
         "cluster_graphical_view": {
             "no_cluster_configured": "Aucun cluster n'est configuré",
             "create_cluster_btn": "Cliquez ici pour créer un cluster",
+            "legend_title_node_state": "État du nœud",
+            "legend_title_sync_status": "État de synchronisation",
+            "legend_title_link_states": "États des liens",
             "legend_node_state": "ÉTAT DU NŒUD",
             "legend_link_state": "ÉTAT DU LIEN",
             "node_state_leader": "Leader",
@@ -29,6 +32,8 @@
             "link_state_in_sync": "En synchronisation",
             "link_state_syncing": "Synchronisation",
             "link_state_out_of_sync": "Désynchronisé",
+            "link_state_receiving_snapshot": "Réception d'un instantané",
+            "link_state_recovering": "Récupération",
             "recovery_state": {
                 "searching_for_node": "Recherche de nœud",
                 "applying_snapshot": "Appliquer un instantané",
@@ -85,7 +90,8 @@
             "advanced_options": "Options avancées",
             "advanced_options_tooltip": "Options avancées pour la configuration des clusters",
             "select_from_locations_hint": "Sélectionner des nœuds à distance",
-            "toggle_legend_btn": "Afficher la légende",
+            "toggle_legend_btn": "Légende",
+            "toggle_legend_btn_tooltip": "Afficher/masquer la légende",
             "errors": {
                 "only_positive_integers": "Saisissez uniquement des nombres entiers positifs",
                 "small_transaction_log_max_size": "La taille maximale du journal des transactions doit être d'au moins 1 Go ou un nombre négatif",
