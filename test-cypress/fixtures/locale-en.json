@@ -16,6 +16,9 @@
         "cluster_graphical_view": {
             "no_cluster_configured": "No cluster is configured",
             "create_cluster_btn": "Click here to create a cluster",
+            "legend_title_node_state": "Node state",
+            "legend_title_sync_status": "Sync status",
+            "legend_title_link_states": "Link states",
             "legend_node_state": "NODE STATE",
             "legend_link_state": "LINK STATE",
             "node_state_leader": "Leader",
@@ -29,6 +32,7 @@
             "link_state_in_sync": "In sync",
             "link_state_syncing": "Syncing",
             "link_state_out_of_sync": "Out of sync",
+            "link_state_recovering": "Recovering",
             "recovery_state": {
                 "searching_for_node": "Searching for node",
                 "applying_snapshot": "Applying a snapshot",
@@ -85,7 +89,8 @@
             "advanced_options": "Advanced options",
             "advanced_options_tooltip": "Advanced options for cluster configuration",
             "select_from_locations_hint": "Select nodes from remote locations",
-            "toggle_legend_btn": "Toggle legend",
+            "toggle_legend_btn": "Legend",
+            "toggle_legend_btn_tooltip": "Toggle legend",
             "errors": {
                 "only_positive_integers": "Enter only positive integers",
                 "small_transaction_log_max_size": "Transaction log maximum size must be at least 1 GB or a negative number",
