@@ -1,29 +1,29 @@
 .cluster-view {
-  position: relative;
+    position: relative;
 }
 
 .cluster-view svg {
-  background-color: #FFF;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -o-user-select: none;
-  user-select: none;
+    background-color: #FFF;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
 .cluster-view path.link {
-  stroke-width: 3px;
+    stroke-width: 5px;
 }
 
 .cluster-zone {
-  stroke: black;
-  fill: transparent;
+    stroke: var(--gray-color);
+    fill: transparent;
 }
 
 .cluster-zone.no-cluster {
-  stroke: black;
-  fill: transparent;
-  transition: fill 0.2s, stroke 0.2s;
+    stroke: black;
+    fill: transparent;
+    transition: fill 0.2s, stroke 0.2s;
 }
 
 .cluster-zone.no-cluster.has-access {
@@ -31,225 +31,228 @@
 }
 
 .cluster-zone.no-cluster:hover {
-  stroke-width: 3 !important;
-  fill: #f7f7f7 !important;
-  height: 120%;
-  width: 120%;
+    stroke-width: 3 !important;
+    fill: #f7f7f7 !important;
+    height: 120%;
+    width: 120%;
 }
 
 .settings-icon {
-  font-size: 110px !important;
+    font-size: 110px !important;
 }
 
 .settings-icon.small {
-  font-size: 56px !important;
+    font-size: 56px !important;
 }
 
 .toggle-legend-icon {
-  font-size: 40px !important;
+    font-size: 40px !important;
 }
 
 .node {
-  cursor: pointer;
-  fill: var(--gray-color);
-  stroke: black;
+    cursor: pointer;
+    fill: var(--gray-color);
 }
 
 .node.leader {
-  fill: var(--primary-color)
+    fill: var(--primary-color);
+    stroke: var(--primary-color);
 }
 
 .node.follower {
-  fill: var(--secondary-color)
+    fill: var(--secondary-color);
+    stroke: var(--secondary-color);
 }
 
 .node.candidate {
-  fill: var(--tertiary-color)
+    fill: var(--tertiary-color);
+    stroke: var(--tertiary-color);
 }
 
 .node.other {
-  fill: var(--gray-color)
+    fill: var(--gray-color);
+    stroke: var(--gray-color);
 }
 
 #node-group.legend .node {
-  cursor: default;
-  stroke-width: 0.5;
+    cursor: default;
+    stroke-width: 0.5;
 }
 
 #node-group.legend .node-icon {
-  font-size: 25px;
+    font-size: 25px;
 }
 
 .legend .id-host {
-  font-size: 9px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  text-align: center;
-  font-weight: 400;
-  color: black;
+    font-size: 9px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: center;
+    font-weight: 400;
+    color: black;
 }
 
 .legend-group .label-wrapper {
-  overflow: visible;
+    overflow: visible;
 }
 
 .toggle-legend-btn {
-  position: absolute;
-  bottom: 0;
+    position: absolute;
+    bottom: 0;
 }
 
 .legend-group.hidden {
-  visibility: hidden;
+    visibility: hidden;
 }
 
 .hidden {
-  display: none;
+    display: none;
 }
 
 text.node-icon {
-  fill: rgba(255, 255, 255, 0.5);
-  font-size: 40px;
+    fill: rgba(255, 255, 255, 0.5);
+    font-size: 40px;
 }
 
 .id-host-background, .node-info-background {
-  fill: #EEEEEE;
+    fill: #EEEEEE;
 }
 
 text.node-icon {
-  text-anchor: middle;
-  dominant-baseline: central;
+    text-anchor: middle;
+    dominant-baseline: central;
 }
 
 text {
-  font-family: var(--main-font) !important;
-  font-size: 12px;
-  pointer-events: none;
+    font-family: var(--main-font) !important;
+    font-size: 12px;
+    pointer-events: none;
 }
 
 text.id-host, .node-info-fo {
-  text-anchor: middle;
-  font-weight: 400;
+    text-anchor: middle;
+    font-weight: 400;
 }
 
 .node-info-fo {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .text-btn {
-  background: none;
-  border: none;
-  margin: 0;
-  padding-top: .1rem;
-  cursor: pointer;
+    background: none;
+    border: none;
+    margin: 0;
+    padding-top: .1rem;
+    cursor: pointer;
 }
 
 .text-btn:focus, .text-btn {
-  outline: none !important;
-  box-shadow: none
+    outline: none !important;
+    box-shadow: none
 }
 
 .no-margin-list ul {
-  margin-bottom: 0;
+    margin-bottom: 0;
 }
 
 div.nodetooltip {
-  z-index: 1000;
-  position: absolute;
-  padding: 10px;
-  padding-left: 30px;
-  font-size: 90%;
-  text-align: left;
-  background: rgba(235, 235, 235, 0.9);
-  width: 40%;
-  max-width: 400px;
+    z-index: 1000;
+    position: absolute;
+    padding: 10px;
+    padding-left: 30px;
+    font-size: 90%;
+    text-align: left;
+    background: rgba(235, 235, 235, 0.9);
+    width: 40%;
+    max-width: 400px;
 }
 
 .main-menu.collapsed ~ div .legend-container {
-  left: 90px;
+    left: 90px;
 }
 
 .cluster-loader {
-  position: relative;
-  z-index: 100000;
+    position: relative;
+    z-index: 100000;
 }
 
 .cluster-loader .ot-loader-new-content {
-  position: absolute;
-  z-index: 100000;
-  width: 100%;
-  height: calc(100vh - 120px);
-  padding-top: calc((100vh - 300px) / 2);
-  background-color: rgba(255, 255, 255, 0.66);
+    position: absolute;
+    z-index: 100000;
+    width: 100%;
+    height: calc(100vh - 120px);
+    padding-top: calc((100vh - 300px) / 2);
+    background-color: rgba(255, 255, 255, 0.66);
 }
 
 .create-cluster-loader {
-  position: absolute;
-  margin: auto;
-  display: flex;
-  z-index: 100000;
-  background-color: rgba(255, 255, 255, 0.66);
+    position: absolute;
+    margin: auto;
+    display: flex;
+    z-index: 100000;
+    background-color: rgba(255, 255, 255, 0.66);
 
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 .cluster-configuration-panel {
-  z-index: 1016 !important;
+    z-index: 1016 !important;
 }
 
 .locations-list {
-  border: 1px solid;
-  min-height: 8rem;
-  max-height: 18rem;
-  overflow: auto;
+    border: 1px solid;
+    min-height: 8rem;
+    max-height: 18rem;
+    overflow: auto;
 }
 
 .locations-list .location-item {
-  justify-content: space-between;
+    justify-content: space-between;
 }
 
 .location-item {
-  padding: 2px;
-  -webkit-user-select: none;
-  user-select: none;
-  word-break: break-all;
+    padding: 2px;
+    -webkit-user-select: none;
+    user-select: none;
+    word-break: break-all;
 
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 .location-item.hoverable:not(.list-group-item-danger):hover {
-  background-color: rgba(0, 0, 0, .05);
-  cursor: pointer;
+    background-color: rgba(0, 0, 0, .05);
+    cursor: pointer;
 }
 
 .location-item.hoverable.list-group-item-danger:hover {
-  cursor: not-allowed;
+    cursor: not-allowed;
 }
 
 .list-group-item-node {
-  cursor: pointer;
-  padding: 0;
+    cursor: pointer;
+    padding: 0;
 }
 
 .list-group-item-node a {
-  padding: 0.75rem 1.25rem;
+    padding: 0.75rem 1.25rem;
 }
 
 .logo-image {
-  background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDIxLjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCA0NyA2Ny4yIiBzdHlsZT0iIiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5zdDB7ZmlsbDojRjA0RTIzO30KPC9zdHlsZT4KPHRpdGxlPmdyYXBoZGItbG9nby1uby10ZXh0PC90aXRsZT4KCTxnPgoJPHBhdGggY2xhc3M9InN0MCIgZD0iTTM5LjMsMjcuOGM0LjMsMC45LDcsNSw2LjEsOS4zYy0wLjksNC4zLTUsNy05LjMsNi4xYy00LjItMC45LTctNS02LjItOS4yYzAuOC00LjIsNC45LTcsOS4xLTYuMgoJCUMzOS4yLDI3LjcsMzkuMiwyNy43LDM5LjMsMjcuOCIvPgoJPHBhdGggY2xhc3M9InN0MCIgZD0iTTIzLDQwLjNjMi41LDAuNiw0LjEsMywzLjcsNS41Yy0wLjUsMi41LTMsNC4xLTUuNSwzLjZjLTIuNS0wLjUtNC4xLTIuOS0zLjctNS41QzE4LjEsNDEuNCwyMC41LDM5LjgsMjMsNDAuMwoJCSIvPgoJPHBhdGggY2xhc3M9InN0MCIgZD0iTTI5LjQsMThjMS43LDAuNCwyLjgsMiwyLjUsMy43Yy0wLjQsMS43LTIsMi44LTMuNywyLjVjLTEuNy0wLjQtMi44LTItMi41LTMuN2MwLDAsMCwwLDAsMAoJCUMyNiwxOC44LDI3LjcsMTcuNywyOS40LDE4QzI5LjQsMTgsMjkuNCwxOCwyOS40LDE4Ii8+Cgk8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMjMuOSwxLjZjMy4yLDIuNSwzLjgsNywxLjMsMTAuM3MtNywzLjgtMTAuMywxLjNjLTMuMi0yLjUtMy44LTctMS4zLTEwLjJDMTYtMC4yLDIwLjYtMC44LDIzLjksMS42CgkJQzIzLjgsMS42LDIzLjgsMS42LDIzLjksMS42Ii8+Cgk8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMTIuMyw0OS40YzIuNywyLjgsMi42LDcuMi0wLjIsOS44Yy0yLjgsMi43LTcuMiwyLjYtOS44LTAuMmMtMi43LTIuOC0yLjYtNy4yLDAuMi05LjhjMCwwLDAsMCwwLDAKCQlDNS4zLDQ2LjUsOS42LDQ2LjYsMTIuMyw0OS40Ii8+CjwvZz4KPC9zdmc+Cg==) no-repeat left center;
-  height: 25px;
-  width: 25px;
+    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDIxLjAuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCA0NyA2Ny4yIiBzdHlsZT0iIiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5zdDB7ZmlsbDojRjA0RTIzO30KPC9zdHlsZT4KPHRpdGxlPmdyYXBoZGItbG9nby1uby10ZXh0PC90aXRsZT4KCTxnPgoJPHBhdGggY2xhc3M9InN0MCIgZD0iTTM5LjMsMjcuOGM0LjMsMC45LDcsNSw2LjEsOS4zYy0wLjksNC4zLTUsNy05LjMsNi4xYy00LjItMC45LTctNS02LjItOS4yYzAuOC00LjIsNC45LTcsOS4xLTYuMgoJCUMzOS4yLDI3LjcsMzkuMiwyNy43LDM5LjMsMjcuOCIvPgoJPHBhdGggY2xhc3M9InN0MCIgZD0iTTIzLDQwLjNjMi41LDAuNiw0LjEsMywzLjcsNS41Yy0wLjUsMi41LTMsNC4xLTUuNSwzLjZjLTIuNS0wLjUtNC4xLTIuOS0zLjctNS41QzE4LjEsNDEuNCwyMC41LDM5LjgsMjMsNDAuMwoJCSIvPgoJPHBhdGggY2xhc3M9InN0MCIgZD0iTTI5LjQsMThjMS43LDAuNCwyLjgsMiwyLjUsMy43Yy0wLjQsMS43LTIsMi44LTMuNywyLjVjLTEuNy0wLjQtMi44LTItMi41LTMuN2MwLDAsMCwwLDAsMAoJCUMyNiwxOC44LDI3LjcsMTcuNywyOS40LDE4QzI5LjQsMTgsMjkuNCwxOCwyOS40LDE4Ii8+Cgk8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMjMuOSwxLjZjMy4yLDIuNSwzLjgsNywxLjMsMTAuM3MtNywzLjgtMTAuMywxLjNjLTMuMi0yLjUtMy44LTctMS4zLTEwLjJDMTYtMC4yLDIwLjYtMC44LDIzLjksMS42CgkJQzIzLjgsMS42LDIzLjgsMS42LDIzLjksMS42Ii8+Cgk8cGF0aCBjbGFzcz0ic3QwIiBkPSJNMTIuMyw0OS40YzIuNywyLjgsMi42LDcuMi0wLjIsOS44Yy0yLjgsMi43LTcuMiwyLjYtOS44LTAuMmMtMi43LTIuOC0yLjYtNy4yLDAuMi05LjhjMCwwLDAsMCwwLDAKCQlDNS4zLDQ2LjUsOS42LDQ2LjYsMTIuMyw0OS40Ii8+CjwvZz4KPC9zdmc+Cg==) no-repeat left center;
+    height: 25px;
+    width: 25px;
 }
 
 .action-buttons {
-  flex-grow: 1;
+    flex-grow: 1;
 }
 
 .advanced-options-toggle {
-  margin-right: 6px;
+    margin-right: 6px;
 }

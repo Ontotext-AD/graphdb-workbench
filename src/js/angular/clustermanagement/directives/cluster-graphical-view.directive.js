@@ -2,12 +2,13 @@ import 'angular/utils/local-storage-adapter';
 import * as CDS from "../services/cluster-drawing.service";
 import {LinkState, NodeState, RecoveryState} from "../../models/clustermanagement/states";
 import d3tip from 'lib/d3-tip/d3-tip-patch';
+import {cloneDeep, get, isEmpty} from "lodash";
+import {CLICK_IN_VIEW, CREATE_CLUSTER, MODEL_UPDATED, NODE_SELECTED} from "../events";
 
 const navigationBarWidthFull = 240;
 const navigationBarWidthCollapsed = 70;
 let navigationBarWidth = navigationBarWidthFull;
-
-const nodeRadius = 50;
+const nodeRadius = 45;
 const legendNodeRadius = 25;
 
 // Labels in translation map is dynamically translated and reassigned. It contains defaults
@@ -77,22 +78,70 @@ const clusterManagementDirectives = angular.module('graphdb.framework.clusterman
     'graphdb.framework.utils.localstorageadapter'
 ]);
 
-clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'LocalStorageAdapter', 'LSKeys', 'UriUtils', '$translate', '$rootScope',
-    function ($window, LocalStorageAdapter, LSKeys, UriUtils, $translate, $rootScope) {
+clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'LocalStorageAdapter', 'LSKeys', 'UriUtils', '$translate', '$jwtAuth', '$rootScope',
+    function ($window, LocalStorageAdapter, LSKeys, UriUtils, $translate, $jwtAuth, $rootScope) {
         return {
-            restrict: 'A',
+            restrict: 'E',
+            scope: {
+                clusterModel: '='
+            },
             link: function (scope, element) {
-                const hasAccess = scope.isAdmin();
 
-                scope.showLegend = false;
-                $rootScope.$on('$translateChangeSuccess', function () {
-                    updateTranslations(translationsMap);
-                    updateLabels();
-                });
-                scope.$on("$destroy", function () {
-                    legendTooltip.destroy();
-                    CDS.removeEventListeners();
-                });
+                // =========================
+                // Private variables
+                // =========================
+
+                const w = angular.element($window);
+                const subscriptions = [];
+                let hasAccess;
+                let legendGroup;
+                let legendWidth;
+                let legendHeight;
+                const legendPadding = 10;
+                let width = getWindowWidth();
+                let height = getWindowHeight();
+                let clusterZoneRadius = Math.min(width, height) / 2 - 100;
+                let clusterZoneX = width / 2;
+                let clusterZoneY = height / 2;
+                let hasCluster;
+                let tooltipElement;
+
+                // SVG components
+                let svg;
+                let clusterZone;
+                let nodesGroup;
+                let linksGroup;
+
+                // =========================
+                // Public variables
+                // =========================
+
+                // =========================
+                // Public functions
+                // =========================
+
+                scope.width = function () {
+                    return width;
+                };
+
+                scope.height = function () {
+                    return height;
+                };
+
+                // =========================
+                // Private functions
+                // =========================
+
+                function resize() {
+                    // recalculates with new screen width
+                    width = getWindowWidth();
+                    height = getWindowHeight();
+                    svg.attr("width", width);
+                    svg.attr("height", height);
+                    plot();
+                    positionLegend();
+                }
+
                 function updateTranslations(translationMapObject, translationAppend = '') {
                     Object.keys(translationMapObject).forEach((key) => {
                         let compoundKey = '';
@@ -121,32 +170,6 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     return Math.max((($window.innerHeight - 250) * 0.95), 600);
                 }
 
-                let legendGroup;
-                let legendWidth;
-                let legendHeight;
-                const legendPadding = 10;
-
-                let width = getWindowWidth();
-                let height = getWindowHeight();
-                let clusterZoneRadius = Math.min(width, height) / 2 - 100;
-                let clusterZoneX = width / 2;
-                let clusterZoneY = height / 2;
-                let hasCluster;
-
-                scope.width = function () {
-                    return width;
-                };
-
-                scope.height = function () {
-                    return height;
-                };
-
-                // SVG components
-                let svg;
-                let clusterZone;
-                let nodesGroup;
-                let linksGroup;
-
                 function updateLabels() {
                     CDS.updateClusterZoneLabels(hasCluster, clusterZone, translationsMap);
                     Object.keys(idTranslationKeyMap).forEach((elementId) => {
@@ -161,7 +184,7 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
 
                 function translateLegendLinksAndNodes(legendNodes, legendLinks) {
                     legendNodes.forEach((node) => {
-                        const label = _.get(translationsMap, node.customText);
+                        const label = get(translationsMap, node.customText);
                         node.toolTip = node.hostname = label;
                     });
                     legendLinks.forEach((link) => {
@@ -174,14 +197,6 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     return translationsMap[labelKey];
                 }
 
-                function initialize() {
-                    updateTranslations(translationsMap);
-                    const hasCluster = !!(scope.clusterModel.nodes && scope.clusterModel.nodes.length);
-                    createClusterZone(hasCluster);
-                    createClusterLegend();
-                    plot();
-                }
-
                 function createClusterZone(hasCluster) {
                     svg = CDS.createClusterSvgElement(element[0])
                         .attr('width', width)
@@ -192,6 +207,19 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
 
                     linksGroup = svg.append('g').attr('id', 'links-group');
                     nodesGroup = svg.append('g').attr('id', 'nodes-group');
+
+                    svg.append("svg:defs").append("svg:marker")
+                        .attr("id", "arrowhead")
+                        .attr("viewBox", "0 0 10 10")
+                        .attr("refX", 5)
+                        .attr("refY", 5)
+                        .attr("markerWidth", 5)
+                        .attr("markerHeight", 5)
+                        .attr("orient", "auto-start-reverse")
+                        .append("path")
+                        .attr("d", "M 0 0 L 10 5 L 0 10 z")
+                        .style("fill", "var(--secondary-color)");
+
                     createLegendGroup();
                 }
 
@@ -201,7 +229,6 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                         .classed('legend-group', true);
                 }
 
-                let tooltipElement;
                 const legendTooltip = d3tip()
                     .attr('class', 'd3-tip')
                     .customPosition(function () {
@@ -296,7 +323,6 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     nodeStateLabel.attr('x', legendPadding + legendWidth / 2);
                     linkStateLabel.attr('x', legendPadding + legendWidth / 2);
 
-
                     const linkWidth = legendWidth / 3;
 
                     const linksGroup = legendGroup.append('g').attr('id', 'links-group');
@@ -366,24 +392,11 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                 }
 
                 function createNodes(nodes) {
-                    nodes.forEach((node) => {
-                        node.hostname = UriUtils.shortenIri(node.endpoint);
-                        if (!_.isEmpty(node.recoveryStatus)) {
-                            let messageLabelKey = `cluster_management.cluster_graphical_view.recovery_state.${node.recoveryStatus.state.toLowerCase()}`;
-                            const hasAffectedNodes = node.recoveryStatus.affectedNodes && node.recoveryStatus.affectedNodes.length > 0;
-                            if (hasAffectedNodes) {
-                                messageLabelKey += '_with_affected_node';
-                            }
-                            node.recoveryStatus.message = $translate.instant(messageLabelKey, {node: node.recoveryStatus.affectedNodes.join(', ')});
-                        }
-                    });
                     const nodeData = nodesGroup.selectAll('#node-group').data(nodes, (node) => node.address);
                     const nodesElements = CDS.createNodes(nodeData, nodeRadius);
-
                     nodesElements
                         .on('click', (event, d) => {
-                            scope.childContext.selectNode(d);
-
+                            scope.$emit(NODE_SELECTED, d);
                             // position the tooltip according to the node!
                             const tooltip = d3.select('.nodetooltip');
                             const windowWidth = $(window).width();
@@ -408,22 +421,6 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                     CDS.updateLinks(linksData, nodes);
                 }
 
-                // Properties and functions that can be used by parent
-                scope.childContext.redraw = plot;
-                scope.childContext.resize = function () {
-                    // recalculates with new screen width
-                    width = getWindowWidth();
-                    height = getWindowHeight();
-                    svg.attr("width", width);
-                    svg.attr("height", height);
-                    plot();
-                    positionLegend();
-                };
-                scope.childContext.toggleLegend = () => {
-                    scope.showLegend = !scope.showLegend;
-                    legendGroup.classed('hidden', !scope.showLegend);
-                };
-
                 function resizeClusterComponent() {
                     calculateClusterZoneProperties();
                     CDS.moveElement(clusterZone, clusterZoneX, clusterZoneY);
@@ -440,16 +437,31 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
 
                 function setClusterZoneType(hasCluster) {
                     CDS.setCreateClusterZone(hasCluster, clusterZone, translationsMap, hasAccess);
-                    let mouseupCallback;
                     if (!hasCluster && hasAccess) {
-                        mouseupCallback = () => {
-                            scope.$apply(function () {
-                                scope.showCreateClusterDialog();
-                            });
-                        };
+                        clusterZone.on('mouseup', () => {
+                            scope.$emit(CREATE_CLUSTER);
+                        });
                     }
-                    clusterZone
-                        .on('mouseup', mouseupCallback);
+                }
+
+                function getNodesModel() {
+                    const nodes = cloneDeep(scope.clusterModel.nodes) || [];
+                    nodes.forEach((node) => {
+                        node.hostname = UriUtils.shortenIri(node.endpoint);
+                        if (!isEmpty(node.recoveryStatus)) {
+                            let messageLabelKey = `cluster_management.cluster_graphical_view.recovery_state.${node.recoveryStatus.state.toLowerCase()}`;
+                            const hasAffectedNodes = node.recoveryStatus.affectedNodes && node.recoveryStatus.affectedNodes.length > 0;
+                            if (hasAffectedNodes) {
+                                messageLabelKey += '_with_affected_node';
+                            }
+                            node.recoveryStatus.message = $translate.instant(messageLabelKey, {node: node.recoveryStatus.affectedNodes.join(', ')});
+                        }
+                    });
+                    return nodes;
+                }
+
+                function mousedownHandler(event) {
+                    scope.$emit(CLICK_IN_VIEW, event.target);
                 }
 
                 function plot() {
@@ -458,12 +470,55 @@ clusterManagementDirectives.directive('clusterGraphicalView', ['$window', 'Local
                         hasCluster = !!scope.clusterModel.hasCluster;
                         setClusterZoneType(hasCluster);
                     }
-                    const nodes = _.cloneDeep(scope.clusterModel.nodes) || [];
-                    const links = _.cloneDeep(scope.clusterModel.links) || [];
+                    const nodes = getNodesModel();
                     createNodes(nodes);
+                    const links = cloneDeep(scope.clusterModel.links) || [];
                     drawLinks(links, nodes);
                 }
 
+                // =========================
+                // Events and watchers
+                // =========================
+
+                const subscribeHandlers = () => {
+                    w.bind('resize', resize);
+                    w.bind('mousedown', mousedownHandler);
+
+                    subscriptions.push($rootScope.$on('$translateChangeSuccess', function () {
+                        updateTranslations(translationsMap);
+                        updateLabels();
+                    }));
+
+                    subscriptions.push(scope.$on(MODEL_UPDATED, function () {
+                        plot();
+                    }));
+                };
+
+                const removeAllListeners = () => {
+                    subscriptions.forEach((subscription) => subscription());
+                };
+
+                scope.$on("$destroy", function () {
+                    w.unbind('resize', resize);
+                    w.unbind('mousedown', mousedownHandler);
+                    legendTooltip.destroy();
+                    CDS.removeEventListeners();
+                    removeAllListeners();
+                });
+
+                // =========================
+                // Initialization
+                // =========================
+
+                function initialize() {
+                    hasAccess = $jwtAuth.isAdmin();
+                    subscribeHandlers();
+                    updateTranslations(translationsMap);
+                    const hasCluster = !!(scope.clusterModel.nodes && scope.clusterModel.nodes.length);
+                    createClusterZone(hasCluster);
+                    createClusterLegend();
+                    plot();
+                }
                 initialize();
             }
         };

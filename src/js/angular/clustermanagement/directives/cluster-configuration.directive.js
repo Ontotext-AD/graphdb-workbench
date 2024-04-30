@@ -6,9 +6,9 @@ angular
     .module('graphdb.framework.clustermanagement.directives.cluster-configuration', modules)
     .directive('clusterConfiguration', ClusterConfiguration);
 
-ClusterConfiguration.$inject = ['$jwtAuth', '$uibModal', '$translate', 'toastr', 'ClusterViewContextService', 'ClusterRestService'];
+ClusterConfiguration.$inject = ['$jwtAuth', '$uibModal', '$translate', 'toastr', 'ClusterViewContextService'];
 
-function ClusterConfiguration($jwtAuth, $uibModal, $translate, toastr, ClusterViewContextService, ClusterRestService) {
+function ClusterConfiguration($jwtAuth, $uibModal, $translate, toastr, ClusterViewContextService) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/clustermanagement/templates/cluster-configuration.html',

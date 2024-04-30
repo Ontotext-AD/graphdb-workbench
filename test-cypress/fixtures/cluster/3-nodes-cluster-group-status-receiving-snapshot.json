@@ -8,7 +8,7 @@
         "lastLogIndex": 0,
         "endpoint": "http://pc-desktop:7200",
         "recoveryStatus": {
-            "affectedNodes": [],
+            "affectedNodes": ["http://pc-desktop:7202"],
             "state": "RECEIVING_SNAPSHOT"
         }
     },
@@ -17,16 +17,13 @@
         "nodeState": "LEADER",
         "term": 2,
         "syncStatus": {
-            "pc-desktop:7300": "IN_SYNC",
+            "pc-desktop:7300": "OUT_OF_SYNC",
             "pc-desktop:7302": "IN_SYNC"
         },
         "lastLogTerm": 0,
         "lastLogIndex": 0,
         "endpoint": "http://pc-desktop:7201",
-        "recoveryStatus": {
-            "affectedNodes": ["http://pc-desktop:7200"],
-            "state": "RECEIVING_SNAPSHOT"
-        }
+        "recoveryStatus": {}
     },
     {
         "address": "pc-desktop:7302",
@@ -36,6 +33,9 @@
         "lastLogTerm": 0,
         "lastLogIndex": 0,
         "endpoint": "http://pc-desktop:7202",
-        "recoveryStatus": {}
+        "recoveryStatus": {
+            "affectedNodes": ["http://pc-desktop:7200"],
+            "state": "SENDING_SNAPSHOT"
+        }
     }
 ]

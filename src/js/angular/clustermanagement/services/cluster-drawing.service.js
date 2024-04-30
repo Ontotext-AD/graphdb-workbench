@@ -1,10 +1,29 @@
 import {LinkState, NodeState, RecoveryState} from "../../models/clustermanagement/states";
+import {isEmpty} from "lodash";
 
 const clusterColors = {
     ontoOrange: 'var(--primary-color)',
     ontoBlue: 'var(--secondary-color)',
     ontoGreen: 'var(--tertiary-color)',
     ontoGrey: 'var(--gray-color)'
+};
+
+const linkStateColors = {
+    [LinkState.IN_SYNC]: clusterColors.ontoBlue,
+    [LinkState.SYNCING]: clusterColors.ontoBlue,
+    [LinkState.OUT_OF_SYNC]: clusterColors.ontoGrey,
+    [LinkState.RECEIVING_SNAPSHOT]: clusterColors.ontoBlue
+};
+
+const linkStateStyle = {
+    // solid line
+    [LinkState.IN_SYNC]: 'none',
+    // dashed line
+    [LinkState.SYNCING]: '10 10',
+    // dashed line
+    [LinkState.OUT_OF_SYNC]: '10 10',
+    // dashed line
+    [LinkState.RECEIVING_SNAPSHOT]: '10 10'
 };
 
 const font = {
@@ -16,7 +35,8 @@ const shortMessageLimit = 40;
 
 export function createClusterSvgElement(element) {
     return d3.select(element)
-        .append('svg');
+        .append('svg')
+        .classed('cluster-diagram', true);
 }
 
 export function createClusterZone(parent) {
@@ -25,7 +45,7 @@ export function createClusterZone(parent) {
         .append("circle")
         .classed('cluster-zone', true)
         .style('fill', 'transparent')
-        .style('stroke-width', '2');
+        .style('stroke-width', '4');
     return clusterZone;
 }
 
@@ -128,12 +148,12 @@ function addHostnameToNodes(nodeElements, nodeRadius, isLegend) {
 
         nodeTextHost
             .append('text')
-            .attr('y', nodeRadius + 15)
+            .attr('y', nodeRadius + 25)
             .attr('class', 'id id-host');
 
         nodeTextHost
             .append('text')
-            .attr('y', nodeRadius + 45)
+            .attr('y', nodeRadius + 55)
             .attr('class', 'node-info-text');
     }
 }
@@ -170,7 +190,7 @@ function updateNodesIcon(nodes) {
 }
 
 function hasRecoveryState(node) {
-    return !_.isEmpty(node.recoveryStatus);
+    return !isEmpty(node.recoveryStatus);
 }
 
 const iconMap = {
@@ -181,6 +201,14 @@ const iconMap = {
     [RecoveryState.BUILDING_SNAPSHOT]: {icon: '\uf187', font: font.FONT_AWESOME},
     [RecoveryState.SENDING_SNAPSHOT]: {icon: '\uf0ee', font: font.FONT_AWESOME},
     [RecoveryState.RECOVERY_OPERATION_FAILURE_WARNING]: {icon: '\ue920', font: font.ICOMOON}
+};
+
+const nodeStateIcons = {
+    [NodeState.CANDIDATE]: {icon: '\ue914', font: font.ICOMOON},
+    [NodeState.NO_CONNECTION]: {icon: '\ue931', font: font.ICOMOON},
+    [NodeState.OUT_OF_SYNC]: {icon: '\ue920', font: font.ICOMOON},
+    [NodeState.READ_ONLY]: {icon: '\ue95c', font: font.ICOMOON},
+    [NodeState.RESTRICTED]: {icon: '\ue933', font: font.ICOMOON}
 };
 
 function getNodeInfoIconType(node) {
@@ -194,22 +222,8 @@ function getNodeInfoIconType(node) {
 }
 
 function getNodeIconType(node) {
-    if (node.nodeState === NodeState.LEADER) {
-        return {icon: '\ue935', font: font.ICOMOON};
-    } else if (node.nodeState === NodeState.FOLLOWER) {
-        return {icon: '\ue963', font: font.ICOMOON};
-    } else if (node.nodeState === NodeState.CANDIDATE) {
-        return {icon: '\ue914', font: font.ICOMOON};
-    } else if (node.nodeState === NodeState.NO_CONNECTION) {
-        return {icon: '\ue931', font: font.ICOMOON};
-    } else if (node.nodeState === NodeState.OUT_OF_SYNC) {
-        return {icon: '\ue920', font: font.ICOMOON};
-    } else if (node.nodeState === NodeState.READ_ONLY) {
-        return {icon: '\ue95c', font: font.ICOMOON};
-    } else if (node.nodeState === NodeState.RESTRICTED) {
-        return {icon: '\ue933', font: font.ICOMOON};
-    }
-    return {icon: '', font: ''};
+    const iconType = nodeStateIcons[node.nodeState];
+    return iconType ? iconType : {icon: '', font: ''};
 }
 
 function updateNodesInfoText(nodes) {
@@ -225,7 +239,7 @@ function updateNodesInfoText(nodes) {
         })
         .append('foreignObject')
         .attr('width', function (d) {
-            if (_.isEmpty(d.recoveryStatus)) {
+            if (isEmpty(d.recoveryStatus)) {
                 return 0;
             }
             const shortMessage = extractShortMessageFromNode(d);
@@ -235,7 +249,7 @@ function updateNodesInfoText(nodes) {
             return objectWidth;
         })
         .attr('height', function (d) {
-            if (_.isEmpty(d.recoveryStatus)) {
+            if (isEmpty(d.recoveryStatus)) {
                 return 0;
             }
             return objectHeight;
@@ -247,7 +261,7 @@ function updateNodesInfoText(nodes) {
             return 78;
         })
         .classed('hidden', function (d) {
-            return _.isEmpty(d.recoveryStatus);
+            return isEmpty(d.recoveryStatus);
         })
         .style('font-size', '12px')
         .style('font-weight', '400')
@@ -315,7 +329,7 @@ function resizeLabelDynamic(nodes) {
     nodes.select('.node-info-fo')
         .each(function (d) {
             const object = d3.select(this);
-            if (_.isEmpty(d.recoveryStatus)) {
+            if (isEmpty(d.recoveryStatus)) {
                 object.attr('width', 0);
                 return;
             }
@@ -376,37 +390,41 @@ export function createLinks(linksDataBinding) {
 
 export function updateLinks(linksDataBinding, nodes) {
     linksDataBinding
+        .attr('class', (link) => {
+            // add the link id as a css class for testing purposes
+            const idClass = link.id.replaceAll(':', '-');
+            return `link ${idClass}`;
+        })
         .attr('stroke', setLinkColor)
         .style('stroke-dasharray', setLinkStyle)
+        .style("marker-mid", addArrow)
         .attr('d', (link) => getLinkCoordinates(link, nodes));
 }
 
-export function setLinkColor(link) {
-    if (link.status === LinkState.IN_SYNC || link.status === LinkState.SYNCING) {
-        return clusterColors.ontoGreen;
-    } else if (link.status === LinkState.OUT_OF_SYNC) {
-        return clusterColors.ontoGrey;
+function addArrow(link) {
+    if (link.status === LinkState.RECEIVING_SNAPSHOT) {
+        return "url(#arrowhead)";
     }
-    return 'none';
+}
+
+export function setLinkColor(link) {
+    const linkColor = linkStateColors[link.status];
+    return linkColor || 'none';
 }
 
 export function setLinkStyle(link) {
-    if (link.status === LinkState.OUT_OF_SYNC || link.status === LinkState.SYNCING) {
-        return '10 10';
-    }
-    return 'none';
+    const linkStyle = linkStateStyle[link.status];
+    return linkStyle || 'none';
 }
 
 function getLinkCoordinates(link, nodes) {
     const source = nodes.find((node) => node.address === link.source);
     const target = nodes.find((node) => node.address === link.target);
-
     const deltaX = target.x - source.x;
     const deltaY = target.y - source.y;
     const dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
     const normX = deltaX / dist;
     const normY = deltaY / dist;
-
     // Padding from node center point
     const sourcePadding = 55;
     const targetPadding = 55;
@@ -414,7 +432,11 @@ function getLinkCoordinates(link, nodes) {
     const sourceY = source.y + (sourcePadding * normY);
     const targetX = target.x - (targetPadding * normX);
     const targetY = target.y - (targetPadding * normY);
-    return 'M' + sourceX + ',' + sourceY + 'L' + targetX + ',' + targetY;
+    // Calculate midpoint
+    const midpointX = (sourceX + targetX) / 2;
+    const midpointY = (sourceY + targetY) / 2;
+    return 'M' + sourceX + ',' + sourceY + 'L' + midpointX + ',' + midpointY +
+        'L' + targetX + ',' + targetY;
 }
 
 export function positionNodesOnClusterZone(nodeElements, clusterZoneX, clusterZoneY, clusterZoneRadius) {
@@ -445,6 +467,8 @@ function createHexagon(nodeGroup, radius) {
         .enter()
         .append("path")
         .attr('class', 'node member')
+        .attr("stroke-width", "10")
+        .attr("stroke-linejoin", "round")
         .attr("d", d3.line());
 }
 

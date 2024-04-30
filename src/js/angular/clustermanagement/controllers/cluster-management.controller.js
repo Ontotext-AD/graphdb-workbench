@@ -9,8 +9,8 @@ import 'angular/clustermanagement/controllers/add-location.controller';
 import 'angular/clustermanagement/controllers/add-nodes.controller';
 import 'angular/clustermanagement/controllers/replace-nodes.controller';
 import {isString} from "lodash";
-import {LinkState, NodeState} from "../../models/clustermanagement/states";
-import {DELETE_CLUSTER, UPDATE_CLUSTER} from "../events";
+import {LinkState, NodeState, RecoveryState} from "../../models/clustermanagement/states";
+import {CLICK_IN_VIEW, CREATE_CLUSTER, DELETE_CLUSTER, MODEL_UPDATED, NODE_SELECTED, UPDATE_CLUSTER} from "../events";
 
 const modules = [
     'ui.bootstrap',
@@ -45,8 +45,8 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     // =========================
 
     const DELETED_ON_NODE_MESSAGE = 'Cluster was deleted on this node.';
-    const w = angular.element($window);
     let updateRequest;
+    const subscriptions = [];
 
     // =========================
     // Public variables
@@ -59,8 +59,6 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     $scope.NodeState = NodeState;
     $scope.leaderChanged = false;
     $scope.currentLeader = null;
-    // Holds child context
-    $scope.childContext = {};
     $scope.showClusterConfigurationPanel = false;
 
     // =========================
@@ -76,12 +74,6 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     $scope.openClusterConfigurationPanel = () => {
         $scope.showClusterConfigurationPanel = true;
         ClusterViewContextService.showClusterConfigurationPanel();
-    };
-
-    $scope.toggleLegend = () => {
-        if ($scope.childContext.toggleLegend) {
-            $scope.childContext.toggleLegend();
-        }
     };
 
     $scope.setLoader = (loader, message) => {
@@ -118,27 +110,12 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             .then((response) => {
                 const nodes = response.data.slice();
                 const leader = nodes.find((node) => node.nodeState === NodeState.LEADER);
-
                 if (isLeaderChanged($scope.currentLeader, leader)) {
                     $scope.currentLeader = leader;
                     $scope.leaderChanged = true;
                 }
-                $scope.currentNode = nodes.find((node) => node.address === $scope.currentNode.address);
-
-                const links = [];
-                if (leader) {
-                    Object.keys(leader.syncStatus).forEach((node) => {
-                        const status = leader.syncStatus[node];
-                        if (status !== LinkState.NO_CONNECTION) {
-                            links.push({
-                                id: `${leader.address}-${node}`,
-                                source: leader.address,
-                                target: node,
-                                status
-                            });
-                        }
-                    });
-                }
+                $scope.currentNode = nodes.find((node) => $scope.currentNode && node.address === $scope.currentNode.address);
+                const links = buildLinksModel(leader, nodes);
                 $scope.clusterModel.hasCluster = true;
                 $scope.clusterModel.nodes = nodes;
                 $scope.clusterModel.links = links;
@@ -305,6 +282,44 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     // Private functions
     // =========================
 
+    const buildLinksModel = (leader, nodes) => {
+        const links = [];
+        if (leader) {
+            Object.keys(leader.syncStatus).forEach((nodeAddress) => {
+                const status = leader.syncStatus[nodeAddress];
+                if (status !== LinkState.NO_CONNECTION) {
+                    links.push({
+                        id: `${leader.address}-${nodeAddress}`,
+                        source: leader.address,
+                        target: nodeAddress,
+                        status
+                    });
+                    // If there are nodes that are out of sync, find if some of them are currently receiving
+                    // snapshots and add respective link for them
+                    if (status === LinkState.OUT_OF_SYNC) {
+                        const outOfSyncNode = nodes.find((node) => node.address === nodeAddress);
+                        let nodeEndpointSendingSnapshot;
+                        if (outOfSyncNode.recoveryStatus.state === RecoveryState.RECEIVING_SNAPSHOT) {
+                            // Affected nodes for this node should contain the node endpoints which are sending the snapshot.
+                            // TBD: is it possible to have more than one node sending snapshot?
+                            nodeEndpointSendingSnapshot = outOfSyncNode.recoveryStatus.affectedNodes[0];
+                        }
+                        if (outOfSyncNode && nodeEndpointSendingSnapshot) {
+                            const nodeSendingSnapshot = nodes.find((node) => node.endpoint === nodeEndpointSendingSnapshot);
+                            links.push({
+                                id: `${outOfSyncNode.address}-${nodeSendingSnapshot.address}`,
+                                source: nodeSendingSnapshot.address,
+                                target: outOfSyncNode.address,
+                                status: LinkState.RECEIVING_SNAPSHOT
+                            });
+                        }
+                    }
+                }
+            });
+        }
+        return links;
+    };
+
     const selectNode = (node) => {
         if ($scope.selectedNode !== node) {
             $scope.selectedNode = node;
@@ -332,7 +347,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             })
             .finally(() => {
                 updateRequest = null;
-                $scope.childContext.redraw();
+                $scope.$broadcast(MODEL_UPDATED);
             });
     };
 
@@ -426,15 +441,13 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             });
     };
 
-    const resizeHandler = () => {
-        $scope.childContext.resize();
-    };
-
-    const mousedownHandler = function (event) {
-        const target = event.target;
+    /**
+     * @param {HTMLElement} targetEl The element which is the event target.
+     */
+    const deselectNode = function (targetEl) {
         const nodeTooltipElement = document.getElementById('nodeTooltip');
-        if ($scope.selectedNode && nodeTooltipElement !== target && !nodeTooltipElement.contains(target)) {
-            $scope.childContext.selectNode(null);
+        if ($scope.selectedNode && nodeTooltipElement !== targetEl && !nodeTooltipElement.contains(targetEl)) {
+            selectNode(null);
         }
     };
 
@@ -442,17 +455,11 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     // Events and watchers
     // =========================
 
-    const subscriptions = [];
-
     const removeAllListeners = () => {
         subscriptions.forEach((subscription) => subscription());
     };
 
     const subscribeHandlers = () => {
-        // track window resizing and window mousedown
-        w.bind('resize', resizeHandler);
-        w.bind('mousedown', mousedownHandler);
-
         subscriptions.push(ClusterViewContextService.onShowClusterConfigurationPanel((show) => {
             $scope.showClusterConfigurationPanel = show;
         }));
@@ -462,11 +469,18 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
         subscriptions.push($scope.$on(DELETE_CLUSTER, (event, data) => {
             deleteCluster(data.force);
         }));
+        subscriptions.push($scope.$on(CLICK_IN_VIEW, (event, data) => {
+            deselectNode(data);
+        }));
+        subscriptions.push($scope.$on(NODE_SELECTED, (event, data) => {
+            selectNode(data);
+        }));
+        subscriptions.push($scope.$on(CREATE_CLUSTER, () => {
+            $scope.showCreateClusterDialog();
+        }));
     };
 
     $scope.$on('$destroy', function () {
-        w.unbind('resize', resizeHandler);
-        w.unbind('mousedown', mousedownHandler);
         removeAllListeners();
     });
 
@@ -476,7 +490,6 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
 
     const init = () => {
         subscribeHandlers();
-        $scope.childContext.selectNode = selectNode;
         $scope.showClusterConfigurationPanel = ClusterViewContextService.getShowClusterConfigurationPanel();
 
         loadInitialData()
