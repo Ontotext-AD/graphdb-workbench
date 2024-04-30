@@ -522,9 +522,9 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
     }
 }
 
-EditResourceCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$repositories', '$uibModal', '$timeout', 'ClassInstanceDetailsService', 'StatementsService', 'RDF4JRepositoriesRestService', '$translate'];
+EditResourceCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$repositories', '$uibModal', '$timeout', 'ClassInstanceDetailsService', 'StatementsService', 'RDF4JRepositoriesRestService', '$translate', '$licenseService'];
 
-function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibModal, $timeout, ClassInstanceDetailsService, StatementsService, RDF4JRepositoriesRestService, $translate) {
+function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibModal, $timeout, ClassInstanceDetailsService, StatementsService, RDF4JRepositoriesRestService, $translate, $licenseService) {
     $scope.uriParam = $location.search().uri;
     $scope.newRow = {
         subject: $scope.uriParam,
@@ -548,9 +548,10 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibM
     $scope.validEditRow = validEditRow;
     $scope.viewTrig = viewTrig;
     $scope.save = save;
+    $scope.isLicenseValid = $licenseService.isLicenseValid();
 
     function getClassInstancesDetails() {
-        if (!$scope.isLicenseValid()) {
+        if (!$scope.isLicenseValid) {
             return;
         }
         RDF4JRepositoriesRestService.getNamespaces($scope.activeRepository())

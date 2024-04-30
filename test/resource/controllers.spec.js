@@ -21,8 +21,11 @@ describe('=> EditResourceCtrl', function () {
         StatementsService,
         $scope,
         $translate;
+        $licenseService;
 
-    beforeEach(angular.mock.inject(function (_$repositories_, _$httpBackend_, _$location_, _$controller_, _$window_, _$timeout_, _ClassInstanceDetailsService_, _StatementsService_, $rootScope, _$translate_) {
+    beforeEach(angular.mock.inject(function (_$repositories_, _$httpBackend_, _$location_, _$controller_, _$window_,
+                                             _$timeout_, _ClassInstanceDetailsService_, _StatementsService_, $rootScope,
+                                             _$translate_, _$licenseService_) {
         $repositories = _$repositories_;
         $httpBackend = _$httpBackend_;
         $location = _$location_;
@@ -33,12 +36,15 @@ describe('=> EditResourceCtrl', function () {
         StatementsService = _StatementsService_;
         $scope = $rootScope.$new();
         $translate = _$translate_;
+        $licenseService = _$licenseService_;
 
         $translate.instant = function (key) {
             return bundle[key];
         }
 
         $httpBackend.when('GET', 'rest/locations').respond(200, {});
+        $httpBackend.when('GET', 'rest/graphdb-settings/license').respond(200, 'licenseinfo');
+        $httpBackend.when('GET', 'rest/graphdb-settings/license/hardcoded').respond(200, 'true');
 
         $controller('EditResourceCtrl', {$scope: $scope, $translate: $translate});
 
