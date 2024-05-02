@@ -83,13 +83,13 @@
 
 <div class="top-offset" core-errors license></div>
 <div class="top-offset" system-repo-warning></div>
-<div class="top-offset alert alert-danger" ng-show="repositoryError && isLicenseValid()">
+<div class="top-offset alert alert-danger" ng-show="repositoryError">
     <p>{{'not.usable.active.repo.error' | translate}}</p>
 
     <p>{{repositoryError}}</p>
 </div>
 
-<div class="explore" ng-hide="loader || repositoryError || !isLicenseValid()">
+<div class="explore" ng-hide="loader || repositoryError">
 
     <div class="row class-cnt-slider animate-show" ng-show="showExternalElements && hasClassHierarchy()" style="margin-left: 20px;">
 		<p class="slider-help-button">
@@ -107,7 +107,7 @@
                   ng-hide="isSystemRepository()"></rzslider>
     </div>
     <div class='explore_results'>
-		<div class="top-offset alert alert-danger" ng-show="hierarchyError">
+		<div class="top-offset alert alert-danger" ng-show="hierarchyError && isLicenseValid()">
 			<p>{{'cannot.load.classhierarchy.for.repo.warning' | translate}}
 				<button class="btn btn-link p-0 pull-right"
 						gdb-tooltip="{{'reload.diagram.tooltip' | translate}}"
@@ -119,7 +119,7 @@
 			<p>{{hierarchyError}}</p>
 
 		</div>
-        <div class="top-offset row" ng-show="getActiveRepositoryNoError() && !hierarchyError && !hasClassHierarchy() && !isSystemRepository() && isAllGraphsSelected()">
+        <div class="top-offset row" ng-show="isLicenseValid() && getActiveRepositoryNoError() && !hierarchyError && !hasClassHierarchy() && !isSystemRepository() && isAllGraphsSelected()">
             <p class="alert alert-warning">{{'no.classhierarchy.for.repo.warning' | translate}}</p>
         </div>
         <div class="top-offset row" ng-show="getActiveRepositoryNoError() && !hierarchyError && !hasClassHierarchy() && !isSystemRepository() && !isAllGraphsSelected()">
