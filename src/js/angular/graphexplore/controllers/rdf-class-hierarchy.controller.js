@@ -57,7 +57,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     let selectedGraph = allGraphs;
 
     const initView = function () {
-        if (!$scope.getActiveRepository()) {
+        if (!$scope.getActiveRepository() && !$licenseService.isLicenseValid()) {
             return;
         }
         return RDF4JRepositoriesRestService.resolveGraphs($repositories.getActiveRepository())
@@ -65,8 +65,8 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
                 $scope.graphsInRepo = graphsInRepo.results.bindings.length > 1002 ? graphsInRepo.results.bindings.slice(0, 1002) : graphsInRepo.results.bindings;
                 setSelectedGraphFromCache();
             }).error(function (data) {
-            $scope.repositoryError = getError(data);
-            toastr.error(getError(data), $translate.instant('graphexplore.error.getting.graphs'));
+                $scope.repositoryError = getError(data);
+                toastr.error(getError(data), $translate.instant('graphexplore.error.getting.graphs'));
         });
     };
 
@@ -133,6 +133,10 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
             prepareDataForClassInfoSidePanel($scope.selectedClass);
         }
     });
+
+    $scope.isLicenseValid = function() {
+        return $licenseService.isLicenseValid();
+    };
 
     function instancesFilterFunc(inst) {
         return inst.resolvedUri
@@ -452,10 +456,12 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     }
 
     function getClassHierarchyData() {
-
+        if (!$licenseService.isLicenseValid()) {
+            return;
+        }
         refreshDiagramExternalElements();
 
-        if (!$scope.isSystemRepository() && $scope.isLicenseValid()) {
+        if (!$scope.isSystemRepository()) {
             $scope.hierarchyError = false;
             $scope.loader = true;
             GraphDataRestService.getClassHierarchyData(selectedGraph.contextID.uri)

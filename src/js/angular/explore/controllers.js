@@ -67,7 +67,6 @@ function ExploreCtrl(
     $scope.contextTypes = ContextType.getAllType();
     $scope.currentContextTypeId = ContextTypes.EXPLICIT.id;
     $scope.roles = [RoleType.SUBJECT, RoleType.PREDICATE, RoleType.OBJECT, RoleType.CONTEXT, RoleType.ALL];
-    $scope.isLicenseValid = $licenseService.isLicenseValid();
     $scope.resourceInfo = undefined;
 
     // Defaults
@@ -130,7 +129,7 @@ function ExploreCtrl(
     };
 
     $scope.loadResource = () => {
-        if (!$scope.isLicenseValid) {
+        if (!$licenseService.isLicenseValid()) {
             return;
         }
         // Get resource details
@@ -535,7 +534,7 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibM
     };
     $scope.newResource = false;
     $scope.datatypeOptions = StatementsService.getDatatypeOptions();
-
+    $scope.isLicenseValid = $licenseService.isLicenseValid();
     $scope.activeRepository = function () {
         return $repositories.getActiveRepository();
     };
@@ -548,10 +547,9 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibM
     $scope.validEditRow = validEditRow;
     $scope.viewTrig = viewTrig;
     $scope.save = save;
-    $scope.isLicenseValid = $licenseService.isLicenseValid();
 
     function getClassInstancesDetails() {
-        if (!$scope.isLicenseValid) {
+        if (!$licenseService.isLicenseValid()) {
             return;
         }
         RDF4JRepositoriesRestService.getNamespaces($scope.activeRepository())
@@ -588,7 +586,7 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibM
     $scope.$watch(function () {
         return $repositories.getActiveRepository();
     }, function () {
-        if ($scope.isLicenseValid && $scope.activeRepository()) {
+        if ($licenseService.isLicenseValid() && $scope.activeRepository()) {
             $scope.getClassInstancesDetails();
         }
     });

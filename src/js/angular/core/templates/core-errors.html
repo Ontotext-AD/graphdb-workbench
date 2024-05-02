@@ -3,7 +3,7 @@
         <div class="mb-1 mt-1 ml-1 mr-1">
             <div class="card repository-errors">
                 <div class="alert lead" ng-class="!getActiveRepository() ? 'alert-info' : 'alert-warning'">
-                    <div ng-if="!getActiveRepository()" >{{'core.errors.no.connected.repository.warning.msg' | translate}}</div>
+                    <div ng-if="isLicenseValid() && !getActiveRepository()" >{{'core.errors.no.connected.repository.warning.msg' | translate}}</div>
                     <div id="restrictedDiv" ng-if="getActiveRepository() && isRestricted">{{'core.errors.restricted.warning.msg' | translate}}
                         <span ng-if="!isLicenseValid()">{{'core.errors.not.valid.license.warning.msg' | translate}}
                             <p></p>
@@ -32,7 +32,7 @@
                 </div>
                 <ul class="list-group limit-height clearfix two-columns repos" ng-mouseleave="hidePopoverForRepo($event)">
                     <li ng-repeat="repository in getAccessibleRepositories() | orderBy: ['type === \'system\'', 'location', 'id']"
-                        ng-if="repository.id !== getActiveRepository() || repository.location !== getActiveRepositoryObject().location"
+                        ng-if="isLicenseValid() && repository.id !== getActiveRepository() || repository.location !== getActiveRepositoryObject().location"
                         class="list-group-item list-group-item-action repository"
                         ng-class="{'remote': !repository.local}"
                         ng-mouseenter="showPopoverForRepo($event, repository)" ngx-mouseleave="setPopoverForRepo($event, repository, false)">

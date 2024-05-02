@@ -83,7 +83,7 @@
 
 <div class="top-offset" core-errors license></div>
 <div class="top-offset" system-repo-warning></div>
-<div class="top-offset alert alert-danger" ng-show="repositoryError">
+<div class="top-offset alert alert-danger" ng-show="repositoryError && isLicenseValid()">
     <p>{{'not.usable.active.repo.error' | translate}}</p>
 
     <p>{{repositoryError}}</p>
@@ -135,7 +135,7 @@
                 show-external-elements="showExternalElements"
                 hide-prefixes="hidePrefixes"
                 current-browser-limit="currentBrowserLimit"
-                ng-show="isLicenseValid() && hasClassHierarchy()">
+                ng-show="hasClassHierarchy()">
         </rdf-class-hierarchy>
 
         <pageslide

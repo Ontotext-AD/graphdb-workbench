@@ -40,10 +40,9 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
         $scope.page = 1;
         $scope.pageSize = $scope.pageSizeOptions[0];
         $scope.displayedNamespaces = [];
-        $scope.isLicenseValid = $licenseService.isLicenseValid();
 
         $scope.getNamespaces = function () {
-            if (!$scope.isLicenseValid || !$repositories.getActiveRepository()) {
+            if (!$licenseService.isLicenseValid() || !$repositories.getActiveRepository()) {
                 return;
             }
 
@@ -117,7 +116,6 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
             $scope.searchNamespaces = '';
             $scope.getNamespaces();
             $scope.selectedAll = false;
-            $scope.isLicenseValid = $licenseService.isLicenseValid();
         });
 
         $scope.onNamespaceSearch = function() {

@@ -297,7 +297,6 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             const MIN_CHAR_LEN = 0;
             const IS_SEARCH_PRESERVED = $scope.preserveSearch === 'true';
             const SEARCH_INPUT_FIELD = element.find('.view-res-input');
-            const isLicenseValid = $licenseService.isLicenseValid();
             $scope.textButtonLabel = $scope.textButton || 'query.editor.table.btn';
             $scope.visualButtonLabel = $scope.visualButton || 'query.editor.visual.btn';
 
@@ -332,7 +331,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             };
 
             $scope.$watch('namespacespromise', function () {
-                if (angular.isDefined($scope.namespacespromise) && isLicenseValid) {
+                if (angular.isDefined($scope.namespacespromise) && $licenseService.isLicenseValid()) {
                     $scope.namespacespromise.success(function (data) {
                         element.namespaces = data.results.bindings.map(function (e) {
                             return {

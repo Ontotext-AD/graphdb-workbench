@@ -70,7 +70,6 @@ function SimilarityCtrl(
     $scope.isGraphDBRepository = undefined;
     $scope.canEditRepo = $scope.canWriteActiveRepo();
     $scope.loadSimilarityIndexesTimer = undefined;
-    $scope.isLicenseValid = $licenseService.isLicenseValid();
 
     // =========================
     // Public functions
@@ -275,7 +274,7 @@ function SimilarityCtrl(
     };
 
     const init = () => {
-        if (!$scope.isLicenseValid) {
+        if (!$licenseService.isLicenseValid()) {
             return;
         }
         const activeRepository = $scope.getActiveRepository();
@@ -284,7 +283,7 @@ function SimilarityCtrl(
             $scope.activeRepository = activeRepository;
             $scope.isGraphDBRepository = checkIsGraphDBRepository();
             if ($scope.isGraphDBRepository) {
-                if ($scope.isLicenseValid) {
+                if ($licenseService.isLicenseValid()) {
                     $scope.reloadSimilarityIndexes();
                 }
                 loadSearchQueries();
