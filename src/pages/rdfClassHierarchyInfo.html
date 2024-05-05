@@ -107,7 +107,7 @@
                   ng-hide="isSystemRepository()"></rzslider>
     </div>
     <div class='explore_results'>
-		<div class="top-offset alert alert-danger" ng-show="hierarchyError && isLicenseValid()">
+		<div class="top-offset alert alert-danger" ng-show="hierarchyError">
 			<p>{{'cannot.load.classhierarchy.for.repo.warning' | translate}}
 				<button class="btn btn-link p-0 pull-right"
 						gdb-tooltip="{{'reload.diagram.tooltip' | translate}}"

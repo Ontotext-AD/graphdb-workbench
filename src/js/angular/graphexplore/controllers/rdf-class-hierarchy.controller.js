@@ -134,10 +134,6 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
         }
     });
 
-    $scope.isLicenseValid = function() {
-        return $licenseService.isLicenseValid();
-    };
-
     function instancesFilterFunc(inst) {
         return inst.resolvedUri
             .toLowerCase()
