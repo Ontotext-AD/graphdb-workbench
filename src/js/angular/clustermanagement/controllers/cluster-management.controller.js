@@ -60,6 +60,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     $scope.leaderChanged = false;
     $scope.currentLeader = null;
     $scope.showClusterConfigurationPanel = false;
+    $scope.clusterConfigurationPanelSize = undefined;
 
     // =========================
     // Public functions
@@ -459,8 +460,13 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
         subscriptions.forEach((subscription) => subscription());
     };
 
+    const updateClusterConfigurationPanelSize = () => {
+        $scope.clusterConfigurationPanelSize = 0.25 * window.innerWidth + 'px';
+    };
+
     const subscribeHandlers = () => {
         subscriptions.push(ClusterViewContextService.onShowClusterConfigurationPanel((show) => {
+            updateClusterConfigurationPanelSize();
             $scope.showClusterConfigurationPanel = show;
         }));
         subscriptions.push($scope.$on(UPDATE_CLUSTER, (event, data) => {
@@ -490,6 +496,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
 
     const init = () => {
         subscribeHandlers();
+        updateClusterConfigurationPanelSize();
         $scope.showClusterConfigurationPanel = ClusterViewContextService.getShowClusterConfigurationPanel();
 
         loadInitialData()
