@@ -19,4 +19,16 @@ export class LanguageSelectorSteps {
     static switchToEn() {
         LanguageSelectorSteps.changeLanguage('en');
     }
+
+    static getLanguageChangeModal() {
+        return cy.get('.modal-dialog');
+    }
+
+    static confirmLanguageChange() {
+        this.getLanguageChangeModal().find('.confirm-btn').click();
+    }
+
+    static cancelLanguageChange() {
+        this.getLanguageChangeModal().find('.cancel-btn').click();
+    }
 }

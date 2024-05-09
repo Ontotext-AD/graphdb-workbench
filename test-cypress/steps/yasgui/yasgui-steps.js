@@ -176,6 +176,12 @@ export class YasguiSteps {
     }
 }
 
+export class PluginTabs {
+    static getGoogleChartsTab() {
+        return cy.get('.select_charts');
+    }
+}
+
 export class TabContextMenu {
     static getContextMenu() {
         return cy.get('.yasgui .context-menu');

@@ -14,11 +14,13 @@ import {toBoolean} from "../utils/string-utils";
 import {VIEW_SPARQL_EDITOR} from "../models/sparql/constants";
 import {CancelAbortingQuery} from "../models/sparql/cancel-aborting-query";
 import {QueryMode} from "../models/ontotext-yasgui/query-mode";
+import 'angular/core/services/event-emitter-service';
 
 const modules = [
     'ui.bootstrap',
     'graphdb.framework.rest.connectors.service',
-    'graphdb.framework.externalsync.controllers'
+    'graphdb.framework.externalsync.controllers',
+    'graphdb.framework.utils.event-emitter-service'
 ];
 
 angular
@@ -30,6 +32,7 @@ SparqlEditorCtrl.$inject = [
     '$scope',
     '$q',
     '$location',
+    '$languageService',
     '$jwtAuth',
     '$repositories',
     '$uibModal',
@@ -39,12 +42,14 @@ SparqlEditorCtrl.$inject = [
     'ConnectorsRestService',
     'GuidesService',
     'ModalService',
-    'MonitoringRestService'];
+    'MonitoringRestService',
+    'EventEmitterService'];
 
 function SparqlEditorCtrl($rootScope,
                           $scope,
                           $q,
                           $location,
+                          $languageService,
                           $jwtAuth,
                           $repositories,
                           $uibModal,
@@ -54,7 +59,8 @@ function SparqlEditorCtrl($rootScope,
                           ConnectorsRestService,
                           GuidesService,
                           ModalService,
-                          MonitoringRestService) {
+                          MonitoringRestService,
+                          EventEmitterService) {
     this.repository = '';
 
     const QUERY_EDITOR_ID = '#query-editor';
@@ -403,6 +409,26 @@ function SparqlEditorCtrl($rootScope,
 
     // Initialization and bootstrap
     const init = () => {
+        // This script check is required, because of the following scenario:
+        // I am in the SPARQL view;
+        // Then I go to a different view and change the language;
+        // Then I return to the SPARQL view. I will see that the Google chart and Pivot table will have their
+        // original scripts loaded still.
+        // THE FIX: Get all the scripts (if there are none, the correct language will be loaded). If there are
+        // scripts, and they don't match those, which are loaded already, the page needs to reload when opening
+        // the SPARQL view, otherwise the Google chart and Pivot table configs will be in the old language.
+        const googleScripts = document.querySelectorAll(`script[src*="https://www.gstatic.com/"]`);
+        if (googleScripts.length > 0) {
+            const currentLang = $languageService.getLanguage();
+            let searchTerm = 'module.js';
+            if ('en' !== currentLang) {
+                searchTerm = `module__${currentLang}.js`;
+            }
+            if (!Array.prototype.some.call(googleScripts, (script) => script.src.includes(searchTerm))) {
+                location.reload();
+                return;
+            }
+        }
         Promise.all([$jwtAuth.getPrincipal(), $repositories.getPrefixes($repositories.getActiveRepository())])
             .then(([principal, usedPrefixes]) => {
                 $scope.prefixes = usedPrefixes;
@@ -509,6 +535,28 @@ function SparqlEditorCtrl($rootScope,
         subscriptions.forEach((subscription) => subscription());
         window.removeEventListener('beforeunload', beforeunloadHandler);
     };
+
+    subscriptions.push(
+        $scope.$on('language-changed', function () {
+            location.reload();
+        })
+    );
+    subscriptions.push(
+        EventEmitterService.subscribe('before-language-change', function (args) {
+                return new Promise((resolve) => {
+                    ModalService.openSimpleModal({
+                        title: $translate.instant('query.editor.language.change.warning.title'),
+                        message: $translate.instant('query.editor.reload.page.warning'),
+                        warning: true
+                    }).result.then(function () {
+                        resolve(args);
+                    }, function () {
+                        args.cancel = true;
+                        resolve(args);
+                    });
+                });
+            }
+        ));
 
     // Deregister the watcher when the scope/directive is destroyed
     $scope.$on('$destroy', removeAllListeners);

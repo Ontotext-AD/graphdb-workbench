@@ -803,6 +803,8 @@
     "query.editor.automatically.execute.update.warning": "Il s'agit d'une mise à jour et elle peut modifier les données du dépôt. <br>Êtes-vous sûr de vouloir l'exécuter automatiquement ?",
     "query.editor.error.show.full.message": "Afficher le message d'exception complet",
     "query.editor.error.show.less.message": "Afficher moins de détails sur l'exception",
+    "query.editor.language.change.warning.title": "Changer la langue",
+    "query.editor.reload.page.warning": "Changer la langue rechargera la page. Es-tu sur de vouloir continuer?",
     "sparql.tab.directive.unnamed.tab.title": "Anonyme",
     "search.resource.current.page.msg": "Use <b>View resource</b> on this page",
     "search.resources.msg": "Rechercher des ressources RDF",

@@ -804,6 +804,8 @@
     "query.editor.automatically.execute.update.warning": "This is an update and it may change the data in the repository.<br>Are you sure you want to execute it automatically?",
     "query.editor.error.show.full.message": "Show full exception message",
     "query.editor.error.show.less.message": "Show less exception message",
+    "query.editor.language.change.warning.title": "Change language",
+    "query.editor.reload.page.warning": "Changing the language will reload the page. Are you sure you want to continue?",
     "sparql.tab.directive.unnamed.tab.title": "Unnamed",
     "search.resource.current.page.msg": "Use <b>View resource</b> on this page",
     "search.resources.msg": "Search RDF resources",

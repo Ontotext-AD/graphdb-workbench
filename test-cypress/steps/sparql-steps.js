@@ -72,7 +72,7 @@ class SparqlSteps {
     }
 
     static getQueryArea() {
-        return cy.get('#queryEditor .CodeMirror');
+        return cy.get('#query-editor .CodeMirror');
     }
 
     static waitUntilQueryIsVisible() {

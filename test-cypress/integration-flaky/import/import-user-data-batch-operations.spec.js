@@ -127,7 +127,9 @@ describe('Import user data: Batch operations', {retries: {runMode: 2}}, () => {
         ImportUserDataSteps.selectFileByIndex(0);
         // And I delete the file
         ImportUserDataSteps.removeSelectedResources();
-        // Then I should see a confirmation dialog
+        // Then I force click the confirmation dialog, to hide the button popover, which covers it
+        ModalDialogSteps.getDialog().click({force: true});
+        // The dialog should be visible
         ModalDialogSteps.getDialog().should('be.visible');
         // When I confirm the deletion
         ModalDialogSteps.clickOnConfirmButton();
