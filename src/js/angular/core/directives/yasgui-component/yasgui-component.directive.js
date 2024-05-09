@@ -14,12 +14,10 @@ import {YasguiComponentDirectiveUtil} from "./yasgui-component-directive.util";
 import {KeyboardShortcutName} from "../../../models/ontotext-yasgui/keyboard-shortcut-name";
 import {YasguiPersistenceMigrationService} from "./yasgui-persistence-migration.service";
 import {ExportSettingsCtrl} from "../../components/export-settings-modal/controller";
-import 'angular/core/services/event-emitter-service';
 
 const modules = [
     'graphdb.framework.core.services.translation-service',
-    'graphdb.framework.sparql-editor.share-query.service',
-    'graphdb.framework.utils.event-emitter-service'];
+    'graphdb.framework.sparql-editor.share-query.service'];
 angular
     .module('graphdb.framework.core.directives.yasgui-component', modules)
     .directive('yasguiComponent', yasguiComponentDirective);
@@ -40,7 +38,6 @@ yasguiComponentDirective.$inject = [
     'MonitoringRestService',
     'SparqlRestService',
     'ShareQueryLinkService',
-    'EventEmitterService',
     'ModalService'
 ];
 
@@ -77,7 +74,6 @@ function yasguiComponentDirective(
     MonitoringRestService,
     SparqlRestService,
     ShareQueryLinkService,
-    eventEmitterService,
     ModalService
 ) {
 
@@ -91,7 +87,6 @@ function yasguiComponentDirective(
         },
         link: ($scope, element, attrs) => {
             $scope.classToApply = attrs.class || '';
-            $scope.language = undefined;
             const downloadAsPluginNameToEventHandler = new Map();
             const outputHandlers = $scope.yasguiConfig && $scope.yasguiConfig.outputHandlers ? new Map($scope.yasguiConfig.outputHandlers) : new Map();
             // The initial query value which is set in the yasqe editor. This is used for dirty checking while the user
@@ -374,27 +369,6 @@ function yasguiComponentDirective(
             const subscriptions = [];
 
             const init = (newVal, oldValue) => {
-                // This script check is required, because of the following scenario:
-                // I am in the SPARQL view;
-                // Then I go to a different view and change the language;
-                // Then I return to the SPARQL view. I will see that the Google chart and Pivot table will have their
-                // original scripts loaded still.
-                // THE FIX: Get all the scripts (if there are none, the correct language will be loaded). If there are
-                // scripts, and they don't match those, which are loaded already, the page needs to reload when opening
-                // the SPARQL view, otherwise the Google chart and Pivot table configs will be in the old language.
-                const googleScripts = document.querySelectorAll(`script[src*="https://www.gstatic.com/"]`);
-                if (googleScripts.length > 0) {
-                    const currentLang = $languageService.getLanguage();
-                    let searchTerm = 'module.js';
-                    if ('en' !== currentLang) {
-                        searchTerm = `module__${currentLang}.js`;
-                    }
-                    if (!Array.prototype.some.call(googleScripts, (script) => script.src.includes(searchTerm))) {
-                        location.reload();
-                        return;
-                    }
-                }
-                $scope.language = $languageService.getLanguage();
                 if (!$scope.ontotextYasguiConfig && newVal || newVal && !isEqual(newVal, oldValue)) {
                     const virtualRepository = $repositories.isActiveRepoOntopType();
                     const config = {
@@ -506,26 +480,9 @@ function yasguiComponentDirective(
             };
 
             subscriptions.push(
-                $scope.$on('language-changed', function () {
-                    location.reload();
-                })
-            );
-            subscriptions.push(
-                eventEmitterService.subscribe('before-language-change', function (args) {
-                    return new Promise((resolve) => {
-                        ModalService.openSimpleModal({
-                            title: $translate.instant('query.editor.language.change.warning.title'),
-                            message: $translate.instant('query.editor.reload.page.warning'),
-                            warning: true
-                        }).result.then(function () {
-                            resolve(args);
-                        }, function () {
-                            args.cancel = true;
-                            resolve(args);
-                        });
-                    });
-                }
-            ));
+                $scope.$on('language-changed', function (event, args) {
+                    $scope.language = args.locale;
+                }));
 
             const removeAllSubscribers = () => {
                 subscriptions.forEach((subscription) => subscription());
