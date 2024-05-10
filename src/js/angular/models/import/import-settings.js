@@ -37,8 +37,8 @@ export class ImportSettings {
         this.format = null;
         this.data = null;
         this.timestamp = Date.now();
-        this.contextLink = null;
         this.parserSettings = {
+            contextLink: null,
             preserveBNodeIds: false,
             failOnUnknownDataTypes: false,
             verifyDataTypeValues: false,
