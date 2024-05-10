@@ -66,12 +66,6 @@ export class ImportResource {
          */
         this.numReplacedGraphs = importResourceServerData ? importResourceServerData.numReplacedGraphs : 0;
 
-        /**
-         * The property is used when importing JSONLD files only
-         * @type {string | undefined}
-         */
-        this.contextLink = importResourceServerData ? importResourceServerData.contextLink : undefined;
-
         this.parserSettings = importResourceServerData ? importResourceServerData.parserSettings : new ImportParsingSettings();
 
         /**

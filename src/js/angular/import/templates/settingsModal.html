@@ -157,7 +157,7 @@
                 </label>
                 <div class="col-lg-9">
                     <input validate-uri name="contextLink" type="text"
-                           ng-model="settings['contextLink']" class="form-control"
+                           ng-model="settings.parserSettings['contextLink']" class="form-control"
                            placeholder="http://example.com/example.jsonld">
                     <div class="alert alert-danger"
                          ng-if="settingsForm.contextLink.$dirty && settingsForm.contextLink.$error.validateUri">
