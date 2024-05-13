@@ -35,10 +35,10 @@ angular
     .controller('ClusterManagementCtrl', ClusterManagementCtrl);
 
 ClusterManagementCtrl.$inject = ['$scope', '$http', '$q', 'toastr', '$repositories', '$uibModal', '$sce', '$jwtAuth',
-    '$window', '$interval', 'ModalService', '$timeout', 'ClusterRestService', '$location', '$translate', 'RemoteLocationsService', '$rootScope', 'ClusterViewContextService'];
+    '$window', '$interval', 'ModalService', '$timeout', 'ClusterRestService', '$location', '$translate', 'RemoteLocationsService', '$rootScope', 'ClusterViewContextService', '$licenseService'];
 
 function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibModal, $sce, $jwtAuth,
-    $window, $interval, ModalService, $timeout, ClusterRestService, $location, $translate, RemoteLocationsService, $rootScope, ClusterViewContextService) {
+    $window, $interval, ModalService, $timeout, ClusterRestService, $location, $translate, RemoteLocationsService, $rootScope, ClusterViewContextService, $licenseService) {
 
     // =========================
     // Private variables
@@ -70,6 +70,10 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
 
     $scope.isAdmin = () => {
         return $jwtAuth.isAuthenticated() && $jwtAuth.isAdmin();
+    };
+
+    $scope.isLicenseValid = function () {
+        return $licenseService.isLicenseValid();
     };
 
     $scope.openClusterConfigurationPanel = () => {

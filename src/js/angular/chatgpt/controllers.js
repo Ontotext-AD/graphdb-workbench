@@ -8,11 +8,14 @@ angular
     .controller('ChatGptCtrl', ChatGptCtrl)
     .controller('ChatGptSettingsCtrl', ChatGptSettingsCtrl);
 
-ChatGptCtrl.$inject = ['$scope', '$http', '$timeout', '$translate', '$uibModal', '$repositories', 'toastr', 'ModalService', 'LocalStorageAdapter'];
+ChatGptCtrl.$inject = ['$scope', '$http', '$timeout', '$translate', '$uibModal', '$repositories', 'toastr', 'ModalService', 'LocalStorageAdapter', '$licenseService'];
 
 const CHATGPTRETRIEVAL_ENDPOINT = 'rest/chat/retrieval';
 
-function ChatGptCtrl($scope, $http, $timeout, $translate, $uibModal, $repositories, toastr, ModalService, LocalStorageAdapter) {
+function ChatGptCtrl($scope, $http, $timeout, $translate, $uibModal, $repositories, toastr, ModalService, LocalStorageAdapter, $licenseService) {
+    $scope.isLicenseValid = function () {
+        return $licenseService.isLicenseValid();
+    };
     function scrollToEnd() {
         $timeout(() => {
             const element = document.getElementById("messages-scrollable");

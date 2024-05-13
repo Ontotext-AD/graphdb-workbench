@@ -14,8 +14,8 @@
 
     <div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
     <div class="ot-owlim-ctrl" ng-hide="loader">
-        <div core-errors></div>
-        <div ng-show="getActiveRepository()">
+        <div core-errors license></div>
+        <div ng-show="isLicenseValid() && getActiveRepository()">
 
 			<div class="alert alert-warning" ng-hide="graphs.length > 0">
 				{{'export.no.graphs.in.repo' | translate}} <a ng-href="sparql">{{'export.sparql.update.form' | translate}}</a> {{'or' | translate}} <a ng-href="import">{{'export.data.import.page' | translate}}</a>.
