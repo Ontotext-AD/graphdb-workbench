@@ -265,9 +265,9 @@ function multiRequired() {
 
 const SEARCH_DISPLAY_TYPE = {table: 'table', visual: 'visual'};
 
-searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q', '$sce', 'LocalStorageAdapter', 'LSKeys', '$repositories', '$translate', 'GuidesService', '$licenseService'];
+searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q', '$sce', 'LocalStorageAdapter', 'LSKeys', '$repositories', '$translate', 'GuidesService'];
 
-function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q, $sce, LocalStorageAdapter, LSKeys, $repositories, $translate, GuidesService, $licenseService) {
+function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q, $sce, LocalStorageAdapter, LSKeys, $repositories, $translate, GuidesService) {
     return {
         restrict: 'EA',
         scope: {
@@ -331,7 +331,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             };
 
             $scope.$watch('namespacespromise', function () {
-                if (angular.isDefined($scope.namespacespromise) && $licenseService.isLicenseValid()) {
+                if (angular.isDefined($scope.namespacespromise)) {
                     $scope.namespacespromise.success(function (data) {
                         element.namespaces = data.results.bindings.map(function (e) {
                             return {

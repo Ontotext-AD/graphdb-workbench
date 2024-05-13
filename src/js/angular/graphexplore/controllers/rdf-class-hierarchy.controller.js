@@ -57,7 +57,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     let selectedGraph = allGraphs;
 
     const initView = function () {
-        if (!$scope.getActiveRepository() && !$licenseService.isLicenseValid()) {
+        if (!$scope.getActiveRepository() || !$licenseService.isLicenseValid()) {
             return;
         }
         return RDF4JRepositoriesRestService.resolveGraphs($repositories.getActiveRepository())
@@ -452,12 +452,9 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     }
 
     function getClassHierarchyData() {
-        if (!$licenseService.isLicenseValid()) {
-            return;
-        }
         refreshDiagramExternalElements();
 
-        if (!$scope.isSystemRepository()) {
+        if (!$scope.isSystemRepository() && $licenseService.isLicenseValid()) {
             $scope.hierarchyError = false;
             $scope.loader = true;
             GraphDataRestService.getClassHierarchyData(selectedGraph.contextID.uri)

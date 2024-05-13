@@ -534,7 +534,6 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibM
     };
     $scope.newResource = false;
     $scope.datatypeOptions = StatementsService.getDatatypeOptions();
-    $scope.isLicenseValid = $licenseService.isLicenseValid();
     $scope.activeRepository = function () {
         return $repositories.getActiveRepository();
     };
@@ -586,7 +585,7 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibM
     $scope.$watch(function () {
         return $repositories.getActiveRepository();
     }, function () {
-        if ($licenseService.isLicenseValid() && $scope.activeRepository()) {
+        if ($scope.activeRepository()) {
             $scope.getClassInstancesDetails();
         }
     });

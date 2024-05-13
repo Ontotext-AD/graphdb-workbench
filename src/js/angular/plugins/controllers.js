@@ -25,6 +25,10 @@ function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, 
         getPlugins();
     };
 
+    $scope.isLicenseValid = function () {
+        return $licenseService.isLicenseValid();
+    };
+
     $scope.clear = function () {
         $scope.searchPluginsTerm = '';
         $scope.plugins = [];

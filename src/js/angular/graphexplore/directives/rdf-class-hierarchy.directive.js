@@ -107,7 +107,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
 
         var g = appendMainGroup();
 
-        if (!scope.classHierarchyData.classCount && $repositories.getActiveRepository() && !$repositories.isSystemRepository()) {
+        if (!scope.classHierarchyData.classCount && $repositories.getActiveRepository() && !$repositories.isSystemRepository() && $licenseService.isLicenseValid()) {
             $rootScope.loader = true;
             $rootScope.hierarchyError = false;
             const selGraphFromCache = LocalStorageAdapter.get(`classHierarchy-selectedGraph-${$repositories.getActiveRepository()}`);
@@ -124,9 +124,6 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
 
                 }).error(function (response) {
                 $rootScope.loader = false;
-                if (!$licenseService.isLicenseValid()) {
-                    return;
-                }
                 $rootScope.hierarchyError = getError(response);
                 toastr.error($translate.instant('graphexplore.error.request.failed', {name: ROOT_OBJ_NAME, error: getError(response)}));
             });

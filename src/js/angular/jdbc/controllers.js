@@ -25,14 +25,14 @@ angular.module('graphdb.framework.jdbc.controllers', modules, [
     .controller('JdbcListCtrl', JdbcListCtrl)
     .controller('JdbcCreateCtrl', JdbcCreateCtrl);
 
-JdbcListCtrl.$inject = ['$scope', '$repositories', 'JdbcRestService', 'toastr', 'ModalService', '$translate'];
+JdbcListCtrl.$inject = ['$scope', '$repositories', 'JdbcRestService', 'toastr', 'ModalService', '$translate', '$licenseService'];
 
-function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalService, $translate) {
+function JdbcListCtrl($scope, $repositories, JdbcRestService, toastr, ModalService, $translate, $licenseService) {
 
     $scope.getSqlConfigurations = function () {
         // Only do this if there is an active repo that isn't an Ontop or FedX repo.
         // Ontop and FedX repos don't support JDBC.
-        if ($scope.isLicenseValid()
+        if ($licenseService.isLicenseValid()
             && $repositories.getActiveRepository()
             && !$repositories.isActiveRepoOntopType()
             && !$repositories.isActiveRepoFedXType()) {
@@ -85,7 +85,8 @@ JdbcCreateCtrl.$inject = [
     'ModalService',
     '$translate',
     '$languageService',
-    'EventEmitterService'];
+    'EventEmitterService',
+    '$licenseService'];
 
 function JdbcCreateCtrl(
     $q,
@@ -103,7 +104,8 @@ function JdbcCreateCtrl(
     ModalService,
     $translate,
     $languageService,
-    EventEmitterService) {
+    EventEmitterService,
+    $licenseService) {
 
     $scope.emptySparqlResponse = "{\"head\": {\"vars\": []},\"results\": {\"bindings\": []}}";
     $scope.getSuggestionSqlType = '';
@@ -127,6 +129,10 @@ function JdbcCreateCtrl(
     // =========================
     // Public functions
     // =========================
+
+    $scope.isLicenseValid = function () {
+        return $licenseService.isLicenseValid();
+    };
 
     $scope.saveJdbcConfiguration = () => {
         $scope.saveOrUpdateExecuted = true;
@@ -316,7 +322,7 @@ function JdbcCreateCtrl(
     };
 
     const init = (prefixes, jdbcConfiguration = new JdbcConfigurationInfo()) => {
-        if (!$scope.isLicenseValid()) {
+        if (!$licenseService.isLicenseValid()) {
             return;
         }
         $scope.jdbcConfigurationInfo.columns = jdbcConfiguration.columns;

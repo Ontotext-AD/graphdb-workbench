@@ -23,8 +23,6 @@ function licenseService($rootScope, LicenseRestService, $translate) {
                 that.loadingLicense = false;
                 updateProductType(that.license);
             });
-        }).finally(function () {
-            $rootScope.$broadcast('license.set');
         });
     };
 
