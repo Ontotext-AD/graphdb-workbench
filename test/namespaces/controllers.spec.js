@@ -23,10 +23,9 @@ describe('=> NamespacesCtrl tests', function () {
         toastr,
         httpGetNamespaces,
         modalInstance,
-        $translate,
-        $licenseService;
+        $translate;
 
-    beforeEach(angular.mock.inject(function (_$httpBackend_, _$repositories_, _RDF4JRepositoriesRestService_, _toastr_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, $q, _$translate_, _$licenseService_) {
+    beforeEach(angular.mock.inject(function (_$httpBackend_, _$repositories_, _RDF4JRepositoriesRestService_, _toastr_, _$location_, _$controller_, _$window_, _$timeout_, $rootScope, $q, _$translate_) {
         $httpBackend = _$httpBackend_;
         $controller = _$controller_;
         $timeout = _$timeout_;
@@ -35,18 +34,13 @@ describe('=> NamespacesCtrl tests', function () {
         toastr = _toastr_;
         $scope = $rootScope.$new();
         $translate = _$translate_;
-        $licenseService = _$licenseService_;
 
         $translate.instant = function (key) {
             return bundle[key];
         };
 
         modalInstance = new FakeModal($q, $rootScope);
-        $licenseService.isLicenseValid = function () {
-            return true;
-        }
-        $httpBackend.when('GET', 'rest/graphdb-settings/license').respond(200, 'licenseinfo');
-        $httpBackend.when('GET', 'rest/graphdb-settings/license/hardcoded').respond(200, 'true');
+
         $httpBackend.when('GET', 'rest/locations').respond(200, {});
 
         $repositories.getActiveRepositoryObject = function () {
@@ -106,8 +100,7 @@ describe('=> NamespacesCtrl tests', function () {
                     return modalInstance;
                 }
             },
-            $translate: $translate,
-            $licenseService: $licenseService
+            $translate: $translate
         });
     }));
 
