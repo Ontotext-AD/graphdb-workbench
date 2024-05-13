@@ -162,6 +162,11 @@ yasgui-component .yasr-toolbar {
     line-height: 1.25;
 }
 
+/* Make all buttons in the yasr toolbar having equal height same as the other WB buttons. */
+yasgui-component .yasr-toolbar .yasr-toolbar-element {
+    height: 38px;
+}
+
 yasgui-component .yasr-toolbar .explore-visual-graph-button {
     display: flex;
     align-items: center;
