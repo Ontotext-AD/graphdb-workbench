@@ -122,6 +122,7 @@ describe('Namespaces', () => {
 
     it('should filter existing namespaces', () => {
         getNamespacesFilterField()
+            .should('be.visible')
             .should('have.value', '')
             .type('owl')
             .should('have.value', 'owl');
@@ -202,6 +203,7 @@ describe('Namespaces', () => {
     });
 
     it('should allow to delete existing namespaces', () => {
+        getNamespacesFilterField().should('be.visible');
         // Delete single namespace from it's actions
         getRefreshedTableNamespaces();
         deleteNamespace('xsd');
