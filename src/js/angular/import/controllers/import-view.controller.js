@@ -221,8 +221,6 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
          * !!!This should be public because it's used by the upload and import controllers
          */
         $scope.onRepositoryChange = () => {
-            // Update restricted on repositoryIsSet
-            $scope.setRestricted();
             if ($scope.isRestricted) {
                 return;
             }
