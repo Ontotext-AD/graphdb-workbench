@@ -116,12 +116,6 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
             $scope.selectedAll = false;
         });
 
-        $scope.$on('license.set', function () {
-            $scope.searchNamespaces = '';
-            $scope.getNamespaces();
-            $scope.selectedAll = false;
-        });
-
         $scope.onNamespaceSearch = function() {
             $scope.haveSelected = false;
             $scope.selectedAll = false;
