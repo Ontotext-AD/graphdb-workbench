@@ -6,3 +6,144 @@ body {
 code, pre, kbd, samp, textarea {
     font-family: var(--mono-font);
 }
+
+.swagger-ui .info {
+    margin: 0;
+}
+
+.swagger-ui .info .title {
+    font-size: 20px;
+    font-family: var(--main-font);
+    color: #000000;
+}
+
+.swagger-section {
+    background-color: #FFFFFF;
+}
+
+.swagger-ui .wrapper {
+    margin: 0;
+    padding: 0;
+    font-size: 1em;
+    display: contents;
+}
+
+.swagger-ui .opblock-tag small {
+    font-size: 1em;
+    padding: 0;
+}
+
+.swagger-ui .opblock-tag a::after {
+    content: ' : ';
+}
+
+.swagger-ui .renderedMarkdown p {
+    margin: 0.3em;
+}
+
+.swagger-section .swagger-ui-wrap h3, p, a {
+    color: #999999 !important;
+    padding: 2px !important;
+}
+
+.swagger-section .opblock-summary-path {
+    font-size: 1.1em !important;
+    font-family: unset !important;
+}
+
+.swagger-ui .expand-operation {
+    filter: opacity(0.5);
+}
+
+.swagger-section .swagger-ui-wrap .code {
+    font-family: var(--mono-font);
+}
+
+/* HIDE SOME ELEMENTS */
+
+.swagger-ui .scheme-container {
+    display: none;
+}
+
+.swagger-ui section.models {
+    display: none !important;
+}
+
+.swagger-ui .topbar {
+    display: none;
+}
+
+.swagger-ui .info .title small {
+    display: none;
+}
+
+.swagger-ui .url, .info>div {
+    display: none;
+}
+
+/* COLORS */
+
+.swagger-ui .opblock.opblock-get {
+    background-color: #E7F0F7;
+    border: 1px solid #C3D9EC;
+}
+
+.swagger-ui .opblock.opblock-get .opblock-summary {
+    border-color: #0F6AB4;
+}
+
+.swagger-ui .opblock.opblock-get .opblock-summary-method {
+    background: #0F6AB4;
+}
+
+.swagger-ui .opblock.opblock-patch {
+    background: #FCE9E3;
+    border: 1px solid #F5D5C3;
+}
+
+.swagger-ui .opblock.opblock-patch .opblock-summary-method {
+    border-color: #D38042;
+    background-color: #D38042;
+}
+
+.swagger-ui .opblock.opblock-post {
+    background: #E7f6EC;
+    border: 1px solid #C3E8d1;
+}
+
+.swagger-ui .opblock.opblock-post .opblock-summary-method {
+    background-color: #10A54A;
+}
+
+.swagger-ui .opblock.opblock-delete {
+    background: #F5E8E8;
+    border: 1px solid #E8C6C7;
+}
+
+.swagger-ui .opblock.opblock-delete .opblock-summary-method {
+    background-color: #A41E22;
+}
+
+.swagger-ui .opblock.opblock-put {
+    background: #F9F2E9;
+    border: 1px solid #F0E0CA;
+}
+
+.swagger-ui .opblock.opblock-put .opblock-summary-method {
+    background-color: #C5862B;
+}
+
+.opblock-summary-path a {
+    color: #000000 !important;
+}
+
+.swagger-section .swagger-ui-wrap pre code>span {
+    color: #000000 !important;
+}
+
+.swagger-section .swagger-ui-wrap pre {
+    background-color: #FCF6DB !important;
+    color: #000000 !important;
+    border: 1px solid #E5E0C6 !important;
+    padding: 10px !important;
+}
