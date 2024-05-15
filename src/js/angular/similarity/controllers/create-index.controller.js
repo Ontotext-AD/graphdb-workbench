@@ -541,7 +541,7 @@ function CreateSimilarityIdxCtrl(
     }
 
     const getQueryEndpoint = () => {
-        return `/repositories/${$repositories.getActiveRepository()}`;
+        return `repositories/${$repositories.getActiveRepository()}`;
     };
 
     /**
