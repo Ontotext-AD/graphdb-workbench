@@ -482,7 +482,7 @@ function GraphConfigCtrl(
     }
 
     const getQueryEndpoint = () => {
-        return `/repositories/${$repositories.getActiveRepository()}`;
+        return `repositories/${$repositories.getActiveRepository()}`;
     };
 
     const defaultYasguiConfig = {
