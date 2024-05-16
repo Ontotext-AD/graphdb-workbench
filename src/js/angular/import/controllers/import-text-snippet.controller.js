@@ -27,7 +27,8 @@ function ImportTextSnippetController($scope, $uibModalInstance, text, format) {
     $scope.rdfText = text;
     $scope.importFormat = $scope.importFormats.find((formatModel) => formatModel.type === format);
     $scope.startImport = true;
-    $scope.sizeLimit = 4000;
+    // Total amount of characters that can be imported via the text snippet dialog
+    $scope.sizeLimit = 100000;
 
 
     // =========================
