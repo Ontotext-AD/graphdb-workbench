@@ -127,6 +127,10 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
                     $scope.clusterModel.nodes = [];
                     $scope.clusterModel.links = [];
                     $scope.clusterConfiguration = null;
+                    // Return from the local catch to allow error propagation furter
+                    // in the promise chain, because we actually want to skip the next
+                    // requests in the chain.
+                    return Promise.reject(error);
                 }
             });
     };
