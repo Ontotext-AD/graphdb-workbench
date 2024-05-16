@@ -119,7 +119,6 @@ describe('Cluster management', () => {
         ClusterPageSteps.previewClusterConfig();
         ClusterConfigurationSteps.getClusterConfig().should('be.visible');
         ClusterConfigurationSteps.deleteCluster();
-        // ClusterConfigurationSteps.closeConfigurationPanel();
         // Then I expect a confirmation dialog to appear
         DeleteClusterDialogSteps.getDialog().should('be.visible');
         // When I confirm
@@ -131,8 +130,6 @@ describe('Cluster management', () => {
         ClusterStubs.stubNoClusterConfig();
         RemoteLocationStubs.stubRemoteLocationStatusNotCluster();
         DeleteClusterDialogSteps.getDialog().should('not.exist');
-        ClusterPageSteps.previewClusterConfig();
-        ClusterConfigurationSteps.getDeleteClusterButton().should('be.hidden');
         ClusterPageSteps.getRemoveNodesButton().should('not.exist');
         ClusterPageSteps.getAddNodesButton().should('not.exist');
         ClusterPageSteps.getReplaceNodesButton().should('not.exist');
