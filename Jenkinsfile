@@ -19,6 +19,12 @@ pipeline {
 
   stages {
 
+  stage('Validate translations') {
+    steps {
+        sh 'node scripts/validate-translations.js || exit 1'
+    }
+  }
+
     stage('Install') {
       steps {
         sh "npm install"
@@ -86,6 +92,10 @@ pipeline {
       sh "sudo rm -rf ./coverage"
       sh "sudo rm -rf ./cypress"
       sh "sudo rm -rf ./report"
+    }
+
+    failure {
+      archiveArtifacts artifacts: 'translation-validation-result.json', onlyIfSuccessful: false
     }
   }
 }
