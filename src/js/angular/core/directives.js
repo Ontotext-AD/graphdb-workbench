@@ -129,20 +129,25 @@ function coreErrors($timeout) {
         transclude: true,
         templateUrl: 'js/angular/core/templates/core-errors.html',
         link: function (scope, element, attrs) {
-            // watch for changes in the active repository hide host element of this directive
-            scope.$watch('getActiveRepository()', function (newValue) {
-                if (newValue && !scope.isRestricted) {
-                    element.hide();
-                } else {
-                    element.show();
-                }
-            });
-
-            scope.setAttrs(attrs);
 
             let previousElement;
-
             scope.showRemoteLocations = false;
+
+            // =========================
+            // Public function
+            // =========================
+            scope.showPopoverForRepo = (event, repository) => {
+                hidePopoverForRepo();
+                scope.setPopoverRepo(repository);
+                $timeout(function () {
+                    const element = $(event.toElement).find('.popover-anchor')[0];
+                    previousElement = element;
+                    if (element && !scope.getActiveRepository()) {
+                        element.dispatchEvent(new Event('show'));
+                    }
+                });
+                event.stopPropagation();
+            };
 
             scope.toggleShowRemoteLocations = () => {
                 scope.showRemoteLocations = !scope.showRemoteLocations;
@@ -160,20 +165,15 @@ function coreErrors($timeout) {
                 }
             };
 
-            scope.showPopoverForRepo = function (event, repository) {
-                scope.hidePopoverForRepo();
-                scope.setPopoverRepo(repository);
-                $timeout(function () {
-                    const element = $(event.toElement).find('.popover-anchor')[0];
-                    previousElement = element;
-                    if (element && !scope.getActiveRepository()) {
-                        element.dispatchEvent(new Event('show'));
-                    }
-                });
-                event.stopPropagation();
+            // =========================
+            // Private function
+            // =========================
+
+            const init = () => {
+                scope.setAttrs(attrs);
             };
 
-            scope.hidePopoverForRepo = function (event) {
+            const hidePopoverForRepo = (event) => {
                 if (event) {
                     // Prevents hiding if we move the mouse over the popover
                     let el = event.relatedTarget;
@@ -196,6 +196,21 @@ function coreErrors($timeout) {
                     event.stopPropagation();
                 }
             };
+
+            // =========================
+            // Event handlers
+            // =========================
+
+            // watch for changes in the active repository hide host element of this directive
+            scope.$watch('getActiveRepository()', function (newValue) {
+                if (newValue && !scope.isRestricted) {
+                    element.hide();
+                } else {
+                    element.show();
+                }
+            });
+
+            init();
         }
     };
 }
