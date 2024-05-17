@@ -143,6 +143,10 @@ class ImportSteps {
         return cy.window().its('navigator.clipboard').invoke('readText').then((text) => text);
     }
 
+    static openHelpMessage() {
+        this.getView().find('.toggle-help-btn').click();
+    }
+
     static closeHelpMessage() {
         return this.getHelpMessage().find('button.close').click();
     }

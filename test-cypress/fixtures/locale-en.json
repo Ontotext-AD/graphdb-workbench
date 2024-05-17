@@ -32,6 +32,7 @@
             "link_state_in_sync": "In sync",
             "link_state_syncing": "Syncing",
             "link_state_out_of_sync": "Out of sync",
+            "link_state_receiving_snapshot": "Receiving a snapshot",
             "link_state_recovering": "Recovering",
             "recovery_state": {
                 "searching_for_node": "Searching for node",
@@ -987,26 +988,30 @@
                 "copied_to_clipboard": "Copied to clipboard"
             },
             "on_upload": {
-                "import_user_data": "Import User Data",
-                "to_reimport_again": "To reimport a file, URL or text snippet click the Import button again.",
-                "file_size_limit_can_be_changed": "The file size limit can be changed by setting the",
+                "import_user_data": "Import RDF files from your computer, from a URL, or type or paste RDF data",
+                "file_size_limit_can_be_changed": "The file size limit for uploads can be changed by setting the",
                 "the_property": " property",
                 "execution": "Import execution",
                 "work_in_background": "Imports are executed in the background while you continue working on other things.",
+                "to_reimport_again": "To reimport a file, URL or text snippet click the Import button again.",
                 "interrupt_support": "Interrupt is supported only when the location is local.",
                 "parser_config": "Parser config options are not available for remote locations."
             },
             "on_server_import": {
-                "import_from_server": "It’s required to have access to the server where the GraphDB Workbench is running",
-                "open_directory": "Open (or create) a directory",
-                "put_files_into": "and place your files and folders in it",
+                "import_from_server": "Import files from the server where GraphDB is running",
+                "open_directory": "Put files or directories you want to import into the",
+                "put_files_into": "directory on the GraphDB server. Create the directory if necessary.",
                 "directory_can_be_changed": "The directory can be changed by setting the",
-                "the_property": "property"
+                "the_property": "property",
+                "execution": "Import execution",
+                "work_in_background": "Imports are executed in the background while you continue working on other things.",
+                "to_reimport_again": "To reimport a file, URL or text snippet click the Import button again.",
+                "interrupt_support": "Interrupt is supported only when the location is local."
             },
             "on_file_size_limit": {
-                "file_size_limit_info": "To import larger than {{fileSizeLimit}} MB files, use the ",
+                "file_import_options_info_1": "Explore other file import options - ",
+                "file_import_options_info_2": "import (opens Server files tab) or ",
                 "server_files_link": "Server files",
-                "import_or_use": "import or use the",
                 "api_link": "API"
             }
         },

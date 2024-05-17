@@ -108,18 +108,16 @@
                     <div class="ot-view-info">
                         <h4>{{'import.help.on_upload.import_user_data' | translate}}</h4>
                         <p>
-                            {{'import.help.on_upload.to_reimport_again' | translate}}<br>
                             {{'import.help.on_upload.file_size_limit_can_be_changed' | translate}}
                             <strong class="file-size-prop copyable">graphdb.workbench.maxUploadSize</strong>
                             <copy-to-clipboard tooltip-text="import.help.buttons.copy_file_size_prop.tooltip"></copy-to-clipboard>
                             {{'import.help.on_upload.the_property' | translate}}.
                         </p>
-
-                        <h4>{{'import.help.on_upload.execution' | translate}}</h4>
+                        <h5>{{'import.help.on_upload.execution' | translate}}</h5>
                         <ul>
                             <li>{{'import.help.on_upload.work_in_background' | translate}}</li>
+                            <li>{{'import.help.on_upload.to_reimport_again' | translate}}</li>
                             <li>{{'import.help.on_upload.interrupt_support' | translate}}</li>
-                            <li>{{'import.help.on_upload.parser_config' | translate}}</li>
                         </ul>
                     </div>
                 </div>
@@ -147,12 +145,18 @@
                         <p>
                             {{'import.help.on_server_import.open_directory' | translate}}
                             <strong>{{appData.properties['graphdb.workbench.importDirectory'].value}}</strong>
-                            {{'import.help.on_server_import.put_files_into' | translate}}.<br>
+                            {{'import.help.on_server_import.put_files_into' | translate}}<br><br>
                             {{'import.help.on_server_import.directory_can_be_changed' | translate}}
                             <strong class="server-import-directory-prop copyable">graphdb.workbench.importDirectory</strong>
                             <copy-to-clipboard tooltip-text="import.help.buttons.copy_import_directory_prop.tooltip"></copy-to-clipboard>
                             {{'import.help.on_server_import.the_property' | translate}}.
                         </p>
+                        <h5>{{'import.help.on_server_import.execution' | translate}}</h5>
+                        <ul>
+                            <li>{{'import.help.on_server_import.work_in_background' | translate}}</li>
+                            <li>{{'import.help.on_server_import.to_reimport_again' | translate}}</li>
+                            <li>{{'import.help.on_server_import.interrupt_support' | translate}}</li>
+                        </ul>
                     </div>
                 </div>
                 <div class="ot-loader ot-main-loader" onto-loader size="50" ng-if="loader"></div>
