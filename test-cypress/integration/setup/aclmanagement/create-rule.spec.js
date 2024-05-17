@@ -199,5 +199,22 @@ describe('ACL Management: create rule', () => {
         // Then I expect an error notification to be displayed that describe me that ACL have to be unique.
         ApplicationSteps.getErrorNotifications().contains('Every ACL rule should be unique.');
     });
+
+    it('should not allow creating a new rule if CUSTOM ROLE is less than 2 symbols', () => {
+        // When I am on "ACL Management" page and create a new rule with a CUSTOM ROLE of 1 symbol
+        AclManagementSteps.addRuleInBeginning();
+        AclManagementSteps.selectPolicy(0, 'allow');
+        AclManagementSteps.fillRole(0, 'A');
+        AclManagementSteps.selectOperation(0, 'write');
+        AclManagementSteps.fillSubject(0, '<urn:Mary>');
+        AclManagementSteps.fillPredicate(0, '*');
+        AclManagementSteps.fillObject(0, '*');
+        AclManagementSteps.fillContext(0, '*');
+        // and try to save it.
+        AclManagementSteps.saveRule(0);
+
+        // Then I expect an error notification to be displayed that tells me this ROLE length is not allowed
+        ApplicationSteps.getErrorNotifications().contains('Can not create a custom role with only one symbol.');
+    });
 });
 

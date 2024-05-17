@@ -122,6 +122,18 @@ export class ACListModel {
     }
 
     /**
+     * Checks if the role is at least 2 symbols long.
+     *
+     * @param {string} scope - The scope of the rule to be checked.
+     * @param {number} indexRuleToBeChecked - The index of the rule to be checked.
+     * @return {boolean} - True, if CUSTOM ROLE length greater than 1, otherwise false.
+    */
+    isRoleValidLength(scope, indexRuleToBeChecked) {
+        const checkedRule = this.getRule(scope, indexRuleToBeChecked);
+        return checkedRule.roleWithoutCustomPrefix.length > 1;
+    }
+
+    /**
      * Returns a copy of a rule object at a specified index within a given scope.
      *
      * @param {string} scope - The scope of the rule.

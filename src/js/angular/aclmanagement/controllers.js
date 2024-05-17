@@ -193,6 +193,10 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
      * @param {string} scope
      */
     $scope.saveRule = (scope) => {
+        if (!$scope.rulesModel.isRoleValidLength($scope.editedRuleScope, $scope.editedRuleIndex)) {
+            notifyInvalidRoleLength();
+            return;
+        }
         if ($scope.rulesModel.isRuleDuplicated($scope.editedRuleScope, $scope.editedRuleIndex)) {
             notifyDuplication();
             return;
@@ -414,6 +418,10 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
 
     const notifyDuplication = () => {
         toastr.error($translate.instant('acl_management.errors.duplicated_rules'));
+    };
+
+    const notifyInvalidRoleLength = () => {
+        toastr.error($translate.instant('acl_management.errors.invalid_role_length'));
     };
 
     const loadNamespaces = () => {

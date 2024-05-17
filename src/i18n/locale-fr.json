@@ -203,7 +203,8 @@
         "errors": {
             "loading_rules": "Erreur lors du chargement des règles ACL",
             "updating_rules": "Erreur lors de la mise à jour des règles ACL",
-            "duplicated_rules": "Chaque règle ACL doit être unique."
+            "duplicated_rules": "Chaque règle ACL doit être unique.",
+            "invalid_role_length": "Impossible de créer un rôle personnalisé avec un seul symbole."
         },
         "defaults": {
             "asterisk": "* - Toute valeur RDF",
