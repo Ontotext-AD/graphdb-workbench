@@ -443,7 +443,6 @@ function yasguiComponentDirective(
                     .then(SparqlRestService.addKnownPrefixes)
                     .then((response) => {
                         queryString = response.data;
-                        ontotextYasguiElement.setQuery(queryString);
                     })
                     .then(() => {
                         emitQueryChanged(JSON.stringify(queryString));
