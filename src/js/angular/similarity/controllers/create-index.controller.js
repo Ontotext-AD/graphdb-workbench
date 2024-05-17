@@ -1,6 +1,5 @@
 import 'angular/utils/notifications';
 import 'angular/utils/local-storage-adapter';
-import 'angular/core/services/event-emitter-service';
 import {mapIndexesResponseToSimilarityIndex} from "../../rest/mappers/similarity-index-mapper";
 import {
     DISABLE_YASQE_BUTTONS_CONFIGURATION, INFERRED_AND_SAME_AS_BUTTONS_CONFIGURATION, YasguiComponentDirectiveUtil, YasqeButtonName,
@@ -36,7 +35,7 @@ CreateSimilarityIdxCtrl.$inject = [
     'LSKeys',
     '$translate',
     '$repositories',
-    'EventEmitterService',
+    'GlobalEmitterBuss',
     'ModalService'
 ];
 
@@ -55,7 +54,7 @@ function CreateSimilarityIdxCtrl(
     LSKeys,
     $translate,
     $repositories,
-    EventEmitterService,
+    GlobalEmitterBuss,
     ModalService
 ) {
 
@@ -920,7 +919,7 @@ function CreateSimilarityIdxCtrl(
     // =========================
     const subscriptions = [];
 
-    subscriptions.push(EventEmitterService.subscribe('repositoryWillChangeEvent', repositoryWillChangedHandler));
+    subscriptions.push(GlobalEmitterBuss.subscribe('repositoryWillChangeEvent', repositoryWillChangedHandler));
     subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
     subscriptions.push($scope.$on('$destroy', removeAllListeners));
     // Prevent go out of the current page? check

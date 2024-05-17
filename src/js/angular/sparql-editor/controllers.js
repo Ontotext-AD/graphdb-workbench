@@ -14,13 +14,11 @@ import {toBoolean} from "../utils/string-utils";
 import {VIEW_SPARQL_EDITOR} from "../models/sparql/constants";
 import {CancelAbortingQuery} from "../models/sparql/cancel-aborting-query";
 import {QueryMode} from "../models/ontotext-yasgui/query-mode";
-import 'angular/core/services/event-emitter-service';
 
 const modules = [
     'ui.bootstrap',
     'graphdb.framework.rest.connectors.service',
-    'graphdb.framework.externalsync.controllers',
-    'graphdb.framework.utils.event-emitter-service'
+    'graphdb.framework.externalsync.controllers'
 ];
 
 angular
@@ -43,7 +41,7 @@ SparqlEditorCtrl.$inject = [
     'GuidesService',
     'ModalService',
     'MonitoringRestService',
-    'EventEmitterService'];
+    'GlobalEmitterBuss'];
 
 function SparqlEditorCtrl($rootScope,
                           $scope,
@@ -60,7 +58,7 @@ function SparqlEditorCtrl($rootScope,
                           GuidesService,
                           ModalService,
                           MonitoringRestService,
-                          EventEmitterService) {
+                          GlobalEmitterBuss) {
     this.repository = '';
 
     const QUERY_EDITOR_ID = '#query-editor';
@@ -542,7 +540,7 @@ function SparqlEditorCtrl($rootScope,
         })
     );
     subscriptions.push(
-        EventEmitterService.subscribe('before-language-change', function (args) {
+        GlobalEmitterBuss.subscribe('before-language-change', function (args) {
                 return new Promise((resolve) => {
                     ModalService.openSimpleModal({
                         title: $translate.instant('query.editor.language.change.warning.title'),

@@ -10,23 +10,23 @@ describe('==> Repository module services tests', function () {
 
     describe('=> $repositories tests', function () {
 
-        let $repositories, $httpBackend, $http, $jwtAuth, httpGetActiveLocation, httpGetRepositories, httpSecurity, httpDefaultUser, EventEmitterService;
+        let $repositories, $httpBackend, $http, $jwtAuth, httpGetActiveLocation, httpGetRepositories, httpSecurity, httpDefaultUser, GlobalEmitterBuss;
         let $timeout;
 
-        beforeEach(angular.mock.inject(function (_$repositories_, _$httpBackend_, _$http_, _$jwtAuth_, _$timeout_, _EventEmitterService_) {
+        beforeEach(angular.mock.inject(function (_$repositories_, _$httpBackend_, _$http_, _$jwtAuth_, _$timeout_, _GlobalEmitterBuss_) {
             // The injector unwraps the underscores (_) from around the parameter names when matching
             $repositories = _$repositories_;
             $httpBackend = _$httpBackend_;
             $http = _$http_;
             $jwtAuth = _$jwtAuth_;
             $timeout = _$timeout_;
-            EventEmitterService = _EventEmitterService_;
+            GlobalEmitterBuss = _GlobalEmitterBuss_;
 
             $jwtAuth.canReadRepo = function () {
                 return true;
             };
 
-            EventEmitterService.emit = (eventName, eventData, callback) => {
+            GlobalEmitterBuss.emit = (eventName, eventData, callback) => {
                 if ('repositoryWillChangeEvent' === eventName) {
                     callback(eventData);
                 }

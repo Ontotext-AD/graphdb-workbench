@@ -15,6 +15,7 @@ import 'angular/core/directives/operations-statuses-monitor/operations-statuses-
 import 'angular/core/directives/autocomplete/autocomplete.directive';
 import 'angular/core/directives/prop-indeterminate/prop-indeterminate.directive';
 import {defineCustomElements} from 'ontotext-yasgui-web-component/loader';
+import 'angular/global-emitter-buss';
 
 // $translate.instant converts <b> from strings to &lt;b&gt
 // and $sce.trustAsHtml could not recognise that this is valid html
@@ -42,6 +43,7 @@ const modules = [
     'graphdb.framework.guides.services',
     'graphdb.framework.core.directives.operationsstatusesmonitor',
     'graphdb.framework.core.directives.autocomplete',
+    'graphdb.framework.global-emitter-buss',
     'ngCustomElement'
 ];
 

@@ -4,7 +4,6 @@ import 'angular/rest/locations.rest.service';
 import 'angular/rest/license.rest.service';
 import 'ng-file-upload/dist/ng-file-upload.min';
 import 'ng-file-upload/dist/ng-file-upload-shim.min';
-import 'angular/core/services/event-emitter-service';
 import {QueryMode} from "../../models/ontotext-yasgui/query-mode";
 
 const modules = [
@@ -12,16 +11,15 @@ const modules = [
     'graphdb.framework.rest.repositories.service',
     'graphdb.framework.rest.locations.service',
     'graphdb.framework.rest.license.service',
-    'toastr',
-    'graphdb.framework.utils.event-emitter-service'
+    'toastr'
 ];
 
 const repositories = angular.module('graphdb.framework.core.services.repositories', modules);
 
 repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth',
-    'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService', '$translate', '$q', 'LocalStorageAdapter', 'LSKeys', 'EventEmitterService', 'RDF4JRepositoriesRestService',
+    'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService', '$translate', '$q', 'LocalStorageAdapter', 'LSKeys', 'GlobalEmitterBuss', 'RDF4JRepositoriesRestService',
     function (toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth,
-        RepositoriesRestService, LocationsRestService, LicenseRestService, $translate, $q, LocalStorageAdapter, LSKeys, eventEmitterService, RDF4JRepositoriesRestService) {
+        RepositoriesRestService, LocationsRestService, LicenseRestService, $translate, $q, LocalStorageAdapter, LSKeys, GlobalEmitterBuss, RDF4JRepositoriesRestService) {
 
         this.location = {uri: '', label: 'Local', local: true, isInCluster: false};
         this.locationError = '';
@@ -331,7 +329,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
 
         this.setRepository = function (repo) {
             const eventData = {oldRepository: this.repository, newRepository: repo, cancel: false};
-            eventEmitterService.emit('repositoryWillChangeEvent', eventData, (eventData) => {
+            GlobalEmitterBuss.emit('repositoryWillChangeEvent', eventData, (eventData) => {
                 if (!eventData.cancel) {
                     if (repo) {
                         LocalStorageAdapter.set(LSKeys.REPOSITORY_ID, repo.id);

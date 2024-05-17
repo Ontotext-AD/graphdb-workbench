@@ -2,7 +2,6 @@ import 'angular/core/services/repositories.service';
 import 'angular/rest/monitoring.rest.service';
 import 'angular/utils/notifications';
 import 'angular/core/services';
-import 'angular/core/services/event-emitter-service';
 import {JdbcConfigurationInfo} from "../models/jdbc/jdbc-configuration-info";
 import {YasqeMode} from "../models/ontotext-yasgui/yasqe-mode";
 import {JdbcConfigurationError} from "../models/jdbc/jdbc-configuration-error";
@@ -15,8 +14,7 @@ const modules = [
     'ui.bootstrap',
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.rest.monitoring.service',
-    'toastr',
-    'graphdb.framework.utils.event-emitter-service'
+    'toastr'
 ];
 
 angular.module('graphdb.framework.jdbc.controllers', modules, [
@@ -84,7 +82,7 @@ JdbcCreateCtrl.$inject = [
     'ModalService',
     '$translate',
     '$languageService',
-    'EventEmitterService'];
+    'GlobalEmitterBuss'];
 
 function JdbcCreateCtrl(
     $q,
@@ -102,7 +100,7 @@ function JdbcCreateCtrl(
     ModalService,
     $translate,
     $languageService,
-    EventEmitterService) {
+    GlobalEmitterBuss) {
 
     $scope.emptySparqlResponse = "{\"head\": {\"vars\": []},\"results\": {\"bindings\": []}}";
     $scope.getSuggestionSqlType = '';
@@ -631,7 +629,7 @@ function JdbcCreateCtrl(
 
     subscriptions.push($rootScope.$on('$translateChangeSuccess', languageChangedHandler));
     subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
-    subscriptions.push(EventEmitterService.subscribe('repositoryWillChangeEvent', repositoryWillChangedHandler));
+    subscriptions.push(GlobalEmitterBuss.subscribe('repositoryWillChangeEvent', repositoryWillChangedHandler));
     subscriptions.push($scope.$on('$destroy', removeAllListeners));
     // Prevent go out of the current page? check
     window.addEventListener('beforeunload', beforeunloadHandler);

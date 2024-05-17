@@ -13,9 +13,9 @@ angular
     .module('graphdb.framework.import.services.importcontext', [])
     .factory('ImportContextService', ImportContextService);
 
-ImportContextService.$inject = ['EventEmitterService'];
+ImportContextService.$inject = ['GlobalEmitterBuss'];
 
-function ImportContextService(EventEmitterService) {
+function ImportContextService(GlobalEmitterBuss) {
 
     let _activeTabId = TABS.USER;
     /**
@@ -49,7 +49,7 @@ function ImportContextService(EventEmitterService) {
      */
     function updateActiveTabId(activeTabId) {
         _activeTabId = activeTabId;
-        EventEmitterService.emit('activeTabIdUpdated', getActiveTabId());
+        GlobalEmitterBuss.emit('activeTabIdUpdated', getActiveTabId());
     }
 
     function getActiveTabId() {
@@ -63,7 +63,7 @@ function ImportContextService(EventEmitterService) {
      * @return unsubscribe function.
      */
     function onActiveTabIdUpdated(callback) {
-        return EventEmitterService.subscribe('activeTabIdUpdated', () => callback(getActiveTabId()));
+        return GlobalEmitterBuss.subscribe('activeTabIdUpdated', () => callback(getActiveTabId()));
     }
 
     /**
@@ -74,7 +74,7 @@ function ImportContextService(EventEmitterService) {
      */
     function updateFiles(files) {
         _files = files;
-        EventEmitterService.emit('filesUpdated', getFiles());
+        GlobalEmitterBuss.emit('filesUpdated', getFiles());
     }
 
     /**
@@ -84,7 +84,7 @@ function ImportContextService(EventEmitterService) {
      * @return unsubscribe function.
      */
     function onFilesUpdated(callback) {
-        return EventEmitterService.subscribe('filesUpdated', () => callback(getFiles()));
+        return GlobalEmitterBuss.subscribe('filesUpdated', () => callback(getFiles()));
     }
 
     /**
@@ -95,7 +95,7 @@ function ImportContextService(EventEmitterService) {
      */
     function addFile(file) {
         _files.push(file);
-        EventEmitterService.emit('fileAdded', cloneDeep(file));
+        GlobalEmitterBuss.emit('fileAdded', cloneDeep(file));
     }
 
     /**
@@ -114,7 +114,7 @@ function ImportContextService(EventEmitterService) {
      */
     function updateResources(resources) {
         _resources = resources;
-        EventEmitterService.emit('resourcesUpdated', getResources());
+        GlobalEmitterBuss.emit('resourcesUpdated', getResources());
     }
 
     /**
@@ -132,6 +132,6 @@ function ImportContextService(EventEmitterService) {
      * @return the unsubscribe function.
      */
     function onResourcesUpdated(callback) {
-        return EventEmitterService.subscribe('resourcesUpdated', () => callback(getResources()));
+        return GlobalEmitterBuss.subscribe('resourcesUpdated', () => callback(getResources()));
     }
 }

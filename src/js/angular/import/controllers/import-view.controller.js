@@ -520,7 +520,7 @@ importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$
     init();
 }]);
 
-importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$uibModal', '$translate', '$repositories', 'ImportRestService', 'UploadRestService', 'ModalService', 'ImportContextService', 'EventEmitterService', function ($scope, toastr, $controller, $uibModal, $translate, $repositories, ImportRestService, UploadRestService, ModalService, ImportContextService, EventEmitterService) {
+importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$uibModal', '$translate', '$repositories', 'ImportRestService', 'UploadRestService', 'ModalService', 'ImportContextService', 'GlobalEmitterBuss', function ($scope, toastr, $controller, $uibModal, $translate, $repositories, ImportRestService, UploadRestService, ModalService, ImportContextService, GlobalEmitterBuss) {
 
     // =========================
     // Private variables
@@ -559,7 +559,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         const eventData = {files: $newFiles, cancel: false};
         // Notify that new files have been selected and will be added for uploading.
         // Subscribers of the "filesForUploadSelected" event may cancel the event by setting the 'cancel' property to true in the passed 'eventData' object.
-        EventEmitterService.emit("filesForUploadSelected", eventData, (eventData) => {
+        GlobalEmitterBuss.emit("filesForUploadSelected", eventData, (eventData) => {
             // Skip uploading of files if some subscriber canceled the uploading.
             if (!eventData.cancel) {
                 notifyForTooLargeFiles($invalidFiles);
