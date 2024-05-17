@@ -1,7 +1,8 @@
 import {ComponentStoreService} from "./core/services/component-store.service";
 
 export const GlobalPropertyName = {
-    SELECTED_REPOSITORY: 'SELECTED_REPOSITORY'
+    SELECTED_REPOSITORY: 'SELECTED_REPOSITORY',
+    LICENSE: 'LICENSE'
 };
 
 angular
@@ -45,11 +46,37 @@ function GlobalStoreService(GlobalEmitterBuss, LocalStorageAdapter, LSKeys) {
         return context.onUpdated(GlobalPropertyName.SELECTED_REPOSITORY, callback);
     };
 
+    /**
+     * @return {License}
+     */
+    const getLicense = () => {
+        return context.get(GlobalPropertyName.LICENSE);
+    };
+
+    /**
+     * @param {License} license
+     */
+    const updateLicense = (license) => {
+        context.update(GlobalPropertyName.LICENSE, license);
+    };
+
+    /**
+     * If the licence change then the <code>callback</code> functions will be called with the new license parameter.
+     * @param {function} callback - The callback to be called when the event is fired.
+     * @return {function} unsubscribe function.
+     */
+    const onLicenseUpdated = (callback) => {
+        return context.onUpdated(GlobalPropertyName.LICENSE, callback);
+    };
+
     init();
 
     return {
         getSelectedRepository,
         updateSelectedRepository,
-        onSelectedRepositoryUpdated
+        onSelectedRepositoryUpdated,
+        getLicense,
+        updateLicense,
+        onLicenseUpdated
     };
 }

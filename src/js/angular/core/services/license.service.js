@@ -1,47 +1,89 @@
+import {License} from "../../models/license";
+import 'angular/global-store.service';
+
 angular.module('graphdb.framework.core.services.licenseService', [])
-    .service('$licenseService', ['$rootScope', 'LicenseRestService', '$translate', licenseService]);
+    .service('$licenseService', ['$rootScope', 'LicenseRestService', '$translate', 'GlobalStoreService', licenseService]);
 
-function licenseService($rootScope, LicenseRestService, $translate) {
+function licenseService($rootScope, LicenseRestService, $translate, GlobalStoreService) {
 
-    const that = this;
+    let isLicenseHardcoded = false;
+    let showLicense = false;
+    let loadingLicense = false;
+    let productType = undefined;
+    let productTypeHuman = '';
 
-    this.checkLicenseStatus = function () {
-        that.loadingLicense = true;
+    const subscriptions = [];
+
+    // =========================
+    // public function
+    // =========================
+    const checkLicenseStatus = () => {
+        loadingLicense = true;
         LicenseRestService.getHardcodedLicense().success(function (res) {
-            that.isLicenseHardcoded = (res === 'true');
+            isLicenseHardcoded = (res === 'true');
         }).error(function () {
-            that.isLicenseHardcoded = true;
+            isLicenseHardcoded = true;
         }).then(function () {
             LicenseRestService.getLicenseInfo().then(function (res) {
-                that.license = res.data;
-                that.showLicense = true;
-                that.loadingLicense = false;
-                updateProductType(that.license);
+                const license = new License(res.data);
+                GlobalStoreService.updateLicense(license);
+                showLicense = true;
+                loadingLicense = false;
             }, function () {
-                that.license = {message: $translate.instant('no.license.set.msg'), valid: false};
-                that.showLicense = true;
-                that.loadingLicense = false;
-                updateProductType(that.license);
+                GlobalStoreService.updateLicense(new License({
+                    message: $translate.instant('no.license.set.msg'),
+                    valid: false
+                }));
+                showLicense = true;
+                loadingLicense = false;
             });
         });
     };
 
+    const isLicenseValid = function () {
+        const license = GlobalStoreService.getLicense();
+        return license && license.valid;
+    };
+
+    // =========================
+    // Private function
+    // =========================
+
     const updateProductType = function (license) {
-        that.productType = license.productType;
-        if (that.productType === "standard") {
-            that.productTypeHuman = "Standard";
-        } else if (that.productType === "enterprise") {
-            that.productTypeHuman = "Enterprise";
-        } else if (that.productType === "free") {
-            that.productTypeHuman = "Free";
-        } else if (that.productType === "graphdb") {
-            that.productTypeHuman = "GraphDB";
+        // TODO check if this have to be translated.
+        productType = license.productType;
+        if (productType === "standard") {
+            productTypeHuman = "Standard";
+        } else if (productType === "enterprise") {
+            productTypeHuman = "Enterprise";
+        } else if (productType === "free") {
+            productTypeHuman = "Free";
+        } else if (productType === "graphdb") {
+            productTypeHuman = "GraphDB";
         }
     };
 
-    this.checkLicenseStatus();
+    const removeAllListeners = () => {
+        subscriptions.forEach((subscription) => subscription());
+    };
 
-    this.isLicenseValid = function() {
-        return that.license && that.license.valid;
-    }
+    const init = () => {
+        subscriptions.push(GlobalStoreService.onLicenseUpdated((license) => updateProductType(license)));
+        checkLicenseStatus();
+    };
+
+    // Deregister the watcher when the scope/directive is destroyed
+    $rootScope.$on('$destroy', removeAllListeners);
+
+    init();
+
+    return {
+        isLicenseHardcoded,
+        showLicense,
+        loadingLicense,
+        productType,
+        productTypeHuman,
+        isLicenseValid,
+        checkLicenseStatus
+    };
 }
