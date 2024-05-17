@@ -87,6 +87,7 @@ const addResourceToTree = (root, resource) => {
         return importServerResource;
     } else {
         resourceParent.importResource = resource;
+        resourceParent.path = path.join('/');
         return resourceParent;
     }
 };
@@ -181,7 +182,7 @@ const setupImportedAndModifiedComparableProperties = (importResourceElement) => 
 };
 
 const isImportable = (importResource) => {
-    return importResource.isFile() && importResource.status !== ImportResourceStatus.IMPORTING && importResource.status !== ImportResourceStatus.UPLOADING && importResource.status !== ImportResourceStatus.PENDING && importResource.status !== ImportResourceStatus.INTERRUPTING;
+    return importResource.status !== ImportResourceStatus.IMPORTING && importResource.status !== ImportResourceStatus.UPLOADING && importResource.status !== ImportResourceStatus.PENDING && importResource.status !== ImportResourceStatus.INTERRUPTING;
 };
 
 const hasOngoingImport = (importResource) => {
