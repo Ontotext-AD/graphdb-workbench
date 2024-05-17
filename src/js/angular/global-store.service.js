@@ -1,7 +1,7 @@
 import {ComponentStoreService} from "./core/services/component-store.service";
 
 export const GlobalPropertyName = {
-    ACTIVE_REPOSITORY: 'ACTIVE_REPOSITORY'
+    SELECTED_REPOSITORY: 'SELECTED_REPOSITORY'
 };
 
 angular
@@ -21,16 +21,16 @@ function GlobalStoreService(GlobalEmitterBuss, LocalStorageAdapter, LSKeys) {
                 location: LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION) || ''
             };
         }
-        updateActiveRepository(selectedRepo);
+        updateSelectedRepository(selectedRepo);
     };
 
     const context = new ComponentStoreService(GlobalEmitterBuss);
 
-    const getActiveRepository = () => {
-        return context.get(GlobalPropertyName.ACTIVE_REPOSITORY);
+    const getSelectedRepository = () => {
+        return context.get(GlobalPropertyName.SELECTED_REPOSITORY);
     };
 
-    const updateActiveRepository = (newRepository) => {
+    const updateSelectedRepository = (newRepository) => {
         if (newRepository) {
             LocalStorageAdapter.set(LSKeys.REPOSITORY_ID, newRepository.id);
             LocalStorageAdapter.set(LSKeys.REPOSITORY_LOCATION, newRepository.location);
@@ -38,18 +38,18 @@ function GlobalStoreService(GlobalEmitterBuss, LocalStorageAdapter, LSKeys) {
             LocalStorageAdapter.remove(LSKeys.REPOSITORY_ID);
             LocalStorageAdapter.remove(LSKeys.REPOSITORY_LOCATION);
         }
-        context.update(GlobalPropertyName.ACTIVE_REPOSITORY, newRepository);
+        context.update(GlobalPropertyName.SELECTED_REPOSITORY, newRepository);
     };
 
-    const onActiveRepositoryUpdated = (callback) => {
-        return context.onUpdated(GlobalPropertyName.ACTIVE_REPOSITORY, callback);
+    const onSelectedRepositoryUpdated = (callback) => {
+        return context.onUpdated(GlobalPropertyName.SELECTED_REPOSITORY, callback);
     };
 
     init();
 
     return {
-        getActiveRepository,
-        updateActiveRepository,
-        onActiveRepositoryUpdated
+        getSelectedRepository,
+        updateSelectedRepository,
+        onSelectedRepositoryUpdated
     };
 }

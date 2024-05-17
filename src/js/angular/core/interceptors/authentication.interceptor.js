@@ -3,10 +3,10 @@ import 'angular/core/services';
 angular.module('graphdb.framework.core.interceptors.authentication', [
     'ngCookies'
 ])
-    .factory('$authenticationInterceptor', ['AuthTokenService', 'LocalStorageAdapter', 'LSKeys',
-        function(AuthTokenService, LocalStorageAdapter, LSKeys) {
+    .factory('$authenticationInterceptor', ['AuthTokenService', 'GlobalStoreService',
+        function (AuthTokenService, GlobalStoreService) {
             return {
-                'request': function(config) {
+                'request': function (config) {
                     const headers = config.headers || {};
 
                     // When using OpenID, during authentication process, the additional headers modification must be skipped
@@ -21,11 +21,10 @@ angular.module('graphdb.framework.core.interceptors.authentication', [
                     headers['X-Requested-With'] = 'XMLHttpRequest';
                     headers.Authorization = AuthTokenService.getAuthToken();
 
-                    const repositoryId = LocalStorageAdapter.get(LSKeys.REPOSITORY_ID);
-                    const repositoryLocation = LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION);
+                    const selectedRepository = GlobalStoreService.getSelectedRepository();
 
-                    headers['X-GraphDB-Repository'] = repositoryId ? repositoryId : undefined;
-                    headers['X-GraphDB-Repository-Location'] = repositoryLocation ? repositoryLocation : undefined;
+                    headers['X-GraphDB-Repository'] = selectedRepository ? selectedRepository.id : undefined;
+                    headers['X-GraphDB-Repository-Location'] = selectedRepository ? selectedRepository.location : undefined;
 
                     config.headers = headers;
                     return config;

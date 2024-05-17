@@ -17,9 +17,9 @@ const modules = [
 const repositories = angular.module('graphdb.framework.core.services.repositories', modules);
 
 repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth',
-    'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService', '$translate', '$q', 'LocalStorageAdapter', 'LSKeys', 'GlobalEmitterBuss', 'RDF4JRepositoriesRestService',
+    'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService', '$translate', '$q', 'LocalStorageAdapter', 'LSKeys', 'GlobalEmitterBuss', 'RDF4JRepositoriesRestService', 'GlobalStoreService',
     function (toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth,
-        RepositoriesRestService, LocationsRestService, LicenseRestService, $translate, $q, LocalStorageAdapter, LSKeys, GlobalEmitterBuss, RDF4JRepositoriesRestService) {
+        RepositoriesRestService, LocationsRestService, LicenseRestService, $translate, $q, LocalStorageAdapter, LSKeys, GlobalEmitterBuss, RDF4JRepositoriesRestService, GlobalStoreService) {
 
         this.location = {uri: '', label: 'Local', local: true, isInCluster: false};
         this.locationError = '';
@@ -256,14 +256,18 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         };
 
         this.getActiveRepositoryObjectFromStorage = function() {
+            const selectedRepository = GlobalStoreService.getSelectedRepository();
+            const id = selectedRepository ? selectedRepository.id : '';
+            const location = selectedRepository ? selectedRepository.location : '';
             return {
-                id: LocalStorageAdapter.get(LSKeys.REPOSITORY_ID) || '',
-                location: LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION) || ''
+                id,
+                location
             };
         };
 
         this.getActiveRepository = function () {
-            return LocalStorageAdapter.get(LSKeys.REPOSITORY_ID) || undefined;
+            const selectedRepository = GlobalStoreService.getSelectedRepository();
+            return selectedRepository ? selectedRepository.id : undefined;
         };
 
         this.getActiveRepositoryObject = function () {
@@ -331,13 +335,14 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             const eventData = {oldRepository: this.repository, newRepository: repo, cancel: false};
             GlobalEmitterBuss.emit('repositoryWillChangeEvent', eventData, (eventData) => {
                 if (!eventData.cancel) {
+                    let selectedRepo = undefined;
                     if (repo) {
-                        LocalStorageAdapter.set(LSKeys.REPOSITORY_ID, repo.id);
-                        LocalStorageAdapter.set(LSKeys.REPOSITORY_LOCATION, repo.location);
-                    } else {
-                        LocalStorageAdapter.remove(LSKeys.REPOSITORY_ID);
-                        LocalStorageAdapter.remove(LSKeys.REPOSITORY_LOCATION);
+                        selectedRepo = {
+                            id: repo.id,
+                            location: repo.location
+                        };
                     }
+                    GlobalStoreService.updateSelectedRepository(selectedRepo);
                     this.setRepositoryHeaders(repo);
                     $rootScope.$broadcast('repositoryIsSet', {newRepo: true});
 
