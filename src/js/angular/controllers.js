@@ -23,6 +23,7 @@ import './guides/directives';
 import {GUIDE_PAUSE} from './guides/tour-lib-services/shepherd.service';
 import 'angular-pageslide-directive/dist/angular-pageslide-directive';
 import 'angularjs-slider/dist/rzslider.min';
+import 'angular/core/directives/core-error/core-error.directive';
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -49,7 +50,8 @@ angular
         'graphdb.framework.guides.directives',
         'graphdb.framework.guides.services',
         'pageslide-directive',
-        'rzSlider'
+        'rzSlider',
+        'graphdb.framework.core.directives.core-error'
     ])
     .controller('mainCtrl', mainCtrl)
     .controller('homeCtrl', homeCtrl)
@@ -227,7 +229,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     });
 
     $scope.$on("repositoryIsSet", function () {
-        $scope.setRestricted();
         LocalStorageAdapter.clearClassHieararchyState();
     });
 
@@ -367,13 +368,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     };
 
     $scope.canWriteActiveRepo = function (noSystem) {
-        const activeRepository = $repositories.getActiveRepositoryObject();
-        if (activeRepository) {
-            // If the parameter noSystem is true then we don't allow write access to the SYSTEM repository
-            return $jwtAuth.canWriteRepo(activeRepository)
-                && (activeRepository.id !== 'SYSTEM' || !noSystem);
-        }
-        return false;
+        return $repositories.canWriteActiveRepo(noSystem);
     };
 
     $scope.getActiveRepositoryObject = function () {
@@ -410,23 +405,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
      */
     $scope.setAttrs = function(attrs) {
         $scope.attrs = attrs;
-    };
-
-    /**
-     *  If the license is not valid or
-     *  If the attribute "write" is provided and repository other than Ontop one,
-     * directive will require a repository with write access.
-     *  If on the other hand attribute "ontop" or "fedx" is found and such repo, proper message about the
-     * restrictions related with repository of type Ontop or FedX will be shown to the user
-     */
-    $scope.setRestricted = function () {
-        if ($scope.attrs) {
-            $scope.isRestricted =
-                $scope.attrs.hasOwnProperty('license') && !$licenseService.isLicenseValid() ||
-                $scope.attrs.hasOwnProperty('write') && $scope.isSecurityEnabled() && !$scope.canWriteActiveRepo()||
-                $scope.attrs.hasOwnProperty('ontop') && $scope.isActiveRepoOntopType() ||
-                $scope.attrs.hasOwnProperty('fedx') && $scope.isActiveRepoFedXType();
-        }
     };
 
     $scope.toHumanReadableType = function (type) {
@@ -566,7 +544,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     };
 
     $scope.canManageRepositories = function () {
-        return $jwtAuth.hasRole(UserRole.ROLE_REPO_MANAGER) && !$repositories.getDegradedReason();
+        return $repositories.canManageRepositories();
     };
 
     $scope.getSavedQueries = function () {

@@ -37,6 +37,13 @@ export class ComponentStoreService {
      * @return {function} unsubscribe function.
      */
     onUpdated(propertyName, callback) {
+        if (!propertyName || !callback) {
+            return;
+        }
+        const value = this.get(propertyName);
+        if (value) {
+            callback(value);
+        }
         return this.eventEmitterService.subscribe(this.getUpdateEventName(propertyName), () => callback(this.get(propertyName)));
     }
 

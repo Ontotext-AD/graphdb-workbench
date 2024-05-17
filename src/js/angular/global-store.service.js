@@ -2,6 +2,7 @@ import {ComponentStoreService} from "./core/services/component-store.service";
 
 export const GlobalPropertyName = {
     SELECTED_REPOSITORY: 'SELECTED_REPOSITORY',
+    SELECTED_REPOSITORY_OBJECT: 'SELECTED_REPOSITORY_OBJECT',
     LICENSE: 'LICENSE'
 };
 
@@ -31,19 +32,37 @@ function GlobalStoreService(GlobalEmitterBuss, LocalStorageAdapter, LSKeys) {
         return context.get(GlobalPropertyName.SELECTED_REPOSITORY);
     };
 
-    const updateSelectedRepository = (newRepository) => {
-        if (newRepository) {
-            LocalStorageAdapter.set(LSKeys.REPOSITORY_ID, newRepository.id);
-            LocalStorageAdapter.set(LSKeys.REPOSITORY_LOCATION, newRepository.location);
+    /**
+     * @param {SelectedRepository} newSelectedRepository
+     */
+    const updateSelectedRepository = (newSelectedRepository) => {
+        if (newSelectedRepository) {
+            LocalStorageAdapter.set(LSKeys.REPOSITORY_ID, newSelectedRepository.id);
+            LocalStorageAdapter.set(LSKeys.REPOSITORY_LOCATION, newSelectedRepository.location);
         } else {
             LocalStorageAdapter.remove(LSKeys.REPOSITORY_ID);
             LocalStorageAdapter.remove(LSKeys.REPOSITORY_LOCATION);
         }
-        context.update(GlobalPropertyName.SELECTED_REPOSITORY, newRepository);
+        context.update(GlobalPropertyName.SELECTED_REPOSITORY, newSelectedRepository);
     };
 
     const onSelectedRepositoryUpdated = (callback) => {
         return context.onUpdated(GlobalPropertyName.SELECTED_REPOSITORY, callback);
+    };
+
+    const getSelectedRepositoryObject = () => {
+        return context.get(GlobalPropertyName.SELECTED_REPOSITORY_OBJECT);
+    };
+
+    /**
+     * @param {Repository} newRepository
+     */
+    const updateSelectedRepositoryObject = (newRepository) => {
+        context.update(GlobalPropertyName.SELECTED_REPOSITORY_OBJECT, newRepository);
+    };
+
+    const onSelectedRepositoryObjectUpdated = (callback) => {
+        return context.onUpdated(GlobalPropertyName.SELECTED_REPOSITORY_OBJECT, callback);
     };
 
     /**
@@ -75,6 +94,9 @@ function GlobalStoreService(GlobalEmitterBuss, LocalStorageAdapter, LSKeys) {
         getSelectedRepository,
         updateSelectedRepository,
         onSelectedRepositoryUpdated,
+        getSelectedRepositoryObject,
+        updateSelectedRepositoryObject,
+        onSelectedRepositoryObjectUpdated,
         getLicense,
         updateLicense,
         onLicenseUpdated

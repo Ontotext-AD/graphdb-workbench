@@ -1,4 +1,7 @@
 import 'angular/utils/local-storage-adapter';
+import 'angular/core/directives/core-error/core-error.directive';
+import 'angular/core/directives/core-error/core-error-directive.store';
+
 
 const modules = [
     'pageslide-directive',
@@ -8,7 +11,9 @@ const modules = [
     'angucomplete-alt',
     'rzSlider',
     'toastr',
-    'graphdb.framework.utils.localstorageadapter'
+    'graphdb.framework.utils.localstorageadapter',
+    'graphdb.framework.core.directives.core-error',
+    'graphdb.framework.stores.core-error.store'
 ];
 
 const SAFARI_IE_EDGE_CLASS_LIMIT = 400;

@@ -1,10 +1,12 @@
 import 'angular/core/services';
 import 'angular/rest/monitoring.rest.service';
+import 'angular/core/directives/core-error/core-error.directive';
 
 const queriesCtrl = angular.module('graphdb.framework.jmx.queries.controllers', [
     'ui.bootstrap',
     'toastr',
-    'graphdb.framework.rest.monitoring.service'
+    'graphdb.framework.rest.monitoring.service',
+    'graphdb.framework.core.directives.core-error'
 ]);
 
 queriesCtrl.controller('QueriesCtrl', ['$scope', '$uibModal', 'toastr', '$interval', '$repositories', '$jwtAuth', 'ModalService',

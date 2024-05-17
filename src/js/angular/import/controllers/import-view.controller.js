@@ -9,6 +9,8 @@ import 'angular/import/controllers/settings-modal.controller';
 import 'angular/import/controllers/import-url.controller';
 import 'angular/import/controllers/import-text-snippet.controller';
 import 'angular/import/controllers/file-override-confirmation.controller';
+import 'angular/core/directives/core-error/core-error.directive';
+import 'angular/core/directives/core-error/core-error-directive.store';
 import {FileFormats} from "../../models/import/file-formats";
 import * as stringUtils from "../../utils/string-utils";
 import {FileUtils} from "../../utils/file-utils";
@@ -36,7 +38,9 @@ const modules = [
     'graphdb.framework.impex.import.controllers.settings-modal',
     'graphdb.framework.impex.import.controllers.import-url',
     'graphdb.framework.impex.import.controllers.import-text-snippet',
-    'graphdb.framework.impex.import.controllers.file-override-confirmation'
+    'graphdb.framework.impex.import.controllers.file-override-confirmation',
+    'graphdb.framework.core.directives.core-error',
+    'graphdb.framework.stores.core-error.store'
 ];
 
 const importViewModule = angular.module('graphdb.framework.impex.import.controllers', modules);
@@ -47,8 +51,8 @@ const USER_DATA_TYPE = {
     URL: 'url'
 };
 
-importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', '$repositories', '$uibModal', '$filter', '$jwtAuth', '$location', '$translate', 'LicenseRestService', 'GuidesService', 'ModalService', 'ImportRestService', 'ImportContextService', 'ImportViewStorageService',
-    function ($scope, toastr, $interval, $repositories, $uibModal, $filter, $jwtAuth, $location, $translate, LicenseRestService, GuidesService, ModalService, ImportRestService, ImportContextService, ImportViewStorageService) {
+importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', '$repositories', '$uibModal', '$filter', '$jwtAuth', '$location', '$translate', 'LicenseRestService', 'GuidesService', 'ModalService', 'ImportRestService', 'ImportContextService', 'ImportViewStorageService', 'CoreErrorDirectiveStore',
+    function ($scope, toastr, $interval, $repositories, $uibModal, $filter, $jwtAuth, $location, $translate, LicenseRestService, GuidesService, ModalService, ImportRestService, ImportContextService, ImportViewStorageService, CoreErrorDirectiveStore) {
 
         // =========================
         // Private variables
@@ -432,6 +436,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         const initSubscriptions = () => {
             subscriptions.push($scope.$on('repositoryIsSet', $scope.onRepositoryChange));
             subscriptions.push($scope.$on('$destroy', () => $interval.cancel(listPollingHandler)));
+            subscriptions.push(CoreErrorDirectiveStore.onPageRestrictedUpdated((pageRestricted) => $scope.isRestricted = pageRestricted));
             subscriptions.push(ImportContextService.onActiveTabIdUpdated((newActiveTabId) => {
                 $scope.activeTabId = newActiveTabId;
                 ImportContextService.updateResources(new ImportResourceTreeElement());

@@ -1,10 +1,14 @@
 import 'angular/rest/autocomplete.rest.service';
+import 'angular/core/directives/core-error/core-error.directive';
+import 'angular/core/directives/core-error/core-error-directive.store';
 import {mapNamespacesResponse} from "../rest/mappers/namespaces-mapper";
 import {decodeHTML} from "../../../app";
 
 const modules = [
     'toastr',
-    'graphdb.framework.rest.autocomplete.service'
+    'graphdb.framework.rest.autocomplete.service',
+    'graphdb.framework.core.directives.core-error',
+    'graphdb.framework.stores.core-error.store'
 ];
 
 angular
@@ -12,11 +16,12 @@ angular
     .controller('AutocompleteCtrl', AutocompleteCtrl)
     .controller('AddLabelCtrl', AddLabelCtrl);
 
-AutocompleteCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', '$uibModal', '$timeout', 'RDF4JRepositoriesRestService', 'UriUtils', 'AutocompleteRestService', '$autocompleteStatus', '$translate'];
+AutocompleteCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', '$uibModal', '$timeout', 'RDF4JRepositoriesRestService', 'UriUtils', 'AutocompleteRestService', '$autocompleteStatus', '$translate', 'CoreErrorDirectiveStore'];
 
-function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseService, $uibModal, $timeout, RDF4JRepositoriesRestService, UriUtils, AutocompleteRestService, $autocompleteStatus, $translate) {
+function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseService, $uibModal, $timeout, RDF4JRepositoriesRestService, UriUtils, AutocompleteRestService, $autocompleteStatus, $translate, CoreErrorDirectiveStore) {
 
     let timer;
+    const subscriptions = [];
 
     function cancelTimer() {
         if (timer) {
@@ -138,8 +143,11 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
         }, 5000);
     };
 
+    subscriptions.push(CoreErrorDirectiveStore.onPageRestrictedUpdated((pageRestricted) => $scope.isRestricted = pageRestricted));
+
     $scope.$on("$destroy", function () {
         cancelTimer();
+        subscriptions.forEach((subscription) => subscription());
     });
 
     const init = function() {
@@ -255,7 +263,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
         removeLabelConfig(label);
     };
 
-    $scope.$on('repositoryIsSet', function () {
+    subscriptions.push($scope.$on('repositoryIsSet', function () {
         cancelTimer();
         if (!$licenseService.isLicenseValid() ||
             !$repositories.getActiveRepository() ||
@@ -265,7 +273,7 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
         }
         $scope.checkForPlugin();
         pullStatus();
-    });
+    }));
 
     const loadNamespaces = () => {
         RDF4JRepositoriesRestService.getNamespaces($repositories.getActiveRepository())

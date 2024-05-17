@@ -3,6 +3,7 @@ import 'angular/core/services/repositories.service';
 import 'angular/rest/monitoring.rest.service';
 import 'angular/utils/notifications';
 import 'angular/utils/uri-utils';
+import 'angular/core/directives/core-error/core-error.directive';
 import {decodeHTML} from "../../../app";
 import {DEFAULT_SPARQL_QUERY, SparqlTemplateInfo} from "../models/sparql-template/sparql-template-info";
 import {SparqlTemplateError} from "../models/sparql-template/sparql-template-error";
@@ -17,7 +18,8 @@ const modules = [
     'ui.bootstrap',
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.rest.monitoring.service',
-    'toastr'
+    'toastr',
+    'graphdb.framework.core.directives.core-error'
 ];
 
 angular.module('graphdb.framework.sparql-template.controllers', modules, [

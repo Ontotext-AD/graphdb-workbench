@@ -9,7 +9,6 @@ angular
     .directive('ontoLoader', ontoLoader)
     .directive('ontoLoaderFancy', ontoLoaderFancy)
     .directive('ontoLoaderNew', ontoLoaderNew)
-    .directive('coreErrors', coreErrors)
     .directive('eatClick', eatClick)
     .directive('multiRequired', multiRequired)
     .directive('searchResourceInput', searchResourceInput)
@@ -118,100 +117,6 @@ function ontoLoaderNew($timeout) {
         + '<img width="{{size}}" height="{{size}}" src="js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]"/>'
         + '<div style="font-size: {{size/4}}px">{{currentMessage}}<div>'
         + '</div>'
-    };
-}
-
-coreErrors.$inject = ['$timeout'];
-
-function coreErrors($timeout) {
-    return {
-        restrict: 'EA',
-        transclude: true,
-        templateUrl: 'js/angular/core/templates/core-errors.html',
-        link: function (scope, element, attrs) {
-
-            let previousElement;
-            scope.showRemoteLocations = false;
-
-            // =========================
-            // Public function
-            // =========================
-            scope.showPopoverForRepo = (event, repository) => {
-                hidePopoverForRepo();
-                scope.setPopoverRepo(repository);
-                $timeout(function () {
-                    const element = $(event.toElement).find('.popover-anchor')[0];
-                    previousElement = element;
-                    if (element && !scope.getActiveRepository()) {
-                        element.dispatchEvent(new Event('show'));
-                    }
-                });
-                event.stopPropagation();
-            };
-
-            scope.toggleShowRemoteLocations = () => {
-                scope.showRemoteLocations = !scope.showRemoteLocations;
-            };
-
-            scope.getAccessibleRepositories = function () {
-                let remoteLocationsFilter = (repo) => true;
-                if (!scope.showRemoteLocations) {
-                    remoteLocationsFilter = (repo) => repo.local;
-                }
-                if (scope.isRestricted) {
-                    return scope.getWritableRepositories().filter(remoteLocationsFilter);
-                } else {
-                    return scope.getReadableRepositories().filter(remoteLocationsFilter);
-                }
-            };
-
-            // =========================
-            // Private function
-            // =========================
-
-            const init = () => {
-                scope.setAttrs(attrs);
-            };
-
-            const hidePopoverForRepo = (event) => {
-                if (event) {
-                    // Prevents hiding if we move the mouse over the popover
-                    let el = event.relatedTarget;
-                    while (el) {
-                        if (el.className.indexOf('popover') === 0) {
-                            return;
-                        }
-                        el = el.parentElement;
-                    }
-                }
-                if (previousElement) {
-                    $timeout(function () {
-                        if (previousElement) { // might have been nulled by another timeout
-                            previousElement.dispatchEvent(new Event('hide'));
-                            previousElement = null;
-                        }
-                    });
-                }
-                if (event) {
-                    event.stopPropagation();
-                }
-            };
-
-            // =========================
-            // Event handlers
-            // =========================
-
-            // watch for changes in the active repository hide host element of this directive
-            scope.$watch('getActiveRepository()', function (newValue) {
-                if (newValue && !scope.isRestricted) {
-                    element.hide();
-                } else {
-                    element.show();
-                }
-            });
-
-            init();
-        }
     };
 }
 

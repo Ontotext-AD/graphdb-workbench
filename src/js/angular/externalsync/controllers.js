@@ -1,9 +1,13 @@
 import 'angular/rest/rdf4j.repositories.rest.service';
 import 'angular/rest/connectors.rest.service';
+import 'angular/core/directives/core-error/core-error.directive';
+import 'angular/core/directives/core-error/core-error-directive.store';
 
 const modules = [
     'graphdb.framework.rest.rdf4j.repositories.service',
-    'graphdb.framework.rest.connectors.service'
+    'graphdb.framework.rest.connectors.service',
+    'graphdb.framework.core.directives.core-error',
+    'graphdb.framework.stores.core-error.store'
 ];
 
 angular
@@ -237,9 +241,9 @@ function parseFirstBuildingResult(results) {
     return {};
 }
 
-ConnectorsCtrl.$inject = ['$scope', '$http', '$repositories', '$uibModal', 'toastr', 'ModalService', '$q', 'RDF4JRepositoriesRestService', 'ConnectorsRestService', '$translate'];
+ConnectorsCtrl.$inject = ['$scope', '$http', '$repositories', '$uibModal', 'toastr', 'ModalService', '$q', 'RDF4JRepositoriesRestService', 'ConnectorsRestService', '$translate', 'CoreErrorDirectiveStore'];
 
-function ConnectorsCtrl($scope, $http, $repositories, $uibModal, toastr, ModalService, $q, RDF4JRepositoriesRestService, ConnectorsRestService, $translate) {
+function ConnectorsCtrl($scope, $http, $repositories, $uibModal, toastr, ModalService, $q, RDF4JRepositoriesRestService, ConnectorsRestService, $translate, CoreErrorDirectiveStore) {
     $scope.loader = false;
 
     $scope.controllers = [];
@@ -247,6 +251,8 @@ function ConnectorsCtrl($scope, $http, $repositories, $uibModal, toastr, ModalSe
     $scope.existing = {};
 
     $scope.definitions = {};
+
+    const subscriptions = [];
 
     $scope.getLoaderMessage = function () {
         const timeSeconds = (Date.now() - $scope.loaderStartTime) / 1000;
@@ -573,6 +579,9 @@ function ConnectorsCtrl($scope, $http, $repositories, $uibModal, toastr, ModalSe
             }
         });
     };
+
+    subscriptions.push(CoreErrorDirectiveStore.onPageRestrictedUpdated((pageRestricted) => $scope.isRestricted = pageRestricted));
+    $scope.$on('destroy', () => subscriptions.forEach((subscription) => subscription()));
 }
 
 DeleteConnectorCtrl.$inject = ['$scope', '$uibModalInstance', 'popoverMsg'];

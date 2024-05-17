@@ -1,3 +1,4 @@
+import 'angular/core/directives/core-error/core-error.directive';
 import {decodeHTML} from "../../../../app";
 import {SimilaritySearchType} from "../../models/similarity/similarity-search-type";
 import {SimilarityResultType} from "../../models/similarity/similarity-result-type";
@@ -8,7 +9,7 @@ import {SimilaritySearch} from "../../models/similarity/similarity-search";
 import {RenderingMode} from "../../models/ontotext-yasgui/rendering-mode";
 
 angular
-    .module('graphdb.framework.similarity.controllers.list', [])
+    .module('graphdb.framework.similarity.controllers.list', ['graphdb.framework.core.directives.core-error'])
     .controller('SimilarityCtrl', SimilarityCtrl);
 
 SimilarityCtrl.$inject = [

@@ -5,6 +5,7 @@ import 'angular/rest/license.rest.service';
 import 'ng-file-upload/dist/ng-file-upload.min';
 import 'ng-file-upload/dist/ng-file-upload-shim.min';
 import {QueryMode} from "../../models/ontotext-yasgui/query-mode";
+import {UserRole} from "../../utils/user-utils";
 
 const modules = [
     'ngCookies',
@@ -63,6 +64,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                 if (!$jwtAuth.canReadRepo(repository)) {
                     this.setRepository('');
                 } else {
+                    GlobalStoreService.updateSelectedRepositoryObject(existsActiveRepo);
                     $rootScope.$broadcast('repositoryIsSet', {newRepo: false});
                 }
             } else {
@@ -464,6 +466,20 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             }
         };
 
+        this.canWriteActiveRepo = function (noSystem) {
+            const activeRepository = this.getActiveRepositoryObject();
+            if (activeRepository) {
+                // If the parameter noSystem is true then we don't allow write access to the SYSTEM repository
+                return $jwtAuth.canWriteRepo(activeRepository)
+                    && (activeRepository.id !== 'SYSTEM' || !noSystem);
+            }
+            return false;
+        };
+
+        this.canManageRepositories = function () {
+            return $jwtAuth.hasRole(UserRole.ROLE_REPO_MANAGER) && !this.getDegradedReason();
+        };
+
         $rootScope.$on('securityInit', function (scope, securityEnabled, userLoggedIn, freeAccess) {
             locationsRequestPromise = null;
             if (!securityEnabled || userLoggedIn || freeAccess) {
@@ -479,5 +495,9 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             that.locationsShouldReload = true;
             that.getLocations()
                 .then(() => that.initQuick());
+        });
+
+        GlobalStoreService.onSelectedRepositoryUpdated(() => {
+            GlobalStoreService.updateSelectedRepositoryObject(this.getActiveRepositoryObject());
         });
     }]);

@@ -2,6 +2,7 @@ import 'angular/core/services/repositories.service';
 import 'angular/rest/monitoring.rest.service';
 import 'angular/utils/notifications';
 import 'angular/core/services';
+import 'angular/core/directives/core-error/core-error.directive';
 import {JdbcConfigurationInfo} from "../models/jdbc/jdbc-configuration-info";
 import {YasqeMode} from "../models/ontotext-yasgui/yasqe-mode";
 import {JdbcConfigurationError} from "../models/jdbc/jdbc-configuration-error";
@@ -14,7 +15,8 @@ const modules = [
     'ui.bootstrap',
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.rest.monitoring.service',
-    'toastr'
+    'toastr',
+    'graphdb.framework.core.directives.core-error'
 ];
 
 angular.module('graphdb.framework.jdbc.controllers', modules, [
