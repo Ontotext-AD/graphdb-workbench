@@ -203,7 +203,7 @@
             "loading_rules": "Error during ACL rules",
             "updating_rules": "Error during ACL rules update",
             "duplicated_rules": "Every ACL rule should be unique.",
-            "invalid_role_length": "Can not create a custom role with only one symbol."
+            "role_length_too_short": "Too short"
         },
         "defaults": {
             "asterisk": "* - Any RDF value",

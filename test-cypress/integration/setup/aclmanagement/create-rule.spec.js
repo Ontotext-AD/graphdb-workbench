@@ -210,11 +210,9 @@ describe('ACL Management: create rule', () => {
         AclManagementSteps.fillPredicate(0, '*');
         AclManagementSteps.fillObject(0, '*');
         AclManagementSteps.fillContext(0, '*');
-        // and try to save it.
-        AclManagementSteps.saveRule(0);
 
         // Then I expect an error notification to be displayed that tells me this ROLE length is not allowed
-        ApplicationSteps.getErrorNotifications().contains('Can not create a custom role with only one symbol.');
+        AclManagementSteps.getFieldError().contains('Too short');
     });
 });
 
