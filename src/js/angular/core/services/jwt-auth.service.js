@@ -1,15 +1,17 @@
 import 'angular/core/services';
 import 'angular/core/services/openid-auth.service.js';
 import 'angular/rest/security.rest.service';
+import 'angular/global-store.service';
 import {UserRole} from 'angular/utils/user-utils';
 
 angular.module('graphdb.framework.core.services.jwtauth', [
     'toastr',
     'graphdb.framework.rest.security.service',
-    'graphdb.framework.core.services.openIDService'
+    'graphdb.framework.core.services.openIDService',
+    'graphdb.framework.store.globalstore'
 ])
-    .service('$jwtAuth', ['$http', 'toastr', '$location', '$rootScope', 'SecurityRestService', '$openIDAuth', '$translate', '$q', 'AuthTokenService', 'LSKeys', 'LocalStorageAdapter',
-        function ($http, toastr, $location, $rootScope, SecurityRestService, $openIDAuth, $translate, $q, AuthTokenService, LSKeys, LocalStorageAdapter) {
+    .service('$jwtAuth', ['$http', 'toastr', '$location', '$rootScope', 'SecurityRestService', '$openIDAuth', '$translate', '$q', 'AuthTokenService', 'GlobalStoreService',
+        function ($http, toastr, $location, $rootScope, SecurityRestService, $openIDAuth, $translate, $q, AuthTokenService, GlobalStoreService) {
             const jwtAuth = this;
 
             $rootScope.deniedPermissions = {};
@@ -285,18 +287,12 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     $rootScope.deniedPermissions = {};
                     this.securityInitialized = true;
 
-                    const selectedRepo = {
-                        id: LocalStorageAdapter.get(LSKeys.REPOSITORY_ID) || '',
-                        location: LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION) || ''
-                    };
-
-                    if (!jwtAuth.canReadRepo(selectedRepo)) {
+                    if (!jwtAuth.canReadRepo(GlobalStoreService.getSelectedRepository())) {
                         // if the current repo is unreadable by the currently logged-in user (or free access user)
                         // we unset the repository
-                        LocalStorageAdapter.remove(LSKeys.REPOSITORY_ID);
-                        LocalStorageAdapter.remove(LSKeys.REPOSITORY_LOCATION);
                         // reset denied permissions (different repo, different rights)
                         $rootScope.deniedPermissions = {};
+                        GlobalStoreService.updateSelectedRepository(undefined);
                     }
 
                     $rootScope.$broadcast('securityInit', this.securityEnabled, that.hasExplicitAuthentication(), this.freeAccess);

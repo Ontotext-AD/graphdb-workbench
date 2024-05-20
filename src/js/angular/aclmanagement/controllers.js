@@ -1,5 +1,6 @@
 import 'angular/rest/plugins.rest.service';
 import 'angular/rest/aclmanagement.rest.service';
+import 'angular/core/directives/core-error/core-error.directive';
 import {mapAclRulesResponse} from "../rest/mappers/aclmanagement-mapper";
 import {isEqual} from 'lodash';
 import {mapNamespacesResponse} from "../rest/mappers/namespaces-mapper";
@@ -7,7 +8,8 @@ import {ACL_SCOPE, DEFAULT_CONTEXT_VALUES, DEFAULT_URI_VALUES, DEFAULT_CLEAR_GRA
 
 const modules = [
     'graphdb.framework.rest.plugins.service',
-    'graphdb.framework.rest.aclmanagement.service'
+    'graphdb.framework.rest.aclmanagement.service',
+    'graphdb.framework.core.directives.core-error'
 ];
 
 angular

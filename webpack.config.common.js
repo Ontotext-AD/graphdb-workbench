@@ -185,6 +185,11 @@ module.exports = {
                 transform: replaceVersion
             },
             {
+                from: 'src/js/angular/core/directives/core-error/templates',
+                to: 'js/angular/core/directives/core-error/templates',
+                transform: replaceVersion
+            },
+            {
                 from: 'src/js/angular/templates',
                 to: 'js/angular/templates'
             }

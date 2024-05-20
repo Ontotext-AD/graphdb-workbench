@@ -2,9 +2,9 @@ angular
     .module('graphdb.framework.clustermanagement.services.cluster-view-context-service', [])
     .factory('ClusterViewContextService', ClusterViewContextService);
 
-ClusterViewContextService.$inject = ['EventEmitterService'];
+ClusterViewContextService.$inject = ['GlobalEmitterBuss'];
 
-function ClusterViewContextService(EventEmitterService) {
+function ClusterViewContextService(GlobalEmitterBuss) {
     let _showClusterConfigurationPanel = false;
     let _clusterViewD3Container;
 
@@ -14,7 +14,7 @@ function ClusterViewContextService(EventEmitterService) {
 
     function setShowClusterConfigurationPanel(showClusterConfigurationPanel) {
         _showClusterConfigurationPanel = showClusterConfigurationPanel;
-        EventEmitterService.emit('showClusterConfigurationPanel', getShowClusterConfigurationPanel());
+        GlobalEmitterBuss.emit('showClusterConfigurationPanel', getShowClusterConfigurationPanel());
     }
 
     function showClusterConfigurationPanel() {
@@ -26,7 +26,7 @@ function ClusterViewContextService(EventEmitterService) {
     }
 
     function onShowClusterConfigurationPanel(callback) {
-        return EventEmitterService.subscribe('showClusterConfigurationPanel', () => callback(getShowClusterConfigurationPanel()));
+        return GlobalEmitterBuss.subscribe('showClusterConfigurationPanel', () => callback(getShowClusterConfigurationPanel()));
     }
 
     function getClusterViewD3Container() {
@@ -34,12 +34,12 @@ function ClusterViewContextService(EventEmitterService) {
     }
 
     function onClusterViewD3ContainerUpdated(callback) {
-      return EventEmitterService.subscribe('clusterViewD3ContainerChanged', () => callback(getClusterViewD3Container()));
+      return GlobalEmitterBuss.subscribe('clusterViewD3ContainerChanged', () => callback(getClusterViewD3Container()));
     }
 
     function updateClusterViewD3Container(clusterViewD3Container) {
         _clusterViewD3Container = clusterViewD3Container;
-        EventEmitterService.emit('clusterViewD3ContainerChanged', getClusterViewD3Container());
+        GlobalEmitterBuss.emit('clusterViewD3ContainerChanged', getClusterViewD3Container());
     }
 
     return {

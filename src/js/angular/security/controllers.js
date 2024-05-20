@@ -2,6 +2,7 @@ import 'angular/core/services';
 import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/openid-auth.service';
 import 'angular/rest/security.rest.service';
+import 'angular/core/directives/core-error/core-error.directive';
 import {UserUtils, UserRole, UserType} from 'angular/utils/user-utils';
 
 const SYSTEM_REPO = 'SYSTEM';
@@ -17,7 +18,8 @@ const modules = [
     'graphdb.framework.core.services.openIDService',
     'graphdb.framework.rest.security.service',
     'toastr',
-    'ngTagsInput'
+    'ngTagsInput',
+    'graphdb.framework.core.directives.core-error'
 ];
 
 const createUniqueKey = function (repository) {

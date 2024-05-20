@@ -1,6 +1,9 @@
+import 'angular/core/directives/core-error/core-error.directive';
+
 const modules = [
     'toastr',
-    'graphdb.framework.utils.localstorageadapter'
+    'graphdb.framework.utils.localstorageadapter',
+    'graphdb.framework.core.directives.core-error'
 ];
 
 angular

@@ -1,4 +1,6 @@
-export class Repository {
+import {SelectedRepository} from "./selected-repository";
+
+export class Repository extends SelectedRepository {
     /**
      * @param {string} id
      * @param {string} title
@@ -24,5 +26,7 @@ export class Repository {
                 local,
                 readable,
                 writable,
-                unsupported) {}
+                unsupported) {
+        super(id, location);
+    }
 }

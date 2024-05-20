@@ -3,7 +3,7 @@ import 'angular/core/services/repositories.service';
 import 'angular/rest/monitoring.rest.service';
 import 'angular/utils/notifications';
 import 'angular/utils/uri-utils';
-import 'angular/core/services/event-emitter-service';
+import 'angular/core/directives/core-error/core-error.directive';
 import {decodeHTML} from "../../../app";
 import {DEFAULT_SPARQL_QUERY, SparqlTemplateInfo} from "../models/sparql-template/sparql-template-info";
 import {SparqlTemplateError} from "../models/sparql-template/sparql-template-error";
@@ -19,7 +19,7 @@ const modules = [
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.rest.monitoring.service',
     'toastr',
-    'graphdb.framework.utils.event-emitter-service'
+    'graphdb.framework.core.directives.core-error'
 ];
 
 angular.module('graphdb.framework.sparql-template.controllers', modules, [
@@ -95,7 +95,7 @@ SparqlTemplateCreateCtrl.$inject = [
     'ModalService',
     '$translate',
     '$q',
-    'EventEmitterService',
+    'GlobalEmitterBuss',
     '$languageService'];
 
 function SparqlTemplateCreateCtrl(
@@ -113,7 +113,7 @@ function SparqlTemplateCreateCtrl(
     ModalService,
     $translate,
     $q,
-    eventEmitterService,
+    GlobalEmitterBuss,
     $languageService) {
 
     $scope.initialQuery = DEFAULT_SPARQL_QUERY;
@@ -488,7 +488,7 @@ function SparqlTemplateCreateCtrl(
     subscriptions.push($scope.$on('queryChanged', queryChangeHandler));
     subscriptions.push($rootScope.$on('$translateChangeSuccess', languageChangedHandler));
     subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
-    subscriptions.push(eventEmitterService.subscribe('repositoryWillChangeEvent', repositoryWillChangedHandler));
+    subscriptions.push(GlobalEmitterBuss.subscribe('repositoryWillChangeEvent', repositoryWillChangedHandler));
     subscriptions.push($scope.$on('$destroy', removeAllListeners));
     // Prevent go out of the current page? check
     window.addEventListener('beforeunload', beforeunloadHandler);

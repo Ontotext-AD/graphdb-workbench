@@ -3,6 +3,8 @@ import 'angular/core/directives';
 import 'angular/utils/uri-utils';
 import 'angular/rest/rdfrank.rest.service';
 import 'ng-tags-input/build/ng-tags-input.min';
+import 'angular/core/directives/core-error/core-error.directive';
+import 'angular/core/directives/core-error/core-error-directive.store';
 import {mapNamespacesResponse} from "../rest/mappers/namespaces-mapper";
 import {decodeHTML} from "../../../app";
 
@@ -10,13 +12,16 @@ const rdfRankApp = angular.module('graphdb.framework.rdfrank', [
     'ngRoute',
     'ngTagsInput',
     'graphdb.framework.utils.uriutils',
-    'graphdb.framework.rest.rdfrank.service'
+    'graphdb.framework.rest.rdfrank.service',
+    'graphdb.framework.core.directives.core-error',
+    'graphdb.framework.stores.core-error.store'
 ]);
 
-rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', '$timeout', 'ClassInstanceDetailsService', 'UriUtils', 'RDF4JRepositoriesRestService', 'RdfRankRestService', '$translate',
-    function ($scope, $interval, toastr, $repositories, $licenseService, $timeout, ClassInstanceDetailsService, UriUtils, RDF4JRepositoriesRestService, RdfRankRestService, $translate) {
+rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', '$timeout', 'ClassInstanceDetailsService', 'UriUtils', 'RDF4JRepositoriesRestService', 'RdfRankRestService', '$translate', 'CoreErrorDirectiveStore',
+    function ($scope, $interval, toastr, $repositories, $licenseService, $timeout, ClassInstanceDetailsService, UriUtils, RDF4JRepositoriesRestService, RdfRankRestService, $translate, CoreErrorDirectiveStore) {
 
         let timer;
+        const subscriptions = [];
 
         function cancelTimer() {
             if (timer) {
@@ -183,7 +188,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
             return $repositories.getDegradedReason();
         };
 
-        $scope.$on('repositoryIsSet', function () {
+        subscriptions.push($scope.$on('repositoryIsSet', function () {
             cancelTimer();
             if (!$licenseService.isLicenseValid() ||
                 !$repositories.getActiveRepository() ||
@@ -193,7 +198,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
             }
             $scope.checkForPlugin();
             pullStatus();
-        });
+        }));
 
         $scope.toggleFiltering = function () {
             RdfRankRestService.toggleFiltering(!$scope.filteringEnabled).success(function () {
@@ -281,8 +286,11 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
             }, 5000);
         };
 
+        subscriptions.push(CoreErrorDirectiveStore.onPageRestrictedUpdated((pageRestricted) => $scope.isRestricted = pageRestricted));
+
         $scope.$on('$destroy', function () {
             cancelTimer();
+            subscriptions.forEach((subscription) => subscription());
         });
 
         const init = function () {

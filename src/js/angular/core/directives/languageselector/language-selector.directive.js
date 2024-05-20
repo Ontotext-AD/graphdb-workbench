@@ -1,15 +1,14 @@
 import 'angular/utils/local-storage-adapter';
-import 'angular/core/services/event-emitter-service';
 angular
     .module('graphdb.framework.core.directives.languageselector.languageselector', [
-        'graphdb.framework.utils.localstorageadapter', 'graphdb.framework.utils.event-emitter-service'
+        'graphdb.framework.utils.localstorageadapter'
     ])
     .directive('languageSelector', languageSelector)
     .service('$languageService', [languageService]);
 
-languageSelector.$inject = ['$translate', 'LocalStorageAdapter', 'LSKeys', '$languageService', 'EventEmitterService'];
+languageSelector.$inject = ['$translate', 'LocalStorageAdapter', 'LSKeys', '$languageService', 'GlobalEmitterBuss'];
 
-function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageService, eventEmitterService) {
+function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageService, GlobalEmitterBuss) {
     return {
         templateUrl: 'js/angular/core/directives/languageselector/templates/languageSelector.html',
         restrict: 'E',
@@ -43,7 +42,7 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageServ
             $scope.changeLanguage = function (lang) {
                 if ($languageService.getLanguage() !== lang.key) {
                     const eventData = {locale: lang.key, cancel: false};
-                    eventEmitterService.emit('before-language-change', eventData, (eventData) => {
+                    GlobalEmitterBuss.emit('before-language-change', eventData, (eventData) => {
                         if (!eventData || !eventData.cancel) {
                            setAndPersistLanguage(lang);
                         }

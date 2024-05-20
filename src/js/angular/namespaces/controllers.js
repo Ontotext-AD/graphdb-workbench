@@ -2,6 +2,7 @@ import 'angular/core/services';
 import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/repositories.service';
 import 'angular/rest/rdf4j.repositories.rest.service';
+import 'angular/core/directives/core-error/core-error.directive';
 
 const modules = [
     'ui.bootstrap',
@@ -9,7 +10,8 @@ const modules = [
     'graphdb.framework.core.services.jwtauth',
     'graphdb.framework.rest.repositories.service',
     'graphdb.framework.rest.rdf4j.repositories.service',
-    'toastr'
+    'toastr',
+    'graphdb.framework.core.directives.core-error'
 ];
 
 const namespaces = angular.module('graphdb.framework.namespaces.controllers', modules);

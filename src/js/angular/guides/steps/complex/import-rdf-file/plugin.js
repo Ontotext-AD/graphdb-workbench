@@ -6,7 +6,7 @@ PluginRegistry.add('guide.step', [
             const toastr = services.toastr;
             const $translate = services.$translate;
             const $interpolate = services.$interpolate;
-            const EventEmitterService = services.EventEmitterService;
+            const GlobalEmitterBuss = services.GlobalEmitterBuss;
             options.mainAction = 'import-file';
 
             const steps = [
@@ -45,7 +45,7 @@ PluginRegistry.add('guide.step', [
                         show: (guide) => () => {
                             // Subscribes to event "filesForUploadSelected", when the step is showing, this will give opportunity
                             // to canceling uploading if user not choose correct file.
-                            filesForUploadSelectedSubscription = EventEmitterService.subscribe('filesForUploadSelected', ((eventData) => {
+                            filesForUploadSelectedSubscription = GlobalEmitterBuss.subscribe('filesForUploadSelected', ((eventData) => {
                                 const uploadedFiles = eventData.files || [];
                                 if (uploadedFiles.some((uploadedFile) => uploadedFile.name === options.resourceFile)) {
                                     // When tha correct file is selected, the guide can continue.

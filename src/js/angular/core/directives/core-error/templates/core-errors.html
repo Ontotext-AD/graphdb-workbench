@@ -1,16 +1,16 @@
-<div class="mb-2 row" ng-hide="getActiveRepository() && !isRestricted">
+<div class="mb-2 row" ng-hide="hasSelectedRepository && !restricted">
     <div role="alert">
         <div class="mb-1 mt-1 ml-1 mr-1">
             <div class="card repository-errors">
-                <div class="alert lead" ng-class="!getActiveRepository() ? 'alert-info' : 'alert-warning'">
-                    <div ng-if="!getActiveRepository()" >{{'core.errors.no.connected.repository.warning.msg' | translate}}</div>
-                    <div id="restrictedDiv" ng-if="getActiveRepository() && isRestricted">{{'core.errors.restricted.warning.msg' | translate}}
+                <div class="alert lead" ng-class="!hasSelectedRepository ? 'alert-info' : 'alert-warning'">
+                    <div ng-if="!hasSelectedRepository" >{{'core.errors.no.connected.repository.warning.msg' | translate}}</div>
+                    <div id="restrictedDiv" ng-if="hasSelectedRepository && restricted">{{'core.errors.restricted.warning.msg' | translate}}
                         <span ng-if="!isLicenseValid()">{{'core.errors.not.valid.license.warning.msg' | translate}}
                             <p></p>
                             <div><a href="license" class="btn btn-primary confirm-btn">{{'core.errors.set.new.license.warning.msg' | translate}}</a></div>
                         </span>
                         <span ng-if="isSecurityEnabled() && !canWriteActiveRepo()">{{'core.errors.no.permission.to.repository.warning.msg' | translate}}</span>
-                        <strong ng-if="isActiveRepoOntopType()">{{getActiveRepository()}}</strong>
+                        <strong ng-if="isActiveRepoOntopType()">{{hasSelectedRepository}}</strong>
                         <span ng-if="canWriteActiveRepo() && isActiveRepoOntopType()">{{'core.errors.read.only.repository.warning.msg' | translate}}</span>
                         <span ng-if="canWriteActiveRepo() && isActiveRepoFedXType()"> <strong>{{title | translate}}</strong>{{'core.errors.fedx.repository.warning.msg' | translate}}</span></div>
                         <small>
@@ -19,20 +19,20 @@
                             </span>
 
                             <span ng-hide="getAccessibleRepositories().length">
-                                <span ng-if="isRestricted">{{'core.errors.no.accessible.writable.repositories.warning.msg' | translate}}</span>
-                                <span ng-if="!isRestricted">{{'core.errors.no.accessible.repositories.warning.msg' | translate}}</span>
+                                <span ng-if="restricted">{{'core.errors.no.accessible.writable.repositories.warning.msg' | translate}}</span>
+                                <span ng-if="!restricted">{{'core.errors.no.accessible.repositories.warning.msg' | translate}}</span>
                                 <span ng-if="canManageRepositories()">{{'core.errors.create.repository.warning.msg' | translate}}</span>.
                             </span>
                         </small>
                 </div>
-                <div ng-if="!getActiveRepository()">
+                <div ng-if="!hasSelectedRepository">
                     <button class="btn btn-link" ng-click="toggleShowRemoteLocations()">
                         {{(showRemoteLocations ? "core.errors.hide.remote.locations.btn" : "core.errors.show.remote.locations.btn") | translate}}
                     </button>
                 </div>
                 <ul class="list-group limit-height clearfix two-columns repos" ng-mouseleave="hidePopoverForRepo($event)">
                     <li ng-repeat="repository in getAccessibleRepositories() | orderBy: ['type === \'system\'', 'location', 'id']"
-                        ng-if="repository.id !== getActiveRepository() || repository.location !== getActiveRepositoryObject().location"
+                        ng-if="repository.id !== hasSelectedRepository || repository.location !== getActiveRepositoryObject().location"
                         class="list-group-item list-group-item-action repository"
                         ng-class="{'remote': !repository.local}"
                         ng-mouseenter="showPopoverForRepo($event, repository)" ngx-mouseleave="setPopoverForRepo($event, repository, false)">

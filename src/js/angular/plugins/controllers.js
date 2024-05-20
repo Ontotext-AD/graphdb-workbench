@@ -1,18 +1,23 @@
 import 'angular/rest/plugins.rest.service';
+import 'angular/core/directives/core-error/core-error.directive';
+import 'angular/core/directives/core-error/core-error-directive.store';
 
 const modules = [
-    'graphdb.framework.rest.plugins.service'
+    'graphdb.framework.rest.plugins.service',
+    'graphdb.framework.core.directives.core-error',
+    'graphdb.framework.stores.core-error.store'
 ];
 
 angular
     .module('graphdb.framework.plugins.controllers', modules)
     .controller('PluginsCtrl', PluginsCtrl);
 
-PluginsCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', '$timeout', 'PluginsRestService', '$translate'];
+PluginsCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', '$timeout', 'PluginsRestService', '$translate', 'CoreErrorDirectiveStore'];
 
-function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, $timeout, PluginsRestService, $translate) {
+function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, $timeout, PluginsRestService, $translate, CoreErrorDirectiveStore) {
 
     let timer;
+    const subscriptions = [];
 
     const init = function () {
         $scope.clear();
@@ -109,14 +114,16 @@ function PluginsCtrl($scope, $interval, toastr, $repositories, $licenseService, 
     };
 
     // this is used when repository is changed from the upper menu to refresh the plugins for it.
-    $scope.$on('repositoryIsSet', function () {
+    subscriptions.push($scope.$on('repositoryIsSet', function () {
         cancelTimer();
         init();
-    });
+    }));
+    subscriptions.push(CoreErrorDirectiveStore.onPageRestrictedUpdated((pageRestricted) => $scope.isRestricted = pageRestricted));
 
     $scope.$on('$destroy', function () {
         cancelTimer();
         $(window).off('resize.plugin');
+        subscriptions.forEach((subscription) => subscription());
     });
 
     $(window).on('resize.plugin', function () {

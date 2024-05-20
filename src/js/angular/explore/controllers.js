@@ -6,6 +6,7 @@ import {ResourceInfo} from "../models/resource/resource-info";
 import {ContextType, ContextTypes} from "../models/resource/context-type";
 import {RoleType} from "../models/resource/role-type";
 import {RenderingMode} from "../models/ontotext-yasgui/rendering-mode";
+import 'angular/core/directives/core-error/core-error.directive';
 import {DISABLE_YASQE_BUTTONS_CONFIGURATION} from "../core/directives/yasgui-component/yasgui-component-directive.util";
 import * as jsonld from 'jsonld';
 import {ExportSettingsCtrl} from "../core/components/export-settings-modal/controller";
@@ -19,7 +20,8 @@ const modules = [
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.explore.services',
     'graphdb.workbench.utils.filetypes',
-    'graphdb.framework.rest.explore.rest.service'
+    'graphdb.framework.rest.explore.rest.service',
+    'graphdb.framework.core.directives.core-error'
 ];
 
 angular

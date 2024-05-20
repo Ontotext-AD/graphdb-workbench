@@ -4,24 +4,23 @@ import 'angular/rest/locations.rest.service';
 import 'angular/rest/license.rest.service';
 import 'ng-file-upload/dist/ng-file-upload.min';
 import 'ng-file-upload/dist/ng-file-upload-shim.min';
-import 'angular/core/services/event-emitter-service';
 import {QueryMode} from "../../models/ontotext-yasgui/query-mode";
+import {UserRole} from "../../utils/user-utils";
 
 const modules = [
     'ngCookies',
     'graphdb.framework.rest.repositories.service',
     'graphdb.framework.rest.locations.service',
     'graphdb.framework.rest.license.service',
-    'toastr',
-    'graphdb.framework.utils.event-emitter-service'
+    'toastr'
 ];
 
 const repositories = angular.module('graphdb.framework.core.services.repositories', modules);
 
 repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth',
-    'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService', '$translate', '$q', 'LocalStorageAdapter', 'LSKeys', 'EventEmitterService', 'RDF4JRepositoriesRestService',
+    'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService', '$translate', '$q', 'LocalStorageAdapter', 'LSKeys', 'GlobalEmitterBuss', 'RDF4JRepositoriesRestService', 'GlobalStoreService',
     function (toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth,
-        RepositoriesRestService, LocationsRestService, LicenseRestService, $translate, $q, LocalStorageAdapter, LSKeys, eventEmitterService, RDF4JRepositoriesRestService) {
+        RepositoriesRestService, LocationsRestService, LicenseRestService, $translate, $q, LocalStorageAdapter, LSKeys, GlobalEmitterBuss, RDF4JRepositoriesRestService, GlobalStoreService) {
 
         this.location = {uri: '', label: 'Local', local: true, isInCluster: false};
         this.locationError = '';
@@ -65,6 +64,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                 if (!$jwtAuth.canReadRepo(repository)) {
                     this.setRepository('');
                 } else {
+                    GlobalStoreService.updateSelectedRepositoryObject(existsActiveRepo);
                     $rootScope.$broadcast('repositoryIsSet', {newRepo: false});
                 }
             } else {
@@ -258,14 +258,18 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         };
 
         this.getActiveRepositoryObjectFromStorage = function() {
+            const selectedRepository = GlobalStoreService.getSelectedRepository();
+            const id = selectedRepository ? selectedRepository.id : '';
+            const location = selectedRepository ? selectedRepository.location : '';
             return {
-                id: LocalStorageAdapter.get(LSKeys.REPOSITORY_ID) || '',
-                location: LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION) || ''
+                id,
+                location
             };
         };
 
         this.getActiveRepository = function () {
-            return LocalStorageAdapter.get(LSKeys.REPOSITORY_ID) || undefined;
+            const selectedRepository = GlobalStoreService.getSelectedRepository();
+            return selectedRepository ? selectedRepository.id : undefined;
         };
 
         this.getActiveRepositoryObject = function () {
@@ -331,15 +335,16 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
 
         this.setRepository = function (repo) {
             const eventData = {oldRepository: this.repository, newRepository: repo, cancel: false};
-            eventEmitterService.emit('repositoryWillChangeEvent', eventData, (eventData) => {
+            GlobalEmitterBuss.emit('repositoryWillChangeEvent', eventData, (eventData) => {
                 if (!eventData.cancel) {
+                    let selectedRepo = undefined;
                     if (repo) {
-                        LocalStorageAdapter.set(LSKeys.REPOSITORY_ID, repo.id);
-                        LocalStorageAdapter.set(LSKeys.REPOSITORY_LOCATION, repo.location);
-                    } else {
-                        LocalStorageAdapter.remove(LSKeys.REPOSITORY_ID);
-                        LocalStorageAdapter.remove(LSKeys.REPOSITORY_LOCATION);
+                        selectedRepo = {
+                            id: repo.id,
+                            location: repo.location
+                        };
                     }
+                    GlobalStoreService.updateSelectedRepository(selectedRepo);
                     this.setRepositoryHeaders(repo);
                     $rootScope.$broadcast('repositoryIsSet', {newRepo: true});
 
@@ -461,6 +466,20 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             }
         };
 
+        this.canWriteActiveRepo = function (noSystem) {
+            const activeRepository = this.getActiveRepositoryObject();
+            if (activeRepository) {
+                // If the parameter noSystem is true then we don't allow write access to the SYSTEM repository
+                return $jwtAuth.canWriteRepo(activeRepository)
+                    && (activeRepository.id !== 'SYSTEM' || !noSystem);
+            }
+            return false;
+        };
+
+        this.canManageRepositories = function () {
+            return $jwtAuth.hasRole(UserRole.ROLE_REPO_MANAGER) && !this.getDegradedReason();
+        };
+
         $rootScope.$on('securityInit', function (scope, securityEnabled, userLoggedIn, freeAccess) {
             locationsRequestPromise = null;
             if (!securityEnabled || userLoggedIn || freeAccess) {
@@ -476,5 +495,9 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             that.locationsShouldReload = true;
             that.getLocations()
                 .then(() => that.initQuick());
+        });
+
+        GlobalStoreService.onSelectedRepositoryUpdated(() => {
+            GlobalStoreService.updateSelectedRepositoryObject(this.getActiveRepositoryObject());
         });
     }]);
