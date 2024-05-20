@@ -66,7 +66,7 @@ class HomeSteps {
 
     static verifyRepositoryIsSelected(repositoryId) {
         cy.get('ul.repos')
-            .contains(repositoryId).should('not.exist');
+            .contains(repositoryId).should('not.be.visible');
         cy.get('#btnReposGroup')
             .should('contain', repositoryId);
     }

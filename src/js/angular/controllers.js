@@ -24,6 +24,7 @@ import {GUIDE_PAUSE} from './guides/tour-lib-services/shepherd.service';
 import 'angular-pageslide-directive/dist/angular-pageslide-directive';
 import 'angularjs-slider/dist/rzslider.min';
 import 'angular/core/directives/core-error/core-error.directive';
+import 'angular/core/directives/core-error/core-error-directive.store';
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -51,19 +52,24 @@ angular
         'graphdb.framework.guides.services',
         'pageslide-directive',
         'rzSlider',
-        'graphdb.framework.core.directives.core-error'
+        'graphdb.framework.core.directives.core-error',
+        'graphdb.framework.stores.core-error.store'
     ])
     .controller('mainCtrl', mainCtrl)
     .controller('homeCtrl', homeCtrl)
     .controller('repositorySizeCtrl', repositorySizeCtrl)
     .controller('uxTestCtrl', uxTestCtrl);
 
-homeCtrl.$inject = ['$scope', '$rootScope', '$http', '$repositories', '$jwtAuth', '$licenseService', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService', 'toastr'];
+homeCtrl.$inject = ['$scope', '$rootScope', '$http', '$repositories', '$jwtAuth', '$licenseService', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService', 'GlobalStoreService'];
 
-function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseService, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService, toastr) {
+function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseService, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService, GlobalStoreService) {
     $scope.doClear = false;
+    const subscriptions = [];
 
-    $scope.getActiveRepositorySize = function () {
+    // =========================
+    // Public function
+    // =========================
+    $scope.getActiveRepositorySize = () => {
         const repo = $repositories.getActiveRepositoryObject();
         if (!repo) {
             return;
@@ -76,7 +82,16 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
         });
     };
 
-    function refreshRepositoryInfo() {
+    $scope.onKeyDown = function (event) {
+        if (event.keyCode === 27) {
+            $scope.doClear = true;
+        }
+    };
+
+    // =========================
+    // Private function
+    // =========================
+    const refreshRepositoryInfo = () => {
         if ($scope.getActiveRepository()) {
             $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
                 .success(function () {
@@ -85,13 +100,17 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
             // Getting the repository size should not be related to license
             $scope.getActiveRepositorySize();
         }
-    }
+    };
 
-    function checkAutocompleteStatus() {
+    const checkAutocompleteStatus = () => {
         if ($licenseService.isLicenseValid()) {
             $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
         }
-    }
+    };
+
+    // =========================
+    // Event handlers
+    // =========================
 
     $scope.$on('autocompleteStatus', function() {
         checkAutocompleteStatus();
@@ -100,9 +119,9 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
     // Rather then rely on securityInit we monitory repositoryIsSet which is guaranteed to be called
     // after security was initialized. This way we avoid a race condition when the newly logged in
     // user doesn't have read access to the active repository.
-    $scope.$on('repositoryIsSet', refreshRepositoryInfo);
+    subscriptions.push(GlobalStoreService.onSelectedRepositoryObjectUpdated(refreshRepositoryInfo));
 
-    $scope.$on('$routeChangeSuccess', function ($event, current, previous) {
+    subscriptions.push($scope.$on('$routeChangeSuccess', function ($event, current, previous) {
         if (previous) {
             // If previous is defined we got here through navigation, hence security is already
             // initialized and its safe to refresh the repository info.
@@ -114,14 +133,9 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
                 $rootScope.redirectToLogin();
             }
         }
-    });
+    }));
 
-    $scope.onKeyDown = function (event) {
-        if (event.keyCode === 27) {
-            $scope.doClear = true;
-        }
-    };
-
+    $scope.$on('destroy', () => subscriptions.forEach((subscription) => subscription));
 }
 
 mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$licenseService', '$rootScope',
