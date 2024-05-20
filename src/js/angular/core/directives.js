@@ -140,6 +140,8 @@ function coreErrors($timeout) {
 
             scope.setAttrs(attrs);
 
+            scope.setRestricted();
+
             let previousElement;
 
             scope.showRemoteLocations = false;
