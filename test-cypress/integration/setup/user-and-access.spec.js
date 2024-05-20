@@ -72,6 +72,32 @@ describe('User and Access', () => {
         testForUser(name, true);
     });
 
+    it('Create user with custom role', () => {
+        const name = "user";
+        // When I create a read/write user
+        getCreateNewUserButton().click();
+        getUsernameField().type(name);
+        getPasswordField().type(PASSWORD);
+        getConfirmPasswordField().type(PASSWORD);
+        getRoleRadioButton(ROLE_USER).click();
+        // And add a custom role of 1 letter
+        getCustomRoleField().type('A');
+        getRepoitoryRightsList().contains('Any data repository').nextUntil('.write').eq(1).within(() => {
+            cy.get('.write').click();
+        });
+
+        // Then the 'create' button should be disabled
+        getConfirmUserCreateButton().should('be.disabled');
+        // And the field should show an error
+        getFieldError().should('contain.text', 'Must be at least 2 symbols long');
+        // When I add more text to the custom role tag
+        getCustomRoleField().type('A');
+        // Then the 'create' button should be enabled
+        getConfirmUserCreateButton().should('be.enabled');
+        // And the field error should not exist
+        getFieldError().should('not.exist');
+    });
+
     function testForUser(name, isAdmin) {
         //enable security
         getToggleSecuritySwitch().click();
@@ -136,6 +162,10 @@ describe('User and Access', () => {
         return cy.get('#wb-user-confirmpassword');
     }
 
+    function getCustomRoleField() {
+        return cy.get('tags-input');
+    }
+
     function getConfirmUserCreateButton() {
         return cy.get('#wb-user-submit');
     }
@@ -146,6 +176,10 @@ describe('User and Access', () => {
 
     function getRepoitoryRightsList() {
         return cy.get('#user-repos');
+    }
+
+    function getFieldError() {
+        return cy.get('div.small');
     }
 
     function createUser(username, password, role) {

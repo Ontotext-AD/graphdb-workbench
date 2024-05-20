@@ -209,7 +209,7 @@
                     <div class="card-block">
                         <h3>{{'security.user.custom_role' | translate}}</h3>
                         <div class="input-group">
-                            <tags-input class="wb-tags-input" ng-model="customRoles" min-length="2"
+                            <tags-input name="customRoleTag" class="wb-tags-input" ng-model="customRoles" min-length="2"
                                         ng-disabled="!isUser() || mode === 'settings'"
                                         use-strings="true"
                                         add-on-space="true"
@@ -219,6 +219,9 @@
                                         paste-split-pattern="[\s+]"
                                         on-tag-added="addCustomRole($tag)"
                                         placeholder="{{'security.user.add.custom_role.msg' | translate}}"></tags-input>
+                            <div class="small" ng-if="form.customRoleTag.$touched && !form.customRoleTag.$valid">
+                                <small>{{'security.user.role.too.short' | translate}}</small>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -269,7 +272,7 @@
 
 		<div class="text-right">
             <button id="wb-user-goBack" class="btn btn-secondary" type="button" ng-click="goBack()">{{'common.cancel.btn' | translate}}</button>
-            <button id="wb-user-submit" class="btn btn-primary" type="submit">{{saveButtonText}}</button>
+            <button id="wb-user-submit" class="btn btn-primary" type="submit" ng-disabled="form.customRoleTag.$touched && !form.customRoleTag.$valid">{{saveButtonText}}</button>
 		</div>
 	</form>
 </div>

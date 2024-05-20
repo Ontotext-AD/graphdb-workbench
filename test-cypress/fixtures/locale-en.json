@@ -484,6 +484,7 @@
     "security.count.all.results": "Count all SPARQL results",
     "security.read.write.access": "Repositories read/write access",
     "security.user.rights": "Users should have rights to at least one repository!",
+    "security.user.role.too.short": "Must be at least 2 symbols long",
     "security.no.active.location": "There is no active location.",
     "security.repository.title": "Repository",
     "security.tooltip.read": "Read",
