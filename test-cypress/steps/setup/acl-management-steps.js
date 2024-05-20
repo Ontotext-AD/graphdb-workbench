@@ -161,6 +161,10 @@ export class AclManagementSteps {
         this.getRoleField(index).clear().type(value);
     }
 
+    static getFieldError() {
+        return cy.get('div.small');
+    }
+
     static getPluginField(index) {
         return this.getRule(index).find('.plugin-cell textarea');
     }

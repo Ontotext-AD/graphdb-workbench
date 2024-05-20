@@ -151,7 +151,7 @@
                                         </select>
                                     </td>
                                     <td class="data role-cell">
-                                        <textarea type="text" name="role" required
+                                        <textarea type="text" name="role" minlength="2" required
                                                   ng-model="rule.role"
                                                   ng-change="setDirty(activeTabScope)"
                                                   ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
@@ -161,6 +161,9 @@
                                                   class="form-control form-control-sm textarea-edit"
                                                placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}">
                                         </textarea>
+                                        <div class="small" ng-if="ruleData.role.$touched && !ruleData.role.$valid">
+                                            <small>{{'acl_management.errors.role_length_too_short' | translate}}</small>
+                                        </div>
                                         <em></em>
                                     </td>
                                     <td class="data operation-cell">
@@ -342,7 +345,7 @@
                                         </select>
                                     </td>
                                     <td class="data role-cell">
-                                        <textarea type="text" name="role" required
+                                        <textarea type="text" name="role" minlength="2" required
                                                   ng-model="rule.role"
                                                   ng-change="setDirty(activeTabScope)"
                                                   ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
@@ -352,6 +355,9 @@
                                                   rows="1"
                                                   placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}">
                                         </textarea>
+                                        <div class="small" ng-if="ruleData.role.$touched && !ruleData.role.$valid">
+                                            <small>{{'acl_management.errors.role_length_too_short' | translate}}</small>
+                                        </div>
                                         <em></em>
                                     </td>
                                     <td class="data context-cell">
@@ -488,7 +494,7 @@
                                         </select>
                                     </td>
                                     <td class="data role-cell">
-                                        <textarea type="text" name="role" required
+                                        <textarea type="text" name="role" minlength="2" required
                                                   ng-model="rule.role"
                                                   ng-change="setDirty(activeTabScope)"
                                                   ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
@@ -498,6 +504,9 @@
                                                   class="form-control form-control-sm textarea-edit"
                                                   placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}">
                                         </textarea>
+                                        <div class="small" ng-if="ruleData.role.$touched && !ruleData.role.$valid">
+                                            <small>{{'acl_management.errors.role_length_too_short' | translate}}</small>
+                                        </div>
                                         <em></em>
                                     </td>
                                     <td class="data operation-cell">
@@ -632,7 +641,7 @@
                                         </select>
                                     </td>
                                     <td class="data role-cell">
-                                        <textarea type="text" name="role" required
+                                        <textarea type="text" name="role" minlength="2" required
                                                   ng-model="rule.role"
                                                   ng-change="setDirty(activeTabScope)"
                                                   ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
@@ -642,6 +651,9 @@
                                                   class="form-control form-control-sm textarea-edit"
                                                   placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}">
                                         </textarea>
+                                        <div class="small" ng-if="ruleData.role.$touched && !ruleData.role.$valid">
+                                            <small>{{'acl_management.errors.role_length_too_short' | translate}}</small>
+                                        </div>
                                         <em></em>
                                     </td>
                                     <td class="data operation-cell">
