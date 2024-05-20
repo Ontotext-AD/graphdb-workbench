@@ -144,6 +144,8 @@ class ImportSteps {
     }
 
     static openHelpMessage() {
+        // For some reason the page info box opens unexpectedly and covers the help info icon. Try to close it.
+        cy.get('body').click();
         this.getView().find('.toggle-help-btn').click();
     }
 
