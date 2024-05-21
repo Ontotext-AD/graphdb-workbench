@@ -110,35 +110,35 @@
                 'sorting_desc': SORTING_TYPES.NAME === sortedBy &&  !sortAsc,
                 'sorting_asc': SORTING_TYPES.NAME === sortedBy && sortAsc,
                 'sorting': SORTING_TYPES.NAME !== sortedBy
-                }">{{'import.import_resource_tree.header.name' | translate}}</span>
+                }">{{columnKeys.name | translate}}</span>
             </th>
             <th class="header-cell cell-size" ng-click="sort(SORTING_TYPES.SIZE)">
                 <span ng-class="{
                 'sorting_desc': SORTING_TYPES.SIZE === sortedBy &&  !sortAsc,
                 'sorting_asc': SORTING_TYPES.SIZE === sortedBy && sortAsc,
                 'sorting': SORTING_TYPES.SIZE !== sortedBy
-                }">{{'import.import_resource_tree.header.size' | translate}}</span>
+                }">{{columnKeys.size | translate}}</span>
             </th>
             <th class="header-cell cell-modified" ng-click="sort(SORTING_TYPES.MODIFIED)">
                 <span ng-class="{
                 'sorting_desc': SORTING_TYPES.MODIFIED === sortedBy &&  !sortAsc,
                 'sorting_asc': SORTING_TYPES.MODIFIED === sortedBy && sortAsc,
                 'sorting': SORTING_TYPES.MODIFIED !== sortedBy
-                }">{{'import.import_resource_tree.header.modified' | translate}}</span>
+                }">{{columnKeys.modified | translate}}</span>
             </th>
             <th class="header-cell cell-imported" ng-click="sort(SORTING_TYPES.IMPORTED)">
                 <span ng-class="{
                 'sorting_desc': SORTING_TYPES.IMPORTED === sortedBy &&  !sortAsc,
                 'sorting_asc': SORTING_TYPES.IMPORTED === sortedBy && sortAsc,
                 'sorting': SORTING_TYPES.IMPORTED !== sortedBy
-                }">{{'import.import_resource_tree.header.imported' | translate}}</span>
+                }">{{columnKeys.imported | translate}}</span>
             </th>
             <th class="header-cell cell-context" ng-click="sort(SORTING_TYPES.CONTEXT)">
                 <span ng-class="{
                 'sorting_desc': SORTING_TYPES.CONTEXT === sortedBy &&  !sortAsc,
                 'sorting_asc': SORTING_TYPES.CONTEXT === sortedBy && sortAsc,
                 'sorting': SORTING_TYPES.CONTEXT !== sortedBy
-                }">{{'import.import_resource_tree.header.context' | translate}}</span>
+                }">{{columnKeys.context | translate}}</span>
             </th>
             <th class="header-cell import-resource-action"></th>
         </tr>
