@@ -957,6 +957,7 @@
         "context.link.info": "Spécifie le contexte JSON-LD externe en tant qu'URL. Seules les URL figurant sur la liste blanche peuvent être utilisées",
         "file.upload.progress": "{{progress}} % téléchargé",
         "text_snippet_dialog": {
+            "title": "Extrait de texte",
             "text_snippet": {
                 "label": "Insérez vos données RDF ici et sélectionnez son format ci-dessous.",
                 "placeholder": "# Exemple : rdf:predicate a rdf:Property .",
@@ -1055,7 +1056,7 @@
             "removed_count_statements": "Suppression de {{count}} déclarations",
             "removed_statements": "Déclarations supprimées",
             "replaced_count_graphs": "Remplacement de {{count}} graphiques",
-            "replaced_graphs_count": "Nombre de graphiques remplacés"
+            "number_of_replaced_graphs": "Nombre de graphiques remplacés"
         }
     },
     "url.import.input.placeholder": "URL des données",
