@@ -89,7 +89,7 @@ describe('User and Access', () => {
         // And the field should show an error
         UserAndAccessSteps.getFieldError().should('contain.text', 'Must be at least 2 symbols long');
         // When I add more text to the custom role tag
-        UserAndAccessSteps.addTextToCustomRoleField('A');
+        UserAndAccessSteps.addTextToCustomRoleField('A{enter}');
         // Then the 'create' button should be enabled
         UserAndAccessSteps.getConfirmUserCreateButton().should('be.enabled');
         // And the field error should not exist

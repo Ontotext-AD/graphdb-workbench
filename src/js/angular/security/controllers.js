@@ -484,9 +484,28 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
             return $scope.user && !$scope.user.appSettings.DEFAULT_INFERENCE;
         };
 
+        $scope.showTagError = false;
+
         $scope.addCustomRole = function (role) {
+            $scope.showTagError = false;
             role.text = role.text.toUpperCase();
             return role;
+        };
+
+        $scope.validateTag = function (tag) {
+            if (tag.text.length < 2 ) {
+                $scope.showTagError = true;
+                return false;
+            }
+            $scope.showTagError = false;
+            return true;
+        };
+
+        $scope.checkForBackspace = function(event) {
+            // If the key pressed is the backspace or delete key, the tag error message will be hidden
+            if (event.keyCode === 8 || event.keyCode === 46) {
+                $scope.showTagError = false;
+            }
         };
     }]);
 
