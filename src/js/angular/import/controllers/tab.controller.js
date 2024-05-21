@@ -18,7 +18,7 @@ function TabController($scope, $location, ImportViewStorageService, ImportContex
     // =========================
     // Public variables
     // =========================
-    $scope.isHelpVisible = true;
+    $scope.isHelpVisible = false;
     $scope.fileSizeLimitInfoTemplateUrl = 'js/angular/import/templates/fileSizeLimitInfo.html';
 
     // =========================
@@ -32,32 +32,30 @@ function TabController($scope, $location, ImportViewStorageService, ImportContex
     $scope.toggleHelp = () => {
         const viewPersistence = ImportViewStorageService.getImportViewSettings();
         ImportViewStorageService.toggleHelpVisibility();
-        $scope.isHelpVisible = !viewPersistence.isHelpVisible;
+        setIsHelpVisible(!viewPersistence.isHelpVisible);
     };
 
     // =========================
     // Private functions
     // =========================
 
-    const onFilesUpdated = (files) => {
+    const setIsHelpVisible = (isVisible) => {
+        $scope.isHelpVisible = isVisible;
+    };
+
+    const setHelpVisibility = (resources) => {
         // reset help visibility on empty state in initial load
-        if (shouldResetHelpVisibility && files.length === 0) {
+        if (shouldResetHelpVisibility && resources.getSize() === 0) {
             ImportViewStorageService.setHelpVisibility(true);
             shouldResetHelpVisibility = false;
         }
-        const viewPersistence = ImportViewStorageService.getImportViewSettings();
-        let isVisible = viewPersistence.isHelpVisible;
-        if (files.length === 0 && viewPersistence.isHelpVisible) {
-            isVisible = true;
-        } else if (files.length === 0 && !viewPersistence.isHelpVisible) {
-            isVisible = false;
-        } else if (viewPersistence.isHelpVisible) {
-            isVisible = true;
-        } else if (!viewPersistence.isHelpVisible) {
-            isVisible = false;
-        }
+        const isVisible = resources.getSize() === 0;
         ImportViewStorageService.setHelpVisibility(isVisible);
-        $scope.isHelpVisible = isVisible;
+        setIsHelpVisible(isVisible);
+    };
+
+    const onResourcesUpdated = (resources) => {
+        setHelpVisibility(resources);
     };
 
     // =========================
@@ -68,9 +66,10 @@ function TabController($scope, $location, ImportViewStorageService, ImportContex
     subscriptions.push(ImportContextService.onActiveTabIdUpdated((newActiveTabId) => {
         $scope.activeTabId = newActiveTabId;
         $location.hash($scope.activeTabId);
+        setHelpVisibility(ImportContextService.getResources());
     }));
 
-    subscriptions.push(ImportContextService.onFilesUpdated(onFilesUpdated));
+    subscriptions.push(ImportContextService.onResourcesUpdated(onResourcesUpdated));
 
     const removeAllListeners = () => subscriptions.forEach((subscription) => subscription());
 

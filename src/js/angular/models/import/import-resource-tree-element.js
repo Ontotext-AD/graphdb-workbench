@@ -327,4 +327,8 @@ export class ImportResourceTreeElement {
         this.files.sort(compareFunction);
         this.directories.forEach((directory) => directory.sort(compareFunction));
     }
+
+    getSize() {
+        return this.toList().length;
+    }
 }

@@ -987,20 +987,24 @@
                 "copied_to_clipboard": "Copié dans le presse-papier"
             },
             "on_upload": {
-                "import_user_data": "Importer des données utilisateur",
-                "to_reimport_again": "Pour réimporter un fichier, une URL ou un extrait de texte, cliquez à nouveau sur le bouton Importer.",
-                "file_size_limit_can_be_changed": "The file size limit can be changed by setting the",
+                "import_user_data": "Importez des fichiers RDF depuis votre ordinateur, depuis une URL, ou saisissez ou collez des données RDF",
+                "file_size_limit_can_be_changed": "La limite de taille de fichier pour les téléchargements peut être modifiée en définissant le",
                 "the_property": "propriété",
                 "execution": "Exécution d'importation",
                 "work_in_background": "Les importations sont exécutées en arrière-plan pendant que vous continuez à travailler sur d'autres choses.",
+                "to_reimport_again": "Pour réimporter un fichier, une URL ou un extrait de texte, cliquez à nouveau sur le bouton Importer.",
                 "interrupt_support": "L'interruption n'est prise en charge que lorsque l'emplacement est local.",
                 "parser_config": "Les options de configuration de l'analyseur ne sont pas disponibles pour les sites distants."
             },
             "on_server_import": {
-                "import_from_server": "Il est nécessaire d'avoir accès au serveur sur lequel GraphDB Workbench est exécuté",
-                "open_directory": "Ouvrir (ou créer) un répertoire",
-                "put_files_into": "et placez-y vos fichiers et dossiers",
+                "import_from_server": "Importer des fichiers depuis le serveur sur lequel GraphDB est exécuté",
+                "open_directory": "Placez les fichiers ou répertoires que vous souhaitez importer dans",
+                "put_files_into": "répertoire du serveur GraphDB. Créez le répertoire si nécessaire.",
                 "directory_can_be_changed": "Le répertoire peut être modifié en réglant le",
+                "execution": "Exécution d'importation",
+                "work_in_background": "Les importations sont exécutées en arrière-plan pendant que vous continuez à travailler sur d'autres choses.",
+                "to_reimport_again": "Pour réimporter un fichier, une URL ou un extrait de texte, cliquez à nouveau sur le bouton Importer.",
+                "interrupt_support": "L'interruption n'est prise en charge que lorsque l'emplacement est local.",
                 "the_property": "propriété"
             },
             "on_file_size_limit": {

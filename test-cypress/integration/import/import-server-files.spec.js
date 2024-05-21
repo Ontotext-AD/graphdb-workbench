@@ -41,7 +41,11 @@ describe('Import server files', () => {
 
     it('Should be able to toggle the server file import help', () => {
         // When the page is loaded
-        // Then I should see the server files import help
+        // Then I expect import help message to be hidden because it is not an empty state
+        ImportServerFilesSteps.getHelpMessage().should('not.exist');
+        // When I click on the help button
+        ImportServerFilesSteps.openHelpMessage();
+        // Then the help should appear
         ImportServerFilesSteps.getHelpMessage().should('be.visible');
         // When I close the help
         ImportServerFilesSteps.closeHelpMessage();
