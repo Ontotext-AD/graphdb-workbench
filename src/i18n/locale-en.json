@@ -948,7 +948,7 @@
         "context.link.info": "Specifies external JSON-LD context as a URL. Only whitelisted URLs can be used.",
         "file.upload.progress": "{{progress}} % uploaded",
         "text_snippet_dialog": {
-            "title": "Importer des données RDF à partir d'un extrait de texte",
+            "title": "Import RDF data from a text snippet",
             "text_snippet": {
                 "label": "Insert your RDF data here and select its format below.",
                 "placeholder": "# Example: rdf:predicate a rdf:Property .",
