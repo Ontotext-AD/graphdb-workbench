@@ -277,7 +277,6 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         $scope.importAll = (selectedResources, withoutChangingSettings) => {
             // mark all files as selected locally in order to have them after the import is confirmed via the modal
             selectedResources
-                .filter((resource) => resource.isFile())
                 .forEach((resource) => {
                     $scope.selectedForImportFiles[resource.path] = true;
                 });
