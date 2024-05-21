@@ -123,6 +123,7 @@
                 </div>
                 <div class="ot-loader ot-main-loader" onto-loader size="50" ng-if="loader"></div>
                 <import-resource-tree ng-if ="!loader"
+                                      column-keys="columnKeys"
                                       show-type-filter="false"
                                       sort-by="SORTING_TYPES.MODIFIED"
                                       asc="false"
@@ -161,6 +162,7 @@
                 </div>
                 <div class="ot-loader ot-main-loader" onto-loader size="50" ng-if="loader"></div>
                 <import-resource-tree ng-if ="!loader"
+                                      column-keys="columnKeys"
                                       show-type-filter="true"
                                       sort-by="SORTING_TYPES.NAME"
                                       on-import="onImport(resource)"

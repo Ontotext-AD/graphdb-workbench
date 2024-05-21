@@ -465,6 +465,13 @@ importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$
     // Public variables
     // =========================
 
+    $scope.columnKeys = {
+        'name': 'import.import_resource_tree.header.name',
+        'size': 'import.import_resource_tree.header.size',
+        'modified': 'import.import_resource_tree.header.modified',
+        'imported': 'import.import_resource_tree.header.imported',
+        'context': 'import.import_resource_tree.header.context'
+    };
     $scope.loader = true;
     angular.extend(this, $controller('ImportViewCtrl', {$scope: $scope}));
     $scope.defaultType = 'server';
@@ -538,6 +545,13 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     // Public variables
     // =========================
 
+    $scope.columnKeys = {
+        'name': 'import.import_resource_tree.header.name',
+        'size': 'import.import_resource_tree.header.size',
+        'modified': 'import.import_resource_tree.header.uploaded',
+        'imported': 'import.import_resource_tree.header.imported',
+        'context': 'import.import_resource_tree.header.context'
+    };
     $scope.loader = true;
     angular.extend(this, $controller('ImportViewCtrl', {$scope: $scope}));
     $scope.defaultType = USER_DATA_TYPE.FILE;

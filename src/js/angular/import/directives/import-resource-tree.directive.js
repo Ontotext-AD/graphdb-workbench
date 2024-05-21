@@ -32,7 +32,11 @@ function importResourceTreeDirective($timeout, ImportContextService) {
         restrict: 'E',
         templateUrl: 'js/angular/import/templates/import-resource-tree.html',
         scope: {
-
+            /**
+             * Contains mapping of the column names to label keys. Should contain
+             * keys for: name, size, imported, modified, context column names.
+             */
+            columnKeys: '=',
             /**
              * If the type filter buttons should be visible.
              */

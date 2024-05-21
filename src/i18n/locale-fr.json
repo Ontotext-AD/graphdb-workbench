@@ -1029,6 +1029,7 @@
                 "name": "Nom",
                 "size": "Taille",
                 "modified": "Modifié",
+                "uploaded": "Téléchargé",
                 "imported": "Importé",
                 "context": "Contexte"
             },
