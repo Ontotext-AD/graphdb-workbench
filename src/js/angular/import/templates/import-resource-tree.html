@@ -144,7 +144,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr ng-repeat-start="resource in displayResources track by resource.importResource.name"
+        <tr ng-repeat-start="resource in displayResources track by resource.importResource.hash"
             class="row title-row"
             ng-class="{ 'even-row-start': $even, 'odd-row-start': $odd}">
             <td class="cell cell-select">
