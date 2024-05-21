@@ -219,7 +219,7 @@
                                         paste-split-pattern="[\s+]"
                                         on-tag-added="addCustomRole($tag)"
                                         placeholder="{{'security.user.add.custom_role.msg' | translate}}"></tags-input>
-                            <div class="small" ng-if="form.customRoleTag.$touched && !form.customRoleTag.$valid">
+                            <div class="small" ng-show="form.customRoleTag.$invalid">
                                 <small>{{'security.user.role.too.short' | translate}}</small>
                             </div>
                         </div>
