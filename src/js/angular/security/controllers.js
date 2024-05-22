@@ -484,30 +484,30 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
             return $scope.user && !$scope.user.appSettings.DEFAULT_INFERENCE;
         };
 
-        $scope.isRoleValid = false;
+        $scope.showRoleValidationError = false;
         const minTagLength = 2;
 
         $scope.addCustomRole = function (role) {
-            $scope.isRoleValid = false;
+            $scope.showRoleValidationError = false;
             role.text = role.text.toUpperCase();
             return role;
         };
 
         $scope.validateTag = function (tag) {
-            $scope.isRoleValid = tag.text.length < minTagLength;
-            return !$scope.isRoleValid;
+            $scope.showRoleValidationError = tag.text.length < minTagLength;
+            return !$scope.showRoleValidationError;
         };
 
         $scope.checkForBackspace = function(event) {
             // If the key pressed is the backspace or delete key, the tag error message will be hidden
             if (event.keyCode === 8 || event.keyCode === 46) {
-                $scope.isRoleValid = false;
+                $scope.showRoleValidationError = false;
             }
         };
 
         $scope.removeErrorOnCut = function() {
             // If the user cuts text from the field, the tag error message will be hidden
-            $scope.isRoleValid = false;
+            $scope.showRoleValidationError = false;
         };
     }]);
 

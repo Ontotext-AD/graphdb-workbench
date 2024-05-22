@@ -222,7 +222,7 @@
                                         ng-keydown="checkForBackspace($event)"
                                         ng-cut="removeErrorOnCut()"
                                         placeholder="{{'security.user.add.custom_role.msg' | translate}}"></tags-input>
-                            <div class="small" ng-show="isRoleValid">
+                            <div class="small" ng-show="showRoleValidationError">
                                 <small>{{'security.user.role.too.short' | translate}}</small>
                             </div>
                         </div>
@@ -275,7 +275,7 @@
 
 		<div class="text-right">
             <button id="wb-user-goBack" class="btn btn-secondary" type="button" ng-click="goBack()">{{'common.cancel.btn' | translate}}</button>
-            <button id="wb-user-submit" class="btn btn-primary" type="submit" ng-disabled="isRoleValid">{{saveButtonText}}</button>
+            <button id="wb-user-submit" class="btn btn-primary" type="submit" ng-disabled="showRoleValidationError">{{saveButtonText}}</button>
 		</div>
 	</form>
 </div>
