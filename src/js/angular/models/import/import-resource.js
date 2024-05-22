@@ -1,15 +1,14 @@
 import {ImportResourceStatus} from "./import-resource-status";
 import {ImportParsingSettings} from "./import-parsing-settings";
 import {ImportResourceType} from "./import-resource-type";
-import {generateMD5Hash} from "../../utils/hash-utils";
 
 /**
  * DTO represents a resource that describes an import resource of rdf data.
  */
 export class ImportResource {
 
-    constructor(importResourceServerData) {
-        this.hash = generateMD5Hash(JSON.stringify(importResourceServerData));
+    constructor(importResourceServerData, hashGenerator) {
+        this.hash = hashGenerator(JSON.stringify(importResourceServerData));
         this.name = importResourceServerData ? importResourceServerData.name : undefined;
         this.status = importResourceServerData ? importResourceServerData.status : ImportResourceStatus.NONE;
         this.message = importResourceServerData && importResourceServerData.message ? importResourceServerData.message : '';
