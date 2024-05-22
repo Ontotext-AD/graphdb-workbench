@@ -487,6 +487,7 @@
     "security.count.all.results": "Compter tous les résultats SPARQL",
     "security.read.write.access": "Accès en lecture/écriture aux dépôts\n",
     "security.user.rights": "Les utilisateurs doivent avoir des droits sur au moins un dépôt !",
+    "security.user.role.too.short": "Doit contenir au moins 2 symboles",
     "security.no.active.location": "Il n'y a pas de dépôt actif.",
     "security.repository.title": "Dépôt",
     "security.tooltip.read": "Lire",

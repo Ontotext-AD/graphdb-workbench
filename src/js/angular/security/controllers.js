@@ -484,9 +484,54 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
             return $scope.user && !$scope.user.appSettings.DEFAULT_INFERENCE;
         };
 
+        /**
+         * The validity of the last user typed custom role.
+         * @type {boolean}
+         */
+        $scope.isRoleValid = true;
+        const minTagLength = 2;
+
+        /**
+         * Adds the user typed custom role and sets role validity flag to true.
+         *
+         * @param {{text: string}} role the user input
+         * @return {{text: string}} the user input in uppercase
+         */
         $scope.addCustomRole = function (role) {
+            $scope.isRoleValid = true;
             role.text = role.text.toUpperCase();
             return role;
+        };
+
+        /**
+         * Checks if the input text is valid or not.
+         *
+         * @param {{text: string}} fieldValue the user input
+         * @return {boolean} true if valid, otherwise false
+         */
+        $scope.isCustomRoleValid = function (fieldValue) {
+            $scope.isRoleValid = fieldValue.text.length >= minTagLength;
+            return $scope.isRoleValid;
+        };
+
+        /**
+         * Checks if the user pressed the 'Backspace' or 'Delete' key and sets the role validity flag accordingly.
+         *
+         * @param {Object} event
+         */
+        $scope.checkForBackspace = function(event) {
+            // If the key pressed is the backspace or delete key, the tag error message will be hidden
+            if (event.keyCode === 8 || event.keyCode === 46) {
+                $scope.isRoleValid = true;
+            }
+        };
+
+        /**
+         * Sets the role validity flag to true.
+         */
+        $scope.removeErrorOnCut = function() {
+            // If the user cuts text from the field, the tag error message will be hidden
+            $scope.isRoleValid = true;
         };
     }]);
 

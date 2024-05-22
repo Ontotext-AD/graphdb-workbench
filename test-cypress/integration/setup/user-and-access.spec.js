@@ -1,3 +1,5 @@
+import {UserAndAccessSteps} from "../../steps/setup/user-and-access-steps";
+
 describe('User and Access', () => {
 
     const PASSWORD = "password";
@@ -7,21 +9,21 @@ describe('User and Access', () => {
     const DEFAULT_ADMIN_PASSWORD = "root";
 
     beforeEach(() => {
-        cy.visit('/users');
+        UserAndAccessSteps.visit();
         cy.window();
         // Users table should be visible
-        getUsersTable().should('be.visible');
+        UserAndAccessSteps.getUsersTable().should('be.visible');
     });
 
     after(() => {
-        cy.visit('/users');
-        getUsersTable().should('be.visible');
-        cy.get('#wb-users-userInUsers tr').then((table) => {
-            cy.get('table > tbody  > tr').each(($el, index, $list) => {
-                getUsersTable().should('be.visible');
+        UserAndAccessSteps.visit();
+        UserAndAccessSteps.getUsersTable().should('be.visible');
+        UserAndAccessSteps.getUsersTableRow().then((table) => {
+            UserAndAccessSteps.getTableRow().each(($el, index, $list) => {
+                UserAndAccessSteps.getUsersTable().should('be.visible');
                 const username = $el.find('.username').text();
                 if (username !=='admin') {
-                    deleteUser(username);
+                    UserAndAccessSteps.deleteUser(username);
                 }
             });
         });
@@ -29,26 +31,22 @@ describe('User and Access', () => {
 
     it('Initial state', () => {
         // Create new user button should be visible
-        getCreateNewUserButton().should('be.visible');
+        UserAndAccessSteps.getCreateNewUserButton().should('be.visible');
         // Security should be disabled
-        cy.get('#toggle-security').find('.security-switch-label').should('be.visible')
-            .and('contain', 'Security is OFF');
-        cy.get('#toggle-security').find('.switch:checkbox').should('not.be.checked');
+        UserAndAccessSteps.getSecuritySwitchLabel().should('be.visible').and('contain', 'Security is OFF');
+        UserAndAccessSteps.getSecurityCheckbox().should('not.be.checked');
         // Only admin user should be created by default
-        getUsersTable().find('tbody tr').should('have.length', 1);
-        findUserInTable('admin');
-        cy.get('@user').find('.user-type').should('be.visible')
-            .and('contain', 'Administrator');
+        UserAndAccessSteps.getTableRow().should('have.length', 1);
+        UserAndAccessSteps.findUserInTable('admin');
+        UserAndAccessSteps.getUserType().should('be.visible').and('contain', 'Administrator');
         // The admin should have unrestricted rights
-        cy.get('@user').find('.repository-rights').should('be.visible')
-            .and('contain', 'Unrestricted');
+        UserAndAccessSteps.getRepositoryRights().should('be.visible').and('contain', 'Unrestricted');
         // And can be edited
-        cy.get('@user').find('.edit-user-btn').should('be.visible')
-            .and('not.be.disabled');
+        UserAndAccessSteps.getEditUserButton().should('be.visible').and('not.be.disabled');
         // And cannot be deleted
-        cy.get('@user').find('.delete-user-btn').should('not.exist');
+        UserAndAccessSteps.getDeleteUserButton().should('not.exist');
         // Date created should be visible
-        cy.get('@user').find('.date-created').should('be.visible');
+        UserAndAccessSteps.getDateCreated().should('be.visible');
     });
 
     it('Create user', () => {
@@ -72,140 +70,102 @@ describe('User and Access', () => {
         testForUser(name, true);
     });
 
-    function testForUser(name, isAdmin) {
-        //enable security
-        getToggleSecuritySwitch().click();
-        //login new user
-        loginWithUser(name, PASSWORD);
-        //verify permissions
-        cy.url().should('include', '/users');
-        if (isAdmin) {
-            getUsersTable().should('be.visible');
-        } else {
-            cy.get('.alert-danger').should('contain',
-                'You have no permission to access this functionality with your current credentials.');
-        }
-        logout();
-        //login with the admin
-        loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
-        cy.get('.ot-splash').should('not.be.visible');
-        getUsersTable().should('be.visible');
-        //delete new-user
-        deleteUser(name);
-        //disable security
-        getToggleSecuritySwitch().click({force: true});
-        cy.get('#toggle-security').find('.security-switch-label').should('be.visible')
-            .and('contain', 'Security is OFF');
-        getUsersTable().should('be.visible');
-    }
+    it('Create user with custom role', () => {
+        const name = "user";
+        // When I create a read/write user
+        UserAndAccessSteps.clickCreateNewUserButton();
+        UserAndAccessSteps.typeUsername(name);
+        UserAndAccessSteps.typePassword(PASSWORD);
+        UserAndAccessSteps.typeConfirmPasswordField(PASSWORD);
+        UserAndAccessSteps.selectRoleRadioButton(ROLE_USER);
+        // And add a custom role of 1 letter
+        UserAndAccessSteps.addTextToCustomRoleField('A');
+        UserAndAccessSteps.getRepositoryRightsList().contains('Any data repository').nextUntil('.write').eq(1).within(() => {
+            UserAndAccessSteps.clickWriteAccess();
+        });
 
-    it('Warn users when setting no password when creating new user admin', () => {
-        getUsersTable().should('be.visible');
-        createUser("adminWithNoPassword", PASSWORD, ROLE_CUSTOM_ADMIN);
-        getUsersTable().should('be.visible');
-        cy.get('.ot-splash').should('not.be.visible');
-        deleteUser("adminWithNoPassword");
+        // Then the 'create' button should be disabled
+        UserAndAccessSteps.getConfirmUserCreateButton().should('be.disabled');
+        // And the field should show an error
+        UserAndAccessSteps.getFieldError().should('contain.text', 'Must be at least 2 symbols long');
+        // When I add more text to the custom role tag
+        UserAndAccessSteps.addTextToCustomRoleField('A{enter}');
+        // Then the 'create' button should be enabled
+        UserAndAccessSteps.getConfirmUserCreateButton().should('be.enabled');
+        // And the field error should not exist
+        UserAndAccessSteps.getFieldError().should('not.be.visible');
+
+        // When I type an invalid tag
+        UserAndAccessSteps.addTextToCustomRoleField('B{enter}');
+        // And the field shows an error
+        UserAndAccessSteps.getFieldError().should('contain.text', 'Must be at least 2 symbols long');
+        // When I delete the invalid text
+        UserAndAccessSteps.addTextToCustomRoleField('{backspace}');
+        // Then the error should not be visible
+        UserAndAccessSteps.getFieldError().should('not.be.visible');
     });
 
-    function getCreateNewUserButton() {
-        return cy.get('#wb-users-userCreateLink');
-    }
-
-    function getToggleSecuritySwitch() {
-        return cy.get('#toggle-security span.switch');
-    }
-
-    function getUsersTable() {
-        return cy.get('#wb-users-userInUsers');
-    }
-
-    function findUserInTable(username) {
-        return getUsersTable().find(`tbody .username:contains(${username})`)
-            .closest('tr').as('user');
-    }
-
-    function getUsernameField() {
-        return cy.get('#wb-user-username');
-    }
-
-    function getPasswordField() {
-        return cy.get('#wb-user-password');
-    }
-
-    function getConfirmPasswordField() {
-        return cy.get('#wb-user-confirmpassword');
-    }
-
-    function getConfirmUserCreateButton() {
-        return cy.get('#wb-user-submit');
-    }
-
-    function getRoleRadioButton(userRole) {
-        return cy.get(userRole);
-    }
-
-    function getRepoitoryRightsList() {
-        return cy.get('#user-repos');
-    }
+    it('Warn users when setting no password when creating new user admin', () => {
+        UserAndAccessSteps.getUsersTable().should('be.visible');
+        createUser("adminWithNoPassword", PASSWORD, ROLE_CUSTOM_ADMIN);
+        UserAndAccessSteps.getUsersTable().should('be.visible');
+        UserAndAccessSteps.getSplashLoader().should('not.be.visible');
+        UserAndAccessSteps.deleteUser("adminWithNoPassword");
+    });
 
     function createUser(username, password, role) {
-        getCreateNewUserButton().click();
-        getUsernameField().type(username);
-        getPasswordField().type(password);
-        getConfirmPasswordField().type(password);
-        getRoleRadioButton(role).click();
+        UserAndAccessSteps.clickCreateNewUserButton();
+        UserAndAccessSteps.typeUsername(username);
+        UserAndAccessSteps.typePassword(password);
+        UserAndAccessSteps.typeConfirmPasswordField(password);
+        UserAndAccessSteps.selectRoleRadioButton(role);
         if (role === "#roleUser") {
-            getRepoitoryRightsList().contains('Any data repository').nextUntil('.write').eq(1).within(() => {
-                cy.get('.write').click();
+            UserAndAccessSteps.getRepositoryRightsList().contains('Any data repository').nextUntil('.write').eq(1).within(() => {
+                UserAndAccessSteps.clickWriteAccess();
             });
-            getConfirmUserCreateButton().click();
+            UserAndAccessSteps.confirmUserCreate();
         } else if (role === "#roleAdmin" && username === "adminWithNoPassword") {
-            cy.get('#noPassword:checkbox').check()
+            UserAndAccessSteps.getNoPasswordCheckbox().check()
                 .then(() => {
-                    cy.get('#noPassword:checkbox')
+                    UserAndAccessSteps.getNoPasswordCheckbox()
                         .should('be.checked');
                 });
-            getConfirmUserCreateButton().click()
+            UserAndAccessSteps.getConfirmUserCreateButton().click()
                 .then(() => {
-                    cy.get('.modal-dialog').find('.lead').contains('If the password is unset and security is enabled, this administrator will not be ' +
+                    UserAndAccessSteps.getDialogText().contains('If the password is unset and security is enabled, this administrator will not be ' +
                         'able to log into GraphDB through the workbench. Are you sure that you want to continue?');
-                    cy.get('.modal-dialog').find('.confirm-btn').click();
+                    UserAndAccessSteps.confirmInDialog();
                 });
         } else {
-            getConfirmUserCreateButton().click();
+            UserAndAccessSteps.confirmUserCreate();
         }
-        cy.get('.ot-splash').should('not.be.visible');
-        getUsersTable().should('contain', username);
+        UserAndAccessSteps.getSplashLoader().should('not.be.visible');
+        UserAndAccessSteps.getUsersTable().should('contain', username);
     }
 
-    function deleteUser(username) {
-        findUserInTable(username);
-        cy.get('@user')
-            .should('have.length', 1)
-            .within(() => {
-                cy.get('.delete-user-btn')
-                    .as('deleteBtn');
-            });
-        return cy.waitUntil(() =>
-            cy.get('@deleteBtn')
-                .then((deleteBtn) => deleteBtn && Cypress.dom.isAttached(deleteBtn) && deleteBtn.trigger('click')))
-            .then(() => {
-                cy.get('.confirm-btn').click();
-            });
-    }
-
-    function loginWithUser(username, password) {
-        cy.get('#wb-login-username').type(username);
-        cy.get('#wb-login-password').type(password);
-        cy.get('#wb-login-submitLogin').click();
-    }
-
-    function logout() {
-        cy.get('#btnGroupDrop2').click();
-        cy.get('.dropdown-item')
-            .contains('Logout')
-            .closest('a')
-            // Force the click because Cypress sometimes determines that the item has 0x0 dimensions
-            .click({force: true});
+    function testForUser(name, isAdmin) {
+        //enable security
+        UserAndAccessSteps.toggleSecurity();
+        //login new user
+        UserAndAccessSteps.loginWithUser(name, PASSWORD);
+        //verify permissions
+        UserAndAccessSteps.getUrl().should('include', '/users');
+        if (isAdmin) {
+            UserAndAccessSteps.getUsersTable().should('be.visible');
+        } else {
+            UserAndAccessSteps.getError().should('contain',
+                'You have no permission to access this functionality with your current credentials.');
+        }
+        UserAndAccessSteps.logout();
+        //login with the admin
+        UserAndAccessSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+        UserAndAccessSteps.getSplashLoader().should('not.be.visible');
+        UserAndAccessSteps.getUsersTable().should('be.visible');
+        //delete new-user
+        UserAndAccessSteps.deleteUser(name);
+        //disable security
+        UserAndAccessSteps.toggleSecurity();//.click({force: true});
+        UserAndAccessSteps.getSecuritySwitchLabel().should('be.visible').and('contain', 'Security is OFF');
+        UserAndAccessSteps.getUsersTable().should('be.visible');
     }
 });
