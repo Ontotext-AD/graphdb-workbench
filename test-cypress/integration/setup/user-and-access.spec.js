@@ -94,6 +94,15 @@ describe('User and Access', () => {
         UserAndAccessSteps.getConfirmUserCreateButton().should('be.enabled');
         // And the field error should not exist
         UserAndAccessSteps.getFieldError().should('not.be.visible');
+
+        // When I type an invalid tag
+        UserAndAccessSteps.addTextToCustomRoleField('B{enter}');
+        // And the field shows an error
+        UserAndAccessSteps.getFieldError().should('contain.text', 'Must be at least 2 symbols long');
+        // When I delete the invalid text
+        UserAndAccessSteps.addTextToCustomRoleField('{backspace}');
+        // Then the error should not be visible
+        UserAndAccessSteps.getFieldError().should('not.be.visible');
     });
 
     it('Warn users when setting no password when creating new user admin', () => {
