@@ -76,6 +76,7 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             $scope.SORTING_TYPES = SortingType;
             $scope.sortAsc = angular.isDefined(attrs.asc) ? $scope.asc : true;
             $scope.sortedBy = $scope.sortBy;
+            $scope.showLoader = ImportContextService.getShowLoader();
 
             // =========================
             // Public functions
@@ -316,6 +317,7 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             const subscriptions = [];
 
             subscriptions.push(ImportContextService.onResourcesUpdated(onResourcesUpdatedHandler));
+            subscriptions.push(ImportContextService.onShowLoaderUpdated((showLoader) => $scope.showLoader = showLoader));
 
             const removeAllSubscribers = () => {
                 subscriptions.forEach((subscription) => subscription());

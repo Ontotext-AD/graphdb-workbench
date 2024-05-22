@@ -350,8 +350,11 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
          */
         $scope.updateListHttp = (force) => {
             const filesLoader = $scope.activeTabId === TABS.USER ? ImportRestService.getUploadedFiles : ImportRestService.getServerFiles;
+            const executedInTabId = $scope.activeTabId;
             filesLoader($repositories.getActiveRepository()).success(function (data) {
-
+                if (executedInTabId !== ImportContextService.getActiveTabId()) {
+                    return;
+                }
                 if (TABS.SERVER === $scope.activeTabId) {
                     ImportContextService.updateResources(toImportServerResource(toImportResource(data)));
                 } else if (TABS.USER === $scope.activeTabId) {
@@ -390,7 +393,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                 $scope.savedSettings = _.mapKeys(_.filter($scope.files, 'parserSettings'), 'name');
             }).error(function (data) {
                 toastr.warning($translate.instant('import.error.could.not.get.files', {data: getError(data)}));
-            });
+            }).finally(() => ImportContextService.updateShowLoader(false));
         };
 
         const resetStatusOrRemoveEntry = (names, remove) => {
@@ -434,6 +437,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             subscriptions.push($scope.$on('repositoryIsSet', $scope.onRepositoryChange));
             subscriptions.push($scope.$on('$destroy', () => $interval.cancel(listPollingHandler)));
             subscriptions.push(ImportContextService.onActiveTabIdUpdated((newActiveTabId) => {
+                ImportContextService.updateShowLoader(true);
                 $scope.activeTabId = newActiveTabId;
                 ImportContextService.updateResources(new ImportResourceTreeElement());
                 $scope.updateListHttp(true);
@@ -471,7 +475,6 @@ importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$
         'imported': 'import.import_resource_tree.header.imported',
         'context': 'import.import_resource_tree.header.context'
     };
-    $scope.loader = true;
     angular.extend(this, $controller('ImportViewCtrl', {$scope: $scope}));
     $scope.defaultType = 'server';
     $scope.tabId = '#import-server';
@@ -520,10 +523,6 @@ importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$
     const init = function () {
         $scope.pollList();
         $scope.onRepositoryChange();
-        const onFirstResourceUpdatesHandler = ImportContextService.onResourcesUpdated(() => {
-            $scope.loader = false;
-            onFirstResourceUpdatesHandler();
-        });
     };
     init();
 }]);
@@ -551,7 +550,6 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         'imported': 'import.import_resource_tree.header.imported',
         'context': 'import.import_resource_tree.header.context'
     };
-    $scope.loader = true;
     angular.extend(this, $controller('ImportViewCtrl', {$scope: $scope}));
     $scope.defaultType = USER_DATA_TYPE.FILE;
     $scope.tabId = '#import-user';
@@ -876,10 +874,6 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         subscriptions.push(ImportContextService.onFilesUpdated((files) => {
             filesPrefixRegistry.buildPrefixesRegistry(files);
         }));
-        const onFirstResourceUpdatesHandler = ImportContextService.onResourcesUpdated(() => {
-            $scope.loader = false;
-            onFirstResourceUpdatesHandler();
-        });
     };
     init();
 }]);

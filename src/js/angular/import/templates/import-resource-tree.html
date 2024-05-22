@@ -1,4 +1,5 @@
-<div class="import-resource-tree mt-2" ng-if="resources && !resources.isEmpty()">
+<div class="ot-loader ot-main-loader" onto-loader size="50" ng-if="showLoader"></div>
+<div class="import-resource-tree mt-2" ng-if="!showLoader && resources && !resources.isEmpty()">
     <div class="import-resource-tree-header">
         <div class="import-resources-actions">
             <div class="import-resource-status-dropdown btn-group" uib-dropdown>
