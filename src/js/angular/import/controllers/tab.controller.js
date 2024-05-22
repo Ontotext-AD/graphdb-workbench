@@ -49,7 +49,17 @@ function TabController($scope, $location, ImportViewStorageService, ImportContex
             ImportViewStorageService.setHelpVisibility(true);
             shouldResetHelpVisibility = false;
         }
-        const isVisible = resources.getSize() === 0;
+        const viewPersistence = ImportViewStorageService.getImportViewSettings();
+        let isVisible = viewPersistence.isHelpVisible;
+        if (resources.getSize() === 0 && viewPersistence.isHelpVisible) {
+            isVisible = true;
+        } else if (resources.getSize() === 0 && !viewPersistence.isHelpVisible) {
+            isVisible = false;
+        } else if (viewPersistence.isHelpVisible) {
+            isVisible = true;
+        } else if (!viewPersistence.isHelpVisible) {
+            isVisible = false;
+        }
         ImportViewStorageService.setHelpVisibility(isVisible);
         setIsHelpVisible(isVisible);
     };
