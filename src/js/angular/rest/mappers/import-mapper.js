@@ -2,9 +2,11 @@ import {ImportResourceTreeElement} from "../../models/import/import-resource-tre
 import {ImportResource} from "../../models/import/import-resource";
 import {ImportResourceStatus} from "../../models/import/import-resource-status";
 import {ImportResourceType} from "../../models/import/import-resource-type";
+import {md5HashGenerator} from "../../utils/hash-utils";
 
 export const toImportResource = (importResourcesServerData) => {
-    return importResourcesServerData.map((importResourceServerData) => new ImportResource(importResourceServerData));
+    const hashGenerator = md5HashGenerator();
+    return importResourcesServerData.map((importResourceServerData) => new ImportResource(importResourceServerData, hashGenerator));
 };
 
 export const INDENT = 30;

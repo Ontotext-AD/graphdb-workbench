@@ -7,7 +7,8 @@ import {ImportResourceType} from "./import-resource-type";
  */
 export class ImportResource {
 
-    constructor(importResourceServerData) {
+    constructor(importResourceServerData, hashGenerator) {
+        this.hash = hashGenerator(JSON.stringify(importResourceServerData));
         this.name = importResourceServerData ? importResourceServerData.name : undefined;
         this.status = importResourceServerData ? importResourceServerData.status : ImportResourceStatus.NONE;
         this.message = importResourceServerData && importResourceServerData.message ? importResourceServerData.message : '';
