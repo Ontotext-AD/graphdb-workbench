@@ -351,7 +351,8 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         $scope.updateListHttp = (force) => {
             const filesLoader = $scope.activeTabId === TABS.USER ? ImportRestService.getUploadedFiles : ImportRestService.getServerFiles;
             const executedInTabId = $scope.activeTabId;
-            filesLoader($repositories.getActiveRepository()).success(function (data) {
+            return filesLoader($repositories.getActiveRepository())
+                .success(function (data) {
                 if (executedInTabId !== ImportContextService.getActiveTabId()) {
                     return;
                 }
@@ -393,7 +394,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                 $scope.savedSettings = _.mapKeys(_.filter($scope.files, 'parserSettings'), 'name');
             }).error(function (data) {
                 toastr.warning($translate.instant('import.error.could.not.get.files', {data: getError(data)}));
-            }).finally(() => ImportContextService.updateShowLoader(false));
+            });
         };
 
         const resetStatusOrRemoveEntry = (names, remove) => {
@@ -437,10 +438,10 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             subscriptions.push($scope.$on('repositoryIsSet', $scope.onRepositoryChange));
             subscriptions.push($scope.$on('$destroy', () => $interval.cancel(listPollingHandler)));
             subscriptions.push(ImportContextService.onActiveTabIdUpdated((newActiveTabId) => {
-                ImportContextService.updateShowLoader(true);
                 $scope.activeTabId = newActiveTabId;
                 ImportContextService.updateResources(new ImportResourceTreeElement());
-                $scope.updateListHttp(true);
+                ImportContextService.updateShowLoader(true);
+                $scope.updateListHttp(true).finally(() => ImportContextService.updateShowLoader(false));
             }));
             $scope.$on('$destroy', removeAllListeners);
         };
