@@ -1,6 +1,8 @@
 import {ImportSettingsDialogSteps} from "../../steps/import/import-settings-dialog-steps";
 import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
 import {ImportServerFilesSteps} from "../../steps/import/import-server-files-steps";
+import ImportSteps from "../../steps/import/import-steps";
+import HomeSteps from "../../steps/home-steps";
 
 const bnodes = `_:node0 <http://purl.org/dc/elements/1.1/title> "A new book" ;
                     \t<http://purl.org/dc/elements/1.1/creator> "A.N.Other" .`;
@@ -41,5 +43,59 @@ describe('Import view', () => {
         // Then I should see the uploaded file
         ImportUserDataSteps.getResources().should('have.length', 1);
         ImportUserDataSteps.getResourceByName('bnodes.ttl').should('be.visible');
+    });
+
+    it.only('Should display/hide help message depends on resource result', () => {
+        // Given I am on import page
+
+        // The help message has to be displayed, because the result of imported files are empty.
+        ImportUserDataSteps.getHelpMessage().should('exist');
+
+        // When I toggle the help
+        ImportUserDataSteps.toggleHelpMessage();
+
+        // The help message mustn't be displayed because the user has hidden it, regardless resources are empty.
+        ImportUserDataSteps.getHelpMessage().should('not.exist');
+
+        // When I go to server tab
+        ImportSteps.openServerFilesTab();
+
+        // Then I expect to see the help message because the user is going to that tab for the first time.
+        ImportServerFilesSteps.getHelpMessage().should('exist');
+
+        // When I toggle the server help
+        ImportServerFilesSteps.toggleHelpMessage();
+
+        // The help message mustn't be displayed because the user has hidden it.
+        ImportServerFilesSteps.getHelpMessage().should('not.exist');
+
+        // When I return to the user tab
+        ImportSteps.openUserDataTab();
+
+        // The help message mustn't be displayed because the user has hidden it, regardless resources are empty.
+        ImportUserDataSteps.getHelpMessage().should('not.exist');
+
+        // When I go to other view
+        HomeSteps.visit();
+        // And return to import user data
+        ImportUserDataSteps.visit();
+
+        // Then I expect the help message to be displayed, because there are no results, regardless of whether the user had previously hidden the help message.
+        ImportUserDataSteps.getHelpMessage().should('exist');
+
+        // When I go to server tab
+        ImportSteps.openServerFilesTab()
+
+        // Then I expect the help message to not be displayed, because the user had previously hidden the help message.
+        ImportServerFilesSteps.getHelpMessage().should('not.exist');
+
+        // When I go to user tab and upload a file
+        ImportSteps.openUserDataTab();
+        ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[0], bnodes));
+        ImportSettingsDialogSteps.import();
+        ImportUserDataSteps.getResources().should('have.length', 1);
+
+        // Then I expect the help message not exist, because user because there are resource displayed
+        ImportUserDataSteps.getHelpMessage().should('not.exist');
     });
 });

@@ -34,29 +34,37 @@ function ImportViewStorageService(localStorageAdapter, LSKeys) {
         return new ImportViewPersistence(settings);
     };
 
+    const getIsHelpVisible = (tabId) => {
+        return getImportViewSettings().getIsHelpVisible(tabId);
+    }
+
     /**
      * Toggles the help visibility.
+     * @param {string} tabId the value have to be one of {@link TABS}
      */
-    const toggleHelpVisibility = () => {
+    const toggleHelpVisibility = (tabId) => {
         const settings = getImportViewSettings();
-        settings.toggleHelpVisibility();
+        settings.toggleHelpVisibility(tabId);
         localStorageAdapter.set(LSKeys.IMPORT_VIEW, settings.toJSON());
     };
 
     /**
      * Sets the help visibility.
+     * @param {string} tabId the value have to be one of {@link TABS}
      * @param {boolean} isVisible - The visibility of the help.
      */
-    const setHelpVisibility = (isVisible) => {
+    const setIsHelpVisible = (tabId, isVisible) => {
+        console.log('visisbility is changeddddddddddddddddddddddddddddddddddddddddddddddddddddddd')
         const settings = getImportViewSettings();
-        settings.isHelpVisible = isVisible;
+        settings.setIsHelpVisible(tabId, isVisible);
         localStorageAdapter.set(LSKeys.IMPORT_VIEW, settings.toJSON());
     };
 
     return {
         initImportViewSettings,
         getImportViewSettings,
-        toggleHelpVisibility,
-        setHelpVisibility
+        setIsHelpVisible,
+        getIsHelpVisible,
+        toggleHelpVisibility
     };
 }

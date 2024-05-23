@@ -1,23 +1,27 @@
+import {TABS} from "../../import/services/import-context.service";
+
 export class ImportViewPersistence {
     constructor(jsonData = {}) {
-        this._isHelpVisible = jsonData.isHelpVisible !== undefined ? jsonData.isHelpVisible : true;
+        this._persistence = {};
+        this._persistence[TABS.USER] = {}
+        this._persistence[TABS.SERVER] = {}
+        this._persistence[[TABS.USER]].isHelpVisible = jsonData && jsonData[TABS.USER] !== undefined ? jsonData[TABS.USER].isHelpVisible : true;
+        this._persistence[[TABS.SERVER]].isHelpVisible = jsonData && jsonData[TABS.SERVER] !== undefined ? jsonData[TABS.SERVER].isHelpVisible : true;
     }
 
-    get isHelpVisible() {
-        return this._isHelpVisible;
+    getIsHelpVisible(tabId) {
+        return this._persistence[tabId].isHelpVisible;
     }
 
-    set isHelpVisible(value) {
-        this._isHelpVisible = value;
+    setIsHelpVisible(tabId, value) {
+        this._persistence[tabId].isHelpVisible = value;
     }
 
-    toggleHelpVisibility() {
-        this._isHelpVisible = !this._isHelpVisible;
+    toggleHelpVisibility(tabId) {
+        this.setIsHelpVisible(tabId, !this._persistence[tabId].isHelpVisible);
     }
 
     toJSON() {
-        return {
-            isHelpVisible: this._isHelpVisible
-        };
+        return JSON.stringify(this._persistence);
     }
 }

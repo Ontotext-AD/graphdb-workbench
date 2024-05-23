@@ -78,6 +78,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         $scope.textFileFormatsHuman = FileFormats.getTextFileFormatsHuman();
         $scope.maxUploadFileSizeMB = 0;
         $scope.SORTING_TYPES = SortingType;
+        $scope.TAB_IDS = TABS;
 
         // =========================
         // Public functions
@@ -86,6 +87,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         $scope.toTitleCase = (str) => stringUtils.toTitleCase(str);
 
         $scope.pollList = () => {
+            console.log("polling is created")
             listPollingHandler = $interval(() => {
                 // Skip iteration if we are updating something
                 if (!$scope.updating) {
@@ -207,9 +209,6 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
 
         $scope.updateList = (force) => {
             if (!$scope.canWriteActiveRepo()) {
-                return;
-            }
-            if (!$($scope.tabId).is(':visible')) {
                 return;
             }
             $scope.updateListHttp(force);
@@ -354,8 +353,10 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             return filesLoader($repositories.getActiveRepository())
                 .success(function (data) {
                 if (executedInTabId !== ImportContextService.getActiveTabId()) {
+                    console.log("response cancelled")
                     return;
                 }
+                console.log("resource are updated")
                 if (TABS.SERVER === $scope.activeTabId) {
                     ImportContextService.updateResources(toImportServerResource(toImportResource(data)));
                 } else if (TABS.USER === $scope.activeTabId) {
@@ -427,6 +428,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         };
 
         const removeAllListeners = () => {
+            console.log("canceling polling");
             subscriptions.forEach((subscription) => subscription());
         };
 
@@ -436,6 +438,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
 
         const initSubscriptions = () => {
             subscriptions.push($scope.$on('repositoryIsSet', $scope.onRepositoryChange));
+            console.log("creates pulling");
             subscriptions.push($scope.$on('$destroy', () => $interval.cancel(listPollingHandler)));
             subscriptions.push(ImportContextService.onActiveTabIdUpdated((newActiveTabId) => {
                 $scope.activeTabId = newActiveTabId;

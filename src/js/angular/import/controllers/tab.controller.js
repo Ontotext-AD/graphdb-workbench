@@ -13,7 +13,7 @@ function TabController($scope, $location, ImportViewStorageService, ImportContex
     // =========================
 
     // flag to reset help visibility on empty state in initial load of the view
-    let shouldResetHelpVisibility = true;
+    let checkEmptyState = {};
 
     // =========================
     // Public variables
@@ -25,38 +25,39 @@ function TabController($scope, $location, ImportViewStorageService, ImportContex
     // Public functions
     // =========================
 
+    const updateHelpVisibility = () => {
+        let empty = checkEmptyState[$scope.activeTabId] && areResourcesEmpty();
+        let helpVisible = ImportViewStorageService.getIsHelpVisible($scope.activeTabId);
+        $scope.isHelpVisible =  empty || helpVisible;
+    }
+
+    const areResourcesEmpty = () => {
+        let importResourceTreeElement = ImportContextService.getResources();
+        return !importResourceTreeElement || importResourceTreeElement.isEmpty();
+    }
+
     $scope.openTab = (tab) => {
         ImportContextService.updateActiveTabId(tab);
     };
 
     $scope.toggleHelp = () => {
-        const viewPersistence = ImportViewStorageService.getImportViewSettings();
-        ImportViewStorageService.toggleHelpVisibility();
-        setIsHelpVisible(!viewPersistence.isHelpVisible);
+        checkEmptyState[$scope.activeTabId] = false;
+        ImportViewStorageService.setIsHelpVisible($scope.activeTabId, !$scope.isHelpVisible)
+        updateHelpVisibility();
     };
 
     // =========================
     // Private functions
     // =========================
-
-    const setIsHelpVisible = (isVisible) => {
-        $scope.isHelpVisible = isVisible;
-    };
-
-    const setHelpVisibility = (resources) => {
-        // reset help visibility on empty state in initial load
-        if (shouldResetHelpVisibility && resources.getSize() === 0) {
-            ImportViewStorageService.setHelpVisibility(true);
-            shouldResetHelpVisibility = false;
-        }
-        const isVisible = resources.getSize() === 0;
-        ImportViewStorageService.setHelpVisibility(isVisible);
-        setIsHelpVisible(isVisible);
-    };
-
-    const onResourcesUpdated = (resources) => {
-        setHelpVisibility(resources);
-    };
+    const init = () => {
+        Object.values(TABS).forEach((tabId) => checkEmptyState[tabId] = true);
+        // // When controller is initialized we reset the state of persistence. Initially the help have to be opened.
+        // ImportViewStorageService.setHelpVisibility($scope.activeTabId.false);
+        // Updates the active tab id from tha url.
+        const activeTabId = $location.hash() || TABS.USER;
+        $scope.openTab(activeTabId);
+        updateHelpVisibility();
+    }
 
     // =========================
     // Watchers and event handlers
@@ -66,16 +67,14 @@ function TabController($scope, $location, ImportViewStorageService, ImportContex
     subscriptions.push(ImportContextService.onActiveTabIdUpdated((newActiveTabId) => {
         $scope.activeTabId = newActiveTabId;
         $location.hash($scope.activeTabId);
-        setHelpVisibility(ImportContextService.getResources());
+        updateHelpVisibility();
     }));
 
-    subscriptions.push(ImportContextService.onResourcesUpdated(onResourcesUpdated));
+    subscriptions.push(ImportContextService.onResourcesUpdated(updateHelpVisibility));
 
     const removeAllListeners = () => subscriptions.forEach((subscription) => subscription());
 
     $scope.$on('$destroy', removeAllListeners);
 
-    // Updates the active tab id from tha url.
-    const activeTabId = $location.hash() || TABS.USER;
-    $scope.openTab(activeTabId);
+    init();
 }

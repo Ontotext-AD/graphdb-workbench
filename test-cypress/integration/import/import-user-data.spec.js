@@ -80,24 +80,20 @@ describe('Import user data', () => {
         ImportUserDataSteps.getResources().should('have.length', 0);
         // Then I should see the user data import help
         ImportUserDataSteps.getHelpMessage().should('be.visible');
-        // When I upload a text snippet
+        // When I have uploaded a text snippet
         ImportUserDataSteps.openImportTextSnippetDialog();
         ImportUserDataSteps.fillRDFTextSnippet(RDF_TEXT_SNIPPET);
         ImportUserDataSteps.clickImportTextSnippetButton();
         ImportSettingsDialogSteps.import();
         ImportUserDataSteps.getResources().should('have.length', 1);
-        // Then the help should disappear because it's not an empty state anymore
-        ImportUserDataSteps.getHelpMessage().should('not.exist');
-        // When I open the help message
-        ImportUserDataSteps.openHelpMessage();
-        // Then the help message should appear
-        ImportUserDataSteps.getHelpMessage().should('be.visible');
-        // When I visit another page and return
+        // And I close the help
+        ImportUserDataSteps.closeHelpMessage();
+        // And I visit another page and return
         cy.visit('/webapi');
         cy.url().should('include', '/webapi');
         ImportUserDataSteps.visit();
         ImportUserDataSteps.getResources().should('have.length', 1);
-        // Then the help should not appear because it's not an empty state
+        // Then the help should not appear because I have closed it explicitly
         ImportUserDataSteps.getHelpMessage().should('not.exist');
         // When I delete the uploaded file
         ImportUserDataSteps.deleteUploadedFile(0);
