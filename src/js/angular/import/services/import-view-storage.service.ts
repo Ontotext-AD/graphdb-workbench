@@ -1,3 +1,5 @@
+import * as angular from 'angular';
+
 import {ImportViewPersistence} from "../../models/import/import-view-persistence";
 
 angular

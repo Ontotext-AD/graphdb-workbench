@@ -1,3 +1,5 @@
+import * as angular from 'angular';
+
 import {ImportResourceStatus} from "../../models/import/import-resource-status";
 import * as stringUtils from "../../utils/string-utils";
 

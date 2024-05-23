@@ -1,3 +1,4 @@
+import * as angular from 'angular';
 import 'angular/core/services';
 import 'angular/core/directives';
 import 'angular/import/controllers/import-view.controller';

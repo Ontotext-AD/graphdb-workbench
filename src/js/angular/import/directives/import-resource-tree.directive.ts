@@ -1,3 +1,5 @@
+import * as angular from 'angular';
+
 import {ImportResourceStatus} from "../../models/import/import-resource-status";
 import 'angular/import/directives/import-resource-message.directive';
 import 'angular/import/directives/import-resource-status-info.directive';

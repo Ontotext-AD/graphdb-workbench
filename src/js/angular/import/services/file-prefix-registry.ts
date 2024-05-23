@@ -4,9 +4,7 @@ import {FileUtils} from "../../utils/file-utils";
  * This is a stateful utility class which maintains a registry of filenames mapped to numerical indices.
  */
 export class FilePrefixRegistry {
-    constructor() {
-        this.filesPrefixRegistry = {};
-    }
+    private filesPrefixRegistry: Record<string, number> = {};
 
     /**
      * Builds a registry of filenames mapped to numerical indices.
@@ -20,17 +18,18 @@ export class FilePrefixRegistry {
                 const fileNameOnly = FileUtils.getFilenameAndExtension(file.name).filename;
 
                 const suffixSeparatorIndex = fileNameOnly.lastIndexOf('-');
-                let index = suffixSeparatorIndex < 0 ? 0 : fileNameOnly.substring(suffixSeparatorIndex + 1);
+                let index = suffixSeparatorIndex < 0 ? 0 : parseInt(fileNameOnly.substring(suffixSeparatorIndex + 1));
                 let filename = fileNameOnly.substring(0, suffixSeparatorIndex);
                 if (suffixSeparatorIndex < 0) {
                     index = 0;
                     filename = fileNameOnly;
                 } else {
-                    index = fileNameOnly.substring(suffixSeparatorIndex + 1);
+                    index = parseInt(fileNameOnly.substring(suffixSeparatorIndex + 1));
                     filename = fileNameOnly.substring(0, suffixSeparatorIndex);
                 }
 
                 if (index) {
+                    // @ts-ignore
                     index = parseInt(index);
                     const currentIndex = this.filesPrefixRegistry[filename] || 0;
                     this.filesPrefixRegistry[filename] = currentIndex < index ? index : currentIndex;

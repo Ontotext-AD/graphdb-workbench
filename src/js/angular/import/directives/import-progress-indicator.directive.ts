@@ -1,3 +1,5 @@
+import * as angular from 'angular';
+
 const modules = [];
 
 angular
@@ -12,7 +14,7 @@ function ImportProgressIndicator() {
         link: function (scope, element, attr) {
             scope.$watch('file.status', function () {
                 if (scope.file.status === 'IMPORTING' || scope.file.status === 'UPLOADING') {
-                    if (!$(element).has('object').length > 0) {
+                    if (!$(element).has('object').length) {
                         $(element).append('<object width="' + attr.size + '" height="' + attr.size + '" data="js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]">{{\'common.loading\' | translate}}</object>');
                     }
                 }

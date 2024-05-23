@@ -1,4 +1,5 @@
-import {decodeHTML} from "../../utils/html-utils";
+import * as angular from 'angular';
+import decodeHTML from "../../utils/html-utils";
 
 angular
     .module('graphdb.framework.impex.import.controllers.file-override-confirmation', [])

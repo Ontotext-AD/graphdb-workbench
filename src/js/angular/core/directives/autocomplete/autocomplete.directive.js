@@ -1,5 +1,11 @@
 import {mapUriAsNtripleAutocompleteResponse} from "../../../rest/mappers/autocomplete-mapper";
-import {decodeHTML} from "../../../utils/html-utils";
+// import {decodeHTML} from "../../../utils/html-utils";
+
+function decodeHTML(html) {
+    const txt = document.createElement('textarea');
+    txt.innerHTML = html;
+    return txt.value;
+}
 
 angular
     .module('graphdb.framework.core.directives.autocomplete', [])

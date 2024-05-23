@@ -1,4 +1,4 @@
-import {decodeHTML} from "../../../utils/html-utils";
+import decodeHTML from "../../../utils/html-utils";
 
 angular
     .module('graphdb.framework.core.directives.rdfresourcesearch.rdfresourcesearch', [])

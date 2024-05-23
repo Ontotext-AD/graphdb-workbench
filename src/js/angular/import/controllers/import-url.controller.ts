@@ -1,3 +1,5 @@
+import * as angular from 'angular';
+
 angular
     .module('graphdb.framework.impex.import.controllers.import-url', [])
     .controller('ImportUrlController', ImportUrlController);

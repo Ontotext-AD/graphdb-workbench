@@ -6,6 +6,7 @@ import 'ng-file-upload/dist/ng-file-upload.min';
 import 'ng-file-upload/dist/ng-file-upload-shim.min';
 import 'angular/core/services/event-emitter-service';
 import {QueryMode} from "../../models/ontotext-yasgui/query-mode";
+import getError from "../../utils/error-utils";
 
 const modules = [
     'ngCookies',

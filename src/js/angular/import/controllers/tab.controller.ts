@@ -1,3 +1,5 @@
+import * as angular from 'angular';
+
 import {TABS} from "../services/import-context.service";
 
 angular
@@ -39,7 +41,7 @@ function TabController($scope, $location, ImportViewStorageService, ImportContex
     // Private functions
     // =========================
 
-    const onFilesUpdated = (files) => {
+    const onFilesUpdated = (files: any[]) => {
         // reset help visibility on empty state in initial load
         if (shouldResetHelpVisibility && files.length === 0) {
             ImportViewStorageService.setHelpVisibility(true);

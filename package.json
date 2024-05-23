@@ -4,8 +4,8 @@
     "description": "The web application for GraphDB APIs",
     "scripts": {
         "build": "webpack --config=webpack.config.prod.js",
-        "build-dev": "webpack --config=webpack.config.dev.js",
-        "start": "webpack-dev-server --config=webpack.config.dev.js --open",
+        "build-dev": "webpack --config=webpack.config.dev.js --progress",
+        "start": "webpack-dev-server --config=webpack.config.dev.js --open --progress",
         "lint": "eslint ./src",
         "test": "karma start",
         "test:coverage": "rimraf coverage/ && karma start --single-run --browsers ChromeHeadless",
@@ -38,6 +38,7 @@
     "devDependencies": {
         "@babel/runtime": "^7.19.0",
         "@types/jquery": "^3.5.29",
+        "@types/lodash": "^4.17.0",
         "babel-core": "^6.26.3",
         "babel-loader": "^8.1.0",
         "babel-polyfill": "^6.26.0",

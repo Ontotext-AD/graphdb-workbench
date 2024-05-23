@@ -1,5 +1,6 @@
 import 'angular/utils/local-storage-adapter';
-import {decodeHTML} from "../utils/html-utils";
+import decodeHTML from "../utils/html-utils";
+import getError from "../utils/error-utils";
 
 angular
     .module('graphdb.framework.core.directives', [

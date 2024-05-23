@@ -7,7 +7,7 @@ import toastr from 'angular-toastr';
 import 'lodash';
 import 'angular-ui-bootstrap/ui-bootstrap-tpls.min';
 import 'angular-bowser/src/angular-bowser';
-import 'angular/utils/error-utils';
+// import 'angular/utils/error-utils';
 import 'autofill-event/autofill-event';
 import 'angular/core/directives';
 import 'angular/core/controllers';

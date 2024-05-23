@@ -29,7 +29,7 @@ module.exports = {
             'src/js/',
             'node_modules'
         ],
-        extensions: ['.js']
+        extensions: ['.js', '.ts']
     },
     plugins: [
         new WebpackAutoInject({

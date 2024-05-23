@@ -1,4 +1,5 @@
 import {KJUR, KEYUTIL, b64utoutf8, hextob64u} from 'jsrsasign';
+import getError from "../../utils/error-utils";
 
 const modules = [
     'toastr',

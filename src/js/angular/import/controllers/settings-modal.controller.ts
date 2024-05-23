@@ -1,3 +1,6 @@
+import * as angular from 'angular';
+import * as _ from 'lodash';
+
 angular
     .module('graphdb.framework.impex.import.controllers.settings-modal', [])
     .controller('SettingsModalController', SettingsModalController);

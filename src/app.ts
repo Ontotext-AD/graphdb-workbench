@@ -120,7 +120,8 @@ const moduleDefinition = function (productInfo) {
                             if (!route.path) {
                                 return $q.defer().resolve();
                             }
-                            return import(`angular/${route.path}`).then(module => {
+                            console.log(`preload`, route);
+                            return import(`angular/${route.path}.ts`).then(module => {
                                 $ocLazyLoad.inject(route.module);
                             })
                         }]

@@ -14,6 +14,7 @@ import {YasguiComponentDirectiveUtil} from "./yasgui-component-directive.util";
 import {KeyboardShortcutName} from "../../../models/ontotext-yasgui/keyboard-shortcut-name";
 import {YasguiPersistenceMigrationService} from "./yasgui-persistence-migration.service";
 import {ExportSettingsCtrl} from "../../components/export-settings-modal/controller";
+import getError from "../../../utils/error-utils";
 
 const modules = [
     'graphdb.framework.core.services.translation-service',

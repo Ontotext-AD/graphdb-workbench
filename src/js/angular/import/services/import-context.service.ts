@@ -1,3 +1,5 @@
+import * as angular from 'angular';
+
 /**
  * The import service is implemented using many controllers and directives that share common variables.
  * The purpose of the ImportContextService is to hold data shared between them.

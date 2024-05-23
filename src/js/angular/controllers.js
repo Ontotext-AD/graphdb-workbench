@@ -22,7 +22,7 @@ import './guides/directives';
 import {GUIDE_PAUSE} from './guides/tour-lib-services/shepherd.service';
 import 'angular-pageslide-directive/dist/angular-pageslide-directive';
 import 'angularjs-slider/dist/rzslider.min';
-import {decodeHTML} from "./utils/html-utils";
+import decodeHTML from "./utils/html-utils";
 
 angular
     .module('graphdb.workbench.se.controllers', [

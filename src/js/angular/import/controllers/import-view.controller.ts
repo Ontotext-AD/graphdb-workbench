@@ -1,3 +1,5 @@
+import * as angular from 'angular';
+
 import 'angular/core/services';
 import 'angular/utils/uri-utils';
 import 'angular/rest/import.rest.service';
@@ -15,11 +17,13 @@ import {FileUtils} from "../../utils/file-utils";
 import {DateUtils} from "../../utils/date-utils";
 import {toImportResource, toImportServerResource, toImportUserDataResource} from "../../rest/mappers/import-mapper";
 import {ImportResourceTreeElement} from "../../models/import/import-resource-tree-element";
-import {FilePrefixRegistry} from "../services/file-prefix-registry";
 import {SortingType} from "../../models/import/sorting-type";
 import {ImportResourceStatus} from "../../models/import/import-resource-status";
 import {TABS} from "../services/import-context.service";
-import {decodeHTML} from "../../utils/html-utils";
+import decodeHTML from "../../utils/html-utils";
+import {FilePrefixRegistry} from "../services/file-prefix-registry";
+import * as _ from 'lodash';
+import getError from "../../utils/error-utils";
 
 const modules = [
     'ui.bootstrap',
@@ -135,6 +139,8 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                         return !fileName;
                     }
                 },
+                backdrop: undefined,
+                keyboard: undefined,
                 size: 'lg'
             };
 
@@ -337,7 +343,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                 });
         };
 
-        const getSettingsFor = (fileName, withDefaultSettings) => {
+        const getSettingsFor = (fileName, withDefaultSettings?) => {
             if (!withDefaultSettings && !_.isEmpty(fileName) && !_.isEmpty($scope.savedSettings[fileName])) {
                 return $scope.savedSettings[fileName];
             } else {
@@ -491,7 +497,7 @@ importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$
     // Private functions
     // =========================
 
-    const importServerFiles = function (selectedFileNames, overrideSettings) {
+    const importServerFiles = function (selectedFileNames, overrideSettings?) {
         if (!$scope.canWriteActiveRepo()) {
             return;
         }
@@ -617,7 +623,9 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
      * @param {{ImportResource}|undefined} importResource
      */
     $scope.openTextSnippetDialog = (importResource) => {
-        const scope = {};
+        const scope = {
+            rdfText: undefined
+        };
         if (importResource) {
             scope.rdfText = importResource.data;
         }
