@@ -30,6 +30,8 @@ function ImportContextService(EventEmitterService) {
      */
     let _files = [];
 
+    let _showLoader = true;
+
     return {
         updateActiveTabId,
         getActiveTabId,
@@ -40,8 +42,33 @@ function ImportContextService(EventEmitterService) {
         onFilesUpdated,
         updateResources,
         getResources,
-        onResourcesUpdated
+        onResourcesUpdated,
+        updateShowLoader,
+        getShowLoader,
+        onShowLoaderUpdated
     };
+
+    /**
+     * @param {boolean} showLoader
+     */
+    function updateShowLoader(showLoader) {
+        _showLoader = showLoader;
+        EventEmitterService.emit('showLoaderUpdated', getShowLoader());
+    }
+
+    function getShowLoader() {
+        return _showLoader;
+    }
+
+    /**
+     * Subscribes to the 'showLoaderUpdated' event.
+     * @param {function} callback - The callback to be called when the event is fired.
+     *
+     * @return unsubscribe function.
+     */
+    function onShowLoaderUpdated(callback) {
+        return EventEmitterService.subscribe('showLoaderUpdated', () => callback(getShowLoader()));
+    }
 
     /**
      * Updates the active tab id of import page.
