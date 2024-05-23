@@ -45,35 +45,42 @@ describe('Import view', () => {
         ImportUserDataSteps.getResourceByName('bnodes.ttl').should('be.visible');
     });
 
-    it.only('Should display/hide help message depends on resource result', () => {
+    it('Should display/hide help message depends on resource result', () => {
         // Given I am on import page
 
-        // The help message has to be displayed, because the result of imported files are empty.
+        // Then help message has to be displayed, because the result of imported files are empty.
         ImportUserDataSteps.getHelpMessage().should('exist');
 
         // When I toggle the help
         ImportUserDataSteps.toggleHelpMessage();
 
-        // The help message mustn't be displayed because the user has hidden it, regardless resources are empty.
+        // Then help message mustn't be displayed because the user has hidden it, regardless resources are empty.
         ImportUserDataSteps.getHelpMessage().should('not.exist');
 
         // When I go to server tab
         ImportSteps.openServerFilesTab();
 
-        // Then I expect to see the help message because the user is going to that tab for the first time.
-        ImportServerFilesSteps.getHelpMessage().should('exist');
+        // Then help message mustn't be displayed because the resources are not empty.
+        ImportServerFilesSteps.getHelpMessage().should('not.exist');
 
         // When I toggle the server help
         ImportServerFilesSteps.toggleHelpMessage();
 
-        // The help message mustn't be displayed because the user has hidden it.
-        ImportServerFilesSteps.getHelpMessage().should('not.exist');
+        // Then I expect the help message be displayed.
+        ImportServerFilesSteps.getHelpMessage().should('exist');
 
         // When I return to the user tab
         ImportSteps.openUserDataTab();
 
-        // The help message mustn't be displayed because the user has hidden it, regardless resources are empty.
+        // Then help message mustn't be displayed because the user has hidden it, regardless resources are empty.
         ImportUserDataSteps.getHelpMessage().should('not.exist');
+
+        // When I go to server tab
+        ImportSteps.openServerFilesTab();
+
+        // Then I expect the help message be displayed.
+        ImportServerFilesSteps.getHelpMessage().should('exist');
+
 
         // When I go to other view
         HomeSteps.visit();
@@ -86,7 +93,7 @@ describe('Import view', () => {
         // When I go to server tab
         ImportSteps.openServerFilesTab()
 
-        // Then I expect the help message to not be displayed, because the user had previously hidden the help message.
+        // Then help message mustn't be displayed because the resources are not empty.
         ImportServerFilesSteps.getHelpMessage().should('not.exist');
 
         // When I go to user tab and upload a file

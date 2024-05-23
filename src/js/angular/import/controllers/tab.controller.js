@@ -4,16 +4,16 @@ angular
     .module('graphdb.framework.impex.import.controllers.tab', [])
     .controller('TabController', TabController);
 
-TabController.$inject = ['$scope', '$location', 'ImportViewStorageService', 'ImportContextService'];
+TabController.$inject = ['$scope', '$location', 'ImportContextService'];
 
-function TabController($scope, $location, ImportViewStorageService, ImportContextService) {
+function TabController($scope, $location, ImportContextService) {
 
     // =========================
     // Private variables
     // =========================
 
-    // flag to reset help visibility on empty state in initial load of the view
-    let checkEmptyState = {};
+    // object holds information about
+    let helpVisibility;
 
     // =========================
     // Public variables
@@ -26,14 +26,12 @@ function TabController($scope, $location, ImportViewStorageService, ImportContex
     // =========================
 
     const updateHelpVisibility = () => {
-        let empty = checkEmptyState[$scope.activeTabId] && areResourcesEmpty();
-        let helpVisible = ImportViewStorageService.getIsHelpVisible($scope.activeTabId);
-        $scope.isHelpVisible =  empty || helpVisible;
-    }
-
-    const areResourcesEmpty = () => {
-        let importResourceTreeElement = ImportContextService.getResources();
-        return !importResourceTreeElement || importResourceTreeElement.isEmpty();
+        if (helpVisibility.isPristine($scope.activeTabId)) {
+            let importResourceTreeElement = ImportContextService.getResources();
+            $scope.isHelpVisible = !importResourceTreeElement || importResourceTreeElement.isEmpty()
+        } else {
+            $scope.isHelpVisible = helpVisibility.isHelpVisible($scope.activeTabId);
+        }
     }
 
     $scope.openTab = (tab) => {
@@ -41,8 +39,7 @@ function TabController($scope, $location, ImportViewStorageService, ImportContex
     };
 
     $scope.toggleHelp = () => {
-        checkEmptyState[$scope.activeTabId] = false;
-        ImportViewStorageService.setIsHelpVisible($scope.activeTabId, !$scope.isHelpVisible)
+        helpVisibility.setIsHelpVisible($scope.activeTabId, !$scope.isHelpVisible);
         updateHelpVisibility();
     };
 
@@ -50,9 +47,7 @@ function TabController($scope, $location, ImportViewStorageService, ImportContex
     // Private functions
     // =========================
     const init = () => {
-        Object.values(TABS).forEach((tabId) => checkEmptyState[tabId] = true);
-        // // When controller is initialized we reset the state of persistence. Initially the help have to be opened.
-        // ImportViewStorageService.setHelpVisibility($scope.activeTabId.false);
+        helpVisibility = new HelpVisibilityPersistence();
         // Updates the active tab id from tha url.
         const activeTabId = $location.hash() || TABS.USER;
         $scope.openTab(activeTabId);
@@ -77,4 +72,39 @@ function TabController($scope, $location, ImportViewStorageService, ImportContex
     $scope.$on('$destroy', removeAllListeners);
 
     init();
+}
+
+class HelpVisibilityPersistence {
+    constructor() {
+        this._helpVisibility = {
+            [TABS.USER]: {
+                isHelpVisible: undefined
+            },
+            [TABS.SERVER]: {
+                isHelpVisible: undefined
+            }
+        };
+    }
+
+    /**
+     * Checks if user is toggled the help.
+     * @param {string} tabId the value have to be one of {@link TABS}
+     * @return {boolean} true if the user has clicked the help icon at least once.
+     */
+    isPristine(tabId) {
+        return this._helpVisibility[tabId].isHelpVisible === undefined;
+    }
+
+    /**
+     * Sets the help visibility.
+     * @param {string} tabId the value have to be one of {@link TABS}
+     * @param {boolean} isVisible - The visibility of the help.
+     */
+    setIsHelpVisible(tabId, isHelpVisible) {
+        this._helpVisibility[tabId].isHelpVisible = isHelpVisible;
+    }
+
+    isHelpVisible(tabId) {
+        return this._helpVisibility[tabId] && this._helpVisibility[tabId].isHelpVisible;
+    }
 }
