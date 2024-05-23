@@ -145,7 +145,7 @@ class ImportSteps {
 
     static toggleHelpMessage() {
         // For some reason the page info box opens unexpectedly and covers the help info icon.
-        this.getView().find('.toggle-help-btn').click();
+        this.getView().find('.toggle-help-btn').click({force: true});
     }
 
     static closeHelpMessage() {
