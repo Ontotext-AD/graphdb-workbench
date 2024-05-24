@@ -41,12 +41,12 @@ describe('Import server files', () => {
 
     it('Should be able to toggle the server file import help', () => {
         // When the page is loaded
-        // Then I should see the server files import help
-        ImportServerFilesSteps.getHelpMessage().should('be.visible');
-        // When I close the help
-        ImportServerFilesSteps.closeHelpMessage();
-        // Then the help should disappear
+        // Then I should not see the server files import help
         ImportServerFilesSteps.getHelpMessage().should('not.exist');
+        // When I open the help
+        ImportServerFilesSteps.toggleHelpMessage();
+        // Then the help should disappear
+        ImportServerFilesSteps.getHelpMessage().should('be.visible');
     });
 
     it('Should be able to filter the files', () => {

@@ -78,7 +78,7 @@ describe('Import user data', () => {
         ImportUserDataSteps.visit();
         // When the page is loaded and no uploaded files are present
         ImportUserDataSteps.getResources().should('have.length', 0);
-        // Then I should see the user data import help
+        // Then I should not see the user data import help
         ImportUserDataSteps.getHelpMessage().should('be.visible');
         // When I have uploaded a text snippet
         ImportUserDataSteps.openImportTextSnippetDialog();
@@ -86,6 +86,8 @@ describe('Import user data', () => {
         ImportUserDataSteps.clickImportTextSnippetButton();
         ImportSettingsDialogSteps.import();
         ImportUserDataSteps.getResources().should('have.length', 1);
+        ImportUserDataSteps.getHelpMessage().should('not.exist');
+        ImportUserDataSteps.toggleHelpMessage();
         // And I close the help
         ImportUserDataSteps.closeHelpMessage();
         // And I visit another page and return
