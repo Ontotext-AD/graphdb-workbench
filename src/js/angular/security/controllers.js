@@ -792,6 +792,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
         $scope.showWorkbenchSettings = true;
         /** @type {WorkbenchSettingsModel} */
         $scope.workbenchSettings = WorkbenchSettingsStorageService.getWorkbenchSettings();
+        $scope.selectedThemeMode = $scope.workbenchSettings.mode;
         $scope.saveButtonText = $translate.instant('common.save.btn');
         $scope.pageTitle = $translate.instant('view.settings.title');
         $scope.passwordPlaceholder = $translate.instant('security.new.password');
@@ -907,7 +908,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
             if (!$scope.validateForm()) {
                 return false;
             }
-
+            ThemeService.toggleThemeMode($scope.selectedThemeMode);
             $scope.updateUserHttp();
         };
 
@@ -916,7 +917,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
         };
 
         $scope.setThemeMode = function () {
-            ThemeService.toggleThemeMode($scope.workbenchSettings.mode);
+            $scope.selectedThemeMode = $scope.workbenchSettings.mode;
         };
 
         /**
