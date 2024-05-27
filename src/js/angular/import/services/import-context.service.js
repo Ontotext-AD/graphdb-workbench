@@ -32,6 +32,8 @@ function ImportContextService(EventEmitterService) {
 
     let _showLoader = true;
 
+    let _selectedFilesNames = [];
+
     return {
         updateActiveTabId,
         getActiveTabId,
@@ -45,8 +47,33 @@ function ImportContextService(EventEmitterService) {
         onResourcesUpdated,
         updateShowLoader,
         getShowLoader,
-        onShowLoaderUpdated
+        onShowLoaderUpdated,
+        updateSelectedFilesNames,
+        getSelectedFilesNames,
+        onSelectedFilesNamesUpdated
     };
+
+    /**
+     * @param {string[]} selectedFilesNames
+     */
+    function updateSelectedFilesNames(selectedFilesNames) {
+        _selectedFilesNames = selectedFilesNames;
+        EventEmitterService.emit('selectedFilesNamesUpdated', getSelectedFilesNames());
+    }
+
+    function getSelectedFilesNames() {
+        return _selectedFilesNames;
+    }
+
+    /**
+     * Subscribes to the 'selectedFilesNamesUpdated' event.
+     * @param {function} callback - The callback to be called when the event is fired.
+     *
+     * @return unsubscribe function.
+     */
+    function onSelectedFilesNamesUpdated(callback) {
+        return EventEmitterService.subscribe('selectedFilesNamesUpdated', () => callback(getShowLoader()));
+    }
 
     /**
      * @param {boolean} showLoader

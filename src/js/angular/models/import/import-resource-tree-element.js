@@ -100,6 +100,20 @@ export class ImportResourceTreeElement {
         throw new Error('Unsupported resource type!');
     }
 
+    removeResource(importServerResource) {
+        if (importServerResource.isFile()) {
+            this.files = this.files.filter((file) => importServerResource.importResource.name !== file.importResource.name);
+        } else {
+            this.directories = this.directories.filter((directory) => importServerResource.importResource.name !== directory.importResource.name);
+        }
+    }
+
+    remove() {
+        if (!this.isRoot()) {
+            this.parent.removeResource(this);
+        }
+    }
+
     /**
      * Searches for a resource with the specified <code>directoryName</code> or creates one if hte resource is not found.
      *
