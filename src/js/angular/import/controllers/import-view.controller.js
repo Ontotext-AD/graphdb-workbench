@@ -3,7 +3,6 @@ import 'angular/utils/uri-utils';
 import 'angular/rest/import.rest.service';
 import 'angular/rest/upload.rest.service';
 import 'angular/import/services/import-context.service';
-import 'angular/import/services/import-view-storage.service';
 import 'angular/import/controllers/tab.controller';
 import 'angular/import/controllers/settings-modal.controller';
 import 'angular/import/controllers/import-url.controller';
@@ -31,7 +30,6 @@ const modules = [
     'graphdb.framework.rest.import.service',
     'graphdb.framework.rest.upload.service',
     'graphdb.framework.import.services.importcontext',
-    'graphdb.framework.import.services.importviewstorageservice',
     'graphdb.framework.impex.import.controllers.tab',
     'graphdb.framework.impex.import.controllers.settings-modal',
     'graphdb.framework.impex.import.controllers.import-url',
@@ -47,8 +45,8 @@ const USER_DATA_TYPE = {
     URL: 'url'
 };
 
-importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', '$repositories', '$uibModal', '$filter', '$jwtAuth', '$location', '$translate', 'LicenseRestService', 'GuidesService', 'ModalService', 'ImportRestService', 'ImportContextService', 'ImportViewStorageService',
-    function ($scope, toastr, $interval, $repositories, $uibModal, $filter, $jwtAuth, $location, $translate, LicenseRestService, GuidesService, ModalService, ImportRestService, ImportContextService, ImportViewStorageService) {
+importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', '$repositories', '$uibModal', '$filter', '$jwtAuth', '$location', '$translate', 'LicenseRestService', 'GuidesService', 'ModalService', 'ImportRestService', 'ImportContextService',
+    function ($scope, toastr, $interval, $repositories, $uibModal, $filter, $jwtAuth, $location, $translate, LicenseRestService, GuidesService, ModalService, ImportRestService, ImportContextService) {
 
         // =========================
         // Private variables
@@ -78,6 +76,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         $scope.textFileFormatsHuman = FileFormats.getTextFileFormatsHuman();
         $scope.maxUploadFileSizeMB = 0;
         $scope.SORTING_TYPES = SortingType;
+        $scope.TAB_IDS = TABS;
 
         // =========================
         // Public functions
@@ -207,9 +206,6 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
 
         $scope.updateList = (force) => {
             if (!$scope.canWriteActiveRepo()) {
-                return;
-            }
-            if (!$($scope.tabId).is(':visible')) {
                 return;
             }
             $scope.updateListHttp(force);
@@ -430,10 +426,6 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             subscriptions.forEach((subscription) => subscription());
         };
 
-        const initPersistence = () => {
-            ImportViewStorageService.initImportViewSettings();
-        };
-
         const initSubscriptions = () => {
             subscriptions.push($scope.$on('repositoryIsSet', $scope.onRepositoryChange));
             subscriptions.push($scope.$on('$destroy', () => $interval.cancel(listPollingHandler)));
@@ -454,7 +446,6 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         const init = () => {
             initSubscriptions();
             getAppData();
-            initPersistence();
         };
         init();
     }]);

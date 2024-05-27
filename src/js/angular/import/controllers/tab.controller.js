@@ -4,16 +4,16 @@ angular
     .module('graphdb.framework.impex.import.controllers.tab', [])
     .controller('TabController', TabController);
 
-TabController.$inject = ['$scope', '$location', 'ImportViewStorageService', 'ImportContextService'];
+TabController.$inject = ['$scope', '$location', 'ImportContextService'];
 
-function TabController($scope, $location, ImportViewStorageService, ImportContextService) {
+function TabController($scope, $location, ImportContextService) {
 
     // =========================
     // Private variables
     // =========================
 
-    // flag to reset help visibility on empty state in initial load of the view
-    let shouldResetHelpVisibility = true;
+    // object holds information about
+    let helpVisibility;
 
     // =========================
     // Public variables
@@ -25,38 +25,34 @@ function TabController($scope, $location, ImportViewStorageService, ImportContex
     // Public functions
     // =========================
 
+    const updateHelpVisibility = () => {
+        if (helpVisibility.isPristine($scope.activeTabId)) {
+            let importResourceTreeElement = ImportContextService.getResources();
+            $scope.isHelpVisible = !importResourceTreeElement || importResourceTreeElement.isEmpty()
+        } else {
+            $scope.isHelpVisible = helpVisibility.isHelpVisible($scope.activeTabId);
+        }
+    }
+
     $scope.openTab = (tab) => {
         ImportContextService.updateActiveTabId(tab);
     };
 
     $scope.toggleHelp = () => {
-        const viewPersistence = ImportViewStorageService.getImportViewSettings();
-        ImportViewStorageService.toggleHelpVisibility();
-        setIsHelpVisible(!viewPersistence.isHelpVisible);
+        helpVisibility.setIsHelpVisible($scope.activeTabId, !$scope.isHelpVisible);
+        updateHelpVisibility();
     };
 
     // =========================
     // Private functions
     // =========================
-
-    const setIsHelpVisible = (isVisible) => {
-        $scope.isHelpVisible = isVisible;
-    };
-
-    const setHelpVisibility = (resources) => {
-        // reset help visibility on empty state in initial load
-        if (shouldResetHelpVisibility && resources.getSize() === 0) {
-            ImportViewStorageService.setHelpVisibility(true);
-            shouldResetHelpVisibility = false;
-        }
-        const isVisible = resources.getSize() === 0;
-        ImportViewStorageService.setHelpVisibility(isVisible);
-        setIsHelpVisible(isVisible);
-    };
-
-    const onResourcesUpdated = (resources) => {
-        setHelpVisibility(resources);
-    };
+    const init = () => {
+        helpVisibility = new HelpVisibilityPersistence();
+        // Updates the active tab id from tha url.
+        const activeTabId = $location.hash() || TABS.USER;
+        $scope.openTab(activeTabId);
+        updateHelpVisibility();
+    }
 
     // =========================
     // Watchers and event handlers
@@ -66,16 +62,49 @@ function TabController($scope, $location, ImportViewStorageService, ImportContex
     subscriptions.push(ImportContextService.onActiveTabIdUpdated((newActiveTabId) => {
         $scope.activeTabId = newActiveTabId;
         $location.hash($scope.activeTabId);
-        setHelpVisibility(ImportContextService.getResources());
+        updateHelpVisibility();
     }));
 
-    subscriptions.push(ImportContextService.onResourcesUpdated(onResourcesUpdated));
+    subscriptions.push(ImportContextService.onResourcesUpdated(updateHelpVisibility));
 
     const removeAllListeners = () => subscriptions.forEach((subscription) => subscription());
 
     $scope.$on('$destroy', removeAllListeners);
 
-    // Updates the active tab id from tha url.
-    const activeTabId = $location.hash() || TABS.USER;
-    $scope.openTab(activeTabId);
+    init();
+}
+
+class HelpVisibilityPersistence {
+    constructor() {
+        this._helpVisibility = {
+            [TABS.USER]: {
+                isHelpVisible: undefined
+            },
+            [TABS.SERVER]: {
+                isHelpVisible: undefined
+            }
+        };
+    }
+
+    /**
+     * Checks if user is toggled the help.
+     * @param {string} tabId the value have to be one of {@link TABS}
+     * @return {boolean} true if the user has clicked the help icon at least once.
+     */
+    isPristine(tabId) {
+        return this._helpVisibility[tabId].isHelpVisible === undefined;
+    }
+
+    /**
+     * Sets the help visibility.
+     * @param {string} tabId the value have to be one of {@link TABS}
+     * @param {boolean} isVisible - The visibility of the help.
+     */
+    setIsHelpVisible(tabId, isHelpVisible) {
+        this._helpVisibility[tabId].isHelpVisible = isHelpVisible;
+    }
+
+    isHelpVisible(tabId) {
+        return this._helpVisibility[tabId] && this._helpVisibility[tabId].isHelpVisible;
+    }
 }
