@@ -1,8 +1,11 @@
+import * as angular from 'angular';
+
 import 'angular/core/services/translation.service';
 import 'angular/sparql-editor/share-query-link.service';
 import {queryPayloadFromEvent, savedQueriesResponseMapper} from "../../../rest/mappers/saved-query-mapper";
 import {isFunction, merge} from "lodash";
 import {saveAs} from 'lib/FileSaver-patch';
+
 import {downloadAsFile, toYasguiOutputModel} from "../../../utils/yasgui-utils";
 import {EventDataType} from "../../../models/ontotext-yasgui/event-data-type";
 import {QueryMode} from "../../../models/ontotext-yasgui/query-mode";
@@ -387,7 +390,9 @@ function yasguiComponentDirective(
                         language: $languageService.getLanguage(),
                         i18n: TranslationService.getTranslations(),
                         getRepositoryStatementsCount: getRepositoryStatementsCount,
-                        onQueryAborted: onQueryAborted
+                        onQueryAborted: onQueryAborted,
+                        keyboardShortcutConfiguration: undefined,
+                        showQueryButton: undefined,
                     };
 
                     angular.extend(config, getDefaultConfig(), $scope.yasguiConfig);

@@ -1,7 +1,10 @@
+import * as angular from 'angular';
 import 'angular/core/services';
 import 'angular/core/services/openid-auth.service.js';
 import 'angular/rest/security.rest.service';
 import {UserRole} from 'angular/utils/user-utils';
+import {isEmpty} from "lodash";
+import {intersection} from "lodash";
 
 angular.module('graphdb.framework.core.services.jwtauth', [
     'toastr',
@@ -358,14 +361,14 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     if ('string' === typeof role) {
                         role = [role];
                     }
-                    const hasPrincipal = !_.isEmpty(this.principal);
+                    const hasPrincipal = !isEmpty(this.principal);
                     if (!hasPrincipal) {
                         return false;
                     }
                     if (role[0] === 'IS_AUTHENTICATED_FULLY') {
                         return hasPrincipal;
                     } else {
-                        return _.intersection(role, this.principal.authorities).length > 0;
+                        return intersection(role, this.principal.authorities).length > 0;
                     }
                 } else {
                     return true;
@@ -402,7 +405,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 // Adding remote secured location could be done only with admin credentials,
                 // that's why we do no check for rights
                 if (this.securityEnabled || this.hasOverrideAuth) {
-                    if (_.isEmpty(this.principal)) {
+                    if (isEmpty(this.principal)) {
                         return false;
                     } else if (this.hasAdminRole()) {
                         return true;
@@ -420,7 +423,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 // Adding remote secured location could be done only with admin credentials,
                 // that's why we do no check for rights
                 if (this.securityEnabled) {
-                    if (_.isEmpty(this.principal)) {
+                    if (isEmpty(this.principal)) {
                         return false;
                     } else if (this.hasAdminRole()) {
                         return true;

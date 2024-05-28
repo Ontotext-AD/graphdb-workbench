@@ -1,3 +1,11 @@
+import * as angular from 'angular';
+
+type TooltipPosition = {
+    left?: number;
+    top?: number;
+    direction?: number;
+};
+
 angular
     .module('graphdb.framework.core.directives.angular-tooltips', [])
     .directive('gdbTooltip', directive);
@@ -46,7 +54,7 @@ function directive($timeout, $compile) {
                 }
             };
 
-            function setPosition(oldPosition = {}) {
+            function setPosition(oldPosition: TooltipPosition = {}) {
                 const pos = $scope.calculatePosition($scope.tooltipElement, $scope.getDirection());
                 $scope.tooltipElement.addClass('angular-tooltip-' + pos.direction).css(pos);
 
@@ -97,7 +105,7 @@ function directive($timeout, $compile) {
                 const scrollLeft = window.scrollX || document.documentElement.scrollLeft;
                 const scrollTop = window.scrollY || document.documentElement.scrollTop;
                 const arrowPadding = 12;
-                const pos = {};
+                const pos: TooltipPosition = {};
                 let newDirection = null;
 
                 // calculate the left position
@@ -145,11 +153,15 @@ function directive($timeout, $compile) {
                     }
                 }
 
-                pos.left += 'px';
-                pos.top += 'px';
-                pos.direction = direction;
+                // pos.left += 'px';
+                // pos.top += 'px';
+                // pos.direction = direction;
 
-                return pos;
+                return {
+                    left: pos.left + 'px',
+                    top: pos.top + 'px',
+                    direction: pos.direction
+                };
             };
 
             $scope.stringStartsWith = function (searchString, findString) {

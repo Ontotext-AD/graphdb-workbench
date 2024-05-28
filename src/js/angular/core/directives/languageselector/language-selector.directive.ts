@@ -1,3 +1,4 @@
+import * as angular from 'angular';
 import 'angular/utils/local-storage-adapter';
 angular
     .module('graphdb.framework.core.directives.languageselector.languageselector', [

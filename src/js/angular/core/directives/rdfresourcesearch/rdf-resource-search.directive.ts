@@ -1,3 +1,4 @@
+import * as angular from 'angular';
 import decodeHTML from "../../../utils/html-utils";
 
 angular

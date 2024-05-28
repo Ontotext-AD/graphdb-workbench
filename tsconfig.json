@@ -12,7 +12,7 @@
         "sourceMap": true,
         "target": "es6",
         "typeRoots": [
-            "../node_modules/@types"
+            "node_modules/@types"
         ],
         "noImplicitAny": false,
         "removeComments": true,

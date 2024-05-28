@@ -1,4 +1,6 @@
 // This is a rework of the ng-FitText.js which can be found here https://github.com/patrickmarabeas/ng-FitText.js
+import * as angular from 'angular';
+import {debounce} from "lodash";
 angular
     .module('graphdb.framework.core.directives.fittext', [])
     .directive('fitText', fitTextDirective);
@@ -15,7 +17,7 @@ function fitTextDirective($timeout) {
         link: function (scope, element, attrs) {
 
             const config = {
-                'debounce': _.debounce,
+                'debounce': debounce,
                 'delay': 100,
                 'loadDelay': 10,
                 'compressor': 1,

@@ -125,7 +125,7 @@ export const YasguiPersistenceMigrationService = (function () {
         sparqlViewData.val.tabConfig[tab.id] = tab;
     };
 
-    const getPersistedData = (persistenceKey) => {
+    const getPersistedData = (persistenceKey): any => {
         let persistenceData = localStorage.getItem(persistenceKey);
         if (!persistenceData) {
             return;

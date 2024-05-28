@@ -1,3 +1,4 @@
+import * as angular from 'angular';
 angular
     .module('graphdb.framework.core.controllers', [])
     .controller('CopyToClipboardModalCtrl', CopyToClipboardModalCtrl)
@@ -24,6 +25,7 @@ CopyToClipboardModalCtrl.$inject = ['$scope', '$uibModalInstance', 'uri', 'toast
 function CopyToClipboardModalCtrl($scope, $uibModalInstance, uri, toastr, $translate, $timeout) {
     $uibModalInstance.opened.then(function () {
         $timeout(() => {
+            // @ts-ignore
             $('#clipboardURI')[0].select();
         }, 0);
     });
@@ -33,6 +35,7 @@ function CopyToClipboardModalCtrl($scope, $uibModalInstance, uri, toastr, $trans
     $scope.ok = function () {
         try {
             const copyText = document.getElementById('clipboardURI');
+            // @ts-ignore
             copyText.select();
             document.execCommand('copy');
             toastr.success($translate.instant('modal.ctr.copy.url.success'));
@@ -79,10 +82,13 @@ function ViewQueryCtrl($scope, $uibModalInstance, query, toastr, $translate) {
                 const range = document.createRange();
                 range.selectNodeContents(elements[0].firstChild);
                 sel.addRange(range);
-            } else if (document.selection) {
-                const textRange = document.body.createTextRange();
-                textRange.moveToElementText(elements[0]);
-                textRange.select();
+            } else { // @ts-ignore
+                if (document.selection) {
+                                // @ts-ignore
+                    const textRange = document.body.createTextRange();
+                                textRange.moveToElementText(elements[0]);
+                                textRange.select();
+                            }
             }
         }
     };

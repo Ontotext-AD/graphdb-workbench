@@ -1,3 +1,5 @@
+import * as angular from 'angular';
+
 /**
  * Defines the colors in which the tab name has to be changed.
  * @type {string[]} - Array of valid CSS values for the color property.
@@ -152,6 +154,10 @@ export const YasguiComponentDirectiveUtil = (function () {
 })();
 
 export class YasqeButtonsBuilder {
+    private createSavedQueryVisibility: boolean;
+    private showSavedQueriesVisibility: boolean;
+    private shareQueryVisibility: boolean;
+    private includeInferredStatementsVisibility: boolean;
 
     constructor() {
         this.createSavedQueryVisibility = false;

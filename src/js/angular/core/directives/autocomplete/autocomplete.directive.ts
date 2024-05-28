@@ -1,3 +1,5 @@
+import * as angular from 'angular';
+
 import {mapUriAsNtripleAutocompleteResponse} from "../../../rest/mappers/autocomplete-mapper";
 // import {decodeHTML} from "../../../utils/html-utils";
 

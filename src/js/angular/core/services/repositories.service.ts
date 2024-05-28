@@ -1,3 +1,4 @@
+import * as angular from 'angular';
 import 'angular/core/services';
 import 'angular/rest/repositories.rest.service';
 import 'angular/rest/locations.rest.service';
@@ -7,6 +8,8 @@ import 'ng-file-upload/dist/ng-file-upload-shim.min';
 import 'angular/core/services/event-emitter-service';
 import {QueryMode} from "../../models/ontotext-yasgui/query-mode";
 import getError from "../../utils/error-utils";
+import {filter} from "lodash";
+import {isEmpty} from "lodash";
 
 const modules = [
     'ngCookies',
@@ -37,7 +40,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         const FEDX_REPOSITORY_LABEL = 'graphdb:FedXRepository';
 
 
-        const loadingDone = function (err, locationError) {
+        const loadingDone = function (err?, locationError?) {
             that.loading = false;
             if (err) {
                 // reset location data
@@ -224,7 +227,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         };
 
         this.hasActiveLocation = function () {
-            return !_.isEmpty(this.location);
+            return !isEmpty(this.location);
         };
 
         this.getLocationError = function () {
@@ -246,14 +249,14 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         };
 
         this.getReadableRepositories = function () {
-            return _.filter(this.getRepositories(), function (repo) {
+            return filter(this.getRepositories(), function (repo) {
                 return $jwtAuth.canReadRepo(repo);
             });
         };
 
         this.getWritableRepositories = function () {
             const that = this;
-            return _.filter(this.getRepositories(), function (repo) {
+            return filter(this.getRepositories(), function (repo) {
                 return $jwtAuth.canWriteRepo(repo) && !that.isActiveRepoOntopType(repo);
             });
         };
@@ -325,8 +328,11 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         };
 
         this.setRepositoryHeaders = function (repository) {
+            // @ts-ignore
             $.ajaxSetup()['headers'] = $.ajaxSetup()['headers'] || {};
+            // @ts-ignore
             $.ajaxSetup()['headers']['X-GraphDB-Repository'] = repository ? repository.id : undefined;
+            // @ts-ignore
             $.ajaxSetup()['headers']['X-GraphDB-Repository-Location'] = repository ? repository.location : undefined;
         };
 

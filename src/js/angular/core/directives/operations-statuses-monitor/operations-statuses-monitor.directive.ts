@@ -1,3 +1,5 @@
+import * as angular from 'angular';
+
 import {OPERATION_GROUP_TYPE} from "../../../models/monitoring/operations/operation-group";
 import {OPERATION_STATUS, OPERATION_STATUS_SORT_ORDER} from "../../../models/monitoring/operations/operation-status";
 import {
@@ -154,6 +156,9 @@ function operationsStatusesMonitorDirectives($interval, $repositories, Monitorin
 }
 
 class OperationGroupSummary {
+    private type: any;
+    private runningOperations: any;
+    private status: any;
     constructor(operationGroup, runningOperations, status) {
         this.type = operationGroup;
         this.runningOperations = runningOperations;

@@ -1,3 +1,4 @@
+import * as angular from 'angular';
 angular.module('graphdb.framework.core.services.licenseService', [])
     .service('$licenseService', ['$rootScope', 'LicenseRestService', '$translate', licenseService]);
 

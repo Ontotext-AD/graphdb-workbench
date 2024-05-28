@@ -1,3 +1,4 @@
+import * as angular from 'angular';
 const modules = [];
 
 angular
@@ -83,6 +84,7 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
      * @return {ThemeDefinitionModel|undefined} A theme definition obtained from the PluginRegistry by name.
      */
     const getThemeDefinitionByName = (themeName) => {
+        // @ts-ignore
         const themeDefinition = PluginRegistry.findPlugin(THEMES_EXTENSION, (themeDefinition) => themeDefinition.name === themeName);
         if (themeDefinition) {
             return themeDefinition;
@@ -130,6 +132,7 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
      * @return {ThemeModel[]} An array with all registered theme names and labels.
      */
     const getThemes = () => {
+        // @ts-ignore
         const themeDefinitions = PluginRegistry.get(THEMES_EXTENSION);
         return themeDefinitions
             .filter(validateThemeDefinition)
@@ -175,6 +178,7 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
      */
     const getThemeDefinition = () => {
         const workbenchTheme = workbenchSettingsStorageService.getThemeName();
+        // @ts-ignore
         let selectedThemeDefinition = PluginRegistry.findPlugin(THEMES_EXTENSION, (themeDefinition) => themeDefinition.name === workbenchTheme);
         if (!selectedThemeDefinition) {
             selectedThemeDefinition = getDefaultThemeDefinition();
@@ -190,6 +194,7 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
     const buildStylesheet = (themeDefinition) => {
         const stylesheetContent = themeTag(themeDefinition);
         const stylesheet = new CSSStyleSheet();
+        // @ts-ignore
         stylesheet.title = themeDefinition.name;
         stylesheet.replaceSync(stylesheetContent);
         return stylesheet;

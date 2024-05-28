@@ -29,7 +29,7 @@ module.exports = {
             'src/js/',
             'node_modules'
         ],
-        extensions: ['.js', '.ts']
+        extensions: ['.js', '.ts', '.tsx', '.mjs']
     },
     plugins: [
         new WebpackAutoInject({
@@ -193,7 +193,12 @@ module.exports = {
     module: {
         rules: [
             {
-              test: /\.tsx?$/,
+                test: /\.mjs$/,
+                include: /node_modules/,
+                type: "javascript/auto"
+            },
+            {
+                test: /\.tsx?$/,
                 loader: "ts-loader"
             },
             {

@@ -1,3 +1,4 @@
+import * as angular from 'angular';
 angular.module('graphdb.framework.core.services.autocompleteStatus', [])
     .service('$autocompleteStatus', ['$rootScope', 'AutocompleteRestService', 'LocalStorageAdapter', 'LSKeys', '$repositories', autocompleteStatusService]);
 

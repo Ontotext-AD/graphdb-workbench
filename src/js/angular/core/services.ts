@@ -1,3 +1,4 @@
+import * as angular from 'angular';
 import 'angular-animate/angular-animate.min';
 import 'angular-cookies/angular-cookies.min';
 import 'angular-route/angular-route.min';

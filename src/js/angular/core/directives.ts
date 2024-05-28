@@ -1,3 +1,4 @@
+import * as angular from 'angular';
 import 'angular/utils/local-storage-adapter';
 import decodeHTML from "../utils/html-utils";
 import getError from "../utils/error-utils";

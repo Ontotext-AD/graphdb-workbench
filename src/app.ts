@@ -10,7 +10,7 @@ import 'angular/core/interceptors/authentication.interceptor';
 import 'angular/core/directives/rdfresourcesearch/rdf-resource-search.directive';
 import 'angular/core/directives/languageselector/language-selector.directive';
 import 'angular/core/directives/copy-to-clipboard/copy-to-clipboard.directive';
-import 'angular/core/directives/angulartooltips/angular-tooltips.js';
+import 'angular/core/directives/angulartooltips/angular-tooltips';
 import 'angular/core/directives/uppercased.directive';
 import 'angular/core/directives/operations-statuses-monitor/operations-statuses-monitor.directive';
 import 'angular/core/directives/autocomplete/autocomplete.directive';

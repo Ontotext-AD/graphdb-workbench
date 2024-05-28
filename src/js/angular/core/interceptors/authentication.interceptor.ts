@@ -1,3 +1,5 @@
+import * as angular from 'angular';
+
 import 'angular/core/services';
 
 angular.module('graphdb.framework.core.interceptors.authentication', [

@@ -1,3 +1,4 @@
+import * as angular from 'angular';
 /**
  * angular-cancel-on-navigate - AngularJS module that cancels HTTP requests on location change (navigation)
  * @version v0.1.0

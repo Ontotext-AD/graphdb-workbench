@@ -8,5 +8,5 @@ import './css/shepherd-custom.css';
 import 'jquery';
 import 'lib/angularjs/1.3.8/angular.js';
 import 'lib/bootstrap/bootstrap.min';
-import 'angular/core/loading-hint.js';
+import 'angular/core/loading-hint';
 import 'ng-custom-element/dist/ng-custom-element.umd';

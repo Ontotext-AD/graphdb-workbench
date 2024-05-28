@@ -1,3 +1,4 @@
+import * as angular from 'angular';
 const modules = [];
 
 angular.module('graphdb.framework.core.services.translation-service', modules)

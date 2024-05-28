@@ -1,3 +1,5 @@
+import * as angular from 'angular';
+
 angular.module('graphdb.framework.core.directives.paginations', [])
     .directive('paginations', function () {
         return {

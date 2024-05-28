@@ -1,3 +1,5 @@
+import * as angular from 'angular';
+
 angular
     .module('graphdb.framework.core.components.export-settings-modal', [
         'graphdb.framework.utils.localstorageadapter'

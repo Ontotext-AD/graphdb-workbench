@@ -1,3 +1,4 @@
+import * as angular from 'angular';
 /**
  * @ngdoc directive
  * @name copyToClipboard
