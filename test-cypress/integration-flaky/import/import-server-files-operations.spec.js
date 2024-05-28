@@ -28,7 +28,7 @@ describe('Import server files - Operations', {retries: {runMode: 2}}, () => {
     it('Should import Server files successfully without changing settings', () => {
         // Given I have opened the server files tab
         // When I select to import a file
-        ImportServerFilesSteps.importFileByName(FILE_FOR_IMPORT);
+        ImportServerFilesSteps.importResourceByName(FILE_FOR_IMPORT);
         ImportSettingsDialogSteps.import();
         // Then I should see the file imported successfully
         ImportServerFilesSteps.checkImportedResource(0, FILE_FOR_IMPORT);
@@ -39,7 +39,7 @@ describe('Import server files - Operations', {retries: {runMode: 2}}, () => {
     it('Should import files from directory successfully without changing settings', () => {
         // Given I have opened the server files tab
         // When I select to import a file
-        ImportServerFilesSteps.importFileByName(FILE_FROM_DIRECTORY_FOR_IMPORT);
+        ImportServerFilesSteps.importResourceByName(FILE_FROM_DIRECTORY_FOR_IMPORT);
         ImportSettingsDialogSteps.import();
         // Then I should see the file imported successfully
         ImportServerFilesSteps.checkImportedResource(0, FILE_FROM_DIRECTORY_FOR_IMPORT);
@@ -48,7 +48,7 @@ describe('Import server files - Operations', {retries: {runMode: 2}}, () => {
     it('Should import Server files successfully with changing settings', () => {
         // Given I have opened the server files tab
         // When I select to import a file
-        ImportServerFilesSteps.importFileByName(FILE_FOR_IMPORT);
+        ImportServerFilesSteps.importResourceByName(FILE_FOR_IMPORT);
         // And I change the settings
         ImportSettingsDialogSteps.expandAdvancedSettings();
         ImportSettingsDialogSteps.fillBaseURI(BASE_URI);
@@ -65,7 +65,7 @@ describe('Import server files - Operations', {retries: {runMode: 2}}, () => {
     it('Should import Server files successfully with JSONLD context link settings', () => {
         // Given I have opened the server files tab
         // When I select to import a file
-        ImportServerFilesSteps.importFileByName(JSONLD_FILE_FOR_IMPORT);
+        ImportServerFilesSteps.importResourceByName(JSONLD_FILE_FOR_IMPORT);
         // And I change the settings
         ImportSettingsDialogSteps.expandAdvancedSettings();
         ImportSettingsDialogSteps.fillBaseURI(BASE_URI);
@@ -82,7 +82,7 @@ describe('Import server files - Operations', {retries: {runMode: 2}}, () => {
     it('Should import Server files successfully with JSONLD default settings', () => {
         // Given I have opened the server files tab
         // When I select to import a file
-        ImportServerFilesSteps.importFileByName(JSONLD_FILE_FOR_IMPORT);
+        ImportServerFilesSteps.importResourceByName(JSONLD_FILE_FOR_IMPORT);
         // And I change the settings
         ImportSettingsDialogSteps.expandAdvancedSettings();
         ImportSettingsDialogSteps.fillBaseURI(BASE_URI);
@@ -99,11 +99,11 @@ describe('Import server files - Operations', {retries: {runMode: 2}}, () => {
     it('Should be able to reset status of imported file', () => {
         // Given I have opened the server files tab
         // And I have imported a file
-        ImportServerFilesSteps.importFileByName(FILE_FOR_IMPORT);
+        ImportServerFilesSteps.importResourceByName(FILE_FOR_IMPORT);
         ImportSettingsDialogSteps.import();
         ImportServerFilesSteps.checkImportedResource(0, FILE_FOR_IMPORT);
         // When I reset the status of the imported file
-        ImportServerFilesSteps.resetFileStatusByName(FILE_FOR_IMPORT);
+        ImportServerFilesSteps.resetResourceStatusByName(FILE_FOR_IMPORT);
         // Then Import status of the file should not be visible
         ImportServerFilesSteps.getResourceStatus(FILE_FOR_IMPORT).should('be.hidden');
     });
@@ -111,18 +111,18 @@ describe('Import server files - Operations', {retries: {runMode: 2}}, () => {
     it('Should be able to reset status of imported file from a directory', () => {
         // Given I have opened the server files tab
         // And I have imported a file
-        ImportServerFilesSteps.importFileByName(FILE_FROM_DIRECTORY_FOR_IMPORT);
+        ImportServerFilesSteps.importResourceByName(FILE_FROM_DIRECTORY_FOR_IMPORT);
         ImportSettingsDialogSteps.import();
         ImportServerFilesSteps.checkImportedResource(0, FILE_FROM_DIRECTORY_FOR_IMPORT);
         // When I reset the status of the imported file
-        ImportServerFilesSteps.resetFileStatusByName(FILE_FROM_DIRECTORY_FOR_IMPORT);
+        ImportServerFilesSteps.resetResourceStatusByName(FILE_FROM_DIRECTORY_FOR_IMPORT);
         // Then Import status of the file should not be visible
         ImportServerFilesSteps.getResourceStatus(FILE_FROM_DIRECTORY_FOR_IMPORT).should('be.hidden');
     });
 
     it('Should import turtlestar from Server files successfully without changing settings', () => {
         // Given I have opened the server files tab
-        ImportServerFilesSteps.importFileByName(TTLS_FOR_IMPORT);
+        ImportServerFilesSteps.importResourceByName(TTLS_FOR_IMPORT);
         // When I select to import a ttl file without changing settings
         ImportSettingsDialogSteps.import();
         // Then I should see the file imported successfully
@@ -132,7 +132,7 @@ describe('Import server files - Operations', {retries: {runMode: 2}}, () => {
 
     it('Should import trigstar from Server files successfully without changing settings', () => {
         // Given I have opened the server files tab
-        ImportServerFilesSteps.importFileByName(TRIGS_FOR_IMPORT);
+        ImportServerFilesSteps.importResourceByName(TRIGS_FOR_IMPORT);
         // When I select to import a trigstar file without changing settings
         ImportSettingsDialogSteps.import();
         // Then I should see the file imported successfully

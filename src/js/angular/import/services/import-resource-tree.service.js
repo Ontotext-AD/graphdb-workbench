@@ -34,6 +34,36 @@ export class ImportResourceTreeService {
     }
 
     /**
+     * Merges the tree <code>importResourceElement</code> with the passed new resources (<code>newResources</code>). This includes adding an import resource if it does not exist in the tree,
+     * removing it from the tree if the resource is not present in <code>newResources</code>, and updating the tree resource if it exists.
+     *
+     * @param {ImportResourceTreeElement} importResourceElement - The tree where the new resources will be merged.
+     * @param {ImportResource[]} newResources - A list of the new resources.
+     * @param {boolean} isUserImport
+     */
+    static mergeResourceTree(importResourceElement, newResources, isUserImport) {
+        // Removes missing files.
+        importResourceElement.getRoot().toList().forEach((resource) => {
+            const newResource = newResources.find((newResource) => {
+                return newResource.name === resource.importResource.name
+            });
+            if (!newResource) {
+                resource.remove();
+            }
+        });
+
+        newResources.forEach((resource) => {
+            const existingResource = importResourceElement.getResourceByName(resource.name);
+            if (existingResource) {
+                // if resource is already in the tree just update imported resource.
+                existingResource.importResource = resource;
+            } else {
+                ImportResourceTreeService.addResourceToTree(importResourceElement, resource, isUserImport);
+            }
+        });
+    }
+
+    /**
      * Adds the <code>resource</code> into the tree with root <code>root</code>.
      * @param {ImportResourceTreeElement} root
      * @param {ImportResource} resource
@@ -53,16 +83,17 @@ export class ImportResourceTreeService {
         const resourceParent = ImportResourceTreeService.getOrCreateParent(root, directoryPath);
 
         if (resource.isFile()) {
-            const importServerResource = new ImportResourceTreeElement();
-            importServerResource.parent = resourceParent;
-            importServerResource.importResource = resource;
-            importServerResource.path = path.join('/');
-            importServerResource.name = path[path.length - 1];
-            resourceParent.addResource(importServerResource);
-            ImportResourceTreeService.setIcon(importServerResource, isUserImport);
-            return importServerResource;
+            const importResourceElement = new ImportResourceTreeElement();
+            importResourceElement.parent = resourceParent;
+            importResourceElement.importResource = resource;
+            importResourceElement.path = path.join('/');
+            importResourceElement.name = path[path.length - 1];
+            resourceParent.addResource(importResourceElement);
+            ImportResourceTreeService.setIcon(importResourceElement, isUserImport);
+            return importResourceElement;
         } else {
             resourceParent.importResource = resource;
+            resourceParent.path = path.join('/');
             ImportResourceTreeService.setIcon(resourceParent, isUserImport);
             return resourceParent;
         }
@@ -78,13 +109,13 @@ export class ImportResourceTreeService {
 
     /**
      * Creates directory path (if no created yet) and returns the inner parent .
-     * @param {ImportResourceTreeElement} importServerResource - the root parent directory.
+     * @param {ImportResourceTreeElement} importResourceElement - the root parent directory.
      * @param {string[]} directoryPath - the list with directory names that have to be created.
      *
      * @return {ImportResourceTreeElement} the inner parent.
      */
-    static getOrCreateParent(importServerResource, directoryPath) {
-        let parent = importServerResource;
+    static getOrCreateParent(importResourceElement, directoryPath) {
+        let parent = importResourceElement;
         directoryPath.forEach((directoryName) => {
             const directory = parent.getOrCreateDirectory(directoryName);
             directory.parent = parent;
@@ -166,7 +197,7 @@ export class ImportResourceTreeService {
     }
 
     static isImportable(importResource) {
-        return importResource.isFile() && importResource.status !== ImportResourceStatus.IMPORTING && importResource.status !== ImportResourceStatus.UPLOADING && importResource.status !== ImportResourceStatus.PENDING && importResource.status !== ImportResourceStatus.INTERRUPTING;
+        return importResource.status !== ImportResourceStatus.IMPORTING && importResource.status !== ImportResourceStatus.UPLOADING && importResource.status !== ImportResourceStatus.PENDING && importResource.status !== ImportResourceStatus.INTERRUPTING;
     }
 
     static hasOngoingImport(importResource) {

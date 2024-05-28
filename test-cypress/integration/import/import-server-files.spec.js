@@ -1,5 +1,6 @@
 import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
 import {ImportServerFilesSteps} from "../../steps/import/import-server-files-steps";
+import {ImportSettingsDialogSteps} from "../../steps/import/import-settings-dialog-steps";
 
 describe('Import server files', () => {
 
@@ -11,7 +12,7 @@ describe('Import server files', () => {
         repositoryId = 'server-import-' + Date.now();
         cy.createRepository({id: repositoryId});
         ImportServerFilesSteps.visitServerImport(repositoryId);
-        ImportServerFilesSteps.getResources().should('have.length', 14);
+        ImportServerFilesSteps.getResources().should('have.length', 17);
     });
 
     afterEach(() => {
@@ -52,7 +53,6 @@ describe('Import server files', () => {
     it('Should be able to filter the files', () => {
         // When the server files tab is loaded
         // Then I should see all the files
-        ImportServerFilesSteps.getResources().should('have.length', 14);
         // When I type in the filter filed
         ImportServerFilesSteps.typeInFilterField('007');
         // Then I should see only the files matching the filter
@@ -64,15 +64,43 @@ describe('Import server files', () => {
         // When the server files tab is loaded
         // Then I should see all the files and folders by default
         ImportServerFilesSteps.getShowAllResourceTypesButton().should('have.class', 'active');
-        ImportServerFilesSteps.getResources().should('have.length', 14);
+        ImportServerFilesSteps.getResources().should('have.length', 17);
         // When I select the folders only filter
         ImportServerFilesSteps.selectFoldersOnlyFilter();
         // Then I should see only the folders
         ImportServerFilesSteps.getShowOnlyFoldersButton().should('have.class', 'active');
-        ImportServerFilesSteps.getResources().should('have.length', 1);
+        ImportServerFilesSteps.getResources().should('have.length', 2);
         // When I select the files only filter
         ImportServerFilesSteps.selectFilesOnlyFilter();
         // Then I should see only the files
-        ImportServerFilesSteps.getResources().should('have.length', 13);
+        ImportServerFilesSteps.getResources().should('have.length', 15);
+    });
+
+    it('should be able to import hole directory', () => {
+        // When the server files tab is loaded
+        // When I try to import a directory that contains resources with correct rdf data.
+        ImportServerFilesSteps.importResourceByName('more-files');
+        ImportSettingsDialogSteps.import();
+
+        // Then I expect all files to be successfully imported.
+        ImportServerFilesSteps.checkImportedResource(0, 'more-files', 'Imported successfully in');
+        ImportServerFilesSteps.checkImportedResource(1, 'jsonld-file.jsonld', 'Imported successfully in');
+        ImportServerFilesSteps.checkImportedResource(2, 'rdfxml.rdf', 'Imported successfully in');
+
+        // When I try to import a directory that contains resources with incorrect rdf data.
+        ImportServerFilesSteps.importResourceByName('more-files-with-error');
+        ImportSettingsDialogSteps.import();
+        // Then I expect no one file be imported.
+        ImportServerFilesSteps.checkImportedResource(0, 'more-files-with-error', 'RDF Parse Error: The element type "ex:editor" must be terminated by the matching end-ta');
+        ImportServerFilesSteps.checkImportedStatusIsEmpty('import-resource-with-correct-data.jsonld');
+        ImportServerFilesSteps.checkImportedStatusIsEmpty('import-resource-with-incorrect-data.rdf');
+
+        // When I click on a directory reset status button
+        ImportServerFilesSteps.resetResourceStatusByName('more-files');
+
+        // Then I expect all sub-resource statuses to be reset.
+        ImportServerFilesSteps.checkImportedStatusIsEmpty('more-files');
+        ImportServerFilesSteps.checkImportedStatusIsEmpty('jsonld-file.jsonld');
+        ImportServerFilesSteps.checkImportedStatusIsEmpty('rdfxml.rdf');
     });
 });

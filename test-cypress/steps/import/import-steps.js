@@ -194,9 +194,14 @@ class ImportSteps {
     }
 
     static checkImportedResource(index, resourceName, expectedStatus) {
+        if (expectedStatus === undefined) {}
         const status = expectedStatus || 'Imported successfully';
         this.getResourceByName(resourceName).should('contain', resourceName);
         this.getResourceStatus(resourceName).should('contain', status);
+    }
+
+    static checkImportedStatusIsEmpty(resourceName) {
+        this.getResourceStatus(resourceName).find('.import-resource-message').children().should('have.length', 0);
     }
 
     static checkUserDataUploadedResource(index, resourceName) {
@@ -266,7 +271,7 @@ class ImportSteps {
         this.getResource(index).find('.import-resource-action-import-btn').click();
     }
 
-    static importFileByName(name) {
+    static importResourceByName(name) {
         this.getResourceByName(name).find('.import-resource-action-import-btn').click();
     }
 
@@ -274,7 +279,7 @@ class ImportSteps {
         this.getResource(index).find('.import-resource-action-reset-btn').click();
     }
 
-    static resetFileStatusByName(name) {
+    static resetResourceStatusByName(name) {
         this.getResourceByName(name).find('.import-resource-action-reset-btn').click();
     }
 

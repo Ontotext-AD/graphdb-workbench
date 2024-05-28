@@ -308,31 +308,12 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             const onResourcesUpdatedHandler = (newResources = []) => {
                 const isUserImport = TABS.USER === ImportContextService.getActiveTabId();
                 if ($scope.resources.isEmpty()) {
-                    $scope.resources = ImportResourceTreeService.toImportResourceTree(_.cloneDeep(newResources), isUserImport);
+                    $scope.resources = ImportResourceTreeService.toImportResourceTree(newResources, isUserImport);
                     if (isUserImport) {
                         $scope.sortedBy = SortingType.MODIFIED;
-                        sortResources();
                     }
                 } else {
-                    // Removes missing files.
-                    $scope.resources.toList().forEach((resource) => {
-                        const newResource = newResources.find((newResource) => {
-                            return newResource.name === resource.importResource.name
-                        });
-                        if (!newResource) {
-                            resource.remove();
-                        }
-                    });
-
-                    newResources.forEach((resource) => {
-                        const existingResource = $scope.resources.getResourceByName(resource.name);
-                        if (existingResource) {
-                            // if resource is already in the tree just update imported resource.
-                            existingResource.importResource = resource;
-                        } else {
-                            ImportResourceTreeService.addResourceToTree($scope.resources, resource, isUserImport);
-                        }
-                    });
+                    ImportResourceTreeService.mergeResourceTree($scope.resources, newResources, isUserImport);
                 }
                 ImportResourceTreeService.calculateElementIndent($scope.resources);
                 ImportResourceTreeService.setupAfterTreeInitProperties($scope.resources);

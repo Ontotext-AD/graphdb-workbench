@@ -86,25 +86,25 @@ export class ImportResourceTreeElement {
 
     /**
      * Adds an import resource with rdf data to import resource parent-child tree.
-     * @param {ImportResourceTreeElement} importServerResource - an import resource with rdf data.
+     * @param {ImportResourceTreeElement} importResourceElement - an import resource with rdf data.
      */
-    addResource(importServerResource) {
-        if (importServerResource.isFile()) {
-            this.files.push(importServerResource);
+    addResource(importResourceElement) {
+        if (importResourceElement.isFile()) {
+            this.files.push(importResourceElement);
             return;
         }
-        if (importServerResource.isDirectory()) {
-            this.directories.push(importServerResource);
+        if (importResourceElement.isDirectory()) {
+            this.directories.push(importResourceElement);
             return;
         }
         throw new Error('Unsupported resource type!');
     }
 
-    removeResource(importServerResource) {
-        if (importServerResource.isFile()) {
-            this.files = this.files.filter((file) => importServerResource.importResource.name !== file.importResource.name);
+    removeResource(importResourceElement) {
+        if (importResourceElement.isFile()) {
+            this.files = this.files.filter((file) => importResourceElement.importResource.name !== file.importResource.name);
         } else {
-            this.directories = this.directories.filter((directory) => importServerResource.importResource.name !== directory.importResource.name);
+            this.directories = this.directories.filter((directory) => importResourceElement.importResource.name !== directory.importResource.name);
         }
     }
 
