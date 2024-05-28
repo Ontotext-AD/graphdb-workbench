@@ -29,7 +29,10 @@ module.exports = {
             'src/js/',
             'node_modules'
         ],
-        extensions: ['.js', '.ts', '.tsx', '.mjs']
+        extensions: ['.js', '.ts', '.tsx', '.mjs'],
+        alias: {
+            "@angular/upgrade/static": "@angular/upgrade/bundles/upgrade-static.umd.js"
+        }
     },
     plugins: [
         new WebpackAutoInject({
