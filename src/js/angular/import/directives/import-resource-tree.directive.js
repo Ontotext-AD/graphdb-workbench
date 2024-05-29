@@ -189,10 +189,7 @@ function importResourceTreeDirective($timeout, ImportContextService) {
              * and can have their states reset.
              */
             const setCanResetResourcesFlag = () => {
-                $scope.canResetSelectedResources = $scope.resources.getAllSelected()
-                    .some((treeResource) => {
-                        return treeResource.importResource.status === ImportResourceStatus.DONE;
-                    });
+                $scope.canResetSelectedResources = $scope.resources.getSelectedImportedResources();
             };
 
             const updateListedImportResources = () => {

@@ -1,3 +1,5 @@
+import {ImportResourceStatus} from "./import-resource-status";
+
 /**
  * Resources have parent-child relations. This class represents one resource element from the parent-child relation tree.
  */
@@ -258,6 +260,13 @@ export class ImportResourceTreeElement {
         // clone them to ensure that upcoming from the server changes in the resources
         // will not interfere with the selected resources list
         return _.cloneDeep(allSelected);
+    }
+
+    getSelectedImportedResources() {
+       return this.getAllSelected()
+            .some((treeResource) => {
+                return treeResource.importResource.status === ImportResourceStatus.DONE;
+            });
     }
 
     deselectAll() {

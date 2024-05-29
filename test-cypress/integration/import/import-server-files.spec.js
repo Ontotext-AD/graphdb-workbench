@@ -76,7 +76,7 @@ describe('Import server files', () => {
         ImportServerFilesSteps.getResources().should('have.length', 15);
     });
 
-    it('should be able to import hole directory', () => {
+    it('should be able to import the whole directory', () => {
         // When the server files tab is loaded
         // When I try to import a directory that contains resources with correct rdf data.
         ImportServerFilesSteps.importResourceByName('more-files');
