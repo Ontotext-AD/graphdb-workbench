@@ -1020,9 +1020,9 @@
             },
             "on_file_size_limit": {
                 "file_import_options_info_1": "Explorez d'autres options d'importation de fichiers - Importation de ",
-                "file_import_options_info_2": "(ouvre l'onglet Fichiers serveur) ou ",
+                "file_import_options_info_2": "importation et l'",
                 "server_files_link": "Fichiers serveur",
-                "api_link": "API"
+                "api_link": "API REST de GraphDB."
             }
         },
         "import_resource_tree": {
