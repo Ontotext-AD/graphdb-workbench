@@ -1,3 +1,5 @@
+import {ImportResourceStatus} from "./import-resource-status";
+
 /**
  * Resources have parent-child relations. This class represents one resource element from the parent-child relation tree.
  */
@@ -86,18 +88,32 @@ export class ImportResourceTreeElement {
 
     /**
      * Adds an import resource with rdf data to import resource parent-child tree.
-     * @param {ImportResourceTreeElement} importServerResource - an import resource with rdf data.
+     * @param {ImportResourceTreeElement} importResourceElement - an import resource with rdf data.
      */
-    addResource(importServerResource) {
-        if (importServerResource.isFile()) {
-            this.files.push(importServerResource);
+    addResource(importResourceElement) {
+        if (importResourceElement.isFile()) {
+            this.files.push(importResourceElement);
             return;
         }
-        if (importServerResource.isDirectory()) {
-            this.directories.push(importServerResource);
+        if (importResourceElement.isDirectory()) {
+            this.directories.push(importResourceElement);
             return;
         }
         throw new Error('Unsupported resource type!');
+    }
+
+    removeResource(importResourceElement) {
+        if (importResourceElement.isFile()) {
+            this.files = this.files.filter((file) => importResourceElement.importResource.name !== file.importResource.name);
+        } else {
+            this.directories = this.directories.filter((directory) => importResourceElement.importResource.name !== directory.importResource.name);
+        }
+    }
+
+    remove() {
+        if (!this.isRoot()) {
+            this.parent.removeResource(this);
+        }
     }
 
     /**
@@ -244,6 +260,13 @@ export class ImportResourceTreeElement {
         // clone them to ensure that upcoming from the server changes in the resources
         // will not interfere with the selected resources list
         return _.cloneDeep(allSelected);
+    }
+
+    getSelectedImportedResources() {
+       return this.getAllSelected()
+            .some((treeResource) => {
+                return treeResource.importResource.status === ImportResourceStatus.DONE;
+            });
     }
 
     deselectAll() {

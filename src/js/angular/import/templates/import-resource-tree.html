@@ -32,7 +32,7 @@
                 </ul>
             </div>
             <div class="import-resource-selected-actions btn-group"
-                 ng-if="selectedResources && selectedResources.length > 0">
+                 ng-if="hasSelection">
                 <div class="btn-group batch-import-dropdown" uib-dropdown
                      uib-popover="{{'import.selected.items' | translate}}"
                      popover-trigger="mouseenter"
@@ -193,13 +193,13 @@
                     <button role="button" class="btn btn-link btn-sm secondary import-resource-action-reset-btn"
                             ng-click="resetStatus(resource)"
                             ng-if="resource.canResetStatus"
-                            ng-disabled="selectedResources.length > 0"
+                            ng-disabled="hasSelection"
                             gdb-tooltip="{{'import.reset.status' | translate}}">
                         <span class="icon-close"></span>
                     </button>
                     <button ng-if="canRemoveResource"
                             class="btn btn-link btn-sm secondary import-resource-action-remove-btn"
-                            ng-disabled="selectedResources.length > 0"
+                            ng-disabled="hasSelection"
                             ng-click="removeResource(resource)"
                             gdb-tooltip="{{'import.remove.btn' | translate}}">
                         <em class="icon-trash"></em>
@@ -207,7 +207,7 @@
                     <button class="btn btn-primary btn-sm import-resource-action-import-btn"
                             ng-if="resource.isImportable"
                             ng-click="onImport({resource: resource})"
-                            ng-disabled="selectedResources.length > 0"
+                            ng-disabled="hasSelection"
                             guide-selector="import-file-{{resource.name}}"
                             gdb-tooltip="{{'import.import.btn' | translate}}">
                         <span class="icon-import"></span>

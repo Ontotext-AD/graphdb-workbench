@@ -1,0 +1,8 @@
+{
+    "@context": {
+        "ab": "http://learningsparql.com/ns/addressbook#"
+    },
+    "@id": "ab:richard",
+    "ab:homeTel": "(229)276-5135",
+    "ab:email": "richard491@hotmail.com"
+}

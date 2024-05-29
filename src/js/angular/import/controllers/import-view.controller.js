@@ -12,8 +12,7 @@ import {FileFormats} from "../../models/import/file-formats";
 import * as stringUtils from "../../utils/string-utils";
 import {FileUtils} from "../../utils/file-utils";
 import {DateUtils} from "../../utils/date-utils";
-import {toImportResource, toImportServerResource, toImportUserDataResource} from "../../rest/mappers/import-mapper";
-import {ImportResourceTreeElement} from "../../models/import/import-resource-tree-element";
+import {toImportResource} from "../../rest/mappers/import-mapper";
 import {decodeHTML} from "../../../../app";
 import {FilePrefixRegistry} from "../services/file-prefix-registry";
 import {SortingType} from "../../models/import/sorting-type";
@@ -178,7 +177,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
          * @return {string[]}
          */
         $scope.getSelectedFiles = () => {
-            return ImportContextService.getResources().getAllSelectedFilesNames();
+            return ImportContextService.getSelectedFilesNames();
         };
 
         $scope.importSelected = (overrideSettings) => {
@@ -353,9 +352,9 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                     return;
                 }
                 if (TABS.SERVER === $scope.activeTabId) {
-                    ImportContextService.updateResources(toImportServerResource(toImportResource(data)));
+                    ImportContextService.updateResources(toImportResource(data));
                 } else if (TABS.USER === $scope.activeTabId) {
-                    ImportContextService.updateResources(toImportUserDataResource(toImportResource(data)));
+                    ImportContextService.updateResources(toImportResource(data));
                 }
 
                 // reload all files
@@ -431,7 +430,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             subscriptions.push($scope.$on('$destroy', () => $interval.cancel(listPollingHandler)));
             subscriptions.push(ImportContextService.onActiveTabIdUpdated((newActiveTabId) => {
                 $scope.activeTabId = newActiveTabId;
-                ImportContextService.updateResources(new ImportResourceTreeElement());
+                ImportContextService.updateResources([]);
                 ImportContextService.updateShowLoader(true);
                 $scope.updateListHttp(true).finally(() => ImportContextService.updateShowLoader(false));
             }));

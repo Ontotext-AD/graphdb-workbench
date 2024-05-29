@@ -1011,9 +1011,9 @@
             },
             "on_file_size_limit": {
                 "file_import_options_info_1": "Explore other file import options - ",
-                "file_import_options_info_2": "import (opens Server files tab) or ",
+                "file_import_options_info_2": "import and the ",
                 "server_files_link": "Server files",
-                "api_link": "API"
+                "api_link": "GraphDB REST API."
             }
         },
         "import_resource_tree": {

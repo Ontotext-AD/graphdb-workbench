@@ -2,6 +2,9 @@ import {ImportResourceStatus} from "../../models/import/import-resource-status";
 import 'angular/import/directives/import-resource-message.directive';
 import 'angular/import/directives/import-resource-status-info.directive';
 import {SortingType} from "../../models/import/sorting-type";
+import {ImportResourceTreeElement} from "../../models/import/import-resource-tree-element";
+import {TABS} from "../services/import-context.service";
+import {ImportResourceTreeService} from "../services/import-resource-tree.service";
 
 const TYPE_FILTER_OPTIONS = {
     'FILE': 'FILE',
@@ -58,11 +61,8 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             // =========================
             // Public variables
             // =========================
+            $scope.resources = new ImportResourceTreeElement();
             $scope.displayResources = [];
-            /**
-             * @type {ImportResourceTreeElement[]}
-             */
-            $scope.selectedResources = [];
             $scope.TYPE_FILTER_OPTIONS = TYPE_FILTER_OPTIONS;
             $scope.filterByType = TYPE_FILTER_OPTIONS.ALL;
             $scope.filterByFileName = '';
@@ -77,6 +77,7 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             $scope.sortAsc = angular.isDefined(attrs.asc) ? $scope.asc : true;
             $scope.sortedBy = $scope.sortBy;
             $scope.showLoader = ImportContextService.getShowLoader();
+            $scope.hasSelection = false;
 
             // =========================
             // Public functions
@@ -88,9 +89,9 @@ function importResourceTreeDirective($timeout, ImportContextService) {
              */
             $scope.selectionChanged = ((resource) => {
                 resource.setSelection(resource.selected);
-                $scope.selectedResources = $scope.resources.getAllSelected();
                 updateSelectByStateDropdownModel();
                 setCanResetResourcesFlag();
+                updateHasSelection();
             });
 
             $scope.selectResourceWithStatus = (resourceStatus) => {
@@ -105,7 +106,6 @@ function importResourceTreeDirective($timeout, ImportContextService) {
                     $scope.resources.selectAllWithStatus([ImportResourceStatus.IMPORTING, ImportResourceStatus.NONE, ImportResourceStatus.ERROR, ImportResourceStatus.PENDING, ImportResourceStatus.INTERRUPTING]);
                 }
 
-                $scope.selectedResources = $scope.resources.getAllSelected();
                 updateListedImportResources();
                 setCanResetResourcesFlag();
             };
@@ -124,10 +124,7 @@ function importResourceTreeDirective($timeout, ImportContextService) {
              * Resets the status of the selected resources.
              */
             $scope.onResetStatus = () => {
-                if (!$scope.selectedResources) {
-                    return;
-                }
-                const resourcesNames = $scope.selectedResources
+                const resourcesNames = $scope.resources.getAllSelected()
                     .filter((resource) => !resource.isDirectory())
                     .map((resource) => resource.path);
                 if (resourcesNames.length > 0) {
@@ -144,8 +141,9 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             };
 
             $scope.onRemoveResources = () => {
-                if ($scope.selectedResources && $scope.selectedResources.length > 0) {
-                    $scope.onRemove({resources: $scope.selectedResources});
+                const selectedResources = $scope.resources.getAllSelected();
+                if (selectedResources && selectedResources.length > 0) {
+                    $scope.onRemove({resources: selectedResources});
                 }
             };
 
@@ -154,8 +152,9 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             };
 
             $scope.importAll = (withoutChangingSettings) => {
-                if ($scope.selectedResources && $scope.selectedResources.length > 0) {
-                    $scope.onImportAll({selectedResources: $scope.selectedResources, withoutChangingSettings});
+                const selectedResources = $scope.resources.getAllSelected();
+                if (selectedResources && selectedResources.length > 0) {
+                    $scope.onImportAll({selectedResources: selectedResources, withoutChangingSettings});
                 }
             };
 
@@ -190,27 +189,25 @@ function importResourceTreeDirective($timeout, ImportContextService) {
              * and can have their states reset.
              */
             const setCanResetResourcesFlag = () => {
-                $scope.canResetSelectedResources = $scope.selectedResources
-                    .some((treeResource) => treeResource.importResource.status === ImportResourceStatus.DONE);
+                $scope.canResetSelectedResources = $scope.resources.getSelectedImportedResources();
             };
 
             const updateListedImportResources = () => {
-                $scope.selectedResources.forEach((resource) => {
-                    const resourceByFullPath = $scope.resources.getResourceByName(resource.importResource.name);
-                    if (resourceByFullPath) {
-                        resourceByFullPath.selected = true;
-                    }
-                });
                 $scope.resources.getRoot().updateSelectionState();
-                // update selected resources because we keep cloned resources and not live references
-                $scope.selectedResources = $scope.resources.getAllSelected();
                 sortResources();
                 $scope.displayResources = $scope.resources.toList()
                     .filter(filterByType)
                     .filter(filterByName);
 
+                updateHasSelection();
                 updateSelectByStateDropdownModel();
             };
+
+            const updateHasSelection = () => {
+                let allSelectedFilesNames = $scope.resources.getAllSelectedFilesNames();
+                $scope.hasSelection = allSelectedFilesNames.length > 0;
+                ImportContextService.updateSelectedFilesNames(allSelectedFilesNames);
+            }
 
             const updateSelectByStateDropdownModel = () => {
                 const hasUnselectedDisplayedImportResource = $scope.displayResources.some((resource) => !resource.selected);
@@ -305,8 +302,18 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             // Subscription handlers
             // =========================
 
-            const onResourcesUpdatedHandler = (resources) => {
-                $scope.resources = resources;
+            const onResourcesUpdatedHandler = (newResources = []) => {
+                const isUserImport = TABS.USER === ImportContextService.getActiveTabId();
+                if ($scope.resources.isEmpty()) {
+                    $scope.resources = ImportResourceTreeService.toImportResourceTree(newResources, isUserImport);
+                    if (isUserImport) {
+                        $scope.sortedBy = SortingType.MODIFIED;
+                    }
+                } else {
+                    ImportResourceTreeService.mergeResourceTree($scope.resources, newResources, isUserImport);
+                }
+                ImportResourceTreeService.calculateElementIndent($scope.resources);
+                ImportResourceTreeService.setupAfterTreeInitProperties($scope.resources);
                 updateListedImportResources();
                 setCanResetResourcesFlag();
             };
@@ -318,6 +325,7 @@ function importResourceTreeDirective($timeout, ImportContextService) {
 
             subscriptions.push(ImportContextService.onResourcesUpdated(onResourcesUpdatedHandler));
             subscriptions.push(ImportContextService.onShowLoaderUpdated((showLoader) => $scope.showLoader = showLoader));
+            subscriptions.push(ImportContextService.onActiveTabIdUpdated(() => $scope.resources = new ImportResourceTreeElement()));
 
             const removeAllSubscribers = () => {
                 subscriptions.forEach((subscription) => subscription());
