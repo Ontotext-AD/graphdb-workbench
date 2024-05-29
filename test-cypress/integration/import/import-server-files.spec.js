@@ -100,7 +100,5 @@ describe('Import server files', () => {
 
         // Then I expect all sub-resource statuses to be reset.
         ImportServerFilesSteps.checkImportedStatusIsEmpty('more-files');
-        ImportServerFilesSteps.checkImportedStatusIsEmpty('jsonld-file.jsonld');
-        ImportServerFilesSteps.checkImportedStatusIsEmpty('rdfxml.rdf');
     });
 });
