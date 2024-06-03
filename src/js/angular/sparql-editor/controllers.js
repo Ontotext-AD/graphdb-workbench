@@ -15,6 +15,7 @@ import {VIEW_SPARQL_EDITOR} from "../models/sparql/constants";
 import {CancelAbortingQuery} from "../models/sparql/cancel-aborting-query";
 import {QueryMode} from "../models/ontotext-yasgui/query-mode";
 import 'angular/core/services/event-emitter-service';
+import {YasguiResetFlags} from "../models/ontotext-yasgui/yasgui-reset-flags";
 
 const modules = [
     'ui.bootstrap',
@@ -445,10 +446,10 @@ function SparqlEditorCtrl($rootScope,
     // =========================
     const subscriptions = [];
 
-    const resetYasrResults = () => {
+    const reInitYasgui = (flags) => {
         YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(QUERY_EDITOR_ID)
             .then((yasguiComponent) => {
-                return yasguiComponent.resetYasrResults();
+                return yasguiComponent.reInitYasgui(flags);
             })
             .catch(() => {
                 console.error('Failed to reset yasr results');
@@ -458,7 +459,8 @@ function SparqlEditorCtrl($rootScope,
     const repositoryChangedHandler = (activeRepo) => {
         if (activeRepo) {
             if (!initialRepoInitialization) {
-                resetYasrResults();
+                const flags = new YasguiResetFlags(true, true, true, true);
+                reInitYasgui(flags);
             }
             init();
             initialRepoInitialization = false;

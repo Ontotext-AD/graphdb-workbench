@@ -165,11 +165,11 @@ export class YasguiComponent {
     }
 
     /**
-     * Resets the YASR results.
-     *
+     * Reinitializes the YASGUI component.
+     * @param {YasguiResetFlags} flags the flags specifying what to reset to default config values
      * @return {Promise<void>}
      */
-    resetYasrResults() {
-        return this.yasguiComponent.resetResults();
+    reInitYasgui(flags) {
+        return this.yasguiComponent.reInitYasgui(flags);
     }
 }
