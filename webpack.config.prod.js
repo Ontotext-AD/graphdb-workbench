@@ -4,7 +4,8 @@ const merge = require('webpack-merge');
 const commonConfig = require('./webpack.config.common');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+// const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = merge(commonConfig, {
@@ -33,6 +34,11 @@ module.exports = merge(commonConfig, {
             }
         ]
     },
+    optimization: {
+        minimizer: [
+            new CssMinimizerPlugin()
+        ]
+    },
     plugins: [
         new HtmlWebpackPlugin({
             template: './src/template.html',
@@ -48,7 +54,8 @@ module.exports = merge(commonConfig, {
             // }
         }),
         new MiniCssExtractPlugin({filename: "[name].[contentHash].css"}),
-        new OptimizeCssAssetsPlugin(),
+        // new OptimizeCssAssetsPlugin(),
+        new CssMinimizerPlugin(),
         new CleanWebpackPlugin()
     ]
 });
