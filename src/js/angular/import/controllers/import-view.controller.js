@@ -83,15 +83,6 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
 
         $scope.toTitleCase = (str) => stringUtils.toTitleCase(str);
 
-        $scope.pollList = () => {
-            listPollingHandler = $interval(() => {
-                // Skip iteration if we are updating something
-                if (!$scope.updating) {
-                    $scope.updateList(false);
-                }
-            }, LIST_POLLING_INTERVAL);
-        };
-
         /**
          * Sets the settings for the given file and triggers import process.
          * TODO: this function should be refactored because it does too much.
@@ -302,6 +293,15 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         // Private functions
         // =========================
 
+        const pollList = () => {
+            listPollingHandler = $interval(() => {
+                // Skip iteration if we are updating something
+                if (!$scope.updating) {
+                    $scope.updateList(false);
+                }
+            }, LIST_POLLING_INTERVAL);
+        };
+
         const getSettings = () => {
             if (!$scope.canWriteActiveRepo()) {
                 return;
@@ -425,28 +425,29 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             subscriptions.forEach((subscription) => subscription());
         };
 
+        const onActiveTabChanged = (activeTabId) => {
+            $scope.activeTabId = activeTabId;
+            ImportContextService.updateResources([]);
+            ImportContextService.updateShowLoader(true);
+            $scope.updateListHttp(true).finally(() => ImportContextService.updateShowLoader(false));
+        }
+
         const initSubscriptions = () => {
             subscriptions.push($scope.$on('repositoryIsSet', $scope.onRepositoryChange));
             subscriptions.push($scope.$on('$destroy', () => $interval.cancel(listPollingHandler)));
-            subscriptions.push(ImportContextService.onActiveTabIdUpdated((newActiveTabId) => {
-                $scope.activeTabId = newActiveTabId;
-                ImportContextService.updateResources([]);
-                ImportContextService.updateShowLoader(true);
-                $scope.updateListHttp(true).finally(() => ImportContextService.updateShowLoader(false));
-            }));
+            subscriptions.push(ImportContextService.onActiveTabIdUpdated((newActiveTabId) => onActiveTabChanged(newActiveTabId)));
             $scope.$on('$destroy', removeAllListeners);
         };
 
         // =========================
         // Initialization
         // =========================
-
-        // TODO: Beware that this init is called tree times due to the child controllers which extends this one. We should refactor this.
-        const init = () => {
+        $scope.importViewControllerInit = () => {
+            pollList();
             initSubscriptions();
             getAppData();
+            onActiveTabChanged(ImportContextService.getActiveTabId());
         };
-        init();
     }]);
 
 importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$translate', '$repositories', 'ImportRestService', 'ImportContextService', function ($scope, toastr, $controller, $translate, $repositories, ImportRestService, ImportContextService) {
@@ -511,11 +512,9 @@ importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$
     // Initialization
     // =========================
 
-    const init = function () {
-        $scope.pollList();
-        $scope.onRepositoryChange();
-    };
-    init();
+    if (TABS.SERVER === ImportContextService.getActiveTabId()) {
+        $scope.importViewControllerInit();
+    }
 }]);
 
 importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$uibModal', '$translate', '$repositories', 'ImportRestService', 'UploadRestService', 'ModalService', 'ImportContextService', 'EventEmitterService', function ($scope, toastr, $controller, $uibModal, $translate, $repositories, ImportRestService, UploadRestService, ModalService, ImportContextService, EventEmitterService) {
@@ -860,11 +859,12 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     // =========================
 
     const init = function () {
-        $scope.pollList();
-        $scope.onRepositoryChange();
         subscriptions.push(ImportContextService.onFilesUpdated((files) => {
             filesPrefixRegistry.buildPrefixesRegistry(files);
         }));
     };
-    init();
+    if (TABS.USER === ImportContextService.getActiveTabId()) {
+        $scope.importViewControllerInit();
+        init();
+    }
 }]);
