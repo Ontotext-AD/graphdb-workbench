@@ -1,15 +1,16 @@
+import 'angular/import/controllers/import-resource-message-dialog.controller';
 import {ImportResourceStatus} from "../../models/import/import-resource-status";
 import * as stringUtils from "../../utils/string-utils";
 
-const modules = [];
+const modules = ['graphdb.framework.impex.import.controllers.import-resource-message-dialog'];
 
 angular
     .module('graphdb.framework.import.directives.import-resource-message', modules)
     .directive('importResourceMessage', importResourceMessageDirective);
 
-importResourceMessageDirective.$inject = [];
+importResourceMessageDirective.$inject = ['$uibModal'];
 
-function importResourceMessageDirective() {
+function importResourceMessageDirective($uibModal) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/import/templates/import-resource-message.html',
@@ -22,6 +23,25 @@ function importResourceMessageDirective() {
             $scope.hasReplacedGraphs = $scope.resource.importResource.numReplacedGraphs > 0;
             $scope.hasAddedStatements = $scope.resource.importResource.addedStatements > 0;
             $scope.hasRemovedStatements = $scope.resource.importResource.removedStatements > 0;
+
+            /**
+             *
+             * @param {ImportResourceTreeElement} resourceTreeElement
+             */
+            $scope.showMessage = (resourceTreeElement) => {
+                $uibModal.open({
+                    templateUrl: 'js/angular/import/templates/import-resource-message-dialog.html',
+                    controller: 'ImportResourceMessageDialogController',
+                    size: 'lg',
+                    windowClass: 'import-resource-message-dialog',
+                    backdrop: 'static',
+                    resolve: {
+                        message: function () {
+                            return resourceTreeElement ? resourceTreeElement.importResource.message : '';
+                        }
+                    }
+                });
+            }
         }
     };
 }

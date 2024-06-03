@@ -42,6 +42,17 @@
     padding-top: 8px;
 }
 
+.import-resource-table .even-row-start .cell,
+.import-resource-table .odd-row-start .cell {
+    padding-top: 12px;
+}
+
+.import-resource-table .even-row-end .cell,
+.import-resource-table .odd-row-end .cell {
+    padding-top: 4px;
+    padding-bottom: 12px;
+}
+
 .import-resource-tree .import-resource-table .header-cell {
     font-weight: 700;
     font-size: 14px;
@@ -55,7 +66,6 @@
 
 .import-resource-tree .import-resource-table .cell {
     line-height: 18px;
-    vertical-align: top;
 }
 
 .import-resource-tree .import-resource-table .cell-title {
@@ -132,6 +142,11 @@
 .import-resource-tree .import-resource-table .cell .import-resource-message .success-messages .success-message .import-counters .import-counter,
 .import-resource-tree .import-resource-table .cell .import-resource-message .success-messages .success-message .text-success {
     padding-left: 10px;
+}
+
+.import-resource-tree .import-resource-table .cell .import-resource-message .error-message {
+    display: flex;
+    align-items: center;
 }
 
 .import-resource-tree .import-resource-tree-header {

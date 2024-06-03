@@ -84,6 +84,8 @@ export class ImportResourceTreeElement {
          * @type {string}
          */
         this.iconClass = '';
+
+        this.shortenedMessage = '';
     }
 
     /**
