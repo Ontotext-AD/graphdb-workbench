@@ -54,6 +54,9 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         const subscriptions = [];
         let listPollingHandler = null;
         const LIST_POLLING_INTERVAL = 4000;
+        // Holds the default settings of the chosen repository. Must not be used directly.
+        // The "getDefaultSettings" function must be used, as it guarantees that the default settings are loaded correctly.
+        let defaultSettings = undefined;
 
         // =========================
         // Public variables
@@ -83,15 +86,6 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
 
         $scope.toTitleCase = (str) => stringUtils.toTitleCase(str);
 
-        $scope.pollList = () => {
-            listPollingHandler = $interval(() => {
-                // Skip iteration if we are updating something
-                if (!$scope.updating) {
-                    $scope.updateList(false);
-                }
-            }, LIST_POLLING_INTERVAL);
-        };
-
         /**
          * Sets the settings for the given file and triggers import process.
          * TODO: this function should be refactored because it does too much.
@@ -101,61 +95,66 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
          * @param {string|undefined} format - Format of the file. This is applicable for single files only.
          * @param {Function|undefined} onImportRejectHandler - Function to call when import is rejected.
          */
-        $scope.setSettingsFor = (fileName, withDefaultSettings, format, onImportRejectHandler = () => {}) => {
-            $scope.settingsFor = fileName;
-            $scope.settings = getSettingsFor(fileName, withDefaultSettings);
-            if (fileName === "" ||
-                format === "application/ld+json" ||
-                format === "application/x-ld+ndjson" ||
-                fileName.endsWith("jsonld") ||
-                fileName.endsWith("zip") ||
-                fileName.endsWith("gz") ||
-                $scope.settings.type === "directory") {
-                $scope.settings.hasContextLink = true;
-                $scope.defaultSettings.hasContextLink = true;
-            } else {
-                $scope.settings.hasContextLink = false;
-                $scope.defaultSettings.hasContextLink = false;
-            }
-
-            const options = {
-                templateUrl: 'js/angular/import/templates/settingsModal.html',
-                controller: 'SettingsModalController',
-                resolve: {
-                    settings: function () {
-                        return _.cloneDeep($scope.settings);
-                    },
-                    hasParserSettings: $scope.isLocalLocation,
-                    defaultSettings: function () {
-                        return $scope.defaultSettings;
-                    },
-                    isMultiple: function () {
-                        return !fileName;
-                    }
-                },
-                size: 'lg'
-            };
-
-            if (GuidesService.isActive()) {
-                // Prevents closing dialog when user click outside the dialog.
-                options.backdrop = 'static';
-                options.keyboard = false;
-            }
-
-            $uibModal.open(options).result.then(
-                (settings) => {
+        $scope.setSettingsFor = (fileName, withDefaultSettings, format, onImportRejectHandler = () => {
+        }) => {
+            getSettingsFor(fileName, withDefaultSettings)
+                .then((settings) => {
+                    $scope.settingsFor = fileName;
                     $scope.settings = settings;
-                    if ($scope.settingsFor === '') {
-                        $scope.importSelected();
+
+                    if (fileName === "" ||
+                        format === "application/ld+json" ||
+                        format === "application/x-ld+ndjson" ||
+                        fileName.endsWith("jsonld") ||
+                        fileName.endsWith("zip") ||
+                        fileName.endsWith("gz") ||
+                        $scope.settings.type === "directory") {
+                        $scope.settings.hasContextLink = true;
                     } else {
-                        $scope.importFile($scope.settingsFor, true);
+                        $scope.settings.hasContextLink = false;
                     }
-                },
-                (settings) => {
-                    $scope.settings = settings;
-                    if (onImportRejectHandler) {
-                        onImportRejectHandler();
+
+                    const initialSettings = _.cloneDeep($scope.settings);
+
+                    const options = {
+                        templateUrl: 'js/angular/import/templates/settingsModal.html',
+                        controller: 'SettingsModalController',
+                        resolve: {
+                            settings: function () {
+                                return _.cloneDeep($scope.settings);
+                            },
+                            hasParserSettings: $scope.isLocalLocation,
+                            defaultSettings: function () {
+                                return initialSettings;
+                            },
+                            isMultiple: function () {
+                                return !fileName;
+                            }
+                        },
+                        size: 'lg'
+                    };
+
+                    if (GuidesService.isActive()) {
+                        // Prevents closing dialog when user click outside the dialog.
+                        options.backdrop = 'static';
+                        options.keyboard = false;
                     }
+
+                    $uibModal.open(options).result.then(
+                        (settings) => {
+                            $scope.settings = settings;
+                            if ($scope.settingsFor === '') {
+                                $scope.importSelected();
+                            } else {
+                                $scope.importFile($scope.settingsFor, true);
+                            }
+                        },
+                        (settings) => {
+                            $scope.settings = settings;
+                            if (onImportRejectHandler) {
+                                onImportRejectHandler();
+                            }
+                        });
                 });
         };
 
@@ -166,10 +165,12 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
          * @param {boolean} startImport - Whether to start the import process or not.
          */
         $scope.updateImport = (fileName, withDefaultSettings, startImport) => {
-            $scope.settingsFor = fileName;
-            $scope.settings = getSettingsFor(fileName, withDefaultSettings);
-
-            $scope.importFile(fileName, startImport);
+            getSettingsFor(fileName, withDefaultSettings)
+                .then((settings) => {
+                    $scope.settingsFor = fileName;
+                    $scope.settings = settings;
+                    $scope.importFile(fileName, startImport);
+                });
         };
 
         /**
@@ -188,10 +189,13 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             const importNext = () => {
                 const fileName = selectedFileNames.shift();
                 if (fileName) {
-                    if (overrideSettings) {
-                        $scope.settings = getSettingsFor(fileName);
-                    }
-                    $scope.importFile(fileName, true, importNext);
+                    getSettingsFor(fileName)
+                        .then((settings) => {
+                            if (overrideSettings) {
+                                $scope.settings = settings;
+                            }
+                            $scope.importFile(fileName, true, importNext);
+                        });
                 }
             };
 
@@ -222,7 +226,17 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                 return;
             }
             $scope.updateList(true);
-            getSettings();
+            loadDefaultSettings();
+        };
+
+        const getDefaultSettings = () => {
+            if (defaultSettings) {
+                return Promise.resolve(angular.copy(defaultSettings));
+            }
+            return loadDefaultSettings()
+                .then(() => {
+                    return angular.copy(defaultSettings);
+                });
         };
 
         /**
@@ -302,17 +316,28 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         // Private functions
         // =========================
 
-        const getSettings = () => {
+        const pollList = () => {
+            listPollingHandler = $interval(() => {
+                // Skip iteration if we are updating something
+                if (!$scope.updating) {
+                    $scope.updateList(false);
+                }
+            }, LIST_POLLING_INTERVAL);
+        };
+
+        const loadDefaultSettings = () => {
+            defaultSettings = undefined;
             if (!$scope.canWriteActiveRepo()) {
-                return;
+                return Promise.resolve(defaultSettings);
             }
 
-            ImportRestService.getDefaultSettings($repositories.getActiveRepository())
+            return ImportRestService.getDefaultSettings($repositories.getActiveRepository())
                 .success(function (data) {
-                    $scope.defaultSettings = data;
+                    defaultSettings = data;
+                    return defaultSettings;
                 }).error(function (data) {
-                toastr.warning($translate.instant('import.error.default.settings', {data: getError(data)}));
-            });
+                    toastr.warning($translate.instant('import.error.default.settings', {data: getError(data)}));
+                });
         };
 
         /**
@@ -333,9 +358,12 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
 
         const getSettingsFor = (fileName, withDefaultSettings) => {
             if (!withDefaultSettings && !_.isEmpty(fileName) && !_.isEmpty($scope.savedSettings[fileName])) {
-                return $scope.savedSettings[fileName];
+                return Promise.resolve($scope.savedSettings[fileName]);
             } else {
-                return _.cloneDeep($scope.defaultSettings);
+                return getDefaultSettings()
+                    .then((defaultSettings) => {
+                        return defaultSettings
+                    });
             }
         };
 
@@ -425,28 +453,30 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             subscriptions.forEach((subscription) => subscription());
         };
 
+        const onActiveTabChanged = (activeTabId) => {
+            $scope.activeTabId = activeTabId;
+            ImportContextService.updateResources([]);
+            ImportContextService.updateShowLoader(true);
+            $scope.updateListHttp(true).finally(() => ImportContextService.updateShowLoader(false));
+        }
+
         const initSubscriptions = () => {
             subscriptions.push($scope.$on('repositoryIsSet', $scope.onRepositoryChange));
             subscriptions.push($scope.$on('$destroy', () => $interval.cancel(listPollingHandler)));
-            subscriptions.push(ImportContextService.onActiveTabIdUpdated((newActiveTabId) => {
-                $scope.activeTabId = newActiveTabId;
-                ImportContextService.updateResources([]);
-                ImportContextService.updateShowLoader(true);
-                $scope.updateListHttp(true).finally(() => ImportContextService.updateShowLoader(false));
-            }));
+            subscriptions.push(ImportContextService.onActiveTabIdUpdated((newActiveTabId) => onActiveTabChanged(newActiveTabId)));
             $scope.$on('$destroy', removeAllListeners);
         };
 
         // =========================
         // Initialization
         // =========================
-
-        // TODO: Beware that this init is called tree times due to the child controllers which extends this one. We should refactor this.
-        const init = () => {
+        $scope.importViewControllerInit = () => {
             initSubscriptions();
             getAppData();
+            loadDefaultSettings();
+            pollList();
+            onActiveTabChanged(ImportContextService.getActiveTabId());
         };
-        init();
     }]);
 
 importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$translate', '$repositories', 'ImportRestService', 'ImportContextService', function ($scope, toastr, $controller, $translate, $repositories, ImportRestService, ImportContextService) {
@@ -511,11 +541,9 @@ importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$
     // Initialization
     // =========================
 
-    const init = function () {
-        $scope.pollList();
-        $scope.onRepositoryChange();
-    };
-    init();
+    if (TABS.SERVER === ImportContextService.getActiveTabId()) {
+        $scope.importViewControllerInit();
+    }
 }]);
 
 importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$uibModal', '$translate', '$repositories', 'ImportRestService', 'UploadRestService', 'ModalService', 'ImportContextService', 'EventEmitterService', function ($scope, toastr, $controller, $uibModal, $translate, $repositories, ImportRestService, UploadRestService, ModalService, ImportContextService, EventEmitterService) {
@@ -860,11 +888,12 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     // =========================
 
     const init = function () {
-        $scope.pollList();
-        $scope.onRepositoryChange();
         subscriptions.push(ImportContextService.onFilesUpdated((files) => {
             filesPrefixRegistry.buildPrefixesRegistry(files);
         }));
     };
-    init();
+    if (TABS.USER === ImportContextService.getActiveTabId()) {
+        $scope.importViewControllerInit();
+        init();
+    }
 }]);
