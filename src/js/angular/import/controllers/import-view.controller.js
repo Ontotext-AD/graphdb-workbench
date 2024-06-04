@@ -471,10 +471,10 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         // Initialization
         // =========================
         $scope.importViewControllerInit = () => {
-            loadDefaultSettings();
-            pollList();
             initSubscriptions();
             getAppData();
+            loadDefaultSettings();
+            pollList();
             onActiveTabChanged(ImportContextService.getActiveTabId());
         };
     }]);
