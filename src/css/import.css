@@ -72,3 +72,9 @@
 .copy-btn:focus {
     outline: none;
 }
+
+.import-resource-message-dialog .message{
+    color: #000000;
+    font-size: 15px;
+    resize: none;
+}

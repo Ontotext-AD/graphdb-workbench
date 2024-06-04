@@ -1,0 +1,29 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="close()"></button>
+</div>
+
+<div class="modal-body">
+    <form>
+        <div class="form-group">
+            <textarea class="form-control message" rows="30" ng-model="message" readonly
+                      ng-maxlength="sizeLimit-1"></textarea>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <div>
+        <button
+            type="button"
+            class="btn btn-secondary close-btn"
+            ng-click="close()">
+            {{'common.close' | translate}}
+        </button>
+        <button
+            type="button"
+            class="btn btn-primary copy-to-clipboard-btn"
+            ng-click="copyToClipboard()">
+            {{'copy.to.clipboard.modal.ok.btn' | translate}}
+        </button>
+    </div>
+</div>

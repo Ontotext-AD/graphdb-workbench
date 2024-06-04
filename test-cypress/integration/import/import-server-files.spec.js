@@ -1,6 +1,8 @@
 import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
 import {ImportServerFilesSteps} from "../../steps/import/import-server-files-steps";
 import {ImportSettingsDialogSteps} from "../../steps/import/import-settings-dialog-steps";
+import {ImportResourceMessageDialog} from "../../steps/import/import-resource-message-dialog";
+import {ApplicationSteps} from "../../steps/application-steps";
 
 describe('Import server files', () => {
 
@@ -12,7 +14,7 @@ describe('Import server files', () => {
         repositoryId = 'server-import-' + Date.now();
         cy.createRepository({id: repositoryId});
         ImportServerFilesSteps.visitServerImport(repositoryId);
-        ImportServerFilesSteps.getResources().should('have.length', 17);
+        ImportServerFilesSteps.getResources().should('have.length', 18);
     });
 
     afterEach(() => {
@@ -64,7 +66,7 @@ describe('Import server files', () => {
         // When the server files tab is loaded
         // Then I should see all the files and folders by default
         ImportServerFilesSteps.getShowAllResourceTypesButton().should('have.class', 'active');
-        ImportServerFilesSteps.getResources().should('have.length', 17);
+        ImportServerFilesSteps.getResources().should('have.length', 18);
         // When I select the folders only filter
         ImportServerFilesSteps.selectFoldersOnlyFilter();
         // Then I should see only the folders
@@ -73,7 +75,7 @@ describe('Import server files', () => {
         // When I select the files only filter
         ImportServerFilesSteps.selectFilesOnlyFilter();
         // Then I should see only the files
-        ImportServerFilesSteps.getResources().should('have.length', 15);
+        ImportServerFilesSteps.getResources().should('have.length', 16);
     });
 
     it('should be able to import the whole directory', () => {
@@ -105,5 +107,39 @@ describe('Import server files', () => {
         // only for the folder. The next two lines are correct but are commented out to be tried again later.
         // ImportServerFilesSteps.checkImportedStatusIsEmpty('jsonld-file.jsonld');
         // ImportServerFilesSteps.checkImportedStatusIsEmpty('rdfxml.rdf');
+    });
+
+    it('should open error dialog', () => {
+        const importResourceName = 'import-resource-with-long-error.rdf';
+        // When I visited the server import tab,
+        // and try to import a file with wrong data that causes server to generate long error message.
+        ImportServerFilesSteps.importResourceByName(importResourceName);
+        ImportSettingsDialogSteps.import();
+
+        // I expect only part of the error be displayed,
+        ImportServerFilesSteps.checkImportedResource(0, importResourceName, 'RDF Parse Error: The element type ');
+        // and when click on that error
+        ImportServerFilesSteps.openErrorDialog(importResourceName);
+
+        // Then I expect to see dialog,
+        ImportSettingsDialogSteps.getDialog().should('be.visible');
+
+        // with full error message
+        ImportResourceMessageDialog.getMessage().should('have.value', 'RDF Parse Error: The element type "ex:looooooooooooooooooooooooooooooooongTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaame" must be terminated by the matching end-tag "</ex:looooooooooooooooooooooooooooooooongTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaame>". [line 9, column 6]');
+
+        // When I click on corner close button.
+        ImportResourceMessageDialog.clickOnCornerCloseButton();
+
+        // // Then I expect the dialog closed
+        ImportResourceMessageDialog.getDialog().should('not.exist');
+
+        // When error dialog is opened,
+        ImportServerFilesSteps.openErrorDialog(importResourceName);
+        ImportResourceMessageDialog.getDialog().should('be.visible');
+        // and I click one close button
+        ImportResourceMessageDialog.clickOnCloseButton();
+
+        // Then I expect the dialog closed
+        ImportResourceMessageDialog.getDialog().should('not.exist');
     });
 });

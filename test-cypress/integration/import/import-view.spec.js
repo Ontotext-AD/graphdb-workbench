@@ -37,7 +37,7 @@ describe('Import view', () => {
         // When I switch to the server files tab
         ImportUserDataSteps.openServerFilesTab();
         // Then I should see the server files only
-        ImportServerFilesSteps.getResources().should('have.length', 17);
+        ImportServerFilesSteps.getResources().should('have.length', 18);
         // When I switch back to the user data tab
         ImportServerFilesSteps.openUserDataTab();
         // Then I should see the uploaded file
@@ -91,7 +91,7 @@ describe('Import view', () => {
         ImportUserDataSteps.getHelpMessage().should('exist');
 
         // When I go to server tab
-        ImportSteps.openServerFilesTab()
+        ImportSteps.openServerFilesTab();
 
         // Then help message mustn't be displayed because the resources are not empty.
         ImportServerFilesSteps.getHelpMessage().should('not.exist');

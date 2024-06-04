@@ -6,6 +6,7 @@ export const INDENT = 30;
 const PREFIX_AND_SUFFIX_LENGTH = 30;
 const MAX_CONTEXT_LENGTH = PREFIX_AND_SUFFIX_LENGTH * 2 + 3;
 const MAX_NAME_LENGTH = PREFIX_AND_SUFFIX_LENGTH * 4 + 3;
+const MAX_MESSAGE_LENGTH = 150;
 
 
 export const serverImportResourceTypeToIconMapping = new Map();
@@ -155,12 +156,24 @@ export class ImportResourceTreeService {
             importResourceElement.canResetStatus = ImportResourceTreeService.canResetStatus(importResourceElement.importResource);
             importResourceElement.hasStatusInfo = importResourceElement.importResource.status === 'DONE' || importResourceElement.importResource.status === 'ERROR';
             importResourceElement.isEditable = importResourceElement.importResource.isText();
+            ImportResourceTreeService.setupShortenedMessage(importResourceElement);
             ImportResourceTreeService.setupShortenedContext(importResourceElement);
             ImportResourceTreeService.setupShortenedName(importResourceElement);
             ImportResourceTreeService.setupImportedAndModifiedComparableProperties(importResourceElement);
         }
         importResourceElement.directories.forEach((directory) => ImportResourceTreeService.setupAfterTreeInitProperties(directory));
         importResourceElement.files.forEach((file) => ImportResourceTreeService.setupAfterTreeInitProperties(file));
+    }
+
+    /**
+     * Setts shortedMessage property if message is too long.
+     * @param {ImportResourceTreeElement} importResourceElement
+     */
+    static setupShortenedMessage(importResourceElement) {
+        const message = importResourceElement.importResource ? importResourceElement.importResource.message : '' || '';
+        if (message.length > MAX_MESSAGE_LENGTH) {
+            importResourceElement.shortenedMessage = message.substring(0, MAX_MESSAGE_LENGTH) + '...';
+        }
     }
 
     /**

@@ -189,6 +189,10 @@ class ImportSteps {
         return this.getResourceByName(name).next().find('import-resource-message');
     }
 
+    static openErrorDialog(name) {
+        this.getResourceStatus(name).find('.error-message .btn').click();
+    }
+
     static getImportedResourcesStates() {
         return this.getResources().find('.import-resource-message');
     }
