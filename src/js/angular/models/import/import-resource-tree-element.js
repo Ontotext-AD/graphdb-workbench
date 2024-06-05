@@ -285,6 +285,7 @@ export class ImportResourceTreeElement {
         }
 
         this.files.forEach((file) => allSelected.push(...file.getAllSelectedFiles()));
+        this.directories.forEach((directory) => allSelected.push(...directory.getAllSelectedFiles()));
 
         return allSelected;
     }

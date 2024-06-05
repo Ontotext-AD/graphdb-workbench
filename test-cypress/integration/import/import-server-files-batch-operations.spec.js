@@ -11,18 +11,44 @@ describe('Import server files - Batch operations', () => {
         repositoryId = 'server-import-' + Date.now();
         cy.createRepository({id: repositoryId});
         ImportServerFilesSteps.visitServerImport(repositoryId);
-        ImportServerFilesSteps.getResources().should('have.length', 17);
+        ImportServerFilesSteps.getResources().should('have.length', 18);
     });
 
     afterEach(() => {
         cy.deleteRepository(repositoryId);
     });
 
+    it('should batch operation buttons be visible when files/directories are selected', () => {
+        // When I select a directory.
+        ImportServerFilesSteps.selectFileByName('more-files');
+
+        // Then I expect the import button be visible
+        ImportServerFilesSteps.getBatchImportButton().should('exist');
+
+        // When I deselect all files and directories
+        ImportServerFilesSteps.selectFileByName('more-files');
+
+        // Then I expect batch import button to not be visible.
+        ImportServerFilesSteps.getBatchImportButton().should('not.exist');
+
+        // When I select a file of some folder
+        ImportServerFilesSteps.selectFileByName('rdfxml.rdf');
+
+        // Then I expect batch import button to not be visible.
+        ImportServerFilesSteps.getBatchImportButton().should('exist');
+
+        // When I deselect a file of some folder
+        ImportServerFilesSteps.selectFileByName('rdfxml.rdf');
+
+        // Then I expect batch import button to not be visible.
+        ImportServerFilesSteps.getBatchImportButton().should('not.exist');
+    });
+
     it('Should be able to filter server files by status', () => {
         // When I select All files from the menu
         ImportServerFilesSteps.selectAllResources();
         // Then I should see all files selected
-        ImportServerFilesSteps.getSelectedResources().should('have.length', 17);
+        ImportServerFilesSteps.getSelectedResources().should('have.length', 18);
         // When I select None from the menu
         ImportServerFilesSteps.deselectAllResources();
         // Then I should see no files selected
@@ -39,7 +65,7 @@ describe('Import server files - Batch operations', () => {
         // When I select Not Imported from the menu
         ImportServerFilesSteps.selectNotImportedResources();
         // Then I should see only not imported files selected
-        ImportServerFilesSteps.getSelectedResources().should('have.length', 13);
+        ImportServerFilesSteps.getSelectedResources().should('have.length', 17);
         // Deselect all for the next step
         ImportServerFilesSteps.deselectAllResources();
         ImportServerFilesSteps.getSelectedResources().should('have.length', 0);
