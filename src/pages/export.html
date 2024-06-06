@@ -64,10 +64,10 @@
                             <li ng-repeat="format in exportFormats">
                                 <a href="javascript:" ng-click="openJSONLDExportSettings(format, false)"
                                    ng-if="format.name === 'JSON-LD' || format.name === 'NDJSON-LD'"
-                                   class="dropdown-item export-repo-format-{{format.name}}">{{format.name}}</a>
+                                   class="dropdown-item export-repo-format-{{format.name}}">{{format.translateKey | translate}}</a>
                                 <a href="javascript:" ng-click="exportRepo(format, false)"
                                    ng-if="format.name !== 'JSON-LD' && format.name !== 'NDJSON-LD'"
-                                   class="dropdown-item export-repo-format-{{format.name}}">{{format.name}}</a>
+                                   class="dropdown-item export-repo-format-{{format.name}}">{{format.translateKey | translate}}</a>
                             </li>
                         </ul>
                     </div>
@@ -99,10 +99,10 @@
                                             <li ng-repeat="format in exportFormats">
                                                 <a href="javascript:" ng-click="openJSONLDExportSettingsForSelectedGraphs(format)"
                                                    ng-if="format.name === 'JSON-LD' || format.name === 'NDJSON-LD'"
-                                                   class="dropdown-item export-repo-format-{{format.name}}">{{format.name}}</a>
+                                                   class="dropdown-item export-repo-format-{{format.name}}">{{format.translateKey | translate}}</a>
                                                 <a href="javascript:" ng-click="exportSelectedGraphs(format)"
                                                    ng-if="format.name !== 'JSON-LD' && format.name !== 'NDJSON-LD'"
-                                                   class="dropdown-item export-repo-format-{{format.name}}">{{format.name}}</a>
+                                                   class="dropdown-item export-repo-format-{{format.name}}">{{format.translateKey | translate}}</a>
                                             </li>
 										</ul>
 									</div>
@@ -149,10 +149,10 @@
                                         <li ng-repeat="format in exportFormats">
                                             <a href="javascript:" ng-click="openJSONLDExportSettings(format, graph.contextID, false)"
                                                   ng-if="format.name === 'JSON-LD' || format.name === 'NDJSON-LD'"
-                                                  class="dropdown-item export-repo-format-{{format.name}}-row">{{format.name}}</a>
+                                                  class="dropdown-item export-repo-format-{{format.name}}-row">{{format.translateKey | translate}}</a>
                                             <a href="javascript:" ng-click="exportRepo(format, graph.contextID)"
                                                   ng-if="format.name !== 'JSON-LD' && format.name !== 'NDJSON-LD'"
-                                                  class="dropdown-item export-repo-format-{{format.name}}-row">{{format.name}}</a>
+                                                  class="dropdown-item export-repo-format-{{format.name}}-row">{{format.translateKey | translate}}</a>
                                         </li>
 									</ul>
 								</div>

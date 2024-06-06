@@ -103,10 +103,10 @@
                 <li ng-repeat="fileType in fileTypes">
                     <a href="javascript:" ng-click="openJSONLDExportSettings(fileType)"
                        ng-if="fileType.name === 'JSON-LD' || fileType.name === 'NDJSON-LD'"
-                       class="dropdown-item">{{fileType.name}}</a>
+                       class="dropdown-item">{{fileType.translateKey | translate}}</a>
                     <a href="javascript:" ng-click="downloadExport(fileType)"
                        ng-if="fileType.name !== 'JSON-LD' && fileType.name !== 'NDJSON-LD'"
-                       class="dropdown-item">{{fileType.name}}</a>
+                       class="dropdown-item">{{fileType.translateKey | translate}}</a>
                 </li>
             </ul>
         </div>
