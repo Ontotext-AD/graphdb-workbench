@@ -25,6 +25,14 @@ pipeline {
     }
   }
 
+  stage('Print Branch Name') {
+    steps {
+      script {
+        echo "Building branch: ${env.BRANCH_NAME}"
+      }
+    }
+  }
+
     stage('Install') {
       steps {
         sh "npm install"
@@ -48,13 +56,24 @@ pipeline {
     stage('Sonar') {
       steps {
         withSonarQubeEnv('SonarCloud') {
-          sh "node sonar-project.js --branch='${env.ghprbSourceBranch}' --target-branch='${env.ghprbTargetBranch}' --pull-request-id='${env.ghprbPullId}'"
+          script {
+            if (env.BRANCH_NAME == 'master') {
+              sh "node sonar-project.js --branch='${env.BRANCH_NAME}'"
+            } else {
+              sh "node sonar-project.js --branch='${env.ghprbSourceBranch}' --target-branch='${env.ghprbTargetBranch}' --pull-request-id='${env.ghprbPullId}'"
+            }
+          }
         }
       }
     }
 
 
     stage('Acceptance') {
+      when {
+        expression {
+          return env.BRANCH_NAME != 'master'
+        }
+      }
       steps {
         configFileProvider(
                 [configFile(fileId: 'ceb7e555-a3d9-47c7-9afe-d008fd9efb14', targetLocation: 'graphdb.license')]) {
