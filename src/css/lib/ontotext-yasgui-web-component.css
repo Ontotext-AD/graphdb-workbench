@@ -3,8 +3,9 @@
 /** Fixes the issue with the color of the sequence of < or > characters.
 This resolves the problem described in more detail in the issue tracker: "https://ontotext.atlassian.net/browse/GDB-9233"
  */
-.CodeMirror-line span[class|="cm"]::after {
-    content: "\200c\200b"
+.CodeMirror pre.CodeMirror-line, .CodeMirror pre.CodeMirror-line-like {
+    font-variant-ligatures: none;
+    -webkit-font-variant-ligatures: none;
 }
 
 /* Resets the default font-size for every tag in the yasgui */
