@@ -1,3 +1,26 @@
+// vendor stuff
+import 'lib/bootstrap/bootstrap.min.css';
+import 'angular-toastr/dist/angular-toastr.min.css';
+import 'font-awesome/css/font-awesome.min.css';
+import './css/lib/animate/animate.css';
+import 'shepherd.js/dist/css/shepherd.css';
+import './css/shepherd-custom.css';
+
+import 'jquery';
+import 'lib/angularjs/1.3.8/angular.js';
+import 'lib/bootstrap/bootstrap.min';
+import 'angular/core/loading-hint.js';
+import 'ng-custom-element/dist/ng-custom-element.umd';
+
+// our stuff
+import './css/angular-tooltips.css';
+import './css/bootstrap-graphdb-theme.css';
+import './css/bootstrap-graphdb-theme-dark-auto.css';
+import './css/workbench-custom.css';
+import './less/core.less';
+import './less/owlim-workbench.less';
+
+// app imports
 import 'angular/core/services';
 import 'angular/controllers';
 import 'angular/core/angularCancelOnNavigateModule';
@@ -73,6 +96,7 @@ const moduleDefinition = function (productInfo) {
                   $templateRequestProvider,
                   $translateProvider) {
 
+            console.log(`222`, );
             // configure angular translate module
             // configures staticFilesLoader
             $translateProvider.useStaticFilesLoader({
@@ -111,28 +135,28 @@ const moduleDefinition = function (productInfo) {
             // separated by &. Parameters may come in any order.
             $route.routes['_openid_implicit_'].regexp = /[&/](?:id_token=.*&access_token=|access_token=.*&id_token=)/;
 
-            let routes = PluginRegistry.get('route');
-
-            angular.forEach(routes, function (route) {
-                $routeProvider.when(route.url, {
-                    controller: route.controller,
-                    templateUrl: route.templateUrl,
-                    title: route.title,
-                    helpInfo: route.helpInfo,
-                    reloadOnSearch: route.reloadOnSearch !== undefined ? route.reloadOnSearch : true,
-                    resolve: {
-                        preload: ['$ocLazyLoad', '$q', function ($ocLazyLoad, $q) {
-                            // some modules define routes to just static pages
-                            if (!route.path) {
-                                return $q.defer().resolve();
-                            }
-                            return import(`angular/${route.path}`).then(module => {
-                                $ocLazyLoad.inject(route.module);
-                            })
-                        }]
-                    }
-                });
-            });
+            // let routes = PluginRegistry.get('route');
+            //
+            // angular.forEach(routes, function (route) {
+            //     $routeProvider.when(route.url, {
+            //         controller: route.controller,
+            //         templateUrl: route.templateUrl,
+            //         title: route.title,
+            //         helpInfo: route.helpInfo,
+            //         reloadOnSearch: route.reloadOnSearch !== undefined ? route.reloadOnSearch : true,
+            //         // resolve: {
+            //         //     preload: ['$ocLazyLoad', '$q', function ($ocLazyLoad, $q) {
+            //         //         // some modules define routes to just static pages
+            //         //         if (!route.path) {
+            //         //             return $q.defer().resolve();
+            //         //         }
+            //         //         return import(`angular/${route.path}`).then(module => {
+            //         //             $ocLazyLoad.inject(route.module);
+            //         //         })
+            //         //     }]
+            //         // }
+            //     });
+            // });
 
             $routeProvider.otherwise({
                 templateUrl: 'pages/not_found.html'
@@ -150,12 +174,12 @@ const moduleDefinition = function (productInfo) {
             // to construct version/edition-specific links.
             $menuItemsProvider.setProductInfo(productInfo);
 
-            let mainMenu = PluginRegistry.get('main.menu');
-            mainMenu.forEach(function (menu) {
-                menu.items.forEach(function (item) {
-                    $menuItemsProvider.addItem(item);
-                });
-            });
+            // let mainMenu = PluginRegistry.get('main.menu');
+            // mainMenu.forEach(function (menu) {
+            //     menu.items.forEach(function (item) {
+            //         $menuItemsProvider.addItem(item);
+            //     });
+            // });
 
             $httpProvider.interceptors.push('$unauthorizedInterceptor');
             $httpProvider.interceptors.push('$authenticationInterceptor');
@@ -184,7 +208,9 @@ const moduleDefinition = function (productInfo) {
     // we need to inject $jwtAuth here in order to init the service before everything else
     workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', 'LSKeys', 'GuidesService',
         function ($rootScope, $route, toastr, $sce, $translate, ThemeService, WorkbenchSettingsStorageService, LSKeys, GuidesService) {
-        $rootScope.$on('$routeChangeSuccess', function () {
+
+            console.log(`333`, );
+            $rootScope.$on('$routeChangeSuccess', function () {
             updateTitleAndHelpInfo();
 
             toastr.clear();
@@ -222,25 +248,28 @@ const moduleDefinition = function (productInfo) {
 
     workbench.filter('prettyJSON', () => (json) => angular.toJson(json, true));
 
+    console.log(`BOOT`, );
     angular.bootstrap(document, ['graphdb.workbench']);
 };
 
-$.get('rest/info/version?local=1', function (data) {
-    console.log(`APPPPP`, );
-    // Extract major.minor version as short version
-    const versionArray = data.productVersion.match(/^(\d+\.\d+)/);
-    if (versionArray.length) {
-        data.productShortVersion = versionArray[1];
-    } else {
-        data.productShortVersion = data.productVersion;
-    }
+moduleDefinition({productVersion: '10.0.0-M3-RC1'});
 
-    // Add the first attribute to the short version, e.g. if the full version is 10.0.0-M3-RC1,
-    // the first attribute is M3 so the short version will be 10.0-M3.
-    const attributeArray = data.productVersion.match(/(-.*?)(-|$)/);
-    if (attributeArray && attributeArray.length) {
-        data.productShortVersion = data.productShortVersion + attributeArray[1];
-    }
-
-    moduleDefinition(data);
-});
+// $.get('rest/info/version?local=1', function (data) {
+//     // Extract major.minor version as short version
+//     const versionArray = data.productVersion.match(/^(\d+\.\d+)/);
+//     if (versionArray.length) {
+//         data.productShortVersion = versionArray[1];
+//     } else {
+//         data.productShortVersion = data.productVersion;
+//     }
+//
+//     // Add the first attribute to the short version, e.g. if the full version is 10.0.0-M3-RC1,
+//     // the first attribute is M3 so the short version will be 10.0-M3.
+//     const attributeArray = data.productVersion.match(/(-.*?)(-|$)/);
+//     if (attributeArray && attributeArray.length) {
+//         data.productShortVersion = data.productShortVersion + attributeArray[1];
+//     }
+//
+//     console.log(`111`, );
+//     // moduleDefinition(data);
+// });

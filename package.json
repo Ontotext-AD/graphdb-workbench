@@ -4,6 +4,8 @@
     "description": "The web application for GraphDB APIs",
     "scripts": {
         "build": "webpack --config=webpack.config.prod.js",
+        "build-cc": "webpack --config=webpack.config.cc.js",
+        "start-cc": "webpack-dev-server --config=webpack.config.cc.js --open",
         "build-dev": "webpack --config=webpack.config.dev.js",
         "start": "webpack-dev-server --config=webpack.config.dev.js --open",
         "lint": "eslint ./src",
