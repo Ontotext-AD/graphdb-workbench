@@ -19,25 +19,26 @@ pipeline {
 
   stages {
 
-  stage('Validate translations') {
-    steps {
-        sh 'node scripts/validate-translations.js || exit 1'
-    }
-  }
-
-  stage('Print Branch Name') {
-    steps {
-      script {
-        echo "Building branch: ${env.BRANCH_NAME}"
-      }
-    }
-  }
-
     stage('Install') {
       steps {
         sh "npm install"
       }
     }
+
+    stage('Validate translations') {
+     steps {
+       sh 'node scripts/validate-translations.js || exit 1'
+     }
+    }
+
+    stage('Print Branch Name') {
+      steps {
+        script {
+          echo "Building branch: ${env.BRANCH_NAME}"
+        }
+      }
+    }
+
 
 //     stage('Test') {
 //       steps {
