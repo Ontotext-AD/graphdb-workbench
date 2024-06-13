@@ -20,8 +20,8 @@
      message="getLoaderMessage"
      size="75">
 </div>
-
-<div class="clearfix d-flex" ng-if="!loader && clusterConfiguration">
+<div core-errors license></div>
+<div class="clearfix d-flex" ng-if="isLicenseValid() && !loader && clusterConfiguration">
     <div class="action-buttons">
         <div ng-if="isAdmin()" class="buttons-wrapper">
             <button type="button" class="btn btn-secondary remove-node-btn" ng-if="currentLeader"
@@ -72,7 +72,7 @@
     </div>
 </div>
 
-<div ng-if="!loader" class="cluster-view">
+<div ng-if="isLicenseValid() && !loader" class="cluster-view">
     <cluster-graphical-view cluster-model="clusterModel" legend-visible=""></cluster-graphical-view>
     <cluster-legend></cluster-legend>
 </div>

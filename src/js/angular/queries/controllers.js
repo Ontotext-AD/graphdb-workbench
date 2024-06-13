@@ -8,8 +8,8 @@ const queriesCtrl = angular.module('graphdb.framework.jmx.queries.controllers', 
 ]);
 
 queriesCtrl.controller('QueriesCtrl', ['$scope', '$uibModal', 'toastr', '$interval', '$repositories', '$jwtAuth', 'ModalService',
-    'MonitoringRestService', '$translate', 'AuthTokenService',
-    function ($scope, $uibModal, toastr, $interval, $repositories, $jwtAuth, ModalService, MonitoringRestService, $translate, AuthTokenService) {
+    'MonitoringRestService', '$translate', 'AuthTokenService', '$licenseService',
+    function ($scope, $uibModal, toastr, $interval, $repositories, $jwtAuth, ModalService, MonitoringRestService, $translate, AuthTokenService, $licenseService) {
 
         $scope.loader = true;
         $scope.stringLimit = 500;
@@ -139,6 +139,10 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$uibModal', 'toastr', '$interv
 
         $scope.toggleQueryExpanded = function (queryId) {
             $scope.expanded[queryId] = !$scope.expanded[queryId];
+        };
+
+        $scope.isLicenseValid = function () {
+            return $licenseService.isLicenseValid();
         };
     }]);
 

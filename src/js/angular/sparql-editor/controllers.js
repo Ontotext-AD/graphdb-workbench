@@ -44,7 +44,8 @@ SparqlEditorCtrl.$inject = [
     'GuidesService',
     'ModalService',
     'MonitoringRestService',
-    'EventEmitterService'];
+    'EventEmitterService',
+    '$licenseService'];
 
 function SparqlEditorCtrl($rootScope,
                           $scope,
@@ -61,7 +62,8 @@ function SparqlEditorCtrl($rootScope,
                           GuidesService,
                           ModalService,
                           MonitoringRestService,
-                          EventEmitterService) {
+                          EventEmitterService,
+                          $licenseService) {
     this.repository = '';
 
     const QUERY_EDITOR_ID = '#query-editor';
@@ -98,6 +100,10 @@ function SparqlEditorCtrl($rootScope,
                 [EventDataType.REQUEST_ABORTED, requestAbortedHandler]
             ])
         };
+    };
+
+    $scope.isLicenseValid = function () {
+        return $licenseService.isLicenseValid();
     };
 
     $scope.getActiveRepositoryNoError = () => {

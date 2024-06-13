@@ -89,7 +89,7 @@
     <p>{{repositoryError}}</p>
 </div>
 
-<div class="explore" ng-hide="loader || repositoryError || !isLicenseValid()">
+<div class="explore" ng-hide="loader || repositoryError">
 
     <div class="row class-cnt-slider animate-show" ng-show="showExternalElements && hasClassHierarchy()" style="margin-left: 20px;">
 		<p class="slider-help-button">
@@ -119,7 +119,7 @@
 			<p>{{hierarchyError}}</p>
 
 		</div>
-        <div class="top-offset row" ng-show="getActiveRepositoryNoError() && !hierarchyError && !hasClassHierarchy() && !isSystemRepository() && isAllGraphsSelected()">
+        <div class="top-offset row" ng-show="isLicenseValid() && getActiveRepositoryNoError() && !hierarchyError && !hasClassHierarchy() && !isSystemRepository() && isAllGraphsSelected()">
             <p class="alert alert-warning">{{'no.classhierarchy.for.repo.warning' | translate}}</p>
         </div>
         <div class="top-offset row" ng-show="getActiveRepositoryNoError() && !hierarchyError && !hasClassHierarchy() && !isSystemRepository() && !isAllGraphsSelected()">
@@ -135,7 +135,7 @@
                 show-external-elements="showExternalElements"
                 hide-prefixes="hidePrefixes"
                 current-browser-limit="currentBrowserLimit"
-                ng-show="isLicenseValid() && hasClassHierarchy()">
+                ng-show="hasClassHierarchy()">
         </rdf-class-hierarchy>
 
         <pageslide

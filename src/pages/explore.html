@@ -1,7 +1,7 @@
 <link href="css/explore.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-<div core-errors></div>
-<div class="page fit-content-on-mobile">
+<div core-errors license></div>
+<div class="page fit-content-on-mobile" ng-if="isLicenseValid()">
     <div class="resource-info" ng-if="resourceInfo && !isTripleResource()">
         <div class="thumb" ng-if="resourceInfo.details.img">
             <a href="{{resourceInfo.details.img}}">

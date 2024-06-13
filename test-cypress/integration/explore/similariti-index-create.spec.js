@@ -12,11 +12,10 @@ const DEFAULT_PREDICATION_SELECT_QUERY = 'SELECT ?subject ?predicate ?object\nWH
 const DEFAULT_PREDICATION_SEARCH_QUERY = 'SELECT ?entity ?score {\n ?search a ?index ;\n ?searchType ?query;\n psi:searchPredicate ?psiPredicate;\n :searchParameters ?parameters;\n ?resultType ?result .\n ?result :value ?entity ;\n :score ?score .\n}';
 
 describe('Create similarity index', () => {
-    let secondRepositoryId;
     let repositoryId;
 
     beforeEach(() => {
-        const repositoryId = 'similarity-index-create' + Date.now();
+        repositoryId = 'similarity-index-create' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
@@ -25,7 +24,6 @@ describe('Create similarity index', () => {
 
     afterEach(() => {
         cy.deleteRepository(repositoryId);
-        cy.deleteRepository(secondRepositoryId);
     });
 
     context('Validations for textual similarity index', () => {

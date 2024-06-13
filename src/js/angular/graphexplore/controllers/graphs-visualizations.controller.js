@@ -1189,16 +1189,12 @@ function GraphsVisualizationsCtrl(
         return $repositories.getActiveRepository();
     };
 
-    $scope.isLicenseValid = function () {
-        return $licenseService.isLicenseValid();
-    };
-
     // This method may be called twice - once by us explicitly and once by the repositoryInit event.
     // In some race conditions getActiveRepository() will be already set when we enter it the first
     // time but then we'll be called again by the event, so we need the above flag to avoid double
     // initialization and weirdness.
     function initForRepository(newRepo) {
-        if (!$repositories.getActiveRepository() || $scope.hasInitedRepository && !newRepo) {
+        if (!$licenseService.isLicenseValid() || !$repositories.getActiveRepository() || $scope.hasInitedRepository && !newRepo) {
             return;
         }
 

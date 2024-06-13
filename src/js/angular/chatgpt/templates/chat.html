@@ -66,8 +66,8 @@
               popover-append-to-body="true"><span class="icon-info text-tertiary"></span></span>
     </h1>
 
-    <div core-errors></div>
-    <div class="ot-chatgpt-ctrl d-flex" ng-show="getActiveRepository()">
+    <div core-errors license></div>
+    <div class="ot-chatgpt-ctrl d-flex" ng-show="isLicenseValid() && getActiveRepository()">
         <div class="chat">
             <div uib-collapse="!isCollapsed" id="ot-help-text" class="alert alert-info">
                 <button type="button" ng-click="isCollapsed = false" gdb-tooltip="{{'common.close' | translate}}" class="close"

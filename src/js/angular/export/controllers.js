@@ -22,14 +22,16 @@ const exportCtrl = angular.module('graphdb.framework.impex.export.controllers', 
 
 exportCtrl.controller('ExportCtrl',
   ['$scope', '$http', '$location', '$timeout', 'ModalService', 'filterFilter', '$repositories', 'toastr', 'ExportRestService', 'RDF4JRepositoriesRestService',
-      'FileTypes', '$translate', 'AuthTokenService', '$uibModal',
+      'FileTypes', '$translate', 'AuthTokenService', '$uibModal', '$licenseService',
       function($scope, $http, $location, $timeout, ModalService, filterFilter, $repositories, toastr, ExportRestService, RDF4JRepositoriesRestService,
-        FileTypes, $translate, AuthTokenService, $uibModal) {
+        FileTypes, $translate, AuthTokenService, $uibModal, $licenseService) {
 
             $scope.getActiveRepository = function () {
                 return $repositories.getActiveRepository();
             };
-
+            $scope.isLicenseValid = function () {
+                return $licenseService.isLicenseValid();
+            };
             $scope.exportFormats = FileTypes;
             $scope.deleting = {};
             $scope.showExportDDTooltip = true;

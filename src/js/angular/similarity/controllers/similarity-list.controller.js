@@ -274,6 +274,9 @@ function SimilarityCtrl(
     };
 
     const init = () => {
+        if (!$licenseService.isLicenseValid()) {
+            return;
+        }
         const activeRepository = $scope.getActiveRepository();
         if (activeRepository && $scope.activeRepository !== activeRepository) {
             $scope.canEditRepo = $scope.canWriteActiveRepo();

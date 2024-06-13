@@ -43,7 +43,8 @@ ExploreCtrl.$inject = [
     '$jwtAuth',
     '$translate',
     '$q',
-    'ExploreRestService'];
+    'ExploreRestService',
+    '$licenseService'];
 
 function ExploreCtrl(
     $scope,
@@ -59,13 +60,13 @@ function ExploreCtrl(
     $jwtAuth,
     $translate,
     $q,
-    ExploreRestService) {
+    ExploreRestService,
+    $licenseService) {
 
     $scope.ContextTypes = ContextTypes;
     $scope.contextTypes = ContextType.getAllType();
     $scope.currentContextTypeId = ContextTypes.EXPLICIT.id;
     $scope.roles = [RoleType.SUBJECT, RoleType.PREDICATE, RoleType.OBJECT, RoleType.CONTEXT, RoleType.ALL];
-
     $scope.resourceInfo = undefined;
 
     // Defaults
@@ -128,6 +129,9 @@ function ExploreCtrl(
     };
 
     $scope.loadResource = () => {
+        if (!$licenseService.isLicenseValid()) {
+            return;
+        }
         // Get resource details
         ExploreRestService.getResourceDetails($scope.resourceInfo.uri, $scope.resourceInfo.triple, $scope.resourceInfo.context)
             .success((data) => {
@@ -517,9 +521,9 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
     }
 }
 
-EditResourceCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$repositories', '$uibModal', '$timeout', 'ClassInstanceDetailsService', 'StatementsService', 'RDF4JRepositoriesRestService', '$translate'];
+EditResourceCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$repositories', '$uibModal', '$timeout', 'ClassInstanceDetailsService', 'StatementsService', 'RDF4JRepositoriesRestService', '$translate', '$licenseService'];
 
-function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibModal, $timeout, ClassInstanceDetailsService, StatementsService, RDF4JRepositoriesRestService, $translate) {
+function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibModal, $timeout, ClassInstanceDetailsService, StatementsService, RDF4JRepositoriesRestService, $translate, $licenseService) {
     $scope.uriParam = $location.search().uri;
     $scope.newRow = {
         subject: $scope.uriParam,
@@ -530,7 +534,6 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibM
     };
     $scope.newResource = false;
     $scope.datatypeOptions = StatementsService.getDatatypeOptions();
-
     $scope.activeRepository = function () {
         return $repositories.getActiveRepository();
     };
@@ -545,6 +548,9 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibM
     $scope.save = save;
 
     function getClassInstancesDetails() {
+        if (!$licenseService.isLicenseValid()) {
+            return;
+        }
         RDF4JRepositoriesRestService.getNamespaces($scope.activeRepository())
             .success(function (data) {
                 $scope.namespaces = data.results.bindings.map(function (e) {
