@@ -152,8 +152,8 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             };
 
             $scope.importAll = (withoutChangingSettings) => {
-                const selectedResources = $scope.resources.getAllSelected();
-                if (selectedResources && selectedResources.length > 0) {
+                const selectedResources = $scope.resources.getAllSelectedForImport();
+                if (selectedResources.length > 0) {
                     $scope.onImportAll({selectedResources: selectedResources, withoutChangingSettings});
                 }
             };
@@ -204,10 +204,10 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             };
 
             const updateHasSelection = () => {
-                let allSelectedFilesNames = $scope.resources.getAllSelectedFilesNames();
+                const allSelectedFilesNames = $scope.resources.getAllSelectedFilesNames();
                 $scope.hasSelection = allSelectedFilesNames.length > 0;
                 ImportContextService.updateSelectedFilesNames(allSelectedFilesNames);
-            }
+            };
 
             const updateSelectByStateDropdownModel = () => {
                 const hasUnselectedDisplayedImportResource = $scope.displayResources.some((resource) => !resource.selected);
