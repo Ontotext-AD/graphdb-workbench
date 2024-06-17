@@ -8,6 +8,7 @@ import {ImportResourceType} from "./import-resource-type";
 export class ImportResource {
 
     constructor(importResourceServerData, hashGenerator) {
+        // we use hash as a key to tell angular that the object has changed, and it should update the view
         this.hash = hashGenerator(JSON.stringify(importResourceServerData));
         this.name = importResourceServerData ? importResourceServerData.name : undefined;
         this.status = importResourceServerData ? importResourceServerData.status : ImportResourceStatus.NONE;

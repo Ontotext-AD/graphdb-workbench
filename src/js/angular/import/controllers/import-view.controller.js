@@ -458,7 +458,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             ImportContextService.updateResources([]);
             ImportContextService.updateShowLoader(true);
             $scope.updateListHttp(true).finally(() => ImportContextService.updateShowLoader(false));
-        }
+        };
 
         const initSubscriptions = () => {
             subscriptions.push($scope.$on('repositoryIsSet', $scope.onRepositoryChange));
