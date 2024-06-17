@@ -1,4 +1,5 @@
 import {ImportResourceStatus} from "./import-resource-status";
+import {cloneDeep} from 'lodash';
 
 /**
  * Resources have parent-child relations. This class represents one resource element from the parent-child relation tree.
@@ -250,6 +251,31 @@ export class ImportResourceTreeElement {
         this.directories.forEach((directory) => directory.selectAllWithStatus(statuses));
     }
 
+    /**
+     * Returns all selected resources for import. This method accounts for the case where if a directory is selected,
+     * then its children are not collected. We do this because we want to avoid the server to double import the same
+     * resources.
+     * @return {ImportResourceTreeElement[]}
+     */
+    getAllSelectedForImport() {
+        const allSelected = [];
+        const isRoot = this.isRoot();
+        // If this is not the root, and it is selected, then push it to the list. This can be a file or directory which
+        // is has all files in it selected.
+        if (!isRoot && this.selected) {
+            allSelected.push(this);
+        }
+        // If it is the root or a partially selected directory, then recurse through all the children.
+        if (isRoot || (this.isDirectory() && !this.selected)) {
+            this.files.forEach((file) => allSelected.push(...file.getAllSelectedForImport()));
+            this.directories.forEach((directory) => allSelected.push(...directory.getAllSelectedForImport()));
+        }
+
+        // clone them to ensure that upcoming from the server changes in the resources
+        // will not interfere with the selected resources list
+        return cloneDeep(allSelected);
+    }
+
     getAllSelected() {
         const allSelected = [];
         if (!this.isRoot() && this.selected) {
@@ -261,7 +287,7 @@ export class ImportResourceTreeElement {
 
         // clone them to ensure that upcoming from the server changes in the resources
         // will not interfere with the selected resources list
-        return _.cloneDeep(allSelected);
+        return cloneDeep(allSelected);
     }
 
     getSelectedImportedResources() {
