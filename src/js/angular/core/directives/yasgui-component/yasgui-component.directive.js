@@ -353,8 +353,9 @@ function yasguiComponentDirective(
                     });
 
                     modalInstance.result.then(function (data) {
+                        const relValue = data.currentMode.name === 'framed' ? 'frame' : 'context';
                         const acceptHeader = accept + ';profile=' + data.currentMode.link;
-                        const linkHeader = data.link ? '<' + data.link + '>' : '';
+                        const linkHeader = data.link ? `<${data.link}>; rel=http://www.w3.org/ns/json-ld#${relValue}` : '';
                         downloadAs(query, infer, sameAs, authToken, acceptHeader, linkHeader);
                     });
                 } else {
