@@ -1412,6 +1412,7 @@ footer.footer .container-fluid.main-container p {
 -------------------------------------------------------------*/
 .nav-tabs {
     font-weight: 400;
+    display: inline-block;
 }
 
 .nav-tabs .nav-item {
