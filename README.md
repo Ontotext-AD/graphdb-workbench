@@ -3,7 +3,7 @@ The web application for GraphDB APIs
 
 [![Build Status](https://jenkins.ontotext.com/buildStatus/icon?job=graphdb-workbench-pipeline)]
 ### Setup Environment
-test
+
 * Checkout or clone the project.
 * Enter the project directory and execute `npm install` in order to install all 
 needed dependencies locally.
@@ -20,17 +20,6 @@ Running `npm run start` will bundle application and vendor code in memory and st
 development server and proxy requests to `localhost:7200` (default).
 
 ## Testing
-
-### Unit tests
-
-Unit tests can be run by executing `npm test`. 
-
-> It's important to be noted that angular components in the application and the 
-tests are built as AMD modules and all new tests must follow the same style. 
-
-Requirejs is used as a module loader. The test framework is Jasmine with Karma 
-as test launcher. Karma is configured to watch source and tests files for 
-changes and continuously re-executing the tests.
 
 ### Acceptance/functional tests
 
