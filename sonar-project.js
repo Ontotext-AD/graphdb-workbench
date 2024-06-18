@@ -11,9 +11,7 @@ const sonarOptions = {
   "sonar.projectName": "graphdb-workbench",
   "sonar.sources": "./src",
   "sonar.exclusions": "src/res/**/*,src/font/**/*,src/js/lib/**/*,src/css/fonts/**/*,src/css/lib/**/*",
-  "sonar.tests": "test",
   "sonar.language": "js",
-  "sonar.javascript.lcov.reportPaths": "coverage/lcov.info",
   "sonar.scm.provider": "git",
   "sonar.sourceEncoding": "UTF-8",
 };
