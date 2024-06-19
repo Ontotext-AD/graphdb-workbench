@@ -125,7 +125,6 @@ function importResourceTreeDirective($timeout, ImportContextService) {
              */
             $scope.onResetStatus = () => {
                 const resourcesNames = $scope.resources.getAllSelected()
-                    .filter((resource) => !resource.isDirectory())
                     .map((resource) => resource.path);
                 if (resourcesNames.length > 0) {
                     $scope.onReset({resources: resourcesNames});
