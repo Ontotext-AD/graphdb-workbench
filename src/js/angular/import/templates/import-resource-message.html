@@ -11,19 +11,19 @@
                 <small>{{resource.importResource.message || ''}}</small>
             </span>
             <span class="import-counters">
-                <span class="import-counter" ng-if="hasReplacedGraphs">
+                <span class="import-counter" ng-if="resource.importResource.numReplacedGraphs > 0">
                     <small class="mr-0">
                         {{ 'import.status-info.replaced_count_graphs' | translate: {count: resource.importResource.numReplacedGraphs} }}
-                        {{ (hasAddedStatements || hasRemovedStatements ? ',' : '') }}
+                        {{ (resource.importResource.addedStatements > 0 || resource.importResource.removedStatements > 0 ? ',' : '') }}
                     </small>
                 </span>
-                <span class="import-counter" ng-if="hasAddedStatements">
+                <span class="import-counter" ng-if="resource.importResource.addedStatements > 0">
                     <small>
                         {{ 'import.status-info.added_count_statements' | translate: {count: resource.importResource.addedStatements} }}
-                        {{ (hasRemovedStatements ? ',' : '') }}
+                        {{ (resource.importResource.removedStatements > 0 ? ',' : '') }}
                     </small>
                 </span>
-                <span class="import-counter" ng-if="hasRemovedStatements">
+                <span class="import-counter" ng-if="resource.importResource.removedStatements > 0">
                     <small>
                         {{ 'import.status-info.removed_count_statements' | translate: {count: resource.importResource.removedStatements} }}
                     </small>

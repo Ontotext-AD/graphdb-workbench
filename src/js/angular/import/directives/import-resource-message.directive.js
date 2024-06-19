@@ -20,9 +20,6 @@ function importResourceMessageDirective($uibModal) {
         link: ($scope) => {
             $scope.ImportResourceStatus = ImportResourceStatus;
             $scope.toTitleCase = (str) => stringUtils.toTitleCase(str);
-            $scope.hasReplacedGraphs = $scope.resource.importResource.numReplacedGraphs > 0;
-            $scope.hasAddedStatements = $scope.resource.importResource.addedStatements > 0;
-            $scope.hasRemovedStatements = $scope.resource.importResource.removedStatements > 0;
 
             /**
              *
