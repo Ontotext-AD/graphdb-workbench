@@ -261,7 +261,7 @@ export class ImportResourceTreeElement {
         const allSelected = [];
         const isRoot = this.isRoot();
         // If this is not the root, and it is selected, then push it to the list. This can be a file or directory which
-        // is has all files in it selected.
+        // has all files in it selected.
         if (!isRoot && this.selected) {
             allSelected.push(this);
         }
