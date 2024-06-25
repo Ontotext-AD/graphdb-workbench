@@ -464,6 +464,11 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             subscriptions.push($scope.$on('repositoryIsSet', $scope.onRepositoryChange));
             subscriptions.push($scope.$on('$destroy', () => $interval.cancel(listPollingHandler)));
             subscriptions.push(ImportContextService.onActiveTabIdUpdated((newActiveTabId) => onActiveTabChanged(newActiveTabId)));
+            subscriptions.push(ImportContextService.onSelectedFilesNamesUpdated(() => {
+                $scope.selectedForImportFiles = ImportContextService.getSelectedFilesNames()
+                    .map((name) => ({[name]: true}))
+                    .reduce((acc, val) => Object.assign(acc, val), {});
+            }));
             $scope.$on('$destroy', removeAllListeners);
         };
 
