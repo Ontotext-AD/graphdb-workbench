@@ -1,0 +1,18 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/app",
+    "types": [],
+    "paths": {
+      "tslib" : ["path/to/node_modules/tslib/tslib.d.ts"]
+    }
+  },
+  "files": [
+    "src/main.ts",
+    "src/main.single-spa.ts"
+  ],
+  "include": [
+    "src/**/*.d.ts"
+  ]
+}
