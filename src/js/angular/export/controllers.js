@@ -230,7 +230,7 @@ exportCtrl.controller('ExportCtrl',
 
                 modalInstance.result.then(function (data) {
                     const relValue = data.currentMode.name === 'framed' ? 'frame' : 'context';
-                    const linkHeader = data.link ? `<${data.link}>; rel=http://www.w3.org/ns/json-ld#${relValue}` : '';
+                    const linkHeader = data.link ? `<${data.link}>; rel="http://www.w3.org/ns/json-ld#${relValue}"` : '';
                     downloadJSONLDExport(format, context, linkHeader, $repositories.getActiveRepositoryObject(), $scope.graphsByValue, data.currentMode);
                 });
             };
