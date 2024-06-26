@@ -1,0 +1,39 @@
+{
+    "name": "graphdb-workbench",
+    "version": "2.7.0-RC1",
+    "description": "The web application for GraphDB APIs",
+    "scripts": {
+
+    },
+    "files": [
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Ontotext-AD/graphdb-workbench.git"
+    },
+    "keywords": [
+        "graphdb",
+        "workbench"
+    ],
+    "author": {
+        "name": "\"Sirma AI\" JSC, trading as Ontotext",
+        "url": "https://www.ontotext.com/"
+    },
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/Ontotext-AD/graphdb-workbench/issues"
+    },
+    "homepage": "https://github.com/Ontotext-AD/graphdb-workbench#readme",
+    "workspaces": [
+        "packages/root-config",
+        "packages/legacy-workbench"
+    ],
+    "devDependencies": {
+
+    },
+    "dependencies": {
+
+    },
+    "resolutions": {
+    }
+}
