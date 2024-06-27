@@ -1,5 +1,3 @@
-import {ImportResourceStatus} from "../models/import/import-resource-status";
-
 angular
     .module('graphdb.framework.rest.upload.service', [])
     .factory('UploadRestService', UploadRestService);
@@ -42,7 +40,7 @@ function UploadRestService($http, Upload, $translate) {
         return Upload.upload({
             url: `${BASE_ENDPOINT}/${repositoryId}/import/upload/file`,
             data: data
-        }).progress((evt) => reportProgress(evt, file));
+        });
     }
 
     /**
@@ -56,20 +54,6 @@ function UploadRestService($http, Upload, $translate) {
         return Upload.upload({
             url: `${BASE_ENDPOINT}/${repositoryId}/import/upload/update/file`,
             data: data
-        }).progress((evt) => reportProgress(evt, file));
-    }
-
-    function reportProgress(evt, file) {
-        if (file.file) {
-            file.file = null;
-            file.status = ImportResourceStatus.UPLOADING;
-        } else if (file.status !== ImportResourceStatus.UPLOADING) {
-            file.status = ImportResourceStatus.PENDING;
-        }
-
-        if (file.status === ImportResourceStatus.UPLOADING) {
-            const progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-            file.message = $translate.instant('import.file.upload.progress', {progress: progressPercentage});
-        }
+        });
     }
 }

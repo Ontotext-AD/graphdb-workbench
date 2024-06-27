@@ -1,3 +1,7 @@
+#wb-import .tab-content .progress {
+    font-size: 1rem;
+}
+
 .upload-buttons {
     align-items: stretch;
     display: flex;
@@ -73,8 +77,9 @@
     outline: none;
 }
 
-.import-resource-message-dialog .message{
+.import-resource-message-dialog .message {
     color: #000000;
     font-size: 15px;
     resize: none;
 }
+

@@ -36,6 +36,13 @@
         <div class="tab-content">
             <div id="import-user" ng-if="TAB_IDS.USER === activeTabId" class="tab-pane" ng-controller="UploadCtrl"
                  ng-class="activeTabId == 'user' ? 'active' : ''">
+
+                <div class="progress" ng-if="uploadProgressMessage">
+                    <div class="progress-bar progress-bar-success" role="progressbar" style="width:{{progressPercentage}}%">
+                        {{uploadProgressMessage}}
+                    </div>
+                </div>
+
                 <div class="row upload-buttons">
                     <div class="col-xs-12 col-md-6 col-lg-4 mb-2 fat-btn">
                         <div class="btn btn-outline-primary btn-lg text-xs-left upload-rdf-files-btn"
