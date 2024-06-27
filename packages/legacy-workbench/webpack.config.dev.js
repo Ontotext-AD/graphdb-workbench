@@ -1,6 +1,6 @@
 const PACKAGE = require('./package.json');
 const path = require('path');
-const merge = require('webpack-merge');
+const {merge} = require('webpack-merge');
 const commonConfig = require('./webpack.config.common');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -33,6 +33,7 @@ module.exports = merge(commonConfig, {
         new HtmlWebpackPlugin({
             template: './src/template.html',
             favicon: 'src/img/icon.png',
+            showErrors: true,
             templateParameters: {
                 version: PACKAGE.version
             }
@@ -40,8 +41,12 @@ module.exports = merge(commonConfig, {
         new CleanWebpackPlugin()
     ],
     devServer: {
-        disableHostCheck: true,
-        contentBase: path.join(__dirname, 'dist/'),
+        // disableHostCheck: true,
+        allowedHosts: 'all',
+        // contentBase: path.join(__dirname, 'dist/'),
+        static: {
+            directory: path.join(__dirname, 'dist/')
+        },
         compress: true,
         port: portHere,
         host: host,
