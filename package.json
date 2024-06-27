@@ -3,10 +3,15 @@
     "version": "2.7.0-RC1",
     "description": "The web application for GraphDB APIs",
     "scripts": {
-
+        "clean": "sh scripts/clean.sh",
+        "install": "sh scripts/install.sh",
+        "build": "sh scripts/build.sh",
+        "start": "concurrently \"npm run start-legacy-workbench\" \"npm run start-root-config\" \"npm run start-workbench\"",
+        "start-legacy-workbench": "cd packages/legacy-workbench && npm run start",
+        "start-root-config": "cd packages/root-config && npm run start",
+        "start-workbench": "cd packages/workbench && npm run start"
     },
-    "files": [
-    ],
+    "files": [],
     "repository": {
         "type": "git",
         "url": "git+https://github.com/Ontotext-AD/graphdb-workbench.git"
@@ -24,14 +29,9 @@
         "url": "https://github.com/Ontotext-AD/graphdb-workbench/issues"
     },
     "homepage": "https://github.com/Ontotext-AD/graphdb-workbench#readme",
-    "workspaces": [
-    ],
+    "workspaces": [],
     "devDependencies": {
-
+        "concurrently": "^8.2.2"
     },
-    "dependencies": {
-
-    },
-    "resolutions": {
-    }
+    "resolutions": {}
 }
