@@ -777,9 +777,18 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         $scope.settings.name = file.name;
         const data = UploadRestService.createUploadPayload(file, $scope.settings);
         const uploader = startImport ? UploadRestService.uploadUserDataFile : UploadRestService.updateUserDataFile;
-        uploader($repositories.getActiveRepository(), file, data).then(() => {
-            $scope.updateList();
-        }).catch((data) => {
+        uploader($repositories.getActiveRepository(), file, data).then(
+            (resp) => {
+                $scope.progressPercentage = null;
+                $scope.uploadProgressMessage = '';
+                $scope.updateList();
+            },
+            () => {},
+            (evt) => {
+                $scope.progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                $scope.uploadProgressMessage = $translate.instant('import.file.upload.progress', {progress: $scope.progressPercentage});
+            }
+        ).catch((data) => {
             toastr.error($translate.instant('import.could.not.upload.file', {data: getError(data)}));
             file.status = ImportResourceStatus.ERROR;
             file.message = getError(data);
