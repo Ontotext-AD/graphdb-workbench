@@ -16,14 +16,15 @@ function replaceVersion(content) {
 
 module.exports = {
     entry: {
-        vendor: './src/vendor.js',
-        main: './src/main.js',
-        bundle: './src/app.js'
+        main: './src/index.js',
     },
     output: {
         filename: '[name].js',
         chunkFilename: '[name].js',
-        path: path.resolve(__dirname, 'dist')
+        path: path.resolve(__dirname, 'dist'),
+        libraryTarget: "system",
+        // TODO MAKE IT BY CONFIGURATION
+        publicPath: "http://localhost:9001/",
     },
     resolve: {
         modules: [

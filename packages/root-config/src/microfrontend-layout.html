@@ -20,13 +20,21 @@
     <nav>
         <a style="margin-left: 10px" href="/home">Home</a>
         <a style="margin-left: 10px" href="/sparql">Sparql</a>
+        <a style="margin-left: 10px" href="/import">Import</a>
+        <a style="margin-left: 10px" href="/repository">Repository</a>
     </nav>
 
     <route path="sparql">
-        <application name="@ontotext/sparql"></application>
+        <application name="@ontotext/workbench"></application>
     </route>
     <route path="graphql">
-        <application name="@ontotext/graphql"></application>
+        <application name="@ontotext/workbench"></application>
+    </route>
+    <route path="import">
+        <application name="@ontotext/legacy-workbench"></application>
+    </route>
+    <route path="repository">
+        <application name="@ontotext/legacy-workbench"></application>
     </route>
 
     <main>

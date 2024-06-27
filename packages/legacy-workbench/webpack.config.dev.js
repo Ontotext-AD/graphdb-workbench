@@ -6,7 +6,7 @@ const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const host = 'localhost';
-const portHere = 9000;
+const portHere = 9001;
 const portThere = 7200;
 
 module.exports = merge(commonConfig, {
@@ -50,6 +50,11 @@ module.exports = merge(commonConfig, {
         compress: true,
         port: portHere,
         host: host,
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+            "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization, x-graphdb-repository",
+        },
         // needed to handle urls sent by open id providers that contain dots
         historyApiFallback: {
             disableDotRule: true
