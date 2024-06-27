@@ -4,7 +4,7 @@ angular
 
 SecurityRestService.$inject = ['$http'];
 
-const SECURITY_ENDPOINT = 'http://localhost:9001/rest/security';
+const SECURITY_ENDPOINT = 'rest/security';
 const SECURITY_USER_ENDPOINT = `${SECURITY_ENDPOINT}/users`;
 const SECURITY_AUTHENTICATED_ENDPOINT = `${SECURITY_ENDPOINT}/authenticated-user`;
 const SECURITY_FREE_ACCESS_ENDPOINT = `${SECURITY_ENDPOINT}/free-access`;

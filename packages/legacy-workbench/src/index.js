@@ -1,8 +1,8 @@
 import singleSpaAngularJS from "single-spa-angularjs";
 
+import './vendor';
 import './main';
-import './vendor'
-import './app'
+import './app';
 
 import angular from "angular";
 
@@ -45,7 +45,6 @@ const ngLifecycles = singleSpaAngularJS({
 });
 
 export const bootstrap = (props) => {
-    console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
     console.log("WORKBENCH app bootstrapped");
     // The usage of the generated bootstrap is commented out because it triggers the initialization of angular
     // In the workbench case, we configure the workbench and bootstrap it in the app.js file.
