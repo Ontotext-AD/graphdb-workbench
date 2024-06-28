@@ -129,6 +129,9 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                             },
                             isMultiple: function () {
                                 return !fileName;
+                            },
+                            activeTab: function () {
+                                return $scope.activeTabId;
                             }
                         },
                         size: 'lg'
