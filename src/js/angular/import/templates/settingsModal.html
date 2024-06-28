@@ -310,7 +310,7 @@
         {{'import.restore.defaults.btn' | translate}}
     </button>
     <button type="button" class="btn btn-secondary cancel-import-button" ng-click="cancel()" guide-selector="import-settings-cancel-button">
-        {{'common.cancel.btn' | translate}}
+        {{activeTab === userTabId ? 'import.only.upload.btn' : 'common.cancel.btn' | translate}}
     </button>
     <button type="submit" form="settingsForm" ng-click="ok()" ng-disabled="settingsForm.$invalid"
             class="btn btn-primary import-settings-import-button"

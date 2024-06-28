@@ -908,6 +908,7 @@
         "forces.serial.statements": "Forces the use of the serial statements pipeline. Not recommended. Use for debugging only.",
         "force.serial.pipeline": "Force serial pipeline",
         "restore.defaults.btn": "Restore defaults",
+        "only.upload.btn": "Only upload",
         "abort.btn": "Abort",
         "no.files.found": "No files found",
         "enable.for.auto.start": "Enable this option to start the import when you click the Import button. If it is disabled the import will be added to the list but not started automatically.",
