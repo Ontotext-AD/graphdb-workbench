@@ -50,7 +50,8 @@ export const bootstrap = (props) => {
     // In the workbench case, we configure the workbench and bootstrap it in the app.js file.
     // return ngLifecycles.bootstrap(props);
     return Promise.resolve();
-}
+};
+
 export const mount = (props) => {
     console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
     console.log('WORKBENCH app mounted');
@@ -58,9 +59,10 @@ export const mount = (props) => {
         .then(() => {
             domElementGetter();
         });
-}
+};
+
 export const unmount = (props) => {
     console.log('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
     console.log('WORKBENCH app unmounted');
     return ngLifecycles.unmount(props);
-}
+};

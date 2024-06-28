@@ -6,40 +6,58 @@
 
     -->
 
-    <!-- Example layouts you might find helpful:
+<!--    <nav>-->
+<!--        <a style="margin-left: 10px" href="/" onclick="singleSpaNavigate(event)">Legacy WB</a>-->
+<!--        <a style="margin-left: 10px" href="/import" onclick="singleSpaNavigate(event)">Import</a>-->
+<!--        <a style="margin-left: 10px" href="/repository" onclick="singleSpaNavigate(event)">Repository</a>-->
+<!--        &nbsp;|-->
+<!--        <a style="margin-left: 10px" href="/sparql" onclick="singleSpaNavigate(event)">Sparql</a>-->
+<!--        <a style="margin-left: 10px" href="/graphql" onclick="singleSpaNavigate(event)">Graphql</a>-->
+<!--    </nav>-->
+
+<!--    <nav>-->
+<!--        <a style="margin-left: 10px" href="/" onclick="handleNavigation(event)">Legacy WB</a>-->
+<!--        <a style="margin-left: 10px" href="/import" onclick="handleNavigation(event)">Import</a>-->
+<!--        <a style="margin-left: 10px" href="/repository" onclick="handleNavigation(event)">Repository</a>-->
+<!--        &nbsp;|-->
+<!--        <a style="margin-left: 10px" href="/sparql" onclick="handleNavigation(event)">Sparql</a>-->
+<!--        <a style="margin-left: 10px" href="/graphql" onclick="handleNavigation(event)">Graphql</a>-->
+<!--    </nav>-->
 
     <nav>
-      <application name="@org/navbar"></application>
-    </nav>
-    <route path="settings">
-      <application name="@org/settings"></application>
-    </route>
-
-    -->
-
-    <nav>
-        <a style="margin-left: 10px" href="/home">Home</a>
-        <a style="margin-left: 10px" href="/sparql">Sparql</a>
+        <a style="margin-left: 10px" href="/">Legacy WB</a>
         <a style="margin-left: 10px" href="/import">Import</a>
         <a style="margin-left: 10px" href="/repository">Repository</a>
+        &nbsp;|
+        <a style="margin-left: 10px" href="/sparql">Sparql</a>
+        <a style="margin-left: 10px" href="/graphql">Graphql</a>
     </nav>
 
-    <route path="sparql">
-        <application name="@ontotext/workbench"></application>
-    </route>
-    <route path="graphql">
-        <application name="@ontotext/workbench"></application>
-    </route>
-    <route path="import">
-        <application name="@ontotext/legacy-workbench"></application>
-    </route>
-    <route path="repository">
-        <application name="@ontotext/legacy-workbench"></application>
-    </route>
-
     <main>
+        <route path="sparql">
+            <application name="@ontotext/workbench"></application>
+        </route>
+        <route path="graphql">
+            <application name="@ontotext/workbench"></application>
+        </route>
+        <route path="import">
+            <application name="@ontotext/legacy-workbench"></application>
+        </route>
+        <route path="repository">
+            <application name="@ontotext/legacy-workbench"></application>
+        </route>
         <route default>
-            <application name="@single-spa/welcome"></application>
+            <application name="@ontotext/legacy-workbench"></application>
         </route>
     </main>
+
+    <script type="module">
+        import { navigateToUrl } from 'single-spa';
+
+        function handleNavigation(event) {
+            console.log(`NAVIGATE`, event);
+            event.preventDefault(); // Prevent the default browser behavior
+            navigateToUrl(event.target.href); // Let single-spa handle the navigation
+        }
+    </script>
 </single-spa-router>

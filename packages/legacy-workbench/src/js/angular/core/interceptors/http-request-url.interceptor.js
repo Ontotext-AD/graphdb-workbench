@@ -10,8 +10,8 @@ angular.module('graphdb.framework.core.interceptors.http-request-url', [
             if (!config.url.startsWith(currentHost) && !config.url.startsWith("http:") && !config.url.startsWith("https:")) {
                 config.url = currentHost + config.url;
             }
-            console.log("-----------------------" + config.url + "-----------------------");
-            console.log('-------------------------' + JSON.stringify(config) + '--------------------------------------')
+            // console.log("-----------------------" + config.url + "-----------------------");
+            // console.log('-------------------------' + JSON.stringify(config) + '--------------------------------------')
             return config;
         }
     };
