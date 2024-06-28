@@ -1,10 +1,11 @@
 const PACKAGE = require('./package.json');
 const path = require('path');
-const merge = require('webpack-merge');
+const {merge} = require('webpack-merge');
 const commonConfig = require('./webpack.config.common');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+// const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = merge(commonConfig, {
@@ -17,20 +18,35 @@ module.exports = merge(commonConfig, {
         }
     },
     output: {
-        filename: '[name].[contentHash].bundle.js',
-        chunkFilename: '[name].[contentHash].bundle.js',
+        filename: '[name].[contenthash].bundle.js',
+        chunkFilename: '[name].[contenthash].bundle.js',
         path: path.resolve(__dirname, 'dist')
     },
     module: {
         rules: [
             {
                 test: /\.css$/,
-                use: [MiniCssExtractPlugin.loader, 'css-loader']
+                use: [{
+                    loader: MiniCssExtractPlugin.loader,
+                    options: {
+                        publicPath: '',
+                    },
+                }, 'css-loader']
             },
             {
                 test: /\.less$/,
-                use: [MiniCssExtractPlugin.loader, 'css-loader', 'less-loader']
+                use: [{
+                    loader: MiniCssExtractPlugin.loader,
+                    options: {
+                        publicPath: '',
+                    },
+                }, 'css-loader', 'less-loader']
             }
+        ]
+    },
+    optimization: {
+        minimizer: [
+            new CssMinimizerPlugin()
         ]
     },
     plugins: [
@@ -48,8 +64,9 @@ module.exports = merge(commonConfig, {
             //     removeComments: true
             // }
         }),
-        new MiniCssExtractPlugin({filename: "[name].[contentHash].css"}),
-        new OptimizeCssAssetsPlugin(),
+        new MiniCssExtractPlugin({filename: "[name].[contenthash].css"}),
+        // new OptimizeCssAssetsPlugin(),
+        new CssMinimizerPlugin(),
         new CleanWebpackPlugin()
     ]
 });

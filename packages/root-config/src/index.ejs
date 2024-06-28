@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <base href="/">
   <title>Root Config</title>
 
   <!--
@@ -39,6 +40,8 @@
     }
   </script>
   <link rel="preload" href="https://cdn.jsdelivr.net/npm/single-spa@5.9.0/lib/system/single-spa.min.js" as="script">
+   <script src="http://localhost:9001/plugin-registry.js?v=2.7.0-RC3"></script>
+   <script src="http://localhost:9001/plugins.js?v=2.7.0-RC3"></script>
 
   <!-- Add your organization's prod import map URL to this script's src  -->
   <!-- <script type="systemjs-importmap" src="/importmap.json"></script> -->
@@ -47,10 +50,10 @@
   <script type="systemjs-importmap">
     {
       "imports": {
-        "@single-spa/welcome": "https://unpkg.com/single-spa-welcome/dist/single-spa-welcome.js",
+      "@single-spa/welcome": "https://unpkg.com/single-spa-welcome/dist/single-spa-welcome.js",
         "@ontotext/root-config": "//localhost:9000/ontotext-root-config.js",
-        "@ontotext/sparql": "http://localhost:9001/main.js",
-        "@ontotext/graphql": "http://localhost:9001/main.js"
+        "@ontotext/workbench": "http://localhost:9002/main.js",
+        "@ontotext/legacy-workbench": "http://localhost:9001/main.bundle.js"
       }
     }
   </script>
