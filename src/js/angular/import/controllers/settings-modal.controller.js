@@ -1,10 +1,11 @@
+import {TABS} from "../services/import-context.service";
 angular
     .module('graphdb.framework.impex.import.controllers.settings-modal', [])
     .controller('SettingsModalController', SettingsModalController);
 
-SettingsModalController.$inject = ['$scope', '$uibModalInstance', 'toastr', 'UriUtils', 'settings', 'hasParserSettings', 'defaultSettings', 'isMultiple', '$translate'];
+SettingsModalController.$inject = ['$scope', '$uibModalInstance', 'toastr', 'UriUtils', 'settings', 'hasParserSettings', 'defaultSettings', 'isMultiple', 'activeTab', '$translate'];
 
-function SettingsModalController($scope, $uibModalInstance, toastr, UriUtils, settings, hasParserSettings, defaultSettings, isMultiple, $translate) {
+function SettingsModalController($scope, $uibModalInstance, toastr, UriUtils, settings, hasParserSettings, defaultSettings, isMultiple, activeTab, $translate) {
 
     // =========================
     // Public variables
@@ -15,6 +16,8 @@ function SettingsModalController($scope, $uibModalInstance, toastr, UriUtils, se
     $scope.isMultiple = isMultiple;
     $scope.enableReplace = !!($scope.settings.replaceGraphs && $scope.settings.replaceGraphs.length);
     $scope.showAdvancedSettings = false;
+    $scope.activeTab = activeTab;
+    $scope.userTabId = TABS.USER;
 
     // =========================
     // Public functions
