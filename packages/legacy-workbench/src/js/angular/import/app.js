@@ -13,7 +13,6 @@ const modules = [
     'ngRoute',
     'ngFileUpload',
     'ui.bootstrap',
-    'graphdb.framework.impex.import.directives',
     'graphdb.framework.impex.import.controllers',
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.import.directives.validate-uri',
