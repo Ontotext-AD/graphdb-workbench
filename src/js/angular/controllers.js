@@ -23,7 +23,7 @@ import './guides/directives';
 import {GUIDE_PAUSE} from './guides/tour-lib-services/shepherd.service';
 import 'angular-pageslide-directive/dist/angular-pageslide-directive';
 import 'angularjs-slider/dist/rzslider.min';
-import {DebounceUtils} from "./utils/debounce-utils";
+import _ from "lodash";
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -202,9 +202,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         $scope.initTutorial();
     });
 
-    $scope.checkMenu = DebounceUtils.debounce(function() {
+    $scope.checkMenu = _.debounce(function() {
         return $('.main-menu').hasClass('collapsed');
-    }, 250);
+    }, 250, {trailing: false});
 
     //Copy to clipboard popover options
     $scope.copyToClipboard = function (uri) {
