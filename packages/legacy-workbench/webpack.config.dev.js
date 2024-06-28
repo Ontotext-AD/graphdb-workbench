@@ -1,12 +1,12 @@
 const PACKAGE = require('./package.json');
 const path = require('path');
-const merge = require('webpack-merge');
+const {merge} = require('webpack-merge');
 const commonConfig = require('./webpack.config.common');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const host = 'localhost';
-const portHere = 9000;
+const portHere = 9001;
 const portThere = 7200;
 
 module.exports = merge(commonConfig, {
@@ -33,6 +33,7 @@ module.exports = merge(commonConfig, {
         new HtmlWebpackPlugin({
             template: './src/template.html',
             favicon: 'src/img/icon.png',
+            showErrors: true,
             templateParameters: {
                 version: PACKAGE.version,
                 devMode: true
@@ -41,11 +42,20 @@ module.exports = merge(commonConfig, {
         new CleanWebpackPlugin()
     ],
     devServer: {
-        disableHostCheck: true,
-        contentBase: path.join(__dirname, 'dist/'),
+        // disableHostCheck: true,
+        allowedHosts: 'all',
+        // contentBase: path.join(__dirname, 'dist/'),
+        static: {
+            directory: path.join(__dirname, 'dist/')
+        },
         compress: true,
         port: portHere,
         host: host,
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+            "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization, x-graphdb-repository",
+        },
         // needed to handle urls sent by open id providers that contain dots
         historyApiFallback: {
             disableDotRule: true
