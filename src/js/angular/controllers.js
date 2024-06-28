@@ -201,9 +201,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         $scope.initTutorial();
     });
 
-    $scope.checkMenu = function () {
+    $scope.checkMenu = debounce(function() {
         return $('.main-menu').hasClass('collapsed');
-    };
+    }, 250);
 
     //Copy to clipboard popover options
     $scope.copyToClipboard = function (uri) {
@@ -514,6 +514,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     $scope.$on('$destroy', () => {
         window.removeEventListener('storage', localStoreChangeHandler);
+        if ($scope.checkMenu) {
+            $timeout.cancel($scope.checkMenu);
+        }
     });
 
     $scope.isAdmin = function () {
@@ -714,6 +717,40 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         } else {
             collapsedMenuLogicOnInit();
         }
+    }
+
+    /**
+     * Creates a debounced function that delays invoking the provided function until after a specified wait time has
+     * elapsed since the last time the debounced function was invoked. Optionally, the function can be invoked immediately
+     * and then wait for the specified time before allowing the next invocation.
+     * @param {Function} func - The function to debounce.
+     * @param {number} wait - The number of milliseconds to delay.
+     * @param {boolean} [callImmediately=false] - If true, the function will be invoked immediately, then wait for the specified time
+     *                                           before allowing the next invocation.
+     * @return {Function} - Returns the new debounced function.
+     */
+    function debounce(func, wait, callImmediately) {
+        let timeout;
+
+        return function(...args) {
+            const later = () => {
+                timeout = null;
+                if (!callImmediately) {
+                    func.apply(this, args);
+                }
+            };
+            const callNow = callImmediately && !timeout;
+
+            if (timeout) {
+                clearTimeout(timeout);
+            }
+
+            timeout = setTimeout(later, wait);
+
+            if (callNow) {
+                func.apply(this, args);
+            }
+        };
     }
 
     $scope.slideToPage = function (index) {
