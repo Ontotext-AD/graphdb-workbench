@@ -916,6 +916,7 @@
         "forces.serial.statements": "Force l'utilisation du pipeline d'instructions en série. Non recommandé. A utiliser uniquement pour le débogage.",
         "force.serial.pipeline": "Forcer le pipeline série",
         "restore.defaults.btn": "Restaurer les valeurs par défaut",
+        "only.upload.btn": "Télécharger uniquement",
         "abort.btn": "Abandonner",
         "no.files.found": "Aucun fichier trouvé",
         "enable.for.auto.start": "Activez cette option pour lancer l'importation lorsque vous cliquez sur le bouton Importer. Si elle est désactivée, l'importation sera ajoutée à la liste mais ne démarrera pas automatiquement.",
