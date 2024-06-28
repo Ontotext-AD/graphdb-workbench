@@ -69,7 +69,7 @@
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "port": 9001
+            "port": 9002
           },
           "configurations": {
             "production": {
