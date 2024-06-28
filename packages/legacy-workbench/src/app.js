@@ -6,6 +6,7 @@ import 'angular-translate';
 import 'angular-translate-loader-static-files';
 import 'angular/core/interceptors/unauthorized.interceptor';
 import 'angular/core/interceptors/authentication.interceptor';
+import 'angular/core/interceptors/http-request-url.interceptor';
 import 'angular/core/directives/rdfresourcesearch/rdf-resource-search.directive';
 import 'angular/core/directives/languageselector/language-selector.directive';
 import 'angular/core/directives/copy-to-clipboard/copy-to-clipboard.directive';
@@ -37,6 +38,7 @@ const modules = [
     'pascalprecht.translate',
     'graphdb.framework.core.interceptors.unauthorized',
     'graphdb.framework.core.interceptors.authentication',
+    'graphdb.framework.core.interceptors.http-request-url',
     'graphdb.framework.core.directives.rdfresourcesearch.rdfresourcesearch',
     'graphdb.framework.core.directives.languageselector.languageselector',
     'graphdb.framework.core.directives.copytoclipboard.copytoclipboard',
@@ -64,9 +66,10 @@ const providers = [
     '$languageServiceProvider'
 ];
 
+const workbench = angular.module('graphdb.workbench', modules);
+
 const moduleDefinition = function (productInfo, translations) {
     defineCustomElements();
-    const workbench = angular.module('graphdb.workbench', modules);
 
     workbench.config([...providers,
         function ($routeProvider,
@@ -146,16 +149,22 @@ const moduleDefinition = function (productInfo, translations) {
                                 return $q.defer().resolve();
                             }
                             return import(`angular/${route.path}`).then(module => {
-                                $ocLazyLoad.inject(route.module);
-                            })
+                                $ocLazyLoad.inject(route.module)
+                                    .catch(err => {
+                                        console.log(err)
+                                    });
+                            }).catch(error => {
+                                console.error(`Error loading module for path: ${route.path}`, error);
+                                return $q.reject(error);
+                            });
                         }]
                     }
                 });
             });
 
-            $routeProvider.otherwise({
-                templateUrl: 'pages/not_found.html'
-            });
+            // $routeProvider.otherwise({
+            //     templateUrl: 'pages/not_found.html'
+            // });
 
             // use the HTML5 History API
             $locationProvider.html5Mode(true);
@@ -178,6 +187,7 @@ const moduleDefinition = function (productInfo, translations) {
 
             $httpProvider.interceptors.push('$unauthorizedInterceptor');
             $httpProvider.interceptors.push('$authenticationInterceptor');
+            $httpProvider.interceptors.push('$httpRequestURLInterceptor');
 
             // Hack the template request provider to add a version parameter to templates that
             // are fetched via HTTP to avoid cache issues. Those that are in the templateCache
@@ -244,7 +254,8 @@ const moduleDefinition = function (productInfo, translations) {
     workbench.filter('humanReadableSize', () => (size) => convertToHumanReadable(size));
     workbench.filter('trustAsHtml', ['$translate', '$sce', ($translate, $sce) => (message) => $sce.trustAsHtml(decodeHTML(message))]);
 
-    angular.bootstrap(document, ['graphdb.workbench']);
+    const workbenchElement = document.getElementById('workbench-app');
+    angular.bootstrap(workbenchElement, ['graphdb.workbench']);
 };
 
 // Manually load language files
@@ -282,7 +293,8 @@ function loadTranslations(language) {
 
 function startWorkbench(translations) {
     // Fetch the product version information before bootstrapping the app
-    $.get('rest/info/version?local=1', function (data) {
+    $.get('http://localhost:9001/rest/info/version?local=1', function (data) {
+        // Extract major.minor version as short version
         const versionArray = data.productVersion.match(/^(\d+\.\d+)/);
         if (versionArray.length) {
             data.productShortVersion = versionArray[1];
