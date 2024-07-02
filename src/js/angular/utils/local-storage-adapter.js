@@ -27,7 +27,8 @@ angular
         'REPOSITORY_ID': 'repository-id',
         'REPOSITORY_LOCATION': 'repository-location',
         'JSONLD_EXPORT_SETTINGS': 'jsonld-export-settings',
-        'IMPORT_VIEW': 'import-view'
+        'IMPORT_VIEW': 'import-view',
+        'SPARQL_LAST_REPO': 'sparql-last-repo'
     });
 
 LocalStorageAdapter.$inject = ['localStorageService', 'LSKeys'];

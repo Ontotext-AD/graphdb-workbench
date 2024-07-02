@@ -154,6 +154,13 @@ export class OntotextYasguiConfig {
         this.immutableSameAs = undefined;
 
         /**
+         * If the Yasgui state should be cleared to the initial state. Default value is false.
+         *
+         * @type {boolean}
+         */
+        this.clearState = false;
+
+        /**
          * If the configured endpoint should be preconfigured to any new opened editor tab.
          *
          * @type {boolean}
