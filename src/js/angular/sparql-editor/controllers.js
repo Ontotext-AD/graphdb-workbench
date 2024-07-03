@@ -15,13 +15,13 @@ import {VIEW_SPARQL_EDITOR} from "../models/sparql/constants";
 import {CancelAbortingQuery} from "../models/sparql/cancel-aborting-query";
 import {QueryMode} from "../models/ontotext-yasgui/query-mode";
 import 'angular/core/services/event-emitter-service';
-import {YasguiResetFlags} from "../models/ontotext-yasgui/yasgui-reset-flags";
 
 const modules = [
     'ui.bootstrap',
     'graphdb.framework.rest.connectors.service',
     'graphdb.framework.externalsync.controllers',
-    'graphdb.framework.utils.event-emitter-service'
+    'graphdb.framework.utils.event-emitter-service',
+    'graphdb.framework.utils.localstorageadapter'
 ];
 
 angular
@@ -44,7 +44,9 @@ SparqlEditorCtrl.$inject = [
     'GuidesService',
     'ModalService',
     'MonitoringRestService',
-    'EventEmitterService'];
+    'EventEmitterService',
+    'LocalStorageAdapter',
+    'LSKeys'];
 
 function SparqlEditorCtrl($rootScope,
                           $scope,
@@ -61,13 +63,14 @@ function SparqlEditorCtrl($rootScope,
                           GuidesService,
                           ModalService,
                           MonitoringRestService,
-                          EventEmitterService) {
+                          EventEmitterService,
+                          LocalStorageAdapter,
+                          LSKeys) {
     this.repository = '';
 
     const QUERY_EDITOR_ID = '#query-editor';
-    // When the view is loaded the repository change watcher will be triggered. We need to have this flag to prevent
-    // resetting the yasgui on the first load. This flag will be set to false after the first repository change.
-    let initialRepoInitialization = true;
+    let activeRepository = $repositories.getActiveRepository();
+    let isOntopRepo = $repositories.isActiveRepoOntopType();
 
     /**
      * @type {OntotextYasguiConfig}
@@ -84,24 +87,29 @@ function SparqlEditorCtrl($rootScope,
     // =========================
     // Public functions
     // =========================
-    $scope.updateConfig = () => {
+    /**
+     * Updates the Yasgui configuration
+     * @param {boolean} clearYasguiState if set to true, the Yasgui will reinitialize and clear all tab results. Queries will remain.
+     */
+    $scope.updateConfig = (clearYasguiState) => {
         $scope.yasguiConfig = {
             endpoint: getEndpoint,
             componentId: VIEW_SPARQL_EDITOR,
             prefixes: $scope.prefixes,
-            infer: $scope.inferUserSetting,
-            sameAs: $scope.sameAsUserSetting,
+            infer: isOntopRepo || $scope.inferUserSetting,
+            sameAs: isOntopRepo || $scope.sameAsUserSetting,
             yasrToolbarPlugins: [exploreVisualGraphYasrToolbarElementBuilder],
             beforeUpdateQuery: getBeforeUpdateQueryHandler(),
             outputHandlers: new Map([
                 [EventDataType.QUERY_EXECUTED, queryExecutedHandler],
                 [EventDataType.REQUEST_ABORTED, requestAbortedHandler]
-            ])
+            ]),
+            clearState: clearYasguiState !== undefined ? clearYasguiState : false
         };
     };
 
     $scope.getActiveRepositoryNoError = () => {
-        return $repositories.getActiveRepository();
+        return activeRepository;
     };
 
     // =========================
@@ -124,8 +132,13 @@ function SparqlEditorCtrl($rootScope,
         return $repositories.resolveSparqlEndpoint(yasqe.getQueryMode());
     };
 
-    const initViewFromUrlParams = () => {
-        $scope.updateConfig();
+    /**
+     * Initializes the editor from the URL parameters.
+     * @param {boolean} clearYasguiState if set to true, the Yasgui will reinitialize and clear all tab results. Queries will remain.
+     * The default is false.
+     */
+    const initViewFromUrlParams = (clearYasguiState = false) => {
+        $scope.updateConfig(clearYasguiState);
         const queryParams = $location.search();
         if (queryParams.hasOwnProperty(RouteConstants.savedQueryName)) {
             // init new tab from shared saved query link
@@ -409,7 +422,7 @@ function SparqlEditorCtrl($rootScope,
     };
 
     // Initialization and bootstrap
-    const init = () => {
+    const init = (clearYasguiState) => {
         // This script check is required, because of the following scenario:
         // I am in the SPARQL view;
         // Then I go to a different view and change the language;
@@ -430,12 +443,12 @@ function SparqlEditorCtrl($rootScope,
                 return;
             }
         }
-        Promise.all([$jwtAuth.getPrincipal(), $repositories.getPrefixes($repositories.getActiveRepository())])
+        Promise.all([$jwtAuth.getPrincipal(), $repositories.getPrefixes(activeRepository)])
             .then(([principal, usedPrefixes]) => {
                 $scope.prefixes = usedPrefixes;
                 setInferAndSameAs(principal);
                 // check is there is a saved query or query url parameter and init the editor
-                initViewFromUrlParams();
+                initViewFromUrlParams(clearYasguiState);
             });
         // TODO: we should also watch for changes in namespaces
         // scope.$watch('namespaces', function () {});
@@ -446,24 +459,17 @@ function SparqlEditorCtrl($rootScope,
     // =========================
     const subscriptions = [];
 
-    const reInitYasgui = (flags) => {
-        YasguiComponentDirectiveUtil.getOntotextYasguiElementAsync(QUERY_EDITOR_ID)
-            .then((yasguiComponent) => {
-                return yasguiComponent.reInitYasgui(flags);
-            })
-            .catch(() => {
-                console.error('Failed to reset yasr results');
-            });
-    };
-
-    const repositoryChangedHandler = (activeRepo) => {
-        if (activeRepo) {
-            if (!initialRepoInitialization) {
-                const flags = new YasguiResetFlags(true, true, true, true);
-                reInitYasgui(flags);
-            }
-            init();
-            initialRepoInitialization = false;
+    const repositoryChangedHandler = (object) => {
+        if (!object) {
+            return;
+        }
+        activeRepository= $repositories.getActiveRepository();
+        isOntopRepo = $repositories.isActiveRepoOntopType(object);
+        if (LocalStorageAdapter.get(LSKeys.SPARQL_LAST_REPO) !== activeRepository) {
+            init(true);
+            persistLasstUsedRepository();
+        } else {
+            init(false);
         }
     };
 
@@ -538,6 +544,25 @@ function SparqlEditorCtrl($rootScope,
         window.removeEventListener('beforeunload', beforeunloadHandler);
     };
 
+    const finalizeAndDestroy = () => {
+        persistLasstUsedRepository();
+        removeAllListeners();
+    };
+
+    const persistLasstUsedRepository = () => {
+        // The active repository is set when the controller is initialized and when the repository is changed.
+        // It holds the actual repository when the YASGUI is initialized. DON'T use runtime fetching of the actual repository here, because there is a scenario:
+        // 1. Open a tab with the SPARQL view open;
+        // 2. Open the SPARQL view in another tab and execute a query;
+        // 3. Switch to the repositories view and change the repository;
+        // 4. Switch back to the SPARQL view, and the YASR is not cleared.
+        // The problem occurs because of the second tab. When the repository is changed, its ID is persisted to local storage, which triggers the "storage" event to be fired.
+        // In the main controller, a listener has been registered to listen to that event and refresh the page outside of the Angular scope.
+        // Reloading the page triggers the destruction of the component and persistence of the active repository. The reloading of the page is out of the Angular scope, so the "activeRepository"
+        // holds the real repository when the YASGUI is created. If we use $$repositories.getActiveRepository(), the new value will be fetched, which in this case will be incorrect.
+        LocalStorageAdapter.set(LSKeys.SPARQL_LAST_REPO, activeRepository);
+    }
+
     subscriptions.push(
         $scope.$on('language-changed', function () {
             location.reload();
@@ -561,7 +586,7 @@ function SparqlEditorCtrl($rootScope,
         ));
 
     // Deregister the watcher when the scope/directive is destroyed
-    $scope.$on('$destroy', removeAllListeners);
+    subscriptions.push($scope.$on('$destroy', finalizeAndDestroy));
 
     // Wait until the active repository object is set, otherwise "canWriteActiveRepo()" may return a wrong result and the "ontotext-yasgui"
     // readOnly configuration may be incorrect.
