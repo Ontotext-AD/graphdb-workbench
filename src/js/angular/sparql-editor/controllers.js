@@ -70,6 +70,7 @@ function SparqlEditorCtrl($rootScope,
 
     const QUERY_EDITOR_ID = '#query-editor';
     let activeRepository = $repositories.getActiveRepository();
+    let isOntopRepo;
 
     /**
      * @type {OntotextYasguiConfig}
@@ -95,8 +96,8 @@ function SparqlEditorCtrl($rootScope,
             endpoint: getEndpoint,
             componentId: VIEW_SPARQL_EDITOR,
             prefixes: $scope.prefixes,
-            infer: $scope.inferUserSetting,
-            sameAs: $scope.sameAsUserSetting,
+            infer: isOntopRepo || $scope.inferUserSetting,
+            sameAs: isOntopRepo || $scope.sameAsUserSetting,
             yasrToolbarPlugins: [exploreVisualGraphYasrToolbarElementBuilder],
             beforeUpdateQuery: getBeforeUpdateQueryHandler(),
             outputHandlers: new Map([
@@ -458,8 +459,12 @@ function SparqlEditorCtrl($rootScope,
     // =========================
     const subscriptions = [];
 
-    const repositoryChangedHandler = () => {
+    const repositoryChangedHandler = (object) => {
+        if (!object) {
+            return;
+        }
         activeRepository= $repositories.getActiveRepository();
+        isOntopRepo = $repositories.isActiveRepoOntopType(object);
         if (LocalStorageAdapter.get(LSKeys.SPARQL_LAST_REPO) !== activeRepository) {
             init(true);
             persistLasstUsedRepository();
