@@ -70,7 +70,7 @@ function SparqlEditorCtrl($rootScope,
 
     const QUERY_EDITOR_ID = '#query-editor';
     let activeRepository = $repositories.getActiveRepository();
-    let isOntopRepo;
+    let isOntopRepo = $repositories.isActiveRepoOntopType();
 
     /**
      * @type {OntotextYasguiConfig}
