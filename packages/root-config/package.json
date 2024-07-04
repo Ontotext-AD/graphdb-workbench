@@ -1,7 +1,7 @@
 {
   "name": "@ontotext/root-config",
   "scripts": {
-    "start": "webpack serve --port 9000 --env isLocal",
+    "start": "webpack serve --port 9000 --env isLocal --open",
     "lint": "eslint src --ext js",
     "test": "cross-env BABEL_ENV=test jest --passWithNoTests",
     "format": "prettier --write .",
