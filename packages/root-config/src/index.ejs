@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <base href="/">
-  <title>Root Config</title>
+  <title>GraphDB Workbench</title>
 
   <!--
     Remove this if you only support browsers that support async/await.
@@ -35,7 +35,8 @@
   <script type="systemjs-importmap">
     {
       "imports": {
-        "single-spa": "https://cdn.jsdelivr.net/npm/single-spa@5.9.0/lib/system/single-spa.min.js"
+        "single-spa": "https://cdn.jsdelivr.net/npm/single-spa@5.9.0/lib/system/single-spa.min.js",
+        "@ontotext/workbench-api": "http://localhost:9003/ontotext-workbench-api.js"
       }
     }
   </script>
@@ -50,10 +51,9 @@
   <script type="systemjs-importmap">
     {
       "imports": {
-      "@single-spa/welcome": "https://unpkg.com/single-spa-welcome/dist/single-spa-welcome.js",
         "@ontotext/root-config": "//localhost:9000/ontotext-root-config.js",
-        "@ontotext/workbench": "http://localhost:9002/main.js",
-        "@ontotext/legacy-workbench": "http://localhost:9001/main.bundle.js"
+        "@ontotext/legacy-workbench": "http://localhost:9001/main.bundle.js",
+        "@ontotext/workbench": "http://localhost:9002/main.js"
       }
     }
   </script>
