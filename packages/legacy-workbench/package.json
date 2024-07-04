@@ -5,7 +5,7 @@
     "scripts": {
         "build": "webpack --config=webpack.config.prod.js",
         "build-dev": "webpack --config=webpack.config.dev.js",
-        "start": "webpack-dev-server --config=webpack.config.dev.js --open",
+        "start": "webpack-dev-server --config=webpack.config.dev.js",
         "lint": "eslint ./src",
         "less:watch": "less-watch-compiler --config=./less-watch-compiler.config.json",
         "less:preprocess": "less-watch-compiler --config=./less-compiler.config.json",
