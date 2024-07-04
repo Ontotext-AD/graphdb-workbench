@@ -20,3 +20,12 @@ echo ''
 cd ..
 cd workbench
 npm install
+
+
+echo ''
+echo '########################   Installing -- api --   ###########################'
+echo ''
+
+cd ..
+cd api
+npm install
