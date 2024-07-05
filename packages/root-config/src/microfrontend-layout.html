@@ -1,4 +1,23 @@
 <single-spa-router base="/">
+    <style>
+        body {
+            display: flex;
+            flex-direction: row;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        nav {
+            width: 200px;
+            background-color: #f0f0f0;
+            flex-shrink: 0;
+        }
+
+        main {
+            flex-grow: 1;
+        }
+    </style>
+
     <!--
 
       This is the single-spa Layout Definition for your microfrontends.
@@ -6,26 +25,9 @@
 
     -->
 
-    <nav id="workbenchNavbar" class="workbench-navbar">
+    <nav class="wb-navbar">
         <application name="@ontotext/navbar"></application>
     </nav>
-
-    <style>
-        body {
-            display: flex;
-            flex-direction: row;
-            height: 100vh;
-        }
-
-        .workbench-navbar {
-            width: 200px;
-            flex-shrink: 0;
-        }
-
-        #workbench-app {
-            flex-grow: 1;
-        }
-    </style>
 
     <main>
         <route path="sparql">

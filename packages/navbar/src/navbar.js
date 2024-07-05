@@ -38,7 +38,7 @@ export const mount = async (props) => {
         }
     }
 
-    document.querySelector('.workbench-navbar .toggle-menu').addEventListener('click', toggleNavigation);
+    document.querySelector('.wb-navbar .toggle-menu').addEventListener('click', toggleNavigation);
 };
 
 export const bootstrap = htmlLifecycles.bootstrap;

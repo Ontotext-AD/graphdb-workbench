@@ -1,8 +1,6 @@
-.workbench-navbar {
+.wb-navbar {
     position: fixed;
     width: 15rem;
-    /*display: flex;*/
-    /*flex-direction: column;*/
     background-color: #f7f7f7;
     height: 100%;
     padding: 0 !important;
@@ -10,11 +8,11 @@
     overflow-x: hidden;
 }
 
-.workbench-navbar > div {
+.wb-navbar > div {
     width: 100%;
 }
 
-.workbench-navbar .navbar-nav {
+.wb-navbar .navbar-nav {
     display: flex;
     flex-direction: column;
     list-style: none;
@@ -22,13 +20,13 @@
     margin: 0;
 }
 
-.workbench-navbar .navbar-nav .nav-item {
+.wb-navbar .navbar-nav .nav-item {
     margin: 0 !important;
     padding: 15px 0;
     border-bottom: 1px solid #fff;
 }
 
-.workbench-navbar .navbar-nav .nav-item .nav-link {
+.wb-navbar .navbar-nav .nav-item .nav-link {
     text-decoration: none;
     color: rgb(0, 54, 99);
     font-size: 1.1rem;
@@ -37,7 +35,7 @@
     display: block;
 }
 
-.workbench-navbar .navbar-nav .brand {
+.wb-navbar .navbar-nav .brand {
     height: 60px;
     display: flex;
     align-items: center;
@@ -45,7 +43,7 @@
     background-color: hsl( 207.3 , 100% , 19.4% );
 }
 
-.workbench-navbar .navbar-nav .brand a {
+.wb-navbar .navbar-nav .brand a {
     display: block;
     color: #fff;
     font-size: 2.5rem;
