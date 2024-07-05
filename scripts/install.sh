@@ -29,3 +29,11 @@ echo ''
 cd ..
 cd api
 npm install
+
+echo ''
+echo '########################   Installing -- navbar --   ###########################'
+echo ''
+
+cd ..
+cd navbar
+npm install
