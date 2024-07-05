@@ -3,7 +3,7 @@ const CleanWebpackPlugin = require("clean-webpack-plugin").CleanWebpackPlugin;
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = (webpackConfigEnv, argv) => {
-    const defaultConfig = {
+    return {
         mode: 'development',
         entry: "./src/navbar.js",
         output: {
@@ -48,11 +48,6 @@ module.exports = (webpackConfigEnv, argv) => {
             allowedHosts: "all",
             historyApiFallback: true,
             port: 9005
-        },
-        optimization: {
-            minimize: false,
         }
     };
-
-    return defaultConfig;
 };
