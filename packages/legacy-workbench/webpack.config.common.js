@@ -40,7 +40,7 @@ module.exports = {
         ],
         extensions: ['.js', '.mjs']
     },
-    externals: ["@ontotext/workbench-api"],
+    externals: ["@ontotext/workbench-api", "@ontotext/navbar"],
     plugins: [
         new webpack.DefinePlugin({
             version: JSON.stringify(require("./package.json").version),
