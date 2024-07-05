@@ -6,32 +6,26 @@
 
     -->
 
-<!--    <nav>-->
-<!--        <a style="margin-left: 10px" href="/" onclick="singleSpaNavigate(event)">Legacy WB</a>-->
-<!--        <a style="margin-left: 10px" href="/import" onclick="singleSpaNavigate(event)">Import</a>-->
-<!--        <a style="margin-left: 10px" href="/repository" onclick="singleSpaNavigate(event)">Repository</a>-->
-<!--        &nbsp;|-->
-<!--        <a style="margin-left: 10px" href="/sparql" onclick="singleSpaNavigate(event)">Sparql</a>-->
-<!--        <a style="margin-left: 10px" href="/graphql" onclick="singleSpaNavigate(event)">Graphql</a>-->
-<!--    </nav>-->
-
-<!--    <nav>-->
-<!--        <a style="margin-left: 10px" href="/" onclick="handleNavigation(event)">Legacy WB</a>-->
-<!--        <a style="margin-left: 10px" href="/import" onclick="handleNavigation(event)">Import</a>-->
-<!--        <a style="margin-left: 10px" href="/repository" onclick="handleNavigation(event)">Repository</a>-->
-<!--        &nbsp;|-->
-<!--        <a style="margin-left: 10px" href="/sparql" onclick="handleNavigation(event)">Sparql</a>-->
-<!--        <a style="margin-left: 10px" href="/graphql" onclick="handleNavigation(event)">Graphql</a>-->
-<!--    </nav>-->
-
-    <nav>
-        <a style="margin-left: 10px" href="/">Legacy WB</a>
-        <a style="margin-left: 10px" href="/import">Import</a>
-        <a style="margin-left: 10px" href="/repository">Repository</a>
-        &nbsp;|
-        <a style="margin-left: 10px" href="/sparql">Sparql</a>
-        <a style="margin-left: 10px" href="/graphql">Graphql</a>
+    <nav id="workbenchNavbar" class="workbench-navbar">
+        <application name="@ontotext/navbar"></application>
     </nav>
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: row;
+            height: 100vh;
+        }
+
+        .workbench-navbar {
+            width: 200px;
+            flex-shrink: 0;
+        }
+
+        #workbench-app {
+            flex-grow: 1;
+        }
+    </style>
 
     <main>
         <route path="sparql">
@@ -50,14 +44,4 @@
             <application name="@ontotext/legacy-workbench"></application>
         </route>
     </main>
-
-    <script type="module">
-        import { navigateToUrl } from 'single-spa';
-
-        function handleNavigation(event) {
-            console.log(`NAVIGATE`, event);
-            event.preventDefault(); // Prevent the default browser behavior
-            navigateToUrl(event.target.href); // Let single-spa handle the navigation
-        }
-    </script>
 </single-spa-router>

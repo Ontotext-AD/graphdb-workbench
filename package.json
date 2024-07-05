@@ -7,11 +7,12 @@
         "install": "sh scripts/install.sh",
         "postinstall": "cd packages/api && npm run build",
         "build": "sh scripts/build.sh",
-        "start": "concurrently \"npm run start-workbench-api\" \"npm run start-legacy-workbench\" \"npm run start-root-config\" \"npm run start-workbench\"",
+        "start": "concurrently \"npm run start-workbench-api\" \"npm run start-legacy-workbench\" \"npm run start-root-config\" \"npm run start-workbench\" \"npm run start-navbar\"",
         "start-workbench-api": "cd packages/api && npm run start",
         "start-legacy-workbench": "cd packages/legacy-workbench && npm run start",
         "start-root-config": "cd packages/root-config && npm run start",
-        "start-workbench": "cd packages/workbench && npm run start"
+        "start-workbench": "cd packages/workbench && npm run start",
+        "start-navbar": "cd packages/navbar && npm run start"
     },
     "files": [],
     "repository": {
