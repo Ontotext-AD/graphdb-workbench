@@ -23,8 +23,7 @@ export const mount = async (props) => {
 
     let opened = true;
     function toggleNavigation() {
-        console.log('toggleNavigation');
-        const navbar = document.querySelector('.workbench-navbar');
+        const navbar = document.querySelector('.wb-navbar');
         const workbenchApp = document.getElementById('workbench-app');
 
         if (opened) {

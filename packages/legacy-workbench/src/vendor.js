@@ -1,4 +1,3 @@
-import 'lib/bootstrap/bootstrap.min.css';
 import 'angular-toastr/dist/angular-toastr.min.css';
 import 'lib/awesome_me/css/fontawesome.min.css';
 import 'lib/awesome_me/css/regular.min.css';
