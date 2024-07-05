@@ -24,6 +24,11 @@ rm -fr packages/legacy-workbench/dist
 echo '- Delete "packages/legacy-workbench/node_modules"'
 rm -fr packages/legacy-workbench/node_modules
 
+echo ''
+echo '########################   Cleaning -- navbar --   ###########################'
+echo ''
+rm -fr packages/navbar/dist
+rm -fr packages/navabr/node_modules
 
 echo ''
 echo '########################   Cleaning -- Root config --   ###########################'
@@ -40,7 +45,3 @@ echo '- Delete "node_modules"'
 rm -fr node_modules
 echo '- Delete "deploy"'
 rm -fr deploy
-
-# Cleans up the navbar project.
-rm -fr packages/navbar/dist
-rm -fr packages/navabr/node_modules

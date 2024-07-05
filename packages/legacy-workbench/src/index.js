@@ -30,10 +30,23 @@ const ngLifecycles = singleSpaAngularJS({
     angular: angular,
     mainAngularModule: "graphdb.workbench",
     ngRoute: true,
-    preserveGlobal: false,
-    domElementGetter
+    preserveGlobal: false
 });
 
-export const bootstrap = ngLifecycles.bootstrap;
-export const mount = ngLifecycles.mount;
-export const unmount = ngLifecycles.unmount;
+export const bootstrap = (props) => {
+    // The usage of the generated bootstrap is commented out because it triggers the initialization of angular
+    // In the workbench case, we configure the workbench and bootstrap it in the app.js file.
+    // return ngLifecycles.bootstrap(props);
+    return Promise.resolve();
+};
+
+export const mount = (props) => {
+    return Promise.resolve()
+        .then(() => {
+            domElementGetter();
+        });
+};
+
+export const unmount = (props) => {
+    return ngLifecycles.unmount(props);
+};
