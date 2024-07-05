@@ -5,7 +5,7 @@
     "scripts": {
         "clean": "sh scripts/clean.sh",
         "install": "sh scripts/install.sh",
-        "postinstall": "npm run build",
+        "postinstall": "cd packages/api && npm run build",
         "build": "sh scripts/build.sh",
         "start": "concurrently \"npm run start-workbench-api\" \"npm run start-legacy-workbench\" \"npm run start-root-config\" \"npm run start-workbench\"",
         "start-workbench-api": "cd packages/api && npm run start",
