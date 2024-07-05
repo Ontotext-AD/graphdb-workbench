@@ -22,3 +22,10 @@ echo '########################   Building -- Root config --  ###################
 echo ''
 cd ../root-config
 npm run build
+
+echo ''
+echo '########################   Building -- navbar --   ###########################'
+echo ''
+
+cd packages/navbar
+npm run build
