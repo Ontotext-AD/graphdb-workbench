@@ -236,7 +236,7 @@ const moduleDefinition = function (productInfo) {
     angular.bootstrap(workbenchElement, ['graphdb.workbench']);
 };
 
-$.get('http://localhost:9001/rest/info/version?local=1', function (data) {
+$.get('/rest/info/version?local=1', function (data) {
     // Extract major.minor version as short version
     const versionArray = data.productVersion.match(/^(\d+\.\d+)/);
     if (versionArray.length) {
