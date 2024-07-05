@@ -3,9 +3,7 @@ const singleSpaDefaults = require("webpack-config-single-spa");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 
-const host = 'localhost';
-const portHere = 9000;
-const portThere = 9001;
+require('dotenv').config({path:'../../.env'});
 
 module.exports = (webpackConfigEnv, argv) => {
   const orgName = "ontotext";
@@ -37,8 +35,8 @@ module.exports = (webpackConfigEnv, argv) => {
               directory: path.join(__dirname, 'dist/')
           },
           compress: true,
-          port: portHere,
-          host: host,
+          port: process.env.ROOT_CONFIG_PORT,
+          host: process.env.ROOT_CONFIG_HOST,
           headers: {
               "Access-Control-Allow-Origin": "*",
               "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
@@ -49,8 +47,28 @@ module.exports = (webpackConfigEnv, argv) => {
               disableDotRule: true
           },
           proxy: [{
+                context: [process.env.LEGACY_WORKBENCH_PREFIX],
+                target: process.env.LEGACY_WORKBENCH_PROTOCOL + '://' + process.env.LEGACY_WORKBENCH_HOST + ':' + process.env.LEGACY_WORKBENCH_PORT,
+                pathRewrite: { [`^${process.env.LEGACY_WORKBENCH_PREFIX}`]: '' }
+            },
+            {
+                context: [process.env.WORKBENCH_PREFIX],
+                target: process.env.WORKBENCH_PROTOCOL + '://' + process.env.WORKBENCH_HOST + ':' + process.env.WORKBENCH_PORT,
+                pathRewrite: { [`^${process.env.WORKBENCH_PREFIX}`]: '' },
+            },
+            {
+                context: [process.env.ROOT_CONFIG_PREFIX],
+                target: process.env.ROOT_CONFIG_PROTOCOL + '://' + process.env.ROOT_CONFIG_HOST + ':' + process.env.ROOT_CONFIG_PORT,
+                pathRewrite: { [`^${process.env.ROOT_CONFIG_PREFIX}`]: '' }
+            },
+            {
+                context: [process.env.NAVBAR_PREFIX],
+                target: process.env.NAVBAR_PROTOCOL + '://' + process.env.NAVBAR_HOST + ':' + process.env.NAVBAR_PORT,
+                pathRewrite: { [`^${process.env.NAVBAR_PREFIX}`]: '' }
+            },
+            {
               context: ['/rest', '/repositories', '/protocol', '/rdf-bridge'],
-              target: 'http://' + host + ':' + portThere,
+              target: process.env.LEGACY_WORKBENCH_PROTOCOL + '://' + process.env.LEGACY_WORKBENCH_HOST + ':' + process.env.LEGACY_WORKBENCH_PORT,
               onProxyRes: (proxyRes) => {
                   var key = 'www-authenticate';
                   if (proxyRes.headers[key]) {

@@ -1,6 +1,7 @@
 const path = require("path");
 const CleanWebpackPlugin = require("clean-webpack-plugin").CleanWebpackPlugin;
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+require('dotenv').config({path:'../../.env'});
 
 module.exports = (webpackConfigEnv, argv) => {
     const defaultConfig = {
@@ -47,7 +48,7 @@ module.exports = (webpackConfigEnv, argv) => {
             headers: { "Access-Control-Allow-Origin": "*" },
             allowedHosts: "all",
             historyApiFallback: true,
-            port: 9005
+            port: process.env.NAVBAR_PORT
         },
         optimization: {
             minimize: false,

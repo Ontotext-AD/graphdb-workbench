@@ -4,10 +4,7 @@ const {merge} = require('webpack-merge');
 const commonConfig = require('./webpack.config.common');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-
-const host = 'localhost';
-const portHere = 9001;
-const portThere = 7200;
+require('dotenv').config({path:'../../.env'});
 
 module.exports = merge(commonConfig, {
     mode: 'development',
@@ -48,8 +45,8 @@ module.exports = merge(commonConfig, {
             directory: path.join(__dirname, 'dist/')
         },
         compress: true,
-        port: portHere,
-        host: host,
+        port: process.env.LEGACY_WORKBENCH_PORT,
+        host: process.env.LEGACY_WORKBENCH_HOST,
         headers: {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
@@ -61,7 +58,7 @@ module.exports = merge(commonConfig, {
         },
         proxy: [{
             context: ['/rest', '/repositories', '/protocol', '/rdf-bridge'],
-            target: 'http://' + host + ':' + portThere,
+            target: process.env.GRAPH_DB_PROTOCOL + '://' + process.env.GRAPH_DB_HOST + ':' + process.env.GRAPH_DB_PORT,
             onProxyRes: (proxyRes) => {
                 var key = 'www-authenticate';
                 if (proxyRes.headers[key]) {

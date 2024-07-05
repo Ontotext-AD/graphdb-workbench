@@ -1,7 +1,7 @@
 {
   "name": "@ontotext/workbench-api",
   "scripts": {
-    "start": "webpack serve --port 9003",
+    "start": "webpack serve --port",
     "start:standalone": "webpack serve --env standalone",
     "build": "concurrently npm:build:*",
     "build:webpack": "webpack --mode=production",
@@ -45,6 +45,7 @@
     "@types/jest": "^27.0.1",
     "@types/systemjs": "^6.1.1",
     "@types/webpack-env": "^1.16.2",
-    "single-spa": "^5.9.3"
+    "single-spa": "^5.9.3",
+    "dotenv": "^16.4.5"
   }
 }
