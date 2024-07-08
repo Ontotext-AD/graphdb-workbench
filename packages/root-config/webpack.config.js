@@ -2,6 +2,7 @@ const { merge } = require("webpack-merge");
 const singleSpaDefaults = require("webpack-config-single-spa");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
+require('dotenv').config({path:'../../.env'});
 
 require('dotenv').config({path:'../../.env'});
 
@@ -65,6 +66,11 @@ module.exports = (webpackConfigEnv, argv) => {
                 context: [process.env.NAVBAR_PREFIX],
                 target: process.env.NAVBAR_PROTOCOL + '://' + process.env.NAVBAR_HOST + ':' + process.env.NAVBAR_PORT,
                 pathRewrite: { [`^${process.env.NAVBAR_PREFIX}`]: '' }
+            },
+            {
+                context: [process.env.API_PREFIX],
+                target: process.env.API_PROTOCOL + '://' + process.env.API_HOST + ':' + process.env.API_PORT,
+                pathRewrite: { [`^${process.env.API_PREFIX}`]: '' }
             },
             {
               context: ['/rest', '/repositories', '/protocol', '/rdf-bridge'],
