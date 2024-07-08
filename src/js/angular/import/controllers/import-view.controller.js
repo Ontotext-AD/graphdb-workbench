@@ -365,7 +365,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             } else {
                 return getDefaultSettings()
                     .then((defaultSettings) => {
-                        return defaultSettings
+                        return defaultSettings;
                     });
             }
         };
@@ -373,6 +373,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         // TODO: temporary exposed in the scope because it is called via scope.parent from the child TabsCtrl which should be changed
         /**
          * @param {boolean} force - Force the files list to be replaced with the new data
+         * @return {Promise} A promise which is self resolved. An ugly legacy solution which we didn't want to change now.
          */
         $scope.updateListHttp = (force) => {
             const filesLoader = $scope.activeTabId === TABS.USER ? ImportRestService.getUploadedFiles : ImportRestService.getServerFiles;
@@ -467,11 +468,6 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             subscriptions.push($scope.$on('repositoryIsSet', $scope.onRepositoryChange));
             subscriptions.push($scope.$on('$destroy', () => $interval.cancel(listPollingHandler)));
             subscriptions.push(ImportContextService.onActiveTabIdUpdated((newActiveTabId) => onActiveTabChanged(newActiveTabId)));
-            subscriptions.push(ImportContextService.onSelectedFilesNamesUpdated(() => {
-                $scope.selectedForImportFiles = ImportContextService.getSelectedFilesNames()
-                    .map((name) => ({[name]: true}))
-                    .reduce((acc, val) => Object.assign(acc, val), {});
-            }));
             $scope.$on('$destroy', removeAllListeners);
         };
 
@@ -492,6 +488,8 @@ importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$
     // =========================
     // Private variables
     // =========================
+
+    const subscriptions = [];
 
     // =========================
     // Public variables
@@ -545,12 +543,27 @@ importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$
         });
     };
 
+    const removeAllListeners = () => {
+        subscriptions.forEach((subscription) => subscription());
+    };
+
+    const init = function () {
+        subscriptions.push(ImportContextService.onSelectedFilesNamesUpdated(() => {
+            $scope.selectedForImportFiles = ImportContextService.getSelectedFilesNames()
+                .map((name) => ({[name]: true}))
+                .reduce((acc, val) => Object.assign(acc, val), {});
+        }));
+    };
+
     // =========================
     // Initialization
     // =========================
 
+    $scope.$on('$destroy', removeAllListeners);
+
     if (TABS.SERVER === ImportContextService.getActiveTabId()) {
         $scope.importViewControllerInit();
+        init();
     }
 }]);
 
