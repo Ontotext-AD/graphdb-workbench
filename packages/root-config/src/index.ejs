@@ -36,13 +36,13 @@
     {
       "imports": {
         "single-spa": "https://cdn.jsdelivr.net/npm/single-spa@5.9.0/lib/system/single-spa.min.js",
-        "@ontotext/workbench-api": "http://localhost:9003/ontotext-workbench-api.js"
+        "@ontotext/workbench-api": "/api/ontotext-workbench-api.js"
       }
     }
   </script>
   <link rel="preload" href="https://cdn.jsdelivr.net/npm/single-spa@5.9.0/lib/system/single-spa.min.js" as="script">
-   <script src="http://localhost:9001/plugin-registry.js?v=2.7.0-RC3"></script>
-   <script src="http://localhost:9001/plugins.js?v=2.7.0-RC3"></script>
+   <script src="/legacy-workbench/plugin-registry.js?v=2.7.0-RC3"></script>
+   <script src="/legacy-workbench/plugins.js?v=2.7.0-RC3"></script>
 
   <!-- Add your organization's prod import map URL to this script's src  -->
   <!-- <script type="systemjs-importmap" src="/importmap.json"></script> -->
@@ -51,10 +51,10 @@
   <script type="systemjs-importmap">
     {
       "imports": {
-        "@ontotext/root-config": "//localhost:9000/ontotext-root-config.js",
-        "@ontotext/legacy-workbench": "http://localhost:9001/main.bundle.js",
-        "@ontotext/workbench": "http://localhost:9002/main.js",
-        "@ontotext/navbar": "http://localhost:9005/navbar.js"
+        "@ontotext/root-config": "/root-config/ontotext-root-config.js",
+        "@ontotext/legacy-workbench": "/legacy-workbench/main.bundle.js",
+        "@ontotext/workbench": "/workbench/main.js",
+        "@ontotext/navbar": "/navbar/navbar.js"
       }
     }
   </script>

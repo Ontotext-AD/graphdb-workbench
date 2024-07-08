@@ -1,7 +1,7 @@
 {
   "name": "@ontotext/root-config",
   "scripts": {
-    "start": "webpack serve --port 9000 --env isLocal --open",
+    "start": "webpack serve --env isLocal --open",
     "lint": "eslint src --ext js",
     "test": "cross-env BABEL_ENV=test jest --passWithNoTests",
     "format": "prettier --write .",
@@ -36,7 +36,10 @@
   "dependencies": {
     "@types/jest": "^27.0.1",
     "@types/systemjs": "^6.1.1",
+    "webpack": "^5.92.1",
+    "webpack-cli": "^5.1.4",
     "single-spa": "^5.9.3",
-    "single-spa-layout": "^1.6.0"
+    "single-spa-layout": "^1.6.0",
+    "dotenv": "^16.4.5"
   }
 }

@@ -4,6 +4,7 @@ const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const MergeIntoSingleFilePlugin = require('webpack-merge-and-include-globally');
 const WebpackAutoInject = require('webpack-auto-inject-version');
+require('dotenv').config({path:'../../.env'});
 
 // Pass this function as a transform argument to CopyPlugin elements to replace [AIV]{version}[/AIV]
 // with the current workbench version number. This is not related to the WebpackAutoInject plugin
@@ -24,7 +25,7 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         libraryTarget: "system",
         // TODO MAKE IT BY CONFIGURATION
-        publicPath: "http://localhost:9001/",
+        publicPath: process.env.LEGACY_WORKBENCH_PROTOCOL + '://' + process.env.LEGACY_WORKBENCH_HOST + ':' + process.env.LEGACY_WORKBENCH_PORT + "/",
     },
     resolve: {
         modules: [
