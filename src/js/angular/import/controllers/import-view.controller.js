@@ -375,6 +375,9 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
          * @param {boolean} force - Force the files list to be replaced with the new data
          */
         $scope.updateListHttp = (force) => {
+            if (!$repositories.getActiveRepository()) {
+                return Promise.resolve();
+            }
             const filesLoader = $scope.activeTabId === TABS.USER ? ImportRestService.getUploadedFiles : ImportRestService.getServerFiles;
             const executedInTabId = $scope.activeTabId;
             return filesLoader($repositories.getActiveRepository())
