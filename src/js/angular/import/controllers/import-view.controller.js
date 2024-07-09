@@ -65,13 +65,6 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         $scope.files = []; // should be private
         $scope.fileChecked = {};
         $scope.activeTabId = ImportContextService.getActiveTabId();
-        /**
-         * Contains a mapping of file names to flags indicating whether the file is selected or not.
-         * The selected files from this mapping are synchronized in the resources model each time it is refreshed from
-         * the server.
-         * @type {{[string]:boolean}}
-         */
-        $scope.selectedForImportFiles = {};
         $scope.popoverTemplateUrl = 'settingsPopoverTemplate.html';
         $scope.fileFormatsExtended = FileFormats.getFileFormatsExtended();
         $scope.fileFormatsHuman = FileFormats.getFileFormatsHuman() + $translate.instant('import.gz.zip');
@@ -176,16 +169,8 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                 });
         };
 
-        /**
-         * Get selection from the resource tree.
-         * @return {string[]}
-         */
-        $scope.getSelectedFiles = () => {
-            return ImportContextService.getSelectedFilesNames();
-        };
-
         $scope.importSelected = (overrideSettings) => {
-            const selected = new Set([...Object.keys($scope.selectedForImportFiles), ...$scope.getSelectedFiles()]);
+            const selected = new Set([...getImplicitlySelectedFiles(), ...getExplicitlySelectedFiles()]);
             const selectedFileNames = Array.from(selected);
 
             // Calls the REST API sequentially for the selected files
@@ -230,16 +215,6 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             }
             $scope.updateList(true);
             loadDefaultSettings();
-        };
-
-        const getDefaultSettings = () => {
-            if (defaultSettings) {
-                return Promise.resolve(angular.copy(defaultSettings));
-            }
-            return loadDefaultSettings()
-                .then(() => {
-                    return angular.copy(defaultSettings);
-                });
         };
 
         /**
@@ -287,11 +262,6 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
          * @param {boolean} withoutChangingSettings - Whether to use default settings or not.
          */
         $scope.importAll = (selectedResources, withoutChangingSettings) => {
-            // mark all files as selected locally in order to have them after the import is confirmed via the modal
-            selectedResources
-                .forEach((resource) => {
-                    $scope.selectedForImportFiles[resource.path] = true;
-                });
             if (withoutChangingSettings) {
                 $scope.importSelected(selectedResources, withoutChangingSettings);
             } else {
@@ -344,6 +314,25 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         };
 
         /**
+         * Get selection from the resource tree. These are files explicitly selected by the user by checking the
+         * checkboxes.
+         * @return {string[]}
+         */
+        const getExplicitlySelectedFiles = () => {
+            return ImportContextService.getSelectedFilesNames();
+        };
+
+        /**
+         * Get the names of the files which were just uploaded.
+         * @return {string[]}
+         */
+        const getImplicitlySelectedFiles = () => {
+            return $scope.currentFiles
+                .filter((file) => file.name)
+                .map((file) => file.name);
+        };
+
+        /**
          * Opens a confirmation dialog to confirm the removal of the selected resources. If removal is confirmed, a
          * request is sent to the backend with the selected file names to be removed.
          * @param {string[]} names - The names of the resources to be removed.
@@ -359,13 +348,23 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                 });
         };
 
+        const getDefaultSettings = () => {
+            if (defaultSettings) {
+                return Promise.resolve(angular.copy(defaultSettings));
+            }
+            return loadDefaultSettings()
+                .then(() => {
+                    return angular.copy(defaultSettings);
+                });
+        };
+
         const getSettingsFor = (fileName, withDefaultSettings) => {
             if (!withDefaultSettings && !_.isEmpty(fileName) && !_.isEmpty($scope.savedSettings[fileName])) {
                 return Promise.resolve($scope.savedSettings[fileName]);
             } else {
                 return getDefaultSettings()
                     .then((defaultSettings) => {
-                        return defaultSettings
+                        return defaultSettings;
                     });
             }
         };
@@ -373,6 +372,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         // TODO: temporary exposed in the scope because it is called via scope.parent from the child TabsCtrl which should be changed
         /**
          * @param {boolean} force - Force the files list to be replaced with the new data
+         * @return {Promise} A promise which is self resolved. An ugly legacy solution which we didn't want to change now.
          */
         $scope.updateListHttp = (force) => {
             const filesLoader = $scope.activeTabId === TABS.USER ? ImportRestService.getUploadedFiles : ImportRestService.getServerFiles;
@@ -467,11 +467,6 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
             subscriptions.push($scope.$on('repositoryIsSet', $scope.onRepositoryChange));
             subscriptions.push($scope.$on('$destroy', () => $interval.cancel(listPollingHandler)));
             subscriptions.push(ImportContextService.onActiveTabIdUpdated((newActiveTabId) => onActiveTabChanged(newActiveTabId)));
-            subscriptions.push(ImportContextService.onSelectedFilesNamesUpdated(() => {
-                $scope.selectedForImportFiles = ImportContextService.getSelectedFilesNames()
-                    .map((name) => ({[name]: true}))
-                    .reduce((acc, val) => Object.assign(acc, val), {});
-            }));
             $scope.$on('$destroy', removeAllListeners);
         };
 
@@ -517,8 +512,7 @@ importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$
      * @param {boolean} overrideSettings If default settings should be used or not.
      */
     $scope.importSelected = (overrideSettings) => {
-        const selectedFileNames = Object.keys($scope.selectedForImportFiles);
-        importServerFiles(selectedFileNames, overrideSettings);
+        importServerFiles(ImportContextService.getSelectedFilesNames(), overrideSettings);
     };
 
     $scope.importFile = function (fileName) {
@@ -862,7 +856,6 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                 // the list of currentFiles files to be imported.
                 $scope.currentFiles.forEach((file) => {
                     $scope.fileChecked[file.name] = true;
-                    $scope.selectedForImportFiles[file.name] = true;
                 });
                 // Provide an import rejected callback and do the upload instead.
                 let fileName = '';
@@ -872,8 +865,6 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                 $scope.setSettingsFor(fileName, false, undefined, () => {
                     $scope.currentFiles.forEach((file) => {
                         $scope.updateImport(file.name, false, false);
-                        // reset these as we are just uploading here
-                        $scope.selectedForImportFiles = {};
                     });
                 });
             }
@@ -881,11 +872,10 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     };
 
     const deselectAllFiles = () => {
+        // TODO: This should be removed at some time
         Object.keys($scope.fileChecked).forEach((key) => {
             $scope.fileChecked[key] = false;
         });
-        // TODO: The above should be removed
-        $scope.selectedForImportFiles = {};
     };
 
     const removeAllListeners = () => {
