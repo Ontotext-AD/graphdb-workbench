@@ -375,6 +375,9 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
          * @return {Promise} A promise which is self resolved. An ugly legacy solution which we didn't want to change now.
          */
         $scope.updateListHttp = (force) => {
+            if (!$repositories.getActiveRepository()) {
+                return Promise.resolve();
+            }
             const filesLoader = $scope.activeTabId === TABS.USER ? ImportRestService.getUploadedFiles : ImportRestService.getServerFiles;
             const executedInTabId = $scope.activeTabId;
             return filesLoader($repositories.getActiveRepository())
