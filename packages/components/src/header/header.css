@@ -1,0 +1,8 @@
+.header-component {
+    display: flex;
+    height: 46px;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    padding: 0 2rem 0 0;
+}
