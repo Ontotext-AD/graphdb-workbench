@@ -9,11 +9,28 @@ import "./styles/styles.css";
 import "./styles/bootstrap.min.css";
 import "font-awesome/css/font-awesome.min.css";
 
+// We can also imperatively load and mount the components like this.
+// System.import("@ontotext/components").then((components) => {
+//     console.log(`COMPONENTS`, components);
+//     components.navbar.mount({
+//         domElement: document.querySelector(".wb-navbar")
+//     });
+//     components.footer.mount({
+//         domElement: document.querySelector(".wb-footer")
+//     });
+// });
+
 const routes = constructRoutes(microfrontendLayout);
 const applications = constructApplications({
     routes,
     loadApp({name}) {
-        return System.import(name);
+        if (!name.includes('.')) {
+            return System.import(name);
+        } else {
+            // This allows us to load submodules exported in a namespace-like fashion. For example: "@ontotext/components.navbar".
+            const [module, exported] = name.split('.', 2);
+            return System.import(module).then((module) => module[exported]);
+        }
     },
 });
 const layoutEngine = constructLayoutEngine({routes, applications});
