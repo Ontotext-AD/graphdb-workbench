@@ -1,14 +1,13 @@
 const path = require("path");
 const CleanWebpackPlugin = require("clean-webpack-plugin").CleanWebpackPlugin;
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = (webpackConfigEnv, argv) => {
     return {
         mode: 'development',
-        entry: "./src/navbar.js",
+        entry: "./src/index.js",
         output: {
             path: path.resolve(process.cwd(), "dist"),
-            filename: "navbar.js",
+            filename: "index.js",
             libraryTarget: "system",
             publicPath: "",
         },
@@ -16,10 +15,7 @@ module.exports = (webpackConfigEnv, argv) => {
             extensions: [".js"],
         },
         plugins: [
-            new CleanWebpackPlugin(),
-            new HtmlWebpackPlugin({
-                template: "./src/navbar.html",
-            })
+            new CleanWebpackPlugin()
         ],
         module: {
             rules: [
@@ -47,7 +43,10 @@ module.exports = (webpackConfigEnv, argv) => {
             headers: { "Access-Control-Allow-Origin": "*" },
             allowedHosts: "all",
             historyApiFallback: true,
-            port: 9005
+            port: 9004
+        },
+        optimization: {
+            minimize: false,
         }
     };
 };
