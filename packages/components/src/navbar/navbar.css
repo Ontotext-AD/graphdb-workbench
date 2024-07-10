@@ -1,4 +1,4 @@
-.wb-navbar {
+.navbar-component {
     position: fixed;
     width: 15rem;
     background-color: #f7f7f7;
@@ -8,11 +8,11 @@
     overflow-x: hidden;
 }
 
-.wb-navbar > div {
+.navbar-component > div {
     width: 100%;
 }
 
-.wb-navbar .navbar-nav {
+.navbar-component {
     display: flex;
     flex-direction: column;
     list-style: none;
@@ -20,13 +20,13 @@
     margin: 0;
 }
 
-.wb-navbar .navbar-nav .nav-item {
+.navbar-component .nav-item {
     margin: 0 !important;
     padding: 15px 0;
     border-bottom: 1px solid #fff;
 }
 
-.wb-navbar .navbar-nav .nav-item .nav-link {
+.navbar-component .nav-item .nav-link {
     text-decoration: none;
     color: rgb(0, 54, 99);
     font-size: 1.1rem;
@@ -35,7 +35,7 @@
     display: block;
 }
 
-.wb-navbar .navbar-nav .brand {
+.navbar-component .brand {
     height: 60px;
     display: flex;
     align-items: center;
@@ -43,7 +43,7 @@
     background-color: hsl( 207.3 , 100% , 19.4% );
 }
 
-.wb-navbar .navbar-nav .brand a {
+.navbar-component .brand a {
     display: block;
     color: #fff;
     font-size: 2.5rem;
