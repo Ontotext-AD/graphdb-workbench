@@ -1,17 +1,37 @@
 body {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 15rem 1fr; /* Fixed width for nav, rest for content */
+    grid-template-rows: auto 1fr auto; /* Size for header, dynamic for main, size for footer */
+    grid-template-areas:
+        "nav header"
+        "nav main"
+        "nav footer";
     height: 100vh;
-    width: 100vw;
     margin: 0;
 }
 
 nav {
-    width: 200px;
+    grid-area: nav;
     background-color: #f0f0f0;
-    flex-shrink: 0;
+}
+
+header {
+    grid-area: header;
 }
 
 main {
-    flex-grow: 1;
+    grid-area: main;
+}
+
+main .main-container {
+    /* This is a temporary solution to properly align the main container next to the sidebar until a proper layout is in place. */
+    margin-left: 0;
+}
+
+footer {
+    grid-area: footer;
+}
+
+@media (min-width: 768px) {
+    /* Adjustments for larger screens if necessary */
 }

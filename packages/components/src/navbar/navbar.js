@@ -24,6 +24,7 @@ export const mount = async (props) => {
     let opened = true;
     function toggleNavigation() {
         const navbar = document.querySelector('.wb-navbar');
+        // TODO: Rethink this, because it's a coupling with the component client through the DOM.
         const workbenchApp = document.getElementById('workbench-app');
 
         if (opened) {
@@ -31,7 +32,7 @@ export const mount = async (props) => {
             workbenchApp.style.flexGrow = '1';
             opened = false;
         } else {
-            navbar.style.width = '200px';
+            navbar.style.width = '15rem';
             workbenchApp.style.flexGrow = '0';
             opened = true;
         }

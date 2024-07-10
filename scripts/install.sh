@@ -31,9 +31,9 @@ cd api
 npm install
 
 echo ''
-echo '########################   Installing -- navbar --   ###########################'
+echo '########################   Installing -- components --   ###########################'
 echo ''
 
 cd ..
-cd navbar
+cd components
 npm install
