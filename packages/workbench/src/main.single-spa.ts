@@ -7,12 +7,14 @@ import { singleSpaAngular, getSingleSpaExtraProviders } from 'single-spa-angular
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 import { singleSpaPropsSubject } from './single-spa/single-spa-props';
+import {defineCustomElements} from '../../shared-components/loader';
 
 if (environment.production) {
   enableProdMode();
 }
 
 // bootstrapApplication(AppComponent, appConfig).catch((err) => console.error(err));
+defineCustomElements(window);
 
 const lifecycles = singleSpaAngular({
   bootstrapFunction: singleSpaProps => {

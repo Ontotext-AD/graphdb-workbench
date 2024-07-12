@@ -25,12 +25,6 @@ echo '- Delete "packages/legacy-workbench/node_modules"'
 rm -fr packages/legacy-workbench/node_modules
 
 echo ''
-echo '########################   Cleaning -- navbar --   ###########################'
-echo ''
-rm -fr packages/navbar/dist
-rm -fr packages/navabr/node_modules
-
-echo ''
 echo '########################   Cleaning -- Root config --   ###########################'
 echo ''
 echo '- Delete "packages/root-config/dist"'

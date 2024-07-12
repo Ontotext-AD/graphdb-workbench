@@ -1,4 +1,4 @@
-import {registerApplication, start, navigateToUrl} from "single-spa";
+import {registerApplication, start, navigateToUrl, addErrorHandler, getAppStatus} from "single-spa";
 import {
     constructApplications,
     constructRoutes,
@@ -8,17 +8,14 @@ import microfrontendLayout from "./microfrontend-layout.html";
 import "./styles/styles.css";
 import "./styles/bootstrap.min.css";
 import "font-awesome/css/font-awesome.min.css";
+// import "./styles/bootstrap-graphdb-theme.css";
+import {defineCustomElements} from "../../shared-components/loader";
 
-// We can also imperatively load and mount the components like this.
-// System.import("@ontotext/components").then((components) => {
-//     console.log(`COMPONENTS`, components);
-//     components.navbar.mount({
-//         domElement: document.querySelector(".wb-navbar")
-//     });
-//     components.footer.mount({
-//         domElement: document.querySelector(".wb-footer")
-//     });
-// });
+addErrorHandler((err) => {
+    console.log(err);
+    console.log(err.appOrParcelName);
+    console.log(getAppStatus(err.appOrParcelName));
+});
 
 const routes = constructRoutes(microfrontendLayout);
 const applications = constructApplications({
@@ -33,10 +30,23 @@ const applications = constructApplications({
         }
     },
 });
+
 const layoutEngine = constructLayoutEngine({routes, applications});
 
 applications.forEach(registerApplication);
 layoutEngine.activate();
+
+defineCustomElements();
+
+// This is one way to pass properties to the custom elements.
+window.addEventListener("single-spa:first-mount", () => {
+    // const navbar = document.querySelector('onto-navbar');
+    // if (navbar) {
+    //     navbar.menuModel = PluginRegistry.get('main.menu');
+    // } else {
+    //     console.error('onto-navbar element not found');
+    // }
+});
 
 // window.addEventListener("single-spa:routing-event", (evt) => {
 //     console.log("single-spa finished mounting/unmounting applications!");

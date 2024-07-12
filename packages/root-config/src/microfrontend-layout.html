@@ -8,11 +8,16 @@
     -->
 
     <header class="wb-header">
-        <application name="@ontotext/components.header"></application>
+        <onto-header></onto-header>
     </header>
 
     <nav class="wb-navbar">
-        <application name="@ontotext/components.navbar"></application>
+        <onto-navbar></onto-navbar>
+        <script type="text/javascript">
+            const navbar = document.querySelector('onto-navbar');
+            console.log(`PADD DATA`, navbar);
+            navbar.menuModel = PluginRegistry.get('main.menu');
+        </script>
     </nav>
 
     <main>
@@ -34,6 +39,6 @@
     </main>
 
     <footer class="wb-footer">
-        <application name="@ontotext/components.footer"></application>
+        <onto-footer></onto-footer>
     </footer>
 </single-spa-router>
