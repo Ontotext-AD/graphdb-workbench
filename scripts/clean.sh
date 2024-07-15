@@ -1,4 +1,18 @@
 echo ''
+echo '######################## Cleaning -- Shared components -- ###########################'
+echo ''
+echo '- Delete "packages/shared-components/.stencil"'
+rm -fr packages/shared-components/.stencil
+echo '- Delete "packages/shared-components/dist"'
+rm -fr packages/shared-components/dist
+echo '- Delete "packages/shared-components/loader"'
+rm -fr packages/shared-components/loader
+echo '- Delete "packages/shared-components/node_modules"'
+rm -fr packages/shared-components/node_modules
+echo '- Delete "packages/shared-components/www"'
+rm -fr packages/shared-components/www`
+
+echo ''
 echo '########################   Cleaning -- api --   ###########################'
 echo ''
 echo '- Delete "packages/api/dist"'
