@@ -328,7 +328,9 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
                 });
                 $scope.instancesLoader = false;
 
-                $scope.instancesSearchPlaceholder = $scope.instancesObj.items.length < 1000 ? "Search class instances" : "Search first 1000 class instances";
+                $scope.instancesSearchPlaceholder = $scope.instancesObj.items.length < 1000 ?
+                    $translate.instant('graphexplore.search.class.instances') :
+                    $translate.instant('graphexplore.search.first.class.instances');
                 $scope.instancesNotFiltered = $scope.instancesObj.items;
             })
             .error(function () {
