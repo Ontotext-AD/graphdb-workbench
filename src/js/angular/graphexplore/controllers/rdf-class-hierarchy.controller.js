@@ -79,6 +79,12 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
         }
     };
 
+    const getPlaceholderText = function () {
+        return $scope.instancesObj.items.length < 1000 ?
+            $translate.instant('graphexplore.search.class.instances') :
+            $translate.instant('graphexplore.search.first.class.instances');
+    };
+
     $rootScope.$watch(function () {
         return $rootScope.key;
     }, function () {
@@ -95,12 +101,21 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     // adapter implementation for ui-scroll directive
     $scope.adapterContainer = {adapter: {remain: true}};
 
+    const subscriptions = [];
 
     // events
-    $scope.$on('goToDomainRangeGraphView', onGoToDomainRangeGraphView);
-    $scope.$on('classCount', initClassCountSlider);
-    $scope.$on('repositoryIsSet', onRepositoryIsSet);
+    subscriptions.push($scope.$on('goToDomainRangeGraphView', onGoToDomainRangeGraphView));
+    subscriptions.push($scope.$on('classCount', initClassCountSlider));
+    subscriptions.push($scope.$on('repositoryIsSet', onRepositoryIsSet));
+    subscriptions.push($rootScope.$on('$translateChangeSuccess', () => {
+        $scope.instancesSearchPlaceholder = getPlaceholderText();
+    }));
 
+    const unsubscribeListeners = () => {
+        subscriptions.forEach((subscription) => subscription());
+    };
+
+    subscriptions.push($scope.$on('$destroy', unsubscribeListeners));
     // objects
     $scope.datasource = datasource;
 
@@ -328,9 +343,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
                 });
                 $scope.instancesLoader = false;
 
-                $scope.instancesSearchPlaceholder = $scope.instancesObj.items.length < 1000 ?
-                    $translate.instant('graphexplore.search.class.instances') :
-                    $translate.instant('graphexplore.search.first.class.instances');
+                $scope.instancesSearchPlaceholder = getPlaceholderText();
                 $scope.instancesNotFiltered = $scope.instancesObj.items;
             })
             .error(function () {
