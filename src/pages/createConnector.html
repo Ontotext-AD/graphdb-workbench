@@ -1,6 +1,6 @@
 <div class="modal-header">
     <button type="button" class="close" ng-click="cancel()"></button>
-    <h3 class="modal-title">Create new {{connector.key}} Connector</h3>
+    <h3 class="modal-title">{{ 'externalsync.create.connector' | translate: {name: connector["key"]} }}</h3>
 </div>
 <div class="modal-body">
     <form name="form" id="connectorForm" ng-submit="ok()" novalidate>

@@ -13,19 +13,19 @@ chartsDirective.directive('chart', ['$rootScope',
                 let myChart;
 
                 const languageChangedSubscription = $rootScope.$on('$translateChangeSuccess', () => {
-                    scope.chart.translateLabels()
+                    scope.chart.translateLabels();
                     myChart.setOption(scope.chart.chartOptions);
 
                 });
 
                 scope.$watch('chart', function () {
                     initChart();
-                })
+                });
 
 
                 function refreshChart() {
                     myChart.setOption(scope.chart.chartOptions);
-                    scope.chart.updateRange(scope.chart.dataHolder)
+                    scope.chart.updateRange(scope.chart.dataHolder);
                     myChart.hideLoading();
                 }
 
@@ -34,8 +34,9 @@ chartsDirective.directive('chart', ['$rootScope',
                     myChart.setOption(scope.chart.chartOptions);
                     myChart.showLoading();
 
-                    myChart.on('legendselectchanged', handleLegendSelect)
-                    scope.chart.registerRefreshHandler(refreshChart)
+                    myChart.on('legendselectchanged', handleLegendSelect);
+                    scope.chart.registerRefreshHandler(refreshChart);
+                    scope.chart.translateLabels();
                     window.addEventListener('resize', handleWindowResize);
                 }
 
@@ -48,13 +49,13 @@ chartsDirective.directive('chart', ['$rootScope',
                 }
 
                 scope.$on("$destroy", function () {
-                    myChart.on('legendselectchanged')
+                    myChart.on('legendselectchanged');
                     myChart.dispose();
-                    scope.chart.unregisterRefreshHandler(refreshChart)
+                    scope.chart.unregisterRefreshHandler(refreshChart);
                     languageChangedSubscription();
                     window.removeEventListener('resize', handleWindowResize);
                 });
             }
-        }
+        };
     }
 ]);
