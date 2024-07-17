@@ -4,13 +4,13 @@
         {{'cluster_management.cluster_configuration.label' | translate}}
     </h3>
     <div class="mb-2" ng-if="isAdmin">
-        <button type="button" class="btn btn-secondary delete-cluster-btn mr-1"
+        <button type="button" class="btn btn-secondary delete-cluster-btn mr-1 mt-1"
                 ng-click="showDeleteDialog()"
                 gdb-tooltip="{{'cluster_management.buttons.delete_cluster_tooltip' | translate}}"
                 tooltip-placement="bottom">
             <span class="icon-trash"></span> {{'cluster_management.buttons.delete_cluster' | translate}}
         </button>
-        <button type="button" class="btn btn-primary edit-cluster-configuration"
+        <button type="button" class="btn btn-primary edit-cluster-configuration mt-1"
                 ng-click="showEditConfigurationDialog()"
                 gdb-tooltip="{{'cluster_management.buttons.edit_cluster_tooltip' | translate}}"
                 tooltip-placement="bottom">
