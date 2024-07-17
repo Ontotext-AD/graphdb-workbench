@@ -5,35 +5,18 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { ExternalMenuModel } from "./components/onto-navbar/menu-model";
+export { ExternalMenuModel } from "./components/onto-navbar/menu-model";
 export namespace Components {
-    interface MyComponent {
-        /**
-          * The first name
-         */
-        "first": string;
-        /**
-          * The last name
-         */
-        "last": string;
-        /**
-          * The middle name
-         */
-        "middle": string;
-    }
     interface OntoFooter {
     }
     interface OntoHeader {
     }
     interface OntoNavbar {
+        "menuItems": ExternalMenuModel;
     }
 }
 declare global {
-    interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {
-    }
-    var HTMLMyComponentElement: {
-        prototype: HTMLMyComponentElement;
-        new (): HTMLMyComponentElement;
-    };
     interface HTMLOntoFooterElement extends Components.OntoFooter, HTMLStencilElement {
     }
     var HTMLOntoFooterElement: {
@@ -53,35 +36,20 @@ declare global {
         new (): HTMLOntoNavbarElement;
     };
     interface HTMLElementTagNameMap {
-        "my-component": HTMLMyComponentElement;
         "onto-footer": HTMLOntoFooterElement;
         "onto-header": HTMLOntoHeaderElement;
         "onto-navbar": HTMLOntoNavbarElement;
     }
 }
 declare namespace LocalJSX {
-    interface MyComponent {
-        /**
-          * The first name
-         */
-        "first"?: string;
-        /**
-          * The last name
-         */
-        "last"?: string;
-        /**
-          * The middle name
-         */
-        "middle"?: string;
-    }
     interface OntoFooter {
     }
     interface OntoHeader {
     }
     interface OntoNavbar {
+        "menuItems"?: ExternalMenuModel;
     }
     interface IntrinsicElements {
-        "my-component": MyComponent;
         "onto-footer": OntoFooter;
         "onto-header": OntoHeader;
         "onto-navbar": OntoNavbar;
@@ -91,7 +59,6 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "my-component": LocalJSX.MyComponent & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
             "onto-footer": LocalJSX.OntoFooter & JSXBase.HTMLAttributes<HTMLOntoFooterElement>;
             "onto-header": LocalJSX.OntoHeader & JSXBase.HTMLAttributes<HTMLOntoHeaderElement>;
             "onto-navbar": LocalJSX.OntoNavbar & JSXBase.HTMLAttributes<HTMLOntoNavbarElement>;

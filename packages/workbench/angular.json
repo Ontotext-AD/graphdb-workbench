@@ -40,7 +40,7 @@
               "libraryName": "workbench",
               "libraryTarget": "umd"
             },
-            "deployUrl": "http://localhost:9001/"
+            "deployUrl": "http://localhost:9002/"
           },
           "configurations": {
             "production": {

@@ -1,4 +1,9 @@
-import {registerApplication, start, navigateToUrl, addErrorHandler, getAppStatus} from "single-spa";
+import {
+    registerApplication,
+    start,
+    addErrorHandler,
+    getAppStatus,
+} from "single-spa";
 import {
     constructApplications,
     constructRoutes,
@@ -9,7 +14,7 @@ import "./styles/styles.css";
 import "./styles/bootstrap.min.css";
 import "font-awesome/css/font-awesome.min.css";
 // import "./styles/bootstrap-graphdb-theme.css";
-import {defineCustomElements} from "../../shared-components/loader";
+import { defineCustomElements } from "../../shared-components/loader";
 
 addErrorHandler((err) => {
     console.log(err);
@@ -40,12 +45,12 @@ defineCustomElements();
 
 // This is one way to pass properties to the custom elements.
 window.addEventListener("single-spa:first-mount", () => {
-    // const navbar = document.querySelector('onto-navbar');
-    // if (navbar) {
-    //     navbar.menuModel = PluginRegistry.get('main.menu');
-    // } else {
-    //     console.error('onto-navbar element not found');
-    // }
+    const navbar = document.querySelector('onto-navbar');
+    if (navbar) {
+        navbar.menuItems = PluginRegistry.get('main.menu');
+    } else {
+        console.error('onto-navbar element not found');
+    }
 });
 
 // window.addEventListener("single-spa:routing-event", (evt) => {
