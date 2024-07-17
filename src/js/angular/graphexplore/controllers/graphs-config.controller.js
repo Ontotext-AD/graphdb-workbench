@@ -17,6 +17,7 @@ angular
     .controller('GraphConfigCtrl', GraphConfigCtrl);
 
 GraphConfigCtrl.$inject = [
+    '$rootScope',
     '$scope',
     '$timeout',
     '$location',
@@ -36,6 +37,7 @@ GraphConfigCtrl.$inject = [
 ];
 
 function GraphConfigCtrl(
+    $rootScope,
     $scope,
     $timeout,
     $location,
@@ -91,13 +93,7 @@ function GraphConfigCtrl(
      */
     $scope.getNamespacesPromise = undefined;
 
-    $scope.tabsViewModel = [
-        {page: 1, label: $translate.instant('starting.point.label'), type: 'startGraphQuery'},
-        {page: 2, label: $translate.instant('graph.expansion'), type: 'expandQuery'},
-        {page: 3, label: $translate.instant('node.basics'), type: 'resourceQuery'},
-        {page: 4, label: $translate.instant('edge.basics'), type: 'predicateLabelQuery'},
-        {page: 5, label: $translate.instant('node.extra'), type: 'resourcePropertiesQuery'}
-    ];
+    $scope.tabsViewModel = [];
 
     // =========================
     // Private fields
@@ -569,7 +565,18 @@ function GraphConfigCtrl(
         }
     };
 
+    const translateTabsViewModel = () => {
+        $scope.tabsViewModel = [
+            {page: 1, label: $translate.instant('starting.point.label'), type: 'startGraphQuery'},
+            {page: 2, label: $translate.instant('graph.expansion'), type: 'expandQuery'},
+            {page: 3, label: $translate.instant('node.basics'), type: 'resourceQuery'},
+            {page: 4, label: $translate.instant('edge.basics'), type: 'predicateLabelQuery'},
+            {page: 5, label: $translate.instant('node.extra'), type: 'resourcePropertiesQuery'}
+        ];
+    }
+
     const initView = () => {
+        translateTabsViewModel();
         $repositories.getPrefixes(activeRepository)
             .then((prefixes) => initYasgui(prefixes))
             .finally(() => setLoader(false));
@@ -613,6 +620,10 @@ function GraphConfigCtrl(
     subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
     subscriptions.push($scope.$on('$destroy', unsubscribeListeners));
     subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, repositoryChangedHandler));
+
+    subscriptions.push($rootScope.$on('$translateChangeSuccess', () => {
+        translateTabsViewModel();
+    }));
     window.addEventListener('beforeunload', beforeunloadHandler);
 
     // Trigger for showing the editor and moving it to the right position

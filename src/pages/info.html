@@ -23,7 +23,7 @@
 							<p class="list-group-item-text">{{sesameVersion}}</p>
 						</div>
 						<div class="col-md-3 connectors-item">
-							<h5 class="list-group-item-heading">Connectors</h5>
+							<h5 class="list-group-item-heading">{{'view.system.information.connectors.label' | translate}}</h5>
 							<p class="list-group-item-text">{{connectorsVersion}}</p>
 						</div>
                         <div class="col-md-3 gdb-item">
@@ -43,8 +43,8 @@
 							<p class="list-group-item-text">{{info.javaVersion}}</p>
 						</div>
 						<div class="col-md-3 heap-item">
-							<h5 class="list-group-item-heading">Heap memory</h5>
-							<p class="list-group-item-text">{{info.usedMemory}} out of {{info.maxMemory}}</p>
+							<h5 class="list-group-item-heading">{{'view.system.information.heap.memory' | translate}}</h5>
+							<p class="list-group-item-text">{{info.usedMemory}} {{'view.system.information.outOf.label' | translate}} {{info.maxMemory}}</p>
 						</div>
 					</div>
 				</div>
@@ -97,7 +97,7 @@
 
 		</uib-tab>
 		<uib-tab>
-		    <uib-tab-heading class="nav-item jvm-arguments"><span class="nav-link">JVM Arguments</span></uib-tab-heading>
+		    <uib-tab-heading class="nav-item jvm-arguments"><span class="nav-link">{{'view.system.information.jvm.args' | translate}}</span></uib-tab-heading>
 			<ul class="list-group border-top-0 jvm-arguments-body">
 				<li ng-repeat="argument in info.jvmArguments track by $index" class="list-group-item">{{argument}}</li>
 			</ul>
