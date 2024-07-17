@@ -13,8 +13,8 @@ const rdfRankApp = angular.module('graphdb.framework.rdfrank', [
     'graphdb.framework.rest.rdfrank.service'
 ]);
 
-rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', '$timeout', 'ClassInstanceDetailsService', 'UriUtils', 'RDF4JRepositoriesRestService', 'RdfRankRestService', '$translate',
-    function ($scope, $interval, toastr, $repositories, $licenseService, $timeout, ClassInstanceDetailsService, UriUtils, RDF4JRepositoriesRestService, RdfRankRestService, $translate) {
+rdfRankApp.controller('RDFRankCtrl', ['$scope', '$rootScope', '$interval', 'toastr', '$repositories', '$licenseService', '$timeout', 'ClassInstanceDetailsService', 'UriUtils', 'RDF4JRepositoriesRestService', 'RdfRankRestService', '$translate',
+    function ($scope, $rootScope, $interval, toastr, $repositories, $licenseService, $timeout, ClassInstanceDetailsService, UriUtils, RDF4JRepositoriesRestService, RdfRankRestService, $translate) {
 
         let timer;
 
@@ -55,6 +55,15 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
             refreshStatus();
             refreshFilteringStatus();
             refreshFilteringConfig();
+        };
+
+        const updateFilterList = function () {
+            return {
+                INCLUDED_PREDICATES: {name: 'Included Predicates', predicate: 'includedPredicates', placeholderKey: 'rdfrank.include.predicates', fieldNameKey: 'rdfrank.include.label'},
+                INCLUDED_GRAPHS: {name: 'Included Graphs', predicate: 'includedGraphs', placeholderKey: 'rdfrank.include.graphs', fieldNameKey: 'rdfrank.include.label'},
+                EXCLUDED_PREDICATES: {name: 'Excluded Predicates', predicate: 'excludedPredicates', placeholderKey: 'rdfrank.exclude.predicates', fieldNameKey: 'rdfrank.exclude.label'},
+                EXCLUDED_GRAPHS: {name: 'Excluded Graphs', predicate: 'excludedGraphs', placeholderKey: 'rdfrank.exclude.graphs', fieldNameKey: 'rdfrank.exclude.label'}
+            };
         };
 
         $scope.checkForPlugin = function () {
@@ -120,12 +129,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
             CONFIG_CHANGED: 'CONFIG_CHANGED'
         };
 
-        $scope.filterLists = {
-            INCLUDED_PREDICATES: {name: 'Included Predicates', predicate: 'includedPredicates'},
-            INCLUDED_GRAPHS: {name: 'Included Graphs', predicate: 'includedGraphs'},
-            EXCLUDED_PREDICATES: {name: 'Excluded Predicates', predicate: 'excludedPredicates'},
-            EXCLUDED_GRAPHS: {name: 'Excluded Graphs', predicate: 'excludedGraphs'}
-        };
+        $scope.filterLists = updateFilterList();
 
         $scope.setLoader = function (loader, message) {
             $timeout.cancel($scope.loaderTimeout);
@@ -281,7 +285,12 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
             }, 5000);
         };
 
+        const languageChangedSubscription = $rootScope.$on('$translateChangeSuccess', () => {
+            $scope.filterLists = updateFilterList();
+        });
+
         $scope.$on('$destroy', function () {
+            languageChangedSubscription();
             cancelTimer();
         });
 
@@ -294,6 +303,7 @@ rdfRankApp.controller('RDFRankCtrl', ['$scope', '$interval', 'toastr', '$reposit
             }
             $scope.checkForPlugin();
             pullStatus();
+            updateFilterList();
         };
 
         init();

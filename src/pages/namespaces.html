@@ -63,7 +63,8 @@
                        ng-change="onNamespaceSearch()">
             </span>
             <div paginations class="ot-export-pagination pull-right namespaces-header-pagination"></div>
-            <span class="showing-info-namespaces pull-right">{{'showing.label' | translate}} {{(pageSize * (page - 1)) + 1}} - {{pageSize * page >= displayedNamespaces.length ? displayedNamespaces.length + (pageSize * (page - 1)) : pageSize * page}} of {{matchedElements.length}} {{'results.label' | translate}}</span>
+            <span class="showing-info-namespaces pull-right">
+                {{'showing.label' | translate}} {{(pageSize * (page - 1)) + 1}} - {{pageSize * page >= displayedNamespaces.length ? displayedNamespaces.length + (pageSize * (page - 1)) : pageSize * page}} {{'view.namespaces.pagination.of' | translate}} {{matchedElements.length}} {{'results.label' | translate}}</span>
         </div>
         <table ng-show="displayedNamespaces.length > 0" id="wb-namespaces-namespaceInNamespaces"
                class="table table-striped table-hover" aria-describedby="Namespaces table">

@@ -1,8 +1,8 @@
 <div class="form-group mb-2 mt-1">
-	<label>{{list.name.split(" ")[0]}}</label>
+	<label>{{list.fieldNameKey | translate}}</label>
 	<div>
 		<tags-input class="wb-tags-input" ng-model="list.elements" min-length="3" add-on-space="true"
-					add-on-comma="true" placeholder="{{'common.add' | translate}} {{list.name}}"
+					add-on-comma="true" placeholder="{{'common.add' | translate}} {{list.placeholderKey | translate}}"
 					on-tag-added="addToList(list, $tag)"
 					on-tag-removed="deleteFromList(list, $tag)"></tags-input>
 	</div>
