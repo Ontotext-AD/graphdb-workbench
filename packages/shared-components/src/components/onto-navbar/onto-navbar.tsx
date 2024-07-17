@@ -1,7 +1,7 @@
-import {Component, Host, h, Fragment, getAssetPath} from '@stencil/core';
-import {NavbarService} from "./navbar-service";
+import {Component, Host, h, Fragment, getAssetPath, Prop, Watch, Element} from '@stencil/core';
 import {ExternalMenuModel, MenuItemModel, MenuModel} from "./menu-model";
 import {navigateToUrl} from "single-spa";
+import {NavbarService} from "./navbar-service";
 
 @Component({
   tag: 'onto-navbar',
@@ -11,19 +11,25 @@ import {navigateToUrl} from "single-spa";
 export class OntoNavbar {
   private menuModel: MenuModel;
 
-  componentWillLoad() {
-    this.init();
+  @Element() hostElement: HTMLElement;
+
+  @Prop() menuItems: ExternalMenuModel;
+  @Watch('menuItems')
+  configurationChanged(menuItems: ExternalMenuModel) {
+    this.init(menuItems);
   }
 
-  private init() {
-    // @ts-ignore
-    const menuPlugins: ExternalMenuModel = PluginRegistry.get('main.menu');
-    const navbarService = new NavbarService(menuPlugins);
+  componentWillRender() {
+    this.init(this.menuItems);
+  }
+
+  private init(menuItems: ExternalMenuModel): void {
+    const navbarService = new NavbarService(menuItems);
     this.menuModel = navbarService.buildMenuModel();
   }
 
   private toggleNavbar(): void {
-    console.log(`toggle menu`, );
+    console.log(`TODO: toggle menu`, );
   }
 
   private select(event: MouseEvent, menuItem: MenuItemModel) {
@@ -32,7 +38,7 @@ export class OntoNavbar {
     navigateToUrl(menuItem.href);
 
     const targetElement = event.target;
-    if (targetElement instanceof Element) {
+    if (targetElement instanceof HTMLElement) {
       const mainMenuElement = targetElement.closest('.main-menu');
       const selectedMenuElement = targetElement.closest('.menu-element');
 
@@ -65,6 +71,9 @@ export class OntoNavbar {
   }
 
   render() {
+    if (!this.menuModel) {
+      return;
+    }
     const logoImg1 = getAssetPath(`./assets/graphdb-logo.svg#Layer_1`);
     const logoImg2 = getAssetPath(`./assets/graphdb-logo-sq.svg#Layer_1`);
     return (

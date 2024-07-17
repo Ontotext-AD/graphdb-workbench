@@ -1,16 +1,27 @@
 import {ExternalMenuItemModel, ExternalMenuModel, MenuItemModel, MenuModel} from "./menu-model";
 
+/**
+ * Service responsible for transforming the external menu model into a UI model.
+ */
 export class NavbarService {
   private navbarPlugins: ExternalMenuModel;
-  private navbarUIModel: MenuModel;
+  private readonly navbarUIModel: MenuModel;
   private itemsWithMissedParent: ExternalMenuItemModel[];
 
+  /**
+   * Constructs a new instance of NavbarService.
+   * @param navbarPlugins The external menu model containing initial menu items.
+   */
   constructor(navbarPlugins: ExternalMenuModel) {
     this.navbarPlugins = navbarPlugins || [];
     this.navbarUIModel = [];
     this.itemsWithMissedParent = [];
   }
 
+  /**
+   * Builds the menu model from the provided plugins.
+   * @returns The constructed menu model.
+   */
   buildMenuModel(): MenuModel {
     this.navbarPlugins.forEach((menu) => {
       menu.items.forEach((item) => {

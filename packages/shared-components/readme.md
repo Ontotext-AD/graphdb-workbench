@@ -37,6 +37,14 @@ To build the component for production, run:
 npm run build
 ```
 
+Often during a component development it is needed to test the component integration in some application, the workbench 
+for example. This would require instant rebuild after each change in the component's source code. To achieve this, there
+is an additional command:
+
+```bash
+npm run build:watch
+```
+
 To run the unit tests for the components, run:
 
 ```bash

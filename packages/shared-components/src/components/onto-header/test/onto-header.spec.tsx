@@ -9,9 +9,11 @@ describe('onto-header', () => {
     });
     expect(page.root).toEqualHtml(`
       <onto-header>
-        <mock:shadow-root>
-          <slot></slot>
-        </mock:shadow-root>
+        <div class="header-component">
+          <div class="search-component">&#x1F50D;</div>
+          <div class="repository-selector-component">TestRepo &#8964;</div>
+          <div class="language-selector-component">EN &#8964;</div>
+        </div>
       </onto-header>
     `);
   });

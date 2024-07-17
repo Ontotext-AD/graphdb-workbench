@@ -23,7 +23,7 @@ import './guides/directives';
 import {GUIDE_PAUSE} from './guides/tour-lib-services/shepherd.service';
 import 'angular-pageslide-directive/dist/angular-pageslide-directive';
 import 'angularjs-slider/dist/rzslider.min';
-import {AuthenticationService, RepositoryService} from "@ontotext/workbench-api";
+// import {AuthenticationService, RepositoryService} from "@ontotext/workbench-api";
 
 angular
     .module('graphdb.workbench.se.controllers', [

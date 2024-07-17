@@ -3,9 +3,9 @@ export interface ExternalMenuItemModel {
   labelKey: string;
   href: string;
   order: number;
-  icon: string;
-  guideSelector: string;
-  children: ExternalMenuItemModel[];
+  children?: ExternalMenuItemModel[];
+  icon?: string;
+  guideSelector?: string;
   editions?: string;
   role?: string;
   parent?: string;
