@@ -51,7 +51,8 @@ describe('Graphs overview screen validation', () => {
      * @return a cypress chainer containing the selected page link.
      */
     function selectPage(page) {
-        return cy.get(`.top-pagination ul li a`).contains(page).click();
+        GraphsOverviewSteps.getTopPagination().should('exist');
+        return GraphsOverviewSteps.getTopPagination().contains(page).click();
     }
 
     function selectItemFromMenu(number) {
@@ -66,9 +67,8 @@ describe('Graphs overview screen validation', () => {
 
     context('Test graphs overview pagination', () => {
         it('Should be visible', () => {
-            cy.get('div[paginations]')
-                .should('be.visible')
-                .and('contain', '3');
+            GraphsOverviewSteps.getPaginations().should('exist');
+            GraphsOverviewSteps.getPaginations().should('be.visible').and('contain', '3');
             verifyGraphExistence('The default graph');
         });
 

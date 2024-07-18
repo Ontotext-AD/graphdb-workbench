@@ -68,11 +68,12 @@ describe('Namespaces', () => {
             .and('contain', `Showing 1 - ${getDefaultNamespacesLength()} of ${getDefaultNamespacesLength()} results`);
 
         // Both header & footer pagination must be the same
-        getNamespacesHeaderPagination()
-            .should('be.visible')
+        getNamespacesHeaderPagination().should('exist');
+        getNamespacesHeaderPagination().should('be.visible')
             .find('li')
             // Single page + First & Last buttons
             .should('have.length', 3);
+        getNamespacesPagination().should('exist');
         getNamespacesPagination()
             .should('be.visible')
             .find('li')
