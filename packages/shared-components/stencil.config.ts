@@ -19,6 +19,12 @@ export const config: Config = {
     {
       type: 'www',
       serviceWorker: null, // disable service workers
+      copy: [
+        {src: 'js'},
+        {src: 'pages'},
+        {src: '../node_modules/font-awesome/css/', dest: 'pages/css'},
+        {src: '../node_modules/font-awesome/fonts/', dest: 'pages/fonts'},
+      ]
     },
   ],
   testing: {
