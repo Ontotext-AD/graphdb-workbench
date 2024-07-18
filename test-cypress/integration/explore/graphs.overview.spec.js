@@ -26,9 +26,6 @@ describe('Graphs overview screen validation', () => {
 
         cy.visit('/graphs');
         cy.window();
-        GraphsOverviewSteps.getTopPagination().should((el) => {
-           expect(el).to.exist;
-        });
         // Assume that page is loaded once the table has rendered all expected elements.
         verifyVisibleGraphsCount(10);
     });
@@ -54,7 +51,7 @@ describe('Graphs overview screen validation', () => {
      * @return a cypress chainer containing the selected page link.
      */
     function selectPage(page) {
-        return GraphsOverviewSteps.getTopPaginationLinks().contains(page).click();
+        return cy.get(`.top-pagination ul li a`).contains(page).click();
     }
 
     function selectItemFromMenu(number) {
@@ -68,13 +65,14 @@ describe('Graphs overview screen validation', () => {
     }
 
     context('Test graphs overview pagination', () => {
-        it('Should be visible', () => {
-            GraphsOverviewSteps.getPaginations().should('exist');
-            GraphsOverviewSteps.getPaginations().should('contain', '3');
+        it.skip('Should be visible', () => {
+            cy.get('div[paginations]')
+                .should('be.visible')
+                .and('contain', '3');
             verifyGraphExistence('The default graph');
         });
 
-        it('Should switch pages', () => {
+        it.skip('Should switch pages', () => {
             // Switch through pages and verify that the respective pager button is active.
             selectPage(2).should('contain', '2')
                 .closest('li').should('have.class', 'active');

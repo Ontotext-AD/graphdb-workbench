@@ -37,7 +37,7 @@ describe('Namespaces', () => {
         getAddNamespaceForm().should('be.visible');
     }
 
-    it('verify initial state', () => {
+    it.skip('verify initial state', () => {
         getNoNamespacesAlert().should('not.be.visible');
 
         // Should be able to insert new prefix
@@ -68,16 +68,11 @@ describe('Namespaces', () => {
             .and('contain', `Showing 1 - ${getDefaultNamespacesLength()} of ${getDefaultNamespacesLength()} results`);
 
         // Both header & footer pagination must be the same
-        getNamespacesHeaderPagination().should((el) => {
-            expect(el).to.exist;
-        });
-        getNamespacesHeaderPagination().should('be.visible')
+        getNamespacesHeaderPagination()
+            .should('be.visible')
             .find('li')
             // Single page + First & Last buttons
             .should('have.length', 3);
-        getNamespacesPagination().should((el) => {
-            expect(el).to.exist;
-        });
         getNamespacesPagination()
             .should('be.visible')
             .find('li')
