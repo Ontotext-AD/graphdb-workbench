@@ -1,22 +1,14 @@
-const PACKAGE = require('./package.json');
 const path = require('path');
 const {merge} = require('webpack-merge');
-const commonConfig = require('./webpack.config.common');
-const {CleanWebpackPlugin} = require('clean-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const commonConfig = require('./webpack.config.common')();
 
 const host = 'localhost';
-const portHere = 9001;
+const portHere = 9000;
 const portThere = 7200;
 
 module.exports = merge(commonConfig, {
     mode: 'development',
     devtool: 'source-map',
-    output: {
-        filename: '[name].bundle.js',
-        chunkFilename: '[name].bundle.js',
-        path: path.resolve(__dirname, 'dist')
-    },
     module: {
         rules: [
             {
@@ -60,6 +52,8 @@ module.exports = merge(commonConfig, {
         historyApiFallback: {
             disableDotRule: true
         },
+        // Enable hot module replacement
+        hot: true,
         proxy: [{
             context: ['/rest', '/repositories', '/protocol', '/rdf-bridge'],
             target: 'http://' + host + ':' + portThere,

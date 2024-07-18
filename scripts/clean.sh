@@ -10,7 +10,7 @@ rm -fr packages/shared-components/loader
 echo '- Delete "packages/shared-components/node_modules"'
 rm -fr packages/shared-components/node_modules
 echo '- Delete "packages/shared-components/www"'
-rm -fr packages/shared-components/www`
+rm -fr packages/shared-components/www
 
 echo ''
 echo '########################   Cleaning -- api --   ###########################'
@@ -51,5 +51,5 @@ echo '########################   Cleaning -- Root --   #########################
 echo ''
 echo '- Delete "node_modules"'
 rm -fr node_modules
-echo '- Delete "deploy"'
-rm -fr deploy
+echo '- Delete "dist"'
+rm -fr dist

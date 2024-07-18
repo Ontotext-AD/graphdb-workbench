@@ -5,6 +5,8 @@
   "compilerOptions": {
     "declarationDir": "dist",
     "outDir": "dist",
+    "baseUrl": "./",
+    "typeRoots": ["./node_modules/@types"]
   },
   "include": ["src/**/*"],
   "exclude": ["src/**/*.test*"]

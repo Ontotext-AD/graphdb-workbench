@@ -6,7 +6,6 @@ import 'angular-translate';
 import 'angular-translate-loader-static-files';
 import 'angular/core/interceptors/unauthorized.interceptor';
 import 'angular/core/interceptors/authentication.interceptor';
-import 'angular/core/interceptors/http-request-url.interceptor';
 import 'angular/core/directives/rdfresourcesearch/rdf-resource-search.directive';
 import 'angular/core/directives/languageselector/language-selector.directive';
 import 'angular/core/directives/copy-to-clipboard/copy-to-clipboard.directive';
@@ -43,7 +42,6 @@ const modules = [
     'pascalprecht.translate',
     'graphdb.framework.core.interceptors.unauthorized',
     'graphdb.framework.core.interceptors.authentication',
-    'graphdb.framework.core.interceptors.http-request-url',
     'graphdb.framework.core.directives.rdfresourcesearch.rdfresourcesearch',
     'graphdb.framework.core.directives.languageselector.languageselector',
     'graphdb.framework.core.directives.copytoclipboard.copytoclipboard',
@@ -196,7 +194,6 @@ const moduleDefinition = function (productInfo, translations) {
 
             $httpProvider.interceptors.push('$unauthorizedInterceptor');
             $httpProvider.interceptors.push('$authenticationInterceptor');
-            $httpProvider.interceptors.push('$httpRequestURLInterceptor');
 
             // Hack the template request provider to add a version parameter to templates that
             // are fetched via HTTP to avoid cache issues. Those that are in the templateCache

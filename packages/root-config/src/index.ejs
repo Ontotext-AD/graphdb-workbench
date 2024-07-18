@@ -37,28 +37,19 @@
         {
           "imports": {
             "single-spa": "https://cdn.jsdelivr.net/npm/single-spa@5.9.0/lib/system/single-spa.min.js",
-            "@ontotext/workbench-api": "http://localhost:9003/ontotext-workbench-api.js"
+                    "@ontotext/workbench-api": "http://localhost:9003/ontotext-workbench-api.js",
+                    "@ontotext/root-config": "/<%= mainBundle %>",
+                    "@ontotext/legacy-workbench": "/<%= legacyWorkbenchBundle %>",
+                    "@ontotext/workbench": "http://localhost:9002/main.js"
           }
         }
     </script>
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/single-spa@5.9.0/lib/system/single-spa.min.js" as="script">
-    <script src="http://localhost:9001/plugin-registry.js?v=2.7.0-RC3"></script>
-    <script src="http://localhost:9001/plugins.js?v=2.7.0-RC3"></script>
+    <script src="plugin-registry.js?v=<%= buildVersion %>"></script>
+    <script src="plugins.js?v=<%= buildVersion %>"></script>
 
     <!-- Add your organization's prod import map URL to this script's src  -->
     <!-- <script type="systemjs-importmap" src="/importmap.json"></script> -->
-
-    <% if (isLocal) { %>
-        <script type="systemjs-importmap">
-            {
-              "imports": {
-                "@ontotext/root-config": "//localhost:9000/ontotext-root-config.js",
-                "@ontotext/legacy-workbench": "http://localhost:9001/main.bundle.js",
-                "@ontotext/workbench": "http://localhost:9002/main.js"
-              }
-            }
-        </script>
-    <% } %>
 
     <!--
       If you need to support Angular applications, uncomment the script tag below to ensure only one instance of ZoneJS is loaded

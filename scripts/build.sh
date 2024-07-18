@@ -6,26 +6,14 @@ cd packages/api
 npm run build
 
 echo ''
-echo '########################   Building -- Legacy Workbench --  ###########################'
+echo '########################   Building -- shared-components --   ###########################'
 echo ''
-cd ../legacy-workbench
+
+cd packages/shared-components
 npm run build
 
 echo ''
 echo '########################   Building -- Workbench --  ###########################'
 echo ''
 cd ../workbench
-npm run build
-
-echo ''
-echo '########################   Building -- Root config --  ###########################'
-echo ''
-cd ../root-config
-npm run build
-
-echo ''
-echo '########################   Building -- shared-components --   ###########################'
-echo ''
-
-cd packages/shared-components
 npm run build
