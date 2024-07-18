@@ -24,7 +24,7 @@ import {GUIDE_PAUSE} from './guides/tour-lib-services/shepherd.service';
 import 'angular-pageslide-directive/dist/angular-pageslide-directive';
 import 'angularjs-slider/dist/rzslider.min';
 import {debounce} from "lodash";
-import {AuthenticationService, RepositoryService} from "@ontotext/workbench-api";
+// import {AuthenticationService, RepositoryService} from "@ontotext/workbench-api";
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -62,13 +62,13 @@ homeCtrl.$inject = ['$scope', '$rootScope', '$http', '$repositories', '$jwtAuth'
 
 function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseService, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService, toastr) {
 
-    console.log(`LOGIN TS API in new WB`, AuthenticationService.login());
-    RepositoryService.getRepositories().then((response) => {
-        console.log(`response`, response);
-        return response.json();
-    }).then((data) => {
-        console.log(`REPOSITORIES TS API in new WB`, data);
-    });
+    // console.log(`LOGIN TS API in new WB`, AuthenticationService.login());
+    // RepositoryService.getRepositories().then((response) => {
+    //     console.log(`response`, response);
+    //     return response.json();
+    // }).then((data) => {
+    //     console.log(`REPOSITORIES TS API in new WB`, data);
+    // });
 
     $scope.doClear = false;
 
