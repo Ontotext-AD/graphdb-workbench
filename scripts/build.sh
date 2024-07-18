@@ -24,8 +24,8 @@ cd ../root-config
 npm run build
 
 echo ''
-echo '########################   Building -- navbar --   ###########################'
+echo '########################   Building -- shared-components --   ###########################'
 echo ''
 
-cd packages/navbar
+cd packages/shared-components
 npm run build

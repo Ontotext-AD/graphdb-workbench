@@ -31,9 +31,9 @@ cd api
 npm install
 
 echo ''
-echo '########################   Installing -- components --   ###########################'
+echo '########################   Installing -- shared components --   ###########################'
 echo ''
 
 cd ..
-cd components
+cd shared-components
 npm install
