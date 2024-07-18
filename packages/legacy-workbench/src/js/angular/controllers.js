@@ -28,7 +28,7 @@ import 'angularjs-slider/dist/rzslider.min';
 import {debounce} from "lodash";
 import {DocumentationUrlResolver} from "./utils/documentation-url-resolver";
 import {NamespacesListModel} from "./models/namespaces/namespaces-list";
-import {AuthenticationService, RepositoryService} from "@ontotext/workbench-api";
+// import {AuthenticationService, RepositoryService} from "@ontotext/workbench-api";
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -92,13 +92,13 @@ function homeCtrl($scope,
                   RDF4JRepositoriesService,
                   toastr) {
 
-    console.log(`LOGIN TS API in new WB`, AuthenticationService.login());
-    RepositoryService.getRepositories().then((response) => {
-        console.log(`response`, response);
-        return response.json();
-    }).then((data) => {
-        console.log(`REPOSITORIES TS API in new WB`, data);
-    });
+    // console.log(`LOGIN TS API in new WB`, AuthenticationService.login());
+    // RepositoryService.getRepositories().then((response) => {
+    //     console.log(`response`, response);
+    //     return response.json();
+    // }).then((data) => {
+    //     console.log(`REPOSITORIES TS API in new WB`, data);
+    // });
 
     // =========================
     // Public variables
