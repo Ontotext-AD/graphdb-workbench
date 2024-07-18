@@ -7,13 +7,14 @@
         "install": "sh scripts/install.sh",
         "postinstall": "npm run build:api",
         "build": "sh scripts/build.sh",
+        "build:modules": "concurrently \"npm run build:api\" \"npm run build:shared\"",
         "build:api": "cd packages/api && npm run build",
-        "start": "concurrently \"npm run start-workbench-api\" \"npm run start-legacy-workbench\" \"npm run start-root-config\" \"npm run start-workbench\" \"npm run start-components\"",
+        "build:shared": "cd packages/shared-components && npm run build",
+        "start": "concurrently \"npm run start-workbench-api\" \"npm run start-legacy-workbench\" \"npm run start-root-config\" \"npm run start-workbench\"",
         "start-workbench-api": "cd packages/api && npm run start",
         "start-legacy-workbench": "cd packages/legacy-workbench && npm run start",
         "start-root-config": "cd packages/root-config && npm run start",
-        "start-workbench": "cd packages/workbench && npm run start",
-        "start-components": "cd packages/components && npm run start"
+        "start-workbench": "cd packages/workbench && npm run start"
     },
     "files": [],
     "repository": {
