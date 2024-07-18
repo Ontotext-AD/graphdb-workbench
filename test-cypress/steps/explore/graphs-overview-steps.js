@@ -54,8 +54,12 @@ export class GraphsOverviewSteps {
         cy.get('[id=wb-JSONLD-mode]').select(option);
     }
 
-    static getTopPagination() {
+    static getTopPaginationLinks() {
         return cy.get(`.top-pagination ul li a`);
+    }
+
+    static getTopPagination() {
+        return cy.get(`.top-pagination`);
     }
 
     static getPaginations() {
