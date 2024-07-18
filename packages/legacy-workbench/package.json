@@ -40,9 +40,7 @@
         "eslint-config-google": "^0.13.0",
         "is-obj": "^2.0.0",
         "less": "^3.10.3",
-        "less-loader": "^5.0.0",
         "license-checker": "^25.0.1",
-        "mini-css-extract-plugin": "^0.8.0",
         "minimist": "^1.2.5",
         "puppeteer": "^5.3.1",
         "sonarqube-scanner": "^3.3.0"

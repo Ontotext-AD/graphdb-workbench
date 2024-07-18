@@ -8,7 +8,7 @@ module.exports = (config, options) => {
   // delete singleSpaWebpackConfig.externals['zone.js'];
   // Feel free to modify this webpack config however you'd like to
 
-  singleSpaWebpackConfig.externals = ["@ontotext/workbench-api", "@ontotext/components"];
+  singleSpaWebpackConfig.externals = ["@ontotext/workbench-api"];
 
   return singleSpaWebpackConfig;
 };

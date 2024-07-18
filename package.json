@@ -16,7 +16,7 @@
         "start": "concurrently \"npm run start-workbench-api\" \"npm run start-workbench\" \"npm run start-root\"",
         "start-workbench-api": "cd packages/api && npm run start",
         "start-workbench": "cd packages/workbench && npm run start",
-        "start-root": "webpack serve --port 9000 --env isLocal --open  --config=webpack.config.dev.js"
+        "start-root": "webpack serve --port 9000 --open  --config=webpack.config.dev.js"
     },
     "files": [],
     "repository": {

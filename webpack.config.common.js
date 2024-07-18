@@ -53,7 +53,7 @@ module.exports = (webpackConfigEnv, argv) => {
             ],
             extensions: ['.js']
         },
-        externals: ["@ontotext/workbench-api", "@ontotext/components"],
+        externals: ["@ontotext/workbench-api"],
         // modify the webpack config however you'd like to by adding to this object
         plugins: [
             new HtmlWebpackPlugin({
@@ -63,10 +63,10 @@ module.exports = (webpackConfigEnv, argv) => {
                     return {
                     isLocal: webpackConfigEnv && webpackConfigEnv.isLocal,
                     orgName,
-                        mainBundle: Object.keys(compilation.assets).find(asset => asset.includes('main') && asset.endsWith('.js')),
-                        legacyWorkbenchBundle:  Object.keys(compilation.assets).find(asset => asset.includes('legacyWorkbench') && asset.endsWith('.js')),
-                        contentHash: assets.contentHash,
-                        buildVersion: PACKAGE.version
+                    mainBundle: Object.keys(compilation.assets).find(asset => asset.includes('main') && asset.endsWith('.js')),
+                    legacyWorkbenchBundle:  Object.keys(compilation.assets).find(asset => asset.includes('legacyWorkbench') && asset.endsWith('.js')),
+                    contentHash: assets.contentHash,
+                    buildVersion: PACKAGE.version
                     };
                 },
                 chunks: ['main'],
