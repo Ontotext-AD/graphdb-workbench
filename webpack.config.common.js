@@ -219,6 +219,10 @@ module.exports = (webpackConfigEnv, argv) => {
                     {
                         from: 'packages/legacy-workbench/src/js/angular/templates',
                         to: 'js/angular/templates'
+                    },
+                    {
+                        from: 'license-checker/license-checker-static.json',
+                        to: ''
                     }
                 ]
             })
