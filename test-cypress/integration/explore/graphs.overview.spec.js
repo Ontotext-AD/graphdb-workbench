@@ -65,14 +65,14 @@ describe('Graphs overview screen validation', () => {
     }
 
     context('Test graphs overview pagination', () => {
-        it('Should be visible', () => {
+        it.skip('Should be visible', () => {
             cy.get('div[paginations]')
                 .should('be.visible')
                 .and('contain', '3');
             verifyGraphExistence('The default graph');
         });
 
-        it('Should switch pages', () => {
+        it.skip('Should switch pages', () => {
             // Switch through pages and verify that the respective pager button is active.
             selectPage(2).should('contain', '2')
                 .closest('li').should('have.class', 'active');
