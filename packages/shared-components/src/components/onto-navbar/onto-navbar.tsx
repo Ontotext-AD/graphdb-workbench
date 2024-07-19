@@ -59,8 +59,8 @@ export class OntoNavbar {
         });
         // if the submenu item doesn't have a parent (it's a root level menu item), then add the active state to the root level menu item
         if (!menuItem.hasParent) {
-          if (!selectedMenuElement.classList.contains('active')) {
-            selectedMenuElement.classList.add('active')
+          if (!targetElement.classList.contains('active')) {
+            targetElement.classList.add('active')
           }
         } else {
           // when the sub menu item has a parent, then add the active state to the sub menu item
