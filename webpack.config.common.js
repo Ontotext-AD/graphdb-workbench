@@ -7,14 +7,9 @@ const singleSpaDefaults = require("webpack-config-single-spa");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 
-// Pass this function as a transform argument to CopyPlugin elements to replace [AIV]{version}[/AIV]
-// with the current workbench version number. This is not related to the WebpackAutoInject plugin
-// (it will replace only in bundled files, not in CopyPlugin) but we use the same tag for consistency.
-function replaceVersion(content) {
-    return content
-        .toString()
-        .replace(/\[AIV]{version}\[\/AIV]/g, PACKAGE.version);
-}
+// The "string-replace-loader" replaces the version in all HTML and JS files except those copied by CopyPlugin.
+// This function must be used as the transform parameter of the plugin to replace the version.
+const replaceVersion = (content) => content.toString().replace(/\[AIV]{version}\[\/AIV]/g, PACKAGE.version);
 
 const host = 'localhost';
 const portHere = 9000;
@@ -230,6 +225,14 @@ module.exports = (webpackConfigEnv, argv) => {
         ],
         module: {
             rules: [
+                {
+                    test: /\.(js|html)$/,
+                    loader: 'string-replace-loader',
+                    options: {
+                        search: /\[AIV\]{version}\[\/AIV\]/g,
+                        replace: PACKAGE.version
+                    }
+                },
                 {
                     test: /\.(md|gzip|map)$/,
                     use: 'ignore-loader'
