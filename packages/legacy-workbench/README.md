@@ -103,4 +103,4 @@ Note: Instead of mounting the workbench, this can be done in a custom Docker ima
 GraphDB one as a base and then copy the custom workbench.
 
 ## License
-[LICENSE](licenses/LICENSE)
+[LICENSE](../../licenses/LICENSE)
