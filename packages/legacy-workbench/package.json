@@ -5,9 +5,7 @@
     "scripts": {
         "lint": "eslint ./src",
         "less:watch": "less-watch-compiler --config=./less-watch-compiler.config.json",
-        "less:preprocess": "less-watch-compiler --config=./less-compiler.config.json",
-        "license-report": "license-checker --production --json --customPath license-checker-format.json --out dist/license-checker.json",
-        "postbuild": "npm run license-report && copyfiles -V -f license-checker/license-checker-static.json dist/"
+        "less:preprocess": "less-watch-compiler --config=./less-compiler.config.json"
     },
     "files": [
         "dist/"
@@ -42,7 +40,6 @@
         "eslint-plugin-cypress": "^4.1.0",
         "is-obj": "^2.0.0",
         "less": "^3.10.3",
-        "license-checker": "^25.0.1",
         "minimist": "^1.2.5",
         "puppeteer": "^5.3.1",
         "sonarqube-scanner": "^3.3.0"
