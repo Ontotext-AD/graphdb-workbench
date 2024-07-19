@@ -7,7 +7,7 @@
         "install": "sh scripts/install.sh",
         "postinstall": "npm run build:api && npm run build:shared",
         "build": "sh scripts/build.sh",
-        "postbuild": "webpack --config=webpack.config.prod.js",
+        "postbuild": "webpack --config=webpack.config.prod.js && npm run license-report",
         "build-dev": "sh scripts/build.sh",
         "postbuild-dev": "webpack --config=webpack.config.dev.js",
         "build:modules": "concurrently \"npm run build:api\" \"npm run build:shared\"",
@@ -16,7 +16,8 @@
         "start": "concurrently \"npm run start-workbench-api\" \"npm run start-workbench\" \"npm run start-root\"",
         "start-workbench-api": "cd packages/api && npm run start",
         "start-workbench": "cd packages/workbench && npm run start",
-        "start-root": "webpack serve --port 9000 --open  --config=webpack.config.dev.js"
+        "start-root": "webpack serve --port 9000 --open  --config=webpack.config.dev.js",
+        "license-report": "license-checker --production --json --customPath license-checker-format.json --out dist/license-checker.json --start ./ --start packages/shared-components --start packages/api --start packages/legacy-workbench --start packages/root-config --start packages/workbench"
     },
     "files": [],
     "repository": {
@@ -48,6 +49,7 @@
         "html-loader": "^0.5.5",
         "ignore-loader": "^0.1.2",
         "less-loader": "^12.2.0",
+        "license-checker": "^25.0.1",
         "mini-css-extract-plugin": "^2.9.0",
         "string-replace-loader": "^3.1.0",
         "style-loader": "^4.0.0",
