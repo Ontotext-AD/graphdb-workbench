@@ -15,6 +15,9 @@ export namespace Components {
     interface OntoHeader {
     }
     interface OntoNavbar {
+        /**
+          * The external menu items model.
+         */
         "menuItems": ExternalMenuModel;
     }
     /**
@@ -80,6 +83,9 @@ declare namespace LocalJSX {
     interface OntoHeader {
     }
     interface OntoNavbar {
+        /**
+          * The external menu items model.
+         */
         "menuItems"?: ExternalMenuModel;
     }
     /**

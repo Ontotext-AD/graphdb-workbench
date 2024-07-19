@@ -7,9 +7,9 @@
 
 ## Properties
 
-| Property    | Attribute | Description | Type                       | Default     |
-| ----------- | --------- | ----------- | -------------------------- | ----------- |
-| `menuItems` | --        |             | `ExternalMenuItemsModel[]` | `undefined` |
+| Property    | Attribute | Description                    | Type                       | Default     |
+| ----------- | --------- | ------------------------------ | -------------------------- | ----------- |
+| `menuItems` | --        | The external menu items model. | `ExternalMenuItemsModel[]` | `undefined` |
 
 
 ## Dependencies

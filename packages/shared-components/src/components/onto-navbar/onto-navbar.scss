@@ -1,7 +1,8 @@
 :host {
   display: block;
 }
-.main-menu {
+
+.navbar-component {
   width: 15rem;
   position: fixed;
   top: 0;
@@ -21,41 +22,41 @@
 /*Make collapsed menu with absolute position if window height is smaller than the
 main menu height*/
 @media screen and (max-height: 475px) {
-  .main-menu.collapsed {
+  .navbar-component.collapsed {
     position: absolute;
   }
 }
 
-.main-menu li {
+.navbar-component li {
   list-style: none;
 }
 
-.main-menu li a {
+.navbar-component li a {
   color: var(--secondary-color);
   text-decoration: none;
 }
 
-.main-menu li .menu-element-root:hover,
-.main-menu .sub-menu li:hover {
+.navbar-component li .menu-element-root:hover,
+.navbar-component .sub-menu li:hover {
   background-color: rgba(0, 0, 0, .1);
 }
 
-.main-menu li .menu-element-root:hover .menu-item-icon,
-.main-menu .menu-element.open .menu-item-icon {
+.navbar-component li .menu-element-root:hover .menu-item-icon,
+.navbar-component .menu-element.open .menu-item-icon {
   transform: scale(1.1);
 }
 
-.main-menu .menu-element.open .sub-menu .menu-item-icon {
+.navbar-component .menu-element.open .sub-menu .menu-item-icon {
   transform: scale(0.5);
 }
 
-.main-menu .menu-element {
+.navbar-component .menu-element {
   border-bottom: 1px solid #fff;
   background-color: #f7f7f7;
   position: relative;
 }
 
-.main-menu .menu-element-root {
+.navbar-component .menu-element-root {
   padding: 0.8em 2.5em 0.8em 0.8em;
   display: block;
   line-height: 2.5rem;
@@ -72,7 +73,7 @@ main menu height*/
   overflow: hidden;
 }
 
-.main-menu .menu-item-icon {
+.navbar-component .menu-item-icon {
   font-size: 2.5rem;
   vertical-align: middle;
   color: var(--primary-color);
@@ -85,41 +86,41 @@ main menu height*/
   pointer-events: none;
 }
 
-.main-menu .menu-item-icon.fa-flask {
+.navbar-component .menu-item-icon.fa-flask {
   /* Temporary: until we get our own icon */
   font-size: 2rem;
   padding: 4px 5px;
 }
 
-.main-menu .menu-element-root .menu-item {
+.navbar-component .menu-element-root .menu-item {
   pointer-events: none;
 }
 
-.main-menu .menu-element-root.active,
-.main-menu .menu-element-root.active:hover {
+.navbar-component .menu-element-root.active,
+.navbar-component .menu-element-root.active:hover {
   background-color: var(--primary-color);
   color: #fff;
 }
 
-.main-menu .active .menu-item-icon {
+.navbar-component .active .menu-item-icon {
   color: var(--icon-on-primary-color);
 }
 
-.main-menu :not(.brand) .menu-element-root {
+.navbar-component :not(.brand) .menu-element-root {
   font-size: 1.1rem;
 }
 
-.main-menu .brand {
+.navbar-component .brand {
   background-color: var(--logo-background-color);
 }
 
-.main-menu .brand a {
+.navbar-component .brand a {
   display: block;
   position: relative;
   z-index: 5;
 }
 
-.main-menu .product-version {
+.navbar-component .product-version {
   line-height: normal;
   color: rgba(255, 255, 255, .8);
   text-transform: uppercase;
@@ -137,37 +138,37 @@ main menu height*/
   border-right-width: 0;
 }
 
-.main-menu .menu-element.open,
-.main-menu.collapsed .menu-element:hover {
+.navbar-component .menu-element.open,
+.navbar-component.collapsed .menu-element:hover {
   background-color: #dcdcdc;
 }
 
-.main-menu .sub-menu {
+.navbar-component .sub-menu {
   position: relative;
   padding: 0;
   z-index: 110;
 }
 
-.main-menu .sub-menu li {
+.navbar-component .sub-menu li {
   display: none;
 }
 
-.main-menu .sub-menu li a {
+.navbar-component .sub-menu li a {
   padding: 0.5em 0.8em;
   display: block;
 }
 
-.main-menu .sub-menu li.active a {
+.navbar-component .sub-menu li.active a {
   background-color: var(--primary-color);
   font-weight: 500;
   color: #fff;
 }
 
-.main-menu .menu-element.open ul li {
+.navbar-component .menu-element.open ul li {
   display: block;
 }
 
-.main-menu .menu-element ul:before, .rdf-list ul.datasource:before {
+.navbar-component .menu-element ul:before, .rdf-list ul.datasource:before {
   font-family: 'icomoon', sans-serif !important;
   content: "\e921";
   display: block;
@@ -182,58 +183,120 @@ main menu height*/
   pointer-events: none;
 }
 
-.main-menu .menu-element.open ul:before, .rdf-list ul.open.datasource:before {
+.navbar-component .menu-element.open ul:before, .rdf-list ul.open.datasource:before {
   transform: rotate(180deg);
 }
 
-//.navbar-component {
-//  position: fixed;
-//  width: 15rem;
-//  background-color: #f7f7f7;
-//  height: 100%;
-//  padding: 0 !important;
-//  overflow-y: auto;
-//  overflow-x: hidden;
-//}
-//
-//.navbar-component > div {
-//  width: 100%;
-//}
-//
-//.navbar-component {
-//  display: flex;
-//  flex-direction: column;
-//  list-style: none;
-//  padding: 0;
-//  margin: 0;
-//}
-//
-//.navbar-component .nav-item {
-//  margin: 0 !important;
-//  padding: 15px 0;
-//  border-bottom: 1px solid #fff;
-//}
-//
-//.navbar-component .nav-item .nav-link {
-//  text-decoration: none;
-//  color: rgb(0, 54, 99);
-//  font-size: 1.1rem;
-//  font-weight: 400;
-//  padding: 5px 10px;
-//  display: block;
-//}
-//
-//.navbar-component .brand {
-//  height: 60px;
-//  display: flex;
-//  align-items: center;
-//  justify-content: center;
-//  background-color: hsl( 207.3 , 100% , 19.4% );
-//}
-//
-//.navbar-component .brand a {
-//  display: block;
-//  color: #fff;
-//  font-size: 2.5rem;
-//  font-weight: 300;
-//}
+.toggle-menu {
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: #fff;
+  font-size: 0.8em;
+  line-height: 1.5;
+  padding: 0 0.3em;
+  background-color: rgba(255, 255, 255, .1);
+  z-index: 10;
+  cursor: pointer;
+}
+
+.toggle-menu:hover {
+  background-color: var(--primary-color);
+}
+
+.toggle-menu [class^="icon-"] {
+  -moz-transition: all 0.2s ease-in; /* FF4+ */
+  -o-transition: all 0.2s ease-in; /* Opera 10.5+ */
+  -webkit-transition: all 0.2s ease-in; /* Saf3.2+, Chrome */
+  transition: all 0.2s ease-in;
+  display: inline-block;
+}
+
+.toggle-menu:hover [class^="icon-"] {
+  transform: scale(1.1);
+}
+
+.small-logo {
+  width: 50px;
+  height: 50px;
+}
+
+.big-logo {
+  width: 180px;
+  height: 50px;
+}
+
+.navbar-component.collapsed {
+  width: 4.375rem;
+  overflow: visible;
+  height: auto;
+}
+
+.navbar-component.collapsed .menu-element.clicked .sub-menu {
+  position: absolute;
+  top: 0;
+  left: 4.375rem;
+  background-color: #EBEBEB;
+  width: 15rem;
+}
+
+.navbar-component.collapsed .menu-element .menu-item,
+.navbar-component.collapsed .menu-element .sub-menu li {
+  display: none;
+}
+
+.navbar-component.collapsed .menu-element.clicked .sub-menu li {
+  display: block;
+}
+
+.navbar-component.collapsed .menu-element-root {
+  overflow: visible;
+}
+
+.navbar-component .menu-element.open ul li.submenu-title,
+.navbar-component .submenu-title {
+  display: none;
+}
+
+.navbar-component.collapsed .menu-element.clicked ul li.submenu-title {
+  display: block;
+  font-size: 1.2em;
+  font-weight: 500;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding: 0.5em 0.8rem 0.2em 0;
+  color: var(--secondary-color);
+  margin-left: 0.8rem;
+  margin-bottom: 0.5em;
+}
+
+.navbar-component .sub-menu li.submenu-title:hover {
+  background-color: transparent;
+}
+
+.navbar-component.collapsed .menu-element.clicked .sub-menu.align-bottom {
+  bottom: 0;
+  top: auto;
+}
+
+.navbar-component.collapsed .menu-element ul:before {
+  display: none;
+}
+
+.navbar-component.collapsed .brand a {
+  padding: 0.4rem;
+}
+
+.navbar-component.collapsed .product-version {
+  display: none;
+}
+
+.navbar-component.collapsed .small-logo, .navbar-component .big-logo {
+  display: block;
+}
+
+.navbar-component .small-logo, .navbar-component.collapsed .big-logo {
+  display: none;
+}

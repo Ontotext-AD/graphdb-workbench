@@ -1,7 +1,7 @@
 body {
     display: grid;
-    grid-template-columns: 15rem 1fr; /* Fixed width for nav, rest for content */
-    grid-template-rows: auto 1fr auto; /* Size for header, dynamic for main, size for footer */
+    grid-template-columns: 15rem minmax(200px, 1fr);
+    grid-template-rows: auto 1fr auto;
     grid-template-areas:
         "nav header"
         "nav main"
@@ -10,9 +10,12 @@ body {
     margin: 0;
 }
 
+body.expanded {
+    grid-template-columns: 4.375rem 1fr;
+}
+
 nav {
     grid-area: nav;
-    background-color: #f0f0f0;
 }
 
 header {
@@ -33,5 +36,4 @@ footer {
 }
 
 @media (min-width: 768px) {
-    /* Adjustments for larger screens if necessary */
 }
