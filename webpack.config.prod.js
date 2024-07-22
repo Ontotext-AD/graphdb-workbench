@@ -1,11 +1,12 @@
 const path = require('path');
 const {merge} = require('webpack-merge');
-const commonConfig = require('./webpack.config.common')();
+const commonConfig = require('./webpack.config.common');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
-module.exports = merge(commonConfig, {
+module.exports = (env, argv) => merge(commonConfig(env, argv), {
     mode: 'production',
     performance: {
         maxEntrypointSize: 990000,
@@ -49,6 +50,21 @@ module.exports = merge(commonConfig, {
         ]
     },
     plugins: [
+        new CopyPlugin({
+            patterns: [
+                {
+                    from: 'packages/root-config/node_modules/systemjs/dist/system.min.js',
+                    to: 'resources'
+                },
+                {
+                    from: 'packages/root-config/node_modules/systemjs/dist/extras/amd.min.js',
+                    to: 'resources'
+                },
+                {
+                    from: 'packages/root-config/node_modules/single-spa/lib/system/single-spa.min.js',
+                    to: 'resources'
+                }]
+        }),
         new MiniCssExtractPlugin({filename: "[name].[contenthash].css"}),
         new CssMinimizerPlugin(),
         new CleanWebpackPlugin()
