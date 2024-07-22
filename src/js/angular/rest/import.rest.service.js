@@ -16,7 +16,8 @@ function ImportRestService($http) {
         updateTextSnippet,
         importFromUrl,
         updateFromUrl,
-        stopImport,
+        stopServerImport,
+        stopUserDataImport,
         resetServerFileStatus,
         resetUserDataStatus
     };
@@ -90,13 +91,23 @@ function ImportRestService($http) {
     }
 
     /**
-     * Stops the import process.
+     * Stops the user data import process.
      * @param {string} repositoryId - The repository id
      * @param {{name: string, type: string}} params - The parameters to be sent to the server
      * @return {*}
      */
-    function stopImport(repositoryId, params) {
+    function stopUserDataImport(repositoryId, params) {
         return $http.delete(`${BASE_ENDPOINT}/${repositoryId}/import/upload`, {params});
+    }
+
+    /**
+     * Stops the server file import process.
+     * @param {string} repositoryId - The repository id
+     * @param {{name: string, type: string}} params - The parameters to be sent to the server
+     * @return {*}
+     */
+    function stopServerImport(repositoryId, params) {
+        return $http.delete(`${BASE_ENDPOINT}/${repositoryId}/import/server`, {params});
     }
 
     /**

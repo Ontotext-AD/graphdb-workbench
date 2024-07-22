@@ -226,12 +226,13 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         };
 
         /**
-         * Triggers a stop operation in the backend for selected resources.
+         * Triggers abort operation in the backend for selected resources.
          * @param {ImportResourceTreeElement} resource - The resource for which the import should be stopped.
          */
         $scope.onStopImport = (resource) => {
             const file = resource.importResource;
-            ImportRestService.stopImport($repositories.getActiveRepository(), {name: file.name, type: file.type})
+            const importAborter = $scope.activeTabId === TABS.USER ? ImportRestService.stopUserDataImport : ImportRestService.stopServerImport;
+            importAborter($repositories.getActiveRepository(), {name: file.name, type: file.type})
                 .success(function () {
                     $scope.updateList();
                 }).error(function (data) {
