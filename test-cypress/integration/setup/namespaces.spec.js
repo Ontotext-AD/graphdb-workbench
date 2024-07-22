@@ -37,7 +37,7 @@ describe('Namespaces', () => {
         getAddNamespaceForm().should('be.visible');
     }
 
-    it.skip('verify initial state', () => {
+    it('verify initial state', () => {
         getNoNamespacesAlert().should('not.be.visible');
 
         // Should be able to insert new prefix
