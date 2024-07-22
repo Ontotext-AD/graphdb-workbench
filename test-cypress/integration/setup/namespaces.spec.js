@@ -37,7 +37,7 @@ describe('Namespaces', () => {
         getAddNamespaceForm().should('be.visible');
     }
 
-    it.skip('verify initial state', () => {
+    it('verify initial state', () => {
         getNoNamespacesAlert().should('not.be.visible');
 
         // Should be able to insert new prefix
@@ -69,15 +69,21 @@ describe('Namespaces', () => {
 
         // Both header & footer pagination must be the same
         getNamespacesHeaderPagination()
-            .should('be.visible')
+            .should('contain.text', 'First')
+            .should('contain.text', '1')
+            .should('contain.text', 'Last')
             .find('li')
             // Single page + First & Last buttons
-            .should('have.length', 3);
+            .should('have.length', 3)
+            .should('be.visible');
         getNamespacesPagination()
-            .should('be.visible')
+            .should('contain.text', 'First')
+            .should('contain.text', '1')
+            .should('contain.text', 'Last')
             .find('li')
             // Single page + First & Last buttons
-            .should('have.length', 3);
+            .should('have.length', 3)
+            .should('be.visible');
 
         // Verify default namespaces are present and interactable
         const defaultPrefixes = Object.keys(DEFAULT_NAMESPACES).sort(function (a, b) {
