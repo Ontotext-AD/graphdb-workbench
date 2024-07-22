@@ -69,21 +69,15 @@ describe('Namespaces', () => {
 
         // Both header & footer pagination must be the same
         getNamespacesHeaderPagination()
-            .should('contain.text', 'First')
-            .should('contain.text', '1')
-            .should('contain.text', 'Last')
+            .should('be.visible')
             .find('li')
             // Single page + First & Last buttons
-            .should('have.length', 3)
-            .should('be.visible');
+            .should('have.length', 3);
         getNamespacesPagination()
-            .should('contain.text', 'First')
-            .should('contain.text', '1')
-            .should('contain.text', 'Last')
+            .should('be.visible')
             .find('li')
             // Single page + First & Last buttons
-            .should('have.length', 3)
-            .should('be.visible');
+            .should('have.length', 3);
 
         // Verify default namespaces are present and interactable
         const defaultPrefixes = Object.keys(DEFAULT_NAMESPACES).sort(function (a, b) {

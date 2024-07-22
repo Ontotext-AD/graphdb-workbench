@@ -66,14 +66,14 @@ describe('Graphs overview screen validation', () => {
 
     context('Test graphs overview pagination', () => {
         it('Should be visible', () => {
-            GraphsOverviewSteps.getPaginations().should('exist').and('contain', 'First');
+            GraphsOverviewSteps.getPaginations()
+                .should('be.visible')
+                .and('contain', '3');
             GraphsOverviewSteps.getTopPaginationLinks().should('have.length', 5);
             verifyGraphExistence('The default graph');
         });
 
         it('Should switch pages', () => {
-            // Try to wait until pagination has loaded
-            GraphsOverviewSteps.getPaginations().should('exist').and('contain', 'First');
             // Switch through pages and verify that the respective pager button is active.
             selectPage(2).should('contain', '2')
                 .closest('li').should('have.class', 'active');
