@@ -1,6 +1,6 @@
 // Due to a problem in the uib-pagination library, the template needs to be recompiled, in order to set the first and last text in a new language
 angular.module('graphdb.framework.core.directives.paginations', [])
-    .directive('paginations', function ($translate, $rootScope, $compile) {
+    .directive('paginations', ["$translate", "$rootScope", "$compile", function ($translate, $rootScope, $compile) {
         return {
             link: function ($scope, element) {
                 const template = '<uib-pagination class="nav navbar-right" ' +
@@ -25,4 +25,4 @@ angular.module('graphdb.framework.core.directives.paginations', [])
                $scope.$on('$destroy', languageChangedSubscription);
             }
         };
-    });
+    }]);
