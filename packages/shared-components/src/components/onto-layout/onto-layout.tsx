@@ -11,13 +11,14 @@ import {WINDOW_WIDTH_FOR_COLLAPSED_NAVBAR} from "../../models/constants";
 export class OntoLayout {
   private windowResizeObserver: (...args: any) => void;
 
+  private isNavbarCollapsed = false;
+
   constructor() {
-    this.windowResizeObserver = debounce(() => this.windowResizehandler(), 50);
+    this.windowResizeObserver = debounce(() => this.windowResizeHandler(), 50);
   }
 
   @Element() hostElement: HTMLElement;
 
-  // TODO: determine this on init
   @State() isLowResolution = false;
 
   /**
@@ -27,8 +28,8 @@ export class OntoLayout {
    */
   @Listen('navbarToggled')
   onNavbarToggled(event: CustomEvent<NavbarToggledEvent>) {
-    const isCollapsed = event.detail.payload;
-    if (isCollapsed) {
+    this.isNavbarCollapsed = event.detail.payload;
+    if (this.isNavbarCollapsed) {
       this.hostElement.classList.add('expanded');
     } else {
       this.hostElement.classList.remove('expanded');
@@ -44,14 +45,21 @@ export class OntoLayout {
     this.windowResizeObserver();
   }
 
-  private windowResizehandler(): void {
-    if (window.innerWidth > WINDOW_WIDTH_FOR_COLLAPSED_NAVBAR) {
+  private windowResizeHandler(): void {
+    this.isLowResolution = window.innerWidth <= WINDOW_WIDTH_FOR_COLLAPSED_NAVBAR;
+    if (!this.isLowResolution && !this.isNavbarCollapsed) {
       this.hostElement.classList.remove('expanded');
-      this.isLowResolution = false;
     } else {
       this.hostElement.classList.add('expanded');
-      this.isLowResolution = true;
     }
+  }
+
+  // ========================
+  // Lifecycle methods
+  // ========================
+
+  componentDidLoad() {
+    this.windowResizeHandler();
   }
 
   render() {
