@@ -5,3 +5,8 @@ yasgui-component .CodeMirror {
 .keyboard-shortcuts-dialog-wrapper {
     margin-top: -21px;
 }
+
+.no-wrap-popover {
+    max-width: none;
+    white-space: nowrap;
+}
