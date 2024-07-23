@@ -12,15 +12,49 @@
       This is needed by babel to share largeish helper code for compiling async/await in older
       browsers. More information at https://github.com/single-spa/create-single-spa/issues/112
     -->
-    <script src="https://cdn.jsdelivr.net/npm/regenerator-runtime@0.13.7/runtime.min.js"></script>
+    <script src="/resources/runtime.js"></script>
 
     <!--
       This CSP allows any SSL-enabled host and for arbitrary eval(), but you should limit these directives further to increase your app's security.
       Learn more about CSP policies at https://content-security-policy.com/#directive
     -->
     <meta http-equiv="Content-Security-Policy"
-          content="default-src 'self' https: localhost:*; script-src 'unsafe-inline' 'unsafe-eval' https: localhost:*; connect-src https: localhost:* ws://localhost:*; style-src 'unsafe-inline' https: http://localhost:9000; object-src 'none';">
+          content=" default-src 'self' <%= microFrontEndsUrls %>;
+                    script-src 'self' 'unsafe-inline' 'unsafe-eval' <%= microFrontEndsUrls %>;
+                    connect-src 'self' <%= microFrontEndsUrls %>;
+                    style-src 'self' 'unsafe-inline' <%= microFrontEndsUrls %>;
+                    img-src 'self' data: <%= microFrontEndsUrls %>;
+                    font-src 'self' <%= microFrontEndsUrls %>;
+                    base-uri 'self';">
     <meta name="importmap-type" content="systemjs-importmap"/>
+
+    <link rel="preload" href="/single-spa.min.js" as="script">
+    <script src="plugin-registry.js?v=<%= buildVersion %>"></script>
+    <script src="plugins.js?v=<%= buildVersion %>"></script>
+     <script src="/resources/import-map-overrides.js"></script>
+
+     <% if (isDevelopmentMode) { %>
+        <script src="/resources/system.js"></script>
+        <script src="/resources/amd.js"></script>
+        <script type="systemjs-importmap">
+            {
+                "imports": {
+                    "single-spa": "/resources/single-spa.dev.js"
+                }
+            }
+        </script>
+    <% } else { %>
+        <script src="/resources/system.min.js"></script>
+        <script src="/resources/amd.min.js"></script>
+        <script type="systemjs-importmap">
+            {
+                "imports": {
+                    "single-spa": "/resources/single-spa.min.js"
+                }
+            }
+                </script>
+    <% } %>
+
     <!-- If you wish to turn off import-map-overrides for specific environments (prod), uncomment the line below -->
     <!-- More info at https://github.com/joeldenning/import-map-overrides/blob/master/docs/configuration.md#domain-list -->
     <!-- <meta name="import-map-overrides-domains" content="denylist:prod.example.com" /> -->
@@ -33,38 +67,17 @@
 
       More information about shared dependencies can be found at https://single-spa.js.org/docs/recommended-setup#sharing-with-import-maps.
     -->
+
     <script type="systemjs-importmap">
         {
           "imports": {
-            "single-spa": "https://cdn.jsdelivr.net/npm/single-spa@5.9.0/lib/system/single-spa.min.js",
-                    "@ontotext/workbench-api": "http://localhost:9003/ontotext-workbench-api.js",
-                    "@ontotext/root-config": "/<%= mainBundle %>",
-                    "@ontotext/legacy-workbench": "/<%= legacyWorkbenchBundle %>",
-                    "@ontotext/workbench": "http://localhost:9002/main.js"
+            "@ontotext/workbench-api": "http://localhost:9003/ontotext-workbench-api.js",
+            "@ontotext/root-config": "/<%= mainBundle %>",
+            "@ontotext/legacy-workbench": "/<%= legacyWorkbenchBundle %>",
+            "@ontotext/workbench": "http://localhost:9002/main.js"
           }
         }
     </script>
-    <link rel="preload" href="https://cdn.jsdelivr.net/npm/single-spa@5.9.0/lib/system/single-spa.min.js" as="script">
-    <script src="plugin-registry.js?v=<%= buildVersion %>"></script>
-    <script src="plugins.js?v=<%= buildVersion %>"></script>
-
-    <!-- Add your organization's prod import map URL to this script's src  -->
-    <!-- <script type="systemjs-importmap" src="/importmap.json"></script> -->
-
-    <!--
-      If you need to support Angular applications, uncomment the script tag below to ensure only one instance of ZoneJS is loaded
-      Learn more about why at https://single-spa.js.org/docs/ecosystem-angular/#zonejs
-    -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/zone.js@0.11.3/dist/zone.min.js"></script> -->
-
-    <script src="https://cdn.jsdelivr.net/npm/import-map-overrides@2.2.0/dist/import-map-overrides.js"></script>
-    <% if (isLocal) { %>
-        <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/system.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/amd.js"></script>
-    <% } else { %>
-        <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/system.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/amd.min.js"></script>
-    <% } %>
 
 </head>
 <body>
