@@ -5,6 +5,7 @@ const MergeIntoSingleFilePlugin = require('webpack-merge-and-include-globally');
 const {merge} = require("webpack-merge");
 const singleSpaDefaults = require("webpack-config-single-spa");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const {MergeJsonPlugin} = require('./webpack/merge-json-plugin.js');
 const path = require("path");
 
 // The "string-replace-loader" replaces the version in all HTML and JS files except those copied by CopyPlugin.
@@ -56,12 +57,13 @@ module.exports = (webpackConfigEnv, argv) => {
                 template: "packages/root-config/src/index.ejs",
                 templateParameters: (compilation, assets, assetTags, options) => {
                     return {
-                    isLocal: webpackConfigEnv && webpackConfigEnv.isLocal,
-                    orgName,
-                    mainBundle: Object.keys(compilation.assets).find(asset => asset.includes('main') && asset.endsWith('.js')),
-                    legacyWorkbenchBundle:  Object.keys(compilation.assets).find(asset => asset.includes('legacyWorkbench') && asset.endsWith('.js')),
-                    contentHash: assets.contentHash,
-                    buildVersion: PACKAGE.version
+                        isDevelopmentMode: argv.env.BUILD_MODE === 'development',
+                        orgName,
+                        mainBundle: Object.keys(compilation.assets).find(asset => asset.includes('main') && asset.endsWith('.js')),
+                        legacyWorkbenchBundle:  Object.keys(compilation.assets).find(asset => asset.includes('legacyWorkbench') && asset.endsWith('.js')),
+                        contentHash: assets.contentHash,
+                        buildVersion: PACKAGE.version,
+                        microFrontEndsUrls: 'http://localhost:9002 http://localhost:9003 ws://localhost:9003 ws://localhost:9002'
                     };
                 },
                 chunks: ['main'],
@@ -76,6 +78,16 @@ module.exports = (webpackConfigEnv, argv) => {
                         'packages/legacy-workbench/src/**/plugin.js'
                     ]
                 }
+            }),
+            new MergeJsonPlugin({
+                files: [
+                    'packages/api/dist/license-checker.json',
+                    'packages/legacy-workbench/dist/license-checker.json',
+                    'packages/root-config/dist/license-checker.json',
+                    'packages/shared-components/dist/license-checker.json',
+                    'packages/workbench/dist/license-checker.json',
+                ],
+                output: 'license-checker.json'
             }),
             new CopyPlugin({
                 patterns: [
@@ -223,6 +235,15 @@ module.exports = (webpackConfigEnv, argv) => {
                     {
                         from: 'license-checker/license-checker-static.json',
                         to: ''
+                    },
+                    {
+                        from: 'packages/root-config/node_modules/regenerator-runtime/runtime.js',
+                        to: 'resources'
+                    }
+                    ,
+                    {
+                        from: 'packages/root-config/node_modules/import-map-overrides/dist/import-map-overrides.js',
+                        to: 'resources'
                     }
                 ]
             })

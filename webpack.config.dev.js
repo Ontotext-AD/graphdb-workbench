@@ -1,14 +1,32 @@
 const path = require('path');
 const {merge} = require('webpack-merge');
-const commonConfig = require('./webpack.config.common')();
+const commonConfig = require('./webpack.config.common');
+const CopyPlugin = require("copy-webpack-plugin");
 
 const host = 'localhost';
 const portHere = 9000;
 const portThere = 7200;
 
-module.exports = merge(commonConfig, {
+module.exports = (env, argv) => merge(commonConfig(env, argv), {
     mode: 'development',
     devtool: 'source-map',
+    plugins: [
+        new CopyPlugin({
+            patterns: [
+                {
+                    from: 'packages/root-config/node_modules/systemjs/dist/system.js',
+                    to: 'resources'
+                },
+                {
+                    from: 'packages/root-config/node_modules/systemjs/dist/extras/amd.js',
+                    to: 'resources'
+                },
+                {
+                    from: 'packages/root-config/node_modules/single-spa/lib/system/single-spa.dev.js',
+                    to: 'resources'
+                }]
+        })
+    ],
     module: {
         rules: [
             {
