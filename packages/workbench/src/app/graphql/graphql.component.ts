@@ -1,5 +1,5 @@
 import {Component, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
-import {AuthenticationService, RepositoryService} from "@ontotext/workbench-api";
+import {WorkbenchAuthenticationService, WorkbenchRepositoryService, WorkbenchServiceProvider} from "@ontotext/workbench-api";
 
 @Component({
   selector: 'app-graphql',
@@ -11,8 +11,8 @@ import {AuthenticationService, RepositoryService} from "@ontotext/workbench-api"
 })
 export class GraphqlComponent {
   constructor() {
-    console.log('GraphqlComponent login', AuthenticationService.login());
-    RepositoryService.getRepositories().then((response) => {
+    console.log('GraphqlComponent login', WorkbenchServiceProvider.get(WorkbenchAuthenticationService).login());
+    WorkbenchServiceProvider.get(WorkbenchRepositoryService).getRepositories().then((response) => {
       return response.json();
     }).then((data) => {
       console.log('GraphqlComponent repositories', data);
