@@ -600,8 +600,13 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         EventEmitterService.emit("filesForUploadSelected", eventData, (eventData) => {
             // Skip uploading of files if some subscriber canceled the uploading.
             if (!eventData.cancel) {
-                notifyForTooLargeFiles($invalidFiles);
-                const newFiles = $newFiles || [];
+                const invalidFiles = $invalidFiles || [];
+                notifyForTooLargeFiles(invalidFiles);
+                const invalidFileNames = invalidFiles.map((invalidFile) => invalidFile.name);
+
+                let newFiles = $newFiles || [];
+                newFiles = newFiles.filter((file) => !invalidFileNames.includes(file.name));
+
                 // RDF4J does not support decompressing .bz2 files, so we want to reject importing them
                 removeBZip2Files(newFiles);
 
