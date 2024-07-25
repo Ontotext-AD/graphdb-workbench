@@ -427,6 +427,8 @@ function yasguiComponentDirective(
             const setInitialQueryState = () => {
                 return $scope.getOntotextYasguiElement().getQuery()
                     .then((query) => {
+                        console.log(window);
+                        console.log(window.Yasgui)
                         initialQueryValue = JSON.stringify(query);
                     });
             };

@@ -1,0 +1,64 @@
+//@import 'src/css/variables';
+
+.ontotext-dropdown {
+
+  .ontotext-dropdown-button {
+    font-size: 16px;
+    font-weight: 400;
+    padding: 5px 16px;
+    line-height: 1.25;
+    border: none;
+    outline: none;
+    color: white;
+    background-color: orange;
+  }
+
+  .ontotext-dropdown-menu {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    z-index: 1000;
+  }
+
+  .ontotext-dropdown-menu-item {
+    display: block;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 400;
+    padding: .5em 1.2em;
+    color: white;
+    background-color: orange;
+  }
+
+  .ontotext-dropdown-menu-item:hover {
+    text-decoration: none;
+    background-color: orangered;
+    color: #ffffff;
+  }
+
+  .ontotext-dropdown-icon:before {
+    padding-right: 5px;
+  }
+
+  .ontotext-dropdown-button.icon-caret-down-after:after, .ontotext-dropdown-button.icon-caret-up-after:after {
+    padding-left: 10px;
+    color: grey;
+  }
+
+  .ontotext-dropdown-menu.closed {
+    display: none;
+  }
+
+  .ontotext-dropdown-button:hover {
+    cursor: pointer;
+  }
+
+  @media (max-width: 768px) {
+    .ontotext-dropdown-button:after {
+      padding-left: 0 !important;
+    }
+    .button-name {
+      display: none;
+    }
+  }
+}

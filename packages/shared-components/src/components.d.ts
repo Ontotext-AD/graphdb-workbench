@@ -5,14 +5,24 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { DropdownOption } from "./models/components/dropdown-option";
 import { ExternalMenuModel } from "./components/onto-navbar/menu-model";
 import { TranslationParameter } from "./models/translation/translation-parameter";
+export { DropdownOption } from "./models/components/dropdown-option";
 export { ExternalMenuModel } from "./components/onto-navbar/menu-model";
 export { TranslationParameter } from "./models/translation/translation-parameter";
 export namespace Components {
+    interface OntoDropdown {
+        "iconClass": string;
+        "items": DropdownOption[];
+        "nameLabelKey": string;
+        "tooltipLabelKey": string;
+    }
     interface OntoFooter {
     }
     interface OntoHeader {
+    }
+    interface OntoLanguageSelector {
     }
     interface OntoNavbar {
         "menuItems": ExternalMenuModel;
@@ -32,7 +42,28 @@ export namespace Components {
         "translationParameters": TranslationParameter[];
     }
 }
+export interface OntoDropdownCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLOntoDropdownElement;
+}
 declare global {
+    interface HTMLOntoDropdownElementEventMap {
+        "valueChanged": any;
+    }
+    interface HTMLOntoDropdownElement extends Components.OntoDropdown, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLOntoDropdownElementEventMap>(type: K, listener: (this: HTMLOntoDropdownElement, ev: OntoDropdownCustomEvent<HTMLOntoDropdownElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLOntoDropdownElementEventMap>(type: K, listener: (this: HTMLOntoDropdownElement, ev: OntoDropdownCustomEvent<HTMLOntoDropdownElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLOntoDropdownElement: {
+        prototype: HTMLOntoDropdownElement;
+        new (): HTMLOntoDropdownElement;
+    };
     interface HTMLOntoFooterElement extends Components.OntoFooter, HTMLStencilElement {
     }
     var HTMLOntoFooterElement: {
@@ -44,6 +75,12 @@ declare global {
     var HTMLOntoHeaderElement: {
         prototype: HTMLOntoHeaderElement;
         new (): HTMLOntoHeaderElement;
+    };
+    interface HTMLOntoLanguageSelectorElement extends Components.OntoLanguageSelector, HTMLStencilElement {
+    }
+    var HTMLOntoLanguageSelectorElement: {
+        prototype: HTMLOntoLanguageSelectorElement;
+        new (): HTMLOntoLanguageSelectorElement;
     };
     interface HTMLOntoNavbarElement extends Components.OntoNavbar, HTMLStencilElement {
     }
@@ -68,16 +105,27 @@ declare global {
         new (): HTMLTranslateLabelElement;
     };
     interface HTMLElementTagNameMap {
+        "onto-dropdown": HTMLOntoDropdownElement;
         "onto-footer": HTMLOntoFooterElement;
         "onto-header": HTMLOntoHeaderElement;
+        "onto-language-selector": HTMLOntoLanguageSelectorElement;
         "onto-navbar": HTMLOntoNavbarElement;
         "translate-label": HTMLTranslateLabelElement;
     }
 }
 declare namespace LocalJSX {
+    interface OntoDropdown {
+        "iconClass"?: string;
+        "items"?: DropdownOption[];
+        "nameLabelKey"?: string;
+        "onValueChanged"?: (event: OntoDropdownCustomEvent<any>) => void;
+        "tooltipLabelKey"?: string;
+    }
     interface OntoFooter {
     }
     interface OntoHeader {
+    }
+    interface OntoLanguageSelector {
     }
     interface OntoNavbar {
         "menuItems"?: ExternalMenuModel;
@@ -97,8 +145,10 @@ declare namespace LocalJSX {
         "translationParameters"?: TranslationParameter[];
     }
     interface IntrinsicElements {
+        "onto-dropdown": OntoDropdown;
         "onto-footer": OntoFooter;
         "onto-header": OntoHeader;
+        "onto-language-selector": OntoLanguageSelector;
         "onto-navbar": OntoNavbar;
         "translate-label": TranslateLabel;
     }
@@ -107,8 +157,10 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "onto-dropdown": LocalJSX.OntoDropdown & JSXBase.HTMLAttributes<HTMLOntoDropdownElement>;
             "onto-footer": LocalJSX.OntoFooter & JSXBase.HTMLAttributes<HTMLOntoFooterElement>;
             "onto-header": LocalJSX.OntoHeader & JSXBase.HTMLAttributes<HTMLOntoHeaderElement>;
+            "onto-language-selector": LocalJSX.OntoLanguageSelector & JSXBase.HTMLAttributes<HTMLOntoLanguageSelectorElement>;
             "onto-navbar": LocalJSX.OntoNavbar & JSXBase.HTMLAttributes<HTMLOntoNavbarElement>;
             /**
              * The purpose of this component is to display translated literals in the DOM. A Stencil component re-renders when a prop or state changes,
