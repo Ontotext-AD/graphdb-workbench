@@ -15,6 +15,7 @@ import 'angular/core/directives/operations-statuses-monitor/operations-statuses-
 import 'angular/core/directives/autocomplete/autocomplete.directive';
 import 'angular/core/directives/prop-indeterminate/prop-indeterminate.directive';
 import {defineCustomElements} from 'ontotext-yasgui-web-component/loader';
+import {WorkbenchServiceProvider, WorkbenchGlobalContextService} from "@ontotext/workbench-api";
 
 // $translate.instant converts <b> from strings to &lt;b&gt
 // and $sce.trustAsHtml could not recognise that this is valid html
@@ -157,6 +158,7 @@ const moduleDefinition = function (productInfo) {
             // to construct version/edition-specific links.
             $menuItemsProvider.setProductInfo(productInfo);
 
+            // TODO this remove this when clean code. The main menu is processed in shared-components
             let mainMenu = PluginRegistry.get('main.menu');
             mainMenu.forEach(function (menu) {
                 menu.items.forEach(function (item) {
@@ -218,6 +220,21 @@ const moduleDefinition = function (productInfo) {
         ThemeService.applyDarkThemeMode();
 
         GuidesService.init();
+
+        // =========================
+        // Functions and configurations for integration with the shared-components module.
+        // =========================
+        let globalContextService = WorkbenchServiceProvider.get(WorkbenchGlobalContextService);
+
+        let languageChangeSubscriptions = globalContextService.onLanguageChanged()
+            .subscribe((language) => {
+            $translate.use(language);
+        });
+
+        $rootScope.$on('destroy', () => {
+            console.log("Destroy")
+            languageChangeSubscriptions.unsubscribe();
+        })
     }]);
 
     workbench.filter('titlecase', function() {

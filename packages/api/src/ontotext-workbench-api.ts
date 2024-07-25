@@ -4,4 +4,5 @@ export {WorkbenchRepositoryService} from './services/workbench-repository.servic
 export {WorkbenchServiceProvider} from './workbench-service.provider'
 export {WorkbenchEventService} from './services/workbench-event.service';
 export {WorkbenchLanguageService} from './services/workbench-language.service';
+export {WorkbenchGlobalContextService} from './services/workbench-global-context.service';
 export {WorkbenchEventType} from './models/events/workbench.event';
