@@ -600,8 +600,13 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         EventEmitterService.emit("filesForUploadSelected", eventData, (eventData) => {
             // Skip uploading of files if some subscriber canceled the uploading.
             if (!eventData.cancel) {
-                notifyForTooLargeFiles($invalidFiles);
-                const newFiles = $newFiles || [];
+                const invalidFiles = $invalidFiles || [];
+                notifyForTooLargeFiles(invalidFiles);
+                const invalidFileNames = invalidFiles.map((invalidFile) => invalidFile.name);
+
+                let newFiles = $newFiles || [];
+                newFiles = newFiles.filter((file) => !invalidFileNames.includes(file.name));
+
                 // RDF4J does not support decompressing .bz2 files, so we want to reject importing them
                 removeBZip2Files(newFiles);
 
@@ -784,16 +789,19 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                 $scope.uploadProgressMessage = '';
                 $scope.updateList();
             },
-            () => {},
+            (error) => {
+                toastr.error($translate.instant('import.could.not.upload.file', {data: getError(error.data)}));
+                file.status = ImportResourceStatus.ERROR;
+                file.message = getError(error.data);
+            },
             (evt) => {
                 $scope.progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
                 $scope.uploadProgressMessage = $translate.instant('import.file.upload.progress', {progress: $scope.progressPercentage});
             }
-        ).catch((data) => {
-            toastr.error($translate.instant('import.could.not.upload.file', {data: getError(data)}));
-            file.status = ImportResourceStatus.ERROR;
-            file.message = getError(data);
-        }).finally(nextCallback || function () {});
+        ).finally(nextCallback || function () {
+            $scope.progressPercentage = null;
+            $scope.uploadProgressMessage = '';
+        });
     };
 
     const removeBZip2Files = (files) => {
