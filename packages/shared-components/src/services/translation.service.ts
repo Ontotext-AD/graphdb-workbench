@@ -1,9 +1,6 @@
 import en from '../assets/i18n/en.json'
 import fr from '../assets/i18n/fr.json'
-import {
-  ServiceProvider,
-  LanguageService
-} from "../../../api/src/ontotext-workbench-api";
+import {ServiceProvider, LanguageService} from "@ontotext/workbench-api";
 import {Subscription} from '@reactivex/rxjs/dist/package';
 import {TranslationParameter} from '../models/translation/translation-parameter';
 import {TranslationCallback, TranslationObserver} from '../models/translation/translation-observer';

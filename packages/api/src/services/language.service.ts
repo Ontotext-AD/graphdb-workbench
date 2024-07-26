@@ -1,26 +1,44 @@
-import {EventService} from './event.service';
-import {ServiceProvider} from '../service.provider';
-import {LanguageChangeEvent} from '../models/events/language/language-chage.event';
 import {Service} from './service';
-import {GlobalContextService} from './global-context.service';
-import {Subject} from '@reactivex/rxjs/dist/package';
+import {ReplaySubject, Subject} from '@reactivex/rxjs/dist/package';
 
+/**
+ * The LanguageService class manages the application's language settings.
+ */
 export class LanguageService implements Service {
-    private readonly eventService: EventService;
-    private readonly globalContextService: GlobalContextService;
 
     static readonly DEFAULT_LANGUAGE = 'en';
+    private readonly selectedLanguage = new ReplaySubject<string>(1);
 
+    /**
+     * Constructs a new LanguageService instance.
+     * Reads the initial language setting from local storage (not yet implemented)
+     * and sets it as the first value of the ReplaySubject.
+     */
     constructor() {
-        this.eventService = ServiceProvider.get(EventService);
-        this.globalContextService = ServiceProvider.get(GlobalContextService);
+        // TODO read it from local store and pass it as first value
     }
 
+    /**
+     * Changes the current language of the application.
+     * This method updates the language setting and notifies all subscribers
+     * about the language change. The new language is also intended to be saved
+     * to local storage (not yet implemented).
+     *
+     * @param {string} locale - The new language code to set (e.g., 'en', 'fr', 'de').
+     */
     changeLanguage(locale: string): void {
-        this.eventService.emit(new LanguageChangeEvent(locale));
+        // TODO save it to local store.
+        this.selectedLanguage.next(locale);
     }
 
+    /**
+     * Returns an observable that emits the current language whenever it changes.
+     * Subscribers to this observable will receive updates whenever the language
+     * is changed using the `changeLanguage` method.
+     *
+     * @returns {Subject<string>} An observable stream of language changes.
+     */
     onLanguageChanged(): Subject<string> {
-        return this.globalContextService.onLanguageChanged();
+        return this.selectedLanguage;
     }
 }

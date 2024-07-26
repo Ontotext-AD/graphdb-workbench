@@ -1,7 +1,3 @@
-export const EventType = {
-    'LANGUAGE_CHANGED': 'languageChangeEvent'
-}
-
 export class Event {
     readonly NAME;
     readonly payload;

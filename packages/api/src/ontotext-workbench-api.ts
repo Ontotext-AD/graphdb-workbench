@@ -4,5 +4,3 @@ export {RepositoryService} from './services/repository.service';
 export {ServiceProvider} from './service.provider'
 export {EventService} from './services/event.service';
 export {LanguageService} from './services/language.service';
-export {GlobalContextService} from './services/global-context.service';
-export {EventType} from './models/events/event';

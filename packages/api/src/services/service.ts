@@ -1,6 +1,4 @@
 /**
- * Interface for marking a service object as a workbench service.
- * This interface is used to designate services that are specific
- * to the workbench environment.
+ * Interface for identifying a service as part of the workbench system.
  */
 export interface Service {}

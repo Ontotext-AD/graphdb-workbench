@@ -1,5 +1,5 @@
 import { Component, Host, h } from '@stencil/core';
-import {ServiceProvider, EventService, EventType} from "@ontotext/workbench-api";
+import {ServiceProvider, LanguageService} from "@ontotext/workbench-api";
 
 @Component({
   tag: 'onto-header',
@@ -8,24 +8,24 @@ import {ServiceProvider, EventService, EventType} from "@ontotext/workbench-api"
 })
 export class OntoHeader {
 
-  private eventService: EventService;
+  private languageService: LanguageService;
 
+  // TODO remove this when implement language selector
   private locale = 'en'
 
   constructor() {
-    this.eventService = ServiceProvider.get(EventService);
+    this.languageService = ServiceProvider.get(LanguageService);
   }
 
-  private onClick(): void {
-    // TODO remove this when implement language selector
+  // TODO remove this when implement language selector
+  private onLanguageChanged(): void {
     if (this.locale === 'en') {
       this.locale = 'fr';
     } else {
       this.locale = 'en';
     }
-    this.eventService.emit({NAME: EventType.LANGUAGE_CHANGED, payload: {locale: this.locale}})
+    this.languageService.changeLanguage(this.locale);
   }
-
 
   render() {
     return (
@@ -33,7 +33,7 @@ export class OntoHeader {
         <div class="header-component">
           <div class="search-component">&#x1F50D;</div>
           <div class="repository-selector-component">TestRepo &#8964;</div>
-          <div class="language-selector-component" onClick={() => this.onClick()}>EN &#8964;</div>
+          <div class="language-selector-component" onClick={() => this.onLanguageChanged()}>EN &#8964;</div>
         </div>
       </Host>
     );
