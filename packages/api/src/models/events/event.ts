@@ -1,8 +1,8 @@
-export const WorkbenchEventType = {
+export const EventType = {
     'LANGUAGE_CHANGED': 'languageChangeEvent'
 }
 
-export class WorkbenchEvent {
+export class Event {
     readonly NAME;
     readonly payload;
     constructor(name: string, payload?: any) {

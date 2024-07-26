@@ -1,5 +1,5 @@
 import { Component, Host, h } from '@stencil/core';
-import {WorkbenchServiceProvider, WorkbenchEventService, WorkbenchEventType} from "@ontotext/workbench-api";
+import {ServiceProvider, EventService, EventType} from "@ontotext/workbench-api";
 
 @Component({
   tag: 'onto-header',
@@ -8,12 +8,12 @@ import {WorkbenchServiceProvider, WorkbenchEventService, WorkbenchEventType} fro
 })
 export class OntoHeader {
 
-  private eventService: WorkbenchEventService;
+  private eventService: EventService;
 
   private locale = 'en'
 
   constructor() {
-    this.eventService = WorkbenchServiceProvider.get(WorkbenchEventService);
+    this.eventService = ServiceProvider.get(EventService);
   }
 
   private onClick(): void {
@@ -23,7 +23,7 @@ export class OntoHeader {
     } else {
       this.locale = 'en';
     }
-    this.eventService.emit({NAME: WorkbenchEventType.LANGUAGE_CHANGED, payload: {locale: this.locale}})
+    this.eventService.emit({NAME: EventType.LANGUAGE_CHANGED, payload: {locale: this.locale}})
   }
 
 

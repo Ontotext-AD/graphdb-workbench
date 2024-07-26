@@ -1,8 +1,8 @@
 // Anything exported from this file is importable by other in-browser modules.
-export {WorkbenchAuthenticationService} from './services/workbench-authentication.service';
-export {WorkbenchRepositoryService} from './services/workbench-repository.service';
-export {WorkbenchServiceProvider} from './workbench-service.provider'
-export {WorkbenchEventService} from './services/workbench-event.service';
-export {WorkbenchLanguageService} from './services/workbench-language.service';
-export {WorkbenchGlobalContextService} from './services/workbench-global-context.service';
-export {WorkbenchEventType} from './models/events/workbench.event';
+export {AuthenticationService} from './services/authentication.service';
+export {RepositoryService} from './services/repository.service';
+export {ServiceProvider} from './service.provider'
+export {EventService} from './services/event.service';
+export {LanguageService} from './services/language.service';
+export {GlobalContextService} from './services/global-context.service';
+export {EventType} from './models/events/event';

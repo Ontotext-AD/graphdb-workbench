@@ -1,7 +1,7 @@
-import {WorkbenchEventType, WorkbenchEvent} from '../workbench.event';
+import {EventType, Event} from '../event';
 
-export class LanguageChangeEvent extends WorkbenchEvent {
+export class LanguageChangeEvent extends Event {
     constructor(locale: string) {
-        super(WorkbenchEventType.LANGUAGE_CHANGED, {locale});
+        super(EventType.LANGUAGE_CHANGED, {locale});
     }
 }

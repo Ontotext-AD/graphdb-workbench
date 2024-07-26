@@ -1,8 +1,8 @@
 import en from '../assets/i18n/en.json'
 import fr from '../assets/i18n/fr.json'
 import {
-  WorkbenchServiceProvider,
-  WorkbenchLanguageService
+  ServiceProvider,
+  LanguageService
 } from "../../../api/src/ontotext-workbench-api";
 import {Subscription} from '@reactivex/rxjs/dist/package';
 import {TranslationParameter} from '../models/translation/translation-parameter';
@@ -15,12 +15,12 @@ class TranslationServiceClassDefinition {
 
   private bundle = {en, fr}
   private readonly languageChangeSubscription: Subscription;
-  private currentLanguage = WorkbenchLanguageService.DEFAULT_LANGUAGE;
+  private currentLanguage = LanguageService.DEFAULT_LANGUAGE;
 
   private translationChangedObservers: Record<string, TranslationObserver[]> = {};
 
   constructor() {
-    this.languageChangeSubscription = WorkbenchServiceProvider.get(WorkbenchLanguageService).onLanguageChanged().subscribe(((language) => {
+    this.languageChangeSubscription = ServiceProvider.get(LanguageService).onLanguageChanged().subscribe(((language) => {
       this.currentLanguage = language;
       this.notifyTranslationsChanged();
     }));
@@ -65,7 +65,7 @@ class TranslationServiceClassDefinition {
     let translation = this.bundle[locale][key];
     if (!translation) {
       // Fallback to the default language
-      translation = this.bundle[WorkbenchLanguageService.DEFAULT_LANGUAGE][key];
+      translation = this.bundle[LanguageService.DEFAULT_LANGUAGE][key];
     }
 
     if (translation) {

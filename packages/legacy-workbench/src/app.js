@@ -15,7 +15,7 @@ import 'angular/core/directives/operations-statuses-monitor/operations-statuses-
 import 'angular/core/directives/autocomplete/autocomplete.directive';
 import 'angular/core/directives/prop-indeterminate/prop-indeterminate.directive';
 import {defineCustomElements} from 'ontotext-yasgui-web-component/loader';
-import {WorkbenchServiceProvider, WorkbenchGlobalContextService} from "@ontotext/workbench-api";
+import {ServiceProvider, GlobalContextService} from "@ontotext/workbench-api";
 
 // $translate.instant converts <b> from strings to &lt;b&gt
 // and $sce.trustAsHtml could not recognise that this is valid html
@@ -224,7 +224,7 @@ const moduleDefinition = function (productInfo) {
         // =========================
         // Functions and configurations for integration with the shared-components module.
         // =========================
-        let globalContextService = WorkbenchServiceProvider.get(WorkbenchGlobalContextService);
+        let globalContextService = ServiceProvider.get(GlobalContextService);
 
         let languageChangeSubscriptions = globalContextService.onLanguageChanged()
             .subscribe((language) => {
@@ -232,7 +232,6 @@ const moduleDefinition = function (productInfo) {
         });
 
         $rootScope.$on('destroy', () => {
-            console.log("Destroy")
             languageChangeSubscriptions.unsubscribe();
         })
     }]);

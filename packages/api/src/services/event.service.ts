@@ -1,19 +1,19 @@
-import {WorkbenchEvent} from '../models/events/workbench.event';
-import {WorkbenchService} from './workbenchService';
+import {Event} from '../models/events/event';
+import {Service} from './service';
 
 /**
  * Service used for global communication within the workbench ecosystem.
  */
-export class WorkbenchEventService implements WorkbenchService {
+export class EventService implements Service {
     private hostElement;
     constructor() {
         this.hostElement = document.querySelector('body');
     }
 
-    emit(workbenchEvent: WorkbenchEvent): CustomEvent {
-        const event = new CustomEvent(workbenchEvent.NAME, {detail: workbenchEvent.payload});
-        this.hostElement.dispatchEvent(event);
-        return event;
+    emit(event: Event): CustomEvent {
+        const customEvent = new CustomEvent(event.NAME, {detail: event.payload});
+        this.hostElement.dispatchEvent(customEvent);
+        return customEvent;
     }
     subscribe(eventName: string, callback: (payload: any) => void): () => void {
         const listener = (event: Event) => {
