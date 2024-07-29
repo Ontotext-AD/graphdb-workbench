@@ -6,7 +6,9 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ExternalMenuModel } from "./components/onto-navbar/menu-model";
+import { TranslationParameter } from "./models/translation/translation-parameter";
 export { ExternalMenuModel } from "./components/onto-navbar/menu-model";
+export { TranslationParameter } from "./models/translation/translation-parameter";
 export namespace Components {
     interface OntoFooter {
     }
@@ -14,6 +16,20 @@ export namespace Components {
     }
     interface OntoNavbar {
         "menuItems": ExternalMenuModel;
+    }
+    /**
+     * The purpose of this component is to display translated literals in the DOM. A Stencil component re-renders when a prop or state changes,
+     * but it may not re-render when the language changes. In such cases, this component should be used. It handles language change events
+     * and re-translates the passed language and translation parameters.
+     * Example of usage:
+     * <code>
+     *    <translate-label labelKey={item.labelKey} translationParameter={item.translationParameter}></translate-label>
+     *    <translate-label labelKey="example.label></translate-label>
+     * </code>
+     */
+    interface TranslateLabel {
+        "labelKey": string;
+        "translationParameters": TranslationParameter[];
     }
 }
 declare global {
@@ -35,10 +51,27 @@ declare global {
         prototype: HTMLOntoNavbarElement;
         new (): HTMLOntoNavbarElement;
     };
+    /**
+     * The purpose of this component is to display translated literals in the DOM. A Stencil component re-renders when a prop or state changes,
+     * but it may not re-render when the language changes. In such cases, this component should be used. It handles language change events
+     * and re-translates the passed language and translation parameters.
+     * Example of usage:
+     * <code>
+     *    <translate-label labelKey={item.labelKey} translationParameter={item.translationParameter}></translate-label>
+     *    <translate-label labelKey="example.label></translate-label>
+     * </code>
+     */
+    interface HTMLTranslateLabelElement extends Components.TranslateLabel, HTMLStencilElement {
+    }
+    var HTMLTranslateLabelElement: {
+        prototype: HTMLTranslateLabelElement;
+        new (): HTMLTranslateLabelElement;
+    };
     interface HTMLElementTagNameMap {
         "onto-footer": HTMLOntoFooterElement;
         "onto-header": HTMLOntoHeaderElement;
         "onto-navbar": HTMLOntoNavbarElement;
+        "translate-label": HTMLTranslateLabelElement;
     }
 }
 declare namespace LocalJSX {
@@ -49,10 +82,25 @@ declare namespace LocalJSX {
     interface OntoNavbar {
         "menuItems"?: ExternalMenuModel;
     }
+    /**
+     * The purpose of this component is to display translated literals in the DOM. A Stencil component re-renders when a prop or state changes,
+     * but it may not re-render when the language changes. In such cases, this component should be used. It handles language change events
+     * and re-translates the passed language and translation parameters.
+     * Example of usage:
+     * <code>
+     *    <translate-label labelKey={item.labelKey} translationParameter={item.translationParameter}></translate-label>
+     *    <translate-label labelKey="example.label></translate-label>
+     * </code>
+     */
+    interface TranslateLabel {
+        "labelKey"?: string;
+        "translationParameters"?: TranslationParameter[];
+    }
     interface IntrinsicElements {
         "onto-footer": OntoFooter;
         "onto-header": OntoHeader;
         "onto-navbar": OntoNavbar;
+        "translate-label": TranslateLabel;
     }
 }
 export { LocalJSX as JSX };
@@ -62,6 +110,17 @@ declare module "@stencil/core" {
             "onto-footer": LocalJSX.OntoFooter & JSXBase.HTMLAttributes<HTMLOntoFooterElement>;
             "onto-header": LocalJSX.OntoHeader & JSXBase.HTMLAttributes<HTMLOntoHeaderElement>;
             "onto-navbar": LocalJSX.OntoNavbar & JSXBase.HTMLAttributes<HTMLOntoNavbarElement>;
+            /**
+             * The purpose of this component is to display translated literals in the DOM. A Stencil component re-renders when a prop or state changes,
+             * but it may not re-render when the language changes. In such cases, this component should be used. It handles language change events
+             * and re-translates the passed language and translation parameters.
+             * Example of usage:
+             * <code>
+             *    <translate-label labelKey={item.labelKey} translationParameter={item.translationParameter}></translate-label>
+             *    <translate-label labelKey="example.label></translate-label>
+             * </code>
+             */
+            "translate-label": LocalJSX.TranslateLabel & JSXBase.HTMLAttributes<HTMLTranslateLabelElement>;
         }
     }
 }
