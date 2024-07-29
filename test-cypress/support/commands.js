@@ -84,19 +84,3 @@ Cypress.Commands.add("hideToastContainer", (url, formData) => {
     cy.get('.toast-success')
         .then((toastContainer) => toastContainer && toastContainer.remove());
 });
-
-
-Cypress.Commands.add('pasteIntoCodeMirror', (selector, text) => {
-    cy.get(selector).then((codeMirrorElement) => {
-        const codeMirror = codeMirrorElement[0].CodeMirror;
-        const event = new ClipboardEvent('paste', {
-            bubbles: true,
-            cancelable: true,
-            clipboardData: new DataTransfer()
-        });
-        event.clipboardData.setData('text/plain', text);
-
-        const inputField = codeMirror.getInputField();
-        inputField.dispatchEvent(event);
-    });
-});

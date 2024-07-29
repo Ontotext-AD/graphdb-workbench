@@ -64,18 +64,26 @@ describe('Sparql editor', () => {
             '?x afn:preferredLabel ?Person .\n' +
             '?doc afn:containsMention / pub-old:hasInstance ?x .\n' +
             '}');
-        // Wait, so that Yasqe can have time to replace the existing query with the new one
-        cy.wait(100);
         // Then I expect the prefixes to be added automatically
         cy.get('.CodeMirror').then((codeMirrorElement) => {
-           const codeMirror = codeMirrorElement[0].CodeMirror;
-           const value = codeMirror.getValue();
-           expect(value).to.equal('PREFIX afn: <http://jena.apache.org/ARQ/function#>\n' +
-              'select distinct ?x ?Person  where {\n' +
-              '?x a afn:Person .\n' +
-              '?x afn:preferredLabel ?Person .\n' +
-              '?doc afn:containsMention / pub-old:hasInstance ?x .\n' +
-              '}');
+            const codeMirror = codeMirrorElement[0].CodeMirror;
+            // Wait, so that Yasqe can have time to replace the existing query with the new one
+            cy.waitUntil(() => {
+                return codeMirror.getValue() === 'PREFIX afn: <http://jena.apache.org/ARQ/function#>\n' +
+                    'select distinct ?x ?Person  where {\n' +
+                    '?x a afn:Person .\n' +
+                    '?x afn:preferredLabel ?Person .\n' +
+                    '?doc afn:containsMention / pub-old:hasInstance ?x .\n' +
+                    '}';
+            }).then(() => {
+                const value = codeMirror.getValue();
+                expect(value).to.equal('PREFIX afn: <http://jena.apache.org/ARQ/function#>\n' +
+                    'select distinct ?x ?Person  where {\n' +
+                    '?x a afn:Person .\n' +
+                    '?x afn:preferredLabel ?Person .\n' +
+                    '?doc afn:containsMention / pub-old:hasInstance ?x .\n' +
+                    '}');
+            });
         });
     });
 });
