@@ -54,11 +54,11 @@ class TranslationServiceClassDefinition {
    * @param key The key for the label which needs to be translated.
    * @param parameters Optional parameters which to be applied during the translation.
    */
-  translate(key: string, parameters?: TranslationParameter[]): string {
+  public translate(key: string, parameters?: TranslationParameter[]): string {
     return this.translateInLocale(key, this.currentLanguage, parameters);
   }
 
-  translateInLocale(key: string, locale: string, parameters?: TranslationParameter[]): string {
+  public translateInLocale(key: string, locale: string, parameters?: TranslationParameter[]): string {
     let translation = this.bundle[locale][key];
     if (!translation) {
       // Fallback to the default language
