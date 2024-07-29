@@ -13,14 +13,6 @@ PluginRegistry.add('route', {
 PluginRegistry.add('main.menu', {
     'items': [
         {
-            label: 'Monitor',
-            labelKey: 'menu.monitor.label',
-            href: '#',
-            order: 3,
-            role: 'ROLE_MONITORING',
-            icon: 'icon-monitoring',
-            guideSelector: 'menu-monitor'
-        }, {
             label: 'Resources',
             labelKey: 'menu.resources.label',
             href: 'monitor/system',
