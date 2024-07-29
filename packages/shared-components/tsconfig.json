@@ -4,10 +4,14 @@
     "allowUnreachableCode": false,
     "declaration": false,
     "experimentalDecorators": true,
+    "resolveJsonModule": true,
     "lib": [
       "dom",
       "es2017"
     ],
+    "paths": {
+      "@ontotext/workbench-api": ["../api/dist/ontotext-workbench-api.d.ts"]
+    },
     "moduleResolution": "node",
     "module": "esnext",
     "target": "es2017",
