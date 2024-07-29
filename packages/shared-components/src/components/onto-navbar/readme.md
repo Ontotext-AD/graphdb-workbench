@@ -11,6 +11,7 @@
 | ----------------- | ------------------ | ------------------------------------------------------------------------------------------------------------ | -------------------------- | ----------- |
 | `menuItems`       | --                 | Configuration for the menu items model. This is the external model that is used to build the internal model. | `ExternalMenuItemsModel[]` | `undefined` |
 | `navbarCollapsed` | `navbar-collapsed` | Configuration whether the navbar should be collapsed.                                                        | `boolean`                  | `undefined` |
+| `selectedMenu`    | `selected-menu`    | The selected menu item.                                                                                      | `string`                   | `undefined` |
 
 
 ## Events

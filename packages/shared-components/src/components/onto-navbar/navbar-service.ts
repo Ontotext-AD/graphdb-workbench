@@ -1,92 +1,42 @@
-import {ExternalMenuItemModel, ExternalMenuModel, MenuItemModel, MenuModel} from "./menu-model";
+import {ExternalMenuItemModel, ExternalMenuModel} from "./external-menu-model";
+import {NavbarItemModel, NavbarModel} from "./navbar-model";
 
-/**
- * Service responsible for transforming the external menu model into a UI model.
- */
 export class NavbarService {
-  private navbarPlugins: ExternalMenuModel;
-  private readonly navbarUIModel: MenuModel;
-  private itemsWithMissedParent: ExternalMenuItemModel[];
 
-  /**
-   * Constructs a new instance of NavbarService.
-   * @param navbarPlugins The external menu model containing initial menu items.
-   */
-  constructor(navbarPlugins: ExternalMenuModel) {
-    this.navbarPlugins = navbarPlugins || [];
-    this.navbarUIModel = [];
-    this.itemsWithMissedParent = [];
+  static map(navbarPlugins: ExternalMenuModel): NavbarModel {
+    const navbarModel = new NavbarModel();
+    NavbarService.setTopLevelMenuItems(navbarPlugins, navbarModel);
+    NavbarService.setSubmenuItems(navbarPlugins, navbarModel);
+    const navbarModel1 = navbarModel.sorted();
+    console.log(`%cnavbarModel:`, 'background: plum', navbarModel1);
+    return navbarModel1;
   }
 
-  /**
-   * Builds the menu model from the provided plugins.
-   * @returns The constructed menu model.
-   */
-  buildMenuModel(): MenuModel {
-    this.navbarPlugins.forEach((menu) => {
-      menu.items.forEach((item) => {
-        this.addItem(item);
-      });
+  private static setTopLevelMenuItems(navbarPlugins: ExternalMenuModel, navbarModel: NavbarModel) {
+    navbarPlugins.forEach((menuPlugin) => {
+      menuPlugin.items
+        .filter((item) => !item.parent)
+        .forEach((item) => {
+          navbarModel.addItem(this.toMenuItemModel(item, item.children, undefined));
+        });
     });
-    return this.navbarUIModel.sort(this.menuItemCompare);
   }
 
-  private addItem(item: ExternalMenuItemModel): void {
-    if (!item.parent) {
-      if (!this.exists(this.navbarUIModel, item.label)) {
-        this.navbarUIModel.push(this.toMenuItemModel(item, [], false));
-        // A new parent is registered, so we try to process items which parents were missed.
-        this.updateItemsWithMissedParent();
-      }
-    } else {
-      if (!this.addItemToParent(item)) {
-        // Save item because parent may not processed yet. We will try later to process it again.
-        this.itemsWithMissedParent.push(item);
-      }
-    }
+  private static setSubmenuItems(navbarPlugins: ExternalMenuModel, navbarModel: NavbarModel) {
+    navbarPlugins.forEach((menuPlugin) => {
+      menuPlugin.items
+        .filter((item) => item.parent)
+        .forEach((item) => {
+          const topLevelItem = navbarModel.getTopLevelItem(item.parent)
+          // Some submenu items in the external menu model have children which is unusual.
+          // I'm not sure if and where these children are used. For now, I'm ignoring them.
+          topLevelItem.addChildren(this.toMenuItemModel(item, [], topLevelItem));
+        });
+    });
   }
 
-  private addItemToParent(item: ExternalMenuItemModel): boolean {
-    const parentItem = this.findParent(this.navbarUIModel, item.parent);
-    if (parentItem) {
-      if (!this.exists(parentItem.children, item.label)) {
-        const children = item.children ? item.children : [];
-        parentItem.children.push(this.toMenuItemModel(item, children, true));
-        return true;
-      }
-    }
-    return false;
-  };
-
-  private findParent(items: MenuModel, parent: string): MenuItemModel | undefined {
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i];
-      if (item.label === parent) {
-        return item;
-      }
-      const found = this.findParent(item.children, parent);
-      if (found) {
-        return found;
-      }
-    }
-    return undefined;
-  };
-
-  private updateItemsWithMissedParent(): void {
-    if (this.itemsWithMissedParent.length > 0) {
-      const notProcessed = [];
-      this.itemsWithMissedParent.forEach((itemWithMissedParent) => {
-        if (!this.addItemToParent(itemWithMissedParent)) {
-          notProcessed.push(itemWithMissedParent);
-        }
-      });
-      this.itemsWithMissedParent = notProcessed;
-    }
-  };
-
-  private toMenuItemModel(item: ExternalMenuItemModel, children: ExternalMenuItemModel[], hasParent = false): MenuItemModel {
-    const convertedChildren = children.map((childrenItem) => this.toMenuItemModel(childrenItem, childrenItem.children, true));
-    return {
+  private static toMenuItemModel(item: ExternalMenuItemModel, children: ExternalMenuItemModel[], parent: NavbarItemModel): NavbarItemModel {
+    const itemModel = new NavbarItemModel({
       label: item.label,
       labelKey: item.labelKey,
       href: item.href,
@@ -96,22 +46,11 @@ export class NavbarService {
       editions: item.editions,
       icon: item.icon,
       guideSelector: item.guideSelector,
-      children: convertedChildren,
-      hasParent: hasParent
-    };
-  };
-
-  private exists(items: MenuModel, label: string): boolean {
-    return items.some(item => item.label === label);
-  };
-
-  private menuItemCompare(a, b) {
-    if (a.order < b.order) {
-      return -1;
-    }
-    if (a.order > b.order) {
-      return 1;
-    }
-    return 0;
+      hasParent: !!parent,
+      parent: item.parent,
+      selected: false
+    });
+    itemModel.children = children.map((childrenItem) => this.toMenuItemModel(childrenItem, childrenItem.children, itemModel));
+    return itemModel;
   };
 }

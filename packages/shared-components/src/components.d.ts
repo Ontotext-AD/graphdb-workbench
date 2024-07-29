@@ -5,10 +5,10 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { ExternalMenuModel } from "./components/onto-navbar/menu-model";
+import { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
 import { NavbarToggledEvent } from "./components/onto-navbar/navbar-toggled-event";
 import { TranslationParameter } from "./models/translation/translation-parameter";
-export { ExternalMenuModel } from "./components/onto-navbar/menu-model";
+export { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
 export { NavbarToggledEvent } from "./components/onto-navbar/navbar-toggled-event";
 export { TranslationParameter } from "./models/translation/translation-parameter";
 export namespace Components {
@@ -27,6 +27,10 @@ export namespace Components {
           * Configuration whether the navbar should be collapsed.
          */
         "navbarCollapsed": boolean;
+        /**
+          * The selected menu item.
+         */
+        "selectedMenu": string;
     }
     /**
      * The purpose of this component is to display translated literals in the DOM. A Stencil component re-renders when a prop or state changes,
@@ -127,6 +131,10 @@ declare namespace LocalJSX {
           * Event fired when the navbar is toggled.
          */
         "onNavbarToggled"?: (event: OntoNavbarCustomEvent<NavbarToggledEvent>) => void;
+        /**
+          * The selected menu item.
+         */
+        "selectedMenu"?: string;
     }
     /**
      * The purpose of this component is to display translated literals in the DOM. A Stencil component re-renders when a prop or state changes,

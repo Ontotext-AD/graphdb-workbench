@@ -13,6 +13,11 @@ export class OntoLayout {
 
   private isNavbarCollapsed = false;
 
+  /**
+   * The current route. This is used to highlight the selected menu item in the navbar.
+   */
+  public currentRoute: string;
+
   constructor() {
     this.windowResizeObserver = debounce(() => this.windowResizeHandler(), 50);
   }
@@ -62,6 +67,11 @@ export class OntoLayout {
     this.windowResizeHandler();
   }
 
+  componentWillLoad() {
+    let route = window.location.pathname;
+    this.currentRoute  = route.replace('/', '').split('/')[0];
+  }
+
   render() {
     return (
       <Host class="wb-layout">
@@ -70,7 +80,7 @@ export class OntoLayout {
         </header>
 
         <nav class="wb-navbar">
-          <onto-navbar navbar-collapsed={this.isLowResolution}></onto-navbar>
+          <onto-navbar navbar-collapsed={this.isLowResolution} selected-menu={this.currentRoute}></onto-navbar>
         </nav>
 
         <slot name="main"></slot>

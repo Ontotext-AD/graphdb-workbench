@@ -41,5 +41,6 @@
   "menu.support.label": "Support",
   "menu.guides.label": "Guides interactifs",
   "menu.plugins.label": "Plugins",
-  "visual.graph.label": "Graphique visuel"
+  "visual.graph.label": "Graphique visuel",
+  "view.rdf.rank.title": "Rang RDF"
 }

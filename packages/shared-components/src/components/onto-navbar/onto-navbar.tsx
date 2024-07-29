@@ -11,10 +11,11 @@ import {
   State,
   Watch
 } from '@stencil/core';
-import {ExternalMenuModel, MenuItemModel, MenuModel} from "./menu-model";
+import {ExternalMenuModel} from "./external-menu-model";
 import {navigateToUrl} from "single-spa";
-import {NavbarService} from "./navbar-service";
 import {NavbarToggledEvent} from "./navbar-toggled-event";
+import {NavbarService} from "./navbar-service";
+import {NavbarItemModel, NavbarModel} from "./navbar-model";
 
 const LABELS = {
   'NAVBAR': {
@@ -33,12 +34,6 @@ const LABELS = {
 })
 export class OntoNavbar {
   /**
-   * The internal menu model used for UI rendering.
-   * @private
-   */
-  private menuModel: MenuModel;
-
-  /**
    * Flag indicating whether the navbar is collapsed in result of toggle action initiated by the user. This is needed
    * in cases where the browser window is resized which is an operation that should not override the user's choice
    * regarding the navbar collapsed state, e.g. if the user has manually collapsed the navbar and then resizes the
@@ -48,6 +43,13 @@ export class OntoNavbar {
   private isCollapsedByUser = false;
 
   @Element() hostElement: HTMLElement;
+
+  /**
+   * The internal menu model used for UI rendering.
+   * @private
+   */
+  @State()
+  private menuModel: NavbarModel;
 
   /**
    * Controls the expanded/collapsed state of the navbar.
@@ -60,6 +62,11 @@ export class OntoNavbar {
    * Configuration whether the navbar should be collapsed.
    */
   @Prop() navbarCollapsed: boolean;
+
+  /**
+   * The selected menu item.
+   */
+  @Prop() selectedMenu: string;
 
   @Watch('navbarCollapsed')
   navbarCollapsedChange(collapsed: boolean) {
@@ -88,63 +95,50 @@ export class OntoNavbar {
   @Event() navbarToggled: EventEmitter<NavbarToggledEvent>;
 
   private init(menuItems: ExternalMenuModel): void {
-    const navbarService = new NavbarService(menuItems);
-    this.menuModel = navbarService.buildMenuModel();
+    const internalModel = NavbarService.map(menuItems || []);
+    internalModel.initSelected(this.selectedMenu);
+    this.menuModel = internalModel;
   }
 
-  private select(event: MouseEvent, menuItem: MenuItemModel) {
+  private select(event: MouseEvent, menuItem: NavbarItemModel) {
     event.preventDefault();
     // navigate to respective url without reloading if possible
     navigateToUrl(menuItem.href);
 
-    const targetElement = event.target as HTMLElement;
-    const mainMenuElement = targetElement.closest('.navbar-component');
-    const selectedMenuElement = targetElement.closest('.menu-element');
-    //
-    const activeMenuElement = this.hostElement.querySelector('.active');
-    // if the menu has sub menus then close other open menus and toggle this one
-    const openedMenuElements = mainMenuElement.querySelectorAll('.open');
-    Array.from(openedMenuElements)
-      .filter((element) => element !== selectedMenuElement)
-      .forEach((element) => {
-        element.classList.remove('open');
-      });
-    console.log(`select`, '\nchildren', menuItem.children, '\nhasParent', menuItem.hasParent, '\ntarget', targetElement, '\nactive', activeMenuElement);
+    console.log(`%cchildren:`, 'background: orange', menuItem.open, menuItem.children);
     if (menuItem.children.length) {
-      // close the parent as this is a submenu
-      selectedMenuElement.classList.toggle('open');
-      // currently selected menu item contains a selected submenu item
-      const selectedSubmenu = mainMenuElement.querySelectorAll('.sub-menu-item.active');
-      console.log(`selectedSubmenu`, selectedSubmenu, activeMenuElement);
-      // and transfer the highlight to the parent
-      if (selectedSubmenu.length) {
-        targetElement.classList.toggle('active');
-      }
-    } else {
-      const activeElements = mainMenuElement.querySelectorAll('.active');
-      activeElements.forEach((element) => {
-        element.classList.remove('active');
-      });
-      // if the submenu item doesn't have a parent (it's a root level menu item), then add the active state to the root level menu item
-      if (!menuItem.hasParent) {
-        if (!targetElement.classList.contains('active')) {
-          targetElement.classList.add('active')
+      if (!menuItem.open) {
+        this.menuModel.closeOpened();
+        this.menuModel.open(menuItem);
+        if (this.menuModel.hasSelectedSubmenu(menuItem)) {
+          this.menuModel.deselectItem(menuItem);
         }
       } else {
-        // when the sub menu item has a parent, then add the active state to the sub menu item
-        targetElement.closest('.sub-menu-item').classList.add('active');
+        this.menuModel.closeAll();
+        if (this.menuModel.hasSelectedSubmenu(menuItem)) {
+          this.menuModel.selectItem(menuItem);
+        }
       }
+    } else {
+      this.menuModel.closeOtherParents(menuItem);
+      this.menuModel.deselectAll();
+      this.menuModel.selectItem(menuItem);
     }
+
+    this.refreshNavbar()
   }
 
   private toggleNavbar(): void {
     if (!this.isCollapsed) {
       this.isCollapsedByUser = true;
+      this.menuModel.highlightSelected();
       this.collapseNavbar();
     } else {
       this.isCollapsedByUser = false;
+      this.menuModel.unhighlightSelected();
       this.expandNavbar();
     }
+    this.refreshNavbar();
     this.navbarToggled.emit(new NavbarToggledEvent(this.isCollapsed));
   }
 
@@ -160,11 +154,15 @@ export class OntoNavbar {
     }
   }
 
+  private refreshNavbar(): void {
+    this.menuModel = new NavbarModel(this.menuModel._items);
+  }
+
   // ========================
   // Lifecycle methods
   // ========================
 
-  componentWillRender() {
+  componentWillLoad() {
     this.init(this.menuItems);
   }
 
@@ -196,18 +194,19 @@ export class OntoNavbar {
               </svg>
             </a>
           </li>
-          {this.menuModel.map((item) => (
-            <li class="menu-element">
+          {this.menuModel._items.map((item) => (
+            <li class={{'menu-element': true, 'open open2': item.open}}>
               {item.children.length > 0 &&
                 <Fragment>
-                  <div class="menu-element-root" onClick={(event) => this.select(event, item)}>
+                  <div class={{'menu-element-root': true, 'active': item.selected}}
+                       onClick={(event) => this.select(event, item)}>
                     <span class={`menu-item-icon ${item.icon}`}></span>
                     <translate-label class="menu-item" labelKey={item.labelKey}></translate-label>
                   </div>
                   <ul class="sub-menu">
                   {
                       item.children.map((submenu) => (
-                        <li class="sub-menu-item">
+                        <li class={{'sub-menu-item': true, 'active': submenu.selected}}>
                           <a class="sub-menu-link" href={submenu.href} onClick={(event) => this.select(event, submenu)}>
                             <translate-label class="menu-item" labelKey={submenu.labelKey}></translate-label>
                             {submenu.icon &&
@@ -221,7 +220,8 @@ export class OntoNavbar {
                 </Fragment>
               }
               {item.children.length === 0 &&
-                <a class="menu-element-root" href={item.href} onClick={(event) => this.select(event, item)}>
+                <a class={{'menu-element-root': true, 'active': item.selected}}
+                   href={item.href} onClick={(event) => this.select(event, item)}>
                   <span class={`menu-item-icon ${item.icon}`}></span>
                   <translate-label class="menu-item" labelKey={item.labelKey}></translate-label>
                 </a>

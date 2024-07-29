@@ -38,5 +38,6 @@
   "menu.support.label": "Support",
   "menu.guides.label": "Interactive guides",
   "menu.plugins.label": "Plugins",
-  "visual.graph.label": "Visual graph"
+  "visual.graph.label": "Visual graph",
+  "view.rdf.rank.title": "RDF Rank"
 }
