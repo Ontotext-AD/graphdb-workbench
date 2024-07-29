@@ -1,3 +1,6 @@
 // Anything exported from this file is importable by other in-browser modules.
-export {AuthenticationService} from './authentication-service';
-export {RepositoryService} from './repository-service';
+export {AuthenticationService} from './services/authentication.service';
+export {RepositoryService} from './services/repository.service';
+export {ServiceProvider} from './service.provider'
+export {EventService} from './services/event.service';
+export {LanguageService} from './services/language.service';
