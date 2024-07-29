@@ -1,7 +1,6 @@
 {
   "extends": "ts-config-single-spa",
-  "files": [
-      "src/authentication-service.ts", "src/ontotext-workbench-api.ts"],
+  "files": ["src/ontotext-workbench-api.ts"],
   "compilerOptions": {
     "declarationDir": "dist",
     "outDir": "dist",

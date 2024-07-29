@@ -101,14 +101,14 @@ export class OntoNavbar {
                   <Fragment>
                     <div class="menu-element-root" onClick={(event) => this.select(event, item)}>
                       <span class={`menu-item-icon ${item.icon}`}></span>
-                      <span class="menu-item">{item.label}</span>
+                      <translate-label class="menu-item" labelKey={item.labelKey}></translate-label>
                     </div>
                     <ul class="sub-menu">
                       {
                         item.children.map((submenu) => (
                           <li class="sub-menu-item">
                             <a class="sub-menu-link" href={submenu.href} onClick={(event) => this.select(event, submenu)}>
-                              {submenu.label}
+                              <translate-label class="menu-item" labelKey={submenu.labelKey}></translate-label>
                               {submenu.icon &&
                                 <span title="some title" class={`text-muted ${submenu.icon}`}></span>
                               }
@@ -122,7 +122,7 @@ export class OntoNavbar {
                 {item.children.length === 0 &&
                   <a class="menu-element-root" href={item.href} onClick={(event) => this.select(event, item)}>
                     <span class={`menu-item-icon ${item.icon}`}></span>
-                    <span class="menu-item">{item.label}</span>
+                    <translate-label class="menu-item" labelKey={item.labelKey}></translate-label>
                   </a>
                 }
               </li>
