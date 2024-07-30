@@ -125,11 +125,11 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
 
 mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$licenseService', '$rootScope',
     'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService',
-    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils', '$q', 'GuidesService', '$route', '$window', 'AuthTokenService'];
+    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils', '$q', 'GuidesService', '$route', '$window', 'AuthTokenService', '$document'];
 
 function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $licenseService, $rootScope,
                   productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService,
-                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q, GuidesService, $route, $window, AuthTokenService) {
+                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q, GuidesService, $route, $window, AuthTokenService, $document) {
     $scope.descr = $translate.instant('main.gdb.description');
     $scope.documentation = '';
     $scope.menu = $menuItems;
@@ -811,6 +811,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     });
 
+    $scope.getProductType = function() {
+        return $licenseService.productType;
+    };
 
     $scope.isEnterprise = function () {
         return $scope.getProductType() === "enterprise";
@@ -819,6 +822,16 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.isFreeEdition = function () {
         return $scope.getProductType() === "free";
     };
+
+    $scope.injectGTM = function() {
+        const dataLayerScript = $document[0].createElement('script');
+        dataLayerScript.text = "(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'}); var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:''; j.async=true; j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl; f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer','GTM-WBP6C6Z4');";
+        $document[0].getElementsByTagName('head')[0].appendChild(dataLayerScript);
+    };
+
+    //TODO - add license logic for production. It will be tested with any licenses for now.
+    // DO NOT MERGE UNTIL THIS IS RESOLVED
+    $scope.injectGTM();
 
     $scope.checkEdition = function (editions) {
         if (editions == null) {
@@ -839,9 +852,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $licenseService.isLicenseHardcoded;
     };
 
-    $scope.getProductType = function() {
-        return $licenseService.productType;
-    };
 
     $scope.getProductTypeHuman = function() {
         return $licenseService.productTypeHuman;
