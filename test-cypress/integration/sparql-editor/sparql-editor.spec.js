@@ -52,4 +52,30 @@ describe('Sparql editor', () => {
         // And yasr tabs should not be visible
         YasrSteps.getResultHeader().should('not.be.visible');
     });
+
+    it('Should paste and add prefixes', () => {
+        // Given I have opened the workbench
+        // When I visit the sparql editor page
+        SparqlEditorSteps.visitSparqlEditorPage();
+        YasqeSteps.clearEditor();
+        const prefix = 'PREFIX afn: <http://jena.apache.org/ARQ/function#>\n';
+        const query = 'select distinct ?x ?Person  where {\n' +
+            '?x a afn:Person .\n' +
+            '?x afn:preferredLabel ?Person .\n' +
+            '?doc afn:containsMention / pub-old:hasInstance ?x .\n' +
+            '}';
+        // I paste a query into the editor
+        cy.pasteIntoCodeMirror('.CodeMirror', query);
+        // Then I expect the prefixes to be added automatically
+        cy.get('.CodeMirror').then((codeMirrorElement) => {
+            const codeMirror = codeMirrorElement[0].CodeMirror;
+            // Wait, so that Yasqe can have time to replace the existing query with the new one
+            cy.waitUntil(() => {
+                return codeMirror.getValue() === prefix + query;
+            }).then(() => {
+                const value = codeMirror.getValue();
+                expect(value).to.equal(prefix + query);
+            });
+        });
+    });
 });
