@@ -98,6 +98,8 @@ describe('Import view', () => {
 
         // When I go to user tab and upload a file
         ImportSteps.openUserDataTab();
+        // And I wait for tab data to load
+        cy.wait(100);
         ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[0], bnodes));
         ImportSettingsDialogSteps.import();
         ImportUserDataSteps.getResources().should('have.length', 1);
