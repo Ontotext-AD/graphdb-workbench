@@ -242,11 +242,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.$on("$routeChangeSuccess", function ($event, current, previous) {
         $scope.clicked = false;
         $scope.hideRdfResourceSearch = false;
-        $('.menu-element-root').removeClass('active');
-        $timeout(function () {
-            $('.menu-element.open a.menu-element-root').addClass('active');
-            $('.main-menu.collapsed .menu-element.open .menu-element-root').addClass('active');
-        }, 400);
         if (previous) {
             // Recheck license status on navigation within the workbench (security is already inited)
             $licenseService.checkLicenseStatus().then(() => TrackingService.init());
