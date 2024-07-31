@@ -14,15 +14,6 @@ PluginRegistry.add('route', {
 PluginRegistry.add('main.menu', {
     'items': [
         {
-            label: 'Setup',
-            labelKey: 'menu.setup.label',
-            href: '#',
-            order: 5,
-            role: 'IS_AUTHENTICATED_FULLY',
-            icon: 'icon-settings',
-            guideSelector: 'menu-setup'
-        },
-        {
             label: 'RDF Rank',
             labelKey: 'view.rdf.rank.title',
             href: 'rdfrank',
