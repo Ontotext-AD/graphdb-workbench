@@ -1,44 +1,136 @@
-import {NavbarService} from "../navbar-service";
-import {ExternalMenuModel} from "../menu-model";
+import {NavbarService} from '../navbar-service';
+import {ExternalMenuModel} from '../external-menu-model';
+import {NavbarItemModel, NavbarModel} from '../navbar-model';
 
 describe('NavbarService', () => {
-  let navbarService: NavbarService;
-  let mockNavbarPlugins: ExternalMenuModel;
+  let mockExternalMenuModel: ExternalMenuModel;
 
   beforeEach(() => {
-    mockNavbarPlugins = [
+    mockExternalMenuModel = [
       {
-        "items": [
-          { "label": "Setup", "labelKey": "menu.setup.label", "href": "#", "order": 5, "role": "IS_AUTHENTICATED_FULLY", "icon": "icon-settings", "guideSelector": "menu-setup" },
-          { "label": "ACL Management", "labelKey": "menu.aclmanagement.label", "href": "aclmanagement", "order": 6, "parent": "Setup", "role": "ROLE_ADMIN", "guideSelector": "sub-menu-aclmanagement" } ]
-      },
-      {
-        "items": [
-          { "label": "Setup", "labelKey": "menu.setup.label", "href": "#", "order": 5, "role": "IS_AUTHENTICATED_FULLY", "icon": "icon-settings", "guideSelector": "menu-setup" },
-          { "label": "Autocomplete", "labelKey": "menu.autocomplete.label", "href": "autocomplete", "order": 40, "parent": "Setup", "role": "IS_AUTHENTICATED_FULLY", "guideSelector": "sub-menu-autocomplete" }
+        items: [
+          {
+            label: 'Import',
+            labelKey: 'common.import',
+            href: 'import',
+            order: 0,
+            role: 'IS_AUTHENTICATED_FULLY',
+            icon: 'icon-import',
+            guideSelector: 'menu-import',
+            children: []
+          }
         ]
       },
       {
-        "items": [
-          { "label": "Lab", "labelKey": "menu.lab.label", "href": "#", "order": 6, "role": "IS_AUTHENTICATED_FULLY", "icon": "fa fa-flask", "guideSelector": "menu-lab" },
-          { "label": "Talk to Your Graph", "labelKey": "menu.ttyg.label", "href": "chatgpt", "order": 20, "role": "ROLE_USER", "parent": "Lab", "guideSelector": "sub-menu-ttyg" }
+        items: [
+          {
+            label: 'Explore',
+            labelKey: 'menu.explore.label',
+            href: '#',
+            order: 1,
+            role: 'IS_AUTHENTICATED_FULLY',
+            icon: 'icon-data',
+            guideSelector: 'menu-explore',
+            children: []
+          }
         ]
       },
+      {
+        items: [
+          {
+            label: 'Class relationships',
+            labelKey: 'menu.class.relationships.label',
+            href: 'relationships',
+            order: 2,
+            parent: 'Explore',
+            guideSelector: 'sub-menu-class-relationships'
+          },
+          {
+            label: 'Class hierarchy',
+            labelKey: 'menu.class.hierarchy.label',
+            href: 'hierarchy',
+            order: 1,
+            parent: 'Explore',
+            guideSelector: 'menu-class-hierarchy'
+          },
+          {
+            label: 'Visual graph',
+            labelKey: 'visual.graph.label',
+            href: 'graphs-visualizations',
+            order: 5,
+            parent: 'Explore',
+            children: [],
+            guideSelector: 'sub-menu-visual-graph'
+          }
+        ]
+      }
     ];
-    navbarService = new NavbarService(mockNavbarPlugins);
   });
 
-  it('should build a menu model from provided plugins', () => {
-    const menuModel = navbarService.buildMenuModel();
-    console.log(`model`, JSON.stringify(menuModel));
-    const actual = [{"label":"Setup","labelKey":"menu.setup.label","href":"#","order":5,"role":"IS_AUTHENTICATED_FULLY","icon":"icon-settings","guideSelector":"menu-setup","children":[{"label":"ACL Management","labelKey":"menu.aclmanagement.label","href":"aclmanagement","order":6,"role":"ROLE_ADMIN","guideSelector":"sub-menu-aclmanagement","children":[],"hasParent":true},{"label":"Autocomplete","labelKey":"menu.autocomplete.label","href":"autocomplete","order":40,"role":"IS_AUTHENTICATED_FULLY","guideSelector":"sub-menu-autocomplete","children":[],"hasParent":true}],"hasParent":false},{"label":"Lab","labelKey":"menu.lab.label","href":"#","order":6,"role":"IS_AUTHENTICATED_FULLY","icon":"fa fa-flask","guideSelector":"menu-lab","children":[{"label":"Talk to Your Graph","labelKey":"menu.ttyg.label","href":"chatgpt","order":20,"role":"ROLE_USER","guideSelector":"sub-menu-ttyg","children":[],"hasParent":true}],"hasParent":false}];
-    expect(menuModel).toEqual(actual);
-  });
-
-  it('should not duplicate items if added multiple times', () => {
-    mockNavbarPlugins[1].items.push({ "label": "Autocomplete", "labelKey": "menu.autocomplete.label", "href": "autocomplete2", "order": 40, "parent": "Setup" });
-    const menuModel = navbarService.buildMenuModel();
-    expect(menuModel[0].children.length).toBe(2);
-    expect(menuModel[0].children.filter(item => item.label === 'Autocomplete').length).toBe(1);
+  describe('map', () => {
+    it('should map external menu model to navbar model', () => {
+      const navbarModel = NavbarService.map(mockExternalMenuModel);
+      expect(navbarModel).toBeInstanceOf(NavbarModel);
+      const actual = new NavbarModel();
+      actual.addItem(new NavbarItemModel({
+        label: 'Import',
+        labelKey: 'common.import',
+        href: 'import',
+        order: 0,
+        role: 'IS_AUTHENTICATED_FULLY',
+        icon: 'icon-import',
+        guideSelector: 'menu-import',
+        children: [],
+        hasParent: false,
+        selected: false
+      }));
+      actual.addItem(new NavbarItemModel({
+        label: 'Explore',
+        labelKey: 'menu.explore.label',
+        href: '#',
+        order: 1,
+        role: 'IS_AUTHENTICATED_FULLY',
+        icon: 'icon-data',
+        guideSelector: 'menu-explore',
+        hasParent: false,
+        selected: false,
+        children: [
+          new NavbarItemModel({
+            label: 'Class hierarchy',
+            labelKey: 'menu.class.hierarchy.label',
+            href: 'hierarchy',
+            order: 1,
+            parent: 'Explore',
+            guideSelector: 'menu-class-hierarchy',
+            children: [],
+            hasParent: true,
+            selected: false
+          }),
+          new NavbarItemModel({
+            label: 'Class relationships',
+            labelKey: 'menu.class.relationships.label',
+            href: 'relationships',
+            order: 2,
+            parent: 'Explore',
+            guideSelector: 'sub-menu-class-relationships',
+            children: [],
+            hasParent: true,
+            selected: false
+          }),
+          new NavbarItemModel({
+            label: 'Visual graph',
+            labelKey: 'visual.graph.label',
+            href: 'graphs-visualizations',
+            order: 5,
+            parent: 'Explore',
+            children: [],
+            guideSelector: 'sub-menu-visual-graph',
+            hasParent: true,
+            selected: false
+          })
+        ]
+      }));
+      expect(navbarModel).toEqual(actual)
+    });
   });
 });

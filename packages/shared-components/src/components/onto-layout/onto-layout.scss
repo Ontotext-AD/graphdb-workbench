@@ -1,0 +1,39 @@
+:host {
+  display: block;
+}
+.wb-layout {
+  display: grid;
+  grid-template-columns: 15rem minmax(200px, 1fr);
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+        "nav header"
+        "nav main"
+        "nav footer";
+  height: 100vh;
+  margin: 0;
+
+  &.expanded {
+    grid-template-columns: 4.375rem 1fr;
+  }
+
+  nav {
+    grid-area: nav;
+  }
+
+  header {
+    grid-area: header;
+  }
+
+  main {
+    grid-area: main;
+  }
+
+  main .main-container {
+    /* This is a temporary solution to properly align the main container next to the sidebar until a proper layout is in place. */
+    margin-left: 0;
+  }
+
+  footer {
+    grid-area: footer;
+  }
+}
