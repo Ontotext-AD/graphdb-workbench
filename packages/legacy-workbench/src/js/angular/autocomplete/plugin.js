@@ -13,7 +13,6 @@ PluginRegistry.add('route', {
 
 PluginRegistry.add('main.menu', {
     'items': [
-        {label: 'Setup', labelKey: 'menu.setup.label', href: '#', order: 5, role: 'IS_AUTHENTICATED_FULLY', icon: "icon-settings", guideSelector: 'menu-setup'},
         {label: 'Autocomplete', labelKey: 'menu.autocomplete.label', href: 'autocomplete', order: 40, parent: 'Setup', role: "IS_AUTHENTICATED_FULLY", guideSelector: 'sub-menu-autocomplete'}
     ]
 });

@@ -1,4 +1,7 @@
 {
+  "menu.logo.link.title": "GraphDB logo",
+  "menu.buttons.expand": "Expand menu",
+  "menu.buttons.collapse": "Collapse menu",
   "common.import": "Import",
   "menu.rdf.label": "RDF",
   "menu.explore.label": "Explore",
@@ -38,5 +41,6 @@
   "menu.support.label": "Support",
   "menu.guides.label": "Interactive guides",
   "menu.plugins.label": "Plugins",
-  "visual.graph.label": "Visual graph"
+  "visual.graph.label": "Visual graph",
+  "view.rdf.rank.title": "RDF Rank"
 }
