@@ -20,7 +20,8 @@ PluginRegistry.add('main.menu', {
             order: 2,
             role: 'IS_AUTHENTICATED_FULLY',
             icon: "icon-sparql",
-            guideSelector: 'menu-sparql'
+            guideSelector: 'menu-sparql',
+            children: []
         }
     ]
 });

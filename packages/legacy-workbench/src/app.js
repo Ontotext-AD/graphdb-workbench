@@ -177,13 +177,13 @@ const moduleDefinition = function (productInfo, translations) {
             // to construct version/edition-specific links.
             $menuItemsProvider.setProductInfo(productInfo);
 
-            // TODO this remove this when clean code. The main menu is processed in shared-components
-            let mainMenu = PluginRegistry.get('main.menu');
-            mainMenu.forEach(function (menu) {
-                menu.items.forEach(function (item) {
-                    $menuItemsProvider.addItem(item);
-                });
-            });
+            // TODO: [MIG] remove this when cleaning the code. The main menu is processed in shared-components.
+            // let mainMenu = PluginRegistry.get('main.menu');
+            // mainMenu.forEach(function (menu) {
+            //     menu.items.forEach(function (item) {
+            //         $menuItemsProvider.addItem(item);
+            //     });
+            // });
 
             $httpProvider.interceptors.push('$unauthorizedInterceptor');
             $httpProvider.interceptors.push('$authenticationInterceptor');
