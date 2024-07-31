@@ -21,20 +21,13 @@ const DOCUMENTATION_URL = 'https://graphdb.ontotext.com/documentation/';
 PluginRegistry.add('main.menu', {
     'items': [
         {
-            label: 'Setup',
-            labelKey: 'menu.setup.label',
-            href: '#',
-            order: 7,
-            role: 'IS_AUTHENTICATED_FULLY',
-            icon: 'icon-settings',
-            guideSelector: 'menu-setup'
-        }, {
             label: 'Help',
             labelKey: 'menu.help.label',
             href: '#',
             order: 8,
             icon: 'icon-help',
-            guideSelector: 'menu-help'
+            guideSelector: 'menu-help',
+            children: []
         }, {
             label: 'System information',
             labelKey: 'menu.system.information.label',

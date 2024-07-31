@@ -52,14 +52,6 @@ PluginRegistry.add('route', [
 PluginRegistry.add('main.menu', {
     'items': [
         {
-            label: 'Explore',
-            labelKey: 'menu.explore.label',
-            href: '#',
-            order: 1,
-            role: 'IS_AUTHENTICATED_FULLY',
-            icon: 'icon-data',
-            guideSelector: 'menu-explore'
-        }, {
             label: 'Class relationships',
             labelKey: 'menu.class.relationships.label',
             href: 'relationships',
