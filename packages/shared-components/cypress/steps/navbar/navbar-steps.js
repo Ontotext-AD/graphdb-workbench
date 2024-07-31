@@ -5,12 +5,16 @@ export class NavbarSteps extends BaseSteps {
     super.visit('navbar');
   }
 
+  static toggleNavbar() {
+    cy.get('.toggle-menu').click();
+  }
+
   static getMainMenu() {
-    return cy.get('.main-menu');
+    return cy.get('.navbar-component');
   }
 
   static getRootMenuItems() {
-    return cy.get('.main-menu > .menu-element');
+    return cy.get('.navbar-component > .menu-element');
   }
 
   static getRootMenuItem(index) {
