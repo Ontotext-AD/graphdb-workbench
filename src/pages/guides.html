@@ -26,7 +26,7 @@
 </div>
 <div ng-show="displayedGuides.length > 0">
     <div paginations class="ot-guides-pagination pull-right ot-owlim-ctrl"></div>
-    <span class="showing-info-namespaces pull-right">{{'showing.label' | translate}} {{(pageSize * (page - 1)) + 1}} - {{pageSize * page >= displayedGuides.length ? displayedGuides.length + (pageSize * (page - 1)) : pageSize * page}} of {{guides.length}}</span>
+    <span class="showing-info-namespaces pull-right">{{'showing.label' | translate}} {{(pageSize * (page - 1)) + 1}} - {{pageSize * page >= displayedGuides.length ? displayedGuides.length + (pageSize * (page - 1)) : pageSize * page}} {{'pagination.of.label' | translate}} {{guides.length}}</span>
 </div>
 
 <table ng-show="displayedGuides.length > 0" id="guides-table" class="table table-striped table-hover" aria-describedby="Guides table">

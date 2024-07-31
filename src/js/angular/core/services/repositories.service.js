@@ -6,6 +6,7 @@ import 'ng-file-upload/dist/ng-file-upload.min';
 import 'ng-file-upload/dist/ng-file-upload-shim.min';
 import 'angular/core/services/event-emitter-service';
 import {QueryMode} from "../../models/ontotext-yasgui/query-mode";
+import {md5HashGenerator} from "../../utils/hash-utils";
 
 const modules = [
     'ngCookies',
@@ -131,6 +132,14 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             }
         };
 
+        this.assignHashesToRepositories = function (repositoriesData) {
+            return repositoriesData.map((repo) => {
+                const hashGenerator = md5HashGenerator();
+                repo.hash = hashGenerator(JSON.stringify(repo));
+                return repo;
+            });
+        };
+
         this.init = function (successCallback, errorCallback, quick) {
             this.loading = true;
             if (!quick) {
@@ -145,8 +154,9 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                                 .then(function(result) {
                                     that.location = location;
                                     Object.entries(result.data).forEach(([key, value]) => {
+                                        const reposWithHashes = that.assignHashesToRepositories(value);
                                         that.clearLocationErrorMsg(key);
-                                        that.repositories.set(key, value);
+                                        that.repositories.set(key, reposWithHashes);
                                     });
                                     that.resetActiveRepository();
                                     loadingDone();

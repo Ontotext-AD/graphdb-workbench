@@ -1671,6 +1671,7 @@
     "search.plugins.placeholder": "Search plugins",
     "showing.label": "Showing",
     "results.label": "results",
+    "pagination.of.label": "of",
     "no.plugins.match.filter.warning": "No plugins match this filter.",
     "error.warning": "404 That’s an error!",
     "requested.url.not.found.msg": "The requested URL was not found on this server. That’s all I know.",
