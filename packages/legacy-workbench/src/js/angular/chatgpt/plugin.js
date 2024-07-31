@@ -13,15 +13,6 @@ PluginRegistry.add('route', [
 PluginRegistry.add('main.menu', {
     'items': [
         {
-            label: 'Lab',
-            labelKey: 'menu.lab.label',
-            href: '#',
-            order: 6,
-            role: 'IS_AUTHENTICATED_FULLY',
-            icon: "fa fa-flask",
-            guideSelector: 'menu-lab'
-        },
-        {
             label: 'Talk to Your Graph',
             labelKey: 'menu.ttyg.label',
             href: 'chatgpt',
