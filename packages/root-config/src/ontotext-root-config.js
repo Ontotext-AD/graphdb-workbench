@@ -10,7 +10,6 @@ import {
     constructLayoutEngine,
 } from "single-spa-layout";
 import microfrontendLayout from "./microfrontend-layout.html";
-import "./styles/layout.css";
 import "./styles/bootstrap.min.css";
 import "font-awesome/css/font-awesome.min.css";
 // import "./styles/bootstrap-graphdb-theme.css";
