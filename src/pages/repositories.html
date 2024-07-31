@@ -69,7 +69,7 @@
                                    class="table table-hover table-striped" aria-describedby="Repositories table">
                                 <tbody>
                                 <tr class="repository"
-                                    ng-repeat="repository in getRepositoriesFromLocation(location.uri) | orderBy: ['type === \'system\'', 'location', 'id']"
+                                    ng-repeat="repository in getRepositoriesFromLocation(location.uri) | orderBy: ['type === \'system\'', 'location', 'id'] track by repository.hash"
                                     ng-class="{'table-info text-secondary': isRepoActive(repository)}">
                                     <td width="25">
                                         <span role="button" class="icon-connection-off icon-lg text-secondary m-0"

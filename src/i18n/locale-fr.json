@@ -1683,6 +1683,7 @@
     "search.plugins.placeholder": "Rechercher des plugins",
     "showing.label": "Montrant",
     "results.label": "résultats",
+    "pagination.of.label": "sur",
     "no.plugins.match.filter.warning": "Aucun plug-ins correspond en ce filtre.",
     "error.warning": "404. C'est une erreur!",
     "requested.url.not.found.msg": "L'URL demandée n'a pas été trouvée sur ce serveur. C'est tout ce que je sais.",
