@@ -5,7 +5,7 @@ export class NavbarModel {
   /**
    * The model is private and should not be accessed directly. Use the provided methods to interact with the model.
    */
-  _items: NavbarItemModel[];
+  private readonly _items: NavbarItemModel[];
 
   /**
    * Creates a new instance of the navbar model.
@@ -16,19 +16,163 @@ export class NavbarModel {
   }
 
   /**
-   * Finds out the menu item by its href property and marks it as selected if it is a top level menu. If the menu item
-   * is a sub menu, it marks its parent as opened and the sub menu item as selected.
-   * @param selectedMenu The href of the menu item to be selected.
+   * Clones the model. This method is useful when the model needs to be modified without affecting the original model.
+   * @return The cloned model.
    */
-  initSelected(selectedMenu: string) {
+  getModel(): NavbarItemModel[] {
+    const cloneItem = (item: NavbarItemModel): NavbarItemModel => {
+      const clonedChildren = item.children.map(cloneItem);
+      return new NavbarItemModel({...item, children: clonedChildren});
+    };
+    return this._items.map(cloneItem);
+  }
+
+  /**
+   * Adds a new top level item to the model. The sub menu items should be added separately as children before calling
+   * this method.
+   * @param item The item to be added.
+   */
+  addItem(item: NavbarItemModel): void {
+    this._items.push(item);
+  }
+
+  /**
+   * Returns the selected root item.
+   * @return The selected root item or null if no item is selected.
+   */
+  getSelectedRootItem(): NavbarItemModel | undefined {
+    return this._items.find((item) => item.selected);
+  }
+
+  /**
+   * Checks if the parent of the provided item is opened.
+   * @param item The menu item for which the parent needs to be checked.
+   * @return True if the parent is opened, false otherwise. If the item has no parent, the method returns false.
+   */
+  isParentOpened(item: NavbarItemModel): boolean {
+    return !!this.getParentItem(item)?.open;
+  }
+
+  /**
+   * Returns the top level menu item with the given label.
+   * @param parent The label of the top level menu item. Each menu item has a label which identifies it in the model.
+   * The label comes from the main menu plugin definition and should be unique for each menu item.
+   * @return The top level menu item or undefined if no item is found.
+   */
+  getTopLevelItem(parent: string) {
+    return this._items.find((item) => item.label === parent);
+  }
+
+  /**
+   * Returns the top level menu item with the same label as the parent property of the provided item.
+   * @param item The menu item for which the parent is needed.
+   * @return The parent menu item or undefined if no parent is found.
+   */
+  getParentItem(item: NavbarItemModel): NavbarItemModel {
+    return this._items.find((i) => i.label === item.parent);
+  }
+
+  /**
+   * Deselects all menu items.
+   */
+  deselectAll(): void {
     this.walk((item) => {
-      if (item.href === selectedMenu) {
-        if (item.hasParent) {
-          this.open(this.getParentItem(item));
-        }
-        this.selectItem(item);
+      item.selected = false;
+    });
+  }
+
+  /**
+   * Closes all opened top level menu items.
+   */
+  closeAll(): void {
+    this.walk((item) => {
+      item.open = false;
+    });
+  }
+
+  /**
+   * Deselects a top level menu item. When a menu item is selected it is highlighted in the UI.
+   * @param item The top level menu item to be deselected.
+   */
+  deselectItem(item: NavbarItemModel): void {
+    item.selected = false;
+  }
+
+  /**
+   * Selects a top level menu item. When a menu item is selected it is highlighted in the UI.
+   * @param item The top level menu item to be selected.
+   */
+  selectItem(item: NavbarItemModel): void {
+    item.selected = true;
+  }
+
+  /**
+   * Checks if a top level menu item has a selected submenu.
+   * @param item The top level menu item to be checked.
+   * @return True if the top level menu item has a selected submenu, false otherwise.
+   */
+  hasSelectedSubmenu(item: NavbarItemModel): boolean {
+    return item.children && item.children.some((child) => child.selected);
+  }
+
+  /**
+   * Marks an opened top level menu item as closed. If the item has a selected submenu, then the top level menu item
+   * is marked as selected to indicate that the submenu is active.
+   */
+  closeOpened(): void {
+    const opened = this._items.find((item) => item.open);
+    if (opened) {
+      if (this.hasSelectedSubmenu(opened)) {
+        this.selectItem(opened);
+      }
+      opened.open = false;
+    }
+  }
+
+  /**
+   * Opens a top level menu item and closes all other top level menu items.
+   * @param item The top level menu item to be opened.
+   */
+  open(item: NavbarItemModel): void {
+    this.walk((item) => {
+      item.open = false;
+    });
+    item.open = true;
+  }
+
+  /**
+   * Closes all top level menu items except the one that is the parent of the current item.
+   * @param currentItem The current menu item.
+   */
+  closeOtherParents(currentItem: NavbarItemModel): void {
+    const parent = currentItem.parent;
+    this.walk((item) => {
+      if (item.label !== parent) {
+        item.open = false;
       }
     });
+  }
+
+  /**
+   * Highlights the selected menu item by selecting its parent if it has one.
+   * This is useful when the navbar is collapsed. This operation is the opposite of the unhighlightSelected method.
+   */
+  highlightSelected() {
+    const selectedItem = this.getSelectedItem();
+    if (selectedItem?.hasParent) {
+      this.selectItem(this.getParentItem(selectedItem));
+    }
+  }
+
+  /**
+   * Unhighlights the selected opened menu item if it has a submenu. This is useful when the navbar is going to be expanded.
+   * This operation is the opposite of the highlightSelected method.
+   */
+  unhighlightSelected() {
+    const selectedRootItem = this.getSelectedRootItem();
+    if (selectedRootItem && selectedRootItem.children.length && selectedRootItem.open) {
+      this.deselectItem(selectedRootItem);
+    }
   }
 
   /**
@@ -57,141 +201,31 @@ export class NavbarModel {
     return selectedItem;
   }
 
-  /**
-   * Highlights the selected menu item by selecting its parent if it has one.
-   * This is useful when the navbar is collapsed. This operation is the opposite of the unhighlightSelected method.
-   */
-  highlightSelected() {
+  expandSelected(): void {
     const selectedItem = this.getSelectedItem();
-    if (selectedItem?.hasParent) {
-      this.selectItem(this.getParentItem(selectedItem));
+    if (selectedItem) {
+      if (selectedItem.hasParent) {
+        this.open(this.getParentItem(selectedItem));
+      } else {
+        this.open(selectedItem);
+      }
     }
   }
 
   /**
-   * Unhighlights the selected menu item if it has a submenu. This is useful when the navbar is going to be expanded.
-   * This operation is the opposite of the highlightSelected method.
+   * Finds out the menu item by its href property and marks it as selected if it is a top level menu. If the menu item
+   * is a sub menu, it marks its parent as opened and the sub menu item as selected.
+   * @param selectedMenu The href of the menu item to be selected.
    */
-  unhighlightSelected() {
-    const selectedRootItem = this.getSelectedRootItem();
-    if (selectedRootItem && selectedRootItem.children.length) {
-      this.deselectItem(selectedRootItem);
-    }
-  }
-
-  /**
-   * Checks if a top level menu item has a selected submenu.
-   * @param item The top level menu item to be checked.
-   * @returns True if the top level menu item has a selected submenu, false otherwise.
-   */
-  hasSelectedSubmenu(item: NavbarItemModel): boolean {
-    return item.children && item.children.some((child) => child.selected);
-  }
-
-  /**
-   * Selects a top level menu item. When a menu item is selected it is highlighted in the UI.
-   * @param item The top level menu item to be selected.
-   */
-  selectItem(item: NavbarItemModel): void {
-    item.selected = true;
-  }
-
-  /**
-   * Deselects a top level menu item. When a menu item is selected it is highlighted in the UI.
-   * @param item The top level menu item to be deselected.
-   */
-  deselectItem(item: NavbarItemModel): void {
-    item.selected = false;
-  }
-
-  /**
-   * Opens a top level menu item and closes all other top level menu items.
-   * @param item The top level menu item to be opened.
-   */
-  open(item: NavbarItemModel): void {
+  initSelected(selectedMenu: string): void {
     this.walk((item) => {
-      item.open = false;
-    });
-    item.open = true;
-  }
-
-  /**
-   * Closes all top level menu items except the one that is the parent of the current item.
-   * @param currentItem The current menu item.
-   */
-  closeOtherParents(currentItem: NavbarItemModel): void {
-    const parent = currentItem.parent;
-    this.walk((item) => {
-      if (item.label !== parent) {
-        item.open = false;
+      if (item.href === selectedMenu) {
+        if (item.hasParent) {
+          this.open(this.getParentItem(item));
+        }
+        this.selectItem(item);
       }
     });
-  }
-
-  /**
-   * Marks an opened top level menu item as closed. If the item had a selected submenu, then the top level menu item
-   * is marked as selected to indicate that the submenu is active.
-   */
-  closeOpened(): void {
-    const opened = this._items.find((item) => item.open);
-    if (opened) {
-      if (this.hasSelectedSubmenu(opened)) {
-        this.selectItem(opened);
-      }
-      opened.open = false;
-    }
-  }
-
-  /**
-   * Closes all opened top level menu items.
-   */
-  closeAll(): void {
-    this.walk((item) => {
-      item.open = false;
-    });
-  }
-
-  /**
-   * Deselects all menu items.
-   */
-  deselectAll(): void {
-    this.walk((item) => {
-      item.selected = false;
-    });
-  }
-
-  /**
-   * Adds a new top level item to the model. The sub menu items should be added separately as children before calling
-   * this method.
-   * @param item The item to be added.
-   */
-  addItem(item: NavbarItemModel): void {
-    this._items.push(item);
-  }
-
-  /**
-   * Returns the top level menu item with the given label which is the parent of the provided item.
-   * @param item The menu item for which the parent is needed.
-   */
-  getParentItem(item: NavbarItemModel): NavbarItemModel {
-    return this._items.find((i) => i.label === item.parent);
-  }
-
-  /**
-   * Returns the top level menu item with the given label.
-   * @param parent The label of the top level menu item. Each menu item has a label which identifies it in the model.
-   * The label comes from the main menu plugin definition and should be unique for each menu item.
-   */
-  getTopLevelItem(parent: string) {
-    return this._items.find((item) => item.label === parent);
-  }
-
-  /**
-   * Returns the selected root item.
-   * @return The selected root item or null if no item is selected.
-   */
-  public getSelectedRootItem() {
-    return this._items.find((item) => item.selected);
   }
 
   /**
@@ -225,6 +259,10 @@ export class NavbarModel {
         });
       }
     });
+  }
+
+  get items(): NavbarItemModel[] {
+    return this._items;
   }
 }
 

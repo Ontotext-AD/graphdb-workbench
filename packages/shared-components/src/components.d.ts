@@ -28,7 +28,7 @@ export namespace Components {
          */
         "navbarCollapsed": boolean;
         /**
-          * The selected menu item.
+          * The selected menu item. If provided, the menu item will be highlighted.
          */
         "selectedMenu": string;
     }
@@ -132,7 +132,7 @@ declare namespace LocalJSX {
          */
         "onNavbarToggled"?: (event: OntoNavbarCustomEvent<NavbarToggledEvent>) => void;
         /**
-          * The selected menu item.
+          * The selected menu item. If provided, the menu item will be highlighted.
          */
         "selectedMenu"?: string;
     }

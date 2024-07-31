@@ -16,16 +16,13 @@ import {navigateToUrl} from "single-spa";
 import {NavbarToggledEvent} from "./navbar-toggled-event";
 import {NavbarService} from "./navbar-service";
 import {NavbarItemModel, NavbarModel} from "./navbar-model";
+import {TranslationService} from "../../services/translation.service";
 
-const LABELS = {
-  'NAVBAR': {
-    'BRAND_TITLE': 'GraphDB logo',
-    'TOGGLE_BUTTON_TITLE': {
-      'COLLAPSE': 'Collapse menu',
-      'EXPAND': 'Expand menu'
-    },
-  }
-}
+const labelKeys = {
+  EXPAND: 'menu.buttons.expand',
+  COLLAPSE: 'menu.buttons.collapse',
+  LOGO_LINK: 'menu.logo.link.title'
+};
 
 @Component({
   tag: 'onto-navbar',
@@ -33,12 +30,17 @@ const LABELS = {
   shadow: false,
 })
 export class OntoNavbar {
+  private labels = {
+    [labelKeys.EXPAND]: TranslationService.translate(labelKeys.EXPAND),
+    [labelKeys.COLLAPSE]:TranslationService.translate(labelKeys.COLLAPSE),
+    [labelKeys.LOGO_LINK]: TranslationService.translate(labelKeys.LOGO_LINK)
+  }
+
   /**
    * Flag indicating whether the navbar is collapsed in result of toggle action initiated by the user. This is needed
    * in cases where the browser window is resized which is an operation that should not override the user's choice
    * regarding the navbar collapsed state, e.g. if the user has manually collapsed the navbar and then resizes the
    * window, the navbar should remain collapsed.
-   * @private
    */
   private isCollapsedByUser = false;
 
@@ -46,14 +48,12 @@ export class OntoNavbar {
 
   /**
    * The internal menu model used for UI rendering.
-   * @private
    */
   @State()
   private menuModel: NavbarModel;
 
   /**
    * Controls the expanded/collapsed state of the navbar.
-   * @private
    */
   @State()
   private isCollapsed = false;
@@ -64,7 +64,7 @@ export class OntoNavbar {
   @Prop() navbarCollapsed: boolean;
 
   /**
-   * The selected menu item.
+   * The selected menu item. If provided, the menu item will be highlighted.
    */
   @Prop() selectedMenu: string;
 
@@ -105,7 +105,6 @@ export class OntoNavbar {
     // navigate to respective url without reloading if possible
     navigateToUrl(menuItem.href);
 
-    console.log(`%cchildren:`, 'background: orange', menuItem.open, menuItem.children);
     if (menuItem.children.length) {
       if (!menuItem.open) {
         this.menuModel.closeOpened();
@@ -125,6 +124,12 @@ export class OntoNavbar {
       this.menuModel.selectItem(menuItem);
     }
 
+    // When the navbar is collapsed then find if the selected item has active children and mark the item as selected
+    // to allow it to be highlighted in the collapsed state.
+    if (this.isCollapsed && this.menuModel.isParentOpened(menuItem)) {
+      this.menuModel.closeOpened();
+    }
+
     this.refreshNavbar()
   }
 
@@ -132,9 +137,11 @@ export class OntoNavbar {
     if (!this.isCollapsed) {
       this.isCollapsedByUser = true;
       this.menuModel.highlightSelected();
+      this.menuModel.closeOpened();
       this.collapseNavbar();
     } else {
       this.isCollapsedByUser = false;
+      this.menuModel.expandSelected();
       this.menuModel.unhighlightSelected();
       this.expandNavbar();
     }
@@ -155,7 +162,22 @@ export class OntoNavbar {
   }
 
   private refreshNavbar(): void {
-    this.menuModel = new NavbarModel(this.menuModel._items);
+    this.menuModel = new NavbarModel(this.menuModel.items);
+  }
+
+  private onLanguageChanged(): void {
+    this.refreshNavbar();
+  }
+
+  private onTranslate(key: string): void {
+    TranslationService.onTranslate(
+      key,
+      [],
+      (translation) => {
+        this.labels[key] = translation;
+        this.onLanguageChanged();
+      }
+    );
   }
 
   // ========================
@@ -164,6 +186,10 @@ export class OntoNavbar {
 
   componentWillLoad() {
     this.init(this.menuItems);
+    // subscribe to language change events for each label
+    this.onTranslate(labelKeys.EXPAND);
+    this.onTranslate(labelKeys.COLLAPSE);
+    this.onTranslate(labelKeys.LOGO_LINK);
   }
 
   render() {
@@ -177,25 +203,23 @@ export class OntoNavbar {
         <ul class="navbar-component">
           <li class="brand">
             <span class="toggle-menu" title={
-              this.isCollapsed ?
-                LABELS.NAVBAR.TOGGLE_BUTTON_TITLE.EXPAND :
-                LABELS.NAVBAR.TOGGLE_BUTTON_TITLE.COLLAPSE
+              this.isCollapsed ? this.labels[labelKeys.EXPAND] : this.labels[labelKeys.COLLAPSE]
             } onClick={() => this.toggleNavbar()}>
                 <em class={this.isCollapsed ? 'icon-caret-right' : 'icon-caret-left'}></em>
             </span>
             <a class="menu-element-root home-page" href="./">
               <svg class="big-logo">
-                <desc>{LABELS.NAVBAR.BRAND_TITLE}</desc>
+                <desc>{this.labels[labelKeys.LOGO_LINK]}</desc>
                 <use href={logoImg1}></use>
               </svg>
               <svg class="small-logo">
-                <desc>{LABELS.NAVBAR.BRAND_TITLE}</desc>
+                <desc>{this.labels[labelKeys.LOGO_LINK]}</desc>
                 <use href={logoImg2}></use>
               </svg>
             </a>
           </li>
-          {this.menuModel._items.map((item) => (
-            <li class={{'menu-element': true, 'open open2': item.open}}>
+          {this.menuModel.items.map((item) => (
+            <li class={{'menu-element': true, 'open': item.open}}>
               {item.children.length > 0 &&
                 <Fragment>
                   <div class={{'menu-element-root': true, 'active': item.selected}}
@@ -204,7 +228,10 @@ export class OntoNavbar {
                     <translate-label class="menu-item" labelKey={item.labelKey}></translate-label>
                   </div>
                   <ul class="sub-menu">
-                  {
+                    <li class="submenu-title">
+                      <translate-label labelKey={item.labelKey}></translate-label>
+                    </li>
+                    {
                       item.children.map((submenu) => (
                         <li class={{'sub-menu-item': true, 'active': submenu.selected}}>
                           <a class="sub-menu-link" href={submenu.href} onClick={(event) => this.select(event, submenu)}>

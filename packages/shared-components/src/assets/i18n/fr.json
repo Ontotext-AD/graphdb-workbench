@@ -1,4 +1,7 @@
 {
+  "menu.logo.link.title": "Logo GraphDB",
+  "menu.buttons.expand": "Développer le menu",
+  "menu.buttons.collapse": "Réduire le menu",
   "common.import": "Importer",
   "menu.rdf.label": "RDF",
   "menu.explore.label": "Explorez",

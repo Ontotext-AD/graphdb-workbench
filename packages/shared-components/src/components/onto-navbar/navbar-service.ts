@@ -7,9 +7,7 @@ export class NavbarService {
     const navbarModel = new NavbarModel();
     NavbarService.setTopLevelMenuItems(navbarPlugins, navbarModel);
     NavbarService.setSubmenuItems(navbarPlugins, navbarModel);
-    const navbarModel1 = navbarModel.sorted();
-    console.log(`%cnavbarModel:`, 'background: plum', navbarModel1);
-    return navbarModel1;
+    return navbarModel.sorted();
   }
 
   private static setTopLevelMenuItems(navbarPlugins: ExternalMenuModel, navbarModel: NavbarModel) {

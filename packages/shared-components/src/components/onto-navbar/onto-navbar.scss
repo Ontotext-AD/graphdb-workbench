@@ -233,7 +233,7 @@ main menu height*/
   height: auto;
 }
 
-.navbar-component.collapsed .menu-element.clicked .sub-menu {
+.navbar-component.collapsed .menu-element.open .sub-menu {
   position: absolute;
   top: 0;
   left: 4.375rem;
@@ -246,8 +246,13 @@ main menu height*/
   display: none;
 }
 
-.navbar-component.collapsed .menu-element.clicked .sub-menu li {
+.navbar-component.collapsed .menu-element.open .menu-item,
+.navbar-component.collapsed .menu-element.open .sub-menu li {
   display: block;
+}
+
+.navbar-component.collapsed .menu-element.open .menu-element-root .menu-item {
+  display: none;
 }
 
 .navbar-component.collapsed .menu-element-root {
@@ -259,7 +264,7 @@ main menu height*/
   display: none;
 }
 
-.navbar-component.collapsed .menu-element.clicked ul li.submenu-title {
+.navbar-component.collapsed .menu-element.open ul li.submenu-title {
   display: block;
   font-size: 1.2em;
   font-weight: 500;
@@ -276,7 +281,7 @@ main menu height*/
   background-color: transparent;
 }
 
-.navbar-component.collapsed .menu-element.clicked .sub-menu.align-bottom {
+.navbar-component.collapsed .menu-element.open .sub-menu.align-bottom {
   bottom: 0;
   top: auto;
 }
