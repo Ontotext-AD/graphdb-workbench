@@ -256,7 +256,7 @@ function clusterLegend($rootScope, ClusterViewContextService, $translate, $docum
 
             const closeDialog = () => {
                 $scope.hideLegend = true;
-                legendGroup.classed('hidden-legged', $scope.hideLegend);
+                legendGroup.classed('hidden-legend', $scope.hideLegend);
             };
 
             const onKeyDown = (event) => {
