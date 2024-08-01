@@ -37,7 +37,7 @@ function clusterLegend($rootScope, ClusterViewContextService, $translate, $docum
 
             $scope.toggleLegend = () => {
                 $scope.hideLegend = !$scope.hideLegend;
-                legendGroup.classed('hidden', $scope.hideLegend);
+                legendGroup.classed('hidden-legend', $scope.hideLegend);
             };
 
             // =========================
@@ -178,7 +178,7 @@ function clusterLegend($rootScope, ClusterViewContextService, $translate, $docum
              */
             const createLegendGroup = (clusterViewD3Container) => {
                 legendGroup = clusterViewD3Container.append('g')
-                    .classed('hidden', $scope.hideLegend)
+                    .classed('hidden-legend', $scope.hideLegend)
                     .classed('cluster-legend-group', true);
             };
 
@@ -256,7 +256,7 @@ function clusterLegend($rootScope, ClusterViewContextService, $translate, $docum
 
             const closeDialog = () => {
                 $scope.hideLegend = true;
-                legendGroup.classed('hidden', $scope.hideLegend);
+                legendGroup.classed('hidden-legged', $scope.hideLegend);
             };
 
             const onKeyDown = (event) => {
