@@ -48,7 +48,7 @@ export class ClusterPageSteps {
     }
 
     static openLegend() {
-        return cy.get('.toggle-legend-btn button');
+        return cy.get('.toggle-legend-btn button').click();
     }
 
     static getLegend() {
