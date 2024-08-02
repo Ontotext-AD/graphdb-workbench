@@ -2,18 +2,15 @@ echo ''
 echo '########################   Building -- api --   ###########################'
 echo ''
 
-cd packages/api
-npm run build
+npm run build --prefix packages/api
 
 echo ''
 echo '########################   Building -- shared-components --   ###########################'
 echo ''
 
-cd packages/shared-components
-npm run build
+npm run build --prefix packages/shared-components
 
 echo ''
 echo '########################   Building -- Workbench --  ###########################'
 echo ''
-cd ../workbench
-npm run build
+npm run build --prefix packages/workbench

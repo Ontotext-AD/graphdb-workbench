@@ -2,38 +2,28 @@ echo ''
 echo '########################   Installing -- legacy-workbench --   ###########################'
 echo ''
 
-cd packages/legacy-workbench
-npm install
+npm install --prefix packages/legacy-workbench
 
 echo ''
 echo '########################   Installing -- root-config --   ###########################'
 echo ''
 
-cd ..
-cd root-config
-npm install
+npm install --prefix packages/root-config
 
 echo ''
 echo '########################   Installing -- workbench --   ###########################'
 echo ''
 
-cd ..
-cd workbench
-npm install
-
+npm install --prefix packages/workbench
 
 echo ''
 echo '########################   Installing -- api --   ###########################'
 echo ''
 
-cd ..
-cd api
-npm install
+npm install --prefix packages/api
 
 echo ''
 echo '########################   Installing -- shared components --   ###########################'
 echo ''
 
-cd ..
-cd shared-components
-npm install
+npm install --prefix packages/shared-components
