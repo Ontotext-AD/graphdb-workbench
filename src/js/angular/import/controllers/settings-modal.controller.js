@@ -1,23 +1,34 @@
 import {TABS} from "../services/import-context.service";
+import {Operation} from "./import-view.controller";
 angular
     .module('graphdb.framework.impex.import.controllers.settings-modal', [])
     .controller('SettingsModalController', SettingsModalController);
 
-SettingsModalController.$inject = ['$scope', '$uibModalInstance', 'toastr', 'UriUtils', 'settings', 'hasParserSettings', 'defaultSettings', 'isMultiple', 'activeTab', '$translate'];
 
-function SettingsModalController($scope, $uibModalInstance, toastr, UriUtils, settings, hasParserSettings, defaultSettings, isMultiple, activeTab, $translate) {
+export const SettingsModalActions = {
+    UPLOAD_ONLY: 'upload_only',
+    UPLOAD_AND_IMPORT: 'upload_and_import',
+    CANCEL: 'cancel',
+    CANCEL_IMPORT: 'cancel_import'
+};
+
+// TODO: combine all model parameters into one object!!!
+SettingsModalController.$inject = ['$scope', '$uibModalInstance', 'toastr', 'UriUtils', '$translate', 'dialogModel'];
+
+function SettingsModalController($scope, $uibModalInstance, toastr, UriUtils, $translate, dialogModel) {
 
     // =========================
     // Public variables
     // =========================
 
-    $scope.settings = settings;
-    $scope.hasParserSettings = hasParserSettings;
-    $scope.isMultiple = isMultiple;
+    $scope.settings = dialogModel.settings;
+    $scope.hasParserSettings = dialogModel.hasParserSettings;
+    $scope.isMultiple = dialogModel.isMultiple;
     $scope.enableReplace = !!($scope.settings.replaceGraphs && $scope.settings.replaceGraphs.length);
     $scope.showAdvancedSettings = false;
-    $scope.activeTab = activeTab;
+    $scope.activeTab = dialogModel.activeTab;
     $scope.userTabId = TABS.USER;
+    $scope.isUploadOperation = dialogModel.operation === Operation.UPLOAD;
 
     // =========================
     // Public functions
@@ -35,17 +46,32 @@ function SettingsModalController($scope, $uibModalInstance, toastr, UriUtils, se
 
         if ($scope.settingsForm.$valid) {
             fixSettings();
-            $uibModalInstance.close($scope.settings);
+            $uibModalInstance.close(getDismissModel(SettingsModalActions.UPLOAD_AND_IMPORT));
         }
     };
 
     $scope.cancel = function () {
         fixSettings();
-        $uibModalInstance.dismiss($scope.settings);
+        $uibModalInstance.dismiss(getDismissModel(SettingsModalActions.CANCEL));
+    };
+
+    $scope.onlyUpload = function () {
+        fixSettings();
+        $uibModalInstance.dismiss(getDismissModel(SettingsModalActions.UPLOAD_ONLY));
+    };
+
+    $scope.cancelImport = function () {
+        fixSettings();
+        $uibModalInstance.dismiss(getDismissModel(SettingsModalActions.CANCEL_IMPORT));
+    };
+
+    $scope.close = function () {
+        fixSettings();
+        $uibModalInstance.dismiss(getDismissModel(SettingsModalActions.CANCEL));
     };
 
     $scope.reset = function () {
-        $scope.settings = _.cloneDeep(defaultSettings);
+        $scope.settings = _.cloneDeep(dialogModel.defaultSettings);
         $scope.target = 'data';
     };
 
@@ -82,6 +108,18 @@ function SettingsModalController($scope, $uibModalInstance, toastr, UriUtils, se
     // =========================
     // Private functions
     // =========================
+
+    /**
+     * Returns the model for the dismiss action.
+     * @param {string} action The action to be performed.
+     * @return {{settings: *, action}}
+     */
+    const getDismissModel = function (action) {
+        return {
+            settings: $scope.settings,
+            action
+        };
+    };
 
     const fixSettings = function () {
         if ($scope.target === 'default') {
