@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <button type="button" class="close" ng-click="cancel()"></button>
+    <button type="button" class="close" ng-click="close()"></button>
     <h4 class="modal-title">{{'import.settings' | translate}}</h4>
 </div>
 <div class="modal-body">
@@ -309,8 +309,17 @@
     <button type="button" class="btn btn-link pull-left" ng-click="reset()">
         {{'import.restore.defaults.btn' | translate}}
     </button>
-    <button type="button" class="btn btn-secondary cancel-import-button" ng-click="cancel()" guide-selector="import-settings-cancel-button">
-        {{activeTab === userTabId ? 'import.only.upload.btn' : 'common.cancel.btn' | translate}}
+    <button type="button" ng-if="activeTab === userTabId" ng-click="cancel()"
+            class="btn btn-secondary cancel-btn cancel-upload-button">
+        {{'import.cancel.btn' | translate}}
+    </button>
+    <button type="button" ng-if="activeTab === userTabId && isUploadOperation" ng-click="onlyUpload()"
+            class="btn btn-secondary upload-only-button" guide-selector="import-settings-cancel-button">
+        {{'import.only.upload.btn' | translate}}
+    </button>
+    <button type="button" ng-if="activeTab !== userTabId" ng-click="cancelImport()"
+            class="btn btn-secondary cancel-import-button" guide-selector="import-settings-cancel-button">
+        {{'common.cancel.btn' | translate}}
     </button>
     <button type="submit" form="settingsForm" ng-click="ok()" ng-disabled="settingsForm.$invalid"
             class="btn btn-primary import-settings-import-button"

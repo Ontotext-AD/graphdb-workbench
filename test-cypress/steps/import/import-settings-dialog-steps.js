@@ -1,6 +1,10 @@
 import {ModalDialogSteps} from "../modal-dialog-steps";
 
 export class ImportSettingsDialogSteps extends ModalDialogSteps {
+    static getDialog() {
+        return super.getDialog('.import-settings-modal');
+    }
+
     static getImportButton() {
         return this.getDialog().find('.import-settings-import-button');
     }
@@ -15,6 +19,22 @@ export class ImportSettingsDialogSteps extends ModalDialogSteps {
 
     static cancelImport() {
         this.getCancelImportButton().click();
+    }
+
+    static getUploadOnlyButton() {
+        return this.getDialog().find('.upload-only-button');
+    }
+
+    static uploadOnly() {
+        this.getUploadOnlyButton().click();
+    }
+
+    static getCancelUploadButton() {
+        return this.getDialog().find('.cancel-btn');
+    }
+
+    static cancelUpload() {
+        this.getCancelUploadButton().click();
     }
 
     static getSettingsForm() {

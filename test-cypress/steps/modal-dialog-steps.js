@@ -1,6 +1,6 @@
 export class ModalDialogSteps {
-    static getDialog() {
-        return cy.get('.modal-dialog');
+    static getDialog(cssClass = '.modal-dialog') {
+        return cy.get(cssClass);
     }
 
     static getDialogHeader() {
@@ -13,6 +13,10 @@ export class ModalDialogSteps {
 
     static clickOnCloseButton() {
         ModalDialogSteps.getCloseButton().click();
+    }
+
+    static close() {
+        this.clickOnCloseButton();
     }
 
     static getDialogBody() {

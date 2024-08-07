@@ -924,6 +924,7 @@
         "force.serial.pipeline": "Forcer le pipeline série",
         "restore.defaults.btn": "Restaurer les valeurs par défaut",
         "only.upload.btn": "Télécharger uniquement",
+        "cancel.btn": "Annuler",
         "abort.btn": "Abandonner",
         "no.files.found": "Aucun fichier trouvé",
         "enable.for.auto.start": "Activez cette option pour lancer l'importation lorsque vous cliquez sur le bouton Importer. Si elle est désactivée, l'importation sera ajoutée à la liste mais ne démarrera pas automatiquement.",

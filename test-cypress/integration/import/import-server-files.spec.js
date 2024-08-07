@@ -124,13 +124,13 @@ describe('Import server files', () => {
         ImportServerFilesSteps.openErrorDialog(importResourceName);
 
         // Then I expect to see dialog,
-        ImportSettingsDialogSteps.getDialog().should('be.visible');
+        ImportResourceMessageDialog.getDialog().should('be.visible');
 
         // with full error message
         ImportResourceMessageDialog.getMessage().should('have.value', 'RDF Parse Error: The element type "ex:looooooooooooooooooooooooooooooooongTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaame" must be terminated by the matching end-tag "</ex:looooooooooooooooooooooooooooooooongTaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabNaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaame>". [line 9, column 6]');
 
         // When I click on corner close button.
-        ImportResourceMessageDialog.clickOnCornerCloseButton();
+        ImportResourceMessageDialog.close();
 
         // // Then I expect the dialog closed
         ImportResourceMessageDialog.getDialog().should('not.exist');
