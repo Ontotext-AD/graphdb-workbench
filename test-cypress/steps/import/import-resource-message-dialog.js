@@ -1,27 +1,8 @@
-export class ImportResourceMessageDialog {
+import {ModalDialogSteps} from "../modal-dialog-steps";
 
+export class ImportResourceMessageDialog extends ModalDialogSteps {
     static getDialog() {
-        return cy.get('.import-resource-message-dialog');
-    }
-
-    static getDialogHeader() {
-        return ImportResourceMessageDialog.getDialog().find('.modal-header');
-    }
-
-    static getCornerCloseButton() {
-        return ImportResourceMessageDialog.getDialogHeader().find('.close');
-    }
-
-    static clickOnCornerCloseButton() {
-        ImportResourceMessageDialog.getCornerCloseButton().click();
-    }
-
-    static getDialogBody() {
-        return ImportResourceMessageDialog.getDialog().find('.modal-body');
-    }
-
-    static getDialogFooter() {
-        return ImportResourceMessageDialog.getDialog().find('.modal-footer');
+        return super.getDialog('.import-resource-message-dialog');
     }
 
     static getCloseButton() {
@@ -37,7 +18,7 @@ export class ImportResourceMessageDialog {
     }
 
     static getCopyToClipboard() {
-        return ImportResourceMessageDialog.getDialogFooter().find('.copy-to-clipboard-btn')
+        return ImportResourceMessageDialog.getDialogFooter().find('.copy-to-clipboard-btn');
     }
 
     static copyToClipboard() {
