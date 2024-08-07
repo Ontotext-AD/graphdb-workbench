@@ -18,6 +18,7 @@ import {FilePrefixRegistry} from "../services/file-prefix-registry";
 import {SortingType} from "../../models/import/sorting-type";
 import {ImportResourceStatus} from "../../models/import/import-resource-status";
 import {TABS} from "../services/import-context.service";
+import {SettingsModalActions} from "./settings-modal.controller";
 
 const modules = [
     'ui.bootstrap',
@@ -37,6 +38,14 @@ const modules = [
 ];
 
 const importViewModule = angular.module('graphdb.framework.impex.import.controllers', modules);
+
+export const Operation = {
+    IMPORT: 'import',
+    BATCH_IMPORT: 'batch_import',
+    IMPORT_SNIPPET: 'import_snippet',
+    IMPORT_URL: 'import_url',
+    UPLOAD: 'upload'
+};
 
 const USER_DATA_TYPE = {
     FILE: 'file',
@@ -86,9 +95,10 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
          * @param {string} fileName - Name of the file.
          * @param {boolean} withDefaultSettings - Whether to use default settings or not.
          * @param {string|undefined} format - Format of the file. This is applicable for single files only.
+         * @param {string|undefined} operation - Operation that led to opening the settings modal.
          * @param {Function|undefined} onImportRejectHandler - Function to call when import is rejected.
          */
-        $scope.setSettingsFor = (fileName, withDefaultSettings, format, onImportRejectHandler = () => {
+        $scope.setSettingsFor = (fileName, withDefaultSettings, format, operation, onImportRejectHandler = () => {
         }) => {
             getSettingsFor(fileName, withDefaultSettings)
                 .then((settings) => {
@@ -112,19 +122,17 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                     const options = {
                         templateUrl: 'js/angular/import/templates/settingsModal.html',
                         controller: 'SettingsModalController',
+                        windowClass: 'import-settings-modal',
                         resolve: {
-                            settings: function () {
-                                return _.cloneDeep($scope.settings);
-                            },
-                            hasParserSettings: $scope.isLocalLocation,
-                            defaultSettings: function () {
-                                return initialSettings;
-                            },
-                            isMultiple: function () {
-                                return !fileName;
-                            },
-                            activeTab: function () {
-                                return $scope.activeTabId;
+                            dialogModel: function () {
+                                return {
+                                    operation: operation,
+                                    settings: _.cloneDeep($scope.settings),
+                                    hasParserSettings: $scope.isLocalLocation,
+                                    defaultSettings: initialSettings,
+                                    isMultiple: !fileName,
+                                    activeTab: $scope.activeTabId
+                                };
                             }
                         },
                         size: 'lg'
@@ -137,16 +145,23 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                     }
 
                     $uibModal.open(options).result.then(
-                        (settings) => {
-                            $scope.settings = settings;
+                        (data) => {
+                            $scope.settings = data.settings;
                             if ($scope.settingsFor === '') {
                                 $scope.importSelected();
                             } else {
                                 $scope.importFile($scope.settingsFor, true);
                             }
                         },
-                        (settings) => {
-                            $scope.settings = settings;
+                        (data) => {
+                            $scope.settings = data.settings;
+                            if (data.action === SettingsModalActions.CANCEL) {
+                                $scope.currentFiles = [];
+                                // remove the selected files because operation was canceled
+                                if (operation === Operation.UPLOAD) {
+                                    $scope.files = [];
+                                }
+                            }
                             if (onImportRejectHandler) {
                                 onImportRejectHandler();
                             }
@@ -222,7 +237,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
          * @param {ImportResourceTreeElement} resource - The resource for which the import should be triggered.
          */
         $scope.onImport = (resource) => {
-            $scope.setSettingsFor(resource.importResource.name, false, resource.importResource.format);
+            $scope.setSettingsFor(resource.importResource.name, false, resource.importResource.format, Operation.IMPORT);
         };
 
         /**
@@ -271,7 +286,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                 if (selectedResources.length === 1) {
                     fileName = selectedResources[0].importResource.name;
                 }
-                $scope.setSettingsFor(fileName, withoutChangingSettings, undefined);
+                $scope.setSettingsFor(fileName, withoutChangingSettings, undefined, Operation.BATCH_IMPORT);
             }
         };
 
@@ -690,7 +705,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                 $scope.updateImport(importResource.name, false, false);
             }
             if (data.startImport) {
-                $scope.setSettingsFor(importResource.name, false, importResource.format);
+                $scope.setSettingsFor(importResource.name, false, importResource.format, Operation.IMPORT_SNIPPET);
             }
         });
     };
@@ -715,7 +730,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
             }
             $scope.updateImport(data.url, true, false);
             if (data.startImport) {
-                $scope.setSettingsFor(data.url, true, data.format);
+                $scope.setSettingsFor(data.url, true, data.format, Operation.IMPORT_URL);
             }
         });
     };
@@ -874,7 +889,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                 if ($scope.currentFiles.length === 1) {
                     fileName = $scope.currentFiles[0].name;
                 }
-                $scope.setSettingsFor(fileName, false, undefined, () => {
+                $scope.setSettingsFor(fileName, false, undefined, Operation.UPLOAD, () => {
                     $scope.currentFiles.forEach((file) => {
                         $scope.updateImport(file.name, false, false);
                     });

@@ -916,6 +916,7 @@
         "force.serial.pipeline": "Force serial pipeline",
         "restore.defaults.btn": "Restore defaults",
         "only.upload.btn": "Only upload",
+        "cancel.btn": "Cancel",
         "abort.btn": "Abort",
         "no.files.found": "No files found",
         "enable.for.auto.start": "Enable this option to start the import when you click the Import button. If it is disabled the import will be added to the list but not started automatically.",

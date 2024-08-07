@@ -47,6 +47,40 @@ describe('Import user data: File upload', () => {
         // Then I should see the uploaded file
         ImportUserDataSteps.getResources().should('have.length', 1);
         ImportUserDataSteps.checkImportedResource(0, 'bnodes.ttl');
+        // When I try to import the same file again
+        ImportUserDataSteps.importFile(0);
+        // Then I should not see the upload only option
+        ImportSettingsDialogSteps.getDialog().should('be.visible');
+        ImportSettingsDialogSteps.getUploadOnlyButton().should('not.exist');
+        ImportSettingsDialogSteps.getCancelUploadButton().should('be.visible');
+        ImportSettingsDialogSteps.import();
+        ImportSettingsDialogSteps.getDialog().should('not.exist');
+        ImportUserDataSteps.getResources().should('have.length', 1);
+        ImportUserDataSteps.checkImportedResource(0, 'bnodes.ttl');
+    });
+
+    it('Should be able to cancel the file upload', () => {
+        // Given there are no files uploaded yet
+        ImportUserDataSteps.getResourcesTable().should('be.hidden');
+        // And I have selected to upload a file
+        ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[0], bnodes));
+        ImportSettingsDialogSteps.getDialog().should('be.visible');
+        // When I cancel the file upload via the cancel button
+        ImportSettingsDialogSteps.cancelUpload();
+        // Then the file upload dialog should close
+        ImportSettingsDialogSteps.getDialog().should('not.exist');
+        // And there should be no files uploaded
+        ImportUserDataSteps.getResourcesTable().should('be.hidden');
+        // When I select to upload a file again
+        ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[0], bnodes));
+        // Then the import settings dialog should open
+        ImportSettingsDialogSteps.getDialog().should('be.visible');
+        // And I close the file upload dialog via the close button
+        ImportSettingsDialogSteps.close();
+        // Then the file upload dialog should close
+        ImportSettingsDialogSteps.getDialog().should('not.exist');
+        // And there should be no files uploaded
+        ImportUserDataSteps.getResourcesTable().should('be.hidden');
     });
 
     it('Should allow replacing graph when uploading and importing single file', () => {
@@ -97,7 +131,7 @@ describe('Import user data: File upload', () => {
         // When I start to upload a file
         ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[0], bnodes));
         // Then the import settings dialog should open automatically
-        ImportSettingsDialogSteps.cancelImport();
+        ImportSettingsDialogSteps.uploadOnly();
         // Then I should see the uploaded file
         ImportUserDataSteps.getResources().should('have.length', 1);
         ImportUserDataSteps.checkUserDataUploadedResource(0, 'bnodes.ttl');

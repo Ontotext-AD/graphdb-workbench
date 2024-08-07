@@ -19,7 +19,7 @@ function ImportContextService(EventEmitterService) {
 
     let _activeTabId = TABS.USER;
     /**
-     * @type {ImportResourceTreeElement}
+     * @type {ImportResource[]}
      * @private
      */
     let _resources = undefined;
@@ -164,7 +164,7 @@ function ImportContextService(EventEmitterService) {
      * Updates the resources.
      * Emits the 'resourcesUpdated' event when the resources are updated.
      * The 'filesUpdated' event contains the new resources.
-     * @param {ImportResourceTreeElement} resources
+     * @param {ImportResource[]} resources
      */
     function updateResources(resources) {
         _resources = resources;
@@ -173,7 +173,7 @@ function ImportContextService(EventEmitterService) {
 
     /**
      * Gets the resources.
-     * @return {ImportResourceTreeElement} - The resources.
+     * @return {ImportResource[]} - The resources.
      */
     function getResources() {
         return cloneDeep(_resources);
