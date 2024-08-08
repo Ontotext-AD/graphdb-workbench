@@ -15,7 +15,8 @@ function AddLocationFromClusterCtrl($scope, $uibModalInstance, toastr, productIn
         'authType': 'signature',
         'username': '',
         'password': '',
-        'active': false
+        'active': false,
+        'clusterMode': true
     };
     $scope.docBase = getDocBase(productInfo);
 
