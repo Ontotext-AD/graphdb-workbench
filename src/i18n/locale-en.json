@@ -1524,6 +1524,7 @@
     "password.required": "Password*",
     "my.password.placeholder": "my-password",
     "signature.auth.info": "Signature authentication uses the token secret, which must be the same on all GraphDB instances. For more information on configuring the token secret, please refer to ",
+    "signature.cluster.auth.info": "The token secret must be the same on all GraphDB instances. For more information on configuring the token secret, please refer to ",
     "signature.auth.info.last": " in the documentation.",
     "update.file.content.header": "Update file contents",
     "update.file.edit.content.header": "Edit \"{{fileName}}\" contents",

@@ -187,6 +187,28 @@ describe('Cluster management', () => {
         ReplaceNodesDialogSteps.getDialog().should('not.exist');
         ApplicationSteps.getSuccessNotifications().should('be.visible');
     });
+
+    it('Should not see "Authentication type" while attaching remote GDB node in cluster view', () => {
+        // Given I have opened the cluster management page
+        ClusterPageSteps.visit();
+
+        // When there is no cluster configured yet
+        ClusterStubs.stubNoClusterGroupStatus();
+        ClusterStubs.stubNoClusterNodeStatus();
+        ClusterStubs.stubNoClusterConfig();
+        RemoteLocationStubs.stubAddRemoteLocation();
+        RemoteLocationStubs.stubGetRemoteLocations(0);
+
+        // When I open the create cluster dialog
+        ClusterPageSteps.getClusterPage().should('be.visible');
+        ClusterPageSteps.createCluster();
+        CreateClusterDialogSteps.getDialog().should('be.visible');
+        // And I add a remote location
+        RemoteLocationStubs.stubRemoteLocationCheck();
+        CreateClusterDialogSteps.openAddRemoteLocationDialog();
+        AddRemoteLocationDialogSteps.getDialog().should('be.visible');
+        AddRemoteLocationDialogSteps.verifyDialogBody("The token secret must be the same on all GraphDB instances. For more information on configuring the token secret, please refer to ");
+    });
 });
 
 function addRemoteLocation(location, locationsCount) {
