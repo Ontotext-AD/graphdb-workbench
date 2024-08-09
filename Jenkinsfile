@@ -14,7 +14,6 @@ pipeline {
                 script {
                     echo "Agent: ${env.AGENT}"
                     echo "Building branch: ${env.BRANCH_NAME}"
-                    sh 'docker-compose run --rm node --version'
                 }
             }
         }
