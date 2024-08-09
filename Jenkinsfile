@@ -2,7 +2,6 @@ pipeline {
     agent {
         docker {
              image 'node:18'
-             args '-u root:root'
              label env.AGENT
         }
     }
@@ -11,19 +10,20 @@ pipeline {
         REPO_URL = 'https://github.com/Ontotext-AD/graphdb-workbench.git'
     }
 
-    stage('Build Info') {
-        steps {
-            script {
-                echo "Agent: ${env.AGENT}"
-                echo "Building branch: ${env.BRANCH_NAME}"
+    stages {
+
+        stage('Build Info') {
+            steps {
+                script {
+                    echo "Agent: ${env.AGENT}"
+                    echo "Building branch: ${env.BRANCH_NAME}"
+                }
             }
         }
-    }
 
-    stages {
         stage('Install') {
             steps {
-                sh 'npm install'
+                sh 'npm run install --verbose'
             }
         }
 
