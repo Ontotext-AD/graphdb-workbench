@@ -9,9 +9,9 @@ import {OntoTooltipConfiguration} from './models/onto-tooltip-configuration';
 })
 export class OntoTooltip {
 
-    static readonly ATTR_CONTENT = 'tooltip-content';
-    static readonly ATTR_THEME = 'tooltip-theme';
-    static readonly ATTR_PLACEMENT = 'tooltip-placement';
+    private static readonly ATTR_CONTENT = 'tooltip-content';
+    private static readonly ATTR_THEME = 'tooltip-theme';
+    private static readonly ATTR_PLACEMENT = 'tooltip-placement';
 
     /**
      * Checks if the target of the 'mouseover' event has tooltip configuration.
