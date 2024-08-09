@@ -7,19 +7,19 @@ import {Service} from './service';
  * to be caught by any component in any module.
  */
 export class EventService implements Service {
-    /**
+  /**
      * Emits a {@link CustomEvent} of type passed <code>event.NAME</code> and detail <code>event.payload</code>.
      *
      * @param event - the event to be emitted.
      * @return the emitted event.
      */
-    emit(event: Event): CustomEvent {
-        const customEvent = new CustomEvent(event.NAME, {detail: event.payload});
-        this.getHostElement().dispatchEvent(customEvent);
-        return customEvent;
-    }
+  emit<T extends {} | undefined>(event: Event<T>): CustomEvent {
+    const customEvent = new CustomEvent(event.NAME, {detail: event.payload});
+    this.getHostElement().dispatchEvent(customEvent);
+    return customEvent;
+  }
 
-    /**
+  /**
      * Subscribes for event of type <code>eventName</code>.
      *
      * @param eventName - type of subscription event.
@@ -27,18 +27,18 @@ export class EventService implements Service {
      *
      * @return unsubscribe function which can be used for manual unsubscription.
      */
-    subscribe(eventName: string, callback: (payload: any) => void): () => void {
-        const listener = (event) => {
-            if (event instanceof CustomEvent) {
-                callback(event.detail);
-            }
-        };
-        this.getHostElement().addEventListener(eventName, listener);
+  subscribe<T extends {} | undefined>(eventName: string, callback: (payload: T) => void): () => void {
+    const listener = (event: unknown) => {
+      if (event instanceof CustomEvent) {
+        callback(event.detail as T);
+      }
+    };
+    this.getHostElement().addEventListener(eventName, listener);
 
-        return () => this.getHostElement().removeEventListener(eventName, listener);
-    }
+    return () => this.getHostElement().removeEventListener(eventName, listener);
+  }
 
-    private getHostElement(): HTMLElement {
-        return document.body;
-    }
+  private getHostElement(): HTMLElement {
+    return document.body;
+  }
 }

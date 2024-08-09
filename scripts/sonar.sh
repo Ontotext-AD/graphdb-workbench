@@ -11,20 +11,17 @@ install_package() {
     description=$(echo "$package" | sed 's/\// -- /g')
 
     echo ''
-    echo "########################   Installing -- ${description} --   ###########################"
+    echo "########################   Running Sonar analysis -- ${description} --   ###########################"
     echo ''
 
-    npm install --prefix "packages/${package}"
+    npm run sonar --prefix "packages/${package}"
 
-    handle_error "Installing ${description}"
+    handle_error "Linting ${description}"
 }
 # Install
-install_package "legacy-workbench"
-install_package "root-config"
 install_package "workbench"
-install_package "api"
 install_package "shared-components"
 
 echo ''
-echo '########################   All packages installed successfully!   ###########################'
+echo '########################   All Sonar analysis ran successfully!   ###########################'
 echo ''

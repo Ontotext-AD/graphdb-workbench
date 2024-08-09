@@ -160,7 +160,7 @@ class TranslationServiceClassDefinition {
   }
 
   private applyParameters(translation: string, parameters: TranslationParameter[]): string {
-    if (parameters) {
+    if (parameters !== null) {
       return parameters.reduce(
         // replace all occurrence of parameter key with parameter value.
         (translation, parameter) => TranslationServiceClassDefinition.replaceAll(translation, parameter),
@@ -169,9 +169,12 @@ class TranslationServiceClassDefinition {
     return translation;
   }
 
-  private static replaceAll(translation: string, parameter: TranslationParameter): string {
-    return parameter ? translation.split(`{{${parameter.key}}}`).join(parameter.value) : translation;
+  private static replaceAll(translation: string, parameter: TranslationParameter | null | undefined): string {
+    return parameter != null
+      ? translation.split(`{{${parameter.key}}}`).join(parameter.value)
+      : translation;
   }
+
 
   private notifyTranslationsChanged(): void {
     Object.keys(this.translationChangedObservers).forEach((eventName) => {
@@ -181,7 +184,7 @@ class TranslationServiceClassDefinition {
   }
 
   destroy(): void {
-    if (this.languageChangeSubscription) {
+    if (this.languageChangeSubscription != null) {
       this.languageChangeSubscription.unsubscribe();
     }
   }

@@ -6,19 +6,19 @@ import {ReplaySubject, Subject} from '@reactivex/rxjs/dist/package';
  */
 export class LanguageService implements Service {
 
-    static readonly DEFAULT_LANGUAGE = 'en';
-    private readonly selectedLanguage = new ReplaySubject<string>(1);
+  static readonly DEFAULT_LANGUAGE = 'en';
+  private readonly selectedLanguage = new ReplaySubject<string>(1);
 
-    /**
+  /**
      * Constructs a new LanguageService instance.
      * Reads the initial language setting from local storage (not yet implemented)
      * and sets it as the first value of the ReplaySubject.
      */
-    constructor() {
-        // TODO read it from local store and pass it as first value
-    }
+  constructor() {
+    // TODO read it from local store and pass it as first value
+  }
 
-    /**
+  /**
      * Changes the current language of the application.
      * This method updates the language setting and notifies all subscribers
      * about the language change. The new language is also intended to be saved
@@ -26,19 +26,19 @@ export class LanguageService implements Service {
      *
      * @param {string} locale - The new language code to set (e.g., 'en', 'fr', 'de').
      */
-    changeLanguage(locale: string): void {
-        // TODO save it to local store.
-        this.selectedLanguage.next(locale);
-    }
+  changeLanguage(locale: string): void {
+    // TODO save it to local store.
+    this.selectedLanguage.next(locale);
+  }
 
-    /**
+  /**
      * Returns an observable that emits the current language whenever it changes.
      * Subscribers to this observable will receive updates whenever the language
      * is changed using the `changeLanguage` method.
      *
      * @returns {Subject<string>} An observable stream of language changes.
      */
-    onLanguageChanged(): Subject<string> {
-        return this.selectedLanguage;
-    }
+  onLanguageChanged(): Subject<string> {
+    return this.selectedLanguage;
+  }
 }

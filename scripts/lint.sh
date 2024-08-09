@@ -11,12 +11,12 @@ install_package() {
     description=$(echo "$package" | sed 's/\// -- /g')
 
     echo ''
-    echo "########################   Installing -- ${description} --   ###########################"
+    echo "########################   Linting -- ${description} --   ###########################"
     echo ''
 
-    npm install --prefix "packages/${package}"
+    npm run lint --prefix "packages/${package}"
 
-    handle_error "Installing ${description}"
+    handle_error "Linting ${description}"
 }
 # Install
 install_package "legacy-workbench"
@@ -26,5 +26,5 @@ install_package "api"
 install_package "shared-components"
 
 echo ''
-echo '########################   All packages installed successfully!   ###########################'
+echo '########################   All packages lint check passed successfully!   ###########################'
 echo ''
