@@ -10,7 +10,7 @@ describe('SparqlComponent', () => {
     await TestBed.configureTestingModule({
       imports: [SparqlComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(SparqlComponent);
     component = fixture.componentInstance;

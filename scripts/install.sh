@@ -1,39 +1,30 @@
-echo ''
-echo '########################   Installing -- legacy-workbench --   ###########################'
-echo ''
+#!/bin/bash
 
-cd packages/legacy-workbench
-npm install
+# This script should be run from the root directory of the project.
 
-echo ''
-echo '########################   Installing -- root-config --   ###########################'
-echo ''
+# Source the error handling script
+. scripts/error-handling.sh
 
-cd ..
-cd root-config
-npm install
+install_package() {
+    local package=$1
+    local description
+    description=$(echo "$package" | sed 's/\// -- /g')
 
-echo ''
-echo '########################   Installing -- workbench --   ###########################'
-echo ''
+    echo ''
+    echo "########################   Installing -- ${description} --   ###########################"
+    echo ''
 
-cd ..
-cd workbench
-npm install
+    npm ci --prefix "packages/${package}"
 
-
-echo ''
-echo '########################   Installing -- api --   ###########################'
-echo ''
-
-cd ..
-cd api
-npm install
+    handle_error "Installing ${description}"
+}
+# Install
+install_package "legacy-workbench"
+install_package "root-config"
+install_package "workbench"
+install_package "api"
+install_package "shared-components"
 
 echo ''
-echo '########################   Installing -- shared components --   ###########################'
+echo '########################   All packages installed successfully!   ###########################'
 echo ''
-
-cd ..
-cd shared-components
-npm install
