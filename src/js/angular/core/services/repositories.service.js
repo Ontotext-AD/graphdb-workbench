@@ -7,6 +7,7 @@ import 'ng-file-upload/dist/ng-file-upload-shim.min';
 import 'angular/core/services/event-emitter-service';
 import {QueryMode} from "../../models/ontotext-yasgui/query-mode";
 import {md5HashGenerator} from "../../utils/hash-utils";
+import {RemoteLocationModel} from "../../models/repository/remote-location.model";
 
 const modules = [
     'ngCookies',
@@ -205,7 +206,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                     this.locations = [this.location];
                     locationsRequestPromise = LocationsRestService.getLocations(abortRequestPromise, true)
                         .then((data) => {
-                            that.locations = data.data;
+                            that.locations = data.data.map((location) => new RemoteLocationModel(location));
                             return this.locations;
                         })
                         .catch(function () {

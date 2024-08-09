@@ -5,6 +5,8 @@ import {
     STATIC_RULESETS
 } from "./repository.constants";
 import {decodeHTML} from "../../../app";
+import './controllers/manage-remote-location-dialog.controller';
+import {RemoteLocationType} from "../models/repository/remote-location.model";
 
 export const getFileName = function (path) {
     let lastIdx = path.lastIndexOf('/');
@@ -108,11 +110,11 @@ const getDocBase = function (productInfo) {
     return `https://graphdb.ontotext.com/documentation/${productInfo.productShortVersion}`;
 };
 const filterLocations = function (result) {
-    return result.filter((location) => !location.errorMsg && !location.degradedReason);
+    return result.filter((location) => location.isGraphDBLocation() && !location.errorMsg && !location.degradedReason);
 };
 
 /**
- * Gets the remote locations that are error free and without degraded reason
+ * Gets the remote locations that are error free, without degraded reason and is not of type Ontopic
  * @param {*} $repositories the repositories service
  * @return {[] | Promise} returns the locations as array or a promise of the array
  */
@@ -127,7 +129,8 @@ const modules = [
     'graphdb.framework.core.services.repositories',
     'graphdb.framework.utils.localstorageadapter',
     'toastr',
-    'ngFileUpload'
+    'ngFileUpload',
+    'graphdb.framework.repositories.controllers.manage-remote-location-dialog'
 ];
 
 angular.module('graphdb.framework.repositories.controllers', modules)
@@ -145,7 +148,13 @@ LocationsAndRepositoriesCtrl.$inject = ['$scope', '$rootScope', '$uibModal', 'to
 
 function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $repositories, ModalService, AuthTokenService, LocationsRestService,
     LocalStorageAdapter, $interval, $translate, $q, GuidesService) {
+
+    $scope.RemoteLocationType = RemoteLocationType;
     $scope.loader = true;
+    /**
+     * @type {RemoteLocationModel[]}
+     */
+    $scope.locations = [];
 
     $scope.isLocationInactive = function (location) {
         return !location.active || !$scope.hasActiveLocation();
@@ -161,6 +170,17 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
             })
             .finally(() => $scope.loader = false);
     }
+
+    $scope.getLocalLocation = (local, locationType) => {
+        const remoteLocationModel = $scope.locations.filter((location) => {
+            let locationTypeCheck = true;
+            if (locationType) {
+                locationTypeCheck = location.locationType === locationType;
+            }
+            return locationTypeCheck && location.local === local;
+        });
+        return remoteLocationModel;
+    };
 
     $scope.hasActiveLocation = function () {
         return $repositories.hasActiveLocation();
@@ -214,14 +234,40 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
             .finally(() => getLocations());
     };
 
-    $scope.addLocation = function () {
+    $scope.addLocation = () => {
+       $scope.openRemoteLocationDialog();
+    };
+
+    $scope.editLocation = (remoteLocation) => {
+        if (remoteLocation.locationType === undefined) {
+            // for backward compatibility. The old instances this property not exist so we assume it is GraphDB instance.
+            remoteLocation.locationType = RemoteLocationType.GRAPH_DB;
+        }
+        $scope.openRemoteLocationDialog(remoteLocation);
+    };
+
+    /**
+     * Opens the location dialog.
+     * @param {RemoteLocationModel} remoteLocation (optional) If a location is passed, the dialog will open for editing; otherwise, it will open for registering a new one.
+     */
+    $scope.openRemoteLocationDialog = (remoteLocation) => {
         $uibModal.open({
-            templateUrl: 'js/angular/templates/modal/add-location.html',
+            templateUrl: 'js/angular/repositories/templates/manage-remote-location-dialog.template.html',
             windowClass: 'addLocationDialog',
-            controller: 'AddLocationCtrl'
-        }).result
-            .then(function (dataAddLocation) {
-                $scope.addLocationHttp(dataAddLocation);
+            controller: 'ManageRemoteLocationDialogController',
+            resolve: {
+                data: () => {
+                    return {
+                        remoteLocation
+                    };
+                }
+            }
+        }).result.then((dataAddLocation) => {
+                if (remoteLocation) {
+                    $scope.editLocationHttp(dataAddLocation);
+                } else {
+                    $scope.addLocationHttp(dataAddLocation);
+                }
             });
     };
 
@@ -238,23 +284,6 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
                 toastr.error(msg, $translate.instant('common.error'));
             })
             .finally(() => getLocations());
-    };
-
-    $scope.editLocation = function (location) {
-        const modalInstance = $uibModal.open({
-            templateUrl: 'js/angular/templates/modal/edit-location.html',
-            controller: 'EditLocationCtrl',
-            resolve: {
-                location: function () {
-                    return location;
-                }
-            }
-        });
-
-        modalInstance.result.then(function (dataEditLocation) {
-            $scope.editLocationHttp(dataEditLocation);
-        }, function () {
-        });
     };
 
     //Change repository

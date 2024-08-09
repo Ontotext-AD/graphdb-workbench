@@ -1,0 +1,112 @@
+<div class="modal-header">
+    <button ng-click="cancel();" class="close" aria-hidden="true"></button>
+
+    <h3 class="modal-title">{{(isEdit ? 'manage.remote.location.dialog.update.instance' : 'manage.remote.location.dialog.attach.instance') | translate}}</h3>
+</div>
+<div class="modal-body">
+    <form id="remoteLocationForm" novalidate name="remoteLocationForm">
+        <label>
+            <input type="radio"
+                   class="graph-db-instance"
+                   ng-model="remoteLocation.locationType"
+                   ng-disabled="isEdit"
+                   ng-change="onLocationTypeChanged()"
+                   value="{{RemoteLocationType.GRAPH_DB}}">
+            {{'manage.remote.location.dialog.graph_db.location.instance' | translate}}
+
+        </label>
+        <label class="padding-label">
+            <input type="radio"
+                   class="grap ontopic-instance"
+                   ng-model="remoteLocation.locationType"
+                   ng-disabled="isEdit"
+                   ng-change="onLocationTypeChanged()"
+                   value="{{RemoteLocationType.ONTOPIC}}">
+            {{'manage.remote.location.dialog.ontopic.location.instance' | translate}}
+        </label>
+
+        <div class="form-group row">
+            <label for="location" class="col-md-4 col-form-label">{{'manage.remote.location.dialog.required.url' | translate}}</label>
+            <div class="col-md-8">
+                <input id="location" ng-model="remoteLocation.uri" required name="location" class="form-control"
+                       placeholder="http://my-hostname:7200" ng-disabled="isEdit" validate-url/>
+                <span ng-if="!isEdit" class="form-text text-muted">
+                    {{(remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.url.message' : 'manage.remote.location.dialog.ontopic.url.message') | translate}}
+                </span>
+            </div>
+        </div>
+
+        <div ng-if="!remoteLocationForm.location.$pristine">
+            <div ng-if="remoteLocationForm.location.$error.required" class="alert alert-warning">
+                {{'manage.remote.location.dialog.url.requred.message' | translate}}
+            </div>
+            <div ng-if="remoteLocationForm.location.$error.validUrl" class="alert alert-warning">
+                {{(remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.error.not_valid.url' : 'manage.remote.location.dialog.ontopic.error.not_valid.url') | translate}} http://server.example.com:7200/.
+            </div>
+        </div>
+        <div class="form-group row" ng-if="remoteLocation.isGraphDBLocation()">
+            <label class="col-md-4 col-form-label">{{'manage.remote.location.dialog.auth_type.header' | translate}}</label>
+            <div class="col-md-8">
+                <label class="col-form-label" gdb-tooltip="{{'remote.location.no.auth.used.tooltip' | translate}}">
+                    <input type="radio" name="authType" ng-model="remoteLocation.authType" value="{{RemoteLocationAuthType.NONE}}" class="none-authentication"/>
+                    {{'manage.remote.location.dialog.auth_type.none' | translate}}
+                </label>
+                &nbsp;
+                <label class="col-form-label" gdb-tooltip="{{'basic.auth.type.tooltip' | translate}}. {{'basic.auth.type.admin.constraint.tooltip' | translate}}">
+                    <input type="radio" name="authType" ng-model="remoteLocation.authType" value="{{RemoteLocationAuthType.BASIC}}" class="basic-authentication"/>
+                    {{'manage.remote.location.dialog.auth_type.basic' | translate}}
+                </label>
+                &nbsp;
+                <label class="col-form-label" gdb-tooltip="{{'signature.auth.type.tooltip' | translate}}">
+                    <input type="radio" name="authType" ng-model="remoteLocation.authType" value="{{RemoteLocationAuthType.SIGNATURE}}" class="signature-authentication"/>
+                    {{'manage.remote.location.dialog.auth_type.signature' | translate}}
+                </label>
+            </div>
+        </div>
+        <div class="form-group row" ng-if="remoteLocation.isNoneAuthType()">
+            <div class="col-md-12">{{'manage.remote.location.dialog.auth_type.basic.description' | translate}}</div>
+        </div>
+        <div  ng-if="remoteLocation.isBasicAuthType()">
+            <div class="form-group row">
+                <div class="col-md-12">{{(remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.basic.auth.type.description' : 'manage.remote.location.dialog.ontopic.basic.auth.type.description') | translate}}</div>
+            </div>
+            <div class="form-group row">
+                <label for="username" class="col-md-4 col-form-label">
+                    {{(remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.username.required.message' : 'manage.remote.location.dialog.ontopic.username.required.message') | translate}}
+                </label>
+                <div class="col-md-8">
+                    <input id="username" ng-model="remoteLocation.username" name="locationUsername" placeholder="{{(remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.username.placeholder' : 'manage.remote.location.dialog.ontopic.username.placeholder') | translate}}"
+                           class="form-control" ng-required="remoteLocation.isBasicAuthType()"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="password" class="col-md-4 col-form-label">
+                    {{(remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.password.required.message' : 'manage.remote.location.dialog.ontopic.password.required.message') | translate}}
+                </label>
+                <div class="col-md-8">
+                    <input id="password" ng-model="remoteLocation.password" name="locationPassword" placeholder="{{(remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.password.placeholder' : 'manage.remote.location.dialog.ontopic.password.placeholder') | translate}}"
+                           type="password" class="form-control" ng-required="remoteLocation.isBasicAuthType()"/>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row" ng-if="remoteLocation.isSignatureAuthType()">
+            <div class="col-md-12">
+                {{'manage.remote.location.dialog.auth_type.signature.description.prefix' | translate}}
+                <a href="{{docBase}}/access-control.html#gdb-authentication" rel="noopener" target="_blank">
+                    Access Control / GDB authentication
+                </a>
+                {{'manage.remote.location.dialog.auth_type.signature.description.suffix' | translate}}
+        </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" ng-click="cancel();" class="btn btn-secondary cancel-attaching-location" data-dismiss="modal">
+        {{'common.cancel.btn' | translate}}
+    </button>
+    <button type="submit" ng-click="ok();" class="btn btn-primary attach-location" form="remoteLocationForm"
+            ng-disabled="remoteLocationForm.$pristine || remoteLocationForm.$invalid">
+        <span ng-if="!isEdit" class="icon-plus"></span>
+        {{(isEdit ? 'common.save.btn' : 'common.attach') | translate}}
+    </button>
+</div>

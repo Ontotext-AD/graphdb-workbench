@@ -408,7 +408,7 @@ span.label {
     border:0px !important;
 }
 
-.btns-all {
+.btns-all, .ontopic-instances, .location-type-title {
     padding: 0 13px;
 }
 .repository {

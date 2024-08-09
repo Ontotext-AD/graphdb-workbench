@@ -206,4 +206,32 @@ export class RepositorySteps {
             .and('contain', 'Repositories from: ')
             .and('contain', 'Local');
     }
+
+    static getOntopicTable() {
+        return cy.get('#wb-repositories-ontopic-repositoryInGetRepositories');
+    }
+
+    static getDeleteOntopicInstanceBtn(url) {
+        return RepositorySteps.getOntopicTable().find('tr').contains(url).parent().find('.delete-ontopic-location');
+    }
+
+    static deleteOntopicInstance(url) {
+        RepositorySteps.getDeleteOntopicInstanceBtn(url).click();
+    }
+
+    static getEditOntopicInstanceBtn(url) {
+        return RepositorySteps.getOntopicTable().find('tr').contains(url).parent().find('.edit-ontopic-location');
+    }
+
+    static editOntopicInstance(url) {
+        RepositorySteps.getEditOntopicInstanceBtn(url).click();
+    }
+
+    static getRemoteGraphDBTable() {
+        return cy.get('#wb-locations-locationInGetRemoteLocations');
+    }
+
+    static getLocalGraphDBTable() {
+        return cy.get('#wb-locations-locationInGetLocations');
+    }
 }
