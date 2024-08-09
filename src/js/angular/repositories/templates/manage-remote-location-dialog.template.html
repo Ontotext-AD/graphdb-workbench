@@ -7,6 +7,7 @@
     <form id="remoteLocationForm" novalidate name="remoteLocationForm">
         <label>
             <input type="radio"
+                   class="graph-db-instance"
                    ng-model="remoteLocation.locationType"
                    ng-disabled="isEdit"
                    ng-change="onLocationTypeChanged()"
@@ -16,6 +17,7 @@
         </label>
         <label class="padding-label">
             <input type="radio"
+                   class="grap ontopic-instance"
                    ng-model="remoteLocation.locationType"
                    ng-disabled="isEdit"
                    ng-change="onLocationTypeChanged()"
@@ -46,17 +48,17 @@
             <label class="col-md-4 col-form-label">{{'manage.remote.location.dialog.auth_type.header' | translate}}</label>
             <div class="col-md-8">
                 <label class="col-form-label" gdb-tooltip="{{'remote.location.no.auth.used.tooltip' | translate}}">
-                    <input type="radio" name="authType" ng-model="remoteLocation.authType" value="{{RemoteLocationAuthType.NONE}}"/>
+                    <input type="radio" name="authType" ng-model="remoteLocation.authType" value="{{RemoteLocationAuthType.NONE}}" class="none-authentication"/>
                     {{'manage.remote.location.dialog.auth_type.none' | translate}}
                 </label>
                 &nbsp;
                 <label class="col-form-label" gdb-tooltip="{{'basic.auth.type.tooltip' | translate}}. {{'basic.auth.type.admin.constraint.tooltip' | translate}}">
-                    <input type="radio" name="authType" ng-model="remoteLocation.authType" value="{{RemoteLocationAuthType.BASIC}}"/>
+                    <input type="radio" name="authType" ng-model="remoteLocation.authType" value="{{RemoteLocationAuthType.BASIC}}" class="basic-authentication"/>
                     {{'manage.remote.location.dialog.auth_type.basic' | translate}}
                 </label>
                 &nbsp;
                 <label class="col-form-label" gdb-tooltip="{{'signature.auth.type.tooltip' | translate}}">
-                    <input type="radio" name="authType" ng-model="remoteLocation.authType" value="{{RemoteLocationAuthType.SIGNATURE}}"/>
+                    <input type="radio" name="authType" ng-model="remoteLocation.authType" value="{{RemoteLocationAuthType.SIGNATURE}}" class="signature-authentication"/>
                     {{'manage.remote.location.dialog.auth_type.signature' | translate}}
                 </label>
             </div>
@@ -99,10 +101,10 @@
     </form>
 </div>
 <div class="modal-footer">
-    <button type="button" ng-click="cancel();" class="btn btn-secondary" data-dismiss="modal">
+    <button type="button" ng-click="cancel();" class="btn btn-secondary cancel-attaching-location" data-dismiss="modal">
         {{'common.cancel.btn' | translate}}
     </button>
-    <button type="submit" ng-click="ok();" class="btn btn-primary add-location-btn" form="remoteLocationForm"
+    <button type="submit" ng-click="ok();" class="btn btn-primary attach-location" form="remoteLocationForm"
             ng-disabled="remoteLocationForm.$pristine || remoteLocationForm.$invalid">
         <span ng-if="!isEdit" class="icon-plus"></span>
         {{(isEdit ? 'common.save.btn' : 'common.attach') | translate}}

@@ -17,7 +17,6 @@
     <div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
     <!-- Local GraphDB instance -->
     <div ng-if="getLocalLocation(true, RemoteLocationType.GRAPH_DB).length && hasActiveLocation()" class="mb-1">
-        <h4 class="location-type-title">{{'repositories.location.local.graph_db.instance' | translate}}</h4>
 
         <table id="wb-locations-locationInGetLocations" class="table" aria-describedby="Locations repository table">
             <tbody>
@@ -304,7 +303,7 @@
     <!-- Remote Ontopic instances -->
     <div ng-if="getLocalLocation(false, RemoteLocationType.ONTOPIC).length" class="mb-1 ontopic-instances">
         <h4>{{'repositories.location.ontopic.instances' | translate}}</h4>
-        <table id="wb-repositories-repositoryInGetRepositories2"
+        <table id="wb-repositories-ontopic-repositoryInGetRepositories"
                class="table table-hover table-striped" aria-describedby="Repositories table">
             <tbody>
             <tr ng-repeat="location in getLocalLocation(false, RemoteLocationType.ONTOPIC) | orderBy: ['type === \'system\'', 'location', 'id']"
@@ -314,12 +313,12 @@
                 </td>
                 <td>
                     <div ng-if="isAdmin()" class="actions-bar-inline pull-right">
-                        <button class="btn btn-link p-0"
+                        <button class="btn btn-link p-0 edit-ontopic-location"
                                 gdb-tooltip="{{'edit.location' | translate}}" tooltip-placement="top"
                                 ng-click="editLocation(location)">
                             <em class="icon-edit"></em>
                         </button>
-                        <button class="btn btn-link p-0 secondary"
+                        <button class="btn btn-link p-0 secondary delete-ontopic-location"
                                 gdb-tooltip="{{'detach.location' | translate}}" tooltip-placement="top"
                                 ng-click="deleteLocation(location.uri)">
                             <em class="icon-close"></em>
@@ -343,7 +342,7 @@
                 <li><a class="dropdown-item" href ng-click="fromFile()">{{'create.from.file' | translate}}</a></li>
             </ul>
         </div>
-        <button id="addLocation1" ng-if="!getActiveLocation().isInCluster" ng-click="addLocation()" class="btn btn-primary pull-right"><span
+        <button id="addAttachRemoteLocation" ng-if="!getActiveLocation().isInCluster" ng-click="addLocation()" class="btn btn-primary pull-right"><span
             class="icon-plus"></span>{{'attach.remote.location' | translate}}
         </button>
     </div>
