@@ -36,14 +36,18 @@
     "build:watch": "stencil build --watch",
     "build": "stencil build",
     "start": "stencil build --dev --watch --serve",
-    "test": "stencil test --spec --e2e",
-    "test:watch": "stencil test --spec --e2e --watchAll",
-    "test:spec:watch": "stencil test --spec --watchAll",
-    "test:e2e:watch": "stencil test --e2e --watchAll",
+    "test": "stencil test --spec",
+    "test:watch": "stencil test --spec --watchAll",
     "cy:open": "cypress open",
-    "generate": "stencil generate"
+    "cy:run": "cypress run",
+    "cy:run:ci": "npm run start & npm run cy:run",
+    "generate": "stencil generate",
+    "lint": "eslint src/**/*{.ts,.tsx}",
+    "lint:fix": "eslint --fix src/**/*{.ts,.tsx}",
+    "sonar": "./sonar-run.sh"
   },
   "devDependencies": {
+    "@stencil-community/eslint-plugin": "^0.8.0",
     "@stencil/core": "^4.7.0",
     "@stencil/sass": "^3.0.12",
     "@types/jest": "^29.5.6",
@@ -51,7 +55,9 @@
     "cypress": "^13.13.1",
     "jest": "^29.7.0",
     "jest-cli": "^29.7.0",
-    "puppeteer": "^21.9.0"
+    "puppeteer": "^21.9.0",
+    "sonarqube-scanner": "^3.3.0",
+    "ts-jest": "^29.2.4"
   },
   "dependencies": {
     "@reactivex/rxjs": "^6.6.7",

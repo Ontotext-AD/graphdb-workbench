@@ -4,8 +4,11 @@
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
     "types": [
-      "jasmine"
-    ]
+      "jest"
+    ],
+    "paths": {
+      "@ontotext/workbench-api": ["../api/dist/ontotext-workbench-api.d.ts"]
+    }
   },
   "include": [
     "src/**/*.spec.ts",

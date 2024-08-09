@@ -44,19 +44,17 @@ export class OntoNavbar {
    */
   private isCollapsedByUser = false;
 
-  @Element() hostElement: HTMLElement;
+  @Element() hostElement: HTMLOntoNavbarElement;
 
   /**
    * The internal menu model used for UI rendering.
    */
-  @State()
-  private menuModel: NavbarModel;
+  @State() private menuModel: NavbarModel;
 
   /**
    * Controls the expanded/collapsed state of the navbar.
    */
-  @State()
-  private isCollapsed = false;
+  @State() private isCollapsed = false;
 
   /**
    * Configuration whether the navbar should be collapsed.
@@ -133,6 +131,12 @@ export class OntoNavbar {
     this.refreshNavbar()
   }
 
+  private handleSelectMenuItem(item: NavbarItemModel) {
+    return (event: MouseEvent) => {
+      this.select(event, item);
+    }
+  }
+
   private toggleNavbar(): void {
     if (!this.isCollapsed) {
       this.isCollapsedByUser = true;
@@ -193,7 +197,7 @@ export class OntoNavbar {
   }
 
   render() {
-    if (!this.menuModel) {
+    if (this.menuModel === null) {
       return;
     }
     const logoImg1 = getAssetPath(`./assets/graphdb-logo.svg#Layer_1`);
@@ -204,7 +208,7 @@ export class OntoNavbar {
           <li class="brand">
             <span class="toggle-menu" title={
               this.isCollapsed ? this.labels[labelKeys.EXPAND] : this.labels[labelKeys.COLLAPSE]
-            } onClick={() => this.toggleNavbar()}>
+            } onClick={this.toggleNavbar}>
                 <em class={this.isCollapsed ? 'icon-caret-right' : 'icon-caret-left'}></em>
             </span>
             <a class="menu-element-root home-page" href="./">
@@ -223,7 +227,7 @@ export class OntoNavbar {
               {item.children.length > 0 &&
                 <Fragment>
                   <div class={{'menu-element-root': true, 'active': item.selected}}
-                       onClick={(event) => this.select(event, item)}>
+                       onClick={this.handleSelectMenuItem(item)}>
                     <span class={`menu-item-icon ${item.icon}`}></span>
                     <translate-label class="menu-item" labelKey={item.labelKey}></translate-label>
                   </div>
@@ -234,7 +238,7 @@ export class OntoNavbar {
                     {
                       item.children.map((submenu) => (
                         <li class={{'sub-menu-item': true, 'active': submenu.selected}}>
-                          <a class="sub-menu-link" href={submenu.href} onClick={(event) => this.select(event, submenu)}>
+                          <a class="sub-menu-link" href={submenu.href} onClick={this.handleSelectMenuItem(submenu)}>
                             <translate-label class="menu-item" labelKey={submenu.labelKey}></translate-label>
                             {submenu.icon &&
                               <span title="some title" class={`text-muted ${submenu.icon}`}></span>
@@ -248,7 +252,7 @@ export class OntoNavbar {
               }
               {item.children.length === 0 &&
                 <a class={{'menu-element-root': true, 'active': item.selected}}
-                   href={item.href} onClick={(event) => this.select(event, item)}>
+                   href={item.href} onClick={this.handleSelectMenuItem(item)}>
                   <span class={`menu-item-icon ${item.icon}`}></span>
                   <translate-label class="menu-item" labelKey={item.labelKey}></translate-label>
                 </a>

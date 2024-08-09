@@ -6,18 +6,18 @@ import {Service} from './services/service';
  */
 export class ServiceProvider {
 
-    /**
+  /**
      * The static modifier ensures the map is the same for all ServiceProviders. Each micro-frontend will have its
      * own instance of {@see ServiceFactoryService}, but the map with instances will be shared.
      *
      * @private
      */
-    private static readonly SERVICE_INSTANCES = new Map<string, Service>
+  private static readonly SERVICE_INSTANCES = new Map<string, Service>;
 
-    public static get<T extends Service>(type: { new(service: Service): T; }): T {
-        if (!ServiceProvider.SERVICE_INSTANCES.has(type.name)) {
-            ServiceProvider.SERVICE_INSTANCES.set(type.name, new type(this));
-        }
-        return this.SERVICE_INSTANCES.get(type.name) as T;
+  public static get<T extends Service>(type: new(service: Service) => T): T {
+    if (!ServiceProvider.SERVICE_INSTANCES.has(type.name)) {
+      ServiceProvider.SERVICE_INSTANCES.set(type.name, new type(this));
     }
+    return this.SERVICE_INSTANCES.get(type.name) as T;
+  }
 }
