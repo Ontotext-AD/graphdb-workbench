@@ -21,7 +21,16 @@ export class TranslateLabel {
 
   private readonly unsubscribeTranslationChanged: Function;
 
+  /**
+   * Represents a label key.
+   * @typedef {string} labelKey
+   */
   @Prop() labelKey: string;
+
+  /**
+   * Represents an array of translation parameters.
+   * @typedef {TranslationParameter[]} TranslationParameters
+   */
   @Prop() translationParameters: TranslationParameter[] = [];
 
   @State() translatedLabel: string;

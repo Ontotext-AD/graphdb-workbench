@@ -1,5 +1,5 @@
 import { Component, Host, h } from '@stencil/core';
-import {ServiceProvider, LanguageService} from "@ontotext/workbench-api";
+import {ServiceProvider, LanguageService} from '../../../../api/src/ontotext-workbench-api';
 
 @Component({
   tag: 'onto-header',
@@ -33,7 +33,7 @@ export class OntoHeader {
         <div class="header-component">
           <div class="search-component">&#x1F50D;</div>
           <div class="repository-selector-component">TestRepo &#8964;</div>
-          <div class="language-selector-component" onClick={() => this.onLanguageChanged()}>EN &#8964;</div>
+          <div class="language-selector-component" onClick={this.onLanguageChanged}>EN &#8964;</div>
         </div>
       </Host>
     );

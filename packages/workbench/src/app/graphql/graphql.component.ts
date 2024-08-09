@@ -12,7 +12,7 @@ import {AuthenticationService, RepositoryService, ServiceProvider} from "@ontote
 export class GraphqlComponent {
   constructor() {
     console.log('GraphqlComponent login', ServiceProvider.get(AuthenticationService).login());
-    ServiceProvider.get(RepositoryService).getRepositories().then((response) => {
+    ServiceProvider.get<RepositoryService>(RepositoryService).getRepositories().then((response) => {
       return response.json();
     }).then((data) => {
       console.log('GraphqlComponent repositories', data);

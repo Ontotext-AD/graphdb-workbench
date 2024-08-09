@@ -1,4 +1,4 @@
-import { Config } from '@stencil/core';
+import {Config} from '@stencil/core';
 import {sass} from '@stencil/sass';
 
 export const config: Config = {
@@ -8,17 +8,12 @@ export const config: Config = {
       type: 'dist',
       esmLoaderPath: '../loader',
     },
-    // {
-    //   type: 'dist-custom-elements',
-    //   customElementsExportBehavior: 'single-export-module',
-    //   externalRuntime: false,
-    // },
     {
       type: 'docs-readme',
     },
     {
       type: 'www',
-      serviceWorker: null, // disable service workers
+      serviceWorker: null,
       copy: [
         {src: 'pages'},
         {src: '../node_modules/font-awesome/css/', dest: 'pages/css'},
@@ -28,6 +23,13 @@ export const config: Config = {
   ],
   testing: {
     browserHeadless: "new",
+    moduleNameMapper: {
+      '^@ontotext/workbench-api$': '<rootDir>/../api/dist/ontotext-workbench-api.d.ts',
+    },
+    moduleDirectories: ["node_modules"],
+    transform: {
+      '^.+\\.(js|mjs|jsx|ts|tsx)$': 'ts-jest',
+    },
   },
   plugins: [
     sass(),
