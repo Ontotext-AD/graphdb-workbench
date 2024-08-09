@@ -5,7 +5,8 @@
     "scripts": {
         "lint": "eslint ./src",
         "less:watch": "less-watch-compiler --config=./less-watch-compiler.config.json",
-        "less:preprocess": "less-watch-compiler --config=./less-compiler.config.json"
+        "less:preprocess": "less-watch-compiler --config=./less-compiler.config.json",
+        "validate": "node ./scripts/validate-translations.js"
     },
     "files": [
         "dist/"

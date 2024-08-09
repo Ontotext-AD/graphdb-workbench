@@ -1,6 +1,6 @@
 {
   "presets": [
-    "@babel/preset-env",
+    "@babel/preset-env"
   ],
   "plugins": [
     [
@@ -10,14 +10,5 @@
         "regenerator": false
       }
     ]
-  ],
-  "env": {
-    "test": {
-      "presets": [
-        ["@babel/preset-env", {
-          "targets": "current node"
-        }]
-      ]
-    }
-  }
+  ]
 }

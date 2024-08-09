@@ -1,38 +1,38 @@
 import {
-    registerApplication,
-    start,
-    addErrorHandler,
-    getAppStatus,
-} from "single-spa";
+  registerApplication,
+  start,
+  addErrorHandler,
+  getAppStatus,
+} from 'single-spa';
 import {
-    constructApplications,
-    constructRoutes,
-    constructLayoutEngine,
-} from "single-spa-layout";
-import microfrontendLayout from "./microfrontend-layout.html";
-import "./styles/bootstrap.min.css";
-import "font-awesome/css/font-awesome.min.css";
+  constructApplications,
+  constructRoutes,
+  constructLayoutEngine,
+} from 'single-spa-layout';
+import microfrontendLayout from './microfrontend-layout.html';
+import './styles/bootstrap.min.css';
+import 'font-awesome/css/font-awesome.min.css';
 // import "./styles/bootstrap-graphdb-theme.css";
-import { defineCustomElements } from "../../shared-components/loader";
+import { defineCustomElements } from '../../shared-components/loader';
 
 addErrorHandler((err) => {
-    console.log(err);
-    console.log(err.appOrParcelName);
-    console.log(getAppStatus(err.appOrParcelName));
+  console.error(err);
+  console.error(err.appOrParcelName);
+  console.error(getAppStatus(err.appOrParcelName));
 });
 
 const routes = constructRoutes(microfrontendLayout);
 const applications = constructApplications({
-    routes,
-    loadApp({name}) {
-        if (!name.includes('.')) {
-            return System.import(name);
-        } else {
-            // This allows us to load submodules exported in a namespace-like fashion. For example: "@ontotext/components.navbar".
-            const [module, exported] = name.split('.', 2);
-            return System.import(module).then((module) => module[exported]);
-        }
-    },
+  routes,
+  loadApp({name}) {
+    if (!name.includes('.')) {
+      return System.import(name);
+    } else {
+      // This allows us to load submodules exported in a namespace-like fashion. For example: "@ontotext/components.navbar".
+      const [module, exported] = name.split('.', 2);
+      return System.import(module).then((module) => module[exported]);
+    }
+  },
 });
 
 const layoutEngine = constructLayoutEngine({routes, applications});
@@ -43,13 +43,13 @@ layoutEngine.activate();
 defineCustomElements();
 
 // This is one way to pass properties to the custom elements.
-window.addEventListener("single-spa:first-mount", () => {
-    const navbar = document.querySelector('onto-navbar');
-    if (navbar) {
-        navbar.menuItems = PluginRegistry.get('main.menu');
-    } else {
-        console.error('onto-navbar element not found');
-    }
+window.addEventListener('single-spa:first-mount', () => {
+  const navbar = document.querySelector('onto-navbar');
+  if (navbar) {
+    navbar.menuItems = PluginRegistry.get('main.menu');
+  } else {
+    console.error('onto-navbar element not found');
+  }
 });
 
 // window.addEventListener("single-spa:routing-event", (evt) => {
