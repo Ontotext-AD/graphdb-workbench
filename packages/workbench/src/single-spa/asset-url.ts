@@ -3,7 +3,7 @@
 // See https://webpack.js.org/guides/public-path/#root
 
 export function assetUrl(url: string): string {
-  // @ts-ignore
+  // @ts-expect-error Webpack path not found
   const publicPath = __webpack_public_path__;
   const publicPathSuffix = publicPath.endsWith('/') ? '' : '/';
   const urlPrefix = url.startsWith('/') ? '' : '/';
