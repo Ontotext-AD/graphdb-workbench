@@ -18,10 +18,10 @@ Example of usage:
 
 ## Properties
 
-| Property                | Attribute   | Description | Type                     | Default     |
-| ----------------------- | ----------- | ----------- | ------------------------ | ----------- |
-| `labelKey`              | `label-key` |             | `string`                 | `undefined` |
-| `translationParameters` | --          |             | `TranslationParameter[]` | `[]`        |
+| Property                | Attribute   | Description                                    | Type                     | Default     |
+| ----------------------- | ----------- | ---------------------------------------------- | ------------------------ | ----------- |
+| `labelKey`              | `label-key` | Represents a label key.                        | `string`                 | `undefined` |
+| `translationParameters` | --          | Represents an array of translation parameters. | `TranslationParameter[]` | `[]`        |
 
 
 ## Dependencies
