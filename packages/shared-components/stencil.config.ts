@@ -28,6 +28,13 @@ export const config: Config = {
   ],
   testing: {
     browserHeadless: "new",
+    moduleNameMapper: {
+      '^@ontotext/workbench-api$': '<rootDir>/../api/dist/ontotext-workbench-api.d.ts',
+    },
+    moduleDirectories: ["node_modules"],
+    transform: {
+      '^.+\\.(js|mjs|jsx|ts|tsx)$': 'ts-jest',
+    },
   },
   plugins: [
     sass(),

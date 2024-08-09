@@ -1,0 +1,9 @@
+version: "3"
+services:
+    npm:
+        build: ./
+        stdin_open: true
+        tty: true
+        volumes:
+            -   ./:/app
+

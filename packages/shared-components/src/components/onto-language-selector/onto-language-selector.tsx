@@ -37,7 +37,7 @@ export class OntoLanguageSelector {
       <Host>
         <onto-dropdown
           class='onto-language-selector'
-          onValueChanged={(newLanguage: any) => this.onLanguageChanged(newLanguage)}
+          onValueChanged={this.onLanguageChangedHandler()}
           dropdownButtonNameLabelKey={!this.currentLanguage ? 'language_selector.toggle_menu.label' : undefined}
           dropdownButtonName={this.currentLanguage ? this.currentLanguage : undefined}
           dropdownButtonTooltipLabelKey={this.currentLanguage ? 'language_selector.toggle_menu.tooltip' : 'language_selector.toggle_menu.label'}
@@ -52,6 +52,10 @@ export class OntoLanguageSelector {
   private changeLanguage(newLanguage: string): void {
     this.currentLanguage = newLanguage;
     this.items = this.getLanguageDropdownOptions();
+  }
+
+  private onLanguageChangedHandler() {
+    return (newLanguage: any) => this.onLanguageChanged(newLanguage);
   }
 
   private onLanguageChanged(newLanguageEvent: CustomEvent): void {

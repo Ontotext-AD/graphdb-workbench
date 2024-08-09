@@ -1,55 +1,43 @@
-echo ''
-echo '######################## Cleaning -- Shared components -- ###########################'
-echo ''
-echo '- Delete "packages/shared-components/.stencil"'
-rm -fr packages/shared-components/.stencil
-echo '- Delete "packages/shared-components/dist"'
-rm -fr packages/shared-components/dist
-echo '- Delete "packages/shared-components/loader"'
-rm -fr packages/shared-components/loader
-echo '- Delete "packages/shared-components/node_modules"'
-rm -fr packages/shared-components/node_modules
-echo '- Delete "packages/shared-components/www"'
-rm -fr packages/shared-components/www
+#!/bin/bash
 
-echo ''
-echo '########################   Cleaning -- api --   ###########################'
-echo ''
-echo '- Delete "packages/api/dist"'
-rm -fr packages/api/dist
-echo '- Delete "packages/api/node_modules"'
-rm -fr packages/api/node_modules
+# This script should be run from the root directory of the project.
 
-echo ''
-echo '########################   Cleaning -- Workbench --   ###########################'
-echo ''
-echo '- Delete "packages/workbench/dist"'
-rm -fr packages/workbench/dist
-echo '- Delete "packages/workbench/node_modules"'
-rm -fr packages/workbench/node_modules
-echo '- Delete "packages/workbench/.angular"'
-rm -fr packages/workbench/.angular
+# Source the error handling script
+. scripts/error-handling.sh
 
-echo ''
-echo '########################   Cleaning -- Legacy Workbench --   ###########################'
-echo ''
-echo '- Delete "packages/legacy-workbench/dist"'
-rm -fr packages/legacy-workbench/dist
-echo '- Delete "packages/legacy-workbench/node_modules"'
-rm -fr packages/legacy-workbench/node_modules
+clean_directory() {
+    local path=$1
+    local description
+    description=$(echo "$path" | sed 's/\// -- /g')
 
-echo ''
-echo '########################   Cleaning -- Root config --   ###########################'
-echo ''
-echo '- Delete "packages/root-config/dist"'
-rm -fr packages/root-config/dist
-echo '- Delete "packages/root-config/node_modules"'
-rm -fr packages/root-config/node_modules
+    echo "########################   DELETE -- Cleaning ${description} --   ###########################"
+    rm -rf "${path}"
 
+    handle_error "Cleaning ${description}"
+}
+
+# Clean
+clean_directory "packages/shared-components/.stencil"
+clean_directory "packages/shared-components/dist"
+clean_directory "packages/shared-components/loader"
+clean_directory "packages/shared-components/node_modules"
+clean_directory "packages/shared-components/www"
+
+clean_directory "packages/api/dist"
+clean_directory "packages/api/node_modules"
+
+clean_directory "packages/workbench/dist"
+clean_directory "packages/workbench/node_modules"
+clean_directory "packages/workbench/.angular"
+
+clean_directory "packages/legacy-workbench/dist"
+clean_directory "packages/legacy-workbench/node_modules"
+
+clean_directory "packages/root-config/dist"
+clean_directory "packages/root-config/node_modules"
+
+clean_directory "node_modules"
+clean_directory "dist"
+
+echo '########################   All directories cleaned successfully!   ###########################'
 echo ''
-echo '########################   Cleaning -- Root --   ###########################'
-echo ''
-echo '- Delete "node_modules"'
-rm -fr node_modules
-echo '- Delete "dist"'
-rm -fr dist

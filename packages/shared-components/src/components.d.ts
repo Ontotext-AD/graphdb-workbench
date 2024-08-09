@@ -86,7 +86,13 @@ export namespace Components {
      * </code>
      */
     interface TranslateLabel {
+        /**
+          * Represents a label key.
+         */
         "labelKey": string;
+        /**
+          * Represents an array of translation parameters.
+         */
         "translationParameters": TranslationParameter[];
     }
 }
@@ -274,7 +280,13 @@ declare namespace LocalJSX {
      * </code>
      */
     interface TranslateLabel {
+        /**
+          * Represents a label key.
+         */
         "labelKey"?: string;
+        /**
+          * Represents an array of translation parameters.
+         */
         "translationParameters"?: TranslationParameter[];
     }
     interface IntrinsicElements {
