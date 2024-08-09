@@ -22,7 +22,12 @@
         "license-report-api": "license-checker --production --json --customPath license-checker/license-checker-format.json --start packages/api --out packages/api/dist/license-checker.json",
         "license-report-legacy-workbench": "license-checker --production --json --customPath license-checker/license-checker-format.json --start packages/legacy-workbench --out packages/legacy-workbench/dist/license-checker.json",
         "license-report-shared-components": "license-checker --production --json --customPath license-checker/license-checker-format.json --start packages/shared-components --out packages/shared-components/dist/license-checker.json",
-        "license-report-workbench": "license-checker --production --json --customPath license-checker/license-checker-format.json --start packages/workbench --out packages/workbench/dist/license-checker.json"
+        "license-report-workbench": "license-checker --production --json --customPath license-checker/license-checker-format.json --start packages/workbench --out packages/workbench/dist/license-checker.json",
+        "lint": "sh scripts/lint.sh",
+        "validate": "sh scripts/validate.sh",
+        "test": "sh scripts/test.sh",
+        "cy:run": "sh scripts/cy.sh",
+        "sonar": "sh scripts/sonar.sh"
     },
     "files": [],
     "repository": {
