@@ -16,13 +16,13 @@ export class OntoLayout {
   /**
    * The current route. This is used to highlight the selected menu item in the navbar.
    */
-  public currentRoute: string;
+  private currentRoute: string;
 
   constructor() {
     this.windowResizeObserver = debounce(() => this.windowResizeHandler(), 50);
   }
 
-  @Element() hostElement: HTMLElement;
+  @Element() hostElement: HTMLOntoLayoutElement;
 
   @State() isLowResolution = false;
 
