@@ -3,7 +3,10 @@ import {AttachRepositorySteps} from "../../steps/repositories/attach-repository-
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 
-describe('Attach remote location', () => {
+/**
+ * Skipped for now until the backend is ready
+ */
+describe.skip('Attach remote location', () => {
 
     beforeEach(() => {
         RepositorySteps.visit();
