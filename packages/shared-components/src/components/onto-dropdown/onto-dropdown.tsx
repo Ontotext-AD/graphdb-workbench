@@ -93,12 +93,12 @@ export class OntoDropdown {
         return (
             <div class={`onto-dropdown ${this.open ? 'open' : 'closed'}`}>
                 <button class="onto-dropdown-button"
-                        tooltip-content={this.dropdownButtonTooltip ? this.dropdownButtonTooltip : TranslationService.translate(this.dropdownButtonTooltipLabelKey)}
+                        tooltip-content={this.dropdownButtonTooltip ?? TranslationService.translate(this.dropdownButtonTooltipLabelKey)}
                         tooltip-placement='left'
-                        onClick={() => this.toggleComponent()}>
+                        onClick={this.toggleComponentHandler()}>
                     <span class={'button-icon ' + this.iconClass}></span>
                     <span class='button-name'>
-                      {this.dropdownButtonName ? this.dropdownButtonName : TranslationService.translate(this.dropdownButtonNameLabelKey)}
+                      {this.dropdownButtonName ?? TranslationService.translate(this.dropdownButtonNameLabelKey)}
                     </span>
                 </button>
 
@@ -107,19 +107,27 @@ export class OntoDropdown {
                         <button class='onto-dropdown-menu-item'
                                 tooltip-content={item.tooltip ? item.tooltip : TranslationService.translate(item.tooltipLabelKey)}
                                 tooltip-placement='left'
-                                onClick={() => this.onSelect(item.value)}>
+                                onClick={this.onSelectHandler(item.value)}>
                             <span class={'onto-dropdown-option-icon ' + item.iconClass}></span>
-                            <span innerHTML={item.name ? item.name : TranslationService.translate(item.nameLabelKey)}></span>
+                            <span innerHTML={item.name ?? TranslationService.translate(item.nameLabelKey)}></span>
                         </button>)}
                 </div>
             </div>
         );
     }
 
-    private onSelect(value: string): void {
-        this.open = false;
-        this.valueChanged.emit(value);
-    }
+  private onSelectHandler(value:any) {
+    return () => this.onSelect(value);
+  }
+
+  private onSelect(value: string): void {
+      this.open = false;
+      this.valueChanged.emit(value);
+  }
+
+  private toggleComponentHandler() {
+    return () => this.toggleComponent();
+  }
 
     private toggleComponent(): void {
         this.open = !this.open;
