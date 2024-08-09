@@ -3,7 +3,7 @@
 # This script should be run from the root directory of the project.
 
 # Source the error handling script
-source ./scripts/error-handling.sh
+. scripts/error-handling.sh
 
 install_package() {
     local package=$1
@@ -19,7 +19,6 @@ install_package() {
     handle_error "Linting ${description}"
 }
 # Install
-install_package "legacy-workbench"
 install_package "root-config"
 install_package "workbench"
 install_package "api"

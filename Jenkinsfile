@@ -1,9 +1,6 @@
 pipeline {
     agent {
-        docker {
-             image 'node:18'
-             label env.AGENT
-        }
+        label env.AGENT
     }
 
     environment {
@@ -17,49 +14,50 @@ pipeline {
                 script {
                     echo "Agent: ${env.AGENT}"
                     echo "Building branch: ${env.BRANCH_NAME}"
+                    sh 'docker-compose run --rm node --version'
                 }
             }
         }
 
         stage('Install') {
             steps {
-                sh 'npm run install --verbose'
+                sh 'docker-compose run --rm npm run install'
             }
         }
 
         stage('Lint') {
             steps {
-                sh 'npm run lint'
+                sh 'docker-compose run --rm npm run lint'
             }
         }
 
         stage('Pre-build validations') {
             steps {
-                sh 'npm run validate'
+                sh 'docker-compose run --rm npm run validate'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'npm run build'
+                sh 'docker-compose run --rm npm run build'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'npm run test'
+                sh 'docker-compose run --rm npm run test'
             }
         }
 
         stage('Cypress Test') {
             steps {
-                sh 'npm run cy:run'
+                sh 'docker-compose run --rm npm run cy:run'
             }
         }
 
         stage('Sonar') {
             steps {
-                sh 'npm run sonar'
+                sh 'docker-compose run --rm npm run sonar'
             }
         }
     }

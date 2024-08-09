@@ -3,7 +3,8 @@
 # This script should be run from the root directory of the project.
 
 # Source the error handling script
-source ./scripts/error-handling.sh
+. scripts/error-handling.sh
+echo "Sourced error-handling.sh successfully"
 
 validate_package() {
     local package=$1

@@ -3,7 +3,7 @@
 # This script should be run from the root directory of the project.
 
 # Source the error handling script
-source ./scripts/error-handling.sh
+. scripts/error-handling.sh
 
 clean_directory() {
     local path=$1

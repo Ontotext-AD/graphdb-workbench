@@ -3,7 +3,7 @@
 # This script should be run from the root directory of the project.
 
 # Source the error handling script
-source ./scripts/error-handling.sh
+. scripts/error-handling.sh
 
 install_package() {
     local package=$1
@@ -14,7 +14,7 @@ install_package() {
     echo "########################   Installing -- ${description} --   ###########################"
     echo ''
 
-    npm install --prefix "packages/${package}"
+    npm ci --prefix "packages/${package}"
 
     handle_error "Installing ${description}"
 }
