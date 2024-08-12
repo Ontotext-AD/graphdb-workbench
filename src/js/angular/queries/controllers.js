@@ -127,7 +127,7 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$uibModal', 'toastr', '$interv
 
         $scope.downloadQuery = function (queryId) {
             const filename = 'query_' + queryId + '.rq';
-            let link = '/rest/monitor/repository/' + $repositories.getActiveRepository()
+            let link = 'rest/monitor/repository/' + $repositories.getActiveRepository()
                 + '/query/download?query=' + encodeURIComponent(queryId)
                 + '&filename=' + encodeURIComponent(filename);
             if ($jwtAuth.isAuthenticated()) {
