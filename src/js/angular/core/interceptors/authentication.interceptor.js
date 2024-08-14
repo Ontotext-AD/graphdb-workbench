@@ -19,16 +19,7 @@ angular.module('graphdb.framework.core.interceptors.authentication', [
                     // Angular doesn't send this header by default, and we need it to detect XHR requests
                     // so that we don't advertise Basic auth with them.
                     headers['X-Requested-With'] = 'XMLHttpRequest';
-                    const token = AuthTokenService.getAuthToken();
-                    if (token) {
-                        // If a token is present, add it to the headers under the 'Authorization' key.
-                        // However, adding this 'Authorization' header can break Kerberos authentication.
-                        // Kerberos does not use tokens for authentication; it relies on ticket-based
-                        // authentication via SPNEGO (Simple and Protected GSSAPI Negotiation Mechanism).
-                        // If 'Authorization' is set with a token, the server may prioritize it over
-                        // Kerberos, causing the Kerberos authentication to fail.
-                        headers.Authorization = AuthTokenService.getAuthToken();
-                    }
+                    headers.Authorization = AuthTokenService.getAuthToken();
 
                     const repositoryId = LocalStorageAdapter.get(LSKeys.REPOSITORY_ID);
                     const repositoryLocation = LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION);
