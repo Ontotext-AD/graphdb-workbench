@@ -1,4 +1,4 @@
-import 'angular/chatgpt/controllers';
+import 'angular/chatgpt/controllers/ttyg-view.controller';
 
 const modules = [
     'ngRoute',

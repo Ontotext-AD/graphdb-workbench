@@ -4,7 +4,7 @@ PluginRegistry.add('route', [
         'templateUrl': 'js/angular/chatgpt/templates/chat.html',
         'module': 'graphdb.framework.chatgpt',
         'path': 'chatgpt/app',
-        'controller': 'ChatGptCtrl',
+        'controller': 'TTYGViewCtrl',
         'title': 'menu.ttyg.label',
         'helpInfo': 'ttyg.helpInfo'
     }

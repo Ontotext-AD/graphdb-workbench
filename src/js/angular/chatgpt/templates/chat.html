@@ -1,8 +1,7 @@
-<link href="css/chat.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
-<link href="css/rdf-details-side-panel.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+<link href="css/ttyg.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-<div class="chatgpt-view">
-    <h1 id="chatgpt-view-title">
+<div class="ttyg-view">
+    <h1 id="ttyg-view-title">
         {{ title }}
         <span class="btn btn-link"
               uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
@@ -13,15 +12,15 @@
 
     <div core-errors></div>
 
-    <div id="chatgpt-container" class="chatgpt-container" ng-show="getActiveRepository()">
+    <div id="ttyg-container" class="ttyg-container" ng-show="getActiveRepository()">
 
-        <div id="left-sidebar" class="left-sidebar sidebar">
+        <div id="left-sidebar" class="left-sidebar sidebar" ng-class="showChats ? 'expanded' : 'collapsed'">
             <div class="toolbar">
                 <button class="btn btn-link secondary btn-sm toggle-chat-list-sidebar-btn"
                         ng-if="true"
                         ng-click="toggleChatsListSidebar()"
                         ng-disabled="false"
-                        gdb-tooltip="{{'ttyg.chat.btn.close_sidebar.tooltip' | translate}}">
+                        gdb-tooltip="{{'ttyg.chat.btn.' + (showChats ? 'close_sidebar' : 'open_sidebar') + '.tooltip' | translate}}">
                     <i class="fa-light fa-sidebar"></i>
                 </button>
                 <button class="btn btn-link secondary btn-sm create-chat-btn"
@@ -35,13 +34,49 @@
             <pageslide
                 ps-class="chats-list-panel slide-panel"
                 ps-container="left-sidebar"
-                ps-open="showInfoPanel"
+                ps-open="showChats"
                 onopen="onopen"
                 onclose="onclose"
                 ps-side="left"
                 ps-click-outside="false"
                 ps-size="80vw">
                 <div class="chats-list-component">
+                    <div class="chat-group">
+                        <label>Today</label>
+                        <ul>
+                            <li>chat 1</li>
+                            <li>chat 2</li>
+                            <li>chat 3</li>
+                            <li>chat 4</li>
+                        </ul>
+                    </div>
+                    <div class="chat-group">
+                        <label>Yesterday</label>
+                        <ul>
+                            <li>chat 1</li>
+                            <li>chat 2</li>
+                            <li>chat 3</li>
+                            <li>chat 4</li>
+                        </ul>
+                    </div>
+                    <div class="chat-group">
+                        <label>Today</label>
+                        <ul>
+                            <li>chat 1</li>
+                            <li>chat 2</li>
+                            <li>chat 3</li>
+                            <li>chat 4</li>
+                        </ul>
+                    </div>
+                    <div class="chat-group">
+                        <label>Yesterday</label>
+                        <ul>
+                            <li>chat 1</li>
+                            <li>chat 2</li>
+                            <li>chat 3</li>
+                            <li>chat 4</li>
+                        </ul>
+                    </div>
                     <div class="chat-group">
                         <label>Today</label>
                         <ul>
@@ -128,7 +163,7 @@
             <!--        </div>-->
         </div>
 
-        <div id="right-sidebar" class="right-sidebar sidebar">
+        <div id="right-sidebar" class="right-sidebar sidebar" ng-class="showAgents ? 'expanded' : 'collapsed'">
             <div class="toolbar">
                 <button class="btn btn-link secondary btn-sm help-btn"
                         ng-if="true"
@@ -140,16 +175,16 @@
                 <span>
                     <button class="btn btn-link secondary btn-sm create-agent-btn"
                             ng-if="true"
-                            ng-click="editAgent()"
+                            ng-click="createAgent()"
                             ng-disabled="false"
                             gdb-tooltip="{{'ttyg.agent.btn.create_agent.tooltip' | translate}}">
                         <i class="fa-light fa-circle-plus"></i>
                     </button>
                     <button class="btn btn-link secondary btn-sm close-agents-btn"
                             ng-if="true"
-                            ng-click="editAgent()"
+                            ng-click="toggleAgentsListSidebar()"
                             ng-disabled="false"
-                            gdb-tooltip="{{'ttyg.agent.btn.close_sidebar.tooltip' | translate}}">
+                            gdb-tooltip="{{'ttyg.agent.btn.' + (showAgents ? 'close_sidebar' : 'open_sidebar') + '.tooltip' | translate}}">
                         <i class="fa-light fa-message-bot"></i>
                     </button>
                 </span>
@@ -158,7 +193,7 @@
             <pageslide
                 ps-class="agents-list-panel slide-panel"
                 ps-container="right-sidebar"
-                ps-open="showInfoPanel"
+                ps-open="showAgents"
                 onopen="onopen"
                 onclose="onclose"
                 ps-side="right"

@@ -6,65 +6,79 @@
 
 /* override the main-container and title to accommodate to the new design without left and right padding */
 .main-container {
-    padding: 0 0 3rem 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
 }
 
-.chatgpt-view #chatgpt-view-title {
+.ttyg-view #ttyg-view-title {
     padding: 0 2rem;
 }
 
-.chatgpt-view .toolbar {
+.ttyg-view .toolbar {
     width: 100%;
     display: flex;
     gap: 8px;
     padding: 0.5em;
 }
 
-.chatgpt-view .sidebar {
+.ttyg-view .sidebar {
     display: flex;
     flex-direction: column;
     height: 100%;
 }
 
-.chatgpt-view .sidebar .slide-panel {
+.ttyg-view .sidebar .slide-panel {
     /* adapt to view width but at least 220px, menu size ignored for all practical screen sizes */
     max-width: var(--sidebar-width);
     top: 32px !important;
     padding: 1rem;
 }
 
-.chatgpt-view .sidebar .slide-panel.slide-panel-expanded  {
+.ttyg-view .sidebar .slide-panel.slide-panel-expanded  {
     /* adapt width according to available space but not more than 800px */
     max-width: min(800px, 100% - var(--menu-width));
 }
 
-.chatgpt-view .left-sidebar .toolbar {
+.ttyg-view .left-sidebar .toolbar {
     justify-content: space-between;
 }
 
-.chatgpt-view .right-sidebar .toolbar {
-    justify-content: space-between;
+.ttyg-view .left-sidebar.collapsed .toolbar {
+    justify-content: start;
 }
 
-.chatgpt-view .left-sidebar .chats-list-panel {
+.ttyg-view .left-sidebar .chats-list-panel {
     background-color: var(--sidebar-bgcolor);
+    overflow-y: auto;
 }
 
-.chatgpt-view .left-sidebar .chats-list-panel .chat-group label {
+.ttyg-view .left-sidebar .chats-list-panel .chat-group label {
     color: #aaa;
 }
 
-.chatgpt-view .left-sidebar .chats-list-panel .chat-group ul {
+.ttyg-view .left-sidebar .chats-list-panel .chat-group ul {
     list-style: none;
     padding-inline-start: 0;
 }
 
-.chatgpt-view .right-sidebar .agents-list-panel ul {
+.ttyg-view .right-sidebar .toolbar {
+    justify-content: space-between;
+}
+
+.ttyg-view .right-sidebar.collapsed .toolbar {
+    justify-content: end;
+}
+
+.ttyg-view .right-sidebar .agents-list-panel {
+    overflow-y: auto;
+}
+
+.ttyg-view .right-sidebar .agents-list-panel ul {
     list-style: none;
     padding-inline-start: 0;
 }
 
-.chatgpt-view .chatgpt-container {
+.ttyg-view .ttyg-container {
     display: grid;
     grid-template-columns: var(--sidebar-width) 1fr var(--sidebar-width);
     grid-template-rows: auto 1fr auto;
@@ -72,56 +86,56 @@
         "left-sidebar chat-content right-sidebar";
 }
 
-.chatgpt-view .chat-content {
+.ttyg-view .chat-content {
     padding: 0 2rem;
 }
 
-.chatgpt-view .chat-content .chat {
+.ttyg-view .chat-content .chat {
     width: 720px;
     margin: auto;
-    height: calc(100vh - 8em);
+    height: calc(100vh - 10em);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
-.chatgpt-view .chat .messages {
+.ttyg-view .chat .messages {
     border: 1px solid #ddd;
     height: calc(100% - 5em);
     overflow: scroll;
 }
 
-.chatgpt-view .chat .messages-hint {
+.ttyg-view .chat .messages-hint {
     font-size: 2em;
     padding-top: 2em;
     text-align: center;
 }
 
-.chatgpt-view .chat .messages-item {
+.ttyg-view .chat .messages-item {
     padding: 0.5em;
 }
 
-.chatgpt-view .chat .messages-item-content {
+.ttyg-view .chat .messages-item-content {
     white-space: pre-line;
 }
 
-.chatgpt-view .chat .messages-item-question {
+.ttyg-view .chat .messages-item-question {
     background-color: hsla(var(--secondary-color-hsl), 0.1);
 }
 
-.chatgpt-view .chat .messages-item-assistant {
+.ttyg-view .chat .messages-item-assistant {
     background-color: hsla(var(--secondary-color-hsl), 0.2);
 }
 
-.chatgpt-view .chat .messages-item-assistant .icon {
+.ttyg-view .chat .messages-item-assistant .icon {
     color: var(--primary-color);
 }
 
-.chatgpt-view .chat .question {
+.ttyg-view .chat .question {
 
 }
 
-.chatgpt-view .controls {
+.ttyg-view .controls {
     display: flex;
     flex-direction: column;
 }
