@@ -213,6 +213,68 @@
             "all": "all - EFFACER TOUS les graphiques"
         }
     },
+    "ttyg": {
+        "helpInfo": "Parlez à votre graphe est un chatbot basé sur le modèle GPT-4 d'OpenAI qui peut répondre aux questions sur les données stockées dans GraphDB, en exploitant à la fois vos données et les connaissances générales du modèle GPT-4. Le bot fonctionne dans connexion avec le connecteur ChatGPT Retrieval.",
+        "hint": "Parlez à votre graphe – posez simplement une question !\nPour le moment, cela fonctionne mieux si vous demandez en anglais, désolé !",
+        "help": {
+            "btn": {
+                "show_help": {
+                    "tooltip": "Show help"
+                }
+            }
+        },
+        "chat": {
+            "btn": {
+                "open_sidebar": {
+                    "tooltip": "Ouvrir la barre latérale"
+                },
+                "close_sidebar": {
+                    "tooltip": "Fermer la barre latérale"
+                },
+                "create_chat": {
+                    "tooltip": "Créer un chat"
+                },
+                "export_chat": {
+                    "tooltip": "Exporter le chat"
+                }
+            }
+        },
+        "agent": {
+            "btn": {
+                "edit_agent": {
+                    "tooltip": "Modifier l'agent"
+                },
+                "create_agent": {
+                    "tooltip": "Créer un agent"
+                },
+                "open_sidebar": {
+                    "tooltip": "Ouvrir la barre latérale"
+                },
+                "close_sidebar": {
+                    "tooltip": "Fermer la barre latérale"
+                }
+            }
+        },
+        "help.what.title": "Qu'est-ce que c'est ?",
+        "help.what.content": "Parlez à votre graphe est un chatbot basé sur le modèle GPT-4 d'OpenAI qui peut répondre aux questions sur les données stockées dans GraphDB, en exploitant à la fois vos données et les connaissances générales du modèle GPT-4.",
+        "help.how.title": "Comment ça marche ?",
+        "help.how.content": "Le bot utilise le connecteur ChatGPT Retrieval pour récupérer des informations dont il ne connaît pas. A ce titre, vous devez d'abord créer un tel connecteur. Voir aussi les paramètres pour affiner l'intégration avec le Connecteur de récupération.",
+        "ask.button": "Demander",
+        "clear.hint": "Effacer l'historique de la conversation.",
+        "clear.history.confirmation": "Cela effacera l'historique de la conversation.",
+        "settings.title": "Paramètres pour parler à votre graphe",
+        "settings.info": "Les paramètres sont stockés uniquement dans le navigateur et sont par dépôt.",
+        "settings.connector.id": "ID du connecteur ChatGPT Retrieval",
+        "settings.connector.id.tooltip": "L'ID du connecteur ChatGPT Retrieval à utiliser. S'il est vide, le premier connecteur défini sera utilisé.",
+        "settings.query.template": "Modèle de requête",
+        "settings.query.template.tooltip": "Le modèle de requête utilisé par le chatbot pour demander plus d'informations au connecteur. Il doit contenir au moins la clé \"query\" mais peut également contenir un \"filter\" clé si votre connecteur possède des métadonnées appropriées.",
+        "settings.ground.truths": "Vérités fondamentales",
+        "settings.ground.truths.tooltip": "Une liste facultative de vérités fondamentales qui aident le chatbot à établir le contexte.",
+        "settings.topk": "Nombre des meilleurs résultats",
+        "settings.topk.tooltip": "Nombre de résultats renvoyés au chatbot lorsqu'il demande plus d'informations. Plus de résultats fourniront plus d'informations mais ils peuvent également introduire du bruit.",
+        "settings.echo.vector.query": "Écho à la requête vectorielle",
+        "settings.echo.vector.query.tooltip": "S'il est activé, le bot utilisera les requêtes générées comme retour à l'API GPT."
+    },
     "config.name.label": "Nom de configuration",
     "graph.config.required": "Ma configuration de graphe (obligatoire)",
     "description.text": "La description",
@@ -2125,27 +2187,6 @@
     "guide.unexpected.error.message": "Le guide a été annulé en raison d'une erreur inattendue. Veuillez exécuter à nouveau le guide et si le problème persiste, contactez le support.",
     "guide.start.unexpected.error.message": "Le guide ne peut pas être démarré en raison d'une erreur inattendue. Veuillez réessayer d'exécuter le guide et si le problème persiste, contactez le support.",
     "guide.step_plugin.execute-sparql-query.query-not-same.error": "La requête n'est pas la même que la requête du guide !",
-    "ttyg.helpInfo": "Parlez à votre graphe est un chatbot basé sur le modèle GPT-4 d'OpenAI qui peut répondre aux questions sur les données stockées dans GraphDB, en exploitant à la fois vos données et les connaissances générales du modèle GPT-4. Le bot fonctionne dans connexion avec le connecteur ChatGPT Retrieval.",
-    "ttyg.hint": "Parlez à votre graphe – posez simplement une question !\nPour le moment, cela fonctionne mieux si vous demandez en anglais, désolé !",
-    "ttyg.help.what.title": "Qu'est-ce que c'est ?",
-    "ttyg.help.what.content": "Parlez à votre graphe est un chatbot basé sur le modèle GPT-4 d'OpenAI qui peut répondre aux questions sur les données stockées dans GraphDB, en exploitant à la fois vos données et les connaissances générales du modèle GPT-4.",
-    "ttyg.help.how.title": "Comment ça marche ?",
-    "ttyg.help.how.content": "Le bot utilise le connecteur ChatGPT Retrieval pour récupérer des informations dont il ne connaît pas. A ce titre, vous devez d'abord créer un tel connecteur. Voir aussi les paramètres pour affiner l'intégration avec le Connecteur de récupération.",
-    "ttyg.ask.button": "Demander",
-    "ttyg.clear.hint": "Effacer l'historique de la conversation.",
-    "ttyg.clear.history.confirmation": "Cela effacera l'historique de la conversation.",
-    "ttyg.settings.title": "Paramètres pour parler à votre graphe",
-    "ttyg.settings.info": "Les paramètres sont stockés uniquement dans le navigateur et sont par dépôt.",
-    "ttyg.settings.connector.id": "ID du connecteur ChatGPT Retrieval",
-    "ttyg.settings.connector.id.tooltip": "L'ID du connecteur ChatGPT Retrieval à utiliser. S'il est vide, le premier connecteur défini sera utilisé.",
-    "ttyg.settings.query.template": "Modèle de requête",
-    "ttyg.settings.query.template.tooltip": "Le modèle de requête utilisé par le chatbot pour demander plus d'informations au connecteur. Il doit contenir au moins la clé \"query\" mais peut également contenir un \"filter\" clé si votre connecteur possède des métadonnées appropriées.",
-    "ttyg.settings.ground.truths": "Vérités fondamentales",
-    "ttyg.settings.ground.truths.tooltip": "Une liste facultative de vérités fondamentales qui aident le chatbot à établir le contexte.",
-    "ttyg.settings.topk": "Nombre des meilleurs résultats",
-    "ttyg.settings.topk.tooltip": "Nombre de résultats renvoyés au chatbot lorsqu'il demande plus d'informations. Plus de résultats fourniront plus d'informations mais ils peuvent également introduire du bruit.",
-    "ttyg.settings.echo.vector.query": "Écho à la requête vectorielle",
-    "ttyg.settings.echo.vector.query.tooltip": "S'il est activé, le bot utilisera les requêtes générées comme retour à l'API GPT.",
     "global.operations_statuses.queries.title": "Exécution de requêtes",
     "global.operations_statuses.updates.title": "Exécution de mises à jour",
     "global.operations_statuses.imports.title": "Exécution d'importations",

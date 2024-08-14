@@ -13,6 +13,10 @@ ChatGptCtrl.$inject = ['$scope', '$http', '$timeout', '$translate', '$uibModal',
 const CHATGPTRETRIEVAL_ENDPOINT = 'rest/chat/retrieval';
 
 function ChatGptCtrl($scope, $http, $timeout, $translate, $uibModal, $repositories, toastr, ModalService, LocalStorageAdapter) {
+
+    $scope.showInfoPanel = true;
+    // $scope.showInfoPanel = false;
+
     function scrollToEnd() {
         $timeout(() => {
             const element = document.getElementById("messages-scrollable");

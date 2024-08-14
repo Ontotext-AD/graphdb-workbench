@@ -1,0 +1,127 @@
+:root {
+    --sidebar-width: max(220px, 10vw);
+    --sidebar-bgcolor: #f9fafb;
+    --toolbar-height: 32px;
+}
+
+/* override the main-container and title to accommodate to the new design without left and right padding */
+.main-container {
+    padding: 0 0 3rem 0 !important;
+}
+
+.chatgpt-view #chatgpt-view-title {
+    padding: 0 2rem;
+}
+
+.chatgpt-view .toolbar {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+    padding: 0.5em;
+}
+
+.chatgpt-view .sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.chatgpt-view .sidebar .slide-panel {
+    /* adapt to view width but at least 220px, menu size ignored for all practical screen sizes */
+    max-width: var(--sidebar-width);
+    top: 32px !important;
+    padding: 1rem;
+}
+
+.chatgpt-view .sidebar .slide-panel.slide-panel-expanded  {
+    /* adapt width according to available space but not more than 800px */
+    max-width: min(800px, 100% - var(--menu-width));
+}
+
+.chatgpt-view .left-sidebar .toolbar {
+    justify-content: space-between;
+}
+
+.chatgpt-view .right-sidebar .toolbar {
+    justify-content: space-between;
+}
+
+.chatgpt-view .left-sidebar .chats-list-panel {
+    background-color: var(--sidebar-bgcolor);
+}
+
+.chatgpt-view .left-sidebar .chats-list-panel .chat-group label {
+    color: #aaa;
+}
+
+.chatgpt-view .left-sidebar .chats-list-panel .chat-group ul {
+    list-style: none;
+    padding-inline-start: 0;
+}
+
+.chatgpt-view .right-sidebar .agents-list-panel ul {
+    list-style: none;
+    padding-inline-start: 0;
+}
+
+.chatgpt-view .chatgpt-container {
+    display: grid;
+    grid-template-columns: var(--sidebar-width) 1fr var(--sidebar-width);
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+        "left-sidebar chat-content right-sidebar";
+}
+
+.chatgpt-view .chat-content {
+    padding: 0 2rem;
+}
+
+.chatgpt-view .chat-content .chat {
+    width: 720px;
+    margin: auto;
+    height: calc(100vh - 8em);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.chatgpt-view .chat .messages {
+    border: 1px solid #ddd;
+    height: calc(100% - 5em);
+    overflow: scroll;
+}
+
+.chatgpt-view .chat .messages-hint {
+    font-size: 2em;
+    padding-top: 2em;
+    text-align: center;
+}
+
+.chatgpt-view .chat .messages-item {
+    padding: 0.5em;
+}
+
+.chatgpt-view .chat .messages-item-content {
+    white-space: pre-line;
+}
+
+.chatgpt-view .chat .messages-item-question {
+    background-color: hsla(var(--secondary-color-hsl), 0.1);
+}
+
+.chatgpt-view .chat .messages-item-assistant {
+    background-color: hsla(var(--secondary-color-hsl), 0.2);
+}
+
+.chatgpt-view .chat .messages-item-assistant .icon {
+    color: var(--primary-color);
+}
+
+.chatgpt-view .chat .question {
+
+}
+
+.chatgpt-view .controls {
+    display: flex;
+    flex-direction: column;
+}

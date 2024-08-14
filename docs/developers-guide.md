@@ -1,6 +1,14 @@
 # Developers Guide
 
+## Font awesome icons
 
+The font kit is our own and is installed using the following command:
+`npm install --save '@awesome.me/kit-94ffd2fc4a@latest'`
+
+Because we use a PRO plan we have an authentication token which is used for install and update. The token is in the `.npmrc` file in the root of the project.
+
+It can be updated by running the following command:
+`npm update '@awesome.me/kit-94ffd2fc4a'`
 
 ## Extending the GraphDB Workbench
 

@@ -1,0 +1,113 @@
+<style>
+    .ot-chatgpt-ctrl {
+        max-width: 950px;
+        align-items: start;
+        justify-content: stretch;
+    }
+
+    .chat {
+        flex-grow: 9;
+        height: calc(100vh - 8em);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .messages {
+        border: 1px solid #ddd;
+        height: calc(100% - 5em);
+        overflow: scroll;
+    }
+
+    .messages-hint {
+        font-size: 2em;
+        padding-top: 2em;
+        text-align: center;
+    }
+
+    .messages-item {
+        padding: 0.5em;
+    }
+
+    .messages-item-content {
+        white-space: pre-line;
+    }
+
+    .messages-item-question {
+        background-color: hsla(var(--secondary-color-hsl), 0.1);
+    }
+
+    .messages-item-assistant {
+        background-color: hsla(var(--secondary-color-hsl), 0.2);
+    }
+
+    .messages-item-assistant .icon {
+        color: var(--primary-color);
+    }
+
+    .question {
+
+    }
+
+    .controls {
+        display: flex;
+        flex-direction: column;
+    }
+</style>
+
+
+<div id="wb-chatgpt">
+    <h1>
+        {{ title }}
+        <span class="btn btn-link"
+              uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+              popover-trigger="mouseenter"
+              popover-placement="bottom-right"
+              popover-append-to-body="true"><span class="icon-info text-tertiary"></span></span>
+    </h1>
+
+    <div core-errors></div>
+    <div class="ot-chatgpt-ctrl d-flex" ng-show="getActiveRepository()">
+        <div class="chat">
+            <div uib-collapse="!isCollapsed" id="ot-help-text" class="alert alert-info">
+                <button type="button" ng-click="isCollapsed = false" gdb-tooltip="{{'common.close' | translate}}" class="close"
+                        aria-label="Close"></button>
+                <div ng-include="helpTemplateUrl"></div>
+            </div>
+            <div class="messages">
+                <div id="messages-scrollable">
+                    <div class="messages-hint text-muted" ng-if="!history.length">
+                        {{ 'ttyg.hint' | translate }}
+                    </div>
+                    <div ng-repeat="msg in history">
+                        <div ng-if="!msg.internal" class="messages-item messages-item-{{ msg.role }}">
+                            <i class="icon icon-{{ getIcon(msg.role) }}"></i>
+                            <i class="icon icon-warning" ng-if="msg.error"></i>
+                            <span class="messages-item-content">{{ msg.content }}</span>
+                        </div>
+                    </div>
+                    <div onto-loader-new ng-show="loader" size="40"></div>
+                </div>
+            </div>
+            <div class="question">
+                <form>
+                    <div class="mb-2 d-flex">
+                        <input class="form-control" ng-model="question" type="text">
+                        <button class="btn btn-primary" ng-disabled="loader" ng-click="ask()">{{ 'ttyg.ask.button' | translate }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="controls">
+            <button class="btn btn-link btn-lg" ng-click="isCollapsed = !isCollapsed" >
+                <i class="icon-help"></i>
+            </button>
+            <button class="btn btn-link btn-lg" ng-click="openSettings()">
+                <i class="icon-settings"></i>
+            </button>
+            <a class="btn btn-link btn-lg secondary" ng-click="clear()">
+                <i class="icon-trash"></i>
+            </a>
+        </div>
+    </div>
+</div>
