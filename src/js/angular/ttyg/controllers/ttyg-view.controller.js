@@ -4,7 +4,7 @@ const modules = [
 ];
 
 angular
-    .module('graphdb.framework.chatgpt.controllers', modules)
+    .module('graphdb.framework.ttyg.controllers', modules)
     .controller('TTYGViewCtrl', TTYGViewCtrl);
 
 TTYGViewCtrl.$inject = ['$scope', '$http', '$timeout', '$translate', '$uibModal', '$repositories', 'toastr', 'ModalService', 'LocalStorageAdapter'];
@@ -21,7 +21,7 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
     // Public variables
     // =========================
 
-    $scope.helpTemplateUrl = "js/angular/chatgpt/templates/chatInfo.html";
+    $scope.helpTemplateUrl = "js/angular/ttyg/templates/chatInfo.html";
     $scope.showChats = true;
     $scope.showAgents = true;
     $scope.connectorID = undefined;
@@ -106,7 +106,7 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
 
     $scope.openSettings = () => {
         const modalInstance = $uibModal.open({
-            templateUrl: 'js/angular/chatgpt/templates/modal/settings.html',
+            templateUrl: 'js/angular/ttyg/templates/modal/settings.html',
             controller: 'AgentSettingsDialogCtrl',
             size: 'lg',
             resolve: {

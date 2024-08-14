@@ -1,4 +1,4 @@
-import 'angular/chatgpt/controllers/ttyg-view.controller';
+import 'angular/ttyg/controllers/ttyg-view.controller';
 
 const modules = [
     'toastr',
@@ -6,7 +6,7 @@ const modules = [
 ];
 
 angular
-    .module('graphdb.framework.chatgpt.controllers', modules)
+    .module('graphdb.framework.ttyg.controllers', modules)
     .controller('AgentSettingsDialogCtrl', AgentSettingsDialogCtrl);
 
 AgentSettingsDialogCtrl.$inject = ['$scope', '$translate', '$uibModalInstance', 'data'];
