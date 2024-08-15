@@ -57,22 +57,22 @@ function ImportContextService(EventEmitterService) {
      * @param {string[]} selectedFilesNames
      */
     function updateSelectedFilesNames(selectedFilesNames) {
-        _selectedFilesNames = selectedFilesNames;
-        EventEmitterService.emit('selectedFilesNamesUpdated', getSelectedFilesNames());
+        _selectedFilesNames = cloneDeep(selectedFilesNames);
+        EventEmitterService.emitParallel('selectedFilesNamesUpdated', getSelectedFilesNames());
     }
 
     function getSelectedFilesNames() {
-        return _selectedFilesNames;
+        return cloneDeep(_selectedFilesNames);
     }
 
     /**
      * Subscribes to the 'selectedFilesNamesUpdated' event.
      * @param {function} callback - The callback to be called when the event is fired.
      *
-     * @return unsubscribe function.
+     * @return {function} unsubscribe function.
      */
     function onSelectedFilesNamesUpdated(callback) {
-        return EventEmitterService.subscribe('selectedFilesNamesUpdated', () => callback(getShowLoader()));
+        return EventEmitterService.subscribeParallel('selectedFilesNamesUpdated', (selectedFilenames) => callback(selectedFilenames));
     }
 
     /**
@@ -80,7 +80,7 @@ function ImportContextService(EventEmitterService) {
      */
     function updateShowLoader(showLoader) {
         _showLoader = showLoader;
-        EventEmitterService.emit('showLoaderUpdated', getShowLoader());
+        EventEmitterService.emitParallel('showLoaderUpdated', getShowLoader());
     }
 
     function getShowLoader() {
@@ -91,10 +91,10 @@ function ImportContextService(EventEmitterService) {
      * Subscribes to the 'showLoaderUpdated' event.
      * @param {function} callback - The callback to be called when the event is fired.
      *
-     * @return unsubscribe function.
+     * @return {function} unsubscribe function.
      */
     function onShowLoaderUpdated(callback) {
-        return EventEmitterService.subscribe('showLoaderUpdated', () => callback(getShowLoader()));
+        return EventEmitterService.subscribeParallel('showLoaderUpdated', (showLoader) => callback(showLoader));
     }
 
     /**
@@ -103,7 +103,7 @@ function ImportContextService(EventEmitterService) {
      */
     function updateActiveTabId(activeTabId) {
         _activeTabId = activeTabId;
-        EventEmitterService.emit('activeTabIdUpdated', getActiveTabId());
+        EventEmitterService.emitParallel('activeTabIdUpdated', getActiveTabId());
     }
 
     function getActiveTabId() {
@@ -114,10 +114,10 @@ function ImportContextService(EventEmitterService) {
      * Subscribes to the 'activeTabUpdated' event.
      * @param {function} callback - The callback to be called when the event is fired.
      *
-     * @return unsubscribe function.
+     * @return {function} unsubscribe function.
      */
     function onActiveTabIdUpdated(callback) {
-        return EventEmitterService.subscribe('activeTabIdUpdated', () => callback(getActiveTabId()));
+        return EventEmitterService.subscribeParallel('activeTabIdUpdated', (activeTabId) => callback(activeTabId));
     }
 
     /**
@@ -127,18 +127,18 @@ function ImportContextService(EventEmitterService) {
      * @param {*[]} files
      */
     function updateFiles(files) {
-        _files = files;
-        EventEmitterService.emit('filesUpdated', getFiles());
+        _files = cloneDeep(files);
+        EventEmitterService.emitParallel('filesUpdated', getFiles());
     }
 
     /**
      * Subscribes to the 'filesUpdated' event.
      * @param {function} callback - The callback to be called when the event is fired.
      *
-     * @return unsubscribe function.
+     * @return {function} unsubscribe function.
      */
     function onFilesUpdated(callback) {
-        return EventEmitterService.subscribe('filesUpdated', () => callback(getFiles()));
+        return EventEmitterService.subscribeParallel('filesUpdated', (files) => callback(files));
     }
 
     /**
@@ -148,8 +148,10 @@ function ImportContextService(EventEmitterService) {
      * @param {object} file - The file to be added.
      */
     function addFile(file) {
-        _files.push(file);
-        EventEmitterService.emit('fileAdded', cloneDeep(file));
+        const files = getFiles();
+        files.push(file);
+        updateFiles(files);
+        EventEmitterService.emitParallel('fileAdded', cloneDeep(file));
     }
 
     /**
@@ -167,8 +169,8 @@ function ImportContextService(EventEmitterService) {
      * @param {ImportResource[]} resources
      */
     function updateResources(resources) {
-        _resources = resources;
-        EventEmitterService.emit('resourcesUpdated', getResources());
+        _resources = cloneDeep(resources);
+        EventEmitterService.emitParallel('resourcesUpdated', getResources());
     }
 
     /**
@@ -183,9 +185,9 @@ function ImportContextService(EventEmitterService) {
      * Subscribes to the 'resourcesUpdated' event.
      * @param {function} callback - The callback to be called when the event is fired.
      *
-     * @return the unsubscribe function.
+     * @return {function} the unsubscribe function.
      */
     function onResourcesUpdated(callback) {
-        return EventEmitterService.subscribe('resourcesUpdated', () => callback(getResources()));
+        return EventEmitterService.subscribeParallel('resourcesUpdated', (resources) => callback(resources));
     }
 }
