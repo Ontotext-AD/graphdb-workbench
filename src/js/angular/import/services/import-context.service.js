@@ -3,6 +3,7 @@
  * The purpose of the ImportContextService is to hold data shared between them.
  */
 import {cloneDeep} from "lodash";
+import {ImportResourceStatus} from "../../models/import/import-resource-status";
 
 export const TABS = {
     USER: 'user',
@@ -23,6 +24,13 @@ function ImportContextService(EventEmitterService) {
      * @private
      */
     let _importedResources = [];
+
+    /**
+     *
+     * @type {ImportResource[]}
+     * @private
+     */
+    let _uploadedFiles = [];
 
     /**
      * @type {*[]}
@@ -52,7 +60,12 @@ function ImportContextService(EventEmitterService) {
         onShowLoaderUpdated,
         updateSelectedFilesNames,
         getSelectedFilesNames,
-        onSelectedFilesNamesUpdated
+        onSelectedFilesNamesUpdated,
+        updateUploadFile,
+        getUploadFile,
+        updateUploadFiles,
+        getUploadFiles,
+        onUploadFilesChanged
     };
 
     /**
@@ -173,7 +186,7 @@ function ImportContextService(EventEmitterService) {
     function updateImportedResources(resources) {
         _importedResources = resources;
         EventEmitterService.emitParallel('importedResourcesUpdated', getImportedResources());
-        EventEmitterService.emitParallel('resourcesUpdated', getImportedResources());
+        EventEmitterService.emitParallel('resourcesUpdated', getResources());
     }
 
     /**
@@ -181,7 +194,7 @@ function ImportContextService(EventEmitterService) {
      * @return {ImportResource[]} - The imported resources.
      */
     function getImportedResources() {
-        return cloneDeep(_importedResources);
+        return cloneDeep(_importedResources) || [];
     }
 
     /**
@@ -199,8 +212,36 @@ function ImportContextService(EventEmitterService) {
      * @return {ImportResource[]} - The resources.
      */
     function getResources() {
-        // returns will be updated to return files that are uploaded.
-        return cloneDeep(_importedResources);
+        const importResources = getImportedResources();
+        let uploadFiles = getUploadFiles();
+
+        const uploadedFilesForRemoving = [];
+        const skipImportedFiles = [];
+
+        importResources.forEach((r) => {
+            const foundResource = uploadFiles.find((uploadFile) => uploadFile.name === r.name);
+            if (foundResource) {
+                if (foundResource.status === ImportResourceStatus.UPLOADED) {
+                    // Add to removal list if the file is not uploading (ready for import)
+                    uploadedFilesForRemoving.push(foundResource);
+                } else {
+                    // Skip importing files that are still uploading
+                    skipImportedFiles.push(foundResource);
+                }
+            }
+        });
+
+        // Remove uploaded files that are already imported and update the list
+        if (uploadedFilesForRemoving.length > 0) {
+            uploadFiles = uploadFiles.filter(
+                (uploadFile) => !uploadedFilesForRemoving.some((uFR) => uFR.name === uploadFile.name)
+            );
+            updateUploadFiles(uploadFiles, false);
+        }
+
+        return importResources
+            .filter((iR) => !skipImportedFiles.some((r) => iR.name === r.name))
+            .concat(uploadFiles);
     }
 
     /**
@@ -211,5 +252,45 @@ function ImportContextService(EventEmitterService) {
      */
     function onResourcesUpdated(callback) {
         return EventEmitterService.subscribeParallel('resourcesUpdated', (resources) => callback(resources));
+    }
+
+    /**
+     * @param {ImportResource} updatedUploadedFile
+     */
+    function updateUploadFile(updatedUploadedFile) {
+        const uploadFiles = getUploadFiles();
+        const foundResource = uploadFiles.find((uploadFile) => uploadFile.name === updatedUploadedFile.name);
+        if (foundResource) {
+            Object.assign(foundResource, updatedUploadedFile);
+        } else {
+            uploadFiles.push(updatedUploadedFile);
+        }
+        updateUploadFiles(uploadFiles);
+    }
+
+    function getUploadFile(name) {
+        return cloneDeep(_uploadedFiles.find((uploadFile) => uploadFile.name === name));
+    }
+
+    function updateUploadFiles(uploadedFiles, notifyResourceChanged = true) {
+        _uploadedFiles = cloneDeep(uploadedFiles);
+        EventEmitterService.emitParallel('uploadFilesUpdated', getUploadFiles());
+        if (notifyResourceChanged) {
+            EventEmitterService.emitParallel('resourcesUpdated', getResources());
+        }
+    }
+
+    function getUploadFiles() {
+        return cloneDeep(_uploadedFiles) || [];
+    }
+
+    /**
+     * Subscribes to the 'uploadFilesUpdated' event.
+     * @param {function} callback - The callback to be called when the event is fired.
+     *
+     * @return {function} unsubscribe function.
+     */
+    function onUploadFilesChanged(callback) {
+        return EventEmitterService.subscribeParallel('uploadFilesUpdated', (uploadFiles) => callback(uploadFiles));
     }
 }

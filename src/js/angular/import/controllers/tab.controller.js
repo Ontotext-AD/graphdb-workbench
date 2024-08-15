@@ -32,7 +32,7 @@ function TabController($scope, $location, ImportContextService) {
         } else {
             $scope.isHelpVisible = helpVisibility.isHelpVisible($scope.activeTabId);
         }
-    }
+    };
 
     $scope.openTab = (tab) => {
         ImportContextService.updateActiveTabId(tab);

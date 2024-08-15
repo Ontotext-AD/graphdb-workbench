@@ -12,7 +12,7 @@ import {FileFormats} from "../../models/import/file-formats";
 import * as stringUtils from "../../utils/string-utils";
 import {FileUtils} from "../../utils/file-utils";
 import {DateUtils} from "../../utils/date-utils";
-import {toImportResource} from "../../rest/mappers/import-mapper";
+import {filesToImportResource, toImportResource} from "../../rest/mappers/import-mapper";
 import {decodeHTML} from "../../../../app";
 import {FilePrefixRegistry} from "../services/file-prefix-registry";
 import {SortingType} from "../../models/import/sorting-type";
@@ -145,7 +145,13 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                     }
 
                     $uibModal.open(options).result.then(
+                        // confirmed handler
                         (data) => {
+                            if ($scope.currentFiles && (data.action === SettingsModalActions.UPLOAD_ONLY || data.action === SettingsModalActions.UPLOAD_AND_IMPORT)) {
+                                const uploadingImportResource = filesToImportResource($scope.currentFiles, ImportResourceStatus.UPLOADING);
+                                ImportContextService.updateUploadFiles(uploadingImportResource);
+                            }
+
                             $scope.settings = data.settings;
                             if ($scope.settingsFor === '') {
                                 $scope.importSelected();
@@ -153,6 +159,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                                 $scope.importFile($scope.settingsFor, true);
                             }
                         },
+                        // rejected handler
                         (data) => {
                             $scope.settings = data.settings;
                             if (data.action === SettingsModalActions.CANCEL) {
@@ -708,7 +715,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     };
 
     /**
-     * Opens a modal dialog where the user can paste a url and import the data from it.
+     * Opens a modal dialog where the user can paste an url and import the data from it.
      */
     $scope.rdfDataFromURL = () => {
         const modalInstance = $uibModal.open({
@@ -795,25 +802,45 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         $scope.settings.name = file.name;
         const data = UploadRestService.createUploadPayload(file, $scope.settings);
         const uploader = startImport ? UploadRestService.uploadUserDataFile : UploadRestService.updateUserDataFile;
-        uploader($repositories.getActiveRepository(), file, data).then(
-            (resp) => {
-                $scope.progressPercentage = null;
-                $scope.uploadProgressMessage = '';
+        uploader($repositories.getActiveRepository(), file, data)
+            .progress((evt) => {
+                console.log("Uploader progress...... ", file.name);
+                const progress = parseInt(100.0 * evt.loaded / evt.total) || 0;
+                const uploadProgressMessage = $translate.instant(
+                    'import.file.upload.progress',
+                    {progress: progress});
+
+                const uploadingResource = ImportContextService.getUploadFile(file.name);
+                if (uploadingResource) {
+                    // TODO check if this is needed
+                    uploadingResource.status = progress >= 100 ? ImportRestService.UPLOADED : ImportResourceStatus.UPLOADING;
+                    uploadingResource.message = uploadProgressMessage;
+                    ImportContextService.updateUploadFile(uploadingResource);
+                }
+            })
+            .success((resp) => {
+                console.log("Uploader success...... ", file.name);
+                const uploadingResource = ImportContextService.getUploadFile(file.name);
+                if (uploadingResource) {
+                    uploadingResource.status = ImportResourceStatus.UPLOADED;
+                    ImportContextService.updateUploadFile(uploadingResource);
+                }
                 $scope.updateList();
-            },
-            (error) => {
-                toastr.error($translate.instant('import.could.not.upload.file', {data: getError(error.data)}));
+            })
+            .error((error) => {
+                console.log("Uploader error ...... ", file.name);
+                const errorMessage = getError(error);
+                toastr.error($translate.instant('import.could.not.upload.file', {data: errorMessage}));
                 file.status = ImportResourceStatus.ERROR;
-                file.message = getError(error.data);
-            },
-            (evt) => {
-                $scope.progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                $scope.uploadProgressMessage = $translate.instant('import.file.upload.progress', {progress: $scope.progressPercentage});
+                file.message = errorMessage;
+                const uploadingResource = ImportContextService.getUploadFile(file.name);
+                if (uploadingResource) {
+                    uploadingResource.status = ImportResourceStatus.UPLOAD_ERROR;
+                    uploadingResource.message = errorMessage;
+                    ImportContextService.updateUploadFile(uploadingResource);
             }
-        ).finally(nextCallback || function () {
-            $scope.progressPercentage = null;
-            $scope.uploadProgressMessage = '';
-        });
+            })
+            .finally(nextCallback);
     };
 
     const removeBZip2Files = (files) => {
