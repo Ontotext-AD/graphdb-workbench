@@ -1,10 +1,10 @@
 PluginRegistry.add('route', [
     {
         'url': '/chatgpt',
-        'templateUrl': 'js/angular/chatgpt/templates/chat.html',
-        'module': 'graphdb.framework.chatgpt',
-        'path': 'chatgpt/app',
-        'controller': 'ChatGptCtrl',
+        'templateUrl': 'js/angular/ttyg/templates/ttyg.html',
+        'module': 'graphdb.framework.ttyg',
+        'path': 'ttyg/app',
+        'controller': 'TTYGViewCtrl',
         'title': 'menu.ttyg.label',
         'helpInfo': 'ttyg.helpInfo'
     }
@@ -18,7 +18,7 @@ PluginRegistry.add('main.menu', {
             href: '#',
             order: 6,
             role: 'IS_AUTHENTICATED_FULLY',
-            icon: "fa fa-flask",
+            icon: "fa-light fa-flask",
             guideSelector: 'menu-lab'
         },
         {

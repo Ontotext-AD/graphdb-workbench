@@ -1,0 +1,213 @@
+<link href="css/ttyg.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+<div class="ttyg-view">
+    <h1 id="ttyg-view-title">
+        {{ title }}
+        <span class="btn btn-link"
+              uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
+              popover-trigger="mouseenter"
+              popover-placement="bottom-right"
+              popover-append-to-body="true"><span class="icon-info text-tertiary"></span></span>
+    </h1>
+
+    <div core-errors></div>
+
+    <div id="ttyg-container" class="ttyg-container" ng-show="getActiveRepository()">
+
+        <div id="left-sidebar" class="left-sidebar sidebar" ng-class="showChats ? 'expanded' : 'collapsed'">
+            <div class="toolbar">
+                <button class="btn btn-link secondary btn-sm toggle-chats-sidebar-btn"
+                        ng-if="true"
+                        ng-click="toggleChatsListSidebar()"
+                        ng-disabled="false"
+                        gdb-tooltip="{{'ttyg.chat.btn.' + (showChats ? 'close_sidebar' : 'open_sidebar') + '.tooltip' | translate}}">
+                    <i class="fa-light fa-sidebar"></i>
+                </button>
+                <button class="btn btn-link secondary btn-sm create-chat-btn"
+                        ng-if="true"
+                        ng-click="createChat()"
+                        ng-disabled="false"
+                        gdb-tooltip="{{'ttyg.chat.btn.create_chat.tooltip' | translate}}">
+                    <i class="fa-light fa-pen-to-square"></i>
+                </button>
+            </div>
+            <pageslide
+                ps-class="chats-list-panel slide-panel"
+                ps-container="left-sidebar"
+                ps-open="showChats"
+                onopen="onopen"
+                onclose="onclose"
+                ps-side="left"
+                ps-click-outside="false"
+                ps-size="80vw">
+                <div class="chats-list-component">
+                    <div class="chat-group">
+                        <label>Today</label>
+                        <ul>
+                            <li>chat 1</li>
+                            <li>chat 2</li>
+                            <li>chat 3</li>
+                            <li>chat 4</li>
+                        </ul>
+                    </div>
+                    <div class="chat-group">
+                        <label>Yesterday</label>
+                        <ul>
+                            <li>chat 1</li>
+                            <li>chat 2</li>
+                            <li>chat 3</li>
+                            <li>chat 4</li>
+                        </ul>
+                    </div>
+                    <div class="chat-group">
+                        <label>Today</label>
+                        <ul>
+                            <li>chat 1</li>
+                            <li>chat 2</li>
+                            <li>chat 3</li>
+                            <li>chat 4</li>
+                        </ul>
+                    </div>
+                    <div class="chat-group">
+                        <label>Yesterday</label>
+                        <ul>
+                            <li>chat 1</li>
+                            <li>chat 2</li>
+                            <li>chat 3</li>
+                            <li>chat 4</li>
+                        </ul>
+                    </div>
+                    <div class="chat-group">
+                        <label>Today</label>
+                        <ul>
+                            <li>chat 1</li>
+                            <li>chat 2</li>
+                            <li>chat 3</li>
+                            <li>chat 4</li>
+                        </ul>
+                    </div>
+                    <div class="chat-group">
+                        <label>Yesterday</label>
+                        <ul>
+                            <li>chat 1</li>
+                            <li>chat 2</li>
+                            <li>chat 3</li>
+                            <li>chat 4</li>
+                        </ul>
+                    </div>
+                </div>
+            </pageslide>
+        </div>
+
+        <div class="chat-content">
+            <div class="toolbar">
+                <button class="btn btn-link secondary btn-sm edit-current-agent-btn"
+                        ng-if="true"
+                        ng-click="editAgent()"
+                        ng-disabled="false"
+                        gdb-tooltip="{{'ttyg.agent.btn.edit_agent.tooltip' | translate}}">
+                    <i class="fa-light fa-gear"></i>
+                </button>
+                <button class="btn btn-link secondary btn-sm export-current-chat-btn"
+                        ng-if="true"
+                        ng-click="exportChat()"
+                        ng-disabled="false"
+                        gdb-tooltip="{{'ttyg.chat.btn.export_chat.tooltip' | translate}}">
+                    <i class="fa-light fa-arrow-down-to-line"></i>
+                </button>
+            </div>
+
+            <div class="chat">
+                <div uib-collapse="!isCollapsed" id="ot-help-text" class="alert alert-info">
+                    <button type="button" ng-click="isCollapsed = false" gdb-tooltip="{{'common.close' | translate}}"
+                            class="close"
+                            aria-label="Close"></button>
+                    <div ng-include="helpTemplateUrl"></div>
+                </div>
+                <div class="messages">
+                    <div id="messages-scrollable">
+                        <div class="messages-hint text-muted" ng-if="!history.length">
+                            {{ 'ttyg.hint' | translate }}
+                        </div>
+                        <div ng-repeat="msg in history">
+                            <div ng-if="!msg.internal" class="messages-item messages-item-{{ msg.role }}">
+                                <i class="icon icon-{{ getIcon(msg.role) }}"></i>
+                                <i class="icon icon-warning" ng-if="msg.error"></i>
+                                <span class="messages-item-content">{{ msg.content }}</span>
+                            </div>
+                        </div>
+                        <div onto-loader-new ng-show="loader" size="40"></div>
+                    </div>
+                </div>
+                <div class="question">
+                    <form>
+                        <div class="mb-2 d-flex">
+                            <input class="form-control" ng-model="question" type="text">
+                            <button class="btn btn-primary" ng-disabled="loader" ng-click="ask()">{{ 'ttyg.ask.button' |
+                                translate }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!--        <div class="controls">-->
+            <!--            <button class="btn btn-link btn-lg" ng-click="isCollapsed = !isCollapsed">-->
+            <!--                <i class="icon-help"></i>-->
+            <!--            </button>-->
+            <!--            <button class="btn btn-link btn-lg" ng-click="openSettings()">-->
+            <!--                <i class="icon-settings"></i>-->
+            <!--            </button>-->
+            <!--            <a class="btn btn-link btn-lg secondary" ng-click="clear()">-->
+            <!--                <i class="icon-trash"></i>-->
+            <!--            </a>-->
+            <!--        </div>-->
+        </div>
+
+        <div id="right-sidebar" class="right-sidebar sidebar" ng-class="showAgents ? 'expanded' : 'collapsed'">
+            <div class="toolbar">
+                <button class="btn btn-link secondary btn-sm help-btn"
+                        ng-if="true"
+                        ng-click="openHelp()"
+                        ng-disabled="false"
+                        gdb-tooltip="{{'ttyg.help.btn.show_help.tooltip' | translate}}">
+                    <i class="fa-light fa-circle-question"></i>
+                </button>
+                <span>
+                    <button class="btn btn-link secondary btn-sm create-agent-btn"
+                            ng-if="true"
+                            ng-click="createAgent()"
+                            ng-disabled="false"
+                            gdb-tooltip="{{'ttyg.agent.btn.create_agent.tooltip' | translate}}">
+                        <i class="fa-light fa-circle-plus"></i>
+                    </button>
+                    <button class="btn btn-link secondary btn-sm toggle-agents-sidebar-btn"
+                            ng-if="true"
+                            ng-click="toggleAgentsListSidebar()"
+                            ng-disabled="false"
+                            gdb-tooltip="{{'ttyg.agent.btn.' + (showAgents ? 'close_sidebar' : 'open_sidebar') + '.tooltip' | translate}}">
+                        <i class="fa-light fa-message-bot"></i>
+                    </button>
+                </span>
+            </div>
+
+            <pageslide
+                ps-class="agents-list-panel slide-panel"
+                ps-container="right-sidebar"
+                ps-open="showAgents"
+                onopen="onopen"
+                onclose="onclose"
+                ps-side="right"
+                ps-click-outside="false"
+                ps-size="80vw">
+                <div class="agents-list-component">
+                    <ul>
+                        <li>agent 1</li>
+                        <li>agent 2</li>
+                        <li>agent 3</li>
+                        <li>agent 4</li>
+                    </ul>
+                </div>
+            </pageslide>
+        </div>
+    </div>
+</div>

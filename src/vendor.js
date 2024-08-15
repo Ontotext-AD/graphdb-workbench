@@ -1,6 +1,7 @@
 import 'lib/bootstrap/bootstrap.min.css';
 import 'angular-toastr/dist/angular-toastr.min.css';
 import 'font-awesome/css/font-awesome.min.css';
+import '@awesome.me/kit-94ffd2fc4a/icons/css/all.css';
 import './css/lib/animate/animate.css';
 import 'shepherd.js/dist/css/shepherd.css';
 import './css/shepherd-custom.css';

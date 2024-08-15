@@ -114,8 +114,8 @@ module.exports = {
                 to: 'js/angular/autocomplete/templates'
             },
             {
-                from: 'src/js/angular/chatgpt/templates',
-                to: 'js/angular/chatgpt/templates'
+                from: 'src/js/angular/ttyg/templates',
+                to: 'js/angular/ttyg/templates'
             },
             {
                 from: 'src/js/angular/clustermanagement/templates',
