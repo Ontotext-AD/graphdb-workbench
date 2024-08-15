@@ -16,7 +16,7 @@
 
         <div id="left-sidebar" class="left-sidebar sidebar" ng-class="showChats ? 'expanded' : 'collapsed'">
             <div class="toolbar">
-                <button class="btn btn-link secondary btn-sm toggle-chat-list-sidebar-btn"
+                <button class="btn btn-link secondary btn-sm toggle-chats-sidebar-btn"
                         ng-if="true"
                         ng-click="toggleChatsListSidebar()"
                         ng-disabled="false"
@@ -101,16 +101,16 @@
 
         <div class="chat-content">
             <div class="toolbar">
-                <button class="btn btn-link secondary btn-sm edit-agent-btn"
+                <button class="btn btn-link secondary btn-sm edit-current-agent-btn"
                         ng-if="true"
                         ng-click="editAgent()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.agent.btn.edit_agent.tooltip' | translate}}">
                     <i class="fa-light fa-gear"></i>
                 </button>
-                <button class="btn btn-link secondary btn-sm create-chat-btn"
+                <button class="btn btn-link secondary btn-sm export-current-chat-btn"
                         ng-if="true"
-                        ng-click="createChat()"
+                        ng-click="exportChat()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.chat.btn.export_chat.tooltip' | translate}}">
                     <i class="fa-light fa-arrow-down-to-line"></i>
@@ -180,7 +180,7 @@
                             gdb-tooltip="{{'ttyg.agent.btn.create_agent.tooltip' | translate}}">
                         <i class="fa-light fa-circle-plus"></i>
                     </button>
-                    <button class="btn btn-link secondary btn-sm close-agents-btn"
+                    <button class="btn btn-link secondary btn-sm toggle-agents-sidebar-btn"
                             ng-if="true"
                             ng-click="toggleAgentsListSidebar()"
                             ng-disabled="false"
