@@ -401,11 +401,8 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                 if (executedInTabId !== ImportContextService.getActiveTabId()) {
                     return;
                 }
-                if (TABS.SERVER === $scope.activeTabId) {
-                    ImportContextService.updateResources(toImportResource(data));
-                } else if (TABS.USER === $scope.activeTabId) {
-                    ImportContextService.updateResources(toImportResource(data));
-                }
+
+                ImportContextService.updateImportedResources(toImportResource(data));
 
                 // reload all files
                 if ($scope.files.length === 0 || force) {
@@ -477,7 +474,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
 
         const onActiveTabChanged = (activeTabId) => {
             $scope.activeTabId = activeTabId;
-            ImportContextService.updateResources([]);
+            ImportContextService.updateImportedResources([]);
             ImportContextService.updateShowLoader(true);
             $scope.updateListHttp(true).finally(() => ImportContextService.updateShowLoader(false));
         };

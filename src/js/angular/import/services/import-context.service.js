@@ -22,7 +22,7 @@ function ImportContextService(EventEmitterService) {
      * @type {ImportResource[]}
      * @private
      */
-    let _resources = undefined;
+    let _importedResources = [];
 
     /**
      * @type {*[]}
@@ -42,7 +42,9 @@ function ImportContextService(EventEmitterService) {
         addFile,
         updateFiles,
         onFilesUpdated,
-        updateResources,
+        getImportedResources,
+        updateImportedResources,
+        onImportedResourcesUpdated,
         getResources,
         onResourcesUpdated,
         updateShowLoader,
@@ -164,13 +166,32 @@ function ImportContextService(EventEmitterService) {
 
     /**
      * Updates the resources.
-     * Emits the 'resourcesUpdated' event when the resources are updated.
+     * Emits the 'resourcesUpdated' and 'importedResourcesUpdated' events when the resources are updated.
      * The 'filesUpdated' event contains the new resources.
      * @param {ImportResource[]} resources
      */
-    function updateResources(resources) {
-        _resources = cloneDeep(resources);
-        EventEmitterService.emitParallel('resourcesUpdated', getResources());
+    function updateImportedResources(resources) {
+        _importedResources = resources;
+        EventEmitterService.emitParallel('importedResourcesUpdated', getImportedResources());
+        EventEmitterService.emitParallel('resourcesUpdated', getImportedResources());
+    }
+
+    /**
+     * Gets the imported resources.
+     * @return {ImportResource[]} - The imported resources.
+     */
+    function getImportedResources() {
+        return cloneDeep(_importedResources);
+    }
+
+    /**
+     * Subscribes to the 'importedResourcesUpdated' event.
+     * @param {function} callback - The callback to be called when the event is fired.
+     *
+     * @return {function} the unsubscribe function.
+     */
+    function onImportedResourcesUpdated(callback) {
+        return EventEmitterService.subscribeParallel('importedResourcesUpdated', (importedResources) => callback(importedResources));
     }
 
     /**
@@ -178,7 +199,8 @@ function ImportContextService(EventEmitterService) {
      * @return {ImportResource[]} - The resources.
      */
     function getResources() {
-        return cloneDeep(_resources);
+        // returns will be updated to return files that are uploaded.
+        return cloneDeep(_importedResources);
     }
 
     /**
