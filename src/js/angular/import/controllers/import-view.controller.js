@@ -486,6 +486,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         const onActiveTabChanged = (activeTabId) => {
             $scope.activeTabId = activeTabId;
             ImportContextService.updateImportedResources([]);
+            ImportContextService.updateResourcesForUpload([]);
             ImportContextService.updateShowLoader(true);
             $scope.updateListHttp(true).finally(() => ImportContextService.updateShowLoader(false));
         };
@@ -816,7 +817,6 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
 
                 const uploadingResource = ImportContextService.getResourceForUpload(file.name);
                 if (uploadingResource) {
-                    uploadingResource.status = progress >= 100 ? ImportRestService.UPLOADED : ImportResourceStatus.UPLOADING;
                     uploadingResource.message = uploadProgressMessage;
                     ImportContextService.updateResourceForUpload(uploadingResource);
                 }
