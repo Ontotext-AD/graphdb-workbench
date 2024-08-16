@@ -224,6 +224,7 @@
             }
         },
         "chat": {
+            "loading_chats": "Loading chats...",
             "btn": {
                 "open_sidebar": {
                     "tooltip": "Open sidebar"
@@ -235,7 +236,16 @@
                     "tooltip": "Create a new chat"
                 },
                 "export_chat": {
+                    "label": "Export",
                     "tooltip": "Export chat"
+                },
+                "delete_chat": {
+                    "label": "Delete chat",
+                    "tooltip": "Delete chat"
+                },
+                "rename_chat": {
+                    "label": "Rename",
+                    "tooltip": "Rename chat"
                 }
             }
         },
@@ -1424,6 +1434,12 @@
     "no.connected.gdb.instances": "There are no connected GraphDB instances.",
     "edit.file.content": "Edit file content",
     "upload.file": "Upload file...",
+    "common": {
+        "dates": {
+            "today": "Today",
+            "yesterday": "Yesterday"
+        }
+    },
     "common.confirm.delete": "Confirm delete",
     "common.confirm.save": "Confirm save",
     "common.cancel.btn": "Cancel",

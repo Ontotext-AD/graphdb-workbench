@@ -1,29 +1,54 @@
+import 'angular/rest/ttyg.rest.service';
+import 'angular/ttyg/directives/chat-list.directive';
+
 const modules = [
     'toastr',
-    'graphdb.framework.utils.localstorageadapter'
+    'graphdb.framework.utils.localstorageadapter',
+    'graphdb.framework.rest.ttyg.service',
+    'graphdb.framework.ttyg.directives.chats-list'
 ];
 
 angular
     .module('graphdb.framework.ttyg.controllers', modules)
     .controller('TTYGViewCtrl', TTYGViewCtrl);
 
-TTYGViewCtrl.$inject = ['$scope', '$http', '$timeout', '$translate', '$uibModal', '$repositories', 'toastr', 'ModalService', 'LocalStorageAdapter'];
+TTYGViewCtrl.$inject = ['$scope', '$http', '$timeout', '$translate', '$uibModal', '$repositories', 'toastr', 'ModalService', 'LocalStorageAdapter', 'TTYGRestService'];
 
 const CHATGPTRETRIEVAL_ENDPOINT = 'rest/chat/retrieval';
 
-function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositories, toastr, ModalService, LocalStorageAdapter) {
+function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositories, toastr, ModalService, LocalStorageAdapter, TTYGRestService) {
 
     // =========================
     // Private variables
     // =========================
+
+    const subscriptions = [];
 
     // =========================
     // Public variables
     // =========================
 
     $scope.helpTemplateUrl = "js/angular/ttyg/templates/chatInfo.html";
+    /**
+     * Controls the visibility of the chats list sidebar. By default, it is visible unless there are no chats.
+     * @type {boolean}
+     */
     $scope.showChats = true;
+    /**
+     * Controls the visibility of the agents list sidebar.
+     * @type {boolean}
+     */
     $scope.showAgents = true;
+    /**
+     * Chats list.
+     * @type {ChatsListModel}
+     */
+    $scope.chats = undefined;
+    /**
+     * Flag to control the visibility of the loader when loading chat list.
+     * @type {boolean}
+     */
+    $scope.loadingChats = false;
     $scope.connectorID = undefined;
     $scope.history = [];
     $scope.askSettings = {
@@ -130,6 +155,10 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
     // Private functions
     // =========================
 
+    function hideChats() {
+        $scope.showChats = false;
+    }
+
     function scrollToEnd() {
         $timeout(() => {
             const element = document.getElementById("messages-scrollable");
@@ -147,22 +176,26 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
         LocalStorageAdapter.set('ttyg', persisted);
     }
 
-    // =========================
-    // Subscriptions
-    // =========================
+    function loadChats() {
+        $scope.loadingChats = true;
+        return TTYGRestService.getConversations()
+        .then((chatsListModel) => {
+            $scope.chats = chatsListModel;
+            if ($scope.chats.isEmpty()) {
+                hideChats();
+            }
+        }).catch((error) => {
+            toastr.error(getError(error, 0, 100));
+        })
+        .finally(() => {
+            $scope.loadingChats = false;
+        });
+    }
 
-    $scope.$on('repositoryIsSet', function () {
-        init();
-    });
-
-    // =========================
-    // Initialization
-    // =========================
-
-    function init() {
-        if ($repositories.getActiveRepository()) {
+    function initView() {
+        const repoId = $repositories.getActiveRepository();
+        if (repoId) {
             const stored = LocalStorageAdapter.get('ttyg');
-            const repoId = $repositories.getActiveRepository();
             if (stored && stored[repoId]) {
                 const s = stored[repoId];
                 if (s.history) {
@@ -177,5 +210,24 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
             scrollToEnd();
         }
     }
-    init();
+
+    // =========================
+    // Subscriptions
+    // =========================
+
+    function removeAllListeners() {
+        subscriptions.forEach((subscription) => subscription());
+    }
+
+    subscriptions.push($scope.$on('repositoryIsSet', () => onInit()));
+    $scope.$on('$destroy', removeAllListeners);
+
+    // =========================
+    // Initialization
+    // =========================
+
+    function onInit() {
+        loadChats();
+        initView();
+    }
 }

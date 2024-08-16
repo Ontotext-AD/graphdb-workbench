@@ -1,13 +1,25 @@
 :root {
     --sidebar-width: max(220px, 10vw);
     --sidebar-bgcolor: #f9fafb;
-    --toolbar-height: 32px;
+    --toolbar-height: 37px;
+}
+
+@media (max-width: 1440px) {
+    :root {
+        --toolbar-height: 32px;
+    }
 }
 
 /* override the main-container and title to accommodate to the new design without left and right padding */
 .main-container {
     padding-left: 0 !important;
     padding-right: 0 !important;
+}
+
+/*override btn-small to properly center the icons */
+.ttyg-view .btn-sm {
+    padding: 0 !important;
+    line-height: 1 !important;
 }
 
 .ttyg-view #ttyg-view-title {
@@ -18,7 +30,7 @@
     width: 100%;
     display: flex;
     gap: 8px;
-    padding: 0.5em;
+    padding: 10px;
 }
 
 .ttyg-view .sidebar {
@@ -30,8 +42,8 @@
 .ttyg-view .sidebar .slide-panel {
     /* adapt to view width but at least 220px, menu size ignored for all practical screen sizes */
     max-width: var(--sidebar-width);
-    top: 32px !important;
-    padding: 1rem;
+    top: var(--toolbar-height) !important;
+    padding: 1rem 0 1rem 1rem;
 }
 
 .ttyg-view .sidebar .slide-panel.slide-panel-expanded  {
@@ -41,22 +53,24 @@
 
 .ttyg-view .left-sidebar .toolbar {
     justify-content: space-between;
+    background-color: var(--sidebar-bgcolor);
 }
 
 .ttyg-view .left-sidebar.collapsed .toolbar {
     justify-content: start;
+    background-color: #fff;
 }
 
-.ttyg-view .left-sidebar .chats-list-panel {
+.ttyg-view .left-sidebar .chat-list-panel {
     background-color: var(--sidebar-bgcolor);
     overflow-y: auto;
 }
 
-.ttyg-view .left-sidebar .chats-list-panel .chat-group label {
+.ttyg-view .left-sidebar .chat-list-panel .chat-group label {
     color: #aaa;
 }
 
-.ttyg-view .left-sidebar .chats-list-panel .chat-group ul {
+.ttyg-view .left-sidebar .chat-list-panel .chat-group ul {
     list-style: none;
     padding-inline-start: 0;
 }

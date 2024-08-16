@@ -33,8 +33,11 @@ ontoLoaderFancy.$inject = [];
 function ontoLoaderFancy() {
     return {
         template: function (elem, attr) {
-            return '<object width="' + attr.size + '" height="' + attr.size + '" data="js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]"></object>'
-                + '<div>{{\'common.loading\' | translate}}<div>';
+            const message = attr.message ? `<div>${attr.message}</div>` : `<div>{{'common.loading' | translate}}<div>`;
+            return `
+                <object width="${attr.size}" height="${attr.size}" data="js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]"></object>
+                ${message}
+            `;
         }
     };
 }

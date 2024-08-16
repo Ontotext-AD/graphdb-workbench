@@ -1,4 +1,4 @@
-<link href="css/ttyg.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+<link href="css/ttyg/ttyg.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
 <div class="ttyg-view">
     <h1 id="ttyg-view-title">
@@ -32,7 +32,7 @@
                 </button>
             </div>
             <pageslide
-                ps-class="chats-list-panel slide-panel"
+                ps-class="chat-list-panel slide-panel"
                 ps-container="left-sidebar"
                 ps-open="showChats"
                 onopen="onopen"
@@ -40,61 +40,9 @@
                 ps-side="left"
                 ps-click-outside="false"
                 ps-size="80vw">
-                <div class="chats-list-component">
-                    <div class="chat-group">
-                        <label>Today</label>
-                        <ul>
-                            <li>chat 1</li>
-                            <li>chat 2</li>
-                            <li>chat 3</li>
-                            <li>chat 4</li>
-                        </ul>
-                    </div>
-                    <div class="chat-group">
-                        <label>Yesterday</label>
-                        <ul>
-                            <li>chat 1</li>
-                            <li>chat 2</li>
-                            <li>chat 3</li>
-                            <li>chat 4</li>
-                        </ul>
-                    </div>
-                    <div class="chat-group">
-                        <label>Today</label>
-                        <ul>
-                            <li>chat 1</li>
-                            <li>chat 2</li>
-                            <li>chat 3</li>
-                            <li>chat 4</li>
-                        </ul>
-                    </div>
-                    <div class="chat-group">
-                        <label>Yesterday</label>
-                        <ul>
-                            <li>chat 1</li>
-                            <li>chat 2</li>
-                            <li>chat 3</li>
-                            <li>chat 4</li>
-                        </ul>
-                    </div>
-                    <div class="chat-group">
-                        <label>Today</label>
-                        <ul>
-                            <li>chat 1</li>
-                            <li>chat 2</li>
-                            <li>chat 3</li>
-                            <li>chat 4</li>
-                        </ul>
-                    </div>
-                    <div class="chat-group">
-                        <label>Yesterday</label>
-                        <ul>
-                            <li>chat 1</li>
-                            <li>chat 2</li>
-                            <li>chat 3</li>
-                            <li>chat 4</li>
-                        </ul>
-                    </div>
+                <div class="sidebar-content">
+                    <chat-list ng-if="chats" chat-list="chats"></chat-list>
+                    <div ng-if="loadingChats" onto-loader-fancy message="{{'ttyg.chat.loading_chats' | translate}}" size="25" style="height: 75vh; display: flex;"></div>
                 </div>
             </pageslide>
         </div>

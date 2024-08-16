@@ -1,0 +1,36 @@
+<link href="css/ttyg/chat-list.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+<div class="chat-list-component">
+    <div ng-repeat="chatGroup in chatList.chatsByDay" class="chat-group">
+        <label>{{chatGroup.timestamp | readableTimestamp}}</label>
+        <ul>
+            <li ng-repeat="chat in chatGroup.chats" class="chat-item">
+                <div class="chat-name">{{chat.conversationName}}</div>
+                <div class="btn-group">
+                    <button class="btn btn-link secondary btn-sm open-chat-actions-btn"
+                            data-toggle="dropdown" aria-expanded="false"
+                            ng-if="true"
+                            ng-click="openChatActionMenu()"
+                            ng-disabled="false">
+                        <i class="fa-regular fa-ellipsis"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <button class="dropdown-item" type="button">
+                            <i class="fa-light fa-arrow-down-to-line"></i>
+                            <span>{{'ttyg.chat.btn.export_chat.label' | translate}}</span>
+                        </button>
+                        <button class="dropdown-item" type="button">
+                            <i class="fa-light fa-pen"></i>
+                            <span>{{'ttyg.chat.btn.rename_chat.label' | translate}}</span>
+                        </button>
+                        <div class="dropdown-divider"></div>
+                        <button class="dropdown-item" type="button">
+                            <i class="fa-light fa-trash-can"></i>
+                            <span>{{'ttyg.chat.btn.delete_chat.label' | translate}}</span>
+                        </button>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

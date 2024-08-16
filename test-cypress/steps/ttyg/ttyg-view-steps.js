@@ -19,8 +19,32 @@ export class TTYGViewSteps {
         return cy.get('.left-sidebar');
     }
 
+    static getChatListLoadingIndicator() {
+        return this.getChatsSidebar().find('[onto-loader-fancy]');
+    }
+
     static getChatsPanel() {
-        return this.getChatsSidebar().find('.chats-list-panel');
+        return this.getChatsSidebar().find('.chat-list-panel');
+    }
+
+    static getChatListComponent() {
+        return this.getChatsPanel().find('.chat-list-component');
+    }
+
+    static getChatByDayGroups() {
+        return this.getChatListComponent().find('.chat-group');
+    }
+
+    static getChatGroup(index) {
+        return this.getChatByDayGroups().eq(index);
+    }
+
+    static getChatsFromGroup(index) {
+        return this.getChatGroup(index).find('.chat-item');
+    }
+
+    static getChatFromGroup(groupIndex, chatIndex) {
+        return this.getChatGroup(groupIndex).find('.chat-item').eq(chatIndex);
     }
 
     static getToggleChatsSidebarButton() {
