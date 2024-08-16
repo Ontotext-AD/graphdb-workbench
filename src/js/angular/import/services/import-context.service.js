@@ -30,7 +30,7 @@ function ImportContextService(EventEmitterService) {
      * @type {ImportResource[]}
      * @private
      */
-    let _uploadedFiles = [];
+    let _resourcesForUpload = [];
 
     /**
      * @type {*[]}
@@ -61,11 +61,11 @@ function ImportContextService(EventEmitterService) {
         updateSelectedFilesNames,
         getSelectedFilesNames,
         onSelectedFilesNamesUpdated,
-        updateUploadFile,
-        getUploadFile,
-        updateUploadFiles,
-        getUploadFiles,
-        onUploadFilesChanged
+        updateResourceForUpload,
+        getResourceForUpload,
+        updateResourcesForUpload,
+        getResourcesForUpload,
+        onResourcesForUploadChanged
     };
 
     /**
@@ -178,13 +178,13 @@ function ImportContextService(EventEmitterService) {
     }
 
     /**
-     * Updates the resources.
-     * Emits the 'resourcesUpdated' and 'importedResourcesUpdated' events when the resources are updated.
-     * The 'filesUpdated' event contains the new resources.
-     * @param {ImportResource[]} resources
+     * Updates the imported resource. Emits the 'resourcesUpdated' and 'importedResourcesUpdated' events when the resources are updated.
+     * The 'resourcesUpdated' event contains the resources that are currently uploading, resources that have been uploaded but not yet returned by the backend,
+     * and resources that are either imported or being imported at the moment.
+     * @param {ImportResource[]} importResources
      */
-    function updateImportedResources(resources) {
-        _importedResources = resources;
+    function updateImportedResources(importResources) {
+        _importedResources = importResources;
         EventEmitterService.emitParallel('importedResourcesUpdated', getImportedResources());
         EventEmitterService.emitParallel('resourcesUpdated', getResources());
     }
@@ -209,43 +209,52 @@ function ImportContextService(EventEmitterService) {
 
     /**
      * Gets the resources.
-     * @return {ImportResource[]} - The resources.
+     * @return {ImportResource[]} - the resources that are currently uploading, resources that have been uploaded but not yet returned by the backend,
+     * and resources that are either imported or being imported at the moment.
      */
     function getResources() {
         const importResources = getImportedResources();
-        let uploadFiles = getUploadFiles();
+        let resourcesForUpload = getResourcesForUpload();
 
-        const uploadedFilesForRemoving = [];
-        const skipImportedFiles = [];
+        const uploadedResources = [];
+        const overridingForUploadResource = [];
 
-        importResources.forEach((r) => {
-            const foundResource = uploadFiles.find((uploadFile) => uploadFile.name === r.name);
-            if (foundResource) {
-                if (foundResource.status === ImportResourceStatus.UPLOADED) {
-                    // Add to removal list if the file is not uploading (ready for import)
-                    uploadedFilesForRemoving.push(foundResource);
+        importResources.forEach(({name: importResourceName}) => {
+            const foundResourceForUpdate = resourcesForUpload.find(({name: nameOfUploadingResource}) => nameOfUploadingResource === importResourceName);
+            if (foundResourceForUpdate) {
+                if (foundResourceForUpdate.status === ImportResourceStatus.UPLOADED) {
+                    // If an already uploaded resource is found in the list of imported resources, it means we can remove it from the upload list.
+                    // It is removed here, rather than after the upload is finished, to ensure that the backend has returned it. Otherwise, it may temporarily disappear.
+                    uploadedResources.push(foundResourceForUpdate);
                 } else {
-                    // Skip importing files that are still uploading
-                    skipImportedFiles.push(foundResource);
+                    // If a resource for upload is not uploaded, but it is in list of imported resources, it means that it is uploaded with overwrite option, and we have to show instance that
+                    // is uploading at the moment.
+                    // So we add it to list of overwriting resources later we will skip it from the resulted list with resource.
+
+                    // If a resource is in the list of imported resources but is in the list of resources for upload, it means it was uploaded with the overwrite option,
+                    // and we need to show the instance that is currently uploading.
+                    // Therefore, we add it to the list of overwriting resources, so it can be skipped from the final list of resources.
+                    overridingForUploadResource.push(foundResourceForUpdate);
                 }
             }
         });
 
-        // Remove uploaded files that are already imported and update the list
-        if (uploadedFilesForRemoving.length > 0) {
-            uploadFiles = uploadFiles.filter(
-                (uploadFile) => !uploadedFilesForRemoving.some((uFR) => uFR.name === uploadFile.name)
-            );
-            updateUploadFiles(uploadFiles, false);
+        if (uploadedResources.length > 0) {
+            // Remove all uploaded resources that have been returned by the backend.
+            resourcesForUpload = resourcesForUpload.filter(({name: nameOfUploadingResource}) => !uploadedResources.some(({name: nameOfUploadedResource}) => nameOfUploadedResource === nameOfUploadingResource));
+            updateResourcesForUpload(resourcesForUpload, false);
         }
 
+        // Finally, concatenate the resources that are currently uploading, resources that have been uploaded but not yet returned by the backend,
+        // and resources that are either imported or being imported at the moment.
         return importResources
-            .filter((iR) => !skipImportedFiles.some((r) => iR.name === r.name))
-            .concat(uploadFiles);
+            .filter(({name: importResourceName}) => !overridingForUploadResource.some((uploadingResourceName) => importResourceName === uploadingResourceName))
+            .concat(resourcesForUpload);
     }
 
     /**
-     * Subscribes to the 'resourcesUpdated' event.
+     * Subscribes to the 'resourcesUpdated' event. It will be called when already imported resource or resources for upload are changed.
+     *
      * @param {function} callback - The callback to be called when the event is fired.
      *
      * @return {function} the unsubscribe function.
@@ -255,42 +264,42 @@ function ImportContextService(EventEmitterService) {
     }
 
     /**
-     * @param {ImportResource} updatedUploadedFile
+     * @param {ImportResource} updatedResourceFroUpload
      */
-    function updateUploadFile(updatedUploadedFile) {
-        const uploadFiles = getUploadFiles();
-        const foundResource = uploadFiles.find((uploadFile) => uploadFile.name === updatedUploadedFile.name);
+    function updateResourceForUpload(updatedResourceFroUpload) {
+        const resourcesForUpload = getResourcesForUpload();
+        const foundResource = resourcesForUpload.find(({name: nameOfResourceForUpload}) => nameOfResourceForUpload === updatedResourceFroUpload.name);
         if (foundResource) {
-            Object.assign(foundResource, updatedUploadedFile);
+            Object.assign(foundResource, updatedResourceFroUpload);
         } else {
-            uploadFiles.push(updatedUploadedFile);
+            resourcesForUpload.push(updatedResourceFroUpload);
         }
-        updateUploadFiles(uploadFiles);
+        updateResourcesForUpload(resourcesForUpload);
     }
 
-    function getUploadFile(name) {
-        return cloneDeep(_uploadedFiles.find((uploadFile) => uploadFile.name === name));
+    function getResourceForUpload(name) {
+        return cloneDeep(_resourcesForUpload.find(({name: nameOfResourceForUpload}) => nameOfResourceForUpload === name));
     }
 
-    function updateUploadFiles(uploadedFiles, notifyResourceChanged = true) {
-        _uploadedFiles = cloneDeep(uploadedFiles);
-        EventEmitterService.emitParallel('uploadFilesUpdated', getUploadFiles());
+    function updateResourcesForUpload(uploadedResources, notifyResourceChanged = true) {
+        _resourcesForUpload = cloneDeep(uploadedResources);
+        EventEmitterService.emitParallel('resourcesForUploadChanged', getResourcesForUpload());
         if (notifyResourceChanged) {
             EventEmitterService.emitParallel('resourcesUpdated', getResources());
         }
     }
 
-    function getUploadFiles() {
-        return cloneDeep(_uploadedFiles) || [];
+    function getResourcesForUpload() {
+        return cloneDeep(_resourcesForUpload) || [];
     }
 
     /**
-     * Subscribes to the 'uploadFilesUpdated' event.
+     * Subscribes to the 'resourcesForUploadChanged' event.
      * @param {function} callback - The callback to be called when the event is fired.
      *
      * @return {function} unsubscribe function.
      */
-    function onUploadFilesChanged(callback) {
-        return EventEmitterService.subscribeParallel('uploadFilesUpdated', (uploadFiles) => callback(uploadFiles));
+    function onResourcesForUploadChanged(callback) {
+        return EventEmitterService.subscribeParallel('resourcesForUploadChanged', (uploadFiles) => callback(uploadFiles));
     }
 }

@@ -149,7 +149,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                         (data) => {
                             if ($scope.currentFiles && (data.action === SettingsModalActions.UPLOAD_ONLY || data.action === SettingsModalActions.UPLOAD_AND_IMPORT)) {
                                 const uploadingImportResource = filesToImportResource($scope.currentFiles, ImportResourceStatus.UPLOADING);
-                                ImportContextService.updateUploadFiles(uploadingImportResource);
+                                ImportContextService.updateResourcesForUpload(uploadingImportResource);
                             }
 
                             $scope.settings = data.settings;
@@ -810,20 +810,20 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                     'import.file.upload.progress',
                     {progress: progress});
 
-                const uploadingResource = ImportContextService.getUploadFile(file.name);
+                const uploadingResource = ImportContextService.getResourceForUpload(file.name);
                 if (uploadingResource) {
                     // TODO check if this is needed
                     uploadingResource.status = progress >= 100 ? ImportRestService.UPLOADED : ImportResourceStatus.UPLOADING;
                     uploadingResource.message = uploadProgressMessage;
-                    ImportContextService.updateUploadFile(uploadingResource);
+                    ImportContextService.updateResourceForUpload(uploadingResource);
                 }
             })
             .success((resp) => {
                 console.log("Uploader success...... ", file.name);
-                const uploadingResource = ImportContextService.getUploadFile(file.name);
+                const uploadingResource = ImportContextService.getResourceForUpload(file.name);
                 if (uploadingResource) {
                     uploadingResource.status = ImportResourceStatus.UPLOADED;
-                    ImportContextService.updateUploadFile(uploadingResource);
+                    ImportContextService.updateResourceForUpload(uploadingResource);
                 }
                 $scope.updateList();
             })
@@ -833,11 +833,11 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                 toastr.error($translate.instant('import.could.not.upload.file', {data: errorMessage}));
                 file.status = ImportResourceStatus.ERROR;
                 file.message = errorMessage;
-                const uploadingResource = ImportContextService.getUploadFile(file.name);
+                const uploadingResource = ImportContextService.getResourceForUpload(file.name);
                 if (uploadingResource) {
                     uploadingResource.status = ImportResourceStatus.UPLOAD_ERROR;
                     uploadingResource.message = errorMessage;
-                    ImportContextService.updateUploadFile(uploadingResource);
+                    ImportContextService.updateResourceForUpload(uploadingResource);
             }
             })
             .finally(nextCallback);
