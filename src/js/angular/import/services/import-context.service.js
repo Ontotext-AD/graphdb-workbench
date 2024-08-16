@@ -73,7 +73,7 @@ function ImportContextService(EventEmitterService) {
      */
     function updateSelectedFilesNames(selectedFilesNames) {
         _selectedFilesNames = cloneDeep(selectedFilesNames);
-        EventEmitterService.emitParallel('selectedFilesNamesUpdated', getSelectedFilesNames());
+        EventEmitterService.emitSync('selectedFilesNamesUpdated', getSelectedFilesNames());
     }
 
     function getSelectedFilesNames() {
@@ -87,7 +87,7 @@ function ImportContextService(EventEmitterService) {
      * @return {function} unsubscribe function.
      */
     function onSelectedFilesNamesUpdated(callback) {
-        return EventEmitterService.subscribeParallel('selectedFilesNamesUpdated', (selectedFilenames) => callback(selectedFilenames));
+        return EventEmitterService.subscribeSync('selectedFilesNamesUpdated', (selectedFilenames) => callback(selectedFilenames));
     }
 
     /**
@@ -95,7 +95,7 @@ function ImportContextService(EventEmitterService) {
      */
     function updateShowLoader(showLoader) {
         _showLoader = showLoader;
-        EventEmitterService.emitParallel('showLoaderUpdated', getShowLoader());
+        EventEmitterService.emitSync('showLoaderUpdated', getShowLoader());
     }
 
     function getShowLoader() {
@@ -109,7 +109,7 @@ function ImportContextService(EventEmitterService) {
      * @return {function} unsubscribe function.
      */
     function onShowLoaderUpdated(callback) {
-        return EventEmitterService.subscribeParallel('showLoaderUpdated', (showLoader) => callback(showLoader));
+        return EventEmitterService.subscribeSync('showLoaderUpdated', (showLoader) => callback(showLoader));
     }
 
     /**
@@ -118,7 +118,7 @@ function ImportContextService(EventEmitterService) {
      */
     function updateActiveTabId(activeTabId) {
         _activeTabId = activeTabId;
-        EventEmitterService.emitParallel('activeTabIdUpdated', getActiveTabId());
+        EventEmitterService.emitSync('activeTabIdUpdated', getActiveTabId());
     }
 
     function getActiveTabId() {
@@ -132,7 +132,7 @@ function ImportContextService(EventEmitterService) {
      * @return {function} unsubscribe function.
      */
     function onActiveTabIdUpdated(callback) {
-        return EventEmitterService.subscribeParallel('activeTabIdUpdated', (activeTabId) => callback(activeTabId));
+        return EventEmitterService.subscribeSync('activeTabIdUpdated', (activeTabId) => callback(activeTabId));
     }
 
     /**
@@ -143,7 +143,7 @@ function ImportContextService(EventEmitterService) {
      */
     function updateFiles(files) {
         _files = cloneDeep(files);
-        EventEmitterService.emitParallel('filesUpdated', getFiles());
+        EventEmitterService.emitSync('filesUpdated', getFiles());
     }
 
     /**
@@ -153,7 +153,7 @@ function ImportContextService(EventEmitterService) {
      * @return {function} unsubscribe function.
      */
     function onFilesUpdated(callback) {
-        return EventEmitterService.subscribeParallel('filesUpdated', (files) => callback(files));
+        return EventEmitterService.subscribeSync('filesUpdated', (files) => callback(files));
     }
 
     /**
@@ -166,7 +166,7 @@ function ImportContextService(EventEmitterService) {
         const files = getFiles();
         files.push(file);
         updateFiles(files);
-        EventEmitterService.emitParallel('fileAdded', cloneDeep(file));
+        EventEmitterService.emitSync('fileAdded', cloneDeep(file));
     }
 
     /**
@@ -185,8 +185,8 @@ function ImportContextService(EventEmitterService) {
      */
     function updateImportedResources(importResources) {
         _importedResources = importResources;
-        EventEmitterService.emitParallel('importedResourcesUpdated', getImportedResources());
-        EventEmitterService.emitParallel('resourcesUpdated', getResources());
+        EventEmitterService.emitSync('importedResourcesUpdated', getImportedResources());
+        EventEmitterService.emitSync('resourcesUpdated', getResources());
     }
 
     /**
@@ -204,7 +204,7 @@ function ImportContextService(EventEmitterService) {
      * @return {function} the unsubscribe function.
      */
     function onImportedResourcesUpdated(callback) {
-        return EventEmitterService.subscribeParallel('importedResourcesUpdated', (importedResources) => callback(importedResources));
+        return EventEmitterService.subscribeSync('importedResourcesUpdated', (importedResources) => callback(importedResources));
     }
 
     /**
@@ -260,7 +260,7 @@ function ImportContextService(EventEmitterService) {
      * @return {function} the unsubscribe function.
      */
     function onResourcesUpdated(callback) {
-        return EventEmitterService.subscribeParallel('resourcesUpdated', (resources) => callback(resources));
+        return EventEmitterService.subscribeSync('resourcesUpdated', (resources) => callback(resources));
     }
 
     /**
@@ -283,9 +283,9 @@ function ImportContextService(EventEmitterService) {
 
     function updateResourcesForUpload(uploadedResources, notifyResourceChanged = true) {
         _resourcesForUpload = cloneDeep(uploadedResources);
-        EventEmitterService.emitParallel('resourcesForUploadChanged', getResourcesForUpload());
+        EventEmitterService.emitSync('resourcesForUploadChanged', getResourcesForUpload());
         if (notifyResourceChanged) {
-            EventEmitterService.emitParallel('resourcesUpdated', getResources());
+            EventEmitterService.emitSync('resourcesUpdated', getResources());
         }
     }
 
@@ -300,6 +300,6 @@ function ImportContextService(EventEmitterService) {
      * @return {function} unsubscribe function.
      */
     function onResourcesForUploadChanged(callback) {
-        return EventEmitterService.subscribeParallel('resourcesForUploadChanged', (uploadFiles) => callback(uploadFiles));
+        return EventEmitterService.subscribeSync('resourcesForUploadChanged', (uploadFiles) => callback(uploadFiles));
     }
 }

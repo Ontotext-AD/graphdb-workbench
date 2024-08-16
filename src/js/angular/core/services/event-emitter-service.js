@@ -9,7 +9,7 @@ angular
  */
 function EventEmitterService() {
     const subscribers = {};
-    const parallelSubscribers = {};
+    const syncSubscribers = {};
 
     /**
      * Registers the <code>subscriber</code> for an event with the name <code>eventName</code>.
@@ -69,7 +69,7 @@ function EventEmitterService() {
 
     /**
      * Subscribes a callback function to a specified event, allowing it to be called whenever the event is emitted.
-     * This function manages the parallel execution of event subscribers, storing the callback in an array
+     * This function manages the all execution of event subscribers, storing the callback in an array
      * corresponding to the event name. It also provides an unsubscribe function to remove the callback when
      * it's no longer needed.
      *
@@ -80,34 +80,34 @@ function EventEmitterService() {
      * @return {Function} - An unsubscribe function that can be called to remove the callback
      *                       from the list of subscribers for this event.
      */
-    const subscribeParallel = (eventName, callback) => {
+    const subscribeSync = (eventName, callback) => {
         // Initialize the subscriber array for the event if it doesn't exist
-        if (!parallelSubscribers[eventName]) {
-            parallelSubscribers[eventName] = [];
+        if (!syncSubscribers[eventName]) {
+            syncSubscribers[eventName] = [];
         }
 
         // Add the callback function to the list of subscribers for the event
-        parallelSubscribers[eventName].push(callback);
+        syncSubscribers[eventName].push(callback);
 
         // Return an unsubscribe function
         return function () {
-            const index = parallelSubscribers[eventName].indexOf(callback);
+            const index = syncSubscribers[eventName].indexOf(callback);
             if (index !== -1) {
-                parallelSubscribers[eventName].splice(index, 1);
+                syncSubscribers[eventName].splice(index, 1);
             }
         };
     };
 
     /**
-     * Emits an event by calling all subscribers associated with the event name in parallel.
+     * Emits an event by calling all subscribers associated with the event name in sequence.
      * Each subscriber is expected to process the eventData and then invoke its own callback
      * function (if provided) with the eventData independently.
      *
      * @param {String} eventName - The name of the event to emit.
      * @param {Object} eventData - The data to pass to each subscriber.
      */
-    const emitParallel = (eventName, eventData) => {
-        const eventSubscribers = parallelSubscribers[eventName] || [];
+    const emitSync = (eventName, eventData) => {
+        const eventSubscribers = syncSubscribers[eventName] || [];
         // Execute all subscribers in parallel
         eventSubscribers.forEach((callback) => {
             if (angular.isFunction(callback)) {
@@ -121,7 +121,7 @@ function EventEmitterService() {
     return {
         subscribe,
         emit,
-        subscribeParallel,
-        emitParallel
+        subscribeSync,
+        emitSync
     };
 }
