@@ -147,7 +147,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                     $uibModal.open(options).result.then(
                         // confirmed handler
                         (data) => {
-                            if ($scope.currentFiles && (data.action === SettingsModalActions.UPLOAD_ONLY || data.action === SettingsModalActions.UPLOAD_AND_IMPORT)) {
+                            if ($scope.currentFiles && (data.action === SettingsModalActions.UPLOAD_AND_IMPORT)) {
                                 const uploadingImportResource = filesToImportResource($scope.currentFiles, ImportResourceStatus.UPLOADING);
                                 ImportContextService.updateResourcesForUpload(uploadingImportResource);
                             }
@@ -168,6 +168,10 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                                 if (operation === Operation.UPLOAD) {
                                     $scope.files = [];
                                 }
+                            }
+                            if ($scope.currentFiles && (data.action === SettingsModalActions.UPLOAD_ONLY)) {
+                                const uploadingImportResource = filesToImportResource($scope.currentFiles, ImportResourceStatus.UPLOADING);
+                                ImportContextService.updateResourcesForUpload(uploadingImportResource);
                             }
                             if (onImportRejectHandler) {
                                 onImportRejectHandler();
