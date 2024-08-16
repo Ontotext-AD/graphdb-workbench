@@ -816,7 +816,6 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
 
                 const uploadingResource = ImportContextService.getResourceForUpload(file.name);
                 if (uploadingResource) {
-                    // TODO check if this is needed
                     uploadingResource.status = progress >= 100 ? ImportRestService.UPLOADED : ImportResourceStatus.UPLOADING;
                     uploadingResource.message = uploadProgressMessage;
                     ImportContextService.updateResourceForUpload(uploadingResource);
@@ -831,8 +830,14 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                 $scope.updateList();
             })
             .error((error) => {
-                const errorMessage = getError(error);
-                toastr.error($translate.instant('import.could.not.upload.file', {data: errorMessage}));
+                let errorMessage = '';
+                if (error) {
+                    errorMessage = $translate.instant('import.could.not.upload.file', {data: errorMessage});
+                } else {
+                    errorMessage = $translate.instant('import.upload.file.failure');
+                }
+                toastr.error(errorMessage);
+
                 file.status = ImportResourceStatus.ERROR;
                 file.message = errorMessage;
                 const uploadingResource = ImportContextService.getResourceForUpload(file.name);
@@ -872,7 +877,6 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         });
 
         modalInstance.result.then((data) => {
-            isFileListInitialized = true;
             if (data.overwrite) {
                 // on first upload, currentFiles would be empty
                 if (!$scope.currentFiles.length) {
@@ -887,6 +891,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                 const prefixedDuplicates = filesPrefixRegistry.prefixDuplicates(duplicatedFiles);
                 $scope.currentFiles = [...$scope.currentFiles, ...prefixedDuplicates, ...uniqueFiles];
             }
+            isFileListInitialized = true;
             uploadedFilesValidatorAndProcess();
         });
     };

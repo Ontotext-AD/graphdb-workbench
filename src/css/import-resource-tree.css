@@ -154,7 +154,8 @@
     flex-wrap: wrap;
 }
 .import-resource-tree .import-resource-table .cell .import-resource-message .success-messages .success-message .import-counters .import-counter,
-.import-resource-tree .import-resource-table .cell .import-resource-message .success-messages .success-message .text-success {
+.import-resource-tree .import-resource-table .cell .import-resource-message .success-messages .success-message .text-success,
+.import-resource-tree .import-resource-table .cell .import-resource-message .error-message .message {
     padding-left: 10px;
 }
 

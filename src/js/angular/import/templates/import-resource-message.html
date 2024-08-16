@@ -38,7 +38,7 @@
                 ng-click="showMessage(resource)">
             <small>{{resource.shortenedMessage}}</small>
         </button>
-        <small ng-if="!resource.shortenedMessage">{{resource.importResource.message || ''}}</small>
+        <small class="message" ng-if="!resource.shortenedMessage">{{resource.importResource.message || ''}}</small>
     </span>
     <span class="text-secondary import-status-loader"
           ng-if="resource.importResource.status === ImportResourceStatus.IMPORTING || resource.importResource.status === ImportResourceStatus.PENDING || resource.importResource.status === ImportResourceStatus.INTERRUPTING">

@@ -1008,6 +1008,7 @@
         "could.not.send.data": "Could not send data for import; {{data}}",
         "could.not.send.url": "Could not send url for import; {{data}}",
         "could.not.upload.file": "Could not upload file; {{data}}",
+        "upload.file.failure": "File upload failed.",
         "could.not.update.text": "Could not update text import; {{data}}",
         "text.snippet.not.imported": "Text snippet was edited but has not been imported again.",
         "graph.already.in.list": "This graph is already in the list.",
