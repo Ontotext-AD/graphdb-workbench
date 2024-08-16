@@ -29,7 +29,7 @@ export const filesToImportResource = (files, initialStatus) => {
             name: file.name,
             size: file.size,
             type: 'file',
-            modifiedOn: file.lastModified,
+            modifiedOn: undefined,
             file: file,
             status: initialStatus
         }, hashGenerator);
