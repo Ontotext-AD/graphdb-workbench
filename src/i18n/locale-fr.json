@@ -224,6 +224,7 @@
             }
         },
         "chat": {
+            "loading_chats": "Chargement des chats...",
             "btn": {
                 "open_sidebar": {
                     "tooltip": "Ouvrir la barre latérale"
@@ -235,7 +236,16 @@
                     "tooltip": "Créer un chat"
                 },
                 "export_chat": {
+                    "label": "Exporter",
                     "tooltip": "Exporter le chat"
+                },
+                "delete_chat": {
+                    "label": "Supprimer le chat",
+                    "tooltip": "Supprimer le chat"
+                },
+                "rename_chat": {
+                    "label": "Renommer",
+                    "tooltip": "Renommer le chat"
                 }
             }
         },
@@ -1433,6 +1443,12 @@
     "no.connected.gdb.instances": "Il n'y a pas d'instances GraphDB connectées.",
     "edit.file.content": "Modifier le contenu du fichier",
     "upload.file": "Téléverser un fichier...",
+    "common": {
+        "dates": {
+            "today": "Aujourd'hui",
+            "yesterday": "Hier"
+        }
+    },
     "common.confirm.delete": "Confirmation de la suppression",
     "common.confirm.save": "Confirmer enregistrer",
     "common.cancel.btn": "Annuler",
