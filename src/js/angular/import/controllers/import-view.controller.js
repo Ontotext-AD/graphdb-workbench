@@ -650,6 +650,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                 } else {
                     $scope.currentFiles = [...newFiles];
                     isFileListInitialized = true;
+                    uploadedFilesValidatorAndProcess();
                 }
             }
         });
@@ -808,7 +809,6 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         const uploader = startImport ? UploadRestService.uploadUserDataFile : UploadRestService.updateUserDataFile;
         uploader($repositories.getActiveRepository(), file, data)
             .progress((evt) => {
-                console.log("Uploader progress...... ", file.name);
                 const progress = parseInt(100.0 * evt.loaded / evt.total) || 0;
                 const uploadProgressMessage = $translate.instant(
                     'import.file.upload.progress',
@@ -823,7 +823,6 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                 }
             })
             .success((resp) => {
-                console.log("Uploader success...... ", file.name);
                 const uploadingResource = ImportContextService.getResourceForUpload(file.name);
                 if (uploadingResource) {
                     uploadingResource.status = ImportResourceStatus.UPLOADED;
@@ -832,7 +831,6 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                 $scope.updateList();
             })
             .error((error) => {
-                console.log("Uploader error ...... ", file.name);
                 const errorMessage = getError(error);
                 toastr.error($translate.instant('import.could.not.upload.file', {data: errorMessage}));
                 file.status = ImportResourceStatus.ERROR;
@@ -844,7 +842,10 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                     ImportContextService.updateResourceForUpload(uploadingResource);
             }
             })
-            .finally(nextCallback);
+            .finally(() => {
+                $scope.currentFiles = $scope.currentFiles.filter(({name: selectedFileName}) => selectedFileName !== file.name);
+                nextCallback();
+            });
     };
 
     const removeBZip2Files = (files) => {
@@ -871,6 +872,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         });
 
         modalInstance.result.then((data) => {
+            isFileListInitialized = true;
             if (data.overwrite) {
                 // on first upload, currentFiles would be empty
                 if (!$scope.currentFiles.length) {
@@ -880,17 +882,16 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                     // newer versions if file names are equal
                     $scope.currentFiles = [...duplicatedFiles, ...uniqueFiles];
                 }
-                isFileListInitialized = true;
             } else {
                 // override rejected
                 const prefixedDuplicates = filesPrefixRegistry.prefixDuplicates(duplicatedFiles);
                 $scope.currentFiles = [...$scope.currentFiles, ...prefixedDuplicates, ...uniqueFiles];
-                isFileListInitialized = true;
             }
+            uploadedFilesValidatorAndProcess();
         });
     };
 
-    const uploadedFilesValidator = () => {
+    const uploadedFilesValidatorAndProcess = () => {
         $scope.files = _.uniqBy(
             _.union(
                 _.map($scope.currentFiles, function (file) {
@@ -941,7 +942,6 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     // Watchers and event handlers
     // =========================
 
-    subscriptions.push($scope.$watchCollection('currentFiles', uploadedFilesValidator));
 
     $scope.$on('$destroy', removeAllListeners);
 
