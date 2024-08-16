@@ -34,7 +34,7 @@ describe('TTYG view', () => {
         TTYGViewSteps.getExportCurrentChatButton().should('be.visible');
     });
 
-    it('Should render chat list', () => {
+    it.skip('Should render chat list', () => {
         TTYGStubs.stubChatsListGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();

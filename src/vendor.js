@@ -1,7 +1,7 @@
 import 'lib/bootstrap/bootstrap.min.css';
 import 'angular-toastr/dist/angular-toastr.min.css';
 // TODO: remove this if no issues are found
-// import 'font-awesome/css/font-awesome.min.css';
+import 'font-awesome/css/font-awesome.min.css';
 import '@awesome.me/kit-94ffd2fc4a/icons/css/fontawesome.min.css';
 import '@awesome.me/kit-94ffd2fc4a/icons/css/light.min.css';
 import './css/lib/animate/animate.css';
