@@ -197,7 +197,7 @@
                             gdb-tooltip="{{'import.reset.status' | translate}}">
                         <span class="icon-close"></span>
                     </button>
-                    <button ng-if="canRemoveResource"
+                    <button ng-if="canRemoveResource && resource.importResource.status !== ImportResourceStatus.UPLOADING && resource.importResource.status !== ImportResourceStatus.UPLOADED && resource.importResource.status !== ImportResourceStatus.UPLOAD_ERROR"
                             class="btn btn-link btn-sm secondary import-resource-action-remove-btn"
                             ng-disabled="hasSelection"
                             ng-click="removeResource(resource)"

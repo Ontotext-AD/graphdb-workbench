@@ -816,15 +816,47 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                     {progress: progress});
 
                 const uploadingResource = ImportContextService.getResourceForUpload(file.name);
-                if (uploadingResource) {
+                /**
+                 * Skips the update of files that encountered an error during upload.
+                 *
+                 * <p>This is necessary because the upload library may exhibit different behavior
+                 * when there are connection issues. In some cases, the error callback is invoked
+                 * for a file, but once the connection is reestablished, the progress callback may
+                 * be called again. This can cause a mismatch between the file's status and its
+                 * corresponding message.</p>
+                 *
+                 * <p>To avoid this mismatch, we check if the resource is marked as failed
+                 * (i.e., has a status of {@code ImportResourceStatus.UPLOAD_ERROR}) before
+                 * proceeding with the update.</p>
+                 */
+                if (uploadingResource && uploadingResource.status !== ImportResourceStatus.UPLOAD_ERROR) {
+                    if (progress >= 100) {
+                        uploadingResource.status = ImportResourceStatus.UPLOADED;
+                    } else {
+                        uploadingResource.status = ImportResourceStatus.UPLOADING;
+                    }
                     uploadingResource.message = uploadProgressMessage;
                     ImportContextService.updateResourceForUpload(uploadingResource);
                 }
             })
             .success((resp) => {
                 const uploadingResource = ImportContextService.getResourceForUpload(file.name);
-                if (uploadingResource) {
+                /**
+                 * Skips the update of files that encountered an error during upload.
+                 *
+                 * <p>This is necessary because the upload library may exhibit different behavior
+                 * when there are connection issues. In some cases, the error callback is invoked
+                 * for a file, but once the connection is reestablished, the progress callback may
+                 * be called again. This can cause a mismatch between the file's status and its
+                 * corresponding message.</p>
+                 *
+                 * <p>To avoid this mismatch, we check if the resource is marked as failed
+                 * (i.e., has a status of {@code ImportResourceStatus.UPLOAD_ERROR}) before
+                 * proceeding with the update.</p>
+                 */
+                if (uploadingResource && uploadingResource.status !== ImportResourceStatus.UPLOAD_ERROR) {
                     uploadingResource.status = ImportResourceStatus.UPLOADED;
+                    uploadingResource.message = undefined;
                     ImportContextService.updateResourceForUpload(uploadingResource);
                 }
                 $scope.updateList();
@@ -841,7 +873,21 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                 file.status = ImportResourceStatus.ERROR;
                 file.message = errorMessage;
                 const uploadingResource = ImportContextService.getResourceForUpload(file.name);
-                if (uploadingResource) {
+                /**
+                 * Skips the update of files that encountered an error during upload.
+                 *
+                 * <p>This is necessary because the upload library may exhibit different behavior
+                 * when there are connection issues. In some cases, the error callback is invoked
+                 * for a file, but once the connection is reestablished, the progress callback may
+                 * be called again. This can cause a mismatch between the file's status and its
+                 * corresponding message.</p>
+                 *
+                 * <p>To avoid this mismatch, we check if the resource is marked as failed
+                 * (i.e., has a status of {@code ImportResourceStatus.UPLOAD_ERROR}) before
+                 * proceeding with the update.</p>
+                 */
+                // Prevents updating resource if it already uploaded.
+                if (uploadingResource && uploadingResource.status !== ImportResourceStatus.UPLOADED) {
                     uploadingResource.status = ImportResourceStatus.UPLOAD_ERROR;
                     uploadingResource.message = errorMessage;
                     ImportContextService.updateResourceForUpload(uploadingResource);
