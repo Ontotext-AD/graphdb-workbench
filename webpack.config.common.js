@@ -142,6 +142,10 @@ module.exports = {
                 to: 'js/angular/import/templates'
             },
             {
+                from: 'src/js/angular/aclmanagement/templates',
+                to: 'js/angular/aclmanagement/templates'
+            },
+            {
                 from: 'src/js/angular/rdfrank/templates',
                 to: 'js/angular/rdfrank/templates'
             },

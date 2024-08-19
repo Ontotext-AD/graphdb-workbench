@@ -214,5 +214,31 @@ describe('ACL Management: create rule', () => {
         // Then I expect an error notification to be displayed that tells me this ROLE length is not allowed
         AclManagementSteps.getFieldError().contains('Too short');
     });
+
+    it('should show message if role prefix is CUSTOM_', () => {
+        // When I am on "ACL Management" page and create a new rule with a CUSTOM_ prefix
+        AclManagementSteps.addRuleInBeginning();
+        AclManagementSteps.selectPolicy(0, 'allow');
+        AclManagementSteps.fillRole(0, 'CUSTOM_ROLE_FOO');
+        AclManagementSteps.saveRule(0);
+
+        // Then I expect the prefix keep/remove dialog to appear
+        AclManagementSteps.getPrefixDialog().should('be.visible');
+        // When I choose to remove the prefix
+        AclManagementSteps.removePrefix();
+        // Then I expect the role to be without the prefix
+        AclManagementSteps.getSavedRoleField(0).should('not.contain.text', 'CUSTOM_ROLE_FOO');
+
+        // When I create another rule with a CUSTOM_ prefix
+        AclManagementSteps.addRuleInBeginning();
+        AclManagementSteps.selectPolicy(0, 'allow');
+        AclManagementSteps.fillRole(0, 'CUSTOM_ROLE');
+        AclManagementSteps.saveRule(0);
+
+        // And I choose to keep the prefix
+        AclManagementSteps.keepPrefix();
+        // Then I expect the role to be with the prefix
+        AclManagementSteps.getSavedRoleField(0).should('contain.text', 'CUSTOM_ROLE');
+    });
 });
 

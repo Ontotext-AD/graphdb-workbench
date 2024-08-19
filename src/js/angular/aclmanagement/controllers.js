@@ -1,5 +1,6 @@
 import 'angular/rest/plugins.rest.service';
 import 'angular/rest/aclmanagement.rest.service';
+import 'angular/aclmanagement/controllers/prefix-role-options.controller';
 import {mapAclRulesResponse} from "../rest/mappers/aclmanagement-mapper";
 import {isEqual} from 'lodash';
 import {mapNamespacesResponse} from "../rest/mappers/namespaces-mapper";
@@ -7,16 +8,17 @@ import {ACL_SCOPE, DEFAULT_CONTEXT_VALUES, DEFAULT_URI_VALUES, DEFAULT_CLEAR_GRA
 
 const modules = [
     'graphdb.framework.rest.plugins.service',
-    'graphdb.framework.rest.aclmanagement.service'
+    'graphdb.framework.rest.aclmanagement.service',
+    'graphdb.framework.aclmanagement.controllers.prefix-role-options.controller'
 ];
 
 angular
     .module('graphdb.framework.aclmanagement.controllers', modules)
     .controller('AclManagementCtrl', AclManagementCtrl);
 
-AclManagementCtrl.$inject = ['$scope', '$location', 'toastr', 'AclManagementRestService', '$repositories', '$translate', 'ModalService', 'RDF4JRepositoriesRestService', 'AutocompleteRestService'];
+AclManagementCtrl.$inject = ['$scope', '$location', 'toastr', 'AclManagementRestService', '$repositories', '$translate', 'ModalService', 'RDF4JRepositoriesRestService', 'AutocompleteRestService', '$uibModal'];
 
-function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, $repositories, $translate, ModalService, RDF4JRepositoriesRestService, AutocompleteRestService) {
+function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, $repositories, $translate, ModalService, RDF4JRepositoriesRestService, AutocompleteRestService, $uibModal) {
 
     $scope.contextValue = undefined;
 
@@ -193,6 +195,9 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
      * @param {string} scope
      */
     $scope.saveRule = (scope) => {
+        if ($scope.rulesModel.aclRules.get($scope.editedRuleScope)[$scope.editedRuleIndex].role.startsWith('CUSTOM_CUSTOM_')) {
+            notifyCustomPrefixUsed($scope.rulesModel.aclRules.get($scope.editedRuleScope)[$scope.editedRuleIndex].role, $scope.editedRuleScope, $scope.editedRuleIndex);
+        }
         if ($scope.rulesModel.isRuleDuplicated($scope.editedRuleScope, $scope.editedRuleIndex)) {
             notifyDuplication();
             return;
@@ -414,6 +419,20 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
 
     const notifyDuplication = () => {
         toastr.error($translate.instant('acl_management.errors.duplicated_rules'));
+    };
+
+    const notifyCustomPrefixUsed = (roleName, editedRuleScope, editedRuleIndex) => {
+        const modalInstance = $uibModal.open({
+            templateUrl: 'js/angular/aclmanagement/templates/prefix-role-options.html',
+            controller: 'PrefixRoleOptionsCtrl',
+            windowClass: 'remove-role-prefix-dialog'
+        });
+
+        modalInstance.result.then((data) => {
+            if (!data.keep) {
+                $scope.rulesModel.aclRules.get(editedRuleScope)[editedRuleIndex].role = roleName.replace('CUSTOM_', '');
+            }
+        });
     };
 
     const loadNamespaces = () => {

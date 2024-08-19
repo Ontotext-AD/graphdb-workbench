@@ -157,12 +157,28 @@ export class AclManagementSteps {
         return this.getRule(index).find('.role-cell textarea');
     }
 
+    static getSavedRoleField(index) {
+        return this.getRule(index).find('.role-cell');
+    }
+
     static fillRole(index, value) {
         this.getRoleField(index).clear().type(value);
     }
 
     static getFieldError() {
         return cy.get('div.small');
+    }
+
+    static getPrefixDialog() {
+        return cy.get('.remove-role-prefix-dialog');
+    }
+
+    static keepPrefix() {
+        this.getPrefixDialog().find('.keep-prefix-btn').click();
+    }
+
+    static removePrefix() {
+        this.getPrefixDialog().find('.remove-prefix-btn').click();
     }
 
     static getPluginField(index) {
