@@ -234,20 +234,20 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             };
 
             const compareBySize = (acs) => (r1, r2) => {
-                const r1Size = r1.importResource.size | 0;
-                const r2Size = r2.importResource.size | 0;
+                const r1Size = r1.importResource.size || 0;
+                const r2Size = r2.importResource.size || 0;
                 return acs ? r1Size - r2Size : r2Size - r1Size;
             };
 
             const compareByModified = (acs) => (r1, r2) => {
-                const r1ModifiedOn = r1.importResource.modifiedOn | 0;
-                const r2ModifiedOn = r2.importResource.modifiedOn | 0;
+                const r1ModifiedOn = r1.importResource.modifiedOn || Number.MAX_VALUE;
+                const r2ModifiedOn = r2.importResource.modifiedOn || Number.MAX_VALUE;
                 return acs ? r1ModifiedOn - r2ModifiedOn : r2ModifiedOn - r1ModifiedOn;
             };
 
             const compareByImportedOn = (acs) => (r1, r2) => {
-                const r1ImportedOn = r1.importResource.importedOn | 0;
-                const r2ImportedOn = r2.importResource.importedOn | 0;
+                const r1ImportedOn = r1.importResource.importedOn || Number.MAX_VALUE;
+                const r2ImportedOn = r2.importResource.importedOn || Number.MAX_VALUE;
                 return acs ? r1ImportedOn - r2ImportedOn : r2ImportedOn - r1ImportedOn;
             };
 

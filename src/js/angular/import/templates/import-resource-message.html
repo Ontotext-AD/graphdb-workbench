@@ -31,18 +31,23 @@
             </span>
         </div>
     </div>
-    <span ng-if="resource.importResource.status === ImportResourceStatus.ERROR" class="text-danger error-message">
+    <span ng-if="resource.importResource.status === ImportResourceStatus.ERROR || resource.importResource.status === ImportResourceStatus.UPLOAD_ERROR" class="text-danger error-message">
         <em class="icon-warning"></em>
         <button ng-if="resource.shortenedMessage"
                 class="btn btn-link"
                 ng-click="showMessage(resource)">
             <small>{{resource.shortenedMessage}}</small>
         </button>
-        <small ng-if="!resource.shortenedMessage">{{resource.importResource.message || ''}}</small>
+        <small class="message" ng-if="!resource.shortenedMessage">{{resource.importResource.message || ''}}</small>
     </span>
     <span class="text-secondary import-status-loader"
-          ng-if="resource.importResource.status === ImportResourceStatus.IMPORTING || resource.importResource.status === ImportResourceStatus.UPLOADING || resource.importResource.status === ImportResourceStatus.PENDING || resource.importResource.status === ImportResourceStatus.INTERRUPTING">
+          ng-if="resource.importResource.status === ImportResourceStatus.IMPORTING || resource.importResource.status === ImportResourceStatus.PENDING || resource.importResource.status === ImportResourceStatus.INTERRUPTING">
         <em class="icon-reload loader"></em>
         <small>{{toTitleCase(resource.importResource.status)}}...</small>
+    </span>
+    <span class="text-secondary import-status-loader"
+          ng-if="resource.importResource.status === ImportResourceStatus.UPLOADING || resource.importResource.status === ImportResourceStatus.UPLOADED">
+        <em class="icon-reload loader"></em>
+        <small>{{resource.importResource.message ? resource.importResource.message : (toTitleCase(resource.importResource.status) + '...')}}</small>
     </span>
 </div>

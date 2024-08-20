@@ -27,12 +27,12 @@ function TabController($scope, $location, ImportContextService) {
 
     const updateHelpVisibility = () => {
         if (helpVisibility.isPristine($scope.activeTabId)) {
-            let resources = ImportContextService.getResources();
+            const resources = ImportContextService.getResources();
             $scope.isHelpVisible = !resources || resources.length === 0;
         } else {
             $scope.isHelpVisible = helpVisibility.isHelpVisible($scope.activeTabId);
         }
-    }
+    };
 
     $scope.openTab = (tab) => {
         ImportContextService.updateActiveTabId(tab);

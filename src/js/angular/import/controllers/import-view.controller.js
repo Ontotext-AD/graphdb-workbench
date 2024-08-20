@@ -12,7 +12,7 @@ import {FileFormats} from "../../models/import/file-formats";
 import * as stringUtils from "../../utils/string-utils";
 import {FileUtils} from "../../utils/file-utils";
 import {DateUtils} from "../../utils/date-utils";
-import {toImportResource} from "../../rest/mappers/import-mapper";
+import {filesToImportResource, toImportResource} from "../../rest/mappers/import-mapper";
 import {decodeHTML} from "../../../../app";
 import {FilePrefixRegistry} from "../services/file-prefix-registry";
 import {SortingType} from "../../models/import/sorting-type";
@@ -145,7 +145,13 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                     }
 
                     $uibModal.open(options).result.then(
+                        // confirmed handler
                         (data) => {
+                            if ($scope.currentFiles && (data.action === SettingsModalActions.UPLOAD_AND_IMPORT)) {
+                                const uploadingImportResource = filesToImportResource($scope.currentFiles, ImportResourceStatus.UPLOADING);
+                                ImportContextService.updateResourcesForUpload(uploadingImportResource);
+                            }
+
                             $scope.settings = data.settings;
                             if ($scope.settingsFor === '') {
                                 $scope.importSelected();
@@ -153,6 +159,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                                 $scope.importFile($scope.settingsFor, true);
                             }
                         },
+                        // rejected handler
                         (data) => {
                             $scope.settings = data.settings;
                             if (data.action === SettingsModalActions.CANCEL) {
@@ -161,6 +168,10 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                                 if (operation === Operation.UPLOAD) {
                                     $scope.files = [];
                                 }
+                            }
+                            if ($scope.currentFiles && (data.action === SettingsModalActions.UPLOAD_ONLY)) {
+                                const uploadingImportResource = filesToImportResource($scope.currentFiles, ImportResourceStatus.UPLOADING);
+                                ImportContextService.updateResourcesForUpload(uploadingImportResource);
                             }
                             if (onImportRejectHandler) {
                                 onImportRejectHandler();
@@ -401,11 +412,8 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                 if (executedInTabId !== ImportContextService.getActiveTabId()) {
                     return;
                 }
-                if (TABS.SERVER === $scope.activeTabId) {
-                    ImportContextService.updateResources(toImportResource(data));
-                } else if (TABS.USER === $scope.activeTabId) {
-                    ImportContextService.updateResources(toImportResource(data));
-                }
+
+                ImportContextService.updateImportedResources(toImportResource(data));
 
                 // reload all files
                 if ($scope.files.length === 0 || force) {
@@ -477,7 +485,8 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
 
         const onActiveTabChanged = (activeTabId) => {
             $scope.activeTabId = activeTabId;
-            ImportContextService.updateResources([]);
+            ImportContextService.updateImportedResources([]);
+            ImportContextService.updateResourcesForUpload([]);
             ImportContextService.updateShowLoader(true);
             $scope.updateListHttp(true).finally(() => ImportContextService.updateShowLoader(false));
         };
@@ -642,6 +651,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                 } else {
                     $scope.currentFiles = [...newFiles];
                     isFileListInitialized = true;
+                    uploadedFilesValidatorAndProcess();
                 }
             }
         });
@@ -711,7 +721,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     };
 
     /**
-     * Opens a modal dialog where the user can paste a url and import the data from it.
+     * Opens a modal dialog where the user can paste an url and import the data from it.
      */
     $scope.rdfDataFromURL = () => {
         const modalInstance = $uibModal.open({
@@ -798,25 +808,95 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
         $scope.settings.name = file.name;
         const data = UploadRestService.createUploadPayload(file, $scope.settings);
         const uploader = startImport ? UploadRestService.uploadUserDataFile : UploadRestService.updateUserDataFile;
-        uploader($repositories.getActiveRepository(), file, data).then(
-            (resp) => {
-                $scope.progressPercentage = null;
-                $scope.uploadProgressMessage = '';
+        uploader($repositories.getActiveRepository(), file, data)
+            .progress((evt) => {
+                const progress = parseInt(100.0 * evt.loaded / evt.total) || 0;
+                const uploadProgressMessage = $translate.instant(
+                    'import.file.upload.progress',
+                    {progress: progress});
+
+                const uploadingResource = ImportContextService.getResourceForUpload(file.name);
+                /**
+                 * Skips the update of files that encountered an error during upload.
+                 *
+                 * <p>This is necessary because the upload library may exhibit different behavior
+                 * when there are connection issues. In some cases, the error callback is invoked
+                 * for a file, but once the connection is reestablished, the progress callback may
+                 * be called again. This can cause a mismatch between the file's status and its
+                 * corresponding message.</p>
+                 *
+                 * <p>To avoid this mismatch, we check if the resource is marked as failed
+                 * (i.e., has a status of {@code ImportResourceStatus.UPLOAD_ERROR}) before
+                 * proceeding with the update.</p>
+                 */
+                if (uploadingResource && uploadingResource.status !== ImportResourceStatus.UPLOAD_ERROR) {
+                    if (progress >= 100) {
+                        uploadingResource.status = ImportResourceStatus.UPLOADED;
+                    } else {
+                        uploadingResource.status = ImportResourceStatus.UPLOADING;
+                    }
+                    uploadingResource.message = uploadProgressMessage;
+                    ImportContextService.updateResourceForUpload(uploadingResource);
+                }
+            })
+            .success((resp) => {
+                const uploadingResource = ImportContextService.getResourceForUpload(file.name);
+                /**
+                 * Skips the update of files that encountered an error during upload.
+                 *
+                 * <p>This is necessary because the upload library may exhibit different behavior
+                 * when there are connection issues. In some cases, the error callback is invoked
+                 * for a file, but once the connection is reestablished, the progress callback may
+                 * be called again. This can cause a mismatch between the file's status and its
+                 * corresponding message.</p>
+                 *
+                 * <p>To avoid this mismatch, we check if the resource is marked as failed
+                 * (i.e., has a status of {@code ImportResourceStatus.UPLOAD_ERROR}) before
+                 * proceeding with the update.</p>
+                 */
+                if (uploadingResource && uploadingResource.status !== ImportResourceStatus.UPLOAD_ERROR) {
+                    uploadingResource.status = ImportResourceStatus.UPLOADED;
+                    uploadingResource.message = undefined;
+                    ImportContextService.updateResourceForUpload(uploadingResource);
+                }
                 $scope.updateList();
-            },
-            (error) => {
-                toastr.error($translate.instant('import.could.not.upload.file', {data: getError(error.data)}));
+            })
+            .error((error) => {
+                let errorMessage = '';
+                if (error) {
+                    errorMessage = $translate.instant('import.could.not.upload.file', {data: errorMessage});
+                } else {
+                    errorMessage = $translate.instant('import.upload.file.failure');
+                }
+                toastr.error(errorMessage);
+
                 file.status = ImportResourceStatus.ERROR;
-                file.message = getError(error.data);
-            },
-            (evt) => {
-                $scope.progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                $scope.uploadProgressMessage = $translate.instant('import.file.upload.progress', {progress: $scope.progressPercentage});
+                file.message = errorMessage;
+                const uploadingResource = ImportContextService.getResourceForUpload(file.name);
+                /**
+                 * Skips the update of files that encountered an error during upload.
+                 *
+                 * <p>This is necessary because the upload library may exhibit different behavior
+                 * when there are connection issues. In some cases, the error callback is invoked
+                 * for a file, but once the connection is reestablished, the progress callback may
+                 * be called again. This can cause a mismatch between the file's status and its
+                 * corresponding message.</p>
+                 *
+                 * <p>To avoid this mismatch, we check if the resource is marked as failed
+                 * (i.e., has a status of {@code ImportResourceStatus.UPLOAD_ERROR}) before
+                 * proceeding with the update.</p>
+                 */
+                // Prevents updating resource if it already uploaded.
+                if (uploadingResource && uploadingResource.status !== ImportResourceStatus.UPLOADED) {
+                    uploadingResource.status = ImportResourceStatus.UPLOAD_ERROR;
+                    uploadingResource.message = errorMessage;
+                    ImportContextService.updateResourceForUpload(uploadingResource);
             }
-        ).finally(nextCallback || function () {
-            $scope.progressPercentage = null;
-            $scope.uploadProgressMessage = '';
-        });
+            })
+            .finally(() => {
+                $scope.currentFiles = $scope.currentFiles.filter(({name: selectedFileName}) => selectedFileName !== file.name);
+                nextCallback();
+            });
     };
 
     const removeBZip2Files = (files) => {
@@ -852,17 +932,17 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                     // newer versions if file names are equal
                     $scope.currentFiles = [...duplicatedFiles, ...uniqueFiles];
                 }
-                isFileListInitialized = true;
             } else {
                 // override rejected
                 const prefixedDuplicates = filesPrefixRegistry.prefixDuplicates(duplicatedFiles);
                 $scope.currentFiles = [...$scope.currentFiles, ...prefixedDuplicates, ...uniqueFiles];
-                isFileListInitialized = true;
             }
+            isFileListInitialized = true;
+            uploadedFilesValidatorAndProcess();
         });
     };
 
-    const uploadedFilesValidator = () => {
+    const uploadedFilesValidatorAndProcess = () => {
         $scope.files = _.uniqBy(
             _.union(
                 _.map($scope.currentFiles, function (file) {
@@ -913,7 +993,6 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
     // Watchers and event handlers
     // =========================
 
-    subscriptions.push($scope.$watchCollection('currentFiles', uploadedFilesValidator));
 
     $scope.$on('$destroy', removeAllListeners);
 
