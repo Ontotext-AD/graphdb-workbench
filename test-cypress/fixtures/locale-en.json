@@ -176,6 +176,12 @@
                 "role": "ROLE1",
                 "plugin": "Plugin"
             },
+            "prefix_dialog": {
+                "warning_text": "The prefix CUSTOM_ is implicitly added. To avoid the prefix being duplicated, please consider removing it.",
+                "strip_prefix": "Remove prefix",
+                "keep_prefix": "Keep prefix"
+            },
+            "user_role_message": "The prefix CUSTOM_ is implicitly added on rule creation. If the prefix wasn't also added explicitly, it should be removed.",
             "actions": {
                 "move_up": "Move the rule up",
                 "move_down": "Move the rule down",
