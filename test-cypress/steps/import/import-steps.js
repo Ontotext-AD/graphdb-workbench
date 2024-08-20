@@ -205,7 +205,7 @@ class ImportSteps {
     }
 
     static checkImportedStatusIsEmpty(resourceName) {
-        this.getResourceStatus(resourceName).find('.import-resource-message').children().should('have.length', 0);
+        this.getResourceStatus(resourceName).find('.import-resource-message .success-messages').should('have.length', 0);
     }
 
     static checkUserDataUploadedResource(index, resourceName) {

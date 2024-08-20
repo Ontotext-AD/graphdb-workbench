@@ -171,7 +171,7 @@ export class ImportResourceTreeService {
      */
     static setupShortenedMessage(importResourceElement) {
         const message = importResourceElement.importResource ? importResourceElement.importResource.message : '' || '';
-        if (message.length > MAX_MESSAGE_LENGTH) {
+        if (message && message.length > MAX_MESSAGE_LENGTH) {
             importResourceElement.shortenedMessage = message.substring(0, MAX_MESSAGE_LENGTH) + '...';
         }
     }
@@ -210,7 +210,7 @@ export class ImportResourceTreeService {
     }
 
     static isImportable(importResource) {
-        return importResource.status !== ImportResourceStatus.IMPORTING && importResource.status !== ImportResourceStatus.UPLOADING && importResource.status !== ImportResourceStatus.PENDING && importResource.status !== ImportResourceStatus.INTERRUPTING;
+        return importResource.status !== ImportResourceStatus.IMPORTING && importResource.status !== ImportResourceStatus.UPLOADING && importResource.status !== ImportResourceStatus.PENDING && importResource.status !== ImportResourceStatus.INTERRUPTING && importResource.status !== ImportResourceStatus.UPLOADING && importResource.status !== ImportResourceStatus.UPLOADED && importResource.status !== ImportResourceStatus.UPLOAD_ERROR;
     }
 
     static hasOngoingImport(importResource) {

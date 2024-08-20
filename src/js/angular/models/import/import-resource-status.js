@@ -9,6 +9,11 @@ export const ImportResourceStatus = {
      */
     'NONE': 'NONE',
     'UPLOADING': 'UPLOADING',
+    'UPLOAD_ERROR': 'UPLOAD_ERROR',
+    /**
+     * Marks resource as uploaded.
+     */
+    'UPLOADED': 'UPLOADED',
     /**
      * The import of rdf resources in this state was not started because GraphDB was stopped.
      */
