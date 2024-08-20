@@ -1,10 +1,13 @@
-import 'angular/rest/ttyg.rest.service';
+import 'angular/core/services/ttyg.service';
 import 'angular/ttyg/directives/chat-list.directive';
+import 'angular/ttyg/services/ttyg-context.service';
+import {TTYGEventName} from "../services/ttyg-context.service";
 
 const modules = [
     'toastr',
     'graphdb.framework.utils.localstorageadapter',
-    'graphdb.framework.rest.ttyg.service',
+    'graphdb.framework.core.services.ttyg-service',
+    'graphdb.framework.ttyg.services.ttygcontext',
     'graphdb.framework.ttyg.directives.chats-list'
 ];
 
@@ -12,11 +15,11 @@ angular
     .module('graphdb.framework.ttyg.controllers', modules)
     .controller('TTYGViewCtrl', TTYGViewCtrl);
 
-TTYGViewCtrl.$inject = ['$scope', '$http', '$timeout', '$translate', '$uibModal', '$repositories', 'toastr', 'ModalService', 'LocalStorageAdapter', 'TTYGRestService'];
+TTYGViewCtrl.$inject = ['$scope', '$http', '$timeout', '$translate', '$uibModal', '$repositories', 'toastr', 'ModalService', 'LocalStorageAdapter', 'TTYGService', 'TTYGContextService'];
 
 const CHATGPTRETRIEVAL_ENDPOINT = 'rest/chat/retrieval';
 
-function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositories, toastr, ModalService, LocalStorageAdapter, TTYGRestService) {
+function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositories, toastr, ModalService, LocalStorageAdapter, TTYGService, TTYGContextService) {
 
     // =========================
     // Private variables
@@ -41,7 +44,7 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
     $scope.showAgents = true;
     /**
      * Chats list.
-     * @type {ChatsListModel}
+     * @type {ChatsListModel|undefined}
      */
     $scope.chats = undefined;
     /**
@@ -49,6 +52,12 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
      * @type {boolean}
      */
     $scope.loadingChats = false;
+    $scope.loadingChat = false;
+    /**
+     * Current chat being displayed.
+     * @type {ChatModel|undefined}
+     */
+    $scope.currentChat = undefined;
     $scope.connectorID = undefined;
     $scope.history = [];
     $scope.askSettings = {
@@ -155,18 +164,14 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
     // Private functions
     // =========================
 
-    function hideChats() {
-        $scope.showChats = false;
-    }
-
-    function scrollToEnd() {
+    const scrollToEnd = () => {
         $timeout(() => {
             const element = document.getElementById("messages-scrollable");
             element.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
         }, 0);
-    }
+    };
 
-    function persist() {
+    const persist = () => {
         const persisted = LocalStorageAdapter.get('ttyg') || {};
         persisted[$repositories.getActiveRepository()] = {
             "history": $scope.history,
@@ -174,25 +179,15 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
             "askSettings": $scope.askSettings
         };
         LocalStorageAdapter.set('ttyg', persisted);
-    }
+    };
 
-    function loadChats() {
-        $scope.loadingChats = true;
-        return TTYGRestService.getConversations()
-        .then((chatsListModel) => {
-            $scope.chats = chatsListModel;
-            if ($scope.chats.isEmpty()) {
-                hideChats();
-            }
-        }).catch((error) => {
-            toastr.error(getError(error, 0, 100));
-        })
-        .finally(() => {
-            $scope.loadingChats = false;
-        });
-    }
+    const loadChats = () => {
+        return TTYGService.getConversations()
+            .then((chatsListModel) => TTYGContextService.updateChats(chatsListModel))
+            .catch((error) => toastr.error(getError(error, 0, 100)));
+    };
 
-    function initView() {
+    const initView = () => {
         const repoId = $repositories.getActiveRepository();
         if (repoId) {
             const stored = LocalStorageAdapter.get('ttyg');
@@ -209,7 +204,43 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
 
             scrollToEnd();
         }
-    }
+    };
+
+    // =========================
+    // Subscription handlers
+    // =========================
+    const getActiveRepositoryObjectHandler = (activeRepo) => {
+        if (activeRepo) {
+            onInit();
+        }
+    };
+
+    const onRenameChat = (chat) => {
+        TTYGService.renameConversation(chat)
+            .then(() => {
+                loadChats();
+                TTYGContextService.emit(TTYGEventName.RENAME_CHAT_SUCCESSFUL);
+            })
+            .catch((error) => {
+                TTYGContextService.emit(TTYGEventName.RENAME_CHAT_FAILURE);
+                toastr.error($translate.instant('ttyg.chat.messages.rename_failure'));
+            });
+    };
+
+    /**
+     * @param {ChatsListModel} chats
+     */
+    const onChatsChanged = (chats) => {
+        $scope.chats = chats;
+        if (chats.isEmpty()) {
+            $scope.showChats = false;
+        } else {
+            $scope.showChats = true;
+            if (!TTYGContextService.getSelectedChat()) {
+                TTYGContextService.selectChat($scope.chats.getFirstChat());
+            }
+        }
+    };
 
     // =========================
     // Subscriptions
@@ -219,7 +250,9 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
         subscriptions.forEach((subscription) => subscription());
     }
 
-    subscriptions.push($scope.$on('repositoryIsSet', () => onInit()));
+    subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler));
+    subscriptions.push(TTYGContextService.onChatsListChanged(onChatsChanged));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.RENAME_CHAT, onRenameChat));
     $scope.$on('$destroy', removeAllListeners);
 
     // =========================
@@ -227,7 +260,9 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
     // =========================
 
     function onInit() {
-        loadChats();
+        $scope.loadingChats = true;
+        loadChats()
+            .finally(() => $scope.loadingChats = false);
         initView();
     }
 }

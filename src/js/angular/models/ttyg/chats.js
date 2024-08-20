@@ -1,24 +1,32 @@
 export class ChatModel {
-    constructor(data) {
-        this._conversationId = data.conversationId;
-        this._conversationName = data.conversationName;
+    constructor(data, hashGenerator) {
+        this.hashGenerator = hashGenerator;
+        this._id = data.id;
+        this._name = data.name;
         this._timestamp = data.timestamp;
+        this._messages = data.messages;
+        this.hash = this.generateHash();
     }
 
-    get conversationId() {
-        return this._conversationId;
+    generateHash() {
+        return this.hashGenerator(JSON.stringify(this));
     }
 
-    set conversationId(value) {
-        this._conversationId = value;
+    get id() {
+        return this._id;
     }
 
-    get conversationName() {
-        return this._conversationName;
+    set id(value) {
+        this._id = value;
     }
 
-    set conversationName(value) {
-        this._conversationName = value;
+    get name() {
+        return this._name;
+    }
+
+    set name(value) {
+        this.generateHash();
+        this._name = value;
     }
 
     get timestamp() {
@@ -27,6 +35,14 @@ export class ChatModel {
 
     set timestamp(value) {
         this._timestamp = value;
+    }
+
+    get messages() {
+        return this._messages;
+    }
+
+    set messages(value) {
+        this._messages = value;
     }
 }
 
@@ -94,8 +110,47 @@ export class ChatsListModel {
         });
     }
 
+    /**
+     * Checks if the chat list is empty.
+     * @return {boolean}
+     */
     isEmpty() {
         return this._chats.length === 0;
+    }
+
+    /**
+     * Returns the first chat from the list.
+     * @return {ChatModel|undefined}
+     */
+    getFirstChat() {
+        return this._chats[0];
+    }
+
+    /**
+     * Deselects all chats.
+     */
+    deselectAll() {
+        this._chats.forEach((c) => {
+            c.selected = false;
+        });
+    }
+
+    /**
+     * Selects a chat.
+     * @param {ChatModel} chat
+     */
+    selectChat(chat) {
+        this.deselectAll();
+        this._chats.forEach((c) => {
+            c.selected = c.id === chat.id;
+        });
+    }
+
+    renameChat(renamedChat) {
+        const chat = this._chats.find((c) => c.id === renamedChat.id);
+        if (chat) {
+            chat.name = renamedChat.name;
+        }
     }
 
     /**

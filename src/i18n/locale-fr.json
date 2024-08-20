@@ -250,6 +250,9 @@
                     "label": "Renommer",
                     "tooltip": "Renommer le chat"
                 }
+            },
+            "messages": {
+                "rename_failure": "Échec du renommage de la conversation. Veuillez réessayer."
             }
         },
         "agent": {

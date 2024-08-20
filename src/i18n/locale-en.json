@@ -250,6 +250,9 @@
                     "label": "Rename",
                     "tooltip": "Rename chat"
                 }
+            },
+            "messages": {
+                "rename_failure": "Failed to rename the conversation. Please try again."
             }
         },
         "agent": {

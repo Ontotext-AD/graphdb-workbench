@@ -4,9 +4,20 @@
     <div ng-repeat="chatGroup in chatList.chatsByDay" class="chat-group">
         <label>{{chatGroup.timestamp | readableTimestamp}}</label>
         <ul>
-            <li ng-repeat="chat in chatGroup.chats" class="chat-item">
-                <div class="chat-name">{{chat.conversationName}}</div>
-                <div class="btn-group">
+            <li ng-repeat="chat in chatGroup.chats track by chat.hash" class="chat-item"
+                ng-class="{'selected': chat.id === selectedChat.id, 'edited': renamedChat && chat.id === renamedChat.id}">
+                <div class="chat-name">
+                    <inline-editable-text
+                        field-name="name"
+                        source="chat"
+                        is-editing="renamedChat && chat.id === renamedChat.id"
+                        on-save="onRenameChat(newText, source)"
+                        on-cancel="onCancelChatRenaming()"
+                        on-dblclick="onSelectChatForRenaming(chat)"
+                        on-click="onSelectChat(source)">
+                    </inline-editable-text>
+                </div>
+                <div ng-if="!renamedChat || chat.id !== renamedChat.id" class="btn-group">
                     <button class="btn btn-link secondary btn-sm open-chat-actions-btn"
                             data-toggle="dropdown" aria-expanded="false"
                             ng-if="true"
@@ -19,7 +30,7 @@
                             <i class="fa-light fa-arrow-down-to-line"></i>
                             <span>{{'ttyg.chat.btn.export_chat.label' | translate}}</span>
                         </button>
-                        <button class="dropdown-item" type="button">
+                        <button class="dropdown-item" type="button" ng-click="onSelectChatForRenaming(chat)">
                             <i class="fa-light fa-pen"></i>
                             <span>{{'ttyg.chat.btn.rename_chat.label' | translate}}</span>
                         </button>
