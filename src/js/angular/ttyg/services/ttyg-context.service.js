@@ -111,7 +111,10 @@ function TTYGContextService(EventEmitterService) {
 export const TTYGEventName = {
     RENAME_CHAT: 'renameChat',
     RENAME_CHAT_SUCCESSFUL: 'chatRenamed',
-    RENAME_CHAT_FAILURE: 'chatRenamedFailed',
+    RENAME_CHAT_FAILURE: 'chatRenamedFailure',
     SELECT_CHAT: 'selectChat',
+    DELETE_CHAT: 'deleteChat',
+    DELETE_CHAT_SUCCESSFUL: 'chatDeleted',
+    DELETE_CHAT_FAILURE: 'chatDeletedFailure',
     CHAT_LIST_UPDATED: 'chatListUpdated'
 };

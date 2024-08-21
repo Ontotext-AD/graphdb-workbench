@@ -36,7 +36,7 @@ export class TtygRestServiceFakeBackend {
     }
 
     deleteConversation(id) {
-        this.conversations = this.conversations.filter((conversation) => conversation.id === id);
+        this.conversations = this.conversations.filter((conversation) => conversation.id !== id);
         return Promise.resolve();
     }
 

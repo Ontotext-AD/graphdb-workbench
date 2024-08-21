@@ -1,5 +1,6 @@
 import 'angular/core/filters/readableTimestamp';
 import 'angular/core/directives/inline-editable-text/inline-editable-text.directive';
+import {decodeHTML} from "../../../../app";
 import {TTYGEventName} from "../services/ttyg-context.service";
 
 const modules = [
@@ -11,9 +12,9 @@ angular
     .module('graphdb.framework.ttyg.directives.chats-list', modules)
     .directive('chatList', ChatListComponent);
 
-ChatListComponent.$inject = ['TTYGContextService', '$timeout'];
+ChatListComponent.$inject = ['TTYGContextService', 'ModalService', '$translate'];
 
-function ChatListComponent(TTYGContextService, $timeout) {
+function ChatListComponent(TTYGContextService, ModalService, $translate) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/chat-list.html',
@@ -47,6 +48,12 @@ function ChatListComponent(TTYGContextService, $timeout) {
             $scope.onSelectChat = (chat) => {
                 TTYGContextService.selectChat(chat);
                 $scope.renamedChat = undefined;
+            };
+
+            $scope.onDeleteChat = (chat) => {
+                const title = $translate.instant('ttyg.dialog.delete.title');
+                const confirmDeleteMessage = decodeHTML($translate.instant('ttyg.dialog.delete.body', {chatName: chat.name}));
+                ModalService.openConfirmation(title, confirmDeleteMessage, () => TTYGContextService.emit(TTYGEventName.DELETE_CHAT, chat));
             };
 
             $scope.onRenameChat = (newName, chat) => {

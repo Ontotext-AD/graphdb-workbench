@@ -242,6 +242,18 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
         }
     };
 
+    const onDeleteChat = (chat) => {
+        TTYGService.deleteConversation(chat.id)
+            .then(() => {
+                loadChats();
+                TTYGContextService.emit(TTYGEventName.DELETE_CHAT_SUCCESSFUL, chat);
+            })
+            .catch((error) => {
+                TTYGContextService.emit(TTYGEventName.DELETE_CHAT_FAILURE);
+                toastr.error($translate.instant('ttyg.chat.messages.delete_failure'));
+            });
+    };
+
     // =========================
     // Subscriptions
     // =========================
@@ -253,6 +265,7 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
     subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler));
     subscriptions.push(TTYGContextService.onChatsListChanged(onChatsChanged));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.RENAME_CHAT, onRenameChat));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_CHAT, onDeleteChat));
     $scope.$on('$destroy', removeAllListeners);
 
     // =========================
