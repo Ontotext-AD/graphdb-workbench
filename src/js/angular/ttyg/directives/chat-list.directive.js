@@ -62,6 +62,10 @@ function ChatListComponent(TTYGContextService, ModalService, $translate) {
                 TTYGContextService.emit(TTYGEventName.RENAME_CHAT, chat);
             };
 
+            $scope.onExportChat = (chat) => {
+                TTYGContextService.emit(TTYGEventName.CHART_EXPORT, chat);
+            };
+
             $scope.onCancelChatRenaming = () => {
                 $scope.renamedChat = undefined;
             };

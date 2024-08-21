@@ -259,7 +259,8 @@
             },
             "messages": {
                 "rename_failure": "Échec du renommage de la conversation. Veuillez réessayer.",
-                "delete_failure": "Échec de la suppression de la conversation. Veuillez réessayer."
+                "delete_failure": "Échec de la suppression de la conversation. Veuillez réessayer.",
+                "export_failure": "Échec de l'exportation de la conversation. Veuillez réessayer."
             }
         },
         "agent": {

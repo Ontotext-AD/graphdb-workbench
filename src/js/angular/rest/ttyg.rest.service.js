@@ -39,6 +39,13 @@ function TTYGRestService($http) {
         return $http.post(`${CONVERSATIONS_ENDPOINT}/${id}`);
     };
 
+    const exportConversation = (id) => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.exportConversation(id);
+        }
+        return $http.post(`${CONVERSATIONS_ENDPOINT}/export/${id}`);
+    };
+
     const askQuestion = (id, data) => {
         if (DEVELOPMENT) {
             return _fakeBackend.askQuestion(id, data);
@@ -72,6 +79,7 @@ function TTYGRestService($http) {
     return {
         getConversation,
         renameConversation,
+        exportConversation,
         askQuestion,
         getConversations,
         deleteConversation,

@@ -259,7 +259,8 @@
             },
             "messages": {
                 "rename_failure": "Failed to rename the conversation. Please try again.",
-                "delete_failure": "Failed to delete the conversation. Please try again."
+                "delete_failure": "Failed to delete the conversation. Please try again.",
+                "export_failure": "Failed to export the conversation. Please try again."
             }
         },
         "agent": {

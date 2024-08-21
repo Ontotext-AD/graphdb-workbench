@@ -24,6 +24,11 @@ export class TtygRestServiceFakeBackend {
         return Promise.resolve(cloneDeep(conversation));
     }
 
+    exportConversation(id) {
+        console.log("Exporting conversation with id: ", id);
+        return Promise.resolve();
+    }
+
     askQuestion(id, data) {
         return {
             id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNe",

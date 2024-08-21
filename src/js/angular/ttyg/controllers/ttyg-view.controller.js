@@ -254,6 +254,22 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
             });
     };
 
+    $scope.onExportSelectedChat = () => {
+        onExportChat(TTYGContextService.getSelectedChat());
+    };
+
+    const onExportChat = (chat) => {
+        TTYGService.exportConversation(chat.id)
+            .then(() => {
+                loadChats();
+                TTYGContextService.emit(TTYGEventName.CHART_EXPORT_SUCCESSFUL, chat);
+            })
+            .catch((error) => {
+                TTYGContextService.emit(TTYGEventName.CHART_EXPORT_FAILURE);
+                toastr.error($translate.instant('ttyg.chat.messages.export_failure'));
+            });
+    };
+
     // =========================
     // Subscriptions
     // =========================
@@ -266,6 +282,7 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
     subscriptions.push(TTYGContextService.onChatsListChanged(onChatsChanged));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.RENAME_CHAT, onRenameChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_CHAT, onDeleteChat));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CHART_EXPORT, onExportChat));
     $scope.$on('$destroy', removeAllListeners);
 
     // =========================

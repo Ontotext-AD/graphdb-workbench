@@ -29,7 +29,7 @@ function TTYGService(TTYGRestService) {
 
     /**
      * Renames the conversation (<code>chart</code>).
-     * @param {ChatModel} chat - the conversation to be edited.
+     * @param {ChatModel} chat - the conversation to be renamed.
      * @return {*}
      */
     const renameConversation = (chat) => {
@@ -38,9 +38,18 @@ function TTYGService(TTYGRestService) {
     };
 
     /**
+     * Exports the conversation (<code>chart</code>).
+     * @param {string} id - the conversation to be exported.
+     * @return {*}
+     */
+    const exportConversation = (id) => {
+        return TTYGRestService.exportConversation(id);
+    };
+
+    /**
      * Asks a question.
      * @param {ChatMessageModel} messageChat
-     * return {ChatMessageModel} the answer of the question.
+     * return {Promise<ChatMessageModel>} the answer of the question.
      */
     const askQuestion = (messageChat) => {
         return TTYGRestService.askQuestion(messageChat.conversationId, askQuestionChatRequestMapper(messageChat))
@@ -68,6 +77,7 @@ function TTYGService(TTYGRestService) {
     return {
         getConversation,
         renameConversation,
+        exportConversation,
         askQuestion,
         getConversations,
         deleteConversation,
