@@ -169,16 +169,20 @@ export class AclManagementSteps {
         return cy.get('div.small');
     }
 
-    static getPrefixDialog() {
-        return cy.get('.remove-role-prefix-dialog');
+    static getPrefixWarning() {
+        return cy.get('.prefix-warning-text');
     }
 
-    static keepPrefix() {
-        this.getPrefixDialog().find('.keep-prefix-btn').click();
+    static getWarningIcon() {
+        return cy.get('.icon-warning');
     }
 
-    static removePrefix() {
-        this.getPrefixDialog().find('.remove-prefix-btn').click();
+    static getWarningIconTooltipText() {
+        return cy.get('.angular-tooltip');
+    }
+
+    static mouseoverWarningIcon() {
+        cy.get('.icon-warning').first().trigger('mouseover');
     }
 
     static getPluginField(index) {

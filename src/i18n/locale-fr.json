@@ -176,12 +176,9 @@
                 "role": "ROLE1",
                 "plugin": "Brancher"
             },
-            "prefix_dialog": {
-                "warning_text": "Le préfixe CUSTOM_ est implicitement ajouté. Pour éviter que le préfixe ne soit dupliqué, pensez à le supprimer.",
-                "strip_prefix": "Supprimer le préfixe",
-                "keep_prefix": "Conserver le préfixe"
+            "prefix_warning": {
+                "text": "Les rôles personnalisés doivent être saisis sans le préfixe \"CUSTOM_\" dans workbench"
             },
-            "user_role_message": "Le préfixe CUSTOM_ est implicitement ajouté lors de la création de la règle. Si le préfixe n’a pas également été ajouté explicitement, il doit être supprimé.",
             "actions": {
                 "move_up": "Déplacer la règle vers le haut",
                 "move_down": "Déplacer la règle vers le bas",

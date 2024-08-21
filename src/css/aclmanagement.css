@@ -104,6 +104,11 @@ html, body {
     margin: 4px 0 0 3px;
 }
 
+.acl-management-view .acl-rules .role-cell .data .icon-warning {
+    float: right;
+    vertical-align: middle;
+}
+
 .acl-management-view .acl-rules .operation-column {
     width: 10%;
 }

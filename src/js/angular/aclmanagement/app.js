@@ -5,7 +5,6 @@ import 'angular/repositories/controllers';
 import 'angular/aclmanagement/controllers';
 import 'angular/core/services/repositories.service';
 import 'angular/aclmanagement/directives/custom-role-prefix.directive';
-import 'angular/aclmanagement/controllers/prefix-role-options.controller';
 
 const modules = [
     'ui.bootstrap',

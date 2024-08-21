@@ -353,8 +353,8 @@ securityCtrl.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$uibModal
         };
     }]);
 
-securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$translate', 'passwordPlaceholder', '$uibModal',
-    function ($rootScope, $scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $translate, passwordPlaceholder, $uibModal) {
+securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$translate', 'passwordPlaceholder',
+    function ($rootScope, $scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $translate, passwordPlaceholder) {
         $rootScope.$on('$translateChangeSuccess', function () {
             $scope.passwordPlaceholder = $translate.instant(passwordPlaceholder);
         });
@@ -510,19 +510,9 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
          * @return {boolean} true if valid, otherwise false
          */
         $scope.isCustomRoleValid = function (fieldValue) {
-            if (fieldValue.text.toUpperCase().startsWith('CUSTOM_')) {
-                notifyCustomPrefixUsed(fieldValue.text);
-            }
+            $scope.showCustomPrefixMessage = fieldValue.text.toUpperCase().startsWith("CUSTOM_");
             $scope.isRoleValid = fieldValue.text.length >= minTagLength;
             return $scope.isRoleValid;
-        };
-
-        const notifyCustomPrefixUsed = () => {
-            $uibModal.open({
-                templateUrl: 'js/angular/security/templates/modal/prefix-message.html',
-                controller: 'PrefixMessageCtrl',
-                windowClass: 'prefix-message-dialog'
-            });
         };
 
         /**
@@ -535,6 +525,7 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
             if (event.keyCode === 8 || event.keyCode === 46) {
                 $scope.isRoleValid = true;
             }
+            $scope.showCustomPrefixMessage = event.target.value.toUpperCase().startsWith("CUSTOM_");
         };
 
         /**
@@ -968,10 +959,3 @@ securityCtrl.controller('DeleteUserCtrl', ['$scope', '$uibModalInstance', 'usern
         $uibModalInstance.dismiss('cancel');
     };
 }]);
-
-securityCtrl.controller('PrefixMessageCtrl', ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {
-    $scope.ok = function () {
-        $uibModalInstance.close();
-    };
-}]);
-

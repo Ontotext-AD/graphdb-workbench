@@ -105,17 +105,13 @@ describe('User and Access', () => {
         UserAndAccessSteps.getFieldError().should('not.be.visible');
     });
 
-    it('Adding a role with a CUSTOM_ prefix shows an info message', () => {
+    it('Adding a role with a CUSTOM_ prefix shows a warning message', () => {
         // When I create a user
         UserAndAccessSteps.clickCreateNewUserButton();
         // And I add a custom role tag with prefix CUSTOM_
-        UserAndAccessSteps.addTextToCustomRoleField('CUSTOM_USER_FOO{enter}');
-        // Then I should see a dialog
-        UserAndAccessSteps.getModal().should('be.visible');
-        // The dialog should contain a warning text
-        UserAndAccessSteps.getModalBody().should('contain', 'The prefix CUSTOM_ is implicitly added on rule creation. If the prefix wasn\'t also added explicitly, it should be removed.');
-        // Then I can dismiss the dialog
-        UserAndAccessSteps.clickModalOK();
+        UserAndAccessSteps.addTextToCustomRoleField('CUSTOM_USER');
+        // There should be a warning text
+        UserAndAccessSteps.getPrefixWarning().should('contain', 'Custom roles should be entered without the "CUSTOM_" prefix in Workbench');
     });
 
     it('Warn users when setting no password when creating new user admin', () => {
