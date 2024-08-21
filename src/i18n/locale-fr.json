@@ -1014,7 +1014,7 @@
                 "execution": "Exécution d'importation",
                 "work_in_background": "Les importations sont exécutées en arrière-plan pendant que vous continuez à travailler sur d'autres choses.",
                 "to_reimport_again": "Pour réimporter un fichier, une URL ou un extrait de texte, cliquez à nouveau sur le bouton Importer.",
-                "interrupt_support": "L'interruption n'est prise en charge que lorsque l'emplacement est local.",
+                "interrupt_support": "L'interruption est prise en charge uniquement lorsque le référentiel est local.",
                 "parser_config": "Les options de configuration de l'analyseur ne sont pas disponibles pour les sites distants."
             },
             "on_server_import": {
@@ -1025,7 +1025,7 @@
                 "execution": "Exécution d'importation",
                 "work_in_background": "Les importations sont exécutées en arrière-plan pendant que vous continuez à travailler sur d'autres choses.",
                 "to_reimport_again": "Pour réimporter un fichier, une URL ou un extrait de texte, cliquez à nouveau sur le bouton Importer.",
-                "interrupt_support": "L'interruption n'est prise en charge que lorsque l'emplacement est local.",
+                "interrupt_support": "L'interruption est prise en charge uniquement lorsque le référentiel est local.",
                 "the_property": "propriété"
             },
             "on_file_size_limit": {

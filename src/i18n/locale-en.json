@@ -1005,7 +1005,7 @@
                 "execution": "Import execution",
                 "work_in_background": "Imports are executed in the background while you continue working on other things.",
                 "to_reimport_again": "To reimport a file, URL or text snippet click the Import button again.",
-                "interrupt_support": "Interrupt is supported only when the location is local.",
+                "interrupt_support": "Interrupt is supported only when the repository is local.",
                 "parser_config": "Parser config options are not available for remote locations."
             },
             "on_server_import": {
@@ -1017,7 +1017,7 @@
                 "execution": "Import execution",
                 "work_in_background": "Imports are executed in the background while you continue working on other things.",
                 "to_reimport_again": "To reimport a file, URL or text snippet click the Import button again.",
-                "interrupt_support": "Interrupt is supported only when the location is local."
+                "interrupt_support": "Interrupt is supported only when the repository is local."
             },
             "on_file_size_limit": {
                 "file_import_options_info_1": "Explore other file import options - ",
