@@ -944,6 +944,7 @@
         "could.not.send.data": "Impossible d'envoyer des données pour l'importation; {{data}}",
         "could.not.send.url": "Impossible d'envoyer l'url pour l'importation; {{data}}",
         "could.not.upload.file": "Impossible de télécharger un fichier; {{data}}",
+        "upload.file.failure": "Échec du téléchargement du fichier.",
         "could.not.update.text": "Impossible de mettre à jour le texte importé; {{data}}",
         "text.snippet.not.imported": "L'extrait de texte a été modifié mais n'a pas été réimporté.",
         "graph.already.in.list": "Ce graphe est déjà dans la liste.",
