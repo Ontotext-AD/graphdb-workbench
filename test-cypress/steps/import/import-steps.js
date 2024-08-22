@@ -458,6 +458,14 @@ class ImportSteps {
             .and('not.have.class', 'ng-animate')
             .and('have.class', 'in');
     }
+
+    static getSizeCell() {
+        return cy.get('th.cell-size');
+    }
+
+    static orderBySize() {
+        ImportSteps.getSizeCell().click();
+    }
 }
 
 export default ImportSteps;

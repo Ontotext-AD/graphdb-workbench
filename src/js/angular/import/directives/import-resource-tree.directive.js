@@ -5,6 +5,7 @@ import {SortingType} from "../../models/import/sorting-type";
 import {ImportResourceTreeElement} from "../../models/import/import-resource-tree-element";
 import {TABS} from "../services/import-context.service";
 import {ImportResourceTreeService} from "../services/import-resource-tree.service";
+import {convertToBytes} from "../../utils/size-util";
 
 const TYPE_FILTER_OPTIONS = {
     'FILE': 'FILE',
@@ -234,8 +235,10 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             };
 
             const compareBySize = (acs) => (r1, r2) => {
-                const r1Size = r1.importResource.size || 0;
-                const r2Size = r2.importResource.size || 0;
+                // The format of size returned by the backend has changed, but we need to keep the old format for backward compatibility.
+                // Therefore, we convert the size to always be in bytes.
+                const r1Size = convertToBytes(r1.importResource.size);
+                const r2Size = convertToBytes(r2.importResource.size);
                 return acs ? r1Size - r2Size : r2Size - r1Size;
             };
 

@@ -167,7 +167,7 @@
                 </span>
             </td>
             <td class="cell cell-size">
-                {{ resource.importResource.size || ''}}
+                {{ resource.importResource.size | humanReadableSize}}
             </td>
             <td class="cell cell-modified"
                 ng-class="{'font-weight-bold': resource.isModifiedBiggerThanImported}">
