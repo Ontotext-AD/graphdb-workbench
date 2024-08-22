@@ -69,11 +69,11 @@ function TTYGRestService($http) {
      * Creates a new conversation.
      * @return {Promise<*>}
      */
-    const createConversation = () => {
+    const createConversation = (data) => {
         if (DEVELOPMENT) {
             return _fakeBackend.createConversation();
         }
-        return $http.post(CONVERSATIONS_ENDPOINT);
+        return $http.post(CONVERSATIONS_ENDPOINT, data);
     };
 
     return {

@@ -2,6 +2,7 @@ import 'angular/core/services/ttyg.service';
 import 'angular/ttyg/directives/chat-list.directive';
 import 'angular/ttyg/services/ttyg-context.service';
 import {TTYGEventName} from "../services/ttyg-context.service";
+import {ChatQuestion} from "../../models/ttyg/chat-question";
 
 const modules = [
     'toastr',
@@ -57,8 +58,11 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
      * Current chat being displayed.
      * @type {ChatModel|undefined}
      */
-    $scope.currentChat = undefined;
+    $scope.selectedChat = undefined;
+    $scope.selectedAgent = undefined;
     $scope.connectorID = undefined;
+    $scope.chatQuestion = undefined;
+
     $scope.history = [];
     $scope.askSettings = {
         "queryTemplate": {
@@ -72,6 +76,33 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
     // =========================
     // Public functions
     // =========================
+    $scope.startNewChat = () => {
+        $scope.chatQuestion = new ChatQuestion();
+        TTYGContextService.selectChat(undefined);
+    };
+
+    $scope.ask = () => {
+        if (!$scope.chatQuestion.conversationId) {
+            TTYGService.createConversation()
+                .then((conversation) => {
+                    loadChats();
+                    $scope.chatQuestion.conversationId = conversation.id;
+                    TTYGService.askQuestion($scope.chatQuestion)
+                        .then((answer) => {
+                            if ($scope.selectedChat) {
+                                $scope.selectedChat.messages.push(answer);
+                            }
+                            createNewChatQuestion();
+                        });
+                });
+        } else {
+            TTYGService.askQuestion($scope.chatQuestion)
+                .then((answer) => {
+                    $scope.selectedChat.messages.push(answer);
+                    createNewChatQuestion();
+                });
+        }
+    };
 
     $scope.onopen = $scope.onclose = () => angular.noop();
 
@@ -91,39 +122,6 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
         } else {
             return "help";
         }
-    };
-
-    $scope.ask = () => {
-        if (!$scope.question.trim()) {
-            return;
-        }
-
-        const filteredHistory = $scope.history.filter((h) => !h.error);
-        const chatRequest = {
-            "connectorID": $scope.connectorID,
-            "question": $scope.question,
-            "askSettings": $scope.askSettings,
-            "history": filteredHistory
-        };
-
-        const questionMsg = {"role": "question", "content": $scope.question};
-
-        $http.post(`${CHATGPTRETRIEVAL_ENDPOINT}?repositoryID=${$repositories.getActiveRepository()}`, chatRequest).then((response) => {
-            $scope.history.pop();
-            response.data.forEach((e) => $scope.history.push(e));
-        }).catch((error) => {
-            questionMsg.error = true;
-            toastr.error(getError(error, 0, 100));
-        }).finally(() => {
-            $scope.loader = false;
-            scrollToEnd();
-            persist();
-        });
-
-        $scope.history.push(questionMsg);
-        $scope.loader = true;
-        scrollToEnd();
-        $scope.question = "";
     };
 
     $scope.clear = () => {
@@ -163,6 +161,17 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
     // =========================
     // Private functions
     // =========================
+
+    const createNewChatQuestion = () => {
+        const chatQuestion = new ChatQuestion();
+        if ($scope.selectedChat) {
+            chatQuestion.conversationId = $scope.selectedChat.id;
+        }
+        if ($scope.selectedAgent) {
+            chatQuestion.agentId = $scope.selectedAgent.id;
+        }
+        $scope.chatQuestion = chatQuestion;
+    };
 
     const scrollToEnd = () => {
         $timeout(() => {
@@ -234,6 +243,7 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
         $scope.chats = chats;
         if (chats.isEmpty()) {
             $scope.showChats = false;
+            $scope.selectedChat = undefined;
         } else {
             $scope.showChats = true;
             if (!TTYGContextService.getSelectedChat()) {
@@ -270,6 +280,18 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
             });
     };
 
+    const onSelectedChatChanged = (chat) => {
+        $scope.selectedChat = undefined;
+        if (!chat) {
+            return;
+        }
+        TTYGService.getConversation(chat.id)
+            .then((chat) => {
+                $scope.selectedChat = chat;
+                createNewChatQuestion();
+            });
+    };
+
     // =========================
     // Subscriptions
     // =========================
@@ -283,6 +305,7 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.RENAME_CHAT, onRenameChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_CHAT, onDeleteChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CHART_EXPORT, onExportChat));
+    subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
     $scope.$on('$destroy', removeAllListeners);
 
     // =========================

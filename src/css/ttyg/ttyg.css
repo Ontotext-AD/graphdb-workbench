@@ -119,6 +119,10 @@
     overflow: scroll;
 }
 
+.ttyg-view .chat .messages.hidden {
+    visibility: hidden;
+}
+
 .ttyg-view .chat .messages-hint {
     font-size: 2em;
     padding-top: 2em;

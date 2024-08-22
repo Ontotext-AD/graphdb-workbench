@@ -1,6 +1,7 @@
 import {chatModelMapper, chatsListMapper} from "../../ttyg/services/chats.mapper";
 import 'angular/rest/ttyg.rest.service';
-import {askQuestionChatRequestMapper, renameChatRequestMapper} from "../../ttyg/services/edit-chat-request.mapper";
+import {askQuestionChatRequestMapper, renameChatRequestMapper} from "../../ttyg/services/chat-request.mapper";
+import {chatMessageModelMapper} from "../../ttyg/services/chat-message.mapper";
 
 const modules = ['graphdb.framework.rest.ttyg.service'];
 
@@ -48,12 +49,12 @@ function TTYGService(TTYGRestService) {
 
     /**
      * Asks a question.
-     * @param {ChatMessageModel} messageChat
+     * @param {ChatQuestion} chatQuestion
      * return {Promise<ChatMessageModel>} the answer of the question.
      */
-    const askQuestion = (messageChat) => {
-        return TTYGRestService.askQuestion(messageChat.conversationId, askQuestionChatRequestMapper(messageChat))
-            .then((data) => chatModelMapper(data));
+    const askQuestion = (chatQuestion) => {
+        return TTYGRestService.askQuestion(chatQuestion.conversationId, askQuestionChatRequestMapper(chatQuestion))
+            .then((data) => chatMessageModelMapper(data));
     };
 
     /**

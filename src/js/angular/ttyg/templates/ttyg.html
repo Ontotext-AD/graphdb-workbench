@@ -24,8 +24,8 @@
                     <i class="fa-light fa-sidebar"></i>
                 </button>
                 <button class="btn btn-link secondary btn-sm create-chat-btn"
-                        ng-if="true"
-                        ng-click="createChat()"
+                        ng-if="chats && !chats.isEmpty()"
+                        ng-click="startNewChat()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.chat.btn.create_chat.tooltip' | translate}}">
                     <i class="fa-light fa-pen-to-square"></i>
@@ -72,17 +72,13 @@
                             aria-label="Close"></button>
                     <div ng-include="helpTemplateUrl"></div>
                 </div>
-                <div class="messages">
+                <div class="messages" ng-class="{'hidden': !selectedChat}">
                     <div id="messages-scrollable">
-                        <div class="messages-hint text-muted" ng-if="!history.length">
+                        <div class="messages-hint text-muted" ng-if="!selectedChat.messages.length">
                             {{ 'ttyg.hint' | translate }}
                         </div>
-                        <div ng-repeat="msg in history">
-                            <div ng-if="!msg.internal" class="messages-item messages-item-{{ msg.role }}">
-                                <i class="icon icon-{{ getIcon(msg.role) }}"></i>
-                                <i class="icon icon-warning" ng-if="msg.error"></i>
-                                <span class="messages-item-content">{{ msg.content }}</span>
-                            </div>
+                        <div ng-repeat="question in selectedChat.messages">
+                            <span class="messages-item-content">{{ question.message }}</span>
                         </div>
                         <div onto-loader-new ng-show="loader" size="40"></div>
                     </div>
@@ -90,9 +86,10 @@
                 <div class="question">
                     <form>
                         <div class="mb-2 d-flex">
-                            <input class="form-control" ng-model="question" type="text">
-                            <button class="btn btn-primary" ng-disabled="loader" ng-click="ask()">{{ 'ttyg.ask.button' |
-                                translate }}
+                            <input class="form-control" ng-model="chatQuestion.question" type="text">
+                            <button class="btn btn-primary" ng-disabled="!chatQuestion.question" ng-click="ask()">
+                                <i class="fa fa-arrow-turn-left-up"></i>
+                                {{ 'ttyg.ask.button' | translate }}
                             </button>
                         </div>
                     </form>

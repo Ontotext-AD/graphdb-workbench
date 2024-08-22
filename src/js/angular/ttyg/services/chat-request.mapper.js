@@ -15,7 +15,7 @@ export const renameChatRequestMapper = (chat) => {
 
 /**
  * Converts a message to an ask question request.
- * @param {ChatMessageModel} chatMessage
+ * @param {ChatQuestion} chatQuestion
  * @return {
  *      {
  *          agentId: string,
@@ -23,9 +23,9 @@ export const renameChatRequestMapper = (chat) => {
  *      }
  * }
  */
-export const askQuestionChatRequestMapper = (chatMessage) => {
+export const askQuestionChatRequestMapper = (chatQuestion) => {
     return {
-        agentId: chatMessage.agentId,
-        question: chatMessage.question
+        agentId: chatQuestion.agentId,
+        question: chatQuestion.question
     };
 };
