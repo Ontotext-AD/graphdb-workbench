@@ -15,7 +15,7 @@ function TTYGService(TTYGRestService) {
 
     const getConversations = (savedQueryName, owner) => {
         return TTYGRestService.getConversations()
-            .then((data) => chatsListMapper(data));
+            .then((response) => chatsListMapper(response.data));
     };
 
     /**
@@ -25,7 +25,7 @@ function TTYGService(TTYGRestService) {
      */
     const getConversation = (id) => {
         return TTYGRestService.getConversation(id)
-            .then((data) => chatModelMapper(data));
+            .then((response) => chatModelMapper(response.data));
     };
 
     /**
@@ -35,7 +35,7 @@ function TTYGService(TTYGRestService) {
      */
     const renameConversation = (chat) => {
         return TTYGRestService.renameConversation(chat.id, renameChatRequestMapper(chat))
-            .then((data) => chatModelMapper(data));
+            .then((response) => chatModelMapper(response.data));
     };
 
     /**
@@ -54,7 +54,7 @@ function TTYGService(TTYGRestService) {
      */
     const askQuestion = (chatQuestion) => {
         return TTYGRestService.askQuestion(chatQuestion.conversationId, askQuestionChatRequestMapper(chatQuestion))
-            .then((data) => chatMessageModelMapper(data));
+            .then((response) => chatMessageModelMapper(response.data));
     };
 
     /**
@@ -70,9 +70,9 @@ function TTYGService(TTYGRestService) {
      * Creates a new conversation.
      * @return {Promise<ChatModel>}
      */
-    const createConversation = () => {
-        return TTYGRestService.createConversation()
-            .then((data) => chatModelMapper(data));
+    const createConversation = (data = {}) => {
+        return TTYGRestService.createConversation(data)
+            .then((response) => chatModelMapper(response.data));
     };
 
     return {

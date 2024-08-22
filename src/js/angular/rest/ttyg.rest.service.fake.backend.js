@@ -8,12 +8,12 @@ export class TtygRestServiceFakeBackend {
 
     getConversations() {
         return new Promise((resolve) => {
-            resolve(cloneDeep(this.conversations));
+            resolve({data: cloneDeep(this.conversations)});
         });
     }
 
     getConversation(id) {
-        return Promise.resolve(cloneDeep(this.conversations.find((conversation) => conversation.id === id)));
+        return Promise.resolve({data: cloneDeep(this.conversations.find((conversation) => conversation.id === id))});
     }
 
     renameConversation(id, data) {
@@ -21,7 +21,7 @@ export class TtygRestServiceFakeBackend {
         if (conversation) {
             conversation.name = data.name;
         }
-        return Promise.resolve(cloneDeep(conversation));
+        return Promise.resolve({data: cloneDeep(conversation)});
     }
 
     exportConversation(id) {
@@ -42,7 +42,7 @@ export class TtygRestServiceFakeBackend {
         if (conversation) {
             conversation.messages.push(answer);
         }
-        return Promise.resolve(answer);
+        return Promise.resolve({data: answer});
     }
 
     deleteConversation(id) {
@@ -58,6 +58,6 @@ export class TtygRestServiceFakeBackend {
             messages: []
         };
         this.conversations.unshift(conversation);
-        return Promise.resolve(conversation);
+        return Promise.resolve({data: conversation});
     }
 }

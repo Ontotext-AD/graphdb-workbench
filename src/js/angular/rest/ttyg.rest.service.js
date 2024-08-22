@@ -7,13 +7,13 @@ angular
 TTYGRestService.$inject = ['$http'];
 
 const CONVERSATIONS_ENDPOINT = 'rest/chat/conversations';
-const DEVELOPMENT = true;
+const DEVELOPMENT = false;
 
 function TTYGRestService($http) {
 
     const _fakeBackend = new TtygRestServiceFakeBackend();
 
-    const getConversations = (savedQueryName, owner) => {
+    const getConversations = () => {
         if (DEVELOPMENT) {
             return _fakeBackend.getConversations();
         }
@@ -36,7 +36,7 @@ function TTYGRestService($http) {
         if (DEVELOPMENT) {
             return _fakeBackend.renameConversation(id, data);
         }
-        return $http.post(`${CONVERSATIONS_ENDPOINT}/${id}`);
+        return $http.put(`${CONVERSATIONS_ENDPOINT}/${id}`);
     };
 
     const exportConversation = (id) => {
@@ -69,7 +69,7 @@ function TTYGRestService($http) {
      * Creates a new conversation.
      * @return {Promise<*>}
      */
-    const createConversation = (data) => {
+    const createConversation = (data = {}) => {
         if (DEVELOPMENT) {
             return _fakeBackend.createConversation();
         }

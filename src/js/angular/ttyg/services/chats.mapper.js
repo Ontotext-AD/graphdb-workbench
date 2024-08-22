@@ -4,31 +4,31 @@ import {chatMessageModelListMapper} from "./chat-message.mapper";
 
 /**
  * Converts the response from the server to a list of ChatModels.
- * @param {*[]} response
+ * @param {*[]} data
  * @return {ChatsListModel}
  */
-export const chatsListMapper = (response) => {
-    if (!response) {
+export const chatsListMapper = (data) => {
+    if (!data) {
         return new ChatsListModel();
     }
-    const chatModels = response.map((chat) => chatModelMapper(chat));
+    const chatModels = data.map((chat) => chatModelMapper(chat));
     return new ChatsListModel(chatModels);
 };
 
 /**
  * Converts the response from the server to a ChatModel.
- * @param {*} response
+ * @param {*} data
  * @return {ChatModel|undefined}
  */
-export const chatModelMapper = (response) => {
-    if (!response) {
+export const chatModelMapper = (data) => {
+    if (!data) {
         return;
     }
     const hashGenerator = md5HashGenerator();
     return new ChatModel({
-        id: response.id,
-        name: response.name,
-        timestamp: response.timestamp,
-        messages: chatMessageModelListMapper(response.messages)
+        id: data.id,
+        name: data.name,
+        timestamp: data.timestamp,
+        messages: chatMessageModelListMapper(data.messages)
     }, hashGenerator);
 };

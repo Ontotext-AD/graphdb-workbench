@@ -167,9 +167,11 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
         if ($scope.selectedChat) {
             chatQuestion.conversationId = $scope.selectedChat.id;
         }
-        if ($scope.selectedAgent) {
-            chatQuestion.agentId = $scope.selectedAgent.id;
-        }
+
+        chatQuestion.agentId = undefined;
+        // if ($scope.selectedAgent) {
+        //     chatQuestion.agentId = $scope.selectedAgent.id;
+        // }
         $scope.chatQuestion = chatQuestion;
     };
 
