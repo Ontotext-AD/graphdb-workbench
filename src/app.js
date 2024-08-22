@@ -15,6 +15,7 @@ import 'angular/core/directives/operations-statuses-monitor/operations-statuses-
 import 'angular/core/directives/autocomplete/autocomplete.directive';
 import 'angular/core/directives/prop-indeterminate/prop-indeterminate.directive';
 import {defineCustomElements} from 'ontotext-yasgui-web-component/loader';
+import {convertToHumanReadable} from "./js/angular/utils/size-util";
 
 // $translate.instant converts <b> from strings to &lt;b&gt
 // and $sce.trustAsHtml could not recognise that this is valid html
@@ -221,6 +222,7 @@ const moduleDefinition = function (productInfo) {
     });
 
     workbench.filter('prettyJSON', () => (json) => angular.toJson(json, true));
+    workbench.filter('humanReadableSize', () => (size) => convertToHumanReadable(size));
 
     angular.bootstrap(document, ['graphdb.workbench']);
 };
