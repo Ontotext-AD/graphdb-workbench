@@ -146,6 +146,10 @@ export class ChatsListModel {
         });
     }
 
+    getChat(id) {
+        return this._chats.find((c) => c.id === id);
+    }
+
     renameChat(renamedChat) {
         const chat = this._chats.find((c) => c.id === renamedChat.id);
         if (chat) {

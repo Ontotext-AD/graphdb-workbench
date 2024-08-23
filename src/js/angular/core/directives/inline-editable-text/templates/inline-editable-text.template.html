@@ -1,8 +1,8 @@
 <div class="inline-editable-text">
-    <span ng-if="!isEditing"
+    <div ng-if="!isEditing"
           ng-click="onSelect()">
-        {{ source[fieldName] }}
-    </span>
+        {{ source[fieldName] || '&nbsp;'}}
+    </div>
 
     <input ng-if="isEditing"
            type="text"

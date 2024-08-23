@@ -12,6 +12,7 @@ export const chatsListMapper = (data) => {
         return new ChatsListModel();
     }
     const chatModels = data.map((chat) => chatModelMapper(chat));
+    chatModels.reverse();
     return new ChatsListModel(chatModels);
 };
 
@@ -29,6 +30,6 @@ export const chatModelMapper = (data) => {
         id: data.id,
         name: data.name,
         timestamp: data.timestamp,
-        messages: chatMessageModelListMapper(data.messages)
+        messages: chatMessageModelListMapper(data.messages).reverse()
     }, hashGenerator);
 };

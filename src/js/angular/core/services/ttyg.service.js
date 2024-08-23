@@ -53,7 +53,7 @@ function TTYGService(TTYGRestService) {
      * return {Promise<ChatMessageModel>} the answer of the question.
      */
     const askQuestion = (chatQuestion) => {
-        return TTYGRestService.askQuestion(chatQuestion.conversationId, askQuestionChatRequestMapper(chatQuestion))
+        return TTYGRestService.askQuestion(askQuestionChatRequestMapper(chatQuestion))
             .then((response) => chatMessageModelMapper(response.data));
     };
 
@@ -68,11 +68,11 @@ function TTYGService(TTYGRestService) {
 
     /**
      * Creates a new conversation.
-     * @return {Promise<ChatModel>}
+     * @return {Promise<string>} created conversation id;
      */
     const createConversation = (data = {}) => {
-        return TTYGRestService.createConversation(data)
-            .then((response) => chatModelMapper(response.data));
+        return TTYGRestService.createConversation(askQuestionChatRequestMapper(data))
+            .then((response) => response.data.conversationId);
     };
 
     return {

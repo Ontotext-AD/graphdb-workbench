@@ -29,16 +29,16 @@ export class TtygRestServiceFakeBackend {
         return Promise.resolve();
     }
 
-    askQuestion(id, data) {
+    askQuestion(data) {
         let answer = {
             id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNe",
-            conversationId: id,
+            conversationId: data.conversationId,
             agentId: null,
             message: `Reply to '${data.question}'`,
             role: "user",
             timestamp: Date.now()
         };
-        const conversation = this.conversations.find((conversation) => conversation.id === id);
+        const conversation = this.conversations.find((conversation) => conversation.id === data.conversationId);
         if (conversation) {
             conversation.messages.push(answer);
         }

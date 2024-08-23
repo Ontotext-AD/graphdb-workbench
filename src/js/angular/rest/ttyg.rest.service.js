@@ -36,7 +36,7 @@ function TTYGRestService($http) {
         if (DEVELOPMENT) {
             return _fakeBackend.renameConversation(id, data);
         }
-        return $http.put(`${CONVERSATIONS_ENDPOINT}/${id}`);
+        return $http.put(`${CONVERSATIONS_ENDPOINT}/${id}`, data);
     };
 
     const exportConversation = (id) => {
@@ -46,11 +46,11 @@ function TTYGRestService($http) {
         return $http.post(`${CONVERSATIONS_ENDPOINT}/export/${id}`);
     };
 
-    const askQuestion = (id, data) => {
+    const askQuestion = (data) => {
         if (DEVELOPMENT) {
-            return _fakeBackend.askQuestion(id, data);
+            return _fakeBackend.askQuestion(data);
         }
-        return $http.post(`${CONVERSATIONS_ENDPOINT}/${id}`, data);
+        return $http.post(`${CONVERSATIONS_ENDPOINT}`, data);
     };
 
     /**

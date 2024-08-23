@@ -31,3 +31,18 @@ export const chatMessageModelMapper = (data) => {
         data: data
     });
 };
+
+/**
+ *
+ * @param {ChatQuestion} chatQuestion
+ * @return {ChatMessageModel}
+ */
+export const chatQuestionToChatMessageMapper = (chatQuestion) => {
+    if (!chatQuestion) {
+        return;
+    }
+
+    const message = new ChatMessageModel(chatQuestion);
+    message.message = chatQuestion.question;
+    return message;
+};

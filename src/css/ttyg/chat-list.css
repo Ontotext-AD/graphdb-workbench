@@ -41,7 +41,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 100%;
+    width: 100%;
 }
 
 .chat-list-component .chat-item:not(.edited):hover {

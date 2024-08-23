@@ -26,6 +26,7 @@ export const renameChatRequestMapper = (chat) => {
 export const askQuestionChatRequestMapper = (chatQuestion) => {
     return {
         agentId: chatQuestion.agentId,
-        question: chatQuestion.question
+        question: chatQuestion.question,
+        conversationId: chatQuestion.conversationId
     };
 };

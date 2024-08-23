@@ -77,7 +77,8 @@
                         <div class="messages-hint text-muted" ng-if="!selectedChat.messages.length">
                             {{ 'ttyg.hint' | translate }}
                         </div>
-                        <div ng-repeat="question in selectedChat.messages">
+                        <div ng-repeat="question in selectedChat.messages" class="m-1" ng-class="{'mt-3': question.role === 'user'}">
+                            <span ng-if="question.role === 'user'">User:  </span>
                             <span class="messages-item-content">{{ question.message }}</span>
                         </div>
                         <div onto-loader-new ng-show="loader" size="40"></div>

@@ -3,6 +3,8 @@ import 'angular/ttyg/directives/chat-list.directive';
 import 'angular/ttyg/services/ttyg-context.service';
 import {TTYGEventName} from "../services/ttyg-context.service";
 import {ChatQuestion} from "../../models/ttyg/chat-question";
+import {chatQuestionToChatMessageMapper} from "../services/chat-message.mapper";
+import {cloneDeep} from "lodash";
 
 const modules = [
     'toastr',
@@ -83,23 +85,23 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
 
     $scope.ask = () => {
         if (!$scope.chatQuestion.conversationId) {
-            TTYGService.createConversation()
-                .then((conversation) => {
-                    loadChats();
-                    $scope.chatQuestion.conversationId = conversation.id;
-                    TTYGService.askQuestion($scope.chatQuestion)
-                        .then((answer) => {
-                            if ($scope.selectedChat) {
-                                $scope.selectedChat.messages.push(answer);
-                            }
-                            createNewChatQuestion();
+            TTYGService.createConversation($scope.chatQuestion)
+                .then((conversationId) => {
+                    loadChats()
+                        .then(() => {
+                            TTYGContextService.selectChat(TTYGContextService.getChats().getChat(conversationId));
                         });
                 });
         } else {
-            TTYGService.askQuestion($scope.chatQuestion)
+            if ($scope.selectedChat) {
+                $scope.chatQuestion.role = 'user';
+                $scope.selectedChat.messages.push(chatQuestionToChatMessageMapper($scope.chatQuestion));
+            }
+            const question = cloneDeep($scope.chatQuestion);
+            createNewChatQuestion();
+            TTYGService.askQuestion(question)
                 .then((answer) => {
                     $scope.selectedChat.messages.push(answer);
-                    createNewChatQuestion();
                 });
         }
     };
@@ -168,7 +170,7 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
             chatQuestion.conversationId = $scope.selectedChat.id;
         }
 
-        chatQuestion.agentId = undefined;
+        chatQuestion.agentId = "asst_FI0g7wLJ2w3vrJl5D2OeH3wc";
         // if ($scope.selectedAgent) {
         //     chatQuestion.agentId = $scope.selectedAgent.id;
         // }
@@ -283,10 +285,14 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
     };
 
     const onSelectedChatChanged = (chat) => {
-        $scope.selectedChat = undefined;
         if (!chat) {
+            $scope.selectedChat = undefined;
             return;
         }
+        if ($scope.selectedChat && $scope.selectedChat.id === chat.id) {
+            return;
+        }
+
         TTYGService.getConversation(chat.id)
             .then((chat) => {
                 $scope.selectedChat = chat;
