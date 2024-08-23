@@ -176,6 +176,9 @@
                 "role": "ROLE1",
                 "plugin": "Plugin"
             },
+            "prefix_warning": {
+                "text": "Custom roles should be entered without the \"CUSTOM_\" prefix in Workbench"
+            },
             "actions": {
                 "move_up": "Move the rule up",
                 "move_down": "Move the rule down",

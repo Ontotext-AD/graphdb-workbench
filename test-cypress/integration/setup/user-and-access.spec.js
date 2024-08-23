@@ -105,6 +105,15 @@ describe('User and Access', () => {
         UserAndAccessSteps.getFieldError().should('not.be.visible');
     });
 
+    it('Adding a role with a CUSTOM_ prefix shows a warning message', () => {
+        // When I create a user
+        UserAndAccessSteps.clickCreateNewUserButton();
+        // And I add a custom role tag with prefix CUSTOM_
+        UserAndAccessSteps.addTextToCustomRoleField('CUSTOM_USER');
+        // There should be a warning text
+        UserAndAccessSteps.getPrefixWarning().should('contain', 'Custom roles should be entered without the "CUSTOM_" prefix in Workbench');
+    });
+
     it('Warn users when setting no password when creating new user admin', () => {
         UserAndAccessSteps.getUsersTable().should('be.visible');
         createUser("adminWithNoPassword", PASSWORD, ROLE_CUSTOM_ADMIN);

@@ -111,6 +111,7 @@
                                         <span class="acl-tag"
                                               ng-class="{'acl-tag-role-negated': rule.roleWithoutCustomPrefix[0] === '!', 'acl-tag-role': rule.roleWithoutCustomPrefix[0] !== '!', 'wildcard-cell': rule.role === '*'}">
                                             {{rule.roleWithoutCustomPrefix}}
+                                            <em ng-if="rule.role.startsWith(doublePrefix)" class="icon-warning" gdb-tooltip="{{'acl_management.rulestable.prefix_warning.text' | translate}}" tooltip-placement="right"></em>
                                         </span>
                                     </td>
                                     <td class="operation-cell data">
@@ -155,6 +156,7 @@
                                                   ng-model="rule.role"
                                                   ng-change="setDirty(activeTabScope)"
                                                   ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
+                                                  ng-blur="showWarning()"
                                                   uppercased uppercase-placeholder="false"
                                                   custom-role-prefix auto-grow
                                                   autocomplete="off"
@@ -164,7 +166,11 @@
                                         <div class="small" ng-if="ruleData.role.$touched && !ruleData.role.$valid">
                                             <small>{{'acl_management.errors.role_length_too_short' | translate}}</small>
                                         </div>
+                                        <div class="small float-lg-left prefix-warning-text" ng-if="rule.role.startsWith(doublePrefix) && !showPrefixWarningIcon">
+                                            <small>{{'acl_management.rulestable.prefix_warning.text' | translate}}</small>
+                                        </div>
                                         <em></em>
+                                        <em ng-if="rule.role.startsWith(doublePrefix) && showPrefixWarningIcon" class="icon-warning" gdb-tooltip="{{'acl_management.rulestable.prefix_warning.text' | translate}}" tooltip-placement="right"></em>
                                     </td>
                                     <td class="data operation-cell">
                                         <select ng-model="rule.operation" ng-change="setDirty(activeTabScope)" class="form-control form-control-sm select-rule">
@@ -311,6 +317,7 @@
                                     <td class="role-cell data">
                                         <span class="acl-tag" ng-class="{'acl-tag-role-negated': rule.roleWithoutCustomPrefix[0] === '!', 'acl-tag-role': rule.roleWithoutCustomPrefix[0] !== '!', 'wildcard-cell': rule.role === '*'}">
                                             {{rule.roleWithoutCustomPrefix}}
+                                            <em ng-if="rule.role.startsWith(doublePrefix)" class="icon-warning" gdb-tooltip="{{'acl_management.rulestable.prefix_warning.text' | translate}}" tooltip-placement="right"></em>
                                         </span>
                                     </td>
                                     <td class="context-cell data" ng-class="{'wildcard-cell': rule.context === '*', 'context-cell-special': !rule.context.startsWith('<') && rule.context !== '*'}">
@@ -349,6 +356,7 @@
                                                   ng-model="rule.role"
                                                   ng-change="setDirty(activeTabScope)"
                                                   ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
+                                                  ng-blur="showWarning()"
                                                   uppercased uppercase-placeholder="false"
                                                   custom-role-prefix auto-grow
                                                   autocomplete="off" class="form-control form-control-sm textarea-edit"
@@ -358,7 +366,15 @@
                                         <div class="small" ng-if="ruleData.role.$touched && !ruleData.role.$valid">
                                             <small>{{'acl_management.errors.role_length_too_short' | translate}}</small>
                                         </div>
+                                        <div class="small float-lg-left prefix-warning-text" ng-if="rule.role.startsWith(doublePrefix) && !showPrefixWarningIcon">
+                                            <small>{{'acl_management.rulestable.prefix_warning.text' | translate}}</small>
+                                        </div>
                                         <em></em>
+                                        <em ng-if="rule.role.startsWith(doublePrefix) && showPrefixWarningIcon"
+                                            class="icon-warning"
+                                            gdb-tooltip="{{'acl_management.rulestable.prefix_warning.text' | translate}}"
+                                            tooltip-placement="right">
+                                        </em>
                                     </td>
                                     <td class="data context-cell">
                                         <autocomplete ng-model="rule.context" on-model-change="setDirty(activeTabScope)" name="context"
@@ -454,6 +470,7 @@
                                     <td class="role-cell data">
                                         <span class="acl-tag" ng-class="{'acl-tag-role-negated': rule.roleWithoutCustomPrefix[0] === '!', 'acl-tag-role': rule.roleWithoutCustomPrefix[0] !== '!', 'wildcard-cell': rule.role === '*'}">
                                             {{rule.roleWithoutCustomPrefix}}
+                                            <em ng-if="rule.role.startsWith(doublePrefix)" class="icon-warning" gdb-tooltip="{{'acl_management.rulestable.prefix_warning.text' | translate}}" tooltip-placement="right"></em>
                                         </span>
                                     </td>
                                     <td class="operation-cell data">
@@ -498,6 +515,7 @@
                                                   ng-model="rule.role"
                                                   ng-change="setDirty(activeTabScope)"
                                                   ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
+                                                  ng-blur="showWarning()"
                                                   uppercased uppercase-placeholder="false"
                                                   custom-role-prefix auto-grow
                                                   autocomplete="off"
@@ -507,7 +525,11 @@
                                         <div class="small" ng-if="ruleData.role.$touched && !ruleData.role.$valid">
                                             <small>{{'acl_management.errors.role_length_too_short' | translate}}</small>
                                         </div>
+                                        <div class="small float-lg-left prefix-warning-text" ng-if="rule.role.startsWith(doublePrefix) && !showPrefixWarningIcon">
+                                            <small>{{'acl_management.rulestable.prefix_warning.text' | translate}}</small>
+                                        </div>
                                         <em></em>
+                                        <em ng-if="rule.role.startsWith(doublePrefix) && showPrefixWarningIcon" class="icon-warning" gdb-tooltip="{{'acl_management.rulestable.prefix_warning.text' | translate}}" tooltip-placement="right"></em>
                                     </td>
                                     <td class="data operation-cell">
                                         <select ng-model="rule.operation" ng-change="setDirty(activeTabScope)" class="form-control form-control-sm select-rule">
@@ -604,6 +626,7 @@
                                     <td class="role-cell data">
                                         <span class="acl-tag" ng-class="{'acl-tag-role-negated': rule.roleWithoutCustomPrefix[0] === '!', 'acl-tag-role': rule.roleWithoutCustomPrefix[0] !== '!', 'wildcard-cell': rule.role === '*'}">
                                             {{rule.roleWithoutCustomPrefix}}
+                                            <em ng-if="rule.role.startsWith(doublePrefix)" class="icon-warning" gdb-tooltip="{{'acl_management.rulestable.prefix_warning.text' | translate}}" tooltip-placement="right"></em>
                                         </span>
                                     </td>
                                     <td class="operation-cell data">
@@ -645,6 +668,7 @@
                                                   ng-model="rule.role"
                                                   ng-change="setDirty(activeTabScope)"
                                                   ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
+                                                  ng-blur="showWarning()"
                                                   uppercased uppercase-placeholder="false"
                                                   custom-role-prefix auto-grow
                                                   autocomplete="off"
@@ -654,7 +678,11 @@
                                         <div class="small" ng-if="ruleData.role.$touched && !ruleData.role.$valid">
                                             <small>{{'acl_management.errors.role_length_too_short' | translate}}</small>
                                         </div>
+                                        <div class="small float-lg-left prefix-warning-text" ng-if="rule.role.startsWith(doublePrefix) && !showPrefixWarningIcon">
+                                            <small>{{'acl_management.rulestable.prefix_warning.text' | translate}}</small>
+                                        </div>
                                         <em></em>
+                                        <em ng-if="rule.role.startsWith(doublePrefix) && showPrefixWarningIcon" class="icon-warning" gdb-tooltip="{{'acl_management.rulestable.prefix_warning.text' | translate}}" tooltip-placement="right"></em>
                                     </td>
                                     <td class="data operation-cell">
                                         <select ng-model="rule.operation" ng-change="setDirty(activeTabScope)" class="form-control form-control-sm select-rule">

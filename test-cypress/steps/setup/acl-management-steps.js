@@ -157,12 +157,32 @@ export class AclManagementSteps {
         return this.getRule(index).find('.role-cell textarea');
     }
 
+    static getSavedRoleField(index) {
+        return this.getRule(index).find('.role-cell');
+    }
+
     static fillRole(index, value) {
         this.getRoleField(index).clear().type(value);
     }
 
     static getFieldError() {
         return cy.get('div.small');
+    }
+
+    static getPrefixWarning() {
+        return cy.get('.prefix-warning-text');
+    }
+
+    static getWarningIcon() {
+        return cy.get('.icon-warning');
+    }
+
+    static getWarningIconTooltipText() {
+        return cy.get('.angular-tooltip');
+    }
+
+    static mouseoverWarningIcon() {
+        cy.get('.icon-warning').first().trigger('mouseover');
     }
 
     static getPluginField(index) {
