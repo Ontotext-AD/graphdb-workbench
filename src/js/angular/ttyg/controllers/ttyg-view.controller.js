@@ -63,7 +63,7 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
     $scope.selectedChat = undefined;
     $scope.selectedAgent = undefined;
     $scope.connectorID = undefined;
-    $scope.chatQuestion = undefined;
+    $scope.chatQuestion = new ChatQuestion();
 
     $scope.history = [];
     $scope.askSettings = {
@@ -170,10 +170,9 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
             chatQuestion.conversationId = $scope.selectedChat.id;
         }
 
-        chatQuestion.agentId = "asst_FI0g7wLJ2w3vrJl5D2OeH3wc";
-        // if ($scope.selectedAgent) {
-        //     chatQuestion.agentId = $scope.selectedAgent.id;
-        // }
+        if ($scope.selectedAgent) {
+            chatQuestion.agentId = $scope.selectedAgent.id;
+        }
         $scope.chatQuestion = chatQuestion;
     };
 
