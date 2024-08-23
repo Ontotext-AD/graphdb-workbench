@@ -148,6 +148,10 @@ export class UserAndAccessSteps {
         return cy.get('.modal-dialog');
     }
 
+    static getPrefixWarning() {
+        return cy.get('.prefix-warning');
+    }
+
     static getDialogText() {
         return this.getModal().find('.lead');
     }
