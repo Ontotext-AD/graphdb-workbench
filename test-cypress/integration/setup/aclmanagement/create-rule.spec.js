@@ -222,17 +222,16 @@ describe('ACL Management: create rule', () => {
         AclManagementSteps.fillRole(0, 'CUSTOM_ROLE_FOO');
 
         // Then I expect the prefix warning to appear
-        AclManagementSteps.getPrefixWarning().should('be.visible');
-        AclManagementSteps.getPrefixWarning().should('contain.text', 'Custom roles should be entered without the "CUSTOM_" prefix in Workbench');
+        AclManagementSteps.getPrefixWarning(0).should('be.visible');
+        AclManagementSteps.getPrefixWarning(0).should('contain.text', 'Custom roles should be entered without the "CUSTOM_" prefix in Workbench');
         // When I save the rule
         AclManagementSteps.saveRule(0);
         // Then the text should be how the user typed it
         AclManagementSteps.getSavedRoleField(0).should('contain', 'CUSTOM_ROLE_FOO');
         // And I expect a warning icon to appear
-        AclManagementSteps.getWarningIcon().should('be.visible');
-        AclManagementSteps.mouseoverWarningIcon();
+        AclManagementSteps.getWarningIcon(0).should('be.visible');
         // And the icon should have the same tooltip text as the warning
-        AclManagementSteps.getWarningIconTooltipText().should('be.visible').and('contain.text', 'Custom roles should be entered without the "CUSTOM_" prefix in Workbench');
+        AclManagementSteps.getWarningIconTooltipText(0).should('be.visible').and('contain.text', 'Custom roles should be entered without the "CUSTOM_" prefix in Workbench');
     });
 });
 

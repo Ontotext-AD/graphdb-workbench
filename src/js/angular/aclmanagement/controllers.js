@@ -4,7 +4,6 @@ import {mapAclRulesResponse} from "../rest/mappers/aclmanagement-mapper";
 import {isEqual} from 'lodash';
 import {mapNamespacesResponse} from "../rest/mappers/namespaces-mapper";
 import {ACL_SCOPE, DEFAULT_CONTEXT_VALUES, DEFAULT_URI_VALUES, DEFAULT_CLEAR_GRAPH_CONTEXT_VALUES} from "./model";
-import {RoleNamePrefixUtils} from "../utils/role-name-prefix-utils";
 
 const modules = [
     'graphdb.framework.rest.plugins.service',
@@ -138,7 +137,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
 
     $scope.rowHeights = {};
 
-    $scope.doublePrefix = "CUSTOM_CUSTOM_";
+    $scope.hasCustomPrefix = false;
 
     //
     // Public functions
@@ -155,6 +154,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
      */
     $scope.addRule = (scope, index) => {
         $scope.rulesModel.addRule(scope, index);
+        $scope.showPrefixWarningIcon(false);
         $scope.editedRuleIndex = index;
         $scope.editedRuleScope = scope;
         $scope.isNewRule = true;
@@ -311,8 +311,8 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
         setModelDirty(scope);
     };
 
-    $scope.showWarning = function () {
-        $scope.showPrefixWarningIcon = true;
+    $scope.showPrefixWarningIcon = function (showWarning) {
+        $scope.hasCustomPrefix = showWarning;
     };
 
     /**
@@ -328,14 +328,11 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
      * @param {FormController} form - The form object.
      */
     $scope.performSearchActionOnEnter = function (event, scope, form) {
-        if (!RoleNamePrefixUtils.isCustomPrefixUsed(event.target.value)) {
-            $scope.showPrefixWarningIcon = false;
-        }
         if (event.keyCode === 13) {
             event.stopPropagation();
             event.preventDefault();
             $scope.triggerValidation(form);
-            if (form.$valid) {
+            if (!form.$error.required || !form.$error.minLength) {
                 $scope.saveRule(scope);
             }
         }

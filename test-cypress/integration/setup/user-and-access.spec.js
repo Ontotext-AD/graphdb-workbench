@@ -111,7 +111,7 @@ describe('User and Access', () => {
         // And I add a custom role tag with prefix CUSTOM_
         UserAndAccessSteps.addTextToCustomRoleField('CUSTOM_USER');
         // There should be a warning text
-        UserAndAccessSteps.getPrefixWarning().should('contain', 'Custom roles should be entered without the "CUSTOM_" prefix in Workbench');
+        UserAndAccessSteps.getPrefixWarning(0).should('contain', 'Custom roles should be entered without the "CUSTOM_" prefix in Workbench');
     });
 
     it('Warn users when setting no password when creating new user admin', () => {

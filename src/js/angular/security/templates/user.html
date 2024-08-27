@@ -219,14 +219,14 @@
                                         paste-split-pattern="[\s+]"
                                         on-tag-adding="isCustomRoleValid($tag)"
                                         on-tag-added="addCustomRole($tag)"
-                                        ng-keydown="checkForBackspace($event)"
+                                        ng-keydown="checkUserInput($event)"
                                         ng-cut="removeErrorOnCut()"
                                         placeholder="{{'security.user.add.custom_role.msg' | translate}}"></tags-input>
                             <div class="small" ng-hide="isRoleValid">
                                 <small>{{'security.user.role.too.short' | translate}}</small>
                             </div>
                             <div class="small prefix-warning" ng-if="showCustomPrefixMessage">
-                                <small>{{'acl_management.rulestable.prefix_warning.text' | translate}}</small>
+                                <small>{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}</small>
                             </div>
                         </div>
                     </div>

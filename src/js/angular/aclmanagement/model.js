@@ -189,6 +189,9 @@ export class ACRuleModel {
         this._scope = scope;
         this._role = role;
         this._policy = policy;
+        // The BE requires CUSTOM_ to be prefixed to user created roles. Our custom-role-prefix directive handles this.
+        // However, if the user also types CUSTOM_ in the input before the role name, we need to detect the double prefix, and display the warnings before the rule is saved.
+        this.doublePrefix = "CUSTOM_CUSTOM_";
     }
 
     get scope() {
@@ -219,6 +222,10 @@ export class ACRuleModel {
 
     set policy(value) {
         this._policy = value;
+    }
+
+    get hasDoublePrefix() {
+        return this._role && this._role.startsWith(this.doublePrefix);
     }
 
     toJSON() {

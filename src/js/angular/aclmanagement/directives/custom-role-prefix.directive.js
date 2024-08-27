@@ -12,6 +12,9 @@ angular
  * from the model value bound to an input field. It ensures that the prefix is present in the model
  * for consistency but is removed when displaying the value in the edit view for better user experience.
  *
+ * The directive also includes validation to check if the view value starts with 'CUSTOM_' or '!CUSTOM_'.
+ * If the value starts with either of these prefixes, the model will be marked as invalid.
+ *
  * Special cases:
  * - If the role starts with '!', '!CUSTOM_' is used instead.
  * - If the role is '*', it is considered a special value and is not prefixed.
@@ -57,6 +60,14 @@ function customRolePrefixDirective() {
             // Check if the element is an input or textarea and has ngModel associated with it
             if ((element[0].tagName === 'INPUT' || element[0].tagName === 'TEXTAREA') && attrs.ngModel) {
                 const ngModelCtrl = element.controller('ngModel');
+                ngModelCtrl.$parsers.push(function(viewValue) {
+                    if (viewValue && (viewValue.startsWith('CUSTOM_') || viewValue.startsWith('!CUSTOM_'))) {
+                        ngModelCtrl.$setValidity('customPrefix', false);
+                    } else {
+                        ngModelCtrl.$setValidity('customPrefix', true);
+                    }
+                    return viewValue;
+                });
 
                 // Set up ngModel formatters and parsers for input element
                 ngModelCtrl.$formatters.push(function(modelValue) {

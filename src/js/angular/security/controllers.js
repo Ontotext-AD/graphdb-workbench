@@ -511,17 +511,17 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
          * @return {boolean} true if valid, otherwise false
          */
         $scope.isCustomRoleValid = function (fieldValue) {
-            $scope.showCustomPrefixMessage = RoleNamePrefixUtils.isCustomPrefixUsed(fieldValue.text);
             $scope.isRoleValid = fieldValue.text.length >= minTagLength;
             return $scope.isRoleValid;
         };
 
         /**
          * Checks if the user pressed the 'Backspace' or 'Delete' key and sets the role validity flag accordingly.
+         * Checks for the CUSTOM_ prefix and displays warning, if present.
          *
          * @param {Object} event
          */
-        $scope.checkForBackspace = function(event) {
+        $scope.checkUserInput = function(event) {
             // If the key pressed is the backspace or delete key, the tag error message will be hidden
             if (event.keyCode === 8 || event.keyCode === 46) {
                 $scope.isRoleValid = true;
