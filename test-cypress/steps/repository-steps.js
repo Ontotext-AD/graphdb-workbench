@@ -121,6 +121,26 @@ export class RepositorySteps {
         return cy.get('.ot-edit-input');
     }
 
+    static getUsernameFieldEditRepo() {
+        return cy.get('.form-group #username');
+    }
+
+    static typeUsernameInEditRepo(username) {
+        this.getUsernameFieldEditRepo().type(username);
+    }
+
+    static clickSaveEditedRepo() {
+        cy.get('#addEditOntopRepository').click();
+    }
+
+    static clickModalOK() {
+        cy.get('.modal-footer .confirm-btn').click();
+    }
+
+    static typeURL(url) {
+        cy.get('#url').type(url);
+    }
+
     static editRepositoryId() {
         this.getRepositoryIdEditElement().click();
     }
@@ -241,5 +261,17 @@ export class RepositorySteps {
 
     static uploadRulesetFile(file) {
         cy.get('input[type=file]').eq(1).selectFile(file, {force: true});
+    }
+
+    static clickObdaSelectFilesBtn() {
+       cy.get('.selectFiles').first().click();
+    }
+
+    static uploadObdaFile(file) {
+        cy.get('input[type=file]').first().selectFile(file, {force: true});
+    }
+
+    static getRepoIcon(type) {
+        return this.getLocalGraphDBTable().get(`.lead .icon-repo-${type}`);
     }
 }
