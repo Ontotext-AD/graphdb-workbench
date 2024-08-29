@@ -234,4 +234,12 @@ export class RepositorySteps {
     static getLocalGraphDBTable() {
         return cy.get('#wb-locations-locationInGetLocations');
     }
+
+    static selectRulesetFile() {
+        cy.get('#additionalParams .form-group .selectFiles').click();
+    }
+
+    static uploadRulesetFile(file) {
+        cy.get('input[type=file]').eq(1).selectFile(file, {force: true});
+    }
 }
