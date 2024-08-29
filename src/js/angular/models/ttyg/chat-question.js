@@ -2,7 +2,7 @@ export class ChatQuestion {
     constructor(data = {}) {
         this._conversationId = data._conversationId;
         // TODO remove harcoded agent id when agent functionality is ready
-        this._agentId = data._agentId || "asst_FI0g7wLJ2w3vrJl5D2OeH3wc";
+        this._agentId = data._agentId || "asst_HApZpXImdncqcVB1jXy3ya9O";
         this._question = data._question;
     }
 
