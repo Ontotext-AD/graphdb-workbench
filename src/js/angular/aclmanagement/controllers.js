@@ -137,6 +137,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
 
     $scope.rowHeights = {};
 
+    // When the user clicks outside the input, this flag is used to signal that the CUSTOM_ prefix warning icon should appear and the warning text should disappear
     $scope.hasCustomPrefix = false;
 
     //
