@@ -53,7 +53,6 @@ describe('Repositories', () => {
     });
 
 
-
     it('create repository page should list available repository types options', () => {
         const expectedRepoTypes = ['GraphDB Repository', 'Ontop Virtual SPARQL', 'FedX Virtual SPARQL'];
         RepositorySteps.createRepository();
@@ -206,6 +205,33 @@ describe('Repositories', () => {
 
         // TODO uncomment and refactor when FTS configuration is with clear ON or OFF status
         // getRepositoryFtsCheckbox().should('be.checked');
+    });
+
+    it('should create repository with selected ruleset file', () => {
+        interceptRulesetFileUpload();
+        // Given I create a repository
+        RepositorySteps.createRepository();
+        RepositorySteps.chooseRepositoryType(GDB_REPOSITORY_TYPE);
+        RepositorySteps.typeRepositoryId(repositoryId);
+        // When I select an invalid ruleset file
+        RepositorySteps.getRepositoryRulesetMenu().select('OWL-Horst (Optimized)').then(() => {
+            RepositorySteps.selectRulesetFile();
+            RepositorySteps.uploadRulesetFile('fixtures/repositories/invalid_builtin_Rules.pie');
+            // Then I see an error
+            ToasterSteps.verifyError('Error compiling ruleset: ');
+            // And I wait for it to disappear
+            ToasterSteps.getToast().should('not.exist');
+        });
+
+        // When I select a valid ruleset file
+        RepositorySteps.getRepositoryRulesetMenu().select('OWL-Horst (Optimized)').then(() => {
+            RepositorySteps.selectRulesetFile();
+            RepositorySteps.uploadRulesetFile('fixtures/repositories/builtin_Rules.pie');
+            // Then there should be no error
+            ToasterSteps.getToast().should('not.exist');
+            // And I should be able to save the repository
+            RepositorySteps.saveRepository();
+        });
     });
 
     it('should allow to switch between repositories', () => {
@@ -490,5 +516,39 @@ describe('Repositories', () => {
                 .find('.repository-status .text-secondary')
                 .then(($el) => $el)
                 .then(($el) => $el && $el.text() === status));
+    }
+
+    function interceptRulesetFileUpload() {
+       cy.intercept(
+            {
+                method: 'POST',
+                url: 'rest/repositories/ruleset/upload'
+            },
+            (req) => {
+                const bodyString = req.body.toString();
+
+                if (bodyString.includes('filename="invalid_builtin_Rules.pie"')) {
+                    req.reply({
+                        statusCode: 200,
+                        body: {
+                            success: false,
+                            errorMessage: 'Error compiling ruleset: invalid_builtin_Rulestmp1724942106843.pie',
+                            fileLocation: ''
+                        }
+                    });
+                } else if (bodyString.includes('filename="builtin_Rules.pie"')) {
+                    req.reply({
+                        statusCode: 200,
+                        body: {
+                            success: true,
+                            errorMessage: '',
+                            fileLocation: 'builtin_Rulestmp1724944380374.pie'
+                        }
+                    });
+                } else {
+                    throw new Error('Test failed: Request did not match stubbed headers.');
+                }
+            }
+        ).as('uploadRuleset');
     }
 });

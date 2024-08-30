@@ -620,7 +620,9 @@ function AddRepositoryCtrl($rootScope, $scope, toastr, $repositories, $location,
                 if (!data.success) {
                     toastr.error(data.errorMessage);
                     isInvalidPieFile = true;
+                    $scope.uploadFile = '';
                 } else {
+                    isInvalidPieFile = false;
                     const fileName = $scope.uploadFile.name;
                     const newValue = {id: data.fileLocation, name: 'Custom: ' + fileName};
                     if ($scope.rulesetPie) {
@@ -640,6 +642,7 @@ function AddRepositoryCtrl($rootScope, $scope, toastr, $repositories, $location,
                 toastr.error(msg, $translate.instant('common.error'));
                 $scope.uploadFile = '';
                 $scope.uploadFileLoader = false;
+                isInvalidPieFile = true;
             });
         }
     };
