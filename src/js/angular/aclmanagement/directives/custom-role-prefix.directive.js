@@ -57,26 +57,47 @@ function customRolePrefixDirective() {
                 return negated ? '!' + value.replace(prefix, '') : value.replace(prefix, '');
             }
 
-            // Check if the element is an input or textarea and has ngModel associated with it
-            if ((element[0].tagName === 'INPUT' || element[0].tagName === 'TEXTAREA') && attrs.ngModel) {
+            // Check if the element is an input, textarea, or tags-input and has ngModel associated with it
+            const isNgTagsInput = element[0].nodeName.toLowerCase() === 'tags-input';
+
+            if ((element[0].tagName === 'INPUT' || element[0].tagName === 'TEXTAREA' || isNgTagsInput) && attrs.ngModel) {
                 const ngModelCtrl = element.controller('ngModel');
-                ngModelCtrl.$parsers.push(function(viewValue) {
-                    if (viewValue && (viewValue.startsWith('CUSTOM_') || viewValue.startsWith('!CUSTOM_'))) {
-                        ngModelCtrl.$setValidity('customPrefix', false);
-                    } else {
-                        ngModelCtrl.$setValidity('customPrefix', true);
-                    }
-                    return viewValue;
-                });
 
-                // Set up ngModel formatters and parsers for input element
-                ngModelCtrl.$formatters.push(function(modelValue) {
-                    return handleCustomPrefix(modelValue, false);
-                });
+                if (isNgTagsInput) {
+                    ngModelCtrl.$parsers.push(function (viewValue) {
+                        if (Array.isArray(viewValue)) {
+                            const isValid = viewValue.every((tag) => !tag.startsWith('CUSTOM_') && !tag.startsWith('!CUSTOM_'));
+                            ngModelCtrl.$setValidity('customPrefix', isValid);
+                        }
+                        return viewValue;
+                    });
 
-                ngModelCtrl.$parsers.push(function(viewValue) {
-                    return handleCustomPrefix(viewValue, true);
-                });
+                    scope.$watch(attrs.ngModel, function (newVal) {
+                        if (Array.isArray(newVal)) {
+                            const isValid = newVal.every((tag) => !tag.startsWith('CUSTOM_') && !tag.startsWith('!CUSTOM_'));
+                            ngModelCtrl.$setValidity('customPrefix', isValid);
+                        }
+                    }, true);
+                } else {
+                    // Validation for single input or textarea
+                    ngModelCtrl.$parsers.push(function (viewValue) {
+                        if (viewValue && (viewValue.startsWith('CUSTOM_') || viewValue.startsWith('!CUSTOM_'))) {
+                            ngModelCtrl.$setValidity('customPrefix', false);
+                        } else {
+                            ngModelCtrl.$setValidity('customPrefix', true);
+                        }
+                        return viewValue;
+                    });
+
+                    // Set up ngModel formatters and parsers for input element
+                    ngModelCtrl.$formatters.push(function(modelValue) {
+                        return handleCustomPrefix(modelValue, false);
+                    });
+
+                    ngModelCtrl.$parsers.push(function(viewValue) {
+                        return handleCustomPrefix(viewValue, true);
+                    });
+                }
             }
         }
     };

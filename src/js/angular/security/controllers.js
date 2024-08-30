@@ -3,7 +3,7 @@ import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/openid-auth.service';
 import 'angular/rest/security.rest.service';
 import {UserUtils, UserRole, UserType} from 'angular/utils/user-utils';
-import {RoleNamePrefixUtils} from "../utils/role-name-prefix-utils";
+import 'angular/aclmanagement/directives/custom-role-prefix.directive';
 
 const SYSTEM_REPO = 'SYSTEM';
 const READ_REPO = 'READ_REPO';
@@ -18,6 +18,7 @@ const modules = [
     'graphdb.framework.core.services.openIDService',
     'graphdb.framework.rest.security.service',
     'toastr',
+    'graphdb.framework.aclmanagement.directives',
     'ngTagsInput'
 ];
 
@@ -517,7 +518,6 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
 
         /**
          * Checks if the user pressed the 'Backspace' or 'Delete' key and sets the role validity flag accordingly.
-         * Checks for the CUSTOM_ prefix and displays warning, if present.
          *
          * @param {Object} event
          */
@@ -526,7 +526,6 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
             if (event.keyCode === 8 || event.keyCode === 46) {
                 $scope.isRoleValid = true;
             }
-            $scope.showCustomPrefixMessage = RoleNamePrefixUtils.isCustomPrefixUsed(event.target.value);
         };
 
         /**

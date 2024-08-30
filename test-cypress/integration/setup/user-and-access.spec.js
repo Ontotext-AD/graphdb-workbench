@@ -109,7 +109,7 @@ describe('User and Access', () => {
         // When I create a user
         UserAndAccessSteps.clickCreateNewUserButton();
         // And I add a custom role tag with prefix CUSTOM_
-        UserAndAccessSteps.addTextToCustomRoleField('CUSTOM_USER');
+        UserAndAccessSteps.addTextToCustomRoleField('CUSTOM_USER{Enter}');
         // There should be a warning text
         UserAndAccessSteps.getPrefixWarning(0).should('contain', 'Custom roles should be entered without the "CUSTOM_" prefix in Workbench');
     });

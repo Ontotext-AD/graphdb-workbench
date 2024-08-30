@@ -221,11 +221,12 @@
                                         on-tag-added="addCustomRole($tag)"
                                         ng-keydown="checkUserInput($event)"
                                         ng-cut="removeErrorOnCut()"
-                                        placeholder="{{'security.user.add.custom_role.msg' | translate}}"></tags-input>
+                                        placeholder="{{'security.user.add.custom_role.msg' | translate}}"
+                                        custom-role-prefix></tags-input>
                             <div class="small" ng-hide="isRoleValid">
                                 <small>{{'security.user.role.too.short' | translate}}</small>
                             </div>
-                            <div class="small prefix-warning" ng-if="showCustomPrefixMessage">
+                            <div class="small prefix-warning" ng-if="form.customRoleTag.$error.customPrefix">
                                 <small>{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}</small>
                             </div>
                         </div>
