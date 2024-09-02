@@ -55,6 +55,10 @@ export class RepositorySteps {
         return RepositorySteps.getRepositoryFromList(id).find('.icon-connection-off');
     }
 
+    static clickRepositoryConnectionOffBtn(id) {
+        RepositorySteps.getRepositoryConnectionOffBtn(id).click();
+    }
+
     static getRepositoryConnectionOnBtn(id) {
         return RepositorySteps.getRepositoryFromList(id).find('.icon-connection-on');
     }
@@ -131,10 +135,6 @@ export class RepositorySteps {
 
     static clickSaveEditedRepo() {
         cy.get('#addEditOntopRepository').click();
-    }
-
-    static clickModalOK() {
-        cy.get('.modal-footer .confirm-btn').click();
     }
 
     static typeURL(url) {
@@ -263,15 +263,16 @@ export class RepositorySteps {
         cy.get('input[type=file]').eq(1).selectFile(file, {force: true});
     }
 
-    static clickObdaSelectFilesBtn() {
-       cy.get('.selectFiles').first().click();
-    }
-
-    static uploadObdaFile(file) {
-        cy.get('input[type=file]').first().selectFile(file, {force: true});
-    }
-
     static getRepoIcon(type) {
         return this.getLocalGraphDBTable().get(`.lead .icon-repo-${type}`);
+    }
+
+    static assertRepositoryStatus(repositoryId, status) {
+        cy.waitUntil(() =>
+            RepositorySteps.getRepositoryFromList(repositoryId)
+                .should('be.visible')
+                .find('.repository-status .text-secondary')
+                .then(($el) => $el)
+                .then(($el) => $el && $el.text() === status));
     }
 }

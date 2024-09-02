@@ -87,15 +87,37 @@ export class OntopRepositorySteps {
         return cy.get('#hostName');
     }
 
+    static typeHostName(host) {
+        OntopRepositorySteps.getHostNameInput().type(host);
+    }
+
     static getPortInput() {
         return cy.get('#port');
+    }
+
+    static typePort(port) {
+        OntopRepositorySteps.getPortInput().type(port);
     }
 
     static getDatabaseNameInput() {
         return cy.get('#databaseName');
     }
 
+    static typeDatabaseName(database) {
+        OntopRepositorySteps.getDatabaseNameInput().type(database);
+    }
+
     static getTestConnectionButton() {
         return cy.get('#testConnection');
+    }
+
+    static clickObdaFileUploadButton() {
+        OntopRepositorySteps.getOBDAUploadButton().click();
+    }
+
+    static uploadObdaFile(file) {
+        // The label for the input has visibility: hidden, so force must be used
+        // eq() index 0 for location of OBDA field input
+        cy.get('input[type=file]').eq(0).selectFile(file, {force: true});
     }
 }
