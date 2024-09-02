@@ -1,12 +1,12 @@
-import {chatModelMapper, chatsListMapper} from "../../ttyg/services/chats.mapper";
+import {chatModelMapper, chatsListMapper} from "./chats.mapper";
 import 'angular/rest/ttyg.rest.service';
-import {askQuestionChatRequestMapper, renameChatRequestMapper} from "../../ttyg/services/chat-request.mapper";
-import {chatMessageModelMapper} from "../../ttyg/services/chat-message.mapper";
+import {askQuestionChatRequestMapper, renameChatRequestMapper} from "./chat-request.mapper";
+import {chatMessageModelMapper} from "./chat-message.mapper";
 
 const modules = ['graphdb.framework.rest.ttyg.service'];
 
 angular
-    .module('graphdb.framework.core.services.ttyg-service', modules)
+    .module('graphdb.framework.ttyg.services.ttyg-service', modules)
     .factory('TTYGService', TTYGService);
 
 TTYGService.$inject = ['TTYGRestService'];

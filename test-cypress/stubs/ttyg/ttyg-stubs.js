@@ -1,8 +1,8 @@
 export class TTYGStubs {
-    static stubChatsListGet(delay = 0) {
+    static stubChatsListGet(fixture = '/ttyg/chats/get-chat-list.json', delay = 0) {
         cy.intercept('/rest/chat/conversations', {
             method: 'GET',
-            fixture: '/ttyg/chats/get-chat-list.json',
+            fixture: fixture,
             statusCode: 200,
             delay: delay
         }).as('get-chat-list');
@@ -25,7 +25,11 @@ export class TTYGStubs {
     }
 
     static stubChatUpdate() {
-
+        cy.intercept('/rest/chat/conversations/*', {
+            method: 'PUT',
+            fixture: '/ttyg/chats/renamed-chat.json',
+            statusCode: 200
+        }).as('update-chat');
     }
 
     static stubChatDelete() {

@@ -32,6 +32,15 @@ function TTYGRestService($http) {
         return $http.get(`${CONVERSATIONS_ENDPOINT}/${id}`);
     };
 
+    /**
+     * Calls the REST API to rename the conversation.
+     *
+     * Bear in mind that the backend doesn't return the whole conversation object, but only the name and the ID.
+     *
+     * @param {string} id - the conversation ID
+     * @param {{name: string}} data - request payload containing the new name
+     * @return {Promise<{name: string, id: string}>}
+     */
     const renameConversation = (id, data) => {
         if (DEVELOPMENT) {
             return _fakeBackend.renameConversation(id, data);
@@ -39,6 +48,14 @@ function TTYGRestService($http) {
         return $http.put(`${CONVERSATIONS_ENDPOINT}/${id}`, data);
     };
 
+    /**
+     * Exports a conversation by its ID.
+     *
+     * TODO: this should give the user a file to download, but the backend doesn't support it yet.
+     *
+     * @param {string} id
+     * @return {*}
+     */
     const exportConversation = (id) => {
         if (DEVELOPMENT) {
             return _fakeBackend.exportConversation(id);
@@ -46,6 +63,11 @@ function TTYGRestService($http) {
         return $http.post(`${CONVERSATIONS_ENDPOINT}/export/${id}`);
     };
 
+    /**
+     * Calls the REST API to ask a question.
+     * @param {*} data
+     * @return {*}
+     */
     const askQuestion = (data) => {
         if (DEVELOPMENT) {
             return _fakeBackend.askQuestion(data);
@@ -67,6 +89,7 @@ function TTYGRestService($http) {
 
     /**
      * Creates a new conversation.
+     * @param {*} data - the data to be sent to the backend
      * @return {Promise<*>}
      */
     const createConversation = (data = {}) => {

@@ -1,5 +1,5 @@
-import 'angular/core/services/ttyg.service';
 import 'angular/ttyg/directives/chat-list.directive';
+import 'angular/ttyg/services/ttyg.service';
 import 'angular/ttyg/services/ttyg-context.service';
 import {TTYGEventName} from "../services/ttyg-context.service";
 import {ChatQuestion} from "../../models/ttyg/chat-question";
@@ -9,7 +9,7 @@ import {cloneDeep} from "lodash";
 const modules = [
     'toastr',
     'graphdb.framework.utils.localstorageadapter',
-    'graphdb.framework.core.services.ttyg-service',
+    'graphdb.framework.ttyg.services.ttyg-service',
     'graphdb.framework.ttyg.services.ttygcontext',
     'graphdb.framework.ttyg.directives.chats-list'
 ];
@@ -78,31 +78,23 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
     // =========================
     // Public functions
     // =========================
+
+    /**
+     * Creates a new chat and selects it.
+     */
     $scope.startNewChat = () => {
         $scope.chatQuestion = new ChatQuestion();
         TTYGContextService.selectChat(undefined);
     };
 
+    /**
+     * Handles the ask question action.
+     */
     $scope.ask = () => {
         if (!$scope.chatQuestion.conversationId) {
-            TTYGService.createConversation($scope.chatQuestion)
-                .then((conversationId) => {
-                    loadChats()
-                        .then(() => {
-                            TTYGContextService.selectChat(TTYGContextService.getChats().getChat(conversationId));
-                        });
-                });
+            createNewChat();
         } else {
-            if ($scope.selectedChat) {
-                $scope.chatQuestion.role = 'user';
-                $scope.selectedChat.messages.push(chatQuestionToChatMessageMapper($scope.chatQuestion));
-            }
-            const question = cloneDeep($scope.chatQuestion);
-            createNewChatQuestion();
-            TTYGService.askQuestion(question)
-                .then((answer) => {
-                    $scope.selectedChat.messages.push(answer);
-                });
+            askQuestion();
         }
     };
 
@@ -160,9 +152,47 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
         });
     };
 
+    /**
+     * Handles the export of a chat by calling the service and updating the chats list.
+     */
+    $scope.onExportSelectedChat = () => {
+        onExportChat(TTYGContextService.getSelectedChat());
+    };
+
     // =========================
     // Private functions
     // =========================
+
+    const createNewChat = () => {
+        let newConversationid = undefined;
+        TTYGService.createConversation($scope.chatQuestion)
+            .then((conversationId) => {
+                newConversationid = conversationId;
+                return loadChats();
+            })
+            .then(() => {
+                TTYGContextService.emit(TTYGEventName.CREATE_CHAT_SUCCESSFUL);
+                TTYGContextService.selectChat(TTYGContextService.getChats().getChat(newConversationid));
+            })
+            .catch((error) => {
+                TTYGContextService.emit(TTYGEventName.CREATE_CHAT_FAILURE);
+                toastr.error($translate.instant('ttyg.chat.messages.create_failure'));
+            });
+    };
+
+    const askQuestion = () => {
+        if ($scope.selectedChat) {
+            $scope.chatQuestion.role = 'user';
+            $scope.selectedChat.messages.push(chatQuestionToChatMessageMapper($scope.chatQuestion));
+        }
+        const question = cloneDeep($scope.chatQuestion);
+        createNewChatQuestion();
+        TTYGService.askQuestion(question)
+            .then((answer) => {
+                $scope.selectedChat.messages.push(answer);
+            })
+            .catch((error) => toastr.error(getError(error, 0, 100)));
+    };
 
     const createNewChatQuestion = () => {
         const chatQuestion = new ChatQuestion();
@@ -195,7 +225,9 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
 
     const loadChats = () => {
         return TTYGService.getConversations()
-            .then((chatsListModel) => TTYGContextService.updateChats(chatsListModel))
+            .then((chatsListModel) => {
+                return TTYGContextService.updateChats(chatsListModel);
+            })
             .catch((error) => toastr.error(getError(error, 0, 100)));
     };
 
@@ -218,19 +250,23 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
         }
     };
 
-    // =========================
-    // Subscription handlers
-    // =========================
     const getActiveRepositoryObjectHandler = (activeRepo) => {
         if (activeRepo) {
             onInit();
         }
     };
 
+    /**
+     * Handles the renaming of a chat by calling the service and updating the chats list.
+     * Events are fired for success and failure cases.
+     * @param {ChatModel} chat - the chat to be renamed.
+     */
     const onRenameChat = (chat) => {
         TTYGService.renameConversation(chat)
             .then(() => {
-                loadChats();
+                return loadChats();
+            })
+            .then(() => {
                 TTYGContextService.emit(TTYGEventName.RENAME_CHAT_SUCCESSFUL);
             })
             .catch((error) => {
@@ -240,7 +276,10 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
     };
 
     /**
-     * @param {ChatsListModel} chats
+     * Handles the change of the chats list.
+     * When the list is empty, the chats list should be hidden.
+     * When the list is not empty, the first chat should be selected
+     * @param {ChatsListModel} chats - the new chats list.
      */
     const onChatsChanged = (chats) => {
         $scope.chats = chats;
@@ -255,10 +294,17 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
         }
     };
 
+    /**
+     * Handles the deletion of a chat by calling the service and updating the chats list.
+     * Events are fired for success and failure cases.
+     * @param {ChatModel} chat - the chat to be deleted.
+     */
     const onDeleteChat = (chat) => {
         TTYGService.deleteConversation(chat.id)
             .then(() => {
-                loadChats();
+                return loadChats();
+            })
+            .then(() => {
                 TTYGContextService.emit(TTYGEventName.DELETE_CHAT_SUCCESSFUL, chat);
             })
             .catch((error) => {
@@ -267,14 +313,16 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
             });
     };
 
-    $scope.onExportSelectedChat = () => {
-        onExportChat(TTYGContextService.getSelectedChat());
-    };
-
+    /**
+     * Handles the export of a chat by calling the service and updating the chats list.
+     * @param {ChatModel} chat - the chat to be exported.
+     */
     const onExportChat = (chat) => {
         TTYGService.exportConversation(chat.id)
             .then(() => {
-                loadChats();
+                return loadChats();
+            })
+            .then(() => {
                 TTYGContextService.emit(TTYGEventName.CHART_EXPORT_SUCCESSFUL, chat);
             })
             .catch((error) => {
@@ -283,6 +331,10 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
             });
     };
 
+    /**
+     * Handles the change of the selected chat.
+     * @param {ChatModel} chat - the new selected chat.
+     */
     const onSelectedChatChanged = (chat) => {
         if (!chat) {
             $scope.selectedChat = undefined;

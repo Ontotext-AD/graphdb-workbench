@@ -25,12 +25,12 @@
                             ng-disabled="false">
                         <i class="fa-regular fa-ellipsis"></i>
                     </button>
-                    <div class="dropdown-menu dropdown-menu-right">
+                    <div class="dropdown-menu dropdown-menu-right chat-actions-menu">
                         <button class="dropdown-item" type="button" ng-click="onExportChat(chat)">
                             <i class="fa-light fa-arrow-down-to-line"></i>
                             <span>{{'ttyg.chat.btn.export_chat.label' | translate}}</span>
                         </button>
-                        <button class="dropdown-item" type="button" ng-click="onSelectChatForRenaming(chat)">
+                        <button class="dropdown-item rename-chat-btn" type="button" ng-click="onSelectChatForRenaming(chat)">
                             <i class="fa-light fa-pen"></i>
                             <span>{{'ttyg.chat.btn.rename_chat.label' | translate}}</span>
                         </button>

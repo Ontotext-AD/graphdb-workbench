@@ -12,7 +12,8 @@ export const chatsListMapper = (data) => {
         return new ChatsListModel();
     }
     const chatModels = data.map((chat) => chatModelMapper(chat));
-    chatModels.reverse();
+    // TODO: Ask Boyan why this was needed?!
+    // chatModels.reverse();
     return new ChatsListModel(chatModels);
 };
 
