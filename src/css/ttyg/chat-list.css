@@ -4,6 +4,23 @@
     justify-content: space-between;
 }
 
+.chat-list-component .chat-item .form-control {
+    padding: 4px 8px;
+}
+
+.chat-list-component .chat-item.selected {
+    background-color: #ddd;
+}
+
+.chat-list-component .chat-item.edited {
+    padding: 0;
+}
+
+.chat-list-component .chat-item .chat-name a {
+    text-decoration: none;
+    color: unset;
+}
+
 .chat-list-component .chat-item .btn-group {
     display: flex;
 }
@@ -24,14 +41,14 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 100%;
+    width: 100%;
 }
 
-.chat-list-component .chat-item:hover {
+.chat-list-component .chat-item:not(.edited):hover {
     background-color: #ddd;
     cursor: pointer;
 }
 
-.chat-list-component .chat-item:hover .open-chat-actions-btn {
+.chat-list-component .chat-item:not(.edited):hover .open-chat-actions-btn {
     display: block;
 }

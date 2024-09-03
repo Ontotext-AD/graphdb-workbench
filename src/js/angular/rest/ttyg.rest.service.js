@@ -1,4 +1,4 @@
-import {chatsListMapper} from "../ttyg/services/chats-mapper";
+import {TtygRestServiceFakeBackend} from "./ttyg.rest.service.fake.backend";
 
 angular
     .module('graphdb.framework.rest.ttyg.service', [])
@@ -7,65 +7,105 @@ angular
 TTYGRestService.$inject = ['$http'];
 
 const CONVERSATIONS_ENDPOINT = 'rest/chat/conversations';
+const DEVELOPMENT = false;
 
 function TTYGRestService($http) {
-    return {
-        getConversations
+
+    const _fakeBackend = new TtygRestServiceFakeBackend();
+
+    const getConversations = () => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.getConversations();
+        }
+        return $http.get(CONVERSATIONS_ENDPOINT);
     };
 
-    function getConversations(savedQueryName, owner) {
-        return $http.get(CONVERSATIONS_ENDPOINT).then((response) => {
-            return chatsListMapper(response && response.data);
-        });
-        // const data = [
-        //     {
-        //         "conversationId": "thread_jdQBvbkaU6JPoO48oFbC54dA",
-        //         "conversationName": "Test chat Test chat Test chat 1",
-        //         "timestamp": 1697408400
-        //     },
-        //     {
-        //         "conversationId": "thread_jdQBvbkaU6JPoO48oQaL76dB",
-        //         "conversationName": "Test chat 2",
-        //         "timestamp": 1697428200
-        //     },
-        //     {
-        //         "conversationId": "thread_jdQBvbkaU6JPoO48oQaL76dC",
-        //         "conversationName": "Test chat 3",
-        //         "timestamp": 1697448900
-        //     },
-        //     {
-        //         "conversationId": "thread_jdQBvbkaU6JPoO48oFbC54dD",
-        //         "conversationName": "Test chat 4",
-        //         "timestamp": 1697331600
-        //     },
-        //     {
-        //         "conversationId": "thread_jdQBvbkaU6JPoO48oQaL76dE",
-        //         "conversationName": "Test chat 5",
-        //         "timestamp": 1697252400
-        //     },
-        //     {
-        //         "conversationId": "thread_jdQBvbkaU6JPoO48oQaL76dF",
-        //         "conversationName": "Test chat 6",
-        //         "timestamp": 1697154000
-        //     }, {
-        //         "conversationId": "thread_jdQBvbkaU6JPoO48oFbC54dE",
-        //         "conversationName": "Test chat 7",
-        //         "timestamp": 1697073000
-        //     },
-        //     {
-        //         "conversationId": "thread_jdQBvbkaU6JPoO48oQaL76dG",
-        //         "conversationName": "Test chat 8",
-        //         "timestamp": 1696980300
-        //     },
-        //     {
-        //         "conversationId": "thread_jdQBvbkaU6JPoO48oQaL76dH",
-        //         "conversationName": "Test chat 9",
-        //         "timestamp": 1696899300
-        //     }
-        // ];
-        // const mapped = chatsListMapper(data);
-        // return new Promise((resolve) => {
-        //     setTimeout(() => resolve(mapped), 100);
-        // });
-    }
+    /**
+     * Loads a conversation by its ID.
+     * @param {string} id
+     * @return {Promise<*>}
+     */
+    const getConversation = (id) => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.getConversation(id);
+        }
+        return $http.get(`${CONVERSATIONS_ENDPOINT}/${id}`);
+    };
+
+    /**
+     * Calls the REST API to rename the conversation.
+     *
+     * Bear in mind that the backend doesn't return the whole conversation object, but only the name and the ID.
+     *
+     * @param {string} id - the conversation ID
+     * @param {{name: string}} data - request payload containing the new name
+     * @return {Promise<{name: string, id: string}>}
+     */
+    const renameConversation = (id, data) => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.renameConversation(id, data);
+        }
+        return $http.put(`${CONVERSATIONS_ENDPOINT}/${id}`, data);
+    };
+
+    /**
+     * Exports a conversation by its ID.
+     *
+     * TODO: this should give the user a file to download, but the backend doesn't support it yet.
+     *
+     * @param {string} id
+     * @return {*}
+     */
+    const exportConversation = (id) => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.exportConversation(id);
+        }
+        return $http.post(`${CONVERSATIONS_ENDPOINT}/export/${id}`);
+    };
+
+    /**
+     * Calls the REST API to ask a question.
+     * @param {*} data
+     * @return {*}
+     */
+    const askQuestion = (data) => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.askQuestion(data);
+        }
+        return $http.post(`${CONVERSATIONS_ENDPOINT}`, data);
+    };
+
+    /**
+     * Deletes a conversation by its ID.
+     * @param {string} id
+     * @return {Promise<void>}
+     */
+    const deleteConversation = (id) => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.deleteConversation(id);
+        }
+        return $http.delete(`${CONVERSATIONS_ENDPOINT}/${id}`);
+    };
+
+    /**
+     * Creates a new conversation.
+     * @param {*} data - the data to be sent to the backend
+     * @return {Promise<*>}
+     */
+    const createConversation = (data = {}) => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.createConversation();
+        }
+        return $http.post(CONVERSATIONS_ENDPOINT, data);
+    };
+
+    return {
+        getConversation,
+        renameConversation,
+        exportConversation,
+        askQuestion,
+        getConversations,
+        deleteConversation,
+        createConversation
+    };
 }

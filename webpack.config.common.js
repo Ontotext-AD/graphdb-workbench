@@ -180,6 +180,11 @@ module.exports = {
                 transform: replaceVersion
             },
             {
+                from: 'src/js/angular/core/directives/inline-editable-text/templates',
+                to: 'js/angular/core/directives/inline-editable-text/templates',
+                transform: replaceVersion
+            },
+            {
                 from: 'src/js/angular/core/components/export-settings-modal',
                 to: 'js/angular/core/components/export-settings-modal',
                 transform: replaceVersion

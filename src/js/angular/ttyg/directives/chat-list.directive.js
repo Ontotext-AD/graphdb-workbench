@@ -1,16 +1,20 @@
 import 'angular/core/filters/readableTimestamp';
+import 'angular/core/directives/inline-editable-text/inline-editable-text.directive';
+import {decodeHTML} from "../../../../app";
+import {TTYGEventName} from "../services/ttyg-context.service";
 
 const modules = [
-    'graphdb.framework.core.filters.readable_titmestamp'
+    'graphdb.framework.core.filters.readable_titmestamp',
+    'graphdb.framework.core.directives.inline-editable-text'
 ];
 
 angular
     .module('graphdb.framework.ttyg.directives.chats-list', modules)
     .directive('chatList', ChatListComponent);
 
-ChatListComponent.$inject = [];
+ChatListComponent.$inject = ['TTYGContextService', 'ModalService', '$translate'];
 
-function ChatListComponent() {
+function ChatListComponent(TTYGContextService, ModalService, $translate) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/chat-list.html',
@@ -23,19 +27,76 @@ function ChatListComponent() {
             // Public variables
             // =========================
 
+            $scope.selectedChat = undefined;
+            $scope.renamedChat = undefined;
+
+            // =========================
+            // Private variables
+            // =========================
+
             // =========================
             // Public functions
             // =========================
 
-            // =========================
-            // Private functions
-            // =========================
+            /**
+             * Handles the selection of a chat for renaming.
+             * @param {ChatModel} chat
+             */
+            $scope.onSelectChatForRenaming = (chat) => {
+                $scope.renamedChat = chat;
+            };
+            /**
+             * Handles the selection of a chat.
+             * @param {ChatModel} chat
+             */
+            $scope.onSelectChat = (chat) => {
+                TTYGContextService.selectChat(chat);
+                $scope.renamedChat = undefined;
+            };
 
+            /**
+             * Handles the deletion of a chat.
+             * @param {ChatModel} chat
+             */
+            $scope.onDeleteChat = (chat) => {
+                const title = $translate.instant('ttyg.dialog.delete.title');
+                const confirmDeleteMessage = decodeHTML($translate.instant('ttyg.dialog.delete.body', {chatName: chat.name}));
+                ModalService.openConfirmation(title, confirmDeleteMessage, () => TTYGContextService.emit(TTYGEventName.DELETE_CHAT, chat));
+            };
 
-            // =========================
-            // Subscription handlers
-            // =========================
+            /**
+             * Handles the renaming of a chat.
+             * @param {string} newName - the new name of the chat
+             * @param {ChatModel} chat
+             */
+            $scope.onRenameChat = (newName, chat) => {
+                chat.name = newName;
+                $scope.renamedChat = undefined;
+                TTYGContextService.emit(TTYGEventName.RENAME_CHAT, chat);
+            };
 
+            /**
+             * Handles the export of a chat.
+             * @param {ChatModel} chat
+             */
+            $scope.onExportChat = (chat) => {
+                TTYGContextService.emit(TTYGEventName.CHART_EXPORT, chat);
+            };
+
+            /**
+             * Handles the cancelation of the chat renaming.
+             */
+            $scope.onCancelChatRenaming = () => {
+                $scope.renamedChat = undefined;
+            };
+
+            /**
+             * Handles the change of the selected chat.
+             * @param {ChatModel} chat
+             */
+            const onSelectedChatChanged = (chat) => {
+                $scope.selectedChat = chat;
+            };
 
             // =========================
             // Subscriptions
@@ -46,8 +107,19 @@ function ChatListComponent() {
                 subscriptions.forEach((subscription) => subscription());
             };
 
+            subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
+
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);
+
+            // =========================
+            // Initialization
+            // =========================
+
+            function initialize() {
+                console.log('ChatListComponent initialized');
+            }
+            initialize();
         }
     };
 }

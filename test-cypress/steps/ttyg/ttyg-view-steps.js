@@ -47,6 +47,44 @@ export class TTYGViewSteps {
         return this.getChatGroup(groupIndex).find('.chat-item').eq(chatIndex);
     }
 
+    static selectChat(groupIndex, chatIndex) {
+        this.getChatFromGroup(groupIndex, chatIndex).click();
+    }
+
+    static editChatName(groupIndex, chatIndex) {
+        this.getChatFromGroup(groupIndex, chatIndex).dblclick();
+    }
+
+    static getChatNameInput(groupIndex, chatIndex) {
+        return this.getChatFromGroup(groupIndex, chatIndex).find('.inline-editable-text input');
+    }
+
+    static writeChatName(groupIndex, chatIndex, name) {
+        this.getChatNameInput(groupIndex, chatIndex).clear().type(name);
+    }
+
+    static saveChatName(groupIndex, chatIndex) {
+        this.getChatNameInput(groupIndex, chatIndex).type('{enter}');
+    }
+
+    static cancelChatNameSaving(groupIndex, chatIndex) {
+        this.getChatNameInput(groupIndex, chatIndex).type('{esc}');
+    }
+
+    static openChatActionMenu(groupIndex, chatIndex) {
+        this.getChatFromGroup(groupIndex, chatIndex).realHover().find('.open-chat-actions-btn').click();
+    }
+
+    static triggerEditChatActionMenu(groupIndex, chatIndex) {
+        this.openChatActionMenu(groupIndex, chatIndex);
+        this.getChatFromGroup(groupIndex, chatIndex).find('.chat-actions-menu .rename-chat-btn').click();
+    }
+
+    static triggerDeleteChatActionMenu(groupIndex, chatIndex) {
+        this.openChatActionMenu(groupIndex, chatIndex);
+        this.getChatFromGroup(groupIndex, chatIndex).find('.chat-actions-menu .delete-chat-btn').click();
+    }
+
     static getToggleChatsSidebarButton() {
         return this.getChatsSidebar().find('.toggle-chats-sidebar-btn');
     }

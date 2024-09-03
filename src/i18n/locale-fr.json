@@ -226,6 +226,12 @@
                 }
             }
         },
+        "dialog": {
+            "delete": {
+                "title": "Supprimer la conversation",
+                "body": "Voulez-vous vraiment supprimer <b>{{chatName}}</b>? Tout l'historique de la conversation sera perdu."
+            }
+        },
         "chat": {
             "loading_chats": "Chargement des chats...",
             "btn": {
@@ -250,6 +256,12 @@
                     "label": "Renommer",
                     "tooltip": "Renommer le chat"
                 }
+            },
+            "messages": {
+                "create_failure": "Échec de la création de la conversation. Veuillez réessayer.",
+                "rename_failure": "Échec du renommage de la conversation. Veuillez réessayer.",
+                "delete_failure": "Échec de la suppression de la conversation. Veuillez réessayer.",
+                "export_failure": "Échec de l'exportation de la conversation. Veuillez réessayer."
             }
         },
         "agent": {

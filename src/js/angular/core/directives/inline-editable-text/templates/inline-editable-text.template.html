@@ -1,0 +1,14 @@
+<div class="inline-editable-text">
+    <div ng-if="!isEditing"
+          ng-click="onSelect()">
+        {{ source[fieldName] || '&nbsp;'}}
+    </div>
+
+    <input ng-if="isEditing"
+           type="text"
+           ng-model="editableModel.text"
+           class="form-control"
+           ng-blur="onCancelEditing()"
+           ng-keydown="onKeydown($event)"
+           auto-focus/>
+</div>

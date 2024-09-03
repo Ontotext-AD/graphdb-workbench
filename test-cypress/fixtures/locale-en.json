@@ -216,6 +216,89 @@
             "all": "all - CLEAR ALL graphs"
         }
     },
+    "ttyg": {
+        "helpInfo": "Talk to Your Graph is chat bot based on OpenAI's GPT-4 model that can answer questions about data stored in GraphDB, leveraging both your data and the general knowledge of the GPT-4 model. The bot works in connection with the ChatGPT Retrieval connector.",
+        "hint": "Talk to your graph – simply ask a question!",
+        "help": {
+            "btn": {
+                "show_help": {
+                    "tooltip": "Show help"
+                }
+            }
+        },
+        "dialog": {
+            "delete": {
+                "title": "Delete Conversation",
+                "body": "Do you really want to delete <b>{{chatName}}</b>? All chat history will be lost."
+            }
+        },
+        "chat": {
+            "loading_chats": "Loading chats...",
+            "btn": {
+                "open_sidebar": {
+                    "tooltip": "Open sidebar"
+                },
+                "close_sidebar": {
+                    "tooltip": "Close sidebar"
+                },
+                "create_chat": {
+                    "tooltip": "Create a new chat"
+                },
+                "export_chat": {
+                    "label": "Export",
+                    "tooltip": "Export chat"
+                },
+                "delete_chat": {
+                    "label": "Delete chat",
+                    "tooltip": "Delete chat"
+                },
+                "rename_chat": {
+                    "label": "Rename",
+                    "tooltip": "Rename chat"
+                }
+            },
+            "messages": {
+                "rename_failure": "Failed to rename the conversation. Please try again.",
+                "delete_failure": "Failed to delete the conversation. Please try again.",
+                "export_failure": "Failed to export the conversation. Please try again."
+            }
+        },
+        "agent": {
+            "btn": {
+                "edit_agent": {
+                    "tooltip": "Edit agent"
+                },
+                "create_agent": {
+                    "tooltip": "Create agent"
+                },
+                "open_sidebar": {
+                    "tooltip": "Open sidebar"
+                },
+                "close_sidebar": {
+                    "tooltip": "Close sidebar"
+                }
+            }
+        },
+        "help.what.title": "What is this?",
+        "help.what.content": "Talk to Your Graph is chat bot based on OpenAI's GPT-4 model that can answer questions about data stored in GraphDB, leveraging both your data and the general knowledge of the GPT-4 model.",
+        "help.how.title": "How does it work?",
+        "help.how.content": "The bot uses the ChatGPT Retrieval connector to fetch information it does not know about. As such, you must first create a suitable connector. See also the settings for fine-tuning the integration with the Retrieval connector.",
+        "ask.button": "Ask",
+        "clear.hint": "Clear the chat history",
+        "clear.history.confirmation": "This will clear the history conversation.",
+        "settings.title": "Talk to Your Graph Settings",
+        "settings.info": "The settings are stored in the browser only and are per repository.",
+        "settings.connector.id": "Retrieval connector ID",
+        "settings.connector.id.tooltip": "The ID of the Retrieval connector to use. If empty, the first defined connector will be used.",
+        "settings.query.template": "Query template",
+        "settings.query.template.tooltip": "The query template used by the chat bot to request more information from the connector. It must contain at least the \"query\" key but may also contain a \"filter\" key if your connector has suitable metadata.",
+        "settings.ground.truths": "Ground truths",
+        "settings.ground.truths.tooltip": "An optional list of ground truths that help the chat bot to establish context.",
+        "settings.topk": "Number of top results",
+        "settings.topk.tooltip": "Number of results returned to the chat bot when it requests more information. More results will provide more information but they may also introduce noise.",
+        "settings.echo.vector.query": "Echo vector query",
+        "settings.echo.vector.query.tooltip": "If enabled the bot will use the generated queries as feedback to the GPT API."
+    },
     "config.name.label": "Config name",
     "graph.config.required": "My graph config (required)",
     "description.text": "Description",
@@ -2084,27 +2167,6 @@
     "guide.confirm.cancel.message": "Are you sure you want to stop the guide?",
     "guide.unexpected.error.message": "The guide was cancelled due to an unexpected error. Please run the guide again and if the problem persists contact the support.",
     "guide.start.unexpected.error.message": "The guide cannot be started due to an unexpected error. Please try running the guide again and if the problem persists contact the support.",
-    "ttyg.helpInfo": "Talk to Your Graph is chat bot based on OpenAI's GPT-4 model that can answer questions about data stored in GraphDB, leveraging both your data and the general knowledge of the GPT-4 model. The bot works in connection with the ChatGPT Retrieval connector.",
-    "ttyg.hint": "Talk to your graph – simply ask a question!",
-    "ttyg.help.what.title": "What is this?",
-    "ttyg.help.what.content": "Talk to Your Graph is chat bot based on OpenAI's GPT-4 model that can answer questions about data stored in GraphDB, leveraging both your data and the general knowledge of the GPT-4 model.",
-    "ttyg.help.how.title": "How does it work?",
-    "ttyg.help.how.content": "The bot uses the ChatGPT Retrieval connector to fetch information it does not know about. As such, you must first create a suitable connector. See also the settings for fine-tuning the integration with the Retrieval connector.",
-    "ttyg.ask.button": "Ask",
-    "ttyg.clear.hint": "Clear the chat history",
-    "ttyg.clear.history.confirmation": "This will clear the history conversation.",
-    "ttyg.settings.title": "Talk to Your Graph Settings",
-    "ttyg.settings.info": "The settings are stored in the browser only and are per repository.",
-    "ttyg.settings.connector.id": "Retrieval connector ID",
-    "ttyg.settings.connector.id.tooltip": "The ID of the Retrieval connector to use. If empty, the first defined connector will be used.",
-    "ttyg.settings.query.template": "Query template",
-    "ttyg.settings.query.template.tooltip": "The query template used by the chat bot to request more information from the connector. It must contain at least the \"query\" key but may also contain a \"filter\" key if your connector has suitable metadata.",
-    "ttyg.settings.ground.truths": "Ground truths",
-    "ttyg.settings.ground.truths.tooltip": "An optional list of ground truths that help the chat bot to establish context.",
-    "ttyg.settings.topk": "Number of top results",
-    "ttyg.settings.topk.tooltip": "Number of results returned to the chat bot when it requests more information. More results will provide more information but they may also introduce noise.",
-    "ttyg.settings.echo.vector.query": "Echo vector query",
-    "ttyg.settings.echo.vector.query.tooltip": "If enabled the bot will use the generated queries as feedback to the GPT API.",
     "global.operations_statuses.queries.title": "Running queries",
     "global.operations_statuses.updates.title": "Running updates",
     "global.operations_statuses.imports.title": "Running imports",
