@@ -26,7 +26,7 @@
                         <i class="fa-regular fa-ellipsis"></i>
                     </button>
                     <div class="dropdown-menu dropdown-menu-right chat-actions-menu">
-                        <button class="dropdown-item" type="button" ng-click="onExportChat(chat)">
+                        <button class="dropdown-item export-chat-btn" type="button" ng-click="onExportChat(chat)">
                             <i class="fa-light fa-arrow-down-to-line"></i>
                             <span>{{'ttyg.chat.btn.export_chat.label' | translate}}</span>
                         </button>
@@ -35,7 +35,7 @@
                             <span>{{'ttyg.chat.btn.rename_chat.label' | translate}}</span>
                         </button>
                         <div class="dropdown-divider"></div>
-                        <button class="dropdown-item" type="button" ng-click="onDeleteChat(chat)">
+                        <button class="dropdown-item delete-chat-btn" type="button" ng-click="onDeleteChat(chat)">
                             <i class="fa-light fa-trash-can"></i>
                             <span>{{'ttyg.chat.btn.delete_chat.label' | translate}}</span>
                         </button>

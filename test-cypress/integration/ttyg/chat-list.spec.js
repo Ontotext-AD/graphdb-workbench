@@ -1,5 +1,6 @@
 import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
+import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 
 describe('TTYG chat list', () => {
     let repositoryId;
@@ -97,6 +98,28 @@ describe('TTYG chat list', () => {
         TTYGViewSteps.cancelChatNameSaving(0, 0);
         // Then I should see the old chat name
         TTYGViewSteps.getChatFromGroup(0, 0).should('contain', 'Very long chat name which does not fit in the sidebar');
+    });
+
+    it('Should be able to delete a chat', () => {
+        TTYGStubs.stubChatsListGet();
+        TTYGStubs.stubChatDelete();
+        // Given I have opened the ttyg page and there are chats loaded
+        TTYGViewSteps.visit();
+        // When I select the delete action from the chat action menu
+        TTYGViewSteps.triggerDeleteChatActionMenu(1, 0);
+        // Then I should see the chat deletion confirmation dialog
+        ModalDialogSteps.getDialog().should('be.visible');
+        // If I reject the deletion
+        ModalDialogSteps.clickOnCancelButton();
+        // Then the chat should not be deleted
+        TTYGViewSteps.getChatFromGroup(1, 0).should('contain', 'Test chat 4');
+        // When I select the delete action from the chat action menu again
+        TTYGViewSteps.triggerDeleteChatActionMenu(1, 0);
+        // And I confirm the deletion
+        TTYGStubs.stubChatsListGet('/ttyg/chats/get-chat-list-with-deleted-chat.json');
+        ModalDialogSteps.clickOnConfirmButton();
+        // Then the chat should be deleted
+        TTYGViewSteps.getChatByDayGroups().should('have.length', 1);
     });
 });
 

@@ -80,6 +80,11 @@ export class TTYGViewSteps {
         this.getChatFromGroup(groupIndex, chatIndex).find('.chat-actions-menu .rename-chat-btn').click();
     }
 
+    static triggerDeleteChatActionMenu(groupIndex, chatIndex) {
+        this.openChatActionMenu(groupIndex, chatIndex);
+        this.getChatFromGroup(groupIndex, chatIndex).find('.chat-actions-menu .delete-chat-btn').click();
+    }
+
     static getToggleChatsSidebarButton() {
         return this.getChatsSidebar().find('.toggle-chats-sidebar-btn');
     }

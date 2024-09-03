@@ -33,6 +33,10 @@ export class TTYGStubs {
     }
 
     static stubChatDelete() {
-
+        cy.intercept('/rest/chat/conversations/*', {
+            method: 'DELETE',
+            fixture: '/ttyg/chats/deleted-chat.json',
+            statusCode: 200
+        }).as('delete-chat');
     }
 }
