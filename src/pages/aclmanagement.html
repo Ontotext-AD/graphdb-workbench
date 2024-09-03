@@ -107,15 +107,16 @@
                                             {{rule.policy}}
                                         </span>
                                     </td>
-                                    <td class="role-cell data">
+                                    <td id="statementRoleCell" class="role-cell data">
                                         <span class="acl-tag"
                                               ng-class="{'acl-tag-role-negated': rule.roleWithoutCustomPrefix[0] === '!', 'acl-tag-role': rule.roleWithoutCustomPrefix[0] !== '!', 'wildcard-cell': rule.role === '*'}">
                                             {{rule.roleWithoutCustomPrefix}}
-                                            <em ng-if="rule.hasDoublePrefix"
-                                                class="icon-warning"
-                                                gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
-                                                tooltip-placement="right"></em>
                                         </span>
+                                        <em ng-if="rule.warnForPrefix"
+                                            class="icon-warning"
+                                            gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
+                                            tooltip-placement="right">
+                                        </em>
                                     </td>
                                     <td class="operation-cell data">
                                          <span class="acl-tag" ng-class="{'wildcard-cell': rule.operation === '*', 'acl-tag-read': rule.operation === 'read','acl-tag-write': rule.operation === 'write'}">
@@ -167,7 +168,7 @@
                                                       class="form-control form-control-sm textarea-edit"
                                                       placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}">
                                             </textarea>
-                                            <em ng-if="ruleData.role.$error.customPrefix && hasCustomPrefix"
+                                            <em ng-if="ruleData.role.$warning && hasCustomPrefix || rule.warnForPrefix"
                                                 class="icon-warning"
                                                 gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
                                                 tooltip-placement="right"></em>
@@ -175,7 +176,7 @@
                                         <div class="small" ng-if="ruleData.role.$touched && ruleData.role.$error.minlength">
                                             <small>{{'acl_management.errors.role_length_too_short' | translate}}</small>
                                         </div>
-                                        <div ng-if="ruleData.role.$error.customPrefix && !hasCustomPrefix">
+                                        <div ng-if="ruleData.role.$warning && !hasCustomPrefix">
                                             <small class="small float-lg-left prefix-warning-text">
                                                 {{'acl_management.rulestable.custom_prefix_warning.text' | translate}}
                                             </small>
@@ -260,7 +261,7 @@
                                             </button>
                                             <button ng-click="saveRule(activeTabScope)"
                                                     class="btn btn-link save-rule-btn"
-                                                    ng-disabled="ruleData.role.$error.required || ruleData.role.$error.minlength"
+                                                    ng-disabled="!ruleData.$valid"
                                                     gdb-tooltip="{{ruleData.$valid ? 'acl_management.rulestable.actions.apply_rule' : 'acl_management.rulestable.messages.invalid_form' | translate}}">
                                                 <em class="icon-check"></em>
                                             </button>
@@ -323,14 +324,15 @@
                                             {{rule.policy}}
                                         </span>
                                     </td>
-                                    <td class="role-cell data">
+                                    <td id="graphRoleCell" class="role-cell data">
                                         <span class="acl-tag" ng-class="{'acl-tag-role-negated': rule.roleWithoutCustomPrefix[0] === '!', 'acl-tag-role': rule.roleWithoutCustomPrefix[0] !== '!', 'wildcard-cell': rule.role === '*'}">
                                             {{rule.roleWithoutCustomPrefix}}
-                                            <em ng-if="rule.hasDoublePrefix"
-                                                class="icon-warning"
-                                                gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
-                                                tooltip-placement="right"></em>
                                         </span>
+                                        <em ng-if="rule.warnForPrefix"
+                                            class="icon-warning"
+                                            gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
+                                            tooltip-placement="right">
+                                        </em>
                                     </td>
                                     <td class="context-cell data" ng-class="{'wildcard-cell': rule.context === '*', 'context-cell-special': !rule.context.startsWith('<') && rule.context !== '*'}">
                                         {{rule.context}}
@@ -376,7 +378,7 @@
                                                       rows="1"
                                                       placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}">
                                             </textarea>
-                                            <em ng-if="ruleData.role.$error.customPrefix && hasCustomPrefix"
+                                            <em ng-if="ruleData.role.$warning && hasCustomPrefix || rule.warnForPrefix"
                                                 class="icon-warning"
                                                 gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
                                                 tooltip-placement="right">
@@ -385,7 +387,7 @@
                                         <div class="small" ng-if="ruleData.role.$touched && ruleData.role.$error.minlength">
                                             <small>{{'acl_management.errors.role_length_too_short' | translate}}</small>
                                         </div>
-                                        <div ng-if="ruleData.role.$error.customPrefix && !hasCustomPrefix">
+                                        <div ng-if="ruleData.role.$warning && !hasCustomPrefix">
                                             <small class="small float-lg-left prefix-warning-text">
                                                 {{'acl_management.rulestable.custom_prefix_warning.text' | translate}}
                                             </small>
@@ -417,7 +419,7 @@
                                             </button>
                                             <button ng-click="saveRule(activeTabScope)"
                                                     class="btn btn-link save-rule-btn"
-                                                    ng-disabled="ruleData.role.$error.required || ruleData.role.$error.minlength"
+                                                    ng-disabled="!ruleData.$valid"
                                                     gdb-tooltip="{{ruleData.$valid ? 'acl_management.rulestable.actions.apply_rule' : 'acl_management.rulestable.messages.invalid_form' | translate}}">
                                                 <em class="icon-check"></em>
                                             </button>
@@ -483,15 +485,15 @@
                                             {{rule.policy}}
                                         </span>
                                     </td>
-                                    <td class="role-cell data">
+                                    <td id="pluginRoleCell" class="role-cell data">
                                         <span class="acl-tag" ng-class="{'acl-tag-role-negated': rule.roleWithoutCustomPrefix[0] === '!', 'acl-tag-role': rule.roleWithoutCustomPrefix[0] !== '!', 'wildcard-cell': rule.role === '*'}">
                                             {{rule.roleWithoutCustomPrefix}}
-                                            <em ng-if="rule.hasDoublePrefix"
-                                                class="icon-warning"
-                                                gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
-                                                tooltip-placement="right">
-                                            </em>
                                         </span>
+                                        <em ng-if="rule.warnForPrefix"
+                                                   class="icon-warning"
+                                                   gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
+                                                   tooltip-placement="right">
+                                        </em>
                                     </td>
                                     <td class="operation-cell data">
                                          <span class="acl-tag" ng-class="{'wildcard-cell': rule.operation === '*', 'acl-tag-read': rule.operation === 'read','acl-tag-write': rule.operation === 'write'}">
@@ -543,7 +545,7 @@
                                                       class="form-control form-control-sm textarea-edit"
                                                       placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}">
                                             </textarea>
-                                            <em ng-if="ruleData.role.$error.customPrefix && hasCustomPrefix"
+                                            <em ng-if="ruleData.role.$warning && hasCustomPrefix || rule.warnForPrefix"
                                                 class="icon-warning"
                                                 gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
                                                 tooltip-placement="right">
@@ -552,7 +554,7 @@
                                         <div class="small" ng-if="ruleData.role.$touched && ruleData.role.$error.minlength">
                                             <small>{{'acl_management.errors.role_length_too_short' | translate}}</small>
                                         </div>
-                                        <div ng-if="ruleData.role.$error.customPrefix && !hasCustomPrefix">
+                                        <div ng-if="ruleData.role.$warning && !hasCustomPrefix">
                                             <small class="small float-lg-left prefix-warning-text">
                                                 {{'acl_management.rulestable.custom_prefix_warning.text' | translate}}
                                             </small>
@@ -588,7 +590,7 @@
                                             </button>
                                             <button ng-click="saveRule(activeTabScope)"
                                                     class="btn btn-link save-rule-btn"
-                                                    ng-disabled="ruleData.role.$error.required || ruleData.role.$error.minlength"
+                                                    ng-disabled="!ruleData.$valid"
                                                     gdb-tooltip="{{ruleData.$valid ? 'acl_management.rulestable.actions.apply_rule' : 'acl_management.rulestable.messages.invalid_form' | translate}}">
                                                 <em class="icon-check"></em>
                                             </button>
@@ -651,15 +653,15 @@
                                             {{rule.policy}}
                                         </span>
                                     </td>
-                                    <td class="role-cell data">
+                                    <td id="systemRoleCell" class="role-cell data">
                                         <span class="acl-tag" ng-class="{'acl-tag-role-negated': rule.roleWithoutCustomPrefix[0] === '!', 'acl-tag-role': rule.roleWithoutCustomPrefix[0] !== '!', 'wildcard-cell': rule.role === '*'}">
                                             {{rule.roleWithoutCustomPrefix}}
-                                            <em ng-if="rule.hasDoublePrefix"
-                                                class="icon-warning"
-                                                gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
-                                                tooltip-placement="right">
-                                            </em>
                                         </span>
+                                        <em ng-if="rule.warnForPrefix"
+                                            class="icon-warning"
+                                            gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
+                                            tooltip-placement="right">
+                                        </em>
                                     </td>
                                     <td class="operation-cell data">
                                          <span class="acl-tag" ng-class="{'wildcard-cell': rule.operation === '*', 'acl-tag-read': rule.operation === 'read','acl-tag-write': rule.operation === 'write'}">
@@ -708,7 +710,7 @@
                                                       class="form-control form-control-sm textarea-edit"
                                                       placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}">
                                             </textarea>
-                                            <em ng-if="ruleData.role.$error.customPrefix && hasCustomPrefix"
+                                            <em ng-if="ruleData.role.$warning && hasCustomPrefix || rule.warnForPrefix"
                                                 class="icon-warning"
                                                 gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
                                                 tooltip-placement="right">
@@ -717,7 +719,7 @@
                                         <div class="small" ng-if="ruleData.role.$touched && ruleData.role.$error.minlength">
                                             <small>{{'acl_management.errors.role_length_too_short' | translate}}</small>
                                         </div>
-                                        <div ng-if="ruleData.role.$error.customPrefix && !hasCustomPrefix">
+                                        <div ng-if="ruleData.role.$warning && !hasCustomPrefix">
                                             <small class="small float-lg-left prefix-warning-text">
                                                 {{'acl_management.rulestable.custom_prefix_warning.text' | translate}}
                                             </small>
@@ -741,7 +743,7 @@
                                             </button>
                                             <button ng-click="saveRule(activeTabScope)"
                                                     class="btn btn-link save-rule-btn"
-                                                    ng-disabled="ruleData.role.$error.required || ruleData.role.$error.minlength"
+                                                    ng-disabled="!ruleData.$valid"
                                                     gdb-tooltip="{{ruleData.$valid ? 'acl_management.rulestable.actions.apply_rule' : 'acl_management.rulestable.messages.invalid_form' | translate}}">
                                                 <em class="icon-check"></em>
                                             </button>

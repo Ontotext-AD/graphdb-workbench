@@ -226,7 +226,7 @@
                             <div class="small" ng-hide="isRoleValid">
                                 <small>{{'security.user.role.too.short' | translate}}</small>
                             </div>
-                            <div class="small prefix-warning" ng-if="form.customRoleTag.$error.customPrefix">
+                            <div class="small prefix-warning" ng-if="form.customRoleTag.$warning">
                                 <small>{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}</small>
                             </div>
                         </div>

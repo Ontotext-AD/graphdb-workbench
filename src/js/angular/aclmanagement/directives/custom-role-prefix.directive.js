@@ -13,7 +13,7 @@ angular
  * for consistency but is removed when displaying the value in the edit view for better user experience.
  *
  * The directive also includes validation to check if the view value starts with 'CUSTOM_' or '!CUSTOM_'.
- * If the value starts with either of these prefixes, the model will be marked as invalid.
+ * If the value starts with either of these prefixes, a warning property will be set in ngModel.
  *
  * Special cases:
  * - If the role starts with '!', '!CUSTOM_' is used instead.
@@ -44,17 +44,25 @@ function customRolePrefixDirective() {
     return {
         restrict: 'A',
         link: function(scope, element, attrs) {
+            const customPrefix = "CUSTOM_";
+            const negatedPrefix = "!CUSTOM_";
+            const subscriptions = [];
+
             // Function to add or remove the custom prefix
             function handleCustomPrefix(value, addPrefix) {
                 if (!value || value === '*') {
                     return value;
                 }
                 const negated = value.startsWith('!');
-                const prefix = negated ? '!CUSTOM_' : 'CUSTOM_';
+                const prefix = negated ? negatedPrefix : customPrefix;
                 if (addPrefix) {
                     return prefix + value.replace(/^!/, '');
                 }
                 return negated ? '!' + value.replace(prefix, '') : value.replace(prefix, '');
+            }
+
+            function hasCustomOrNegatedPrefix(tag) {
+                return tag.startsWith(customPrefix) || tag.startsWith(negatedPrefix);
             }
 
             // Check if the element is an input, textarea, or tags-input and has ngModel associated with it
@@ -66,26 +74,20 @@ function customRolePrefixDirective() {
                 if (isNgTagsInput) {
                     ngModelCtrl.$parsers.push(function (viewValue) {
                         if (Array.isArray(viewValue)) {
-                            const isValid = viewValue.every((tag) => !tag.startsWith('CUSTOM_') && !tag.startsWith('!CUSTOM_'));
-                            ngModelCtrl.$setValidity('customPrefix', isValid);
+                            ngModelCtrl.$warning = viewValue.some((tag) => hasCustomOrNegatedPrefix(tag));
                         }
                         return viewValue;
                     });
 
-                    scope.$watch(attrs.ngModel, function (newVal) {
+                    subscriptions.push(scope.$watch(attrs.ngModel, function (newVal) {
                         if (Array.isArray(newVal)) {
-                            const isValid = newVal.every((tag) => !tag.startsWith('CUSTOM_') && !tag.startsWith('!CUSTOM_'));
-                            ngModelCtrl.$setValidity('customPrefix', isValid);
+                            ngModelCtrl.$warning = newVal.some((tag) => hasCustomOrNegatedPrefix(tag));
                         }
-                    }, true);
+                    }, true));
                 } else {
                     // Validation for single input or textarea
                     ngModelCtrl.$parsers.push(function (viewValue) {
-                        if (viewValue && (viewValue.startsWith('CUSTOM_') || viewValue.startsWith('!CUSTOM_'))) {
-                            ngModelCtrl.$setValidity('customPrefix', false);
-                        } else {
-                            ngModelCtrl.$setValidity('customPrefix', true);
-                        }
+                        ngModelCtrl.$warning = !!(viewValue && hasCustomOrNegatedPrefix(viewValue));
                         return viewValue;
                     });
 
@@ -99,6 +101,12 @@ function customRolePrefixDirective() {
                     });
                 }
             }
+
+            const unsubscribeListeners = () => {
+                subscriptions.forEach((subscription) => subscription());
+            };
+
+            subscriptions.push(scope.$on('$destroy', unsubscribeListeners));
         }
     };
 }

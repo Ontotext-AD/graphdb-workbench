@@ -172,6 +172,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
         $scope.editedRuleScope = scope;
         $scope.isNewRule = false;
         $scope.editedRuleCopy = $scope.rulesModel.getRuleCopy(scope, index);
+        $scope.rulesModel.setPrefixWarningFlag(scope, index);
         $scope.getRowHeight = 'height: ' + $scope.rowHeights[$scope.editedRuleIndex];
         setModelDirty(scope);
     };
@@ -196,10 +197,12 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
      * @param {string} scope
      */
     $scope.saveRule = (scope) => {
+        $scope.rulesModel.setPrefixWarningFlag($scope.editedRuleScope, $scope.editedRuleIndex);
         if ($scope.rulesModel.isRuleDuplicated($scope.editedRuleScope, $scope.editedRuleIndex)) {
             notifyDuplication();
             return;
         }
+
         $scope.editedRuleIndex = undefined;
         $scope.editedRuleScope = undefined;
         $scope.isNewRule = false;
@@ -219,6 +222,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
             $scope.rulesModel.replaceRule(scope, index, $scope.editedRuleCopy);
             $scope.editedRuleCopy = undefined;
         }
+        $scope.rulesModel.setPrefixWarningFlag(scope, index);
         $scope.editedRuleIndex = undefined;
         $scope.editedRuleScope = undefined;
         setModelDirty(scope);
@@ -333,7 +337,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
             event.stopPropagation();
             event.preventDefault();
             $scope.triggerValidation(form);
-            if (!form.$error.required || !form.$error.minLength) {
+            if (form.$valid) {
                 $scope.saveRule(scope);
             }
         }

@@ -104,6 +104,12 @@ html, body {
     margin: 4px 0 0 3px;
 }
 
+#graphRoleCell, #pluginRoleCell, #systemRoleCell, #statementRoleCell {
+    overflow-wrap: anywhere;
+    display: flex;
+    align-items: center;
+}
+
 .acl-management-view .acl-rules .input-container {
     display: flex;
     align-items: center;

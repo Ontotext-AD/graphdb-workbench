@@ -44,6 +44,7 @@ export class ACListModel {
         if (!this._aclRules.has(scope)) {
             this._aclRules.set(scope, []);
         }
+        rule.checkCustomOrNegatedPrefix();
         this._aclRules.get(scope).push(rule);
     }
 
@@ -121,6 +122,11 @@ export class ACListModel {
         });
     }
 
+    setPrefixWarningFlag(scope, index) {
+        const rule = this.getRule(scope, index);
+        rule.checkCustomOrNegatedPrefix();
+    }
+
     /**
      * Returns a copy of a rule object at a specified index within a given scope.
      *
@@ -189,10 +195,6 @@ export class ACRuleModel {
         this._scope = scope;
         this._role = role;
         this._policy = policy;
-        // The BE requires CUSTOM_ to be prefixed to user created roles. Our custom-role-prefix directive handles this.
-        // However, if the user also types CUSTOM_ or !CUSTOM_ in the input before the role name, we need to detect the double prefix, and display the warnings before the rule is saved.
-        this.doublePrefix = "CUSTOM_CUSTOM_";
-        this.negatedDoublePrefix = "!CUSTOM_CUSTOM_";
     }
 
     get scope() {
@@ -225,8 +227,17 @@ export class ACRuleModel {
         this._policy = value;
     }
 
-    get hasDoublePrefix() {
-        return this._role && (this._role.startsWith(this.doublePrefix) || this._role.startsWith(this.negatedDoublePrefix));
+    get warnForPrefix() {
+        return this._warnForPrefix;
+    }
+
+    checkCustomOrNegatedPrefix() {
+        // The BE requires CUSTOM_ to be prefixed to user created roles. Our custom-role-prefix directive handles this.
+        // However, if the user also types CUSTOM_ or !CUSTOM_ in the input before the role name, we need to detect the double prefix, and display the warnings before the rule is saved.
+        const doublePrefix = "CUSTOM_CUSTOM_";
+        const negatedDoublePrefix = "!CUSTOM_CUSTOM_";
+
+        this._warnForPrefix = this.role.startsWith(doublePrefix) || this.role.startsWith(negatedDoublePrefix);
     }
 
     toJSON() {
@@ -308,7 +319,8 @@ export class StatementACRuleModel extends ACRuleModel {
             subject: this.subject,
             predicate: this.predicate,
             object: this.object,
-            context: this.context
+            context: this.context,
+            warnForPrefix: this.warnForPrefix
         };
     }
 
@@ -358,7 +370,8 @@ export class PluginACRuleModel extends ACRuleModel {
             policy: this.policy,
             role: this.role,
             operation: this.operation,
-            plugin: this.plugin
+            plugin: this.plugin,
+            warnForPrefix: this.warnForPrefix
         };
     }
 }
@@ -404,7 +417,8 @@ export class ClearGraphACRuleModel extends ACRuleModel {
             scope: this.scope,
             policy: this.policy,
             role: this.role,
-            context: this.context
+            context: this.context,
+            warnForPrefix: this.warnForPrefix
         };
     }
 }
@@ -432,7 +446,8 @@ export class SystemACRuleModel extends ACRuleModel {
             scope: this.scope,
             policy: this.policy,
             role: this.role,
-            operation: this.operation
+            operation: this.operation,
+            warnForPrefix: this.warnForPrefix
         };
     }
 }
