@@ -42,7 +42,8 @@
                 ps-size="80vw">
                 <div class="sidebar-content">
                     <chat-list ng-if="chats" chat-list="chats"></chat-list>
-                    <div ng-if="loadingChats" onto-loader-fancy message="{{'ttyg.chat.loading_chats' | translate}}" size="25" style="height: 75vh; display: flex;"></div>
+                    <div ng-if="loadingChats" onto-loader-fancy message="{{'ttyg.chat.loading_chats' | translate}}"
+                         size="25" style="height: 75vh; display: flex;"></div>
                 </div>
             </pageslide>
         </div>
@@ -77,7 +78,8 @@
                         <div class="messages-hint text-muted" ng-if="!selectedChat.messages.length">
                             {{ 'ttyg.hint' | translate }}
                         </div>
-                        <div ng-repeat="question in selectedChat.messages" class="m-1" ng-class="{'mt-3': question.role === 'user'}">
+                        <div ng-repeat="question in selectedChat.messages" class="m-1"
+                             ng-class="{'mt-3': question.role === 'user'}">
                             <span ng-if="question.role === 'user'">User:  </span>
                             <span class="messages-item-content">{{ question.message }}</span>
                         </div>
@@ -118,22 +120,20 @@
                         gdb-tooltip="{{'ttyg.help.btn.show_help.tooltip' | translate}}">
                     <i class="fa-light fa-circle-question"></i>
                 </button>
-                <span>
-                    <button class="btn btn-link secondary btn-sm create-agent-btn"
-                            ng-if="true"
-                            ng-click="createAgent()"
-                            ng-disabled="false"
-                            gdb-tooltip="{{'ttyg.agent.btn.create_agent.tooltip' | translate}}">
-                        <i class="fa-light fa-circle-plus"></i>
-                    </button>
-                    <button class="btn btn-link secondary btn-sm toggle-agents-sidebar-btn"
-                            ng-if="true"
-                            ng-click="toggleAgentsListSidebar()"
-                            ng-disabled="false"
-                            gdb-tooltip="{{'ttyg.agent.btn.' + (showAgents ? 'close_sidebar' : 'open_sidebar') + '.tooltip' | translate}}">
-                        <i class="fa-light fa-message-bot"></i>
-                    </button>
-                </span>
+                <button class="btn btn-link secondary btn-sm create-agent-btn"
+                        ng-if="true"
+                        ng-click="createAgent()"
+                        ng-disabled="false"
+                        gdb-tooltip="{{'ttyg.agent.btn.create_agent.tooltip' | translate}}">
+                    <i class="fa-light fa-circle-plus"></i>
+                </button>
+                <button class="btn btn-link secondary btn-sm toggle-agents-sidebar-btn"
+                        ng-if="true"
+                        ng-click="toggleAgentsListSidebar()"
+                        ng-disabled="false"
+                        gdb-tooltip="{{'ttyg.agent.btn.' + (showAgents ? 'close_sidebar' : 'open_sidebar') + '.tooltip' | translate}}">
+                    <i class="fa-light fa-message-bot"></i>
+                </button>
             </div>
 
             <pageslide
@@ -145,13 +145,10 @@
                 ps-side="right"
                 ps-click-outside="false"
                 ps-size="80vw">
-                <div class="agents-list-component">
-                    <ul>
-                        <li>agent 1</li>
-                        <li>agent 2</li>
-                        <li>agent 3</li>
-                        <li>agent 4</li>
-                    </ul>
+                <div class="sidebar-content">
+                    <agent-list ng-if="agents" agent-list="agents"></agent-list>
+                    <div ng-if="loadingAgents" onto-loader-fancy message="{{'ttyg.agent.loading_agents' | translate}}"
+                         size="25" style="height: 75vh; display: flex;"></div>
                 </div>
             </pageslide>
         </div>

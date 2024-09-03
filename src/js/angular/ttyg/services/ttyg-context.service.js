@@ -9,17 +9,32 @@ TTYGContextService.$inject = ['EventEmitterService'];
 function TTYGContextService(EventEmitterService) {
 
     /**
+     * The list of agents.
+     * @type {AgentListModel}
+     * @private
+     */
+    let _agents = undefined;
+
+    /**
      * The ChatsListModel.
      * @type {ChatsListModel}
      * @private
      */
     let _chats = undefined;
+
     /**
      * The currently selected in the UI chat which is used for conversation.
      * @type {ChatModel|undefined}
      * @private
      */
     let _selectedChat = undefined;
+
+    /**
+     * @return {AgentListModel}
+     */
+    const getAgents = () => {
+        return cloneDeep(_agents);
+    };
 
     /**
      * @return {ChatsListModel}
@@ -76,6 +91,14 @@ function TTYGContextService(EventEmitterService) {
     };
 
     /**
+     * @param {AgentListModel} agents
+     */
+    const updateAgents = (agents) => {
+        _agents = cloneDeep(agents);
+        emit(TTYGEventName.AGENT_LIST_UPDATED, getAgents());
+    };
+
+    /**
      * Emits an event with a deep-cloned payload using the EventEmitterService.
      *
      * @param {string} tTYGEventName - The name of the event to emit. It must be a value from {@link TTYGEventName}.
@@ -104,7 +127,8 @@ function TTYGContextService(EventEmitterService) {
         onChatsListChanged,
         getSelectedChat,
         selectChat,
-        onSelectedChatChanged
+        onSelectedChatChanged,
+        updateAgents
     };
 }
 
@@ -121,5 +145,6 @@ export const TTYGEventName = {
     CHART_EXPORT: 'chatExport',
     CHART_EXPORT_SUCCESSFUL: 'chatExportSuccess',
     CHART_EXPORT_FAILURE: 'chatExportFailure',
-    CHAT_LIST_UPDATED: 'chatListUpdated'
+    CHAT_LIST_UPDATED: 'chatListUpdated',
+    AGENT_LIST_UPDATED: 'agentListUpdated'
 };

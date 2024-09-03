@@ -9,7 +9,7 @@ const modules = [
 ];
 
 angular
-    .module('graphdb.framework.ttyg.directives.chats-list', modules)
+    .module('graphdb.framework.ttyg.directives.chat-list', modules)
     .directive('chatList', ChatListComponent);
 
 ChatListComponent.$inject = ['TTYGContextService', 'ModalService', '$translate'];

@@ -1,7 +1,8 @@
 .chat-list-component .chat-item {
-    padding: 4px 8px;
+    padding: 4px 0 4px 8px;
     display: flex;
     justify-content: space-between;
+    width: 100%;
 }
 
 .chat-list-component .chat-item .form-control {
@@ -14,6 +15,13 @@
 
 .chat-list-component .chat-item.edited {
     padding: 0;
+}
+
+.chat-list-component .chat-item .chat-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 90%;
 }
 
 .chat-list-component .chat-item .chat-name a {
@@ -35,13 +43,6 @@
 
 .chat-list-component .chat-item .open-chat-actions-btn {
     display: none;
-}
-
-.chat-list-component .chat-item .chat-name {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 100%;
 }
 
 .chat-list-component .chat-item:not(.edited):hover {

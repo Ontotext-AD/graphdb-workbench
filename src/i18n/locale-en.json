@@ -265,12 +265,23 @@
             }
         },
         "agent": {
+            "loading_agents": "Loading agents...",
             "btn": {
                 "edit_agent": {
-                    "tooltip": "Edit agent"
+                    "label": "Settings",
+                    "tooltip": "Edit Agent"
+                },
+                "clone_agent": {
+                    "label": "Clone",
+                    "tooltip": "Clone Agent"
+                },
+                "delete_agent": {
+                    "label": "Delete Agent",
+                    "tooltip": "Delete Agent"
                 },
                 "create_agent": {
-                    "tooltip": "Create agent"
+                    "label": "Create Agent",
+                    "tooltip": "Create Agent"
                 },
                 "open_sidebar": {
                     "tooltip": "Open sidebar"
@@ -278,6 +289,8 @@
                 "close_sidebar": {
                     "tooltip": "Close sidebar"
                 }
+            },
+            "messages": {
             }
         },
         "help.what.title": "What is this?",

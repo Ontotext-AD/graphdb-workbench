@@ -1,8 +1,10 @@
+import {AGENT_ID} from "../../ttyg/services/constants";
+
 export class ChatQuestion {
     constructor(data = {}) {
         this._conversationId = data._conversationId;
-        // TODO remove harcoded agent id when agent functionality is ready
-        this._agentId = data._agentId || "asst_HApZpXImdncqcVB1jXy3ya9O";
+        // TODO remove hardcoded agent id when agent functionality is ready
+        this._agentId = data._agentId || AGENT_ID;
         this._question = data._question;
     }
 

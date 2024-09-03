@@ -99,6 +99,17 @@ function TTYGRestService($http) {
         return $http.post(CONVERSATIONS_ENDPOINT, data);
     };
 
+    /**
+     * Fetches agents from the backend.
+     * @return {Promise<*>|*}
+     */
+    const getAgents = () => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.getAgents();
+        }
+        return $http.get('rest/chat/agents');
+    };
+
     return {
         getConversation,
         renameConversation,
@@ -106,6 +117,7 @@ function TTYGRestService($http) {
         askQuestion,
         getConversations,
         deleteConversation,
-        createConversation
+        createConversation,
+        getAgents
     };
 }
