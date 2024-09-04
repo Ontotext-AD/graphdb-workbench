@@ -138,20 +138,23 @@ describe('ACL Management: rule scopes', () => {
                     "scope": "clear_graph",
                     "policy": "deny",
                     "role": "CUSTOM_ROLE1",
-                    "context": "all"
+                    "context": "all",
+                    "warnForPrefix": false
                 },
                 {
                     "scope": "plugin",
                     "policy": "deny",
                     "role": "CUSTOM_ROLE2",
                     "operation": "write",
-                    "plugin": "*"
+                    "plugin": "*",
+                    "warnForPrefix": false
                 },
                 {
                     "scope": "system",
                     "policy": "allow",
                     "role": "CUSTOM_ROLE3",
-                    "operation": "write"
+                    "operation": "write",
+                    "warnForPrefix": false
                 },
                 {
                     "scope": "statement",
@@ -161,7 +164,8 @@ describe('ACL Management: rule scopes', () => {
                     "subject": "*",
                     "predicate": "*",
                     "object": "*",
-                    "context": "*"
+                    "context": "*",
+                    "warnForPrefix": false
                 }
             ];
             expect(interception.request.body).to.deep.eq(expectedPayload);

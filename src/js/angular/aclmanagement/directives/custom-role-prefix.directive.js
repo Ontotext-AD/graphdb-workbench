@@ -45,7 +45,7 @@ function customRolePrefixDirective() {
         restrict: 'A',
         link: function(scope, element, attrs) {
             const customPrefix = "CUSTOM_";
-            const negatedPrefix = "!CUSTOM_";
+            const negatedCustomPrefix = "!CUSTOM_";
             const subscriptions = [];
 
             // Function to add or remove the custom prefix
@@ -54,7 +54,7 @@ function customRolePrefixDirective() {
                     return value;
                 }
                 const negated = value.startsWith('!');
-                const prefix = negated ? negatedPrefix : customPrefix;
+                const prefix = negated ? negatedCustomPrefix : customPrefix;
                 if (addPrefix) {
                     return prefix + value.replace(/^!/, '');
                 }
@@ -62,7 +62,7 @@ function customRolePrefixDirective() {
             }
 
             function hasCustomOrNegatedPrefix(tag) {
-                return tag.startsWith(customPrefix) || tag.startsWith(negatedPrefix);
+                return tag.startsWith(customPrefix) || tag.startsWith(negatedCustomPrefix);
             }
 
             // Check if the element is an input, textarea, or tags-input and has ngModel associated with it
