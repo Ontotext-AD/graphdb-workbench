@@ -132,12 +132,12 @@
                         ng-click="toggleAgentsListSidebar()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.agent.btn.' + (showAgents ? 'close_sidebar' : 'open_sidebar') + '.tooltip' | translate}}">
-                    <i class="fa-light fa-message-bot"></i>
+                    <i class="fa-light" ng-class="showAgents ? 'fa-xmark' : 'fa-message-bot'"></i>
                 </button>
             </div>
 
             <pageslide
-                ps-class="agents-list-panel slide-panel"
+                ps-class="agent-list-panel slide-panel"
                 ps-container="right-sidebar"
                 ps-open="showAgents"
                 onopen="onopen"

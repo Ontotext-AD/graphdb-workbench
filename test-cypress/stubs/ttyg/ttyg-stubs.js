@@ -39,4 +39,13 @@ export class TTYGStubs {
             statusCode: 200
         }).as('delete-chat');
     }
+
+    static stubAgentListGet(fixture = '/ttyg/agent/get-agent-list.json', delay = 0) {
+        cy.intercept('/rest/chat/agents', {
+            method: 'GET',
+            fixture: fixture,
+            statusCode: 200,
+            delay: delay
+        }).as('get-agent-list');
+    }
 }

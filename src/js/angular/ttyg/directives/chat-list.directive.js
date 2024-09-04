@@ -80,7 +80,7 @@ function ChatListComponent(TTYGContextService, ModalService, $translate) {
              * @param {ChatModel} chat
              */
             $scope.onExportChat = (chat) => {
-                TTYGContextService.emit(TTYGEventName.CHART_EXPORT, chat);
+                TTYGContextService.emit(TTYGEventName.CHAT_EXPORT, chat);
             };
 
             /**

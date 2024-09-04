@@ -10,6 +10,10 @@ describe('TTYG view', () => {
         cy.presetRepository(repositoryId);
     });
 
+    afterEach(() => {
+        cy.deleteRepository(repositoryId);
+    });
+
     it('Should load ttyg page and render main components', () => {
         TTYGStubs.stubChatsListGet();
         // Given I have opened the ttyg page

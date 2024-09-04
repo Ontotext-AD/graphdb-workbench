@@ -341,10 +341,10 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
                 return loadChats();
             })
             .then(() => {
-                TTYGContextService.emit(TTYGEventName.CHART_EXPORT_SUCCESSFUL, chat);
+                TTYGContextService.emit(TTYGEventName.CHAT_EXPORT_SUCCESSFUL, chat);
             })
             .catch((error) => {
-                TTYGContextService.emit(TTYGEventName.CHART_EXPORT_FAILURE);
+                TTYGContextService.emit(TTYGEventName.CHAT_EXPORT_FAILURE);
                 toastr.error($translate.instant('ttyg.chat.messages.export_failure'));
             });
     };
@@ -369,6 +369,20 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
             });
     };
 
+    /**
+     * Handles the change of the agents list.
+     * @param {AgentListModel} agents - the new agents list.
+     */
+    const onAgentListChanged = (agents) => {
+        $scope.agents = agents;
+        if (agents.isEmpty()) {
+            $scope.showAgents = false;
+        } else {
+            $scope.showAgents = true;
+        }
+    };
+
+
     // =========================
     // Subscriptions
     // =========================
@@ -381,8 +395,9 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
     subscriptions.push(TTYGContextService.onChatsListChanged(onChatsChanged));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.RENAME_CHAT, onRenameChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_CHAT, onDeleteChat));
-    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CHART_EXPORT, onExportChat));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CHAT_EXPORT, onExportChat));
     subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_LIST_UPDATED, onAgentListChanged));
     $scope.$on('$destroy', removeAllListeners);
 
     // =========================
@@ -392,9 +407,8 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
     function onInit() {
         Promise.all([loadChats(), loadAgents()])
             .then(([chats, agents]) => {
-                // TODO: directly set the chats in the scope instead of going through the context event
+                // TODO: directly set the chats and agents in the scope instead of going through the context event
                 TTYGContextService.updateChats(chats);
-                $scope.agents = agents;
                 TTYGContextService.updateAgents(agents);
             })
         .catch((error) => toastr.error(getError(error, 0, 100)));

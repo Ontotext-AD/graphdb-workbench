@@ -142,9 +142,9 @@ export const TTYGEventName = {
     DELETE_CHAT: 'deleteChat',
     DELETE_CHAT_SUCCESSFUL: 'chatDeleted',
     DELETE_CHAT_FAILURE: 'chatDeletedFailure',
-    CHART_EXPORT: 'chatExport',
-    CHART_EXPORT_SUCCESSFUL: 'chatExportSuccess',
-    CHART_EXPORT_FAILURE: 'chatExportFailure',
+    CHAT_EXPORT: 'chatExport',
+    CHAT_EXPORT_SUCCESSFUL: 'chatExportSuccess',
+    CHAT_EXPORT_FAILURE: 'chatExportFailure',
     CHAT_LIST_UPDATED: 'chatListUpdated',
     AGENT_LIST_UPDATED: 'agentListUpdated'
 };

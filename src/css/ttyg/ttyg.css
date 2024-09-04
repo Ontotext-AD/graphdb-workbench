@@ -51,7 +51,6 @@ common sidebar and slidepanel styles
     /* adapt to view width but at least 220px, menu size ignored for all practical screen sizes */
     max-width: var(--sidebar-width);
     top: var(--toolbar-height) !important;
-    /*padding: 1rem 0 1rem 1rem;*/
     padding: 1rem;
 }
 
@@ -100,11 +99,11 @@ right sidebar
     justify-content: end;
 }
 
-.ttyg-view .right-sidebar .agents-list-panel {
+.ttyg-view .right-sidebar .agent-list-panel {
     overflow-y: auto;
 }
 
-.ttyg-view .right-sidebar .agents-list-panel ul {
+.ttyg-view .right-sidebar .agent-list-panel ul {
     list-style: none;
     padding-inline-start: 0;
 }

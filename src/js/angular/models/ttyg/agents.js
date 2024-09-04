@@ -180,6 +180,10 @@ export class AgentListModel {
         this._agents = agents;
     }
 
+    isEmpty() {
+        return this._agents.length === 0;
+    }
+
     get agents() {
         return this._agents;
     }

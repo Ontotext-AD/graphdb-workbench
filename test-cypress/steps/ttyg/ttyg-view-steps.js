@@ -106,7 +106,15 @@ export class TTYGViewSteps {
     }
 
     static getAgentsPanel() {
-        return this.getAgentsSidebar().find('.agents-list-panel');
+        return this.getAgentsSidebar().find('.agent-list-panel');
+    }
+
+    static getAgents() {
+        return this.getAgentsPanel().find('.agent-item');
+    }
+
+    static getAgent(index) {
+        return this.getAgents().eq(index);
     }
 
     static getHelpButton() {
