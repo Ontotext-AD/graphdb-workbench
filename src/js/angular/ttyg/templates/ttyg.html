@@ -21,14 +21,14 @@
                         ng-click="toggleChatsListSidebar()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.chat.btn.' + (showChats ? 'close_sidebar' : 'open_sidebar') + '.tooltip' | translate}}">
-                    <i class="fa-light fa-sidebar"></i>
+                    <i class="fa-regular fa-sidebar"></i>
                 </button>
                 <button class="btn btn-link secondary btn-sm create-chat-btn"
                         ng-if="chats && !chats.isEmpty()"
                         ng-click="startNewChat()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.chat.btn.create_chat.tooltip' | translate}}">
-                    <i class="fa-light fa-pen-to-square"></i>
+                    <i class="fa-regular fa-pen-to-square"></i>
                 </button>
             </div>
             <pageslide
@@ -55,14 +55,14 @@
                         ng-click="editAgent()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.agent.btn.edit_agent.tooltip' | translate}}">
-                    <i class="fa-light fa-gear"></i>
+                    <i class="fa-regular fa-gear"></i>
                 </button>
                 <button class="btn btn-link secondary btn-sm export-current-chat-btn"
                         ng-if="true"
                         ng-click="onExportSelectedChat()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.chat.btn.export_chat.tooltip' | translate}}">
-                    <i class="fa-light fa-arrow-down-to-line"></i>
+                    <i class="fa-regular fa-arrow-down-to-line"></i>
                 </button>
             </div>
 
@@ -118,21 +118,21 @@
                         ng-click="openHelp()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.help.btn.show_help.tooltip' | translate}}">
-                    <i class="fa-light fa-circle-question"></i>
+                    <i class="fa-regular fa-circle-question"></i>
                 </button>
                 <button class="btn btn-link secondary btn-sm create-agent-btn"
                         ng-if="true"
                         ng-click="createAgent()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.agent.btn.create_agent.tooltip' | translate}}">
-                    <i class="fa-light fa-circle-plus"></i>
+                    <i class="fa-regular fa-circle-plus"></i>
                 </button>
                 <button class="btn btn-link secondary btn-sm toggle-agents-sidebar-btn"
                         ng-if="true"
                         ng-click="toggleAgentsListSidebar()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.agent.btn.' + (showAgents ? 'close_sidebar' : 'open_sidebar') + '.tooltip' | translate}}">
-                    <i class="fa-light" ng-class="showAgents ? 'fa-xmark' : 'fa-message-bot'"></i>
+                    <i class="fa-regular" ng-class="showAgents ? 'fa-xmark' : 'fa-message-bot'"></i>
                 </button>
             </div>
 
