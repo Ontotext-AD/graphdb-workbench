@@ -18,10 +18,14 @@
 }
 
 .chat-list-component .chat-item .chat-name {
+    width: 90%;
+}
+
+.chat-list-component .chat-item .chat-name .inline-editable-text {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 90%;
+    width: 100%;
 }
 
 .chat-list-component .chat-item .chat-name a {

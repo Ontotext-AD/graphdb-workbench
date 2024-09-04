@@ -4,8 +4,27 @@
     justify-content: space-between;
 }
 
+.agent-list-component .agent-item .agent-info {
+    width: 92%;
+}
+
 .agent-list-component .agent-item.selected {
     background-color: #ddd;
+}
+
+.agent-list-component .agent-item .related-repository {
+      color: #6b7280;
+}
+
+/*.agent-list-component .agent-item .agent-no-repo .related-repository i {*/
+/*      color: #6b7280;*/
+/*}*/
+
+.agent-list-component .agent-item .agent-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
 }
 
 .agent-list-component .agent-item .agent-name a {
@@ -15,6 +34,8 @@
 
 .agent-list-component .agent-item .btn-group {
     display: flex;
+    align-self: start;
+    margin-top: 4px;
 }
 
 .agent-list-component .agent-item .btn-group .dropdown-menu-right {
@@ -27,13 +48,6 @@
 
 .agent-list-component .agent-item .open-agent-actions-btn {
     display: none;
-}
-
-.agent-list-component .agent-item .agent-name {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 100%;
 }
 
 .agent-list-component .agent-item:not(.edited):hover {

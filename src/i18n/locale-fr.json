@@ -234,6 +234,7 @@
         },
         "chat": {
             "loading_chats": "Chargement des chats...",
+            "deleted_repository": "Dépôt supprimé",
             "btn": {
                 "open_sidebar": {
                     "tooltip": "Ouvrir la barre latérale"

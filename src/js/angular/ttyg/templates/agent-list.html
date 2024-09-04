@@ -2,7 +2,20 @@
 
 <div class="agent-list-component">
     <div ng-repeat="agent in agentList.agents" class="agent-item">
-        <div class="agent-name">{{agent.name}}</div>
+        <div class="agent-info" ng-if="agent.repositoryId">
+            <div class="agent-name">{{agent.name}}</div>
+            <div class="related-repository">
+                <i class="fa-kit fa-gdb-repo-graphdb"></i>
+                {{agent.repositoryId}}
+            </div>
+        </div>
+        <div class="agent-info agent-no-repo" ng-if="!agent.repositoryId">
+            <div class="agent-name">{{agent.name}}</div>
+            <div class="related-repository">
+                <i class="fa-regular fa-triangle-exclamation text-warning"></i>
+                {{'ttyg.agent.deleted_repository' | translate}}
+            </div>
+        </div>
         <div class="btn-group">
             <button class="btn btn-link secondary btn-sm open-agent-actions-btn"
                     data-toggle="dropdown" aria-expanded="false"

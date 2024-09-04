@@ -23,10 +23,10 @@ describe('TTYG agent list', () => {
         // Then I should see the agent list
         TTYGViewSteps.getAgentsPanel().should('be.visible');
         verifyAgentList([
-            {name: 'agent-1'},
-            {name: 'agent-2'},
-            {name: 'Databricks-general-unbiased'},
-            {name: 'Databricks-biomarkers'}
+            {name: 'agent-1', repositoryId: 'starwars'},
+            {name: 'agent-2', repositoryId: 'Deleted repository'},
+            {name: 'Databricks-general-unbiased', repositoryId: 'starwars'},
+            {name: 'Databricks-biomarkers', repositoryId: 'biomarkers'}
         ]);
     });
 
@@ -52,6 +52,9 @@ describe('TTYG agent list', () => {
 function verifyAgentList(data) {
     TTYGViewSteps.getAgents().should('have.length', data.length);
     data.forEach((agent, index) => {
-        TTYGViewSteps.getAgent(index).should('contain', agent.name);
+        TTYGViewSteps.getAgent(index).within(() => {
+           cy.get('.agent-name').should('contain', agent.name);
+           cy.get('.related-repository').should('contain', agent.repositoryId);
+        });
     });
 }

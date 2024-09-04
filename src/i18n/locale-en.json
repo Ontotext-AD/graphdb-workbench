@@ -266,6 +266,7 @@
         },
         "agent": {
             "loading_agents": "Loading agents...",
+            "deleted_repository": "Deleted repository",
             "btn": {
                 "edit_agent": {
                     "label": "Settings",
