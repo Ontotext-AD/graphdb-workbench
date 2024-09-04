@@ -1,5 +1,9 @@
+.chat-list-component {
+    padding: 0 8px;
+}
+
 .chat-list-component .chat-item {
-    padding: 4px 0 4px 8px;
+    padding: 4px;
     display: flex;
     justify-content: space-between;
     width: 100%;
@@ -13,11 +17,20 @@
     background-color: #ddd;
 }
 
+.chat-list-component .chat-item:not(.edited):hover {
+    background-color: #ddd;
+    cursor: pointer;
+}
+
 .chat-list-component .chat-item.edited {
     padding: 0;
 }
 
-.chat-list-component .chat-item .chat-name {
+.chat-list-component .chat-item.edited .chat-name {
+    width: 100%;
+}
+
+.chat-list-component .chat-item:not(.edited) .chat-name {
     width: 90%;
 }
 
@@ -47,11 +60,6 @@
 
 .chat-list-component .chat-item .open-chat-actions-btn {
     display: none;
-}
-
-.chat-list-component .chat-item:not(.edited):hover {
-    background-color: #ddd;
-    cursor: pointer;
 }
 
 .chat-list-component .chat-item:not(.edited):hover .open-chat-actions-btn {

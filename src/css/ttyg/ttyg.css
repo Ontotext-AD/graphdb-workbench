@@ -47,11 +47,14 @@ common sidebar and slidepanel styles
     height: 100%;
 }
 
+.ttyg-view .sidebar .sidebar-content {
+    padding: 1rem 0;
+}
+
 .ttyg-view .sidebar .slide-panel {
     /* adapt to view width but at least 220px, menu size ignored for all practical screen sizes */
     max-width: var(--sidebar-width);
     top: var(--toolbar-height) !important;
-    padding: 1rem;
 }
 
 .ttyg-view .sidebar .slide-panel.slide-panel-expanded  {

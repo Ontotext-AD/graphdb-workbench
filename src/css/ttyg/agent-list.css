@@ -12,13 +12,14 @@
     background-color: #ddd;
 }
 
-.agent-list-component .agent-item .related-repository {
-      color: #6b7280;
+.agent-list-component .agent-item:not(.edited):hover {
+    background-color: #ddd;
+    cursor: pointer;
 }
 
-/*.agent-list-component .agent-item .agent-no-repo .related-repository i {*/
-/*      color: #6b7280;*/
-/*}*/
+.agent-list-component .agent-item .related-repository {
+    color: #6b7280;
+}
 
 .agent-list-component .agent-item .agent-name {
     overflow: hidden;
@@ -48,11 +49,6 @@
 
 .agent-list-component .agent-item .open-agent-actions-btn {
     display: none;
-}
-
-.agent-list-component .agent-item:not(.edited):hover {
-    background-color: #ddd;
-    cursor: pointer;
 }
 
 .agent-list-component .agent-item:not(.edited):hover .open-agent-actions-btn {
