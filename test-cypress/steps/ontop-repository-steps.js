@@ -79,6 +79,10 @@ export class OntopRepositorySteps {
         return cy.get('#driverClass');
     }
 
+    static typeDriverClass(driverClass) {
+        OntopRepositorySteps.getDriverClassInput().type(driverClass);
+    }
+
     static getUrlInput() {
         return cy.get('#url');
     }

@@ -146,11 +146,11 @@ describe('Ontop repositories', () => {
         // The test connection button should be disabled
         OntopRepositorySteps.getTestConnectionButton().should('be.disabled');
         // Then I fill the repository ID
-        RepositorySteps.getRepositoryIdField().type(repositoryId);
+        RepositorySteps.typeRepositoryId(repositoryId);
         // And I fill the driver class
-        OntopRepositorySteps.getDriverClassInput().type('org.test.some.DriverClass');
+        OntopRepositorySteps.typeDriverClass('org.test.some.DriverClass');
         // And I fill the URL
-        OntopRepositorySteps.getUrlInput().type('url:to://database');
+        RepositorySteps.typeURL('url:to://database');
         // The test connection button should be enabled
         OntopRepositorySteps.getTestConnectionButton().should('not.be.disabled');
         // When I select MySql database driver
@@ -168,7 +168,7 @@ describe('Ontop repositories', () => {
         // When I change the database driver for which the port field is required
         OntopRepositorySteps.selectOracleDatabase();
         // When I fill the host name
-        OntopRepositorySteps.getHostNameInput().type(hostName);
+        OntopRepositorySteps.typeHostName(hostName);
         // When I fill the port field
         OntopRepositorySteps.typePort(5423);
         // Then I expect the URL to be filed with the host name and port
