@@ -1,5 +1,6 @@
 import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
+import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 
 describe('TTYG agent list', () => {
     let repositoryId;
@@ -43,6 +44,38 @@ describe('TTYG agent list', () => {
         TTYGViewSteps.expandAgentsSidebar();
         // Then I should see no agents
         TTYGViewSteps.getAgents().should('have.length', 0);
+    });
+
+    it('Should be able to filter the agent list by repository', () => {
+        TTYGStubs.stubAgentListGet();
+        TTYGStubs.stubChatsListGet();
+        RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
+        cy.presetRepository('starwars');
+        // Given I have opened the ttyg page
+        TTYGViewSteps.visit();
+        // When the ttyg page is loaded
+        TTYGViewSteps.getAgents().should('have.length', 4);
+        // Then Agent list filter should be set to All
+        TTYGViewSteps.getSelectedAgentFilter().should('contain', 'All');
+        // And I should see all agents (just check the count, the list is verified in another test)
+        TTYGViewSteps.getAgents().should('have.length', 4);
+        // When I filter the agents by repository 'starwars'
+        TTYGViewSteps.filterAgentsByRepository('starwars');
+        // Then I should see only 2 agents
+        verifyAgentList([
+            {name: 'agent-1', repositoryId: 'starwars'},
+            {name: 'Databricks-general-unbiased', repositoryId: 'starwars'}
+        ]);
+        // When I filter the agents by repository 'biomarkers'
+        TTYGViewSteps.filterAgentsByRepository('biomarkers');
+        // Then I should see only 1 agent
+        verifyAgentList([
+            {name: 'Databricks-biomarkers', repositoryId: 'biomarkers'}
+        ]);
+        // When I select the 'All' filter
+        TTYGViewSteps.filterAgentsByRepository('All');
+        // Then I should see all agents
+        TTYGViewSteps.getAgents().should('have.length', 4);
     });
 });
 

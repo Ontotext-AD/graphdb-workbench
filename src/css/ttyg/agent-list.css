@@ -1,3 +1,29 @@
+.agent-list-component .agent-list {
+    margin-top: 1rem;
+}
+
+.agent-list-component .agents-filter-dropdown {
+    width: 100%;
+}
+
+/* Reset the dropdown toggle button styles to make it look more like an input */
+.agent-list-component .agents-filter-dropdown .dropdown-toggle {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-weight: unset;
+    color: inherit;
+    border-color: var(--gray-color);
+}
+
+.agent-list-component .agents-filter-dropdown .dropdown-toggle:hover {
+    background-color: #fff;
+}
+
+.agent-list-component .agents-filter-dropdown .dropdown-toggle:after {
+    display: none;
+}
+
 .agent-list-component .agent-item {
     padding: 4px 8px;
     display: flex;

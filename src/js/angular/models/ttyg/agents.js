@@ -1,3 +1,6 @@
+import {cloneDeep} from "lodash";
+import {AGENTS_FILTER_ALL_KEY} from "../../ttyg/services/constants";
+
 export class AgentModel {
     constructor(data, hashGenerator) {
         this.hashGenerator = hashGenerator;
@@ -178,10 +181,33 @@ export class AgentListModel {
          * @private
          */
         this._agents = agents;
+        /**
+         * Used to store the original list of agents when filtering.
+         * @type {AgentModel[]}
+         * @private
+         */
+        this._agentsClone = cloneDeep(agents);
     }
 
     isEmpty() {
         return this._agents.length === 0;
+    }
+
+    /**
+     * Filters the agents in place by the repository ID property. This uses the private _agentsClone property to do the
+     * filtering without losing the original list.
+     * There is a special case when the repository ID is equal to AGENTS_FILTER_ALL_KEY which means that all agents
+     * should be shown.
+     * @param {string} repositoryId
+     */
+    filterByRepository(repositoryId) {
+        this._agents = this._agentsClone.filter((agent) => {
+            if (repositoryId === AGENTS_FILTER_ALL_KEY) {
+                return true;
+            } else if (agent.repositoryId === repositoryId) {
+                return agent;
+            }
+        });
     }
 
     get agents() {
@@ -199,3 +225,37 @@ export const ExtractionMethod = {
     SIMILARITY: 'similarity_search',
     RETRIEVAL: 'retrieval_search'
 };
+
+/**
+ * A model used for the filter dropdown in the agent list.
+ */
+export class AgentListFilterModel {
+    constructor(key, label) {
+        /**
+         * @type {string}
+         * @private
+         */
+        this._key = key;
+        /**
+         * @type {string}
+         * @private
+         */
+        this._label = label;
+    }
+
+    get key() {
+        return this._key;
+    }
+
+    set key(value) {
+        this._key = value;
+    }
+
+    get label() {
+        return this._label;
+    }
+
+    set label(value) {
+        this._label = value;
+    }
+}

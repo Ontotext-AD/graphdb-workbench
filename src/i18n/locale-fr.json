@@ -268,6 +268,10 @@
         "agent": {
             "loading_agents": "Chargement des agents...",
             "btn": {
+                "filter": {
+                    "tooltip": "Filtrer par dépôt",
+                    "all": "Tous les dépôts"
+                },
                 "edit_agent": {
                     "label": "Paramètres",
                     "tooltip": "Modifier l'agent"
@@ -292,6 +296,7 @@
                 }
             },
             "messages": {
+                "no_agents": "Aucun agent n'est configuré pour le moment."
             }
         },
         "help.what.title": "Qu'est-ce que c'est ?",

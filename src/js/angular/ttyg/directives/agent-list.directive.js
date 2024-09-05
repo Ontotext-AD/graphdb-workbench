@@ -17,13 +17,20 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/agent-list.html',
         scope: {
-            agentList: '='
+            agentList: '=',
+            agentListFilterModel: '='
         },
         link: ($scope, element, attrs) => {
 
             // =========================
             // Public variables
             // =========================
+
+            /**
+             * The selected agents filter.
+             * @type {{key: string, label: string}|undefined}
+             */
+            $scope.selectedAgentsFilter = undefined;
 
             // =========================
             // Private variables
@@ -58,12 +65,28 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
             };
 
             /**
-             * Handles the selection of a chat.
-             * @param {ChatModel} chat
+             * Handles the selection of an agent.
+             * @param {AgentModel} agent
              */
-            $scope.onSelectChat = (chat) => {
-                TTYGContextService.selectChat(chat);
-                $scope.renamedChat = undefined;
+            $scope.onSelectAgent = (agent) => {
+                console.log('Select agent', agent);
+            };
+
+            /**
+             * Filters the agents based on the selected repository.
+             * @param {AgentListFilterModel} selectedFilter
+             */
+            $scope.onAgentsFilterChange = (selectedFilter) => {
+                $scope.selectedAgentsFilter = selectedFilter;
+                $scope.agentList.filterByRepository($scope.selectedAgentsFilter.key);
+            };
+
+            // =========================
+            // Private functions
+            // =========================
+
+            const updateSelectedAgentsFilter = () => {
+                $scope.selectedAgentsFilter = $scope.agentListFilterModel[0];
             };
 
             // =========================
@@ -76,7 +99,7 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
                 subscriptions.forEach((subscription) => subscription());
             };
 
-            // subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
+            subscriptions.push($scope.$watch('repositoryList', updateSelectedAgentsFilter));
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);
@@ -86,7 +109,7 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
             // =========================
 
             function initialize() {
-                console.log('AgentListComponent initialized');
+                updateSelectedAgentsFilter();
             }
             initialize();
         }

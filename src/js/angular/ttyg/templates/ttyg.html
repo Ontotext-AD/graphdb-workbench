@@ -146,7 +146,8 @@
                 ps-click-outside="false"
                 ps-size="80vw">
                 <div class="sidebar-content">
-                    <agent-list ng-if="agents" agent-list="agents"></agent-list>
+                    <agent-list ng-if="agents" agent-list="agents"
+                                agent-list-filter-model="agentListFilterModel"></agent-list>
                     <div ng-if="loadingAgents" onto-loader-fancy message="{{'ttyg.agent.loading_agents' | translate}}"
                          size="25" style="height: 75vh; display: flex;"></div>
                 </div>

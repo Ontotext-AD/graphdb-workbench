@@ -17,7 +17,7 @@ page layout styles
 /* override the main-container and title to accommodate to the new design without left and right padding */
 .main-container {
     padding-left: 0 !important;
-    padding-right: 0 !important;
+    padding-right: 1rem !important;
 }
 
 /*override btn-small to properly center the icons */
@@ -48,7 +48,8 @@ common sidebar and slidepanel styles
 }
 
 .ttyg-view .sidebar .sidebar-content {
-    padding: 1rem 0;
+    /*padding: 1rem 0;*/
+    padding: 0;
 }
 
 .ttyg-view .sidebar .slide-panel {
@@ -81,15 +82,6 @@ left sidebar
     overflow-y: auto;
 }
 
-.ttyg-view .left-sidebar .chat-list-panel .chat-group label {
-    color: #aaa;
-}
-
-.ttyg-view .left-sidebar .chat-list-panel .chat-group ul {
-    list-style: none;
-    padding-inline-start: 0;
-}
-
 /*
 right sidebar
 */
@@ -104,11 +96,6 @@ right sidebar
 
 .ttyg-view .right-sidebar .agent-list-panel {
     overflow-y: auto;
-}
-
-.ttyg-view .right-sidebar .agent-list-panel ul {
-    list-style: none;
-    padding-inline-start: 0;
 }
 
 /*

@@ -2,6 +2,15 @@
     padding: 0 8px;
 }
 
+.chat-list-component .chat-group label {
+    color: #aaa;
+}
+
+.chat-list-component .chat-group ul {
+    list-style: none;
+    padding-inline-start: 0;
+}
+
 .chat-list-component .chat-item {
     padding: 4px;
     display: flex;
