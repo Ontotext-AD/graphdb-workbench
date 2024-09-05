@@ -109,6 +109,19 @@ export class TTYGViewSteps {
         return this.getAgentsSidebar().find('.agent-list-panel');
     }
 
+    static getAgentFilter() {
+        return this.getAgentsPanel().find('.agents-filter-dropdown');
+    }
+
+    static getSelectedAgentFilter() {
+        return this.getAgentFilter().find('.selected-filter');
+    }
+
+    static filterAgentsByRepository(repository) {
+        this.getAgentFilter().click();
+        this.getAgentFilter().find('.dropdown-menu').find(`[data-value="${repository}"]`).click();
+    }
+
     static getAgents() {
         return this.getAgentsPanel().find('.agent-item');
     }

@@ -6,6 +6,8 @@ import {TTYGEventName} from "../services/ttyg-context.service";
 import {ChatQuestion} from "../../models/ttyg/chat-question";
 import {chatQuestionToChatMessageMapper} from "../services/chat-message.mapper";
 import {cloneDeep} from "lodash";
+import {AGENTS_FILTER_ALL_KEY} from "../services/constants";
+import {AgentListFilterModel} from "../../models/ttyg/agents";
 
 const modules = [
     'toastr',
@@ -20,11 +22,11 @@ angular
     .module('graphdb.framework.ttyg.controllers', modules)
     .controller('TTYGViewCtrl', TTYGViewCtrl);
 
-TTYGViewCtrl.$inject = ['$scope', '$http', '$timeout', '$translate', '$uibModal', '$repositories', 'toastr', 'ModalService', 'LocalStorageAdapter', 'TTYGService', 'TTYGContextService'];
+TTYGViewCtrl.$inject = ['$rootScope', '$scope', '$http', '$timeout', '$translate', '$uibModal', '$repositories', 'toastr', 'ModalService', 'LocalStorageAdapter', 'TTYGService', 'TTYGContextService'];
 
 const CHATGPTRETRIEVAL_ENDPOINT = 'rest/chat/retrieval';
 
-function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositories, toastr, ModalService, LocalStorageAdapter, TTYGService, TTYGContextService) {
+function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal, $repositories, toastr, ModalService, LocalStorageAdapter, TTYGService, TTYGContextService) {
 
     // =========================
     // Private variables
@@ -32,11 +34,16 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
 
     const subscriptions = [];
 
+    const labels = {
+        filter_all: $translate.instant('ttyg.agent.btn.filter.all')
+    };
+
     // =========================
     // Public variables
     // =========================
 
     $scope.helpTemplateUrl = "js/angular/ttyg/templates/chatInfo.html";
+
     /**
      * Controls the visibility of the chats list sidebar. By default, it is visible unless there are no chats.
      * @type {boolean}
@@ -79,6 +86,12 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
     $scope.connectorID = undefined;
     $scope.chatQuestion = new ChatQuestion();
 
+    /**
+     * A list of available repository IDs as a model for the agent list filter.
+     * @type {AgentListFilterModel[]}
+     */
+    $scope.agentListFilterModel = [];
+
     $scope.history = [];
     $scope.askSettings = {
         "queryTemplate": {
@@ -114,10 +127,16 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
 
     $scope.onopen = $scope.onclose = () => angular.noop();
 
+    /**
+     * Toggles the visibility of the chats list sidebar.
+     */
     $scope.toggleChatsListSidebar = () => {
         $scope.showChats = !$scope.showChats;
     };
 
+    /**
+     * Toggles the visibility of the agents list sidebar.
+     */
     $scope.toggleAgentsListSidebar = () => {
         $scope.showAgents = !$scope.showAgents;
     };
@@ -382,6 +401,23 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
         }
     };
 
+    const setRepositoryIds = () => {
+        // TODO: this should be refreshed automatically when the repositories change
+        const repositoryObjects = $repositories.getReadableRepositories().map((repo) => (
+           new AgentListFilterModel(repo.id, repo.id)
+        ));
+        $scope.agentListFilterModel = [
+            new AgentListFilterModel(AGENTS_FILTER_ALL_KEY, labels.filter_all),
+            ...repositoryObjects
+        ];
+    };
+
+    const updateLabels = () => {
+        labels.filter_all = $translate.instant('ttyg.agent.btn.filter.all');
+        // recreate the repository list to trigger the update in the view
+        setRepositoryIds();
+    };
+
 
     // =========================
     // Subscriptions
@@ -398,6 +434,7 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CHAT_EXPORT, onExportChat));
     subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_LIST_UPDATED, onAgentListChanged));
+    subscriptions.push($rootScope.$on('$translateChangeSuccess', updateLabels));
     $scope.$on('$destroy', removeAllListeners);
 
     // =========================
@@ -405,6 +442,8 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
     // =========================
 
     function onInit() {
+        setRepositoryIds();
+
         Promise.all([loadChats(), loadAgents()])
             .then(([chats, agents]) => {
                 // TODO: directly set the chats and agents in the scope instead of going through the context event
