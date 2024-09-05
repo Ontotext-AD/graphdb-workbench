@@ -107,12 +107,16 @@
                                             {{rule.policy}}
                                         </span>
                                     </td>
-                                    <td class="role-cell data">
+                                    <td class="role-cell data role-icon-container">
                                         <span class="acl-tag"
                                               ng-class="{'acl-tag-role-negated': rule.roleWithoutCustomPrefix[0] === '!', 'acl-tag-role': rule.roleWithoutCustomPrefix[0] !== '!', 'wildcard-cell': rule.role === '*'}">
                                             {{rule.roleWithoutCustomPrefix}}
-                                            <em ng-if="rule.role.startsWith(doublePrefix)" class="icon-warning" gdb-tooltip="{{'acl_management.rulestable.prefix_warning.text' | translate}}" tooltip-placement="right"></em>
                                         </span>
+                                        <em ng-if="rule.warnForPrefix"
+                                            class="icon-warning"
+                                            gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
+                                            tooltip-placement="right">
+                                        </em>
                                     </td>
                                     <td class="operation-cell data">
                                          <span class="acl-tag" ng-class="{'wildcard-cell': rule.operation === '*', 'acl-tag-read': rule.operation === 'read','acl-tag-write': rule.operation === 'write'}">
@@ -152,25 +156,31 @@
                                         </select>
                                     </td>
                                     <td class="data role-cell">
-                                        <textarea type="text" name="role" minlength="2" required
-                                                  ng-model="rule.role"
-                                                  ng-change="setDirty(activeTabScope)"
-                                                  ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
-                                                  ng-blur="showWarning()"
-                                                  uppercased uppercase-placeholder="false"
-                                                  custom-role-prefix auto-grow
-                                                  autocomplete="off"
-                                                  class="form-control form-control-sm textarea-edit"
-                                               placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}">
-                                        </textarea>
-                                        <div class="small" ng-if="ruleData.role.$touched && !ruleData.role.$valid">
+                                        <div class="input-container">
+                                            <textarea type="text" name="role" minlength="2" required
+                                                      ng-model="rule.role"
+                                                      ng-change="setDirty(activeTabScope)"
+                                                      ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
+                                                      ng-blur="showPrefixWarningIcon(true)"
+                                                      uppercased uppercase-placeholder="false"
+                                                      custom-role-prefix auto-grow
+                                                      autocomplete="off"
+                                                      class="form-control form-control-sm textarea-edit"
+                                                      placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}">
+                                            </textarea>
+                                            <em ng-if="ruleData.role.$warning && hasCustomPrefix || rule.warnForPrefix"
+                                                class="icon-warning"
+                                                gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
+                                                tooltip-placement="right"></em>
+                                        </div>
+                                        <div class="small" ng-if="ruleData.role.$touched && ruleData.role.$error.minlength">
                                             <small>{{'acl_management.errors.role_length_too_short' | translate}}</small>
                                         </div>
-                                        <div class="small float-lg-left prefix-warning-text" ng-if="rule.role.startsWith(doublePrefix) && !showPrefixWarningIcon">
-                                            <small>{{'acl_management.rulestable.prefix_warning.text' | translate}}</small>
+                                        <div ng-if="ruleData.role.$warning && !hasCustomPrefix">
+                                            <small class="small float-lg-left prefix-warning-text">
+                                                {{'acl_management.rulestable.custom_prefix_warning.text' | translate}}
+                                            </small>
                                         </div>
-                                        <em></em>
-                                        <em ng-if="rule.role.startsWith(doublePrefix) && showPrefixWarningIcon" class="icon-warning" gdb-tooltip="{{'acl_management.rulestable.prefix_warning.text' | translate}}" tooltip-placement="right"></em>
                                     </td>
                                     <td class="data operation-cell">
                                         <select ng-model="rule.operation" ng-change="setDirty(activeTabScope)" class="form-control form-control-sm select-rule">
@@ -314,11 +324,15 @@
                                             {{rule.policy}}
                                         </span>
                                     </td>
-                                    <td class="role-cell data">
+                                    <td class="role-cell data role-icon-container">
                                         <span class="acl-tag" ng-class="{'acl-tag-role-negated': rule.roleWithoutCustomPrefix[0] === '!', 'acl-tag-role': rule.roleWithoutCustomPrefix[0] !== '!', 'wildcard-cell': rule.role === '*'}">
                                             {{rule.roleWithoutCustomPrefix}}
-                                            <em ng-if="rule.role.startsWith(doublePrefix)" class="icon-warning" gdb-tooltip="{{'acl_management.rulestable.prefix_warning.text' | translate}}" tooltip-placement="right"></em>
                                         </span>
+                                        <em ng-if="rule.warnForPrefix"
+                                            class="icon-warning"
+                                            gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
+                                            tooltip-placement="right">
+                                        </em>
                                     </td>
                                     <td class="context-cell data" ng-class="{'wildcard-cell': rule.context === '*', 'context-cell-special': !rule.context.startsWith('<') && rule.context !== '*'}">
                                         {{rule.context}}
@@ -352,29 +366,33 @@
                                         </select>
                                     </td>
                                     <td class="data role-cell">
-                                        <textarea type="text" name="role" minlength="2" required
-                                                  ng-model="rule.role"
-                                                  ng-change="setDirty(activeTabScope)"
-                                                  ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
-                                                  ng-blur="showWarning()"
-                                                  uppercased uppercase-placeholder="false"
-                                                  custom-role-prefix auto-grow
-                                                  autocomplete="off" class="form-control form-control-sm textarea-edit"
-                                                  rows="1"
-                                                  placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}">
-                                        </textarea>
-                                        <div class="small" ng-if="ruleData.role.$touched && !ruleData.role.$valid">
+                                        <div class="input-container">
+                                            <textarea type="text" name="role" minlength="2" required
+                                                      ng-model="rule.role"
+                                                      ng-change="setDirty(activeTabScope)"
+                                                      ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
+                                                      ng-blur="showPrefixWarningIcon(true)"
+                                                      uppercased uppercase-placeholder="false"
+                                                      custom-role-prefix auto-grow
+                                                      autocomplete="off" class="form-control form-control-sm textarea-edit"
+                                                      rows="1"
+                                                      placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}">
+                                            </textarea>
+                                            <em ng-if="ruleData.role.$warning && hasCustomPrefix || rule.warnForPrefix"
+                                                class="icon-warning"
+                                                gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
+                                                tooltip-placement="right">
+                                            </em>
+                                        </div>
+                                        <div class="small" ng-if="ruleData.role.$touched && ruleData.role.$error.minlength">
                                             <small>{{'acl_management.errors.role_length_too_short' | translate}}</small>
                                         </div>
-                                        <div class="small float-lg-left prefix-warning-text" ng-if="rule.role.startsWith(doublePrefix) && !showPrefixWarningIcon">
-                                            <small>{{'acl_management.rulestable.prefix_warning.text' | translate}}</small>
+                                        <div ng-if="ruleData.role.$warning && !hasCustomPrefix">
+                                            <small class="small float-lg-left prefix-warning-text">
+                                                {{'acl_management.rulestable.custom_prefix_warning.text' | translate}}
+                                            </small>
                                         </div>
                                         <em></em>
-                                        <em ng-if="rule.role.startsWith(doublePrefix) && showPrefixWarningIcon"
-                                            class="icon-warning"
-                                            gdb-tooltip="{{'acl_management.rulestable.prefix_warning.text' | translate}}"
-                                            tooltip-placement="right">
-                                        </em>
                                     </td>
                                     <td class="data context-cell">
                                         <autocomplete ng-model="rule.context" on-model-change="setDirty(activeTabScope)" name="context"
@@ -467,11 +485,15 @@
                                             {{rule.policy}}
                                         </span>
                                     </td>
-                                    <td class="role-cell data">
+                                    <td class="role-cell data role-icon-container">
                                         <span class="acl-tag" ng-class="{'acl-tag-role-negated': rule.roleWithoutCustomPrefix[0] === '!', 'acl-tag-role': rule.roleWithoutCustomPrefix[0] !== '!', 'wildcard-cell': rule.role === '*'}">
                                             {{rule.roleWithoutCustomPrefix}}
-                                            <em ng-if="rule.role.startsWith(doublePrefix)" class="icon-warning" gdb-tooltip="{{'acl_management.rulestable.prefix_warning.text' | translate}}" tooltip-placement="right"></em>
                                         </span>
+                                        <em ng-if="rule.warnForPrefix"
+                                                   class="icon-warning"
+                                                   gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
+                                                   tooltip-placement="right">
+                                        </em>
                                     </td>
                                     <td class="operation-cell data">
                                          <span class="acl-tag" ng-class="{'wildcard-cell': rule.operation === '*', 'acl-tag-read': rule.operation === 'read','acl-tag-write': rule.operation === 'write'}">
@@ -511,25 +533,33 @@
                                         </select>
                                     </td>
                                     <td class="data role-cell">
-                                        <textarea type="text" name="role" minlength="2" required
-                                                  ng-model="rule.role"
-                                                  ng-change="setDirty(activeTabScope)"
-                                                  ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
-                                                  ng-blur="showWarning()"
-                                                  uppercased uppercase-placeholder="false"
-                                                  custom-role-prefix auto-grow
-                                                  autocomplete="off"
-                                                  class="form-control form-control-sm textarea-edit"
-                                                  placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}">
-                                        </textarea>
-                                        <div class="small" ng-if="ruleData.role.$touched && !ruleData.role.$valid">
+                                        <div class="input-container">
+                                            <textarea type="text" name="role" minlength="2" required
+                                                      ng-model="rule.role"
+                                                      ng-change="setDirty(activeTabScope)"
+                                                      ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
+                                                      ng-blur="showPrefixWarningIcon(true)"
+                                                      uppercased uppercase-placeholder="false"
+                                                      custom-role-prefix auto-grow
+                                                      autocomplete="off"
+                                                      class="form-control form-control-sm textarea-edit"
+                                                      placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}">
+                                            </textarea>
+                                            <em ng-if="ruleData.role.$warning && hasCustomPrefix || rule.warnForPrefix"
+                                                class="icon-warning"
+                                                gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
+                                                tooltip-placement="right">
+                                            </em>
+                                        </div>
+                                        <div class="small" ng-if="ruleData.role.$touched && ruleData.role.$error.minlength">
                                             <small>{{'acl_management.errors.role_length_too_short' | translate}}</small>
                                         </div>
-                                        <div class="small float-lg-left prefix-warning-text" ng-if="rule.role.startsWith(doublePrefix) && !showPrefixWarningIcon">
-                                            <small>{{'acl_management.rulestable.prefix_warning.text' | translate}}</small>
+                                        <div ng-if="ruleData.role.$warning && !hasCustomPrefix">
+                                            <small class="small float-lg-left prefix-warning-text">
+                                                {{'acl_management.rulestable.custom_prefix_warning.text' | translate}}
+                                            </small>
                                         </div>
                                         <em></em>
-                                        <em ng-if="rule.role.startsWith(doublePrefix) && showPrefixWarningIcon" class="icon-warning" gdb-tooltip="{{'acl_management.rulestable.prefix_warning.text' | translate}}" tooltip-placement="right"></em>
                                     </td>
                                     <td class="data operation-cell">
                                         <select ng-model="rule.operation" ng-change="setDirty(activeTabScope)" class="form-control form-control-sm select-rule">
@@ -623,11 +653,15 @@
                                             {{rule.policy}}
                                         </span>
                                     </td>
-                                    <td class="role-cell data">
+                                    <td class="role-cell data role-icon-container">
                                         <span class="acl-tag" ng-class="{'acl-tag-role-negated': rule.roleWithoutCustomPrefix[0] === '!', 'acl-tag-role': rule.roleWithoutCustomPrefix[0] !== '!', 'wildcard-cell': rule.role === '*'}">
                                             {{rule.roleWithoutCustomPrefix}}
-                                            <em ng-if="rule.role.startsWith(doublePrefix)" class="icon-warning" gdb-tooltip="{{'acl_management.rulestable.prefix_warning.text' | translate}}" tooltip-placement="right"></em>
                                         </span>
+                                        <em ng-if="rule.warnForPrefix"
+                                            class="icon-warning"
+                                            gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
+                                            tooltip-placement="right">
+                                        </em>
                                     </td>
                                     <td class="operation-cell data">
                                          <span class="acl-tag" ng-class="{'wildcard-cell': rule.operation === '*', 'acl-tag-read': rule.operation === 'read','acl-tag-write': rule.operation === 'write'}">
@@ -664,25 +698,33 @@
                                         </select>
                                     </td>
                                     <td class="data role-cell">
-                                        <textarea type="text" name="role" minlength="2" required
-                                                  ng-model="rule.role"
-                                                  ng-change="setDirty(activeTabScope)"
-                                                  ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
-                                                  ng-blur="showWarning()"
-                                                  uppercased uppercase-placeholder="false"
-                                                  custom-role-prefix auto-grow
-                                                  autocomplete="off"
-                                                  class="form-control form-control-sm textarea-edit"
-                                                  placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}">
-                                        </textarea>
-                                        <div class="small" ng-if="ruleData.role.$touched && !ruleData.role.$valid">
+                                        <div class="input-container">
+                                            <textarea type="text" name="role" minlength="2" required
+                                                      ng-model="rule.role"
+                                                      ng-change="setDirty(activeTabScope)"
+                                                      ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
+                                                      ng-blur="showPrefixWarningIcon(true)"
+                                                      uppercased uppercase-placeholder="false"
+                                                      custom-role-prefix auto-grow
+                                                      autocomplete="off"
+                                                      class="form-control form-control-sm textarea-edit"
+                                                      placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}">
+                                            </textarea>
+                                            <em ng-if="ruleData.role.$warning && hasCustomPrefix || rule.warnForPrefix"
+                                                class="icon-warning"
+                                                gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
+                                                tooltip-placement="right">
+                                            </em>
+                                        </div>
+                                        <div class="small" ng-if="ruleData.role.$touched && ruleData.role.$error.minlength">
                                             <small>{{'acl_management.errors.role_length_too_short' | translate}}</small>
                                         </div>
-                                        <div class="small float-lg-left prefix-warning-text" ng-if="rule.role.startsWith(doublePrefix) && !showPrefixWarningIcon">
-                                            <small>{{'acl_management.rulestable.prefix_warning.text' | translate}}</small>
+                                        <div ng-if="ruleData.role.$warning && !hasCustomPrefix">
+                                            <small class="small float-lg-left prefix-warning-text">
+                                                {{'acl_management.rulestable.custom_prefix_warning.text' | translate}}
+                                            </small>
                                         </div>
                                         <em></em>
-                                        <em ng-if="rule.role.startsWith(doublePrefix) && showPrefixWarningIcon" class="icon-warning" gdb-tooltip="{{'acl_management.rulestable.prefix_warning.text' | translate}}" tooltip-placement="right"></em>
                                     </td>
                                     <td class="data operation-cell">
                                         <select ng-model="rule.operation" ng-change="setDirty(activeTabScope)" class="form-control form-control-sm select-rule">
