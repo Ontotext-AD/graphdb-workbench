@@ -1,0 +1,46 @@
+{
+    "": [
+        {
+            "id": "starwars",
+            "title": "",
+            "uri": "http://svelikov-desktop:9000/repositories/starwars",
+            "externalUrl": "http://svelikov-desktop:9000/repositories/starwars",
+            "local": true,
+            "type": "graphdb",
+            "sesameType": "graphdb:SailRepository",
+            "location": "",
+            "readable": true,
+            "writable": true,
+            "unsupported": false,
+            "state": "RUNNING"
+        },
+        {
+            "id": "ttyg-repo-1725518186812",
+            "title": "",
+            "uri": "http://svelikov-desktop:9000/repositories/ttyg-repo-1725518186812",
+            "externalUrl": "http://svelikov-desktop:9000/repositories/ttyg-repo-1725518186812",
+            "local": true,
+            "type": "graphdb",
+            "sesameType": "graphdb:SailRepository",
+            "location": "",
+            "readable": true,
+            "writable": true,
+            "unsupported": false,
+            "state": "RUNNING"
+        },
+        {
+            "id": "biomarkers",
+            "title": "",
+            "uri": "http://svelikov-desktop:9000/repositories/biomarkers",
+            "externalUrl": "http://svelikov-desktop:9000/repositories/biomarkers",
+            "local": true,
+            "type": "graphdb",
+            "sesameType": "graphdb:SailRepository",
+            "location": "",
+            "readable": true,
+            "writable": true,
+            "unsupported": false,
+            "state": "INACTIVE"
+        }
+    ]
+}

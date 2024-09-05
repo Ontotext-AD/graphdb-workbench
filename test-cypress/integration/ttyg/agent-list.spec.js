@@ -1,5 +1,6 @@
 import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
+import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 
 describe('TTYG agent list', () => {
     let repositoryId;
@@ -48,6 +49,8 @@ describe('TTYG agent list', () => {
     it('Should be able to filter the agent list by repository', () => {
         TTYGStubs.stubAgentListGet();
         TTYGStubs.stubChatsListGet();
+        RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
+        cy.presetRepository('starwars');
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
         // When the ttyg page is loaded
