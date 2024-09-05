@@ -169,20 +169,17 @@ export class AclManagementSteps {
         return cy.get('div.small');
     }
 
-    static getPrefixWarning() {
-        return cy.get('.prefix-warning-text');
+    static getPrefixWarning(index) {
+        return this.getSavedRoleField(index).find('.prefix-warning-text');
     }
 
-    static getWarningIcon() {
-        return cy.get('.icon-warning');
+    static getWarningIcon(index) {
+        return this.getSavedRoleField(index).get('.icon-warning');
     }
 
-    static getWarningIconTooltipText() {
+    static getWarningIconTooltipText(index) {
+        this.getWarningIcon(index).trigger('mouseover');
         return cy.get('.angular-tooltip');
-    }
-
-    static mouseoverWarningIcon() {
-        cy.get('.icon-warning').first().trigger('mouseover');
     }
 
     static getPluginField(index) {

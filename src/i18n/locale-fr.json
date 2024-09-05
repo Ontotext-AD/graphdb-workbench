@@ -176,7 +176,7 @@
                 "role": "ROLE1",
                 "plugin": "Brancher"
             },
-            "prefix_warning": {
+            "custom_prefix_warning": {
                 "text": "Les rôles personnalisés doivent être saisis sans le préfixe \"CUSTOM_\" dans workbench"
             },
             "actions": {

@@ -1,6 +1,8 @@
 import {RepositorySteps} from "../../steps/repository-steps";
 import {OntopRepositorySteps} from "../../steps/ontop-repository-steps";
 import {ToasterSteps} from "../../steps/toaster-steps";
+import {RepositoriesStubs as RepositoryStubs} from "../../stubs/repositories/repositories-stubs";
+import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 
 describe('Ontop repositories', () => {
     let repositoryId;
@@ -137,6 +139,91 @@ describe('Ontop repositories', () => {
         OntopRepositorySteps.getTestConnectionButton().should('not.be.disabled');
     });
 
+    it('should create ontop repository', () => {
+        RepositoryStubs.stubRepoCreationEndpoints(repositoryId);
+        // When I visit the create ontop page
+        OntopRepositorySteps.visitCreate();
+        // The test connection button should be disabled
+        OntopRepositorySteps.getTestConnectionButton().should('be.disabled');
+        // Then I fill the repository ID
+        RepositorySteps.typeRepositoryId(repositoryId);
+        // And I fill the driver class
+        OntopRepositorySteps.typeDriverClass('org.test.some.DriverClass');
+        // And I fill the URL
+        RepositorySteps.typeURL('url:to://database');
+        // The test connection button should be enabled
+        OntopRepositorySteps.getTestConnectionButton().should('not.be.disabled');
+        // When I select MySql database driver
+        OntopRepositorySteps.selectMySqlDatabase();
+        // Then I expect the driver class to be changed
+        OntopRepositorySteps.getDriverClassInput().should('have.value', 'com.mysql.cj.jdbc.Driver');
+        // The test connection button should be disabled
+        OntopRepositorySteps.getTestConnectionButton().should('be.disabled');
+
+        const hostName = 'localhost';
+        // When I fill the host name
+        OntopRepositorySteps.typeHostName(hostName);
+        // Then I expect url to be filed with the host name
+        OntopRepositorySteps.getUrlInput().should('have.value', 'jdbc:mysql://localhost/{database}');
+        // When I change the database driver for which the port field is required
+        OntopRepositorySteps.selectOracleDatabase();
+        // When I fill the host name
+        OntopRepositorySteps.typeHostName(hostName);
+        // When I fill the port field
+        OntopRepositorySteps.typePort(5423);
+        // Then I expect the URL to be filed with the host name and port
+        OntopRepositorySteps.getUrlInput().should('have.value', 'jdbc:oracle:thin:@localhost:5423:{database}');
+        // When I fill the database name field
+        OntopRepositorySteps.typeDatabaseName('database-name');
+        // Then I expect the URL to be filed with the host name and port
+        OntopRepositorySteps.getUrlInput().should('have.value', 'jdbc:oracle:thin:@localhost:5423:database-name');
+        // And the test connection button to be enabled
+        OntopRepositorySteps.getTestConnectionButton().should('not.be.disabled');
+        // And I add an OBDA file
+        OntopRepositorySteps.clickObdaFileUploadButton();
+        OntopRepositorySteps.uploadObdaFile('fixtures/ontop/university-complete.obda');
+        // When I click on create repository button
+        OntopRepositorySteps.clickOnCreateRepositoryButton();
+        // The Ontop repository should be created
+        RepositorySteps.visit();
+        // The repository list should contain the new repository, which can be activated
+        RepositorySteps.clickRepositoryConnectionOffBtn(repositoryId);
+        // When the repository is restarted
+        RepositorySteps.restartRepository(repositoryId);
+        RepositorySteps.confirmModal();
+        // Then the correct messages are shown
+        ToasterSteps.verifySuccess('Restarting repository ' + repositoryId);
+        ToasterSteps.getToast().should('not.exist');
+        RepositorySteps.assertRepositoryStatus(repositoryId, "ACTIVE");
+        // And the repo icon remains Ontop
+        RepositorySteps.getRepoIcon('ontop').should('be.visible');
+    });
+
+    it('should edit ontop repository', () => {
+        RepositoryStubs.stubEditOntopResponse(repositoryId);
+        RepositoryStubs.stubSaveOntopResponse(repositoryId);
+        RepositoryStubs.stubRepoCreationEndpoints(repositoryId);
+        // When I open the repositories view
+        RepositorySteps.visit();
+        // Then I should see an Ontop repository
+        RepositorySteps.getRepositoriesList().should('have.length', 1);
+        RepositorySteps.getRepoIcon('ontop').should('be.visible');
+        // And I edit the Ontop repository
+        RepositorySteps.editRepository(repositoryId);
+        // Then I expect the repository to be opened for editing
+        RepositorySteps.getRepositoryCreateForm();
+        RepositorySteps.getRepositoryIdField().should('have.value', repositoryId);
+        // When I add a username
+        RepositorySteps.typeUsernameInEditRepo('Example');
+        // When I fill the host name
+        RepositorySteps.typeURL('jdbc:oracle:thin:@localhost:5423:database-name');
+        // And save the changes
+        RepositorySteps.clickSaveEditedRepo();
+        ModalDialogSteps.clickOnConfirmButton();
+        // The icon should still be Ontop
+        RepositorySteps.getRepoIcon('ontop').should('be.visible');
+    });
+
     it('should populate url when Snowflake driver is selected', () => {
         // When I open create ontop repository page,
         OntopRepositorySteps.visitCreate();
@@ -152,6 +239,5 @@ describe('Ontop repositories', () => {
 
         // Then I expect url to be calculated properly
         OntopRepositorySteps.getUrlInput().should('have.value', 'jdbc:snowflake://someHostName.snowflakecomputing.com:1234/?warehouse=test_database');
-
     });
 });
