@@ -124,7 +124,9 @@ export class ACListModel {
 
     setPrefixWarningFlag(scope, index) {
         const rule = this.getRule(scope, index);
-        rule.checkCustomOrNegatedPrefix();
+        if (rule) {
+            rule.checkCustomOrNegatedPrefix();
+        }
     }
 
     /**
