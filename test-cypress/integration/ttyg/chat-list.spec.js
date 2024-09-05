@@ -1,23 +1,19 @@
 import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
+import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 
 // TODO: This test is skipped because it fails on CI. For some reason the chat list panel is not visible.
 describe.skip('TTYG chat list', () => {
-    let repositoryId;
 
     beforeEach(() => {
-        repositoryId = 'ttyg-repo-' + Date.now();
-        cy.createRepository({id: repositoryId});
-        cy.presetRepository(repositoryId);
-    });
-
-    afterEach(() => {
-        cy.deleteRepository(repositoryId);
+        RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
+        cy.presetRepository('starwars');
     });
 
     it('Should render chat list', () => {
         TTYGStubs.stubChatsListGet();
+        TTYGStubs.stubAgentListGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
         // When the ttyg page is loaded
@@ -40,6 +36,7 @@ describe.skip('TTYG chat list', () => {
 
     it('Should render no results when there are no chats', () => {
         TTYGStubs.stubChatsListGetNoResults();
+        TTYGStubs.stubAgentListGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
         // When the ttyg page is loaded
@@ -54,6 +51,7 @@ describe.skip('TTYG chat list', () => {
 
     it('Should be able to edit an existing chat name by double click on the chat in the list', () => {
         TTYGStubs.stubChatsListGet();
+        TTYGStubs.stubAgentListGet();
         TTYGStubs.stubChatUpdate();
         // Given I have opened the ttyg page and there are chats loaded
         TTYGViewSteps.visit();
@@ -72,6 +70,7 @@ describe.skip('TTYG chat list', () => {
 
     it('Should be able to edit an existing chat name through the action menu', () => {
         TTYGStubs.stubChatsListGet();
+        TTYGStubs.stubAgentListGet();
         TTYGStubs.stubChatUpdate();
         // Given I have opened the ttyg page and there are chats loaded
         TTYGViewSteps.visit();
@@ -91,6 +90,7 @@ describe.skip('TTYG chat list', () => {
 
     it('Should be able to cancel a chat name editing', () => {
         TTYGStubs.stubChatsListGet();
+        TTYGStubs.stubAgentListGet();
         // Given I have opened the ttyg page and there are chats loaded
         TTYGViewSteps.visit();
         // And I double-click on the first chat
@@ -107,6 +107,7 @@ describe.skip('TTYG chat list', () => {
 
     it('Should be able to delete a chat', () => {
         TTYGStubs.stubChatsListGet();
+        TTYGStubs.stubAgentListGet();
         TTYGStubs.stubChatDelete();
         // Given I have opened the ttyg page and there are chats loaded
         TTYGViewSteps.visit();

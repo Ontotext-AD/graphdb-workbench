@@ -1,0 +1,20 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="close()"></button>
+    <h4 class="modal-title">{{'ttyg.agent.create_agent_modal.title' | translate}}</h4>
+</div>
+<div class="modal-body">
+    <form name="agentSettingsForm" id="agentSettingsForm" class="agent-settings-form">
+        <div class="form-horizontal">
+            settings form here
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" ng-click="cancel()" class="btn btn-link cancel-btn">
+        {{'ttyg.agent.create_agent_modal.btn.cancel.label' | translate}}
+    </button>
+    <button type="submit" form="agentSettingsForm" ng-click="ok()" ng-disabled="agentSettingsForm.$invalid"
+            class="btn btn-primary save-agent-settings-btn">
+        {{'ttyg.agent.create_agent_modal.btn.create.label' | translate}}
+    </button>
+</div>

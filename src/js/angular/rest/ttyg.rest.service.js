@@ -106,6 +106,9 @@ function TTYGRestService($http) {
     const getAgents = () => {
         if (DEVELOPMENT) {
             return _fakeBackend.getAgents();
+            // return new Promise((resolve) => {
+            //     setTimeout(() => resolve(_fakeBackend.getAgents()), 3000);
+            // });
         }
         return $http.get('rest/chat/agents');
     };

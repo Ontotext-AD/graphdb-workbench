@@ -146,5 +146,6 @@ export const TTYGEventName = {
     CHAT_EXPORT_SUCCESSFUL: 'chatExportSuccess',
     CHAT_EXPORT_FAILURE: 'chatExportFailure',
     CHAT_LIST_UPDATED: 'chatListUpdated',
-    AGENT_LIST_UPDATED: 'agentListUpdated'
+    AGENT_LIST_UPDATED: 'agentListUpdated',
+    CREATE_AGENT: 'createAgent'
 };

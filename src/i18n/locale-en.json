@@ -219,6 +219,7 @@
     "ttyg": {
         "helpInfo": "Talk to Your Graph is chat bot based on OpenAI's GPT-4 model that can answer questions about data stored in GraphDB, leveraging both your data and the general knowledge of the GPT-4 model. The bot works in connection with the ChatGPT Retrieval connector.",
         "hint": "Talk to your graph – simply ask a question!",
+        "loading": "Loading...",
         "help": {
             "btn": {
                 "show_help": {
@@ -267,6 +268,22 @@
         "agent": {
             "loading_agents": "Loading agents...",
             "deleted_repository": "Deleted repository",
+            "create_agent_modal": {
+                "title": "Create Agent",
+                "btn": {
+                    "create": {
+                        "label": "Create Agent"
+                    },
+                    "cancel": {
+                        "label": "Cancel"
+                    }
+                }
+            },
+            "fat_btn": {
+                "create_agent": {
+                    "label": "Create your first agent"
+                }
+            },
             "btn": {
                 "filter": {
                     "tooltip": "Filter by repository",
@@ -296,7 +313,9 @@
                 }
             },
             "messages": {
-                "no_agents": "No agents found for the selected filter."
+                "no_agents": "No agents found for the selected filter.",
+                "help_1": "Talk to your data in natural language. All you need to do is create and instruct your own AI Agent to assist you.",
+                "help_2": "The Agent is an AI-powered conversational agent designed to help with a wide range of tasks, from answering questions and providing information to assisting with creative and technical projects. It leverages advanced natural language processing to understand and respond to user inputs in a human-like manner, making interactions intuitive and efficient."
             }
         },
         "help.what.title": "What is this?",

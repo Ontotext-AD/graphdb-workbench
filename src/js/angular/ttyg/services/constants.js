@@ -1,5 +1,4 @@
-// export const AGENT_ID = 'asst_gy0XYDD8MupnFtErN860sKBn'; // repoId: starwars, method: fts_search
-export const AGENT_ID = 'asst_O1Hd0HhmZF3oo70yR9hmpxgC'; // repoId: starwars, method: sparql_search
+export const AGENT_ID = 'asst_uoKp5kgnPlyZHhRXY7P2r9D7'; // repoId: starwars, method: fts_search
 
 /**
  * The key to use when filtering agents indicating that all agents should be shown.

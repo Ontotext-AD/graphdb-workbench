@@ -3,16 +3,9 @@ import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 
 describe('TTYG agent list', () => {
-    let repositoryId;
-
     beforeEach(() => {
-        repositoryId = 'ttyg-repo-' + Date.now();
-        cy.createRepository({id: repositoryId});
-        cy.presetRepository(repositoryId);
-    });
-
-    afterEach(() => {
-        cy.deleteRepository(repositoryId);
+        RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
+        cy.presetRepository('starwars');
     });
 
     it('Should render the agent list', () => {
@@ -31,26 +24,28 @@ describe('TTYG agent list', () => {
         ]);
     });
 
-    it('Should render agents panel closed when there are no agents', () => {
+    it('Should be able to toggle agents panel', () => {
         TTYGStubs.stubChatsListGet();
-        TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
+        TTYGStubs.stubAgentListGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
         // When the ttyg page is loaded
-        // And there are no agents, yet
+        // Then I should see the agent list
+        TTYGViewSteps.getAgents().should('have.length', 4);
+        // When I close the agent list panel
+        TTYGViewSteps.collapseAgentsSidebar();
         // Then I expect agent list panel to be closed
         TTYGViewSteps.getAgentsPanel().should('be.hidden');
         // When I open the agent list panel
         TTYGViewSteps.expandAgentsSidebar();
         // Then I should see no agents
-        TTYGViewSteps.getAgents().should('have.length', 0);
+        TTYGViewSteps.getAgentsPanel().should('be.visible');
+        TTYGViewSteps.getAgents().should('have.length', 4);
     });
 
     it('Should be able to filter the agent list by repository', () => {
         TTYGStubs.stubAgentListGet();
         TTYGStubs.stubChatsListGet();
-        RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
-        cy.presetRepository('starwars');
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
         // When the ttyg page is loaded
