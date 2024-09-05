@@ -234,6 +234,7 @@
         },
         "chat": {
             "loading_chats": "Chargement des chats...",
+            "deleted_repository": "Dépôt supprimé",
             "btn": {
                 "open_sidebar": {
                     "tooltip": "Ouvrir la barre latérale"
@@ -265,11 +266,22 @@
             }
         },
         "agent": {
+            "loading_agents": "Chargement des agents...",
             "btn": {
                 "edit_agent": {
+                    "label": "Paramètres",
                     "tooltip": "Modifier l'agent"
                 },
+                "clone_agent": {
+                    "label": "Cloner",
+                    "tooltip": "Cloner l'agent"
+                },
+                "delete_agent": {
+                    "label": "Supprimer l'agent",
+                    "tooltip": "Supprimer l'agent"
+                },
                 "create_agent": {
+                    "label": "Créer un agent",
                     "tooltip": "Créer un agent"
                 },
                 "open_sidebar": {
@@ -278,6 +290,8 @@
                 "close_sidebar": {
                     "tooltip": "Fermer la barre latérale"
                 }
+            },
+            "messages": {
             }
         },
         "help.what.title": "Qu'est-ce que c'est ?",

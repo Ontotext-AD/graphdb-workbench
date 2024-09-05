@@ -12,6 +12,10 @@ describe.skip('TTYG chat list', () => {
         cy.presetRepository(repositoryId);
     });
 
+    afterEach(() => {
+        cy.deleteRepository(repositoryId);
+    });
+
     it('Should render chat list', () => {
         TTYGStubs.stubChatsListGet();
         // Given I have opened the ttyg page

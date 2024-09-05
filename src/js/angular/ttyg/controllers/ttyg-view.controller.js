@@ -1,4 +1,5 @@
 import 'angular/ttyg/directives/chat-list.directive';
+import 'angular/ttyg/directives/agent-list.directive';
 import 'angular/ttyg/services/ttyg.service';
 import 'angular/ttyg/services/ttyg-context.service';
 import {TTYGEventName} from "../services/ttyg-context.service";
@@ -11,7 +12,8 @@ const modules = [
     'graphdb.framework.utils.localstorageadapter',
     'graphdb.framework.ttyg.services.ttyg-service',
     'graphdb.framework.ttyg.services.ttygcontext',
-    'graphdb.framework.ttyg.directives.chats-list'
+    'graphdb.framework.ttyg.directives.chat-list',
+    'graphdb.framework.ttyg.directives.agent-list'
 ];
 
 angular
@@ -62,6 +64,18 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
      */
     $scope.selectedChat = undefined;
     $scope.selectedAgent = undefined;
+
+    /**
+     * Agents list model.
+     * @type {AgentListModel|undefined}
+     */
+    $scope.agents = undefined;
+    /**
+     * Flag to control the visibility of the loader when loading agent list.
+     * @type {boolean}
+     */
+    $scope.loadingAgents = false;
+
     $scope.connectorID = undefined;
     $scope.chatQuestion = new ChatQuestion();
 
@@ -224,11 +238,15 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
     };
 
     const loadChats = () => {
+        $scope.loadingChats = true;
         return TTYGService.getConversations()
-            .then((chatsListModel) => {
-                return TTYGContextService.updateChats(chatsListModel);
-            })
-            .catch((error) => toastr.error(getError(error, 0, 100)));
+            .finally(() => $scope.loadingChats = false);
+    };
+
+    const loadAgents = () => {
+        $scope.loadingAgents = true;
+        return TTYGService.getAgents()
+            .finally(() => $scope.loadingAgents = false);
     };
 
     const initView = () => {
@@ -323,10 +341,10 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
                 return loadChats();
             })
             .then(() => {
-                TTYGContextService.emit(TTYGEventName.CHART_EXPORT_SUCCESSFUL, chat);
+                TTYGContextService.emit(TTYGEventName.CHAT_EXPORT_SUCCESSFUL, chat);
             })
             .catch((error) => {
-                TTYGContextService.emit(TTYGEventName.CHART_EXPORT_FAILURE);
+                TTYGContextService.emit(TTYGEventName.CHAT_EXPORT_FAILURE);
                 toastr.error($translate.instant('ttyg.chat.messages.export_failure'));
             });
     };
@@ -351,6 +369,20 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
             });
     };
 
+    /**
+     * Handles the change of the agents list.
+     * @param {AgentListModel} agents - the new agents list.
+     */
+    const onAgentListChanged = (agents) => {
+        $scope.agents = agents;
+        if (agents.isEmpty()) {
+            $scope.showAgents = false;
+        } else {
+            $scope.showAgents = true;
+        }
+    };
+
+
     // =========================
     // Subscriptions
     // =========================
@@ -363,8 +395,9 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
     subscriptions.push(TTYGContextService.onChatsListChanged(onChatsChanged));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.RENAME_CHAT, onRenameChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_CHAT, onDeleteChat));
-    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CHART_EXPORT, onExportChat));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CHAT_EXPORT, onExportChat));
     subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_LIST_UPDATED, onAgentListChanged));
     $scope.$on('$destroy', removeAllListeners);
 
     // =========================
@@ -372,9 +405,13 @@ function TTYGViewCtrl($scope, $http, $timeout, $translate, $uibModal, $repositor
     // =========================
 
     function onInit() {
-        $scope.loadingChats = true;
-        loadChats()
-            .finally(() => $scope.loadingChats = false);
+        Promise.all([loadChats(), loadAgents()])
+            .then(([chats, agents]) => {
+                // TODO: directly set the chats and agents in the scope instead of going through the context event
+                TTYGContextService.updateChats(chats);
+                TTYGContextService.updateAgents(agents);
+            })
+        .catch((error) => toastr.error(getError(error, 0, 100)));
         initView();
     }
 }

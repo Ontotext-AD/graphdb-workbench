@@ -10,6 +10,10 @@
     }
 }
 
+/*
+page layout styles
+*/
+
 /* override the main-container and title to accommodate to the new design without left and right padding */
 .main-container {
     padding-left: 0 !important;
@@ -33,23 +37,34 @@
     padding: 10px;
 }
 
+/*
+common sidebar and slidepanel styles
+*/
+
 .ttyg-view .sidebar {
     display: flex;
     flex-direction: column;
     height: 100%;
 }
 
+.ttyg-view .sidebar .sidebar-content {
+    padding: 1rem 0;
+}
+
 .ttyg-view .sidebar .slide-panel {
     /* adapt to view width but at least 220px, menu size ignored for all practical screen sizes */
     max-width: var(--sidebar-width);
     top: var(--toolbar-height) !important;
-    padding: 1rem 0 1rem 1rem;
 }
 
 .ttyg-view .sidebar .slide-panel.slide-panel-expanded  {
     /* adapt width according to available space but not more than 800px */
     max-width: min(800px, 100% - var(--menu-width));
 }
+
+/*
+left sidebar
+*/
 
 .ttyg-view .left-sidebar .toolbar {
     justify-content: space-between;
@@ -75,22 +90,30 @@
     padding-inline-start: 0;
 }
 
+/*
+right sidebar
+*/
+
 .ttyg-view .right-sidebar .toolbar {
-    justify-content: space-between;
+    justify-content: end;
 }
 
 .ttyg-view .right-sidebar.collapsed .toolbar {
     justify-content: end;
 }
 
-.ttyg-view .right-sidebar .agents-list-panel {
+.ttyg-view .right-sidebar .agent-list-panel {
     overflow-y: auto;
 }
 
-.ttyg-view .right-sidebar .agents-list-panel ul {
+.ttyg-view .right-sidebar .agent-list-panel ul {
     list-style: none;
     padding-inline-start: 0;
 }
+
+/*
+chat area
+*/
 
 .ttyg-view .ttyg-container {
     display: grid;
