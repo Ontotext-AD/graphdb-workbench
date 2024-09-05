@@ -176,7 +176,7 @@
                 "role": "ROLE1",
                 "plugin": "Plugin"
             },
-            "prefix_warning": {
+            "custom_prefix_warning": {
                 "text": "Custom roles should be entered without the \"CUSTOM_\" prefix in Workbench"
             },
             "actions": {

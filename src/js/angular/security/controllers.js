@@ -3,7 +3,7 @@ import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/openid-auth.service';
 import 'angular/rest/security.rest.service';
 import {UserUtils, UserRole, UserType} from 'angular/utils/user-utils';
-import {RoleNamePrefixUtils} from "../utils/role-name-prefix-utils";
+import 'angular/aclmanagement/directives/custom-role-prefix.directive';
 
 const SYSTEM_REPO = 'SYSTEM';
 const READ_REPO = 'READ_REPO';
@@ -18,6 +18,7 @@ const modules = [
     'graphdb.framework.core.services.openIDService',
     'graphdb.framework.rest.security.service',
     'toastr',
+    'graphdb.framework.aclmanagement.directives',
     'ngTagsInput'
 ];
 
@@ -511,7 +512,6 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
          * @return {boolean} true if valid, otherwise false
          */
         $scope.isCustomRoleValid = function (fieldValue) {
-            $scope.showCustomPrefixMessage = RoleNamePrefixUtils.isCustomPrefixUsed(fieldValue.text);
             $scope.isRoleValid = fieldValue.text.length >= minTagLength;
             return $scope.isRoleValid;
         };
@@ -521,12 +521,11 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
          *
          * @param {Object} event
          */
-        $scope.checkForBackspace = function(event) {
+        $scope.checkUserInput = function(event) {
             // If the key pressed is the backspace or delete key, the tag error message will be hidden
             if (event.keyCode === 8 || event.keyCode === 46) {
                 $scope.isRoleValid = true;
             }
-            $scope.showCustomPrefixMessage = RoleNamePrefixUtils.isCustomPrefixUsed(event.target.value);
         };
 
         /**
