@@ -94,10 +94,6 @@ right sidebar
     justify-content: end;
 }
 
-.ttyg-view .right-sidebar .agent-list-panel {
-    overflow-y: auto;
-}
-
 /*
 chat area
 */

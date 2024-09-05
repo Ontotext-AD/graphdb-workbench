@@ -2,6 +2,7 @@ import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
+import {ApplicationSteps} from "../../steps/application-steps";
 
 // TODO: This test is skipped because it fails on CI. For some reason the chat list panel is not visible.
 describe.skip('TTYG chat list', () => {
@@ -126,6 +127,20 @@ describe.skip('TTYG chat list', () => {
         ModalDialogSteps.clickOnConfirmButton();
         // Then the chat should be deleted
         TTYGViewSteps.getChatByDayGroups().should('have.length', 1);
+    });
+
+    it('Should show error notification if chat list fails to load', () => {
+        TTYGStubs.stubChatListGetError();
+        TTYGStubs.stubAgentListGet();
+        // Given I have opened the ttyg page
+        TTYGViewSteps.visit();
+        // When the chat list fails to load
+        // Then I should see an error notification
+        TTYGViewSteps.getChatListLoadingIndicator().should('not.exist');
+        // And the error notification should be visible
+        ApplicationSteps.getErrorNotifications().should('be.visible');
+        // And the chat list should not be visible
+        TTYGViewSteps.getChatsPanel().should('be.hidden');
     });
 });
 

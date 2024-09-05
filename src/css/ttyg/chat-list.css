@@ -12,7 +12,7 @@
 }
 
 .chat-list-component .chat-item {
-    padding: 4px;
+    padding: 6px 4px;
     display: flex;
     justify-content: space-between;
     width: 100%;

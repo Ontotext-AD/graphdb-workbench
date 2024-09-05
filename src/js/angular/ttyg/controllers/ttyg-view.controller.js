@@ -10,6 +10,7 @@ import {chatQuestionToChatMessageMapper} from "../services/chat-message.mapper";
 import {cloneDeep} from "lodash";
 import {AGENTS_FILTER_ALL_KEY} from "../services/constants";
 import {AgentListFilterModel} from "../../models/ttyg/agents";
+import {ChatsListModel} from "../../models/ttyg/chats";
 
 const modules = [
     'toastr',
@@ -261,17 +262,30 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     const loadChats = () => {
         $scope.loadingChats = true;
         return TTYGService.getConversations()
-            .then((chats) => TTYGContextService.updateChats(chats))
-            .catch((error) => toastr.error(getError(error, 0, 100)))
-            .finally(() => $scope.loadingChats = false);
+            .then((chats) => {
+                return TTYGContextService.updateChats(chats);
+            })
+            .catch((error) => {
+                toastr.error(getError(error, 0, 100));
+                setupChatListPanel(new ChatsListModel());
+            })
+            .finally(() => {
+                $scope.loadingChats = false;
+            });
     };
 
     const loadAgents = () => {
         $scope.loadingAgents = true;
         return TTYGService.getAgents()
-            .then((agents) => TTYGContextService.updateAgents(agents))
-            .catch((error) => toastr.error(getError(error, 0, 100)))
-            .finally(() => $scope.loadingAgents = false);
+            .then((agents) => {
+                return TTYGContextService.updateAgents(agents);
+            })
+            .catch((error) => {
+                toastr.error(getError(error, 0, 100));
+            })
+            .finally(() => {
+                $scope.loadingAgents = false;
+            });
     };
 
     const initView = () => {
@@ -326,6 +340,13 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
      */
     const onChatsChanged = (chats) => {
         $scope.chats = chats;
+        setupChatListPanel(chats);
+    };
+
+    /**
+     * @param {ChatsListModel} chats - the new chats list.
+     */
+    const setupChatListPanel = (chats) => {
         if (chats.isEmpty()) {
             $scope.showChats = false;
             $scope.selectedChat = undefined;
@@ -335,7 +356,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
                 TTYGContextService.selectChat($scope.chats.getFirstChat());
             }
         }
-    };
+    }
 
     /**
      * Handles the deletion of a chat by calling the service and updating the chats list.
@@ -437,9 +458,10 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     };
 
     const setRepositoryIds = () => {
+        const currentRepository = $repositories.getActiveRepository();
         // TODO: this should be refreshed automatically when the repositories change
         const repositoryObjects = $repositories.getReadableRepositories().map((repo) => (
-           new AgentListFilterModel(repo.id, repo.id)
+           new AgentListFilterModel(repo.id, repo.id, repo.id === currentRepository)
         ));
         $scope.agentListFilterModel = [
             new AgentListFilterModel(AGENTS_FILTER_ALL_KEY, labels.filter_all),
@@ -478,8 +500,8 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     // =========================
 
     function onInit() {
-        setRepositoryIds();
         loadAgents().then(() => {
+            setRepositoryIds();
             return loadChats();
         });
         initView();

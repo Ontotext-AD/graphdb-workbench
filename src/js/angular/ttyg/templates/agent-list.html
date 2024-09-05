@@ -21,7 +21,7 @@
             {{'ttyg.agent.messages.no_agents' | translate}}
         </div>
 
-        <div ng-repeat="agent in agentList.agents" class="agent-item">
+        <div ng-repeat="agent in agentList.filterableAgents" class="agent-item">
             <div class="agent-info" ng-if="agent.repositoryId">
                 <div class="agent-name">{{agent.name}}</div>
                 <div class="related-repository">

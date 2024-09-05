@@ -8,6 +8,16 @@ export class TTYGStubs {
         }).as('get-chat-list');
     }
 
+    static stubChatListGetError() {
+        cy.intercept('/rest/chat/conversations', {
+            method: 'GET',
+            statusCode: 500,
+            response: {
+                error: 'Internal Server Error'
+            }
+        }).as('get-chat-list');
+    }
+
     static stubChatsListGetNoResults() {
         cy.intercept('/rest/chat/conversations', {
             method: 'GET',
@@ -46,6 +56,16 @@ export class TTYGStubs {
             fixture: fixture,
             statusCode: 200,
             delay: delay
+        }).as('get-agent-list');
+    }
+
+    static stubAgentListGetError() {
+        cy.intercept('/rest/chat/agents', {
+            method: 'GET',
+            statusCode: 500,
+            response: {
+                error: 'Internal Server Error'
+            }
         }).as('get-agent-list');
     }
 }

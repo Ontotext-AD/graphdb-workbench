@@ -1,6 +1,7 @@
 import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
+import {ApplicationSteps} from "../../steps/application-steps";
 
 describe('TTYG view', () => {
 
@@ -47,6 +48,18 @@ describe('TTYG view', () => {
         TTYGViewSteps.getNoAgentsView().should('be.visible');
         // And the create agent button should be visible
         TTYGViewSteps.getCreateFirstAgentButton().should('be.visible');
+    });
+
+    it('Should show error notification if agents loading fails', () => {
+        TTYGStubs.stubChatsListGet();
+        TTYGStubs.stubAgentListGetError();
+        // Given I have opened the ttyg page
+        TTYGViewSteps.visit();
+        // When the agents loading fails
+        // Then I should see an error notification
+        ApplicationSteps.getErrorNotifications().should('be.visible');
+        // And the no agents view should be rendered
+        TTYGViewSteps.getNoAgentsView().should('be.visible');
     });
 });
 

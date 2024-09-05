@@ -105,6 +105,7 @@ function TTYGRestService($http) {
      */
     const getAgents = () => {
         if (DEVELOPMENT) {
+            // return _fakeBackend.simulateHttpError();
             return _fakeBackend.getAgents();
             // return new Promise((resolve) => {
             //     setTimeout(() => resolve(_fakeBackend.getAgents()), 3000);
