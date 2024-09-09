@@ -23,6 +23,7 @@ describe('TTYG view', () => {
     it('Should load ttyg page and render main components', () => {
         TTYGStubs.stubChatsListGet();
         TTYGStubs.stubAgentListGet();
+        TTYGStubs.stubChatGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
         // When the ttyg page is loaded
@@ -63,6 +64,7 @@ describe('TTYG view', () => {
     it('Should show error notification if agents loading fails', () => {
         TTYGStubs.stubChatsListGet();
         TTYGStubs.stubAgentListGetError();
+        TTYGStubs.stubChatGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
         // When the agents loading fails
