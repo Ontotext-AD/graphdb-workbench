@@ -219,6 +219,7 @@
     "ttyg": {
         "helpInfo": "Parlez à votre graphe est un chatbot basé sur le modèle GPT-4 d'OpenAI qui peut répondre aux questions sur les données stockées dans GraphDB, en exploitant à la fois vos données et les connaissances générales du modèle GPT-4. Le bot fonctionne dans connexion avec le connecteur ChatGPT Retrieval.",
         "hint": "Parlez à votre graphe – posez simplement une question !\nPour le moment, cela fonctionne mieux si vous demandez en anglais, désolé !",
+        "loading": "Chargement...",
         "help": {
             "btn": {
                 "show_help": {
@@ -267,6 +268,23 @@
         },
         "agent": {
             "loading_agents": "Chargement des agents...",
+            "deleted_repository": "Dépôt supprimé",
+            "create_agent_modal": {
+                "title": "Créer un agent",
+                "btn": {
+                    "create": {
+                        "label": "Créer l'agent"
+                    },
+                    "cancel": {
+                        "label": "Annuler"
+                    }
+                }
+            },
+            "fat_btn": {
+                "create_agent": {
+                    "label": "Créez votre premier agent"
+                }
+            },
             "btn": {
                 "filter": {
                     "tooltip": "Filtrer par dépôt",
@@ -296,7 +314,9 @@
                 }
             },
             "messages": {
-                "no_agents": "Aucun agent n'est configuré pour le moment."
+                "no_agents": "Aucun agent n'est configuré pour le moment.",
+                "help_1": "Parlez à vos données en langage naturel. Il vous suffit de créer et d'instruire votre propre agent IA pour vous aider.",
+                "help_2": "The Agent est un agent conversationnel basé sur l'IA, conçu pour vous aider dans une large gamme de tâches, de la réponse aux questions et la fourniture d'informations à l'assistance dans le cadre de projets créatifs et techniques. Il exploite un traitement avancé du langage naturel pour comprendre et répondre aux entrées des utilisateurs de manière humaine, rendant les interactions intuitives et efficaces."
             }
         },
         "help.what.title": "Qu'est-ce que c'est ?",

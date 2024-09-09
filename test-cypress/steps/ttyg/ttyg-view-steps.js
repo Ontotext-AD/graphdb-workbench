@@ -11,6 +11,10 @@ export class TTYGViewSteps {
         return cy.get('#ttyg-view-title');
     }
 
+    static getNoAgentsView() {
+        return this.getTtygView().find('.no-agents-view-component');
+    }
+
     static getTtygViewContent() {
         return cy.get('.ttyg-view-content');
     }
@@ -132,6 +136,10 @@ export class TTYGViewSteps {
 
     static getHelpButton() {
         return this.getAgentsSidebar().find('.help-btn');
+    }
+
+    static getCreateFirstAgentButton() {
+        return this.getNoAgentsView().find('.create-agent-btn');
     }
 
     static getCreateAgentButton() {

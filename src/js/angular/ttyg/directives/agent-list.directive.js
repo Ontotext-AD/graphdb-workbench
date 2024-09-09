@@ -86,7 +86,9 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
             // =========================
 
             const updateSelectedAgentsFilter = () => {
-                $scope.selectedAgentsFilter = $scope.agentListFilterModel[0];
+                const selectedFilter = $scope.agentListFilterModel.find((filter) => filter.selected);
+                $scope.selectedAgentsFilter = selectedFilter || $scope.agentListFilterModel[0];
+                $scope.onAgentsFilterChange($scope.selectedAgentsFilter);
             };
 
             // =========================
@@ -99,7 +101,7 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
                 subscriptions.forEach((subscription) => subscription());
             };
 
-            subscriptions.push($scope.$watch('repositoryList', updateSelectedAgentsFilter));
+            subscriptions.push($scope.$watch('agentListFilterModel', updateSelectedAgentsFilter));
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);

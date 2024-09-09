@@ -1,5 +1,14 @@
+.agent-list-component {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
 .agent-list-component .agent-list {
     margin-top: 1rem;
+    height: 75vh;
+    max-height: 75vh;
+    overflow-y: auto;
 }
 
 .agent-list-component .agents-filter-dropdown {
@@ -25,7 +34,7 @@
 }
 
 .agent-list-component .agent-item {
-    padding: 4px 8px;
+    padding: 6px 8px;
     display: flex;
     justify-content: space-between;
 }

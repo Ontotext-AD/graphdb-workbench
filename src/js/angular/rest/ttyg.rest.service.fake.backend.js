@@ -64,6 +64,14 @@ export class TtygRestServiceFakeBackend {
     getAgents() {
         return Promise.resolve({data: [...agentsList]});
     }
+
+    // Simulate an HTTP error
+    simulateHttpError() {
+        return Promise.reject({
+            status: 500,
+            message: 'Internal Server Error'
+        });
+    }
 }
 
 const conversationList = [

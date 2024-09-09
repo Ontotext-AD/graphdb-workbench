@@ -182,11 +182,11 @@ export class AgentListModel {
          */
         this._agents = agents;
         /**
-         * Used to store the original list of agents when filtering.
+         * Used to store the list of agents for filtering purposes.
          * @type {AgentModel[]}
          * @private
          */
-        this._agentsClone = cloneDeep(agents);
+        this._filterableAgents = cloneDeep(agents);
     }
 
     isEmpty() {
@@ -194,14 +194,14 @@ export class AgentListModel {
     }
 
     /**
-     * Filters the agents in place by the repository ID property. This uses the private _agentsClone property to do the
-     * filtering without losing the original list.
+     * Filters the agents in place by the repository ID property. This uses the private _filterableAgents property to do
+     * the filtering without losing the original list.
      * There is a special case when the repository ID is equal to AGENTS_FILTER_ALL_KEY which means that all agents
      * should be shown.
-     * @param {string} repositoryId
+     * @param {string} repositoryId - the repository ID to filter by
      */
     filterByRepository(repositoryId) {
-        this._agents = this._agentsClone.filter((agent) => {
+        this._filterableAgents = this._agents.filter((agent) => {
             if (repositoryId === AGENTS_FILTER_ALL_KEY) {
                 return true;
             } else if (agent.repositoryId === repositoryId) {
@@ -217,6 +217,14 @@ export class AgentListModel {
     set agents(value) {
         this._agents = value;
     }
+
+    get filterableAgents() {
+        return this._filterableAgents;
+    }
+
+    set filterableAgents(value) {
+        this._filterableAgents = value;
+    }
 }
 
 export const ExtractionMethod = {
@@ -230,7 +238,7 @@ export const ExtractionMethod = {
  * A model used for the filter dropdown in the agent list.
  */
 export class AgentListFilterModel {
-    constructor(key, label) {
+    constructor(key, label, selected = false) {
         /**
          * @type {string}
          * @private
@@ -241,6 +249,12 @@ export class AgentListFilterModel {
          * @private
          */
         this._label = label;
+        /**
+         * Whether the filter is selected or not.
+         * @type {boolean}
+         * @private
+         */
+        this._selected = selected;
     }
 
     get key() {
@@ -257,5 +271,13 @@ export class AgentListFilterModel {
 
     set label(value) {
         this._label = value;
+    }
+
+    get selected() {
+        return this._selected;
+    }
+
+    set selected(value) {
+        this._selected = value;
     }
 }

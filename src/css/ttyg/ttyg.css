@@ -48,7 +48,7 @@ common sidebar and slidepanel styles
 }
 
 .ttyg-view .sidebar .sidebar-content {
-    /*padding: 1rem 0;*/
+    height: 100%;
     padding: 0;
 }
 
@@ -92,10 +92,6 @@ right sidebar
 
 .ttyg-view .right-sidebar.collapsed .toolbar {
     justify-content: end;
-}
-
-.ttyg-view .right-sidebar .agent-list-panel {
-    overflow-y: auto;
 }
 
 /*

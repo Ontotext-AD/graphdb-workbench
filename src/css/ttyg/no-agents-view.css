@@ -1,0 +1,19 @@
+.no-agents-view-component {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 0 1rem 0 2rem;
+}
+
+.no-agents-view-component .content {
+    width: 1024px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.no-agents-view-component .actions {
+    display: flex;
+    justify-content: center;
+}
