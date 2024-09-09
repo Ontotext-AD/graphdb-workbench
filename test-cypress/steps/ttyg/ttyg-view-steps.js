@@ -146,6 +146,10 @@ export class TTYGViewSteps {
         return this.getAgentsSidebar().find('.create-agent-btn');
     }
 
+    static createFirstAgent() {
+        this.getCreateFirstAgentButton().click();
+    }
+
     static getToggleAgentsSidebarButton() {
         return this.getAgentsSidebar().find('.toggle-agents-sidebar-btn');
     }

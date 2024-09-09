@@ -4,7 +4,7 @@ import {RepositoriesStub} from "../repositories-stub";
 
 export class RepositoriesStubs extends Stubs {
     static stubRepositories(withDelay = 0, fixture = '/repositories/get-repositories.json') {
-        RepositoriesStubs.stubQueryResponse('/rest/repositories/all', fixture, 'backup-and-restore-response', withDelay);
+        RepositoriesStubs.stubQueryResponse('/rest/repositories/all', fixture, 'get-all-repositories', withDelay);
     }
 
     static stubLocations(withDelay = 0) {
@@ -13,6 +13,10 @@ export class RepositoriesStubs extends Stubs {
 
     static stubEditOntopResponse(repositoryId) {
         this.interceptRepository(repositoryId, 200);
+    }
+
+    static stubGetRepositoryConfig(repositoryId, fixture = '/repositories/get-repository-config.json', widthDelay = 0) {
+        RepositoriesStubs.stubQueryResponse(`/rest/repositories/${repositoryId}`, fixture, 'get-repository-config');
     }
 
     static getFixtureParams() {

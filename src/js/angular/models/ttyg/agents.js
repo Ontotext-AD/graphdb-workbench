@@ -40,16 +40,20 @@ export class AgentModel {
          */
         this._seed = data.seed;
         /**
-         * @type {number}
-         * @private
-         */
-        this._maxNumberOfTriplesPerCall = data.maxNumberOfTriplesPerCall;
-        /**
-         * @type {{systemInstruction: string, userInstruction: string}}
+         * @type {AgentInstructionsModel}
          * @private
          */
         this._instructions = data.instructions;
+        /**
+         * @type {ExtractionMethodModel[]}
+         * @private
+         */
         this._assistantExtractionMethods = data.assistantExtractionMethods;
+        /**
+         * @type {AdditionalExtractionMethodsModel}
+         * @private
+         */
+        this._additionalExtractionMethods = data.additionalExtractionMethods;
     }
 
     get id() {
@@ -108,14 +112,6 @@ export class AgentModel {
         this._seed = value;
     }
 
-    get maxNumberOfTriplesPerCall() {
-        return this._maxNumberOfTriplesPerCall;
-    }
-
-    set maxNumberOfTriplesPerCall(value) {
-        this._maxNumberOfTriplesPerCall = value;
-    }
-
     get instructions() {
         return this._instructions;
     }
@@ -130,6 +126,14 @@ export class AgentModel {
 
     set assistantExtractionMethods(value) {
         this._assistantExtractionMethods = value;
+    }
+
+    get additionalExtractionMethods() {
+        return this._additionalExtractionMethods;
+    }
+
+    set additionalExtractionMethods(value) {
+        this._additionalExtractionMethods = value;
     }
 }
 
@@ -167,10 +171,152 @@ export class AgentInstructionsModel {
 export class ExtractionMethodModel {
     constructor(data) {
         /**
-         * @type {ExtractionMethod}
+         * The extraction method name.
+         * @type {string}
          * @private
          */
-        this._name = data.name;
+        this._method = data.method;
+        /**
+         * The ontology graph used for the extraction method.
+         * @type {string}
+         * @private
+         */
+        this._ontologyGraph = data.ontologyGraph;
+        /**
+         * The construct query used for the extraction method.
+         * @type {string}
+         * @private
+         */
+        this._sparqlQuery = data.sparqlQuery;
+        /**
+         * The maximum number of triples per call for the extraction method.
+         * @type {number}
+         */
+        this._maxNumberOfTriplesPerCall = data._maxNumberOfTriplesPerCall;
+        /**
+         * The similarity index used for the similarity extraction method.
+         * @type {string}
+         * @private
+         */
+        this._similarityIndex = data.similarityIndex;
+        /**
+         * The similarity threshold used for the similarity extraction method.
+         * @type {number}
+         * @private
+         */
+        this._similarityIndexThreshold = data.similarityIndexThreshold;
+        /**
+         * The query template used for the extraction method.
+         * @type {string}
+         * @private
+         */
+        this._queryTemplate = data.queryTemplate;
+        /**
+         * The retrieval connector instance used for the retrieval extraction method.
+         * @type {string}
+         * @private
+         */
+        this._retrievalConnectorInstance = data.retrievalConnectorInstance;
+    }
+
+    get method() {
+        return this._method;
+    }
+
+    set method(value) {
+        this._method = value;
+    }
+
+    get sparqlQuery() {
+        return this._sparqlQuery;
+    }
+
+    set sparqlQuery(value) {
+        this._sparqlQuery = value;
+    }
+
+    get ontologyGraph() {
+        return this._ontologyGraph;
+    }
+
+    set ontologyGraph(value) {
+        this._ontologyGraph = value;
+    }
+
+    get maxNumberOfTriplesPerCall() {
+        return this._maxNumberOfTriplesPerCall;
+    }
+
+    set maxNumberOfTriplesPerCall(value) {
+        this._maxNumberOfTriplesPerCall = value;
+    }
+
+    get similarityIndex() {
+        return this._similarityIndex;
+    }
+
+    set similarityIndex(value) {
+        this._similarityIndex = value;
+    }
+
+    get similarityIndexThreshold() {
+        return this._similarityIndexThreshold;
+    }
+
+    set similarityIndexThreshold(value) {
+        this._similarityIndexThreshold = value;
+    }
+
+    get queryTemplate() {
+        return this._queryTemplate;
+    }
+
+    set queryTemplate(value) {
+        this._queryTemplate = value;
+    }
+
+    get retrievalConnectorInstance() {
+        return this._retrievalConnectorInstance;
+    }
+
+    set retrievalConnectorInstance(value) {
+        this._retrievalConnectorInstance = value;
+    }
+}
+
+export class AdditionalExtractionMethodsModel {
+    constructor(data) {
+        /**
+         * @type {AdditionalExtractionMethodModel[]}
+         * @private
+         */
+        this._additionalExtractionMethods = data;
+    }
+
+    get additionalExtractionMethods() {
+        return this._additionalExtractionMethods;
+    }
+
+    set additionalExtractionMethods(value) {
+        this._additionalExtractionMethods = value;
+    }
+}
+
+export class AdditionalExtractionMethodModel {
+    constructor(data) {
+        /**
+         * @type {'iri_discovery_search'}
+         * @private
+         */
+        this._method = data._method;
+    }
+
+    get method() {
+        return this._method;
+    }
+
+    set method(value) {
+        this._method = value;
     }
 }
 
@@ -232,6 +378,10 @@ export const ExtractionMethod = {
     SPARQL: 'sparql_search',
     SIMILARITY: 'similarity_search',
     RETRIEVAL: 'retrieval_search'
+};
+
+export const AdditionalExtractionMethod = {
+    IRI_DISCOVERY_SEARCH: 'iri_discovery_search'
 };
 
 /**

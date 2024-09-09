@@ -85,4 +85,12 @@ export class TTYGStubs {
             }
         }).as('get-agent-list');
     }
+
+    static stubAgentCreate() {
+        cy.intercept('/rest/chat/agents', {
+            method: 'POST',
+            fixture: '/ttyg/agent/create-agent.json',
+            statusCode: 200
+        }).as('create-agent');
+    }
 }

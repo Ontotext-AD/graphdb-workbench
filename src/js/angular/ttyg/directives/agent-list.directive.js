@@ -1,9 +1,4 @@
-import 'angular/core/filters/readableTimestamp';
-import 'angular/core/directives/inline-editable-text/inline-editable-text.directive';
-
 const modules = [
-    'graphdb.framework.core.filters.readable_titmestamp',
-    'graphdb.framework.core.directives.inline-editable-text'
 ];
 
 angular

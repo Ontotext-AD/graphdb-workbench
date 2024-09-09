@@ -1,7 +1,7 @@
 import {chatModelMapper, chatsListMapper} from "../../ttyg/services/chats.mapper";
 import 'angular/rest/ttyg.rest.service';
 import {chatMessageModelMapper} from "../../ttyg/services/chat-message.mapper";
-import {agentListMapper} from "../../ttyg/services/agents.mapper";
+import {agentListMapper, agentModelMapper} from "../../ttyg/services/agents.mapper";
 
 const modules = ['graphdb.framework.rest.ttyg.service'];
 
@@ -78,11 +78,25 @@ function TTYGService(TTYGRestService) {
 
     /**
      * Loads all agents from the server and converts the response to a list of AgentModels.
-     * @return {Promise<*>}
+     * @return {Promise<AgentListModel>}
      */
     const getAgents = () => {
         return TTYGRestService.getAgents()
-            .then((response) => agentListMapper(response.data));
+            .then((response) => {
+                return agentListMapper(response.data);
+            });
+    };
+
+    /**
+     * Creates a new agent.
+     * @param {*} payload - the agent data
+     * @return {Promise<AgentModel>} created agent;
+     */
+    const createAgent = (payload) => {
+        return TTYGRestService.createAgent(payload)
+            .then((response) => {
+                return agentModelMapper(response.data);
+            });
     };
 
     return {
@@ -93,6 +107,7 @@ function TTYGService(TTYGRestService) {
         getConversations,
         deleteConversation,
         createConversation,
-        getAgents
+        getAgents,
+        createAgent
     };
 }
