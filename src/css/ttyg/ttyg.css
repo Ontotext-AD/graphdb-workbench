@@ -48,7 +48,7 @@ common sidebar and slidepanel styles
 }
 
 .ttyg-view .sidebar .sidebar-content {
-    /*padding: 1rem 0;*/
+    height: 100%;
     padding: 0;
 }
 

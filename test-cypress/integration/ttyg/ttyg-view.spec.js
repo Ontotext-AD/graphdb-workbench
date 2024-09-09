@@ -5,9 +5,19 @@ import {ApplicationSteps} from "../../steps/application-steps";
 
 describe('TTYG view', () => {
 
+    let repositoryId;
+
     beforeEach(() => {
+        // Create an actual repository to prevent stubbing all background requests that are not related to the ttyg view
+        repositoryId = 'starwars';
+        cy.createRepository({id: repositoryId});
+
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
         cy.presetRepository('starwars');
+    });
+
+    afterEach(() => {
+        cy.deleteRepository(repositoryId);
     });
 
     it('Should load ttyg page and render main components', () => {
