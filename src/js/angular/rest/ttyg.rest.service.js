@@ -1,4 +1,5 @@
 import {TtygRestServiceFakeBackend} from "./ttyg.rest.service.fake.backend";
+import {agentModelMapper} from "../ttyg/services/agents.mapper";
 
 angular
     .module('graphdb.framework.rest.ttyg.service', [])
@@ -7,6 +8,8 @@ angular
 TTYGRestService.$inject = ['$http'];
 
 const CONVERSATIONS_ENDPOINT = 'rest/chat/conversations';
+const AGENTS_ENDPOINT = 'rest/chat/agents';
+
 const DEVELOPMENT = false;
 
 function TTYGRestService($http) {
@@ -111,7 +114,19 @@ function TTYGRestService($http) {
             //     setTimeout(() => resolve(_fakeBackend.getAgents()), 3000);
             // });
         }
-        return $http.get('rest/chat/agents');
+        return $http.get(AGENTS_ENDPOINT);
+    };
+
+    /**
+     * Creates a new agent in the backend.
+     * @param {*} agent
+     * @return {Promise<AgentModel>}
+     */
+    const createAgent = (agent) => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.createAgent(agent);
+        }
+        return $http.post(AGENTS_ENDPOINT, agent);
     };
 
     return {
@@ -122,6 +137,7 @@ function TTYGRestService($http) {
         getConversations,
         deleteConversation,
         createConversation,
-        getAgents
+        getAgents,
+        createAgent
     };
 }

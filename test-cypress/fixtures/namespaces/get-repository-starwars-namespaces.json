@@ -1,0 +1,252 @@
+{
+    "head" : {
+        "vars" : [
+            "prefix",
+            "namespace"
+        ]
+    },
+    "results" : {
+        "bindings" : [
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "agg"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://jena.apache.org/ARQ/function/aggregate#"
+                }
+            },
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "sail"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://www.openrdf.org/config/sail#"
+                }
+            },
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "owl"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://www.w3.org/2002/07/owl#"
+                }
+            },
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "geof"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://www.opengis.net/def/function/geosparql/"
+                }
+            },
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "xsd"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://www.w3.org/2001/XMLSchema#"
+                }
+            },
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "fn"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://www.w3.org/2005/xpath-functions"
+                }
+            },
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "rdfs"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://www.w3.org/2000/01/rdf-schema#"
+                }
+            },
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "spif"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://spinrdf.org/spif#"
+                }
+            },
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "path"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://www.ontotext.com/path#"
+                }
+            },
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "array"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://www.w3.org/2005/xpath-functions/array"
+                }
+            },
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "apf"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://jena.apache.org/ARQ/property#"
+                }
+            },
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "rep"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://www.openrdf.org/config/repository#"
+                }
+            },
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "map"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://www.w3.org/2005/xpath-functions/map"
+                }
+            },
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "sr"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://www.openrdf.org/config/repository/sail#"
+                }
+            },
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "wgs"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://www.w3.org/2003/01/geo/wgs84_pos#"
+                }
+            },
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "gn"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://www.geonames.org/ontology#"
+                }
+            },
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "afn"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://jena.apache.org/ARQ/function#"
+                }
+            },
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "list"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://jena.apache.org/ARQ/list#"
+                }
+            },
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "rdf"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                }
+            },
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "ofn"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://www.ontotext.com/sparql/functions/"
+                }
+            },
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "geoext"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://rdf.useekm.com/ext#"
+                }
+            },
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "graphdb"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://www.ontotext.com/config/graphdb#"
+                }
+            },
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "math"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://www.w3.org/2005/xpath-functions/math"
+                }
+            },
+            {
+                "prefix" : {
+                    "type" : "literal",
+                    "value" : "omgeo"
+                },
+                "namespace" : {
+                    "type" : "literal",
+                    "value" : "http://www.ontotext.com/owlim/geo#"
+                }
+            }
+        ]
+    }
+}

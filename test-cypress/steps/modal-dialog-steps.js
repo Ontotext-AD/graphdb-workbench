@@ -47,6 +47,10 @@ export class ModalDialogSteps {
         ModalDialogSteps.getCancelButton().click();
     }
 
+    static cancel() {
+        ModalDialogSteps.getCancelButton().click();
+    }
+
     static verifyUrlChangedConfirmation(verifyConfirmationDialogOptions = new VerifyConfirmationDialogOptions()) {
         // and try to change the page
         verifyConfirmationDialogOptions.changePageFunction();

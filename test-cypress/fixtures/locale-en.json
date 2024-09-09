@@ -218,7 +218,6 @@
     },
     "ttyg": {
         "helpInfo": "Talk to Your Graph is chat bot based on OpenAI's GPT-4 model that can answer questions about data stored in GraphDB, leveraging both your data and the general knowledge of the GPT-4 model. The bot works in connection with the ChatGPT Retrieval connector.",
-        "hint": "Talk to your graph – simply ask a question!",
         "loading": "Loading...",
         "help": {
             "btn": {
@@ -276,6 +275,91 @@
             "deleted_repository": "Deleted repository",
             "create_agent_modal": {
                 "title": "Create Agent",
+                "advanced_settings": {
+                    "show": "Show advanced settings",
+                    "hide": "Hide advanced settings"
+                },
+                "form": {
+                    "agent_name": {
+                        "label": "GraphAgent name",
+                        "placeholder": "Enter user friendly name"
+                    },
+                    "repository": {
+                        "label": "Repository ID"
+                    },
+                    "model": {
+                        "label": "Model",
+                        "hint": "Check out the available OpenAI models <a href=\"https://platform.openai.com/docs/models\" target=\"_blank\">here</a>."
+                    },
+                    "temperature": {
+                        "label": "Temperature"
+                    },
+                    "top_p": {
+                        "label": "Top_P"
+                    },
+                    "seed": {
+                        "label": "Seed",
+                        "hint": "Any integer value"
+                    },
+                    "extraction_method": {
+                        "label": "Query methods",
+                        "required": "At least one query method must be selected"
+                    },
+                    "fts_search": {
+                        "label": "Full-text search",
+                        "fts_disabled_message": "To use this method, you must enable the full-text search (FTS) index on chosen repository and then restart it.<br/>Enable the index: <a href=\"{{repositoryEditPage}}\" target=\"_blank\">here</a>",
+                        "missing_repository_id": "Repository ID must be selected"
+                    },
+                    "sparql_search": {
+                        "label": "SPARQL",
+                        "required_option": "Select how an ontology should be fetched"
+                    },
+                    "ontology_graph": {
+                        "label": "Fetch ontology from a named graph"
+                    },
+                    "construct_query": {
+                        "label": "Provide a SPARQL CONSTRUCT query that fetches the ontology"
+                    },
+                    "similarity_search": {
+                        "label": "Similarity search"
+                    },
+                    "similarity_index": {
+                        "label": "Similarity index name",
+                        "loading_indexes": "Loading similarity indexes...",
+                        "no_similarity_index_message": "To use this method, you must have a similarity index created.<br/>Create similarity text index <a href=\"{{similarityIndexPage}}\" target=\"_blank\">here</a>."
+                    },
+                    "similarity_threshold": {
+                        "label": "Similarity threshold"
+                    },
+                    "retrieval_search": {
+                        "label": "ChatGPT retrieval connector",
+                        "no_retrieval_connectors_message": "No connector instances.<br/>Create ChatGPT retrieval connector <a href=\"{{retrievalConnectorPage}}\" target=\"_blank\">here</a>."
+                    },
+                    "connector_id": {
+                        "label": "ChatGPT retrieval connector"
+                    },
+                    "query_template": {
+                        "label": "Query template"
+                    },
+                    "max_number_of_triples_per_call": {
+                        "label": "Max number of results (triples) per call",
+                        "placeholder": "Automatic value"
+                    },
+                    "system_instruction": {
+                        "label": "System instructions",
+                        "placeholder": "Enter system instructions"
+                    },
+                    "user_instruction": {
+                        "label": "User instructions",
+                        "placeholder": "Enter user instructions"
+                    },
+                    "additional_query_methods": {
+                        "label": "Additional query methods",
+                        "method": {
+                            "iri_discovery_search": "Full-text search in labels for IRI discovery"
+                        }
+                    }
+                },
                 "btn": {
                     "create": {
                         "label": "Create Agent"
@@ -321,7 +405,10 @@
             "messages": {
                 "no_agents": "No agents found for the selected filter.",
                 "help_1": "Talk to your data in natural language. All you need to do is create and instruct your own AI Agent to assist you.",
-                "help_2": "The Agent is an AI-powered conversational agent designed to help with a wide range of tasks, from answering questions and providing information to assisting with creative and technical projects. It leverages advanced natural language processing to understand and respond to user inputs in a human-like manner, making interactions intuitive and efficient."
+                "help_2": "The Agent is an AI-powered conversational agent designed to help with a wide range of tasks, from answering questions and providing information to assisting with creative and technical projects. It leverages advanced natural language processing to understand and respond to user inputs in a human-like manner, making interactions intuitive and efficient.",
+                "error_retrieval_connectors_loading": "Error loading retrieval connectors",
+                "error_similarity_indexes_loading": "Error loading similarity indexes",
+                "error_repository_config_loading": "Error loading repository configurations"
             }
         },
         "help.what.title": "What is this?",

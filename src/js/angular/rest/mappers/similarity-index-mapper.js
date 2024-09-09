@@ -1,5 +1,10 @@
 import {SimilarityIndex} from "../../models/similarity/similarity-index";
 
+/**
+ * Maps the response data to SimilarityIndex objects.
+ * @param {*} responseData
+ * @return {SimilarityIndex[]}
+ */
 export const mapIndexesResponseToSimilarityIndex = (responseData) => {
     return responseData.map((index) => {
         const similarityIndex = new SimilarityIndex();

@@ -9,6 +9,9 @@ import {TTYGEventName} from "../services/ttyg-context.service";
 import {AGENTS_FILTER_ALL_KEY} from "../services/constants";
 import {AgentListFilterModel} from "../../models/ttyg/agents";
 import {ChatsListModel} from "../../models/ttyg/chats";
+import {newAgentFormModelProvider} from "../services/agents.mapper";
+import {SelectMenuOptionsModel} from "../../models/form-fields";
+import {repositoryInfoMapper} from "../../rest/mappers/repositories-mapper";
 
 const modules = [
     'toastr',
@@ -74,10 +77,20 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
      */
     $scope.agents = undefined;
     /**
-     * Flag to control the visibility of the loader when loading agent list.
+     * Flag to control the visibility of the loader when loading agent list on initial page load.
      * @type {boolean}
      */
     $scope.loadingAgents = false;
+    /**
+     * Flag to control the visibility of the loader when reloading agent list.
+     * @type {boolean}
+     */
+    $scope.reloadingAgents = false;
+    /**
+     * Flag to control the visibility of the loader when creating an agent.
+     * @type {boolean}
+     */
+    $scope.creatingAgent = false;
 
     $scope.connectorID = undefined;
 
@@ -86,6 +99,12 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
      * @type {AgentListFilterModel[]}
      */
     $scope.agentListFilterModel = [];
+
+    /**
+     * A list with the active repositories that is used in child components.
+     * @type {string[]}
+     */
+    $scope.activeRepositoryList = [];
 
     $scope.history = [];
     $scope.askSettings = {
@@ -175,6 +194,37 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
         onExportChat(TTYGContextService.getSelectedChat());
     };
 
+    /**
+     * Configures and opens the modal for creating a new agent.
+     */
+    $scope.onCreateAgent = () => {
+        const activeRepositoryInfo = repositoryInfoMapper($repositories.getActiveRepositoryObject());
+        const options = {
+            templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
+            controller: 'AgentSettingsModalController',
+            windowClass: 'agent-settings-modal',
+            resolve: {
+                dialogModel: function () {
+                    return {
+                        activeRepositoryInfo: activeRepositoryInfo,
+                        activeRepositoryList: $scope.activeRepositoryList,
+                        agentFormModel: newAgentFormModelProvider()
+                    };
+                }
+            },
+            size: 'lg'
+        };
+        $uibModal.open(options).result.then(
+            // confirmed handler
+            (data) => {
+                createAgent(data);
+            },
+            // rejected handler
+            (data) => {
+                console.log(`create agent rejected`, data);
+            });
+    };
+
     // =========================
     // Private functions
     // =========================
@@ -215,6 +265,24 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
             })
             .finally(() => {
                 $scope.loadingAgents = false;
+            });
+    };
+
+    /**
+     * Reloads the agents list.
+     * TODO: this will be used with the agents create/edit/clone actions to reload the agents list instead of the entire view page.
+     */
+    const reloadAgents = () => {
+        $scope.reloadingAgents = true;
+        return TTYGService.getAgents()
+            .then((agents) => {
+                return TTYGContextService.updateAgents(agents);
+            })
+            .catch((error) => {
+                toastr.error(getError(error, 0, 100));
+            })
+            .finally(() => {
+                $scope.reloadingAgents = false;
             });
     };
 
@@ -362,33 +430,40 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
         }
     };
 
-    const onCreateAgent = () => {
-        // open the agent settings modal
-        const options = {
-            templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
-            controller: 'AgentSettingsModalController',
-            windowClass: 'agent-settings-modal',
-            resolve: {
-                dialogModel: function () {
-                    return {
-
-                    };
-                }
-            },
-            size: 'lg'
-        };
-        $uibModal.open(options).result.then(
-            // confirmed handler
-            (data) => {
-                console.log(`create agent confirmed`, data);
-            },
-            // rejected handler
-            (data) => {
-                console.log(`create agent rejected`, data);
+    /**
+     * Creates a new agent with the given payload and reload the view components.
+     * @param {*} newAgentPayload - the payload for the new agent
+     */
+    const createAgent = (newAgentPayload) => {
+        $scope.creatingAgent = true;
+        TTYGService.createAgent(newAgentPayload)
+            .then((agent) => {
+                return loadAgents();
+            })
+            .then(() => {
+                // TODO: select the agent
+            })
+            .catch((error) => {
+                toastr.error(getError(error, 0, 100));
+            })
+            .finally(() => {
+                $scope.creatingAgent = false;
             });
-        // get the data from the modal
-        // call the service to create the agent with the data
-        // reload the agents list
+    };
+
+    /**
+     * Creates a filter model for the agents list.
+     */
+    const buildAgentsFilterModel = () => {
+        const currentRepository = $repositories.getActiveRepository();
+        // TODO: this should be refreshed automatically when the repositories change
+        const repositoryObjects = $repositories.getReadableRepositories().map((repo) => (
+           new AgentListFilterModel(repo.id, repo.id, repo.id === currentRepository)
+        ));
+        $scope.agentListFilterModel = [
+            new AgentListFilterModel(AGENTS_FILTER_ALL_KEY, labels.filter_all),
+            ...repositoryObjects
+        ];
     };
 
     const onSelectedChatChanged = (selectedChat) => {
@@ -402,22 +477,17 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
         }
     };
 
-    const setRepositoryIds = () => {
-        const currentRepository = $repositories.getActiveRepository();
-        // TODO: this should be refreshed automatically when the repositories change
-        const repositoryObjects = $repositories.getReadableRepositories().map((repo) => (
-           new AgentListFilterModel(repo.id, repo.id, repo.id === currentRepository)
-        ));
-        $scope.agentListFilterModel = [
-            new AgentListFilterModel(AGENTS_FILTER_ALL_KEY, labels.filter_all),
-            ...repositoryObjects
-        ];
-    };
-
     const updateLabels = () => {
         labels.filter_all = $translate.instant('ttyg.agent.btn.filter.all');
         // recreate the repository list to trigger the update in the view
-        setRepositoryIds();
+        buildAgentsFilterModel();
+    };
+
+    const buildRepositoryList = () => {
+        $scope.activeRepositoryList = $repositories.getReadableRepositories()
+            .map((repo) => (
+                new SelectMenuOptionsModel({value: repo.id, label: repo.id}))
+            );
     };
 
 
@@ -437,7 +507,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_CHAT, onDeleteChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CHAT_EXPORT, onExportChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_LIST_UPDATED, onAgentListChanged));
-    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_AGENT, onCreateAgent));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_AGENT, $scope.onCreateAgent));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION, onAskQuestion));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.LOAD_CHAT, loadChats));
     subscriptions.push($rootScope.$on('$translateChangeSuccess', updateLabels));
@@ -448,8 +518,9 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     // =========================
 
     function onInit() {
+        buildRepositoryList();
         loadAgents().then(() => {
-            setRepositoryIds();
+            buildAgentsFilterModel();
             return loadChats();
         });
         initView();
