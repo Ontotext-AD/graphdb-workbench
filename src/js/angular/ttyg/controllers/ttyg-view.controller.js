@@ -356,7 +356,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
                 TTYGContextService.selectChat($scope.chats.getFirstChat());
             }
         }
-    }
+    };
 
     /**
      * Handles the deletion of a chat by calling the service and updating the chats list.
