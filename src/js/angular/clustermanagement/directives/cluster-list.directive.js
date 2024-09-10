@@ -150,7 +150,7 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
             const onClusterViewChanged = (cluster) => {
                 $scope.cluster = cluster;
                 $scope.clusterView = cluster.getAttached();
-                $scope.allSuggestions = cluster.getAvailable().map((node) => node.endpoint);
+                $scope.allSuggestions = cluster.getAvailableNodeEndpoints();
 
                 // If there are no cluster nodes, add the local node
                 if ($scope.clusterView.length === 0) {

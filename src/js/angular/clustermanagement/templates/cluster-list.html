@@ -5,7 +5,7 @@
         <button ng-click="addNode()" ng-disabled="editedNodeIndex !== undefined"
                 class="btn btn-primary add-node-btn"
                 gdb-tooltip="{{'cluster_management.update_cluster_group_dialog.actions.add_node_tooltip' | translate}}">
-            <em class="icon-plus"></em>{{'cluster_management.update_cluster_group_dialog.actions.add_node' | translate}}
+            <i class="fa-regular fa-plus"></i> {{'cluster_management.update_cluster_group_dialog.actions.add_node' | translate}}
         </button>
     </div>
     <form name="form" id="updateClusterGroupForm">
@@ -55,11 +55,11 @@
                     <div ng-if="editedNodeIndex === undefined" class="actions-group">
                         <button ng-click="replaceNode($index)" class="btn btn-link replace-node-btn"
                                 gdb-tooltip="{{'cluster_management.update_cluster_group_dialog.actions.replace_node' | translate}}">
-                            <em class="icon-exchange"></em>
+                            <i class="fa-regular fa-arrow-right-arrow-left"></i>
                         </button>
                         <button ng-click="deleteNode($index)" class="btn btn-link delete-node-btn secondary"
                                 gdb-tooltip="{{'cluster_management.update_cluster_group_dialog.actions.delete_node' | translate}}">
-                            <em class="icon-trash"></em>
+                            <i class="fa-regular fa-trash-can"></i>
                         </button>
                     </div>
                 </td>
@@ -69,7 +69,7 @@
                 <td class="index-cell">{{$index + 1}}</td>
                 <td class="data location-cell">
                     <div class="autocomplete-container">
-                            <textarea type="text" name="location" minlength="2" required
+                            <textarea type="text" name="location" required
                                       ng-model="node.endpoint"
                                       ng-change="filterSuggestions(node)"
                                       ng-blur="hideSuggestions(node)"
@@ -106,13 +106,13 @@
                         <button ng-click="deleteNode($index, node)"
                                 class="btn btn-link cancel-node-replace-btn secondary"
                                 gdb-tooltip="{{'cluster_management.update_cluster_group_dialog.actions.cancel_node_adding' | translate}}">
-                            <em class="icon-close"></em>
+                            <i class="fa-regular fa-xmark"></i>
                         </button>
                         <button ng-click="saveNode(node.endpoint, $index)"
                                 class="btn btn-link save-rule-btn"
                                 ng-disabled="!form.location.$valid"
                                 gdb-tooltip="{{form.location.$valid ? 'cluster_management.update_cluster_group_dialog.actions.add_node' : 'cluster_management.update_cluster_group_dialog.messages.invalid_form' | translate}}">
-                            <em class="icon-check"></em>
+                            <i class="fa-regular fa-check"></i>
                         </button>
                     </div>
                 </td>
