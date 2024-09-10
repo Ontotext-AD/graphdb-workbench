@@ -1,10 +1,34 @@
 export class ChatMessageModel {
     constructor(data) {
+
+        /**
+         * @type {string}
+         */
         this._id = data.id;
+
+        /**
+         * @type {string}
+         */
         this._conversationId = data.conversationId;
+
+        /**
+         * @type {string}
+         */
         this._agentId = data.agent;
+
+        /**
+         * @type {string}
+         */
         this._role = data.role;
+
+        /**
+         * @type {string}
+         */
         this._message = data.message;
+
+        /**
+         * @type {number}
+         */
         this._timestamp = data.timestamp;
     }
 

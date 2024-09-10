@@ -1,0 +1,39 @@
+.chat-view {
+    height: 100%;
+}
+
+.chat-view .messages {
+    border: 1px solid #ddd;
+    height: calc(100% - 5em);
+    overflow: scroll;
+}
+
+.chat-view .messages.hidden {
+    visibility: hidden;
+}
+
+.chat-view .messages-hint {
+    font-size: 2em;
+    padding-top: 2em;
+    text-align: center;
+}
+
+.chat-view .messages-item {
+    padding: 0.5em;
+}
+
+.chat-view .messages-item-content {
+    white-space: pre-line;
+}
+
+.chat-view .messages-item-question {
+    background-color: hsla(var(--secondary-color-hsl), 0.1);
+}
+
+.chat-view .messages-item-assistant {
+    background-color: hsla(var(--secondary-color-hsl), 0.2);
+}
+
+.chat-view .messages-item-assistant .icon {
+    color: var(--primary-color);
+}

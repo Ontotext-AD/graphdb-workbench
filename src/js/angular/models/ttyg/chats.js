@@ -1,9 +1,25 @@
 export class ChatModel {
     constructor(data, hashGenerator) {
         this.hashGenerator = hashGenerator;
+
+        /**
+         * @type {string}
+         */
         this._id = data.id;
+
+        /**
+         * @type {string}
+         */
         this._name = data.name;
+
+        /**
+         * @type {number}
+         */
         this._timestamp = data.timestamp;
+
+        /**
+         * @type {string}
+         */
         this._messages = data.messages;
         this.hash = this.generateHash();
     }
