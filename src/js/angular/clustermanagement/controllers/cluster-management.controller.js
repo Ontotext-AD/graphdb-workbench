@@ -8,6 +8,7 @@ import 'angular/clustermanagement/controllers/delete-cluster.controller';
 import 'angular/clustermanagement/controllers/add-location.controller';
 import 'angular/clustermanagement/controllers/add-nodes.controller';
 import 'angular/clustermanagement/controllers/replace-nodes.controller';
+import 'angular/clustermanagement/controllers/update-cluster-group.controller';
 import {isString} from "lodash";
 import {LinkState, NodeState, RecoveryState} from "../../models/clustermanagement/states";
 import {CLICK_IN_VIEW, CREATE_CLUSTER, DELETE_CLUSTER, MODEL_UPDATED, NODE_SELECTED, UPDATE_CLUSTER} from "../events";
@@ -26,6 +27,7 @@ const modules = [
     'graphdb.framework.clustermanagement.controllers.add-location',
     'graphdb.framework.clustermanagement.controllers.add-nodes',
     'graphdb.framework.clustermanagement.controllers.replace-nodes',
+    'graphdb.framework.clustermanagement.controllers.update-cluster-group',
     'toastr',
     'pageslide-directive'
 ];
@@ -91,6 +93,46 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
 
     $scope.getLoaderMessage = () => {
         return $scope.loaderMessage || $translate.instant('common.loading');
+    };
+
+    $scope.showUpdateClusterGroupDialog = function () {
+        const modalInstance = $uibModal.open({
+            templateUrl: 'js/angular/clustermanagement/templates/modal/update-cluster-group-dialog.html',
+            controller: 'UpdateClusterGroupDialogCtrl',
+            size: 'lg',
+            resolve: {
+                data: function () {
+                    return {
+                        clusterModel: $scope.clusterModel
+                    };
+                }
+            }
+        });
+
+        modalInstance.result.then((cluster) => {
+            const newNodes = cluster.getAddToCluster();
+            if (newNodes) {
+                const loaderMessage = $translate.instant('cluster_management.cluster_page.add_nodes_loader');
+                $scope.setLoader(true, loaderMessage);
+
+                const nodesRpcAddress = newNodes.map((node) => node.rpcAddress);
+                ClusterRestService.addNodesToCluster(nodesRpcAddress)
+                    .then(() => {
+                        const successMessage = $translate.instant(
+                            'cluster_management.cluster_page.notifications.add_nodes_success');
+                        onAddRemoveSuccess(successMessage);
+                    })
+                    .catch((error) => {
+                        const failMessageTitle = $translate.instant('cluster_management.cluster_page.notifications.add_nodes_fail');
+                        handleErrors(error.data, error.status, failMessageTitle);
+                    })
+                    .finally(() => {
+                        $scope.setLoader(false);
+                        updateCluster(true);
+                    });
+            }
+        })
+            .finally(() => getLocationsWithRpcAddresses());
     };
 
     $scope.getClusterConfiguration = () => {
