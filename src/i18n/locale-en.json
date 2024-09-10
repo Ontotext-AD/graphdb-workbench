@@ -11,7 +11,8 @@
             "remove_nodes_btn_tooltip": "Remove nodes from existing cluster",
             "edit_cluster": "Edit configuration",
             "edit_cluster_tooltip": "Edit cluster configuration",
-            "show_cluster_settings_tooltip": "Show cluster configuration"
+            "show_cluster_settings_tooltip": "Show cluster configuration",
+            "update_nodes_group_btn": "Update cluster group"
         },
         "cluster_graphical_view": {
             "no_cluster_configured": "No cluster is configured",
@@ -147,6 +148,30 @@
         "remove_nodes_dialog": {
             "title": "Remove nodes from cluster",
             "content": "Select nodes to be removed from existing cluster"
+        },
+        "update_cluster_group_dialog": {
+            "title": "Update cluster group",
+            "current_node": "Current node",
+            "new_node": "New node",
+            "column": {
+                "index": "#",
+                "location": "Location URL",
+                "info": "Information"
+            },
+            "actions": {
+                "replace_node": "Replace node",
+                "delete_node": "Delete node",
+                "add_node": "Add node",
+                "cancel_node_adding": "Cancel"
+            },
+            "messages": {
+                "no_cluster": "No cluster is configured",
+                "invalid_form": "Invalid Location URL",
+                "connecting_node": "Connecting node"
+            },
+            "field_placeholders": {
+                "location": "http://my-hostname:7200"
+            }
         }
     },
     "acl_management": {
