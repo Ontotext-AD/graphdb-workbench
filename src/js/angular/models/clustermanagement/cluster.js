@@ -277,6 +277,15 @@ export class ClusterViewModel {
     }
 
     /**
+     * Gets the endpoints of the available nodes that are not yet part of the cluster.
+     *
+     * @return {string[]} The list of available node endpoints.
+     */
+    getAvailableNodeEndpoints() {
+        return this.getAvailable().map((node) => node.endpoint);
+    }
+
+    /**
      * Adds a location to the cluster.
      * @param {Location} location - The location to add.
      */
