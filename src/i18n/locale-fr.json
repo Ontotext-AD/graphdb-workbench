@@ -11,7 +11,8 @@
             "replace_nodes_btn_tooltip": "Remplacer les nœuds dans le cluster",
             "edit_cluster": "Modifier la configuration",
             "edit_cluster_tooltip": "Modifier la configuration du cluster",
-            "show_cluster_settings_tooltip": "Afficher la configuration du cluster"
+            "show_cluster_settings_tooltip": "Afficher la configuration du cluster",
+            "update_nodes_group_btn": "Mettre à jour le groupe de clustersp"
         },
         "cluster_graphical_view": {
             "no_cluster_configured": "Aucun cluster n'est configuré",
@@ -147,6 +148,30 @@
         "remove_nodes_dialog": {
             "title": "Supprimer des nœuds du cluster",
             "content": "Sélectionner les nœuds à retirer du cluster existant"
+        },
+        "update_cluster_group_dialog": {
+            "title": "Mettre à jour le groupe de clusters",
+            "current_node": "Nœud actuel",
+            "new_node": "Nouveau nœud",
+            "column": {
+                "index": "#",
+                "location": "URL d'emplacement",
+                "info": "Informations"
+            },
+            "actions": {
+                "replace_node": "Remplacer le nœud",
+                "delete_node": "Supprimer le nœud",
+                "add_node": "Ajouter un nœud",
+                "cancel_node_adding": "Annuler"
+            },
+            "messages": {
+                "no_cluster": "Aucun cluster n'est configuré",
+                "invalid_form": "URL d'emplacement non valide",
+                "connecting_node": "Connexion du nœud"
+            },
+            "field_placeholders": {
+                "location": "http://my-hostname:7200"
+            }
         }
     },
     "acl_management": {
