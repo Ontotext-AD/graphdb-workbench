@@ -2,6 +2,7 @@ import {ChatQuestion} from "../../models/ttyg/chat-question";
 import {TTYGEventName} from "../services/ttyg-context.service";
 import {chatQuestionToChatMessageMapper} from "../services/chat-message.mapper";
 import {cloneDeep} from "lodash";
+import {CHAT_MESSAGE_ROLE} from "../../models/ttyg/chat-message";
 
 const modules = [];
 
@@ -137,7 +138,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
 
             const getEmptyChatQuestion = () => {
                 const chatQuestion = new ChatQuestion();
-                chatQuestion.role = 'user';
+                chatQuestion.role = CHAT_MESSAGE_ROLE.USER;
 
                 if ($scope.selectedChat) {
                     chatQuestion.conversationId = $scope.selectedChat.id;
