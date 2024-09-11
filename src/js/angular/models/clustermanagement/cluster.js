@@ -240,7 +240,7 @@ export class ClusterViewModel {
 
     /**
      * Gets nodes attached to the cluster.
-     * @return {Object[]} The list of attached nodes in view model format.
+     * @return {ClusterNodeViewModel[]} The list of attached nodes in view model format.
      */
     getAttached() {
         const nodes = this._clusterModel.nodes;
@@ -263,7 +263,7 @@ export class ClusterViewModel {
 
     /**
      * Gets available locations that can be added to the cluster.
-     * @return {Object[]} The list of available locations in view model format.
+     * @return {ClusterNodeViewModel[]} The list of available locations in view model format.
      */
     getAvailable() {
         const nodes = this._clusterModel.nodes;
@@ -273,7 +273,7 @@ export class ClusterViewModel {
                 !nodes.some((node) => node.endpoint === location.endpoint) &&
                 location.isAvailable &&
                 !this._deleteFromCluster.some((delNode) => delNode.endpoint === location.endpoint)
-        ).map((location) => ClusterUtil.toClusterViewModel(location));
+        ).map((location) => ClusterUtil.toNodeLocationViewModel(location));
     }
 
     /**
@@ -328,17 +328,65 @@ export class ClusterViewModel {
 }
 
 /**
+ * Represents the view model for a cluster node.
+ */
+export class ClusterNodeViewModel {
+    /**
+     * @param {string} address - The node's address.
+     * @param {string} nodeState - The state of the node.
+     * @param {number} term - The term of the node.
+     * @param {string} syncStatus - The synchronization status of the node.
+     * @param {number} lastLogTerm - The last log term.
+     * @param {number} lastLogIndex - The last log index.
+     * @param {string} recoveryStatus - The recovery status.
+     * @param {string} endpoint - The endpoint for the node or location.
+     * @param {string} rpcAddress - The RPC address for the node or location.
+     * @param {boolean} isLocal - Whether the node or location is local.
+     * @param {string} error - Error state, if any.
+     * @param {boolean} isAvailable - Whether the node or location is available.
+     */
+    constructor({
+                    address = null,
+                    nodeState = null,
+                    term = null,
+                    syncStatus = null,
+                    lastLogTerm = null,
+                    lastLogIndex = null,
+                    recoveryStatus = null,
+                    endpoint = null,
+                    rpcAddress = null,
+                    isLocal = null,
+                    error = null,
+                    isAvailable = null
+                } = {}) {
+        this.address = address;
+        this.nodeState = nodeState;
+        this.term = term;
+        this.syncStatus = syncStatus;
+        this.lastLogTerm = lastLogTerm;
+        this.lastLogIndex = lastLogIndex;
+        this.recoveryStatus = recoveryStatus;
+        this.endpoint = endpoint;
+        this.rpcAddress = rpcAddress;
+        this.isLocal = isLocal;
+        this.error = error;
+        this.isAvailable = isAvailable;
+    }
+}
+
+
+/**
  * Utility class for transforming cluster data to a view model format.
  */
 class ClusterUtil {
     /**
-     * Converts location and node data into a view model format.
+     * Converts location and node data into a ClusterNodeViewModel instance.
      * @param {Location} location - The location data.
      * @param {Node} [node] - The node data (optional).
-     * @return {Object} The view model object.
+     * @return {ClusterNodeViewModel} The view model instance.
      */
-    static toClusterViewModel(location, node) {
-        return {
+    static toNodeLocationViewModel(location, node) {
+        return new ClusterNodeViewModel({
             address: node ? node.address : null,
             nodeState: node ? node.nodeState : null,
             term: node ? node.term : null,
@@ -351,6 +399,6 @@ class ClusterUtil {
             isLocal: location ? location.isLocal : null,
             error: location ? location.error : null,
             isAvailable: location ? location.isAvailable : null
-        };
+        });
     }
 }
