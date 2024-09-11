@@ -108,12 +108,11 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
              * @param {ChatModel} chat - the new selected chat.
              */
             const onChatChanged = (chat) => {
+                // The chat can be empty when a new chat is initialized. In this case, we only show the question input and the "Ask" button.
+                // The chat will be automatically created by the backend when the first question is sent.
                 if (!chat) {
                     $scope.chat = undefined;
                     setupNewChatQuestion();
-                    return;
-                }
-                if ($scope.chat && $scope.chat.id === chat.id) {
                     return;
                 }
 
@@ -162,7 +161,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
 
             subscriptions.push(TTYGContextService.onSelectedChatChanged(onChatChanged));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION_SUCCESSFUL, onQuestionAnswer));
-            // TODO add subscription for agent changed, and call "onSelectedAgentChanged"
+            // TODO: add subscription for agent changed, and call "onSelectedAgentChanged"
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);

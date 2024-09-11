@@ -45,13 +45,16 @@ function ChatListComponent(TTYGContextService, ModalService, $translate) {
             $scope.onSelectChatForRenaming = (chat) => {
                 $scope.renamedChat = chat;
             };
+
             /**
              * Handles the selection of a chat.
              * @param {ChatModel} chat
              */
             $scope.onSelectChat = (chat) => {
-                TTYGContextService.selectChat(chat);
-                $scope.renamedChat = undefined;
+                if (!$scope.selectedChat || $scope.selectedChat.id !== chat.id) {
+                    TTYGContextService.selectChat(chat);
+                    $scope.renamedChat = undefined;
+                }
             };
 
             /**
