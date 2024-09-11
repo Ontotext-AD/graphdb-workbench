@@ -119,47 +119,11 @@ chat area
     justify-content: space-between;
 }
 
-.ttyg-view .chat .messages {
-    border: 1px solid #ddd;
-    height: calc(100% - 5em);
-    overflow: scroll;
-}
-
-.ttyg-view .chat .messages.hidden {
-    visibility: hidden;
-}
-
-.ttyg-view .chat .messages-hint {
-    font-size: 2em;
-    padding-top: 2em;
-    text-align: center;
-}
-
-.ttyg-view .chat .messages-item {
-    padding: 0.5em;
-}
-
-.ttyg-view .chat .messages-item-content {
-    white-space: pre-line;
-}
-
-.ttyg-view .chat .messages-item-question {
-    background-color: hsla(var(--secondary-color-hsl), 0.1);
-}
-
-.ttyg-view .chat .messages-item-assistant {
-    background-color: hsla(var(--secondary-color-hsl), 0.2);
-}
-
-.ttyg-view .chat .messages-item-assistant .icon {
-    color: var(--primary-color);
-}
-
-.ttyg-view .chat .question {
-
-}
-
 .ttyg-view .controls {
     display: flex;
     flex-direction: column;
+}
+
+.selected-chat-panel {
+    height: 100%;
 }

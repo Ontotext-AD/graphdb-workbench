@@ -1,4 +1,5 @@
 import {cloneDeep} from "lodash";
+import {CHAT_MESSAGE_ROLE} from "../models/ttyg/chat-message";
 
 export class TtygRestServiceFakeBackend {
 
@@ -29,16 +30,16 @@ export class TtygRestServiceFakeBackend {
         return Promise.resolve();
     }
 
-    askQuestion(data) {
-        let answer = {
+    askQuestion(chatQuestion) {
+        const answer = {
             id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNe",
-            conversationId: data.conversationId,
+            conversationId: chatQuestion.conversationId,
             agentId: null,
-            message: `Reply to '${data.question}'`,
-            role: "user",
+            message: `Reply to '${chatQuestion.question}'`,
+            role: CHAT_MESSAGE_ROLE.ASSISTANT,
             timestamp: Date.now()
         };
-        const conversation = this.conversations.find((conversation) => conversation.id === data.conversationId);
+        const conversation = this.conversations.find((conversation) => conversation.id === chatQuestion.conversationId);
         if (conversation) {
             conversation.messages.push(answer);
         }
@@ -78,22 +79,26 @@ const conversationList = [
     {
         "id": "thread_jdQBvbkaU6JPoO48oFbC54dA",
         "name": "Very long chat name which does not fit in the sidebar",
-        "timestamp": 1725235200
+        "timestamp": 1725235200,
+        "messages": []
     },
     {
         "id": "thread_jdQBvbkaU6JPoO48oQaL76dB",
         "name": "Test chat 2",
-        "timestamp": 1725238800
+        "timestamp": 1725238800,
+        "messages": []
     },
     {
         "id": "thread_jdQBvbkaU6JPoO48oQaL76dC",
         "name": "Test chat 3",
-        "timestamp": 1725242400
+        "timestamp": 1725242400,
+        "messages": []
     },
     {
         "id": "thread_jdQBvbkaU6JPoO48oFbC54dD",
         "name": "Test chat 4",
-        "timestamp": 1697331600
+        "timestamp": 1697331600,
+        "messages": []
     }
 ];
 

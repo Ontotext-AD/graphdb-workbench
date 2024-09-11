@@ -1,4 +1,4 @@
-import {ChatMessageModel} from "../../models/ttyg/chat-message.model";
+import {ChatMessageModel} from "../../models/ttyg/chat-message";
 
 /**
  * Converts the response from the server to a list of ChatMessageModel array.

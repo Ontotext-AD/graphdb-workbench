@@ -1,13 +1,11 @@
 import 'angular/ttyg/directives/chat-list.directive';
+import 'angular/ttyg/directives/chat-panel.directive';
 import 'angular/ttyg/directives/agent-list.directive';
 import 'angular/ttyg/directives/no-agents-view.directive';
 import 'angular/ttyg/controllers/agent-settings-modal.controller';
 import 'angular/ttyg/services/ttyg.service';
 import 'angular/ttyg/services/ttyg-context.service';
 import {TTYGEventName} from "../services/ttyg-context.service";
-import {ChatQuestion} from "../../models/ttyg/chat-question";
-import {chatQuestionToChatMessageMapper} from "../services/chat-message.mapper";
-import {cloneDeep} from "lodash";
 import {AGENTS_FILTER_ALL_KEY} from "../services/constants";
 import {AgentListFilterModel} from "../../models/ttyg/agents";
 import {ChatsListModel} from "../../models/ttyg/chats";
@@ -18,6 +16,7 @@ const modules = [
     'graphdb.framework.ttyg.services.ttyg-service',
     'graphdb.framework.ttyg.services.ttygcontext',
     'graphdb.framework.ttyg.directives.chat-list',
+    'graphdb.framework.ttyg.directives.chat-panel',
     'graphdb.framework.ttyg.directives.agent-list',
     'graphdb.framework.ttyg.directives.no-agents-view',
     'graphdb.framework.ttyg.controllers.agent-settings-modal'
@@ -68,12 +67,6 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
      */
     $scope.loadingChats = false;
     $scope.loadingChat = false;
-    /**
-     * Current chat being displayed.
-     * @type {ChatModel|undefined}
-     */
-    $scope.selectedChat = undefined;
-    $scope.selectedAgent = undefined;
 
     /**
      * Agents list model.
@@ -87,7 +80,6 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     $scope.loadingAgents = false;
 
     $scope.connectorID = undefined;
-    $scope.chatQuestion = new ChatQuestion();
 
     /**
      * A list of available repository IDs as a model for the agent list filter.
@@ -113,19 +105,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
      * Creates a new chat and selects it.
      */
     $scope.startNewChat = () => {
-        $scope.chatQuestion = new ChatQuestion();
         TTYGContextService.selectChat(undefined);
-    };
-
-    /**
-     * Handles the ask question action.
-     */
-    $scope.ask = () => {
-        if (!$scope.chatQuestion.conversationId) {
-            createNewChat();
-        } else {
-            askQuestion();
-        }
     };
 
     $scope.onopen = $scope.onclose = () => angular.noop();
@@ -199,49 +179,6 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     // Private functions
     // =========================
 
-    const createNewChat = () => {
-        let newConversationid = undefined;
-        TTYGService.createConversation($scope.chatQuestion)
-            .then((conversationId) => {
-                newConversationid = conversationId;
-                return loadChats();
-            })
-            .then(() => {
-                TTYGContextService.emit(TTYGEventName.CREATE_CHAT_SUCCESSFUL);
-                TTYGContextService.selectChat(TTYGContextService.getChats().getChat(newConversationid));
-            })
-            .catch((error) => {
-                TTYGContextService.emit(TTYGEventName.CREATE_CHAT_FAILURE);
-                toastr.error($translate.instant('ttyg.chat.messages.create_failure'));
-            });
-    };
-
-    const askQuestion = () => {
-        if ($scope.selectedChat) {
-            $scope.chatQuestion.role = 'user';
-            $scope.selectedChat.messages.push(chatQuestionToChatMessageMapper($scope.chatQuestion));
-        }
-        const question = cloneDeep($scope.chatQuestion);
-        createNewChatQuestion();
-        TTYGService.askQuestion(question)
-            .then((answer) => {
-                $scope.selectedChat.messages.push(answer);
-            })
-            .catch((error) => toastr.error(getError(error, 0, 100)));
-    };
-
-    const createNewChatQuestion = () => {
-        const chatQuestion = new ChatQuestion();
-        if ($scope.selectedChat) {
-            chatQuestion.conversationId = $scope.selectedChat.id;
-        }
-
-        if ($scope.selectedAgent) {
-            chatQuestion.agentId = $scope.selectedAgent.id;
-        }
-        $scope.chatQuestion = chatQuestion;
-    };
-
     const scrollToEnd = () => {
         $timeout(() => {
             const element = document.getElementById("messages-scrollable");
@@ -313,6 +250,29 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
         }
     };
 
+    const onCreateNewChat = (chatQuestion) => {
+        let newConversationId = undefined;
+        TTYGService.createConversation($scope.chatQuestion)
+            .then((conversationId) => {
+                newConversationId = conversationId;
+                return loadChats();
+            })
+            .then(() => {
+                TTYGContextService.emit(TTYGEventName.CREATE_CHAT_SUCCESSFUL);
+                TTYGContextService.selectChat(TTYGContextService.getChats().getChat(newConversationId));
+            })
+            .catch((error) => {
+                TTYGContextService.emit(TTYGEventName.CREATE_CHAT_FAILURE);
+                toastr.error($translate.instant('ttyg.chat.messages.create_failure'));
+            });
+    };
+
+    const onAskQuestion = (chatQuestion) => {
+        TTYGService.askQuestion(chatQuestion)
+            .then((answer) => TTYGContextService.emit(TTYGEventName.ASK_QUESTION_SUCCESSFUL, answer))
+            .catch((error) => toastr.error(getError(error, 0, 100)));
+    };
+
     /**
      * Handles the renaming of a chat by calling the service and updating the chats list.
      * Events are fired for success and failure cases.
@@ -349,7 +309,6 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     const setupChatListPanel = (chats) => {
         if (chats.isEmpty()) {
             $scope.showChats = false;
-            $scope.selectedChat = undefined;
         } else {
             $scope.showChats = true;
             if (!TTYGContextService.getSelectedChat()) {
@@ -392,26 +351,6 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
             .catch((error) => {
                 TTYGContextService.emit(TTYGEventName.CHAT_EXPORT_FAILURE);
                 toastr.error($translate.instant('ttyg.chat.messages.export_failure'));
-            });
-    };
-
-    /**
-     * Handles the change of the selected chat.
-     * @param {ChatModel} chat - the new selected chat.
-     */
-    const onSelectedChatChanged = (chat) => {
-        if (!chat) {
-            $scope.selectedChat = undefined;
-            return;
-        }
-        if ($scope.selectedChat && $scope.selectedChat.id === chat.id) {
-            return;
-        }
-
-        TTYGService.getConversation(chat.id)
-            .then((chat) => {
-                $scope.selectedChat = chat;
-                createNewChatQuestion();
             });
     };
 
@@ -486,12 +425,13 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
 
     subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler));
     subscriptions.push(TTYGContextService.onChatsListChanged(onChatsChanged));
-    subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_CHAT, onCreateNewChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.RENAME_CHAT, onRenameChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_CHAT, onDeleteChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CHAT_EXPORT, onExportChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_LIST_UPDATED, onAgentListChanged));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_AGENT, onCreateAgent));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION, onAskQuestion));
     subscriptions.push($rootScope.$on('$translateChangeSuccess', updateLabels));
     $scope.$on('$destroy', removeAllListeners);
 

@@ -1,10 +1,34 @@
 export class ChatMessageModel {
     constructor(data) {
+
+        /**
+         * @type {string}
+         */
         this._id = data.id;
+
+        /**
+         * @type {string}
+         */
         this._conversationId = data.conversationId;
+
+        /**
+         * @type {string}
+         */
         this._agentId = data.agent;
+
+        /**
+         * @type @type {string} - A value from {@link CHAT_MESSAGE_ROLE}, determining the owner of the message (e.g., user, assistant).
+         */
         this._role = data.role;
+
+        /**
+         * @type {string}
+         */
         this._message = data.message;
+
+        /**
+         * @type {number}
+         */
         this._timestamp = data.timestamp;
     }
 
@@ -56,3 +80,8 @@ export class ChatMessageModel {
         this._timestamp = value;
     }
 }
+
+export const CHAT_MESSAGE_ROLE = {
+    USER: 'user',
+    ASSISTANT: 'assistant'
+};
