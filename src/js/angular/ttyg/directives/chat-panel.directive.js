@@ -84,7 +84,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
 
             const askQuestion = () => {
                 if ($scope.selectedChat) {
-                    $scope.selectedChat.messages.push(chatQuestionToChatMessageMapper($scope.chatQuestion));
+                    $scope.selectedChat.appendMessage(chatQuestionToChatMessageMapper($scope.chatQuestion));
                 }
                 const question = cloneDeep($scope.chatQuestion);
                 setupNewChatQuestion();
@@ -98,7 +98,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
              */
             const onQuestionAnswer = (answer) => {
                 if ($scope.selectedChat && $scope.selectedChat.id === answer.conversationId) {
-                    $scope.selectedChat.messages.push(answer);
+                    $scope.selectedChat.appendMessage(answer);
                 }
             };
 

@@ -24,6 +24,13 @@ export class ChatModel {
         this.hash = this.generateHash();
     }
 
+    /**
+     * @param {ChatMessageModel} message
+     */
+    appendMessage(message) {
+        this.messages.push(message);
+    }
+
     generateHash() {
         return this.hashGenerator(JSON.stringify(this));
     }
