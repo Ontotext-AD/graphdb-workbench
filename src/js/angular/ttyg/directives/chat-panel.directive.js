@@ -40,7 +40,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
             /**
              * @type {ChatModel}
              */
-            $scope.selectedChat = undefined;
+            $scope.chat = undefined;
 
             /**
              * @type {AgentModel}
@@ -84,8 +84,8 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
             };
 
             const askQuestion = () => {
-                if ($scope.selectedChat) {
-                    $scope.selectedChat.appendMessage(chatQuestionToChatMessageMapper($scope.chatQuestion));
+                if ($scope.chat) {
+                    $scope.chat.appendMessage(chatQuestionToChatMessageMapper($scope.chatQuestion));
                 }
                 const question = cloneDeep($scope.chatQuestion);
                 setupNewChatQuestion();
@@ -98,8 +98,8 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
              * @param {ChatMessageModel} answer
              */
             const onQuestionAnswer = (answer) => {
-                if ($scope.selectedChat && $scope.selectedChat.id === answer.conversationId) {
-                    $scope.selectedChat.appendMessage(answer);
+                if ($scope.chat && $scope.chat.id === answer.conversationId) {
+                    $scope.chat.appendMessage(answer);
                 }
             };
 
@@ -107,20 +107,20 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
              * Handles the change of the selected chat.
              * @param {ChatModel} chat - the new selected chat.
              */
-            const onSelectedChatChanged = (chat) => {
+            const onChatChanged = (chat) => {
                 if (!chat) {
-                    $scope.selectedChat = undefined;
+                    $scope.chat = undefined;
                     setupNewChatQuestion();
                     return;
                 }
-                if ($scope.selectedChat && $scope.selectedChat.id === chat.id) {
+                if ($scope.chat && $scope.chat.id === chat.id) {
                     return;
                 }
 
                 // TODO: Check if the agent needs to be changed when the chat is switched.
                 TTYGService.getConversation(chat.id)
                     .then((chat) => {
-                        $scope.selectedChat = chat;
+                        $scope.chat = chat;
                         setupNewChatQuestion();
                     });
             };
@@ -140,8 +140,8 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
                 const chatQuestion = new ChatQuestion();
                 chatQuestion.role = CHAT_MESSAGE_ROLE.USER;
 
-                if ($scope.selectedChat) {
-                    chatQuestion.conversationId = $scope.selectedChat.id;
+                if ($scope.chat) {
+                    chatQuestion.conversationId = $scope.chat.id;
                 }
 
                 if ($scope.selectedAgent) {
@@ -160,7 +160,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
                 subscriptions.forEach((subscription) => subscription());
             };
 
-            subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
+            subscriptions.push(TTYGContextService.onSelectedChatChanged(onChatChanged));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION_SUCCESSFUL, onQuestionAnswer));
             // TODO add subscription for agent changed, and call "onSelectedAgentChanged"
 
