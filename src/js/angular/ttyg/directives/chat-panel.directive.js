@@ -110,7 +110,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
             const onSelectedChatChanged = (chat) => {
                 if (!chat) {
                     $scope.selectedChat = undefined;
-                    $scope.chatQuestion = getEmptyChatQuestion();
+                    setupNewChatQuestion();
                     return;
                 }
                 if ($scope.selectedChat && $scope.selectedChat.id === chat.id) {
