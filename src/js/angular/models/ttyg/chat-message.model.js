@@ -17,7 +17,7 @@ export class ChatMessageModel {
         this._agentId = data.agent;
 
         /**
-         * @type {string}
+         * @type @type {string} - A value from {@link CHAT_MESSAGE_ROLE}, determining the owner of the message (e.g., user, assistant).
          */
         this._role = data.role;
 
@@ -80,3 +80,8 @@ export class ChatMessageModel {
         this._timestamp = value;
     }
 }
+
+export const CHAT_MESSAGE_ROLE = {
+    USER: 'user',
+    ASSISTANT: 'assistant'
+};

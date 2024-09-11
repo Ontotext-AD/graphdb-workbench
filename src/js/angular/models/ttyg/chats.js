@@ -18,7 +18,7 @@ export class ChatModel {
         this._timestamp = data.timestamp;
 
         /**
-         * @type {string}
+         * @type {ChatMessageModel[]}
          */
         this._messages = data.messages;
         this.hash = this.generateHash();
