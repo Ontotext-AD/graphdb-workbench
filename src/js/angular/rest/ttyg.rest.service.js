@@ -65,14 +65,14 @@ function TTYGRestService($http) {
 
     /**
      * Calls the REST API to ask a question.
-     * @param {ChatQuestion} chatQuestion
-     * @return {Promise<ChatMessageModel>}
+     * @param {*} data
+     * @return {*}
      */
-    const askQuestion = (chatQuestion) => {
+    const askQuestion = (data) => {
         if (DEVELOPMENT) {
-            return _fakeBackend.askQuestion(chatQuestion);
+            return _fakeBackend.askQuestion(data);
         }
-        return $http.post(`${CONVERSATIONS_ENDPOINT}`, chatQuestion);
+        return $http.post(`${CONVERSATIONS_ENDPOINT}`, data);
     };
 
     /**
