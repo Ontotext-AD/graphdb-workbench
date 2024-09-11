@@ -69,12 +69,14 @@ function TTYGService(TTYGRestService) {
 
     /**
      * Creates a new conversation.
-     * @param {*} data - the conversation data
+     * @param {ChatQuestion} data - the conversation data
      * @return {Promise<string>} created conversation id;
      */
-    const createConversation = (data = {}) => {
+    const createConversation = (data) => {
         return TTYGRestService.createConversation(askQuestionChatRequestMapper(data))
-            .then((response) => response.data.conversationId);
+            .then((response) => {
+                return response.data.conversationId;
+            });
     };
 
     /**

@@ -252,7 +252,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
 
     const onCreateNewChat = (chatQuestion) => {
         let newConversationId = undefined;
-        TTYGService.createConversation($scope.chatQuestion)
+        TTYGService.createConversation(chatQuestion)
             .then((conversationId) => {
                 newConversationId = conversationId;
                 return loadChats();
