@@ -9,6 +9,7 @@ import {TTYGEventName} from "../services/ttyg-context.service";
 import {AGENTS_FILTER_ALL_KEY} from "../services/constants";
 import {AgentListFilterModel} from "../../models/ttyg/agents";
 import {ChatsListModel} from "../../models/ttyg/chats";
+import {cloneDeep} from "lodash";
 
 const modules = [
     'toastr',
@@ -250,26 +251,33 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
         }
     };
 
-    const onCreateNewChat = (chatQuestion) => {
-        let newConversationId = undefined;
-        TTYGService.createConversation(chatQuestion)
-            .then((conversationId) => {
-                newConversationId = conversationId;
-                return loadChats();
-            })
-            .then(() => {
+    /**
+     * @param {ChatItemModel} catItem
+     */
+    const onCreateNewChat = (catItem) => {
+        TTYGService.createConversation(catItem)
+            .then((chatId) => chatId)
+            .then((newChatId) => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT_SUCCESSFUL);
-                TTYGContextService.selectChat(TTYGContextService.getChats().getChat(newConversationId));
+                TTYGContextService.selectChat(TTYGContextService.getChats().getChat(newChatId));
             })
+            .then(loadChats)
             .catch((error) => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT_FAILURE);
                 toastr.error($translate.instant('ttyg.chat.messages.create_failure'));
             });
     };
 
-    const onAskQuestion = (chatQuestion) => {
-        TTYGService.askQuestion(chatQuestion)
-            .then((answer) => TTYGContextService.emit(TTYGEventName.ASK_QUESTION_SUCCESSFUL, answer))
+    /**
+     * @param {ChatItemModel} chatItem
+     */
+    const onAskQuestion = (chatItem) => {
+        const item = cloneDeep(chatItem);
+        TTYGService.askQuestion(chatItem)
+            .then((answer) => {
+                item.answer = answer;
+                TTYGContextService.emit(TTYGEventName.ASK_QUESTION_SUCCESSFUL, item);
+            })
             .catch((error) => toastr.error(getError(error, 0, 100)));
     };
 

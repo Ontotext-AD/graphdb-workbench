@@ -7,16 +7,6 @@ export class ChatMessageModel {
         this._id = data.id;
 
         /**
-         * @type {string}
-         */
-        this._conversationId = data.conversationId;
-
-        /**
-         * @type {string}
-         */
-        this._agentId = data.agent;
-
-        /**
          * @type @type {string} - A value from {@link CHAT_MESSAGE_ROLE}, determining the owner of the message (e.g., user, assistant).
          */
         this._role = data.role;
@@ -38,22 +28,6 @@ export class ChatMessageModel {
 
     set id(value) {
         this._id = value;
-    }
-
-    get conversationId() {
-        return this._conversationId;
-    }
-
-    set conversationId(value) {
-        this._conversationId = value;
-    }
-
-    get agentId() {
-        return this._agentId;
-    }
-
-    set agentId(value) {
-        this._agentId = value;
     }
 
     get role() {
