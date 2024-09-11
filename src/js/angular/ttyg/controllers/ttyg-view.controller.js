@@ -1,5 +1,5 @@
 import 'angular/ttyg/directives/chat-list.directive';
-import 'angular/ttyg/directives/chat-view.directive';
+import 'angular/ttyg/directives/chat-panel.directive';
 import 'angular/ttyg/directives/agent-list.directive';
 import 'angular/ttyg/directives/no-agents-view.directive';
 import 'angular/ttyg/controllers/agent-settings-modal.controller';
@@ -16,7 +16,7 @@ const modules = [
     'graphdb.framework.ttyg.services.ttyg-service',
     'graphdb.framework.ttyg.services.ttygcontext',
     'graphdb.framework.ttyg.directives.chat-list',
-    'graphdb.framework.ttyg.directives.chat-view',
+    'graphdb.framework.ttyg.directives.chat-panel',
     'graphdb.framework.ttyg.directives.agent-list',
     'graphdb.framework.ttyg.directives.no-agents-view',
     'graphdb.framework.ttyg.controllers.agent-settings-modal'

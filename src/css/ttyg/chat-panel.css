@@ -1,39 +1,39 @@
-.chat-view {
+.chat-panel {
     height: 100%;
 }
 
-.chat-view .messages {
+.chat-panel .messages {
     border: 1px solid #ddd;
     height: calc(100% - 5em);
     overflow: scroll;
 }
 
-.chat-view .messages.hidden {
+.chat-panel .messages.hidden {
     visibility: hidden;
 }
 
-.chat-view .messages-hint {
+.chat-panel .messages-hint {
     font-size: 2em;
     padding-top: 2em;
     text-align: center;
 }
 
-.chat-view .messages-item {
+.chat-panel .messages-item {
     padding: 0.5em;
 }
 
-.chat-view .messages-item-content {
+.chat-panel .messages-item-content {
     white-space: pre-line;
 }
 
-.chat-view .messages-item-question {
+.chat-panel .messages-item-question {
     background-color: hsla(var(--secondary-color-hsl), 0.1);
 }
 
-.chat-view .messages-item-assistant {
+.chat-panel .messages-item-assistant {
     background-color: hsla(var(--secondary-color-hsl), 0.2);
 }
 
-.chat-view .messages-item-assistant .icon {
+.chat-panel .messages-item-assistant .icon {
     color: var(--primary-color);
 }

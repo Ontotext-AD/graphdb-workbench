@@ -6,29 +6,29 @@ import {cloneDeep} from "lodash";
 const modules = [];
 
 angular
-    .module('graphdb.framework.ttyg.directives.chat-view', modules)
-    .directive('chatView', ChartViewComponent);
+    .module('graphdb.framework.ttyg.directives.chat-panel', modules)
+    .directive('chatPanel', ChatPanelComponent);
 
-ChartViewComponent.$inject = ['toastr', '$translate', 'TTYGContextService', 'TTYGService'];
+ChatPanelComponent.$inject = ['toastr', '$translate', 'TTYGContextService', 'TTYGService'];
 
 /**
  * @ngdoc directive
- * @name graphdb.framework.ttyg.directives.chat-view:chatView
+ * @name graphdb.framework.ttyg.directives.chat-panel:chatPanel
  * @restrict E
  * @description
  *
- * This directive represents a chat view component that allows users to interact with a chat. It provides functionality for asking questions,
+ * This directive represents a chat panel component that allows users to interact with a chat. It provides functionality for asking questions,
  * regenerating chat content, and other interactive features.
  *
  * It encapsulates the logic and presentation for displaying and managing chat-related interactions.
  *
  * @example
- * <chat-view></chat-view>
+ * <chat-panel></chat-panel>
  */
-function ChartViewComponent(toastr, $translate, TTYGContextService, TTYGService) {
+function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService) {
     return {
         restrict: 'E',
-        templateUrl: 'js/angular/ttyg/templates/chat-view.html',
+        templateUrl: 'js/angular/ttyg/templates/chat-panel.html',
         scope: {},
         link: ($scope, element, attrs) => {
 
