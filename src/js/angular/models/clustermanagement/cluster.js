@@ -257,7 +257,7 @@ export class ClusterViewModel {
 
         return filteredNodes.map((node) => {
             const location = locationMap.get(node.endpoint);
-            return ClusterUtil.toClusterViewModel(location, node);
+            return ClusterUtil.toNodeLocationViewModel(location, node);
         }).concat(this._addToCluster);
     }
 
