@@ -1,4 +1,5 @@
 import {cloneDeep} from "lodash";
+import {CHAT_MESSAGE_ROLE} from "../models/ttyg/chat-message";
 
 export class TtygRestServiceFakeBackend {
 
@@ -35,7 +36,7 @@ export class TtygRestServiceFakeBackend {
             conversationId: chatQuestion.conversationId,
             agentId: null,
             message: `Reply to '${chatQuestion.question}'`,
-            role: "user",
+            role: CHAT_MESSAGE_ROLE.ASSISTANT,
             timestamp: Date.now()
         };
         const conversation = this.conversations.find((conversation) => conversation.id === chatQuestion.conversationId);
