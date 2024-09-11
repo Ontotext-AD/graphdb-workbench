@@ -46,6 +46,7 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
                     $scope.suggestions = $scope.allSuggestions.filter((item) => item.toLowerCase().includes(query));
                     $scope.showDropdown = true;
                 } else {
+                    $scope.suggestions = [];
                     $scope.showDropdown = false;
                 }
             };
@@ -100,7 +101,7 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
                         handleErrors(error.data, error.status);
                         ClusterContextService.updateClusterView();
                     })
-                    .finally(() =>{
+                    .finally(() => {
                         $scope.editedNodeIndex = undefined;
                         $scope.setLoader(false);
                     });
@@ -185,7 +186,7 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
                 subscriptions.forEach((subscription) => subscription());
             }
 
-            const unwatch = $scope.$watchGroup(['clusterNodes', 'editedNodeIndex'], function(newValues, oldValues) {
+            const unwatch = $scope.$watchGroup(['clusterNodes', 'editedNodeIndex'], function (newValues, oldValues) {
                 const isValid = $scope.isClusterConfigurationValid();
                 ClusterContextService.updateClusterValidity(isValid);
             });
