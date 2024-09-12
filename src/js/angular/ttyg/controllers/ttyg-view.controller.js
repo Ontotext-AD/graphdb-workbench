@@ -259,8 +259,8 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
             .then((newChatId) => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT_SUCCESSFUL);
                 TTYGContextService.selectChat(TTYGContextService.getChats().getChat(newChatId));
+                TTYGContextService.emit(TTYGEventName.LOAD_CHAT);
             })
-            .then(loadChats)
             .catch((error) => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT_FAILURE);
                 toastr.error($translate.instant('ttyg.chat.messages.create_failure'));
@@ -288,10 +288,8 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     const onRenameChat = (chat) => {
         TTYGService.renameConversation(chat)
             .then(() => {
-                return loadChats();
-            })
-            .then(() => {
                 TTYGContextService.emit(TTYGEventName.RENAME_CHAT_SUCCESSFUL);
+                TTYGContextService.emit(TTYGEventName.LOAD_CHAT);
             })
             .catch((error) => {
                 TTYGContextService.emit(TTYGEventName.RENAME_CHAT_FAILURE);
@@ -332,10 +330,8 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     const onDeleteChat = (chat) => {
         TTYGService.deleteConversation(chat.id)
             .then(() => {
-                return loadChats();
-            })
-            .then(() => {
                 TTYGContextService.emit(TTYGEventName.DELETE_CHAT_SUCCESSFUL, chat);
+                TTYGContextService.emit(TTYGEventName.LOAD_CHAT);
             })
             .catch((error) => {
                 TTYGContextService.emit(TTYGEventName.DELETE_CHAT_FAILURE);
@@ -350,10 +346,8 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     const onExportChat = (chat) => {
         TTYGService.exportConversation(chat.id)
             .then(() => {
-                return loadChats();
-            })
-            .then(() => {
                 TTYGContextService.emit(TTYGEventName.CHAT_EXPORT_SUCCESSFUL, chat);
+                TTYGContextService.emit(TTYGEventName.LOAD_CHAT);
             })
             .catch((error) => {
                 TTYGContextService.emit(TTYGEventName.CHAT_EXPORT_FAILURE);
@@ -439,6 +433,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_LIST_UPDATED, onAgentListChanged));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_AGENT, onCreateAgent));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION, onAskQuestion));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.LOAD_CHAT, loadChats));
     subscriptions.push($rootScope.$on('$translateChangeSuccess', updateLabels));
     $scope.$on('$destroy', removeAllListeners);
 
