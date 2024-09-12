@@ -3,7 +3,7 @@ import 'angular/ttyg/directives/chat-panel.directive';
 import 'angular/ttyg/directives/agent-list.directive';
 import 'angular/ttyg/directives/no-agents-view.directive';
 import 'angular/ttyg/controllers/agent-settings-modal.controller';
-import 'angular/ttyg/services/ttyg.service';
+import 'angular/core/services/ttyg.service';
 import 'angular/ttyg/services/ttyg-context.service';
 import {TTYGEventName} from "../services/ttyg-context.service";
 import {AGENTS_FILTER_ALL_KEY} from "../services/constants";
@@ -14,7 +14,7 @@ import {cloneDeep} from "lodash";
 const modules = [
     'toastr',
     'graphdb.framework.utils.localstorageadapter',
-    'graphdb.framework.ttyg.services.ttyg-service',
+    'graphdb.framework.core.services.ttyg-service',
     'graphdb.framework.ttyg.services.ttygcontext',
     'graphdb.framework.ttyg.directives.chat-list',
     'graphdb.framework.ttyg.directives.chat-panel',
