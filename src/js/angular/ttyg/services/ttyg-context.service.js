@@ -151,5 +151,8 @@ export const TTYGEventName = {
     CREATE_AGENT: 'createAgent',
     ASK_QUESTION: 'askQuestion',
     ASK_QUESTION_SUCCESSFUL: 'askQuestionSuccess',
-    ASK_QUESTION_FAILURE: 'askQuestionFailure'
+    ASK_QUESTION_FAILURE: 'askQuestionFailure',
+    LOAD_CHAT: 'loadChat',
+    LOAD_CHAT_SUCCESSFUL: 'loadChatSuccess',
+    LOAD_CHAT_FAILURE: 'loadChatFailure'
 };

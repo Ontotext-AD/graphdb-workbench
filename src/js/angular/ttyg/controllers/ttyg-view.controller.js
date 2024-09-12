@@ -9,6 +9,7 @@ import {TTYGEventName} from "../services/ttyg-context.service";
 import {AGENTS_FILTER_ALL_KEY} from "../services/constants";
 import {AgentListFilterModel} from "../../models/ttyg/agents";
 import {ChatsListModel} from "../../models/ttyg/chats";
+import {cloneDeep} from "lodash";
 
 const modules = [
     'toastr',
@@ -250,16 +251,15 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
         }
     };
 
-    const onCreateNewChat = (chatQuestion) => {
-        let newConversationId = undefined;
-        TTYGService.createConversation($scope.chatQuestion)
-            .then((conversationId) => {
-                newConversationId = conversationId;
-                return loadChats();
-            })
-            .then(() => {
+    /**
+     * @param {ChatItemModel} chatItem
+     */
+    const onCreateNewChat = (chatItem) => {
+        TTYGService.createConversation(chatItem)
+            .then((newChatId) => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT_SUCCESSFUL);
-                TTYGContextService.selectChat(TTYGContextService.getChats().getChat(newConversationId));
+                TTYGContextService.selectChat(TTYGContextService.getChats().getChat(newChatId));
+                TTYGContextService.emit(TTYGEventName.LOAD_CHAT);
             })
             .catch((error) => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT_FAILURE);
@@ -267,9 +267,16 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
             });
     };
 
-    const onAskQuestion = (chatQuestion) => {
-        TTYGService.askQuestion(chatQuestion)
-            .then((answer) => TTYGContextService.emit(TTYGEventName.ASK_QUESTION_SUCCESSFUL, answer))
+    /**
+     * @param {ChatItemModel} chatItem
+     */
+    const onAskQuestion = (chatItem) => {
+        const item = cloneDeep(chatItem);
+        TTYGService.askQuestion(chatItem)
+            .then((answer) => {
+                item.answer = answer;
+                TTYGContextService.emit(TTYGEventName.ASK_QUESTION_SUCCESSFUL, item);
+            })
             .catch((error) => toastr.error(getError(error, 0, 100)));
     };
 
@@ -281,10 +288,8 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     const onRenameChat = (chat) => {
         TTYGService.renameConversation(chat)
             .then(() => {
-                return loadChats();
-            })
-            .then(() => {
                 TTYGContextService.emit(TTYGEventName.RENAME_CHAT_SUCCESSFUL);
+                TTYGContextService.emit(TTYGEventName.LOAD_CHAT);
             })
             .catch((error) => {
                 TTYGContextService.emit(TTYGEventName.RENAME_CHAT_FAILURE);
@@ -325,10 +330,8 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     const onDeleteChat = (chat) => {
         TTYGService.deleteConversation(chat.id)
             .then(() => {
-                return loadChats();
-            })
-            .then(() => {
                 TTYGContextService.emit(TTYGEventName.DELETE_CHAT_SUCCESSFUL, chat);
+                TTYGContextService.emit(TTYGEventName.LOAD_CHAT);
             })
             .catch((error) => {
                 TTYGContextService.emit(TTYGEventName.DELETE_CHAT_FAILURE);
@@ -343,10 +346,8 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     const onExportChat = (chat) => {
         TTYGService.exportConversation(chat.id)
             .then(() => {
-                return loadChats();
-            })
-            .then(() => {
                 TTYGContextService.emit(TTYGEventName.CHAT_EXPORT_SUCCESSFUL, chat);
+                TTYGContextService.emit(TTYGEventName.LOAD_CHAT);
             })
             .catch((error) => {
                 TTYGContextService.emit(TTYGEventName.CHAT_EXPORT_FAILURE);
@@ -432,6 +433,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_LIST_UPDATED, onAgentListChanged));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_AGENT, onCreateAgent));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION, onAskQuestion));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.LOAD_CHAT, loadChats));
     subscriptions.push($rootScope.$on('$translateChangeSuccess', updateLabels));
     $scope.$on('$destroy', removeAllListeners);
 

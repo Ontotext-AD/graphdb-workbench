@@ -1,6 +1,5 @@
 import {chatModelMapper, chatsListMapper} from "./chats.mapper";
 import 'angular/rest/ttyg.rest.service';
-import {askQuestionChatRequestMapper, renameChatRequestMapper} from "./chat-request.mapper";
 import {chatMessageModelMapper} from "./chat-message.mapper";
 import {agentListMapper} from "./agents.mapper";
 
@@ -35,7 +34,7 @@ function TTYGService(TTYGRestService) {
      * @return {*}
      */
     const renameConversation = (chat) => {
-        return TTYGRestService.renameConversation(chat.id, renameChatRequestMapper(chat))
+        return TTYGRestService.renameConversation(chat.id, chat.toRenameRequestPayload())
             .then((response) => chatModelMapper(response.data));
     };
 
@@ -50,11 +49,11 @@ function TTYGService(TTYGRestService) {
 
     /**
      * Asks a question.
-     * @param {ChatQuestion} chatQuestion - the question to be asked.
+     * @param {ChatItemModel} chatItem .
      * @return {Promise<ChatMessageModel>} the answer of the question.
      */
-    const askQuestion = (chatQuestion) => {
-        return TTYGRestService.askQuestion(askQuestionChatRequestMapper(chatQuestion))
+    const askQuestion = (chatItem) => {
+        return TTYGRestService.askQuestion(chatItem.toAskRequestPayload())
             .then((response) => chatMessageModelMapper(response.data));
     };
 
@@ -69,11 +68,11 @@ function TTYGService(TTYGRestService) {
 
     /**
      * Creates a new conversation.
-     * @param {*} data - the conversation data
+     * @param {ChatItemModel} chatItem - the conversation data
      * @return {Promise<string>} created conversation id;
      */
-    const createConversation = (data = {}) => {
-        return TTYGRestService.createConversation(askQuestionChatRequestMapper(data))
+    const createConversation = (chatItem) => {
+        return TTYGRestService.createConversation(chatItem.toCreateChatRequestPayload())
             .then((response) => response.data.conversationId);
     };
 

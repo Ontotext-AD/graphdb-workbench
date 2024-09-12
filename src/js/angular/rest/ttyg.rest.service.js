@@ -94,7 +94,7 @@ function TTYGRestService($http) {
      */
     const createConversation = (data = {}) => {
         if (DEVELOPMENT) {
-            return _fakeBackend.createConversation();
+            return _fakeBackend.createConversation(data);
         }
         return $http.post(CONVERSATIONS_ENDPOINT, data);
     };

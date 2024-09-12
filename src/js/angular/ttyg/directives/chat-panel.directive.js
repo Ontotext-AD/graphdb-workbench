@@ -1,8 +1,6 @@
-import {ChatQuestion} from "../../models/ttyg/chat-question";
 import {TTYGEventName} from "../services/ttyg-context.service";
-import {chatQuestionToChatMessageMapper} from "../services/chat-message.mapper";
-import {cloneDeep} from "lodash";
-import {CHAT_MESSAGE_ROLE} from "../../models/ttyg/chat-message";
+import {CHAT_MESSAGE_ROLE, ChatMessageModel} from "../../models/ttyg/chat-message";
+import {ChatItemModel} from "../../models/ttyg/chat-item";
 
 const modules = [];
 
@@ -48,9 +46,9 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
             $scope.selectedAgent = undefined;
 
             /**
-             * @type {ChatQuestion}
+             * @type {ChatItemModel}
              */
-            $scope.chatQuestion = undefined;
+            $scope.chatItem = undefined;
 
             // =========================
             // Private variables
@@ -64,7 +62,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
              * Handles the ask question action.
              */
             $scope.ask = () => {
-                if (!$scope.chatQuestion.conversationId) {
+                if (!$scope.chatItem.chatId) {
                     createNewChat();
                 } else {
                     askQuestion();
@@ -75,31 +73,27 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
             // Private functions
             // =========================
 
-            const setupNewChatQuestion = () => {
-                $scope.chatQuestion = getEmptyChatQuestion();
+            const setupNewChatItem = () => {
+                $scope.chatItem = getEmptyChatItem();
             };
 
             const createNewChat = () => {
-                TTYGContextService.emit(TTYGEventName.CREATE_CHAT, $scope.chatQuestion);
+                TTYGContextService.emit(TTYGEventName.CREATE_CHAT, $scope.chatItem);
             };
 
             const askQuestion = () => {
-                if ($scope.chat) {
-                    $scope.chat.appendMessage(chatQuestionToChatMessageMapper($scope.chatQuestion));
-                }
-                const question = cloneDeep($scope.chatQuestion);
-                setupNewChatQuestion();
-                TTYGContextService.emit(TTYGEventName.ASK_QUESTION, question);
+                TTYGContextService.emit(TTYGEventName.ASK_QUESTION, $scope.chatItem);
             };
 
             /**
              * Handles answering a chat question.
              *
-             * @param {ChatMessageModel} answer
+             * @param {ChatItemModel} chatItem
              */
-            const onQuestionAnswer = (answer) => {
-                if ($scope.chat && $scope.chat.id === answer.conversationId) {
-                    $scope.chat.appendMessage(answer);
+            const onQuestionAnswer = (chatItem) => {
+                if ($scope.chat && $scope.chat.id === chatItem.chatId) {
+                    $scope.chat.chatHistory.appendItem(chatItem);
+                    setupNewChatItem();
                 }
             };
 
@@ -112,7 +106,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
                 // The chat will be automatically created by the backend when the first question is sent.
                 if (!chat) {
                     $scope.chat = undefined;
-                    setupNewChatQuestion();
+                    setupNewChatItem();
                     return;
                 }
 
@@ -120,7 +114,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
                 TTYGService.getConversation(chat.id)
                     .then((chat) => {
                         $scope.chat = chat;
-                        setupNewChatQuestion();
+                        setupNewChatItem();
                     });
             };
 
@@ -131,23 +125,23 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
             const onSelectedAgentChanged = (agent) => {
                 $scope.selectedAgent = agent;
                 if ($scope.selectedAgent) {
-                    $scope.chatQuestion.agentId = $scope.selectedAgent.id;
+                    $scope.chatItem.agentId = $scope.selectedAgent.id;
                 }
             };
 
-            const getEmptyChatQuestion = () => {
-                const chatQuestion = new ChatQuestion();
-                chatQuestion.role = CHAT_MESSAGE_ROLE.USER;
+            const getEmptyChatItem = () => {
+                const chatItem = new ChatItemModel();
+                chatItem.question = new ChatMessageModel({role: CHAT_MESSAGE_ROLE.USER});
 
                 if ($scope.chat) {
-                    chatQuestion.conversationId = $scope.chat.id;
+                    chatItem.chatId = $scope.chat.id;
                 }
 
                 if ($scope.selectedAgent) {
-                    chatQuestion.agentId = $scope.selectedAgent.id;
+                    chatItem.agentId = $scope.selectedAgent.id;
                 }
 
-                return chatQuestion;
+                return chatItem;
             };
 
             // =========================

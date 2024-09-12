@@ -3,20 +3,25 @@
 <div class="chat-panel">
     <div class="messages" ng-class="{'hidden': !chat}">
         <div id="messages-scrollable">
-            <div class="messages-hint text-muted" ng-if="!chat.messages.length">
+            <div class="messages-hint text-muted" ng-if="chat.chatHistory.isEmpty()">
                 {{ 'ttyg.hint' | translate }}
             </div>
-            <div ng-repeat="message in chat.messages" class="m-1"
-                 ng-class="{'mt-3': message.role === 'user'}">
-                <span ng-if="message.role === 'user'">User:  </span>
-                <span class="messages-content">{{ message.message }}</span>
+            <div ng-repeat="chatItem in chat.chatHistory.items" class="m-1">
+                <div class="mt-3">
+                    <span>User:  </span>
+                    <span class="messages-content">{{ chatItem.question.message }}</span>
+                </div>
+                <div ng-if="chatItem.answer.message">
+                    <span>Assistant:  </span>
+                    <span class="messages-content">{{ chatItem.answer.message }}</span>
+                </div>
             </div>
         </div>
     </div>
     <div class="question">
         <div class="mb-2 d-flex">
-            <input class="form-control" ng-model="chatQuestion.question" type="text">
-            <button class="btn btn-primary" ng-disabled="!chatQuestion.question" ng-click="ask()">
+            <input class="form-control" ng-model="chatItem.question.message" type="text">
+            <button class="btn btn-primary" ng-disabled="!chatItem.question.message" ng-click="ask()">
                 <i class="fa fa-arrow-turn-left-up"></i>
                 {{ 'ttyg.ask.button' | translate }}
             </button>

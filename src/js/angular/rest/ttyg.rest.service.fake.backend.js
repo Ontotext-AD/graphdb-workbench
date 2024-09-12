@@ -30,18 +30,27 @@ export class TtygRestServiceFakeBackend {
         return Promise.resolve();
     }
 
-    askQuestion(chatQuestion) {
+    askQuestion(askRequestData) {
+        const question = {
+            id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNe",
+            conversationId: askRequestData.conversationId,
+            agentId: null,
+            message: `Reply to '${askRequestData.question}'`,
+            role: CHAT_MESSAGE_ROLE.USER,
+            timestamp: Date.now()
+        };
         const answer = {
             id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNe",
-            conversationId: chatQuestion.conversationId,
+            conversationId: askRequestData.conversationId,
             agentId: null,
-            message: `Reply to '${chatQuestion.question}'`,
+            message: `Reply to '${askRequestData.question}'`,
             role: CHAT_MESSAGE_ROLE.ASSISTANT,
             timestamp: Date.now()
         };
-        const conversation = this.conversations.find((conversation) => conversation.id === chatQuestion.conversationId);
+        const conversation = this.conversations.find((conversation) => conversation.id === askRequestData.conversationId);
         if (conversation) {
             conversation.messages.push(answer);
+            conversation.messages.push(question);
         }
         return Promise.resolve({data: answer});
     }
@@ -51,7 +60,7 @@ export class TtygRestServiceFakeBackend {
         return Promise.resolve();
     }
 
-    createConversation() {
+    createConversation(data) {
         const conversation = {
             id: `thread_${this.conversations.length}`,
             name: `Thread ${this.conversations.length}`,
@@ -59,7 +68,19 @@ export class TtygRestServiceFakeBackend {
             messages: []
         };
         this.conversations.unshift(conversation);
-        return Promise.resolve({data: conversation});
+
+        const askRequestData = cloneDeep(data);
+        askRequestData.conversationId = conversation.id;
+        return this.askQuestion(askRequestData)
+            .then(() => {
+                return {
+                    data: {
+                        id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNe",
+                        conversationId: conversation.id,
+                        agentId: data.agentId
+                    }
+                };
+            });
     }
 
     getAgents() {
