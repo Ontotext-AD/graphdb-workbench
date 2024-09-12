@@ -251,14 +251,15 @@ export class ClusterViewModel {
             locationMap.set(location.endpoint, location);
         });
 
-        const filteredNodes = nodes.filter(
-            (node) => !this._deleteFromCluster.some((delNode) => delNode.endpoint === node.endpoint)
-        );
 
-        return filteredNodes.map((node) => {
+        return nodes.map((node) => {
             const location = locationMap.get(node.endpoint);
             return ClusterUtil.toNodeLocationViewModel(location, node);
-        }).concat(this._addToCluster);
+        })
+            .concat(this._addToCluster)
+            .filter(
+                (node) => !this._deleteFromCluster.some((delNode) => delNode.endpoint === node.endpoint)
+            );
     }
 
     /**
@@ -290,23 +291,24 @@ export class ClusterViewModel {
      * @param {Location} location - The location to add.
      */
     addToCluster(location) {
-        this._addToCluster.push(
-            new Location(
-                location.endpoint,
-                location.rpcAddress,
-                location.error,
-                location.isAvailable,
-                location.isLocal
-            )
-        );
+        this._addToCluster.push(Location.fromJSON(location));
     }
 
     /**
-     * Marks a node for deletion from the cluster.
-     * @param {Node} node - The node to delete.
+     * Marks an item for deletion from the cluster.
+     * If the item is already marked for addition, it will be removed from the addition list.
+     * Otherwise, it will be added to the deletion list.
+     *
+     * @param {Node|Location} itemToDelete - The item to delete. This can either be a Node or Location object.
+     * @return {void}
      */
-    deleteFromCluster(node) {
-        this._deleteFromCluster.push(node);
+    deleteFromCluster(itemToDelete) {
+        const locationIndex = this._addToCluster.findIndex((location) => location.endpoint === itemToDelete.endpoint);
+        if (locationIndex === -1) {
+            this._deleteFromCluster.push(itemToDelete);
+        } else {
+            this._addToCluster.splice(locationIndex, 1);
+        }
     }
 
     /**
@@ -324,6 +326,14 @@ export class ClusterViewModel {
      */
     getAddToCluster() {
         return this._addToCluster;
+    }
+
+    /**
+     * Gets nodes to delete from the cluster.
+     * @return {Location|Node[]} The list of nodes added to the cluster.
+     */
+    getDeleteFromCluster() {
+        return this._deleteFromCluster;
     }
 }
 
@@ -373,7 +383,6 @@ export class ClusterNodeViewModel {
         this.isAvailable = isAvailable;
     }
 }
-
 
 /**
  * Utility class for transforming cluster data to a view model format.
