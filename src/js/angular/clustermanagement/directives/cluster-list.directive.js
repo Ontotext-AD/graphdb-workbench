@@ -4,9 +4,9 @@ const modules = [];
 angular.module('graphdb.framework.clustermanagement.directives.cluster-list', modules)
     .directive('clusterList', ClusterListComponent);
 
-ClusterListComponent.$inject = ['$translate', '$timeout', '$repositories', 'productInfo', 'toastr', 'RemoteLocationsService', 'ClusterContextService'];
+ClusterListComponent.$inject = ['$translate', '$timeout', '$repositories', 'productInfo', 'toastr', 'RemoteLocationsService', 'ClusterContextService', 'ModalService'];
 
-function ClusterListComponent($translate, $timeout, $repositories, productInfo, toastr, RemoteLocationsService, ClusterContextService) {
+function ClusterListComponent($translate, $timeout, $repositories, productInfo, toastr, RemoteLocationsService, ClusterContextService, ModalService) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/clustermanagement/templates/cluster-list.html',
@@ -73,16 +73,28 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
 
             /**
              * Saves a node to the cluster based on the provided endpoint.
-             * If the node is available in the cluster, it is added, otherwise, a new location is created and added.
+             * If the node is found in the cluster deletion list, it is restored.
+             * If the node is available in the cluster, it is added.
+             * Otherwise, a new location is created and added.
+             *
              * @param {string} endpoint - The endpoint of the node to save.
              */
             $scope.saveNode = (endpoint) => {
-                const node = $scope.cluster.getAvailable().filter((available) => available.endpoint === endpoint)[0];
-                if (node) {
-                    ClusterContextService.addLocation($scope.cluster, node);
+                const findNodeByEndpoint = (nodes) => nodes.find((node) => node.endpoint === endpoint)[0];
+                const deletedNode = findNodeByEndpoint($scope.cluster.getDeleteFromCluster());
+                if (deletedNode) {
+                    ClusterContextService.restoreNode(deletedNode);
                     $scope.editedNodeIndex = undefined;
                     return;
                 }
+
+                const node = findNodeByEndpoint($scope.cluster.getAvailable());
+                if (node) {
+                    ClusterContextService.addLocation(node);
+                    $scope.editedNodeIndex = undefined;
+                    return;
+                }
+
                 const newLocation = RemoteLocationsService.createNewLocation(endpoint);
                 $scope.setLoader(true, $translate.instant('cluster_management.update_cluster_group_dialog.messages.connecting_node'));
 
@@ -90,16 +102,16 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
                     .then((location) => {
                         if (location.error) {
                             handleErrors(location.error);
-                            ClusterContextService.updateClusterView();
+                            ClusterContextService.emitUpdateClusterView();
                             return;
                         }
                         if (location) {
-                            ClusterContextService.addLocation($scope.cluster, new Location(location));
+                            ClusterContextService.addLocation(Location.fromJSON(location));
                         }
                     })
                     .catch(function (error) {
                         handleErrors(error.data, error.status);
-                        ClusterContextService.updateClusterView();
+                        ClusterContextService.emitUpdateClusterView();
                     })
                     .finally(() => {
                         $scope.editedNodeIndex = undefined;
@@ -110,9 +122,17 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
             /**
              * Deletes a node from the cluster.
              * @param {number} index - The index of the node to delete.
+             * @param {Node|Location} item - The item to delete.
+             * @return {void}
              */
-            $scope.deleteNode = (index) => {
-                // Not implemented
+            $scope.deleteNode = (index, item) => {
+                ModalService.openSimpleModal({
+                    title: $translate.instant('location.confirm.detach'),
+                    message: $translate.instant('location.confirm.detach.warning', {uri: item.endpoint}),
+                    warning: true
+                }).result.then(() =>{
+                    ClusterContextService.deleteFromCluster(item);
+                });
             };
 
             /**
