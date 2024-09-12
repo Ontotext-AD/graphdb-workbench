@@ -41,16 +41,15 @@ function ClusterContextService(EventEmitterService) {
     };
 
     /**
-     * Add a new location (node) to the cluster.
-     * @param {ClusterViewModel} clusterView - The current cluster view model.
-     * @param {Object} node - The node to add to the cluster.
+     * Add a new location to the cluster.
+     * @param {Location} location - The node to add to the cluster.
      * @return {void}
      */
-    const addLocation = (clusterView, node) => {
-        if (!node || !clusterView) {
-            throw new Error("Invalid node or clusterView");
+    const addLocation = (location) => {
+        if (!location) {
+            throw new Error("Invalid location");
         }
-        clusterView.addToCluster(node);
+        _clusterView.addToCluster(location);
         emitUpdateClusterView();
     };
 
@@ -62,6 +61,36 @@ function ClusterContextService(EventEmitterService) {
     const updateClusterValidity = (valid) => {
         _clusterValid = valid;
         emit(ClusterEventName.CLUSTER_VALID_UPDATED, isValid());
+    };
+
+    /**
+     * Marks an item for deletion from the cluster.
+     * @param {Node|Location} itemToDelete - The item to delete. This can either be a Node or a Location object.
+     * @throws {Error} Throws an error if the item to delete is not provided or invalid.
+     * @return {void}
+     */
+    const deleteFromCluster = (itemToDelete) => {
+        if (!itemToDelete) {
+            throw new Error("Invalid node");
+        }
+        _clusterView.deleteFromCluster(itemToDelete);
+        emitUpdateClusterView();
+    };
+
+    /**
+     * Restores a previously deleted node back into the cluster.
+     * @param {Node} node - The node to restore.
+     * @throws {Error} Throws an error if the node is not provided or invalid.
+     * @return {void}
+     */
+    const restoreNode = (node) => {
+        if (!node) {
+            throw new Error("Invalid node");
+        }
+
+        const index = _clusterView.getDeleteFromCluster().findIndex((nodeToDelete) => nodeToDelete.endpoint === node.endpoint);
+        _clusterView.getDeleteFromCluster().splice(index, 1);
+        emitUpdateClusterView();
     };
 
     /**
@@ -125,7 +154,10 @@ function ClusterContextService(EventEmitterService) {
         addLocation,
         updateClusterValidity,
         isValid,
-        onClusterValidityChanged
+        onClusterValidityChanged,
+        emitUpdateClusterView,
+        deleteFromCluster,
+        restoreNode
     };
 }
 
