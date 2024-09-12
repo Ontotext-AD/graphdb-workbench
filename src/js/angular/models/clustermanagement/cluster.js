@@ -236,6 +236,7 @@ export class ClusterViewModel {
         this._clusterModel = ClusterModel.fromJSON(clusterModel);
         this._addToCluster = [];
         this._deleteFromCluster = [];
+        this.MINIMUM_NODES_REQUIRED_FOR_DELETION = 2;
     }
 
     /**
@@ -257,9 +258,7 @@ export class ClusterViewModel {
             return ClusterUtil.toNodeLocationViewModel(location, node);
         })
             .concat(this._addToCluster)
-            .filter(
-                (node) => !this._deleteFromCluster.some((delNode) => delNode.endpoint === node.endpoint)
-            );
+            .filter((node) => !this.isPresentInList(this._deleteFromCluster, node.endpoint));
     }
 
     /**
@@ -271,9 +270,9 @@ export class ClusterViewModel {
         const locations = this._clusterModel.locations;
         return locations.filter(
             (location) =>
-                !nodes.some((node) => node.endpoint === location.endpoint) &&
+                !this.isPresentInList(nodes, location.endpoint) &&
                 location.isAvailable &&
-                !this._deleteFromCluster.some((delNode) => delNode.endpoint === location.endpoint)
+                !this.isPresentInList(this._deleteFromCluster, location.endpoint)
         ).map((location) => ClusterUtil.toNodeLocationViewModel(location));
     }
 
@@ -303,7 +302,7 @@ export class ClusterViewModel {
      * @return {void}
      */
     deleteFromCluster(itemToDelete) {
-        const locationIndex = this._addToCluster.findIndex((location) => location.endpoint === itemToDelete.endpoint);
+        const locationIndex = this.findIndexByEndpoint(this._addToCluster, itemToDelete.endpoint);
         if (locationIndex === -1) {
             this._deleteFromCluster.push(itemToDelete);
         } else {
@@ -317,7 +316,7 @@ export class ClusterViewModel {
      */
     getViewModel() {
         const nodes = [...this._clusterModel.nodes, ...this._addToCluster];
-        return nodes.filter((node) => !this._deleteFromCluster.some((delNode) => delNode.endpoint === node.endpoint));
+        return nodes.filter((node) => !this.isPresentInList(this._deleteFromCluster, node.endpoint));
     }
 
     /**
@@ -334,6 +333,60 @@ export class ClusterViewModel {
      */
     getDeleteFromCluster() {
         return this._deleteFromCluster;
+    }
+
+    /**
+     * Restores a node from the deletion list by removing it from the list of nodes marked for deletion.
+     * @param {Node} node - The node to restore from the deletion list.
+     * @return {void}
+     */
+    restoreFromDeletion(node) {
+        const deleteList = this.getDeleteFromCluster();
+        const index = this.findIndexByEndpoint(deleteList, node.endpoint);
+
+        if (index !== -1) {
+            deleteList.splice(index, 1);
+        } else {
+            throw new Error('Node not found in the deletion list');
+        }
+    }
+
+    /**
+     * Check if an item is present in the list by endpoint.
+     * @param {Node[]|Location[]} list - The array of nodes or locations.
+     * @param {string} endpoint - The endpoint to check for.
+     * @return {boolean} True if the item is found, otherwise false.
+     */
+    isPresentInList(list, endpoint) {
+        return ClusterUtil.isPresentInList(list, endpoint);
+    }
+
+    /**
+     * Find an item in a list by endpoint.
+     * @param {Node[]|Location[]} list - The array of nodes or locations.
+     * @param {string} endpoint - The endpoint to search for.
+     * @return {Node|Location|undefined} The item if found, otherwise undefined.
+     */
+    findByEndpoint(list, endpoint) {
+        return ClusterUtil.findByEndpoint(list, endpoint);
+    }
+
+    /**
+     * Find the index of an item by endpoint.
+     * @param {Node[]|Location[]} list - The array of nodes or locations.
+     * @param {string} endpoint - The endpoint to search for.
+     * @return {number} The index of the item if found, otherwise -1.
+     */
+    findIndexByEndpoint(list, endpoint) {
+        return ClusterUtil.findIndexByEndpoint(list, endpoint);
+    }
+
+    /**
+     * Checks if there are enough nodes to allow a deletion operation.
+     * @return {boolean} True if it's safe to delete, false otherwise.
+     */
+    canDeleteNode() {
+        return this.getAttached().length > this.MINIMUM_NODES_REQUIRED_FOR_DELETION;
     }
 }
 
@@ -409,5 +462,35 @@ class ClusterUtil {
             error: location ? location.error : null,
             isAvailable: location ? location.isAvailable : null
         });
+    }
+
+    /**
+     * Checks if an item is present in a list by comparing the endpoint.
+     * @param {Node[]|Location[]} list - The array of nodes or locations.
+     * @param {string} endpoint - The endpoint to check for.
+     * @return {boolean} True if the item is found, otherwise false.
+     */
+    static isPresentInList(list, endpoint) {
+        return list.some((item) => item.endpoint === endpoint);
+    }
+
+    /**
+     * Finds an item in a list by its endpoint.
+     * @param {Node[]|Location[]} list - The array of nodes or locations.
+     * @param {string} endpoint - The endpoint to search for.
+     * @return {Node|Location|undefined} The item if found, otherwise undefined.
+     */
+    static findByEndpoint(list, endpoint) {
+        return list.find((item) => item.endpoint === endpoint);
+    }
+
+    /**
+     * Finds the index of an item in a list by its endpoint.
+     * @param {Node[]|Location[]} list - The array of nodes or locations.
+     * @param {string} endpoint - The endpoint to search for.
+     * @return {number} The index of the item if found, otherwise -1.
+     */
+    static findIndexByEndpoint(list, endpoint) {
+        return list.findIndex((item) => item.endpoint === endpoint);
     }
 }
