@@ -92,7 +92,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
              */
             const onQuestionAnswer = (chatItem) => {
                 if ($scope.chat && $scope.chat.id === chatItem.chatId) {
-                    $scope.chat.appendItem(chatItem);
+                    $scope.chat.chatHistory.appendItem(chatItem);
                     setupNewChatItem();
                 }
             };

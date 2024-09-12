@@ -1,6 +1,7 @@
 import {ChatsListModel, ChatModel} from "../../models/ttyg/chats";
 import {md5HashGenerator} from "../../utils/hash-utils";
 import {chatItemsModelMapper} from "./chat-message.mapper";
+import {ChatItemsListModel} from "../../models/ttyg/chat-item";
 
 /**
  * Converts the response from the server to a list of ChatModels.
@@ -29,6 +30,6 @@ export const chatModelMapper = (data) => {
         id: data.id,
         name: data.name,
         timestamp: data.timestamp,
-        items: data.messages && data.messages.length ? chatItemsModelMapper(data.messages.reverse()) : []
+        chatHistory: data.messages && data.messages.length ? chatItemsModelMapper(data.messages.reverse()) : new ChatItemsListModel()
     }, hashGenerator);
 };

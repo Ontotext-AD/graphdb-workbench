@@ -3,10 +3,10 @@
 <div class="chat-panel">
     <div class="messages" ng-class="{'hidden': !chat}">
         <div id="messages-scrollable">
-            <div class="messages-hint text-muted" ng-if="!chat.items.length">
+            <div class="messages-hint text-muted" ng-if="chat.chatHistory.isEmpty()">
                 {{ 'ttyg.hint' | translate }}
             </div>
-            <div ng-repeat="chatItem in chat.items" class="m-1">
+            <div ng-repeat="chatItem in chat.chatHistory.items" class="m-1">
                 <div class="mt-3">
                     <span>User:  </span>
                     <span class="messages-content">{{ chatItem.question.message }}</span>

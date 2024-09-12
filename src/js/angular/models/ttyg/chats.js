@@ -1,3 +1,5 @@
+import {ChatItemsListModel} from "./chat-item";
+
 export class ChatModel {
     constructor(data, hashGenerator) {
         this.hashGenerator = hashGenerator;
@@ -18,17 +20,10 @@ export class ChatModel {
         this._timestamp = data.timestamp;
 
         /**
-         * @type {ChatItemModel[]}
+         * @type {ChatItemsListModel}
          */
-        this._items = data.items;
+        this._chatHistory = data.chatHistory;
         this.hash = this.generateHash();
-    }
-
-    /**
-     * @param {ChatItemModel} chatItem
-     */
-    appendItem(chatItem) {
-        this.items.push(chatItem);
     }
 
     generateHash() {
@@ -60,12 +55,12 @@ export class ChatModel {
         this._timestamp = value;
     }
 
-    get items() {
-        return this._items;
+    get chatHistory() {
+        return this._chatHistory;
     }
 
-    set items(value) {
-        this._items = value;
+    set chatHistory(value) {
+        this._chatHistory = value || new ChatItemsListModel();
     }
 
     /**

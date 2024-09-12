@@ -1,5 +1,5 @@
 import {CHAT_MESSAGE_ROLE, ChatMessageModel} from "../../models/ttyg/chat-message";
-import {ChatItemModel} from "../../models/ttyg/chat-item";
+import {ChatItemModel, ChatItemsListModel} from "../../models/ttyg/chat-item";
 
 /**
  * Converts the response from the server to a list of ChatMessageModel array.
@@ -14,11 +14,11 @@ export const chatMessageModelListMapper = (data) => {
 };
 
 /**
- * Maps a list of chat messages into a list of `ChatItemModel` objects, each containing a question (from the user) and its corresponding answer (from the agent).
- * The backend returns messages as individual strings, and this function converts the messages into objects that hold the question and its answer.
+ * Maps a list of chat messages into an instance of {@see ChatItemsListModel}, which contains a list of `ChatItemModel` objects. Each object represents a question (from the user) and its corresponding answer (from the agent).
+ * The backend returns messages as individual entries, and this function transforms those entries into objects that pair each question with its answer.
  *
- * @param {Array<Object>} data - An array of message objects where each message contains details like the role (user or assistant) and message content.
- * @return {Array<ChatItemModel>} A list of `ChatItemModel` instances, each containing a question and its corresponding answer.
+ * @param {Array<Object>} data - An array of message objects, where each message contains details such as the role (user or assistant) and the message content.
+ * @return {ChatItemsListModel} An instance of `ChatItemsListModel` containing a list of `ChatItemModel` objects, where each object holds a question and its corresponding answer.
  *
  * @example
  * // Example message data from the backend
@@ -27,21 +27,20 @@ export const chatMessageModelListMapper = (data) => {
  *   { role: 'assistant', conversationId: '123', agentId: 'agent-1', message: 'The weather is sunny.', timestamp: 1628876590 }
  * ];
  *
- * // Example of returned array
+ * // Example of the resulting ChatItemsListModel array
  * const items = [
  * {
- *     chatId: 123,
+ *     conversationId: '123',
  *     agentId: 'agent-1',
- *     chatId: '123',
  *     question: {
- *          role: 'user',
- *          message: 'What is the weather?',
- *          timestamp: 1628876583
+ *         role: 'user',
+ *         message: 'What is the weather?',
+ *         timestamp: 1628876583
  *     },
  *     answer: {
- *          role: 'agent',
- *          message: 'The weather is sunny.',
- *          timestamp: 1628876590
+ *         role: 'assistant',
+ *         message: 'The weather is sunny.',
+ *         timestamp: 1628876590
  *     }
  * }]
  */
@@ -63,7 +62,7 @@ export const chatItemsModelMapper = (data = []) => {
     if (currentItem) {
         items.push(currentItem);
     }
-    return items;
+    return new ChatItemsListModel(items);
 };
 
 /**
