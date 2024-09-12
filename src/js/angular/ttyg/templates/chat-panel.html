@@ -21,7 +21,7 @@
                     <div class="answer">
                         {{ chatItem.answer.message }}
                     </div>
-                    <div class="actions">
+                    <div class="actions" ng-class="{'hidden-actions': !$last}">
                         <i class="fa-regular fa-arrows-rotate"></i>
                         <i class="fa-regular fa-clone"></i>
                         <i class="fa-regular fa-wand-magic-sparkles"></i>
