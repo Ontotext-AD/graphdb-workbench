@@ -88,8 +88,7 @@ function ClusterContextService(EventEmitterService) {
             throw new Error("Invalid node");
         }
 
-        const index = _clusterView.getDeleteFromCluster().findIndex((nodeToDelete) => nodeToDelete.endpoint === node.endpoint);
-        _clusterView.getDeleteFromCluster().splice(index, 1);
+        _clusterView.restoreFromDeletion(node);
         emitUpdateClusterView();
     };
 
