@@ -252,11 +252,10 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     };
 
     /**
-     * @param {ChatItemModel} catItem
+     * @param {ChatItemModel} chatItem
      */
-    const onCreateNewChat = (catItem) => {
-        TTYGService.createConversation(catItem)
-            .then((chatId) => chatId)
+    const onCreateNewChat = (chatItem) => {
+        TTYGService.createConversation(chatItem)
             .then((newChatId) => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT_SUCCESSFUL);
                 TTYGContextService.selectChat(TTYGContextService.getChats().getChat(newChatId));

@@ -32,17 +32,14 @@ export const chatMessageModelListMapper = (data) => {
  * {
  *     chatId: 123,
  *     agentId: 'agent-1',
+ *     chatId: '123',
  *     question: {
  *          role: 'user',
- *          conversationId: '123',
- *          agentId: 'agent-1',
  *          message: 'What is the weather?',
  *          timestamp: 1628876583
  *     },
  *     answer: {
  *          role: 'agent',
- *          conversationId: '123',
- *          agentId: 'agent-1',
  *          message: 'The weather is sunny.',
  *          timestamp: 1628876590
  *     }
