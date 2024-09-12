@@ -80,15 +80,16 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
              * @param {string} endpoint - The endpoint of the node to save.
              */
             $scope.saveNode = (endpoint) => {
-                const findNodeByEndpoint = (nodes) => nodes.find((node) => node.endpoint === endpoint)[0];
-                const deletedNode = findNodeByEndpoint($scope.cluster.getDeleteFromCluster());
+                const deleteList = $scope.cluster.getDeleteFromCluster();
+                const deletedNode = $scope.cluster.findByEndpoint(deleteList, endpoint);
                 if (deletedNode) {
                     ClusterContextService.restoreNode(deletedNode);
                     $scope.editedNodeIndex = undefined;
                     return;
                 }
 
-                const node = findNodeByEndpoint($scope.cluster.getAvailable());
+                const availableList = $scope.cluster.getAvailable();
+                const node = $scope.cluster.findByEndpoint(availableList, endpoint);
                 if (node) {
                     ClusterContextService.addLocation(node);
                     $scope.editedNodeIndex = undefined;

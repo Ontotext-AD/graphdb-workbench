@@ -12,7 +12,8 @@
             "edit_cluster": "Modifier la configuration",
             "edit_cluster_tooltip": "Modifier la configuration du cluster",
             "show_cluster_settings_tooltip": "Afficher la configuration du cluster",
-            "update_nodes_group_btn": "Mettre à jour le groupe de clustersp"
+            "update_nodes_group_btn": "Mettre à jour le cluster",
+            "update_nodes_group_btn_tooltip": "Mettre à jour les nœuds du cluster"
         },
         "cluster_graphical_view": {
             "no_cluster_configured": "Aucun cluster n'est configuré",
@@ -162,6 +163,7 @@
                 "replace_node": "Remplacer le nœud",
                 "delete_node": "Supprimer le nœud",
                 "add_node": "Ajouter un nœud",
+                "add_node_tooltip": "Ajouter un nœud au cluster actuel",
                 "cancel_node_adding": "Annuler"
             },
             "messages": {
