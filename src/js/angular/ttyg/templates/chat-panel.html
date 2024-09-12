@@ -3,7 +3,7 @@
 <div class="chat-panel h-100">
 
     <div class="messages-hint text-muted" ng-if="chat.chatHistory.isEmpty()">
-        {{ 'ttyg.hint' | translate }}
+        {{ 'ttyg.chat_panel.hint' | translate }}
     </div>
 
     <div ng-class="{'hidden': !chat}">
@@ -34,7 +34,7 @@
         <input class="form-control question-input" ng-model="chatItem.question.message" type="text">
         <button class="btn btn-primary" ng-disabled="!chatItem.question.message" ng-click="ask()">
             <i class="fa fa-arrow-turn-left-up"></i>
-            {{ 'ttyg.ask.button' | translate }}
+            {{ 'ttyg.chat_panel.btn.aks' | translate }}
         </button>
     </div>
 </div>

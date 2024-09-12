@@ -218,7 +218,6 @@
     },
     "ttyg": {
         "helpInfo": "Parlez à votre graphe est un chatbot basé sur le modèle GPT-4 d'OpenAI qui peut répondre aux questions sur les données stockées dans GraphDB, en exploitant à la fois vos données et les connaissances générales du modèle GPT-4. Le bot fonctionne dans connexion avec le connecteur ChatGPT Retrieval.",
-        "hint": "Parlez à votre graphe – posez simplement une question !\nPour le moment, cela fonctionne mieux si vous demandez en anglais, désolé !",
         "loading": "Chargement...",
         "help": {
             "btn": {
@@ -264,6 +263,12 @@
                 "rename_failure": "Échec du renommage de la conversation. Veuillez réessayer.",
                 "delete_failure": "Échec de la suppression de la conversation. Veuillez réessayer.",
                 "export_failure": "Échec de l'exportation de la conversation. Veuillez réessayer."
+            }
+        },
+        "chat_panel": {
+            "hint": "Parlez à votre graphe – posez simplement une question !\nPour le moment, cela fonctionne mieux si vous demandez en anglais, désolé !",
+            "btn": {
+                "aks": "Demander"
             }
         },
         "agent": {
@@ -323,7 +328,6 @@
         "help.what.content": "Parlez à votre graphe est un chatbot basé sur le modèle GPT-4 d'OpenAI qui peut répondre aux questions sur les données stockées dans GraphDB, en exploitant à la fois vos données et les connaissances générales du modèle GPT-4.",
         "help.how.title": "Comment ça marche ?",
         "help.how.content": "Le bot utilise le connecteur ChatGPT Retrieval pour récupérer des informations dont il ne connaît pas. A ce titre, vous devez d'abord créer un tel connecteur. Voir aussi les paramètres pour affiner l'intégration avec le Connecteur de récupération.",
-        "ask.button": "Demander",
         "clear.hint": "Effacer l'historique de la conversation.",
         "clear.history.confirmation": "Cela effacera l'historique de la conversation.",
         "settings.title": "Paramètres pour parler à votre graphe",
