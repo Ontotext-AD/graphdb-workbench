@@ -6,7 +6,7 @@
         {{ 'ttyg.chat_panel.hint' | translate }}
     </div>
 
-    <div ng-class="{'hidden': !chat}">
+    <div class="chat-details" ng-class="{'hidden': !chat}">
         <div class="chat-detail" ng-repeat="chatItem in chat.chatHistory.items">
             <div class="user-message">
                 <div class="question alert-help">

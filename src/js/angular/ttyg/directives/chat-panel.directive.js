@@ -144,6 +144,11 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
                 return chatItem;
             };
 
+            const onChatHistoryChanged = () => {
+                const chatDetailsElement = element.find(".chat-details")[0];
+                chatDetailsElement.scrollTop = chatDetailsElement.scrollHeight;
+            };
+
             // =========================
             // Subscriptions
             // =========================
@@ -153,6 +158,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
                 subscriptions.forEach((subscription) => subscription());
             };
 
+            subscriptions.push($scope.$watchCollection('chat.chatHistory.items', onChatHistoryChanged));
             subscriptions.push(TTYGContextService.onSelectedChatChanged(onChatChanged));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION_SUCCESSFUL, onQuestionAnswer));
             // TODO: add subscription for agent changed, and call "onSelectedAgentChanged"

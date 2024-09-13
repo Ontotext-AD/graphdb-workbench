@@ -4,6 +4,11 @@
     justify-content: space-between
 }
 
+.chat-panel .chat-details {
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
 .chat-panel .chat-detail {
     display: flex;
     flex-direction: column;

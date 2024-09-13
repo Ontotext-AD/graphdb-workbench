@@ -180,13 +180,6 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     // Private functions
     // =========================
 
-    const scrollToEnd = () => {
-        $timeout(() => {
-            const element = document.getElementById("messages-scrollable");
-            element.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
-        }, 0);
-    };
-
     const persist = () => {
         const persisted = LocalStorageAdapter.get('ttyg') || {};
         persisted[$repositories.getActiveRepository()] = {
@@ -240,8 +233,6 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
                     $scope.askSettings = s.askSettings;
                 }
             }
-
-            scrollToEnd();
         }
     };
 
