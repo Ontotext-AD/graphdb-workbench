@@ -9,7 +9,7 @@ export class ChatPanelSteps {
     }
 
     static getChatDetailElement(index = 0) {
-        return ChatPanelSteps.getChatDetailsElements().eq(index);
+        return ChatPanelSteps.getChatDetailsElements().eq(index).scrollIntoView();
     }
 
     static getChatDetailActions(index = 0) {
