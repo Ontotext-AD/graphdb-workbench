@@ -262,11 +262,15 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
      * @param {ChatItemModel} chatItem
      */
     const onAskQuestion = (chatItem) => {
-        const item = cloneDeep(chatItem);
         TTYGService.askQuestion(chatItem)
             .then((answer) => {
-                item.answer = answer;
-                TTYGContextService.emit(TTYGEventName.ASK_QUESTION_SUCCESSFUL, item);
+                const selectedChat = TTYGContextService.getSelectedChat();
+                if (selectedChat && selectedChat.id === chatItem.chatId) {
+                    const item = cloneDeep(chatItem);
+                    item.answer = answer;
+                    selectedChat.chatHistory.appendItem(item);
+                    TTYGContextService.updateSelectedChat(selectedChat);
+                }
             })
             .catch((error) => toastr.error(getError(error, 0, 100)));
     };
@@ -388,6 +392,13 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
         // reload the agents list
     };
 
+    const onSelectedChatChanged = (selectedChat) => {
+        TTYGService.getConversation(selectedChat.id)
+            .then((chat) => {
+                TTYGContextService.updateSelectedChat(chat);
+            });
+    };
+
     const setRepositoryIds = () => {
         const currentRepository = $repositories.getActiveRepository();
         // TODO: this should be refreshed automatically when the repositories change
@@ -416,6 +427,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     }
 
     subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler));
+    subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
     subscriptions.push(TTYGContextService.onChatsListChanged(onChatsChanged));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_CHAT, onCreateNewChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.RENAME_CHAT, onRenameChat));
