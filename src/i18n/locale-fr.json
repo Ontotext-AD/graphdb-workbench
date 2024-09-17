@@ -164,7 +164,7 @@
                 "delete_node": "Supprimer le nœud",
                 "add_node": "Ajouter un nœud",
                 "add_node_tooltip": "Ajouter un nœud au cluster actuel",
-                "cancel_node_adding": "Annuler"
+                "cancel": "Annuler"
             },
             "messages": {
                 "no_cluster": "Aucun cluster n'est configuré",

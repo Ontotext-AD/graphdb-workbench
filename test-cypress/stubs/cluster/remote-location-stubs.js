@@ -32,6 +32,16 @@ export class RemoteLocationStubs extends Stubs {
         }).as('check-remote-location');
     }
 
+    static stubRemoteLocationCheckByAddress(addresses) {
+        addresses.forEach((address) => {
+            cy.intercept(
+                'GET',
+                `/rest/info/rpc-address?location=http:%2F%2F${address.uri}`,
+                `${address.rpc}`
+            ).as(`check-remote-location-address-${address.uri}`);
+        });
+    }
+
     static stubRemoteLocationFilter() {
         cy.intercept('GET', '/rest/locations?filterClusterLocations=true', {
             fixture: '/remote-location/remote-location-check'
@@ -48,5 +58,28 @@ export class RemoteLocationStubs extends Stubs {
         cy.intercept('GET', '/rest/locations/active', {
             fixture: '/remote-location/remote-location-status-not-in-cluster.json'
         }).as('remote-location-status-not-in-cluster');
+    }
+
+    static stubGetRemoteLocationsByList(uris) {
+        const locations = uris.map((uri) => {
+            return {
+                "uri": uri || "",
+                "label": uri ? `Remote (${uri})` : "Local",
+                "username": "",
+                "password": "",
+                "authType": "signature",
+                "active": false,
+                "local": false,
+                "system": false,
+                "errorMsg": null,
+                "defaultRepository": null,
+                "isInCluster": false
+            };
+        });
+
+        cy.intercept('GET', '/rest/locations', {
+            body: locations,
+            statusCode: 200
+        }).as('get-remote-locations-by-list');
     }
 }

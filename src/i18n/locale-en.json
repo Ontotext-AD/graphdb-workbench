@@ -164,7 +164,7 @@
                 "delete_node": "Delete node",
                 "add_node": "Add node",
                 "add_node_tooltip": "Add node to current cluster",
-                "cancel_node_adding": "Cancel"
+                "`cancel`": "Cancel"
             },
             "messages": {
                 "no_cluster": "No cluster is configured",

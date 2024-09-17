@@ -81,43 +81,18 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
              */
             $scope.saveNode = (endpoint) => {
                 const deleteList = $scope.cluster.getDeleteFromCluster();
-                const deletedNode = $scope.cluster.findByEndpoint(deleteList, endpoint);
-                if (deletedNode) {
-                    ClusterContextService.restoreNode(deletedNode);
-                    $scope.editedNodeIndex = undefined;
-                    return;
-                }
-
                 const availableList = $scope.cluster.getAvailable();
-                const node = $scope.cluster.findByEndpoint(availableList, endpoint);
-                if (node) {
-                    ClusterContextService.addLocation(node);
-                    $scope.editedNodeIndex = undefined;
+
+                if (handlePendingReplacementStrategy([...availableList, ...deleteList], endpoint)) {
                     return;
                 }
-
-                const newLocation = RemoteLocationsService.createNewLocation(endpoint);
-                $scope.setLoader(true, $translate.instant('cluster_management.update_cluster_group_dialog.messages.connecting_node'));
-
-                RemoteLocationsService.addLocationHttp(newLocation)
-                    .then((location) => {
-                        if (location.error) {
-                            handleErrors(location.error);
-                            ClusterContextService.emitUpdateClusterView();
-                            return;
-                        }
-                        if (location) {
-                            ClusterContextService.addLocation(Location.fromJSON(location));
-                        }
-                    })
-                    .catch(function (error) {
-                        handleErrors(error.data, error.status);
-                        ClusterContextService.emitUpdateClusterView();
-                    })
-                    .finally(() => {
-                        $scope.editedNodeIndex = undefined;
-                        $scope.setLoader(false);
-                    });
+                if (handleRestoreDeletedNodeStrategy(deleteList, endpoint)) {
+                    return;
+                }
+                if (handleAddAvailableNodeStrategy(availableList, endpoint)) {
+                    return;
+                }
+                handleCreateNewLocationStrategy(endpoint);
             };
 
             /**
@@ -137,14 +112,31 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
             };
 
             /**
+             * Initiates the replacement of a node in the cluster view.
+             * @param {number} index - The zero-based index of the node in the cluster view array that is to be replaced.
+             * @param {Node|Location} item - The node object representing the current state of the node to be replaced.
+             * @return {void}
+             */
+            $scope.replaceNode = (index, item) => {
+                ModalService.openSimpleModal({
+                    title: $translate.instant('location.change.confirm'),
+                    message: $translate.instant('location.change.confirm.warning'),
+                    warning: true
+                }).result.then(() =>{
+                    ClusterContextService.setPendingReplace(item);
+                    $scope.clusterView.splice(index, 1, {});
+                    $scope.editedNodeIndex = index;
+                });
+            };
+
+            /**
              * Checks if the current cluster configuration is valid.
              * The configuration is considered valid if there are at least two nodes and no nodes are being edited.
              * @return {boolean} True if the configuration is valid, false otherwise.
              */
             $scope.isClusterConfigurationValid = () => {
                 const isNotInEditMode = $scope.editedNodeIndex === undefined;
-                const validNodes = $scope.cluster.getViewModel().filter((node) => node.endpoint && node.endpoint.length > 0);
-                const hasValidNodes = validNodes.length >= 2;
+                const hasValidNodes = $scope.cluster.hasValidNodesCount();
                 return isNotInEditMode && hasValidNodes;
             };
 
@@ -164,6 +156,11 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
                 } else {
                     $scope.loader = false;
                 }
+            };
+
+            $scope.cancel = () => {
+                $scope.editedNodeIndex = undefined;
+                ClusterContextService.emitUpdateClusterView();
             };
 
             // =========================
@@ -195,6 +192,91 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
                 }
                 toastr.error(failMessage, $translate.instant('cluster_management.cluster_page.notifications.create_failed'));
             };
+
+            const handlePendingReplacementStrategy = (knownNodesList, endpoint) => {
+                const oldNode = ClusterContextService.getPendingReplace();
+                if (oldNode) {
+                    const node = $scope.cluster.findByEndpoint(knownNodesList, endpoint);
+                    if (node) {
+                        ClusterContextService.replace(oldNode, node);
+                        $scope.editedNodeIndex = undefined;
+                    } else {
+                        const newLocation = RemoteLocationsService.createNewLocation(endpoint);
+                        $scope.setLoader(true, $translate.instant('cluster_management.update_cluster_group_dialog.messages.connecting_node'));
+                        addNewLocation(newLocation)
+                            .then((location) => {
+                                ClusterContextService.replace(oldNode, location);
+                            })
+                            .catch((error) => {
+                                handleErrors(error.data, error.status);
+                                ClusterContextService.emitUpdateClusterView();
+                            })
+                            .finally(() => {
+                                $scope.editedNodeIndex = undefined;
+                                $scope.setLoader(false);
+                            });
+                    }
+                    return true;
+                }
+                return false;
+            };
+
+            const handleRestoreDeletedNodeStrategy = (deleteList, endpoint) => {
+                const deletedNode = $scope.cluster.findByEndpoint(deleteList, endpoint);
+                if (deletedNode) {
+                    ClusterContextService.restoreNode(deletedNode);
+                    $scope.editedNodeIndex = undefined;
+                    return true;
+                }
+                return false;
+            };
+
+            const handleAddAvailableNodeStrategy = (availableList, endpoint) => {
+                const node = $scope.cluster.findByEndpoint(availableList, endpoint);
+                if (node) {
+                    ClusterContextService.addLocation(node);
+                    $scope.editedNodeIndex = undefined;
+                    return true;
+                }
+                return false;
+            };
+
+            const handleCreateNewLocationStrategy = (endpoint) => {
+                const newLocation = RemoteLocationsService.createNewLocation(endpoint);
+                $scope.setLoader(true, $translate.instant('cluster_management.update_cluster_group_dialog.messages.connecting_node'));
+
+                addNewLocation(newLocation)
+                    .then((location) => {
+                        ClusterContextService.addLocation(Location.fromJSON(location));
+                    })
+                    .catch((error) => {
+                    handleErrors(error.data, error.status);
+                    ClusterContextService.emitUpdateClusterView();
+                })
+                    .finally(() => {
+                        $scope.editedNodeIndex = undefined;
+                        $scope.setLoader(false);
+                    });
+
+                return true;
+            };
+
+            const addNewLocation = (newLocation) => {
+                return RemoteLocationsService.addLocationHttp(newLocation)
+                    .then((location) => {
+                        if (location.error) {
+                            handleErrors(location.error);
+                            return;
+                        }
+                        if (location) {
+                            return Location.fromJSON(location);
+                        }
+                    })
+                    .catch((error) => {
+                        throw error;
+                    });
+            };
+
 
             // =========================
             // Subscriptions
