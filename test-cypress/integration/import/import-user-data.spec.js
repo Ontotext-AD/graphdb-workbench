@@ -1,6 +1,7 @@
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
 import {ImportSettingsDialogSteps} from "../../steps/import/import-settings-dialog-steps";
+import {WindowSteps} from "../../steps/window-steps";
 
 const RDF_TEXT_SNIPPET = '@prefix ab:<http://learningsparql.com/ns/addressbook#>.\n\n' +
     'ab:richard ab:homeTel "(229)276-5135".\n' +
@@ -114,6 +115,6 @@ describe('Import user data', () => {
         // And I click the copy button next to the max file size limit property
         ImportUserDataSteps.copyMaxFileSizeLimitProperty();
         // Then I should be able to copy the max file size limit property
-        ImportUserDataSteps.getClipboardTextContent().should('equal', 'graphdb.workbench.maxUploadSize');
+        WindowSteps.getClipboardTextContent().should('equal', 'graphdb.workbench.maxUploadSize');
     });
 });

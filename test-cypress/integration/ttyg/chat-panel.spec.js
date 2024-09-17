@@ -2,6 +2,7 @@ import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {ChatPanelSteps} from "../../steps/ttyg/chat-panel-steps";
+import {ApplicationSteps} from "../../steps/application-steps";
 
 describe('Ttyg ChatPanel', () => {
 
@@ -51,5 +52,17 @@ describe('Ttyg ChatPanel', () => {
         ChatPanelSteps.getQuestionInputElement().should('have.value', '');
         // and "Ask" button be disabled.
         ChatPanelSteps.getAskButtonElement().should('be.disabled');
+
+        // When I click on regenerate button.
+        ChatPanelSteps.regenerateQuestion(2);
+
+        // Then I expect the question to be regenerated and appear in the chat history.
+        ChatPanelSteps.getChatDetailsElements().should('have.length', 4);
+
+        // When I click on copy button
+        ChatPanelSteps.copyAnswer(2);
+
+        // Then I expect the answer to be copied.
+        ApplicationSteps.getSuccessNotifications().contains('The answer was successfully copied to the clipboard.');
     });
 });
