@@ -134,6 +134,10 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
                 chatDetailsElement.scrollTop = chatDetailsElement.scrollHeight;
             };
 
+            const init = () => {
+                $scope.chatItem = getEmptyChatItem();
+            };
+
             // =========================
             // Subscriptions
             // =========================
@@ -152,10 +156,6 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
             // =========================
             // Initialization
             // =========================
-
-            function init() {
-            }
-
             init();
         }
     };
