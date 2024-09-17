@@ -267,7 +267,7 @@
         "chat_panel": {
             "hint": "Talk to your graph – simply ask a question!",
             "btn": {
-                "aks": {
+                "ask": {
                     "label": "Ask"
                 },
                 "regenerate": {

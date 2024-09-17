@@ -268,7 +268,7 @@
         "chat_panel": {
             "hint": "Parlez à votre graphe – posez simplement une question !\nPour le moment, cela fonctionne mieux si vous demandez en anglais, désolé !",
             "btn": {
-                "aks": {
+                "ask": {
                     "label": "Demander"
                 },
                 "regenerate": {

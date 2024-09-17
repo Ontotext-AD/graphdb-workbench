@@ -1,4 +1,5 @@
 import {AGENT_ID} from "../../ttyg/services/constants";
+import {CHAT_MESSAGE_ROLE, ChatMessageModel} from "./chat-message";
 
 /**
  *
@@ -53,6 +54,27 @@ export class ChatItemModel {
 
     set answer(value) {
         this._answer = value;
+    }
+
+    /**
+     * Sets the message for the user's question.
+     *
+     * @param {string} message - The message content for the user's question.
+     */
+    setQuestionMessage(message) {
+        if (!this._question) {
+            this._question = new ChatMessageModel({role: CHAT_MESSAGE_ROLE.USER});
+        }
+        this._question.message = message;
+    }
+
+    /**
+     * Retrieves the message of the user's question.
+     *
+     * @return {string} - The message content of the user's question.
+     */
+    getQuestionMessage() {
+        return this._question.message;
     }
 
     /**

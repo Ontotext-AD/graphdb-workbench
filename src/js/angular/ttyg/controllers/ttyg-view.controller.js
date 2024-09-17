@@ -476,11 +476,12 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
             TTYGContextService.updateSelectedChat(selectedChat);
         }
     };
-    const onCopy = (chatItem) => {
+
+    const onCopiedAnswerToClipboard = (chatItem) => {
         if (navigator.clipboard) {
             navigator.clipboard.writeText(chatItem.answer.message)
-                .then(() => TTYGContextService.emit(TTYGEventName.COPY_ANSWER_SUCCESSFUL))
-                .catch(() => TTYGContextService.emit(TTYGEventName.COPY_ANSWER_FAILURE));
+                .then(() => TTYGContextService.emit(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_SUCCESSFUL))
+                .catch(() => TTYGContextService.emit(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_FAILURE));
         }
     };
 
@@ -517,7 +518,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_AGENT, $scope.onCreateAgent));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION, onAskQuestion));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.LOAD_CHAT, loadChats));
-    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER, onCopy));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD, onCopiedAnswerToClipboard));
     subscriptions.push($rootScope.$on('$translateChangeSuccess', updateLabels));
     $scope.$on('$destroy', removeAllListeners);
 

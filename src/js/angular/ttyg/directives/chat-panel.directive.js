@@ -68,15 +68,24 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 }
             };
 
-            $scope.regenerate = (chatItem) => {
-                const question = getEmptyChatItem();
-                question.question.message = chatItem.question.message;
-                const regenerateChatItem = new ChatItemModel(chatItem.chatId, chatItem.agentId, question.question);
+            /**
+             * Regenerates the answer for the provided chat item.
+             *
+             * @param {ChatItemModel} chatItem - The chat item that contains the question to be regenerated.
+             */
+            $scope.regenerateQuestion = (chatItem) => {
+                const regenerateChatItem = getEmptyChatItem();
+                regenerateChatItem.setQuestionMessage(chatItem.getQuestionMessage());
                 askQuestion(regenerateChatItem);
             };
 
-            $scope.copy = (chatItem) => {
-                TTYGContextService.emit(TTYGEventName.COPY_ANSWER, chatItem);
+            /**
+             * Copies the answer of the provided chat item to the clipboard.
+             *
+             * @param {ChatItemModel} chatItem - The chat item containing the answer to be copied to the clipboard.
+             */
+            $scope.copyAnswerToClipboard = (chatItem) => {
+                TTYGContextService.emit(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD, chatItem);
             };
 
             // =========================
@@ -167,8 +176,8 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             };
 
             subscriptions.push(TTYGContextService.onSelectedChatUpdated(onChatChanged));
-            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_SUCCESSFUL, onCopied));
-            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_SUCCESSFUL, onCopyFailed));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_SUCCESSFUL, onCopied));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_SUCCESSFUL, onCopyFailed));
             // TODO: add subscription for agent changed, and call "onSelectedAgentChanged"
 
             // Deregister the watcher when the scope/directive is destroyed
