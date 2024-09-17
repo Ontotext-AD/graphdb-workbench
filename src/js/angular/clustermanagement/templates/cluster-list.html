@@ -33,7 +33,7 @@
             </tr>
 
             <tr ng-repeat-start="node in clusterView track by $index" ng-if="0"></tr>
-            <tr ng-if="$index !== editedNodeIndex" class="node preview-node-row" capture-height="$index"
+            <tr ng-if="$index !== editedNodeIndex" class="node preview-node-row" data-endpoint="{{node.endpoint}}" capture-height="$index"
                 ng-class="{'selected': $index === selectedNode || $index === editedNodeIndex}">
                 <td class="index-cell">{{$index + 1}}</td>
                 <td class="location-cell data">
@@ -53,7 +53,7 @@
                 <td class="empty-cell"></td>
                 <td class="actions-cell">
                     <div ng-if="editedNodeIndex === undefined" class="actions-group">
-                        <button ng-click="replaceNode($index)" class="btn btn-link replace-node-btn"
+                        <button ng-click="replaceNode($index, node)" class="btn btn-link replace-node-btn"
                                 gdb-tooltip="{{'cluster_management.update_cluster_group_dialog.actions.replace_node' | translate}}">
                             <i class="fa-regular fa-arrow-right-arrow-left"></i>
                         </button>
@@ -64,7 +64,7 @@
                     </div>
                 </td>
             </tr>
-            <tr ng-if="$index === editedNodeIndex" class="node edit-node-row" style="{{getRowHeight}}"
+            <tr ng-if="$index === editedNodeIndex" class="node edit-node-row" data-endpoint="{{node.endpoint}}" style="{{getRowHeight}}"
                 ng-class="{'selected table-info': $index === editedNodeIndex}">
                 <td class="index-cell">{{$index + 1}}</td>
                 <td class="data location-cell">
@@ -103,9 +103,9 @@
                 <td class="empty-cell"></td>
                 <td class="actions-cell">
                     <div class="crud-actions-group">
-                        <button ng-click="deleteNode($index, node)"
+                        <button ng-click="cancel()"
                                 class="btn btn-link cancel-node-replace-btn secondary"
-                                gdb-tooltip="{{'cluster_management.update_cluster_group_dialog.actions.cancel_node_adding' | translate}}">
+                                gdb-tooltip="{{'cluster_management.update_cluster_group_dialog.actions.cancel' | translate}}">
                             <i class="fa-regular fa-xmark"></i>
                         </button>
                         <button ng-click="saveNode(node.endpoint, $index)"
