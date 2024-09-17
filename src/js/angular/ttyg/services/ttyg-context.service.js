@@ -107,7 +107,7 @@ function TTYGContextService(EventEmitterService) {
      * @param {ChatModel} chat - The chat object that is being updated.
      */
     const updateSelectedChat = (chat) => {
-        if (_selectedChat.id === chat.id) {
+        if (!_selectedChat || _selectedChat.id === chat.id) {
             _selectedChat = cloneDeep(chat);
             emit(TTYGEventName.SELECTED_CHAT_UPDATED, getSelectedChat());
         }

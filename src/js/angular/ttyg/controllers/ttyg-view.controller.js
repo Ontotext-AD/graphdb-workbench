@@ -9,7 +9,6 @@ import {TTYGEventName} from "../services/ttyg-context.service";
 import {AGENTS_FILTER_ALL_KEY} from "../services/constants";
 import {AgentListFilterModel} from "../../models/ttyg/agents";
 import {ChatsListModel} from "../../models/ttyg/chats";
-import {cloneDeep} from "lodash";
 
 const modules = [
     'toastr',
@@ -266,7 +265,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
             .then((answer) => {
                 const selectedChat = TTYGContextService.getSelectedChat();
                 if (selectedChat && selectedChat.id === chatItem.chatId) {
-                    const item = cloneDeep(chatItem);
+                    const item = chatItem;
                     item.answer = answer;
                     selectedChat.chatHistory.appendItem(item);
                     TTYGContextService.updateSelectedChat(selectedChat);
@@ -393,10 +392,14 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     };
 
     const onSelectedChatChanged = (selectedChat) => {
-        TTYGService.getConversation(selectedChat.id)
-            .then((chat) => {
-                TTYGContextService.updateSelectedChat(chat);
-            });
+        if (selectedChat) {
+            TTYGService.getConversation(selectedChat.id)
+                .then((chat) => {
+                    TTYGContextService.updateSelectedChat(chat);
+                });
+        } else {
+            TTYGContextService.updateSelectedChat(selectedChat);
+        }
     };
 
     const setRepositoryIds = () => {

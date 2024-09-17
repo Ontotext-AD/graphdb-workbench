@@ -89,8 +89,17 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
              * @param {ChatModel} chat - the new selected chat.
              */
             const onChatChanged = (chat) => {
-                $scope.chat = chat;
-                setupNewChatItem();
+                // Updates $scope.chat and $scope.chatItem, wrapped in $apply because AngularJS
+                // does not detect the changes automatically for some reason.
+                if (!$scope.$$phase) {
+                    $scope.$apply(() => {
+                        $scope.chat = chat;
+                        setupNewChatItem();
+                    });
+                } else {
+                    $scope.chat = chat;
+                    setupNewChatItem();
+                }
                 scrollToBottom();
             };
 
