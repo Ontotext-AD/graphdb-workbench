@@ -10,6 +10,7 @@ ClusterContextService.$inject = ['EventEmitterService'];
 function ClusterContextService(EventEmitterService) {
     let _clusterView = undefined;
     let _clusterValid = false;
+    let _pendingReplace = undefined;
 
     /**
      * Get the current cluster view.
@@ -93,6 +94,26 @@ function ClusterContextService(EventEmitterService) {
     };
 
     /**
+     * Replaces node or location with a new location the cluster.
+     * @param {Node|Location} oldItem - The node to be replaced.
+     * @param {Location} newLocation - The new location.
+     * @return {void}
+     */
+    const replace = (oldItem, newLocation) => {
+        deleteFromCluster(oldItem);
+        addLocation(newLocation);
+    };
+
+    const setPendingReplace = (pendingReplace) => {
+        _pendingReplace = cloneDeep(pendingReplace);
+    };
+
+    const getPendingReplace = () => {
+        return _pendingReplace;
+    };
+
+
+        /**
      * Subscribe to the cluster view update event.
      * @param {function} callback - The callback to be invoked when the cluster view changes.
      * @return {function} Unsubscribe function to stop listening to the event.
@@ -156,7 +177,10 @@ function ClusterContextService(EventEmitterService) {
         onClusterValidityChanged,
         emitUpdateClusterView,
         deleteFromCluster,
-        restoreNode
+        restoreNode,
+        replace,
+        setPendingReplace,
+        getPendingReplace
     };
 }
 
