@@ -42,6 +42,26 @@ export class Location {
         return this._isAvailable;
     }
 
+    set endpoint(value) {
+        this._endpoint = value;
+    }
+
+    set rpcAddress(value) {
+        this._rpcAddress = value;
+    }
+
+    set error(value) {
+        this._error = value;
+    }
+
+    set isAvailable(value) {
+        this._isAvailable = value;
+    }
+
+    set isLocal(value) {
+        this._isLocal = value;
+    }
+
     /**
      * Maps JSON data to a Location instance.
      * @param {Object} json - The JSON data.
@@ -115,6 +135,38 @@ export class Node {
     /** @return {string} The recovery status of the node. */
     get recoveryStatus() {
         return this._recoveryStatus;
+    }
+
+    set address(value) {
+        this._address = value;
+    }
+
+    set nodeState(value) {
+        this._nodeState = value;
+    }
+
+    set term(value) {
+        this._term = value;
+    }
+
+    set syncStatus(value) {
+        this._syncStatus = value;
+    }
+
+    set lastLogTerm(value) {
+        this._lastLogTerm = value;
+    }
+
+    set lastLogIndex(value) {
+        this._lastLogIndex = value;
+    }
+
+    set endpoint(value) {
+        this._endpoint = value;
+    }
+
+    set recoveryStatus(value) {
+        this._recoveryStatus = value;
     }
 
     /**
@@ -234,9 +286,10 @@ export class ClusterViewModel {
      */
     constructor(clusterModel) {
         this._clusterModel = ClusterModel.fromJSON(clusterModel);
-        this._addToCluster = [];
-        this._deleteFromCluster = [];
-        this.MINIMUM_NODES_REQUIRED_FOR_DELETION = 2;
+        this._addToCluster = new Map();
+        this._deleteFromCluster = new Map();
+        this._currentNodesCount = -1;
+        this.MINIMUM_NODES_REQUIRED = 2;
     }
 
     /**
@@ -246,19 +299,17 @@ export class ClusterViewModel {
     getAttached() {
         const nodes = this._clusterModel.nodes;
         const locations = this._clusterModel.locations;
+        const locationMap = new Map(locations.map((location) => [location.endpoint, location]));
 
-        const locationMap = new Map();
-        locations.forEach((location) => {
-            locationMap.set(location.endpoint, location);
-        });
-
-
-        return nodes.map((node) => {
+        const resultNodes = nodes.map((node) => {
             const location = locationMap.get(node.endpoint);
             return ClusterUtil.toNodeLocationViewModel(location, node);
         })
-            .concat(this._addToCluster)
-            .filter((node) => !this.isPresentInList(this._deleteFromCluster, node.endpoint));
+            .concat(Array.from(this._addToCluster.values()))
+            .filter((node) => !this._deleteFromCluster.has(node.endpoint));
+
+        this._currentNodesCount = resultNodes.length;
+        return resultNodes;
     }
 
     /**
@@ -268,11 +319,12 @@ export class ClusterViewModel {
     getAvailable() {
         const nodes = this._clusterModel.nodes;
         const locations = this._clusterModel.locations;
-        return locations.filter(
-            (location) =>
-                !this.isPresentInList(nodes, location.endpoint) &&
-                location.isAvailable &&
-                !this.isPresentInList(this._deleteFromCluster, location.endpoint)
+
+        return locations.filter((location) =>
+            !this.isPresentInList(nodes, location.endpoint) &&
+            location.isAvailable &&
+            !this._deleteFromCluster.has(location.endpoint) &&
+            !this._addToCluster.has(location.endpoint)
         ).map((location) => ClusterUtil.toNodeLocationViewModel(location));
     }
 
@@ -286,69 +338,75 @@ export class ClusterViewModel {
     }
 
     /**
-     * Adds a location to the cluster.
-     * @param {Location} location - The location to add.
+     * Adds a location to the cluster, ensuring uniqueness by endpoint.
+     * @param {Node|Object} location - The location in JSON to add.
      */
     addToCluster(location) {
-        this._addToCluster.push(Location.fromJSON(location));
+        const endpoint = location.endpoint;
+        if (this._deleteFromCluster.has(endpoint)) {
+            // Remove from delete list if it's being added back
+            this._deleteFromCluster.delete(endpoint);
+        } else {
+            this._addToCluster.set(endpoint, Location.fromJSON(location));
+        }
     }
 
     /**
-     * Marks an item for deletion from the cluster.
-     * If the item is already marked for addition, it will be removed from the addition list.
-     * Otherwise, it will be added to the deletion list.
+     * Marks an item for deletion from the cluster, ensuring uniqueness by endpoint.
+     * If the item is already marked for addition, it will be removed from the addition map.
+     * Otherwise, it will be added to the deletion map.
      *
      * @param {Node|Location} itemToDelete - The item to delete. This can either be a Node or Location object.
      * @return {void}
      */
     deleteFromCluster(itemToDelete) {
-        const locationIndex = this.findIndexByEndpoint(this._addToCluster, itemToDelete.endpoint);
-        if (locationIndex === -1) {
-            this._deleteFromCluster.push(itemToDelete);
+        const endpoint = itemToDelete.endpoint;
+        if (this._addToCluster.has(endpoint)) {
+            // Remove from add map if it's there
+            this._addToCluster.delete(endpoint);
         } else {
-            this._addToCluster.splice(locationIndex, 1);
+            this._deleteFromCluster.set(endpoint, itemToDelete);
         }
-    }
-
-    /**
-     * Gets the view model of the current cluster.
-     * @return {Node[]} The list of nodes in the current view model.
-     */
-    getViewModel() {
-        const nodes = [...this._clusterModel.nodes, ...this._addToCluster];
-        return nodes.filter((node) => !this.isPresentInList(this._deleteFromCluster, node.endpoint));
-    }
-
-    /**
-     * Gets nodes added to the cluster.
-     * @return {Location[]} The list of nodes added to the cluster.
-     */
-    getAddToCluster() {
-        return this._addToCluster;
     }
 
     /**
      * Gets nodes to delete from the cluster.
-     * @return {Location|Node[]} The list of nodes added to the cluster.
+     * @return {Location|Node[]} The list of nodes to delete from the cluster.
      */
     getDeleteFromCluster() {
-        return this._deleteFromCluster;
+        return Array.from(this._deleteFromCluster.values());
+    }
+
+    getUpdateActions() {
+        const add = Array.from(this._addToCluster.values());
+        const del = Array.from(this._deleteFromCluster.values());
+        const addCount = add.length;
+        const deleteCount = del.length;
+        const minCount = Math.min(addCount, deleteCount);
+
+        const newNodes = add.slice(0, minCount);
+        const oldNodes = del.slice(0, minCount);
+
+        const nodesToAdd = add.slice(minCount);
+        const nodesToDelete = del.slice(minCount);
+
+        return {
+            replace: {
+                newNodes,
+                oldNodes
+            },
+            add: nodesToAdd,
+            delete: nodesToDelete
+        };
     }
 
     /**
-     * Restores a node from the deletion list by removing it from the list of nodes marked for deletion.
-     * @param {Node} node - The node to restore from the deletion list.
+     * Restores a node from the deletion map by removing it from the map of nodes marked for deletion.
+     * @param {Node} node - The node to restore from the deletion map.
      * @return {void}
      */
     restoreFromDeletion(node) {
-        const deleteList = this.getDeleteFromCluster();
-        const index = this.findIndexByEndpoint(deleteList, node.endpoint);
-
-        if (index !== -1) {
-            deleteList.splice(index, 1);
-        } else {
-            throw new Error('Node not found in the deletion list');
-        }
+        this._deleteFromCluster.delete(node.endpoint);
     }
 
     /**
@@ -382,12 +440,22 @@ export class ClusterViewModel {
     }
 
     /**
+     * Checks if the current number of nodes meets the minimum required.
+     * @return {boolean} True if the current node count is valid, false otherwise.
+     */
+    hasValidNodesCount() {
+        return this._currentNodesCount >= this.MINIMUM_NODES_REQUIRED;
+    }
+
+    /**
      * Checks if there are enough nodes to allow a deletion operation.
+     * Ensures that after deletion, the number of nodes will still meet the minimum required.
      * @return {boolean} True if it's safe to delete, false otherwise.
      */
     canDeleteNode() {
-        return this.getAttached().length > this.MINIMUM_NODES_REQUIRED_FOR_DELETION;
+        return (this._currentNodesCount - 1) >= this.MINIMUM_NODES_REQUIRED;
     }
+
 }
 
 /**
@@ -457,7 +525,7 @@ class ClusterUtil {
             lastLogIndex: node ? node.lastLogIndex : null,
             recoveryStatus: node ? node.recoveryStatus : null,
             endpoint: node ? node.endpoint : location ? location.endpoint : null,
-            rpcAddress: node ? node.endpoint : location ? location.rpcAddress : null,
+            rpcAddress: node ? node.address : location ? location.rpcAddress : null,
             isLocal: location ? location.isLocal : null,
             error: location ? location.error : null,
             isAvailable: location ? location.isAvailable : null
@@ -476,7 +544,7 @@ class ClusterUtil {
 
     /**
      * Finds an item in a list by its endpoint.
-     * @param {Node[]|Location[]} list - The array of nodes or locations.
+     * @param {Node[] | Location[]} list - The array of nodes or locations.
      * @param {string} endpoint - The endpoint to search for.
      * @return {Node|Location|undefined} The item if found, otherwise undefined.
      */
