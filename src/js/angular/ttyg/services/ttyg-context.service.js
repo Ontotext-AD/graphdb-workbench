@@ -71,14 +71,20 @@ function TTYGContextService(EventEmitterService) {
     };
 
     /**
-     * @param {ChatModel} selectedChat
+     * Updates the selected chat with the provided <code>selectedChat</code> and emits the 'selectChat' event
+     * to notify listeners that a new chat has been selected.
+     *
+     * @param {ChatModel} selectedChat - The chat object to select.
      */
     const selectChat = (selectedChat) => {
-        _selectedChat = cloneDeep(selectedChat);
-        emit(TTYGEventName.SELECT_CHAT, getSelectedChat());
+        if (!_selectedChat || _selectedChat.id !== selectedChat) {
+            _selectedChat = cloneDeep(selectedChat);
+            emit(TTYGEventName.SELECT_CHAT, getSelectedChat());
+        }
     };
 
-    /** Subscribes to the 'selectChat' event.
+    /**
+     * Subscribes to the 'selectChat' event.
      * @param {function} callback - The callback to be called when the event is fired.
      *
      * @return {function} unsubscribe function.
@@ -88,6 +94,35 @@ function TTYGContextService(EventEmitterService) {
             callback(getSelectedChat());
         }
         return subscribe(TTYGEventName.SELECT_CHAT, (selectedChat) => callback(selectedChat));
+    };
+
+    /**
+     * Updates the selected chat and emits the 'selectChatUpdated' event to notify listeners that a property
+     * of the selected chat has changed.
+     *
+     * If the ID of the passed chat differs from the current selected chat, no action will occur.
+     *
+     * The selected chat can be updated through {@link TTYGContextService#selectChat}.
+     *
+     * @param {ChatModel} chat - The chat object that is being updated.
+     */
+    const updateSelectedChat = (chat) => {
+        if (!_selectedChat || _selectedChat.id === chat.id) {
+            _selectedChat = cloneDeep(chat);
+            emit(TTYGEventName.SELECTED_CHAT_UPDATED, getSelectedChat());
+        }
+    };
+
+    /** Subscribes to the 'selectChat' event.
+     * @param {function} callback - The callback to be called when the event is fired.
+     *
+     * @return {function} unsubscribe function.
+     */
+    const onSelectedChatUpdated = (callback) => {
+        if (_selectedChat && angular.isFunction(callback)) {
+            callback(getSelectedChat());
+        }
+        return subscribe(TTYGEventName.SELECTED_CHAT_UPDATED, (selectedChat) => callback(selectedChat));
     };
 
     /**
@@ -128,6 +163,8 @@ function TTYGContextService(EventEmitterService) {
         getSelectedChat,
         selectChat,
         onSelectedChatChanged,
+        updateSelectedChat,
+        onSelectedChatUpdated,
         updateAgents
     };
 }
@@ -140,6 +177,7 @@ export const TTYGEventName = {
     RENAME_CHAT_SUCCESSFUL: 'chatRenamed',
     RENAME_CHAT_FAILURE: 'chatRenamedFailure',
     SELECT_CHAT: 'selectChat',
+    SELECTED_CHAT_UPDATED: 'selectChatUpdated',
     DELETE_CHAT: 'deleteChat',
     DELETE_CHAT_SUCCESSFUL: 'chatDeleted',
     DELETE_CHAT_FAILURE: 'chatDeletedFailure',
@@ -150,8 +188,6 @@ export const TTYGEventName = {
     AGENT_LIST_UPDATED: 'agentListUpdated',
     CREATE_AGENT: 'createAgent',
     ASK_QUESTION: 'askQuestion',
-    ASK_QUESTION_SUCCESSFUL: 'askQuestionSuccess',
-    ASK_QUESTION_FAILURE: 'askQuestionFailure',
     LOAD_CHAT: 'loadChat',
     LOAD_CHAT_SUCCESSFUL: 'loadChatSuccess',
     LOAD_CHAT_FAILURE: 'loadChatFailure'

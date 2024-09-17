@@ -218,7 +218,6 @@
     },
     "ttyg": {
         "helpInfo": "Talk to Your Graph is chat bot based on OpenAI's GPT-4 model that can answer questions about data stored in GraphDB, leveraging both your data and the general knowledge of the GPT-4 model. The bot works in connection with the ChatGPT Retrieval connector.",
-        "hint": "Talk to your graph – simply ask a question!",
         "loading": "Loading...",
         "help": {
             "btn": {
@@ -263,6 +262,12 @@
                 "rename_failure": "Failed to rename the conversation. Please try again.",
                 "delete_failure": "Failed to delete the conversation. Please try again.",
                 "export_failure": "Failed to export the conversation. Please try again."
+            }
+        },
+        "chat_panel": {
+            "hint": "Talk to your graph – simply ask a question!",
+            "btn": {
+                "aks": "Ask"
             }
         },
         "agent": {
@@ -322,7 +327,6 @@
         "help.what.content": "Talk to Your Graph is chat bot based on OpenAI's GPT-4 model that can answer questions about data stored in GraphDB, leveraging both your data and the general knowledge of the GPT-4 model.",
         "help.how.title": "How does it work?",
         "help.how.content": "The bot uses the ChatGPT Retrieval connector to fetch information it does not know about. As such, you must first create a suitable connector. See also the settings for fine-tuning the integration with the Retrieval connector.",
-        "ask.button": "Ask",
         "clear.hint": "Clear the chat history",
         "clear.history.confirmation": "This will clear the history conversation.",
         "settings.title": "Talk to Your Graph Settings",

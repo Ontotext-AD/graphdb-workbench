@@ -30,13 +30,25 @@ export class TTYGStubs {
 
     }
 
+    /**
+     * Loads the specified <code>fixture</code> and updates the chatId in the fixture with the actual ID passed in the endpoint call.
+     *
+     * @param {string} fixture - Path to the JSON file containing the chat conversation.
+     * @param {number} delay - Optional delay in milliseconds before responding with the fixture.
+     */
     static stubChatGet(fixture = '/ttyg/chats/get-chat-1.json', delay = 0) {
-        cy.intercept('/rest/chat/conversations/**', {
-            method: 'GET',
-            fixture: fixture,
-            statusCode: 200,
-            delay: delay
-        }).as('get-chat');
+        cy.fixture(fixture).then((body) => {
+            const bodyString = JSON.stringify(body);
+            cy.intercept('/rest/chat/conversations/**', (req) => {
+                const chatId = req.url.split('/').pop();
+                    // Respond with the modified body
+                    req.reply({
+                        statusCode: 200,
+                        body: bodyString.replace(/{chatId}/g, chatId),
+                        delay: delay
+                    });
+            }).as('get-chat');
+        });
     }
 
     static stubChatUpdate() {

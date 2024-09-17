@@ -28,7 +28,6 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
     return {
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/chat-panel.html',
-        scope: {},
         link: ($scope, element, attrs) => {
 
             // =========================
@@ -86,36 +85,22 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
             };
 
             /**
-             * Handles answering a chat question.
-             *
-             * @param {ChatItemModel} chatItem
-             */
-            const onQuestionAnswer = (chatItem) => {
-                if ($scope.chat && $scope.chat.id === chatItem.chatId) {
-                    $scope.chat.chatHistory.appendItem(chatItem);
-                    setupNewChatItem();
-                }
-            };
-
-            /**
              * Handles the change of the selected chat.
              * @param {ChatModel} chat - the new selected chat.
              */
             const onChatChanged = (chat) => {
-                // The chat can be empty when a new chat is initialized. In this case, we only show the question input and the "Ask" button.
-                // The chat will be automatically created by the backend when the first question is sent.
-                if (!chat) {
-                    $scope.chat = undefined;
-                    setupNewChatItem();
-                    return;
-                }
-
-                // TODO: Check if the agent needs to be changed when the chat is switched.
-                TTYGService.getConversation(chat.id)
-                    .then((chat) => {
+                // TODO: Remove the manual update of $scope.chat and $scope.chatItem wrapped in $apply,
+                // as AngularJS currently does not detect the changes automatically for some reason.
+                if (!$scope.$$phase) {
+                    $scope.$apply(() => {
                         $scope.chat = chat;
                         setupNewChatItem();
                     });
+                } else {
+                    $scope.chat = chat;
+                    setupNewChatItem();
+                }
+                scrollToBottom();
             };
 
             /**
@@ -144,6 +129,15 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
                 return chatItem;
             };
 
+            const scrollToBottom = () => {
+                const chatDetailsElement = element.find(".chat-details")[0];
+                chatDetailsElement.scrollTop = chatDetailsElement.scrollHeight;
+            };
+
+            const init = () => {
+                $scope.chatItem = getEmptyChatItem();
+            };
+
             // =========================
             // Subscriptions
             // =========================
@@ -153,8 +147,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
                 subscriptions.forEach((subscription) => subscription());
             };
 
-            subscriptions.push(TTYGContextService.onSelectedChatChanged(onChatChanged));
-            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION_SUCCESSFUL, onQuestionAnswer));
+            subscriptions.push(TTYGContextService.onSelectedChatUpdated(onChatChanged));
             // TODO: add subscription for agent changed, and call "onSelectedAgentChanged"
 
             // Deregister the watcher when the scope/directive is destroyed
@@ -163,10 +156,6 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
             // =========================
             // Initialization
             // =========================
-
-            function init() {
-            }
-
             init();
         }
     };

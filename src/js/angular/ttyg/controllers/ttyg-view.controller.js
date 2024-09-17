@@ -9,7 +9,6 @@ import {TTYGEventName} from "../services/ttyg-context.service";
 import {AGENTS_FILTER_ALL_KEY} from "../services/constants";
 import {AgentListFilterModel} from "../../models/ttyg/agents";
 import {ChatsListModel} from "../../models/ttyg/chats";
-import {cloneDeep} from "lodash";
 
 const modules = [
     'toastr',
@@ -180,13 +179,6 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     // Private functions
     // =========================
 
-    const scrollToEnd = () => {
-        $timeout(() => {
-            const element = document.getElementById("messages-scrollable");
-            element.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
-        }, 0);
-    };
-
     const persist = () => {
         const persisted = LocalStorageAdapter.get('ttyg') || {};
         persisted[$repositories.getActiveRepository()] = {
@@ -240,8 +232,6 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
                     $scope.askSettings = s.askSettings;
                 }
             }
-
-            scrollToEnd();
         }
     };
 
@@ -271,11 +261,15 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
      * @param {ChatItemModel} chatItem
      */
     const onAskQuestion = (chatItem) => {
-        const item = cloneDeep(chatItem);
         TTYGService.askQuestion(chatItem)
             .then((answer) => {
-                item.answer = answer;
-                TTYGContextService.emit(TTYGEventName.ASK_QUESTION_SUCCESSFUL, item);
+                const selectedChat = TTYGContextService.getSelectedChat();
+                if (selectedChat && selectedChat.id === chatItem.chatId) {
+                    const item = chatItem;
+                    item.answer = answer;
+                    selectedChat.chatHistory.appendItem(item);
+                    TTYGContextService.updateSelectedChat(selectedChat);
+                }
             })
             .catch((error) => toastr.error(getError(error, 0, 100)));
     };
@@ -397,6 +391,17 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
         // reload the agents list
     };
 
+    const onSelectedChatChanged = (selectedChat) => {
+        if (selectedChat) {
+            TTYGService.getConversation(selectedChat.id)
+                .then((chat) => {
+                    TTYGContextService.updateSelectedChat(chat);
+                });
+        } else {
+            TTYGContextService.updateSelectedChat(selectedChat);
+        }
+    };
+
     const setRepositoryIds = () => {
         const currentRepository = $repositories.getActiveRepository();
         // TODO: this should be refreshed automatically when the repositories change
@@ -425,6 +430,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     }
 
     subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler));
+    subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
     subscriptions.push(TTYGContextService.onChatsListChanged(onChatsChanged));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_CHAT, onCreateNewChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.RENAME_CHAT, onRenameChat));
