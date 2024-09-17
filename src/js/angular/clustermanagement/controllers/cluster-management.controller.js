@@ -40,7 +40,7 @@ ClusterManagementCtrl.$inject = ['$scope', '$http', '$q', 'toastr', '$repositori
     '$window', '$interval', 'ModalService', '$timeout', 'ClusterRestService', '$location', '$translate', 'RemoteLocationsService', '$rootScope', 'ClusterViewContextService'];
 
 function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibModal, $sce, $jwtAuth,
-    $window, $interval, ModalService, $timeout, ClusterRestService, $location, $translate, RemoteLocationsService, $rootScope, ClusterViewContextService) {
+                               $window, $interval, ModalService, $timeout, ClusterRestService, $location, $translate, RemoteLocationsService, $rootScope, ClusterViewContextService) {
 
     // =========================
     // Private variables
@@ -49,6 +49,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     const DELETED_ON_NODE_MESSAGE = 'Cluster was deleted on this node.';
     const ADD_ACTION = "ADD_ACTION";
     const DELETE_ACTION = "DELETE_ACTION";
+    const REPLACE_ACTION = "REPLACE_ACTION";
     let updateRequest;
     const subscriptions = [];
 
@@ -110,12 +111,13 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
         });
 
         modalInstance.result.then((cluster) => {
-            return handleNodesUpdate(cluster.getAddToCluster(), ADD_ACTION)
-                .then(() => handleNodesUpdate(cluster.getDeleteFromCluster(), DELETE_ACTION));
-        })
-            .finally(() => {
-                updateCluster(true);
-            });
+            const actions = cluster.getUpdateActions();
+            return handleNodesUpdate(actions.add, ADD_ACTION)
+                .then(() => handleNodesUpdate(actions.delete, DELETE_ACTION))
+                .then(() => handleNodesUpdate(actions.replace, REPLACE_ACTION));
+        }).finally(() => {
+            updateCluster(true);
+        });
     };
 
     $scope.getClusterConfiguration = () => {
@@ -270,7 +272,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
                     $scope.setLoader(false);
                     updateCluster(true);
                 });
-           }).finally(() => getLocationsWithRpcAddresses());
+        }).finally(() => getLocationsWithRpcAddresses());
     };
 
     $scope.showRemoveNodesFromClusterDialog = () => {
@@ -482,44 +484,62 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     };
 
     function handleNodesUpdate(nodes, action) {
-        if (nodes.length === 0) {
+        if (shouldSkipNodesUpdate(nodes)) {
             return Promise.resolve();
         }
 
-        const loaderMessage = $translate.instant(
-            action === ADD_ACTION
-                ? 'cluster_management.cluster_page.add_nodes_loader'
-                : 'cluster_management.cluster_page.remove_nodes_loader'
-        );
+        const {loaderMessage, clusterAction, successMessage, failMessageTitle} = getActionProperties(action, nodes);
         $scope.setLoader(true, loaderMessage);
+        const nodesRpcAddress = action === REPLACE_ACTION ? [] : nodes.map((node) => action === ADD_ACTION ? node.rpcAddress : node.address);
+        return executeClusterAction(clusterAction, nodesRpcAddress, successMessage, failMessageTitle)
+            .finally(() => {
+                if (action !== REPLACE_ACTION) {
+                    getLocationsWithRpcAddresses();
+                }
+                $scope.setLoader(false);
+            });
+    }
 
-        const nodesRpcAddress = nodes.map((node) => action === ADD_ACTION ? node.rpcAddress : node.address);
-        const clusterAction = action === ADD_ACTION ? ClusterRestService.addNodesToCluster : ClusterRestService.removeNodesFromCluster;
+    function shouldSkipNodesUpdate(nodes) {
+        return (!nodes ||
+            (Array.isArray(nodes) && nodes.length === 0) ||
+            (nodes.oldNodes && nodes.newNodes && nodes.oldNodes.length === 0 && nodes.newNodes.length === 0));
+    }
 
+    function getActionProperties(action, nodes) {
+        let loaderMessage; let clusterAction; let successMessage; let failMessageTitle;
+
+        if (action === ADD_ACTION) {
+            loaderMessage = $translate.instant('cluster_management.cluster_page.add_nodes_loader');
+            clusterAction = (nodesRpcAddress) => ClusterRestService.addNodesToCluster(nodesRpcAddress);
+            successMessage = $translate.instant('cluster_management.cluster_page.notifications.add_nodes_success');
+            failMessageTitle = $translate.instant('cluster_management.cluster_page.notifications.add_nodes_fail');
+        } else if (action === DELETE_ACTION) {
+            loaderMessage = $translate.instant('cluster_management.cluster_page.remove_nodes_loader');
+            clusterAction = (nodesRpcAddress) => ClusterRestService.removeNodesFromCluster(nodesRpcAddress);
+            successMessage = $translate.instant('cluster_management.cluster_page.notifications.remove_nodes_success');
+            failMessageTitle = $translate.instant('cluster_management.cluster_page.notifications.remove_nodes_fail');
+        } else if (action === REPLACE_ACTION) {
+            loaderMessage = $translate.instant('cluster_management.cluster_page.replace_nodes_loader');
+            const newNodesRpcAddress = nodes.newNodes.map((node) => node.rpcAddress);
+            const oldNodesRpcAddress = nodes.oldNodes.map((node) => node.rpcAddress);
+            const payload = {addNodes: newNodesRpcAddress, removeNodes: oldNodesRpcAddress};
+            clusterAction = () => ClusterRestService.replaceNodesInCluster(payload);
+            successMessage = $translate.instant('cluster_management.cluster_page.notifications.replace_nodes_success');
+            failMessageTitle = $translate.instant('cluster_management.cluster_page.notifications.replace_nodes_fail');
+        }
+        return {loaderMessage, clusterAction, successMessage, failMessageTitle};
+    }
+
+    function executeClusterAction(clusterAction, nodesRpcAddress, successMessage, failMessageTitle) {
         return clusterAction(nodesRpcAddress)
             .then(() => {
-                const successMessage = $translate.instant(
-                    action === ADD_ACTION
-                        ? 'cluster_management.cluster_page.notifications.add_nodes_success'
-                        : 'cluster_management.cluster_page.notifications.remove_nodes_success'
-                );
                 onAddRemoveSuccess(successMessage);
                 return Promise.resolve();
             })
             .catch((error) => {
-                const failMessageTitle = $translate.instant(
-                    action === ADD_ACTION
-                        ? 'cluster_management.cluster_page.notifications.add_nodes_fail'
-                        : 'cluster_management.cluster_page.notifications.remove_nodes_fail'
-                );
                 handleErrors(error.data, error.status, failMessageTitle);
                 return Promise.reject(error);
-            })
-            .finally(() => {
-                if (action === ADD_ACTION) {
-                    getLocationsWithRpcAddresses();
-                }
-                $scope.setLoader(false);
             });
     }
 
