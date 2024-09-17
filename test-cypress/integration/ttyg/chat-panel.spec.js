@@ -5,19 +5,10 @@ import {ChatPanelSteps} from "../../steps/ttyg/chat-panel-steps";
 
 describe('Ttyg ChatPanel', () => {
 
-    let repositoryId;
-
     beforeEach(() => {
         // Create an actual repository to prevent stubbing all background requests that are not related to the ttyg view
-        repositoryId = 'starwars';
-        cy.createRepository({id: repositoryId});
-
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
         cy.presetRepository('starwars');
-    });
-
-    afterEach(() => {
-        cy.deleteRepository(repositoryId);
     });
 
     it('Should load chat history and show answer actions', () => {
