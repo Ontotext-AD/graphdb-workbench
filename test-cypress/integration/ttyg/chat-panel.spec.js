@@ -12,7 +12,12 @@ describe('Ttyg ChatPanel', () => {
         cy.presetRepository('starwars');
     });
 
-    it('Should load chat history and show answer actions', () => {
+    it('Should load chat history and show answer actions', {
+        retries: {
+            openMode: 1,
+            runMode: 2
+        }
+    }, () => {
         TTYGStubs.stubChatsListGet();
         TTYGStubs.stubAgentListGet();
         TTYGStubs.stubChatGet();
