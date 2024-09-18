@@ -285,6 +285,7 @@
         },
         "agent": {
             "loading_agents": "Chargement des agents...",
+            "deleting_agent": "Suppression de l'agent...",
             "deleted_repository": "Dépôt supprimé",
             "create_agent_modal": {
                 "title": "Créer un agent",
@@ -381,6 +382,10 @@
                         "label": "Annuler"
                     }
                 }
+            },
+            "delete_agent_modal": {
+                "title": "Supprimer l'agent",
+                "body": "Voulez-vous vraiment supprimer l'agent <b>{{agentName}}</b>?"
             },
             "fat_btn": {
                 "create_agent": {

@@ -92,6 +92,14 @@ export class TtygRestServiceFakeBackend {
         return Promise.resolve({data: agent});
     }
 
+    deleteAgent(id) {
+        agentsList = agentsList.filter((agent) => agent.id !== id);
+        return Promise.resolve();
+        // return new Promise((resolve) => {
+        //     setTimeout(() => resolve(), 5000);
+        // });
+    }
+
     // Simulate an HTTP error
     simulateHttpError() {
         return Promise.reject({
@@ -128,7 +136,7 @@ const conversationList = [
     }
 ];
 
-const agentsList = [
+let agentsList = [
     {
         "id": "asst_gAPcrHQQ9ZIxD5eXWH2BNFfo",
         "name": "agent-1",

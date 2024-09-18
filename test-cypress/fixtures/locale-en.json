@@ -284,6 +284,7 @@
         },
         "agent": {
             "loading_agents": "Loading agents...",
+            "deleting_agent": "Deleting agent...",
             "deleted_repository": "Deleted repository",
             "create_agent_modal": {
                 "title": "Create Agent",
@@ -380,6 +381,10 @@
                         "label": "Cancel"
                     }
                 }
+            },
+            "delete_agent_modal": {
+                "title": "Delete Agent",
+                "body": "Do you really want to delete the agent <b>{{agentName}}</b>?"
             },
             "fat_btn": {
                 "create_agent": {

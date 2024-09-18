@@ -1,3 +1,6 @@
+import {decodeHTML} from "../../../../app";
+import {TTYGEventName} from "../services/ttyg-context.service";
+
 const modules = [
 ];
 
@@ -26,6 +29,12 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
              * @type {{key: string, label: string}|undefined}
              */
             $scope.selectedAgentsFilter = undefined;
+
+            /**
+             * An event instance holding the agent to be deleted and if the progres is ongoing.
+             * @type {agentId: string, inProgress: boolean}
+             */
+            $scope.deletingAgent = undefined;
 
             // =========================
             // Private variables
@@ -56,15 +65,9 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
              * @param {AgentModel} agent
              */
             $scope.onDeleteAgent = (agent) => {
-                console.log('Delete agent', agent);
-            };
-
-            /**
-             * Handles the selection of an agent.
-             * @param {AgentModel} agent
-             */
-            $scope.onSelectAgent = (agent) => {
-                console.log('Select agent', agent);
+                const title = $translate.instant('ttyg.agent.delete_agent_modal.title');
+                const confirmDeleteMessage = decodeHTML($translate.instant('ttyg.agent.delete_agent_modal.body', {agentName: agent.name}));
+                ModalService.openConfirmation(title, confirmDeleteMessage, () => TTYGContextService.emit(TTYGEventName.DELETE_AGENT, agent));
             };
 
             /**
@@ -86,6 +89,14 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
                 $scope.onAgentsFilterChange($scope.selectedAgentsFilter);
             };
 
+            /**
+             * Handles the progress of deletion of an agent.
+             * @param {{agentId: string, inProgress: boolean}} event
+             */
+            const onDeletingAgent = (event) => {
+                $scope.deletingAgent = event;
+            };
+
             // =========================
             // Subscriptions
             // =========================
@@ -97,6 +108,7 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
             };
 
             subscriptions.push($scope.$watch('agentListFilterModel', updateSelectedAgentsFilter));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETING_AGENT, onDeletingAgent));
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);

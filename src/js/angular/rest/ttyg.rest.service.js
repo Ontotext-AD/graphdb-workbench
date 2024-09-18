@@ -1,5 +1,4 @@
 import {TtygRestServiceFakeBackend} from "./ttyg.rest.service.fake.backend";
-import {agentModelMapper} from "../ttyg/services/agents.mapper";
 
 angular
     .module('graphdb.framework.rest.ttyg.service', [])
@@ -129,6 +128,18 @@ function TTYGRestService($http) {
         return $http.post(AGENTS_ENDPOINT, agent);
     };
 
+    /**
+     * Deletes an agent by its ID from the backend.
+     * @param {string} id
+     * @return {Promise<void>}
+     */
+    const deleteAgent = (id) => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.deleteAgent(id);
+        }
+        return $http.delete(`${AGENTS_ENDPOINT}/${id}`);
+    };
+
     return {
         getConversation,
         renameConversation,
@@ -138,6 +149,7 @@ function TTYGRestService($http) {
         deleteConversation,
         createConversation,
         getAgents,
-        createAgent
+        createAgent,
+        deleteAgent
     };
 }

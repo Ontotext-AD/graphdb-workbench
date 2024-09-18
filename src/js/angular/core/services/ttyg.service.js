@@ -99,6 +99,15 @@ function TTYGService(TTYGRestService) {
             });
     };
 
+    /**
+     * Deletes an agent by its ID.
+     * @param {string} id
+     * @return {Promise<void>|*}
+     */
+    const deleteAgent = (id) => {
+        return TTYGRestService.deleteAgent(id);
+    };
+
     return {
         getConversation,
         renameConversation,
@@ -108,6 +117,7 @@ function TTYGService(TTYGRestService) {
         deleteConversation,
         createConversation,
         getAgents,
-        createAgent
+        createAgent,
+        deleteAgent
     };
 }
