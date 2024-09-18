@@ -39,6 +39,10 @@ export class ModalDialogSteps {
         ModalDialogSteps.getConfirmButton().click();
     }
 
+    static confirm() {
+        ModalDialogSteps.getConfirmButton().click();
+    }
+
     static getCancelButton() {
         return ModalDialogSteps.getDialogFooter().find('.cancel-btn');
     }

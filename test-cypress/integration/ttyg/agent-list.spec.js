@@ -16,7 +16,7 @@ describe('TTYG agent list', () => {
         // When the ttyg page is loaded
         // Then I should see the agent list with agents filtered by the current repository
         TTYGViewSteps.getAgentsPanel().should('be.visible');
-        verifyAgentList([
+        TTYGViewSteps.verifyAgentList([
             {name: 'agent-1', repositoryId: 'starwars'},
             {name: 'Databricks-general-unbiased', repositoryId: 'starwars'}
         ]);
@@ -53,13 +53,13 @@ describe('TTYG agent list', () => {
         // When I filter the agents by repository 'biomarkers'
         TTYGViewSteps.filterAgentsByRepository('biomarkers');
         // Then I should see only 1 agent
-        verifyAgentList([
+        TTYGViewSteps.verifyAgentList([
             {name: 'Databricks-biomarkers', repositoryId: 'biomarkers'}
         ]);
         // When I select the 'All' filter
         TTYGViewSteps.filterAgentsByRepository('All');
         // Then I should see all agents
-        verifyAgentList([
+        TTYGViewSteps.verifyAgentList([
             {name: 'agent-1', repositoryId: 'starwars'},
             {name: 'agent-2', repositoryId: 'Deleted repository'},
             {name: 'Databricks-general-unbiased', repositoryId: 'starwars'},
@@ -67,16 +67,3 @@ describe('TTYG agent list', () => {
         ]);
     });
 });
-
-/**
- * @param {*[]} data
- */
-function verifyAgentList(data) {
-    TTYGViewSteps.getAgents().should('have.length', data.length);
-    data.forEach((agent, index) => {
-        TTYGViewSteps.getAgent(index).within(() => {
-           cy.get('.agent-name').should('contain', agent.name);
-           cy.get('.related-repository').should('contain', agent.repositoryId);
-        });
-    });
-}

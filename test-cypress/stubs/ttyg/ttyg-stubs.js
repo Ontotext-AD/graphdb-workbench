@@ -1,4 +1,6 @@
-export class TTYGStubs {
+import {Stubs} from "../stubs";
+
+export class TTYGStubs extends Stubs {
     static stubChatsListGet(fixture = '/ttyg/chats/get-chat-list.json', delay = 0) {
         cy.intercept('/rest/chat/conversations', {
             method: 'GET',
@@ -92,5 +94,13 @@ export class TTYGStubs {
             fixture: '/ttyg/agent/create-agent.json',
             statusCode: 200
         }).as('create-agent');
+    }
+
+    static stubAgentDelete(delay = 0) {
+        cy.intercept('/rest/chat/agents/**', {
+            method: 'DELETE',
+            statusCode: 200,
+            delay: delay
+        }).as('delete-agent');
     }
 }

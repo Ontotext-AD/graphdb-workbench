@@ -165,7 +165,8 @@ function TTYGContextService(EventEmitterService) {
         onSelectedChatChanged,
         updateSelectedChat,
         onSelectedChatUpdated,
-        updateAgents
+        updateAgents,
+        getAgents
     };
 }
 
@@ -185,12 +186,14 @@ export const TTYGEventName = {
     CHAT_EXPORT_SUCCESSFUL: 'chatExportSuccess',
     CHAT_EXPORT_FAILURE: 'chatExportFailure',
     CHAT_LIST_UPDATED: 'chatListUpdated',
-    AGENT_LIST_UPDATED: 'agentListUpdated',
-    CREATE_AGENT: 'createAgent',
     ASK_QUESTION: 'askQuestion',
     LOAD_CHAT: 'loadChat',
     LOAD_CHAT_SUCCESSFUL: 'loadChatSuccess',
     LOAD_CHAT_FAILURE: 'loadChatFailure',
+    AGENT_LIST_UPDATED: 'agentListUpdated',
+    CREATE_AGENT: 'createAgent',
+    DELETE_AGENT: 'deleteAgent',
+    DELETING_AGENT: 'deletingAgent',
 
     /**
      * Emitting the "copyAnswer" event will trigger an action to copy an answer to the clipboard.

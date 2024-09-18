@@ -189,4 +189,30 @@ export class TTYGViewSteps {
     static getChat() {
         return this.getChatPanel().find('.chat');
     }
+
+    static openAgentActionMenu(index) {
+        this.getAgent(index).realHover().find('.open-agent-actions-btn').click();
+    }
+
+    static triggerDeleteAgentActionMenu(index) {
+        this.openAgentActionMenu(index);
+        this.getAgent(index).find('.agent-actions-menu .delete-agent-btn').click();
+    }
+
+    static getAgentDeletingLoader() {
+        return this.getAgentsPanel().find('.agent-list .deleting-agent-loader');
+    }
+
+    /**
+     * @param {*[]} data
+     */
+    static verifyAgentList(data) {
+        this.getAgents().should('have.length', data.length);
+        data.forEach((agent, index) => {
+            this.getAgent(index).within(() => {
+                cy.get('.agent-name').should('contain', agent.name);
+                cy.get('.related-repository').should('contain', agent.repositoryId);
+            });
+        });
+    }
 }

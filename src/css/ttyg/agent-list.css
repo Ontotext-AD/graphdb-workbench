@@ -89,3 +89,13 @@
 .agent-list-component .agent-item:not(.edited):hover .open-agent-actions-btn {
     display: block;
 }
+
+.agent-list-component .deleting-agent-loader {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 60px;
+    padding: 6px 8px;
+    background-color: #00000066;
+    color: #fff;
+}
