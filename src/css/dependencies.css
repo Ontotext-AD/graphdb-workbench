@@ -127,7 +127,6 @@ div.tooltip {
     background-color: hsla(var(--tertiary-color-hsl), 0.30) !important;
 }
 
-
 .rdf-list > li > div:first-child {
     border-bottom: 0.5pt solid #e8e3e3;
     border-left:1pt solid #e8e3e3;
@@ -135,15 +134,17 @@ div.tooltip {
     border-top:0.5pt solid #e8e3e3;
 }
 
-
-
 .rdf-list li {
     border-bottom: inherit !important;
     background-color: inherit !important;
 }
 
-.rdf-list li:nth-child(even) div.deps-data {
+#wb-dependencies-classInClasses li .even-row:not(.active)  {
     background-color: #f8f7f7;
+}
+
+#wb-dependencies-classInClasses li .odd-row:not(.active)  {
+    background-color: #ffffff;
 }
 
 .rdf-list li div {
