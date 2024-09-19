@@ -924,6 +924,7 @@
         "enable.for.auto.start": "Enable this option to start the import when you click the Import button. If it is disabled the import will be added to the list but not started automatically.",
         "auto.start": "Start import automatically",
         "data.from.url": "Import RDF data from URL",
+        "format": "Format",
         "supported.url.with.rdf": "URL with RDF data. Supported formats are",
         "invalid.url": "Not valid url!",
         "gz.zip": ", as well as their .gz versions and .zip archives",

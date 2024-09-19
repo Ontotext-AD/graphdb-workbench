@@ -933,6 +933,7 @@
         "enable.for.auto.start": "Activez cette option pour lancer l'importation lorsque vous cliquez sur le bouton Importer. Si elle est désactivée, l'importation sera ajoutée à la liste mais ne démarrera pas automatiquement.",
         "auto.start": "Démarrer l'importation automatiquement",
         "data.from.url": "Importer des données RDF depuis une URL",
+        "format": "Format",
         "supported.url.with.rdf": "URL avec des données RDF. Les formats supportés sont",
         "invalid.url": "URL non valide!",
         "gz.zip": "ainsi que leurs versions .gz et leurs archives .zip.",
