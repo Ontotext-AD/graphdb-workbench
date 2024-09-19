@@ -177,7 +177,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
 
             subscriptions.push(TTYGContextService.onSelectedChatUpdated(onChatChanged));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_SUCCESSFUL, onCopied));
-            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_SUCCESSFUL, onCopyFailed));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_FAILURE, onCopyFailed));
             // TODO: add subscription for agent changed, and call "onSelectedAgentChanged"
 
             // Deregister the watcher when the scope/directive is destroyed
