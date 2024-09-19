@@ -4,10 +4,6 @@
     flex-flow: row wrap;
 }
 
-.modal-footer .btn-group .import-format-dropdown-btn {
-    margin-right: 0;
-}
-
 .upload-buttons .btn {
     display: flex;
     height: 100%;
