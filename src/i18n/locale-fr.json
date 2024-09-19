@@ -268,7 +268,19 @@
         "chat_panel": {
             "hint": "Parlez à votre graphe – posez simplement une question !\nPour le moment, cela fonctionne mieux si vous demandez en anglais, désolé !",
             "btn": {
-                "aks": "Demander"
+                "ask": {
+                    "label": "Demander"
+                },
+                "regenerate": {
+                    "tooltip": "Régénérer"
+                },
+                "copy": {
+                    "tooltip": "Copier"
+                }
+            },
+            "messages": {
+                "answer_copy_successful": "La réponse a été copiée avec succès dans le presse-papiers.",
+                "answer_copy_failed": "Échec de la copie de la réponse dans le presse-papiers."
             }
         },
         "agent": {

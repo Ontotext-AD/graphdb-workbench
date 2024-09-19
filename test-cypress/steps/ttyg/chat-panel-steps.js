@@ -27,4 +27,11 @@ export class ChatPanelSteps {
     static getChatDetailQuestionElement(index = 0) {
         return ChatPanelSteps.getChatDetailElement(index).find('.question');
     }
+
+    static regenerateQuestion(index) {
+        ChatPanelSteps.getChatDetailActions(index).find('.regenerate-question-btn').scrollIntoView().click();
+    }
+    static copyAnswer(index) {
+        ChatPanelSteps.getChatDetailActions(index).find('.copy-answer-btn').click({force: true});
+    }
 }

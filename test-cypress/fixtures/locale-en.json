@@ -267,7 +267,19 @@
         "chat_panel": {
             "hint": "Talk to your graph – simply ask a question!",
             "btn": {
-                "aks": "Ask"
+                "ask": {
+                    "label": "Ask"
+                },
+                "regenerate": {
+                    "tooltip": "Regenerate"
+                },
+                "copy": {
+                    "tooltip": "Copy"
+                }
+            },
+            "messages": {
+                "answer_copy_successful": "The answer was successfully copied to the clipboard.",
+                "answer_copy_failed": "Failed to copy the answer to the clipboard."
             }
         },
         "agent": {

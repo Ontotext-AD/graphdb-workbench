@@ -22,8 +22,16 @@
                         {{ chatItem.answer.message }}
                     </div>
                     <div class="actions" ng-class="{'hidden-actions': !$last}">
-                        <i class="fa-regular fa-arrows-rotate"></i>
-                        <i class="fa-regular fa-clone"></i>
+                        <button class="btn btn-link secondary btn-sm regenerate-question-btn"
+                                ng-click="regenerateQuestion(chatItem)"
+                                gdb-tooltip="{{'ttyg.chat_panel.btn.regenerate.tooltip' | translate}}">
+                            <i class="fa-regular fa-arrows-rotate"></i>
+                        </button>
+                        <button class="btn btn-link secondary btn-sm copy-answer-btn"
+                                ng-click="copyAnswerToClipboard(chatItem)"
+                                gdb-tooltip="{{'ttyg.chat_panel.btn.copy.tooltip' | translate}}">
+                            <i class="fa-regular fa-clone"></i>
+                        </button>
                         <i class="fa-regular fa-wand-magic-sparkles"></i>
                     </div>
                 </div>
@@ -34,7 +42,7 @@
         <input class="form-control question-input" ng-model="chatItem.question.message" type="text">
         <button class="btn btn-primary ask-button" ng-disabled="!chatItem.question.message" ng-click="ask()">
             <i class="fa-regular fa-arrow-turn-left-up"></i>
-            {{ 'ttyg.chat_panel.btn.aks' | translate }}
+            {{ 'ttyg.chat_panel.btn.ask.label ' | translate }}
         </button>
     </div>
 </div>

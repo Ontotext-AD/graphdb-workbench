@@ -477,6 +477,14 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
         }
     };
 
+    const onCopiedAnswerToClipboard = (chatItem) => {
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(chatItem.answer.message)
+                .then(() => TTYGContextService.emit(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_SUCCESSFUL))
+                .catch(() => TTYGContextService.emit(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_FAILURE));
+        }
+    };
+
     const updateLabels = () => {
         labels.filter_all = $translate.instant('ttyg.agent.btn.filter.all');
         // recreate the repository list to trigger the update in the view
@@ -510,6 +518,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_AGENT, $scope.onCreateAgent));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION, onAskQuestion));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.LOAD_CHAT, loadChats));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD, onCopiedAnswerToClipboard));
     subscriptions.push($rootScope.$on('$translateChangeSuccess', updateLabels));
     $scope.$on('$destroy', removeAllListeners);
 

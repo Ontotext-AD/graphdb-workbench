@@ -190,5 +190,20 @@ export const TTYGEventName = {
     ASK_QUESTION: 'askQuestion',
     LOAD_CHAT: 'loadChat',
     LOAD_CHAT_SUCCESSFUL: 'loadChatSuccess',
-    LOAD_CHAT_FAILURE: 'loadChatFailure'
+    LOAD_CHAT_FAILURE: 'loadChatFailure',
+
+    /**
+     * Emitting the "copyAnswer" event will trigger an action to copy an answer to the clipboard.
+     */
+    COPY_ANSWER_TO_CLIPBOARD: 'copyAnswerToClipboard',
+
+    /**
+     * This event will be emitted when an answer is successfully copied to the clipboard.
+     */
+    COPY_ANSWER_TO_CLIPBOARD_SUCCESSFUL: 'copyAnswerToClipboardSuccess',
+
+    /**
+     * This event will be emitted when copying an answer to the clipboard fails.
+     */
+    COPY_ANSWER_TO_CLIPBOARD_FAILURE: 'copyAnswerToClipboardFailure'
 };

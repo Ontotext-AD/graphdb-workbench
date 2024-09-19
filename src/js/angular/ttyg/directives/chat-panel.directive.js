@@ -8,7 +8,7 @@ angular
     .module('graphdb.framework.ttyg.directives.chat-panel', modules)
     .directive('chatPanel', ChatPanelComponent);
 
-ChatPanelComponent.$inject = ['toastr', '$translate', 'TTYGContextService', 'TTYGService'];
+ChatPanelComponent.$inject = ['toastr', '$translate', 'TTYGContextService'];
 
 /**
  * @ngdoc directive
@@ -24,7 +24,7 @@ ChatPanelComponent.$inject = ['toastr', '$translate', 'TTYGContextService', 'TTY
  * @example
  * <chat-panel></chat-panel>
  */
-function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService) {
+function ChatPanelComponent(toastr, $translate, TTYGContextService) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/chat-panel.html',
@@ -64,8 +64,28 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
                 if (!$scope.chatItem.chatId) {
                     createNewChat();
                 } else {
-                    askQuestion();
+                    askQuestion($scope.chatItem);
                 }
+            };
+
+            /**
+             * Regenerates the answer for the provided chat item.
+             *
+             * @param {ChatItemModel} chatItem - The chat item that contains the question to be regenerated.
+             */
+            $scope.regenerateQuestion = (chatItem) => {
+                const regenerateChatItem = getEmptyChatItem();
+                regenerateChatItem.setQuestionMessage(chatItem.getQuestionMessage());
+                askQuestion(regenerateChatItem);
+            };
+
+            /**
+             * Copies the answer of the provided chat item to the clipboard.
+             *
+             * @param {ChatItemModel} chatItem - The chat item containing the answer to be copied to the clipboard.
+             */
+            $scope.copyAnswerToClipboard = (chatItem) => {
+                TTYGContextService.emit(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD, chatItem);
             };
 
             // =========================
@@ -80,8 +100,8 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT, $scope.chatItem);
             };
 
-            const askQuestion = () => {
-                TTYGContextService.emit(TTYGEventName.ASK_QUESTION, $scope.chatItem);
+            const askQuestion = (chatItem) => {
+                TTYGContextService.emit(TTYGEventName.ASK_QUESTION, chatItem);
             };
 
             /**
@@ -101,6 +121,14 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
                     setupNewChatItem();
                 }
                 scrollToBottom();
+            };
+
+            const onCopied = () => {
+                toastr.success($translate.instant('ttyg.chat_panel.messages.answer_copy_successful'));
+            };
+
+            const onCopyFailed = () => {
+                toastr.success($translate.instant('ttyg.chat_panel.messages.answer_copy_failed'));
             };
 
             /**
@@ -148,6 +176,8 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, TTYGService)
             };
 
             subscriptions.push(TTYGContextService.onSelectedChatUpdated(onChatChanged));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_SUCCESSFUL, onCopied));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_FAILURE, onCopyFailed));
             // TODO: add subscription for agent changed, and call "onSelectedAgentChanged"
 
             // Deregister the watcher when the scope/directive is destroyed
