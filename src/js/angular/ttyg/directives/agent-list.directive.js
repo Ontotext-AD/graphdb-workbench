@@ -25,6 +25,12 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
             // =========================
 
             /**
+             * Selected agent.
+             * @type {AgentModel|undefined}
+             */
+            $scope.selectedAgent = undefined;
+
+            /**
              * The selected agents filter.
              * @type {{key: string, label: string}|undefined}
              */
@@ -97,6 +103,14 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
                 $scope.deletingAgent = event;
             };
 
+            /**
+             * Handles the selection of an agent.
+             * @param {AgentModel} agent
+             */
+            const onSelectedAgentChanged = (agent) => {
+                $scope.selectedAgent = agent;
+            };
+
             // =========================
             // Subscriptions
             // =========================
@@ -109,6 +123,7 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
 
             subscriptions.push($scope.$watch('agentListFilterModel', updateSelectedAgentsFilter));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETING_AGENT, onDeletingAgent));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_SELECTED, onSelectedAgentChanged));
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);

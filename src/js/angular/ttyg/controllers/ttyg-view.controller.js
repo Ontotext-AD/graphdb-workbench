@@ -1,6 +1,7 @@
 import 'angular/ttyg/directives/chat-list.directive';
 import 'angular/ttyg/directives/chat-panel.directive';
 import 'angular/ttyg/directives/agent-list.directive';
+import 'angular/ttyg/directives/agent-select-menu.directive';
 import 'angular/ttyg/directives/no-agents-view.directive';
 import 'angular/ttyg/controllers/agent-settings-modal.controller';
 import 'angular/core/services/ttyg.service';
@@ -21,6 +22,7 @@ const modules = [
     'graphdb.framework.ttyg.directives.chat-list',
     'graphdb.framework.ttyg.directives.chat-panel',
     'graphdb.framework.ttyg.directives.agent-list',
+    'graphdb.framework.ttyg.directives.agent-select-menu',
     'graphdb.framework.ttyg.directives.no-agents-view',
     'graphdb.framework.ttyg.controllers.agent-settings-modal'
 ];
@@ -223,6 +225,14 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
             (data) => {
                 console.log(`create agent rejected`, data);
             });
+    };
+
+    /**
+     * Handles the agent edit operation.
+     * @param {AgentModel} agent
+     */
+    $scope.onEditAgent = (agent) => {
+        console.log(`Edit agent`, agent);
     };
 
     // =========================
@@ -451,11 +461,18 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
             });
     };
 
+    /**
+     * Handles the deletion of an agent by calling the service and reloading the agents list.
+     * @param {AgentModel} agent - the agent to be deleted.
+     */
     const onDeleteAgent = (agent) => {
         TTYGContextService.emit(TTYGEventName.DELETING_AGENT, {agentId: agent.id, inProgress: true});
         TTYGService.deleteAgent(agent.id)
             .then(() => {
                 return reloadAgents();
+            })
+            .then(() => {
+                TTYGContextService.emit(TTYGEventName.AGENT_DELETED, agent);
             })
             .catch((error) => {
                 toastr.error(getError(error, 0, 100));
@@ -532,6 +549,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION, onAskQuestion));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.LOAD_CHAT, loadChats));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_AGENT, $scope.onCreateAgent));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.EDIT_AGENT, $scope.onEditAgent));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_AGENT, onDeleteAgent));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD, onCopiedAnswerToClipboard));
     subscriptions.push($rootScope.$on('$translateChangeSuccess', updateLabels));

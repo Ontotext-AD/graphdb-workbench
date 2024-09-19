@@ -387,6 +387,14 @@
                 "title": "Supprimer l'agent",
                 "body": "Voulez-vous vraiment supprimer l'agent <b>{{agentName}}</b>?"
             },
+            "agent_select_menu": {
+                "no_selection_label": "Sélectionner un agent",
+                "deleted_agent": "[agent supprimé]",
+                "configure_agent_modal": {
+                    "title": "Configurer l'agent",
+                    "body": "L'agent sélectionné n'a aucun référentiel configuré. Voulez-vous le configurer maintenant?"
+                }
+            },
             "fat_btn": {
                 "create_agent": {
                     "label": "Créez votre premier agent"

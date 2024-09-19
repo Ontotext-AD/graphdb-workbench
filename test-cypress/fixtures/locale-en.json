@@ -386,6 +386,14 @@
                 "title": "Delete Agent",
                 "body": "Do you really want to delete the agent <b>{{agentName}}</b>?"
             },
+            "agent_select_menu": {
+                "no_selection_label": "Select an agent",
+                "deleted_agent": "[deleted agent]",
+                "configure_agent_modal": {
+                    "title": "Configure Agent",
+                    "body": "Selected agent has no repository configured. Do you want to configure it now?"
+                }
+            },
             "fat_btn": {
                 "create_agent": {
                     "label": "Create your first agent"

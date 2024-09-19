@@ -5,10 +5,14 @@ export class SelectMenuOptionsModel {
     /**
      * @param {string} label
      * @param {string} value
+     * @param {boolean} selected
+     * @param {*} data - Additional data that can be used to store any other information.
      */
-    constructor({label, value}) {
+    constructor({label, value, selected = false, data = {}}) {
         this._label = label;
         this._value = value;
+        this._selected = selected;
+        this._data = data;
     }
 
     get label() {
@@ -25,6 +29,22 @@ export class SelectMenuOptionsModel {
 
     set value(value) {
         this._value = value;
+    }
+
+    get selected() {
+        return this._selected;
+    }
+
+    set selected(value) {
+        this._selected = value;
+    }
+
+    get data() {
+        return this._data;
+    }
+
+    set data(value) {
+        this._data = value;
     }
 }
 

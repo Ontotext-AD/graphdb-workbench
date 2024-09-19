@@ -1,0 +1,30 @@
+<link href="css/ttyg/agent-select-menu.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+<div class="btn-group agent-select-menu" uib-dropdown>
+    <button type="button" class="btn dropdown-toggle-btn" uib-dropdown-toggle
+            ng-attr-title="{{selectedAgent && !selectedAgent.isDeleted && selectedAgent.repositoryId ? (selectedAgent.name + ' &middot; ' + selectedAgent.repositoryId) : null}}">
+        <span ng-if="!selectedAgent">{{'ttyg.agent.agent_select_menu.no_selection_label' | translate}}</span>
+        <span ng-if="selectedAgent && !selectedAgent.isDeleted && selectedAgent.repositoryId">{{selectedAgent.name}} &middot; {{selectedAgent.repositoryId}}</span>
+        <span ng-if="selectedAgent && !selectedAgent.isDeleted && !selectedAgent.repositoryId">
+            {{selectedAgent.name}} &middot; <i class="fa-regular fa-triangle-exclamation text-warning"></i>
+                {{'ttyg.agent.deleted_repository' | translate}}
+        </span>
+        <span ng-if="selectedAgent && selectedAgent.isDeleted" class="text-warning">
+            <i class="fa-regular fa-triangle-exclamation"></i>
+            {{'ttyg.agent.agent_select_menu.deleted_agent' | translate}}
+        </span>
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+        <li ng-repeat="agentOption in agentOptionsList" role="menuitem" ng-class="{'selected': agentOption.selected}">
+            <a href="#" ng-if="agentOption.data.agent.repositoryId" ng-click="onAgentSelected(agentOption)">
+                {{agentOption.label}} &middot; {{agentOption.data.agent.repositoryId}}
+            </a>
+            <a href="#" ng-if="!agentOption.data.agent.repositoryId" ng-click="onAgentWithoutRepoSelected(agentOption)">
+                {{agentOption.label}} &middot
+                <i class="fa-regular fa-triangle-exclamation text-warning"></i>
+                {{'ttyg.agent.deleted_repository' | translate}}
+            </a>
+        </li>
+    </ul>
+</div>

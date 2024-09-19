@@ -39,15 +39,15 @@
     justify-content: space-between;
 }
 
+.agent-list-component .agent-item.selected {
+    background-color: #efefef;
+}
+
 .agent-list-component .agent-item .agent-info {
     width: 92%;
 }
 
-.agent-list-component .agent-item.selected {
-    background-color: #ddd;
-}
-
-.agent-list-component .agent-item:not(.edited):hover {
+.agent-list-component .agent-item:hover {
     background-color: #ddd;
     cursor: pointer;
 }

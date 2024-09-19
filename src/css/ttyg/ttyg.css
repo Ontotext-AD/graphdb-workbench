@@ -124,6 +124,10 @@ chat area
     flex-direction: column;
 }
 
+.ttyg-view agent-select-menu {
+    width: 300px;
+}
+
 .selected-chat-panel {
     height: 100%;
 }

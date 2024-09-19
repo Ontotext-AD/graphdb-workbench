@@ -191,9 +191,37 @@ export const TTYGEventName = {
     LOAD_CHAT_SUCCESSFUL: 'loadChatSuccess',
     LOAD_CHAT_FAILURE: 'loadChatFailure',
     AGENT_LIST_UPDATED: 'agentListUpdated',
+
+    /**
+     * This event will be emitted when the create agent process is triggered but before the agent create request is sent.
+     */
     CREATE_AGENT: 'createAgent',
+
+    /**
+     * This event will be emitted when an agent needs to be edited.
+     */
+    EDIT_AGENT: 'editAgent',
+
+    /**
+     * This event will be emitted when the delete agent process is triggered but before the agent delete request is sent.
+     */
     DELETE_AGENT: 'deleteAgent',
+
+    /**
+     * This event will be emitted when the agent was successfully deleted.
+     */
+    AGENT_DELETED: 'agentDeleted',
+
+    /**
+     * This event will be emitted when the agent delete request is in progress. The payload will contain the agent ID
+     * and a boolean indicating if the deletion is in progress.
+     */
     DELETING_AGENT: 'deletingAgent',
+
+    /**
+     * This event will be emitted when an agent is selected by the user through the UI.
+     */
+    AGENT_SELECTED: 'agentSelected',
 
     /**
      * Emitting the "copyAnswer" event will trigger an action to copy an answer to the clipboard.
