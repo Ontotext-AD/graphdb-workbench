@@ -288,44 +288,54 @@ export class ClusterViewModel {
         this._clusterModel = ClusterModel.fromJSON(clusterModel);
         this._addToCluster = new Map();
         this._deleteFromCluster = new Map();
-        this._currentNodesCount = -1;
+        this._currentNodesCount = 0;
         this.MINIMUM_NODES_REQUIRED = 2;
     }
 
+
     /**
      * Gets nodes attached to the cluster.
-     * @return {ClusterNodeViewModel[]} The list of attached nodes in view model format.
+     * @return {Node[]} The list of attached nodes in view model format.
      */
     getAttached() {
         const nodes = this._clusterModel.nodes;
-        const locations = this._clusterModel.locations;
-        const locationMap = new Map(locations.map((location) => [location.endpoint, location]));
-
-        const resultNodes = nodes.map((node) => {
-            const location = locationMap.get(node.endpoint);
-            return ClusterUtil.toNodeLocationViewModel(location, node);
-        })
+        const resultNodes = nodes
             .concat(Array.from(this._addToCluster.values()))
-            .filter((node) => !this._deleteFromCluster.has(node.endpoint));
+            .filter((node) => {
+                return !this._deleteFromCluster.has(node.endpoint);
+            });
 
         this._currentNodesCount = resultNodes.length;
         return resultNodes;
     }
 
     /**
-     * Gets available locations that can be added to the cluster.
-     * @return {ClusterNodeViewModel[]} The list of available locations in view model format.
+     * Get the view model of the current cluster.
+     * @return {ClusterItemViewModel[]} The view model of the cluster.
      */
-    getAvailable() {
+    getViewModel() {
+        return this.getAttached().map((location) => new ClusterItemViewModel(location));
+    }
+
+    /**
+     * Gets available locations that can be added to the cluster.
+     * @param {boolean} includeDeleted include deleted nodes
+     * @return {Location[]} The list of available locations in view model format.
+     */
+    getAvailable(includeDeleted = false) {
         const nodes = this._clusterModel.nodes;
         const locations = this._clusterModel.locations;
 
-        return locations.filter((location) =>
-            !this.isPresentInList(nodes, location.endpoint) &&
-            location.isAvailable &&
-            !this._deleteFromCluster.has(location.endpoint) &&
-            !this._addToCluster.has(location.endpoint)
-        ).map((location) => ClusterUtil.toNodeLocationViewModel(location));
+        return locations
+            .filter((location) => {
+                const isNotInNodeList = !this.isPresentInList(nodes, location.endpoint);
+                const isAvailable = location.isAvailable;
+                const isNotInAddList = !this._addToCluster.has(location.endpoint);
+
+                const isNotDeleted = includeDeleted ? true : !this._deleteFromCluster.has(location.endpoint);
+
+                return isNotInNodeList && isAvailable && isNotDeleted && isNotInAddList;
+            });
     }
 
     /**
@@ -339,15 +349,28 @@ export class ClusterViewModel {
 
     /**
      * Adds a location to the cluster, ensuring uniqueness by endpoint.
-     * @param {Node|Object} location - The location in JSON to add.
+     * @param {Location} location - The location in JSON to add.
      */
     addToCluster(location) {
         const endpoint = location.endpoint;
+
+        if (location.endpoint) {
+            this.addToLocations(location);
+        }
+
         if (this._deleteFromCluster.has(endpoint)) {
-            // Remove from delete list if it's being added back
             this._deleteFromCluster.delete(endpoint);
         } else {
-            this._addToCluster.set(endpoint, Location.fromJSON(location));
+            this._addToCluster.set(endpoint, location);
+        }
+    }
+
+    addToLocations(location) {
+        const index = ClusterUtil.findIndexByEndpoint(this._clusterModel.locations, location.endpoint);
+        if (index === -1) {
+            this._clusterModel.locations.push(location);
+        } else {
+            this._clusterModel.locations.splice(index, 1);
         }
     }
 
@@ -362,7 +385,6 @@ export class ClusterViewModel {
     deleteFromCluster(itemToDelete) {
         const endpoint = itemToDelete.endpoint;
         if (this._addToCluster.has(endpoint)) {
-            // Remove from add map if it's there
             this._addToCluster.delete(endpoint);
         } else {
             this._deleteFromCluster.set(endpoint, itemToDelete);
@@ -378,25 +400,11 @@ export class ClusterViewModel {
     }
 
     getUpdateActions() {
-        const add = Array.from(this._addToCluster.values());
-        const del = Array.from(this._deleteFromCluster.values());
-        const addCount = add.length;
-        const deleteCount = del.length;
-        const minCount = Math.min(addCount, deleteCount);
-
-        const newNodes = add.slice(0, minCount);
-        const oldNodes = del.slice(0, minCount);
-
-        const nodesToAdd = add.slice(minCount);
-        const nodesToDelete = del.slice(minCount);
-
+        const addNodes = Array.from(this._addToCluster.values()).map((node) => node.rpcAddress || node.address);
+        const removeNodes = Array.from(this._deleteFromCluster.values()).map((node) => node.rpcAddress || node.address);
         return {
-            replace: {
-                newNodes,
-                oldNodes
-            },
-            add: nodesToAdd,
-            delete: nodesToDelete
+            addNodes,
+            removeNodes
         };
     }
 
@@ -458,50 +466,93 @@ export class ClusterViewModel {
 
 }
 
-/**
- * Represents the view model for a cluster node.
- */
-export class ClusterNodeViewModel {
-    /**
-     * @param {string} address - The node's address.
-     * @param {string} nodeState - The state of the node.
-     * @param {number} term - The term of the node.
-     * @param {string} syncStatus - The synchronization status of the node.
-     * @param {number} lastLogTerm - The last log term.
-     * @param {number} lastLogIndex - The last log index.
-     * @param {string} recoveryStatus - The recovery status.
-     * @param {string} endpoint - The endpoint for the node or location.
-     * @param {string} rpcAddress - The RPC address for the node or location.
-     * @param {boolean} isLocal - Whether the node or location is local.
-     * @param {string} error - Error state, if any.
-     * @param {boolean} isAvailable - Whether the node or location is available.
-     */
-    constructor({
-                    address = null,
-                    nodeState = null,
-                    term = null,
-                    syncStatus = null,
-                    lastLogTerm = null,
-                    lastLogIndex = null,
-                    recoveryStatus = null,
-                    endpoint = null,
-                    rpcAddress = null,
-                    isLocal = null,
-                    error = null,
-                    isAvailable = null
-                } = {}) {
-        this.address = address;
-        this.nodeState = nodeState;
-        this.term = term;
-        this.syncStatus = syncStatus;
-        this.lastLogTerm = lastLogTerm;
-        this.lastLogIndex = lastLogIndex;
-        this.recoveryStatus = recoveryStatus;
-        this.endpoint = endpoint;
-        this.rpcAddress = rpcAddress;
-        this.isLocal = isLocal;
-        this.error = error;
-        this.isAvailable = isAvailable;
+export class ClusterItemViewModel {
+    constructor(item) {
+        this._item = item;
+        this._endpoint = item.endpoint;
+        this._isDeleted = false;
+        this._isReplacedBy = undefined;
+    }
+
+    getEndPoint() {
+        return this._item.endpoint;
+    }
+
+    getAddress() {
+        if (this._item._address !== undefined) {
+            return this._item._address;
+        } else if (this._item.rpcAddress !== undefined) {
+            return this._item.rpcAddress;
+        }
+        return null;
+    }
+
+    isNode() {
+        return this._item._address !== undefined;
+    }
+
+    getNodeState() {
+        if (this.isNode()) {
+            return this._item._nodeState;
+        }
+        return null;
+    }
+
+    getIsAvailable() {
+        if (!this.isNode()) {
+            return this._item.isAvailable;
+        }
+        return null;
+    }
+
+    getTerm() {
+        if (this.isNode()) {
+            return this._item._term;
+        }
+        return null;
+    }
+
+    getSyncStatus() {
+        if (this.isNode()) {
+            return this._item._syncStatus;
+        }
+        return null;
+    }
+
+    getIsLocal() {
+        if (!this.isNode()) {
+            return this._item.isLocal;
+        }
+        return null;
+    }
+
+    get item() {
+        return this._item;
+    }
+
+    get endpoint() {
+        return this._endpoint;
+    }
+
+    set endpoint(value) {
+        return this._endpoint = value;
+    }
+
+    get isDeleted() {
+        return this._isDeleted;
+    }
+
+    set isDeleted(value) {
+        this._isDeleted = value;
+    }
+
+
+    get isReplacedBy() {
+        return this._isReplacedBy;
+    }
+
+    set isReplacedBy(value) {
+        this._isReplacedBy = value;
     }
 }
 
@@ -509,29 +560,6 @@ export class ClusterNodeViewModel {
  * Utility class for transforming cluster data to a view model format.
  */
 class ClusterUtil {
-    /**
-     * Converts location and node data into a ClusterNodeViewModel instance.
-     * @param {Location} location - The location data.
-     * @param {Node} [node] - The node data (optional).
-     * @return {ClusterNodeViewModel} The view model instance.
-     */
-    static toNodeLocationViewModel(location, node) {
-        return new ClusterNodeViewModel({
-            address: node ? node.address : null,
-            nodeState: node ? node.nodeState : null,
-            term: node ? node.term : null,
-            syncStatus: node ? node.syncStatus : null,
-            lastLogTerm: node ? node.lastLogTerm : null,
-            lastLogIndex: node ? node.lastLogIndex : null,
-            recoveryStatus: node ? node.recoveryStatus : null,
-            endpoint: node ? node.endpoint : location ? location.endpoint : null,
-            rpcAddress: node ? node.address : location ? location.rpcAddress : null,
-            isLocal: location ? location.isLocal : null,
-            error: location ? location.error : null,
-            isAvailable: location ? location.isAvailable : null
-        });
-    }
-
     /**
      * Checks if an item is present in a list by comparing the endpoint.
      * @param {Node[]|Location[]} list - The array of nodes or locations.
