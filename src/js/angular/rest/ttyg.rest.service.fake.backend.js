@@ -96,6 +96,12 @@ export class TtygRestServiceFakeBackend {
         return Promise.resolve({data: agent});
     }
 
+    editAgent(editedAgent) {
+        agentsList = agentsList.map((agent) => agent.id === editedAgent.id ? editedAgent : agent);
+
+        return Promise.resolve({data: editedAgent});
+    }
+
     deleteAgent(id) {
         agentsList = agentsList.filter((agent) => agent.id !== id);
         return Promise.resolve();

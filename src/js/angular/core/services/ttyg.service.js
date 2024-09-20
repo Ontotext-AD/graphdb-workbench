@@ -110,6 +110,18 @@ function TTYGService(TTYGRestService) {
     };
 
     /**
+     * Updates the agent with the provided <code>payload</code>.
+     * @param {*} payload - The data for updating the agent.
+     * @return {Promise<AgentModel>} A promise that resolves to the updated agent.
+     */
+    const editAgent = (payload) => {
+        return TTYGRestService.editAgent(payload)
+            .then((response) => {
+                return agentModelMapper(response.data);
+            });
+    };
+
+    /**
      * Deletes an agent by its ID.
      * @param {string} id
      * @return {Promise<void>|*}
@@ -129,6 +141,7 @@ function TTYGService(TTYGRestService) {
         getAgents,
         getAgent,
         createAgent,
+        editAgent,
         deleteAgent
     };
 }
