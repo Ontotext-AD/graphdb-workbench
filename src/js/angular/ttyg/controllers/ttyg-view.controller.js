@@ -533,7 +533,9 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     const setCurrentAgent = () => {
         const agentId = TTYGStorageService.getAgentId();
         TTYGService.getAgent(agentId).then((agent) => {
-            TTYGContextService.selectAgent(agent);
+            if (agent) {
+                TTYGContextService.selectAgent(agent);
+            }
         });
     };
 
