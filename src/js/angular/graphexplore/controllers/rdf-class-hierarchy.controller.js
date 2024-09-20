@@ -222,43 +222,42 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
 
         $timeout(function () {
             $scope.$broadcast('reCalcViewDimensions');
+
+            const sliderElement = document.getElementById('rzslider');
+            let lastTimeWheel = 0;
+
+            sliderElement.addEventListener('wheel', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // at least 100ms must have passed since last time we updated
+                const now = new Date().getTime();
+                if (now - lastTimeWheel > 100) {
+                    lastTimeWheel = now;
+                } else {
+                    return;
+                }
+
+                let newValue = $scope.classCountSlider.value;
+                const stepSize = $scope.classCountSlider.options.step || 1;
+                if (e.deltaY <= -1) {
+                    newValue += stepSize;
+                } else if (e.deltaY >= 1) {
+                    newValue -= stepSize;
+                }
+
+                newValue = Math.max($scope.classCountSlider.options.floor, Math.min($scope.classCountSlider.options.ceil, newValue));
+
+                if (newValue !== $scope.classCountSlider.value) {
+                    $scope.$apply(function () {
+                        $scope.classCountSlider.value = newValue;
+                        $timeout(setNewCurrentSliderValue, 100, true);
+                    });
+                }
+            });
         }, 200);
 
-        // set this before the slider is moved by the user as we need it
         setNewCurrentSliderValue();
-
-        // Modify the slider with the mouse wheel
-        let lastTimeWheel = 0;
-        $('rzslider').on('wheel', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            // at least 100ms must have passed since last time we updated
-            const now = new Date().getTime();
-            if (now - lastTimeWheel > 100) {
-                lastTimeWheel = now;
-            } else {
-                return;
-            }
-
-            e = e.originalEvent;
-
-            let newValue = $scope.classCountSlider.value;
-            if (e.deltaY <= -1) {
-                newValue += 1;
-            } else if (e.deltaY >= 1) {
-                newValue -= 1;
-            }
-
-            if (newValue !== $scope.classCountSlider.value
-                && newValue >= $scope.classCountSlider.options.floor
-                && newValue <= $scope.classCountSlider.options.ceil) {
-                $scope.$apply(function () {
-                    $scope.classCountSlider.value = newValue;
-                    $timeout(setNewCurrentSliderValue, 100, true);
-                });
-            }
-        });
     }
 
     function setNewCurrentSliderValue() {
