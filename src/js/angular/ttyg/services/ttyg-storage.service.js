@@ -43,7 +43,9 @@ function TTYGStorageService(localStorageAdapter, LSKeys) {
      */
     function getAgentId() {
         const settings = getTtygSettings();
-        return settings.agent.id;
+        if (settings.agent) {
+            return settings.agent.id;
+        }
     }
 
     return {
