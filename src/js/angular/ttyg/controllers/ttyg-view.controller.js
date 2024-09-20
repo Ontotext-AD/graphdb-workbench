@@ -541,11 +541,11 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler));
     subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
     subscriptions.push(TTYGContextService.onChatsListChanged(onChatsChanged));
+    subscriptions.push(TTYGContextService.subscribe(TTYGContextService.onAgentsListChanged(onAgentListChanged)));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_CHAT, onCreateNewChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.RENAME_CHAT, onRenameChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_CHAT, onDeleteChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CHAT_EXPORT, onExportChat));
-    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_LIST_UPDATED, onAgentListChanged));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION, onAskQuestion));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.LOAD_CHAT, loadChats));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_AGENT, $scope.onCreateAgent));

@@ -123,7 +123,7 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
 
             subscriptions.push($scope.$watch('agentListFilterModel', updateSelectedAgentsFilter));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETING_AGENT, onDeletingAgent));
-            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_SELECTED, onSelectedAgentChanged));
+            subscriptions.push(TTYGContextService.onSelectedAgentChanged(onSelectedAgentChanged));
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);

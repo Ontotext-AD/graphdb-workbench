@@ -45,7 +45,7 @@ function AgentSelectMenuComponent(TTYGContextService, $translate, $sce, ModalSer
             $scope.onAgentSelected = (selectedAgentOption) => {
                 markAsSelected(selectedAgentOption);
                 $scope.selectedAgent = selectedAgentOption.data.agent;
-                TTYGContextService.emit(TTYGEventName.AGENT_SELECTED, selectedAgentOption.data.agent);
+                TTYGContextService.selectAgent(selectedAgentOption.data.agent);
             };
 
             /**
@@ -60,7 +60,7 @@ function AgentSelectMenuComponent(TTYGContextService, $translate, $sce, ModalSer
                 );
                 markAsSelected(selectedAgentOption);
                 $scope.selectedAgent = selectedAgentOption.data.agent;
-                TTYGContextService.emit(TTYGEventName.AGENT_SELECTED, selectedAgentOption.data.agent);
+                TTYGContextService.selectAgent(selectedAgentOption.data.agent);
             };
 
             // =========================
@@ -88,6 +88,7 @@ function AgentSelectMenuComponent(TTYGContextService, $translate, $sce, ModalSer
             const onAgentDeleted = (deletedAgent) => {
                 if ($scope.selectedAgent && $scope.selectedAgent.id === deletedAgent.id) {
                     $scope.selectedAgent.isDeleted = true;
+                    TTYGContextService.selectAgent($scope.selectedAgent);
                 }
             };
 
@@ -113,7 +114,7 @@ function AgentSelectMenuComponent(TTYGContextService, $translate, $sce, ModalSer
                 subscriptions.forEach((subscription) => subscription());
             };
 
-            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_LIST_UPDATED, onAgentListChanged));
+            subscriptions.push(TTYGContextService.subscribe(TTYGContextService.onAgentsListChanged(onAgentListChanged)));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_DELETED, onAgentDeleted));
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);
