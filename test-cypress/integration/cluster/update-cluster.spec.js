@@ -62,11 +62,12 @@ describe('Cluster management', () => {
         ClusterListSteps.clickOkButton();
         cy.wait('@response-add-nodes').then((interception) => {
             expect(interception.request.body).to.deep.equal({
-                "nodes": nodesToAdd
+                "addNodes": nodesToAdd,
+                "removeNodes": []
             });
         });
         // And expect success message to be displayed.
-        ApplicationSteps.getSuccessNotifications().contains('Nodes added successfully');
+        ApplicationSteps.getSuccessNotifications().contains('Nodes replaced successfully');
     });
 
     it('Should be able to delete', () => {
@@ -106,11 +107,12 @@ describe('Cluster management', () => {
         ClusterListSteps.clickOkButton();
         cy.wait('@response-delete-nodes').then((interception) => {
             expect(interception.request.body).to.deep.equal({
-                "nodes": nodesToDelete
+                "addNodes": [],
+                "removeNodes": nodesToDelete
             });
         });
         // And expect success message to be displayed.
-        ApplicationSteps.getSuccessNotifications().contains('Nodes removed successfully');
+        ApplicationSteps.getSuccessNotifications().contains('Nodes replaced successfully');
     });
 
     it('Should be able to add 1 and delete 2 nodes', () => {
@@ -183,21 +185,14 @@ describe('Cluster management', () => {
                     "pc-desktop:7303"
                 ],
                 "removeNodes": [
-                    "pc-desktop:7301"
-                ]
-            });
-        });
-
-        cy.wait('@response-delete-nodes').then((interception) => {
-            expect(interception.request.body).to.deep.equal({
-                "nodes": [
+                    "pc-desktop:7301",
                     "pc-desktop:7302"
                 ]
             });
         });
+
         // And expect success message to be displayed.
         ApplicationSteps.getSuccessNotifications().contains('Nodes replaced successfully');
-        ApplicationSteps.getSuccessNotifications().contains('Nodes removed successfully');
     });
 
     it('Should only replace in cluster when I delete 1, add 1 and replace 1 node', () => {
