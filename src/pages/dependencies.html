@@ -127,7 +127,11 @@
                 <ul ui-scroll-viewport id="wb-dependencies-classInClasses" class="rdf-list row">
                     <li ui-scroll="class in datasource" adapter="adapterContainer.adapter" class="item class-row col-sm-12 row"
                         padding="li">
-                        <div class="col-sm-11 row deps-data" ng-class="{'active': (isClassByNameShown(class.name))}">
+                            <div class="col-sm-11 row deps-data" ng-class="{
+                            'active': isClassByNameShown(class.name),
+                            'even-row': $index % 2 === 0,
+                            'odd-row': $index % 2 !== 0
+                            }">
                             <div class="col-sm-8 col-md-8 deps-class-name">
                                 {{class.name}}
                             </div>
@@ -138,11 +142,11 @@
                             <div class="related-arrow col-sm-1 col-md-1" gdb-tooltip="{{'related.classes.label' | translate}}"
                                  ng-click="showClass(class)">
                                 <em class="fa fa-exchange pointer related-classes"
-                                   ng-show="class.inConnectionsSum > 0 && class.outConnectionsSum > 0"></em>
+                                    ng-show="class.inConnectionsSum > 0 && class.outConnectionsSum > 0"></em>
                                 <em class="fa fa-long-arrow-left related-classes"
-                                   ng-show="class.inConnectionsSum > 0 && class.outConnectionsSum == 0"></em>
+                                    ng-show="class.inConnectionsSum > 0 && class.outConnectionsSum == 0"></em>
                                 <em class="fa fa-long-arrow-right related-classes"
-                                   ng-show="class.inConnectionsSum == 0 && class.outConnectionsSum > 0 "></em>
+                                    ng-show="class.inConnectionsSum == 0 && class.outConnectionsSum > 0 "></em>
                             </div>
                         </div>
                         <div class="plusminus col-sm-1 col-md-1">
