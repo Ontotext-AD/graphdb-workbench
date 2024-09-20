@@ -23,17 +23,15 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
             $scope.editedNodeIndex = undefined;
             $scope.allSuggestions = [];
             $scope.loader = false;
-            $scope.cluster = undefined;
-            $scope.clusterView = undefined;
             $scope.errors = [];
-            $scope.newLocation = '';
+            $scope.addNewLocation = false;
 
             /**
              * Adds a new (empty) node to the list of cluster nodes for editing.
              */
             $scope.addNode = () => {
-                $scope.clusterView.push({});
-                $scope.editedNodeIndex = $scope.clusterView.length - 1;
+                $scope.addNewLocation = true;
+                $scope.newLocation = new Location();
             };
 
             /**
@@ -80,51 +78,69 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
              * @param {string} endpoint - The endpoint of the node to save.
              */
             $scope.saveNode = (endpoint) => {
-                const deleteList = $scope.cluster.getDeleteFromCluster();
-                const availableList = $scope.cluster.getAvailable();
-
-                if (handlePendingReplacementStrategy([...availableList, ...deleteList], endpoint)) {
-                    return;
+                const availableList = ClusterContextService.getAvailable(true);
+                const node = ClusterContextService.findByEndpoint(availableList, endpoint);
+                const oldNode = ClusterContextService.getPendingReplace();
+                if (node) {
+                    if (oldNode) {
+                        ClusterContextService.replace(oldNode, node);
+                    } else {
+                        ClusterContextService.addLocation(node);
+                    }
+                    $scope.editedNodeIndex = undefined;
+                    $scope.addNewLocation = false;
+                } else {
+                    const newLocation = RemoteLocationsService.createNewLocation(endpoint);
+                    $scope.setLoader(true, $translate.instant('cluster_management.update_cluster_group_dialog.messages.connecting_node'));
+                    addNewLocation(newLocation)
+                        .then((location) => {
+                            if (oldNode) {
+                                ClusterContextService.replace(oldNode, location);
+                            } else {
+                                ClusterContextService.addLocation(location);
+                            }
+                        })
+                        .catch((error) => {
+                            handleErrors(error.data, error.status);
+                            ClusterContextService.emitUpdateClusterView();
+                        })
+                        .finally(() => {
+                            $scope.editedNodeIndex = undefined;
+                            $scope.setLoader(false);
+                            $scope.addNewLocation = false;
+                        });
                 }
-                if (handleRestoreDeletedNodeStrategy(deleteList, endpoint)) {
-                    return;
-                }
-                if (handleAddAvailableNodeStrategy(availableList, endpoint)) {
-                    return;
-                }
-                handleCreateNewLocationStrategy(endpoint);
             };
 
             /**
              * Deletes a node from the cluster.
              * @param {number} index - The index of the node to delete.
-             * @param {Node|Location} item - The item to delete.
+             * @param {ClusterNodeViewModel} itemView - The item to delete.
              * @return {void}
              */
-            $scope.deleteNode = (index, item) => {
+            $scope.deleteNode = (index, itemView) => {
                 ModalService.openSimpleModal({
                     title: $translate.instant('location.confirm.detach'),
-                    message: $translate.instant('location.confirm.detach.warning', {uri: item.endpoint}),
+                    message: $translate.instant('location.confirm.detach.warning', {uri: itemView.endpoint}),
                     warning: true
-                }).result.then(() =>{
-                    ClusterContextService.deleteFromCluster(item);
+                }).result.then(() => {
+                    ClusterContextService.deleteFromCluster(itemView.item);
                 });
             };
 
             /**
              * Initiates the replacement of a node in the cluster view.
              * @param {number} index - The zero-based index of the node in the cluster view array that is to be replaced.
-             * @param {Node|Location} item - The node object representing the current state of the node to be replaced.
+             * @param {ClusterNodeViewModel} itemView - The node object representing the current state of the node to be replaced.
              * @return {void}
              */
-            $scope.replaceNode = (index, item) => {
+            $scope.replaceNode = (index, itemView) => {
                 ModalService.openSimpleModal({
                     title: $translate.instant('location.change.confirm'),
                     message: $translate.instant('location.change.confirm.warning'),
                     warning: true
-                }).result.then(() =>{
-                    ClusterContextService.setPendingReplace(item);
-                    $scope.clusterView.splice(index, 1, {});
+                }).result.then(() => {
+                    ClusterContextService.setPendingReplace(itemView.item);
                     $scope.editedNodeIndex = index;
                 });
             };
@@ -136,8 +152,9 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
              */
             $scope.isClusterConfigurationValid = () => {
                 const isNotInEditMode = $scope.editedNodeIndex === undefined;
-                const hasValidNodes = $scope.cluster.hasValidNodesCount();
-                return isNotInEditMode && hasValidNodes;
+                const isNotInAddMode = $scope.addNewLocation === false;
+                const hasValidNodes = ClusterContextService.hasValidNodesCount();
+                return isNotInEditMode && isNotInAddMode && hasValidNodes;
             };
 
             /**
@@ -160,6 +177,7 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
 
             $scope.cancel = () => {
                 $scope.editedNodeIndex = undefined;
+                $scope.addNewLocation = false;
                 ClusterContextService.emitUpdateClusterView();
             };
 
@@ -167,17 +185,9 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
             // Private functions
             // =========================
             const onClusterViewChanged = (cluster) => {
-                $scope.cluster = cluster;
-                $scope.clusterView = cluster.getAttached();
-                $scope.allSuggestions = cluster.getAvailableNodeEndpoints();
-
-                // If there are no cluster nodes, add the local node
-                if ($scope.clusterView.length === 0) {
-                    const localNode = $scope.locations.find((location) => location.isLocal);
-                    if (localNode) {
-                        $scope.saveNode(localNode.endpoint, 0);
-                    }
-                }
+                $scope.viewModel = ClusterContextService.getViewModel();
+                $scope.allSuggestions = ClusterContextService.getAvailableNodeEndpoints();
+                $scope.canDeleteNode = ClusterContextService.canDeleteNode();
             };
 
             const handleErrors = (data, status) => {
@@ -191,74 +201,6 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
                     failMessage = data.message || data;
                 }
                 toastr.error(failMessage, $translate.instant('cluster_management.cluster_page.notifications.create_failed'));
-            };
-
-            const handlePendingReplacementStrategy = (knownNodesList, endpoint) => {
-                const oldNode = ClusterContextService.getPendingReplace();
-                if (oldNode) {
-                    const node = $scope.cluster.findByEndpoint(knownNodesList, endpoint);
-                    if (node) {
-                        ClusterContextService.replace(oldNode, node);
-                        $scope.editedNodeIndex = undefined;
-                    } else {
-                        const newLocation = RemoteLocationsService.createNewLocation(endpoint);
-                        $scope.setLoader(true, $translate.instant('cluster_management.update_cluster_group_dialog.messages.connecting_node'));
-                        addNewLocation(newLocation)
-                            .then((location) => {
-                                ClusterContextService.replace(oldNode, location);
-                            })
-                            .catch((error) => {
-                                handleErrors(error.data, error.status);
-                                ClusterContextService.emitUpdateClusterView();
-                            })
-                            .finally(() => {
-                                $scope.editedNodeIndex = undefined;
-                                $scope.setLoader(false);
-                            });
-                    }
-                    return true;
-                }
-                return false;
-            };
-
-            const handleRestoreDeletedNodeStrategy = (deleteList, endpoint) => {
-                const deletedNode = $scope.cluster.findByEndpoint(deleteList, endpoint);
-                if (deletedNode) {
-                    ClusterContextService.restoreNode(deletedNode);
-                    $scope.editedNodeIndex = undefined;
-                    return true;
-                }
-                return false;
-            };
-
-            const handleAddAvailableNodeStrategy = (availableList, endpoint) => {
-                const node = $scope.cluster.findByEndpoint(availableList, endpoint);
-                if (node) {
-                    ClusterContextService.addLocation(node);
-                    $scope.editedNodeIndex = undefined;
-                    return true;
-                }
-                return false;
-            };
-
-            const handleCreateNewLocationStrategy = (endpoint) => {
-                const newLocation = RemoteLocationsService.createNewLocation(endpoint);
-                $scope.setLoader(true, $translate.instant('cluster_management.update_cluster_group_dialog.messages.connecting_node'));
-
-                addNewLocation(newLocation)
-                    .then((location) => {
-                        ClusterContextService.addLocation(Location.fromJSON(location));
-                    })
-                    .catch((error) => {
-                    handleErrors(error.data, error.status);
-                    ClusterContextService.emitUpdateClusterView();
-                })
-                    .finally(() => {
-                        $scope.editedNodeIndex = undefined;
-                        $scope.setLoader(false);
-                    });
-
-                return true;
             };
 
             const addNewLocation = (newLocation) => {
@@ -277,7 +219,6 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
                     });
             };
 
-
             // =========================
             // Subscriptions
             // =========================
@@ -289,7 +230,7 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
                 subscriptions.forEach((subscription) => subscription());
             }
 
-            const unwatch = $scope.$watchGroup(['clusterNodes', 'editedNodeIndex'], function (newValues, oldValues) {
+            const unwatch = $scope.$watchGroup(['clusterNodes', 'editedNodeIndex', 'addNewLocation'], function (newValues, oldValues) {
                 const isValid = $scope.isClusterConfigurationValid();
                 ClusterContextService.updateClusterValidity(isValid);
             });
