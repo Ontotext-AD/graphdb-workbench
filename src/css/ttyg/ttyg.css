@@ -86,6 +86,7 @@ left sidebar
 right sidebar
 */
 .ttyg-view .right-sidebar {
+    /* Lower the default z-index of the slide panel to prevent the repository menu overlapping by the panel. */
     z-index: 997;
 }
 

@@ -6,6 +6,7 @@ import 'angular/ttyg/directives/no-agents-view.directive';
 import 'angular/ttyg/controllers/agent-settings-modal.controller';
 import 'angular/core/services/ttyg.service';
 import 'angular/ttyg/services/ttyg-context.service';
+import 'angular/ttyg/services/ttyg-storage.service';
 import {TTYGEventName} from "../services/ttyg-context.service";
 import {AGENTS_FILTER_ALL_KEY} from "../services/constants";
 import {AgentListFilterModel} from "../../models/ttyg/agents";
@@ -19,6 +20,7 @@ const modules = [
     'graphdb.framework.utils.localstorageadapter',
     'graphdb.framework.core.services.ttyg-service',
     'graphdb.framework.ttyg.services.ttygcontext',
+    'graphdb.framework.ttyg.services.ttygstorage',
     'graphdb.framework.ttyg.directives.chat-list',
     'graphdb.framework.ttyg.directives.chat-panel',
     'graphdb.framework.ttyg.directives.agent-list',
@@ -31,9 +33,9 @@ angular
     .module('graphdb.framework.ttyg.controllers.ttyg-view', modules)
     .controller('TTYGViewCtrl', TTYGViewCtrl);
 
-TTYGViewCtrl.$inject = ['$rootScope', '$scope', '$http', '$timeout', '$translate', '$uibModal', '$repositories', 'toastr', 'ModalService', 'LocalStorageAdapter', 'TTYGService', 'TTYGContextService'];
+TTYGViewCtrl.$inject = ['$rootScope', '$scope', '$http', '$timeout', '$translate', '$uibModal', '$repositories', 'toastr', 'ModalService', 'LocalStorageAdapter', 'TTYGService', 'TTYGContextService', 'TTYGStorageService'];
 
-function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal, $repositories, toastr, ModalService, LocalStorageAdapter, TTYGService, TTYGContextService) {
+function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal, $repositories, toastr, ModalService, LocalStorageAdapter, TTYGService, TTYGContextService, TTYGStorageService) {
 
     // =========================
     // Private variables
@@ -239,6 +241,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     // Private functions
     // =========================
 
+    // TODO: remove
     const persist = () => {
         const persisted = LocalStorageAdapter.get('ttyg') || {};
         persisted[$repositories.getActiveRepository()] = {
@@ -516,6 +519,24 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
         }
     };
 
+    /**
+     * Handles the selection of an agent..
+     * @param {AgentModel} agent
+     */
+    const onAgentSelected = (agent) => {
+        TTYGStorageService.saveAgent(agent);
+    };
+
+    /**
+     * Loads an agent using the agent ID stored in the local storage and selects it.
+     */
+    const setCurrentAgent = () => {
+        const agentId = TTYGStorageService.getAgentId();
+        TTYGService.getAgent(agentId).then((agent) => {
+            TTYGContextService.selectAgent(agent);
+        });
+    };
+
     const updateLabels = () => {
         labels.filter_all = $translate.instant('ttyg.agent.btn.filter.all');
         // recreate the repository list to trigger the update in the view
@@ -551,6 +572,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_AGENT, $scope.onCreateAgent));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.EDIT_AGENT, $scope.onEditAgent));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_AGENT, onDeleteAgent));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_SELECTED, onAgentSelected));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD, onCopiedAnswerToClipboard));
     subscriptions.push($rootScope.$on('$translateChangeSuccess', updateLabels));
     $scope.$on('$destroy', removeAllListeners);
@@ -560,6 +582,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     // =========================
 
     function onInit() {
+        setCurrentAgent();
         buildRepositoryList();
         loadAgents().then(() => {
             buildAgentsFilterModel();

@@ -117,6 +117,18 @@ function TTYGRestService($http) {
     };
 
     /**
+     * Fetches an agent by its ID from the backend.
+     * @param {string} id
+     * @return {Promise<Awaited<{data: T}>>|*}
+     */
+    const getAgent = (id) => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.getAgent(id);
+        }
+        return $http.get(`${AGENTS_ENDPOINT}/${id}`);
+    };
+
+    /**
      * Creates a new agent in the backend.
      * @param {*} agent
      * @return {Promise<AgentModel>}
@@ -149,6 +161,7 @@ function TTYGRestService($http) {
         deleteConversation,
         createConversation,
         getAgents,
+        getAgent,
         createAgent,
         deleteAgent
     };

@@ -40,12 +40,12 @@ function AgentSelectMenuComponent(TTYGContextService, $translate, $sce, ModalSer
 
             /**
              * Handles the agent selection.
-             * @param {SelectMenuOptionsModel} selectedAgentOption
+             * @param {AgentModel} agent
              */
-            $scope.onAgentSelected = (selectedAgentOption) => {
-                markAsSelected(selectedAgentOption);
-                $scope.selectedAgent = selectedAgentOption.data.agent;
-                TTYGContextService.selectAgent(selectedAgentOption.data.agent);
+            $scope.onAgentSelected = (agent) => {
+                markAsSelected(agent);
+                $scope.selectedAgent = agent;
+                TTYGContextService.selectAgent(agent);
             };
 
             /**
@@ -67,9 +67,13 @@ function AgentSelectMenuComponent(TTYGContextService, $translate, $sce, ModalSer
             // Private functions
             // =========================
 
-            const markAsSelected = (selectedAgentOption) => {
+            /**
+             * Marks the given agent as selected and deselects the rest.
+             * @param {AgentModel} agent
+             */
+            const markAsSelected = (agent) => {
                 $scope.agentOptionsList.forEach((agentOption) => {
-                    agentOption.selected = agentOption === selectedAgentOption;
+                    agentOption.selected = agentOption.data.agent === agent;
                 });
             };
 
@@ -92,8 +96,23 @@ function AgentSelectMenuComponent(TTYGContextService, $translate, $sce, ModalSer
                 }
             };
 
-            const buildAgentOptionsModel = (agents) => {
-                $scope.agentOptionsList = agents.agents.map((agent) => {
+            /**
+             * Handles the selection of an agent. When an agent is selected by the user from this menu, the agent is then
+             * saved in the local storage. When the TTYG view is initialized, the selected agent is retrieved from the
+             * local and its details loaded through the API. Then this component is updated to reflect the selected agent.
+             * @param {AgentModel} agent
+             */
+            const onSelectedAgentChanged = (agent) => {
+                markAsSelected(agent);
+                $scope.selectedAgent = agent;
+            };
+
+            /**
+             * Builds the agent options model which is used to display the agents in the select menu.
+             * @param {AgentListModel} agentsListModel
+             */
+            const buildAgentOptionsModel = (agentsListModel) => {
+                $scope.agentOptionsList = agentsListModel.agents.map((agent) => {
                     return new SelectMenuOptionsModel({
                         value: agent.id,
                         label: agent.name,
@@ -114,8 +133,9 @@ function AgentSelectMenuComponent(TTYGContextService, $translate, $sce, ModalSer
                 subscriptions.forEach((subscription) => subscription());
             };
 
-            subscriptions.push(TTYGContextService.subscribe(TTYGContextService.onAgentsListChanged(onAgentListChanged)));
+            subscriptions.push(TTYGContextService.onAgentsListChanged(onAgentListChanged));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_DELETED, onAgentDeleted));
+            subscriptions.push(TTYGContextService.onSelectedAgentChanged(onSelectedAgentChanged));
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);
 

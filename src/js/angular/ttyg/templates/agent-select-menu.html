@@ -19,12 +19,12 @@
         <li ng-repeat="agentOption in agentOptionsList" role="menuitem" class="agent-menu-item"
             ng-class="{'selected': agentOption.selected}">
             <a href="#" ng-if="agentOption.data.agent.repositoryId" class="agent-with-repo-item"
-               ng-click="onAgentSelected(agentOption)">
+               ng-click="onAgentSelected(agentOption.data.agent)">
                 <span class="agent-name">{{agentOption.label}}</span> &middot;
                 <span class="repository-id">{{agentOption.data.agent.repositoryId}}</span>
             </a>
             <a href="#" ng-if="!agentOption.data.agent.repositoryId" class="agent-without-repo-item"
-               ng-click="onAgentWithoutRepoSelected(agentOption)">
+               ng-click="onAgentWithoutRepoSelected(agentOption.data.agent)">
                 <span class="agent-name">{{agentOption.label}}</span> &middot;
                 <i class="fa-regular fa-triangle-exclamation text-warning"></i>
                 <span class="repository-id">{{'ttyg.agent.deleted_repository' | translate}}</span>
