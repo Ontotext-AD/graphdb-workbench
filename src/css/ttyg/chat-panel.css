@@ -1,12 +1,14 @@
 .chat-panel {
     display: flex;
     flex-direction: column;
-    justify-content: space-between
+    justify-content: space-between;
+    align-items: center;
 }
 
 .chat-panel .chat-details {
     overflow-y: auto;
     padding-right: 10px;
+    width: 90%;
 }
 
 .chat-panel .chat-detail {
@@ -73,4 +75,12 @@
 
 .chat-panel .assistant-message .actions {
     padding-left: 6px;
+}
+
+.chat-panel .mew-question {
+    width: 100%;
+}
+
+.chat-panel .mew-question .question-input {
+    background-color: #EFF3F8;
 }
