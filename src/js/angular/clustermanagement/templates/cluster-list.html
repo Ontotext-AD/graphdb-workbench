@@ -26,27 +26,27 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-if="!clusterView.length">
+            <tr ng-if="!viewModel.length">
                 <td colspan="5" class="no-data">
                     {{'cluster_management.update_cluster_group_dialog.messages.no_cluster' | translate}}
                 </td>
             </tr>
 
-            <tr ng-repeat-start="node in clusterView track by $index" ng-if="0"></tr>
+            <tr ng-repeat-start="node in viewModel track by $index" ng-if="0"></tr>
             <tr ng-if="$index !== editedNodeIndex" class="node preview-node-row" data-endpoint="{{node.endpoint}}" capture-height="$index"
                 ng-class="{'selected': $index === selectedNode || $index === editedNodeIndex}">
                 <td class="index-cell">{{$index + 1}}</td>
                 <td class="location-cell data">
                     <div class="location-item">
                         <div class="logo-image"></div>
-                        {{node.endpoint}}
+                        {{node.item.endpoint}}
                     </div>
                 </td>
                 <td class="info-cell data">
-                    <div ng-if="node.isLocal">
+                    <div ng-if="node.item.isLocal">
                         {{'cluster_management.update_cluster_group_dialog.current_node' | translate}}
                     </div>
-                    <div ng-if="!node.address">
+                    <div ng-if="!node.item.address">
                         {{'cluster_management.update_cluster_group_dialog.new_node' | translate}}
                     </div>
                 </td>
@@ -57,7 +57,7 @@
                                 gdb-tooltip="{{'cluster_management.update_cluster_group_dialog.actions.replace_node' | translate}}">
                             <i class="fa-regular fa-arrow-right-arrow-left"></i>
                         </button>
-                        <button ng-click="deleteNode($index, node)" ng-disabled="!cluster.canDeleteNode()" class="btn btn-link delete-node-btn secondary"
+                        <button ng-click="deleteNode($index, node)" ng-disabled="!canDeleteNode" class="btn btn-link delete-node-btn secondary"
                                 gdb-tooltip="{{'cluster_management.update_cluster_group_dialog.actions.delete_node' | translate}}">
                             <i class="fa-regular fa-trash-can"></i>
                         </button>
@@ -96,7 +96,7 @@
                     </div>
                 </td>
                 <td class="info-cell data">
-                    <div ng-if="node.isLocal">
+                    <div ng-if="node.item.isLocal">
                         {{'cluster_management.update_cluster_group_dialog.current_node' | translate}}
                     </div>
                 </td>
@@ -108,7 +108,7 @@
                                 gdb-tooltip="{{'cluster_management.update_cluster_group_dialog.actions.cancel' | translate}}">
                             <i class="fa-regular fa-xmark"></i>
                         </button>
-                        <button ng-click="saveNode(node.endpoint, $index)"
+                        <button ng-click="saveNode(node.endpoint)"
                                 class="btn btn-link save-rule-btn"
                                 ng-disabled="!form.location.$valid"
                                 gdb-tooltip="{{form.location.$valid ? 'cluster_management.update_cluster_group_dialog.actions.add_node' : 'cluster_management.update_cluster_group_dialog.messages.invalid_form' | translate}}">
@@ -118,6 +118,55 @@
                 </td>
             </tr>
             <tr ng-repeat-end ng-if="0"></tr>
+            <tr ng-if="addNewLocation" class="node edit-node-row">
+                <td class="index-cell">{{viewModel.length + 1}}</td>
+                <td class="data location-cell">
+                    <div class="autocomplete-container">
+                            <textarea type="text" name="location" required
+                                      ng-model="newLocation.endpoint"
+                                      ng-change="filterSuggestions(newLocation)"
+                                      ng-blur="hideSuggestions(newLocation)"
+                                      ng-click="filterSuggestions(newLocation)"
+                                      auto-grow
+                                      validate-url exclude="/repositories" exclude-protocol="ftp,ftps" allow-empty="false"
+                                      autocomplete="off"
+                                      class="form-control form-control-sm textarea-edit"
+                                      uib-tooltip="{{'remote.location.enter.url.msg' | translate}}"
+                                      tooltip-placement="top"
+                                      placeholder="{{'cluster_management.update_cluster_group_dialog.field_placeholders.location' | translate}}">
+                            </textarea>
+                        <ul ng-show="suggestions.length > 0 && showDropdown" class="autocomplete-dropdown">
+                            <li ng-repeat="suggestion in suggestions" ng-mouseup="selectSuggestion(newLocation, suggestion)">
+                                {{ suggestion }}
+                            </li>
+                        </ul>
+                        <div class="error-message" ng-show="form.location.$error.validUrl && !form.location.$pristine">
+                            * {{'valid.remote.location.warning' | translate}} http://server.example.com:7200/.
+                        </div>
+                        <div ng-repeat="error in errors" class="error-message">
+                            {{error}}
+                        </div>
+                    </div>
+                </td>
+                <td class="info-cell data">
+                </td>
+                <td class="empty-cell"></td>
+                <td class="actions-cell">
+                    <div class="crud-actions-group">
+                        <button ng-click="cancel()"
+                                class="btn btn-link cancel-node-replace-btn secondary"
+                                gdb-tooltip="{{'cluster_management.update_cluster_group_dialog.actions.cancel' | translate}}">
+                            <i class="fa-regular fa-xmark"></i>
+                        </button>
+                        <button ng-click="saveNode(newLocation.endpoint)"
+                                class="btn btn-link save-rule-btn"
+                                ng-disabled="!form.location.$valid"
+                                gdb-tooltip="{{form.location.$valid ? 'cluster_management.update_cluster_group_dialog.actions.add_node' : 'cluster_management.update_cluster_group_dialog.messages.invalid_form' | translate}}">
+                            <i class="fa-regular fa-check"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
             </tbody>
         </table>
     </form>

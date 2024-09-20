@@ -79,7 +79,7 @@ export class ClusterStubs extends Stubs {
         });
 
         cy.intercept({
-            method: 'POST',
+            method: 'PATCH',
             url: '/rest/cluster/config/node'
         }, (req) => {
             req.reply({
@@ -96,7 +96,7 @@ export class ClusterStubs extends Stubs {
         });
 
         cy.intercept({
-            method: 'DELETE',
+            method: 'PATCH',
             url: '/rest/cluster/config/node'
         }, (req) => {
             req.reply({
