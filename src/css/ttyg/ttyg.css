@@ -85,6 +85,9 @@ left sidebar
 /*
 right sidebar
 */
+.ttyg-view .right-sidebar {
+    z-index: 997;
+}
 
 .ttyg-view .right-sidebar .toolbar {
     justify-content: end;
