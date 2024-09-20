@@ -43,7 +43,7 @@ export class ClusterListSteps {
     }
 
     static clickSaveNodeButton() {
-        cy.get('.edit-node-row .save-rule-btn').click();
+        cy.get('.save-rule-btn').click();
     }
 
     static clickCancelNodeButton() {
@@ -74,5 +74,14 @@ export class ClusterListSteps {
 
     static clickOkButton() {
         return this.getOkButton().click();
+    }
+
+    static getAddNodeRow() {
+        return cy.get('.cluster-group tbody tr.add-node-row');
+    }
+    static enterNewNodeEndpoint(endpoint) {
+        return this.getAddNodeButton().find('textarea[name="location"]')
+            .clear()
+            .type(endpoint);
     }
 }
