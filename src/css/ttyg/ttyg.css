@@ -14,20 +14,10 @@
 page layout styles
 */
 
-/* override the main-container and title to accommodate to the new design without left and right padding */
-.main-container {
-    padding-left: 0 !important;
-    padding-right: 1rem !important;
-}
-
 /*override btn-small to properly center the icons */
 .ttyg-view .btn-sm {
     padding: 0 !important;
     line-height: 1 !important;
-}
-
-.ttyg-view #ttyg-view-title {
-    padding: 0 2rem;
 }
 
 .ttyg-view .toolbar {
@@ -112,6 +102,12 @@ chat area
 
 .ttyg-view .chat-content {
     padding: 0 2rem;
+}
+
+.ttyg-view .chat-content .toolbar {
+    width: 900px;
+    margin: auto;
+    padding: 0;
 }
 
 .ttyg-view .chat-content .chat {
