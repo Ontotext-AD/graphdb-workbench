@@ -14,20 +14,10 @@
 page layout styles
 */
 
-/* override the main-container and title to accommodate to the new design without left and right padding */
-.main-container {
-    padding-left: 0 !important;
-    padding-right: 1rem !important;
-}
-
 /*override btn-small to properly center the icons */
 .ttyg-view .btn-sm {
     padding: 0 !important;
     line-height: 1 !important;
-}
-
-.ttyg-view #ttyg-view-title {
-    padding: 0 2rem;
 }
 
 .ttyg-view .toolbar {
@@ -85,6 +75,10 @@ left sidebar
 /*
 right sidebar
 */
+.ttyg-view .right-sidebar {
+    /* Lower the default z-index of the slide panel to prevent the repository menu overlapping by the panel. */
+    z-index: 997;
+}
 
 .ttyg-view .right-sidebar .toolbar {
     justify-content: end;
@@ -110,8 +104,14 @@ chat area
     padding: 0 2rem;
 }
 
+.ttyg-view .chat-content .toolbar {
+    width: 900px;
+    margin: auto;
+    padding: 0;
+}
+
 .ttyg-view .chat-content .chat {
-    width: 720px;
+    width: 900px;
     margin: auto;
     height: calc(100vh - 10em);
     display: flex;
@@ -122,6 +122,10 @@ chat area
 .ttyg-view .controls {
     display: flex;
     flex-direction: column;
+}
+
+.ttyg-view agent-select-menu {
+    width: 300px;
 }
 
 .selected-chat-panel {

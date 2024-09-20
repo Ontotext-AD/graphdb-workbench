@@ -22,7 +22,8 @@
         </div>
 
         <div ng-repeat="agent in agentList.filterableAgents">
-            <div ng-if="!deletingAgent || deletingAgent.agentId !== agent.id" class="agent-item">
+            <div ng-if="!deletingAgent || deletingAgent.agentId !== agent.id" class="agent-item"
+                 ng-class="{'selected': agent.id === selectedAgent.id}">
                 <div class="agent-info" ng-if="agent.repositoryId">
                     <div class="agent-name">{{agent.name}}</div>
                     <div class="related-repository">

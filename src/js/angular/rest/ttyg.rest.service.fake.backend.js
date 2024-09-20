@@ -87,6 +87,10 @@ export class TtygRestServiceFakeBackend {
         return Promise.resolve({data: [...agentsList]});
     }
 
+    getAgent(id) {
+        return Promise.resolve({data: cloneDeep(agentsList.find((agent) => agent.id === id))});
+    }
+
     createAgent(agent) {
         agentsList.push(agent);
         return Promise.resolve({data: agent});

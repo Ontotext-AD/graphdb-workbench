@@ -88,6 +88,16 @@ function TTYGService(TTYGRestService) {
     };
 
     /**
+     * Loads an agent by its ID.
+     * @param {string} id
+     * @return {Promise<AgentModel|undefined>}
+     */
+    const getAgent = (id) => {
+        return TTYGRestService.getAgent(id)
+            .then((response) => agentModelMapper(response.data));
+    };
+
+    /**
      * Creates a new agent.
      * @param {*} payload - the agent data
      * @return {Promise<AgentModel>} created agent;
@@ -117,6 +127,7 @@ function TTYGService(TTYGRestService) {
         deleteConversation,
         createConversation,
         getAgents,
+        getAgent,
         createAgent,
         deleteAgent
     };

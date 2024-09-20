@@ -1,9 +1,14 @@
 import {cloneDeep} from "lodash";
 import {AGENTS_FILTER_ALL_KEY} from "../../ttyg/services/constants";
-
 export class AgentModel {
     constructor(data, hashGenerator) {
         this.hashGenerator = hashGenerator;
+        /**
+         * Used as a marker when the agent is currently selected and was in the meantime deleted.
+         * @type {boolean}
+         * @private
+         */
+        this._isDeleted = false;
         /**
          * @type {string}
          * @private
@@ -54,6 +59,14 @@ export class AgentModel {
          * @private
          */
         this._additionalExtractionMethods = data.additionalExtractionMethods;
+    }
+
+    get isDeleted() {
+        return this._isDeleted;
+    }
+
+    set isDeleted(value) {
+        this._isDeleted = value;
     }
 
     get id() {

@@ -109,18 +109,8 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
              * @param {ChatModel} chat - the new selected chat.
              */
             const onChatChanged = (chat) => {
-                // TODO: Remove the manual update of $scope.chat and $scope.chatItem wrapped in $apply,
-                // as AngularJS currently does not detect the changes automatically for some reason.
-                if (!$scope.$$phase) {
-                    $scope.$apply(() => {
-                        $scope.chat = chat;
-                        setupNewChatItem();
-                    });
-                } else {
-                    $scope.chat = chat;
-                    setupNewChatItem();
-                }
-                scrollToBottom();
+                $scope.chat = chat;
+                setupNewChatItem();
             };
 
             const onCopied = () => {
@@ -175,10 +165,11 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 subscriptions.forEach((subscription) => subscription());
             };
 
+            subscriptions.push($scope.$watchCollection('chat.chatHistory.items', scrollToBottom));
             subscriptions.push(TTYGContextService.onSelectedChatUpdated(onChatChanged));
+            subscriptions.push(TTYGContextService.onSelectedAgentChanged(onSelectedAgentChanged));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_SUCCESSFUL, onCopied));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_FAILURE, onCopyFailed));
-            // TODO: add subscription for agent changed, and call "onSelectedAgentChanged"
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);

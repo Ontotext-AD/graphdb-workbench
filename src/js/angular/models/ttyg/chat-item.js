@@ -1,4 +1,3 @@
-import {AGENT_ID} from "../../ttyg/services/constants";
 import {CHAT_MESSAGE_ROLE, ChatMessageModel} from "./chat-message";
 
 /**
@@ -17,7 +16,7 @@ export class ChatItemModel {
      * @param {ChatMessageModel} answer - The message object representing the answer to the question. It is undefined if there is no answer.
      */
     // TODO remove hardcoded agent id when agent functionality is ready
-    constructor(chatId, agentId = AGENT_ID, question, answer) {
+    constructor(chatId, agentId, question, answer) {
         this._chatId = chatId;
         this._agentId = agentId;
         this._question = question;

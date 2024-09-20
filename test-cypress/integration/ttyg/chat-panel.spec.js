@@ -39,11 +39,18 @@ describe('Ttyg ChatPanel', () => {
         // When I type a question
         ChatPanelSteps.getQuestionInputElement().type('Who is Han Solo?');
 
+        // Then I expect the "Ask" button be not active because agent is not selected
+        ChatPanelSteps.getAskButtonElement().should('not.be.enabled');
+
+        // When I select an agent
+        TTYGViewSteps.openAgentsMenu();
+        TTYGViewSteps.selectAgent(0);
+
         // Then I expect the "Ask" button be active.
         ChatPanelSteps.getAskButtonElement().should('be.enabled');
 
         // When I click on "Ask" button.
-        ChatPanelSteps.getAskButtonElement().click();
+        ChatPanelSteps.getAskButtonElement().scrollIntoView().click();
 
         // Then I expect the question be in chat history,
         ChatPanelSteps.getChatDetailsElements().should('have.length', 3);

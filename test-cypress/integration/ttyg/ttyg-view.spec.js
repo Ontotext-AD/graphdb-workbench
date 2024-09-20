@@ -2,22 +2,16 @@ import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 import {ApplicationSteps} from "../../steps/application-steps";
+import {NamespaceStubs} from "../../stubs/namespace-stubs";
 
 describe('TTYG view', () => {
 
-    let repositoryId;
+    const repositoryId = 'starwars';
 
     beforeEach(() => {
-        // Create an actual repository to prevent stubbing all background requests that are not related to the ttyg view
-        repositoryId = 'starwars';
-        cy.createRepository({id: repositoryId});
-
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
-        cy.presetRepository('starwars');
-    });
-
-    afterEach(() => {
-        cy.deleteRepository(repositoryId);
+        cy.presetRepository(repositoryId);
+        NamespaceStubs.stubNameSpaceResponse(repositoryId, '/namespaces/get-repository-starwars-namespaces.json');
     });
 
     // TODO: This test is skipped because it fails on CI. For some reason the chat list panel is not visible.

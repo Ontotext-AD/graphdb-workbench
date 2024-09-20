@@ -206,6 +206,7 @@ describe('TTYG create new agent', () => {
     it('Should require similarity index in order to create agent with similarity search method', () => {
         TTYGStubs.stubChatsListGetNoResults();
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
+        SimilarityIndexStubs.stubGetSimilarityIndexes('/similarity/get-similarity-indexes-0.json');
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
         cy.wait('@get-all-repositories');

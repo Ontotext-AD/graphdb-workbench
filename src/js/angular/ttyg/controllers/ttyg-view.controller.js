@@ -1,10 +1,12 @@
 import 'angular/ttyg/directives/chat-list.directive';
 import 'angular/ttyg/directives/chat-panel.directive';
 import 'angular/ttyg/directives/agent-list.directive';
+import 'angular/ttyg/directives/agent-select-menu.directive';
 import 'angular/ttyg/directives/no-agents-view.directive';
 import 'angular/ttyg/controllers/agent-settings-modal.controller';
 import 'angular/core/services/ttyg.service';
 import 'angular/ttyg/services/ttyg-context.service';
+import 'angular/ttyg/services/ttyg-storage.service';
 import {TTYGEventName} from "../services/ttyg-context.service";
 import {AGENTS_FILTER_ALL_KEY} from "../services/constants";
 import {AgentListFilterModel} from "../../models/ttyg/agents";
@@ -18,9 +20,11 @@ const modules = [
     'graphdb.framework.utils.localstorageadapter',
     'graphdb.framework.core.services.ttyg-service',
     'graphdb.framework.ttyg.services.ttygcontext',
+    'graphdb.framework.ttyg.services.ttygstorage',
     'graphdb.framework.ttyg.directives.chat-list',
     'graphdb.framework.ttyg.directives.chat-panel',
     'graphdb.framework.ttyg.directives.agent-list',
+    'graphdb.framework.ttyg.directives.agent-select-menu',
     'graphdb.framework.ttyg.directives.no-agents-view',
     'graphdb.framework.ttyg.controllers.agent-settings-modal'
 ];
@@ -29,9 +33,9 @@ angular
     .module('graphdb.framework.ttyg.controllers.ttyg-view', modules)
     .controller('TTYGViewCtrl', TTYGViewCtrl);
 
-TTYGViewCtrl.$inject = ['$rootScope', '$scope', '$http', '$timeout', '$translate', '$uibModal', '$repositories', 'toastr', 'ModalService', 'LocalStorageAdapter', 'TTYGService', 'TTYGContextService'];
+TTYGViewCtrl.$inject = ['$rootScope', '$scope', '$http', '$timeout', '$translate', '$uibModal', '$repositories', 'toastr', 'ModalService', 'LocalStorageAdapter', 'TTYGService', 'TTYGContextService', 'TTYGStorageService'];
 
-function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal, $repositories, toastr, ModalService, LocalStorageAdapter, TTYGService, TTYGContextService) {
+function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal, $repositories, toastr, ModalService, LocalStorageAdapter, TTYGService, TTYGContextService, TTYGStorageService) {
 
     // =========================
     // Private variables
@@ -225,10 +229,19 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
             });
     };
 
+    /**
+     * Handles the agent edit operation.
+     * @param {AgentModel} agent
+     */
+    $scope.onEditAgent = (agent) => {
+        console.log(`Edit agent`, agent);
+    };
+
     // =========================
     // Private functions
     // =========================
 
+    // TODO: remove
     const persist = () => {
         const persisted = LocalStorageAdapter.get('ttyg') || {};
         persisted[$repositories.getActiveRepository()] = {
@@ -451,11 +464,18 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
             });
     };
 
+    /**
+     * Handles the deletion of an agent by calling the service and reloading the agents list.
+     * @param {AgentModel} agent - the agent to be deleted.
+     */
     const onDeleteAgent = (agent) => {
         TTYGContextService.emit(TTYGEventName.DELETING_AGENT, {agentId: agent.id, inProgress: true});
         TTYGService.deleteAgent(agent.id)
             .then(() => {
                 return reloadAgents();
+            })
+            .then(() => {
+                TTYGContextService.emit(TTYGEventName.AGENT_DELETED, agent);
             })
             .catch((error) => {
                 toastr.error(getError(error, 0, 100));
@@ -499,6 +519,29 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
         }
     };
 
+    /**
+     * Handles the selection of an agent..
+     * @param {AgentModel} agent
+     */
+    const onAgentSelected = (agent) => {
+        TTYGStorageService.saveAgent(agent);
+    };
+
+    /**
+     * Loads an agent using the agent ID stored in the local storage and selects it.
+     */
+    const setCurrentAgent = () => {
+        const agentId = TTYGStorageService.getAgentId();
+        if (!agentId) {
+            return;
+        }
+        TTYGService.getAgent(agentId).then((agent) => {
+            if (agent) {
+                TTYGContextService.selectAgent(agent);
+            }
+        });
+    };
+
     const updateLabels = () => {
         labels.filter_all = $translate.instant('ttyg.agent.btn.filter.all');
         // recreate the repository list to trigger the update in the view
@@ -524,15 +567,17 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler));
     subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
     subscriptions.push(TTYGContextService.onChatsListChanged(onChatsChanged));
+    subscriptions.push(TTYGContextService.subscribe(TTYGContextService.onAgentsListChanged(onAgentListChanged)));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_CHAT, onCreateNewChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.RENAME_CHAT, onRenameChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_CHAT, onDeleteChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CHAT_EXPORT, onExportChat));
-    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_LIST_UPDATED, onAgentListChanged));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION, onAskQuestion));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.LOAD_CHAT, loadChats));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_AGENT, $scope.onCreateAgent));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.EDIT_AGENT, $scope.onEditAgent));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_AGENT, onDeleteAgent));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_SELECTED, onAgentSelected));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD, onCopiedAnswerToClipboard));
     subscriptions.push($rootScope.$on('$translateChangeSuccess', updateLabels));
     $scope.$on('$destroy', removeAllListeners);
@@ -542,6 +587,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     // =========================
 
     function onInit() {
+        setCurrentAgent();
         buildRepositoryList();
         loadAgents().then(() => {
             buildAgentsFilterModel();

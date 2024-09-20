@@ -30,6 +30,13 @@ function TTYGContextService(EventEmitterService) {
     let _selectedChat = undefined;
 
     /**
+     * The currently selected in the UI agent which is used for conversation.
+     * @type {AgentModel|undefined}
+     * @private
+     */
+    let _selectedAgent = undefined;
+
+    /**
      * @return {AgentListModel}
      */
     const getAgents = () => {
@@ -134,6 +141,50 @@ function TTYGContextService(EventEmitterService) {
     };
 
     /**
+     * Subscribes to the 'agentListUpdated' event.
+     * @param {function} callback - The callback to be called when the event is fired.
+     *
+     * @return {function} unsubscribe function.
+     */
+    const onAgentsListChanged = (callback) => {
+        if (_agents && angular.isFunction(callback)) {
+            callback(getAgents());
+        }
+        return subscribe(TTYGEventName.AGENT_LIST_UPDATED, (selectedChat) => callback(selectedChat));
+    };
+
+    /**
+     * @return {AgentModel}
+     */
+    const getSelectedAgent = () => {
+        return cloneDeep(_selectedAgent);
+    };
+
+    /**
+     * Updates the selected agent with the provided <code>selectedAgent</code> and emits the 'agentSelected' event
+     * to notify listeners that a new agent has been selected.
+     *
+     * @param {AgentModel} selectedAgent - The instance of selected agent.
+     */
+    const selectAgent = (selectedAgent) => {
+        _selectedAgent = cloneDeep(selectedAgent);
+        emit(TTYGEventName.AGENT_SELECTED, getSelectedAgent());
+    };
+
+    /**
+     * Subscribes to the 'agentSelected' event.
+     * @param {function} callback - The callback to be called when the event is fired.
+     *
+     * @return {function} unsubscribe function.
+     */
+    const onSelectedAgentChanged = (callback) => {
+        if (_selectedAgent && angular.isFunction(callback)) {
+            callback(getSelectedAgent());
+        }
+        return subscribe(TTYGEventName.AGENT_SELECTED, (selectedChat) => callback(selectedChat));
+    };
+
+    /**
      * Emits an event with a deep-cloned payload using the EventEmitterService.
      *
      * @param {string} tTYGEventName - The name of the event to emit. It must be a value from {@link TTYGEventName}.
@@ -166,7 +217,11 @@ function TTYGContextService(EventEmitterService) {
         updateSelectedChat,
         onSelectedChatUpdated,
         updateAgents,
-        getAgents
+        onAgentsListChanged,
+        getAgents,
+        selectAgent,
+        getSelectedAgent,
+        onSelectedAgentChanged
     };
 }
 
@@ -191,9 +246,37 @@ export const TTYGEventName = {
     LOAD_CHAT_SUCCESSFUL: 'loadChatSuccess',
     LOAD_CHAT_FAILURE: 'loadChatFailure',
     AGENT_LIST_UPDATED: 'agentListUpdated',
+
+    /**
+     * This event will be emitted when the create agent process is triggered but before the agent create request is sent.
+     */
     CREATE_AGENT: 'createAgent',
+
+    /**
+     * This event will be emitted when an agent needs to be edited.
+     */
+    EDIT_AGENT: 'editAgent',
+
+    /**
+     * This event will be emitted when the delete agent process is triggered but before the agent delete request is sent.
+     */
     DELETE_AGENT: 'deleteAgent',
+
+    /**
+     * This event will be emitted when the agent was successfully deleted.
+     */
+    AGENT_DELETED: 'agentDeleted',
+
+    /**
+     * This event will be emitted when the agent delete request is in progress. The payload will contain the agent ID
+     * and a boolean indicating if the deletion is in progress.
+     */
     DELETING_AGENT: 'deletingAgent',
+
+    /**
+     * This event will be emitted when an agent is selected by the user through the UI.
+     */
+    AGENT_SELECTED: 'agentSelected',
 
     /**
      * Emitting the "copyAnswer" event will trigger an action to copy an answer to the clipboard.
