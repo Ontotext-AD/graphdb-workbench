@@ -215,4 +215,39 @@ export class TTYGViewSteps {
             });
         });
     }
+
+    static getAgentsMenu() {
+        return this.getTtygView().find('.agent-select-menu');
+    }
+
+    static getAgentsMenuToggleButton() {
+        return this.getAgentsMenu().find('.dropdown-toggle-btn');
+    }
+
+    static openAgentsMenu() {
+        this.getAgentsMenuToggleButton().click();
+    }
+
+    static getAgentsFromMenu() {
+        return this.getAgentsMenu().find('.agent-menu-item');
+    }
+
+    static getAgentFromMenu(index) {
+        return this.getAgentsFromMenu().eq(index);
+    }
+
+    static selectAgent(index) {
+        this.getAgentFromMenu(index).click();
+    }
+
+    static verifySelectAgentMenuItems(data) {
+        this.openAgentsMenu();
+        this.getAgentsFromMenu().should('have.length', data.length);
+        data.forEach((agent, index) => {
+            this.getAgentFromMenu(index).within(() => {
+                cy.get('.agent-name').should('contain', agent.name);
+                cy.get('.repository-id').should('contain', agent.repositoryId);
+            });
+        });
+    }
 }

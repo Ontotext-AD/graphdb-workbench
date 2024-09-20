@@ -22,10 +22,10 @@ describe('TTYG delete agent', () => {
         TTYGViewSteps.filterAgentsByRepository('All');
         TTYGViewSteps.getAgents().should('have.length', 4);
         // When I select the delete agent action
-        TTYGViewSteps.triggerDeleteAgentActionMenu(1);
+        TTYGViewSteps.triggerDeleteAgentActionMenu(0);
         // Then I should see the delete agent dialog
         ModalDialogSteps.getDialog().should('be.visible');
-        ModalDialogSteps.getDialogBody().contains('Do you really want to delete the agent agent-2?');
+        ModalDialogSteps.getDialogBody().contains('Do you really want to delete the agent agent-1?');
         // When I cancel the delete agent action
         ModalDialogSteps.cancel();
         // Then the modal dialog should be closed
@@ -33,7 +33,7 @@ describe('TTYG delete agent', () => {
         // When I select the delete agent action
         TTYGStubs.stubAgentDelete(1000);
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-after-deleted.json');
-        TTYGViewSteps.triggerDeleteAgentActionMenu(1);
+        TTYGViewSteps.triggerDeleteAgentActionMenu(0);
         // And I confirm the delete agent action
         ModalDialogSteps.confirm();
         // Then the modal dialog should be closed
@@ -42,7 +42,7 @@ describe('TTYG delete agent', () => {
         TTYGViewSteps.getAgentDeletingLoader().should('be.visible');
         TTYGViewSteps.getAgents().should('have.length', 3);
         TTYGViewSteps.verifyAgentList([
-            {name: 'agent-1', repositoryId: 'starwars'},
+            {name: 'agent-2', repositoryId: 'Deleted repository'},
             {name: 'Databricks-general-unbiased', repositoryId: 'starwars'},
             {name: 'Databricks-biomarkers', repositoryId: 'biomarkers'}
         ]);
