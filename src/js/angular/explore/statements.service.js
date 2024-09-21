@@ -41,7 +41,7 @@ function StatementsService() {
                 if (statement.object.type === 'uri') {
                     data += '<' + statement.object.value + '> .';
                 } else {
-                    data += '"' + statement.object.value + '"' + (statement.object.datatype ? '^^<' + statement.object.datatype + '>' : (statement.object.lang ? '@' + statement.object.lang : '')) + ' .';
+                    data += '"""' + statement.object.value + '"""' + (statement.object.datatype ? '^^<' + statement.object.datatype + '>' : (statement.object.lang ? '@' + statement.object.lang : '')) + ' .';
                 }
             }
 
