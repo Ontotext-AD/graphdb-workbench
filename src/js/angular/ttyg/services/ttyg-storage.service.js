@@ -24,6 +24,12 @@ function TTYGStorageService(localStorageAdapter, LSKeys) {
         if (!settings) {
             settings = defaultSettings;
         }
+        if (!settings.agent) {
+            settings.agent = {};
+        }
+        if (!settings.chat) {
+            settings.chat = {};
+        }
         return settings;
     };
 
