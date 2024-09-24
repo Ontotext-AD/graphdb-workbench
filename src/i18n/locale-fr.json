@@ -176,7 +176,7 @@
                 "role": "ROLE1",
                 "plugin": "Brancher"
             },
-            "prefix_warning": {
+            "custom_prefix_warning": {
                 "text": "Les rôles personnalisés doivent être saisis sans le préfixe \"CUSTOM_\" dans workbench"
             },
             "actions": {
@@ -218,7 +218,7 @@
     },
     "ttyg": {
         "helpInfo": "Parlez à votre graphe est un chatbot basé sur le modèle GPT-4 d'OpenAI qui peut répondre aux questions sur les données stockées dans GraphDB, en exploitant à la fois vos données et les connaissances générales du modèle GPT-4. Le bot fonctionne dans connexion avec le connecteur ChatGPT Retrieval.",
-        "hint": "Parlez à votre graphe – posez simplement une question !\nPour le moment, cela fonctionne mieux si vous demandez en anglais, désolé !",
+        "loading": "Chargement...",
         "help": {
             "btn": {
                 "show_help": {
@@ -234,6 +234,7 @@
         },
         "chat": {
             "loading_chats": "Chargement des chats...",
+            "deleted_repository": "Dépôt supprimé",
             "btn": {
                 "open_sidebar": {
                     "tooltip": "Ouvrir la barre latérale"
@@ -264,12 +265,160 @@
                 "export_failure": "Échec de l'exportation de la conversation. Veuillez réessayer."
             }
         },
-        "agent": {
+        "chat_panel": {
+            "hint": "Parlez à votre graphe – posez simplement une question !\nPour le moment, cela fonctionne mieux si vous demandez en anglais, désolé !",
             "btn": {
+                "ask": {
+                    "label": "Demander"
+                },
+                "regenerate": {
+                    "tooltip": "Régénérer"
+                },
+                "copy": {
+                    "tooltip": "Copier"
+                }
+            },
+            "messages": {
+                "answer_copy_successful": "La réponse a été copiée avec succès dans le presse-papiers.",
+                "answer_copy_failed": "Échec de la copie de la réponse dans le presse-papiers."
+            }
+        },
+        "agent": {
+            "loading_agents": "Chargement des agents...",
+            "deleting_agent": "Suppression de l'agent...",
+            "deleted_repository": "Dépôt supprimé",
+            "create_agent_modal": {
+                "title": "Créer un agent",
+                "advanced_settings": {
+                    "show": "Afficher les paramètres avancés",
+                    "hide": "Masquer les paramètres avancés"
+                },
+                "form": {
+                    "agent_name": {
+                        "label": "Nom de l'GraphAgent",
+                        "placeholder": "Entrez un nom convivial"
+                    },
+                    "repository": {
+                        "label": "Index du dépôt"
+                    },
+                    "model": {
+                        "label": "Modèle",
+                        "hint": "Découvrez les modèles OpenAI disponibles <a href=\"https://platform.openai.com/docs/models\" target=\"_blank\">ici</a>."
+                    },
+                    "temperature": {
+                        "label": "Température"
+                    },
+                    "top_p": {
+                        "label": "Top_P"
+                    },
+                    "seed": {
+                        "label": "Graine",
+                        "hint": "Toute valeur entière"
+                    },
+                    "extraction_method": {
+                        "label": "Méthodes de requête",
+                        "required": "Au moins une méthode de requête doit être sélectionnée"
+                    },
+                    "fts_search": {
+                        "label": "Recherche en texte intégral",
+                        "fts_disabled_message": "Pour utiliser cette méthode, vous devez activer l'index de recherche en texte intégral (FTS) sur le référentiel choisi, puis le redémarrer.<br/> Activez l'index <a href=\"{{repositoryEditPage}}\" target=\"_blank\">ici</a>.",
+                        "missing_repository_id": "L'ID du référentiel doit être sélectionné"
+                    },
+                    "sparql_search": {
+                        "label": "SPARQL",
+                        "required_option": "Sélectionnez la manière dont une ontologie doit être récupérée"
+                    },
+                    "ontology_graph": {
+                        "label": "Récupérer l'ontologie à partir d'un graphe nommé"
+                    },
+                    "construct_query": {
+                        "label": "Fournir une requête SPARQL CONSTRUCT qui récupère l'ontologie"
+                    },
+                    "similarity_search": {
+                        "label": "Recherche de similarité"
+                    },
+                    "similarity_index": {
+                        "label": "Nom de l'index de similarité",
+                        "loading_indexes": "Chargement des indices de similarité...",
+                        "no_similarity_index_message": "Pour utiliser cette méthode, vous devez avoir créé un index de similarité.<br/>Créez un index de texte de similarité <a href=\"{{similarityIndexPage}}\" target=\"_blank\">ici</a>."
+                    },
+                    "similarity_threshold": {
+                        "label": "Seuil de similarité"
+                    },
+                    "retrieval_search": {
+                        "label": "Connecteur de récupération ChatGPT",
+                        "no_retrieval_connectors_message": "Aucune instance de connecteur.<br/>Créez un connecteur de récupération ChatGPT <a href=\"{{retrievalConnectorPage}}\" target=\"_blank\">ici</a>."
+                    },
+                    "connector_id": {
+                        "label": "Connecteur de récupération ChatGPT"
+                    },
+                    "query_template": {
+                        "label": "Modèle de requête"
+                    },
+                    "max_number_of_triples_per_call": {
+                        "label": "Nombre maximum de résultats (triples) par appel",
+                        "placeholder": "Valeur automatique"
+                    },
+                    "system_instruction": {
+                        "label": "Instructions système",
+                        "placeholder": "Entrez les instructions du système"
+                    },
+                    "user_instruction": {
+                        "label": "Mode d'emploi",
+                        "placeholder": "Entrez les instructions d'utilisation"
+                    },
+                    "additional_query_methods": {
+                        "label": "Méthodes de requête supplémentaires",
+                        "method": {
+                            "iri_discovery_search": "Recherche de texte intégral dans les étiquettes pour la découverte d'IRI"
+                        }
+                    }
+                },
+                "btn": {
+                    "create": {
+                        "label": "Créer l'agent"
+                    },
+                    "cancel": {
+                        "label": "Annuler"
+                    }
+                }
+            },
+            "delete_agent_modal": {
+                "title": "Supprimer l'agent",
+                "body": "Voulez-vous vraiment supprimer l'agent <b>{{agentName}}</b>?"
+            },
+            "agent_select_menu": {
+                "no_selection_label": "Sélectionner un agent",
+                "deleted_agent": "[agent supprimé]",
+                "configure_agent_modal": {
+                    "title": "Configurer l'agent",
+                    "body": "L'agent sélectionné n'a aucun référentiel configuré. Voulez-vous le configurer maintenant?"
+                }
+            },
+            "fat_btn": {
+                "create_agent": {
+                    "label": "Créez votre premier agent"
+                }
+            },
+            "btn": {
+                "filter": {
+                    "tooltip": "Filtrer par dépôt",
+                    "all": "Tous les dépôts"
+                },
                 "edit_agent": {
+                    "label": "Paramètres",
                     "tooltip": "Modifier l'agent"
                 },
+                "clone_agent": {
+                    "label": "Cloner",
+                    "tooltip": "Cloner l'agent"
+                },
+                "delete_agent": {
+                    "label": "Supprimer l'agent",
+                    "tooltip": "Supprimer l'agent"
+                },
                 "create_agent": {
+                    "label": "Créer un agent",
                     "tooltip": "Créer un agent"
                 },
                 "open_sidebar": {
@@ -278,13 +427,20 @@
                 "close_sidebar": {
                     "tooltip": "Fermer la barre latérale"
                 }
+            },
+            "messages": {
+                "no_agents": "Aucun agent n'est configuré pour le moment.",
+                "help_1": "Parlez à vos données en langage naturel. Il vous suffit de créer et d'instruire votre propre agent IA pour vous aider.",
+                "help_2": "The Agent est un agent conversationnel basé sur l'IA, conçu pour vous aider dans une large gamme de tâches, de la réponse aux questions et la fourniture d'informations à l'assistance dans le cadre de projets créatifs et techniques. Il exploite un traitement avancé du langage naturel pour comprendre et répondre aux entrées des utilisateurs de manière humaine, rendant les interactions intuitives et efficaces.",
+                "error_retrieval_connectors_loading": "Erreur lors du chargement des connecteurs de récupération",
+                "error_similarity_indexes_loading": "Erreur lors du chargement des index de similarité",
+                "error_repository_config_loading": "Erreur lors du chargement de la configuration du dépôt"
             }
         },
         "help.what.title": "Qu'est-ce que c'est ?",
         "help.what.content": "Parlez à votre graphe est un chatbot basé sur le modèle GPT-4 d'OpenAI qui peut répondre aux questions sur les données stockées dans GraphDB, en exploitant à la fois vos données et les connaissances générales du modèle GPT-4.",
         "help.how.title": "Comment ça marche ?",
         "help.how.content": "Le bot utilise le connecteur ChatGPT Retrieval pour récupérer des informations dont il ne connaît pas. A ce titre, vous devez d'abord créer un tel connecteur. Voir aussi les paramètres pour affiner l'intégration avec le Connecteur de récupération.",
-        "ask.button": "Demander",
         "clear.hint": "Effacer l'historique de la conversation.",
         "clear.history.confirmation": "Cela effacera l'historique de la conversation.",
         "settings.title": "Paramètres pour parler à votre graphe",
@@ -1017,6 +1173,7 @@
         "enable.for.auto.start": "Activez cette option pour lancer l'importation lorsque vous cliquez sur le bouton Importer. Si elle est désactivée, l'importation sera ajoutée à la liste mais ne démarrera pas automatiquement.",
         "auto.start": "Démarrer l'importation automatiquement",
         "data.from.url": "Importer des données RDF depuis une URL",
+        "format": "Format",
         "supported.url.with.rdf": "URL avec des données RDF. Les formats supportés sont",
         "invalid.url": "URL non valide!",
         "gz.zip": "ainsi que leurs versions .gz et leurs archives .zip.",

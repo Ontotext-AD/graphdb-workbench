@@ -1,0 +1,101 @@
+.agent-list-component {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.agent-list-component .agent-list {
+    margin-top: 1rem;
+    height: 75vh;
+    max-height: 75vh;
+    overflow-y: auto;
+}
+
+.agent-list-component .agents-filter-dropdown {
+    width: 100%;
+}
+
+/* Reset the dropdown toggle button styles to make it look more like an input */
+.agent-list-component .agents-filter-dropdown .dropdown-toggle {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-weight: unset;
+    color: inherit;
+    border-color: var(--gray-color);
+}
+
+.agent-list-component .agents-filter-dropdown .dropdown-toggle:hover {
+    background-color: #fff;
+}
+
+.agent-list-component .agents-filter-dropdown .dropdown-toggle:after {
+    display: none;
+}
+
+.agent-list-component .agent-item {
+    padding: 6px 8px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.agent-list-component .agent-item.selected {
+    background-color: #efefef;
+}
+
+.agent-list-component .agent-item .agent-info {
+    width: 92%;
+}
+
+.agent-list-component .agent-item:hover {
+    background-color: #ddd;
+    cursor: pointer;
+}
+
+.agent-list-component .agent-item .related-repository {
+    color: #6b7280;
+}
+
+.agent-list-component .agent-item .agent-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.agent-list-component .agent-item .agent-name a {
+    text-decoration: none;
+    color: unset;
+}
+
+.agent-list-component .agent-item .btn-group {
+    display: flex;
+    align-self: start;
+    margin-top: 4px;
+}
+
+.agent-list-component .agent-item .btn-group .dropdown-menu-right {
+    margin-top: 4px;
+}
+
+.agent-list-component .agent-item .btn-group .dropdown-item span {
+    margin-left: 8px;
+}
+
+.agent-list-component .agent-item .open-agent-actions-btn {
+    display: none;
+}
+
+.agent-list-component .agent-item:not(.edited):hover .open-agent-actions-btn {
+    display: block;
+}
+
+.agent-list-component .deleting-agent-loader {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 60px;
+    padding: 6px 8px;
+    background-color: #00000066;
+    color: #fff;
+}

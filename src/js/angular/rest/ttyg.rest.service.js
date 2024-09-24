@@ -7,6 +7,8 @@ angular
 TTYGRestService.$inject = ['$http'];
 
 const CONVERSATIONS_ENDPOINT = 'rest/chat/conversations';
+const AGENTS_ENDPOINT = 'rest/chat/agents';
+
 const DEVELOPMENT = false;
 
 function TTYGRestService($http) {
@@ -94,9 +96,60 @@ function TTYGRestService($http) {
      */
     const createConversation = (data = {}) => {
         if (DEVELOPMENT) {
-            return _fakeBackend.createConversation();
+            return _fakeBackend.createConversation(data);
         }
         return $http.post(CONVERSATIONS_ENDPOINT, data);
+    };
+
+    /**
+     * Fetches agents from the backend.
+     * @return {Promise<*>|*}
+     */
+    const getAgents = () => {
+        if (DEVELOPMENT) {
+            // return _fakeBackend.simulateHttpError();
+            return _fakeBackend.getAgents();
+            // return new Promise((resolve) => {
+            //     setTimeout(() => resolve(_fakeBackend.getAgents()), 3000);
+            // });
+        }
+        return $http.get(AGENTS_ENDPOINT);
+    };
+
+    /**
+     * Fetches an agent by its ID from the backend.
+     * @param {string} id
+     * @return {Promise<Awaited<{data: T}>>|*}
+     */
+    const getAgent = (id) => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.getAgent(id);
+        }
+        return $http.get(`${AGENTS_ENDPOINT}/${id}`);
+    };
+
+    /**
+     * Creates a new agent in the backend.
+     * @param {*} agent
+     * @return {Promise<AgentModel>}
+     */
+    const createAgent = (agent) => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.createAgent(agent);
+        }
+        return $http.post(AGENTS_ENDPOINT, agent);
+    };
+
+    /**
+     * Deletes an agent by its ID from the backend.
+     * @param {string} id
+     * @return {Promise<void>}
+     */
+    const deleteAgent = (id) => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.deleteAgent(id);
+        }
+        return $http.delete(`${AGENTS_ENDPOINT}/${id}`);
     };
 
     return {
@@ -106,6 +159,10 @@ function TTYGRestService($http) {
         askQuestion,
         getConversations,
         deleteConversation,
-        createConversation
+        createConversation,
+        getAgents,
+        getAgent,
+        createAgent,
+        deleteAgent
     };
 }

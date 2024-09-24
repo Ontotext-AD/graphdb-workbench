@@ -104,9 +104,22 @@ html, body {
     margin: 4px 0 0 3px;
 }
 
-.acl-management-view .acl-rules .role-cell .data .icon-warning {
-    float: right;
-    vertical-align: middle;
+.acl-management-view .acl-rules .preview-rule-row .role-icon-container {
+    display: flex;
+    align-items: center;
+}
+
+.acl-management-view .acl-rules .preview-rule-row .role-icon-container .acl-tag-role {
+    overflow-wrap: anywhere;
+}
+
+.acl-management-view .acl-rules .input-container {
+    display: flex;
+    align-items: center;
+}
+
+.acl-management-view .acl-rules .role-cell .icon-warning {
+    margin-left: 3px;
 }
 
 .acl-management-view .acl-rules .operation-column {
@@ -252,6 +265,7 @@ input::placeholder {
 }
 
 .textarea-edit {
+    flex: 1;
     padding: 4px 8px;
     min-height: 29px;
 }

@@ -9,7 +9,7 @@ const modules = [
 ];
 
 angular
-    .module('graphdb.framework.ttyg.directives.chats-list', modules)
+    .module('graphdb.framework.ttyg.directives.chat-list', modules)
     .directive('chatList', ChatListComponent);
 
 ChatListComponent.$inject = ['TTYGContextService', 'ModalService', '$translate'];
@@ -45,13 +45,16 @@ function ChatListComponent(TTYGContextService, ModalService, $translate) {
             $scope.onSelectChatForRenaming = (chat) => {
                 $scope.renamedChat = chat;
             };
+
             /**
              * Handles the selection of a chat.
              * @param {ChatModel} chat
              */
             $scope.onSelectChat = (chat) => {
-                TTYGContextService.selectChat(chat);
-                $scope.renamedChat = undefined;
+                if (!$scope.selectedChat || $scope.selectedChat.id !== chat.id) {
+                    TTYGContextService.selectChat(chat);
+                    $scope.renamedChat = undefined;
+                }
             };
 
             /**
@@ -80,7 +83,7 @@ function ChatListComponent(TTYGContextService, ModalService, $translate) {
              * @param {ChatModel} chat
              */
             $scope.onExportChat = (chat) => {
-                TTYGContextService.emit(TTYGEventName.CHART_EXPORT, chat);
+                TTYGContextService.emit(TTYGEventName.CHAT_EXPORT, chat);
             };
 
             /**

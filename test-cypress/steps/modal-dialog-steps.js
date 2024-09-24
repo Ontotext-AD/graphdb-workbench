@@ -39,11 +39,19 @@ export class ModalDialogSteps {
         ModalDialogSteps.getConfirmButton().click();
     }
 
+    static confirm() {
+        ModalDialogSteps.getConfirmButton().click();
+    }
+
     static getCancelButton() {
         return ModalDialogSteps.getDialogFooter().find('.cancel-btn');
     }
 
     static clickOnCancelButton() {
+        ModalDialogSteps.getCancelButton().click();
+    }
+
+    static cancel() {
         ModalDialogSteps.getCancelButton().click();
     }
 

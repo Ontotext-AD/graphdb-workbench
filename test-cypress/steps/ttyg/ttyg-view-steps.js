@@ -11,6 +11,10 @@ export class TTYGViewSteps {
         return cy.get('#ttyg-view-title');
     }
 
+    static getNoAgentsView() {
+        return this.getTtygView().find('.no-agents-view-component');
+    }
+
     static getTtygViewContent() {
         return cy.get('.ttyg-view-content');
     }
@@ -106,15 +110,44 @@ export class TTYGViewSteps {
     }
 
     static getAgentsPanel() {
-        return this.getAgentsSidebar().find('.agents-list-panel');
+        return this.getAgentsSidebar().find('.agent-list-panel');
+    }
+
+    static getAgentFilter() {
+        return this.getAgentsPanel().find('.agents-filter-dropdown');
+    }
+
+    static getSelectedAgentFilter() {
+        return this.getAgentFilter().find('.selected-filter');
+    }
+
+    static filterAgentsByRepository(repository) {
+        this.getAgentFilter().click();
+        this.getAgentFilter().find('.dropdown-menu').find(`[data-value="${repository}"]`).click();
+    }
+
+    static getAgents() {
+        return this.getAgentsPanel().find('.agent-item');
+    }
+
+    static getAgent(index) {
+        return this.getAgents().eq(index);
     }
 
     static getHelpButton() {
         return this.getAgentsSidebar().find('.help-btn');
     }
 
+    static getCreateFirstAgentButton() {
+        return this.getNoAgentsView().find('.create-agent-btn');
+    }
+
     static getCreateAgentButton() {
         return this.getAgentsSidebar().find('.create-agent-btn');
+    }
+
+    static createFirstAgent() {
+        this.getCreateFirstAgentButton().click();
     }
 
     static getToggleAgentsSidebarButton() {
@@ -155,5 +188,66 @@ export class TTYGViewSteps {
 
     static getChat() {
         return this.getChatPanel().find('.chat');
+    }
+
+    static openAgentActionMenu(index) {
+        this.getAgent(index).realHover().find('.open-agent-actions-btn').click();
+    }
+
+    static triggerDeleteAgentActionMenu(index) {
+        this.openAgentActionMenu(index);
+        this.getAgent(index).find('.agent-actions-menu .delete-agent-btn').click();
+    }
+
+    static getAgentDeletingLoader() {
+        return this.getAgentsPanel().find('.agent-list .deleting-agent-loader');
+    }
+
+    /**
+     * @param {*[]} data
+     */
+    static verifyAgentList(data) {
+        this.getAgents().should('have.length', data.length);
+        data.forEach((agent, index) => {
+            this.getAgent(index).within(() => {
+                cy.get('.agent-name').should('contain', agent.name);
+                cy.get('.related-repository').should('contain', agent.repositoryId);
+            });
+        });
+    }
+
+    static getAgentsMenu() {
+        return this.getTtygView().find('.agent-select-menu');
+    }
+
+    static getAgentsMenuToggleButton() {
+        return this.getAgentsMenu().find('.dropdown-toggle-btn');
+    }
+
+    static openAgentsMenu() {
+        this.getAgentsMenuToggleButton().click();
+    }
+
+    static getAgentsFromMenu() {
+        return this.getAgentsMenu().find('.agent-menu-item');
+    }
+
+    static getAgentFromMenu(index) {
+        return this.getAgentsFromMenu().eq(index);
+    }
+
+    static selectAgent(index) {
+        this.getAgentFromMenu(index).click();
+    }
+
+    static verifySelectAgentMenuItems(data) {
+        this.openAgentsMenu();
+        this.getAgentsFromMenu().should('have.length', data.length);
+        data.forEach((agent, index) => {
+            this.getAgentFromMenu(index).within(() => {
+                cy.get('.agent-name').should('contain', agent.name);
+                cy.get('.repository-id').should('contain', agent.repositoryId);
+            });
+        });
     }
 }

@@ -55,6 +55,10 @@ export class RepositorySteps {
         return RepositorySteps.getRepositoryFromList(id).find('.icon-connection-off');
     }
 
+    static clickRepositoryConnectionOffBtn(id) {
+        RepositorySteps.getRepositoryConnectionOffBtn(id).click();
+    }
+
     static getRepositoryConnectionOnBtn(id) {
         return RepositorySteps.getRepositoryFromList(id).find('.icon-connection-on');
     }
@@ -119,6 +123,22 @@ export class RepositorySteps {
 
     static getRepositoryIdEditElement() {
         return cy.get('.ot-edit-input');
+    }
+
+    static getUsernameFieldEditRepo() {
+        return cy.get('.form-group #username');
+    }
+
+    static typeUsernameInEditRepo(username) {
+        this.getUsernameFieldEditRepo().type(username);
+    }
+
+    static clickSaveEditedRepo() {
+        cy.get('#addEditOntopRepository').click();
+    }
+
+    static typeURL(url) {
+        cy.get('#url').type(url);
     }
 
     static editRepositoryId() {
@@ -241,5 +261,18 @@ export class RepositorySteps {
 
     static uploadRulesetFile(file) {
         cy.get('input[type=file]').eq(1).selectFile(file, {force: true});
+    }
+
+    static getRepoIcon(type) {
+        return this.getLocalGraphDBTable().get(`.lead .icon-repo-${type}`);
+    }
+
+    static assertRepositoryStatus(repositoryId, status) {
+        cy.waitUntil(() =>
+            RepositorySteps.getRepositoryFromList(repositoryId)
+                .should('be.visible')
+                .find('.repository-status .text-secondary')
+                .then(($el) => $el)
+                .then(($el) => $el && $el.text() === status));
     }
 }

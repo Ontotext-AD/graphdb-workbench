@@ -1,0 +1,86 @@
+.chat-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-panel .chat-details {
+    overflow-y: auto;
+    padding-right: 10px;
+    width: 90%;
+}
+
+.chat-panel .chat-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px 0 40px;
+}
+
+.chat-panel .user-message {
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: row;
+}
+
+.chat-panel .assistant {
+    display: flex;
+    gap: 16px;
+}
+
+.chat-panel .actions {
+    display: flex;
+    gap: 10px;
+}
+
+.chat-panel .assistant-message {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chat-panel .assistant-message .answer {
+    padding: 4px 8px;
+}
+
+.chat-panel .user-message .question {
+    max-width: 70%;
+    text-align: end;
+    padding: 8px 16px;
+}
+
+.chat-panel .assistant-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.chat-panel .messages-hint {
+    font-size: 2em;
+    padding-top: 2em;
+    text-align: center;
+}
+
+.chat-panel .assistant-message .hidden-actions {
+    opacity: 0
+}
+
+.chat-panel .assistant-message .actions:hover {
+    opacity: 1;
+}
+
+.chat-panel .assistant-message .actions {
+    padding-left: 6px;
+}
+
+.chat-panel .mew-question {
+    width: 100%;
+}
+
+.chat-panel .mew-question .question-input {
+    background-color: #EFF3F8;
+}

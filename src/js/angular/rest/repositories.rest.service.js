@@ -1,3 +1,5 @@
+import {repositoryConfigMapper} from "./mappers/repositories-mapper";
+
 angular
     .module('graphdb.framework.rest.repositories.service', [])
     .factory('RepositoriesRestService', RepositoriesRestService);
@@ -10,6 +12,7 @@ function RepositoriesRestService($http) {
     return {
         getRepositories,
         getRepository,
+        getRepositoryModel,
         deleteRepository,
         createRepository,
         editRepository,
@@ -33,6 +36,16 @@ function RepositoriesRestService($http) {
             params: {
                 location: repoInfo.location
             }
+        });
+    }
+
+    function getRepositoryModel(repoInfo) {
+        return $http.get(`${REPOSITORIES_ENDPOINT}/${repoInfo.id}`, {
+            params: {
+                location: repoInfo.location
+            }
+        }).then((response) => {
+            return repositoryConfigMapper(response.data);
         });
     }
 

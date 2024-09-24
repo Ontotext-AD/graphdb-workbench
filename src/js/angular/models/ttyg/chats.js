@@ -1,10 +1,28 @@
+import {ChatItemsListModel} from "./chat-item";
+
 export class ChatModel {
     constructor(data, hashGenerator) {
         this.hashGenerator = hashGenerator;
+
+        /**
+         * @type {string}
+         */
         this._id = data.id;
+
+        /**
+         * @type {string}
+         */
         this._name = data.name;
+
+        /**
+         * @type {number}
+         */
         this._timestamp = data.timestamp;
-        this._messages = data.messages;
+
+        /**
+         * @type {ChatItemsListModel}
+         */
+        this._chatHistory = data.chatHistory;
         this.hash = this.generateHash();
     }
 
@@ -37,12 +55,22 @@ export class ChatModel {
         this._timestamp = value;
     }
 
-    get messages() {
-        return this._messages;
+    get chatHistory() {
+        return this._chatHistory;
     }
 
-    set messages(value) {
-        this._messages = value;
+    set chatHistory(value) {
+        this._chatHistory = value || new ChatItemsListModel();
+    }
+
+    /**
+     * Converts the instance to a rename chat request payload.
+     * This request object contains the new name for renaming the chat.
+     *
+     * @return {{name: string}} An object representing the rename request payload.
+     */
+    toRenameRequestPayload() {
+        return {name: this._name};
     }
 }
 

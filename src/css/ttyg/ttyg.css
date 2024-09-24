@@ -10,20 +10,14 @@
     }
 }
 
-/* override the main-container and title to accommodate to the new design without left and right padding */
-.main-container {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-}
+/*
+page layout styles
+*/
 
 /*override btn-small to properly center the icons */
 .ttyg-view .btn-sm {
     padding: 0 !important;
     line-height: 1 !important;
-}
-
-.ttyg-view #ttyg-view-title {
-    padding: 0 2rem;
 }
 
 .ttyg-view .toolbar {
@@ -33,23 +27,35 @@
     padding: 10px;
 }
 
+/*
+common sidebar and slidepanel styles
+*/
+
 .ttyg-view .sidebar {
     display: flex;
     flex-direction: column;
     height: 100%;
 }
 
+.ttyg-view .sidebar .sidebar-content {
+    height: 100%;
+    padding: 0;
+}
+
 .ttyg-view .sidebar .slide-panel {
     /* adapt to view width but at least 220px, menu size ignored for all practical screen sizes */
     max-width: var(--sidebar-width);
     top: var(--toolbar-height) !important;
-    padding: 1rem 0 1rem 1rem;
 }
 
 .ttyg-view .sidebar .slide-panel.slide-panel-expanded  {
     /* adapt width according to available space but not more than 800px */
     max-width: min(800px, 100% - var(--menu-width));
 }
+
+/*
+left sidebar
+*/
 
 .ttyg-view .left-sidebar .toolbar {
     justify-content: space-between;
@@ -66,31 +72,25 @@
     overflow-y: auto;
 }
 
-.ttyg-view .left-sidebar .chat-list-panel .chat-group label {
-    color: #aaa;
-}
-
-.ttyg-view .left-sidebar .chat-list-panel .chat-group ul {
-    list-style: none;
-    padding-inline-start: 0;
+/*
+right sidebar
+*/
+.ttyg-view .right-sidebar {
+    /* Lower the default z-index of the slide panel to prevent the repository menu overlapping by the panel. */
+    z-index: 997;
 }
 
 .ttyg-view .right-sidebar .toolbar {
-    justify-content: space-between;
+    justify-content: end;
 }
 
 .ttyg-view .right-sidebar.collapsed .toolbar {
     justify-content: end;
 }
 
-.ttyg-view .right-sidebar .agents-list-panel {
-    overflow-y: auto;
-}
-
-.ttyg-view .right-sidebar .agents-list-panel ul {
-    list-style: none;
-    padding-inline-start: 0;
-}
+/*
+chat area
+*/
 
 .ttyg-view .ttyg-container {
     display: grid;
@@ -104,8 +104,14 @@
     padding: 0 2rem;
 }
 
+.ttyg-view .chat-content .toolbar {
+    width: 900px;
+    margin: auto;
+    padding: 0;
+}
+
 .ttyg-view .chat-content .chat {
-    width: 720px;
+    width: 900px;
     margin: auto;
     height: calc(100vh - 10em);
     display: flex;
@@ -113,47 +119,15 @@
     justify-content: space-between;
 }
 
-.ttyg-view .chat .messages {
-    border: 1px solid #ddd;
-    height: calc(100% - 5em);
-    overflow: scroll;
-}
-
-.ttyg-view .chat .messages.hidden {
-    visibility: hidden;
-}
-
-.ttyg-view .chat .messages-hint {
-    font-size: 2em;
-    padding-top: 2em;
-    text-align: center;
-}
-
-.ttyg-view .chat .messages-item {
-    padding: 0.5em;
-}
-
-.ttyg-view .chat .messages-item-content {
-    white-space: pre-line;
-}
-
-.ttyg-view .chat .messages-item-question {
-    background-color: hsla(var(--secondary-color-hsl), 0.1);
-}
-
-.ttyg-view .chat .messages-item-assistant {
-    background-color: hsla(var(--secondary-color-hsl), 0.2);
-}
-
-.ttyg-view .chat .messages-item-assistant .icon {
-    color: var(--primary-color);
-}
-
-.ttyg-view .chat .question {
-
-}
-
 .ttyg-view .controls {
     display: flex;
     flex-direction: column;
+}
+
+.ttyg-view agent-select-menu {
+    width: 300px;
+}
+
+.selected-chat-panel {
+    height: 100%;
 }

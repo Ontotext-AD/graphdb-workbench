@@ -176,7 +176,7 @@
                 "role": "ROLE1",
                 "plugin": "Plugin"
             },
-            "prefix_warning": {
+            "custom_prefix_warning": {
                 "text": "Custom roles should be entered without the \"CUSTOM_\" prefix in Workbench"
             },
             "actions": {
@@ -218,7 +218,7 @@
     },
     "ttyg": {
         "helpInfo": "Talk to Your Graph is chat bot based on OpenAI's GPT-4 model that can answer questions about data stored in GraphDB, leveraging both your data and the general knowledge of the GPT-4 model. The bot works in connection with the ChatGPT Retrieval connector.",
-        "hint": "Talk to your graph – simply ask a question!",
+        "loading": "Loading...",
         "help": {
             "btn": {
                 "show_help": {
@@ -258,18 +258,167 @@
                 }
             },
             "messages": {
+                "create_failure": "Failed to create new conversation. Please try again.",
                 "rename_failure": "Failed to rename the conversation. Please try again.",
                 "delete_failure": "Failed to delete the conversation. Please try again.",
                 "export_failure": "Failed to export the conversation. Please try again."
             }
         },
-        "agent": {
+        "chat_panel": {
+            "hint": "Talk to your graph – simply ask a question!",
             "btn": {
+                "ask": {
+                    "label": "Ask"
+                },
+                "regenerate": {
+                    "tooltip": "Regenerate"
+                },
+                "copy": {
+                    "tooltip": "Copy"
+                }
+            },
+            "messages": {
+                "answer_copy_successful": "The answer was successfully copied to the clipboard.",
+                "answer_copy_failed": "Failed to copy the answer to the clipboard."
+            }
+        },
+        "agent": {
+            "loading_agents": "Loading agents...",
+            "deleting_agent": "Deleting agent...",
+            "deleted_repository": "Deleted repository",
+            "create_agent_modal": {
+                "title": "Create Agent",
+                "advanced_settings": {
+                    "show": "Show advanced settings",
+                    "hide": "Hide advanced settings"
+                },
+                "form": {
+                    "agent_name": {
+                        "label": "GraphAgent name",
+                        "placeholder": "Enter user friendly name"
+                    },
+                    "repository": {
+                        "label": "Repository ID"
+                    },
+                    "model": {
+                        "label": "Model",
+                        "hint": "Check out the available OpenAI models <a href=\"https://platform.openai.com/docs/models\" target=\"_blank\">here</a>."
+                    },
+                    "temperature": {
+                        "label": "Temperature"
+                    },
+                    "top_p": {
+                        "label": "Top_P"
+                    },
+                    "seed": {
+                        "label": "Seed",
+                        "hint": "Any integer value"
+                    },
+                    "extraction_method": {
+                        "label": "Query methods",
+                        "required": "At least one query method must be selected"
+                    },
+                    "fts_search": {
+                        "label": "Full-text search",
+                        "fts_disabled_message": "To use this method, you must enable the full-text search (FTS) index on chosen repository and then restart it.<br/>Enable the index: <a href=\"{{repositoryEditPage}}\" target=\"_blank\">here</a>",
+                        "missing_repository_id": "Repository ID must be selected"
+                    },
+                    "sparql_search": {
+                        "label": "SPARQL",
+                        "required_option": "Select how an ontology should be fetched"
+                    },
+                    "ontology_graph": {
+                        "label": "Fetch ontology from a named graph"
+                    },
+                    "construct_query": {
+                        "label": "Provide a SPARQL CONSTRUCT query that fetches the ontology"
+                    },
+                    "similarity_search": {
+                        "label": "Similarity search"
+                    },
+                    "similarity_index": {
+                        "label": "Similarity index name",
+                        "loading_indexes": "Loading similarity indexes...",
+                        "no_similarity_index_message": "To use this method, you must have a similarity index created.<br/>Create similarity text index <a href=\"{{similarityIndexPage}}\" target=\"_blank\">here</a>."
+                    },
+                    "similarity_threshold": {
+                        "label": "Similarity threshold"
+                    },
+                    "retrieval_search": {
+                        "label": "ChatGPT retrieval connector",
+                        "no_retrieval_connectors_message": "No connector instances.<br/>Create ChatGPT retrieval connector <a href=\"{{retrievalConnectorPage}}\" target=\"_blank\">here</a>."
+                    },
+                    "connector_id": {
+                        "label": "ChatGPT retrieval connector"
+                    },
+                    "query_template": {
+                        "label": "Query template"
+                    },
+                    "max_number_of_triples_per_call": {
+                        "label": "Max number of results (triples) per call",
+                        "placeholder": "Automatic value"
+                    },
+                    "system_instruction": {
+                        "label": "System instructions",
+                        "placeholder": "Enter system instructions"
+                    },
+                    "user_instruction": {
+                        "label": "User instructions",
+                        "placeholder": "Enter user instructions"
+                    },
+                    "additional_query_methods": {
+                        "label": "Additional query methods",
+                        "method": {
+                            "iri_discovery_search": "Full-text search in labels for IRI discovery"
+                        }
+                    }
+                },
+                "btn": {
+                    "create": {
+                        "label": "Create Agent"
+                    },
+                    "cancel": {
+                        "label": "Cancel"
+                    }
+                }
+            },
+            "delete_agent_modal": {
+                "title": "Delete Agent",
+                "body": "Do you really want to delete the agent <b>{{agentName}}</b>?"
+            },
+            "agent_select_menu": {
+                "no_selection_label": "Select an agent",
+                "deleted_agent": "[deleted agent]",
+                "configure_agent_modal": {
+                    "title": "Configure Agent",
+                    "body": "Selected agent has no repository configured. Do you want to configure it now?"
+                }
+            },
+            "fat_btn": {
+                "create_agent": {
+                    "label": "Create your first agent"
+                }
+            },
+            "btn": {
+                "filter": {
+                    "tooltip": "Filter by repository",
+                    "all": "All"
+                },
                 "edit_agent": {
-                    "tooltip": "Edit agent"
+                    "label": "Settings",
+                    "tooltip": "Edit Agent"
+                },
+                "clone_agent": {
+                    "label": "Clone",
+                    "tooltip": "Clone Agent"
+                },
+                "delete_agent": {
+                    "label": "Delete Agent",
+                    "tooltip": "Delete Agent"
                 },
                 "create_agent": {
-                    "tooltip": "Create agent"
+                    "label": "Create Agent",
+                    "tooltip": "Create Agent"
                 },
                 "open_sidebar": {
                     "tooltip": "Open sidebar"
@@ -277,13 +426,20 @@
                 "close_sidebar": {
                     "tooltip": "Close sidebar"
                 }
+            },
+            "messages": {
+                "no_agents": "No agents found for the selected filter.",
+                "help_1": "Talk to your data in natural language. All you need to do is create and instruct your own AI Agent to assist you.",
+                "help_2": "The Agent is an AI-powered conversational agent designed to help with a wide range of tasks, from answering questions and providing information to assisting with creative and technical projects. It leverages advanced natural language processing to understand and respond to user inputs in a human-like manner, making interactions intuitive and efficient.",
+                "error_retrieval_connectors_loading": "Error loading retrieval connectors",
+                "error_similarity_indexes_loading": "Error loading similarity indexes",
+                "error_repository_config_loading": "Error loading repository configurations"
             }
         },
         "help.what.title": "What is this?",
         "help.what.content": "Talk to Your Graph is chat bot based on OpenAI's GPT-4 model that can answer questions about data stored in GraphDB, leveraging both your data and the general knowledge of the GPT-4 model.",
         "help.how.title": "How does it work?",
         "help.how.content": "The bot uses the ChatGPT Retrieval connector to fetch information it does not know about. As such, you must first create a suitable connector. See also the settings for fine-tuning the integration with the Retrieval connector.",
-        "ask.button": "Ask",
         "clear.hint": "Clear the chat history",
         "clear.history.confirmation": "This will clear the history conversation.",
         "settings.title": "Talk to Your Graph Settings",
@@ -1002,11 +1158,13 @@
         "force.serial.pipeline": "Force serial pipeline",
         "restore.defaults.btn": "Restore defaults",
         "only.upload.btn": "Only upload",
+        "cancel.btn": "Cancel",
         "abort.btn": "Abort",
         "no.files.found": "No files found",
         "enable.for.auto.start": "Enable this option to start the import when you click the Import button. If it is disabled the import will be added to the list but not started automatically.",
         "auto.start": "Start import automatically",
         "data.from.url": "Import RDF data from URL",
+        "format": "Format",
         "supported.url.with.rdf": "URL with RDF data. Supported formats are",
         "invalid.url": "Not valid url!",
         "gz.zip": ", as well as their .gz versions and .zip archives",
@@ -1116,6 +1274,7 @@
                 "name": "Name",
                 "size": "Size",
                 "modified": "Modified",
+                "uploaded": "Uploaded",
                 "imported": "Imported",
                 "context": "Context"
             },
@@ -1427,6 +1586,9 @@
     "repos.edit.common.settings": "Edit common settings for these repositories",
     "repos.view.update.licenses": "View or update license for these repositories",
     "repos.refresh.page.msg": " Refresh the page to retry.",
+    "repositories.location.remote.graph_db.instances": "Remote GraphDB instances",
+    "repositories.location.local.graph_db.instance": "Local GraphDB instance",
+    "repositories.location.ontopic.instances": "Remote Ontopic instances",
     "no.repos.in.current.location": "There are no repositories in the current location",
     "connect.repo": "Connect repository",
     "connected.tooltip": "Connected",
@@ -1444,6 +1606,12 @@
     "no.connected.gdb.instances": "There are no connected GraphDB instances.",
     "edit.file.content": "Edit file content",
     "upload.file": "Upload file...",
+    "common": {
+        "dates": {
+            "today": "Today",
+            "yesterday": "Yesterday"
+        }
+    },
     "common.confirm.delete": "Confirm delete",
     "common.confirm.save": "Confirm save",
     "common.cancel.btn": "Cancel",
@@ -1593,6 +1761,37 @@
     "attach.remote.gdb.instance": "Attach a remote GraphDB instance",
     "remote.location.url": "Location URL*",
     "remote.location.enter.url.msg": "Enter a URL to a remote GraphDB instance",
+    "remote.location.required": "Location URL is required.",
+    "remote.location.ontopic.username.required": "ClientID*",
+    "remote.location.ontopic.password.required": "Secret*",
+    "remote.ontopic.location.enter.url.msg": "Enter a URL to an Ontopic remote instance",
+    "manage.remote.location.dialog.graph_db.basic.auth.type.description": "Basic authentication requires a Username and a Password.",
+    "manage.remote.location.dialog.ontopic.basic.auth.type.description": "Basic authentication requires a ClientID and a Secret.",
+    "manage.remote.location.dialog.update.instance": "Edit remote instance",
+    "manage.remote.location.dialog.attach.instance": "Attach a remote instance",
+    "manage.remote.location.dialog.graph_db.location.instance": "GraphDB instance",
+    "manage.remote.location.dialog.ontopic.location.instance": "Ontopic instance",
+    "manage.remote.location.dialog.required.url": "Location URL*",
+    "manage.remote.location.dialog.graph_db.url.message": "Enter a URL to a remote GraphDB instance",
+    "manage.remote.location.dialog.ontopic.url.message": "Enter a URL to an Ontopic remote instance",
+    "manage.remote.location.dialog.url.requred.message": "Location URL is required.",
+    "manage.remote.location.dialog.graph_db.error.not_valid.url": "Note that the location should be a URL that points to a remote GraphDB installation, e.g.",
+    "manage.remote.location.dialog.ontopic.error.not_valid.url": "Note that the location should be a URL that points to a remote Ontopic installation, e.g.",
+    "manage.remote.location.dialog.auth_type.header": "Authentication type",
+    "manage.remote.location.dialog.auth_type.none": "None",
+    "manage.remote.location.dialog.auth_type.basic": "Basic auth",
+    "manage.remote.location.dialog.auth_type.basic.description": "No authentication will be used with this location.",
+    "manage.remote.location.dialog.auth_type.signature": "Signature",
+    "manage.remote.location.dialog.graph_db.username.required.message": "Username*",
+    "manage.remote.location.dialog.ontopic.username.required.message": "ClientID*",
+    "manage.remote.location.dialog.graph_db.password.required.message": "Password*",
+    "manage.remote.location.dialog.ontopic.password.required.message": "Secret*",
+    "manage.remote.location.dialog.auth_type.signature.description.prefix": "Signature authentication uses the token secret, which must be the same on all GraphDB instances. For more information on configuring the token secret, please refer to ",
+    "manage.remote.location.dialog.auth_type.signature.description.suffix": " in the documentation.",
+    "manage.remote.location.dialog.graph_db.username.placeholder": "my username",
+    "manage.remote.location.dialog.ontopic.username.placeholder": "my client id",
+    "manage.remote.location.dialog.graph_db.password.placeholder": "my password",
+    "manage.remote.location.dialog.ontopic.password.placeholder": "my secret",
     "valid.remote.location.warning": "Note that the location should be a URL that points to a remote GraphDB installation, e.g.",
     "auth.type.header": "Authentication type",
     "remote.location.no.auth.used.tooltip": "No authentication used with remote location",

@@ -18,7 +18,7 @@ PluginRegistry.add('main.menu', {
             href: '#',
             order: 6,
             role: 'IS_AUTHENTICATED_FULLY',
-            icon: "fa-light fa-flask",
+            icon: "fa-regular fa-flask",
             guideSelector: 'menu-lab'
         },
         {

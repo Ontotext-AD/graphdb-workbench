@@ -399,7 +399,7 @@ describe('Repositories', () => {
         });
 
         //Make sure that repository is in status INACTIVE
-        assertRepositoryStatus(repositoryId, "INACTIVE");
+        RepositorySteps.assertRepositoryStatus(repositoryId, "INACTIVE");
 
         RepositorySteps.getRepositoriesDropdown().click().within(() => {
 
@@ -425,7 +425,7 @@ describe('Repositories', () => {
         cy.get('#wb-repositories-repositoryInGetRepositories .repository')
             .should('have.length.greaterThan', 0)
             .then(() => {
-                assertRepositoryStatus(repositoryId, "RUNNING");
+                RepositorySteps.assertRepositoryStatus(repositoryId, "RUNNING");
             });
 
         //Restart the repository
@@ -434,11 +434,11 @@ describe('Repositories', () => {
         //Check toast for RESTARTING status and repo row for RUNNING status
         ToasterSteps.verifySuccess('Restarting repository ' + repositoryId);
 
-        assertRepositoryStatus(repositoryId, "RESTARTING");
+        RepositorySteps.assertRepositoryStatus(repositoryId, "RESTARTING");
 
         ToasterSteps.getToast().should('not.exist');
 
-        assertRepositoryStatus(repositoryId, "RUNNING");
+        RepositorySteps.assertRepositoryStatus(repositoryId, "RUNNING");
     });
 
     it('should create SHACL repo and test shapes validation', () => {
@@ -508,15 +508,6 @@ describe('Repositories', () => {
         // Then I expect to see a confirmation dialog.
         ModalDialogSteps.verifyDialogBody('Changing the repository ID is a dangerous operation since it renames the repository folder and enforces repository shutdown.');
     });
-
-    function assertRepositoryStatus(repositoryId, status) {
-        cy.waitUntil(() =>
-            RepositorySteps.getRepositoryFromList(repositoryId)
-                .should('be.visible')
-                .find('.repository-status .text-secondary')
-                .then(($el) => $el)
-                .then(($el) => $el && $el.text() === status));
-    }
 
     function interceptRulesetFileUpload() {
        cy.intercept(

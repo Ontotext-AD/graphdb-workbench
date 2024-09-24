@@ -108,7 +108,8 @@ describe('ACL Management: create rule', () => {
                     "subject": "<urn:Mary>",
                     "predicate": "*",
                     "object": "*",
-                    "context": "*"
+                    "context": "*",
+                    "warnForPrefix": false
                 },
                 {
                     "scope": "statement",
@@ -118,7 +119,8 @@ describe('ACL Management: create rule', () => {
                     "subject": "*",
                     "predicate": "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>",
                     "object": "*",
-                    "context": "*"
+                    "context": "*",
+                    "warnForPrefix": false
                 },
                 {
                     "scope": "statement",
@@ -128,7 +130,8 @@ describe('ACL Management: create rule', () => {
                     "subject": "<urn:John>",
                     "predicate": "*",
                     "object": "*",
-                    "context": "*"
+                    "context": "*",
+                    "warnForPrefix": false
                 },
                 {
                     "scope": "statement",
@@ -138,7 +141,8 @@ describe('ACL Management: create rule', () => {
                     "subject": "<<<http://example.com/test> <http://www.w3.org/2000/01/rdf-schema#label> \"test aber auf Deutsch\"@de>>",
                     "predicate": "*",
                     "object": "\"test aber auf Deutsch\"@en",
-                    "context": "<http://example.com/graph1>"
+                    "context": "<http://example.com/graph1>",
+                    "warnForPrefix": false
                 },
                 {
                     "scope": "statement",
@@ -148,7 +152,8 @@ describe('ACL Management: create rule', () => {
                     "subject": "*",
                     "predicate": "*",
                     "object": "\"15\"^^<http://www.w3.org/2001/XMLSchema#int>",
-                    "context": "*"
+                    "context": "*",
+                    "warnForPrefix": false
                 },
                 {
                     "scope": "statement",
@@ -158,7 +163,8 @@ describe('ACL Management: create rule', () => {
                     "subject": "<urn:Cat>",
                     "predicate": "*",
                     "object": "<<<http://example.com/test> <http://www.w3.org/2000/01/rdf-schema#label> \"test aber auf Deutsch\"@de>>",
-                    "context": "*"
+                    "context": "*",
+                    "warnForPrefix": false
                 }
             ];
             expect(interception.request.body).to.deep.eq(expected);
@@ -222,17 +228,16 @@ describe('ACL Management: create rule', () => {
         AclManagementSteps.fillRole(0, 'CUSTOM_ROLE_FOO');
 
         // Then I expect the prefix warning to appear
-        AclManagementSteps.getPrefixWarning().should('be.visible');
-        AclManagementSteps.getPrefixWarning().should('contain.text', 'Custom roles should be entered without the "CUSTOM_" prefix in Workbench');
+        AclManagementSteps.getPrefixWarning(0).should('be.visible');
+        AclManagementSteps.getPrefixWarning(0).should('contain.text', 'Custom roles should be entered without the "CUSTOM_" prefix in Workbench');
         // When I save the rule
         AclManagementSteps.saveRule(0);
         // Then the text should be how the user typed it
         AclManagementSteps.getSavedRoleField(0).should('contain', 'CUSTOM_ROLE_FOO');
         // And I expect a warning icon to appear
-        AclManagementSteps.getWarningIcon().should('be.visible');
-        AclManagementSteps.mouseoverWarningIcon();
+        AclManagementSteps.getWarningIcon(0).should('be.visible');
         // And the icon should have the same tooltip text as the warning
-        AclManagementSteps.getWarningIconTooltipText().should('be.visible').and('contain.text', 'Custom roles should be entered without the "CUSTOM_" prefix in Workbench');
+        AclManagementSteps.getWarningIconTooltipText(0).should('be.visible').and('contain.text', 'Custom roles should be entered without the "CUSTOM_" prefix in Workbench');
     });
 });
 

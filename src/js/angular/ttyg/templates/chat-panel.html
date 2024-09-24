@@ -1,0 +1,48 @@
+<link href="css/ttyg/chat-panel.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+<div class="chat-panel h-100">
+
+    <div class="messages-hint text-muted" ng-if="chat.chatHistory.isEmpty()">
+        {{ 'ttyg.chat_panel.hint' | translate }}
+    </div>
+
+    <div class="chat-details" ng-class="{'hidden': !chat}">
+        <div class="chat-detail" ng-repeat="chatItem in chat.chatHistory.items">
+            <div class="user-message">
+                <div class="question alert-help">
+                    {{ chatItem.question.message }}
+                </div>
+            </div>
+            <div class="assistant">
+                <div class="assistant-icon alert-help">
+                    <i class="fa-regular fa-message-bot"></i>
+                </div>
+                <div class="assistant-message">
+                    <div class="answer">
+                        {{ chatItem.answer.message }}
+                    </div>
+                    <div class="actions" ng-class="{'hidden-actions': !$last}">
+                        <button class="btn btn-link secondary btn-sm regenerate-question-btn"
+                                ng-click="regenerateQuestion(chatItem)"
+                                gdb-tooltip="{{'ttyg.chat_panel.btn.regenerate.tooltip' | translate}}">
+                            <i class="fa-regular fa-arrows-rotate"></i>
+                        </button>
+                        <button class="btn btn-link secondary btn-sm copy-answer-btn"
+                                ng-click="copyAnswerToClipboard(chatItem)"
+                                gdb-tooltip="{{'ttyg.chat_panel.btn.copy.tooltip' | translate}}">
+                            <i class="fa-regular fa-clone"></i>
+                        </button>
+                        <i class="fa-regular fa-wand-magic-sparkles"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mew-question mb-3 mt-2 d-flex">
+        <input class="form-control question-input" ng-model="chatItem.question.message" type="text">
+        <button class="btn btn-primary ask-button" ng-disabled="!chatItem.question.message || !selectedAgent || selectedAgent.isDeleted" ng-click="ask()">
+            <i class="fa-regular fa-arrow-turn-left-up"></i>
+            {{ 'ttyg.chat_panel.btn.ask.label ' | translate }}
+        </button>
+    </div>
+</div>

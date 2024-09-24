@@ -1,10 +1,22 @@
-export class TTYGStubs {
+import {Stubs} from "../stubs";
+
+export class TTYGStubs extends Stubs {
     static stubChatsListGet(fixture = '/ttyg/chats/get-chat-list.json', delay = 0) {
         cy.intercept('/rest/chat/conversations', {
             method: 'GET',
             fixture: fixture,
             statusCode: 200,
             delay: delay
+        }).as('get-chat-list');
+    }
+
+    static stubChatListGetError() {
+        cy.intercept('/rest/chat/conversations', {
+            method: 'GET',
+            statusCode: 500,
+            response: {
+                error: 'Internal Server Error'
+            }
         }).as('get-chat-list');
     }
 
@@ -20,8 +32,25 @@ export class TTYGStubs {
 
     }
 
-    static stubChatGet() {
-
+    /**
+     * Loads the specified <code>fixture</code> and updates the chatId in the fixture with the actual ID passed in the endpoint call.
+     *
+     * @param {string} fixture - Path to the JSON file containing the chat conversation.
+     * @param {number} delay - Optional delay in milliseconds before responding with the fixture.
+     */
+    static stubChatGet(fixture = '/ttyg/chats/get-chat-1.json', delay = 0) {
+        cy.fixture(fixture).then((body) => {
+            const bodyString = JSON.stringify(body);
+            cy.intercept('/rest/chat/conversations/**', (req) => {
+                const chatId = req.url.split('/').pop();
+                    // Respond with the modified body
+                    req.reply({
+                        statusCode: 200,
+                        body: bodyString.replace(/{chatId}/g, chatId),
+                        delay: delay
+                    });
+            }).as('get-chat');
+        });
     }
 
     static stubChatUpdate() {
@@ -38,5 +67,40 @@ export class TTYGStubs {
             fixture: '/ttyg/chats/deleted-chat.json',
             statusCode: 200
         }).as('delete-chat');
+    }
+
+    static stubAgentListGet(fixture = '/ttyg/agent/get-agent-list.json', delay = 0, invocation = 0) {
+        cy.intercept('/rest/chat/agents', {
+            method: 'GET',
+            fixture: fixture,
+            statusCode: 200,
+            delay: delay
+        }).as('get-agent-list-' + invocation);
+    }
+
+    static stubAgentListGetError() {
+        cy.intercept('/rest/chat/agents', {
+            method: 'GET',
+            statusCode: 500,
+            response: {
+                error: 'Internal Server Error'
+            }
+        }).as('get-agent-list');
+    }
+
+    static stubAgentCreate() {
+        cy.intercept('/rest/chat/agents', {
+            method: 'POST',
+            fixture: '/ttyg/agent/create-agent.json',
+            statusCode: 200
+        }).as('create-agent');
+    }
+
+    static stubAgentDelete(delay = 0) {
+        cy.intercept('/rest/chat/agents/**', {
+            method: 'DELETE',
+            statusCode: 200,
+            delay: delay
+        }).as('delete-agent');
     }
 }
