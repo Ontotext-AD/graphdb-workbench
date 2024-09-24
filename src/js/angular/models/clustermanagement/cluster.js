@@ -1,3 +1,5 @@
+import {value} from "lodash/seq";
+
 /**
  * Represents a location with relevant metadata.
  */
@@ -289,6 +291,7 @@ export class ClusterViewModel {
         this._addToCluster = new Map();
         this._deleteFromCluster = new Map();
         this._currentNodesCount = 0;
+        this._clusterConfiguration = new ClusterConfiguration();
         this.MINIMUM_NODES_REQUIRED = 2;
     }
 
@@ -348,6 +351,15 @@ export class ClusterViewModel {
     }
 
     /**
+     * Retrieves the local node information.
+     *
+     * @return {Location} The local node location.
+     */
+    getLocalNode() {
+        return this._clusterModel.locations.find((location) => location.isLocal);
+    }
+
+    /**
      * Adds a location to the cluster, ensuring uniqueness by endpoint.
      * @param {Location} location - The location in JSON to add.
      */
@@ -365,6 +377,14 @@ export class ClusterViewModel {
         }
     }
 
+    /**
+     * Adds a location to the cluster's location list.
+     * If the location is not already present in the list, it will be added.
+     * If the location is already present, it will be replaced.
+     *
+     * @param {Location} location - The location to add to the locations list.
+     * @return {void}
+     */
     addToLocations(location) {
         const index = ClusterUtil.findIndexByEndpoint(this._clusterModel.locations, location.endpoint);
         if (index === -1) {
@@ -399,13 +419,37 @@ export class ClusterViewModel {
         return Array.from(this._deleteFromCluster.values());
     }
 
+    /**
+     * Prepares the actions needed to update the cluster, including nodes to be added and removed.
+     * Also updates the cluster configuration with the current nodes.
+     *
+     * @return {Object} An object containing the nodes to be added, the nodes to be removed, and the updated cluster configuration in JSON format.
+     * @property {string[]} addNodes - List of node addresses to add to the cluster.
+     * @property {string[]} removeNodes - List of node addresses to remove from the cluster.
+     * @property {Object} clusterConfiguration - The updated cluster configuration in JSON format.
+     */
     getUpdateActions() {
         const addNodes = Array.from(this._addToCluster.values()).map((node) => node.rpcAddress || node.address);
         const removeNodes = Array.from(this._deleteFromCluster.values()).map((node) => node.rpcAddress || node.address);
-        return {
+        const updateActions = {
             addNodes,
             removeNodes
         };
+
+        if (!this.hasCluster()) {
+            this._clusterConfiguration.nodes = addNodes;
+            updateActions.clusterConfiguration = this._clusterConfiguration.toJSON();
+        }
+        return updateActions;
+    }
+
+    /**
+     * Retrieves the current cluster configuration.
+     *
+     * @return {ClusterConfiguration} The cluster configuration.
+     */
+    getClusterConfiguration() {
+        return this._clusterConfiguration;
     }
 
     /**
@@ -464,6 +508,14 @@ export class ClusterViewModel {
         return (this._currentNodesCount - 1) >= this.MINIMUM_NODES_REQUIRED;
     }
 
+    /**
+     * Checks if the cluster is currently configured.
+     *
+     * @return {boolean} True if the cluster is configured, false otherwise.
+     */
+    hasCluster() {
+        return this._clusterModel.hasCluster;
+    }
 }
 
 export class ClusterItemViewModel {
@@ -553,6 +605,86 @@ export class ClusterItemViewModel {
 
     set isReplacedBy(value) {
         this._isReplacedBy = value;
+    }
+}
+
+export class ClusterConfiguration {
+    constructor() {
+        this._electionMinTimeout = 8000;
+        this._electionRangeTimeout = 6000;
+        this._heartbeatInterval = 2000;
+        this._messageSizeKB = 64;
+        this._verificationTimeout = 1500;
+        this._transactionLogMaximumSizeGB = 50;
+        this._nodes = [];
+    }
+
+    get electionMinTimeout() {
+        return this._electionMinTimeout;
+    }
+
+    set electionMinTimeout(value) {
+        this._electionMinTimeout = value;
+    }
+
+    get electionRangeTimeout() {
+        return this._electionRangeTimeout;
+    }
+
+    set electionRangeTimeout(value) {
+        this._electionRangeTimeout = value;
+    }
+
+    get heartbeatInterval() {
+        return this._heartbeatInterval;
+    }
+
+    set heartbeatInterval(value) {
+        this._heartbeatInterval = value;
+    }
+
+    get messageSizeKB() {
+        return this._messageSizeKB;
+    }
+
+    set messageSizeKB(value) {
+        this._messageSizeKB = value;
+    }
+
+    get verificationTimeout() {
+        return this._verificationTimeout;
+    }
+
+    set verificationTimeout(value) {
+        this._verificationTimeout = value;
+    }
+
+    get transactionLogMaximumSizeGB() {
+        return this._transactionLogMaximumSizeGB;
+    }
+
+    set transactionLogMaximumSizeGB(value) {
+        this._transactionLogMaximumSizeGB = value;
+    }
+
+    get nodes() {
+        return this._nodes;
+    }
+
+    set nodes(value) {
+        this._nodes = value;
+    }
+
+    toJSON() {
+        return {
+            electionMinTimeout: this.electionMinTimeout,
+            electionRangeTimeout: this.electionRangeTimeout,
+            heartbeatInterval: this.heartbeatInterval,
+            messageSizeKB: this.messageSizeKB,
+            verificationTimeout: this.verificationTimeout,
+            transactionLogMaximumSizeGB: this.transactionLogMaximumSizeGB,
+            nodes: this.nodes
+        };
     }
 }
 
