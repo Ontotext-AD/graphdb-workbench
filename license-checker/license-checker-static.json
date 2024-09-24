@@ -1,4 +1,11 @@
 {
+    "@awesome.me/kit-94ffd2fc4a" : {
+        "licenses": "Font Awesome Pro License",
+        "name": "@awesome.me/kit-94ffd2fc4a",
+        "version": "1.0.105",
+        "description": "Font Awesome is the Internet's icon library and toolkit",
+        "licenseText": "Commercial license, see https://fontawesome.com/license for details"
+    },
     "angucomplete-alt": {
         "licenses": "MIT",
         "name": "angucomplete-alt",
