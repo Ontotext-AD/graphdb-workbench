@@ -108,27 +108,12 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
         });
 
         modalInstance.result.then((cluster) => {
-            const nodes = cluster.getUpdateActions();
-            const loaderMessage = $translate.instant('cluster_management.cluster_page.replace_nodes_loader');
-            $scope.setLoader(true, loaderMessage);
-
-            const addNodes = nodes.addNodes;
-            const removeNodes = nodes.removeNodes;
-            const payload = {addNodes, removeNodes};
-            ClusterRestService.replaceNodesInCluster(payload)
-                .then(() => {
-                    const successMessage = $translate.instant(
-                        'cluster_management.cluster_page.notifications.replace_nodes_success');
-                    onAddRemoveSuccess(successMessage);
-                })
-                .catch((error) => {
-                    const failMessageTitle = $translate.instant('cluster_management.cluster_page.notifications.replace_nodes_fail');
-                    handleErrors(error.data, error.status, failMessageTitle);
-                })
-                .finally(() => {
-                    $scope.setLoader(false);
-                    updateCluster(true);
-                });
+            if (!cluster.hasCluster()) {
+                createCluster(cluster.getUpdateActions().clusterConfiguration);
+            } else {
+                const nodes = cluster.getUpdateActions();
+                editCluster(nodes);
+            }
         }).finally(() => {
             getLocationsWithRpcAddresses();
         });
@@ -177,24 +162,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     };
 
     $scope.showCreateClusterDialog = function () {
-        const modalInstance = $uibModal.open({
-            templateUrl: 'js/angular/clustermanagement/templates/modal/cluster-create-dialog.html',
-            controller: 'CreateClusterCtrl',
-            size: 'lg',
-            resolve: {
-                data: function () {
-                    return {
-                        deleteLocation: deleteLocation,
-                        clusterModel: $scope.clusterModel
-                    };
-                }
-            }
-        });
-
-        modalInstance.result.finally(function () {
-            getLocationsWithRpcAddresses();
-            updateCluster(true);
-        });
+        $scope.showUpdateClusterGroupDialog();
     };
 
     $scope.getCurrentNodeStatus = () => {
@@ -331,6 +299,43 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     // =========================
     // Private functions
     // =========================
+
+    const createCluster = (clusterConfiguration) => {
+        $scope.setLoader(true, $translate.instant('cluster_management.cluster_page.creating_cluster_loader'));
+        return ClusterRestService.createCluster(clusterConfiguration)
+            .then(() => {
+                toastr.success($translate.instant('cluster_management.cluster_page.notifications.create_success'));
+            })
+            .catch(function (error) {
+                handleErrors(error.data, error.status);
+            })
+            .finally(() => {
+                $scope.setLoader(false);
+            });
+    };
+
+    const editCluster = (nodes) => {
+        const loaderMessage = $translate.instant('cluster_management.cluster_page.replace_nodes_loader');
+        $scope.setLoader(true, loaderMessage);
+
+        const addNodes = nodes.addNodes;
+        const removeNodes = nodes.removeNodes;
+        const payload = {addNodes, removeNodes};
+        ClusterRestService.replaceNodesInCluster(payload)
+            .then(() => {
+                const successMessage = $translate.instant(
+                    'cluster_management.cluster_page.notifications.replace_nodes_success');
+                onAddRemoveSuccess(successMessage);
+            })
+            .catch((error) => {
+                const failMessageTitle = $translate.instant('cluster_management.cluster_page.notifications.replace_nodes_fail');
+                handleErrors(error.data, error.status, failMessageTitle);
+            })
+            .finally(() => {
+                $scope.setLoader(false);
+                updateCluster(true);
+            });
+    };
 
     const buildLinksModel = (leader, nodes) => {
         const links = [];

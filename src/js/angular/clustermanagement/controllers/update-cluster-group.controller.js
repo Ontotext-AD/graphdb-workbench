@@ -42,6 +42,13 @@ function UpdateClusterGroupDialogCtrl($scope, $uibModalInstance, data, ClusterCo
         $scope.isValid = isValid;
     };
 
+    const onClusterViewChanged = () => {
+        if (!$scope.hasCluster && ClusterContextService.getAttached().length === 0) {
+            const localNode = ClusterContextService.getLocalNode();
+            ClusterContextService.addLocation(localNode);
+        }
+    };
+
     // =========================
     // Subscriptions
     // =========================
@@ -54,6 +61,7 @@ function UpdateClusterGroupDialogCtrl($scope, $uibModalInstance, data, ClusterCo
     }
 
     subscriptions.push(ClusterContextService.onClusterValidityChanged(onClusterValidityChanged));
+    subscriptions.push(ClusterContextService.onClusterViewChanged(onClusterViewChanged));
     $scope.$on('$destroy', removeAllListeners);
 
     // =========================

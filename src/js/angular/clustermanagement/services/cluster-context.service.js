@@ -170,6 +170,14 @@ function ClusterContextService(EventEmitterService) {
     };
 
     /**
+     * Get the cluster configuration.
+     * @return {ClusterConfiguration} The current cluster configuration.
+     */
+    const getClusterConfiguration = () => {
+        return _clusterView.getClusterConfiguration();
+    };
+
+    /**
      * Find an item in a list by its endpoint.
      * @param {Node[]|Location[]} list - The list of nodes or locations to search.
      * @param {string} endpoint - The endpoint to search for.
@@ -185,6 +193,22 @@ function ClusterContextService(EventEmitterService) {
      */
     const getViewModel = () => {
         return _clusterView.getViewModel();
+    };
+
+    /**
+     * Checks if the cluster is present or not.
+     * @return {boolean} True if the cluster exists, false otherwise.
+     */
+    const hasCluster = () => {
+        return _clusterView.hasCluster();
+    };
+
+    /**
+     * Get the local node from the cluster.
+     * @return {Location|undefined} The local node location or undefined if not found.
+     */
+    const getLocalNode = () => {
+        return _clusterView.getLocalNode();
     };
 
     /**
@@ -262,7 +286,10 @@ function ClusterContextService(EventEmitterService) {
         hasValidNodesCount,
         canDeleteNode,
         findByEndpoint,
-        getViewModel
+        getLocalNode,
+        getViewModel,
+        hasCluster,
+        getClusterConfiguration
     };
 }
 
