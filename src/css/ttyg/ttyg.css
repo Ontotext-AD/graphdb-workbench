@@ -105,13 +105,12 @@ chat area
 }
 
 .ttyg-view .chat-content .toolbar {
-    width: 900px;
     margin: auto;
     padding: 0;
 }
 
 .ttyg-view .chat-content .chat {
-    width: 900px;
+    max-width: 800px;
     margin: auto;
     height: calc(100vh - 10em);
     display: flex;
