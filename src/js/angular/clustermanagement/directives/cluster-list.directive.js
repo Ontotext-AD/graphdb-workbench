@@ -1,4 +1,16 @@
-import {Location} from "../../models/clustermanagement/cluster";
+import {ClusterConfiguration, Location} from "../../models/clustermanagement/cluster";
+
+const getAdvancedOptionsClass = function () {
+    const optionsModule = document.getElementById('advancedOptions');
+
+    if (optionsModule) {
+        const isAriaExpanded = optionsModule.getAttribute('aria-expanded');
+        if (isAriaExpanded && isAriaExpanded === 'true') {
+            return 'fa fa-angle-down';
+        }
+    }
+    return 'fa fa-angle-right';
+};
 
 const modules = [];
 angular.module('graphdb.framework.clustermanagement.directives.cluster-list', modules)
@@ -25,6 +37,8 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
             $scope.loader = false;
             $scope.errors = [];
             $scope.addNewLocation = false;
+            $scope.hasCluster = false;
+            $scope.getAdvancedOptionsClass = getAdvancedOptionsClass;
 
             /**
              * Adds a new (empty) node to the list of cluster nodes for editing.
@@ -154,7 +168,8 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
                 const isNotInEditMode = $scope.editedNodeIndex === undefined;
                 const isNotInAddMode = $scope.addNewLocation === false;
                 const hasValidNodes = ClusterContextService.hasValidNodesCount();
-                return isNotInEditMode && isNotInAddMode && hasValidNodes;
+                const hasValidConfiguration = $scope.form.$valid;
+                return isNotInEditMode && isNotInAddMode && hasValidNodes && hasValidConfiguration;
             };
 
             /**
@@ -185,7 +200,9 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
             // Private functions
             // =========================
             const onClusterViewChanged = (cluster) => {
+                $scope.hasCluster = ClusterContextService.hasCluster();
                 $scope.viewModel = ClusterContextService.getViewModel();
+                $scope.clusterConfiguration = ClusterContextService.getClusterConfiguration();
                 $scope.allSuggestions = ClusterContextService.getAvailableNodeEndpoints();
                 $scope.canDeleteNode = ClusterContextService.canDeleteNode();
             };
@@ -230,7 +247,16 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
                 subscriptions.forEach((subscription) => subscription());
             }
 
-            const unwatch = $scope.$watchGroup(['clusterNodes', 'editedNodeIndex', 'addNewLocation'], function (newValues, oldValues) {
+            const unwatch = $scope.$watchGroup([
+                'editedNodeIndex',
+                'addNewLocation',
+                'clusterConfiguration.electionMinTimeout',
+                'clusterConfiguration.electionRangeTimeout',
+                'clusterConfiguration.heartbeatInterval',
+                'clusterConfiguration.messageSizeKB',
+                'clusterConfiguration.verificationTimeout',
+                'clusterConfiguration.transactionLogMaximumSizeGB'
+            ], function (newValues, oldValues) {
                 const isValid = $scope.isClusterConfigurationValid();
                 ClusterContextService.updateClusterValidity(isValid);
             });
