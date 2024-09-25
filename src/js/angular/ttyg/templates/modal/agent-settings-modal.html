@@ -43,7 +43,7 @@
                         <div class="mr-0 extraction-method-toggle">
                             <input type="checkbox" id="{{extractionMethod.method + '_checkbox'}}"
                                    name="{{extractionMethod}}" class="switch"
-                                   ng-change="toggleExtractionMethod()"
+                                   ng-change="toggleExtractionMethod(extractionMethod)"
                                    ng-model="extractionMethod.selected"/>
                             <label for="{{extractionMethod.method + '_checkbox'}}"></label>
                         </div>

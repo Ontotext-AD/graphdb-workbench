@@ -13,9 +13,9 @@ angular
     ])
     .controller('AgentSettingsModalController', AgentSettingsModalController);
 
-AgentSettingsModalController.$inject = ['$scope', '$uibModalInstance', 'SimilarityService', 'ConnectorsService', 'RepositoriesRestService', '$sce', 'toastr', 'UriUtils', '$translate', 'dialogModel'];
+AgentSettingsModalController.$inject = ['$scope', '$uibModalInstance', '$repositories', '$timeout', 'SimilarityService', 'ConnectorsService', 'RepositoriesRestService', '$sce', 'toastr', 'UriUtils', '$translate', 'dialogModel'];
 
-function AgentSettingsModalController($scope, $uibModalInstance, SimilarityService, ConnectorsService, RepositoriesRestService, $sce, toastr, UriUtils, $translate, dialogModel) {
+function AgentSettingsModalController($scope, $uibModalInstance, $repositories, $timeout, SimilarityService, ConnectorsService, RepositoriesRestService, $sce, toastr, UriUtils, $translate, dialogModel) {
 
     // =========================
     // Private variables
@@ -32,6 +32,8 @@ function AgentSettingsModalController($scope, $uibModalInstance, SimilarityServi
      * @type {AgentFormModel|*}
      */
     $scope.agentFormModel = dialogModel.agentFormModel;
+    // Preselect active repository
+    $scope.agentFormModel.repositoryId = $repositories.getActiveRepository();
 
     $scope.isEdit = !!$scope.agentFormModel.id;
 
@@ -94,9 +96,17 @@ function AgentSettingsModalController($scope, $uibModalInstance, SimilarityServi
      * Sets the UI touched state and validation state for the extraction methods property so that the UI can show if
      * the user has selected at least one extraction method and warn him if he hasn't.
      */
-    $scope.toggleExtractionMethod = () => {
+    $scope.toggleExtractionMethod = (extractionMethod) => {
         $scope.agentSettingsForm.extractionMethods.$setTouched();
         setExtractionMethodValidityStatus();
+        // Auto-show/hide collapsable settings
+        $timeout(() => {
+            if (extractionMethod.selected) {
+                $(`#${extractionMethod.method}_method_heading .collapsed .toggle-icon`).click();
+            } else {
+                $(`#${extractionMethod.method}_method_heading :not(.collapsed) .toggle-icon`).click();
+            }
+        }, 0);
     };
 
     /**

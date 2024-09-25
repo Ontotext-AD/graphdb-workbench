@@ -8,7 +8,7 @@ angular
     .module('graphdb.framework.ttyg.directives.chat-panel', modules)
     .directive('chatPanel', ChatPanelComponent);
 
-ChatPanelComponent.$inject = ['toastr', '$translate', 'TTYGContextService'];
+ChatPanelComponent.$inject = ['toastr', '$translate', '$timeout', 'TTYGContextService'];
 
 /**
  * @ngdoc directive
@@ -24,7 +24,7 @@ ChatPanelComponent.$inject = ['toastr', '$translate', 'TTYGContextService'];
  * @example
  * <chat-panel></chat-panel>
  */
-function ChatPanelComponent(toastr, $translate, TTYGContextService) {
+function ChatPanelComponent(toastr, $translate, $timeout, TTYGContextService) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/chat-panel.html',
@@ -110,7 +110,20 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
              */
             const onChatChanged = (chat) => {
                 $scope.chat = chat;
+                scrollToLastMessage();
                 setupNewChatItem();
+            };
+
+            const scrollToLastMessage = () => {
+                $timeout(() => {
+                    const chatEls = $('.chat-detail');
+                    if (chatEls.length > 0) {
+                        chatEls[chatEls.length - 1].scrollIntoView({
+                            block: "end",
+                            inline: "nearest"
+                        });
+                    }
+                }, 0);
             };
 
             const onCopied = () => {

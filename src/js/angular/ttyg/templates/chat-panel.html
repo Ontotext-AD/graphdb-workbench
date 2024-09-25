@@ -17,9 +17,8 @@
                 <div class="assistant-icon alert-help">
                     <i class="fa-regular fa-message-bot"></i>
                 </div>
-                <div class="assistant-message">
-                    <div class="answer">
-                        {{ chatItem.answer.message }}
+                <div class="assistant-message" ng-if="chatItem.answer">
+                    <div class="answer" ng-bind-html="markdown(chatItem.answer.message)">
                     </div>
                     <div class="actions" ng-class="{'hidden-actions': !$last}">
                         <button class="btn btn-link secondary btn-sm regenerate-question-btn"
@@ -35,11 +34,15 @@
                         <i class="fa-regular fa-wand-magic-sparkles"></i>
                     </div>
                 </div>
+                <div class="assistant-progress" ng-if="!chatItem.answer">
+                    <div onto-loader-new size="40"></div>
+                </div>
             </div>
         </div>
     </div>
     <div class="mew-question mb-3 mt-2 d-flex">
-        <input class="form-control question-input" ng-model="chatItem.question.message" type="text">
+        <input class="form-control question-input" ng-model="chatItem.question.message" type="text"
+               ng-keydown="$event.keyCode === 13 && ask() && $event.preventDefault()">
         <button class="btn btn-primary ask-button" ng-disabled="!chatItem.question.message || !selectedAgent || selectedAgent.isDeleted" ng-click="ask()">
             <i class="fa-regular fa-arrow-turn-left-up"></i>
             {{ 'ttyg.chat_panel.btn.ask.label ' | translate }}

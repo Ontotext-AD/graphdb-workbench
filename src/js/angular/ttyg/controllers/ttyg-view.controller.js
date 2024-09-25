@@ -14,6 +14,8 @@ import {ChatsListModel} from "../../models/ttyg/chats";
 import {agentFormModelMapper, newAgentFormModelProvider} from "../services/agents.mapper";
 import {SelectMenuOptionsModel} from "../../models/form-fields";
 import {repositoryInfoMapper} from "../../rest/mappers/repositories-mapper";
+import markdownIt from 'markdown-it';
+import markdownItCodeCopy from 'markdown-it-code-copy';
 
 const modules = [
     'toastr',
@@ -33,9 +35,9 @@ angular
     .module('graphdb.framework.ttyg.controllers.ttyg-view', modules)
     .controller('TTYGViewCtrl', TTYGViewCtrl);
 
-TTYGViewCtrl.$inject = ['$rootScope', '$scope', '$http', '$timeout', '$translate', '$uibModal', '$repositories', 'toastr', 'ModalService', 'LocalStorageAdapter', 'TTYGService', 'TTYGContextService', 'TTYGStorageService'];
+TTYGViewCtrl.$inject = ['$rootScope', '$scope', '$http', '$timeout', '$translate', '$uibModal', '$repositories', '$sce', 'toastr', 'ModalService', 'LocalStorageAdapter', 'TTYGService', 'TTYGContextService', 'TTYGStorageService'];
 
-function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal, $repositories, toastr, ModalService, LocalStorageAdapter, TTYGService, TTYGContextService, TTYGStorageService) {
+function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal, $repositories, $sce, toastr, ModalService, LocalStorageAdapter, TTYGService, TTYGContextService, TTYGStorageService) {
 
     // =========================
     // Private variables
@@ -274,6 +276,20 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
             });
     };
 
+    const md = markdownIt().use(markdownItCodeCopy, {
+        iconStyle: "",
+        iconClass: "icon-copy",
+        buttonStyle: "position: absolute; top: 0; right: 0;",
+        buttonClass: "btn btn-link btn-sm secondary"
+    });
+    $scope.markdown = (text) => {
+        try {
+            return $sce.trustAsHtml(md.render(text));
+        } catch (e) {
+            return text;
+        }
+    };
+
     // =========================
     // Private functions
     // =========================
@@ -379,15 +395,22 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
      * @param {ChatItemModel} chatItem
      */
     const onAskQuestion = (chatItem) => {
+        const updateChat = (answer) => {
+            const selectedChat = TTYGContextService.getSelectedChat();
+            if ((selectedChat && selectedChat.id === chatItem.chatId)) {
+                if (answer) {
+                    selectedChat.chatHistory.items[selectedChat.chatHistory.items.length - 1].answer = answer;
+                } else {
+                    selectedChat.chatHistory.appendItem(chatItem);
+                }
+                TTYGContextService.updateSelectedChat(selectedChat);
+            }
+        };
+        updateChat();
+
         TTYGService.askQuestion(chatItem)
             .then((answer) => {
-                const selectedChat = TTYGContextService.getSelectedChat();
-                if (selectedChat && selectedChat.id === chatItem.chatId) {
-                    const item = chatItem;
-                    item.answer = answer;
-                    selectedChat.chatHistory.appendItem(item);
-                    TTYGContextService.updateSelectedChat(selectedChat);
-                }
+                updateChat(answer);
             })
             .catch((error) => toastr.error(getError(error, 0, 100)));
     };
