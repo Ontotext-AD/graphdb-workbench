@@ -4,7 +4,7 @@
         "name": "@awesome.me/kit-94ffd2fc4a",
         "version": "1.0.105",
         "description": "Font Awesome is the Internet's icon library and toolkit",
-        "licenseText": "Commercial license, see https://fontawesome.com/license for details"
+        "licenseText": "Font Awesome Pro License\n------------------------\n\nFont Awesome Pro is commercial software that requires a paid license. Full\nFont Awesome Pro license: https://fontawesome.com/license.\n\n# Commercial License\nThe Font Awesome Pro commercial license allows you to pay for FA Pro once, own\nit, and use it just about everywhere you'd like.\n\n# Attribution\nAttribution is not required by the Font Awesome Pro commercial license.\n\n# Brand Icons\nAll brand icons are trademarks of their respective owners. The use of these\ntrademarks does not indicate endorsement of the trademark holder by Font\nAwesome, nor vice versa. **Please do not use brand logos for any purpose except\nto represent the company, product, or service to which they refer.**\n"
     },
     "angucomplete-alt": {
         "licenses": "MIT",
