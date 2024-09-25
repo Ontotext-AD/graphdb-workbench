@@ -55,7 +55,7 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
              * @param {AgentModel} agent
              */
             $scope.onEditAgent = (agent) => {
-                console.log('Edit agent', agent);
+                TTYGContextService.emit(TTYGEventName.EDIT_AGENT, agent);
             };
 
             /**

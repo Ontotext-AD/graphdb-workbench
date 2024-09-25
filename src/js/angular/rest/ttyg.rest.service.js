@@ -141,6 +141,18 @@ function TTYGRestService($http) {
     };
 
     /**
+     * Updates the specified <code>agent</code>.
+     * @param {AgentModel} agent - The agent to be updated.
+     * @return {Promise<AgentModel>} A promise that resolves the updated agent.
+     */
+    const editAgent = (agent) => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.editAgent(agent);
+        }
+        return $http.put(`${AGENTS_ENDPOINT}`, agent);
+    };
+
+    /**
      * Deletes an agent by its ID from the backend.
      * @param {string} id
      * @return {Promise<void>}
@@ -163,6 +175,7 @@ function TTYGRestService($http) {
         getAgents,
         getAgent,
         createAgent,
+        editAgent,
         deleteAgent
     };
 }

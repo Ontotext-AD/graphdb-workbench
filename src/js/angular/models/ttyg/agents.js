@@ -205,7 +205,7 @@ export class ExtractionMethodModel {
          * The maximum number of triples per call for the extraction method.
          * @type {number}
          */
-        this._maxNumberOfTriplesPerCall = data._maxNumberOfTriplesPerCall;
+        this._maxNumberOfTriplesPerCall = data.maxNumberOfTriplesPerCall;
         /**
          * The similarity index used for the similarity extraction method.
          * @type {string}
@@ -321,7 +321,7 @@ export class AdditionalExtractionMethodModel {
          * @type {'iri_discovery_search'}
          * @private
          */
-        this._method = data._method;
+        this._method = data.method;
     }
 
     get method() {

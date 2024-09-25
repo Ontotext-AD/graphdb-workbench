@@ -4,6 +4,12 @@ export class AgentFormModel {
          * @type {string}
          * @private
          */
+        this._id = data.id;
+
+        /**
+         * @type {string}
+         * @private
+         */
         this._name = data.name;
         /**
          * @type {string}
@@ -54,6 +60,7 @@ export class AgentFormModel {
      */
     toPayload() {
         return {
+            id: this.id,
             name: this._name,
             repositoryId: this._repositoryId,
             model: this._model,
@@ -168,6 +175,26 @@ export class ExtractionMethodsFormModel {
         return this._extractionMethods
             .filter((method) => method.selected)
             .map((method) => method.toPayload());
+    }
+
+    /**
+     * Finds the index of the extraction method in the extraction methods array.
+     * @param {string} method
+     * @return {number}
+     */
+    findExtractionMethodIndex(method) {
+        return this._extractionMethods.findIndex((extractionMethod) => extractionMethod.method === method);
+    }
+
+    /**
+     * Sets the extraction method in the extraction methods array.
+     * @param {ExtractionMethodsFormModel} extractionMethod
+     */
+    setExtractionMethod(extractionMethod) {
+        const index = this.findExtractionMethodIndex(extractionMethod.method);
+        if (index !== -1) {
+            this._extractionMethods[index] = extractionMethod;
+        }
     }
 
     get extractionMethods() {
@@ -352,7 +379,9 @@ export class AdditionalExtractionMethodsFormModel {
     }
 
     toPayload() {
-        return this._additionalExtractionMethods.map((method) => method.toPayload());
+        return this._additionalExtractionMethods
+            .filter((method) => method.selected)
+            .map((method) => method.toPayload());
     }
 
     get additionalExtractionMethods() {

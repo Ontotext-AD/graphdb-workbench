@@ -33,6 +33,8 @@ function AgentSettingsModalController($scope, $uibModalInstance, SimilarityServi
      */
     $scope.agentFormModel = dialogModel.agentFormModel;
 
+    $scope.isEdit = !!$scope.agentFormModel.id;
+
     /**
      * The active repository info model.
      * @type {RepositoryInfoModel|*}
