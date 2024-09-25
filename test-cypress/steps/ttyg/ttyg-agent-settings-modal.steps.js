@@ -7,7 +7,7 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
     }
 
     static saveAgent() {
-        this.getSaveAgentButton().click();
+        this.getSaveAgentButton().click({force: true});
     }
 
     // =========================
@@ -323,6 +323,19 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
 
     static typeSeed(value) {
         return this.getSeedField().type(value);
+    }
+
+    // Additional query methods
+    static getIriDiscoverySearchCheckbox() {
+        return cy.get('#iri_discovery_search_checkbox');
+    }
+
+    static checkIriDiscoverySearchCheckbox() {
+        this.getIriDiscoverySearchCheckbox().check({force: true});
+    }
+
+    static uncheckIriDiscoverySearchCheckbox() {
+        this.getIriDiscoverySearchCheckbox().uncheck({force: true});
     }
 
     // System instructions

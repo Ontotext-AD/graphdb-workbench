@@ -96,6 +96,19 @@ export class TTYGStubs extends Stubs {
         }).as('create-agent');
     }
 
+    static stubAgentEdit() {
+        cy.intercept({
+            method: 'PUT',
+            url: '/rest/chat/agents'
+        }, (req) => {
+            const requestBody = req.body;
+            req.reply({
+                statusCode: 200,
+                body: requestBody
+            });
+        }).as('edit-agent');
+    }
+
     static stubAgentDelete(delay = 0) {
         cy.intercept('/rest/chat/agents/**', {
             method: 'DELETE',

@@ -89,6 +89,81 @@ export const newAgentFormModelProvider = () => {
 };
 
 /**
+ * Converts an angel model to an agent form model.
+ * @param {AgentModel} agentModel
+ * @return {AgentFormModel}
+ */
+export const agentFormModelMapper = (agentModel) => {
+    if (!agentModel) {
+        return;
+    }
+    const agentFormModel = newAgentFormModelProvider();
+    agentFormModel.id = agentModel.id;
+    agentFormModel.name = agentModel.name;
+    agentFormModel.repositoryId = agentModel.repositoryId;
+    agentFormModel.model = agentModel.model;
+    agentFormModel.temperature.value = agentModel.temperature !== undefined ? agentModel.temperature : AGENT_MODEL_DEFAULT_VALUES.temperature.value;
+    agentFormModel.topP.value = agentModel.topP !== undefined ? agentModel.topP : AGENT_MODEL_DEFAULT_VALUES.topP.value;
+    agentFormModel.seed = agentModel.seed;
+    agentFormModel.instructions = agentInstructionsFormMapper(agentModel.instructions);
+    extractionMethodsFormMapper(agentFormModel, agentModel.assistantExtractionMethods);
+    // Select additional methods if they are present in the list returned from the backend (BE).
+    agentFormModel.additionalExtractionMethods.additionalExtractionMethods.forEach((method) => {
+        method.selected = agentModel.additionalExtractionMethods && agentModel.additionalExtractionMethods.some((agentMethod) => agentMethod.method === method.method);
+    });
+
+    return agentFormModel;
+};
+
+/**
+ * @param {AgentInstructionsModel} data
+ * @return {AgentInstructionsFormModel}
+ */
+const agentInstructionsFormMapper = (data) => {
+    if (!data) {
+        return;
+    }
+    return new AgentInstructionsFormModel({
+        systemInstruction: data.systemInstruction,
+        userInstruction: data.userInstruction
+    });
+};
+
+/**
+ * @param {AgentFormModel} agentFormModel
+ * @param {ExtractionMethodModel[]} data
+ */
+const extractionMethodsFormMapper = (agentFormModel, data = []) => {
+    data.forEach((extractionMethod) => {
+        const existingMethod = new ExtractionMethodFormModel({
+            selected: true,
+            method: extractionMethod.method,
+            ontologyGraph: extractionMethod.ontologyGraph,
+            sparqlQuery: extractionMethod.sparqlQuery && new TextFieldModel({
+                value: extractionMethod.sparqlQuery,
+                minLength: 1,
+                maxLength: 2380
+            }),
+            similarityIndex: extractionMethod.similarityIndex,
+            similarityIndexThreshold: extractionMethod.similarityIndexThreshold && new NumericRangeModel({
+                value: extractionMethod.similarityIndexThreshold,
+                minValue: 0,
+                maxValue: 1,
+                step: 0.1
+            }),
+            maxNumberOfTriplesPerCall: extractionMethod.maxNumberOfTriplesPerCall,
+            queryTemplate: extractionMethod.queryTemplate && new TextFieldModel({
+                value: extractionMethod.queryTemplate,
+                minLength: 1,
+                maxLength: 2380
+            }),
+            retrievalConnectorInstance: extractionMethod.retrievalConnectorInstance
+        });
+        agentFormModel.assistantExtractionMethods.setExtractionMethod(existingMethod);
+    });
+};
+
+/**
  * Converts the response from the server to a list of AgentModel.
  * @param {*[]} data
  * @return {AgentListModel}
@@ -97,7 +172,7 @@ export const agentListMapper = (data) => {
     if (!data) {
         return new AgentListModel();
     }
-    const agentModels = data.map((chat) => agentModelMapper(chat));
+    const agentModels = data.map((agent) => agentModelMapper(agent));
     return new AgentListModel(agentModels);
 };
 

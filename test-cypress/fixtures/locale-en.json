@@ -287,7 +287,10 @@
             "deleting_agent": "Deleting agent...",
             "deleted_repository": "Deleted repository",
             "create_agent_modal": {
-                "title": "Create Agent",
+                "title": {
+                    "create": "Create Agent",
+                    "edit": "Edit Agent"
+                },
                 "advanced_settings": {
                     "show": "Show advanced settings",
                     "hide": "Hide advanced settings"
@@ -379,6 +382,9 @@
                     },
                     "cancel": {
                         "label": "Cancel"
+                    },
+                    "save": {
+                        "label": "Save"
                     }
                 }
             },
@@ -433,7 +439,9 @@
                 "help_2": "The Agent is an AI-powered conversational agent designed to help with a wide range of tasks, from answering questions and providing information to assisting with creative and technical projects. It leverages advanced natural language processing to understand and respond to user inputs in a human-like manner, making interactions intuitive and efficient.",
                 "error_retrieval_connectors_loading": "Error loading retrieval connectors",
                 "error_similarity_indexes_loading": "Error loading similarity indexes",
-                "error_repository_config_loading": "Error loading repository configurations"
+                "error_repository_config_loading": "Error loading repository configurations",
+                "agent_save_successfully": "The agent '{{agentName}}' was saved successfully.",
+                "agent_save_failure": "Failed to save the agent '{{agentName}}'."
             }
         },
         "help.what.title": "What is this?",

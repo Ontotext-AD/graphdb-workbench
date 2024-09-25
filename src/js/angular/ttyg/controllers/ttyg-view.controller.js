@@ -11,7 +11,7 @@ import {TTYGEventName} from "../services/ttyg-context.service";
 import {AGENTS_FILTER_ALL_KEY} from "../services/constants";
 import {AgentListFilterModel} from "../../models/ttyg/agents";
 import {ChatsListModel} from "../../models/ttyg/chats";
-import {newAgentFormModelProvider} from "../services/agents.mapper";
+import {agentFormModelMapper, newAgentFormModelProvider} from "../services/agents.mapper";
 import {SelectMenuOptionsModel} from "../../models/form-fields";
 import {repositoryInfoMapper} from "../../rest/mappers/repositories-mapper";
 
@@ -230,11 +230,48 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     };
 
     /**
-     * Handles the agent edit operation.
-     * @param {AgentModel} agent
+     * Handles the agent edit operation. If the agent is not provided it is assumed that we need to edit the selected
+     * agent which can be obtained from the context service.
+     * @param {AgentModel|undefined} agent
      */
     $scope.onEditAgent = (agent) => {
-        console.log(`Edit agent`, agent);
+        let agentToEdit = agent;
+        if (!agentToEdit) {
+            agentToEdit = TTYGContextService.getSelectedAgent();
+        }
+        const agentFormModel = agentFormModelMapper(agentToEdit);
+        const activeRepositoryInfo = repositoryInfoMapper($repositories.getActiveRepositoryObject());
+        const options = {
+            templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
+            controller: 'AgentSettingsModalController',
+            windowClass: 'agent-settings-modal',
+            resolve: {
+                dialogModel: function () {
+                    return {
+                        activeRepositoryInfo: activeRepositoryInfo,
+                        activeRepositoryList: $scope.activeRepositoryList,
+                        agentFormModel: agentFormModel
+                    };
+                }
+            },
+            size: 'lg'
+        };
+        $uibModal.open(options).result.then(
+            // confirmed handler
+            (data) => {
+                TTYGService.editAgent(data)
+                    .then((updatedAgent) => {
+                        toastr.success($translate.instant("ttyg.agent.messages.agent_save_successfully", {agentName: updatedAgent.name}));
+                        const hasSelectedAgent = TTYGContextService.getSelectedAgent();
+                        if (hasSelectedAgent && data.id === hasSelectedAgent.id) {
+                            TTYGContextService.selectAgent(updatedAgent);
+                        }
+                        loadAgents(false);
+                    })
+                    .catch(() => {
+                        toastr.error($translate.instant("ttyg.agent.messages.agent_save_failure", {agentName: data.name}));
+                    });
+            });
     };
 
     // =========================
@@ -267,8 +304,8 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
             });
     };
 
-    const loadAgents = () => {
-        $scope.loadingAgents = true;
+    const loadAgents = (showLoader = true) => {
+        $scope.loadingAgents = showLoader;
         return TTYGService.getAgents()
             .then((agents) => {
                 return TTYGContextService.updateAgents(agents);
