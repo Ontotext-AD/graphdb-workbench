@@ -1,5 +1,3 @@
-import {value} from "lodash/seq";
-
 /**
  * Represents a location with relevant metadata.
  */
@@ -421,12 +419,12 @@ export class ClusterViewModel {
 
     /**
      * Prepares the actions needed to update the cluster, including nodes to be added and removed.
-     * Also updates the cluster configuration with the current nodes.
+     * Also updates the cluster configuration with the current nodes if necessary.
      *
      * @return {Object} An object containing the nodes to be added, the nodes to be removed, and the updated cluster configuration in JSON format.
      * @property {string[]} addNodes - List of node addresses to add to the cluster.
      * @property {string[]} removeNodes - List of node addresses to remove from the cluster.
-     * @property {Object} clusterConfiguration - The updated cluster configuration in JSON format.
+     * @property {Object} [clusterConfiguration] - The updated cluster configuration in JSON format, if applicable.
      */
     getUpdateActions() {
         const addNodes = Array.from(this._addToCluster.values()).map((node) => node.rpcAddress || node.address);
@@ -436,11 +434,26 @@ export class ClusterViewModel {
             removeNodes
         };
 
+        const updatedClusterConfig = this.updateClusterConfiguration(addNodes);
+        if (updatedClusterConfig) {
+            updateActions.clusterConfiguration = updatedClusterConfig;
+        }
+
+        return updateActions;
+    }
+
+    /**
+     * Updates the cluster configuration with the current nodes if the cluster does not exist.
+     *
+     * @param {string[]} addNodes - List of node addresses to add to the cluster.
+     * @return {Object|null} The updated cluster configuration in JSON format, or null if no update is made.
+     */
+    updateClusterConfiguration(addNodes) {
         if (!this.hasCluster()) {
             this._clusterConfiguration.nodes = addNodes;
-            updateActions.clusterConfiguration = this._clusterConfiguration.toJSON();
+            return this._clusterConfiguration.toJSON();
         }
-        return updateActions;
+        return null;
     }
 
     /**

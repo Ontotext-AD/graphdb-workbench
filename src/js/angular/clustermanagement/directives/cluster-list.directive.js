@@ -1,16 +1,4 @@
-import {ClusterConfiguration, Location} from "../../models/clustermanagement/cluster";
-
-const getAdvancedOptionsClass = function () {
-    const optionsModule = document.getElementById('advancedOptions');
-
-    if (optionsModule) {
-        const isAriaExpanded = optionsModule.getAttribute('aria-expanded');
-        if (isAriaExpanded && isAriaExpanded === 'true') {
-            return 'fa fa-angle-down';
-        }
-    }
-    return 'fa fa-angle-right';
-};
+import {Location} from "../../models/clustermanagement/cluster";
 
 const modules = [];
 angular.module('graphdb.framework.clustermanagement.directives.cluster-list', modules)
@@ -38,7 +26,6 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
             $scope.errors = [];
             $scope.addNewLocation = false;
             $scope.hasCluster = false;
-            $scope.getAdvancedOptionsClass = getAdvancedOptionsClass;
 
             /**
              * Adds a new (empty) node to the list of cluster nodes for editing.
@@ -190,6 +177,28 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
                 }
             };
 
+            /**
+             * Determines the CSS class for the advanced options button based on its expanded state.
+             *
+             * @return {string} - Returns 'fa fa-angle-down' if the 'advancedOptions' element is expanded, otherwise 'fa fa-angle-right'.
+             */
+            $scope.getAdvancedOptionsClass = () => {
+                const optionsModule = document.getElementById('advancedOptions');
+
+                if (optionsModule) {
+                    const isAriaExpanded = optionsModule.getAttribute('aria-expanded');
+                    if (isAriaExpanded && isAriaExpanded === 'true') {
+                        return 'fa fa-angle-down';
+                    }
+                }
+                return 'fa fa-angle-right';
+            };
+
+            /**
+             * Cancels the current action and resets the form state.
+             *
+             * @return {void}
+             */
             $scope.cancel = () => {
                 $scope.editedNodeIndex = undefined;
                 $scope.addNewLocation = false;
@@ -243,9 +252,9 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
             /**
              * Removes all listeners and unsubscribes from events when the directive is destroyed.
              */
-            function removeAllListeners() {
+            const removeAllListeners = () => {
                 subscriptions.forEach((subscription) => subscription());
-            }
+            };
 
             const unwatch = $scope.$watchGroup([
                 'editedNodeIndex',
@@ -256,7 +265,7 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
                 'clusterConfiguration.messageSizeKB',
                 'clusterConfiguration.verificationTimeout',
                 'clusterConfiguration.transactionLogMaximumSizeGB'
-            ], function (newValues, oldValues) {
+            ], (newValues, oldValues) => {
                 const isValid = $scope.isClusterConfigurationValid();
                 ClusterContextService.updateClusterValidity(isValid);
             });

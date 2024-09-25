@@ -83,7 +83,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
         $timeout.cancel($scope.loaderTimeout);
         if (loader) {
             $scope.loaderMessage = message;
-            $scope.loaderTimeout = $timeout(function () {
+            $scope.loaderTimeout = $timeout(() => {
                 $scope.loader = loader;
             }, 50);
         } else {
@@ -95,13 +95,13 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
         return $scope.loaderMessage || $translate.instant('common.loading');
     };
 
-    $scope.showUpdateClusterGroupDialog = function () {
+    $scope.showUpdateClusterGroupDialog = () => {
         const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/clustermanagement/templates/modal/update-cluster-group-dialog.html',
             controller: 'UpdateClusterGroupDialogCtrl',
             size: 'lg',
             resolve: {
-                data: function () {
+                data: () => {
                     return {clusterModel: $scope.clusterModel};
                 }
             }
@@ -159,10 +159,6 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
                     return Promise.reject(error);
                 }
             });
-    };
-
-    $scope.showCreateClusterDialog = function () {
-        $scope.showUpdateClusterGroupDialog();
     };
 
     $scope.getCurrentNodeStatus = () => {
@@ -306,7 +302,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             .then(() => {
                 toastr.success($translate.instant('cluster_management.cluster_page.notifications.create_success'));
             })
-            .catch(function (error) {
+            .catch((error) => {
                 handleErrors(error.data, error.status);
             })
             .finally(() => {
@@ -507,11 +503,11 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     };
 
 
-    function shouldSkipNodesUpdate(nodes) {
+    const shouldSkipNodesUpdate = (nodes) => {
         return (!nodes ||
             (Array.isArray(nodes) && nodes.length === 0) ||
             (nodes.oldNodes && nodes.newNodes && nodes.oldNodes.length === 0 && nodes.newNodes.length === 0));
-    }
+    };
 
     // =========================
     // Events and watchers
@@ -543,7 +539,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             selectNode(data);
         }));
         subscriptions.push($scope.$on(CREATE_CLUSTER, () => {
-            $scope.showCreateClusterDialog();
+            $scope.showUpdateClusterGroupDialog();
         }));
     };
 
