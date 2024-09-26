@@ -205,6 +205,10 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
                 ClusterContextService.emitUpdateClusterView();
             };
 
+            $scope.restoreNode = (node) => {
+                ClusterContextService.restoreNode(node.item);
+            };
+
             // =========================
             // Private functions
             // =========================
