@@ -131,6 +131,11 @@ chat area
     height: 100%;
 }
 
+.selected-filter, .chat-name {
+    color: var(--secondary-color);
+    font-weight: 400;
+}
+
 /* Better handling of markdown-derived HTML inside the assistant message */
 .assistant-message li > p:has(+:not(p)) {
     margin-bottom: 0;
