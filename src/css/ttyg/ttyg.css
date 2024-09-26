@@ -131,7 +131,7 @@ chat area
     height: 100%;
 }
 
-.selected-filter, .chat-name {
+.selected-filter, .chat-name, .agent-name {
     color: var(--secondary-color);
     font-weight: 400;
 }
