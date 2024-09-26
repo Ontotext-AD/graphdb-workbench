@@ -49,7 +49,8 @@ describe('TTYG create new agent', () => {
         fillAgentName('Test Agent');
 
         // repository ID
-        fillRepository(repositoryId);
+        // fillRepository(repositoryId);
+        // TODO: check repository ID instead
 
         // SPARQL extraction method settings
 
@@ -131,27 +132,28 @@ describe('TTYG create new agent', () => {
         TTYGViewSteps.getAgent(0).should('contain', 'Test Agent').and('contain', 'starwars');
     });
 
-    it('Should require repository ID to be selected to be able to configure the FTS extraction method', () => {
-        RepositoriesStubs.stubGetRepositoryConfig(repositoryId, '/repositories/get-repository-config-starwars-disabled-fts.json');
-        TTYGStubs.stubChatsListGetNoResults();
-        TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
-        // Given I have opened the ttyg page
-        TTYGViewSteps.visit();
-        cy.wait('@get-all-repositories');
-        // When I click on the create agent button
-        TTYGViewSteps.createFirstAgent();
-        // When I open the full text search extraction method panel
-        TtygAgentSettingsModalSteps.toggleFTSExtractionMethodPanel();
-        // Then I should see an error alert for repository id not selected
-        TtygAgentSettingsModalSteps.getMissingRepositoryIdErrorInFtsSearchPanel().should('be.visible')
-            .and('contain', 'Repository ID must be selected');
-        // And I should not see the max triples field
-        TtygAgentSettingsModalSteps.getFtsSearchMaxTriplesFormGroup().should('be.hidden');
-        // When I select a repository
-        TtygAgentSettingsModalSteps.selectRepository(repositoryId);
-        // Then the error alert should be hidden
-        TtygAgentSettingsModalSteps.getMissingRepositoryIdErrorInFtsSearchPanel().should('not.exist');
-    });
+    // TODO: replace with another test or remove, currently disabled because the repo is auto-selected
+    // it('Should require repository ID to be selected to be able to configure the FTS extraction method', () => {
+    //     RepositoriesStubs.stubGetRepositoryConfig(repositoryId, '/repositories/get-repository-config-starwars-disabled-fts.json');
+    //     TTYGStubs.stubChatsListGetNoResults();
+    //     TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
+    //     // Given I have opened the ttyg page
+    //     TTYGViewSteps.visit();
+    //     cy.wait('@get-all-repositories');
+    //     // When I click on the create agent button
+    //     TTYGViewSteps.createFirstAgent();
+    //     // When I open the full text search extraction method panel
+    //     TtygAgentSettingsModalSteps.toggleFTSExtractionMethodPanel();
+    //     // Then I should see an error alert for repository id not selected
+    //     TtygAgentSettingsModalSteps.getMissingRepositoryIdErrorInFtsSearchPanel().should('be.visible')
+    //         .and('contain', 'Repository ID must be selected');
+    //     // And I should not see the max triples field
+    //     TtygAgentSettingsModalSteps.getFtsSearchMaxTriplesFormGroup().should('be.hidden');
+    //     // When I select a repository
+    //     TtygAgentSettingsModalSteps.selectRepository(repositoryId);
+    //     // Then the error alert should be hidden
+    //     TtygAgentSettingsModalSteps.getMissingRepositoryIdErrorInFtsSearchPanel().should('not.exist');
+    // });
 
     it('Should require FTS to be enabled for selected repository when creating agent with FTS extraction method', () => {
         RepositoriesStubs.stubGetRepositoryConfig(repositoryId, '/repositories/get-repository-config-starwars-disabled-fts.json');
