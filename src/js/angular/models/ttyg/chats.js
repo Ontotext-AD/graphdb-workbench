@@ -126,6 +126,10 @@ export class ChatsListModel {
          * @private
          */
         this._chatsByDay = [];
+        // Sort by timestamp in descending order (newest on top)
+        this._chats.sort((a, b) => {
+            return b.timestamp - a.timestamp;
+        });
         // group chats by day
         this._chats.forEach((chat) => {
             const day = new Date(chat.timestamp * 1000).toDateString();

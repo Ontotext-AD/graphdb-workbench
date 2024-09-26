@@ -87,6 +87,9 @@ function TTYGContextService(EventEmitterService) {
         if (!_selectedChat || _selectedChat.id !== selectedChat) {
             _selectedChat = cloneDeep(selectedChat);
             emit(TTYGEventName.SELECT_CHAT, getSelectedChat());
+
+            // Let user start typing a question faster
+            $('.question-input').focus();
         }
     };
 

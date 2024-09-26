@@ -16,6 +16,7 @@ import {SelectMenuOptionsModel} from "../../models/form-fields";
 import {repositoryInfoMapper} from "../../rest/mappers/repositories-mapper";
 import markdownIt from 'markdown-it';
 import markdownItCodeCopy from 'markdown-it-code-copy';
+import {chatModelMapper} from "../services/chats.mapper";
 
 const modules = [
     'toastr',
@@ -30,6 +31,9 @@ const modules = [
     'graphdb.framework.ttyg.directives.no-agents-view',
     'graphdb.framework.ttyg.controllers.agent-settings-modal'
 ];
+
+// Temporary ID for new chats before they get created
+const DUMMY_CHAT_ID = "__NEW__";
 
 angular
     .module('graphdb.framework.ttyg.controllers.ttyg-view', modules)
@@ -379,10 +383,29 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
      * @param {ChatItemModel} chatItem
      */
     const onCreateNewChat = (chatItem) => {
+        // Insert dummy chat to give immediate feedback to user
+        const newChat = chatModelMapper({
+            id: DUMMY_CHAT_ID,
+            name: "...",
+            timestamp: Math.floor(Date.now() / 1000)
+        });
+        newChat.chatHistory.appendItem(chatItem);
+        const chats = TTYGContextService.getChats().chats;
+        chats.push(newChat);
+        TTYGContextService.updateChats(new ChatsListModel(chats));
+        TTYGContextService.selectChat(newChat);
+        TTYGContextService.updateSelectedChat(newChat);
+
         TTYGService.createConversation(chatItem)
             .then((newChatId) => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT_SUCCESSFUL);
-                TTYGContextService.selectChat(TTYGContextService.getChats().getChat(newChatId));
+
+                // Update dummy chat with the real ID and reload/reselect it to make it fully real
+                newChat.id = newChatId;
+                TTYGContextService.updateChats(new ChatsListModel(chats));
+                TTYGContextService.selectChat(newChat);
+
+                // Reloads chat list - mostly needed to get the generated chat name
                 TTYGContextService.emit(TTYGEventName.LOAD_CHAT);
             })
             .catch((error) => {
@@ -561,7 +584,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     };
 
     const onSelectedChatChanged = (selectedChat) => {
-        if (selectedChat) {
+        if (selectedChat && selectedChat.id !== DUMMY_CHAT_ID) {
             TTYGService.getConversation(selectedChat.id)
                 .then((chat) => {
                     TTYGContextService.updateSelectedChat(chat);
