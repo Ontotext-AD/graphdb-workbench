@@ -12,8 +12,8 @@
             "edit_cluster": "Modifier la configuration",
             "edit_cluster_tooltip": "Modifier la configuration du cluster",
             "show_cluster_settings_tooltip": "Afficher la configuration du cluster",
-            "update_nodes_group_btn": "Mettre à jour le cluster",
-            "update_nodes_group_btn_tooltip": "Mettre à jour les nœuds du cluster"
+            "update_nodes_group_btn": "Modifier le cluster",
+            "update_nodes_group_btn_tooltip": "Modifier les nœuds du cluster"
         },
         "cluster_graphical_view": {
             "no_cluster_configured": "Aucun cluster n'est configuré",
@@ -151,25 +151,38 @@
             "content": "Sélectionner les nœuds à retirer du cluster existant"
         },
         "update_cluster_group_dialog": {
-            "title": "Mettre à jour le groupe de clusters",
-            "current_node": "Nœud actuel",
-            "new_node": "Nouveau nœud",
+            "title": "Modifier le cluster",
+            "title_create": "Créer un cluster",
+            "current_node": "Nœud actuel ",
+            "new_node": "Le nœud sera ajouté",
+            "deleted_node": "Le nœud sera supprimé",
+            "leader": "Leader",
+            "follower": "Suiveur",
+            "candidate": "Candidat",
+            "no_cluster": "Aucun cluster",
+            "out_of_sync": "Désynchronisé",
+            "no_connection": "Aucune connexion",
+            "read_only": "Lecture seule",
+            "restricted": "Restricté",
             "column": {
-                "index": "#",
+                "index": "",
                 "location": "URL d'emplacement",
-                "info": "Informations"
+                "info": "",
+                "status": "Changement de statut"
             },
             "actions": {
                 "replace_node": "Remplacer le nœud",
                 "delete_node": "Supprimer le nœud",
                 "add_node": "Ajouter un nœud",
                 "add_node_tooltip": "Ajouter un nœud au cluster actuel",
-                "cancel": "Annuler"
+                "cancel": "Annuler",
+                "restore_node": "Annuler"
             },
             "messages": {
                 "no_cluster": "Aucun cluster n'est configuré",
                 "invalid_form": "URL d'emplacement non valide",
-                "connecting_node": "Connexion du nœud"
+                "connecting_node": "Connexion du nœud",
+                "save_to_apply": "Enregistrer pour appliquer les modifications"
             },
             "field_placeholders": {
                 "location": "http://my-hostname:7200"

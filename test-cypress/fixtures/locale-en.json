@@ -12,8 +12,8 @@
             "edit_cluster": "Edit configuration",
             "edit_cluster_tooltip": "Edit cluster configuration",
             "show_cluster_settings_tooltip": "Show cluster configuration",
-            "update_nodes_group_btn": "Update cluster",
-            "update_nodes_group_btn_tooltip": "Update cluster nodes"
+            "update_nodes_group_btn": "Edit cluster",
+            "update_nodes_group_btn_tooltip": "Edit cluster nodes"
         },
         "cluster_graphical_view": {
             "no_cluster_configured": "No cluster is configured",
@@ -151,25 +151,38 @@
             "content": "Select nodes to be removed from existing cluster"
         },
         "update_cluster_group_dialog": {
-            "title": "Update cluster group",
-            "current_node": "Current node",
-            "new_node": "New node",
+            "title": "Edit cluster",
+            "title_create": "Create cluster",
+            "current_node": "Current node ",
+            "new_node": "Node will be added",
+            "deleted_node": "Node will be removed",
+            "leader": "Leader",
+            "follower": "Follower",
+            "candidate": "Candidate",
+            "no_cluster": "No cluster",
+            "out_of_sync": "Out of sync",
+            "no_connection": "No connection",
+            "read_only": "Read only",
+            "restricted": "Restricted",
             "column": {
-                "index": "#",
+                "index": "",
                 "location": "Location URL",
-                "info": "Information"
+                "info": "",
+                "status": "Status change"
             },
             "actions": {
                 "replace_node": "Replace node",
                 "delete_node": "Delete node",
                 "add_node": "Add node",
                 "add_node_tooltip": "Add node to current cluster",
-                "`cancel`": "Cancel"
+                "cancel": "Cancel",
+                "restore_node": "Undo"
             },
             "messages": {
                 "no_cluster": "No cluster is configured",
                 "invalid_form": "Invalid Location URL",
-                "connecting_node": "Connecting node"
+                "connecting_node": "Connecting node",
+                "save_to_apply": "Save to apply changes"
             },
             "field_placeholders": {
                 "location": "http://my-hostname:7200"

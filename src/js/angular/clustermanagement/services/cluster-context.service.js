@@ -211,6 +211,10 @@ function ClusterContextService(EventEmitterService) {
         return _clusterView.getLocalNode();
     };
 
+    const isChanged = () => {
+        return _clusterView.isChanged();
+    };
+
     /**
      * Subscribe to the cluster view update event.
      * @param {function} callback - The callback to be invoked when the cluster view changes.
@@ -289,7 +293,8 @@ function ClusterContextService(EventEmitterService) {
         getLocalNode,
         getViewModel,
         hasCluster,
-        getClusterConfiguration
+        getClusterConfiguration,
+        isChanged
     };
 }
 

@@ -8,9 +8,9 @@ angular
     .module('graphdb.framework.clustermanagement.controllers.update-cluster-group', modules)
     .controller('UpdateClusterGroupDialogCtrl', UpdateClusterGroupDialogCtrl);
 
-UpdateClusterGroupDialogCtrl.$inject = ['$scope', '$uibModalInstance', 'data', 'ClusterContextService'];
+UpdateClusterGroupDialogCtrl.$inject = ['$scope', '$uibModalInstance', '$translate', 'data', 'ClusterContextService', 'ModalService'];
 
-function UpdateClusterGroupDialogCtrl($scope, $uibModalInstance, data, ClusterContextService) {
+function UpdateClusterGroupDialogCtrl($scope, $uibModalInstance, $translate, data, ClusterContextService, ModalService) {
     // =========================
     // Private variables
     // =========================
@@ -32,7 +32,17 @@ function UpdateClusterGroupDialogCtrl($scope, $uibModalInstance, data, ClusterCo
      * Cancels the operation and dismisses the modal.
      */
     $scope.cancel = () => {
-        $uibModalInstance.dismiss('cancel');
+        if ($scope.isChanged) {
+            ModalService.openSimpleModal({
+                title: $translate.instant('common.warning'),
+                message: $translate.instant('page.leave.pristine.warning'),
+                warning: true
+            }).result.then(() => {
+                $uibModalInstance.dismiss('cancel');
+            });
+        } else {
+            $uibModalInstance.dismiss('cancel');
+        }
     };
 
     // =========================
@@ -47,6 +57,7 @@ function UpdateClusterGroupDialogCtrl($scope, $uibModalInstance, data, ClusterCo
             const localNode = ClusterContextService.getLocalNode();
             ClusterContextService.addLocation(localNode);
         }
+        $scope.isChanged = ClusterContextService.isChanged();
     };
 
     // =========================
@@ -68,4 +79,5 @@ function UpdateClusterGroupDialogCtrl($scope, $uibModalInstance, data, ClusterCo
     // Initialization
     // =========================
     ClusterContextService.setClusterView(data.clusterModel);
+    $scope.hasCluster = data.clusterModel.hasCluster;
 }

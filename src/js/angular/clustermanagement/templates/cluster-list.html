@@ -1,13 +1,15 @@
-<div onto-loader-new ng-if="loader" class="create-cluster-loader" message="getLoaderMessage" size="100  "></div>
+<link href="css/cluster-list.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-<div class="table-responsive" ng-class="isEditMode() ? 'edit-mode': 'preview-mode'">
-    <div class="pull-right mb-1">
-        <button ng-click="addNode()" ng-disabled="editedNodeIndex !== undefined"
-                class="btn btn-primary add-node-btn"
-                gdb-tooltip="{{'cluster_management.update_cluster_group_dialog.actions.add_node_tooltip' | translate}}">
-            <i class="fa-regular fa-plus"></i> {{'cluster_management.update_cluster_group_dialog.actions.add_node' | translate}}
-        </button>
-    </div>
+<div onto-loader-new ng-if="loader" class="create-cluster-loader" message="getLoaderMessage" size="100  "></div>
+<div class="add-node-wrapper pull-right mb-1">
+    <button ng-click="addNode()" ng-disabled="editedNodeIndex !== undefined"
+            class="btn btn-primary add-node-btn"
+            gdb-tooltip="{{'cluster_management.update_cluster_group_dialog.actions.add_node_tooltip' | translate}}">
+        <i class="fa-regular fa-plus"></i> {{'cluster_management.update_cluster_group_dialog.actions.add_node' |
+        translate}}
+    </button>
+</div>
+<div class="table-responsive">
     <form name="form" id="updateClusterGroupForm">
         <table class="cluster-group table table-striped table-hover" aria-describedby="cluster group table">
             <thead>
@@ -21,6 +23,9 @@
                 <th scope="col" class="info-column">
                     {{'cluster_management.update_cluster_group_dialog.column.info' | translate}}
                 </th>
+                <th scope="col" class="status-column">
+                    {{'cluster_management.update_cluster_group_dialog.column.status' | translate}}
+                </th>
                 <th scope="col" class="empty-column"></th>
                 <th scope="col" class="actions-column"></th>
             </tr>
@@ -33,12 +38,12 @@
             </tr>
 
             <tr ng-repeat-start="node in viewModel track by $index" ng-if="0"></tr>
-            <tr ng-if="$index !== editedNodeIndex" class="node preview-node-row" data-endpoint="{{node.endpoint}}" capture-height="$index"
+            <tr ng-if="$index !== editedNodeIndex" class="node preview-node-row" data-endpoint="{{node.endpoint}}"
+                capture-height="$index"
                 ng-class="{'selected': $index === selectedNode || $index === editedNodeIndex}">
-                <td class="index-cell">{{$index + 1}}</td>
-                <td class="location-cell data">
+                <td class="index-cell"><span ng-if="!node.isDeleted">{{node.index + 1}}</span></td>
+                <td class="location-cell data"  ng-class="{'deleting': node.isDeleted, 'adding': !node.item.address}">
                     <div class="location-item">
-                        <div class="logo-image"></div>
                         {{node.item.endpoint}}
                     </div>
                 </td>
@@ -46,27 +51,48 @@
                     <div ng-if="node.item.isLocal">
                         {{'cluster_management.update_cluster_group_dialog.current_node' | translate}}
                     </div>
-                    <div ng-if="!node.item.address">
+
+                    <div ng-if="node.item.nodeState">
+                        {{ ('cluster_management.update_cluster_group_dialog.' + node.item.nodeState.toLowerCase()) |
+                        translate }}
+                    </div>
+                </td>
+                <td class="status-cell data">
+                    <div ng-if="!node.item.address" class="adding">
+                        <i class="fa-regular fa-circle-check status-icon"></i>
                         {{'cluster_management.update_cluster_group_dialog.new_node' | translate}}
+                    </div>
+                    <div ng-if="node.isDeleted" class="deleting">
+                        <i class="fa-regular fa-xmark status-icon"></i>
+                        {{'cluster_management.update_cluster_group_dialog.deleted_node' | translate}}
                     </div>
                 </td>
                 <td class="empty-cell"></td>
                 <td class="actions-cell">
-                    <div ng-if="editedNodeIndex === undefined" class="actions-group">
+                    <div ng-if="editedNodeIndex === undefined && !node.isDeleted" class="actions-group">
+                        <button ng-click="deleteNode($index, node)" ng-disabled="!canDeleteNode"
+                                class="btn btn-link delete-node-btn secondary"
+                                gdb-tooltip="{{'cluster_management.update_cluster_group_dialog.actions.delete_node' | translate}}">
+                            <i class="fa-regular fa-xmark"></i>
+                        </button>
                         <button ng-click="replaceNode($index, node)" class="btn btn-link replace-node-btn"
                                 gdb-tooltip="{{'cluster_management.update_cluster_group_dialog.actions.replace_node' | translate}}">
                             <i class="fa-regular fa-arrow-right-arrow-left"></i>
                         </button>
-                        <button ng-click="deleteNode($index, node)" ng-disabled="!canDeleteNode" class="btn btn-link delete-node-btn secondary"
-                                gdb-tooltip="{{'cluster_management.update_cluster_group_dialog.actions.delete_node' | translate}}">
-                            <i class="fa-regular fa-trash-can"></i>
+                    </div>
+                    <div ng-if="editedNodeIndex === undefined && node.isDeleted" class="actions-group">
+                        <button ng-click="restoreNode(node)"
+                                class="btn btn-link restore-node-btn secondary"
+                                gdb-tooltip="{{'cluster_management.update_cluster_group_dialog.actions.restore_node' | translate}}">
+                            <i class="fa-regular fa-rotate-left"></i>
                         </button>
                     </div>
                 </td>
             </tr>
-            <tr ng-if="$index === editedNodeIndex" class="node edit-node-row" data-endpoint="{{node.endpoint}}" style="{{getRowHeight}}"
+            <tr ng-if="$index === editedNodeIndex" class="node edit-node-row" data-endpoint="{{node.endpoint}}"
+                style="{{getRowHeight}}"
                 ng-class="{'selected table-info': $index === editedNodeIndex}">
-                <td class="index-cell">{{$index + 1}}</td>
+                <td class="index-cell"><span ng-if="!node.isDeleted">{{node.index + 1}}</span></td>
                 <td class="data location-cell">
                     <div class="autocomplete-container">
                             <textarea type="text" name="location" required
@@ -75,7 +101,8 @@
                                       ng-blur="hideSuggestions(node)"
                                       ng-click="filterSuggestions(node)"
                                       auto-grow
-                                      validate-url exclude="/repositories" exclude-protocol="ftp,ftps" allow-empty="false"
+                                      validate-url exclude="/repositories" exclude-protocol="ftp,ftps"
+                                      allow-empty="false"
                                       autocomplete="off"
                                       class="form-control form-control-sm textarea-edit"
                                       uib-tooltip="{{'remote.location.enter.url.msg' | translate}}"
@@ -83,11 +110,13 @@
                                       placeholder="{{'cluster_management.update_cluster_group_dialog.field_placeholders.location' | translate}}">
                             </textarea>
                         <ul ng-show="suggestions.length > 0 && showDropdown" class="autocomplete-dropdown">
-                            <li ng-repeat="suggestion in suggestions" ng-mouseup="selectSuggestion(node, suggestion)">
+                            <li ng-repeat="suggestion in suggestions"
+                                ng-mouseup="selectSuggestion(node, suggestion)">
                                 {{ suggestion }}
                             </li>
                         </ul>
-                        <div class="error-message" ng-show="form.location.$error.validUrl && !form.location.$pristine">
+                        <div class="error-message"
+                             ng-show="form.location.$error.validUrl && !form.location.$pristine">
                             * {{'valid.remote.location.warning' | translate}} http://server.example.com:7200/.
                         </div>
                         <div ng-repeat="error in errors" class="error-message">
@@ -100,6 +129,7 @@
                         {{'cluster_management.update_cluster_group_dialog.current_node' | translate}}
                     </div>
                 </td>
+                <td class="status-cell"></td>
                 <td class="empty-cell"></td>
                 <td class="actions-cell">
                     <div class="crud-actions-group">
@@ -119,7 +149,7 @@
             </tr>
             <tr ng-repeat-end ng-if="0"></tr>
             <tr ng-if="addNewLocation" class="node edit-node-row">
-                <td class="index-cell">{{viewModel.length + 1}}</td>
+                <td class="index-cell"></td>
                 <td class="data location-cell">
                     <div class="autocomplete-container">
                             <textarea type="text" name="location" required
@@ -128,7 +158,8 @@
                                       ng-blur="hideSuggestions(newLocation)"
                                       ng-click="filterSuggestions(newLocation)"
                                       auto-grow
-                                      validate-url exclude="/repositories" exclude-protocol="ftp,ftps" allow-empty="false"
+                                      validate-url exclude="/repositories" exclude-protocol="ftp,ftps"
+                                      allow-empty="false"
                                       autocomplete="off"
                                       class="form-control form-control-sm textarea-edit"
                                       uib-tooltip="{{'remote.location.enter.url.msg' | translate}}"
@@ -136,20 +167,15 @@
                                       placeholder="{{'cluster_management.update_cluster_group_dialog.field_placeholders.location' | translate}}">
                             </textarea>
                         <ul ng-show="suggestions.length > 0 && showDropdown" class="autocomplete-dropdown">
-                            <li ng-repeat="suggestion in suggestions" ng-mouseup="selectSuggestion(newLocation, suggestion)">
+                            <li ng-repeat="suggestion in suggestions"
+                                ng-mouseup="selectSuggestion(newLocation, suggestion)">
                                 {{ suggestion }}
                             </li>
                         </ul>
-                        <div class="error-message" ng-show="form.location.$error.validUrl && !form.location.$pristine">
-                            * {{'valid.remote.location.warning' | translate}} http://server.example.com:7200/.
-                        </div>
-                        <div ng-repeat="error in errors" class="error-message">
-                            {{error}}
-                        </div>
                     </div>
                 </td>
-                <td class="info-cell data">
-                </td>
+                <td class="info-cell data"></td>
+                <td class="status-cell"></td>
                 <td class="empty-cell"></td>
                 <td class="actions-cell">
                     <div class="crud-actions-group">
@@ -169,12 +195,22 @@
             </tr>
             </tbody>
         </table>
-        <div class="form-horizontal" ng-if="!hasCluster" >
+        <div class="errors">
+            <div class="error-message"
+                 ng-show="form.location.$error.validUrl && !form.location.$pristine">
+                * {{'valid.remote.location.warning' | translate}} http://server.example.com:7200/.
+            </div>
+            <div ng-repeat="error in errors" class="error-message">
+                {{error}}
+            </div>
+        </div>
+        <div class="form-horizontal" ng-if="!hasCluster">
             <div class="form-group">
                 <div class="indented-div">
                         <span class="padding-label wrapper-div"
                               gdb-tooltip="{{'cluster_management.cluster_page.advanced_options_tooltip' | translate}}">
-                            <button type="button" class="text-btn" data-toggle="collapse" style="text-align: left" data-target="#advancedOptions">
+                            <button type="button" class="text-btn" data-toggle="collapse" style="text-align: left"
+                                    data-target="#advancedOptions">
                                 <i class="{{getAdvancedOptionsClass()}} advanced-options-toggle" aria-hidden="true"></i>
                                 {{'cluster_management.cluster_page.advanced_options' | translate}}
                             </button>
@@ -183,76 +219,141 @@
 
                 <div id="advancedOptions" class="collapse pb-1 pl-2">
                     <div class="form-group">
-                        <div class="input-group" ng-class="{'has-danger': clusterConfigurationForm.electionMinTimeout.$invalid}">
-                            <label for="election-minimum-timeout" class="col-xs-4 col-form-label">{{'cluster_management.cluster_configuration_properties.election_min_timeout' | translate}}*</label>
-                            <div class="col-xs-8" gdb-tooltip="{{'cluster_management.cluster_configuration_properties.election_min_timeout_tooltip' | translate}}">
-                                <input class="form-control" placeholder="{{'required.field' | translate}}" type="number" ng-model="clusterConfiguration.electionMinTimeout"
-                                       required id="election-minimum-timeout" min="0" pattern="[0-9]+" name="electionMinTimeout">
-                                <div class="form-control-feedback" ng-show="clusterConfigurationForm.electionMinTimeout.$error.required">{{'required.field' | translate}}</div>
-                                <div class="form-control-feedback" ng-show="clusterConfigurationForm.electionMinTimeout.$error.pattern">{{'cluster_management.cluster_page.errors.only_positive_integers' | translate}}</div>
+                        <div class="input-group"
+                             ng-class="{'has-danger': clusterConfigurationForm.electionMinTimeout.$invalid}">
+                            <label for="election-minimum-timeout" class="col-xs-4 col-form-label">{{'cluster_management.cluster_configuration_properties.election_min_timeout'
+                                | translate}}*</label>
+                            <div class="col-xs-8"
+                                 gdb-tooltip="{{'cluster_management.cluster_configuration_properties.election_min_timeout_tooltip' | translate}}">
+                                <input class="form-control" placeholder="{{'required.field' | translate}}"
+                                       type="number" ng-model="clusterConfiguration.electionMinTimeout"
+                                       required id="election-minimum-timeout" min="0" pattern="[0-9]+"
+                                       name="electionMinTimeout">
+                                <div class="form-control-feedback"
+                                     ng-show="clusterConfigurationForm.electionMinTimeout.$error.required">
+                                    {{'required.field' | translate}}
+                                </div>
+                                <div class="form-control-feedback"
+                                     ng-show="clusterConfigurationForm.electionMinTimeout.$error.pattern">
+                                    {{'cluster_management.cluster_page.errors.only_positive_integers' | translate}}
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <div class="input-group" ng-class="{'has-danger': clusterConfigurationForm.electionRangeTimeout.$invalid}">
-                            <label for="election-range-timeout" class="col-xs-4 col-form-label">{{'cluster_management.cluster_configuration_properties.election_range_timeout' | translate}}*</label>
-                            <div class="col-xs-8" gdb-tooltip="{{'cluster_management.cluster_configuration_properties.election_range_timeout_tooltip' | translate}}">
-                                <input class="form-control" placeholder="{{'required.field' | translate}}" type="number" ng-model="clusterConfiguration.electionRangeTimeout"
-                                       required id="election-range-timeout" min="0" pattern="[0-9]+" name="electionRangeTimeout">
-                                <div class="form-control-feedback" ng-show="clusterConfigurationForm.electionRangeTimeout.$error.required">{{'required.field' | translate}}</div>
-                                <div class="form-control-feedback" ng-show="clusterConfigurationForm.electionRangeTimeout.$error.pattern">{{'cluster_management.cluster_page.errors.only_positive_integers' | translate}}</div>
+                        <div class="input-group"
+                             ng-class="{'has-danger': clusterConfigurationForm.electionRangeTimeout.$invalid}">
+                            <label for="election-range-timeout" class="col-xs-4 col-form-label">{{'cluster_management.cluster_configuration_properties.election_range_timeout'
+                                | translate}}*</label>
+                            <div class="col-xs-8"
+                                 gdb-tooltip="{{'cluster_management.cluster_configuration_properties.election_range_timeout_tooltip' | translate}}">
+                                <input class="form-control" placeholder="{{'required.field' | translate}}"
+                                       type="number" ng-model="clusterConfiguration.electionRangeTimeout"
+                                       required id="election-range-timeout" min="0" pattern="[0-9]+"
+                                       name="electionRangeTimeout">
+                                <div class="form-control-feedback"
+                                     ng-show="clusterConfigurationForm.electionRangeTimeout.$error.required">
+                                    {{'required.field' | translate}}
+                                </div>
+                                <div class="form-control-feedback"
+                                     ng-show="clusterConfigurationForm.electionRangeTimeout.$error.pattern">
+                                    {{'cluster_management.cluster_page.errors.only_positive_integers' | translate}}
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <div class="input-group" ng-class="{'has-danger': clusterConfigurationForm.heartbeatInterval.$invalid}">
-                            <label for="heartbeat-interval" class="col-xs-4 col-form-label">{{'cluster_management.cluster_configuration_properties.heartbeat_interval' | translate}}*</label>
-                            <div class="col-xs-8" gdb-tooltip="{{'cluster_management.cluster_configuration_properties.heartbeat_interval_tooltip' | translate}}">
-                                <input class="form-control" placeholder="{{'required.field' | translate}}" type="number" ng-model="clusterConfiguration.heartbeatInterval"
-                                       required id="heartbeat-interval" min="0" pattern="[0-9]+" name="heartbeatInterval">
-                                <div class="form-control-feedback" ng-show="clusterConfigurationForm.heartbeatInterval.$error.required">{{'required.field' | translate}}</div>
-                                <div class="form-control-feedback" ng-show="clusterConfigurationForm.heartbeatInterval.$error.pattern">{{'cluster_management.cluster_page.errors.only_positive_integers' | translate}}</div>
+                        <div class="input-group"
+                             ng-class="{'has-danger': clusterConfigurationForm.heartbeatInterval.$invalid}">
+                            <label for="heartbeat-interval" class="col-xs-4 col-form-label">{{'cluster_management.cluster_configuration_properties.heartbeat_interval'
+                                | translate}}*</label>
+                            <div class="col-xs-8"
+                                 gdb-tooltip="{{'cluster_management.cluster_configuration_properties.heartbeat_interval_tooltip' | translate}}">
+                                <input class="form-control" placeholder="{{'required.field' | translate}}"
+                                       type="number" ng-model="clusterConfiguration.heartbeatInterval"
+                                       required id="heartbeat-interval" min="0" pattern="[0-9]+"
+                                       name="heartbeatInterval">
+                                <div class="form-control-feedback"
+                                     ng-show="clusterConfigurationForm.heartbeatInterval.$error.required">
+                                    {{'required.field' | translate}}
+                                </div>
+                                <div class="form-control-feedback"
+                                     ng-show="clusterConfigurationForm.heartbeatInterval.$error.pattern">
+                                    {{'cluster_management.cluster_page.errors.only_positive_integers' | translate}}
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <div class="input-group" ng-class="{'has-danger': clusterConfigurationForm.messageSizeKB.$invalid}">
-                            <label for="message-size" class="col-xs-4 col-form-label">{{'cluster_management.cluster_configuration_properties.message_size_kb' | translate}}*</label>
-                            <div class="col-xs-8" gdb-tooltip="{{'cluster_management.cluster_configuration_properties.message_size_kb_tooltip' | translate}}">
-                                <input class="form-control" placeholder="{{'required.field' | translate}}" type="number" ng-model="clusterConfiguration.messageSizeKB"
+                        <div class="input-group"
+                             ng-class="{'has-danger': clusterConfigurationForm.messageSizeKB.$invalid}">
+                            <label for="message-size" class="col-xs-4 col-form-label">{{'cluster_management.cluster_configuration_properties.message_size_kb'
+                                | translate}}*</label>
+                            <div class="col-xs-8"
+                                 gdb-tooltip="{{'cluster_management.cluster_configuration_properties.message_size_kb_tooltip' | translate}}">
+                                <input class="form-control" placeholder="{{'required.field' | translate}}"
+                                       type="number" ng-model="clusterConfiguration.messageSizeKB"
                                        required id="message-size" min="0" pattern="[0-9]+" name="messageSizeKB">
-                                <div class="form-control-feedback" ng-show="clusterConfigurationForm.messageSizeKB.$error.required">{{'required.field' | translate}}</div>
-                                <div class="form-control-feedback" ng-show="clusterConfigurationForm.messageSizeKB.$error.pattern">{{'cluster_management.cluster_page.errors.only_positive_integers' | translate}}</div>
+                                <div class="form-control-feedback"
+                                     ng-show="clusterConfigurationForm.messageSizeKB.$error.required">
+                                    {{'required.field' | translate}}
+                                </div>
+                                <div class="form-control-feedback"
+                                     ng-show="clusterConfigurationForm.messageSizeKB.$error.pattern">
+                                    {{'cluster_management.cluster_page.errors.only_positive_integers' | translate}}
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <div class="input-group" ng-class="{'has-danger': clusterConfigurationForm.verificationTimeout.$invalid}">
-                            <label for="verification-timeout" class="col-xs-4 col-form-label">{{'cluster_management.cluster_configuration_properties.verification_timeout' | translate}}*</label>
-                            <div class="col-xs-8" gdb-tooltip="{{'cluster_management.cluster_configuration_properties.verification_timeout_tooltip' | translate}}">
-                                <input class="form-control" placeholder="{{'required.field' | translate}}" type="number" ng-model="clusterConfiguration.verificationTimeout"
-                                       required id="verification-timeout" min="0" pattern="[0-9]+" name="verificationTimeout">
-                                <div class="form-control-feedback" ng-show="clusterConfigurationForm.verificationTimeout.$error.required">{{'required.field' | translate}}</div>
-                                <div class="form-control-feedback" ng-show="clusterConfigurationForm.verificationTimeout.$error.pattern">{{'cluster_management.cluster_page.errors.only_positive_integers' | translate}}</div>
+                        <div class="input-group"
+                             ng-class="{'has-danger': clusterConfigurationForm.verificationTimeout.$invalid}">
+                            <label for="verification-timeout" class="col-xs-4 col-form-label">{{'cluster_management.cluster_configuration_properties.verification_timeout'
+                                | translate}}*</label>
+                            <div class="col-xs-8"
+                                 gdb-tooltip="{{'cluster_management.cluster_configuration_properties.verification_timeout_tooltip' | translate}}">
+                                <input class="form-control" placeholder="{{'required.field' | translate}}"
+                                       type="number" ng-model="clusterConfiguration.verificationTimeout"
+                                       required id="verification-timeout" min="0" pattern="[0-9]+"
+                                       name="verificationTimeout">
+                                <div class="form-control-feedback"
+                                     ng-show="clusterConfigurationForm.verificationTimeout.$error.required">
+                                    {{'required.field' | translate}}
+                                </div>
+                                <div class="form-control-feedback"
+                                     ng-show="clusterConfigurationForm.verificationTimeout.$error.pattern">
+                                    {{'cluster_management.cluster_page.errors.only_positive_integers' | translate}}
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="input-group" ng-class="{'has-danger': clusterConfigurationForm.transactionLogMaximumSizeGB.$invalid}">
-                            <label for="verification-timeout" class="col-xs-4 col-form-label">{{'cluster_management.cluster_configuration_properties.transaction_log_maximum_size_gb' | translate}}*</label>
-                            <div class="col-xs-8" gdb-tooltip="{{'cluster_management.cluster_configuration_properties.transaction_log_maximum_size_gb_tooltip' | translate}}">
-                                <input class="form-control" placeholder="{{'required.field' | translate}}" type="number" ng-model="clusterConfiguration.transactionLogMaximumSizeGB"
-                                       required id="transaction-log-maximum-size-gb" pattern="-?[1-9][0-9]*(\.[0-9]+)?"  name="transaction_log_maximum_size_gb">
-                                <div class="form-control-feedback" ng-show="clusterConfigurationForm.transactionLogMaximumSizeGB.$error.required">{{'required.field' | translate}}</div>
-                                <div class="form-control-feedback" ng-show="clusterConfigurationForm.transactionLogMaximumSizeGB.$error.pattern">{{'cluster_management.cluster_page.errors.small_transaction_log_max_size' | translate}}</div>
+                        <div class="input-group"
+                             ng-class="{'has-danger': clusterConfigurationForm.transactionLogMaximumSizeGB.$invalid}">
+                            <label for="verification-timeout" class="col-xs-4 col-form-label">{{'cluster_management.cluster_configuration_properties.transaction_log_maximum_size_gb'
+                                | translate}}*</label>
+                            <div class="col-xs-8"
+                                 gdb-tooltip="{{'cluster_management.cluster_configuration_properties.transaction_log_maximum_size_gb_tooltip' | translate}}">
+                                <input class="form-control" placeholder="{{'required.field' | translate}}"
+                                       type="number" ng-model="clusterConfiguration.transactionLogMaximumSizeGB"
+                                       required id="transaction-log-maximum-size-gb"
+                                       pattern="-?[1-9][0-9]*(\.[0-9]+)?" name="transaction_log_maximum_size_gb">
+                                <div class="form-control-feedback"
+                                     ng-show="clusterConfigurationForm.transactionLogMaximumSizeGB.$error.required">
+                                    {{'required.field' | translate}}
+                                </div>
+                                <div class="form-control-feedback"
+                                     ng-show="clusterConfigurationForm.transactionLogMaximumSizeGB.$error.pattern">
+                                    {{'cluster_management.cluster_page.errors.small_transaction_log_max_size' |
+                                    translate}}
+                                </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
