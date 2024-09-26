@@ -100,6 +100,8 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             templateUrl: 'js/angular/clustermanagement/templates/modal/update-cluster-group-dialog.html',
             controller: 'UpdateClusterGroupDialogCtrl',
             size: 'lg',
+            backdrop: 'static',
+            keyboard: false,
             resolve: {
                 data: () => {
                     return {clusterModel: $scope.clusterModel};
@@ -311,7 +313,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     };
 
     const editCluster = (nodes) => {
-        const loaderMessage = $translate.instant('cluster_management.cluster_page.replace_nodes_loader');
+        const loaderMessage = $translate.instant('cluster_management.cluster_page.updating_cluster_loader');
         $scope.setLoader(true, loaderMessage);
 
         const addNodes = nodes.addNodes;
@@ -320,11 +322,11 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
         ClusterRestService.replaceNodesInCluster(payload)
             .then(() => {
                 const successMessage = $translate.instant(
-                    'cluster_management.cluster_page.notifications.replace_nodes_success');
+                    'cluster_management.cluster_page.notifications.update_success');
                 onAddRemoveSuccess(successMessage);
             })
             .catch((error) => {
-                const failMessageTitle = $translate.instant('cluster_management.cluster_page.notifications.replace_nodes_fail');
+                const failMessageTitle = $translate.instant('cluster_management.cluster_page.notifications.update_failed');
                 handleErrors(error.data, error.status, failMessageTitle);
             })
             .finally(() => {
