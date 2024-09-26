@@ -268,7 +268,6 @@ div.nodetooltip {
 
 .autocomplete-container {
     position: relative;
-    max-width: 300px;
 }
 
 .autocomplete-dropdown {
@@ -296,4 +295,13 @@ div.nodetooltip {
 .error-message {
     font-size: x-small;
     color: var(--color-warning-dark);
+}
+
+.alert-save {
+    margin-left: 12px;
+    margin-right: 12px;
+}
+
+.alert-save.alert-warning:before {
+    content: "\e920";
 }
