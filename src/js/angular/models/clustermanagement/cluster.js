@@ -301,12 +301,9 @@ export class ClusterViewModel {
     getAttached() {
         const nodes = this._clusterModel.nodes;
         const resultNodes = nodes
-            .concat(Array.from(this._addToCluster.values()))
-            .filter((node) => {
-                return !this._deleteFromCluster.has(node.endpoint);
-            });
+            .concat(Array.from(this._addToCluster.values()));
 
-        this._currentNodesCount = resultNodes.length;
+        this._currentNodesCount = resultNodes.filter((node) => !this._deleteFromCluster.has(node.endpoint)).length;
         return resultNodes;
     }
 
@@ -315,7 +312,16 @@ export class ClusterViewModel {
      * @return {ClusterItemViewModel[]} The view model of the cluster.
      */
     getViewModel() {
-        return this.getAttached().map((location) => new ClusterItemViewModel(location));
+        let index = 0;
+        return this.getAttached().map((item) => {
+            const location = new ClusterItemViewModel(item);
+            if (this._deleteFromCluster.has(item.endpoint)) {
+                location.isDeleted = true;
+            } else {
+                location.index = index++;
+            }
+            return location;
+        });
     }
 
     /**
@@ -474,6 +480,10 @@ export class ClusterViewModel {
         this._deleteFromCluster.delete(node.endpoint);
     }
 
+    isChanged() {
+        return this._addToCluster.size > 0 || this._deleteFromCluster.size > 0;
+    }
+
     /**
      * Check if an item is present in the list by endpoint.
      * @param {Node[]|Location[]} list - The array of nodes or locations.
@@ -536,7 +546,7 @@ export class ClusterItemViewModel {
         this._item = item;
         this._endpoint = item.endpoint;
         this._isDeleted = false;
-        this._isReplacedBy = undefined;
+        this._index = undefined;
     }
 
     getEndPoint() {
@@ -611,13 +621,12 @@ export class ClusterItemViewModel {
         this._isDeleted = value;
     }
 
-
-    get isReplacedBy() {
-        return this._isReplacedBy;
+    get index() {
+        return this._index;
     }
 
-    set isReplacedBy(value) {
-        this._isReplacedBy = value;
+    set index(value) {
+        this._index = value;
     }
 }
 
