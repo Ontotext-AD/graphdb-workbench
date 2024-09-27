@@ -1,14 +1,27 @@
+:root {
+    --text-color: #000000;
+    --line-height: 1.6;
+}
+
 .chat-panel {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    align-items: center;
+    color: var(--text-color);
+}
+
+.chat-panel .btn.btn-link:focus {
+    color: var(--text-color);
+}
+
+.chat-panel .btn.btn-link:not(:hover) {
+    color: var(--text-color);
 }
 
 .chat-panel .chat-details {
     overflow-y: auto;
-    padding-right: 10px;
-    width: 90%;
+    padding-right: 30px;
+    padding-left: 20px;
 }
 
 .chat-panel .chat-detail {
@@ -22,6 +35,7 @@
     display: flex;
     justify-content: flex-end;
     flex-direction: row;
+    color: var(--text-color);
 }
 
 .chat-panel .assistant {
@@ -42,12 +56,14 @@
 
 .chat-panel .assistant-message .answer {
     padding: 4px 8px;
+    line-height: var(--line-height);
 }
 
 .chat-panel .user-message .question {
     max-width: 70%;
-    text-align: end;
     padding: 8px 16px;
+    color: var(--text-color);
+    line-height: var(--line-height);
 }
 
 .chat-panel .assistant-icon {
@@ -69,6 +85,15 @@
     opacity: 0
 }
 
+.chat-panel .assistant-message .toggle-explain-response-icon {
+    transform: rotate(180deg);
+    font-size: 0.6rem;
+}
+
+.chat-panel .assistant-message .toggle-explain-response-icon.expanded {
+    transform: rotate(0deg);
+}
+
 .chat-panel .assistant-message .actions:hover {
     opacity: 1;
 }
@@ -83,4 +108,29 @@
 
 .chat-panel .mew-question .question-input {
     background-color: #EFF3F8;
+    color: var(--text-color);
+}
+
+.chat-panel .assistant-message .derived-answer-hint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chat-panel .assistant-message .deliver-answer-btn {
+    background: none;
+    border-color: #C2C1C2;
+    color: #414041
+}
+
+.chat-panel .assistant-message .explain-response-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.chat-panel .assistant-message .explain-responses {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
 }
