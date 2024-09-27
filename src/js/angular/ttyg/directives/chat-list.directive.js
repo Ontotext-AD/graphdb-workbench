@@ -1,10 +1,8 @@
-import 'angular/core/filters/readableTimestamp';
 import 'angular/core/directives/inline-editable-text/inline-editable-text.directive';
 import {decodeHTML} from "../../../../app";
 import {TTYGEventName} from "../services/ttyg-context.service";
 
 const modules = [
-    'graphdb.framework.core.filters.readable_titmestamp',
     'graphdb.framework.core.directives.inline-editable-text'
 ];
 

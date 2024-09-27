@@ -14,3 +14,6 @@ cypress/
 test-cypress/logs/
 logs/
 .downloads
+
+# skip fonts as they are copied after the instalation of the @awesome.me packages.
+src/js/lib/awesome_me
