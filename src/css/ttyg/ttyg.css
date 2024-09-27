@@ -105,15 +105,14 @@ chat area
 }
 
 .ttyg-view .chat-content .toolbar {
-    width: 900px;
     margin: auto;
     padding: 0;
 }
 
 .ttyg-view .chat-content .chat {
-    width: 900px;
+    max-width: 800px;
     margin: auto;
-    height: calc(100vh - 10em);
+    height: calc(100vh - 13em);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -130,4 +129,9 @@ chat area
 
 .selected-chat-panel {
     height: 100%;
+}
+
+/* Better handling of markdown-derived HTML inside the assistant message */
+.assistant-message li > p:has(+:not(p)) {
+    margin-bottom: 0;
 }
