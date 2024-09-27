@@ -5,7 +5,7 @@ import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 import {ApplicationSteps} from "../../steps/application-steps";
 
 // TODO: This test is skipped because it fails on CI. For some reason the chat list panel is not visible.
-describe.skip('TTYG chat list', () => {
+describe('TTYG chat list', () => {
 
     beforeEach(() => {
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
@@ -15,8 +15,10 @@ describe.skip('TTYG chat list', () => {
     it('Should render chat list', () => {
         TTYGStubs.stubChatsListGet();
         TTYGStubs.stubAgentListGet();
+        TTYGStubs.stubChatGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
+        cy.wait('@get-chat');
         // When the ttyg page is loaded
         // Then I should see the chat list
         // TODO: Temporary removed because it fails on CI.
@@ -38,6 +40,7 @@ describe.skip('TTYG chat list', () => {
     it('Should render no results when there are no chats', () => {
         TTYGStubs.stubChatsListGetNoResults();
         TTYGStubs.stubAgentListGet();
+        TTYGStubs.stubChatGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
         // When the ttyg page is loaded
@@ -54,8 +57,10 @@ describe.skip('TTYG chat list', () => {
         TTYGStubs.stubChatsListGet();
         TTYGStubs.stubAgentListGet();
         TTYGStubs.stubChatUpdate();
+        TTYGStubs.stubChatGet();
         // Given I have opened the ttyg page and there are chats loaded
         TTYGViewSteps.visit();
+        cy.wait('@get-chat');
         // And I double-click on the chat name I want to rename
         TTYGViewSteps.editChatName(1, 0);
         // Then I should see the chat name input
@@ -73,10 +78,13 @@ describe.skip('TTYG chat list', () => {
         TTYGStubs.stubChatsListGet();
         TTYGStubs.stubAgentListGet();
         TTYGStubs.stubChatUpdate();
+        TTYGStubs.stubChatGet();
         // Given I have opened the ttyg page and there are chats loaded
         TTYGViewSteps.visit();
+        cy.wait('@get-chat');
         // And I open the action menu for the chat I want to rename
         TTYGViewSteps.selectChat(1, 0);
+        cy.wait('@get-chat');
         TTYGViewSteps.triggerEditChatActionMenu(1, 0);
         // Then I should see the chat name input
         TTYGViewSteps.getChatNameInput(1, 0).should('be.visible').and('have.value', 'Test chat 4');
@@ -92,8 +100,10 @@ describe.skip('TTYG chat list', () => {
     it('Should be able to cancel a chat name editing', () => {
         TTYGStubs.stubChatsListGet();
         TTYGStubs.stubAgentListGet();
+        TTYGStubs.stubChatGet();
         // Given I have opened the ttyg page and there are chats loaded
         TTYGViewSteps.visit();
+        cy.wait('@get-chat');
         // And I double-click on the first chat
         TTYGViewSteps.editChatName(0, 0);
         // Then I should see the chat name input
@@ -110,8 +120,10 @@ describe.skip('TTYG chat list', () => {
         TTYGStubs.stubChatsListGet();
         TTYGStubs.stubAgentListGet();
         TTYGStubs.stubChatDelete();
+        TTYGStubs.stubChatGet();
         // Given I have opened the ttyg page and there are chats loaded
         TTYGViewSteps.visit();
+        cy.wait('@get-chat');
         // When I select the delete action from the chat action menu
         TTYGViewSteps.triggerDeleteChatActionMenu(1, 0);
         // Then I should see the chat deletion confirmation dialog
@@ -129,9 +141,38 @@ describe.skip('TTYG chat list', () => {
         TTYGViewSteps.getChatByDayGroups().should('have.length', 1);
     });
 
+    it('Should be able to export chat from chat list export action', () => {
+        TTYGStubs.stubChatsListGet();
+        TTYGStubs.stubChatExport();
+        TTYGStubs.stubChatGet();
+        // Given I have opened the ttyg page and there are chats loaded
+        TTYGViewSteps.visit();
+        cy.wait('@get-chat');
+        // When I select the export chat action chat panel toolbar
+        TTYGViewSteps.triggerExportChatActionMenu(1, 0);
+        cy.wait('@export-chat');
+        // Then I expect to download the chat as a file
+        TTYGViewSteps.verifyFileExists('chat-export.json')
+    });
+
+    it('Should be able to export chat from chat panel toolbar export action', () => {
+        TTYGStubs.stubChatsListGet();
+        TTYGStubs.stubChatExport();
+        TTYGStubs.stubChatGet();
+        // Given I have opened the ttyg page and there are chats loaded
+        TTYGViewSteps.visit();
+        cy.wait('@get-chat');
+        // When I select the export chat action chat panel toolbar
+        TTYGViewSteps.exportCurrentChat();
+        cy.wait('@export-chat');
+        // Then I expect to download the chat as a file
+        TTYGViewSteps.verifyFileExists('chat-export.json')
+    });
+
     it('Should show error notification if chat list fails to load', () => {
         TTYGStubs.stubChatListGetError();
         TTYGStubs.stubAgentListGet();
+        TTYGStubs.stubChatGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
         // When the chat list fails to load
