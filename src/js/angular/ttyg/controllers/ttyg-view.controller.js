@@ -204,6 +204,8 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
      */
     $scope.onCreateAgent = () => {
         const activeRepositoryInfo = repositoryInfoMapper($repositories.getActiveRepositoryObject());
+        const agentFormModel = newAgentFormModelProvider();
+        agentFormModel.repositoryId = activeRepositoryInfo.id;
         const options = {
             templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
             controller: 'AgentSettingsModalController',
@@ -213,7 +215,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
                     return {
                         activeRepositoryInfo: activeRepositoryInfo,
                         activeRepositoryList: $scope.activeRepositoryList,
-                        agentFormModel: newAgentFormModelProvider()
+                        agentFormModel
                     };
                 }
             },
