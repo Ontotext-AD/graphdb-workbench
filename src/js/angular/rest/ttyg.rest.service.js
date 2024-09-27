@@ -1,4 +1,4 @@
-import {TtygRestServiceFakeBackend} from "./ttyg.rest.service.fake.backend";
+import {TtygRestServiceFakeBackend} from './ttyg.rest.service.fake.backend';
 
 angular
     .module('graphdb.framework.rest.ttyg.service', [])
@@ -52,17 +52,24 @@ function TTYGRestService($http) {
 
     /**
      * Exports a conversation by its ID.
-     *
-     * TODO: this should give the user a file to download, but the backend doesn't support it yet.
-     *
      * @param {string} id
-     * @return {*}
+     * @return {Promise<{Blob, string}>} Returns the conversation as a Blob and the filename wrapped in a Promise
      */
     const exportConversation = (id) => {
         if (DEVELOPMENT) {
             return _fakeBackend.exportConversation(id);
         }
-        return $http.post(`${CONVERSATIONS_ENDPOINT}/export/${id}`);
+        return $http.get(`${CONVERSATIONS_ENDPOINT}/export/${id}`, {responseType: 'blob'}).then(function (res) {
+            const data = res.data;
+            const headers = res.headers();
+            const contentDispositionHeader = headers['content-disposition'];
+            let filename = 'chat-export';
+            if (contentDispositionHeader) {
+                filename = contentDispositionHeader.split('filename=')[1];
+                filename = filename.substring(0, filename.length);
+            }
+            return {data, filename};
+        });
     };
 
     /**

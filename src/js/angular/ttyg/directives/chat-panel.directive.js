@@ -58,6 +58,18 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             // =========================
 
             /**
+             * Handled pressing enter key in the question input
+             * Will not trigger if `shift` or `ctrl` keys are pressed
+             *
+             * @param $event
+             */
+            $scope.onKeypressOnInput = ($event) => {
+                if ($event.keyCode === 13 && $event.shiftKey === false && $event.ctrlKey === false) {
+                    $scope.ask();
+                }
+            }
+
+            /**
              * Handles the ask question action.
              */
             $scope.ask = () => {

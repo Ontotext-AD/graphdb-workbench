@@ -39,7 +39,7 @@
         </div>
     </div>
     <div class="mew-question mb-3 mt-2 d-flex">
-        <input class="form-control question-input" ng-model="chatItem.question.message" type="text">
+        <input class="form-control question-input" ng-model="chatItem.question.message" type="text" ng-keypress="onKeypressOnInput($event)">
         <button class="btn btn-primary ask-button" ng-disabled="!chatItem.question.message || !selectedAgent || selectedAgent.isDeleted" ng-click="ask()">
             <i class="fa-regular fa-arrow-turn-left-up"></i>
             {{ 'ttyg.chat_panel.btn.ask.label ' | translate }}
