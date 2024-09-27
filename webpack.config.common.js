@@ -115,7 +115,8 @@ module.exports = {
             },
             {
                 from: 'src/js/angular/ttyg/templates',
-                to: 'js/angular/ttyg/templates'
+                to: 'js/angular/ttyg/templates',
+                transform: replaceVersion
             },
             {
                 from: 'src/js/angular/clustermanagement/templates',
