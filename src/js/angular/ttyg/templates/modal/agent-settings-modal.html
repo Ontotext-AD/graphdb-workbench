@@ -39,16 +39,17 @@
                 <div ng-repeat="extractionMethod in agentFormModel.assistantExtractionMethods.extractionMethods"
                      class="extraction-method">
                     <div id="{{extractionMethod.method + '_method_heading'}}" class="extraction-method-heading"
-                         ng-class="{'selected': extractionMethod.selected}">
+                         ng-class="{'selected': extractionMethod.selected}"
+                         data-toggle="collapse"
+                         data-target="#{{extractionMethod.method + '_method_content'}}">
                         <div class="mr-0 extraction-method-toggle">
                             <input type="checkbox" id="{{extractionMethod.method + '_checkbox'}}"
                                    name="{{extractionMethod}}" class="switch"
-                                   ng-change="toggleExtractionMethod()"
+                                   ng-change="toggleExtractionMethod(extractionMethod)"
                                    ng-model="extractionMethod.selected"/>
                             <label for="{{extractionMethod.method + '_checkbox'}}"></label>
                         </div>
-                        <a class="btn btn-link panel-toggle-link collapsed" data-toggle="collapse"
-                           data-target="#{{extractionMethod.method + '_method_content'}}"
+                        <a class="btn btn-link panel-toggle-link collapsed"
                            aria-expanded="false" aria-controls="{{extractionMethod.method + '_method_content'}}"
                            ng-click="onExtractionMethodPanelToggle(extractionMethod)">
                             <span class="mr-1">{{'ttyg.agent.create_agent_modal.form.' + extractionMethod.method + '.label' | translate}}</span>
@@ -234,6 +235,13 @@
 
                     </div>
                 </div>
+
+
+
+
+
+
+
             </div>
             <div class="alert alert-danger extraction-method-required-error"
                  ng-if="agentSettingsForm.extractionMethods.$touched && agentSettingsForm.extractionMethods.$invalid">
