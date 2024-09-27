@@ -29,7 +29,7 @@ module.exports = {
             'src/js/',
             'node_modules'
         ],
-        extensions: ['.js']
+        extensions: ['.js', '.mjs']
     },
     plugins: [
         new WebpackAutoInject({
@@ -198,6 +198,11 @@ module.exports = {
     ],
     module: {
         rules: [
+            {
+                test: /\.mjs$/,
+                include: /node_modules/,
+                type: 'javascript/auto'
+            },
             {
                 test: /jquery.js/,
                 use: [

@@ -17,9 +17,8 @@
                 <div class="assistant-icon alert-help">
                     <i class="fa-regular fa-message-bot"></i>
                 </div>
-                <div class="assistant-message">
-                    <div class="answer">
-                        {{ chatItem.answer.message }}
+                <div class="assistant-message" ng-if="chatItem.answer">
+                    <div class="answer" ng-bind-html="MarkdownService.renderMarkdown(chatItem.answer.message)">
                     </div>
                     <div class="actions" ng-class="{'hidden-actions': !$last}">
                         <button class="btn btn-link secondary btn-sm regenerate-question-btn"

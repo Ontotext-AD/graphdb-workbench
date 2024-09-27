@@ -1,14 +1,17 @@
+import 'angular/core/services/markdown.service';
 import {TTYGEventName} from "../services/ttyg-context.service";
 import {CHAT_MESSAGE_ROLE, ChatMessageModel} from "../../models/ttyg/chat-message";
 import {ChatItemModel} from "../../models/ttyg/chat-item";
 
-const modules = [];
+const modules = [
+    'graphdb.framework.core.services.markdown-service'
+];
 
 angular
     .module('graphdb.framework.ttyg.directives.chat-panel', modules)
     .directive('chatPanel', ChatPanelComponent);
 
-ChatPanelComponent.$inject = ['toastr', '$translate', 'TTYGContextService'];
+ChatPanelComponent.$inject = ['toastr', '$translate', 'TTYGContextService', 'MarkdownService'];
 
 /**
  * @ngdoc directive
@@ -24,7 +27,7 @@ ChatPanelComponent.$inject = ['toastr', '$translate', 'TTYGContextService'];
  * @example
  * <chat-panel></chat-panel>
  */
-function ChatPanelComponent(toastr, $translate, TTYGContextService) {
+function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownService) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/chat-panel.html',
@@ -48,6 +51,8 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
              * @type {ChatItemModel}
              */
             $scope.chatItem = undefined;
+
+            $scope.MarkdownService = MarkdownService;
 
             // =========================
             // Private variables
