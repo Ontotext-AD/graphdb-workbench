@@ -53,23 +53,13 @@ function TTYGRestService($http) {
     /**
      * Exports a conversation by its ID.
      * @param {string} id
-     * @return {Promise<{Blob, string}>} Returns the conversation as a Blob and the filename wrapped in a Promise
+     * @return {Promise<{Blob}>} Returns the conversation as a Blob
      */
     const exportConversation = (id) => {
         if (DEVELOPMENT) {
             return _fakeBackend.exportConversation(id);
         }
-        return $http.get(`${CONVERSATIONS_ENDPOINT}/export/${id}`, {responseType: 'blob'}).then(function (res) {
-            const data = res.data;
-            const headers = res.headers();
-            const contentDispositionHeader = headers['content-disposition'];
-            let filename = 'chat-export';
-            if (contentDispositionHeader) {
-                filename = contentDispositionHeader.split('filename=')[1];
-                filename = filename.substring(0, filename.length);
-            }
-            return {data, filename};
-        });
+        return $http.get(`${CONVERSATIONS_ENDPOINT}/export/${id}`, {responseType: 'blob'});
     };
 
     /**

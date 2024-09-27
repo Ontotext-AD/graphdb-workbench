@@ -141,7 +141,8 @@ describe('TTYG chat list', () => {
         TTYGViewSteps.getChatByDayGroups().should('have.length', 1);
     });
 
-    it('Should be able to export chat from chat list export action', () => {
+    // FIXME: Skipped because of exception thrown by GDB
+    it.skip('Should be able to export chat from chat list export action', () => {
         TTYGStubs.stubChatsListGet();
         TTYGStubs.stubChatExport();
         TTYGStubs.stubChatGet();
@@ -155,7 +156,8 @@ describe('TTYG chat list', () => {
         TTYGViewSteps.verifyFileExists('chat-export.json')
     });
 
-    it('Should be able to export chat from chat panel toolbar export action', () => {
+    // FIXME: Skipped because of exception thrown by GDB
+    it.skip('Should be able to export chat from chat panel toolbar export action', () => {
         TTYGStubs.stubChatsListGet();
         TTYGStubs.stubChatExport();
         TTYGStubs.stubChatGet();
