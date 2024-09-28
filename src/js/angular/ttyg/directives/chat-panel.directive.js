@@ -1,7 +1,7 @@
 import 'angular/core/services/markdown.service';
 import {TTYGEventName} from "../services/ttyg-context.service";
 import {CHAT_MESSAGE_ROLE, ChatMessageModel} from "../../models/ttyg/chat-message";
-import {ChatItemModel} from "../../models/ttyg/chat-item";
+import {ChatItemModel, ChatItemsListModel} from "../../models/ttyg/chat-item";
 
 const modules = [
     'graphdb.framework.core.services.markdown-service'
@@ -43,6 +43,11 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
             $scope.chat = undefined;
 
             /**
+             * @type {ChatItemsListModel}
+             */
+            $scope.chatHistory = undefined;
+
+            /**
              * @type {AgentModel}
              */
             $scope.selectedAgent = undefined;
@@ -51,6 +56,12 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
              * @type {ChatItemModel}
              */
             $scope.chatItem = undefined;
+
+            /**
+             * Flag that indicates when a question is being asked.
+             * @type {boolean}
+             */
+            $scope.asking = false;
 
             $scope.MarkdownService = MarkdownService;
 
@@ -66,11 +77,14 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
              * Handles the ask question action.
              */
             $scope.ask = () => {
+                $scope.asking = true;
+                $scope.chatHistory.appendItem($scope.chatItem);
                 if (!$scope.chatItem.chatId) {
                     createNewChat();
                 } else {
                     askQuestion($scope.chatItem);
                 }
+                $scope.chatItem = getEmptyChatItem();
             };
 
             /**
@@ -96,11 +110,6 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
             // =========================
             // Private functions
             // =========================
-
-            const setupNewChatItem = () => {
-                $scope.chatItem = getEmptyChatItem();
-            };
-
             const createNewChat = () => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT, $scope.chatItem);
             };
@@ -115,7 +124,13 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
              */
             const onChatChanged = (chat) => {
                 $scope.chat = chat;
-                setupNewChatItem();
+                if ($scope.chat) {
+                    $scope.chatHistory = new ChatItemsListModel(chat.chatHistory.items);
+                } else {
+                    $scope.chatHistory = new ChatItemsListModel();
+                }
+                $scope.chatItem = getEmptyChatItem();
+                $scope.asking = false;
             };
 
             const onCopied = () => {
@@ -132,10 +147,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
              */
             const onSelectedAgentChanged = (agent) => {
                 $scope.selectedAgent = agent;
-                if ($scope.selectedAgent) {
-                    if (!$scope.chatItem) {
-                        $scope.chatItem = getEmptyChatItem();
-                    }
+                if ($scope.selectedAgent && $scope.chatItem) {
                     $scope.chatItem.agentId = $scope.selectedAgent.id;
                 }
             };
@@ -161,6 +173,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
             };
 
             const init = () => {
+                $scope.chatHistory = new ChatItemsListModel();
                 $scope.chatItem = getEmptyChatItem();
             };
 
@@ -173,7 +186,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
                 subscriptions.forEach((subscription) => subscription());
             };
 
-            subscriptions.push($scope.$watchCollection('chat.chatHistory.items', scrollToBottom));
+            subscriptions.push($scope.$watchCollection('chatHistory.items', scrollToBottom));
             subscriptions.push(TTYGContextService.onSelectedChatUpdated(onChatChanged));
             subscriptions.push(TTYGContextService.onSelectedAgentChanged(onSelectedAgentChanged));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_SUCCESSFUL, onCopied));

@@ -129,4 +129,8 @@ export class ChatItemsListModel {
     set items(value) {
         this._items = value || [];
     }
+
+    getFirstItem() {
+        return this._items.length > 0 ? this._items[0] : undefined;
+    }
 }

@@ -242,7 +242,11 @@ export const TTYGEventName = {
     CHAT_EXPORT_FAILURE: 'chatExportFailure',
     CHAT_LIST_UPDATED: 'chatListUpdated',
     ASK_QUESTION: 'askQuestion',
-    LOAD_CHAT: 'loadChat',
+
+    /**
+     * Emitting the "loadChats" event will trigger an action to loads all chats from backend server.
+     */
+    LOAD_CHATS: 'loadChats',
     LOAD_CHAT_SUCCESSFUL: 'loadChatSuccess',
     LOAD_CHAT_FAILURE: 'loadChatFailure',
     AGENT_LIST_UPDATED: 'agentListUpdated',

@@ -2,12 +2,12 @@
 
 <div class="chat-panel h-100">
 
-    <div class="messages-hint text-muted" ng-if="chat.chatHistory.isEmpty()">
+    <div class="messages-hint text-muted" ng-if="chatHistory.isEmpty()">
         {{ 'ttyg.chat_panel.hint' | translate }}
     </div>
 
     <div class="chat-details" ng-class="{'hidden': !chat}">
-        <div class="chat-detail" ng-repeat="chatItem in chat.chatHistory.items">
+        <div class="chat-detail" ng-repeat="chatItem in chatHistory.items">
             <div class="user-message">
                 <div class="question alert-help">
                     {{ chatItem.question.message }}
@@ -34,12 +34,15 @@
                         <i class="fa-regular fa-wand-magic-sparkles"></i>
                     </div>
                 </div>
+                <div class="assistant-progress" ng-if="!chatItem.answer">
+                    <div onto-loader-new size="40"></div>
+                </div>
             </div>
         </div>
     </div>
     <div class="mew-question mb-3 mt-2 d-flex">
-        <input class="form-control question-input" ng-model="chatItem.question.message" type="text">
-        <button class="btn btn-primary ask-button" ng-disabled="!chatItem.question.message || !selectedAgent || selectedAgent.isDeleted" ng-click="ask()">
+        <input class="form-control question-input" ng-model="chatItem.question.message" type="text" ng-disabled="asking">
+        <button class="btn btn-primary ask-button" ng-disabled="!chatItem.question.message || !selectedAgent || selectedAgent.isDeleted || asking" ng-click="ask()">
             <i class="fa-regular fa-arrow-turn-left-up"></i>
             {{ 'ttyg.chat_panel.btn.ask.label ' | translate }}
         </button>

@@ -1,6 +1,15 @@
 import {cloneDeep} from "lodash";
 import {CHAT_MESSAGE_ROLE} from "../models/ttyg/chat-message";
 
+// Delay for askQuestion()
+const ASK_DELAY = 2000;
+
+// Delay for getConversations()
+const LIST_CHATS_DELAY = 2000;
+
+// Delay for getConversation(id)
+const GET_CHAT_DELAY = 2000;
+
 export class TtygRestServiceFakeBackend {
 
     constructor() {
@@ -9,12 +18,15 @@ export class TtygRestServiceFakeBackend {
 
     getConversations() {
         return new Promise((resolve) => {
-            resolve({data: cloneDeep(this.conversations)});
+            setTimeout(() => resolve({data: cloneDeep(this.conversations)}), LIST_CHATS_DELAY);
         });
     }
 
     getConversation(id) {
-        return Promise.resolve({data: cloneDeep(this.conversations.find((conversation) => conversation.id === id))});
+        return new Promise((resolve) => {
+            setTimeout(() => resolve({data: cloneDeep(this.conversations.find((conversation) => conversation.id === id))}),
+                GET_CHAT_DELAY);
+        });
     }
 
     renameConversation(id, data) {
@@ -52,7 +64,7 @@ export class TtygRestServiceFakeBackend {
             conversation.messages.push(answer);
             conversation.messages.push(question);
         }
-        return Promise.resolve({data: answer});
+        return new Promise((resolve) => setTimeout(() => resolve({data: answer}), ASK_DELAY));
     }
 
     deleteConversation(id) {
