@@ -92,6 +92,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
                     askQuestion($scope.chatItem);
                 }
                 $scope.chatItem = getEmptyChatItem();
+                focusQuestionInput();
             };
 
             /**
@@ -139,6 +140,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
                 }
                 $scope.chatItem = getEmptyChatItem();
                 $scope.asking = false;
+                focusQuestionInput();
             };
 
             const onCopied = () => {
@@ -150,6 +152,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
                 $scope.loadChat = DUMMY_CHAT_ID !== chatId;
                 $scope.chatHistory = new ChatItemsListModel();
                 $scope.chatItem = getEmptyChatItem();
+                focusQuestionInput();
             };
 
             const onCopyFailed = () => {
@@ -182,6 +185,10 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
                 return chatItem;
             };
 
+            const focusQuestionInput = () => {
+                element.find('.question-input').focus();
+            };
+
             const scrollToBottom = () => {
                 const chatDetailsElement = element.find(".chat-details")[0];
                 chatDetailsElement.scrollTop = chatDetailsElement.scrollHeight;
@@ -190,6 +197,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
             const init = () => {
                 $scope.chatHistory = new ChatItemsListModel();
                 $scope.chatItem = getEmptyChatItem();
+                focusQuestionInput();
             };
 
             // =========================
