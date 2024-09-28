@@ -4,9 +4,11 @@
     <button type="button" class="btn dropdown-toggle-btn" uib-dropdown-toggle
             ng-attr-title="{{selectedAgent && !selectedAgent.isDeleted && selectedAgent.repositoryId ? (selectedAgent.name + ' &middot; ' + selectedAgent.repositoryId) : null}}">
         <span ng-if="!selectedAgent">{{'ttyg.agent.agent_select_menu.no_selection_label' | translate}}</span>
-        <span ng-if="selectedAgent && !selectedAgent.isDeleted && selectedAgent.repositoryId">{{selectedAgent.name}} &middot; {{selectedAgent.repositoryId}}</span>
+        <span ng-if="selectedAgent && !selectedAgent.isDeleted && selectedAgent.repositoryId">
+            <span class="agent-name">{{selectedAgent.name}}</span> &middot; {{selectedAgent.repositoryId}}
+        </span>
         <span ng-if="selectedAgent && !selectedAgent.isDeleted && !selectedAgent.repositoryId">
-            {{selectedAgent.name}} &middot; <i class="fa-regular fa-triangle-exclamation text-warning"></i>
+            <span class="agent-name">{{selectedAgent.name}}</span> &middot; <i class="fa-regular fa-triangle-exclamation text-warning"></i>
                 {{'ttyg.agent.deleted_repository' | translate}}
         </span>
         <span ng-if="selectedAgent && selectedAgent.isDeleted" class="text-warning">
