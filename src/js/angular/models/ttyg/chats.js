@@ -1,5 +1,7 @@
 import {ChatItemsListModel} from "./chat-item";
 
+export const DUMMY_CHAT_ID = "DUMMY_CHAT_ID";
+
 export class ChatModel {
     constructor(data, hashGenerator) {
         this.hashGenerator = hashGenerator;
@@ -126,6 +128,19 @@ export class ChatsListModel {
          * @private
          */
         this._chatsByDay = [];
+        this.sortByTime();
+        this.updateChatsByDay();
+    }
+
+    sortByTime() {
+        // Sort by timestamp in descending order (newest on top)
+        this._chats.sort((a, b) => {
+            return b.timestamp - a.timestamp;
+        });
+    }
+
+    updateChatsByDay() {
+        this._chatsByDay = [];
         // group chats by day
         this._chats.forEach((chat) => {
             const day = new Date(chat.timestamp * 1000).toDateString();
@@ -136,6 +151,12 @@ export class ChatsListModel {
                 this._chatsByDay.push(new ChatByDayModel({day: day, timestamp: chat.timestamp * 1000, chats: [chat]}));
             }
         });
+    }
+
+    appendChat(chat) {
+        this._chats.push(chat);
+        this.sortByTime();
+        this.updateChatsByDay();
     }
 
     /**

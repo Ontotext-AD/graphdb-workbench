@@ -129,7 +129,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
      * Creates a new chat and selects it.
      */
     $scope.startNewChat = () => {
-        TTYGContextService.selectChat(undefined);
+        TTYGContextService.emit(TTYGEventName.NEW_CHAT);
     };
 
     $scope.onopen = $scope.onclose = () => angular.noop();

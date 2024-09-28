@@ -49,7 +49,7 @@ export class TtygRestServiceFakeBackend {
             agentId: null,
             message: `Reply to '${askRequestData.question}'`,
             role: CHAT_MESSAGE_ROLE.USER,
-            timestamp: Date.now()
+            timestamp: Math.floor(Date.now() / 1000)
         };
         const answer = {
             id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNe",
@@ -57,7 +57,7 @@ export class TtygRestServiceFakeBackend {
             agentId: null,
             message: `Reply to '${askRequestData.question}'`,
             role: CHAT_MESSAGE_ROLE.ASSISTANT,
-            timestamp: Date.now()
+            timestamp: Math.floor(Date.now() / 1000)
         };
         const conversation = this.conversations.find((conversation) => conversation.id === askRequestData.conversationId);
         if (conversation) {
@@ -76,7 +76,7 @@ export class TtygRestServiceFakeBackend {
         const conversation = {
             id: `thread_${this.conversations.length}`,
             name: `Thread ${this.conversations.length}`,
-            timestamp: Date.now(),
+            timestamp: Math.floor(Date.now() / 1000),
             messages: []
         };
         this.conversations.unshift(conversation);

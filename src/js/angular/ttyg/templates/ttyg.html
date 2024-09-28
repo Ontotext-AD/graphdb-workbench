@@ -49,7 +49,7 @@
                 ps-click-outside="false"
                 ps-size="80vw">
                 <div class="sidebar-content">
-                    <chat-list ng-if="chats" chat-list="chats"></chat-list>
+                    <chat-list ng-if="chats"></chat-list>
                     <div ng-if="loadingChats" onto-loader-fancy message="{{'ttyg.chat.loading_chats' | translate}}"
                          size="25" style="height: 75vh; display: flex;"></div>
                 </div>

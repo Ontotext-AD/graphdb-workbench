@@ -2,6 +2,9 @@ import 'angular/core/directives/inline-editable-text/inline-editable-text.direct
 import {decodeHTML} from "../../../../app";
 import {TTYGEventName} from "../services/ttyg-context.service";
 
+import {ChatModel, DUMMY_CHAT_ID} from "../../models/ttyg/chats";
+import {md5HashGenerator} from "../../utils/hash-utils";
+
 const modules = [
     'graphdb.framework.core.directives.inline-editable-text'
 ];
@@ -16,9 +19,6 @@ function ChatListComponent(TTYGContextService, ModalService, $translate) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/chat-list.html',
-        scope: {
-            chatList: '='
-        },
         link: ($scope, element, attrs) => {
 
             // =========================
@@ -91,12 +91,57 @@ function ChatListComponent(TTYGContextService, ModalService, $translate) {
                 $scope.renamedChat = undefined;
             };
 
+            $scope.getHumanReadableTimestamp = (timestamp) => {
+                const date = new Date(timestamp);
+                const today = new Date();
+
+                // Get start of today
+                const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+                // Get start of yesterday
+                const yesterdayStart = new Date(todayStart);
+                yesterdayStart.setDate(todayStart.getDate() - 1);
+
+                // Get start of the timestamp's day
+                const dateStart = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+                if (dateStart.getTime() === todayStart.getTime()) {
+                    return $translate.instant('common.dates.today');
+                } else if (dateStart.getTime() === yesterdayStart.getTime()) {
+                    return $translate.instant('common.dates.yesterday');
+                } else {
+                    // returns in format like "8/16/2024"
+                    return date.toLocaleDateString();
+                }
+            };
+
             /**
              * Handles the change of the selected chat.
              * @param {ChatModel} chat
              */
             const onSelectedChatChanged = (chat) => {
                 $scope.selectedChat = chat;
+            };
+
+            /**
+             * Handles the change of the chats list.
+             * @param {ChatsListModel} chatList
+             */
+            const onChatsListChanged = (chatList) => {
+                $scope.chatList = chatList;
+            };
+
+            const onNewChat = () => {
+                if ($scope.selectedChat && $scope.selectedChat.id === DUMMY_CHAT_ID) {
+                    return;
+                }
+                const data = {
+                    id: DUMMY_CHAT_ID,
+                    timestamp: Math.floor(Date.now() / 1000)
+                };
+                const chatModel = new ChatModel(data, md5HashGenerator());
+                $scope.chatList.appendChat(chatModel);
+                TTYGContextService.selectChat(chatModel);
             };
 
             // =========================
@@ -109,6 +154,8 @@ function ChatListComponent(TTYGContextService, ModalService, $translate) {
             };
 
             subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
+            subscriptions.push(TTYGContextService.onChatsListChanged(onChatsListChanged));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.NEW_CHAT, onNewChat));
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);

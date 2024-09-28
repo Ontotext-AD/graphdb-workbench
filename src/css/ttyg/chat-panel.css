@@ -134,3 +134,7 @@
     flex-direction: column;
     gap: 32px;
 }
+
+.chat-panel .load-chat {
+    margin-top: 100px;
+}

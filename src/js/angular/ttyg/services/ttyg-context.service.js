@@ -84,8 +84,9 @@ function TTYGContextService(EventEmitterService) {
      * @param {ChatModel} selectedChat - The chat object to select.
      */
     const selectChat = (selectedChat) => {
-        if (!_selectedChat || _selectedChat.id !== selectedChat) {
+        if (!_selectedChat || _selectedChat.id !== selectedChat.id) {
             _selectedChat = cloneDeep(selectedChat);
+            emit(TTYGEventName.SELECTED_CHAT_WILL_CHANGE, selectedChat.id);
             emit(TTYGEventName.SELECT_CHAT, getSelectedChat());
         }
     };
@@ -114,7 +115,7 @@ function TTYGContextService(EventEmitterService) {
      * @param {ChatModel} chat - The chat object that is being updated.
      */
     const updateSelectedChat = (chat) => {
-        if (!_selectedChat || _selectedChat.id === chat.id) {
+        if (!_selectedChat || !chat || _selectedChat.id === chat.id) {
             _selectedChat = cloneDeep(chat);
             emit(TTYGEventName.SELECTED_CHAT_UPDATED, getSelectedChat());
         }
@@ -190,7 +191,7 @@ function TTYGContextService(EventEmitterService) {
      * @param {string} tTYGEventName - The name of the event to emit. It must be a value from {@link TTYGEventName}.
      * @param {*} payload - The data to emit with the event. The payload is deep-cloned before emission.
      */
-    const emit = (tTYGEventName, payload) => {
+    const emit = (tTYGEventName, payload = undefined) => {
         EventEmitterService.emitSync(tTYGEventName, cloneDeep(payload));
     };
 
@@ -226,14 +227,46 @@ function TTYGContextService(EventEmitterService) {
 }
 
 export const TTYGEventName = {
+    /**
+     * Emitting the "newChat" event notifies that a new chat is about to be created.
+     */
+    NEW_CHAT: 'newChat',
+
+    /**
+     * Emitting the "createChat" event triggers a backend request to create a new chat.
+     */
     CREATE_CHAT: 'createChat',
+
+    /**
+     * This event is emitted when a chat is successfully created.
+     */
     CREATE_CHAT_SUCCESSFUL: 'chatCreated',
+
+    /**
+     * This event is emitted when the creation of a chat fails.
+     */
     CREATE_CHAT_FAILURE: 'chatCreationFailed',
+
     RENAME_CHAT: 'renameChat',
     RENAME_CHAT_SUCCESSFUL: 'chatRenamed',
     RENAME_CHAT_FAILURE: 'chatRenamedFailure',
+
+    /**
+     * This event is triggered to notify that the selected chat is about to be changed.
+     */
+    SELECTED_CHAT_WILL_CHANGE: 'selectedChatWillChange',
+
+    /**
+     * Emitting the "selectChat" event when the selected chat has been changed.
+     */
     SELECT_CHAT: 'selectChat',
+
+    /**
+     * Emitting the "selectChatUpdated" event when the selected chat has been updated.
+     */
     SELECTED_CHAT_UPDATED: 'selectChatUpdated',
+
+
     DELETE_CHAT: 'deleteChat',
     DELETE_CHAT_SUCCESSFUL: 'chatDeleted',
     DELETE_CHAT_FAILURE: 'chatDeletedFailure',

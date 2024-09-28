@@ -2,8 +2,12 @@
 
 <div class="chat-panel h-100">
 
-    <div class="messages-hint text-muted" ng-if="chatHistory.isEmpty()">
+    <div class="messages-hint text-muted" ng-if="!loadChat && chatHistory.isEmpty()">
         {{ 'ttyg.chat_panel.hint' | translate }}
+    </div>
+
+    <div class="load-chat" ng-if="loadChat">
+        <div onto-loader-new size="40"></div>
     </div>
 
     <div class="chat-details" ng-class="{'hidden': !chat}">
