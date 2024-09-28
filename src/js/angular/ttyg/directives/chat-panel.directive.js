@@ -191,8 +191,11 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
             };
 
             const scrollToBottom = () => {
-                const chatDetailsElement = element.find(".chat-details")[0];
-                chatDetailsElement.scrollTop = chatDetailsElement.scrollHeight;
+                // Call it in a timeout to ensure that Angular's digest cycle is finished and all elements are displayed.
+                setTimeout(() => {
+                    const chatDetailsElement = element.find(".chat-details")[0];
+                    chatDetailsElement.scrollTop = chatDetailsElement.scrollHeight;
+                });
             };
 
             const init = () => {
