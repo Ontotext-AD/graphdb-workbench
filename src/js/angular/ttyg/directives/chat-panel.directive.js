@@ -103,6 +103,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
             $scope.regenerateQuestion = (chatItem) => {
                 const regenerateChatItem = getEmptyChatItem();
                 regenerateChatItem.setQuestionMessage(chatItem.getQuestionMessage());
+                $scope.chatHistory.appendItem(regenerateChatItem);
                 askQuestion(regenerateChatItem);
             };
 
