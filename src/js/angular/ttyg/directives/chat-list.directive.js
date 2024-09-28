@@ -25,6 +25,7 @@ function ChatListComponent(TTYGContextService, ModalService, $translate) {
             // Public variables
             // =========================
 
+            $scope.DUMMY_CHAT_ID = DUMMY_CHAT_ID;
             $scope.selectedChat = undefined;
             $scope.renamedChat = undefined;
 
@@ -132,11 +133,11 @@ function ChatListComponent(TTYGContextService, ModalService, $translate) {
             };
 
             const onNewChat = () => {
-                if ($scope.selectedChat && $scope.selectedChat.id === DUMMY_CHAT_ID) {
+                if ($scope.selectedChat && $scope.selectedChat.id === $scope.DUMMY_CHAT_ID) {
                     return;
                 }
                 const data = {
-                    id: DUMMY_CHAT_ID,
+                    id: $scope.DUMMY_CHAT_ID,
                     timestamp: Math.floor(Date.now() / 1000)
                 };
                 const chatModel = new ChatModel(data, md5HashGenerator());
