@@ -3,6 +3,15 @@
     "name": "Han Solo is a fictional character in the...",
     "messages": [
         {
+            "id": "msg_YbtWCL64HPu9Kf7SbsssseRlrwCc",
+            "conversationId": "thread_gy2K7D3efStfchq2v5VvpEvn",
+            "agentId": "asst_uoKp5kgnPlyZHhRXY7P2r9D7",
+            "role": "assistant",
+            "message": "Han Solo is a fictional character in the Star ",
+            "timestamp": "1725875332",
+            "name": null
+        },
+        {
             "id": "msg_1niL7yYidTfiGZynCiryiMMd",
             "conversationId": "thread_gy2K7D3efStfchq2v5VvpEvn",
             "agentId": null,
@@ -16,7 +25,7 @@
             "conversationId": "thread_gy2K7D3efStfchq2v5VvpEvn",
             "agentId": "asst_uoKp5kgnPlyZHhRXY7P2r9D7",
             "role": "assistant",
-            "message": "Han Solo is a fictional character in the Star Wars franchise. He is a Human male with fair skin and brown eyes. Han Solo is portrayed by Harrison Ford in the original Star Wars trilogy and in \"The Force Awakens.\" The character also appears in several other films and media within the Star Wars universe.\n\n**Key Details:**\n- **Gender:** Male\n- **Height:** 180 cm\n- **Mass:** 80 kg\n- **Birth Year:** 29BBY\n- **Eye Color:** Brown\n- **Hair Color:** Brown\n- **Homeworld:** Corellia (Planet 22)\n\n**Description:**\nHan Solo is a character in the Star Wars franchise. In the original film trilogy, Han and his co-pilot, Chewbacca, became involved in the Rebel Alliance's struggle against the Galactic Empire. During the course of the Star Wars narrative, he becomes a chief figure in the Alliance and succeeding galactic governments. Star Wars creator George Lucas described the character as \"a ",
+            "message": "Han Solo is a fictional character in the Star Wars franchise.",
             "timestamp": "1725875332",
             "name": null
         },

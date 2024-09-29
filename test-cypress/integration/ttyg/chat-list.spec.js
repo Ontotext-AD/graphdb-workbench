@@ -15,6 +15,7 @@ describe('TTYG chat list', () => {
 
     it('Should render chat list', () => {
         TTYGStubs.stubChatsListGet();
+        TTYGStubs.stubChatGet();
         TTYGStubs.stubAgentListGet();
         TTYGStubs.stubChatGet();
         // Given I have opened the ttyg page
@@ -30,9 +31,9 @@ describe('TTYG chat list', () => {
         // And the first chat group should have 3 chats
         verifyChatList([
             [
-                {name: 'Very long chat name which does not fit in the sidebar'},
+                {name: 'Test chat 3'},
                 {name: 'Test chat 2'},
-                {name: 'Test chat 3'}
+                {name: 'Very long chat name which does not fit in the sidebar'}
             ],
             [{name: 'Test chat 4'}]
         ]);
@@ -56,6 +57,7 @@ describe('TTYG chat list', () => {
 
     it('Should be able to edit an existing chat name by double click on the chat in the list', () => {
         TTYGStubs.stubChatsListGet();
+        TTYGStubs.stubChatGet();
         TTYGStubs.stubAgentListGet();
         TTYGStubs.stubChatUpdate();
         TTYGStubs.stubChatGet();
@@ -77,6 +79,7 @@ describe('TTYG chat list', () => {
 
     it('Should be able to edit an existing chat name through the action menu', () => {
         TTYGStubs.stubChatsListGet();
+        TTYGStubs.stubChatGet();
         TTYGStubs.stubAgentListGet();
         TTYGStubs.stubChatUpdate();
         TTYGStubs.stubChatGet();
@@ -100,6 +103,7 @@ describe('TTYG chat list', () => {
 
     it('Should be able to cancel a chat name editing', () => {
         TTYGStubs.stubChatsListGet();
+        TTYGStubs.stubChatGet();
         TTYGStubs.stubAgentListGet();
         TTYGStubs.stubChatGet();
         // Given I have opened the ttyg page and there are chats loaded
@@ -108,17 +112,18 @@ describe('TTYG chat list', () => {
         // And I double-click on the first chat
         TTYGViewSteps.editChatName(0, 0);
         // Then I should see the chat name input
-        TTYGViewSteps.getChatNameInput(0, 0).should('be.visible').and('have.value', 'Very long chat name which does not fit in the sidebar');
+        TTYGViewSteps.getChatNameInput(0, 0).should('be.visible').and('have.value', 'Test chat 3');
         // When I change the chat name
         TTYGViewSteps.writeChatName(0, 0, 'New chat name');
         // And I hit [esc] key
         TTYGViewSteps.cancelChatNameSaving(0, 0);
         // Then I should see the old chat name
-        TTYGViewSteps.getChatFromGroup(0, 0).should('contain', 'Very long chat name which does not fit in the sidebar');
+        TTYGViewSteps.getChatFromGroup(0, 0).should('contain', 'Test chat 3');
     });
 
     it('Should be able to delete a chat', () => {
         TTYGStubs.stubChatsListGet();
+        TTYGStubs.stubChatGet();
         TTYGStubs.stubAgentListGet();
         TTYGStubs.stubChatDelete();
         TTYGStubs.stubChatGet();

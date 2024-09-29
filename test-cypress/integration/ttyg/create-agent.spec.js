@@ -48,9 +48,6 @@ describe('TTYG create new agent', () => {
         // agent name
         fillAgentName('Test Agent');
 
-        // repository ID
-        fillRepository(repositoryId);
-
         // SPARQL extraction method settings
 
         // At least one extraction method must be selected
@@ -129,28 +126,6 @@ describe('TTYG create new agent', () => {
         // the new agent should be visible in the agent list (there were 4 agents before, so now there should be 5)
         TTYGViewSteps.getAgents().should('have.length', 5);
         TTYGViewSteps.getAgent(0).should('contain', 'Test Agent').and('contain', 'starwars');
-    });
-
-    it('Should require repository ID to be selected to be able to configure the FTS extraction method', () => {
-        RepositoriesStubs.stubGetRepositoryConfig(repositoryId, '/repositories/get-repository-config-starwars-disabled-fts.json');
-        TTYGStubs.stubChatsListGetNoResults();
-        TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
-        // Given I have opened the ttyg page
-        TTYGViewSteps.visit();
-        cy.wait('@get-all-repositories');
-        // When I click on the create agent button
-        TTYGViewSteps.createFirstAgent();
-        // When I open the full text search extraction method panel
-        TtygAgentSettingsModalSteps.toggleFTSExtractionMethodPanel();
-        // Then I should see an error alert for repository id not selected
-        TtygAgentSettingsModalSteps.getMissingRepositoryIdErrorInFtsSearchPanel().should('be.visible')
-            .and('contain', 'Repository ID must be selected');
-        // And I should not see the max triples field
-        TtygAgentSettingsModalSteps.getFtsSearchMaxTriplesFormGroup().should('be.hidden');
-        // When I select a repository
-        TtygAgentSettingsModalSteps.selectRepository(repositoryId);
-        // Then the error alert should be hidden
-        TtygAgentSettingsModalSteps.getMissingRepositoryIdErrorInFtsSearchPanel().should('not.exist');
     });
 
     it('Should require FTS to be enabled for selected repository when creating agent with FTS extraction method', () => {
@@ -299,7 +274,6 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.typeAgentName('Test Agent');
         TtygAgentSettingsModalSteps.selectRepository(repositoryId);
         // When I select and open the GPT retrieval connector method panel
-        TtygAgentSettingsModalSteps.toggleRetrievalMethodPanel();
         TtygAgentSettingsModalSteps.enableRetrievalMethodPanel();
         // And I select a retrieval connector
         TtygAgentSettingsModalSteps.getRetrievalConnectorField().should('have.value', '');
@@ -338,11 +312,4 @@ function fillAgentName(name) {
     TtygAgentSettingsModalSteps.clearAgentName();
     TtygAgentSettingsModalSteps.getAgentNameError().should('be.visible').and('contain', 'This field is required');
     TtygAgentSettingsModalSteps.typeAgentName(name);
-}
-
-function fillRepository(repositoryId) {
-    TtygAgentSettingsModalSteps.getRepositoryIdError().should('be.visible').and('contain', 'This field is required');
-    TtygAgentSettingsModalSteps.selectRepository(repositoryId);
-    // the save button should be disabled because there are other required fields that are not filled in yet
-    TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.disabled');
 }

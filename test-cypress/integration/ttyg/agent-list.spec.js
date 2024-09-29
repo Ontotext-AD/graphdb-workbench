@@ -24,6 +24,7 @@ describe('TTYG agent list', () => {
 
     it('Should be able to toggle agents panel', () => {
         TTYGStubs.stubChatsListGet();
+        TTYGStubs.stubChatGet();
         TTYGStubs.stubAgentListGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
@@ -43,6 +44,7 @@ describe('TTYG agent list', () => {
 
     it('Should be able to filter the agent list by repository', () => {
         TTYGStubs.stubAgentListGet();
+        TTYGStubs.stubChatGet();
         TTYGStubs.stubChatsListGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
