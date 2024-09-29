@@ -191,7 +191,7 @@ function TTYGContextService(EventEmitterService) {
      * @param {string} tTYGEventName - The name of the event to emit. It must be a value from {@link TTYGEventName}.
      * @param {*} payload - The data to emit with the event. The payload is deep-cloned before emission.
      */
-    const emit = (tTYGEventName, payload = undefined) => {
+    const emit = (tTYGEventName, payload) => {
         EventEmitterService.emitSync(tTYGEventName, cloneDeep(payload));
     };
 
@@ -265,8 +265,6 @@ export const TTYGEventName = {
      * Emitting the "selectChatUpdated" event when the selected chat has been updated.
      */
     SELECTED_CHAT_UPDATED: 'selectChatUpdated',
-
-
     DELETE_CHAT: 'deleteChat',
     DELETE_CHAT_SUCCESSFUL: 'chatDeleted',
     DELETE_CHAT_FAILURE: 'chatDeletedFailure',
