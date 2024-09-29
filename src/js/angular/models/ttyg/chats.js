@@ -1,7 +1,5 @@
 import {ChatItemsListModel} from "./chat-item";
 
-export const DUMMY_CHAT_ID = "DUMMY_CHAT_ID";
-
 export class ChatModel {
     constructor(data, hashGenerator) {
         this.hashGenerator = hashGenerator;

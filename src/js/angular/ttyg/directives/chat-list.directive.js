@@ -2,7 +2,7 @@ import 'angular/core/directives/inline-editable-text/inline-editable-text.direct
 import {decodeHTML} from "../../../../app";
 import {TTYGEventName} from "../services/ttyg-context.service";
 
-import {ChatModel, DUMMY_CHAT_ID} from "../../models/ttyg/chats";
+import {ChatModel} from "../../models/ttyg/chats";
 import {md5HashGenerator} from "../../utils/hash-utils";
 
 const modules = [
@@ -25,7 +25,6 @@ function ChatListComponent(TTYGContextService, ModalService, $translate) {
             // Public variables
             // =========================
 
-            $scope.DUMMY_CHAT_ID = DUMMY_CHAT_ID;
             $scope.selectedChat = undefined;
             $scope.renamedChat = undefined;
 
@@ -133,11 +132,11 @@ function ChatListComponent(TTYGContextService, ModalService, $translate) {
             };
 
             const onNewChat = () => {
-                if ($scope.selectedChat && $scope.selectedChat.id === $scope.DUMMY_CHAT_ID) {
+                if ($scope.selectedChat && !$scope.selectedChat.id) {
                     return;
                 }
                 const data = {
-                    id: $scope.DUMMY_CHAT_ID,
+                    name: "\u00B7 \u00B7 \u00B7",
                     timestamp: Math.floor(Date.now() / 1000)
                 };
                 const chatModel = new ChatModel(data, md5HashGenerator());

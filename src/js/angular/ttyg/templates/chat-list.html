@@ -17,7 +17,7 @@
                         on-click="onSelectChat(source)">
                     </inline-editable-text>
                 </div>
-                <div ng-if="chat.id !== DUMMY_CHAT_ID && (!renamedChat || chat.id !== renamedChat.id)" class="btn-group">
+                <div ng-if="chat.id && (!renamedChat || chat.id !== renamedChat.id)" class="btn-group">
                     <button class="btn btn-link secondary btn-sm open-chat-actions-btn"
                             data-toggle="dropdown" aria-expanded="false"
                             ng-if="true"

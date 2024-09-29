@@ -2,7 +2,6 @@ import 'angular/core/services/markdown.service';
 import {TTYGEventName} from "../services/ttyg-context.service";
 import {CHAT_MESSAGE_ROLE, ChatMessageModel} from "../../models/ttyg/chat-message";
 import {ChatItemModel, ChatItemsListModel} from "../../models/ttyg/chat-item";
-import {DUMMY_CHAT_ID} from "../../models/ttyg/chats";
 
 const modules = [
     'graphdb.framework.core.services.markdown-service'
@@ -150,7 +149,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
 
             const onBeforeSelectedChatChanged = (chatId) => {
                 // Skip loading indication if the chat is a dummy.
-                $scope.loadChat = DUMMY_CHAT_ID !== chatId;
+                $scope.loadChat = chatId;
                 $scope.chatHistory = new ChatItemsListModel();
                 $scope.chatItem = getEmptyChatItem();
                 focusQuestionInput();
