@@ -150,6 +150,7 @@ describe('TTYG chat list', () => {
         TTYGStubs.stubAgentListGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
+        cy.wait('@get-chat');
         TTYGViewSteps.getChatFromGroup(0, 0).should('have.class', 'selected');
 
         // When I select another chat,
@@ -158,6 +159,7 @@ describe('TTYG chat list', () => {
         TTYGViewSteps.getChatFromGroup(0, 2).should('have.class', 'selected');
         // change the page,
         HomeSteps.visit();
+        cy.wait('@get-chat');
         // and came back to the ttyg page
         TTYGViewSteps.visit();
 
