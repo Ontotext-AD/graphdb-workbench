@@ -125,7 +125,7 @@
                     <div class="col-sm-6">{{'links.label' | translate}}</div>
                 </div>
                 <ul ui-scroll-viewport id="wb-dependencies-classInClasses" class="rdf-list row">
-                    <li ui-scroll="class in datasource" adapter="adapterContainer.adapter" class="item class-row col-sm-12 row"
+                    <li ui-scroll="class in datasource" buffer-size="70" padding="1" adapter="adapterContainer.adapter" class="item class-row col-sm-12 row"
                         padding="li">
                             <div class="col-sm-11 row deps-data" ng-class="{
                             'active': isClassByNameShown(class.name),
