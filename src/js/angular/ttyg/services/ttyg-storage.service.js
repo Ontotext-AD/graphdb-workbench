@@ -60,6 +60,7 @@ function TTYGStorageService(localStorageAdapter, LSKeys) {
      */
     function saveChat(chat) {
         const settings = getTtygSettings();
+        // If the chat is not provided, we will persist undefined to clear any previously saved ID, if one exists.
         settings.chat.id = chat ? chat.id : undefined;
         localStorageAdapter.set(LSKeys.TTYG, settings);
     }
