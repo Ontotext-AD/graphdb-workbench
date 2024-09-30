@@ -41,7 +41,7 @@ export class TTYGStubs extends Stubs {
     static stubChatGet(fixture = '/ttyg/chats/get-chat-1.json', delay = 0) {
         cy.fixture(fixture).then((body) => {
             const bodyString = JSON.stringify(body);
-            cy.intercept('/rest/chat/conversations/**', (req) => {
+            cy.intercept('/rest/chat/conversations/*', (req) => {
                 const chatId = req.url.split('/').pop();
                     // Respond with the modified body
                     req.reply({
@@ -67,6 +67,14 @@ export class TTYGStubs extends Stubs {
             fixture: '/ttyg/chats/deleted-chat.json',
             statusCode: 200
         }).as('delete-chat');
+    }
+
+    static stubChatExport() {
+        cy.intercept('/rest/chat/conversations/export/*', {
+            method: 'GET',
+            fixture: '/ttyg/chats/export-chat.json',
+            statusCode: 200
+        }).as('export-chat');
     }
 
     static stubAgentListGet(fixture = '/ttyg/agent/get-agent-list.json', delay = 0, invocation = 0) {

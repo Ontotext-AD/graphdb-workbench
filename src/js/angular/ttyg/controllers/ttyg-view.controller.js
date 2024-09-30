@@ -14,6 +14,7 @@ import {ChatsListModel} from "../../models/ttyg/chats";
 import {agentFormModelMapper, newAgentFormModelProvider} from "../services/agents.mapper";
 import {SelectMenuOptionsModel} from "../../models/form-fields";
 import {repositoryInfoMapper} from "../../rest/mappers/repositories-mapper";
+import {saveAs} from 'lib/FileSaver-patch';
 
 const modules = [
     'toastr',
@@ -369,7 +370,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
                 TTYGContextService.selectChat(TTYGContextService.getChats().getChat(newChatId));
                 TTYGContextService.emit(TTYGEventName.LOAD_CHAT);
             })
-            .catch((error) => {
+            .catch(() => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT_FAILURE);
                 toastr.error($translate.instant('ttyg.chat.messages.create_failure'));
             });
@@ -403,7 +404,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
                 TTYGContextService.emit(TTYGEventName.RENAME_CHAT_SUCCESSFUL);
                 TTYGContextService.emit(TTYGEventName.LOAD_CHAT);
             })
-            .catch((error) => {
+            .catch(() => {
                 TTYGContextService.emit(TTYGEventName.RENAME_CHAT_FAILURE);
                 toastr.error($translate.instant('ttyg.chat.messages.rename_failure'));
             });
@@ -445,7 +446,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
                 TTYGContextService.emit(TTYGEventName.DELETE_CHAT_SUCCESSFUL, chat);
                 TTYGContextService.emit(TTYGEventName.LOAD_CHAT);
             })
-            .catch((error) => {
+            .catch(() => {
                 TTYGContextService.emit(TTYGEventName.DELETE_CHAT_FAILURE);
                 toastr.error($translate.instant('ttyg.chat.messages.delete_failure'));
             });
@@ -457,11 +458,12 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
      */
     const onExportChat = (chat) => {
         TTYGService.exportConversation(chat.id)
-            .then(() => {
+            .then(function ({data, filename}) {
+                saveAs(data, filename);
                 TTYGContextService.emit(TTYGEventName.CHAT_EXPORT_SUCCESSFUL, chat);
                 TTYGContextService.emit(TTYGEventName.LOAD_CHAT);
             })
-            .catch((error) => {
+            .catch(() => {
                 TTYGContextService.emit(TTYGEventName.CHAT_EXPORT_FAILURE);
                 toastr.error($translate.instant('ttyg.chat.messages.export_failure'));
             });
