@@ -128,6 +128,9 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             const onSelectedAgentChanged = (agent) => {
                 $scope.selectedAgent = agent;
                 if ($scope.selectedAgent) {
+                    if (!$scope.chatItem) {
+                        $scope.chatItem = getEmptyChatItem();
+                    }
                     $scope.chatItem.agentId = $scope.selectedAgent.id;
                 }
             };

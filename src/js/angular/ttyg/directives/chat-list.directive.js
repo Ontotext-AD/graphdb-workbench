@@ -118,7 +118,6 @@ function ChatListComponent(TTYGContextService, ModalService, $translate) {
             // =========================
 
             function initialize() {
-                console.log('ChatListComponent initialized');
             }
             initialize();
         }

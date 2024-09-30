@@ -89,6 +89,11 @@ export class TTYGViewSteps {
         this.getChatFromGroup(groupIndex, chatIndex).find('.chat-actions-menu .delete-chat-btn').click();
     }
 
+    static triggerExportChatActionMenu(groupIndex, chatIndex) {
+        this.openChatActionMenu(groupIndex, chatIndex);
+        this.getChatFromGroup(groupIndex, chatIndex).find('.chat-actions-menu .export-chat-btn').click();
+    }
+
     static getToggleChatsSidebarButton() {
         return this.getChatsSidebar().find('.toggle-chats-sidebar-btn');
     }
@@ -184,6 +189,10 @@ export class TTYGViewSteps {
 
     static exportCurrentChat() {
         return this.getExportCurrentChatButton().click();
+    }
+
+    static verifyFileExists(fileName) {
+        cy.readFile('cypress/downloads/' + fileName);
     }
 
     static getChat() {
