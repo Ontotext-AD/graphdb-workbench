@@ -559,11 +559,19 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     };
 
     /**
-     * Handles the selection of an agent..
+     * Handles the selection of an agent.
      * @param {AgentModel} agent
      */
     const onAgentSelected = (agent) => {
         TTYGStorageService.saveAgent(agent);
+    };
+
+    /**
+     * Handles the selection of a chat.
+     * @param {ChatModel} chat
+     */
+    const onChatSelected = (chat) => {
+        TTYGStorageService.saveChat(chat);
     };
 
     /**
@@ -577,6 +585,21 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
         TTYGService.getAgent(agentId).then((agent) => {
             if (agent) {
                 TTYGContextService.selectAgent(agent);
+            }
+        });
+    };
+
+    /**
+     * Loads a chat using the chat ID stored in the local storage and selects it.
+     */
+    const setCurrentChat = () => {
+        const chatId = TTYGStorageService.getChatId();
+        if (!chatId) {
+            return;
+        }
+        TTYGService.getConversation(chatId).then((chatId) => {
+            if (chatId) {
+                TTYGContextService.selectChat(chatId);
             }
         });
     };
@@ -617,6 +640,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.EDIT_AGENT, $scope.onEditAgent));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_AGENT, onDeleteAgent));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_SELECTED, onAgentSelected));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.SELECT_CHAT, onChatSelected));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD, onCopiedAnswerToClipboard));
     subscriptions.push($rootScope.$on('$translateChangeSuccess', updateLabels));
     $scope.$on('$destroy', removeAllListeners);
@@ -627,6 +651,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
 
     function onInit() {
         setCurrentAgent();
+        setCurrentChat();
         buildRepositoryList();
         loadAgents().then(() => {
             buildAgentsFilterModel();

@@ -3,6 +3,7 @@ import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 import {ApplicationSteps} from "../../steps/application-steps";
+import HomeSteps from "../../steps/home-steps";
 
 // TODO: This test is skipped because it fails on CI. For some reason the chat list panel is not visible.
 describe('TTYG chat list', () => {
@@ -184,6 +185,29 @@ describe('TTYG chat list', () => {
         ApplicationSteps.getErrorNotifications().should('be.visible');
         // And the chat list should not be visible
         TTYGViewSteps.getChatsPanel().should('be.hidden');
+    });
+
+    it('should persist selected chat', () => {
+        TTYGStubs.stubChatsListGet();
+        TTYGStubs.stubChatGet();
+        TTYGStubs.stubAgentListGet();
+        // Given I have opened the ttyg page
+        TTYGViewSteps.visit();
+        cy.wait('@get-chat');
+        TTYGViewSteps.getChatFromGroup(0, 0).should('have.class', 'selected');
+
+        // When I select another chat,
+        TTYGViewSteps.selectChat(0, 2);
+        TTYGViewSteps.getChatFromGroup(0, 0).should('have.not.class', 'selected');
+        TTYGViewSteps.getChatFromGroup(0, 2).should('have.class', 'selected');
+        // change the page,
+        HomeSteps.visit();
+        cy.wait('@get-chat');
+        // and came back to the ttyg page
+        TTYGViewSteps.visit();
+
+        // Then I expect to last used chat be selected.
+        TTYGViewSteps.getChatFromGroup(0, 2).should('have.class', 'selected');
     });
 });
 
