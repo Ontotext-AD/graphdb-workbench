@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench",
-    "version": "2.8.0-TR4",
+    "version": "2.8.0-TR5",
     "description": "The web application for GraphDB APIs",
     "scripts": {
         "build": "webpack --config=webpack.config.prod.js",
@@ -10,7 +10,6 @@
         "less:watch": "less-watch-compiler --config=./less-watch-compiler.config.json",
         "less:preprocess": "less-watch-compiler --config=./less-compiler.config.json",
         "license-report": "license-checker --production --json --customPath license-checker-format.json --out dist/license-checker.json",
-        "postinstall": "copyfiles -u 4 'node_modules/@awesome.me/kit-94ffd2fc4a/icons/css/*.min.css' 'node_modules/@awesome.me/kit-94ffd2fc4a/icons/webfonts/**/*' src/js/lib/awesome_me/",
         "postbuild": "npm run license-report && copyfiles -V -f license-checker/license-checker-static.json dist/"
     },
     "files": [
