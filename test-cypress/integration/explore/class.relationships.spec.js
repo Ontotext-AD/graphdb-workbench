@@ -52,15 +52,15 @@ describe('Class relations screen validation', () => {
     });
 
     it('Search for a class', function () {
-        // Expect 10 rows initially to be visible
-        verifyListLength(10);
+        // Expect 39 rows initially to be visible
+        verifyListLength(39);
         // Filter by partial name
         filterByClass(':Wine');
         // Expecting 6 rows to be present
         verifyListLength(6);
         // Clear the filter and expect all rows to be visible again
         getFilterField().clear();
-        verifyListLength(10);
+        verifyListLength(39);
     });
 
     it('Test class relationships for given graph', () => {
