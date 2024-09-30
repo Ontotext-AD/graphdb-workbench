@@ -153,7 +153,7 @@
         "update_cluster_group_dialog": {
             "title": "Edit cluster",
             "title_create": "Create cluster",
-            "current_node": "Current node ",
+            "current_node": "Current node",
             "new_node": "Node will be added",
             "deleted_node": "Node will be removed",
             "leader": "Leader",
@@ -173,6 +173,7 @@
             "actions": {
                 "replace_node": "Replace node",
                 "delete_node": "Delete node",
+                "cannot_delete_node": "You cannot remove more than half of the healthy nodes at the same time",
                 "add_node": "Add node",
                 "add_node_tooltip": "Add node to current cluster",
                 "cancel": "Cancel",

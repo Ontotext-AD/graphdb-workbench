@@ -153,7 +153,7 @@
         "update_cluster_group_dialog": {
             "title": "Modifier le cluster",
             "title_create": "Créer un cluster",
-            "current_node": "Nœud actuel ",
+            "current_node": "Nœud actuel",
             "new_node": "Le nœud sera ajouté",
             "deleted_node": "Le nœud sera supprimé",
             "leader": "Leader",
@@ -173,6 +173,7 @@
             "actions": {
                 "replace_node": "Remplacer le nœud",
                 "delete_node": "Supprimer le nœud",
+                "cannot_delete_node": "Vous ne pouvez pas supprimer plus de la moitié des nœuds sains en même temps",
                 "add_node": "Ajouter un nœud",
                 "add_node_tooltip": "Ajouter un nœud au cluster actuel",
                 "cancel": "Annuler",

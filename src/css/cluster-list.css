@@ -92,3 +92,7 @@
         padding: 0.4em .4em;
     }
 }
+
+.delete-node-tooltip {
+    max-width: 250px;
+}

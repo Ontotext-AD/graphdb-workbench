@@ -290,6 +290,7 @@ export class ClusterViewModel {
         this._deleteFromCluster = new Map();
         this._currentNodesCount = 0;
         this._clusterConfiguration = new ClusterConfiguration();
+        this._localNodeEndpoint = clusterModel.locations.find((location) => location.isLocal).endpoint;
         this.MINIMUM_NODES_REQUIRED = 2;
     }
 
@@ -319,6 +320,9 @@ export class ClusterViewModel {
                 location.isDeleted = true;
             } else {
                 location.index = index++;
+            }
+            if (this._localNodeEndpoint === item.endpoint) {
+                location.isLocal = true;
             }
             return location;
         });
@@ -523,12 +527,22 @@ export class ClusterViewModel {
     }
 
     /**
-     * Checks if there are enough nodes to allow a deletion operation.
-     * Ensures that after deletion, the number of nodes will still meet the minimum required.
-     * @return {boolean} True if it's safe to delete, false otherwise.
+     * Determines if a node can be deleted from the cluster based on the current
+     * number of nodes marked for deletion and the total number of nodes in the cluster.
+     *
+     * This function ensures that less than half of the healthy nodes are marked for deletion.
+     * Deleting 50% or more of the nodes can severely affect quorum-based replication and
+     * increase the likelihood of issues such as split-brain scenarios, where the cluster
+     * is divided into disjointed sub-clusters, leading to data inconsistency or system failure.
+     *
+     * The condition is based on the fact that quorum-based systems require more than
+     * half of the nodes to be healthy for consistent decision-making.
+     *
+     * @return {boolean} True if a node can be deleted (less than half the nodes are marked for deletion), otherwise false.
      */
     canDeleteNode() {
-        return (this._currentNodesCount - 1) >= this.MINIMUM_NODES_REQUIRED;
+        const quorumThreshold = Math.floor(this._clusterModel.nodes.length / 2);
+        return this._deleteFromCluster.size < quorumThreshold;
     }
 
     /**
@@ -547,6 +561,7 @@ export class ClusterItemViewModel {
         this._endpoint = item.endpoint;
         this._isDeleted = false;
         this._index = undefined;
+        this._isLocal = false;
     }
 
     getEndPoint() {
@@ -582,14 +597,14 @@ export class ClusterItemViewModel {
 
     getTerm() {
         if (this.isNode()) {
-            return this._item._term;
+            return this._item.term;
         }
         return null;
     }
 
     getSyncStatus() {
         if (this.isNode()) {
-            return this._item._syncStatus;
+            return this._item.syncStatus;
         }
         return null;
     }
@@ -627,6 +642,14 @@ export class ClusterItemViewModel {
 
     set index(value) {
         this._index = value;
+    }
+
+    get isLocal() {
+        return this._isLocal;
+    }
+
+    set isLocal(value) {
+        this._isLocal = value;
     }
 }
 

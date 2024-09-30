@@ -48,14 +48,14 @@
                     </div>
                 </td>
                 <td class="info-cell data">
-                    <div ng-if="node.item.isLocal">
-                        {{'cluster_management.update_cluster_group_dialog.current_node' | translate}}
-                    </div>
+                    <span ng-if="node.isLocal">
+                        {{'cluster_management.update_cluster_group_dialog.current_node' | translate}}<span ng-if="node.item.nodeState">, </span>
+                    </span>
 
-                    <div ng-if="node.item.nodeState">
+                    <span ng-if="node.item.nodeState">
                         {{ ('cluster_management.update_cluster_group_dialog.' + node.item.nodeState.toLowerCase()) |
                         translate }}
-                    </div>
+                    </span>
                 </td>
                 <td class="status-cell data">
                     <div ng-if="!node.item.address" class="adding">
@@ -72,7 +72,8 @@
                     <div ng-if="editedNodeIndex === undefined && !node.isDeleted" class="actions-group">
                         <button ng-click="deleteNode($index, node)" ng-disabled="!canDeleteNode"
                                 class="btn btn-link delete-node-btn secondary"
-                                gdb-tooltip="{{'cluster_management.update_cluster_group_dialog.actions.delete_node' | translate}}">
+                                gdb-tooltip="{{ canDeleteNode ? ('cluster_management.update_cluster_group_dialog.actions.delete_node' | translate) : ('cluster_management.update_cluster_group_dialog.actions.cannot_delete_node' | translate) }}"
+                                title-class="delete-node-tooltip">
                             <i class="fa-regular fa-xmark"></i>
                         </button>
                         <button ng-click="replaceNode($index, node)" class="btn btn-link replace-node-btn"
@@ -125,9 +126,14 @@
                     </div>
                 </td>
                 <td class="info-cell data">
-                    <div ng-if="node.item.isLocal">
-                        {{'cluster_management.update_cluster_group_dialog.current_node' | translate}}
-                    </div>
+                    <span ng-if="node.isLocal">
+                        {{'cluster_management.update_cluster_group_dialog.current_node' | translate}}<span ng-if="node.item.nodeState">, </span>
+                    </span>
+
+                    <span ng-if="node.item.nodeState">
+                        {{ ('cluster_management.update_cluster_group_dialog.' + node.item.nodeState.toLowerCase()) |
+                        translate }}
+                    </span>
                 </td>
                 <td class="status-cell"></td>
                 <td class="empty-cell"></td>
