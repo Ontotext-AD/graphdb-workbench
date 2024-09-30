@@ -41,10 +41,21 @@ function TTYGService(TTYGRestService) {
     /**
      * Exports the conversation (<code>chart</code>).
      * @param {string} id - the conversation to be exported.
-     * @return {*}
-     */
+     * @return {Promise<{Blob, string}>} Returns the conversation as a Blob and the filename wrapped in a Promise
+     * */
     const exportConversation = (id) => {
-        return TTYGRestService.exportConversation(id);
+        return TTYGRestService.exportConversation(id)
+            .then(function (res) {
+                const data = res.data;
+                const headers = res.headers();
+                const contentDispositionHeader = headers['content-disposition'];
+                let filename = 'chat-export';
+                if (contentDispositionHeader) {
+                    filename = contentDispositionHeader.split('filename=')[1];
+                    filename = filename.substring(0, filename.length);
+                }
+                return {data, filename};
+            });
     };
 
     /**
