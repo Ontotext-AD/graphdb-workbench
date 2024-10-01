@@ -67,7 +67,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
              * Flag that indicates that the chat is about to be changed.
              * @type {boolean}
              */
-            $scope.loadChat = false;
+            $scope.loadingChat = false;
 
             $scope.MarkdownService = MarkdownService;
 
@@ -132,7 +132,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
              */
             const onChatChanged = (chat) => {
                 $scope.chat = chat;
-                $scope.loadChat = false;
+                $scope.loadingChat = false;
                 if ($scope.chat) {
                     $scope.chatHistory = new ChatItemsListModel(chat.chatHistory.items);
                 } else {
@@ -149,7 +149,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
 
             const onBeforeSelectedChatChanged = (chatId) => {
                 // Skip loading indication if the chat is a dummy.
-                $scope.loadChat = chatId;
+                $scope.loadingChat = chatId;
                 $scope.chatHistory = new ChatItemsListModel();
                 $scope.chatItem = getEmptyChatItem();
                 focusQuestionInput();

@@ -2,11 +2,11 @@
 
 <div class="chat-panel h-100">
 
-    <div class="messages-hint text-muted" ng-if="!loadChat && chatHistory.isEmpty()">
+    <div class="messages-hint text-muted" ng-if="!loadingChat && chatHistory.isEmpty()">
         {{ 'ttyg.chat_panel.hint' | translate }}
     </div>
 
-    <div class="load-chat" ng-if="loadChat" onto-loader-new size="40"></div>
+    <div class="chat-loading" ng-if="loadingChat" onto-loader-new size="40"></div>
 
     <div class="chat-details" ng-class="{'hidden': !chat}">
         <div class="chat-detail" ng-repeat="chatItem in chatHistory.items">
@@ -41,8 +41,8 @@
         </div>
     </div>
     <div class="new-question mb-3 mt-2 d-flex">
-        <input class="form-control question-input" ng-model="chatItem.question.message" type="text" ng-disabled="asking || loadChat">
-        <button class="btn btn-primary ask-button" ng-disabled="!chatItem.question.message || !selectedAgent || selectedAgent.isDeleted || asking || loadChat" ng-click="ask()">
+        <input class="form-control question-input" ng-model="chatItem.question.message" type="text" ng-disabled="asking || loadingChat">
+        <button class="btn btn-primary ask-button" ng-disabled="!chatItem.question.message || !selectedAgent || selectedAgent.isDeleted || asking || loadingChat" ng-click="ask()">
             <i class="fa-regular fa-arrow-turn-left-up"></i>
             {{ 'ttyg.chat_panel.btn.ask.label ' | translate }}
         </button>
