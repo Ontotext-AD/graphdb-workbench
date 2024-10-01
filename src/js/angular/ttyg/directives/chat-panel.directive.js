@@ -147,7 +147,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
                 toastr.success($translate.instant('ttyg.chat_panel.messages.answer_copy_successful'));
             };
 
-            const onBeforeSelectedChatChanged = (chatId) => {
+            const onSelectedChatChanged = (chatId) => {
                 // Skip loading indication if the chat is a dummy.
                 $scope.loadingChat = chatId;
                 $scope.chatHistory = new ChatItemsListModel();
@@ -219,10 +219,10 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
             subscriptions.push($scope.$watchCollection('chatHistory.items', scrollToBottom));
             subscriptions.push(TTYGContextService.onSelectedChatUpdated(onChatChanged));
             subscriptions.push(TTYGContextService.onSelectedAgentChanged(onSelectedAgentChanged));
+            subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_SUCCESSFUL, onCopied));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_FAILURE, onCopyFailed));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION_FAILURE, onAskingQuestionFailure));
-            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.SELECTED_CHAT_WILL_CHANGE, onBeforeSelectedChatChanged));
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);

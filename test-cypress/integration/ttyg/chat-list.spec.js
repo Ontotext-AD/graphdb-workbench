@@ -88,7 +88,6 @@ describe('TTYG chat list', () => {
         cy.wait('@get-chat');
         // And I open the action menu for the chat I want to rename
         TTYGViewSteps.selectChat(1, 0);
-        cy.wait('@get-chat');
         TTYGViewSteps.triggerEditChatActionMenu(1, 0);
         // Then I should see the chat name input
         TTYGViewSteps.getChatNameInput(1, 0).should('be.visible').and('have.value', 'Test chat 4');

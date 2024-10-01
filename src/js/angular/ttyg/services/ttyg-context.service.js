@@ -86,7 +86,6 @@ function TTYGContextService(EventEmitterService) {
     const selectChat = (selectedChat) => {
         if (!_selectedChat || _selectedChat.id !== selectedChat.id) {
             _selectedChat = cloneDeep(selectedChat);
-            emit(TTYGEventName.SELECTED_CHAT_WILL_CHANGE, selectedChat.id);
             emit(TTYGEventName.SELECT_CHAT, getSelectedChat());
         }
     };
@@ -250,11 +249,6 @@ export const TTYGEventName = {
     RENAME_CHAT: 'renameChat',
     RENAME_CHAT_SUCCESSFUL: 'chatRenamed',
     RENAME_CHAT_FAILURE: 'chatRenamedFailure',
-
-    /**
-     * This event is triggered to notify that the selected chat is about to be changed.
-     */
-    SELECTED_CHAT_WILL_CHANGE: 'selectedChatWillChange',
 
     /**
      * Emitting the "selectChat" event when the selected chat has been changed.

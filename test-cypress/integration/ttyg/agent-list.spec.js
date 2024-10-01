@@ -13,6 +13,7 @@ describe('TTYG agent list', () => {
         TTYGStubs.stubChatsListGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
+        cy.wait('get-agent-list-0');
         // When the ttyg page is loaded
         // Then I should see the agent list with agents filtered by the current repository
         TTYGViewSteps.getAgentsPanel().should('be.visible');
@@ -28,6 +29,7 @@ describe('TTYG agent list', () => {
         TTYGStubs.stubAgentListGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
+        cy.wait('get-chat');
         // When the ttyg page is loaded
         // Then I should see the agent list
         TTYGViewSteps.getAgents().should('have.length', 2);
@@ -48,6 +50,7 @@ describe('TTYG agent list', () => {
         TTYGStubs.stubChatsListGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
+        cy.wait('get-chat');
         // When the ttyg page is loaded
         TTYGViewSteps.getAgents().should('have.length', 2);
         // Then Agent list filter should be set to All
