@@ -394,7 +394,10 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
                     TTYGContextService.updateSelectedChat(selectedChat);
                 }
             })
-            .catch((error) => toastr.error(getError(error, 0, 100)));
+            .catch((error) => {
+                TTYGContextService.emit(TTYGEventName.ASK_QUESTION_FAILURE);
+                toastr.error(getError(error, 0, 100));
+            });
     };
 
     /**

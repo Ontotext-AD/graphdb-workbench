@@ -159,6 +159,10 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
                 toastr.success($translate.instant('ttyg.chat_panel.messages.answer_copy_failed'));
             };
 
+            const onAskingQuestionFailure = () => {
+                $scope.asking = false;
+            };
+
             /**
              * Handles the change of the selected agent.
              * @param {AgentModel} agent - the new selected agent.
@@ -217,6 +221,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
             subscriptions.push(TTYGContextService.onSelectedAgentChanged(onSelectedAgentChanged));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_SUCCESSFUL, onCopied));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_FAILURE, onCopyFailed));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION_FAILURE, onAskingQuestionFailure));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.SELECTED_CHAT_WILL_CHANGE, onBeforeSelectedChatChanged));
 
             // Deregister the watcher when the scope/directive is destroyed

@@ -272,7 +272,16 @@ export const TTYGEventName = {
     CHAT_EXPORT_SUCCESSFUL: 'chatExportSuccess',
     CHAT_EXPORT_FAILURE: 'chatExportFailure',
     CHAT_LIST_UPDATED: 'chatListUpdated',
+
+    /**
+     * Emitting the "askQuestion" event triggers a request to the backend to retrieve an answer to a question.
+     */
     ASK_QUESTION: 'askQuestion',
+
+    /**
+     * This event will be emitted when the attempt to answer the question fails.
+     */
+    ASK_QUESTION_FAILURE: 'askQuestionFailure',
 
     /**
      * Emitting the "loadChats" event will trigger an action to loads all chats from backend server.
