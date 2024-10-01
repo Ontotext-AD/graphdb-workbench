@@ -84,8 +84,8 @@ const AGENT_MODEL_DEFAULT_VALUES = {
     ])
 };
 
-export const newAgentFormModelProvider = () => {
-    return new AgentFormModel(cloneDeep(AGENT_MODEL_DEFAULT_VALUES));
+export const newAgentFormModelProvider = (data = {}) => {
+    return new AgentFormModel(Object.assign({}, cloneDeep(AGENT_MODEL_DEFAULT_VALUES), data));
 };
 
 /**
