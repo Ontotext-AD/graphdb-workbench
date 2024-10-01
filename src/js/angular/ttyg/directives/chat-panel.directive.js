@@ -1,7 +1,7 @@
 import './chat-item-detail.directive';
 import {TTYGEventName} from "../services/ttyg-context.service";
 import {CHAT_MESSAGE_ROLE, ChatMessageModel} from "../../models/ttyg/chat-message";
-import {ChatItemModel, ChatItemsListModel} from "../../models/ttyg/chat-item";
+import {ChatItemModel} from "../../models/ttyg/chat-item";
 import {cloneDeep} from "lodash";
 
 const modules = [
@@ -42,11 +42,6 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
              * @type {ChatModel}
              */
             $scope.chat = undefined;
-
-            /**
-             * @type {ChatItemsListModel}
-             */
-            $scope.chatHistory = undefined;
 
             /**
              * @type {AgentModel}
@@ -102,6 +97,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 regenerateChatItem.setQuestionMessage(chatItem.getQuestionMessage());
                 $scope.askingChatItem = cloneDeep(regenerateChatItem);
                 askQuestion(regenerateChatItem);
+                scrollToBottom();
             };
 
             /**
@@ -131,11 +127,6 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             const onChatChanged = (chat) => {
                 $scope.chat = chat;
                 $scope.loadingChat = false;
-                if ($scope.chat) {
-                    $scope.chatHistory = new ChatItemsListModel(chat.chatHistory.items);
-                } else {
-                    $scope.chatHistory = new ChatItemsListModel();
-                }
                 $scope.chatItem = getEmptyChatItem();
                 $scope.askingChatItem = undefined;
                 focusQuestionInput();
@@ -145,10 +136,9 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 toastr.success($translate.instant('ttyg.chat_panel.messages.answer_copy_successful'));
             };
 
-            const onSelectedChatChanged = (chatId) => {
-                // Skip loading indication if the chat is a dummy.
-                $scope.loadingChat = chatId;
-                $scope.chatHistory = new ChatItemsListModel();
+            const onSelectedChatChanged = (chat) => {
+                // Skip the loading indication if it is a new (dummy) chat that has not been created yet.
+                $scope.loadingChat = chat && chat.id;
                 $scope.chatItem = getEmptyChatItem();
                 focusQuestionInput();
             };
@@ -189,7 +179,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             };
 
             const focusQuestionInput = () => {
-                element.find('.question-input').focus();
+                element.find('.question-input')[0].focus();
             };
 
             const scrollToBottom = () => {
@@ -201,7 +191,6 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             };
 
             const init = () => {
-                $scope.chatHistory = new ChatItemsListModel();
                 $scope.chatItem = getEmptyChatItem();
                 focusQuestionInput();
             };
@@ -215,7 +204,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 subscriptions.forEach((subscription) => subscription());
             };
 
-            subscriptions.push($scope.$watchCollection('chatHistory.items', scrollToBottom));
+            subscriptions.push($scope.$watchCollection('chat.chatHistory.items', scrollToBottom));
             subscriptions.push(TTYGContextService.onSelectedChatUpdated(onChatChanged));
             subscriptions.push(TTYGContextService.onSelectedAgentChanged(onSelectedAgentChanged));
             subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));

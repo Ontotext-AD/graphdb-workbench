@@ -22,7 +22,7 @@ export class ChatModel {
         /**
          * @type {ChatItemsListModel}
          */
-        this._chatHistory = data.chatHistory;
+        this._chatHistory = data.chatHistory || new ChatItemsListModel();
         this.hash = this.generateHash();
     }
 

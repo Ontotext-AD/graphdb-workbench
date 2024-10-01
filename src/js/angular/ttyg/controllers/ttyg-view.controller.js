@@ -547,7 +547,9 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     };
 
     const onSelectedChatChanged = (selectedChat) => {
-        if (selectedChat) {
+        // If the selected chat has no ID, it indicates that this is a new (dummy) chat
+        // and does not need to be loaded from the server.
+        if (selectedChat && selectedChat.id) {
             TTYGService.getConversation(selectedChat.id)
                 .then((chat) => {
                     TTYGContextService.updateSelectedChat(chat);
