@@ -78,9 +78,11 @@ function TTYGService(TTYGRestService) {
     };
 
     /**
-     * Creates a new conversation.
-     * @param {ChatItemModel} chatItem - the conversation data
-     * @return {Promise<string>} created conversation id;
+     * Creates a new conversation. The creation of a chat and asking a question share the same endpoint. If the request payload
+     * doesn't contain the chat ID, the backend will create a new chat and return the answer, which includes the ID of the created chat.
+     *
+     * @param {ChatItemModel} chatItem - The conversation data.
+     * @return {Promise<string>} The ID of the created conversation.
      */
     const createConversation = (chatItem) => {
         return TTYGRestService.createConversation(chatItem.toCreateChatRequestPayload())
