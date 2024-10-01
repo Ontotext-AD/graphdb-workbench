@@ -132,7 +132,7 @@ function AgentSettingsModalController($scope, $uibModalInstance, SimilarityServi
         const message = decodeHTML(
             $translate.instant(
                 'ttyg.agent.create_agent_modal.form.fts_search.fts_disabled_message',
-                {repositoryEditPage: '#/repository/edit/' + $scope.activeRepositoryInfo.id}
+                {repositoryEditPage: '#/repository/edit/' + $scope.agentFormModel.repositoryId}
             )
         );
         return $sce.trustAsHtml(message);
