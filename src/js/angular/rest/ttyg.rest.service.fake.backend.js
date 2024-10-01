@@ -65,6 +65,7 @@ export class TtygRestServiceFakeBackend {
             conversation.messages.push(question);
         }
         return new Promise((resolve) => setTimeout(() => resolve({data: answer}), ASK_DELAY));
+        // return new Promise((resolve, reject) => setTimeout(() => reject(''), ASK_DELAY));
     }
 
     deleteConversation(id) {

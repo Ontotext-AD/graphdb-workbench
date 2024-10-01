@@ -1,17 +1,18 @@
-import 'angular/core/services/markdown.service';
+import './chat-item-detail.directive';
 import {TTYGEventName} from "../services/ttyg-context.service";
 import {CHAT_MESSAGE_ROLE, ChatMessageModel} from "../../models/ttyg/chat-message";
 import {ChatItemModel, ChatItemsListModel} from "../../models/ttyg/chat-item";
+import {cloneDeep} from "lodash";
 
 const modules = [
-    'graphdb.framework.core.services.markdown-service'
+    'graphdb.framework.ttyg.directives.chat-item-detail'
 ];
 
 angular
     .module('graphdb.framework.ttyg.directives.chat-panel', modules)
     .directive('chatPanel', ChatPanelComponent);
 
-ChatPanelComponent.$inject = ['toastr', '$translate', 'TTYGContextService', 'MarkdownService'];
+ChatPanelComponent.$inject = ['toastr', '$translate', 'TTYGContextService'];
 
 /**
  * @ngdoc directive
@@ -27,7 +28,7 @@ ChatPanelComponent.$inject = ['toastr', '$translate', 'TTYGContextService', 'Mar
  * @example
  * <chat-panel></chat-panel>
  */
-function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownService) {
+function ChatPanelComponent(toastr, $translate, TTYGContextService) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/chat-panel.html',
@@ -58,18 +59,15 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
             $scope.chatItem = undefined;
 
             /**
-             * Flag that indicates when a question is being asked.
-             * @type {boolean}
+             * @type {ChatItemModel}
              */
-            $scope.asking = false;
+            $scope.askingChatItem = undefined;
 
             /**
              * Flag that indicates that the chat is about to be changed.
              * @type {boolean}
              */
             $scope.loadingChat = false;
-
-            $scope.MarkdownService = MarkdownService;
 
             // =========================
             // Private variables
@@ -83,14 +81,14 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
              * Handles the ask question action.
              */
             $scope.ask = () => {
-                $scope.asking = true;
-                $scope.chatHistory.appendItem($scope.chatItem);
+                $scope.askingChatItem = cloneDeep($scope.chatItem);
                 if (!$scope.chatItem.chatId) {
                     createNewChat();
                 } else {
                     askQuestion($scope.chatItem);
                 }
                 $scope.chatItem = getEmptyChatItem();
+                scrollToBottom();
                 focusQuestionInput();
             };
 
@@ -102,7 +100,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
             $scope.regenerateQuestion = (chatItem) => {
                 const regenerateChatItem = getEmptyChatItem();
                 regenerateChatItem.setQuestionMessage(chatItem.getQuestionMessage());
-                $scope.chatHistory.appendItem(regenerateChatItem);
+                $scope.askingChatItem = cloneDeep(regenerateChatItem);
                 askQuestion(regenerateChatItem);
             };
 
@@ -139,7 +137,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
                     $scope.chatHistory = new ChatItemsListModel();
                 }
                 $scope.chatItem = getEmptyChatItem();
-                $scope.asking = false;
+                $scope.askingChatItem = undefined;
                 focusQuestionInput();
             };
 
@@ -160,7 +158,8 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, MarkdownServ
             };
 
             const onAskingQuestionFailure = () => {
-                $scope.asking = false;
+                $scope.chatItem = cloneDeep($scope.askingChatItem);
+                $scope.askingChatItem = undefined;
             };
 
             /**

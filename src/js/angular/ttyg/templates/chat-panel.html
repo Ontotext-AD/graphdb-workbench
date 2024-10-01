@@ -2,47 +2,25 @@
 
 <div class="chat-panel h-100">
 
-    <div class="messages-hint text-muted" ng-if="!loadingChat && chatHistory.isEmpty()">
+    <div class="messages-hint text-muted" ng-if="!loadingChat && chatHistory.isEmpty() && !askingChatItem">
         {{ 'ttyg.chat_panel.hint' | translate }}
     </div>
 
     <div class="chat-loading" ng-if="loadingChat" onto-loader-new size="40"></div>
 
     <div class="chat-details" ng-class="{'hidden': !chat}">
-        <div class="chat-detail" ng-repeat="chatItem in chatHistory.items">
-            <div class="user-message">
-                <div class="question alert-help">
-                    {{ chatItem.question.message }}
-                </div>
-            </div>
-            <div class="assistant">
-                <div class="assistant-icon alert-help">
-                    <i class="fa-regular fa-message-bot"></i>
-                </div>
-                <div class="assistant-message" ng-if="chatItem.answer">
-                    <div class="answer" ng-bind-html="MarkdownService.renderMarkdown(chatItem.answer.message)">
-                    </div>
-                    <div class="actions" ng-class="{'hidden-actions': !$last}">
-                        <button class="btn btn-link secondary btn-sm regenerate-question-btn"
-                                ng-click="regenerateQuestion(chatItem)"
-                                gdb-tooltip="{{'ttyg.chat_panel.btn.regenerate.tooltip' | translate}}">
-                            <i class="fa-regular fa-arrows-rotate"></i>
-                        </button>
-                        <button class="btn btn-link secondary btn-sm copy-answer-btn"
-                                ng-click="copyAnswerToClipboard(chatItem)"
-                                gdb-tooltip="{{'ttyg.chat_panel.btn.copy.tooltip' | translate}}">
-                            <i class="fa-regular fa-clone"></i>
-                        </button>
-                        <i class="fa-regular fa-wand-magic-sparkles"></i>
-                    </div>
-                </div>
-                <div ng-if="asking && !chatItem.answer" onto-loader-new size="40"></div>
-            </div>
-        </div>
+        <chat-item-detail
+            ng-repeat="chatItemDetail in chatHistory.items"
+            chat-item-detail="chatItemDetail"
+            show-actions="!askingChatItem && $last"
+            on-regenerate-question="regenerateQuestion(chatItem)"
+            on-copy-answer-to-clipboard="copyAnswerToClipboard(chatItem)">
+        </chat-item-detail>
+        <chat-item-detail ng-if="askingChatItem" chat-item-detail="askingChatItem" asking="!!askingChatItem"></chat-item-detail>
     </div>
     <div class="new-question mb-3 mt-2 d-flex">
-        <input class="form-control question-input" ng-model="chatItem.question.message" type="text" ng-disabled="asking || loadingChat">
-        <button class="btn btn-primary ask-button" ng-disabled="!chatItem.question.message || !selectedAgent || selectedAgent.isDeleted || asking || loadingChat" ng-click="ask()">
+        <input class="form-control question-input" ng-model="chatItem.question.message" type="text" ng-disabled="askingChatItem || loadingChat">
+        <button class="btn btn-primary ask-button" ng-disabled="!chatItem.question.message || !selectedAgent || selectedAgent.isDeleted || askingChatItem || loadingChat" ng-click="ask()">
             <i class="fa-regular fa-arrow-turn-left-up"></i>
             {{ 'ttyg.chat_panel.btn.ask.label ' | translate }}
         </button>
