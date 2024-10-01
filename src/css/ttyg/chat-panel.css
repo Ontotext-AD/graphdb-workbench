@@ -138,3 +138,8 @@
 .chat-panel .load-chat {
     margin-top: 100px;
 }
+
+/* Better handling of markdown-derived HTML inside the assistant message */
+.chat-panel .assistant-message li > p:has(+:not(p)) {
+    margin-bottom: 0;
+}
