@@ -24,14 +24,14 @@
 
         <div id="left-sidebar" class="left-sidebar sidebar" ng-class="showChats ? 'expanded' : 'collapsed'">
             <div class="toolbar">
-                <button class="btn btn-link secondary btn-sm toggle-chats-sidebar-btn"
+                <button class="btn btn-link btn-sm toggle-chats-sidebar-btn"
                         ng-if="true"
                         ng-click="toggleChatsListSidebar()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.chat.btn.' + (showChats ? 'close_sidebar' : 'open_sidebar') + '.tooltip' | translate}}">
                     <i class="fa-regular fa-sidebar"></i>
                 </button>
-                <button class="btn btn-link secondary btn-sm create-chat-btn"
+                <button class="btn btn-link btn-sm create-chat-btn"
                         ng-if="chats && !chats.isEmpty()"
                         ng-click="startNewChat()"
                         ng-disabled="false"
@@ -59,19 +59,12 @@
         <div class="chat-content">
             <div class="toolbar">
                 <agent-select-menu class="mr-1"></agent-select-menu>
-                <button class="btn btn-link secondary btn-sm edit-current-agent-btn mr-1"
+                <button class="btn btn-link btn-sm edit-current-agent-btn mr-1"
                         ng-if="true"
                         ng-click="onEditAgent()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.agent.btn.edit_agent.tooltip' | translate}}">
-                    <i class="fa-regular fa-gear"></i>
-                </button>
-                <button class="btn btn-link secondary btn-sm export-current-chat-btn"
-                        ng-if="true"
-                        ng-click="onExportSelectedChat()"
-                        ng-disabled="false"
-                        gdb-tooltip="{{'ttyg.chat.btn.export_chat.tooltip' | translate}}">
-                    <i class="fa-regular fa-arrow-down-to-line"></i>
+                    <i class="icon-settings"></i>
                 </button>
             </div>
 
@@ -100,26 +93,26 @@
 
         <div id="right-sidebar" class="right-sidebar sidebar" ng-class="showAgents ? 'expanded' : 'collapsed'">
             <div class="toolbar">
-                <button class="btn btn-link secondary btn-sm help-btn"
+                <button class="btn btn-link btn-sm help-btn"
                         ng-if="true"
                         ng-click="openHelp()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.help.btn.show_help.tooltip' | translate}}">
-                    <i class="fa-regular fa-circle-question"></i>
+                    <i class="icon-help"></i>
                 </button>
-                <button class="btn btn-link secondary btn-sm create-agent-btn"
+                <button class="btn btn-link btn-sm create-agent-btn"
                         ng-if="true"
                         ng-click="onCreateAgent()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.agent.btn.create_agent.tooltip' | translate}}">
-                    <i class="fa-regular fa-circle-plus"></i>
+                    <i class="icon-plus"></i>
                 </button>
-                <button class="btn btn-link secondary btn-sm toggle-agents-sidebar-btn"
+                <button class="btn btn-link btn-sm toggle-agents-sidebar-btn"
                         ng-if="true"
                         ng-click="toggleAgentsListSidebar()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.agent.btn.' + (showAgents ? 'close_sidebar' : 'open_sidebar') + '.tooltip' | translate}}">
-                    <i class="fa-regular" ng-class="showAgents ? 'fa-xmark' : 'fa-message-bot'"></i>
+                    <i class="" ng-class="showAgents ? 'icon-close' : 'fa-message-bot'"></i>
                 </button>
             </div>
 
