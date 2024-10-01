@@ -331,7 +331,7 @@
                     },
                     "fts_search": {
                         "label": "Full-text search",
-                        "fts_disabled_message": "To use this method, you must enable the full-text search (FTS) index on chosen repository and then restart it.<br/>Enable the index: <a href=\"{{repositoryEditPage}}\" target=\"_blank\">here</a>",
+                        "fts_disabled_message": "You must <a href=\"{{repositoryEditPage}}\" target=\"_blank\">enable the full-text search (FTS) index</a> to use this method.",
                         "missing_repository_id": "Repository ID must be selected"
                     },
                     "sparql_search": {

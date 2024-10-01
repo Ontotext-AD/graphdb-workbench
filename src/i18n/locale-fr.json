@@ -332,7 +332,7 @@
                     },
                     "fts_search": {
                         "label": "Recherche en texte intégral",
-                        "fts_disabled_message": "Pour utiliser cette méthode, vous devez activer l'index de recherche en texte intégral (FTS) sur le référentiel choisi, puis le redémarrer.<br/> Activez l'index <a href=\"{{repositoryEditPage}}\" target=\"_blank\">ici</a>.",
+                        "fts_disabled_message": "Vous devez <a href=\"{{repositoryEditPage}}\" target=\"_blank\">activer l'index de recherche en texte intégral (FTS)</a> pour utiliser cette méthode.",
                         "missing_repository_id": "L'ID du référentiel doit être sélectionné"
                     },
                     "sparql_search": {
