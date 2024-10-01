@@ -6,9 +6,7 @@
         {{ 'ttyg.chat_panel.hint' | translate }}
     </div>
 
-    <div class="load-chat" ng-if="loadChat">
-        <div onto-loader-new size="40"></div>
-    </div>
+    <div class="load-chat" ng-if="loadChat" onto-loader-new size="40"></div>
 
     <div class="chat-details" ng-class="{'hidden': !chat}">
         <div class="chat-detail" ng-repeat="chatItem in chatHistory.items">
@@ -38,9 +36,7 @@
                         <i class="fa-regular fa-wand-magic-sparkles"></i>
                     </div>
                 </div>
-                <div class="assistant-progress" ng-if="asking">
-                    <div onto-loader-new size="40"></div>
-                </div>
+                <div ng-if="asking && !chatItem.answer" onto-loader-new size="40"></div>
             </div>
         </div>
     </div>
