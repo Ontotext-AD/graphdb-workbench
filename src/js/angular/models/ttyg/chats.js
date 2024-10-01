@@ -130,8 +130,10 @@ export class ChatsListModel {
         this.updateChatsByDay();
     }
 
+    /**
+     * Sorts the list of chats by timestamp in descending order, with the newest items on top.
+     */
     sortByTime() {
-        // Sort by timestamp in descending order (newest on top)
         this._chats.sort((a, b) => {
             return b.timestamp - a.timestamp;
         });
