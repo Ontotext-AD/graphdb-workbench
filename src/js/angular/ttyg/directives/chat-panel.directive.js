@@ -147,7 +147,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 toastr.success($translate.instant('ttyg.chat_panel.messages.answer_copy_failed'));
             };
 
-            const onAskingQuestionFailure = () => {
+            const onQuestionFailure = () => {
                 $scope.chatItem = cloneDeep($scope.askingChatItem);
                 $scope.askingChatItem = undefined;
             };
@@ -210,7 +210,8 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_SUCCESSFUL, onCopied));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_FAILURE, onCopyFailed));
-            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION_FAILURE, onAskingQuestionFailure));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION_FAILURE, onQuestionFailure));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_CHAT_FAILURE, onQuestionFailure));
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);
