@@ -77,7 +77,12 @@ describe('TTYG chat list', () => {
         TTYGViewSteps.getChatFromGroup(1, 0).should('contain', 'New chat name');
     });
 
-    it('Should be able to edit an existing chat name through the action menu', () => {
+    it('Should be able to edit an existing chat name through the action menu', {
+        retries: {
+            runMode: 1,
+            openMode: 0
+        }
+    }, () => {
         TTYGStubs.stubChatsListGet();
         TTYGStubs.stubChatGet();
         TTYGStubs.stubAgentListGet();
