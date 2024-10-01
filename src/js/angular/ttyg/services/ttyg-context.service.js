@@ -84,7 +84,7 @@ function TTYGContextService(EventEmitterService) {
      * @param {ChatModel} selectedChat - The chat object to select.
      */
     const selectChat = (selectedChat) => {
-        if (!_selectedChat || _selectedChat.id !== selectedChat) {
+        if (!_selectedChat || _selectedChat.id !== selectedChat.id) {
             _selectedChat = cloneDeep(selectedChat);
             emit(TTYGEventName.SELECT_CHAT, getSelectedChat());
         }
@@ -114,7 +114,7 @@ function TTYGContextService(EventEmitterService) {
      * @param {ChatModel} chat - The chat object that is being updated.
      */
     const updateSelectedChat = (chat) => {
-        if (!_selectedChat || _selectedChat.id === chat.id) {
+        if (!_selectedChat || !chat || _selectedChat.id === chat.id) {
             _selectedChat = cloneDeep(chat);
             emit(TTYGEventName.SELECTED_CHAT_UPDATED, getSelectedChat());
         }
@@ -226,13 +226,38 @@ function TTYGContextService(EventEmitterService) {
 }
 
 export const TTYGEventName = {
+    /**
+     * Emitting the "newChat" event notifies that a new chat is about to be created.
+     */
+    NEW_CHAT: 'newChat',
+
+    /**
+     * Emitting the "createChat" event triggers a backend request to create a new chat.
+     */
     CREATE_CHAT: 'createChat',
+
+    /**
+     * This event is emitted when a chat is successfully created.
+     */
     CREATE_CHAT_SUCCESSFUL: 'chatCreated',
+
+    /**
+     * This event is emitted when the creation of a chat fails.
+     */
     CREATE_CHAT_FAILURE: 'chatCreationFailed',
+
     RENAME_CHAT: 'renameChat',
     RENAME_CHAT_SUCCESSFUL: 'chatRenamed',
     RENAME_CHAT_FAILURE: 'chatRenamedFailure',
+
+    /**
+     * Emitting the "selectChat" event when the selected chat has been changed.
+     */
     SELECT_CHAT: 'selectChat',
+
+    /**
+     * Emitting the "selectChatUpdated" event when the selected chat has been updated.
+     */
     SELECTED_CHAT_UPDATED: 'selectChatUpdated',
     DELETE_CHAT: 'deleteChat',
     DELETE_CHAT_SUCCESSFUL: 'chatDeleted',
@@ -241,8 +266,21 @@ export const TTYGEventName = {
     CHAT_EXPORT_SUCCESSFUL: 'chatExportSuccess',
     CHAT_EXPORT_FAILURE: 'chatExportFailure',
     CHAT_LIST_UPDATED: 'chatListUpdated',
+
+    /**
+     * Emitting the "askQuestion" event triggers a request to the backend to retrieve an answer to a question.
+     */
     ASK_QUESTION: 'askQuestion',
-    LOAD_CHAT: 'loadChat',
+
+    /**
+     * This event will be emitted when the attempt to answer the question fails.
+     */
+    ASK_QUESTION_FAILURE: 'askQuestionFailure',
+
+    /**
+     * Emitting the "loadChats" event will trigger an action to loads all chats from backend server.
+     */
+    LOAD_CHATS: 'loadChats',
     LOAD_CHAT_SUCCESSFUL: 'loadChatSuccess',
     LOAD_CHAT_FAILURE: 'loadChatFailure',
     AGENT_LIST_UPDATED: 'agentListUpdated',

@@ -129,7 +129,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
      * Creates a new chat and selects it.
      */
     $scope.startNewChat = () => {
-        TTYGContextService.selectChat(undefined);
+        TTYGContextService.emit(TTYGEventName.NEW_CHAT);
     };
 
     $scope.onopen = $scope.onclose = () => angular.noop();
@@ -204,6 +204,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
      */
     $scope.onCreateAgent = () => {
         const activeRepositoryInfo = repositoryInfoMapper($repositories.getActiveRepositoryObject());
+        const agentFormModel = newAgentFormModelProvider({repositoryId: activeRepositoryInfo.id});
         const options = {
             templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
             controller: 'AgentSettingsModalController',
@@ -213,7 +214,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
                     return {
                         activeRepositoryInfo: activeRepositoryInfo,
                         activeRepositoryList: $scope.activeRepositoryList,
-                        agentFormModel: newAgentFormModelProvider()
+                        agentFormModel
                     };
                 }
             },
@@ -367,8 +368,11 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
         TTYGService.createConversation(chatItem)
             .then((newChatId) => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT_SUCCESSFUL);
-                TTYGContextService.selectChat(TTYGContextService.getChats().getChat(newChatId));
-                TTYGContextService.emit(TTYGEventName.LOAD_CHAT);
+                return TTYGService.getConversation(newChatId);
+            })
+            .then((chat) => {
+                TTYGContextService.selectChat(chat);
+                TTYGContextService.emit(TTYGEventName.LOAD_CHATS);
             })
             .catch(() => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT_FAILURE);
@@ -390,7 +394,10 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
                     TTYGContextService.updateSelectedChat(selectedChat);
                 }
             })
-            .catch((error) => toastr.error(getError(error, 0, 100)));
+            .catch((error) => {
+                TTYGContextService.emit(TTYGEventName.ASK_QUESTION_FAILURE);
+                toastr.error(getError(error, 0, 100));
+            });
     };
 
     /**
@@ -402,7 +409,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
         TTYGService.renameConversation(chat)
             .then(() => {
                 TTYGContextService.emit(TTYGEventName.RENAME_CHAT_SUCCESSFUL);
-                TTYGContextService.emit(TTYGEventName.LOAD_CHAT);
+                TTYGContextService.emit(TTYGEventName.LOAD_CHATS);
             })
             .catch(() => {
                 TTYGContextService.emit(TTYGEventName.RENAME_CHAT_FAILURE);
@@ -444,7 +451,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
         TTYGService.deleteConversation(chat.id)
             .then(() => {
                 TTYGContextService.emit(TTYGEventName.DELETE_CHAT_SUCCESSFUL, chat);
-                TTYGContextService.emit(TTYGEventName.LOAD_CHAT);
+                TTYGContextService.emit(TTYGEventName.LOAD_CHATS);
             })
             .catch(() => {
                 TTYGContextService.emit(TTYGEventName.DELETE_CHAT_FAILURE);
@@ -461,7 +468,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
             .then(function ({data, filename}) {
                 saveAs(data, filename);
                 TTYGContextService.emit(TTYGEventName.CHAT_EXPORT_SUCCESSFUL, chat);
-                TTYGContextService.emit(TTYGEventName.LOAD_CHAT);
+                TTYGContextService.emit(TTYGEventName.LOAD_CHATS);
             })
             .catch(() => {
                 TTYGContextService.emit(TTYGEventName.CHAT_EXPORT_FAILURE);
@@ -540,7 +547,9 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     };
 
     const onSelectedChatChanged = (selectedChat) => {
-        if (selectedChat) {
+        // If the selected chat has no ID, it indicates that this is a new (dummy) chat
+        // and does not need to be loaded from the server.
+        if (selectedChat && selectedChat.id) {
             TTYGService.getConversation(selectedChat.id)
                 .then((chat) => {
                     TTYGContextService.updateSelectedChat(chat);
@@ -635,7 +644,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_CHAT, onDeleteChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CHAT_EXPORT, onExportChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION, onAskQuestion));
-    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.LOAD_CHAT, loadChats));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.LOAD_CHATS, loadChats));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_AGENT, $scope.onCreateAgent));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.EDIT_AGENT, $scope.onEditAgent));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_AGENT, onDeleteAgent));

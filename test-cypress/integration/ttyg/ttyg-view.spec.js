@@ -39,7 +39,6 @@ describe('TTYG view', () => {
         TTYGViewSteps.getChat().should('be.visible');
         TTYGViewSteps.getChatPanelToolbar().should('be.visible');
         TTYGViewSteps.getEditCurrentAgentButton().should('be.visible');
-        TTYGViewSteps.getExportCurrentChatButton().should('be.visible');
     });
 
     it('Should render no agents view if no agent is created yet', () => {

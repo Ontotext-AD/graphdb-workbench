@@ -22,7 +22,7 @@ export class ChatModel {
         /**
          * @type {ChatItemsListModel}
          */
-        this._chatHistory = data.chatHistory;
+        this._chatHistory = data.chatHistory || new ChatItemsListModel();
         this.hash = this.generateHash();
     }
 
@@ -126,6 +126,21 @@ export class ChatsListModel {
          * @private
          */
         this._chatsByDay = [];
+        this.sortByTime();
+        this.updateChatsByDay();
+    }
+
+    /**
+     * Sorts the list of chats by timestamp in descending order, with the newest items on top.
+     */
+    sortByTime() {
+        this._chats.sort((a, b) => {
+            return b.timestamp - a.timestamp;
+        });
+    }
+
+    updateChatsByDay() {
+        this._chatsByDay = [];
         // group chats by day
         this._chats.forEach((chat) => {
             const day = new Date(chat.timestamp * 1000).toDateString();
@@ -136,6 +151,12 @@ export class ChatsListModel {
                 this._chatsByDay.push(new ChatByDayModel({day: day, timestamp: chat.timestamp * 1000, chats: [chat]}));
             }
         });
+    }
+
+    appendChat(chat) {
+        this._chats.push(chat);
+        this.sortByTime();
+        this.updateChatsByDay();
     }
 
     /**

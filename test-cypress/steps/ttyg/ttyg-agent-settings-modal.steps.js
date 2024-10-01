@@ -17,7 +17,7 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
     // Agent name
 
     static getAgentNameFormGroup() {
-        return this.getDialog().find('.agent-name');
+        return this.getDialog().find('.agent-name-label');
     }
 
     static getAgentNameField() {

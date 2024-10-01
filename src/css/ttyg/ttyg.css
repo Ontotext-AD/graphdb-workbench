@@ -57,6 +57,26 @@ common sidebar and slidepanel styles
 left sidebar
 */
 
+/* style font awesome icons to look more like our icons */
+.ttyg-view .left-sidebar .fa-regular {
+    font-size: 1.05em;
+}
+
+.ttyg-view .left-sidebar .btn:hover .fa-regular {
+    transform: scale(1.2);
+}
+
+.ttyg-view .left-sidebar .btn .fa-regular {
+    -moz-transition: transform 0.15s ease-out;
+    -o-transition: transform 0.15s ease-out;
+    -webkit-transition: transform 0.15s ease-out;
+    transition: transform 0.15s ease-out;
+}
+
+.ttyg-view .left-sidebar .fa-regular {
+    font-size: 1.2em;
+}
+
 .ttyg-view .left-sidebar .toolbar {
     justify-content: space-between;
     background-color: var(--sidebar-bgcolor);
@@ -105,15 +125,14 @@ chat area
 }
 
 .ttyg-view .chat-content .toolbar {
-    width: 900px;
     margin: auto;
     padding: 0;
 }
 
 .ttyg-view .chat-content .chat {
-    width: 900px;
+    max-width: 800px;
     margin: auto;
-    height: calc(100vh - 10em);
+    height: calc(100vh - 13em);
     display: flex;
     flex-direction: column;
     justify-content: space-between;

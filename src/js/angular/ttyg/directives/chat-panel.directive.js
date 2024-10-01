@@ -1,8 +1,12 @@
+import './chat-item-detail.directive';
 import {TTYGEventName} from "../services/ttyg-context.service";
 import {CHAT_MESSAGE_ROLE, ChatMessageModel} from "../../models/ttyg/chat-message";
 import {ChatItemModel} from "../../models/ttyg/chat-item";
+import {cloneDeep} from "lodash";
 
-const modules = [];
+const modules = [
+    'graphdb.framework.ttyg.directives.chat-item-detail'
+];
 
 angular
     .module('graphdb.framework.ttyg.directives.chat-panel', modules)
@@ -49,6 +53,17 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
              */
             $scope.chatItem = undefined;
 
+            /**
+             * @type {ChatItemModel}
+             */
+            $scope.askingChatItem = undefined;
+
+            /**
+             * Flag that indicates that the chat is about to be changed.
+             * @type {boolean}
+             */
+            $scope.loadingChat = false;
+
             // =========================
             // Private variables
             // =========================
@@ -61,11 +76,15 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
              * Handles the ask question action.
              */
             $scope.ask = () => {
+                $scope.askingChatItem = cloneDeep($scope.chatItem);
                 if (!$scope.chatItem.chatId) {
                     createNewChat();
                 } else {
                     askQuestion($scope.chatItem);
                 }
+                $scope.chatItem = getEmptyChatItem();
+                scrollToBottom();
+                focusQuestionInput();
             };
 
             /**
@@ -76,7 +95,9 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             $scope.regenerateQuestion = (chatItem) => {
                 const regenerateChatItem = getEmptyChatItem();
                 regenerateChatItem.setQuestionMessage(chatItem.getQuestionMessage());
+                $scope.askingChatItem = cloneDeep(regenerateChatItem);
                 askQuestion(regenerateChatItem);
+                scrollToBottom();
             };
 
             /**
@@ -88,14 +109,21 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 TTYGContextService.emit(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD, chatItem);
             };
 
+            /**
+             * Handles pressing the Enter key in the question input.
+             * Will not trigger if `Shift` or `Ctrl` keys are pressed.
+             *
+             * @param {KeyboardEvent} $event - The keyboard event triggered by the user interaction.
+             */
+            $scope.onKeypressOnInput = ($event) => {
+                if ($event.key === 'Enter' && !$event.shiftKey && !$event.ctrlKey) {
+                    $scope.ask();
+                }
+            };
+
             // =========================
             // Private functions
             // =========================
-
-            const setupNewChatItem = () => {
-                $scope.chatItem = getEmptyChatItem();
-            };
-
             const createNewChat = () => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT, $scope.chatItem);
             };
@@ -110,15 +138,30 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
              */
             const onChatChanged = (chat) => {
                 $scope.chat = chat;
-                setupNewChatItem();
+                $scope.loadingChat = false;
+                $scope.chatItem = getEmptyChatItem();
+                $scope.askingChatItem = undefined;
+                focusQuestionInput();
             };
 
             const onCopied = () => {
                 toastr.success($translate.instant('ttyg.chat_panel.messages.answer_copy_successful'));
             };
 
+            const onSelectedChatChanged = (chat) => {
+                // Skip the loading indication if it is a new (dummy) chat that has not been created yet.
+                $scope.loadingChat = chat && chat.id;
+                $scope.chatItem = getEmptyChatItem();
+                focusQuestionInput();
+            };
+
             const onCopyFailed = () => {
                 toastr.success($translate.instant('ttyg.chat_panel.messages.answer_copy_failed'));
+            };
+
+            const onQuestionFailure = () => {
+                $scope.chatItem = cloneDeep($scope.askingChatItem);
+                $scope.askingChatItem = undefined;
             };
 
             /**
@@ -127,10 +170,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
              */
             const onSelectedAgentChanged = (agent) => {
                 $scope.selectedAgent = agent;
-                if ($scope.selectedAgent) {
-                    if (!$scope.chatItem) {
-                        $scope.chatItem = getEmptyChatItem();
-                    }
+                if ($scope.selectedAgent && $scope.chatItem) {
                     $scope.chatItem.agentId = $scope.selectedAgent.id;
                 }
             };
@@ -150,13 +190,21 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 return chatItem;
             };
 
+            const focusQuestionInput = () => {
+                element.find('.question-input')[0].focus();
+            };
+
             const scrollToBottom = () => {
-                const chatDetailsElement = element.find(".chat-details")[0];
-                chatDetailsElement.scrollTop = chatDetailsElement.scrollHeight;
+                // Call it in a timeout to ensure that Angular's digest cycle is finished and all elements are displayed.
+                setTimeout(() => {
+                    const chatDetailsElement = element.find(".chat-details")[0];
+                    chatDetailsElement.scrollTop = chatDetailsElement.scrollHeight;
+                });
             };
 
             const init = () => {
                 $scope.chatItem = getEmptyChatItem();
+                focusQuestionInput();
             };
 
             // =========================
@@ -171,8 +219,11 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             subscriptions.push($scope.$watchCollection('chat.chatHistory.items', scrollToBottom));
             subscriptions.push(TTYGContextService.onSelectedChatUpdated(onChatChanged));
             subscriptions.push(TTYGContextService.onSelectedAgentChanged(onSelectedAgentChanged));
+            subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_SUCCESSFUL, onCopied));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_FAILURE, onCopyFailed));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION_FAILURE, onQuestionFailure));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_CHAT_FAILURE, onQuestionFailure));
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);

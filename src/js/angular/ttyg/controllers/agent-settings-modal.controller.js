@@ -93,10 +93,13 @@ function AgentSettingsModalController($scope, $uibModalInstance, SimilarityServi
     /**
      * Sets the UI touched state and validation state for the extraction methods property so that the UI can show if
      * the user has selected at least one extraction method and warn him if he hasn't.
+     *
+     * @type {ExtractionMethodFormModel} extractionMethod
      */
-    $scope.toggleExtractionMethod = () => {
+    $scope.toggleExtractionMethod = (extractionMethod) => {
         $scope.agentSettingsForm.extractionMethods.$setTouched();
         setExtractionMethodValidityStatus();
+        $scope.onExtractionMethodPanelToggle(extractionMethod);
     };
 
     /**

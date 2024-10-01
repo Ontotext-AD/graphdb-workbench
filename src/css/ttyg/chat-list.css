@@ -74,3 +74,8 @@
 .chat-list-component .chat-item:not(.edited):hover .open-chat-actions-btn {
     display: block;
 }
+
+.chat-list-component .chat-name {
+    color: var(--secondary-color);
+    font-weight: 400;
+}

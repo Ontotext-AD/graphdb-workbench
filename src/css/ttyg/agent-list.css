@@ -99,3 +99,8 @@
     background-color: #00000066;
     color: #fff;
 }
+
+.agent-list-component .selected-filter, .agent-list-component .agent-name {
+    color: var(--secondary-color);
+    font-weight: 400;
+}

@@ -298,7 +298,7 @@
                 },
                 "form": {
                     "agent_name": {
-                        "label": "Nom de l'GraphAgent",
+                        "label": "Nom de l'Agent",
                         "placeholder": "Entrez un nom convivial"
                     },
                     "repository": {
