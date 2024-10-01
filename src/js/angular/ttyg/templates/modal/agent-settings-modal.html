@@ -188,8 +188,12 @@
 
                         <div ng-if="extractionMethod.method === extractionMethods.RETRIEVAL"
                              class="extraction-method-options">
-                            <div ng-if="!retrievalConnectors.length" class="no-retrieval-connector-message"
-                                 ng-bind-html="getNoRetrievalConnectorHelpMessage()">
+                            <div ng-if="!retrievalConnectors.length" class="no-retrieval-connector-message">
+                                {{'ttyg.agent.create_agent_modal.form.retrieval_search.no_retrieval_connectors_message.message_prefix' | translate}}
+                                <a href="#" ng-click="goToConnectorsView()">
+                                    {{'ttyg.agent.create_agent_modal.form.retrieval_search.no_retrieval_connectors_message.link_label' | translate}}
+                                </a>
+                                {{'ttyg.agent.create_agent_modal.form.retrieval_search.no_retrieval_connectors_message.message_suffix' | translate}}.
                             </div>
                             <div ng-show="retrievalConnectors.length">
                                 <div class="form-group retrieval-connector">

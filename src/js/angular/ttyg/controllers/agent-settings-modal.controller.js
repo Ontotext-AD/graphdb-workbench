@@ -169,19 +169,10 @@ function AgentSettingsModalController(
     };
 
     /**
-     * Resolves the hint for the missing retrieval connector message. This is needed because the hint contains a html
-     * link that should be properly rendered.
-     * @return {*}
+     * Opens the 'Connectors' view in a new tab.
      */
-    $scope.getNoRetrievalConnectorHelpMessage = () => {
-        // The hint contains a html link which should be properly rendered.
-        const message = decodeHTML(
-            $translate.instant(
-                'ttyg.agent.create_agent_modal.form.retrieval_search.no_retrieval_connectors_message',
-                {retrievalConnectorPage: '#/connectors'}
-            )
-        );
-        return $sce.trustAsHtml(message);
+    $scope.goToConnectorsView = () => {
+        TTYGContextService.emit(TTYGEventName.GO_TO_CONNECTORS_VIEW, {repositoryId: $scope.agentFormModel.repositoryId});
     };
 
     /**

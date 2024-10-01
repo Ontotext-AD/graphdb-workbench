@@ -285,6 +285,9 @@
             "dialog": {
                 "confirm_repository_change_before_open_similarity": {
                     "body": "Si vous continuez à créer l'index de similarité, GraphDB s'ouvrira dans un nouvel onglet et passera au dépôt <b>{{repositoryId}}</b>."
+                },
+                "confirm_repository_change_before_open_connectors": {
+                    "body": "Si vous continuez à créer le connecteur de récupération ChatGPT, GraphDB s'ouvrira dans un nouvel onglet et passera au dépôt <b>{{repositoryId}}</b>."
                 }
             }
         },
@@ -359,7 +362,11 @@
                     },
                     "retrieval_search": {
                         "label": "Connecteur de récupération ChatGPT",
-                        "no_retrieval_connectors_message": "Aucune instance de connecteur.<br/>Créez un connecteur de récupération ChatGPT <a href=\"{{retrievalConnectorPage}}\" target=\"_blank\">ici</a>."
+                        "no_retrieval_connectors_message": {
+                            "message_prefix": "Vous devez",
+                            "link_label": "créer un connecteur de récupération ChatGPT",
+                            "message_suffix": "pour utiliser cette méthode"
+                        }
                     },
                     "connector_id": {
                         "label": "Connecteur de récupération ChatGPT"

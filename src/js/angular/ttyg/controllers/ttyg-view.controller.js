@@ -657,6 +657,35 @@ function TTYGViewCtrl(
     };
 
     /**
+     * Opens the connectors view. It checks if the passed repository ID matches the one selected by the workbench.
+     * If they do not match, a confirmation dialog is shown to inform the user that the selected repository
+     * will be automatically changed upon confirmation.
+     *
+     * @param {{repositoryId: string}} payload - The payload containing the repository ID.
+     */
+    const onGoToConnectorsView = (payload) => {
+        if (payload.repositoryId !== $repositories.getActiveRepository()) {
+            const repository = $repositories.getRepository(payload.repositoryId);
+            if (repository) {
+                ModalService.openConfirmation(
+                    $translate.instant('common.confirm'),
+                    decodeHTML($translate.instant('ttyg.chat_panel.dialog.confirm_repository_change_before_open_connectors.body', {repositoryId: repository.id})),
+                    () => {
+                        $repositories.setRepository(repository);
+                        openConnectorsView();
+                    });
+            }
+
+        } else {
+            openConnectorsView();
+        }
+    };
+
+    const openConnectorsView = () => {
+        $window.open('/connectors', '_blank');
+    };
+
+    /**
      * Loads a chat using the chat ID stored in the local storage and selects it.
      */
     const setCurrentChat = () => {
@@ -710,6 +739,7 @@ function TTYGViewCtrl(
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.SELECT_CHAT, onChatSelected));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD, onCopiedAnswerToClipboard));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.GO_TO_CREATE_SIMILARITY_VIEW, onGoToCreateSimilarityView));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.GO_TO_CONNECTORS_VIEW, onGoToConnectorsView));
     subscriptions.push($rootScope.$on('$translateChangeSuccess', updateLabels));
     $scope.$on('$destroy', removeAllListeners);
 

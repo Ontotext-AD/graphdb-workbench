@@ -334,5 +334,10 @@ export const TTYGEventName = {
     /**
      * This event will trigger the opening of the similarity view.
      */
-    GO_TO_CREATE_SIMILARITY_VIEW: "goToCreateSimilarityView"
+    GO_TO_CREATE_SIMILARITY_VIEW: "goToCreateSimilarityView",
+
+    /**
+     * This event will trigger the opening of the connectors view.
+     */
+    GO_TO_CONNECTORS_VIEW: "goToConnectorsView"
 };
