@@ -40,3 +40,8 @@
     text-decoration: none;
     display: block;
 }
+
+.agent-select-menu .agent-name {
+    color: var(--secondary-color);
+    font-weight: 400;
+}
