@@ -9,7 +9,7 @@ TTYGRestService.$inject = ['$http'];
 const CONVERSATIONS_ENDPOINT = 'rest/chat/conversations';
 const AGENTS_ENDPOINT = 'rest/chat/agents';
 
-const DEVELOPMENT = true;
+const DEVELOPMENT = false;
 
 function TTYGRestService($http) {
 
