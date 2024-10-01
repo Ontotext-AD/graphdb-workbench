@@ -14,13 +14,13 @@ describe('TTYG view', () => {
         NamespaceStubs.stubNameSpaceResponse(repositoryId, '/namespaces/get-repository-starwars-namespaces.json');
     });
 
-    // TODO: This test is skipped because it fails on CI. For some reason the chat list panel is not visible.
-    it.skip('Should load ttyg page and render main components', () => {
+    it('Should load ttyg page and render main components', () => {
         TTYGStubs.stubChatsListGet();
         TTYGStubs.stubAgentListGet();
         TTYGStubs.stubChatGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
+        cy.wait('@get-chat');
         // When the ttyg page is loaded
         // Then I should see the ttyg view
         TTYGViewSteps.getTtygView().should('exist');
@@ -28,8 +28,8 @@ describe('TTYG view', () => {
         // Verify the chats sidebar
         TTYGViewSteps.getChatsPanel().should('be.visible');
         TTYGViewSteps.getToggleChatsSidebarButton().should('be.visible');
-        // The create chat button is hidden by default when there are no chats
-        TTYGViewSteps.getCreateChatButton().should('not.exist');
+        // The create chat button is visible when there are chats
+        TTYGViewSteps.getCreateChatButton().should('exist');
         // Verify the agents sidebar
         TTYGViewSteps.getAgentsPanel().should('be.visible');
         TTYGViewSteps.getHelpButton().should('be.visible');
