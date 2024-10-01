@@ -3,7 +3,10 @@
 
 <div class="modal-header">
     <button type="button" class="close" ng-click="close()"></button>
-    <h4 class="modal-title">{{(isEdit ? 'ttyg.agent.create_agent_modal.title.edit ' : 'ttyg.agent.create_agent_modal.title.create') | translate}}</h4>
+    <h4 class="modal-title">{{(
+        operation === AGENT_OPERATION.EDIT ? 'ttyg.agent.create_agent_modal.title.edit '
+        : operation === AGENT_OPERATION.CLONE ? 'ttyg.agent.create_agent_modal.title.clone'
+        : 'ttyg.agent.create_agent_modal.title.create') | translate}}</h4>
 </div>
 
 <div class="modal-body">
@@ -339,6 +342,8 @@
     </button>
     <button type="button" ng-click="ok()" ng-disabled="agentSettingsForm.$invalid"
             class="btn btn-primary save-agent-settings-btn">
-        {{( isEdit ? 'ttyg.agent.create_agent_modal.btn.save.label' : 'ttyg.agent.create_agent_modal.btn.create.label') | translate}}
+        {{(operation === AGENT_OPERATION.EDIT ? 'ttyg.agent.create_agent_modal.btn.save.label'
+        : operation === AGENT_OPERATION.CLONE ? 'ttyg.agent.create_agent_modal.btn.save.label'
+        : 'ttyg.agent.create_agent_modal.btn.create.label') | translate}}
     </button>
 </div>

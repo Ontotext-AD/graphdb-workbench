@@ -297,7 +297,8 @@
             "create_agent_modal": {
                 "title": {
                     "create": "Create Agent",
-                    "edit": "Edit Agent"
+                    "edit": "Edit Agent",
+                    "clone": "Clone Agent"
                 },
                 "advanced_settings": {
                     "show": "Show advanced settings",

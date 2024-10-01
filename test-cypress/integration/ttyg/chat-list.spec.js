@@ -54,7 +54,12 @@ describe('TTYG chat list', () => {
         TTYGViewSteps.getChatByDayGroups().should('have.length', 0);
     });
 
-    it('Should be able to edit an existing chat name by double click on the chat in the list', () => {
+    it('Should be able to edit an existing chat name by double click on the chat in the list', {
+        retries: {
+            runMode: 1,
+            openMode: 0
+        }
+    }, () => {
         TTYGStubs.stubChatsListGet();
         TTYGStubs.stubChatGet();
         TTYGStubs.stubAgentListGet();

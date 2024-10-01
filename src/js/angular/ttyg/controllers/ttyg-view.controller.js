@@ -8,13 +8,14 @@ import 'angular/core/services/ttyg.service';
 import 'angular/ttyg/services/ttyg-context.service';
 import 'angular/ttyg/services/ttyg-storage.service';
 import {TTYGEventName} from "../services/ttyg-context.service";
-import {AGENTS_FILTER_ALL_KEY} from "../services/constants";
+import {AGENT_OPERATION, AGENTS_FILTER_ALL_KEY} from "../services/constants";
 import {AgentListFilterModel} from "../../models/ttyg/agents";
 import {ChatsListModel} from "../../models/ttyg/chats";
 import {agentFormModelMapper, newAgentFormModelProvider} from "../services/agents.mapper";
 import {SelectMenuOptionsModel} from "../../models/form-fields";
 import {repositoryInfoMapper} from "../../rest/mappers/repositories-mapper";
 import {saveAs} from 'lib/FileSaver-patch';
+import {AgentSettingsModal} from "../model/agent-settings-modal";
 import {decodeHTML} from "../../../../app";
 
 const modules = [
@@ -240,11 +241,12 @@ function TTYGViewCtrl(
             windowClass: 'agent-settings-modal',
             resolve: {
                 dialogModel: function () {
-                    return {
-                        activeRepositoryInfo: activeRepositoryInfo,
-                        activeRepositoryList: $scope.activeRepositoryList,
-                        agentFormModel
-                    };
+                    return new AgentSettingsModal(
+                        activeRepositoryInfo,
+                        $scope.activeRepositoryList,
+                        agentFormModel,
+                        AGENT_OPERATION.CREATE
+                    );
                 }
             },
             size: 'lg'
@@ -278,11 +280,12 @@ function TTYGViewCtrl(
             windowClass: 'agent-settings-modal',
             resolve: {
                 dialogModel: function () {
-                    return {
-                        activeRepositoryInfo: activeRepositoryInfo,
-                        activeRepositoryList: $scope.activeRepositoryList,
-                        agentFormModel: agentFormModel
-                    };
+                    return new AgentSettingsModal(
+                        activeRepositoryInfo,
+                        $scope.activeRepositoryList,
+                        agentFormModel,
+                        AGENT_OPERATION.EDIT
+                    );
                 }
             },
             size: 'lg'
@@ -291,6 +294,49 @@ function TTYGViewCtrl(
             // confirmed handler
             (data) => {
                 TTYGService.editAgent(data)
+                    .then((updatedAgent) => {
+                        toastr.success($translate.instant("ttyg.agent.messages.agent_save_successfully", {agentName: updatedAgent.name}));
+                        const hasSelectedAgent = TTYGContextService.getSelectedAgent();
+                        if (hasSelectedAgent && data.id === hasSelectedAgent.id) {
+                            TTYGContextService.selectAgent(updatedAgent);
+                        }
+                        loadAgents(false);
+                    })
+                    .catch(() => {
+                        toastr.error($translate.instant("ttyg.agent.messages.agent_save_failure", {agentName: data.name}));
+                    });
+            });
+    };
+
+    $scope.onCloneAgent = (agent) => {
+        let agentToClone = agent;
+        if (!agentToClone) {
+            agentToClone = TTYGContextService.getSelectedAgent();
+        }
+        const agentFormModel = agentFormModelMapper(agentToClone);
+        agentFormModel.name = `clone-${agentFormModel.name}`;
+        const activeRepositoryInfo = repositoryInfoMapper($repositories.getActiveRepositoryObject());
+        console.log(`clone agent`, agentFormModel, agent);
+        const options = {
+            templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
+            controller: 'AgentSettingsModalController',
+            windowClass: 'agent-settings-modal',
+            resolve: {
+                dialogModel: function () {
+                    return new AgentSettingsModal(
+                        activeRepositoryInfo,
+                        $scope.activeRepositoryList,
+                        agentFormModel,
+                        AGENT_OPERATION.CLONE
+                    );
+                }
+            },
+            size: 'lg'
+        };
+        $uibModal.open(options).result.then(
+            // confirmed handler
+            (data) => {
+                TTYGService.createAgent(data)
                     .then((updatedAgent) => {
                         toastr.success($translate.instant("ttyg.agent.messages.agent_save_successfully", {agentName: updatedAgent.name}));
                         const hasSelectedAgent = TTYGContextService.getSelectedAgent();
@@ -734,6 +780,7 @@ function TTYGViewCtrl(
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.LOAD_CHATS, loadChats));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_AGENT, $scope.onCreateAgent));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.EDIT_AGENT, $scope.onEditAgent));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CLONE_AGENT, $scope.onCloneAgent));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_AGENT, onDeleteAgent));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_SELECTED, onAgentSelected));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.SELECT_CHAT, onChatSelected));

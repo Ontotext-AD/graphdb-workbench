@@ -296,6 +296,11 @@ export const TTYGEventName = {
     EDIT_AGENT: 'editAgent',
 
     /**
+     * This event will be emitted when an agent needs to be cloned.
+     */
+    CLONE_AGENT: 'cloneAgent',
+
+    /**
      * This event will be emitted when the delete agent process is triggered but before the agent delete request is sent.
      */
     DELETE_AGENT: 'deleteAgent',

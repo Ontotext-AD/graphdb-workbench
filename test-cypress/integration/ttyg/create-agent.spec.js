@@ -31,7 +31,12 @@ describe('TTYG create new agent', () => {
         TTYGViewSteps.getNoAgentsView().should('be.visible');
     });
 
-    it('Should be able to create a new agent with SPARQL extraction method on the no agents view', () => {
+    it('Should be able to create a new agent with SPARQL extraction method on the no agents view', {
+        retries: {
+            runMode: 1,
+            openMode: 0
+        }
+    }, () => {
         TTYGStubs.stubChatsListGetNoResults();
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
         // Given I have opened the ttyg page

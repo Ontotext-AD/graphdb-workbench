@@ -195,6 +195,11 @@ export class TTYGViewSteps {
         this.getAgent(index).realHover().find('.open-agent-actions-btn').click();
     }
 
+    static triggerCloneAgentActionMenu(index) {
+        this.openAgentActionMenu(index);
+        this.getAgent(index).find('.agent-actions-menu .clone-agent-btn').click();
+    }
+
     static triggerDeleteAgentActionMenu(index) {
         this.openAgentActionMenu(index);
         this.getAgent(index).find('.agent-actions-menu .delete-agent-btn').click();
