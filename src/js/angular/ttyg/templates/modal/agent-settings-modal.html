@@ -134,8 +134,12 @@
 
                         <div ng-if="extractionMethod.method === extractionMethods.SIMILARITY"
                              class="extraction-method-options">
-                            <div ng-if="!similarityIndexes.length" class="no-similarity-index-message"
-                                 ng-bind-html="getNoSimilarityIndexHelpMessage()">
+                            <div ng-if="!similarityIndexes.length" class="no-similarity-index-message">
+                                {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index_message.message_prefix' | translate}}
+                                <a href="#" ng-click="goToCreateSimilarityView()">
+                                    {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index_message.link_label' | translate}}
+                                </a>
+                                {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index_message.message_suffix' | translate}}.
                             </div>
                             <div ng-show="similarityIndexes.length">
                                 <div class="form-group similarity-index">

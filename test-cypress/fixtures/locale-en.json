@@ -280,6 +280,11 @@
             "messages": {
                 "answer_copy_successful": "The answer was successfully copied to the clipboard.",
                 "answer_copy_failed": "Failed to copy the answer to the clipboard."
+            },
+            "dialog": {
+                "confirm_repository_change_before_open_similarity": {
+                    "body": "If you proceed with creating the similarity index, GraphDB will open in a new tab and switch to the <b>{{repositoryId}}</b> repository."
+                }
             }
         },
         "agent": {
@@ -342,7 +347,11 @@
                     "similarity_index": {
                         "label": "Similarity index name",
                         "loading_indexes": "Loading similarity indexes...",
-                        "no_similarity_index_message": "To use this method, you must have a similarity index created.<br/>Create similarity text index <a href=\"{{similarityIndexPage}}\" target=\"_blank\">here</a>."
+                        "no_similarity_index_message": {
+                            "message_prefix": "You must",
+                            "link_label": "create a similarity index",
+                            "message_suffix": "to use this method"
+                        }
                     },
                     "similarity_threshold": {
                         "label": "Similarity threshold"

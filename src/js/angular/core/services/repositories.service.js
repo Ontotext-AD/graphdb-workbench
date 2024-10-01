@@ -255,6 +255,16 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             return repos;
         };
 
+        /**
+         * Gets repository by id.
+         *
+         * @param {string} repositoryId
+         * @return {*}
+         */
+        this.getRepository = function (repositoryId) {
+            return this.getRepositories().find((repository) => repository.id === repositoryId);
+        };
+
         this.getReadableRepositories = function () {
             return _.filter(this.getRepositories(), function (repo) {
                 return $jwtAuth.canReadRepo(repo);
