@@ -161,21 +161,6 @@ describe('TTYG chat list', () => {
         TTYGViewSteps.verifyFileExists('chat-export.json')
     });
 
-    it('Should be able to export chat from chat panel toolbar export action', () => {
-        TTYGStubs.stubAgentListGet();
-        TTYGStubs.stubChatsListGet();
-        TTYGStubs.stubChatExport();
-        TTYGStubs.stubChatGet();
-        // Given I have opened the ttyg page and there are chats loaded
-        TTYGViewSteps.visit();
-        cy.wait('@get-chat');
-        // When I select the export chat action chat panel toolbar
-        TTYGViewSteps.exportCurrentChat();
-        cy.wait('@export-chat');
-        // Then I expect to download the chat as a file
-        TTYGViewSteps.verifyFileExists('chat-export.json')
-    });
-
     it('Should show error notification if chat list fails to load', () => {
         TTYGStubs.stubChatListGetError();
         TTYGStubs.stubAgentListGet();

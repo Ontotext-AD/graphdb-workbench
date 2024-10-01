@@ -183,14 +183,6 @@ export class TTYGViewSteps {
         return this.getEditCurrentAgentButton().click();
     }
 
-    static getExportCurrentChatButton() {
-        return this.getChatPanelToolbar().find('.export-current-chat-btn');
-    }
-
-    static exportCurrentChat() {
-        return this.getExportCurrentChatButton().click();
-    }
-
     static verifyFileExists(fileName) {
         cy.readFile('cypress/downloads/' + fileName);
     }
