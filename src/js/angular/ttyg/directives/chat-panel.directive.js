@@ -109,6 +109,18 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 TTYGContextService.emit(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD, chatItem);
             };
 
+            /**
+             * Handles pressing the Enter key in the question input.
+             * Will not trigger if `Shift` or `Ctrl` keys are pressed.
+             *
+             * @param {KeyboardEvent} $event - The keyboard event triggered by the user interaction.
+             */
+            $scope.onKeypressOnInput = ($event) => {
+                if ($event.key === 'Enter' && !$event.shiftKey && !$event.ctrlKey) {
+                    $scope.ask();
+                }
+            };
+
             // =========================
             // Private functions
             // =========================
