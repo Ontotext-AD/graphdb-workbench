@@ -10,11 +10,11 @@
     color: var(--text-color);
 }
 
-.chat-panel .btn.btn-link:focus {
+.chat-panel .btn-link:focus {
     color: var(--text-color);
 }
 
-.chat-panel .btn.btn-link:not(:hover) {
+.chat-panel .btn-link:not(:hover) {
     color: var(--text-color);
 }
 
