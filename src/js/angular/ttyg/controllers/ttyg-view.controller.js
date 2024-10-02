@@ -308,15 +308,14 @@ function TTYGViewCtrl(
             });
     };
 
-    $scope.onCloneAgent = (agent) => {
-        let agentToClone = agent;
-        if (!agentToClone) {
-            agentToClone = TTYGContextService.getSelectedAgent();
-        }
+    /**
+     * Handles the agent clone operation.
+     * @param {AgentModel} agentToClone
+     */
+    $scope.onCloneAgent = (agentToClone) => {
         const agentFormModel = agentFormModelMapper(agentToClone);
         agentFormModel.name = `clone-${agentFormModel.name}`;
         const activeRepositoryInfo = repositoryInfoMapper($repositories.getActiveRepositoryObject());
-        console.log(`clone agent`, agentFormModel, agent);
         const options = {
             templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
             controller: 'AgentSettingsModalController',
