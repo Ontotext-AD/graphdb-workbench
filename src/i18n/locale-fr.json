@@ -289,6 +289,14 @@
             "messages": {
                 "answer_copy_successful": "La réponse a été copiée avec succès dans le presse-papiers.",
                 "answer_copy_failed": "Échec de la copie de la réponse dans le presse-papiers."
+            },
+            "dialog": {
+                "confirm_repository_change_before_open_similarity": {
+                    "body": "Si vous continuez à créer l'index de similarité, GraphDB s'ouvrira dans un nouvel onglet et passera au dépôt <b>{{repositoryId}}</b>."
+                },
+                "confirm_repository_change_before_open_connectors": {
+                    "body": "Si vous continuez à créer le connecteur de récupération ChatGPT, GraphDB s'ouvrira dans un nouvel onglet et passera au dépôt <b>{{repositoryId}}</b>."
+                }
             }
         },
         "agent": {
@@ -298,7 +306,8 @@
             "create_agent_modal": {
                 "title": {
                     "create": "Créer un agent",
-                    "edit": "Modifier un agent"
+                    "edit": "Modifier un agent",
+                    "clone": "Cloner un agent"
                 },
                 "advanced_settings": {
                     "show": "Afficher les paramètres avancés",
@@ -332,7 +341,7 @@
                     },
                     "fts_search": {
                         "label": "Recherche en texte intégral",
-                        "fts_disabled_message": "Pour utiliser cette méthode, vous devez activer l'index de recherche en texte intégral (FTS) sur le référentiel choisi, puis le redémarrer.<br/> Activez l'index <a href=\"{{repositoryEditPage}}\" target=\"_blank\">ici</a>.",
+                        "fts_disabled_message": "Vous devez <a href=\"{{repositoryEditPage}}\" target=\"_blank\">activer l'index de recherche en texte intégral (FTS)</a> pour utiliser cette méthode.",
                         "missing_repository_id": "L'ID du référentiel doit être sélectionné"
                     },
                     "sparql_search": {
@@ -351,14 +360,22 @@
                     "similarity_index": {
                         "label": "Nom de l'index de similarité",
                         "loading_indexes": "Chargement des indices de similarité...",
-                        "no_similarity_index_message": "Pour utiliser cette méthode, vous devez avoir créé un index de similarité.<br/>Créez un index de texte de similarité <a href=\"{{similarityIndexPage}}\" target=\"_blank\">ici</a>."
+                        "no_similarity_index": {
+                            "message_1": "Vous devez",
+                            "message_2": "créer un index de similarité",
+                            "message_3": "pour utiliser cette méthode"
+                        }
                     },
                     "similarity_threshold": {
                         "label": "Seuil de similarité"
                     },
                     "retrieval_search": {
                         "label": "Connecteur de récupération ChatGPT",
-                        "no_retrieval_connectors_message": "Aucune instance de connecteur.<br/>Créez un connecteur de récupération ChatGPT <a href=\"{{retrievalConnectorPage}}\" target=\"_blank\">ici</a>."
+                        "no_retrieval_connectors": {
+                            "message_1": "Vous devez",
+                            "message_2": "créer un connecteur de récupération ChatGPT",
+                            "message_3": "pour utiliser cette méthode"
+                        }
                     },
                     "connector_id": {
                         "label": "Connecteur de récupération ChatGPT"
