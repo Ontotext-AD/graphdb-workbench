@@ -83,7 +83,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
         $timeout.cancel($scope.loaderTimeout);
         if (loader) {
             $scope.loaderMessage = message;
-            $scope.loaderTimeout = $timeout(function () {
+            $scope.loaderTimeout = $timeout(() => {
                 $scope.loader = loader;
             }, 50);
         } else {
@@ -95,40 +95,25 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
         return $scope.loaderMessage || $translate.instant('common.loading');
     };
 
-    $scope.showUpdateClusterGroupDialog = function () {
+    $scope.showUpdateClusterGroupDialog = () => {
         const modalInstance = $uibModal.open({
             templateUrl: 'js/angular/clustermanagement/templates/modal/update-cluster-group-dialog.html',
             controller: 'UpdateClusterGroupDialogCtrl',
             size: 'lg',
             resolve: {
-                data: function () {
+                data: () => {
                     return {clusterModel: $scope.clusterModel};
                 }
             }
         });
 
         modalInstance.result.then((cluster) => {
-            const nodes = cluster.getUpdateActions();
-            const loaderMessage = $translate.instant('cluster_management.cluster_page.replace_nodes_loader');
-            $scope.setLoader(true, loaderMessage);
-
-            const addNodes = nodes.addNodes;
-            const removeNodes = nodes.removeNodes;
-            const payload = {addNodes, removeNodes};
-            ClusterRestService.replaceNodesInCluster(payload)
-                .then(() => {
-                    const successMessage = $translate.instant(
-                        'cluster_management.cluster_page.notifications.replace_nodes_success');
-                    onAddRemoveSuccess(successMessage);
-                })
-                .catch((error) => {
-                    const failMessageTitle = $translate.instant('cluster_management.cluster_page.notifications.replace_nodes_fail');
-                    handleErrors(error.data, error.status, failMessageTitle);
-                })
-                .finally(() => {
-                    $scope.setLoader(false);
-                    updateCluster(true);
-                });
+            if (!cluster.hasCluster()) {
+                createCluster(cluster.getUpdateActions().clusterConfiguration);
+            } else {
+                const nodes = cluster.getUpdateActions();
+                editCluster(nodes);
+            }
         }).finally(() => {
             getLocationsWithRpcAddresses();
         });
@@ -174,27 +159,6 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
                     return Promise.reject(error);
                 }
             });
-    };
-
-    $scope.showCreateClusterDialog = function () {
-        const modalInstance = $uibModal.open({
-            templateUrl: 'js/angular/clustermanagement/templates/modal/cluster-create-dialog.html',
-            controller: 'CreateClusterCtrl',
-            size: 'lg',
-            resolve: {
-                data: function () {
-                    return {
-                        deleteLocation: deleteLocation,
-                        clusterModel: $scope.clusterModel
-                    };
-                }
-            }
-        });
-
-        modalInstance.result.finally(function () {
-            getLocationsWithRpcAddresses();
-            updateCluster(true);
-        });
     };
 
     $scope.getCurrentNodeStatus = () => {
@@ -331,6 +295,43 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     // =========================
     // Private functions
     // =========================
+
+    const createCluster = (clusterConfiguration) => {
+        $scope.setLoader(true, $translate.instant('cluster_management.cluster_page.creating_cluster_loader'));
+        return ClusterRestService.createCluster(clusterConfiguration)
+            .then(() => {
+                toastr.success($translate.instant('cluster_management.cluster_page.notifications.create_success'));
+            })
+            .catch((error) => {
+                handleErrors(error.data, error.status);
+            })
+            .finally(() => {
+                $scope.setLoader(false);
+            });
+    };
+
+    const editCluster = (nodes) => {
+        const loaderMessage = $translate.instant('cluster_management.cluster_page.replace_nodes_loader');
+        $scope.setLoader(true, loaderMessage);
+
+        const addNodes = nodes.addNodes;
+        const removeNodes = nodes.removeNodes;
+        const payload = {addNodes, removeNodes};
+        ClusterRestService.replaceNodesInCluster(payload)
+            .then(() => {
+                const successMessage = $translate.instant(
+                    'cluster_management.cluster_page.notifications.replace_nodes_success');
+                onAddRemoveSuccess(successMessage);
+            })
+            .catch((error) => {
+                const failMessageTitle = $translate.instant('cluster_management.cluster_page.notifications.replace_nodes_fail');
+                handleErrors(error.data, error.status, failMessageTitle);
+            })
+            .finally(() => {
+                $scope.setLoader(false);
+                updateCluster(true);
+            });
+    };
 
     const buildLinksModel = (leader, nodes) => {
         const links = [];
@@ -502,11 +503,11 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     };
 
 
-    function shouldSkipNodesUpdate(nodes) {
+    const shouldSkipNodesUpdate = (nodes) => {
         return (!nodes ||
             (Array.isArray(nodes) && nodes.length === 0) ||
             (nodes.oldNodes && nodes.newNodes && nodes.oldNodes.length === 0 && nodes.newNodes.length === 0));
-    }
+    };
 
     // =========================
     // Events and watchers
@@ -538,7 +539,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             selectNode(data);
         }));
         subscriptions.push($scope.$on(CREATE_CLUSTER, () => {
-            $scope.showCreateClusterDialog();
+            $scope.showUpdateClusterGroupDialog();
         }));
     };
 

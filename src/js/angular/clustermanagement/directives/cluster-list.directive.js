@@ -25,6 +25,7 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
             $scope.loader = false;
             $scope.errors = [];
             $scope.addNewLocation = false;
+            $scope.hasCluster = false;
 
             /**
              * Adds a new (empty) node to the list of cluster nodes for editing.
@@ -154,7 +155,8 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
                 const isNotInEditMode = $scope.editedNodeIndex === undefined;
                 const isNotInAddMode = $scope.addNewLocation === false;
                 const hasValidNodes = ClusterContextService.hasValidNodesCount();
-                return isNotInEditMode && isNotInAddMode && hasValidNodes;
+                const hasValidConfiguration = $scope.form.$valid;
+                return isNotInEditMode && isNotInAddMode && hasValidNodes && hasValidConfiguration;
             };
 
             /**
@@ -175,6 +177,28 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
                 }
             };
 
+            /**
+             * Determines the CSS class for the advanced options button based on its expanded state.
+             *
+             * @return {string} - Returns 'fa fa-angle-down' if the 'advancedOptions' element is expanded, otherwise 'fa fa-angle-right'.
+             */
+            $scope.getAdvancedOptionsClass = () => {
+                const optionsModule = document.getElementById('advancedOptions');
+
+                if (optionsModule) {
+                    const isAriaExpanded = optionsModule.getAttribute('aria-expanded');
+                    if (isAriaExpanded && isAriaExpanded === 'true') {
+                        return 'fa fa-angle-down';
+                    }
+                }
+                return 'fa fa-angle-right';
+            };
+
+            /**
+             * Cancels the current action and resets the form state.
+             *
+             * @return {void}
+             */
             $scope.cancel = () => {
                 $scope.editedNodeIndex = undefined;
                 $scope.addNewLocation = false;
@@ -185,7 +209,9 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
             // Private functions
             // =========================
             const onClusterViewChanged = (cluster) => {
+                $scope.hasCluster = ClusterContextService.hasCluster();
                 $scope.viewModel = ClusterContextService.getViewModel();
+                $scope.clusterConfiguration = ClusterContextService.getClusterConfiguration();
                 $scope.allSuggestions = ClusterContextService.getAvailableNodeEndpoints();
                 $scope.canDeleteNode = ClusterContextService.canDeleteNode();
             };
@@ -226,11 +252,20 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
             /**
              * Removes all listeners and unsubscribes from events when the directive is destroyed.
              */
-            function removeAllListeners() {
+            const removeAllListeners = () => {
                 subscriptions.forEach((subscription) => subscription());
-            }
+            };
 
-            const unwatch = $scope.$watchGroup(['clusterNodes', 'editedNodeIndex', 'addNewLocation'], function (newValues, oldValues) {
+            const unwatch = $scope.$watchGroup([
+                'editedNodeIndex',
+                'addNewLocation',
+                'clusterConfiguration.electionMinTimeout',
+                'clusterConfiguration.electionRangeTimeout',
+                'clusterConfiguration.heartbeatInterval',
+                'clusterConfiguration.messageSizeKB',
+                'clusterConfiguration.verificationTimeout',
+                'clusterConfiguration.transactionLogMaximumSizeGB'
+            ], (newValues, oldValues) => {
                 const isValid = $scope.isClusterConfigurationValid();
                 ClusterContextService.updateClusterValidity(isValid);
             });
