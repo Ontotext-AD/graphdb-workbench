@@ -86,20 +86,20 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     };
 
     $scope.showUpdateClusterGroupDialog = () => {
-        const modalInstance = $uibModal.open({
-            templateUrl: 'js/angular/clustermanagement/templates/modal/update-cluster-group-dialog.html',
-            controller: 'UpdateClusterGroupDialogCtrl',
-            size: 'lg',
-            backdrop: 'static',
-            keyboard: false,
-            resolve: {
-                data: () => {
-                    return {clusterModel: $scope.clusterModel};
+        getLocationsWithRpcAddresses().then(() => {
+            return $uibModal.open({
+                templateUrl: 'js/angular/clustermanagement/templates/modal/update-cluster-group-dialog.html',
+                controller: 'UpdateClusterGroupDialogCtrl',
+                size: 'lg',
+                backdrop: 'static',
+                keyboard: false,
+                resolve: {
+                    data: () => {
+                        return {clusterModel: $scope.clusterModel};
+                    }
                 }
-            }
-        });
-
-        modalInstance.result.then((cluster) => {
+            }).result;
+        }).then((cluster) => {
             if (!cluster.hasCluster()) {
                 createCluster(cluster.getUpdateActions().clusterConfiguration);
             } else {
@@ -203,7 +203,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             })
             .finally(() => {
                 $scope.setLoader(false);
-                updateCluster(true);
+                updateCluster(true, true);
             });
     };
 
@@ -254,7 +254,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
         $scope.$apply();
     };
 
-    const updateCluster = (force) => {
+    const updateCluster = (force, deleteUnusedLocations = false) => {
         if (updateRequest) {
             return;
         }
@@ -269,11 +269,26 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
                 if (!$scope.currentNode || $scope.leaderChanged) {
                     return $scope.getCurrentNodeStatus();
                 }
+            }).then(() => {
+                if (deleteUnusedLocations) {
+                    clearUnusedLocations();
+                }
             })
             .finally(() => {
                 updateRequest = null;
                 $scope.$broadcast(MODEL_UPDATED);
             });
+    };
+
+    const clearUnusedLocations = () => {
+        $scope.clusterModel.locations.forEach((location) => {
+            const index = $scope.clusterModel.nodes.findIndex((node) => {
+                return node.endpoint === location.endpoint;
+            });
+            if (index === -1) {
+                $repositories.deleteLocation(location.endpoint);
+            }
+        });
     };
 
     const deleteCluster = (forceDelete) => {
@@ -300,7 +315,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             })
             .finally(() => {
                 $scope.setLoader(false);
-                updateCluster(true);
+                updateCluster(true, true);
                 $rootScope.$broadcast('reloadLocations');
             });
     };
