@@ -2,6 +2,7 @@ import {chatModelMapper, chatsListMapper} from "../../ttyg/services/chats.mapper
 import 'angular/rest/ttyg.rest.service';
 import {chatMessageModelMapper} from "../../ttyg/services/chat-message.mapper";
 import {agentListMapper, agentModelMapper} from "../../ttyg/services/agents.mapper";
+import {explainResponseMapper} from "../../ttyg/services/explain.mapper";
 
 const modules = ['graphdb.framework.rest.ttyg.service'];
 
@@ -143,6 +144,18 @@ function TTYGService(TTYGRestService) {
         return TTYGRestService.deleteAgent(id);
     };
 
+    /**
+     * Returns an explanation of how the answer was generated.
+     * @param {ChatItemModel} chatItem
+     * @return {ExplainResponseModel}
+     */
+    const explainResponse = (chatItem) => {
+        return TTYGRestService.explainResponse(chatItem.toExplainResponsePayload())
+            .then((response) => {
+                return explainResponseMapper(response.data);
+            });
+    };
+
     return {
         getConversation,
         renameConversation,
@@ -155,6 +168,7 @@ function TTYGService(TTYGRestService) {
         getAgent,
         createAgent,
         editAgent,
-        deleteAgent
+        deleteAgent,
+        explainResponse
     };
 }

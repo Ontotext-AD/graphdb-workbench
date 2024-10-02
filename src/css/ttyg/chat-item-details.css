@@ -1,0 +1,111 @@
+:root {
+    --border: 1px solid #C2C1C2;
+}
+
+.chat-detail .assistant {
+    display: flex;
+    gap: 16px;
+}
+
+.chat-detail .assistant-message {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 80%;
+}
+
+.chat-detail .assistant-message .answer {
+    padding: 4px 8px;
+    line-height: var(--line-height);
+}
+
+.chat-detail .assistant-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.chat-detail .assistant-message .hidden-actions {
+    opacity: 0
+}
+
+.chat-detail .assistant-message .toggle-explain-response-icon {
+    transform: rotate(180deg);
+    font-size: 0.6rem;
+}
+
+.chat-detail .assistant-message .toggle-explain-response-icon.expanded {
+    transform: rotate(0deg);
+}
+
+.chat-detail .assistant-message .actions:hover {
+    opacity: 1;
+}
+
+.chat-detail .assistant-message .actions {
+    padding-left: 6px;
+}
+
+.chat-detail .assistant-message .derived-answer-hint {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chat-detail .assistant-message .deliver-answer-btn {
+    background: none;
+    border-color: #C2C1C2;
+    color: #414041
+}
+
+.chat-detail .assistant-message .explain-response-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.chat-detail .assistant-message .explain-responses {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* Better handling of markdown-derived HTML inside the assistant message */
+.chat-detail .assistant-message li > p:has(+:not(p)) {
+    margin-bottom: 0;
+}
+
+.chat-detail .explain-response {
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-detail .explain-response .explain-response-row {
+    display: flex;
+    gap: 10px;
+    margin: 0 !important;
+}
+
+.chat-detail .explain-response .label {
+    color: #1E293B;
+    font-weight: 400;
+}
+
+.chat-detail .explain-response .explain-query .header {
+    display: flex;
+    justify-content: space-between;
+    background-color: #F3F3F3;
+    border-bottom: var(--border);
+    padding: 4px 8px;
+}
+
+.chat-detail .explain-response .explain-query {
+    border: var(--border);
+}
+
+.chat-detail .explain-response .explain-query .query {
+    padding: 16px;
+}

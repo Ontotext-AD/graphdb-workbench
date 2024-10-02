@@ -37,6 +37,14 @@ function TTYGContextService(EventEmitterService) {
     let _selectedAgent = undefined;
 
     /**
+     * Stores information about loaded explain responses.
+     * The key is the answer ID, and the value is an instance of {@see ExplainResponseModel} that holds the explanation message.
+     *
+     * @type {{[key: string]: ExplainResponseModel}}
+     */
+    let _explainCache = {};
+
+    /**
      * @return {AgentListModel}
      */
     const getAgents = () => {
@@ -172,6 +180,36 @@ function TTYGContextService(EventEmitterService) {
     };
 
     /**
+     * @return {{[key: string]: ExplainResponseModel}} the cache of explain responses.
+     */
+    const getExplainResponseCache = () => {
+        return cloneDeep(_explainCache);
+    };
+
+    /**
+     *  Updates the explain response catch.
+     *
+     * @param {ExplainResponseModel} explainResponse
+     */
+    const updateExplainResponseCache = (explainResponse) => {
+        _explainCache[explainResponse.answerId] = explainResponse;
+        _explainCache = cloneDeep(_explainCache);
+        emit(TTYGEventName.EXPLAIN_RESPONSE_CACHE_UPDATED, getExplainResponseCache());
+    };
+
+    /** Subscribes to the 'explainResponseCacheUpdated' event.
+     * @param {function} callback - The callback to be called when the event is fired.
+     *
+     * @return {function} unsubscribe function.
+     */
+    const onExplainResponseCacheUpdated = (callback) => {
+        if (angular.isFunction(callback)) {
+            callback(getExplainResponseCache());
+        }
+        return subscribe(TTYGEventName.EXPLAIN_RESPONSE_CACHE_UPDATED, (chats) => callback(chats));
+    };
+
+    /**
      * Subscribes to the 'agentSelected' event.
      * @param {function} callback - The callback to be called when the event is fired.
      *
@@ -221,7 +259,10 @@ function TTYGContextService(EventEmitterService) {
         getAgents,
         selectAgent,
         getSelectedAgent,
-        onSelectedAgentChanged
+        onSelectedAgentChanged,
+        getExplainResponseCache,
+        updateExplainResponseCache,
+        onExplainResponseCacheUpdated
     };
 }
 
@@ -322,19 +363,9 @@ export const TTYGEventName = {
     AGENT_SELECTED: 'agentSelected',
 
     /**
-     * Emitting the "copyAnswer" event will trigger an action to copy an answer to the clipboard.
+     * Emitting the "copyTextToClipboard" event will trigger an action to copy a copyTextToClipboard to the clipboard.
      */
-    COPY_ANSWER_TO_CLIPBOARD: 'copyAnswerToClipboard',
-
-    /**
-     * This event will be emitted when an answer is successfully copied to the clipboard.
-     */
-    COPY_ANSWER_TO_CLIPBOARD_SUCCESSFUL: 'copyAnswerToClipboardSuccess',
-
-    /**
-     * This event will be emitted when copying an answer to the clipboard fails.
-     */
-    COPY_ANSWER_TO_CLIPBOARD_FAILURE: 'copyAnswerToClipboardFailure',
+    COPY_TEXT_TO_CLIPBOARD: 'copyTextToClipboard',
 
     /**
      * This event will trigger the opening of the similarity view.
@@ -344,5 +375,13 @@ export const TTYGEventName = {
     /**
      * This event will trigger the opening of the connectors view.
      */
-    GO_TO_CONNECTORS_VIEW: "goToConnectorsView"
+    GO_TO_CONNECTORS_VIEW: "goToConnectorsView",
+
+    EXPLAIN_RESPONSE: "explainResponse",
+    EXPLAIN_RESPONSE_SUCCESSFUL: "explainResponseSuccess",
+    EXPLAIN_RESPONSE_FAILURE: "explainResponseFailure",
+
+    EXPLAIN_RESPONSE_CACHE_UPDATED: "explainResponseCacheUpdated",
+
+    GO_TO_SPARQL_EDITOR: "openQueryInSparqlEditor"
 };

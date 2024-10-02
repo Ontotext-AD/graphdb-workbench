@@ -232,6 +232,10 @@
                 "body": "Voulez-vous vraiment supprimer <b>{{chatName}}</b>? Tout l'historique de la conversation sera perdu."
             }
         },
+        "messages": {
+            "text_copy_successful": "Copié avec succès dans le presse-papiers.",
+            "text_copy_failed": "Échec de la copie dans le presse-papiers."
+        },
         "chat": {
             "loading_chats": "Chargement des chats...",
             "deleted_repository": "Dépôt supprimé",
@@ -276,18 +280,23 @@
                 },
                 "copy": {
                     "tooltip": "Copier"
+                },
+                "explain_response": {
+                    "tooltip": "Expliquer la réponse"
+                },
+                "derive_answer": {
+                    "label": "Comment avez-vous obtenu cette réponse ?",
+                    "hint": "Astuce : vous pouvez également demander au modèle, par exemple"
                 }
             },
-            "messages": {
-                "answer_copy_successful": "La réponse a été copiée avec succès dans le presse-papiers.",
-                "answer_copy_failed": "Échec de la copie de la réponse dans le presse-papiers."
+            "labels": {
+                "query_method": "Méthode de requête",
+                "raw_query": "Requête brute",
+                "sparql_query": "Requête SPARQL"
             },
             "dialog": {
-                "confirm_repository_change_before_open_similarity": {
-                    "body": "Si vous continuez à créer l'index de similarité, GraphDB s'ouvrira dans un nouvel onglet et passera au dépôt <b>{{repositoryId}}</b>."
-                },
-                "confirm_repository_change_before_open_connectors": {
-                    "body": "Si vous continuez à créer le connecteur de récupération ChatGPT, GraphDB s'ouvrira dans un nouvel onglet et passera au dépôt <b>{{repositoryId}}</b>."
+                "confirm_repository_change": {
+                    "body": "Si vous continuez l'exécution de la requête SPARQL, GraphDB s'ouvrira dans un nouvel onglet et passera au dépôt <b>{{repositoryId}}</b>."
                 }
             }
         },
@@ -403,6 +412,14 @@
                     },
                     "save": {
                         "label": "Enregistrer"
+                    }
+                },
+                "dialog": {
+                    "confirm_repository_change_before_open_similarity": {
+                        "body": "Si vous continuez à créer l'index de similarité, GraphDB s'ouvrira dans un nouvel onglet et passera au dépôt <b>{{repositoryId}}</b>."
+                    },
+                    "confirm_repository_change_before_open_connectors": {
+                        "body": "Si vous continuez à créer le connecteur de récupération ChatGPT, GraphDB s'ouvrira dans un nouvel onglet et passera au dépôt <b>{{repositoryId}}</b>."
                     }
                 }
             },

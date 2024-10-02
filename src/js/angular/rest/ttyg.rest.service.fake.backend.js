@@ -1,5 +1,6 @@
 import {cloneDeep} from "lodash";
 import {CHAT_MESSAGE_ROLE} from "../models/ttyg/chat-message";
+import {ExtractionMethod} from "../models/ttyg/agents";
 
 // Delay for askQuestion()
 const ASK_DELAY = 2000;
@@ -52,7 +53,7 @@ export class TtygRestServiceFakeBackend {
             timestamp: Math.floor(Date.now() / 1000)
         };
         const answer = {
-            id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNe",
+            id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNe_" + Date.now(),
             conversationId: askRequestData.conversationId,
             agentId: null,
             message: `Reply to '${askRequestData.question}'`,
@@ -129,6 +130,24 @@ export class TtygRestServiceFakeBackend {
             status: 500,
             message: 'Internal Server Error'
         });
+    }
+
+    explainResponse(data) {
+        return Promise.resolve({data: {
+                conversationId: data.conversationId,
+                answerId: data.answerId,
+                queryMethods: [
+                    {
+                        name: ExtractionMethod.FTS_SEARCH,
+                        rawQuery: 'Luke',
+                        query: 'PREFIX onto: <http://www.ontotext.com/>\nDESCRIBE ?iri {\n\t?x onto:fts \'\'\'Luke\'\'\' .\n\t{\n\t\t?x ?p ?iri .\n\t} union {\n\t\t?iri ?p ?x .\n\t}\n}'
+                    }, {
+                        name: ExtractionMethod.FTS_SEARCH,
+                        rawQuery: 'Second Luke',
+                        query: 'PREFIX onto: <http://www.ontotext.com/>\nDESCRIBE ?iri {\n\t?x onto:fts \'\'\'Second Luke\'\'\' .\n\t{\n\t\t?x ?p ?iri .\n\t} union {\n\t\t?iri ?p ?x .\n\t}\n}'
+                    }
+                ]
+            }});
     }
 }
 

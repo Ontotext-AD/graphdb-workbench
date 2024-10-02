@@ -633,12 +633,10 @@ function TTYGViewCtrl(
         }
     };
 
-    const onCopiedAnswerToClipboard = (chatItem) => {
-        if (navigator.clipboard) {
-            navigator.clipboard.writeText(chatItem.answer.message)
-                .then(() => TTYGContextService.emit(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_SUCCESSFUL))
-                .catch(() => TTYGContextService.emit(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_FAILURE));
-        }
+    const onCopyTextToClipboard = (text) => {
+        navigator.clipboard.writeText(text)
+            .then(() => toastr.success($translate.instant('ttyg.messages.text_copy_successful')))
+            .catch(() => toastr.error($translate.instant('ttyg.messages.text_copy_failed')));
     };
 
     /**
@@ -685,7 +683,7 @@ function TTYGViewCtrl(
             if (repository) {
                 ModalService.openConfirmation(
                     $translate.instant('common.confirm'),
-                    decodeHTML($translate.instant('ttyg.chat_panel.dialog.confirm_repository_change_before_open_similarity.body', {repositoryId: repository.id})),
+                    decodeHTML($translate.instant('ttyg.agent.create_agent_modal.dialog.confirm_repository_change_before_open_similarity.body', {repositoryId: repository.id})),
                     () => {
                         $repositories.setRepository(repository);
                         openCreateSimilarityView();
@@ -714,7 +712,7 @@ function TTYGViewCtrl(
             if (repository) {
                 ModalService.openConfirmation(
                     $translate.instant('common.confirm'),
-                    decodeHTML($translate.instant('ttyg.chat_panel.dialog.confirm_repository_change_before_open_connectors.body', {repositoryId: repository.id})),
+                    decodeHTML($translate.instant('ttyg.agent.create_agent_modal.dialog.confirm_repository_change_before_open_connectors.body', {repositoryId: repository.id})),
                     () => {
                         $repositories.setRepository(repository);
                         openConnectorsView();
@@ -728,6 +726,32 @@ function TTYGViewCtrl(
 
     const openConnectorsView = () => {
         $window.open('/connectors', '_blank');
+    };
+
+    /**
+     * Opens SPARQL editor view with passed query.
+     * @param {{query: string, repositoryId: string}} payload
+     */
+    const onGoToSparqlEditorView = (payload) => {
+        if (payload.repositoryId !== $repositories.getActiveRepository()) {
+            const repository = $repositories.getRepository(payload.repositoryId);
+            if (repository) {
+                ModalService.openConfirmation(
+                    $translate.instant('common.confirm'),
+                    decodeHTML($translate.instant('ttyg.chat_panel.dialog.confirm_repository_change.body', {repositoryId: payload.repositoryId})),
+                    () => {
+                        $repositories.setRepository(repository);
+                        openInSparqlEditorInNewTab(payload.query);
+                    });
+            }
+
+        } else {
+            openInSparqlEditorInNewTab(payload.query);
+        }
+    };
+
+    const openInSparqlEditorInNewTab = (query) => {
+        $window.open(`/sparql?query=${encodeURIComponent(query)}&execute=true`, '_blank');
     };
 
     /**
@@ -783,9 +807,10 @@ function TTYGViewCtrl(
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_AGENT, onDeleteAgent));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_SELECTED, onAgentSelected));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.SELECT_CHAT, onChatSelected));
-    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD, onCopiedAnswerToClipboard));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_TEXT_TO_CLIPBOARD, onCopyTextToClipboard));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.GO_TO_CREATE_SIMILARITY_VIEW, onGoToCreateSimilarityView));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.GO_TO_CONNECTORS_VIEW, onGoToConnectorsView));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.GO_TO_SPARQL_EDITOR, onGoToSparqlEditorView));
     subscriptions.push($rootScope.$on('$translateChangeSuccess', updateLabels));
     $scope.$on('$destroy', removeAllListeners);
 

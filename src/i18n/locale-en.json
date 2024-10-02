@@ -232,6 +232,10 @@
                 "body": "Do you really want to delete <b>{{chatName}}</b>? All chat history will be lost."
             }
         },
+        "messages": {
+            "text_copy_successful": "Successfully copied to the clipboard.",
+            "text_copy_failed": "Failed copying to the clipboard."
+        },
         "chat": {
             "loading_chats": "Loading chats...",
             "btn": {
@@ -275,18 +279,24 @@
                 },
                 "copy": {
                     "tooltip": "Copy"
+                },
+                "explain_response": {
+                    "tooltip": "Explain response"
+                },
+                "derive_answer": {
+                    "label": "How did you derive this answer?",
+                    "hint": "Hint: you can also ask the model, for example"
                 }
             },
-            "messages": {
-                "answer_copy_successful": "The answer was successfully copied to the clipboard.",
-                "answer_copy_failed": "Failed to copy the answer to the clipboard."
+            "labels": {
+                "query_method": "Query method",
+                "raw_query": "Raw query",
+                "sparql_query": "SPARQL query"
+
             },
             "dialog": {
-                "confirm_repository_change_before_open_similarity": {
-                    "body": "If you proceed with creating the similarity index, GraphDB will open in a new tab and switch to the <b>{{repositoryId}}</b> repository."
-                },
-                "confirm_repository_change_before_open_connectors": {
-                    "body": "If you proceed with creating the ChatGPT retrieval connector, GraphDB will open in a new tab and switch to the <b>{{repositoryId}}</b> repository."
+                "confirm_repository_change": {
+                    "body": "If you proceed with executing of SPARQL query, GraphDB will open in a new tab and switch to the <b>{{repositoryId}}</b> repository."
                 }
             }
         },
@@ -402,6 +412,14 @@
                     },
                     "save": {
                         "label": "Save"
+                    }
+                },
+                "dialog": {
+                    "confirm_repository_change_before_open_similarity": {
+                        "body": "If you proceed with creating the similarity index, GraphDB will open in a new tab and switch to the <b>{{repositoryId}}</b> repository."
+                    },
+                    "confirm_repository_change_before_open_connectors": {
+                        "body": "If you proceed with creating the ChatGPT retrieval connector, GraphDB will open in a new tab and switch to the <b>{{repositoryId}}</b> repository."
                     }
                 }
             },

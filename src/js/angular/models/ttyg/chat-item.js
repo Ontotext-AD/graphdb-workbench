@@ -100,6 +100,13 @@ export class ChatItemModel {
             question: this._question.message
         };
     }
+
+    toExplainResponsePayload() {
+        return {
+            conversationId: this._chatId,
+            answerId: this.answer.id
+        };
+    }
 }
 
 export class ChatItemsListModel {
