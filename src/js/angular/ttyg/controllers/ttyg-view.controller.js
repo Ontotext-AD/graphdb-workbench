@@ -7,13 +7,13 @@ import 'angular/ttyg/controllers/agent-settings-modal.controller';
 import 'angular/core/services/ttyg.service';
 import 'angular/ttyg/services/ttyg-context.service';
 import 'angular/ttyg/services/ttyg-storage.service';
-import {TTYGEventName} from "../services/ttyg-context.service";
-import {AGENT_OPERATION, AGENTS_FILTER_ALL_KEY} from "../services/constants";
-import {AgentListFilterModel} from "../../models/ttyg/agents";
-import {ChatsListModel} from "../../models/ttyg/chats";
-import {agentFormModelMapper, newAgentFormModelProvider} from "../services/agents.mapper";
-import {SelectMenuOptionsModel} from "../../models/form-fields";
-import {repositoryInfoMapper} from "../../rest/mappers/repositories-mapper";
+import {TTYGEventName} from '../services/ttyg-context.service';
+import {AGENT_OPERATION, AGENTS_FILTER_ALL_KEY} from '../services/constants';
+import {AgentListFilterModel, AgentModel} from '../../models/ttyg/agents';
+import {ChatsListModel} from '../../models/ttyg/chats';
+import {agentFormModelMapper} from '../services/agents.mapper';
+import {SelectMenuOptionsModel} from '../../models/form-fields';
+import {repositoryInfoMapper} from '../../rest/mappers/repositories-mapper';
 import {saveAs} from 'lib/FileSaver-patch';
 import {AgentSettingsModal} from "../model/agent-settings-modal";
 import {decodeHTML} from "../../../../app";
@@ -233,32 +233,39 @@ function TTYGViewCtrl(
      * Configures and opens the modal for creating a new agent.
      */
     $scope.onCreateAgent = () => {
-        const activeRepositoryInfo = repositoryInfoMapper($repositories.getActiveRepositoryObject());
-        const agentFormModel = newAgentFormModelProvider({repositoryId: activeRepositoryInfo.id});
-        const options = {
-            templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
-            controller: 'AgentSettingsModalController',
-            windowClass: 'agent-settings-modal',
-            resolve: {
-                dialogModel: function () {
-                    return new AgentSettingsModal(
-                        activeRepositoryInfo,
+        TTYGContextService.getDefaultAgent()
+            .then((agentDefaultValues) => {
+                const activeRepositoryInfo = repositoryInfoMapper($repositories.getActiveRepositoryObject());
+                agentDefaultValues.repositoryId = activeRepositoryInfo.id;
+                const agentFormModel = agentFormModelMapper(new AgentModel({}), agentDefaultValues, true);
+                const options = {
+                    templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
+                    controller: 'AgentSettingsModalController',
+                    windowClass: 'agent-settings-modal',
+                    resolve: {
+                        dialogModel: function () {
+                            return new AgentSettingsModal(
+                                activeRepositoryInfo,
                         $scope.activeRepositoryList,
                         agentFormModel,
                         AGENT_OPERATION.CREATE
-                    );
-                }
-            },
-            size: 'lg'
-        };
-        $uibModal.open(options).result.then(
-            // confirmed handler
-            (data) => {
-                createAgent(data);
-            },
-            // rejected handler
-            (data) => {
-                console.log(`create agent rejected`, data);
+                            );
+                        }
+                    },
+                    size: 'lg'
+                };
+                return options;
+            })
+            .then((options) => {
+                $uibModal.open(options).result.then(
+                    // confirmed handler
+                    (data) => {
+                        createAgent(data);
+                    },
+                    // rejected handler
+                    (data) => {
+                        console.log(`create agent rejected`, data);
+                    });
             });
     };
 
@@ -272,38 +279,44 @@ function TTYGViewCtrl(
         if (!agentToEdit) {
             agentToEdit = TTYGContextService.getSelectedAgent();
         }
-        const agentFormModel = agentFormModelMapper(agentToEdit);
-        const activeRepositoryInfo = repositoryInfoMapper($repositories.getActiveRepositoryObject());
-        const options = {
-            templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
-            controller: 'AgentSettingsModalController',
-            windowClass: 'agent-settings-modal',
-            resolve: {
-                dialogModel: function () {
-                    return new AgentSettingsModal(
-                        activeRepositoryInfo,
-                        $scope.activeRepositoryList,
-                        agentFormModel,
-                        AGENT_OPERATION.EDIT
-                    );
-                }
-            },
-            size: 'lg'
-        };
-        $uibModal.open(options).result.then(
-            // confirmed handler
-            (data) => {
-                TTYGService.editAgent(data)
-                    .then((updatedAgent) => {
-                        toastr.success($translate.instant("ttyg.agent.messages.agent_save_successfully", {agentName: updatedAgent.name}));
-                        const hasSelectedAgent = TTYGContextService.getSelectedAgent();
-                        if (hasSelectedAgent && data.id === hasSelectedAgent.id) {
-                            TTYGContextService.selectAgent(updatedAgent);
+        TTYGContextService.getDefaultAgent()
+            .then((agentDefaultValues) => {
+                const agentFormModel = agentFormModelMapper(agentToEdit, agentDefaultValues);
+                const activeRepositoryInfo = repositoryInfoMapper($repositories.getActiveRepositoryObject());
+                const options = {
+                    templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
+                    controller: 'AgentSettingsModalController',
+                    windowClass: 'agent-settings-modal',
+                    resolve: {
+                        dialogModel: function () {
+                            return new AgentSettingsModal(
+                                activeRepositoryInfo,
+                                $scope.activeRepositoryList,
+                                agentFormModel,
+                                AGENT_OPERATION.EDIT
+                            );
                         }
-                        loadAgents(false);
-                    })
-                    .catch(() => {
-                        toastr.error($translate.instant("ttyg.agent.messages.agent_save_failure", {agentName: data.name}));
+                    },
+                    size: 'lg'
+                };
+                return options;
+            })
+            .then((options) => {
+                $uibModal.open(options).result.then(
+                    // confirmed handler
+                    (data) => {
+                        TTYGService.editAgent(data)
+                            .then((updatedAgent) => {
+                                toastr.success($translate.instant('ttyg.agent.messages.agent_save_successfully', {agentName: updatedAgent.name}));
+                                const hasSelectedAgent = TTYGContextService.getSelectedAgent();
+                                if (hasSelectedAgent && data.id === hasSelectedAgent.id) {
+                                    TTYGContextService.selectAgent(updatedAgent);
+                                }
+                                loadAgents(false);
+                            })
+                            .catch(() => {
+                                toastr.error($translate.instant('ttyg.agent.messages.agent_save_failure', {agentName: data.name}));
+                            });
                     });
             });
     };
@@ -313,7 +326,7 @@ function TTYGViewCtrl(
      * @param {AgentModel} agentToClone
      */
     $scope.onCloneAgent = (agentToClone) => {
-        const agentFormModel = agentFormModelMapper(agentToClone);
+        const agentFormModel = agentFormModelMapper(agentToClone, agentToClone);
         agentFormModel.name = `clone-${agentFormModel.name}`;
         const activeRepositoryInfo = repositoryInfoMapper($repositories.getActiveRepositoryObject());
         const options = {

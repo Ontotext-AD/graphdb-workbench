@@ -1,56 +1,95 @@
+import {NumericRangeModel, TextFieldModel} from '../form-fields';
+import {AdditionalExtractionMethod, ExtractionMethod} from './agents';
+
 export class AgentFormModel {
     constructor(data) {
         /**
          * @type {string}
          * @private
          */
-        this._id = data.id;
+        this._id = data && data.id;
 
         /**
          * @type {string}
          * @private
          */
-        this._name = data.name;
+        this._name = data && data.name;
         /**
          * @type {string}
          * @private
          */
-        this._repositoryId = data.repositoryId;
+        this._repositoryId = data && data.repositoryId;
         /**
          * @type {string}
          * @private
          */
-        this._model = data.model;
+        this._model = data && data.model || 'gpt-4o';
         /**
          * @type {NumericRangeModel}
          * @private
          */
-        this._temperature = data.temperature;
+        this._temperature = data && data.temperature || new NumericRangeModel({value: 0.7, minValue: 0, maxValue: 2, step: 0.1});
         /**
          * @type {NumericRangeModel}
          * @private
          */
-        this._topP = data.topP;
+        this._topP = data && data.topP || new NumericRangeModel({value: 1, minValue: 0, maxValue: 1, step: 0.1});
         /**
          * @type {number}
          * @private
          */
-        this._seed = data.seed;
+        this._seed = data && data.seed;
         /**
          * @type {AgentInstructionsFormModel}
          * @private
          */
-        this._instructions = data.instructions;
+        this._instructions = data && data.instructions;
         /**
          * @type {ExtractionMethodsFormModel}
          * @private
          */
-        this._assistantExtractionMethods = data.assistantExtractionMethods;
+        this._assistantExtractionMethods = data && data.assistantExtractionMethods || this.getDefaultExtractionMethods();
         /**
          * @type {AdditionalExtractionMethodsFormModel}
          * @private
          */
-        this._additionalExtractionMethods = data.additionalExtractionMethods;
+        this._additionalExtractionMethods = data && data.additionalExtractionMethods || this.getDefaultAdditionalExtractionMethod();
+    }
+
+    getDefaultExtractionMethods() {
+        const extractionMethods = [];
+        extractionMethods.push(new ExtractionMethodFormModel({
+                                                                 method: ExtractionMethod.SPARQL,
+                                                                 ontologyGraph: 'http://example.com/swgraph',
+                                                                 sparqlQuery: new TextFieldModel({value: 'select ?s ?p ?o where {?s ?p ?o .}', minLength: 1, maxLength: 2380}),
+                                                                 selected: false
+                                                             }));
+        extractionMethods.push(new ExtractionMethodFormModel({
+                                                                 method: ExtractionMethod.FTS_SEARCH,
+                                                                 maxNumberOfTriplesPerCall: null,
+                                                                 selected: false
+                                                             }));
+        extractionMethods.push(new ExtractionMethodFormModel({
+                                                                 method: ExtractionMethod.SIMILARITY,
+                                                                 similarityIndex: null,
+                                                                 similarityIndexThreshold: new NumericRangeModel({value: 0.6, minValue: 0, maxValue: 1, step: 0.1}),
+                                                                 maxNumberOfTriplesPerCall: null,
+                                                                 selected: false
+                                                             }));
+        extractionMethods.push(new ExtractionMethodFormModel({
+                                                                 method: ExtractionMethod.RETRIEVAL,
+                                                                 retrievalConnectorInstance: null,
+                                                                 maxNumberOfTriplesPerCall: null,
+                                                                 queryTemplate: new TextFieldModel({value: '{"query": "string"}', minLength: 1, maxLength: 2380}),
+                                                                 selected: false
+                                                             }));
+        return new ExtractionMethodsFormModel(extractionMethods);
+    }
+
+    getDefaultAdditionalExtractionMethod() {
+        const additionalExtractionMethods = [];
+        additionalExtractionMethods.push(new AdditionalExtractionMethodFormModel({method: AdditionalExtractionMethod.IRI_DISCOVERY_SEARCH}));
+        return new AdditionalExtractionMethodsFormModel(additionalExtractionMethods);
     }
 
     /**

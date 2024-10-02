@@ -60,6 +60,7 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.toggleSparqlExtractionMethodPanel();
         TtygAgentSettingsModalSteps.enableSparqlExtractionMethod();
         TtygAgentSettingsModalSteps.disableSparqlExtractionMethod();
+        TtygAgentSettingsModalSteps.getSparqlExtractionMethodPanel().should('not.be.visible');
         TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.disabled');
         TtygAgentSettingsModalSteps.getExtractionMethodError().should('be.visible').and('contain', 'At least one query method must be selected');
         TtygAgentSettingsModalSteps.enableSparqlExtractionMethod();
@@ -71,7 +72,7 @@ describe('TTYG create new agent', () => {
         // select the ontology graph SPARQL extraction method option
         TtygAgentSettingsModalSteps.selectSparqlMethodOntologyGraph();
         // the ontology graph default value should be visible
-        TtygAgentSettingsModalSteps.getSparqlMethodOntologyGraphField().should('have.value', 'http://example.com/swgraph');
+        TtygAgentSettingsModalSteps.getSparqlMethodOntologyGraphField().should('have.value', 'http://example.com');
         // if the value is removed, the save button should be disabled because these fields are required if the option is selected
         TtygAgentSettingsModalSteps.clearSparqlMethodOntologyGraphField();
         TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.disabled');
@@ -79,7 +80,7 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.enabled');
         // select the sparql query SPARQL extraction method option
         TtygAgentSettingsModalSteps.selectSparqlMethodSparqlQuery();
-        TtygAgentSettingsModalSteps.getSparqlMethodSparqlQueryField().should('have.value', 'select ?s ?p ?o where {?s ?p ?o .}');
+        TtygAgentSettingsModalSteps.getSparqlMethodSparqlQueryField().should('have.value', 'CONSTRUCT {?s ?p ?o} WHERE {GRAPH <http://example.org/ontology> {?s ?p ?o .}}');
         // if the value is removed, the save button should be disabled because these fields are required if the option is selected
         TtygAgentSettingsModalSteps.clearSparqlMethodSparqlQueryField();
         TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.disabled');
@@ -106,7 +107,7 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.getTopPField().should('have.value', '0.2');
 
         // Seed
-        TtygAgentSettingsModalSteps.getSeedField().should('have.value', '1');
+        TtygAgentSettingsModalSteps.getSeedField().should('have.value', '0');
         // The seed field is optional, so the save button should be enabled
         TtygAgentSettingsModalSteps.clearSeed();
         TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.enabled');
@@ -115,10 +116,10 @@ describe('TTYG create new agent', () => {
         // Validate the advanced settings
 
         // System instructions
-        TtygAgentSettingsModalSteps.getSystemInstructionsField().should('have.value', '');
+        TtygAgentSettingsModalSteps.getSystemInstructionsField().should('have.value', 'You are a helpful, knowledgeable, and friendly assistant. Your goal is to provide clear and accurate information while being polite, respectful, and professional.');
 
         // User instructions
-        TtygAgentSettingsModalSteps.getUserInstructionsField().should('have.value', '');
+        TtygAgentSettingsModalSteps.getUserInstructionsField().should('have.value', 'If you need to write a SPARQL query, use only the classes and properties provided in the schema and don\'t invent or guess any. Always try to return human-readable names or labels and not only the IRIs. If SPARQL fails to provide the necessary information you can try another tool too.');
 
         // Save the agent
         // stub the agent create request
@@ -220,16 +221,15 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.toggleSimilaritySearchMethodPanel();
         // And I enable the similarity search extraction method
         TtygAgentSettingsModalSteps.enableSimilaritySearchMethodPanel();
-        // And I select a similarity index
-        TtygAgentSettingsModalSteps.getSimilarityIndexField().should('have.value', '');
-        TtygAgentSettingsModalSteps.selectSimilarityIndex('similarity-index');
+        // Then I expect similarity index to be selected
+        TtygAgentSettingsModalSteps.getSimilarityIndexField().should('have.value', '0');
         // Then agent save button should be enabled
         TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.enabled');
         // When I set the similarity index threshold
         TtygAgentSettingsModalSteps.getSimilarityIndexThresholdField().should('have.value', '0.6');
         TtygAgentSettingsModalSteps.setSimilarityIndexThreshold('0.8');
         // And I set the max triples per call
-        TtygAgentSettingsModalSteps.getSimilarityIndexMaxTriplesField().should('have.value', '');
+        TtygAgentSettingsModalSteps.getSimilarityIndexMaxTriplesField().should('have.value', '0');
         TtygAgentSettingsModalSteps.setSimilarityIndexMaxTriples('100');
         // When I save the agent
         TTYGStubs.stubAgentCreate();
@@ -280,9 +280,8 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.selectRepository(repositoryId);
         // When I select and open the GPT retrieval connector method panel
         TtygAgentSettingsModalSteps.enableRetrievalMethodPanel();
-        // And I select a retrieval connector
-        TtygAgentSettingsModalSteps.getRetrievalConnectorField().should('have.value', '');
-        TtygAgentSettingsModalSteps.selectRetrievalConnector('gpt-connector');
+        // Then I expect retrieval connector to be selected
+        TtygAgentSettingsModalSteps.getRetrievalConnectorField().should('have.value', '0');
         // Then the save button should be enabled
         TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.enabled');
         // When I remove the query template
@@ -295,7 +294,7 @@ describe('TTYG create new agent', () => {
         // Then the save button should be enabled
         TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.enabled');
         // When I set the max triples per call
-        TtygAgentSettingsModalSteps.getRetrievalMaxTriplesField().should('have.value', '');
+        TtygAgentSettingsModalSteps.getRetrievalMaxTriplesField().should('have.value', '0');
         TtygAgentSettingsModalSteps.setRetrievalMaxTriples('100');
         // When I save the agent
         TTYGStubs.stubAgentCreate();

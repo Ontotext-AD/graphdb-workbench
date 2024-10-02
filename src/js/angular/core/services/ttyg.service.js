@@ -156,6 +156,13 @@ function TTYGService(TTYGRestService) {
             });
     };
 
+    const getDefaultAgent = () => {
+        return TTYGRestService.getAgentDefaultValues()
+            .then((response) => {
+                return agentModelMapper(response.data);
+            });
+    };
+
     return {
         getConversation,
         renameConversation,
@@ -169,6 +176,7 @@ function TTYGService(TTYGRestService) {
         createAgent,
         editAgent,
         deleteAgent,
-        explainResponse
+        explainResponse,
+        getDefaultAgent
     };
 }
