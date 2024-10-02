@@ -3,12 +3,6 @@
         "buttons": {
             "delete_cluster": "Supprimer le cluster",
             "delete_cluster_tooltip": "Supprimer le cluster existant",
-            "add_nodes_btn": "Ajout de nœuds",
-            "add_nodes_btn_tooltip": "Ajouter des nœuds à un cluster existant",
-            "remove_nodes_btn": "Supprimer les nœuds",
-            "remove_nodes_btn_tooltip": "Supprimer des nœuds du cluster existant",
-            "replace_nodes_btn": "Remplacer les nœuds",
-            "replace_nodes_btn_tooltip": "Remplacer les nœuds dans le cluster",
             "edit_cluster": "Modifier la configuration",
             "edit_cluster_tooltip": "Modifier la configuration du cluster",
             "show_cluster_settings_tooltip": "Afficher la configuration du cluster",
@@ -81,17 +75,10 @@
             "create_page_title": "Créer un cluster",
             "edit_page_title": "Modifier le cluster",
             "creating_cluster_loader": "Création d'un cluster...",
-            "add_nodes_loader": "Ajout de nœuds au cluster...",
-            "replace_nodes_loader": "Remplacement des nœuds dans le cluster...",
-            "remove_nodes_loader": "Suppression des nœuds du cluster...",
             "updating_cluster_loader": "Mise à jour du cluster...",
-            "cluster_nodes_list": "Liste des nœuds du cluster",
-            "remote_locations": "Nœuds à distance",
-            "remove_node_btn_tooltip": "Retirer le nœud du cluster",
             "current_node": "Nœud actuel",
             "advanced_options": "Options avancées",
             "advanced_options_tooltip": "Options avancées pour la configuration des clusters",
-            "select_from_locations_hint": "Sélectionner des nœuds à distance",
             "toggle_legend_btn": "Légende",
             "toggle_legend_btn_tooltip": "Afficher/masquer la légende",
             "errors": {
@@ -109,7 +96,6 @@
                     "no_cluster_configured": "Les nœuds ne doivent pas avoir de configuration de cluster"
                 }
             },
-            "create_btn": "Créer",
             "save_btn": "Sauvez",
             "notifications": {
                 "create_success": "Cluster créé avec succès",
@@ -117,12 +103,6 @@
                 "update_success": "Cluster mis à jour avec succès",
                 "update_failed": "La mise à jour du cluster a échoué",
                 "form_invalid": "Les données du formulaire ne sont pas valides",
-                "add_nodes_success": "Nœuds ajoutés avec succès",
-                "add_nodes_fail": "L'ajout de nœuds a échoué",
-                "replace_nodes_success": "Nœuds remplacés avec succès",
-                "replace_nodes_fail": "Le remplacement des nœuds a échoué",
-                "remove_nodes_success": "Nœuds supprimés avec succès",
-                "remove_nodes_fail": "La suppression des nœuds a échoué"
             }
         },
         "delete_cluster_dialog": {
@@ -137,23 +117,10 @@
                 "fail_delete": "Impossible de supprimer le cluster"
             }
         },
-        "replace_nodes_dialog": {
-            "title": "Remplacer les nœuds dans le cluster",
-            "nodes_to_replace_label": "Nœuds à ajouter au cluster",
-            "cluster_nodes_list": "Sélectionnez les nœuds à supprimer du cluster existant"
-        },
-        "add_nodes_dialog": {
-            "title": "Ajouter des nœuds au cluster",
-            "nodes_to_add_label": "Nœuds à ajouter au cluster"
-        },
-        "remove_nodes_dialog": {
-            "title": "Supprimer des nœuds du cluster",
-            "content": "Sélectionner les nœuds à retirer du cluster existant"
-        },
         "update_cluster_group_dialog": {
             "title": "Modifier le cluster",
             "title_create": "Créer un cluster",
-            "current_node": "Nœud actuel ",
+            "current_node": "Nœud actuel",
             "new_node": "Le nœud sera ajouté",
             "deleted_node": "Le nœud sera supprimé",
             "leader": "Leader",
@@ -173,6 +140,7 @@
             "actions": {
                 "replace_node": "Remplacer le nœud",
                 "delete_node": "Supprimer le nœud",
+                "cannot_delete_node": "Vous ne pouvez pas supprimer plus de la moitié des nœuds sains en même temps",
                 "add_node": "Ajouter un nœud",
                 "add_node_tooltip": "Ajouter un nœud au cluster actuel",
                 "cancel": "Annuler",

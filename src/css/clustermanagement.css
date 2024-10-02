@@ -305,3 +305,43 @@ div.nodetooltip {
 .alert-save.alert-warning:before {
     content: "\e920";
 }
+
+.autocomplete-container {
+    position: relative;
+}
+
+.autocomplete-dropdown {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #ccc;
+    background-color: white;
+    max-height: 150px;
+    overflow-y: auto;
+    position: absolute;
+    width: 100%;
+    z-index: 1000;
+}
+
+.autocomplete-dropdown li {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.autocomplete-dropdown li:hover {
+    background-color: #f0f0f0;
+}
+
+.error-message {
+    font-size: x-small;
+    color: var(--color-warning-dark);
+}
+
+.alert-save {
+    margin-left: 12px;
+    margin-right: 12px;
+}
+
+.alert-save.alert-warning:before {
+    content: "\e920";
+}
