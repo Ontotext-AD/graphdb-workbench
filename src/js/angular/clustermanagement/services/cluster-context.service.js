@@ -10,6 +10,7 @@ ClusterContextService.$inject = ['EventEmitterService'];
 function ClusterContextService(EventEmitterService) {
     let _clusterView = undefined;
     let _clusterValid = false;
+    let _pendingReplace = undefined;
 
     /**
      * Get the current cluster view.
@@ -93,6 +94,100 @@ function ClusterContextService(EventEmitterService) {
     };
 
     /**
+     * Replaces node or location with a new location the cluster.
+     * @param {Node|Location} oldItem - The node to be replaced.
+     * @param {Location} newLocation - The new location.
+     * @return {void}
+     */
+    const replace = (oldItem, newLocation) => {
+        deleteFromCluster(oldItem);
+        addLocation(newLocation);
+    };
+
+    /**
+     * Set the pending replacement operation.
+     * @param {Object} pendingReplace - The pending replacement operation data.
+     * @return {void}
+     */
+    const setPendingReplace = (pendingReplace) => {
+        _pendingReplace = cloneDeep(pendingReplace);
+    };
+
+    /**
+     * Get the pending replacement operation.
+     * @return {Object|undefined} The pending replacement operation data or undefined if not set.
+     */
+    const getPendingReplace = () => {
+        return _pendingReplace;
+    };
+
+    /**
+     * Get the list of items marked for deletion from the cluster.
+     * @return {Node[]|Location[]} The list of items marked for deletion.
+     */
+    const getDeleteFromCluster = () => {
+        return _clusterView.getDeleteFromCluster();
+    };
+
+    /**
+     * Check if the current node count is valid.
+     * @return {boolean} True if the node count is valid, false otherwise.
+     */
+    const hasValidNodesCount = () => {
+        return _clusterView.hasValidNodesCount();
+    };
+
+    /**
+     * Check if a node can be deleted while maintaining a valid node count.
+     * @return {boolean} True if a node can be deleted, false otherwise.
+     */
+    const canDeleteNode = () => {
+        return _clusterView.canDeleteNode();
+    };
+
+    /**
+     * Get the available locations that can be added to the cluster.
+     * @return {Location[]} The list of available locations.
+     */
+    const getAvailable = () => {
+        return _clusterView.getAvailable();
+    };
+
+    /**
+     * Get the available node endpoints that are not yet part of the cluster.
+     * @return {string[]} The list of available node endpoints.
+     */
+    const getAvailableNodeEndpoints = () => {
+        return _clusterView.getAvailableNodeEndpoints();
+    };
+
+    /**
+     * Get the list of attached nodes in the cluster.
+     * @return {Location[]} The list of attached nodes.
+     */
+    const getAttached = () => {
+        return _clusterView.getAttached();
+    };
+
+    /**
+     * Find an item in a list by its endpoint.
+     * @param {Node[]|Location[]} list - The list of nodes or locations to search.
+     * @param {string} endpoint - The endpoint to search for.
+     * @return {Node|Location|undefined} The found item or undefined if not found.
+     */
+    const findByEndpoint = (list, endpoint) => {
+        return _clusterView.findByEndpoint(list, endpoint);
+    };
+
+    /**
+     * Get the view model of the current cluster.
+     * @return {ClusterItemViewModel[]} The view model of the cluster.
+     */
+    const getViewModel = () => {
+        return _clusterView.getViewModel();
+    };
+
+    /**
      * Subscribe to the cluster view update event.
      * @param {function} callback - The callback to be invoked when the cluster view changes.
      * @return {function} Unsubscribe function to stop listening to the event.
@@ -131,7 +226,7 @@ function ClusterContextService(EventEmitterService) {
      * @return {void}
      */
     const emit = (clusterEventName, payload) => {
-        EventEmitterService.emitSync(clusterEventName, cloneDeep(payload));
+        EventEmitterService.emitSync(clusterEventName, payload);
     };
 
     /**
@@ -156,7 +251,18 @@ function ClusterContextService(EventEmitterService) {
         onClusterValidityChanged,
         emitUpdateClusterView,
         deleteFromCluster,
-        restoreNode
+        restoreNode,
+        replace,
+        setPendingReplace,
+        getPendingReplace,
+        getDeleteFromCluster,
+        getAvailable,
+        getAvailableNodeEndpoints,
+        getAttached,
+        hasValidNodesCount,
+        canDeleteNode,
+        findByEndpoint,
+        getViewModel
     };
 }
 
