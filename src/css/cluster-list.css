@@ -38,7 +38,7 @@
     min-height: 36px;
 }
 
-.table td, .table th {
+.cluster-group-table td, .cluster-group-table th {
     padding: .4rem;
     border-bottom: 1px solid #eceeef;
 }
@@ -54,17 +54,18 @@
     width: 50%;
     border-left: 1px solid #eceeef;
 
-    &.adding {
-        color: var(--color-success-dark);
-    }
-    &.deleting {
-        text-decoration: line-through;
-    }
-
     .autocomplete-container>.textarea-edit {
         font-size: 1rem;
         min-height: 32px;
     }
+}
+
+.location-cell.adding {
+    color: var(--color-success-dark);
+}
+
+.location-cell.deleting {
+    text-decoration: line-through;
 }
 
 .info-cell {
@@ -91,4 +92,8 @@
     .btn-link, .btn-link a {
         padding: 0.4em .4em;
     }
+}
+
+.delete-node-tooltip {
+    max-width: 250px;
 }
