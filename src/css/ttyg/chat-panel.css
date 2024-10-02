@@ -21,11 +21,11 @@
 
 .chat-panel .chat-details {
     overflow-y: hidden;
+    scrollbar-gutter: stable;
 }
 
 .chat-panel:hover .chat-details {
     overflow-y: auto;
-    margin-right: -15px;
 }
 
 .chat-panel .chat-detail {

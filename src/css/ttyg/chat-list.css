@@ -3,6 +3,7 @@
     height: 100%;
     clip: rect(0, auto, auto, 0);
     overflow-y: hidden;
+    scrollbar-gutter: stable;
 }
 
 .chat-list-component:hover {

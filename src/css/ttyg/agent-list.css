@@ -10,6 +10,7 @@
     height: 75vh;
     max-height: 75vh;
     overflow-y: hidden;
+    scrollbar-gutter: stable;
 }
 
 .agent-list-component:hover .agent-list {
