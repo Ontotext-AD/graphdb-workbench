@@ -45,6 +45,7 @@ function copyToClipboard($translate, toastr) {
         },
         link: function ($scope, element) {
             $scope.copyToClipboard = function() {
+                console.log('is secure context: ', window.isSecureContext);
                 const textToCopy = element.parent().find('.copyable').text();
                 navigator.clipboard.writeText(textToCopy).then(() => {
                     toastr.success($translate.instant('import.help.messages.copied_to_clipboard'));
