@@ -351,10 +351,10 @@
                     "similarity_index": {
                         "label": "Nom de l'index de similarité",
                         "loading_indexes": "Chargement des indices de similarité...",
-                        "no_similarity_index_message": {
-                            "message_prefix": "Vous devez",
-                            "link_label": "créer un index de similarité",
-                            "message_suffix": "pour utiliser cette méthode"
+                        "no_similarity_index": {
+                            "message_1": "Vous devez",
+                            "message_2": "créer un index de similarité",
+                            "message_3": "pour utiliser cette méthode"
                         }
                     },
                     "similarity_threshold": {
@@ -362,10 +362,10 @@
                     },
                     "retrieval_search": {
                         "label": "Connecteur de récupération ChatGPT",
-                        "no_retrieval_connectors_message": {
-                            "message_prefix": "Vous devez",
-                            "link_label": "créer un connecteur de récupération ChatGPT",
-                            "message_suffix": "pour utiliser cette méthode"
+                        "no_retrieval_connectors": {
+                            "message_1": "Vous devez",
+                            "message_2": "créer un connecteur de récupération ChatGPT",
+                            "message_3": "pour utiliser cette méthode"
                         }
                     },
                     "connector_id": {
