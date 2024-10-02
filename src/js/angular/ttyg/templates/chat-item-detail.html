@@ -28,7 +28,7 @@
                         ng-click="explainResponse()"
                         gdb-tooltip="{{'ttyg.chat_panel.btn.explain_response.tooltip' | translate}}">
                     <i class="fa-regular fa-wand-magic-sparkles"></i>
-                    <i class="fa-regular fa-chevron-up toggle-explain-response-icon" ng-class="{expanded: showExplainResponse}"></i>
+                    <i class="fa-regular fa-chevron-up toggle-explain-response-icon" ng-class="{expanded: explainResponseModel && explainResponseModel.expanded}"></i>
                 </button>
             </div>
             <div class="derived-answer-hint" ng-if="loadingExplainResponse ||showActions && explainResponseModel.expanded">
