@@ -329,5 +329,15 @@ export const TTYGEventName = {
     /**
      * This event will be emitted when copying an answer to the clipboard fails.
      */
-    COPY_ANSWER_TO_CLIPBOARD_FAILURE: 'copyAnswerToClipboardFailure'
+    COPY_ANSWER_TO_CLIPBOARD_FAILURE: 'copyAnswerToClipboardFailure',
+
+    /**
+     * This event will trigger the opening of the similarity view.
+     */
+    GO_TO_CREATE_SIMILARITY_VIEW: "goToCreateSimilarityView",
+
+    /**
+     * This event will trigger the opening of the connectors view.
+     */
+    GO_TO_CONNECTORS_VIEW: "goToConnectorsView"
 };

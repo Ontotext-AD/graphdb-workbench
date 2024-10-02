@@ -280,6 +280,14 @@
             "messages": {
                 "answer_copy_successful": "The answer was successfully copied to the clipboard.",
                 "answer_copy_failed": "Failed to copy the answer to the clipboard."
+            },
+            "dialog": {
+                "confirm_repository_change_before_open_similarity": {
+                    "body": "If you proceed with creating the similarity index, GraphDB will open in a new tab and switch to the <b>{{repositoryId}}</b> repository."
+                },
+                "confirm_repository_change_before_open_connectors": {
+                    "body": "If you proceed with creating the ChatGPT retrieval connector, GraphDB will open in a new tab and switch to the <b>{{repositoryId}}</b> repository."
+                }
             }
         },
         "agent": {
@@ -323,7 +331,7 @@
                     },
                     "fts_search": {
                         "label": "Full-text search",
-                        "fts_disabled_message": "To use this method, you must enable the full-text search (FTS) index on chosen repository and then restart it.<br/>Enable the index: <a href=\"{{repositoryEditPage}}\" target=\"_blank\">here</a>",
+                        "fts_disabled_message": "You must <a href=\"{{repositoryEditPage}}\" target=\"_blank\">enable the full-text search (FTS) index</a> to use this method.",
                         "missing_repository_id": "Repository ID must be selected"
                     },
                     "sparql_search": {
@@ -342,14 +350,22 @@
                     "similarity_index": {
                         "label": "Similarity index name",
                         "loading_indexes": "Loading similarity indexes...",
-                        "no_similarity_index_message": "To use this method, you must have a similarity index created.<br/>Create similarity text index <a href=\"{{similarityIndexPage}}\" target=\"_blank\">here</a>."
+                        "no_similarity_index": {
+                            "message_1": "You must",
+                            "message_2": "create a similarity index",
+                            "message_3": "to use this method"
+                        }
                     },
                     "similarity_threshold": {
                         "label": "Similarity threshold"
                     },
                     "retrieval_search": {
                         "label": "ChatGPT retrieval connector",
-                        "no_retrieval_connectors_message": "No connector instances.<br/>Create ChatGPT retrieval connector <a href=\"{{retrievalConnectorPage}}\" target=\"_blank\">here</a>."
+                        "no_retrieval_connectors": {
+                            "message_1": "You must",
+                            "message_2": "create ChatGPT retrieval connector",
+                            "message_3": "to use this method"
+                        }
                     },
                     "connector_id": {
                         "label": "ChatGPT retrieval connector"

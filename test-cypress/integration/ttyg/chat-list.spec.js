@@ -5,7 +5,6 @@ import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 import {ApplicationSteps} from "../../steps/application-steps";
 import HomeSteps from "../../steps/home-steps";
 
-// TODO: This test is skipped because it fails on CI. For some reason the chat list panel is not visible.
 describe('TTYG chat list', () => {
 
     beforeEach(() => {

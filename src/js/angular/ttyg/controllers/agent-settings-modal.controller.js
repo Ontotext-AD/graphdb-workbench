@@ -4,6 +4,7 @@ import 'angular/core/services/similarity.service';
 import 'angular/core/services/connectors.service';
 import 'angular/rest/repositories.rest.service';
 import {REPOSITORY_PARAMS} from "../../models/repository/repository";
+import {TTYGEventName} from "../services/ttyg-context.service";
 
 angular
     .module('graphdb.framework.ttyg.controllers.agent-settings-modal', [
@@ -13,9 +14,31 @@ angular
     ])
     .controller('AgentSettingsModalController', AgentSettingsModalController);
 
-AgentSettingsModalController.$inject = ['$scope', '$uibModalInstance', 'SimilarityService', 'ConnectorsService', 'RepositoriesRestService', '$sce', 'toastr', 'UriUtils', '$translate', 'dialogModel'];
+AgentSettingsModalController.$inject = [
+    '$scope',
+    '$uibModalInstance',
+    'SimilarityService',
+    'ConnectorsService',
+    'RepositoriesRestService',
+    '$sce',
+    'toastr',
+    'UriUtils',
+    '$translate',
+    'dialogModel',
+    'TTYGContextService'];
 
-function AgentSettingsModalController($scope, $uibModalInstance, SimilarityService, ConnectorsService, RepositoriesRestService, $sce, toastr, UriUtils, $translate, dialogModel) {
+function AgentSettingsModalController(
+    $scope,
+    $uibModalInstance,
+    SimilarityService,
+    ConnectorsService,
+    RepositoriesRestService,
+    $sce,
+    toastr,
+    UriUtils,
+    $translate,
+    dialogModel,
+    TTYGContextService) {
 
     // =========================
     // Private variables
@@ -132,42 +155,24 @@ function AgentSettingsModalController($scope, $uibModalInstance, SimilarityServi
         const message = decodeHTML(
             $translate.instant(
                 'ttyg.agent.create_agent_modal.form.fts_search.fts_disabled_message',
-                {repositoryEditPage: '#/repository/edit/' + $scope.activeRepositoryInfo.id}
+                {repositoryEditPage: '#/repository/edit/' + $scope.agentFormModel.repositoryId}
             )
         );
         return $sce.trustAsHtml(message);
     };
 
     /**
-     * Resolves the hint for the missing similarity index message. This is needed because the hint contains a html link
-     * that should be properly rendered.
-     * @return {*}
+     * Opens the 'Create Similarity' view in a new tab.
      */
-    $scope.getNoSimilarityIndexHelpMessage = () => {
-        // The hint contains a html link which should be properly rendered.
-        const message = decodeHTML(
-            $translate.instant(
-                'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index_message',
-                {similarityIndexPage: '#/similarity'}
-            )
-        );
-        return $sce.trustAsHtml(message);
+    $scope.goToCreateSimilarityView = () => {
+        TTYGContextService.emit(TTYGEventName.GO_TO_CREATE_SIMILARITY_VIEW, {repositoryId: $scope.agentFormModel.repositoryId});
     };
 
     /**
-     * Resolves the hint for the missing retrieval connector message. This is needed because the hint contains a html
-     * link that should be properly rendered.
-     * @return {*}
+     * Opens the 'Connectors' view in a new tab.
      */
-    $scope.getNoRetrievalConnectorHelpMessage = () => {
-        // The hint contains a html link which should be properly rendered.
-        const message = decodeHTML(
-            $translate.instant(
-                'ttyg.agent.create_agent_modal.form.retrieval_search.no_retrieval_connectors_message',
-                {retrievalConnectorPage: '#/connectors'}
-            )
-        );
-        return $sce.trustAsHtml(message);
+    $scope.goToConnectorsView = () => {
+        TTYGContextService.emit(TTYGEventName.GO_TO_CONNECTORS_VIEW, {repositoryId: $scope.agentFormModel.repositoryId});
     };
 
     /**

@@ -134,8 +134,12 @@
 
                         <div ng-if="extractionMethod.method === extractionMethods.SIMILARITY"
                              class="extraction-method-options">
-                            <div ng-if="!similarityIndexes.length" class="no-similarity-index-message"
-                                 ng-bind-html="getNoSimilarityIndexHelpMessage()">
+                            <div ng-if="!similarityIndexes.length" class="no-similarity-index-message">
+                                {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_1' | translate}}
+                                <a href="#" ng-click="goToCreateSimilarityView()">
+                                    {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_2' | translate}}
+                                </a>
+                                {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_3' | translate}}.
                             </div>
                             <div ng-show="similarityIndexes.length">
                                 <div class="form-group similarity-index">
@@ -184,8 +188,12 @@
 
                         <div ng-if="extractionMethod.method === extractionMethods.RETRIEVAL"
                              class="extraction-method-options">
-                            <div ng-if="!retrievalConnectors.length" class="no-retrieval-connector-message"
-                                 ng-bind-html="getNoRetrievalConnectorHelpMessage()">
+                            <div ng-if="!retrievalConnectors.length" class="no-retrieval-connector-message">
+                                {{'ttyg.agent.create_agent_modal.form.retrieval_search.no_retrieval_connectors.message_1' | translate}}
+                                <a href="#" ng-click="goToConnectorsView()">
+                                    {{'ttyg.agent.create_agent_modal.form.retrieval_search.no_retrieval_connectors.message_2' | translate}}
+                                </a>
+                                {{'ttyg.agent.create_agent_modal.form.retrieval_search.no_retrieval_connectors.message_3' | translate}}.
                             </div>
                             <div ng-show="retrievalConnectors.length">
                                 <div class="form-group retrieval-connector">
