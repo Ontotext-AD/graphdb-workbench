@@ -57,7 +57,7 @@
                                 gdb-tooltip="{{'cluster_management.update_cluster_group_dialog.actions.replace_node' | translate}}">
                             <i class="fa-regular fa-arrow-right-arrow-left"></i>
                         </button>
-                        <button ng-click="deleteNode($index)" class="btn btn-link delete-node-btn secondary"
+                        <button ng-click="deleteNode($index, node)" ng-disabled="!cluster.canDeleteNode()" class="btn btn-link delete-node-btn secondary"
                                 gdb-tooltip="{{'cluster_management.update_cluster_group_dialog.actions.delete_node' | translate}}">
                             <i class="fa-regular fa-trash-can"></i>
                         </button>

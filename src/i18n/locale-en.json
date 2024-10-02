@@ -12,7 +12,8 @@
             "edit_cluster": "Edit configuration",
             "edit_cluster_tooltip": "Edit cluster configuration",
             "show_cluster_settings_tooltip": "Show cluster configuration",
-            "update_nodes_group_btn": "Update cluster group"
+            "update_nodes_group_btn": "Update cluster",
+            "update_nodes_group_btn_tooltip": "Update cluster nodes"
         },
         "cluster_graphical_view": {
             "no_cluster_configured": "No cluster is configured",
@@ -162,6 +163,7 @@
                 "replace_node": "Replace node",
                 "delete_node": "Delete node",
                 "add_node": "Add node",
+                "add_node_tooltip": "Add node to current cluster",
                 "cancel_node_adding": "Cancel"
             },
             "messages": {
