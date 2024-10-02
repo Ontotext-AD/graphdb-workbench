@@ -49,13 +49,6 @@ export class ClusterStubs extends Stubs {
         }).as('cluster-config');
     }
 
-    static stubCreateCluster() {
-        cy.intercept('/rest/cluster/config', {
-            fixture: '/cluster/3-nodes-cluster-created.json',
-            statusCode: 201
-        }).as('3-nodes-cluster-created');
-    }
-
     static stubDeleteCluster() {
         cy.intercept('/rest/cluster/config?force=false', {
             fixture: '/cluster/delete-cluster.json',
@@ -141,6 +134,23 @@ export class ClusterStubs extends Stubs {
             body: clusterConfig,
             statusCode: 200
         }).as('cluster-config-list');
+    }
+
+    static stubCreateClusterByList(nodes) {
+        const clusterConfig = {
+            "electionMinTimeout": 8000,
+            "electionRangeTimeout": 6000,
+            "heartbeatInterval": 2000,
+            "messageSizeKB": 64,
+            "verificationTimeout": 1500,
+            "transactionLogMaximumSizeGB": 50.0,
+            "nodes": nodes
+        };
+
+        cy.intercept('/rest/cluster/config', {
+            body: clusterConfig,
+            statusCode: 201
+        }).as('2-nodes-cluster-created');
     }
 
 }

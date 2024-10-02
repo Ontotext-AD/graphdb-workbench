@@ -12,6 +12,14 @@ export class ClusterListSteps {
         return this.getClusterUpdateModal().find('.add-node-btn');
     }
 
+    static getAdvancedOptions() {
+        return this.getClusterUpdateModal().find('.advanced-options-btn');
+    }
+
+    static getSaveAlert() {
+        return cy.get('.alert-warning');
+    }
+
     static getNodes() {
         return cy.get('.cluster-group tbody tr.node');
     }
@@ -22,6 +30,18 @@ export class ClusterListSteps {
 
     static getNodeByEndpoint(endpoint) {
         return ClusterListSteps.getNodes().filter(`[data-endpoint="${endpoint}"]`);
+    }
+
+    static getNodeLocationByEndpoint(endpoint) {
+        return ClusterListSteps.getNodeByEndpoint(endpoint).find('.location-cell');
+    }
+
+    static getNodeIndexByEndpoint(endpoint) {
+        return ClusterListSteps.getNodeByEndpoint(endpoint).find('.index-cell');
+    }
+
+    static getNodeStatusByEndpoint(endpoint) {
+        return ClusterListSteps.getNodeByEndpoint(endpoint).find('.status-cell').invoke('text').then((text) => text.trim());
     }
 
     static clickDeleteNodeButtonByEndpoint(endpoint) {

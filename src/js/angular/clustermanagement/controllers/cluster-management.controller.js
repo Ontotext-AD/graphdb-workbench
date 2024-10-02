@@ -1,8 +1,6 @@
 import 'angular/rest/cluster.rest.service';
 import 'angular/clustermanagement/services/remote-locations.service';
 import 'angular/clustermanagement/services/cluster-view-context.service';
-import 'angular/clustermanagement/controllers/remove-nodes.controller';
-import 'angular/clustermanagement/controllers/create-cluster.controller';
 import 'angular/clustermanagement/controllers/edit-cluster.controller';
 import 'angular/clustermanagement/controllers/delete-cluster.controller';
 import 'angular/clustermanagement/controllers/add-location.controller';
@@ -20,8 +18,6 @@ const modules = [
     'graphdb.framework.rest.cluster.service',
     'graphdb.framework.clustermanagement.services.cluster-view-context-service',
     'graphdb.framework.clustermanagement.services.remote-locations',
-    'graphdb.framework.clustermanagement.controllers.remove-nodes',
-    'graphdb.framework.clustermanagement.controllers.create-cluster',
     'graphdb.framework.clustermanagement.controllers.edit-cluster',
     'graphdb.framework.clustermanagement.controllers.delete-cluster',
     'graphdb.framework.clustermanagement.controllers.add-location',
@@ -382,7 +378,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
         $scope.$apply();
     };
 
-    const updateCluster = (force) => {
+    const updateCluster = (force, deleteUnusedLocations = false) => {
         if (updateRequest) {
             return;
         }
@@ -397,11 +393,26 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
                 if (!$scope.currentNode || $scope.leaderChanged) {
                     return $scope.getCurrentNodeStatus();
                 }
+            }).then(() => {
+                if (deleteUnusedLocations) {
+                    clearUnusedLocations();
+                }
             })
             .finally(() => {
                 updateRequest = null;
                 $scope.$broadcast(MODEL_UPDATED);
             });
+    };
+
+    const clearUnusedLocations = () => {
+        $scope.clusterModel.locations.forEach((location) => {
+            const index = $scope.clusterModel.nodes.findIndex((node) => {
+                return node.endpoint === location.endpoint;
+            });
+            if (index === -1) {
+                $repositories.deleteLocation(location.endpoint);
+            }
+        });
     };
 
     const deleteCluster = (forceDelete) => {
@@ -428,7 +439,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             })
             .finally(() => {
                 $scope.setLoader(false);
-                updateCluster(true);
+                updateCluster(true, true);
                 $rootScope.$broadcast('reloadLocations');
             });
     };
