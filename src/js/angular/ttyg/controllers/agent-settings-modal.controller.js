@@ -5,6 +5,7 @@ import 'angular/core/services/connectors.service';
 import 'angular/rest/repositories.rest.service';
 import {REPOSITORY_PARAMS} from "../../models/repository/repository";
 import {TTYGEventName} from "../services/ttyg-context.service";
+import {AGENT_OPERATION} from "../services/constants";
 
 angular
     .module('graphdb.framework.ttyg.controllers.agent-settings-modal', [
@@ -50,13 +51,18 @@ function AgentSettingsModalController(
     // Public variables
     // =========================
 
+    $scope.AGENT_OPERATION = AGENT_OPERATION;
+
+    /**
+     * The operation type for the modal. This can be 'create', 'edit' or 'clone'.
+     */
+    $scope.operation = dialogModel.operation;
+
     /**
      * The model used in the form.
      * @type {AgentFormModel|*}
      */
     $scope.agentFormModel = dialogModel.agentFormModel;
-
-    $scope.isEdit = !!$scope.agentFormModel.id;
 
     /**
      * The active repository info model.

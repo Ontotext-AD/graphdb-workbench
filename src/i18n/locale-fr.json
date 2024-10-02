@@ -298,7 +298,8 @@
             "create_agent_modal": {
                 "title": {
                     "create": "Créer un agent",
-                    "edit": "Modifier un agent"
+                    "edit": "Modifier un agent",
+                    "clone": "Cloner un agent"
                 },
                 "advanced_settings": {
                     "show": "Afficher les paramètres avancés",

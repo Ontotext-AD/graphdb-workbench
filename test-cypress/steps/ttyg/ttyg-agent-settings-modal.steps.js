@@ -65,6 +65,14 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
         return this.getDialog().find(`#${method}_method_heading`);
     }
 
+    static getSelectedExtractionMethods() {
+        return this.getDialog().find('.extraction-method-heading.selected');
+    }
+
+    static getSelectedExtractionMethod(index) {
+        return this.getSelectedExtractionMethods().eq(index);
+    }
+
     static getExtractionMethodPanel(method) {
         return this.getDialog().find(`#${method}_method_content`).find('.extraction-method-options');
     }

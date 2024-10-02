@@ -5,7 +5,7 @@ import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {TtygAgentSettingsModalSteps} from "../../steps/ttyg/ttyg-agent-settings-modal.steps";
 import {ToasterSteps} from "../../steps/toaster-steps";
 
-describe('TTYG create new agent', () => {
+describe('TTYG edit an agent', () => {
     const repositoryId = 'starwars';
 
     beforeEach(() => {

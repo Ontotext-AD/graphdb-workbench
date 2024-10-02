@@ -63,7 +63,7 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
              * @param {AgentModel} agent
              */
             $scope.onCloneAgent = (agent) => {
-                console.log('Clone agent', agent);
+                TTYGContextService.emit(TTYGEventName.CLONE_AGENT, agent);
             };
 
             /**

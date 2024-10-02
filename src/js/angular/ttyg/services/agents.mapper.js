@@ -135,9 +135,16 @@ const agentInstructionsFormMapper = (data) => {
  */
 const extractionMethodsFormMapper = (agentFormModel, data = []) => {
     data.forEach((extractionMethod) => {
+        let sparqlOption = '';
+        if (extractionMethod.sparqlQuery) {
+           sparqlOption = 'sparqlQuery';
+        } else if (extractionMethod.ontologyGraph) {
+            sparqlOption = 'ontologyGraph';
+        }
         const existingMethod = new ExtractionMethodFormModel({
             selected: true,
             method: extractionMethod.method,
+            sparqlOption: sparqlOption,
             ontologyGraph: extractionMethod.ontologyGraph,
             sparqlQuery: extractionMethod.sparqlQuery && new TextFieldModel({
                 value: extractionMethod.sparqlQuery,
