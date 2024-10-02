@@ -1,5 +1,12 @@
 .chat-list-component {
     padding: 0 8px;
+    height: 100%;
+    clip: rect(0, auto, auto, 0);
+    overflow-y: hidden;
+}
+
+.chat-list-component:hover {
+    overflow-y: auto;
 }
 
 .chat-list-component .chat-group label {
@@ -23,11 +30,11 @@
 }
 
 .chat-list-component .chat-item.selected {
-    background-color: #ddd;
+    background-color: var(--base-background-selected-color);
 }
 
 .chat-list-component .chat-item:not(.edited):hover {
-    background-color: #ddd;
+    background-color: var(--base-background-hover-color);
     cursor: pointer;
 }
 

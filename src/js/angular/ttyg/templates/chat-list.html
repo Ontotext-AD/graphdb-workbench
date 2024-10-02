@@ -1,47 +1,49 @@
 <link href="css/ttyg/chat-list.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
 <div class="chat-list-component">
-    <div ng-repeat="chatGroup in chatList.chatsByDay" class="chat-group">
-        <label>{{getHumanReadableTimestamp(chatGroup.timestamp)}}</label>
-        <ul>
-            <li ng-repeat="chat in chatGroup.chats track by chat.hash" class="chat-item"
-                ng-class="{'selected': chat.id === selectedChat.id, 'edited': renamedChat && chat.id === renamedChat.id}">
-                <div class="chat-name">
-                    <inline-editable-text
-                        field-name="name"
-                        source="chat"
-                        is-editing="renamedChat && chat.id === renamedChat.id"
-                        on-save="onRenameChat(newText, source)"
-                        on-cancel="onCancelChatRenaming()"
-                        on-dblclick="onSelectChatForRenaming(chat)"
-                        on-click="onSelectChat(source)">
-                    </inline-editable-text>
-                </div>
-                <div ng-if="chat.id && (!renamedChat || chat.id !== renamedChat.id)" class="btn-group">
-                    <button class="btn btn-link secondary btn-sm open-chat-actions-btn"
-                            data-toggle="dropdown" aria-expanded="false"
-                            ng-if="true"
-                            ng-click="openChatActionMenu()"
-                            ng-disabled="false">
-                        <i class="fa-regular fa-ellipsis"></i>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-right chat-actions-menu">
-                        <button class="dropdown-item export-chat-btn" type="button" ng-click="onExportChat(chat)">
-                            <i class="fa-regular fa-arrow-down-to-line"></i>
-                            <span>{{'ttyg.chat.btn.export_chat.label' | translate}}</span>
-                        </button>
-                        <button class="dropdown-item rename-chat-btn" type="button" ng-click="onSelectChatForRenaming(chat)">
-                            <i class="fa-regular fa-pen"></i>
-                            <span>{{'ttyg.chat.btn.rename_chat.label' | translate}}</span>
-                        </button>
-                        <div class="dropdown-divider"></div>
-                        <button class="dropdown-item delete-chat-btn" type="button" ng-click="onDeleteChat(chat)">
-                            <i class="fa-regular fa-trash-can"></i>
-                            <span>{{'ttyg.chat.btn.delete_chat.label' | translate}}</span>
-                        </button>
+    <div class="chat-list">
+        <div ng-repeat="chatGroup in chatList.chatsByDay" class="chat-group">
+            <label>{{getHumanReadableTimestamp(chatGroup.timestamp)}}</label>
+            <ul>
+                <li ng-repeat="chat in chatGroup.chats track by chat.hash" class="chat-item"
+                    ng-class="{'selected': chat.id === selectedChat.id, 'edited': renamedChat && chat.id === renamedChat.id}">
+                    <div class="chat-name">
+                        <inline-editable-text
+                            field-name="name"
+                            source="chat"
+                            is-editing="renamedChat && chat.id === renamedChat.id"
+                            on-save="onRenameChat(newText, source)"
+                            on-cancel="onCancelChatRenaming()"
+                            on-dblclick="onSelectChatForRenaming(chat)"
+                            on-click="onSelectChat(source)">
+                        </inline-editable-text>
                     </div>
-                </div>
-            </li>
-        </ul>
+                    <div ng-if="chat.id && (!renamedChat || chat.id !== renamedChat.id)" class="btn-group">
+                        <button class="btn btn-link secondary btn-sm open-chat-actions-btn"
+                                data-toggle="dropdown" aria-expanded="false"
+                                ng-if="true"
+                                ng-click="openChatActionMenu()"
+                                ng-disabled="false">
+                            <i class="fa-regular fa-ellipsis"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right chat-actions-menu">
+                            <button class="dropdown-item export-chat-btn" type="button" ng-click="onExportChat(chat)">
+                                <i class="fa-regular fa-arrow-down-to-line"></i>
+                                <span>{{'ttyg.chat.btn.export_chat.label' | translate}}</span>
+                            </button>
+                            <button class="dropdown-item rename-chat-btn" type="button" ng-click="onSelectChatForRenaming(chat)">
+                                <i class="fa-regular fa-pen"></i>
+                                <span>{{'ttyg.chat.btn.rename_chat.label' | translate}}</span>
+                            </button>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item delete-chat-btn" type="button" ng-click="onDeleteChat(chat)">
+                                <i class="fa-regular fa-trash-can"></i>
+                                <span>{{'ttyg.chat.btn.delete_chat.label' | translate}}</span>
+                            </button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </div>
 </div>

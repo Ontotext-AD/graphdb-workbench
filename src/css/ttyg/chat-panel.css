@@ -8,6 +8,7 @@
     flex-direction: column;
     justify-content: space-between;
     color: var(--text-color);
+    clip: rect(0, auto, auto, 0);
 }
 
 .chat-panel .btn-link:focus {
@@ -19,9 +20,12 @@
 }
 
 .chat-panel .chat-details {
+    overflow-y: hidden;
+}
+
+.chat-panel:hover .chat-details {
     overflow-y: auto;
-    padding-right: 30px;
-    padding-left: 20px;
+    margin-right: -15px;
 }
 
 .chat-panel .chat-detail {
