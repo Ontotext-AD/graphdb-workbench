@@ -213,7 +213,7 @@ function TTYGContextService(EventEmitterService) {
         if (angular.isFunction(callback)) {
             callback(getExplainResponseCache());
         }
-        return subscribe(TTYGEventName.EXPLAIN_RESPONSE_CACHE_UPDATED, (chats) => callback(chats));
+        return subscribe(TTYGEventName.EXPLAIN_RESPONSE_CACHE_UPDATED, (explainResponses) => callback(explainResponses));
     };
 
     /**
@@ -385,11 +385,18 @@ export const TTYGEventName = {
      */
     GO_TO_CONNECTORS_VIEW: "goToConnectorsView",
 
+    /**
+     * This event will trigger fetching a new explanation of how the answer was generated.
+     */
     EXPLAIN_RESPONSE: "explainResponse",
-    EXPLAIN_RESPONSE_SUCCESSFUL: "explainResponseSuccess",
-    EXPLAIN_RESPONSE_FAILURE: "explainResponseFailure",
 
+    /**
+     * This event will be emitted when the cache with explain responses changed.
+     */
     EXPLAIN_RESPONSE_CACHE_UPDATED: "explainResponseCacheUpdated",
 
+    /**
+     * This event will trigger the opening of the sparql view.
+     */
     GO_TO_SPARQL_EDITOR: "openQueryInSparqlEditor"
 };
