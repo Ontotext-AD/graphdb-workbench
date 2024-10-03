@@ -237,10 +237,6 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
             const addNewLocation = (newLocation) => {
                 return RemoteLocationsService.addLocationHttp(newLocation)
                     .then((location) => {
-                        if (location.error) {
-                            handleErrors(location.error);
-                            return;
-                        }
                         if (location) {
                             return Location.fromJSON(location);
                         }
