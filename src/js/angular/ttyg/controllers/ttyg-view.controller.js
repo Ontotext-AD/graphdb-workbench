@@ -230,10 +230,28 @@ function TTYGViewCtrl(
     };
 
     /**
+     * Gets the default agent from the TTYGContextService or fetches it from the server if not available.
+     *
+     * @return {Promise<AgentModel>} A promise that resolves to the default agent.
+     */
+    const getDefaultAgent = () => {
+        const defaultAgent = TTYGContextService.getDefaultAgent();
+        if (defaultAgent) {
+            return Promise.resolve(defaultAgent);
+        } else {
+            return TTYGService.getDefaultAgent()
+                .then((response) => {
+                    TTYGContextService.setDefaultAgent(response);
+                    return response;
+                });
+        }
+    };
+
+    /**
      * Configures and opens the modal for creating a new agent.
      */
     $scope.onCreateAgent = () => {
-        TTYGContextService.getDefaultAgent()
+        getDefaultAgent()
             .then((agentDefaultValues) => {
                 const activeRepositoryInfo = repositoryInfoMapper($repositories.getActiveRepositoryObject());
                 agentDefaultValues.repositoryId = activeRepositoryInfo.id;
@@ -279,7 +297,7 @@ function TTYGViewCtrl(
         if (!agentToEdit) {
             agentToEdit = TTYGContextService.getSelectedAgent();
         }
-        TTYGContextService.getDefaultAgent()
+        getDefaultAgent()
             .then((agentDefaultValues) => {
                 const agentFormModel = agentFormModelMapper(agentToEdit, agentDefaultValues);
                 const activeRepositoryInfo = repositoryInfoMapper($repositories.getActiveRepositoryObject());

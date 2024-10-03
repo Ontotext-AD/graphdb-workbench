@@ -156,6 +156,10 @@ function TTYGService(TTYGRestService) {
             });
     };
 
+    /**
+     * Get the default agent values from server.
+     * @return {Promise<AgentModel>}
+     */
     const getDefaultAgent = () => {
         return TTYGRestService.getAgentDefaultValues()
             .then((response) => {

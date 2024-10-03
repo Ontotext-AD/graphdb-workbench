@@ -55,14 +55,11 @@ function TTYGContextService(EventEmitterService, TTYGService) {
      * @return {Promise<AgentModel>}
      */
     const getDefaultAgent = () => {
-        if (_defaultAgent) {
-            return Promise.resolve(cloneDeep(_defaultAgent));
-        }
-        return TTYGService.getDefaultAgent()
-            .then((response) => {
-                _defaultAgent = response;
-                return cloneDeep(_defaultAgent);
-            });
+        return _defaultAgent;
+    };
+
+    const setDefaultAgent = (agent) => {
+        _defaultAgent = agent;
     };
 
     /**
@@ -313,7 +310,8 @@ function TTYGContextService(EventEmitterService, TTYGService) {
         getExplainResponse,
         addExplainResponseCache,
         onExplainResponseCacheUpdated,
-        getDefaultAgent
+        getDefaultAgent,
+        setDefaultAgent
     };
 }
 
