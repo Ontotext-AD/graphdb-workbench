@@ -207,8 +207,7 @@ function TTYGContextService(EventEmitterService) {
      * @param {ExplainResponseModel} explainResponse
      */
     const addExplainResponseCache = (explainResponse) => {
-        _explainCache[explainResponse.answerId] = explainResponse;
-        _explainCache = cloneDeep(_explainCache);
+        _explainCache[explainResponse.answerId] = cloneDeep(explainResponse);
         emit(TTYGEventName.EXPLAIN_RESPONSE_CACHE_UPDATED, _getExplainResponseCache());
     };
 
