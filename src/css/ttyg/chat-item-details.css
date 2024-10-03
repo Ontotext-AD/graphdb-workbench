@@ -98,7 +98,6 @@
     display: flex;
     justify-content: space-between;
     background-color: #F3F3F3;
-    border-bottom: var(--border);
     padding: 4px 8px;
 }
 
