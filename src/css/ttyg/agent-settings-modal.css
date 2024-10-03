@@ -53,7 +53,7 @@
 
 /* when the panel is expanded */
 .agent-settings-form .extraction-methods .extraction-method:has(.extraction-method-content.in) {
-    background-color: #f9fafb;
+    background-color: var(--base-background-color);
 }
 
 .agent-settings-form .additional-extraction-methods .additional-extraction-method {
@@ -68,4 +68,5 @@
     position: relative;
     /* move the slider up next to the related input field to match the mockup */
     top: -6px;
+    accent-color: var(--secondary-color);
 }

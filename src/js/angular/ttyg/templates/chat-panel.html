@@ -8,19 +8,23 @@
         {{ 'ttyg.chat_panel.hint' | translate }}
     </div>
 
-        <div class="chat-details" ng-class="{'hidden': !chat}" ng-if="!loadingChat">
-            <chat-item-detail
-                ng-repeat="chatItemDetail in chat.chatHistory.items"
-                chat-item-detail="chatItemDetail"
-                show-actions="!askingChatItem && $last"
-                on-regenerate-question="regenerateQuestion(chatItem)"
-                on-copy-answer-to-clipboard="copyAnswerToClipboard(chatItem)">
-            </chat-item-detail>
-            <chat-item-detail ng-if="askingChatItem" chat-item-detail="askingChatItem" asking="!!askingChatItem"></chat-item-detail>
+    <div class="chat-details" ng-class="{'hidden': !chat}" ng-if="!loadingChat">
+        <chat-item-detail
+            ng-repeat="chatItemDetail in chat.chatHistory.items"
+            chat-item-detail="chatItemDetail"
+            show-actions="!askingChatItem && $last"
+            on-regenerate-question="regenerateQuestion(chatItem)"
+            on-copy-answer-to-clipboard="copyAnswerToClipboard(chatItem)">
+        </chat-item-detail>
+        <chat-item-detail ng-if="askingChatItem" chat-item-detail="askingChatItem"
+                          asking="!!askingChatItem"></chat-item-detail>
     </div>
-    <div class="new-question mb-3 mt-2 d-flex">
-        <input class="form-control question-input" ng-model="chatItem.question.message" type="text" ng-disabled="askingChatItem || loadingChat" ng-keypress="onKeypressOnInput($event)">
-        <button class="btn btn-primary ask-button" ng-disabled="!chatItem.question.message || !selectedAgent || selectedAgent.isDeleted || askingChatItem || loadingChat" ng-click="ask()">
+    <div class="new-question mb-2 mt-2 d-flex">
+        <input class="form-control question-input" ng-model="chatItem.question.message" type="text"
+               ng-disabled="askingChatItem || loadingChat" ng-keypress="onKeypressOnInput($event)">
+        <button class="btn btn-primary ask-button"
+                ng-disabled="!chatItem.question.message || !selectedAgent || selectedAgent.isDeleted || askingChatItem || loadingChat"
+                ng-click="ask()">
             <i class="fa-regular fa-arrow-turn-left-up"></i>
             {{ 'ttyg.chat_panel.btn.ask.label ' | translate }}
         </button>
