@@ -70,7 +70,7 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, Markdow
              * Extract the explanation of how the answer was generated.
              */
             $scope.explainResponse = () => {
-                const explainResponse = TTYGContextService.getExplainResponseCache()[$scope.chatItemDetail.answer.id];
+                const explainResponse = TTYGContextService.getExplainResponseCache().getExplainResponse($scope.chatItemDetail.answer.id);
                 if (explainResponse) {
                     explainResponse.expanded = !explainResponse.expanded;
                     TTYGContextService.updateExplainResponseCache(explainResponse);
@@ -120,13 +120,13 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, Markdow
             // =========================
             const init = () => {
                 if ($scope.chatItemDetail.answer) {
-                    $scope.explainResponseModel = TTYGContextService.getExplainResponseCache()[$scope.chatItemDetail.answer.id];
+                    $scope.explainResponseModel = TTYGContextService.getExplainResponseCache().getExplainResponse($scope.chatItemDetail.answer.id);
                 }
             };
 
-            const onExplainResponseCacheUpdated = (explainResponseModel) => {
+            const onExplainResponseCacheUpdated = (explainResponses) => {
                 if ($scope.chatItemDetail.answer) {
-                    $scope.explainResponseModel = explainResponseModel[$scope.chatItemDetail.answer.id];
+                    $scope.explainResponseModel = explainResponses.getExplainResponse($scope.chatItemDetail.answer.id);
                 }
             };
 

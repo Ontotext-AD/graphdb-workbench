@@ -1,4 +1,5 @@
 import {cloneDeep} from "lodash";
+import {ExplainResponseCacheModel} from "../../models/ttyg/explain-response";
 
 angular
     .module('graphdb.framework.ttyg.services.ttygcontext', [])
@@ -38,11 +39,9 @@ function TTYGContextService(EventEmitterService) {
 
     /**
      * Stores information about loaded explain responses.
-     * The key is the answer ID, and the value is an instance of {@see ExplainResponseModel} that holds the explanation message.
-     *
-     * @type {{[key: string]: ExplainResponseModel}}
+     * @type {ExplainResponseCacheModel}
      */
-    let _explainCache = {};
+    let _explainCache = new ExplainResponseCacheModel();
 
     /**
      * @return {AgentListModel}
@@ -180,7 +179,7 @@ function TTYGContextService(EventEmitterService) {
     };
 
     /**
-     * @return {{[key: string]: ExplainResponseModel}} the cache of explain responses.
+     * @return {ExplainResponseCacheModel} the cache of explain responses.
      */
     const getExplainResponseCache = () => {
         return cloneDeep(_explainCache);
@@ -192,8 +191,9 @@ function TTYGContextService(EventEmitterService) {
      * @param {ExplainResponseModel} explainResponse
      */
     const updateExplainResponseCache = (explainResponse) => {
-        _explainCache[explainResponse.answerId] = explainResponse;
-        _explainCache = cloneDeep(_explainCache);
+        const explainResponseCache = getExplainResponseCache();
+        explainResponseCache.adExplainResponse(explainResponse);
+        _explainCache = explainResponseCache;
         emit(TTYGEventName.EXPLAIN_RESPONSE_CACHE_UPDATED, getExplainResponseCache());
     };
 
