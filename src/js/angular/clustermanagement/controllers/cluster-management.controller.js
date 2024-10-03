@@ -108,6 +108,9 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
                 const nodes = cluster.getUpdateActions();
                 editCluster(nodes);
             }
+        }).catch((error) => {
+            $scope.setLoader(false);
+            console.error(error); // eslint-disable-line no-console
         }).finally(() => {
             getLocationsWithRpcAddresses();
         });
