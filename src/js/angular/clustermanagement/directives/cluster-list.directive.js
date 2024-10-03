@@ -103,6 +103,7 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
                         })
                         .catch((error) => {
                             handleErrors(error.data, error.status);
+                            $repositories.deleteLocation(endpoint);
                             ClusterContextService.emitUpdateClusterView();
                         })
                         .finally(() => {
