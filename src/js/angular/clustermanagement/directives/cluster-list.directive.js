@@ -4,9 +4,9 @@ const modules = [];
 angular.module('graphdb.framework.clustermanagement.directives.cluster-list', modules)
     .directive('clusterList', ClusterListComponent);
 
-ClusterListComponent.$inject = ['$translate', '$timeout', '$repositories', 'productInfo', 'toastr', 'RemoteLocationsService', 'ClusterContextService', 'ModalService'];
+ClusterListComponent.$inject = ['$translate', '$timeout', 'productInfo', 'toastr', 'RemoteLocationsService', 'ClusterContextService', 'ModalService'];
 
-function ClusterListComponent($translate, $timeout, $repositories, productInfo, toastr, RemoteLocationsService, ClusterContextService, ModalService) {
+function ClusterListComponent($translate, $timeout, productInfo, toastr, RemoteLocationsService, ClusterContextService, ModalService) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/clustermanagement/templates/cluster-list.html',
@@ -103,7 +103,7 @@ function ClusterListComponent($translate, $timeout, $repositories, productInfo, 
                         })
                         .catch((error) => {
                             handleErrors(error.data, error.status);
-                            $repositories.deleteLocation(endpoint);
+                            RemoteLocationsService.deleteLocation(endpoint);
                             ClusterContextService.emitUpdateClusterView();
                         })
                         .finally(() => {

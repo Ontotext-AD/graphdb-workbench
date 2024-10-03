@@ -8,10 +8,11 @@ RemoteLocationsService.$inject = ['$http', 'toastr', '$uibModal', 'LocationsRest
 
 function RemoteLocationsService($http, toastr, $uibModal, LocationsRestService, $translate) {
     return {
-        addLocationHttp: addLocationHttp,
-        getLocationsWithRpcAddresses: getLocationsWithRpcAddresses,
-        createNewLocation: createNewLocation,
-        isInCluster: isInCluster
+        addLocationHttp,
+        getLocationsWithRpcAddresses,
+        createNewLocation,
+        isInCluster,
+        deleteLocation
     };
 
     function getLocationsWithRpcAddresses() {
@@ -113,5 +114,9 @@ function RemoteLocationsService($http, toastr, $uibModal, LocationsRestService, 
 
     function isInCluster(clusterNodes, location) {
         return clusterNodes.some((node) => location.rpcAddress === node.address);
+    }
+
+    function deleteLocation(endpoint) {
+        return LocationsRestService.deleteLocation(endpoint);
     }
 }
