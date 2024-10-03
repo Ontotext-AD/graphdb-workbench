@@ -203,7 +203,8 @@ function TTYGContextService(EventEmitterService) {
         emit(TTYGEventName.EXPLAIN_RESPONSE_CACHE_UPDATED, getExplainResponseCache());
     };
 
-    /** Subscribes to the 'explainResponseCacheUpdated' event.
+    /**
+     * Subscribes to the 'explainResponseCacheUpdated' event.
      * @param {function} callback - The callback to be called when the event is fired.
      *
      * @return {function} unsubscribe function.
