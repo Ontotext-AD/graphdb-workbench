@@ -10,7 +10,7 @@ const CONVERSATIONS_ENDPOINT = 'rest/chat/conversations';
 const AGENTS_ENDPOINT = 'rest/chat/agents';
 const EXPLAIN_RESPONSE_ENDPOINT = `${CONVERSATIONS_ENDPOINT}/explain`;
 
-const DEVELOPMENT = true;
+const DEVELOPMENT = false;
 
 function TTYGRestService($http) {
 
