@@ -58,7 +58,7 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, Markdow
             };
 
             /**
-             * Copies the message to the clipboard.
+             * Emits an event that triggers copying of the <code>message</code> to the clipboard.
              *
              * @param {string} message
              */
