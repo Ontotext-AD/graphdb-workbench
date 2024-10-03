@@ -50,6 +50,12 @@ function TTYGContextService(EventEmitterService) {
         return cloneDeep(_agents);
     };
 
+    const getAgent = (agentId) => {
+        if (_agents) {
+                return cloneDeep(_agents.getAgent(agentId));
+        }
+    };
+
     /**
      * @return {ChatsListModel}
      */
@@ -257,6 +263,7 @@ function TTYGContextService(EventEmitterService) {
         updateAgents,
         onAgentsListChanged,
         getAgents,
+        getAgent,
         selectAgent,
         getSelectedAgent,
         onSelectedAgentChanged,
