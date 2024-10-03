@@ -37,10 +37,24 @@ function TTYGContextService(EventEmitterService) {
     let _selectedAgent = undefined;
 
     /**
+     * Stores information about loaded explain responses.
+     * The key is the answer ID, and the value is an instance of {@see ExplainResponseModel} that holds the explanation message.
+     *
+     * @type {{[key: string]: ExplainResponseModel}}
+     */
+    let _explainCache = {};
+
+    /**
      * @return {AgentListModel}
      */
     const getAgents = () => {
         return cloneDeep(_agents);
+    };
+
+    const getAgent = (agentId) => {
+        if (_agents) {
+                return cloneDeep(_agents.getAgent(agentId));
+        }
     };
 
     /**
@@ -172,6 +186,56 @@ function TTYGContextService(EventEmitterService) {
     };
 
     /**
+     * @return {{[key: string]: ExplainResponseModel}} the cache of explain responses.
+     */
+    const _getExplainResponseCache = () => {
+        return cloneDeep(_explainCache);
+    };
+
+    /**
+     * Gets the explain response.
+     * @param {stirng} answerId
+     * @return {ExplainResponseModel}
+     */
+    const getExplainResponse = (answerId) => {
+        return cloneDeep(_explainCache[answerId]);
+    };
+
+    /**
+     *  Adds the <code>explainResponse</code> into the explain response cache.
+     *
+     * @param {ExplainResponseModel} explainResponse
+     */
+    const addExplainResponseCache = (explainResponse) => {
+        _explainCache[explainResponse.answerId] = cloneDeep(explainResponse);
+        emit(TTYGEventName.EXPLAIN_RESPONSE_CACHE_UPDATED, _getExplainResponseCache());
+    };
+
+    const hasExplainResponse = (answerId) => {
+        return !!_explainCache[answerId];
+    };
+
+    const toggleExplainResponse = (answerId) => {
+        if (hasExplainResponse(answerId)) {
+            _explainCache[answerId].expanded = !_explainCache[answerId].expanded;
+            emit(TTYGEventName.EXPLAIN_RESPONSE_CACHE_UPDATED, _getExplainResponseCache());
+        }
+    };
+
+    /**
+     * Subscribes to the 'explainResponseCacheUpdated' event.
+     * @param {function} callback - The callback to be called when the event is fired.
+     *
+     * @return {function} unsubscribe function.
+     */
+    const onExplainResponseCacheUpdated = (callback) => {
+        if (angular.isFunction(callback)) {
+            callback(_getExplainResponseCache());
+        }
+        return subscribe(TTYGEventName.EXPLAIN_RESPONSE_CACHE_UPDATED, (explainResponses) => callback(explainResponses));
+    };
+
+    /**
      * Subscribes to the 'agentSelected' event.
      * @param {function} callback - The callback to be called when the event is fired.
      *
@@ -219,9 +283,15 @@ function TTYGContextService(EventEmitterService) {
         updateAgents,
         onAgentsListChanged,
         getAgents,
+        getAgent,
         selectAgent,
         getSelectedAgent,
-        onSelectedAgentChanged
+        onSelectedAgentChanged,
+        hasExplainResponse,
+        toggleExplainResponse,
+        getExplainResponse,
+        addExplainResponseCache,
+        onExplainResponseCacheUpdated
     };
 }
 
@@ -322,21 +392,6 @@ export const TTYGEventName = {
     AGENT_SELECTED: 'agentSelected',
 
     /**
-     * Emitting the "copyAnswer" event will trigger an action to copy an answer to the clipboard.
-     */
-    COPY_ANSWER_TO_CLIPBOARD: 'copyAnswerToClipboard',
-
-    /**
-     * This event will be emitted when an answer is successfully copied to the clipboard.
-     */
-    COPY_ANSWER_TO_CLIPBOARD_SUCCESSFUL: 'copyAnswerToClipboardSuccess',
-
-    /**
-     * This event will be emitted when copying an answer to the clipboard fails.
-     */
-    COPY_ANSWER_TO_CLIPBOARD_FAILURE: 'copyAnswerToClipboardFailure',
-
-    /**
      * This event will trigger the opening of the similarity view.
      */
     GO_TO_CREATE_SIMILARITY_VIEW: "goToCreateSimilarityView",
@@ -344,5 +399,20 @@ export const TTYGEventName = {
     /**
      * This event will trigger the opening of the connectors view.
      */
-    GO_TO_CONNECTORS_VIEW: "goToConnectorsView"
+    GO_TO_CONNECTORS_VIEW: "goToConnectorsView",
+
+    /**
+     * This event will trigger fetching a new explanation of how the answer was generated.
+     */
+    EXPLAIN_RESPONSE: "explainResponse",
+
+    /**
+     * This event will be emitted when the cache with explain responses changed.
+     */
+    EXPLAIN_RESPONSE_CACHE_UPDATED: "explainResponseCacheUpdated",
+
+    /**
+     * This event will trigger the opening of the sparql view.
+     */
+    GO_TO_SPARQL_EDITOR: "openQueryInSparqlEditor"
 };

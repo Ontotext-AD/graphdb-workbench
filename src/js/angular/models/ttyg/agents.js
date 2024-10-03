@@ -369,6 +369,10 @@ export class AgentListModel {
         });
     }
 
+    getAgent(agentId) {
+        return this._agents.find((agent) => agent.id === agentId);
+    }
+
     get agents() {
         return this._agents;
     }

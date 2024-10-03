@@ -53,10 +53,10 @@ export const chatItemsModelMapper = (data = []) => {
                 items.push(currentItem);
             }
             const chatId = message.conversationId;
-            const agentId = message.agentId;
-            currentItem = new ChatItemModel(chatId, agentId, message);
+            currentItem = new ChatItemModel(chatId, chatMessageModelMapper(message));
         } else {
-            currentItem.answer = message;
+            currentItem.answer = chatMessageModelMapper(message);
+            currentItem.agentId = message.agentId;
         }
     });
     if (currentItem) {

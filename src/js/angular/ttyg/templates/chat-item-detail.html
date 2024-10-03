@@ -1,3 +1,5 @@
+<link href="css/ttyg/chat-item-details.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
 <div class="chat-detail">
     <div class="user-message">
         <div class="question alert-help">
@@ -12,17 +14,53 @@
             <div class="answer" ng-bind-html="MarkdownService.renderMarkdown(chatItemDetail.answer.message)">
             </div>
             <div class="actions" ng-class="{'hidden-actions': !showActions}">
-                <button class="btn btn-link secondary btn-sm regenerate-question-btn"
+                <button class="btn btn-link btn-sm regenerate-question-btn"
                         ng-click="regenerateQuestion()"
+                        ng-disabled="disabled"
                         gdb-tooltip="{{'ttyg.chat_panel.btn.regenerate.tooltip' | translate}}">
                     <i class="fa-regular fa-arrows-rotate"></i>
                 </button>
-                <button class="btn btn-link secondary btn-sm copy-answer-btn"
-                        ng-click="copyAnswerToClipboard()"
-                        gdb-tooltip="{{'ttyg.chat_panel.btn.copy.tooltip' | translate}}">
-                    <i class="fa-regular fa-clone"></i>
+                <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy.tooltip" text-to-copy="chatItemDetail.answer.message"></copy-to-clipboard>
+                <button class="btn btn-link btn-sm explain-response-btn"
+                        ng-click="explainResponse()"
+                        ng-disabled="disabled && !explainResponseModel"
+                        gdb-tooltip="{{'ttyg.chat_panel.btn.explain_response.tooltip' | translate}}">
+                    <i class="fa-regular fa-wand-magic-sparkles"></i>
+                    <i class="fa-regular fa-chevron-up toggle-explain-response-icon" ng-class="{expanded: explainResponseModel && explainResponseModel.expanded}"></i>
                 </button>
-                <i class="fa-regular fa-wand-magic-sparkles"></i>
+            </div>
+            <div class="derived-answer-hint" ng-if="loadingExplainResponse ||showActions && explainResponseModel.expanded">
+                <div>{{ 'ttyg.chat_panel.btn.derive_answer.hint' | translate }}</div>
+                <button class="btn deliver-answer-btn" ng-click="onAskHowAnswerWasDerived()">
+                    {{ 'ttyg.chat_panel.btn.derive_answer.label' | translate }}
+                </button>
+            </div>
+            <div ng-if="loadingExplainResponse" onto-loader-new size="40"></div>
+            <div ng-if="explainResponseModel && explainResponseModel.expanded" class="explain-response" ng-repeat="queryMethod in explainResponseModel.queryMethods">
+                <div class="explain-response-row">
+                    <span class="label">{{'ttyg.chat_panel.labels.query_method' | translate}}:</span>
+                    <span class="content">{{queryMethod.name}}</span>
+                </div>
+                <div class="explain-response-row">
+                    <span class="label">{{'ttyg.chat_panel.labels.raw_query' | translate}}:</span>
+                    <span class="content">{{queryMethod.rawQuery}}</span>
+                    <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy.tooltip" text-to-copy="queryMethod.rawQuery"></copy-to-clipboard>
+                </div>
+                <div class="explain-query">
+                    <div class="header">
+                        <div class="label">{{'ttyg.chat_panel.labels.sparql_query' | translate}}</div>
+                        <div class="actions">
+                            <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy.tooltip" text-to-copy="queryMethod.query"></copy-to-clipboard>
+                            <button class="btn btn-link btn-sm"
+                                    ng-click="onOpenInSparqlEditor(queryMethod.query)">
+                                <i class="icon-sparql"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="query">
+                        <pre><code>{{queryMethod.query}}</code></pre>
+                    </div>
+                </div>
             </div>
         </div>
         <div ng-if="asking" onto-loader-new size="40"></div>

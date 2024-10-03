@@ -8,6 +8,7 @@ TTYGRestService.$inject = ['$http'];
 
 const CONVERSATIONS_ENDPOINT = 'rest/chat/conversations';
 const AGENTS_ENDPOINT = 'rest/chat/agents';
+const EXPLAIN_RESPONSE_ENDPOINT = `${CONVERSATIONS_ENDPOINT}/explain`;
 
 const DEVELOPMENT = false;
 
@@ -161,6 +162,18 @@ function TTYGRestService($http) {
         return $http.delete(`${AGENTS_ENDPOINT}/${id}`);
     };
 
+    /**
+     * Calls backend server to fetch an explanation of how the answer was generated.
+     * @param {*} data
+     * @return {Promise}
+     */
+    const explainResponse = (data = {}) => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.explainResponse(data);
+        }
+        return $http.post(EXPLAIN_RESPONSE_ENDPOINT, data);
+    };
+
     return {
         getConversation,
         renameConversation,
@@ -173,6 +186,7 @@ function TTYGRestService($http) {
         getAgent,
         createAgent,
         editAgent,
-        deleteAgent
+        deleteAgent,
+        explainResponse
     };
 }

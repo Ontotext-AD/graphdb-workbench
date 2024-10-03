@@ -95,18 +95,9 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             $scope.regenerateQuestion = (chatItem) => {
                 const regenerateChatItem = getEmptyChatItem();
                 regenerateChatItem.setQuestionMessage(chatItem.getQuestionMessage());
-                $scope.askingChatItem = cloneDeep(regenerateChatItem);
+                $scope.askingChatItem = regenerateChatItem;
                 askQuestion(regenerateChatItem);
                 scrollToBottom();
-            };
-
-            /**
-             * Copies the answer of the provided chat item to the clipboard.
-             *
-             * @param {ChatItemModel} chatItem - The chat item containing the answer to be copied to the clipboard.
-             */
-            $scope.copyAnswerToClipboard = (chatItem) => {
-                TTYGContextService.emit(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD, chatItem);
             };
 
             /**
@@ -119,6 +110,14 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 if ($event.key === 'Enter' && !$event.shiftKey && !$event.ctrlKey) {
                     $scope.ask();
                 }
+            };
+
+            $scope.onAskHowDeliveredAnswer = () => {
+                const askHowDerivedAnswerChatItem = getEmptyChatItem();
+                askHowDerivedAnswerChatItem.setQuestionMessage($translate.instant('ttyg.chat_panel.btn.derive_answer.label'));
+                $scope.askingChatItem = cloneDeep(askHowDerivedAnswerChatItem);
+                askQuestion(askHowDerivedAnswerChatItem);
+                scrollToBottom();
             };
 
             // =========================
@@ -144,19 +143,11 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 focusQuestionInput();
             };
 
-            const onCopied = () => {
-                toastr.success($translate.instant('ttyg.chat_panel.messages.answer_copy_successful'));
-            };
-
             const onSelectedChatChanged = (chat) => {
                 // Skip the loading indication if it is a new (dummy) chat that has not been created yet.
                 $scope.loadingChat = chat && chat.id;
                 $scope.chatItem = getEmptyChatItem();
                 focusQuestionInput();
-            };
-
-            const onCopyFailed = () => {
-                toastr.success($translate.instant('ttyg.chat_panel.messages.answer_copy_failed'));
             };
 
             const onQuestionFailure = () => {
@@ -220,8 +211,6 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             subscriptions.push(TTYGContextService.onSelectedChatUpdated(onChatChanged));
             subscriptions.push(TTYGContextService.onSelectedAgentChanged(onSelectedAgentChanged));
             subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
-            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_SUCCESSFUL, onCopied));
-            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_FAILURE, onCopyFailed));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION_FAILURE, onQuestionFailure));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_CHAT_FAILURE, onQuestionFailure));
 
