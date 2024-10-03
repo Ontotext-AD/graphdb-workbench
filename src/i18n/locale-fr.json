@@ -368,6 +368,11 @@
                             "message_1": "Vous devez",
                             "message_2": "créer un index de similarité",
                             "message_3": "pour utiliser cette méthode"
+                        },
+                        "btn": {
+                            "reload": {
+                                "tooltip": "Rafraîchir les index de similarité."
+                            }
                         }
                     },
                     "similarity_threshold": {
@@ -379,6 +384,11 @@
                             "message_1": "Vous devez",
                             "message_2": "créer un connecteur de récupération ChatGPT",
                             "message_3": "pour utiliser cette méthode"
+                        },
+                        "btn": {
+                            "reload": {
+                                "tooltip": "Rafraîchir les connecteurs de récupération ChatGPT."
+                            }
                         }
                     },
                     "connector_id": {

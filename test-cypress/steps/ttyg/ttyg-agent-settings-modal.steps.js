@@ -55,6 +55,10 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
         return this.getRepositoryIdFromGroup().find('.alert-danger');
     }
 
+    static verifyRepositorySelected(repositoryId) {
+        this.getRepositorySelect().find('option:selected').should('have.text', repositoryId);
+    }
+
     // Extraction methods
 
     static getExtractionMethodError() {
@@ -172,6 +176,10 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
         return this.getExtractionMethodPanel('similarity_search').find('.no-similarity-index-message');
     }
 
+    static clickOnSimilaritySearchIndexMissingHelp() {
+        this.getSimilaritySearchIndexMissingHelp().find('a').click();
+    }
+
     static getSimilarityIndexFormGroup() {
         return this.getExtractionMethodPanel('similarity_search').find('.similarity-index');
     }
@@ -182,6 +190,10 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
 
     static selectSimilarityIndex(index) {
         this.getSimilarityIndexField().select(index);
+    }
+
+    static verifySimilarityIndexSelected(similarityIndex) {
+        this.getSimilarityIndexField().find('option:selected').should('have.text', similarityIndex);
     }
 
     static getSimilarityIndexThresholdFormGroup() {
@@ -220,6 +232,10 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
 
     static getMissingRetrievalConnectorHelp() {
         return this.getExtractionMethodPanel('retrieval_search').find('.no-retrieval-connector-message');
+    }
+
+    static clickOnMissingRetrievalConnectorHelp() {
+        this.getMissingRetrievalConnectorHelp().find('a').click();
     }
 
     static getRetrievalConnectorFormGroup() {
@@ -261,6 +277,10 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
 
     static setRetrievalMaxTriples(value) {
         this.getRetrievalMaxTriplesField().invoke('val', value).trigger('input');
+    }
+
+    static verifyRetrievalConnectorSelected(connectorName) {
+        this.getRetrievalConnectorField().find('option:selected').should('have.text', connectorName);
     }
 
     // GPT model

@@ -13,20 +13,28 @@ SimilarityService.$inject = ['SimilarityRestService'];
 function SimilarityService(SimilarityRestService) {
 
     /**
-     * Returns the similarity indexes.
+     * Returns the similarity indexes for the repository with id <code>repositoryId</code> and location <code>repositoryLocation</code>.
+     * If the repository ID and repository location are not provided, the values persisted in local storage will be used {@see authentication.interceptor.js}.
+     *
+     * @param {string} repositoryId - (optional) The repository id.
+     * @param {string} repositoryLocation - (optional) The repository location.
      * @return {Promise<SimilarityIndex[]>}
      */
-    const getIndexes = () => {
-        return SimilarityRestService.getIndexes()
+    const getIndexes = (repositoryId, repositoryLocation) => {
+        return SimilarityRestService.getIndexes(repositoryId, repositoryLocation)
             .then((response) => mapIndexesResponseToSimilarityIndex(response.data));
     };
 
     /**
-     * Returns the indexes as a menu model.
+     * Returns the similarity indexes for the repository with id <code>repositoryId</code> and location <code>repositoryLocation</code> as a menu model.
+     * If the repository ID and repository location are not provided, the values persisted in local storage will be used {@see authentication.interceptor.js}.
+     *
+     * @param {string} repositoryId - (optional) The repository id.
+     * @param {string} repositoryLocation - (optional) The repository location.
      * @return {Promise<SelectMenuOptionsModel[]>}
      */
-    const getIndexesAsMenuModel = () => {
-        return getIndexes()
+    const getIndexesAsMenuModel = (repositoryId, repositoryLocation) => {
+        return getIndexes(repositoryId, repositoryLocation)
             .then((indexesModel) => {
                 return indexesModel.map((index) => {
                     return new SelectMenuOptionsModel({label: index.name, value: index.name});

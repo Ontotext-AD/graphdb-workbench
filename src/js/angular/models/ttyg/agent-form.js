@@ -294,6 +294,12 @@ export class ExtractionMethodFormModel {
          * @private
          */
         this._retrievalConnectorInstance = data.retrievalConnectorInstance;
+
+        this._expanded = data.expanded !== undefined ? data.expanded : false;
+    }
+
+    toggleCollapse() {
+        this._expanded = !this._expanded;
     }
 
     toPayload() {
@@ -405,6 +411,14 @@ export class ExtractionMethodFormModel {
 
     set retrievalConnectorInstance(value) {
         this._retrievalConnectorInstance = value;
+    }
+
+    get expanded() {
+        return this._expanded;
+    }
+
+    set expanded(value) {
+        this._expanded = value;
     }
 }
 

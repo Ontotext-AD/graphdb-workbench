@@ -368,6 +368,11 @@
                             "message_1": "You must",
                             "message_2": "create a similarity index",
                             "message_3": "to use this method"
+                        },
+                        "btn": {
+                            "reload": {
+                                "tooltip": "Refresh the similarity indexes."
+                            }
                         }
                     },
                     "similarity_threshold": {
@@ -379,6 +384,11 @@
                             "message_1": "You must",
                             "message_2": "create ChatGPT retrieval connector",
                             "message_3": "to use this method"
+                        },
+                        "btn": {
+                            "reload": {
+                                "tooltip": "Refresh the ChatGPT retrieval connectors."
+                            }
                         }
                     },
                     "connector_id": {

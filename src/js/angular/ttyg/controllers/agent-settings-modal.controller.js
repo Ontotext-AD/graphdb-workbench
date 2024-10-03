@@ -135,24 +135,19 @@ function AgentSettingsModalController(
      * @param {ExtractionMethodFormModel} extractionMethod
      */
     $scope.toggleExtractionMethod = (extractionMethod) => {
-        // FIXME: Using jQuery is highly unwanted, but I couldn't find a better way to do it, so that the interaction is not affected
-        const target = `#${extractionMethod.method}_method_content`;
-        if (extractionMethod.selected) {
-            $(target).collapse('show');
-        } else {
-            $(target).collapse('hide');
-        }
+        extractionMethod.expanded = extractionMethod.selected;
         $scope.agentSettingsForm.extractionMethods.$setTouched();
         setExtractionMethodValidityStatus();
-        $scope.onExtractionMethodPanelToggle(extractionMethod);
+        extractionPanelToggleHandlers[extractionMethod.method](extractionMethod);
     };
 
     /**
      * Handles the panel toggle event for the extraction method. This is used to do some initialization when the user
      * opens the panel for a specific extraction method.
-     * @param {ExtractionMethodModel} extractionMethod
+     * @param {ExtractionMethodFormModel} extractionMethod
      */
     $scope.onExtractionMethodPanelToggle = (extractionMethod) => {
+        extractionMethod.toggleCollapse();
         extractionPanelToggleHandlers[extractionMethod.method](extractionMethod);
     };
 
@@ -210,15 +205,59 @@ function AgentSettingsModalController(
     /**
      * Closes the modal when the user cancels the agent creation.
      */
-    $scope.cancel = function () {
+    $scope.cancel = () => {
         $uibModalInstance.dismiss({});
     };
 
     /**
      * Closes the modal when the user clicks the close button.
      */
-    $scope.close = function () {
+    $scope.close = () => {
         $uibModalInstance.dismiss({});
+    };
+
+    /**
+     * Updates the similarity search panel.
+     *
+     * @param {boolean} clearIndexSelection - If true, the selected index will be cleared.
+     */
+    $scope.updateSimilaritySearchPanel = (clearIndexSelection = false) => {
+        const similaritySearchExtractionMethod = $scope.agentFormModel.assistantExtractionMethods.extractionMethods
+            .find((extractionMethod) => extractionMethod.method === ExtractionMethod.SIMILARITY);
+        if (clearIndexSelection) {
+            similaritySearchExtractionMethod.similarityIndex = null;
+        }
+        handleSimilaritySearchExtractionMethodPanelToggle(similaritySearchExtractionMethod);
+    };
+
+    /**
+     * Updates the ChatGPT retrieval connector panel.
+     *
+     * @param {boolean} clearSelection - If true, the selected connector will be cleared.
+     */
+    $scope.updateRetrievalConnectorPanel = (clearSelection = false) => {
+        const retrievalExtractionExtractionMethod = $scope.agentFormModel.assistantExtractionMethods.extractionMethods
+            .find((extractionMethod) => extractionMethod.method === ExtractionMethod.RETRIEVAL);
+        if (clearSelection) {
+            retrievalExtractionExtractionMethod.retrievalConnectorInstance = null;
+        }
+        handleRetrievalConnectorExtractionMethodPanelToggle(retrievalExtractionExtractionMethod);
+    };
+
+    $scope.checkIfFTSEnabled = () => {
+        if (!$scope.agentFormModel.repositoryId) {
+            return;
+        }
+        // pass a fake repository info object with only an id because we don't care for the location
+        RepositoriesRestService.getRepositoryModel({id: $scope.agentFormModel.repositoryId}).then((repositoryModel) => {
+            $scope.ftsEnabled = repositoryModel.getParamValue(REPOSITORY_PARAMS.enableFtsIndex);
+        })
+            .catch((error) => {
+                logAndShowError(error, 'ttyg.agent.messages.error_repository_config_loading');
+            })
+            .finally(() => {
+                $scope.extractionMethodLoaderFlags[ExtractionMethod.FTS_SEARCH] = false;
+            });
     };
 
     /**
@@ -227,7 +266,9 @@ function AgentSettingsModalController(
      * able to validate if the FTS is enabled for that selected repository.
      */
     $scope.onRepositoryChange = () => {
-        checkIfFTSEnabled();
+        $scope.checkIfFTSEnabled();
+        $scope.updateSimilaritySearchPanel(true);
+        $scope.updateRetrievalConnectorPanel(true);
     };
 
     // =========================
@@ -313,71 +354,114 @@ function AgentSettingsModalController(
         $scope.agentSettingsForm.extractionMethods.$setValidity('required', $scope.agentFormModel.hasExtractionMethodSelected());
     };
 
-    const checkIfFTSEnabled = () => {
-        if (!$scope.agentFormModel.repositoryId) {
-            return;
-        }
-        // pass a fake repository info object with only an id because we don't care for the location
-        RepositoriesRestService.getRepositoryModel({id: $scope.agentFormModel.repositoryId}).then((repositoryModel) => {
-            $scope.ftsEnabled = repositoryModel.getParamValue(REPOSITORY_PARAMS.enableFtsIndex);
-        })
-        .catch((error) => {
-            logAndShowError(error, 'ttyg.agent.messages.error_repository_config_loading');
-        })
-        .finally(() => {
-            $scope.extractionMethodLoaderFlags[ExtractionMethod.FTS_SEARCH] = false;
-        });
-    };
-
     const handleFTSExtractionMethodPanelToggle = (extractionMethod) => {
         $scope.extractionMethodLoaderFlags[extractionMethod.method] = true;
-        checkIfFTSEnabled();
+        $scope.checkIfFTSEnabled();
+    };
+
+    /**
+     * Returns the repository info model for the selected repository in the form.
+     *
+     * @return {{repositoryLocation: (*|undefined), repositoryId: (*|undefined)}}
+     */
+    const getSelectedRepositoryInfo = () => {
+        const selectRepositoryInfo = $scope.activeRepositoryList.find((repository) => repository.value === $scope.agentFormModel.repositoryId);
+        return {
+            repositoryId: selectRepositoryInfo ? selectRepositoryInfo.data.repository.id : undefined,
+            repositoryLocation: selectRepositoryInfo ? selectRepositoryInfo.data.repository.location : undefined
+        };
     };
 
     const handleSimilaritySearchExtractionMethodPanelToggle = (extractionMethod) => {
-        $scope.extractionMethodLoaderFlags[extractionMethod.method] = true;
-        SimilarityService.getIndexesAsMenuModel().then((indexes) => {
-            $scope.similarityIndexes = indexes;
-            $scope.agentSettingsForm.$setValidity('missingIndex', !extractionMethod.selected || !!(indexes && indexes.length));
-        })
-        .catch((error) => {
-            logAndShowError(error, 'ttyg.agent.messages.error_similarity_indexes_loading');
-        })
-        .finally(() => {
-            $scope.extractionMethodLoaderFlags[extractionMethod.method] = false;
-        });
+        if (extractionMethod.expanded) {
+            $scope.extractionMethodLoaderFlags[extractionMethod.method] = true;
+            const selectedRepositoryInfo = getSelectedRepositoryInfo();
+            SimilarityService.getIndexesAsMenuModel(selectedRepositoryInfo.repositoryId, selectedRepositoryInfo.repositoryLocation)
+                .then((indexes) => {
+                    $scope.similarityIndexes = indexes;
+                    $scope.agentSettingsForm.$setValidity('missingIndex', !extractionMethod.selected || !!(indexes && indexes.length));
+                    updateSelectedSimilarityIndex($scope.similarityIndexes, extractionMethod);
+                })
+                .catch((error) => {
+                    logAndShowError(error, 'ttyg.agent.messages.error_similarity_indexes_loading');
+                })
+                .finally(() => {
+                    $scope.extractionMethodLoaderFlags[extractionMethod.method] = false;
+                });
+        }
     };
 
-    const handleRetrieavalConnectorExtractionMethodPanelToggle = (extractionMethod) => {
-        $scope.extractionMethodLoaderFlags[extractionMethod.method] = true;
-        ConnectorsService.getConnectorPrefixByName(CHAT_GPT_RETRIEVAL_CONNECTOR_NAME)
-            .then((prefix) => {
-                return ConnectorsService.getConnectorsByTypeAsSelectMenuOptions(prefix);
-            })
-            .then((connectors) => {
-                $scope.retrievalConnectors = connectors;
-                $scope.agentSettingsForm.$setValidity('missingConnector', !extractionMethod.selected || !!(connectors && connectors.length));
-            })
-            .catch((error) => {
-                logAndShowError(error, 'ttyg.agent.messages.error_retrieval_connectors_loading');
-            })
-            .finally(() => {
-                $scope.extractionMethodLoaderFlags[extractionMethod.method] = false;
-            });
+    /**
+     * Updates the selected similarity index for the extraction method.
+     *
+     * @param {SelectMenuOptionsModel[]} indexes - The list of all available similarity indexes.
+     * @param {Object} extractionMethod - The extraction method object containing the currently selected similarity index.
+     */
+    const updateSelectedSimilarityIndex = (indexes, extractionMethod) => {
+        if (indexes.length === 0) {
+            // If no similarity indexes are available, clear the similarity index.
+            extractionMethod.similarityIndex = null;
+            return;
+        }
+
+        // If the selected index is not found in the current list, default to the first index.
+        const selectedIndex = indexes.find((index) => index.value === extractionMethod.similarityIndex);
+        extractionMethod.similarityIndex = selectedIndex ? selectedIndex.value : indexes[0].value;
+    };
+
+    const handleRetrievalConnectorExtractionMethodPanelToggle = (extractionMethod) => {
+        if (extractionMethod.expanded) {
+            $scope.extractionMethodLoaderFlags[extractionMethod.method] = true;
+            const selectedRepositoryInfo = getSelectedRepositoryInfo();
+            ConnectorsService.getConnectorPrefixByName(CHAT_GPT_RETRIEVAL_CONNECTOR_NAME, selectedRepositoryInfo.repositoryId, selectedRepositoryInfo.repositoryLocation)
+                .then((prefix) => ConnectorsService.getConnectorsByTypeAsSelectMenuOptions(prefix, selectedRepositoryInfo.repositoryId, selectedRepositoryInfo.repositoryLocation))
+                .then((connectors) => {
+                    $scope.retrievalConnectors = connectors;
+                    $scope.agentSettingsForm.$setValidity('missingConnector', !extractionMethod.selected || !!(connectors && connectors.length));
+                    updateSelectedRetrievalConnector($scope.retrievalConnectors, extractionMethod);
+
+                })
+                .catch((error) => {
+                    logAndShowError(error, 'ttyg.agent.messages.error_retrieval_connectors_loading');
+                })
+                .finally(() => {
+                    $scope.extractionMethodLoaderFlags[extractionMethod.method] = false;
+                });
+        }
+    };
+
+    /**
+     * Updates the selected retrieval connector for the extraction method.
+     *
+     * @param {SelectMenuOptionsModel[]} retrievalConnectors - The list of all available connectors.
+     * @param {Object} extractionMethod - The extraction method object containing the currently selected retrieval connector.
+     */
+    const updateSelectedRetrievalConnector = (retrievalConnectors, extractionMethod) => {
+        if (retrievalConnectors.length === 0) {
+            // If no connector are available, clear the similarity index.
+            extractionMethod.retrievalConnectorInstance = null;
+            return;
+        }
+        const selectedConnector = retrievalConnectors.find((connector) => connector.value === extractionMethod.retrievalConnectorInstance);
+
+        // If the selected connector is not found in the current list, default to the first index.
+        extractionMethod.retrievalConnectorInstance = selectedConnector
+            ? selectedConnector.value
+            : retrievalConnectors[0].value;
     };
 
     const extractionPanelToggleHandlers = {
         [ExtractionMethod.FTS_SEARCH]: (extractionMethod) => handleFTSExtractionMethodPanelToggle(extractionMethod),
         [ExtractionMethod.SPARQL]: (extractionMethod) => {},
         [ExtractionMethod.SIMILARITY]: (extractionMethod) => handleSimilaritySearchExtractionMethodPanelToggle(extractionMethod),
-        [ExtractionMethod.RETRIEVAL]: (extractionMethod) => handleRetrieavalConnectorExtractionMethodPanelToggle(extractionMethod)
+        [ExtractionMethod.RETRIEVAL]: (extractionMethod) => handleRetrievalConnectorExtractionMethodPanelToggle(extractionMethod)
     };
 
     // =========================
     // Initialization
     // =========================
 
-    const init = function () {
+    const init = () => {
         // Delay the validation status setting because angular form ngmodel is not present immediately
         setTimeout(setExtractionMethodValidityStatus, 0);
     };

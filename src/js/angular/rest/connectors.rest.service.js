@@ -15,7 +15,23 @@ function ConnectorsRestService($http) {
         checkConnector
     };
 
-    function getConnectors() {
+    /**
+     * Fetches all connectors for the repository with id <code>repositoryId</code> and location <code>repositoryLocation</code>.
+     * If the repository ID and repository location are not provided, the values persisted in local storage will be used {@see authentication.interceptor.js}.
+     *
+     * @param {string} repositoryId - (optional) The repository id.
+     * @param {string} repositoryLocation - (optional) The repository location.
+     * @return {*} The similarity indexes for the specified repository.
+     */
+    function getConnectors(repositoryId, repositoryLocation) {
+        if (repositoryId) {
+            return $http.get(CONNECTORS_ENDPOINT, {
+                headers: {
+                    'X-GraphDB-Repository': repositoryId,
+                    'X-GraphDB-Repository-Location': repositoryLocation
+                }
+            });
+        }
         return $http.get(CONNECTORS_ENDPOINT);
     }
 
@@ -23,7 +39,24 @@ function ConnectorsRestService($http) {
         return $http.get(`${CONNECTORS_ENDPOINT}/options?prefix=${prefix}`);
     }
 
-    function hasConnector(prefix) {
+    /**
+     * Fetches all connectors of a specific type defined by the prefix for the repository with id <code>repositoryId</code>
+     * and location <code>repositoryLocation</code>. If the repository ID and repository location are not provided,
+     * the values persisted in local storage will be used {@see authentication.interceptor.js}.
+     * @param {string} prefix
+     * @param {string} repositoryId - (optional) The repository id.
+     * @param {string} repositoryLocation - (optional) The repository location.
+     * @return {Promise<ConnectorListModel>}
+     */
+    function hasConnector(prefix, repositoryId, repositoryLocation) {
+        if (repositoryId) {
+            return $http.get(`${CONNECTORS_ENDPOINT}/existing?prefix=${prefix}`, {
+                headers: {
+                    'X-GraphDB-Repository': repositoryId,
+                    'X-GraphDB-Repository-Location': repositoryLocation
+                }
+            });
+        }
         return $http.get(`${CONNECTORS_ENDPOINT}/existing?prefix=${prefix}`);
     }
 
