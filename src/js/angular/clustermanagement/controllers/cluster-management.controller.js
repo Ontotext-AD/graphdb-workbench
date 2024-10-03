@@ -203,7 +203,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             })
             .finally(() => {
                 $scope.setLoader(false);
-                updateCluster(true);
+                updateCluster(true, true);
             });
     };
 
@@ -340,15 +340,6 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             });
     };
 
-    // Delete location
-    const deleteLocation = (location) => {
-        return ModalService.openSimpleModal({
-            title: $translate.instant('location.confirm.detach'),
-            message: $translate.instant('location.confirm.detach.warning', {uri: location.endpoint}),
-            warning: true
-        }).result.then(() => $repositories.deleteLocation(location.endpoint));
-    };
-
     const onAddRemoveSuccess = (message) => {
         toastr.success(message);
         $scope.getClusterConfiguration();
@@ -389,13 +380,6 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
         if ($scope.selectedNode && nodeTooltipElement !== targetEl && !nodeTooltipElement.contains(targetEl)) {
             selectNode(null);
         }
-    };
-
-
-    const shouldSkipNodesUpdate = (nodes) => {
-        return (!nodes ||
-            (Array.isArray(nodes) && nodes.length === 0) ||
-            (nodes.oldNodes && nodes.newNodes && nodes.oldNodes.length === 0 && nodes.newNodes.length === 0));
     };
 
     // =========================
