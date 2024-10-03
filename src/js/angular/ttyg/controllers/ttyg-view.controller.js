@@ -759,7 +759,13 @@ function TTYGViewCtrl(
     const buildRepositoryList = () => {
         $scope.activeRepositoryList = $repositories.getReadableRepositories()
             .map((repo) => (
-                new SelectMenuOptionsModel({value: repo.id, label: repo.id}))
+                new SelectMenuOptionsModel({
+                    value: repo.id,
+                    label: repo.id,
+                    data: {
+                        repository: repo
+                    }
+                }))
             );
     };
 

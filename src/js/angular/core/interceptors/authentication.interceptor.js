@@ -30,11 +30,13 @@ angular.module('graphdb.framework.core.interceptors.authentication', [
                         headers.Authorization = AuthTokenService.getAuthToken();
                     }
 
-                    const repositoryId = LocalStorageAdapter.get(LSKeys.REPOSITORY_ID);
-                    const repositoryLocation = LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION);
+                    if (!headers['X-GraphDB-Repository']) {
+                        const repositoryId = LocalStorageAdapter.get(LSKeys.REPOSITORY_ID);
+                        const repositoryLocation = LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION);
 
-                    headers['X-GraphDB-Repository'] = repositoryId ? repositoryId : undefined;
-                    headers['X-GraphDB-Repository-Location'] = repositoryLocation ? repositoryLocation : undefined;
+                        headers['X-GraphDB-Repository'] = repositoryId ? repositoryId : undefined;
+                        headers['X-GraphDB-Repository-Location'] = repositoryLocation ? repositoryLocation : undefined;
+                    }
 
                     config.headers = headers;
                     return config;

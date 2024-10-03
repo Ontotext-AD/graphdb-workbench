@@ -32,19 +32,7 @@
     justify-content: space-between;
 }
 
-.agent-settings-modal .agent-settings-form .extraction-methods .extraction-method-heading .panel-toggle-link .toggle-icon {
-    transition: transform 0.3s ease;
-}
-
-.agent-settings-modal .agent-settings-form .extraction-methods .extraction-method-heading .panel-toggle-link.collapsed .toggle-icon {
-    transform: rotate(0deg);
-}
-
-.agent-settings-modal .agent-settings-form .extraction-methods .extraction-method-heading .panel-toggle-link .toggle-icon {
-    transform: rotate(180deg);
-}
-
-.agent-settings-modal .agent-settings-form .extraction-methods .extraction-method-heading.selected .panel-toggle-link {
+.agent-settings-form .extraction-methods .extraction-method-heading.selected .panel-toggle-link {
     font-weight: var(--field-label-weight);
 }
 
@@ -75,4 +63,12 @@
     /* move the slider up next to the related input field to match the mockup */
     top: -6px;
     accent-color: var(--secondary-color);
+}
+
+.agent-settings-form .panel-toggle-link .toggle-icon {
+    transition: transform 0.3s ease; /* Smooth transition */
+}
+
+.extraction-method .panel-toggle-link .toggle-icon.expanded {
+    transform: rotate(180deg);
 }

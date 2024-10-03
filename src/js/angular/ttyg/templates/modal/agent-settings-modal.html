@@ -50,24 +50,24 @@
                                    ng-model="extractionMethod.selected"/>
                             <label for="{{extractionMethod.method + '_checkbox'}}"></label>
                         </div>
-                        <a class="btn btn-link panel-toggle-link collapsed"
-                           data-toggle="collapse"
-                           data-target="#{{extractionMethod.method + '_method_content'}}"
+                        <a class="btn btn-link panel-toggle-link"
                            aria-expanded="false" aria-controls="{{extractionMethod.method + '_method_content'}}"
                            ng-click="onExtractionMethodPanelToggle(extractionMethod)">
                             <span class="mr-1">{{'ttyg.agent.create_agent_modal.form.' + extractionMethod.method + '.label' | translate}}</span>
-                            <i class="fa-regular fa-chevron-down toggle-icon"></i>
+                            <i class="fa-regular fa-chevron-down toggle-icon"
+                               ng-class="{'expanded': extractionMethod.expanded}">
+                            </i>
                         </a>
                     </div>
 
                     <div id="{{extractionMethod.method + '_method_content'}}"
-                         class="collapse show extraction-method-content"
+                         class="show extraction-method-content"
                          aria-labelledby="{{extractionMethod.method + '_method_heading'}}"
                          data-parent="#extractionMethods">
 
                         <!-- SPARQL method settings -->
 
-                        <div ng-if="extractionMethod.method === extractionMethods.SPARQL"
+                        <div ng-if="extractionMethod.expanded && extractionMethod.method === extractionMethods.SPARQL"
                              class="extraction-method-options"
                              ng-class="{'has-error': extractionMethod.selected && !extractionMethod.sparqlOption}">
                             <div class="sparql-option ontology-graph-option">
@@ -111,8 +111,14 @@
 
                         <!-- FTS method settings -->
 
-                        <div ng-if="extractionMethod.method === extractionMethods.FTS_SEARCH"
+                        <div ng-if="extractionMethod.expanded && extractionMethod.method === extractionMethods.FTS_SEARCH"
                              class="extraction-method-options">
+                            <button class="btn btn-link btn-sm regenerate-question-btn pull-right"
+                                    ng-click="checkIfFTSEnabled()"
+                                    ng-disabled="disabled"
+                                    gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.retrieval_search.btn.reload.tooltip' | translate}}">
+                                <i class="fa-regular fa-arrows-rotate"></i>
+                            </button>
                             <div class="alert alert-danger missing-repositoryid-error mb-0"
                                  ng-if="!agentFormModel.repositoryId">
                                 {{'ttyg.agent.create_agent_modal.form.fts_search.missing_repository_id' | translate}}
@@ -135,9 +141,15 @@
 
                         <!-- Similarity method settings -->
 
-                        <div ng-if="extractionMethod.method === extractionMethods.SIMILARITY"
+                        <div ng-if="extractionMethod.expanded && extractionMethod.method === extractionMethods.SIMILARITY"
                              ng-class="{'has-error': extractionMethod.selected && !extractionMethod.sparqlOption}"
                              class="extraction-method-options">
+                            <button class="btn btn-link btn-sm regenerate-question-btn pull-right"
+                                    ng-click="updateSimilaritySearchPanel()"
+                                    ng-disabled="disabled"
+                                    gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.similarity_index.btn.reload.tooltip' | translate}}">
+                                <i class="fa-regular fa-arrows-rotate"></i>
+                            </button>
                             <div ng-if="!similarityIndexes.length" class="no-similarity-index-message">
                                 {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_1' |
                                 translate}}
@@ -193,9 +205,15 @@
 
                         <!-- Retrieval method settings -->
 
-                        <div ng-if="extractionMethod.method === extractionMethods.RETRIEVAL"
+                        <div ng-if="extractionMethod.expanded && extractionMethod.method === extractionMethods.RETRIEVAL"
                              ng-class="{'has-error': agentSettingsForm.$error.missingConnector}"
                              class="extraction-method-options">
+                            <button class="btn btn-link btn-sm regenerate-question-btn pull-right"
+                                    ng-click="updateRetrievalConnectorPanel()"
+                                    ng-disabled="disabled"
+                                    gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.retrieval_search.btn.reload.tooltip' | translate}}">
+                                <i class="fa-regular fa-arrows-rotate"></i>
+                            </button>
                             <div ng-if="!retrievalConnectors.length" class="no-retrieval-connector-message">
                                 {{'ttyg.agent.create_agent_modal.form.retrieval_search.no_retrieval_connectors.message_1'
                                 | translate}}

@@ -5,6 +5,7 @@ import {TtygAgentSettingsModalSteps} from "../../steps/ttyg/ttyg-agent-settings-
 import {NamespaceStubs} from "../../stubs/namespace-stubs";
 import {SimilarityIndexStubs} from "../../stubs/similarity-index-stubs";
 import {ConnectorStubs} from "../../stubs/connector-stubs";
+import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 
 describe('TTYG create new agent', () => {
     const repositoryId = 'starwars';
@@ -71,7 +72,7 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.disableSparqlExtractionMethod();
         // The component here is the bootstrap collapse component, so we need to wait for the animation to finish, otherwise the test might fail randomly
         cy.wait(1000);
-        TtygAgentSettingsModalSteps.getSparqlExtractionMethodPanel().should('not.be.visible');
+        TtygAgentSettingsModalSteps.getSparqlExtractionMethodPanel().should('not.exist');
         TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.disabled');
         TtygAgentSettingsModalSteps.getExtractionMethodError().should('be.visible').and('contain', 'At least one query method must be selected');
         TtygAgentSettingsModalSteps.enableSparqlExtractionMethod();
@@ -359,6 +360,76 @@ describe('TTYG create new agent', () => {
         // the new agent should be visible in the agent list (there were 0 agents before, so now there should be 1)
         TTYGViewSteps.getAgents().should('have.length', 1);
         TTYGViewSteps.getAgent(0).should('contain', 'Test Agent').and('contain', 'starwars');
+    });
+
+    it('Should updates the ChatGPT form field when the repository is changed', () => {
+        TTYGStubs.stubChatsListGetNoResults();
+        TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
+        ConnectorStubs.stubGetConnectors();
+        ConnectorStubs.stubTTYGChatGPTConnectors();
+        // Given I have opened the ttyg page
+        TTYGViewSteps.visit();
+        cy.wait('@get-all-repositories');
+
+        // When I click on the create agent button
+        TTYGViewSteps.createFirstAgent();
+        // Then I expect the selected repository to be set as the repository ID in the form.
+        TtygAgentSettingsModalSteps.verifyRepositorySelected('starwars');
+
+        // When I open ChatGPT retrieval connector panel
+        TtygAgentSettingsModalSteps.enableRetrievalMethodPanel();
+        // Then I expect to see the first connector selected.
+        TtygAgentSettingsModalSteps.verifyRetrievalConnectorSelected('ChatGPT_starwars_one');
+
+        // When I select another repository that have retrieval connectors
+        TtygAgentSettingsModalSteps.selectRepository('biomarkers');
+        // Then I expect to see the first connector from new repository selected.
+        TtygAgentSettingsModalSteps.verifyRetrievalConnectorSelected('ChatGPT_biomarkers_one');
+
+        // When I select a repository that not have retrieval connectors
+        TtygAgentSettingsModalSteps.selectRepository('ttyg-repo-1725518186812');
+        // Then I expect help message to be open
+        TtygAgentSettingsModalSteps.getMissingRetrievalConnectorHelp().should('be.visible');
+
+        // When I click on help menu
+        TtygAgentSettingsModalSteps.clickOnMissingRetrievalConnectorHelp();
+        // Then I expect a confirm dialog displayed.
+        ModalDialogSteps.getDialogBody().contains('If you proceed with creating the ChatGPT retrieval connector, GraphDB will open in a new tab and switch to the ttyg-repo-1725518186812 repository.');
+    });
+
+    it('Should updates the similarity form field when the repository is changed', () => {
+        TTYGStubs.stubChatsListGetNoResults();
+        TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
+        ConnectorStubs.stubGetConnectors();
+        SimilarityIndexStubs.stubTTYGSimilarityIndexes();
+        // Given I have opened the ttyg page
+        TTYGViewSteps.visit();
+        cy.wait('@get-all-repositories');
+
+        // When I click on the create agent button
+        TTYGViewSteps.createFirstAgent();
+        // Then I expect the selected repository to be set as the repository ID in the form.
+        TtygAgentSettingsModalSteps.verifyRepositorySelected('starwars');
+
+        // When I open Similarity index name panel
+        TtygAgentSettingsModalSteps.enableSimilaritySearchMethodPanel();
+        // Then I expect to see the first index selected.
+        TtygAgentSettingsModalSteps.verifySimilarityIndexSelected('similarity_index_starwars_one');
+
+        // When I select another repository that have similarity connectors
+        TtygAgentSettingsModalSteps.selectRepository('biomarkers');
+        // Then I expect to see the first similarity index from new repository selected.
+        TtygAgentSettingsModalSteps.verifySimilarityIndexSelected('similarity_index_biomarkers_one');
+
+        // When I select a repository that not have similarity indexes
+        TtygAgentSettingsModalSteps.selectRepository('ttyg-repo-1725518186812');
+        // Then I expect help message to be open
+        TtygAgentSettingsModalSteps.getSimilaritySearchIndexMissingHelp().should('be.visible');
+
+        // When I click on help menu
+        TtygAgentSettingsModalSteps.clickOnSimilaritySearchIndexMissingHelp();
+        // Then I expect a confirm dialog displayed.
+        ModalDialogSteps.getDialogBody().contains('If you proceed with creating the similarity index, GraphDB will open in a new tab and switch to the ttyg-repo-1725518186812 repository.');
     });
 });
 
