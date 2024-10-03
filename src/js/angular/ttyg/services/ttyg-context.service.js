@@ -216,7 +216,7 @@ function TTYGContextService(EventEmitterService) {
     };
 
     const toggleExplainResponse = (answerId) => {
-        if (!hasExplainResponse(answerId)) {
+        if (hasExplainResponse(answerId)) {
             _explainCache[answerId].expanded = !_explainCache[answerId].expanded;
             emit(TTYGEventName.EXPLAIN_RESPONSE_CACHE_UPDATED, _getExplainResponseCache());
         }
