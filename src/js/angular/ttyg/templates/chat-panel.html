@@ -19,7 +19,7 @@
         <chat-item-detail ng-if="askingChatItem" chat-item-detail="askingChatItem"
                           asking="!!askingChatItem"></chat-item-detail>
     </div>
-    <div class="new-question mb-2 mt-2 d-flex">
+    <div class="new-question mb-3 mt-2 d-flex">
         <input class="form-control question-input" ng-model="chatItem.question.message" type="text"
                ng-disabled="askingChatItem || loadingChat" ng-keypress="onKeypressOnInput($event)">
         <button class="btn btn-primary ask-button"

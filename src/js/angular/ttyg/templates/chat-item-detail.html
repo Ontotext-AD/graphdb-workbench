@@ -16,12 +16,14 @@
             <div class="actions" ng-class="{'hidden-actions': !showActions}">
                 <button class="btn btn-link btn-sm regenerate-question-btn"
                         ng-click="regenerateQuestion()"
+                        ng-disabled="disabled"
                         gdb-tooltip="{{'ttyg.chat_panel.btn.regenerate.tooltip' | translate}}">
                     <i class="fa-regular fa-arrows-rotate"></i>
                 </button>
                 <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy.tooltip" text-to-copy="chatItemDetail.answer.message"></copy-to-clipboard>
                 <button class="btn btn-link btn-sm explain-response-btn"
                         ng-click="explainResponse()"
+                        ng-disabled="disabled && !explainResponseModel"
                         gdb-tooltip="{{'ttyg.chat_panel.btn.explain_response.tooltip' | translate}}">
                     <i class="fa-regular fa-wand-magic-sparkles"></i>
                     <i class="fa-regular fa-chevron-up toggle-explain-response-icon" ng-class="{expanded: explainResponseModel && explainResponseModel.expanded}"></i>

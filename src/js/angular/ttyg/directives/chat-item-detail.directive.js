@@ -30,6 +30,7 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, Markdow
             chatItemDetail: '=',
             showActions: '=',
             asking: '=',
+            disabled: '=',
             onRegenerateQuestion: '&',
             onAskHowDeliveredAnswer: '&'
         },
