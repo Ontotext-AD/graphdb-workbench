@@ -20,7 +20,7 @@
                     <i class="fa-regular fa-arrows-rotate"></i>
                 </button>
                 <button class="btn btn-link secondary btn-sm copy-answer-btn"
-                        ng-click="copy(chatItemDetail.answer.message)"
+                        ng-click="onCopy(chatItemDetail.answer.message)"
                         gdb-tooltip="{{'ttyg.chat_panel.btn.copy.tooltip' | translate}}">
                     <i class="fa-regular fa-clone"></i>
                 </button>
@@ -47,7 +47,7 @@
                     <span class="label">{{'ttyg.chat_panel.labels.raw_query' | translate}}:</span>
                     <span class="content">{{queryMethod.rawQuery}}</span>
                     <button class="btn btn-link btn-sm"
-                            ng-click="copy(queryMethod.rawQuery)"
+                            ng-click="onCopy(queryMethod.rawQuery)"
                             gdb-tooltip="{{'ttyg.chat_panel.btn.copy.tooltip' | translate}}">
                         <i class="fa-regular fa-clone"></i>
                     </button>
@@ -57,7 +57,7 @@
                         <div class="label">{{'ttyg.chat_panel.labels.sparql_query' | translate}}</div>
                         <div class="actions">
                             <button class="btn btn-link btn-sm"
-                                    ng-click="copy(queryMethod.query)"
+                                    ng-click="onCopy(queryMethod.query)"
                                     gdb-tooltip="{{'ttyg.chat_panel.btn.copy.tooltip' | translate}}">
                                 <i class="fa-regular fa-clone"></i>
                             </button>

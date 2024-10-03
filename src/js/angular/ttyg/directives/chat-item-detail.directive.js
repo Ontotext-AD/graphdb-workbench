@@ -62,7 +62,7 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, Markdow
              *
              * @param {string} message
              */
-            $scope.copy = (message) => {
+            $scope.onCopy = (message) => {
                 TTYGContextService.emit(TTYGEventName.COPY_TEXT_TO_CLIPBOARD, message);
             };
 
