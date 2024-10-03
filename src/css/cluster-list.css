@@ -21,10 +21,8 @@
     padding: 0 12px 12px 12px;
 }
 
-.labels-row {
-    th {
-        border-top: none;
-    }
+.labels-row th {
+    border-top: none;
 }
 
 @media (min-width: 1440px) {
@@ -47,17 +45,16 @@
     width: 36px;
     padding-left: 12px;
     border-left: 1px solid #eceeef;
-
 }
 
 .location-cell {
     width: 50%;
     border-left: 1px solid #eceeef;
+}
 
-    .autocomplete-container>.textarea-edit {
-        font-size: 1rem;
-        min-height: 32px;
-    }
+.location-cell .autocomplete-container>.textarea-edit {
+    font-size: 1rem;
+    min-height: 32px;
 }
 
 .location-cell.adding {
@@ -74,24 +71,28 @@
 
 .status-cell {
     border-left: 1px solid #eceeef;
-    .adding {
-        color: var(--color-success-dark);
-    }
-    .deleting {
-        color: var(--color-warning-dark);
-    }
-    .status-icon {
-        padding: 0 4px;
-    }
+}
+
+.status-cell .adding {
+    color: var(--color-success-dark);
+}
+
+.status-cell .deleting {
+    color: var(--color-warning-dark);
+}
+
+.status-cell .status-icon {
+    padding: 0 4px;
 }
 
 .actions-cell {
     width: 80px;
     border-left: 1px solid #eceeef;
     border-right: 1px solid #eceeef;
-    .btn-link, .btn-link a {
-        padding: 0.4em .4em;
-    }
+}
+
+.actions-cell .btn-link, .actions-cell .btn-link a {
+    padding: 0.4em .4em;
 }
 
 .delete-node-tooltip {
