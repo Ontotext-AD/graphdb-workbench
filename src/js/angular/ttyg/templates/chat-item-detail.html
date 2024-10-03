@@ -33,7 +33,7 @@
             </div>
             <div class="derived-answer-hint" ng-if="loadingExplainResponse ||showActions && explainResponseModel.expanded">
                 <div>{{ 'ttyg.chat_panel.btn.derive_answer.hint' | translate }}</div>
-                <button class="btn deliver-answer-btn" ng-click="askHowDerivedAnswer()">
+                <button class="btn deliver-answer-btn" ng-click="onAskHowAnswerWasDerived()">
                     {{ 'ttyg.chat_panel.btn.derive_answer.label' | translate }}
                 </button>
             </div>
