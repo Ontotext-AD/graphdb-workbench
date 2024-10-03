@@ -86,7 +86,9 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     };
 
     $scope.showUpdateClusterGroupDialog = () => {
+        $scope.setLoader(true);
         getLocationsWithRpcAddresses().then(() => {
+            $scope.setLoader(false);
             return $uibModal.open({
                 templateUrl: 'js/angular/clustermanagement/templates/modal/update-cluster-group-dialog.html',
                 controller: 'UpdateClusterGroupDialogCtrl',
