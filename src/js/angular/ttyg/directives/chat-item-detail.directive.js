@@ -82,7 +82,7 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, Markdow
                             TTYGContextService.updateExplainResponseCache(explainResponse);
                         })
                         .catch((error) => {
-                            toastr.error(getError(error.data), $translate.instant('similarity.get.resource.error'));
+                            toastr.error($translate.instant('ttyg.chat_panel.messages.explain_response_failure'));
                         })
                         .finally(() => $scope.loadingExplainResponse = false);
                 }

@@ -298,6 +298,9 @@
                 "confirm_repository_change": {
                     "body": "Si vous continuez l'exécution de la requête SPARQL, GraphDB s'ouvrira dans un nouvel onglet et passera au dépôt <b>{{repositoryId}}</b>."
                 }
+            },
+            "messages":{
+                "explain_response_failure": "Échec de la récupération de l'explication pour la réponse."
             }
         },
         "agent": {

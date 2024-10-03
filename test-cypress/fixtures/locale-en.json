@@ -298,6 +298,9 @@
                 "confirm_repository_change": {
                     "body": "If you proceed with executing of SPARQL query, GraphDB will open in a new tab and switch to the <b>{{repositoryId}}</b> repository."
                 }
+            },
+            "messages": {
+                "explain_response_failure": "Failed to retrieve the explanation for the response."
             }
         },
         "agent": {
