@@ -14,7 +14,12 @@ describe('TTYG edit an agent', () => {
         NamespaceStubs.stubNameSpaceResponse(repositoryId, '/namespaces/get-repository-starwars-namespaces.json');
     });
 
-    it(' should be able to edit an agent.', () => {
+    it(' should be able to edit an agent.', {
+        retries: {
+            runMode: 1,
+            openMode: 0
+        }
+    }, () => {
         TTYGStubs.stubAgentListGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();

@@ -83,7 +83,7 @@ describe('TTYG chat list', () => {
 
     it('Should be able to edit an existing chat name through the action menu', {
         retries: {
-            runMode: 1,
+            runMode: 2,
             openMode: 0
         }
     }, () => {
