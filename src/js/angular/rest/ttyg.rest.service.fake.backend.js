@@ -55,7 +55,7 @@ export class TtygRestServiceFakeBackend {
         const answer = {
             id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNe_" + Date.now(),
             conversationId: askRequestData.conversationId,
-            agentId: null,
+            agentId: askRequestData.agentId,
             message: `Reply to '${askRequestData.question}'`,
             role: CHAT_MESSAGE_ROLE.ASSISTANT,
             timestamp: Math.floor(Date.now() / 1000)
