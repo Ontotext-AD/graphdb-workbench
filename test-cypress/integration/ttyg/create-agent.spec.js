@@ -62,9 +62,13 @@ describe('TTYG create new agent', () => {
 
         // At least one extraction method must be selected
         // enable SPARQL extraction method and disable it again to check the error message for the extraction methods
-        TtygAgentSettingsModalSteps.toggleSparqlExtractionMethodPanel();
         TtygAgentSettingsModalSteps.enableSparqlExtractionMethod();
+        // The component here is the bootstrap collapse component, so we need to wait for the animation to finish, otherwise the test might fail randomly
+        cy.wait(1000);
+        TtygAgentSettingsModalSteps.getSparqlExtractionMethodPanel().should('be.visible');
         TtygAgentSettingsModalSteps.disableSparqlExtractionMethod();
+        // The component here is the bootstrap collapse component, so we need to wait for the animation to finish, otherwise the test might fail randomly
+        cy.wait(1000);
         TtygAgentSettingsModalSteps.getSparqlExtractionMethodPanel().should('not.be.visible');
         TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.disabled');
         TtygAgentSettingsModalSteps.getExtractionMethodError().should('be.visible').and('contain', 'At least one query method must be selected');
@@ -180,7 +184,6 @@ describe('TTYG create new agent', () => {
         // And I select a repository
         TtygAgentSettingsModalSteps.selectRepository(repositoryId);
         // When I open the full text search extraction method panel
-        TtygAgentSettingsModalSteps.toggleFTSExtractionMethodPanel();
         // The save button should be disabled because the FTS extraction method is not enabled
         TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.disabled');
         // And I enable the FTS extraction method
@@ -213,13 +216,9 @@ describe('TTYG create new agent', () => {
         cy.wait('@get-all-repositories');
         // When I click on the create agent button
         TTYGViewSteps.createFirstAgent();
-        // When I open the similarity search extraction method panel
-        TtygAgentSettingsModalSteps.toggleSimilaritySearchMethodPanel();
-        // Then I should see a help message for similarity index missing
-        TtygAgentSettingsModalSteps.getSimilaritySearchIndexMissingHelp().should('be.visible');
         // When I select the similarity search extraction method
         TtygAgentSettingsModalSteps.enableSimilaritySearchMethodPanel();
-        // Then the help message should stay
+        // Then I should see a help message for similarity index missing
         TtygAgentSettingsModalSteps.getSimilaritySearchIndexMissingHelp().should('be.visible');
         // And the agent save button should be disabled because the similarity index method is not configured yet
         TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.disabled');
@@ -242,8 +241,6 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.getDialog().should('be.visible');
         TtygAgentSettingsModalSteps.typeAgentName('Test Agent');
         TtygAgentSettingsModalSteps.selectRepository(repositoryId);
-        // When I open the similarity search extraction method panel
-        TtygAgentSettingsModalSteps.toggleSimilaritySearchMethodPanel();
         // And I enable the similarity search extraction method
         TtygAgentSettingsModalSteps.enableSimilaritySearchMethodPanel();
         // Then I expect similarity index to be selected
@@ -287,7 +284,6 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.typeAgentName('Test Agent');
         TtygAgentSettingsModalSteps.selectRepository(repositoryId);
         // When I select and open the GPT retrieval connector method panel
-        TtygAgentSettingsModalSteps.toggleRetrievalMethodPanel();
         TtygAgentSettingsModalSteps.enableRetrievalMethodPanel();
         // Then I should see the missing connector help message
         TtygAgentSettingsModalSteps.getMissingRetrievalConnectorHelp().should('be.visible');
