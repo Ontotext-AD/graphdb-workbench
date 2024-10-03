@@ -55,7 +55,7 @@ function TTYGContextService(EventEmitterService, TTYGService) {
      * @return {Promise<AgentModel>}
      */
     const getDefaultAgent = () => {
-        return _defaultAgent;
+        return cloneDeep(_defaultAgent);
     };
 
     const setDefaultAgent = (agent) => {
