@@ -192,7 +192,7 @@ function TTYGContextService(EventEmitterService) {
     };
 
     /**
-     *  Updates the explain response catch.
+     *  Updates the explain response cache.
      *
      * @param {ExplainResponseModel} explainResponse
      */
