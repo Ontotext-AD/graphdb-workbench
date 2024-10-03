@@ -109,3 +109,20 @@
 .chat-detail .explain-response .explain-query .query {
     padding: 16px;
 }
+
+.chat-detail .copy-btn {
+    color: var(--primary-color);
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 0;
+}
+
+.chat-detail .copy-btn:hover {
+    transform: scale(1.1);
+    transition: all 0.1s ease-out;
+}
+
+.chat-detail .copy-btn:focus {
+    outline: none;
+}

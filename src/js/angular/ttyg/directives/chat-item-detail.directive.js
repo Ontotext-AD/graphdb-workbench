@@ -58,15 +58,6 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, Markdow
             };
 
             /**
-             * Emits an event that triggers copying of the <code>message</code> to the clipboard.
-             *
-             * @param {string} message
-             */
-            $scope.onCopy = (message) => {
-                TTYGContextService.emit(TTYGEventName.COPY_TEXT_TO_CLIPBOARD, message);
-            };
-
-            /**
              * Extract the explanation of how the answer was generated.
              */
             $scope.explainResponse = () => {

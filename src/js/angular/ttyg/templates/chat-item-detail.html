@@ -14,17 +14,13 @@
             <div class="answer" ng-bind-html="MarkdownService.renderMarkdown(chatItemDetail.answer.message)">
             </div>
             <div class="actions" ng-class="{'hidden-actions': !showActions}">
-                <button class="btn btn-link secondary btn-sm regenerate-question-btn"
+                <button class="btn btn-link btn-sm regenerate-question-btn"
                         ng-click="regenerateQuestion()"
                         gdb-tooltip="{{'ttyg.chat_panel.btn.regenerate.tooltip' | translate}}">
                     <i class="fa-regular fa-arrows-rotate"></i>
                 </button>
-                <button class="btn btn-link secondary btn-sm copy-answer-btn"
-                        ng-click="onCopy(chatItemDetail.answer.message)"
-                        gdb-tooltip="{{'ttyg.chat_panel.btn.copy.tooltip' | translate}}">
-                    <i class="fa-regular fa-clone"></i>
-                </button>
-                <button class="btn btn-link btn-sm copy-answer-btn"
+                <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy.tooltip" text-to-copy="chatItemDetail.answer.message"></copy-to-clipboard>
+                <button class="btn btn-link btn-sm explain-response-btn"
                         ng-click="explainResponse()"
                         gdb-tooltip="{{'ttyg.chat_panel.btn.explain_response.tooltip' | translate}}">
                     <i class="fa-regular fa-wand-magic-sparkles"></i>
@@ -46,21 +42,13 @@
                 <div class="explain-response-row">
                     <span class="label">{{'ttyg.chat_panel.labels.raw_query' | translate}}:</span>
                     <span class="content">{{queryMethod.rawQuery}}</span>
-                    <button class="btn btn-link btn-sm"
-                            ng-click="onCopy(queryMethod.rawQuery)"
-                            gdb-tooltip="{{'ttyg.chat_panel.btn.copy.tooltip' | translate}}">
-                        <i class="fa-regular fa-clone"></i>
-                    </button>
+                    <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy.tooltip" text-to-copy="queryMethod.rawQuery"></copy-to-clipboard>
                 </div>
                 <div class="explain-query">
                     <div class="header">
                         <div class="label">{{'ttyg.chat_panel.labels.sparql_query' | translate}}</div>
                         <div class="actions">
-                            <button class="btn btn-link btn-sm"
-                                    ng-click="onCopy(queryMethod.query)"
-                                    gdb-tooltip="{{'ttyg.chat_panel.btn.copy.tooltip' | translate}}">
-                                <i class="fa-regular fa-clone"></i>
-                            </button>
+                            <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy.tooltip" text-to-copy="queryMethod.query"></copy-to-clipboard>
                             <button class="btn btn-link btn-sm"
                                     ng-click="onOpenInSparqlEditor(queryMethod.query)">
                                 <i class="icon-sparql"></i>

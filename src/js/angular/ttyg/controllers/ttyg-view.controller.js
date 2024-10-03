@@ -633,12 +633,6 @@ function TTYGViewCtrl(
         }
     };
 
-    const onCopyTextToClipboard = (text) => {
-        navigator.clipboard.writeText(text)
-            .then(() => toastr.success($translate.instant('ttyg.messages.text_copy_successful')))
-            .catch(() => toastr.error($translate.instant('ttyg.messages.text_copy_failed')));
-    };
-
     /**
      * Handles the selection of an agent.
      * @param {AgentModel} agent
@@ -807,7 +801,6 @@ function TTYGViewCtrl(
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_AGENT, onDeleteAgent));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_SELECTED, onAgentSelected));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.SELECT_CHAT, onChatSelected));
-    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_TEXT_TO_CLIPBOARD, onCopyTextToClipboard));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.GO_TO_CREATE_SIMILARITY_VIEW, onGoToCreateSimilarityView));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.GO_TO_CONNECTORS_VIEW, onGoToConnectorsView));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.GO_TO_SPARQL_EDITOR, onGoToSparqlEditorView));

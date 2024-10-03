@@ -11,14 +11,6 @@
     clip: rect(0, auto, auto, 0);
 }
 
-.chat-panel .btn-link:focus {
-    color: var(--text-color);
-}
-
-.chat-panel .btn-link:not(:hover) {
-    color: var(--text-color);
-}
-
 .chat-panel .chat-details {
     overflow-y: hidden;
     scrollbar-gutter: stable;

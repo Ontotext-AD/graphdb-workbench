@@ -11,6 +11,9 @@
  * The button also has an `ng-click` directive that triggers the `copyToClipboard` function when the button is clicked.
  *
  * @param {string} tooltipText - The text to be displayed as a tooltip when hovering over the button.
+ * @param {string} textToCopy - (optional) The text to be copied. If not passed, searching by the class 'copyable'
+ *                                         will be used, and the search will be executed within the scope of
+ *                                         the directive's parent element.
  *
  * @example
  * <copy-to-clipboard tooltip-text="Your tooltip text here"></copy-to-clipboard>
@@ -38,14 +41,15 @@ copyToClipboard.$inject = ['$translate', 'toastr'];
  */
 function copyToClipboard($translate, toastr) {
     return {
-        template: '<button class="copy-btn" gdb-tooltip="{{tooltipText | translate}}" ng-click="copyToClipboard()"><span class="icon-copy"></span></button>',
+        template: '<button class="copy-btn" gdb-tooltip="{{tooltipText | translate}}" ng-click="copyToClipboard()"><i class="fa-regular fa-clone"></i></button>',
         restrict: 'E',
         scope: {
-            tooltipText: '@'
+            tooltipText: '@',
+            textToCopy: '='
         },
         link: function ($scope, element) {
             $scope.copyToClipboard = function() {
-                const textToCopy = element.parent().find('.copyable').text();
+                const textToCopy = $scope.textToCopy ? $scope.textToCopy : element.parent().find('.copyable').text();
 
                 if (navigator.clipboard) {
                     navigator.clipboard.writeText(textToCopy).then(() => {

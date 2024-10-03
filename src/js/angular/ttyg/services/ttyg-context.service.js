@@ -392,11 +392,6 @@ export const TTYGEventName = {
     AGENT_SELECTED: 'agentSelected',
 
     /**
-     * Emitting the "copyTextToClipboard" event will trigger an action to copy a copyTextToClipboard to the clipboard.
-     */
-    COPY_TEXT_TO_CLIPBOARD: 'copyTextToClipboard',
-
-    /**
      * This event will trigger the opening of the similarity view.
      */
     GO_TO_CREATE_SIMILARITY_VIEW: "goToCreateSimilarityView",
