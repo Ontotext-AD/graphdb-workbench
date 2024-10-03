@@ -70,16 +70,14 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, Markdow
              * Extract the explanation of how the answer was generated.
              */
             $scope.explainResponse = () => {
-                const explainResponse = TTYGContextService.getExplainResponseCache().getExplainResponse($scope.chatItemDetail.answer.id);
-                if (explainResponse) {
-                    explainResponse.expanded = !explainResponse.expanded;
-                    TTYGContextService.updateExplainResponseCache(explainResponse);
+                if (TTYGContextService.hasExplainResponse($scope.chatItemDetail.answer.id)) {
+                    TTYGContextService.toggleExplainResponse($scope.chatItemDetail.answer.id);
                 } else {
                     $scope.loadingExplainResponse = true;
                     TTYGService.explainResponse($scope.chatItemDetail)
                         .then((explainResponse) => {
                             $scope.explainResponseModel = explainResponse;
-                            TTYGContextService.updateExplainResponseCache(explainResponse);
+                            TTYGContextService.addExplainResponseCache(explainResponse);
                         })
                         .catch(() => {
                             toastr.error($translate.instant('ttyg.chat_panel.messages.explain_response_failure'));
@@ -116,13 +114,13 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, Markdow
             // =========================
             const init = () => {
                 if ($scope.chatItemDetail.answer) {
-                    $scope.explainResponseModel = TTYGContextService.getExplainResponseCache().getExplainResponse($scope.chatItemDetail.answer.id);
+                    $scope.explainResponseModel = TTYGContextService.getExplainResponse($scope.chatItemDetail.answer.id);
                 }
             };
 
-            const onExplainResponseCacheUpdated = (explainResponses) => {
+            const onExplainResponseCacheUpdated = () => {
                 if ($scope.chatItemDetail.answer) {
-                    $scope.explainResponseModel = explainResponses.getExplainResponse($scope.chatItemDetail.answer.id);
+                    $scope.explainResponseModel = TTYGContextService.getExplainResponse($scope.chatItemDetail.answer.id);
                 }
             };
 

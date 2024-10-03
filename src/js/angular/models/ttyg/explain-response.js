@@ -1,33 +1,3 @@
-import {cloneDeep} from "lodash";
-
-export class ExplainResponseCacheModel {
-    constructor() {
-        /**
-         *
-         * @type {{[key: string]: ExplainResponseModel}}
-         */
-        this._cache = {};
-
-    }
-
-    /**
-     * Adds <code>explainResponse to the cache.
-     * @param {ExplainResponseModel} explainResponse
-     */
-    adExplainResponse(explainResponse) {
-        this._cache[explainResponse.answerId] = explainResponse;
-    }
-
-    /**
-     * Returns the explain response instance for answer with id <code>answerId</code>.
-     * @param {string} answerId
-     * @return {ExplainResponseModel | undefined}
-     */
-    getExplainResponse(answerId) {
-        return this._cache[answerId];
-    }
-}
-
 export class ExplainResponseModel {
     constructor(data = {}) {
 

@@ -1,5 +1,4 @@
 import {cloneDeep} from "lodash";
-import {ExplainResponseCacheModel} from "../../models/ttyg/explain-response";
 
 angular
     .module('graphdb.framework.ttyg.services.ttygcontext', [])
@@ -39,9 +38,11 @@ function TTYGContextService(EventEmitterService) {
 
     /**
      * Stores information about loaded explain responses.
-     * @type {ExplainResponseCacheModel}
+     * The key is the answer ID, and the value is an instance of {@see ExplainResponseModel} that holds the explanation message.
+     *
+     * @type {{[key: string]: ExplainResponseModel}}
      */
-    let _explainCache = new ExplainResponseCacheModel();
+    let _explainCache = {};
 
     /**
      * @return {AgentListModel}
@@ -185,22 +186,41 @@ function TTYGContextService(EventEmitterService) {
     };
 
     /**
-     * @return {ExplainResponseCacheModel} the cache of explain responses.
+     * @return {{[key: string]: ExplainResponseModel}} the cache of explain responses.
      */
-    const getExplainResponseCache = () => {
+    const _getExplainResponseCache = () => {
         return cloneDeep(_explainCache);
     };
 
     /**
-     *  Updates the explain response cache.
+     * Gets the explain response.
+     * @param {stirng} answerId
+     * @return {ExplainResponseModel}
+     */
+    const getExplainResponse = (answerId) => {
+        return cloneDeep(_explainCache[answerId]);
+    };
+
+    /**
+     *  Adds the <code>explainResponse</code> into the explain response cache.
      *
      * @param {ExplainResponseModel} explainResponse
      */
-    const updateExplainResponseCache = (explainResponse) => {
-        const explainResponseCache = getExplainResponseCache();
-        explainResponseCache.adExplainResponse(explainResponse);
-        _explainCache = explainResponseCache;
-        emit(TTYGEventName.EXPLAIN_RESPONSE_CACHE_UPDATED, getExplainResponseCache());
+    const addExplainResponseCache = (explainResponse) => {
+        _explainCache[explainResponse.answerId] = explainResponse;
+        _explainCache = cloneDeep(_explainCache);
+        emit(TTYGEventName.EXPLAIN_RESPONSE_CACHE_UPDATED, _getExplainResponseCache());
+    };
+
+    const hasExplainResponse = (answerId) => {
+        return !!_explainCache[answerId];
+    };
+
+    const toggleExplainResponse = (answerId) => {
+        if (!hasExplainResponse(answerId)) {
+            _explainCache[answerId].expanded = !_explainCache[answerId].expanded;
+            emit(TTYGEventName.EXPLAIN_RESPONSE_CACHE_UPDATED, _getExplainResponseCache());
+        }
     };
 
     /**
@@ -211,7 +231,7 @@ function TTYGContextService(EventEmitterService) {
      */
     const onExplainResponseCacheUpdated = (callback) => {
         if (angular.isFunction(callback)) {
-            callback(getExplainResponseCache());
+            callback(_getExplainResponseCache());
         }
         return subscribe(TTYGEventName.EXPLAIN_RESPONSE_CACHE_UPDATED, (explainResponses) => callback(explainResponses));
     };
@@ -268,8 +288,10 @@ function TTYGContextService(EventEmitterService) {
         selectAgent,
         getSelectedAgent,
         onSelectedAgentChanged,
-        getExplainResponseCache,
-        updateExplainResponseCache,
+        hasExplainResponse,
+        toggleExplainResponse,
+        getExplainResponse,
+        addExplainResponseCache,
         onExplainResponseCacheUpdated
     };
 }
