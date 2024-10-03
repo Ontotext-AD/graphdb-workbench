@@ -95,7 +95,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             $scope.regenerateQuestion = (chatItem) => {
                 const regenerateChatItem = getEmptyChatItem();
                 regenerateChatItem.setQuestionMessage(chatItem.getQuestionMessage());
-                $scope.askingChatItem = cloneDeep(regenerateChatItem);
+                $scope.askingChatItem = regenerateChatItem;
                 askQuestion(regenerateChatItem);
                 scrollToBottom();
             };

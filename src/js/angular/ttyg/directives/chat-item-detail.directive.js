@@ -92,12 +92,10 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, Markdow
             $scope.onOpenInSparqlEditor = (query) => {
                 if ($scope.chatItemDetail.agentId) {
                     const agent = TTYGContextService.getAgent($scope.chatItemDetail.agentId);
-                    if (agent) {
-                        TTYGContextService.emit(TTYGEventName.GO_TO_SPARQL_EDITOR, {
-                            query,
-                            repositoryId: agent.repositoryId
-                        });
-                    }
+                    TTYGContextService.emit(TTYGEventName.GO_TO_SPARQL_EDITOR, {
+                        query,
+                        repositoryId: agent.repositoryId
+                    });
                 }
             };
 

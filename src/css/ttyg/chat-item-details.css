@@ -57,7 +57,7 @@
 
 .chat-detail .assistant-message .deliver-answer-btn {
     background: none;
-    border-color: #C2C1C2;
+    border: var(--border);
     color: #414041
 }
 
