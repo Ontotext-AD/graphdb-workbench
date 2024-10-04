@@ -113,9 +113,8 @@
 
                         <div ng-if="extractionMethod.expanded && extractionMethod.method === extractionMethods.FTS_SEARCH"
                              class="extraction-method-options">
-                            <button class="btn btn-link btn-sm regenerate-question-btn pull-right"
+                            <button class="btn btn-link btn-sm pull-right"
                                     ng-click="checkIfFTSEnabled()"
-                                    ng-disabled="disabled"
                                     gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.retrieval_search.btn.reload.tooltip' | translate}}">
                                 <i class="fa-regular fa-arrows-rotate"></i>
                             </button>
@@ -144,7 +143,7 @@
                         <div ng-if="extractionMethod.expanded && extractionMethod.method === extractionMethods.SIMILARITY"
                              ng-class="{'has-error': extractionMethod.selected && !extractionMethod.sparqlOption}"
                              class="extraction-method-options">
-                            <button class="btn btn-link btn-sm regenerate-question-btn pull-right"
+                            <button class="btn btn-link btn-sm pull-right"
                                     ng-click="updateSimilaritySearchPanel()"
                                     ng-disabled="disabled"
                                     gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.similarity_index.btn.reload.tooltip' | translate}}">
@@ -208,7 +207,7 @@
                         <div ng-if="extractionMethod.expanded && extractionMethod.method === extractionMethods.RETRIEVAL"
                              ng-class="{'has-error': agentSettingsForm.$error.missingConnector}"
                              class="extraction-method-options">
-                            <button class="btn btn-link btn-sm regenerate-question-btn pull-right"
+                            <button class="btn btn-link btn-sm pull-right"
                                     ng-click="updateRetrievalConnectorPanel()"
                                     ng-disabled="disabled"
                                     gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.retrieval_search.btn.reload.tooltip' | translate}}">
