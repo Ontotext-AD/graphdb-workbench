@@ -30,10 +30,25 @@ function ontoLoader() {
 
 ontoLoaderFancy.$inject = [];
 
+/**
+ * Directive for the fancy loader.
+ *
+ * Accepts the following attributes:
+ * - size: the size of the loader (width and height)
+ * - message: the message to display below the loader
+ * - hideMessage: if set to true, the message will not be displayed
+ *
+ * @return {{template: (function(*, *): string)}}
+ */
 function ontoLoaderFancy() {
     return {
         template: function (elem, attr) {
-            const message = attr.message ? `<div>${attr.message}</div>` : `<div>{{'common.loading' | translate}}<div>`;
+            let message = '';
+            if (attr.hideMessage) {
+                message = '';
+            } else {
+                message = attr.message ? `<div>${attr.message}</div>` : `<div>{{'common.loading' | translate}}<div>`;
+            }
             return `
                 <object width="${attr.size}" height="${attr.size}" data="js/angular/templates/loader/ot-loader.svg?v=[AIV]{version}[/AIV]"></object>
                 ${message}
