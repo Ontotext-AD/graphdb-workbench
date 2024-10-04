@@ -243,6 +243,23 @@ export class ExtractionMethodsFormModel {
     set extractionMethods(value) {
         this._extractionMethods = value;
     }
+
+    /**
+     * Gets the extraction method with <code>extractionMethodName</code> name.
+     * @param {'retrieval_search' | 'similarity_search' | 'sparql_search' | 'fts_search'} extractionMethodName
+     * @return {ExtractionMethodFormModel}
+     */
+    getExtractionMethod(extractionMethodName) {
+        return this._extractionMethods.find((extractionMethod) => extractionMethod.method === extractionMethodName);
+    }
+
+    getSimilarityExtractionMethod() {
+        return this.getExtractionMethod(ExtractionMethod.SIMILARITY);
+    }
+
+    getRetrievalExtractionMethod() {
+        return this.getExtractionMethod(ExtractionMethod.RETRIEVAL);
+    }
 }
 
 export class ExtractionMethodFormModel {
