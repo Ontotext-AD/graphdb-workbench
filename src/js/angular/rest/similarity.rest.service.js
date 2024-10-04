@@ -21,7 +21,7 @@ function SimilarityRestService($http) {
 
     /**
      * Fetches the similarity indexes for the repository with id <code>repositoryId</code> and location <code>repositoryLocation</code>.
-     * If the repository ID and repository location are not provided, the values persisted in local storage will be used {@see authentication.interceptor.js}.
+     * If the repository ID and repository location are not provided, the currently selected repository will be used.
      *
      * @param {string} repositoryId - (optional) The repository id.
      * @param {string} repositoryLocation - (optional) The repository location.
