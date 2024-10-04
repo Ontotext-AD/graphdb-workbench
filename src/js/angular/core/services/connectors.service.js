@@ -14,7 +14,7 @@ function ConnectorsService(ConnectorsRestService) {
 
     /**
      * Fetches all connector types from the server for the repository with id <code>repositoryId</code> and location <code>repositoryLocation</code>.
-     * If the repository ID and repository location are not provided, the values persisted in local storage will be used {@see authentication.interceptor.js}.
+     * If the repository ID and repository location are not provided, the currently selected repository will be used.
      *
      * @param {string} repositoryId - (optional) The repository id.
      * @param {string} repositoryLocation - (optional) The repository location.
@@ -27,7 +27,7 @@ function ConnectorsService(ConnectorsRestService) {
 
     /**
      * Fetches the connector prefix by its name for the repository with id <code>repositoryId</code> and location <code>repositoryLocation</code>.
-     * If the repository ID and repository location are not provided, the values persisted in local storage will be used {@see authentication.interceptor.js}.
+     * If the repository ID and repository location are not provided, the currently selected repository will be used.
      *
      * @param {string} name
      * @param {string} repositoryId - (optional) The repository id.
@@ -44,8 +44,7 @@ function ConnectorsService(ConnectorsRestService) {
 
     /**
      * Fetches all connectors of a specific type defined by the prefix for the repository with id <code>repositoryId</code>
-     * and location <code>repositoryLocation</code>. If the repository ID and repository location are not provided,
-     * the values persisted in local storage will be used {@see authentication.interceptor.js}.
+     * and location <code>repositoryLocation</code>. If the repository ID and repository location are not provided, the currently selected repository will be used.
      * @param {string} prefix
      * @param {string} repositoryId - (optional) The repository id.
      * @param {string} repositoryLocation - (optional) The repository location.
@@ -60,8 +59,8 @@ function ConnectorsService(ConnectorsRestService) {
 
     /**
      * Fetches all connectors of a specific type defined by the prefix and returns them as SelectMenuOptionsModel
-     * for the repository with id <code>repositoryId</code> and location <code>repositoryLocation</code>. If the repository ID
-     * and repository location are not provided, the values persisted in local storage will be used {@see authentication.interceptor.js}.
+     * for the repository with id <code>repositoryId</code> and location <code>repositoryLocation</code>.
+     * If the repository ID and repository location are not provided, the currently selected repository will be used.
      * @param {string} prefix
      * @param {string} repositoryId - (optional) The repository id.
      * @param {string} repositoryLocation - (optional) The repository location.
