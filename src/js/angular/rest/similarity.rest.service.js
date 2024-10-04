@@ -23,8 +23,8 @@ function SimilarityRestService($http) {
      * Fetches the similarity indexes for the repository with id <code>repositoryId</code> and location <code>repositoryLocation</code>.
      * If the repository ID and repository location are not provided, the currently selected repository will be used.
      *
-     * @param {string} repositoryId - (optional) The repository id.
-     * @param {string} repositoryLocation - (optional) The repository location.
+     * @param {string | undefined} repositoryId - The repository id.
+     * @param {string | undefined} repositoryLocation - The repository location.
      * @return {*} The similarity indexes for the specified repository.
      */
     function getIndexes(repositoryId, repositoryLocation) {
