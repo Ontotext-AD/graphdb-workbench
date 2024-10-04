@@ -294,6 +294,12 @@
                 "sparql_query": "SPARQL query"
 
             },
+            "query_name": {
+                "sparql_search":"SPARQL",
+                "fts_search": "Full-text search",
+                "similarity_search": "Similarity search",
+                "retrieval_search": "ChatGPT retrieval connector"
+            },
             "dialog": {
                 "confirm_repository_change": {
                     "body": "If you proceed with executing of SPARQL query, GraphDB will open in a new tab and switch to the <b>{{repositoryId}}</b> repository."
