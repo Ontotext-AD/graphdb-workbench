@@ -11,6 +11,10 @@ const LIST_CHATS_DELAY = 2000;
 // Delay for getConversation(id)
 const GET_CHAT_DELAY = 2000;
 
+const CREATE_AGENT_DELAY = 2000;
+const EDIT_AGENT_DELAY = 2000;
+const LOAD_AGENTS_DELAY = 2000;
+
 export class TtygRestServiceFakeBackend {
 
     constructor() {
@@ -98,7 +102,7 @@ export class TtygRestServiceFakeBackend {
     }
 
     getAgents() {
-        return Promise.resolve({data: [...agentsList]});
+        return new Promise((resolve) => setTimeout(() => resolve({data: []}), LOAD_AGENTS_DELAY));
     }
 
     getAgent(id) {
@@ -106,14 +110,19 @@ export class TtygRestServiceFakeBackend {
     }
 
     createAgent(agent) {
+        if (agent.name === 'err') {
+            return new Promise((resolve, reject) => setTimeout(() => reject({status: 500, message: 'Internal Server Error'}), CREATE_AGENT_DELAY));
+        }
         agentsList.push(agent);
-        return Promise.resolve({data: agent});
+        return new Promise((resolve) => setTimeout(() => resolve({data: agent}), CREATE_AGENT_DELAY));
     }
 
     editAgent(editedAgent) {
+        if (editedAgent.name === 'err') {
+            return new Promise((resolve, reject) => setTimeout(() => reject({status: 500, message: 'Internal Server Error'}), EDIT_AGENT_DELAY));
+        }
         agentsList = agentsList.map((agent) => agent.id === editedAgent.id ? editedAgent : agent);
-
-        return Promise.resolve({data: editedAgent});
+        return new Promise((resolve) => setTimeout(() => resolve({data: editedAgent}), CREATE_AGENT_DELAY));
     }
 
     deleteAgent(id) {

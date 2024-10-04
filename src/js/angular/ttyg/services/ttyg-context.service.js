@@ -376,9 +376,10 @@ export const TTYGEventName = {
     AGENT_LIST_UPDATED: 'agentListUpdated',
 
     /**
-     * This event will be emitted when the create agent process is triggered but before the agent create request is sent.
+     * This event will be emitted when the create agent process is triggered through the UI but before the agent create
+     * request is sent. This is used to open the agent settings dialog.
      */
-    CREATE_AGENT: 'createAgent',
+    OPEN_AGENT_SETTINGS: 'openAgentSettings',
 
     /**
      * This event will be emitted when an agent needs to be edited.
