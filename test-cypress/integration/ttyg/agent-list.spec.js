@@ -13,7 +13,7 @@ describe('TTYG agent list', () => {
         TTYGStubs.stubChatsListGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
-        cy.wait('@get-agent-list-0');
+        cy.wait('@get-agent-list');
         // When the ttyg page is loaded
         // Then I should see the agent list with agents filtered by the current repository
         TTYGViewSteps.getAgentsPanel().should('be.visible');

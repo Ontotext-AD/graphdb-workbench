@@ -20,7 +20,9 @@ describe('TTYG clone an agent', () => {
         TTYGStubs.stubChatGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
+        cy.wait('@get-all-repositories');
         cy.wait('@get-chat');
+        cy.wait('@get-agent-list');
         // When I select to clone an agent
         TTYGViewSteps.triggerCloneAgentActionMenu(0);
         // Then I expect to see the clone agent settings modal

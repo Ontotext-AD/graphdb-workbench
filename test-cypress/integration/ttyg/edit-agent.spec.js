@@ -24,7 +24,7 @@ describe('TTYG edit an agent', () => {
         TTYGStubs.stubAgentListGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
-
+        cy.wait('@get-agent-list');
         // When I select an agent that don't have activated additional extraction method
         TTYGViewSteps.openAgentsMenu();
         TTYGViewSteps.selectAgent(0);
@@ -39,7 +39,7 @@ describe('TTYG edit an agent', () => {
         // and save the agent.
         TTYGStubs.stubAgentEdit();
         TtygAgentSettingsModalSteps.saveAgent();
-
+        cy.wait('@edit-agent');
         // Then I expect the agent to be saved
         ToasterSteps.verifySuccess('The agent \'agent-1\' was saved successfully.');
         TTYGViewSteps.editCurrentAgent();

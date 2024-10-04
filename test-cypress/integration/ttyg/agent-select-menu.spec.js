@@ -59,7 +59,7 @@ describe('TTYG agent select menu', () => {
         TTYGStubs.stubAgentListGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
-        cy.wait('@get-agent-list-0');
+        cy.wait('@get-agent-list');
         // When I delete an agent from the sidebar
         TTYGStubs.stubAgentDelete();
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-after-deleted.json');
@@ -81,7 +81,7 @@ describe('TTYG agent select menu', () => {
         TTYGStubs.stubAgentListGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
-        cy.wait('@get-agent-list-0');
+        cy.wait('@get-agent-list');
         // And I have selected an agent from the menu
         TTYGViewSteps.openAgentsMenu();
         TTYGViewSteps.selectAgent(0);
@@ -106,7 +106,7 @@ describe('TTYG agent select menu', () => {
         TTYGStubs.stubAgentListGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
-        cy.wait('@get-agent-list-0');
+        cy.wait('@get-agent-list');
         // When I select an agent which has no repository id from the menu
         TTYGViewSteps.openAgentsMenu();
         TTYGViewSteps.selectAgent(1);
