@@ -2,7 +2,8 @@ import {Stubs} from "../stubs";
 
 export class TTYGStubs extends Stubs {
     static stubChatsListGet(fixture = '/ttyg/chats/get-chat-list.json', delay = 0) {
-        cy.intercept('GET', '/rest/chat/conversations', {
+        cy.intercept('/rest/chat/conversations', {
+            method: 'GET',
             fixture: fixture,
             statusCode: 200,
             delay: delay

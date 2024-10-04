@@ -63,11 +63,12 @@ describe('TTYG agent select menu', () => {
         // When I delete an agent from the sidebar
         TTYGStubs.stubAgentDelete();
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-after-deleted.json');
-        TTYGViewSteps.filterAgentsByRepository('All');
+        TTYGViewSteps.selectAllAgentsFilter();
         TTYGViewSteps.triggerDeleteAgentActionMenu(0);
         ModalDialogSteps.confirm();
         ModalDialogSteps.getDialog().should('not.exist');
         // TODO: the agents list filter brakes after deleting an agent!!!
+        TTYGViewSteps.selectAllAgentsFilter();
         TTYGViewSteps.getAgents().should('have.length', 3);
         TTYGViewSteps.verifySelectAgentMenuItems([
             {name: 'agent-2', repositoryId: 'Deleted repository'}, // the agent has no repository id
