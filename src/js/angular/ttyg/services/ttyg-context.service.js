@@ -1,12 +1,12 @@
-import {cloneDeep} from "lodash";
+import {cloneDeep} from 'lodash';
 
 angular
     .module('graphdb.framework.ttyg.services.ttygcontext', [])
     .factory('TTYGContextService', TTYGContextService);
 
-TTYGContextService.$inject = ['EventEmitterService'];
+TTYGContextService.$inject = ['EventEmitterService', 'TTYGService'];
 
-function TTYGContextService(EventEmitterService) {
+function TTYGContextService(EventEmitterService, TTYGService) {
 
     /**
      * The list of agents.
@@ -43,6 +43,24 @@ function TTYGContextService(EventEmitterService) {
      * @type {{[key: string]: ExplainResponseModel}}
      */
     let _explainCache = {};
+
+    /**
+     * The default agent values.
+     * @type {AgentModel|undefined}
+     * @private
+     */
+    let _defaultAgent = undefined;
+
+    /**
+     * @return {Promise<AgentModel>}
+     */
+    const getDefaultAgent = () => {
+        return cloneDeep(_defaultAgent);
+    };
+
+    const setDefaultAgent = (agent) => {
+        _defaultAgent = agent;
+    };
 
     /**
      * @return {AgentListModel}
@@ -291,7 +309,9 @@ function TTYGContextService(EventEmitterService) {
         toggleExplainResponse,
         getExplainResponse,
         addExplainResponseCache,
-        onExplainResponseCacheUpdated
+        onExplainResponseCacheUpdated,
+        getDefaultAgent,
+        setDefaultAgent
     };
 }
 

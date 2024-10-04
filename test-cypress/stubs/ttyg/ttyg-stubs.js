@@ -124,4 +124,12 @@ export class TTYGStubs extends Stubs {
             delay: delay
         }).as('delete-agent');
     }
+
+    static stubAgentDefaultsGet() {
+        cy.intercept('/rest/chat/agents/default', {
+            method: 'GET',
+            fixture: '/ttyg/agent/get-agent-defaults.json',
+            statusCode: 200
+        }).as('get-agent-defaults');
+    }
 }

@@ -42,17 +42,17 @@
                 <div ng-repeat="extractionMethod in agentFormModel.assistantExtractionMethods.extractionMethods"
                      class="extraction-method">
                     <div id="{{extractionMethod.method + '_method_heading'}}" class="extraction-method-heading"
-                         ng-class="{'selected': extractionMethod.selected}"
-                         data-toggle="collapse"
-                         data-target="#{{extractionMethod.method + '_method_content'}}">
+                         ng-class="{'selected': extractionMethod.selected}">
                         <div class="mr-0 extraction-method-toggle">
                             <input type="checkbox" id="{{extractionMethod.method + '_checkbox'}}"
                                    name="{{extractionMethod}}" class="switch"
-                                   ng-change="toggleExtractionMethod(extractionMethod)"
+                                   ng-click="toggleExtractionMethod(extractionMethod, $event)"
                                    ng-model="extractionMethod.selected"/>
                             <label for="{{extractionMethod.method + '_checkbox'}}"></label>
                         </div>
                         <a class="btn btn-link panel-toggle-link collapsed"
+                           data-toggle="collapse"
+                           data-target="#{{extractionMethod.method + '_method_content'}}"
                            aria-expanded="false" aria-controls="{{extractionMethod.method + '_method_content'}}"
                            ng-click="onExtractionMethodPanelToggle(extractionMethod)">
                             <span class="mr-1">{{'ttyg.agent.create_agent_modal.form.' + extractionMethod.method + '.label' | translate}}</span>
@@ -136,6 +136,7 @@
                         <!-- Similarity method settings -->
 
                         <div ng-if="extractionMethod.method === extractionMethods.SIMILARITY"
+                             ng-class="{'has-error': extractionMethod.selected && !extractionMethod.sparqlOption}"
                              class="extraction-method-options">
                             <div ng-if="!similarityIndexes.length" class="no-similarity-index-message">
                                 {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_1' | translate}}
@@ -190,6 +191,7 @@
                         <!-- Retrieval method settings -->
 
                         <div ng-if="extractionMethod.method === extractionMethods.RETRIEVAL"
+                             ng-class="{'has-error': agentSettingsForm.$error.missingConnector}"
                              class="extraction-method-options">
                             <div ng-if="!retrievalConnectors.length" class="no-retrieval-connector-message">
                                 {{'ttyg.agent.create_agent_modal.form.retrieval_search.no_retrieval_connectors.message_1' | translate}}

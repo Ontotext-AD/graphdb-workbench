@@ -174,6 +174,13 @@ function TTYGRestService($http) {
         return $http.post(EXPLAIN_RESPONSE_ENDPOINT, data);
     };
 
+    const getAgentDefaultValues = () => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.getAgentDefaultValues();
+        }
+        return $http.get(`${AGENTS_ENDPOINT}/default`);
+    };
+
     return {
         getConversation,
         renameConversation,
@@ -187,6 +194,7 @@ function TTYGRestService($http) {
         createAgent,
         editAgent,
         deleteAgent,
-        explainResponse
+        explainResponse,
+        getAgentDefaultValues
     };
 }

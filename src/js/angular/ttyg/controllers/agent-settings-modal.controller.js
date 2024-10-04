@@ -125,7 +125,14 @@ function AgentSettingsModalController(
      *
      * @type {ExtractionMethodFormModel} extractionMethod
      */
-    $scope.toggleExtractionMethod = (extractionMethod) => {
+    $scope.toggleExtractionMethod = (extractionMethod, event) => {
+        // FIXME: Using jQuery is highly unwanted, but I couldn't find a better way to do it, so that the interaction is not affected
+        const target = `#${extractionMethod.method}_method_content`;
+        if (extractionMethod.selected) {
+            $(target).collapse('show');
+        } else {
+            $(target).collapse('hide');
+        }
         $scope.agentSettingsForm.extractionMethods.$setTouched();
         setExtractionMethodValidityStatus();
         $scope.onExtractionMethodPanelToggle(extractionMethod);
@@ -251,6 +258,7 @@ function AgentSettingsModalController(
         $scope.extractionMethodLoaderFlags[extractionMethod.method] = true;
         SimilarityService.getIndexesAsMenuModel().then((indexes) => {
             $scope.similarityIndexes = indexes;
+            $scope.agentSettingsForm.$setValidity('missingIndex', !extractionMethod.selected || !!(indexes && indexes.length));
         })
         .catch((error) => {
             logAndShowError(error, 'ttyg.agent.messages.error_similarity_indexes_loading');
@@ -268,6 +276,7 @@ function AgentSettingsModalController(
             })
             .then((connectors) => {
                 $scope.retrievalConnectors = connectors;
+                $scope.agentSettingsForm.$setValidity('missingConnector', !extractionMethod.selected || !!(connectors && connectors.length));
             })
             .catch((error) => {
                 logAndShowError(error, 'ttyg.agent.messages.error_retrieval_connectors_loading');

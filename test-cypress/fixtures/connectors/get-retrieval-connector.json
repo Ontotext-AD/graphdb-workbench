@@ -24,6 +24,6 @@
             "bulkUpdateBatchSize": 1000,
             "skipInitialIndexing": false
         },
-        "name": "gpt-connector"
+        "name": "retrieval-connector"
     }
 ]
