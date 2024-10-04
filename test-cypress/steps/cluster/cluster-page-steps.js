@@ -68,7 +68,7 @@ export class ClusterPageSteps {
     }
 
     static getUpdateClusterButton() {
-        return cy.get('.update-cluster-btn');
+        return cy.get('.edit-cluster-nodes-modal-btn');
     }
 
     static updateCluster() {

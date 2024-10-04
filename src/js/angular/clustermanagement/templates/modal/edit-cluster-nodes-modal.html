@@ -2,15 +2,15 @@
     <h3 class="modal-title" ng-if="hasCluster">{{'cluster_management.update_cluster_group_dialog.title' | translate}}</h3>
     <h3 class="modal-title" ng-if="!hasCluster">{{'cluster_management.update_cluster_group_dialog.title_create' | translate}}</h3>
 </div>
-<div class="modal-body cluster-list-modal">
-        <cluster-list ng-if="!loading"></cluster-list>
+<div class="modal-body cluster-nodes-configuration-modal">
+        <cluster-nodes-configuration ng-if="!loading"></cluster-nodes-configuration>
     <div class="alert alert-warning alert-save" ng-if="isChanged">
         {{'cluster_management.update_cluster_group_dialog.messages.save_to_apply' | translate}}
     </div>
 </div>
 <div class="modal-footer mt-0">
     <button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
-    <button id="wb-update-cluster-group-submit" class="btn btn-primary"
+    <button id="wb-edit-cluster-nodes-modal-submit" class="btn btn-primary"
             ng-disabled="!isValid || !isChanged"
             ng-click="ok()" type="submit">{{'save.changes.label' | translate}}
     </button>

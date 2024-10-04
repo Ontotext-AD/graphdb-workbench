@@ -15,6 +15,42 @@ export class ClusterStubs extends Stubs {
         }).as('3-nodes-cluster-group-status');
     }
 
+    static stubClusterGroupStatusAfterAdd() {
+        cy.intercept('/rest/cluster/group/status', {
+            fixture: '/cluster/4-nodes-cluster-group-status.json',
+            statusCode: 200
+        }).as('4-nodes-cluster-group-status');
+    }
+
+    static stubClusterGroupStatusAfterDelete() {
+        cy.intercept('/rest/cluster/group/status', {
+            fixture: '/cluster/2-nodes-cluster-group-status-deleted.json',
+            statusCode: 200
+        }).as('2-nodes-cluster-group-status-deleted');
+    }
+
+    static stubClusterGroupStatusAfterReplaceAndDelete() {
+        cy.intercept('/rest/cluster/group/status', {
+            fixture: '/cluster/3-nodes-cluster-group-status-after-replace.json',
+            statusCode: 200
+        }).as('3-nodes-cluster-group-status-after-replace');
+    }
+
+    static stubClusterGroupStatusAfterReplace() {
+        cy.intercept('/rest/cluster/group/status', {
+            fixture: '/cluster/2-nodes-cluster-group-status.json',
+            statusCode: 200
+        }).as('2-nodes-cluster-group-status');
+    }
+
+    static stubDeleteUnusedLocation(uri) {
+        cy.intercept(`rest/locations?uri=${uri}`, {
+            body: `Successfully removed location '${uri}'`,
+            statusCode: 200,
+            method: 'DELETE'
+        }).as('delete-location');
+    }
+
     static stubClusterWithRecoveryStatusGroupStatus(recoveryStatus) {
         cy.intercept('/rest/cluster/group/status', {
             fixture: `/cluster/3-nodes-cluster-group-status-${recoveryStatus}`,

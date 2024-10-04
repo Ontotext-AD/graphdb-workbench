@@ -1,7 +1,7 @@
-export class ClusterListSteps {
+export class ClusterNodesConfigurationSteps {
 
-    static getClusterUpdateModal() {
-        return cy.get('cluster-list');
+    static getClusterNodesConfigurationModal() {
+        return cy.get('cluster-nodes-configuration');
     }
 
     static clickAddNodeButton() {
@@ -9,11 +9,11 @@ export class ClusterListSteps {
     }
 
     static getAddNodeButton() {
-        return this.getClusterUpdateModal().find('.add-node-btn');
+        return this.getClusterNodesConfigurationModal().find('.add-node-btn');
     }
 
     static getAdvancedOptions() {
-        return this.getClusterUpdateModal().find('.advanced-options-btn');
+        return this.getClusterNodesConfigurationModal().find('.advanced-options-btn');
     }
 
     static getSaveAlert() {
@@ -25,33 +25,33 @@ export class ClusterListSteps {
     }
 
     static getNodeByIndex(index) {
-        return ClusterListSteps.getNodes().eq(index);
+        return ClusterNodesConfigurationSteps.getNodes().eq(index);
     }
 
     static getNodeByEndpoint(endpoint) {
-        return ClusterListSteps.getNodes().filter(`[data-endpoint="${endpoint}"]`);
+        return ClusterNodesConfigurationSteps.getNodes().filter(`[data-endpoint="${endpoint}"]`);
     }
 
     static getNodeLocationByEndpoint(endpoint) {
-        return ClusterListSteps.getNodeByEndpoint(endpoint).find('.location-cell');
+        return ClusterNodesConfigurationSteps.getNodeByEndpoint(endpoint).find('.location-cell');
     }
 
     static getNodeIndexByEndpoint(endpoint) {
-        return ClusterListSteps.getNodeByEndpoint(endpoint).find('.index-cell');
+        return ClusterNodesConfigurationSteps.getNodeByEndpoint(endpoint).find('.index-cell');
     }
 
     static getNodeStatusByEndpoint(endpoint) {
-        return ClusterListSteps.getNodeByEndpoint(endpoint).find('.status-cell').invoke('text').then((text) => text.trim());
+        return ClusterNodesConfigurationSteps.getNodeByEndpoint(endpoint).find('.status-cell').invoke('text').then((text) => text.trim());
     }
 
     static clickDeleteNodeButtonByEndpoint(endpoint) {
-        ClusterListSteps.getNodeByEndpoint(endpoint)
+        ClusterNodesConfigurationSteps.getNodeByEndpoint(endpoint)
             .find('.delete-node-btn')
-            .click();
+            .click({force:true});
     }
 
     static clickReplaceNodeButtonByEndpoint(endpoint) {
-        ClusterListSteps.getNodeByEndpoint(endpoint)
+        ClusterNodesConfigurationSteps.getNodeByEndpoint(endpoint)
             .find('.replace-node-btn')
             .click();
     }
@@ -79,7 +79,7 @@ export class ClusterListSteps {
     }
 
     static isDeleteNodeButtonEnabledByEndpoint(endpoint) {
-        return ClusterListSteps.getNodeByEndpoint(endpoint)
+        return ClusterNodesConfigurationSteps.getNodeByEndpoint(endpoint)
             .find('.delete-node-btn')
             .then((button) => !button.is(':disabled'));
     }
@@ -89,7 +89,7 @@ export class ClusterListSteps {
     }
 
     static getOkButton() {
-        return cy.get('#wb-update-cluster-group-submit');
+        return cy.get('#wb-edit-cluster-nodes-modal-submit');
     }
 
     static clickOkButton() {

@@ -24,7 +24,7 @@
 <div class="clearfix d-flex" ng-if="!loader && clusterConfiguration">
     <div class="action-buttons">
         <div ng-if="isAdmin()" class="buttons-wrapper">
-            <button type="button" class="btn btn-primary update-cluster-btn" ng-if="currentLeader"
+            <button type="button" class="btn btn-primary edit-cluster-nodes-modal-btn" ng-if="currentLeader"
                     ng-click="showUpdateClusterGroupDialog()"
                     gdb-tooltip="{{'cluster_management.buttons.update_nodes_group_btn_tooltip' | translate}}" tooltip-placement="bottom">
                 <i class="fa-regular fa-plus"></i> {{'cluster_management.buttons.update_nodes_group_btn' | translate}}

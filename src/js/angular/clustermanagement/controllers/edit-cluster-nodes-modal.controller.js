@@ -5,12 +5,12 @@ const modules = [
 ];
 
 angular
-    .module('graphdb.framework.clustermanagement.controllers.update-cluster-group', modules)
-    .controller('UpdateClusterGroupDialogCtrl', UpdateClusterGroupDialogCtrl);
+    .module('graphdb.framework.clustermanagement.controllers.edit-cluster-nodes-modal', modules)
+    .controller('EditClusterNodesModalController', EditClusterNodesModalController);
 
-UpdateClusterGroupDialogCtrl.$inject = ['$scope', '$uibModalInstance', '$translate', 'data', 'ClusterContextService', 'ModalService'];
+EditClusterNodesModalController.$inject = ['$scope', '$uibModalInstance', '$translate', 'data', 'ClusterContextService', 'ModalService'];
 
-function UpdateClusterGroupDialogCtrl($scope, $uibModalInstance, $translate, data, ClusterContextService, ModalService) {
+function EditClusterNodesModalController($scope, $uibModalInstance, $translate, data, ClusterContextService, ModalService) {
     // =========================
     // Private variables
     // =========================

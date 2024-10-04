@@ -1,0 +1,24 @@
+[
+    {
+        "address": "pc-desktop:7300",
+        "nodeState": "LEADER",
+        "term": 2,
+        "syncStatus": {
+            "pc-desktop:7303": "IN_SYNC"
+        },
+        "lastLogTerm": 0,
+        "lastLogIndex": 0,
+        "endpoint": "http://pc-desktop:7200",
+        "recoveryStatus": {}
+    },
+    {
+        "address": "pc-desktop:7303",
+        "nodeState": "FOLLOWER",
+        "term": 2,
+        "syncStatus": {},
+        "lastLogTerm": 0,
+        "lastLogIndex": 0,
+        "endpoint": "http://pc-desktop:7203",
+        "recoveryStatus": {}
+    }
+]

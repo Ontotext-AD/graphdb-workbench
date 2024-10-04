@@ -3,7 +3,7 @@ import 'angular/clustermanagement/services/remote-locations.service';
 import 'angular/clustermanagement/services/cluster-view-context.service';
 import 'angular/clustermanagement/controllers/edit-cluster.controller';
 import 'angular/clustermanagement/controllers/delete-cluster.controller';
-import 'angular/clustermanagement/controllers/update-cluster-group.controller';
+import 'angular/clustermanagement/controllers/edit-cluster-nodes-modal.controller';
 import {isString} from "lodash";
 import {LinkState, NodeState, RecoveryState} from "../../models/clustermanagement/states";
 import {CLICK_IN_VIEW, CREATE_CLUSTER, DELETE_CLUSTER, MODEL_UPDATED, NODE_SELECTED, UPDATE_CLUSTER} from "../events";
@@ -17,7 +17,7 @@ const modules = [
     'graphdb.framework.clustermanagement.services.remote-locations',
     'graphdb.framework.clustermanagement.controllers.edit-cluster',
     'graphdb.framework.clustermanagement.controllers.delete-cluster',
-    'graphdb.framework.clustermanagement.controllers.update-cluster-group',
+    'graphdb.framework.clustermanagement.controllers.edit-cluster-nodes-modal',
     'toastr',
     'pageslide-directive'
 ];
@@ -90,8 +90,8 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
         getLocationsWithRpcAddresses().then(() => {
             $scope.setLoader(false);
             return $uibModal.open({
-                templateUrl: 'js/angular/clustermanagement/templates/modal/update-cluster-group-dialog.html',
-                controller: 'UpdateClusterGroupDialogCtrl',
+                templateUrl: 'js/angular/clustermanagement/templates/modal/edit-cluster-nodes-modal.html',
+                controller: 'EditClusterNodesModalController',
                 size: 'lg',
                 backdrop: 'static',
                 keyboard: false,
@@ -110,6 +110,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             }
         }).catch((error) => {
             $scope.setLoader(false);
+            updateCluster(true, true);
             console.error(error); // eslint-disable-line no-console
         }).finally(() => {
             getLocationsWithRpcAddresses();
@@ -291,7 +292,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
                 return node.endpoint === location.endpoint;
             });
             if (index === -1) {
-                $repositories.deleteLocation(location.endpoint);
+                RemoteLocationsService.deleteLocation(location.endpoint);
             }
         });
     };

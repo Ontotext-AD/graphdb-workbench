@@ -1,16 +1,16 @@
 import {Location} from "../../models/clustermanagement/cluster";
 
 const modules = [];
-angular.module('graphdb.framework.clustermanagement.directives.cluster-list', modules)
-    .directive('clusterList', ClusterListComponent);
+angular.module('graphdb.framework.clustermanagement.directives.cluster-nodes-configuration', modules)
+    .directive('clusterNodesConfiguration', ClusterNodesConfigurationComponent);
 
-ClusterListComponent.$inject = ['$translate', '$timeout', 'productInfo', 'toastr', 'RemoteLocationsService', 'ClusterContextService', 'ModalService'];
+ClusterNodesConfigurationComponent.$inject = ['$translate', '$timeout', 'productInfo', 'toastr', 'RemoteLocationsService', 'ClusterContextService', 'ModalService'];
 
-function ClusterListComponent($translate, $timeout, productInfo, toastr, RemoteLocationsService, ClusterContextService, ModalService) {
+function ClusterNodesConfigurationComponent($translate, $timeout, productInfo, toastr, RemoteLocationsService, ClusterContextService, ModalService) {
     return {
         restrict: 'E',
-        templateUrl: 'js/angular/clustermanagement/templates/cluster-list.html',
-        link: ($scope, element, attrs) => {
+        templateUrl: 'js/angular/clustermanagement/templates/cluster-nodes-configuration.html',
+        link: ($scope) => {
             // =========================
             // Private variables
             // =========================
@@ -82,42 +82,19 @@ function ClusterListComponent($translate, $timeout, productInfo, toastr, RemoteL
                 const availableList = ClusterContextService.getAvailable(true);
                 const node = ClusterContextService.findByEndpoint(availableList, endpoint);
                 const oldNode = ClusterContextService.getPendingReplace();
+
                 if (node) {
-                    if (oldNode) {
-                        ClusterContextService.replace(oldNode, node);
-                    } else {
-                        ClusterContextService.addLocation(node);
-                    }
-                    $scope.editedNodeIndex = undefined;
-                    $scope.addNewLocation = false;
+                    handleNodeSave(node, oldNode);
                 } else {
                     const newLocation = RemoteLocationsService.createNewLocation(endpoint);
-                    $scope.setLoader(true, $translate.instant('cluster_management.update_cluster_group_dialog.messages.connecting_node'));
-                    addNewLocation(newLocation)
-                        .then((location) => {
-                            if (oldNode) {
-                                ClusterContextService.replace(oldNode, location);
-                            } else {
-                                ClusterContextService.addLocation(location);
-                            }
-                        })
-                        .catch((error) => {
-                            handleErrors(error.data, error.status);
-                            RemoteLocationsService.deleteLocation(endpoint);
-                            ClusterContextService.emitUpdateClusterView();
-                        })
-                        .finally(() => {
-                            $scope.editedNodeIndex = undefined;
-                            $scope.setLoader(false);
-                            $scope.addNewLocation = false;
-                        });
+                    handleNewLocationSave(newLocation, oldNode, endpoint);
                 }
             };
 
             /**
              * Deletes a node from the cluster.
              * @param {number} index - The index of the node to delete.
-             * @param {ClusterNodeViewModel} itemView - The item to delete.
+             * @param {ClusterItemViewModel} itemView - The item to delete.
              * @return {void}
              */
             $scope.deleteNode = (index, itemView) => {
@@ -126,6 +103,9 @@ function ClusterListComponent($translate, $timeout, productInfo, toastr, RemoteL
                     message: $translate.instant('location.confirm.detach.warning', {uri: itemView.endpoint}),
                     warning: true
                 }).result.then(() => {
+                    if (itemView.isLocation()) {
+                        RemoteLocationsService.deleteLocation(itemView.getEndPoint());
+                    }
                     ClusterContextService.deleteFromCluster(itemView.item);
                 });
             };
@@ -133,7 +113,7 @@ function ClusterListComponent($translate, $timeout, productInfo, toastr, RemoteL
             /**
              * Initiates the replacement of a node in the cluster view.
              * @param {number} index - The zero-based index of the node in the cluster view array that is to be replaced.
-             * @param {ClusterNodeViewModel} itemView - The node object representing the current state of the node to be replaced.
+             * @param {ClusterItemViewModel} itemView - The node object representing the current state of the node to be replaced.
              * @return {void}
              */
             $scope.replaceNode = (index, itemView) => {
@@ -213,9 +193,72 @@ function ClusterListComponent($translate, $timeout, productInfo, toastr, RemoteL
             // =========================
             // Private functions
             // =========================
+            /**
+             * Handles the saving of an existing node in the cluster.
+             * @param {Object} node - The node object found in the cluster.
+             * @param {Object|null} oldNode - The old node that is being replaced (if any).
+             */
+            function handleNodeSave(node, oldNode) {
+                if (oldNode) {
+                    ClusterContextService.replace(oldNode, node);
+                    RemoteLocationsService.deleteLocation(oldNode.endpoint);
+                } else {
+                    ClusterContextService.addLocation(node);
+                }
+                resetNodeEditState();
+            }
+
+            /**
+             * Handles the process of saving a newly created location.
+             * @param {Object} newLocation - The new location object to be added.
+             * @param {Object|null} oldNode - The old node that is being replaced (if any).
+             * @param {string} endpoint - The endpoint of the new location.
+             */
+            const handleNewLocationSave = (newLocation, oldNode, endpoint) => {
+                $scope.setLoader(true, $translate.instant('cluster_management.update_cluster_group_dialog.messages.connecting_node'));
+
+                addNewLocation(newLocation)
+                    .then((location) => {
+                        if (oldNode) {
+                            ClusterContextService.replace(oldNode, location);
+                        } else {
+                            ClusterContextService.addLocation(location);
+                        }
+                    })
+                    .catch((error) => handleSaveError(error, endpoint))
+                    .finally(() => {
+                        if (oldNode) {
+                            RemoteLocationsService.deleteLocation(oldNode.endpoint);
+                        }
+                        resetNodeEditState();
+                    });
+            };
+
+            /**
+             * Handles errors that occur during the saving of a new location.
+             * @param {Object} error - The error object.
+             * @param {string} endpoint - The endpoint of the node that failed to save.
+             */
+            const handleSaveError = (error, endpoint) => {
+                handleErrors(error.data, error.status);
+                RemoteLocationsService.deleteLocation(endpoint);
+                ClusterContextService.emitUpdateClusterView();
+            };
+
+            /**
+             * Resets the state of the node edit operation.
+             */
+            const resetNodeEditState = () => {
+                ClusterContextService.setPendingReplace(undefined);
+                $scope.editedNodeIndex = undefined;
+                $scope.addNewLocation = false;
+                $scope.setLoader(false);
+            };
+
             const onClusterViewChanged = (cluster) => {
                 $scope.hasCluster = ClusterContextService.hasCluster();
                 $scope.viewModel = ClusterContextService.getViewModel();
+                $scope.clusterNodesEndpoints = $scope.viewModel.map((node) => node.endpoint);
                 $scope.clusterConfiguration = ClusterContextService.getClusterConfiguration();
                 $scope.allSuggestions = ClusterContextService.getAvailableNodeEndpoints();
                 $scope.canDeleteNode = ClusterContextService.canDeleteNode();

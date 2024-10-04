@@ -1,4 +1,4 @@
-<link href="css/cluster-list.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+<link href="css/cluster-nodes-configuration.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
 <div onto-loader-new ng-if="loader" class="create-cluster-loader" message="getLoaderMessage" size="100  "></div>
 <div class="add-node-wrapper pull-right mb-1">
@@ -103,6 +103,7 @@
                                       ng-click="filterSuggestions(node)"
                                       auto-grow
                                       validate-url exclude="/repositories" exclude-protocol="ftp,ftps"
+                                      validate-duplicate-url excluded-urls="clusterNodesEndpoints"
                                       allow-empty="false"
                                       autocomplete="off"
                                       class="form-control form-control-sm textarea-edit"
@@ -116,13 +117,6 @@
                                 {{ suggestion }}
                             </li>
                         </ul>
-                        <div class="error-message"
-                             ng-show="form.location.$error.validUrl && !form.location.$pristine">
-                            * {{'valid.remote.location.warning' | translate}} http://server.example.com:7200/.
-                        </div>
-                        <div ng-repeat="error in errors" class="error-message">
-                            {{error}}
-                        </div>
                     </div>
                 </td>
                 <td class="info-cell data">
@@ -165,6 +159,7 @@
                                       ng-click="filterSuggestions(newLocation)"
                                       auto-grow
                                       validate-url exclude="/repositories" exclude-protocol="ftp,ftps"
+                                      validate-duplicate-url excluded-urls="clusterNodesEndpoints"
                                       allow-empty="false"
                                       autocomplete="off"
                                       class="form-control form-control-sm textarea-edit"
@@ -205,6 +200,10 @@
             <div class="error-message"
                  ng-show="form.location.$error.validUrl && !form.location.$pristine">
                 * {{'valid.remote.location.warning' | translate}} http://server.example.com:7200/.
+            </div>
+            <div class="error-message"
+                 ng-show="form.location.$error.duplicateUrl && !form.location.$pristine">
+                * {{'duplicate.remote.location.warning' | translate}}
             </div>
             <div ng-repeat="error in errors" class="error-message">
                 {{error}}
