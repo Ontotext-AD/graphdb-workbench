@@ -4,6 +4,7 @@ import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 import {ApplicationSteps} from "../../steps/application-steps";
 import HomeSteps from "../../steps/home-steps";
+import {ChatPanelSteps} from "../../steps/ttyg/chat-panel-steps";
 
 describe('TTYG chat list', () => {
 
@@ -167,6 +168,24 @@ describe('TTYG chat list', () => {
         ModalDialogSteps.clickOnConfirmButton();
         // Then the chat should be deleted
         TTYGViewSteps.getChatByDayGroups().should('have.length', 1);
+        // and the selected chat should be loaded in chat panel
+        TTYGViewSteps.getChatFromGroup(0, 0).should('contain', 'Test chat 3');
+        TTYGViewSteps.getChatFromGroup(0, 0).should('have.class', 'selected');
+        ChatPanelSteps.getChatDetailsElements().should('have.length', 2);
+
+        // When I select a chat
+        TTYGViewSteps.selectChat(0, 1);
+        // Then I expect the chat be loaded
+        TTYGViewSteps.getChatFromGroup(0, 0).should('contain', 'Test chat 3');
+        TTYGViewSteps.getChatFromGroup(0, 0).should('have.class', 'selected');
+        ChatPanelSteps.getChatDetailsElements().should('have.length', 2);
+
+        // When I delete the selected chat
+        TTYGViewSteps.triggerDeleteChatActionMenu(0, 1);
+        ModalDialogSteps.clickOnConfirmButton();
+
+        // Then I expect the chat history to be removed from the chat panel.
+        ChatPanelSteps.getChatDetailsElements().should('have.length', 0);
     });
 
     it('Should be able to export chat from chat list export action', () => {
