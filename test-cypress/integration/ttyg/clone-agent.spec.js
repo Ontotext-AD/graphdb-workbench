@@ -11,6 +11,7 @@ describe('TTYG clone an agent', () => {
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
         cy.presetRepository(repositoryId);
         NamespaceStubs.stubNameSpaceResponse(repositoryId, '/namespaces/get-repository-starwars-namespaces.json');
+        TTYGStubs.stubAgentDefaultsGet();
     });
 
     it(' should be able to clone an agent.', () => {
