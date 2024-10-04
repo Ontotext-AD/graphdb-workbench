@@ -42,7 +42,7 @@ function TTYGContextService(EventEmitterService, TTYGService) {
      *
      * @type {{[key: string]: ExplainResponseModel}}
      */
-    let _explainCache = {};
+    const _explainCache = {};
 
     /**
      * The default agent values.
@@ -88,6 +88,16 @@ function TTYGContextService(EventEmitterService, TTYGService) {
     const updateChats = (chats) => {
         _chats = cloneDeep(chats);
         emit(TTYGEventName.CHAT_LIST_UPDATED, getChats());
+    };
+
+    const deleteChat = (chat) => {
+        _chats.deleteChat(chat);
+        updateChats(_chats);
+    };
+
+    const addChat = (newChat) => {
+        _chats.appendChat(newChat);
+        updateChats(_chats);
     };
 
     /** Subscribes to the 'chatListUpdated' event.
@@ -292,6 +302,8 @@ function TTYGContextService(EventEmitterService, TTYGService) {
         subscribe,
         getChats,
         updateChats,
+        deleteChat,
+        addChat,
         onChatsListChanged,
         getSelectedChat,
         selectChat,

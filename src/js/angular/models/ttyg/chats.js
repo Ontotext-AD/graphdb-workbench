@@ -139,6 +139,12 @@ export class ChatsListModel {
         });
     }
 
+    deleteChat(chatToBeDeleted) {
+        this._chats = this._chats.filter((chat) => chat.id !== chatToBeDeleted.id);
+        this.sortByTime();
+        this.updateChatsByDay();
+    }
+
     updateChatsByDay() {
         this._chatsByDay = [];
         // group chats by day

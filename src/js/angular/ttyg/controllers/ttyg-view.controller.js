@@ -530,12 +530,14 @@ function TTYGViewCtrl(
      * @param {ChatModel} chat - the chat to be deleted.
      */
     const onDeleteChat = (chat) => {
+        TTYGContextService.deleteChat(chat);
         TTYGService.deleteConversation(chat.id)
             .then(() => {
                 TTYGContextService.emit(TTYGEventName.DELETE_CHAT_SUCCESSFUL, chat);
                 TTYGContextService.emit(TTYGEventName.LOAD_CHATS);
             })
             .catch(() => {
+                TTYGContextService.addChat(chat);
                 TTYGContextService.emit(TTYGEventName.DELETE_CHAT_FAILURE);
                 toastr.error($translate.instant('ttyg.chat.messages.delete_failure'));
             });
