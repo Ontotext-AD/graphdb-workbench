@@ -61,10 +61,23 @@ export class RemoteLocationStubs extends Stubs {
     }
 
     static stubGetRemoteLocationsByList(uris) {
+        const local = [{
+            "uri": "",
+            "label": "Local",
+            "username": "",
+            "password": "",
+            "authType": "signature",
+            "active": false,
+            "local": true,
+            "system": false,
+            "errorMsg": null,
+            "defaultRepository": null,
+            "isInCluster": false
+        }];
         const locations = uris.map((uri) => {
             return {
-                "uri": uri || "",
-                "label": uri ? `Remote (${uri})` : "Local",
+                "uri": uri,
+                "label": `Remote (${uri})`,
                 "username": "",
                 "password": "",
                 "authType": "signature",
@@ -78,7 +91,7 @@ export class RemoteLocationStubs extends Stubs {
         });
 
         cy.intercept('GET', '/rest/locations', {
-            body: locations,
+            body: [...local, ...locations],
             statusCode: 200
         }).as('get-remote-locations-by-list');
     }

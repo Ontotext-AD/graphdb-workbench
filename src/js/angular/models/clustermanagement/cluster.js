@@ -581,6 +581,10 @@ export class ClusterItemViewModel {
         return this._item._address !== undefined;
     }
 
+    isLocation() {
+        return this._item._address === undefined;
+    }
+
     getNodeState() {
         if (this.isNode()) {
             return this._item._nodeState;

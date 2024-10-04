@@ -102,7 +102,7 @@
                 "create_failed": "La création du cluster a échoué",
                 "update_success": "Cluster mis à jour avec succès",
                 "update_failed": "La mise à jour du cluster a échoué",
-                "form_invalid": "Les données du formulaire ne sont pas valides",
+                "form_invalid": "Les données du formulaire ne sont pas valides"
             }
         },
         "delete_cluster_dialog": {
@@ -1834,6 +1834,7 @@
     "remote.location.url": "URL de l'emplacement*",
     "remote.location.enter.url.msg": "Entrez l'URL d'une instance GraphDB distante",
     "valid.remote.location.warning": "Notez que l'emplacement doit être une URL qui pointe vers une installation GraphDB distante, par ex.",
+    "duplicate.remote.location.warning": "L'URL est déjà dans la liste",
     "auth.type.header": "Type d'authentification",
     "remote.location.no.auth.used.tooltip": "Aucune authentification utilisée avec l'emplacement distant",
     "auth.type.none": "Aucun",
