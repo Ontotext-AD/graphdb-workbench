@@ -294,6 +294,12 @@
                 "raw_query": "Requête brute",
                 "sparql_query": "Requête SPARQL"
             },
+            "query_name": {
+                "sparql_search":"SPARQL",
+                "fts_search": "Recherche en texte intégral",
+                "similarity_search": "Recherche de similarité",
+                "retrieval_search": "Connecteur de récupération ChatGPT"
+            },
             "dialog": {
                 "confirm_repository_change": {
                     "body": "Si vous continuez l'exécution de la requête SPARQL, GraphDB s'ouvrira dans un nouvel onglet et passera au dépôt <b>{{repositoryId}}</b>."
