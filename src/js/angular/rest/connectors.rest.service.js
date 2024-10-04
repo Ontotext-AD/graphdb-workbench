@@ -19,8 +19,8 @@ function ConnectorsRestService($http) {
      * Fetches all connectors for the repository with id <code>repositoryId</code> and location <code>repositoryLocation</code>.
      * If the repository ID and repository location are not provided, the values persisted in local storage will be used {@see authentication.interceptor.js}.
      *
-     * @param {string} repositoryId - (optional) The repository id.
-     * @param {string} repositoryLocation - (optional) The repository location.
+     * @param {string | undefined} repositoryId - The repository id.
+     * @param {string | undefined} repositoryLocation - The repository location.
      * @return {*} The similarity indexes for the specified repository.
      */
     function getConnectors(repositoryId, repositoryLocation) {
@@ -43,8 +43,8 @@ function ConnectorsRestService($http) {
      * Fetches all connectors of a specific type defined by the prefix for the repository with id <code>repositoryId</code>
      * and location <code>repositoryLocation</code>. If the repository ID and repository location are not provided, the currently selected repository will be used.
      * @param {string} prefix
-     * @param {string} repositoryId - (optional) The repository id.
-     * @param {string} repositoryLocation - (optional) The repository location.
+     * @param {string | undefined} repositoryId - The repository id.
+     * @param {string | undefined} repositoryLocation - The repository location.
      * @return {Promise<ConnectorListModel>}
      */
     function hasConnector(prefix, repositoryId, repositoryLocation) {

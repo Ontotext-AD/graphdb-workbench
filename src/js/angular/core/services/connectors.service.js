@@ -16,8 +16,8 @@ function ConnectorsService(ConnectorsRestService) {
      * Fetches all connector types from the server for the repository with id <code>repositoryId</code> and location <code>repositoryLocation</code>.
      * If the repository ID and repository location are not provided, the currently selected repository will be used.
      *
-     * @param {string} repositoryId - (optional) The repository id.
-     * @param {string} repositoryLocation - (optional) The repository location.
+     * @param {string | undefined} repositoryId - The repository id.
+     * @param {string | undefined} repositoryLocation - The repository location.
      * @return {Promise<ConnectorTypesListModel>}
      */
     const getConnectorTypes = (repositoryId, repositoryLocation) => {
@@ -30,8 +30,8 @@ function ConnectorsService(ConnectorsRestService) {
      * If the repository ID and repository location are not provided, the currently selected repository will be used.
      *
      * @param {string} name
-     * @param {string} repositoryId - (optional) The repository id.
-     * @param {string} repositoryLocation - (optional) The repository location.
+     * @param {string | undefined} repositoryId - The repository id.
+     * @param {string | undefined} repositoryLocation - The repository location.
      * @return {Promise<string|null>}
      */
     const getConnectorPrefixByName = (name, repositoryId, repositoryLocation) => {
@@ -46,8 +46,8 @@ function ConnectorsService(ConnectorsRestService) {
      * Fetches all connectors of a specific type defined by the prefix for the repository with id <code>repositoryId</code>
      * and location <code>repositoryLocation</code>. If the repository ID and repository location are not provided, the currently selected repository will be used.
      * @param {string} prefix
-     * @param {string} repositoryId - (optional) The repository id.
-     * @param {string} repositoryLocation - (optional) The repository location.
+     * @param {string | undefined} repositoryId - The repository id.
+     * @param {string | undefined} repositoryLocation - The repository location.
      * @return {Promise<ConnectorListModel>}
      */
     const getConnectorsByType = (prefix, repositoryId, repositoryLocation) => {
@@ -62,8 +62,8 @@ function ConnectorsService(ConnectorsRestService) {
      * for the repository with id <code>repositoryId</code> and location <code>repositoryLocation</code>.
      * If the repository ID and repository location are not provided, the currently selected repository will be used.
      * @param {string} prefix
-     * @param {string} repositoryId - (optional) The repository id.
-     * @param {string} repositoryLocation - (optional) The repository location.
+     * @param {string | undefined} repositoryId - The repository id.
+     * @param {string | undefined} repositoryLocation - The repository location.
      * @return {Promise<SelectMenuOptionsModel[]>}
      */
     const getConnectorsByTypeAsSelectMenuOptions = (prefix, repositoryId, repositoryLocation) => {
