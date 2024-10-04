@@ -1981,6 +1981,7 @@
     "manage.remote.location.dialog.graph_db.password.placeholder": "my password",
     "manage.remote.location.dialog.ontopic.password.placeholder": "my secret",
     "valid.remote.location.warning": "Note that the location should be a URL that points to a remote GraphDB installation, e.g.",
+    "duplicate.remote.location.warning": "The URL is already in the list",
     "auth.type.header": "Authentication type",
     "remote.location.no.auth.used.tooltip": "No authentication used with remote location",
     "auth.type.none": "None",
