@@ -222,8 +222,7 @@ function AgentSettingsModalController(
      * @param {boolean} clearIndexSelection - If true, the selected index will be cleared.
      */
     $scope.updateSimilaritySearchPanel = (clearIndexSelection = false) => {
-        const similaritySearchExtractionMethod = $scope.agentFormModel.assistantExtractionMethods.extractionMethods
-            .find((extractionMethod) => extractionMethod.method === ExtractionMethod.SIMILARITY);
+        const similaritySearchExtractionMethod = $scope.agentFormModel.assistantExtractionMethods.getSimilarityExtractionMethod();
         if (clearIndexSelection) {
             similaritySearchExtractionMethod.similarityIndex = null;
         }
@@ -236,8 +235,7 @@ function AgentSettingsModalController(
      * @param {boolean} clearSelection - If true, the selected connector will be cleared.
      */
     $scope.updateRetrievalConnectorPanel = (clearSelection = false) => {
-        const retrievalExtractionExtractionMethod = $scope.agentFormModel.assistantExtractionMethods.extractionMethods
-            .find((extractionMethod) => extractionMethod.method === ExtractionMethod.RETRIEVAL);
+        const retrievalExtractionExtractionMethod = $scope.agentFormModel.assistantExtractionMethods.getRetrievalExtractionMethod();
         if (clearSelection) {
             retrievalExtractionExtractionMethod.retrievalConnectorInstance = null;
         }
