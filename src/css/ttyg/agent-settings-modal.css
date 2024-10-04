@@ -45,12 +45,7 @@
     padding: 1rem 1rem 1rem 3.6rem;
 }
 
-/* when the panel is expanded */
-.agent-settings-modal .agent-settings-form .extraction-methods .extraction-method:has(.extraction-method-content.in) {
-    background-color: var(--base-background-color);
-}
-
-.agent-settings-modal .agent-settings-form .additional-extraction-methods .additional-extraction-method {
+.agent-settings-form .additional-extraction-methods .additional-extraction-method {
     padding: 0 10px;
 }
 
@@ -71,4 +66,9 @@
 
 .extraction-method .panel-toggle-link .toggle-icon.expanded {
     transform: rotate(180deg);
+}
+
+/* when the panel is expanded */
+.agent-settings-form .extraction-methods .extraction-method:has(.expanded) {
+    background-color: var(--base-background-color);
 }
