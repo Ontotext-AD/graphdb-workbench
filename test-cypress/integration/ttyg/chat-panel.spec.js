@@ -54,6 +54,7 @@ describe('Ttyg ChatPanel', () => {
         ChatPanelSteps.getAskButtonElement().should('be.enabled');
 
         // When I click on "Ask" button.
+        TTYGStubs.stubAnswerQuestion();
         ChatPanelSteps.getAskButtonElement().scrollIntoView().click();
 
         // Then I expect the question be in chat history,
@@ -65,6 +66,7 @@ describe('Ttyg ChatPanel', () => {
         ChatPanelSteps.getAskButtonElement().should('be.disabled');
 
         // When I click on regenerate button.
+        TTYGStubs.stubAnswerQuestion();
         ChatPanelSteps.regenerateQuestion(2);
 
         // Then I expect the question to be regenerated and appear in the chat history.

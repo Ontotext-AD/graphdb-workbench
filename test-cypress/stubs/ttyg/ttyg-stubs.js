@@ -2,8 +2,7 @@ import {Stubs} from "../stubs";
 
 export class TTYGStubs extends Stubs {
     static stubChatsListGet(fixture = '/ttyg/chats/get-chat-list.json', delay = 0) {
-        cy.intercept('/rest/chat/conversations', {
-            method: 'GET',
+        cy.intercept('GET', '/rest/chat/conversations', {
             fixture: fixture,
             statusCode: 200,
             delay: delay
@@ -35,14 +34,17 @@ export class TTYGStubs extends Stubs {
     static stubChatGet(fixture = '/ttyg/chats/get-chat-1.json', delay = 0) {
         cy.fixture(fixture).then((body) => {
             const bodyString = JSON.stringify(body);
-            cy.intercept('/rest/chat/conversations/*', (req) => {
+            cy.intercept({
+                method: 'GET',
+                url: '/rest/chat/conversations/*'
+            }, (req) => {
                 const chatId = req.url.split('/').pop();
-                    // Respond with the modified body
-                    req.reply({
-                        statusCode: 200,
-                        body: bodyString.replace(/{chatId}/g, chatId),
-                        delay: delay
-                    });
+                // Respond with the modified body
+                req.reply({
+                    statusCode: 200,
+                    body: bodyString.replace(/{chatId}/g, chatId),
+                    delay: delay
+                });
             }).as('get-chat');
         });
     }
@@ -118,5 +120,28 @@ export class TTYGStubs extends Stubs {
             fixture: '/ttyg/agent/get-agent-defaults.json',
             statusCode: 200
         }).as('get-agent-defaults');
+    }
+
+    static stubAnswerQuestion() {
+        cy.intercept({
+            method: 'POST',
+            url: '/rest/chat/conversations'
+        }, (req) => {
+            const requestBody = req.body;
+
+            const answer = {
+                id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNe_" + Date.now(),
+                conversationId: requestBody.conversationId,
+                agentId: requestBody.agentId,
+                message: `Reply to '${requestBody.question}'`,
+                role: 'assistant',
+                timestamp: Math.floor(Date.now() / 1000)
+            };
+
+            req.reply({
+                statusCode: 200,
+                body: answer
+            });
+        }).as('get-answer');
     }
 }
