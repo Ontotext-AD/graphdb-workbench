@@ -121,11 +121,6 @@ function TTYGViewCtrl(
      * @type {boolean}
      */
     $scope.reloadingAgents = false;
-    /**
-     * Flag to control the visibility of the loader when creating an agent.
-     * @type {boolean}
-     */
-    $scope.creatingAgent = false;
 
     $scope.connectorID = undefined;
 
@@ -250,7 +245,7 @@ function TTYGViewCtrl(
     /**
      * Configures and opens the modal for creating a new agent.
      */
-    $scope.onCreateAgent = () => {
+    $scope.onOpenNewAgentSettings = () => {
         getDefaultAgent()
             .then((agentDefaultValues) => {
                 const activeRepositoryInfo = repositoryInfoMapper($repositories.getActiveRepositoryObject());
@@ -275,15 +270,7 @@ function TTYGViewCtrl(
                 return options;
             })
             .then((options) => {
-                $uibModal.open(options).result.then(
-                    // confirmed handler
-                    (data) => {
-                        createAgent(data);
-                    },
-                    // rejected handler
-                    (data) => {
-                        console.log(`create agent rejected`, data);
-                    });
+                $uibModal.open(options).result.then(reloadAgents);
             });
     };
 
@@ -292,7 +279,7 @@ function TTYGViewCtrl(
      * agent which can be obtained from the context service.
      * @param {AgentModel|undefined} agent
      */
-    $scope.onEditAgent = (agent) => {
+    $scope.onOpenAgentSettings = (agent) => {
         let agentToEdit = agent;
         if (!agentToEdit) {
             agentToEdit = TTYGContextService.getSelectedAgent();
@@ -321,29 +308,21 @@ function TTYGViewCtrl(
             })
             .then((options) => {
                 $uibModal.open(options).result.then(
-                    // confirmed handler
-                    (data) => {
-                        TTYGService.editAgent(data)
-                            .then((updatedAgent) => {
-                                toastr.success($translate.instant('ttyg.agent.messages.agent_save_successfully', {agentName: updatedAgent.name}));
-                                const hasSelectedAgent = TTYGContextService.getSelectedAgent();
-                                if (hasSelectedAgent && data.id === hasSelectedAgent.id) {
-                                    TTYGContextService.selectAgent(updatedAgent);
-                                }
-                                loadAgents(false);
-                            })
-                            .catch(() => {
-                                toastr.error($translate.instant('ttyg.agent.messages.agent_save_failure', {agentName: data.name}));
-                            });
+                    (updatedAgent) => {
+                        const hasSelectedAgent = TTYGContextService.getSelectedAgent();
+                        if (hasSelectedAgent && updatedAgent.id === hasSelectedAgent.id) {
+                            TTYGContextService.selectAgent(updatedAgent);
+                        }
+                        reloadAgents();
                     });
             });
     };
 
     /**
-     * Handles the agent clone operation.
+     * Opens the agent settings modal with the agent to clone.
      * @param {AgentModel} agentToClone
      */
-    $scope.onCloneAgent = (agentToClone) => {
+    $scope.onOpenCloneAgentSettings = (agentToClone) => {
         const agentFormModel = agentFormModelMapper(agentToClone, agentToClone);
         agentFormModel.name = `clone-${agentFormModel.name}`;
         const activeRepositoryInfo = repositoryInfoMapper($repositories.getActiveRepositoryObject());
@@ -364,20 +343,12 @@ function TTYGViewCtrl(
             size: 'lg'
         };
         $uibModal.open(options).result.then(
-            // confirmed handler
-            (data) => {
-                TTYGService.createAgent(data)
-                    .then((updatedAgent) => {
-                        toastr.success($translate.instant("ttyg.agent.messages.agent_save_successfully", {agentName: updatedAgent.name}));
-                        const hasSelectedAgent = TTYGContextService.getSelectedAgent();
-                        if (hasSelectedAgent && data.id === hasSelectedAgent.id) {
-                            TTYGContextService.selectAgent(updatedAgent);
-                        }
-                        loadAgents(false);
-                    })
-                    .catch(() => {
-                        toastr.error($translate.instant("ttyg.agent.messages.agent_save_failure", {agentName: data.name}));
-                    });
+            (updatedAgent) => {
+                const hasSelectedAgent = TTYGContextService.getSelectedAgent();
+                if (hasSelectedAgent && updatedAgent.id === hasSelectedAgent.id) {
+                    TTYGContextService.selectAgent(updatedAgent);
+                }
+                reloadAgents();
             });
     };
 
@@ -411,6 +382,11 @@ function TTYGViewCtrl(
             });
     };
 
+    /**
+     * Loads the agents list from the server and updates the context service.
+     * @param {boolean} showLoader
+     * @return {Promise<void>}
+     */
     const loadAgents = (showLoader = true) => {
         $scope.loadingAgents = showLoader;
         return TTYGService.getAgents()
@@ -426,7 +402,8 @@ function TTYGViewCtrl(
     };
 
     /**
-     * Reloads the agents list.
+     * Reloads the agents list. Basically the same as loadAgents but this sets the reloadingAgents flag that cause only
+     * the agents list panel to be masked by the loader.
      * @return {Promise<void>}
      */
     const reloadAgents = () => {
@@ -592,27 +569,6 @@ function TTYGViewCtrl(
         } else {
             $scope.showAgents = true;
         }
-    };
-
-    /**
-     * Creates a new agent with the given payload and reload the view components.
-     * @param {*} newAgentPayload - the payload for the new agent
-     */
-    const createAgent = (newAgentPayload) => {
-        $scope.creatingAgent = true;
-        TTYGService.createAgent(newAgentPayload)
-            .then((agent) => {
-                return loadAgents();
-            })
-            .then(() => {
-                // TODO: select the agent
-            })
-            .catch((error) => {
-                toastr.error(getError(error, 0, 100));
-            })
-            .finally(() => {
-                $scope.creatingAgent = false;
-            });
     };
 
     /**
@@ -826,9 +782,9 @@ function TTYGViewCtrl(
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CHAT_EXPORT, onExportChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION, onAskQuestion));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.LOAD_CHATS, loadChats));
-    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_AGENT, $scope.onCreateAgent));
-    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.EDIT_AGENT, $scope.onEditAgent));
-    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CLONE_AGENT, $scope.onCloneAgent));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.OPEN_AGENT_SETTINGS, $scope.onOpenNewAgentSettings));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.EDIT_AGENT, $scope.onOpenAgentSettings));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CLONE_AGENT, $scope.onOpenCloneAgentSettings));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_AGENT, onDeleteAgent));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_SELECTED, onAgentSelected));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.SELECT_CHAT, onChatSelected));

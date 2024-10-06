@@ -131,6 +131,14 @@ export class TTYGViewSteps {
         this.getAgentFilter().find('.dropdown-menu').find(`[data-value="${repository}"]`).click();
     }
 
+    static selectAllAgentsFilter() {
+        this.filterAgentsByRepository('All');
+    }
+
+    static getAgentsLoadingIndicator() {
+        return this.getAgentsPanel().find('.agent-list-loader');
+    }
+
     static getAgents() {
         return this.getAgentsPanel().find('.agent-item');
     }

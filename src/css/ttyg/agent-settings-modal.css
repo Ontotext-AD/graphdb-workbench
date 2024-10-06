@@ -2,69 +2,75 @@
     --field-label-weight: 500;
 }
 
-.agent-settings-form label {
+.agent-settings-modal .modal-footer .creating-agent-loader {
+    display: inline-block;
+    position: relative;
+    bottom: -3px;
+}
+
+.agent-settings-modal .agent-settings-form label {
     font-weight: var(--field-label-weight);
 }
 
-.agent-settings-form .extraction-methods {
+.agent-settings-modal .agent-settings-form .extraction-methods {
     display: flex;
     flex-direction: column;
 }
 
-.agent-settings-form .has-error {
+.agent-settings-modal .agent-settings-form .has-error {
     outline: 1px solid #FA787E;
 }
 
-.agent-settings-form .extraction-methods .extraction-method-heading {
+.agent-settings-modal .agent-settings-form .extraction-methods .extraction-method-heading {
     display: flex;
     align-items: center;
 }
 
-.agent-settings-form .extraction-methods .extraction-method-heading .panel-toggle-link {
+.agent-settings-modal .agent-settings-form .extraction-methods .extraction-method-heading .panel-toggle-link {
     display: flex;
     flex-grow: 1;
     justify-content: space-between;
 }
 
-.agent-settings-form .extraction-methods .extraction-method-heading .panel-toggle-link .toggle-icon {
+.agent-settings-modal .agent-settings-form .extraction-methods .extraction-method-heading .panel-toggle-link .toggle-icon {
     transition: transform 0.3s ease;
 }
 
-.agent-settings-form .extraction-methods .extraction-method-heading .panel-toggle-link.collapsed .toggle-icon {
+.agent-settings-modal .agent-settings-form .extraction-methods .extraction-method-heading .panel-toggle-link.collapsed .toggle-icon {
     transform: rotate(0deg);
 }
 
-.agent-settings-form .extraction-methods .extraction-method-heading .panel-toggle-link .toggle-icon {
+.agent-settings-modal .agent-settings-form .extraction-methods .extraction-method-heading .panel-toggle-link .toggle-icon {
     transform: rotate(180deg);
 }
 
-.agent-settings-form .extraction-methods .extraction-method-heading.selected .panel-toggle-link {
+.agent-settings-modal .agent-settings-form .extraction-methods .extraction-method-heading.selected .panel-toggle-link {
     font-weight: var(--field-label-weight);
 }
 
-.agent-settings-form .extraction-methods .extraction-method {
+.agent-settings-modal .agent-settings-form .extraction-methods .extraction-method {
     padding: 0 10px;
     margin-bottom: 2px;
 }
 
-.agent-settings-form .extraction-methods .extraction-method .extraction-method-options {
+.agent-settings-modal .agent-settings-form .extraction-methods .extraction-method .extraction-method-options {
     padding: 1rem 1rem 1rem 3.6rem;
 }
 
 /* when the panel is expanded */
-.agent-settings-form .extraction-methods .extraction-method:has(.extraction-method-content.in) {
+.agent-settings-modal .agent-settings-form .extraction-methods .extraction-method:has(.extraction-method-content.in) {
     background-color: var(--base-background-color);
 }
 
-.agent-settings-form .additional-extraction-methods .additional-extraction-method {
+.agent-settings-modal .agent-settings-form .additional-extraction-methods .additional-extraction-method {
     padding: 0 10px;
 }
 
-.agent-settings-form input[type="range"] {
+.agent-settings-modal .agent-settings-form input[type="range"] {
     width: 100%
 }
 
-.agent-settings-form [type="range"] {
+.agent-settings-modal .agent-settings-form [type="range"] {
     position: relative;
     /* move the slider up next to the related input field to match the mockup */
     top: -6px;

@@ -44,10 +44,11 @@ describe('TTYG create new agent', () => {
         }
     }, () => {
         TTYGStubs.stubChatsListGetNoResults();
-        TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
+        TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json', 1000);
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
         cy.wait('@get-all-repositories');
+        cy.wait('@get-agent-list');
         // When I click on the create agent button
         TTYGViewSteps.createFirstAgent();
         // Then I should see the create agent modal
@@ -132,15 +133,21 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.getUserInstructionsField().should('have.value', 'If you need to write a SPARQL query, use only the classes and properties provided in the schema and don\'t invent or guess any. Always try to return human-readable names or labels and not only the IRIs. If SPARQL fails to provide the necessary information you can try another tool too.');
 
         // Save the agent
-        // stub the agent create request
-        TTYGStubs.stubAgentCreate();
-        TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-new-agent.json');
+        TTYGStubs.stubAgentCreate(1000);
+        TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-new-agent.json', 1000);
         TtygAgentSettingsModalSteps.saveAgent();
-        // the modal should be closed and the agent should be created
+        TtygAgentSettingsModalSteps.getCreatingAgentLoader().should('be.visible');
+        cy.wait('@create-agent');
+        // the modal should be closed
         TtygAgentSettingsModalSteps.getDialog().should('not.exist');
+        cy.wait('@get-agent-list');
         TTYGViewSteps.getNoAgentsView().should('not.exist');
-        // the new agent should be visible in the agent list (there were 4 agents before, so now there should be 5)
-        TTYGViewSteps.getAgents().should('have.length', 5);
+        // agent list should be reloaded to show the new agent and the loading indicator should be visible
+        // TODO: this doesn't work for some reason. During the agent list loading the view remains blank and then the agent list is shown
+        // TTYGViewSteps.getAgentsLoadingIndicator().should('be.visible');
+        // the agent should be created
+        // the new agent should be visible in the agent list (there were 0 agents before, so now there should be 1)
+        TTYGViewSteps.getAgents().should('have.length', 1);
         TTYGViewSteps.getAgent(0).should('contain', 'Test Agent').and('contain', 'starwars');
     });
 
@@ -178,6 +185,7 @@ describe('TTYG create new agent', () => {
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
         cy.wait('@get-all-repositories');
+        cy.wait('@get-agent-list');
         // When I click on the create agent button
         TTYGViewSteps.createFirstAgent();
         // And I fill in the agent name
@@ -195,11 +203,14 @@ describe('TTYG create new agent', () => {
         TTYGStubs.stubAgentCreate();
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-new-agent.json');
         TtygAgentSettingsModalSteps.saveAgent();
-        // the modal should be closed and the agent should be created
+        cy.wait('@create-agent');
+        // the modal should be closed
         TtygAgentSettingsModalSteps.getDialog().should('not.exist');
+        cy.wait('@get-agent-list');
+        // and the agent should be created
         TTYGViewSteps.getNoAgentsView().should('not.exist');
-        // the new agent should be visible in the agent list (there were 4 agents before, so now there should be 5)
-        TTYGViewSteps.getAgents().should('have.length', 5);
+        // the new agent should be visible in the agent list (there were 0 agents before, so now there should be 1)
+        TTYGViewSteps.getAgents().should('have.length', 1);
         TTYGViewSteps.getAgent(0).should('contain', 'Test Agent').and('contain', 'starwars');
     });
 
@@ -215,6 +226,7 @@ describe('TTYG create new agent', () => {
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
         cy.wait('@get-all-repositories');
+        cy.wait('@get-agent-list');
         // When I click on the create agent button
         TTYGViewSteps.createFirstAgent();
         // When I select the similarity search extraction method
@@ -237,6 +249,7 @@ describe('TTYG create new agent', () => {
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
         cy.wait('@get-all-repositories');
+        cy.wait('@get-agent-list');
         // When I click on the create agent button
         TTYGViewSteps.createFirstAgent();
         TtygAgentSettingsModalSteps.getDialog().should('be.visible');
@@ -258,11 +271,14 @@ describe('TTYG create new agent', () => {
         TTYGStubs.stubAgentCreate();
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-new-agent.json');
         TtygAgentSettingsModalSteps.saveAgent();
-        // the modal should be closed and the agent should be created
+        cy.wait('@create-agent');
+        // the modal should be closed
         TtygAgentSettingsModalSteps.getDialog().should('not.exist');
+        cy.wait('@get-agent-list');
+        // and the agent should be created
         TTYGViewSteps.getNoAgentsView().should('not.exist');
-        // the new agent should be visible in the agent list (there were 4 agents before, so now there should be 5)
-        TTYGViewSteps.getAgents().should('have.length', 5);
+        // the new agent should be visible in the agent list (there were 0 agents before, so now there should be 1)
+        TTYGViewSteps.getAgents().should('have.length', 1);
         TTYGViewSteps.getAgent(0).should('contain', 'Test Agent').and('contain', 'starwars');
     });
 
@@ -279,6 +295,7 @@ describe('TTYG create new agent', () => {
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
         cy.wait('@get-all-repositories');
+        cy.wait('@get-agent-list');
         // When I click on the create agent button
         TTYGViewSteps.createFirstAgent();
         TtygAgentSettingsModalSteps.getDialog().should('be.visible');
@@ -305,6 +322,7 @@ describe('TTYG create new agent', () => {
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
         cy.wait('@get-all-repositories');
+        cy.wait('@get-agent-list');
         // When I click on the create agent button
         TTYGViewSteps.createFirstAgent();
         TtygAgentSettingsModalSteps.getDialog().should('be.visible');
@@ -332,11 +350,14 @@ describe('TTYG create new agent', () => {
         TTYGStubs.stubAgentCreate();
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-new-agent.json');
         TtygAgentSettingsModalSteps.saveAgent();
-        // the modal should be closed and the agent should be created
+        cy.wait('@create-agent');
+        // the modal should be closed
         TtygAgentSettingsModalSteps.getDialog().should('not.exist');
+        cy.wait('@get-agent-list');
+        // and the agent should be created
         TTYGViewSteps.getNoAgentsView().should('not.exist');
-        // the new agent should be visible in the agent list (there were 4 agents before, so now there should be 5)
-        TTYGViewSteps.getAgents().should('have.length', 5);
+        // the new agent should be visible in the agent list (there were 0 agents before, so now there should be 1)
+        TTYGViewSteps.getAgents().should('have.length', 1);
         TTYGViewSteps.getAgent(0).should('contain', 'Test Agent').and('contain', 'starwars');
     });
 });

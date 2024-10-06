@@ -19,7 +19,7 @@ function NoAgentsView(TTYGContextService) {
             // =========================
 
             $scope.onCreateAgent = () => {
-                TTYGContextService.emit(TTYGEventName.CREATE_AGENT);
+                TTYGContextService.emit(TTYGEventName.OPEN_AGENT_SETTINGS);
             };
         }
     };

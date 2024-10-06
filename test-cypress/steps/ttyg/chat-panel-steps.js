@@ -31,6 +31,7 @@ export class ChatPanelSteps {
     static regenerateQuestion(index) {
         ChatPanelSteps.getChatDetailActions(index).find('.regenerate-question-btn').scrollIntoView().click();
     }
+
     static copyAnswer(index) {
         ChatPanelSteps.getChatDetailActions(index).find('.copy-answer-btn').click({force: true});
     }

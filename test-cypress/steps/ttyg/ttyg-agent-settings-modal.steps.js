@@ -7,7 +7,7 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
     }
 
     static saveAgent() {
-        this.getSaveAgentButton().click({force: true});
+        this.getSaveAgentButton().click();
     }
 
     // =========================
@@ -380,5 +380,9 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
 
     static typeUserInstructions(value) {
         return this.getUserInstructionsField().type(value);
+    }
+
+    static getCreatingAgentLoader() {
+        return this.getDialog().find('.saving-agent-loader');
     }
 }

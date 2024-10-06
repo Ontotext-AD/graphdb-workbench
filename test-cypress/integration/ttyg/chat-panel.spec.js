@@ -16,6 +16,10 @@ describe('Ttyg ChatPanel', () => {
 
         // When visiting the TTYG page where there is a chat with questions and answers
         TTYGViewSteps.visit();
+        cy.wait('@get-chat-list');
+        cy.wait('@get-agent-list');
+        cy.wait('@get-chat');
+        cy.wait('@get-all-repositories');
     });
 
     it('Should load chat history and show answer actions', () => {
@@ -65,7 +69,6 @@ describe('Ttyg ChatPanel', () => {
 
         // Then I expect the question to be regenerated and appear in the chat history.
         ChatPanelSteps.getChatDetailsElements().should('have.length', 4);
-
     });
 
     // Can't test this on CI

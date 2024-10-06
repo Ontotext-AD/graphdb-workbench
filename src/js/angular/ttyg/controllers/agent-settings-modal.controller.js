@@ -2,6 +2,7 @@ import {decodeHTML} from "../../../../app";
 import {ExtractionMethod} from "../../models/ttyg/agents";
 import 'angular/core/services/similarity.service';
 import 'angular/core/services/connectors.service';
+import 'angular/core/services/ttyg.service';
 import 'angular/rest/repositories.rest.service';
 import {REPOSITORY_PARAMS} from "../../models/repository/repository";
 import {TTYGEventName} from "../services/ttyg-context.service";
@@ -26,7 +27,8 @@ AgentSettingsModalController.$inject = [
     'UriUtils',
     '$translate',
     'dialogModel',
-    'TTYGContextService'];
+    'TTYGContextService',
+    'TTYGService'];
 
 function AgentSettingsModalController(
     $scope,
@@ -39,7 +41,8 @@ function AgentSettingsModalController(
     UriUtils,
     $translate,
     dialogModel,
-    TTYGContextService) {
+    TTYGContextService,
+    TTYGService) {
 
     // =========================
     // Private variables
@@ -54,9 +57,15 @@ function AgentSettingsModalController(
     $scope.AGENT_OPERATION = AGENT_OPERATION;
 
     /**
-     * The operation type for the modal. This can be 'create', 'edit' or 'clone'.
+     * The operation type for the modal. This can be one of <code>AGENT_OPEATION</code> constants.
      */
     $scope.operation = dialogModel.operation;
+
+    /**
+     * Flag to control the visibility of the loader when creating an agent.
+     * @type {boolean}
+     */
+    $scope.savingAgent = false;
 
     /**
      * The model used in the form.
@@ -123,9 +132,9 @@ function AgentSettingsModalController(
      * Sets the UI touched state and validation state for the extraction methods property so that the UI can show if
      * the user has selected at least one extraction method and warn him if he hasn't.
      *
-     * @type {ExtractionMethodFormModel} extractionMethod
+     * @param {ExtractionMethodFormModel} extractionMethod
      */
-    $scope.toggleExtractionMethod = (extractionMethod, event) => {
+    $scope.toggleExtractionMethod = (extractionMethod) => {
         // FIXME: Using jQuery is highly unwanted, but I couldn't find a better way to do it, so that the interaction is not affected
         const target = `#${extractionMethod.method}_method_content`;
         if (extractionMethod.selected) {
@@ -189,12 +198,13 @@ function AgentSettingsModalController(
     };
 
     /**
-     * Closes the modal when the user confirms the agent settings and sends the payload to the parent controller opened
-     * the modal.
+     * Handles the selected agent operation which can be one of <code>AGENT_OPERATION</code> types. Respective handler
+     * is called based on the operation type with the agent payload build based on the form model.
+     * @return {Promise<void>}
      */
     $scope.ok = () => {
-        const payload = $scope.agentFormModel.toPayload();
-        $uibModalInstance.close(payload);
+        const agentPayload = $scope.agentFormModel.toPayload();
+        return agentOperationHandlers[$scope.operation](agentPayload);
     };
 
     /**
@@ -223,6 +233,76 @@ function AgentSettingsModalController(
     // =========================
     // Private functions
     // =========================
+
+    /**
+     * Mapping of agent operations to their respective handlers.
+     * @type {{[AGENT_OPERATION.EDIT]: (function(*): Promise<void>), [AGENT_OPERATION.CLONE]: (function(*): Promise<void>), [AGENT_OPERATION.CREATE]: (function(*): Promise<void>)}}
+     */
+    const agentOperationHandlers = {
+        [AGENT_OPERATION.CREATE]: (payload) => createAgent(payload),
+        [AGENT_OPERATION.EDIT]: (payload) => editAgent(payload),
+        [AGENT_OPERATION.CLONE]: (payload) => cloneAgent(payload)
+    };
+
+    /**
+     * Creates a new agent with the given payload and closes the modal if no errors occur.
+     * @param {*} newAgentPayload - the payload for the new agent.
+     * @return {Promise<void>}
+     */
+    const createAgent = (newAgentPayload) => {
+        $scope.savingAgent = true;
+        return TTYGService.createAgent(newAgentPayload)
+            .then((agentModel) => {
+                $uibModalInstance.close(agentModel);
+                toastr.success($translate.instant('ttyg.agent.messages.agent_save_successfully', {agentName: agentModel.name}));
+            })
+            .catch((error) => {
+                toastr.error(getError(error, 0, 100));
+            })
+            .finally(() => {
+                $scope.savingAgent = false;
+            });
+    };
+
+    /**
+     * Sends the edit agent payload to the server and closes the modal if no errors occur.
+     * @param {*} agentPayload - the payload for the agent to be edited.
+     * @return {Promise<void>}
+     */
+    const editAgent = (agentPayload) => {
+        $scope.savingAgent = true;
+        return TTYGService.editAgent(agentPayload)
+            .then((updatedAgent) => {
+                $uibModalInstance.close(updatedAgent);
+                toastr.success($translate.instant('ttyg.agent.messages.agent_save_successfully', {agentName: updatedAgent.name}));
+            })
+            .catch(() => {
+                toastr.error($translate.instant('ttyg.agent.messages.agent_save_failure', {agentName: agentPayload.name}));
+            })
+            .finally(() => {
+                $scope.savingAgent = false;
+            });
+    };
+
+    /**
+     * Clones the agent with the given payload and closes the modal if no errors occur.
+     * @param {*} agentPayload
+     * @return {Promise<void>}
+     */
+    const cloneAgent = (agentPayload) => {
+        $scope.savingAgent = true;
+        return TTYGService.createAgent(agentPayload)
+            .then((updatedAgent) => {
+                $uibModalInstance.close(updatedAgent);
+                toastr.success($translate.instant("ttyg.agent.messages.agent_save_successfully", {agentName: updatedAgent.name}));
+            })
+            .catch(() => {
+                toastr.error($translate.instant("ttyg.agent.messages.agent_save_failure", {agentName: agentPayload.name}));
+            })
+            .finally(() => {
+                $scope.savingAgent = false;
+            });
+    };
 
     const logAndShowError = (error, errorMessageKey) => {
         console.error(error);

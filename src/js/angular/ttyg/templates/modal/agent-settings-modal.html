@@ -139,11 +139,14 @@
                              ng-class="{'has-error': extractionMethod.selected && !extractionMethod.sparqlOption}"
                              class="extraction-method-options">
                             <div ng-if="!similarityIndexes.length" class="no-similarity-index-message">
-                                {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_1' | translate}}
+                                {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_1' |
+                                translate}}
                                 <a href="#" ng-click="goToCreateSimilarityView()">
-                                    {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_2' | translate}}
+                                    {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_2'
+                                    | translate}}
                                 </a>
-                                {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_3' | translate}}.
+                                {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_3' |
+                                translate}}.
                             </div>
                             <div ng-show="similarityIndexes.length">
                                 <div class="form-group similarity-index">
@@ -194,11 +197,14 @@
                              ng-class="{'has-error': agentSettingsForm.$error.missingConnector}"
                              class="extraction-method-options">
                             <div ng-if="!retrievalConnectors.length" class="no-retrieval-connector-message">
-                                {{'ttyg.agent.create_agent_modal.form.retrieval_search.no_retrieval_connectors.message_1' | translate}}
+                                {{'ttyg.agent.create_agent_modal.form.retrieval_search.no_retrieval_connectors.message_1'
+                                | translate}}
                                 <a href="#" ng-click="goToConnectorsView()">
-                                    {{'ttyg.agent.create_agent_modal.form.retrieval_search.no_retrieval_connectors.message_2' | translate}}
+                                    {{'ttyg.agent.create_agent_modal.form.retrieval_search.no_retrieval_connectors.message_2'
+                                    | translate}}
                                 </a>
-                                {{'ttyg.agent.create_agent_modal.form.retrieval_search.no_retrieval_connectors.message_3' | translate}}.
+                                {{'ttyg.agent.create_agent_modal.form.retrieval_search.no_retrieval_connectors.message_3'
+                                | translate}}.
                             </div>
                             <div ng-show="retrievalConnectors.length">
                                 <div class="form-group retrieval-connector">
@@ -303,7 +309,7 @@
             <div class="form-group seed col-md-4 pr-0">
                 <label for="seed">{{'ttyg.agent.create_agent_modal.form.seed.label' | translate}}</label>
                 <input type="number" class="form-control" id="seed" name="seed" min="0" ng-model="agentFormModel.seed"
-                placeholder="{{'ttyg.agent.create_agent_modal.form.seed.hint' | translate}}">
+                       placeholder="{{'ttyg.agent.create_agent_modal.form.seed.hint' | translate}}">
             </div>
         </div>
 
@@ -342,10 +348,11 @@
     <button type="button" ng-click="cancel()" class="btn cancel-btn">
         {{'ttyg.agent.create_agent_modal.btn.cancel.label' | translate}}
     </button>
-    <button type="button" ng-click="ok()" ng-disabled="agentSettingsForm.$invalid"
+    <button type="button" ng-click="ok()" ng-disabled="agentSettingsForm.$invalid || savingAgent"
             class="btn btn-primary save-agent-settings-btn">
-        {{(operation === AGENT_OPERATION.EDIT ? 'ttyg.agent.create_agent_modal.btn.save.label'
+        <span>{{(operation === AGENT_OPERATION.EDIT ? 'ttyg.agent.create_agent_modal.btn.save.label'
         : operation === AGENT_OPERATION.CLONE ? 'ttyg.agent.create_agent_modal.btn.save.label'
-        : 'ttyg.agent.create_agent_modal.btn.create.label') | translate}}
+        : 'ttyg.agent.create_agent_modal.btn.create.label') | translate}}</span>
+        <span class="saving-agent-loader" ng-if="savingAgent" onto-loader-fancy hide-message="true" size="15"></span>
     </button>
 </div>
