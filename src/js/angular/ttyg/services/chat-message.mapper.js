@@ -48,6 +48,10 @@ export const chatItemsModelMapper = (data = []) => {
     const items = [];
     let currentItem;
     data.forEach((message) => {
+        // NOTE: The backend chat model doesn't have a ChatItemModel object,
+        // i.e. it doesn't group user + assistant messages together.
+        // In essence, there may be multiple consecutive user messages as well as
+        // multiple consecutive assistant messages.
         if (CHAT_MESSAGE_ROLE.USER === message.role) {
             if (currentItem) {
                 items.push(currentItem);
@@ -55,8 +59,17 @@ export const chatItemsModelMapper = (data = []) => {
             const chatId = message.conversationId;
             currentItem = new ChatItemModel(chatId, chatMessageModelMapper(message));
         } else {
-            currentItem.answer = chatMessageModelMapper(message);
-            currentItem.agentId = message.agentId;
+            if (currentItem) {
+                currentItem.answer = chatMessageModelMapper(message);
+                currentItem.agentId = message.agentId;
+            } else {
+                const chatId = message.conversationId;
+                currentItem = new ChatItemModel(chatId, null);
+                currentItem.agentId = message.agentId;
+                currentItem.answer = message;
+            }
+            items.push(currentItem);
+            currentItem = null;
         }
     });
     if (currentItem) {

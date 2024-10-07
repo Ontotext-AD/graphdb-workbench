@@ -59,7 +59,7 @@
 }
 
 .agent-list-component .agent-item .related-repository {
-    color: #6b7280;
+    color: var(--gray-color-dark);
 }
 
 .agent-list-component .agent-item .agent-name {

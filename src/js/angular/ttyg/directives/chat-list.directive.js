@@ -13,9 +13,9 @@ angular
     .module('graphdb.framework.ttyg.directives.chat-list', modules)
     .directive('chatList', ChatListComponent);
 
-ChatListComponent.$inject = ['TTYGContextService', 'ModalService', '$translate'];
+ChatListComponent.$inject = ['TTYGContextService', 'ModalService', '$translate', '$filter'];
 
-function ChatListComponent(TTYGContextService, ModalService, $translate) {
+function ChatListComponent(TTYGContextService, ModalService, $translate, $filter) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/chat-list.html',
@@ -110,8 +110,8 @@ function ChatListComponent(TTYGContextService, ModalService, $translate) {
                 } else if (dateStart.getTime() === yesterdayStart.getTime()) {
                     return $translate.instant('common.dates.yesterday');
                 } else {
-                    // returns in format like "8/16/2024"
-                    return date.toLocaleDateString();
+                    // ISO format is the least ambiguous
+                    return $filter('date')(date, 'yyyy-MM-dd');
                 }
             };
 
