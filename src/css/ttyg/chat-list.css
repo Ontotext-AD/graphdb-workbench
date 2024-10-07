@@ -11,7 +11,7 @@
 }
 
 .chat-list-component .chat-group label {
-    color: #aaa;
+    color: var(--gray-color-dark);
 }
 
 .chat-list-component .chat-group ul {

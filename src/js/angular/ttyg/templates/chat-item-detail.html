@@ -1,16 +1,16 @@
 <link href="css/ttyg/chat-item-details.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
 <div class="chat-detail">
-    <div class="user-message">
+    <div class="user-message" ng-if="chatItemDetail.question">
         <div class="question alert-help">
             {{ chatItemDetail.question.message }}
         </div>
     </div>
-    <div class="assistant">
+    <div class="assistant" ng-if="chatItemDetail.answer">
         <div class="assistant-icon alert-help">
             <i class="fa-regular fa-message-bot"></i>
         </div>
-        <div class="assistant-message" ng-if="chatItemDetail.answer">
+        <div class="assistant-message">
             <div class="answer" ng-bind-html="MarkdownService.renderMarkdown(chatItemDetail.answer.message)">
             </div>
             <div class="actions" ng-class="{'hidden-actions': !showActions}">
@@ -63,6 +63,6 @@
                 </div>
             </div>
         </div>
-        <div ng-if="asking" onto-loader-new size="40"></div>
     </div>
+    <div ng-if="asking" onto-loader-new size="40"></div>
 </div>
