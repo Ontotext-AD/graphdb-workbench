@@ -205,6 +205,10 @@ export class ChatsListModel {
         return this._chats.find((c) => c.id === id);
     }
 
+    getNonPersistedChat() {
+        return this._chats.find((chat) => !chat.id);
+    }
+
     renameChat(renamedChat) {
         const chat = this._chats.find((c) => c.id === renamedChat.id);
         if (chat) {
