@@ -44,7 +44,6 @@ describe('TTYG chat list', () => {
     it('Should render no results when there are no chats', () => {
         TTYGStubs.stubChatsListGetNoResults();
         TTYGStubs.stubAgentListGet();
-        TTYGStubs.stubChatGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
         cy.wait('@get-chat-list');
@@ -205,7 +204,6 @@ describe('TTYG chat list', () => {
     it('Should show error notification if chat list fails to load', () => {
         TTYGStubs.stubChatListGetError();
         TTYGStubs.stubAgentListGet();
-        TTYGStubs.stubChatGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
         cy.wait('@get-chat-list');

@@ -120,6 +120,15 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 scrollToBottom();
             };
 
+            $scope.getAgentName = (agentId) => {
+              const agent = TTYGContextService.getAgent(agentId);
+              if (agent) {
+                  return agent.name;
+              }
+              // TODO: Decide what to display if the agent is not found (deleted)
+              return '';
+            };
+
             // =========================
             // Private functions
             // =========================
@@ -141,6 +150,12 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 $scope.loadingChat = false;
                 $scope.chatItem = getEmptyChatItem();
                 $scope.askingChatItem = undefined;
+                if ($scope.chat) {
+                    const lastChatItem = $scope.chat.chatHistory.getLast();
+                    if (lastChatItem && lastChatItem.agentId) {
+                        TTYGContextService.selectAgent(TTYGContextService.getAgent(lastChatItem.agentId));
+                    }
+                }
                 focusQuestionInput();
             };
 

@@ -23,7 +23,8 @@ describe('Ttyg ChatPanel', () => {
     });
 
     it('Should load chat history and show answer actions', () => {
-
+        // When I select a chat which last used agent is missing (deleted)
+        TTYGViewSteps.selectChat(0, 2);
         // Then I expect chat history to be displayed
         ChatPanelSteps.getChatDetailsElements().should('have.length', 2);
         // and only the actions for the last message are visible.
@@ -71,6 +72,40 @@ describe('Ttyg ChatPanel', () => {
 
         // Then I expect the question to be regenerated and appear in the chat history.
         ChatPanelSteps.getChatDetailsElements().should('have.length', 4);
+    });
+
+    it('Should show info message that the agent is changed', () => {
+        // When select a chat that has answers using different agents
+        TTYGViewSteps.selectChat(0, 1);
+
+        // Then I expect to see two messages indicating the agent change.
+        ChatPanelSteps.getAgentInfoMessages().should('have.length', 2);
+        // The first one is before the first chat item and is there because the currently selected agent is different from the one used in the first chat item.
+        ChatPanelSteps.getAgentInfoMessage(0).contains('Agent changed to Databricks-general-unbiased');
+        // The second one is there because the second and thirtieth chat items used different agents.
+        ChatPanelSteps.getAgentInfoMessage(1).contains('Agent changed to agent-2');
+
+        // When I change the selected agent to one that has not been used yet.
+        TTYGViewSteps.openAgentsMenu();
+        TTYGViewSteps.selectAgent(3);
+        // Then I expect to see two messages indicating the agent change.
+        ChatPanelSteps.getAgentInfoMessages().should('have.length', 3);
+        // The first has to be without changes
+        ChatPanelSteps.getAgentInfoMessage(0).contains('Agent changed to Databricks-general-unbiased');
+        ChatPanelSteps.getAgentInfoMessage(1).contains('Agent changed to agent-2');
+        // The last one is because the agent of the last chat item is different from the selected agent.
+        ChatPanelSteps.getAgentInfoMessage(2).contains('Agent changed to Databricks-biomarkers');
+    });
+
+    it('Should select last used agent when change the selected chat', () => {
+        // Then I expect the last used agent to be selected.
+        TTYGViewSteps.getAgentsMenuToggleButton().contains('agent-1');
+
+        // When I select another chat that last used agent is different.
+        TTYGViewSteps.selectChat(0, 1);
+        TTYGViewSteps.getChatFromGroup(0, 1).should('have.class', 'selected');
+        // Then I expect the last used agent be selected.
+        TTYGViewSteps.getAgentsMenuToggleButton().contains('agent-2');
     });
 
     // Can't test this on CI

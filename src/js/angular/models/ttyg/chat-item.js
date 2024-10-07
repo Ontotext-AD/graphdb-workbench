@@ -134,4 +134,10 @@ export class ChatItemsListModel {
     set items(value) {
         this._items = value || [];
     }
+
+    getLast() {
+        if (!this.isEmpty()) {
+            return this._items[this._items.length - 1];
+        }
+    }
 }

@@ -35,4 +35,12 @@ export class ChatPanelSteps {
     static copyAnswer(index) {
         ChatPanelSteps.getChatDetailActions(index).find('.copy-answer-btn').click({force: true});
     }
+
+    static getAgentInfoMessages() {
+        return ChatPanelSteps.getChatPanel().find('.agent-changed-info');
+    }
+
+    static getAgentInfoMessage(index = 0) {
+        return ChatPanelSteps.getAgentInfoMessages().eq(index);
+    }
 }

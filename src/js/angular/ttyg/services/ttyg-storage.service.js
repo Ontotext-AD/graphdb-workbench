@@ -39,7 +39,8 @@ function TTYGStorageService(localStorageAdapter, LSKeys) {
      */
     function saveAgent(agent) {
         const settings = getTtygSettings();
-        settings.agent.id = agent.id;
+        // If the agent is not provided, we will persist undefined to clear any previously saved ID, if one exists.
+        settings.agent.id = agent ? agent.id : undefined;
         localStorageAdapter.set(LSKeys.TTYG, settings);
     }
 
