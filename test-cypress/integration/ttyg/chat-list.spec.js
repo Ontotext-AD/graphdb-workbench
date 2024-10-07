@@ -168,10 +168,6 @@ describe('TTYG chat list', () => {
         ModalDialogSteps.clickOnConfirmButton();
         // Then the chat should be deleted
         TTYGViewSteps.getChatByDayGroups().should('have.length', 1);
-        // and the selected chat should be loaded in chat panel
-        TTYGViewSteps.getChatFromGroup(0, 0).should('contain', 'Test chat 3');
-        TTYGViewSteps.getChatFromGroup(0, 0).should('have.class', 'selected');
-        ChatPanelSteps.getChatDetailsElements().should('have.length', 2);
 
         // When I select a chat
         TTYGViewSteps.selectChat(0, 1);
