@@ -88,10 +88,9 @@ describe('TTYG chat list', () => {
         TTYGViewSteps.getChatFromGroup(1, 0).should('contain', 'New chat name');
     });
 
-    // TODO: This test has quite hight failure rate on CI. Investigate and fix. Or move in the flaky tests suite.
-    it.skip('Should be able to edit an existing chat name through the action menu', {
+    it('Should be able to edit an existing chat name through the action menu', {
         retries: {
-            runMode: 2,
+            runMode: 1,
             openMode: 0
         }
     }, () => {
@@ -107,6 +106,7 @@ describe('TTYG chat list', () => {
         cy.wait('@get-agent-list');
         // And I open the action menu for the chat I want to rename
         TTYGViewSteps.selectChat(1, 0);
+        cy.wait('@get-chat');
         TTYGViewSteps.triggerEditChatActionMenu(1, 0);
         // Then I should see the chat name input
         TTYGViewSteps.getChatNameInput(1, 0).should('be.visible').and('have.value', 'Test chat 4');
