@@ -27,6 +27,7 @@ function ChatListComponent(TTYGContextService, ModalService, $translate, $filter
 
             $scope.selectedChat = undefined;
             $scope.renamedChat = undefined;
+            $scope.deletingChat = undefined;
 
             // =========================
             // Private variables
@@ -144,6 +145,14 @@ function ChatListComponent(TTYGContextService, ModalService, $translate, $filter
                 TTYGContextService.selectChat(chatModel);
             };
 
+            /**
+             * Handles the progress of deletion of a chat.
+             * @param {{chatId: string, inProgress: boolean}} event
+             */
+            const onDeletingChat = (event) => {
+                $scope.deletingChat = event;
+            };
+
             // =========================
             // Subscriptions
             // =========================
@@ -156,6 +165,7 @@ function ChatListComponent(TTYGContextService, ModalService, $translate, $filter
             subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
             subscriptions.push(TTYGContextService.onChatsListChanged(onChatsListChanged));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.NEW_CHAT, onNewChat));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETING_CHAT, onDeletingChat));
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);

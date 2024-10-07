@@ -238,6 +238,7 @@
         },
         "chat": {
             "loading_chats": "Loading chats...",
+            "deleting_chat": "Deleting chats...",
             "btn": {
                 "open_sidebar": {
                     "tooltip": "Open sidebar"

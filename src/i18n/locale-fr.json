@@ -238,6 +238,7 @@
         },
         "chat": {
             "loading_chats": "Chargement des chats...",
+            "deleting_chat": "Deleting chats...",
             "deleted_repository": "Dépôt supprimé",
             "btn": {
                 "open_sidebar": {
