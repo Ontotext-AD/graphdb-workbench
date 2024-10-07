@@ -58,8 +58,7 @@ const providers = [
     '$translateProvider'
 ];
 
-const moduleDefinition = function (productInfo) {
-
+const moduleDefinition = function (productInfo, translations) {
     defineCustomElements();
     const workbench = angular.module('graphdb.workbench', modules);
 
@@ -74,14 +73,24 @@ const moduleDefinition = function (productInfo) {
                   $templateRequestProvider,
                   $translateProvider) {
 
-            // configure angular translate module
-            // configures staticFilesLoader
-            $translateProvider.useStaticFilesLoader({
-                prefix: 'i18n/locale-',
-                suffix: '.json?v=[AIV]{version}[/AIV]'
-            });
-            // load 'en' table on startup
-            $translateProvider.preferredLanguage('en');
+            if (Object.keys(translations).length > 0) {
+                // If translations data is provided, iterate over the object and register each language key
+                // and its corresponding translation data with $translateProvider.
+                Object.keys(translations).forEach(langKey => {
+                    $translateProvider.translations(langKey, translations[langKey]);
+                });
+            } else {
+                // If no translation data is preloaded, fallback to loading translation files dynamically
+                // using the static files' loader.
+                // This tells $translateProvider to load translations from external files based on
+                // the specified pattern (prefix/suffix).
+                $translateProvider.useStaticFilesLoader({
+                    prefix: 'i18n/locale-',
+                    suffix: '.json?v=[AIV]{version}[/AIV]'
+                });
+                // load 'en' table on startup
+                $translateProvider.preferredLanguage('en');
+            }
             $translateProvider.useSanitizeValueStrategy('escape');
 
             // configure toastr
@@ -92,20 +101,21 @@ const moduleDefinition = function (productInfo) {
                 extendedTimeOut: 5000
             });
 
-
             localStorageServiceProvider
                 .setStorageType('localStorage')
                 .setNotify(true, true);
 
-
-            var $route = $routeProvider.$get[$routeProvider.$get.length-1]({$on:function(){}});
+            const $route = $routeProvider.$get[$routeProvider.$get.length - 1]({
+                $on: function () {
+                }
+            });
 
             // Handle OAuth returned url, _openid_implicit_ is just a placeholder, the actual URL
             // is defined by the regular expression below.
-            $routeProvider.when('_openid_implicit_',{
-                controller : function() {
+            $routeProvider.when('_openid_implicit_', {
+                controller: function () {
                 },
-                template : "<div></div>"
+                template: "<div></div>"
             });
 
             // The URL will contain access_token=xxx and id_token=xxx and possibly other parameters,
@@ -185,38 +195,38 @@ const moduleDefinition = function (productInfo) {
     // we need to inject $jwtAuth here in order to init the service before everything else
     workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', 'LSKeys', 'GuidesService',
         function ($rootScope, $route, toastr, $sce, $translate, ThemeService, WorkbenchSettingsStorageService, LSKeys, GuidesService) {
-        $rootScope.$on('$routeChangeSuccess', function () {
-            updateTitleAndHelpInfo();
+            $rootScope.$on('$routeChangeSuccess', function () {
+                updateTitleAndHelpInfo();
 
-            toastr.clear();
-        });
+                toastr.clear();
+            });
 
-        $rootScope.$on('$translateChangeSuccess', function () {
-            updateTitleAndHelpInfo();
-        });
+            $rootScope.$on('$translateChangeSuccess', function () {
+                updateTitleAndHelpInfo();
+            });
 
-        function updateTitleAndHelpInfo() {
-            if ($route.current.title) {
-                document.title = decodeHTML($translate.instant($route.current.title)) + ' | GraphDB Workbench';
-            } else {
-                document.title = 'GraphDB Workbench';
+            function updateTitleAndHelpInfo() {
+                if ($route.current.title) {
+                    document.title = decodeHTML($translate.instant($route.current.title)) + ' | GraphDB Workbench';
+                } else {
+                    document.title = 'GraphDB Workbench';
+                }
+
+                $rootScope.helpInfo = $sce.trustAsHtml(decodeHTML($translate.instant($route.current.helpInfo)));
+                $rootScope.title = decodeHTML($translate.instant($route.current.title));
             }
 
-            $rootScope.helpInfo = $sce.trustAsHtml(decodeHTML($translate.instant($route.current.helpInfo)));
-            $rootScope.title = decodeHTML($translate.instant($route.current.title));
-        }
+            // Check if theme is set in local storage workbench settings and apply
+            const currentTheme = WorkbenchSettingsStorageService.getThemeName();
+            ThemeService.applyTheme(currentTheme);
+            ThemeService.applyDarkThemeMode();
 
-        // Check if theme is set in local storage workbench settings and apply
-        const currentTheme = WorkbenchSettingsStorageService.getThemeName();
-        ThemeService.applyTheme(currentTheme);
-        ThemeService.applyDarkThemeMode();
+            GuidesService.init();
+        }]);
 
-        GuidesService.init();
-    }]);
-
-    workbench.filter('titlecase', function() {
+    workbench.filter('titlecase', function () {
         return function (input) {
-            var s = "" + input;
+            const s = "" + input;
             return s.charAt(0).toUpperCase() + s.slice(1);
         };
     });
@@ -227,21 +237,58 @@ const moduleDefinition = function (productInfo) {
     angular.bootstrap(document, ['graphdb.workbench']);
 };
 
-$.get('rest/info/version?local=1', function (data) {
-    // Extract major.minor version as short version
-    const versionArray = data.productVersion.match(/^(\d+\.\d+)/);
-    if (versionArray.length) {
-        data.productShortVersion = versionArray[1];
-    } else {
-        data.productShortVersion = data.productVersion;
-    }
+// Manually load language files
+function loadTranslationsBeforeWorkbenchStart() {
+    const languages = ['en', 'fr']
+    const promises = languages.map(loadTranslations);
+    const translations = {};
+    Promise.all(promises)
+        .then((results) => {
+            results.forEach(result => {
+                if (result) {
+                    translations[result.language] = result.data;
+                }
+            });
+            // Start the app once all translations are loaded
+            startWorkbench(translations);
+        })
+        .catch(() => {
+            console.error('Failed to load one or more translation files.');
+        });
+}
 
-    // Add the first attribute to the short version, e.g. if the full version is 10.0.0-M3-RC1,
-    // the first attribute is M3 so the short version will be 10.0-M3.
-    const attributeArray = data.productVersion.match(/(-.*?)(-|$)/);
-    if (attributeArray && attributeArray.length) {
-        data.productShortVersion = data.productShortVersion + attributeArray[1];
-    }
+// Helper function to load translations for a given language
+function loadTranslations(language) {
+    return $.getJSON(`i18n/locale-${language}.json?v=[AIV]{version}[/AIV]`)
+        .then(function (data) {
+            return {language, data};
+        })
+        .fail(function () {
+            console.error(`Failed to load translation file for: ${language}`);
+            return null;
+        });
+}
 
-    moduleDefinition(data);
-});
+function startWorkbench(translations) {
+    // Fetch the product version information before bootstrapping the app
+    $.get('rest/info/version?local=1', function (data) {
+        const versionArray = data.productVersion.match(/^(\d+\.\d+)/);
+        if (versionArray.length) {
+            data.productShortVersion = versionArray[1];
+        } else {
+            data.productShortVersion = data.productVersion;
+        }
+
+        // Add the first attribute to the short version, e.g. if the full version is 10.0.0-M3-RC1,
+        // the first attribute is M3 so the short version will be 10.0-M3.
+        const attributeArray = data.productVersion.match(/(-.*?)(-|$)/);
+        if (attributeArray && attributeArray.length) {
+            data.productShortVersion = data.productShortVersion + attributeArray[1];
+        }
+
+        moduleDefinition(data, translations);
+    });
+}
+
+// First load the translation files and then start the workbench
+loadTranslationsBeforeWorkbenchStart();
