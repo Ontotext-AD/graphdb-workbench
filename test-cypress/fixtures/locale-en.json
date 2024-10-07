@@ -238,6 +238,7 @@
         },
         "chat": {
             "loading_chats": "Loading chats...",
+            "deleting_chat": "Deleting chats...",
             "btn": {
                 "open_sidebar": {
                     "tooltip": "Open sidebar"
@@ -293,6 +294,12 @@
                 "raw_query": "Raw query",
                 "sparql_query": "SPARQL query"
 
+            },
+            "query_name": {
+                "sparql_search":"SPARQL",
+                "fts_search": "Full-text search",
+                "similarity_search": "Similarity search",
+                "retrieval_search": "ChatGPT retrieval connector"
             },
             "dialog": {
                 "confirm_repository_change": {

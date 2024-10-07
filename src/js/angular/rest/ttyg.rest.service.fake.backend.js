@@ -15,6 +15,8 @@ const CREATE_AGENT_DELAY = 2000;
 const EDIT_AGENT_DELAY = 2000;
 const LOAD_AGENTS_DELAY = 2000;
 
+const DELETE_DELAY = 2000;
+
 export class TtygRestServiceFakeBackend {
 
     constructor() {
@@ -75,7 +77,7 @@ export class TtygRestServiceFakeBackend {
 
     deleteConversation(id) {
         this.conversations = this.conversations.filter((conversation) => conversation.id !== id);
-        return Promise.resolve();
+        return new Promise((resolve) => setTimeout(() => resolve(), DELETE_DELAY));
     }
 
     createConversation(data) {

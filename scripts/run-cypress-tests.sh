@@ -8,45 +8,50 @@ trap cleanup INT
 
 function cleanup() {
     if [ -e "${GDB_TMPDIR:-}" ]; then
-        # The PID file might not be there yet if GraphDB is still starting so wait and retry a couple of times if needed
-        for i in {1..3}; do
-            if [ ! -f "$GDB_TMPDIR/graphdb.pid" ]; then
-                echo "GraphDB PID file not found, sleep for 5 seconds and retry (attempt $i)"
-                sleep 5
-            fi
-            if [ -f "$GDB_TMPDIR/graphdb.pid" ]; then
-                echo "Killing GraphDB"
-                kill -9 $(cat "$GDB_TMPDIR/graphdb.pid")
-                break
-            fi
-        done
+        if [ -n "${GRAPHDB_PID:-}" ]; then
+            echo "Killing GraphDB"
+            kill -9 "$GRAPHDB_PID"
+        fi
         echo "Removing temporary directory"
         rm -rf "$GDB_TMPDIR"
     fi
-    exit ${1:-}
+    exit "${1:-}"
 }
 
-if [ -z "${GDB_VERSION:-}" ]; then
-    echo "GDB_VERSION must be set to run script. Don't run this script directly, use npm run test:acceptance"
-    cleanup 1
+if [ -z "${1:-}" ]; then
+    if [ -z "${GDB_VERSION:-}" ]; then
+        echo "GDB_VERSION must be set to run script or a version must be passed as the first argument"
+        cleanup 1
+    fi
+else
+    GDB_VERSION="$1"
 fi
 
 # Make sure we are in the project root
-cd $(dirname $0)/..
+cd "$(dirname $0)/.." || cleanup 1
 echo "Working directory: $(pwd)"
 
 echo "Running tests with GDB: $GDB_VERSION"
 
 DOWNLOADS=.downloads
 DOWNLOAD_URL="http://maven.ontotext.com/repository/owlim-releases/com/ontotext/graphdb/graphdb/${GDB_VERSION}/graphdb-${GDB_VERSION}-dist.zip"
+LOCAL_MAVEN_ZIP=~/".m2/repository/com/ontotext/graphdb/graphdb/${GDB_VERSION}/graphdb-${GDB_VERSION}-dist.zip"
 GDB_ZIP="$DOWNLOADS/graphdb-$GDB_VERSION.zip"
+
+if [ -z "${NODE_OPTIONS:-}" ]; then
+    # Needed for newer node versions
+    export NODE_OPTIONS=--openssl-legacy-provider
+fi
 
 if ! mkdir -p "$DOWNLOADS"; then
     echo "Could not create $DOWNLOADS directory"
     cleanup 1
 fi
 
-if [ ! -f "$GDB_ZIP" ]; then
+if [ -f "$LOCAL_MAVEN_ZIP" ]; then
+    echo "Using GraphDB from local Maven repository"
+    GDB_ZIP="$LOCAL_MAVEN_ZIP"
+elif [ ! -f "$GDB_ZIP" ]; then
     echo "Downloading GraphDB from $DOWNLOAD_URL"
     # Clean previous runs
     if ! curl -sSL "${DOWNLOAD_URL}" -o "$GDB_ZIP"; then
@@ -72,18 +77,26 @@ if ! npm run build; then
 fi
 
 echo "Starting GraphDB daemon"
-if ! "$GDB_TMPDIR/graphdb-${GDB_VERSION}/bin/graphdb" -d \
-    -p "$GDB_TMPDIR/graphdb.pid" \
+# Starts GraphDB as a bash background process and records the PID in GRAPHDB_PID
+# The output is redirected to graphdb-console.txt in the temp directory
+"$GDB_TMPDIR/graphdb-${GDB_VERSION}/bin/graphdb" \
     -Denable.cypress.hack=true \
     -Dgraphdb.workbench.home="$(pwd)/dist/" \
     -Dgraphdb.stats.default=disabled \
     -Dgraphdb.workbench.importDirectory="$(pwd)/test-cypress/fixtures/graphdb-import/" \
-    -Dgraphdb.jsonld.whitelist="https://w3c.github.io/json-ld-api/tests/*" ; then
+    -Dgraphdb.jsonld.whitelist="https://w3c.github.io/json-ld-api/tests/*" \
+        > "$GDB_TMPDIR/graphdb-console.txt" \
+        & GRAPHDB_PID=$!
+
+# Give it some time to spin up and check if still alive
+sleep 2
+if ! kill -0 "$GRAPHDB_PID" >& /dev/null; then
+    unset GRAPHDB_PID
     echo "Unable to start GraphDB"
     cleanup 1
 fi
 
-cd test-cypress
+cd test-cypress || cleanup 1
 
 echo "Installing Cypress tests module"
 if ! npm ci; then

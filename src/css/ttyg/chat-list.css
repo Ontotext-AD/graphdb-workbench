@@ -11,7 +11,7 @@
 }
 
 .chat-list-component .chat-group label {
-    color: #aaa;
+    color: var(--gray-color-dark);
 }
 
 .chat-list-component .chat-group ul {
@@ -19,11 +19,21 @@
     padding-inline-start: 0;
 }
 
-.chat-list-component .chat-item {
+.chat-list-component .chat-item .chat-detail {
     padding: 6px 4px;
     display: flex;
     justify-content: space-between;
     width: 100%;
+}
+
+.chat-list-component .chat-item .deleting-chat-loader {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 60px;
+    padding: 6px 8px;
+    background-color: #00000066;
+    color: #fff;
 }
 
 .chat-list-component .chat-item .form-control {
