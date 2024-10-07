@@ -133,7 +133,11 @@ function ChatListComponent(TTYGContextService, ModalService, $translate) {
             };
 
             const onNewChat = () => {
-                if ($scope.selectedChat && !$scope.selectedChat.id) {
+                const newChat = $scope.chatList.getNonPersistedChat();
+                if (newChat) {
+                    if ($scope.selectedChat.id !== newChat.id) {
+                        TTYGContextService.selectChat(newChat);
+                    }
                     return;
                 }
                 const data = {
