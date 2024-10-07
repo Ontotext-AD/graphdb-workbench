@@ -269,6 +269,20 @@ function AgentSettingsModalController(
         $scope.updateRetrievalConnectorPanel(true);
     };
 
+    /**
+     * Restores the default system instructions.
+     */
+    $scope.onRestoreDefaultSystemInstructions = () => {
+        $scope.agentFormModel.instructions.systemInstruction = $scope.agentFormModel.instructions.systemInstructionCopy;
+    };
+
+    /**
+     * Restores the default user instructions.
+     */
+    $scope.onRestoreDefaultUserInstructions = () => {
+        $scope.agentFormModel.instructions.userInstruction = $scope.agentFormModel.instructions.userInstructionCopy;
+    };
+
     // =========================
     // Private functions
     // =========================

@@ -85,6 +85,12 @@ function TTYGViewCtrl(
     $scope.helpTemplateUrl = "js/angular/ttyg/templates/chatInfo.html";
 
     /**
+     * Controls the visibility of the help panel.
+     * @type {boolean}
+     */
+    $scope.isHelpVisible = false;
+
+    /**
      * Controls the visibility of the chats list sidebar. By default, it is visible unless there are no chats.
      * @type {boolean}
      */
@@ -104,6 +110,7 @@ function TTYGViewCtrl(
      * @type {boolean}
      */
     $scope.loadingChats = false;
+
     $scope.loadingChat = false;
 
     /**
@@ -215,6 +222,13 @@ function TTYGViewCtrl(
             $scope.askSettings = result.askSettings;
             persist();
         });
+    };
+
+    /**
+     * Handles the help message open event.
+     */
+    $scope.onOpenHelp = () => {
+        $scope.isHelpVisible = true;
     };
 
     /**
@@ -566,11 +580,7 @@ function TTYGViewCtrl(
      */
     const onAgentListChanged = (agents) => {
         $scope.agents = agents;
-        if (agents.isEmpty()) {
-            $scope.showAgents = false;
-        } else {
-            $scope.showAgents = true;
-        }
+        $scope.showAgents = !agents.isEmpty();
     };
 
     /**

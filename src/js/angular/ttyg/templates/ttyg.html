@@ -12,6 +12,12 @@
 
     <div core-errors></div>
 
+    <div uib-collapse="!isHelpVisible" class="alert alert-info">
+        <button type="button" ng-click="isHelpVisible = false" gdb-tooltip="{{'common.close' | translate}}" class="close"
+                aria-label="Close"></button>
+        <div ng-include="helpTemplateUrl"></div>
+    </div>
+
     <div onto-loader-new
          ng-show="loadingAgents"
          class="ttyg-page-loader"
@@ -84,7 +90,7 @@
             <div class="toolbar">
                 <button class="btn btn-link btn-sm help-btn"
                         ng-if="true"
-                        ng-click="openHelp()"
+                        ng-click="onOpenHelp()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.help.btn.show_help.tooltip' | translate}}">
                     <i class="icon-help"></i>
