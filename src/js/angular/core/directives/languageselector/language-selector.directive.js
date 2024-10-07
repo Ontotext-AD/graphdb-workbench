@@ -66,11 +66,11 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageServ
                 return new Promise((resolve) => {
                     // Get user preferred language from local storage adapter
                     if (userPreferredLang) {
-                        $scope.selectedLang = $scope.languages.find(lang => lang.key === userPreferredLang);
+                        $scope.selectedLang = $scope.languages.find((lang) => lang.key === userPreferredLang);
                     } else if (browserPreferredLanguages) {
                         // Or browser languages ordered based on user preference
-                        for (let language of browserPreferredLanguages) {
-                            $scope.selectedLang = $scope.languages.find(lang => lang.key === language);
+                        for (const language of browserPreferredLanguages) {
+                            $scope.selectedLang = $scope.languages.find((lang) => lang.key === language);
                             if ($scope.selectedLang) {
                                 break;
                             }
@@ -86,7 +86,7 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageServ
                 .then(function () {
                     if (!$scope.selectedLang) {
                         // or fallback to English
-                        $scope.selectedLang = $scope.languages.find(lang => lang.key === 'en');
+                        $scope.selectedLang = $scope.languages.find((lang) => lang.key === 'en');
                     }
                     $translate.use($scope.selectedLang.key);
                     $languageService.setLanguage($scope.selectedLang.key);
@@ -99,9 +99,9 @@ function languageService() {
     this.language = 'en';
     this.setLanguage = function (lang) {
         this.language = lang;
-    }
+    };
 
     this.getLanguage = function () {
         return this.language;
-    }
+    };
 }

@@ -13,9 +13,9 @@ angular
     .module('graphdb.framework.ttyg.directives.chat-list', modules)
     .directive('chatList', ChatListComponent);
 
-ChatListComponent.$inject = ['TTYGContextService', 'ModalService', '$translate'];
+ChatListComponent.$inject = ['TTYGContextService', 'ModalService', '$translate', '$filter'];
 
-function ChatListComponent(TTYGContextService, ModalService, $translate) {
+function ChatListComponent(TTYGContextService, ModalService, $translate, $filter) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/chat-list.html',
@@ -27,6 +27,7 @@ function ChatListComponent(TTYGContextService, ModalService, $translate) {
 
             $scope.selectedChat = undefined;
             $scope.renamedChat = undefined;
+            $scope.deletingChat = undefined;
 
             // =========================
             // Private variables
@@ -110,8 +111,8 @@ function ChatListComponent(TTYGContextService, ModalService, $translate) {
                 } else if (dateStart.getTime() === yesterdayStart.getTime()) {
                     return $translate.instant('common.dates.yesterday');
                 } else {
-                    // returns in format like "8/16/2024"
-                    return date.toLocaleDateString();
+                    // ISO format is the least ambiguous
+                    return $filter('date')(date, 'yyyy-MM-dd');
                 }
             };
 
@@ -132,7 +133,11 @@ function ChatListComponent(TTYGContextService, ModalService, $translate) {
             };
 
             const onNewChat = () => {
-                if ($scope.selectedChat && !$scope.selectedChat.id) {
+                const newChat = $scope.chatList.getNonPersistedChat();
+                if (newChat) {
+                    if ($scope.selectedChat.id !== newChat.id) {
+                        TTYGContextService.selectChat(newChat);
+                    }
                     return;
                 }
                 const data = {
@@ -142,6 +147,14 @@ function ChatListComponent(TTYGContextService, ModalService, $translate) {
                 const chatModel = new ChatModel(data, md5HashGenerator());
                 $scope.chatList.appendChat(chatModel);
                 TTYGContextService.selectChat(chatModel);
+            };
+
+            /**
+             * Handles the progress of deletion of a chat.
+             * @param {{chatId: string, inProgress: boolean}} event
+             */
+            const onDeletingChat = (event) => {
+                $scope.deletingChat = event;
             };
 
             // =========================
@@ -156,6 +169,7 @@ function ChatListComponent(TTYGContextService, ModalService, $translate) {
             subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
             subscriptions.push(TTYGContextService.onChatsListChanged(onChatsListChanged));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.NEW_CHAT, onNewChat));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETING_CHAT, onDeletingChat));
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);

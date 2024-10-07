@@ -124,6 +124,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             // Private functions
             // =========================
             const createNewChat = () => {
+                TTYGContextService.emit(TTYGEventName.NEW_CHAT, $scope.chatItem);
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT, $scope.chatItem);
             };
 
@@ -166,6 +167,12 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 }
             };
 
+            const onChatDeleted = (deletedChat) => {
+                if ($scope.chat && deletedChat.id === $scope.chat.id) {
+                    reset();
+                }
+            };
+
             const getEmptyChatItem = () => {
                 const chatItem = new ChatItemModel();
                 chatItem.question = new ChatMessageModel({role: CHAT_MESSAGE_ROLE.USER});
@@ -193,6 +200,14 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 });
             };
 
+            const reset = () => {
+                $scope.chat = undefined;
+                $scope.loadingChat = false;
+                $scope.chatItem = getEmptyChatItem();
+                $scope.askingChatItem = undefined;
+                focusQuestionInput();
+            };
+
             const init = () => {
                 $scope.chatItem = getEmptyChatItem();
                 focusQuestionInput();
@@ -213,6 +228,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION_FAILURE, onQuestionFailure));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_CHAT_FAILURE, onQuestionFailure));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_CHAT_SUCCESSFUL, onChatDeleted));
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);

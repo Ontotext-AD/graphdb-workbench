@@ -5,17 +5,18 @@
 .chat-detail .assistant {
     display: flex;
     gap: 16px;
+    padding-bottom: 13px;
 }
 
 .chat-detail .assistant-message {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     width: 80%;
 }
 
 .chat-detail .assistant-message .answer {
-    padding: 4px 8px;
+    padding: 0 8px;
     line-height: var(--line-height);
 }
 
@@ -74,8 +75,13 @@
 }
 
 /* Better handling of markdown-derived HTML inside the assistant message */
-.chat-detail .assistant-message li > p:has(+:not(p)) {
+.chat-detail .assistant-message li > p:has(+:not(p, div)),
+.chat-detail .assistant-message p:last-child {
     margin-bottom: 0;
+}
+
+.chat-detail .assistant-message pre {
+    text-wrap: wrap;
 }
 
 .chat-detail .explain-response {
