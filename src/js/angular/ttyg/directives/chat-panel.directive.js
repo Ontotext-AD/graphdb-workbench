@@ -169,7 +169,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
 
             const onChatDeleted = (deletedChat) => {
                 if ($scope.chat && deletedChat.id === $scope.chat.id) {
-                    init(null);
+                    reset();
                 }
             };
 
@@ -200,11 +200,16 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 });
             };
 
-            const init = (chat) => {
-                $scope.chat = chat;
+            const reset = () => {
+                $scope.chat = undefined;
                 $scope.loadingChat = false;
                 $scope.chatItem = getEmptyChatItem();
                 $scope.askingChatItem = undefined;
+                focusQuestionInput();
+            };
+
+            const init = () => {
+                $scope.chatItem = getEmptyChatItem();
                 focusQuestionInput();
             };
 
