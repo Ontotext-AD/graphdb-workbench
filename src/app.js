@@ -73,7 +73,7 @@ const moduleDefinition = function (productInfo, translations) {
                   $templateRequestProvider,
                   $translateProvider) {
 
-            if (Object.keys(translations).length > 0) {
+            if (translations && Object.keys(translations).length > 0) {
                 // If translations data is provided, iterate over the object and register each language key
                 // and its corresponding translation data with $translateProvider.
                 Object.keys(translations).forEach(langKey => {
@@ -254,6 +254,7 @@ function loadTranslationsBeforeWorkbenchStart() {
         })
         .catch(() => {
             console.error('Failed to load one or more translation files.');
+            startWorkbench(translations);
         });
 }
 
