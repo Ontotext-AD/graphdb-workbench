@@ -53,7 +53,9 @@
     width: 100%
 }
 
-.agent-settings-modal .agent-settings-form [type="range"] {
+.agent-settings-form #similarityIndexThresholdSlider,
+.agent-settings-form #temperatureSlider,
+.agent-settings-form #topPSlider {
     position: relative;
     /* move the slider up next to the related input field to match the mockup */
     top: -6px;
