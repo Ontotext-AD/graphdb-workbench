@@ -102,7 +102,7 @@ export class TtygRestServiceFakeBackend {
     }
 
     getAgents() {
-        return new Promise((resolve) => setTimeout(() => resolve({data: []}), LOAD_AGENTS_DELAY));
+        return new Promise((resolve) => setTimeout(() => resolve({data: [...agentsList]}), LOAD_AGENTS_DELAY));
     }
 
     getAgent(id) {

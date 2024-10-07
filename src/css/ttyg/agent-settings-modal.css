@@ -49,6 +49,18 @@
     padding: 0 10px;
 }
 
+.agent-settings-modal .agent-settings-form #sparqlQuery,
+.agent-settings-modal .agent-settings-form #queryTemplate {
+    font-size: 1rem;
+    font-family: var(--mono-font) !important;
+}
+
+.agent-settings-modal .agent-settings-form #fts_search_maxNumberOfTriplesPerCall,
+.agent-settings-modal .agent-settings-form #similarity_search_maxNumberOfTriplesPerCall,
+.agent-settings-modal .agent-settings-form #retrieval_search_maxNumberOfTriplesPerCall {
+    width: 30%
+}
+
 .agent-settings-modal .agent-settings-form input[type="range"] {
     width: 100%
 }
