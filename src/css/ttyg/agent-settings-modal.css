@@ -45,7 +45,7 @@
     padding: 1rem 1rem 1rem 3.6rem;
 }
 
-.agent-settings-form .additional-extraction-methods .additional-extraction-method {
+.agent-settings-modal .agent-settings-form .additional-extraction-methods .additional-extraction-method {
     padding: 0 10px;
 }
 
@@ -53,9 +53,7 @@
     width: 100%
 }
 
-.agent-settings-form #similarityIndexThresholdSlider,
-.agent-settings-form #temperatureSlider,
-.agent-settings-form #topPSlider {
+.agent-settings-modal .agent-settings-form [type="range"] {
     position: relative;
     /* move the slider up next to the related input field to match the mockup */
     top: -6px;
