@@ -42,7 +42,7 @@ function TTYGContextService(EventEmitterService, TTYGService) {
      *
      * @type {{[key: string]: ExplainResponseModel}}
      */
-    const _explainCache = {};
+    let _explainCache = {};
 
     /**
      * The default agent values.
@@ -50,6 +50,15 @@ function TTYGContextService(EventEmitterService, TTYGService) {
      * @private
      */
     let _defaultAgent = undefined;
+
+    const resetContext = () => {
+        _agents = undefined;
+        _chats = undefined;
+        _selectedChat = undefined;
+        _selectedAgent = undefined;
+        _explainCache = {};
+        _defaultAgent = undefined;
+    };
 
     /**
      * @return {Promise<AgentModel>}
@@ -298,6 +307,7 @@ function TTYGContextService(EventEmitterService, TTYGService) {
     };
 
     return {
+        resetContext,
         emit,
         subscribe,
         getChats,

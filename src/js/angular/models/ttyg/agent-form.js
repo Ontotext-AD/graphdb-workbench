@@ -327,7 +327,7 @@ export class ExtractionMethodFormModel {
         if (this._sparqlOption === 'ontologyGraph') {
             payload.ontologyGraph = this._ontologyGraph ? this._ontologyGraph : null;
         } else if (this._sparqlOption === 'sparqlQuery') {
-            payload.constructQuery = this._sparqlQuery ? this._sparqlQuery.value : null;
+            payload.sparqlQuery = this._sparqlQuery ? this._sparqlQuery.value : null;
         }
         // this is used for all but the SPARQL method
         if (this._maxNumberOfTriplesPerCall) {
