@@ -10,13 +10,14 @@ import 'angular/ttyg/services/ttyg-storage.service';
 import {TTYGEventName} from '../services/ttyg-context.service';
 import {AGENT_OPERATION, AGENTS_FILTER_ALL_KEY} from '../services/constants';
 import {AgentListFilterModel, AgentModel} from '../../models/ttyg/agents';
-import {ChatsListModel} from '../../models/ttyg/chats';
+import {ChatModel, ChatsListModel} from '../../models/ttyg/chats';
 import {agentFormModelMapper} from '../services/agents.mapper';
 import {SelectMenuOptionsModel} from '../../models/form-fields';
 import {repositoryInfoMapper} from '../../rest/mappers/repositories-mapper';
 import {saveAs} from 'lib/FileSaver-patch';
 import {AgentSettingsModal} from "../model/agent-settings-modal";
 import {decodeHTML} from "../../../../app";
+import {md5HashGenerator} from "../../utils/hash-utils";
 
 const modules = [
     'toastr',
@@ -166,7 +167,12 @@ function TTYGViewCtrl(
      * Creates a new chat and selects it.
      */
     $scope.startNewChat = () => {
-        TTYGContextService.emit(TTYGEventName.NEW_CHAT);
+        let nonPersistedChat = TTYGContextService.getChats().getNonPersistedChat();
+        if (!nonPersistedChat) {
+            nonPersistedChat = getEmptyChat();
+            TTYGContextService.addChat(nonPersistedChat);
+        }
+        TTYGContextService.selectChat(nonPersistedChat);
     };
 
     $scope.onopen = $scope.onclose = () => angular.noop();
@@ -462,17 +468,33 @@ function TTYGViewCtrl(
         }
     };
 
+    const getEmptyChat = () => {
+        const data = {
+            name: "\u00B7 \u00B7 \u00B7",
+            timestamp: Math.floor(Date.now() / 1000)
+        };
+        return new ChatModel(data, md5HashGenerator());
+    };
+
     /**
      * @param {ChatItemModel} chatItem
      */
     const onCreateNewChat = (chatItem) => {
+        $scope.startNewChat();
+
         TTYGService.createConversation(chatItem)
             .then((newChatId) => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT_SUCCESSFUL);
                 return TTYGService.getConversation(newChatId);
             })
             .then((chat) => {
-                TTYGContextService.selectChat(chat);
+                const selectedChat = TTYGContextService.getSelectedChat();
+                // If the selected chat is not changed during the creation process.
+                if (selectedChat && !selectedChat.id) {
+                    const nonPersistedChat = TTYGContextService.getChats().getNonPersistedChat();
+                    TTYGContextService.updateSelectedChat(chat);
+                    TTYGContextService.replaceChat(chat, nonPersistedChat);
+                }
                 TTYGContextService.emit(TTYGEventName.LOAD_CHATS);
             })
             .catch(() => {
