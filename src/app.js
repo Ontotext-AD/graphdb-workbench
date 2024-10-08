@@ -226,7 +226,7 @@ const moduleDefinition = function (productInfo, translations) {
 
             // Checks license status and adds tracking code when free/evaluation license
             $licenseService.checkLicenseStatus();
-    }]);
+        }]);
 
     workbench.filter('titlecase', function () {
         return function (input) {
