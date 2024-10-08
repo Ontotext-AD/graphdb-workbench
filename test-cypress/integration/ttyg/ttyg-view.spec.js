@@ -38,7 +38,8 @@ describe('TTYG view', () => {
         // Verify the chat panel
         TTYGViewSteps.getChat().should('be.visible');
         TTYGViewSteps.getChatPanelToolbar().should('be.visible');
-        TTYGViewSteps.getEditCurrentAgentButton().should('be.visible');
+        // the edit agent settings button should not be visible when there is not a selected agent
+        TTYGViewSteps.getEditCurrentAgentButton().should('not.exist');
     });
 
     it('Should render no agents view if no agent is created yet', () => {
