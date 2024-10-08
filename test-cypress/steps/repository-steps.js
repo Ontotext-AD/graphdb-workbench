@@ -231,12 +231,24 @@ export class RepositorySteps {
         return cy.get('#wb-repositories-ontopic-repositoryInGetRepositories');
     }
 
+    static getSparqlEndpointTable() {
+        return cy.get('#wb-repositories-sparql-repositoryInGetRepositories');
+    }
+
     static getDeleteOntopicInstanceBtn(url) {
         return RepositorySteps.getOntopicTable().find('tr').contains(url).parent().find('.delete-ontopic-location');
     }
 
     static deleteOntopicInstance(url) {
         RepositorySteps.getDeleteOntopicInstanceBtn(url).click();
+    }
+
+    static getDeleteSparqlInstanceBtn(url) {
+        return RepositorySteps.getSparqlEndpointTable().find('tr').contains(url).parent().find('.delete-sparql-location');
+    }
+
+    static deleteSparqlLocation(url) {
+        RepositorySteps.getDeleteSparqlInstanceBtn(url).click();
     }
 
     static getEditOntopicInstanceBtn(url) {

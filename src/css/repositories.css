@@ -408,7 +408,7 @@ span.label {
     border:0px !important;
 }
 
-.btns-all, .ontopic-instances, .location-type-title {
+.btns-all, .ontopic-instances, .location-type-title, .sparql-instances {
     padding: 0 13px;
 }
 .repository {

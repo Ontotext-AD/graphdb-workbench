@@ -24,6 +24,15 @@
                    value="{{RemoteLocationType.ONTOPIC}}">
             {{'manage.remote.location.dialog.ontopic.location.instance' | translate}}
         </label>
+        <label class="padding-label">
+            <input type="radio"
+                   class="graph-sparql-instance"
+                   ng-model="remoteLocation.locationType"
+                   ng-disabled="isEdit"
+                   ng-change="onLocationTypeChanged()"
+                   value="{{RemoteLocationType.SPARQL}}">
+            {{'manage.remote.location.dialog.sparql.endpoint.instance' | translate}}
+        </label>
 
         <div class="form-group row">
             <label for="location" class="col-md-4 col-form-label">{{'manage.remote.location.dialog.required.url' | translate}}</label>
@@ -31,7 +40,9 @@
                 <input id="location" ng-model="remoteLocation.uri" required name="location" class="form-control"
                        placeholder="http://my-hostname:7200" ng-disabled="isEdit" validate-url/>
                 <span ng-if="!isEdit" class="form-text text-muted">
-                    {{(remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.url.message' : 'manage.remote.location.dialog.ontopic.url.message') | translate}}
+                    {{ (remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.url.message' :
+                        remoteLocation.isSparqlLocation() ? 'manage.remote.location.dialog.sparql.url.message' :
+                        'manage.remote.location.dialog.ontopic.url.message') | translate }}
                 </span>
             </div>
         </div>
@@ -41,7 +52,9 @@
                 {{'manage.remote.location.dialog.url.requred.message' | translate}}
             </div>
             <div ng-if="remoteLocationForm.location.$error.validUrl" class="alert alert-warning">
-                {{(remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.error.not_valid.url' : 'manage.remote.location.dialog.ontopic.error.not_valid.url') | translate}} http://server.example.com:7200/.
+                {{(remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.error.not_valid.url' :
+                remoteLocation.isSparqlLocation() ? 'manage.remote.location.dialog.sparql.error.not_valid.url' :
+                'manage.remote.location.dialog.ontopic.error.not_valid.url') | translate}} http://server.example.com:7200/.
             </div>
         </div>
         <div class="form-group row" ng-if="remoteLocation.isGraphDBLocation()">
@@ -68,23 +81,37 @@
         </div>
         <div  ng-if="remoteLocation.isBasicAuthType()">
             <div class="form-group row">
-                <div class="col-md-12">{{(remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.basic.auth.type.description' : 'manage.remote.location.dialog.ontopic.basic.auth.type.description') | translate}}</div>
+                <div class="col-md-12">
+                    {{ (remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.basic.auth.type.description' :
+                    remoteLocation.isSparqlLocation() ? 'manage.remote.location.dialog.sparql.basic.auth.type.description' :
+                    'manage.remote.location.dialog.ontopic.basic.auth.type.description') | translate }}
+                </div>
             </div>
             <div class="form-group row">
                 <label for="username" class="col-md-4 col-form-label">
-                    {{(remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.username.required.message' : 'manage.remote.location.dialog.ontopic.username.required.message') | translate}}
+                    {{ (remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.username.required.message' :
+                    remoteLocation.isSparqlLocation() ? 'manage.remote.location.dialog.sparql.username.required.message' :
+                    'manage.remote.location.dialog.ontopic.username.required.message') | translate }}
                 </label>
                 <div class="col-md-8">
-                    <input id="username" ng-model="remoteLocation.username" name="locationUsername" placeholder="{{(remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.username.placeholder' : 'manage.remote.location.dialog.ontopic.username.placeholder') | translate}}"
+                    <input id="username" ng-model="remoteLocation.username" name="locationUsername"
+                           placeholder="{{ (remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.username.placeholder' :
+                                            remoteLocation.isSparqlLocation() ? 'manage.remote.location.dialog.sparql.username.placeholder' :
+                                            'manage.remote.location.dialog.ontopic.username.placeholder') | translate }}"
                            class="form-control" ng-required="remoteLocation.isBasicAuthType()"/>
                 </div>
             </div>
             <div class="form-group row">
                 <label for="password" class="col-md-4 col-form-label">
-                    {{(remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.password.required.message' : 'manage.remote.location.dialog.ontopic.password.required.message') | translate}}
+                    {{ (remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.password.required.message' :
+                    remoteLocation.isSparqlLocation() ? 'manage.remote.location.dialog.sparql.password.required.message' :
+                    'manage.remote.location.dialog.ontopic.password.required.message') | translate }}
                 </label>
                 <div class="col-md-8">
-                    <input id="password" ng-model="remoteLocation.password" name="locationPassword" placeholder="{{(remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.password.placeholder' : 'manage.remote.location.dialog.ontopic.password.placeholder') | translate}}"
+                    <input id="password" ng-model="remoteLocation.password" name="locationPassword"
+                           placeholder="{{ (remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.password.placeholder' :
+                                            remoteLocation.isSparqlLocation() ? 'manage.remote.location.dialog.sparql.password.placeholder' :
+                                            'manage.remote.location.dialog.ontopic.password.placeholder') | translate }}"
                            type="password" class="form-control" ng-required="remoteLocation.isBasicAuthType()"/>
                 </div>
             </div>
