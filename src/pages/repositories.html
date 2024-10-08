@@ -325,6 +325,35 @@
             </tbody>
         </table>
     </div>
+    <!-- SPARQL Endpoint instances -->
+    <div ng-if="getLocalLocation(false, RemoteLocationType.SPARQL).length" class="mb-1 sparql-instances">
+        <h4>{{'repositories.location.sparql.instances' | translate}}</h4>
+        <table id="wb-repositories-sparql-repositoryInGetRepositories"
+               class="table table-hover table-striped" aria-describedby="Repositories table">
+            <tbody>
+            <tr ng-repeat="location in getLocalLocation(false, RemoteLocationType.SPARQL) | orderBy: ['type === \'system\'', 'location', 'id']"
+                ng-class="{'table-info text-secondary': isRepoActive(location)}">
+                <td>
+                    {{location.uri}}
+                </td>
+                <td>
+                    <div ng-if="isAdmin()" class="actions-bar-inline pull-right">
+                        <button class="btn btn-link p-0 edit-sparql-location"
+                                gdb-tooltip="{{'edit.location' | translate}}" tooltip-placement="top"
+                                ng-click="editLocation(location)">
+                            <em class="icon-edit"></em>
+                        </button>
+                        <button class="btn btn-link p-0 secondary delete-sparql-location"
+                                gdb-tooltip="{{'detach.location' | translate}}" tooltip-placement="top"
+                                ng-click="deleteLocation(location.uri)">
+                            <em class="icon-close"></em>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
 
     <div class="btns-all" ng-if="getLocationError()">
@@ -338,7 +367,7 @@
                 <li><a class="dropdown-item" href ng-click="fromFile()">{{'create.from.file' | translate}}</a></li>
             </ul>
         </div>
-        <button id="addAttachRemoteLocation" ng-if="!getActiveLocation().isInCluster" ng-click="addLocation()" class="btn btn-primary pull-right"><span
+        <button id="addAttachRemoteLocation" ng-click="addLocation()" class="btn btn-primary pull-right"><span
             class="icon-plus"></span>{{'attach.remote.location' | translate}}
         </button>
     </div>
