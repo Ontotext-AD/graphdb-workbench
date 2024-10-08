@@ -31,7 +31,7 @@ run.$inject = ['$rootScope', '$location', '$licenseService'];
 
 function run($rootScope, $location, $licenseService) {
     $rootScope.$on('$locationChangeStart', function () {
-        if ($licenseService.isLicenseHardcoded && $location.url() === '/license/register') {
+        if ($licenseService.isLicenseHardcoded() && $location.url() === '/license/register') {
             $location.path('license');
         }
     });

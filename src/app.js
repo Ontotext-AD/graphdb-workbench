@@ -41,6 +41,7 @@ const modules = [
     'graphdb.framework.core.directives.uppercased',
     'graphdb.framework.core.directives.prop-indeterminate',
     'graphdb.framework.guides.services',
+    'graphdb.framework.core.services.licenseService',
     'graphdb.framework.core.directives.operationsstatusesmonitor',
     'graphdb.framework.core.directives.autocomplete',
     'ngCustomElement'
@@ -193,8 +194,8 @@ const moduleDefinition = function (productInfo, translations) {
     workbench.constant('productInfo', productInfo);
 
     // we need to inject $jwtAuth here in order to init the service before everything else
-    workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', 'LSKeys', 'GuidesService',
-        function ($rootScope, $route, toastr, $sce, $translate, ThemeService, WorkbenchSettingsStorageService, LSKeys, GuidesService) {
+    workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', 'LSKeys', 'GuidesService', '$licenseService',
+        function ($rootScope, $route, toastr, $sce, $translate, ThemeService, WorkbenchSettingsStorageService, LSKeys, GuidesService, $licenseService) {
             $rootScope.$on('$routeChangeSuccess', function () {
                 updateTitleAndHelpInfo();
 
@@ -222,7 +223,10 @@ const moduleDefinition = function (productInfo, translations) {
             ThemeService.applyDarkThemeMode();
 
             GuidesService.init();
-        }]);
+
+            // Checks license status and adds tracking code when free/evaluation license
+            $licenseService.checkLicenseStatus();
+    }]);
 
     workbench.filter('titlecase', function () {
         return function (input) {
