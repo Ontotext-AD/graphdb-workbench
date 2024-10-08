@@ -63,23 +63,56 @@ export class AttachRepositorySteps {
     static selectGraphDBRadioBtn() {
         AttachRepositorySteps.getGraphDBRadioBtn().check();
     }
+
     static getOntopicRadioBtn() {
         return AttachRepositorySteps.getRemoteLocationDialog().find('.ontopic-instance');
+    }
+
+    static getSparqlEndpointRadioBtn() {
+        return AttachRepositorySteps.getRemoteLocationDialog().find('.graph-sparql-instance');
     }
 
     static selectOntopicRadioBtn() {
         AttachRepositorySteps.getOntopicRadioBtn().check();
     }
 
+    static selectSparqlEndpointRadioBtn() {
+        AttachRepositorySteps.getSparqlEndpointRadioBtn().check();
+    }
+
     static getLocationURLInput() {
         return AttachRepositorySteps.getRemoteLocationDialog().get('#location');
+    }
+
+    static clearURL() {
+        AttachRepositorySteps.getLocationURLInput().clear();
+    }
+
+    static enterURL(url) {
+        AttachRepositorySteps.getLocationURLInput().type(url);
     }
 
     static getUsernameInput() {
         return AttachRepositorySteps.getRemoteLocationDialog().get('#username');
     }
 
+    static enterUsername(text) {
+        AttachRepositorySteps.getUsernameInput().type(text);
+    }
+
+    static clearUsername() {
+        AttachRepositorySteps.getUsernameInput().clear();
+    }
+
     static getPasswordInput() {
         return AttachRepositorySteps.getRemoteLocationDialog().get('#password');
+    }
+
+    static enterPassword(text) {
+        AttachRepositorySteps.getPasswordInput().type(text);
+    }
+
+    static clearPassword() {
+        AttachRepositorySteps.getPasswordInput().clear();
     }
 }

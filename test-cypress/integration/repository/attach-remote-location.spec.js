@@ -3,10 +3,7 @@ import {AttachRepositorySteps} from "../../steps/repositories/attach-repository-
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 
-/**
- * Skipped for now until the backend is ready
- */
-describe.skip('Attach remote location', () => {
+describe('Attach remote location', () => {
 
     beforeEach(() => {
         RepositorySteps.visit();
@@ -24,19 +21,19 @@ describe.skip('Attach remote location', () => {
         AttachRepositorySteps.getGraphDBRadioBtn().should('be.checked');
 
         // When I fill wrong location URL
-        AttachRepositorySteps.getLocationURLInput().type("Wrong URL");
+        AttachRepositorySteps.enterURL("Wrong URL");
 
         // Then I expect to see error message
         AttachRepositorySteps.getRemoteLocationDialog().should('contain', 'Note that the location should be a URL that points to a remote GraphDB installation,');
 
         // When I clear the wrong URL
-        AttachRepositorySteps.getLocationURLInput().clear();
+        AttachRepositorySteps.clearURL();
 
         // Then I expect to see an error message that states the location is required.
         AttachRepositorySteps.getRemoteLocationDialog().should('contain', 'Location URL is required.');
 
         // When I fill correct URL
-        AttachRepositorySteps.getLocationURLInput().type("http://loc");
+        AttachRepositorySteps.enterURL("http://loc");
 
         // Then I expect the "Attach" button to be enabled
         AttachRepositorySteps.getAttachBtn().should('be.enabled');
@@ -48,19 +45,19 @@ describe.skip('Attach remote location', () => {
         AttachRepositorySteps.getAttachBtn().should('be.disabled');
 
         // When I fill Username
-        AttachRepositorySteps.getUsernameInput().type('username');
+        AttachRepositorySteps.enterUsername('username');
 
         // Then I expect the "Attach" button to be disabled (not clickable), because Password is mandatory
         AttachRepositorySteps.getAttachBtn().should('be.disabled');
 
         // When I fill password
-        AttachRepositorySteps.getPasswordInput().type('password');
+        AttachRepositorySteps.enterPassword('password');
         // Then I expect the "Attach" button to be enabled
         AttachRepositorySteps.getAttachBtn().should('be.enabled');
 
         // When I remove the Username and Password and
-        AttachRepositorySteps.getUsernameInput().clear();
-        AttachRepositorySteps.getPasswordInput().clear();
+        AttachRepositorySteps.clearUsername();
+        AttachRepositorySteps.clearPassword();
         // switch to Signature authentication type
         AttachRepositorySteps.selectSignatureRadioBtn();
 
@@ -68,7 +65,7 @@ describe.skip('Attach remote location', () => {
         AttachRepositorySteps.getAttachBtn().should('be.enabled');
 
         // When I clear the location URL
-        AttachRepositorySteps.getLocationURLInput().clear();
+        AttachRepositorySteps.clearURL();
 
         // Then I expect the "Attach" button to be disabled (not clickable), because Location URL is mandatory
         AttachRepositorySteps.getAttachBtn().should('be.disabled');
@@ -79,21 +76,21 @@ describe.skip('Attach remote location', () => {
         AttachRepositorySteps.getAttachBtn().should('be.disabled');
 
         // When I fill wrong location URL
-        AttachRepositorySteps.getLocationURLInput().type("Wrong URL");
+        AttachRepositorySteps.enterURL("Wrong URL");
 
         // Then I expect to see error message
         AttachRepositorySteps.getRemoteLocationDialog().should('contain', 'Note that the location should be a URL that points to a remote Ontopic installation,');
 
         // When I clear the wrong URL
-        AttachRepositorySteps.getLocationURLInput().clear();
+        AttachRepositorySteps.clearURL();
 
         // Then I expect to see an error message that states the location is required.
         AttachRepositorySteps.getRemoteLocationDialog().should('contain', 'Location URL is required.');
 
         // When I fill all mandatory fields
-        AttachRepositorySteps.getLocationURLInput().type('http://local');
-        AttachRepositorySteps.getUsernameInput().type("username");
-        AttachRepositorySteps.getPasswordInput().type('password');
+        AttachRepositorySteps.enterURL('http://local');
+        AttachRepositorySteps.enterUsername("username");
+        AttachRepositorySteps.enterPassword('password');
 
         // Then I expect the "Attach" button to be enabled
         AttachRepositorySteps.getAttachBtn().should('be.enabled');
@@ -111,7 +108,7 @@ describe.skip('Attach remote location', () => {
         ModalDialogSteps.getDialogBody().should('contain', 'Are you sure you want to detach the location \'http://local\'?');
 
         // When I confirm
-        ModalDialogSteps.getConfirmButton().click();
+        ModalDialogSteps.clickOnConfirmButton();
 
         // Then I expect the location to be deleted.
         RepositorySteps.getOntopicTable().should('not.exist');
@@ -150,5 +147,33 @@ describe.skip('Attach remote location', () => {
         AttachRepositorySteps.getLocationURLInput().should('have.value', 'http://local');
         // And be disabled
         AttachRepositorySteps.getLocationURLInput().should('be.disabled');
+    });
+
+    it('should create and delete SPARQL endpoint instance', () => {
+        // When I open the "Attach a remote instance" dialog.
+        AttachRepositorySteps.openAttachRemoteLocationDialog();
+        // Then I expect the "Attach" button to be disabled (not clickable), because location URL is mandatory
+        AttachRepositorySteps.getAttachBtn().should('be.disabled');
+        // And authentication type to be "None". This is default location type.
+        AttachRepositorySteps.getRemoteLocationDialog().should('contain', 'No authentication will be used with this location.');
+        // I expect GraphDB type be selected
+        AttachRepositorySteps.getGraphDBRadioBtn().should('be.checked');
+        // When I select SPARQL Endpoint instance
+        AttachRepositorySteps.selectSparqlEndpointRadioBtn();
+        // When I fill correct URL, username and password
+        AttachRepositorySteps.enterURL("http://endpoint/repo/ex");
+        AttachRepositorySteps.enterUsername("username");
+        AttachRepositorySteps.enterPassword('password');
+        // Then I expect the "Attach" button to be enabled
+        AttachRepositorySteps.getAttachBtn().should('be.enabled');
+        // And when I attach the location, it should be visible in the list
+        AttachRepositorySteps.attachRemoteLocation();
+        RepositorySteps.getSparqlEndpointTable().should('contain', 'http://endpoint/repo/ex');
+        // Then I can remove the new location
+        RepositorySteps.deleteSparqlLocation('http://endpoint/repo/ex');
+        // When I confirm
+        ModalDialogSteps.clickOnConfirmButton();
+        // Then the instance should be gone
+        RepositorySteps.getSparqlEndpointTable().should('not.contain', 'http://endpoint/repo/ex');
     });
 });
