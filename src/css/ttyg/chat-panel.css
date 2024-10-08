@@ -24,14 +24,17 @@
 .chat-panel .chat-detail {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    padding: 16px 0 40px;
+}
+
+.chat-panel *:last-child > .chat-detail {
+    padding-bottom: 40px;
 }
 
 .chat-panel .user-message {
     display: flex;
     justify-content: flex-end;
     flex-direction: row;
+    padding-bottom: 26px;
     color: var(--text-color);
 }
 

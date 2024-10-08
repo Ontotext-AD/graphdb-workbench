@@ -42,7 +42,7 @@ function TTYGContextService(EventEmitterService, TTYGService) {
      *
      * @type {{[key: string]: ExplainResponseModel}}
      */
-    let _explainCache = {};
+    const _explainCache = {};
 
     /**
      * The default agent values.
@@ -88,6 +88,16 @@ function TTYGContextService(EventEmitterService, TTYGService) {
     const updateChats = (chats) => {
         _chats = cloneDeep(chats);
         emit(TTYGEventName.CHAT_LIST_UPDATED, getChats());
+    };
+
+    const deleteChat = (chat) => {
+        _chats.deleteChat(chat);
+        updateChats(_chats);
+    };
+
+    const addChat = (newChat) => {
+        _chats.appendChat(newChat);
+        updateChats(_chats);
     };
 
     /** Subscribes to the 'chatListUpdated' event.
@@ -292,6 +302,8 @@ function TTYGContextService(EventEmitterService, TTYGService) {
         subscribe,
         getChats,
         updateChats,
+        deleteChat,
+        addChat,
         onChatsListChanged,
         getSelectedChat,
         selectChat,
@@ -349,9 +361,32 @@ export const TTYGEventName = {
      * Emitting the "selectChatUpdated" event when the selected chat has been updated.
      */
     SELECTED_CHAT_UPDATED: 'selectChatUpdated',
+
+    /**
+     * This event will be emitted when the chat delete request is in progress. The payload will contain the chat ID
+     * and a boolean indicating if the deletion is in progress.
+     */
+    DELETING_CHAT: 'deletingChat',
+
+    /**
+     * This event will be emitted when the delete chat process is triggered but before the chat delete request is sent.
+     */
     DELETE_CHAT: 'deleteChat',
+
+    /**
+     * This event will be emitted when the chat was successfully deleted.
+     */
     DELETE_CHAT_SUCCESSFUL: 'chatDeleted',
+
+    /**
+     * This event will be emitted when the attempt to answer the question fails.
+     */
+
+    /**
+     * This event is emitted when the deletion of a chat fails.
+     */
     DELETE_CHAT_FAILURE: 'chatDeletedFailure',
+
     CHAT_EXPORT: 'chatExport',
     CHAT_EXPORT_SUCCESSFUL: 'chatExportSuccess',
     CHAT_EXPORT_FAILURE: 'chatExportFailure',

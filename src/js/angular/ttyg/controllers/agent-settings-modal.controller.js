@@ -296,7 +296,7 @@ function AgentSettingsModalController(
                 toastr.success($translate.instant('ttyg.agent.messages.agent_save_successfully', {agentName: agentModel.name}));
             })
             .catch((error) => {
-                toastr.error(getError(error, 0, 100));
+                toastr.error($translate.instant('ttyg.agent.messages.agent_save_failure', {agentName: newAgentPayload.name}));
             })
             .finally(() => {
                 $scope.savingAgent = false;

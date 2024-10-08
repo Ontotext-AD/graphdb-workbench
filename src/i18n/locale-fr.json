@@ -238,6 +238,7 @@
         },
         "chat": {
             "loading_chats": "Chargement des chats...",
+            "deleting_chat": "Deleting chats...",
             "deleted_repository": "Dépôt supprimé",
             "btn": {
                 "open_sidebar": {
@@ -293,6 +294,12 @@
                 "query_method": "Méthode de requête",
                 "raw_query": "Requête brute",
                 "sparql_query": "Requête SPARQL"
+            },
+            "query_name": {
+                "sparql_search":"SPARQL",
+                "fts_search": "Recherche en texte intégral",
+                "similarity_search": "Recherche de similarité",
+                "retrieval_search": "Connecteur de récupération ChatGPT"
             },
             "dialog": {
                 "confirm_repository_change": {

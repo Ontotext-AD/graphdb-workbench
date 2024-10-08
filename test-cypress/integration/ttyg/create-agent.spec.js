@@ -119,11 +119,12 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.getTopPField().should('have.value', '0.2');
 
         // Seed
-        TtygAgentSettingsModalSteps.getSeedField().should('have.value', '0');
-        // The seed field is optional, so the save button should be enabled
-        TtygAgentSettingsModalSteps.clearSeed();
-        TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.enabled');
-        TtygAgentSettingsModalSteps.typeSeed('2');
+        // TODO: The seed field is currently removed until backend decides to use it
+        // TtygAgentSettingsModalSteps.getSeedField().should('have.value', '0');
+        // // The seed field is optional, so the save button should be enabled
+        // TtygAgentSettingsModalSteps.clearSeed();
+        // TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.enabled');
+        // TtygAgentSettingsModalSteps.typeSeed('2');
 
         // Validate the advanced settings
 

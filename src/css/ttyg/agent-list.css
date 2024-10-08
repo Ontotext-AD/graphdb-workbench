@@ -26,9 +26,15 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     font-weight: unset;
     color: inherit;
     border-color: var(--gray-color);
+}
+
+.agent-list-component .agents-filter-dropdown .dropdown-toggle .selected-filter {
+    flex-grow: 1;
+    text-align: left;
 }
 
 .agent-list-component .agents-filter-dropdown .dropdown-toggle:hover {
@@ -59,7 +65,7 @@
 }
 
 .agent-list-component .agent-item .related-repository {
-    color: #6b7280;
+    color: var(--gray-color-dark);
 }
 
 .agent-list-component .agent-item .agent-name {
