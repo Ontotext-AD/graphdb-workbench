@@ -59,6 +59,12 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
         this.getRepositorySelect().find('option:selected').should('have.text', repositoryId);
     }
 
+    static verifyRepositoryOptionNotExist(repositoryId) {
+        this.getRepositorySelect().each(($select) => {
+            cy.wrap($select).find('option').should('not.contain.text', repositoryId);
+        });
+    }
+
     // Extraction methods
 
     static getExtractionMethodError() {
