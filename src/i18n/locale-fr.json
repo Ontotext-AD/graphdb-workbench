@@ -222,7 +222,7 @@
         "help": {
             "btn": {
                 "show_help": {
-                    "tooltip": "Show help"
+                    "tooltip": "Afficher l'aide"
                 }
             }
         },
@@ -242,13 +242,13 @@
             "deleted_repository": "Dépôt supprimé",
             "btn": {
                 "open_sidebar": {
-                    "tooltip": "Ouvrir la barre latérale"
+                    "tooltip": "Afficher la liste de discussion"
                 },
                 "close_sidebar": {
-                    "tooltip": "Fermer la barre latérale"
+                    "tooltip": "Masquer la liste de discussion"
                 },
                 "create_chat": {
-                    "tooltip": "Créer un chat"
+                    "tooltip": "Démarrer une nouvelle discussion"
                 },
                 "export_chat": {
                     "label": "Exporter",
@@ -279,8 +279,14 @@
                 "regenerate": {
                     "tooltip": "Régénérer"
                 },
-                "copy": {
-                    "tooltip": "Copier"
+                "copy_answer": {
+                    "tooltip": "Copier la réponse"
+                },
+                "copy_raw_query": {
+                    "tooltip": "Copier la requête brute"
+                },
+                "copy_sparql": {
+                    "tooltip": "Copier la requête SPARQL"
                 },
                 "explain_response": {
                     "tooltip": "Expliquer la réponse"
@@ -288,6 +294,9 @@
                 "derive_answer": {
                     "label": "Comment avez-vous obtenu cette réponse ?",
                     "hint": "Astuce : vous pouvez également demander au modèle, par exemple"
+                },
+                "open_in_sparql_editor": {
+                    "tooltip": "Ouvrir dans l'éditeur SPARQL"
                 }
             },
             "labels": {
@@ -327,20 +336,25 @@
                 "form": {
                     "agent_name": {
                         "label": "Nom de l'Agent",
-                        "placeholder": "Entrez un nom convivial"
+                        "placeholder": "Entrez un nom convivial",
+                        "tooltip": "Un nom descriptif qui vous aide à identifier cet agent."
                     },
                     "repository": {
-                        "label": "Index du dépôt"
+                        "label": "Index du dépôt",
+                        "tooltip": "L'ID du référentiel qui sera utilisé pour récupérer les informations de GraphDB. Les référentiels Ontop et FedX ne sont pas pris en charge."
                     },
                     "model": {
                         "label": "Modèle",
+                        "tooltip": "Le modèle à utiliser pour cet agent. Des modèles plus puissants fourniront de meilleurs résultats.",
                         "hint": "Découvrez les modèles OpenAI disponibles <a href=\"https://platform.openai.com/docs/models\" target=\"_blank\">ici</a>."
                     },
                     "temperature": {
-                        "label": "Température"
+                        "label": "Température",
+                        "tooltip": "La température d'échantillonnage à utiliser, entre 0 et 2. Des valeurs plus élevées comme 0,8 rendront la sortie plus aléatoire, tandis que des valeurs plus faibles comme 0,2 la rendront plus ciblée et déterministe."
                     },
                     "top_p": {
-                        "label": "Top_P"
+                        "label": "Top_P",
+                        "tooltip": "Une alternative à l'échantillonnage avec température, appelée échantillonnage du noyau, où le modèle considère les résultats des jetons avec la masse de probabilité Top P. Ainsi, 0,1 signifie que seuls les jetons comprenant la masse de probabilité supérieure de 10 % sont pris en compte. OpenAI recommande de modifier cela ou la température, mais pas les deux."
                     },
                     "seed": {
                         "label": "Graine",
@@ -348,28 +362,40 @@
                     },
                     "extraction_method": {
                         "label": "Méthodes de requête",
-                        "required": "Au moins une méthode de requête doit être sélectionnée"
+                        "required": "Au moins une méthode de requête doit être sélectionnée",
+                        "tooltip": "Méthodes de requête à utiliser par le modèle pour récupérer des informations de GraphDB et répondre aux questions."
                     },
                     "fts_search": {
                         "label": "Recherche en texte intégral",
+                        "tooltip": "Répond aux questions en utilisant la recherche en texte intégral dans les littéraux et les IRI. Fonctionne bien sur les questions ouvertes, mais moins bien sur les agrégations.",
                         "fts_disabled_message": "Vous devez <a href=\"{{repositoryEditPage}}\" target=\"_blank\">activer l'index de recherche en texte intégral (FTS)</a> pour utiliser cette méthode.",
                         "missing_repository_id": "L'ID du référentiel doit être sélectionné"
                     },
+                    "fts_search_max_number_of_triples_per_call": {
+                        "label": "Nombre maximum de résultats (triples) par appel",
+                        "tooltip": "Limitez le nombre maximal de triplets renvoyés par la recherche en texte intégral. La valeur par défaut est automatique et déterminée au moment de l'exécution. En cas de doute, laissez la valeur par défaut.",
+                        "placeholder": "Valeur automatique"
+                    },
                     "sparql_search": {
                         "label": "SPARQL",
+                        "tooltip": "Répond aux questions en exécutant une requête SPARQL. Cela fonctionne bien pour les ensembles de données avec de bonnes ontologies et fonctionne bien sur les questions fermées, y compris les agrégations.",
                         "required_option": "Sélectionnez la manière dont une ontologie doit être récupérée"
                     },
                     "ontology_graph": {
-                        "label": "Récupérer l'ontologie à partir d'un graphe nommé"
+                        "label": "Récupérer l'ontologie à partir d'un graphe nommé",
+                        "tooltip": "Le graphe nommé qui contient l'ensemble de l'ontologie ou un sous-ensemble suffisant pour générer des requêtes SPARQL utiles."
                     },
                     "construct_query": {
-                        "label": "Fournir une requête SPARQL CONSTRUCT qui récupère l'ontologie"
+                        "label": "Fournir une requête SPARQL CONSTRUCT qui récupère l'ontologie",
+                        "tooltip": "A SPARQL CONSTRUCT query that returns the entire ontology or a subset sufficient to generate useful SPARQL queries."
                     },
                     "similarity_search": {
-                        "label": "Recherche de similarité"
+                        "label": "Recherche de similarité",
+                        "tooltip": "Répond aux questions en utilisant la recherche de similarité. Fonctionne bien sur les questions ouvertes, mais moins bien sur les agrégations."
                     },
                     "similarity_index": {
                         "label": "Nom de l'index de similarité",
+                        "tooltip": "L'index de similarité de texte à utiliser pour les requêtes de recherche de similarité.",
                         "loading_indexes": "Chargement des indices de similarité...",
                         "no_similarity_index": {
                             "message_1": "Vous devez",
@@ -383,10 +409,12 @@
                         }
                     },
                     "similarity_threshold": {
-                        "label": "Seuil de similarité"
+                        "label": "Seuil de similarité",
+                        "tooltip": "Utilisez uniquement les résultats de similarité dont le score est au moins égal à la valeur seuil, entre 0 et 1. La valeur par défaut est 0,6."
                     },
                     "retrieval_search": {
                         "label": "Connecteur de récupération ChatGPT",
+                        "tooltip": "Répond aux questions en utilisant la recherche vectorielle dans les blocs de texte créés à partir de RDF. Fonctionne bien sur les questions ouvertes, mais moins bien pour fournir des agrégations.",
                         "no_retrieval_connectors": {
                             "message_1": "Vous devez",
                             "message_2": "créer un connecteur de récupération ChatGPT",
@@ -399,27 +427,52 @@
                         }
                     },
                     "connector_id": {
-                        "label": "Connecteur de récupération ChatGPT"
+                        "label": "Connecteur de récupération ChatGPT",
+                        "tooltip": "L'instance du connecteur de récupération ChatGPT à utiliser pour les requêtes de récupération CtatGPT."
                     },
                     "query_template": {
-                        "label": "Modèle de requête"
+                        "label": "Modèle de requête",
+                        "tooltip": "Ce modèle peut utiliser un filtre avec les champs de métadonnées disponibles dans votre instance de connecteur de récupération ChatGPT. La valeur par défaut contient uniquement la partie requête et n'utilise aucun champ de métadonnées. Veuillez consulter la documentation pour plus d'informations."
                     },
-                    "max_number_of_triples_per_call": {
+                    "retrieval_search_max_number_of_triples_per_call": {
                         "label": "Nombre maximum de résultats (triples) par appel",
+                        "tooltip": "Limitez le nombre maximal de fragments de texte renvoyés par le connecteur de récupération ChatGPT. La valeur par défaut est automatique et déterminée au moment de l'exécution. En cas de doute, laissez la valeur par défaut.",
                         "placeholder": "Valeur automatique"
                     },
                     "system_instruction": {
                         "label": "Instructions système",
-                        "placeholder": "Entrez les instructions du système"
+                        "placeholder": "Entrez les instructions du système",
+                        "tooltip": "Instructions de base pour l'agent. La valeur par défaut fournit de bons résultats dans la plupart des configurations, il n'est donc pas nécessaire de la modifier.",
+                        "btn": {
+                            "copy_instruction": {
+                                "tooltip": "Copier les instructions du système"
+                            },
+                            "restore_default": {
+                                "tooltip": "Réinitialiser par défaut"
+                            }
+                        }
                     },
                     "user_instruction": {
                         "label": "Mode d'emploi",
-                        "placeholder": "Entrez les instructions d'utilisation"
+                        "placeholder": "Entrez les instructions d'utilisation",
+                        "tooltip": "Des instructions supplémentaires peuvent être utilisées pour fournir des vérités fondamentales ou des instructions appropriées.",
+                        "btn": {
+                            "copy_instruction": {
+                                "tooltip": "Copier les instructions d'utilisation"
+                            },
+                            "restore_default": {
+                                "tooltip": "Réinitialiser par défaut"
+                            }
+                        }
                     },
                     "additional_query_methods": {
                         "label": "Méthodes de requête supplémentaires",
+                        "tooltip": "Des méthodes de requête supplémentaires complètent les méthodes de requête principales, mais ne peuvent pas être utilisées seules pour répondre à des questions générales.",
                         "method": {
-                            "iri_discovery_search": "Recherche de texte intégral dans les étiquettes pour la découverte d'IRI"
+                            "iri_discovery_search": {
+                                "label": "Recherche de texte intégral dans les étiquettes pour la découverte d'IRI",
+                                "tooltip": "Aide le modèle à découvrir les IRI pour une requête incomplète particulière, par exemple le nom Michael dans \"Quel est le numéro de téléphone de Michael?\""
+                            }
                         }
                     }
                 },
@@ -466,8 +519,8 @@
                     "all": "Tous les dépôts"
                 },
                 "edit_agent": {
-                    "label": "Paramètres",
-                    "tooltip": "Modifier l'agent"
+                    "label": "Paramètres de l'agent",
+                    "tooltip": "Paramètres de l'agent"
                 },
                 "clone_agent": {
                     "label": "Cloner",
@@ -479,10 +532,10 @@
                 },
                 "create_agent": {
                     "label": "Créer un agent",
-                    "tooltip": "Créer un agent"
+                    "tooltip": "Créer un nouvel agent"
                 },
                 "open_sidebar": {
-                    "tooltip": "Ouvrir la barre latérale"
+                    "tooltip": "Gérer les agents"
                 },
                 "close_sidebar": {
                     "tooltip": "Fermer la barre latérale"
@@ -492,6 +545,7 @@
                 "no_agents": "Aucun agent n'est configuré pour le moment.",
                 "help_1": "Parlez à vos données en langage naturel. Il vous suffit de créer et d'instruire votre propre agent IA pour vous aider.",
                 "help_2": "The Agent est un agent conversationnel basé sur l'IA, conçu pour vous aider dans une large gamme de tâches, de la réponse aux questions et la fourniture d'informations à l'assistance dans le cadre de projets créatifs et techniques. Il exploite un traitement avancé du langage naturel pour comprendre et répondre aux entrées des utilisateurs de manière humaine, rendant les interactions intuitives et efficaces.",
+                "warn1": "Pour utiliser cette fonctionnalité, la propriété de configuration graphdb.gpt.token doit être définie sur votre jeton GPT dans le fichier de configuration graphdb.properties.",
                 "error_retrieval_connectors_loading": "Erreur lors du chargement des connecteurs de récupération",
                 "error_similarity_indexes_loading": "Erreur lors du chargement des index de similarité",
                 "error_repository_config_loading": "Erreur lors du chargement de la configuration du dépôt",

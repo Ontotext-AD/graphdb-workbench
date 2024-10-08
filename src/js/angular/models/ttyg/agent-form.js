@@ -504,10 +504,22 @@ export class AgentInstructionsFormModel {
          */
         this._systemInstruction = data.systemInstruction;
         /**
+         * Used in case the user wants to revert the system instruction to the original one.
+         * @type {string}
+         * @private
+         */
+        this._systemInstructionCopy = data.systemInstruction;
+        /**
          * @type {string}
          * @private
          */
         this._userInstruction = data.userInstruction;
+        /**
+         * Used in case the user wants to revert the user instruction to the original one
+         * @type {string}
+         * @private
+         */
+        this._userInstructionCopy = data.userInstruction;
     }
 
     toPayload() {
@@ -525,11 +537,27 @@ export class AgentInstructionsFormModel {
         this._systemInstruction = value;
     }
 
+    get systemInstructionCopy() {
+        return this._systemInstructionCopy;
+    }
+
+    set systemInstructionCopy(value) {
+        this._systemInstructionCopy = value;
+    }
+
     get userInstruction() {
         return this._userInstruction;
     }
 
     set userInstruction(value) {
         this._userInstruction = value;
+    }
+
+    get userInstructionCopy() {
+        return this._userInstructionCopy;
+    }
+
+    set userInstructionCopy(value) {
+        this._userInstructionCopy = value;
     }
 }

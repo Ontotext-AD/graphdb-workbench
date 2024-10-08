@@ -45,6 +45,10 @@
     padding: 1rem 1rem 1rem 3.6rem;
 }
 
+.agent-settings-modal .agent-settings-form .extraction-methods .extraction-method .extraction-method-options .radio-inline {
+    cursor: pointer;
+}
+
 .agent-settings-modal .agent-settings-form .additional-extraction-methods .additional-extraction-method {
     padding: 0 10px;
 }
@@ -74,6 +78,19 @@
 
 .agent-settings-form .panel-toggle-link .toggle-icon {
     transition: transform 0.3s ease; /* Smooth transition */
+}
+
+.agent-settings-form .advanced-settings .toolbar {
+    display: flex;
+    justify-content: space-between;
+}
+
+.agent-settings-form .advanced-settings .toolbar .copy-btn {
+    color: var(--primary-color);
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 0;
 }
 
 .extraction-method .panel-toggle-link .toggle-icon.expanded {
