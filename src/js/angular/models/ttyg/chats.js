@@ -139,6 +139,10 @@ export class ChatsListModel {
         });
     }
 
+    /**
+     * Deletes a chat from the chat list.
+     * @param {ChatModel} chatToBeDeleted
+     */
     deleteChat(chatToBeDeleted) {
         this._chats = this._chats.filter((chat) => chat.id !== chatToBeDeleted.id);
         this.sortByTime();
@@ -226,6 +230,14 @@ export class ChatsListModel {
             chat.name = renamedChat.name;
         }
     }
+
+    // deleteChat(chatId) {
+    //     const chatIndex = this._chats.findIndex((c) => c.id === chatId);
+    //     if (chatIndex >= 0) {
+    //         this._chats.splice(chatIndex, 1);
+    //         this.updateChatsByDay();
+    //     }
+    // }
 
     /**
      * @return {ChatModel[]}

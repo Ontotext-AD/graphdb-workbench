@@ -78,6 +78,14 @@ export class TTYGStubs extends Stubs {
         }).as('get-agent-list');
     }
 
+    static stubAgentGet(fixture = '/ttyg/agent/get-agent.json', delay = 0) {
+        cy.intercept('GET', '/rest/chat/agents/*', {
+            fixture: fixture,
+            statusCode: 200,
+            delay: delay
+        }).as('get-agent');
+    }
+
     static stubAgentListGetError() {
         cy.intercept('GET', '/rest/chat/agents', {
             statusCode: 500,
@@ -109,7 +117,7 @@ export class TTYGStubs extends Stubs {
     }
 
     static stubAgentDelete(delay = 0) {
-        cy.intercept('DELETE','/rest/chat/agents/**', {
+        cy.intercept('DELETE', '/rest/chat/agents/**', {
             statusCode: 200,
             delay: delay
         }).as('delete-agent');

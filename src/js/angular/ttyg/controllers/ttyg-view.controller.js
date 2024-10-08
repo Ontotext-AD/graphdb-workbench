@@ -17,6 +17,7 @@ import {repositoryInfoMapper} from '../../rest/mappers/repositories-mapper';
 import {saveAs} from 'lib/FileSaver-patch';
 import {AgentSettingsModal} from "../model/agent-settings-modal";
 import {decodeHTML} from "../../../../app";
+import {status as httpStatus} from "../../models/http-status";
 import {md5HashGenerator} from "../../utils/hash-utils";
 
 const modules = [
@@ -284,9 +285,9 @@ function TTYGViewCtrl(
                         dialogModel: function () {
                             return new AgentSettingsModal(
                                 activeRepositoryInfo,
-                        $scope.activeRepositoryList,
-                        agentFormModel,
-                        AGENT_OPERATION.CREATE
+                                $scope.activeRepositoryList,
+                                agentFormModel,
+                                AGENT_OPERATION.CREATE
                             );
                         }
                     },
@@ -657,10 +658,33 @@ function TTYGViewCtrl(
             TTYGService.getConversation(selectedChat.id)
                 .then((chat) => {
                     TTYGContextService.updateSelectedChat(chat);
+                    TTYGStorageService.saveChat(selectedChat);
+                })
+                .catch((error) => {
+                    // If the chat is not found and the server returns 404, then we notify the user
+                    // and remove the chat from the chat list. It's expected that the backend would
+                    // also remove it and next time the list is loaded the chat will no longer be there.
+                    if (error.status === httpStatus.NOT_FOUND) {
+                        notifyForMissingChat(selectedChat);
+                        TTYGContextService.emit(TTYGEventName.LOAD_CHAT_FAILURE, selectedChat);
+                    }
                 });
         } else {
             TTYGContextService.updateSelectedChat(selectedChat);
         }
+    };
+
+    const notifyForMissingChat = (selectedChat) => {
+        ModalService.openSimpleModal({
+            title: $translate.instant('ttyg.chat.dialog.chat_is_missing.title'),
+            message: $translate.instant('ttyg.chat.dialog.chat_is_missing.body'),
+            warning: false
+        }).result
+            .then(function () {
+                // delete the chat from the list
+                console.log(`OK handler`, );
+                TTYGContextService.deleteChat(selectedChat);
+            });
     };
 
     /**
@@ -670,14 +694,6 @@ function TTYGViewCtrl(
     const onAgentSelected = (agent) => {
         $scope.selectedAgent = agent;
         TTYGStorageService.saveAgent(agent);
-    };
-
-    /**
-     * Handles the selection of a chat.
-     * @param {ChatModel} chat
-     */
-    const onChatSelected = (chat) => {
-        TTYGStorageService.saveChat(chat);
     };
 
     /**
@@ -838,7 +854,6 @@ function TTYGViewCtrl(
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CLONE_AGENT, $scope.onOpenCloneAgentSettings));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_AGENT, onDeleteAgent));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_SELECTED, onAgentSelected));
-    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.SELECT_CHAT, onChatSelected));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.GO_TO_CREATE_SIMILARITY_VIEW, onGoToCreateSimilarityView));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.GO_TO_CONNECTORS_VIEW, onGoToConnectorsView));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.GO_TO_SPARQL_EDITOR, onGoToSparqlEditorView));
