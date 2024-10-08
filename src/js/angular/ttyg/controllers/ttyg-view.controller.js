@@ -119,6 +119,11 @@ function TTYGViewCtrl(
      */
     $scope.agents = undefined;
     /**
+     * The model of the selected agent.
+     * @type {AgentModel|undefined}
+     */
+    $scope.selectedAgent = undefined;
+    /**
      * Flag to control the visibility of the loader when loading agent list on initial page load.
      * @type {boolean}
      */
@@ -595,6 +600,9 @@ function TTYGViewCtrl(
             })
             .then(() => {
                 TTYGContextService.emit(TTYGEventName.AGENT_DELETED, agent);
+                if ($scope.selectedAgent && $scope.selectedAgent.id === agent.id) {
+                    $scope.selectedAgent = undefined;
+                }
             })
             .catch((error) => {
                 toastr.error(getError(error, 0, 100));
@@ -637,6 +645,7 @@ function TTYGViewCtrl(
      * @param {AgentModel} agent
      */
     const onAgentSelected = (agent) => {
+        $scope.selectedAgent = agent;
         TTYGStorageService.saveAgent(agent);
     };
 
@@ -786,8 +795,9 @@ function TTYGViewCtrl(
     // Subscriptions
     // =========================
 
-    function removeAllListeners() {
+    function cleanUp() {
         subscriptions.forEach((subscription) => subscription());
+        TTYGContextService.resetContext();
     }
 
     subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler));
@@ -810,7 +820,7 @@ function TTYGViewCtrl(
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.GO_TO_CONNECTORS_VIEW, onGoToConnectorsView));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.GO_TO_SPARQL_EDITOR, onGoToSparqlEditorView));
     subscriptions.push($rootScope.$on('$translateChangeSuccess', updateLabels));
-    $scope.$on('$destroy', removeAllListeners);
+    $scope.$on('$destroy', cleanUp);
 
     // =========================
     // Initialization
