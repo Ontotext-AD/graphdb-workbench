@@ -109,6 +109,11 @@ function TTYGContextService(EventEmitterService, TTYGService) {
         updateChats(_chats);
     };
 
+    const replaceChat = (newChat, oldChat) => {
+     _chats.replaceChat(newChat, oldChat);
+     updateChats(_chats);
+    };
+
     /** Subscribes to the 'chatListUpdated' event.
      * @param {function} callback - The callback to be called when the event is fired.
      *
@@ -165,7 +170,7 @@ function TTYGContextService(EventEmitterService, TTYGService) {
      * @param {ChatModel} chat - The chat object that is being updated.
      */
     const updateSelectedChat = (chat) => {
-        if (!_selectedChat || !chat || _selectedChat.id === chat.id) {
+        if (!_selectedChat || !_selectedChat.id || !chat || _selectedChat.id === chat.id) {
             _selectedChat = cloneDeep(chat);
             emit(TTYGEventName.SELECTED_CHAT_UPDATED, getSelectedChat());
         }
@@ -314,6 +319,7 @@ function TTYGContextService(EventEmitterService, TTYGService) {
         updateChats,
         deleteChat,
         addChat,
+        replaceChat,
         onChatsListChanged,
         getSelectedChat,
         selectChat,
@@ -338,11 +344,6 @@ function TTYGContextService(EventEmitterService, TTYGService) {
 }
 
 export const TTYGEventName = {
-    /**
-     * Emitting the "newChat" event notifies that a new chat is about to be created.
-     */
-    NEW_CHAT: 'newChat',
-
     /**
      * Emitting the "createChat" event triggers a backend request to create a new chat.
      */

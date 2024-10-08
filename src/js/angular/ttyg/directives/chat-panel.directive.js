@@ -124,7 +124,6 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             // Private functions
             // =========================
             const createNewChat = () => {
-                TTYGContextService.emit(TTYGEventName.NEW_CHAT, $scope.chatItem);
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT, $scope.chatItem);
             };
 
@@ -133,11 +132,15 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             };
 
             /**
-             * Handles the change of the selected chat.
+             * Handles the update of the selected chat.
              * @param {ChatModel} chat - the new selected chat.
              */
-            const onChatChanged = (chat) => {
+            const onSelectedChatUpdated = (chat) => {
                 $scope.chat = chat;
+                if (!chat.id && $scope.askingChatItem) {
+                    // Do nothing if the chat is new (dummy) and a question is currently being asked.
+                    return;
+                }
                 $scope.loadingChat = false;
                 $scope.chatItem = getEmptyChatItem();
                 $scope.askingChatItem = undefined;
@@ -223,7 +226,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             };
 
             subscriptions.push($scope.$watchCollection('chat.chatHistory.items', scrollToBottom));
-            subscriptions.push(TTYGContextService.onSelectedChatUpdated(onChatChanged));
+            subscriptions.push(TTYGContextService.onSelectedChatUpdated(onSelectedChatUpdated));
             subscriptions.push(TTYGContextService.onSelectedAgentChanged(onSelectedAgentChanged));
             subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION_FAILURE, onQuestionFailure));
