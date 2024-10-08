@@ -96,7 +96,7 @@
                 </td>
                 <td class="break-word">
                     <div class="value">
-                        {{importedOn | date:'yyyy-MM-dd, HH:mm' }}
+                        {{importedOn ? (importedOn | date:'yyyy-MM-dd, HH:mm') : '' }}
                     </div>
                 </td>
             </tr>
