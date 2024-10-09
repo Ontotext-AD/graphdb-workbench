@@ -278,6 +278,7 @@
         },
         "chat_panel": {
             "hint": "Parlez à votre graphe – posez simplement une question !\nPour le moment, cela fonctionne mieux si vous demandez en anglais, désolé !",
+            "deleted_agent": "<span class=\"text-warning\"><i class=\"fa-regular fa-triangle-exclamation fa-xs\"></i> agent supprimé</span>",
             "btn": {
                 "ask": {
                     "label": "Demander"
@@ -322,7 +323,8 @@
                 }
             },
             "messages":{
-                "explain_response_failure": "Échec de la récupération de l'explication pour la réponse."
+                "explain_response_failure": "Échec de la récupération de l'explication pour la réponse.",
+                "agent_changed_info": "L'agent a été changé en <b> {{agentName}} </b>"
             }
         },
         "agent": {

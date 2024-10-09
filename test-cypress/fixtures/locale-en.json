@@ -277,6 +277,7 @@
         },
         "chat_panel": {
             "hint": "Talk to your graph – simply ask a question!",
+            "deleted_agent": "<span class=\"text-warning\"><i class=\"fa-regular fa-triangle-exclamation fa-xs\"></i> deleted agent</span>",
             "btn": {
                 "ask": {
                     "label": "Ask"
@@ -313,7 +314,8 @@
                 }
             },
             "messages": {
-                "explain_response_failure": "Failed to retrieve the explanation for the response."
+                "explain_response_failure": "Failed to retrieve the explanation for the response.",
+                "agent_changed_info": "Agent changed to <b> {{agentName}} </b>"
             }
         },
         "agent": {

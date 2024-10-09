@@ -237,6 +237,7 @@ const moduleDefinition = function (productInfo, translations) {
 
     workbench.filter('prettyJSON', () => (json) => angular.toJson(json, true));
     workbench.filter('humanReadableSize', () => (size) => convertToHumanReadable(size));
+    workbench.filter('htmlTranslate', ['$translate', '$sce', ($translate, $sce) => (key, params) => $sce.trustAsHtml(decodeHTML($translate.instant(key, params)))]);
 
     angular.bootstrap(document, ['graphdb.workbench']);
 };

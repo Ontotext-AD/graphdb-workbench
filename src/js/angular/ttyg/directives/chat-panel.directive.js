@@ -3,6 +3,7 @@ import {TTYGEventName} from "../services/ttyg-context.service";
 import {CHAT_MESSAGE_ROLE, ChatMessageModel} from "../../models/ttyg/chat-message";
 import {ChatItemModel} from "../../models/ttyg/chat-item";
 import {cloneDeep} from "lodash";
+import {decodeHTML} from "../../../../app";
 
 const modules = [
     'graphdb.framework.ttyg.directives.chat-item-detail'
@@ -120,6 +121,11 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 scrollToBottom();
             };
 
+            $scope.getAgentName = (agentId) => {
+              const agent = TTYGContextService.getAgent(agentId);
+              return agent ? agent.name : decodeHTML($translate.instant('ttyg.chat_panel.deleted_agent'));
+            };
+
             // =========================
             // Private functions
             // =========================
@@ -144,6 +150,12 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 $scope.loadingChat = false;
                 $scope.chatItem = getEmptyChatItem();
                 $scope.askingChatItem = undefined;
+                if ($scope.chat) {
+                    const lastChatItem = $scope.chat.chatHistory.getLast();
+                    if (lastChatItem && lastChatItem.agentId) {
+                        TTYGContextService.selectAgent(TTYGContextService.getAgent(lastChatItem.agentId));
+                    }
+                }
                 focusQuestionInput();
             };
 
