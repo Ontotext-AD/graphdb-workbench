@@ -192,7 +192,7 @@ describe('Home screen validation', () => {
         });
     });
 
-    context.only('GA', () => {
+    context('GA', () => {
         it('Should set GA tracking code in header when free license', () => {
             LicenseStubs.stubFreeLicense();
             LicenseStubs.stubGoogleCalls();
