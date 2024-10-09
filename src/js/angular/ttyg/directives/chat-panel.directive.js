@@ -3,6 +3,7 @@ import {TTYGEventName} from "../services/ttyg-context.service";
 import {CHAT_MESSAGE_ROLE, ChatMessageModel} from "../../models/ttyg/chat-message";
 import {ChatItemModel} from "../../models/ttyg/chat-item";
 import {cloneDeep} from "lodash";
+import {decodeHTML} from "../../../../app";
 
 const modules = [
     'graphdb.framework.ttyg.directives.chat-item-detail'
@@ -122,10 +123,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
 
             $scope.getAgentName = (agentId) => {
               const agent = TTYGContextService.getAgent(agentId);
-              if (agent) {
-                  return agent.name;
-              }
-              return agentId;
+              return agent ? agent.name : decodeHTML($translate.instant('ttyg.chat_panel.deleted_agent'));
             };
 
             // =========================

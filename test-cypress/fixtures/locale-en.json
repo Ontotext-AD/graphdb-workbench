@@ -277,6 +277,7 @@
         },
         "chat_panel": {
             "hint": "Talk to your graph – simply ask a question!",
+            "deleted_agent": "<span class=\"text-warning\"><i class=\"fa-regular fa-triangle-exclamation fa-xs\"></i> deleted agent</span>",
             "btn": {
                 "ask": {
                     "label": "Ask"

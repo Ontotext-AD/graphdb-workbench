@@ -68,3 +68,7 @@
 .chat-panel .chat-loading {
     margin-top: 100px;
 }
+
+.chat-panel .text-warning {
+    font-weight: 300;
+}
