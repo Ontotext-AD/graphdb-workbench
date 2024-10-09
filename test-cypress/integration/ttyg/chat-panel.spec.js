@@ -22,7 +22,7 @@ describe('Ttyg ChatPanel', () => {
         cy.wait('@get-all-repositories');
     });
 
-    it.only('Should load chat history and show answer actions', () => {
+    it('Should load chat history and show answer actions', () => {
         // When I select a chat which last used agent is missing (deleted)
         TTYGViewSteps.selectChat(0, 2);
         // Then I expect chat history to be displayed
