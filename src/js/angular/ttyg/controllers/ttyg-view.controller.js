@@ -675,10 +675,9 @@ function TTYGViewCtrl(
     };
 
     const notifyForMissingChat = (selectedChat) => {
-        ModalService.openSimpleModal({
+        ModalService.openModalAlert({
             title: $translate.instant('ttyg.chat.dialog.chat_is_missing.title'),
-            message: $translate.instant('ttyg.chat.dialog.chat_is_missing.body'),
-            warning: false
+            message: $translate.instant('ttyg.chat.dialog.chat_is_missing.body')
         }).result
             .then(function () {
                 TTYGContextService.deleteChat(selectedChat);

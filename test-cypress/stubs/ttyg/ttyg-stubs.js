@@ -49,6 +49,15 @@ export class TTYGStubs extends Stubs {
         });
     }
 
+    static stubChatGet404Error() {
+        cy.intercept('GET', '/rest/chat/conversations/*', {
+            statusCode: 404,
+            response: {
+                error: 'Not Found'
+            }
+        }).as('get-chat');
+    }
+
     static stubChatUpdate() {
         cy.intercept('PUT', '/rest/chat/conversations/*', {
             fixture: '/ttyg/chats/renamed-chat.json',
