@@ -92,7 +92,7 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
         }
     }
 
-    $scope.$on('autocompleteStatus', function() {
+    $scope.$on('autocompleteStatus', function () {
         checkAutocompleteStatus();
     });
 
@@ -202,7 +202,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         $scope.initTutorial();
     });
 
-    $scope.checkMenu = debounce(function() {
+    $scope.checkMenu = debounce(function () {
         return $('.main-menu').hasClass('collapsed');
     }, 250, {trailing: false});
 
@@ -324,7 +324,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.isFreeAccessEnabled = function () {
         return $jwtAuth.isFreeAccessEnabled();
     };
-    $scope.hasExternalAuthUser = function() {
+    $scope.hasExternalAuthUser = function () {
         return $jwtAuth.hasExternalAuthUser();
     };
     $scope.isDefaultAuthEnabled = function () {
@@ -401,7 +401,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $repositories.isActiveRepoFedXType();
     };
 
-    $scope.isLicenseValid = function() {
+    $scope.isLicenseValid = function () {
         return $licenseService.isLicenseValid();
     };
 
@@ -409,7 +409,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
      *  Sets attrs property in the directive
      * @param attrs
      */
-    $scope.setAttrs = function(attrs) {
+    $scope.setAttrs = function (attrs) {
         $scope.attrs = attrs;
     };
 
@@ -424,7 +424,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         if ($scope.attrs) {
             $scope.isRestricted =
                 $scope.attrs.hasOwnProperty('license') && !$licenseService.isLicenseValid() ||
-                $scope.attrs.hasOwnProperty('write') && $scope.isSecurityEnabled() && !$scope.canWriteActiveRepo()||
+                $scope.attrs.hasOwnProperty('write') && $scope.isSecurityEnabled() && !$scope.canWriteActiveRepo() ||
                 $scope.attrs.hasOwnProperty('ontop') && $scope.isActiveRepoOntopType() ||
                 $scope.attrs.hasOwnProperty('fedx') && $scope.isActiveRepoFedXType();
         }
@@ -611,7 +611,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             },
             {
                 "title": $translate.instant('main.info.title.create.repo.page'),
-                "info": decodeHTML($translate.instant('main.info.create.repo.page', {link:"<a href=\"https://graphdb.ontotext.com/documentation/" + productInfo.productShortVersion + "/configuring-a-repository.html\" target=\"_blank\">"}))
+                "info": decodeHTML($translate.instant('main.info.create.repo.page', {link: "<a href=\"https://graphdb.ontotext.com/documentation/" + productInfo.productShortVersion + "/configuring-a-repository.html\" target=\"_blank\">"}))
             },
             {
                 "title": $translate.instant('main.info.title.load.sample.dataset'),
@@ -637,7 +637,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }, 50);
     };
 
-    $scope.getTutorialPageHtml = function(page) {
+    $scope.getTutorialPageHtml = function (page) {
         return $sce.trustAsHtml(page.info);
     };
 
@@ -811,6 +811,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     });
 
+    $scope.getProductType = function () {
+        return $licenseService.productType();
+    };
 
     $scope.isEnterprise = function () {
         return $scope.getProductType() === "enterprise";
@@ -827,24 +830,21 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return _.indexOf(editions, $scope.getProductType()) >= 0;
     };
 
-    $scope.showLicense = function() {
-        return $licenseService.showLicense;
+    $scope.showLicense = function () {
+        return $licenseService.showLicense();
     };
 
-    $scope.getLicense = function() {
-        return $licenseService.license;
+    $scope.getLicense = function () {
+        return $licenseService.license();
     };
 
-    $scope.isLicenseHardcoded = function() {
-        return $licenseService.isLicenseHardcoded;
+    $scope.isLicenseHardcoded = function () {
+        return $licenseService.isLicenseHardcoded();
     };
 
-    $scope.getProductType = function() {
-        return $licenseService.productType;
-    };
 
-    $scope.getProductTypeHuman = function() {
-        return $licenseService.productTypeHuman;
+    $scope.getProductTypeHuman = function () {
+        return $licenseService.productTypeHuman();
     };
 
 
@@ -977,17 +977,17 @@ function uxTestCtrl($scope, $repositories, toastr, ModalService) {
         });
     };
 
-    $scope.demoToast = function(alertType, secondArg=true) {
+    $scope.demoToast = function (alertType, secondArg = true) {
         toastr[alertType]('Consectetur adipiscing elit. Sic transit gloria mundi.',
             secondArg ? 'Lorem ipsum dolor sit amet' : undefined,
             {timeOut: 300000, extendedTimeOut: 300000});
     };
 
-    $scope.clearToasts = function() {
+    $scope.clearToasts = function () {
         toastr.clear();
     };
 
-    $scope.clearRepo = function() {
+    $scope.clearRepo = function () {
         $repositories.setRepository('');
     };
 }

@@ -1,4 +1,5 @@
 import HomeSteps from '../../steps/home-steps';
+import {LicenseStubs} from "../../stubs/license-stubs";
 
 const FILE_TO_IMPORT = 'wine.rdf';
 
@@ -98,7 +99,7 @@ describe('Home screen validation', () => {
             cy.presetRepository(repositoryId);
 
             cy.visit('/graphs', {
-                onBeforeLoad (win) {
+                onBeforeLoad(win) {
                     cy.stub(win, 'open').as('window.open');
                 }
             });
@@ -156,7 +157,7 @@ describe('Home screen validation', () => {
 
             //Navigate away from the Homepage, to be able to test the new resource search box
             cy.visit('/graphs', {
-                onBeforeLoad (win) {
+                onBeforeLoad(win) {
                     cy.stub(win, 'open').as('window.open');
                 }
             });
@@ -166,7 +167,7 @@ describe('Home screen validation', () => {
 
             getRDFResourceSearchBox().click();
             //Verify that the new resource search box is focused
-            cy.focused().should('have.attr', 'placeholder', 'Search RDF resources...')
+            cy.focused().should('have.attr', 'placeholder', 'Search RDF resources...');
 
             //Verify autocomplete suggestions count
             cy.focused().then(() => {
@@ -177,7 +178,7 @@ describe('Home screen validation', () => {
                     .should('be.visible')
                     .children()
                     .should('have.length', 7);
-            })
+            });
 
             //Test table and visual buttons.
             cy.get("#auto_0").should('be.visible').click();
@@ -188,6 +189,37 @@ describe('Home screen validation', () => {
             cy.get("#auto_0").should('be.visible').click();
             cy.get('@window.open').should('be.calledWith', 'graphs-visualizations?uri=http%3A%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23Dry');
             cy.deleteRepository(repositoryId);
+        });
+    });
+
+    context('GA', () => {
+        it('Should set GA tracking code in header when free license', () => {
+            LicenseStubs.stubFreeLicense();
+            LicenseStubs.stubGoogleCalls();
+            HomeSteps.visit();
+            cy.document()
+                .get('head script')
+                .should("have.attr", "src")
+                .should('include', 'https://www.googletagmanager.com/gtm.js?id=GTM-WBP6C6Z4');
+        });
+
+        it('Should set GA tracking code in header when evaluation enterprise license', () => {
+            LicenseStubs.stubEvaluationLicense();
+            LicenseStubs.stubGoogleCalls();
+            HomeSteps.visit();
+            cy.document()
+                .get('head script')
+                .should("have.attr", "src")
+                .should('include', 'https://www.googletagmanager.com/gtm.js?id=GTM-WBP6C6Z4');
+        });
+
+        it('Should NOT set GA tracking code in header when enterprise license', () => {
+            LicenseStubs.stubEnterpriseLicense();
+            LicenseStubs.stubGoogleCalls();
+            HomeSteps.visit();
+            cy.document()
+                .get('head script')
+                .should("not.have.attr", "src");
         });
     });
 

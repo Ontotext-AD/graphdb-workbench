@@ -63,7 +63,7 @@ LicenseCtrl.$inject = ['$scope', 'LicenseRestService', '$licenseService', 'toast
 function LicenseCtrl($scope, LicenseRestService, $licenseService, toastr, $rootScope, ModalService, $translate) {
 
     $scope.loadingLicense = function() {
-        return $licenseService.loadingLicense;
+        return $licenseService.loadingLicense();
     };
 
     $licenseService.checkLicenseStatus();
