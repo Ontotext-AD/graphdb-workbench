@@ -39,34 +39,36 @@
                 </button>
             </div>
             <div ng-if="loadingExplainResponse" onto-loader-new size="40"></div>
-            <div ng-if="explainResponseModel && explainResponseModel.expanded" class="explain-response"
-                 ng-repeat="queryMethod in explainResponseModel.queryMethods">
-                <div class="explain-response-row">
-                    <span class="label">{{'ttyg.chat_panel.labels.query_method' | translate}}:</span>
-                    <span class="content">{{('ttyg.chat_panel.query_name.' + queryMethod.name) | translate}}</span>
-                </div>
-                <div ng-if="queryMethod.rawQuery" class="explain-response-row">
-                    <span class="label">{{'ttyg.chat_panel.labels.raw_query' | translate}}:</span>
-                    <span class="content">{{queryMethod.rawQuery}}</span>
-                    <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy_raw_query.tooltip"
-                                       text-to-copy="queryMethod.rawQuery"></copy-to-clipboard>
-                </div>
-                <!-- TODO: When the query method is "Retrieval connector" do not display the SPARQL option, and the open in SPARQL view button should be hidden. -->
-                <div ng-if="queryMethod.query" class="explain-query">
-                    <div class="header">
-                        <div class="label">{{'ttyg.chat_panel.labels.sparql_query' | translate}}</div>
-                        <div class="actions">
-                            <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy_sparql.tooltip"
-                                               text-to-copy="queryMethod.query"></copy-to-clipboard>
-                            <button class="btn btn-link btn-sm"
-                                    ng-click="onOpenInSparqlEditor(queryMethod.query)"
-                                    gdb-tooltip="{{'ttyg.chat_panel.btn.open_in_sparql_editor.tooltip' | translate}}">
-                                <i class="icon-sparql"></i>
-                            </button>
-                        </div>
+            <div class="explain-responses">
+                <div ng-if="explainResponseModel && explainResponseModel.expanded" class="explain-response"
+                     ng-repeat="queryMethod in explainResponseModel.queryMethods">
+                    <div class="explain-response-row">
+                        <span class="label">{{'ttyg.chat_panel.labels.query_method' | translate}}:</span>
+                        <span class="content">{{('ttyg.chat_panel.query_name.' + queryMethod.name) | translate}}</span>
                     </div>
-                    <div class="query">
-                        <pre><code>{{queryMethod.query}}</code></pre>
+                    <div ng-if="queryMethod.rawQuery" class="explain-response-row">
+                        <span class="label">{{'ttyg.chat_panel.labels.raw_query' | translate}}:</span>
+                        <span class="content">{{queryMethod.rawQuery}}</span>
+                        <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy_raw_query.tooltip"
+                                           text-to-copy="queryMethod.rawQuery"></copy-to-clipboard>
+                    </div>
+                    <!-- TODO: When the query method is "Retrieval connector" do not display the SPARQL option, and the open in SPARQL view button should be hidden. -->
+                    <div ng-if="queryMethod.query" class="explain-query">
+                        <div class="header">
+                            <div class="label">{{'ttyg.chat_panel.labels.sparql_query' | translate}}</div>
+                            <div class="actions">
+                                <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy_sparql.tooltip"
+                                                   text-to-copy="queryMethod.query"></copy-to-clipboard>
+                                <button class="btn btn-link btn-sm"
+                                        ng-click="onOpenInSparqlEditor(queryMethod.query)"
+                                        gdb-tooltip="{{'ttyg.chat_panel.btn.open_in_sparql_editor.tooltip' | translate}}">
+                                    <i class="icon-sparql"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="query">
+                            <pre><code>{{queryMethod.query}}</code></pre>
+                        </div>
                     </div>
                 </div>
             </div>
