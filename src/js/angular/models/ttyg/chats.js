@@ -231,14 +231,6 @@ export class ChatsListModel {
         }
     }
 
-    // deleteChat(chatId) {
-    //     const chatIndex = this._chats.findIndex((c) => c.id === chatId);
-    //     if (chatIndex >= 0) {
-    //         this._chats.splice(chatIndex, 1);
-    //         this.updateChatsByDay();
-    //     }
-    // }
-
     /**
      * @return {ChatModel[]}
      */

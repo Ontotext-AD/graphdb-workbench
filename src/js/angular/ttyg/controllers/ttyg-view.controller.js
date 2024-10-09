@@ -681,8 +681,6 @@ function TTYGViewCtrl(
             warning: false
         }).result
             .then(function () {
-                // delete the chat from the list
-                console.log(`OK handler`, );
                 TTYGContextService.deleteChat(selectedChat);
             });
     };
