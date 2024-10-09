@@ -147,6 +147,16 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 focusQuestionInput();
             };
 
+            /**
+             * Handles the failure of loading the chat and the server returns 404. This might happen if the chat does
+             * not exist anymore because it was deleted by another user for example.
+             */
+            const onLoadChatFailure = () => {
+                $scope.loadingChat = false;
+                $scope.chatItem = getEmptyChatItem();
+                focusQuestionInput();
+            };
+
             const onSelectedChatChanged = (chat) => {
                 // Skip the loading indication if it is a new (dummy) chat that has not been created yet.
                 $scope.loadingChat = chat && chat.id;
@@ -229,6 +239,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             subscriptions.push(TTYGContextService.onSelectedChatUpdated(onSelectedChatUpdated));
             subscriptions.push(TTYGContextService.onSelectedAgentChanged(onSelectedAgentChanged));
             subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.LOAD_CHAT_FAILURE, onLoadChatFailure));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION_FAILURE, onQuestionFailure));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_CHAT_FAILURE, onQuestionFailure));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_CHAT_SUCCESSFUL, onChatDeleted));

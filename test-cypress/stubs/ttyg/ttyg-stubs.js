@@ -49,6 +49,15 @@ export class TTYGStubs extends Stubs {
         });
     }
 
+    static stubChatGet404Error() {
+        cy.intercept('GET', '/rest/chat/conversations/*', {
+            statusCode: 404,
+            response: {
+                error: 'Not Found'
+            }
+        }).as('get-chat');
+    }
+
     static stubChatUpdate() {
         cy.intercept('PUT', '/rest/chat/conversations/*', {
             fixture: '/ttyg/chats/renamed-chat.json',
@@ -76,6 +85,14 @@ export class TTYGStubs extends Stubs {
             statusCode: 200,
             delay: delay
         }).as('get-agent-list');
+    }
+
+    static stubAgentGet(fixture = '/ttyg/agent/get-agent.json', delay = 0) {
+        cy.intercept('GET', '/rest/chat/agents/*', {
+            fixture: fixture,
+            statusCode: 200,
+            delay: delay
+        }).as('get-agent');
     }
 
     static stubAgentListGetError() {
@@ -109,7 +126,7 @@ export class TTYGStubs extends Stubs {
     }
 
     static stubAgentDelete(delay = 0) {
-        cy.intercept('DELETE','/rest/chat/agents/**', {
+        cy.intercept('DELETE', '/rest/chat/agents/**', {
             statusCode: 200,
             delay: delay
         }).as('delete-agent');

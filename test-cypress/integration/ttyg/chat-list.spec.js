@@ -5,6 +5,7 @@ import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 import {ApplicationSteps} from "../../steps/application-steps";
 import HomeSteps from "../../steps/home-steps";
 import {ChatPanelSteps} from "../../steps/ttyg/chat-panel-steps";
+import {AlertDialogSteps} from "../../steps/alert-dialog-steps";
 
 describe('TTYG chat list', () => {
 
@@ -244,6 +245,30 @@ describe('TTYG chat list', () => {
 
         // Then I expect to last used chat be selected.
         TTYGViewSteps.getChatFromGroup(0, 2).should('have.class', 'selected');
+    });
+
+    it('Should automatically remove the selected chat when it is not found by the backend', () => {
+        TTYGStubs.stubChatsListGet();
+        TTYGStubs.stubChatGet();
+        TTYGStubs.stubAgentListGet();
+        // Given I have opened the ttyg page
+        TTYGViewSteps.visit();
+        cy.wait('@get-all-repositories');
+        cy.wait('@get-chat-list');
+        cy.wait('@get-chat');
+        cy.wait('@get-agent-list');
+        // And the page have loaded and the chat list is visible
+        TTYGViewSteps.getChatFromGroup(0, 0).should('have.class', 'selected');
+        // When I select a chat for which the backend would return 404
+        TTYGStubs.stubChatGet404Error();
+        TTYGViewSteps.selectChat(0, 2);
+        cy.wait('@get-chat');
+        // Then I expect an alert to be displayed to the user
+        AlertDialogSteps.getDialog().should('be.visible');
+        // When I close the alert
+        AlertDialogSteps.acceptAlert();
+        // Then I expect the chat to be removed from the chat list
+        TTYGViewSteps.getChatFromGroup(0, 2).should('not.exist');
     });
 });
 

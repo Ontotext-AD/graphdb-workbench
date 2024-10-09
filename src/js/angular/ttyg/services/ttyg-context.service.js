@@ -6,7 +6,7 @@ angular
 
 TTYGContextService.$inject = ['EventEmitterService', 'TTYGService'];
 
-function TTYGContextService(EventEmitterService, TTYGService) {
+function TTYGContextService(EventEmitterService) {
 
     /**
      * The list of agents.
@@ -99,6 +99,10 @@ function TTYGContextService(EventEmitterService, TTYGService) {
         emit(TTYGEventName.CHAT_LIST_UPDATED, getChats());
     };
 
+    /**
+     * Deletes the chat with the provided <code>chatId</code>.
+     * @param {ChatModel} chat
+     */
     const deleteChat = (chat) => {
         _chats.deleteChat(chat);
         updateChats(_chats);
@@ -227,16 +231,13 @@ function TTYGContextService(EventEmitterService, TTYGService) {
         emit(TTYGEventName.AGENT_SELECTED, getSelectedAgent());
     };
 
-    /**
-     * @return {{[key: string]: ExplainResponseModel}} the cache of explain responses.
-     */
     const _getExplainResponseCache = () => {
         return cloneDeep(_explainCache);
     };
 
     /**
      * Gets the explain response.
-     * @param {stirng} answerId
+     * @param {string} answerId
      * @return {ExplainResponseModel}
      */
     const getExplainResponse = (answerId) => {
@@ -317,12 +318,12 @@ function TTYGContextService(EventEmitterService, TTYGService) {
         subscribe,
         getChats,
         updateChats,
-        deleteChat,
         addChat,
         replaceChat,
         onChatsListChanged,
         getSelectedChat,
         selectChat,
+        deleteChat,
         onSelectedChatChanged,
         updateSelectedChat,
         onSelectedChatUpdated,
@@ -419,6 +420,7 @@ export const TTYGEventName = {
     LOAD_CHATS: 'loadChats',
     LOAD_CHAT_SUCCESSFUL: 'loadChatSuccess',
     LOAD_CHAT_FAILURE: 'loadChatFailure',
+
     AGENT_LIST_UPDATED: 'agentListUpdated',
 
     /**

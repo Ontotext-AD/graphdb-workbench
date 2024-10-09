@@ -139,6 +139,10 @@ export class ChatsListModel {
         });
     }
 
+    /**
+     * Deletes a chat from the chat list.
+     * @param {ChatModel} chatToBeDeleted
+     */
     deleteChat(chatToBeDeleted) {
         this._chats = this._chats.filter((chat) => chat.id !== chatToBeDeleted.id);
         this.sortByTime();

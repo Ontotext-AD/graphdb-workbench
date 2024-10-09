@@ -146,6 +146,7 @@ ModalService.$inject = ['$uibModal', '$timeout', '$sce'];
 function ModalService($uibModal, $timeout, $sce) {
     return {
         openSimpleModal: openSimpleModal,
+        openModalAlert: openModalAlert,
         openCopyToClipboardModal: openCopyToClipboardModal,
         openConfirmation: openConfirmation
     };
@@ -176,6 +177,24 @@ function ModalService($uibModal, $timeout, $sce) {
             controller: 'SimpleModalCtrl',
             size: config.size,
             windowClass: config.dialogClass,
+            resolve: {
+                title: function () {
+                    return config.title;
+                },
+                message: function () {
+                    return $sce.trustAsHtml(config.message);
+                }
+            }
+        });
+    }
+
+    function openModalAlert(config) {
+        const windowClass = 'modal-alert ' + config.dialogClass;
+        return $uibModal.open({
+            templateUrl: 'js/angular/core/templates/modal/modal-simple.html',
+            controller: 'SimpleModalCtrl',
+            size: config.size,
+            windowClass,
             resolve: {
                 title: function () {
                     return config.title;

@@ -11,10 +11,12 @@ describe('TTYG agent list', () => {
     it('Should render the agent list', () => {
         TTYGStubs.stubAgentListGet();
         TTYGStubs.stubChatsListGet();
+        TTYGStubs.stubChatGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
         cy.wait('@get-agent-list');
         cy.wait('@get-chat-list');
+        cy.wait('@get-chat');
         cy.wait('@get-all-repositories');
         // When the ttyg page is loaded
         // Then I should see the agent list with agents filtered by the current repository
