@@ -38,6 +38,9 @@ describe('TTYG view', () => {
         // Verify the chat panel
         TTYGViewSteps.getChat().should('be.visible');
         TTYGViewSteps.getChatPanelToolbar().should('be.visible');
+
+        // When I select a chat whose last answer has a deleted agent.
+        TTYGViewSteps.selectChat(0, 2);
         // the edit agent settings button should not be visible when there is not a selected agent
         TTYGViewSteps.getEditCurrentAgentButton().should('not.exist');
     });

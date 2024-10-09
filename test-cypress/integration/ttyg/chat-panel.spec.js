@@ -78,23 +78,20 @@ describe('Ttyg ChatPanel', () => {
         // When select a chat that has answers using different agents
         TTYGViewSteps.selectChat(0, 1);
 
-        // Then I expect to see two messages indicating the agent change.
-        ChatPanelSteps.getAgentInfoMessages().should('have.length', 2);
-        // The first one is before the first chat item and is there because the currently selected agent is different from the one used in the first chat item.
-        ChatPanelSteps.getAgentInfoMessage(0).contains('Agent changed to Databricks-general-unbiased');
-        // The second one is there because the second and thirtieth chat items used different agents.
-        ChatPanelSteps.getAgentInfoMessage(1).contains('Agent changed to agent-2');
+        // Then I expect to see one messages indicating the agent change.
+        ChatPanelSteps.getAgentInfoMessages().should('have.length', 1);
+        ChatPanelSteps.getAgentInfoMessage(0).contains('Agent changed to agent-2');
 
         // When I change the selected agent to one that has not been used yet.
         TTYGViewSteps.openAgentsMenu();
         TTYGViewSteps.selectAgent(3);
-        // Then I expect to see two messages indicating the agent change.
-        ChatPanelSteps.getAgentInfoMessages().should('have.length', 3);
-        // The first has to be without changes
-        ChatPanelSteps.getAgentInfoMessage(0).contains('Agent changed to Databricks-general-unbiased');
-        ChatPanelSteps.getAgentInfoMessage(1).contains('Agent changed to agent-2');
+        // and ask a new question or click on regenerate button.
+        TTYGStubs.stubAnswerQuestion();
+        ChatPanelSteps.regenerateQuestion(2);
+        // Then I expect to see one messages indicating the agent change.
+        ChatPanelSteps.getAgentInfoMessages().should('have.length', 2);
         // The last one is because the agent of the last chat item is different from the selected agent.
-        ChatPanelSteps.getAgentInfoMessage(2).contains('Agent changed to Databricks-biomarkers');
+        ChatPanelSteps.getAgentInfoMessage(1).contains('Agent changed to Databricks-biomarkers');
     });
 
     it('Should select last used agent when change the selected chat', () => {
