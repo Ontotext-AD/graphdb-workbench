@@ -165,6 +165,17 @@ export class ChatsListModel {
         this.updateChatsByDay();
     }
 
+    replaceChat(newChat, oldChat) {
+        this._chats = this._chats.map((chat) => {
+            if (chat.id === oldChat.id) {
+                return newChat;
+            }
+            return chat;
+        });
+        this.sortByTime();
+        this.updateChatsByDay();
+    }
+
     /**
      * Checks if the chat list is empty.
      * @return {boolean}

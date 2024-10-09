@@ -15,6 +15,7 @@
             show-actions="!askingChatItem && $last"
             on-regenerate-question="regenerateQuestion(chatItem)"
             on-copy-answer-to-clipboard="copyAnswerToClipboard(chatItem)"
+            on-ask-how-delivered-answer="onAskHowDeliveredAnswer(chatItem)"
             disabled="askingChatItem">
         </chat-item-detail>
         <chat-item-detail ng-if="askingChatItem" chat-item-detail="askingChatItem"

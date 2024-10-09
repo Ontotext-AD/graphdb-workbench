@@ -42,7 +42,7 @@ function TTYGContextService(EventEmitterService, TTYGService) {
      *
      * @type {{[key: string]: ExplainResponseModel}}
      */
-    const _explainCache = {};
+    let _explainCache = {};
 
     /**
      * The default agent values.
@@ -50,6 +50,15 @@ function TTYGContextService(EventEmitterService, TTYGService) {
      * @private
      */
     let _defaultAgent = undefined;
+
+    const resetContext = () => {
+        _agents = undefined;
+        _chats = undefined;
+        _selectedChat = undefined;
+        _selectedAgent = undefined;
+        _explainCache = {};
+        _defaultAgent = undefined;
+    };
 
     /**
      * @return {Promise<AgentModel>}
@@ -98,6 +107,11 @@ function TTYGContextService(EventEmitterService, TTYGService) {
     const addChat = (newChat) => {
         _chats.appendChat(newChat);
         updateChats(_chats);
+    };
+
+    const replaceChat = (newChat, oldChat) => {
+     _chats.replaceChat(newChat, oldChat);
+     updateChats(_chats);
     };
 
     /** Subscribes to the 'chatListUpdated' event.
@@ -156,7 +170,7 @@ function TTYGContextService(EventEmitterService, TTYGService) {
      * @param {ChatModel} chat - The chat object that is being updated.
      */
     const updateSelectedChat = (chat) => {
-        if (!_selectedChat || !chat || _selectedChat.id === chat.id) {
+        if (!_selectedChat || !_selectedChat.id || !chat || _selectedChat.id === chat.id) {
             _selectedChat = cloneDeep(chat);
             emit(TTYGEventName.SELECTED_CHAT_UPDATED, getSelectedChat());
         }
@@ -298,12 +312,14 @@ function TTYGContextService(EventEmitterService, TTYGService) {
     };
 
     return {
+        resetContext,
         emit,
         subscribe,
         getChats,
         updateChats,
         deleteChat,
         addChat,
+        replaceChat,
         onChatsListChanged,
         getSelectedChat,
         selectChat,
@@ -328,11 +344,6 @@ function TTYGContextService(EventEmitterService, TTYGService) {
 }
 
 export const TTYGEventName = {
-    /**
-     * Emitting the "newChat" event notifies that a new chat is about to be created.
-     */
-    NEW_CHAT: 'newChat',
-
     /**
      * Emitting the "createChat" event triggers a backend request to create a new chat.
      */

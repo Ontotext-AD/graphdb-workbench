@@ -51,6 +51,10 @@ function ChatListComponent(TTYGContextService, ModalService, $translate, $filter
              */
             $scope.onSelectChat = (chat) => {
                 if (!$scope.selectedChat || $scope.selectedChat.id !== chat.id) {
+                    const nonPersistedChat = TTYGContextService.getChats().getNonPersistedChat();
+                    if (nonPersistedChat) {
+                        TTYGContextService.deleteChat(nonPersistedChat);
+                    }
                     TTYGContextService.selectChat(chat);
                     $scope.renamedChat = undefined;
                 }
@@ -132,23 +136,6 @@ function ChatListComponent(TTYGContextService, ModalService, $translate, $filter
                 $scope.chatList = chatList;
             };
 
-            const onNewChat = () => {
-                const newChat = $scope.chatList.getNonPersistedChat();
-                if (newChat) {
-                    if ($scope.selectedChat.id !== newChat.id) {
-                        TTYGContextService.selectChat(newChat);
-                    }
-                    return;
-                }
-                const data = {
-                    name: "\u00B7 \u00B7 \u00B7",
-                    timestamp: Math.floor(Date.now() / 1000)
-                };
-                const chatModel = new ChatModel(data, md5HashGenerator());
-                $scope.chatList.appendChat(chatModel);
-                TTYGContextService.selectChat(chatModel);
-            };
-
             /**
              * Handles the progress of deletion of a chat.
              * @param {{chatId: string, inProgress: boolean}} event
@@ -167,8 +154,8 @@ function ChatListComponent(TTYGContextService, ModalService, $translate, $filter
             };
 
             subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
+            subscriptions.push(TTYGContextService.onSelectedChatUpdated(onSelectedChatChanged));
             subscriptions.push(TTYGContextService.onChatsListChanged(onChatsListChanged));
-            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.NEW_CHAT, onNewChat));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETING_CHAT, onDeletingChat));
 
             // Deregister the watcher when the scope/directive is destroyed
