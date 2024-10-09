@@ -271,6 +271,11 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             });
         };
 
+        this.getReadableGraphdbRepositories = function () {
+            return this.getReadableRepositories()
+                .filter((repo) => repo.type === 'graphdb');
+        };
+
         this.getWritableRepositories = function () {
             const that = this;
             return _.filter(this.getRepositories(), function (repo) {
