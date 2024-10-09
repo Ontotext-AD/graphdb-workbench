@@ -110,6 +110,10 @@ function licenseService($window, $document, LicenseRestService, $translate) {
     /**
      * Checks if a Google Tag Manager (GTM) script is already present in the document.
      *
+     * When the GTM script is injected, it dynamically adds additional scripts depending on how many tags
+     * are configured within your GTM container. These scripts are usually inserted into the `<head>` section,
+     * but it’s better to search through the entire document to ensure all related GTM scripts are found.
+     *
      * This function searches through all `<script>` elements in the document and returns `true` if any script
      * has a `src` attribute that contains 'googletagmanager'. It returns `false` otherwise.
      *
