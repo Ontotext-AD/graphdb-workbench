@@ -41,6 +41,34 @@
             "writable": true,
             "unsupported": false,
             "state": "INACTIVE"
+        },
+        {
+            "id": "Fedx_repository",
+            "title": "",
+            "uri": "http://localhost:8080/graphdb/repositories/Fedx_repository",
+            "externalUrl": "http://boyantonchev:9000/repositories/Fedx_repository",
+            "local": true,
+            "type": "fedx",
+            "sesameType": "graphdb:FedXRepository",
+            "location": "",
+            "readable": true,
+            "writable": true,
+            "unsupported": false,
+            "state": "INACTIVE"
+        },
+        {
+            "id": "Ontop_repository",
+            "title": "",
+            "uri": "http://localhost:8080/graphdb/repositories/Fedx_repository",
+            "externalUrl": "http://boyantonchev:9000/repositories/Fedx_repository",
+            "local": true,
+            "type": "ontop",
+            "sesameType": "graphdb:FedXRepository",
+            "location": "",
+            "readable": true,
+            "writable": true,
+            "unsupported": false,
+            "state": "INACTIVE"
         }
     ]
 }

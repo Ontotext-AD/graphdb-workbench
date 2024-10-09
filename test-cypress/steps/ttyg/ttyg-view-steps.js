@@ -126,9 +126,19 @@ export class TTYGViewSteps {
         return this.getAgentFilter().find('.selected-filter');
     }
 
+    static getDropdownMenu() {
+        return this.getAgentFilter().find('.dropdown-menu');
+    }
+
+    static verifyRepositoryOptionNotExist(repositoryId) {
+        this.getDropdownMenu().each(($select) => {
+            cy.wrap($select).should('not.contain.text', repositoryId);
+        });
+    }
+
     static filterAgentsByRepository(repository) {
         this.getAgentFilter().click();
-        this.getAgentFilter().find('.dropdown-menu').find(`[data-value="${repository}"]`).click();
+        this.getDropdownMenu().find(`[data-value="${repository}"]`).click();
     }
 
     static selectAllAgentsFilter() {
