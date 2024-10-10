@@ -21,10 +21,12 @@ describe('TTYG edit an agent', () => {
             openMode: 0
         }
     }, () => {
+        TTYGStubs.stubChatsListGet();
         TTYGStubs.stubAgentListGet();
         TTYGStubs.stubChatGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
+        cy.wait('@get-chat-list');
         cy.wait('@get-agent-list');
         cy.wait('@get-chat');
         // When I select an agent that don't have activated additional extraction method

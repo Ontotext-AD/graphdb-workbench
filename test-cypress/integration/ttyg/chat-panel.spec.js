@@ -42,8 +42,10 @@ describe('Ttyg ChatPanel', () => {
         ChatPanelSteps.getAskButtonElement().should('be.disabled');
 
         // When I type a question
-        ChatPanelSteps.getQuestionInputElement().should('be.enabled');
-        ChatPanelSteps.getQuestionInputElement().type('Who is Han Solo?');
+        ChatPanelSteps.getQuestionInputElement()
+            .should('be.visible')
+            .and('not.be.disabled')
+            .type('Who is Han Solo?');
 
         // Then I expect the "Ask" button be not active because agent is not selected
         ChatPanelSteps.getAskButtonElement().should('not.be.enabled');
