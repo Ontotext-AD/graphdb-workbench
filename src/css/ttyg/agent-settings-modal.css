@@ -80,12 +80,14 @@
     transition: transform 0.3s ease; /* Smooth transition */
 }
 
-.agent-settings-form .advanced-settings .toolbar {
+.agent-settings-form .advanced-settings .toolbar,
+.user-instructions .toolbar {
     display: flex;
     justify-content: space-between;
 }
 
-.agent-settings-form .advanced-settings .toolbar .copy-btn {
+.agent-settings-form .advanced-settings .toolbar .copy-btn,
+.user-instructions .toolbar .copy-btn {
     color: var(--primary-color);
     border: none;
     background-color: transparent;
