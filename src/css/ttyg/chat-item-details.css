@@ -11,8 +11,8 @@
 .chat-detail .assistant-message {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    width: 80%;
+    gap: 16px;
+    width: 100%;
 }
 
 .chat-detail .assistant-message .answer {

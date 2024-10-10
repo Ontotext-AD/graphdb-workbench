@@ -153,11 +153,23 @@ export class TtygRestServiceFakeBackend {
                 answerId: data.answerId,
                 queryMethods: [
                     {
-                        name: ExtractionMethod.FTS_SEARCH,
+                        name: 'sparql_query',
                         rawQuery: 'Luke',
                         query: 'PREFIX onto: <http://www.ontotext.com/>\nDESCRIBE ?iri {\n\t?x onto:fts \'\'\'Luke\'\'\' .\n\t{\n\t\t?x ?p ?iri .\n\t} union {\n\t\t?iri ?p ?x .\n\t}\n}'
                     }, {
-                        name: ExtractionMethod.FTS_SEARCH,
+                        name: 'fts_search',
+                        rawQuery: 'Second Luke',
+                        query: 'PREFIX onto: <http://www.ontotext.com/>\nDESCRIBE ?iri {\n\t?x onto:fts \'\'\'Second Luke\'\'\' .\n\t{\n\t\t?x ?p ?iri .\n\t} union {\n\t\t?iri ?p ?x .\n\t}\n}'
+                    }, {
+                        name: 'similarity_search',
+                        rawQuery: 'Second Luke',
+                        query: 'PREFIX onto: <http://www.ontotext.com/>\nDESCRIBE ?iri {\n\t?x onto:fts \'\'\'Second Luke\'\'\' .\n\t{\n\t\t?x ?p ?iri .\n\t} union {\n\t\t?iri ?p ?x .\n\t}\n}'
+                    }, {
+                        name: 'retrieval_search',
+                        rawQuery: 'Second Luke',
+                        query: 'PREFIX onto: <http://www.ontotext.com/>\nDESCRIBE ?iri {\n\t?x onto:fts \'\'\'Second Luke\'\'\' .\n\t{\n\t\t?x ?p ?iri .\n\t} union {\n\t\t?iri ?p ?x .\n\t}\n}'
+                    }, {
+                        name: 'iri_discovery',
                         rawQuery: 'Second Luke',
                         query: 'PREFIX onto: <http://www.ontotext.com/>\nDESCRIBE ?iri {\n\t?x onto:fts \'\'\'Second Luke\'\'\' .\n\t{\n\t\t?x ?p ?iri .\n\t} union {\n\t\t?iri ?p ?x .\n\t}\n}'
                     }

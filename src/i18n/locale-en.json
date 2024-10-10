@@ -312,10 +312,11 @@
 
             },
             "query_name": {
-                "sparql_search":"SPARQL",
+                "sparql_query":"SPARQL",
                 "fts_search": "Full-text search",
                 "similarity_search": "Similarity search",
-                "retrieval_search": "ChatGPT retrieval connector"
+                "retrieval_search": "ChatGPT retrieval connector",
+                "iri_discovery": "Full-text search in labels for IRI discovery"
             },
             "dialog": {
                 "confirm_repository_change": {
