@@ -484,9 +484,10 @@ function TTYGViewCtrl(
         $scope.startNewChat();
 
         TTYGService.createConversation(chatItem)
-            .then((newChatId) => {
+            .then((chatAnswer) => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT_SUCCESSFUL);
-                return TTYGService.getConversation(newChatId);
+                // TODO discuse we have all answers id and can update selected chats without loading it.
+                return TTYGService.getConversation(chatAnswer.chatId);
             })
             .then((chat) => {
                 const selectedChat = TTYGContextService.getSelectedChat();
@@ -509,13 +510,15 @@ function TTYGViewCtrl(
      */
     const onAskQuestion = (chatItem) => {
         TTYGService.askQuestion(chatItem)
-            .then((answer) => {
+            .then((chatAnswer) => {
                 const selectedChat = TTYGContextService.getSelectedChat();
                 if (selectedChat && selectedChat.id === chatItem.chatId) {
+                    selectedChat.timestamp = chatAnswer.timestamp;
                     const item = chatItem;
-                    item.answer = answer;
+                    chatItem.answers = chatAnswer.messages;
                     selectedChat.chatHistory.appendItem(item);
                     TTYGContextService.updateSelectedChat(selectedChat);
+                    // TODO reorder the list of chats
                 }
             })
             .catch((error) => {
@@ -800,9 +803,9 @@ function TTYGViewCtrl(
         if (!chatId) {
             return;
         }
-        TTYGService.getConversation(chatId).then((chatId) => {
-            if (chatId) {
-                TTYGContextService.selectChat(chatId);
+        TTYGService.getConversation(chatId).then((chat) => {
+            if (chat) {
+                TTYGContextService.selectChat(chat);
             }
         });
     };

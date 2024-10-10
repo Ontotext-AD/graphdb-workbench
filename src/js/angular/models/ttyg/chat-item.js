@@ -13,12 +13,32 @@ export class ChatItemModel {
      * @param {string} chatId - The unique identifier for the chat associated with this instance.
      * @param {ChatMessageModel} question - The message object representing the question.
      */
-    // TODO remove hardcoded agent id when agent functionality is ready
     constructor(chatId, question) {
+
+        /**
+         * @type {string | undefined}
+         * @private
+         */
         this._chatId = chatId;
+
+        /**
+         * @type {string | undefined}
+         * @private
+         */
         this._agentId = undefined;
+
+        /**
+         * @type {ChatMessageModel}
+         * @private
+         */
         this._question = question;
-        this._answer = undefined;
+
+        /**
+         *
+         * @type {ChatMessageModel[] | undefined}
+         * @private
+         */
+        this._answers = [];
     }
 
     get chatId() {
@@ -45,12 +65,16 @@ export class ChatItemModel {
         this._question = value;
     }
 
-    get answer() {
-        return this._answer;
+    get answers() {
+        return this._answers;
     }
 
-    set answer(value) {
-        this._answer = value;
+    /**
+     *
+     * @param {ChatMessageModel[]} value
+     */
+    set answers(value) {
+        this._answers = value;
     }
 
     /**
@@ -99,10 +123,10 @@ export class ChatItemModel {
         };
     }
 
-    toExplainResponsePayload() {
+    toExplainResponsePayload(answerId) {
         return {
             conversationId: this._chatId,
-            answerId: this.answer.id
+            answerId
         };
     }
 }

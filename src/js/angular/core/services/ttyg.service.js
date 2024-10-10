@@ -1,6 +1,6 @@
 import {chatModelMapper, chatsListMapper} from "../../ttyg/services/chats.mapper";
 import 'angular/rest/ttyg.rest.service';
-import {chatMessageModelMapper} from "../../ttyg/services/chat-message.mapper";
+import {chatAnswerModelMapper} from "../../ttyg/services/chat-message.mapper";
 import {agentListMapper, agentModelMapper} from "../../ttyg/services/agents.mapper";
 import {explainResponseMapper} from "../../ttyg/services/explain.mapper";
 
@@ -62,11 +62,11 @@ function TTYGService(TTYGRestService) {
     /**
      * Asks a question.
      * @param {ChatItemModel} chatItem .
-     * @return {Promise<ChatMessageModel>} the answer of the question.
+     * @return {Promise<ChatAnswerModel>} the answer of the question.
      */
     const askQuestion = (chatItem) => {
         return TTYGRestService.askQuestion(chatItem.toAskRequestPayload())
-            .then((response) => chatMessageModelMapper(response.data));
+            .then((response) => chatAnswerModelMapper(response.data));
     };
 
     /**
@@ -83,11 +83,11 @@ function TTYGService(TTYGRestService) {
      * doesn't contain the chat ID, the backend will create a new chat and return the answer, which includes the ID of the created chat.
      *
      * @param {ChatItemModel} chatItem - The conversation data.
-     * @return {Promise<string>} The ID of the created conversation.
+     * @return {Promise<ChatAnswerModel>} The answer of the question.
      */
     const createConversation = (chatItem) => {
         return TTYGRestService.createConversation(chatItem.toCreateChatRequestPayload())
-            .then((response) => response.data.conversationId);
+            .then((response) => chatAnswerModelMapper(response.data));
     };
 
     /**
@@ -147,10 +147,11 @@ function TTYGService(TTYGRestService) {
     /**
      * Returns an explanation of how the answer was generated.
      * @param {ChatItemModel} chatItem
+     * @param {string} answerId
      * @return {ExplainResponseModel}
      */
-    const explainResponse = (chatItem) => {
-        return TTYGRestService.explainResponse(chatItem.toExplainResponsePayload())
+    const explainResponse = (chatItem, answerId) => {
+        return TTYGRestService.explainResponse(chatItem.toExplainResponsePayload(answerId))
             .then((response) => {
                 return explainResponseMapper(response.data);
             });
