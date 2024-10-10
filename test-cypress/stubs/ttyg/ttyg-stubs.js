@@ -1,5 +1,4 @@
 import {Stubs} from "../stubs";
-import {CHAT_MESSAGE_ROLE} from "../../../src/js/angular/models/ttyg/chat-message";
 
 export class TTYGStubs extends Stubs {
     static stubChatsListGet(fixture = '/ttyg/chats/get-chat-list.json', delay = 0) {
@@ -155,7 +154,7 @@ export class TTYGStubs extends Stubs {
                     {
                         id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNe_" + Date.now(),
                         conversationId: requestBody.conversationId,
-                        role: CHAT_MESSAGE_ROLE.ASSISTANT,
+                        role: 'assistant',
                         agentId: requestBody.agentId,
                         message: `Reply to '${requestBody.question}'`,
                         timestamp: Math.floor(Date.now() / 1000),
@@ -164,7 +163,7 @@ export class TTYGStubs extends Stubs {
                     {
                         id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNeс_" + Date.now(),
                         conversationId: requestBody.conversationId,
-                        role: CHAT_MESSAGE_ROLE.ASSISTANT,
+                        role: 'assistant',
                         agentId: requestBody.agentId,
                         message: `Reply to '${requestBody.question}' Second`,
                         timestamp: Math.floor(Date.now() / 1000),
