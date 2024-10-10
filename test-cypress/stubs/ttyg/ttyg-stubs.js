@@ -1,4 +1,5 @@
 import {Stubs} from "../stubs";
+import {CHAT_MESSAGE_ROLE} from "../../../src/js/angular/models/ttyg/chat-message";
 
 export class TTYGStubs extends Stubs {
     static stubChatsListGet(fixture = '/ttyg/chats/get-chat-list.json', delay = 0) {
@@ -147,12 +148,29 @@ export class TTYGStubs extends Stubs {
             const requestBody = req.body;
 
             const answer = {
-                id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNe_" + Date.now(),
-                conversationId: requestBody.conversationId,
-                agentId: requestBody.agentId,
-                message: `Reply to '${requestBody.question}'`,
-                role: 'assistant',
-                timestamp: Math.floor(Date.now() / 1000)
+                id: requestBody.conversationId,
+                name: "Han Solo is a character",
+                timestamp: Math.floor(Date.now() / 1000),
+                messages: [
+                    {
+                        id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNe_" + Date.now(),
+                        conversationId: requestBody.conversationId,
+                        role: CHAT_MESSAGE_ROLE.ASSISTANT,
+                        agentId: requestBody.agentId,
+                        message: `Reply to '${requestBody.question}'`,
+                        timestamp: Math.floor(Date.now() / 1000),
+                        name: null
+                    },
+                    {
+                        id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNeс_" + Date.now(),
+                        conversationId: requestBody.conversationId,
+                        role: CHAT_MESSAGE_ROLE.ASSISTANT,
+                        agentId: requestBody.agentId,
+                        message: `Reply to '${requestBody.question}' Second`,
+                        timestamp: Math.floor(Date.now() / 1000),
+                        name: null
+                    }
+                ]
             };
 
             req.reply({

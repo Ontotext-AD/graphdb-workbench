@@ -28,14 +28,14 @@ describe('Ttyg ChatPanel', () => {
         // Then I expect chat history to be displayed
         ChatPanelSteps.getChatDetailsElements().should('have.length', 2);
         // and only the actions for the last message are visible.
-        ChatPanelSteps.getChatDetailActions(0).should('not.be.visible');
-        ChatPanelSteps.getChatDetailActions(1).should('be.visible');
+        ChatPanelSteps.getChatDetailActions(0, 0).should('not.be.visible');
+        ChatPanelSteps.getChatDetailActions(1, 0).should('be.visible');
 
         // When I hover over the hidden answer actions.
-        ChatPanelSteps.getChatDetailActions(0).realHover();
+        ChatPanelSteps.getChatDetailActions(0, 0).realHover();
 
         // Then I expect answer actions to be visible.
-        ChatPanelSteps.getChatDetailActions(0).should('be.visible');
+        ChatPanelSteps.getChatDetailActions(1, 0).should('be.visible');
 
         // When the new question input is empty.
         // The "Ask" button must be disabled.
@@ -67,6 +67,9 @@ describe('Ttyg ChatPanel', () => {
         ChatPanelSteps.getQuestionInputElement().should('have.value', '');
         // and "Ask" button be disabled.
         ChatPanelSteps.getAskButtonElement().should('be.disabled');
+        // and only the actions for the last message are visible.
+        ChatPanelSteps.getChatDetailActions(2, 0).should('not.be.visible');
+        ChatPanelSteps.getChatDetailActions(2, 1).should('be.visible');
 
         // When I click on regenerate button.
         TTYGStubs.stubAnswerQuestion();
