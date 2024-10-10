@@ -42,10 +42,10 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, Markdow
             $scope.MarkdownService = MarkdownService;
 
             /**
-             * @type {ExplainResponseModel}
+             * @type {{[key: string]: ExplainResponseModel}}
              */
-            $scope.explainResponseModel = undefined;
-            $scope.loadingExplainResponse = false;
+            $scope.explainResponseModel = {};
+            $scope.loadingExplainResponse = {};
 
             // =========================
             // Private variables
@@ -60,13 +60,14 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, Markdow
 
             /**
              * Extract the explanation of how the answer was generated.
+             * @param {string} answerId
              */
-            $scope.explainResponse = () => {
-                if (TTYGContextService.hasExplainResponse($scope.chatItemDetail.answer.id)) {
-                    TTYGContextService.toggleExplainResponse($scope.chatItemDetail.answer.id);
+            $scope.explainResponse = (answerId) => {
+                if (TTYGContextService.hasExplainResponse(answerId)) {
+                    TTYGContextService.toggleExplainResponse(answerId);
                 } else {
-                    $scope.loadingExplainResponse = true;
-                    TTYGService.explainResponse($scope.chatItemDetail)
+                    $scope.loadingExplainResponse[answerId] = true;
+                    TTYGService.explainResponse($scope.chatItemDetail, answerId)
                         .then((explainResponse) => {
                             $scope.explainResponseModel = explainResponse;
                             TTYGContextService.addExplainResponseCache(explainResponse);
@@ -74,7 +75,7 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, Markdow
                         .catch(() => {
                             toastr.error($translate.instant('ttyg.chat_panel.messages.explain_response_failure'));
                         })
-                        .finally(() => $scope.loadingExplainResponse = false);
+                        .finally(() => $scope.loadingExplainResponse[answerId] = false);
                 }
             };
 
@@ -103,15 +104,17 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, Markdow
             // Private functions
             // =========================
             const init = () => {
-                if ($scope.chatItemDetail.answer) {
-                    $scope.explainResponseModel = TTYGContextService.getExplainResponse($scope.chatItemDetail.answer.id);
-                }
+                updateExplainResponseModel();
             };
 
             const onExplainResponseCacheUpdated = () => {
-                if ($scope.chatItemDetail.answer) {
-                    $scope.explainResponseModel = TTYGContextService.getExplainResponse($scope.chatItemDetail.answer.id);
-                }
+                updateExplainResponseModel();
+            };
+
+            const updateExplainResponseModel = () => {
+                $scope.chatItemDetail.answers.forEach((answer) => {
+                    $scope.explainResponseModel[answer.id] = TTYGContextService.getExplainResponse(answer.id);
+                });
             };
 
             // =========================

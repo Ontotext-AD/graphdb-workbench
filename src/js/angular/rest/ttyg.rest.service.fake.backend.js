@@ -54,21 +54,41 @@ export class TtygRestServiceFakeBackend {
             id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNe",
             conversationId: askRequestData.conversationId,
             agentId: null,
-            message: `Reply to '${askRequestData.question}'`,
+            message: `${askRequestData.question}`,
             role: CHAT_MESSAGE_ROLE.USER,
             timestamp: Math.floor(Date.now() / 1000)
         };
-        const answer = {
-            id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNe_" + Date.now(),
-            conversationId: askRequestData.conversationId,
-            agentId: askRequestData.agentId,
-            message: `Reply to '${askRequestData.question}'`,
-            role: CHAT_MESSAGE_ROLE.ASSISTANT,
-            timestamp: Math.floor(Date.now() / 1000)
-        };
+
         const conversation = this.conversations.find((conversation) => conversation.id === askRequestData.conversationId);
+
+        const answer = {
+            id: askRequestData.conversationId,
+            name: conversation ? conversation.name : "Han Solo is a character in the Star Wars...",
+            timestamp: Math.floor(Date.now() / 1000),
+            messages: [
+                {
+                    id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNe_" + Date.now(),
+                    conversationId: askRequestData.conversationId,
+                    role: CHAT_MESSAGE_ROLE.ASSISTANT,
+                    agentId: askRequestData.agentId,
+                    message: `Reply to '${askRequestData.question}' Han Solo is a character in the Star Wars universe.`,
+                    timestamp: Math.floor(Date.now() / 1000),
+                    name: null
+                },
+                {
+                    id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNeс_" + Date.now(),
+                    conversationId: askRequestData.conversationId,
+                    role: CHAT_MESSAGE_ROLE.ASSISTANT,
+                    agentId: askRequestData.agentId,
+                    message: `Reply to '${askRequestData.question}' It seems there was an error with the query. Let me rectify this and try again.`,
+                    timestamp: Math.floor(Date.now() / 1000),
+                    name: null
+                }
+            ]
+        };
+
         if (conversation) {
-            conversation.messages.push(answer);
+            conversation.messages.push(...answer.messages);
             conversation.messages.push(question);
         }
         return new Promise((resolve) => setTimeout(() => resolve({data: answer}), ASK_DELAY));
@@ -91,16 +111,7 @@ export class TtygRestServiceFakeBackend {
 
         const askRequestData = cloneDeep(data);
         askRequestData.conversationId = conversation.id;
-        return this.askQuestion(askRequestData)
-            .then(() => {
-                return {
-                    data: {
-                        id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNe",
-                        conversationId: conversation.id,
-                        agentId: data.agentId
-                    }
-                };
-            });
+        return this.askQuestion(askRequestData);
     }
 
     getAgents() {

@@ -1,5 +1,6 @@
 import {CHAT_MESSAGE_ROLE, ChatMessageModel} from "../../models/ttyg/chat-message";
 import {ChatItemModel, ChatItemsListModel} from "../../models/ttyg/chat-item";
+import {ChatAnswerModel} from "../../models/ttyg/chat-answer";
 
 /**
  * Converts the response from the server to a list of ChatMessageModel array.
@@ -59,17 +60,8 @@ export const chatItemsModelMapper = (data = []) => {
             const chatId = message.conversationId;
             currentItem = new ChatItemModel(chatId, chatMessageModelMapper(message));
         } else {
-            if (currentItem) {
-                currentItem.answer = chatMessageModelMapper(message);
-                currentItem.agentId = message.agentId;
-            } else {
-                const chatId = message.conversationId;
-                currentItem = new ChatItemModel(chatId, null);
-                currentItem.agentId = message.agentId;
-                currentItem.answer = message;
-            }
-            items.push(currentItem);
-            currentItem = null;
+            currentItem.answers.push(chatMessageModelMapper(message));
+            currentItem.agentId = message.agentId;
         }
     });
     if (currentItem) {
@@ -93,5 +85,22 @@ export const chatMessageModelMapper = (data) => {
         message: data.message,
         timestamp: data.timestamp,
         data: data
+    });
+};
+
+/**
+ * Converts the response from the server to a ChatAnswerModel instance.
+ * @param {*} data
+ * @return {ChatAnswerModel|undefined}
+ */
+export const chatAnswerModelMapper = (data) => {
+    if (!data) {
+        return;
+    }
+    return new ChatAnswerModel({
+        chatId: data.id,
+        chatName: data.name,
+        timestamp: data.timestamp,
+        messages: chatMessageModelListMapper(data.messages)
     });
 };
