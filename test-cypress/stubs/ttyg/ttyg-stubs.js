@@ -31,18 +31,18 @@ export class TTYGStubs extends Stubs {
      * @param {string} fixture - Path to the JSON file containing the chat conversation.
      * @param {number} delay - Optional delay in milliseconds before responding with the fixture.
      */
-    static stubChatGet(fixture = '/ttyg/chats/get-chat-1.json', delay = 0) {
-        cy.fixture(fixture).then((body) => {
-            const bodyString = JSON.stringify(body);
+    static stubChatGet(delay = 0) {
+        cy.fixture('/ttyg/chats/get-chat.json').then((body) => {
             cy.intercept({
                 method: 'GET',
                 url: '/rest/chat/conversations/*'
             }, (req) => {
                 const chatId = req.url.split('/').pop();
+                const chat = body[chatId];
                 // Respond with the modified body
                 req.reply({
                     statusCode: 200,
-                    body: bodyString.replace(/{chatId}/g, chatId),
+                    body: JSON.stringify(chat),
                     delay: delay
                 });
             }).as('get-chat');
