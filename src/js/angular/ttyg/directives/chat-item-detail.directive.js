@@ -113,6 +113,13 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, Markdow
                 }
             };
 
+            $scope.showRawQuery = (queryMethod) => {
+                // TODO: Create a chat panel model and move this check there when the model is updated.
+                const rawQueryNoSpaces = queryMethod.rawQuery.replace(/\s+/g, '');
+                const queryNoSpaces = queryMethod.query.replace(/\s+/g, '');
+                return rawQueryNoSpaces && rawQueryNoSpaces !== queryNoSpaces;
+            };
+
             // =========================
             // Private functions
             // =========================
