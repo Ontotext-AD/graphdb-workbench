@@ -1,4 +1,8 @@
-import {ExplainQueryMethodModel, ExplainResponseModel} from "../../models/ttyg/explain-response";
+import {
+    ExplainQueryMethodModel,
+    ExplainQueryMethodsListModel,
+    ExplainResponseModel
+} from "../../models/ttyg/explain-response";
 
 /**
  * Converts the response from the server to a ExplainResponseModel.
@@ -10,7 +14,7 @@ export const explainResponseMapper = (data) => {
     return new ExplainResponseModel({
         chatId: data.conversationId,
         answerId: data.answerId,
-        queryMethods: data.queryMethods
+        queryMethods: explainQueryMethodsListMapper(data.queryMethods)
     });
 };
 
@@ -21,7 +25,7 @@ export const explainResponseMapper = (data) => {
  * @return {ExplainQueryMethodsListModel}
  */
 export const explainQueryMethodsListMapper = (data = []) => {
-    return data.map(explainQueryMethodMapper);
+    return new ExplainQueryMethodsListModel(data.map(explainQueryMethodMapper));
 };
 
 /**

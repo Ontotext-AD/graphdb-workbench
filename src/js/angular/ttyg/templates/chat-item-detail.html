@@ -43,7 +43,7 @@
                 <div class="explain-responses">
                     <div ng-if="explainResponseModel[answer.id] && explainResponseModel[answer.id].expanded"
                          class="explain-response"
-                         ng-repeat="queryMethod in explainResponseModel[answer.id].queryMethods">
+                         ng-repeat="queryMethod in explainResponseModel[answer.id].queryMethods.items">
                         <div class="explain-response-row">
                             <span class="label">{{'ttyg.chat_panel.labels.query_method' | translate}}:</span>
                             <span
