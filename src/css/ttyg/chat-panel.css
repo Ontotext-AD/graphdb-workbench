@@ -14,7 +14,6 @@
 .chat-panel .chat-details {
     overflow-y: hidden;
     scrollbar-gutter: stable;
-    padding-right: 10px;
 }
 
 .chat-panel:hover .chat-details {

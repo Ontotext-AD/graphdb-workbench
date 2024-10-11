@@ -295,6 +295,15 @@
                 "copy_sparql": {
                     "tooltip": "Copier la requête SPARQL"
                 },
+                "copy_json": {
+                    "tooltip": "Copier la requête JSON"
+                },
+                "copy_other": {
+                    "tooltip": "Copier la requête"
+                },
+                "copy_error_message": {
+                    "tooltip": "Copier le message d'erreur"
+                },
                 "explain_response": {
                     "tooltip": "Expliquer la réponse"
                 },
@@ -311,7 +320,8 @@
                 "raw_query": "Requête brute",
                 "sparql_query": "Requête SPARQL",
                 "agent_name": "Agent: {{agentName}}",
-                "json": "JSON"
+                "json": "JSON",
+                "error_message": "Message d'erreur envoyée au modèle"
             },
             "query_name": {
                 "sparql_query":"SPARQL",

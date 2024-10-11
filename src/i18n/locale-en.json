@@ -294,12 +294,21 @@
                 "copy_sparql": {
                     "tooltip": "Copy SPARQL query"
                 },
+                "copy_json": {
+                    "tooltip": "Copy JSON query"
+                },
+                "copy_other": {
+                    "tooltip": "Copy query"
+                },
+                "copy_error_message": {
+                    "tooltip": "Copy error message"
+                },
                 "explain_response": {
                     "tooltip": "Explain response"
                 },
                 "derive_answer": {
                     "label": "How did you derive this answer?",
-                    "hint": "Hint: you can also ask the model, for example"
+                    "hint": "<b>Hint</b>: you can also ask the model, for example"
                 },
                 "open_in_sparql_editor": {
                     "tooltip": "Open in SPARQL editor"
@@ -310,7 +319,8 @@
                 "raw_query": "Raw query",
                 "sparql_query": "SPARQL query",
                 "agent_name": "Agent: {{agentName}}",
-                "json": "JSON"
+                "json": "JSON",
+                "error_message": "Error message sent to model"
             },
             "query_name": {
                 "sparql_query":"SPARQL",

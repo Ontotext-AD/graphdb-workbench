@@ -93,7 +93,7 @@ export class ExplainQueryMethodModel {
          * @type {string | null}
          * @private
          */
-        this._errorMessage = data.output;
+        this._errorMessage = data.errorOutput;
     }
 
     get name() {
@@ -138,6 +138,7 @@ export class ExplainQueryMethodModel {
 }
 
 export const ExplainQueryType = {
-    SAPRQL: 'sparql',
-    JSON: 'json'
+    SPARQL: 'sparql',
+    JSON: 'json',
+    OTHER: 'other'
 };

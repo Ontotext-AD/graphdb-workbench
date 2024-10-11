@@ -34,8 +34,8 @@
                 </div>
                 <div class="derived-answer-hint"
                      ng-if="showActions && $last && explainResponseModel[answer.id].expanded">
-                    <div>{{ 'ttyg.chat_panel.btn.derive_answer.hint' | translate }}</div>
-                    <button class="btn deliver-answer-btn" ng-click="onAskHowAnswerWasDerived()">
+                    <div ng-bind-html="'ttyg.chat_panel.btn.derive_answer.hint' | htmlTranslate"></div>
+                    <button class="btn btn-secondary deliver-answer-btn" ng-click="onAskHowAnswerWasDerived()">
                         {{ 'ttyg.chat_panel.btn.derive_answer.label' | translate }}
                     </button>
                 </div>
@@ -44,24 +44,13 @@
                     <div ng-if="explainResponseModel[answer.id] && explainResponseModel[answer.id].expanded"
                          class="explain-response"
                          ng-repeat="queryMethod in explainResponseModel[answer.id].queryMethods.items">
-                        <div class="explain-response-row">
-                            <span class="label">{{'ttyg.chat_panel.labels.query_method' | translate}}:</span>
-                            <span
-                                class="content">{{('ttyg.chat_panel.query_name.' + queryMethod.name) | translate}}</span>
-                        </div>
-                        <div ng-if="showRawQuery(queryMethod)" class="explain-response-row">
-                            <span class="label">{{'ttyg.chat_panel.labels.raw_query' | translate}}:</span>
-                            <span class="content">{{queryMethod.rawQuery}}</span>
-                            <copy-to-clipboard class="copy-to-clipboard-btn" tooltip-text="ttyg.chat_panel.btn.copy_raw_query.tooltip"
-                                               text-to-copy="queryMethod.rawQuery"></copy-to-clipboard>
-                        </div>
                         <div ng-if="queryMethod.query" class="explain-query">
                             <div class="header">
-                                <div class="label">{{(queryMethod.queryType === ExplainQueryType.SAPRQL ? 'ttyg.chat_panel.labels.sparql_query' : 'ttyg.chat_panel.labels.json') | translate}}</div>
+                                <div class="label">Called {{('ttyg.chat_panel.query_name.' + queryMethod.name) | translate}}</div>
                                 <div class="actions">
-                                    <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy_sparql.tooltip"
+                                    <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy_{{ queryMethod.queryType }}.tooltip"
                                                        text-to-copy="queryMethod.query"></copy-to-clipboard>
-                                    <button ng-if="queryMethod.queryType === ExplainQueryType.SAPRQL" class="btn btn-link btn-sm"
+                                    <button ng-if="queryMethod.queryType === ExplainQueryType.SPARQL" class="btn btn-link btn-sm"
                                             ng-click="onOpenInSparqlEditor(queryMethod.query)"
                                             gdb-tooltip="{{'ttyg.chat_panel.btn.open_in_sparql_editor.tooltip' | translate}}">
                                         <i class="icon-sparql"></i>
@@ -70,6 +59,20 @@
                             </div>
                             <div class="query">
                                 <pre><code>{{queryMethod.query}}</code></pre>
+                            </div>
+                            <div ng-if="showRawQuery(queryMethod)" class="explain-response-row">
+                                <span class="label">{{'ttyg.chat_panel.labels.raw_query' | translate}}:</span>
+                                <span class="content">{{queryMethod.rawQuery}}</span>
+                                <copy-to-clipboard class="copy-to-clipboard-btn" tooltip-text="ttyg.chat_panel.btn.copy_raw_query.tooltip"
+                                                   text-to-copy="queryMethod.rawQuery"></copy-to-clipboard>
+                            </div>
+                            <div ng-if="queryMethod.errorMessage" class="alert no-icon alert-warning error-message">
+                                <div class="error-header">
+                                    <div class="label">{{'ttyg.chat_panel.labels.error_message' | translate}}:</div>
+                                    <copy-to-clipboard class="copy-to-clipboard-btn" tooltip-text="ttyg.chat_panel.btn.copy_error_message.tooltip"
+                                                       text-to-copy="queryMethod.errorMessage"></copy-to-clipboard>
+                                </div>
+                                <div class="error-content">{{queryMethod.errorMessage}}</div>
                             </div>
                         </div>
                     </div>
