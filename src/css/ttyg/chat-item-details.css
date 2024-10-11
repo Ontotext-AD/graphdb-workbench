@@ -12,7 +12,7 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-    width: 100%;
+    width: 90%;
 }
 
 .chat-detail .assistant-message .answer {
@@ -94,6 +94,19 @@
     gap: 10px;
     margin: 0 !important;
     align-items: center;
+    white-space: nowrap;
+}
+
+.chat-detail .explain-response .explain-response-row .label,
+.chat-detail .explain-response .explain-response-row .copy-to-clipboard-btn {
+    flex-shrink: 0;
+}
+
+.chat-detail .explain-response .explain-response-row .content {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .chat-detail .explain-response .label {

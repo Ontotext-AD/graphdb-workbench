@@ -52,7 +52,7 @@
                         <div ng-if="showRawQuery(queryMethod)" class="explain-response-row">
                             <span class="label">{{'ttyg.chat_panel.labels.raw_query' | translate}}:</span>
                             <span class="content">{{queryMethod.rawQuery}}</span>
-                            <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy_raw_query.tooltip"
+                            <copy-to-clipboard class="copy-to-clipboard-btn" tooltip-text="ttyg.chat_panel.btn.copy_raw_query.tooltip"
                                                text-to-copy="queryMethod.rawQuery"></copy-to-clipboard>
                         </div>
                         <!-- TODO: When the query method is "Retrieval connector" do not display the SPARQL option, and the open in SPARQL view button should be hidden. -->
