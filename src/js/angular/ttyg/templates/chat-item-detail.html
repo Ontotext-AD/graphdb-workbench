@@ -49,7 +49,7 @@
                             <span
                                 class="content">{{('ttyg.chat_panel.query_name.' + queryMethod.name) | translate}}</span>
                         </div>
-                        <div ng-if="queryMethod.rawQuery" class="explain-response-row">
+                        <div ng-if="showRawQuery(queryMethod)" class="explain-response-row">
                             <span class="label">{{'ttyg.chat_panel.labels.raw_query' | translate}}:</span>
                             <span class="content">{{queryMethod.rawQuery}}</span>
                             <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy_raw_query.tooltip"
