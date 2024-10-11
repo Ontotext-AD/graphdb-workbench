@@ -309,7 +309,7 @@
                 },
                 "derive_answer": {
                     "label": "Comment avez-vous obtenu cette réponse ?",
-                    "hint": "Astuce : vous pouvez également demander au modèle, par exemple"
+                    "hint": "<b>Astuce</b> : vous pouvez également demander au modèle, par exemple"
                 },
                 "open_in_sparql_editor": {
                     "tooltip": "Ouvrir dans l'éditeur SPARQL"
@@ -324,11 +324,11 @@
                 "error_message": "Message d'erreur envoyée au modèle"
             },
             "query_name": {
-                "sparql_query":"SPARQL",
-                "fts_search": "Recherche en texte intégral",
-                "similarity_search": "Recherche de similarité",
-                "retrieval_search": "Connecteur de récupération ChatGPT",
-                "iri_discovery": "Recherche de texte intégral dans les étiquettes pour la découverte d'IRI"
+                "sparql_query":"Appelé SPARQL",
+                "fts_search": "Appelé Recherche en texte intégral",
+                "similarity_search": "Appelé Recherche de similarité",
+                "retrieval_search": "Appelé Connecteur de récupération ChatGPT",
+                "iri_discovery": "Appelé Recherche de texte intégral dans les étiquettes pour la découverte d'IRI"
             },
             "dialog": {
                 "confirm_repository_change": {

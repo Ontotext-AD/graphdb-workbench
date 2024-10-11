@@ -46,7 +46,7 @@
                          ng-repeat="queryMethod in explainResponseModel[answer.id].queryMethods.items">
                         <div ng-if="queryMethod.query" class="explain-query">
                             <div class="header">
-                                <div class="label">Called {{('ttyg.chat_panel.query_name.' + queryMethod.name) | translate}}</div>
+                                <div class="label">{{('ttyg.chat_panel.query_name.' + queryMethod.name) | translate}}</div>
                                 <div class="actions">
                                     <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy_{{ queryMethod.queryType }}.tooltip"
                                                        text-to-copy="queryMethod.query"></copy-to-clipboard>
@@ -60,7 +60,7 @@
                             <div class="query">
                                 <pre><code>{{queryMethod.query}}</code></pre>
                             </div>
-                            <div ng-if="showRawQuery(queryMethod)" class="explain-response-row">
+                            <div ng-if="showRawQuery(queryMethod)" class="explain-response-row raw-query">
                                 <span class="label">{{'ttyg.chat_panel.labels.raw_query' | translate}}:</span>
                                 <span class="content">{{queryMethod.rawQuery}}</span>
                                 <copy-to-clipboard class="copy-to-clipboard-btn" tooltip-text="ttyg.chat_panel.btn.copy_raw_query.tooltip"

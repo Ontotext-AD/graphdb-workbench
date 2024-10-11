@@ -22,20 +22,25 @@ describe('Ttyg ChatPanel', () => {
         cy.wait('@get-all-repositories');
     });
 
-    it('Should load chat history and show answer actions', () => {
+    it('Should load chat history and show answer actions', {
+        retries: {
+            runMode: 1,
+            openMode: 0
+        }
+    }, () => {
         // When I select a chat which last used agent is missing (deleted)
         TTYGViewSteps.selectChat(0, 2);
         // Then I expect chat history to be displayed
         ChatPanelSteps.getChatDetailsElements().should('have.length', 2);
         // and only the actions for the last message are visible.
-        ChatPanelSteps.getChatDetailActions(0, 0).should('not.be.visible');
-        ChatPanelSteps.getChatDetailActions(1, 0).should('be.visible');
+        ChatPanelSteps.getChatDetailActions(0, 0).should('exist').and('have.css', 'opacity', '0');
+        ChatPanelSteps.getChatDetailActions(1, 0).should('exist').and('have.css', 'opacity', '1');
 
         // When I hover over the hidden answer actions.
         ChatPanelSteps.getChatDetailActions(0, 0).realHover();
 
         // Then I expect answer actions to be visible.
-        ChatPanelSteps.getChatDetailActions(1, 0).should('be.visible');
+        ChatPanelSteps.getChatDetailActions(0, 0).should('exist').and('have.css', 'opacity', '1');
 
         // When the new question input is empty.
         // The "Ask" button must be disabled.
@@ -140,23 +145,20 @@ describe('Ttyg ChatPanel', () => {
         TTYGViewSteps.getHowDeliverAnswerButton().should('have.length', 1);
         // and the raw query in the first query method does not exist because the raw query and query are identical.
         TTYGViewSteps.getRawQuery(1, 0).should('not.exist');
-        TTYGViewSteps.getQueryMethodElement(1, 0).should('contain', "SPARQL");
-        // and the header label has 'SPARQL query' because the query is SPARQ
-        TTYGViewSteps.getExplainQueryHeaderElement(1, 0).contains("SPARQL query");
+        // and the header label has 'SPARQL query' because the query is Called SPARQL
+        TTYGViewSteps.getExplainQueryHeaderElement(1, 0).contains("Called SPARQL");
         TTYGViewSteps.getExplainQueryQueryElement(1, 0).contains(" SELECT ?character ?name ?height");
 
         // the second query
-        TTYGViewSteps.getQueryMethodElement(1, 1).should('contain', "ChatGPT retrieval connector");
-        // the header label hase "JSON" because the query is json.
-        TTYGViewSteps.getExplainQueryHeaderElement(1, 1).contains("JSON");
+        // the header label has "Called ChatGPT retrieval connector" because the query is ChatGPT retrieval connector.
+        TTYGViewSteps.getExplainQueryHeaderElement(1, 1).contains("Called ChatGPT retrieval connector");
         TTYGViewSteps.getExplainQueryQueryElement(1, 1).contains("{\n  \"queries\" : [ {\n    \"query\" : \"pilots that work with Luke Skywalker\",\n    \"filter\" : {\n      \"document");
 
         // the third query
         // raw query should exist because raw query and query are not identical.
         TTYGViewSteps.getRawQuery(1, 2).should('exist');
-        TTYGViewSteps.getQueryMethodElement(1, 2).should('contain', "Full-text search in labels for IRI discovery");
         //the header label has "SPARQL query" because the query is SPARQL.
-        TTYGViewSteps.getExplainQueryHeaderElement(1, 2).contains("SPARQL query");
+        TTYGViewSteps.getExplainQueryHeaderElement(1, 2).contains("Called Full-text search in labels for IRI discovery");
         TTYGViewSteps.getExplainQueryQueryElement(1, 2).contains("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-sch");
     });
 

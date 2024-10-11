@@ -299,23 +299,15 @@ export class TTYGViewSteps {
         return this.getExplainResponsesElement(explainResponsesIndex).find('.explain-response').eq(explainResponseIndex);
     }
 
-    static getQueryMethodElement(explainResponsesIndex, explainResponseIndex) {
-        return this.getExplainResponseElement(explainResponsesIndex, explainResponseIndex).find('.explain-response-row').eq(0);
-    }
-
     static getRawQuery(explainResponsesIndex, explainResponseIndex) {
-        return this.getExplainResponseElement(explainResponsesIndex, explainResponseIndex).find('.explain-response-row').eq(1);
-    }
-
-    static getExplainQueryElement(explainResponsesIndex, explainResponseIndex) {
-        return this.getExplainResponseElement(explainResponsesIndex, explainResponseIndex).find('.explain-query').eq(0);
+        return this.getExplainResponseElement(explainResponsesIndex, explainResponseIndex).find('.raw-query');
     }
 
     static getExplainQueryHeaderElement(explainResponsesIndex, explainResponseIndex) {
-        return this.getExplainQueryElement(explainResponsesIndex, explainResponseIndex).find('.header');
+        return this.getExplainResponseElement(explainResponsesIndex, explainResponseIndex).find('.header');
     }
 
     static getExplainQueryQueryElement(explainResponsesIndex, explainResponseIndex) {
-        return this.getExplainQueryElement(explainResponsesIndex, explainResponseIndex).find('.query');
+        return this.getExplainResponseElement(explainResponsesIndex, explainResponseIndex).find('.query');
     }
 }

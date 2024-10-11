@@ -28,11 +28,11 @@
 }
 
 .chat-detail .assistant-message .hidden-actions {
-    visibility: hidden;
+    opacity: 0;
 }
 
 .chat-detail .assistant-message:hover .actions {
-    visibility: visible;
+    opacity: 1;
 }
 
 .chat-detail .assistant-message .toggle-explain-response-icon {
