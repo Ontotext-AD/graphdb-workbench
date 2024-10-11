@@ -112,6 +112,50 @@ describe('Ttyg ChatPanel', () => {
         TTYGViewSteps.getAgentsMenuToggleButton().contains('agent-2');
     });
 
+    it('Should displays explain response', () => {
+        TTYGStubs.stubExplainResponse();
+        // When I visit the TTYG page, a chat with two questions and answers is loaded.
+        // Then, I expect only the last "Explain" button to be visible.
+        TTYGViewSteps.getExplainResponseButton(0).should('not.be.visible');
+        TTYGViewSteps.getExplainResponseButton(1).should('be.visible');
+
+        // When I click on first explain response button
+        TTYGViewSteps.getExplainResponseButton(0).realHover();
+        // Then I expect to explain button to be visible.
+        TTYGViewSteps.getExplainResponseButton(0).should('be.visible');
+
+        // When I click on the button.
+        TTYGViewSteps.clickOnExplainResponse(0);
+        // Then I expect the hint message to not exist (it should only exist for the last 'Explain' response).
+        TTYGViewSteps.getHowDeliverAnswerButton().should('not.exist');
+
+        // Then when I click on explain response button on the second answer
+        TTYGViewSteps.clickOnExplainResponse(1);
+        // Then I expect the hint message to exist (it should only exist for the last 'Explain' response).
+        TTYGViewSteps.getHowDeliverAnswerButton().should('exist');
+        TTYGViewSteps.getHowDeliverAnswerButton().should('have.length', 1);
+        // and the raw query in the first query method does not exist because the raw query and query are identical.
+        TTYGViewSteps.getRawQuery(1, 0).should('not.exist');
+        TTYGViewSteps.getQueryMethodElement(1, 0).should('contain', "SPARQL");
+        // and the header label has 'SPARQL query' because the query is SPARQ
+        TTYGViewSteps.getExplainQueryHeaderElement(1, 0).contains("SPARQL query");
+        TTYGViewSteps.getExplainQueryQueryElement(1, 0).contains(" SELECT ?character ?name ?height");
+
+        // the second query
+        TTYGViewSteps.getQueryMethodElement(1, 1).should('contain', "ChatGPT retrieval connector");
+        // the header label hase "JSON" because the query is json.
+        TTYGViewSteps.getExplainQueryHeaderElement(1, 1).contains("JSON");
+        TTYGViewSteps.getExplainQueryQueryElement(1, 1).contains("{\n  \"queries\" : [ {\n    \"query\" : \"pilots that work with Luke Skywalker\",\n    \"filter\" : {\n      \"document");
+
+        // the third query
+        // raw query should exist because raw query and query are not identical.
+        TTYGViewSteps.getRawQuery(1, 2).should('exist');
+        TTYGViewSteps.getQueryMethodElement(1, 2).should('contain', "Full-text search in labels for IRI discovery");
+        //the header label has "SPARQL query" because the query is SPARQL.
+        TTYGViewSteps.getExplainQueryHeaderElement(1, 2).contains("SPARQL query");
+        TTYGViewSteps.getExplainQueryQueryElement(1, 2).contains("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-sch");
+    });
+
     // Can't test this on CI
     it.skip('Should copy an answer when click on copy button', () => {
         // When I click on copy button
