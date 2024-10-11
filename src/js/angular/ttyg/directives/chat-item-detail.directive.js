@@ -1,5 +1,6 @@
 import 'angular/core/services/markdown.service';
 import {TTYGEventName} from "../services/ttyg-context.service";
+import {ExplainQueryType} from "../../models/ttyg/explain-response";
 
 const modules = [
     'graphdb.framework.core.services.markdown-service'
@@ -41,6 +42,7 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, Markdow
             // =========================
 
             $scope.MarkdownService = MarkdownService;
+            $scope.ExplainQueryType = ExplainQueryType;
 
             /**
              * Mapping of agent id to agent name which is used to display the agent name in the UI.
@@ -82,7 +84,6 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, Markdow
                     $scope.loadingExplainResponse[answerId] = true;
                     TTYGService.explainResponse($scope.chatItemDetail, answerId)
                         .then((explainResponse) => {
-                            $scope.explainResponseModel = explainResponse;
                             TTYGContextService.addExplainResponseCache(explainResponse);
                         })
                         .catch(() => {

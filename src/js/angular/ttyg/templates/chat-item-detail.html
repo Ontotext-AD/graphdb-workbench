@@ -55,14 +55,13 @@
                             <copy-to-clipboard class="copy-to-clipboard-btn" tooltip-text="ttyg.chat_panel.btn.copy_raw_query.tooltip"
                                                text-to-copy="queryMethod.rawQuery"></copy-to-clipboard>
                         </div>
-                        <!-- TODO: When the query method is "Retrieval connector" do not display the SPARQL option, and the open in SPARQL view button should be hidden. -->
                         <div ng-if="queryMethod.query" class="explain-query">
                             <div class="header">
-                                <div class="label">{{'ttyg.chat_panel.labels.sparql_query' | translate}}</div>
+                                <div class="label">{{(queryMethod.queryType === ExplainQueryType.SAPRQL ? 'ttyg.chat_panel.labels.sparql_query' : 'ttyg.chat_panel.labels.json') | translate}}</div>
                                 <div class="actions">
                                     <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy_sparql.tooltip"
                                                        text-to-copy="queryMethod.query"></copy-to-clipboard>
-                                    <button class="btn btn-link btn-sm"
+                                    <button ng-if="queryMethod.queryType === ExplainQueryType.SAPRQL" class="btn btn-link btn-sm"
                                             ng-click="onOpenInSparqlEditor(queryMethod.query)"
                                             gdb-tooltip="{{'ttyg.chat_panel.btn.open_in_sparql_editor.tooltip' | translate}}">
                                         <i class="icon-sparql"></i>
