@@ -3,12 +3,14 @@ import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {ChatPanelSteps} from "../../steps/ttyg/chat-panel-steps";
 import {ApplicationSteps} from "../../steps/application-steps";
+import {RepositoriesStub} from "../../stubs/repositories-stub";
 
 describe('Ttyg ChatPanel', () => {
 
     beforeEach(() => {
         // Create an actual repository to prevent stubbing all background requests that are not related to the ttyg view
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
+        RepositoriesStub.stubBaseEndpoints('starwars');
         cy.presetRepository('starwars');
         TTYGStubs.stubChatsListGet();
         TTYGStubs.stubAgentListGet();
@@ -22,12 +24,7 @@ describe('Ttyg ChatPanel', () => {
         cy.wait('@get-all-repositories');
     });
 
-    it('Should load chat history and show answer actions', {
-        retries: {
-            runMode: 1,
-            openMode: 0
-        }
-    }, () => {
+    it('Should load chat history and show answer actions', () => {
         // When I select a chat which last used agent is missing (deleted)
         TTYGViewSteps.selectChat(0, 2);
         // Then I expect chat history to be displayed
@@ -79,9 +76,9 @@ describe('Ttyg ChatPanel', () => {
         ChatPanelSteps.getChatDetailActions(2, 0).should('not.be.visible');
         ChatPanelSteps.getChatDetailActions(2, 1).should('be.visible');
 
-        // When I click on regenerate button.
+        // When I click on regenerate button on the last response => +2 messages
         TTYGStubs.stubAnswerQuestion();
-        ChatPanelSteps.regenerateQuestion(2);
+        ChatPanelSteps.regenerateQuestion(2, 1);
 
         // Then I expect the question to be regenerated and appear in the chat history.
         ChatPanelSteps.getChatDetailsElements().should('have.length', 4);
@@ -123,6 +120,18 @@ describe('Ttyg ChatPanel', () => {
         // Wait to chat be loaded
         ChatPanelSteps.getChatDetailsElements().should('have.length', 2);
 
+        // Quirk - the first explain response button is sometimes visible and the test fails
+        // so by hovering over the view title h1 element we make it disappear
+        cy.get('h1').realHover();
+        // Then, I expect only the last "Explain" button to be visible.
+        TTYGViewSteps.getExplainResponseButton(0).should('not.be.visible');
+        TTYGViewSteps.getExplainResponseButton(1).should('be.visible');
+
+        // When I click on first explain response button
+        TTYGViewSteps.getExplainResponseButton(0).realHover();
+        // Then I expect to explain button to be visible.
+        TTYGViewSteps.getExplainResponseButton(0).should('be.visible');
+
         // When I click on the button.
         TTYGStubs.stubExplainResponse();
         TTYGViewSteps.clickOnExplainResponse(0);
@@ -137,20 +146,21 @@ describe('Ttyg ChatPanel', () => {
         TTYGViewSteps.getHowDeliverAnswerButton().should('have.length', 1);
         // and the raw query in the first query method does not exist because the raw query and query are identical.
         TTYGViewSteps.getRawQuery(1, 0).should('not.exist');
-        // and the header label has 'SPARQL query' because the query is Called SPARQL
-        TTYGViewSteps.getExplainQueryHeaderElement(1, 0).contains("Called SPARQL");
+        // it's a SPARQL query
+        TTYGViewSteps.getQueryMethodElement(1, 0).should('contain', "SPARQL");
+        TTYGViewSteps.getQueryMethodDetailsElement(1, 0).should('contain', "Direct query");
         TTYGViewSteps.getExplainQueryQueryElement(1, 0).contains(" SELECT ?character ?name ?height");
 
-        // the second query
-        // the header label has "Called ChatGPT retrieval connector" because the query is ChatGPT retrieval connector.
-        TTYGViewSteps.getExplainQueryHeaderElement(1, 1).contains("Called ChatGPT retrieval connector");
+        // the second query - JSON
+        TTYGViewSteps.getQueryMethodElement(1, 1).should('contain', "ChatGPT Retrieval");
+        TTYGViewSteps.getQueryMethodDetailsElement(1, 1).should('contain', "Direct JSON query");
         TTYGViewSteps.getExplainQueryQueryElement(1, 1).contains("{\n  \"queries\" : [ {\n    \"query\" : \"pilots that work with Luke Skywalker\",\n    \"filter\" : {\n      \"document");
 
-        // the third query
+        // the third query - FTS IRI to SPARQL
         // raw query should exist because raw query and query are not identical.
         TTYGViewSteps.getRawQuery(1, 2).should('exist');
-        //the header label has "SPARQL query" because the query is SPARQL.
-        TTYGViewSteps.getExplainQueryHeaderElement(1, 2).contains("Called Full-text search in labels for IRI discovery");
+        TTYGViewSteps.getQueryMethodElement(1, 2).should('contain', "FTS for IRI discovery");
+        TTYGViewSteps.getQueryMethodDetailsElement(1, 2).should('contain', "via SPARQL");
         TTYGViewSteps.getExplainQueryQueryElement(1, 2).contains("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-sch");
     });
 

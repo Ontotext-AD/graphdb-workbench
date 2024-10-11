@@ -1035,6 +1035,10 @@ main menu height*/
     text-underline-offset: var(--link-underline-offset);
 }
 
+.btn-link-only-icons {
+    text-decoration: none !important;
+}
+
 .btn-link.secondary {
     color: rgba(0, 0, 0, .66);
 }

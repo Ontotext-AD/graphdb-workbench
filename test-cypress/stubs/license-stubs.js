@@ -94,5 +94,8 @@ export class LicenseStubs {
         cy.intercept('GET', 'https://www.googletagmanager.com/**', {
             statusCode: 503
         });
+        cy.intercept('POST', 'https://region1.google-analytics.com/**', {
+            statusCode: 500
+        });
     }
 }

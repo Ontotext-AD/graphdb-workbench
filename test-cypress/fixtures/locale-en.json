@@ -320,14 +320,23 @@
                 "sparql_query": "SPARQL query",
                 "agent_name": "Agent: {{agentName}}",
                 "json": "JSON",
-                "error_message": "Error message sent to model"
+                "error_message": "Error message sent to model",
+                "explain_no_methods": "No query methods were called.",
+                "called": "Called {{('ttyg.chat_panel.query_name.' + name) | translate}}"
             },
             "query_name": {
-                "sparql_query":"Called SPARQL",
-                "fts_search": "Called Full-text search",
-                "similarity_search": "Called Similarity search",
-                "retrieval_search": "Called ChatGPT retrieval connector",
-                "iri_discovery": "Called Full-text search in labels for IRI discovery"
+                "sparql_query":"SPARQL",
+                "fts_search": "Full-text search",
+                "similarity_search": "Similarity search",
+                "retrieval_search": "ChatGPT Retrieval",
+                "iri_discovery": "FTS for IRI discovery"
+            },
+            "query_desc": {
+                "sparql_query":"Direct query",
+                "fts_search": "Full-text search via SPARQL",
+                "similarity_search": "Similarity search via SPARQL",
+                "retrieval_search": "Direct JSON query",
+                "iri_discovery": "Full-text search via SPARQL"
             },
             "dialog": {
                 "confirm_repository_change": {
@@ -373,7 +382,7 @@
                         "tooltip": "The sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic."
                     },
                     "top_p": {
-                        "label": "Top_P",
+                        "label": "Top P",
                         "tooltip": "An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with Top P probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered. OpenAI recommends altering this or temperature but not both."
                     },
                     "seed": {
@@ -437,21 +446,21 @@
                         "tooltip": "Use only similarity results whose score is at least the threshold value, between 0 and 1. The default value is 0.6."
                     },
                     "retrieval_search": {
-                        "label": "ChatGPT retrieval connector",
+                        "label": "ChatGPT Retrieval connector",
                         "tooltip": "Answers questions by using vector search in text chunks created from RDF. Performs well on open-ended questions but not so well on providing aggregations.",
                         "no_retrieval_connectors": {
                             "message_1": "You must",
-                            "message_2": "create ChatGPT retrieval connector",
+                            "message_2": "create ChatGPT Retrieval connector",
                             "message_3": "to use this method"
                         },
                         "btn": {
                             "reload": {
-                                "tooltip": "Refresh the ChatGPT retrieval connectors."
+                                "tooltip": "Refresh the ChatGPT Retrieval connectors."
                             }
                         }
                     },
                     "connector_id": {
-                        "label": "ChatGPT retrieval connector",
+                        "label": "ChatGPT Retrieval connector",
                         "tooltip": "The ChatGPT Retrieval Connector instance to use for CtatGPT retrieval queries."
                     },
                     "query_template": {
@@ -464,12 +473,12 @@
                         "placeholder": "Automatic value"
                     },
                     "system_instruction": {
-                        "label": "System instructions",
-                        "placeholder": "Enter system instructions",
+                        "label": "Base instructions",
+                        "placeholder": "Enter base instructions",
                         "tooltip": "Base instructions for the agent. The default value provides good results in most setups so there is no need to change it.",
                         "btn": {
                             "copy_instruction": {
-                                "tooltip": "Copy system instructions"
+                                "tooltip": "Copy base instructions"
                             },
                             "restore_default": {
                                 "tooltip": "Reset to default"
@@ -477,12 +486,12 @@
                         }
                     },
                     "user_instruction": {
-                        "label": "User instructions",
-                        "placeholder": "Enter user instructions",
+                        "label": "Additional instructions",
+                        "placeholder": "Enter additional instructions",
                         "tooltip": "Additional instructions can be used to provide ground truths or proper instructions.",
                         "btn": {
                             "copy_instruction": {
-                                "tooltip": "Copy user instructions"
+                                "tooltip": "Copy additional instructions"
                             },
                             "restore_default": {
                                 "tooltip": "Reset to default"
@@ -516,7 +525,7 @@
                         "body": "If you proceed with creating the similarity index, GraphDB will open in a new tab and switch to the <b>{{repositoryId}}</b> repository."
                     },
                     "confirm_repository_change_before_open_connectors": {
-                        "body": "If you proceed with creating the ChatGPT retrieval connector, GraphDB will open in a new tab and switch to the <b>{{repositoryId}}</b> repository."
+                        "body": "If you proceed with creating the ChatGPT Retrieval connector, GraphDB will open in a new tab and switch to the <b>{{repositoryId}}</b> repository."
                     }
                 }
             },
@@ -1142,8 +1151,6 @@
     "core.create.saved.query": "Create saved query",
     "core.show.saved.query": "Show saved queries",
     "core.popover.get.url.current.query": "Get URL to current query",
-    "core.include.inferred": "Include inferred data in results: ",
-    "core.expand.sameAs": "Expand results over owl:sameAs: ",
     "core.require.inferred": "Requires 'Include Inferred'!",
     "query.editor.no.results.from.prev.run.warning": "No results from previous run. Click Run or press Ctrl/Cmd-Enter to execute the current query or update.",
     "query.editor.visual.btn": "Visual",

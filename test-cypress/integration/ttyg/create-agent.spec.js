@@ -2,18 +2,18 @@ import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 import {TtygAgentSettingsModalSteps} from "../../steps/ttyg/ttyg-agent-settings-modal.steps";
-import {NamespaceStubs} from "../../stubs/namespace-stubs";
 import {SimilarityIndexStubs} from "../../stubs/similarity-index-stubs";
 import {ConnectorStubs} from "../../stubs/connector-stubs";
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
+import {RepositoriesStub} from "../../stubs/repositories-stub";
 
 describe('TTYG create new agent', () => {
     const repositoryId = 'starwars';
 
     beforeEach(() => {
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
+        RepositoriesStub.stubBaseEndpoints(repositoryId);
         cy.presetRepository(repositoryId);
-        NamespaceStubs.stubNameSpaceResponse(repositoryId, '/namespaces/get-repository-starwars-namespaces.json');
         TTYGStubs.stubAgentDefaultsGet();
     });
 
@@ -398,7 +398,7 @@ describe('TTYG create new agent', () => {
         // When I click on help menu
         TtygAgentSettingsModalSteps.clickOnMissingRetrievalConnectorHelp();
         // Then I expect a confirm dialog displayed.
-        ModalDialogSteps.getDialogBody().contains('If you proceed with creating the ChatGPT retrieval connector, GraphDB will open in a new tab and switch to the ttyg-repo-1725518186812 repository.');
+        ModalDialogSteps.getDialogBody().contains('If you proceed with creating the ChatGPT Retrieval connector, GraphDB will open in a new tab and switch to the ttyg-repo-1725518186812 repository.');
     });
 
     it('Should updates the similarity form field when the repository is changed', () => {

@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Usage:
+# scripts/run-cypress-tests.sh [--loop] [<gdb-version> [<spec>] [<cypress-arg> ...]
+
 # Force quit if there is an unbound variable
 set -u
 
@@ -18,13 +21,44 @@ function cleanup() {
     exit "${1:-}"
 }
 
+function show_help_and_exit() {
+    echo "Usage: .run-cypress-tests.sh [--loop] [<gdb-version>] [<spec>] [<cypress-option> ...]"
+    echo "    --loop           - runs tests in a loop until failure"
+    echo "    <gdb-version>    - GraphDB version to use (you can also set GDB_VERSION)"
+    echo "    <spec>           - path to test in the integration directory, passed as --spec to cypress"
+    echo "    <cypress-option> - any string starting with - with be passed to cypress, e.g., --headed"
+    exit 1
+}
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+    show_help_and_exit
+fi
+
 if [ -z "${1:-}" ]; then
     if [ -z "${GDB_VERSION:-}" ]; then
-        echo "GDB_VERSION must be set to run script or a version must be passed as the first argument"
-        cleanup 1
+        show_help_and_exit
     fi
 else
-    GDB_VERSION="$1"
+    if [[ "$1" == "--loop" ]]; then
+        # Has optional first "--loop" argument => run tests in loop until failure
+        LOOP=1
+        shift
+    fi
+
+    if [[ "$1:-" =~ ^[0-9] ]]; then
+        # Has next argument - GraphDB version
+        GDB_VERSION="$1"
+        shift
+    fi
+
+    if [ -n "${1:-}" ]; then
+        # Has next argument - cypress option(s) or integration spec path
+        if [[ "${1:-}" != -* ]]; then
+            # Doesn't start with "-" => integration spec path inside integration directory
+            set -- "$@" --spec "integration/$1"
+            shift
+        fi
+    fi
 fi
 
 # Make sure we are in the project root
@@ -105,7 +139,17 @@ if ! npm ci; then
 fi
 
 echo "Starting Cypress tests against GraphDB version ${GDB_VERSION}"
-npx cypress run --record=false --config baseUrl=http://localhost:7200,video=false
 
-# Stops GraphDB, removes the temporary directory and exits using the exit code of the last command (i.e. the test run)
-cleanup $?
+count=0
+exit_code=1
+while npx cypress run --record=false --config baseUrl=http://localhost:7200,video=false "$@"; do
+    exit_code=$?
+    count=$((count+1))
+    echo "Tests OK - run $count"
+    if [ -z "${LOOP:-}" ]; then
+        cleanup 0
+    fi
+done
+
+# Stops GraphDB, removes the temporary directory and exits using the exit code of the test run
+cleanup $exit_code

@@ -6,11 +6,13 @@ import {ApplicationSteps} from "../../steps/application-steps";
 import HomeSteps from "../../steps/home-steps";
 import {ChatPanelSteps} from "../../steps/ttyg/chat-panel-steps";
 import {AlertDialogSteps} from "../../steps/alert-dialog-steps";
+import {RepositoriesStub} from "../../stubs/repositories-stub";
 
 describe('TTYG chat list', () => {
 
     beforeEach(() => {
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
+        RepositoriesStub.stubBaseEndpoints('starwars');
         cy.presetRepository('starwars');
     });
 
@@ -172,9 +174,9 @@ describe('TTYG chat list', () => {
         // When I select a chat
         TTYGViewSteps.selectChat(0, 1);
         // Then I expect the chat be loaded
-        TTYGViewSteps.getChatFromGroup(0, 0).should('contain', 'Test chat 3');
-        TTYGViewSteps.getChatFromGroup(0, 0).should('have.class', 'selected');
-        ChatPanelSteps.getChatDetailsElements().should('have.length', 2);
+        TTYGViewSteps.getChatFromGroup(0, 1).should('contain', 'Test chat 2');
+        TTYGViewSteps.getChatFromGroup(0, 1).should('have.class', 'selected');
+        ChatPanelSteps.getChatDetailsElements().should('have.length', 3);
 
         // When I delete the selected chat
         TTYGViewSteps.triggerDeleteChatActionMenu(0, 1);

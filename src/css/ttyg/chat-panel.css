@@ -12,40 +12,50 @@
 }
 
 .chat-panel .chat-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--message-gap);
     overflow-y: hidden;
     scrollbar-gutter: stable;
-    padding-right: 10px;
+    /*
+    this padding is needed to prevent a safari weirdness with the invisible scroll gutter
+    hiding the border of the explain boxes
+    (needed on the right only but set also left to keep the symetry)
+    */
+    padding-left: 1px;
+    padding-right: 1px;
 }
 
 .chat-panel:hover .chat-details {
     overflow-y: auto;
 }
 
+.chat-panel .chat-details > div:last-child {
+    /* bigger space just before the ask input and button */
+    padding-bottom: 3rem;
+}
+
 .chat-panel .chat-detail {
     display: flex;
     flex-direction: column;
-}
-
-.chat-panel *:last-child > .chat-detail {
-    padding-bottom: 40px;
+    gap: var(--message-gap);
 }
 
 .chat-panel .user-message {
     display: flex;
     justify-content: flex-end;
     flex-direction: row;
-    padding-bottom: 26px;
     color: var(--text-color);
 }
 
 .chat-panel .actions {
     display: flex;
-    gap: 10px;
+    gap: 0.625rem;
 }
 
 .chat-panel .user-message .question {
     max-width: 70%;
-    padding: 8px 16px;
+    padding: 0.5rem 1rem;
     color: var(--text-color);
     line-height: var(--line-height);
 }
