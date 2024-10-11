@@ -33,6 +33,10 @@
     opacity: 0
 }
 
+.chat-detail .assistant-message:hover .actions{
+    opacity: 1;
+}
+
 .chat-detail .assistant-message .toggle-explain-response-icon {
     transform: rotate(180deg);
     font-size: 0.6rem;
@@ -40,10 +44,6 @@
 
 .chat-detail .assistant-message .toggle-explain-response-icon.expanded {
     transform: rotate(0deg);
-}
-
-.chat-detail .assistant-message .actions:hover {
-    opacity: 1;
 }
 
 .chat-detail .assistant-message .actions {
