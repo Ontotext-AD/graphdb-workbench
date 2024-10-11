@@ -89,9 +89,10 @@ function licenseService($window, $document, LicenseRestService, $translate) {
      */
     const isTrackingAllowed = () => {
         const licenseTypeOfUse = _license && _license.typeOfUse.toLowerCase();
-        return _productType === "free" ||
-            licenseTypeOfUse === EVALUATION_TYPE_1 ||
-            licenseTypeOfUse === EVALUATION_TYPE_2;
+        return !$window.wbDevMode &&
+            (_productType === "free" ||
+                licenseTypeOfUse === EVALUATION_TYPE_1 ||
+                licenseTypeOfUse === EVALUATION_TYPE_2);
     };
 
     /**
@@ -144,7 +145,7 @@ function licenseService($window, $document, LicenseRestService, $translate) {
         }
 
         if ($window.dataLayer) {
-            $window.dataLayer.push = function() {
+            $window.dataLayer.push = function () {
                 return null;
             };
         }
@@ -197,6 +198,7 @@ function licenseService($window, $document, LicenseRestService, $translate) {
         isLicenseHardcoded,
         showLicense,
         productType,
-        productTypeHuman
+        productTypeHuman,
+        isTrackingAllowed
     };
 }

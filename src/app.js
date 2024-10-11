@@ -42,6 +42,7 @@ const modules = [
     'graphdb.framework.core.directives.prop-indeterminate',
     'graphdb.framework.guides.services',
     'graphdb.framework.core.services.licenseService',
+    'graphdb.framework.core.services.cookieService',
     'graphdb.framework.core.directives.operationsstatusesmonitor',
     'graphdb.framework.core.directives.autocomplete',
     'ngCustomElement'
@@ -194,8 +195,8 @@ const moduleDefinition = function (productInfo, translations) {
     workbench.constant('productInfo', productInfo);
 
     // we need to inject $jwtAuth here in order to init the service before everything else
-    workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', 'LSKeys', 'GuidesService', '$licenseService',
-        function ($rootScope, $route, toastr, $sce, $translate, ThemeService, WorkbenchSettingsStorageService, LSKeys, GuidesService, $licenseService) {
+    workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', 'LSKeys', 'GuidesService', '$licenseService', 'CookieService',
+        function ($rootScope, $route, toastr, $sce, $translate, ThemeService, WorkbenchSettingsStorageService, LSKeys, GuidesService, $licenseService, CookieService) {
             $rootScope.$on('$routeChangeSuccess', function () {
                 updateTitleAndHelpInfo();
 
@@ -224,8 +225,15 @@ const moduleDefinition = function (productInfo, translations) {
 
             GuidesService.init();
 
-            // Checks license status and adds tracking code when free/evaluation license
-            $licenseService.checkLicenseStatus();
+            // Checks license status and adds tracking code and cookies when free/evaluation license
+            $licenseService.checkLicenseStatus().then(() => {
+                if ($licenseService.isTrackingAllowed) {
+                    const installationId = $licenseService.license().installationId || '';
+                    CookieService.setCookieIfAbsent(installationId);
+                } else {
+                    $licenseService.deleteCookie();
+                }
+            });
         }]);
 
     workbench.filter('titlecase', function () {

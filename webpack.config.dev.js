@@ -34,7 +34,8 @@ module.exports = merge(commonConfig, {
             template: './src/template.html',
             favicon: 'src/img/icon.png',
             templateParameters: {
-                version: PACKAGE.version
+                version: PACKAGE.version,
+                devMode: true
             }
         }),
         new CleanWebpackPlugin()
