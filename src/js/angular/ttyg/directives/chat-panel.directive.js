@@ -121,6 +121,11 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 scrollToBottom();
             };
 
+            /**
+             * Finds out if agent with such id exists and returns its name or a default message for deleted agent.
+             * @param {string} agentId
+             * @return {string}
+             */
             $scope.getAgentName = (agentId) => {
               const agent = TTYGContextService.getAgent(agentId);
               return agent ? agent.name : decodeHTML($translate.instant('ttyg.chat_panel.deleted_agent'));
@@ -129,6 +134,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             // =========================
             // Private functions
             // =========================
+
             const createNewChat = () => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT, $scope.chatItem);
             };

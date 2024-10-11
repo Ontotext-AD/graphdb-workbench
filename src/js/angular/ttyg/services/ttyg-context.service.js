@@ -80,7 +80,7 @@ function TTYGContextService(EventEmitterService) {
 
     const getAgent = (agentId) => {
         if (_agents) {
-                return cloneDeep(_agents.getAgent(agentId));
+            return cloneDeep(_agents.getAgent(agentId));
         }
     };
 
@@ -114,8 +114,8 @@ function TTYGContextService(EventEmitterService) {
     };
 
     const replaceChat = (newChat, oldChat) => {
-     _chats.replaceChat(newChat, oldChat);
-     updateChats(_chats);
+        _chats.replaceChat(newChat, oldChat);
+        updateChats(_chats);
     };
 
     /** Subscribes to the 'chatListUpdated' event.

@@ -308,8 +308,8 @@
             "labels": {
                 "query_method": "Query method",
                 "raw_query": "Raw query",
-                "sparql_query": "SPARQL query"
-
+                "sparql_query": "SPARQL query",
+                "agent_name": "Agent: {{agentName}}"
             },
             "query_name": {
                 "sparql_query":"SPARQL",

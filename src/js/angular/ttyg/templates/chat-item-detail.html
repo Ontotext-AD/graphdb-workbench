@@ -8,7 +8,8 @@
     </div>
     <div class="answers" ng-repeat="answer in chatItemDetail.answers">
         <div class="assistant">
-            <div class="assistant-icon alert-help">
+            <div class="assistant-icon alert-help"
+                 gdb-tooltip="{{'ttyg.chat_panel.labels.agent_name' | translate : {agentName:  agentNameByIdMap[chatItemDetail.agentId]} }}">
                 <i class="fa-regular fa-message-bot"></i>
             </div>
             <div class="assistant-message">
