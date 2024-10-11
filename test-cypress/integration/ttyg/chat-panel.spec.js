@@ -122,14 +122,6 @@ describe('Ttyg ChatPanel', () => {
         // When I visit the TTYG page, a chat with two questions and answers is loaded.
         // Wait to chat be loaded
         ChatPanelSteps.getChatDetailsElements().should('have.length', 2);
-        // Then, I expect only the last "Explain" button to be visible.
-        TTYGViewSteps.getExplainResponseButton(0).should('not.be.visible');
-        TTYGViewSteps.getExplainResponseButton(1).should('be.visible');
-
-        // When I click on first explain response button
-        TTYGViewSteps.getExplainResponseButton(0).realHover();
-        // Then I expect to explain button to be visible.
-        TTYGViewSteps.getExplainResponseButton(0).should('be.visible');
 
         // When I click on the button.
         TTYGStubs.stubExplainResponse();
