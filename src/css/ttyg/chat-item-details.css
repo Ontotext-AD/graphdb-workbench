@@ -30,11 +30,11 @@
 }
 
 .chat-detail .assistant-message .hidden-actions {
-    opacity: 0
+    visibility: hidden;
 }
 
-.chat-detail .assistant-message:hover .actions{
-    opacity: 1;
+.chat-detail .assistant-message:hover .actions {
+    visibility: visible;
 }
 
 .chat-detail .assistant-message .toggle-explain-response-icon {
