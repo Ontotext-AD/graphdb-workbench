@@ -42,7 +42,7 @@ const modules = [
     'graphdb.framework.core.directives.prop-indeterminate',
     'graphdb.framework.guides.services',
     'graphdb.framework.core.services.licenseService',
-    'graphdb.framework.core.services.cookieService',
+    'graphdb.framework.core.services.installationCookieService',
     'graphdb.framework.core.directives.operationsstatusesmonitor',
     'graphdb.framework.core.directives.autocomplete',
     'ngCustomElement'
@@ -195,8 +195,8 @@ const moduleDefinition = function (productInfo, translations) {
     workbench.constant('productInfo', productInfo);
 
     // we need to inject $jwtAuth here in order to init the service before everything else
-    workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', 'LSKeys', 'GuidesService', '$licenseService', 'CookieService',
-        function ($rootScope, $route, toastr, $sce, $translate, ThemeService, WorkbenchSettingsStorageService, LSKeys, GuidesService, $licenseService, CookieService) {
+    workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', 'LSKeys', 'GuidesService', '$licenseService', 'InstallationCookieService',
+        function ($rootScope, $route, toastr, $sce, $translate, ThemeService, WorkbenchSettingsStorageService, LSKeys, GuidesService, $licenseService, InstallationCookieService) {
             $rootScope.$on('$routeChangeSuccess', function () {
                 updateTitleAndHelpInfo();
 
@@ -227,11 +227,11 @@ const moduleDefinition = function (productInfo, translations) {
 
             // Checks license status and adds tracking code and cookies when free/evaluation license
             $licenseService.checkLicenseStatus().then(() => {
-                if ($licenseService.isTrackingAllowed) {
+                if ($licenseService.isTrackingAllowed()) {
                     const installationId = $licenseService.license().installationId || '';
-                    CookieService.setCookieIfAbsent(installationId);
+                    InstallationCookieService.setIfAbsent(installationId);
                 } else {
-                    $licenseService.deleteCookie();
+                    InstallationCookieService.remove();
                 }
             });
         }]);

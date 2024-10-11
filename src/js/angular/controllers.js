@@ -12,7 +12,7 @@ import 'ng-file-upload/dist/ng-file-upload-shim.min';
 import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/repositories.service';
 import 'angular/core/services/license.service';
-import 'angular/core/services/cookie.service';
+import 'angular/core/services/installation-cookie.service';
 import {UserRole} from 'angular/utils/user-utils';
 import 'angular/utils/local-storage-adapter';
 import 'angular/utils/workbench-settings-storage-service';
@@ -31,7 +31,7 @@ angular
         'graphdb.framework.core.services.jwtauth',
         'graphdb.framework.core.services.repositories',
         'graphdb.framework.core.services.licenseService',
-        'graphdb.framework.core.services.cookieService',
+        'graphdb.framework.core.services.installationCookieService',
         'graphdb.framework.core.services.theme-service',
         'ngCookies',
         'ngFileUpload',
