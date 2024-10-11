@@ -14,7 +14,7 @@
             </div>
             <div class="assistant-message">
                 <div class="answer" ng-bind-html="MarkdownService.renderMarkdown(answer.message)"></div>
-                <div class="actions" ng-class="{'hidden-actions': !showActions || !$last}">
+                <div class="actions" ng-class="{'hidden-actions': !explainResponseModel[answer.id].expanded && (!showActions || !$last)}">
                     <button class="btn btn-link btn-sm regenerate-question-btn"
                             ng-click="regenerateQuestion()"
                             ng-disabled="disabled"
