@@ -40,12 +40,7 @@ describe('Ttyg ChatPanel', () => {
         // When the new question input is empty.
         // The "Ask" button must be disabled.
         ChatPanelSteps.getAskButtonElement().should('be.disabled');
-
-        // When I type a question
-        ChatPanelSteps.getQuestionInputElement()
-            .should('be.visible')
-            .and('not.be.disabled')
-            .type('Who is Han Solo?');
+        ChatPanelSteps.getQuestionInputElement().should('be.disabled');
 
         // Then I expect the "Ask" button be not active because agent is not selected
         ChatPanelSteps.getAskButtonElement().should('not.be.enabled');
@@ -53,6 +48,12 @@ describe('Ttyg ChatPanel', () => {
         // When I select an agent
         TTYGViewSteps.openAgentsMenu();
         TTYGViewSteps.selectAgent(0);
+
+        // When I type a question
+        ChatPanelSteps.getQuestionInputElement()
+            .should('be.visible')
+            .and('not.be.disabled')
+            .type('Who is Han Solo?');
 
         // Then I expect the "Ask" button be active.
         ChatPanelSteps.getAskButtonElement().should('be.enabled');
@@ -113,7 +114,6 @@ describe('Ttyg ChatPanel', () => {
     });
 
     it('Should displays explain response', () => {
-        TTYGStubs.stubExplainResponse();
         // When I visit the TTYG page, a chat with two questions and answers is loaded.
         // Then, I expect only the last "Explain" button to be visible.
         TTYGViewSteps.getExplainResponseButton(0).should('not.be.visible');
@@ -125,11 +125,13 @@ describe('Ttyg ChatPanel', () => {
         TTYGViewSteps.getExplainResponseButton(0).should('be.visible');
 
         // When I click on the button.
+        TTYGStubs.stubExplainResponse();
         TTYGViewSteps.clickOnExplainResponse(0);
         // Then I expect the hint message to not exist (it should only exist for the last 'Explain' response).
         TTYGViewSteps.getHowDeliverAnswerButton().should('not.exist');
 
         // Then when I click on explain response button on the second answer
+        TTYGStubs.stubExplainResponse('/ttyg/chats/explain-response-2.json');
         TTYGViewSteps.clickOnExplainResponse(1);
         // Then I expect the hint message to exist (it should only exist for the last 'Explain' response).
         TTYGViewSteps.getHowDeliverAnswerButton().should('exist');
