@@ -39,12 +39,25 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, Markdow
             // =========================
             // Public variables
             // =========================
+
             $scope.MarkdownService = MarkdownService;
+
+            /**
+             * Mapping of agent id to agent name which is used to display the agent name in the UI.
+             * @type {{[key: string]: string}}
+             */
+            $scope.agentNameByIdMap = {};
 
             /**
              * @type {{[key: string]: ExplainResponseModel}}
              */
             $scope.explainResponseModel = {};
+
+            /**
+             * Mapping of answer id to a boolean value indicating whether the explanation of how the answer was
+             * generated is being loaded.
+             * @type {{[key: string]: boolean}}
+             */
             $scope.loadingExplainResponse = {};
 
             // =========================
@@ -117,6 +130,10 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, Markdow
                 });
             };
 
+            const onAgentsListChanged = () => {
+                $scope.agentNameByIdMap = TTYGContextService.getAgents().agentNameByIdMap;
+            };
+
             // =========================
             // Subscriptions
             // =========================
@@ -127,6 +144,7 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, Markdow
             };
 
             subscriptions.push(TTYGContextService.onExplainResponseCacheUpdated(onExplainResponseCacheUpdated));
+            subscriptions.push(TTYGContextService.onAgentsListChanged(onAgentsListChanged));
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);

@@ -309,7 +309,8 @@
             "labels": {
                 "query_method": "Méthode de requête",
                 "raw_query": "Requête brute",
-                "sparql_query": "Requête SPARQL"
+                "sparql_query": "Requête SPARQL",
+                "agent_name": "Agent: {{agentName}}"
             },
             "query_name": {
                 "sparql_query":"SPARQL",

@@ -1,5 +1,6 @@
 import {cloneDeep} from "lodash";
 import {AGENTS_FILTER_ALL_KEY} from "../../ttyg/services/constants";
+
 export class AgentModel {
     constructor(data, hashGenerator) {
         this.hashGenerator = hashGenerator;
@@ -346,6 +347,16 @@ export class AgentListModel {
          * @private
          */
         this._filterableAgents = cloneDeep(agents);
+
+        this._agentNameByIdMap = {};
+        this._initializeAgentNameByIdMap();
+    }
+
+    _initializeAgentNameByIdMap() {
+        this._agentNameByIdMap = this._agents.reduce((map, agent) => {
+            map[agent.id] = agent.name;
+            return map;
+        }, {});
     }
 
     isEmpty() {
@@ -387,6 +398,14 @@ export class AgentListModel {
 
     set filterableAgents(value) {
         this._filterableAgents = value;
+    }
+
+    get agentNameByIdMap() {
+        return cloneDeep(this._agentNameByIdMap);
+    }
+
+    set agentNameByIdMap(value) {
+        this._agentNameByIdMap = value;
     }
 }
 

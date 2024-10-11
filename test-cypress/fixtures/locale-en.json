@@ -241,13 +241,13 @@
             "deleting_chat": "Deleting chats...",
             "btn": {
                 "open_sidebar": {
-                    "tooltip": "Open sidebar"
+                    "tooltip": "Show chat list"
                 },
                 "close_sidebar": {
-                    "tooltip": "Close sidebar"
+                    "tooltip": "Hide chat list"
                 },
                 "create_chat": {
-                    "tooltip": "Create a new chat"
+                    "tooltip": "Start a new chat"
                 },
                 "export_chat": {
                     "label": "Export",
@@ -285,8 +285,14 @@
                 "regenerate": {
                     "tooltip": "Regenerate"
                 },
-                "copy": {
-                    "tooltip": "Copy"
+                "copy_answer": {
+                    "tooltip": "Copy answer"
+                },
+                "copy_raw_query": {
+                    "tooltip": "Copy raw query"
+                },
+                "copy_sparql": {
+                    "tooltip": "Copy SPARQL query"
                 },
                 "explain_response": {
                     "tooltip": "Explain response"
@@ -294,13 +300,16 @@
                 "derive_answer": {
                     "label": "How did you derive this answer?",
                     "hint": "Hint: you can also ask the model, for example"
+                },
+                "open_in_sparql_editor": {
+                    "tooltip": "Open in SPARQL editor"
                 }
             },
             "labels": {
                 "query_method": "Query method",
                 "raw_query": "Raw query",
-                "sparql_query": "SPARQL query"
-
+                "sparql_query": "SPARQL query",
+                "agent_name": "Agent: {{agentName}}"
             },
             "query_name": {
                 "sparql_query":"SPARQL",
@@ -336,20 +345,25 @@
                 "form": {
                     "agent_name": {
                         "label": "Agent name",
-                        "placeholder": "Enter user friendly name"
+                        "placeholder": "Enter user friendly name",
+                        "tooltip": "A descriptive name that helps you identify this agent."
                     },
                     "repository": {
-                        "label": "Repository ID"
+                        "label": "Repository ID",
+                        "tooltip": "The ID of the repository that will be used to retrieve information from GraphDB. Ontop and FedX repositories are not supported."
                     },
                     "model": {
                         "label": "Model",
+                        "tooltip": "The model to use for this agent. More powerful models will provide better results.",
                         "hint": "Check out the available OpenAI models <a href=\"https://platform.openai.com/docs/models\" target=\"_blank\">here</a>."
                     },
                     "temperature": {
-                        "label": "Temperature"
+                        "label": "Temperature",
+                        "tooltip": "The sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic."
                     },
                     "top_p": {
-                        "label": "Top_P"
+                        "label": "Top_P",
+                        "tooltip": "An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with Top P probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered. OpenAI recommends altering this or temperature but not both."
                     },
                     "seed": {
                         "label": "Seed",
@@ -357,28 +371,44 @@
                     },
                     "extraction_method": {
                         "label": "Query methods",
-                        "required": "At least one query method must be selected"
+                        "required": "At least one query method must be selected",
+                        "tooltip": "Query methods to be used by the model to retrieve information from GraphDB and answer questions."
                     },
                     "fts_search": {
                         "label": "Full-text search",
+                        "tooltip": "Answers questions by using full-text search in literals and IRIs. Performs well on open-ended questions but not so well on providing aggregations.",
                         "fts_disabled_message": "You must <a href=\"{{repositoryEditPage}}\" target=\"_blank\">enable the full-text search (FTS) index</a> to use this method.",
                         "missing_repository_id": "Repository ID must be selected"
                     },
+                    "fts_search_max_number_of_triples_per_call": {
+                        "label": "Max number of results (triples) per call",
+                        "tooltip": "Limit the maximum number of triples returned by Full-text search. The default value is automatic and determined at runtime. If not sure, leave the default value.",
+                        "placeholder": "Automatic value"
+                    },
                     "sparql_search": {
                         "label": "SPARQL",
+                        "tooltip": "Answers questions by performing a SPARQL query. This works well for datasets with good ontologies and performs well on closed-ended questions, including aggregations.",
                         "required_option": "Select how an ontology should be fetched"
                     },
                     "ontology_graph": {
-                        "label": "Fetch ontology from a named graph"
+                        "label": "Fetch ontology from a named graph",
+                        "tooltip": "The named graph that contains the entire ontology or a subset sufficient to generate useful SPARQL queries."
                     },
                     "construct_query": {
-                        "label": "Provide a SPARQL CONSTRUCT query that fetches the ontology"
+                        "label": "Provide a SPARQL CONSTRUCT query that fetches the ontology",
+                        "tooltip": "A SPARQL CONSTRUCT query that returns the entire ontology or a subset sufficient to generate useful SPARQL queries."
                     },
                     "similarity_search": {
-                        "label": "Similarity search"
+                        "label": "Similarity search",
+                        "tooltip": "Answers questions by using Similarity search. Performs well on open-ended questions but not so well on providing aggregations."
+                    },
+                    "similarity_search_max_number_of_triples_per_call": {
+                        "label": "Max number of results (triples) per call",
+                        "tooltip": "Limit the maximum number of triples returned by Similarity search. The default value is automatic and determined at runtime. If not sure, leave the default value."
                     },
                     "similarity_index": {
                         "label": "Similarity index name",
+                        "tooltip": "The text similarity index to use for similarity search queries.",
                         "loading_indexes": "Loading similarity indexes...",
                         "no_similarity_index": {
                             "message_1": "You must",
@@ -392,10 +422,12 @@
                         }
                     },
                     "similarity_threshold": {
-                        "label": "Similarity threshold"
+                        "label": "Similarity score threshold",
+                        "tooltip": "Use only similarity results whose score is at least the threshold value, between 0 and 1. The default value is 0.6."
                     },
                     "retrieval_search": {
                         "label": "ChatGPT retrieval connector",
+                        "tooltip": "Answers questions by using vector search in text chunks created from RDF. Performs well on open-ended questions but not so well on providing aggregations.",
                         "no_retrieval_connectors": {
                             "message_1": "You must",
                             "message_2": "create ChatGPT retrieval connector",
@@ -408,27 +440,52 @@
                         }
                     },
                     "connector_id": {
-                        "label": "ChatGPT retrieval connector"
+                        "label": "ChatGPT retrieval connector",
+                        "tooltip": "The ChatGPT Retrieval Connector instance to use for CtatGPT retrieval queries."
                     },
                     "query_template": {
-                        "label": "Query template"
+                        "label": "Query template",
+                        "tooltip": "This template may use a filter with the available metadata fields in your ChatGPT Retrieval Connector instance. The default value contains only the query part and uses no metadata fields. Please consult the documentation for more information."
                     },
-                    "max_number_of_triples_per_call": {
-                        "label": "Max number of results (triples) per call",
+                    "retrieval_search_max_number_of_triples_per_call": {
+                        "label": "Max number of results (chunks) per call",
+                        "tooltip": "Limit the maximum number of text chunks returned by the ChatGPT Retrieval Connector. The default value is automatic and determined at runtime. If not sure, leave the default value.",
                         "placeholder": "Automatic value"
                     },
                     "system_instruction": {
                         "label": "System instructions",
-                        "placeholder": "Enter system instructions"
+                        "placeholder": "Enter system instructions",
+                        "tooltip": "Base instructions for the agent. The default value provides good results in most setups so there is no need to change it.",
+                        "btn": {
+                            "copy_instruction": {
+                                "tooltip": "Copy system instructions"
+                            },
+                            "restore_default": {
+                                "tooltip": "Reset to default"
+                            }
+                        }
                     },
                     "user_instruction": {
                         "label": "User instructions",
-                        "placeholder": "Enter user instructions"
+                        "placeholder": "Enter user instructions",
+                        "tooltip": "Additional instructions can be used to provide ground truths or proper instructions.",
+                        "btn": {
+                            "copy_instruction": {
+                                "tooltip": "Copy user instructions"
+                            },
+                            "restore_default": {
+                                "tooltip": "Reset to default"
+                            }
+                        }
                     },
                     "additional_query_methods": {
                         "label": "Additional query methods",
+                        "tooltip": "Additional query methods supplement the main query methods but cannot be used on their own to answer general questions.",
                         "method": {
-                            "iri_discovery_search": "Full-text search in labels for IRI discovery"
+                            "iri_discovery_search": {
+                                "label": "Full-text search in labels for IRI discovery",
+                                "tooltip": "Helps the model discover the IRIs for a particular incomplete query, for example the name Michael in “What’s Michael’s phone number?”"
+                            }
                         }
                     }
                 },
@@ -475,8 +532,8 @@
                     "all": "All"
                 },
                 "edit_agent": {
-                    "label": "Settings",
-                    "tooltip": "Edit Agent"
+                    "label": "Agent settings",
+                    "tooltip": "Edit agent settings"
                 },
                 "clone_agent": {
                     "label": "Clone",
@@ -488,10 +545,10 @@
                 },
                 "create_agent": {
                     "label": "Create Agent",
-                    "tooltip": "Create Agent"
+                    "tooltip": "Create a new agent"
                 },
                 "open_sidebar": {
-                    "tooltip": "Open sidebar"
+                    "tooltip": "Manage agents"
                 },
                 "close_sidebar": {
                     "tooltip": "Close sidebar"
@@ -501,6 +558,7 @@
                 "no_agents": "No agents found for the selected filter.",
                 "help_1": "Talk to your data in natural language. All you need to do is create and instruct your own AI Agent to assist you.",
                 "help_2": "The Agent is an AI-powered conversational agent designed to help with a wide range of tasks, from answering questions and providing information to assisting with creative and technical projects. It leverages advanced natural language processing to understand and respond to user inputs in a human-like manner, making interactions intuitive and efficient.",
+                "warn1": "To use this feature, the config property graphdb.gpt.token should be set to your GPT token in conf graphdb.properties file.",
                 "error_retrieval_connectors_loading": "Error loading retrieval connectors",
                 "error_similarity_indexes_loading": "Error loading similarity indexes",
                 "error_repository_config_loading": "Error loading repository configurations",
