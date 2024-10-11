@@ -36,7 +36,8 @@ export class LicenseStubs {
             "licenseCapabilities": [
                 "Lucene connector"
             ],
-            "productType": "free"
+            "productType": "free",
+            "installationId": "1234-abcd-5678"
         };
     }
 
@@ -59,7 +60,9 @@ export class LicenseStubs {
                 "Cluster",
                 "Elasticsearch connector"
             ],
-            productType: "enterprise"
+            productType: "enterprise",
+            installationId: "1234-abcd-5678"
+
         };
     }
 
@@ -82,13 +85,14 @@ export class LicenseStubs {
                 "Cluster",
                 "Elasticsearch connector"
             ],
-            productType: "enterprise"
+            productType: "enterprise",
+            installationId: "1234-abcd-5678"
         };
     }
 
     static stubGoogleCalls() {
         cy.intercept('GET', 'https://www.googletagmanager.com/**', {
-            statusCode: 200
+            statusCode: 503
         });
     }
 }

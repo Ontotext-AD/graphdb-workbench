@@ -38,7 +38,8 @@ module.exports = merge(commonConfig, {
             template: './src/template.html',
             favicon: 'src/img/icon.png',
             templateParameters: {
-                version: PACKAGE.version
+                version: PACKAGE.version,
+                devMode: false
             }
             // TODO: enable this once completed with the fixes
             // minify: {
