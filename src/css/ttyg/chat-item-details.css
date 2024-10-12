@@ -12,11 +12,9 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-    width: 100%;
 }
 
 .chat-detail .assistant-message .answer {
-    padding: 0 8px;
     line-height: var(--line-height);
 }
 
@@ -30,7 +28,11 @@
 }
 
 .chat-detail .assistant-message .hidden-actions {
-    opacity: 0
+    opacity: 0;
+}
+
+.chat-detail .assistant-message:hover .actions {
+    opacity: 1;
 }
 
 .chat-detail .assistant-message .toggle-explain-response-icon {
@@ -42,24 +44,20 @@
     transform: rotate(0deg);
 }
 
-.chat-detail .assistant-message .actions:hover {
-    opacity: 1;
-}
-
 .chat-detail .assistant-message .actions {
     padding-left: 6px;
 }
 
 .chat-detail .assistant-message .derived-answer-hint {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 8px;
+    margin-top: -8px;
 }
 
 .chat-detail .assistant-message .deliver-answer-btn {
-    background: none;
-    border: var(--border);
-    color: #414041
+    padding: 6px 12px;
 }
 
 .chat-detail .assistant-message .explain-response-wrapper {
@@ -94,6 +92,19 @@
     gap: 10px;
     margin: 0 !important;
     align-items: center;
+    white-space: nowrap;
+    padding: 0 16px 16px 16px;
+}
+
+.chat-detail .explain-response .explain-response-row .label,
+.chat-detail .explain-response .explain-response-row .copy-to-clipboard-btn {
+    flex-shrink: 0;
+}
+
+.chat-detail .explain-response .explain-response-row .content {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .chat-detail .explain-response .label {
@@ -113,7 +124,28 @@
 }
 
 .chat-detail .explain-response .explain-query .query {
-    padding: 16px;
+    padding: 16px 16px 0 16px;
+}
+
+.chat-detail .explain-response .error-message {
+    margin: 0 16px 16px 16px;
+}
+
+.chat-detail .explain-response .error-message .error-header {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    white-space: nowrap;
+    justify-content: space-between;
+}
+
+.chat-detail .explain-response .error-content {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    max-height: 4.5rem; /* fallback if line-clamp doesn't work */
 }
 
 .chat-detail .copy-btn {

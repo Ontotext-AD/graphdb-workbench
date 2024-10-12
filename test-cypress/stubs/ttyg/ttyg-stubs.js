@@ -139,43 +139,17 @@ export class TTYGStubs extends Stubs {
         }).as('get-agent-defaults');
     }
 
-    static stubAnswerQuestion() {
-        cy.intercept({
-            method: 'POST',
-            url: '/rest/chat/conversations'
-        }, (req) => {
-            const requestBody = req.body;
+    static stubAnswerQuestion(fixture = '/ttyg/chats/ask-question.json') {
+        cy.intercept('POST', '/rest/chat/conversations', {
+            fixture,
+            statusCode: 200
+        }).as('get-agent-defaults');
+    }
 
-            const answer = {
-                id: requestBody.conversationId,
-                name: "Han Solo is a character",
-                timestamp: Math.floor(Date.now() / 1000),
-                messages: [
-                    {
-                        id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNe_" + Date.now(),
-                        conversationId: requestBody.conversationId,
-                        role: 'assistant',
-                        agentId: requestBody.agentId,
-                        message: `Reply to '${requestBody.question}'`,
-                        timestamp: Math.floor(Date.now() / 1000),
-                        name: null
-                    },
-                    {
-                        id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNeс_" + Date.now(),
-                        conversationId: requestBody.conversationId,
-                        role: 'assistant',
-                        agentId: requestBody.agentId,
-                        message: `Reply to '${requestBody.question}' Second`,
-                        timestamp: Math.floor(Date.now() / 1000),
-                        name: null
-                    }
-                ]
-            };
-
-            req.reply({
-                statusCode: 200,
-                body: answer
-            });
-        }).as('get-answer');
+    static stubExplainResponse(fixture = '/ttyg/chats/explain-response-1.json') {
+        cy.intercept('POST', 'rest/chat/conversations/explain', {
+            fixture,
+            statusCode: 200
+        }).as('explain-response');
     }
 }

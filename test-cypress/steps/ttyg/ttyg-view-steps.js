@@ -274,4 +274,40 @@ export class TTYGViewSteps {
             });
         });
     }
+
+    static getExplainResponseButton(index) {
+        return this.getTtygView().find('.explain-response-btn').eq(index);
+    }
+
+    static clickOnExplainResponse(index) {
+        this.getExplainResponseButton(index).click();
+    }
+
+    static getHowDeliverAnswerButton() {
+        return this.getTtygView().find('.deliver-answer-btn');
+    }
+
+    static clickOnHowDeliverAnswerButton(index) {
+        this.getHowDeliverAnswerButton().click();
+    }
+
+    static getExplainResponsesElement(index) {
+        return cy.get('.explain-responses').eq(index);
+    }
+
+    static getExplainResponseElement(explainResponsesIndex, explainResponseIndex) {
+        return this.getExplainResponsesElement(explainResponsesIndex).find('.explain-response').eq(explainResponseIndex);
+    }
+
+    static getRawQuery(explainResponsesIndex, explainResponseIndex) {
+        return this.getExplainResponseElement(explainResponsesIndex, explainResponseIndex).find('.raw-query');
+    }
+
+    static getExplainQueryHeaderElement(explainResponsesIndex, explainResponseIndex) {
+        return this.getExplainResponseElement(explainResponsesIndex, explainResponseIndex).find('.header');
+    }
+
+    static getExplainQueryQueryElement(explainResponsesIndex, explainResponseIndex) {
+        return this.getExplainResponseElement(explainResponsesIndex, explainResponseIndex).find('.query');
+    }
 }

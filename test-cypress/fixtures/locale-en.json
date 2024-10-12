@@ -294,12 +294,21 @@
                 "copy_sparql": {
                     "tooltip": "Copy SPARQL query"
                 },
+                "copy_json": {
+                    "tooltip": "Copy JSON query"
+                },
+                "copy_other": {
+                    "tooltip": "Copy query"
+                },
+                "copy_error_message": {
+                    "tooltip": "Copy error message"
+                },
                 "explain_response": {
                     "tooltip": "Explain response"
                 },
                 "derive_answer": {
                     "label": "How did you derive this answer?",
-                    "hint": "Hint: you can also ask the model, for example"
+                    "hint": "<b>Hint</b>: you can also ask the model, for example"
                 },
                 "open_in_sparql_editor": {
                     "tooltip": "Open in SPARQL editor"
@@ -309,14 +318,16 @@
                 "query_method": "Query method",
                 "raw_query": "Raw query",
                 "sparql_query": "SPARQL query",
-                "agent_name": "Agent: {{agentName}}"
+                "agent_name": "Agent: {{agentName}}",
+                "json": "JSON",
+                "error_message": "Error message sent to model"
             },
             "query_name": {
-                "sparql_query":"SPARQL",
-                "fts_search": "Full-text search",
-                "similarity_search": "Similarity search",
-                "retrieval_search": "ChatGPT retrieval connector",
-                "iri_discovery": "Full-text search in labels for IRI discovery"
+                "sparql_query":"Called SPARQL",
+                "fts_search": "Called Full-text search",
+                "similarity_search": "Called Similarity search",
+                "retrieval_search": "Called ChatGPT retrieval connector",
+                "iri_discovery": "Called Full-text search in labels for IRI discovery"
             },
             "dialog": {
                 "confirm_repository_change": {
