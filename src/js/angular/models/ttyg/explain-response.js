@@ -53,16 +53,16 @@ export class ExplainResponseModel {
 }
 
 export class ExplainQueryMethodsListModel {
-    constructor(data = {}) {
-        this._queryMothods = data.queryMethods || [];
+    constructor(data = []) {
+        this._items = data;
     }
 
-    get queryMothods() {
-        return this._queryMothods;
+    get items() {
+        return this._items;
     }
 
-    set queryMothods(value) {
-        this._queryMothods = value;
+    set items(value) {
+        this._items = value;
     }
 }
 
@@ -71,17 +71,29 @@ export class ExplainQueryMethodModel {
         /**
          * @type {ExtractionMethod.FTS_SEARCH | ExtractionMethod.RETRIEVAL | ExtractionMethod.SPARQL | ExtractionMethod.SIMILARITY}
          */
-        this._name = data._name;
+        this._name = data.name;
 
         /**
          * @type {string}
          */
-        this._rawQuery = data._rawQuery;
+        this._rawQuery = data.rawQuery;
 
         /**
          * @type {string}
          */
-        this._query = data._query;
+        this._query = data.query;
+
+        /**
+         * @Type {ExplainQueryType}
+         * @private
+         */
+        this._queryType = data.queryType;
+
+        /**
+         * @type {string | null}
+         * @private
+         */
+        this._errorMessage = data.errorOutput;
     }
 
     get name() {
@@ -107,4 +119,26 @@ export class ExplainQueryMethodModel {
     set query(value) {
         this._query = value;
     }
+
+    get queryType() {
+        return this._queryType;
+    }
+
+    set queryType(value) {
+        this._queryType = value;
+    }
+
+    get errorMessage() {
+        return this._errorMessage;
+    }
+
+    set errorMessage(value) {
+        this._errorMessage = value;
+    }
 }
+
+export const ExplainQueryType = {
+    SPARQL: 'sparql',
+    JSON: 'json',
+    OTHER: 'other'
+};
