@@ -43,4 +43,20 @@ export class ChatPanelSteps {
     static getAgentInfoMessage(index = 0) {
         return ChatPanelSteps.getAgentInfoMessages().eq(index);
     }
+
+    static getOpenInSparqlEditorElements() {
+        return ChatPanelSteps.getChatPanel().find('open-in-sparql-editor');
+    }
+
+    static getOpenInSparqlEditorElement(index = 0) {
+        return ChatPanelSteps.getOpenInSparqlEditorElements().eq(index);
+    }
+
+    static getCopyToClipboardElements() {
+        return ChatPanelSteps.getChatPanel().find('copy-to-clipboard');
+    }
+
+    static getCopyToClipboardElement(index = 0) {
+        return ChatPanelSteps.getCopyToClipboardElements().eq(index);
+    }
 }

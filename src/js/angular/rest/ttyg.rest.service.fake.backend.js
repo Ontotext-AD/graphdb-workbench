@@ -71,7 +71,7 @@ export class TtygRestServiceFakeBackend {
                     conversationId: askRequestData.conversationId,
                     role: CHAT_MESSAGE_ROLE.ASSISTANT,
                     agentId: askRequestData.agentId,
-                    message: `Reply to '${askRequestData.question}' Han Solo is a character in the Star Wars universe.`,
+                    message: "Certainly! Here's a random example that incorporates code, JSON, and a SPARQL query:\n\n### Code (Python)\n\n```python\ndef greet(name):\n    return f\"Hello, {name}!\"\n\nprint(greet(\"World\"))\n```\n\n### JSON\n\n```json\n{\n    \"greeting\": \"Hello\",\n    \"target\": \"World\",\n    \"language\": \"English\"\n}\n```\n\n### SPARQL Query\n\n```sparql\nSELECT ?person ?name\nWHERE {\n    ?person a ex:Person .\n    ?person ex:hasName ?name .\n}\nLIMIT 10\n```\n\nThis example demonstrates a simple Python function for greeting, a JSON object representing a greeting structure, and a SPARQL query to retrieve names of persons from a dataset.",
                     timestamp: Math.floor(Date.now() / 1000),
                     name: null
                 },

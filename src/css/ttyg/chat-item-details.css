@@ -147,7 +147,8 @@
     max-height: 4.5rem; /* fallback if line-clamp doesn't work */
 }
 
-.chat-detail .copy-btn {
+.chat-detail .copy-btn,
+.chat-detail .open-in-sparql-editor-btn {
     color: var(--primary-color);
     border: none;
     background-color: transparent;
@@ -155,11 +156,13 @@
     padding: 0;
 }
 
-.chat-detail .copy-btn:hover {
+.chat-detail .copy-btn:hover,
+.chat-detail .open-in-sparql-editor-btn {
     transform: scale(1.1);
     transition: all 0.1s ease-out;
 }
 
-.chat-detail .copy-btn:focus {
+.chat-detail .copy-btn:focus,
+.chat-detail .open-in-sparql-editor-btn {
     outline: none;
 }
