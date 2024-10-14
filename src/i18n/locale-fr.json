@@ -401,7 +401,12 @@
                         "label": "Recherche en texte intégral",
                         "tooltip": "Répond aux questions en utilisant la recherche en texte intégral dans les littéraux et les IRI. Fonctionne bien sur les questions ouvertes, mais moins bien sur les agrégations.",
                         "fts_disabled_message": "Vous devez <a href=\"{{repositoryEditPage}}\" target=\"_blank\">activer l'index de recherche en texte intégral (FTS)</a> pour utiliser cette méthode.",
-                        "missing_repository_id": "L'ID du référentiel doit être sélectionné"
+                        "missing_repository_id": "L'ID du référentiel doit être sélectionné",
+                        "btn": {
+                            "reload": {
+                                "tooltip": "Rafraîchir l'état de l'index FTS"
+                            }
+                        }
                     },
                     "fts_search_max_number_of_triples_per_call": {
                         "label": "Nombre maximum de résultats (triples) par appel",
@@ -440,7 +445,7 @@
                         },
                         "btn": {
                             "reload": {
-                                "tooltip": "Rafraîchir les index de similarité."
+                                "tooltip": "Rafraîchir les index de similarité"
                             }
                         }
                     },
@@ -458,7 +463,7 @@
                         },
                         "btn": {
                             "reload": {
-                                "tooltip": "Rafraîchir les connecteurs de ChatGPT Retrieval."
+                                "tooltip": "Rafraîchir les connecteurs de ChatGPT Retrieval"
                             }
                         }
                     },
