@@ -1,6 +1,6 @@
 export class TTYGViewSteps {
     static visit() {
-        cy.visit('/chatgpt');
+        cy.visit('/ttyg');
     }
 
     static getTtygView() {
