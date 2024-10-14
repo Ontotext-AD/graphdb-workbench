@@ -107,12 +107,7 @@ export class RepositoriesStubs extends Stubs {
             body: {}
         }).as('restartRepository');
 
-        cy.intercept(`/rest/autocomplete/enabled`, {
-            statusCode: 200,
-            body: {}
-        });
-
-        RepositoriesStub.stubNameSpaces(repositoryId, [{
+        RepositoriesStub.stubBaseEndpoints(repositoryId, [{
             "type": "literal",
             "value": "http://jena.apache.org/ARQ/function/aggregate#"
         }]);

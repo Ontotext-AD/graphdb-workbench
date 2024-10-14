@@ -2,7 +2,7 @@ import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 import {ApplicationSteps} from "../../steps/application-steps";
-import {NamespaceStubs} from "../../stubs/namespace-stubs";
+import {RepositoriesStub} from "../../stubs/repositories-stub";
 
 describe('TTYG view', () => {
 
@@ -10,8 +10,8 @@ describe('TTYG view', () => {
 
     beforeEach(() => {
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
+        RepositoriesStub.stubBaseEndpoints(repositoryId);
         cy.presetRepository(repositoryId);
-        NamespaceStubs.stubNameSpaceResponse(repositoryId, '/namespaces/get-repository-starwars-namespaces.json');
     });
 
     it('Should load ttyg page and render main components', () => {

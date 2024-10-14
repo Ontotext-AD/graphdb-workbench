@@ -21,9 +21,9 @@
                             gdb-tooltip="{{'ttyg.chat_panel.btn.regenerate.tooltip' | translate}}">
                         <i class="fa-regular fa-arrows-rotate"></i>
                     </button>
-                    <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy_answer.tooltip"
+                    <copy-to-clipboard class="btn-sm" tooltip-text="ttyg.chat_panel.btn.copy_answer.tooltip"
                                        text-to-copy="answer.message"></copy-to-clipboard>
-                    <button class="btn btn-link btn-sm explain-response-btn"
+                    <button class="btn btn-link btn-link-only-icons btn-sm explain-response-btn"
                             ng-click="explainResponse(answer.id)"
                             ng-disabled="disabled && !explainResponseModel[answer.id]"
                             gdb-tooltip="{{'ttyg.chat_panel.btn.explain_response.tooltip' | translate}}">
@@ -40,13 +40,22 @@
                     </button>
                 </div>
                 <div ng-if="loadingExplainResponse[answer.id]" onto-loader-new size="40"></div>
-                <div class="explain-responses">
-                    <div ng-if="explainResponseModel[answer.id] && explainResponseModel[answer.id].expanded"
+                <div class="explain-responses" ng-if="explainResponseModel[answer.id] && explainResponseModel[answer.id].expanded">
+                    <div ng-if="!explainResponseModel[answer.id].queryMethods.items.length"
+                         class="explain-response">
+                        {{ 'ttyg.chat_panel.labels.explain_no_methods' | translate }}
+                    </div>
+                    <div ng-if="explainResponseModel[answer.id].queryMethods.items"
                          class="explain-response"
                          ng-repeat="queryMethod in explainResponseModel[answer.id].queryMethods.items">
-                        <div ng-if="queryMethod.query" class="explain-query">
-                            <div class="header">
-                                <div class="label">{{('ttyg.chat_panel.query_name.' + queryMethod.name) | translate}}</div>
+                        <div class="explain-call">
+                            <div class="header" gdb-tooltip="">
+                                <div class="label">
+                                    <span class="query-method" ng-bind-html="'ttyg.chat_panel.labels.called' | htmlTranslate:{name: queryMethod.name}">
+                                    </span>:
+                                    <span class="query-method-details" ng-bind="('ttyg.chat_panel.query_desc.' + queryMethod.name) | translate">
+                                    </span>
+                                </div>
                                 <div class="actions">
                                     <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy_{{ queryMethod.queryType }}.tooltip"
                                                        text-to-copy="queryMethod.query"></copy-to-clipboard>
@@ -60,7 +69,7 @@
                             <div class="query">
                                 <pre><code>{{queryMethod.query}}</code></pre>
                             </div>
-                            <div ng-if="showRawQuery(queryMethod)" class="explain-response-row raw-query">
+                            <div ng-if="showRawQuery(queryMethod)" class="raw-query">
                                 <span class="label">{{'ttyg.chat_panel.labels.raw_query' | translate}}:</span>
                                 <span class="content">{{queryMethod.rawQuery}}</span>
                                 <copy-to-clipboard class="copy-to-clipboard-btn" tooltip-text="ttyg.chat_panel.btn.copy_raw_query.tooltip"

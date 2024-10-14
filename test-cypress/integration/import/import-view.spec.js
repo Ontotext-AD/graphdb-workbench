@@ -103,6 +103,7 @@ describe('Import view', () => {
         ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[0], bnodes));
         ImportSettingsDialogSteps.import();
         ImportUserDataSteps.getResources().should('have.length', 1);
+        ImportUserDataSteps.checkImportedResource(0, 'bnodes.ttl');
 
         // Then I expect the help message not exist, because user because there are resource displayed
         ImportUserDataSteps.getHelpMessage().should('not.exist');

@@ -1,6 +1,8 @@
 :root {
     --sidebar-width: 13vw;
     --toolbar-height: 37px;
+    /* the gap between user and agent as well as between agent and agent messages */
+    --message-gap: 1.5rem;
 }
 
 @media (max-width: 1440px) {

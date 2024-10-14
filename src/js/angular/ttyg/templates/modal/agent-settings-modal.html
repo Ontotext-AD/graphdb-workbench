@@ -320,29 +320,29 @@
                        name="{{additionalExtractionMethod.method}}" class="switch"
                        ng-model="additionalExtractionMethod.selected"/>
                 <label for="{{additionalExtractionMethod.method + '_checkbox'}}"></label>
-                <span class="extraction-method-label" uib-popover="{{'ttyg.agent.create_agent_modal.form.additional_query_methods.method.' +
+                <a class="btn btn-link extraction-method-label" uib-popover="{{'ttyg.agent.create_agent_modal.form.additional_query_methods.method.' +
                     additionalExtractionMethod.method + '.tooltip' | translate}}"
                       popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.additional_query_methods.method.' +
-                    additionalExtractionMethod.method + '.label' | translate}}</span>
+                    additionalExtractionMethod.method + '.label' | translate}}</a>
             </div>
         </div>
 
-        <div class="form-group gpt-model">
-            <label for="model" uib-popover="{{'ttyg.agent.create_agent_modal.form.model.tooltip' | translate}}"
-                   popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.model.label' | translate}}</label>
-            <input type="text" class="form-control" id="model" name="model" ng-model="agentFormModel.model"
-                   required autocomplete="off">
-            <small id="modelHelp" class="form-text text-muted"
-                   ng-bind-html="getModelHelpMessage()">
-            </small>
-            <div class="alert alert-danger"
-                 ng-if="agentSettingsForm.model.$touched && agentSettingsForm.model.$invalid">
-                {{'required.field' | translate}}
-            </div>
-        </div>
 
         <div class="form-row clearfix">
-            <div class="form-group temperature col-md-6 pl-0">
+            <div class="form-group gpt-model col-md-4">
+                <label for="model" uib-popover="{{'ttyg.agent.create_agent_modal.form.model.tooltip' | translate}}"
+                       popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.model.label' | translate}}</label>
+                <input type="text" class="form-control" id="model" name="model" ng-model="agentFormModel.model"
+                       required autocomplete="off">
+                <small id="modelHelp" class="form-text text-muted"
+                       ng-bind-html="getModelHelpMessage()">
+                </small>
+                <div class="alert alert-danger"
+                     ng-if="agentSettingsForm.model.$touched && agentSettingsForm.model.$invalid">
+                    {{'required.field' | translate}}
+                </div>
+            </div>
+            <div class="form-group temperature col-md-4">
                 <label for="temperature"
                        uib-popover="{{'ttyg.agent.create_agent_modal.form.temperature.tooltip' | translate}}"
                        popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.temperature.label' |
@@ -354,7 +354,7 @@
                        max="{{agentFormModel.temperature.maxValue}}" step="{{agentFormModel.temperature.step}}"
                        ng-model="agentFormModel.temperature.value"/>
             </div>
-            <div class="form-group top-p col-md-6 pr-0">
+            <div class="form-group top-p col-md-4">
                 <label for="topP" uib-popover="{{'ttyg.agent.create_agent_modal.form.top_p.tooltip' | translate}}"
                        popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.top_p.label' |
                     translate}}</label>
@@ -389,7 +389,7 @@
                     </button>
                 </div>
             </div>
-            <textarea type="text" class="form-control" id="userInstruction" name="userInstruction" rows="10"
+            <textarea type="text" class="form-control" id="userInstruction" name="userInstruction" rows="5"
                       ng-model="agentFormModel.instructions.userInstruction"
                       placeholder="{{'ttyg.agent.create_agent_modal.form.user_instruction.placeholder' | translate}}">
                 </textarea>
@@ -424,7 +424,7 @@
                         </button>
                     </div>
                 </div>
-                <textarea type="text" class="form-control" id="systemInstruction" name="systemInstruction" rows="10"
+                <textarea type="text" class="form-control" id="systemInstruction" name="systemInstruction" rows="5"
                           ng-model="agentFormModel.instructions.systemInstruction"
                           placeholder="{{'ttyg.agent.create_agent_modal.form.system_instruction.placeholder' | translate}}">
                 </textarea>

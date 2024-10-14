@@ -4,14 +4,14 @@
 
 .chat-detail .assistant {
     display: flex;
-    gap: 16px;
-    padding-bottom: 13px;
+    gap: 1rem;
 }
 
 .chat-detail .assistant-message {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 1rem;
+    flex-grow: 1;
 }
 
 .chat-detail .assistant-message .answer {
@@ -19,12 +19,12 @@
 }
 
 .chat-detail .assistant-icon {
-    width: 40px;
-    height: 40px;
+    width: 2.5rem;
+    height: 2.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 10px;
+    padding: 0.625rem;
 }
 
 .chat-detail .assistant-message .hidden-actions {
@@ -45,31 +45,30 @@
 }
 
 .chat-detail .assistant-message .actions {
-    padding-left: 6px;
 }
 
 .chat-detail .assistant-message .derived-answer-hint {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 8px;
-    margin-top: -8px;
+    gap: 0.5rem;
+    margin-top: -0.5rem;
 }
 
 .chat-detail .assistant-message .deliver-answer-btn {
-    padding: 6px 12px;
+    padding: 0.375rem 0.75rem;
 }
 
 .chat-detail .assistant-message .explain-response-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 1rem;
 }
 
 .chat-detail .assistant-message .explain-responses {
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 1.5rem;
 }
 
 /* Better handling of markdown-derived HTML inside the assistant message */
@@ -87,21 +86,21 @@
     flex-direction: column;
 }
 
-.chat-detail .explain-response .explain-response-row {
+.chat-detail .explain-response .raw-query {
     display: flex;
-    gap: 10px;
+    gap: 0.625rem;
     margin: 0 !important;
     align-items: center;
     white-space: nowrap;
-    padding: 0 16px 16px 16px;
+    padding: 0 1rem 1rem 1rem;
 }
 
-.chat-detail .explain-response .explain-response-row .label,
-.chat-detail .explain-response .explain-response-row .copy-to-clipboard-btn {
+.chat-detail .explain-response .raw-query .label,
+.chat-detail .explain-response .raw-query .copy-to-clipboard-btn {
     flex-shrink: 0;
 }
 
-.chat-detail .explain-response .explain-response-row .content {
+.chat-detail .explain-response .raw-query .content {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -112,28 +111,28 @@
     font-weight: 400;
 }
 
-.chat-detail .explain-response .explain-query .header {
+.chat-detail .explain-response .explain-call .header {
     display: flex;
     justify-content: space-between;
     background-color: #F3F3F3;
-    padding: 4px 8px;
+    padding: 0.25rem 0.25rem;
 }
 
-.chat-detail .explain-response .explain-query {
+.chat-detail .explain-response .explain-call {
     border: var(--border);
 }
 
-.chat-detail .explain-response .explain-query .query {
-    padding: 16px 16px 0 16px;
+.chat-detail .explain-response .explain-call .query {
+    padding: 1rem 1rem 0 1rem;
 }
 
 .chat-detail .explain-response .error-message {
-    margin: 0 16px 16px 16px;
+    margin: 0 1rem 1rem 1rem;
 }
 
 .chat-detail .explain-response .error-message .error-header {
     display: flex;
-    gap: 10px;
+    gap: 0.625rem;
     align-items: center;
     white-space: nowrap;
     justify-content: space-between;

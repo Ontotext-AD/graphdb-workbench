@@ -193,10 +193,10 @@ describe('Home screen validation', () => {
         });
     });
 
+    // Note: Google API calls are stubbed for all specs in support/index.js
     context('GA', () => {
         it('Should set GA tracking code in header and a cookie when free license and prodMode', () => {
             LicenseStubs.stubFreeLicense();
-            LicenseStubs.stubGoogleCalls();
             HomeSteps.visit();
             EnvironmentStubs.stubWbProdMode();
 
@@ -214,7 +214,6 @@ describe('Home screen validation', () => {
 
         it('Should set GA tracking code in header and cookie when evaluation enterprise license and prodMode', () => {
             LicenseStubs.stubEvaluationLicense();
-            LicenseStubs.stubGoogleCalls();
             HomeSteps.visit();
             EnvironmentStubs.stubWbProdMode();
 
@@ -232,7 +231,6 @@ describe('Home screen validation', () => {
 
         it('Should NOT set GA tracking code in header and cookie when enterprise license in prodMode', () => {
             LicenseStubs.stubEnterpriseLicense();
-            LicenseStubs.stubGoogleCalls();
             HomeSteps.visit();
             EnvironmentStubs.stubWbProdMode();
 

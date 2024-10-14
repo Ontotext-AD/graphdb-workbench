@@ -299,6 +299,14 @@ export class TTYGViewSteps {
         return this.getExplainResponsesElement(explainResponsesIndex).find('.explain-response').eq(explainResponseIndex);
     }
 
+    static getQueryMethodElement(explainResponsesIndex, explainResponseIndex) {
+        return this.getExplainResponseElement(explainResponsesIndex, explainResponseIndex).find('.query-method');
+    }
+
+    static getQueryMethodDetailsElement(explainResponsesIndex, explainResponseIndex) {
+        return this.getExplainResponseElement(explainResponsesIndex, explainResponseIndex).find('.query-method-details');
+    }
+
     static getRawQuery(explainResponsesIndex, explainResponseIndex) {
         return this.getExplainResponseElement(explainResponsesIndex, explainResponseIndex).find('.raw-query');
     }

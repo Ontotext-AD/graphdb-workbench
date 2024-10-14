@@ -1,3 +1,5 @@
+import {GlobalOperationsStatusesStub} from "./global-operations-statuses-stub";
+
 export class RepositoriesStub {
 
     static stubOntopRepository(repositoryId) {
@@ -54,5 +56,18 @@ export class RepositoriesStub {
             statusCode: 200,
             body: namespacesResponse
         });
+    }
+
+    static stubAutocomplete() {
+        cy.intercept(`/rest/autocomplete/enabled`, {
+            statusCode: 200,
+            body: {}
+        });
+    }
+
+    static stubBaseEndpoints(repositoryId, namespaces) {
+        RepositoriesStub.stubNameSpaces(repositoryId, namespaces);
+        RepositoriesStub.stubAutocomplete();
+        GlobalOperationsStatusesStub.stubNoOperationsResponse('starwars');
     }
 }
