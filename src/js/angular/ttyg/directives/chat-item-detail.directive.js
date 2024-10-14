@@ -1,20 +1,22 @@
-import 'angular/core/services/markdown.service';
+import 'angular/core/directives/markdown-content/markdown-content';
+import 'angular/core/directives/open-in-sparql-editor/open-in-sparql-editor.directive';
 import {TTYGEventName} from "../services/ttyg-context.service";
 import {ExplainQueryType} from "../../models/ttyg/explain-response";
 
 const modules = [
-    'graphdb.framework.core.services.markdown-service'
+    'graphdb.framework.core.directives.open-in-sparql-editor',
+    'graphdb.framework.core.directives.markdown-content'
 ];
 
 angular
     .module('graphdb.framework.ttyg.directives.chat-item-detail', modules)
     .directive('chatItemDetail', ChatItemDetailComponent);
 
-ChatItemDetailComponent.$inject = ['toastr', '$translate', 'TTYGContextService', 'MarkdownService', 'TTYGService'];
+ChatItemDetailComponent.$inject = ['toastr', '$translate', 'TTYGContextService', 'TTYGService'];
 
 /**
  * @ngdoc directive
- * @name graphdb.framework.ttyg.directives.chat-detail:chatDetail
+ * @name graphdb.framework.ttyg.directives.chat-detail:chatItemDetail
  * @restrict E
  * @description
  *
@@ -23,7 +25,7 @@ ChatItemDetailComponent.$inject = ['toastr', '$translate', 'TTYGContextService',
  * @example
  * <chat-item-detail chat-item="chatItem"></chat-item-detail>
  */
-function ChatItemDetailComponent(toastr, $translate, TTYGContextService, MarkdownService, TTYGService) {
+function ChatItemDetailComponent(toastr, $translate, TTYGContextService, TTYGService) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/chat-item-detail.html',
@@ -41,8 +43,9 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, Markdow
             // Public variables
             // =========================
 
-            $scope.MarkdownService = MarkdownService;
             $scope.ExplainQueryType = ExplainQueryType;
+            $scope.repositoryId = undefined;
+            $scope.markdownContentOptions = undefined;
 
             /**
              * Mapping of agent id to agent name which is used to display the agent name in the UI.
@@ -106,10 +109,9 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, Markdow
              */
             $scope.onOpenInSparqlEditor = (query) => {
                 if ($scope.chatItemDetail.agentId) {
-                    const agent = TTYGContextService.getAgent($scope.chatItemDetail.agentId);
                     TTYGContextService.emit(TTYGEventName.GO_TO_SPARQL_EDITOR, {
                         query,
-                        repositoryId: agent.repositoryId
+                        repositoryId: $scope.repositoryId
                     });
                 }
             };
@@ -121,10 +123,17 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, Markdow
                 return rawQueryNoSpaces && rawQueryNoSpaces !== queryNoSpaces;
             };
 
+            $scope.getRepositoryId = (f) => {
+                const agent = TTYGContextService.getAgent($scope.chatItemDetail.agentId);
+                return agent ? agent.repositoryId : '';
+            };
+
             // =========================
             // Private functions
             // =========================
             const init = () => {
+                $scope.repositoryId = $scope.getRepositoryId();
+                $scope.markdownContentOptions = {repositoryId: $scope.repositoryId};
                 updateExplainResponseModel();
             };
 

@@ -1,11 +1,9 @@
 import markdownIt from 'markdown-it';
-import markdownItCodeCopy from 'markdown-it-code-copy';
+import {markdownCodeCopyPlugin} from "./plugins/markdown-code-copy-plugin";
+import {markdownOpenInSparqlEditorPlugin} from "./plugins/markdown-open-in-sparql-editor-plugin";
 
-const DEFAULT_MARKDOWN_CONFIGURATION = {
-    iconStyle: "",
-    iconClass: "icon-copy",
-    buttonStyle: "position: absolute; top: 0; right: 0;",
-    buttonClass: "btn btn-link btn-sm secondary"
+const OPEN_IN_SPARQL_PLUGIN_OPTIONS = {
+    buttonStyle: 'position: absolute; top: 0; right: 0; margin-right: 24px'
 };
 
 /**
@@ -20,7 +18,9 @@ angular
 MarkdownService.$inject = ['$sce'];
 
 function MarkdownService($sce) {
-    const markdownInstance = markdownIt().use(markdownItCodeCopy, DEFAULT_MARKDOWN_CONFIGURATION);
+    const markdownInstance = markdownIt()
+        .use(markdownCodeCopyPlugin)
+        .use(markdownOpenInSparqlEditorPlugin, OPEN_IN_SPARQL_PLUGIN_OPTIONS);
 
     /**
      * Retrieves a Markdown-it instance with optional custom configuration.
@@ -30,7 +30,10 @@ function MarkdownService($sce) {
      */
     const getMarkdown = (config) => {
         if (config) {
-            return markdownIt().use(markdownItCodeCopy, config);
+            return markdownIt()
+                .use(markdownCodeCopyPlugin, config)
+                .use(markdownOpenInSparqlEditorPlugin, _.merge({}, OPEN_IN_SPARQL_PLUGIN_OPTIONS, config));
+
         }
         return markdownInstance;
     };
@@ -41,9 +44,9 @@ function MarkdownService($sce) {
      * @param {string} text - The Markdown text to render.
      * @return {string} The rendered HTML, or the original text in case of an error.
      */
-    const renderMarkdown = (text) => {
+    const renderMarkdown = (text, config) => {
         try {
-            return $sce.trustAsHtml(getMarkdown().render(text));
+            return $sce.trustAsHtml(getMarkdown(config).render(text));
         } catch (e) {
             console.error('Error rendering markdown:', e);
             // Return the original text in case of an error

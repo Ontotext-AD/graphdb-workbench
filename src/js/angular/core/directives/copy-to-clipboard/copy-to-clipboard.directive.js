@@ -45,7 +45,7 @@ function copyToClipboard($translate, toastr) {
         restrict: 'E',
         scope: {
             tooltipText: '@',
-            textToCopy: '='
+            textToCopy: '@'
         },
         link: function ($scope, element) {
             $scope.copyToClipboard = function() {

@@ -93,7 +93,6 @@
         "jsrsasign": "^11.0.0",
         "lodash": "^4.17.21",
         "markdown-it": "^14.1.0",
-        "markdown-it-code-copy": "^0.2.1",
         "ng-custom-element": "^2.0.3",
         "ng-file-upload": "^12.2.13",
         "ng-tags-input": "^3.2.0",

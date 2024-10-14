@@ -13,7 +13,7 @@
                 <i class="fa-regular fa-message-bot"></i>
             </div>
             <div class="assistant-message">
-                <div class="answer" ng-bind-html="MarkdownService.renderMarkdown(answer.message)"></div>
+                <markdown-content class="answer" content="{{answer.message}}" options="markdownContentOptions"></markdown-content>
                 <div class="actions" ng-class="{'hidden-actions': !explainResponseModel[answer.id].expanded && (!showActions || !$last)}">
                     <button class="btn btn-link btn-sm regenerate-question-btn"
                             ng-click="regenerateQuestion()"
@@ -57,13 +57,14 @@
                                     </span>
                                 </div>
                                 <div class="actions">
+                                    <open-in-sparql-editor
+                                        ng-if="queryMethod.queryType === ExplainQueryType.SPARQL"
+                                        execute-query="{{!queryMethod.errorMessage}}"
+                                        repository-id="{{repositoryId}}"
+                                        query="{{queryMethod.query}}">
+                                    </open-in-sparql-editor>
                                     <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy_{{ queryMethod.queryType }}.tooltip"
                                                        text-to-copy="queryMethod.query"></copy-to-clipboard>
-                                    <button ng-if="queryMethod.queryType === ExplainQueryType.SPARQL" class="btn btn-link btn-sm"
-                                            ng-click="onOpenInSparqlEditor(queryMethod.query)"
-                                            gdb-tooltip="{{'ttyg.chat_panel.btn.open_in_sparql_editor.tooltip' | translate}}">
-                                        <i class="icon-sparql"></i>
-                                    </button>
                                 </div>
                             </div>
                             <div class="query">
