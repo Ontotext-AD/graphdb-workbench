@@ -1,8 +1,6 @@
 const DEFAULT_MARKDOWN_CONFIGURATION = {
-    iconStyle: "",
-    iconClass: "icon-copy",
     buttonStyle: "position: absolute; top: 0; right: 0;",
-    buttonClass: "btn btn-link btn-sm secondary"
+    buttonClass: ""
 };
 
 /**
@@ -10,10 +8,19 @@ const DEFAULT_MARKDOWN_CONFIGURATION = {
  *
  * @param {Function} origRule The original rule function responsible for rendering code blocks.
  * @param {Object} options The options to customize the rendering. These will be merged with the default configuration.
+ * Options model description:
+ * ```JSON
+ *      {
+ *          // Inline CSS styles applied to position the button inside the code block. Defaults to positioning the button at the top-right of the block.
+ *          buttonStyle: "position: absolute; top: 0; right: 0;",
+ *          // The CSS class for styling the button. The default applies Bootstrap-like styles with a small button size and a secondary theme
+ *          buttonClass: "btn btn-link btn-sm secondary",
+ *      }
+ * ```
  * @return {Function} A function that renders a code block with a "copy to clipboard" button, when a fenced code block is detected.
  */
 function renderCode(origRule, options) {
-    options = _.merge(DEFAULT_MARKDOWN_CONFIGURATION, options);
+    options = _.merge({}, DEFAULT_MARKDOWN_CONFIGURATION, options);
     return (...args) => {
         const [tokens, idx] = args;
         const token = tokens[idx];
@@ -28,7 +35,7 @@ function renderCode(origRule, options) {
                         ${origRendered}
                         <copy-to-clipboard
                             style="${options.buttonStyle}"
-                            class="${options.buttonStyle}"
+                            class="${options.buttonClass}"
                             tooltip-text="ttyg.chat_panel.btn.copy_sparql.tooltip"
                             text-to-copy="${content}">
                         </copy-to-clipboard>

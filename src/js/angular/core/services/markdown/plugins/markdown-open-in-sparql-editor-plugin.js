@@ -1,7 +1,6 @@
 const DEFAULT_MARKDOWN_CONFIGURATION = {
-    iconClass: 'icon-sparql',
     buttonStyle: "position: absolute; top: 0; right: 0;",
-    buttonClass: "btn btn-link btn-sm secondary"
+    buttonClass: ""
 };
 
 /**
@@ -10,10 +9,24 @@ const DEFAULT_MARKDOWN_CONFIGURATION = {
  *
  * @param {Function} origRule The original rule function responsible for rendering code blocks.
  * @param {Object} options The options to customize the rendering. These will be merged with the default configuration.
+ * Options model description:
+ * ```JSON
+ *      {
+ *          // Inline CSS styles applied to position the button inside the code block. Defaults to positioning the button at the top-right of the block.
+ *          buttonStyle: "position: absolute; top: 0; right: 0;",
+ *          // The CSS class for styling the button.
+ *          buttonClass: "",
+ *          // A flag that determines whether the SPARQL query should be automatically executed when opened in the SPARQL editor. Defaults to `false`.
+ *          executeQuery: false,
+ *          // The ID of the repository that the SPARQL query will be executed against.
+ *          repositoryId: ''
+ *      }
+ * ```
+ *
  * @return {Function} A function that renders a fenced code block with an "open in SPARQL editor" button when the block is recognized as containing SPARQL code.
  */
 function renderCode(origRule, options) {
-    options = _.merge(DEFAULT_MARKDOWN_CONFIGURATION, options);
+    options = _.merge({}, DEFAULT_MARKDOWN_CONFIGURATION, options);
     return (...args) => {
         const [tokens, idx] = args;
         const token = tokens[idx];
@@ -28,7 +41,7 @@ function renderCode(origRule, options) {
                         ${origRendered}
                         <open-in-sparql-editor
                             style="${options.buttonStyle}"
-                            class="${options.buttonStyle}"
+                            class="${options.buttonClass}"
                             execute-query="${options.executeQuery}"
                             repository-id="${options.repositoryId}"
                             query="${content}">
