@@ -281,6 +281,7 @@ function TTYGViewCtrl(
                     templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
                     controller: 'AgentSettingsModalController',
                     windowClass: 'agent-settings-modal',
+                    backdrop: 'static',
                     resolve: {
                         dialogModel: function () {
                             return new AgentSettingsModal(
@@ -318,6 +319,7 @@ function TTYGViewCtrl(
                     templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
                     controller: 'AgentSettingsModalController',
                     windowClass: 'agent-settings-modal',
+                    backdrop: 'static',
                     resolve: {
                         dialogModel: function () {
                             return new AgentSettingsModal(
@@ -356,6 +358,7 @@ function TTYGViewCtrl(
             templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
             controller: 'AgentSettingsModalController',
             windowClass: 'agent-settings-modal',
+            backdrop: 'static',
             resolve: {
                 dialogModel: function () {
                     return new AgentSettingsModal(
