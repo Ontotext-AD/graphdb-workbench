@@ -18,12 +18,10 @@
     overflow-y: hidden;
     scrollbar-gutter: stable;
     /*
-    this padding is needed to prevent a safari weirdness with the invisible scroll gutter
-    hiding the border of the explain boxes
-    (needed on the right only but set also left to keep the symetry)
+    space for scroll gutters - we don't want them inside the chat
     */
-    padding-left: 1px;
-    padding-right: 1px;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 .chat-panel:hover .chat-details {
@@ -68,6 +66,7 @@
 
 .chat-panel .new-question {
     width: 100%;
+    padding: 0 1rem;
 }
 
 .chat-panel .new-question .question-input {
