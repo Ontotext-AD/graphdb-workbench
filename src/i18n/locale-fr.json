@@ -312,6 +312,9 @@
                 },
                 "open_in_sparql_editor": {
                     "tooltip": "Ouvrir dans l'éditeur SPARQL"
+                },
+                "proceed": {
+                    "label": "Procéder"
                 }
             },
             "labels": {

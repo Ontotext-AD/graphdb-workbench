@@ -4,11 +4,12 @@ angular
     .controller('SimpleModalCtrl', SimpleModalCtrl)
     .controller('ViewQueryCtrl', ViewQueryCtrl);
 
-SimpleModalCtrl.$inject = ['$scope', '$uibModalInstance', 'title', 'message'];
+SimpleModalCtrl.$inject = ['$scope', '$uibModalInstance', '$sce', 'config'];
 
-function SimpleModalCtrl($scope, $uibModalInstance, title, message) {
-    $scope.title = title;
-    $scope.message = message;
+function SimpleModalCtrl($scope, $uibModalInstance, $sce, config) {
+    $scope.confirmButtonKey = config.confirmButtonKey;
+    $scope.title = config.title;
+    $scope.message = $sce.trustAsHtml(config.message);
 
     $scope.ok = function () {
         $uibModalInstance.close();

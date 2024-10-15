@@ -70,9 +70,12 @@ function openInSparqlEditorDirective($repositories, $translate, ModalService, $w
                 const activeRepositoryId = $repositories.getActiveRepository();
                 if (!activeRepositoryId || activeRepositoryId !== $scope.repositoryId) {
                     // Open a confirmation modal before switching the repository
-                    ModalService.openConfirmation(
-                        $translate.instant('common.confirm'),
-                        decodeHTML($translate.instant('ttyg.chat_panel.dialog.confirm_repository_change.body', {repositoryId: $scope.repositoryId})),
+                    ModalService.openConfirmationModal(
+                        {
+                            title: $translate.instant('common.confirm'),
+                            message: decodeHTML($translate.instant('ttyg.chat_panel.dialog.confirm_repository_change.body', {repositoryId: $scope.repositoryId})),
+                            confirmButtonKey: 'ttyg.chat_panel.btn.proceed.label'
+                        },
                         () => {
                             $repositories.setRepository($repositories.getRepository($scope.repositoryId));
                             openInSparqlEditorInNewTab($scope.query);

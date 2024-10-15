@@ -281,6 +281,7 @@ function TTYGViewCtrl(
                     templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
                     controller: 'AgentSettingsModalController',
                     windowClass: 'agent-settings-modal',
+                    backdrop: 'static',
                     resolve: {
                         dialogModel: function () {
                             return new AgentSettingsModal(
@@ -318,6 +319,7 @@ function TTYGViewCtrl(
                     templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
                     controller: 'AgentSettingsModalController',
                     windowClass: 'agent-settings-modal',
+                    backdrop: 'static',
                     resolve: {
                         dialogModel: function () {
                             return new AgentSettingsModal(
@@ -356,6 +358,7 @@ function TTYGViewCtrl(
             templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
             controller: 'AgentSettingsModalController',
             windowClass: 'agent-settings-modal',
+            backdrop: 'static',
             resolve: {
                 dialogModel: function () {
                     return new AgentSettingsModal(
@@ -722,9 +725,11 @@ function TTYGViewCtrl(
         if (payload.repositoryId !== $repositories.getActiveRepository()) {
             const repository = $repositories.getRepository(payload.repositoryId);
             if (repository) {
-                ModalService.openConfirmation(
-                    $translate.instant('common.confirm'),
-                    decodeHTML($translate.instant('ttyg.agent.create_agent_modal.dialog.confirm_repository_change_before_open_similarity.body', {repositoryId: repository.id})),
+                ModalService.openConfirmationModal({
+                        title: $translate.instant('common.confirm'),
+                        message: decodeHTML($translate.instant('ttyg.agent.create_agent_modal.dialog.confirm_repository_change_before_open_similarity.body', {repositoryId: repository.id})),
+                        confirmButtonKey: 'ttyg.chat_panel.btn.proceed.label'
+                    },
                     () => {
                         $repositories.setRepository(repository);
                         openCreateSimilarityView();
@@ -751,9 +756,11 @@ function TTYGViewCtrl(
         if (payload.repositoryId !== $repositories.getActiveRepository()) {
             const repository = $repositories.getRepository(payload.repositoryId);
             if (repository) {
-                ModalService.openConfirmation(
-                    $translate.instant('common.confirm'),
-                    decodeHTML($translate.instant('ttyg.agent.create_agent_modal.dialog.confirm_repository_change_before_open_connectors.body', {repositoryId: repository.id})),
+                ModalService.openConfirmationModal({
+                        title: $translate.instant('common.confirm'),
+                        message: decodeHTML($translate.instant('ttyg.agent.create_agent_modal.dialog.confirm_repository_change_before_open_connectors.body', {repositoryId: repository.id})),
+                        confirmButtonKey: 'ttyg.chat_panel.btn.proceed.label'
+                    },
                     () => {
                         $repositories.setRepository(repository);
                         openConnectorsView();

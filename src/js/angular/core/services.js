@@ -13,6 +13,13 @@ import 'angular/core/directives';
 import 'angular/core/controllers';
 import 'angular-translate/dist/angular-translate';
 
+const DEFAULT_MODAL_SERVICE_CONFIG = {
+    title: '',
+    message: '',
+    confirmButtonKey: 'common.yes.btn',
+    backdrop: true
+};
+
 const modules = [
     'ui.bootstrap',
     'jlareau.bowser',
@@ -146,6 +153,7 @@ ModalService.$inject = ['$uibModal', '$timeout', '$sce'];
 function ModalService($uibModal, $timeout, $sce) {
     return {
         openSimpleModal: openSimpleModal,
+        openConfirmationModal: openConfirmationModal,
         openModalAlert: openModalAlert,
         openCopyToClipboardModal: openCopyToClipboardModal,
         openConfirmation: openConfirmation
@@ -154,18 +162,48 @@ function ModalService($uibModal, $timeout, $sce) {
     /**
      * Opens a confirmation dialog with provided translated title and message. If provided onConfirm and onCancel
      * handler functions then they will be executed.
+     * Use {@link ModalService#openConfirmationModal} instead of this function.
+     *
      * @param {string} title
      * @param {string} message
      * @param {Function} onConfirm
      * @param {Function} onCancel
      */
     function openConfirmation(title, message, onConfirm = () => {}, onCancel = () => {}) {
-        const dialogConfig = {
-            title,
-            message,
-            warning: true
-        };
-        openSimpleModal(dialogConfig).result.then(onConfirm, onCancel);
+        openConfirmationModal({title, message}, onConfirm, onCancel);
+    }
+
+    /**
+     * Opens a confirmation dialog with the provided translated title and message. If `onConfirm` and `onCancel`
+     * handler functions are provided, they will be executed accordingly.
+     *
+     * @param {Object} config Configuration object for the confirmation dialog.
+     * ```JSON
+     * {
+     *     // The title of the confirmation dialog.
+     *     title: '',
+     *     // The message or body of the dialog.
+     *     message: '',
+     *     // The key for the label of the confirm button. Default value is "common.yes.btn".
+     *     confirmButtonKey: 'common.yes.btn',
+     *     // Controls the dialog backdrop behavior. Possible values:
+     *     // * true (default) - The modal will have a backdrop, and clicking outside the modal (on the backdrop)
+     *     //                   will close the modal.
+     *     // * false - No backdrop is displayed. The modal can only be closed by other means,
+     *     //           such as using a close button or triggering a specific function.
+     *     // * 'static' - The modal will have a backdrop, but clicking outside (on the backdrop)
+     *     //              will not close the modal. It can only be closed via a specific action,
+     *     //              such as a button or programmatic close.
+     *     backdrop: true
+     * }
+     * ```
+     *
+     * @param {Function} onConfirm - A callback function that is called when the user confirms the action.
+     * @param {Function} onCancel - A callback function that is called when the user cancels the action.
+     */
+    function openConfirmationModal(config, onConfirm = () => {}, onCancel = () => {}) {
+        const confirmConfig = _.merge({warning: true}, config);
+        openSimpleModal(confirmConfig).result.then(onConfirm, onCancel);
     }
 
     function openSimpleModal(config) {
@@ -177,13 +215,9 @@ function ModalService($uibModal, $timeout, $sce) {
             controller: 'SimpleModalCtrl',
             size: config.size,
             windowClass: config.dialogClass,
+            backdrop: config.backdrop,
             resolve: {
-                title: function () {
-                    return config.title;
-                },
-                message: function () {
-                    return $sce.trustAsHtml(config.message);
-                }
+                config: () => _.merge({}, DEFAULT_MODAL_SERVICE_CONFIG, config)
             }
         });
     }
@@ -196,12 +230,7 @@ function ModalService($uibModal, $timeout, $sce) {
             size: config.size,
             windowClass,
             resolve: {
-                title: function () {
-                    return config.title;
-                },
-                message: function () {
-                    return $sce.trustAsHtml(config.message);
-                }
+                config: () => _.merge({}, DEFAULT_MODAL_SERVICE_CONFIG, config)
             }
         });
     }
