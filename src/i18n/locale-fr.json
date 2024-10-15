@@ -1966,6 +1966,7 @@
     "manage.remote.location.dialog.required.url": "URL de l'emplacement*",
     "manage.remote.location.dialog.graph_db.url.message": "Entrez une URL vers une instance distante de GraphDB",
     "manage.remote.location.dialog.ontopic.url.message": "Entrez une URL vers une instance distante d'Ontopic",
+    "manage.remote.location.dialog.sparql.url.message": "Entrez une URL vers une instance distante point d'accès SPARQL",
     "manage.remote.location.dialog.url.requred.message": "L'URL de l'emplacement est requise.",
     "manage.remote.location.dialog.graph_db.error.not_valid.url": "Notez que l'emplacement doit être une URL pointant vers une installation distante de GraphDB, par exemple.",
     "manage.remote.location.dialog.ontopic.error.not_valid.url": "Notez que l'emplacement doit être une URL pointant vers une installation distante d'Ontopic, par exemple.",
