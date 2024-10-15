@@ -432,7 +432,8 @@
                     },
                     "similarity_search_max_number_of_triples_per_call": {
                         "label": "Nombre maximal de résultats (triples) par appel",
-                        "tooltip": "Limitez le nombre maximal de triples renvoyés par la recherche de similarité. La valeur par défaut est automatique et déterminée au moment de l'exécution. En cas de doute, laissez la valeur par défaut."
+                        "tooltip": "Limitez le nombre maximal de triples renvoyés par la recherche de similarité. La valeur par défaut est automatique et déterminée au moment de l'exécution. En cas de doute, laissez la valeur par défaut.",
+                        "placeholder": "Valeur automatique"
                     },
                     "similarity_index": {
                         "label": "Nom de l'index de similarité",
@@ -580,13 +581,18 @@
                 },
                 "close_sidebar": {
                     "tooltip": "Fermer la barre latérale"
+                },
+                "copy_gpt_token_prop": {
+                    "tooltip": "Copier la propriété du jeton GPT"
                 }
             },
             "messages": {
                 "no_agents": "Aucun agent n'est configuré pour le moment.",
                 "help_1": "Parlez à vos données en langage naturel. Il vous suffit de créer et d'instruire votre propre agent IA pour vous aider.",
                 "help_2": "The Agent est un agent conversationnel basé sur l'IA, conçu pour vous aider dans une large gamme de tâches, de la réponse aux questions et la fourniture d'informations à l'assistance dans le cadre de projets créatifs et techniques. Il exploite un traitement avancé du langage naturel pour comprendre et répondre aux entrées des utilisateurs de manière humaine, rendant les interactions intuitives et efficaces.",
-                "warn1": "Pour utiliser cette fonctionnalité, la propriété de configuration graphdb.gpt.token doit être définie sur votre jeton GPT dans le fichier de configuration graphdb.properties.",
+                "token_prop_warn1": "Pour utiliser cette fonctionnalité, la propriété de configuration",
+                "token_prop_warn2": "doit être définie sur votre jeton GPT dans le fichier de",
+                "token_prop_warn3": ".",
                 "error_retrieval_connectors_loading": "Erreur lors du chargement des connecteurs de récupération",
                 "error_similarity_indexes_loading": "Erreur lors du chargement des index de similarité",
                 "error_repository_config_loading": "Erreur lors du chargement de la configuration du dépôt",

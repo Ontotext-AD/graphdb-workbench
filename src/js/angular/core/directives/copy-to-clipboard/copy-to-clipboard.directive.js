@@ -41,7 +41,25 @@ copyToClipboard.$inject = ['$translate', 'toastr'];
  */
 function copyToClipboard($translate, toastr) {
     return {
-        template: '<button class="copy-btn" gdb-tooltip="{{tooltipText | translate}}" ng-click="copyToClipboard()"><i class="fa-regular fa-clone"></i></button>',
+        template: `
+            <style>
+                .copy-btn {
+                    border: none;
+                    background-color: transparent;
+                    cursor: pointer;
+                    padding: 0;
+                    color: var(--secondary-color);
+                }
+                .copy-btn:hover {
+                    transform: scale(1.1);
+                    transition: all 0.1s ease-out;
+                }
+                .copy-btn:focus {
+                    outline: none;
+                }
+            </style>
+            <button class="copy-btn" gdb-tooltip="{{tooltipText | translate}}" ng-click="copyToClipboard()"><i class="fa-regular fa-clone"></i></button>
+        `,
         restrict: 'E',
         scope: {
             tooltipText: '@',
