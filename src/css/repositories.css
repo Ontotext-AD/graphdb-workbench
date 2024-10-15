@@ -455,7 +455,11 @@ span.label {
     margin-bottom: 0.5em;
 }
 
-.repository-status {
+.repository-status, .location-type {
     font-weight: bolder;
     font-variant-caps: all-small-caps;
+}
+
+.location-url {
+    font-size: 1.1rem;
 }
