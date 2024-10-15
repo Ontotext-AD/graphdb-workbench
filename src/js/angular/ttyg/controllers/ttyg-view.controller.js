@@ -606,7 +606,6 @@ function TTYGViewCtrl(
         TTYGService.deleteConversation(chat.id)
             .then(() => {
                 TTYGContextService.emit(TTYGEventName.DELETE_CHAT_SUCCESSFUL, chat);
-                TTYGContextService.emit(TTYGEventName.LOAD_CHATS);
             })
             .catch(() => {
                 TTYGContextService.emit(TTYGEventName.DELETE_CHAT_FAILURE);
@@ -624,7 +623,6 @@ function TTYGViewCtrl(
             .then(function ({data, filename}) {
                 saveAs(data, filename);
                 TTYGContextService.emit(TTYGEventName.CHAT_EXPORT_SUCCESSFUL, chat);
-                TTYGContextService.emit(TTYGEventName.LOAD_CHATS);
             })
             .catch(() => {
                 TTYGContextService.emit(TTYGEventName.CHAT_EXPORT_FAILURE);
