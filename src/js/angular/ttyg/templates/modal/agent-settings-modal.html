@@ -207,7 +207,7 @@
                                            type="range" ng-required="extractionMethod.selected"
                                            min="{{extractionMethod.similarityIndexThreshold.minValue}}"
                                            max="{{extractionMethod.similarityIndexThreshold.maxValue}}"
-                                           step="{{extractionMethod.similarityIndexThreshold.step}}"
+                                           step="0.1"
                                            ng-model="extractionMethod.similarityIndexThreshold.value"/>
                                 </div>
                                 <div class="form-group similarity-max-triples">
@@ -325,7 +325,6 @@
                     additionalExtractionMethod.method + '.label' | translate}}</a>
             </div>
         </div>
-
 
         <div class="form-row clearfix">
             <div class="form-group gpt-model col-md-4">
