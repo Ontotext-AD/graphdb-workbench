@@ -182,6 +182,10 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
         return remoteLocationModel;
     };
 
+    $scope.hasAnyRemoteLocation = (local, locationTypes) => {
+        return locationTypes.some((locationType) => $scope.getLocalLocation(local, locationType).length > 0);
+    };
+
     $scope.hasActiveLocation = function () {
         return $repositories.hasActiveLocation();
     };
