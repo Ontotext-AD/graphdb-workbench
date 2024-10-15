@@ -154,7 +154,7 @@
         </table>
     </div>
     <!-- Remote GraphDB instances -->
-    <div ng-if="getLocalLocation(false, RemoteLocationType.GRAPH_DB).length && hasActiveLocation()" class="mb-1">
+    <div ng-if="hasAnyRemoteLocation(false, [RemoteLocationType.GRAPH_DB, RemoteLocationType.SPARQL, RemoteLocationType.ONTOPIC]) && hasActiveLocation()" class="mb-1">
         <h4 class="location-type-title">{{'repositories.location.remote.graph_db.instances' | translate}}</h4>
 
         <table id="wb-locations-locationInGetRemoteLocations" class="table" aria-describedby="Locations repository table">
@@ -295,66 +295,62 @@
             </tr>
             </tbody>
         </table>
-    </div>
-    <!-- Remote Ontopic instances -->
-    <div ng-if="getLocalLocation(false, RemoteLocationType.ONTOPIC).length" class="mb-1 ontopic-instances">
-        <h4>{{'repositories.location.ontopic.instances' | translate}}</h4>
-        <table id="wb-repositories-ontopic-repositoryInGetRepositories"
-               class="table table-hover table-striped" aria-describedby="Repositories table">
-            <tbody>
-            <tr ng-repeat="location in getLocalLocation(false, RemoteLocationType.ONTOPIC) | orderBy: ['type === \'system\'', 'location', 'id']"
-                ng-class="{'table-info text-secondary': isRepoActive(location)}">
-                <td>
-                    {{location.uri}}
-                </td>
-                <td>
-                    <div ng-if="isAdmin()" class="actions-bar-inline pull-right">
-                        <button class="btn btn-link p-0 edit-ontopic-location"
-                                gdb-tooltip="{{'edit.location' | translate}}" tooltip-placement="top"
-                                ng-click="editLocation(location)">
-                            <em class="icon-edit"></em>
-                        </button>
-                        <button class="btn btn-link p-0 secondary delete-ontopic-location"
-                                gdb-tooltip="{{'detach.location' | translate}}" tooltip-placement="top"
-                                ng-click="deleteLocation(location.uri)">
-                            <em class="icon-close"></em>
-                        </button>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <!-- SPARQL Endpoint instances -->
-    <div ng-if="getLocalLocation(false, RemoteLocationType.SPARQL).length" class="mb-1 sparql-instances">
-        <h4>{{'repositories.location.sparql.instances' | translate}}</h4>
-        <table id="wb-repositories-sparql-repositoryInGetRepositories"
-               class="table table-hover table-striped" aria-describedby="Repositories table">
-            <tbody>
-            <tr ng-repeat="location in getLocalLocation(false, RemoteLocationType.SPARQL) | orderBy: ['type === \'system\'', 'location', 'id']"
-                ng-class="{'table-info text-secondary': isRepoActive(location)}">
-                <td>
-                    {{location.uri}}
-                </td>
-                <td>
-                    <div ng-if="isAdmin()" class="actions-bar-inline pull-right">
-                        <button class="btn btn-link p-0 edit-sparql-location"
-                                gdb-tooltip="{{'edit.location' | translate}}" tooltip-placement="top"
-                                ng-click="editLocation(location)">
-                            <em class="icon-edit"></em>
-                        </button>
-                        <button class="btn btn-link p-0 secondary delete-sparql-location"
-                                gdb-tooltip="{{'detach.location' | translate}}" tooltip-placement="top"
-                                ng-click="deleteLocation(location.uri)">
-                            <em class="icon-close"></em>
-                        </button>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
 
+        <!-- Remote Ontopic instances -->
+        <div ng-if="hasAnyRemoteLocation(false, [RemoteLocationType.SPARQL, RemoteLocationType.ONTOPIC])" class="mb-1 ontopic-instances">
+            <table id="wb-repositories-ontopic-repositoryInGetRepositories"
+                   class="table table-hover table-striped" aria-describedby="Repositories table">
+                <tbody>
+                <tr ng-repeat="location in getLocalLocation(false, RemoteLocationType.ONTOPIC) | orderBy: ['type === \'system\'', 'location', 'id']"
+                    ng-class="{'table-info text-secondary': isRepoActive(location)}">
+                    <td class="lead text-overflow">
+                        <strong class="location-url">{{location.uri}}</strong>
+                        <span class="location-type"> &middot; <span
+                            class="text-secondary">{{location.locationType}}</span></span>
+                    </td>
+                    <td>
+                        <div ng-if="isAdmin()" class="actions-bar-inline pull-right">
+                            <button class="btn btn-link p-0 edit-ontopic-location"
+                                    gdb-tooltip="{{'edit.location' | translate}}" tooltip-placement="top"
+                                    ng-click="editLocation(location)">
+                                <em class="icon-edit"></em>
+                            </button>
+                            <button class="btn btn-link p-0 secondary delete-ontopic-location"
+                                    gdb-tooltip="{{'detach.location' | translate}}" tooltip-placement="top"
+                                    ng-click="deleteLocation(location.uri)">
+                                <em class="icon-close"></em>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr ng-if="getLocalLocation(false, RemoteLocationType.SPARQL).length" class="mb-1 sparql-instances"
+                    ng-repeat="location in getLocalLocation(false, RemoteLocationType.SPARQL) | orderBy: ['type === \'system\'', 'location', 'id']"
+                    ng-class="{'table-info text-secondary': isRepoActive(location)}">
+                    <td class="lead text-overflow">
+                        <strong class="location-url">{{location.uri}}</strong>
+                        <span class="location-type"> &middot; <span
+                            class="text-secondary">{{location.locationType}}</span></span>
+                    </td>
+                    <td>
+                        <div ng-if="isAdmin()" class="actions-bar-inline pull-right">
+                            <button class="btn btn-link p-0 edit-sparql-location"
+                                    gdb-tooltip="{{'edit.location' | translate}}" tooltip-placement="top"
+                                    ng-click="editLocation(location)">
+                                <em class="icon-edit"></em>
+                            </button>
+                            <button class="btn btn-link p-0 secondary delete-sparql-location"
+                                    gdb-tooltip="{{'detach.location' | translate}}" tooltip-placement="top"
+                                    ng-click="deleteLocation(location.uri)">
+                                <em class="icon-close"></em>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
     <div class="btns-all" ng-if="getLocationError()">
         <div class="btn-group" uib-dropdown>
