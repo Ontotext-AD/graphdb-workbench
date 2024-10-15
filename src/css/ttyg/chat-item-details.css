@@ -18,6 +18,11 @@
     line-height: var(--line-height);
 }
 
+.chat-detail .assistant-message .answer img {
+    max-width: 100%;
+    height: auto;
+}
+
 .chat-detail .assistant-icon {
     width: 2.5rem;
     height: 2.5rem;
