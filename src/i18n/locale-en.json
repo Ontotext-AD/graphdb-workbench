@@ -552,7 +552,8 @@
             },
             "fat_btn": {
                 "create_agent": {
-                    "label": "Create your first agent"
+                    "label": "Create your first agent",
+                    "tooltip_disabled": "You do not have permission to create an agent"
                 }
             },
             "btn": {
@@ -562,7 +563,8 @@
                 },
                 "edit_agent": {
                     "label": "Agent settings",
-                    "tooltip": "Edit agent settings"
+                    "tooltip": "Edit agent settings",
+                    "tooltip_disabled": "You do not have permission to edit the agent"
                 },
                 "clone_agent": {
                     "label": "Clone",
@@ -574,7 +576,8 @@
                 },
                 "create_agent": {
                     "label": "Create Agent",
-                    "tooltip": "Create a new agent"
+                    "tooltip": "Create a new agent",
+                    "tooltip_disabled": "You do not have permission to create an agent"
                 },
                 "open_sidebar": {
                     "tooltip": "Manage agents"
@@ -584,6 +587,9 @@
                 },
                 "copy_gpt_token_prop": {
                     "tooltip": "Copy GPT token property"
+                },
+                "open-agent-actions": {
+                    "label_disabled": "You do not have permission to modify the agent"
                 }
             },
             "messages": {

@@ -42,6 +42,8 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
              */
             $scope.deletingAgent = undefined;
 
+            $scope.canModifyAgent = false;
+
             // =========================
             // Private variables
             // =========================
@@ -113,6 +115,10 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
                 $scope.selectedAgent = agent;
             };
 
+            const onCanUpdateAgentUpdated = (canModifyAgent) => {
+                $scope.canModifyAgent = canModifyAgent;
+            };
+
             // =========================
             // Subscriptions
             // =========================
@@ -126,6 +132,7 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
             subscriptions.push($scope.$watch('agentListFilterModel', updateSelectedAgentsFilter));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETING_AGENT, onDeletingAgent));
             subscriptions.push(TTYGContextService.onSelectedAgentChanged(onSelectedAgentChanged));
+            subscriptions.push(TTYGContextService.onCanUpdateAgentUpdated(onCanUpdateAgentUpdated));
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);

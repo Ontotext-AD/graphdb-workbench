@@ -69,8 +69,8 @@
                     <button class="btn btn-link btn-sm edit-current-agent-btn mr-1"
                             ng-if="selectedAgent"
                             ng-click="onOpenAgentSettings()"
-                            ng-disabled="false"
-                            gdb-tooltip="{{'ttyg.agent.btn.edit_agent.tooltip' | translate}}">
+                            ng-disabled="!canModifyAgent"
+                            gdb-tooltip="{{ (canModifyAgent ? 'ttyg.agent.btn.edit_agent.tooltip' : 'ttyg.agent.btn.edit_agent.tooltip_disabled') | translate}}">
                         <i class="icon-settings"></i>
                     </button>
                 </div>
@@ -96,10 +96,10 @@
                     <i class="icon-help"></i>
                 </button>
                 <button class="btn btn-link btn-sm create-agent-btn"
-                        ng-if="true"
+                        ng-disabled="!canModifyAgent"
                         ng-click="onOpenNewAgentSettings()"
                         ng-disabled="false"
-                        gdb-tooltip="{{'ttyg.agent.btn.create_agent.tooltip' | translate}}">
+                        gdb-tooltip="{{ (canModifyAgent ? 'ttyg.agent.btn.create_agent.tooltip' : 'ttyg.agent.btn.create_agent.tooltip_disabled') | translate}}">
                     <i class="icon-plus"></i>
                 </button>
                 <button class="btn btn-link btn-sm toggle-agents-sidebar-btn"
