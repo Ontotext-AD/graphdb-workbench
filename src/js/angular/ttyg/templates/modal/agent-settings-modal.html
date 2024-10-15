@@ -151,7 +151,7 @@
                                        id="{{extractionMethods.FTS_SEARCH + '_maxNumberOfTriplesPerCall'}}"
                                        name="maxNumberOfTriplesPerCall" min="0"
                                        ng-model="extractionMethod.maxNumberOfTriplesPerCall"
-                                       placeholder="{{'ttyg.agent.create_agent_modal.form.ttyg.agent.create_agent_modal.form.fts_search_max_number_of_triples_per_call.placeholder' | translate}}">
+                                       placeholder="{{'ttyg.agent.create_agent_modal.form.fts_search_max_number_of_triples_per_call.placeholder' | translate}}">
                             </div>
                         </div>
 
@@ -159,7 +159,6 @@
 
                         <div
                             ng-if="extractionMethod.expanded && extractionMethod.method === extractionMethods.SIMILARITY"
-                            ng-class="{'has-error': extractionMethod.selected && !extractionMethod.sparqlOption}"
                             class="extraction-method-options">
                             <button class="btn btn-link btn-sm pull-right"
                                     ng-click="updateSimilaritySearchPanel()"
@@ -208,7 +207,7 @@
                                            type="range" ng-required="extractionMethod.selected"
                                            min="{{extractionMethod.similarityIndexThreshold.minValue}}"
                                            max="{{extractionMethod.similarityIndexThreshold.maxValue}}"
-                                           step="{{extractionMethod.similarityIndexThreshold.step}}"
+                                           step="0.1"
                                            ng-model="extractionMethod.similarityIndexThreshold.value"/>
                                 </div>
                                 <div class="form-group similarity-max-triples">
@@ -221,7 +220,7 @@
                                            id="{{extractionMethods.SIMILARITY + '_maxNumberOfTriplesPerCall'}}"
                                            name="maxNumberOfTriplesPerCall" min="0"
                                            ng-model="extractionMethod.maxNumberOfTriplesPerCall"
-                                           placeholder="{{'ttyg.agent.create_agent_modal.form.max_number_of_triples_per_call.placeholder' | translate}}">
+                                           placeholder="{{'ttyg.agent.create_agent_modal.form.similarity_search_max_number_of_triples_per_call.placeholder' | translate}}">
                                 </div>
                             </div>
                         </div>
@@ -295,7 +294,7 @@
                                            id="{{extractionMethods.RETRIEVAL + '_maxNumberOfTriplesPerCall'}}"
                                            name="maxNumberOfTriplesPerCall" min="0"
                                            ng-model="extractionMethod.maxNumberOfTriplesPerCall"
-                                           placeholder="{{'ttyg.agent.create_agent_modal.form.max_number_of_triples_per_call.placeholder' | translate}}">
+                                           placeholder="{{'ttyg.agent.create_agent_modal.form.retrieval_search_max_number_of_triples_per_call.placeholder' | translate}}">
                                 </div>
                             </div>
                         </div>
@@ -326,7 +325,6 @@
                     additionalExtractionMethod.method + '.label' | translate}}</a>
             </div>
         </div>
-
 
         <div class="form-row clearfix">
             <div class="form-group gpt-model col-md-4">
