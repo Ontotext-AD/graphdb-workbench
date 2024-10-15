@@ -38,7 +38,7 @@
             <label for="location" class="col-md-4 col-form-label">{{'manage.remote.location.dialog.required.url' | translate}}</label>
             <div class="col-md-8">
                 <input id="location" ng-model="remoteLocation.uri" required name="location" class="form-control"
-                       placeholder="http://my-hostname:7200" ng-disabled="isEdit" validate-url/>
+                       placeholder="http://my-hostname:7200" validate-url/>
                 <span ng-if="!isEdit" class="form-text text-muted">
                     {{ (remoteLocation.isGraphDBLocation() ? 'manage.remote.location.dialog.graph_db.url.message' :
                         remoteLocation.isSparqlLocation() ? 'manage.remote.location.dialog.sparql.url.message' :
