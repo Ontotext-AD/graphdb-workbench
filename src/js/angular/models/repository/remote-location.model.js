@@ -10,7 +10,6 @@ export class RemoteLocationModel {
         this.system = data.system;
         this.errorMsg = data.errorMsg;
         this.defaultRepository = data.defaultRepository;
-        this.isInCluster = data.isInCluster;
         this.locationType = data.locationType || RemoteLocationType.GRAPH_DB;
     }
 

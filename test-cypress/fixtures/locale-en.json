@@ -1777,7 +1777,7 @@
     "repositories.location.remote.graph_db.instances": "Remote GraphDB instances",
     "repositories.location.local.graph_db.instance": "Local GraphDB instance",
     "repositories.location.ontopic.instances": "Remote Ontopic instances",
-    "repositories.location.sparql.instances": "SPARQL Endpoints",
+    "repositories.location.sparql.instances": "Remote SPARQL endpoints",
     "no.repos.in.current.location": "There are no repositories in the current location",
     "connect.repo": "Connect repository",
     "connected.tooltip": "Connected",

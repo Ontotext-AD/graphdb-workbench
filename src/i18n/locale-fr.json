@@ -1777,7 +1777,7 @@
     "repositories.location.remote.graph_db.instances": "Instances distantes de GraphDB",
     "repositories.location.local.graph_db.instance": "Instance locale de GraphDB",
     "repositories.location.ontopic.instances": "Instances distantes d'Ontopic",
-    "repositories.location.sparql.instances": "Points d'accès SPARQL",
+    "repositories.location.sparql.instances": "Points distantes d'accès SPARQL",
     "no.repos.in.current.location": "Il n'y a pas de dépôt dans l'emplacement actuel.",
     "connect.repo": "Connectez le dépôt",
     "connected.tooltip": "Connecté",

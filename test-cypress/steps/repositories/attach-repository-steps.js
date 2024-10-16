@@ -89,7 +89,7 @@ export class AttachRepositorySteps {
     }
 
     static enterURL(url) {
-        AttachRepositorySteps.getLocationURLInput().type(url);
+        AttachRepositorySteps.getLocationURLInput().click().type(url);
     }
 
     static getUsernameInput() {

@@ -99,7 +99,7 @@ describe('Attach remote location', () => {
         AttachRepositorySteps.attachRemoteLocation();
 
         // Then I expect location with URL "http://local" to be created
-        RepositorySteps.getOntopicTable().should('contain', 'http://local');
+        RepositorySteps.getSparqlOntopicTable().should('contain', 'http://local');
 
         // When delete the created location
         RepositorySteps.deleteOntopicInstance('http://local');
@@ -111,14 +111,14 @@ describe('Attach remote location', () => {
         ModalDialogSteps.clickOnConfirmButton();
 
         // Then I expect the location to be deleted.
-        RepositorySteps.getOntopicTable().should('not.exist');
+        RepositorySteps.getSparqlOntopicTable().should('not.exist');
     });
 
     it('Should information be present for all location possible scenarios: error, location with and without repositories', () => {
         // When I open the Repositories view that contains all possible kind of locations.
         RepositoriesStubs.stubRepositories();
         RepositoriesStubs.stubLocations();
-
+        RepositorySteps.getLocalGraphDBTable().should('exist');
         // Then I expect to see the repositories from location GraphDb instance
         RepositorySteps.getLocalGraphDBTable().contains('test · RUNNING');
         // and a remote GraphDB instance with no repositories in it
@@ -128,14 +128,14 @@ describe('Attach remote location', () => {
         // and a remote GraphDB instance with error in it
         RepositorySteps.getRemoteGraphDBTable().contains('Cannot connect to location Connect to localhost:7212 [localhost/127.0.0.1] fa');
         // and a remote Ontopic instance
-        RepositorySteps.getOntopicTable().contains('http://local');
+        RepositorySteps.getSparqlOntopicTable().contains('http://local');
     });
 
     it('Should open edit remote location dialog', () => {
         // When I open the Repositories view that contains all possible kind of locations.
         RepositoriesStubs.stubRepositories();
         RepositoriesStubs.stubLocations();
-
+        RepositorySteps.getLocalGraphDBTable().should('exist');
         // When I click on edit ontopic istance
         RepositorySteps.editOntopicInstance('http://local');
 
@@ -145,8 +145,8 @@ describe('Attach remote location', () => {
         AttachRepositorySteps.getOntopicRadioBtn().should('be.disabled');
         // The location url be set
         AttachRepositorySteps.getLocationURLInput().should('have.value', 'http://local');
-        // And be disabled
-        AttachRepositorySteps.getLocationURLInput().should('be.disabled');
+        // And be enabled for edit
+        AttachRepositorySteps.getLocationURLInput().should('be.enabled');
     });
 
     it('should create and delete SPARQL endpoint instance', () => {
@@ -168,12 +168,12 @@ describe('Attach remote location', () => {
         AttachRepositorySteps.getAttachBtn().should('be.enabled');
         // And when I attach the location, it should be visible in the list
         AttachRepositorySteps.attachRemoteLocation();
-        RepositorySteps.getSparqlEndpointTable().should('contain', 'http://endpoint/repo/ex');
+        RepositorySteps.getSparqlOntopicTable().should('contain', 'http://endpoint/repo/ex');
         // Then I can remove the new location
         RepositorySteps.deleteSparqlLocation('http://endpoint/repo/ex');
         // When I confirm
         ModalDialogSteps.clickOnConfirmButton();
         // Then the instance should be gone
-        RepositorySteps.getSparqlEndpointTable().should('not.contain', 'http://endpoint/repo/ex');
+        RepositorySteps.getSparqlOntopicTable().should('not.exist');
     });
 });

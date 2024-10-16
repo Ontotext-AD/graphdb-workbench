@@ -411,6 +411,11 @@ span.label {
 .btns-all, .ontopic-instances, .location-type-title, .sparql-instances {
     padding: 0 13px;
 }
+
+.remote-location-type-title {
+    padding: 0;
+}
+
 .repository {
     padding: 0;
 }
