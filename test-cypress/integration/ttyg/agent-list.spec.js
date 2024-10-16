@@ -27,7 +27,7 @@ describe('TTYG agent list', () => {
         // When I click on "Manage agents"
         TTYGViewSteps.expandAgentsSidebar();
         // Then I should see the agent list with agents filtered by the current repository
-        TTYGViewSteps.getAgentsPanel().should('not.be.visible');
+        TTYGViewSteps.getAgentsPanel().should('be.visible');
         TTYGViewSteps.verifyAgentList([
             {name: 'agent-1', repositoryId: 'starwars'},
             {name: 'Databricks-general-unbiased', repositoryId: 'starwars'}
