@@ -318,7 +318,7 @@ function TTYGContextService(EventEmitterService) {
         if (angular.isFunction(callback)) {
             callback(getCanModifyAgent());
         }
-        return subscribe(TTYGEventName.CAN_MODIFY_AGENT_UPDATED, (explainResponses) => callback(explainResponses));
+        return subscribe(TTYGEventName.CAN_MODIFY_AGENT_UPDATED, (canModifyAgent) => callback(canModifyAgent));
     };
 
     /**

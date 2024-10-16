@@ -140,6 +140,10 @@ function TTYGViewCtrl(
 
     $scope.connectorID = undefined;
 
+    /**
+     * A flag that determines whether buttons that modify an agent should be disabled.
+     * @type {boolean}
+     */
     $scope.canModifyAgent = false;
 
     /**
