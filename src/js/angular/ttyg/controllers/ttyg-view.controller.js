@@ -103,7 +103,7 @@ function TTYGViewCtrl(
      * Controls the visibility of the agents list sidebar.
      * @type {boolean}
      */
-    $scope.showAgents = true;
+    $scope.showAgents = false;
     /**
      * Chats list.
      * @type {ChatsListModel|undefined}
@@ -628,7 +628,6 @@ function TTYGViewCtrl(
      */
     const onAgentListChanged = (agents) => {
         $scope.agents = agents;
-        $scope.showAgents = !agents.isEmpty();
     };
 
     /**

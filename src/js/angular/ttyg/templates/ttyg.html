@@ -103,18 +103,18 @@
                     <i class="icon-plus"></i>
                 </button>
                 <button class="btn btn-link btn-sm toggle-agents-sidebar-btn"
+                        ng-if="!showAgents"
+                        ng-click="toggleAgentsListSidebar()"
+                        ng-disabled="!canModifyAgent"
+                        gdb-tooltip="{{'ttyg.agent.btn.open_sidebar.' + (canModifyAgent ? 'tooltip' : 'tooltip_disabled') | translate}}">
+                    <i class="fa-regular fa-message-bot"></i>
+                </button>
+                <button class="btn btn-link btn-sm toggle-agents-sidebar-btn"
                         ng-if="showAgents"
                         ng-click="toggleAgentsListSidebar()"
                         ng-disabled="false"
-                        gdb-tooltip="{{'ttyg.agent.btn.' + (showAgents ? 'close_sidebar' : 'open_sidebar') + '.tooltip' | translate}}">
+                        gdb-tooltip="{{'ttyg.agent.btn.close_sidebar' + '.tooltip' | translate}}">
                     <i class="icon-close"></i>
-                </button>
-                <button class="btn btn-link btn-sm toggle-agents-sidebar-btn"
-                        ng-if="!showAgents"
-                        ng-click="toggleAgentsListSidebar()"
-                        ng-disabled="false"
-                        gdb-tooltip="{{'ttyg.agent.btn.' + (showAgents ? 'close_sidebar' : 'open_sidebar') + '.tooltip' | translate}}">
-                    <i class="fa-regular fa-message-bot"></i>
                 </button>
             </div>
 

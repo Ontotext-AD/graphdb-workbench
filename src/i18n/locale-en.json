@@ -580,7 +580,8 @@
                     "tooltip_disabled": "You do not have permission to create an agent"
                 },
                 "open_sidebar": {
-                    "tooltip": "Manage agents"
+                    "tooltip": "Manage agents",
+                    "tooltip_disabled": "You do not have permission to modify the agent"
                 },
                 "close_sidebar": {
                     "tooltip": "Close sidebar"
