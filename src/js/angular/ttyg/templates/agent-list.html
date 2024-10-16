@@ -44,8 +44,7 @@
                             data-toggle="dropdown" aria-expanded="false"
                             ng-if="true"
                             ng-click="openAgentActionMenu()"
-                            gdb-tooltip="{{ (!canModifyAgent ? ('ttyg.agent.btn.open-agent-actions.label_disabled' | translate) : '') }}"
-                            ng-disabled="!canModifyAgent">
+                            ng-disabled="false">
                         <i class="fa-regular fa-ellipsis"></i>
                     </button>
                     <div class="dropdown-menu dropdown-menu-right agent-actions-menu">
