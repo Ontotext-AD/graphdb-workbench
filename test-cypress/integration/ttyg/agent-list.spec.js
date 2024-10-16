@@ -10,7 +10,7 @@ describe('TTYG agent list', () => {
         cy.presetRepository('starwars');
     });
 
-    it('Should render the agent list', () => {
+    it('Should be able to toggle agents panel', () => {
         TTYGStubs.stubAgentListGet();
         TTYGStubs.stubChatsListGet();
         TTYGStubs.stubChatGet();
@@ -21,36 +21,22 @@ describe('TTYG agent list', () => {
         cy.wait('@get-chat');
         cy.wait('@get-all-repositories');
         // When the ttyg page is loaded
+        // Then I expect tha agent list be closed by default.
+        TTYGViewSteps.getAgentsPanel().should('not.be.visible');
+
+        // When I click on "Manage agents"
+        TTYGViewSteps.expandAgentsSidebar();
         // Then I should see the agent list with agents filtered by the current repository
         TTYGViewSteps.getAgentsPanel().should('be.visible');
         TTYGViewSteps.verifyAgentList([
             {name: 'agent-1', repositoryId: 'starwars'},
             {name: 'Databricks-general-unbiased', repositoryId: 'starwars'}
         ]);
-    });
 
-    it('Should be able to toggle agents panel', () => {
-        TTYGStubs.stubChatsListGet();
-        TTYGStubs.stubChatGet();
-        TTYGStubs.stubAgentListGet();
-        // Given I have opened the ttyg page
-        TTYGViewSteps.visit();
-        cy.wait('@get-chat');
-        cy.wait('@get-agent-list');
-        cy.wait('@get-chat-list');
-        cy.wait('@get-all-repositories');
-        // When the ttyg page is loaded
-        // Then I should see the agent list
-        TTYGViewSteps.getAgents().should('have.length', 2);
         // When I close the agent list panel
         TTYGViewSteps.collapseAgentsSidebar();
         // Then I expect agent list panel to be closed
         TTYGViewSteps.getAgentsPanel().should('be.hidden');
-        // When I open the agent list panel
-        TTYGViewSteps.expandAgentsSidebar();
-        // Then I should see no agents
-        TTYGViewSteps.getAgentsPanel().should('be.visible');
-        TTYGViewSteps.getAgents().should('have.length', 2);
     });
 
     it('Should be able to filter the agent list by repository', () => {

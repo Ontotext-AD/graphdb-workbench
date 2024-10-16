@@ -39,6 +39,7 @@ angular
     .controller('TTYGViewCtrl', TTYGViewCtrl);
 
 TTYGViewCtrl.$inject = [
+    '$jwtAuth',
     '$window',
     '$rootScope',
     '$scope',
@@ -55,6 +56,7 @@ TTYGViewCtrl.$inject = [
     'TTYGStorageService'];
 
 function TTYGViewCtrl(
+    $jwtAuth,
     $window,
     $rootScope,
     $scope,
@@ -101,7 +103,7 @@ function TTYGViewCtrl(
      * Controls the visibility of the agents list sidebar.
      * @type {boolean}
      */
-    $scope.showAgents = true;
+    $scope.showAgents = false;
     /**
      * Chats list.
      * @type {ChatsListModel|undefined}
@@ -137,6 +139,12 @@ function TTYGViewCtrl(
     $scope.reloadingAgents = false;
 
     $scope.connectorID = undefined;
+
+    /**
+     * A flag that determines whether buttons that modify an agent should be disabled.
+     * @type {boolean}
+     */
+    $scope.canModifyAgent = false;
 
     /**
      * A list of available repository IDs as a model for the agent list filter.
@@ -464,6 +472,12 @@ function TTYGViewCtrl(
                 }
             }
         }
+
+        updateCanModifyAgent();
+    };
+
+    const updateCanModifyAgent = () => {
+        TTYGContextService.setCanModifyAgent($jwtAuth.isRepoManager());
     };
 
     const getActiveRepositoryObjectHandler = (activeRepo) => {
@@ -558,6 +572,10 @@ function TTYGViewCtrl(
         setupChatListPanel(chats);
     };
 
+    const onCanUpdateAgentUpdated = (canModifyAgent) => {
+        $scope.canModifyAgent = canModifyAgent;
+    };
+
     /**
      * @param {ChatsListModel} chats - the new chats list.
      */
@@ -614,7 +632,6 @@ function TTYGViewCtrl(
      */
     const onAgentListChanged = (agents) => {
         $scope.agents = agents;
-        $scope.showAgents = !agents.isEmpty();
     };
 
     /**
@@ -849,6 +866,7 @@ function TTYGViewCtrl(
     subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler));
     subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
     subscriptions.push(TTYGContextService.onChatsListChanged(onChatsChanged));
+    subscriptions.push(TTYGContextService.onCanUpdateAgentUpdated(onCanUpdateAgentUpdated));
     subscriptions.push(TTYGContextService.subscribe(TTYGContextService.onAgentsListChanged(onAgentListChanged)));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_CHAT, onCreateNewChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.RENAME_CHAT, onRenameChat));
@@ -865,8 +883,8 @@ function TTYGViewCtrl(
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.GO_TO_CONNECTORS_VIEW, onGoToConnectorsView));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.GO_TO_SPARQL_EDITOR, onGoToSparqlEditorView));
     subscriptions.push($rootScope.$on('$translateChangeSuccess', updateLabels));
+    subscriptions.push($rootScope.$on('securityInit', updateCanModifyAgent));
     $scope.$on('$destroy', cleanUp);
-
     // =========================
     // Initialization
     // =========================

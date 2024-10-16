@@ -61,6 +61,7 @@ describe('TTYG agent select menu', () => {
         TTYGViewSteps.visit();
         cy.wait('@get-agent-list');
         // When I delete an agent from the sidebar
+        TTYGViewSteps.expandAgentsSidebar();
         TTYGStubs.stubAgentDelete();
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-after-deleted.json');
         TTYGViewSteps.selectAllAgentsFilter();

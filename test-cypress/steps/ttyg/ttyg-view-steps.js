@@ -209,8 +209,12 @@ export class TTYGViewSteps {
         return this.getChatPanel().find('.chat');
     }
 
+    static getOpenAgentActionsButton(index) {
+        return this.getAgent(index).realHover().find('.open-agent-actions-btn');
+    }
+
     static openAgentActionMenu(index) {
-        this.getAgent(index).realHover().find('.open-agent-actions-btn').click();
+        this.getOpenAgentActionsButton(index).click();
     }
 
     static triggerCloneAgentActionMenu(index) {
