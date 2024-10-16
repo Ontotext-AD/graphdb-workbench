@@ -509,7 +509,7 @@ function TTYGViewCtrl(
         TTYGService.createConversation(chatItem)
             .then((chatAnswer) => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT_SUCCESSFUL);
-                // TODO discuse we have all answers id and can update selected chats without loading it.
+                // TODO: To discus: If we have all answer ids, can we update selected chats without loading it?
                 return TTYGService.getConversation(chatAnswer.chatId);
             })
             .then((chat) => {
@@ -542,6 +542,11 @@ function TTYGViewCtrl(
                     selectedChat.chatHistory.appendItem(item);
                     TTYGContextService.updateSelectedChat(selectedChat);
                     // TODO reorder the list of chats
+                    // Update the timestamp of the chat to which the last question was added in the chats list and
+                    // update the list so that the chat is moved to the top.
+                    const chats = TTYGContextService.getChats();
+                    chats.updateChatTimestamp(selectedChat.id, chatAnswer.timestamp);
+                    TTYGContextService.updateChats(chats);
                 }
             })
             .catch((error) => {
