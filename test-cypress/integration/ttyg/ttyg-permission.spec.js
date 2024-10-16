@@ -60,7 +60,7 @@ describe('TTYG permissions', () => {
         TTYGViewSteps.visit();
         TTYGViewSteps.getCreateAgentButton().should(shouldBe);
         TTYGViewSteps.getEditCurrentAgentButton().should(shouldBe);
-        TTYGViewSteps.getOpenAgentActionsButton(1).should(shouldBe);
+        TTYGViewSteps.getToggleAgentsSidebarButton().should(shouldBe);
         UserAndAccessSteps.logout();
     }
 });

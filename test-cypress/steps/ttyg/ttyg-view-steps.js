@@ -214,7 +214,7 @@ export class TTYGViewSteps {
     }
 
     static openAgentActionMenu(index) {
-        this.getOpenAgentActionsButton.click();
+        this.getOpenAgentActionsButton(index).click();
     }
 
     static triggerCloneAgentActionMenu(index) {
