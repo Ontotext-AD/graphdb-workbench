@@ -141,7 +141,11 @@
 							{{'security.ignore.shared.queries' | translate}}
 						</label>
 
-					</div>
+                        <label class="d-block cookie-policy-link" ng-if="showCookiePolicyLink">
+                            <a href="#" ng-click="showCookiePolicy()">{{'cookie.cookie_policy_url_label' | translate}}</a>
+                        </label>
+
+                    </div>
 				</div>
 
 				<div class="card" id="workbench-settings" ng-if="showWorkbenchSettings">

@@ -132,11 +132,11 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
         }
 
         $scope.isGDBLoginEnabled = function() {
-            return $jwtAuth.passwordLoginEnabled;
+            return $jwtAuth.isPasswordLoginEnabled();
         };
 
         $scope.isOpenIDEnabled = function() {
-            return $jwtAuth.openIDEnabled;
+            return $jwtAuth.isOpenIDEnabled();
         };
 
         $scope.login = function () {
@@ -784,8 +784,8 @@ securityCtrl.controller('RolesMappingController', ['$scope', 'toastr', 'Security
     });
 }]);
 
-securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '$window', '$timeout', '$jwtAuth', '$rootScope', '$controller', 'SecurityRestService', 'ModalService', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', '$q',
-    function ($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityRestService, ModalService, $translate, ThemeService, WorkbenchSettingsStorageService, $q) {
+securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '$window', '$timeout', '$jwtAuth', '$rootScope', '$controller', 'SecurityRestService', 'ModalService', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', '$q', '$uibModal', '$licenseService',
+    function ($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityRestService, ModalService, $translate, ThemeService, WorkbenchSettingsStorageService, $q, $uibModal, $licenseService) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
 
@@ -929,6 +929,24 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
             $scope.selectedTheme = theme;
             $scope.workbenchSettings.theme = theme.name;
             ThemeService.applyTheme(theme.name);
+        };
+
+        $licenseService.checkLicenseStatus().then(() => {
+            $scope.showCookiePolicyLink = $licenseService.isTrackingAllowed();
+        });
+
+        $scope.showCookiePolicy = () => {
+            $uibModal.open({
+                templateUrl: 'js/angular/core/templates/cookie-policy/cookie-policy.html',
+                controller: ['$scope', function ($scope) {
+                    $scope.close = () => {
+                        $scope.$close();
+                    };
+                }],
+                backdrop: 'static',
+                windowClass: 'cookie-policy-modal',
+                keyboard: false
+            });
         };
 
         $scope.$on('$destroy', function () {
