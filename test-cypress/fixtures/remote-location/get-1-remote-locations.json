@@ -9,8 +9,7 @@
         "local": true,
         "system": true,
         "errorMsg": null,
-        "defaultRepository": null,
-        "isInCluster": false
+        "defaultRepository": null
     },
     {
         "uri": "http://localhost:7201",
@@ -22,7 +21,6 @@
         "local": false,
         "system": false,
         "errorMsg": null,
-        "defaultRepository": null,
-        "isInCluster": false
+        "defaultRepository": null
     }
 ]
