@@ -668,7 +668,7 @@ function TTYGViewCtrl(
     const buildAgentsFilterModel = () => {
         const currentRepository = $repositories.getActiveRepository();
         // TODO: this should be refreshed automatically when the repositories change
-        const repositoryObjects = $repositories.getReadableGraphdbRepositories()
+        const repositoryObjects = $repositories.getLocalReadableRepositories()
             .map((repo) => (
            new AgentListFilterModel(repo.id, repo.id, repo.id === currentRepository)
         ));
@@ -845,7 +845,7 @@ function TTYGViewCtrl(
     };
 
     const buildRepositoryList = () => {
-        $scope.activeRepositoryList = $repositories.getReadableGraphdbRepositories()
+        $scope.activeRepositoryList = $repositories.getLocalReadableRepositories()
             .map((repo) => (
                 new SelectMenuOptionsModel({
                     value: repo.id,
