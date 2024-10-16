@@ -611,6 +611,9 @@ function TTYGViewCtrl(
         TTYGService.deleteConversation(chat.id)
             .then(() => {
                 TTYGContextService.emit(TTYGEventName.DELETE_CHAT_SUCCESSFUL, chat);
+                const chats = TTYGContextService.getChats();
+                chats.deleteChat(chat);
+                TTYGContextService.updateChats(chats);
             })
             .catch(() => {
                 TTYGContextService.emit(TTYGEventName.DELETE_CHAT_FAILURE);
@@ -722,6 +725,7 @@ function TTYGViewCtrl(
      */
     const onAgentSelected = (agent) => {
         $scope.selectedAgent = agent;
+        console.log(`save agent`, agent);
         TTYGStorageService.saveAgent(agent);
     };
 
@@ -730,13 +734,17 @@ function TTYGViewCtrl(
      */
     const setCurrentAgent = () => {
         const agentId = TTYGStorageService.getAgentId();
+        console.log(`1 setCurrentAgent`, agentId);
         if (!agentId) {
             return;
         }
         TTYGService.getAgent(agentId).then((agent) => {
+            console.log(`2 setCurrentAgent`, agent);
             if (agent) {
                 TTYGContextService.selectAgent(agent);
             }
+        }).catch((error) => {
+
         });
     };
 
