@@ -463,7 +463,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.logout = function () {
         $jwtAuth.clearAuthentication();
         toastr.success('Signed out');
-        if ($jwtAuth.freeAccess) {
+        if ($jwtAuth.isFreeAccessEnabled()) {
             // if it's free access check if we still can access the current repo
             // if not, a new default repo will be set or the current repo will be unset
             $repositories.resetActiveRepository();
@@ -788,7 +788,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     });
 
-    if ($jwtAuth.securityInitialized) {
+    if ($jwtAuth.isSecurityInitialized()) {
         $scope.getSavedQueries();
     }
 

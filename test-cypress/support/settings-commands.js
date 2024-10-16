@@ -1,5 +1,6 @@
-Cypress.Commands.add('setDefaultUserData', () => {
+Cypress.Commands.add('setDefaultUserData', (cookieConsent = true) => {
     const defaultUserSettings = {
+        'COOKIE_CONSENT': cookieConsent,
         'DEFAULT_SAMEAS': true,
         'DEFAULT_INFERENCE': true,
         'EXECUTE_COUNT': true,
