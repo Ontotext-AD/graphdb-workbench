@@ -22,7 +22,7 @@
                         <i class="fa-regular fa-arrows-rotate"></i>
                     </button>
                     <copy-to-clipboard class="btn-sm" tooltip-text="ttyg.chat_panel.btn.copy_answer.tooltip"
-                                       text-to-copy="answer.message"></copy-to-clipboard>
+                                       text-to-copy="{{answer.message}}"></copy-to-clipboard>
                     <button class="btn btn-link btn-link-only-icons btn-sm explain-response-btn"
                             ng-click="explainResponse(answer.id)"
                             ng-disabled="disabled && !explainResponseModel[answer.id]"
@@ -64,7 +64,7 @@
                                         query="{{queryMethod.query}}">
                                     </open-in-sparql-editor>
                                     <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy_{{ queryMethod.queryType }}.tooltip"
-                                                       text-to-copy="queryMethod.query"></copy-to-clipboard>
+                                                       text-to-copy="{{queryMethod.query}}"></copy-to-clipboard>
                                 </div>
                             </div>
                             <div class="query">
@@ -74,13 +74,13 @@
                                 <span class="label">{{'ttyg.chat_panel.labels.raw_query' | translate}}:</span>
                                 <span class="content">{{queryMethod.rawQuery}}</span>
                                 <copy-to-clipboard class="copy-to-clipboard-btn" tooltip-text="ttyg.chat_panel.btn.copy_raw_query.tooltip"
-                                                   text-to-copy="queryMethod.rawQuery"></copy-to-clipboard>
+                                                   text-to-copy="{{queryMethod.rawQuery}}"></copy-to-clipboard>
                             </div>
                             <div ng-if="queryMethod.errorMessage" class="alert no-icon alert-warning error-message">
                                 <div class="error-header">
                                     <div class="label">{{'ttyg.chat_panel.labels.error_message' | translate}}:</div>
                                     <copy-to-clipboard class="copy-to-clipboard-btn" tooltip-text="ttyg.chat_panel.btn.copy_error_message.tooltip"
-                                                       text-to-copy="queryMethod.errorMessage"></copy-to-clipboard>
+                                                       text-to-copy="{{queryMethod.errorMessage}}"></copy-to-clipboard>
                                 </div>
                                 <div class="error-content">{{queryMethod.errorMessage}}</div>
                             </div>
