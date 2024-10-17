@@ -600,7 +600,7 @@
                 "token_prop_warn1": "Pour activer cette fonctionnalité, définissez la propriété de configuration",
                 "token_prop_warn2": "à votre jeton GPT dans le fichier",
                 "token_prop_warn3": ".",
-                "token_prop_warn3": "Configurer l'utilisation de vos modèles GPT",
+                "token_prop_warn4": "Configurer l'utilisation de vos modèles GPT",
                 "error_retrieval_connectors_loading": "Erreur lors du chargement des connecteurs de récupération",
                 "error_similarity_indexes_loading": "Erreur lors du chargement des index de similarité",
                 "error_repository_config_loading": "Erreur lors du chargement de la configuration du dépôt",
