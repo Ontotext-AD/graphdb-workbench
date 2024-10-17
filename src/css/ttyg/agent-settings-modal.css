@@ -1,5 +1,7 @@
 :root {
     --field-label-weight: 500;
+    --error-color: #FA787E;
+    --warning-color: #8a6d3b;
 }
 
 .agent-settings-modal .modal-footer .creating-agent-loader {
@@ -18,7 +20,11 @@
 }
 
 .agent-settings-modal .agent-settings-form .has-error {
-    outline: 1px solid #FA787E;
+    outline: 1px solid var(--error-color);
+}
+
+.agent-settings-modal .agent-settings-form .has-warning {
+    outline: 2px solid var(--warning-color);
 }
 
 .agent-settings-modal .agent-settings-form .extraction-methods .extraction-method-heading {
