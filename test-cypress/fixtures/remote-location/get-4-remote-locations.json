@@ -1,0 +1,54 @@
+[
+    {
+        "uri": "",
+        "label": "Local",
+        "username": null,
+        "password": null,
+        "authType": "none",
+        "active": true,
+        "local": true,
+        "system": true,
+        "errorMsg": null,
+        "defaultRepository": null,
+        "isInCluster": true
+    },
+    {
+        "uri": "http://pc-desktop:7203",
+        "label": "Remote (http://pc-desktop:7203)",
+        "username": "",
+        "password": "",
+        "authType": "signature",
+        "active": false,
+        "local": false,
+        "system": false,
+        "errorMsg": null,
+        "defaultRepository": null,
+        "isInCluster": false
+    },
+    {
+        "uri": "http://pc-desktop:7202",
+        "label": "Remote (http://pc-desktop:7202)",
+        "username": "",
+        "password": "",
+        "authType": "signature",
+        "active": false,
+        "local": false,
+        "system": false,
+        "errorMsg": null,
+        "defaultRepository": null,
+        "isInCluster": true
+    },
+    {
+        "uri": "http://pc-desktop:7233",
+        "label": "Remote (http://pc-desktop:7233)",
+        "username": "",
+        "password": "",
+        "authType": "signature",
+        "active": false,
+        "local": false,
+        "system": false,
+        "errorMsg": null,
+        "defaultRepository": null,
+        "isInCluster": false
+    }
+]
