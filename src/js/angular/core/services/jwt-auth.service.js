@@ -3,20 +3,6 @@ import 'angular/core/services/openid-auth.service.js';
 import 'angular/rest/security.rest.service';
 import {UserRole} from 'angular/utils/user-utils';
 
-const LOGIN_PATH = '/login';
-const NO_ACCESS = 'noaccess';
-const EXPIRED = 'expired';
-const TOKEN_TYPE_BEARER = 'Bearer';
-const OVERRIDE_AUTH_USERNAME = 'overrideauth';
-const ADMIN_USERNAME = 'admin';
-const READ_PERMISSION = 'READ';
-const WRITE_PERMISSION = 'WRITE';
-const TOKEN_TYPE_GDB = 'GDB';
-const AUTH_FULLY = 'IS_AUTHENTICATED_FULLY';
-const ROLE_SEPARATOR = '_';
-const SYSTEM_REPO = 'SYSTEM';
-const REPO_WILDCARD = '*';
-
 angular.module('graphdb.framework.core.services.jwtauth', [
     'toastr',
     'graphdb.framework.rest.security.service',
@@ -24,77 +10,52 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 ])
     .service('$jwtAuth', ['$http', 'toastr', '$location', '$rootScope', 'SecurityRestService', '$openIDAuth', '$translate', '$q', 'AuthTokenService', 'LSKeys', 'LocalStorageAdapter',
         function ($http, toastr, $location, $rootScope, SecurityRestService, $openIDAuth, $translate, $q, AuthTokenService, LSKeys, LocalStorageAdapter) {
+            const jwtAuth = this;
 
-            // =========================
-            // Public variables
-            // =========================
             $rootScope.deniedPermissions = {};
-
-            // =========================
-            // Private variables
-            // =========================
-            let _securityEnabled = true;
-            let _externalAuthUser = false;
-            let _principal = undefined;
-            let _freeAccessPrincipal = undefined;
-            let _freeAccess = false;
-            let _securityInitialized = false;
-            let _hasOverrideAuth = false;
-            let _externalAuth = undefined;
-            let _authImplementation = undefined;
-            let _openIDEnabled = false;
-            let _passwordLoginEnabled = undefined;
-            let _openIDConfig = undefined;
-            let _gdbUrl = undefined;
-
-            // =========================
-            // RootScope functions
-            // =========================
-
-            /**
-             * Sets a permission denied for a given path.
-             * @param {string} path The path where the permission is denied.
-             * @return {boolean} False if it's the login path or user isn't authenticated.
-             */
-            $rootScope.setPermissionDenied = (path) => {
-                if (path === LOGIN_PATH || !isAuthenticated()) {
+            $rootScope.setPermissionDenied = function (path) {
+                if (path === '/login' || !jwtAuth.isAuthenticated()) {
                     return false;
                 }
                 $rootScope.deniedPermissions[path] = true;
                 return true;
             };
-
-            /**
-             * Checks if permission is granted for the current path.
-             * @return {boolean} True if permission is granted.
-             */
-            $rootScope.hasPermission = () => {
+            $rootScope.hasPermission = function () {
                 const path = $location.path();
                 return !$rootScope.deniedPermissions[path];
             };
 
+            this.updateReturnUrl = () => {
+                if ($location.url().indexOf('/login') !== 0) {
+                    $rootScope.returnToUrl = $location.url();
+                }
+            };
+
             /**
              * Redirects to the login page.
+             *
              * @param {boolean} expired If true a toast message about expired login will be shown.
+             *                          In some cases this will be autodetected.
              * @param {boolean} noaccess If true a toast message about no access/config error will be shown.
+             *                           This overrides 'expired'.
              * @return {Promise<unknown>}
              */
-            $rootScope.redirectToLogin = (expired, noaccess) => {
-                if (_authTokenIsType(TOKEN_TYPE_BEARER)) {
+            $rootScope.redirectToLogin = function (expired, noaccess) {
+                if (jwtAuth.authTokenIsType('Bearer')) {
                     // OpenID login may be detected as expired either on initial validation
                     // when we get expired = true or indirectly via 401, setting expired = true
                     // handles the second case.
                     expired = true;
                 }
-                _clearAuthenticationInternal();
+                jwtAuth.clearAuthenticationInternal();
                 // remember where we were so we can return there
-                updateReturnUrl();
+                jwtAuth.updateReturnUrl();
 
-                $location.path(LOGIN_PATH);
+                $location.path('/login');
                 if (noaccess) {
-                    $location.search(NO_ACCESS);
+                    $location.search('noaccess');
                 } else if (expired) {
-                    $location.search(EXPIRED);
+                    $location.search('expired');
                 }
                 // Countering race condition. When the unauthorized interceptor catches error 401 or 409, then we must make
                 // sure that a request is made to access the login page before proceeding with the rejection of the
@@ -105,125 +66,17 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     }, 100);
                 });
             };
-
-            /**
-             * Returns whether the current user has external authentication.
-             * @return {boolean} True if the user is authenticated via an external system.
-             */
-            $rootScope.hasExternalAuthUser = () => hasExternalAuthUser();
-
-            // =========================
-            // Public functions
-            // =========================
-            /**
-             * Checks if the current user is authenticated.
-             * @return {boolean} True if the user is authenticated.
-             */
-            const isAuthenticated = () => !_securityEnabled || _hasExplicitAuthentication();
-
-            const _hasExplicitAuthentication = () => {
-                const token = AuthTokenService.getAuthToken();
-                return token != null || _externalAuthUser;
+            $rootScope.hasExternalAuthUser = function () {
+                return jwtAuth.hasExternalAuthUser();
             };
 
-            const _authTokenIsType = (type) => {
-                const token = AuthTokenService.getAuthToken();
-                return token && token.startsWith(type);
-            };
+            this.securityEnabled = true;
+            this.freeAccess = false;
+            this.hasOverrideAuth = false;
+            this.externalAuthUser = false;
+            this.securityInitialized = false;
 
-            const _clearAuthenticationInternal = () => {
-                $openIDAuth.softLogout();
-                _principal = _freeAccessPrincipal;
-                AuthTokenService.clearAuthToken();
-            };
-
-            const updateReturnUrl = () => {
-                if ($location.url().indexOf(LOGIN_PATH) !== 0) {
-                    $rootScope.returnToUrl = $location.url();
-                }
-            };
-
-            /**
-             * Returns whether the current user has external authentication.
-             * @return {boolean} True if the user is authenticated via an external system.
-             */
-            const hasExternalAuthUser = () => _externalAuthUser;
-
-            /**
-             * Initializes security by retrieving the security configuration and authenticating the user.
-             */
-            const _initSecurity = () => {
-                _securityInitialized = false;
-
-                SecurityRestService.getSecurityConfig().then((res) => {
-                    _securityEnabled = res.data.enabled;
-                    _externalAuth = res.data.hasExternalAuth;
-                    _authImplementation = res.data.authImplementation;
-                    _openIDEnabled = res.data.openIdEnabled;
-                    _passwordLoginEnabled = res.data.passwordLoginEnabled;
-
-                    if (_securityEnabled) {
-                        const freeAccessData = res.data.freeAccess;
-                        _freeAccess = freeAccessData.enabled;
-                        if (_freeAccess) {
-                            _freeAccessPrincipal = {
-                                authorities: freeAccessData.authorities,
-                                appSettings: freeAccessData.appSettings
-                            };
-                        }
-                        if (_openIDEnabled) {
-                            _openIDConfig = res.data.methodSettings.openid;
-                            // Remove the parameters from the url
-                            _gdbUrl = $location.absUrl().replace($location.url().substr(1), '');
-                            $openIDAuth.initOpenId(_openIDConfig, _gdbUrl, (justLoggedIn) => {
-                                // A valid OpenID was obtained just now or previously,
-                                // so we set it as the authentication.
-                                // This function will be called every time the token is refreshed too,
-                                // so keep it clean of other logic.
-                                // The variable justLoggedIn will be set to true if this is
-                                // a new login that just happened.
-                                AuthTokenService.setAuthToken($openIDAuth.authHeaderGraphDB());
-                                console.log('oidc: set id/access token as GraphDB auth');
-                                // When logging via OpenID we may get a token that doesn't have
-                                // rights in GraphDB, this should be considered invalid.
-                                _getAuthenticatedUserFromBackend(true, justLoggedIn);
-                            }, () => {
-                                if (_authTokenIsType(TOKEN_TYPE_BEARER)) {
-                                    // Possibly previous login with OpenID but token is no longer valid,
-                                    // redirect to login and warn user about expired token.
-                                    setTimeout(() => $rootScope.redirectToLogin(true), 0);
-                                } else {
-                                    // Logged in via non-OpenID or not logged in at all
-                                    _getAuthenticatedUserFromBackend();
-                                }
-                            });
-                        } else {
-                            _getAuthenticatedUserFromBackend();
-                        }
-                    } else {
-                        AuthTokenService.clearAuthToken();
-                        const overrideAuthData = res.data.overrideAuth;
-                        _hasOverrideAuth = overrideAuthData.enabled;
-                        if (_hasOverrideAuth) {
-                            _principal = {
-                                username: OVERRIDE_AUTH_USERNAME,
-                                authorities: overrideAuthData.authorities,
-                                appSettings: overrideAuthData.appSettings
-                            };
-                            $rootScope.$broadcast('securityInit', _securityEnabled, true, _hasOverrideAuth);
-                        } else {
-                            return SecurityRestService.getAdminUser().then((res) => {
-                                _principal = {
-                                    username: ADMIN_USERNAME,
-                                    appSettings: res.data.appSettings,
-                                    authorities: res.data.grantedAuthorities
-                                };
-                                $rootScope.$broadcast('securityInit', _securityEnabled, true, _hasOverrideAuth);
-                            });
-                        }
-                    }
-                });
-            };
+            const that = this;
 
             /**
              * Determines the currently authenticated user from the backend's point-of-view
@@ -234,71 +87,210 @@ angular.module('graphdb.framework.core.services.jwtauth', [
              * @param {boolean} noFreeAccessFallback If true does not fallback to free access.
              * @param {boolean} justLoggedIn Indicates that the user just logged in.
              */
-            const _getAuthenticatedUserFromBackend = (noFreeAccessFallback, justLoggedIn) => {
-                SecurityRestService.getAuthenticatedUser()
-                    .then((response) => {
-                        const data = response.data;
-                        const token = AuthTokenService.getAuthToken();
-
-                        if (token && token.startsWith(TOKEN_TYPE_GDB)) {
-                            // There is a previous authentication via JWT, it's still valid
-                            // so refresh the principal
-                            _externalAuthUser = false;
-                            _principal = data;
-                            $rootScope.$broadcast('securityInit', _securityEnabled, true, _freeAccess);
-                        } else if (_openIDEnabled && token && token.startsWith(TOKEN_TYPE_BEARER)) {
-                            // The auth was obtained from OpenID, we need to authenticate with the returned user
-                            return authenticate(data, token);
-                        } else {
-                            // There is no previous authentication, but we got a principal via
-                            // an external authentication mechanism (e.g. Kerberos)
-                            _externalAuthUser = true;
-                            return authenticate(data, '');
+            this.getAuthenticatedUserFromBackend = function(noFreeAccessFallback, justLoggedIn) {
+                SecurityRestService.getAuthenticatedUser().
+                success(function(data, status, headers) {
+                    const token = AuthTokenService.getAuthToken();
+                    if (token && token.startsWith('GDB')) {
+                        // There is a previous authentication via JWT, it's still valid
+                        // so refresh the principal
+                        that.externalAuthUser = false;
+                        that.principal = data;
+                        $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.freeAccess);
+                        // console.log('previous JWT authentication ok');
+                    } else if (that.openIDEnabled && token && token.startsWith('Bearer')) {
+                        // The auth was obtained from OpenID, we need to authenticate with the returned user
+                        that.authenticate(data, token);
+                    } else {
+                        // There is no previous authentication but we got a principal via
+                        // an external authentication mechanism (e.g. Kerberos)
+                        that.externalAuthUser = true;
+                        that.authenticate(data, ''); // this will emit securityInit
+                        // console.log('external authentication ok');
+                    }
+                }).error(function () {
+                    if (noFreeAccessFallback || !that.freeAccess) {
+                        $rootScope.redirectToLogin(false, justLoggedIn);
+                    } else {
+                        that.securityInitialized = true;
+                        if (!that.hasExplicitAuthentication()) {
+                            that.clearAuthentication();
+                            // console.log('free access fallback');
                         }
-                    })
-                    .catch(() => {
-                        if (noFreeAccessFallback || !_freeAccess) {
-                            $rootScope.redirectToLogin(false, justLoggedIn);
-                        } else {
-                            _securityInitialized = true;
-                            if (!_hasExplicitAuthentication()) {
-                                clearAuthentication();
-                            }
-                        }
-                    });
+                    }
+                });
             };
 
-            /**
-             * Authenticates the user with the provided data and authentication header value.
-             *
-             * This method sets the authentication token if provided, clears it if not, and then sets
-             * the user's principal data. It also checks if the current repository is readable by the
-             * user, removing the repository from local storage if not. The method broadcasts the
-             * 'securityInit' event with the updated security state and resolves the promise once complete.
-             *
-             * @param {object} data - The authenticated user's data.
-             * @param {string} authHeaderValue - The authentication token to be set (e.g., JWT or Bearer token).
-             * @return {Promise<boolean>} A promise that resolves to true when authentication is complete.
-             */
-            const authenticate = (data, authHeaderValue) => {
+            this.initSecurity = function () {
+                this.securityInitialized = false;
+
+                SecurityRestService.getSecurityConfig().then(function (res) {
+                    that.securityEnabled = res.data.enabled;
+                    that.externalAuth = res.data.hasExternalAuth;
+                    that.authImplementation = res.data.authImplementation;
+                    that.openIDEnabled = res.data.openIdEnabled;
+                    that.passwordLoginEnabled = res.data.passwordLoginEnabled;
+
+                    if (that.securityEnabled) {
+                        const freeAccessData = res.data.freeAccess;
+                        that.freeAccess = freeAccessData.enabled;
+                        if (that.freeAccess) {
+                            that.freeAccessPrincipal = {
+                                authorities: freeAccessData.authorities,
+                                appSettings: freeAccessData.appSettings
+                            };
+                        }
+                        if (that.openIDEnabled) {
+                            that.openIDConfig = res.data.methodSettings.openid;
+                            // Remove the parameters from the url
+                            that.gdbUrl = $location.absUrl().replace($location.url().substr(1), '');
+                            $openIDAuth.initOpenId(that.openIDConfig,
+                                that.gdbUrl,
+                                function (justLoggedIn) {
+                                    // A valid OpenID was obtained just now or previously,
+                                    // so we set it as the authentication.
+                                    // This function will be called every time the token is refreshed too,
+                                    // so keep it clean of other logic.
+                                    // The variable justLoggedIn will be set to true if this is
+                                    // a new login that just happened.
+                                    AuthTokenService.setAuthToken($openIDAuth.authHeaderGraphDB());
+                                    console.log('oidc: set id/access token as GraphDB auth');
+                                    // When logging via OpenID we may get a token that doesn't have
+                                    // rights in GraphDB, this should be considered invalid.
+                                    that.getAuthenticatedUserFromBackend(true, justLoggedIn);
+                                }, function () {
+                                    console.log('oidc: not logged or login error');
+                                    if (that.authTokenIsType('Bearer')) {
+                                        // Possibly previous login with OpenID but token is no longer valid,
+                                        // redirect to login and warn user about expired token.
+                                        setTimeout(() => {
+                                            $rootScope.redirectToLogin(true);
+                                        }, 0);
+                                    } else {
+                                        // Logged in via non-OpenID or not logged in at all
+                                        that.getAuthenticatedUserFromBackend();
+                                    }
+                                });
+                        } else {
+                            that.getAuthenticatedUserFromBackend();
+                        }
+                    } else {
+                        AuthTokenService.clearAuthToken();
+                        const overrideAuthData = res.data.overrideAuth;
+                        that.hasOverrideAuth = overrideAuthData.enabled;
+                        if (that.hasOverrideAuth) {
+                            that.principal = {
+                                username: 'overrideauth',
+                                authorities: overrideAuthData.authorities,
+                                appSettings: overrideAuthData.appSettings
+                            };
+                            $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.hasOverrideAuth);
+
+                        } else {
+                            return SecurityRestService.getAdminUser().then(function (res) {
+                                that.principal = {username: 'admin', appSettings: res.data.appSettings, authorities: res.data.grantedAuthorities};
+                                $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.hasOverrideAuth);
+                            });
+                        }
+                    }
+                });
+            };
+
+            this.initSecurity();
+
+            this.reinitializeSecurity = function () {
+                if (!this.securityInitialized) {
+                    this.initSecurity();
+                }
+            };
+
+            this.isSecurityEnabled = function () {
+                return this.securityEnabled;
+            };
+
+            this.hasExternalAuth = function () {
+                return this.externalAuth;
+            };
+
+            this.getAuthImplementation = function () {
+                return this.authImplementation;
+            };
+
+            this.isFreeAccessEnabled = function () {
+                return this.freeAccess;
+            };
+
+            this.isDefaultAuthEnabled = function () {
+                return this.hasOverrideAuth && this.principal && this.principal.username === 'overrideauth';
+            };
+
+            this.authTokenIsType = function (type) {
+                const token = AuthTokenService.getAuthToken();
+                return token && token.startsWith(type);
+            };
+
+            this.loginOpenID = function () {
+                // FIX: This causes the workbench to always return to this.gdbUrl after login, which breaks the logic for multitab login
+                $openIDAuth.login(this.openIDConfig, this.gdbUrl);
+            };
+
+            this.toggleSecurity = function (enabled) {
+                if (enabled !== this.securityEnabled) {
+                    SecurityRestService.toggleSecurity(enabled).then(function () {
+                        toastr.success($translate.instant('jwt.auth.security.status', {status: ($translate.instant(enabled ? 'enabled.status' : 'disabled.status'))}));
+                        AuthTokenService.clearAuthToken();
+                        that.initSecurity();
+                        that.securityEnabled = enabled;
+                    }, function (err) {
+                        toastr.error(err.data, $translate.instant('common.error'));
+                    });
+                }
+            };
+
+            this.toggleFreeAccess = function (enabled, authorities, appSettings, updateFreeAccess) {
+                if (enabled !== this.freeAccess || updateFreeAccess) {
+                    this.freeAccess = enabled;
+                    if (enabled) {
+                        this.freeAccessPrincipal = {authorities: authorities, appSettings: appSettings};
+                    } else {
+                        this.freeAccessPrincipal = undefined;
+                    }
+                    SecurityRestService.setFreeAccess({
+                        enabled: enabled ? 'true' : 'false',
+                        authorities: authorities,
+                        appSettings: appSettings
+                    }).then(function () {
+                        if (updateFreeAccess) {
+                            toastr.success($translate.instant('jwt.auth.free.access.updated.msg'));
+                        } else {
+                            toastr.success($translate.instant('jwt.auth.free.access.status', {status: ($translate.instant(enabled ? 'enabled.status' : 'disabled.status'))}));
+                        }
+                    }, function (err) {
+                        toastr.error(err.data.error.message, $translate.instant('common.error'));
+                    });
+                    $rootScope.$broadcast('securityInit', this.securityEnabled, this.hasExplicitAuthentication(), this.freeAccess);
+                }
+            };
+
+            this.authenticate = function (data, authHeaderValue) {
                 return new Promise((resolve) => {
                     if (authHeaderValue) {
                         AuthTokenService.setAuthToken(authHeaderValue);
-                        _externalAuthUser = false;
+                        this.externalAuthUser = false;
                     } else {
                         AuthTokenService.clearAuthToken();
                     }
 
-                    _principal = data;
+                    this.principal = data;
                     $rootScope.deniedPermissions = {};
-                    _securityInitialized = true;
+                    this.securityInitialized = true;
 
                     const selectedRepo = {
                         id: LocalStorageAdapter.get(LSKeys.REPOSITORY_ID) || '',
                         location: LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION) || ''
                     };
 
-                    if (!canReadRepo(selectedRepo)) {
+                    if (!jwtAuth.canReadRepo(selectedRepo)) {
                         // if the current repo is unreadable by the currently logged-in user (or free access user)
                         // we unset the repository
                         LocalStorageAdapter.remove(LSKeys.REPOSITORY_ID);
@@ -307,99 +299,146 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         $rootScope.deniedPermissions = {};
                     }
 
-                    $rootScope.$broadcast('securityInit', _securityEnabled, _hasExplicitAuthentication(), _freeAccess);
-                    setTimeout(() => resolve(true));
+                    $rootScope.$broadcast('securityInit', this.securityEnabled, that.hasExplicitAuthentication(), this.freeAccess);
+                    setTimeout(() => {
+                        resolve(true);
+                    });
                 });
             };
 
-            const clearAuthentication = () => {
-                _clearAuthenticationInternal();
-                $rootScope.$broadcast('securityInit', _securityEnabled, false, _freeAccess);
-            };
-
-            /**
-             * Checks whether the user has permission to write to the repository.
-             * @param {string} menuRole The menu role to check.
-             * @param {object} repo The repository object to check.
-             * @return {boolean} True if the user has write permission.
-             */
-            const checkForWrite = (menuRole, repo) => {
-                if (menuRole === WRITE_PERMISSION) {
-                    return canWriteRepo(repo);
-                }
-                return hasRole(menuRole);
-            };
-
-            /**
-             * Checks if the user has write permissions to a repository.
-             * @param {object} repo The repository object to check.
-             * @return {boolean} True if the user has write permissions.
-             */
-            const canWriteRepo = (repo) => {
-                if (!repo) {
-                    return false;
-                }
-                // Adding remote secured location could be done only with admin credentials,
-                // that's why we do no check for rights
-                if (_securityEnabled || _hasOverrideAuth) {
-                    if (_.isEmpty(_principal)) {
-                        return false;
-                    } else if (hasAdminRole()) {
-                        return true;
-                    }
-                    return _checkRights(repo, WRITE_PERMISSION);
-                } else {
-                    return true;
+            this.authenticateOpenID = function(authHeader) {
+                AuthTokenService.clearAuthToken();
+                if (authHeader) {
+                    AuthTokenService.setAuthToken(authHeader);
+                    this.externalAuthUser = false;
                 }
             };
 
-            const canReadRepo = (repo) => {
-                if (!repo) {
-                    return false;
-                }
-                // Adding remote secured location could be done only with admin credentials,
-                // that's why we do no check for rights
-                if (_securityEnabled) {
-                    if (_.isEmpty(_principal)) {
-                        return false;
-                    } else if (hasAdminRole()) {
-                        return true;
-                    }
-                    return _checkRights(repo, READ_PERMISSION);
-                } else {
-                    return true;
-                }
+            this.hasExternalAuthUser = function () {
+                return this.externalAuthUser;
             };
 
-            const hasAdminRole = () => isAdmin() || _isRepoManager();
+            this.hasExplicitAuthentication = function () {
+                const token = AuthTokenService.getAuthToken();
+                return token != null || this.externalAuthUser;
+            };
 
-            const isAdmin = () => hasRole(UserRole.ROLE_ADMIN);
+            // Returns a promise of the principal object if already fetched or a promise which resolves after security initialization
+            this.getPrincipal = function () {
+                if (this.principal) {
+                    return Promise.resolve(this.principal);
+                }
+                const deferred = $q.defer();
+                $rootScope.$on('securityInit', () => {
+                    deferred.resolve(this.principal);
+                });
+                return deferred.promise;
+            };
 
-            const _isRepoManager = () => hasRole(UserRole.ROLE_REPO_MANAGER);
+            this.clearAuthenticationInternal = function () {
+                $openIDAuth.softLogout();
+                this.principal = this.freeAccessPrincipal;
+                AuthTokenService.clearAuthToken();
+            };
 
-            const hasRole = (role) => {
-                if (role && (_securityEnabled || _hasOverrideAuth)) {
-                    if (typeof role === 'string') {
+            this.clearAuthentication = function () {
+                this.clearAuthenticationInternal();
+                $rootScope.$broadcast('securityInit', this.securityEnabled, false, this.freeAccess);
+            };
+
+            this.isAuthenticated = function () {
+                return !this.securityEnabled || this.hasExplicitAuthentication();
+            };
+
+            this.hasPermission = function () {
+            };
+
+            this.hasRole = function (role) {
+                if (role !== undefined && (this.securityEnabled || this.hasOverrideAuth)) {
+                    if ('string' === typeof role) {
                         role = [role];
                     }
-                    if (!_.isEmpty(_principal)) {
-                        if (role[0] === AUTH_FULLY) {
-                            return true;
-                        }
-                        return _.intersection(role, _principal.authorities).length > 0;
+                    const hasPrincipal = !_.isEmpty(this.principal);
+                    if (!hasPrincipal) {
+                        return false;
                     }
+                    if (role[0] === 'IS_AUTHENTICATED_FULLY') {
+                        return hasPrincipal;
+                    } else {
+                        return _.intersection(role, this.principal.authorities).length > 0;
+                    }
+                } else {
+                    return true;
                 }
-                return true;
             };
 
-            const _checkRights = (repo, action) => {
-                if (repo && _principal) {
-                    for (let i = 0; i < _principal.authorities.length; i++) {
-                        const authRole = _principal.authorities[i];
-                        const parts = authRole.split(ROLE_SEPARATOR, 2);
+            this.isAdmin = function () {
+                return this.hasRole(UserRole.ROLE_ADMIN);
+            };
+
+            this.isRepoManager = function () {
+                return this.hasRole(UserRole.ROLE_REPO_MANAGER);
+            };
+
+            this.hasRoleMonitor = function () {
+                return this.hasRole(UserRole.ROLE_MONITORING);
+            };
+
+            this.checkForWrite = function (menuRole, repo) {
+                if ('WRITE_REPO' === menuRole) {
+                    return this.canWriteRepo(repo);
+                }
+                return this.hasRole(menuRole);
+            };
+
+            this.hasAdminRole = function () {
+                return this.isAdmin() || this.isRepoManager();
+            };
+
+            this.canWriteRepo = function (repo) {
+                if (!repo) {
+                    return false;
+                }
+                // Adding remote secured location could be done only with admin credentials,
+                // that's why we do no check for rights
+                if (this.securityEnabled || this.hasOverrideAuth) {
+                    if (_.isEmpty(this.principal)) {
+                        return false;
+                    } else if (this.hasAdminRole()) {
+                        return true;
+                    }
+                    return this.checkRights(repo, 'WRITE');
+                } else {
+                    return true;
+                }
+            };
+
+            this.canReadRepo = function (repo) {
+                if (!repo) {
+                    return false;
+                }
+                // Adding remote secured location could be done only with admin credentials,
+                // that's why we do no check for rights
+                if (this.securityEnabled) {
+                    if (_.isEmpty(this.principal)) {
+                        return false;
+                    } else if (this.hasAdminRole()) {
+                        return true;
+                    }
+                    return this.checkRights(repo, 'READ');
+                } else {
+                    return true;
+                }
+            };
+
+            this.checkRights = function (repo, action) {
+                if (repo) {
+                    for (let i = 0; i < this.principal.authorities.length; i++) {
+                        const authRole = this.principal.authorities[i];
+                        const parts = authRole.split('_', 2);
                         const repoPart = authRole.slice(parts[0].length + parts[1].length + 2);
                         const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
-                        if (parts[0] === action && (repoId === repoPart || repo.id !== SYSTEM_REPO && repoPart === REPO_WILDCARD)) {
+                        if (parts[0] === action && (repoId === repoPart || repo.id !== 'SYSTEM' && repoPart === '*')) {
                             return true;
                         }
                     }
@@ -407,129 +446,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return false;
             };
 
-            /**
-             * Reinitializes security, calling security initialization if it hasn't been completed yet.
-             */
-            const reinitializeSecurity = () => {
-                if (!_securityInitialized) {
-                    _initSecurity();
-                }
-            };
 
-            const isSecurityEnabled = () => _securityEnabled;
-
-            const hasExternalAuth = () => _externalAuth;
-
-            const getAuthImplementation = () => _authImplementation;
-
-            const isFreeAccessEnabled = () => _freeAccess;
-
-            const isDefaultAuthEnabled = () => _hasOverrideAuth && _principal && _principal.username === OVERRIDE_AUTH_USERNAME;
-
-            const loginOpenID = () => {
-                // FIX: This causes the workbench to always return to this.gdbUrl after login, which breaks the logic for multitab login
-                $openIDAuth.login(_openIDConfig, _gdbUrl);
-            };
-
-            /**
-             * Toggles security on or off.
-             * @param {boolean} enabled Whether security should be enabled.
-             */
-            const toggleSecurity = (enabled) => {
-                if (enabled !== _securityEnabled) {
-                    SecurityRestService.toggleSecurity(enabled).then(() => {
-                        toastr.success($translate.instant('jwt.auth.security.status', {status: $translate.instant(enabled ? 'enabled.status' : 'disabled.status')}));
-                        AuthTokenService.clearAuthToken();
-                        _initSecurity();
-                        _securityEnabled = enabled;
-                    }).catch((err) => {
-                        toastr.error(err.data, $translate.instant('common.error'));
-                    });
-                }
-            };
-
-            /**
-             * Toggles free access on or off.
-             * @param {boolean} enabled Whether free access should be enabled.
-             * @param {Array} authorities The authorities to assign for free access.
-             * @param {object} appSettings The application settings for free access.
-             * @param {boolean} updateFreeAccess Whether free access should be updated.
-             */
-            const toggleFreeAccess = (enabled, authorities, appSettings, updateFreeAccess) => {
-                if (enabled !== _freeAccess || updateFreeAccess) {
-                    _freeAccess = enabled;
-                    _freeAccessPrincipal = enabled ? {authorities, appSettings} : undefined;
-                    SecurityRestService.setFreeAccess({
-                        enabled: enabled ? 'true' : 'false',
-                        authorities,
-                        appSettings
-                    }).then(() => {
-                        toastr.success($translate.instant('jwt.auth.free.access.status', {status: $translate.instant(enabled ? 'enabled.status' : 'disabled.status')}));
-                    }).catch((err) => {
-                        toastr.error(err.data.error.message, $translate.instant('common.error'));
-                    });
-                    $rootScope.$broadcast('securityInit', _securityEnabled, _hasExplicitAuthentication(), _freeAccess);
-                }
-            };
-
-            /**
-             * Returns a promise of the principal object if already fetched or a promise which resolves after security initialization
-             * @return {Promise<object>} A promise that resolves with the principal object.
-             */
-            const getPrincipal = () => {
-                if (_principal) {
-                    return Promise.resolve(_principal);
-                }
-                const deferred = $q.defer();
-                $rootScope.$on('securityInit', () => {
-                    deferred.resolve(_principal);
-                });
-                return deferred.promise;
-            };
-
-            const isSecurityInitialized = () => _securityInitialized;
-
-            const isOpenIDEnabled = () => _openIDEnabled;
-
-            const isPasswordLoginEnabled = () => _passwordLoginEnabled;
-
-            /**
-             * Updates the user data on the backend.
-             * @param {object} data The user data to be updated.
-             * @return {Promise<object>} A promise that resolves after the update is completed.
-             */
-            const updateUserData = (data) => SecurityRestService.updateUserData(data);
-
-            // =========================
-            // Initialization
-            // =========================
-            _initSecurity();
-
-            return {
-                isAuthenticated,
-                updateReturnUrl,
-                hasExternalAuthUser,
-                authenticate,
-                clearAuthentication,
-                canReadRepo,
-                hasAdminRole,
-                isAdmin,
-                hasRole,
-                reinitializeSecurity,
-                isSecurityEnabled,
-                hasExternalAuth,
-                getAuthImplementation,
-                isFreeAccessEnabled,
-                isDefaultAuthEnabled,
-                loginOpenID,
-                toggleSecurity,
-                toggleFreeAccess,
-                getPrincipal,
-                checkForWrite,
-                canWriteRepo,
-                isSecurityInitialized,
-                isOpenIDEnabled,
-                isPasswordLoginEnabled,
-                updateUserData
-            };
+            this.updateUserData = (data) => SecurityRestService.updateUserData(data);
         }]);

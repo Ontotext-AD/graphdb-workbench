@@ -352,7 +352,7 @@ describe('Home screen validation', () => {
         });
     });
 
-    context.only('Cookie policy', () => {
+    context('Cookie policy', () => {
         beforeEach(() => cy.setDefaultUserData(false));
         afterEach(() => cy.setDefaultUserData());
 
