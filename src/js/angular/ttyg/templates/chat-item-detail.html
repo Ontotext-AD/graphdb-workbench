@@ -2,14 +2,15 @@
 
 <div class="chat-detail">
     <div class="user-message" ng-if="chatItemDetail.question">
-        <div class="question alert-help">
+        <div class="question alert-help"
+             gdb-tooltip="{{ 'ttyg.chat_panel.labels.question_asked' | translate : { date: getHumanReadableQuestionTimestamp(chatItemDetail.question.timestamp), time: (chatItemDetail.question.timestamp | date:'HH:mm') } }}">
             {{ chatItemDetail.question.message }}
         </div>
     </div>
     <div class="answers" ng-repeat="answer in chatItemDetail.answers">
         <div class="assistant">
             <div class="assistant-icon alert-help"
-                 gdb-tooltip="{{'ttyg.chat_panel.labels.agent_name' | translate : {agentName:  agentNameByIdMap[chatItemDetail.agentId]} }}">
+                 gdb-tooltip="{{'ttyg.chat_panel.labels.agent_name' | translate : { agentName: agentNameByIdMap[chatItemDetail.agentId], date: getHumanReadableQuestionTimestamp(chatItemDetail.question.timestamp), time: (chatItemDetail.question.timestamp | date:'HH:mm') } }}">
                 <i class="fa-regular fa-message-bot"></i>
             </div>
             <div class="assistant-message">
@@ -34,7 +35,7 @@
                 </div>
                 <div class="derived-answer-hint"
                      ng-if="showActions && $last && explainResponseModel[answer.id].expanded">
-                    <div ng-bind-html="'ttyg.chat_panel.btn.derive_answer.hint' | htmlTranslate"></div>
+                    <div ng-bind-html="'ttyg.chat_panel.btn.derive_answer.hint' | translate | trustAsHtml"></div>
                     <button class="btn btn-secondary deliver-answer-btn" ng-click="onAskHowAnswerWasDerived()">
                         {{ 'ttyg.chat_panel.btn.derive_answer.label' | translate }}
                     </button>
@@ -51,7 +52,7 @@
                         <div class="explain-call">
                             <div class="header" gdb-tooltip="">
                                 <div class="label">
-                                    <span class="query-method" ng-bind-html="'ttyg.chat_panel.labels.called' | htmlTranslate:{name: queryMethod.name}">
+                                    <span class="query-method" ng-bind-html="'ttyg.chat_panel.labels.called' | translate:{name: queryMethod.name} | trustAsHtml">
                                     </span>:
                                     <span class="query-method-details" ng-bind="('ttyg.chat_panel.query_desc.' + queryMethod.name) | translate">
                                     </span>

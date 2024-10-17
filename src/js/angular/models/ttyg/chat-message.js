@@ -19,7 +19,7 @@ export class ChatMessageModel {
         /**
          * @type {number}
          */
-        this._timestamp = data.timestamp;
+        this._timestamp = data.timestamp * 1000;
     }
 
     get id() {

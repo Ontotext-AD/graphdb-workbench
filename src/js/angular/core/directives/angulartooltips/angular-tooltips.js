@@ -1,3 +1,5 @@
+import {decodeHTML} from "../../../../../app";
+
 angular
     .module('graphdb.framework.core.directives.angular-tooltips', [])
     .directive('gdbTooltip', directive);
@@ -57,7 +59,7 @@ function directive($timeout, $compile) {
 
             $scope.updateTooltip = function (title) {
                 // insert html into tooltip
-                $scope.tooltipElement.html(title);
+                $scope.tooltipElement.html(decodeHTML(title));
 
                 // compile html contents into angularjs
                 $compile($scope.tooltipElement.contents())($scope);
