@@ -725,7 +725,6 @@ function TTYGViewCtrl(
      */
     const onAgentSelected = (agent) => {
         $scope.selectedAgent = agent;
-        console.log(`save agent`, agent);
         TTYGStorageService.saveAgent(agent);
     };
 
@@ -734,17 +733,15 @@ function TTYGViewCtrl(
      */
     const setCurrentAgent = () => {
         const agentId = TTYGStorageService.getAgentId();
-        console.log(`1 setCurrentAgent`, agentId);
         if (!agentId) {
             return;
         }
         TTYGService.getAgent(agentId).then((agent) => {
-            console.log(`2 setCurrentAgent`, agent);
             if (agent) {
                 TTYGContextService.selectAgent(agent);
             }
         }).catch((error) => {
-
+            toastr.error(getError(error, 0, 100));
         });
     };
 
