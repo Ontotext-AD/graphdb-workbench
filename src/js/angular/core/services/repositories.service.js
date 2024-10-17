@@ -271,17 +271,21 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             });
         };
 
-        /**
-         * Returns all readable repositories that are local.
-         * @return {*}
-         */
-        this.getLocalReadableRepositories = function () {
-            return this.getReadableRepositories().filter((repository) => repository.local === true);
-        };
-
         this.getReadableGraphdbRepositories = function () {
             return this.getReadableRepositories()
                 .filter((repo) => repo.type === 'graphdb');
+        };
+
+        /**
+         * Returns all readable graphdb repositories that are local.
+         * @return {*}
+         */
+        this.getLocalReadableGraphdbRepositories = function () {
+            return this.getReadableGraphdbRepositories().filter((repository) => repository.local === true);
+        };
+
+        this.getLocalReadablGraphdbRepositoryIds = function () {
+            return this.getLocalReadableGraphdbRepositories().map((repository) => repository.id);
         };
 
         this.getWritableRepositories = function () {
