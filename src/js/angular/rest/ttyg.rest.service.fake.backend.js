@@ -1,6 +1,5 @@
 import {cloneDeep} from "lodash";
 import {CHAT_MESSAGE_ROLE} from "../models/ttyg/chat-message";
-import {ExtractionMethod} from "../models/ttyg/agents";
 
 // Delay for askQuestion()
 const ASK_DELAY = 2000;
