@@ -7,8 +7,6 @@
 
 .agent-list-component .agent-list {
     margin-top: 1rem;
-    height: 75vh;
-    max-height: 75vh;
     overflow-y: hidden;
     scrollbar-gutter: stable;
 }
