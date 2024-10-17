@@ -1,14 +1,10 @@
 <link href="css/ttyg/chat-panel.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-<div class="chat-panel h-100">
+<div class="chat-panel h-100" ng-class="chat.chatHistory.isEmpty() ? 'no-content' : ''">
 
     <div class="chat-loading" ng-if="loadingChat" onto-loader-new size="40"></div>
 
-    <div class="messages-hint text-muted" ng-if="!loadingChat && chat.chatHistory.isEmpty() && !askingChatItem">
-        {{ 'ttyg.chat_panel.hint' | translate }}
-    </div>
-
-    <div class="chat-details" ng-class="{'hidden': !chat}" ng-if="!loadingChat">
+    <div class="chat-details" ng-class="{'hidden': !chat}" ng-if="!loadingChat && !chat.chatHistory.isEmpty()">
         <div ng-repeat="chatItemDetail in chat.chatHistory.items">
 
             <!-- Before the first chat item is displayed, show the agent change info if the agent of the first response is different from the selected agent. -->
@@ -50,5 +46,10 @@
             <i class="fa-regular fa-arrow-turn-left-up"></i>
             {{ 'ttyg.chat_panel.btn.ask.label ' | translate }}
         </button>
+    </div>
+
+    <div class="messages-hint text-muted" ng-if="!loadingChat && chat.chatHistory.isEmpty() && !askingChatItem" ng-cloak>
+        <div class="hint1" ng-bind-html="'ttyg.chat_panel.hint1' | htmlTranslate"></div>
+        <div class="hint2" ng-bind="'ttyg.chat_panel.hint2' | translate"></div>
     </div>
 </div>
