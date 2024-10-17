@@ -80,7 +80,9 @@ const extractionMethodsFormMapper = (agentFormModel, isNew, defaultData, data = 
                 maxValue: 1,
                 step: 0.1
             }),
-            maxNumberOfTriplesPerCall: extractionMethod.maxNumberOfTriplesPerCall,
+            // In case backend returns 0 as a default value this means that there is no limit, so we set the null in order
+            // to show the placeholder in the input field.
+            maxNumberOfTriplesPerCall: extractionMethod.maxNumberOfTriplesPerCall === 0 ? null : extractionMethod.maxNumberOfTriplesPerCall,
             queryTemplate: extractionMethod.queryTemplate && new TextFieldModel({
                 value: extractionMethod.queryTemplate,
                 minLength: 1,
@@ -95,13 +97,23 @@ const extractionMethodsFormMapper = (agentFormModel, isNew, defaultData, data = 
 /**
  * Converts the response from the server to a list of AgentModel.
  * @param {*[]} data
+ * @param {string[]} localRepositoryIds
  * @return {AgentListModel}
  */
-export const agentListMapper = (data) => {
+export const agentListMapper = (data, localRepositoryIds) => {
     if (!data) {
         return new AgentListModel();
     }
-    const agentModels = data.map((agent) => agentModelMapper(agent));
+    const agentModels = data
+        .map((agent) => agentModelMapper(agent))
+        .map((agent) => {
+            // If the agent is not in the list of local repositories, then set the repositoryId to null in order to show
+            // the agent is not assigned to any repository in this GDB instance.
+            if (!localRepositoryIds.includes(agent.repositoryId)) {
+                agent.repositoryId = null;
+            }
+            return agent;
+        });
     return new AgentListModel(agentModels);
 };
 

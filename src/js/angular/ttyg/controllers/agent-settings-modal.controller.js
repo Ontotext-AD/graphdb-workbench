@@ -6,7 +6,7 @@ import 'angular/core/services/ttyg.service';
 import 'angular/rest/repositories.rest.service';
 import {REPOSITORY_PARAMS} from "../../models/repository/repository";
 import {TTYGEventName} from "../services/ttyg-context.service";
-import {AGENT_OPERATION} from "../services/constants";
+import {AGENT_OPERATION, TTYG_ERROR_MSG_LENGTH} from "../services/constants";
 
 angular
     .module('graphdb.framework.ttyg.controllers.agent-settings-modal', [
@@ -250,12 +250,12 @@ function AgentSettingsModalController(
         RepositoriesRestService.getRepositoryModel({id: $scope.agentFormModel.repositoryId}).then((repositoryModel) => {
             $scope.ftsEnabled = repositoryModel.getParamValue(REPOSITORY_PARAMS.enableFtsIndex);
         })
-            .catch((error) => {
-                logAndShowError(error, 'ttyg.agent.messages.error_repository_config_loading');
-            })
-            .finally(() => {
-                $scope.extractionMethodLoaderFlags[ExtractionMethod.FTS_SEARCH] = false;
-            });
+        .catch((error) => {
+            logAndShowError(error, 'ttyg.agent.messages.error_repository_config_loading');
+        })
+        .finally(() => {
+            $scope.extractionMethodLoaderFlags[ExtractionMethod.FTS_SEARCH] = false;
+        });
     };
 
     /**
@@ -310,7 +310,7 @@ function AgentSettingsModalController(
                 toastr.success($translate.instant('ttyg.agent.messages.agent_save_successfully', {agentName: agentModel.name}));
             })
             .catch((error) => {
-                toastr.error($translate.instant('ttyg.agent.messages.agent_save_failure', {agentName: newAgentPayload.name}));
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             })
             .finally(() => {
                 $scope.savingAgent = false;

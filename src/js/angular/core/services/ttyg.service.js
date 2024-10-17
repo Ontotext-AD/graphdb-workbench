@@ -10,9 +10,9 @@ angular
     .module('graphdb.framework.core.services.ttyg-service', modules)
     .factory('TTYGService', TTYGService);
 
-TTYGService.$inject = ['TTYGRestService'];
+TTYGService.$inject = ['TTYGRestService', '$repositories'];
 
-function TTYGService(TTYGRestService) {
+function TTYGService(TTYGRestService, $repositories) {
 
     const getConversations = (savedQueryName, owner) => {
         return TTYGRestService.getConversations()
@@ -95,9 +95,10 @@ function TTYGService(TTYGRestService) {
      * @return {Promise<AgentListModel>}
      */
     const getAgents = () => {
+        const localRepositories = $repositories.getLocalReadablGraphdbRepositoryIds();
         return TTYGRestService.getAgents()
             .then((response) => {
-                return agentListMapper(response.data);
+                return agentListMapper(response.data, localRepositories);
             });
     };
 

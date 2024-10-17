@@ -16,6 +16,7 @@ const identicalTranslations = [
     "ChatGPT Retrieval",
     "ClientID*",
     "Cluster",
+    "Cookies",
     "Document",
     "Documentation",
     "Format",
@@ -34,6 +35,7 @@ const identicalTranslations = [
     "Top P",
     "Type:",
     "type",
+    "Google Analytics (GA4)",
 
     // File formats:
     "JSON",

@@ -276,6 +276,18 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                 .filter((repo) => repo.type === 'graphdb');
         };
 
+        /**
+         * Returns all readable graphdb repositories that are local.
+         * @return {*}
+         */
+        this.getLocalReadableGraphdbRepositories = function () {
+            return this.getReadableGraphdbRepositories().filter((repository) => repository.local === true);
+        };
+
+        this.getLocalReadablGraphdbRepositoryIds = function () {
+            return this.getLocalReadableGraphdbRepositories().map((repository) => repository.id);
+        };
+
         this.getWritableRepositories = function () {
             const that = this;
             return _.filter(this.getRepositories(), function (repo) {

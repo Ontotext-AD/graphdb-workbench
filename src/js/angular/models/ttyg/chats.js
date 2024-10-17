@@ -140,6 +140,20 @@ export class ChatsListModel {
     }
 
     /**
+     * Updates the timestamp of a chat in the list.
+     * @param {string} chatId
+     * @param {number} timestamp
+     */
+    updateChatTimestamp(chatId, timestamp) {
+        const chat = this._chats.find((c) => c.id === chatId);
+        if (chat) {
+            chat.timestamp = timestamp;
+        }
+        this.sortByTime();
+        this.updateChatsByDay();
+    }
+
+    /**
      * Deletes a chat from the chat list.
      * @param {ChatModel} chatToBeDeleted
      */

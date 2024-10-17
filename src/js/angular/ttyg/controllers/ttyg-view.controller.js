@@ -8,7 +8,7 @@ import 'angular/core/services/ttyg.service';
 import 'angular/ttyg/services/ttyg-context.service';
 import 'angular/ttyg/services/ttyg-storage.service';
 import {TTYGEventName} from '../services/ttyg-context.service';
-import {AGENT_OPERATION, AGENTS_FILTER_ALL_KEY} from '../services/constants';
+import {AGENT_OPERATION, AGENTS_FILTER_ALL_KEY, TTYG_ERROR_MSG_LENGTH} from '../services/constants';
 import {AgentListFilterModel, AgentModel} from '../../models/ttyg/agents';
 import {ChatModel, ChatsListModel} from '../../models/ttyg/chats';
 import {agentFormModelMapper} from '../services/agents.mapper';
@@ -417,7 +417,7 @@ function TTYGViewCtrl(
                 return TTYGContextService.updateChats(chats);
             })
             .catch((error) => {
-                toastr.error(getError(error, 0, 100));
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
                 setupChatListPanel(new ChatsListModel());
             })
             .finally(() => {
@@ -437,7 +437,7 @@ function TTYGViewCtrl(
                 return TTYGContextService.updateAgents(agents);
             })
             .catch((error) => {
-                toastr.error(getError(error, 0, 100));
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             })
             .finally(() => {
                 $scope.loadingAgents = false;
@@ -456,7 +456,7 @@ function TTYGViewCtrl(
                 return TTYGContextService.updateAgents(agents);
             })
             .catch((error) => {
-                toastr.error(getError(error, 0, 100));
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             })
             .finally(() => {
                 $scope.reloadingAgents = false;
@@ -509,7 +509,7 @@ function TTYGViewCtrl(
         TTYGService.createConversation(chatItem)
             .then((chatAnswer) => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT_SUCCESSFUL);
-                // TODO discuse we have all answers id and can update selected chats without loading it.
+                // TODO: To discus: If we have all answer ids, can we update selected chats without loading it?
                 return TTYGService.getConversation(chatAnswer.chatId);
             })
             .then((chat) => {
@@ -542,11 +542,16 @@ function TTYGViewCtrl(
                     selectedChat.chatHistory.appendItem(item);
                     TTYGContextService.updateSelectedChat(selectedChat);
                     // TODO reorder the list of chats
+                    // Update the timestamp of the chat to which the last question was added in the chats list and
+                    // update the list so that the chat is moved to the top.
+                    const chats = TTYGContextService.getChats();
+                    chats.updateChatTimestamp(selectedChat.id, chatAnswer.timestamp);
+                    TTYGContextService.updateChats(chats);
                 }
             })
             .catch((error) => {
                 TTYGContextService.emit(TTYGEventName.ASK_QUESTION_FAILURE);
-                toastr.error(getError(error, 0, 100));
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             });
     };
 
@@ -606,7 +611,9 @@ function TTYGViewCtrl(
         TTYGService.deleteConversation(chat.id)
             .then(() => {
                 TTYGContextService.emit(TTYGEventName.DELETE_CHAT_SUCCESSFUL, chat);
-                TTYGContextService.emit(TTYGEventName.LOAD_CHATS);
+                const chats = TTYGContextService.getChats();
+                chats.deleteChat(chat);
+                TTYGContextService.updateChats(chats);
             })
             .catch(() => {
                 TTYGContextService.emit(TTYGEventName.DELETE_CHAT_FAILURE);
@@ -624,7 +631,6 @@ function TTYGViewCtrl(
             .then(function ({data, filename}) {
                 saveAs(data, filename);
                 TTYGContextService.emit(TTYGEventName.CHAT_EXPORT_SUCCESSFUL, chat);
-                TTYGContextService.emit(TTYGEventName.LOAD_CHATS);
             })
             .catch(() => {
                 TTYGContextService.emit(TTYGEventName.CHAT_EXPORT_FAILURE);
@@ -657,7 +663,7 @@ function TTYGViewCtrl(
                 }
             })
             .catch((error) => {
-                toastr.error(getError(error, 0, 100));
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             })
             .finally(() => {
                 TTYGContextService.emit(TTYGEventName.DELETING_AGENT, {agentId: agent.id, inProgress: false});
@@ -670,7 +676,7 @@ function TTYGViewCtrl(
     const buildAgentsFilterModel = () => {
         const currentRepository = $repositories.getActiveRepository();
         // TODO: this should be refreshed automatically when the repositories change
-        const repositoryObjects = $repositories.getReadableGraphdbRepositories()
+        const repositoryObjects = $repositories.getLocalReadableGraphdbRepositories()
             .map((repo) => (
            new AgentListFilterModel(repo.id, repo.id, repo.id === currentRepository)
         ));
@@ -734,6 +740,8 @@ function TTYGViewCtrl(
             if (agent) {
                 TTYGContextService.selectAgent(agent);
             }
+        }).catch((error) => {
+            toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
         });
     };
 
@@ -847,7 +855,7 @@ function TTYGViewCtrl(
     };
 
     const buildRepositoryList = () => {
-        $scope.activeRepositoryList = $repositories.getReadableGraphdbRepositories()
+        $scope.activeRepositoryList = $repositories.getLocalReadableGraphdbRepositories()
             .map((repo) => (
                 new SelectMenuOptionsModel({
                     value: repo.id,
@@ -891,6 +899,7 @@ function TTYGViewCtrl(
     subscriptions.push($rootScope.$on('$translateChangeSuccess', updateLabels));
     subscriptions.push($rootScope.$on('securityInit', updateCanModifyAgent));
     $scope.$on('$destroy', cleanUp);
+
     // =========================
     // Initialization
     // =========================
