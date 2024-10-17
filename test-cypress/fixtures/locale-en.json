@@ -597,7 +597,7 @@
                 "no_agents": "No agents found for the selected filter.",
                 "help_1": "Talk to your data in natural language. All you need to do is create and instruct your own AI Agent to assist you.",
                 "help_2": "The Agent is an AI-powered conversational agent designed to help with a wide range of tasks, from answering questions and providing information to assisting with creative and technical projects. It leverages advanced natural language processing to understand and respond to user inputs in a human-like manner, making interactions intuitive and efficient.",
-                "token_prop_warn1": "To use this feature, the config property",
+                "token_prop_warn1": "To enable this feature, set the config property",
                 "token_prop_warn2": "should be set to your GPT token in",
                 "token_prop_warn3": "file.",
                 "error_retrieval_connectors_loading": "Error loading retrieval connectors",
@@ -605,6 +605,9 @@
                 "error_repository_config_loading": "Error loading repository configurations",
                 "agent_save_successfully": "The agent '{{agentName}}' was saved successfully.",
                 "agent_save_failure": "Failed to save the agent '{{agentName}}'."
+            },
+            "documentation": {
+                "configure_gpt_models": "Configuring your use of GPT models"
             }
         },
         "help.what.title": "What is this?",
