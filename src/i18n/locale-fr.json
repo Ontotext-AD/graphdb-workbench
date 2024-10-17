@@ -382,7 +382,8 @@
                     },
                     "temperature": {
                         "label": "Température",
-                        "tooltip": "La température d'échantillonnage à utiliser, entre 0 et 2. Des valeurs plus élevées comme 0,8 rendront la sortie plus aléatoire, tandis que des valeurs plus faibles comme 0,2 la rendront plus ciblée et déterministe."
+                        "tooltip": "La température d'échantillonnage à utiliser, entre 0 et 2. Des valeurs plus élevées comme 0,8 rendront la sortie plus aléatoire, tandis que des valeurs plus faibles comme 0,2 la rendront plus ciblée et déterministe.",
+                        "high_temperature_warning": "Le réglage de la température au-dessus de 1 entraînera des réponses moins précises de la part de l'agent"
                     },
                     "top_p": {
                         "label": "Top P",
@@ -485,6 +486,10 @@
                         "label": "Instructions de base",
                         "placeholder": "Entrez les instructions de base",
                         "tooltip": "Instructions de base pour l'agent. La valeur par défaut fournit de bons résultats dans la plupart des configurations, il n'est donc pas nécessaire de la modifier.",
+                        "overriding_system_instruction_warning": {
+                            "title": "Remplacement des instructions de base",
+                            "body": "Le non-respect des instructions de base peut entraîner de moins bons résultats. Ne changez cela que si vous savez ce que vous faites."
+                        },
                         "btn": {
                             "copy_instruction": {
                                 "tooltip": "Copier les instructions du système"
