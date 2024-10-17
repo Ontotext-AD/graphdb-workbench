@@ -890,11 +890,11 @@ function TTYGViewCtrl(
     // =========================
 
     function onInit() {
-        setCurrentAgent();
-        setCurrentChat();
         buildRepositoryList();
         loadAgents().then(() => {
             buildAgentsFilterModel();
+            setCurrentAgent();
+            setCurrentChat();
             return loadChats();
         });
         initView();
