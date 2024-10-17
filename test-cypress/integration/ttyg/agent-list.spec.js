@@ -56,6 +56,7 @@ describe('TTYG agent list', () => {
         TTYGViewSteps.getAgentFilter().click();
         TTYGViewSteps.verifyRepositoryOptionNotExist('Fedx_repository');
         TTYGViewSteps.verifyRepositoryOptionNotExist('Ontop_repository');
+        TTYGViewSteps.getAgentFilter().click();
         // When I filter the agents by repository 'biomarkers'
         TTYGViewSteps.filterAgentsByRepository('biomarkers');
         // Then I should see only 1 agent
