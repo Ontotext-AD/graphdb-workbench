@@ -267,7 +267,7 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.getSimilarityIndexThresholdField().should('have.value', '0.6');
         TtygAgentSettingsModalSteps.setSimilarityIndexThreshold('0.8');
         // And I set the max triples per call
-        TtygAgentSettingsModalSteps.getSimilarityIndexMaxTriplesField().should('have.value', '0');
+        TtygAgentSettingsModalSteps.getSimilarityIndexMaxTriplesField().should('have.value', '');
         TtygAgentSettingsModalSteps.setSimilarityIndexMaxTriples('100');
         // When I save the agent
         TTYGStubs.stubAgentCreate();
@@ -346,7 +346,7 @@ describe('TTYG create new agent', () => {
         // Then the save button should be enabled
         TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.enabled');
         // When I set the max triples per call
-        TtygAgentSettingsModalSteps.getRetrievalMaxTriplesField().should('have.value', '0');
+        TtygAgentSettingsModalSteps.getRetrievalMaxTriplesField().should('have.value', '');
         TtygAgentSettingsModalSteps.setRetrievalMaxTriples('100');
         // When I save the agent
         TTYGStubs.stubAgentCreate();

@@ -1,4 +1,11 @@
 /**
+ * The length of the message to be cut and displayed to the user from the error
+ * server's response.
+ * @type {number}
+ */
+export const TTYG_ERROR_MSG_LENGTH = 100;
+
+/**
  * The key to use when filtering agents indicating that all agents should be shown.
  * @type {string}
  */
