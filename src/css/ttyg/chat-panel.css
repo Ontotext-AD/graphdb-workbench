@@ -11,6 +11,12 @@
     clip: rect(0, auto, auto, 0);
 }
 
+.chat-panel.no-content {
+    justify-content: center;
+    align-items: center;
+    height: inherit !important;
+}
+
 .chat-panel .chat-details {
     display: flex;
     flex-direction: column;
@@ -59,9 +65,15 @@
 }
 
 .chat-panel .messages-hint {
-    font-size: 2em;
-    padding-top: 2em;
     text-align: center;
+}
+
+.chat-panel .messages-hint .hint1 {
+    font-size: 1.5rem;
+}
+
+.chat-panel .messages-hint .hint2 {
+    font-size: 1.5rem;
 }
 
 .chat-panel .new-question {

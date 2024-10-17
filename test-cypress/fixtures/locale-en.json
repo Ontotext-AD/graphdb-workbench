@@ -276,7 +276,8 @@
             }
         },
         "chat_panel": {
-            "hint": "Talk to your graph – simply ask a question!",
+            "hint1": "<b>GRAPH</b>WISE – AI THRIVES ON WHOLE DATA",
+            "hint2": "Simply ask a question!",
             "deleted_agent": "<span class=\"text-warning\"><i class=\"fa-regular fa-triangle-exclamation fa-xs\"></i> deleted agent</span>",
             "btn": {
                 "ask": {
