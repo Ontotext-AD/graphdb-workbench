@@ -80,7 +80,9 @@ const extractionMethodsFormMapper = (agentFormModel, isNew, defaultData, data = 
                 maxValue: 1,
                 step: 0.1
             }),
-            maxNumberOfTriplesPerCall: extractionMethod.maxNumberOfTriplesPerCall,
+            // In case backend returns 0 as a default value this means that there is no limit, so we set the null in order
+            // to show the placeholder in the input field.
+            maxNumberOfTriplesPerCall: extractionMethod.maxNumberOfTriplesPerCall === 0 ? null : extractionMethod.maxNumberOfTriplesPerCall,
             queryTemplate: extractionMethod.queryTemplate && new TextFieldModel({
                 value: extractionMethod.queryTemplate,
                 minLength: 1,
