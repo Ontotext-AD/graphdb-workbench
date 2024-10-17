@@ -552,7 +552,8 @@
             },
             "fat_btn": {
                 "create_agent": {
-                    "label": "Créez votre premier agent"
+                    "label": "Créez votre premier agent",
+                    "tooltip_disabled": "Vous n'avez pas l'autorisation de créer un agent"
                 }
             },
             "btn": {
@@ -562,7 +563,8 @@
                 },
                 "edit_agent": {
                     "label": "Paramètres de l'agent",
-                    "tooltip": "Paramètres de l'agent"
+                    "tooltip": "Paramètres de l'agent",
+                    "tooltip_disabled": "Vous n'avez pas l'autorisation de modifier l'agent."
                 },
                 "clone_agent": {
                     "label": "Cloner",
@@ -574,16 +576,21 @@
                 },
                 "create_agent": {
                     "label": "Créer un agent",
-                    "tooltip": "Créer un nouvel agent"
+                    "tooltip": "Créer un nouvel agent",
+                    "tooltip_disabled": "Vous n'avez pas la permission de créer un agent"
                 },
                 "open_sidebar": {
-                    "tooltip": "Gérer les agents"
+                    "tooltip": "Gérer les agents",
+                    "tooltip_disabled": "Vous n'avez pas la permission de modifier l'agent"
                 },
                 "close_sidebar": {
                     "tooltip": "Fermer la barre latérale"
                 },
                 "copy_gpt_token_prop": {
                     "tooltip": "Copier la propriété du jeton GPT"
+                },
+                "open-agent-actions": {
+                    "label_disabled": "Vous n'avez pas la permission de modifier l'agent"
                 }
             },
             "messages": {

@@ -4,6 +4,8 @@ import './sparql-commands';
 import './import-commands';
 import './settings-commands';
 import './visual-graph-commands';
+import './user-commands';
+import './security-command';
 import 'cypress-wait-until';
 
 /**

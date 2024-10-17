@@ -14,7 +14,10 @@
         </div>
 
         <div class="actions">
-            <button class="btn btn-outline-primary btn-lg text-xs-left create-agent-btn" ng-click="onCreateAgent()">
+            <button class="btn btn-outline-primary btn-lg text-xs-left create-agent-btn"
+                    gdb-tooltip="{{!canModifyAgent ? ('ttyg.agent.fat_btn.create_agent.tooltip_disabled' | translate) : ''}}"
+                    ng-disabled="!canModifyAgent"
+                    ng-click="onCreateAgent()">
                 <i class="fa-regular fa-message-bot fa-xl"></i>
                 <span class="text ml-1">{{'ttyg.agent.fat_btn.create_agent.label' | translate}}</span>
             </button>

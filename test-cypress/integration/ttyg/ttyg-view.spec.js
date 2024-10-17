@@ -31,7 +31,7 @@ describe('TTYG view', () => {
         // The create chat button is visible when there are chats
         TTYGViewSteps.getCreateChatButton().should('exist');
         // Verify the agents sidebar
-        TTYGViewSteps.getAgentsPanel().should('be.visible');
+        TTYGViewSteps.getAgentsPanel().should('not.be.visible');
         TTYGViewSteps.getHelpButton().should('be.visible');
         TTYGViewSteps.getCreateAgentButton().should('be.visible');
         TTYGViewSteps.getToggleAgentsSidebarButton().should('be.visible');

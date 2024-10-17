@@ -51,6 +51,8 @@ function TTYGContextService(EventEmitterService) {
      */
     let _defaultAgent = undefined;
 
+    let _canModifyAgent = false;
+
     const resetContext = () => {
         _agents = undefined;
         _chats = undefined;
@@ -58,6 +60,7 @@ function TTYGContextService(EventEmitterService) {
         _selectedAgent = undefined;
         _explainCache = {};
         _defaultAgent = undefined;
+        _canModifyAgent = false;
     };
 
     /**
@@ -292,6 +295,33 @@ function TTYGContextService(EventEmitterService) {
     };
 
     /**
+     * Updates the "canModifyAgent" flag and emits the 'canModifyAgentUpdated' event to notify listeners that the canModifyAgent flag is changed.
+     *
+     * @param {boolean} canModifyAgent
+     */
+    const setCanModifyAgent = (canModifyAgent) => {
+        _canModifyAgent = cloneDeep(canModifyAgent);
+        emit(TTYGEventName.CAN_MODIFY_AGENT_UPDATED, getCanModifyAgent());
+    };
+
+    const getCanModifyAgent = () => {
+        return _canModifyAgent;
+    };
+
+    /**
+     * Subscribes to the 'canModifyAgentUpdated' event.
+     * @param {function} callback - The callback to be called when the event is fired.
+     *
+     * @return {function} unsubscribe function.
+     */
+    const onCanUpdateAgentUpdated = (callback) => {
+        if (angular.isFunction(callback)) {
+            callback(getCanModifyAgent());
+        }
+        return subscribe(TTYGEventName.CAN_MODIFY_AGENT_UPDATED, (canModifyAgent) => callback(canModifyAgent));
+    };
+
+    /**
      * Emits an event with a deep-cloned payload using the EventEmitterService.
      *
      * @param {string} tTYGEventName - The name of the event to emit. It must be a value from {@link TTYGEventName}.
@@ -340,7 +370,10 @@ function TTYGContextService(EventEmitterService) {
         addExplainResponseCache,
         onExplainResponseCacheUpdated,
         getDefaultAgent,
-        setDefaultAgent
+        setDefaultAgent,
+        setCanModifyAgent,
+        getCanModifyAgent,
+        onCanUpdateAgentUpdated
     };
 }
 
@@ -483,5 +516,7 @@ export const TTYGEventName = {
     /**
      * This event will trigger the opening of the sparql view.
      */
-    GO_TO_SPARQL_EDITOR: "openQueryInSparqlEditor"
+    GO_TO_SPARQL_EDITOR: "openQueryInSparqlEditor",
+
+    CAN_MODIFY_AGENT_UPDATED: "canModifyAgentUpdated"
 };

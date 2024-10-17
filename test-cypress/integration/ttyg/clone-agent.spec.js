@@ -24,6 +24,7 @@ describe('TTYG clone an agent', () => {
         cy.wait('@get-chat');
         cy.wait('@get-agent-list');
         // When I select to clone an agent
+        TTYGViewSteps.expandAgentsSidebar();
         TTYGViewSteps.triggerCloneAgentActionMenu(0);
         // Then I expect to see the clone agent settings modal
         TtygAgentSettingsModalSteps.getDialog().should('be.visible');

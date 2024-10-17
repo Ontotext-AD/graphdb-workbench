@@ -24,7 +24,7 @@
          size="100">
     </div>
 
-    <no-agents-view ng-cloak ng-if="!loadingAgents && !reloadingAgents && (!agents || agents.isEmpty())"></no-agents-view>
+    <no-agents-view ng-cloak ng-if="getActiveRepository() && !loadingAgents && !reloadingAgents && (!agents || agents.isEmpty())"></no-agents-view>
 
     <div id="ttyg-container" class="ttyg-container" ng-show="getActiveRepository() && !loadingAgents && agents && !agents.isEmpty()">
 
@@ -69,8 +69,8 @@
                     <button class="btn btn-link btn-sm edit-current-agent-btn mr-1"
                             ng-if="selectedAgent"
                             ng-click="onOpenAgentSettings()"
-                            ng-disabled="false"
-                            gdb-tooltip="{{'ttyg.agent.btn.edit_agent.tooltip' | translate}}">
+                            ng-disabled="!canModifyAgent"
+                            gdb-tooltip="{{ (canModifyAgent ? 'ttyg.agent.btn.edit_agent.tooltip' : 'ttyg.agent.btn.edit_agent.tooltip_disabled') | translate}}">
                         <i class="icon-settings"></i>
                     </button>
                 </div>
@@ -96,19 +96,25 @@
                     <i class="icon-help"></i>
                 </button>
                 <button class="btn btn-link btn-sm create-agent-btn"
-                        ng-if="true"
+                        ng-disabled="!canModifyAgent"
                         ng-click="onOpenNewAgentSettings()"
                         ng-disabled="false"
-                        gdb-tooltip="{{'ttyg.agent.btn.create_agent.tooltip' | translate}}">
+                        gdb-tooltip="{{ (canModifyAgent ? 'ttyg.agent.btn.create_agent.tooltip' : 'ttyg.agent.btn.create_agent.tooltip_disabled') | translate}}">
                     <i class="icon-plus"></i>
                 </button>
                 <button class="btn btn-link btn-sm toggle-agents-sidebar-btn"
-                        ng-if="true"
+                        ng-if="!showAgents"
+                        ng-click="toggleAgentsListSidebar()"
+                        ng-disabled="!canModifyAgent"
+                        gdb-tooltip="{{'ttyg.agent.btn.open_sidebar.' + (canModifyAgent ? 'tooltip' : 'tooltip_disabled') | translate}}">
+                    <i class="fa-regular fa-message-bot"></i>
+                </button>
+                <button class="btn btn-link btn-sm toggle-agents-sidebar-btn"
+                        ng-if="showAgents"
                         ng-click="toggleAgentsListSidebar()"
                         ng-disabled="false"
-                        gdb-tooltip="{{'ttyg.agent.btn.' + (showAgents ? 'close_sidebar' : 'open_sidebar') + '.tooltip' | translate}}">
-                    <i ng-if="!showAgents" class="fa-regular fa-message-bot"></i>
-                    <i ng-if="showAgents" class="icon-close"></i>
+                        gdb-tooltip="{{'ttyg.agent.btn.close_sidebar' + '.tooltip' | translate}}">
+                    <i class="icon-close"></i>
                 </button>
             </div>
 

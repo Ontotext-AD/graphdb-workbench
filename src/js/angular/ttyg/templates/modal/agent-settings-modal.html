@@ -379,7 +379,7 @@
                 <div class="actions">
                     <copy-to-clipboard
                         tooltip-text="ttyg.agent.create_agent_modal.form.user_instruction.btn.copy_instruction.tooltip"
-                        text-to-copy="agentFormModel.instructions.userInstruction"></copy-to-clipboard>
+                        text-to-copy="{{agentFormModel.instructions.userInstruction}}"></copy-to-clipboard>
                     <button class="btn btn-link btn-sm create-chat-btn"
                             ng-click="onRestoreDefaultUserInstructions()"
                             gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.user_instruction.btn.restore_default.tooltip' | translate}}">
@@ -414,7 +414,7 @@
                     <div class="actions">
                         <copy-to-clipboard
                             tooltip-text="ttyg.agent.create_agent_modal.form.system_instruction.btn.copy_instruction.tooltip"
-                            text-to-copy="agentFormModel.instructions.systemInstruction"></copy-to-clipboard>
+                            text-to-copy="{{agentFormModel.instructions.systemInstruction}}"></copy-to-clipboard>
                         <button class="btn btn-link btn-sm create-chat-btn"
                                 ng-click="onRestoreDefaultSystemInstructions()"
                                 gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.system_instruction.btn.restore_default.tooltip' | translate}}">

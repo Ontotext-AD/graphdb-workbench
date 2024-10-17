@@ -18,6 +18,7 @@ describe('TTYG delete agent', () => {
         TTYGStubs.stubAgentListGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
+        TTYGViewSteps.expandAgentsSidebar();
         TTYGViewSteps.getAgents().should('have.length', 2);
         TTYGViewSteps.filterAgentsByRepository('All');
         TTYGViewSteps.getAgents().should('have.length', 4);

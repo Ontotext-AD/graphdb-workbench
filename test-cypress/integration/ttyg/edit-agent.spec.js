@@ -30,6 +30,7 @@ describe('TTYG edit an agent', () => {
         cy.wait('@get-agent-list');
         cy.wait('@get-chat');
         // When I select an agent that don't have activated additional extraction method
+        TTYGViewSteps.expandAgentsSidebar();
         TTYGViewSteps.openAgentsMenu();
         TTYGViewSteps.selectAgent(0);
         TTYGViewSteps.editCurrentAgent();
