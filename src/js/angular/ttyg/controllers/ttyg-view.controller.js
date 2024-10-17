@@ -118,6 +118,12 @@ function TTYGViewCtrl(
     $scope.loadingChat = false;
 
     /**
+     * Flag controls when component is initialized.
+     * @type {boolean}
+     */
+    $scope.initialized = false;
+
+    /**
      * Agents list model.
      * @type {AgentListModel|undefined}
      */
@@ -892,6 +898,7 @@ function TTYGViewCtrl(
     function onInit() {
         buildRepositoryList();
         loadAgents().then(() => {
+            $scope.initialized = true;
             buildAgentsFilterModel();
             setCurrentAgent();
             setCurrentChat();
