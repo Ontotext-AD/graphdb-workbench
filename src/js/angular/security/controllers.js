@@ -132,11 +132,11 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
         }
 
         $scope.isGDBLoginEnabled = function() {
-            return $jwtAuth.isPasswordLoginEnabled();
+            return $jwtAuth.passwordLoginEnabled;
         };
 
         $scope.isOpenIDEnabled = function() {
-            return $jwtAuth.isOpenIDEnabled();
+            return $jwtAuth.openIDEnabled;
         };
 
         $scope.login = function () {
@@ -931,9 +931,14 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
             ThemeService.applyTheme(theme.name);
         };
 
-        $licenseService.checkLicenseStatus().then(() => {
-            $scope.showCookiePolicyLink = $licenseService.isTrackingAllowed();
-        });
+        const checkLicenseStatus = () => {
+            $licenseService.checkLicenseStatus().then(() => {
+                $scope.showCookiePolicyLink = $licenseService.isTrackingAllowed();
+            }).catch((error) => {
+                const msg = getError(error.data, error.status);
+                toastr.error(msg, $translate.instant('common.error'));
+            });
+        };
 
         $scope.showCookiePolicy = () => {
             $uibModal.open({
@@ -961,6 +966,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
                 };
             }
             $scope.setThemeMode();
+            checkLicenseStatus();
         };
 
         initView();
