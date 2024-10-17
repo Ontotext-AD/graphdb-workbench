@@ -8,7 +8,7 @@ import 'angular/core/services/ttyg.service';
 import 'angular/ttyg/services/ttyg-context.service';
 import 'angular/ttyg/services/ttyg-storage.service';
 import {TTYGEventName} from '../services/ttyg-context.service';
-import {AGENT_OPERATION, AGENTS_FILTER_ALL_KEY} from '../services/constants';
+import {AGENT_OPERATION, AGENTS_FILTER_ALL_KEY, TTYG_ERROR_MSG_LENGTH} from '../services/constants';
 import {AgentListFilterModel, AgentModel} from '../../models/ttyg/agents';
 import {ChatModel, ChatsListModel} from '../../models/ttyg/chats';
 import {agentFormModelMapper} from '../services/agents.mapper';
@@ -417,7 +417,7 @@ function TTYGViewCtrl(
                 return TTYGContextService.updateChats(chats);
             })
             .catch((error) => {
-                toastr.error(getError(error, 0, 100));
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
                 setupChatListPanel(new ChatsListModel());
             })
             .finally(() => {
@@ -437,7 +437,7 @@ function TTYGViewCtrl(
                 return TTYGContextService.updateAgents(agents);
             })
             .catch((error) => {
-                toastr.error(getError(error, 0, 100));
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             })
             .finally(() => {
                 $scope.loadingAgents = false;
@@ -456,7 +456,7 @@ function TTYGViewCtrl(
                 return TTYGContextService.updateAgents(agents);
             })
             .catch((error) => {
-                toastr.error(getError(error, 0, 100));
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             })
             .finally(() => {
                 $scope.reloadingAgents = false;
@@ -551,7 +551,7 @@ function TTYGViewCtrl(
             })
             .catch((error) => {
                 TTYGContextService.emit(TTYGEventName.ASK_QUESTION_FAILURE);
-                toastr.error(getError(error, 0, 100));
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             });
     };
 
@@ -663,7 +663,7 @@ function TTYGViewCtrl(
                 }
             })
             .catch((error) => {
-                toastr.error(getError(error, 0, 100));
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             })
             .finally(() => {
                 TTYGContextService.emit(TTYGEventName.DELETING_AGENT, {agentId: agent.id, inProgress: false});
@@ -741,7 +741,7 @@ function TTYGViewCtrl(
                 TTYGContextService.selectAgent(agent);
             }
         }).catch((error) => {
-            toastr.error(getError(error, 0, 100));
+            toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
         });
     };
 
