@@ -97,13 +97,23 @@ const extractionMethodsFormMapper = (agentFormModel, isNew, defaultData, data = 
 /**
  * Converts the response from the server to a list of AgentModel.
  * @param {*[]} data
+ * @param {string[]} localRepositoryIds
  * @return {AgentListModel}
  */
-export const agentListMapper = (data) => {
+export const agentListMapper = (data, localRepositoryIds) => {
     if (!data) {
         return new AgentListModel();
     }
-    const agentModels = data.map((agent) => agentModelMapper(agent));
+    const agentModels = data
+        .map((agent) => agentModelMapper(agent))
+        .map((agent) => {
+            // If the agent is not in the list of local repositories, then set the repositoryId to null in order to show
+            // the agent is not assigned to any repository in this GDB instance.
+            if (!localRepositoryIds.includes(agent.repositoryId)) {
+                agent.repositoryId = null;
+            }
+            return agent;
+        });
     return new AgentListModel(agentModels);
 };
 
