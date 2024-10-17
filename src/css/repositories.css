@@ -354,7 +354,7 @@ span.label {
 }
 
 .padding-label {
-    padding-left: 15px;
+    padding-left: 9px;
     padding-right: 15px
 }
 
@@ -408,9 +408,14 @@ span.label {
     border:0px !important;
 }
 
-.btns-all, .ontopic-instances, .location-type-title {
+.btns-all, .ontopic-instances, .location-type-title, .sparql-instances {
     padding: 0 13px;
 }
+
+.remote-location-type-title {
+    padding: 0;
+}
+
 .repository {
     padding: 0;
 }
@@ -455,7 +460,11 @@ span.label {
     margin-bottom: 0.5em;
 }
 
-.repository-status {
+.repository-status, .location-type {
     font-weight: bolder;
     font-variant-caps: all-small-caps;
+}
+
+.location-url {
+    font-size: 1.1rem;
 }
