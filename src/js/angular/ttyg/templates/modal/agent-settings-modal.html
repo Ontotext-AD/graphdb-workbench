@@ -321,7 +321,7 @@
                 <label for="{{additionalExtractionMethod.method + '_checkbox'}}"></label>
                 <a class="btn btn-link extraction-method-label" uib-popover="{{'ttyg.agent.create_agent_modal.form.additional_query_methods.method.' +
                     additionalExtractionMethod.method + '.tooltip' | translate}}"
-                      popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.additional_query_methods.method.' +
+                   popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.additional_query_methods.method.' +
                     additionalExtractionMethod.method + '.label' | translate}}</a>
             </div>
         </div>
@@ -329,7 +329,8 @@
         <div class="form-row clearfix">
             <div class="form-group gpt-model col-md-4">
                 <label for="model" uib-popover="{{'ttyg.agent.create_agent_modal.form.model.tooltip' | translate}}"
-                       popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.model.label' | translate}}</label>
+                       popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.model.label' |
+                    translate}}</label>
                 <input type="text" class="form-control" id="model" name="model" ng-model="agentFormModel.model"
                        required autocomplete="off">
                 <small id="modelHelp" class="form-text text-muted"
@@ -341,15 +342,20 @@
                 </div>
             </div>
             <div class="form-group temperature col-md-4">
-                <label for="temperature"
-                       uib-popover="{{'ttyg.agent.create_agent_modal.form.temperature.tooltip' | translate}}"
-                       popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.temperature.label' |
-                    translate}}</label>
-                <input type="text" class="form-control" id="temperature" name="temperature" readonly
+                <label for="temperature">
+                    <span uib-popover="{{'ttyg.agent.create_agent_modal.form.temperature.tooltip' | translate}}"
+                          popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.temperature.label' | translate}}</span>
+                    <i class="fa-regular fa-triangle-exclamation text-warning high-temperature-warning" ng-if="showHighTemperatureWarning"
+                       uib-popover="{{'ttyg.agent.create_agent_modal.form.temperature.high_temperature_warning' | translate}}"
+                       popover-trigger="mouseenter"></i>
+                </label>
+                <input type="text" id="temperature" name="temperature" readonly
+                       class="form-control" ng-class="{'has-warning': showHighTemperatureWarning}"
                        ng-model="agentFormModel.temperature.value">
                 <input id="temperatureSlider" name="temperature" type="range"
                        min="{{agentFormModel.temperature.minValue}}"
                        max="{{agentFormModel.temperature.maxValue}}" step="{{agentFormModel.temperature.step}}"
+                       ng-change="onTemperatureChange()"
                        ng-model="agentFormModel.temperature.value"/>
             </div>
             <div class="form-group top-p col-md-4">
@@ -406,10 +412,13 @@
         <div ng-show="showAdvancedSettings" class="advanced-settings">
             <div class="form-group system-instructions">
                 <div class="toolbar">
-                    <label for="systemInstruction"
-                           uib-popover="{{'ttyg.agent.create_agent_modal.form.system_instruction.tooltip' | translate}}"
-                           popover-trigger="mouseenter">
-                        {{'ttyg.agent.create_agent_modal.form.system_instruction.label' | translate}}
+                    <label for="systemInstruction">
+                        <span
+                            uib-popover="{{'ttyg.agent.create_agent_modal.form.system_instruction.tooltip' | translate}}"
+                            popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.system_instruction.label' | translate}}</span>
+                        <i class="fa-regular fa-triangle-exclamation text-warning overriding-system-instructions-warning" ng-if="showSystemInstructionWarning"
+                           uib-popover="{{'ttyg.agent.create_agent_modal.form.system_instruction.overriding_system_instruction_warning.body' | translate}}"
+                           popover-trigger="mouseenter"></i>
                     </label>
                     <div class="actions">
                         <copy-to-clipboard
@@ -423,8 +432,10 @@
                     </div>
                 </div>
                 <textarea type="text" class="form-control" id="systemInstruction" name="systemInstruction" rows="5"
+                          placeholder="{{'ttyg.agent.create_agent_modal.form.system_instruction.placeholder' | translate}}"
+                          ng-class="{'has-warning': showSystemInstructionWarning}"
                           ng-model="agentFormModel.instructions.systemInstruction"
-                          placeholder="{{'ttyg.agent.create_agent_modal.form.system_instruction.placeholder' | translate}}">
+                          ng-change="onSystemInstructionChange()">
                 </textarea>
             </div>
         </div>

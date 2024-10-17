@@ -19,6 +19,7 @@ angular
 AgentSettingsModalController.$inject = [
     '$scope',
     '$uibModalInstance',
+    'ModalService',
     'SimilarityService',
     'ConnectorsService',
     'RepositoriesRestService',
@@ -33,6 +34,7 @@ AgentSettingsModalController.$inject = [
 function AgentSettingsModalController(
     $scope,
     $uibModalInstance,
+    ModalService,
     SimilarityService,
     ConnectorsService,
     RepositoriesRestService,
@@ -105,6 +107,18 @@ function AgentSettingsModalController(
      * @type {boolean}
      */
     $scope.showAdvancedSettings = false;
+
+    /**
+     * Flag used to show/hide the high temperature warning in the modal.
+     * @type {boolean}
+     */
+    $scope.showHighTemperatureWarning = false;
+
+    /**
+     * Flag used to control the visibility of the system instruction warning.
+     * @type {boolean}
+     */
+    $scope.showSystemInstructionWarning = false;
 
     /**
      * The similarity indexes to be used for the similarity extraction method as select menu options.
@@ -281,6 +295,33 @@ function AgentSettingsModalController(
      */
     $scope.onRestoreDefaultUserInstructions = () => {
         $scope.agentFormModel.instructions.userInstruction = $scope.agentFormModel.instructions.userInstructionCopy;
+    };
+
+    /**
+     * Handles the change in the temperature field. This is needed because the high temperature warning should be shown
+     * when the temperature is higher than 1.
+     */
+    $scope.onTemperatureChange = () => {
+        $scope.showHighTemperatureWarning = $scope.agentFormModel.temperature.value > 1;
+    };
+
+    /**
+     * Handles the change in the system instructions field.
+     */
+    $scope.onSystemInstructionChange = () => {
+        if ($scope.agentFormModel.instructions.systemInstruction !== '' && !$scope.showSystemInstructionWarning) {
+            $scope.showSystemInstructionWarning = true;
+            ModalService.openModalAlert({
+                title: $translate.instant('ttyg.agent.create_agent_modal.form.system_instruction.overriding_system_instruction_warning.title'),
+                message: $translate.instant('ttyg.agent.create_agent_modal.form.system_instruction.overriding_system_instruction_warning.body')
+            }).result
+                .then(function () {
+                    // Do nothing, just warning the user
+                });
+        }
+        if ($scope.agentFormModel.instructions.systemInstruction === '') {
+            $scope.showSystemInstructionWarning = false;
+        }
     };
 
     // =========================
