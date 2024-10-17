@@ -39,7 +39,7 @@ common sidebar and slidepanel styles
 }
 
 .ttyg-view .sidebar .sidebar-content {
-    height: 100%;
+    height: calc(100% - var(--toolbar-height));
     padding: 0;
 }
 
