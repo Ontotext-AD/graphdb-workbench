@@ -24,7 +24,7 @@
          size="100">
     </div>
 
-    <no-agents-view ng-cloak ng-if="getActiveRepository() && !loadingAgents && !reloadingAgents && (!agents || agents.isEmpty())"></no-agents-view>
+    <no-agents-view ng-cloak ng-if="initialized && getActiveRepository() && !loadingAgents && !reloadingAgents && (!agents || agents.isEmpty())"></no-agents-view>
 
     <div id="ttyg-container" class="ttyg-container" ng-show="getActiveRepository() && !loadingAgents && agents && !agents.isEmpty()">
 
