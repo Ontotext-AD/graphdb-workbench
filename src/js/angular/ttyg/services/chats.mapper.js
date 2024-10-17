@@ -31,6 +31,6 @@ export const chatModelMapper = (data) => {
         id: data.id,
         name: data.name,
         timestamp: data.timestamp,
-        chatHistory: data.messages && data.messages.length ? chatItemsModelMapper(data.messages.reverse()) : new ChatItemsListModel()
+        chatHistory: data.messages && data.messages.length ? chatItemsModelMapper(data.messages) : new ChatItemsListModel()
     }, hashGenerator);
 };
