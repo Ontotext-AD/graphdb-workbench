@@ -383,7 +383,8 @@
                     },
                     "temperature": {
                         "label": "Temperature",
-                        "tooltip": "The sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic."
+                        "tooltip": "The sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.",
+                        "high_temperature_warning": "A temperature above 1.0 may cause the model to generate anything from creative responses to overdriven, incoherent outputs. Consider lowering the temperature for more reliable results."
                     },
                     "top_p": {
                         "label": "Top P",
@@ -486,6 +487,10 @@
                         "label": "Base instructions",
                         "placeholder": "Enter base instructions",
                         "tooltip": "Base instructions for the agent. The default value provides good results in most setups so there is no need to change it.",
+                        "overriding_system_instruction_warning": {
+                            "title": "Overriding base instructions",
+                            "body": "Modifying the base instructions may result in suboptimal performance. Only proceed if you are confident in your adjustments."
+                        },
                         "btn": {
                             "copy_instruction": {
                                 "tooltip": "Copy base instructions"

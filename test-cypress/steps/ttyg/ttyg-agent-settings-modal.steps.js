@@ -322,8 +322,16 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
         return this.getTemperatureFormGroup().find('#temperature');
     }
 
+    static getTemperatureSliderField() {
+        return this.getTemperatureFormGroup().find('#temperatureSlider');
+    }
+
     static setTemperature(value) {
-        this.getTemperatureField().invoke('val', value).trigger('input');
+        this.getTemperatureSliderField().invoke('val', value).trigger('input');
+    }
+
+    static getTemperatureWarning() {
+        return this.getTemperatureFormGroup().find('.high-temperature-warning');
     }
 
     // Top P
@@ -382,6 +390,10 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
         return this.getSystemInstructionsFormGroup().find('#systemInstruction');
     }
 
+    static getSystemInstructionsWarning() {
+        return this.getSystemInstructionsFormGroup().find('.overriding-system-instructions-warning');
+    }
+
     static clearSystemInstructions() {
         this.getSystemInstructionsField().clear();
     }
@@ -406,6 +418,10 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
 
     static typeUserInstructions(value) {
         return this.getUserInstructionsField().type(value);
+    }
+
+    static toggleAdvancedSettings() {
+        this.getDialog().find('.toggle-advanced-settings').click();
     }
 
     static getCreatingAgentLoader() {

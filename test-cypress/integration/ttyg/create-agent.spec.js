@@ -6,6 +6,7 @@ import {SimilarityIndexStubs} from "../../stubs/similarity-index-stubs";
 import {ConnectorStubs} from "../../stubs/connector-stubs";
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 import {RepositoriesStub} from "../../stubs/repositories-stub";
+import {AlertDialogSteps} from "../../steps/alert-dialog-steps";
 
 describe('TTYG create new agent', () => {
     const repositoryId = 'starwars';
@@ -109,9 +110,8 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.typeGptModel('gpt-4o');
 
         // temperature
-        TtygAgentSettingsModalSteps.getTemperatureField().should('have.value', '0.7');
         TtygAgentSettingsModalSteps.setTemperature('0.2');
-        TtygAgentSettingsModalSteps.getTemperatureField().should('have.value', '0.2');
+        TtygAgentSettingsModalSteps.getTemperatureSliderField().should('have.value', '0.2');
 
         // Top P
         TtygAgentSettingsModalSteps.getTopPField().should('have.value', '1');
@@ -129,7 +129,7 @@ describe('TTYG create new agent', () => {
         // Validate the advanced settings
 
         // System instructions
-        TtygAgentSettingsModalSteps.getSystemInstructionsField().should('have.value', 'You are a helpful, knowledgeable, and friendly assistant. Your goal is to provide clear and accurate information while being polite, respectful, and professional.');
+        TtygAgentSettingsModalSteps.getSystemInstructionsField().should('have.value', '');
 
         // User instructions
         TtygAgentSettingsModalSteps.getUserInstructionsField().should('have.value', 'If you need to write a SPARQL query, use only the classes and properties provided in the schema and don\'t invent or guess any. Always try to return human-readable names or labels and not only the IRIs. If SPARQL fails to provide the necessary information you can try another tool too.');
@@ -434,6 +434,61 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.clickOnSimilaritySearchIndexMissingHelp();
         // Then I expect a confirm dialog displayed.
         ModalDialogSteps.getDialogBody().contains('If you proceed with creating the similarity index, GraphDB will open in a new tab and switch to the ttyg-repo-1725518186812 repository.');
+    });
+
+    it('Should warn the user when temperature is set above given treshold', () => {
+        RepositoriesStubs.stubGetRepositoryConfig(repositoryId, '/repositories/get-repository-config-starwars-enabled-fts.json');
+        TTYGStubs.stubChatsListGetNoResults();
+        TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
+        // Given I have opened the ttyg page
+        TTYGViewSteps.visit();
+        cy.wait('@get-all-repositories');
+        cy.wait('@get-agent-list');
+        // When I open the agent settings dialog
+        TTYGViewSteps.createFirstAgent();
+        TtygAgentSettingsModalSteps.typeAgentName('Test Agent');
+        // Then I expect that the high temperature warning is not visible
+        TtygAgentSettingsModalSteps.getTemperatureWarning().should('not.exist');
+        TtygAgentSettingsModalSteps.getTemperatureField().should('not.have.class', 'has-warning');
+        // And I change the temperature to value above 1.0
+        TtygAgentSettingsModalSteps.setTemperature('1.2');
+        TtygAgentSettingsModalSteps.getTemperatureSliderField().should('have.value', '1.2');
+        // Then I should see a warning message
+        TtygAgentSettingsModalSteps.getTemperatureWarning().should('be.visible');
+        TtygAgentSettingsModalSteps.getTemperatureField().should('have.class', 'has-warning');
+        // When I change the temperature to value below 1.0
+        TtygAgentSettingsModalSteps.setTemperature('0.9');
+        TtygAgentSettingsModalSteps.getTemperatureSliderField().should('have.value', '0.9');
+        // Then The high temperature warning should be hidden
+        TtygAgentSettingsModalSteps.getTemperatureWarning().should('not.exist');
+        TtygAgentSettingsModalSteps.getTemperatureField().should('not.have.class', 'has-warning');
+    });
+
+    it('Should warn the user when he changes the default value of the base instruction', () => {
+        RepositoriesStubs.stubGetRepositoryConfig(repositoryId, '/repositories/get-repository-config-starwars-enabled-fts.json');
+        TTYGStubs.stubChatsListGetNoResults();
+        TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
+        // Given I have opened the ttyg page
+        TTYGViewSteps.visit();
+        cy.wait('@get-all-repositories');
+        cy.wait('@get-agent-list');
+        // When I open the agent settings dialog
+        TTYGViewSteps.createFirstAgent();
+        TtygAgentSettingsModalSteps.typeAgentName('Test Agent');
+        // Then I expect that the overriding base instruction warning is not visible
+        TtygAgentSettingsModalSteps.toggleAdvancedSettings();
+        TtygAgentSettingsModalSteps.getSystemInstructionsWarning().should('not.exist');
+        // When I change the base instruction
+        TtygAgentSettingsModalSteps.typeSystemInstructions('New');
+        // Then I should see a warning alert
+        AlertDialogSteps.getDialog().should('be.visible');
+        AlertDialogSteps.acceptAlert();
+        // And the warning should be visible
+        TtygAgentSettingsModalSteps.getSystemInstructionsWarning().should('be.visible');
+        // When I revert the base instruction to the default value
+        TtygAgentSettingsModalSteps.clearSystemInstructions();
+        // Then the warning should be hidden
+        TtygAgentSettingsModalSteps.getSystemInstructionsWarning().should('not.exist');
     });
 });
 
