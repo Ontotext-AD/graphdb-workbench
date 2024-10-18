@@ -595,7 +595,7 @@ function TTYGViewCtrl(
             $scope.showChats = false;
         } else {
             $scope.showChats = true;
-            if (!TTYGContextService.getSelectedChat()) {
+            if (!TTYGContextService.getSelectedChat() && !TTYGStorageService.getChatId()) {
                 TTYGContextService.selectChat($scope.chats.getFirstChat());
             }
         }
@@ -841,11 +841,7 @@ function TTYGViewCtrl(
         if (!chatId) {
             return;
         }
-        TTYGService.getConversation(chatId).then((chat) => {
-            if (chat) {
-                TTYGContextService.selectChat(chat);
-            }
-        });
+        TTYGContextService.selectChat(TTYGContextService.getChats().getChat(chatId));
     };
 
     const updateLabels = () => {
@@ -910,9 +906,9 @@ function TTYGViewCtrl(
             $scope.initialized = true;
             buildAgentsFilterModel();
             setCurrentAgent();
-            setCurrentChat();
             return loadChats();
-        });
+        })
+            .then(setCurrentChat);
         initView();
     }
 }
