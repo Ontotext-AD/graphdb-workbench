@@ -3,14 +3,14 @@
 <div class="chat-detail">
     <div class="user-message" ng-if="chatItemDetail.question">
         <div class="question alert-help"
-             gdb-tooltip="{{chatItemDetail.question.timestamp | readableTimestamp: {timeFormat: ', HH:mm'} }}">
+             gdb-tooltip="{{ 'ttyg.chat_panel.labels.question_asked' | htmlTranslate : { agentName: agentNameByIdMap[chatItemDetail.agentId], date: (chatItemDetail.question.timestamp * 1000 | readableTimestamp), time: (chatItemDetail.question.timestamp * 1000 | date:'HH:mm') } }}">
             {{ chatItemDetail.question.message }}
         </div>
     </div>
     <div class="answers" ng-repeat="answer in chatItemDetail.answers">
         <div class="assistant">
             <div class="assistant-icon alert-help"
-                 gdb-tooltip="{{'ttyg.chat_panel.labels.agent_name' | htmlTranslate : {agentName:  agentNameByIdMap[chatItemDetail.agentId], usedAt: (chatItemDetail.question.timestamp | readableTimestamp: {timeFormat: ', HH:mm'} )} }}">
+                 gdb-tooltip="{{'ttyg.chat_panel.labels.agent_name' | htmlTranslate : { date: (chatItemDetail.question.timestamp * 1000 | readableTimestamp), time: (chatItemDetail.question.timestamp * 1000 | date:'HH:mm') } }}">
                 <i class="fa-regular fa-message-bot"></i>
             </div>
             <div class="assistant-message">
