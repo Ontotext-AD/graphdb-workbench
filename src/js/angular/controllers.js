@@ -142,23 +142,29 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.productInfo = productInfo;
     $scope.guidePaused = 'true' === LocalStorageAdapter.get(GUIDE_PAUSE);
 
-    // Check on page load
     $scope.isMenuCollapsedOnLoad = function () {
         return $('.main-menu').hasClass('collapsed');
     };
 
-    $timeout(function () {
-        $scope.menuCollapsed = $scope.isMenuCollapsedOnLoad();
-    }, 0);
-
-    // Check after initial load
     $scope.checkMenu = debounce(function () {
-        return $('.main-menu').hasClass('collapsed');
+        const collapsed = $scope.isMenuCollapsedOnLoad();
+        if ($scope.menuCollapsed !== collapsed) {
+            $scope.menuCollapsed = collapsed;
+        }
     }, 0, {trailing: true});
 
-    const deregisterMenuWatcher = $scope.$watch('menuCollapsed', function () {
-        $scope.menuCollapsed = $scope.checkMenu();
+    const deregisterMenuWatcher = $scope.$watch(function () {
+        return $scope.isMenuCollapsedOnLoad();
+    }, function (newValue, oldValue) {
+        if (newValue !== oldValue || typeof newValue === 'undefined') {
+            // Trigger debounced check on both collapse and expand
+            $scope.checkMenu();
+        }
     });
+
+    $scope.showLabel = function (item) {
+        return item.children ? true : !$scope.menuCollapsed;
+    };
 
     const setYears = function () {
         const date = new Date();
