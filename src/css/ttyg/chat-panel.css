@@ -69,7 +69,57 @@
 }
 
 .chat-panel .messages-hint .hint1 {
-    font-size: 1.5rem;
+    font-size: 2rem;
+    transform:scale(1, 0.8);
+}
+
+.chat-panel .messages-hint .hint1 .graph,
+.chat-panel .messages-hint .hint1 .wise {
+    animation-duration: 3.0s;
+    animation-delay: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-out;
+}
+
+.chat-panel .messages-hint .hint1 .graph {
+    font-weight: 500;
+    animation-name: change-color-graph;
+}
+
+.chat-panel .messages-hint .hint1 .wise {
+    animation-name: change-color-wise;
+}
+
+.chat-panel .messages-hint .hint1 .thrives {
+    font-size: 0.425em;
+    font-weight: 400;
+}
+
+@keyframes change-color-graph {
+    0% {
+        color: var(--graphwise-blue-color);
+    }
+    40% {
+        color: inherit;
+    }
+    100% {
+        color: inherit;
+    }
+}
+
+@keyframes change-color-wise {
+    0% {
+        color: inherit;
+    }
+    40% {
+        color: var(--graphwise-pink-color);
+    }
+    80% {
+        color: inherit;
+    }
+    100% {
+        color: inherit;
+    }
 }
 
 .chat-panel .messages-hint .hint2 {
