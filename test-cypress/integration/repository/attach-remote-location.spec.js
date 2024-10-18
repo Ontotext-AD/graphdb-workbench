@@ -145,8 +145,8 @@ describe('Attach remote location', () => {
         AttachRepositorySteps.getOntopicRadioBtn().should('be.disabled');
         // The location url be set
         AttachRepositorySteps.getLocationURLInput().should('have.value', 'http://local');
-        // And be enabled for edit
-        AttachRepositorySteps.getLocationURLInput().should('be.enabled');
+        // And be disabled for edit
+        AttachRepositorySteps.getLocationURLInput().should('be.disabled');
     });
 
     it('should create and delete SPARQL endpoint instance', () => {
