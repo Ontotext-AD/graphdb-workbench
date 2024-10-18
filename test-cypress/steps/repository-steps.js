@@ -3,7 +3,7 @@ import {REPOSITORIES_URL} from "../support/repository-commands";
 export class RepositorySteps {
 
     static visit() {
-        cy.intercept('/rest/locations?filterClusterLocations=true').as('getLocations');
+        cy.intercept('/rest/locations').as('getLocations');
         cy.intercept(REPOSITORIES_URL + 'all').as('getRepositories');
         cy.visit('/repository');
         RepositorySteps.waitLoader();
@@ -227,20 +227,28 @@ export class RepositorySteps {
             .and('contain', 'Local');
     }
 
-    static getOntopicTable() {
-        return cy.get('#wb-repositories-ontopic-repositoryInGetRepositories');
+    static getSparqlOntopicTable() {
+        return cy.get('#wb-repositories-ontopic-sparql-repositoryInGetRepositories');
     }
 
     static getDeleteOntopicInstanceBtn(url) {
-        return RepositorySteps.getOntopicTable().find('tr').contains(url).parent().find('.delete-ontopic-location');
+        return RepositorySteps.getSparqlOntopicTable().find('tr').contains(url).parent().parent().find('.delete-ontopic-location');
     }
 
     static deleteOntopicInstance(url) {
         RepositorySteps.getDeleteOntopicInstanceBtn(url).click();
     }
 
+    static getDeleteSparqlInstanceBtn(url) {
+        return RepositorySteps.getSparqlOntopicTable().find('tr').contains(url).parent().parent().find('.delete-sparql-location');
+    }
+
+    static deleteSparqlLocation(url) {
+        RepositorySteps.getDeleteSparqlInstanceBtn(url).click();
+    }
+
     static getEditOntopicInstanceBtn(url) {
-        return RepositorySteps.getOntopicTable().find('tr').contains(url).parent().find('.edit-ontopic-location');
+        return RepositorySteps.getSparqlOntopicTable().find('tr').contains(url).parent().parent().find('.edit-ontopic-location');
     }
 
     static editOntopicInstance(url) {

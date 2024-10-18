@@ -10,8 +10,7 @@
         "local": false,
         "system": false,
         "errorMsg": null,
-        "defaultRepository": null,
-        "isInCluster": false
+        "defaultRepository": null
     },
     {
         "uri": "http://localhost:7212",
@@ -24,8 +23,7 @@
         "local": false,
         "system": false,
         "errorMsg": "Cannot connect to location Connect to localhost:7212 [localhost/127.0.0.1] failed: Connection refused (Connection refused) (Connect to localhost:7212 [localhost/127.0.0.1] failed: Connection refused (Connection refused)).",
-        "defaultRepository": null,
-        "isInCluster": false
+        "defaultRepository": null
     },
     {
         "uri": "",
@@ -38,8 +36,7 @@
         "local": true,
         "system": true,
         "errorMsg": null,
-        "defaultRepository": null,
-        "isInCluster": false
+        "defaultRepository": null
     },
     {
         "uri": "http://localhost:7201",
@@ -52,8 +49,7 @@
         "local": false,
         "system": false,
         "errorMsg": null,
-        "defaultRepository": null,
-        "isInCluster": false
+        "defaultRepository": null
     },
     {
         "uri": "http://localhost:7202",
@@ -66,7 +62,6 @@
         "local": false,
         "system": false,
         "errorMsg": null,
-        "defaultRepository": null,
-        "isInCluster": false
+        "defaultRepository": null
     }
 ]
