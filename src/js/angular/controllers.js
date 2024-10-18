@@ -135,11 +135,36 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.descr = $translate.instant('main.gdb.description');
     $scope.documentation = '';
     $scope.menu = $menuItems;
+    $scope.menuCollapsed = false;
     $scope.tutorialState = LocalStorageAdapter.get(LSKeys.TUTORIAL_STATE) !== 1;
     $scope.userLoggedIn = false;
     $scope.embedded = $location.search().embedded;
     $scope.productInfo = productInfo;
     $scope.guidePaused = 'true' === LocalStorageAdapter.get(GUIDE_PAUSE);
+
+    $scope.isMenuCollapsedOnLoad = function () {
+        return $('.main-menu').hasClass('collapsed');
+    };
+
+    $scope.checkMenu = debounce(function () {
+        const collapsed = $scope.isMenuCollapsedOnLoad();
+        if ($scope.menuCollapsed !== collapsed) {
+            $scope.menuCollapsed = collapsed;
+        }
+    }, 0, {trailing: true});
+
+    const deregisterMenuWatcher = $scope.$watch(function () {
+        return $scope.isMenuCollapsedOnLoad();
+    }, function (newValue, oldValue) {
+        if (newValue !== oldValue || typeof newValue === 'undefined') {
+            // Trigger debounced check on both collapse and expand
+            $scope.checkMenu();
+        }
+    });
+
+    $scope.showLabel = function (item) {
+        return item.children ? true : !$scope.menuCollapsed;
+    };
 
     const setYears = function () {
         const date = new Date();
@@ -203,10 +228,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         $rootScope.title = decodeHTML($translate.instant($rootScope.title));
         $scope.initTutorial();
     });
-
-    $scope.checkMenu = debounce(function () {
-        return $('.main-menu').hasClass('collapsed');
-    }, 250, {trailing: false});
 
     //Copy to clipboard popover options
     $scope.copyToClipboard = function (uri) {
@@ -517,6 +538,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     $scope.$on('$destroy', () => {
         window.removeEventListener('storage', localStoreChangeHandler);
+        deregisterMenuWatcher();
         if ($scope.checkMenu) {
             $timeout.cancel($scope.checkMenu);
         }
