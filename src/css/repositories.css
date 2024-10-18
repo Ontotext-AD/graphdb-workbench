@@ -354,8 +354,13 @@ span.label {
 }
 
 .padding-label {
-    padding-left: 9px;
-    padding-right: 15px
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+#remoteLocationForm > .remote-location-radio-list {
+    padding-left: 0;
+    padding-right: 4px
 }
 
 .wrapper-div {

@@ -5,7 +5,7 @@
 </div>
 <div class="modal-body">
     <form id="remoteLocationForm" novalidate name="remoteLocationForm">
-        <label>
+        <label class="remote-location-radio-list">
             <input type="radio"
                    class="graph-db-instance"
                    ng-model="remoteLocation.locationType"
@@ -15,7 +15,7 @@
             {{'manage.remote.location.dialog.graph_db.location.instance' | translate}}
 
         </label>
-        <label class="padding-label">
+        <label class="padding-label remote-location-radio-list">
             <input type="radio"
                    class="grap ontopic-instance"
                    ng-model="remoteLocation.locationType"
@@ -24,7 +24,7 @@
                    value="{{RemoteLocationType.ONTOPIC}}">
             {{'manage.remote.location.dialog.ontopic.location.instance' | translate}}
         </label>
-        <label class="padding-label">
+        <label class="padding-label remote-location-radio-list">
             <input type="radio"
                    class="graph-sparql-instance"
                    ng-model="remoteLocation.locationType"
