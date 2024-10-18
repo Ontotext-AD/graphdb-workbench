@@ -24,6 +24,10 @@
     --base-background-selected-color: #dcdcdc;
     /* The base background color that is used for hover effects in panels and elements */
     --base-background-hover-color: rgba(0, 0, 0, .1);
+
+    /* Graphwise colors */
+    --graphwise-blue-color: #001FFF;
+    --graphwise-pink-color: #DF367C;
 }
 
 :root.menu-collapsed {
