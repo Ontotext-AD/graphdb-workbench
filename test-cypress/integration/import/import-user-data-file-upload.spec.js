@@ -99,11 +99,14 @@ describe('Import user data: File upload', () => {
         ImportUserDataSteps.getResourcesTable().should('be.hidden');
         // When I upload a file
         ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[0], bnodes));
+        // Then the import settings dialog should open automatically
+        ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.import();
         // Then I should see the uploaded file
         ImportUserDataSteps.checkImportedResource(0, 'bnodes.ttl');
         // When I upload another file
         ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[1], jsonld));
+        ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.import();
         // Then I should see the uploaded file - it becomes first in the list
         ImportUserDataSteps.checkImportedResource(0, 'jsonld.jsonld');
@@ -111,6 +114,7 @@ describe('Import user data: File upload', () => {
         // When I override the first file
         ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[0], bnodes));
         FileOverwriteDialogSteps.overwrite();
+        ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.import();
         // Then I should see the uploaded file - it becomes first in the list
         // TODO: timestamps currently seems to not be changed on reimport
@@ -119,6 +123,7 @@ describe('Import user data: File upload', () => {
         // When I override the second file
         ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[1], jsonld));
         FileOverwriteDialogSteps.overwrite();
+        ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.import();
         // Then I should see the uploaded file - it becomes first in the list
         ImportUserDataSteps.checkImportedResource(0, 'jsonld.jsonld');
@@ -131,6 +136,7 @@ describe('Import user data: File upload', () => {
         // When I start to upload a file
         ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[0], bnodes));
         // Then the import settings dialog should open automatically
+        ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.uploadOnly();
         // Then I should see the uploaded file
         ImportUserDataSteps.getResources().should('have.length', 1);
@@ -149,6 +155,7 @@ describe('Import user data: File upload', () => {
         const file2 = ImportUserDataSteps.createFile(testFiles[1], jsonld);
         ImportUserDataSteps.selectFile([file1, file2]);
         // Then the import settings dialog should open automatically
+        ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.import();
         // Then I should see the uploaded file
         ImportUserDataSteps.getResources().should('have.length', 2);
@@ -165,6 +172,8 @@ describe('Import user data: File upload', () => {
         ImportUserDataSteps.getResourcesTable().should('be.hidden');
         const file1 = ImportUserDataSteps.createFile(testFiles[0], bnodes);
         ImportUserDataSteps.selectFile(file1);
+        // Then the import settings dialog should open automatically
+        ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.import();
         ImportUserDataSteps.getResources().should('have.length', 1);
         ImportUserDataSteps.checkImportedResource(0, 'bnodes.ttl');
@@ -186,6 +195,8 @@ describe('Import user data: File upload', () => {
         ImportUserDataSteps.getResourcesTable().should('be.hidden');
         const file1 = ImportUserDataSteps.createFile(testFiles[0], bnodes);
         ImportUserDataSteps.selectFile(file1);
+        // Then the import settings dialog should open automatically
+        ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.import();
         ImportUserDataSteps.getResources().should('have.length', 1);
         ImportUserDataSteps.checkImportedResource(0, 'bnodes.ttl');
@@ -220,6 +231,8 @@ describe('Import user data: File upload', () => {
         // When I upload a file with invalid format
         const file1 = ImportUserDataSteps.createFile(testFiles[2], jsonld);
         ImportUserDataSteps.selectFile(file1);
+        // Then the import settings dialog should open automatically
+        ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.import();
         // Then I should see an error message
         ImportUserDataSteps.getResources().should('have.length', 1);

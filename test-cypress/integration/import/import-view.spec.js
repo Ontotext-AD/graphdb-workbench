@@ -31,6 +31,8 @@ describe('Import view', () => {
         // Given I have opened the user data tab and uploaded a single file
         ImportUserDataSteps.getResourcesTable().should('be.hidden');
         ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[0], bnodes));
+        // Then the import settings dialog should open automatically
+        ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.import();
         ImportUserDataSteps.getResources().should('have.length', 1);
         ImportUserDataSteps.getResourceByName('bnodes.ttl').should('be.visible');
@@ -43,6 +45,7 @@ describe('Import view', () => {
         // Then I should see the uploaded file
         ImportUserDataSteps.getResources().should('have.length', 1);
         ImportUserDataSteps.getResourceByName('bnodes.ttl').should('be.visible');
+        ImportUserDataSteps.checkImportedResource(0, 'bnodes.ttl');
     });
 
     it('Should display/hide help message depends on resource result', () => {
@@ -99,8 +102,9 @@ describe('Import view', () => {
         // When I go to user tab and upload a file
         ImportSteps.openUserDataTab();
         // And I wait for tab data to load
-        cy.wait(100);
         ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[0], bnodes));
+        // Then the import settings dialog should open automatically
+        ImportSettingsDialogSteps.getDialog().should('be.visible');
         ImportSettingsDialogSteps.import();
         ImportUserDataSteps.getResources().should('have.length', 1);
         ImportUserDataSteps.checkImportedResource(0, 'bnodes.ttl');

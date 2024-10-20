@@ -292,7 +292,7 @@ class ImportSteps {
     }
 
     static selectFile(files) {
-        cy.get('input[type=file]').selectFile(files, {force: true});
+        cy.get('#wb-import-uploadFile label').selectFile(files);
     }
 
     static uploadFile(filePath) {

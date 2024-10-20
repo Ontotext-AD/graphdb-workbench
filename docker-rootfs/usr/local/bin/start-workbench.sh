@@ -9,4 +9,4 @@ mv /etc/nginx/conf.d/default.conf.tmp /etc/nginx/conf.d/default.conf
 # Tests & prints the whole configuration (easy to debug issues)
 nginx -T
 
-nginx -g "daemon off;"
+nginx -g "daemon off;" > /dev/null
