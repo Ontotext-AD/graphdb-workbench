@@ -59,13 +59,15 @@
                                ngf-max-size="maxUploadFileSizeMB + 'MB'">
                                 <div class="grid-container">
                                     <em class="icon-upload icon-lg"></em>
-                                    <div class="text">
+                                    <!-- Keep this a label, it points to the input element created by ngFileUpload
+                                         and makes cypress happy -->
+                                    <label for="ngf-wb-import-uploadFile" class="text m-0">
                                         <div>{{'upload.rdf.files.label' | translate}}</div>
                                         <small
                                             class="text-muted">{{'all.rdf.formats.label' | translate}}{{'up.to' | translate}}
                                             {{maxUploadFileSizeMB | number}} MB
                                         </small>
-                                    </div>
+                                    </label>
                                 </div>
                             </a>
                         </div>

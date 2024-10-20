@@ -268,11 +268,8 @@ export class RepositorySteps {
     }
 
     static assertRepositoryStatus(repositoryId, status) {
-        cy.waitUntil(() =>
-            RepositorySteps.getRepositoryFromList(repositoryId)
-                .should('be.visible')
-                .find('.repository-status .text-secondary')
-                .then(($el) => $el)
-                .then(($el) => $el && $el.text() === status));
+        RepositorySteps.getRepositoryFromList(repositoryId).as('repo');
+        cy.get('@repo').should('be.visible');
+        cy.get('@repo').find('.repository-status .text-secondary').contains(status);
     }
 }
