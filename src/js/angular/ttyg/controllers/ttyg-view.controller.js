@@ -579,7 +579,6 @@ function TTYGViewCtrl(
      * @param {ChatsListModel} chats - the new chats list.
      */
     const onChatsChanged = (chats) => {
-        console.log(`onChatsChanged`, chats);
         $scope.chats = chats;
         setupChatListPanel(chats);
     };

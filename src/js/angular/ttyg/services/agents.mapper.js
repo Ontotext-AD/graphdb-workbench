@@ -22,7 +22,7 @@ export const agentFormModelMapper = (agentModel, defaultAgentModel, isNew = fals
     agentFormModel.temperature.value = agentModel.temperature !== undefined ? agentModel.temperature : defaultAgentModel.temperature;
     agentFormModel.topP.value = agentModel.topP !== undefined ? agentModel.topP : defaultAgentModel.topP;
     agentFormModel.seed = agentModel.seed || defaultAgentModel.seed;
-    agentFormModel.instructions = agentInstructionsFormMapper(agentModel.instructions || defaultAgentModel.instructions);
+    agentFormModel.instructions = agentInstructionsFormMapper(agentModel.instructions, defaultAgentModel.instructions);
     extractionMethodsFormMapper(agentFormModel, isNew, defaultAgentModel.assistantExtractionMethods, agentModel.assistantExtractionMethods);
     // Select additional methods if they are present in the list returned from the backend (BE).
     agentFormModel.additionalExtractionMethods.additionalExtractionMethods.forEach((method) => {
@@ -32,16 +32,21 @@ export const agentFormModelMapper = (agentModel, defaultAgentModel, isNew = fals
 };
 
 /**
- * @param {AgentInstructionsModel} data
+ * @param {AgentInstructionsModel} currentAgentModelInstructions
+ * @param {AgentInstructionsModel} defaultInstructions
  * @return {AgentInstructionsFormModel}
  */
-const agentInstructionsFormMapper = (data) => {
-    if (!data) {
+const agentInstructionsFormMapper = (currentAgentModelInstructions, defaultInstructions) => {
+    if (!currentAgentModelInstructions && !defaultInstructions) {
         return;
     }
+    const systemInstruction = currentAgentModelInstructions && currentAgentModelInstructions.systemInstruction || defaultInstructions.systemInstruction;
+    const userInstruction = currentAgentModelInstructions && currentAgentModelInstructions.userInstruction || defaultInstructions.userInstruction;
     return new AgentInstructionsFormModel({
-        systemInstruction: data.systemInstruction,
-        userInstruction: data.userInstruction
+        systemInstruction: systemInstruction,
+        userInstruction: userInstruction,
+        defaultSystemInstruction: defaultInstructions.systemInstruction,
+        defaultUserInstruction: defaultInstructions.userInstruction
     });
 };
 
