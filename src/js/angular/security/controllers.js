@@ -784,8 +784,8 @@ securityCtrl.controller('RolesMappingController', ['$scope', 'toastr', 'Security
     });
 }]);
 
-securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '$window', '$timeout', '$jwtAuth', '$rootScope', '$controller', 'SecurityRestService', 'ModalService', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', '$q',
-    function ($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityRestService, ModalService, $translate, ThemeService, WorkbenchSettingsStorageService, $q) {
+securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '$window', '$timeout', '$jwtAuth', '$rootScope', '$controller', 'SecurityRestService', 'ModalService', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', '$q', '$uibModal', '$licenseService',
+    function ($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityRestService, ModalService, $translate, ThemeService, WorkbenchSettingsStorageService, $q, $uibModal, $licenseService) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
 
@@ -931,6 +931,29 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
             ThemeService.applyTheme(theme.name);
         };
 
+        const checkLicenseStatus = () => {
+            $licenseService.checkLicenseStatus().then(() => {
+                $scope.showCookiePolicyLink = $licenseService.isTrackingAllowed();
+            }).catch((error) => {
+                const msg = getError(error.data, error.status);
+                toastr.error(msg, $translate.instant('common.error'));
+            });
+        };
+
+        $scope.showCookiePolicy = () => {
+            $uibModal.open({
+                templateUrl: 'js/angular/core/templates/cookie-policy/cookie-policy.html',
+                controller: ['$scope', function ($scope) {
+                    $scope.close = () => {
+                        $scope.$close();
+                    };
+                }],
+                backdrop: 'static',
+                windowClass: 'cookie-policy-modal',
+                keyboard: false
+            });
+        };
+
         $scope.$on('$destroy', function () {
             const workbenchSettings = WorkbenchSettingsStorageService.getWorkbenchSettings();
             ThemeService.toggleThemeMode(workbenchSettings.mode);
@@ -943,6 +966,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
                 };
             }
             $scope.setThemeMode();
+            checkLicenseStatus();
         };
 
         initView();

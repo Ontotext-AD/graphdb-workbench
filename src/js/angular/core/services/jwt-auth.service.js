@@ -60,7 +60,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 // Countering race condition. When the unauthorized interceptor catches error 401 or 409, then we must make
                 // sure that a request is made to access the login page before proceeding with the rejection of the
                 // original request. Otherwise the login page is not accessible in the context of spring security.
-                return new Promise(resolve => {
+                return new Promise((resolve) => {
                     setTimeout(() => {
                         resolve(true);
                     }, 100);
@@ -445,4 +445,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 }
                 return false;
             };
+
+
+            this.updateUserData = (data) => SecurityRestService.updateUserData(data);
         }]);
