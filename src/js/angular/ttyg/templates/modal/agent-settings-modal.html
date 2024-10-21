@@ -120,6 +120,15 @@
                                  ng-if="extractionMethod.selected && !extractionMethod.sparqlOption">
                                 {{'ttyg.agent.create_agent_modal.form.sparql_search.required_option' | translate}}
                             </div>
+                            <div class="add-missing-namespaces-option mt-1">
+                                <input id="addMissingNamespaces" name="addMissingNamespaces" type="checkbox"
+                                       ng-model="extractionMethod.addMissingNamespaces">
+                                <label for="addMissingNamespaces"
+                                       uib-popover="{{'ttyg.agent.create_agent_modal.form.add_missing_namespaces.tooltip' | translate}}"
+                                       popover-trigger="mouseenter">{{
+                                    'ttyg.agent.create_agent_modal.form.add_missing_namespaces.label' | translate
+                                    }}</label>
+                            </div>
                         </div>
 
                         <!-- FTS method settings -->
@@ -321,7 +330,8 @@
                 <label for="{{additionalExtractionMethod.method + '_checkbox'}}"></label>
                 <a class="btn btn-link extraction-method-label" uib-popover="{{'ttyg.agent.create_agent_modal.form.additional_query_methods.method.' +
                     additionalExtractionMethod.method + '.tooltip' | translate}}"
-                   popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.additional_query_methods.method.' +
+                   popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.additional_query_methods.method.'
+                    +
                     additionalExtractionMethod.method + '.label' | translate}}</a>
             </div>
         </div>
@@ -345,7 +355,8 @@
                 <label for="temperature">
                     <span uib-popover="{{'ttyg.agent.create_agent_modal.form.temperature.tooltip' | translate}}"
                           popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.temperature.label' | translate}}</span>
-                    <i class="fa-regular fa-triangle-exclamation text-warning high-temperature-warning" ng-if="showHighTemperatureWarning"
+                    <i class="fa-regular fa-triangle-exclamation text-warning high-temperature-warning"
+                       ng-if="showHighTemperatureWarning"
                        uib-popover="{{'ttyg.agent.create_agent_modal.form.temperature.high_temperature_warning' | translate}}"
                        popover-trigger="mouseenter"></i>
                 </label>
@@ -416,7 +427,8 @@
                         <span
                             uib-popover="{{'ttyg.agent.create_agent_modal.form.system_instruction.tooltip' | translate}}"
                             popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.system_instruction.label' | translate}}</span>
-                        <i class="fa-regular fa-triangle-exclamation text-warning overriding-system-instructions-warning" ng-if="showSystemInstructionWarning"
+                        <i class="fa-regular fa-triangle-exclamation text-warning overriding-system-instructions-warning"
+                           ng-if="showSystemInstructionWarning"
                            uib-popover="{{'ttyg.agent.create_agent_modal.form.system_instruction.overriding_system_instruction_warning.body' | translate}}"
                            popover-trigger="mouseenter"></i>
                     </label>

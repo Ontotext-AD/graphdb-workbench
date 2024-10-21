@@ -68,6 +68,7 @@ const extractionMethodsFormMapper = (agentFormModel, isNew, defaultData, data = 
             method: extractionMethod.method,
             sparqlOption: sparqlOption,
             ontologyGraph: extractionMethod.ontologyGraph,
+            addMissingNamespaces: extractionMethod.addMissingNamespaces,
             sparqlQuery: extractionMethod.sparqlQuery && new TextFieldModel({
                 value: extractionMethod.sparqlQuery,
                 minLength: 1,
@@ -150,6 +151,7 @@ const extractionMethodMapper = (data) => {
     return new ExtractionMethodModel({
         method: data.method,
         ontologyGraph: data.ontologyGraph,
+        addMissingNamespaces: data.addMissingNamespaces,
         sparqlQuery: data.sparqlQuery,
         similarityIndex: data.similarityIndex,
         similarityIndexThreshold: data.similarityIndexThreshold,

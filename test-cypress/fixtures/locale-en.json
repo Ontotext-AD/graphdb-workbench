@@ -424,6 +424,10 @@
                         "label": "Fetch ontology from a named graph",
                         "tooltip": "The named graph that contains the entire ontology or a subset sufficient to generate useful SPARQL queries."
                     },
+                    "add_missing_namespaces": {
+                        "label": "Auto-add missing namespaces",
+                        "tooltip": "Automatically insert missing namespaces in SPARQL queries. This helps avoid errors when a query doesn't include necessary namespaces. In many cases, the model corrects itself after the missing namespaces error is returned, but enabling this option ensures GraphDB resolves the issue automatically."
+                    },
                     "construct_query": {
                         "label": "Provide a SPARQL CONSTRUCT query that fetches the ontology",
                         "tooltip": "A SPARQL CONSTRUCT query that returns the entire ontology or a subset sufficient to generate useful SPARQL queries."

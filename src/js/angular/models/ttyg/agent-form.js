@@ -279,6 +279,12 @@ export class ExtractionMethodFormModel {
          */
         this._sparqlOption = data.sparqlOption;
         /**
+         * Whether to add missing namespaces to the generated SPARQL query.
+         * @type {boolean}
+         * @private
+         */
+        this._addMissingNamespaces = data.addMissingNamespaces;
+        /**
          * @type {string}
          * @private
          */
@@ -328,6 +334,12 @@ export class ExtractionMethodFormModel {
             payload.ontologyGraph = this._ontologyGraph ? this._ontologyGraph : null;
         } else if (this._sparqlOption === 'sparqlQuery') {
             payload.sparqlQuery = this._sparqlQuery ? this._sparqlQuery.value : null;
+        }
+        if (this._method === ExtractionMethod.SPARQL) {
+            // this is used only in the sparql method
+            if (this._addMissingNamespaces !== undefined) {
+                payload.addMissingNamespaces = this._addMissingNamespaces;
+            }
         }
         // this is used for all but the SPARQL method
         if (this._maxNumberOfTriplesPerCall) {
@@ -380,6 +392,14 @@ export class ExtractionMethodFormModel {
 
     set sparqlQuery(value) {
         this._sparqlQuery = value;
+    }
+
+    get addMissingNamespaces() {
+        return this._addMissingNamespaces;
+    }
+
+    set addMissingNamespaces(value) {
+        this._addMissingNamespaces = value;
     }
 
     get ontologyGraph() {

@@ -14,6 +14,11 @@
     font-weight: var(--field-label-weight);
 }
 
+.agent-settings-modal .agent-settings-form [type="checkbox"],
+.agent-settings-modal .agent-settings-form [type="checkbox"] + label {
+    cursor: pointer;
+}
+
 .agent-settings-modal .agent-settings-form .extraction-methods {
     display: flex;
     flex-direction: column;

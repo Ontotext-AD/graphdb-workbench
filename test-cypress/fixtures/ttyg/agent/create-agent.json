@@ -13,7 +13,8 @@
     "assistantExtractionMethods": [
         {
             "method": "sparql_search",
-            "sparqlQuery": "select ?s ?p ?o where {?s ?p ?o .}"
+            "sparqlQuery": "select ?s ?p ?o where {?s ?p ?o .}",
+            "addMissingNamespaces": true
         }
     ]
 }
