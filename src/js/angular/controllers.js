@@ -148,14 +148,17 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     };
 
     $scope.onRdfResourceSearch = () => {
-        if ($location.url() === '/') {
+        if (isHomePage()) {
             $scope.hideRdfResourceSearch = true;
             $('#search-resource-input-home input').focus();
             toastr.info(decodeHTML($translate.instant('search.resource.current.page.msg')), $translate.instant('search.resources.msg'), {
                 allowHtml: true
             });
         }
+    };
 
+    const isHomePage = () => {
+        return $location.url() === '/';
     };
 
     $scope.isMenuCollapsedOnLoad = function () {
@@ -200,6 +203,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     $scope.$on("$routeChangeSuccess", function ($event, current, previous) {
         $scope.clicked = false;
+        $scope.hideRdfResourceSearch = false;
         $('.menu-element-root').removeClass('active');
         $timeout(function () {
             $('.menu-element.open a.menu-element-root').addClass('active');
