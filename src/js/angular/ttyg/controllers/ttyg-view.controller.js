@@ -251,10 +251,10 @@ function TTYGViewCtrl(
     };
 
     /**
-     * Handles the help message open event.
+     * Handles the help message toggle event.
      */
-    $scope.onOpenHelp = () => {
-        $scope.isHelpVisible = true;
+    $scope.onToggleHelp = () => {
+        $scope.isHelpVisible = !$scope.isHelpVisible;
     };
 
     /**
@@ -579,6 +579,7 @@ function TTYGViewCtrl(
      * @param {ChatsListModel} chats - the new chats list.
      */
     const onChatsChanged = (chats) => {
+        console.log(`onChatsChanged`, chats);
         $scope.chats = chats;
         setupChatListPanel(chats);
     };
@@ -838,7 +839,11 @@ function TTYGViewCtrl(
      */
     const setCurrentChat = () => {
         const chatId = TTYGStorageService.getChatId();
-        if (!chatId) {
+        const chats = TTYGContextService.getChats();
+        // If the chat ID is not stored in the local storage, there is no need to load it.
+        // Also, if a chat id is found in the storage but is not present in the chat list, then it probably was deleted,
+        // and it will be replaced with a new one on next selection.
+        if (!chatId || !chats.getChat(chatId)) {
             return;
         }
         TTYGContextService.selectChat(TTYGContextService.getChats().getChat(chatId));
