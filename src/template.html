@@ -21,7 +21,7 @@
 
 <div class="status-bar bg-white" ng-hide="!showMainManuAndStatusBar()" ng-cloak>
     <!-- Looking glass search icon -->
-    <rdf-resource-search></rdf-resource-search>
+    <rdf-resource-search ng-if="showRdfResourceSearch()" on-open="onRdfResourceSearch()"></rdf-resource-search>
 
     <!-- Invalid/expired license notification -->
     <div ng-if="!getLicense().valid && showLicense()">
