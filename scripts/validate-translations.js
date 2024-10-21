@@ -36,7 +36,7 @@ const identicalTranslations = [
     "Type:",
     "type",
     "Google Analytics (GA4)",
-    "<b>GRAPH</b>WISE – AI THRIVES ON WHOLE DATA",
+    "<div><span class=\"graph\">GRAPH</span><span class=\"wise\">WISE</span></div><div class=\"thrives\">AI THRIVES ON WHOLE DATA</div>",
 
     // File formats:
     "JSON",
