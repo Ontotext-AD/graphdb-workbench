@@ -150,11 +150,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.onRdfResourceSearch = () => {
         if ($location.url() === '/') {
             $scope.hideRdfResourceSearch = true;
+            $('#search-resource-input-home input').focus();
             toastr.info(decodeHTML($translate.instant('search.resource.current.page.msg')), $translate.instant('search.resources.msg'), {
                 allowHtml: true
             });
-        } else {
-            $('#search-resource-input-home input').focus();
         }
 
     };
