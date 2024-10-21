@@ -66,4 +66,12 @@ export class ClusterPageSteps {
     static getLegendLinkStates() {
         return this.getLegend().find('.link-state');
     }
+
+    static getUpdateClusterButton() {
+        return cy.get('.edit-cluster-nodes-modal-btn');
+    }
+
+    static updateCluster() {
+        this.getUpdateClusterButton().click();
+    }
 }

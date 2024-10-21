@@ -1,12 +1,8 @@
 import {ClusterPageSteps} from "../../steps/cluster/cluster-page-steps";
 import {GlobalOperationsStatusesStub} from "../../stubs/global-operations-statuses-stub";
 import {ClusterStubs} from "../../stubs/cluster/cluster-stubs";
-import {CreateClusterDialogSteps} from "../../steps/cluster/create-cluster-dialog-steps";
-import {AddRemoteLocationDialogSteps} from "../../steps/cluster/add-remote-location-dialog-steps";
 import {RemoteLocationStubs} from "../../stubs/cluster/remote-location-stubs";
 import {DeleteClusterDialogSteps} from "../../steps/cluster/delete-cluster-dialog-steps";
-import {ReplaceNodesDialogSteps} from "../../steps/cluster/replace-nodes-dialog-steps";
-import {ApplicationSteps} from "../../steps/application-steps";
 import {ClusterConfigurationSteps} from "../../steps/cluster/cluster-configuration-steps";
 
 describe('Cluster management', () => {
@@ -16,91 +12,6 @@ describe('Cluster management', () => {
     beforeEach(() => {
         repositoryId = 'cluster-repo' + Date.now();
         GlobalOperationsStatusesStub.stubNoOperationsResponse(repositoryId);
-    });
-
-    it('Should be able to open a create cluster dialog', () => {
-        // Given I have opened the cluster management page
-        ClusterPageSteps.visit();
-
-        ClusterStubs.stubNoClusterGroupStatus();
-        ClusterStubs.stubNoClusterNodeStatus();
-        ClusterStubs.stubNoClusterConfig();
-        RemoteLocationStubs.stubAddRemoteLocation();
-        RemoteLocationStubs.stubGetRemoteLocations(0);
-
-        // Then I expect that the page should be loaded
-        ClusterPageSteps.getClusterPage().should('be.visible');
-        // And the create cluster button to be visible
-        ClusterPageSteps.getCreateClusterButton().should('be.visible').and('have.class', 'no-cluster');
-        // When I click on the create cluster button
-        ClusterPageSteps.createCluster();
-        // Then I expect create cluster dialog to become visible
-        CreateClusterDialogSteps.getDialog().should('be.visible');
-        CreateClusterDialogSteps.getDialogHeader().should('contain.text', 'Create cluster');
-        // And I expect to see a single node in the cluster nodes list
-        CreateClusterDialogSteps.getClusterNodesList().should('have.length', 1);
-        // And I expect to see no remote locations in the locations list
-        CreateClusterDialogSteps.getRemoteLocationsList().should('have.length', 0);
-        // And I expect that the create cluster button should be disabled
-        CreateClusterDialogSteps.getNoSelectedNodesWarning().should('be.visible');
-        // And I expect that the create cluster button should be disabled
-        CreateClusterDialogSteps.getSaveClusterConfigButton().should('be.disabled');
-        // When I click on the cancel button
-        CreateClusterDialogSteps.clickOnCancelButton();
-        // Then I expect that the create cluster dialog should be closed
-        CreateClusterDialogSteps.getDialog().should('not.exist');
-    });
-
-    it('Should be able to create a cluster', () => {
-        // Given I have opened the cluster management page
-        ClusterPageSteps.visit();
-
-        // When there is no cluster configured yet
-        ClusterStubs.stubNoClusterGroupStatus();
-        ClusterStubs.stubNoClusterNodeStatus();
-        ClusterStubs.stubNoClusterConfig();
-        RemoteLocationStubs.stubAddRemoteLocation();
-        RemoteLocationStubs.stubGetRemoteLocations(0);
-
-        // When I open the create cluster dialog
-        ClusterPageSteps.getClusterPage().should('be.visible');
-        ClusterPageSteps.createCluster();
-        CreateClusterDialogSteps.getDialog().should('be.visible');
-        // And I add a remote location
-        RemoteLocationStubs.stubRemoteLocationCheck();
-        addRemoteLocation('http://localhost:7201', 1);
-        CreateClusterDialogSteps.getRemoteLocationsList().should('have.length', 1);
-        // When I select the added remote location
-        CreateClusterDialogSteps.selectRemoteLocation(0);
-        // Then I expect that the remote location will be added to the cluster nodes list
-        CreateClusterDialogSteps.getRemoteLocationsList().should('have.length', 0);
-        CreateClusterDialogSteps.getClusterNodesList().should('have.length', 2);
-        // And the no selected nodes warning should disappear
-        CreateClusterDialogSteps.getNoSelectedNodesWarning().should('not.exist');
-        // When I add another remote location
-        addRemoteLocation('http://localhost:7202', 2);
-        // Then I expect it to be added to the cluster nodes list
-        CreateClusterDialogSteps.getRemoteLocationsList().should('have.length', 1);
-        CreateClusterDialogSteps.selectRemoteLocation(0);
-        CreateClusterDialogSteps.getRemoteLocationsList().should('have.length', 0);
-        CreateClusterDialogSteps.getClusterNodesList().should('have.length', 3);
-        // When I click on create cluster button
-        ClusterStubs.stubCreateCluster();
-        CreateClusterDialogSteps.saveClusterConfig();
-        // Then I expect that the create cluster dialog should be closed
-        CreateClusterDialogSteps.getDialog().should('not.exist');
-        // And cluster should be created
-        ClusterStubs.stubClusterConfig();
-        ClusterStubs.stubClusterGroupStatus();
-        ClusterStubs.stubClusterNodeStatus();
-        RemoteLocationStubs.stubRemoteLocationFilter();
-        RemoteLocationStubs.stubRemoteLocationStatusInCluster();
-        // And cluster management actions should be accessible
-        ClusterPageSteps.getRemoveNodesButton().should('be.visible');
-        ClusterPageSteps.getAddNodesButton().should('be.visible');
-        ClusterPageSteps.getReplaceNodesButton().should('be.visible');
-        ClusterPageSteps.getPreviewClusterConfigButton().should('be.visible');
-        ClusterPageSteps.getCreateClusterButton().should('not.have.class', 'no-cluster');
     });
 
     it('Should be able to delete cluster', () => {
@@ -136,85 +47,4 @@ describe('Cluster management', () => {
         ClusterPageSteps.getPreviewClusterConfigButton().should('not.exist');
         ClusterPageSteps.getCreateClusterButton().should('have.class', 'no-cluster');
     });
-
-    it('Should be able to replace nodes in cluster', () => {
-        // Given I have opened the cluster management page
-        RemoteLocationStubs.stubGetRemoteLocations();
-        ClusterPageSteps.visit();
-
-        // Given there is an existing cluster created
-        ClusterStubs.stubClusterConfig();
-        ClusterStubs.stubClusterGroupStatus();
-        ClusterStubs.stubClusterNodeStatus();
-        RemoteLocationStubs.stubRemoteLocationFilter();
-        RemoteLocationStubs.stubRemoteLocationStatusInCluster();
-        ClusterPageSteps.getClusterPage().should('be.visible');
-        ClusterPageSteps.getCreateClusterButton().should('not.have.class', 'no-cluster');
-        // When I click on replace nodes button
-        ClusterPageSteps.replaceNodes();
-        // Then I expect a replace nodes dialog to appear
-        ReplaceNodesDialogSteps.getDialog().should('be.visible');
-        ReplaceNodesDialogSteps.getClusterNodes().should('have.length', 3);
-        ReplaceNodesDialogSteps.getRemoteLocations().should('have.length', 0);
-        ReplaceNodesDialogSteps.getReplaceNodesButton().should('be.disabled');
-        // When I add a new remote location
-        RemoteLocationStubs.stubAddRemoteLocation();
-        RemoteLocationStubs.stubRemoteLocationCheck();
-        addRemoteLocation('http://localhost:7203', 3);
-        ClusterPageSteps.getClusterPage().should('be.visible');
-        ClusterPageSteps.getCreateClusterButton().should('not.have.class', 'no-cluster');
-        // And I select the new location as replacement node
-        ReplaceNodesDialogSteps.selectRemoteLocation(0);
-        ReplaceNodesDialogSteps.getSelectedRemoteLocations().should('have.length', 1);
-        // And I select a node from the cluster to be replaced
-        ReplaceNodesDialogSteps.selectClusterNode(2);
-        // Then I expect the replace nodes button to become enabled
-        ReplaceNodesDialogSteps.getReplaceNodesButton().should('not.be.disabled');
-        // When I click on replace nodes button
-        ClusterStubs.stubReplaceNodes();
-        ReplaceNodesDialogSteps.replaceNodes();
-        // Then I expect nodes to be replaced
-        cy.wait('@replace-nodes').then((interception) => {
-            expect(interception.request.body).to.deep.equal({
-                "addNodes": [
-                    "pc-desktop:7301\n"
-                ],
-                "removeNodes": [
-                    "pc-desktop:7302"
-                ]
-            });
-        });
-        ReplaceNodesDialogSteps.getDialog().should('not.exist');
-        ApplicationSteps.getSuccessNotifications().should('be.visible');
-    });
-
-    it('Should not see "Authentication type" while attaching remote GDB node in cluster view', () => {
-        // Given I have opened the cluster management page
-        ClusterPageSteps.visit();
-
-        // When there is no cluster configured yet
-        ClusterStubs.stubNoClusterGroupStatus();
-        ClusterStubs.stubNoClusterNodeStatus();
-        ClusterStubs.stubNoClusterConfig();
-        RemoteLocationStubs.stubAddRemoteLocation();
-        RemoteLocationStubs.stubGetRemoteLocations(0);
-
-        // When I open the create cluster dialog
-        ClusterPageSteps.getClusterPage().should('be.visible');
-        ClusterPageSteps.createCluster();
-        CreateClusterDialogSteps.getDialog().should('be.visible');
-        // And I add a remote location
-        RemoteLocationStubs.stubRemoteLocationCheck();
-        CreateClusterDialogSteps.openAddRemoteLocationDialog();
-        AddRemoteLocationDialogSteps.getDialog().should('be.visible');
-        AddRemoteLocationDialogSteps.verifyDialogBody("The token secret must be the same on all GraphDB instances. For more information on configuring the token secret, please refer to ");
-    });
 });
-
-function addRemoteLocation(location, locationsCount) {
-    CreateClusterDialogSteps.openAddRemoteLocationDialog();
-    AddRemoteLocationDialogSteps.getDialog().should('be.visible');
-    AddRemoteLocationDialogSteps.typeLocation(location);
-    RemoteLocationStubs.stubGetRemoteLocations(locationsCount);
-    AddRemoteLocationDialogSteps.addLocation();
-}
