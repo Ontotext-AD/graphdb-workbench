@@ -1,11 +1,7 @@
 <div class="container-fluid">
     <h1>
         {{title}}
-        <span class="btn btn-link"
-              uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
-              popover-trigger="mouseenter"
-              popover-placement="bottom-right"
-              popover-append-to-body="true"><span class="icon-info text-tertiary"></span></span>
+        <context-tooltip></context-tooltip>
     </h1>
     <div core-errors ontop fedx license></div>
     <inactive-plugin-directive

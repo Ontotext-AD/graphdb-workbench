@@ -4,11 +4,7 @@
 
 <h1>
 	{{title}}
-	<span class="btn btn-link"
-	   uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
-	   popover-trigger="mouseenter"
-	   popover-placement="bottom"
-	   popover-append-to-body="true"><span class="icon-info text-tertiary"></span></span>
+    <context-tooltip></context-tooltip>
 </h1>
 
 <iframe id="webapi_frame" title="{{'webapi.title' | translate}}" src="res/swagger5/index.html" style="width: 100%; height: 90vh; border: none"></iframe>

@@ -6,7 +6,8 @@ PluginRegistry.add('route', [
         templateUrl: 'pages/guides.html',
         title: 'view.guides.title',
         controller: 'GuidesCtrl',
-        helpInfo: 'view.guides.helpInfo'
+        helpInfo: 'view.guides.helpInfo',
+        documentationUrl: 'index.html'
     }
 ]);
 

@@ -6,7 +6,8 @@ PluginRegistry.add('route', {
     'controller': 'RDFRankCtrl',
     'templateUrl': 'pages/rdfrank.html',
     'title': 'view.rdf.rank.title',
-    'helpInfo': 'view.rdf.rank.helpInfo'
+    'helpInfo': 'view.rdf.rank.helpInfo',
+    'documentationUrl': 'ranking-results.html'
 });
 
 PluginRegistry.add('main.menu', {

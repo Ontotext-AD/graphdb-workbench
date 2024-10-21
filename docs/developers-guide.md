@@ -56,7 +56,8 @@ PluginRegistry.add('route', {
     'controller': 'AutocompleteCtrl',
     'templateUrl': 'pages/autocomplete.html',
     'title': 'Autocomplete index',
-    'helpInfo': 'The Autocomplete index is used for automatic ...'
+    'helpInfo': 'The Autocomplete index is used for automatic ...',
+    'documentationUrl': 'autocomplete-index.html'
 });
 ```
 
@@ -72,7 +73,8 @@ PluginRegistry.add('route', {
     'controller': 'AutocompleteCtrl',
     'templateUrl': 'pages/autocomplete.html',
     'title': 'Autocomplete index',
-    'helpInfo': 'The Autocomplete index is used for automatic completion of URIs in the SPARQL editor and the View resource page. Use this view to enable or disable the index and check its status.'
+    'helpInfo': 'The Autocomplete index is used for automatic completion of URIs in the SPARQL editor and the View resource page. Use this view to enable or disable the index and check its status.',
+    'documentationUrl': 'autocomplete-index.html'
 });
 
 PluginRegistry.add('main.menu', {
@@ -178,6 +180,7 @@ routes.forEach(function (route) {
         templateUrl: route.templateUrl,
         title: route.title,
         helpInfo: route.helpInfo,
+        documentationUrl: route.documentationUrl,
         reloadOnSearch: route.reloadOnSearch !== undefined ? route.reloadOnSearch : true
     });
 });

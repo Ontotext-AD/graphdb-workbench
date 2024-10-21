@@ -7,16 +7,16 @@ PluginRegistry.add('route', [
         'controller': 'AdminInfoCtrl',
         'templateUrl': 'pages/info.html',
         'title': 'view.system.information.title',
-        'helpInfo': 'view.system.information.helpInfo'
+        'helpInfo': 'view.system.information.helpInfo',
+        'documentationUrl': 'diagnosing-and-reporting-critical-errors.html#running-a-system-report'
     }, {
         'url': '/webapi',
         'templateUrl': 'pages/webapi.html',
         'title': 'view.rest.api.documentation.title',
-        'helpInfo': 'view.rest.api.documentation.helpInfo'
+        'helpInfo': 'view.rest.api.documentation.helpInfo',
+        'documentationUrl': 'using-the-graphdb-rest-api.html'
     }
 ]);
-
-const DOCUMENTATION_URL = 'https://graphdb.ontotext.com/documentation/';
 
 PluginRegistry.add('main.menu', {
     'items': [
@@ -56,8 +56,8 @@ PluginRegistry.add('main.menu', {
             order: 2,
             parent: 'Help',
             icon: 'icon-external',
-            hrefFun: function (productInfo) {
-                return DOCUMENTATION_URL + productInfo.productShortVersion + '/';
+            hrefFun: function (productInfo, urlResolver) {
+                return urlResolver(productInfo.productShortVersion, 'index.html');
             },
             guideSelector: 'sub-menu-documentation'
         }, {
@@ -66,8 +66,8 @@ PluginRegistry.add('main.menu', {
             order: 3,
             parent: 'Help',
             icon: 'icon-external',
-            hrefFun: function (productInfo) {
-                return DOCUMENTATION_URL + productInfo.productShortVersion + '/tutorials.html';
+            hrefFun: function (productInfo, urlResolver) {
+                return urlResolver(productInfo.productShortVersion, 'tutorials.html');
             },
             guideSelector: 'sub-menu-developer-hub'
         }, {
@@ -76,8 +76,8 @@ PluginRegistry.add('main.menu', {
             order: 4,
             parent: 'Help',
             icon: 'icon-external',
-            hrefFun: function (productInfo) {
-                return DOCUMENTATION_URL + productInfo.productShortVersion + '/support.html';
+            hrefFun: function (productInfo, urlResolver) {
+                return urlResolver(productInfo.productShortVersion, 'support.html');
             },
             guideSelector: 'sub-menu-support'
         }

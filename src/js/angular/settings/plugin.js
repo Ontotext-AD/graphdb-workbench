@@ -16,7 +16,8 @@ PluginRegistry.add('route', [
         'controller': 'LicenseCtrl',
         'templateUrl': 'pages/licenseInfo.html',
         'title': 'view.existing.license.title',
-        'helpInfo': 'view.existing.license.helpInfo'
+        'helpInfo': 'view.existing.license.helpInfo',
+        'documentationUrl': 'working-with-workbench.html#wbmenu-license'
     }
 ]);
 
