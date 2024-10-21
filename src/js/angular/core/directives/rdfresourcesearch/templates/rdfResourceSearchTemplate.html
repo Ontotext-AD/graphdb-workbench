@@ -1,6 +1,6 @@
 <link href="css/rdf-resource-search.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-<div ng-if="getActiveRepository() && hasActiveLocation() && isNotLoading()" ng-cloak>
+<div ng-cloak>
     <div id="search-box" class="card search-rdf-input" ng-keydown="onKeyDown($event)" ng-if="!isHomePage()">
         <div class="card-block">
             <search-resource-input namespacespromise="getNamespacesPromise"

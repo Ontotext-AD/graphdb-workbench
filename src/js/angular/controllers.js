@@ -142,6 +142,23 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.productInfo = productInfo;
     $scope.guidePaused = 'true' === LocalStorageAdapter.get(GUIDE_PAUSE);
 
+    $scope.hideRdfResourceSearch = false;
+    $scope.showRdfResourceSearch = () => {
+        return !$scope.hideRdfResourceSearch && !!$scope.getActiveRepository() && $scope.hasActiveLocation() &&(!$scope.isLoadingLocation() || $scope.isLoadingLocation() && $location.url() === '/repository');
+    };
+
+    $scope.onRdfResourceSearch = () => {
+        if ($location.url() === '/') {
+            $scope.hideRdfResourceSearch = true;
+            toastr.info(decodeHTML($translate.instant('search.resource.current.page.msg')), $translate.instant('search.resources.msg'), {
+                allowHtml: true
+            });
+        } else {
+            $('#search-resource-input-home input').focus();
+        }
+
+    };
+
     $scope.isMenuCollapsedOnLoad = function () {
         return $('.main-menu').hasClass('collapsed');
     };

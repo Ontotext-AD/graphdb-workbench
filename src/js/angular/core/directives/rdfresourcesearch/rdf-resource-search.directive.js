@@ -6,14 +6,17 @@ angular
 
 rdfResourceSearchDirective.$inject = ['$rootScope', '$timeout',
     'AutocompleteRestService', 'RDF4JRepositoriesRestService',
-    'RepositoriesRestService', '$repositories', '$location', '$licenseService', 'toastr', '$translate'];
+    'RepositoriesRestService', '$repositories', '$location', '$licenseService'];
 
 function rdfResourceSearchDirective($rootScope, $timeout,
                                     AutocompleteRestService, RDF4JRepositoriesRestService,
-                                    RepositoriesRestService, $repositories, $location, $licenseService, toastr, $translate) {
+                                    RepositoriesRestService, $repositories, $location, $licenseService) {
     return {
         templateUrl: 'js/angular/core/directives/rdfresourcesearch/templates/rdfResourceSearchTemplate.html',
         restrict: 'AE',
+        scope: {
+            onOpen: '&'
+        },
         link: function ($scope, element) {
 
 
@@ -28,6 +31,7 @@ function rdfResourceSearchDirective($rootScope, $timeout,
             // =========================
 
             $scope.showInput = () => {
+                $scope.onOpen();
                 createSearchInput()
                     .then(() => $rootScope.$broadcast('rdfResourceSearchExpanded'));
             };
@@ -48,16 +52,6 @@ function rdfResourceSearchDirective($rootScope, $timeout,
                 }, 200);
             };
 
-            // TODO: remove this from here, it controls the visibility of component and have to be in main template
-            $scope.isNotLoading = function () {
-                return !$scope.isLoadingLocation() || $scope.isLoadingLocation() && $location.url() === '/repository';
-            };
-
-            // TODO: remove this from here, it controls the visibility of component and have to be in main template
-            $scope.getActiveRepository = () => {
-                return $repositories.getActiveRepository();
-            };
-
             // TODO: remove this from here, When tha page is home page and button is clicked then it is hided
             $scope.isHomePage = function () {
                 return $location.url() === '/';
@@ -68,13 +62,11 @@ function rdfResourceSearchDirective($rootScope, $timeout,
             // =========================
 
             const refreshRepositoryInfo = () => {
-                if ($scope.getActiveRepository()) {
-                    $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces(
-                        $scope.getActiveRepository())
-                        .success(function () {
-                            checkAutocompleteStatus();
-                        });
-                }
+                $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces(
+                    $repositories.getActiveRepository())
+                    .success(function () {
+                        checkAutocompleteStatus();
+                    });
             };
 
             const checkAutocompleteStatus = () => {
@@ -108,16 +100,15 @@ function rdfResourceSearchDirective($rootScope, $timeout,
                             element.find('search-resource-input .view-res-input').focus();
                             window.addEventListener('mousedown', onWindowClick);
                         }, 200);
-                    } else {
-                        $('#search-resource-input-home input').focus();
-                        toastr.info(decodeHTML($translate.instant('search.resource.current.page.msg')), $translate.instant('search.resources.msg'), {
-                            allowHtml: true
-                        });
                     }
                     setTimeout(() => {
                         resolve(true);
                     });
                 });
+            };
+
+            const init = () => {
+                refreshRepositoryInfo();
             };
 
             // =========================
@@ -138,6 +129,11 @@ function rdfResourceSearchDirective($rootScope, $timeout,
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);
+
+            // =========================
+            // Initialization
+            // =========================
+            init();
         }
     };
 }
