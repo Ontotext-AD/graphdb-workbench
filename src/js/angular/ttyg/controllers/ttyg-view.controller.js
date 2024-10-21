@@ -290,7 +290,7 @@ function TTYGViewCtrl(
             .then((agentDefaultValues) => {
                 const activeRepositoryInfo = repositoryInfoMapper($repositories.getActiveRepositoryObject());
                 agentDefaultValues.repositoryId = activeRepositoryInfo.id;
-                const agentFormModel = agentFormModelMapper(new AgentModel({}), agentDefaultValues, true);
+                const agentFormModel = agentFormModelMapper(new AgentModel({}), agentDefaultValues, AGENT_OPERATION.CREATE);
                 const options = {
                     templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
                     controller: 'AgentSettingsModalController',
@@ -312,6 +312,9 @@ function TTYGViewCtrl(
             })
             .then((options) => {
                 $uibModal.open(options).result.then(reloadAgents);
+            })
+            .catch((error) => {
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             });
     };
 
@@ -327,9 +330,9 @@ function TTYGViewCtrl(
         }
         getDefaultAgent()
             .then((agentDefaultValues) => {
-                const agentFormModel = agentFormModelMapper(agentToEdit, agentDefaultValues);
+                const agentFormModel = agentFormModelMapper(agentToEdit, agentDefaultValues, AGENT_OPERATION.EDIT);
                 const activeRepositoryInfo = repositoryInfoMapper($repositories.getActiveRepositoryObject());
-                const options = {
+                return {
                     templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
                     controller: 'AgentSettingsModalController',
                     windowClass: 'agent-settings-modal',
@@ -346,7 +349,6 @@ function TTYGViewCtrl(
                     },
                     size: 'lg'
                 };
-                return options;
             })
             .then((options) => {
                 $uibModal.open(options).result.then(
@@ -357,6 +359,9 @@ function TTYGViewCtrl(
                         }
                         reloadAgents();
                     });
+            })
+            .catch((error) => {
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             });
     };
 
@@ -365,33 +370,39 @@ function TTYGViewCtrl(
      * @param {AgentModel} agentToClone
      */
     $scope.onOpenCloneAgentSettings = (agentToClone) => {
-        const agentFormModel = agentFormModelMapper(agentToClone, agentToClone);
-        agentFormModel.name = `clone-${agentFormModel.name}`;
-        const activeRepositoryInfo = repositoryInfoMapper($repositories.getActiveRepositoryObject());
-        const options = {
-            templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
-            controller: 'AgentSettingsModalController',
-            windowClass: 'agent-settings-modal',
-            backdrop: 'static',
-            resolve: {
-                dialogModel: function () {
-                    return new AgentSettingsModal(
-                        activeRepositoryInfo,
-                        $scope.activeRepositoryList,
-                        agentFormModel,
-                        AGENT_OPERATION.CLONE
-                    );
-                }
-            },
-            size: 'lg'
-        };
-        $uibModal.open(options).result.then(
-            (updatedAgent) => {
-                const hasSelectedAgent = TTYGContextService.getSelectedAgent();
-                if (hasSelectedAgent && updatedAgent.id === hasSelectedAgent.id) {
-                    TTYGContextService.selectAgent(updatedAgent);
-                }
-                reloadAgents();
+        getDefaultAgent()
+            .then((agentDefaultValues) => {
+                const agentFormModel = agentFormModelMapper(agentToClone, agentDefaultValues, AGENT_OPERATION.CLONE);
+                agentFormModel.name = `clone-${agentFormModel.name}`;
+                const activeRepositoryInfo = repositoryInfoMapper($repositories.getActiveRepositoryObject());
+                return {
+                    templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
+                    controller: 'AgentSettingsModalController',
+                    windowClass: 'agent-settings-modal',
+                    backdrop: 'static',
+                    resolve: {
+                        dialogModel: function () {
+                            return new AgentSettingsModal(
+                                activeRepositoryInfo,
+                                $scope.activeRepositoryList,
+                                agentFormModel,
+                                AGENT_OPERATION.CLONE
+                            );
+                        }
+                    },
+                    size: 'lg'
+                };
+            }).then((options) => {
+                $uibModal.open(options).result.then(
+                    (updatedAgent) => {
+                        const hasSelectedAgent = TTYGContextService.getSelectedAgent();
+                        if (hasSelectedAgent && updatedAgent.id === hasSelectedAgent.id) {
+                            TTYGContextService.selectAgent(updatedAgent);
+                        }
+                        reloadAgents();
+                    });
+            }).catch((error) => {
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             });
     };
 
