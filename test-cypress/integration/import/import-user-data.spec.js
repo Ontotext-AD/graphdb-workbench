@@ -28,7 +28,12 @@ describe('Import user data', () => {
         cy.url().should('include', '/import#user');
         // Then I should see the user help icons
         ImportUserDataSteps.showPageInfoPopover();
-        ImportUserDataSteps.getPageInfoPopover().should('be.visible');
+        ImportUserDataSteps.getPageInfoPopover()
+            .should('be.visible')
+            .find('a')
+            .should('have.attr', 'href', 'https://graphdb.ontotext.com/documentation/master/loading-data-using-the-workbench.html')
+            .and('contain.text', 'Learn more in the GraphDB documentation');
+        ImportUserDataSteps.hidePageInfoPopover();
         // And user data import tab should be selected by default
         ImportUserDataSteps.getActiveTab().should('have.text', 'User data');
         ImportUserDataSteps.getUserDataTab().should('be.visible');

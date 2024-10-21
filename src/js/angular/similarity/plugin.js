@@ -7,7 +7,8 @@ PluginRegistry.add('route', [
         'controller': 'SimilarityCtrl',
         'templateUrl': 'pages/similarity-indexes.html',
         'title': 'view.similarity.indexes.title',
-        'helpInfo': 'view.similarity.indexes.helpInfo'
+        'helpInfo': 'view.similarity.indexes.helpInfo',
+        'documentationUrl': 'semantic-similarity-searches.html#text-based-similarity-searches'
     }, {
         'url': '/similarity/index/create',
         'module': 'graphdb.framework.similarity',

@@ -6,7 +6,8 @@ PluginRegistry.add('route', [
         'path': 'ttyg/app',
         'controller': 'TTYGViewCtrl',
         'title': 'menu.ttyg.label',
-        'helpInfo': 'ttyg.helpInfo'
+        'helpInfo': 'ttyg.helpInfo',
+        'documentationUrl': 'talk-to-graph.html'
     }
 ]);
 

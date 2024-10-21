@@ -7,7 +7,8 @@ PluginRegistry.add('route', {
     'templateUrl': 'pages/sparql-editor.html',
     'title': 'view.sparql-editor.title',
     'helpInfo': 'view.sparql-editor.helpInfo',
-    'reloadOnSearch': false
+    'reloadOnSearch': false,
+    'documentationUrl': 'sparql-queries.html'
 });
 
 PluginRegistry.add('main.menu', {

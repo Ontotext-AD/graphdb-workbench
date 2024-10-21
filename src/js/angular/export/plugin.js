@@ -6,7 +6,8 @@ PluginRegistry.add('route', {
     'controller': 'ExportCtrl',
     'templateUrl': 'pages/export.html',
     'title': 'menu.graphs.overview.label',
-    'helpInfo': 'view.export.ctr.helpInfo '
+    'helpInfo': 'view.export.ctr.helpInfo ',
+    'documentationUrl': 'working-with-workbench.html#wbmenu-graphs-overview'
 });
 
 PluginRegistry.add('main.menu', {
