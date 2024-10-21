@@ -191,6 +191,12 @@ export class ExtractionMethodModel {
          */
         this._method = data.method;
         /**
+         * Whether to add missing namespaces to the generated SPARQL query.
+         * @type {boolean}
+         * @private
+         */
+        this._addMissingNamespaces = data.addMissingNamespaces;
+        /**
          * The ontology graph used for the extraction method.
          * @type {string}
          * @private
@@ -239,6 +245,14 @@ export class ExtractionMethodModel {
 
     set method(value) {
         this._method = value;
+    }
+
+    get addMissingNamespaces() {
+        return this._addMissingNamespaces;
+    }
+
+    set addMissingNamespaces(value) {
+        this._addMissingNamespaces = value;
     }
 
     get sparqlQuery() {

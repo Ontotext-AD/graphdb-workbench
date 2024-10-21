@@ -424,6 +424,10 @@
                         "label": "Récupérer l'ontologie à partir d'un graphe nommé",
                         "tooltip": "Le graphe nommé qui contient l'ensemble de l'ontologie ou un sous-ensemble suffisant pour générer des requêtes SPARQL utiles."
                     },
+                    "add_missing_namespaces": {
+                        "label": "Ajouter automatiquement les espaces de noms manquants",
+                        "tooltip": "Insérez automatiquement les espaces de noms manquants dans les requêtes SPARQL. Cela aide à éviter les erreurs lorsque des espaces de noms nécessaires ne sont pas inclus. Dans de nombreux cas, le modèle se corrige après le retour de l'erreur d'espaces de noms manquants, mais activer cette option garantit que GraphDB résout le problème automatiquement."
+                    },
                     "construct_query": {
                         "label": "Fournir une requête SPARQL CONSTRUCT qui récupère l'ontologie",
                         "tooltip": "A SPARQL CONSTRUCT query that returns the entire ontology or a subset sufficient to generate useful SPARQL queries."
