@@ -99,6 +99,9 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.disabled');
         TtygAgentSettingsModalSteps.typeSparqlMethodSparqlQueryField('select ?s ?p ?o where {?s ?p ?o .}');
         TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.enabled');
+        // check the add missing namespaces checkbox
+        TtygAgentSettingsModalSteps.getAddMissingNamespacesCheckbox().should('not.be.checked');
+        TtygAgentSettingsModalSteps.toggleAddMissingNamespacesCheckbox();
 
         // Validate the other agent settings
 
@@ -139,7 +142,30 @@ describe('TTYG create new agent', () => {
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-new-agent.json', 1000);
         TtygAgentSettingsModalSteps.saveAgent();
         TtygAgentSettingsModalSteps.getCreatingAgentLoader().should('be.visible');
-        cy.wait('@create-agent');
+        cy.wait('@create-agent').then((interception) => {
+            assert.deepEqual(interception.request.body, {
+                "id": "id",
+                "name": "Test Agent",
+                "repositoryId": "starwars",
+                "model": "gpt-4o",
+                "temperature": "0.2",
+                "topP": "0.2",
+                "seed": 0,
+                "assistantsInstructions": {
+                    "systemInstruction": "",
+                    "userInstruction": "If you need to write a SPARQL query, use only the classes and properties provided in the schema and don't invent or guess any. Always try to return human-readable names or labels and not only the IRIs. If SPARQL fails to provide the necessary information you can try another tool too."
+                },
+                "assistantExtractionMethods": [
+                    {
+                        "method": "sparql_search",
+                        "sparqlQuery": "select ?s ?p ?o where {?s ?p ?o .}",
+                        "addMissingNamespaces": true
+                    }
+                ],
+                "additionalExtractionMethods": [
+                ]
+            });
+        });
         // the modal should be closed
         TtygAgentSettingsModalSteps.getDialog().should('not.exist');
         cy.wait('@get-agent-list');

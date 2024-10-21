@@ -142,6 +142,14 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
         return this.getSparqlMethodSparqlQueryField().type(value, {parseSpecialCharSequences: false});
     }
 
+    static getAddMissingNamespacesCheckbox() {
+        return cy.get('#addMissingNamespaces');
+    }
+
+    static toggleAddMissingNamespacesCheckbox() {
+        this.getAddMissingNamespacesCheckbox().click();
+    }
+
     // FTS extraction method
 
     static enableFtsExtractionMethod() {

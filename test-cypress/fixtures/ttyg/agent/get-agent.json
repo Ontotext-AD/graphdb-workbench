@@ -13,7 +13,8 @@
         {
             "method": "sparql_search",
             "ontologyGraph": null,
-            "sparqlQuery": "CONSTRUCT {\n    ?s ?p ?o\n} WHERE {\n    GRAPH <http://example.com/sw-ont> {\n        ?s ?p ?o\n    }\n}"
+            "sparqlQuery": "CONSTRUCT {\n    ?s ?p ?o\n} WHERE {\n    GRAPH <http://example.com/sw-ont> {\n        ?s ?p ?o\n    }\n}",
+            "addMissingNamespaces": false
         }
     ],
     "additionalExtractionMethods": [

@@ -14,7 +14,8 @@
         {
             "method": "sparql_search",
             "ontologyGraph": "http://example.com",
-            "sparqlQuery": "CONSTRUCT {?s ?p ?o} WHERE {GRAPH <http://example.org/ontology> {?s ?p ?o .}}"
+            "sparqlQuery": "CONSTRUCT {?s ?p ?o} WHERE {GRAPH <http://example.org/ontology> {?s ?p ?o .}}",
+            "addMissingNamespaces": false
         },
         {
             "method": "fts_search",
