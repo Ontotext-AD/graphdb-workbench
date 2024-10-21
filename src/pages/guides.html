@@ -1,11 +1,7 @@
 <link href="css/guides.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
 <h1>
     {{title}}
-    <span class="btn btn-link"
-          uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
-          popover-trigger="mouseenter"
-          popover-placement="bottom"
-          popover-append-to-body="true"><span class="icon-info text-tertiary"></span></span>
+    <context-tooltip></context-tooltip>
 </h1>
 
 <div ng-show="displayedGuides.length > 0" class="clearfix">

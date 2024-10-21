@@ -7,7 +7,8 @@ PluginRegistry.add('route', [
         'controller': 'ClusterManagementCtrl',
         'templateUrl': 'pages/cluster-management/clusterInfo.html',
         'helpInfo': 'view.clusterManagement.helpInfo',
-        'title': 'view.clusterManagement.title'
+        'title': 'view.clusterManagement.title',
+        'documentationUrl': 'creating-a-cluster.html#using-the-workbench'
     }
 ]);
 

@@ -6,7 +6,8 @@ PluginRegistry.add('route', {
     'controller': 'BackupAndRestoreCtrl',
     'templateUrl': 'pages/monitor/backup-and-restore.html',
     'title': 'view.monitoring.backup_and_restore.title',
-    'helpInfo': 'view.monitoring.backup_and_restore.helpInfo'
+    'helpInfo': 'view.monitoring.backup_and_restore.helpInfo',
+    'documentationUrl': 'backup-and-restore.html#monitoring-your-recovery-operations'
 });
 
 PluginRegistry.add('main.menu', {

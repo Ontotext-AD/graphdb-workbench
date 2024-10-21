@@ -36,7 +36,7 @@ class HomeSteps {
         cy.get('.tutorial-container .decline-tutorial').click();
     }
 
-    static selectSPARQLQueryToExecute(query)  {
+    static selectSPARQLQueryToExecute(query) {
         cy.contains('ul.saved-queries li', query)
             .should('be.visible')
             .trigger('hover')
@@ -59,7 +59,7 @@ class HomeSteps {
     }
 
     static createRepo() {
-        let repositoryId = 'home-repository-' + Date.now();
+        const repositoryId = 'home-repository-' + Date.now();
         cy.createRepository({id: repositoryId});
         return repositoryId;
     }
@@ -108,7 +108,7 @@ class HomeSteps {
     }
 
     static getAutocompleteInput() {
-        let input = cy.get('.home-rdf-resource-search search-resource-input .view-res-input');
+        const input = cy.get('.home-rdf-resource-search search-resource-input .view-res-input');
         input.should('be.visible');
         return input;
     }
@@ -123,7 +123,7 @@ class HomeSteps {
     }
 
     static getAutocompleteResultElement(uri) {
-        let element = cy.get("#auto-complete-results-wrapper p").contains(uri);
+        const element = cy.get("#auto-complete-results-wrapper p").contains(uri);
         element.trigger('mouseover');
         return element;
     }
@@ -158,7 +158,7 @@ class HomeSteps {
     static doNotOpenRdfSearchBoxButFocusResourceSearch() {
         cy.get('.search-rdf-btn').click();
         cy.get('.search-rdf-input').should('not.exist');
-        cy.get('.search-rdf-input search-resource-input .view-res-input').should('not.exist')
+        cy.get('.search-rdf-input search-resource-input .view-res-input').should('not.exist');
         cy.get('#search-resource-input-home > #search-resource-box > input').should('be.visible')
             .and('be.focused');
     }
@@ -179,5 +179,24 @@ class HomeSteps {
         return cy.get('#license-label-home');
     }
 
+    static getHelpMenu() {
+        return cy.get('.main-menu .menu-element-root').eq(7);
+    }
+
+    static clickHelpMenu() {
+        return HomeSteps.getHelpMenu().click();
+    }
+
+    static getDocumentationLink() {
+        return cy.get('[guide-selector="sub-menu-documentation"]');
+    }
+
+    static getTutorialsLink() {
+        return cy.get('[guide-selector="sub-menu-developer-hub"]');
+    }
+
+    static getSupportLink() {
+        return cy.get('[guide-selector="sub-menu-support"]');
+    }
 }
 export default HomeSteps;

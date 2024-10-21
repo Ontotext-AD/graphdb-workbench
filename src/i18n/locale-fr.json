@@ -1823,6 +1823,7 @@
     "common.attach": "Attacher",
     "common.close": "Fermer",
     "common.preview": "Aperçu",
+    "common.learn_more_in_documentation": "Pour en savoir plus, consultez la documentation GraphDB",
     "paginator.first.page.label": "Premier",
     "paginator.last.page.label": "Dernier",
     "active.location.version.not.support.settings.warning": "La version de GraphDB à votre emplacement actif ne prend pas en charge les paramètres.",

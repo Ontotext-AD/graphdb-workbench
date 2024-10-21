@@ -6,7 +6,8 @@ PluginRegistry.add('route', {
     'controller': 'QueriesCtrl',
     'templateUrl': 'pages/monitor/queries.html',
     'title': 'view.query.and.update.monitoring.title',
-    'helpInfo': 'view.query.and.update.monitoring.helpInfo'
+    'helpInfo': 'view.query.and.update.monitoring.helpInfo',
+    'documentationUrl': 'query-monitoring.html'
 });
 
 PluginRegistry.add('main.menu', {

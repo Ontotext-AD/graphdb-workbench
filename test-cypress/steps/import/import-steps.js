@@ -34,11 +34,15 @@ class ImportSteps {
     }
 
     static showPageInfoPopover() {
-        this.getPageInfoIcon().realHover();
+        return this.getPageInfoIcon().realHover();
     }
 
     static getPageInfoPopover() {
         return cy.get('.help-info');
+    }
+
+    static hidePageInfoPopover() {
+        return cy.get('.menu-element-root').realHover();
     }
 
     static visitUserImport(repository) {
@@ -398,16 +402,16 @@ class ImportSteps {
     }
 
     static verifyImportStatusDetails(fileToSelect, details) {
-        this.getServerFileElement(fileToSelect).find('.import-status .import-status-info').then(infoIconEl => {
+        this.getServerFileElement(fileToSelect).find('.import-status .import-status-info').then((infoIconEl) => {
             cy.wrap(infoIconEl).should('be.visible');
             cy.wrap(infoIconEl).trigger('mouseenter');
 
-            cy.get('.popover-content').then(content => {
+            cy.get('.popover-content').then((content) => {
                 cy.wrap(content).should('be.visible');
                 if (details instanceof Array) {
-                    details.forEach(text => {
+                    details.forEach((text) => {
                         cy.wrap(content).should('contain', text);
-                    })
+                    });
                 } else {
                     cy.wrap(content).should('contain', details);
                 }
@@ -426,7 +430,7 @@ class ImportSteps {
             this
                 .getServerFileElement(filename)
                 .find('.import-status .import-status-message')
-                .then(status => status && status.text().indexOf(message) > -1));
+                .then((status) => status && status.text().indexOf(message) > -1));
 
         return this;
     }
