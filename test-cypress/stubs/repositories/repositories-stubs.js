@@ -8,7 +8,7 @@ export class RepositoriesStubs extends Stubs {
     }
 
     static stubLocations(withDelay = 0) {
-        RepositoriesStubs.stubQueryResponse('/rest/locations?filterClusterLocations=true', '/repositories/get-locations.json', 'backup-and-restore-response', withDelay);
+        RepositoriesStubs.stubQueryResponse('/rest/locations', '/repositories/get-locations.json', 'backup-and-restore-response', withDelay);
     }
 
     static stubEditOntopResponse(repositoryId) {

@@ -10,7 +10,6 @@ export class RemoteLocationModel {
         this.system = data.system;
         this.errorMsg = data.errorMsg;
         this.defaultRepository = data.defaultRepository;
-        this.isInCluster = data.isInCluster;
         this.locationType = data.locationType || RemoteLocationType.GRAPH_DB;
     }
 
@@ -20,6 +19,10 @@ export class RemoteLocationModel {
 
     isOntopicLocation() {
         return RemoteLocationType.ONTOPIC === this.locationType;
+    }
+
+    isSparqlLocation() {
+        return RemoteLocationType.SPARQL === this.locationType;
     }
 
     isBasicAuthType() {
@@ -40,7 +43,8 @@ export class RemoteLocationModel {
  */
 export const RemoteLocationType = {
     'GRAPH_DB': 'GDB',
-    'ONTOPIC': 'ONTOPIC'
+    'ONTOPIC': 'ONTOPIC',
+    'SPARQL': 'SPARQL'
 };
 
 /**
