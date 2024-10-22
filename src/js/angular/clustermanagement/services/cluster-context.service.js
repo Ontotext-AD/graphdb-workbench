@@ -35,7 +35,10 @@ function ClusterContextService(EventEmitterService) {
      */
     const setClusterView = (clusterView) => {
         if (!clusterView) {
-            throw new Error("Invalid cluster view object");
+            _clusterView = undefined;
+            _clusterValid = false;
+            _pendingReplace = undefined;
+            return;
         }
         _clusterView = new ClusterViewModel(cloneDeep(clusterView));
         emitUpdateClusterView();

@@ -437,8 +437,8 @@ export class ClusterViewModel {
      * @property {Object} [clusterConfiguration] - The updated cluster configuration in JSON format, if applicable.
      */
     getUpdateActions() {
-        const addNodes = Array.from(this._addToCluster.values()).map((node) => node.rpcAddress || node.address);
-        const removeNodes = Array.from(this._deleteFromCluster.values()).map((node) => node.rpcAddress || node.address);
+        const addNodes = Array.from(this._addToCluster.values()).map((node) => node.endpoint);
+        const removeNodes = Array.from(this._deleteFromCluster.values()).map((node) => node.endpoint);
         const updateActions = {
             addNodes,
             removeNodes
