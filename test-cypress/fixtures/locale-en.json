@@ -3,15 +3,11 @@
         "buttons": {
             "delete_cluster": "Delete cluster",
             "delete_cluster_tooltip": "Delete existing cluster",
-            "add_nodes_btn": "Add nodes",
-            "add_nodes_btn_tooltip": "Add nodes to existing cluster",
-            "replace_nodes_btn": "Replace nodes",
-            "replace_nodes_btn_tooltip": "Replace nodes in cluster",
-            "remove_nodes_btn": "Remove nodes",
-            "remove_nodes_btn_tooltip": "Remove nodes from existing cluster",
             "edit_cluster": "Edit configuration",
             "edit_cluster_tooltip": "Edit cluster configuration",
-            "show_cluster_settings_tooltip": "Show cluster configuration"
+            "show_cluster_settings_tooltip": "Show cluster configuration",
+            "update_nodes_group_btn": "Edit cluster",
+            "update_nodes_group_btn_tooltip": "Edit cluster nodes"
         },
         "cluster_graphical_view": {
             "no_cluster_configured": "No cluster is configured",
@@ -79,17 +75,10 @@
             "create_page_title": "Create cluster",
             "edit_page_title": "Edit cluster configuration",
             "creating_cluster_loader": "Creating cluster...",
-            "add_nodes_loader": "Adding nodes to cluster...",
-            "replace_nodes_loader": "Replacing nodes in cluster...",
-            "remove_nodes_loader": "Removing nodes from cluster...",
             "updating_cluster_loader": "Updating cluster...",
-            "cluster_nodes_list": "Cluster nodes list",
-            "remote_locations": "Remote locations",
-            "remove_node_btn_tooltip": "Remove node",
             "current_node": "Current node",
             "advanced_options": "Advanced options",
             "advanced_options_tooltip": "Advanced options for cluster configuration",
-            "select_from_locations_hint": "Select nodes from remote locations",
             "toggle_legend_btn": "Legend",
             "toggle_legend_btn_tooltip": "Toggle legend",
             "errors": {
@@ -107,20 +96,13 @@
                     "no_cluster_configured": "Nodes must not have cluster configuration"
                 }
             },
-            "create_btn": "Create",
             "save_btn": "Save",
             "notifications": {
                 "create_success": "Cluster created successfully",
                 "create_failed": "Cluster creation failed",
                 "update_success": "Cluster updated successfully",
                 "update_failed": "Cluster update failed",
-                "form_invalid": "The form data is invalid",
-                "add_nodes_success": "Nodes added successfully",
-                "add_nodes_fail": "Adding nodes failed",
-                "replace_nodes_success": "Nodes replaced successfully",
-                "replace_nodes_fail": "Replacing nodes failed",
-                "remove_nodes_success": "Nodes removed successfully",
-                "remove_nodes_fail": "Removing nodes failed"
+                "form_invalid": "The form data is invalid"
             }
         },
         "delete_cluster_dialog": {
@@ -135,18 +117,44 @@
                 "fail_delete": "Can not delete cluster"
             }
         },
-        "replace_nodes_dialog": {
-            "title": "Replace nodes in cluster",
-            "nodes_to_replace_label": "Nodes to add to cluster",
-            "cluster_nodes_list": "Select nodes to be removed from existing cluster"
-        },
-        "add_nodes_dialog": {
-            "title": "Add nodes to cluster",
-            "nodes_to_add_label": "Nodes to add to cluster"
-        },
-        "remove_nodes_dialog": {
-            "title": "Remove nodes from cluster",
-            "content": "Select nodes to be removed from existing cluster"
+        "update_cluster_group_dialog": {
+            "title": "Edit cluster",
+            "title_create": "Create cluster",
+            "current_node": "Current node",
+            "new_node": "Node will be added",
+            "deleted_node": "Node will be removed",
+            "leader": "Leader",
+            "follower": "Follower",
+            "candidate": "Candidate",
+            "no_cluster": "No cluster",
+            "out_of_sync": "Out of sync",
+            "no_connection": "No connection",
+            "read_only": "Read only",
+            "restricted": "Restricted",
+            "column": {
+                "index": "",
+                "location": "Location URL",
+                "info": "",
+                "status": "Status change"
+            },
+            "actions": {
+                "replace_node": "Replace node",
+                "delete_node": "Delete node",
+                "cannot_delete_node": "You cannot remove more than half of the healthy nodes at the same time",
+                "add_node": "Add node",
+                "add_node_tooltip": "Add node to current cluster",
+                "cancel": "Cancel",
+                "restore_node": "Undo"
+            },
+            "messages": {
+                "no_cluster": "No cluster is configured",
+                "invalid_form": "Invalid Location URL",
+                "connecting_node": "Connecting node",
+                "save_to_apply": "Save to apply changes"
+            },
+            "field_placeholders": {
+                "location": "http://my-hostname:7200"
+            }
         }
     },
     "acl_management": {
@@ -1973,6 +1981,7 @@
     "manage.remote.location.dialog.graph_db.password.placeholder": "my password",
     "manage.remote.location.dialog.ontopic.password.placeholder": "my secret",
     "valid.remote.location.warning": "Note that the location should be a URL that points to a remote GraphDB installation, e.g.",
+    "duplicate.remote.location.warning": "The URL is already in the list",
     "auth.type.header": "Authentication type",
     "remote.location.no.auth.used.tooltip": "No authentication used with remote location",
     "auth.type.none": "None",
