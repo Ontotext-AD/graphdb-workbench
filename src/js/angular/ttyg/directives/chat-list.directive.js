@@ -2,9 +2,6 @@ import 'angular/core/directives/inline-editable-text/inline-editable-text.direct
 import {decodeHTML} from "../../../../app";
 import {TTYGEventName} from "../services/ttyg-context.service";
 
-import {ChatModel} from "../../models/ttyg/chats";
-import {md5HashGenerator} from "../../utils/hash-utils";
-
 const modules = [
     'graphdb.framework.core.directives.inline-editable-text'
 ];
@@ -19,7 +16,7 @@ function ChatListComponent(TTYGContextService, ModalService, $translate, $filter
     return {
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/chat-list.html',
-        link: ($scope, element, attrs) => {
+        link: ($scope) => {
 
             // =========================
             // Public variables

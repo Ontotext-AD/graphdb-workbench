@@ -346,6 +346,7 @@ function TTYGContextService(EventEmitterService) {
         resetContext,
         emit,
         subscribe,
+        // chats
         getChats,
         updateChats,
         addChat,
@@ -357,6 +358,7 @@ function TTYGContextService(EventEmitterService) {
         onSelectedChatChanged,
         updateSelectedChat,
         onSelectedChatUpdated,
+        // agents
         updateAgents,
         onAgentsListChanged,
         getAgents,
@@ -364,16 +366,17 @@ function TTYGContextService(EventEmitterService) {
         selectAgent,
         getSelectedAgent,
         onSelectedAgentChanged,
+        getDefaultAgent,
+        setDefaultAgent,
+        setCanModifyAgent,
+        getCanModifyAgent,
+        onCanUpdateAgentUpdated,
+        // chat explain
         hasExplainResponse,
         toggleExplainResponse,
         getExplainResponse,
         addExplainResponseCache,
         onExplainResponseCacheUpdated,
-        getDefaultAgent,
-        setDefaultAgent,
-        setCanModifyAgent,
-        getCanModifyAgent,
-        onCanUpdateAgentUpdated
     };
 }
 
