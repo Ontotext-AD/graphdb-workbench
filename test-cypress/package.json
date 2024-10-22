@@ -10,7 +10,7 @@
         "test": "cypress run",
         "test:flaky": "cypress run --config-file cypress-flaky.config.js",
         "test:partial": "cypress run --spec \"integration/repository/**\"",
-        "test:core": "cypress run --spec integration/repository/**,integration/import/**,integration/sparql-editor/**,integration/monitor/**,integration/cluster/**"
+        "test:core": "cypress run --spec integration/repository/**,integration/import/**,integration/sparql-editor/**,integration/monitor/**,integration/cluster/**,integration/ttyg/**"
     },
     "author": {
         "name": "\"Sirma AI\" JSC, trading as Ontotext",
