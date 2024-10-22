@@ -370,8 +370,8 @@ function AgentSettingsModalController(
                 $uibModalInstance.close(updatedAgent);
                 toastr.success($translate.instant('ttyg.agent.messages.agent_save_successfully', {agentName: updatedAgent.name}));
             })
-            .catch(() => {
-                toastr.error($translate.instant('ttyg.agent.messages.agent_save_failure', {agentName: agentPayload.name}));
+            .catch((error) => {
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             })
             .finally(() => {
                 $scope.savingAgent = false;
@@ -390,8 +390,8 @@ function AgentSettingsModalController(
                 $uibModalInstance.close(updatedAgent);
                 toastr.success($translate.instant("ttyg.agent.messages.agent_save_successfully", {agentName: updatedAgent.name}));
             })
-            .catch(() => {
-                toastr.error($translate.instant("ttyg.agent.messages.agent_save_failure", {agentName: agentPayload.name}));
+            .catch((error) => {
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             })
             .finally(() => {
                 $scope.savingAgent = false;
