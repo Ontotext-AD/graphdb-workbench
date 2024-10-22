@@ -18,13 +18,12 @@ describe('Cluster management', () => {
 
     it('Should be able to add', () => {
         const clusterLocations = ['http://pc-desktop:7200', 'http://pc-desktop:7201', 'http://pc-desktop:7202'];
-        const nodesToAdd = ['pc-desktop:7303'];
+        const nodesToAdd = ['http://pc-desktop:7203'];
         const urisToAdd = ['http://pc-desktop:7203'];
         ClusterStubs.stubClusterConfigByList(clusterLocations);
         ClusterStubs.stubClusterGroupStatus();
         ClusterStubs.stubClusterNodeStatus();
         RemoteLocationStubs.stubRemoteLocationFilter();
-        RemoteLocationStubs.stubRemoteLocationCheckByAddress([{uri: 'pc-desktop:7203', rpc: 'pc-desktop:7303'}]);
 
         // Given I have opened the cluster management page
         ClusterPageSteps.visit();
@@ -73,7 +72,7 @@ describe('Cluster management', () => {
 
     it('Should be able to delete', () => {
         const clusterLocations = ['http://pc-desktop:7200', 'http://pc-desktop:7201', 'http://pc-desktop:7202'];
-        const nodesToDelete = ['pc-desktop:7301'];
+        const nodesToDelete = ['http://pc-desktop:7201'];
         ClusterStubs.stubClusterConfigByList(clusterLocations);
         ClusterStubs.stubClusterGroupStatus();
         ClusterStubs.stubClusterNodeStatus();
@@ -206,20 +205,20 @@ describe('Cluster management', () => {
 
 
         //And when I confirm changes
-        ClusterStubs.stubAddNodesByList(['pc-desktop:7203']);
-        ClusterStubs.stubDeleteNodesByList(['pc-desktop:7201', 'pc-desktop:7202']);
-        ClusterStubs.stubReplaceNodesByList(['pc-desktop:7203'], ['pc-desktop:7201']);
+        ClusterStubs.stubAddNodesByList(['http://pc-desktop:7203']);
+        ClusterStubs.stubDeleteNodesByList(['http://pc-desktop:7201', 'http://pc-desktop:7202']);
+        ClusterStubs.stubReplaceNodesByList(['http://pc-desktop:7203'], ['http://pc-desktop:7201']);
         ClusterStubs.stubClusterGroupStatusAfterReplace();
 
         ClusterNodesConfigurationSteps.clickOkButton();
         cy.wait('@response-replace-nodes').then((interception) => {
             expect(interception.request.body).to.deep.equal({
                 "addNodes": [
-                    "pc-desktop:7303"
+                    "http://pc-desktop:7203"
                 ],
                 "removeNodes": [
-                    "pc-desktop:7301",
-                    "pc-desktop:7302"
+                    "http://pc-desktop:7201",
+                    "http://pc-desktop:7202"
                 ]
             });
         });
@@ -338,20 +337,20 @@ describe('Cluster management', () => {
         ClusterNodesConfigurationSteps.getNodeIndexByEndpoint('http://pc-desktop:7203').should('have.text', '3');
 
         //And when I confirm changes
-        const nodesToAdd = ['pc-desktop:7233', 'pc-desktop:7203'];
-        const nodesToRemove = ['pc-desktop:7301', 'pc-desktop:7300'];
+        const nodesToAdd = ['http://pc-desktop:7233', 'http://pc-desktop:7203'];
+        const nodesToRemove = ['http://pc-desktop:7201', 'http://pc-desktop:7200'];
         ClusterStubs.stubReplaceNodesByList(nodesToAdd, nodesToRemove);
         ClusterStubs.stubClusterGroupStatusAfterReplaceAndDelete();
         ClusterNodesConfigurationSteps.clickOkButton();
         cy.wait('@response-replace-nodes').then((interception) => {
             expect(interception.request.body).to.deep.equal({
                 "addNodes": [
-                    "pc-desktop:7333",
-                    "pc-desktop:7303"
+                    "http://pc-desktop:7233",
+                    "http://pc-desktop:7203"
                 ],
                 "removeNodes": [
-                    "pc-desktop:7301",
-                    "pc-desktop:7300"
+                    "http://pc-desktop:7201",
+                    "http://pc-desktop:7200"
                 ]
             });
         });
@@ -416,7 +415,7 @@ describe('Cluster management', () => {
                 "messageSizeKB": 64,
                 "verificationTimeout": 1500,
                 "transactionLogMaximumSizeGB": 50.0,
-                "nodes": ['pc-desktop:7300', 'pc-desktop:7303']
+                "nodes": ['http://pc-desktop:7200', 'http://pc-desktop:7203']
             });
         });
         // And expect success message to be displayed.
