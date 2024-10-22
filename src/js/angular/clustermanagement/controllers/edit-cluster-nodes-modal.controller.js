@@ -1,4 +1,5 @@
 import 'angular/clustermanagement/services/cluster-context.service';
+import {cloneDeep} from "lodash";
 
 const modules = [
     'graphdb.framework.clustermanagement.services.cluster-context'
@@ -23,9 +24,25 @@ function EditClusterNodesModalController($scope, $uibModalInstance, $translate, 
 
     /**
      * Confirms and saves the changes, closing the modal.
+     *
+     * This function is called when the user confirms their actions in the modal.
+     *
+     * It retrieves the current cluster view from `ClusterContextService`.
+     *
+     * If the cluster does not have a valid cluster configuration,
+     * it closes the modal and passes a deep clone of the updated cluster configuration.
+     *
+     * If the cluster does have a valid configuration, it passes a deep clone of the full update actions.
+     *
+     * @private
      */
     $scope.ok = () => {
-        $uibModalInstance.close(ClusterContextService.getClusterView());
+        const cluster = ClusterContextService.getClusterView();
+        if (!cluster.hasCluster()) {
+            $uibModalInstance.close(cloneDeep(cluster.getUpdateActions().clusterConfiguration));
+        } else {
+            $uibModalInstance.close(cloneDeep(cluster.getUpdateActions()));
+        }
     };
 
     /**
@@ -65,15 +82,24 @@ function EditClusterNodesModalController($scope, $uibModalInstance, $translate, 
     // =========================
 
     /**
+     * Cleanup function that is called when the modal is destroyed.
+     * @private
+     */
+    const onDestroy = () => {
+        removeAllListeners();
+        ClusterContextService.setClusterView(undefined);
+    };
+
+    /**
      * Unsubscribes from all listeners when the scope is destroyed.
      */
-    function removeAllListeners() {
+    const removeAllListeners = () => {
         subscriptions.forEach((subscription) => subscription());
-    }
+    };
 
     subscriptions.push(ClusterContextService.onClusterValidityChanged(onClusterValidityChanged));
     subscriptions.push(ClusterContextService.onClusterViewChanged(onClusterViewChanged));
-    $scope.$on('$destroy', removeAllListeners);
+    $scope.$on('$destroy', onDestroy);
 
     // =========================
     // Initialization

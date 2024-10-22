@@ -10,11 +10,9 @@ function ClusterRestService($http) {
     return {
         getClusterConfig,
         createCluster,
-        updateCluster,
+        updateClusterConfiguration,
         deleteCluster,
-        addNodesToCluster,
         replaceNodesInCluster,
-        removeNodesFromCluster,
         getClusterStatus,
         getNodeStatus
     };
@@ -25,7 +23,7 @@ function ClusterRestService($http) {
      * @return {*}
      */
     function replaceNodesInCluster(payload) {
-        return $http.patch(`${CLUSTER_GROUP_ENDPOINT}/config/node`, payload);
+        return $http.patch(`${CLUSTER_GROUP_ENDPOINT}/httpConfig`, payload);
     }
 
     function getClusterConfig() {
@@ -33,10 +31,10 @@ function ClusterRestService($http) {
     }
 
     function createCluster(groupConfiguration) {
-        return $http.post(`${CLUSTER_GROUP_ENDPOINT}/config`, groupConfiguration);
+        return $http.post(`${CLUSTER_GROUP_ENDPOINT}/httpConfig`, groupConfiguration);
     }
 
-    function updateCluster(groupConfiguration) {
+    function updateClusterConfiguration(groupConfiguration) {
         if (groupConfiguration.nodes) {
             delete groupConfiguration.nodes;
         }
@@ -48,14 +46,6 @@ function ClusterRestService($http) {
             force: forceDelete
         });
         return $http.delete(`${CLUSTER_GROUP_ENDPOINT}/config?${data}`);
-    }
-
-    function addNodesToCluster(nodesArray) {
-        return $http.post(`${CLUSTER_GROUP_ENDPOINT}/config/node`, {nodes: nodesArray});
-    }
-
-    function removeNodesFromCluster(nodesArray) {
-        return $http.delete(`${CLUSTER_GROUP_ENDPOINT}/config/node`, {data: {nodes: nodesArray}, headers: {'Content-Type': 'application/json'}});
     }
 
     function getClusterStatus() {

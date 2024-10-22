@@ -101,17 +101,15 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
                     }
                 }
             }).result;
-        }).then((cluster) => {
-            if (!cluster.hasCluster()) {
-                createCluster(cluster.getUpdateActions().clusterConfiguration);
+        }).then((clusterNodes) => {
+            if (clusterNodes.addNodes || clusterNodes.removeNodes) {
+                editCluster(clusterNodes);
             } else {
-                const nodes = cluster.getUpdateActions();
-                editCluster(nodes);
+                createCluster(clusterNodes);
             }
-        }).catch((error) => {
+        }).catch(() => {
             $scope.setLoader(false);
             updateCluster(true, true);
-            console.error(error); // eslint-disable-line no-console
         }).finally(() => {
             getLocationsWithRpcAddresses();
         });
