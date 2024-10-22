@@ -546,6 +546,9 @@
                     },
                     "save": {
                         "label": "Enregistrer"
+                    },
+                    "explain_settings": {
+                        "label": "Expliquer les paramètres"
                     }
                 },
                 "dialog": {
@@ -560,6 +563,31 @@
             "delete_agent_modal": {
                 "title": "Supprimer l'agent",
                 "body": "Voulez-vous vraiment supprimer l'agent <b>{{agentName}}</b>?"
+            },
+            "instructions_explain_modal": {
+                "title": "Instructions pour les agents",
+                "instructions": {
+                    "baseInstructions": {
+                        "label": "Instructions de base",
+                        "description": "Établit le contexte principal et les directives fondamentales pour le comportement de l'agent."
+                    },
+                    "additionalInstructions": {
+                        "label": "Instructions supplémentaires",
+                        "description": "Fournit des directives supplémentaires pour personnaliser davantage le comportement de l'agent ou spécifier des vérités importantes."
+                    },
+                    "sparqlInstructions": {
+                        "label": "Instructions SPARQL",
+                        "description": "Détaille les instructions pour la construction et l'exécution des requêtes SPARQL."
+                    },
+                    "ontologyIntroduction": {
+                        "label": "Introduction à l'ontologie",
+                        "description": "Introduit la section contenant les données de l'ontologie."
+                    },
+                    "ontology": {
+                        "label": "Ontologie",
+                        "description": "Représente l'ontologie extraite et sérialisée."
+                    }
+                }
             },
             "agent_select_menu": {
                 "no_selection_label": "Sélectionner un agent",

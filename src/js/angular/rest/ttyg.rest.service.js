@@ -186,11 +186,27 @@ function TTYGRestService($http) {
         return $http.post(EXPLAIN_RESPONSE_ENDPOINT, data);
     };
 
+    /**
+     * Calls the backend server to fetch the default values for an agent.
+     * @return {Promise}
+     */
     const getAgentDefaultValues = () => {
         if (DEVELOPMENT) {
             return _fakeBackend.getAgentDefaultValues();
         }
         return $http.get(`${AGENTS_ENDPOINT}/default`);
+    };
+
+    /**
+     * Calls the backend server to fetch an explanation of how the agent settings were generated.
+     * @param {*} data
+     * @return {Promise}
+     */
+    const explainAgentSettings = (data) => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.explainAgentSettings();
+        }
+        return $http.post(`${AGENTS_ENDPOINT}/explain`, data);
     };
 
     return {
@@ -208,6 +224,7 @@ function TTYGRestService($http) {
         editAgent,
         deleteAgent,
         explainResponse,
-        getAgentDefaultValues
+        getAgentDefaultValues,
+        explainAgentSettings
     };
 }

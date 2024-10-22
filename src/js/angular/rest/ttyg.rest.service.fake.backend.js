@@ -153,6 +153,10 @@ export class TtygRestServiceFakeBackend {
         return Promise.resolve({data: defaultAgentValues});
     }
 
+    explainAgentSettings() {
+        return Promise.resolve({data: {}});
+    }
+
     // Simulate an HTTP error
     simulateHttpError() {
         return Promise.reject({

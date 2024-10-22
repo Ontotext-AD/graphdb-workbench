@@ -4,6 +4,7 @@ import 'angular/core/services/similarity.service';
 import 'angular/core/services/connectors.service';
 import 'angular/core/services/ttyg.service';
 import 'angular/rest/repositories.rest.service';
+import 'angular/ttyg/controllers/agent-instructions-explain-modal.controller';
 import {REPOSITORY_PARAMS} from "../../models/repository/repository";
 import {TTYGEventName} from "../services/ttyg-context.service";
 import {AGENT_OPERATION, TTYG_ERROR_MSG_LENGTH} from "../services/constants";
@@ -12,7 +13,8 @@ angular
     .module('graphdb.framework.ttyg.controllers.agent-settings-modal', [
         'graphdb.framework.core.services.similarity',
         'graphdb.framework.core.services.connectors',
-        'graphdb.framework.rest.repositories.service'
+        'graphdb.framework.rest.repositories.service',
+        'graphdb.framework.ttyg.controllers.agent-instructions-explain-modal'
     ])
     .controller('AgentSettingsModalController', AgentSettingsModalController);
 
@@ -20,6 +22,7 @@ AgentSettingsModalController.$inject = [
     '$scope',
     '$uibModalInstance',
     'ModalService',
+    '$uibModal',
     'SimilarityService',
     'ConnectorsService',
     'RepositoriesRestService',
@@ -35,6 +38,7 @@ function AgentSettingsModalController(
     $scope,
     $uibModalInstance,
     ModalService,
+    $uibModal,
     SimilarityService,
     ConnectorsService,
     RepositoriesRestService,
@@ -59,7 +63,7 @@ function AgentSettingsModalController(
     $scope.AGENT_OPERATION = AGENT_OPERATION;
 
     /**
-     * The operation type for the modal. This can be one of <code>AGENT_OPEATION</code> constants.
+     * The operation type for the modal. This can be one of <code>AGENT_OPERATION</code> constants.
      */
     $scope.operation = dialogModel.operation;
 
@@ -322,6 +326,36 @@ function AgentSettingsModalController(
         if ($scope.agentFormModel.instructions.systemInstruction === '') {
             $scope.showSystemInstructionWarning = false;
         }
+    };
+
+    /**
+     * Opens the agent instructions explain modal.
+     */
+    $scope.onExplainAgentSettings = () => {
+      const agentPayload = $scope.agentFormModel.toPayload();
+      TTYGService.explainAgentSettings(agentPayload)
+          .then((agentInstructionsExplain) => {
+            const options = {
+                templateUrl: 'js/angular/ttyg/templates/modal/agent-instructions-explain-modal.html',
+                controller: 'AgentInstructionsExplainModalController',
+                windowClass: 'agent-instructions-explain-modal',
+                backdrop: 'static',
+                resolve: {
+                    dialogModel: function () {
+                        return {
+                            agentInstructionsExplain
+                        };
+                    }
+                },
+                size: 'lg'
+            };
+            $uibModal.open(options).result
+                .then(() => {
+                    // Do nothing
+                });
+          }).catch((error) => {
+              toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
+          });
     };
 
     // =========================
