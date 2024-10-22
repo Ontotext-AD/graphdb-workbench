@@ -4,8 +4,6 @@ import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 
 describe('Attach remote location', () => {
-    let repositoryId;
-
     beforeEach(() => {
         cy.visit('/repository');
         RepositorySteps.waitLoader();
@@ -135,8 +133,8 @@ describe('Attach remote location', () => {
     });
 
     it('Should open edit remote location dialog', () => {
-        repositoryId = 'http://local';
-        addRemoteSPARQLLocation(repositoryId, 'username', 'password');
+        const locationId = 'http://local';
+        addRemoteSPARQLLocation(locationId, 'username', 'password');
         RepositorySteps.getLocalGraphDBTable().should('exist');
         // When I click to edit the SPARQL instance
         RepositorySteps.editSparqlInstance(0);
@@ -145,25 +143,25 @@ describe('Attach remote location', () => {
         // And be disabled
         AttachRepositorySteps.getSparqlEndpointRadioBtn().should('be.disabled');
         // The location url be set
-        AttachRepositorySteps.getLocationURLInput().should('have.value', repositoryId);
+        AttachRepositorySteps.getLocationURLInput().should('have.value', locationId);
         // And be disabled for edit
         AttachRepositorySteps.getLocationURLInput().should('be.disabled');
         ModalDialogSteps.close();
         // Then I can remove the new location
-        RepositorySteps.deleteSparqlLocation(repositoryId);
+        RepositorySteps.deleteSparqlLocation(locationId);
         // When I confirm
         ModalDialogSteps.clickOnConfirmButton();
     });
 
     it('should create and delete SPARQL endpoint instance', () => {
-        repositoryId = 'http://endpoint/repo/ex';
-        addRemoteSPARQLLocation(repositoryId, 'username', 'password');
+        const locationId = 'http://endpoint/repo/ex';
+        addRemoteSPARQLLocation(locationId, 'username', 'password');
         // Then the dialog has closed
         ModalDialogSteps.getDialog().should('not.exist');
         // And the SPARQL table should be visible
-        RepositorySteps.getSparqlOntopicTable().should('contain', repositoryId);
+        RepositorySteps.getSparqlOntopicTable().should('contain', locationId);
         // Then I can remove the new location
-        RepositorySteps.deleteSparqlLocation(repositoryId);
+        RepositorySteps.deleteSparqlLocation(locationId);
         // When I confirm
         ModalDialogSteps.clickOnConfirmButton();
         // Then the instance should be gone
