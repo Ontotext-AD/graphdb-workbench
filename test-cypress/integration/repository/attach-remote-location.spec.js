@@ -12,10 +12,6 @@ describe('Attach remote location', () => {
         RepositorySteps.waitUntilRepositoriesPageIsLoaded();
     });
 
-    afterEach(() => {
-        cy.deleteRepository(repositoryId);
-    });
-
     it('Should create and delete remote instance', () => {
         // When I open the "Attach a remote instance" dialog.
         AttachRepositorySteps.openAttachRemoteLocationDialog();
