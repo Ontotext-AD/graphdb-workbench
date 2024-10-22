@@ -1,30 +1,23 @@
-import {DELETE_CLUSTER, UPDATE_CLUSTER} from "../events";
+import {DELETE_CLUSTER, UPDATE_CLUSTER} from "../../events";
 
 const modules = [];
 
 angular
-    .module('graphdb.framework.clustermanagement.directives.cluster-configuration', modules)
-    .directive('clusterConfiguration', ClusterConfiguration);
+    .module('graphdb.framework.clustermanagement.directives.cluster-configuration.cluster-properties', modules)
+    .directive('clusterProperties', ClusterProperties);
 
-ClusterConfiguration.$inject = ['$jwtAuth', '$uibModal', '$translate', 'toastr', 'ClusterViewContextService'];
+ClusterProperties.$inject = ['$jwtAuth', '$uibModal'];
 
-function ClusterConfiguration($jwtAuth, $uibModal, $translate, toastr, ClusterViewContextService) {
+function ClusterProperties($jwtAuth, $uibModal) {
     return {
         restrict: 'E',
-        templateUrl: 'js/angular/clustermanagement/templates/cluster-configuration.html',
+        templateUrl: 'js/angular/clustermanagement/templates/cluster-configuration/cluster-properties.html',
         scope: {
             currentNode: '=',
             clusterModel: '=',
             clusterConfiguration: '='
         },
         link: ($scope) => {
-
-            $scope.isAdmin = false;
-
-            $scope.closeClusterConfigurationPanel = () => {
-                ClusterViewContextService.hideClusterConfigurationPanel();
-            };
-
             $scope.showEditConfigurationDialog = () => {
                 const modalInstance = $uibModal.open({
                     templateUrl: 'js/angular/clustermanagement/templates/modal/cluster-edit-dialog.html',
