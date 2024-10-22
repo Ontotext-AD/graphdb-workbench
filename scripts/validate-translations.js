@@ -60,10 +60,12 @@ const identicalTranslations = [
     "{{progressMessage}}... {{timeHuman}}",
     "\n{{extraMessage}}",
     "{{n}}/{{nn}}",
+    "",
 
     // Example values below - maybe they should never be translated?
     "http://example.com/context.jsonld",
-    "http://example.com/frame.jsonld"
+    "http://example.com/frame.jsonld",
+    "http://my-hostname:7200"
 ];
 
 // Unverified identical or TO DO translations - printed as warnings
