@@ -2,10 +2,9 @@
     <h4>{{title}}</h4>
     <div ng-if="helpInfo">
         <p ng-bind-html="helpInfo">
-            <!--{{helpInfo}}-->
         </p>
     </div>
     <div ng-if="documentationUrl">
-        <a ng-href="{{documentationUrl}}" target="_blank">{{'common.learn_more_in_documentation' | translate}}</a> <i class="fa-regular fa-arrow-up-right-from-square"></i>
+        <a ng-href="{{documentationUrl}}" target="_blank" rel="noopener">{{'common.learn_more_in_documentation' | translate}}</a> <i class="fa-regular fa-arrow-up-right-from-square"></i>
     </div>
 </div>

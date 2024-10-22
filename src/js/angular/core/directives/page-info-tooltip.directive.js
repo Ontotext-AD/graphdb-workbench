@@ -1,11 +1,11 @@
 /**
  * @ngdoc directive
- * @name contextTooltip
+ * @name pageInfoTooltip
  * @restrict E
  * @scope
  * @element ANY
  * @description
- * The `contextTooltip` directive creates a tooltip that shows context-specific information
+ * The `pageInfoTooltip` directive creates a tooltip that shows context-specific information
  * when the user hovers over the element. The directive listens for `mouseenter` and `mouseleave`
  * events and toggles the popover's visibility.
  *
@@ -18,16 +18,16 @@
  * Usage example in HTML:
  * <h1>
  *     {{title}}
- *     <span context-tooltip></span>
+ *     <page-info-tooltip></page-info-tooltip>
  * </h1>
  *
  * @returns {Object} The directive definition object with link function.
  */
-angular.module('graphdb.framework.core.directives.context-tooltip', [])
-    .directive('contextTooltip', function() {
+angular.module('graphdb.framework.core.directives.page-info-tooltip', [])
+    .directive('pageInfoTooltip', function() {
         return {
             restrict: 'E',
-            templateUrl: 'js/angular/templates/contextTooltip.html',
+            templateUrl: 'js/angular/templates/pageInfoTooltip.html',
             link: function($scope, element) {
                 // Track whether the popover is open
                 $scope.isPopoverOpen = false;

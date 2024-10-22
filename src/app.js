@@ -14,7 +14,7 @@ import 'angular/core/directives/uppercased.directive';
 import 'angular/core/directives/operations-statuses-monitor/operations-statuses-monitor.directive';
 import 'angular/core/directives/autocomplete/autocomplete.directive';
 import 'angular/core/directives/prop-indeterminate/prop-indeterminate.directive';
-import 'angular/core/directives/context-tooltip.directive';
+import 'angular/core/directives/page-info-tooltip.directive';
 import {defineCustomElements} from 'ontotext-yasgui-web-component/loader';
 import {convertToHumanReadable} from "./js/angular/utils/size-util";
 import {DocumentationUrlResolver} from "./js/angular/utils/documentation-url-resolver";
@@ -42,7 +42,7 @@ const modules = [
     'graphdb.framework.core.directives.angular-tooltips',
     'graphdb.framework.core.directives.uppercased',
     'graphdb.framework.core.directives.prop-indeterminate',
-    'graphdb.framework.core.directives.context-tooltip',
+    'graphdb.framework.core.directives.page-info-tooltip',
     'graphdb.framework.guides.services',
     'graphdb.framework.core.services.licenseService',
     'graphdb.framework.core.services.installationCookieService',
@@ -199,8 +199,8 @@ const moduleDefinition = function (productInfo, translations) {
     workbench.constant('productInfo', productInfo);
 
     // we need to inject $jwtAuth here in order to init the service before everything else
-    workbench.run(['$window', '$rootScope', '$route', 'toastr', '$sce', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', 'LSKeys', 'GuidesService', '$licenseService', 'InstallationCookieService',
-        function ($window, $rootScope, $route, toastr, $sce, $translate, ThemeService, WorkbenchSettingsStorageService, LSKeys, GuidesService, $licenseService, InstallationCookieService) {
+    workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', 'LSKeys', 'GuidesService', '$licenseService', 'InstallationCookieService',
+        function ($rootScope, $route, toastr, $sce, $translate, ThemeService, WorkbenchSettingsStorageService, LSKeys, GuidesService, $licenseService, InstallationCookieService) {
             $rootScope.$on('$routeChangeSuccess', function () {
                 updateTitleAndHelpInfo();
 

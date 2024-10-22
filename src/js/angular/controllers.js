@@ -314,7 +314,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     });
 
-    $scope.urlResolver = DocumentationUrlResolver.getDocumentationUrl;
+    $scope.resolveUrl = (productVersion, endpointPath) => DocumentationUrlResolver.getDocumentationUrl(productVersion, endpointPath);
 
     $scope.isCurrentPath = function (path) {
         return $location.path() === '/' + path;
