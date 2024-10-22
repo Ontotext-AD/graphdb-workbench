@@ -28,12 +28,19 @@
   padding-right: 20px;
   width: 60vw;
 
-  -webkit-transition: all 0.3s ease-in; /* Safari */
-  transition: all 0.3s ease-in;
+    /* Safari */
+  -webkit-transition: top 0.3s ease-in, opacity 0.5s ease;
+  transition: top 0.3s ease-in, opacity 0.5s ease;
 }
 
-.show-rdf-search-box {
-  top: 40px;
+.show-rdf-search-box-visible {
+    top: 40px;
+    opacity: 1;
+}
+
+.show-rdf-search-box-invisible {
+    top: -550px;
+    opacity: 0;
 }
 
 @media (max-width: 768px) {
