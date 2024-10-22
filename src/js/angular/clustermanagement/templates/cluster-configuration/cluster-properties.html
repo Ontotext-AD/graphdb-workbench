@@ -1,20 +1,16 @@
-<div class="cluster-configuration break-word-alt p-1 pt-2">
-    <button class="close mb-1 ml-1" ng-click="closeClusterConfigurationPanel()"></button>
-    <h3 class="hovered-parent">
-        {{'cluster_management.cluster_configuration.label' | translate}}
-    </h3>
+<div class="cluster-properties">
     <div class="mb-2" ng-if="isAdmin">
-        <button type="button" class="btn btn-secondary delete-cluster-btn mr-1 mt-1"
-                ng-click="showDeleteDialog()"
-                gdb-tooltip="{{'cluster_management.buttons.delete_cluster_tooltip' | translate}}"
-                tooltip-placement="bottom">
-            <span class="icon-trash"></span> {{'cluster_management.buttons.delete_cluster' | translate}}
-        </button>
-        <button type="button" class="btn btn-primary edit-cluster-configuration mt-1"
+        <button type="button" class="btn btn-primary edit-cluster-configuration"
                 ng-click="showEditConfigurationDialog()"
                 gdb-tooltip="{{'cluster_management.buttons.edit_cluster_tooltip' | translate}}"
                 tooltip-placement="bottom">
             <span class="icon-edit mr-1"></span>{{'cluster_management.buttons.edit_cluster' | translate}}
+        </button>
+        <button type="button" class="btn btn-secondary delete-cluster-btn mr-1"
+                ng-click="showDeleteDialog()"
+                gdb-tooltip="{{'cluster_management.buttons.delete_cluster_tooltip' | translate}}"
+                tooltip-placement="bottom">
+            <span class="icon-trash"></span> {{'cluster_management.buttons.delete_cluster' | translate}}
         </button>
     </div>
     <div class="datasource mb-1">
@@ -77,13 +73,4 @@
             <span>{{clusterConfiguration.transactionLogMaximumSizeGB | number}}</span>
         </div>
     </div>
-    <h4>{{'cluster_management.cluster_configuration.nodes_list_label' | translate}}</h4>
-    <ul>
-        <li ng-repeat="node in clusterModel.nodes">
-            <a class="data-value" href="{{node.endpoint}}" target="_blank">{{node.endpoint}}</a>
-            <div class="small">{{ 'cluster_management.cluster_status.node.rpc_address' | translate }}: <span class="data-value">{{node.address}}</span>
-            </div>
-            <div class="small">{{ 'cluster_management.cluster_status.node.state' | translate }}: <span class="data-value">{{node.nodeState}}</span></div>
-        </li>
-    </ul>
 </div>

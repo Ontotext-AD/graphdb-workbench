@@ -345,3 +345,20 @@ div.nodetooltip {
 .alert-save.alert-warning:before {
     content: "\e920";
 }
+
+ul.nodes-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+ul.nodes-list li {
+    margin-bottom: 10px;
+}
+
+ul.nodes-list li a {
+    text-decoration: none;
+}
+
+ul.nodes-list li a:hover {
+    text-decoration: underline;
+}

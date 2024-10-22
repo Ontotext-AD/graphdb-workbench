@@ -3,8 +3,8 @@
         "buttons": {
             "delete_cluster": "Supprimer le cluster",
             "delete_cluster_tooltip": "Supprimer le cluster existant",
-            "edit_cluster": "Modifier la configuration",
-            "edit_cluster_tooltip": "Modifier la configuration du cluster",
+            "edit_cluster": "Modifier les propriétés",
+            "edit_cluster_tooltip": "Modifier les propriétés du cluster",
             "show_cluster_settings_tooltip": "Afficher la configuration du cluster",
             "update_nodes_group_btn": "Modifier le cluster",
             "update_nodes_group_btn_tooltip": "Modifier les nœuds du cluster"
@@ -58,6 +58,7 @@
             }
         },
         "cluster_configuration_properties": {
+            "label": "Propriétés",
             "election_min_timeout": "Délai minimum d'élection",
             "election_min_timeout_tooltip": "Election min timeout concerne le temps d'attente minimum en millisecondes pour un heartbeat d'un leader. Si le temps s'écoule sans qu'un leader ne reçoive de message Heartbeat. Le suiveur deviendra un candidat et demandera des votes aux autres nœuds.",
             "election_range_timeout": "Délai d'expiration de la plage d'élection",
@@ -70,6 +71,13 @@
             "verification_timeout_tooltip": "Le délai de vérification concerne la durée pendant laquelle un nœud suiveur attendra avant de tenter de vérifier la dernière entrée engagée lorsque la première vérification n'a pas abouti.",
             "transaction_log_maximum_size_gb": "Taille maximale du journal des transactions GB",
             "transaction_log_maximum_size_gb_tooltip": "Taille maximale du journal des transactions en GB qui déclenchera une troncature automatique du journal des transactions s'il devient plus grand. La taille minimale du journal des transactions est de 1 GB. Les nombres négatifs désactivent la troncature automatique du journal des transactions."
+        },
+        "cluster_configuration_nodes": {
+            "label": "Nœuds",
+            "local": "Local"
+        },
+        "cluster_configuration_multi_region": {
+            "label": "Multi-région"
         },
         "cluster_page": {
             "create_page_title": "Créer un cluster",
