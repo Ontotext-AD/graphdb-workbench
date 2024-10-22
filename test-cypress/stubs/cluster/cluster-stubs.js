@@ -109,7 +109,7 @@ export class ClusterStubs extends Stubs {
 
         cy.intercept({
             method: 'PATCH',
-            url: '/rest/cluster/config/node'
+            url: '/rest/cluster/httpConfig'
         }, (req) => {
             req.reply({
                 statusCode: 200,
@@ -126,7 +126,7 @@ export class ClusterStubs extends Stubs {
 
         cy.intercept({
             method: 'PATCH',
-            url: '/rest/cluster/config/node'
+            url: '/rest/cluster/httpConfig'
         }, (req) => {
             req.reply({
                 statusCode: 200,
@@ -146,7 +146,7 @@ export class ClusterStubs extends Stubs {
 
         cy.intercept({
             method: 'PATCH',
-            url: '/rest/cluster/config/node'
+            url: '/rest/cluster/httpConfig'
         }, (req) => {
             req.reply({
                 statusCode: 200,
@@ -183,7 +183,7 @@ export class ClusterStubs extends Stubs {
             "nodes": nodes
         };
 
-        cy.intercept('/rest/cluster/config', {
+        cy.intercept('/rest/cluster/httpConfig', {
             body: clusterConfig,
             statusCode: 201
         }).as('2-nodes-cluster-created');
