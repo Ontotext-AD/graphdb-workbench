@@ -12,7 +12,7 @@
                             <inline-editable-text
                                 field-name="name"
                                 source="chat"
-                                is-editing="renamedChat && chat.id === renamedChat.id"
+                                is-editing="chat.id && renamedChat && chat.id === renamedChat.id"
                                 on-save="onRenameChat(newText, source)"
                                 on-cancel="onCancelChatRenaming()"
                                 on-dblclick="onSelectChatForRenaming(chat)"
