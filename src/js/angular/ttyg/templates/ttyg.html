@@ -1,6 +1,6 @@
 <link href="css/ttyg/ttyg.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-<div class="ttyg-view">
+<div class="ttyg-view" ng-class="{'help-visible': isHelpVisible}">
     <h1 id="ttyg-view-title">
         {{ title }}
         <page-info-tooltip></page-info-tooltip>
@@ -86,7 +86,7 @@
             <div class="toolbar">
                 <button class="btn btn-link btn-sm help-btn"
                         ng-if="true"
-                        ng-click="onOpenHelp()"
+                        ng-click="onToggleHelp()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.help.btn.show_help.tooltip' | translate}}">
                     <i class="icon-help"></i>

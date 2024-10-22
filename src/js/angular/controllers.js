@@ -143,6 +143,25 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.productInfo = productInfo;
     $scope.guidePaused = 'true' === LocalStorageAdapter.get(GUIDE_PAUSE);
 
+    $scope.hideRdfResourceSearch = false;
+    $scope.showRdfResourceSearch = () => {
+        return !$scope.hideRdfResourceSearch && !!$scope.getActiveRepository() && $scope.hasActiveLocation() &&(!$scope.isLoadingLocation() || $scope.isLoadingLocation() && $location.url() === '/repository');
+    };
+
+    $scope.onRdfResourceSearch = () => {
+        if (isHomePage()) {
+            $scope.hideRdfResourceSearch = true;
+            $('#search-resource-input-home input').focus();
+            toastr.info(decodeHTML($translate.instant('search.resource.current.page.msg')), $translate.instant('search.resources.msg'), {
+                allowHtml: true
+            });
+        }
+    };
+
+    const isHomePage = () => {
+        return $location.url() === '/';
+    };
+
     $scope.isMenuCollapsedOnLoad = function () {
         return $('.main-menu').hasClass('collapsed');
     };
@@ -185,6 +204,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     $scope.$on("$routeChangeSuccess", function ($event, current, previous) {
         $scope.clicked = false;
+        $scope.hideRdfResourceSearch = false;
         $('.menu-element-root').removeClass('active');
         $timeout(function () {
             $('.menu-element.open a.menu-element-root').addClass('active');

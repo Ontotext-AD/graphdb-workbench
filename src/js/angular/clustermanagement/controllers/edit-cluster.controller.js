@@ -21,9 +21,9 @@ function EditClusterCtrl($scope, $uibModalInstance, $timeout, ClusterRestService
     // Public functions
     // =========================
 
-    $scope.updateCluster = () => {
+    $scope.updateClusterConfiguration = () => {
         $scope.setLoader(true, $translate.instant('cluster_management.cluster_page.updating_cluster_loader'));
-        return ClusterRestService.updateCluster($scope.clusterConfiguration)
+        return ClusterRestService.updateClusterConfiguration($scope.clusterConfiguration)
             .then(() => {
                 toastr.success($translate.instant('cluster_management.cluster_page.notifications.update_success'));
                 $uibModalInstance.close();
@@ -55,7 +55,7 @@ function EditClusterCtrl($scope, $uibModalInstance, $timeout, ClusterRestService
             toastr.warning($translate.instant('cluster_management.cluster_page.notifications.form_invalid'));
             return;
         }
-        $scope.updateCluster();
+        $scope.updateClusterConfiguration();
     };
 
     $scope.cancel = () => {
@@ -78,5 +78,5 @@ function EditClusterCtrl($scope, $uibModalInstance, $timeout, ClusterRestService
         } else if (status === 400) {
             $scope.errors.push(...data);
         }
-    }
+    };
 }
