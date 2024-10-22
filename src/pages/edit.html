@@ -1,7 +1,7 @@
 <link href="css/lib/angular-xeditable/xeditable.min.css?v=[AIV]{version}[/AIV]" rel="stylesheet">
 
-<div core-errors write></div>
-<div class="page" ng-show="getActiveRepository() && hasAdminRole()">
+<div core-errors></div>
+<div class="page" ng-show="getActiveRepository()">
     <div class="resource-info">
         <div class="thumb" ng-show="{{details.img}}">
             <a href="{{details.img}}"><img ng-src="{{details.img}}" alt="details image"/></a>

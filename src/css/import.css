@@ -60,23 +60,6 @@
     border-bottom: 1px dotted var(--secondary-color);
 }
 
-.copy-btn {
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
-    padding: 0;
-    color: var(--secondary-color);
-}
-
-.copy-btn:hover {
-    transform: scale(1.1);
-    transition: all 0.1s ease-out;
-}
-
-.copy-btn:focus {
-    outline: none;
-}
-
 .import-resource-message-dialog .message {
     color: #000000;
     font-size: 15px;

@@ -7,7 +7,7 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
     }
 
     static saveAgent() {
-        this.getSaveAgentButton().click({force: true});
+        this.getSaveAgentButton().click();
     }
 
     // =========================
@@ -17,7 +17,7 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
     // Agent name
 
     static getAgentNameFormGroup() {
-        return this.getDialog().find('.agent-name');
+        return this.getDialog().find('.agent-name-label');
     }
 
     static getAgentNameField() {
@@ -55,6 +55,16 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
         return this.getRepositoryIdFromGroup().find('.alert-danger');
     }
 
+    static verifyRepositorySelected(repositoryId) {
+        this.getRepositorySelect().find('option:selected').should('have.text', repositoryId);
+    }
+
+    static verifyRepositoryOptionNotExist(repositoryId) {
+        this.getRepositorySelect().each(($select) => {
+            cy.wrap($select).find('option').should('not.contain.text', repositoryId);
+        });
+    }
+
     // Extraction methods
 
     static getExtractionMethodError() {
@@ -63,6 +73,14 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
 
     static getExtractionMethod(method) {
         return this.getDialog().find(`#${method}_method_heading`);
+    }
+
+    static getSelectedExtractionMethods() {
+        return this.getDialog().find('.extraction-method-heading.selected');
+    }
+
+    static getSelectedExtractionMethod(index) {
+        return this.getSelectedExtractionMethods().eq(index);
     }
 
     static getExtractionMethodPanel(method) {
@@ -124,6 +142,14 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
         return this.getSparqlMethodSparqlQueryField().type(value, {parseSpecialCharSequences: false});
     }
 
+    static getAddMissingNamespacesCheckbox() {
+        return cy.get('#addMissingNamespaces');
+    }
+
+    static toggleAddMissingNamespacesCheckbox() {
+        this.getAddMissingNamespacesCheckbox().click();
+    }
+
     // FTS extraction method
 
     static enableFtsExtractionMethod() {
@@ -164,6 +190,10 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
         return this.getExtractionMethodPanel('similarity_search').find('.no-similarity-index-message');
     }
 
+    static clickOnSimilaritySearchIndexMissingHelp() {
+        this.getSimilaritySearchIndexMissingHelp().find('a').click();
+    }
+
     static getSimilarityIndexFormGroup() {
         return this.getExtractionMethodPanel('similarity_search').find('.similarity-index');
     }
@@ -174,6 +204,10 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
 
     static selectSimilarityIndex(index) {
         this.getSimilarityIndexField().select(index);
+    }
+
+    static verifySimilarityIndexSelected(similarityIndex) {
+        this.getSimilarityIndexField().find('option:selected').should('have.text', similarityIndex);
     }
 
     static getSimilarityIndexThresholdFormGroup() {
@@ -212,6 +246,10 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
 
     static getMissingRetrievalConnectorHelp() {
         return this.getExtractionMethodPanel('retrieval_search').find('.no-retrieval-connector-message');
+    }
+
+    static clickOnMissingRetrievalConnectorHelp() {
+        this.getMissingRetrievalConnectorHelp().find('a').click();
     }
 
     static getRetrievalConnectorFormGroup() {
@@ -255,6 +293,10 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
         this.getRetrievalMaxTriplesField().invoke('val', value).trigger('input');
     }
 
+    static verifyRetrievalConnectorSelected(connectorName) {
+        this.getRetrievalConnectorField().find('option:selected').should('have.text', connectorName);
+    }
+
     // GPT model
 
     static getGptModelFormGroup() {
@@ -288,8 +330,16 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
         return this.getTemperatureFormGroup().find('#temperature');
     }
 
+    static getTemperatureSliderField() {
+        return this.getTemperatureFormGroup().find('#temperatureSlider');
+    }
+
     static setTemperature(value) {
-        this.getTemperatureField().invoke('val', value).trigger('input');
+        this.getTemperatureSliderField().invoke('val', value).trigger('input');
+    }
+
+    static getTemperatureWarning() {
+        return this.getTemperatureFormGroup().find('.high-temperature-warning');
     }
 
     // Top P
@@ -348,6 +398,10 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
         return this.getSystemInstructionsFormGroup().find('#systemInstruction');
     }
 
+    static getSystemInstructionsWarning() {
+        return this.getSystemInstructionsFormGroup().find('.overriding-system-instructions-warning');
+    }
+
     static clearSystemInstructions() {
         this.getSystemInstructionsField().clear();
     }
@@ -372,5 +426,13 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
 
     static typeUserInstructions(value) {
         return this.getUserInstructionsField().type(value);
+    }
+
+    static toggleAdvancedSettings() {
+        this.getDialog().find('.toggle-advanced-settings').click();
+    }
+
+    static getCreatingAgentLoader() {
+        return this.getDialog().find('.saving-agent-loader');
     }
 }

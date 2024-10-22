@@ -1,5 +1,7 @@
 import 'angular/ttyg/controllers/ttyg-view.controller';
 
+// TODO: This is old code. Should be deleted!
+
 const modules = [
     'toastr',
     'graphdb.framework.utils.localstorageadapter'

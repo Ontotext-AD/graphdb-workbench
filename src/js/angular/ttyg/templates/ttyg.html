@@ -12,26 +12,32 @@
 
     <div core-errors></div>
 
+    <div uib-collapse="!isHelpVisible" class="alert alert-info">
+        <button type="button" ng-click="isHelpVisible = false" gdb-tooltip="{{'common.close' | translate}}" class="close"
+                aria-label="Close"></button>
+        <div ng-include="helpTemplateUrl"></div>
+    </div>
+
     <div onto-loader-new
          ng-show="loadingAgents"
          class="ttyg-page-loader"
          size="100">
     </div>
 
-    <no-agents-view ng-cloak ng-if="!loadingAgents && (!agents || agents.isEmpty())"></no-agents-view>
+    <no-agents-view ng-cloak ng-if="initialized && getActiveRepository() && !loadingAgents && !reloadingAgents && (!agents || agents.isEmpty())"></no-agents-view>
 
     <div id="ttyg-container" class="ttyg-container" ng-show="getActiveRepository() && !loadingAgents && agents && !agents.isEmpty()">
 
         <div id="left-sidebar" class="left-sidebar sidebar" ng-class="showChats ? 'expanded' : 'collapsed'">
             <div class="toolbar">
-                <button class="btn btn-link secondary btn-sm toggle-chats-sidebar-btn"
+                <button class="btn btn-link btn-sm toggle-chats-sidebar-btn"
                         ng-if="true"
                         ng-click="toggleChatsListSidebar()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.chat.btn.' + (showChats ? 'close_sidebar' : 'open_sidebar') + '.tooltip' | translate}}">
                     <i class="fa-regular fa-sidebar"></i>
                 </button>
-                <button class="btn btn-link secondary btn-sm create-chat-btn"
+                <button class="btn btn-link btn-sm create-chat-btn"
                         ng-if="chats && !chats.isEmpty()"
                         ng-click="startNewChat()"
                         ng-disabled="false"
@@ -49,33 +55,26 @@
                 ps-click-outside="false"
                 ps-size="80vw">
                 <div class="sidebar-content">
-                    <chat-list ng-if="chats" chat-list="chats"></chat-list>
-                    <div ng-if="loadingChats" onto-loader-fancy message="{{'ttyg.chat.loading_chats' | translate}}"
+                    <chat-list ng-if="chats"></chat-list>
+                    <div ng-if="!chats && loadingChats" onto-loader-fancy message="{{'ttyg.chat.loading_chats' | translate}}"
                          size="25" style="height: 75vh; display: flex;"></div>
                 </div>
             </pageslide>
         </div>
 
         <div class="chat-content">
-            <div class="toolbar">
-                <agent-select-menu class="mr-1"></agent-select-menu>
-                <button class="btn btn-link secondary btn-sm edit-current-agent-btn mr-1"
-                        ng-if="true"
-                        ng-click="onEditAgent()"
-                        ng-disabled="false"
-                        gdb-tooltip="{{'ttyg.agent.btn.edit_agent.tooltip' | translate}}">
-                    <i class="fa-regular fa-gear"></i>
-                </button>
-                <button class="btn btn-link secondary btn-sm export-current-chat-btn"
-                        ng-if="true"
-                        ng-click="onExportSelectedChat()"
-                        ng-disabled="false"
-                        gdb-tooltip="{{'ttyg.chat.btn.export_chat.tooltip' | translate}}">
-                    <i class="fa-regular fa-arrow-down-to-line"></i>
-                </button>
-            </div>
-
             <div class="chat">
+                <div class="toolbar mb-2">
+                    <agent-select-menu class="mr-1"></agent-select-menu>
+                    <button class="btn btn-link btn-sm edit-current-agent-btn mr-1"
+                            ng-if="selectedAgent"
+                            ng-click="onOpenAgentSettings()"
+                            ng-disabled="!canModifyAgent"
+                            gdb-tooltip="{{ (canModifyAgent ? 'ttyg.agent.btn.edit_agent.tooltip' : 'ttyg.agent.btn.edit_agent.tooltip_disabled') | translate}}">
+                        <i class="icon-settings"></i>
+                    </button>
+                </div>
+
                 <div uib-collapse="!isCollapsed" id="ot-help-text" class="alert alert-info">
                     <button type="button" ng-click="isCollapsed = false" gdb-tooltip="{{'common.close' | translate}}"
                             class="close"
@@ -85,41 +84,37 @@
 
                 <chat-panel class="selected-chat-panel"></chat-panel>
             </div>
-            <!--        <div class="controls">-->
-            <!--            <button class="btn btn-link btn-lg" ng-click="isCollapsed = !isCollapsed">-->
-            <!--                <i class="icon-help"></i>-->
-            <!--            </button>-->
-            <!--            <button class="btn btn-link btn-lg" ng-click="openSettings()">-->
-            <!--                <i class="icon-settings"></i>-->
-            <!--            </button>-->
-            <!--            <a class="btn btn-link btn-lg secondary" ng-click="clear()">-->
-            <!--                <i class="icon-trash"></i>-->
-            <!--            </a>-->
-            <!--        </div>-->
         </div>
 
         <div id="right-sidebar" class="right-sidebar sidebar" ng-class="showAgents ? 'expanded' : 'collapsed'">
             <div class="toolbar">
-                <button class="btn btn-link secondary btn-sm help-btn"
+                <button class="btn btn-link btn-sm help-btn"
                         ng-if="true"
-                        ng-click="openHelp()"
+                        ng-click="onOpenHelp()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.help.btn.show_help.tooltip' | translate}}">
-                    <i class="fa-regular fa-circle-question"></i>
+                    <i class="icon-help"></i>
                 </button>
-                <button class="btn btn-link secondary btn-sm create-agent-btn"
-                        ng-if="true"
-                        ng-click="onCreateAgent()"
+                <button class="btn btn-link btn-sm create-agent-btn"
+                        ng-disabled="!canModifyAgent"
+                        ng-click="onOpenNewAgentSettings()"
                         ng-disabled="false"
-                        gdb-tooltip="{{'ttyg.agent.btn.create_agent.tooltip' | translate}}">
-                    <i class="fa-regular fa-circle-plus"></i>
+                        gdb-tooltip="{{ (canModifyAgent ? 'ttyg.agent.btn.create_agent.tooltip' : 'ttyg.agent.btn.create_agent.tooltip_disabled') | translate}}">
+                    <i class="icon-plus"></i>
                 </button>
-                <button class="btn btn-link secondary btn-sm toggle-agents-sidebar-btn"
-                        ng-if="true"
+                <button class="btn btn-link btn-sm toggle-agents-sidebar-btn"
+                        ng-if="!showAgents"
+                        ng-click="toggleAgentsListSidebar()"
+                        ng-disabled="!canModifyAgent"
+                        gdb-tooltip="{{'ttyg.agent.btn.open_sidebar.' + (canModifyAgent ? 'tooltip' : 'tooltip_disabled') | translate}}">
+                    <i class="fa-regular fa-message-bot"></i>
+                </button>
+                <button class="btn btn-link btn-sm toggle-agents-sidebar-btn"
+                        ng-if="showAgents"
                         ng-click="toggleAgentsListSidebar()"
                         ng-disabled="false"
-                        gdb-tooltip="{{'ttyg.agent.btn.' + (showAgents ? 'close_sidebar' : 'open_sidebar') + '.tooltip' | translate}}">
-                    <i class="fa-regular" ng-class="showAgents ? 'fa-xmark' : 'fa-message-bot'"></i>
+                        gdb-tooltip="{{'ttyg.agent.btn.close_sidebar' + '.tooltip' | translate}}">
+                    <i class="icon-close"></i>
                 </button>
             </div>
 
@@ -133,10 +128,11 @@
                 ps-click-outside="false"
                 ps-size="80vw">
                 <div class="sidebar-content">
-                    <agent-list ng-if="agents" agent-list="agents"
+                    <agent-list ng-if="agents && agentListFilterModel.length && !reloadingAgents" agent-list="agents"
                                 agent-list-filter-model="agentListFilterModel"></agent-list>
                     <div ng-if="reloadingAgents" onto-loader-fancy message="{{'ttyg.agent.loading_agents' | translate}}"
-                         size="25" style="height: 75vh; display: flex;"></div>
+                         class="agent-list-loader"
+                         size="25" style="display: flex;"></div>
                 </div>
             </pageslide>
         </div>

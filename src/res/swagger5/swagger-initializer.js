@@ -1,4 +1,7 @@
 window.onload = function() {
+    //<editor-fold desc="Changeable Configuration Block">
+
+    // the following lines will be replaced by docker/configurator, when it runs in a docker-container
     window.uiRdf4j = SwaggerUIBundle({
         url: "../../rest/api/rdf4j",
         name: "RDF4J API",
@@ -23,6 +26,8 @@ window.onload = function() {
         ],
         layout: "StandaloneLayout"
     });
+
+    //</editor-fold>
 
     window.uiWB = SwaggerUIBundle({
         url: "../../rest/api/workbench",

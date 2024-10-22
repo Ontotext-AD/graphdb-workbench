@@ -1,5 +1,6 @@
 import {CHAT_MESSAGE_ROLE, ChatMessageModel} from "../../models/ttyg/chat-message";
 import {ChatItemModel, ChatItemsListModel} from "../../models/ttyg/chat-item";
+import {ChatAnswerModel} from "../../models/ttyg/chat-answer";
 
 /**
  * Converts the response from the server to a list of ChatMessageModel array.
@@ -48,15 +49,19 @@ export const chatItemsModelMapper = (data = []) => {
     const items = [];
     let currentItem;
     data.forEach((message) => {
+        // NOTE: The backend chat model doesn't have a ChatItemModel object,
+        // i.e. it doesn't group user + assistant messages together.
+        // In essence, there may be multiple consecutive user messages as well as
+        // multiple consecutive assistant messages.
         if (CHAT_MESSAGE_ROLE.USER === message.role) {
             if (currentItem) {
                 items.push(currentItem);
             }
             const chatId = message.conversationId;
-            const agentId = message.agentId;
-            currentItem = new ChatItemModel(chatId, agentId, message);
+            currentItem = new ChatItemModel(chatId, chatMessageModelMapper(message));
         } else {
-            currentItem.answer = message;
+            currentItem.answers.push(chatMessageModelMapper(message));
+            currentItem.agentId = message.agentId;
         }
     });
     if (currentItem) {
@@ -80,5 +85,22 @@ export const chatMessageModelMapper = (data) => {
         message: data.message,
         timestamp: data.timestamp,
         data: data
+    });
+};
+
+/**
+ * Converts the response from the server to a ChatAnswerModel instance.
+ * @param {*} data
+ * @return {ChatAnswerModel|undefined}
+ */
+export const chatAnswerModelMapper = (data) => {
+    if (!data) {
+        return;
+    }
+    return new ChatAnswerModel({
+        chatId: data.id,
+        chatName: data.name,
+        timestamp: data.timestamp,
+        messages: chatMessageModelListMapper(data.messages)
     });
 };

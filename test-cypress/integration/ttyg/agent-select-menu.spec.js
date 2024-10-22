@@ -1,8 +1,8 @@
 import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
-import {NamespaceStubs} from "../../stubs/namespace-stubs";
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
+import {RepositoriesStub} from "../../stubs/repositories-stub";
 
 describe('TTYG agent select menu', () => {
 
@@ -10,8 +10,8 @@ describe('TTYG agent select menu', () => {
 
     beforeEach(() => {
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
+        RepositoriesStub.stubBaseEndpoints(repositoryId);
         cy.presetRepository(repositoryId);
-        NamespaceStubs.stubNameSpaceResponse(repositoryId, '/namespaces/get-repository-starwars-namespaces.json');
         TTYGStubs.stubChatsListGetNoResults();
     });
 
@@ -59,15 +59,17 @@ describe('TTYG agent select menu', () => {
         TTYGStubs.stubAgentListGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
-        cy.wait('@get-agent-list-0');
+        cy.wait('@get-agent-list');
         // When I delete an agent from the sidebar
+        TTYGViewSteps.expandAgentsSidebar();
         TTYGStubs.stubAgentDelete();
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-after-deleted.json');
-        TTYGViewSteps.filterAgentsByRepository('All');
+        TTYGViewSteps.selectAllAgentsFilter();
         TTYGViewSteps.triggerDeleteAgentActionMenu(0);
         ModalDialogSteps.confirm();
         ModalDialogSteps.getDialog().should('not.exist');
         // TODO: the agents list filter brakes after deleting an agent!!!
+        TTYGViewSteps.selectAllAgentsFilter();
         TTYGViewSteps.getAgents().should('have.length', 3);
         TTYGViewSteps.verifySelectAgentMenuItems([
             {name: 'agent-2', repositoryId: 'Deleted repository'}, // the agent has no repository id
@@ -81,7 +83,7 @@ describe('TTYG agent select menu', () => {
         TTYGStubs.stubAgentListGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
-        cy.wait('@get-agent-list-0');
+        cy.wait('@get-agent-list');
         // And I have selected an agent from the menu
         TTYGViewSteps.openAgentsMenu();
         TTYGViewSteps.selectAgent(0);
@@ -106,7 +108,7 @@ describe('TTYG agent select menu', () => {
         TTYGStubs.stubAgentListGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
-        cy.wait('@get-agent-list-0');
+        cy.wait('@get-agent-list');
         // When I select an agent which has no repository id from the menu
         TTYGViewSteps.openAgentsMenu();
         TTYGViewSteps.selectAgent(1);

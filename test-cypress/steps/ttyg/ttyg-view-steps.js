@@ -1,6 +1,6 @@
 export class TTYGViewSteps {
     static visit() {
-        cy.visit('/chatgpt');
+        cy.visit('/ttyg');
     }
 
     static getTtygView() {
@@ -89,6 +89,11 @@ export class TTYGViewSteps {
         this.getChatFromGroup(groupIndex, chatIndex).find('.chat-actions-menu .delete-chat-btn').click();
     }
 
+    static triggerExportChatActionMenu(groupIndex, chatIndex) {
+        this.openChatActionMenu(groupIndex, chatIndex);
+        this.getChatFromGroup(groupIndex, chatIndex).find('.chat-actions-menu .export-chat-btn').click();
+    }
+
     static getToggleChatsSidebarButton() {
         return this.getChatsSidebar().find('.toggle-chats-sidebar-btn');
     }
@@ -121,9 +126,27 @@ export class TTYGViewSteps {
         return this.getAgentFilter().find('.selected-filter');
     }
 
+    static getDropdownMenu() {
+        return this.getAgentFilter().find('.dropdown-menu');
+    }
+
+    static verifyRepositoryOptionNotExist(repositoryId) {
+        this.getDropdownMenu().each(($select) => {
+            cy.wrap($select).should('not.contain.text', repositoryId);
+        });
+    }
+
     static filterAgentsByRepository(repository) {
         this.getAgentFilter().click();
-        this.getAgentFilter().find('.dropdown-menu').find(`[data-value="${repository}"]`).click();
+        this.getDropdownMenu().find(`[data-value="${repository}"]`).click();
+    }
+
+    static selectAllAgentsFilter() {
+        this.filterAgentsByRepository('All');
+    }
+
+    static getAgentsLoadingIndicator() {
+        return this.getAgentsPanel().find('.agent-list-loader');
     }
 
     static getAgents() {
@@ -178,20 +201,25 @@ export class TTYGViewSteps {
         return this.getEditCurrentAgentButton().click();
     }
 
-    static getExportCurrentChatButton() {
-        return this.getChatPanelToolbar().find('.export-current-chat-btn');
-    }
-
-    static exportCurrentChat() {
-        return this.getExportCurrentChatButton().click();
+    static verifyFileExists(fileName) {
+        cy.readFile('cypress/downloads/' + fileName);
     }
 
     static getChat() {
         return this.getChatPanel().find('.chat');
     }
 
+    static getOpenAgentActionsButton(index) {
+        return this.getAgent(index).realHover().find('.open-agent-actions-btn');
+    }
+
     static openAgentActionMenu(index) {
-        this.getAgent(index).realHover().find('.open-agent-actions-btn').click();
+        this.getOpenAgentActionsButton(index).click();
+    }
+
+    static triggerCloneAgentActionMenu(index) {
+        this.openAgentActionMenu(index);
+        this.getAgent(index).find('.agent-actions-menu .clone-agent-btn').click();
     }
 
     static triggerDeleteAgentActionMenu(index) {
@@ -249,5 +277,49 @@ export class TTYGViewSteps {
                 cy.get('.repository-id').should('contain', agent.repositoryId);
             });
         });
+    }
+
+    static getExplainResponseButton(index) {
+        return this.getTtygView().find('.explain-response-btn').eq(index);
+    }
+
+    static clickOnExplainResponse(index) {
+        this.getExplainResponseButton(index).click();
+    }
+
+    static getHowDeliverAnswerButton() {
+        return this.getTtygView().find('.deliver-answer-btn');
+    }
+
+    static clickOnHowDeliverAnswerButton(index) {
+        this.getHowDeliverAnswerButton().click();
+    }
+
+    static getExplainResponsesElement(index) {
+        return cy.get('.explain-responses').eq(index);
+    }
+
+    static getExplainResponseElement(explainResponsesIndex, explainResponseIndex) {
+        return this.getExplainResponsesElement(explainResponsesIndex).find('.explain-response').eq(explainResponseIndex);
+    }
+
+    static getQueryMethodElement(explainResponsesIndex, explainResponseIndex) {
+        return this.getExplainResponseElement(explainResponsesIndex, explainResponseIndex).find('.query-method');
+    }
+
+    static getQueryMethodDetailsElement(explainResponsesIndex, explainResponseIndex) {
+        return this.getExplainResponseElement(explainResponsesIndex, explainResponseIndex).find('.query-method-details');
+    }
+
+    static getRawQuery(explainResponsesIndex, explainResponseIndex) {
+        return this.getExplainResponseElement(explainResponsesIndex, explainResponseIndex).find('.raw-query');
+    }
+
+    static getExplainQueryHeaderElement(explainResponsesIndex, explainResponseIndex) {
+        return this.getExplainResponseElement(explainResponsesIndex, explainResponseIndex).find('.header');
+    }
+
+    static getExplainQueryQueryElement(explainResponsesIndex, explainResponseIndex) {
+        return this.getExplainResponseElement(explainResponsesIndex, explainResponseIndex).find('.query');
     }
 }

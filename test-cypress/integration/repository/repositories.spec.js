@@ -420,13 +420,7 @@ describe('Repositories', () => {
         HomeSteps.visitAndWaitLoader();
         cy.visit('/repository');
 
-        // Verify that the repositories are loaded
-        // and only afterwards continue with the check
-        cy.get('#wb-repositories-repositoryInGetRepositories .repository')
-            .should('have.length.greaterThan', 0)
-            .then(() => {
-                RepositorySteps.assertRepositoryStatus(repositoryId, "RUNNING");
-            });
+        RepositorySteps.assertRepositoryStatus(repositoryId, "RUNNING");
 
         //Restart the repository
         RepositorySteps.restartRepository(repositoryId);

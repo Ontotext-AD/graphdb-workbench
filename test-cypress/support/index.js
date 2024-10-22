@@ -21,6 +21,7 @@ import './commands';
 
 import 'cypress-real-events';
 import 'cypress-file-upload';
+import {LicenseStubs} from "../stubs/license-stubs";
 
 // Configures an environment variable with the key used for common actions (cmd on mac, ctrl on other OS).
 // This variable must be used in all actions that type e.g. ctrl-a to select text.
@@ -29,3 +30,7 @@ Cypress.env('modifierKey', Cypress.platform === 'darwin' ? '{cmd}' : '{ctrl}');
 require('cypress-failed-log');
 require('cypress-terminal-report/src/installLogsCollector')();
 
+// We don't want any tests to hit real Google
+beforeEach(() => {
+    LicenseStubs.stubGoogleCalls();
+});

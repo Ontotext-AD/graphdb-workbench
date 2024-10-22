@@ -11,6 +11,9 @@
  * The button also has an `ng-click` directive that triggers the `copyToClipboard` function when the button is clicked.
  *
  * @param {string} tooltipText - The text to be displayed as a tooltip when hovering over the button.
+ * @param {string} textToCopy - (optional) The text to be copied. If not passed, searching by the class 'copyable'
+ *                                         will be used, and the search will be executed within the scope of
+ *                                         the directive's parent element.
  *
  * @example
  * <copy-to-clipboard tooltip-text="Your tooltip text here"></copy-to-clipboard>
@@ -29,7 +32,7 @@ copyToClipboard.$inject = ['$translate', 'toastr'];
  * @description
  * The `copyToClipboard` function is the link function of the directive.
  * It defines a `copyToClipboard` function in the directive's scope that gets the text from the element with the class `copyable` that is a child of the directive's parent element.
- * It then uses the `navigator.clipboard.writeText` function to write this text to the clipboard.
+ * It then uses the `navigator.clipboard.writeText` function to write this text to the clipboard. If the browser does not support `navigator.clipboard`, `document.execCommand('copy')` is used instead.
  * If the text is successfully written to the clipboard, a success message is displayed using the `toastr` service.
  * If an error occurs, the error is logged to the console.
  *
@@ -38,19 +41,61 @@ copyToClipboard.$inject = ['$translate', 'toastr'];
  */
 function copyToClipboard($translate, toastr) {
     return {
-        template: '<button class="copy-btn" gdb-tooltip="{{tooltipText | translate}}" ng-click="copyToClipboard()"><span class="icon-copy"></span></button>',
+        template: `
+            <style>
+                .copy-btn {
+                    border: none;
+                    background-color: transparent;
+                    cursor: pointer;
+                    padding: 0;
+                    color: var(--secondary-color);
+                }
+                .copy-btn:hover {
+                    transform: scale(1.1);
+                    transition: all 0.1s ease-out;
+                }
+                .copy-btn:focus {
+                    outline: none;
+                }
+            </style>
+            <button class="copy-btn" gdb-tooltip="{{tooltipText | translate}}" ng-click="copyToClipboard()"><i class="fa-regular fa-clone"></i></button>
+        `,
         restrict: 'E',
         scope: {
-            tooltipText: '@'
+            tooltipText: '@',
+            textToCopy: '@'
         },
         link: function ($scope, element) {
             $scope.copyToClipboard = function() {
-                const textToCopy = element.parent().find('.copyable').text();
-                navigator.clipboard.writeText(textToCopy).then(() => {
-                    toastr.success($translate.instant('import.help.messages.copied_to_clipboard'));
-                }, (err) => {
-                    console.error('Could not copy text: ', err);
-                });
+                const textToCopy = $scope.textToCopy ? $scope.textToCopy : element.parent().find('.copyable').text();
+
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        toastr.success($translate.instant('import.help.messages.copied_to_clipboard'));
+                    }).catch((err) => {
+                        console.error('Could not copy text: ', err);
+                    });
+                } else {
+                    // document.execCommand('copy') can only copy text that is selected. The browser requires a selected
+                    // text range to perform the copy operation. So the string is temporarily placed into a selectable form.
+                    const tempTextArea = document.createElement('textarea');
+                    tempTextArea.value = textToCopy;
+                    document.body.appendChild(tempTextArea);
+                    tempTextArea.select();
+
+                    try {
+                        const successful = document.execCommand('copy');
+                        if (successful) {
+                            toastr.success($translate.instant('import.help.messages.copied_to_clipboard'));
+                        } else {
+                            console.error('Unable to copy text');
+                        }
+                    } catch (err) {
+                        console.error('Could not copy text: ', err);
+                    } finally {
+                        document.body.removeChild(tempTextArea);
+                    }
+                }
             };
         }
     };

@@ -9,6 +9,8 @@ services:
         -Dgraphdb.workbench.importDirectory=/opt/home/import-data/
         -Dgraphdb.jsonld.whitelist=https://w3c.github.io/json-ld-api/tests/*
         -Dgraphdb.stats.default=disabled
+        -Dgraphdb.foreground=
+        -Dgraphdb.logger.root.level=ERROR
     expose:
       - 7200
     volumes:

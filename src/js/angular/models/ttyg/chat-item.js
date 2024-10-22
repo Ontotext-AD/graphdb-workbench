@@ -11,16 +11,34 @@ export class ChatItemModel {
      * Creates an instance of ChatItemModel.
      *
      * @param {string} chatId - The unique identifier for the chat associated with this instance.
-     * @param {string} [agentId=AGENT_ID] - The ID of the agent used to answer the question.
      * @param {ChatMessageModel} question - The message object representing the question.
-     * @param {ChatMessageModel} answer - The message object representing the answer to the question. It is undefined if there is no answer.
      */
-    // TODO remove hardcoded agent id when agent functionality is ready
-    constructor(chatId, agentId, question, answer) {
+    constructor(chatId, question) {
+
+        /**
+         * @type {string | undefined}
+         * @private
+         */
         this._chatId = chatId;
-        this._agentId = agentId;
+
+        /**
+         * @type {string | undefined}
+         * @private
+         */
+        this._agentId = undefined;
+
+        /**
+         * @type {ChatMessageModel}
+         * @private
+         */
         this._question = question;
-        this._answer = answer;
+
+        /**
+         *
+         * @type {ChatMessageModel[] | undefined}
+         * @private
+         */
+        this._answers = [];
     }
 
     get chatId() {
@@ -47,12 +65,16 @@ export class ChatItemModel {
         this._question = value;
     }
 
-    get answer() {
-        return this._answer;
+    get answers() {
+        return this._answers;
     }
 
-    set answer(value) {
-        this._answer = value;
+    /**
+     *
+     * @param {ChatMessageModel[]} value
+     */
+    set answers(value) {
+        this._answers = value;
     }
 
     /**
@@ -100,6 +122,13 @@ export class ChatItemModel {
             question: this._question.message
         };
     }
+
+    toExplainResponsePayload(answerId) {
+        return {
+            conversationId: this._chatId,
+            answerId
+        };
+    }
 }
 
 export class ChatItemsListModel {
@@ -128,5 +157,11 @@ export class ChatItemsListModel {
 
     set items(value) {
         this._items = value || [];
+    }
+
+    getLast() {
+        if (!this.isEmpty()) {
+            return this._items[this._items.length - 1];
+        }
     }
 }

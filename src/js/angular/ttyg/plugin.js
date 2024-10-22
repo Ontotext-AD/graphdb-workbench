@@ -1,6 +1,6 @@
 PluginRegistry.add('route', [
     {
-        'url': '/chatgpt',
+        'url': '/ttyg',
         'templateUrl': 'js/angular/ttyg/templates/ttyg.html',
         'module': 'graphdb.framework.ttyg',
         'path': 'ttyg/app',
@@ -24,7 +24,7 @@ PluginRegistry.add('main.menu', {
         {
             label: 'Talk to Your Graph',
             labelKey: 'menu.ttyg.label',
-            href: 'chatgpt',
+            href: 'ttyg',
             order: 20,
             role: 'ROLE_USER',
             parent: 'Lab',

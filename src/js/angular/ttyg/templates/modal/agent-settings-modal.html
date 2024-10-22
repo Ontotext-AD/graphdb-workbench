@@ -3,13 +3,18 @@
 
 <div class="modal-header">
     <button type="button" class="close" ng-click="close()"></button>
-    <h4 class="modal-title">{{(isEdit ? 'ttyg.agent.create_agent_modal.title.edit ' : 'ttyg.agent.create_agent_modal.title.create') | translate}}</h4>
+    <h4 class="modal-title">{{(
+        operation === AGENT_OPERATION.EDIT ? 'ttyg.agent.create_agent_modal.title.edit '
+        : operation === AGENT_OPERATION.CLONE ? 'ttyg.agent.create_agent_modal.title.clone'
+        : 'ttyg.agent.create_agent_modal.title.create') | translate}}</h4>
 </div>
 
 <div class="modal-body">
     <form novalidate name="agentSettingsForm" id="agentSettingsForm" class="agent-settings-form">
-        <div class="form-group agent-name">
-            <label for="name">{{'ttyg.agent.create_agent_modal.form.agent_name.label' | translate}}</label>
+        <div class="form-group agent-name-label">
+            <label for="name" uib-popover="{{'ttyg.agent.create_agent_modal.form.agent_name.tooltip' | translate}}"
+                   popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.agent_name.label'
+                | translate}}</label>
             <input type="text" class="form-control" id="name" name="name" ng-model="agentFormModel.name"
                    required autocomplete="off"
                    placeholder="{{'ttyg.agent.create_agent_modal.form.agent_name.placeholder' | translate}}">
@@ -19,7 +24,10 @@
             </div>
         </div>
         <div class="form-group repository-id">
-            <label for="repositoryId">{{'ttyg.agent.create_agent_modal.form.repository.label' | translate}}</label>
+            <label for="repositoryId"
+                   uib-popover="{{'ttyg.agent.create_agent_modal.form.repository.tooltip' | translate}}"
+                   popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.repository.label' |
+                translate}}</label>
             <select class="form-control" id="repositoryId" name="repositoryId" ng-model="agentFormModel.repositoryId"
                     required ng-change="onRepositoryChange()"
                     ng-options="repository.value as repository.label for repository in activeRepositoryList">
@@ -30,7 +38,9 @@
             </div>
         </div>
         <div class="form-group extraction-methods-group">
-            <label for="extractionMethods">{{'ttyg.agent.create_agent_modal.form.extraction_method.label' |
+            <label for="extractionMethods"
+                   uib-popover="{{'ttyg.agent.create_agent_modal.form.extraction_method.tooltip' | translate}}"
+                   popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.extraction_method.label' |
                 translate}}</label>
             <div id="extractionMethods" name="extractionMethods"
                  ng-model="agentFormModel.assistantExtractionMethods.extractionMethods"
@@ -43,31 +53,36 @@
                         <div class="mr-0 extraction-method-toggle">
                             <input type="checkbox" id="{{extractionMethod.method + '_checkbox'}}"
                                    name="{{extractionMethod}}" class="switch"
-                                   ng-change="toggleExtractionMethod()"
+                                   ng-click="toggleExtractionMethod(extractionMethod, $event)"
                                    ng-model="extractionMethod.selected"/>
                             <label for="{{extractionMethod.method + '_checkbox'}}"></label>
                         </div>
-                        <a class="btn btn-link panel-toggle-link collapsed" data-toggle="collapse"
-                           data-target="#{{extractionMethod.method + '_method_content'}}"
+                        <a class="btn btn-link panel-toggle-link"
                            aria-expanded="false" aria-controls="{{extractionMethod.method + '_method_content'}}"
                            ng-click="onExtractionMethodPanelToggle(extractionMethod)">
-                            <span class="mr-1">{{'ttyg.agent.create_agent_modal.form.' + extractionMethod.method + '.label' | translate}}</span>
-                            <i class="fa-regular fa-chevron-down toggle-icon"></i>
+                            <span class="mr-1"
+                                  uib-popover="{{'ttyg.agent.create_agent_modal.form.' + extractionMethod.method + '.tooltip' | translate}}"
+                                  popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.' + extractionMethod.method + '.label' | translate}}</span>
+                            <i class="fa-regular fa-chevron-down toggle-icon"
+                               ng-class="{'expanded': extractionMethod.expanded}">
+                            </i>
                         </a>
                     </div>
 
                     <div id="{{extractionMethod.method + '_method_content'}}"
-                         class="collapse show extraction-method-content"
+                         class="show extraction-method-content"
                          aria-labelledby="{{extractionMethod.method + '_method_heading'}}"
                          data-parent="#extractionMethods">
 
                         <!-- SPARQL method settings -->
 
-                        <div ng-if="extractionMethod.method === extractionMethods.SPARQL"
+                        <div ng-if="extractionMethod.expanded && extractionMethod.method === extractionMethods.SPARQL"
                              class="extraction-method-options"
                              ng-class="{'has-error': extractionMethod.selected && !extractionMethod.sparqlOption}">
                             <div class="sparql-option ontology-graph-option">
-                                <label class="radio-inline">
+                                <label class="radio-inline"
+                                       uib-popover="{{'ttyg.agent.create_agent_modal.form.ontology_graph.tooltip' | translate}}"
+                                       popover-trigger="mouseenter">
                                     <input type="radio" name="sparqlOption" ng-required="extractionMethod.selected"
                                            ng-model="extractionMethod.sparqlOption" value="ontologyGraph">
                                     {{'ttyg.agent.create_agent_modal.form.ontology_graph.label' | translate}}
@@ -82,7 +97,9 @@
                                 </div>
                             </div>
                             <div class="sparql-option sparql-query-option">
-                                <label class="radio-inline">
+                                <label class="radio-inline"
+                                       uib-popover="{{'ttyg.agent.create_agent_modal.form.construct_query.tooltip' | translate}}"
+                                       popover-trigger="mouseenter">
                                     <input type="radio" name="sparqlOption" ng-required="extractionMethod.selected"
                                            ng-model="extractionMethod.sparqlOption" value="sparqlQuery">
                                     {{'ttyg.agent.create_agent_modal.form.construct_query.label' | translate}}
@@ -90,7 +107,7 @@
                                 <div class="panel" ng-show="extractionMethod.sparqlOption === 'sparqlQuery'">
                                     <div class="form-group">
                                             <textarea type="text" class="form-control" id="sparqlQuery"
-                                                      name="sparqlQuery"
+                                                      name="sparqlQuery" rows="10"
                                                       ng-required="extractionMethod.selected && extractionMethod.sparqlOption === 'sparqlQuery'"
                                                       ng-minlength="extractionMethod.sparqlQuery.minLength"
                                                       ng-maxlength="extractionMethod.sparqlQuery.maxLength"
@@ -103,12 +120,27 @@
                                  ng-if="extractionMethod.selected && !extractionMethod.sparqlOption">
                                 {{'ttyg.agent.create_agent_modal.form.sparql_search.required_option' | translate}}
                             </div>
+                            <div class="add-missing-namespaces-option mt-1">
+                                <input id="addMissingNamespaces" name="addMissingNamespaces" type="checkbox"
+                                       ng-model="extractionMethod.addMissingNamespaces">
+                                <label for="addMissingNamespaces"
+                                       uib-popover="{{'ttyg.agent.create_agent_modal.form.add_missing_namespaces.tooltip' | translate}}"
+                                       popover-trigger="mouseenter">{{
+                                    'ttyg.agent.create_agent_modal.form.add_missing_namespaces.label' | translate
+                                    }}</label>
+                            </div>
                         </div>
 
                         <!-- FTS method settings -->
 
-                        <div ng-if="extractionMethod.method === extractionMethods.FTS_SEARCH"
-                             class="extraction-method-options">
+                        <div
+                            ng-if="extractionMethod.expanded && extractionMethod.method === extractionMethods.FTS_SEARCH"
+                            class="extraction-method-options">
+                            <button class="btn btn-link btn-sm pull-right"
+                                    ng-click="checkIfFTSEnabled()"
+                                    gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.fts_search.btn.reload.tooltip' | translate}}">
+                                <i class="fa-regular fa-arrows-rotate"></i>
+                            </button>
                             <div class="alert alert-danger missing-repositoryid-error mb-0"
                                  ng-if="!agentFormModel.repositoryId">
                                 {{'ttyg.agent.create_agent_modal.form.fts_search.missing_repository_id' | translate}}
@@ -117,28 +149,47 @@
                                  ng-bind-html="getFTSDisabledHelpMessage()">
                             </div>
                             <div class="form-group max-triples" ng-show="ftsEnabled && agentFormModel.repositoryId">
-                                <label for="{{extractionMethods.FTS_SEARCH + '_maxNumberOfTriplesPerCall'}}">
-                                    {{'ttyg.agent.create_agent_modal.form.max_number_of_triples_per_call.label' |
+                                <label for="{{extractionMethods.FTS_SEARCH + '_maxNumberOfTriplesPerCall'}}"
+                                       uib-popover="{{'ttyg.agent.create_agent_modal.form.fts_search_max_number_of_triples_per_call.tooltip' | translate}}"
+                                       popover-trigger="mouseenter">
+                                    {{'ttyg.agent.create_agent_modal.form.fts_search_max_number_of_triples_per_call.label'
+                                    |
                                     translate}}
                                 </label>
                                 <input type="number" class="form-control"
                                        id="{{extractionMethods.FTS_SEARCH + '_maxNumberOfTriplesPerCall'}}"
                                        name="maxNumberOfTriplesPerCall" min="0"
                                        ng-model="extractionMethod.maxNumberOfTriplesPerCall"
-                                       placeholder="{{'ttyg.agent.create_agent_modal.form.max_number_of_triples_per_call.placeholder' | translate}}">
+                                       placeholder="{{'ttyg.agent.create_agent_modal.form.fts_search_max_number_of_triples_per_call.placeholder' | translate}}">
                             </div>
                         </div>
 
                         <!-- Similarity method settings -->
 
-                        <div ng-if="extractionMethod.method === extractionMethods.SIMILARITY"
-                             class="extraction-method-options">
-                            <div ng-if="!similarityIndexes.length" class="no-similarity-index-message"
-                                 ng-bind-html="getNoSimilarityIndexHelpMessage()">
+                        <div
+                            ng-if="extractionMethod.expanded && extractionMethod.method === extractionMethods.SIMILARITY"
+                            class="extraction-method-options">
+                            <button class="btn btn-link btn-sm pull-right"
+                                    ng-click="updateSimilaritySearchPanel()"
+                                    ng-disabled="disabled"
+                                    gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.similarity_index.btn.reload.tooltip' | translate}}">
+                                <i class="fa-regular fa-arrows-rotate"></i>
+                            </button>
+                            <div ng-if="!similarityIndexes.length" class="no-similarity-index-message">
+                                {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_1' |
+                                translate}}
+                                <a href="#" ng-click="goToCreateSimilarityView()">
+                                    {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_2'
+                                    | translate}}
+                                </a>
+                                {{'ttyg.agent.create_agent_modal.form.similarity_index.no_similarity_index.message_3' |
+                                translate}}.
                             </div>
                             <div ng-show="similarityIndexes.length">
                                 <div class="form-group similarity-index">
-                                    <label for="similarityIndex">{{'ttyg.agent.create_agent_modal.form.similarity_index.label'
+                                    <label for="similarityIndex"
+                                           uib-popover="{{'ttyg.agent.create_agent_modal.form.similarity_index.tooltip' | translate}}"
+                                           popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.similarity_index.label'
                                         | translate}}</label>
                                     <span ng-if="extractionMethodLoaderFlags.similarity_search" onto-loader-fancy
                                           size="16"></span>
@@ -154,7 +205,9 @@
                                     </div>
                                 </div>
                                 <div class="form-group similarity-index-threshold">
-                                    <label for="similarityIndexThreshold">{{'ttyg.agent.create_agent_modal.form.similarity_threshold.label'
+                                    <label for="similarityIndexThreshold"
+                                           uib-popover="{{'ttyg.agent.create_agent_modal.form.similarity_threshold.tooltip' | translate}}"
+                                           popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.similarity_threshold.label'
                                         | translate}}</label>
                                     <input type="text" class="form-control" id="similarityIndexThreshold"
                                            name="similarityIndexThreshold" readonly
@@ -163,32 +216,51 @@
                                            type="range" ng-required="extractionMethod.selected"
                                            min="{{extractionMethod.similarityIndexThreshold.minValue}}"
                                            max="{{extractionMethod.similarityIndexThreshold.maxValue}}"
-                                           step="{{extractionMethod.similarityIndexThreshold.step}}"
+                                           step="0.1"
                                            ng-model="extractionMethod.similarityIndexThreshold.value"/>
                                 </div>
                                 <div class="form-group similarity-max-triples">
-                                    <label for="{{extractionMethods.SIMILARITY + '_maxNumberOfTriplesPerCall'}}">
-                                        {{'ttyg.agent.create_agent_modal.form.max_number_of_triples_per_call.label'
+                                    <label for="{{extractionMethods.SIMILARITY + '_maxNumberOfTriplesPerCall'}}"
+                                           uib-popover="{{'ttyg.agent.create_agent_modal.form.similarity_search_max_number_of_triples_per_call.tooltip' | translate}}"
+                                           popover-trigger="mouseenter">
+                                        {{'ttyg.agent.create_agent_modal.form.similarity_search_max_number_of_triples_per_call.label'
                                         | translate}}</label>
                                     <input type="number" class="form-control"
                                            id="{{extractionMethods.SIMILARITY + '_maxNumberOfTriplesPerCall'}}"
                                            name="maxNumberOfTriplesPerCall" min="0"
                                            ng-model="extractionMethod.maxNumberOfTriplesPerCall"
-                                           placeholder="{{'ttyg.agent.create_agent_modal.form.max_number_of_triples_per_call.placeholder' | translate}}">
+                                           placeholder="{{'ttyg.agent.create_agent_modal.form.similarity_search_max_number_of_triples_per_call.placeholder' | translate}}">
                                 </div>
                             </div>
                         </div>
 
                         <!-- Retrieval method settings -->
 
-                        <div ng-if="extractionMethod.method === extractionMethods.RETRIEVAL"
-                             class="extraction-method-options">
-                            <div ng-if="!retrievalConnectors.length" class="no-retrieval-connector-message"
-                                 ng-bind-html="getNoRetrievalConnectorHelpMessage()">
+                        <div
+                            ng-if="extractionMethod.expanded && extractionMethod.method === extractionMethods.RETRIEVAL"
+                            ng-class="{'has-error': agentSettingsForm.$error.missingConnector}"
+                            class="extraction-method-options">
+                            <button class="btn btn-link btn-sm pull-right"
+                                    ng-click="updateRetrievalConnectorPanel()"
+                                    ng-disabled="disabled"
+                                    gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.retrieval_search.btn.reload.tooltip' | translate}}">
+                                <i class="fa-regular fa-arrows-rotate"></i>
+                            </button>
+                            <div ng-if="!retrievalConnectors.length" class="no-retrieval-connector-message">
+                                {{'ttyg.agent.create_agent_modal.form.retrieval_search.no_retrieval_connectors.message_1'
+                                | translate}}
+                                <a href="#" ng-click="goToConnectorsView()">
+                                    {{'ttyg.agent.create_agent_modal.form.retrieval_search.no_retrieval_connectors.message_2'
+                                    | translate}}
+                                </a>
+                                {{'ttyg.agent.create_agent_modal.form.retrieval_search.no_retrieval_connectors.message_3'
+                                | translate}}.
                             </div>
                             <div ng-show="retrievalConnectors.length">
                                 <div class="form-group retrieval-connector">
-                                    <label for="retrievalConnectorInstance">{{'ttyg.agent.create_agent_modal.form.connector_id.label'
+                                    <label for="retrievalConnectorInstance"
+                                           uib-popover="{{'ttyg.agent.create_agent_modal.form.connector_id.tooltip' | translate}}"
+                                           popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.connector_id.label'
                                         | translate}}</label>
                                     <span ng-if="extractionMethodLoaderFlags.retrieval_search" onto-loader-fancy
                                           size="16"></span>
@@ -205,29 +277,33 @@
                                     </div>
                                 </div>
                                 <div class="form-group query-template">
-                                    <label for="queryTemplate">{{'ttyg.agent.create_agent_modal.form.query_template.label'
+                                    <label for="queryTemplate"
+                                           uib-popover="{{'ttyg.agent.create_agent_modal.form.query_template.tooltip' | translate}}"
+                                           popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.query_template.label'
                                         |
                                         translate}}</label>
                                     <textarea type="text" class="form-control" id="queryTemplate" name="queryTemplate"
-                                              ng-required="extractionMethod.selected"
+                                              rows="10" ng-required="extractionMethod.selected"
                                               ng-minlength="extractionMethod.queryTemplate.minLength"
                                               ng-maxlength="extractionMethod.queryTemplate.maxLength"
                                               ng-model="extractionMethod.queryTemplate.value">
-                                </textarea>
+                                    </textarea>
                                     <div class="alert alert-danger"
                                          ng-if="extractionMethod.name.$touched && extractionMethod.name.$invalid">
                                         {{'required.field' | translate}}
                                     </div>
                                 </div>
                                 <div class="form-group retrieval-connector-max-triples">
-                                    <label for="{{extractionMethods.RETRIEVAL + '_maxNumberOfTriplesPerCall'}}">
-                                        {{'ttyg.agent.create_agent_modal.form.max_number_of_triples_per_call.label'
+                                    <label for="{{extractionMethods.RETRIEVAL + '_maxNumberOfTriplesPerCall'}}"
+                                           uib-popover="{{'ttyg.agent.create_agent_modal.form.retrieval_search_max_number_of_triples_per_call.tooltip' | translate}}"
+                                           popover-trigger="mouseenter">
+                                        {{'ttyg.agent.create_agent_modal.form.retrieval_search_max_number_of_triples_per_call.label'
                                         | translate}}</label>
                                     <input type="number" class="form-control"
                                            id="{{extractionMethods.RETRIEVAL + '_maxNumberOfTriplesPerCall'}}"
                                            name="maxNumberOfTriplesPerCall" min="0"
                                            ng-model="extractionMethod.maxNumberOfTriplesPerCall"
-                                           placeholder="{{'ttyg.agent.create_agent_modal.form.max_number_of_triples_per_call.placeholder' | translate}}">
+                                           placeholder="{{'ttyg.agent.create_agent_modal.form.retrieval_search_max_number_of_triples_per_call.placeholder' | translate}}">
                                 </div>
                             </div>
                         </div>
@@ -242,7 +318,9 @@
         </div>
 
         <div class="form-group additional-extraction-methods">
-            <label>{{'ttyg.agent.create_agent_modal.form.additional_query_methods.label' | translate}}</label>
+            <label uib-popover="{{'ttyg.agent.create_agent_modal.form.additional_query_methods.tooltip' | translate}}"
+                   popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.additional_query_methods.label' |
+                translate}}</label>
             <div
                 ng-repeat="additionalExtractionMethod in agentFormModel.additionalExtractionMethods.additionalExtractionMethods"
                 class="additional-extraction-method">
@@ -250,47 +328,86 @@
                        name="{{additionalExtractionMethod.method}}" class="switch"
                        ng-model="additionalExtractionMethod.selected"/>
                 <label for="{{additionalExtractionMethod.method + '_checkbox'}}"></label>
-                <span class="extraction-method-label">{{'ttyg.agent.create_agent_modal.form.additional_query_methods.method.' +
-                    additionalExtractionMethod.method | translate}}</span>
-            </div>
-        </div>
-
-        <div class="form-group gpt-model">
-            <label for="model">{{'ttyg.agent.create_agent_modal.form.model.label' | translate}}</label>
-            <input type="text" class="form-control" id="model" name="model" ng-model="agentFormModel.model"
-                   required autocomplete="off">
-            <small id="modelHelp" class="form-text text-muted"
-                   ng-bind-html="getModelHelpMessage()">
-            </small>
-            <div class="alert alert-danger"
-                 ng-if="agentSettingsForm.model.$touched && agentSettingsForm.model.$invalid">
-                {{'required.field' | translate}}
+                <a class="btn btn-link extraction-method-label" uib-popover="{{'ttyg.agent.create_agent_modal.form.additional_query_methods.method.' +
+                    additionalExtractionMethod.method + '.tooltip' | translate}}"
+                   popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.additional_query_methods.method.'
+                    +
+                    additionalExtractionMethod.method + '.label' | translate}}</a>
             </div>
         </div>
 
         <div class="form-row clearfix">
-            <div class="form-group temperature col-md-4 pl-0">
-                <label for="temperature">{{'ttyg.agent.create_agent_modal.form.temperature.label' | translate}}</label>
-                <input type="text" class="form-control" id="temperature" name="temperature" readonly
+            <div class="form-group gpt-model col-md-4">
+                <label for="model" uib-popover="{{'ttyg.agent.create_agent_modal.form.model.tooltip' | translate}}"
+                       popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.model.label' |
+                    translate}}</label>
+                <input type="text" class="form-control" id="model" name="model" ng-model="agentFormModel.model"
+                       required autocomplete="off">
+                <small id="modelHelp" class="form-text text-muted"
+                       ng-bind-html="getModelHelpMessage()">
+                </small>
+                <div class="alert alert-danger"
+                     ng-if="agentSettingsForm.model.$touched && agentSettingsForm.model.$invalid">
+                    {{'required.field' | translate}}
+                </div>
+            </div>
+            <div class="form-group temperature col-md-4">
+                <label for="temperature">
+                    <span uib-popover="{{'ttyg.agent.create_agent_modal.form.temperature.tooltip' | translate}}"
+                          popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.temperature.label' | translate}}</span>
+                    <i class="fa-regular fa-triangle-exclamation text-warning high-temperature-warning"
+                       ng-if="showHighTemperatureWarning"
+                       uib-popover="{{'ttyg.agent.create_agent_modal.form.temperature.high_temperature_warning' | translate}}"
+                       popover-trigger="mouseenter"></i>
+                </label>
+                <input type="text" id="temperature" name="temperature" readonly
+                       class="form-control" ng-class="{'has-warning': showHighTemperatureWarning}"
                        ng-model="agentFormModel.temperature.value">
                 <input id="temperatureSlider" name="temperature" type="range"
                        min="{{agentFormModel.temperature.minValue}}"
                        max="{{agentFormModel.temperature.maxValue}}" step="{{agentFormModel.temperature.step}}"
+                       ng-change="onTemperatureChange()"
                        ng-model="agentFormModel.temperature.value"/>
             </div>
             <div class="form-group top-p col-md-4">
-                <label for="topP">{{'ttyg.agent.create_agent_modal.form.top_p.label' | translate}}</label>
+                <label for="topP" uib-popover="{{'ttyg.agent.create_agent_modal.form.top_p.tooltip' | translate}}"
+                       popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.top_p.label' |
+                    translate}}</label>
                 <input type="text" class="form-control" id="topP" name="topP" readonly
                        ng-model="agentFormModel.topP.value">
                 <input id="topPSlider" name="topP" type="range" min="{{agentFormModel.topP.minValue}}"
                        max="{{agentFormModel.topP.maxValue}}" step="{{agentFormModel.topP.step}}"
                        ng-model="agentFormModel.topP.value"/>
             </div>
-            <div class="form-group seed col-md-4 pr-0">
-                <label for="seed">{{'ttyg.agent.create_agent_modal.form.seed.label' | translate}}</label>
-                <input type="number" class="form-control" id="seed" name="seed" min="0" ng-model="agentFormModel.seed"
-                placeholder="{{'ttyg.agent.create_agent_modal.form.seed.hint' | translate}}">
+            <!--            Hidden for now because currently this property doesn't work in openai, but in the future it will -->
+            <!--            <div class="form-group seed col-md-4 pr-0">-->
+            <!--                <label for="seed">{{'ttyg.agent.create_agent_modal.form.seed.label' | translate}}</label>-->
+            <!--                <input type="number" class="form-control" id="seed" name="seed" min="0" ng-model="agentFormModel.seed"-->
+            <!--                       placeholder="{{'ttyg.agent.create_agent_modal.form.seed.hint' | translate}}">-->
+            <!--            </div>-->
+        </div>
+
+        <div class="form-group user-instructions">
+            <div class="toolbar">
+                <label for="userInstruction"
+                       uib-popover="{{'ttyg.agent.create_agent_modal.form.user_instruction.tooltip' | translate}}"
+                       popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.user_instruction.label' |
+                    translate}}</label>
+                <div class="actions">
+                    <copy-to-clipboard
+                        tooltip-text="ttyg.agent.create_agent_modal.form.user_instruction.btn.copy_instruction.tooltip"
+                        text-to-copy="{{agentFormModel.instructions.userInstruction}}"></copy-to-clipboard>
+                    <button class="btn btn-link btn-sm create-chat-btn"
+                            ng-click="onRestoreDefaultUserInstructions()"
+                            gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.user_instruction.btn.restore_default.tooltip' | translate}}">
+                        <i class="fa-regular fa-arrow-rotate-left"></i>
+                    </button>
+                </div>
             </div>
+            <textarea type="text" class="form-control" id="userInstruction" name="userInstruction" rows="5"
+                      ng-model="agentFormModel.instructions.userInstruction"
+                      placeholder="{{'ttyg.agent.create_agent_modal.form.user_instruction.placeholder' | translate}}">
+                </textarea>
         </div>
 
         <div class="text-xs-center">
@@ -305,19 +422,32 @@
 
         <div ng-show="showAdvancedSettings" class="advanced-settings">
             <div class="form-group system-instructions">
-                <label for="systemInstruction">{{'ttyg.agent.create_agent_modal.form.system_instruction.label' |
-                    translate}}</label>
-                <textarea type="text" class="form-control" id="systemInstruction" name="systemInstruction"
+                <div class="toolbar">
+                    <label for="systemInstruction">
+                        <span
+                            uib-popover="{{'ttyg.agent.create_agent_modal.form.system_instruction.tooltip' | translate}}"
+                            popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.system_instruction.label' | translate}}</span>
+                        <i class="fa-regular fa-triangle-exclamation text-warning overriding-system-instructions-warning"
+                           ng-if="showSystemInstructionWarning"
+                           uib-popover="{{'ttyg.agent.create_agent_modal.form.system_instruction.overriding_system_instruction_warning.body' | translate}}"
+                           popover-trigger="mouseenter"></i>
+                    </label>
+                    <div class="actions">
+                        <copy-to-clipboard
+                            tooltip-text="ttyg.agent.create_agent_modal.form.system_instruction.btn.copy_instruction.tooltip"
+                            text-to-copy="{{agentFormModel.instructions.systemInstruction}}"></copy-to-clipboard>
+                        <button class="btn btn-link btn-sm create-chat-btn"
+                                ng-click="onRestoreDefaultSystemInstructions()"
+                                gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.system_instruction.btn.restore_default.tooltip' | translate}}">
+                            <i class="fa-regular fa-arrow-rotate-left"></i>
+                        </button>
+                    </div>
+                </div>
+                <textarea type="text" class="form-control" id="systemInstruction" name="systemInstruction" rows="5"
+                          placeholder="{{'ttyg.agent.create_agent_modal.form.system_instruction.placeholder' | translate}}"
+                          ng-class="{'has-warning': showSystemInstructionWarning}"
                           ng-model="agentFormModel.instructions.systemInstruction"
-                          placeholder="{{'ttyg.agent.create_agent_modal.form.system_instruction.placeholder' | translate}}">
-                </textarea>
-            </div>
-            <div class="form-group user-instructions">
-                <label for="userInstruction">{{'ttyg.agent.create_agent_modal.form.user_instruction.label' |
-                    translate}}</label>
-                <textarea type="text" class="form-control" id="userInstruction" name="userInstruction"
-                          ng-model="agentFormModel.instructions.userInstruction"
-                          placeholder="{{'ttyg.agent.create_agent_modal.form.user_instruction.placeholder' | translate}}">
+                          ng-change="onSystemInstructionChange()">
                 </textarea>
             </div>
         </div>
@@ -325,11 +455,14 @@
 </div>
 
 <div class="modal-footer">
-    <button type="button" ng-click="cancel()" class="btn btn-link cancel-btn">
+    <button type="button" ng-click="cancel()" class="btn cancel-btn">
         {{'ttyg.agent.create_agent_modal.btn.cancel.label' | translate}}
     </button>
-    <button type="button" ng-click="ok()" ng-disabled="agentSettingsForm.$invalid"
+    <button type="button" ng-click="ok()" ng-disabled="agentSettingsForm.$invalid || savingAgent"
             class="btn btn-primary save-agent-settings-btn">
-        {{( isEdit ? 'ttyg.agent.create_agent_modal.btn.save.label' : 'ttyg.agent.create_agent_modal.btn.create.label') | translate}}
+        <span>{{(operation === AGENT_OPERATION.EDIT ? 'ttyg.agent.create_agent_modal.btn.save.label'
+        : operation === AGENT_OPERATION.CLONE ? 'ttyg.agent.create_agent_modal.btn.save.label'
+        : 'ttyg.agent.create_agent_modal.btn.create.label') | translate}}</span>
+        <span class="saving-agent-loader" ng-if="savingAgent" onto-loader-fancy hide-message="true" size="15"></span>
     </button>
 </div>

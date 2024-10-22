@@ -1,9 +1,17 @@
 .chat-list-component {
     padding: 0 8px;
+    height: 100%;
+    clip: rect(0, auto, auto, 0);
+    overflow-y: hidden;
+    scrollbar-gutter: stable;
+}
+
+.chat-list-component:hover {
+    overflow-y: auto;
 }
 
 .chat-list-component .chat-group label {
-    color: #aaa;
+    color: var(--gray-color-dark);
 }
 
 .chat-list-component .chat-group ul {
@@ -11,11 +19,21 @@
     padding-inline-start: 0;
 }
 
-.chat-list-component .chat-item {
+.chat-list-component .chat-item .chat-detail {
     padding: 6px 4px;
     display: flex;
     justify-content: space-between;
     width: 100%;
+}
+
+.chat-list-component .chat-item .deleting-chat-loader {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 60px;
+    padding: 6px 8px;
+    background-color: #00000066;
+    color: #fff;
 }
 
 .chat-list-component .chat-item .form-control {
@@ -23,11 +41,11 @@
 }
 
 .chat-list-component .chat-item.selected {
-    background-color: #ddd;
+    background-color: var(--base-background-selected-color);
 }
 
 .chat-list-component .chat-item:not(.edited):hover {
-    background-color: #ddd;
+    background-color: var(--base-background-hover-color);
     cursor: pointer;
 }
 
@@ -73,4 +91,9 @@
 
 .chat-list-component .chat-item:not(.edited):hover .open-chat-actions-btn {
     display: block;
+}
+
+.chat-list-component .chat-name {
+    color: var(--secondary-color);
+    font-weight: 400;
 }

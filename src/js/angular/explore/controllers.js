@@ -517,9 +517,9 @@ function FindResourceCtrl($scope, $http, $location, $repositories, $q, $timeout,
     }
 }
 
-EditResourceCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$repositories', '$uibModal', '$timeout', 'ClassInstanceDetailsService', 'StatementsService', 'RDF4JRepositoriesRestService', '$translate', '$jwtAuth'];
+EditResourceCtrl.$inject = ['$scope', '$http', '$location', 'toastr', '$repositories', '$uibModal', '$timeout', 'ClassInstanceDetailsService', 'StatementsService', 'RDF4JRepositoriesRestService', '$translate'];
 
-function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibModal, $timeout, ClassInstanceDetailsService, StatementsService, RDF4JRepositoriesRestService, $translate, $jwtAuth) {
+function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibModal, $timeout, ClassInstanceDetailsService, StatementsService, RDF4JRepositoriesRestService, $translate) {
     $scope.uriParam = $location.search().uri;
     $scope.newRow = {
         subject: $scope.uriParam,
@@ -583,10 +583,6 @@ function EditResourceCtrl($scope, $http, $location, toastr, $repositories, $uibM
             $scope.getClassInstancesDetails();
         }
     });
-
-    $scope.hasAdminRole = () => {
-        return $jwtAuth.isAuthenticated() && $jwtAuth.hasAdminRole();
-    };
 
     $scope.validateUri = function (val) {
         let check = true;

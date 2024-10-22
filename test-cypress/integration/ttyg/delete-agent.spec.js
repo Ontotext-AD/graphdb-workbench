@@ -1,16 +1,16 @@
 import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
-import {NamespaceStubs} from "../../stubs/namespace-stubs";
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
+import {RepositoriesStub} from "../../stubs/repositories-stub";
 
 describe('TTYG delete agent', () => {
     const repositoryId = 'starwars';
 
     beforeEach(() => {
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
+        RepositoriesStub.stubBaseEndpoints(repositoryId);
         cy.presetRepository(repositoryId);
-        NamespaceStubs.stubNameSpaceResponse(repositoryId, '/namespaces/get-repository-starwars-namespaces.json');
     });
 
     it('Should be able to delete agent', () => {
@@ -18,6 +18,7 @@ describe('TTYG delete agent', () => {
         TTYGStubs.stubAgentListGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
+        TTYGViewSteps.expandAgentsSidebar();
         TTYGViewSteps.getAgents().should('have.length', 2);
         TTYGViewSteps.filterAgentsByRepository('All');
         TTYGViewSteps.getAgents().should('have.length', 4);

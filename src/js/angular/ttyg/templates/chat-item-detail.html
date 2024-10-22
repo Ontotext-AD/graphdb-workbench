@@ -1,0 +1,95 @@
+<link href="css/ttyg/chat-item-details.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+<div class="chat-detail">
+    <div class="user-message" ng-if="chatItemDetail.question">
+        <div class="question alert-help">
+            {{ chatItemDetail.question.message }}
+        </div>
+    </div>
+    <div class="answers" ng-repeat="answer in chatItemDetail.answers">
+        <div class="assistant">
+            <div class="assistant-icon alert-help"
+                 gdb-tooltip="{{'ttyg.chat_panel.labels.agent_name' | translate : {agentName:  agentNameByIdMap[chatItemDetail.agentId]} }}">
+                <i class="fa-regular fa-message-bot"></i>
+            </div>
+            <div class="assistant-message">
+                <markdown-content class="answer" content="{{answer.message}}" options="markdownContentOptions"></markdown-content>
+                <div class="actions" ng-class="{'hidden-actions': !explainResponseModel[answer.id].expanded && (!showActions || !$last)}">
+                    <button class="btn btn-link btn-sm regenerate-question-btn"
+                            ng-click="regenerateQuestion()"
+                            ng-disabled="disabled"
+                            gdb-tooltip="{{'ttyg.chat_panel.btn.regenerate.tooltip' | translate}}">
+                        <i class="fa-regular fa-arrows-rotate"></i>
+                    </button>
+                    <copy-to-clipboard class="btn-sm" tooltip-text="ttyg.chat_panel.btn.copy_answer.tooltip"
+                                       text-to-copy="{{answer.message}}"></copy-to-clipboard>
+                    <button class="btn btn-link btn-link-only-icons btn-sm explain-response-btn"
+                            ng-click="explainResponse(answer.id)"
+                            ng-disabled="disabled && !explainResponseModel[answer.id]"
+                            gdb-tooltip="{{'ttyg.chat_panel.btn.explain_response.tooltip' | translate}}">
+                        <i class="fa-regular fa-wand-magic-sparkles"></i>
+                        <i class="fa-regular fa-chevron-up toggle-explain-response-icon"
+                           ng-class="{expanded: explainResponseModel[answer.id] && explainResponseModel[answer.id].expanded}"></i>
+                    </button>
+                </div>
+                <div class="derived-answer-hint"
+                     ng-if="showActions && $last && explainResponseModel[answer.id].expanded">
+                    <div ng-bind-html="'ttyg.chat_panel.btn.derive_answer.hint' | htmlTranslate"></div>
+                    <button class="btn btn-secondary deliver-answer-btn" ng-click="onAskHowAnswerWasDerived()">
+                        {{ 'ttyg.chat_panel.btn.derive_answer.label' | translate }}
+                    </button>
+                </div>
+                <div ng-if="loadingExplainResponse[answer.id]" onto-loader-new size="40"></div>
+                <div class="explain-responses" ng-if="explainResponseModel[answer.id] && explainResponseModel[answer.id].expanded">
+                    <div ng-if="!explainResponseModel[answer.id].queryMethods.items.length"
+                         class="explain-response">
+                        {{ 'ttyg.chat_panel.labels.explain_no_methods' | translate }}
+                    </div>
+                    <div ng-if="explainResponseModel[answer.id].queryMethods.items"
+                         class="explain-response"
+                         ng-repeat="queryMethod in explainResponseModel[answer.id].queryMethods.items">
+                        <div class="explain-call">
+                            <div class="header" gdb-tooltip="">
+                                <div class="label">
+                                    <span class="query-method" ng-bind-html="'ttyg.chat_panel.labels.called' | htmlTranslate:{name: queryMethod.name}">
+                                    </span>:
+                                    <span class="query-method-details" ng-bind="('ttyg.chat_panel.query_desc.' + queryMethod.name) | translate">
+                                    </span>
+                                </div>
+                                <div class="actions">
+                                    <open-in-sparql-editor
+                                        ng-if="queryMethod.queryType === ExplainQueryType.SPARQL"
+                                        execute-query="{{!queryMethod.errorMessage}}"
+                                        repository-id="{{repositoryId}}"
+                                        query="{{queryMethod.query}}">
+                                    </open-in-sparql-editor>
+                                    <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy_{{ queryMethod.queryType }}.tooltip"
+                                                       text-to-copy="{{queryMethod.query}}"></copy-to-clipboard>
+                                </div>
+                            </div>
+                            <div class="query">
+                                <pre><code>{{queryMethod.query}}</code></pre>
+                            </div>
+                            <div ng-if="showRawQuery(queryMethod)" class="raw-query">
+                                <span class="label">{{'ttyg.chat_panel.labels.raw_query' | translate}}:</span>
+                                <span class="content">{{queryMethod.rawQuery}}</span>
+                                <copy-to-clipboard class="copy-to-clipboard-btn" tooltip-text="ttyg.chat_panel.btn.copy_raw_query.tooltip"
+                                                   text-to-copy="{{queryMethod.rawQuery}}"></copy-to-clipboard>
+                            </div>
+                            <div ng-if="queryMethod.errorMessage" class="alert no-icon alert-warning error-message">
+                                <div class="error-header">
+                                    <div class="label">{{'ttyg.chat_panel.labels.error_message' | translate}}:</div>
+                                    <copy-to-clipboard class="copy-to-clipboard-btn" tooltip-text="ttyg.chat_panel.btn.copy_error_message.tooltip"
+                                                       text-to-copy="{{queryMethod.errorMessage}}"></copy-to-clipboard>
+                                </div>
+                                <div class="error-content">{{queryMethod.errorMessage}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-if="asking" onto-loader-new size="40"></div>
+</div>
+

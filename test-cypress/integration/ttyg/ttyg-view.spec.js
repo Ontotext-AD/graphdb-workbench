@@ -2,7 +2,7 @@ import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 import {ApplicationSteps} from "../../steps/application-steps";
-import {NamespaceStubs} from "../../stubs/namespace-stubs";
+import {RepositoriesStub} from "../../stubs/repositories-stub";
 
 describe('TTYG view', () => {
 
@@ -10,17 +10,17 @@ describe('TTYG view', () => {
 
     beforeEach(() => {
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
+        RepositoriesStub.stubBaseEndpoints(repositoryId);
         cy.presetRepository(repositoryId);
-        NamespaceStubs.stubNameSpaceResponse(repositoryId, '/namespaces/get-repository-starwars-namespaces.json');
     });
 
-    // TODO: This test is skipped because it fails on CI. For some reason the chat list panel is not visible.
-    it.skip('Should load ttyg page and render main components', () => {
+    it('Should load ttyg page and render main components', () => {
         TTYGStubs.stubChatsListGet();
         TTYGStubs.stubAgentListGet();
         TTYGStubs.stubChatGet();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
+        cy.wait('@get-chat');
         // When the ttyg page is loaded
         // Then I should see the ttyg view
         TTYGViewSteps.getTtygView().should('exist');
@@ -28,18 +28,21 @@ describe('TTYG view', () => {
         // Verify the chats sidebar
         TTYGViewSteps.getChatsPanel().should('be.visible');
         TTYGViewSteps.getToggleChatsSidebarButton().should('be.visible');
-        // The create chat button is hidden by default when there are no chats
-        TTYGViewSteps.getCreateChatButton().should('not.exist');
+        // The create chat button is visible when there are chats
+        TTYGViewSteps.getCreateChatButton().should('exist');
         // Verify the agents sidebar
-        TTYGViewSteps.getAgentsPanel().should('be.visible');
+        TTYGViewSteps.getAgentsPanel().should('not.be.visible');
         TTYGViewSteps.getHelpButton().should('be.visible');
         TTYGViewSteps.getCreateAgentButton().should('be.visible');
         TTYGViewSteps.getToggleAgentsSidebarButton().should('be.visible');
         // Verify the chat panel
         TTYGViewSteps.getChat().should('be.visible');
         TTYGViewSteps.getChatPanelToolbar().should('be.visible');
-        TTYGViewSteps.getEditCurrentAgentButton().should('be.visible');
-        TTYGViewSteps.getExportCurrentChatButton().should('be.visible');
+
+        // When I select a chat whose last answer has a deleted agent.
+        TTYGViewSteps.selectChat(0, 2);
+        // the edit agent settings button should not be visible when there is not a selected agent
+        TTYGViewSteps.getEditCurrentAgentButton().should('not.exist');
     });
 
     it('Should render no agents view if no agent is created yet', () => {

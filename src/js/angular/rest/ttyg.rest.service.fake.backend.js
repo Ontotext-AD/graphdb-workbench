@@ -1,5 +1,21 @@
 import {cloneDeep} from "lodash";
 import {CHAT_MESSAGE_ROLE} from "../models/ttyg/chat-message";
+import {ExtractionMethod} from "../models/ttyg/agents";
+
+// Delay for askQuestion()
+const ASK_DELAY = 2000;
+
+// Delay for getConversations()
+const LIST_CHATS_DELAY = 2000;
+
+// Delay for getConversation(id)
+const GET_CHAT_DELAY = 2000;
+
+const CREATE_AGENT_DELAY = 2000;
+const EDIT_AGENT_DELAY = 2000;
+const LOAD_AGENTS_DELAY = 2000;
+
+const DELETE_DELAY = 2000;
 
 export class TtygRestServiceFakeBackend {
 
@@ -9,12 +25,15 @@ export class TtygRestServiceFakeBackend {
 
     getConversations() {
         return new Promise((resolve) => {
-            resolve({data: cloneDeep(this.conversations)});
+            setTimeout(() => resolve({data: cloneDeep(this.conversations)}), LIST_CHATS_DELAY);
         });
     }
 
     getConversation(id) {
-        return Promise.resolve({data: cloneDeep(this.conversations.find((conversation) => conversation.id === id))});
+        return new Promise((resolve) => {
+            setTimeout(() => resolve({data: cloneDeep(this.conversations.find((conversation) => conversation.id === id))}),
+                GET_CHAT_DELAY);
+        });
     }
 
     renameConversation(id, data) {
@@ -35,56 +54,68 @@ export class TtygRestServiceFakeBackend {
             id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNe",
             conversationId: askRequestData.conversationId,
             agentId: null,
-            message: `Reply to '${askRequestData.question}'`,
+            message: `${askRequestData.question}`,
             role: CHAT_MESSAGE_ROLE.USER,
-            timestamp: Date.now()
+            timestamp: Math.floor(Date.now() / 1000)
         };
-        const answer = {
-            id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNe",
-            conversationId: askRequestData.conversationId,
-            agentId: null,
-            message: `Reply to '${askRequestData.question}'`,
-            role: CHAT_MESSAGE_ROLE.ASSISTANT,
-            timestamp: Date.now()
-        };
+
         const conversation = this.conversations.find((conversation) => conversation.id === askRequestData.conversationId);
+
+        const answer = {
+            id: askRequestData.conversationId,
+            name: conversation ? conversation.name : "Han Solo is a character in the Star Wars...",
+            timestamp: Math.floor(Date.now() / 1000),
+            messages: [
+                {
+                    id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNe_" + Date.now(),
+                    conversationId: askRequestData.conversationId,
+                    role: CHAT_MESSAGE_ROLE.ASSISTANT,
+                    agentId: askRequestData.agentId,
+                    message: "Certainly! Here's a random example that incorporates code, JSON, and a SPARQL query:\n\n### Code (Python)\n\n```python\ndef greet(name):\n    return f\"Hello, {name}!\"\n\nprint(greet(\"World\"))\n```\n\n### JSON\n\n```json\n{\n    \"greeting\": \"Hello\",\n    \"target\": \"World\",\n    \"language\": \"English\"\n}\n```\n\n### SPARQL Query\n\n```sparql\nSELECT ?person ?name\nWHERE {\n    ?person a ex:Person .\n    ?person ex:hasName ?name .\n}\nLIMIT 10\n```\n\nThis example demonstrates a simple Python function for greeting, a JSON object representing a greeting structure, and a SPARQL query to retrieve names of persons from a dataset.",
+                    timestamp: Math.floor(Date.now() / 1000),
+                    name: null
+                },
+                {
+                    id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNeс_" + Date.now(),
+                    conversationId: askRequestData.conversationId,
+                    role: CHAT_MESSAGE_ROLE.ASSISTANT,
+                    agentId: askRequestData.agentId,
+                    message: `Reply to '${askRequestData.question}' It seems there was an error with the query. Let me rectify this and try again.`,
+                    timestamp: Math.floor(Date.now() / 1000),
+                    name: null
+                }
+            ]
+        };
+
         if (conversation) {
-            conversation.messages.push(answer);
+            conversation.messages.push(...answer.messages);
             conversation.messages.push(question);
         }
-        return Promise.resolve({data: answer});
+        return new Promise((resolve) => setTimeout(() => resolve({data: answer}), ASK_DELAY));
+        // return new Promise((resolve, reject) => setTimeout(() => reject(''), ASK_DELAY));
     }
 
     deleteConversation(id) {
         this.conversations = this.conversations.filter((conversation) => conversation.id !== id);
-        return Promise.resolve();
+        return new Promise((resolve) => setTimeout(() => resolve(), DELETE_DELAY));
     }
 
     createConversation(data) {
         const conversation = {
             id: `thread_${this.conversations.length}`,
             name: `Thread ${this.conversations.length}`,
-            timestamp: Date.now(),
+            timestamp: Math.floor(Date.now() / 1000),
             messages: []
         };
         this.conversations.unshift(conversation);
 
         const askRequestData = cloneDeep(data);
         askRequestData.conversationId = conversation.id;
-        return this.askQuestion(askRequestData)
-            .then(() => {
-                return {
-                    data: {
-                        id: "msg_Bn07kVDCYT1qmgu1G7Zw0KNe",
-                        conversationId: conversation.id,
-                        agentId: data.agentId
-                    }
-                };
-            });
+        return this.askQuestion(askRequestData);
     }
 
     getAgents() {
-        return Promise.resolve({data: [...agentsList]});
+        return new Promise((resolve) => setTimeout(() => resolve({data: [...agentsList]}), LOAD_AGENTS_DELAY));
     }
 
     getAgent(id) {
@@ -92,14 +123,19 @@ export class TtygRestServiceFakeBackend {
     }
 
     createAgent(agent) {
+        if (agent.name === 'err') {
+            return new Promise((resolve, reject) => setTimeout(() => reject({status: 500, message: 'Internal Server Error'}), CREATE_AGENT_DELAY));
+        }
         agentsList.push(agent);
-        return Promise.resolve({data: agent});
+        return new Promise((resolve) => setTimeout(() => resolve({data: agent}), CREATE_AGENT_DELAY));
     }
 
     editAgent(editedAgent) {
+        if (editedAgent.name === 'err') {
+            return new Promise((resolve, reject) => setTimeout(() => reject({status: 500, message: 'Internal Server Error'}), EDIT_AGENT_DELAY));
+        }
         agentsList = agentsList.map((agent) => agent.id === editedAgent.id ? editedAgent : agent);
-
-        return Promise.resolve({data: editedAgent});
+        return new Promise((resolve) => setTimeout(() => resolve({data: editedAgent}), CREATE_AGENT_DELAY));
     }
 
     deleteAgent(id) {
@@ -110,12 +146,78 @@ export class TtygRestServiceFakeBackend {
         // });
     }
 
+    getAgentDefaultValues() {
+        return Promise.resolve({data: defaultAgentValues});
+    }
+
     // Simulate an HTTP error
     simulateHttpError() {
         return Promise.reject({
             status: 500,
             message: 'Internal Server Error'
         });
+    }
+
+    explainResponse(data) {
+        return Promise.resolve({data: {
+                conversationId: data.conversationId,
+                answerId: data.answerId,
+                queryMethods: [
+                    {
+                        name: "sparql_query",
+                        rawQuery: "SELECT ?character ?name ?height WHERE {\n  ?character a voc:Character;\n             rdfs:label ?name;\n             voc:height ?height.\n  FILTER(?name = \"Luke Skywalker\" || ?name = \"Leia Organa\")\n}",
+                        query: "SELECT ?character ?name ?height WHERE {\n  ?character a voc:Character;\n             rdfs:label ?name;\n             voc:height ?height.\n  FILTER(?name = \"Luke Skywalker\" || ?name = \"Leia Organa\")\n}",
+                        queryType: "sparql",
+                        errorOutput: "Error: org.eclipse.rdf4j.query.MalformedQueryException: org.eclipse.rdf4j.query.parser.sparql.ast.VisitorException: QName 'voc:Character' uses an undefined prefix"
+                    }, {
+                        name: "retrieval_search",
+                        rawQuery: "{\"queries\":[{\"query\":\"pilots that work with Luke Skywalker\",\"filter\":{\"document_id\":\"https://swapi.co/resource/human/1\"},\"top_k\":3}]}",
+                        query: "{\n  \"queries\" : [ {\n    \"query\" : \"pilots that work with Luke Skywalker\",\n    \"filter\" : {\n      \"document_id\" : \"https://swapi.co/resource/human/1\"\n    },\n    \"top_k\" : 3\n  } ]\n}",
+                        queryType: "json",
+                        errorOutput: null
+                    },
+                    {
+                        name: "iri_discovery",
+                        rawQuery: "Luke Skywalker",
+                        query: "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX onto: <http://www.ontotext.com/>\nSELECT ?label ?iri {\n    ?label onto:fts ('''Luke~ Skywalker~''' '*') .\n    ?iri rdfs:label|skos:prefLabel ?label .\n}",
+                        queryType: "sparql",
+                        errorOutput: null
+                    },
+                    {
+                        name: "sparql_query",
+                        rawQuery: "SELECT ?height WHERE {\n  <https://swapi.co/resource/human/1> voc:height ?height.\n}",
+                        query: "SELECT ?height WHERE {\n  <https://swapi.co/resource/human/1> voc:height ?height.\n}",
+                        queryType: "sparql",
+                        errorOutput: "Error: org.eclipse.rdf4j.query.MalformedQueryException: org.eclipse.rdf4j.query.parser.sparql.ast.VisitorException: QName 'voc:height' uses an undefined prefix"
+                    },
+                    {
+                        name: "sparql_query",
+                        rawQuery: "PREFIX voc: <https://swapi.co/vocabulary/>\nSELECT ?name ?height WHERE {\n  ?character voc:height ?height;\n             rdfs:label ?name.\n  FILTER(?name = \"Luke Skywalker\" || ?name = \"Leia Organa\")\n}",
+                        query: "PREFIX voc: <https://swapi.co/vocabulary/>\nSELECT ?name ?height WHERE {\n  ?character voc:height ?height;\n             rdfs:label ?name.\n  FILTER(?name = \"Luke Skywalker\" || ?name = \"Leia Organa\")\n}",
+                        queryType: "sparql",
+                        errorOutput: null
+                    },
+                    {
+                        name: 'fts_search',
+                        rawQuery: 'Second Luke',
+                        query: 'PREFIX onto: <http://www.ontotext.com/>\nDESCRIBE ?iri {\n\t?x onto:fts \'\'\'Second Luke\'\'\' .\n\t{\n\t\t?x ?p ?iri .\n\t} union {\n\t\t?iri ?p ?x .\n\t}\n}',
+                        queryType: "sparql",
+                        errorOutput: null
+                    }, {
+                        name: 'similarity_search',
+                        rawQuery: 'Second Luke',
+                        query: 'PREFIX onto: <http://www.ontotext.com/>\nDESCRIBE ?iri {\n\t?x onto:fts \'\'\'Second Luke\'\'\' .\n\t{\n\t\t?x ?p ?iri .\n\t} union {\n\t\t?iri ?p ?x .\n\t}\n}',
+                        queryType: "sparql",
+                        errorOutput: null
+                    }, {
+                        name: "iri_discovery",
+                        rawQuery: "Luke Skywalker",
+                        query: "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX onto: <http://www.ontotext.com/>\nSELECT ?label ?iri {\n    ?label onto:fts ('''Luke~ Skywalker~''' '*') .\n    ?iri rdfs:label|skos:prefLabel ?label .\n}",
+                        queryType: "sparql",
+                        errorOutput: null
+                    }
+                ]
+            }});
     }
 }
 
@@ -216,3 +318,45 @@ let agentsList = [
         "maxNumberOfTriplesPerCall": null
     }
 ];
+
+const defaultAgentValues = {
+    "id": "id",
+    "name": "Quadro",
+    "model": "gpt-4o",
+    "temperature": 0.7,
+    "topP": 1,
+    "seed": 0,
+    "repositoryId": "test-repository",
+    "instructions": {
+        "systemInstruction": "You are a helpful, knowledgeable, and friendly assistant. Your goal is to provide clear and accurate information while being polite, respectful, and professional.",
+        "userInstruction": "If you need to write a SPARQL query, use only the classes and properties provided in the schema and don't invent or guess any. Always try to return human-readable names or labels and not only the IRIs. If SPARQL fails to provide the necessary information you can try another tool too."
+    },
+    "assistantExtractionMethods": [
+        {
+            "method": "sparql_search",
+            "ontologyGraph": "http://example.com",
+            "sparqlQuery": "CONSTRUCT {?s ?p ?o} WHERE {GRAPH <http://example.org/ontology> {?s ?p ?o .}}"
+        },
+        {
+            "method": "fts_search",
+            "maxNumberOfTriplesPerCall": 0
+        },
+        {
+            "method": "similarity_search",
+            "similarityIndex": "similarity-index",
+            "similarityIndexThreshold": 0.6,
+            "maxNumberOfTriplesPerCall": 0
+        },
+        {
+            "method": "retrieval_search",
+            "retrievalConnectorInstance": "retrieval-connector",
+            "queryTemplate": "{\"query\": \"string\"}",
+            "maxNumberOfTriplesPerCall": 0
+        }
+    ],
+    "additionalExtractionMethods": [
+        {
+            "method": "iri_discovery_search"
+        }
+    ]
+};

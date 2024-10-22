@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Usage:
+# scripts/run-cypress-tests.sh [--loop] [<gdb-version> [<spec>] [<cypress-arg> ...]
+
 # Force quit if there is an unbound variable
 set -u
 
@@ -8,45 +11,81 @@ trap cleanup INT
 
 function cleanup() {
     if [ -e "${GDB_TMPDIR:-}" ]; then
-        # The PID file might not be there yet if GraphDB is still starting so wait and retry a couple of times if needed
-        for i in {1..3}; do
-            if [ ! -f "$GDB_TMPDIR/graphdb.pid" ]; then
-                echo "GraphDB PID file not found, sleep for 5 seconds and retry (attempt $i)"
-                sleep 5
-            fi
-            if [ -f "$GDB_TMPDIR/graphdb.pid" ]; then
-                echo "Killing GraphDB"
-                kill -9 $(cat "$GDB_TMPDIR/graphdb.pid")
-                break
-            fi
-        done
+        if [ -n "${GRAPHDB_PID:-}" ]; then
+            echo "Killing GraphDB"
+            kill -9 "$GRAPHDB_PID"
+        fi
         echo "Removing temporary directory"
         rm -rf "$GDB_TMPDIR"
     fi
-    exit ${1:-}
+    exit "${1:-}"
 }
 
-if [ -z "${GDB_VERSION:-}" ]; then
-    echo "GDB_VERSION must be set to run script. Don't run this script directly, use npm run test:acceptance"
-    cleanup 1
+function show_help_and_exit() {
+    echo "Usage: .run-cypress-tests.sh [--loop] [<gdb-version>] [<spec>] [<cypress-option> ...]"
+    echo "    --loop           - runs tests in a loop until failure"
+    echo "    <gdb-version>    - GraphDB version to use (you can also set GDB_VERSION)"
+    echo "    <spec>           - path to test in the integration directory, passed as --spec to cypress"
+    echo "    <cypress-option> - any string starting with - with be passed to cypress, e.g., --headed"
+    exit 1
+}
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+    show_help_and_exit
+fi
+
+if [ -z "${1:-}" ]; then
+    if [ -z "${GDB_VERSION:-}" ]; then
+        show_help_and_exit
+    fi
+else
+    if [[ "$1" == "--loop" ]]; then
+        # Has optional first "--loop" argument => run tests in loop until failure
+        LOOP=1
+        shift
+    fi
+
+    if [[ "$1:-" =~ ^[0-9] ]]; then
+        # Has next argument - GraphDB version
+        GDB_VERSION="$1"
+        shift
+    fi
+
+    if [ -n "${1:-}" ]; then
+        # Has next argument - cypress option(s) or integration spec path
+        if [[ "${1:-}" != -* ]]; then
+            # Doesn't start with "-" => integration spec path inside integration directory
+            set -- "$@" --spec "integration/$1"
+            shift
+        fi
+    fi
 fi
 
 # Make sure we are in the project root
-cd $(dirname $0)/..
+cd "$(dirname $0)/.." || cleanup 1
 echo "Working directory: $(pwd)"
 
 echo "Running tests with GDB: $GDB_VERSION"
 
 DOWNLOADS=.downloads
 DOWNLOAD_URL="http://maven.ontotext.com/repository/owlim-releases/com/ontotext/graphdb/graphdb/${GDB_VERSION}/graphdb-${GDB_VERSION}-dist.zip"
+LOCAL_MAVEN_ZIP=~/".m2/repository/com/ontotext/graphdb/graphdb/${GDB_VERSION}/graphdb-${GDB_VERSION}-dist.zip"
 GDB_ZIP="$DOWNLOADS/graphdb-$GDB_VERSION.zip"
+
+if [ -z "${NODE_OPTIONS:-}" ]; then
+    # Needed for newer node versions
+    export NODE_OPTIONS=--openssl-legacy-provider
+fi
 
 if ! mkdir -p "$DOWNLOADS"; then
     echo "Could not create $DOWNLOADS directory"
     cleanup 1
 fi
 
-if [ ! -f "$GDB_ZIP" ]; then
+if [ -f "$LOCAL_MAVEN_ZIP" ]; then
+    echo "Using GraphDB from local Maven repository"
+    GDB_ZIP="$LOCAL_MAVEN_ZIP"
+elif [ ! -f "$GDB_ZIP" ]; then
     echo "Downloading GraphDB from $DOWNLOAD_URL"
     # Clean previous runs
     if ! curl -sSL "${DOWNLOAD_URL}" -o "$GDB_ZIP"; then
@@ -72,18 +111,26 @@ if ! npm run build; then
 fi
 
 echo "Starting GraphDB daemon"
-if ! "$GDB_TMPDIR/graphdb-${GDB_VERSION}/bin/graphdb" -d \
-    -p "$GDB_TMPDIR/graphdb.pid" \
+# Starts GraphDB as a bash background process and records the PID in GRAPHDB_PID
+# The output is redirected to graphdb-console.txt in the temp directory
+"$GDB_TMPDIR/graphdb-${GDB_VERSION}/bin/graphdb" \
     -Denable.cypress.hack=true \
     -Dgraphdb.workbench.home="$(pwd)/dist/" \
     -Dgraphdb.stats.default=disabled \
     -Dgraphdb.workbench.importDirectory="$(pwd)/test-cypress/fixtures/graphdb-import/" \
-    -Dgraphdb.jsonld.whitelist="https://w3c.github.io/json-ld-api/tests/*" ; then
+    -Dgraphdb.jsonld.whitelist="https://w3c.github.io/json-ld-api/tests/*" \
+        > "$GDB_TMPDIR/graphdb-console.txt" \
+        & GRAPHDB_PID=$!
+
+# Give it some time to spin up and check if still alive
+sleep 2
+if ! kill -0 "$GRAPHDB_PID" >& /dev/null; then
+    unset GRAPHDB_PID
     echo "Unable to start GraphDB"
     cleanup 1
 fi
 
-cd test-cypress
+cd test-cypress || cleanup 1
 
 echo "Installing Cypress tests module"
 if ! npm ci; then
@@ -92,7 +139,17 @@ if ! npm ci; then
 fi
 
 echo "Starting Cypress tests against GraphDB version ${GDB_VERSION}"
-npx cypress run --record=false --config baseUrl=http://localhost:7200,video=false
 
-# Stops GraphDB, removes the temporary directory and exits using the exit code of the last command (i.e. the test run)
-cleanup $?
+count=0
+exit_code=1
+while npx cypress run --record=false --config baseUrl=http://localhost:7200,video=false "$@"; do
+    exit_code=$?
+    count=$((count+1))
+    echo "Tests OK - run $count"
+    if [ -z "${LOOP:-}" ]; then
+        cleanup 0
+    fi
+done
+
+# Stops GraphDB, removes the temporary directory and exits using the exit code of the test run
+cleanup $exit_code

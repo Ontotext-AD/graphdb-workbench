@@ -10,7 +10,7 @@
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-secondary cancel-btn" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
-    <button class="btn btn-primary confirm-btn" ng-click="ok()">{{'common.yes.btn' | translate}}</button>
+    <button class="btn btn-primary confirm-btn" ng-click="ok()">{{ (confirmButtonKey || 'common.yes.btn') | translate}}</button>
 </div>
 
 <!-- End confirmDelete -->

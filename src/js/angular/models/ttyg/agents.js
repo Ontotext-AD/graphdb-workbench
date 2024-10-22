@@ -1,5 +1,6 @@
 import {cloneDeep} from "lodash";
 import {AGENTS_FILTER_ALL_KEY} from "../../ttyg/services/constants";
+
 export class AgentModel {
     constructor(data, hashGenerator) {
         this.hashGenerator = hashGenerator;
@@ -190,6 +191,12 @@ export class ExtractionMethodModel {
          */
         this._method = data.method;
         /**
+         * Whether to add missing namespaces to the generated SPARQL query.
+         * @type {boolean}
+         * @private
+         */
+        this._addMissingNamespaces = data.addMissingNamespaces;
+        /**
          * The ontology graph used for the extraction method.
          * @type {string}
          * @private
@@ -238,6 +245,14 @@ export class ExtractionMethodModel {
 
     set method(value) {
         this._method = value;
+    }
+
+    get addMissingNamespaces() {
+        return this._addMissingNamespaces;
+    }
+
+    set addMissingNamespaces(value) {
+        this._addMissingNamespaces = value;
     }
 
     get sparqlQuery() {
@@ -346,6 +361,16 @@ export class AgentListModel {
          * @private
          */
         this._filterableAgents = cloneDeep(agents);
+
+        this._agentNameByIdMap = {};
+        this._initializeAgentNameByIdMap();
+    }
+
+    _initializeAgentNameByIdMap() {
+        this._agentNameByIdMap = this._agents.reduce((map, agent) => {
+            map[agent.id] = agent.name;
+            return map;
+        }, {});
     }
 
     isEmpty() {
@@ -369,6 +394,10 @@ export class AgentListModel {
         });
     }
 
+    getAgent(agentId) {
+        return this._agents.find((agent) => agent.id === agentId);
+    }
+
     get agents() {
         return this._agents;
     }
@@ -383,6 +412,14 @@ export class AgentListModel {
 
     set filterableAgents(value) {
         this._filterableAgents = value;
+    }
+
+    get agentNameByIdMap() {
+        return cloneDeep(this._agentNameByIdMap);
+    }
+
+    set agentNameByIdMap(value) {
+        this._agentNameByIdMap = value;
     }
 }
 

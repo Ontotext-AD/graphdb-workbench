@@ -255,10 +255,37 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             return repos;
         };
 
+        /**
+         * Gets repository by id.
+         *
+         * @param {string} repositoryId
+         * @return {*}
+         */
+        this.getRepository = function (repositoryId) {
+            return this.getRepositories().find((repository) => repository.id === repositoryId);
+        };
+
         this.getReadableRepositories = function () {
             return _.filter(this.getRepositories(), function (repo) {
                 return $jwtAuth.canReadRepo(repo);
             });
+        };
+
+        this.getReadableGraphdbRepositories = function () {
+            return this.getReadableRepositories()
+                .filter((repo) => repo.type === 'graphdb');
+        };
+
+        /**
+         * Returns all readable graphdb repositories that are local.
+         * @return {*}
+         */
+        this.getLocalReadableGraphdbRepositories = function () {
+            return this.getReadableGraphdbRepositories().filter((repository) => repository.local === true);
+        };
+
+        this.getLocalReadablGraphdbRepositoryIds = function () {
+            return this.getLocalReadableGraphdbRepositories().map((repository) => repository.id);
         };
 
         this.getWritableRepositories = function () {

@@ -29,7 +29,7 @@ module.exports = {
             'src/js/',
             'node_modules'
         ],
-        extensions: ['.js']
+        extensions: ['.js', '.mjs']
     },
     plugins: [
         new WebpackAutoInject({
@@ -115,7 +115,8 @@ module.exports = {
             },
             {
                 from: 'src/js/angular/ttyg/templates',
-                to: 'js/angular/ttyg/templates'
+                to: 'js/angular/ttyg/templates',
+                transform: replaceVersion
             },
             {
                 from: 'src/js/angular/clustermanagement/templates',
@@ -197,6 +198,11 @@ module.exports = {
     ],
     module: {
         rules: [
+            {
+                test: /\.mjs$/,
+                include: /node_modules/,
+                type: 'javascript/auto'
+            },
             {
                 test: /jquery.js/,
                 use: [

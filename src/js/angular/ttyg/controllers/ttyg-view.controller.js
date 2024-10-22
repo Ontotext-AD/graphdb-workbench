@@ -7,13 +7,18 @@ import 'angular/ttyg/controllers/agent-settings-modal.controller';
 import 'angular/core/services/ttyg.service';
 import 'angular/ttyg/services/ttyg-context.service';
 import 'angular/ttyg/services/ttyg-storage.service';
-import {TTYGEventName} from "../services/ttyg-context.service";
-import {AGENTS_FILTER_ALL_KEY} from "../services/constants";
-import {AgentListFilterModel} from "../../models/ttyg/agents";
-import {ChatsListModel} from "../../models/ttyg/chats";
-import {agentFormModelMapper, newAgentFormModelProvider} from "../services/agents.mapper";
-import {SelectMenuOptionsModel} from "../../models/form-fields";
-import {repositoryInfoMapper} from "../../rest/mappers/repositories-mapper";
+import {TTYGEventName} from '../services/ttyg-context.service';
+import {AGENT_OPERATION, AGENTS_FILTER_ALL_KEY, TTYG_ERROR_MSG_LENGTH} from '../services/constants';
+import {AgentListFilterModel, AgentModel} from '../../models/ttyg/agents';
+import {ChatModel, ChatsListModel} from '../../models/ttyg/chats';
+import {agentFormModelMapper} from '../services/agents.mapper';
+import {SelectMenuOptionsModel} from '../../models/form-fields';
+import {repositoryInfoMapper} from '../../rest/mappers/repositories-mapper';
+import {saveAs} from 'lib/FileSaver-patch';
+import {AgentSettingsModal} from "../model/agent-settings-modal";
+import {decodeHTML} from "../../../../app";
+import {status as httpStatus} from "../../models/http-status";
+import {md5HashGenerator} from "../../utils/hash-utils";
 
 const modules = [
     'toastr',
@@ -33,9 +38,39 @@ angular
     .module('graphdb.framework.ttyg.controllers.ttyg-view', modules)
     .controller('TTYGViewCtrl', TTYGViewCtrl);
 
-TTYGViewCtrl.$inject = ['$rootScope', '$scope', '$http', '$timeout', '$translate', '$uibModal', '$repositories', 'toastr', 'ModalService', 'LocalStorageAdapter', 'TTYGService', 'TTYGContextService', 'TTYGStorageService'];
+TTYGViewCtrl.$inject = [
+    '$jwtAuth',
+    '$window',
+    '$rootScope',
+    '$scope',
+    '$http',
+    '$timeout',
+    '$translate',
+    '$uibModal',
+    '$repositories',
+    'toastr',
+    'ModalService',
+    'LocalStorageAdapter',
+    'TTYGService',
+    'TTYGContextService',
+    'TTYGStorageService'];
 
-function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal, $repositories, toastr, ModalService, LocalStorageAdapter, TTYGService, TTYGContextService, TTYGStorageService) {
+function TTYGViewCtrl(
+    $jwtAuth,
+    $window,
+    $rootScope,
+    $scope,
+    $http,
+    $timeout,
+    $translate,
+    $uibModal,
+    $repositories,
+    toastr,
+    ModalService,
+    LocalStorageAdapter,
+    TTYGService,
+    TTYGContextService,
+    TTYGStorageService) {
 
     // =========================
     // Private variables
@@ -54,6 +89,12 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     $scope.helpTemplateUrl = "js/angular/ttyg/templates/chatInfo.html";
 
     /**
+     * Controls the visibility of the help panel.
+     * @type {boolean}
+     */
+    $scope.isHelpVisible = false;
+
+    /**
      * Controls the visibility of the chats list sidebar. By default, it is visible unless there are no chats.
      * @type {boolean}
      */
@@ -62,7 +103,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
      * Controls the visibility of the agents list sidebar.
      * @type {boolean}
      */
-    $scope.showAgents = true;
+    $scope.showAgents = false;
     /**
      * Chats list.
      * @type {ChatsListModel|undefined}
@@ -73,13 +114,25 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
      * @type {boolean}
      */
     $scope.loadingChats = false;
+
     $scope.loadingChat = false;
+
+    /**
+     * Flag controls when component is initialized.
+     * @type {boolean}
+     */
+    $scope.initialized = false;
 
     /**
      * Agents list model.
      * @type {AgentListModel|undefined}
      */
     $scope.agents = undefined;
+    /**
+     * The model of the selected agent.
+     * @type {AgentModel|undefined}
+     */
+    $scope.selectedAgent = undefined;
     /**
      * Flag to control the visibility of the loader when loading agent list on initial page load.
      * @type {boolean}
@@ -90,13 +143,14 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
      * @type {boolean}
      */
     $scope.reloadingAgents = false;
-    /**
-     * Flag to control the visibility of the loader when creating an agent.
-     * @type {boolean}
-     */
-    $scope.creatingAgent = false;
 
     $scope.connectorID = undefined;
+
+    /**
+     * A flag that determines whether buttons that modify an agent should be disabled.
+     * @type {boolean}
+     */
+    $scope.canModifyAgent = false;
 
     /**
      * A list of available repository IDs as a model for the agent list filter.
@@ -128,7 +182,12 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
      * Creates a new chat and selects it.
      */
     $scope.startNewChat = () => {
-        TTYGContextService.selectChat(undefined);
+        let nonPersistedChat = TTYGContextService.getChats().getNonPersistedChat();
+        if (!nonPersistedChat) {
+            nonPersistedChat = getEmptyChat();
+            TTYGContextService.addChat(nonPersistedChat);
+        }
+        TTYGContextService.selectChat(nonPersistedChat);
     };
 
     $scope.onopen = $scope.onclose = () => angular.noop();
@@ -192,6 +251,13 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     };
 
     /**
+     * Handles the help message open event.
+     */
+    $scope.onOpenHelp = () => {
+        $scope.isHelpVisible = true;
+    };
+
+    /**
      * Handles the export of a chat by calling the service and updating the chats list.
      */
     $scope.onExportSelectedChat = () => {
@@ -199,33 +265,53 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     };
 
     /**
+     * Gets the default agent from the TTYGContextService or fetches it from the server if not available.
+     *
+     * @return {Promise<AgentModel>} A promise that resolves to the default agent.
+     */
+    const getDefaultAgent = () => {
+        const defaultAgent = TTYGContextService.getDefaultAgent();
+        if (defaultAgent) {
+            return Promise.resolve(defaultAgent);
+        } else {
+            return TTYGService.getDefaultAgent()
+                .then((response) => {
+                    TTYGContextService.setDefaultAgent(response);
+                    return response;
+                });
+        }
+    };
+
+    /**
      * Configures and opens the modal for creating a new agent.
      */
-    $scope.onCreateAgent = () => {
-        const activeRepositoryInfo = repositoryInfoMapper($repositories.getActiveRepositoryObject());
-        const options = {
-            templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
-            controller: 'AgentSettingsModalController',
-            windowClass: 'agent-settings-modal',
-            resolve: {
-                dialogModel: function () {
-                    return {
-                        activeRepositoryInfo: activeRepositoryInfo,
-                        activeRepositoryList: $scope.activeRepositoryList,
-                        agentFormModel: newAgentFormModelProvider()
-                    };
-                }
-            },
-            size: 'lg'
-        };
-        $uibModal.open(options).result.then(
-            // confirmed handler
-            (data) => {
-                createAgent(data);
-            },
-            // rejected handler
-            (data) => {
-                console.log(`create agent rejected`, data);
+    $scope.onOpenNewAgentSettings = () => {
+        getDefaultAgent()
+            .then((agentDefaultValues) => {
+                const activeRepositoryInfo = repositoryInfoMapper($repositories.getActiveRepositoryObject());
+                agentDefaultValues.repositoryId = activeRepositoryInfo.id;
+                const agentFormModel = agentFormModelMapper(new AgentModel({}), agentDefaultValues, true);
+                const options = {
+                    templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
+                    controller: 'AgentSettingsModalController',
+                    windowClass: 'agent-settings-modal',
+                    backdrop: 'static',
+                    resolve: {
+                        dialogModel: function () {
+                            return new AgentSettingsModal(
+                                activeRepositoryInfo,
+                                $scope.activeRepositoryList,
+                                agentFormModel,
+                                AGENT_OPERATION.CREATE
+                            );
+                        }
+                    },
+                    size: 'lg'
+                };
+                return options;
+            })
+            .then((options) => {
+                $uibModal.open(options).result.then(reloadAgents);
             });
     };
 
@@ -234,43 +320,78 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
      * agent which can be obtained from the context service.
      * @param {AgentModel|undefined} agent
      */
-    $scope.onEditAgent = (agent) => {
+    $scope.onOpenAgentSettings = (agent) => {
         let agentToEdit = agent;
         if (!agentToEdit) {
             agentToEdit = TTYGContextService.getSelectedAgent();
         }
-        const agentFormModel = agentFormModelMapper(agentToEdit);
+        getDefaultAgent()
+            .then((agentDefaultValues) => {
+                const agentFormModel = agentFormModelMapper(agentToEdit, agentDefaultValues);
+                const activeRepositoryInfo = repositoryInfoMapper($repositories.getActiveRepositoryObject());
+                const options = {
+                    templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
+                    controller: 'AgentSettingsModalController',
+                    windowClass: 'agent-settings-modal',
+                    backdrop: 'static',
+                    resolve: {
+                        dialogModel: function () {
+                            return new AgentSettingsModal(
+                                activeRepositoryInfo,
+                                $scope.activeRepositoryList,
+                                agentFormModel,
+                                AGENT_OPERATION.EDIT
+                            );
+                        }
+                    },
+                    size: 'lg'
+                };
+                return options;
+            })
+            .then((options) => {
+                $uibModal.open(options).result.then(
+                    (updatedAgent) => {
+                        const hasSelectedAgent = TTYGContextService.getSelectedAgent();
+                        if (hasSelectedAgent && updatedAgent.id === hasSelectedAgent.id) {
+                            TTYGContextService.selectAgent(updatedAgent);
+                        }
+                        reloadAgents();
+                    });
+            });
+    };
+
+    /**
+     * Opens the agent settings modal with the agent to clone.
+     * @param {AgentModel} agentToClone
+     */
+    $scope.onOpenCloneAgentSettings = (agentToClone) => {
+        const agentFormModel = agentFormModelMapper(agentToClone, agentToClone);
+        agentFormModel.name = `clone-${agentFormModel.name}`;
         const activeRepositoryInfo = repositoryInfoMapper($repositories.getActiveRepositoryObject());
         const options = {
             templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
             controller: 'AgentSettingsModalController',
             windowClass: 'agent-settings-modal',
+            backdrop: 'static',
             resolve: {
                 dialogModel: function () {
-                    return {
-                        activeRepositoryInfo: activeRepositoryInfo,
-                        activeRepositoryList: $scope.activeRepositoryList,
-                        agentFormModel: agentFormModel
-                    };
+                    return new AgentSettingsModal(
+                        activeRepositoryInfo,
+                        $scope.activeRepositoryList,
+                        agentFormModel,
+                        AGENT_OPERATION.CLONE
+                    );
                 }
             },
             size: 'lg'
         };
         $uibModal.open(options).result.then(
-            // confirmed handler
-            (data) => {
-                TTYGService.editAgent(data)
-                    .then((updatedAgent) => {
-                        toastr.success($translate.instant("ttyg.agent.messages.agent_save_successfully", {agentName: updatedAgent.name}));
-                        const hasSelectedAgent = TTYGContextService.getSelectedAgent();
-                        if (hasSelectedAgent && data.id === hasSelectedAgent.id) {
-                            TTYGContextService.selectAgent(updatedAgent);
-                        }
-                        loadAgents(false);
-                    })
-                    .catch(() => {
-                        toastr.error($translate.instant("ttyg.agent.messages.agent_save_failure", {agentName: data.name}));
-                    });
+            (updatedAgent) => {
+                const hasSelectedAgent = TTYGContextService.getSelectedAgent();
+                if (hasSelectedAgent && updatedAgent.id === hasSelectedAgent.id) {
+                    TTYGContextService.selectAgent(updatedAgent);
+                }
+                reloadAgents();
             });
     };
 
@@ -296,7 +417,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
                 return TTYGContextService.updateChats(chats);
             })
             .catch((error) => {
-                toastr.error(getError(error, 0, 100));
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
                 setupChatListPanel(new ChatsListModel());
             })
             .finally(() => {
@@ -304,6 +425,11 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
             });
     };
 
+    /**
+     * Loads the agents list from the server and updates the context service.
+     * @param {boolean} showLoader
+     * @return {Promise<void>}
+     */
     const loadAgents = (showLoader = true) => {
         $scope.loadingAgents = showLoader;
         return TTYGService.getAgents()
@@ -311,7 +437,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
                 return TTYGContextService.updateAgents(agents);
             })
             .catch((error) => {
-                toastr.error(getError(error, 0, 100));
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             })
             .finally(() => {
                 $scope.loadingAgents = false;
@@ -319,7 +445,8 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     };
 
     /**
-     * Reloads the agents list.
+     * Reloads the agents list. Basically the same as loadAgents but this sets the reloadingAgents flag that cause only
+     * the agents list panel to be masked by the loader.
      * @return {Promise<void>}
      */
     const reloadAgents = () => {
@@ -329,7 +456,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
                 return TTYGContextService.updateAgents(agents);
             })
             .catch((error) => {
-                toastr.error(getError(error, 0, 100));
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             })
             .finally(() => {
                 $scope.reloadingAgents = false;
@@ -351,6 +478,12 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
                 }
             }
         }
+
+        updateCanModifyAgent();
+    };
+
+    const updateCanModifyAgent = () => {
+        TTYGContextService.setCanModifyAgent($jwtAuth.isRepoManager());
     };
 
     const getActiveRepositoryObjectHandler = (activeRepo) => {
@@ -359,17 +492,37 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
         }
     };
 
+    const getEmptyChat = () => {
+        const data = {
+            name: "\u00B7 \u00B7 \u00B7",
+            timestamp: Math.floor(Date.now() / 1000)
+        };
+        return new ChatModel(data, md5HashGenerator());
+    };
+
     /**
      * @param {ChatItemModel} chatItem
      */
     const onCreateNewChat = (chatItem) => {
+        $scope.startNewChat();
+
         TTYGService.createConversation(chatItem)
-            .then((newChatId) => {
+            .then((chatAnswer) => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT_SUCCESSFUL);
-                TTYGContextService.selectChat(TTYGContextService.getChats().getChat(newChatId));
-                TTYGContextService.emit(TTYGEventName.LOAD_CHAT);
+                // TODO: To discus: If we have all answer ids, can we update selected chats without loading it?
+                return TTYGService.getConversation(chatAnswer.chatId);
             })
-            .catch((error) => {
+            .then((chat) => {
+                const selectedChat = TTYGContextService.getSelectedChat();
+                // If the selected chat is not changed during the creation process.
+                if (selectedChat && !selectedChat.id) {
+                    const nonPersistedChat = TTYGContextService.getChats().getNonPersistedChat();
+                    TTYGContextService.updateSelectedChat(chat);
+                    TTYGContextService.replaceChat(chat, nonPersistedChat);
+                }
+                TTYGContextService.emit(TTYGEventName.LOAD_CHATS);
+            })
+            .catch(() => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT_FAILURE);
                 toastr.error($translate.instant('ttyg.chat.messages.create_failure'));
             });
@@ -380,16 +533,26 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
      */
     const onAskQuestion = (chatItem) => {
         TTYGService.askQuestion(chatItem)
-            .then((answer) => {
+            .then((chatAnswer) => {
                 const selectedChat = TTYGContextService.getSelectedChat();
                 if (selectedChat && selectedChat.id === chatItem.chatId) {
+                    selectedChat.timestamp = chatAnswer.timestamp;
                     const item = chatItem;
-                    item.answer = answer;
+                    chatItem.answers = chatAnswer.messages;
                     selectedChat.chatHistory.appendItem(item);
                     TTYGContextService.updateSelectedChat(selectedChat);
+                    // TODO reorder the list of chats
+                    // Update the timestamp of the chat to which the last question was added in the chats list and
+                    // update the list so that the chat is moved to the top.
+                    const chats = TTYGContextService.getChats();
+                    chats.updateChatTimestamp(selectedChat.id, chatAnswer.timestamp);
+                    TTYGContextService.updateChats(chats);
                 }
             })
-            .catch((error) => toastr.error(getError(error, 0, 100)));
+            .catch((error) => {
+                TTYGContextService.emit(TTYGEventName.ASK_QUESTION_FAILURE);
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
+            });
     };
 
     /**
@@ -401,9 +564,9 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
         TTYGService.renameConversation(chat)
             .then(() => {
                 TTYGContextService.emit(TTYGEventName.RENAME_CHAT_SUCCESSFUL);
-                TTYGContextService.emit(TTYGEventName.LOAD_CHAT);
+                TTYGContextService.emit(TTYGEventName.LOAD_CHATS);
             })
-            .catch((error) => {
+            .catch(() => {
                 TTYGContextService.emit(TTYGEventName.RENAME_CHAT_FAILURE);
                 toastr.error($translate.instant('ttyg.chat.messages.rename_failure'));
             });
@@ -420,6 +583,10 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
         setupChatListPanel(chats);
     };
 
+    const onCanUpdateAgentUpdated = (canModifyAgent) => {
+        $scope.canModifyAgent = canModifyAgent;
+    };
+
     /**
      * @param {ChatsListModel} chats - the new chats list.
      */
@@ -428,7 +595,7 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
             $scope.showChats = false;
         } else {
             $scope.showChats = true;
-            if (!TTYGContextService.getSelectedChat()) {
+            if (!TTYGContextService.getSelectedChat() && !TTYGStorageService.getChatId()) {
                 TTYGContextService.selectChat($scope.chats.getFirstChat());
             }
         }
@@ -440,15 +607,19 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
      * @param {ChatModel} chat - the chat to be deleted.
      */
     const onDeleteChat = (chat) => {
+        TTYGContextService.emit(TTYGEventName.DELETING_CHAT, {chatId: chat.id, inProgress: true});
         TTYGService.deleteConversation(chat.id)
             .then(() => {
                 TTYGContextService.emit(TTYGEventName.DELETE_CHAT_SUCCESSFUL, chat);
-                TTYGContextService.emit(TTYGEventName.LOAD_CHAT);
+                const chats = TTYGContextService.getChats();
+                chats.deleteChat(chat);
+                TTYGContextService.updateChats(chats);
             })
-            .catch((error) => {
+            .catch(() => {
                 TTYGContextService.emit(TTYGEventName.DELETE_CHAT_FAILURE);
                 toastr.error($translate.instant('ttyg.chat.messages.delete_failure'));
-            });
+            })
+            .finally(() => TTYGContextService.emit(TTYGEventName.DELETING_CHAT, {chatId: chat.id, inProgress: false}));
     };
 
     /**
@@ -457,11 +628,11 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
      */
     const onExportChat = (chat) => {
         TTYGService.exportConversation(chat.id)
-            .then(() => {
+            .then(function ({data, filename}) {
+                saveAs(data, filename);
                 TTYGContextService.emit(TTYGEventName.CHAT_EXPORT_SUCCESSFUL, chat);
-                TTYGContextService.emit(TTYGEventName.LOAD_CHAT);
             })
-            .catch((error) => {
+            .catch(() => {
                 TTYGContextService.emit(TTYGEventName.CHAT_EXPORT_FAILURE);
                 toastr.error($translate.instant('ttyg.chat.messages.export_failure'));
             });
@@ -473,32 +644,6 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
      */
     const onAgentListChanged = (agents) => {
         $scope.agents = agents;
-        if (agents.isEmpty()) {
-            $scope.showAgents = false;
-        } else {
-            $scope.showAgents = true;
-        }
-    };
-
-    /**
-     * Creates a new agent with the given payload and reload the view components.
-     * @param {*} newAgentPayload - the payload for the new agent
-     */
-    const createAgent = (newAgentPayload) => {
-        $scope.creatingAgent = true;
-        TTYGService.createAgent(newAgentPayload)
-            .then((agent) => {
-                return loadAgents();
-            })
-            .then(() => {
-                // TODO: select the agent
-            })
-            .catch((error) => {
-                toastr.error(getError(error, 0, 100));
-            })
-            .finally(() => {
-                $scope.creatingAgent = false;
-            });
     };
 
     /**
@@ -513,9 +658,12 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
             })
             .then(() => {
                 TTYGContextService.emit(TTYGEventName.AGENT_DELETED, agent);
+                if ($scope.selectedAgent && $scope.selectedAgent.id === agent.id) {
+                    $scope.selectedAgent = undefined;
+                }
             })
             .catch((error) => {
-                toastr.error(getError(error, 0, 100));
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             })
             .finally(() => {
                 TTYGContextService.emit(TTYGEventName.DELETING_AGENT, {agentId: agent.id, inProgress: false});
@@ -528,7 +676,8 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     const buildAgentsFilterModel = () => {
         const currentRepository = $repositories.getActiveRepository();
         // TODO: this should be refreshed automatically when the repositories change
-        const repositoryObjects = $repositories.getReadableRepositories().map((repo) => (
+        const repositoryObjects = $repositories.getLocalReadableGraphdbRepositories()
+            .map((repo) => (
            new AgentListFilterModel(repo.id, repo.id, repo.id === currentRepository)
         ));
         $scope.agentListFilterModel = [
@@ -538,29 +687,44 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     };
 
     const onSelectedChatChanged = (selectedChat) => {
-        if (selectedChat) {
+        // If the selected chat has no ID, it indicates that this is a new (dummy) chat
+        // and does not need to be loaded from the server.
+        if (selectedChat && selectedChat.id) {
             TTYGService.getConversation(selectedChat.id)
                 .then((chat) => {
                     TTYGContextService.updateSelectedChat(chat);
+                    TTYGStorageService.saveChat(selectedChat);
+                })
+                .catch((error) => {
+                    // If the chat is not found and the server returns 404, then we notify the user
+                    // and remove the chat from the chat list. It's expected that the backend would
+                    // also remove it and next time the list is loaded the chat will no longer be there.
+                    if (error.status === httpStatus.NOT_FOUND) {
+                        notifyForMissingChat(selectedChat);
+                        TTYGContextService.emit(TTYGEventName.LOAD_CHAT_FAILURE, selectedChat);
+                    }
                 });
         } else {
             TTYGContextService.updateSelectedChat(selectedChat);
         }
     };
 
-    const onCopiedAnswerToClipboard = (chatItem) => {
-        if (navigator.clipboard) {
-            navigator.clipboard.writeText(chatItem.answer.message)
-                .then(() => TTYGContextService.emit(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_SUCCESSFUL))
-                .catch(() => TTYGContextService.emit(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD_FAILURE));
-        }
+    const notifyForMissingChat = (selectedChat) => {
+        ModalService.openModalAlert({
+            title: $translate.instant('ttyg.chat.dialog.chat_is_missing.title'),
+            message: $translate.instant('ttyg.chat.dialog.chat_is_missing.body')
+        }).result
+            .then(function () {
+                TTYGContextService.deleteChat(selectedChat);
+            });
     };
 
     /**
-     * Handles the selection of an agent..
+     * Handles the selection of an agent.
      * @param {AgentModel} agent
      */
     const onAgentSelected = (agent) => {
+        $scope.selectedAgent = agent;
         TTYGStorageService.saveAgent(agent);
     };
 
@@ -576,7 +740,108 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
             if (agent) {
                 TTYGContextService.selectAgent(agent);
             }
+        }).catch((error) => {
+            toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
         });
+    };
+
+    /**
+     * Opens the create similarity view. It checks if the passed repository ID matches the one selected by the workbench.
+     * If they do not match, a confirmation dialog is shown to inform the user that the selected repository
+     * will be automatically changed upon confirmation.
+     *
+     * @param {{repositoryId: string}} payload - The payload containing the repository ID.
+     */
+    const onGoToCreateSimilarityView = (payload) => {
+        if (payload.repositoryId !== $repositories.getActiveRepository()) {
+            const repository = $repositories.getRepository(payload.repositoryId);
+            if (repository) {
+                ModalService.openConfirmationModal({
+                        title: $translate.instant('common.confirm'),
+                        message: decodeHTML($translate.instant('ttyg.agent.create_agent_modal.dialog.confirm_repository_change_before_open_similarity.body', {repositoryId: repository.id})),
+                        confirmButtonKey: 'ttyg.chat_panel.btn.proceed.label'
+                    },
+                    () => {
+                        $repositories.setRepository(repository);
+                        openCreateSimilarityView();
+                    });
+            }
+
+        } else {
+            openCreateSimilarityView();
+        }
+    };
+
+    const openCreateSimilarityView = () => {
+        $window.open('/similarity/index/create', '_blank');
+    };
+
+    /**
+     * Opens the connectors view. It checks if the passed repository ID matches the one selected by the workbench.
+     * If they do not match, a confirmation dialog is shown to inform the user that the selected repository
+     * will be automatically changed upon confirmation.
+     *
+     * @param {{repositoryId: string}} payload - The payload containing the repository ID.
+     */
+    const onGoToConnectorsView = (payload) => {
+        if (payload.repositoryId !== $repositories.getActiveRepository()) {
+            const repository = $repositories.getRepository(payload.repositoryId);
+            if (repository) {
+                ModalService.openConfirmationModal({
+                        title: $translate.instant('common.confirm'),
+                        message: decodeHTML($translate.instant('ttyg.agent.create_agent_modal.dialog.confirm_repository_change_before_open_connectors.body', {repositoryId: repository.id})),
+                        confirmButtonKey: 'ttyg.chat_panel.btn.proceed.label'
+                    },
+                    () => {
+                        $repositories.setRepository(repository);
+                        openConnectorsView();
+                    });
+            }
+
+        } else {
+            openConnectorsView();
+        }
+    };
+
+    const openConnectorsView = () => {
+        $window.open('/connectors', '_blank');
+    };
+
+    /**
+     * Opens SPARQL editor view with passed query.
+     * @param {{query: string, repositoryId: string}} payload
+     */
+    const onGoToSparqlEditorView = (payload) => {
+        if (payload.repositoryId !== $repositories.getActiveRepository()) {
+            const repository = $repositories.getRepository(payload.repositoryId);
+            if (repository) {
+                ModalService.openConfirmation(
+                    $translate.instant('common.confirm'),
+                    decodeHTML($translate.instant('ttyg.chat_panel.dialog.confirm_repository_change.body', {repositoryId: payload.repositoryId})),
+                    () => {
+                        $repositories.setRepository(repository);
+                        openInSparqlEditorInNewTab(payload.query);
+                    });
+            }
+
+        } else {
+            openInSparqlEditorInNewTab(payload.query);
+        }
+    };
+
+    const openInSparqlEditorInNewTab = (query) => {
+        $window.open(`/sparql?query=${encodeURIComponent(query)}&execute=true`, '_blank');
+    };
+
+    /**
+     * Loads a chat using the chat ID stored in the local storage and selects it.
+     */
+    const setCurrentChat = () => {
+        const chatId = TTYGStorageService.getChatId();
+        if (!chatId) {
+            return;
+        }
+        TTYGContextService.selectChat(TTYGContextService.getChats().getChat(chatId));
     };
 
     const updateLabels = () => {
@@ -586,9 +851,15 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     };
 
     const buildRepositoryList = () => {
-        $scope.activeRepositoryList = $repositories.getReadableRepositories()
+        $scope.activeRepositoryList = $repositories.getLocalReadableGraphdbRepositories()
             .map((repo) => (
-                new SelectMenuOptionsModel({value: repo.id, label: repo.id}))
+                new SelectMenuOptionsModel({
+                    value: repo.id,
+                    label: repo.id,
+                    data: {
+                        repository: repo
+                    }
+                }))
             );
     };
 
@@ -597,39 +868,47 @@ function TTYGViewCtrl($rootScope, $scope, $http, $timeout, $translate, $uibModal
     // Subscriptions
     // =========================
 
-    function removeAllListeners() {
+    function cleanUp() {
         subscriptions.forEach((subscription) => subscription());
+        TTYGContextService.resetContext();
     }
 
     subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler));
     subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
     subscriptions.push(TTYGContextService.onChatsListChanged(onChatsChanged));
+    subscriptions.push(TTYGContextService.onCanUpdateAgentUpdated(onCanUpdateAgentUpdated));
     subscriptions.push(TTYGContextService.subscribe(TTYGContextService.onAgentsListChanged(onAgentListChanged)));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_CHAT, onCreateNewChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.RENAME_CHAT, onRenameChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_CHAT, onDeleteChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CHAT_EXPORT, onExportChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION, onAskQuestion));
-    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.LOAD_CHAT, loadChats));
-    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_AGENT, $scope.onCreateAgent));
-    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.EDIT_AGENT, $scope.onEditAgent));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.LOAD_CHATS, loadChats));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.OPEN_AGENT_SETTINGS, $scope.onOpenNewAgentSettings));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.EDIT_AGENT, $scope.onOpenAgentSettings));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CLONE_AGENT, $scope.onOpenCloneAgentSettings));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_AGENT, onDeleteAgent));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_SELECTED, onAgentSelected));
-    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.COPY_ANSWER_TO_CLIPBOARD, onCopiedAnswerToClipboard));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.GO_TO_CREATE_SIMILARITY_VIEW, onGoToCreateSimilarityView));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.GO_TO_CONNECTORS_VIEW, onGoToConnectorsView));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.GO_TO_SPARQL_EDITOR, onGoToSparqlEditorView));
     subscriptions.push($rootScope.$on('$translateChangeSuccess', updateLabels));
-    $scope.$on('$destroy', removeAllListeners);
+    subscriptions.push($rootScope.$on('securityInit', updateCanModifyAgent));
+    $scope.$on('$destroy', cleanUp);
 
     // =========================
     // Initialization
     // =========================
 
     function onInit() {
-        setCurrentAgent();
         buildRepositoryList();
         loadAgents().then(() => {
+            $scope.initialized = true;
             buildAgentsFilterModel();
+            setCurrentAgent();
             return loadChats();
-        });
+        })
+            .then(setCurrentChat);
         initView();
     }
 }

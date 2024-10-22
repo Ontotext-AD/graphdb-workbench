@@ -222,7 +222,7 @@
         "help": {
             "btn": {
                 "show_help": {
-                    "tooltip": "Show help"
+                    "tooltip": "Afficher l'aide"
                 }
             }
         },
@@ -232,30 +232,34 @@
                 "body": "Voulez-vous vraiment supprimer <b>{{chatName}}</b>? Tout l'historique de la conversation sera perdu."
             }
         },
+        "messages": {
+            "text_copy_successful": "Copié avec succès dans le presse-papiers.",
+            "text_copy_failed": "Échec de la copie dans le presse-papiers."
+        },
         "chat": {
-            "loading_chats": "Chargement des chats...",
-            "deleted_repository": "Dépôt supprimé",
+            "loading_chats": "Chargement des discussions...",
+            "deleting_chat": "Suppression des discussions...",
             "btn": {
                 "open_sidebar": {
-                    "tooltip": "Ouvrir la barre latérale"
+                    "tooltip": "Afficher la liste de discussion"
                 },
                 "close_sidebar": {
-                    "tooltip": "Fermer la barre latérale"
+                    "tooltip": "Masquer la liste de discussion"
                 },
                 "create_chat": {
-                    "tooltip": "Créer un chat"
+                    "tooltip": "Démarrer une nouvelle discussion"
                 },
                 "export_chat": {
                     "label": "Exporter",
-                    "tooltip": "Exporter le chat"
+                    "tooltip": "Exporter la discussion"
                 },
                 "delete_chat": {
-                    "label": "Supprimer le chat",
-                    "tooltip": "Supprimer le chat"
+                    "label": "Supprimer la discussion",
+                    "tooltip": "Supprimer la discussion"
                 },
                 "rename_chat": {
                     "label": "Renommer",
-                    "tooltip": "Renommer le chat"
+                    "tooltip": "Renommer la discussion"
                 }
             },
             "messages": {
@@ -263,10 +267,18 @@
                 "rename_failure": "Échec du renommage de la conversation. Veuillez réessayer.",
                 "delete_failure": "Échec de la suppression de la conversation. Veuillez réessayer.",
                 "export_failure": "Échec de l'exportation de la conversation. Veuillez réessayer."
+            },
+            "dialog": {
+                "chat_is_missing": {
+                    "title": "Еrreur",
+                    "body": "La conversation sélectionnée est introuvable. Elle a probablement été supprimée."
+                }
             }
         },
         "chat_panel": {
-            "hint": "Parlez à votre graphe – posez simplement une question !\nPour le moment, cela fonctionne mieux si vous demandez en anglais, désolé !",
+            "hint1": "<div><span class=\"graph\">GRAPH</span><span class=\"wise\">WISE</span></div><div class=\"thrives\">AI THRIVES ON WHOLE DATA</div>",
+            "hint2": "Posez simplement une question !",
+            "deleted_agent": "<span class=\"text-warning\"><i class=\"fa-regular fa-triangle-exclamation fa-xs\"></i> agent supprimé</span>",
             "btn": {
                 "ask": {
                     "label": "Demander"
@@ -274,13 +286,70 @@
                 "regenerate": {
                     "tooltip": "Régénérer"
                 },
-                "copy": {
-                    "tooltip": "Copier"
+                "copy_answer": {
+                    "tooltip": "Copier la réponse"
+                },
+                "copy_raw_query": {
+                    "tooltip": "Copier la requête brute"
+                },
+                "copy_sparql": {
+                    "tooltip": "Copier la requête SPARQL"
+                },
+                "copy_json": {
+                    "tooltip": "Copier la requête JSON"
+                },
+                "copy_other": {
+                    "tooltip": "Copier la requête"
+                },
+                "copy_error_message": {
+                    "tooltip": "Copier le message d'erreur"
+                },
+                "explain_response": {
+                    "tooltip": "Expliquer la réponse"
+                },
+                "derive_answer": {
+                    "label": "Comment avez-vous obtenu cette réponse ?",
+                    "hint": "<b>Astuce</b> : vous pouvez également demander au modèle, par exemple"
+                },
+                "open_in_sparql_editor": {
+                    "tooltip": "Ouvrir dans l'éditeur SPARQL"
+                },
+                "proceed": {
+                    "label": "Procéder"
                 }
             },
-            "messages": {
-                "answer_copy_successful": "La réponse a été copiée avec succès dans le presse-papiers.",
-                "answer_copy_failed": "Échec de la copie de la réponse dans le presse-papiers."
+            "labels": {
+                "query_method": "Méthode de requête",
+                "raw_query": "Requête brute",
+                "sparql_query": "Requête SPARQL",
+                "agent_name": "Agent: {{agentName}}",
+                "json": "JSON",
+                "error_message": "Message d'erreur envoyée au modèle",
+                "explain_no_methods": "Aucune méthode de requête n'a été appelée.",
+                "called": "{{('ttyg.chat_panel.query_name.' + name) | translate}} a été appelé"
+            },
+            "query_name": {
+                "sparql_query": "SPARQL",
+                "fts_search": "Recherche en texte intégral",
+                "similarity_search": "Recherche de similarité",
+                "retrieval_search": "ChatGPT Retrieval",
+                "iri_discovery": "FTS pour la découverte IRI"
+            },
+            "query_desc": {
+                "sparql_query": "Requête directe",
+                "fts_search": "Recherche en texte intégral via SPARQL",
+                "similarity_search": "Recherche de similarité via SPARQL",
+                "retrieval_search": "Requête JSON directe",
+                "iri_discovery": "Recherche en texte intégral via SPARQL"
+            },
+            "dialog": {
+                "confirm_repository_change": {
+                    "body": "Si vous continuez l'exécution de la requête SPARQL, GraphDB s'ouvrira dans un nouvel onglet et passera au dépôt <b>{{repositoryId}}</b>."
+                }
+            },
+            "messages":{
+                "explain_response_failure": "Échec de la récupération de l'explication pour la réponse.",
+                "agent_changed_info": "L'agent a été changé en <b> {{agentName}} </b>"
             }
         },
         "agent": {
@@ -290,7 +359,8 @@
             "create_agent_modal": {
                 "title": {
                     "create": "Créer un agent",
-                    "edit": "Modifier un agent"
+                    "edit": "Modifier un agent",
+                    "clone": "Cloner un agent"
                 },
                 "advanced_settings": {
                     "show": "Afficher les paramètres avancés",
@@ -298,21 +368,27 @@
                 },
                 "form": {
                     "agent_name": {
-                        "label": "Nom de l'GraphAgent",
-                        "placeholder": "Entrez un nom convivial"
+                        "label": "Nom de l'Agent",
+                        "placeholder": "Entrez un nom convivial",
+                        "tooltip": "Un nom descriptif qui vous aide à identifier cet agent."
                     },
                     "repository": {
-                        "label": "Index du dépôt"
+                        "label": "ID du dépôt",
+                        "tooltip": "L'ID du référentiel qui sera utilisé pour récupérer les informations de GraphDB. Les référentiels Ontop et FedX ne sont pas pris en charge."
                     },
                     "model": {
                         "label": "Modèle",
+                        "tooltip": "Le modèle à utiliser pour cet agent. Des modèles plus puissants fourniront de meilleurs résultats.",
                         "hint": "Découvrez les modèles OpenAI disponibles <a href=\"https://platform.openai.com/docs/models\" target=\"_blank\">ici</a>."
                     },
                     "temperature": {
-                        "label": "Température"
+                        "label": "Température",
+                        "tooltip": "La température d'échantillonnage à utiliser, entre 0 et 2. Des valeurs plus élevées comme 0,8 rendront la sortie plus aléatoire, tandis que des valeurs plus faibles comme 0,2 la rendront plus ciblée et déterministe.",
+                        "high_temperature_warning": "Une température supérieure à 1,0 peut amener le modèle à générer des réponses allant de créatives à incohérentes, voire incompréhensibles. Pensez à baisser la température pour des résultats plus fiables."
                     },
                     "top_p": {
-                        "label": "Top_P"
+                        "label": "Top P",
+                        "tooltip": "Une alternative à l'échantillonnage avec température, appelée échantillonnage du noyau, où le modèle considère les résultats des jetons avec la masse de probabilité Top P. Ainsi, 0,1 signifie que seuls les jetons comprenant la masse de probabilité supérieure de 10 % sont pris en compte. OpenAI recommande de modifier cela ou la température, mais pas les deux."
                     },
                     "seed": {
                         "label": "Graine",
@@ -320,60 +396,135 @@
                     },
                     "extraction_method": {
                         "label": "Méthodes de requête",
-                        "required": "Au moins une méthode de requête doit être sélectionnée"
+                        "required": "Au moins une méthode de requête doit être sélectionnée",
+                        "tooltip": "Méthodes de requête à utiliser par le modèle pour récupérer des informations de GraphDB et répondre aux questions."
                     },
                     "fts_search": {
                         "label": "Recherche en texte intégral",
-                        "fts_disabled_message": "Pour utiliser cette méthode, vous devez activer l'index de recherche en texte intégral (FTS) sur le référentiel choisi, puis le redémarrer.<br/> Activez l'index <a href=\"{{repositoryEditPage}}\" target=\"_blank\">ici</a>.",
-                        "missing_repository_id": "L'ID du référentiel doit être sélectionné"
+                        "tooltip": "Répond aux questions en utilisant la recherche en texte intégral dans les littéraux et les IRI. Fonctionne bien sur les questions ouvertes, mais moins bien sur les agrégations.",
+                        "fts_disabled_message": "Vous devez <a href=\"{{repositoryEditPage}}\" target=\"_blank\">activer l'index de recherche en texte intégral (FTS)</a> pour utiliser cette méthode.",
+                        "missing_repository_id": "L'ID du référentiel doit être sélectionné",
+                        "btn": {
+                            "reload": {
+                                "tooltip": "Rafraîchir l'état de l'index FTS"
+                            }
+                        }
+                    },
+                    "fts_search_max_number_of_triples_per_call": {
+                        "label": "Nombre maximum de résultats (triples) par appel",
+                        "tooltip": "Limitez le nombre maximal de triplets renvoyés par la recherche en texte intégral. La valeur par défaut est automatique et déterminée au moment de l'exécution. En cas de doute, laissez la valeur par défaut.",
+                        "placeholder": "Valeur automatique"
                     },
                     "sparql_search": {
                         "label": "SPARQL",
+                        "tooltip": "Répond aux questions en exécutant une requête SPARQL. Cela fonctionne bien pour les ensembles de données avec de bonnes ontologies et fonctionne bien sur les questions fermées, y compris les agrégations.",
                         "required_option": "Sélectionnez la manière dont une ontologie doit être récupérée"
                     },
                     "ontology_graph": {
-                        "label": "Récupérer l'ontologie à partir d'un graphe nommé"
+                        "label": "Récupérer l'ontologie à partir d'un graphe nommé",
+                        "tooltip": "Le graphe nommé qui contient l'ensemble de l'ontologie ou un sous-ensemble suffisant pour générer des requêtes SPARQL utiles."
+                    },
+                    "add_missing_namespaces": {
+                        "label": "Ajouter automatiquement les espaces de noms manquants",
+                        "tooltip": "Insérez automatiquement les espaces de noms manquants dans les requêtes SPARQL. Cela aide à éviter les erreurs lorsque des espaces de noms nécessaires ne sont pas inclus. Dans de nombreux cas, le modèle se corrige après le retour de l'erreur d'espaces de noms manquants, mais activer cette option garantit que GraphDB résout le problème automatiquement."
                     },
                     "construct_query": {
-                        "label": "Fournir une requête SPARQL CONSTRUCT qui récupère l'ontologie"
+                        "label": "Fournir une requête SPARQL CONSTRUCT qui récupère l'ontologie",
+                        "tooltip": "A SPARQL CONSTRUCT query that returns the entire ontology or a subset sufficient to generate useful SPARQL queries."
                     },
                     "similarity_search": {
-                        "label": "Recherche de similarité"
+                        "label": "Recherche de similarité",
+                        "tooltip": "Répond aux questions en utilisant la recherche de similarité. Fonctionne bien sur les questions ouvertes, mais moins bien sur les agrégations."
+                    },
+                    "similarity_search_max_number_of_triples_per_call": {
+                        "label": "Nombre maximal de résultats (triples) par appel",
+                        "tooltip": "Limitez le nombre maximal de triples renvoyés par la recherche de similarité. La valeur par défaut est automatique et déterminée au moment de l'exécution. En cas de doute, laissez la valeur par défaut.",
+                        "placeholder": "Valeur automatique"
                     },
                     "similarity_index": {
                         "label": "Nom de l'index de similarité",
+                        "tooltip": "L'index de similarité de texte à utiliser pour les requêtes de recherche de similarité.",
                         "loading_indexes": "Chargement des indices de similarité...",
-                        "no_similarity_index_message": "Pour utiliser cette méthode, vous devez avoir créé un index de similarité.<br/>Créez un index de texte de similarité <a href=\"{{similarityIndexPage}}\" target=\"_blank\">ici</a>."
+                        "no_similarity_index": {
+                            "message_1": "Vous devez",
+                            "message_2": "créer un index de similarité",
+                            "message_3": "pour utiliser cette méthode"
+                        },
+                        "btn": {
+                            "reload": {
+                                "tooltip": "Rafraîchir les index de similarité"
+                            }
+                        }
                     },
                     "similarity_threshold": {
-                        "label": "Seuil de similarité"
+                        "label": "Seuil de similarité",
+                        "tooltip": "Utilisez uniquement les résultats de similarité dont le score est au moins égal à la valeur seuil, entre 0 et 1. La valeur par défaut est 0,6."
                     },
                     "retrieval_search": {
-                        "label": "Connecteur de récupération ChatGPT",
-                        "no_retrieval_connectors_message": "Aucune instance de connecteur.<br/>Créez un connecteur de récupération ChatGPT <a href=\"{{retrievalConnectorPage}}\" target=\"_blank\">ici</a>."
+                        "label": "Connecteur de ChatGPT Retrieval",
+                        "tooltip": "Répond aux questions en utilisant la recherche vectorielle dans les blocs de texte créés à partir de RDF. Fonctionne bien sur les questions ouvertes, mais moins bien pour fournir des agrégations.",
+                        "no_retrieval_connectors": {
+                            "message_1": "Vous devez",
+                            "message_2": "créer un connecteur de ChatGPT Retrieval",
+                            "message_3": "pour utiliser cette méthode"
+                        },
+                        "btn": {
+                            "reload": {
+                                "tooltip": "Rafraîchir les connecteurs de ChatGPT Retrieval"
+                            }
+                        }
                     },
                     "connector_id": {
-                        "label": "Connecteur de récupération ChatGPT"
+                        "label": "Connecteur de ChatGPT Retrieval",
+                        "tooltip": "L'instance du connecteur de ChatGPT Retrieval à utiliser pour les requêtes de récupération CtatGPT."
                     },
                     "query_template": {
-                        "label": "Modèle de requête"
+                        "label": "Modèle de requête",
+                        "tooltip": "Ce modèle peut utiliser un filtre avec les champs de métadonnées disponibles dans votre instance de connecteur de ChatGPT Retrieval. La valeur par défaut contient uniquement la partie requête et n'utilise aucun champ de métadonnées. Veuillez consulter la documentation pour plus d'informations."
                     },
-                    "max_number_of_triples_per_call": {
+                    "retrieval_search_max_number_of_triples_per_call": {
                         "label": "Nombre maximum de résultats (triples) par appel",
+                        "tooltip": "Limitez le nombre maximal de fragments de texte renvoyés par le connecteur de ChatGPT Retrieval. La valeur par défaut est automatique et déterminée au moment de l'exécution. En cas de doute, laissez la valeur par défaut.",
                         "placeholder": "Valeur automatique"
                     },
                     "system_instruction": {
-                        "label": "Instructions système",
-                        "placeholder": "Entrez les instructions du système"
+                        "label": "Instructions de base",
+                        "placeholder": "Entrez les instructions de base",
+                        "tooltip": "Instructions de base pour l'agent. La valeur par défaut fournit de bons résultats dans la plupart des configurations, il n'est donc pas nécessaire de la modifier.",
+                        "overriding_system_instruction_warning": {
+                            "title": "Remplacement des instructions de base",
+                            "body": "Modifier les instructions de base peut entraîner des résultats sous-optimaux. N’effectuez ces changements que si vous êtes sûr de ce que vous faites."
+                        },
+                        "btn": {
+                            "copy_instruction": {
+                                "tooltip": "Copier les instructions du système"
+                            },
+                            "restore_default": {
+                                "tooltip": "Réinitialiser par défaut"
+                            }
+                        }
                     },
                     "user_instruction": {
-                        "label": "Mode d'emploi",
-                        "placeholder": "Entrez les instructions d'utilisation"
+                        "label": "Instructions supplémentaires",
+                        "placeholder": "Entrez des instructions supplémentaires",
+                        "tooltip": "Des instructions supplémentaires peuvent être utilisées pour fournir des vérités fondamentales ou des instructions appropriées.",
+                        "btn": {
+                            "copy_instruction": {
+                                "tooltip": "Copier les instructions supplémentaires"
+                            },
+                            "restore_default": {
+                                "tooltip": "Réinitialiser par défaut"
+                            }
+                        }
                     },
                     "additional_query_methods": {
                         "label": "Méthodes de requête supplémentaires",
+                        "tooltip": "Des méthodes de requête supplémentaires complètent les méthodes de requête principales, mais ne peuvent pas être utilisées seules pour répondre à des questions générales.",
                         "method": {
-                            "iri_discovery_search": "Recherche de texte intégral dans les étiquettes pour la découverte d'IRI"
+                            "iri_discovery_search": {
+                                "label": "Recherche de texte intégral dans les étiquettes pour la découverte d'IRI",
+                                "tooltip": "Aide le modèle à découvrir les IRI pour une requête incomplète particulière, par exemple le nom Michael dans \"Quel est le numéro de téléphone de Michael?\""
+                            }
                         }
                     }
                 },
@@ -386,6 +537,14 @@
                     },
                     "save": {
                         "label": "Enregistrer"
+                    }
+                },
+                "dialog": {
+                    "confirm_repository_change_before_open_similarity": {
+                        "body": "Si vous continuez à créer l'index de similarité, GraphDB s'ouvrira dans un nouvel onglet et passera au dépôt <b>{{repositoryId}}</b>."
+                    },
+                    "confirm_repository_change_before_open_connectors": {
+                        "body": "Si vous continuez à créer le connecteur de ChatGPT Retrieval, GraphDB s'ouvrira dans un nouvel onglet et passera au dépôt <b>{{repositoryId}}</b>."
                     }
                 }
             },
@@ -403,7 +562,8 @@
             },
             "fat_btn": {
                 "create_agent": {
-                    "label": "Créez votre premier agent"
+                    "label": "Créez votre premier agent",
+                    "tooltip_disabled": "Vous n'avez pas l'autorisation de créer un agent"
                 }
             },
             "btn": {
@@ -412,8 +572,9 @@
                     "all": "Tous les dépôts"
                 },
                 "edit_agent": {
-                    "label": "Paramètres",
-                    "tooltip": "Modifier l'agent"
+                    "label": "Paramètres de l'agent",
+                    "tooltip": "Paramètres de l'agent",
+                    "tooltip_disabled": "Vous n'avez pas l'autorisation de modifier l'agent."
                 },
                 "clone_agent": {
                     "label": "Cloner",
@@ -425,19 +586,31 @@
                 },
                 "create_agent": {
                     "label": "Créer un agent",
-                    "tooltip": "Créer un agent"
+                    "tooltip": "Créer un nouvel agent",
+                    "tooltip_disabled": "Vous n'avez pas la permission de créer un agent"
                 },
                 "open_sidebar": {
-                    "tooltip": "Ouvrir la barre latérale"
+                    "tooltip": "Gérer les agents",
+                    "tooltip_disabled": "Vous n'avez pas la permission de modifier l'agent"
                 },
                 "close_sidebar": {
                     "tooltip": "Fermer la barre latérale"
+                },
+                "copy_gpt_token_prop": {
+                    "tooltip": "Copier la propriété du jeton GPT"
+                },
+                "open-agent-actions": {
+                    "label_disabled": "Vous n'avez pas la permission de modifier l'agent"
                 }
             },
             "messages": {
                 "no_agents": "Aucun agent n'est configuré pour le moment.",
                 "help_1": "Parlez à vos données en langage naturel. Il vous suffit de créer et d'instruire votre propre agent IA pour vous aider.",
                 "help_2": "The Agent est un agent conversationnel basé sur l'IA, conçu pour vous aider dans une large gamme de tâches, de la réponse aux questions et la fourniture d'informations à l'assistance dans le cadre de projets créatifs et techniques. Il exploite un traitement avancé du langage naturel pour comprendre et répondre aux entrées des utilisateurs de manière humaine, rendant les interactions intuitives et efficaces.",
+                "token_prop_warn1": "Pour activer cette fonctionnalité, définissez la propriété de configuration",
+                "token_prop_warn2": "à votre jeton GPT dans le fichier",
+                "token_prop_warn3": ".",
+                "token_prop_warn4": "Configurer l'utilisation de vos modèles GPT",
                 "error_retrieval_connectors_loading": "Erreur lors du chargement des connecteurs de récupération",
                 "error_similarity_indexes_loading": "Erreur lors du chargement des index de similarité",
                 "error_repository_config_loading": "Erreur lors du chargement de la configuration du dépôt",
@@ -515,7 +688,6 @@
     "share.visual.graph": "Partager le graphe visuel avec d'autres utilisateurs",
     "closes.config.save": "Ferme la configuration et enregistre tous les changements.",
     "preview.results": "Exécute la requête SPARQL et affiche un aperçu des résultats. Seuls les 100 premiers résultats seront affichés.",
-    "preview.btn": "Aperçu",
     "closes.preview": "Ferme l'aperçu et affiche l'éditeur de requête.",
     "reverts.changes": "Annule les changements dans l'éditeur de requêtes.",
     "revert.changes.btn": "Inverser les changements",
@@ -593,7 +765,6 @@
     "connector.label": "connecteur",
     "eta.label": "ETA :",
     "processed.entities": "Entités traitées :",
-    "of.middle.of.sentence": "de",
     "estimated.in.brackets": "(estimé)",
     "indexed.entities": "Entités indexées :",
     "speed.label": "Vitesse :",
@@ -648,7 +819,6 @@
     "name.simple.label": "Nom",
     "connector.name": "nom du connecteur",
     "connector.name.popover": "Nom qui identifie le connecteur.",
-    "add.sentence.start": "Ajouter",
     "nested.objects.error": "La définition d'objets imbriqués n'est pas prise en charge par cette interface.",
     "delete.field.popover": "Supprimer un champ",
     "add.field.popover": "Ajouter un champ",
@@ -888,7 +1058,7 @@
     "view.class.hierarchy.title": "Hiérarchie de classe",
     "view.class.hierarchy.helpInfo": "La vue Hiérarchie de classe montre la hiérarchie des classes RDF par nombre d'instances. Les cercles les plus grands sont les classes parentes et les cercles plus petits imbriqués sont leurs sous-classes. Passez la souris sur une classe donnée pour voir ses sous-classes ou faites un zoom sur un cercle imbriqué (classe RDF) pour une exploration plus approfondie.",
     "view.domain.range.graph.title": "Graphe domaine-image",
-    "view.domain.range.graph.helpInfo": "La vue Graphe domaine-image montre les classes et les propriétés qui mènent à ou à partir d'une classe RDF donnée. Les types de sujet possibles d'une propriété (affichés à gauche de la propriété) sont le <b>domaine</b>, tandis que les types d'objets possibles d'une propriété (affichés à droite) sont la <b>image</b > de cette propriété. Vous pouvez naviguer vers une autre classe en double-cliquant sur celle-ci.",
+    "view.domain.range.graph.helpInfo": "La vue Graphe domaine-image montre les classes et les propriétés qui mènent à ou à partir d'une classe RDF donnée. Les types de sujet possibles d'une propriété (affichés à gauche de la propriété) sont le <b>domaine</b>, tandis que les types d'objets possibles d'une propriété (affichés à droite) sont la <b>image</b> de cette propriété. Vous pouvez naviguer vers une autre classe en double-cliquant sur celle-ci.",
     "view.class.relationships.title": "Relations de classe",
     "view.class.relationships.helpInfo": "La vue Relations de classe montre les relations entre les classes RDF, où une relation est représentée par des liens entre les instances individuelles de deux classes. Chaque lien est une déclaration RDF où le sujet est une instance d'une classe, l'objet est une instance d'une autre classe et le lien est le prédicat. En fonction du nombre de liens entre les instances de deux classes, le faisceau peut être plus ou moins épais et il prend la couleur de la classe ayant le plus de liens entrants. Les liens peuvent être dans les deux sens.",
     "view.visual.graph.helpInfo": "La vue Graphique visuel fournit un moyen de créer une représentation visuelle de parties du graphe RDF. La visualisation part d'une seule ressource et des ressources qui lui sont connectées ou du résultat d'une requête de graphique. Double-cliquez sur les ressources pour développer le graphique avec ses connexions.",
@@ -901,7 +1071,6 @@
     "view.jdbc.create.helpInfo": "La vue de configuration de la table SQL permet de définir une table SQL virtuelle. Chaque table doit avoir un nom, une requête SPARQL SELECT et un ensemble de définitions de colonnes SQL.",
     "view.jdbc.create.get_suggestion_sql_type": "Obtenir une suggestion...",
     "jdbc.column.names.constraint": "Les noms de colonnes doivent être placés dans un tableau.",
-    "view.namespaces.title": "Espaces de noms",
     "view.namespaces.helpInfo": "La vue Espaces de noms fournit une vue d'ensemble de tous les espaces de noms définis dans un dépôt GraphDB. Les espaces de noms sont essentiellement des notations abrégées pour les IRI. Vous pouvez y ajouter, supprimer et modifier ces espaces.",
     "view.namespaces.pagination.of": "sur",
     "view.query.and.update.monitoring.title": "Surveillance des requêtes et des mises à jour",
@@ -928,7 +1097,6 @@
     "view.edit.repo.title": "Modifier le dépôt : {{repositoryId}}",
     "view.resource.monitoring.title": "Surveillance du système",
     "view.resource.monitoring.helpInfo": "La vue de surveillance du système montre l'utilisation de diverses ressources du système, telles que la mémoire, le CPU, les descripteurs de fichiers et l'espace de stockage. Elle présente également certaines mesures de performance qui vous permettent de diagnostiquer divers problèmes, ainsi qu'un aperçu de la santé du cluster",
-    "view.users.access.title": "Utilisateurs et accès",
     "view.users.access.helpInfo": "La vue Utilisateurs et accès est utilisée pour gérer les utilisateurs et leur accès aux dépôts GraphDB. Vous pouvez également activer ou désactiver la sécurité de l'ensemble du GraphDB. Lorsque la sécurité est désactivée, tout le monde a un accès complet aux dépôts et à la fonctionnalité d'administration.",
     "view.aclmanagement.title": "Gestion ACL",
     "view.aclmanagement.helpInfo": "La vue de gestion ACL est utilisée pour gérer la liste de contrôle d’accès (ACL), un mécanisme de contrôle précis du niveau d’accès au niveau du quadruple du dépôt. Chaque règle ACL se compose du quadruple (sujet, prédicat, objet, contexte, y compris les caractères génériques) dont le niveau doit être contrôlé, de l’appartenance au rôle applicable et de la politique (autoriser ou refuser) de la règle.",
@@ -975,7 +1143,6 @@
     "menu.graphs.overview.label": "Aperçu des graphes",
     "menu.class.relationships.label": "Relations entre les classes",
     "menu.class.hierarchy.label": "Hiérarchie des classes",
-    "menu.visual.graph.label": "Graphique visuel",
     "menu.similarity.label": "Similarité",
     "menu.sparql.label": "SPARQL",
     "menu.monitor.label": "Surveiller",
@@ -986,7 +1153,6 @@
     "menu.ftsStringLiteralsIndex.label": "Index de recherche en texte intégral pour les littéraux xsd:string",
     "menu.ftsIrisIndex.label": "Index de recherche en texte intégral pour l'indexation en texte intégral des IRI",
     "menu.ftsDefaultAnalyzer.label": "Analyseur pour l'index par défaut",
-    "menu.ftsLanguages.label": "Entrez la langue pour la recherche plein texte",
     "menu.resources.label": "Système",
     "menu.setup.label": "Configurer",
     "menu.lab.label": "Laboratoire",
@@ -999,7 +1165,6 @@
     "menu.connectors.label": "Connecteurs",
     "menu.namespaces.label": "Espaces de noms",
     "menu.autocomplete.label": "Autocomplétion",
-    "menu.rdf.rank.label": "Rang RDF",
     "menu.jdbc.label": "JDBC",
     "menu.sparql.template.label": "Modèles SPARQL",
     "menu.license.label": "Licence",
@@ -1018,8 +1183,6 @@
     "core.create.saved.query": "Créer une requête sauvegardée",
     "core.show.saved.query": "Afficher les requêtes sauvegardées",
     "core.popover.get.url.current.query": "Obtenir l'URL de la requête en cours",
-    "core.include.inferred": "Inclure les données déduites dans les résultats : {{value}}",
-    "core.expand.sameAs": "Étendre les résultats sur owl:sameAs : {{value}}",
     "core.require.inferred": "Nécessite 'Inclure les données inférées' !",
     "query.editor.no.results.from.prev.run.warning": "Aucun résultat de l'exécution précédente. Cliquez sur Exécuter ou appuyez sur Ctrl/Cmd-Enter pour exécuter la requête ou la mise à jour en cours.",
     "query.editor.visual.btn": "Visuel",
@@ -1090,7 +1253,7 @@
     "openid.auth.cannot.retrieve.token.msg": "Impossible de récupérer le jeton après la connexion; {{error}}",
     "openid.auth.cannot.refresh.token.msg": "Impossible de rafraîchir le jeton OpenID; {{error}}",
     "repositories.service.error.loading.location": "Erreur de chargement de l'emplacement",
-    "repositories.service.different.gdb.version": "L'emplacement distant exécute une version différente de GraphDB.",
+    "repositories.service.different.gdb.version": "L'emplacement distant {{location}} exécute une version différente de GraphDB.",
     "repositories.service.no.active.location": "Il n'y a pas de site actif",
     "repositories.service.restarting.repo": "Redémarrage du dépôt {{repositoryId}}",
     "no.license.set.msg": "Aucune licence n'a été définie.",
@@ -1205,7 +1368,6 @@
         "show.files.directories": "Afficher à la fois les fichiers et les dépôts",
         "show.directories.only": "Afficher uniquement les dépôts",
         "type.to.filter": "Tapez pour filtrer par nom",
-        "select.all": "Tout sélectionner",
         "selected.items": "Importer les éléments sélectionnés",
         "without.changing.settings": "Importer sans modifier les paramètres",
         "reset.last.imported": "Réinitialiser le dernier statut importé des éléments sélectionnés",
@@ -1367,7 +1529,7 @@
     "externalsync.extra.message.warning": "Cette opération est généralement rapide, mais elle peut prendre un certain temps.",
     "externalsync.delete.force.success.msg": "Supprimé (avec force) le connecteur {{name}}",
     "externalsync.delete.success.msg": "Suppression du connecteur {{name}}",
-    "externalsync.delete.remote.warning": "Vous devrez peut-être supprimer manuellement l'index de {{clés}}.",
+    "externalsync.delete.remote.warning": "Vous devrez peut-être supprimer manuellement l'index de {{key}}.",
     "add.label.add.autocomplete": "Ajouter un libellé pour la saisie semi-automatique",
     "add.label.edit.autocomplete": "Modifier l'étiquette pour la saisie semi-automatique",
     "add.label.enter.iri": "Entrez l'IRI du label ou cliquez sur l'un des IRIs prédéfinis.",
@@ -1451,13 +1613,14 @@
     "ontop.repo.database.driver": "Pilote de base de données",
     "ontop.repo.database.host_name": "Nom de l'hôte",
     "ontop.repo.database.host_name.placeholder": "Entrez le nom de l'hôte",
+    "ontop.repo.database.snowflake.host_name": "Account identifier",
     "ontop.repo.database.port": "Port",
     "ontop.repo.database.port.placeholder": "Entrez le port",
     "ontop.repo.database.username": "Nom d'utilisateur",
     "ontop.repo.database.username.placeholder": "Entrez le nom d'utilisateur",
     "ontop.repo.database.database_name": "Nom de la base de données",
     "ontop.repo.database.database_name.placeholder": "Entrez le nom de la source de données",
-    "ontop.repo.database.schema.database_name": "Schema",
+    "ontop.repo.database.schema.database_name": "Schéma",
     "ontop.repo.database.http_path.database_name": "HttpPath",
     "ontop.repo.database.warehouse.database_name": "Warehouse",
     "ontop.repo.database.password": "Mot de passe",
@@ -1465,7 +1628,6 @@
     "ontop.repo.database.driver_class": "Classe du pilote",
     "ontop.repo.database.driver_class.placeholder": "Entrez la classe du pilote de la source de données",
     "ontop.repo.database.url": "URL JDBC",
-    "ontop.repo.database.snowflake.host_name": "Identifiant du compte",
     "ontop.repo.test.connection": "Test de connexion",
     "ontop.repo.download.jdbc.driver": "Télécharger le pilote JDBC",
     "ontop.repo.missing.jdbc.driver": "Pilote JDBC manquant",
@@ -1701,7 +1863,7 @@
     "are.license.details.correct": "Vos détails de licence sont-ils corrects?",
     "edition": "Édition",
     "capabilities": "Capacités",
-    "none": "None",
+    "none": "Aucun",
     "licensed.to": "Autorisé à",
     "valid.until": "Valable jusque",
     "perpetual": "Perpétuel",
@@ -1761,10 +1923,8 @@
     "similarity.index.creation.msg": "création d'index",
     "similarity.get.resource.error": "Impossible de récupérer des ressources!",
     "similarity.delete.index.warning": "Êtes-vous sûr de vouloir supprimer l'index '{{name}}'?",
-    "similarity.rebuild.index.warning": "Êtes-vous sûr de vouloir reconstruire tout l'index '{{name}}' ? Vous pourrez toujours utiliser la dernière construction réussie!",
+    "similarity.rebuild.index.warning": "Êtes-vous sûr de vouloir reconstruire tout l'index '{{name}}' ?<br> Vous pourrez toujours utiliser la dernière construction réussie!",
     "similarity.copy_of.prefix": "Copie_de",
-    "similarity.error.invalid.select.query": "La requête SELECT doit être une requête SELECT",
-    "similarity.error.query.invalid": "Requete invalide",
     "similarity.warning.unsaved.changes": "Vous avez des modifications non sauvegardées. Etes-vous sûr de vouloir quitter?",
     "sparql.template.get.templates.error": "Impossible de récupérer des modèles SPARQL",
     "sparql.template.delete.template.warning": "Êtes-vous sûr de vouloir supprimer le modèle SPARQL '{{templateID}}'?",
@@ -1777,6 +1937,14 @@
     "save.sparql.template.failure.msg": "Impossible de sauvegarder le modèle {{templateID}}.",
     "sparql.template.query.constraint": "La requête modèle doit être une requête UPDATE.",
     "sparql.template.query.invalid": "Requete invalide",
+    "save.sparql.template.success.msg": "Saved SPARQL template",
+    "attach.remote.gdb.instance": "Attach a remote GraphDB instance",
+    "remote.location.url": "URL de l'emplacement*",
+    "remote.location.enter.url.msg": "Entrez une URL vers une instance distante de GraphDB",
+    "remote.location.required": "L'URL de l'emplacement est requise.",
+    "remote.location.ontopic.username.required": "ClientID*",
+    "remote.location.ontopic.password.required": "Secret*",
+    "remote.ontopic.location.enter.url.msg": "Enter a Entrez une URL vers une instance distante d'Ontopic",
     "manage.remote.location.dialog.graph_db.basic.auth.type.description": "L'authentification de base nécessite un nom d'utilisateur et un mot de passe.",
     "manage.remote.location.dialog.ontopic.basic.auth.type.description": "L'authentification de base nécessite un ClientID et un Secret.",
     "manage.remote.location.dialog.update.instance": "Modifier l'instance distante",
@@ -1804,10 +1972,6 @@
     "manage.remote.location.dialog.ontopic.username.placeholder": "mon client id",
     "manage.remote.location.dialog.graph_db.password.placeholder": "mon mot de passe",
     "manage.remote.location.dialog.ontopic.password.placeholder": "mon secret",
-    "save.sparql.template.success.msg": "Modèle SPARQL enregistré",
-    "attach.remote.gdb.instance": "Joindre une instance GraphDB distante",
-    "remote.location.url": "URL de l'emplacement*",
-    "remote.location.enter.url.msg": "Entrez l'URL d'une instance GraphDB distante",
     "valid.remote.location.warning": "Notez que l'emplacement doit être une URL qui pointe vers une installation GraphDB distante, par ex.",
     "auth.type.header": "Type d'authentification",
     "remote.location.no.auth.used.tooltip": "Aucune authentification utilisée avec l'emplacement distant",
@@ -1855,7 +2019,7 @@
     "main.info.load.sample.dataset": "GraphDB inclut un jeu de données d'exemple dans la distribution sous le dépôt examples/data/news. Ce jeu de données représente de nouveaux articles enrichis sémantiquement avec des informations structurées provenant de Wikipedia. Pour charger les données, allez dans Import > RDF et sélectionnez les fichiers locaux.",
     "main.info.title.run.sparql.query": "Exécuter une requête SPARQL",
     "main.info.run.sparql.query": "Vous pouvez trouver une liste d'exemples de requêtes SPARQL sous examples/data/news/queries.txt démontrant comment trouver des recherches intéressantes d'articles d'actualité et les entités mentionnées comme : <br><ul><li>(1) Donnez-moi des articles sur des personnes nées à New York</li><li>(2) Montrez-moi toutes les professions de chaque personne dans les nouvelles</li><li>(3) Citez-moi les membres d'un parti politique spécifique</li></ul>",
-    "main.info.rest.api": "GraphDB vous permet d'effectuer chaque opération également via une API REST ou en utilisant une application client RDF4J spécifique au langage. Pour consulter la liste complète des fonctionnalités prises en charge, rendez-vous à l'adresse suivante  <a href=\"/webapi\">Aide> REST API</a> ou consultez l'exemple de code sous examples/developer-getting-started/ Amusez-vous bien!",
+    "main.info.rest.api": "GraphDB vous permet d'effectuer chaque opération également via une API REST ou en utilisant une application client RDF4J spécifique au langage. Pour consulter la liste complète des fonctionnalités prises en charge, rendez-vous à l'adresse suivante  <a href=\"/webapi\">Aide> REST API</a> ou consultez l'exemple de code sous examples/developer-getting-started/<br>Amusez-vous bien!",
     "timestamp.moments.ago": "il y a quelques instants",
     "timestamp.minutes.ago": "minutes",
     "timestamp.today.at": "aujourd'hui à ",
@@ -2002,7 +2166,6 @@
     "free.license.restrictions": "Vous ne disposez pas d'une licence valide pour GraphDB SE/EE et GraphDB fonctionne en mode Free. Définissez une licence SE/EE valide pour avoir accès à toutes les fonctionnalités SE/EE.",
     "table.name": "Nom de la table",
     "table.name.placeholder.required": "Nom de la table SQL (obligatoire)",
-    "jdbc.data.query": "Requête de données",
     "jdbc.column.types": "Types de colonnes",
     "jdbc.no.columns.defined.warning": "Aucune colonne n'est définie. Veuillez commencer par une requête de données et revenir à cet onglet pour revoir les définitions des colonnes.",
     "jdbc.column.name": "Nom de colonne",
@@ -2195,7 +2358,6 @@
     "download.as.progress.msg": "Téléchargement du résultat SPARQL",
     "visual.graph.label": "Graphique visuel",
     "explore.graph.visually.popover": "Cliquez pour explorer le graphe visuellement.",
-    "edit.label": "Éditer",
     "pred.label": "Prédicat",
     "example.label": "Exemple",
     "complete.short.iri.warning": "Veuillez compléter le court IRI.",
@@ -2372,6 +2534,7 @@
     "guide.step_plugin.table-graph-visual": "Vous pouvez toujours explorer les mêmes données en utilisant la vue <b>{{'visual.graph.label'|translate}}</b>. Cliquez sur le {{'visual.graph.label'|translate}} pour l'essayer maintenant.",
     "guide.step_plugin.guide-ended.title": "Fin du guide",
     "guide.step_plugin.guide-ended.content": "Ce guide est terminé.",
+    "guide.step_plugin.execute-sparql-query.query-not-same.error": "La requête n'est pas la même que la requête du guide !",
     "guide.step_plugin.enable-autocomplete.error": "L'index de saisie semi-automatique n'est pas activé !",
     "guide.step_plugin.welcome.title": "Bienvenue dans {{translatedGuideName}}",
     "guide.step_plugin.welcome.content": "Tout au long du guide, vous verrez des boîtes comme celle-ci qui fourniront des instructions sur ce qu'il faut faire.<p>L'icône dans le coin supérieur gauche est également un indice :<ul><li>{{infoIconHint}}</li><li>{{mouseIconHint}}</li><li>{{inputIconHint}}</li></ul></p>",
@@ -2383,7 +2546,6 @@
     "guide.confirm.cancel.message": "Êtes-vous sûr de vouloir arrêter le guide?",
     "guide.unexpected.error.message": "Le guide a été annulé en raison d'une erreur inattendue. Veuillez exécuter à nouveau le guide et si le problème persiste, contactez le support.",
     "guide.start.unexpected.error.message": "Le guide ne peut pas être démarré en raison d'une erreur inattendue. Veuillez réessayer d'exécuter le guide et si le problème persiste, contactez le support.",
-    "guide.step_plugin.execute-sparql-query.query-not-same.error": "La requête n'est pas la même que la requête du guide !",
     "global.operations_statuses.queries.title": "Exécution de requêtes",
     "global.operations_statuses.updates.title": "Exécution de mises à jour",
     "global.operations_statuses.imports.title": "Exécution d'importations",
@@ -2397,11 +2559,6 @@
     "global.operations_statuses.UNAVAILABLE_NODES.title": "Nœuds indisponibles",
     "view.sparql-editor.title": "Requête et mise à jour SPARQL",
     "view.sparql-editor.helpInfo": "La vue Requête et mise à jour SPARQL est un éditeur unifié pour les requêtes et les mises à jour. Entrez n'importe quelle requête ou mise à jour SPARQL et cliquez sur Exécuter pour l'exécuter. La vue vous permet également d'enregistrer des requêtes pour une récupération et une exécution futures dans l'éditeur SPARQL.",
-    "view.sparql-editor.leave_page.run_queries.warning.message": "<div>Êtes-vous sûr de vouloir quitter ?</div>",
-    "view.sparql-editor.leave_page.ran_query.warning.message": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez 1 requête en cours{{updateInfo}}. La requête sera interrompue.</div>",
-    "view.sparql-editor.leave_page.ran_queries.warning.message": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez {{queriesCount}} requêtes en cours{{updateInfo}}. Les requêtes seront interrompues.</div>",
-    "view.sparql-editor.leave_page.ran_update.warning.message": " et 1 mise à jour",
-    "view.sparql-editor.leave_page.ran_updates.warning.message": " et {{updatesCount}} mises à jour",
     "view.sparql-editor.leave_page.run_queries.confirmation.none_queries_non_updates.message": "Êtes-vous sûr de vouloir quitter ?",
     "view.sparql-editor.leave_page.run_queries.confirmation.none_queries_one_update.message": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez 1 mise à jour en cours.</div><div>Êtes-vous sûr de vouloir quitter ?</div>",
     "view.sparql-editor.leave_page.run_queries.confirmation.none_queries_updates.message": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez {{updatesCount}} mises à jour en cours.</div><div>Êtes-vous sûr de vouloir quitter ?</div>",
@@ -2419,7 +2576,7 @@
     "yasgui.tab_list.close_other_tabs.confirmation.one_query_updates.message": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez 1 requête et {{updatesCount}} mises à jour en cours. La requête sera annulée.</div><div>Êtes-vous sûr de vouloir fermer tous les autres onglets de requête ?</div>",
     "yasgui.tab_list.close_other_tabs.confirmation.queries_non_updates.message": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez {{queriesCount}} requêtes en cours. Les requêtes seront annulées.</div><div>Êtes-vous sûr de vouloir fermer tous les autres onglets de requête ?</div>",
     "yasgui.tab_list.close_other_tabs.confirmation.queries_one_update.message": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez {{queriesCount}} requêtes et 1 mise à jour en cours. Les requêtes seront annulées.</div><div>Êtes-vous sûr de vouloir fermer tous les autres onglets de requête ?</div>",
-    "yasgui.tab_list.close_other_tabs.confirmation.queries_updates.message": "<div class\"run_query_confirmation alert alert-warning\">Vous avez {{queriesCount}} requêtes et {{updatesCount}} mises à jour en cours. Les requêtes seront annulées.</div><div>Êtes-vous sûr de vouloir fermer tous les autres onglets de requête ?</div>",
+    "yasgui.tab_list.close_other_tabs.confirmation.queries_updates.message": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez {{queriesCount}} requêtes et {{updatesCount}} mises à jour en cours. Les requêtes seront annulées.</div><div>Êtes-vous sûr de vouloir fermer tous les autres onglets de requête ?</div>",
     "yasgui.tab_list.close_tab.confirmation.not_query_update.message": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez 1 mise à jour en cours.</div><div>Êtes-vous sûr de vouloir fermer cet onglet de requête ?</div>",
     "yasgui.tab_list.close_tab.confirmation.query_non_updates.message": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez 1 requête en cours, qui sera annulée.</div><div>Êtes-vous sûr de vouloir fermer cet onglet de requête ?</div>"
 }

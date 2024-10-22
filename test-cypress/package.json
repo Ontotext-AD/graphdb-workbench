@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench-tests",
-    "version": "2.8.0-TR3",
+    "version": "2.8.0-TR12",
     "description": "Cypress tests for GraphDB workbench",
     "scripts": {
         "prepack": "npm shrinkwrap",
@@ -10,7 +10,7 @@
         "test": "cypress run",
         "test:flaky": "cypress run --config-file cypress-flaky.config.js",
         "test:partial": "cypress run --spec \"integration/repository/**\"",
-        "test:core": "cypress run --spec integration/repository/**,integration/import/**,integration/sparql-editor/**,integration/monitor/**,integration/cluster/**"
+        "test:core": "cypress run --spec integration/repository/**,integration/import/**,integration/sparql-editor/**,integration/monitor/**,integration/cluster/**,integration/ttyg/**"
     },
     "author": {
         "name": "\"Sirma AI\" JSC, trading as Ontotext",
@@ -25,16 +25,15 @@
         "type": "git",
         "url": "git+https://github.com/Ontotext-AD/graphdb-workbench.git"
     },
-    "dependencies": {},
     "devDependencies": {
         "cypress": "^13.3.1",
         "cypress-failed-log": "^2.10.0",
         "cypress-file-upload": "^5.0.8",
-        "cypress-localstorage-commands": "^1.4.4",
+        "cypress-localstorage-commands": "^2.2.6",
         "cypress-multi-reporters": "^1.6.3",
         "cypress-real-events": "^1.8.1",
-        "cypress-terminal-report": "^5.2.0",
-        "cypress-wait-until": "^1.7.1",
+        "cypress-terminal-report": "^7.0.3",
+        "cypress-wait-until": "^3.0.2",
         "del": "^6.1.1",
         "minimist": "^1.2.5",
         "mocha-junit-reporter": "^2.2.0"

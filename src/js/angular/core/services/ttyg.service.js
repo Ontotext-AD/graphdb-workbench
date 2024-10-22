@@ -1,7 +1,8 @@
 import {chatModelMapper, chatsListMapper} from "../../ttyg/services/chats.mapper";
 import 'angular/rest/ttyg.rest.service';
-import {chatMessageModelMapper} from "../../ttyg/services/chat-message.mapper";
+import {chatAnswerModelMapper} from "../../ttyg/services/chat-message.mapper";
 import {agentListMapper, agentModelMapper} from "../../ttyg/services/agents.mapper";
+import {explainResponseMapper} from "../../ttyg/services/explain.mapper";
 
 const modules = ['graphdb.framework.rest.ttyg.service'];
 
@@ -9,9 +10,9 @@ angular
     .module('graphdb.framework.core.services.ttyg-service', modules)
     .factory('TTYGService', TTYGService);
 
-TTYGService.$inject = ['TTYGRestService'];
+TTYGService.$inject = ['TTYGRestService', '$repositories'];
 
-function TTYGService(TTYGRestService) {
+function TTYGService(TTYGRestService, $repositories) {
 
     const getConversations = (savedQueryName, owner) => {
         return TTYGRestService.getConversations()
@@ -41,20 +42,31 @@ function TTYGService(TTYGRestService) {
     /**
      * Exports the conversation (<code>chart</code>).
      * @param {string} id - the conversation to be exported.
-     * @return {*}
-     */
+     * @return {Promise<{Blob, string}>} Returns the conversation as a Blob and the filename wrapped in a Promise
+     * */
     const exportConversation = (id) => {
-        return TTYGRestService.exportConversation(id);
+        return TTYGRestService.exportConversation(id)
+            .then(function (res) {
+                const data = res.data;
+                const headers = res.headers();
+                const contentDispositionHeader = headers['content-disposition'];
+                let filename = 'chat-export';
+                if (contentDispositionHeader) {
+                    filename = contentDispositionHeader.split('filename=')[1];
+                    filename = filename.substring(0, filename.length);
+                }
+                return {data, filename};
+            });
     };
 
     /**
      * Asks a question.
      * @param {ChatItemModel} chatItem .
-     * @return {Promise<ChatMessageModel>} the answer of the question.
+     * @return {Promise<ChatAnswerModel>} the answer of the question.
      */
     const askQuestion = (chatItem) => {
         return TTYGRestService.askQuestion(chatItem.toAskRequestPayload())
-            .then((response) => chatMessageModelMapper(response.data));
+            .then((response) => chatAnswerModelMapper(response.data));
     };
 
     /**
@@ -67,13 +79,15 @@ function TTYGService(TTYGRestService) {
     };
 
     /**
-     * Creates a new conversation.
-     * @param {ChatItemModel} chatItem - the conversation data
-     * @return {Promise<string>} created conversation id;
+     * Creates a new conversation. The creation of a chat and asking a question share the same endpoint. If the request payload
+     * doesn't contain the chat ID, the backend will create a new chat and return the answer, which includes the ID of the created chat.
+     *
+     * @param {ChatItemModel} chatItem - The conversation data.
+     * @return {Promise<ChatAnswerModel>} The answer of the question.
      */
     const createConversation = (chatItem) => {
         return TTYGRestService.createConversation(chatItem.toCreateChatRequestPayload())
-            .then((response) => response.data.conversationId);
+            .then((response) => chatAnswerModelMapper(response.data));
     };
 
     /**
@@ -81,9 +95,10 @@ function TTYGService(TTYGRestService) {
      * @return {Promise<AgentListModel>}
      */
     const getAgents = () => {
+        const localRepositories = $repositories.getLocalReadablGraphdbRepositoryIds();
         return TTYGRestService.getAgents()
             .then((response) => {
-                return agentListMapper(response.data);
+                return agentListMapper(response.data, localRepositories);
             });
     };
 
@@ -130,6 +145,30 @@ function TTYGService(TTYGRestService) {
         return TTYGRestService.deleteAgent(id);
     };
 
+    /**
+     * Returns an explanation of how the answer was generated.
+     * @param {ChatItemModel} chatItem
+     * @param {string} answerId
+     * @return {ExplainResponseModel}
+     */
+    const explainResponse = (chatItem, answerId) => {
+        return TTYGRestService.explainResponse(chatItem.toExplainResponsePayload(answerId))
+            .then((response) => {
+                return explainResponseMapper(response.data);
+            });
+    };
+
+    /**
+     * Get the default agent values from server.
+     * @return {Promise<AgentModel>}
+     */
+    const getDefaultAgent = () => {
+        return TTYGRestService.getAgentDefaultValues()
+            .then((response) => {
+                return agentModelMapper(response.data);
+            });
+    };
+
     return {
         getConversation,
         renameConversation,
@@ -142,6 +181,8 @@ function TTYGService(TTYGRestService) {
         getAgent,
         createAgent,
         editAgent,
-        deleteAgent
+        deleteAgent,
+        explainResponse,
+        getDefaultAgent
     };
 }

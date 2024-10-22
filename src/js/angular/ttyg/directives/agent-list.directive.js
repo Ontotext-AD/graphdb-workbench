@@ -63,7 +63,7 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
              * @param {AgentModel} agent
              */
             $scope.onCloneAgent = (agent) => {
-                console.log('Clone agent', agent);
+                TTYGContextService.emit(TTYGEventName.CLONE_AGENT, agent);
             };
 
             /**
@@ -82,7 +82,9 @@ function AgentListComponent(TTYGContextService, ModalService, $translate) {
              */
             $scope.onAgentsFilterChange = (selectedFilter) => {
                 $scope.selectedAgentsFilter = selectedFilter;
-                $scope.agentList.filterByRepository($scope.selectedAgentsFilter.key);
+                if ($scope.selectedAgentsFilter) {
+                    $scope.agentList.filterByRepository($scope.selectedAgentsFilter.key);
+                }
             };
 
             // =========================

@@ -1,48 +1,55 @@
 <link href="css/ttyg/chat-panel.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-<div class="chat-panel h-100">
+<div class="chat-panel h-100" ng-class="chat.chatHistory.isEmpty() && !askingChatItem ? 'no-content' : ''">
 
-    <div class="messages-hint text-muted" ng-if="chat.chatHistory.isEmpty()">
-        {{ 'ttyg.chat_panel.hint' | translate }}
-    </div>
+    <div class="chat-loading" ng-if="loadingChat" onto-loader-new size="40"></div>
 
-    <div class="chat-details" ng-class="{'hidden': !chat}">
-        <div class="chat-detail" ng-repeat="chatItem in chat.chatHistory.items">
-            <div class="user-message">
-                <div class="question alert-help">
-                    {{ chatItem.question.message }}
-                </div>
+    <div class="chat-details" ng-class="{'hidden': !chat}" ng-if="!loadingChat && !chat.chatHistory.isEmpty() || askingChatItem">
+        <div ng-repeat="chatItemDetail in chat.chatHistory.items">
+
+            <!-- Before the first chat item is displayed, show the agent change info if the agent of the first response is different from the selected agent. -->
+            <!--            <div class="alert alert-info agent-changed-info" ng-if="$first && selectedAgent && chatItemDetail.agentId !== selectedAgent.id"-->
+            <!--                 ng-bind-html="'ttyg.chat_panel.messages.agent_changed_info' | htmlTranslate: {agentName: getAgentName(chatItemDetail.agentId)}">-->
+            <!--            </div>-->
+
+            <!-- Before each chat item, except the first one, is displayed, show the agent change info if the currently used agent is different from the previous one. -->
+            <div class="alert alert-info agent-changed-info"
+                 ng-if="!$first && chatItemDetail.agentId !== chat.chatHistory.items[$index - 1].agentId"
+                 ng-bind-html="'ttyg.chat_panel.messages.agent_changed_info' | htmlTranslate: {agentName: getAgentName(chatItemDetail.agentId)}">
             </div>
-            <div class="assistant">
-                <div class="assistant-icon alert-help">
-                    <i class="fa-regular fa-message-bot"></i>
-                </div>
-                <div class="assistant-message">
-                    <div class="answer">
-                        {{ chatItem.answer.message }}
-                    </div>
-                    <div class="actions" ng-class="{'hidden-actions': !$last}">
-                        <button class="btn btn-link secondary btn-sm regenerate-question-btn"
-                                ng-click="regenerateQuestion(chatItem)"
-                                gdb-tooltip="{{'ttyg.chat_panel.btn.regenerate.tooltip' | translate}}">
-                            <i class="fa-regular fa-arrows-rotate"></i>
-                        </button>
-                        <button class="btn btn-link secondary btn-sm copy-answer-btn"
-                                ng-click="copyAnswerToClipboard(chatItem)"
-                                gdb-tooltip="{{'ttyg.chat_panel.btn.copy.tooltip' | translate}}">
-                            <i class="fa-regular fa-clone"></i>
-                        </button>
-                        <i class="fa-regular fa-wand-magic-sparkles"></i>
-                    </div>
-                </div>
-            </div>
+
+            <chat-item-detail
+                chat-item-detail="chatItemDetail"
+                show-actions="!askingChatItem && $last"
+                on-regenerate-question="regenerateQuestion(chatItem)"
+                on-copy-answer-to-clipboard="copyAnswerToClipboard(chatItem)"
+                on-ask-how-delivered-answer="onAskHowDeliveredAnswer(chatItem)"
+                disabled="askingChatItem">
+            </chat-item-detail>
         </div>
+
+        <!-- After all chat items are displayed, show the agent change info if the selected agent is different from the one used in the last chat item. -->
+        <div class="alert alert-info agent-changed-info"
+             ng-if="askingChatItem && selectedAgent && chat.chatHistory.items.length && chat.chatHistory.items[chat.chatHistory.items.length -1].agentId !== selectedAgent.id"
+             ng-bind-html="'ttyg.chat_panel.messages.agent_changed_info' | htmlTranslate: {agentName: getAgentName(selectedAgent.id)}">
+        </div>
+        <chat-item-detail ng-if="askingChatItem" chat-item-detail="askingChatItem"
+                          asking="!!askingChatItem"></chat-item-detail>
     </div>
-    <div class="mew-question mb-3 mt-2 d-flex">
-        <input class="form-control question-input" ng-model="chatItem.question.message" type="text">
-        <button class="btn btn-primary ask-button" ng-disabled="!chatItem.question.message || !selectedAgent || selectedAgent.isDeleted" ng-click="ask()">
+    <div class="new-question mb-2 mt-2 d-flex">
+        <input class="form-control question-input" ng-model="chatItem.question.message" type="text"
+               ng-disabled="askingChatItem || loadingChat || !selectedAgent || selectedAgent.isDeleted"
+               ng-keypress="onKeypressOnInput($event)">
+        <button class="btn btn-primary ask-button"
+                ng-disabled="!chatItem.question.message || !selectedAgent || selectedAgent.isDeleted || askingChatItem || loadingChat"
+                ng-click="ask()">
             <i class="fa-regular fa-arrow-turn-left-up"></i>
             {{ 'ttyg.chat_panel.btn.ask.label ' | translate }}
         </button>
+    </div>
+
+    <div class="messages-hint text-muted" ng-if="!loadingChat && chat.chatHistory.isEmpty() && !askingChatItem" ng-cloak>
+        <div class="hint2" ng-bind="'ttyg.chat_panel.hint2' | translate"></div>
+        <div class="hint1" ng-bind-html="'ttyg.chat_panel.hint1' | htmlTranslate"></div>
     </div>
 </div>

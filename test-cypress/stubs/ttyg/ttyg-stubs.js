@@ -2,8 +2,7 @@ import {Stubs} from "../stubs";
 
 export class TTYGStubs extends Stubs {
     static stubChatsListGet(fixture = '/ttyg/chats/get-chat-list.json', delay = 0) {
-        cy.intercept('/rest/chat/conversations', {
-            method: 'GET',
+        cy.intercept('GET', '/rest/chat/conversations', {
             fixture: fixture,
             statusCode: 200,
             delay: delay
@@ -11,8 +10,7 @@ export class TTYGStubs extends Stubs {
     }
 
     static stubChatListGetError() {
-        cy.intercept('/rest/chat/conversations', {
-            method: 'GET',
+        cy.intercept('GET', '/rest/chat/conversations', {
             statusCode: 500,
             response: {
                 error: 'Internal Server Error'
@@ -21,15 +19,10 @@ export class TTYGStubs extends Stubs {
     }
 
     static stubChatsListGetNoResults() {
-        cy.intercept('/rest/chat/conversations', {
-            method: 'GET',
+        cy.intercept('GET', '/rest/chat/conversations', {
             fixture: '/ttyg/chats/get-chat-list-0.json',
             statusCode: 200
         }).as('get-chat-list');
-    }
-
-    static stubChatCreate() {
-
     }
 
     /**
@@ -38,61 +31,84 @@ export class TTYGStubs extends Stubs {
      * @param {string} fixture - Path to the JSON file containing the chat conversation.
      * @param {number} delay - Optional delay in milliseconds before responding with the fixture.
      */
-    static stubChatGet(fixture = '/ttyg/chats/get-chat-1.json', delay = 0) {
-        cy.fixture(fixture).then((body) => {
-            const bodyString = JSON.stringify(body);
-            cy.intercept('/rest/chat/conversations/**', (req) => {
+    static stubChatGet(delay = 0) {
+        cy.fixture('/ttyg/chats/get-chat.json').then((body) => {
+            cy.intercept({
+                method: 'GET',
+                url: '/rest/chat/conversations/*'
+            }, (req) => {
                 const chatId = req.url.split('/').pop();
-                    // Respond with the modified body
-                    req.reply({
-                        statusCode: 200,
-                        body: bodyString.replace(/{chatId}/g, chatId),
-                        delay: delay
-                    });
+                const chat = body[chatId];
+                // Respond with the modified body
+                req.reply({
+                    statusCode: 200,
+                    body: JSON.stringify(chat),
+                    delay: delay
+                });
             }).as('get-chat');
         });
     }
 
+    static stubChatGet404Error() {
+        cy.intercept('GET', '/rest/chat/conversations/*', {
+            statusCode: 404,
+            response: {
+                error: 'Not Found'
+            }
+        }).as('get-chat');
+    }
+
     static stubChatUpdate() {
-        cy.intercept('/rest/chat/conversations/*', {
-            method: 'PUT',
+        cy.intercept('PUT', '/rest/chat/conversations/*', {
             fixture: '/ttyg/chats/renamed-chat.json',
             statusCode: 200
         }).as('update-chat');
     }
 
     static stubChatDelete() {
-        cy.intercept('/rest/chat/conversations/*', {
-            method: 'DELETE',
+        cy.intercept('DELETE', '/rest/chat/conversations/*', {
             fixture: '/ttyg/chats/deleted-chat.json',
             statusCode: 200
         }).as('delete-chat');
     }
 
-    static stubAgentListGet(fixture = '/ttyg/agent/get-agent-list.json', delay = 0, invocation = 0) {
-        cy.intercept('/rest/chat/agents', {
-            method: 'GET',
+    static stubChatExport() {
+        cy.intercept('GET', '/rest/chat/conversations/export/*', {
+            fixture: '/ttyg/chats/export-chat.json',
+            statusCode: 200
+        }).as('export-chat');
+    }
+
+    static stubAgentListGet(fixture = '/ttyg/agent/get-agent-list.json', delay = 0) {
+        cy.intercept('GET', '/rest/chat/agents', {
             fixture: fixture,
             statusCode: 200,
             delay: delay
-        }).as('get-agent-list-' + invocation);
+        }).as('get-agent-list');
+    }
+
+    static stubAgentGet(fixture = '/ttyg/agent/get-agent.json', delay = 0) {
+        cy.intercept('GET', '/rest/chat/agents/*', {
+            fixture: fixture,
+            statusCode: 200,
+            delay: delay
+        }).as('get-agent');
     }
 
     static stubAgentListGetError() {
-        cy.intercept('/rest/chat/agents', {
-            method: 'GET',
+        cy.intercept('GET', '/rest/chat/agents', {
             statusCode: 500,
             response: {
                 error: 'Internal Server Error'
             }
-        }).as('get-agent-list');
+        }).as('get-agent-list-error');
     }
 
-    static stubAgentCreate() {
-        cy.intercept('/rest/chat/agents', {
-            method: 'POST',
+    static stubAgentCreate(delay = 0) {
+        cy.intercept('POST', '/rest/chat/agents', {
             fixture: '/ttyg/agent/create-agent.json',
-            statusCode: 200
+            statusCode: 200,
+            delay: delay
         }).as('create-agent');
     }
 
@@ -110,10 +126,30 @@ export class TTYGStubs extends Stubs {
     }
 
     static stubAgentDelete(delay = 0) {
-        cy.intercept('/rest/chat/agents/**', {
-            method: 'DELETE',
+        cy.intercept('DELETE', '/rest/chat/agents/**', {
             statusCode: 200,
             delay: delay
         }).as('delete-agent');
+    }
+
+    static stubAgentDefaultsGet() {
+        cy.intercept('GET', '/rest/chat/agents/default', {
+            fixture: '/ttyg/agent/get-agent-defaults.json',
+            statusCode: 200
+        }).as('get-agent-defaults');
+    }
+
+    static stubAnswerQuestion(fixture = '/ttyg/chats/ask-question.json') {
+        cy.intercept('POST', '/rest/chat/conversations', {
+            fixture,
+            statusCode: 200
+        }).as('get-agent-defaults');
+    }
+
+    static stubExplainResponse(fixture = '/ttyg/chats/explain-response-1.json') {
+        cy.intercept('POST', 'rest/chat/conversations/explain', {
+            fixture,
+            statusCode: 200
+        }).as('explain-response');
     }
 }

@@ -18,6 +18,16 @@
     /* Link decoration, see GDB-9013 before you touch these */
     --link-decoration-thickness: clamp(1px, 6%, 10px);
     --link-underline-offset: clamp(1px, 6%, 10px);
+    /* The base background color that is used for panels and other similar elements */
+    --base-background-color: #f7f7f7;
+    /* The base background color that is used for selected panels or elements */
+    --base-background-selected-color: #dcdcdc;
+    /* The base background color that is used for hover effects in panels and elements */
+    --base-background-hover-color: rgba(0, 0, 0, .1);
+
+    /* Graphwise colors */
+    --graphwise-blue-color: #001FFF;
+    --graphwise-pink-color: #DF367C;
 }
 
 :root.menu-collapsed {
@@ -640,7 +650,7 @@ main menu height*/
 
 .main-menu li .menu-element-root:hover,
 .main-menu .sub-menu li:hover {
-    background-color: rgba(0, 0, 0, .1);
+    background-color: var(--base-background-hover-color);
 }
 
 .main-menu li .menu-element-root:hover .menu-item-icon,
@@ -654,7 +664,7 @@ main menu height*/
 
 .main-menu .menu-element {
     border-bottom: 1px solid #fff;
-    background-color: #f7f7f7;
+    background-color: var(--base-background-color);
     position: relative;
 }
 
@@ -742,7 +752,7 @@ main menu height*/
 
 .main-menu .menu-element.open,
 .main-menu.collapsed .menu-element:hover {
-    background-color: #dcdcdc;
+    background-color: var(--base-background-selected-color);
 }
 
 .main-menu .sub-menu {
@@ -1027,6 +1037,10 @@ main menu height*/
     text-decoration-style: dotted;
     text-decoration-thickness: var(--link-decoration-thickness);
     text-underline-offset: var(--link-underline-offset);
+}
+
+.btn-link-only-icons {
+    text-decoration: none !important;
 }
 
 .btn-link.secondary {

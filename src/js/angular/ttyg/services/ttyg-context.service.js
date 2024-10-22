@@ -1,10 +1,10 @@
-import {cloneDeep} from "lodash";
+import {cloneDeep} from 'lodash';
 
 angular
     .module('graphdb.framework.ttyg.services.ttygcontext', [])
     .factory('TTYGContextService', TTYGContextService);
 
-TTYGContextService.$inject = ['EventEmitterService'];
+TTYGContextService.$inject = ['EventEmitterService', 'TTYGService'];
 
 function TTYGContextService(EventEmitterService) {
 
@@ -37,10 +37,54 @@ function TTYGContextService(EventEmitterService) {
     let _selectedAgent = undefined;
 
     /**
+     * Stores information about loaded explain responses.
+     * The key is the answer ID, and the value is an instance of {@see ExplainResponseModel} that holds the explanation message.
+     *
+     * @type {{[key: string]: ExplainResponseModel}}
+     */
+    let _explainCache = {};
+
+    /**
+     * The default agent values.
+     * @type {AgentModel|undefined}
+     * @private
+     */
+    let _defaultAgent = undefined;
+
+    let _canModifyAgent = false;
+
+    const resetContext = () => {
+        _agents = undefined;
+        _chats = undefined;
+        _selectedChat = undefined;
+        _selectedAgent = undefined;
+        _explainCache = {};
+        _defaultAgent = undefined;
+        _canModifyAgent = false;
+    };
+
+    /**
+     * @return {Promise<AgentModel>}
+     */
+    const getDefaultAgent = () => {
+        return cloneDeep(_defaultAgent);
+    };
+
+    const setDefaultAgent = (agent) => {
+        _defaultAgent = agent;
+    };
+
+    /**
      * @return {AgentListModel}
      */
     const getAgents = () => {
         return cloneDeep(_agents);
+    };
+
+    const getAgent = (agentId) => {
+        if (_agents) {
+            return cloneDeep(_agents.getAgent(agentId));
+        }
     };
 
     /**
@@ -56,6 +100,25 @@ function TTYGContextService(EventEmitterService) {
     const updateChats = (chats) => {
         _chats = cloneDeep(chats);
         emit(TTYGEventName.CHAT_LIST_UPDATED, getChats());
+    };
+
+    /**
+     * Deletes the chat with the provided <code>chatId</code>.
+     * @param {ChatModel} chat
+     */
+    const deleteChat = (chat) => {
+        _chats.deleteChat(chat);
+        updateChats(_chats);
+    };
+
+    const addChat = (newChat) => {
+        _chats.appendChat(newChat);
+        updateChats(_chats);
+    };
+
+    const replaceChat = (newChat, oldChat) => {
+        _chats.replaceChat(newChat, oldChat);
+        updateChats(_chats);
     };
 
     /** Subscribes to the 'chatListUpdated' event.
@@ -84,7 +147,7 @@ function TTYGContextService(EventEmitterService) {
      * @param {ChatModel} selectedChat - The chat object to select.
      */
     const selectChat = (selectedChat) => {
-        if (!_selectedChat || _selectedChat.id !== selectedChat) {
+        if (!_selectedChat || _selectedChat.id !== selectedChat.id) {
             _selectedChat = cloneDeep(selectedChat);
             emit(TTYGEventName.SELECT_CHAT, getSelectedChat());
         }
@@ -114,7 +177,7 @@ function TTYGContextService(EventEmitterService) {
      * @param {ChatModel} chat - The chat object that is being updated.
      */
     const updateSelectedChat = (chat) => {
-        if (!_selectedChat || _selectedChat.id === chat.id) {
+        if (!_selectedChat || !_selectedChat.id || !chat || _selectedChat.id === chat.id) {
             _selectedChat = cloneDeep(chat);
             emit(TTYGEventName.SELECTED_CHAT_UPDATED, getSelectedChat());
         }
@@ -171,6 +234,53 @@ function TTYGContextService(EventEmitterService) {
         emit(TTYGEventName.AGENT_SELECTED, getSelectedAgent());
     };
 
+    const _getExplainResponseCache = () => {
+        return cloneDeep(_explainCache);
+    };
+
+    /**
+     * Gets the explain response.
+     * @param {string} answerId
+     * @return {ExplainResponseModel}
+     */
+    const getExplainResponse = (answerId) => {
+        return cloneDeep(_explainCache[answerId]);
+    };
+
+    /**
+     *  Adds the <code>explainResponse</code> into the explain response cache.
+     *
+     * @param {ExplainResponseModel} explainResponse
+     */
+    const addExplainResponseCache = (explainResponse) => {
+        _explainCache[explainResponse.answerId] = cloneDeep(explainResponse);
+        emit(TTYGEventName.EXPLAIN_RESPONSE_CACHE_UPDATED, _getExplainResponseCache());
+    };
+
+    const hasExplainResponse = (answerId) => {
+        return !!_explainCache[answerId];
+    };
+
+    const toggleExplainResponse = (answerId) => {
+        if (hasExplainResponse(answerId)) {
+            _explainCache[answerId].expanded = !_explainCache[answerId].expanded;
+            emit(TTYGEventName.EXPLAIN_RESPONSE_CACHE_UPDATED, _getExplainResponseCache());
+        }
+    };
+
+    /**
+     * Subscribes to the 'explainResponseCacheUpdated' event.
+     * @param {function} callback - The callback to be called when the event is fired.
+     *
+     * @return {function} unsubscribe function.
+     */
+    const onExplainResponseCacheUpdated = (callback) => {
+        if (angular.isFunction(callback)) {
+            callback(_getExplainResponseCache());
+        }
+        return subscribe(TTYGEventName.EXPLAIN_RESPONSE_CACHE_UPDATED, (explainResponses) => callback(explainResponses));
+    };
+
     /**
      * Subscribes to the 'agentSelected' event.
      * @param {function} callback - The callback to be called when the event is fired.
@@ -182,6 +292,33 @@ function TTYGContextService(EventEmitterService) {
             callback(getSelectedAgent());
         }
         return subscribe(TTYGEventName.AGENT_SELECTED, (selectedChat) => callback(selectedChat));
+    };
+
+    /**
+     * Updates the "canModifyAgent" flag and emits the 'canModifyAgentUpdated' event to notify listeners that the canModifyAgent flag is changed.
+     *
+     * @param {boolean} canModifyAgent
+     */
+    const setCanModifyAgent = (canModifyAgent) => {
+        _canModifyAgent = cloneDeep(canModifyAgent);
+        emit(TTYGEventName.CAN_MODIFY_AGENT_UPDATED, getCanModifyAgent());
+    };
+
+    const getCanModifyAgent = () => {
+        return _canModifyAgent;
+    };
+
+    /**
+     * Subscribes to the 'canModifyAgentUpdated' event.
+     * @param {function} callback - The callback to be called when the event is fired.
+     *
+     * @return {function} unsubscribe function.
+     */
+    const onCanUpdateAgentUpdated = (callback) => {
+        if (angular.isFunction(callback)) {
+            callback(getCanModifyAgent());
+        }
+        return subscribe(TTYGEventName.CAN_MODIFY_AGENT_UPDATED, (canModifyAgent) => callback(canModifyAgent));
     };
 
     /**
@@ -206,56 +343,134 @@ function TTYGContextService(EventEmitterService) {
     };
 
     return {
+        resetContext,
         emit,
         subscribe,
         getChats,
         updateChats,
+        addChat,
+        replaceChat,
         onChatsListChanged,
         getSelectedChat,
         selectChat,
+        deleteChat,
         onSelectedChatChanged,
         updateSelectedChat,
         onSelectedChatUpdated,
         updateAgents,
         onAgentsListChanged,
         getAgents,
+        getAgent,
         selectAgent,
         getSelectedAgent,
-        onSelectedAgentChanged
+        onSelectedAgentChanged,
+        hasExplainResponse,
+        toggleExplainResponse,
+        getExplainResponse,
+        addExplainResponseCache,
+        onExplainResponseCacheUpdated,
+        getDefaultAgent,
+        setDefaultAgent,
+        setCanModifyAgent,
+        getCanModifyAgent,
+        onCanUpdateAgentUpdated
     };
 }
 
 export const TTYGEventName = {
+    /**
+     * Emitting the "createChat" event triggers a backend request to create a new chat.
+     */
     CREATE_CHAT: 'createChat',
+
+    /**
+     * This event is emitted when a chat is successfully created.
+     */
     CREATE_CHAT_SUCCESSFUL: 'chatCreated',
+
+    /**
+     * This event is emitted when the creation of a chat fails.
+     */
     CREATE_CHAT_FAILURE: 'chatCreationFailed',
+
     RENAME_CHAT: 'renameChat',
     RENAME_CHAT_SUCCESSFUL: 'chatRenamed',
     RENAME_CHAT_FAILURE: 'chatRenamedFailure',
+
+    /**
+     * Emitting the "selectChat" event when the selected chat has been changed.
+     */
     SELECT_CHAT: 'selectChat',
+
+    /**
+     * Emitting the "selectChatUpdated" event when the selected chat has been updated.
+     */
     SELECTED_CHAT_UPDATED: 'selectChatUpdated',
+
+    /**
+     * This event will be emitted when the chat delete request is in progress. The payload will contain the chat ID
+     * and a boolean indicating if the deletion is in progress.
+     */
+    DELETING_CHAT: 'deletingChat',
+
+    /**
+     * This event will be emitted when the delete chat process is triggered but before the chat delete request is sent.
+     */
     DELETE_CHAT: 'deleteChat',
+
+    /**
+     * This event will be emitted when the chat was successfully deleted.
+     */
     DELETE_CHAT_SUCCESSFUL: 'chatDeleted',
+
+    /**
+     * This event will be emitted when the attempt to answer the question fails.
+     */
+
+    /**
+     * This event is emitted when the deletion of a chat fails.
+     */
     DELETE_CHAT_FAILURE: 'chatDeletedFailure',
+
     CHAT_EXPORT: 'chatExport',
     CHAT_EXPORT_SUCCESSFUL: 'chatExportSuccess',
     CHAT_EXPORT_FAILURE: 'chatExportFailure',
     CHAT_LIST_UPDATED: 'chatListUpdated',
+
+    /**
+     * Emitting the "askQuestion" event triggers a request to the backend to retrieve an answer to a question.
+     */
     ASK_QUESTION: 'askQuestion',
-    LOAD_CHAT: 'loadChat',
+
+    /**
+     * This event will be emitted when the attempt to answer the question fails.
+     */
+    ASK_QUESTION_FAILURE: 'askQuestionFailure',
+
+    /**
+     * Emitting the "loadChats" event will trigger an action to loads all chats from backend server.
+     */
+    LOAD_CHATS: 'loadChats',
     LOAD_CHAT_SUCCESSFUL: 'loadChatSuccess',
     LOAD_CHAT_FAILURE: 'loadChatFailure',
+
     AGENT_LIST_UPDATED: 'agentListUpdated',
 
     /**
-     * This event will be emitted when the create agent process is triggered but before the agent create request is sent.
+     * This event will be emitted when the create agent process is triggered through the UI but before the agent create
+     * request is sent. This is used to open the agent settings dialog.
      */
-    CREATE_AGENT: 'createAgent',
+    OPEN_AGENT_SETTINGS: 'openAgentSettings',
 
     /**
      * This event will be emitted when an agent needs to be edited.
      */
     EDIT_AGENT: 'editAgent',
+
+    /**
+     * This event will be emitted when an agent needs to be cloned.
+     */
+    CLONE_AGENT: 'cloneAgent',
 
     /**
      * This event will be emitted when the delete agent process is triggered but before the agent delete request is sent.
@@ -279,17 +494,29 @@ export const TTYGEventName = {
     AGENT_SELECTED: 'agentSelected',
 
     /**
-     * Emitting the "copyAnswer" event will trigger an action to copy an answer to the clipboard.
+     * This event will trigger the opening of the similarity view.
      */
-    COPY_ANSWER_TO_CLIPBOARD: 'copyAnswerToClipboard',
+    GO_TO_CREATE_SIMILARITY_VIEW: "goToCreateSimilarityView",
 
     /**
-     * This event will be emitted when an answer is successfully copied to the clipboard.
+     * This event will trigger the opening of the connectors view.
      */
-    COPY_ANSWER_TO_CLIPBOARD_SUCCESSFUL: 'copyAnswerToClipboardSuccess',
+    GO_TO_CONNECTORS_VIEW: "goToConnectorsView",
 
     /**
-     * This event will be emitted when copying an answer to the clipboard fails.
+     * This event will trigger fetching a new explanation of how the answer was generated.
      */
-    COPY_ANSWER_TO_CLIPBOARD_FAILURE: 'copyAnswerToClipboardFailure'
+    EXPLAIN_RESPONSE: "explainResponse",
+
+    /**
+     * This event will be emitted when the cache with explain responses changed.
+     */
+    EXPLAIN_RESPONSE_CACHE_UPDATED: "explainResponseCacheUpdated",
+
+    /**
+     * This event will trigger the opening of the sparql view.
+     */
+    GO_TO_SPARQL_EDITOR: "openQueryInSparqlEditor",
+
+    CAN_MODIFY_AGENT_UPDATED: "canModifyAgentUpdated"
 };

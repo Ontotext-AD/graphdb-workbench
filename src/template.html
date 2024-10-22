@@ -120,7 +120,7 @@
         <a class="menu-element-root" ng-href="{{::item.hrefFun ? item.hrefFun(productInfo) : item.href}}" ng-if="!item.children.length"
            ng-click="select($index, $event, clicked)">
             <span ng-class=item.icon class="menu-item-icon"></span>
-            <span class="menu-item" ng-show="!checkMenu()">{{item.label}}</span>
+            <span class="menu-item" ng-show="showLabel(item)">{{item.label}}</span>
         </a>
         <ul ng-if="item.children.length" class="sub-menu">
             <li class="submenu-title">{{item.label}}</li>
@@ -146,7 +146,7 @@
     </div>
 
         <div class="container-fluid main-container" ng-show="hasPermission()" ng-view role="main"
-             ng-class="checkMenu() ? 'expanded':''">
+             ng-class="(menuCollapsed || checkMenu()) ? 'expanded':''">
 
         </div>
 
@@ -164,6 +164,9 @@
     <object data="img/graphdb-splash.svg"></object>
     <div>GraphDB Workbench is loading...</div>
 </div>
+<script type="application/javascript">
+    window.wbDevMode = <%= devMode %>;
+</script>
 </body>
 
 </html>

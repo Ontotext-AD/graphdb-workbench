@@ -39,7 +39,8 @@ function TTYGStorageService(localStorageAdapter, LSKeys) {
      */
     function saveAgent(agent) {
         const settings = getTtygSettings();
-        settings.agent.id = agent.id;
+        // If the agent is not provided, we will persist undefined to clear any previously saved ID, if one exists.
+        settings.agent.id = agent ? agent.id : undefined;
         localStorageAdapter.set(LSKeys.TTYG, settings);
     }
 
@@ -54,8 +55,32 @@ function TTYGStorageService(localStorageAdapter, LSKeys) {
         }
     }
 
+    /**
+     * Saves the chat in the local storage.
+     * @param {ChatModel} chat
+     */
+    function saveChat(chat) {
+        const settings = getTtygSettings();
+        // If the chat is not provided, we will persist undefined to clear any previously saved ID, if one exists.
+        settings.chat.id = chat ? chat.id : undefined;
+        localStorageAdapter.set(LSKeys.TTYG, settings);
+    }
+
+    /**
+     * Gets the chat id from the local storage.
+     * @return {string|undefined}
+     */
+    function getChatId() {
+        const settings = getTtygSettings();
+        if (settings.chat) {
+            return settings.chat.id;
+        }
+    }
+
     return {
         saveAgent,
-        getAgentId
+        getAgentId,
+        saveChat,
+        getChatId
     };
 }

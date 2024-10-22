@@ -1,56 +1,95 @@
+import {NumericRangeModel, TextFieldModel} from '../form-fields';
+import {AdditionalExtractionMethod, ExtractionMethod} from './agents';
+
 export class AgentFormModel {
     constructor(data) {
         /**
          * @type {string}
          * @private
          */
-        this._id = data.id;
+        this._id = data && data.id;
 
         /**
          * @type {string}
          * @private
          */
-        this._name = data.name;
+        this._name = data && data.name;
         /**
          * @type {string}
          * @private
          */
-        this._repositoryId = data.repositoryId;
+        this._repositoryId = data && data.repositoryId;
         /**
          * @type {string}
          * @private
          */
-        this._model = data.model;
+        this._model = data && data.model || 'gpt-4o';
         /**
          * @type {NumericRangeModel}
          * @private
          */
-        this._temperature = data.temperature;
+        this._temperature = data && data.temperature || new NumericRangeModel({value: 0.7, minValue: 0, maxValue: 2, step: 0.1});
         /**
          * @type {NumericRangeModel}
          * @private
          */
-        this._topP = data.topP;
+        this._topP = data && data.topP || new NumericRangeModel({value: 1, minValue: 0, maxValue: 1, step: 0.1});
         /**
          * @type {number}
          * @private
          */
-        this._seed = data.seed;
+        this._seed = data && data.seed;
         /**
          * @type {AgentInstructionsFormModel}
          * @private
          */
-        this._instructions = data.instructions;
+        this._instructions = data && data.instructions;
         /**
          * @type {ExtractionMethodsFormModel}
          * @private
          */
-        this._assistantExtractionMethods = data.assistantExtractionMethods;
+        this._assistantExtractionMethods = data && data.assistantExtractionMethods || this.getDefaultExtractionMethods();
         /**
          * @type {AdditionalExtractionMethodsFormModel}
          * @private
          */
-        this._additionalExtractionMethods = data.additionalExtractionMethods;
+        this._additionalExtractionMethods = data && data.additionalExtractionMethods || this.getDefaultAdditionalExtractionMethod();
+    }
+
+    getDefaultExtractionMethods() {
+        const extractionMethods = [];
+        extractionMethods.push(new ExtractionMethodFormModel({
+                                                                 method: ExtractionMethod.SPARQL,
+                                                                 ontologyGraph: 'http://example.com/swgraph',
+                                                                 sparqlQuery: new TextFieldModel({value: 'select ?s ?p ?o where {?s ?p ?o .}', minLength: 1, maxLength: 2380}),
+                                                                 selected: false
+                                                             }));
+        extractionMethods.push(new ExtractionMethodFormModel({
+                                                                 method: ExtractionMethod.FTS_SEARCH,
+                                                                 maxNumberOfTriplesPerCall: null,
+                                                                 selected: false
+                                                             }));
+        extractionMethods.push(new ExtractionMethodFormModel({
+                                                                 method: ExtractionMethod.SIMILARITY,
+                                                                 similarityIndex: null,
+                                                                 similarityIndexThreshold: new NumericRangeModel({value: 0.6, minValue: 0, maxValue: 1, step: 0.1}),
+                                                                 maxNumberOfTriplesPerCall: null,
+                                                                 selected: false
+                                                             }));
+        extractionMethods.push(new ExtractionMethodFormModel({
+                                                                 method: ExtractionMethod.RETRIEVAL,
+                                                                 retrievalConnectorInstance: null,
+                                                                 maxNumberOfTriplesPerCall: null,
+                                                                 queryTemplate: new TextFieldModel({value: '{"query": "string"}', minLength: 1, maxLength: 2380}),
+                                                                 selected: false
+                                                             }));
+        return new ExtractionMethodsFormModel(extractionMethods);
+    }
+
+    getDefaultAdditionalExtractionMethod() {
+        const additionalExtractionMethods = [];
+        additionalExtractionMethods.push(new AdditionalExtractionMethodFormModel({method: AdditionalExtractionMethod.IRI_DISCOVERY_SEARCH}));
+        return new AdditionalExtractionMethodsFormModel(additionalExtractionMethods);
     }
 
     /**
@@ -204,6 +243,23 @@ export class ExtractionMethodsFormModel {
     set extractionMethods(value) {
         this._extractionMethods = value;
     }
+
+    /**
+     * Gets the extraction method with <code>extractionMethodName</code> name.
+     * @param {'retrieval_search' | 'similarity_search' | 'sparql_search' | 'fts_search'} extractionMethodName
+     * @return {ExtractionMethodFormModel}
+     */
+    getExtractionMethod(extractionMethodName) {
+        return this._extractionMethods.find((extractionMethod) => extractionMethod.method === extractionMethodName);
+    }
+
+    getSimilarityExtractionMethod() {
+        return this.getExtractionMethod(ExtractionMethod.SIMILARITY);
+    }
+
+    getRetrievalExtractionMethod() {
+        return this.getExtractionMethod(ExtractionMethod.RETRIEVAL);
+    }
 }
 
 export class ExtractionMethodFormModel {
@@ -222,6 +278,12 @@ export class ExtractionMethodFormModel {
          * @private
          */
         this._sparqlOption = data.sparqlOption;
+        /**
+         * Whether to add missing namespaces to the generated SPARQL query.
+         * @type {boolean}
+         * @private
+         */
+        this._addMissingNamespaces = data.addMissingNamespaces;
         /**
          * @type {string}
          * @private
@@ -255,6 +317,12 @@ export class ExtractionMethodFormModel {
          * @private
          */
         this._retrievalConnectorInstance = data.retrievalConnectorInstance;
+
+        this._expanded = data.expanded !== undefined ? data.expanded : false;
+    }
+
+    toggleCollapse() {
+        this._expanded = !this._expanded;
     }
 
     toPayload() {
@@ -265,7 +333,13 @@ export class ExtractionMethodFormModel {
         if (this._sparqlOption === 'ontologyGraph') {
             payload.ontologyGraph = this._ontologyGraph ? this._ontologyGraph : null;
         } else if (this._sparqlOption === 'sparqlQuery') {
-            payload.constructQuery = this._sparqlQuery ? this._sparqlQuery.value : null;
+            payload.sparqlQuery = this._sparqlQuery ? this._sparqlQuery.value : null;
+        }
+        if (this._method === ExtractionMethod.SPARQL) {
+            // this is used only in the sparql method
+            if (this._addMissingNamespaces !== undefined) {
+                payload.addMissingNamespaces = this._addMissingNamespaces;
+            }
         }
         // this is used for all but the SPARQL method
         if (this._maxNumberOfTriplesPerCall) {
@@ -320,6 +394,14 @@ export class ExtractionMethodFormModel {
         this._sparqlQuery = value;
     }
 
+    get addMissingNamespaces() {
+        return this._addMissingNamespaces;
+    }
+
+    set addMissingNamespaces(value) {
+        this._addMissingNamespaces = value;
+    }
+
     get ontologyGraph() {
         return this._ontologyGraph;
     }
@@ -366,6 +448,14 @@ export class ExtractionMethodFormModel {
 
     set retrievalConnectorInstance(value) {
         this._retrievalConnectorInstance = value;
+    }
+
+    get expanded() {
+        return this._expanded;
+    }
+
+    set expanded(value) {
+        this._expanded = value;
     }
 }
 
@@ -434,10 +524,22 @@ export class AgentInstructionsFormModel {
          */
         this._systemInstruction = data.systemInstruction;
         /**
+         * Used in case the user wants to revert the system instruction to the original one.
+         * @type {string}
+         * @private
+         */
+        this._systemInstructionCopy = data.systemInstruction;
+        /**
          * @type {string}
          * @private
          */
         this._userInstruction = data.userInstruction;
+        /**
+         * Used in case the user wants to revert the user instruction to the original one
+         * @type {string}
+         * @private
+         */
+        this._userInstructionCopy = data.userInstruction;
     }
 
     toPayload() {
@@ -455,11 +557,27 @@ export class AgentInstructionsFormModel {
         this._systemInstruction = value;
     }
 
+    get systemInstructionCopy() {
+        return this._systemInstructionCopy;
+    }
+
+    set systemInstructionCopy(value) {
+        this._systemInstructionCopy = value;
+    }
+
     get userInstruction() {
         return this._userInstruction;
     }
 
     set userInstruction(value) {
         this._userInstruction = value;
+    }
+
+    get userInstructionCopy() {
+        return this._userInstructionCopy;
+    }
+
+    set userInstructionCopy(value) {
+        this._userInstructionCopy = value;
     }
 }

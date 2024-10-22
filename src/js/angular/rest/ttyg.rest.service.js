@@ -1,4 +1,4 @@
-import {TtygRestServiceFakeBackend} from "./ttyg.rest.service.fake.backend";
+import {TtygRestServiceFakeBackend} from './ttyg.rest.service.fake.backend';
 
 angular
     .module('graphdb.framework.rest.ttyg.service', [])
@@ -8,6 +8,7 @@ TTYGRestService.$inject = ['$http'];
 
 const CONVERSATIONS_ENDPOINT = 'rest/chat/conversations';
 const AGENTS_ENDPOINT = 'rest/chat/agents';
+const EXPLAIN_RESPONSE_ENDPOINT = `${CONVERSATIONS_ENDPOINT}/explain`;
 
 const DEVELOPMENT = false;
 
@@ -52,17 +53,14 @@ function TTYGRestService($http) {
 
     /**
      * Exports a conversation by its ID.
-     *
-     * TODO: this should give the user a file to download, but the backend doesn't support it yet.
-     *
      * @param {string} id
-     * @return {*}
+     * @return {Promise<{Blob}>} Returns the conversation as a Blob
      */
     const exportConversation = (id) => {
         if (DEVELOPMENT) {
             return _fakeBackend.exportConversation(id);
         }
-        return $http.post(`${CONVERSATIONS_ENDPOINT}/export/${id}`);
+        return $http.get(`${CONVERSATIONS_ENDPOINT}/export/${id}`, {responseType: 'blob'});
     };
 
     /**
@@ -164,6 +162,25 @@ function TTYGRestService($http) {
         return $http.delete(`${AGENTS_ENDPOINT}/${id}`);
     };
 
+    /**
+     * Calls backend server to fetch an explanation of how the answer was generated.
+     * @param {*} data
+     * @return {Promise}
+     */
+    const explainResponse = (data = {}) => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.explainResponse(data);
+        }
+        return $http.post(EXPLAIN_RESPONSE_ENDPOINT, data);
+    };
+
+    const getAgentDefaultValues = () => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.getAgentDefaultValues();
+        }
+        return $http.get(`${AGENTS_ENDPOINT}/default`);
+    };
+
     return {
         getConversation,
         renameConversation,
@@ -176,6 +193,8 @@ function TTYGRestService($http) {
         getAgent,
         createAgent,
         editAgent,
-        deleteAgent
+        deleteAgent,
+        explainResponse,
+        getAgentDefaultValues
     };
 }

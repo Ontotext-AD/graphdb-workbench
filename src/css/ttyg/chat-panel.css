@@ -1,86 +1,145 @@
+:root {
+    --text-color: #000000;
+    --line-height: 1.6;
+}
+
 .chat-panel {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    color: var(--text-color);
+    clip: rect(0, auto, auto, 0);
+}
+
+.chat-panel.no-content {
+    justify-content: center;
     align-items: center;
+    height: inherit !important;
 }
 
 .chat-panel .chat-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--message-gap);
+    overflow-y: hidden;
+    scrollbar-gutter: stable;
+    /*
+    space for scroll gutters - we don't want them inside the chat
+    */
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.chat-panel:hover .chat-details {
     overflow-y: auto;
-    padding-right: 10px;
-    width: 90%;
+}
+
+.chat-panel .chat-details > div:last-child {
+    /* bigger space just before the ask input and button */
+    padding-bottom: 3rem;
 }
 
 .chat-panel .chat-detail {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    padding: 16px 0 40px;
+    gap: var(--message-gap);
 }
 
 .chat-panel .user-message {
     display: flex;
     justify-content: flex-end;
     flex-direction: row;
-}
-
-.chat-panel .assistant {
-    display: flex;
-    gap: 16px;
+    color: var(--text-color);
 }
 
 .chat-panel .actions {
     display: flex;
-    gap: 10px;
-}
-
-.chat-panel .assistant-message {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.chat-panel .assistant-message .answer {
-    padding: 4px 8px;
+    gap: 0.625rem;
 }
 
 .chat-panel .user-message .question {
     max-width: 70%;
-    text-align: end;
-    padding: 8px 16px;
-}
-
-.chat-panel .assistant-icon {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
+    padding: 0.5rem 1rem;
+    color: var(--text-color);
+    line-height: var(--line-height);
 }
 
 .chat-panel .messages-hint {
-    font-size: 2em;
-    padding-top: 2em;
     text-align: center;
 }
 
-.chat-panel .assistant-message .hidden-actions {
-    opacity: 0
+.chat-panel .messages-hint .hint1 {
+    font-size: 2rem;
+    transform:scale(1, 0.8);
 }
 
-.chat-panel .assistant-message .actions:hover {
-    opacity: 1;
+.chat-panel .messages-hint .hint1 .graph,
+.chat-panel .messages-hint .hint1 .wise {
+    animation-duration: 3.0s;
+    animation-delay: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-out;
 }
 
-.chat-panel .assistant-message .actions {
-    padding-left: 6px;
+.chat-panel .messages-hint .hint1 .graph {
+    font-weight: 500;
+    animation-name: change-color-graph;
 }
 
-.chat-panel .mew-question {
+.chat-panel .messages-hint .hint1 .wise {
+    animation-name: change-color-wise;
+}
+
+.chat-panel .messages-hint .hint1 .thrives {
+    font-size: 0.425em;
+    font-weight: 400;
+}
+
+@keyframes change-color-graph {
+    0% {
+        color: var(--graphwise-blue-color);
+    }
+    40% {
+        color: inherit;
+    }
+    100% {
+        color: inherit;
+    }
+}
+
+@keyframes change-color-wise {
+    0% {
+        color: inherit;
+    }
+    40% {
+        color: var(--graphwise-pink-color);
+    }
+    80% {
+        color: inherit;
+    }
+    100% {
+        color: inherit;
+    }
+}
+
+.chat-panel .messages-hint .hint2 {
+    font-size: 1.5rem;
+}
+
+.chat-panel .new-question {
     width: 100%;
+    padding: 0 1rem;
 }
 
-.chat-panel .mew-question .question-input {
+.chat-panel .new-question .question-input {
     background-color: #EFF3F8;
+    color: var(--text-color);
+}
+
+.chat-panel .chat-loading {
+    margin-top: 100px;
+}
+
+.chat-panel .text-warning {
+    font-weight: 300;
 }

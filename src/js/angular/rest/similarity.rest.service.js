@@ -19,7 +19,23 @@ function SimilarityRestService($http) {
         saveSearchQuery
     };
 
-    function getIndexes() {
+    /**
+     * Fetches the similarity indexes for the repository with id <code>repositoryId</code> and location <code>repositoryLocation</code>.
+     * If the repository ID and repository location are not provided, the currently selected repository will be used.
+     *
+     * @param {string | undefined} repositoryId - The repository id.
+     * @param {string | undefined} repositoryLocation - The repository location.
+     * @return {*} The similarity indexes for the specified repository.
+     */
+    function getIndexes(repositoryId, repositoryLocation) {
+        if (repositoryId) {
+            return $http.get(SIMILARITY_ENDPOINT, {
+                headers: {
+                    'X-GraphDB-Repository': repositoryId,
+                    'X-GraphDB-Repository-Location': repositoryLocation
+                }
+            });
+        }
         return $http.get(SIMILARITY_ENDPOINT);
     }
 

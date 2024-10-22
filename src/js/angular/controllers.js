@@ -12,6 +12,7 @@ import 'ng-file-upload/dist/ng-file-upload-shim.min';
 import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/repositories.service';
 import 'angular/core/services/license.service';
+import 'angular/core/services/installation-cookie.service';
 import {UserRole} from 'angular/utils/user-utils';
 import 'angular/utils/local-storage-adapter';
 import 'angular/utils/workbench-settings-storage-service';
@@ -30,6 +31,7 @@ angular
         'graphdb.framework.core.services.jwtauth',
         'graphdb.framework.core.services.repositories',
         'graphdb.framework.core.services.licenseService',
+        'graphdb.framework.core.services.installationCookieService',
         'graphdb.framework.core.services.theme-service',
         'ngCookies',
         'ngFileUpload',
@@ -92,7 +94,7 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
         }
     }
 
-    $scope.$on('autocompleteStatus', function() {
+    $scope.$on('autocompleteStatus', function () {
         checkAutocompleteStatus();
     });
 
@@ -133,11 +135,36 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.descr = $translate.instant('main.gdb.description');
     $scope.documentation = '';
     $scope.menu = $menuItems;
+    $scope.menuCollapsed = false;
     $scope.tutorialState = LocalStorageAdapter.get(LSKeys.TUTORIAL_STATE) !== 1;
     $scope.userLoggedIn = false;
     $scope.embedded = $location.search().embedded;
     $scope.productInfo = productInfo;
     $scope.guidePaused = 'true' === LocalStorageAdapter.get(GUIDE_PAUSE);
+
+    $scope.isMenuCollapsedOnLoad = function () {
+        return $('.main-menu').hasClass('collapsed');
+    };
+
+    $scope.checkMenu = debounce(function () {
+        const collapsed = $scope.isMenuCollapsedOnLoad();
+        if ($scope.menuCollapsed !== collapsed) {
+            $scope.menuCollapsed = collapsed;
+        }
+    }, 0, {trailing: true});
+
+    const deregisterMenuWatcher = $scope.$watch(function () {
+        return $scope.isMenuCollapsedOnLoad();
+    }, function (newValue, oldValue) {
+        if (newValue !== oldValue || typeof newValue === 'undefined') {
+            // Trigger debounced check on both collapse and expand
+            $scope.checkMenu();
+        }
+    });
+
+    $scope.showLabel = function (item) {
+        return item.children ? true : !$scope.menuCollapsed;
+    };
 
     const setYears = function () {
         const date = new Date();
@@ -201,10 +228,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         $rootScope.title = decodeHTML($translate.instant($rootScope.title));
         $scope.initTutorial();
     });
-
-    $scope.checkMenu = debounce(function() {
-        return $('.main-menu').hasClass('collapsed');
-    }, 250, {trailing: false});
 
     //Copy to clipboard popover options
     $scope.copyToClipboard = function (uri) {
@@ -324,7 +347,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.isFreeAccessEnabled = function () {
         return $jwtAuth.isFreeAccessEnabled();
     };
-    $scope.hasExternalAuthUser = function() {
+    $scope.hasExternalAuthUser = function () {
         return $jwtAuth.hasExternalAuthUser();
     };
     $scope.isDefaultAuthEnabled = function () {
@@ -401,7 +424,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $repositories.isActiveRepoFedXType();
     };
 
-    $scope.isLicenseValid = function() {
+    $scope.isLicenseValid = function () {
         return $licenseService.isLicenseValid();
     };
 
@@ -409,7 +432,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
      *  Sets attrs property in the directive
      * @param attrs
      */
-    $scope.setAttrs = function(attrs) {
+    $scope.setAttrs = function (attrs) {
         $scope.attrs = attrs;
     };
 
@@ -424,7 +447,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         if ($scope.attrs) {
             $scope.isRestricted =
                 $scope.attrs.hasOwnProperty('license') && !$licenseService.isLicenseValid() ||
-                $scope.attrs.hasOwnProperty('write') && $scope.isSecurityEnabled() && !$scope.canWriteActiveRepo()||
+                $scope.attrs.hasOwnProperty('write') && $scope.isSecurityEnabled() && !$scope.canWriteActiveRepo() ||
                 $scope.attrs.hasOwnProperty('ontop') && $scope.isActiveRepoOntopType() ||
                 $scope.attrs.hasOwnProperty('fedx') && $scope.isActiveRepoFedXType();
         }
@@ -515,6 +538,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     $scope.$on('$destroy', () => {
         window.removeEventListener('storage', localStoreChangeHandler);
+        deregisterMenuWatcher();
         if ($scope.checkMenu) {
             $timeout.cancel($scope.checkMenu);
         }
@@ -611,7 +635,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             },
             {
                 "title": $translate.instant('main.info.title.create.repo.page'),
-                "info": decodeHTML($translate.instant('main.info.create.repo.page', {link:"<a href=\"https://graphdb.ontotext.com/documentation/" + productInfo.productShortVersion + "/configuring-a-repository.html\" target=\"_blank\">"}))
+                "info": decodeHTML($translate.instant('main.info.create.repo.page', {link: "<a href=\"https://graphdb.ontotext.com/documentation/" + productInfo.productShortVersion + "/configuring-a-repository.html\" target=\"_blank\">"}))
             },
             {
                 "title": $translate.instant('main.info.title.load.sample.dataset'),
@@ -637,7 +661,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }, 50);
     };
 
-    $scope.getTutorialPageHtml = function(page) {
+    $scope.getTutorialPageHtml = function (page) {
         return $sce.trustAsHtml(page.info);
     };
 
@@ -811,6 +835,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     });
 
+    $scope.getProductType = function () {
+        return $licenseService.productType();
+    };
 
     $scope.isEnterprise = function () {
         return $scope.getProductType() === "enterprise";
@@ -827,24 +854,21 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return _.indexOf(editions, $scope.getProductType()) >= 0;
     };
 
-    $scope.showLicense = function() {
-        return $licenseService.showLicense;
+    $scope.showLicense = function () {
+        return $licenseService.showLicense();
     };
 
-    $scope.getLicense = function() {
-        return $licenseService.license;
+    $scope.getLicense = function () {
+        return $licenseService.license();
     };
 
-    $scope.isLicenseHardcoded = function() {
-        return $licenseService.isLicenseHardcoded;
+    $scope.isLicenseHardcoded = function () {
+        return $licenseService.isLicenseHardcoded();
     };
 
-    $scope.getProductType = function() {
-        return $licenseService.productType;
-    };
 
-    $scope.getProductTypeHuman = function() {
-        return $licenseService.productTypeHuman;
+    $scope.getProductTypeHuman = function () {
+        return $licenseService.productTypeHuman();
     };
 
 
@@ -977,17 +1001,17 @@ function uxTestCtrl($scope, $repositories, toastr, ModalService) {
         });
     };
 
-    $scope.demoToast = function(alertType, secondArg=true) {
+    $scope.demoToast = function (alertType, secondArg = true) {
         toastr[alertType]('Consectetur adipiscing elit. Sic transit gloria mundi.',
             secondArg ? 'Lorem ipsum dolor sit amet' : undefined,
             {timeOut: 300000, extendedTimeOut: 300000});
     };
 
-    $scope.clearToasts = function() {
+    $scope.clearToasts = function () {
         toastr.clear();
     };
 
-    $scope.clearRepo = function() {
+    $scope.clearRepo = function () {
         $repositories.setRepository('');
     };
 }

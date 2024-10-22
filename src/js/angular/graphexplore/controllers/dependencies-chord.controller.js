@@ -168,7 +168,7 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     $rootScope.key = '';
 
     datasource.get = function (index, count, success) {
-        return UiScrollService.initLazyList(index, count, success, position, $scope.allClasses.items);
+        UiScrollService.initLazyList(index, count, success, position, $scope.allClasses.items);
     };
 
     $rootScope.$watch(function () {

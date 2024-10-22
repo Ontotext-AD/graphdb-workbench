@@ -74,6 +74,10 @@ describe('Graphs overview screen validation', () => {
         });
 
         it('Should switch pages', () => {
+            // Makes this less flaky - is it possible the page elements don't have an event attached
+            // yet when this fails? It looks like the click has never happened
+            cy.wait(100);
+
             // Switch through pages and verify that the respective pager button is active.
             selectPage(2).should('contain', '2')
                 .closest('li').should('have.class', 'active');
