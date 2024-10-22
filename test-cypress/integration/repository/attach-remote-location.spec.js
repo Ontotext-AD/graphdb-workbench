@@ -4,9 +4,16 @@ import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 
 describe('Attach remote location', () => {
+    let repositoryId;
 
     beforeEach(() => {
-        RepositorySteps.visit();
+        cy.visit('/repository');
+        RepositorySteps.waitLoader();
+        RepositorySteps.waitUntilRepositoriesPageIsLoaded();
+    });
+
+    afterEach(() => {
+        cy.deleteRepository(repositoryId);
     });
 
     it('Should create and delete remote instance', () => {
@@ -132,24 +139,42 @@ describe('Attach remote location', () => {
     });
 
     it('Should open edit remote location dialog', () => {
-        // When I open the Repositories view that contains all possible kind of locations.
-        RepositoriesStubs.stubRepositories();
-        RepositoriesStubs.stubLocations();
+        repositoryId = 'http://local';
+        addRemoteSPARQLLocation(repositoryId, 'username', 'password');
         RepositorySteps.getLocalGraphDBTable().should('exist');
-        // When I click on edit ontopic istance
-        RepositorySteps.editOntopicInstance('http://local');
-
-        // Then I expect to see that Ontopic instance is set
-        AttachRepositorySteps.getOntopicRadioBtn().should('be.checked');
+        // When I click to edit the SPARQL instance
+        RepositorySteps.editSparqlInstance(0);
+        // Then I expect to see that SPARQL instance is selected
+        AttachRepositorySteps.getSparqlEndpointRadioBtn().should('be.checked');
         // And be disabled
-        AttachRepositorySteps.getOntopicRadioBtn().should('be.disabled');
+        AttachRepositorySteps.getSparqlEndpointRadioBtn().should('be.disabled');
         // The location url be set
-        AttachRepositorySteps.getLocationURLInput().should('have.value', 'http://local');
+        AttachRepositorySteps.getLocationURLInput().should('have.value', repositoryId);
         // And be disabled for edit
         AttachRepositorySteps.getLocationURLInput().should('be.disabled');
+        ModalDialogSteps.close();
+        // Then I can remove the new location
+        RepositorySteps.deleteSparqlLocation(repositoryId);
+        // When I confirm
+        ModalDialogSteps.clickOnConfirmButton();
     });
 
     it('should create and delete SPARQL endpoint instance', () => {
+        repositoryId = 'http://endpoint/repo/ex';
+        addRemoteSPARQLLocation(repositoryId, 'username', 'password');
+        // Then the dialog has closed
+        ModalDialogSteps.getDialog().should('not.exist');
+        // And the SPARQL table should be visible
+        RepositorySteps.getSparqlOntopicTable().should('contain', repositoryId);
+        // Then I can remove the new location
+        RepositorySteps.deleteSparqlLocation(repositoryId);
+        // When I confirm
+        ModalDialogSteps.clickOnConfirmButton();
+        // Then the instance should be gone
+        RepositorySteps.getSparqlOntopicTable().should('not.exist');
+    });
+
+    function addRemoteSPARQLLocation(url, username, password) {
         // When I open the "Attach a remote instance" dialog.
         AttachRepositorySteps.openAttachRemoteLocationDialog();
         // Then I expect the "Attach" button to be disabled (not clickable), because location URL is mandatory
@@ -161,19 +186,12 @@ describe('Attach remote location', () => {
         // When I select SPARQL Endpoint instance
         AttachRepositorySteps.selectSparqlEndpointRadioBtn();
         // When I fill correct URL, username and password
-        AttachRepositorySteps.enterURL("http://endpoint/repo/ex");
-        AttachRepositorySteps.enterUsername("username");
-        AttachRepositorySteps.enterPassword('password');
+        AttachRepositorySteps.enterURL(url);
+        AttachRepositorySteps.enterUsername(username);
+        AttachRepositorySteps.enterPassword(password);
         // Then I expect the "Attach" button to be enabled
         AttachRepositorySteps.getAttachBtn().should('be.enabled');
         // And when I attach the location, it should be visible in the list
         AttachRepositorySteps.attachRemoteLocation();
-        RepositorySteps.getSparqlOntopicTable().should('contain', 'http://endpoint/repo/ex');
-        // Then I can remove the new location
-        RepositorySteps.deleteSparqlLocation('http://endpoint/repo/ex');
-        // When I confirm
-        ModalDialogSteps.clickOnConfirmButton();
-        // Then the instance should be gone
-        RepositorySteps.getSparqlOntopicTable().should('not.exist');
-    });
+    }
 });

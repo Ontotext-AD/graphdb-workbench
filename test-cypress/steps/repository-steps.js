@@ -255,6 +255,16 @@ export class RepositorySteps {
         RepositorySteps.getEditOntopicInstanceBtn(url).click();
     }
 
+    static getEditSparqlInstanceBtn(row) {
+        return cy.get('#wb-repositories-ontopic-sparql-repositoryInGetRepositories tbody tr')
+            .eq(row)
+            .find('.edit-sparql-location');
+    }
+
+    static editSparqlInstance(row) {
+        RepositorySteps.getEditSparqlInstanceBtn(row).click();
+    }
+
     static getRemoteGraphDBTable() {
         return cy.get('#wb-locations-locationInGetRemoteLocations');
     }
