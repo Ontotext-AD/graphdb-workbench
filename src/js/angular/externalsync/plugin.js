@@ -6,7 +6,8 @@ PluginRegistry.add('route', {
     'controller': 'ConnectorsCtrl',
     'templateUrl': 'pages/connectorsInfo.html',
     'title': 'view.connector.management.title',
-    'helpInfo': 'view.connector.management.helpInfo'
+    'helpInfo': 'view.connector.management.helpInfo',
+    'documentationUrl': 'connectors.html'
 });
 
 PluginRegistry.add('main.menu', {

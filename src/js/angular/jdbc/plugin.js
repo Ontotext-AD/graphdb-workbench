@@ -7,7 +7,8 @@ PluginRegistry.add('route', [
         'controller': 'JdbcListCtrl',
         'templateUrl': 'pages/jdbc.html',
         'title': 'view.jdbc.title',
-        'helpInfo': 'view.jdbc.helpInfo'
+        'helpInfo': 'view.jdbc.helpInfo',
+        'documentationUrl': 'sql-access-over-jdbc.html'
     },
     {
         'url': '/jdbc/configuration/create',

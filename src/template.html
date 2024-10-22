@@ -117,7 +117,7 @@
             <span ng-class=item.icon class="menu-item-icon"></span>
             <span class="menu-item">{{item.label}}</span>
         </div>
-        <a class="menu-element-root" ng-href="{{::item.hrefFun ? item.hrefFun(productInfo) : item.href}}" ng-if="!item.children.length"
+        <a class="menu-element-root" ng-href="{{::item.hrefFun ? item.hrefFun(productInfo, resolveUrl) : item.href}}" ng-if="!item.children.length"
            ng-click="select($index, $event, clicked)">
             <span ng-class=item.icon class="menu-item-icon"></span>
             <span class="menu-item" ng-show="showLabel(item)">{{item.label}}</span>
@@ -129,7 +129,7 @@
                 ng-class="{ active: (isCurrentPath(submenu.href) || isCurrentSubmenuChildPath(submenu)) }"
                 ng-if="checkForWrite(submenu.role, getActiveRepositoryObject()) && checkEdition(submenu.editions)"
                 guide-selector="{{submenu.guideSelector}}">
-                <a ng-href="{{::submenu.hrefFun ? submenu.hrefFun(productInfo) : submenu.href}}">{{submenu.label}}
+                <a ng-href="{{::submenu.hrefFun ? submenu.hrefFun(productInfo, resolveUrl) : submenu.href}}">{{submenu.label}}
                   <span ng-if="submenu.icon" title="{{'open.external.page' | translate}}" ng-class=submenu.icon class="text-muted"></span>
                 </a>
             </li>

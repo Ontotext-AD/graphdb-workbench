@@ -3,11 +3,7 @@
 <div class="ttyg-view" ng-class="{'help-visible': isHelpVisible}">
     <h1 id="ttyg-view-title">
         {{ title }}
-        <span class="btn btn-link"
-              uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
-              popover-trigger="mouseenter"
-              popover-placement="bottom-right"
-              popover-append-to-body="true"><span class="icon-info text-tertiary"></span></span>
+        <page-info-tooltip></page-info-tooltip>
     </h1>
 
     <div core-errors></div>

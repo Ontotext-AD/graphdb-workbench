@@ -25,6 +25,7 @@ import {GUIDE_PAUSE} from './guides/tour-lib-services/shepherd.service';
 import 'angular-pageslide-directive/dist/angular-pageslide-directive';
 import 'angularjs-slider/dist/rzslider.min';
 import {debounce} from "lodash";
+import {DocumentationUrlResolver} from "./utils/documentation-url-resolver";
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -332,6 +333,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             $scope.selected = -1;
         }
     });
+
+    $scope.resolveUrl = (productVersion, endpointPath) => DocumentationUrlResolver.getDocumentationUrl(productVersion, endpointPath);
 
     $scope.isCurrentPath = function (path) {
         return $location.path() === '/' + path;

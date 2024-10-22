@@ -14,8 +14,10 @@ import 'angular/core/directives/uppercased.directive';
 import 'angular/core/directives/operations-statuses-monitor/operations-statuses-monitor.directive';
 import 'angular/core/directives/autocomplete/autocomplete.directive';
 import 'angular/core/directives/prop-indeterminate/prop-indeterminate.directive';
+import 'angular/core/directives/page-info-tooltip.directive';
 import {defineCustomElements} from 'ontotext-yasgui-web-component/loader';
 import {convertToHumanReadable} from "./js/angular/utils/size-util";
+import {DocumentationUrlResolver} from "./js/angular/utils/documentation-url-resolver";
 
 // $translate.instant converts <b> from strings to &lt;b&gt
 // and $sce.trustAsHtml could not recognise that this is valid html
@@ -40,6 +42,7 @@ const modules = [
     'graphdb.framework.core.directives.angular-tooltips',
     'graphdb.framework.core.directives.uppercased',
     'graphdb.framework.core.directives.prop-indeterminate',
+    'graphdb.framework.core.directives.page-info-tooltip',
     'graphdb.framework.guides.services',
     'graphdb.framework.core.services.licenseService',
     'graphdb.framework.core.services.installationCookieService',
@@ -132,6 +135,7 @@ const moduleDefinition = function (productInfo, translations) {
                     templateUrl: route.templateUrl,
                     title: route.title,
                     helpInfo: route.helpInfo,
+                    documentationUrl: route.documentationUrl,
                     reloadOnSearch: route.reloadOnSearch !== undefined ? route.reloadOnSearch : true,
                     resolve: {
                         preload: ['$ocLazyLoad', '$q', function ($ocLazyLoad, $q) {
@@ -214,8 +218,9 @@ const moduleDefinition = function (productInfo, translations) {
                     document.title = 'GraphDB Workbench';
                 }
 
-                $rootScope.helpInfo = $sce.trustAsHtml(decodeHTML($translate.instant($route.current.helpInfo)));
+                $rootScope.helpInfo = $route.current.helpInfo && $sce.trustAsHtml(decodeHTML($translate.instant($route.current.helpInfo)));
                 $rootScope.title = decodeHTML($translate.instant($route.current.title));
+                $rootScope.documentationUrl =  DocumentationUrlResolver.getDocumentationUrl(productInfo.productShortVersion, $route.current.documentationUrl);
             }
 
             // Check if theme is set in local storage workbench settings and apply

@@ -6,7 +6,8 @@ PluginRegistry.add('route', {
     'controller': 'AclManagementCtrl',
     'templateUrl': 'pages/aclmanagement.html',
     'title': 'view.aclmanagement.title',
-    'helpInfo': 'view.aclmanagement.helpInfo'
+    'helpInfo': 'view.aclmanagement.helpInfo',
+    'documentationUrl': 'managing-fgac-workbench.html'
 });
 
 PluginRegistry.add('main.menu', {

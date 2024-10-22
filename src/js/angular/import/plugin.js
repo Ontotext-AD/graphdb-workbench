@@ -7,7 +7,8 @@ PluginRegistry.add('route', {
     'templateUrl': 'pages/import.html',
     'title': 'common.import',
     'reloadOnSearch': false,
-    'helpInfo': 'view.import.helpInfo'
+    'helpInfo': 'view.import.helpInfo',
+    'documentationUrl': 'loading-data-using-the-workbench.html'
 });
 
 PluginRegistry.add('main.menu', {
