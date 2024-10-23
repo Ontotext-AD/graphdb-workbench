@@ -2,3 +2,7 @@
     font-weight: bolder;
     margin-bottom: 0.5em;
 }
+
+.instructions-explain .instruction-content {
+    margin-top: 0.5em;
+}

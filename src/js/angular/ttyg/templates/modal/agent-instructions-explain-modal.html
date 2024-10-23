@@ -8,14 +8,13 @@
 <div class="modal-body">
     <div class="instructions-explain">
         <div ng-repeat="instruction in agentInstructionsExplain" class="instruction" ng-class="{'mb-2': !$last}">
-            <span class="instruction-title mb-1"
-                 uib-popover="{{'ttyg.agent.instructions_explain_modal.instructions.' + instruction.type + '.description' | translate}}"
-                 popover-trigger="mouseenter">
-                ### {{'ttyg.agent.instructions_explain_modal.instructions.' + instruction.type + '.label' | translate}}
-            </span>
-            <div class="instruction-content">
-                {{instruction.content}}
-            </div>
+            <h5 class="instruction-title mb-0">
+                <span
+                    uib-popover="{{'ttyg.agent.instructions_explain_modal.instructions.' + instruction.type + '.description' | translate}}"
+                    popover-trigger="mouseenter">{{'ttyg.agent.instructions_explain_modal.instructions.' + instruction.type + '.label' | translate}}</span>
+            </h5>
+            <h7 class="text-muted d-block">({{instruction.size}} characters)</h7>
+            <pre class="instruction-content">{{instruction.content}}</pre>
         </div>
     </div>
 </div>
