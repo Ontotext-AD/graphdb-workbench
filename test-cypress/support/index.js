@@ -22,6 +22,7 @@ import './commands';
 import 'cypress-real-events';
 import 'cypress-file-upload';
 import {LicenseStubs} from "../stubs/license-stubs";
+import {SecurityStubs} from "../stubs/security-stubs";
 
 // Configures an environment variable with the key used for common actions (cmd on mac, ctrl on other OS).
 // This variable must be used in all actions that type e.g. ctrl-a to select text.
@@ -33,5 +34,8 @@ require('cypress-terminal-report/src/installLogsCollector')();
 // We don't want any tests to hit real Google
 beforeEach(() => {
     LicenseStubs.stubGoogleCalls();
-    cy.setDefaultUserData();
+    if (Cypress.env('set_default_user_data')) {
+        // cy.setDefaultUserData();
+        SecurityStubs.stubUpdateUserData('admin');
+    }
 });
