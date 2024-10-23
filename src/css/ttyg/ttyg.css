@@ -3,7 +3,9 @@
     --toolbar-height: 37px;
     /* the gap between user and agent as well as between agent and agent messages */
     --message-gap: 1.5rem;
-    --chat-panel-height-offset: 13em;
+    --chat-height-vh-reduce: 12rem;
+    --chat-min-height: 300px;
+    --chat-panel-vh-reduce: 4rem;
 }
 
 @media (max-width: 1440px) {
@@ -125,25 +127,22 @@ chat area
 }
 
 .ttyg-view .chat-content .toolbar {
-    margin: auto;
+    /*margin: auto;*/
     padding: 0 1rem;
 }
 
 .ttyg-view .chat-content .chat {
     max-width: calc(800px + 2rem);
     margin: auto;
-    height: calc(100vh - var(--chat-panel-height-offset));
+    height: calc(100vh - var(--chat-height-vh-reduce));
+    min-height: var(--chat-min-height);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
 }
 
 .ttyg-view .chat-content .chat .selected-chat-panel {
-    height: calc(100vh - var(--chat-panel-height-offset));
-}
-
-.ttyg-view.help-visible .chat-content .chat .selected-chat-panel {
-    height: calc(100vh - var(--chat-panel-height-offset) + 3em);
+    height: calc(100vh - var(--chat-height-vh-reduce) - var(--chat-panel-vh-reduce));
+    min-height: calc(var(--chat-min-height) - var(--chat-panel-vh-reduce)) ;
 }
 
 .ttyg-view .controls {
@@ -153,4 +152,16 @@ chat area
 
 .ttyg-view agent-select-menu {
     width: 300px;
+}
+
+.ttyg-view .chat-list-panel-loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100% - var(--toolbar-height))
+}
+
+.ttyg-view .chat-list-panel-loader > div {
+    display: flex;
+    font-weight: 400;
 }

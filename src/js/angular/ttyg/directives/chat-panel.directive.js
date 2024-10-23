@@ -4,6 +4,7 @@ import {CHAT_MESSAGE_ROLE, ChatMessageModel} from "../../models/ttyg/chat-messag
 import {ChatItemModel} from "../../models/ttyg/chat-item";
 import {cloneDeep} from "lodash";
 import {decodeHTML} from "../../../../app";
+import {ChatModel} from "../../models/ttyg/chats";
 
 const modules = [
     'graphdb.framework.ttyg.directives.chat-item-detail'
@@ -60,10 +61,16 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             $scope.askingChatItem = undefined;
 
             /**
+             * True while a question is being handled. It may involve multiple requests until it turns back to false.
+             * @type {boolean}
+             */
+            $scope.waitingForLastMessage = false;
+
+            /**
              * Flag that indicates that the chat is about to be changed.
              * @type {boolean}
              */
-            $scope.loadingChat = false;
+            $scope.loadingChat = true;
 
             // =========================
             // Private variables
@@ -136,10 +143,12 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             // =========================
 
             const createNewChat = () => {
+                $scope.waitingForLastMessage = true;
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT, $scope.chatItem);
             };
 
             const askQuestion = (chatItem) => {
+                $scope.waitingForLastMessage = true;
                 TTYGContextService.emit(TTYGEventName.ASK_QUESTION, chatItem);
             };
 
@@ -165,6 +174,10 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 focusQuestionInput();
             };
 
+            const onLastMessageReceived = () => {
+                $scope.waitingForLastMessage = false;
+            };
+
             /**
              * Handles the failure of loading the chat and the server returns 404. This might happen if the chat does
              * not exist anymore because it was deleted by another user for example.
@@ -176,10 +189,14 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             };
 
             const onSelectedChatChanged = (chat) => {
-                // Skip the loading indication if it is a new (dummy) chat that has not been created yet.
-                $scope.loadingChat = chat && chat.id;
-                $scope.chatItem = getEmptyChatItem();
-                focusQuestionInput();
+                if (chat) {
+                    // Skip the loading indication if it is a new (dummy) chat that has not been created yet.
+                    $scope.loadingChat = chat && chat.id;
+                    $scope.chatItem = getEmptyChatItem();
+                    focusQuestionInput();
+                } else {
+                    reset();
+                }
             };
 
             const onQuestionFailure = () => {
@@ -220,7 +237,10 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             };
 
             const focusQuestionInput = () => {
-                element.find('.question-input')[0].focus();
+                const els = element.find('.question-input');
+                if (els.length) {
+                    els[0].focus();
+                }
             };
 
             const scrollToBottom = () => {
@@ -234,14 +254,16 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             };
 
             const reset = () => {
-                $scope.chat = undefined;
+                $scope.chat = ChatModel.getEmptyChat();
                 $scope.loadingChat = false;
                 $scope.chatItem = getEmptyChatItem();
                 $scope.askingChatItem = undefined;
+                $scope.waitingForLastMessage = false;
                 focusQuestionInput();
             };
 
             const init = () => {
+                $scope.chat = ChatModel.getEmptyChat();
                 $scope.chatItem = getEmptyChatItem();
                 focusQuestionInput();
             };
@@ -257,6 +279,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
 
             subscriptions.push($scope.$watchCollection('chat.chatHistory.items', scrollToBottom));
             subscriptions.push(TTYGContextService.onSelectedChatUpdated(onSelectedChatUpdated));
+            subscriptions.push(TTYGContextService.onLastMessageReceived(onLastMessageReceived));
             subscriptions.push(TTYGContextService.onSelectedAgentChanged(onSelectedAgentChanged));
             subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.LOAD_CHAT_FAILURE, onLoadChatFailure));

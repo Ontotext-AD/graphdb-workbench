@@ -153,6 +153,11 @@ function TTYGContextService(EventEmitterService) {
         }
     };
 
+    const deselectChat = () => {
+        _selectedChat = undefined;
+        emit(TTYGEventName.SELECT_CHAT, getSelectedChat());
+    };
+
     /**
      * Subscribes to the 'selectChat' event.
      * @param {function} callback - The callback to be called when the event is fired.
@@ -160,7 +165,7 @@ function TTYGContextService(EventEmitterService) {
      * @return {function} unsubscribe function.
      */
     const onSelectedChatChanged = (callback) => {
-        if (_selectedChat && angular.isFunction(callback)) {
+        if (angular.isFunction(callback)) {
             callback(getSelectedChat());
         }
         return subscribe(TTYGEventName.SELECT_CHAT, (selectedChat) => callback(selectedChat));
@@ -193,6 +198,18 @@ function TTYGContextService(EventEmitterService) {
             callback(getSelectedChat());
         }
         return subscribe(TTYGEventName.SELECTED_CHAT_UPDATED, (selectedChat) => callback(selectedChat));
+    };
+
+    /** Subscribes to the 'firstMessageReceived' event.
+     * @param {function} callback - The callback to be called when the event is fired.
+     *
+     * @return {function} unsubscribe function.
+     */
+    const onLastMessageReceived = (callback) => {
+        if (_selectedChat && angular.isFunction(callback)) {
+            callback(getSelectedChat());
+        }
+        return subscribe(TTYGEventName.LAST_MESSAGE_RECEIVED, (selectedChat) => callback(selectedChat));
     };
 
     /**
@@ -354,10 +371,12 @@ function TTYGContextService(EventEmitterService) {
         onChatsListChanged,
         getSelectedChat,
         selectChat,
+        deselectChat,
         deleteChat,
         onSelectedChatChanged,
         updateSelectedChat,
         onSelectedChatUpdated,
+        onLastMessageReceived,
         // agents
         updateAgents,
         onAgentsListChanged,
@@ -411,6 +430,11 @@ export const TTYGEventName = {
     SELECTED_CHAT_UPDATED: 'selectChatUpdated',
 
     /**
+     * Emitting the "lastMessageReceived" event when the final answer message has been received.
+     */
+    LAST_MESSAGE_RECEIVED: 'lastMessageReceived',
+
+    /**
      * This event will be emitted when the chat delete request is in progress. The payload will contain the chat ID
      * and a boolean indicating if the deletion is in progress.
      */
@@ -449,6 +473,11 @@ export const TTYGEventName = {
      * This event will be emitted when the attempt to answer the question fails.
      */
     ASK_QUESTION_FAILURE: 'askQuestionFailure',
+
+    /**
+     * Emitting the "continueChatRun" event triggers a request to the backend to retrieve more remaining answers from the same chat run.
+     */
+    CONTINUE_CHAT_RUN: 'continueChatRun',
 
     /**
      * Emitting the "loadChats" event will trigger an action to loads all chats from backend server.

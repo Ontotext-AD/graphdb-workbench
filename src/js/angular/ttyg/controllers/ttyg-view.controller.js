@@ -18,7 +18,7 @@ import {saveAs} from 'lib/FileSaver-patch';
 import {AgentSettingsModal} from "../model/agent-settings-modal";
 import {decodeHTML} from "../../../../app";
 import {status as httpStatus} from "../../models/http-status";
-import {md5HashGenerator} from "../../utils/hash-utils";
+import {ContinueChatRun} from "../../models/ttyg/chat-answer";
 
 const modules = [
     'toastr',
@@ -182,12 +182,7 @@ function TTYGViewCtrl(
      * Creates a new chat and selects it.
      */
     $scope.startNewChat = () => {
-        let nonPersistedChat = TTYGContextService.getChats().getNonPersistedChat();
-        if (!nonPersistedChat) {
-            nonPersistedChat = getEmptyChat();
-            TTYGContextService.addChat(nonPersistedChat);
-        }
-        TTYGContextService.selectChat(nonPersistedChat);
+        TTYGContextService.deselectChat();
     };
 
     $scope.onopen = $scope.onclose = () => angular.noop();
@@ -503,35 +498,34 @@ function TTYGViewCtrl(
         }
     };
 
-    const getEmptyChat = () => {
-        const data = {
-            name: "\u00B7 \u00B7 \u00B7",
-            timestamp: Math.floor(Date.now() / 1000)
-        };
-        return new ChatModel(data, md5HashGenerator());
-    };
-
     /**
      * @param {ChatItemModel} chatItem
      */
     const onCreateNewChat = (chatItem) => {
-        $scope.startNewChat();
+        let nonPersistedChat = TTYGContextService.getChats().getNonPersistedChat();
+        if (!nonPersistedChat) {
+            nonPersistedChat = ChatModel.getEmptyChat();
+            TTYGContextService.addChat(nonPersistedChat);
+        }
+        TTYGContextService.selectChat(nonPersistedChat);
 
         TTYGService.createConversation(chatItem)
             .then((chatAnswer) => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT_SUCCESSFUL);
-                // TODO: To discus: If we have all answer ids, can we update selected chats without loading it?
-                return TTYGService.getConversation(chatAnswer.chatId);
-            })
-            .then((chat) => {
                 const selectedChat = TTYGContextService.getSelectedChat();
                 // If the selected chat is not changed during the creation process.
                 if (selectedChat && !selectedChat.id) {
+                    // Give the newly created things the real IDs
+                    selectedChat.id = chatAnswer.chatId;
+                    chatItem.chatId = chatAnswer.chatId;
+
+                    // Replace the placeholder with the newly created chat
                     const nonPersistedChat = TTYGContextService.getChats().getNonPersistedChat();
-                    TTYGContextService.updateSelectedChat(chat);
-                    TTYGContextService.replaceChat(chat, nonPersistedChat);
+                    TTYGContextService.replaceChat(selectedChat, nonPersistedChat);
+
+                    // Process the messages
+                    updateChatAnswersFirstResponse(selectedChat, chatItem, chatAnswer);
                 }
-                TTYGContextService.emit(TTYGEventName.LOAD_CHATS);
             })
             .catch(() => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT_FAILURE);
@@ -547,24 +541,65 @@ function TTYGViewCtrl(
         TTYGService.askQuestion(chatItem)
             .then((chatAnswer) => {
                 const selectedChat = TTYGContextService.getSelectedChat();
+                // If still the same chat selected
                 if (selectedChat && selectedChat.id === chatItem.chatId) {
-                    selectedChat.timestamp = chatAnswer.timestamp;
-                    const item = chatItem;
-                    chatItem.answers = chatAnswer.messages;
-                    selectedChat.chatHistory.appendItem(item);
-                    TTYGContextService.updateSelectedChat(selectedChat);
-                    // TODO reorder the list of chats
-                    // Update the timestamp of the chat to which the last question was added in the chats list and
-                    // update the list so that the chat is moved to the top.
-                    const chats = TTYGContextService.getChats();
-                    chats.updateChatTimestamp(selectedChat.id, chatAnswer.timestamp);
-                    TTYGContextService.updateChats(chats);
+                    // just process the messages
+                    updateChatAnswersFirstResponse(selectedChat, chatItem, chatAnswer);
                 }
             })
             .catch((error) => {
                 TTYGContextService.emit(TTYGEventName.ASK_QUESTION_FAILURE);
                 toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             });
+    };
+
+    const onContinueChatRun = (continueData) => {
+        TTYGService.continueChatRun(continueData)
+            .then((chatAnswer) => {
+                const chatId = continueData.chatId;
+                const selectedChat = TTYGContextService.getSelectedChat();
+                // If still the same chat selected
+                if (selectedChat && selectedChat.id === chatId) {
+                    // just process the additional answers (with a recovered ChatItemModel)
+                    const items = selectedChat.chatHistory.items;
+                    const lastItem = items[items.length - 1];
+                    updateChatAnswers(selectedChat, lastItem, chatAnswer);
+                }
+            })
+            .catch((error) => {
+                // TODO failure event
+                TTYGContextService.emit(TTYGEventName.ASK_QUESTION_FAILURE);
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
+            });
+    };
+
+    const updateChatAnswers = (selectedChat, chatItem, chatAnswer) => {
+        selectedChat.timestamp = chatAnswer.timestamp;
+        chatItem.answers = chatItem.answers || [];
+        chatItem.answers.push(...chatAnswer.messages);
+        TTYGContextService.updateSelectedChat(selectedChat);
+
+        if (chatAnswer.continueRunId) {
+            TTYGContextService.emit(TTYGEventName.CONTINUE_CHAT_RUN,
+                new ContinueChatRun(chatItem, chatAnswer.continueRunId));
+        } else {
+            // Last message - update the timestamp and the name of the chat in the chat list
+            const chats = TTYGContextService.getChats();
+            // Updating the timestamp in the list gets the chat moved to the top.
+            chats.updateChatTimestamp(selectedChat.id, chatAnswer.timestamp);
+            // Strictly speaking the chat name update is needed only for new chats,
+            // but it doesn't hurt for every chat.
+            chats.updateChatName(selectedChat.id, chatAnswer.chatName);
+            // and also in the chat - doesn't seem to matter atm
+            selectedChat.name = chatAnswer.name;
+            TTYGContextService.updateChats(chats);
+            TTYGContextService.emit(TTYGEventName.LAST_MESSAGE_RECEIVED, selectedChat);
+        }
+    };
+
+    const updateChatAnswersFirstResponse = (selectedChat, chatItem, chatAnswer) => {
+        selectedChat.chatHistory.appendItem(chatItem);
+        updateChatAnswers(selectedChat, chatItem, chatAnswer);
     };
 
     /**
@@ -716,7 +751,7 @@ function TTYGViewCtrl(
                         TTYGContextService.emit(TTYGEventName.LOAD_CHAT_FAILURE, selectedChat);
                     }
                 });
-        } else {
+        } else if (selectedChat) {
             TTYGContextService.updateSelectedChat(selectedChat);
         }
     };
@@ -899,6 +934,7 @@ function TTYGViewCtrl(
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_CHAT, onDeleteChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CHAT_EXPORT, onExportChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION, onAskQuestion));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CONTINUE_CHAT_RUN, onContinueChatRun));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.LOAD_CHATS, loadChats));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.OPEN_AGENT_SETTINGS, $scope.onOpenNewAgentSettings));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.EDIT_AGENT, $scope.onOpenAgentSettings));

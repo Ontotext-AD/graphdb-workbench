@@ -70,6 +70,17 @@ function TTYGService(TTYGRestService, $repositories) {
     };
 
     /**
+     * Continues a chat run. In essence continue means "fetch more answers".
+     * @param {ContinueChatRun} continueData .
+     * @return {Promise<ChatAnswerModel>} the next answer in the run.
+     */
+    const continueChatRun = (continueData) => {
+        const payload = continueData.toContinueRunRequestPayload();
+        return TTYGRestService.continueChatRun(payload)
+            .then((response) => chatAnswerModelMapper(response.data));
+    };
+
+    /**
      * Deletes a conversation by its ID.
      * @param {string} id
      * @return {Promise<void>}
@@ -174,6 +185,7 @@ function TTYGService(TTYGRestService, $repositories) {
         renameConversation,
         exportConversation,
         askQuestion,
+        continueChatRun,
         getConversations,
         deleteConversation,
         createConversation,
