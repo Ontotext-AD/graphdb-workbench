@@ -1,6 +1,5 @@
 import {cloneDeep} from "lodash";
 import {CHAT_MESSAGE_ROLE} from "../models/ttyg/chat-message";
-import {ExtractionMethod} from "../models/ttyg/agents";
 
 // Delay for askQuestion()
 const ASK_DELAY = 2000;
@@ -88,8 +87,8 @@ export class TtygRestServiceFakeBackend {
         };
 
         if (conversation) {
-            conversation.messages.push(...answer.messages);
             conversation.messages.push(question);
+            conversation.messages.push(...answer.messages);
         }
         return new Promise((resolve) => setTimeout(() => resolve({data: answer}), ASK_DELAY));
         // return new Promise((resolve, reject) => setTimeout(() => reject(''), ASK_DELAY));
