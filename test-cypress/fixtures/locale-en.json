@@ -546,6 +546,9 @@
                     },
                     "save": {
                         "label": "Save"
+                    },
+                    "explain_settings": {
+                        "label": "Explain settings"
                     }
                 },
                 "dialog": {
@@ -560,6 +563,36 @@
             "delete_agent_modal": {
                 "title": "Delete Agent",
                 "body": "Do you really want to delete the agent <b>{{agentName}}</b>?"
+            },
+            "instructions_explain_modal": {
+                "title": "Agent instructions",
+                "instructions": {
+                    "baseInstructions": {
+                        "label": "Base instructions",
+                        "description": "Establishes the main context and foundational guidelines for the agent's behavior."
+                    },
+                    "additionalInstructions": {
+                        "label": "Additional instructions",
+                        "description": "Provides extra guidelines to further customize the agent's behavior or specify important truths."
+                    },
+                    "sparqlInstructions": {
+                        "label": "SPARQL instructions",
+                        "description": "Details the instructions for constructing and executing SPARQL queries."
+                    },
+                    "ontologyIntroduction": {
+                        "label": "Ontology introduction",
+                        "description": "Introduces the section that contains the ontology data."
+                    },
+                    "ontology": {
+                        "label": "Ontology",
+                        "description": "Represents the extracted and serialized ontology."
+                    }
+                },
+                "btn": {
+                    "close": {
+                        "label": "Close"
+                    }
+                }
             },
             "agent_select_menu": {
                 "no_selection_label": "Select an agent",

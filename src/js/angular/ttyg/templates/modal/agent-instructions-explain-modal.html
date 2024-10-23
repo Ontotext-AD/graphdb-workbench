@@ -1,0 +1,26 @@
+<link href="css/ttyg/agent-instructions-explain-modal.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+<div class="modal-header">
+    <button type="button" class="close" ng-click="close()"></button>
+    <h4 class="modal-title">{{'ttyg.agent.instructions_explain_modal.title' | translate}}</h4>
+</div>
+
+<div class="modal-body">
+    <div class="instructions-explain">
+        <div ng-repeat="instruction in agentInstructionsExplain" class="instruction" ng-class="{'mb-2': !$last}">
+            <h5 class="instruction-title mb-0">
+                <span
+                    uib-popover="{{'ttyg.agent.instructions_explain_modal.instructions.' + instruction.type + '.description' | translate}}"
+                    popover-trigger="mouseenter">{{'ttyg.agent.instructions_explain_modal.instructions.' + instruction.type + '.label' | translate}}</span>
+            </h5>
+            <h7 class="text-muted d-block">({{instruction.size}} characters)</h7>
+            <pre class="instruction-content">{{instruction.content}}</pre>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" ng-click="onCloseAgentInstructionsExplainModal()">
+        {{'ttyg.agent.instructions_explain_modal.btn.close.label' | translate}}
+    </button>
+</div>
