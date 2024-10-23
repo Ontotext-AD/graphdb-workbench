@@ -99,16 +99,19 @@ function TTYGViewCtrl(
      * @type {boolean}
      */
     $scope.showChats = true;
+
     /**
      * Controls the visibility of the agents list sidebar.
      * @type {boolean}
      */
     $scope.showAgents = false;
+
     /**
      * Chats list.
      * @type {ChatsListModel|undefined}
      */
     $scope.chats = undefined;
+
     /**
      * Flag to control the visibility of the loader when loading chat list.
      * @type {boolean}
@@ -128,16 +131,19 @@ function TTYGViewCtrl(
      * @type {AgentListModel|undefined}
      */
     $scope.agents = undefined;
+
     /**
      * The model of the selected agent.
      * @type {AgentModel|undefined}
      */
     $scope.selectedAgent = undefined;
+
     /**
      * Flag to control the visibility of the loader when loading agent list on initial page load.
      * @type {boolean}
      */
     $scope.loadingAgents = false;
+
     /**
      * Flag to control the visibility of the loader when reloading agent list.
      * @type {boolean}
@@ -164,19 +170,12 @@ function TTYGViewCtrl(
      */
     $scope.activeRepositoryList = [];
 
-    $scope.history = [];
-    $scope.askSettings = {
-        "queryTemplate": {
-            "query": "string"
-        },
-        "groundTruths": [],
-        "echoVectorQuery": false,
-        "topK": 5
-    };
-
     // =========================
     // Public functions
     // =========================
+
+    // Needed by the slidepanel directive
+    $scope.onopen = $scope.onclose = () => angular.noop();
 
     /**
      * Creates a new chat and selects it.
@@ -184,8 +183,6 @@ function TTYGViewCtrl(
     $scope.startNewChat = () => {
         TTYGContextService.deselectChat();
     };
-
-    $scope.onopen = $scope.onclose = () => angular.noop();
 
     /**
      * Toggles the visibility of the chats list sidebar.
@@ -199,50 +196,6 @@ function TTYGViewCtrl(
      */
     $scope.toggleAgentsListSidebar = () => {
         $scope.showAgents = !$scope.showAgents;
-    };
-
-    $scope.getIcon = (role) => {
-        if (role === "question") {
-            return "user";
-        } else if (role === "assistant") {
-            return "data";
-        } else {
-            return "help";
-        }
-    };
-
-    $scope.clear = () => {
-        ModalService.openSimpleModal({
-            title: $translate.instant('common.confirm'),
-            message: $translate.instant('ttyg.clear.history.confirmation'),
-            warning: true
-        }).result
-            .then(function () {
-                $scope.history = [];
-                persist();
-            });
-    };
-
-    $scope.openSettings = () => {
-        const modalInstance = $uibModal.open({
-            templateUrl: 'js/angular/ttyg/templates/modal/settings.html',
-            controller: 'AgentSettingsDialogCtrl',
-            size: 'lg',
-            resolve: {
-                data: function () {
-                    return {
-                        askSettings: $scope.askSettings,
-                        connectorID: $scope.connectorID
-                    };
-                }
-            }
-        });
-
-        modalInstance.result.then(function (result) {
-            $scope.connectorID = result.connectorID;
-            $scope.askSettings = result.askSettings;
-            persist();
-        });
     };
 
     /**
@@ -286,7 +239,7 @@ function TTYGViewCtrl(
                 const activeRepositoryInfo = repositoryInfoMapper($repositories.getActiveRepositoryObject());
                 agentDefaultValues.repositoryId = activeRepositoryInfo.id;
                 const agentFormModel = agentFormModelMapper(new AgentModel({}), agentDefaultValues, AGENT_OPERATION.CREATE);
-                const options = {
+                return {
                     templateUrl: 'js/angular/ttyg/templates/modal/agent-settings-modal.html',
                     controller: 'AgentSettingsModalController',
                     windowClass: 'agent-settings-modal',
@@ -303,7 +256,6 @@ function TTYGViewCtrl(
                     },
                     size: 'lg'
                 };
-                return options;
             })
             .then((options) => {
                 $uibModal.open(options).result.then(reloadAgents);
@@ -405,17 +357,6 @@ function TTYGViewCtrl(
     // Private functions
     // =========================
 
-    // TODO: remove
-    const persist = () => {
-        const persisted = LocalStorageAdapter.get('ttyg') || {};
-        persisted[$repositories.getActiveRepository()] = {
-            "history": $scope.history,
-            "connectorID": $scope.connectorID,
-            "askSettings": $scope.askSettings
-        };
-        LocalStorageAdapter.set('ttyg', persisted);
-    };
-
     const loadChats = () => {
         $scope.loadingChats = true;
         return TTYGService.getConversations()
@@ -467,25 +408,6 @@ function TTYGViewCtrl(
             .finally(() => {
                 $scope.reloadingAgents = false;
             });
-    };
-
-    const initView = () => {
-        const repoId = $repositories.getActiveRepository();
-        if (repoId) {
-            const stored = LocalStorageAdapter.get('ttyg');
-            if (stored && stored[repoId]) {
-                const s = stored[repoId];
-                if (s.history) {
-                    $scope.history = s.history;
-                }
-                $scope.connectorID = s.connectorID;
-                if (s.askSettings) {
-                    $scope.askSettings = s.askSettings;
-                }
-            }
-        }
-
-        updateCanModifyAgent();
     };
 
     const updateCanModifyAgent = () => {
@@ -953,13 +875,14 @@ function TTYGViewCtrl(
 
     function onInit() {
         buildRepositoryList();
-        loadAgents().then(() => {
-            $scope.initialized = true;
-            buildAgentsFilterModel();
-            setCurrentAgent();
-            return loadChats();
-        })
+        loadAgents()
+            .then(() => {
+                $scope.initialized = true;
+                buildAgentsFilterModel();
+                setCurrentAgent();
+                return loadChats();
+            })
             .then(setCurrentChat);
-        initView();
+        updateCanModifyAgent();
     }
 }
