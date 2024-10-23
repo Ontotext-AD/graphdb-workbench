@@ -203,6 +203,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             const onQuestionFailure = () => {
                 $scope.chatItem = cloneDeep($scope.askingChatItem);
                 $scope.askingChatItem = undefined;
+                $scope.waitingForLastMessage = false;
             };
 
             /**
