@@ -8,6 +8,5 @@
     "local": true,
     "system": true,
     "errorMsg": null,
-    "defaultRepository": null,
-    "isInCluster": false
+    "defaultRepository": null
 }

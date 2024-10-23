@@ -25,7 +25,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
     function (toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth,
         RepositoriesRestService, LocationsRestService, LicenseRestService, $translate, $q, LocalStorageAdapter, LSKeys, eventEmitterService, RDF4JRepositoriesRestService) {
 
-        this.location = {uri: '', label: 'Local', local: true, isInCluster: false};
+        this.location = {uri: '', label: 'Local', local: true};
         this.locationError = '';
         this.loading = true;
 
@@ -204,7 +204,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                 if (!locationsRequestPromise) {
                     this.locationsShouldReload = false;
                     this.locations = [this.location];
-                    locationsRequestPromise = LocationsRestService.getLocations(abortRequestPromise, true)
+                    locationsRequestPromise = LocationsRestService.getLocations(abortRequestPromise)
                         .then((data) => {
                             that.locations = data.data.map((location) => new RemoteLocationModel(location));
                             return this.locations;

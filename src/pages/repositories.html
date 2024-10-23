@@ -159,153 +159,155 @@
 
         <table id="wb-locations-locationInGetRemoteLocations" class="table" aria-describedby="Locations repository table">
             <tbody>
-            <tr class="location"
-                ng-repeat="location in getLocalLocation(false, RemoteLocationType.GRAPH_DB) | orderBy: ['uri']">
-                <td>
-                    <div>
-                        <div class="pull-left">
-                            <strong>{{'repos.from' | translate}}</strong>
-                            <em ng-if="location.degradedReason" class="icon-warning icon-lg text-warning"
-                                gdb-tooltip="{{location.degradedReason}}{{'repos.degraded.reason.extra.msg' | translate}}"
-                                tooltip-placement="right"></em>
-                            <span class="mr-1">{{location.label}}</span>
+                <tr class="location"
+                    ng-repeat="location in getLocalLocation(false, RemoteLocationType.GRAPH_DB) | orderBy: ['uri']">
+                    <td>
+                        <div>
+                            <div class="pull-left">
+                                <strong>{{'repos.from' | translate}}</strong>
+                                <em ng-if="location.degradedReason" class="icon-warning icon-lg text-warning"
+                                    gdb-tooltip="{{location.degradedReason}}{{'repos.degraded.reason.extra.msg' | translate}}"
+                                    tooltip-placement="right"></em>
+                                <span class="mr-1">{{location.label}}</span>
+                            </div>
+                            <div ng-if="location.local" class="actions-bar-inline pull-right">
+                                <button
+                                    gdb-tooltip="{{'repos.edit.common.settings' | translate}}"
+                                    tooltip-placement="top"
+                                    class="btn btn-link px-0"
+                                    ng-click="openActiveLocationSettings()">
+                                    <span class="icon-settings"></span>
+                                </button>
+                                <a class="btn btn-link px-0 pull-right" href="license"
+                                   gdb-tooltip="{{'repos.view.update.licenses' | translate}}"
+                                   tooltip-placement="top">
+                                    <span class="icon-key"></span>
+                                </a>
+                            </div>
+                            <div ng-if="isAdmin() && !location.local" class="actions-bar-inline pull-right">
+                                <button class="btn btn-link p-0"
+                                        gdb-tooltip="{{'edit.location' | translate}}" tooltip-placement="top"
+                                        ng-click="editLocation(location)">
+                                    <em class="icon-edit"></em>
+                                </button>
+                                <button class="btn btn-link p-0 secondary"
+                                        gdb-tooltip="{{'detach.location' | translate}}" tooltip-placement="top"
+                                        ng-click="deleteLocation(location.uri)">
+                                    <em class="icon-close"></em>
+                                </button>
+                            </div>
                         </div>
-                        <div ng-if="location.local" class="actions-bar-inline pull-right">
-                            <button
-                                gdb-tooltip="{{'repos.edit.common.settings' | translate}}"
-                                tooltip-placement="top"
-                                class="btn btn-link px-0"
-                                ng-click="openActiveLocationSettings()">
-                                <span class="icon-settings"></span>
-                            </button>
-                            <a class="btn btn-link px-0 pull-right" href="license"
-                               gdb-tooltip="{{'repos.view.update.licenses' | translate}}"
-                               tooltip-placement="top">
-                                <span class="icon-key"></span>
-                            </a>
-                        </div>
-                        <div ng-if="isAdmin() && !location.local" class="actions-bar-inline pull-right">
-                            <button class="btn btn-link p-0"
-                                    gdb-tooltip="{{'edit.location' | translate}}" tooltip-placement="top"
-                                    ng-click="editLocation(location)">
-                                <em class="icon-edit"></em>
-                            </button>
-                            <button class="btn btn-link p-0 secondary"
-                                    gdb-tooltip="{{'detach.location' | translate}}" tooltip-placement="top"
-                                    ng-click="deleteLocation(location.uri)">
-                                <em class="icon-close"></em>
-                            </button>
-                        </div>
-                    </div>
-                    <div ng-if="hasActiveLocation()" class="pt-2">
-                        <div class="alert alert-warning no-repositories-alert"
-                             ng-if="!getRepositoriesFromLocation(location.uri).length && !location.errorMsg">
-                            {{'no.repos.in.current.location' | translate}}
-                        </div>
-                        <div class="alert alert-danger" ng-if="location.errorMsg">
-                            {{location.errorMsg}}{{'repos.refresh.page.msg' | translate}}
-                        </div>
-                        <div ng-if="getRepositoriesFromLocation(location.uri).length" class="mb-1">
-                            <table id="wb-repositories-repositoryInRemoteGetRepositories"
-                                   class="table table-hover table-striped" aria-describedby="Repositories table">
-                                <tbody>
-                                <tr class="repository"
-                                    ng-repeat="repository in getRepositoriesFromLocation(location.uri) | orderBy: ['type === \'system\'', 'location', 'id'] track by repository.hash"
-                                    ng-class="{'table-info text-secondary': isRepoActive(repository)}">
-                                    <td width="25">
-                                        <span role="button" class="icon-connection-off icon-lg text-secondary m-0"
-                                              gdb-tooltip="{{'connect.repo' | translate}}" tooltip-placement="top"
-                                              ng-click="setRepository(repository)"
-                                              ng-if="!isRepoActive(repository)"
-                                              data-repository-id="{{repository}}"
-                                              guide-selector="repository-{{repository.id}}-plug"></span>
-                                        <span role="button" class="icon-connection-on icon-lg text-tertiary"
-                                              gdb-tooltip="{{'connected.tooltip' | translate}}" tooltip-placement="top"
-                                              ng-if="isRepoActive(repository)"></span>
-                                    </td>
-                                    <td>
-                                        <div class="lead text-overflow" ng-mouseover="setPopoverRepo(repository)">
-                                            <span popover-popup-delay="500"
-                                                  popover-trigger="mouseenter" popover-placement="bottom-right"
-                                                  uib-popover-template="popoverTemplate"
-                                                  popover-title="{{'security.repository.title' | translate}} {{repository.id}}">
-                                                <span class="icon-lg" ng-class="'icon-repo-' + repository.type"></span>
-                                                <strong class="repository-id">{{repository.id}}</strong></span>
-                                            <span class="repository-status"> &middot; <span
-                                                class="text-secondary">{{repository.state}}</span></span>
-                                            <span ng-if="repository.title"><small> &middot; {{repository.title}}</small></span>
-                                        </div>
-                                    </td>
-                                    <td width="150" class="text-nowrap repository-actions">
-                                        <button class="btn btn-link p-0"
-                                                ng-click="copyToClipboard(repository.externalUrl)"
-                                                gdb-tooltip="{{'copy.repo.url' | translate}}">
-                                            <span class="icon-link"></span>
-                                        </button>
-                                        <span ng-if="location.degradedReason">
-                                            <em class="icon-warning icon-lg text-warning"
-                                                gdb-tooltip="{{location.degradedReason}}{{'repo.not.supported.delete.or.edit' | translate}}"
-                                                tooltip-placement="top"></em>
-                                        </span>
-                                        <span ng-if="repository.type !== 'system' && !location.degradedReason">
-                                            <a class="btn btn-link p-0 edit-repository-btn"
-                                               href="repository/edit/{{repository.id}}?location={{repository.location}}"
-                                               gdb-tooltip="{{'repoTooltips.editRepository' | translate}}"
-                                               tooltip-placement="top">
-                                                <span class="icon-edit"></span>
-                                            </a>
-                                            <a class="btn btn-link p-0 download-turtle-config download-repository-config-btn"
-                                               ng-href="{{getRepositoryDownloadLink(repository)}}"
-                                               rel="noopener"
-                                               target="_blank"
-                                               gdb-tooltip="{{'download.repo.config' | translate}}"
-                                               tooltip-placement="top">
-                                                    <em class="icon-download"></em>
-                                            </a>
-                                            <button class="btn btn-link p-0 restart-repository-btn" type="button"
-                                                    gdb-tooltip="{{'restart.repo.label' | translate}} {{repository.id}}"
-                                                    tooltip-placement="top"
-                                                    ng-click="restartRepository(repository)">
-                                                    <span class="icon-reload"></span>
+                        <div ng-if="hasActiveLocation()" class="pt-2">
+                            <div class="alert alert-warning no-repositories-alert"
+                                 ng-if="!getRepositoriesFromLocation(location.uri).length && !location.errorMsg">
+                                {{'no.repos.in.current.location' | translate}}
+                            </div>
+                            <div class="alert alert-danger" ng-if="location.errorMsg">
+                                {{location.errorMsg}}{{'repos.refresh.page.msg' | translate}}
+                            </div>
+                            <div ng-if="getRepositoriesFromLocation(location.uri).length" class="mb-1">
+                                <table id="wb-repositories-repositoryInRemoteGetRepositories"
+                                       class="table table-hover table-striped" aria-describedby="Repositories table">
+                                    <tbody>
+                                    <tr class="repository"
+                                        ng-repeat="repository in getRepositoriesFromLocation(location.uri) | orderBy: ['type === \'system\'', 'location', 'id'] track by repository.hash"
+                                        ng-class="{'table-info text-secondary': isRepoActive(repository)}">
+                                        <td width="25">
+                                            <span role="button" class="icon-connection-off icon-lg text-secondary m-0"
+                                                  gdb-tooltip="{{'connect.repo' | translate}}" tooltip-placement="top"
+                                                  ng-click="setRepository(repository)"
+                                                  ng-if="!isRepoActive(repository)"
+                                                  data-repository-id="{{repository}}"
+                                                  guide-selector="repository-{{repository.id}}-plug"></span>
+                                            <span role="button" class="icon-connection-on icon-lg text-tertiary"
+                                                  gdb-tooltip="{{'connected.tooltip' | translate}}" tooltip-placement="top"
+                                                  ng-if="isRepoActive(repository)"></span>
+                                        </td>
+                                        <td>
+                                            <div class="lead text-overflow" ng-mouseover="setPopoverRepo(repository)">
+                                                <span popover-popup-delay="500"
+                                                      popover-trigger="mouseenter" popover-placement="bottom-right"
+                                                      uib-popover-template="popoverTemplate"
+                                                      popover-title="{{'security.repository.title' | translate}} {{repository.id}}">
+                                                    <span class="icon-lg" ng-class="'icon-repo-' + repository.type"></span>
+                                                    <strong class="repository-id">{{repository.id}}</strong></span>
+                                                <span class="repository-status"> &middot; <span
+                                                    class="text-secondary">{{repository.state}}</span></span>
+                                                <span ng-if="repository.title"><small> &middot; {{repository.title}}</small></span>
+                                            </div>
+                                        </td>
+                                        <td width="150" class="text-nowrap repository-actions">
+                                            <button class="btn btn-link p-0"
+                                                    ng-click="copyToClipboard(repository.externalUrl)"
+                                                    gdb-tooltip="{{'copy.repo.url' | translate}}">
+                                                <span class="icon-link"></span>
                                             </button>
-                                            <button class="btn btn-link p-0 secondary delete-repository-btn"
-                                                    type="button"
-                                                    gdb-tooltip="{{'delete.repo' | translate}}"
-                                                    tooltip-placement="top"
-                                                    ng-click="deleteRepository(repository)">
-                                                <em class="icon-trash"></em>
+                                            <span ng-if="location.degradedReason">
+                                                <em class="icon-warning icon-lg text-warning"
+                                                    gdb-tooltip="{{location.degradedReason}}{{'repo.not.supported.delete.or.edit' | translate}}"
+                                                    tooltip-placement="top"></em>
+                                            </span>
+                                            <span ng-if="repository.type !== 'system' && !location.degradedReason">
+                                                <a class="btn btn-link p-0 edit-repository-btn"
+                                                   href="repository/edit/{{repository.id}}?location={{repository.location}}"
+                                                   gdb-tooltip="{{'repoTooltips.editRepository' | translate}}"
+                                                   tooltip-placement="top">
+                                                    <span class="icon-edit"></span>
+                                                </a>
+                                                <a class="btn btn-link p-0 download-turtle-config download-repository-config-btn"
+                                                   ng-href="{{getRepositoryDownloadLink(repository)}}"
+                                                   rel="noopener"
+                                                   target="_blank"
+                                                   gdb-tooltip="{{'download.repo.config' | translate}}"
+                                                   tooltip-placement="top">
+                                                        <em class="icon-download"></em>
+                                                </a>
+                                                <button class="btn btn-link p-0 restart-repository-btn" type="button"
+                                                        gdb-tooltip="{{'restart.repo.label' | translate}} {{repository.id}}"
+                                                        tooltip-placement="top"
+                                                        ng-click="restartRepository(repository)">
+                                                        <span class="icon-reload"></span>
+                                                </button>
+                                                <button class="btn btn-link p-0 secondary delete-repository-btn"
+                                                        type="button"
+                                                        gdb-tooltip="{{'delete.repo' | translate}}"
+                                                        tooltip-placement="top"
+                                                        ng-click="deleteRepository(repository)">
+                                                    <em class="icon-trash"></em>
+                                                </button>
+                                            </span>
+                                        </td>
+                                        <td width="50">
+                                            <button class="btn btn-link p-0 pin-repository-btn"
+                                                    ng-if="repository.type !== 'system' && location.active"
+                                                    ng-click="toggleDefaultRepository(repository.id)"
+                                                    ng-class="getDefaultRepository() === repository.id && location.active ? 'active' : ''"
+                                                    gdb-tooltip="{{'set.as.default.repo' | translate}}">
+                                                <em class="icon-pin"></em>
                                             </button>
-                                        </span>
-                                    </td>
-                                    <td width="50">
-                                        <button class="btn btn-link p-0 pin-repository-btn"
-                                                ng-if="repository.type !== 'system' && location.active"
-                                                ng-click="toggleDefaultRepository(repository.id)"
-                                                ng-class="getDefaultRepository() === repository.id && location.active ? 'active' : ''"
-                                                gdb-tooltip="{{'set.as.default.repo' | translate}}">
-                                            <em class="icon-pin"></em>
-                                        </button>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
-                </td>
-            </tr>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
-    <!-- Remote Ontopic instances -->
-    <div ng-if="getLocalLocation(false, RemoteLocationType.ONTOPIC).length" class="mb-1 ontopic-instances">
-        <h4>{{'repositories.location.ontopic.instances' | translate}}</h4>
-        <table id="wb-repositories-ontopic-repositoryInGetRepositories"
+    <!-- Remote Ontopic and SPARQL instances -->
+    <div ng-if="hasAnyRemoteLocation(false, [RemoteLocationType.SPARQL, RemoteLocationType.ONTOPIC])" class="mb-1 ontopic-instances">
+        <h4 class="remote-location-type-title">{{'repositories.location.sparql.instances' | translate}}</h4>
+        <table id="wb-repositories-ontopic-sparql-repositoryInGetRepositories"
                class="table table-hover table-striped" aria-describedby="Repositories table">
             <tbody>
             <tr ng-repeat="location in getLocalLocation(false, RemoteLocationType.ONTOPIC) | orderBy: ['type === \'system\'', 'location', 'id']"
                 ng-class="{'table-info text-secondary': isRepoActive(location)}">
-                <td>
-                    {{location.uri}}
+                <td class="lead text-overflow">
+                    <strong class="location-url">{{location.uri}}</strong>
+                    <span class="location-type"> &middot; <span
+                        class="text-secondary">{{location.locationType}}</span></span>
                 </td>
                 <td>
                     <div ng-if="isAdmin()" class="actions-bar-inline pull-right">
@@ -322,10 +324,33 @@
                     </div>
                 </td>
             </tr>
+
+            <tr ng-if="getLocalLocation(false, RemoteLocationType.SPARQL).length" class="mb-1 sparql-instances"
+                ng-repeat="location in getLocalLocation(false, RemoteLocationType.SPARQL) | orderBy: ['type === \'system\'', 'location', 'id']"
+                ng-class="{'table-info text-secondary': isRepoActive(location)}">
+                <td class="lead text-overflow">
+                    <strong class="location-url">{{location.uri}}</strong>
+                    <span class="location-type"> &middot; <span
+                        class="text-secondary">{{location.locationType}}</span></span>
+                </td>
+                <td>
+                    <div ng-if="isAdmin()" class="actions-bar-inline pull-right">
+                        <button class="btn btn-link p-0 edit-sparql-location"
+                                gdb-tooltip="{{'edit.location' | translate}}" tooltip-placement="top"
+                                ng-click="editLocation(location)">
+                            <em class="icon-edit"></em>
+                        </button>
+                        <button class="btn btn-link p-0 secondary delete-sparql-location"
+                                gdb-tooltip="{{'detach.location' | translate}}" tooltip-placement="top"
+                                ng-click="deleteLocation(location.uri)">
+                            <em class="icon-close"></em>
+                        </button>
+                    </div>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>
-
 
     <div class="btns-all" ng-if="getLocationError()">
         <div class="btn-group" uib-dropdown>
@@ -338,7 +363,7 @@
                 <li><a class="dropdown-item" href ng-click="fromFile()">{{'create.from.file' | translate}}</a></li>
             </ul>
         </div>
-        <button id="addAttachRemoteLocation" ng-if="!getActiveLocation().isInCluster" ng-click="addLocation()" class="btn btn-primary pull-right"><span
+        <button id="addAttachRemoteLocation" ng-click="addLocation()" class="btn btn-primary pull-right"><span
             class="icon-plus"></span>{{'attach.remote.location' | translate}}
         </button>
     </div>
