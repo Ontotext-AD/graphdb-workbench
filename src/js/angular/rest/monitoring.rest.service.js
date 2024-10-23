@@ -67,7 +67,7 @@ function MonitoringRestService($http) {
      * @return {Promise<ActiveOperationsModel>}
      */
     function monitorActiveOperations(repositoryID) {
-        return $http.get(`${MONITORING_ENDPOINT}/${repositoryID}/operations`)
+        return $http.get(`${QUERY_MONITORING_ENDPOINT}/${repositoryID}/operations`)
             .then((response) => mapActiveOperationResponseToModel(response.data));
     }
 
