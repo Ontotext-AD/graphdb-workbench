@@ -11,10 +11,8 @@ Cypress.Commands.add('setDefaultUserData', (cookieConsent = true) => {
         method: 'PATCH',
         url: `rest/security/users/${encodeURIComponent('admin')}`,
         body: {
-            data: {
-                "appSettings": defaultUserSettings,
-                'password': 'root'
-            }
+            "appSettings": defaultUserSettings,
+            'password': 'root'
         }
     }).then((response) => {
         cy.waitUntil(() => response && response.status === 200); // 201 Created

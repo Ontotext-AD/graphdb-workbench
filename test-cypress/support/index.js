@@ -33,4 +33,5 @@ require('cypress-terminal-report/src/installLogsCollector')();
 // We don't want any tests to hit real Google
 beforeEach(() => {
     LicenseStubs.stubGoogleCalls();
+    cy.setDefaultUserData();
 });
