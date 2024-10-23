@@ -87,8 +87,8 @@ export class TtygRestServiceFakeBackend {
         };
 
         if (conversation) {
-            conversation.messages.push(...answer.messages);
             conversation.messages.push(question);
+            conversation.messages.push(...answer.messages);
         }
         return new Promise((resolve) => setTimeout(() => resolve({data: answer}), ASK_DELAY));
         // return new Promise((resolve, reject) => setTimeout(() => reject(''), ASK_DELAY));
