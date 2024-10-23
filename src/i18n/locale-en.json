@@ -587,6 +587,11 @@
                         "label": "Ontology",
                         "description": "Represents the extracted and serialized ontology."
                     }
+                },
+                "btn": {
+                    "close": {
+                        "label": "Close"
+                    }
                 }
             },
             "agent_select_menu": {

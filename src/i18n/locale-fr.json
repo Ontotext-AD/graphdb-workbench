@@ -587,6 +587,11 @@
                         "label": "Ontologie",
                         "description": "Représente l'ontologie extraite et sérialisée."
                     }
+                },
+                "btn": {
+                    "close": {
+                        "label": "Fermer"
+                    }
                 }
             },
             "agent_select_menu": {
