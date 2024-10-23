@@ -537,7 +537,6 @@ function TTYGViewCtrl(
      * @param {ChatItemModel} chatItem
      */
     const onAskQuestion = (chatItem) => {
-        chatItem.question.timestamp = Date.now();
         TTYGService.askQuestion(chatItem)
             .then((chatAnswer) => {
                 const selectedChat = TTYGContextService.getSelectedChat();

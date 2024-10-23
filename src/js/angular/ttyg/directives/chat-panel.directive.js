@@ -84,6 +84,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
              * Handles the ask question action.
              */
             $scope.ask = () => {
+                $scope.chatItem.question.timestamp = Date.now();
                 $scope.askingChatItem = cloneDeep($scope.chatItem);
                 if (!$scope.chatItem.chatId) {
                     createNewChat();
