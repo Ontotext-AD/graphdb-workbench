@@ -46,21 +46,13 @@ function AgentSelectMenuComponent(TTYGContextService, $translate, $sce, ModalSer
                 markAsSelected(agent);
                 $scope.selectedAgent = agent;
                 TTYGContextService.selectAgent(agent);
-            };
-
-            /**
-             * Handles the selection of an agent without a repository.
-             * @param {SelectMenuOptionsModel} selectedAgentOption
-             */
-            $scope.onAgentWithoutRepoSelected = (selectedAgentOption) => {
-                const title = $translate.instant('ttyg.agent.agent_select_menu.configure_agent_modal.title');
-                const confirmMessage = $translate.instant('ttyg.agent.agent_select_menu.configure_agent_modal.body');
-                ModalService.openConfirmation(title, confirmMessage,
-                    () => TTYGContextService.emit(TTYGEventName.EDIT_AGENT, selectedAgentOption.data.agent)
-                );
-                markAsSelected(selectedAgentOption);
-                $scope.selectedAgent = selectedAgentOption.data.agent;
-                TTYGContextService.selectAgent(selectedAgentOption.data.agent);
+                if (agent.isRepositoryDeleted) {
+                    const title = $translate.instant('ttyg.agent.agent_select_menu.configure_agent_modal.title');
+                    const confirmMessage = $translate.instant('ttyg.agent.agent_select_menu.configure_agent_modal.body');
+                    ModalService.openConfirmation(title, confirmMessage,
+                        () => TTYGContextService.emit(TTYGEventName.EDIT_AGENT, agent)
+                    );
+                }
             };
 
             // =========================

@@ -6,7 +6,7 @@
         "temperature": 0.0,
         "topP": 0.0,
         "seed": null,
-        "repositoryId": null,
+        "repositoryId": "Not existing repo",
         "instructions": {
             "systemInstruction": "string\n\nstring",
             "userInstruction": "string"

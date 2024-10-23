@@ -29,8 +29,8 @@ describe('TTYG agent list', () => {
         // Then I should see the agent list with agents filtered by the current repository
         TTYGViewSteps.getAgentsPanel().should('be.visible');
         TTYGViewSteps.verifyAgentList([
-            {name: 'agent-1', repositoryId: 'starwars'},
-            {name: 'Databricks-general-unbiased', repositoryId: 'starwars'}
+            {name: 'agent-1', repositoryId: 'starwars', isRepositoryDeleted: false},
+            {name: 'Databricks-general-unbiased', repositoryId: 'starwars', isRepositoryDeleted: false}
         ]);
 
         // When I close the agent list panel
@@ -61,16 +61,16 @@ describe('TTYG agent list', () => {
         TTYGViewSteps.filterAgentsByRepository('biomarkers');
         // Then I should see only 1 agent
         TTYGViewSteps.verifyAgentList([
-            {name: 'Databricks-biomarkers', repositoryId: 'biomarkers'}
+            {name: 'Databricks-biomarkers', repositoryId: 'biomarkers', isRepositoryDeleted: false}
         ]);
         // When I select the 'All' filter
         TTYGViewSteps.filterAgentsByRepository('All');
         // Then I should see all agents
         TTYGViewSteps.verifyAgentList([
-            {name: 'agent-1', repositoryId: 'starwars'},
-            {name: 'agent-2', repositoryId: 'Deleted repository'},
-            {name: 'Databricks-general-unbiased', repositoryId: 'starwars'},
-            {name: 'Databricks-biomarkers', repositoryId: 'biomarkers'}
+            {name: 'agent-1', repositoryId: 'starwars', isRepositoryDeleted: false},
+            {name: 'agent-2', repositoryId: 'Not existing repo', isRepositoryDeleted: true},
+            {name: 'Databricks-general-unbiased', repositoryId: 'starwars', isRepositoryDeleted: false},
+            {name: 'Databricks-biomarkers', repositoryId: 'biomarkers', isRepositoryDeleted: false}
         ]);
     });
 });

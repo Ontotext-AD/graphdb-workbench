@@ -120,8 +120,9 @@ function TTYGService(TTYGRestService, $repositories) {
      * @return {Promise<AgentModel|undefined>}
      */
     const getAgent = (id) => {
+        const localRepositories = $repositories.getLocalReadablGraphdbRepositoryIds();
         return TTYGRestService.getAgent(id)
-            .then((response) => agentModelMapper(response.data));
+            .then((response) => agentModelMapper(response.data, localRepositories));
     };
 
     /**
@@ -130,9 +131,10 @@ function TTYGService(TTYGRestService, $repositories) {
      * @return {Promise<AgentModel>} created agent;
      */
     const createAgent = (payload) => {
+        const localRepositories = $repositories.getLocalReadablGraphdbRepositoryIds();
         return TTYGRestService.createAgent(payload)
             .then((response) => {
-                return agentModelMapper(response.data);
+                return agentModelMapper(response.data, localRepositories);
             });
     };
 
@@ -142,9 +144,10 @@ function TTYGService(TTYGRestService, $repositories) {
      * @return {Promise<AgentModel>} A promise that resolves to the updated agent.
      */
     const editAgent = (payload) => {
+        const localRepositories = $repositories.getLocalReadablGraphdbRepositoryIds();
         return TTYGRestService.editAgent(payload)
             .then((response) => {
-                return agentModelMapper(response.data);
+                return agentModelMapper(response.data, localRepositories);
             });
     };
 
@@ -175,9 +178,10 @@ function TTYGService(TTYGRestService, $repositories) {
      * @return {Promise<AgentModel>}
      */
     const getDefaultAgent = () => {
+        const localRepositories = $repositories.getLocalReadablGraphdbRepositoryIds();
         return TTYGRestService.getAgentDefaultValues()
             .then((response) => {
-                return agentModelMapper(response.data);
+                return agentModelMapper(response.data, localRepositories);
             });
     };
 

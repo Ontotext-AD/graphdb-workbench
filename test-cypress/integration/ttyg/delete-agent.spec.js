@@ -43,9 +43,9 @@ describe('TTYG delete agent', () => {
         TTYGViewSteps.getAgentDeletingLoader().should('be.visible');
         TTYGViewSteps.getAgents().should('have.length', 3);
         TTYGViewSteps.verifyAgentList([
-            {name: 'agent-2', repositoryId: 'Deleted repository'},
-            {name: 'Databricks-general-unbiased', repositoryId: 'starwars'},
-            {name: 'Databricks-biomarkers', repositoryId: 'biomarkers'}
+            {name: 'agent-2', repositoryId: 'Not existing repo', isRepositoryDeleted: true},
+            {name: 'Databricks-general-unbiased', repositoryId: 'starwars', isRepositoryDeleted: false},
+            {name: 'Databricks-biomarkers', repositoryId: 'biomarkers', isRepositoryDeleted: false}
         ]);
     });
 });
