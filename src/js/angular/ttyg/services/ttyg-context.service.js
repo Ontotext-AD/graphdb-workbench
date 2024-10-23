@@ -200,7 +200,7 @@ function TTYGContextService(EventEmitterService) {
         return subscribe(TTYGEventName.SELECTED_CHAT_UPDATED, (selectedChat) => callback(selectedChat));
     };
 
-    /** Subscribes to the 'firstMessageReceived' event.
+    /** Subscribes to the 'lastMessageReceived' event.
      * @param {function} callback - The callback to be called when the event is fired.
      *
      * @return {function} unsubscribe function.
