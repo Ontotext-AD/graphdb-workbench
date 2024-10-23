@@ -149,7 +149,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
              */
             const onSelectedChatUpdated = (chat) => {
                 $scope.chat = chat;
-                if (!chat.id && $scope.askingChatItem) {
+                if (!chat || !chat.id && $scope.askingChatItem) {
                     // Do nothing if the chat is new (dummy) and a question is currently being asked.
                     return;
                 }
@@ -227,7 +227,9 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 // Call it in a timeout to ensure that Angular's digest cycle is finished and all elements are displayed.
                 setTimeout(() => {
                     const chatDetailsElement = element.find(".chat-details")[0];
-                    chatDetailsElement.scrollTop = chatDetailsElement.scrollHeight;
+                    if (chatDetailsElement) {
+                        chatDetailsElement.scrollTop = chatDetailsElement.scrollHeight;
+                    }
                 });
             };
 

@@ -3,7 +3,7 @@
 <div class="chat-list-component">
     <div class="chat-list">
         <div ng-repeat="chatGroup in chatList.chatsByDay" class="chat-group">
-            <label>{{getHumanReadableTimestamp(chatGroup.timestamp)}}</label>
+            <label>{{ getHumanReadableChatGroupTimestamp(chatGroup.timestamp) }}</label>
             <ul>
                 <li ng-repeat="chat in chatGroup.chats track by chat.hash" class="chat-item"
                     ng-class="{'selected': chat.id === selectedChat.id, 'edited': renamedChat && chat.id === renamedChat.id}">

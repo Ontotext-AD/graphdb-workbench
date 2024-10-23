@@ -2,6 +2,7 @@ import 'angular/core/directives/markdown-content/markdown-content';
 import 'angular/core/directives/open-in-sparql-editor/open-in-sparql-editor.directive';
 import {TTYGEventName} from "../services/ttyg-context.service";
 import {ExplainQueryType} from "../../models/ttyg/explain-response";
+import {getHumanReadableTimestamp} from "../services/ttyg.utils";
 
 const modules = [
     'graphdb.framework.core.directives.open-in-sparql-editor',
@@ -12,7 +13,7 @@ angular
     .module('graphdb.framework.ttyg.directives.chat-item-detail', modules)
     .directive('chatItemDetail', ChatItemDetailComponent);
 
-ChatItemDetailComponent.$inject = ['toastr', '$translate', 'TTYGContextService', 'TTYGService'];
+ChatItemDetailComponent.$inject = ['toastr', '$translate', 'TTYGContextService', 'TTYGService', '$filter'];
 
 /**
  * @ngdoc directive
@@ -25,7 +26,7 @@ ChatItemDetailComponent.$inject = ['toastr', '$translate', 'TTYGContextService',
  * @example
  * <chat-item-detail chat-item="chatItem"></chat-item-detail>
  */
-function ChatItemDetailComponent(toastr, $translate, TTYGContextService, TTYGService) {
+function ChatItemDetailComponent(toastr, $translate, TTYGContextService, TTYGService, $filter) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/chat-item-detail.html',
@@ -126,6 +127,10 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, TTYGSer
             $scope.getRepositoryId = (f) => {
                 const agent = TTYGContextService.getAgent($scope.chatItemDetail.agentId);
                 return agent ? agent.repositoryId : '';
+            };
+
+            $scope.getHumanReadableQuestionTimestamp = (timestamp) => {
+                return getHumanReadableTimestamp($translate, $filter, timestamp);
             };
 
             // =========================
