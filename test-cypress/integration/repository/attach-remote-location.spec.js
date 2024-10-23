@@ -4,13 +4,12 @@ import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 
 describe('Attach remote location', () => {
-    beforeEach(() => {
+
+    it('Should create and delete remote instance', () => {
         cy.visit('/repository');
         RepositorySteps.waitLoader();
         RepositorySteps.waitUntilRepositoriesPageIsLoaded();
-    });
 
-    it('Should create and delete remote instance', () => {
         // When I open the "Attach a remote instance" dialog.
         AttachRepositorySteps.openAttachRemoteLocationDialog();
 
@@ -115,10 +114,15 @@ describe('Attach remote location', () => {
         RepositorySteps.getSparqlOntopicTable().should('not.exist');
     });
 
-    it('Should information be present for all location possible scenarios: error, location with and without repositories', () => {
-        // When I open the Repositories view that contains all possible kind of locations.
+    it('Should render different location types in separate tables: error, location with and without repositories', () => {
         RepositoriesStubs.stubRepositories();
         RepositoriesStubs.stubLocations();
+        cy.visit('/repository');
+        cy.wait('@get-all-repositories');
+        RepositorySteps.waitLoader();
+        RepositorySteps.waitUntilRepositoriesPageIsLoaded();
+
+        // When I open the Repositories view that contains all possible kind of locations.
         RepositorySteps.getLocalGraphDBTable().should('exist');
         // Then I expect to see the repositories from location GraphDb instance
         RepositorySteps.getLocalGraphDBTable().contains('test · RUNNING');
@@ -132,7 +136,11 @@ describe('Attach remote location', () => {
         RepositorySteps.getSparqlOntopicTable().contains('http://local');
     });
 
-    it('Should open edit remote location dialog', () => {
+    it('Should edit remote location dialog', () => {
+        cy.visit('/repository');
+        RepositorySteps.waitLoader();
+        RepositorySteps.waitUntilRepositoriesPageIsLoaded();
+
         const locationId = 'http://local';
         addRemoteSPARQLLocation(locationId, 'username', 'password');
         RepositorySteps.getLocalGraphDBTable().should('exist');
@@ -153,7 +161,11 @@ describe('Attach remote location', () => {
         ModalDialogSteps.clickOnConfirmButton();
     });
 
-    it('should create and delete SPARQL endpoint instance', () => {
+    it('Should create and delete SPARQL endpoint instance', () => {
+        cy.visit('/repository');
+        RepositorySteps.waitLoader();
+        RepositorySteps.waitUntilRepositoriesPageIsLoaded();
+
         const locationId = 'http://endpoint/repo/ex';
         addRemoteSPARQLLocation(locationId, 'username', 'password');
         // Then the dialog has closed
@@ -167,25 +179,25 @@ describe('Attach remote location', () => {
         // Then the instance should be gone
         RepositorySteps.getSparqlOntopicTable().should('not.exist');
     });
-
-    function addRemoteSPARQLLocation(url, username, password) {
-        // When I open the "Attach a remote instance" dialog.
-        AttachRepositorySteps.openAttachRemoteLocationDialog();
-        // Then I expect the "Attach" button to be disabled (not clickable), because location URL is mandatory
-        AttachRepositorySteps.getAttachBtn().should('be.disabled');
-        // And authentication type to be "None". This is default location type.
-        AttachRepositorySteps.getRemoteLocationDialog().should('contain', 'No authentication will be used with this location.');
-        // I expect GraphDB type be selected
-        AttachRepositorySteps.getGraphDBRadioBtn().should('be.checked');
-        // When I select SPARQL Endpoint instance
-        AttachRepositorySteps.selectSparqlEndpointRadioBtn();
-        // When I fill correct URL, username and password
-        AttachRepositorySteps.enterURL(url);
-        AttachRepositorySteps.enterUsername(username);
-        AttachRepositorySteps.enterPassword(password);
-        // Then I expect the "Attach" button to be enabled
-        AttachRepositorySteps.getAttachBtn().should('be.enabled');
-        // And when I attach the location, it should be visible in the list
-        AttachRepositorySteps.attachRemoteLocation();
-    }
 });
+
+function addRemoteSPARQLLocation(url, username, password) {
+    // When I open the "Attach a remote instance" dialog.
+    AttachRepositorySteps.openAttachRemoteLocationDialog();
+    // Then I expect the "Attach" button to be disabled (not clickable), because location URL is mandatory
+    AttachRepositorySteps.getAttachBtn().should('be.disabled');
+    // And authentication type to be "None". This is default location type.
+    AttachRepositorySteps.getRemoteLocationDialog().should('contain', 'No authentication will be used with this location.');
+    // I expect GraphDB type be selected
+    AttachRepositorySteps.getGraphDBRadioBtn().should('be.checked');
+    // When I select SPARQL Endpoint instance
+    AttachRepositorySteps.selectSparqlEndpointRadioBtn();
+    // When I fill correct URL, username and password
+    AttachRepositorySteps.enterURL(url);
+    AttachRepositorySteps.enterUsername(username);
+    AttachRepositorySteps.enterPassword(password);
+    // Then I expect the "Attach" button to be enabled
+    AttachRepositorySteps.getAttachBtn().should('be.enabled');
+    // And when I attach the location, it should be visible in the list
+    AttachRepositorySteps.attachRemoteLocation();
+}

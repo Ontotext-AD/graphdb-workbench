@@ -4,11 +4,11 @@ import {RepositoriesStub} from "../repositories-stub";
 
 export class RepositoriesStubs extends Stubs {
     static stubRepositories(withDelay = 0, fixture = '/repositories/get-repositories.json') {
-        RepositoriesStubs.stubQueryResponse('/rest/repositories/all', fixture, 'get-all-repositories', withDelay);
+        RepositoriesStubs.stubGetQueryResponse('/rest/repositories/all', fixture, 'get-all-repositories', withDelay);
     }
 
     static stubLocations(withDelay = 0) {
-        RepositoriesStubs.stubQueryResponse('/rest/locations', '/repositories/get-locations.json', 'backup-and-restore-response', withDelay);
+        RepositoriesStubs.stubQueryResponse('/rest/locations', '/repositories/get-locations.json', 'get-locations', withDelay);
     }
 
     static stubEditOntopResponse(repositoryId) {
