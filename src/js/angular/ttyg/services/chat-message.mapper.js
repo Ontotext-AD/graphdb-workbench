@@ -53,13 +53,16 @@ export const chatItemsModelMapper = (data = []) => {
         // i.e. it doesn't group user + assistant messages together.
         // In essence, there may be multiple consecutive user messages as well as
         // multiple consecutive assistant messages.
+        const chatId = message.conversationId;
         if (CHAT_MESSAGE_ROLE.USER === message.role) {
             if (currentItem) {
                 items.push(currentItem);
             }
-            const chatId = message.conversationId;
             currentItem = new ChatItemModel(chatId, chatMessageModelMapper(message));
         } else {
+            if (!currentItem) {
+                currentItem = new ChatItemModel(chatId, null);
+            }
             currentItem.answers.push(chatMessageModelMapper(message));
             currentItem.agentId = message.agentId;
         }
@@ -101,6 +104,7 @@ export const chatAnswerModelMapper = (data) => {
         chatId: data.id,
         chatName: data.name,
         timestamp: data.timestamp,
-        messages: chatMessageModelListMapper(data.messages)
+        messages: chatMessageModelListMapper(data.messages),
+        continueRunId: data.continueRunId
     });
 };

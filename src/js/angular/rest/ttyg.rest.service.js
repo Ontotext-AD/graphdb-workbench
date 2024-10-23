@@ -76,6 +76,18 @@ function TTYGRestService($http) {
     };
 
     /**
+     * Calls the REST API to continue a chat run.
+     * @param {*} data
+     * @return {*}
+     */
+    const continueChatRun = (data) => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.continueChatRun(data);
+        }
+        return $http.post(`${CONVERSATIONS_ENDPOINT}/continue`, data);
+    };
+
+    /**
      * Deletes a conversation by its ID.
      * @param {string} id
      * @return {Promise<void>}
@@ -186,6 +198,7 @@ function TTYGRestService($http) {
         renameConversation,
         exportConversation,
         askQuestion,
+        continueChatRun,
         getConversations,
         deleteConversation,
         createConversation,

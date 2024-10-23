@@ -94,6 +94,10 @@ export class TtygRestServiceFakeBackend {
         // return new Promise((resolve, reject) => setTimeout(() => reject(''), ASK_DELAY));
     }
 
+    continueChatRun(data) {
+        alert("continueChatRun() not implemented");
+    }
+
     deleteConversation(id) {
         this.conversations = this.conversations.filter((conversation) => conversation.id !== id);
         return new Promise((resolve) => setTimeout(() => resolve(), DELETE_DELAY));
