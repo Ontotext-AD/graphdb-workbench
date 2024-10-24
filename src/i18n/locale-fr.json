@@ -663,7 +663,7 @@
         "help.what.title": "Qu'est-ce que c'est ?",
         "help.what.content": "Parlez à votre graphe est un chatbot basé sur le modèle GPT-4 d'OpenAI qui peut répondre aux questions sur les données stockées dans GraphDB, en exploitant à la fois vos données et les connaissances générales du modèle GPT-4.",
         "help.how.title": "Comment ça marche ?",
-        "help.how.content": "Le bot utilise le connecteur ChatGPT Retrieval pour récupérer des informations dont il ne connaît pas. A ce titre, vous devez d'abord créer un tel connecteur. Voir aussi les paramètres pour affiner l'intégration avec le Connecteur de récupération.",
+        "help.how.content": "Le bot utilise le connecteur ChatGPT Retrieval pour récupérer des informations dont il ne connaît pas. A ce titre, vous devez d'abord créer un tel connecteur. Voir aussi les paramètres pour affiner l'intégration avec le Connecteur de récupération."
     },
     "config.name.label": "Nom de configuration",
     "graph.config.required": "Ma configuration de graphe (obligatoire)",
