@@ -70,14 +70,60 @@
             "verification_timeout": "Délai de vérification",
             "verification_timeout_tooltip": "Le délai de vérification concerne la durée pendant laquelle un nœud suiveur attendra avant de tenter de vérifier la dernière entrée engagée lorsque la première vérification n'a pas abouti.",
             "transaction_log_maximum_size_gb": "Taille maximale du journal des transactions GB",
-            "transaction_log_maximum_size_gb_tooltip": "Taille maximale du journal des transactions en GB qui déclenchera une troncature automatique du journal des transactions s'il devient plus grand. La taille minimale du journal des transactions est de 1 GB. Les nombres négatifs désactivent la troncature automatique du journal des transactions."
+            "transaction_log_maximum_size_gb_tooltip": "Taille maximale du journal des transactions en GB qui déclenchera une troncature automatique du journal des transactions s'il devient plus grand. La taille minimale du journal des transactions est de 1 GB. Les nombres négatifs désactivent la troncature automatique du journal des transactions.",
+            "batch_update_interval": "Intervalle de mise à jour par lots",
+            "batch_update_interval_tooltip": "Spécifie l'intervalle de temps (en millisecondes) auquel les mises à jour sont regroupées et synchronisées entre les clusters primaire et secondaire."
         },
         "cluster_configuration_nodes": {
             "label": "Nœuds",
             "local": "Local"
         },
         "cluster_configuration_multi_region": {
-            "label": "Multi-région"
+            "label": "Multi-région",
+            "primary_cluster": "Cluster principal",
+            "secondary_cluster": "Cluster secondaire",
+            "primary_leader": "Leader principal : {{primaryLeader}}",
+            "create_tag": "Ajouter une balise d'identification",
+            "create_tag_tooltip": "Ajouter une balise d'identification à utiliser avec ce cluster",
+            "enable_secondary_mode": "Activer le mode secondaire",
+            "enable_secondary_mode_tooltip": "Activer ce cluster en mode secondaire",
+            "delete_tag_tooltip": "Supprimer la balise",
+            "cancel_tooltip": "Annuler",
+            "disable_secondary_mode": "Désactiver le mode secondaire",
+            "disable_secondary_mode_tooltip": "Désactiver le mode secondaire du cluster",
+            "created_tag": "Ajouté avec succès à la balise d'identification principale du cluster : {{tag}}",
+            "deleted_tag": "La balise d'identification principale '{{tag}}' a été supprimée du cluster",
+            "secondary_enabled": "Mode secondaire activé avec succès",
+            "disabled_secondary_mode": "Le mode secondaire est désactivé",
+            "secondary_cluster_settings": "Paramètres du cluster secondaire",
+            "column": {
+                "index": "",
+                "tag": "Balise d'identification",
+                "tag_index": "Index"
+            },
+            "confirm": {
+                "delete": "Supprimer la balise d'identification {{tag}}",
+                "warning": "La suppression de la balise d'identification empêcherait tout cluster secondaire identifié avec elle de récupérer des mises à jour.",
+                "disable_secondary_mode": "Désactiver le mode secondaire",
+                "disable_secondary_mode_warning": "En désactivant le mode secondaire, ce cluster cesserait d'être une réplique en lecture seule.",
+                "enable_secondary": "Activer le mode secondaire",
+                "enable_secondary_warning": "En activant le mode secondaire, ce cluster deviendrait une réplique en lecture seule du cluster principal spécifié."
+
+            },
+            "error": {
+                "ascii": "Caractères non valides détectés. Seuls les caractères ASCII imprimables sont autorisés.",
+                "length": "La longueur d'entrée doit être comprise entre {{minLen}} et {{maxLen}} caractères.",
+                "creating": "Erreur lors de la création de la balise",
+                "deleting": "Erreur lors de la suppression de la balise",
+                "disabling": "Erreur lors de la désactivation du mode secondaire",
+                "secondary": "Erreur lors de l'activation du mode secondaire"
+            },
+            "secondary_mode_modal": {
+                "rpc_address": "Toute adresse RPC de nœud de cluster principal",
+                "rpc_address_placeholder": "node-name:7300",
+                "tag": "Balise d'identification",
+                "tag_placeholder": "Exemple : us-central"
+            }
         },
         "cluster_page": {
             "create_page_title": "Créer un cluster",

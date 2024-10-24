@@ -30,10 +30,20 @@ function ClusterConfiguration($jwtAuth, $uibModal, $translate, toastr, ClusterVi
             clusterConfiguration: '='
         },
         link: ($scope) => {
-            $scope.isAdmin = false;
+            // =========================
+            // Private variables
+            // =========================
+            const subscriptions = [];
+
+            // =========================
+            // Public variables
+            // =========================
             $scope.CONFIGURATION_TABS = CONFIGURATION_TABS;
             $scope.activeTab = CONFIGURATION_TABS.PROPERTIES;
 
+            // =========================
+            // Public functions
+            // =========================
             $scope.closeClusterConfigurationPanel = () => {
                 ClusterViewContextService.hideClusterConfigurationPanel();
             };
@@ -41,6 +51,33 @@ function ClusterConfiguration($jwtAuth, $uibModal, $translate, toastr, ClusterVi
             $scope.switchTab = ($event, tab) => {
                 $scope.activeTab = tab;
             };
+
+            // =========================
+            // Events and watchers
+            // =========================
+            const subscribeHandlers = () => {
+                subscriptions.push(ClusterViewContextService.onShowClusterConfigurationPanel((show) => {
+                    if (!show) {
+                        $scope.activeTab = CONFIGURATION_TABS.PROPERTIES;
+                    }
+                }));
+            };
+
+            const removeAllListeners = () => {
+                subscriptions.forEach((subscription) => subscription());
+            };
+
+            $scope.$on('$destroy', function () {
+                removeAllListeners();
+            });
+
+            // =========================
+            // Initialization
+            // =========================
+            const init = () => {
+                subscribeHandlers();
+            };
+            init();
         }
     };
 }

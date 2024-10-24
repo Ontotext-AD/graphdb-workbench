@@ -73,4 +73,14 @@
             <span>{{clusterConfiguration.transactionLogMaximumSizeGB | number}}</span>
         </div>
     </div>
+    <div class="datasource mb-1" ng-if="clusterConfiguration.batchUpdateInterval">
+        <div class="item clearfix break-word-alt small">
+            {{'cluster_management.cluster_configuration_properties.batch_update_interval' | translate}}
+            <em class="icon-info text-primary"
+                gdb-tooltip="{{'cluster_management.cluster_configuration_properties.batch_update_interval_tooltip' | translate}}"></em>
+        </div>
+        <div class="data-value">
+            <span>{{clusterConfiguration.batchUpdateInterval | number}}</span>
+        </div>
+    </div>
 </div>

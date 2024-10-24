@@ -18,6 +18,14 @@ function ClusterProperties($jwtAuth, $uibModal) {
             clusterConfiguration: '='
         },
         link: ($scope) => {
+            // =========================
+            // Public variables
+            // =========================
+            $scope.isAdmin = false;
+
+            // =========================
+            // Public functions
+            // =========================
             $scope.showEditConfigurationDialog = () => {
                 const modalInstance = $uibModal.open({
                     templateUrl: 'js/angular/clustermanagement/templates/modal/cluster-edit-dialog.html',
@@ -48,6 +56,9 @@ function ClusterProperties($jwtAuth, $uibModal) {
                 });
             };
 
+            // =========================
+            // Initialization
+            // =========================
             const init = () => {
                 $scope.isAdmin = $jwtAuth.isAuthenticated() && $jwtAuth.isAdmin();
             };
