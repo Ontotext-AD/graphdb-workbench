@@ -182,3 +182,11 @@ describe('RDF resource search', () => {
         cy.deleteRepository(repositoryId);
     });
 });
+
+function getRDFResourceSearchBox() {
+    return cy.get('rdf-resource-search').should('be.visible');
+}
+
+function getVisualButton() {
+    return cy.get('.display-type-visual-btn').should('be.visible');
+}

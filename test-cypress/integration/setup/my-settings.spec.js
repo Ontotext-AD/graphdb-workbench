@@ -1,6 +1,8 @@
 import {SparqlEditorSteps} from "../../steps/sparql-editor-steps";
 import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
 
+Cypress.env('set_default_user_data', false);
+
 describe('My Settings', () => {
 
     let repositoryId;
