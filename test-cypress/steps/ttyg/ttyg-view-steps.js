@@ -110,6 +110,10 @@ export class TTYGViewSteps {
         return this.getChatsSidebar().find('.create-chat-btn');
     }
 
+    static createANewChat() {
+        TTYGViewSteps.getCreateChatButton().click();
+    }
+
     static getAgentsSidebar() {
         return cy.get('.right-sidebar');
     }
