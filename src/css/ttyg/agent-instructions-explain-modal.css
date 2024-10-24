@@ -6,3 +6,7 @@
 .instructions-explain .instruction-content {
     margin-top: 0.5em;
 }
+
+.instructions-explain pre {
+    white-space: pre-wrap;
+}

@@ -60,6 +60,9 @@ const identicalTranslations = [
     "{{progressMessage}}... {{timeHuman}}",
     "\n{{extraMessage}}",
     "{{n}}/{{nn}}",
+    "{{'ttyg.helpInfo'|translate|trustAsHtml}}",
+    "{{'ttyg.help.how.content2'|translate|trustAsHtml}}",
+    "{{'ttyg.helpInfo'|translate|trustAsHtml}}",
     "",
 
     // Example values below - maybe they should never be translated?

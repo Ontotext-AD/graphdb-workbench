@@ -1,11 +1,11 @@
 <div class="ot-view-info">
     <h5>{{'ttyg.help.what.title' | translate}}</h5>
-    <p>
-        {{'ttyg.help.what.content' | translate}}
+    <p ng-bind-html="'ttyg.help.what.content' | translate | trustAsHtml">
     </p>
 
     <h5>{{'ttyg.help.how.title' | translate}}</h5>
-    <p>
-        {{'ttyg.help.how.content' | translate}}
+    <p ng-bind-html="'ttyg.help.how.content1' | translate | trustAsHtml">
+    </p>
+    <p ng-bind-html="'ttyg.help.how.content2' | translate | trustAsHtml">
     </p>
 </div>
