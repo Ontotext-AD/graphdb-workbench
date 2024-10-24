@@ -25,6 +25,9 @@ export class AgentModel {
          * @private
          */
         this._repositoryId = data.repositoryId;
+
+        this.isRepositoryDeleted = data.isRepositoryDeleted !== undefined ? data.isRepositoryDeleted: false;
+
         /**
          * @type {string}
          * @private

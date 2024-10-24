@@ -28,7 +28,6 @@ export class TTYGStubs extends Stubs {
     /**
      * Loads the specified <code>fixture</code> and updates the chatId in the fixture with the actual ID passed in the endpoint call.
      *
-     * @param {string} fixture - Path to the JSON file containing the chat conversation.
      * @param {number} delay - Optional delay in milliseconds before responding with the fixture.
      */
     static stubChatGet(delay = 0) {
@@ -144,6 +143,18 @@ export class TTYGStubs extends Stubs {
             fixture,
             statusCode: 200
         }).as('get-agent-defaults');
+    }
+
+    static stubCrateNewChat(fixture = 'ttyg/chats/create/create-chat-response.json') {
+        cy.fixture(fixture).then((fixtureData) => {
+            const today = Math.floor(Date.now() / 1000) + '';
+            const body = JSON.stringify(fixtureData).replace(/"creationDate"/g, today);
+            cy.intercept('POST', '/rest/chat/conversations', {
+                statusCode: 200,
+                body: JSON.parse(body)
+            }).as('create-chat');
+        });
+
     }
 
     static stubExplainResponse(fixture = '/ttyg/chats/explain-response-1.json') {

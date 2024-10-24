@@ -444,6 +444,7 @@ function TTYGViewCtrl(
                     // Replace the placeholder with the newly created chat
                     const nonPersistedChat = TTYGContextService.getChats().getNonPersistedChat();
                     TTYGContextService.replaceChat(selectedChat, nonPersistedChat);
+                    TTYGStorageService.saveChat(selectedChat);
 
                     // Process the messages
                     updateChatAnswersFirstResponse(selectedChat, chatItem, chatAnswer);
