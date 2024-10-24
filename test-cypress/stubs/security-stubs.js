@@ -12,6 +12,13 @@ export class SecurityStubs {
         }).as('security-all');
     }
 
+    static stubUpdateUserData(userName) {
+        cy.intercept('PATCH', `/rest/security/users/${userName}`, {
+            statusCode: 200,
+            body: {}
+        }).as('updateUser');
+    }
+
     static getAdminResponse(infer, sameAs) {
         return {
             "username": "admin",

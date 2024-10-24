@@ -21,5 +21,8 @@ module.exports = defineConfig({
         reporterOptions: {
             configFile: 'cypress-reporter-config.json'
         }
+    },
+    env: {
+        set_default_user_data: true
     }
 });
