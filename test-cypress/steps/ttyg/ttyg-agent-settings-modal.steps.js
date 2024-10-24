@@ -179,7 +179,17 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
     // Similarity search method
 
     static enableSimilaritySearchMethodPanel() {
-        this.getExtractionMethod('similarity_search').find('.extraction-method-toggle label').click();
+        this.getExtractionMethod('similarity_search')
+            .find('.extraction-method-toggle input[type="checkbox"]')
+            .should('not.be.checked') // Ensure the checkbox is not checked
+            .click({force: true});
+    }
+
+    static disableSimilaritySearchMethodPanel() {
+        this.getExtractionMethod('similarity_search')
+            .find('.extraction-method-toggle input[type="checkbox"]')
+            .should('be.checked') // Ensure the checkbox is checked
+            .click({force: true});
     }
 
     static toggleSimilaritySearchMethodPanel() {
@@ -237,7 +247,17 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
     // Retrieval method
 
     static enableRetrievalMethodPanel() {
-        this.getExtractionMethod('retrieval_search').find('.extraction-method-toggle label').click();
+        this.getExtractionMethod('retrieval_search')
+            .find('.extraction-method-toggle input[type="checkbox"]')
+            .should('not.be.checked')
+            .click({force: true});
+    }
+
+    static disableRetrievalMethodPanel() {
+        this.getExtractionMethod('retrieval_search')
+            .find('.extraction-method-toggle input[type="checkbox"]')
+            .should('be.checked')
+            .click({force: true});
     }
 
     static toggleRetrievalMethodPanel() {
