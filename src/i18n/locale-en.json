@@ -225,7 +225,7 @@
         }
     },
     "ttyg": {
-        "helpInfo": "Talk to Your Graph is chat bot based on OpenAI's GPT-4 model that can answer questions about data stored in GraphDB, leveraging both your data and the general knowledge of the GPT-4 model. The bot works in connection with the ChatGPT Retrieval connector.",
+        "helpInfo": "The <b>Talk to Your Graph</b> view lets you interact with your database through a conversational interface. You can ask natural language questions about the data and receive answers generated through the combined power of GraphDB and OpenAI. It supports multiple agent configurations and persistent chats for ongoing, contextual conversations.",
         "loading": "Loading...",
         "help": {
             "btn": {
@@ -344,6 +344,7 @@
                 "retrieval_search": "ChatGPT Retrieval",
                 "iri_discovery": "FTS for IRI discovery"
             },
+            "query_colon": ":",
             "query_desc": {
                 "sparql_query":"Direct query",
                 "fts_search": "Full-text search via SPARQL",
@@ -647,8 +648,9 @@
             },
             "messages": {
                 "no_agents": "No agents found for the selected filter.",
-                "help_1": "Talk to your data in natural language. All you need to do is create and instruct your own AI Agent to assist you.",
-                "help_2": "The Agent is an AI-powered conversational agent designed to help with a wide range of tasks, from answering questions and providing information to assisting with creative and technical projects. It leverages advanced natural language processing to understand and respond to user inputs in a human-like manner, making interactions intuitive and efficient.",
+                "help_1": "{{'ttyg.helpInfo'|translate|trustAsHtml}}",
+                "help_2": "{{'ttyg.help.how.content2'|translate|trustAsHtml}}",
+                "help_config": "To use <b>Talk to Your Graph</b>, GraphDB must first be configured to work with OpenAI. Please ensure that the necessary API keys and settings are in place before starting. For detailed setup instructions, refer to the <a href=\"{{talkToGraphDocumentationLink}}\" target=\"_blank\" rel=\"noopener\">documentation<i class=\"icon-external\"></i></a> or contact your administrator.",
                 "token_prop_warn1": "To enable this feature, set the config property",
                 "token_prop_warn2": "to your GPT token in",
                 "token_prop_warn3": "file.",
@@ -661,7 +663,7 @@
             }
         },
         "help.what.title": "What is this?",
-        "help.what.content": "Talk to Your Graph is chat bot based on OpenAI's GPT-4 model that can answer questions about data stored in GraphDB, leveraging both your data and the general knowledge of the GPT-4 model.",
+        "help.what.content": "{{'ttyg.helpInfo'|translate|trustAsHtml}}",
         "help.how.title": "How does it work?",
         "help.how.content": "The bot uses the ChatGPT Retrieval connector to fetch information it does not know about. As such, you must first create a suitable connector. See also the settings for fine-tuning the integration with the Retrieval connector."
     },
