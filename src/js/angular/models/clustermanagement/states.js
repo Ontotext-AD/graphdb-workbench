@@ -27,3 +27,8 @@ export const LinkState = {
     // complimentary state, built based on the recovery state of two nodes when one is receiving snapshot to the other
     RECEIVING_SNAPSHOT: 'RECEIVING_SNAPSHOT'
 };
+
+export const TopologyState = {
+    PRIMARY_NODE: 'PRIMARY_NODE',
+    SECONDARY_NODE: 'SECONDARY_NODE'
+};

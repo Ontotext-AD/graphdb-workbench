@@ -37,9 +37,9 @@
 }
 
 .cluster-group-table td, .cluster-group-table th {
-    padding: .4rem;
-    border-bottom: 1px solid #eceeef;
-}
+     padding: .4rem;
+     border-bottom: 1px solid #eceeef;
+ }
 
 .index-cell {
     width: 36px;
