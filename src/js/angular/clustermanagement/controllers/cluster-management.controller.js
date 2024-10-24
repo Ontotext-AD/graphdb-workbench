@@ -58,7 +58,12 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
     // Public functions
     // =========================
 
-    $scope.onopen = $scope.onclose = () => angular.noop();
+    $scope.onopen = () => angular.noop();
+
+    // fires close event on blur
+    $scope.onclose = () => {
+        ClusterViewContextService.hideClusterConfigurationPanel();
+    };
 
     $scope.isAdmin = () => {
         return $jwtAuth.isAuthenticated() && $jwtAuth.isAdmin();
