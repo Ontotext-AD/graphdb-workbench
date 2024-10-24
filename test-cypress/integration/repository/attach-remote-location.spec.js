@@ -136,7 +136,7 @@ describe('Attach remote location', () => {
         RepositorySteps.getSparqlOntopicTable().contains('http://local');
     });
 
-    it('Should edit remote location dialog', () => {
+    it('Should be able to open edit remote location dialog', () => {
         cy.visit('/repository');
         RepositorySteps.waitLoader();
         RepositorySteps.waitUntilRepositoriesPageIsLoaded();
@@ -156,9 +156,8 @@ describe('Attach remote location', () => {
         AttachRepositorySteps.getLocationURLInput().should('be.disabled');
         ModalDialogSteps.close();
         // Then I can remove the new location
-        RepositorySteps.deleteSparqlLocation(locationId);
-        // When I confirm
-        ModalDialogSteps.clickOnConfirmButton();
+        deleteRemoteLocation(locationId);
+        RepositorySteps.getSparqlOntopicTable().should('not.exist');
     });
 
     it('Should create and delete SPARQL endpoint instance', () => {
@@ -173,15 +172,13 @@ describe('Attach remote location', () => {
         // And the SPARQL table should be visible
         RepositorySteps.getSparqlOntopicTable().should('contain', locationId);
         // Then I can remove the new location
-        RepositorySteps.deleteSparqlLocation(locationId);
-        // When I confirm
-        ModalDialogSteps.clickOnConfirmButton();
-        // Then the instance should be gone
+        deleteRemoteLocation(locationId);
         RepositorySteps.getSparqlOntopicTable().should('not.exist');
     });
 });
 
 function addRemoteSPARQLLocation(url, username, password) {
+    RepositoriesStubs.spyCreateLocation();
     // When I open the "Attach a remote instance" dialog.
     AttachRepositorySteps.openAttachRemoteLocationDialog();
     // Then I expect the "Attach" button to be disabled (not clickable), because location URL is mandatory
@@ -200,4 +197,12 @@ function addRemoteSPARQLLocation(url, username, password) {
     AttachRepositorySteps.getAttachBtn().should('be.enabled');
     // And when I attach the location, it should be visible in the list
     AttachRepositorySteps.attachRemoteLocation();
+    cy.wait('@createLocation');
+}
+
+function deleteRemoteLocation(locationId) {
+    RepositoriesStubs.spyDeleteLocation();
+    RepositorySteps.deleteSparqlLocation(locationId);
+    ModalDialogSteps.clickOnConfirmButton();
+    cy.wait('@deleteLocation');
 }
