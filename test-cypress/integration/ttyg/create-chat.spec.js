@@ -5,7 +5,7 @@ import {TTYGViewSteps} from "../../steps/ttyg/ttyg-view-steps";
 import {ChatPanelSteps} from "../../steps/ttyg/chat-panel-steps";
 import HomeSteps from "../../steps/home-steps";
 
-describe('Ttyg ChatPanel', () => {
+describe('TTYG create chat', () => {
     beforeEach(() => {
         // Create an actual repository to prevent stubbing all background requests that are not related to the ttyg view
         RepositoriesStubs.stubRepositories(0, '/repositories/get-ttyg-repositories.json');
