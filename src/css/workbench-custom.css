@@ -405,3 +405,7 @@
 .update-ontop-repo-dialog .modal-dialog .modal-content .modal-body {
     font-family: var(--mono-font);
 }
+
+.help-info b {
+    font-weight: 500;
+}

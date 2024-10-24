@@ -25,18 +25,15 @@
         <div ng-repeat="agent in agentList.filterableAgents">
             <div ng-if="!deletingAgent || deletingAgent.agentId !== agent.id" class="agent-item"
                  ng-class="{'selected': agent.id === selectedAgent.id}">
-                <div class="agent-info" ng-if="agent.repositoryId">
+                <div class="agent-info">
                     <div class="agent-name">{{agent.name}}</div>
                     <div class="related-repository">
-                        <i class="fa-kit fa-gdb-repo-graphdb"></i>
+                        <i ng-if="!agent.isRepositoryDeleted" class="fa-kit fa-gdb-repo-graphdb"></i>
+                        <i ng-if="agent.isRepositoryDeleted"
+                           class="fa-regular fa-triangle-exclamation text-warning agent-with-deleted-repository"
+                           gdb-tooltip="{{'ttyg.agent.deleted_repository' | translate}}">
+                        </i>
                         {{agent.repositoryId}}
-                    </div>
-                </div>
-                <div class="agent-info agent-no-repo" ng-if="!agent.repositoryId">
-                    <div class="agent-name">{{agent.name}}</div>
-                    <div class="related-repository">
-                        <i class="fa-regular fa-triangle-exclamation text-warning"></i>
-                        {{'ttyg.agent.deleted_repository' | translate}}
                     </div>
                 </div>
                 <div class="btn-group">
