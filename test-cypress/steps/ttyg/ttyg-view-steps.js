@@ -243,6 +243,8 @@ export class TTYGViewSteps {
         data.forEach((agent, index) => {
             this.getAgent(index).within(() => {
                 cy.get('.agent-name').should('contain', agent.name);
+                const shouldExist = agent.isRepositoryDeleted ? 'exist' : 'not.exist';
+                cy.get('.agent-with-deleted-repository').should(shouldExist);
                 cy.get('.related-repository').should('contain', agent.repositoryId);
             });
         });
@@ -278,6 +280,8 @@ export class TTYGViewSteps {
         data.forEach((agent, index) => {
             this.getAgentFromMenu(index).within(() => {
                 cy.get('.agent-name').should('contain', agent.name);
+                const shouldExist = agent.isRepositoryDeleted ? 'exist' : 'not.exist';
+                cy.get('.agent-with-deleted-repository').should(shouldExist);
                 cy.get('.repository-id').should('contain', agent.repositoryId);
             });
         });

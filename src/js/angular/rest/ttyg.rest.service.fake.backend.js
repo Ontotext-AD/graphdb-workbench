@@ -282,7 +282,7 @@ let agentsList = [
         "temperature": 0.0,
         "topP": 0.0,
         "seed": null,
-        "repositoryId": null,
+        "repositoryId": "Non existing repo",
         "instructions": {
             "systemInstruction": "string\n\nstring",
             "userInstruction": "string"

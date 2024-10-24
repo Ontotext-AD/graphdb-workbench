@@ -118,19 +118,11 @@ export const agentListMapper = (data, localRepositoryIds) => {
         return new AgentListModel();
     }
     const agentModels = data
-        .map((agent) => agentModelMapper(agent))
-        .map((agent) => {
-            // If the agent is not in the list of local repositories, then set the repositoryId to null in order to show
-            // the agent is not assigned to any repository in this GDB instance.
-            if (!localRepositoryIds.includes(agent.repositoryId)) {
-                agent.repositoryId = null;
-            }
-            return agent;
-        });
+        .map((agent) => agentModelMapper(agent, localRepositoryIds));
     return new AgentListModel(agentModels);
 };
 
-export const agentModelMapper = (data) => {
+export const agentModelMapper = (data, localRepositoryIds) => {
     if (!data) {
         return;
     }
@@ -139,6 +131,8 @@ export const agentModelMapper = (data) => {
         id: data.id,
         name: data.name,
         repositoryId: data.repositoryId,
+        // Sets the isRepositoryDeleted flag based on whether the repository ID is not in the list of repositories.
+        isRepositoryDeleted: !localRepositoryIds.includes(data.repositoryId),
         model: data.model,
         temperature: data.temperature,
         topP: data.topP,

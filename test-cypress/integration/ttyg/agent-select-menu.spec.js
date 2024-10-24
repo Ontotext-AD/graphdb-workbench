@@ -22,10 +22,10 @@ describe('TTYG agent select menu', () => {
         // When The page is loaded
         // Then I should see all the agents in the menu
         TTYGViewSteps.verifySelectAgentMenuItems([
-            {name: 'agent-1', repositoryId: 'starwars'},
-            {name: 'agent-2', repositoryId: 'Deleted repository'}, // the agent has no repository id
-            {name: 'Databricks-general-unbiased', repositoryId: 'starwars'},
-            {name: 'Databricks-biomarkers', repositoryId: 'biomarkers'}
+            {name: 'agent-1', repositoryId: 'starwars', isRepositoryDeleted: false},
+            {name: 'agent-2', repositoryId: 'Not existing repo', isRepositoryDeleted: true},
+            {name: 'Databricks-general-unbiased', repositoryId: 'starwars', isRepositoryDeleted: false},
+            {name: 'Databricks-biomarkers', repositoryId: 'biomarkers', isRepositoryDeleted: false}
         ]);
     });
 
@@ -72,9 +72,9 @@ describe('TTYG agent select menu', () => {
         TTYGViewSteps.selectAllAgentsFilter();
         TTYGViewSteps.getAgents().should('have.length', 3);
         TTYGViewSteps.verifySelectAgentMenuItems([
-            {name: 'agent-2', repositoryId: 'Deleted repository'}, // the agent has no repository id
-            {name: 'Databricks-general-unbiased', repositoryId: 'starwars'},
-            {name: 'Databricks-biomarkers', repositoryId: 'biomarkers'}
+            {name: 'agent-2', repositoryId: 'Not existing repo', isRepositoryDeleted: true},
+            {name: 'Databricks-general-unbiased', repositoryId: 'starwars', isRepositoryDeleted: false},
+            {name: 'Databricks-biomarkers', repositoryId: 'biomarkers', isRepositoryDeleted: false}
         ]);
     });
 
@@ -97,9 +97,9 @@ describe('TTYG agent select menu', () => {
         ModalDialogSteps.getDialog().should('not.exist');
         // TODO: the agents list filter brakes after deleting an agent!!!
         TTYGViewSteps.verifySelectAgentMenuItems([
-            {name: 'agent-2', repositoryId: 'Deleted repository'}, // the agent has no repository id
-            {name: 'Databricks-general-unbiased', repositoryId: 'starwars'},
-            {name: 'Databricks-biomarkers', repositoryId: 'biomarkers'}
+            {name: 'agent-2', repositoryId: 'Not existing repo', isRepositoryDeleted: true},
+            {name: 'Databricks-general-unbiased', repositoryId: 'starwars', isRepositoryDeleted: false},
+            {name: 'Databricks-biomarkers', repositoryId: 'biomarkers', isRepositoryDeleted: false}
         ]);
     });
 
