@@ -170,5 +170,30 @@
             }
         ],
         "timestamp": "1725875483"
+    },
+    "thread_new_created_chat": {
+        "id": "thread_new_created_chat",
+        "name": "Han Solo is a character",
+        "messages": [
+            {
+                "id": "msg_A9UeOFT9SF3pKzJzar1HwM7d",
+                "conversationId": "thread_new_created_chat",
+                "agentId": "asst_gAPcrHQQ9ZIxD5eXWH2BNFfo",
+                "role": "user",
+                "message": "Who is Han Solo?",
+                "timestamp": 1725875323,
+                "name": null
+            },
+            {
+                "id": "msg_Bn07kVDCYT1qmgu1G7Zw0KNeс_",
+                "conversationId": "thread_new_created_chat",
+                "role": "assistant",
+                "agentId": "asst_gAPcrHQQ9ZIxD5eXWH2BNFfo",
+                "message": "Han Solo is a character ...",
+                "timestamp": 1725875323,
+                "name": null
+            }
+        ],
+        "timestamp": "1725875483"
     }
 }
