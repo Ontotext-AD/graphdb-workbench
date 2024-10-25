@@ -665,7 +665,9 @@
         "help.what.title": "Qu'est-ce que c'est ?",
         "help.what.content": "{{'ttyg.helpInfo'|translate|trustAsHtml}}",
         "help.how.title": "Comment ça marche ?",
-        "help.how.content": "Le bot utilise le connecteur ChatGPT Retrieval pour récupérer des informations dont il ne connaît pas. A ce titre, vous devez d'abord créer un tel connecteur. Voir aussi les paramètres pour affiner l'intégration avec le Connecteur de récupération."
+        "help.how.content": "Le bot utilise le connecteur ChatGPT Retrieval pour récupérer des informations dont il ne connaît pas. A ce titre, vous devez d'abord créer un tel connecteur. Voir aussi les paramètres pour affiner l'intégration avec le Connecteur de récupération.",
+        "help.how.content1": "<b>Parlez à votre graphe</b> est alimenté par l'API Assistants d'OpenAI. Vous commencez par sélectionner ou configurer un agent, qui définit le contexte et les règles de requête. Une fois en place, vous pouvez démarrer une conversation en posant des questions en langage naturel. L'assistant interprète votre requête, exécute les méthodes de requête appropriées pour récupérer les données, et vous répond. La fonction de conversation persistante garantit que les échanges restent contextuellement cohérents, permettant des interactions plus approfondies au fil du temps. Vous pouvez utiliser plusieurs agents simultanément pour couvrir différents domaines ou sources de données.",
+        "help.how.content2": "Un agent dans <b>Parlez à votre graphe</b> est un assistant piloté par l'IA, spécifiquement configuré pour interagir avec votre base de données graphe. Il utilise un traitement avancé du langage naturel pour comprendre et répondre à vos questions en interrogeant la base de données et en fournissant des informations pertinentes. Chaque agent est adapté à un contexte spécifique, rendant les interactions fluides et efficaces, que ce soit pour récupérer des données, explorer des insights ou travailler sur des projets complexes."
     },
     "config.name.label": "Nom de configuration",
     "graph.config.required": "Ma configuration de graphe (obligatoire)",
