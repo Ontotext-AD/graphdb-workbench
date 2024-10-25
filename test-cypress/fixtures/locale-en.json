@@ -119,9 +119,9 @@
                 "secondary": "Error enabling secondary mode"
             },
             "secondary_mode_modal": {
-                "rpc_address": "Any primary cluster node RPC address",
+                "rpc_address": "Any primary cluster node RPC address *",
                 "rpc_address_placeholder": "node-name:7300",
-                "tag": "Identifier tag",
+                "tag": "Identifier tag *",
                 "tag_placeholder": "Example: us-central"
             }
         },

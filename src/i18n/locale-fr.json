@@ -119,9 +119,9 @@
                 "secondary": "Erreur lors de l'activation du mode secondaire"
             },
             "secondary_mode_modal": {
-                "rpc_address": "Toute adresse RPC de nœud de cluster principal",
+                "rpc_address": "Toute adresse RPC de nœud de cluster principal *",
                 "rpc_address_placeholder": "node-name:7300",
-                "tag": "Balise d'identification",
+                "tag": "Balise d'identification *",
                 "tag_placeholder": "Exemple : us-central"
             }
         },

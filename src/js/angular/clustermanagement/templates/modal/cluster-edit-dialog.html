@@ -8,33 +8,29 @@
     <div class="modal-body">
         <form novalidate id="clusterConfigurationForm" name="clusterConfigurationForm">
             <div class="form-horizontal">
-                <div class="form-group">
-                    <div>
-                        <div class="form-group" ng-repeat="fieldConfig in configFields">
-                            <div class="input-group"
-                                 ng-class="{'has-danger': clusterConfigurationForm[fieldConfig.name].$invalid}">
-                                <label for="{{fieldConfig.id}}" class="col-xs-4 col-form-label">{{fieldConfig.label |
-                                    translate}}*</label>
-                                <div class="col-xs-8" gdb-tooltip="{{fieldConfig.tooltip | translate}}">
-                                    <input
-                                        class="form-control"
-                                        placeholder="{{'required.field' | translate}}"
-                                        type="number"
-                                        ng-model="clusterConfiguration[fieldConfig.name]"
-                                        required
-                                        id="{{fieldConfig.id}}"
-                                        min="0"
-                                        name="{{fieldConfig.name}}"
-                                        ng-pattern="fieldConfig.pattern">
-                                    <div class="form-control-feedback"
-                                         ng-show="clusterConfigurationForm[fieldConfig.name].$error.required">
-                                        {{'required.field' | translate}}
-                                    </div>
-                                    <div class="form-control-feedback"
-                                         ng-show="clusterConfigurationForm[fieldConfig.name].$error.pattern">
-                                        {{fieldConfig.errorMsg | translate}}
-                                    </div>
-                                </div>
+                <div class="form-group" ng-repeat="fieldConfig in configFields">
+                    <div class="input-group"
+                         ng-class="{'has-danger': clusterConfigurationForm[fieldConfig.name].$invalid}">
+                        <label for="{{fieldConfig.id}}" class="col-xs-4 col-form-label">{{fieldConfig.label |
+                            translate}}*</label>
+                        <div class="col-xs-8" gdb-tooltip="{{fieldConfig.tooltip | translate}}">
+                            <input
+                                class="form-control"
+                                placeholder="{{'required.field' | translate}}"
+                                type="number"
+                                ng-model="clusterConfiguration[fieldConfig.name]"
+                                required
+                                id="{{fieldConfig.id}}"
+                                min="0"
+                                name="{{fieldConfig.name}}"
+                                ng-pattern="fieldConfig.pattern">
+                            <div class="form-control-feedback"
+                                 ng-show="clusterConfigurationForm[fieldConfig.name].$error.required">
+                                {{'required.field' | translate}}
+                            </div>
+                            <div class="form-control-feedback"
+                                 ng-show="clusterConfigurationForm[fieldConfig.name].$error.pattern">
+                                {{fieldConfig.errorMsg | translate}}
                             </div>
                         </div>
                     </div>
@@ -53,11 +49,9 @@
                                         translate}}
                                     </li>
                                     <li>
-                                        {{'cluster_management.cluster_page.errors.preconditions_failed.authentication_secret'
-                                        | translate}}
+                                        {{'cluster_management.cluster_page.errors.preconditions_failed.authentication_secret' | translate}}
                                     </li>
-                                    <li>{{'cluster_management.cluster_page.errors.preconditions_failed.nodes_reachable'
-                                        | translate}}
+                                    <li>{{'cluster_management.cluster_page.errors.preconditions_failed.nodes_reachable' | translate}}
                                     </li>
                                 </ul>
                             </div>

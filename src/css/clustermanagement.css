@@ -372,9 +372,12 @@ ul.nodes-list li a:hover {
 }
 
 
-.tags-table .index-column,
-.actions-column {
+.tags-table .index-column {
     width: 10%;
+}
+
+.actions-column {
+    width: 80px;
 }
 
 .tag-input.ng-invalid.ng-dirty {
@@ -397,7 +400,6 @@ ul.nodes-list li a:hover {
 
 .actions-cell {
     width: 80px;
-    border-left: 1px solid #eceeef;
     border-right: 1px solid #eceeef;
 }
 

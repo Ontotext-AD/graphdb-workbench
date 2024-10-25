@@ -89,7 +89,7 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
                     })
                     .then(() => toastr.success($translate.instant('cluster_management.cluster_configuration_multi_region.deleted_tag', {tag})))
                     .catch((response) => {
-                        if (response === 'cancel') {
+                        if (response === 'cancel' || response === 'escape key press') {
                             return;
                         }
                         const msg = getError(response);
@@ -99,6 +99,7 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
             };
 
             $scope.enableSecondaryMode = () => {
+                $scope.addingTag = false;
                 const confirmConfig = {
                     title: $translate.instant('cluster_management.cluster_configuration_multi_region.confirm.enable_secondary'),
                     message: $translate.instant('cluster_management.cluster_configuration_multi_region.confirm.enable_secondary_warning'),
@@ -116,10 +117,11 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
                     })
                     .then(() => toastr.success($translate.instant('cluster_management.cluster_configuration_multi_region.secondary_enabled')))
                     .catch((response) => {
-                        if (response !== 'cancel') {
-                            const msg = getError(response);
-                            toastr.error(msg, $translate.instant('cluster_management.cluster_configuration_multi_region.error.secondary'));
+                        if (response === 'cancel' || response === 'escape key press') {
+                            return;
                         }
+                        const msg = getError(response);
+                        toastr.error(msg, $translate.instant('cluster_management.cluster_configuration_multi_region.error.secondary'));
                     })
                     .finally(() => setLoader(false));
             };
@@ -138,7 +140,7 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
                     })
                     .then(() => toastr.success($translate.instant('cluster_management.cluster_configuration_multi_region.disabled_secondary_mode')))
                     .catch((response) => {
-                        if (response === 'cancel') {
+                        if (response === 'cancel' || response === 'escape key press') {
                             return;
                         }
                         const msg = getError(response);
@@ -187,11 +189,16 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
             };
 
             const updateClusterData = (clusterModel) => {
+                setLoader(true);
                 ClusterRestService.getClusterConfig()
                     .then((response) => {
                         $scope.secondaryTag = ClusterConfiguration.fromJSON(response.data).secondaryTag;
                         setTopology(ClusterModel.fromJSON(clusterModel));
-                    });
+                    }).catch((response) => {
+                        const msg = getError(response);
+                        toastr.error(msg, $translate.instant('cluster_management.cluster_configuration_multi_region.error.disabling'));
+                    })
+                    .finally(() => setLoader(false));
             };
 
             const handleClusterConfigurationPanelVisibility = (show) => {
@@ -206,7 +213,7 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
                     $scope.loaderMessage = message;
                     $scope.loaderTimeout = $timeout(() => {
                         $scope.loader = loader;
-                    }, 50);
+                    }, 150);
                 } else {
                     $scope.loader = false;
                 }
@@ -238,8 +245,7 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
             const init = () => {
                 $scope.isAdmin = $jwtAuth.isAuthenticated() && $jwtAuth.isAdmin();
                 subscribeHandlers();
-                setTopology(ClusterModel.fromJSON($scope.clusterModel));
-                $scope.secondaryTag = $scope.clusterConfiguration.secondaryTag;
+                updateClusterData($scope.clusterModel);
             };
             init();
         }

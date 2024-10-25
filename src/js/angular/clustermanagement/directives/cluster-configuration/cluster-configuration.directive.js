@@ -69,6 +69,7 @@ function ClusterConfiguration($jwtAuth, $uibModal, $translate, toastr, ClusterVi
 
             $scope.$on('$destroy', function () {
                 removeAllListeners();
+                $scope.closeClusterConfigurationPanel();
             });
 
             // =========================
