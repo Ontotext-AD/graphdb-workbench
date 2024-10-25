@@ -460,6 +460,11 @@ function AgentSettingsModalController(
     };
 
     const handleSimilaritySearchExtractionMethodPanelToggle = (extractionMethod) => {
+        if (!extractionMethod.selected) {
+            // clear the validation status if method is deselected.
+            $scope.agentSettingsForm.$setValidity('missingIndex', true);
+        }
+
         if (extractionMethod.expanded) {
             $scope.extractionMethodLoaderFlags[extractionMethod.method] = true;
             const selectedRepositoryInfo = getSelectedRepositoryInfo();
@@ -470,6 +475,7 @@ function AgentSettingsModalController(
                     updateSelectedSimilarityIndex($scope.similarityIndexes, extractionMethod);
                 })
                 .catch((error) => {
+                    $scope.agentSettingsForm.$setValidity('missingIndex', false);
                     logAndShowError(error, 'ttyg.agent.messages.error_similarity_indexes_loading');
                 })
                 .finally(() => {
@@ -497,6 +503,11 @@ function AgentSettingsModalController(
     };
 
     const handleRetrievalConnectorExtractionMethodPanelToggle = (extractionMethod) => {
+        if (!extractionMethod.selected) {
+            // clear the validation status if method is deselected.
+            $scope.agentSettingsForm.$setValidity('missingConnector', true);
+        }
+
         if (extractionMethod.expanded) {
             $scope.extractionMethodLoaderFlags[extractionMethod.method] = true;
             const selectedRepositoryInfo = getSelectedRepositoryInfo();
@@ -509,6 +520,7 @@ function AgentSettingsModalController(
 
                 })
                 .catch((error) => {
+                    $scope.agentSettingsForm.$setValidity('missingConnector', false);
                     logAndShowError(error, 'ttyg.agent.messages.error_retrieval_connectors_loading');
                 })
                 .finally(() => {

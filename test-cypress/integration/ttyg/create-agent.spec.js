@@ -516,6 +516,37 @@ describe('TTYG create new agent', () => {
         // Then the warning should be hidden
         TtygAgentSettingsModalSteps.getSystemInstructionsWarning().should('not.exist');
     });
+
+    it('should reset validation error when similarity search/ChatGPT connector are disabled', () => {
+        // When I open agent settings dialog and make all steps so the create button became enabled.
+        TTYGStubs.stubChatsListGetNoResults();
+        TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
+        TTYGViewSteps.visit();
+        cy.wait('@get-all-repositories');
+        TTYGViewSteps.createFirstAgent();
+        TtygAgentSettingsModalSteps.enableFtsExtractionMethod();
+        TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.enabled');
+
+        // When enable the similarity index method
+        TtygAgentSettingsModalSteps.enableSimilaritySearchMethodPanel();
+        // Then I expect the save button be disabled because there aren't indexes in the selected repo.
+        TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.disabled');
+
+        // When I disable the similarity index method
+        TtygAgentSettingsModalSteps.disableSimilaritySearchMethodPanel();
+        // Then I expect the save button be enabled because the method is disabled.
+        TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.enabled');
+
+        // When enable the ChatGPT Retrieval connector method
+        TtygAgentSettingsModalSteps.enableRetrievalMethodPanel();
+        // Then I expect the save button be disabled because there aren't retrieval connectors in the selected repo.
+        TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.disabled');
+
+        // When I disable the ChatGPT Retrieval connector method
+        TtygAgentSettingsModalSteps.disableRetrievalMethodPanel();
+        // Then I expect the save button be enabled because the method is disabled.
+        TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.enabled');
+    });
 });
 
 function fillAgentName(name) {
