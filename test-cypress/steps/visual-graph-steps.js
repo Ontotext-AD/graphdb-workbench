@@ -11,6 +11,10 @@ export class VisualGraphSteps {
         cy.url().should('include', `${Cypress.config('baseUrl')}${VIEW_URL}`);
     }
 
+    static getPage() {
+        return cy.get('.visual-graph-view');
+    }
+
     static updateGraphConfiguration(namedGraph) {
         cy.get('[data-cy="save-or-update-graph"]').click()
             .get('[id="wb-graphviz-savegraph-name"]').type(namedGraph)
@@ -42,11 +46,27 @@ export class VisualGraphSteps {
     // Visual graph home view access
 
     static getSearchField() {
-        return cy.get('.search-rdf-resources input:visible');
+        return this.getPage().find('.search-rdf-resources input:visible');
     }
 
     static getGraphVisualizationPane() {
         return cy.get('.graph-visualization');
+    }
+
+    static searchFor(resource, fullName) {
+        this.getSearchField().type(resource);
+        cy.get('.result-item.active').should('contain', fullName).click();
+    }
+
+    static getGraphVisualizationNodes() {
+        return this.getGraphVisualizationPane().find('.node-wrapper');
+    }
+
+    static searchForResourceAndOpen(resource, fullName) {
+        VisualGraphSteps.getSearchField().should('be.visible');
+        VisualGraphSteps.searchFor(resource, fullName);
+        VisualGraphSteps.getGraphVisualizationPane().should('be.visible');
+        VisualGraphSteps.getGraphVisualizationNodes().should('be.visible');
     }
 
     static searchForResource(resource) {
