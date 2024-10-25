@@ -11,8 +11,7 @@ function RemoteLocationsService($http, toastr, $uibModal, LocationsRestService, 
         addLocationHttp,
         getLocationsWithRpcAddresses,
         createNewLocation,
-        isInCluster,
-        deleteLocation
+        isInCluster
     };
 
     function getLocationsWithRpcAddresses() {
@@ -114,9 +113,5 @@ function RemoteLocationsService($http, toastr, $uibModal, LocationsRestService, 
 
     function isInCluster(clusterNodes, location) {
         return clusterNodes.some((node) => location.rpcAddress === node.address);
-    }
-
-    function deleteLocation(endpoint) {
-        return LocationsRestService.deleteLocation(endpoint);
     }
 }

@@ -9,7 +9,7 @@ export class Location {
      * @param {boolean} isAvailable - Whether the location is available.
      * @param {boolean} isLocal - Whether the location is local.
      */
-    constructor(endpoint, rpcAddress, error = null, isAvailable = false, isLocal = false) {
+    constructor(endpoint, rpcAddress = null, error = null, isAvailable = false, isLocal = false) {
         this._endpoint = endpoint;
         this._rpcAddress = rpcAddress;
         this._error = error;
