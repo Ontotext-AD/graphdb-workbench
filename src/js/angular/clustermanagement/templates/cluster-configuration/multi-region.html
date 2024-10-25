@@ -1,4 +1,4 @@
-<div onto-loader-new ng-if="loader" class="create-cluster-loader" message="getLoaderMessage" size="100  "></div>
+<div onto-loader-new ng-if="loader" class="multi-region-loader" message="getLoaderMessage" size="100"></div>
 
 <div class="multi-region">
     <div ng-if="topology.state === TopologyState.PRIMARY_NODE">
@@ -45,8 +45,8 @@
                                    ng-model="asciiInput"
                                    ascii-validator
                                    length-validator
-                                   min-length="3"
-                                   max-length="255"
+                                   min-length="{{TagLengthConstraints.minLen}}"
+                                   max-length="{{TagLengthConstraints.maxLen}}"
                                    class="form-control tag-input"
                                    required>
                         </td>
@@ -98,7 +98,7 @@
                     <span class="error-message">{{ 'cluster_management.cluster_configuration_multi_region.error.ascii' | translate }}</span>
                 </div>
                 <div ng-show="tagForm.asciiInput.$error.lengthValidator && !tagForm.asciiInput.$pristine">
-                    <span class="error-message">{{ 'cluster_management.cluster_configuration_multi_region.error.length' | translate: {minLen: '3', maxLen: '255'} }}</span>
+                    <span class="error-message">{{ 'cluster_management.cluster_configuration_multi_region.error.length' | translate: {minLen: TagLengthConstraints.minLen, maxLen: TagLengthConstraints.maxLen} }}</span>
                 </div>
             </form>
         </div>

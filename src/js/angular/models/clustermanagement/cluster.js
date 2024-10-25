@@ -713,14 +713,32 @@ export class ClusterItemViewModel {
 }
 
 export class ClusterConfiguration {
-    constructor() {
-        this._electionMinTimeout = 8000;
-        this._electionRangeTimeout = 6000;
-        this._heartbeatInterval = 2000;
-        this._messageSizeKB = 64;
-        this._verificationTimeout = 1500;
-        this._transactionLogMaximumSizeGB = 50;
-        this._nodes = [];
+    constructor({
+                    electionMinTimeout = 8000,
+                    electionRangeTimeout = 6000,
+                    heartbeatInterval = 2000,
+                    messageSizeKB = 64,
+                    verificationTimeout = 1500,
+                    transactionLogMaximumSizeGB = 50,
+                    batchUpdateInterval = 5000,
+                    nodes = [],
+                    secondaryTag,
+                    primaryNodes
+                } = {}) {
+        this._electionMinTimeout = electionMinTimeout;
+        this._electionRangeTimeout = electionRangeTimeout;
+        this._heartbeatInterval = heartbeatInterval;
+        this._messageSizeKB = messageSizeKB;
+        this._verificationTimeout = verificationTimeout;
+        this._transactionLogMaximumSizeGB = transactionLogMaximumSizeGB;
+        this._batchUpdateInterval = batchUpdateInterval;
+        this._nodes = nodes;
+        this._secondaryTag = secondaryTag;
+        this._primaryNodes = primaryNodes;
+    }
+
+    static fromJSON(json) {
+        return new ClusterConfiguration(json);
     }
 
     get electionMinTimeout() {
@@ -779,16 +797,44 @@ export class ClusterConfiguration {
         this._nodes = value;
     }
 
+    get batchUpdateInterval() {
+        return this._batchUpdateInterval;
+    }
+
+    set batchUpdateInterval(value) {
+        this._batchUpdateInterval = value;
+    }
+
+    get secondaryTag() {
+        return this._secondaryTag;
+    }
+
+    set secondaryTag(value) {
+        this._secondaryTag = value;
+    }
+
+    get primaryNodes() {
+        return this._primaryNodes;
+    }
+
+    set primaryNodes(value) {
+        this._primaryNodes = value;
+    }
+
     toJSON() {
-        return {
-            electionMinTimeout: this.electionMinTimeout,
-            electionRangeTimeout: this.electionRangeTimeout,
-            heartbeatInterval: this.heartbeatInterval,
-            messageSizeKB: this.messageSizeKB,
-            verificationTimeout: this.verificationTimeout,
-            transactionLogMaximumSizeGB: this.transactionLogMaximumSizeGB,
-            nodes: this.nodes
+        const json = {
+            electionMinTimeout: this._electionMinTimeout,
+            electionRangeTimeout: this._electionRangeTimeout,
+            heartbeatInterval: this._heartbeatInterval,
+            messageSizeKB: this._messageSizeKB,
+            verificationTimeout: this._verificationTimeout,
+            transactionLogMaximumSizeGB: this._transactionLogMaximumSizeGB,
+            batchUpdateInterval: this._batchUpdateInterval,
+            nodes: this._nodes
         };
+        if (this._secondaryTag !== undefined) json.secondaryTag = this._secondaryTag;
+        if (this._primaryNodes !== undefined) json.primaryNodes = this._primaryNodes;
+        return json;
     }
 }
 
