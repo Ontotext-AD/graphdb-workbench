@@ -216,9 +216,12 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window'
         });
 
         $scope.toggleSecurity = function () {
-            $jwtAuth.toggleSecurity(!$jwtAuth.isSecurityEnabled())
+            const isSecurityEnabled = $jwtAuth.isSecurityEnabled();
+            $jwtAuth.toggleSecurity(!isSecurityEnabled)
                 .then(() => {
-                    if ($jwtAuth.isSecurityEnabled()) {
+                    // reload UI only if security status has changed
+                    // TODO: Not sure if we really need to reload the page here. The UI state is updated just fine. But maybe the reload is needed for something else?
+                    if (isSecurityEnabled !== $jwtAuth.isSecurityEnabled()) {
                         $window.location.reload();
                     }
                 });
