@@ -12,7 +12,7 @@ describe('Confirmations when try to change repository', () => {
     let repositoryId;
 
     beforeEach(() => {
-        const repositoryId = 'similarity-index-' + Date.now();
+        repositoryId = 'similarity-index-' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
