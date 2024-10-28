@@ -415,6 +415,7 @@ describe('Cluster management', () => {
                 "messageSizeKB": 64,
                 "verificationTimeout": 1500,
                 "transactionLogMaximumSizeGB": 50.0,
+                "batchUpdateInterval": 5000,
                 "nodes": ['http://pc-desktop:7200', 'http://pc-desktop:7203']
             });
         });
