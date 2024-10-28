@@ -1,28 +1,24 @@
 import {VisualGraphSteps} from "../../../steps/visual-graph-steps";
+import {ApplicationSteps} from "../../../steps/application-steps";
 
 const FILE_TO_IMPORT = 'wine.rdf';
-const DRY_GRAPH = "http://www.w3.org/TR/2003/PR-owl-guide-20031209/wine#Dry";
+const VALID_RESOURCE = 'USRegion';
 
 describe('Visual graph screen validation', () => {
 
-    let repositoryId = 'graphRepo' + Date.now();
-    const VALID_RESOURCE = 'USRegion';
+    let repositoryId;
 
-    before(() => {
+    beforeEach(() => {
         cy.clearLocalStorage('ls.graphs-viz');
-        repositoryId = 'repo' + Date.now();
+        repositoryId = 'graphRepo-' + Date.now();
         cy.createRepository({id: repositoryId});
+        cy.presetRepository(repositoryId);
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
     });
 
-    after(() => {
+    afterEach(() => {
         cy.clearLocalStorage('ls.graphs-viz');
-        cy.setDefaultUserData();
         cy.deleteRepository(repositoryId);
-    });
-
-    beforeEach(() => {
-        cy.presetRepository(repositoryId);
     });
 
     context('When autocomplete is disabled', () => {
@@ -40,30 +36,30 @@ describe('Visual graph screen validation', () => {
     });
 
     context('When autocomplete is enabled', () => {
-        before(() => {
-            cy.enableAutocomplete(repositoryId);
-        });
         beforeEach(() => {
-            cy.visit('graphs-visualizations');
+            cy.enableAutocomplete(repositoryId);
+            //http://localhost:9000/graphs-visualizations?uri=http:%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23USRegion
             cy.window();
         });
 
         it('Test search for an invalid resource', () => {
+            VisualGraphSteps.visit();
             VisualGraphSteps.getSearchField().should('be.visible').type('.invalid_resource');
             // There are two buttons rendered in the DOM where one of them is hidden. We need the visible one.
             cy.get('.autocomplete-visual-btn:visible').click();
             // Verify that an "Invalid IRI" message is displayed
-            cy.get('#toast-container').should('contain', 'Invalid IRI');
+            ApplicationSteps.getErrorNotifications().should('be.visible').and('contain', 'Invalid IRI');
         });
 
         it('Test search for a valid resource', () => {
+            VisualGraphSteps.visit();
             VisualGraphSteps.searchForResourceAndOpen(VALID_RESOURCE, VALID_RESOURCE);
             // Verify redirection to existing visual graph
             cy.url().should('match', /USRegion$/);
         });
 
         it('Test default graph state', () => {
-            VisualGraphSteps.searchForResourceAndOpen(VALID_RESOURCE, VALID_RESOURCE);
+            VisualGraphSteps.openUSRegionUri();
             VisualGraphSteps.openVisualGraphSettings();
 
             cy.get('.filter-sidepanel').as('sidepanel').should('be.visible').within(() => {
@@ -105,7 +101,7 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test invalid links limit should show error to user ', () => {
-            VisualGraphSteps.searchForResourceAndOpen(VALID_RESOURCE, VALID_RESOURCE);
+            VisualGraphSteps.openUSRegionUri();
             VisualGraphSteps.openVisualGraphSettings();
 
             cy.get('.filter-sidepanel').as('sidepanel').should('be.visible').within(() => {
@@ -135,7 +131,7 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test search for a valid resource with links', () => {
-            VisualGraphSteps.searchForResourceAndOpen(VALID_RESOURCE, VALID_RESOURCE);
+            VisualGraphSteps.openUSRegionUri();
             // Check include inferred
             VisualGraphSteps.toggleInferredStatements(true);
             // Navigate to Visual graph menu
@@ -149,7 +145,7 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test collapse and expand a node', () => {
-            VisualGraphSteps.searchForResourceAndOpen(VALID_RESOURCE, VALID_RESOURCE);
+            VisualGraphSteps.openUSRegionUri();
             VisualGraphSteps.toggleInferredStatements(false);
 
             // Hover over node with the mouse and collapse it through the menu
@@ -172,7 +168,7 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test expand and collapse node info panel with single click', () => {
-            VisualGraphSteps.searchForResourceAndOpen(VALID_RESOURCE, VALID_RESOURCE);
+            VisualGraphSteps.openUSRegionUri();
 
             // Click once on the node with the mouse to open node's info panel
             VisualGraphSteps.getTargetNode().click();
@@ -188,7 +184,7 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test remove child node', () => {
-            VisualGraphSteps.searchForResourceAndOpen(VALID_RESOURCE, VALID_RESOURCE);
+            VisualGraphSteps.openUSRegionUri();
             VisualGraphSteps.toggleInferredStatements(false);
             // Verify that before given node is removed there are 4 of them
             VisualGraphSteps.getNodes().and('have.length', 4);
@@ -207,7 +203,7 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test remove parent node', () => {
-            VisualGraphSteps.searchForResourceAndOpen(VALID_RESOURCE, VALID_RESOURCE);
+            VisualGraphSteps.openUSRegionUri();
 
             // Verify that search bar isn't visible
             VisualGraphSteps.getSearchField().should('not.exist');
@@ -221,7 +217,7 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test expand collapsed node which has connections with double click', () => {
-            VisualGraphSteps.searchForResourceAndOpen(VALID_RESOURCE, VALID_RESOURCE);
+            VisualGraphSteps.openUSRegionUri();
             VisualGraphSteps.toggleInferredStatements(false);
 
             VisualGraphSteps.getTargetNode().trigger('mouseover');
@@ -273,7 +269,7 @@ describe('Visual graph screen validation', () => {
                 'Right arrow\n                        \n                        ' +
                 'Rotate the graph to the right\n';
 
-            VisualGraphSteps.searchForResourceAndOpen(VALID_RESOURCE, VALID_RESOURCE);
+            VisualGraphSteps.openUSRegionUri();
             // Click on "mouse and keyboard actions" in the lower right corner of the screen
             cy.get('#keyboardShortcuts').click();
             // Verify all mouse and actions
@@ -289,7 +285,7 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test maximum links to show', () => {
-            VisualGraphSteps.searchForResourceAndOpen(VALID_RESOURCE, VALID_RESOURCE);
+            VisualGraphSteps.openUSRegionUri();
 
             // Verify that 20 links (nodes) are displayed
             VisualGraphSteps.getPredicates().should('have.length', 20);
@@ -310,7 +306,7 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test include inferred Statements', () => {
-            VisualGraphSteps.searchForResourceAndOpen(VALID_RESOURCE, VALID_RESOURCE);
+            VisualGraphSteps.openUSRegionUri();
             // Check include inferred
             VisualGraphSteps.toggleInferredStatements(true);
 
@@ -334,7 +330,7 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test preferred types', () => {
-            VisualGraphSteps.searchForResourceAndOpen(DRY_GRAPH, DRY_GRAPH);
+            VisualGraphSteps.openDryWineUri();
 
             VisualGraphSteps.openVisualGraphSettings();
             // Set "vin:Chardonnay" as a preferred type
@@ -354,7 +350,7 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test ignored types', () => {
-            VisualGraphSteps.searchForResourceAndOpen(DRY_GRAPH, DRY_GRAPH);
+            VisualGraphSteps.openDryWineUri();
 
             // Pick a type that is displayed in the diagram for example "vin:Zinfandel"
             VisualGraphSteps.getNodes().and('contain', 'Zinfandel');
@@ -371,7 +367,7 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test preferred predicates', () => {
-            VisualGraphSteps.searchForResourceAndOpen(DRY_GRAPH, DRY_GRAPH);
+            VisualGraphSteps.openDryWineUri();
 
             VisualGraphSteps.openVisualGraphSettings();
             // Go to predicates tab
@@ -387,7 +383,7 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test ignored predicates', () => {
-            VisualGraphSteps.searchForResourceAndOpen(DRY_GRAPH, DRY_GRAPH);
+            VisualGraphSteps.openDryWineUri();
             VisualGraphSteps.toggleInferredStatements(false);
 
             // Pick a type that is displayed in the diagram for example "vin:Zinfandel"
@@ -409,7 +405,7 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test reset settings', () => {
-            VisualGraphSteps.searchForResourceAndOpen(DRY_GRAPH, DRY_GRAPH);
+            VisualGraphSteps.openDryWineUri();
 
             // Modify the settings first
             VisualGraphSteps.openVisualGraphSettings();
@@ -487,7 +483,7 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test include schema statements', () => {
-            VisualGraphSteps.searchForResourceAndOpen(DRY_GRAPH, DRY_GRAPH);
+            VisualGraphSteps.openDryWineUri();
             VisualGraphSteps.getPredicates().should('contain', 'type');
             VisualGraphSteps.openVisualGraphSettings();
             VisualGraphSteps.getSettingsPanel().should('be.visible');

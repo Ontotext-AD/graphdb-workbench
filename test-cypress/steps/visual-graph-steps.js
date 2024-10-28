@@ -7,6 +7,14 @@ export class VisualGraphSteps {
         cy.visit(VIEW_URL);
     }
 
+    static openUSRegionUri() {
+        cy.visit('/graphs-visualizations?uri=http:%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23USRegion');
+    }
+
+    static openDryWineUri() {
+        cy.visit('/graphs-visualizations?uri=http:%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23Dry');
+    }
+
     static verifyUrl() {
         cy.url().should('include', `${Cypress.config('baseUrl')}${VIEW_URL}`);
     }
