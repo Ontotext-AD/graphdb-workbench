@@ -85,8 +85,8 @@ export class ContinueChatRun {
         return {
             conversationId: this.chatId,
             runId: this._runId,
-            lastMessageId: this._chatItem.answers[this._chatItem.answers.length - 1].id,
-            agentId: this._chatItem.agentId
+            agentId: this._chatItem.agentId,
+            tzOffset: -new Date().getTimezoneOffset() // offsets are reversed here hence the minus
         };
     }
 }
