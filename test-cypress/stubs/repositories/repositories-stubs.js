@@ -11,6 +11,14 @@ export class RepositoriesStubs extends Stubs {
         RepositoriesStubs.stubQueryResponse('/rest/locations', '/repositories/get-locations.json', 'get-locations', withDelay);
     }
 
+    static spyCreateLocation() {
+        cy.intercept('POST', '/rest/locations').as('createLocation');
+    }
+
+    static spyDeleteLocation() {
+        cy.intercept('DELETE', '/rest/locations?**').as('deleteLocation');
+    }
+
     static stubEditOntopResponse(repositoryId) {
         this.interceptRepository(repositoryId, 200);
     }
