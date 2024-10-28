@@ -389,14 +389,16 @@
                 "json": "JSON",
                 "error_message": "Error message sent to model",
                 "explain_no_methods": "No query methods were called.",
-                "called": "Called {{('ttyg.chat_panel.query_name.' + name) | translate}}"
+                "called": "Called {{('ttyg.chat_panel.query_name.' + name) | translate}}",
+                "no_query": "There is no query."
             },
             "query_name": {
                 "sparql_query":"SPARQL",
                 "fts_search": "Full-text search",
                 "similarity_search": "Similarity search",
                 "retrieval_search": "ChatGPT Retrieval",
-                "iri_discovery": "FTS for IRI discovery"
+                "iri_discovery": "FTS for IRI discovery",
+                "now": "the Now function"
             },
             "query_colon": ":",
             "query_desc": {
@@ -404,7 +406,8 @@
                 "fts_search": "Full-text search via SPARQL",
                 "similarity_search": "Similarity search via SPARQL",
                 "retrieval_search": "Direct JSON query",
-                "iri_discovery": "Full-text search via SPARQL"
+                "iri_discovery": "Full-text search via SPARQL",
+                "now": "returns the system time"
             },
             "dialog": {
                 "confirm_repository_change": {

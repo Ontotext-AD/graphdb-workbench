@@ -119,7 +119,8 @@ export class ChatItemModel {
         return {
             conversationId: this._chatId,
             agentId: this._agentId,
-            question: this._question.message
+            question: this._question.message,
+            tzOffset: -new Date().getTimezoneOffset() // offsets are reversed here hence the minus
         };
     }
 
