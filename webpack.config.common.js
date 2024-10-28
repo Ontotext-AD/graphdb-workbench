@@ -124,7 +124,8 @@ module.exports = {
             },
             {
                 from: 'src/js/angular/core/templates',
-                to: 'js/angular/core/templates'
+                to: 'js/angular/core/templates',
+                transform: replaceVersion
             },
             {
                 from: 'src/js/angular/explore/templates',
