@@ -1,31 +1,26 @@
 import {SparqlEditorSteps} from "../../steps/sparql-editor-steps";
 import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
 
+// Disable the default user data setup stub because we want to actually change it in this test
 Cypress.env('set_default_user_data', false);
 
 describe('My Settings', () => {
 
     let repositoryId;
-    let testResultCountQuery = "select * where { \n" +
+    const testResultCountQuery = "select * where { \n" +
         "\t?s ?p ?o .\n" +
         "} limit 1001";
     const FILE_TO_IMPORT = 'wine.rdf';
 
-    before(() => {
-        repositoryId = 'repo' + Date.now();
+    beforeEach(() => {
+        repositoryId = 'my-settings-' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
-    });
-
-    beforeEach(() => {
         cy.setDefaultUserData();
         visitSettingsView();
     });
 
-    after(() => {
-        // Verify that the default user settings are returned
-        cy.clearLocalStorage();
-        cy.setDefaultUserData();
+    afterEach(() => {
         cy.deleteRepository(repositoryId);
     });
 
@@ -202,8 +197,7 @@ describe('My Settings', () => {
     });
 
     it('Saving administrator credentials with checked unset password should show modal window to warn user about' +
-        ' unsetting the' +
-        ' password', () => {
+        ' unsetting the password', () => {
         // User role is administrator
         cy.get('#noPassword:checkbox').check()
             .then(() => {
@@ -214,9 +208,8 @@ describe('My Settings', () => {
             .then(() => {
                 cy.get('.modal-dialog').find('.lead').contains('If you unset the password and then enable security,' +
                     ' this administrator will not be able to log into GraphDB through the workbench.');
-    }
-    )
-});
+            });
+    });
 
     it('sameAs button should be disabled if inference is turned off', () => {
         clickLabelBtn('#inference-on')
