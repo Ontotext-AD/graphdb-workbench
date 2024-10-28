@@ -389,14 +389,16 @@
                 "json": "JSON",
                 "error_message": "Message d'erreur envoyée au modèle",
                 "explain_no_methods": "Aucune méthode de requête n'a été appelée.",
-                "called": "{{('ttyg.chat_panel.query_name.' + name) | translate}} a été appelé"
+                "called": "{{('ttyg.chat_panel.query_name.' + name) | translate}} a été appelé",
+                "no_query": "Il n'y a pas de requête."
             },
             "query_name": {
                 "sparql_query": "SPARQL",
                 "fts_search": "Recherche en texte intégral",
                 "similarity_search": "Recherche de similarité",
                 "retrieval_search": "ChatGPT Retrieval",
-                "iri_discovery": "FTS pour la découverte IRI"
+                "iri_discovery": "FTS pour la découverte IRI",
+                "now": "La fonction \"Maintenant\""
             },
             "query_colon": " :",
             "query_desc": {
@@ -404,7 +406,8 @@
                 "fts_search": "Recherche en texte intégral via SPARQL",
                 "similarity_search": "Recherche de similarité via SPARQL",
                 "retrieval_search": "Requête JSON directe",
-                "iri_discovery": "Recherche en texte intégral via SPARQL"
+                "iri_discovery": "Recherche en texte intégral via SPARQL",
+                "now": "Renvoie l'heure système"
             },
             "dialog": {
                 "confirm_repository_change": {
