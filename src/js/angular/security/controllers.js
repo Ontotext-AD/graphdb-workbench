@@ -227,58 +227,62 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window'
         $scope.toggleFreeAccess = function (updateFreeAccess) {
             if (!$jwtAuth.isFreeAccessEnabled() || ($jwtAuth.isFreeAccessEnabled() && updateFreeAccess)) {
                 SecurityRestService.getFreeAccess().then(function (res) {
-                    let authorities = res.data.authorities;
-                    let appSettings = res.data.appSettings || {
+                    const authorities = res.data.authorities;
+                    const appSettings = res.data.appSettings || {
                         'DEFAULT_SAMEAS': true,
                         'DEFAULT_INFERENCE': true,
                         'EXECUTE_COUNT': true,
                         'IGNORE_SHARED_QUERIES': false,
                         'DEFAULT_VIS_GRAPH_SCHEMA': true
                     };
-                    const modalInstance = $uibModal.open({
-                        templateUrl: 'js/angular/security/templates/modal/default-authorities.html',
-                        controller: 'DefaultAuthoritiesCtrl',
-                        resolve: {
-                            data: function () {
-                                return {
-                                    // converts the array rights to hash ones. why, oh, why do we have both formats?
-                                    defaultAuthorities: function () {
-                                        const defaultAuthorities = {
-                                            [READ_REPO]: {},
-                                            [WRITE_REPO]: {}
-                                        };
-                                        // We might have old (no longer existing) repositories so we have to check that
-                                        const repoIds = _.mapKeys($scope.getRepositories(), function (r) {
-                                            return createUniqueKey(r);
-                                        });
-                                        _.each(authorities, function (a) {
-                                            // indexOf works in IE 11, startsWith doesn't
-                                            if (a.indexOf(WRITE_REPO_PREFIX) === 0) {
-                                                if (repoIds.hasOwnProperty(a.substr(11))) {
-                                                    defaultAuthorities[WRITE_REPO][a.substr(11)] = true;
-                                                }
-                                            } else if (a.indexOf(READ_REPO_PREFIX) === 0) {
-                                                if (repoIds.hasOwnProperty(a.substr(10))) {
-                                                    defaultAuthorities[READ_REPO][a.substr(10)] = true;
-                                                }
-                                            }
-                                        });
-                                        return defaultAuthorities;
-                                    },
-                                    appSettings: appSettings
-                                };
-                            }
-                        }
-                    });
-                    modalInstance.result.then(function (data) {
-                        authorities = data.authorities;
-                        appSettings = data.appSettings;
-                        $jwtAuth.toggleFreeAccess(updateFreeAccess || !$jwtAuth.isFreeAccessEnabled(), authorities, appSettings, updateFreeAccess);
-                    });
+                    configureFreeAccess(appSettings, authorities, updateFreeAccess);
                 });
             } else {
                 $jwtAuth.toggleFreeAccess(!$jwtAuth.isFreeAccessEnabled(), []);
             }
+        };
+
+        const configureFreeAccess = (appSettings, authorities, updateFreeAccess) => {
+            const modalInstance = $uibModal.open({
+                templateUrl: 'js/angular/security/templates/modal/default-authorities.html',
+                controller: 'DefaultAuthoritiesCtrl',
+                resolve: {
+                    data: function () {
+                        return {
+                            // converts the array rights to hash ones. why, oh, why do we have both formats?
+                            defaultAuthorities: function () {
+                                const defaultAuthorities = {
+                                    [READ_REPO]: {},
+                                    [WRITE_REPO]: {}
+                                };
+                                // We might have old (no longer existing) repositories so we have to check that
+                                const repoIds = _.mapKeys($scope.getRepositories(), function (r) {
+                                    return createUniqueKey(r);
+                                });
+                                _.each(authorities, function (a) {
+                                    // indexOf works in IE 11, startsWith doesn't
+                                    if (a.indexOf(WRITE_REPO_PREFIX) === 0) {
+                                        if (repoIds.hasOwnProperty(a.substr(11))) {
+                                            defaultAuthorities[WRITE_REPO][a.substr(11)] = true;
+                                        }
+                                    } else if (a.indexOf(READ_REPO_PREFIX) === 0) {
+                                        if (repoIds.hasOwnProperty(a.substr(10))) {
+                                            defaultAuthorities[READ_REPO][a.substr(10)] = true;
+                                        }
+                                    }
+                                });
+                                return defaultAuthorities;
+                            },
+                            appSettings: appSettings
+                        };
+                    }
+                }
+            });
+            modalInstance.result.then(function (data) {
+                authorities = data.authorities;
+                appSettings = data.appSettings;
+                $jwtAuth.toggleFreeAccess(updateFreeAccess || !$jwtAuth.isFreeAccessEnabled(), authorities, appSettings, updateFreeAccess);
+            });
         };
 
         $scope.editFreeAccess = function () {

@@ -250,7 +250,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.toggleFreeAccess = function (enabled, authorities, appSettings, updateFreeAccess) {
                 if (enabled !== this.freeAccess || updateFreeAccess) {
-                    this.freeAccess = enabled;
                     if (enabled) {
                         this.freeAccessPrincipal = {authorities: authorities, appSettings: appSettings};
                     } else {
@@ -261,13 +260,14 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         authorities: authorities,
                         appSettings: appSettings
                     }).then(function () {
+                        this.freeAccess = enabled;
                         if (updateFreeAccess) {
                             toastr.success($translate.instant('jwt.auth.free.access.updated.msg'));
                         } else {
                             toastr.success($translate.instant('jwt.auth.free.access.status', {status: ($translate.instant(enabled ? 'enabled.status' : 'disabled.status'))}));
                         }
-                    }, function (err) {
-                        toastr.error(err.data.error.message, $translate.instant('common.error'));
+                    }).catch((err) => {
+                        toastr.error(err.data, $translate.instant('common.error'));
                     });
                     $rootScope.$broadcast('securityInit', this.securityEnabled, this.hasExplicitAuthentication(), this.freeAccess);
                 }
