@@ -1,6 +1,6 @@
 <link href="css/cluster-nodes-configuration.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-<div onto-loader-new ng-if="loader" class="create-cluster-loader" message="getLoaderMessage" size="100  "></div>
+<div onto-loader-new ng-if="loader" class="create-cluster-loader" message="getLoaderMessage" size="100"></div>
 <div class="add-node-wrapper pull-right mb-1">
     <button ng-click="addNode()" ng-disabled="editedNodeIndex !== undefined"
             class="btn btn-primary add-node-btn"
@@ -357,6 +357,27 @@
                                      ng-show="clusterConfigurationForm.transactionLogMaximumSizeGB.$error.pattern">
                                     {{'cluster_management.cluster_page.errors.small_transaction_log_max_size' |
                                     translate}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group" ng-class="{'has-danger': clusterConfigurationForm.batchUpdateInterval.$invalid}">
+                            <label for="batch-update-interval" class="col-xs-4 col-form-label">
+                                {{'cluster_management.cluster_configuration_properties.batch_update_interval' | translate}}*
+                            </label>
+                            <div class="col-xs-8" gdb-tooltip="{{'cluster_management.cluster_configuration_properties.batch_update_interval_tooltip' | translate}}">
+                                <input
+                                    class="form-control"
+                                    placeholder="{{'required.field' | translate}}"
+                                    type="number"
+                                    ng-model="clusterConfiguration.batchUpdateInterval"
+                                    required
+                                    id="batch-update-interval"
+                                    min="0"
+                                    name="batchUpdateInterval">
+                                <div class="form-control-feedback" ng-show="clusterConfigurationForm.batchUpdateInterval.$error.required">
+                                    {{'required.field' | translate}}
                                 </div>
                             </div>
                         </div>

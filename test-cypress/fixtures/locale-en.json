@@ -3,8 +3,8 @@
         "buttons": {
             "delete_cluster": "Delete cluster",
             "delete_cluster_tooltip": "Delete existing cluster",
-            "edit_cluster": "Edit configuration",
-            "edit_cluster_tooltip": "Edit cluster configuration",
+            "edit_cluster": "Edit properties",
+            "edit_cluster_tooltip": "Edit cluster properties",
             "show_cluster_settings_tooltip": "Show cluster configuration",
             "update_nodes_group_btn": "Edit cluster",
             "update_nodes_group_btn_tooltip": "Edit cluster nodes"
@@ -58,6 +58,7 @@
             }
         },
         "cluster_configuration_properties": {
+            "label": "Properties",
             "election_min_timeout": "Election minimum timeout",
             "election_min_timeout_tooltip": "Election min timeout concerns the minimum wait time in milliseconds for a heartbeat from a leader. Should the time pass without receiving a heartbeat message from a leader. The follower will become a candidate and request votes from other nodes.",
             "election_range_timeout": "Election range timeout",
@@ -69,7 +70,60 @@
             "verification_timeout": "Verification timeout",
             "verification_timeout_tooltip": "Verification timeout concerns the amount of time a follower node would wait until attempting to verify last committed entry when the first verification is unsuccessful.",
             "transaction_log_maximum_size_gb": "Transaction log maximum size GB",
-            "transaction_log_maximum_size_gb_tooltip": "Maximum size of the transaction log in GBs that will trigger an automatic truncation of the transaction log if it becomes bigger. The minimum transaction log size is 1 GB. Negative numbers will disable the automatic transaction log truncation."
+            "transaction_log_maximum_size_gb_tooltip": "Maximum size of the transaction log in GBs that will trigger an automatic truncation of the transaction log if it becomes bigger. The minimum transaction log size is 1 GB. Negative numbers will disable the automatic transaction log truncation.",
+            "batch_update_interval": "Batch update interval",
+            "batch_update_interval_tooltip": "Specifies the time interval (in milliseconds) at which updates are batched and synchronized between the primary and secondary clusters."
+        },
+        "cluster_configuration_nodes": {
+            "label": "Nodes",
+            "local": "Local"
+        },
+        "cluster_configuration_multi_region": {
+            "label": "Multi-region",
+            "primary_cluster": "Primary cluster",
+            "secondary_cluster": "Secondary cluster",
+            "primary_leader": "Primary leader: {{primaryLeader}}",
+            "create_tag": "Add identifier tag",
+            "create_tag_tooltip": "Add identifier tag to use with this cluster",
+            "enable_secondary_mode": "Enable secondary mode",
+            "enable_secondary_mode_tooltip": "Enable this cluster in secondary mode",
+            "delete_tag_tooltip": "Delete tag",
+            "cancel_tooltip": "Cancel",
+            "disable_secondary_mode": "Disable secondary mode",
+            "disable_secondary_mode_tooltip": "Disable cluster's secondary mode",
+            "created_tag": "Successfully added to cluster primary identifier tag: {{tag}}",
+            "deleted_tag": "Removed primary identifier tag '{{tag}}' from cluster",
+            "secondary_enabled": "Successfully enabled secondary mode",
+            "disabled_secondary_mode": "Secondary mode is disabled",
+            "secondary_cluster_settings": "Secondary cluster settings",
+            "column": {
+                "index": "",
+                "tag": "Identifier tag",
+                "tag_index": "Index"
+            },
+            "confirm": {
+                "delete": "Delete identifier tag {{tag}}",
+                "warning": "Deleting identifier tag would stop any secondary cluster identified with it from pulling updates.",
+                "disable_secondary_mode": "Disable secondary mode",
+                "disable_secondary_mode_warning": "By disabling secondary mode this cluster would stop being a read-only replica.",
+                "enable_secondary": "Enable secondary mode",
+                "enable_secondary_warning": "By enabling secondary mode this cluster would become a read-only replica of the specified primary cluster."
+
+            },
+            "error": {
+                "ascii": "Invalid characters detected. Only printable ASCII characters are allowed.",
+                "length": "The input length must be between {{minLen}} and {{maxLen}} characters.",
+                "creating": "Error during Tag creation",
+                "deleting": "Error during Tag deletion",
+                "disabling": "Error during secondary mode disabling",
+                "secondary": "Error enabling secondary mode"
+            },
+            "secondary_mode_modal": {
+                "rpc_address": "Any primary cluster node RPC address *",
+                "rpc_address_placeholder": "node-name:7300",
+                "tag": "Identifier tag *",
+                "tag_placeholder": "Example: us-central"
+            }
         },
         "cluster_page": {
             "create_page_title": "Create cluster",

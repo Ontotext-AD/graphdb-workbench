@@ -7,7 +7,10 @@
         "lastLogTerm": 0,
         "lastLogIndex": 0,
         "endpoint": "http://pc-desktop:7200",
-        "recoveryStatus": {}
+        "recoveryStatus": {},
+        "topologyStatus": {
+            "state": "PRIMARY_NODE"
+        }
     },
     {
         "address": "pc-desktop:7301",
@@ -20,7 +23,10 @@
         "lastLogTerm": 0,
         "lastLogIndex": 0,
         "endpoint": "http://pc-desktop:7201",
-        "recoveryStatus": {}
+        "recoveryStatus": {},
+        "topologyStatus": {
+            "state": "PRIMARY_NODE"
+        }
     },
     {
         "address": "pc-desktop:7302",
@@ -30,6 +36,9 @@
         "lastLogTerm": 0,
         "lastLogIndex": 0,
         "endpoint": "http://pc-desktop:7202",
-        "recoveryStatus": {}
+        "recoveryStatus": {},
+        "topologyStatus": {
+            "state": "PRIMARY_NODE"
+        }
     }
 ]

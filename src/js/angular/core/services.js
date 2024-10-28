@@ -119,7 +119,7 @@ function MenuItemsProvider() {
     this.updateItemsWithMissedParent = function () {
         if (itemsWithMissedParent.length > 0) {
             const notProcessed = [];
-            let self = this;
+            const self = this;
             itemsWithMissedParent.forEach(function (itemWithMissedParent) {
                 if (!self.addItemToParent(itemWithMissedParent)) {
                     notProcessed.push(itemWithMissedParent);
@@ -156,7 +156,8 @@ function ModalService($uibModal, $timeout, $sce) {
         openConfirmationModal: openConfirmationModal,
         openModalAlert: openModalAlert,
         openCopyToClipboardModal: openCopyToClipboardModal,
-        openConfirmation: openConfirmation
+        openConfirmation: openConfirmation,
+        openCustomModal: openCustomModal
     };
 
     /**
@@ -195,6 +196,10 @@ function ModalService($uibModal, $timeout, $sce) {
      *     //              will not close the modal. It can only be closed via a specific action,
      *     //              such as a button or programmatic close.
      *     backdrop: true
+     *     // Prevents the modal buttons' click events from propagating to parent elements
+     *     // * true - Prevents propagating
+     *     // * false (or not set) - Allows propagating
+     *     stopPropagation: true
      * }
      * ```
      *
@@ -243,6 +248,19 @@ function ModalService($uibModal, $timeout, $sce) {
                 uri: function () {
                     return uri;
                 }
+            }
+        });
+    }
+
+    function openCustomModal(config) {
+        return $uibModal.open({
+            templateUrl: config.templateUrl,
+            controller: config.controller,
+            size: config.size,
+            windowClass: config.dialogClass,
+            backdrop: config.backdrop,
+            resolve: {
+                config: () => _.merge({}, DEFAULT_MODAL_SERVICE_CONFIG, config)
             }
         });
     }

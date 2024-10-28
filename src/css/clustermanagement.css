@@ -345,3 +345,69 @@ div.nodetooltip {
 .alert-save.alert-warning:before {
     content: "\e920";
 }
+
+ul.nodes-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+ul.nodes-list li {
+    margin-bottom: 10px;
+}
+
+ul.nodes-list li a {
+    text-decoration: none;
+}
+
+ul.nodes-list li a:hover {
+    text-decoration: underline;
+}
+
+.tags-table .tag-column {
+    width: auto;
+}
+
+.tags-table .tag-index-column {
+    width: 16%;
+}
+
+
+.tags-table .index-column {
+    width: 10%;
+}
+
+.actions-column {
+    width: 80px;
+}
+
+.tag-input.ng-invalid.ng-dirty {
+    border-color: red;
+}
+
+.tag-input.ng-valid.ng-dirty {
+    border-color: initial;
+}
+
+.tags-table td, .tags-table th {
+    padding: .4rem;
+    border-bottom: 1px solid #eceeef;
+}
+
+.index-cell {
+    padding-left: 12px;
+    border-left: 1px solid #eceeef;
+}
+
+.actions-cell {
+    width: 80px;
+    border-right: 1px solid #eceeef;
+}
+
+.actions-cell .btn-link, .actions-cell .btn-link a {
+    padding: 0.4em .4em;
+}
+
+.secondary-tag-table td, .secondary-tag-table th {
+    padding: .4rem;
+    border-bottom: 1px solid #eceeef;
+}

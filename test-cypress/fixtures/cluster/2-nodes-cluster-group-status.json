@@ -9,7 +9,10 @@
         "lastLogTerm": 0,
         "lastLogIndex": 0,
         "endpoint": "http://pc-desktop:7200",
-        "recoveryStatus": {}
+        "recoveryStatus": {},
+        "topologyStatus": {
+            "state": "PRIMARY_NODE"
+        }
     },
     {
         "address": "pc-desktop:7303",
@@ -19,6 +22,9 @@
         "lastLogTerm": 0,
         "lastLogIndex": 0,
         "endpoint": "http://pc-desktop:7203",
-        "recoveryStatus": {}
+        "recoveryStatus": {},
+        "topologyStatus": {
+            "state": "PRIMARY_NODE"
+        }
     }
 ]

@@ -14,4 +14,8 @@ function DeleteClusterCtrl($scope, $uibModalInstance) {
     $scope.cancel = () => {
         $uibModalInstance.dismiss('cancel');
     };
+
+    $scope.onClick = ($event) => {
+        $event.stopPropagation();
+    };
 }
