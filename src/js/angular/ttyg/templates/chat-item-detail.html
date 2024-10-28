@@ -57,7 +57,7 @@
                                     <span class="query-method-details" ng-bind="('ttyg.chat_panel.query_desc.' + queryMethod.name) | translate">
                                     </span>
                                 </div>
-                                <div class="actions">
+                                <div ng-if="queryMethod.query" class="actions">
                                     <open-in-sparql-editor
                                         ng-if="queryMethod.queryType === ExplainQueryType.SPARQL"
                                         execute-query="{{!queryMethod.errorMessage}}"
@@ -69,7 +69,8 @@
                                 </div>
                             </div>
                             <div class="query">
-                                <pre><code>{{queryMethod.query}}</code></pre>
+                                <div ng-if="!queryMethod.query" class="mb-1">{{ 'ttyg.chat_panel.labels.no_query' | translate }}</code></div>
+                                <pre ng-if="queryMethod.query"><code>{{queryMethod.query}}</code></pre>
                             </div>
                             <div ng-if="showRawQuery(queryMethod)" class="raw-query">
                                 <span class="label">{{'ttyg.chat_panel.labels.raw_query' | translate}}:</span>
