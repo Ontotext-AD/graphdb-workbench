@@ -16,7 +16,7 @@ describe('Create similarity index', () => {
     let repositoryId;
 
     beforeEach(() => {
-        const repositoryId = 'similarity-index-create' + Date.now();
+        repositoryId = 'similarity-index-create' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);

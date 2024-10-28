@@ -7,8 +7,20 @@ export class VisualGraphSteps {
         cy.visit(VIEW_URL);
     }
 
+    static openUSRegionUri() {
+        cy.visit('/graphs-visualizations?uri=http:%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23USRegion');
+    }
+
+    static openDryWineUri() {
+        cy.visit('/graphs-visualizations?uri=http:%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23Dry');
+    }
+
     static verifyUrl() {
         cy.url().should('include', `${Cypress.config('baseUrl')}${VIEW_URL}`);
+    }
+
+    static getPage() {
+        return cy.get('.visual-graph-view');
     }
 
     static updateGraphConfiguration(namedGraph) {
@@ -42,11 +54,27 @@ export class VisualGraphSteps {
     // Visual graph home view access
 
     static getSearchField() {
-        return cy.get('.search-rdf-resources input:visible');
+        return this.getPage().find('.search-rdf-resources input:visible');
     }
 
     static getGraphVisualizationPane() {
         return cy.get('.graph-visualization');
+    }
+
+    static searchFor(resource, fullName) {
+        this.getSearchField().type(resource);
+        cy.get('.result-item.active').should('contain', fullName).click();
+    }
+
+    static getGraphVisualizationNodes() {
+        return this.getGraphVisualizationPane().find('.node-wrapper');
+    }
+
+    static searchForResourceAndOpen(resource, fullName) {
+        VisualGraphSteps.getSearchField().should('be.visible');
+        VisualGraphSteps.searchFor(resource, fullName);
+        VisualGraphSteps.getGraphVisualizationPane().should('be.visible');
+        VisualGraphSteps.getGraphVisualizationNodes().should('be.visible');
     }
 
     static searchForResource(resource) {

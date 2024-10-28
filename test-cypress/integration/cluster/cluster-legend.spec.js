@@ -3,12 +3,15 @@ import {ClusterPageSteps} from "../../steps/cluster/cluster-page-steps";
 import {ClusterStubs} from "../../stubs/cluster/cluster-stubs";
 import {RemoteLocationStubs} from "../../stubs/cluster/remote-location-stubs";
 
+Cypress.env('set_default_user_data', false);
+
 describe('Cluster legend', () => {
 
     let repositoryId;
 
     beforeEach(() => {
         repositoryId = 'cluster-repo' + Date.now();
+        cy.setDefaultUserData();
         GlobalOperationsStatusesStub.stubNoOperationsResponse(repositoryId);
     });
 
