@@ -2,7 +2,7 @@ import 'angular/core/services';
 import 'angular/core/directives';
 import 'angular/clustermanagement/controllers/cluster-management.controller';
 import 'angular/clustermanagement/directives/cluster-graphical-view.directive';
-import 'angular/clustermanagement/directives/cluster-configuration.directive';
+import 'angular/clustermanagement/directives/cluster-configuration/cluster-configuration.directive';
 import 'angular/clustermanagement/directives/cluster-nodes-configuration.directive';
 import 'angular/core/services/repositories.service';
 import 'lib/d3.patch.js';

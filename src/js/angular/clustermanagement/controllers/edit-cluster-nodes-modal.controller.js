@@ -33,8 +33,6 @@ function EditClusterNodesModalController($scope, $uibModalInstance, $translate, 
      * it closes the modal and passes a deep clone of the updated cluster configuration.
      *
      * If the cluster does have a valid configuration, it passes a deep clone of the full update actions.
-     *
-     * @private
      */
     $scope.ok = () => {
         const cluster = ClusterContextService.getClusterView();

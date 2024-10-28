@@ -85,8 +85,9 @@ export class Node {
      * @param {number} lastLogIndex - The last log index of the node.
      * @param {string} endpoint - The endpoint associated with the node.
      * @param {string} recoveryStatus - The recovery status of the node.
+     * @param {Object} topologyStatus - The topology status of the node.
      */
-    constructor(address, nodeState, term, syncStatus, lastLogTerm, lastLogIndex, endpoint, recoveryStatus) {
+    constructor(address, nodeState, term, syncStatus, lastLogTerm, lastLogIndex, endpoint, recoveryStatus, topologyStatus) {
         this._address = address;
         this._nodeState = nodeState;
         this._term = term;
@@ -95,6 +96,7 @@ export class Node {
         this._lastLogIndex = lastLogIndex;
         this._endpoint = endpoint;
         this._recoveryStatus = recoveryStatus;
+        this._topologyStatus = TopologyStatus.fromJSON(topologyStatus);
     }
 
     /** @return {string} The address of the node. */
@@ -169,13 +171,66 @@ export class Node {
         this._recoveryStatus = value;
     }
 
+    get topologyStatus() {
+        return this._topologyStatus;
+    }
+
+    set topologyStatus(value) {
+        return this._topologyStatus = value;
+    }
+
     /**
      * Maps JSON data to a Node instance.
      * @param {Object} json - The JSON data.
      * @return {Node} The mapped Node instance.
      */
-    static fromJSON({address, nodeState, term, syncStatus, lastLogTerm, lastLogIndex, endpoint, recoveryStatus}) {
-        return new Node(address, nodeState, term, syncStatus, lastLogTerm, lastLogIndex, endpoint, recoveryStatus);
+    static fromJSON({address, nodeState, term, syncStatus, lastLogTerm, lastLogIndex, endpoint, recoveryStatus, topologyStatus}) {
+        return new Node(address, nodeState, term, syncStatus, lastLogTerm, lastLogIndex, endpoint, recoveryStatus, topologyStatus);
+    }
+}
+
+/**
+ * Represents the status of a topology.
+ */
+export class TopologyStatus {
+    /**
+     * @param {string} state - The current state of the topology.
+     * @param {{string, number}[]} [primaryTags=[]] - A map of primary tags and their associated values (optional).
+     * @param {number} [primaryIndex] - The index of the primary cluster.
+     * @param {string} [primaryLeader] - The leader's rpc address of the primary cluster.
+     */
+    constructor(state, primaryTags = new Map(), primaryIndex, primaryLeader) {
+        this._state = state;
+        this._primaryTags = primaryTags;
+        this._primaryIndex = primaryIndex;
+        this._primaryLeader = primaryLeader;
+    }
+
+    get state() {
+        return this._state;
+    }
+
+    get primaryTags() {
+        return this._primaryTags;
+    }
+
+    get primaryIndex() {
+        return this._primaryIndex;
+    }
+
+    get primaryLeader() {
+        return this._primaryLeader;
+    }
+
+    /**
+     * Maps JSON data to a TopologyStatus instance.
+     * Converts primaryTags from an object to a Map if provided, otherwise defaults to an empty Map.
+     * @param {Object} json - The JSON data.
+     * @return {TopologyStatus} The mapped TopologyStatus instance.
+     */
+    static fromJSON({state, primaryTags = {}, primaryIndex, primaryLeader}) {
+        const primaryTagsMap = Object.entries(primaryTags);
+        return new TopologyStatus(state, primaryTagsMap, primaryIndex, primaryLeader);
     }
 }
 
@@ -658,14 +713,32 @@ export class ClusterItemViewModel {
 }
 
 export class ClusterConfiguration {
-    constructor() {
-        this._electionMinTimeout = 8000;
-        this._electionRangeTimeout = 6000;
-        this._heartbeatInterval = 2000;
-        this._messageSizeKB = 64;
-        this._verificationTimeout = 1500;
-        this._transactionLogMaximumSizeGB = 50;
-        this._nodes = [];
+    constructor({
+                    electionMinTimeout = 8000,
+                    electionRangeTimeout = 6000,
+                    heartbeatInterval = 2000,
+                    messageSizeKB = 64,
+                    verificationTimeout = 1500,
+                    transactionLogMaximumSizeGB = 50,
+                    batchUpdateInterval = 5000,
+                    nodes = [],
+                    secondaryTag,
+                    primaryNodes
+                } = {}) {
+        this._electionMinTimeout = electionMinTimeout;
+        this._electionRangeTimeout = electionRangeTimeout;
+        this._heartbeatInterval = heartbeatInterval;
+        this._messageSizeKB = messageSizeKB;
+        this._verificationTimeout = verificationTimeout;
+        this._transactionLogMaximumSizeGB = transactionLogMaximumSizeGB;
+        this._batchUpdateInterval = batchUpdateInterval;
+        this._nodes = nodes;
+        this._secondaryTag = secondaryTag;
+        this._primaryNodes = primaryNodes;
+    }
+
+    static fromJSON(json) {
+        return new ClusterConfiguration(json);
     }
 
     get electionMinTimeout() {
@@ -724,16 +797,44 @@ export class ClusterConfiguration {
         this._nodes = value;
     }
 
+    get batchUpdateInterval() {
+        return this._batchUpdateInterval;
+    }
+
+    set batchUpdateInterval(value) {
+        this._batchUpdateInterval = value;
+    }
+
+    get secondaryTag() {
+        return this._secondaryTag;
+    }
+
+    set secondaryTag(value) {
+        this._secondaryTag = value;
+    }
+
+    get primaryNodes() {
+        return this._primaryNodes;
+    }
+
+    set primaryNodes(value) {
+        this._primaryNodes = value;
+    }
+
     toJSON() {
-        return {
-            electionMinTimeout: this.electionMinTimeout,
-            electionRangeTimeout: this.electionRangeTimeout,
-            heartbeatInterval: this.heartbeatInterval,
-            messageSizeKB: this.messageSizeKB,
-            verificationTimeout: this.verificationTimeout,
-            transactionLogMaximumSizeGB: this.transactionLogMaximumSizeGB,
-            nodes: this.nodes
+        const json = {
+            electionMinTimeout: this._electionMinTimeout,
+            electionRangeTimeout: this._electionRangeTimeout,
+            heartbeatInterval: this._heartbeatInterval,
+            messageSizeKB: this._messageSizeKB,
+            verificationTimeout: this._verificationTimeout,
+            transactionLogMaximumSizeGB: this._transactionLogMaximumSizeGB,
+            batchUpdateInterval: this._batchUpdateInterval,
+            nodes: this._nodes
         };
+        if (this._secondaryTag !== undefined) json.secondaryTag = this._secondaryTag;
+        if (this._primaryNodes !== undefined) json.primaryNodes = this._primaryNodes;
+        return json;
     }
 }
 

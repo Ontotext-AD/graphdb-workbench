@@ -23,7 +23,10 @@
         "lastLogTerm": 0,
         "lastLogIndex": 0,
         "endpoint": "http://pc-desktop:7201",
-        "recoveryStatus": {}
+        "recoveryStatus": {},
+        "topologyStatus": {
+            "state": "PRIMARY_NODE"
+        }
     },
     {
         "address": "pc-desktop:7302",

@@ -163,6 +163,7 @@ export class ClusterStubs extends Stubs {
             "messageSizeKB": 64,
             "verificationTimeout": 1500,
             "transactionLogMaximumSizeGB": 50.0,
+            "batchUpdateInterval": 5000,
             "nodes": nodes
         };
 
@@ -180,6 +181,7 @@ export class ClusterStubs extends Stubs {
             "messageSizeKB": 64,
             "verificationTimeout": 1500,
             "transactionLogMaximumSizeGB": 50.0,
+            "batchUpdateInterval": 5000,
             "nodes": nodes
         };
 

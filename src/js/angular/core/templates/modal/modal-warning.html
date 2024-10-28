@@ -1,16 +1,17 @@
-<!-- Start confirmDelete -->
-
-<div class="modal-header">
-	<button ng-click="cancel();" class="close" aria-hidden="true"></button>
-    <h3 class="modal-title">{{title}}</h3>
-</div>
-<div class="modal-body">
-    <div class="lead" ng-bind-html="message">
+<div ng-click="onClick($event)">
+    <div class="modal-header">
+        <button ng-click="cancel();" class="close" aria-hidden="true"></button>
+        <h3 class="modal-title">{{title}}</h3>
+    </div>
+    <div class="modal-body">
+        <div class="lead" ng-bind-html="message">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary cancel-btn" ng-click="cancel()">{{'common.cancel.btn' |
+            translate}}
+        </button>
+        <button class="btn btn-primary confirm-btn" ng-click="ok()">{{ (confirmButtonKey || 'common.yes.btn') | translate}}
+        </button>
     </div>
 </div>
-<div class="modal-footer">
-    <button type="button" class="btn btn-secondary cancel-btn" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
-    <button class="btn btn-primary confirm-btn" ng-click="ok()">{{ (confirmButtonKey || 'common.yes.btn') | translate}}</button>
-</div>
-
-<!-- End confirmDelete -->
