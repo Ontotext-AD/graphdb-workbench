@@ -114,7 +114,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             }
         }).catch(() => {
             $scope.setLoader(false);
-            updateCluster(true, true);
+            updateCluster(true);
         }).finally(() => {
             getLocationsWithRpcAddresses();
         });
@@ -212,7 +212,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             })
             .finally(() => {
                 $scope.setLoader(false);
-                updateCluster(true, true);
+                updateCluster(true);
             });
     };
 
@@ -263,7 +263,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
         $scope.$apply();
     };
 
-    const updateCluster = (force, deleteUnusedLocations = false) => {
+    const updateCluster = (force) => {
         if (updateRequest) {
             return;
         }
@@ -278,26 +278,11 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
                 if (!$scope.currentNode || $scope.leaderChanged) {
                     return $scope.getCurrentNodeStatus();
                 }
-            }).then(() => {
-                if (deleteUnusedLocations) {
-                    clearUnusedLocations();
-                }
             })
             .finally(() => {
                 updateRequest = null;
                 $scope.$broadcast(MODEL_UPDATED);
             });
-    };
-
-    const clearUnusedLocations = () => {
-        $scope.clusterModel.locations.forEach((location) => {
-            const index = $scope.clusterModel.nodes.findIndex((node) => {
-                return node.endpoint === location.endpoint;
-            });
-            if (index === -1) {
-                RemoteLocationsService.deleteLocation(location.endpoint);
-            }
-        });
     };
 
     const deleteCluster = (forceDelete) => {
@@ -324,7 +309,7 @@ function ClusterManagementCtrl($scope, $http, $q, toastr, $repositories, $uibMod
             })
             .finally(() => {
                 $scope.setLoader(false);
-                updateCluster(true, true);
+                updateCluster(true);
                 $rootScope.$broadcast('reloadLocations');
             });
     };

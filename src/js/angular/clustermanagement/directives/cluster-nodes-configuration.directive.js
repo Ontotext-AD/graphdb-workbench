@@ -80,15 +80,10 @@ function ClusterNodesConfigurationComponent($translate, $timeout, productInfo, t
              */
             $scope.saveNode = (endpoint) => {
                 const availableList = ClusterContextService.getAvailable(true);
-                const node = ClusterContextService.findByEndpoint(availableList, endpoint);
+                const node = ClusterContextService.findByEndpoint(availableList, endpoint) || new Location(endpoint);
                 const oldNode = ClusterContextService.getPendingReplace();
 
-                if (node) {
-                    handleNodeSave(node, oldNode);
-                } else {
-                    const newLocation = RemoteLocationsService.createNewLocation(endpoint);
-                    handleNewLocationSave(newLocation, oldNode, endpoint);
-                }
+                handleNodeSave(node, oldNode);
             };
 
             /**
@@ -103,9 +98,6 @@ function ClusterNodesConfigurationComponent($translate, $timeout, productInfo, t
                     message: $translate.instant('location.confirm.detach.warning', {uri: itemView.endpoint}),
                     warning: true
                 }).result.then(() => {
-                    if (itemView.isLocation()) {
-                        RemoteLocationsService.deleteLocation(itemView.getEndPoint());
-                    }
                     ClusterContextService.deleteFromCluster(itemView.item);
                 });
             };
@@ -201,49 +193,11 @@ function ClusterNodesConfigurationComponent($translate, $timeout, productInfo, t
             function handleNodeSave(node, oldNode) {
                 if (oldNode) {
                     ClusterContextService.replace(oldNode, node);
-                    RemoteLocationsService.deleteLocation(oldNode.endpoint);
                 } else {
                     ClusterContextService.addLocation(node);
                 }
                 resetNodeEditState();
             }
-
-            /**
-             * Handles the process of saving a newly created location.
-             * @param {Object} newLocation - The new location object to be added.
-             * @param {Object|null} oldNode - The old node that is being replaced (if any).
-             * @param {string} endpoint - The endpoint of the new location.
-             */
-            const handleNewLocationSave = (newLocation, oldNode, endpoint) => {
-                $scope.setLoader(true, $translate.instant('cluster_management.update_cluster_group_dialog.messages.connecting_node'));
-
-                addNewLocation(newLocation)
-                    .then((location) => {
-                        if (oldNode) {
-                            ClusterContextService.replace(oldNode, location);
-                        } else {
-                            ClusterContextService.addLocation(location);
-                        }
-                    })
-                    .catch((error) => handleSaveError(error, endpoint))
-                    .finally(() => {
-                        if (oldNode) {
-                            RemoteLocationsService.deleteLocation(oldNode.endpoint);
-                        }
-                        resetNodeEditState();
-                    });
-            };
-
-            /**
-             * Handles errors that occur during the saving of a new location.
-             * @param {Object} error - The error object.
-             * @param {string} endpoint - The endpoint of the node that failed to save.
-             */
-            const handleSaveError = (error, endpoint) => {
-                handleErrors(error.data, error.status);
-                RemoteLocationsService.deleteLocation(endpoint);
-                ClusterContextService.emitUpdateClusterView();
-            };
 
             /**
              * Resets the state of the node edit operation.
@@ -252,7 +206,6 @@ function ClusterNodesConfigurationComponent($translate, $timeout, productInfo, t
                 ClusterContextService.setPendingReplace(undefined);
                 $scope.editedNodeIndex = undefined;
                 $scope.addNewLocation = false;
-                $scope.setLoader(false);
             };
 
             const onClusterViewChanged = (cluster) => {
@@ -262,31 +215,6 @@ function ClusterNodesConfigurationComponent($translate, $timeout, productInfo, t
                 $scope.clusterConfiguration = ClusterContextService.getClusterConfiguration();
                 $scope.allSuggestions = ClusterContextService.getAvailableNodeEndpoints();
                 $scope.canDeleteNode = ClusterContextService.canDeleteNode();
-            };
-
-            const handleErrors = (data, status) => {
-                let failMessage;
-                $scope.errors.splice(0);
-                if (status === 400) {
-                    $scope.errors.push(...data);
-                } else if (status === 409) {
-                    $scope.errors.push(data);
-                } else if (data.message || typeof data === 'string') {
-                    failMessage = data.message || data;
-                }
-                toastr.error(failMessage, $translate.instant('cluster_management.cluster_page.notifications.create_failed'));
-            };
-
-            const addNewLocation = (newLocation) => {
-                return RemoteLocationsService.addLocationHttp(newLocation)
-                    .then((location) => {
-                        if (location) {
-                            return Location.fromJSON(location);
-                        }
-                    })
-                    .catch((error) => {
-                        throw error;
-                    });
             };
 
             // =========================
