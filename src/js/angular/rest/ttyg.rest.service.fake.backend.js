@@ -222,6 +222,18 @@ export class TtygRestServiceFakeBackend {
                         query: "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX onto: <http://www.ontotext.com/>\nSELECT ?label ?iri {\n    ?label onto:fts ('''Luke~ Skywalker~''' '*') .\n    ?iri rdfs:label|skos:prefLabel ?label .\n}",
                         queryType: "sparql",
                         errorOutput: null
+                    }, {
+                        name: "sparql_query",
+                        rawQuery: "SELECT ?name ?height WHERE { ?character voc:name ?name ; voc:height ?height . FILTER (?name = 'Luke Skywalker' || ?name = 'Leia Organa') }",
+                        query: "SELECT ?name ?height WHERE { ?character voc:name ?name ; voc:height ?height . FILTER (?name = 'Luke Skywalker' || ?name = 'Leia Organa') }",
+                        queryType: "sparql",
+                        errorOutput: "Error: java.lang.IllegalArgumentException: The following IRIs are not used in the data stored in GraphDB: https://swapi.co/vocabulary/name"
+                    }, {
+                        name: "sparql_query",
+                        rawQuery: "SELECT ?character ?height WHERE { ?character voc:height ?height . FILTER (?character = <https://swapi.co/resource/human/1> || ?character = <https://swapi.co/resource/human/5>) }",
+                        query: "SELEdCT ?character ?height WHERE { ?character voc:height ?height . FILTER (?character = <https://swapi.co/resource/human/1> || ?character = <https://swapi.co/resource/human/5>) }",
+                        queryType: "sparql",
+                        errorOutput: null
                     }
                 ]
             }});
