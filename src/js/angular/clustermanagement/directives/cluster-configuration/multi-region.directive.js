@@ -161,7 +161,7 @@ function MultiRegion($jwtAuth, $translate, $timeout, toastr, ModalService, Clust
                 const secondaryModalConfig = {
                     title: $translate.instant('cluster_management.cluster_configuration_multi_region.secondary_cluster_settings'),
                     templateUrl: 'js/angular/clustermanagement/templates/modal/secondary-mode-modal.html',
-                    controller: secondaryModeModalController,
+                    controller:  ['$scope', '$uibModalInstance', 'config', secondaryModeModalController],
                     size: 'lg',
                     warning: true,
                     backdrop: 'static'
