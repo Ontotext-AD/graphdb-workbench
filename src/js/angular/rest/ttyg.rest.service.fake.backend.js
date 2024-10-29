@@ -335,6 +335,82 @@ let agentsList = [
         },
         "assistantExtractionMethods": [],
         "maxNumberOfTriplesPerCall": null
+    },
+    {
+        "id": "asst_qMyCpCBmqxV9I2B8UoMfFzc555",
+        "name": "agent with long name long long long long long long long long long long long long",
+        "model": "gpt-4o",
+        "temperature": 0.0,
+        "topP": 0.0,
+        "seed": null,
+        "repositoryId": "Non existing repo",
+        "instructions": {
+            "systemInstruction": "string\n\nstring",
+            "userInstruction": "string"
+        },
+        "assistantExtractionMethods": [
+            {
+                "ftsMethod": "fts_search"
+            }
+        ],
+        "maxNumberOfTriplesPerCall": null
+    },
+    {
+        "id": "asst_qMyCpCBmqxV9I2B8UoMfFzcр555",
+        "name": "Long_agent_with_long_name_long_long_long_long_long_long_long_long_long_long_long_long",
+        "model": "gpt-4o",
+        "temperature": 0.0,
+        "topP": 0.0,
+        "seed": null,
+        "repositoryId": "Non existing repo",
+        "instructions": {
+            "systemInstruction": "string\n\nstring",
+            "userInstruction": "string"
+        },
+        "assistantExtractionMethods": [
+            {
+                "ftsMethod": "fts_search"
+            }
+        ],
+        "maxNumberOfTriplesPerCall": null
+    },
+    {
+        "id": "asst_qMyCpCBmqxV9I2B8UoMfFzc55д5",
+        "name": "agent with long name long long long long long long long long long long long long",
+        "model": "gpt-4o",
+        "temperature": 0.0,
+        "topP": 0.0,
+        "seed": null,
+        "repositoryId": "starwars",
+        "instructions": {
+            "systemInstruction": "string\n\nstring",
+            "userInstruction": "string"
+        },
+        "assistantExtractionMethods": [
+            {
+                "ftsMethod": "fts_search"
+            }
+        ],
+        "maxNumberOfTriplesPerCall": null
+    },
+    {
+        "id": "asst_qMyCpCBmqxV9I2B8UoMfFzcя555",
+        "name": "Long_agent_with_long_name_long_long_long_long_long_long_long_long_long_long_long_long",
+        "model": "gpt-4o",
+        "temperature": 0.0,
+        "topP": 0.0,
+        "seed": null,
+        "repositoryId": "starwars",
+        "instructions": {
+            "systemInstruction": "string\n\nstring",
+            "userInstruction": "string"
+        },
+        "assistantExtractionMethods": [
+            {
+                "ftsMethod": "fts_search"
+            }
+        ],
+        "maxNumberOfTriplesPerCall": null
     }
 ];
 
