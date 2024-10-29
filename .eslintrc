@@ -25,7 +25,7 @@
         "key-spacing": "off"
     },
     "parserOptions": {
-        "ecmaVersion": 2016,
+        "ecmaVersion": 2017,
         "sourceType": "module",
         "ecmaFeatures": {
             "impliedStrict": true
