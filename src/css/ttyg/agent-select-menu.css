@@ -20,6 +20,7 @@
     width: auto;
     background-color: #fff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 30vw;
 }
 
 .agent-select-menu .dropdown-menu li {
@@ -38,10 +39,43 @@
 
 .agent-select-menu .dropdown-menu li a {
     text-decoration: none;
-    display: block;
 }
 
-.agent-select-menu .agent-name {
+.agent-select-menu .agent-option,
+.agent-select-menu .selected-agent-option {
+    display: flex;
+    overflow: hidden;
+    align-items: center;
+    gap: 0.2em;
+    width: 100%;
+}
+
+.agent-select-menu .agent-option .agent-name,
+.agent-select-menu .agent-option .repository-id {
     color: var(--secondary-color);
     font-weight: 400;
+}
+
+.agent-select-menu .agent-option .agent-name,
+.agent-select-menu .agent-option .repository-id,
+.agent-select-menu .selected-agent-option .agent-name,
+.agent-select-menu .selected-agent-option .repository-id {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.agent-select-menu .agent-option .agent-name,
+.agent-select-menu .selected-agent-option .agent-name {
+    flex: 0 1 auto;
+}
+
+.agent-select-menu .agent-option .repository-id,
+.agent-select-menu .selected-agent-option .repository-id {
+    flex: 0 1 50%;
+    text-align: left;
+}
+
+.agent-select-menu .agent-option .agent-with-deleted-repository,
+.agent-select-menu .selected-agent-option .agent-with-deleted-repository{
+    flex: 0 1 auto;
 }
