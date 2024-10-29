@@ -106,7 +106,7 @@
 										ng-click="dropContext()"
 											gdb-tooltip="{{'remove.data.from.selected.graph.tooltip' | translate}}" tooltip-placement="top"
 										ng-disabled="!canWriteActiveRepo(true) || !hasMultipleSelected()">
-										<span class="fa fa-trash-o"></span>
+										<span class="fa fa-trash-can"></span>
 									</button>
 								</th>
 								<th id="graphColumn">{{'graphs.label' | translate}}</th>
@@ -157,7 +157,7 @@
 										ng-click="dropContext(graph)"
 										gdb-tooltip="{{'remove.data.from.this.graph.tooltip' | translate}}" tooltip-placement="top"
 										ng-disabled="!canWriteActiveRepo(true) || !graph.contextID.uri">
-									<span class="fa fa-trash-o fa-lg"></span>
+									<span class="fa fa-trash-can"></span>
 								</button>
 
 							</td>
