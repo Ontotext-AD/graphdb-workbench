@@ -71,7 +71,7 @@
 
 .agent-select-menu .agent-option .repository-id,
 .agent-select-menu .selected-agent-option .repository-id {
-    flex: 0 2 50%;
+    flex: 0 1 50%;
     text-align: left;
 }
 

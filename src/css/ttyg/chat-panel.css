@@ -129,6 +129,7 @@
 
 .chat-panel .new-question {
     width: 100%;
+    padding-left: 1rem;
 }
 
 .chat-panel .new-question .question-input {
