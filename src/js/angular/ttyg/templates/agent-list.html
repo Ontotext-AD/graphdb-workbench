@@ -5,7 +5,7 @@
         <button type="button" uib-dropdown-toggle class="btn btn-outline-primary dropdown-toggle">
             <i class="fa-kit fa-gdb-repo-graphdb mr-1"></i>
             <span class="selected-filter">{{selectedAgentsFilter.label}}</span>
-            <i class="fa-regular fa-filter" gdb-tooltip="{{'ttyg.agent.btn.filter.tooltip' | translate}}"></i>
+            <i class="fa fa-filter" gdb-tooltip="{{'ttyg.agent.btn.filter.tooltip' | translate}}"></i>
         </button>
         <ul class="dropdown-menu" role="menu">
             <li ng-repeat="filterModel in agentListFilterModel">
@@ -30,7 +30,7 @@
                     <div class="related-repository">
                         <i ng-if="!agent.isRepositoryDeleted" class="fa-kit fa-gdb-repo-graphdb"></i>
                         <i ng-if="agent.isRepositoryDeleted"
-                           class="fa-regular fa-triangle-exclamation text-warning agent-with-deleted-repository"
+                           class="fa fa-triangle-exclamation text-warning agent-with-deleted-repository"
                            gdb-tooltip="{{'ttyg.agent.deleted_repository' | translate}}">
                         </i>
                         {{agent.repositoryId}}
@@ -42,20 +42,20 @@
                             ng-if="true"
                             ng-click="openAgentActionMenu()"
                             ng-disabled="false">
-                        <i class="fa-regular fa-ellipsis"></i>
+                        <i class="fa fa-ellipsis"></i>
                     </button>
                     <div class="dropdown-menu dropdown-menu-right agent-actions-menu">
                         <button class="dropdown-item edit-agent-btn" type="button" ng-click="onEditAgent(agent)">
-                            <i class="fa-regular fa-gear"></i>
+                            <i class="fa fa-gear"></i>
                             <span>{{'ttyg.agent.btn.edit_agent.label' | translate}}</span>
                         </button>
                         <button class="dropdown-item clone-agent-btn" type="button" ng-click="onCloneAgent(agent)">
-                            <i class="fa-regular fa-clone"></i>
+                            <i class="fa fa-clone"></i>
                             <span>{{'ttyg.agent.btn.clone_agent.label' | translate}}</span>
                         </button>
                         <div class="dropdown-divider"></div>
                         <button class="dropdown-item delete-agent-btn" type="button" ng-click="onDeleteAgent(agent)">
-                            <i class="fa-regular fa-trash-can"></i>
+                            <i class="fa fa-trash-can"></i>
                             <span>{{'ttyg.agent.btn.delete_agent.label' | translate}}</span>
                         </button>
                     </div>

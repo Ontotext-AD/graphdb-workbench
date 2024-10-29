@@ -80,14 +80,6 @@ module.exports = {
                 to: 'js/lib/bootstrap/bootstrap.min.css'
             },
             {
-                from: 'node_modules/font-awesome/css',
-                to: 'font/font-awesome/4.3.0/css'
-            },
-            {
-                from: 'node_modules/font-awesome/fonts',
-                to: 'font/font-awesome/4.3.0/fonts'
-            },
-            {
                 from: 'src/css',
                 to: 'css'
             },
