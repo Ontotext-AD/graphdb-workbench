@@ -7,13 +7,13 @@
         <span ng-if="selectedAgent && !selectedAgent.isDeleted">
             <span class="agent-name">{{selectedAgent.name}}</span> &middot;
             <i ng-if="selectedAgent.isRepositoryDeleted"
-               class="fa-regular fa-triangle-exclamation text-warning agent-with-deleted-repository"
+               class="fa fa-triangle-exclamation text-warning agent-with-deleted-repository"
                gdb-tooltip="{{'ttyg.agent.deleted_repository' | translate}}">
             </i>
             {{selectedAgent.repositoryId}}
         </span>
         <span ng-if="selectedAgent && selectedAgent.isDeleted" class="text-warning">
-            <i class="fa-regular fa-triangle-exclamation"></i>
+            <i class="fa fa-triangle-exclamation"></i>
             {{'ttyg.agent.agent_select_menu.deleted_agent' | translate}}
         </span>
         <span class="caret"></span>
@@ -25,7 +25,7 @@
                ng-click="onAgentSelected(agentOption.data.agent)">
                 <span class="agent-name">{{agentOption.label}}</span> &middot;
                 <i ng-if="agentOption.data.agent.isRepositoryDeleted"
-                   class="fa-regular fa-triangle-exclamation text-warning agent-with-deleted-repository"
+                   class="fa fa-triangle-exclamation text-warning agent-with-deleted-repository"
                    gdb-tooltip="{{'ttyg.agent.deleted_repository' | translate}}">
                 </i>
                 <span class="repository-id">{{agentOption.data.agent.repositoryId}}</span>

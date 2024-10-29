@@ -87,7 +87,6 @@
         "autofill-event": "0.0.1",
         "d3": "^7.8.5",
         "echarts": "^5.4.3",
-        "font-awesome": "^4.7.0",
         "jquery": "^3.4.1",
         "jsonld": "^8.3.2",
         "jsrsasign": "^11.0.0",
