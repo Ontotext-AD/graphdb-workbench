@@ -98,4 +98,11 @@ export class LicenseStubs {
             statusCode: 500
         });
     }
+
+    static stubLicenseHardcoded(hardcoded = false) {
+        cy.intercept('GET', '/rest/graphdb-settings/license/hardcoded', {
+            statusCode: 200,
+            body: hardcoded + ''
+        }).as('license-hardcoded');
+    }
 }

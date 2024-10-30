@@ -37,7 +37,7 @@ function licenseService($window, $document, LicenseRestService, $translate) {
         _loadingLicense = true;
         return LicenseRestService.getHardcodedLicense()
             .then((res) => {
-                _isLicenseHardcoded = (res === 'true');
+                _isLicenseHardcoded = (res.data === 'true');
                 return LicenseRestService.getLicenseInfo();
             })
             .then((res) => {
