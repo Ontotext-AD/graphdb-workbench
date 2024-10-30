@@ -260,6 +260,10 @@ export class ExtractionMethodsFormModel {
     getRetrievalExtractionMethod() {
         return this.getExtractionMethod(ExtractionMethod.RETRIEVAL);
     }
+
+    getFTSSearchExtractionMethod() {
+        return this.getExtractionMethod(ExtractionMethod.FTS_SEARCH);
+    }
 }
 
 export class ExtractionMethodFormModel {
