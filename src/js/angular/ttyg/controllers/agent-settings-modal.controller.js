@@ -241,6 +241,9 @@ function AgentSettingsModalController(
      */
     $scope.updateSimilaritySearchPanel = (clearIndexSelection = false) => {
         const similaritySearchExtractionMethod = $scope.agentFormModel.assistantExtractionMethods.getSimilarityExtractionMethod();
+        if (!similaritySearchExtractionMethod.selected) {
+            return;
+        }
         if (clearIndexSelection) {
             similaritySearchExtractionMethod.similarityIndex = null;
         }
@@ -254,6 +257,9 @@ function AgentSettingsModalController(
      */
     $scope.updateRetrievalConnectorPanel = (clearSelection = false) => {
         const retrievalExtractionExtractionMethod = $scope.agentFormModel.assistantExtractionMethods.getRetrievalExtractionMethod();
+        if (!retrievalExtractionExtractionMethod.selected) {
+            return;
+        }
         if (clearSelection) {
             retrievalExtractionExtractionMethod.retrievalConnectorInstance = null;
         }
@@ -262,8 +268,19 @@ function AgentSettingsModalController(
 
     $scope.checkIfFTSEnabled = () => {
         if (!$scope.agentFormModel.repositoryId) {
+            $scope.agentSettingsForm.$setValidity('FTSDisabled', false);
             return;
         }
+
+        const ftsSearchExtractionMethod = $scope.agentFormModel.assistantExtractionMethods.getFTSSearchExtractionMethod();
+        if (!ftsSearchExtractionMethod.selected) {
+            // clear the validation status if method is deselected.
+            $scope.agentSettingsForm.$setValidity('FTSDisabled', true);
+            return;
+        }
+
+        $scope.extractionMethodLoaderFlags[ExtractionMethod.FTS_SEARCH] = true;
+
         // pass a fake repository info object with only an id because we don't care for the location
         RepositoriesRestService.getRepositoryModel({id: $scope.agentFormModel.repositoryId}).then((repositoryModel) => {
             $scope.ftsEnabled = repositoryModel.getParamValue(REPOSITORY_PARAMS.enableFtsIndex);
@@ -273,6 +290,7 @@ function AgentSettingsModalController(
         })
         .finally(() => {
             $scope.extractionMethodLoaderFlags[ExtractionMethod.FTS_SEARCH] = false;
+            $scope.agentSettingsForm.$setValidity('FTSDisabled', $scope.ftsEnabled);
         });
     };
 
@@ -282,9 +300,7 @@ function AgentSettingsModalController(
      * able to validate if the FTS is enabled for that selected repository.
      */
     $scope.onRepositoryChange = () => {
-        $scope.checkIfFTSEnabled();
-        $scope.updateSimilaritySearchPanel(true);
-        $scope.updateRetrievalConnectorPanel(true);
+        refreshValidations(true, true);
     };
 
     /**
@@ -442,7 +458,6 @@ function AgentSettingsModalController(
     };
 
     const handleFTSExtractionMethodPanelToggle = (extractionMethod) => {
-        $scope.extractionMethodLoaderFlags[extractionMethod.method] = true;
         $scope.checkIfFTSEnabled();
     };
 
@@ -555,6 +570,32 @@ function AgentSettingsModalController(
         [ExtractionMethod.SIMILARITY]: (extractionMethod) => handleSimilaritySearchExtractionMethodPanelToggle(extractionMethod),
         [ExtractionMethod.RETRIEVAL]: (extractionMethod) => handleRetrievalConnectorExtractionMethodPanelToggle(extractionMethod)
     };
+
+    const refreshValidations = (clearIndexSelection = false, clearRetrievalConnectorSelection = false) => {
+        $scope.checkIfFTSEnabled();
+        $scope.updateSimilaritySearchPanel(clearIndexSelection);
+        $scope.updateRetrievalConnectorPanel(clearRetrievalConnectorSelection);
+    };
+
+    const onTabVisibilityChanged = () => {
+        if (!document.hidden) {
+            refreshValidations();
+        }
+    };
+
+    // =========================
+    // Subscriptions
+    // =========================
+
+    const removeAllSubscribers = () => {
+        document.removeEventListener("visibilitychange", onTabVisibilityChanged);
+    };
+
+    document.addEventListener("visibilitychange", onTabVisibilityChanged);
+
+    // Deregister the watcher when the scope/directive is destroyed
+    $scope.$on('$destroy', removeAllSubscribers);
+
 
     // =========================
     // Initialization
