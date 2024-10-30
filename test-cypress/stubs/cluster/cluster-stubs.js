@@ -183,24 +183,11 @@ export class ClusterStubs extends Stubs {
         }).as('2-nodes-cluster-created');
     }
 
-    static stubSaveClusterConfiguration(expectedRequestBody) {
-        cy.intercept({
-            method: 'PATCH',
-            url: '/rest/cluster/config'
-        }, (req) => {
-            req.reply({
-                statusCode: 200,
-                body:  {
-                    electionMinTimeout: 5000,
-                    electionRangeTimeout: 3000,
-                    heartbeatInterval: 1500,
-                    messageSizeKB: 64,
-                    verificationTimeout: 1200,
-                    transactionLogMaximumSizeGB: 50,
-                    batchUpdateInterval: 2000,
-                    nodes: ["pc-desktop:7300", "pc-desktop:7301", "pc-desktop:7302"]
-                }
-            });
+    static stubSaveClusterConfiguration() {
+        cy.intercept('/rest/cluster/config', {
+            fixture: '/cluster/save-cluster-configuration-response.json',
+            statusCode: 200,
+            method: 'PATCH'
         }).as('save-cluster-properties');
     }
 
