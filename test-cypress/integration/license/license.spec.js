@@ -3,8 +3,9 @@ import {LicenseStubs} from "../../stubs/license-stubs";
 
 describe('License', () => {
    it('Should displays an informational message if the license is provided through a file (hardcoded)', () => {
-      LicenseSteps.visit();
       LicenseStubs.stubLicenseHardcoded(true);
+      LicenseStubs.stubEnterpriseLicense();
+      LicenseSteps.visit();
       LicenseSteps.getLicenseHeader().should('have.text', "GraphDB Enterprise Edition");
 
       LicenseSteps.getHardcodedAlertMessage().should('exist');
@@ -13,8 +14,9 @@ describe('License', () => {
    });
 
    it('Should not displays an informational message if the license is not provided through a file (not hardcoded)', () => {
-      LicenseSteps.visit();
       LicenseStubs.stubLicenseHardcoded(false);
+      LicenseStubs.stubEnterpriseLicense();
+      LicenseSteps.visit();
       LicenseSteps.getLicenseHeader().should('have.text', "GraphDB Enterprise Edition");
 
       LicenseSteps.getHardcodedAlertMessage().should('not.exist');
