@@ -76,6 +76,11 @@ function CreateSimilarityIdxCtrl(
     $scope.saveOrUpdateExecuted = false;
     $scope.loadingControllerResources = false;
     $scope.helpHidden = LocalStorageAdapter.get(LSKeys.HIDE_SIMILARITY_HELP) === 1;
+    /**
+     * Flag that indicates if the index save operation is in progress.
+     * @type {boolean}
+     */
+    $scope.savingIndex = false;
 
     let isDirty = false;
     let searchQueries = undefined;
@@ -146,16 +151,21 @@ function CreateSimilarityIdxCtrl(
      */
     $scope.createSimilarityIndex = () => {
         $scope.saveOrUpdateExecuted = true;
+        $scope.savingIndex = true;
         updateQueryFromEditor($scope.similarityIndexInfo)
             .then(validateQuery)
             .then(validateQueryType)
             .then(validateSimilarityIndex)
             .then(validateSimilarityIndexNameExistence)
             .then((similarityIndexInfo) => createIndex(similarityIndexInfo.getSimilarityIndex()))
+            .then(() => goToSimilarityIndexesView())
             .catch((error) => {
                 if (!(error instanceof SimilarityIndexError)) {
                     toastr.error(getError(error), $translate.instant('similarity.could.not.get.indexes.error'));
                 }
+            })
+            .finally(() => {
+                $scope.savingIndex = false;
             });
     };
 
@@ -186,10 +196,7 @@ function CreateSimilarityIdxCtrl(
 
     $scope.saveSearchQuery = function () {
         $scope.saveOrUpdateExecuted = true;
-        if (!isDirty) {
-            goToSimilarityIndexesView();
-        }
-        $scope.saveOrUpdateExecuted = true;
+        $scope.savingIndex = true;
         updateQueryFromEditor($scope.similarityIndexInfo)
             .then(validateSimilarityIndexName)
             .then(validateQuery)
@@ -197,11 +204,22 @@ function CreateSimilarityIdxCtrl(
             .then(validateSearchQuery)
             .then(validateAnalogicalQuery)
             .then(saveQuery)
-            .then(notifySaveSuccess)
+            .then((isSearchQuery) => {
+                // toastr should be triggered before the redirect because the redirect will remove the toast
+                return Notifications.showToastMessageWithDelay(isSearchQuery ? 'similarity.changed.search.query.msg' : 'similarity.changed.analogical.query.msg');
+            })
+            .then(() => {
+                if (!isDirty) {
+                    $location.url('similarity');
+                }
+            })
             .catch((error) => {
                 if (!(error instanceof SimilarityIndexError)) {
                     toastr.error(getError(error), $translate.instant('similarity.change.query.error'));
                 }
+            })
+            .finally(() => {
+                $scope.savingIndex = false;
             });
     };
 
@@ -561,10 +579,6 @@ function CreateSimilarityIdxCtrl(
             similarityIndex.options = similarityIndex.options + (similarityIndex.options === '' ? '' : ' ') + '-literal_index' + ' true';
             similarityIndex.type = SimilarityIndexType.TEXT_LITERAL;
         }
-        // TODO this can be very slowly, old implementation redirect to the indexes view before execute the query
-        // ask the team if this have to be like old implementation or we can show a dialog that describes that creation of query is slow
-        // and can take a time. We can ask tha user to stay on page or live it
-        goToSimilarityIndexesView();
         isDirty = false;
         return SimilarityRestService.createIndex('POST',
             similarityIndex.name,
@@ -593,6 +607,7 @@ function CreateSimilarityIdxCtrl(
         await Notifications.showToastMessageWithDelay(isSearchQuery ? 'similarity.changed.search.query.msg' : 'similarity.changed.analogical.query.msg');
         $location.url('similarity');
     }
+
     const saveQuery = (similarityIndexInfo) => {
         const isSearchQuery = similarityIndexInfo.isSearchQueryTypeSelected();
         let data = {
