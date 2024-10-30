@@ -40,7 +40,23 @@ openInSparqlEditorDirective.$inject = ['$repositories', '$translate', 'ModalServ
 
 function openInSparqlEditorDirective($repositories, $translate, ModalService, $window) {
     return {
-        template: `<button class="open-in-sparql-editor-btn" gdb-tooltip="{{'ttyg.chat_panel.btn.open_in_sparql_editor.tooltip' | translate}}" ng-click="onGoToSparqlEditorView()"><i class="icon-sparql"></i></button>`,
+        // Note: the line-height of the element must match the line-height of the icon.
+        // This defines a composite FontAwesome icon to match the style of the surrounding icons.
+        template: `
+            <style>
+                .open-in-sparql-editor-btn {
+                    line-height: 0.75;
+                }
+                .open-in-sparql-editor-btn .fa:nth-child(2) {
+                    margin-left: -0.2em;
+                    margin-right: -0.2em;
+                    font-size: 0.9em;
+                }
+            </style>
+            <button class="btn btn-link btn-sm open-in-sparql-editor-btn" gdb-tooltip="{{'ttyg.chat_panel.btn.open_in_sparql_editor.tooltip' | translate}}" ng-click="onGoToSparqlEditorView()">
+                <i class="fa fa-bracket-curly"></i><i class="fa fa-ellipsis"></i><i class="fa fa-bracket-curly-right"></i>
+            </button>
+        `,
         restrict: 'E',
         scope: {
             query: '@',
