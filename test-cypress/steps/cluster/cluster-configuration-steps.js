@@ -23,6 +23,14 @@ export class ClusterConfigurationSteps {
         return this.getTabs().eq(index).click();
     }
 
+    static selectNodesTab() {
+        return this.selectTab(1);
+    }
+
+    static selectMultiRegionConfigTab() {
+        return this.selectTab(2);
+    }
+
     static getClusterPropertiesTabContent() {
         return cy.get('cluster-properties');
     }
