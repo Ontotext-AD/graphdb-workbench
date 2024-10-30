@@ -43,14 +43,6 @@ export class ClusterStubs extends Stubs {
         }).as('2-nodes-cluster-group-status');
     }
 
-    static stubDeleteUnusedLocation(uri) {
-        cy.intercept(`rest/locations?uri=${uri}`, {
-            body: `Successfully removed location '${uri}'`,
-            statusCode: 200,
-            method: 'DELETE'
-        }).as('delete-location');
-    }
-
     static stubClusterWithRecoveryStatusGroupStatus(recoveryStatus) {
         cy.intercept('/rest/cluster/group/status', {
             fixture: `/cluster/3-nodes-cluster-group-status-${recoveryStatus}`,
@@ -189,6 +181,62 @@ export class ClusterStubs extends Stubs {
             body: clusterConfig,
             statusCode: 201
         }).as('2-nodes-cluster-created');
+    }
+
+    static stubSaveClusterConfiguration(expectedRequestBody) {
+        cy.intercept({
+            method: 'PATCH',
+            url: '/rest/cluster/config'
+        }, (req) => {
+            req.reply({
+                statusCode: 200,
+                body:  {
+                    electionMinTimeout: 5000,
+                    electionRangeTimeout: 3000,
+                    heartbeatInterval: 1500,
+                    messageSizeKB: 64,
+                    verificationTimeout: 1200,
+                    transactionLogMaximumSizeGB: 50,
+                    batchUpdateInterval: 2000,
+                    nodes: ["pc-desktop:7300", "pc-desktop:7301", "pc-desktop:7302"]
+                }
+            });
+        }).as('save-cluster-properties');
+    }
+
+    static stubAddTag(tag) {
+        cy.intercept({
+            method: 'POST',
+            url: '/rest/cluster/config/tag'
+        }, (req) => {
+            req.reply({
+                statusCode: 200,
+                body: `Successfully added to cluster primary tag: ${tag}`
+            });
+        }).as('add-tag');
+    }
+
+    static stubClusterGroupStatusWithTag() {
+        cy.intercept('/rest/cluster/group/status', {
+            fixture: '/cluster/3-nodes-cluster-group-status-with-tag.json',
+            statusCode: 200
+        }).as('3-nodes-cluster-group-status-tag');
+    }
+
+    static stubDeleteTag(uri) {
+        cy.intercept(`rest/cluster/config/tag`, {
+            body: `"Removed primary tag '${uri}' from cluster`,
+            statusCode: 200,
+            method: 'DELETE'
+        }).as('delete-tag');
+    }
+
+    static stubEnableSecondaryMode() {
+        cy.intercept(`rest/cluster/config/secondary-mode`, {
+            body: `Successfully enabled secondary cluster mode`,
+            statusCode: 200,
+            method: 'POST'
+        }).as('enable-secondary-mode');
     }
 
 }
