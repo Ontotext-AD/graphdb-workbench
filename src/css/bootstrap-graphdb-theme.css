@@ -48,6 +48,23 @@
     font-style: normal;
 }
 
+.fa, .fa-regular, .fa-light, .fa-thin {
+    /*
+    General fix for FontAwesome icons being somewhat larger than our icons font.
+    font-size-adjust has other ways to do this (ex-height N) but that doesn't work well
+    with this font in Firefox. This magic value works identically in all browsers.
+    */
+    font-size-adjust: ch-width 0.52;
+}
+
+.pull-right {
+    float: right
+}
+
+.pull-left {
+    float: left
+}
+
 [class^="icon-"], [class*=" icon-"], .icon-any, .fa-d3 {
     speak: none;
     font-style: normal;
@@ -687,6 +704,8 @@ main menu height*/
 
 .main-menu .menu-item-icon {
     font-size: 2.5rem;
+    width: 2.5rem;
+    text-align: center;
     vertical-align: middle;
     color: var(--primary-color);
     transform: scale(0.9);
@@ -696,12 +715,6 @@ main menu height*/
     -webkit-transition: all 0.18s ease-out; /* Saf3.2+, Chrome */
     transition: all 0.18s ease-out;
     pointer-events: none;
-}
-
-.main-menu .menu-item-icon.fa-flask {
-    /* Temporary: until we get our own icon */
-    font-size: 2rem;
-    padding: 4px 5px;
 }
 
 .main-menu .menu-element-root .menu-item {
@@ -1081,13 +1094,16 @@ main menu height*/
     transition: transform 0.15s ease-out;
 }
 
-.btn [class^="icon-"] {
-    font-size: 1.4em;
+.btn [class^="icon-"],
+.btn .fa {
     line-height: 0.75;
+    font-size: 1.4em;
     display: inline-block;
+    vertical-align: middle;
 }
 
-.btn.btn-inline [class^="icon-"] {
+.btn.btn-inline [class^="icon-"],
+.btn.btn-inline .fa {
      font-size: inherit;
      line-height: inherit;
      vertical-align: inherit;

@@ -31,14 +31,14 @@
                         ng-click="toggleChatsListSidebar()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.chat.btn.' + (showChats ? 'close_sidebar' : 'open_sidebar') + '.tooltip' | translate}}">
-                    <i class="fa-regular fa-sidebar"></i>
+                    <i class="fa fa-sidebar"></i>
                 </button>
                 <button class="btn btn-link btn-sm create-chat-btn"
                         ng-if="chats && !chats.isEmpty()"
                         ng-click="startNewChat()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.chat.btn.create_chat.tooltip' | translate}}">
-                    <i class="fa-regular fa-pen-to-square"></i>
+                    <i class="fa fa-pen-to-square"></i>
                 </button>
             </div>
             <pageslide
@@ -105,7 +105,7 @@
                         ng-click="toggleAgentsListSidebar()"
                         ng-disabled="!canModifyAgent"
                         gdb-tooltip="{{'ttyg.agent.btn.open_sidebar.' + (canModifyAgent ? 'tooltip' : 'tooltip_disabled') | translate}}">
-                    <i class="fa-regular fa-message-bot"></i>
+                    <i class="fa fa-message-bot"></i>
                 </button>
                 <button class="btn btn-link btn-sm toggle-agents-sidebar-btn"
                         ng-if="showAgents"

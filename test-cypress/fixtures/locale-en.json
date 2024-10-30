@@ -340,7 +340,7 @@
         "chat_panel": {
             "hint1": "<div><span class=\"graph\">GRAPH</span><span class=\"wise\">WISE</span></div><div class=\"thrives\">AI THRIVES ON WHOLE DATA</div>",
             "hint2": "Simply ask a question!",
-            "deleted_agent": "<span class=\"text-warning\"><i class=\"fa-regular fa-triangle-exclamation fa-xs\"></i> deleted agent</span>",
+            "deleted_agent": "<span class=\"text-warning\"><i class=\"fa fa-triangle-exclamation fa-xs\"></i> deleted agent</span>",
             "btn": {
                 "ask": {
                     "label": "Ask"

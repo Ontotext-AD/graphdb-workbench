@@ -11,7 +11,7 @@
         <div class="assistant">
             <div class="assistant-icon alert-help"
                  gdb-tooltip="{{'ttyg.chat_panel.labels.agent_name' | translate : { agentName: agentNameByIdMap[chatItemDetail.agentId], date: getHumanReadableQuestionTimestamp(chatItemDetail.question.timestamp), time: (chatItemDetail.question.timestamp | date:'HH:mm') } }}">
-                <i class="fa-regular fa-message-bot"></i>
+                <i class="fa fa-lg fa-message-bot"></i>
             </div>
             <div class="assistant-message">
                 <markdown-content class="answer" content="{{answer.message}}" options="markdownContentOptions"></markdown-content>
@@ -20,16 +20,16 @@
                             ng-click="regenerateQuestion()"
                             ng-disabled="disabled"
                             gdb-tooltip="{{'ttyg.chat_panel.btn.regenerate.tooltip' | translate}}">
-                        <i class="fa-regular fa-arrows-rotate"></i>
+                        <i class="fa fa-arrows-rotate"></i>
                     </button>
-                    <copy-to-clipboard class="btn-sm" tooltip-text="ttyg.chat_panel.btn.copy_answer.tooltip"
+                    <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy_answer.tooltip"
                                        text-to-copy="{{answer.message}}"></copy-to-clipboard>
                     <button class="btn btn-link btn-link-only-icons btn-sm explain-response-btn"
                             ng-click="explainResponse(answer.id)"
                             ng-disabled="disabled && !explainResponseModel[answer.id]"
                             gdb-tooltip="{{'ttyg.chat_panel.btn.explain_response.tooltip' | translate}}">
-                        <i class="fa-regular fa-wand-magic-sparkles"></i>
-                        <i class="fa-regular fa-chevron-up toggle-explain-response-icon"
+                        <i class="fa fa-wand-magic-sparkles"></i>
+                        <i class="fa fa-chevron-up toggle-explain-response-icon"
                            ng-class="{expanded: explainResponseModel[answer.id] && explainResponseModel[answer.id].expanded}"></i>
                     </button>
                 </div>
