@@ -134,6 +134,7 @@
 
                         <div
                             ng-if="extractionMethod.expanded && extractionMethod.method === extractionMethods.FTS_SEARCH"
+                            ng-class="{'has-error': agentSettingsForm.$error.FTSDisabled}"
                             class="extraction-method-options">
                             <button class="btn btn-link btn-sm pull-right"
                                     ng-click="checkIfFTSEnabled()"
@@ -167,6 +168,7 @@
 
                         <div
                             ng-if="extractionMethod.expanded && extractionMethod.method === extractionMethods.SIMILARITY"
+                            ng-class="{'has-error': agentSettingsForm.$error.missingIndex}"
                             class="extraction-method-options">
                             <button class="btn btn-link btn-sm pull-right"
                                     ng-click="updateSimilaritySearchPanel()"
