@@ -1,3 +1,6 @@
+import {CookieConsent} from "../../../models/cookie-policy/cookie-consent";
+import {CookiePolicyModalController} from "./cookie-policy-modal-controller";
+
 const modules = [];
 
 angular
@@ -9,7 +12,7 @@ cookieConsent.$inject = ['$jwtAuth', '$uibModal', '$licenseService', '$translate
 function cookieConsent($jwtAuth, $uibModal, $licenseService, $translate, toastr) {
     return {
         restrict: 'E',
-        templateUrl:'js/angular/core/templates/cookie-policy/cookie-consent.html',
+        templateUrl: 'js/angular/core/templates/cookie-policy/cookie-consent.html',
         link: ($scope) => {
             // =========================
             // Public variables
@@ -17,32 +20,26 @@ function cookieConsent($jwtAuth, $uibModal, $licenseService, $translate, toastr)
             $scope.showCookieConsent = false;
 
             // =========================
-            // Private variables
-            // =========================
-            let appSettings = undefined;
-            let username = undefined;
-
-            // =========================
             // Public functions
             // =========================
             $scope.acceptConsent = () => {
-                appSettings.COOKIE_CONSENT = true;
-                $jwtAuth.updateUserData({appSettings, username}).finally(() => $scope.showCookieConsent = false);
+                $jwtAuth.getPrincipal()
+                    .then((data) => {
+                        const appSettings = data.appSettings;
+                        const username = data.username;
+                        appSettings.COOKIE_CONSENT = CookieConsent.fromJSON(appSettings.COOKIE_CONSENT).getConsent();
+                        appSettings.COOKIE_CONSENT.policyAccepted = true;
+                        return $jwtAuth.updateUserData({appSettings, username});
+                    })
+                .finally(() => $scope.showCookieConsent = false);
             };
 
             $scope.showCookiePolicy = () => {
-                $scope.showCookieConsent = false;
                 $uibModal.open({
                     templateUrl: 'js/angular/core/templates/cookie-policy/cookie-policy.html',
-                    controller: ['$scope', function ($scope) {
-                        $scope.close = () => {
-                            $scope.$close(false);
-                        };
-                    }],
-                    backdrop: 'static',
-                    windowClass: 'cookie-policy-modal',
-                    keyboard: false
-                }).result.then(() => $scope.acceptConsent());
+                    controller: CookiePolicyModalController,
+                    windowClass: 'cookie-policy-modal'
+                });
             };
 
             // =========================
@@ -57,10 +54,9 @@ function cookieConsent($jwtAuth, $uibModal, $licenseService, $translate, toastr)
                     if (!data) {
                         return;
                     }
-                    appSettings = data.appSettings;
-                    username = data.username;
-
-                    if (!appSettings.COOKIE_CONSENT) {
+                    const appSettings = data.appSettings;
+                    appSettings.COOKIE_CONSENT = CookieConsent.fromJSON(appSettings.COOKIE_CONSENT).getConsent();
+                    if (!appSettings.COOKIE_CONSENT.policyAccepted) {
                         $scope.showCookieConsent = true;
                     }
                 }).catch((error) => {

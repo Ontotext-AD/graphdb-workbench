@@ -24,7 +24,7 @@ describe('Cookie policy', () => {
     it('Should show cookie policy to user in user settings', () => {
         SettingsSteps.visit();
         EnvironmentStubs.stubWbProdMode();
-        SettingsSteps.getCookiePolicyLink().should('exist').and('be.visible');
+        SettingsSteps.getCookiePolicyButton().should('exist').and('be.visible');
 
         // When I click on the link
         SettingsSteps.clickCookiePolicyLink();
@@ -39,7 +39,7 @@ describe('Cookie policy', () => {
 
     it('Should NOT show cookie policy to user when tracking is not applicable', () => {
         SettingsSteps.visit();
-        SettingsSteps.getCookiePolicyLink().should('not.exist');
+        SettingsSteps.getCookiePolicyButton().should('not.exist');
     });
 
     it('Should save consent in user settings', () => {
@@ -52,14 +52,30 @@ describe('Cookie policy', () => {
 
         // I expect to save cookie consent in user settings
         cy.wait('@updateUser').then((xhr) => {
-            expect(xhr.request.body.appSettings).to.deep.eq({
-                "DEFAULT_INFERENCE": true,
-                "DEFAULT_VIS_GRAPH_SCHEMA": true,
-                "DEFAULT_SAMEAS": true,
-                "IGNORE_SHARED_QUERIES": false,
-                "EXECUTE_COUNT": true,
-                "COOKIE_CONSENT": true
+            expect(xhr.request.body.appSettings).to.include({
+                DEFAULT_INFERENCE: true,
+                DEFAULT_VIS_GRAPH_SCHEMA: true,
+                DEFAULT_SAMEAS: true,
+                IGNORE_SHARED_QUERIES: false,
+                EXECUTE_COUNT: true
             });
+
+            // Assert COOKIE_CONSENT properties, excluding updatedAt
+            expect(xhr.request.body.appSettings.COOKIE_CONSENT).to.include({
+                policyAccepted: true,
+                statistic: true,
+                thirdParty: true
+            });
+
+            // Assert that updatedAt is present, is a number, and is a reasonable timestamp
+            const updatedAt = xhr.request.body.appSettings.COOKIE_CONSENT.updatedAt;
+            expect(updatedAt).to.exist;
+            expect(updatedAt).to.be.a('number');
+
+            // Check that updatedAt is within 1 hour of the current time
+            const oneHourInMilliseconds = 60 * 60 * 1000;
+            const now = Date.now();
+            expect(updatedAt).to.be.within(now - oneHourInMilliseconds, now + oneHourInMilliseconds);
         });
     });
 });
