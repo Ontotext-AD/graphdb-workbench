@@ -2701,9 +2701,6 @@
             "third_party_tooltip": "Toggle Third-party cookies",
             "third_party_cookies_text": "We use Google Analytics 4 (GA4) cookies to help us recognize unique users and sessions, track interactions, and collect data such as page views, session duration, and engagement. These cookies are managed by Google, meaning we do not control their operation. IP anonymization is enabled by default in GA4, so it cannot store IP addresses or track users personally. No data is shared between GA4 and other Google products, and processing occurs globally, primarily in the USA, without breaching GDPR, as no personal data is collected.",
             "change_cookies": "You can change your cookie preferences at any time in",
-            "change_cookies_location1": "Setup",
-            "change_cookies_location2": "My Settings",
-            "change_cookies_location3": "User settings",
             "change_cookies_location4": "Cookie policy"
         }
     }

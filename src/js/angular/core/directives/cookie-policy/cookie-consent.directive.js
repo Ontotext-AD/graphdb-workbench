@@ -31,7 +31,7 @@ function cookieConsent($jwtAuth, $uibModal, $licenseService, $translate, toastr)
                         appSettings.COOKIE_CONSENT.policyAccepted = true;
                         return $jwtAuth.updateUserData({appSettings, username});
                     })
-                .finally(() => $scope.showCookieConsent = false);
+                    .finally(() => $scope.showCookieConsent = false);
             };
 
             $scope.showCookiePolicy = () => {
@@ -46,24 +46,52 @@ function cookieConsent($jwtAuth, $uibModal, $licenseService, $translate, toastr)
             // Private functions
             // =========================
             const init = () => {
-                $licenseService.checkLicenseStatus().then(() => {
-                    if ($licenseService.isTrackingAllowed()) {
-                        return $jwtAuth.getPrincipal();
-                    }
-                }).then((data) => {
-                    if (!data) {
-                        return;
-                    }
-                    const appSettings = data.appSettings;
-                    appSettings.COOKIE_CONSENT = CookieConsent.fromJSON(appSettings.COOKIE_CONSENT).getConsent();
-                    if (!appSettings.COOKIE_CONSENT.policyAccepted) {
-                        $scope.showCookieConsent = true;
-                    }
-                }).catch((error) => {
-                    const msg = getError(error.data, error.status);
-                    toastr.error(msg, $translate.instant('common.error'));
-                });
+                $licenseService.checkLicenseStatus()
+                    .then(() => {
+                        if ($licenseService.isTrackingAllowed()) {
+                            return checkUserConsentStatus();
+                        }
+                    })
+                    .catch((error) => {
+                        const msg = getError(error.data, error.status);
+                        toastr.error(msg, $translate.instant('common.error'));
+                    });
             };
+
+            const checkUserConsentStatus = () => {
+                return $jwtAuth.getPrincipal()
+                    .then((data) => {
+                        if (!data) {
+                            return;
+                        }
+                        const appSettings = data.appSettings;
+                        appSettings.COOKIE_CONSENT = CookieConsent.fromJSON(appSettings.COOKIE_CONSENT).getConsent();
+                        if (!appSettings.COOKIE_CONSENT.policyAccepted) {
+                            $scope.showCookieConsent = true;
+                        }
+                    })
+                    .catch((error) => {
+                        const msg = getError(error.data, error.status);
+                        toastr.error(msg, $translate.instant('common.error'));
+                    });
+            };
+
+            const securityInit = (event, securityEnabled, userLoggedIn) => {
+                if (userLoggedIn) {
+                    checkUserConsentStatus();
+                } else {
+                    $scope.showCookieConsent = false;
+                }
+            };
+
+            // =========================
+            // Subscriptions
+            // =========================
+            const securityInitListener = $scope.$on('securityInit', securityInit);
+
+            $scope.$on('$destroy', () => {
+                securityInitListener();
+            });
 
             // =========================
             // Initialization
