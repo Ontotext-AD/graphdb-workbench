@@ -2,7 +2,7 @@
 
 <div class="multi-region">
     <div ng-if="topology.state === TopologyState.PRIMARY_NODE">
-        <h4 class="title">{{'cluster_management.cluster_configuration_multi_region.primary_cluster' | translate}}</h4>
+        <h4>{{'cluster_management.cluster_configuration_multi_region.primary_cluster' | translate}}</h4>
         <div class="mb-2" ng-if="isAdmin">
             <button type="button" class="btn btn-primary create-tag-btn"
                     ng-click="add()"
