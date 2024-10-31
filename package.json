@@ -96,7 +96,7 @@
         "ng-file-upload": "^12.2.13",
         "ng-tags-input": "^3.2.0",
         "oclazyload": "^1.1.0",
-        "ontotext-yasgui-web-component": "1.3.19",
+        "ontotext-yasgui-web-component": "1.3.20",
         "shepherd.js": "^11.2.0"
     },
     "resolutions": {
