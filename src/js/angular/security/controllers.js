@@ -4,6 +4,7 @@ import 'angular/core/services/openid-auth.service';
 import 'angular/rest/security.rest.service';
 import {UserUtils, UserRole, UserType} from 'angular/utils/user-utils';
 import 'angular/aclmanagement/directives/custom-role-prefix.directive';
+import {CookiePolicyModalController} from "../core/directives/cookie-policy/cookie-policy-modal-controller";
 
 const SYSTEM_REPO = 'SYSTEM';
 const READ_REPO = 'READ_REPO';
@@ -943,14 +944,8 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
         $scope.showCookiePolicy = () => {
             $uibModal.open({
                 templateUrl: 'js/angular/core/templates/cookie-policy/cookie-policy.html',
-                controller: ['$scope', function ($scope) {
-                    $scope.close = () => {
-                        $scope.$close();
-                    };
-                }],
-                backdrop: 'static',
-                windowClass: 'cookie-policy-modal',
-                keyboard: false
+                controller: CookiePolicyModalController,
+                windowClass: 'cookie-policy-modal'
             });
         };
 
