@@ -274,6 +274,7 @@ function SimilarityCtrl(
     };
 
     const init = () => {
+        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
         const activeRepository = $scope.getActiveRepository();
         if (activeRepository && $scope.activeRepository !== activeRepository) {
             $scope.canEditRepo = $scope.canWriteActiveRepo();
