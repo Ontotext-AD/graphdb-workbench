@@ -3,6 +3,8 @@ import {EnvironmentStubs} from "../../stubs/environment-stubs";
 import {SecurityStubs} from "../../stubs/security-stubs";
 import {SettingsSteps} from "../../steps/setup/settings-steps";
 
+Cypress.env('set_default_user_data', false);
+
 describe('Cookie policy', () => {
     beforeEach(() => {
         cy.setDefaultUserData(false);
