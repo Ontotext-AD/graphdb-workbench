@@ -1,13 +1,14 @@
+import 'angular/core/services/workbench-context.service';
 import {decodeHTML} from "../../../../../app";
 import {mapUriAsNtripleAutocompleteResponse} from "../../../rest/mappers/autocomplete-mapper";
 
 angular
-    .module('graphdb.framework.core.directives.autocomplete', [])
+    .module('graphdb.framework.core.directives.autocomplete', ['graphdb.core.services.workbench-context'])
     .directive('autocomplete', autocomplete);
 
-autocomplete.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$q', '$sce', '$repositories', '$translate', '$timeout'];
+autocomplete.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$q', '$sce', '$repositories', '$translate', '$timeout', 'WorkbenchContextService'];
 
-function autocomplete($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $q, $sce, $repositories, $translate, $timeout) {
+function autocomplete($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $q, $sce, $repositories, $translate, $timeout, WorkbenchContextService) {
     return {
         restrict: 'E',
         require: 'ngModel',
@@ -423,9 +424,8 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
             }
         };
 
-        // TODO maybe we can remove it
-        const onAutocompleteEnabledChanged = () => {
-            element.autoCompleteStatus = !!$scope.isAutocompleteEnabled;
+        const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
+            element.autoCompleteStatus = !!autocompleteEnabled;
             // trigger onChange only if the value was manually populated by the user
             if ($scope.searchInput !== '' && !$scope.ngModel) {
                 $scope.onChange();
@@ -448,8 +448,7 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
         // Watchers
         //
         const subscriptions = [];
-        // TODO maybe we can remove it
-        subscriptions.push($scope.$watch('isAutocompleteEnabled', onAutocompleteEnabledChanged));
+        subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
         subscriptions.push($scope.$watch('searchInput', ngModelUpdater));
         subscriptions.push($scope.$on('$destroy', unsubscribeListeners));
 

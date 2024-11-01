@@ -1,7 +1,6 @@
 import 'angular/utils/local-storage-adapter';
 import 'angular/core/services/workbench-context.service';
 import {decodeHTML} from "../../../app";
-import {NamespacesListModel} from "../models/namespaces/namespaces-list";
 
 angular
     .module('graphdb.framework.core.directives', [
@@ -351,7 +350,6 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 LocalStorageAdapter.remove(LSKeys.RDF_RESOURCE_DESCRIPTION);
             };
 
-            // TODO maybe we can remove it
             const onSelectedRepositoryNamespacesUpdated = (repositoryNamespaces) => {
                 $scope.getNamespacesPromise = repositoryNamespaces.namespaces;
             };
