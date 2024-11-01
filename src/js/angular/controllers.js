@@ -15,11 +15,11 @@ import 'angular/core/services/license.service';
 import 'angular/core/services/installation-cookie.service';
 import 'angular/core/services/workbench-context.service';
 import 'angular/core/services/rdf4j-repositories.service';
+import 'angular/core/services/autocomplete.service';
 import {UserRole} from 'angular/utils/user-utils';
 import 'angular/utils/local-storage-adapter';
 import 'angular/utils/workbench-settings-storage-service';
 import 'angular/utils/uri-utils';
-import 'angular/core/services/autocomplete-status.service';
 import {decodeHTML} from "../../app";
 import './guides/guides.service';
 import './guides/directives';
@@ -51,13 +51,13 @@ angular
         'graphdb.framework.rest.rdf4j.repositories.service',
         'graphdb.framework.utils.localstorageadapter',
         'graphdb.framework.utils.workbenchsettingsstorageservice',
-        'graphdb.framework.core.services.autocompleteStatus',
         'graphdb.framework.utils.uriutils',
         'graphdb.framework.guides.directives',
         'graphdb.framework.guides.services',
         'pageslide-directive',
         'graphdb.core.services.workbench-context',
         'graphdb.framework.rdf4j.repositories.service',
+        'graphdb.framework.core.services.autocomplete',
         'rzSlider'
     ])
     .controller('mainCtrl', mainCtrl)
@@ -137,12 +137,12 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
 mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$licenseService', '$rootScope',
     'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService',
     'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils', '$q', 'GuidesService', '$route', '$window', 'AuthTokenService',
-    'WorkbenchContextService', 'RDF4JRepositoriesService', 'AutocompleteRestService'];
+    'WorkbenchContextService', 'RDF4JRepositoriesService', 'AutocompleteService'];
 
 function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $licenseService, $rootScope,
                   productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService,
                   MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q, GuidesService, $route, $window, AuthTokenService,
-                  WorkbenchContextService, RDF4JRepositoriesService, AutocompleteRestService) {
+                  WorkbenchContextService, RDF4JRepositoriesService, AutocompleteService) {
 
     // =========================
     // Public variables
@@ -973,10 +973,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     });
 
     const updateAutocompleteStatus = () => {
-        AutocompleteRestService.checkAutocompleteStatus()
-            .then((response) => {
-                WorkbenchContextService.setAutocompleteEnabled(response.data);
-                LocalStorageAdapter.set(LSKeys.AUTOCOMPLETE_ENABLED, response.data);
+        AutocompleteService.checkAutocompleteStatus()
+            .then((autocompleteEnabled) => {
+                WorkbenchContextService.setAutocompleteEnabled(autocompleteEnabled);
             });
     };
 
