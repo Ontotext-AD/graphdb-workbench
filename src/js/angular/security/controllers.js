@@ -2,15 +2,11 @@ import 'angular/core/services';
 import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/openid-auth.service';
 import 'angular/rest/security.rest.service';
-import {UserUtils, UserRole, UserType} from 'angular/utils/user-utils';
+import {UserRole, UserType} from 'angular/utils/user-utils';
 import 'angular/aclmanagement/directives/custom-role-prefix.directive';
 import {CookiePolicyModalController} from "../core/directives/cookie-policy/cookie-policy-modal-controller";
-
-const SYSTEM_REPO = 'SYSTEM';
-const READ_REPO = 'READ_REPO';
-const READ_REPO_PREFIX = 'READ_REPO_';
-const WRITE_REPO = 'WRITE_REPO';
-const WRITE_REPO_PREFIX = 'WRITE_REPO_';
+import {READ_REPO, READ_REPO_PREFIX, SYSTEM_REPO, WRITE_REPO, WRITE_REPO_PREFIX} from "./services/constants";
+import {createUniqueKey, parseAuthorities} from "./services/authorities-util";
 
 const modules = [
     'ngCookies',
@@ -23,99 +19,10 @@ const modules = [
     'ngTagsInput'
 ];
 
-const createUniqueKey = function (repository) {
-    if (repository.location) {
-        return `${repository.id}@${repository.location}`;
-    }
-    return repository.id;
-};
+const securityModule = angular.module('graphdb.framework.security.controllers', modules);
 
-const securityCtrl = angular.module('graphdb.framework.security.controllers', modules);
-
-const setGrantedAuthorities = function ($scope) {
-    function pushAuthority() {
-        for (let i = 0; i < arguments.length; i++) {
-            const authority = arguments[i];
-            if (_.indexOf($scope.user.grantedAuthorities, authority) < 0) {
-                $scope.user.grantedAuthorities.push(authority);
-            }
-        }
-    }
-
-    $scope.user.grantedAuthorities = [];
-
-    $scope.repositoryCheckError = true;
-    if ($scope.userType === UserType.ADMIN) {
-        $scope.repositoryCheckError = false;
-        pushAuthority(UserRole.ROLE_ADMIN);
-    } else if ($scope.userType === UserType.REPO_MANAGER) {
-        $scope.repositoryCheckError = false;
-        pushAuthority(UserRole.ROLE_REPO_MANAGER);
-    } else {
-        pushAuthority(UserRole.ROLE_USER);
-        for (const index in $scope.grantedAuthorities.WRITE_REPO) {
-            if ($scope.grantedAuthorities.WRITE_REPO[index]) {
-                $scope.repositoryCheckError = false;
-                pushAuthority(WRITE_REPO_PREFIX + index, READ_REPO_PREFIX + index);
-            }
-        }
-        for (const index in $scope.grantedAuthorities.READ_REPO) {
-            if ($scope.grantedAuthorities.READ_REPO[index]) {
-                $scope.repositoryCheckError = false;
-                pushAuthority(READ_REPO_PREFIX + index);
-            }
-        }
-    }
-    if ($scope.customRoles) {
-        $scope.customRoles.forEach((role) => pushAuthority('CUSTOM_' + role));
-    }
-};
-
-const parseAuthorities = function (authorities) {
-    let userType = UserType.USER;
-    const grantedAuthorities = {
-        [READ_REPO]: {},
-        [WRITE_REPO]: {}
-    };
-    const repositories = {};
-    const customRoles = [];
-    for (let i = 0; i < authorities.length; i++) {
-        const role = authorities[i];
-        if (role === UserRole.ROLE_ADMIN) {
-            userType = UserType.ADMIN;
-        } else if (role === UserRole.ROLE_REPO_MANAGER) {
-            if (userType !== UserType.ADMIN) {
-                userType = UserType.REPO_MANAGER;
-            }
-        } else if (role === UserRole.ROLE_USER) {
-            userType = UserType.USER;
-        } else if (role.indexOf('READ_REPO_') === 0 || role.indexOf('WRITE_REPO_') === 0) {
-            const index = role.indexOf('_', role.indexOf('_') + 1);
-            const op = role.substr(0, index);
-            const repo = role.substr(index + 1);
-            grantedAuthorities[op][repo] = true;
-            repositories[repo] = repositories[repo] || {};
-            if (op === READ_REPO) {
-                repositories[repo].read = true;
-            } else if (op === WRITE_REPO) {
-                repositories[repo].write = true;
-            }
-        } else if (role.indexOf('CUSTOM_') === 0) {
-            customRoles.push(role.substr('CUSTOM_'.length));
-        }
-    }
-
-    return {
-        userType: userType,
-        userTypeDescription: UserUtils.getUserRoleName(userType),
-        grantedAuthorities: grantedAuthorities,
-        repositories: repositories,
-        customRoles: customRoles
-    };
-};
-
-securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$openIDAuth', '$location', '$rootScope', '$translate', 'TrackingService',
-    function ($scope, $http, toastr, $jwtAuth, $openIDAuth, $location, $rootScope, $translate, TrackingService) {
+securityModule.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$openIDAuth', '$location', '$rootScope', '$translate',
+    function ($scope, $http, toastr, $jwtAuth, $openIDAuth, $location, $rootScope, $translate) {
         $scope.username = '';
         $scope.password = '';
 
@@ -175,7 +82,7 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
         };
     }]);
 
-securityCtrl.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService', 'SecurityRestService', '$translate',
+securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService', 'SecurityRestService', '$translate',
     function ($scope, $uibModal, toastr, $window, $jwtAuth, $timeout, ModalService, SecurityRestService, $translate) {
 
         $scope.loader = true;
@@ -317,7 +224,7 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window'
         };
     }]);
 
-securityCtrl.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$uibModalInstance', 'data', '$rootScope',
+securityModule.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$uibModalInstance', 'data', '$rootScope',
     function ($scope, $http, $uibModalInstance, data, $rootScope) {
         $scope.grantedAuthorities = data.defaultAuthorities();
         $scope.appSettings = data.appSettings;
@@ -362,7 +269,7 @@ securityCtrl.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$uibModal
         };
     }]);
 
-securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$translate', 'passwordPlaceholder',
+securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$translate', 'passwordPlaceholder',
     function ($rootScope, $scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $translate, passwordPlaceholder) {
         $rootScope.$on('$translateChangeSuccess', function () {
             $scope.passwordPlaceholder = $translate.instant(passwordPlaceholder);
@@ -383,7 +290,42 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
         };
 
         $scope.setGrantedAuthorities = function () {
-            setGrantedAuthorities($scope);
+            function pushAuthority() {
+                for (let i = 0; i < arguments.length; i++) {
+                    const authority = arguments[i];
+                    if (_.indexOf($scope.user.grantedAuthorities, authority) < 0) {
+                        $scope.user.grantedAuthorities.push(authority);
+                    }
+                }
+            }
+
+            $scope.user.grantedAuthorities = [];
+
+            $scope.repositoryCheckError = true;
+            if ($scope.userType === UserType.ADMIN) {
+                $scope.repositoryCheckError = false;
+                pushAuthority(UserRole.ROLE_ADMIN);
+            } else if ($scope.userType === UserType.REPO_MANAGER) {
+                $scope.repositoryCheckError = false;
+                pushAuthority(UserRole.ROLE_REPO_MANAGER);
+            } else {
+                pushAuthority(UserRole.ROLE_USER);
+                for (const index in $scope.grantedAuthorities.WRITE_REPO) {
+                    if ($scope.grantedAuthorities.WRITE_REPO[index]) {
+                        $scope.repositoryCheckError = false;
+                        pushAuthority(WRITE_REPO_PREFIX + index, READ_REPO_PREFIX + index);
+                    }
+                }
+                for (const index in $scope.grantedAuthorities.READ_REPO) {
+                    if ($scope.grantedAuthorities.READ_REPO[index]) {
+                        $scope.repositoryCheckError = false;
+                        pushAuthority(READ_REPO_PREFIX + index);
+                    }
+                }
+            }
+            if ($scope.customRoles) {
+                $scope.customRoles.forEach((role) => pushAuthority('CUSTOM_' + role));
+            }
         };
 
         $scope.$watch('userType', function () {
@@ -544,7 +486,7 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
         };
     }]);
 
-securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService', '$translate',
+securityModule.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService', '$translate',
     function ($scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $controller, SecurityRestService, ModalService, $translate) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.password.placeholder'}));
@@ -653,7 +595,7 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
         };
     }]);
 
-securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window', '$routeParams', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService', '$translate',
+securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window', '$routeParams', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService', '$translate',
     function ($scope, $http, toastr, $window, $routeParams, $timeout, $location, $jwtAuth, $controller, SecurityRestService, ModalService, $translate) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
@@ -752,7 +694,7 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
         };
     }]);
 
-securityCtrl.controller('RolesMappingController', ['$scope', 'toastr', 'SecurityRestService', '$translate',
+securityModule.controller('RolesMappingController', ['$scope', 'toastr', 'SecurityRestService', '$translate',
     function ($scope, toastr, SecurityRestService, $translate) {
 
         $scope.debugMapping = function (role, mapping) {
@@ -791,207 +733,7 @@ securityCtrl.controller('RolesMappingController', ['$scope', 'toastr', 'Security
         });
     }]);
 
-securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '$window', '$timeout', '$jwtAuth', '$rootScope', '$controller', 'SecurityRestService', 'ModalService', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', '$q', '$uibModal', '$licenseService', 'TrackingService',
-    function ($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityRestService, ModalService, $translate, ThemeService, WorkbenchSettingsStorageService, $q, $uibModal, $licenseService, TrackingService) {
-
-        angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
-
-        /**
-         * If the cookie policy banner should be visible or not.
-         * @type {boolean}
-         */
-        $scope.showCookiePolicyLink = false;
-        $scope.themes = ThemeService.getThemes();
-        $scope.mode = 'settings';
-        $scope.showWorkbenchSettings = true;
-        /** @type {WorkbenchSettingsModel} */
-        $scope.workbenchSettings = WorkbenchSettingsStorageService.getWorkbenchSettings();
-        $scope.selectedThemeMode = $scope.workbenchSettings.mode;
-        $scope.saveButtonText = $translate.instant('common.save.btn');
-        $scope.pageTitle = $translate.instant('view.settings.title');
-        $scope.passwordPlaceholder = $translate.instant('security.new.password');
-        $scope.grantedAuthorities = {
-            [READ_REPO]: {},
-            [WRITE_REPO]: {}
-        };
-        $scope.loader = false;
-        /** @type {ThemeModel} */
-        $scope.selectedTheme = ThemeService.getTheme();
-        $scope.showCookiePolicyLink = false;
-
-        $scope.hasEditRestrictions = function () {
-            return true;
-        };
-
-        $scope.isUser = function () {
-            return $scope.userType === UserType.USER;
-        };
-
-        $scope.goBack = function () {
-            const timer = $timeout(function () {
-                $window.history.back();
-            }, 100);
-            $scope.$on('$destroy', function () {
-                $timeout.cancel(timer);
-            });
-        };
-
-        // Wrapped in a scope function for ease of testing
-        $scope.getPrincipal = function () {
-            return $jwtAuth.getPrincipal()
-                .then((principal) => {
-                    $scope.currentUserData = _.cloneDeep(principal);
-                });
-        };
-
-        $scope.getPrincipal().then(() => {
-            $scope.redirectAdmin();
-            initUserData($scope);
-        });
-
-        $scope.updateCurrentUserData = function () {
-            // Using $q.when to proper set values in view
-            $q.when($jwtAuth.getPrincipal())
-                .then((principal) => _.assign(principal, $scope.userData));
-        };
-
-        //call it as a function so I can make test on it
-        $scope.redirectAdmin = function () {
-            if (!$scope.currentUserData) {
-                $rootScope.redirectToLogin();
-            }
-        };
-
-        const initUserData = function (scope) {
-            // Copy needed so that Cancel would work correctly, need to call updateCurrentUserData on OK
-            scope.userData = _.cloneDeep(scope.currentUserData);
-            scope.user = {username: scope.userData.username};
-            scope.user.password = '';
-            scope.user.confirmpassword = '';
-            scope.user.external = scope.userData.external;
-            scope.user.appSettings = scope.userData.appSettings;
-            // For backward compatibility
-            if (scope.user.appSettings['DEFAULT_VIS_GRAPH_SCHEMA'] === undefined) {
-                scope.user.appSettings['DEFAULT_VIS_GRAPH_SCHEMA'] = true;
-            }
-
-            const pa = parseAuthorities(scope.userData.authorities);
-            $scope.userType = pa.userType;
-            $scope.grantedAuthorities = pa.grantedAuthorities;
-            $scope.customRoles = pa.customRoles;
-        };
-
-        $scope.submit = function () {
-            if ($scope.noPassword && $scope.userType === UserType.ADMIN) {
-                ModalService.openSimpleModal({
-                    title: $translate.instant('security.save.admin.settings'),
-                    message: $translate.instant('security.admin.pass.unset'),
-                    warning: true
-                }).result.then(function () {
-                    $scope.updateUser();
-                });
-            } else {
-                $scope.updateUser();
-            }
-        };
-
-        $scope.updateUserHttp = function () {
-            $scope.loader = true;
-            SecurityRestService.updateUserData({
-                username: $scope.user.username,
-                pass: ($scope.noPassword) ? '' : $scope.user.password || undefined,
-                appSettings: $scope.user.appSettings
-            }).success(function () {
-                $scope.updateCurrentUserData();
-                toastr.success($translate.instant('security.user.updated', {name: $scope.user.username}));
-                const timer = $timeout(function () {
-                    $scope.loader = false;
-                    $window.history.back();
-                }, 2000);
-                WorkbenchSettingsStorageService.saveWorkbenchSettings($scope.workbenchSettings);
-                $scope.$on('$destroy', function () {
-                    $timeout.cancel(timer);
-                });
-            }).error(function (data) {
-                const msg = getError(data);
-                $scope.loader = false;
-                toastr.error(msg, $translate.instant('common.error'));
-            });
-        };
-
-        $scope.updateUser = function () {
-            if (!$scope.validateForm()) {
-                return false;
-            }
-            ThemeService.toggleThemeMode($scope.selectedThemeMode);
-            $scope.updateUserHttp();
-        };
-
-        $scope.validateForm = function () {
-            return $scope.validatePassword();
-        };
-
-        $scope.setThemeMode = function () {
-            $scope.selectedThemeMode = $scope.workbenchSettings.mode;
-        };
-
-        /**
-         * @param {{name: string, label: string}} theme
-         */
-        $scope.setTheme = (theme) => {
-            $scope.selectedTheme = theme;
-            $scope.workbenchSettings.theme = theme.name;
-            ThemeService.applyTheme(theme.name);
-        };
-
-        const showCookiePolicyLink = () => {
-            $licenseService.checkLicenseStatus().then(() => {
-                $scope.showCookiePolicyLink = TrackingService.isTrackingAllowed();
-            });
-        };
-
-        $scope.showCookiePolicy = ($event) => {
-            // The button that triggers this handler is inside a form which has a submit property,
-            // and we need to prevent that because it leads to a redirect to the home page.
-            $event.preventDefault();
-
-            $uibModal.open({
-                templateUrl: 'js/angular/core/templates/cookie-policy/cookie-policy.html',
-                controller: CookiePolicyModalController,
-                backdrop: 'static',
-                keyboard: false,
-                windowClass: 'cookie-policy-modal'
-            })
-                // If the modal returns `shouldReload` as true, we reload the page.
-                // Reloading is crucial here due to potential memory leaks that arise from dynamically
-                // adding and removing Google Tag Manager (GTM) scripts based on the user's consent choice.
-                // See the comments within `CookiePolicyModalController`.
-                .result.then((shouldReload) => {
-                if (shouldReload) {
-                    $window.location.reload();
-                }
-            });
-        };
-
-        $scope.$on('$destroy', function () {
-            const workbenchSettings = WorkbenchSettingsStorageService.getWorkbenchSettings();
-            ThemeService.toggleThemeMode(workbenchSettings.mode);
-        });
-
-        const initView = () => {
-            if (!$scope.workbenchSettings) {
-                $scope.workbenchSettings = {
-                    theme: 'light'
-                };
-            }
-            $scope.setThemeMode();
-            showCookiePolicyLink();
-        };
-
-        initView();
-    }]);
-
-securityCtrl.controller('DeleteUserCtrl', ['$scope', '$uibModalInstance', 'username', function ($scope, $uibModalInstance, username) {
+securityModule.controller('DeleteUserCtrl', ['$scope', '$uibModalInstance', 'username', function ($scope, $uibModalInstance, username) {
     $scope.username = username;
 
     $scope.ok = function () {
