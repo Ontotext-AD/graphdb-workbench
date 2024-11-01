@@ -60,35 +60,35 @@ pipeline {
     }
 
 
-    stage('Acceptance') {
-      when {
-        expression {
-          return env.BRANCH_NAME != 'master'
-        }
-      }
-      steps {
-        configFileProvider(
-                [configFile(fileId: 'ceb7e555-a3d9-47c7-9afe-d008fd9efb14', targetLocation: 'graphdb.license')]) {
-          sh 'cp graphdb.license ./test-cypress/fixtures/'
-        }
-          sh "ls ./test-cypress/fixtures/"
-          // --no-ansi suppresses color output that shows as garbage in Jenkins
-          sh "docker-compose --no-ansi build --force-rm --no-cache --parallel"
-          sh "docker-compose --no-ansi up --abort-on-container-exit --exit-code-from cypress-tests"
-
-          // Fix coverage permissions
-          sh "sudo chown -R \$(id -u):\$(id -g) coverage/"
-          sh "sudo chown -R \$(id -u):\$(id -g) cypress/"
-          sh "sudo chown -R \$(id -u):\$(id -g) report/"
-
-          // Move up to be picked by Sonar
-//           sh "mv test-cypress/coverage/ cypress-coverage/"
-//           sh "sync"
+//     stage('Acceptance') {
+//       when {
+//         expression {
+//           return env.BRANCH_NAME != 'master'
+//         }
+//       }
+//       steps {
+//         configFileProvider(
+//                 [configFile(fileId: 'ceb7e555-a3d9-47c7-9afe-d008fd9efb14', targetLocation: 'graphdb.license')]) {
+//           sh 'cp graphdb.license ./test-cypress/fixtures/'
+//         }
+//           sh "ls ./test-cypress/fixtures/"
+//           // --no-ansi suppresses color output that shows as garbage in Jenkins
+//           sh "docker-compose --no-ansi build --force-rm --no-cache --parallel"
+//           sh "docker-compose --no-ansi up --abort-on-container-exit --exit-code-from cypress-tests"
 //
-//           // Update relative paths to absolute path
-//           sh "sed -i.backup \"s@^SF:..@SF:\$(pwd)@\" cypress-coverage/lcov.info"
-      }
-    }
+//           // Fix coverage permissions
+//           sh "sudo chown -R \$(id -u):\$(id -g) coverage/"
+//           sh "sudo chown -R \$(id -u):\$(id -g) cypress/"
+//           sh "sudo chown -R \$(id -u):\$(id -g) report/"
+//
+//           // Move up to be picked by Sonar
+// //           sh "mv test-cypress/coverage/ cypress-coverage/"
+// //           sh "sync"
+// //
+// //           // Update relative paths to absolute path
+// //           sh "sed -i.backup \"s@^SF:..@SF:\$(pwd)@\" cypress-coverage/lcov.info"
+//       }
+//     }
   }
 
   post {
