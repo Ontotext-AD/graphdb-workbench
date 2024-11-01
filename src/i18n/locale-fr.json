@@ -1886,7 +1886,7 @@
     "common.confirm.save": "Confirmer enregistrer",
     "common.cancel.btn": "Annuler",
     "common.yes.btn": "Oui",
-    "common.ok.btn": "d'accord",
+    "common.ok.btn": "D'accord",
     "common.close.btn": "Fermer",
     "common.error": "Erreur",
     "common.warning": "Avertissement",
@@ -2680,7 +2680,7 @@
     "yasgui.tab_list.close_tab.confirmation.not_query_update.message": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez 1 mise à jour en cours.</div><div>Êtes-vous sûr de vouloir fermer cet onglet de requête ?</div>",
     "yasgui.tab_list.close_tab.confirmation.query_non_updates.message": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez 1 requête en cours, qui sera annulée.</div><div>Êtes-vous sûr de vouloir fermer cet onglet de requête ?</div>",
     "cookie" : {
-        "cookie_consent": "Nous pouvons utiliser des cookies pour nous aider à améliorer GraphDB et développer de meilleures fonctionnalités. Aucune information personnelle ou sensible n'est collectée. En cliquant sur « OK », vous consentez à notre",
+        "cookie_consent": "Nous pouvons utiliser des cookies pour nous aider à améliorer GraphDB et développer de meilleures fonctionnalités. Aucune information personnelle ou sensible n'est collectée. En cliquant sur « {{'common.ok.btn' | translate}} », vous consentez à notre",
         "cookie_policy_url_label": "politique de cookies",
         "policy": {
             "title": "Politique de cookies",
