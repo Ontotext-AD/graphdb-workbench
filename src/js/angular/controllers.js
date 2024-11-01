@@ -173,15 +173,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     }, 0, {trailing: true});
 
-    const deregisterMenuWatcher = $scope.$watch(function () {
-        return $scope.isMenuCollapsedOnLoad();
-    }, function (newValue, oldValue) {
-        if (newValue !== oldValue || typeof newValue === 'undefined') {
-            // Trigger debounced check on both collapse and expand
-            $scope.checkMenu();
-        }
-    });
-
     $scope.showLabel = function (item) {
         return item.children ? true : !$scope.menuCollapsed;
     };
@@ -192,8 +183,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         $scope.previousYear = 2002; // Peio says this is 2002 or 2003, in other words the year of the earliest file.
     };
 
+    // TODO Move to init
     setYears();
 
+    // TODO Move to init
     $('#repositorySelectDropdown').on('hide.bs.dropdown', function (e) {
         if (GuidesService.isActive()) {
             if ($('#repositorySelectDropdown.autoCloseOff').length > 0) {
@@ -202,53 +195,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     });
 
-    $scope.$on("$routeChangeSuccess", function ($event, current, previous) {
-        $scope.clicked = false;
-        $scope.hideRdfResourceSearch = false;
-        $('.menu-element-root').removeClass('active');
-        $timeout(function () {
-            $('.menu-element.open a.menu-element-root').addClass('active');
-            $('.main-menu.collapsed .menu-element.open .menu-element-root').addClass('active');
-        }, 400);
-        if (previous) {
-            // Recheck license status on navigation within the workbench (security is already inited)
-            $licenseService.checkLicenseStatus();
-        }
-    });
 
     $scope.resumeGuide = function () {
         $rootScope.$broadcast('guideResume');
     };
-
-    $rootScope.$on('guideReset', function () {
-        $scope.guidePaused = false;
-        $rootScope.guidePaused = false;
-    });
-
-    $rootScope.$on('guideStarted', function () {
-        $scope.guidePaused = false;
-        $rootScope.guidePaused = false;
-    });
-
-    $rootScope.$on('guidePaused', function () {
-        $scope.guidePaused = true;
-        $rootScope.guidePaused = true;
-    });
-
-    $rootScope.$on('$translateChangeSuccess', function () {
-        $scope.menu.forEach(function (menu) {
-            menu.label = $translate.instant(menu.labelKey);
-            if (menu.children) {
-                menu.children.forEach(function (child) {
-                    child.label = $translate.instant(child.labelKey);
-                });
-            }
-        });
-
-        $rootScope.helpInfo = $sce.trustAsHtml(decodeHTML($translate.instant($rootScope.helpInfo)));
-        $rootScope.title = decodeHTML($translate.instant($rootScope.title));
-        $scope.initTutorial();
-    });
 
     //Copy to clipboard popover options
     $scope.copyToClipboard = function (uri) {
@@ -266,15 +216,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.getLocationFromUri = function (location) {
         return $repositories.getLocationFromUri(location);
     };
-
-    $scope.$on("$locationChangeSuccess", function () {
-        $scope.showFooter = true;
-    });
-
-    $scope.$on("repositoryIsSet", function () {
-        $scope.setRestricted();
-        LocalStorageAdapter.clearClassHieararchyState();
-    });
 
     $scope.graphdbVersion =
         $scope.engineVersion = productInfo.productVersion;
@@ -327,6 +268,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     };
 
+    // TODO Move to init
     $('body').bind('click', function (e) {
         if (!$(e.target).parents(".main-menu").length && $('.main-menu').hasClass('collapsed')) {
             $scope.clicked = false;
@@ -350,6 +292,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return false;
     };
 
+    // TODO Move to init
     if ($location.path() === '/') {
         $scope.selected = -1;
     } else {
@@ -552,20 +495,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             }
         }
     };
-
-    /**
-     * Add a listener for the browser's local store change event. This event will be fired in all tabs of the current domain
-     * EXPECT FOR THE ONE where the local store changed.
-     */
-    window.addEventListener('storage', localStoreChangeHandler);
-
-    $scope.$on('$destroy', () => {
-        window.removeEventListener('storage', localStoreChangeHandler);
-        deregisterMenuWatcher();
-        if ($scope.checkMenu) {
-            $timeout.cancel($scope.checkMenu);
-        }
-    });
 
     $scope.isAdmin = function () {
         return $scope.hasRole(UserRole.ROLE_ADMIN);
@@ -816,47 +745,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     };
 
-    $scope.$on('onToggleNavWidth', function (e, isCollapsed) {
-        $scope.menuState = isCollapsed;
-        if (isCollapsed) {
-            LocalStorageAdapter.set(LSKeys.MENU_STATE, 'collapsedMenu');
-        } else {
-            LocalStorageAdapter.set(LSKeys.MENU_STATE, 'expandedMenu');
-        }
-        if ($scope.tutorialState && $location.path() === '/') {
-            const withOfParentElm = $(".pages-wrapper")[0].offsetWidth + 200;
-            $timeout(function () {
-                const $pageSlider = $(".pages-wrapper .page-slide");
-                $pageSlider.css("left", withOfParentElm + "px");
-                $($pageSlider[$scope.activePage]).css("left", 0 + "px");
-            }, 50);
-        }
-    });
-
+    // TODO: Move to init
     if ($jwtAuth.securityInitialized) {
         $scope.getSavedQueries();
     }
-
-    $scope.$on('securityInit', function (scope, securityEnabled, userLoggedIn, freeAccess) {
-        $scope.securityEnabled = securityEnabled;
-        $scope.userLoggedIn = userLoggedIn;
-
-        // Handles all cases of pages accessible without being logged and without having free access ON
-        if (securityEnabled && !userLoggedIn && !freeAccess) {
-            if ($location.path() !== '/login') {
-                $rootScope.redirectToLogin();
-            }
-        } else {
-            setPrincipal()
-                .then(() => {
-                    // Added timeout because, when the 'securityInit' event is fired after user logged-in.
-                    // The authentication headers are still not set correctly when a request that loads saved queries is called and the $unauthorizedInterceptor rejects the request.
-                    // There are many places where setTimeout is used, see $jwtAuth#authenticate and $jwtAuth#setAuthHeaders.
-                    setTimeout(() => $scope.getSavedQueries(), 500);
-                });
-            $licenseService.checkLicenseStatus();
-        }
-    });
 
     $scope.getProductType = function () {
         return $licenseService.productType();
@@ -889,11 +781,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $licenseService.isLicenseHardcoded();
     };
 
-
     $scope.getProductTypeHuman = function () {
         return $licenseService.productTypeHuman();
     };
-
 
     $scope.getHumanReadableSeconds = function (s, preciseSeconds) {
         const days = Math.floor(s / 86400);
@@ -947,6 +837,124 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
         return $filter('date')(time, ("'" + $translate.instant('timestamp.on') + "' yyyy-MM-dd '" + $translate.instant('timestamp.at') + "' HH:mm"));
     };
+
+    // =================================
+    // Subscriptions and event handlers
+    // =================================
+
+    const deregisterMenuWatcher = $scope.$watch(function () {
+        return $scope.isMenuCollapsedOnLoad();
+    }, function (newValue, oldValue) {
+        if (newValue !== oldValue || typeof newValue === 'undefined') {
+            // Trigger debounced check on both collapse and expand
+            $scope.checkMenu();
+        }
+    });
+
+    $scope.$on("$routeChangeSuccess", function ($event, current, previous) {
+        $scope.clicked = false;
+        $scope.hideRdfResourceSearch = false;
+        $('.menu-element-root').removeClass('active');
+        $timeout(function () {
+            $('.menu-element.open a.menu-element-root').addClass('active');
+            $('.main-menu.collapsed .menu-element.open .menu-element-root').addClass('active');
+        }, 400);
+        if (previous) {
+            // Recheck license status on navigation within the workbench (security is already inited)
+            $licenseService.checkLicenseStatus();
+        }
+    });
+
+    $rootScope.$on('guideReset', function () {
+        $scope.guidePaused = false;
+        $rootScope.guidePaused = false;
+    });
+
+    $rootScope.$on('guideStarted', function () {
+        $scope.guidePaused = false;
+        $rootScope.guidePaused = false;
+    });
+
+    $rootScope.$on('guidePaused', function () {
+        $scope.guidePaused = true;
+        $rootScope.guidePaused = true;
+    });
+
+    $rootScope.$on('$translateChangeSuccess', function () {
+        $scope.menu.forEach(function (menu) {
+            menu.label = $translate.instant(menu.labelKey);
+            if (menu.children) {
+                menu.children.forEach(function (child) {
+                    child.label = $translate.instant(child.labelKey);
+                });
+            }
+        });
+
+        $rootScope.helpInfo = $sce.trustAsHtml(decodeHTML($translate.instant($rootScope.helpInfo)));
+        $rootScope.title = decodeHTML($translate.instant($rootScope.title));
+        $scope.initTutorial();
+    });
+
+    $scope.$on("$locationChangeSuccess", function () {
+        $scope.showFooter = true;
+    });
+
+    $scope.$on("repositoryIsSet", function () {
+        $scope.setRestricted();
+        LocalStorageAdapter.clearClassHieararchyState();
+    });
+
+    /**
+     * Add a listener for the browser's local store change event. This event will be fired in all tabs of the current domain
+     * EXPECT FOR THE ONE where the local store changed.
+     */
+    window.addEventListener('storage', localStoreChangeHandler);
+
+    $scope.$on('$destroy', () => {
+        window.removeEventListener('storage', localStoreChangeHandler);
+        deregisterMenuWatcher();
+        if ($scope.checkMenu) {
+            $timeout.cancel($scope.checkMenu);
+        }
+    });
+
+    $scope.$on('onToggleNavWidth', function (e, isCollapsed) {
+        $scope.menuState = isCollapsed;
+        if (isCollapsed) {
+            LocalStorageAdapter.set(LSKeys.MENU_STATE, 'collapsedMenu');
+        } else {
+            LocalStorageAdapter.set(LSKeys.MENU_STATE, 'expandedMenu');
+        }
+        if ($scope.tutorialState && $location.path() === '/') {
+            const withOfParentElm = $(".pages-wrapper")[0].offsetWidth + 200;
+            $timeout(function () {
+                const $pageSlider = $(".pages-wrapper .page-slide");
+                $pageSlider.css("left", withOfParentElm + "px");
+                $($pageSlider[$scope.activePage]).css("left", 0 + "px");
+            }, 50);
+        }
+    });
+
+    $scope.$on('securityInit', function (scope, securityEnabled, userLoggedIn, freeAccess) {
+        $scope.securityEnabled = securityEnabled;
+        $scope.userLoggedIn = userLoggedIn;
+
+        // Handles all cases of pages accessible without being logged and without having free access ON
+        if (securityEnabled && !userLoggedIn && !freeAccess) {
+            if ($location.path() !== '/login') {
+                $rootScope.redirectToLogin();
+            }
+        } else {
+            setPrincipal()
+                .then(() => {
+                    // Added timeout because, when the 'securityInit' event is fired after user logged-in.
+                    // The authentication headers are still not set correctly when a request that loads saved queries is called and the $unauthorizedInterceptor rejects the request.
+                    // There are many places where setTimeout is used, see $jwtAuth#authenticate and $jwtAuth#setAuthHeaders.
+                    setTimeout(() => $scope.getSavedQueries(), 500);
+                });
+            $licenseService.checkLicenseStatus();
+        }
+    });
 }
 
 repositorySizeCtrl.$inject = ['$scope', '$http', 'RepositoriesRestService'];
