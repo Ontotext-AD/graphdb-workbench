@@ -1,11 +1,12 @@
+import 'angular/core/services/workbench-context.service';
 
 angular
-    .module('graphdb.framework.core.directives.rdfresourcesearch.rdfresourcesearch', [])
+    .module('graphdb.framework.core.directives.rdfresourcesearch.rdfresourcesearch', ['graphdb.core.services.workbench-context'])
     .directive('rdfResourceSearch', rdfResourceSearchDirective);
 
-rdfResourceSearchDirective.$inject = ['$rootScope', 'AutocompleteRestService', 'RDF4JRepositoriesRestService', '$repositories', '$licenseService'];
+rdfResourceSearchDirective.$inject = ['$rootScope', 'AutocompleteRestService', 'RDF4JRepositoriesRestService', '$repositories', '$licenseService', 'WorkbenchContextService'];
 
-function rdfResourceSearchDirective($rootScope, AutocompleteRestService, RDF4JRepositoriesRestService, $repositories, $licenseService) {
+function rdfResourceSearchDirective($rootScope, AutocompleteRestService, RDF4JRepositoriesRestService, $repositories, $licenseService, WorkbenchContextService) {
     return {
         templateUrl: 'js/angular/core/directives/rdfresourcesearch/templates/rdfResourceSearchTemplate.html',
         restrict: 'AE',
@@ -24,8 +25,6 @@ function rdfResourceSearchDirective($rootScope, AutocompleteRestService, RDF4JRe
 
             $scope.showInput = () => {
                 $scope.showRdfSearchInput = true;
-                refreshRepositoryInfo();
-                checkAutocompleteStatus();
                 element.find('.view-res-input').focus();
                 window.addEventListener('mousedown', onWindowClick);
                 $scope.onOpen();
@@ -47,28 +46,34 @@ function rdfResourceSearchDirective($rootScope, AutocompleteRestService, RDF4JRe
             // Private functions
             // =========================
 
-            const refreshRepositoryInfo = () => {
-                $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($repositories.getActiveRepository());
-            };
-
-            const checkAutocompleteStatus = () => {
-                if ($licenseService.isLicenseValid()) {
-                    $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
-                }
-            };
-
             const onWindowClick = (event) => {
                 if (!(event.target.id === "search-box" || $(event.target).closest("#search-box").length)) {
                     $scope.$apply(() => $scope.hideInput());
                 }
             };
 
+            // TODO maybe we can remove it
+            const onSelectedRepositoryNamespacesUpdated = (repositoryNamespaces) => {
+                $scope.getNamespacesPromise = repositoryNamespaces;
+                $scope.namespaces = repositoryNamespaces;
+            };
+
+            // TODO maybe we can remove it
+            const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
+                $scope.getAutocompletePromise = autocompleteEnabled;
+            };
+
             // =========================
             // Subscriptions
             // =========================
+            const subscriptions = [];
+
+            subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
+            subscriptions.push(WorkbenchContextService.onSelectedRepositoryNamespacesUpdated(onSelectedRepositoryNamespacesUpdated));
 
             const removeAllSubscribers = () => {
                 window.addEventListener('mousedown', onWindowClick);
+                subscriptions.forEach((subscription) => subscription());
             };
 
             // Deregister the watcher when the scope/directive is destroyed
