@@ -142,8 +142,18 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.embedded = $location.search().embedded;
     $scope.productInfo = productInfo;
     $scope.guidePaused = 'true' === LocalStorageAdapter.get(GUIDE_PAUSE);
-
     $scope.hideRdfResourceSearch = false;
+    $scope.graphdbVersion = $scope.engineVersion = productInfo.productVersion;
+    $scope.workbenchVersion = productInfo.Workbench;
+    $scope.connectorsVersion = productInfo.connectors;
+    $scope.sesameVersion = productInfo.sesame;
+    $scope.popoverTemplate = 'js/angular/templates/repositorySize.html';
+    $scope.securityEnabled = true;
+
+    // =========================
+    // Public functions
+    // =========================
+
     $scope.showRdfResourceSearch = () => {
         return !$scope.hideRdfResourceSearch && !!$scope.getActiveRepository() && $scope.hasActiveLocation() &&(!$scope.isLoadingLocation() || $scope.isLoadingLocation() && $location.url() === '/repository');
     };
@@ -156,10 +166,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                 allowHtml: true
             });
         }
-    };
-
-    const isHomePage = () => {
-        return $location.url() === '/';
     };
 
     $scope.isMenuCollapsedOnLoad = function () {
@@ -176,25 +182,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.showLabel = function (item) {
         return item.children ? true : !$scope.menuCollapsed;
     };
-
-    const setYears = function () {
-        const date = new Date();
-        $scope.currentYear = date.getFullYear();
-        $scope.previousYear = 2002; // Peio says this is 2002 or 2003, in other words the year of the earliest file.
-    };
-
-    // TODO Move to init
-    setYears();
-
-    // TODO Move to init
-    $('#repositorySelectDropdown').on('hide.bs.dropdown', function (e) {
-        if (GuidesService.isActive()) {
-            if ($('#repositorySelectDropdown.autoCloseOff').length > 0) {
-                e.preventDefault();
-            }
-        }
-    });
-
 
     $scope.resumeGuide = function () {
         $rootScope.$broadcast('guideResume');
@@ -216,14 +203,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.getLocationFromUri = function (location) {
         return $repositories.getLocationFromUri(location);
     };
-
-    $scope.graphdbVersion =
-        $scope.engineVersion = productInfo.productVersion;
-    $scope.workbenchVersion = productInfo.Workbench;
-
-    $scope.connectorsVersion = productInfo.connectors;
-
-    $scope.sesameVersion = productInfo.sesame;
 
     $scope.select = function (index, event, clicked) {
         if ($('.main-menu').hasClass('collapsed')) {
@@ -268,14 +247,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     };
 
-    // TODO Move to init
-    $('body').bind('click', function (e) {
-        if (!$(e.target).parents(".main-menu").length && $('.main-menu').hasClass('collapsed')) {
-            $scope.clicked = false;
-            $scope.selected = -1;
-        }
-    });
-
     $scope.resolveUrl = (productVersion, endpointPath) => DocumentationUrlResolver.getDocumentationUrl(productVersion, endpointPath);
 
     $scope.isCurrentPath = function (path) {
@@ -292,30 +263,18 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return false;
     };
 
-    // TODO Move to init
-    if ($location.path() === '/') {
-        $scope.selected = -1;
-    } else {
-        $timeout(function () {
-            const route = $location.path().replace('/', '');
-            const elem = $('a[href^="' + route + '"]');
-            $scope.selected = elem.closest('.menu-element').index() - 1;
-        }, 200);
-        $scope.isCurrentPath($location.path());
-    }
-
-    $scope.popoverTemplate = 'js/angular/templates/repositorySize.html';
-
-    $scope.securityEnabled = true;
     $scope.isSecurityEnabled = function () {
         return $jwtAuth.isSecurityEnabled();
     };
+
     $scope.isFreeAccessEnabled = function () {
         return $jwtAuth.isFreeAccessEnabled();
     };
+
     $scope.hasExternalAuthUser = function () {
         return $jwtAuth.hasExternalAuthUser();
     };
+
     $scope.isDefaultAuthEnabled = function () {
         return $jwtAuth.isDefaultAuthEnabled();
     };
@@ -438,15 +397,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         $repositories.setRepository(repository);
     };
 
-    function setPrincipal() {
-        // Using $q.when to proper set values in view
-        return $q.when($jwtAuth.getPrincipal())
-            .then((principal) => {
-                $scope.principal = principal;
-                $scope.isIgnoreSharedQueries = principal && principal.appSettings.IGNORE_SHARED_QUERIES;
-            });
-    }
-
     $scope.logout = function () {
         $jwtAuth.clearAuthentication();
         toastr.success('Signed out');
@@ -463,37 +413,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     $scope.showMainManuAndStatusBar = () => {
         return $jwtAuth.isAuthenticated() || $scope.isSecurityEnabled() && $scope.isFreeAccessEnabled();
-    };
-
-    const reloadPageOutsideAngularScope = () => {
-        setTimeout(() => {
-            $window.location.reload();
-        }, 0);
-    };
-
-    /**
-     * Initialized as 'undefined' to guarantee that when the 'localStoreChangeHandler' function is called for the first time, it will be processed properly.
-     * If we set it to "false" and when the $jwtAuth.isAuthenticated() is called for first time it can return "false" as example, then the page will not
-     * be reloaded or redirected to the login page.
-     * @type {undefined | boolean}
-     */
-    let isAuthenticated = undefined;
-    const localStoreChangeHandler = (localStoreEvent) => {
-        if (AuthTokenService.AUTH_STORAGE_NAME === localStoreEvent.key) {
-            const newAuthenticationState = $jwtAuth.isAuthenticated();
-            $jwtAuth.updateReturnUrl();
-            if (isAuthenticated !== newAuthenticationState) {
-                isAuthenticated = newAuthenticationState;
-                if (isAuthenticated) {
-                    $location.url($rootScope.returnToUrl || '/');
-                    $route.reload();
-                    reloadPageOutsideAngularScope();
-                } else {
-                    $rootScope.redirectToLogin();
-                    reloadPageOutsideAngularScope();
-                }
-            }
-        }
     };
 
     $scope.isAdmin = function () {
@@ -629,73 +548,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     };
 
-    collapsedMenuLogicOnInit();
-
-    $(window).resize(function () {
-        collapseMenuLogicOnResize();
-        if ($scope.tutorialState && $location.path() === '/') {
-            $scope.initTutorial();
-        }
-        if ($(window).height() < 735) {
-            $('.sub-menu').addClass('align-bottom');
-            $('.main-menu.collapsed li:nth-child(2) .sub-menu').removeClass('align-bottom');
-        } else {
-            $('.sub-menu').removeClass('align-bottom');
-        }
-    });
-
-    function setMenuCollapsed(menuCollapsed) {
-        if (menuCollapsed) {
-            $(":root").addClass("menu-collapsed");
-        } else {
-            $(":root").removeClass("menu-collapsed");
-        }
-    }
-
-    function collapsedMenuLogicOnInit() {
-        if ($(window).width() <= 720) {
-            $('.container-fluid.main-container').addClass("expanded");
-            setMenuCollapsed(true);
-            $('.main-menu').addClass('collapsed');
-            $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
-            $('.toggle-menu').hide();
-        } else if ($(window).width() > 720 && LocalStorageAdapter.get(LSKeys.MENU_STATE) === 'collapsedMenu') {
-            $('.container-fluid.main-container').addClass("expanded");
-            setMenuCollapsed(true);
-            $('.main-menu').addClass('collapsed');
-            $('.toggle-menu').show();
-            $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
-        } else {
-            $('.container-fluid.main-container').removeClass("expanded");
-            setMenuCollapsed(false);
-            $('.main-menu').removeClass('collapsed');
-            $('.toggle-menu').show();
-            $('.main-menu .icon-caret-right').toggleClass('icon-caret-right').toggleClass('icon-caret-left');
-        }
-    }
-
-    function collapseMenuLogicOnResize() {
-        if (angular.isDefined($scope.menuState)) {
-            if ($(window).width() <= 720) {
-                $('.container-fluid.main-container').addClass("expanded");
-                setMenuCollapsed(true);
-                $('.main-menu').addClass('collapsed');
-                $('.toggle-menu').hide();
-                $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
-            } else if ($(window).width() > 720 && $scope.menuState) {
-                $('.toggle-menu').show();
-            } else {
-                $('.container-fluid.main-container').removeClass("expanded");
-                setMenuCollapsed(false);
-                $('.main-menu').removeClass('collapsed');
-                $('.toggle-menu').show();
-                $('.main-menu .icon-caret-right').toggleClass('icon-caret-right').toggleClass('icon-caret-left');
-            }
-        } else {
-            collapsedMenuLogicOnInit();
-        }
-    }
-
     $scope.slideToPage = function (index) {
         const widthOfParentElm = $(".main-container")[0].offsetWidth;
         const $pageSlider = $(".pages-wrapper .page-slide");
@@ -744,11 +596,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             $rootScope.$broadcast("onToggleNavWidth", false);
         }
     };
-
-    // TODO: Move to init
-    if ($jwtAuth.securityInitialized) {
-        $scope.getSavedQueries();
-    }
 
     $scope.getProductType = function () {
         return $licenseService.productType();
@@ -838,6 +685,161 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $filter('date')(time, ("'" + $translate.instant('timestamp.on') + "' yyyy-MM-dd '" + $translate.instant('timestamp.at') + "' HH:mm"));
     };
 
+    // =========================
+    // Private functions
+    // =========================
+
+    const init = () => {
+        setYears();
+
+        $('#repositorySelectDropdown').on('hide.bs.dropdown', function (e) {
+            if (GuidesService.isActive()) {
+                if ($('#repositorySelectDropdown.autoCloseOff').length > 0) {
+                    e.preventDefault();
+                }
+            }
+        });
+
+        $('body').bind('click', function (e) {
+            if (!$(e.target).parents(".main-menu").length && $('.main-menu').hasClass('collapsed')) {
+                $scope.clicked = false;
+                $scope.selected = -1;
+            }
+        });
+
+        if ($location.path() === '/') {
+            $scope.selected = -1;
+        } else {
+            $timeout(function () {
+                const route = $location.path().replace('/', '');
+                const elem = $('a[href^="' + route + '"]');
+                $scope.selected = elem.closest('.menu-element').index() - 1;
+            }, 200);
+            $scope.isCurrentPath($location.path());
+        }
+
+        collapsedMenuLogicOnInit();
+
+        $(window).resize(function () {
+            collapseMenuLogicOnResize();
+            if ($scope.tutorialState && $location.path() === '/') {
+                $scope.initTutorial();
+            }
+            if ($(window).height() < 735) {
+                $('.sub-menu').addClass('align-bottom');
+                $('.main-menu.collapsed li:nth-child(2) .sub-menu').removeClass('align-bottom');
+            } else {
+                $('.sub-menu').removeClass('align-bottom');
+            }
+        });
+
+        if ($jwtAuth.securityInitialized) {
+            $scope.getSavedQueries();
+        }
+    };
+
+    const isHomePage = () => {
+        return $location.url() === '/';
+    };
+
+    const setYears = function () {
+        const date = new Date();
+        $scope.currentYear = date.getFullYear();
+        $scope.previousYear = 2002; // Peio says this is 2002 or 2003, in other words the year of the earliest file.
+    };
+
+    function setPrincipal() {
+        // Using $q.when to proper set values in view
+        return $q.when($jwtAuth.getPrincipal())
+            .then((principal) => {
+                $scope.principal = principal;
+                $scope.isIgnoreSharedQueries = principal && principal.appSettings.IGNORE_SHARED_QUERIES;
+            });
+    }
+
+    const reloadPageOutsideAngularScope = () => {
+        setTimeout(() => {
+            $window.location.reload();
+        }, 0);
+    };
+
+    /**
+     * Initialized as 'undefined' to guarantee that when the 'localStoreChangeHandler' function is called for the first time, it will be processed properly.
+     * If we set it to "false" and when the $jwtAuth.isAuthenticated() is called for first time it can return "false" as example, then the page will not
+     * be reloaded or redirected to the login page.
+     * @type {undefined | boolean}
+     */
+    let isAuthenticated = undefined;
+    const localStoreChangeHandler = (localStoreEvent) => {
+        if (AuthTokenService.AUTH_STORAGE_NAME === localStoreEvent.key) {
+            const newAuthenticationState = $jwtAuth.isAuthenticated();
+            $jwtAuth.updateReturnUrl();
+            if (isAuthenticated !== newAuthenticationState) {
+                isAuthenticated = newAuthenticationState;
+                if (isAuthenticated) {
+                    $location.url($rootScope.returnToUrl || '/');
+                    $route.reload();
+                    reloadPageOutsideAngularScope();
+                } else {
+                    $rootScope.redirectToLogin();
+                    reloadPageOutsideAngularScope();
+                }
+            }
+        }
+    };
+
+    function setMenuCollapsed(menuCollapsed) {
+        if (menuCollapsed) {
+            $(":root").addClass("menu-collapsed");
+        } else {
+            $(":root").removeClass("menu-collapsed");
+        }
+    }
+
+    function collapsedMenuLogicOnInit() {
+        if ($(window).width() <= 720) {
+            $('.container-fluid.main-container').addClass("expanded");
+            setMenuCollapsed(true);
+            $('.main-menu').addClass('collapsed');
+            $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
+            $('.toggle-menu').hide();
+        } else if ($(window).width() > 720 && LocalStorageAdapter.get(LSKeys.MENU_STATE) === 'collapsedMenu') {
+            $('.container-fluid.main-container').addClass("expanded");
+            setMenuCollapsed(true);
+            $('.main-menu').addClass('collapsed');
+            $('.toggle-menu').show();
+            $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
+        } else {
+            $('.container-fluid.main-container').removeClass("expanded");
+            setMenuCollapsed(false);
+            $('.main-menu').removeClass('collapsed');
+            $('.toggle-menu').show();
+            $('.main-menu .icon-caret-right').toggleClass('icon-caret-right').toggleClass('icon-caret-left');
+        }
+    }
+
+    function collapseMenuLogicOnResize() {
+        if (angular.isDefined($scope.menuState)) {
+            if ($(window).width() <= 720) {
+                $('.container-fluid.main-container').addClass("expanded");
+                setMenuCollapsed(true);
+                $('.main-menu').addClass('collapsed');
+                $('.toggle-menu').hide();
+                $('.main-menu .icon-caret-left').toggleClass('icon-caret-left').toggleClass('icon-caret-right');
+            } else if ($(window).width() > 720 && $scope.menuState) {
+                $('.toggle-menu').show();
+            } else {
+                $('.container-fluid.main-container').removeClass("expanded");
+                setMenuCollapsed(false);
+                $('.main-menu').removeClass('collapsed');
+                $('.toggle-menu').show();
+                $('.main-menu .icon-caret-right').toggleClass('icon-caret-right').toggleClass('icon-caret-left');
+            }
+        } else {
+            collapsedMenuLogicOnInit();
+        }
+    }
+
     // =================================
     // Subscriptions and event handlers
     // =================================
@@ -910,14 +912,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
      */
     window.addEventListener('storage', localStoreChangeHandler);
 
-    $scope.$on('$destroy', () => {
-        window.removeEventListener('storage', localStoreChangeHandler);
-        deregisterMenuWatcher();
-        if ($scope.checkMenu) {
-            $timeout.cancel($scope.checkMenu);
-        }
-    });
-
     $scope.$on('onToggleNavWidth', function (e, isCollapsed) {
         $scope.menuState = isCollapsed;
         if (isCollapsed) {
@@ -955,6 +949,19 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             $licenseService.checkLicenseStatus();
         }
     });
+
+    $scope.$on('$destroy', () => {
+        window.removeEventListener('storage', localStoreChangeHandler);
+        deregisterMenuWatcher();
+        if ($scope.checkMenu) {
+            $timeout.cancel($scope.checkMenu);
+        }
+    });
+
+    // =========================
+    // Initialization
+    // =========================
+    init();
 }
 
 repositorySizeCtrl.$inject = ['$scope', '$http', 'RepositoriesRestService'];
