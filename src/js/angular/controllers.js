@@ -955,7 +955,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     const updateAutocompleteStatus = () => {
         AutocompleteService.checkAutocompleteStatus()
             .then((autocompleteEnabled) => {
-                WorkbenchContextService.setAutocompleteEnabled(autocompleteEnabled);
+                WorkbenchContextService.setAutocompleteEnabled(!$repositories.isActiveRepoFedXType() && $licenseService.isLicenseValid() && autocompleteEnabled);
             });
     };
 

@@ -60,7 +60,7 @@ function AutocompleteCtrl(
         AutocompleteService.checkAutocompleteStatus()
             .then((autocompleteEnabled) => {
                 $scope.autocompleteEnabled = autocompleteEnabled;
-                WorkbenchContextService.setAutocompleteEnabled(autocompleteEnabled);
+                WorkbenchContextService.setAutocompleteEnabled(!$repositories.isActiveRepoFedXType() && $licenseService.isLicenseValid() && autocompleteEnabled);
             })
             .catch((error) => {
                 toastr.error(getError(error));
