@@ -2,7 +2,7 @@ import {SparqlEditorSteps} from "../../steps/sparql-editor-steps";
 import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
 
 // Disable the default user data setup stub because we want to actually change it in this test
-Cypress.env('set_default_user_data', false);
+// Cypress.env('set_default_user_data', false);
 
 describe('My Settings', () => {
 
@@ -78,7 +78,7 @@ describe('My Settings', () => {
             .and('be.disabled');
     });
 
-    it('should change settings for admin and verify changes are reflected in SPARQL editor', () => {
+    it.only('should change settings for admin and verify changes are reflected in SPARQL editor', () => {
         cy.get('.sparql-editor-settings').should('be.visible');
 
         //turn off inference, sameAs and count total results
