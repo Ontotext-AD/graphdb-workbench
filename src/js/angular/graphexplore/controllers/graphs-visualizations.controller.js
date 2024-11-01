@@ -1,4 +1,5 @@
 import 'angular/core/services';
+import 'angular/core/services/workbench-context.service';
 import D3 from 'lib/common/d3-utils.js';
 import d3tip from 'lib/d3-tip/d3-tip-patch';
 import 'angular/utils/local-storage-adapter';
@@ -11,7 +12,8 @@ const modules = [
     'toastr',
     'ui.bootstrap',
     'ngTagsInput',
-    'graphdb.framework.utils.localstorageadapter'
+    'graphdb.framework.utils.localstorageadapter',
+    'graphdb.core.services.workbench-context'
 ];
 
 angular
@@ -45,7 +47,8 @@ GraphsVisualizationsCtrl.$inject = [
     "GraphDataRestService",
     "RDF4JRepositoriesRestService",
     "$translate",
-    "GuidesService"
+    "GuidesService",
+    "WorkbenchContextService"
 ];
 
 function GraphsVisualizationsCtrl(
@@ -71,7 +74,8 @@ function GraphsVisualizationsCtrl(
     GraphDataRestService,
     RDF4JRepositoriesRestService,
     $translate,
-    GuidesService
+    GuidesService,
+    WorkbenchContextService
 ) {
     // =========================
     // Public fields
@@ -376,6 +380,7 @@ function GraphsVisualizationsCtrl(
 
     const removeAllListeners = () => {
         subscriptions.forEach((subscription) => subscription());
+        $('body').off("keydown", keydownHandler);
     };
 
     const destroyHandler = () => {
@@ -3025,9 +3030,7 @@ function GraphsVisualizationsCtrl(
         force.alpha(1).restart();
     };
 
-    // event for capturing left and right arrows used for rotation
-    $('body').on("keydown", function (event) {
-
+    const keydownHandler = (event) => {
         if (GuidesService.isActive() || event.target.nodeName === 'input' || !$scope.nodeSelected) {
             // don't do anything when the target is an input field or no node is selected or a guide is active.
             return;
@@ -3040,7 +3043,10 @@ function GraphsVisualizationsCtrl(
             // right arrow rotates right
             $scope.rotate(false);
         }
-    });
+    };
+
+    // event for capturing left and right arrows used for rotation
+    $('body').on("keydown", keydownHandler);
 
     $scope.getLiteralFromPropValue = function (value) {
         return value.substring(value.indexOf(':') + 1);
