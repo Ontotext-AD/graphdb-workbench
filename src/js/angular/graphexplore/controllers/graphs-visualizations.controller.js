@@ -32,7 +32,6 @@ GraphsVisualizationsCtrl.$inject = [
     "toastr",
     "$timeout",
     "ClassInstanceDetailsService",
-    "AutocompleteRestService",
     "$q",
     "$location",
     "$jwtAuth",
@@ -45,7 +44,6 @@ GraphsVisualizationsCtrl.$inject = [
     "SavedGraphsRestService",
     "GraphConfigRestService",
     "GraphDataRestService",
-    "RDF4JRepositoriesRestService",
     "$translate",
     "GuidesService",
     "WorkbenchContextService"
@@ -59,7 +57,6 @@ function GraphsVisualizationsCtrl(
     toastr,
     $timeout,
     ClassInstanceDetailsService,
-    AutocompleteRestService,
     $q,
     $location,
     $jwtAuth,
@@ -72,7 +69,6 @@ function GraphsVisualizationsCtrl(
     SavedGraphsRestService,
     GraphConfigRestService,
     GraphDataRestService,
-    RDF4JRepositoriesRestService,
     $translate,
     GuidesService,
     WorkbenchContextService
