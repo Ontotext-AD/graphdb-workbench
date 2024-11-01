@@ -19,6 +19,13 @@ export class SecurityStubs {
         }).as('updateUser');
     }
 
+    static getAdminUser() {
+        cy.intercept('GET', 'rest/security/users/admin', {
+            fixture: '/security/get-admin-user.json',
+            statusCode: 200
+        }).as('getAdminUser');
+    }
+
     static getAdminResponse(infer, sameAs) {
         return {
             "username": "admin",
