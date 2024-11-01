@@ -319,11 +319,6 @@ function GraphsVisualizationsCtrl(
         $scope.namespaces = repositoryNamespaces;
     };
 
-    // TODO maybe we can remove it
-    const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
-        $scope.getAutocompletePromise = autocompleteEnabled;
-    };
-
     // =========================
     // Event handlers
     // =========================
@@ -336,7 +331,6 @@ function GraphsVisualizationsCtrl(
         $scope.propertiesSearchPlaceholder = $translate.instant("visual.search.instance.placeholder");
     }));
 
-    subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
     subscriptions.push(WorkbenchContextService.onSelectedRepositoryNamespacesUpdated(onSelectedRepositoryNamespacesUpdated));
 
     subscriptions.push($scope.$on('repositoryIsSet', function (event, args) {

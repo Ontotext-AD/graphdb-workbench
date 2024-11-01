@@ -58,17 +58,11 @@ function rdfResourceSearchDirective($rootScope, AutocompleteRestService, RDF4JRe
                 $scope.namespaces = repositoryNamespaces;
             };
 
-            // TODO maybe we can remove it
-            const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
-                $scope.getAutocompletePromise = autocompleteEnabled;
-            };
-
             // =========================
             // Subscriptions
             // =========================
             const subscriptions = [];
 
-            subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
             subscriptions.push(WorkbenchContextService.onSelectedRepositoryNamespacesUpdated(onSelectedRepositoryNamespacesUpdated));
 
             const removeAllSubscribers = () => {

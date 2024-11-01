@@ -315,11 +315,6 @@ function SimilarityCtrl(
         $scope.getNamespacesPromise = repositoryNamespaces;
     };
 
-    // TODO maybe we can remove it
-    const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
-        $scope.getAutocompletePromise = autocompleteEnabled;
-    };
-
     const checkIsGraphDBRepository = () => {
         return $scope.getActiveRepository() && !$scope.isActiveRepoOntopType() && !$scope.isActiveRepoFedXType();
     };
@@ -348,7 +343,6 @@ function SimilarityCtrl(
         subscriptions.forEach((subscription) => subscription());
     };
 
-    subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
     subscriptions.push(WorkbenchContextService.onSelectedRepositoryNamespacesUpdated(onSelectedRepositoryNamespacesUpdated));
 
     const searchTypeChangeHandler = () => {

@@ -1,11 +1,13 @@
 import 'angular/utils/local-storage-adapter';
+import 'angular/core/services/workbench-context.service';
 import {decodeHTML} from "../../../app";
 import {NamespacesListModel} from "../models/namespaces/namespaces-list";
 
 angular
     .module('graphdb.framework.core.directives', [
         'graphdb.framework.core.services.repositories',
-        'graphdb.framework.utils.localstorageadapter'
+        'graphdb.framework.utils.localstorageadapter',
+        'graphdb.core.services.workbench-context'
     ])
     .directive('ontoLoader', ontoLoader)
     .directive('ontoLoaderFancy', ontoLoaderFancy)
@@ -286,14 +288,13 @@ function multiRequired() {
 
 const SEARCH_DISPLAY_TYPE = {table: 'table', visual: 'visual'};
 
-searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q', '$sce', 'LocalStorageAdapter', 'LSKeys', '$repositories', '$translate', 'GuidesService'];
+searchResourceInput.$inject = ['$location', 'toastr', 'ClassInstanceDetailsService', 'AutocompleteRestService', '$rootScope', '$q', '$sce', 'LocalStorageAdapter', 'LSKeys', '$repositories', '$translate', 'GuidesService', 'WorkbenchContextService'];
 
-function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q, $sce, LocalStorageAdapter, LSKeys, $repositories, $translate, GuidesService) {
+function searchResourceInput($location, toastr, ClassInstanceDetailsService, AutocompleteRestService, $rootScope, $q, $sce, LocalStorageAdapter, LSKeys, $repositories, $translate, GuidesService, WorkbenchContextService) {
     return {
         restrict: 'EA',
         scope: {
             namespacespromise: '=',
-            autocompletepromisestatus: '=',
             textButton: '@',
             visualButton: '@',
             textCallback: '&',
@@ -371,47 +372,45 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 }
             });
 
-            $scope.$watch('autocompletepromisestatus', function () {
-                if (!$repositories.isActiveRepoFedXType() && angular.isDefined($scope.autocompletepromisestatus)) {
-                    if (angular.isFunction($scope.autocompletepromisestatus.success)) {
-                        $scope.autocompletepromisestatus.success(function (response) {
-                            element.autoCompleteStatus = !!response;
-                            if ($scope.searchInput !== '') {
-                                $scope.onChange();
-                            }
-                        }).error(function () {
-                            toastr.error($translate.instant('explore.error.autocomplete'));
-                        });
-                    } else {
-                        element.autoCompleteStatus = !!$scope.autocompletepromisestatus;
-                        if ($scope.searchInput !== '') {
-                            $scope.onChange();
-                        }
-                    }
+            const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
+                element.autoCompleteStatus = autocompleteEnabled;
+                if ($scope.searchInput !== '') {
+                    $scope.onChange();
                 }
-            });
+            };
 
-            $scope.$watch('empty', function () {
+            const subscriptions = [];
+            subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
+
+            const removeAllListeners = () => {
+                subscriptions.forEach((subscription) => subscription());
+            };
+
+            // Deregister the watcher when the scope/directive is destroyed
+            subscriptions.push($scope.$on('$destroy', removeAllListeners));
+
+
+            subscriptions.push($scope.$watch('empty', function () {
                 if (!IS_SEARCH_PRESERVED) {
                     $scope.searchInput = '';
                     $scope.empty = false;
                 }
-            });
+            }));
 
-            $scope.$watch('clear', function () {
+            subscriptions.push($scope.$watch('clear', function () {
                 if ($scope.clear) {
                     $scope.clearInput();
                     $scope.clear = false;
                 }
-            });
+            }));
 
-            $rootScope.$on('$translateChangeSuccess', function () {
+            subscriptions.push($rootScope.$on('$translateChangeSuccess', function () {
                 if (attrs.$attr.placeholder) {
                     $scope.placeholder = attrs.$attr.placeholder;
                 } else {
                     $scope.placeholder = `${$translate.instant('search.resources.msg')}...`;
                 }
-            });
+            }));
 
             const defaultTextCallback = function (params) {
                 const param = params.type || 'uri';
@@ -686,7 +685,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     });
             }
 
-            $scope.$on('rdfResourceSearchExpanded', loadAutocompleteData);
+            subscriptions.push($scope.$on('rdfResourceSearchExpanded', loadAutocompleteData));
 
             $scope.setActiveClassOnMouseMove = function (index) {
                 if (!element.autoCompleteStatus) {

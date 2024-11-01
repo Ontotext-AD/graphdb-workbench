@@ -87,10 +87,6 @@ function GraphConfigCtrl(
     /**
      * @type {Promise|undefined}
      */
-    $scope.getAutocompletePromise = undefined;
-    /**
-     * @type {Promise|undefined}
-     */
     $scope.getNamespacesPromise = undefined;
 
     $scope.tabsViewModel = [];
@@ -445,11 +441,6 @@ function GraphConfigCtrl(
     };
 
     // TODO maybe we can remove it
-    const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
-        $scope.getAutocompletePromise = autocompleteEnabled;
-    };
-
-    // TODO maybe we can remove it
     const onSelectedRepositoryNamespacesUpdated = (repositoryNamespaces) => {
         $scope.getNamespacesPromise = repositoryNamespaces;
     };
@@ -621,7 +612,6 @@ function GraphConfigCtrl(
 
     const subscriptions = [];
     subscriptions.push(WorkbenchContextService.onSelectedRepositoryNamespacesUpdated(onSelectedRepositoryNamespacesUpdated));
-    subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
     subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
     subscriptions.push($scope.$on('$destroy', unsubscribeListeners));
     subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, repositoryChangedHandler));
