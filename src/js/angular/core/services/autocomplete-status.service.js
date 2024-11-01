@@ -1,3 +1,5 @@
+// TODO Remove this service
+
 angular.module('graphdb.framework.core.services.autocompleteStatus', [])
     .service('$autocompleteStatus', ['$rootScope', 'AutocompleteRestService', 'LocalStorageAdapter', 'LSKeys', '$repositories', autocompleteStatusService]);
 

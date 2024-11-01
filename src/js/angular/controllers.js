@@ -13,6 +13,8 @@ import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/repositories.service';
 import 'angular/core/services/license.service';
 import 'angular/core/services/installation-cookie.service';
+import 'angular/core/services/workbench-context.service';
+import 'angular/core/services/rdf4j-repositories.service';
 import {UserRole} from 'angular/utils/user-utils';
 import 'angular/utils/local-storage-adapter';
 import 'angular/utils/workbench-settings-storage-service';
@@ -26,6 +28,7 @@ import 'angular-pageslide-directive/dist/angular-pageslide-directive';
 import 'angularjs-slider/dist/rzslider.min';
 import {debounce} from "lodash";
 import {DocumentationUrlResolver} from "./utils/documentation-url-resolver";
+import {NamespacesListModel} from "./models/namespaces/namespaces-list";
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -53,6 +56,8 @@ angular
         'graphdb.framework.guides.directives',
         'graphdb.framework.guides.services',
         'pageslide-directive',
+        'graphdb.core.services.workbench-context',
+        'graphdb.framework.rdf4j.repositories.service',
         'rzSlider'
     ])
     .controller('mainCtrl', mainCtrl)
@@ -78,6 +83,7 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
         });
     };
 
+    // TODO Remove it after finish
     function refreshRepositoryInfo() {
         if ($scope.getActiveRepository()) {
             $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
@@ -88,13 +94,13 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
             $scope.getActiveRepositorySize();
         }
     }
-
+// TODO Remove it after finish
     function checkAutocompleteStatus() {
         if ($licenseService.isLicenseValid()) {
             $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
         }
     }
-
+// TODO Remove it after finish
     $scope.$on('autocompleteStatus', function () {
         checkAutocompleteStatus();
     });
@@ -102,6 +108,7 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
     // Rather then rely on securityInit we monitory repositoryIsSet which is guaranteed to be called
     // after security was initialized. This way we avoid a race condition when the newly logged in
     // user doesn't have read access to the active repository.
+    // TODO Remove it after finish
     $scope.$on('repositoryIsSet', refreshRepositoryInfo);
 
     $scope.$on('$routeChangeSuccess', function ($event, current, previous) {
@@ -110,6 +117,7 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
             // initialized and its safe to refresh the repository info.
             if ($jwtAuth.isAuthenticated() || $jwtAuth.isFreeAccessEnabled()) {
                 // Security is OFF or security is ON but we are authenticated
+                // TODO Remove it after finish
                 refreshRepositoryInfo();
             } else {
                 // Security is ON and we aren't authenticated, redirect to login page
@@ -128,11 +136,17 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
 
 mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$licenseService', '$rootScope',
     'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService',
-    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils', '$q', 'GuidesService', '$route', '$window', 'AuthTokenService'];
+    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils', '$q', 'GuidesService', '$route', '$window', 'AuthTokenService',
+    'WorkbenchContextService', 'RDF4JRepositoriesService', 'AutocompleteRestService'];
 
 function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $licenseService, $rootScope,
                   productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService,
-                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q, GuidesService, $route, $window, AuthTokenService) {
+                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q, GuidesService, $route, $window, AuthTokenService,
+                  WorkbenchContextService, RDF4JRepositoriesService, AutocompleteRestService) {
+
+    // =========================
+    // Public variables
+    // =========================
     $scope.descr = $translate.instant('main.gdb.description');
     $scope.documentation = '';
     $scope.menu = $menuItems;
@@ -955,6 +969,38 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         deregisterMenuWatcher();
         if ($scope.checkMenu) {
             $timeout.cancel($scope.checkMenu);
+        }
+    });
+
+    const updateAutocompleteStatus = () => {
+        AutocompleteRestService.checkAutocompleteStatus()
+            .then((response) => {
+                WorkbenchContextService.setAutocompleteEnabled(response.data);
+                LocalStorageAdapter.set(LSKeys.AUTOCOMPLETE_ENABLED, response.data);
+            });
+    };
+
+    const updateRepositoryNamespace = (activeRepository) => {
+        if (activeRepository) {
+            RDF4JRepositoriesService.getNamespaces(activeRepository)
+                .then((namespaces) => WorkbenchContextService.setSelectedRepositoryNamespaces(namespaces));
+        } else {
+            WorkbenchContextService.setSelectedRepositoryNamespaces(new NamespacesListModel([]));
+        }
+    };
+
+    const onRepositoriesChanged = () => {
+        const activeRepository = $repositories.getActiveRepository();
+        if (activeRepository !== WorkbenchContextService.getSelectedRepositoryId()) {
+            WorkbenchContextService.setSelectedRepositoryId(activeRepository);
+            updateAutocompleteStatus();
+            updateRepositoryNamespace(activeRepository);
+        }
+    };
+    $rootScope.$on("repositoryIsSet", onRepositoriesChanged);
+    window.addEventListener('storage', (event) => {
+        if ('ls.' + LSKeys.AUTOCOMPLETE_ENABLED === event.key) {
+            WorkbenchContextService.setAutocompleteEnabled(event.newValue);
         }
     });
 

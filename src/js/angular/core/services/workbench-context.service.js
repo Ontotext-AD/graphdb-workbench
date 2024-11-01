@@ -3,7 +3,7 @@ import {NamespacesListModel} from "../../models/namespaces/namespaces-list";
 
 angular
     .module('graphdb.core.services.workbench-context', [])
-    .factory('WorkbenchContext', WorkbenchContextService);
+    .factory('WorkbenchContextService', WorkbenchContextService);
 
 WorkbenchContextService.$inject = ['EventEmitterService'];
 
@@ -16,12 +16,46 @@ WorkbenchContextService.$inject = ['EventEmitterService'];
  */
 function WorkbenchContextService(EventEmitterService) {
 
+    let _selectedRepositoryId = undefined;
     let _autocompleteEnabled = undefined;
     let _selectedRepositoryNamespaces = undefined;
 
     const init = () => {
         _autocompleteEnabled = false;
         _selectedRepositoryNamespaces = new NamespacesListModel([]);
+    };
+
+    /**
+     * Updates the selected repository id and emits the 'selectedRepositoryIdUpdated' event to notify listeners that selected repository id changed.
+     *
+     * @param {string | undefined} selectedRepositoryId
+     */
+    const setSelectedRepositoryId = (selectedRepositoryId) => {
+        if (_selectedRepositoryId !== selectedRepositoryId) {
+            _selectedRepositoryId = selectedRepositoryId;
+            EventEmitterService.emitSync(WorkbenchEventName.SELECTED_REPOSITORY_ID_UPDATED, getSelectedRepositoryId());
+        }
+    };
+
+    /**
+     *
+     * @return {string} the selected repository id.
+     */
+    const getSelectedRepositoryId = () => {
+        return _selectedRepositoryId;
+    };
+
+    /**
+     * Subscribes to the 'selectedRepositoryIdUpdated' event.
+     * @param {function} callback - The callback to be called when the event is fired.
+     *
+     * @return {function} unsubscribe function.
+     */
+    const onSelectedRepositoryIdUpdated = (callback) => {
+        if (angular.isFunction(callback)) {
+            callback(getSelectedRepositoryId());
+        }
+        return EventEmitterService.subscribeSync(WorkbenchEventName.AUTOCOMPLETE_ENABLED_UPDATED, (payload) => callback(payload));
     };
 
     /**
@@ -74,7 +108,7 @@ function WorkbenchContextService(EventEmitterService) {
      * @return {NamespacesListModel} the selected repository namespaces.
      */
     const getSelectedRepositoryNamespaces = () => {
-        return _selectedRepositoryNamespaces;
+        return cloneDeep(_selectedRepositoryNamespaces);
     };
 
     /**
@@ -103,14 +137,27 @@ function WorkbenchContextService(EventEmitterService) {
         setSelectedRepositoryNamespaces,
         getSelectedRepositoryNamespaces,
         onSelectedRepositoryNamespacesUpdated,
+        setSelectedRepositoryId,
+        getSelectedRepositoryId,
+        onSelectedRepositoryIdUpdated,
         resetContext
     };
 }
 
 export const WorkbenchEventName = {
+
+    /**
+     * This event is emitted when selected repository is changed.
+     */
+    SELECTED_REPOSITORY_ID_UPDATED: 'selectedRepositoryIdUpdated',
+
     /**
      * This event is emitted when status of autocomplete is changed.
      */
     AUTOCOMPLETE_ENABLED_UPDATED: 'autocompleteEnabledUpdated',
+
+    /**
+     * This event is emitted when the namespaces of selected repository changed.
+     */
     SELECTED_REPOSITORY_NAMESPACES_UPDATED: 'selectedRepositoryNamespacesUpdated'
 };
