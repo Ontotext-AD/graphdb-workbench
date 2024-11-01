@@ -1,5 +1,6 @@
 import 'angular/rest/plugins.rest.service';
 import 'angular/rest/aclmanagement.rest.service';
+import 'angular/core/services/workbench-context.service';
 import {mapAclRulesResponse} from "../rest/mappers/aclmanagement-mapper";
 import {isEqual} from 'lodash';
 import {mapNamespacesResponse} from "../rest/mappers/namespaces-mapper";
@@ -7,16 +8,17 @@ import {ACL_SCOPE, DEFAULT_CONTEXT_VALUES, DEFAULT_URI_VALUES, DEFAULT_CLEAR_GRA
 
 const modules = [
     'graphdb.framework.rest.plugins.service',
-    'graphdb.framework.rest.aclmanagement.service'
+    'graphdb.framework.rest.aclmanagement.service',
+    'graphdb.core.services.workbench-context'
 ];
 
 angular
     .module('graphdb.framework.aclmanagement.controllers', modules)
     .controller('AclManagementCtrl', AclManagementCtrl);
 
-AclManagementCtrl.$inject = ['$scope', '$location', 'toastr', 'AclManagementRestService', '$repositories', '$translate', 'ModalService', 'RDF4JRepositoriesRestService', 'AutocompleteRestService'];
+AclManagementCtrl.$inject = ['$scope', '$location', 'toastr', 'AclManagementRestService', '$repositories', '$translate', 'ModalService', 'RDF4JRepositoriesRestService', 'WorkbenchContextService'];
 
-function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, $repositories, $translate, ModalService, RDF4JRepositoriesRestService, AutocompleteRestService) {
+function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, $repositories, $translate, ModalService, RDF4JRepositoriesRestService, WorkbenchContextService) {
 
     $scope.contextValue = undefined;
 
@@ -482,8 +484,9 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
         }
     };
 
-    const checkAutocompleteStatus = () => {
-        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+    // TODO maybe we can remove it
+    const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
+        $scope.isAutocompleteEnabled = autocompleteEnabled;
     };
 
     /**
@@ -491,7 +494,9 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
      */
     const init = () => {
         loadNamespaces();
-        subscriptions.push($scope.$on('autocompleteStatus', checkAutocompleteStatus));
+        // TODO maybe we can remove it
+        subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
+
         // Watching for repository changes and reload the rules, because they are stored per repository and reset page state.
         subscriptions.push($scope.$watch(getActiveRepositoryId, () => {
             resetPageState();

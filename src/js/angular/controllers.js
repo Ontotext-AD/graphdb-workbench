@@ -992,7 +992,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $rootScope.$on("repositoryIsSet", onRepositoriesChanged);
     window.addEventListener('storage', (event) => {
         if ('ls.' + LSKeys.AUTOCOMPLETE_ENABLED === event.key) {
-            WorkbenchContextService.setAutocompleteEnabled($licenseService.isLicenseValid() && event.newValue);
+            WorkbenchContextService.setAutocompleteEnabled(!$repositories.isActiveRepoFedXType() && $licenseService.isLicenseValid() && event.newValue);
         }
     });
 
