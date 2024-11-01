@@ -2680,7 +2680,7 @@
     "yasgui.tab_list.close_tab.confirmation.not_query_update.message": "<div class=\"run_query_confirmation alert alert-warning\">You have running 1 update.</div><div>Are you sure you want to close this query tab?</div>",
     "yasgui.tab_list.close_tab.confirmation.query_non_updates.message": "<div class=\"run_query_confirmation alert alert-warning\">You have running 1 query, that will be aborted.</div><div>Are you sure you want to close this query tab?</div>",
     "cookie" : {
-        "cookie_consent": "We may use cookies to help us improve GraphDB and develop better features. No personal or sensitive information is collected. By clicking “OK,” you consent to our",
+        "cookie_consent": "We may use cookies to help us improve GraphDB and develop better features. No personal or sensitive information is collected. By clicking “{{'common.ok.btn' | translate}},” you consent to our",
         "cookie_policy_url_label": "Cookie Policy",
         "policy": {
             "title": "Cookies Policy",
