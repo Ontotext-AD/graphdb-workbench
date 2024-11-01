@@ -938,7 +938,11 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
             });
         };
 
-        $scope.showCookiePolicy = () => {
+        $scope.showCookiePolicy = ($event) => {
+            // The button that triggers this handler is inside a form which has a submit property,
+            // and we need to prevent that because it leads to a redirect to the home page.
+            $event.preventDefault();
+
             $uibModal.open({
                 templateUrl: 'js/angular/core/templates/cookie-policy/cookie-policy.html',
                 controller: CookiePolicyModalController,
