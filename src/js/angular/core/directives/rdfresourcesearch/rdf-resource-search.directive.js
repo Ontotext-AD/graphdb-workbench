@@ -1,12 +1,10 @@
-import 'angular/core/services/workbench-context.service';
-
 angular
-    .module('graphdb.framework.core.directives.rdfresourcesearch.rdfresourcesearch', ['graphdb.core.services.workbench-context'])
+    .module('graphdb.framework.core.directives.rdfresourcesearch.rdfresourcesearch', [])
     .directive('rdfResourceSearch', rdfResourceSearchDirective);
 
-rdfResourceSearchDirective.$inject = ['$rootScope', 'AutocompleteRestService', 'RDF4JRepositoriesRestService', '$repositories', '$licenseService', 'WorkbenchContextService'];
+rdfResourceSearchDirective.$inject = ['$rootScope'];
 
-function rdfResourceSearchDirective($rootScope, AutocompleteRestService, RDF4JRepositoriesRestService, $repositories, $licenseService, WorkbenchContextService) {
+function rdfResourceSearchDirective($rootScope) {
     return {
         templateUrl: 'js/angular/core/directives/rdfresourcesearch/templates/rdfResourceSearchTemplate.html',
         restrict: 'AE',
@@ -52,22 +50,11 @@ function rdfResourceSearchDirective($rootScope, AutocompleteRestService, RDF4JRe
                 }
             };
 
-            // TODO maybe we can remove it
-            const onSelectedRepositoryNamespacesUpdated = (repositoryNamespaces) => {
-                $scope.getNamespacesPromise = repositoryNamespaces;
-                $scope.namespaces = repositoryNamespaces;
-            };
-
             // =========================
             // Subscriptions
             // =========================
-            const subscriptions = [];
-
-            subscriptions.push(WorkbenchContextService.onSelectedRepositoryNamespacesUpdated(onSelectedRepositoryNamespacesUpdated));
-
             const removeAllSubscribers = () => {
                 window.addEventListener('mousedown', onWindowClick);
-                subscriptions.forEach((subscription) => subscription());
             };
 
             // Deregister the watcher when the scope/directive is destroyed

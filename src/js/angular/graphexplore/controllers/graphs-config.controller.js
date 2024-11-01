@@ -1,6 +1,5 @@
 import 'angular/utils/notifications';
 import 'angular/utils/local-storage-adapter';
-import 'angular/core/services/workbench-context.service';
 import {YasqeMode} from "../../models/ontotext-yasgui/yasqe-mode";
 import {RenderingMode} from "../../models/ontotext-yasgui/rendering-mode";
 import {
@@ -13,8 +12,7 @@ import {mapGraphConfigSamplesToGraphConfigs} from "../../rest/mappers/graphs-con
 angular
     .module('graphdb.framework.graphexplore.controllers.graphviz.config', [
         'graphdb.framework.utils.notifications',
-        'graphdb.framework.utils.localstorageadapter',
-        'graphdb.core.services.workbench-context'
+        'graphdb.framework.utils.localstorageadapter'
     ])
     .controller('GraphConfigCtrl', GraphConfigCtrl);
 
@@ -33,8 +31,7 @@ GraphConfigCtrl.$inject = [
     'LocalStorageAdapter',
     'LSKeys',
     '$translate',
-    'ModalService',
-    'WorkbenchContextService'
+    'ModalService'
 ];
 
 function GraphConfigCtrl(
@@ -52,8 +49,7 @@ function GraphConfigCtrl(
     LocalStorageAdapter,
     LSKeys,
     $translate,
-    ModalService,
-    WorkbenchContextService
+    ModalService
 ) {
 
     // =========================
@@ -84,10 +80,6 @@ function GraphConfigCtrl(
         inference: $scope.newConfig.startQueryIncludeInferred,
         sameAs: $scope.newConfig.startQuerySameAs
     };
-    /**
-     * @type {Promise|undefined}
-     */
-    $scope.getNamespacesPromise = undefined;
 
     $scope.tabsViewModel = [];
 
@@ -440,11 +432,6 @@ function GraphConfigCtrl(
         toastr.warning(message);
     };
 
-    // TODO maybe we can remove it
-    const onSelectedRepositoryNamespacesUpdated = (repositoryNamespaces) => {
-        $scope.getNamespacesPromise = repositoryNamespaces;
-    };
-
     const validateQueryWithCallback = (successCallback, query, queryType, params, all, oneOf) => {
         if (!query) {
             successCallback();
@@ -611,7 +598,6 @@ function GraphConfigCtrl(
     // =========================
 
     const subscriptions = [];
-    subscriptions.push(WorkbenchContextService.onSelectedRepositoryNamespacesUpdated(onSelectedRepositoryNamespacesUpdated));
     subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
     subscriptions.push($scope.$on('$destroy', unsubscribeListeners));
     subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, repositoryChangedHandler));

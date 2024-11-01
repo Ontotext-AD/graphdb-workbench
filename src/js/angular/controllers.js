@@ -63,9 +63,9 @@ angular
     .controller('repositorySizeCtrl', repositorySizeCtrl)
     .controller('uxTestCtrl', uxTestCtrl);
 
-homeCtrl.$inject = ['$scope', '$rootScope', '$http', '$repositories', '$jwtAuth', '$licenseService', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'WorkbenchContextService', 'toastr'];
+homeCtrl.$inject = ['$scope', '$rootScope', '$http', '$repositories', '$jwtAuth', '$licenseService', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService'];
 
-function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseService, AutocompleteRestService, LicenseRestService, RepositoriesRestService, WorkbenchContextService, toastr) {
+function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseService, AutocompleteRestService, LicenseRestService, RepositoriesRestService) {
 
     // =========================
     // Public variables
@@ -99,16 +99,9 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
     // =================================
     const subscriptions = [];
 
-    // TODO maybe we can remove it
-    const onSelectedRepositoryNamespacesUpdated = (repositoryNamespaces) => {
-        $scope.getNamespacesPromise = repositoryNamespaces;
-    };
-
-    subscriptions.push(WorkbenchContextService.onSelectedRepositoryNamespacesUpdated(onSelectedRepositoryNamespacesUpdated));
-
     $scope.$on('$destroy', () => subscriptions.forEach((subscription) => subscription()));
 
-    $scope.$on('$routeChangeSuccess', function ($event, current, previous) {
+    subscriptions.push($scope.$on('$routeChangeSuccess', function ($event, current, previous) {
         if (previous) {
             // If previous is defined we got here through navigation, hence security is already
             // initialized and its safe to refresh the repository info.
@@ -117,7 +110,7 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
                 $rootScope.redirectToLogin();
             }
         }
-    });
+    }));
 
 }
 

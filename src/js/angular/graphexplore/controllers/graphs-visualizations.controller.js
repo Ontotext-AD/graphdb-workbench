@@ -1,5 +1,4 @@
 import 'angular/core/services';
-import 'angular/core/services/workbench-context.service';
 import D3 from 'lib/common/d3-utils.js';
 import d3tip from 'lib/d3-tip/d3-tip-patch';
 import 'angular/utils/local-storage-adapter';
@@ -12,8 +11,7 @@ const modules = [
     'toastr',
     'ui.bootstrap',
     'ngTagsInput',
-    'graphdb.framework.utils.localstorageadapter',
-    'graphdb.core.services.workbench-context'
+    'graphdb.framework.utils.localstorageadapter'
 ];
 
 angular
@@ -45,8 +43,7 @@ GraphsVisualizationsCtrl.$inject = [
     "GraphConfigRestService",
     "GraphDataRestService",
     "$translate",
-    "GuidesService",
-    "WorkbenchContextService"
+    "GuidesService"
 ];
 
 function GraphsVisualizationsCtrl(
@@ -70,8 +67,7 @@ function GraphsVisualizationsCtrl(
     GraphConfigRestService,
     GraphDataRestService,
     $translate,
-    GuidesService,
-    WorkbenchContextService
+    GuidesService
 ) {
     // =========================
     // Public fields
@@ -313,12 +309,6 @@ function GraphsVisualizationsCtrl(
         return namespacePrefix ? (namespacePrefix.prefix + ":" + iri.substring(namespacePrefix.uri.length)) : iri;
     };
 
-    // TODO maybe we can remove it
-    const onSelectedRepositoryNamespacesUpdated = (repositoryNamespaces) => {
-        $scope.getNamespacesPromise = repositoryNamespaces;
-        $scope.namespaces = repositoryNamespaces;
-    };
-
     // =========================
     // Event handlers
     // =========================
@@ -330,8 +320,6 @@ function GraphsVisualizationsCtrl(
         $scope.INVALID_LINKS_TOOLTIP = $translate.instant('sidepanel.invalid.limit.links.tooltip');
         $scope.propertiesSearchPlaceholder = $translate.instant("visual.search.instance.placeholder");
     }));
-
-    subscriptions.push(WorkbenchContextService.onSelectedRepositoryNamespacesUpdated(onSelectedRepositoryNamespacesUpdated));
 
     subscriptions.push($scope.$on('repositoryIsSet', function (event, args) {
         // New repo set from dropdown, clear init state

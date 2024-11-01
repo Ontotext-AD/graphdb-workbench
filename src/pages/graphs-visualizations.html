@@ -83,7 +83,6 @@
                             <p ng-if="configLoaded.hint">{{'hint' | translate}} {{configLoaded.hint}}
                         </p>
                         <search-resource-input class="incontext-search-rdf-resource"
-                                namespacespromise="getNamespacesPromise"
                                 text-button=""
                                 visual-button="{{'rdfs.comment.show' | translate}}"
                                 visual-callback="openUri(uri)"
@@ -103,7 +102,6 @@
                         <h3>{{'visual.easy.graph' | translate}}</h3>
                         <p>{{'visual.easy.graph.info' | translate}}</p>
                         <search-resource-input class="search-rdf-resources"
-                                namespacespromise="getNamespacesPromise"
                                 text-button=""
                                 visual-button="{{'rdfs.comment.show' | translate}}"
                                 visual-callback="easyGraphSearch(uri)"

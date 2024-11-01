@@ -1,4 +1,3 @@
-import 'angular/core/services/workbench-context.service';
 import {decodeHTML} from "../../../../app";
 import {SimilaritySearchType} from "../../models/similarity/similarity-search-type";
 import {SimilarityResultType} from "../../models/similarity/similarity-result-type";
@@ -9,7 +8,7 @@ import {SimilaritySearch} from "../../models/similarity/similarity-search";
 import {RenderingMode} from "../../models/ontotext-yasgui/rendering-mode";
 
 angular
-    .module('graphdb.framework.similarity.controllers.list', ['graphdb.core.services.workbench-context'])
+    .module('graphdb.framework.similarity.controllers.list', [])
     .controller('SimilarityCtrl', SimilarityCtrl);
 
 SimilarityCtrl.$inject = [
@@ -26,8 +25,7 @@ SimilarityCtrl.$inject = [
     'productInfo',
     'RDF4JRepositoriesRestService',
     '$translate',
-    'SparqlRestService',
-    'WorkbenchContextService'
+    'SparqlRestService'
 ];
 
 function SimilarityCtrl(
@@ -44,8 +42,7 @@ function SimilarityCtrl(
     productInfo,
     RDF4JRepositoriesRestService,
     $translate,
-    SparqlRestService,
-    WorkbenchContextService) {
+    SparqlRestService) {
 
     const PREFIX = 'http://www.ontotext.com/graphdb/similarity/';
     const PREFIX_PREDICATION = 'http://www.ontotext.com/graphdb/similarity/psi/';
@@ -310,11 +307,6 @@ function SimilarityCtrl(
         return '<' + iri + '>';
     };
 
-    // TODO maybe we can remove it
-    const onSelectedRepositoryNamespacesUpdated = (repositoryNamespaces) => {
-        $scope.getNamespacesPromise = repositoryNamespaces;
-    };
-
     const checkIsGraphDBRepository = () => {
         return $scope.getActiveRepository() && !$scope.isActiveRepoOntopType() && !$scope.isActiveRepoFedXType();
     };
@@ -342,8 +334,6 @@ function SimilarityCtrl(
     const removeAllListeners = () => {
         subscriptions.forEach((subscription) => subscription());
     };
-
-    subscriptions.push(WorkbenchContextService.onSelectedRepositoryNamespacesUpdated(onSelectedRepositoryNamespacesUpdated));
 
     const searchTypeChangeHandler = () => {
         $scope.empty = true;

@@ -294,7 +294,6 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
     return {
         restrict: 'EA',
         scope: {
-            namespacespromise: '=',
             textButton: '@',
             visualButton: '@',
             textCallback: '&',
@@ -352,25 +351,10 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 LocalStorageAdapter.remove(LSKeys.RDF_RESOURCE_DESCRIPTION);
             };
 
-            $scope.$watch('namespacespromise', function () {
-                if (angular.isDefined($scope.namespacespromise)) {
-                    if ($scope.namespacespromise instanceof NamespacesListModel) {
-                        element.namespaces = $scope.namespacespromise.namespaces;
-                    } else {
-                        $scope.namespacespromise.success(function (data) {
-                            element.namespaces = data.results.bindings.map(function (e) {
-                                return {
-                                    prefix: e.prefix.value,
-                                    uri: e.namespace.value
-                                };
-                            });
-                        }).error(function (data) {
-                            const msg = getError(data);
-                            toastr.error(msg, $translate.instant('error.getting.namespaces.for.repo'));
-                        });
-                    }
-                }
-            });
+            // TODO maybe we can remove it
+            const onSelectedRepositoryNamespacesUpdated = (repositoryNamespaces) => {
+                $scope.getNamespacesPromise = repositoryNamespaces.namespaces;
+            };
 
             const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
                 element.autoCompleteStatus = autocompleteEnabled;
@@ -381,6 +365,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
 
             const subscriptions = [];
             subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
+            subscriptions.push(WorkbenchContextService.onSelectedRepositoryNamespacesUpdated(onSelectedRepositoryNamespacesUpdated));
 
             const removeAllListeners = () => {
                 subscriptions.forEach((subscription) => subscription());
