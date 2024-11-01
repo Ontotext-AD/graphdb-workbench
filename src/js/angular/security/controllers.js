@@ -787,6 +787,11 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
 
+        /**
+         * If the cookie policy banner should be visible or not.
+         * @type {boolean}
+         */
+        $scope.showCookiePolicyLink = false;
         $scope.themes = ThemeService.getThemes();
         $scope.mode = 'settings';
         $scope.showWorkbenchSettings = true;
