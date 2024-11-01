@@ -43,7 +43,7 @@ beforeEach(() => {
         // to modify it because for some reason this request gets a 401 response
         // for some reason.
         // It'll be good to investigate it a bit sometime.
-        SecurityStubs.getAdminUser();
+        SecurityStubs.stubGetAdminUser();
         // SecurityStubs.stubUpdateUserData('admin');
     }
 });
