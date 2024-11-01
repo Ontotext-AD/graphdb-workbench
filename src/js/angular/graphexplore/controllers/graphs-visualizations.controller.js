@@ -323,7 +323,7 @@ function GraphsVisualizationsCtrl(
 
     const subscriptions = [];
 
-    $rootScope.$on('$translateChangeSuccess', function () {
+    subscriptions.push($rootScope.$on('$translateChangeSuccess', function () {
         $scope.INVALID_LINKS_MSG = $translate.instant('sidepanel.invalid.limit.links.msg');
         $scope.INVALID_LINKS_TOOLTIP = $translate.instant('sidepanel.invalid.limit.links.tooltip');
         $scope.propertiesSearchPlaceholder = $translate.instant("visual.search.instance.placeholder");
@@ -333,7 +333,7 @@ function GraphsVisualizationsCtrl(
         checkAutocompleteStatus();
     });
 
-    $scope.$on('repositoryIsSet', function (event, args) {
+    subscriptions.push($scope.$on('repositoryIsSet', function (event, args) {
         // New repo set from dropdown, clear init state
         if (args.newRepo) {
             $scope.hasInitedRepository = false;
@@ -355,7 +355,7 @@ function GraphsVisualizationsCtrl(
             }
 
         }
-    });
+    }));
 
     const rootScopeGenericWatcher = () => $rootScope.key;
     const rootScopeGenericChangeHandler = () => {
