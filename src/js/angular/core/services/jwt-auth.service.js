@@ -236,7 +236,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.toggleSecurity = function (enabled) {
                 if (enabled !== this.securityEnabled) {
-                    SecurityRestService.toggleSecurity(enabled).then(function () {
+                    return SecurityRestService.toggleSecurity(enabled).then(function () {
                         toastr.success($translate.instant('jwt.auth.security.status', {status: ($translate.instant(enabled ? 'enabled.status' : 'disabled.status'))}));
                         AuthTokenService.clearAuthToken();
                         that.initSecurity();
@@ -245,6 +245,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         toastr.error(err.data, $translate.instant('common.error'));
                     });
                 }
+                return Promise.resolve();
             };
 
             this.toggleFreeAccess = function (enabled, authorities, appSettings, updateFreeAccess) {
