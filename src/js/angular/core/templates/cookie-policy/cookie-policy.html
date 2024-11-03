@@ -23,7 +23,7 @@
         <span gdb-tooltip="{{'cookie.policy.statistic_tooltip' | translate}}" tooltip-placement="top"
               ng-click="toggleConsent(ConsentTypes.STATISTIC)"
               class="switch">
-        <input type="checkbox" class="switch" ng-checked="appSettings.COOKIE_CONSENT.statistic"/>
+        <input type="checkbox" class="switch" ng-checked="cookieConsent.getStatisticConsent()"/>
         <label for="statistic-consent"></label>
     </span>
     </div>
@@ -34,7 +34,7 @@
         <span gdb-tooltip="{{'cookie.policy.third_party_tooltip' | translate}}" tooltip-placement="top"
               ng-click="toggleConsent(ConsentTypes.THIRD_PARTY)"
               class="switch">
-        <input type="checkbox" class="switch" ng-checked="appSettings.COOKIE_CONSENT.thirdParty"/>
+        <input type="checkbox" class="switch" ng-checked="cookieConsent.thirdParty"/>
         <label for="third-party-consent"></label>
     </span>
     </div>
