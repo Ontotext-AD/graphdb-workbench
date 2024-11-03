@@ -1,4 +1,3 @@
-import {CookieConsent} from "../../../models/cookie-policy/cookie-consent";
 import {CookiePolicyModalController} from "./cookie-policy-modal-controller";
 
 const modules = [];
@@ -7,13 +6,18 @@ angular
     .module('graphdb.framework.core.directives.cookie-consent', modules)
     .directive('cookieConsent', cookieConsent);
 
-cookieConsent.$inject = ['$jwtAuth', '$uibModal', '$licenseService', '$translate', 'toastr'];
+cookieConsent.$inject = ['$jwtAuth', '$uibModal', '$licenseService', '$translate', 'toastr', 'TrackingService'];
 
-function cookieConsent($jwtAuth, $uibModal, $licenseService, $translate, toastr) {
+function cookieConsent($jwtAuth, $uibModal, $licenseService, $translate, toastr, TrackingService) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/core/templates/cookie-policy/cookie-consent.html',
         link: ($scope) => {
+            // =========================
+            // Private variables
+            // =========================
+            let cookieConsent = undefined;
+
             // =========================
             // Public variables
             // =========================
@@ -23,21 +27,16 @@ function cookieConsent($jwtAuth, $uibModal, $licenseService, $translate, toastr)
             // Public functions
             // =========================
             $scope.acceptConsent = () => {
-                $jwtAuth.getPrincipal()
-                    .then((data) => {
-                        const appSettings = data.appSettings;
-                        const username = data.username;
-                        appSettings.COOKIE_CONSENT = CookieConsent.fromJSON(appSettings.COOKIE_CONSENT).getConsent();
-                        appSettings.COOKIE_CONSENT.policyAccepted = true;
-                        return $jwtAuth.updateUserData({appSettings, username});
-                    })
-                    .finally(() => $scope.showCookieConsent = false);
+                TrackingService.updateCookieConsent(cookieConsent.setPolicyAccepted(true))
+                    .then(() => $scope.showCookieConsent = false);
             };
 
             $scope.showCookiePolicy = () => {
                 $uibModal.open({
                     templateUrl: 'js/angular/core/templates/cookie-policy/cookie-policy.html',
                     controller: CookiePolicyModalController,
+                    backdrop: 'static',
+                    keyboard: false,
                     windowClass: 'cookie-policy-modal'
                 });
             };
@@ -46,29 +45,10 @@ function cookieConsent($jwtAuth, $uibModal, $licenseService, $translate, toastr)
             // Private functions
             // =========================
             const init = () => {
-                $licenseService.checkLicenseStatus()
-                    .then(() => {
-                        if ($licenseService.isTrackingAllowed()) {
-                            return checkUserConsentStatus();
-                        }
-                    })
-                    .catch((error) => {
-                        const msg = getError(error.data, error.status);
-                        toastr.error(msg, $translate.instant('common.error'));
-                    });
-            };
-
-            const checkUserConsentStatus = () => {
-                return $jwtAuth.getPrincipal()
-                    .then((data) => {
-                        if (!data) {
-                            return;
-                        }
-                        const appSettings = data.appSettings;
-                        appSettings.COOKIE_CONSENT = CookieConsent.fromJSON(appSettings.COOKIE_CONSENT).getConsent();
-                        if (!appSettings.COOKIE_CONSENT.policyAccepted) {
-                            $scope.showCookieConsent = true;
-                        }
+                TrackingService.getCookieConsent()
+                    .then((consent) => {
+                        cookieConsent = consent;
+                        $scope.showCookieConsent = !consent.getPolicyAccepted();
                     })
                     .catch((error) => {
                         const msg = getError(error.data, error.status);
@@ -78,7 +58,7 @@ function cookieConsent($jwtAuth, $uibModal, $licenseService, $translate, toastr)
 
             const securityInit = (event, securityEnabled, userLoggedIn) => {
                 if (userLoggedIn) {
-                    checkUserConsentStatus();
+                    init();
                 } else {
                     $scope.showCookieConsent = false;
                 }

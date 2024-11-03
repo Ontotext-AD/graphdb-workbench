@@ -46,10 +46,24 @@ function CookieService($document, $cookies) {
         $document[0].cookie = new CookieBuilder(key, '', {expiration: -1}).build();
     };
 
+    /**
+     * Retrieves all cookies.
+     *
+     * @return {Object} - An object containing all cookies as key-value pairs.
+     */
+    const getAll = () => {
+        const result = {};
+        for (const [key, value] of Object.entries($cookies)) {
+            result[key] = value;
+        }
+        return result;
+    };
+
     return {
         get,
         set,
-        remove
+        remove,
+        getAll
     };
 }
 
