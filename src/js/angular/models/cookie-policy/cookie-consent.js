@@ -3,29 +3,19 @@
  */
 export class CookieConsent {
     /**
-     * Initializes the CookieConsent instance with default values.
+     * Initializes the CookieConsent instance with optional values.
+     * If a value is not provided, it remains undefined.
      * @constructor
+     * @param {boolean} [policyAccepted] - Indicates if the user has accepted the overall cookie policy.
+     * @param {boolean} [statistic] - Consent status for statistic cookies.
+     * @param {boolean} [thirdParty] - Consent status for third-party cookies.
+     * @param {number} [updatedAt] - Unix timestamp of the last consent update (milliseconds since epoch).
      */
-    constructor() {
-        /**
-         * @property {boolean} policyAccepted - Indicates if the user has accepted the overall cookie policy.
-         */
-        this.policyAccepted = false;
-
-        /**
-         * @property {boolean} statistic - Consent status for statistic cookies.
-         */
-        this.statistic = false;
-
-        /**
-         * @property {boolean} thirdParty - Consent status for third-party cookies.
-         */
-        this.thirdParty = false;
-
-        /**
-         * @property {number} updatedAt - Unix timestamp of the last consent update (milliseconds since epoch).
-         */
-        this.updatedAt = Date.now();
+    constructor(policyAccepted, statistic, thirdParty, updatedAt) {
+        this.policyAccepted = policyAccepted;
+        this.statistic = statistic;
+        this.thirdParty = thirdParty;
+        this.updatedAt = updatedAt;
     }
 
     /**
@@ -69,11 +59,23 @@ export class CookieConsent {
         this.updatedAt = Date.now();
     }
 
+    getPolicyAccepted() {
+        return this.policyAccepted;
+    }
+
+    getStatisticConsent() {
+        return this.statistic;
+    }
+
+    getThirdPartyConsent() {
+        return this.thirdParty;
+    }
+
     /**
      * Retrieves the current consent settings.
      * @return {Object} An object containing the current acceptance status for the cookie policy, consents for statistic and third-party cookies, and the `updatedAt` timestamp.
      */
-    getConsent() {
+    toJSON() {
         return {
             policyAccepted: this.policyAccepted,
             statistic: this.statistic,
@@ -84,32 +86,22 @@ export class CookieConsent {
 
     /**
      * Creates a CookieConsent instance from a JSON object.
-     * If the JSON object has missing values, default values are applied:
-     * - `policyAccepted` defaults to `false`.
-     * - `statistic` and `thirdParty` cookies default to `true`.
-     * - `updatedAt` defaults to the current timestamp.
-     *
-     * Only properties explicitly set in the JSON object are used to overwrite the defaults.
+     * If values are missing in the JSON object, they will remain undefined.
      *
      * @param {Object} json - The JSON object to initialize the CookieConsent instance.
-     * @param {boolean} [json.policyAccepted=false] - Whether the overall cookie policy has been accepted.
-     * @param {boolean} [json.statistic=true] - Consent status for statistic cookies.
-     * @param {boolean} [json.thirdParty=true] - Consent status for third-party cookies.
-     * @param {number} [json.updatedAt=Date.now()] - The timestamp of the last consent update.
-     * @return {CookieConsent} A new CookieConsent instance with values set from the JSON object or defaults applied.
+     * @param {boolean} [json.policyAccepted] - Whether the overall cookie policy has been accepted.
+     * @param {boolean} [json.statistic] - Consent status for statistic cookies.
+     * @param {boolean} [json.thirdParty] - Consent status for third-party cookies.
+     * @param {number} [json.updatedAt] - The timestamp of the last consent update.
+     * @return {CookieConsent} A new CookieConsent instance with values set from the JSON object.
      */
     static fromJSON(json) {
-        // Start with a CookieConsent instance with initial default values
-        const consent = new CookieConsent().setPolicyAccepted(false).setStatisticConsent(true).setThirdPartyConsent(true);
-
-        if (json) {
-            consent.policyAccepted = json.policyAccepted !== undefined ? json.policyAccepted : consent.policyAccepted;
-            consent.statistic = json.statistic !== undefined ? json.statistic : consent.statistic;
-            consent.thirdParty = json.thirdParty !== undefined ? json.thirdParty : consent.thirdParty;
-            consent.updatedAt = json.updatedAt !== undefined ? json.updatedAt : consent.updatedAt;
-        }
-
-        return consent;
+        return new CookieConsent(
+            json && json.policyAccepted,
+            json && json.statistic,
+            json && json.thirdParty,
+            json && json.updatedAt
+        );
     }
 }
 

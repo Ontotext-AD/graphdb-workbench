@@ -1,5 +1,3 @@
-import 'angular/core/services/cookie.service';
-
 // The name of the cookie that stores installation-related data.
 const INSTALLATION_COOKIE_NAME = '_wb';
 
@@ -11,9 +9,7 @@ const INSTALLATION_COOKIE_VERSION = 'WB1';
 // In this case, the cookie is set to expire in 400 days from the date it is created.
 const INSTALLATION_COOKIE_EXPIRATION_IN_DAYS = 400;
 
-const modules = [
-    'graphdb.framework.core.services.cookieService'
-];
+const modules = [];
 
 angular.module('graphdb.framework.core.services.installationCookieService', modules)
     .service('InstallationCookieService', ['CookieService', InstallationCookieService]);
