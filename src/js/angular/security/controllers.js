@@ -213,15 +213,12 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window'
         });
 
         $scope.toggleSecurity = function () {
-            $jwtAuth.toggleSecurity(!$jwtAuth.isSecurityEnabled());
-            if ($jwtAuth.isSecurityEnabled()) {
-                const timer = $timeout(function () {
-                    $window.location.reload();
-                }, 500);
-                $scope.$on('$destroy', function () {
-                    $timeout.cancel(timer);
+            $jwtAuth.toggleSecurity(!$jwtAuth.isSecurityEnabled())
+                .then(() => {
+                    if ($jwtAuth.isSecurityEnabled()) {
+                        $window.location.reload();
+                    }
                 });
-            }
         };
 
         $scope.toggleFreeAccess = function (updateFreeAccess) {
