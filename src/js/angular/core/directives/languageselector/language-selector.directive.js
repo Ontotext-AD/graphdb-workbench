@@ -2,10 +2,10 @@ import 'angular/utils/local-storage-adapter';
 import 'angular/core/services/event-emitter-service';
 angular
     .module('graphdb.framework.core.directives.languageselector.languageselector', [
+        'graphdb.framework.core',
         'graphdb.framework.utils.localstorageadapter', 'graphdb.framework.utils.event-emitter-service'
     ])
-    .directive('languageSelector', languageSelector)
-    .service('$languageService', [languageService]);
+    .directive('languageSelector', languageSelector);
 
 languageSelector.$inject = ['$translate', 'LocalStorageAdapter', 'LSKeys', '$languageService', 'EventEmitterService'];
 
@@ -18,19 +18,11 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageServ
             const browserPreferredLanguages = navigator.languages;
 
             $scope.selectedLang = {};
-            $scope.languages = [
-                {
-                    key: 'en',
-                    name: 'English'
-                },
-                {
-                    key: 'fr',
-                    name: 'Français'
-            }];
+            $scope.languages = $languageService.getAvailableLanguages();
 
             // If some keys in i18n folder are not
             // translated they will be translated in English
-            $translate.fallbackLanguage('en');
+            $translate.fallbackLanguage($languageService.getDefaultLanguage());
 
             function setAndPersistLanguage(lang) {
                 $scope.selectedLang = lang;
@@ -86,22 +78,11 @@ function languageSelector($translate, LocalStorageAdapter, LSKeys, $languageServ
                 .then(function () {
                     if (!$scope.selectedLang) {
                         // or fallback to English
-                        $scope.selectedLang = $scope.languages.find((lang) => lang.key === 'en');
+                        $scope.selectedLang = $scope.languages.find((lang) => lang.key === $languageService.getDefaultLanguage());
                     }
                     $translate.use($scope.selectedLang.key);
                     $languageService.setLanguage($scope.selectedLang.key);
             });
         }
-    };
-}
-
-function languageService() {
-    this.language = 'en';
-    this.setLanguage = function (lang) {
-        this.language = lang;
-    };
-
-    this.getLanguage = function () {
-        return this.language;
     };
 }

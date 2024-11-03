@@ -3,11 +3,11 @@ const modules = [];
 angular.module('graphdb.framework.core.services.translation-service', modules)
     .service('TranslationService', TranslationService);
 
-TranslationService.$inject = ['$translate'];
+TranslationService.$inject = ['$translate', '$languageService'];
 
-function TranslationService($translate) {
+function TranslationService($translate, $languageService) {
 
-    const supportedLanguages = ['en', 'fr'];
+    const supportedLanguages = $languageService.getSupportedLanguages();
     let allTranslations;
 
     const getTranslations = () => {
