@@ -1,5 +1,6 @@
 import 'angular/utils/local-storage-adapter';
 import {decodeHTML} from "../../../app";
+import {NamespacesListModel} from "../models/namespaces/namespaces-list";
 
 angular
     .module('graphdb.framework.core.directives', [
@@ -352,30 +353,43 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
 
             $scope.$watch('namespacespromise', function () {
                 if (angular.isDefined($scope.namespacespromise)) {
-                    $scope.namespacespromise.success(function (data) {
-                        element.namespaces = data.results.bindings.map(function (e) {
-                            return {
-                                prefix: e.prefix.value,
-                                uri: e.namespace.value
-                            };
+                    if ($scope.namespacespromise instanceof NamespacesListModel) {
+                        element.namespaces = $scope.namespacespromise.namespaces;
+                    } else {
+                        // TODO: Remove this once all controllers using this directive are updated.
+                        $scope.namespacespromise.success(function (data) {
+                            element.namespaces = data.results.bindings.map(function (e) {
+                                return {
+                                    prefix: e.prefix.value,
+                                    uri: e.namespace.value
+                                };
+                            });
+                        }).error(function (data) {
+                            const msg = getError(data);
+                            toastr.error(msg, $translate.instant('error.getting.namespaces.for.repo'));
                         });
-                    }).error(function (data) {
-                        const msg = getError(data);
-                        toastr.error(msg, $translate.instant('error.getting.namespaces.for.repo'));
-                    });
+                    }
                 }
             });
 
             $scope.$watch('autocompletepromisestatus', function () {
                 if (!$repositories.isActiveRepoFedXType() && angular.isDefined($scope.autocompletepromisestatus)) {
-                    $scope.autocompletepromisestatus.success(function (response) {
-                        element.autoCompleteStatus = !!response;
+                    if (angular.isFunction($scope.autocompletepromisestatus.success)) {
+                        // TODO: Remove this once all controllers using this directive are updated.
+                        $scope.autocompletepromisestatus.success(function (response) {
+                            element.autoCompleteStatus = !!response;
+                            if ($scope.searchInput !== '') {
+                                $scope.onChange();
+                            }
+                        }).error(function () {
+                            toastr.error($translate.instant('explore.error.autocomplete'));
+                        });
+                    } else {
+                        element.autoCompleteStatus = !!$scope.autocompletepromisestatus;
                         if ($scope.searchInput !== '') {
                             $scope.onChange();
                         }
-                    }).error(function () {
-                        toastr.error($translate.instant('explore.error.autocomplete'));
-                    });
+                    }
                 }
             });
 

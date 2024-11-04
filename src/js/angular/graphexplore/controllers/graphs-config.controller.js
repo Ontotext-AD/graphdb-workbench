@@ -1,5 +1,6 @@
 import 'angular/utils/notifications';
 import 'angular/utils/local-storage-adapter';
+import 'angular/core/services/workbench-context.service';
 import {YasqeMode} from "../../models/ontotext-yasgui/yasqe-mode";
 import {RenderingMode} from "../../models/ontotext-yasgui/rendering-mode";
 import {
@@ -12,7 +13,8 @@ import {mapGraphConfigSamplesToGraphConfigs} from "../../rest/mappers/graphs-con
 angular
     .module('graphdb.framework.graphexplore.controllers.graphviz.config', [
         'graphdb.framework.utils.notifications',
-        'graphdb.framework.utils.localstorageadapter'
+        'graphdb.framework.utils.localstorageadapter',
+        'graphdb.core.services.workbench-context'
     ])
     .controller('GraphConfigCtrl', GraphConfigCtrl);
 
@@ -26,14 +28,13 @@ GraphConfigCtrl.$inject = [
     'SparqlRestService',
     '$filter',
     'GraphConfigRestService',
-    'AutocompleteRestService',
     '$routeParams',
     'Notifications',
-    'RDF4JRepositoriesRestService',
     'LocalStorageAdapter',
     'LSKeys',
     '$translate',
-    'ModalService'
+    'ModalService',
+    'WorkbenchContextService'
 ];
 
 function GraphConfigCtrl(
@@ -46,14 +47,13 @@ function GraphConfigCtrl(
     SparqlRestService,
     $filter,
     GraphConfigRestService,
-    AutocompleteRestService,
     $routeParams,
     Notifications,
-    RDF4JRepositoriesRestService,
     LocalStorageAdapter,
     LSKeys,
     $translate,
-    ModalService
+    ModalService,
+    WorkbenchContextService
 ) {
 
     // =========================
@@ -444,9 +444,15 @@ function GraphConfigCtrl(
         toastr.warning(message);
     };
 
-    const checkAutocompleteStatus = () => {
-        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
-    }
+    // TODO: remove or change it to return autocomplete instead promise.
+    const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
+        $scope.getAutocompletePromise = autocompleteEnabled;
+    };
+
+    // TODO: remove or change it to return namespaces instead promise.
+    const onSelectedRepositoryNamespacesUpdated = (repositoryNamespaces) => {
+        $scope.getNamespacesPromise = repositoryNamespaces;
+    };
 
     const validateQueryWithCallback = (successCallback, query, queryType, params, all, oneOf) => {
         if (!query) {
@@ -473,8 +479,6 @@ function GraphConfigCtrl(
 
     const initForConfig = () => {
         getGraphConfigSamples();
-        checkAutocompleteStatus();
-        $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository());
     }
 
     const getQueryEndpoint = () => {
@@ -616,7 +620,8 @@ function GraphConfigCtrl(
     // =========================
 
     const subscriptions = [];
-    subscriptions.push($scope.$on('autocompleteStatus', checkAutocompleteStatus));
+    subscriptions.push(WorkbenchContextService.onSelectedRepositoryNamespacesUpdated(onSelectedRepositoryNamespacesUpdated));
+    subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
     subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
     subscriptions.push($scope.$on('$destroy', unsubscribeListeners));
     subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, repositoryChangedHandler));

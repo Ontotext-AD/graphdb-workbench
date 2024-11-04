@@ -6,7 +6,6 @@ import 'angular/rest/plugins.rest.service';
 import 'angular/rest/monitoring.rest.service';
 import 'angular/rest/license.rest.service';
 import 'angular/rest/repositories.rest.service';
-import 'angular/rest/rdf4j.repositories.rest.service';
 import 'ng-file-upload/dist/ng-file-upload.min';
 import 'ng-file-upload/dist/ng-file-upload-shim.min';
 import 'angular/core/services/jwt-auth.service';
@@ -48,7 +47,6 @@ angular
         'graphdb.framework.rest.sparql.service',
         'graphdb.framework.rest.plugins.service',
         'graphdb.framework.rest.monitoring.service',
-        'graphdb.framework.rest.rdf4j.repositories.service',
         'graphdb.framework.utils.localstorageadapter',
         'graphdb.framework.utils.workbenchsettingsstorageservice',
         'graphdb.framework.core.services.autocomplete',
@@ -65,11 +63,18 @@ angular
     .controller('repositorySizeCtrl', repositorySizeCtrl)
     .controller('uxTestCtrl', uxTestCtrl);
 
-homeCtrl.$inject = ['$scope', '$rootScope', '$http', '$repositories', '$jwtAuth', '$licenseService', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService', 'toastr'];
+homeCtrl.$inject = ['$scope', '$rootScope', '$http', '$repositories', '$jwtAuth', '$licenseService', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'WorkbenchContextService', 'toastr'];
 
-function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseService, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService, toastr) {
+function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseService, AutocompleteRestService, LicenseRestService, RepositoriesRestService, WorkbenchContextService, toastr) {
+
+    // =========================
+    // Public variables
+    // =========================
     $scope.doClear = false;
 
+    // =========================
+    // Public functions
+    // =========================
     $scope.getActiveRepositorySize = function () {
         const repo = $repositories.getActiveRepositoryObject();
         if (!repo) {
@@ -83,51 +88,42 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
         });
     };
 
-    function refreshRepositoryInfo() {
-        if ($scope.getActiveRepository()) {
-            $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
-                .success(function () {
-                    checkAutocompleteStatus();
-                });
-            // Getting the repository size should not be related to license
-            $scope.getActiveRepositorySize();
-        }
-    }
-
-    function checkAutocompleteStatus() {
-        if ($licenseService.isLicenseValid()) {
-            $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
-        }
-    }
-
-    $scope.$on('autocompleteStatus', function () {
-        checkAutocompleteStatus();
-    });
-
-    // Rather then rely on securityInit we monitory repositoryIsSet which is guaranteed to be called
-    // after security was initialized. This way we avoid a race condition when the newly logged in
-    // user doesn't have read access to the active repository.
-    $scope.$on('repositoryIsSet', refreshRepositoryInfo);
-
-    $scope.$on('$routeChangeSuccess', function ($event, current, previous) {
-        if (previous) {
-            // If previous is defined we got here through navigation, hence security is already
-            // initialized and its safe to refresh the repository info.
-            if ($jwtAuth.isAuthenticated() || $jwtAuth.isFreeAccessEnabled()) {
-                // Security is OFF or security is ON but we are authenticated
-                refreshRepositoryInfo();
-            } else {
-                // Security is ON and we aren't authenticated, redirect to login page
-                $rootScope.redirectToLogin();
-            }
-        }
-    });
-
     $scope.onKeyDown = function (event) {
         if (event.keyCode === 27) {
             $scope.doClear = true;
         }
     };
+
+    // =================================
+    // Subscriptions and event handlers
+    // =================================
+    const subscriptions = [];
+
+    // TODO: remove or change it to return namespaces instead promise.
+    const onSelectedRepositoryNamespacesUpdated = (repositoryNamespaces) => {
+        $scope.getNamespacesPromise = repositoryNamespaces;
+    };
+
+    // TODO: remove or change it to return autocomplete instead promise.
+    const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
+        $scope.getAutocompletePromise = autocompleteEnabled;
+    };
+
+    subscriptions.push(WorkbenchContextService.onSelectedRepositoryNamespacesUpdated(onSelectedRepositoryNamespacesUpdated));
+    subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
+
+    $scope.$on('$destroy', () => subscriptions.forEach((subscription) => subscription()));
+
+    $scope.$on('$routeChangeSuccess', function ($event, current, previous) {
+        if (previous) {
+            // If previous is defined we got here through navigation, hence security is already
+            // initialized and its safe to refresh the repository info.
+            if (!($jwtAuth.isAuthenticated() || $jwtAuth.isFreeAccessEnabled())) {
+                // Security is ON and we aren't authenticated, redirect to login page
+                $rootScope.redirectToLogin();
+            }
+        }
+    });
 
 }
 

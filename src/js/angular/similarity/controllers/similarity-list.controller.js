@@ -1,3 +1,4 @@
+import 'angular/core/services/workbench-context.service';
 import {decodeHTML} from "../../../../app";
 import {SimilaritySearchType} from "../../models/similarity/similarity-search-type";
 import {SimilarityResultType} from "../../models/similarity/similarity-result-type";
@@ -8,7 +9,7 @@ import {SimilaritySearch} from "../../models/similarity/similarity-search";
 import {RenderingMode} from "../../models/ontotext-yasgui/rendering-mode";
 
 angular
-    .module('graphdb.framework.similarity.controllers.list', [])
+    .module('graphdb.framework.similarity.controllers.list', ['graphdb.core.services.workbench-context'])
     .controller('SimilarityCtrl', SimilarityCtrl);
 
 SimilarityCtrl.$inject = [
@@ -25,7 +26,8 @@ SimilarityCtrl.$inject = [
     'productInfo',
     'RDF4JRepositoriesRestService',
     '$translate',
-    'SparqlRestService'
+    'SparqlRestService',
+    'WorkbenchContextService'
 ];
 
 function SimilarityCtrl(
@@ -42,7 +44,8 @@ function SimilarityCtrl(
     productInfo,
     RDF4JRepositoriesRestService,
     $translate,
-    SparqlRestService) {
+    SparqlRestService,
+    WorkbenchContextService) {
 
     const PREFIX = 'http://www.ontotext.com/graphdb/similarity/';
     const PREFIX_PREDICATION = 'http://www.ontotext.com/graphdb/similarity/psi/';
@@ -308,10 +311,14 @@ function SimilarityCtrl(
         return '<' + iri + '>';
     };
 
-    const checkAutocompleteStatus = () => {
-        if ($licenseService.isLicenseValid()) {
-            $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
-        }
+    // TODO: remove or change it to return namespaces instead promise.
+    const onSelectedRepositoryNamespacesUpdated = (repositoryNamespaces) => {
+        $scope.getNamespacesPromise = repositoryNamespaces;
+    };
+
+    // TODO: remove or change it to return autocomplete instead promise.
+    const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
+        $scope.getAutocompletePromise = autocompleteEnabled;
     };
 
     const checkIsGraphDBRepository = () => {
@@ -342,7 +349,8 @@ function SimilarityCtrl(
         subscriptions.forEach((subscription) => subscription());
     };
 
-    subscriptions.push($scope.$on('autocompleteStatus', checkAutocompleteStatus));
+    subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
+    subscriptions.push(WorkbenchContextService.onSelectedRepositoryNamespacesUpdated(onSelectedRepositoryNamespacesUpdated));
 
     const searchTypeChangeHandler = () => {
         $scope.empty = true;
