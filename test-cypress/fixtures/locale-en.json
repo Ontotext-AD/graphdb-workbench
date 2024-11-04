@@ -1093,6 +1093,7 @@
     "resource.memory.heap.label": "Heap memory usage",
     "resource.memory.heap.tooltip": "Shows the heap memory used by GraphDB. The heap memory is the main memory allocated for keeping the database running and it is also used for any memory-intensive operations when needed. Approaching the maximum heap size can slow down GraphDB",
     "resource.memory.heap.max": "Maximum heap size: ",
+    "resource.memory.non_heap.max": "Maximum off-heap size: ",
     "resource.memory.non_heap.label": "Off-heap memory usage",
     "resource.memory.non_heap.tooltip": "Shows the off-heap memory used by GraphDB. The off-heap memory is used only for certain structures and should not grow substantially with time",
     "resource.memory.committed": "Committed memory",

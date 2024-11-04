@@ -1093,6 +1093,7 @@
     "resource.memory.heap.label": "Utilisation de la mémoire du tas",
     "resource.memory.heap.tooltip": "Montre la mémoire du tas utilisée par GraphDB. La mémoire du tas est la mémoire principale allouée pour faire fonctionner la base de données et elle est également utilisée pour toutes les opérations gourmandes en mémoire lorsque cela est nécessaire. L'approche de la taille maximale du tas peut ralentir GraphDB",
     "resource.memory.heap.max": "Taille maximale du tas : ",
+    "resource.memory.non_heap.max": "Taille maximale hors-heap : ",
     "resource.memory.non_heap.label": "Utilisation de la mémoire hors-heap",
     "resource.memory.non_heap.tooltip": "Montre la mémoire hors-heap utilisée par GraphDB. La mémoire off-heap n'est utilisée que pour certaines structures et ne devrait pas augmenter de façon substantielle avec le temps",
     "resource.memory.committed": "La mémoire engagée",
