@@ -72,7 +72,7 @@ function WorkbenchContextService(EventEmitterService) {
         if (angular.isFunction(callback)) {
             callback(getSelectedRepositoryId());
         }
-        return EventEmitterService.subscribeSync(WorkbenchEventName.AUTOCOMPLETE_ENABLED_UPDATED, (payload) => callback(payload));
+        return EventEmitterService.subscribeSync(WorkbenchEventName.SELECTED_REPOSITORY_ID_UPDATED, (payload) => callback(payload));
     };
 
     /**
@@ -138,7 +138,7 @@ function WorkbenchContextService(EventEmitterService) {
         if (angular.isFunction(callback)) {
             callback(getSelectedRepositoryNamespaces());
         }
-        return EventEmitterService.subscribeSync(WorkbenchEventName.AUTOCOMPLETE_ENABLED_UPDATED, (payload) => callback(payload));
+        return EventEmitterService.subscribeSync(WorkbenchEventName.SELECTED_REPOSITORY_NAMESPACES_UPDATED, (payload) => callback(payload));
     };
 
     const resetContext = () => {

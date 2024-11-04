@@ -986,7 +986,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $rootScope.$on("repositoryIsSet", onRepositoriesChanged);
     window.addEventListener('storage', (event) => {
         if ('ls.' + LSKeys.AUTOCOMPLETE_ENABLED === event.key) {
-            WorkbenchContextService.setAutocompleteEnabled(event.newValue);
+            WorkbenchContextService.setAutocompleteEnabled(event.newValue === 'true');
         } else if ('ls.' + LSKeys.REPOSITORY_ID === event.key) {
             onRepositoriesChanged();
         }
