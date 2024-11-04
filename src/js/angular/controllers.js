@@ -104,9 +104,8 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
         $scope.getNamespacesPromise = repositoryNamespaces;
     };
 
-    // TODO: remove or change it to return autocomplete instead promise.
     const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
-        $scope.getAutocompletePromise = autocompleteEnabled;
+        $scope.isAutocompleteEnabled = autocompleteEnabled;
     };
 
     subscriptions.push(WorkbenchContextService.onSelectedRepositoryNamespacesUpdated(onSelectedRepositoryNamespacesUpdated));

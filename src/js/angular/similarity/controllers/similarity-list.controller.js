@@ -277,7 +277,6 @@ function SimilarityCtrl(
     };
 
     const init = () => {
-        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
         const activeRepository = $scope.getActiveRepository();
         if (activeRepository && $scope.activeRepository !== activeRepository) {
             $scope.canEditRepo = $scope.canWriteActiveRepo();
@@ -316,9 +315,8 @@ function SimilarityCtrl(
         $scope.getNamespacesPromise = repositoryNamespaces;
     };
 
-    // TODO: remove or change it to return autocomplete instead promise.
     const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
-        $scope.getAutocompletePromise = autocompleteEnabled;
+        $scope.isAutocompleteEnabled = autocompleteEnabled;
     };
 
     const checkIsGraphDBRepository = () => {

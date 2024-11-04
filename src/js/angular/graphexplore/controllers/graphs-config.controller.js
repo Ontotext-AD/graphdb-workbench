@@ -87,7 +87,7 @@ function GraphConfigCtrl(
     /**
      * @type {Promise|undefined}
      */
-    $scope.getAutocompletePromise = undefined;
+    $scope.isAutocompleteEnabled = undefined;
     /**
      * @type {Promise|undefined}
      */
@@ -444,9 +444,8 @@ function GraphConfigCtrl(
         toastr.warning(message);
     };
 
-    // TODO: remove or change it to return autocomplete instead promise.
     const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
-        $scope.getAutocompletePromise = autocompleteEnabled;
+        $scope.isAutocompleteEnabled = autocompleteEnabled;
     };
 
     // TODO: remove or change it to return namespaces instead promise.

@@ -57,9 +57,8 @@ function rdfResourceSearchDirective($rootScope, AutocompleteRestService, RDF4JRe
                 $scope.getNamespacesPromise = repositoryNamespaces;
             };
 
-            // TODO maybe we can remove it
             const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
-                $scope.getAutocompletePromise = autocompleteEnabled;
+                $scope.isAutocompleteEnabled = autocompleteEnabled;
             };
 
             // =========================

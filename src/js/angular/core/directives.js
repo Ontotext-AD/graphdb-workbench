@@ -293,7 +293,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
         restrict: 'EA',
         scope: {
             namespacespromise: '=',
-            autocompletepromisestatus: '=',
+            isAutocompleteEnabled: '=',
             textButton: '@',
             visualButton: '@',
             textCallback: '&',
@@ -372,24 +372,10 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 }
             });
 
-            $scope.$watch('autocompletepromisestatus', function () {
-                if (!$repositories.isActiveRepoFedXType() && angular.isDefined($scope.autocompletepromisestatus)) {
-                    if (angular.isFunction($scope.autocompletepromisestatus.success)) {
-                        // TODO: Remove this once all controllers using this directive are updated.
-                        $scope.autocompletepromisestatus.success(function (response) {
-                            element.autoCompleteStatus = !!response;
-                            if ($scope.searchInput !== '') {
-                                $scope.onChange();
-                            }
-                        }).error(function () {
-                            toastr.error($translate.instant('explore.error.autocomplete'));
-                        });
-                    } else {
-                        element.autoCompleteStatus = !!$scope.autocompletepromisestatus;
-                        if ($scope.searchInput !== '') {
-                            $scope.onChange();
-                        }
-                    }
+            $scope.$watch('isAutocompleteEnabled', function () {
+                element.autoCompleteStatus = !!$scope.isAutocompleteEnabled;
+                if ($scope.searchInput !== '') {
+                    $scope.onChange();
                 }
             });
 

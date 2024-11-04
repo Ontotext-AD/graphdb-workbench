@@ -319,9 +319,8 @@ function GraphsVisualizationsCtrl(
         $scope.namespaces = repositoryNamespaces.namespaces;
     };
 
-    // TODO: remove or change it to return autocomplete instead promise.
     const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
-        $scope.getAutocompletePromise = autocompleteEnabled;
+        $scope.isAutocompleteEnabled = autocompleteEnabled;
     };
 
     // =========================
