@@ -19,7 +19,7 @@ import {UserRole} from 'angular/utils/user-utils';
 import 'angular/utils/local-storage-adapter';
 import 'angular/utils/workbench-settings-storage-service';
 import 'angular/utils/uri-utils';
-import 'angular/core/services/autocomplete-status.service';
+import 'angular/core/services/autocomplete.service';
 import {decodeHTML} from "../../app";
 import './guides/guides.service';
 import './guides/directives';
@@ -51,7 +51,7 @@ angular
         'graphdb.framework.rest.rdf4j.repositories.service',
         'graphdb.framework.utils.localstorageadapter',
         'graphdb.framework.utils.workbenchsettingsstorageservice',
-        'graphdb.framework.core.services.autocompleteStatus',
+        'graphdb.framework.core.services.autocomplete',
         'graphdb.framework.utils.uriutils',
         'graphdb.framework.guides.directives',
         'graphdb.framework.guides.services',
@@ -134,12 +134,12 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
 mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$licenseService', '$rootScope',
     'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService',
     'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils', '$q', 'GuidesService', '$route', '$window', 'AuthTokenService', 'TrackingService',
-    'WorkbenchContextService', 'RDF4JRepositoriesService', 'AutocompleteRestService'];
+    'WorkbenchContextService', 'RDF4JRepositoriesService', 'AutocompleteService'];
 
 function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $licenseService, $rootScope,
                   productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService,
                   MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q, GuidesService, $route, $window, AuthTokenService, TrackingService,
-                  WorkbenchContextService, RDF4JRepositoriesService, AutocompleteRestService) {
+                  WorkbenchContextService, RDF4JRepositoriesService, AutocompleteService) {
     $scope.descr = $translate.instant('main.gdb.description');
     $scope.documentation = '';
     $scope.menu = $menuItems;
@@ -965,7 +965,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             LocalStorageAdapter.set(LSKeys.AUTOCOMPLETE_ENABLED, false);
             return;
         }
-        AutocompleteRestService.checkAutocompleteStatus()
+        AutocompleteService.checkAutocompleteStatus()
             .then((response) => {
                 WorkbenchContextService.setAutocompleteEnabled(response.data);
                 LocalStorageAdapter.set(LSKeys.AUTOCOMPLETE_ENABLED, response.data);
