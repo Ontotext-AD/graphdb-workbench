@@ -12,7 +12,7 @@ import 'ng-file-upload/dist/ng-file-upload-shim.min';
 import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/repositories.service';
 import 'angular/core/services/license.service';
-import 'angular/core/services/installation-cookie.service';
+import 'angular/core/services/tracking/tracking.service';
 import {UserRole} from 'angular/utils/user-utils';
 import 'angular/utils/local-storage-adapter';
 import 'angular/utils/workbench-settings-storage-service';
@@ -32,7 +32,7 @@ angular
         'graphdb.framework.core.services.jwtauth',
         'graphdb.framework.core.services.repositories',
         'graphdb.framework.core.services.licenseService',
-        'graphdb.framework.core.services.installationCookieService',
+        'graphdb.framework.core.services.trackingService',
         'graphdb.framework.core.services.theme-service',
         'ngCookies',
         'ngFileUpload',
@@ -128,11 +128,11 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
 
 mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$licenseService', '$rootScope',
     'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService',
-    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils', '$q', 'GuidesService', '$route', '$window', 'AuthTokenService'];
+    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils', '$q', 'GuidesService', '$route', '$window', 'AuthTokenService', 'TrackingService'];
 
 function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $licenseService, $rootScope,
                   productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService,
-                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q, GuidesService, $route, $window, AuthTokenService) {
+                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q, GuidesService, $route, $window, AuthTokenService, TrackingService) {
     $scope.descr = $translate.instant('main.gdb.description');
     $scope.documentation = '';
     $scope.menu = $menuItems;
@@ -212,7 +212,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }, 400);
         if (previous) {
             // Recheck license status on navigation within the workbench (security is already inited)
-            $licenseService.checkLicenseStatus();
+            $licenseService.checkLicenseStatus().then(() => TrackingService.init());
         }
     });
 
@@ -854,9 +854,13 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                     // There are many places where setTimeout is used, see $jwtAuth#authenticate and $jwtAuth#setAuthHeaders.
                     setTimeout(() => $scope.getSavedQueries(), 500);
                 });
-            $licenseService.checkLicenseStatus();
+            $licenseService.checkLicenseStatus().then(() => TrackingService.init());
         }
     });
+
+    $scope.isTrackingAllowed = function () {
+        return TrackingService.isTrackingAllowed();
+    };
 
     $scope.getProductType = function () {
         return $licenseService.productType();

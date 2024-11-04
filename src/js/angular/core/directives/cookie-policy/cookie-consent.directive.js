@@ -1,73 +1,77 @@
+import {CookiePolicyModalController} from "./cookie-policy-modal-controller";
+
 const modules = [];
 
 angular
     .module('graphdb.framework.core.directives.cookie-consent', modules)
     .directive('cookieConsent', cookieConsent);
 
-cookieConsent.$inject = ['$jwtAuth', '$uibModal', '$licenseService', '$translate', 'toastr'];
+cookieConsent.$inject = ['$jwtAuth', '$uibModal', '$licenseService', '$translate', 'toastr', 'TrackingService'];
 
-function cookieConsent($jwtAuth, $uibModal, $licenseService, $translate, toastr) {
+function cookieConsent($jwtAuth, $uibModal, $licenseService, $translate, toastr, TrackingService) {
     return {
         restrict: 'E',
-        templateUrl:'js/angular/core/templates/cookie-policy/cookie-consent.html',
+        templateUrl: 'js/angular/core/templates/cookie-policy/cookie-consent.html',
         link: ($scope) => {
+            // =========================
+            // Private variables
+            // =========================
+            let cookieConsent = undefined;
+
             // =========================
             // Public variables
             // =========================
             $scope.showCookieConsent = false;
 
             // =========================
-            // Private variables
-            // =========================
-            let appSettings = undefined;
-            let username = undefined;
-
-            // =========================
             // Public functions
             // =========================
             $scope.acceptConsent = () => {
-                appSettings.COOKIE_CONSENT = true;
-                $jwtAuth.updateUserData({appSettings, username}).finally(() => $scope.showCookieConsent = false);
+                TrackingService.updateCookieConsent(cookieConsent.setPolicyAccepted(true))
+                    .then(() => $scope.showCookieConsent = false);
             };
 
             $scope.showCookiePolicy = () => {
-                $scope.showCookieConsent = false;
                 $uibModal.open({
                     templateUrl: 'js/angular/core/templates/cookie-policy/cookie-policy.html',
-                    controller: ['$scope', function ($scope) {
-                        $scope.close = () => {
-                            $scope.$close(false);
-                        };
-                    }],
+                    controller: CookiePolicyModalController,
                     backdrop: 'static',
-                    windowClass: 'cookie-policy-modal',
-                    keyboard: false
-                }).result.then(() => $scope.acceptConsent());
+                    keyboard: false,
+                    windowClass: 'cookie-policy-modal'
+                });
             };
 
             // =========================
             // Private functions
             // =========================
             const init = () => {
-                $licenseService.checkLicenseStatus().then(() => {
-                    if ($licenseService.isTrackingAllowed()) {
-                        return $jwtAuth.getPrincipal();
-                    }
-                }).then((data) => {
-                    if (!data) {
-                        return;
-                    }
-                    appSettings = data.appSettings;
-                    username = data.username;
-
-                    if (!appSettings.COOKIE_CONSENT) {
-                        $scope.showCookieConsent = true;
-                    }
-                }).catch((error) => {
-                    const msg = getError(error.data, error.status);
-                    toastr.error(msg, $translate.instant('common.error'));
-                });
+                TrackingService.getCookieConsent()
+                    .then((consent) => {
+                        cookieConsent = consent;
+                        $scope.showCookieConsent = !consent.getPolicyAccepted();
+                    })
+                    .catch((error) => {
+                        const msg = getError(error.data, error.status);
+                        toastr.error(msg, $translate.instant('common.error'));
+                    });
             };
+
+            const securityInit = (event, securityEnabled, userLoggedIn) => {
+                if (userLoggedIn) {
+                    init();
+                } else {
+                    $scope.showCookieConsent = false;
+                }
+            };
+
+            // =========================
+            // Subscriptions
+            // =========================
+            const securityInitListener = $scope.$on('securityInit', securityInit);
+
+            $scope.$on('$destroy', () => {
+                securityInitListener();
+            });
 
             // =========================
             // Initialization

@@ -9,7 +9,6 @@ import 'angular/core/interceptors/authentication.interceptor';
 import 'angular/core/directives/rdfresourcesearch/rdf-resource-search.directive';
 import 'angular/core/directives/languageselector/language-selector.directive';
 import 'angular/core/directives/copy-to-clipboard/copy-to-clipboard.directive';
-import 'angular/core/directives/cookie-policy/cookie-consent.directive';
 import 'angular/core/directives/angulartooltips/angular-tooltips.js';
 import 'angular/core/directives/uppercased.directive';
 import 'angular/core/directives/operations-statuses-monitor/operations-statuses-monitor.directive';
@@ -40,14 +39,11 @@ const modules = [
     'graphdb.framework.core.directives.rdfresourcesearch.rdfresourcesearch',
     'graphdb.framework.core.directives.languageselector.languageselector',
     'graphdb.framework.core.directives.copytoclipboard.copytoclipboard',
-    'graphdb.framework.core.directives.cookie-consent',
     'graphdb.framework.core.directives.angular-tooltips',
     'graphdb.framework.core.directives.uppercased',
     'graphdb.framework.core.directives.prop-indeterminate',
     'graphdb.framework.core.directives.page-info-tooltip',
     'graphdb.framework.guides.services',
-    'graphdb.framework.core.services.licenseService',
-    'graphdb.framework.core.services.installationCookieService',
     'graphdb.framework.core.directives.operationsstatusesmonitor',
     'graphdb.framework.core.directives.autocomplete',
     'ngCustomElement'
@@ -201,8 +197,8 @@ const moduleDefinition = function (productInfo, translations) {
     workbench.constant('productInfo', productInfo);
 
     // we need to inject $jwtAuth here in order to init the service before everything else
-    workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', 'LSKeys', 'GuidesService', '$licenseService', 'InstallationCookieService',
-        function ($rootScope, $route, toastr, $sce, $translate, ThemeService, WorkbenchSettingsStorageService, LSKeys, GuidesService, $licenseService, InstallationCookieService) {
+    workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', 'LSKeys', 'GuidesService',
+        function ($rootScope, $route, toastr, $sce, $translate, ThemeService, WorkbenchSettingsStorageService, LSKeys, GuidesService) {
             $rootScope.$on('$routeChangeSuccess', function () {
                 updateTitleAndHelpInfo();
 
@@ -231,16 +227,6 @@ const moduleDefinition = function (productInfo, translations) {
             ThemeService.applyDarkThemeMode();
 
             GuidesService.init();
-
-            // Checks license status and adds tracking code and cookies when free/evaluation license
-            $licenseService.checkLicenseStatus().then(() => {
-                if ($licenseService.isTrackingAllowed()) {
-                    const installationId = $licenseService.license().installationId || '';
-                    InstallationCookieService.setIfAbsent(installationId);
-                } else {
-                    InstallationCookieService.remove();
-                }
-            });
         }]);
 
     workbench.filter('titlecase', function () {

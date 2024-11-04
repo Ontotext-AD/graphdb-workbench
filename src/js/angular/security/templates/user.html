@@ -141,8 +141,8 @@
 							{{'security.ignore.shared.queries' | translate}}
 						</label>
 
-                        <label class="d-block cookie-policy-link" ng-if="showCookiePolicyLink">
-                            <a href="#" ng-click="showCookiePolicy()">{{'cookie.cookie_policy_url_label' | translate}}</a>
+                        <label class="d-block" ng-if="showCookiePolicyLink">
+                            <button class="btn btn-secondary show-cookie-policy-btn" ng-click="showCookiePolicy($event)">{{'cookie.cookie_policy_url_label' | translate}}</button>
                         </label>
 
                     </div>

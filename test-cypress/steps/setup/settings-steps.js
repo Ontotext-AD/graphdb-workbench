@@ -3,12 +3,12 @@ export class SettingsSteps {
         cy.visit('/settings');
     }
 
-    static getCookiePolicyLink() {
-        return cy.get('.cookie-policy-link a');
+    static getCookiePolicyButton() {
+        return cy.get('.show-cookie-policy-btn');
     }
 
     static clickCookiePolicyLink() {
-        return SettingsSteps.getCookiePolicyLink().click();
+        return SettingsSteps.getCookiePolicyButton().click();
     }
 
     static getCookiePolicyModal() {
