@@ -962,9 +962,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             return;
         }
         AutocompleteService.checkAutocompleteStatus()
-            .then((response) => {
-                WorkbenchContextService.setAutocompleteEnabled(response.data);
-                LocalStorageAdapter.set(LSKeys.AUTOCOMPLETE_ENABLED, response.data);
+            .then((autocompleteEnabled) => {
+                WorkbenchContextService.setAutocompleteEnabled(autocompleteEnabled);
+                LocalStorageAdapter.set(LSKeys.AUTOCOMPLETE_ENABLED, autocompleteEnabled);
             });
     };
 
