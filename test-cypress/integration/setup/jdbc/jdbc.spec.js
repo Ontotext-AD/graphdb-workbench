@@ -1,7 +1,7 @@
-import {JdbcSteps} from "../../steps/setup/jdbc-steps";
-import {JdbcCreateSteps} from "../../steps/setup/jdbc-create-steps";
-import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
-import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
+import {JdbcSteps} from "../../../steps/setup/jdbc-steps";
+import {JdbcCreateSteps} from "../../../steps/setup/jdbc-create-steps";
+import {ModalDialogSteps} from "../../../steps/modal-dialog-steps";
+import {YasqeSteps} from "../../../steps/yasgui/yasqe-steps";
 
 const FILE_TO_IMPORT = '200-row-allianz.ttl';
 const EDIT_QUERY = "PREFIX ex:<http://example.com/#>\n" +

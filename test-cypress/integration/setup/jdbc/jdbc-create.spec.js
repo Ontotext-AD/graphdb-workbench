@@ -1,12 +1,12 @@
-import {JdbcSteps} from "../../steps/setup/jdbc-steps";
-import {JdbcCreateSteps} from "../../steps/setup/jdbc-create-steps";
-import {ToasterSteps} from "../../steps/toaster-steps";
-import {YasrSteps} from "../../steps/yasgui/yasr-steps";
-import {ModalDialogSteps, VerifyConfirmationDialogOptions} from "../../steps/modal-dialog-steps";
-import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
-import {MainMenuSteps} from "../../steps/main-menu-steps";
-import {RepositorySelectorSteps} from "../../steps/repository-selector-steps";
-import {YasguiLoader} from "../../steps/yasgui/yasgui-loader";
+import {JdbcSteps} from "../../../steps/setup/jdbc-steps";
+import {JdbcCreateSteps} from "../../../steps/setup/jdbc-create-steps";
+import {ToasterSteps} from "../../../steps/toaster-steps";
+import {YasrSteps} from "../../../steps/yasgui/yasr-steps";
+import {ModalDialogSteps, VerifyConfirmationDialogOptions} from "../../../steps/modal-dialog-steps";
+import {YasqeSteps} from "../../../steps/yasgui/yasqe-steps";
+import {MainMenuSteps} from "../../../steps/main-menu-steps";
+import {RepositorySelectorSteps} from "../../../steps/repository-selector-steps";
+import {YasguiLoader} from "../../../steps/yasgui/yasgui-loader";
 
 const FILE_TO_IMPORT = '200-row-allianz.ttl';
 const DEFAULT_QUERY = 'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n' +
@@ -229,7 +229,6 @@ describe('JDBC configuration', () => {
         // Then I expect the new page is loaded.
         JdbcSteps.verifyUrl();
     });
-
 
     it('should display confirm message when configuration name is changed', () => {
         // When I open the create JDBC configuration page,
