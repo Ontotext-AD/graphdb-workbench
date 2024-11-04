@@ -99,9 +99,8 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
     // =================================
     const subscriptions = [];
 
-    // TODO: remove or change it to return namespaces instead promise.
     const onSelectedRepositoryNamespacesUpdated = (repositoryNamespaces) => {
-        $scope.getNamespacesPromise = repositoryNamespaces;
+        $scope.repositoryNamespaces = repositoryNamespaces;
     };
 
     const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {

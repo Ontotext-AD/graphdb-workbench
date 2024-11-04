@@ -153,7 +153,7 @@
 
 			<search-resource-input
 					ng-if="!similaritySearchType.isSearchEntityPredicateType() && !similaritySearchType.isSearchAnalogicalType(searchType)"
-					namespacespromise="getNamespacesPromise"
+                    repository-namespaces="repositoryNamespaces"
                     is-autocomplete-enabled="isAutocompleteEnabled"
 					placeholder="{{'search.rdf.resources.for.rdf.entity.placeholder' | translate}}"
 					text-button=""
@@ -167,7 +167,7 @@
 			<div class="row" ng-if="similaritySearchType.isSearchEntityPredicateType(searchType)">
 				<div class="col-md-6 pr-0">
 					<search-resource-input
-							namespacespromise="getNamespacesPromise"
+                            repository-namespaces="repositoryNamespaces"
                             is-autocomplete-enabled="isAutocompleteEnabled"
 							placeholder="{{'search.rdf.for.subject.placeholder' | translate}}"
 							text-button=""
@@ -182,7 +182,7 @@
 
 				<div class="col-md-6">
 					<search-resource-input
-							namespacespromise="getNamespacesPromise"
+                            repository-namespaces="repositoryNamespaces"
                             is-autocomplete-enabled="isAutocompleteEnabled"
 							placeholder="{{'search.rdf.for.predicate.placeholder' | translate}}"
 							text-button=""
@@ -198,7 +198,7 @@
 			<div class="row" ng-if="similaritySearchType.isSearchAnalogicalType(searchType)">
 				<div class="col-md-6 pr-0">
 					<search-resource-input
-							namespacespromise="getNamespacesPromise"
+                            repository-namespaces="repositoryNamespaces"
                             is-autocomplete-enabled="isAutocompleteEnabled"
 							placeholder="{{'search.rdf.for.given.subject.placeholder' | translate}}"
 							text-button=""
@@ -212,7 +212,7 @@
 
 				<div class="col-md-6 pr-0">
 					<search-resource-input
-							namespacespromise="getNamespacesPromise"
+                            repository-namespaces="repositoryNamespaces"
                             is-autocomplete-enabled="isAutocompleteEnabled"
 							placeholder="{{'search.rdf.for.given.object.placeholder' | translate}}"
 							text-button=""
@@ -228,7 +228,7 @@
 			<div class="row" ng-if="similaritySearchType.isSearchAnalogicalType(searchType)">
 				<div class="col-md-12 mt-2">
 					<search-resource-input
-							namespacespromise="getNamespacesPromise"
+                            repository-namespaces="repositoryNamespaces"
                             is-autocomplete-enabled="isAutocompleteEnabled"
 							placeholder="{{'search.rdf.for.search.subject.placeholder' | translate}}"
 							text-button=""

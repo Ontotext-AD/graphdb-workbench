@@ -313,9 +313,8 @@ function GraphsVisualizationsCtrl(
         return namespacePrefix ? (namespacePrefix.prefix + ":" + iri.substring(namespacePrefix.uri.length)) : iri;
     };
 
-    // TODO: remove or change it to return namespaces instead promise.
     const onSelectedRepositoryNamespacesUpdated = (repositoryNamespaces) => {
-        $scope.getNamespacesPromise = repositoryNamespaces;
+        $scope.repositoryNamespaces = repositoryNamespaces;
         $scope.namespaces = repositoryNamespaces.namespaces;
     };
 

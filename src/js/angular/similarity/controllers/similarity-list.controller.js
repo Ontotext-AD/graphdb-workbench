@@ -310,9 +310,8 @@ function SimilarityCtrl(
         return '<' + iri + '>';
     };
 
-    // TODO: remove or change it to return namespaces instead promise.
     const onSelectedRepositoryNamespacesUpdated = (repositoryNamespaces) => {
-        $scope.getNamespacesPromise = repositoryNamespaces;
+        $scope.repositoryNamespaces = repositoryNamespaces;
     };
 
     const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {

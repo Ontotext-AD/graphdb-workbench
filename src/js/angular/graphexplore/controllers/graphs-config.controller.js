@@ -85,13 +85,13 @@ function GraphConfigCtrl(
         sameAs: $scope.newConfig.startQuerySameAs
     };
     /**
-     * @type {Promise|undefined}
+     * @type {boolean|undefined}
      */
     $scope.isAutocompleteEnabled = undefined;
     /**
-     * @type {Promise|undefined}
+     * @type {NamespacesListModel|undefined}
      */
-    $scope.getNamespacesPromise = undefined;
+    $scope.repositoryNamespaces = undefined;
 
     $scope.tabsViewModel = [];
 
@@ -448,9 +448,8 @@ function GraphConfigCtrl(
         $scope.isAutocompleteEnabled = autocompleteEnabled;
     };
 
-    // TODO: remove or change it to return namespaces instead promise.
     const onSelectedRepositoryNamespacesUpdated = (repositoryNamespaces) => {
-        $scope.getNamespacesPromise = repositoryNamespaces;
+        $scope.repositoryNamespaces = repositoryNamespaces;
     };
 
     const validateQueryWithCallback = (successCallback, query, queryType, params, all, oneOf) => {
