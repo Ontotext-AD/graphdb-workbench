@@ -1,5 +1,7 @@
+import 'angular/rest/autocomplete.rest.service';
+
 angular
-    .module('graphdb.framework.core.services.autocomplete', [])
+    .module('graphdb.framework.core.services.autocomplete', ['graphdb.framework.rest.autocomplete.service'])
     .factory('AutocompleteService', AutocompleteService);
 
 AutocompleteService.$inject = ['AutocompleteRestService', 'LSKeys', 'LocalStorageAdapter'];
