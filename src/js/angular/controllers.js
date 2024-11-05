@@ -97,7 +97,7 @@ function homeCtrl($scope,
     // =========================
     // Public functions
     // =========================
-    $scope.getActiveRepositorySize = function () {
+    $scope.getActiveRepositorySize = () => {
         const repo = $repositories.getActiveRepositoryObject();
         if (!repo) {
             return;
@@ -146,7 +146,10 @@ function homeCtrl($scope,
         if (previous) {
             // If previous is defined we got here through navigation, hence security is already
             // initialized and its safe to refresh the repository info.
-            if (!($jwtAuth.isAuthenticated() || $jwtAuth.isFreeAccessEnabled())) {
+            if ($jwtAuth.isAuthenticated() || $jwtAuth.isFreeAccessEnabled()) {
+                // Security is OFF or security is ON but we are authenticated
+                $scope.getActiveRepositorySize();
+            } else {
                 // Security is ON and we aren't authenticated, redirect to login page
                 $rootScope.redirectToLogin();
             }
