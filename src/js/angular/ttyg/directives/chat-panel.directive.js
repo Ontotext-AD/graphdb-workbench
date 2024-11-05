@@ -104,6 +104,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             $scope.regenerateQuestion = (chatItem) => {
                 const regenerateChatItem = getEmptyChatItem();
                 regenerateChatItem.setQuestionMessage(chatItem.getQuestionMessage());
+                regenerateChatItem.question.timestamp = Date.now();
                 $scope.askingChatItem = regenerateChatItem;
                 askQuestion(regenerateChatItem);
                 scrollToBottom();
@@ -124,6 +125,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             $scope.onAskHowDeliveredAnswer = () => {
                 const askHowDerivedAnswerChatItem = getEmptyChatItem();
                 askHowDerivedAnswerChatItem.setQuestionMessage($translate.instant('ttyg.chat_panel.btn.derive_answer.label'));
+                askHowDerivedAnswerChatItem.question.timestamp = Date.now();
                 $scope.askingChatItem = cloneDeep(askHowDerivedAnswerChatItem);
                 askQuestion(askHowDerivedAnswerChatItem);
                 scrollToBottom();
