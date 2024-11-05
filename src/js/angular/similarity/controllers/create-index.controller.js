@@ -195,32 +195,34 @@ function CreateSimilarityIdxCtrl(
     }
 
     $scope.saveSearchQuery = function () {
-        $scope.saveOrUpdateExecuted = true;
-        $scope.savingIndex = true;
-        updateQueryFromEditor($scope.similarityIndexInfo)
-            .then(validateSimilarityIndexName)
-            .then(validateQuery)
-            .then(validateQueryType)
-            .then(validateSearchQuery)
-            .then(validateAnalogicalQuery)
-            .then(saveQuery)
-            .then((isSearchQuery) => {
-                // toastr should be triggered before the redirect because the redirect will remove the toast
-                return Notifications.showToastMessageWithDelay(isSearchQuery ? 'similarity.changed.search.query.msg' : 'similarity.changed.analogical.query.msg');
-            })
-            .then(() => {
-                if (!isDirty) {
+        if (!isDirty) {
+            $location.url('similarity');
+        } else {
+            $scope.saveOrUpdateExecuted = true;
+            $scope.savingIndex = true;
+            updateQueryFromEditor($scope.similarityIndexInfo)
+                .then(validateSimilarityIndexName)
+                .then(validateQuery)
+                .then(validateQueryType)
+                .then(validateSearchQuery)
+                .then(validateAnalogicalQuery)
+                .then(saveQuery)
+                .then((isSearchQuery) => {
+                    // toastr should be triggered before the redirect because the redirect will remove the toast
+                    return Notifications.showToastMessageWithDelay(isSearchQuery ? 'similarity.changed.search.query.msg' : 'similarity.changed.analogical.query.msg');
+                })
+                .then(() => {
                     $location.url('similarity');
-                }
-            })
-            .catch((error) => {
-                if (!(error instanceof SimilarityIndexError)) {
-                    toastr.error(getError(error), $translate.instant('similarity.change.query.error'));
-                }
-            })
-            .finally(() => {
-                $scope.savingIndex = false;
-            });
+                })
+                .catch((error) => {
+                    if (!(error instanceof SimilarityIndexError)) {
+                        toastr.error(getError(error), $translate.instant('similarity.change.query.error'));
+                    }
+                })
+                .finally(() => {
+                    $scope.savingIndex = false;
+                });
+        }
     };
 
     /**
