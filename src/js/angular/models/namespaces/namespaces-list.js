@@ -1,5 +1,10 @@
 export class NamespacesListModel {
     constructor(namespaces = []) {
+        /**
+         *
+         * @type {NamespaceModel[]}
+         * @private
+         */
         this._namespaces = namespaces;
         this.sort();
     }
