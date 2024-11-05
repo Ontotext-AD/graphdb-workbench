@@ -69,6 +69,7 @@ homeCtrl.$inject = ['$scope',
     '$repositories',
     '$jwtAuth',
     '$licenseService',
+    '$translate',
     'AutocompleteRestService',
     'LicenseRestService',
     'RepositoriesRestService',
@@ -82,6 +83,7 @@ function homeCtrl($scope,
                   $repositories,
                   $jwtAuth,
                   $licenseService,
+                  $translate,
                   AutocompleteRestService,
                   LicenseRestService,
                   RepositoriesRestService,
@@ -130,6 +132,10 @@ function homeCtrl($scope,
         RDF4JRepositoriesService.getNamespaces(repositoryId)
             .then((repositoryNamespaces) => {
                 $scope.repositoryNamespaces = repositoryNamespaces;
+            })
+            .catch((error) => {
+                const msg = getError(error);
+                toastr.error(msg, $translate.instant('error.getting.namespaces.for.repo'));
             });
     };
 
@@ -996,6 +1002,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             .then((autocompleteEnabled) => {
                 WorkbenchContextService.setAutocompleteEnabled(autocompleteEnabled);
                 LocalStorageAdapter.set(LSKeys.AUTOCOMPLETE_ENABLED, autocompleteEnabled);
+            })
+            .catch(() => {
+                toastr.error($translate.instant('explore.error.autocomplete'));
             });
     };
 

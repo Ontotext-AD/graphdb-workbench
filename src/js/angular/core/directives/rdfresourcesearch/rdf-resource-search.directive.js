@@ -6,9 +6,27 @@ angular
     .module('graphdb.framework.core.directives.rdfresourcesearch.rdfresourcesearch', modules)
     .directive('rdfResourceSearch', rdfResourceSearchDirective);
 
-rdfResourceSearchDirective.$inject = ['$rootScope', 'AutocompleteRestService', 'RDF4JRepositoriesRestService', '$repositories', '$licenseService', 'WorkbenchContextService', 'RDF4JRepositoriesService'];
+rdfResourceSearchDirective.$inject = [
+    '$rootScope',
+    'AutocompleteRestService',
+    'RDF4JRepositoriesRestService',
+    '$repositories',
+    '$licenseService',
+    '$translate',
+    'toastr',
+    'WorkbenchContextService',
+    'RDF4JRepositoriesService'];
 
-function rdfResourceSearchDirective($rootScope, AutocompleteRestService, RDF4JRepositoriesRestService, $repositories, $licenseService, WorkbenchContextService, RDF4JRepositoriesService) {
+function rdfResourceSearchDirective(
+    $rootScope,
+    AutocompleteRestService,
+    RDF4JRepositoriesRestService,
+    $repositories,
+    $licenseService,
+    $translate,
+    toastr,
+    WorkbenchContextService,
+    RDF4JRepositoriesService) {
     return {
         templateUrl: 'js/angular/core/directives/rdfresourcesearch/templates/rdfResourceSearchTemplate.html',
         restrict: 'AE',
@@ -63,6 +81,10 @@ function rdfResourceSearchDirective($rootScope, AutocompleteRestService, RDF4JRe
                 RDF4JRepositoriesService.getNamespaces(repositoryId)
                     .then((repositoryNamespaces) => {
                         $scope.repositoryNamespaces = repositoryNamespaces;
+                    })
+                    .catch((error) => {
+                        const msg = getError(error);
+                        toastr.error(msg, $translate.instant('error.getting.namespaces.for.repo'));
                     });
             };
 

@@ -327,6 +327,10 @@ function GraphsVisualizationsCtrl(
             .then((repositoryNamespaces) => {
                 $scope.repositoryNamespaces = repositoryNamespaces;
                 $scope.namespaces = repositoryNamespaces.namespaces;
+            })
+            .catch((error) => {
+                const msg = getError(error);
+                toastr.error(msg, $translate.instant('error.getting.namespaces.for.repo'));
             });
     };
 

@@ -324,6 +324,10 @@ function SimilarityCtrl(
         RDF4JRepositoriesService.getNamespaces(repositoryId)
             .then((repositoryNamespaces) => {
                 $scope.repositoryNamespaces = repositoryNamespaces;
+            })
+            .catch((error) => {
+                const msg = getError(error);
+                toastr.error(msg, $translate.instant('error.getting.namespaces.for.repo'));
             });
     };
 

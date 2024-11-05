@@ -1,6 +1,5 @@
 import 'angular/utils/local-storage-adapter';
 import {decodeHTML} from "../../../app";
-import {NamespacesListModel} from "../models/namespaces/namespaces-list";
 
 angular
     .module('graphdb.framework.core.directives', [
