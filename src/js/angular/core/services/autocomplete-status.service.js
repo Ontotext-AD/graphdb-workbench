@@ -15,7 +15,11 @@ function autocompleteStatusService($rootScope, AutocompleteRestService, LocalSto
     that.setAutocompleteStatus(value);
   }, true);
 
-  function refreshAutocompleteStatus() {
+  function refreshAutocompleteStatus(event, eventPayload) {
+      if (!eventPayload.newRepo) {
+          // skip emitting the event if the repository has not changed.
+          return;
+      }
       // Autocomplete is related with an active repository
       if (!$repositories.getActiveRepository() ||
             $repositories.isActiveRepoOntopType() ||

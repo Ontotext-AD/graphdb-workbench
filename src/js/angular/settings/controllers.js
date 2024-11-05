@@ -58,14 +58,15 @@ function ActiveLocationSettingsCtrl($scope, toastr, $uibModalInstance, LicenseRe
     };
 }
 
-LicenseCtrl.$inject = ['$scope', 'LicenseRestService', '$licenseService', 'toastr', '$rootScope', 'ModalService', '$translate'];
+LicenseCtrl.$inject = ['$scope', 'LicenseRestService', '$licenseService', 'toastr', '$rootScope', 'ModalService', '$translate', 'TrackingService'];
 
-function LicenseCtrl($scope, LicenseRestService, $licenseService, toastr, $rootScope, ModalService, $translate) {
+function LicenseCtrl($scope, LicenseRestService, $licenseService, toastr, $rootScope, ModalService, $translate, TrackingService) {
 
     $scope.loadingLicense = function() {
         return $licenseService.loadingLicense();
     };
 
+    // TODO - Check if redundant call and remove
     $licenseService.checkLicenseStatus();
 
     $scope.revertToFree = function () {
@@ -77,7 +78,7 @@ function LicenseCtrl($scope, LicenseRestService, $licenseService, toastr, $rootS
             .then(function () {
                 LicenseRestService.unregisterLicense()
                     .success(function () {
-                        $licenseService.checkLicenseStatus();
+                        $licenseService.checkLicenseStatus().then(() => TrackingService.init());
                     });
             });
     };

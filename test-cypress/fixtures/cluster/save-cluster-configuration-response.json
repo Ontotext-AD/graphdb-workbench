@@ -1,0 +1,10 @@
+{
+    "electionMinTimeout": 5000,
+    "electionRangeTimeout": 3000,
+    "heartbeatInterval": 1500,
+    "messageSizeKB": 64,
+    "verificationTimeout": 1200,
+    "transactionLogMaximumSizeGB": 50,
+    "batchUpdateInterval": 2000,
+    "nodes": ["pc-desktop:7300", "pc-desktop:7301", "pc-desktop:7302"]
+}

@@ -56,10 +56,10 @@
             <p class="text-muted">{{license.typeOfUse}}</p>
             <div class="text-right">
                 <button ng-click="revertToFree()" ng-if="!isLicenseHardcoded() && !isFreeEdition() && isAdmin()"
-                        class="btn btn-secondary">
+                        class="btn btn-secondary revert-to-free-license-btn">
                     {{'revert.to.free' | translate}}
                 </button>
-                <a href="license/register" ng-if="!isLicenseHardcoded() && isAdmin()" class="btn btn-primary">
+                <a href="license/register" ng-if="!isLicenseHardcoded() && isAdmin()" class="btn btn-primary set-new-license-link">
                     {{'core.errors.set.new.license.warning.msg' | translate}}
                 </a>
             </div>
@@ -71,13 +71,11 @@
     </div>
 </div>
 
-<div class="alert alert-warning" ng-if="isLicenseHardcoded() && isAdmin() && !isFreeEdition()">
+<div class="alert alert-warning license-hardcoded-alert-message" ng-if="isLicenseHardcoded() && isAdmin() && !isFreeEdition()">
     {{'license.cannot.be.changed.from.wb.warning' | translate}}
 </div>
 
 <div class="alert alert-warning" ng-if="!isAdmin() && !isFreeEdition()">
     {{'license.admin.authority.constraint' | translate}}
 </div>
-</div>
-
 

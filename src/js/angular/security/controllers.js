@@ -4,6 +4,7 @@ import 'angular/core/services/openid-auth.service';
 import 'angular/rest/security.rest.service';
 import {UserUtils, UserRole, UserType} from 'angular/utils/user-utils';
 import 'angular/aclmanagement/directives/custom-role-prefix.directive';
+import {CookiePolicyModalController} from "../core/directives/cookie-policy/cookie-policy-modal-controller";
 
 const SYSTEM_REPO = 'SYSTEM';
 const READ_REPO = 'READ_REPO';
@@ -113,15 +114,17 @@ const parseAuthorities = function (authorities) {
     };
 };
 
-securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$openIDAuth', '$location', '$rootScope', '$translate',
-    function ($scope, $http, toastr, $jwtAuth, $openIDAuth, $location, $rootScope, $translate) {
+securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$openIDAuth', '$location', '$rootScope', '$translate', 'TrackingService',
+    function ($scope, $http, toastr, $jwtAuth, $openIDAuth, $location, $rootScope, $translate, TrackingService) {
         $scope.username = '';
         $scope.password = '';
 
         // Reinitialize security settings, if failed for some reason
         $jwtAuth.reinitializeSecurity();
 
-        $scope.loginWithOpenID = function() {
+        TrackingService.init();
+
+        $scope.loginWithOpenID = function () {
             $jwtAuth.loginOpenID();
         };
 
@@ -131,11 +134,11 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
             toastr.error($translate.instant('security.auth.token.expired'), $translate.instant('security.login.error'));
         }
 
-        $scope.isGDBLoginEnabled = function() {
+        $scope.isGDBLoginEnabled = function () {
             return $jwtAuth.passwordLoginEnabled;
         };
 
-        $scope.isOpenIDEnabled = function() {
+        $scope.isOpenIDEnabled = function () {
             return $jwtAuth.openIDEnabled;
         };
 
@@ -201,10 +204,10 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window'
                     }
                     $scope.loader = false;
                 }).error(function (data) {
-                    const msg = getError(data);
-                    toastr.error(msg, $translate.instant('common.error'));
-                    $scope.loader = false;
-                });
+                const msg = getError(data);
+                toastr.error(msg, $translate.instant('common.error'));
+                $scope.loader = false;
+            });
         };
         $scope.getUsers();
 
@@ -213,15 +216,12 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window'
         });
 
         $scope.toggleSecurity = function () {
-            $jwtAuth.toggleSecurity(!$jwtAuth.isSecurityEnabled());
-            if ($jwtAuth.isSecurityEnabled()) {
-                const timer = $timeout(function () {
-                    $window.location.reload();
-                }, 500);
-                $scope.$on('$destroy', function () {
-                    $timeout.cancel(timer);
+            $jwtAuth.toggleSecurity(!$jwtAuth.isSecurityEnabled())
+                .then(() => {
+                    if ($jwtAuth.isSecurityEnabled()) {
+                        $window.location.reload();
+                    }
                 });
-            }
         };
 
         $scope.toggleFreeAccess = function (updateFreeAccess) {
@@ -427,7 +427,7 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
             [WRITE_REPO]: {}
         };
 
-        $scope.validatePassword = function() {
+        $scope.validatePassword = function () {
             if ($scope.noPassword) {
                 $scope.passwordError = '';
                 $scope.confirmPasswordError = '';
@@ -449,7 +449,7 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
             return true;
         };
 
-        $scope.isLocalAuthentication = function() {
+        $scope.isLocalAuthentication = function () {
             return $jwtAuth.getAuthImplementation() === 'Local';
         };
 
@@ -467,7 +467,7 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
             }
         };
 
-        $scope.setNoPassword = function() {
+        $scope.setNoPassword = function () {
             if ($scope.noPassword) {
                 $scope.user.password = '';
                 $scope.user.confirmpassword = '';
@@ -521,7 +521,7 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
          *
          * @param {Object} event
          */
-        $scope.checkUserInput = function(event) {
+        $scope.checkUserInput = function (event) {
             // If the key pressed is the backspace or delete key, the tag error message will be hidden
             if (event.keyCode === 8 || event.keyCode === 46) {
                 $scope.isRoleValid = true;
@@ -531,7 +531,7 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
         /**
          * Sets the role validity flag to true.
          */
-        $scope.removeErrorOnCut = function() {
+        $scope.removeErrorOnCut = function () {
             // If the user cuts text from the field, the tag error message will be hidden
             $scope.isRoleValid = true;
         };
@@ -570,18 +570,18 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
         };
 
         $scope.submit = function () {
-                if ($scope.noPassword && $scope.userType === UserType.ADMIN) {
-                    ModalService.openSimpleModal({
-                        title: $translate.instant('security.create.admin'),
-                        message: $translate.instant('security.admin.login.warning'),
-                        warning: true
-                    }).result.then(function () {
-                        $scope.createUser();
-                    });
-                } else {
+            if ($scope.noPassword && $scope.userType === UserType.ADMIN) {
+                ModalService.openSimpleModal({
+                    title: $translate.instant('security.create.admin'),
+                    message: $translate.instant('security.admin.login.warning'),
+                    warning: true
+                }).result.then(function () {
                     $scope.createUser();
-                }
-            };
+                });
+            } else {
+                $scope.createUser();
+            }
+        };
 
         $scope.createUserHttp = function () {
             $scope.loader = true;
@@ -748,47 +748,52 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
 securityCtrl.controller('RolesMappingController', ['$scope', 'toastr', 'SecurityRestService', '$translate',
     function ($scope, toastr, SecurityRestService, $translate) {
 
-    $scope.debugMapping = function (role, mapping) {
-        const method = mapping.split(':');
-        SecurityRestService.getRolesMapping({
-            role: role,
-            method: method[1],
-            mapping: method[0]
-        });
-    };
-
-    const loadRoles = function () {
-        SecurityRestService.getRoles()
-            .success(function (data) {
-                $scope.roleMappings = data;
-                $scope.roles = _.keys($scope.roleMappings);
-                $scope.mappings = _.keys($scope.roleMappings[$scope.roles[0]]);
-                const permissionsCount = _.map($scope.roles, function (role) {
-                    return [role, _.filter($scope.roleMappings[role]).length];
-                });
-                $scope.roles = _.reverse(_.map(_.orderBy(permissionsCount, function (p) {
-                    return p[1];
-                }), function (p) {
-                    return p[0];
-                }));
-            })
-            .error(function (data) {
-                const msg = getError(data);
-                $scope.loader = false;
-                toastr.error(msg, $translate.instant('common.error'));
+        $scope.debugMapping = function (role, mapping) {
+            const method = mapping.split(':');
+            SecurityRestService.getRolesMapping({
+                role: role,
+                method: method[1],
+                mapping: method[0]
             });
-    };
+        };
 
-    $scope.$on('repositoryIsSet', function () {
-        loadRoles();
-    });
-}]);
+        const loadRoles = function () {
+            SecurityRestService.getRoles()
+                .success(function (data) {
+                    $scope.roleMappings = data;
+                    $scope.roles = _.keys($scope.roleMappings);
+                    $scope.mappings = _.keys($scope.roleMappings[$scope.roles[0]]);
+                    const permissionsCount = _.map($scope.roles, function (role) {
+                        return [role, _.filter($scope.roleMappings[role]).length];
+                    });
+                    $scope.roles = _.reverse(_.map(_.orderBy(permissionsCount, function (p) {
+                        return p[1];
+                    }), function (p) {
+                        return p[0];
+                    }));
+                })
+                .error(function (data) {
+                    const msg = getError(data);
+                    $scope.loader = false;
+                    toastr.error(msg, $translate.instant('common.error'));
+                });
+        };
 
-securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '$window', '$timeout', '$jwtAuth', '$rootScope', '$controller', 'SecurityRestService', 'ModalService', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', '$q', '$uibModal', '$licenseService',
-    function ($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityRestService, ModalService, $translate, ThemeService, WorkbenchSettingsStorageService, $q, $uibModal, $licenseService) {
+        $scope.$on('repositoryIsSet', function () {
+            loadRoles();
+        });
+    }]);
+
+securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '$window', '$timeout', '$jwtAuth', '$rootScope', '$controller', 'SecurityRestService', 'ModalService', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', '$q', '$uibModal', '$licenseService', 'TrackingService',
+    function ($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityRestService, ModalService, $translate, ThemeService, WorkbenchSettingsStorageService, $q, $uibModal, $licenseService, TrackingService) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
 
+        /**
+         * If the cookie policy banner should be visible or not.
+         * @type {boolean}
+         */
+        $scope.showCookiePolicyLink = false;
         $scope.themes = ThemeService.getThemes();
         $scope.mode = 'settings';
         $scope.showWorkbenchSettings = true;
@@ -805,6 +810,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
         $scope.loader = false;
         /** @type {ThemeModel} */
         $scope.selectedTheme = ThemeService.getTheme();
+        $scope.showCookiePolicyLink = false;
 
         $scope.hasEditRestrictions = function () {
             return true;
@@ -931,26 +937,32 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
             ThemeService.applyTheme(theme.name);
         };
 
-        const checkLicenseStatus = () => {
+        const showCookiePolicyLink = () => {
             $licenseService.checkLicenseStatus().then(() => {
-                $scope.showCookiePolicyLink = $licenseService.isTrackingAllowed();
-            }).catch((error) => {
-                const msg = getError(error.data, error.status);
-                toastr.error(msg, $translate.instant('common.error'));
+                $scope.showCookiePolicyLink = TrackingService.isTrackingAllowed();
             });
         };
 
-        $scope.showCookiePolicy = () => {
+        $scope.showCookiePolicy = ($event) => {
+            // The button that triggers this handler is inside a form which has a submit property,
+            // and we need to prevent that because it leads to a redirect to the home page.
+            $event.preventDefault();
+
             $uibModal.open({
                 templateUrl: 'js/angular/core/templates/cookie-policy/cookie-policy.html',
-                controller: ['$scope', function ($scope) {
-                    $scope.close = () => {
-                        $scope.$close();
-                    };
-                }],
+                controller: CookiePolicyModalController,
                 backdrop: 'static',
-                windowClass: 'cookie-policy-modal',
-                keyboard: false
+                keyboard: false,
+                windowClass: 'cookie-policy-modal'
+            })
+                // If the modal returns `shouldReload` as true, we reload the page.
+                // Reloading is crucial here due to potential memory leaks that arise from dynamically
+                // adding and removing Google Tag Manager (GTM) scripts based on the user's consent choice.
+                // See the comments within `CookiePolicyModalController`.
+                .result.then((shouldReload) => {
+                if (shouldReload) {
+                    $window.location.reload();
+                }
             });
         };
 
@@ -966,7 +978,7 @@ securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '
                 };
             }
             $scope.setThemeMode();
-            checkLicenseStatus();
+            showCookiePolicyLink();
         };
 
         initView();

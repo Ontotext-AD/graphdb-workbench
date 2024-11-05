@@ -346,7 +346,7 @@ function JdbcCreateCtrl(
             query: jdbcConfigurationInfo.query,
             columns: jdbcConfigurationInfo.columns
         };
-        JdbcRestService.updateJdbcConfiguration(configuration)
+        return JdbcRestService.updateJdbcConfiguration(configuration)
             .then(() => {
                 $scope.isDirty = false;
                 $scope.jdbcConfigurationInfo.isNewConfiguration = false;

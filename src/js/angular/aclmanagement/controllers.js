@@ -503,6 +503,7 @@ function AclManagementCtrl($scope, $location, toastr, AclManagementRestService, 
         subscriptions.push($scope.$on('$destroy', unsubscribeListeners));
         // Listening for event fired when browser window is going to be closed
         window.addEventListener('beforeunload', beforeUnloadHandler);
+        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
     };
 
     init();

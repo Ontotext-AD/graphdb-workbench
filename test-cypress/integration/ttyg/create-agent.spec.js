@@ -517,14 +517,26 @@ describe('TTYG create new agent', () => {
         TtygAgentSettingsModalSteps.getSystemInstructionsWarning().should('not.exist');
     });
 
-    it('should reset validation error when similarity search/ChatGPT connector are disabled', () => {
+    it('should reset validation error when FTS, similarity search or ChatGPT connector are disabled', () => {
         // When I open agent settings dialog and make all steps so the create button became enabled.
         TTYGStubs.stubChatsListGetNoResults();
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-0.json');
+        SimilarityIndexStubs.stubGetSimilarityIndexes('/similarity/get-similarity-indexes-0.json');
         TTYGViewSteps.visit();
         cy.wait('@get-all-repositories');
         TTYGViewSteps.createFirstAgent();
+        TtygAgentSettingsModalSteps.enableSparqlExtractionMethod();
+        TtygAgentSettingsModalSteps.selectSparqlMethodOntologyGraph();
+        TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.enabled');
+
+        // When enable FTS extraction method and selected repository has not fts search enabled.
         TtygAgentSettingsModalSteps.enableFtsExtractionMethod();
+        // Then I expect the create button be disabled.
+        TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.disabled');
+
+        // When I disable FTS extraction method
+        TtygAgentSettingsModalSteps.disableFtsExtractionMethod();
+        // Then I expect the save button be enabled because is deselected
         TtygAgentSettingsModalSteps.getSaveAgentButton().should('be.enabled');
 
         // When enable the similarity index method

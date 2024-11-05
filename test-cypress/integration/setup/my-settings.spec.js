@@ -1,8 +1,7 @@
 import {SparqlEditorSteps} from "../../steps/sparql-editor-steps";
 import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
-
-// Disable the default user data setup stub because we want to actually change it in this test
-Cypress.env('set_default_user_data', false);
+import {SecurityStubs} from "../../stubs/security-stubs";
+import {VisualGraphSteps} from "../../steps/visual-graph-steps";
 
 describe('My Settings', () => {
 
@@ -79,6 +78,7 @@ describe('My Settings', () => {
     });
 
     it('should change settings for admin and verify changes are reflected in SPARQL editor', () => {
+        SecurityStubs.resetGetAdminUserStub();
         cy.get('.sparql-editor-settings').should('be.visible');
 
         //turn off inference, sameAs and count total results
@@ -143,13 +143,12 @@ describe('My Settings', () => {
         cy.get('#schema-on').find('.switch:checkbox').should('be.checked');
         cy.enableAutocomplete(repositoryId);
         //Verify that schema statements ON is reflected in Visual graph
-        visitVisualGraphView();
-        cy.searchEasyVisualGraph(DRY_GRAPH);
+        VisualGraphSteps.openDryWineUri();
         cy.get('.visual-graph-settings-btn').scrollIntoView().click();
         cy.get('.rdf-info-side-panel .filter-sidepanel').should('be.visible');
         cy.get('.include-schema-statements').should('be.visible').and('be.checked');
         saveGraphSettings()
-            .then(() => cy.get('.predicate').should('contain','type'));
+            .then(() => cy.get('.predicate').should('contain', 'type'));
 
         //Set schema statements OFF in my settings
         visitSettingsView();
@@ -167,9 +166,7 @@ describe('My Settings', () => {
             });
 
         //Verify that schema statements OFF is reflected in Visual graph
-        visitVisualGraphView();
-
-        cy.searchEasyVisualGraph(DRY_GRAPH);
+        VisualGraphSteps.openDryWineUri();
 
         cy.get('.visual-graph-settings-btn').click();
         cy.get('.rdf-info-side-panel .filter-sidepanel').should('be.visible');
