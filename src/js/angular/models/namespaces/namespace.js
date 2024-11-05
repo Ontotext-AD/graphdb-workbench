@@ -1,4 +1,4 @@
-export class NameSpaceModel {
+export class NamespaceModel {
     constructor(prefix, uri) {
         this._prefix = prefix;
         this._uri = uri;

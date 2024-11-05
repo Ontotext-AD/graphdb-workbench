@@ -1,4 +1,4 @@
-import {NameSpaceModel} from "../../models/namespaces/namespace";
+import {NamespaceModel} from "../../models/namespaces/namespace";
 import {NamespacesListModel} from "../../models/namespaces/namespaces-list";
 
 /**
@@ -21,9 +21,9 @@ export const mapNamespacesResponse = (response) => {
 /**
  * Maps a binding of repository namespace response to internal model.
  * @param {Object} binding
- * @return {NameSpaceModel}
+ * @return {NamespaceModel}
  */
-export const namespaceModelMapper = (binding) => new NameSpaceModel(binding.prefix.value, binding.namespace.value);
+export const namespaceModelMapper = (binding) => new NamespaceModel(binding.prefix.value, binding.namespace.value);
 
 /**
  * Maps a bindings of repository namespaces response to NamespacesListModel.
