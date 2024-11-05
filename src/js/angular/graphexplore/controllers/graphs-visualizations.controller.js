@@ -1,10 +1,12 @@
 import 'angular/core/services';
 import 'angular/core/services/workbench-context.service';
+import 'angular/core/services/rdf4j-repositories.service';
 import D3 from 'lib/common/d3-utils.js';
 import d3tip from 'lib/d3-tip/d3-tip-patch';
 import 'angular/utils/local-storage-adapter';
 import {NUMBER_PATTERN} from "../../repositories/repository.constants";
 import {removeSpecialChars} from "../../utils/string-utils";
+import {NamespacesListModel} from "../../models/namespaces/namespaces-list";
 
 const modules = [
     'ui.scroll.jqlite',
@@ -13,7 +15,8 @@ const modules = [
     'ui.bootstrap',
     'ngTagsInput',
     'graphdb.framework.utils.localstorageadapter',
-    'graphdb.core.services.workbench-context'
+    'graphdb.core.services.workbench-context',
+    'graphdb.framework.core.services.rdf4j.repositories'
 ];
 
 angular
@@ -46,7 +49,8 @@ GraphsVisualizationsCtrl.$inject = [
     "GraphDataRestService",
     "$translate",
     "GuidesService",
-    "WorkbenchContextService"
+    "WorkbenchContextService",
+    'RDF4JRepositoriesService'
 ];
 
 function GraphsVisualizationsCtrl(
@@ -71,7 +75,8 @@ function GraphsVisualizationsCtrl(
     GraphDataRestService,
     $translate,
     GuidesService,
-    WorkbenchContextService
+    WorkbenchContextService,
+    RDF4JRepositoriesService
 ) {
     // =========================
     // Public fields
@@ -313,9 +318,16 @@ function GraphsVisualizationsCtrl(
         return namespacePrefix ? (namespacePrefix.prefix + ":" + iri.substring(namespacePrefix.uri.length)) : iri;
     };
 
-    const onSelectedRepositoryNamespacesUpdated = (repositoryNamespaces) => {
-        $scope.repositoryNamespaces = repositoryNamespaces;
-        $scope.namespaces = repositoryNamespaces.namespaces;
+    const onSelectedRepositoryIdUpdated = (repositoryId) => {
+        if (!repositoryId) {
+            $scope.repositoryNamespaces = new NamespacesListModel();
+            return;
+        }
+        RDF4JRepositoriesService.getNamespaces(repositoryId)
+            .then((repositoryNamespaces) => {
+                $scope.repositoryNamespaces = repositoryNamespaces;
+                $scope.namespaces = repositoryNamespaces.namespaces;
+            });
     };
 
     const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
@@ -335,7 +347,7 @@ function GraphsVisualizationsCtrl(
     }));
 
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
-    subscriptions.push(WorkbenchContextService.onSelectedRepositoryNamespacesUpdated(onSelectedRepositoryNamespacesUpdated));
+    subscriptions.push(WorkbenchContextService.onSelectedRepositoryIdUpdated(onSelectedRepositoryIdUpdated));
 
     subscriptions.push($scope.$on('repositoryIsSet', function (event, args) {
         // New repo set from dropdown, clear init state

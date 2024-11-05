@@ -1,12 +1,14 @@
 import 'angular/core/services/workbench-context.service';
+import {NamespacesListModel} from "../../../models/namespaces/namespaces-list";
 
+const modules = ['graphdb.core.services.workbench-context', 'graphdb.framework.core.services.rdf4j.repositories'];
 angular
-    .module('graphdb.framework.core.directives.rdfresourcesearch.rdfresourcesearch', ['graphdb.core.services.workbench-context'])
+    .module('graphdb.framework.core.directives.rdfresourcesearch.rdfresourcesearch', modules)
     .directive('rdfResourceSearch', rdfResourceSearchDirective);
 
-rdfResourceSearchDirective.$inject = ['$rootScope', 'AutocompleteRestService', 'RDF4JRepositoriesRestService', '$repositories', '$licenseService', 'WorkbenchContextService'];
+rdfResourceSearchDirective.$inject = ['$rootScope', 'AutocompleteRestService', 'RDF4JRepositoriesRestService', '$repositories', '$licenseService', 'WorkbenchContextService', 'RDF4JRepositoriesService'];
 
-function rdfResourceSearchDirective($rootScope, AutocompleteRestService, RDF4JRepositoriesRestService, $repositories, $licenseService, WorkbenchContextService) {
+function rdfResourceSearchDirective($rootScope, AutocompleteRestService, RDF4JRepositoriesRestService, $repositories, $licenseService, WorkbenchContextService, RDF4JRepositoriesService) {
     return {
         templateUrl: 'js/angular/core/directives/rdfresourcesearch/templates/rdfResourceSearchTemplate.html',
         restrict: 'AE',
@@ -52,13 +54,22 @@ function rdfResourceSearchDirective($rootScope, AutocompleteRestService, RDF4JRe
                 }
             };
 
-            const onSelectedRepositoryNamespacesUpdated = (repositoryNamespaces) => {
-                $scope.repositoryNamespaces = repositoryNamespaces;
+
+            const onSelectedRepositoryIdUpdated = (repositoryId) => {
+                if (!repositoryId) {
+                    $scope.repositoryNamespaces = new NamespacesListModel();
+                    return;
+                }
+                RDF4JRepositoriesService.getNamespaces(repositoryId)
+                    .then((repositoryNamespaces) => {
+                        $scope.repositoryNamespaces = repositoryNamespaces;
+                    });
             };
 
             const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
                 $scope.isAutocompleteEnabled = autocompleteEnabled;
             };
+
 
             // =========================
             // Subscriptions
@@ -66,7 +77,7 @@ function rdfResourceSearchDirective($rootScope, AutocompleteRestService, RDF4JRe
             const subscriptions = [];
 
             subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
-            subscriptions.push(WorkbenchContextService.onSelectedRepositoryNamespacesUpdated(onSelectedRepositoryNamespacesUpdated));
+            subscriptions.push(WorkbenchContextService.onSelectedRepositoryIdUpdated(onSelectedRepositoryIdUpdated));
 
             const removeAllSubscribers = () => {
                 window.addEventListener('mousedown', onWindowClick);

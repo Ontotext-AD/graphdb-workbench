@@ -1,4 +1,5 @@
 import 'angular/core/services/workbench-context.service';
+import 'angular/core/services/rdf4j-repositories.service';
 import {decodeHTML} from "../../../../app";
 import {SimilaritySearchType} from "../../models/similarity/similarity-search-type";
 import {SimilarityResultType} from "../../models/similarity/similarity-result-type";
@@ -7,9 +8,11 @@ import {SimilarityIndexType} from "../../models/similarity/similarity-index-type
 import {mapIndexesResponseToSimilarityIndex} from "../../rest/mappers/similarity-index-mapper";
 import {SimilaritySearch} from "../../models/similarity/similarity-search";
 import {RenderingMode} from "../../models/ontotext-yasgui/rendering-mode";
+import {NamespacesListModel} from "../../models/namespaces/namespaces-list";
 
+const modules = ['graphdb.core.services.workbench-context', 'graphdb.framework.core.services.rdf4j.repositories'];
 angular
-    .module('graphdb.framework.similarity.controllers.list', ['graphdb.core.services.workbench-context'])
+    .module('graphdb.framework.similarity.controllers.list', modules)
     .controller('SimilarityCtrl', SimilarityCtrl);
 
 SimilarityCtrl.$inject = [
@@ -27,7 +30,8 @@ SimilarityCtrl.$inject = [
     'RDF4JRepositoriesRestService',
     '$translate',
     'SparqlRestService',
-    'WorkbenchContextService'
+    'WorkbenchContextService',
+    'RDF4JRepositoriesService'
 ];
 
 function SimilarityCtrl(
@@ -45,7 +49,8 @@ function SimilarityCtrl(
     RDF4JRepositoriesRestService,
     $translate,
     SparqlRestService,
-    WorkbenchContextService) {
+    WorkbenchContextService,
+    RDF4JRepositoriesService) {
 
     const PREFIX = 'http://www.ontotext.com/graphdb/similarity/';
     const PREFIX_PREDICATION = 'http://www.ontotext.com/graphdb/similarity/psi/';
@@ -310,8 +315,16 @@ function SimilarityCtrl(
         return '<' + iri + '>';
     };
 
-    const onSelectedRepositoryNamespacesUpdated = (repositoryNamespaces) => {
-        $scope.repositoryNamespaces = repositoryNamespaces;
+
+    const onSelectedRepositoryIdUpdated = (repositoryId) => {
+        if (!repositoryId) {
+            $scope.repositoryNamespaces = new NamespacesListModel();
+            return;
+        }
+        RDF4JRepositoriesService.getNamespaces(repositoryId)
+            .then((repositoryNamespaces) => {
+                $scope.repositoryNamespaces = repositoryNamespaces;
+            });
     };
 
     const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
@@ -347,7 +360,7 @@ function SimilarityCtrl(
     };
 
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
-    subscriptions.push(WorkbenchContextService.onSelectedRepositoryNamespacesUpdated(onSelectedRepositoryNamespacesUpdated));
+    subscriptions.push(WorkbenchContextService.onSelectedRepositoryIdUpdated(onSelectedRepositoryIdUpdated));
 
     const searchTypeChangeHandler = () => {
         $scope.empty = true;

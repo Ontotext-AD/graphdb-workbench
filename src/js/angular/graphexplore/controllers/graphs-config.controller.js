@@ -9,12 +9,15 @@ import {
 } from "../../core/directives/yasgui-component/yasgui-component-directive.util";
 import {GraphsConfig, StartMode} from "../../models/graphs/graphs-config";
 import {mapGraphConfigSamplesToGraphConfigs} from "../../rest/mappers/graphs-config-mapper";
+import {NamespacesListModel} from "../../models/namespaces/namespaces-list";
 
 angular
     .module('graphdb.framework.graphexplore.controllers.graphviz.config', [
         'graphdb.framework.utils.notifications',
         'graphdb.framework.utils.localstorageadapter',
-        'graphdb.core.services.workbench-context'
+        'graphdb.core.services.workbench-context',
+        'graphdb.framework.core.services.rdf4j.repositories'
+
     ])
     .controller('GraphConfigCtrl', GraphConfigCtrl);
 
@@ -34,7 +37,8 @@ GraphConfigCtrl.$inject = [
     'LSKeys',
     '$translate',
     'ModalService',
-    'WorkbenchContextService'
+    'WorkbenchContextService',
+    'RDF4JRepositoriesService'
 ];
 
 function GraphConfigCtrl(
@@ -53,7 +57,8 @@ function GraphConfigCtrl(
     LSKeys,
     $translate,
     ModalService,
-    WorkbenchContextService
+    WorkbenchContextService,
+    RDF4JRepositoriesService
 ) {
 
     // =========================
@@ -448,8 +453,15 @@ function GraphConfigCtrl(
         $scope.isAutocompleteEnabled = autocompleteEnabled;
     };
 
-    const onSelectedRepositoryNamespacesUpdated = (repositoryNamespaces) => {
-        $scope.repositoryNamespaces = repositoryNamespaces;
+    const onSelectedRepositoryIdUpdated = (repositoryId) => {
+        if (!repositoryId) {
+            $scope.repositoryNamespaces = new NamespacesListModel();
+            return;
+        }
+        RDF4JRepositoriesService.getNamespaces(repositoryId)
+            .then((repositoryNamespaces) => {
+                $scope.repositoryNamespaces = repositoryNamespaces;
+            });
     };
 
     const validateQueryWithCallback = (successCallback, query, queryType, params, all, oneOf) => {
@@ -618,7 +630,7 @@ function GraphConfigCtrl(
     // =========================
 
     const subscriptions = [];
-    subscriptions.push(WorkbenchContextService.onSelectedRepositoryNamespacesUpdated(onSelectedRepositoryNamespacesUpdated));
+    subscriptions.push(WorkbenchContextService.onSelectedRepositoryIdUpdated(onSelectedRepositoryIdUpdated));
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
     subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
     subscriptions.push($scope.$on('$destroy', unsubscribeListeners));

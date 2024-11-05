@@ -6,7 +6,9 @@
          ng-class="{'show-rdf-search-box-visible': showRdfSearchInput, 'show-rdf-search-box-invisible': !showRdfSearchInput}"
          ng-keydown="onKeyDown($event)">
         <div class="card-block">
-            <search-resource-input repository-namespaces="repositoryNamespaces"
+            <search-resource-input
+                                   ng-if="showRdfSearchInput"
+                                   repository-namespaces="repositoryNamespaces"
                                    is-autocomplete-enabled="isAutocompleteEnabled"
                                    empty="empty"
                                    open-in-new-tab="true"

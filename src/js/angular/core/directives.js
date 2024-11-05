@@ -352,7 +352,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             };
 
             $scope.$watch('repositoryNamespaces', function () {
-                element.namespaces = $scope.repositoryNamespaces.namespaces;
+                element.namespaces = $scope.repositoryNamespaces ? $scope.repositoryNamespaces.namespaces : [];
             });
 
             $scope.$watch('isAutocompleteEnabled', function () {

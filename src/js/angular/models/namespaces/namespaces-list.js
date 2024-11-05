@@ -1,5 +1,5 @@
 export class NamespacesListModel {
-    constructor(namespaces) {
+    constructor(namespaces = []) {
         this._namespaces = namespaces;
         this.sort();
     }

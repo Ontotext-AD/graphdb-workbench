@@ -30,16 +30,9 @@ function WorkbenchContextService(EventEmitterService) {
      */
     let _autocompleteEnabled = undefined;
 
-    /**
-     *  Holds the namespaces of the selected Repository.
-     * @type {NamespacesListModel}
-     * @private
-     */
-    let _selectedRepositoryNamespaces = undefined;
-
     const init = () => {
         _autocompleteEnabled = false;
-        _selectedRepositoryNamespaces = new NamespacesListModel([]);
+        _selectedRepositoryId = undefined;
     };
 
     /**
@@ -108,39 +101,6 @@ function WorkbenchContextService(EventEmitterService) {
         return EventEmitterService.subscribeSync(WorkbenchEventName.AUTOCOMPLETE_ENABLED_UPDATED, (payload) => callback(payload));
     };
 
-    /**
-     * Updates the selected repository namespaces and emits the 'selectedRepositoryNamespacesUpdated' event to notify listeners that the selected repository namespaces are changed.
-     *
-     * @param {NamespacesListModel} selectedRepositoryNamespaces
-     */
-    const setSelectedRepositoryNamespaces = (selectedRepositoryNamespaces) => {
-        if (!isEqual(_selectedRepositoryNamespaces, selectedRepositoryNamespaces)) {
-            _selectedRepositoryNamespaces = cloneDeep(selectedRepositoryNamespaces);
-            EventEmitterService.emitSync(WorkbenchEventName.SELECTED_REPOSITORY_NAMESPACES_UPDATED, getSelectedRepositoryNamespaces());
-        }
-    };
-
-    /**
-     *
-     * @return {NamespacesListModel} the selected repository namespaces.
-     */
-    const getSelectedRepositoryNamespaces = () => {
-        return cloneDeep(_selectedRepositoryNamespaces);
-    };
-
-    /**
-     * Subscribes to the 'selectedRepositoryNamespacesUpdated' event.
-     * @param {function} callback - The callback to be called when the event is fired.
-     *
-     * @return {function} unsubscribe function.
-     */
-    const onSelectedRepositoryNamespacesUpdated = (callback) => {
-        if (angular.isFunction(callback)) {
-            callback(getSelectedRepositoryNamespaces());
-        }
-        return EventEmitterService.subscribeSync(WorkbenchEventName.SELECTED_REPOSITORY_NAMESPACES_UPDATED, (payload) => callback(payload));
-    };
-
     const resetContext = () => {
         init();
     };
@@ -151,9 +111,6 @@ function WorkbenchContextService(EventEmitterService) {
         setAutocompleteEnabled,
         getAutocompleteEnabled,
         onAutocompleteEnabledUpdated,
-        setSelectedRepositoryNamespaces,
-        getSelectedRepositoryNamespaces,
-        onSelectedRepositoryNamespacesUpdated,
         setSelectedRepositoryId,
         getSelectedRepositoryId,
         onSelectedRepositoryIdUpdated,

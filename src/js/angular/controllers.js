@@ -55,7 +55,7 @@ angular
         'graphdb.framework.guides.services',
         'pageslide-directive',
         'graphdb.core.services.workbench-context',
-        'graphdb.framework.rdf4j.repositories.service',
+        'graphdb.framework.core.services.rdf4j.repositories',
         'rzSlider'
     ])
     .controller('mainCtrl', mainCtrl)
@@ -63,9 +63,31 @@ angular
     .controller('repositorySizeCtrl', repositorySizeCtrl)
     .controller('uxTestCtrl', uxTestCtrl);
 
-homeCtrl.$inject = ['$scope', '$rootScope', '$http', '$repositories', '$jwtAuth', '$licenseService', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'WorkbenchContextService', 'toastr'];
+homeCtrl.$inject = ['$scope',
+    '$rootScope',
+    '$http',
+    '$repositories',
+    '$jwtAuth',
+    '$licenseService',
+    'AutocompleteRestService',
+    'LicenseRestService',
+    'RepositoriesRestService',
+    'WorkbenchContextService',
+    'RDF4JRepositoriesService',
+    'toastr'];
 
-function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseService, AutocompleteRestService, LicenseRestService, RepositoriesRestService, WorkbenchContextService, toastr) {
+function homeCtrl($scope,
+                  $rootScope,
+                  $http,
+                  $repositories,
+                  $jwtAuth,
+                  $licenseService,
+                  AutocompleteRestService,
+                  LicenseRestService,
+                  RepositoriesRestService,
+                  WorkbenchContextService,
+                  RDF4JRepositoriesService,
+                  toastr) {
 
     // =========================
     // Public variables
@@ -99,15 +121,22 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
     // =================================
     const subscriptions = [];
 
-    const onSelectedRepositoryNamespacesUpdated = (repositoryNamespaces) => {
-        $scope.repositoryNamespaces = repositoryNamespaces;
+    const onSelectedRepositoryIdUpdated = (repositoryId) => {
+        if (!repositoryId) {
+            $scope.repositoryNamespaces = new NamespacesListModel();
+            return;
+        }
+        RDF4JRepositoriesService.getNamespaces(repositoryId)
+            .then((repositoryNamespaces) => {
+                $scope.repositoryNamespaces = repositoryNamespaces;
+            });
     };
 
     const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
         $scope.isAutocompleteEnabled = autocompleteEnabled;
     };
 
-    subscriptions.push(WorkbenchContextService.onSelectedRepositoryNamespacesUpdated(onSelectedRepositoryNamespacesUpdated));
+    subscriptions.push(WorkbenchContextService.onSelectedRepositoryIdUpdated(onSelectedRepositoryIdUpdated));
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
 
     $scope.$on('$destroy', () => subscriptions.forEach((subscription) => subscription()));
@@ -128,12 +157,12 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
 mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$licenseService', '$rootScope',
     'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService',
     'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils', '$q', 'GuidesService', '$route', '$window', 'AuthTokenService', 'TrackingService',
-    'WorkbenchContextService', 'RDF4JRepositoriesService', 'AutocompleteService'];
+    'WorkbenchContextService', 'AutocompleteService'];
 
 function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $licenseService, $rootScope,
                   productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService,
                   MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q, GuidesService, $route, $window, AuthTokenService, TrackingService,
-                  WorkbenchContextService, RDF4JRepositoriesService, AutocompleteService) {
+                  WorkbenchContextService, AutocompleteService) {
     $scope.descr = $translate.instant('main.gdb.description');
     $scope.documentation = '';
     $scope.menu = $menuItems;
@@ -966,21 +995,11 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             });
     };
 
-    const updateRepositoryNamespace = (activeRepository) => {
-        if (activeRepository) {
-            RDF4JRepositoriesService.getNamespaces(activeRepository)
-                .then((namespaces) => WorkbenchContextService.setSelectedRepositoryNamespaces(namespaces));
-        } else {
-            WorkbenchContextService.setSelectedRepositoryNamespaces(new NamespacesListModel([]));
-        }
-    };
-
     const onRepositoriesChanged = () => {
         const activeRepository = $repositories.getActiveRepository();
         if (activeRepository !== WorkbenchContextService.getSelectedRepositoryId()) {
             WorkbenchContextService.setSelectedRepositoryId(activeRepository);
             updateAutocompleteStatus();
-            updateRepositoryNamespace(activeRepository);
         }
     };
     $rootScope.$on("repositoryIsSet", onRepositoriesChanged);
