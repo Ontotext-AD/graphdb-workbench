@@ -423,7 +423,6 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
             }
         };
 
-        // TODO maybe we can remove it
         const onAutocompleteEnabledChanged = () => {
             element.autoCompleteStatus = !!$scope.isAutocompleteEnabled;
             // trigger onChange only if the value was manually populated by the user
@@ -448,7 +447,6 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
         // Watchers
         //
         const subscriptions = [];
-        // TODO maybe we can remove it
         subscriptions.push($scope.$watch('isAutocompleteEnabled', onAutocompleteEnabledChanged));
         subscriptions.push($scope.$watch('searchInput', ngModelUpdater));
         subscriptions.push($scope.$on('$destroy', unsubscribeListeners));
