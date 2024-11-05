@@ -694,24 +694,6 @@ function TTYGViewCtrl(
      */
     const onAgentSelected = (agent) => {
         $scope.selectedAgent = agent;
-        TTYGStorageService.saveAgent(agent);
-    };
-
-    /**
-     * Loads an agent using the agent ID stored in the local storage and selects it.
-     */
-    const setCurrentAgent = () => {
-        const agentId = TTYGStorageService.getAgentId();
-        if (!agentId) {
-            return;
-        }
-        TTYGService.getAgent(agentId).then((agent) => {
-            if (agent) {
-                TTYGContextService.selectAgent(agent);
-            }
-        }).catch((error) => {
-            toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
-        });
     };
 
     /**
@@ -880,7 +862,6 @@ function TTYGViewCtrl(
             .then(() => {
                 $scope.initialized = true;
                 buildAgentsFilterModel();
-                setCurrentAgent();
                 return loadChats();
             })
             .then(setCurrentChat);
