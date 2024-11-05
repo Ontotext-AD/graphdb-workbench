@@ -28,12 +28,7 @@ function WorkbenchContextService(EventEmitterService) {
      * @type {boolean}
      * @private
      */
-    let _autocompleteEnabled = undefined;
-
-    const init = () => {
-        _autocompleteEnabled = false;
-        _selectedRepositoryId = undefined;
-    };
+    let _autocompleteEnabled = false;
 
     /**
      * Updates the selected repository id and emits the 'selectedRepositoryIdUpdated' event to notify listeners that selected repository id changed.
@@ -101,11 +96,13 @@ function WorkbenchContextService(EventEmitterService) {
         return EventEmitterService.subscribeSync(WorkbenchEventName.AUTOCOMPLETE_ENABLED_UPDATED, (payload) => callback(payload));
     };
 
+    /**
+     * Resets the workbench context to its initial state.
+     */
     const resetContext = () => {
-        init();
+        _autocompleteEnabled = false;
+        _selectedRepositoryId = undefined;
     };
-
-    init();
 
     return {
         setAutocompleteEnabled,
