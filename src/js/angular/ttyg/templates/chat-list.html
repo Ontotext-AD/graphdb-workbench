@@ -16,7 +16,9 @@
                                 on-save="onRenameChat(newText, source)"
                                 on-cancel="onCancelChatRenaming()"
                                 on-dblclick="onSelectChatForRenaming(chat)"
-                                on-click="onSelectChat(source)">
+                                on-click="onSelectChat(source)"
+                                title="{{chat.name}}"
+                                show-tooltip-on-overflow>
                             </inline-editable-text>
                         </div>
                         <div ng-if="chat.id && (!renamedChat || chat.id !== renamedChat.id)" class="btn-group">

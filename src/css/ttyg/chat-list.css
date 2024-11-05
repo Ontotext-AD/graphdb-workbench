@@ -61,7 +61,7 @@
     width: 90%;
 }
 
-.chat-list-component .chat-item .chat-name .inline-editable-text {
+.chat-list-component .chat-item .chat-name .inline-editable-text .editable-text-element {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
