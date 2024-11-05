@@ -126,6 +126,7 @@ function homeCtrl($scope,
             $scope.repositoryNamespaces = new NamespacesListModel();
             return;
         }
+        $scope.getActiveRepositorySize();
         RDF4JRepositoriesService.getNamespaces(repositoryId)
             .then((repositoryNamespaces) => {
                 $scope.repositoryNamespaces = repositoryNamespaces;
