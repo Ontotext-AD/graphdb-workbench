@@ -1,7 +1,8 @@
 {
     "extends": [
         "eslint:recommended",
-        "google"
+        "google",
+        "plugin:cypress/recommended"
     ],
     "rules": {
         "no-console": "error",
@@ -34,8 +35,12 @@
     "env": {
         "es6": true,
         "browser": true,
-        "amd": true
+        "amd": true,
+        "cypress/globals": true
     },
+    "plugins": [
+        "cypress"
+    ],
     "globals": {
         "angular": true,
         "$": true,
