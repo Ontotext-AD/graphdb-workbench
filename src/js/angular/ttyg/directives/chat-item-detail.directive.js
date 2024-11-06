@@ -101,7 +101,7 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, TTYGSer
              * Triggers an asking how the answer was generated.
              */
             $scope.onAskHowAnswerWasDerived = () => {
-                $scope.onAskHowDeliveredAnswer({chatItem: $scope.chatItemDetail});
+                $scope.onAskHowDeliveredAnswer();
             };
 
             /**
