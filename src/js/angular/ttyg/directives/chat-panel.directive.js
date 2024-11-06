@@ -169,6 +169,8 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 $scope.chatItem = getEmptyChatItem();
                 $scope.askingChatItem = undefined;
                 if ($scope.chat) {
+                    // TODO: Why on earth this is here? The chat changed handler is in the ttyg.view. Why doesn't it handle this
+                    // but we need to go through 2 more events to achieve the same result?
                     const lastChatItem = $scope.chat.chatHistory.getLast();
                     if (lastChatItem && lastChatItem.agentId) {
                         TTYGContextService.selectAgent(TTYGContextService.getAgent(lastChatItem.agentId));
