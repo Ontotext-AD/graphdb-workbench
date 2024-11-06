@@ -235,7 +235,7 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
         // Validators
         //
         ngModel.$validators.custom = function(modelValue) {
-            if (!$scope.validateUri && !$scope.validateLiteralValue && !$scope.validateDefaultValue) {
+            if (!$scope.validateUri && !$scope.validateLiteralValue && !$scope.validateDefaultValue || !modelValue) {
                 return true;
             }
 

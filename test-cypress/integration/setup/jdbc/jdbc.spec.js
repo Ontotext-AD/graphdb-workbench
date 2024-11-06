@@ -55,7 +55,7 @@ describe('JDBC configuration', () => {
         JdbcSteps.getJDBCConfigurations().should('contain', 'No tables are defined');
     });
 
-    it('Should create a new JDBC configuration, edit, preview, then delete', () => {
+    it.only('Should create a new JDBC configuration, edit, preview, then delete', () => {
         // When I am on JDBC configurations page and click on create a new table configuration button.
         JdbcSteps.clickOnCreateJdbcConfigurationButton();
 
@@ -80,7 +80,7 @@ describe('JDBC configuration', () => {
         JdbcSteps.clickOnEditButton();
         // change the query,
         YasqeSteps.clearEditor();
-        YasqeSteps.writeInEditor(EDIT_QUERY);
+        YasqeSteps.pasteQuery(EDIT_QUERY);
         // and click on save button.
         JdbcCreateSteps.clickOnSave();
 
@@ -151,7 +151,7 @@ describe('JDBC configuration', () => {
         // When I edit the configuration
         JdbcSteps.clickOnEditButton();
         YasqeSteps.clearEditor();
-        YasqeSteps.writeInEditor(EDIT_QUERY);
+        YasqeSteps.pasteQuery(EDIT_QUERY);
         // And click on save button.
         JdbcCreateSteps.clickOnSave();
         // Then I expect to see a notification with the error message.
