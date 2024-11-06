@@ -436,7 +436,7 @@
                 "form": {
                     "agent_name": {
                         "label": "Agent name",
-                        "placeholder": "Enter user friendly name",
+                        "placeholder": "Enter a user friendly name",
                         "tooltip": "A descriptive name that helps you identify this agent."
                     },
                     "repository": {
