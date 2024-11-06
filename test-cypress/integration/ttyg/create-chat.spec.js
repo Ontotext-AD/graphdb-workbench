@@ -61,7 +61,6 @@ describe('TTYG create chat', () => {
         TTYGStubs.stubAgentGet();
         TTYGViewSteps.visit();
         cy.wait('@get-chat-list');
-        cy.wait('@get-agent');
         // Then I expect newly created chat be selected.
         TTYGViewSteps.getChatFromGroup(0, 0).should('contain', 'New chat of Han Solo is a character');
         TTYGViewSteps.getChatFromGroup(0, 0).should('have.class', 'selected');
