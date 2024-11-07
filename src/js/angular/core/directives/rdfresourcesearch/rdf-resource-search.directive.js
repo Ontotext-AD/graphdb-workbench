@@ -42,13 +42,20 @@ function rdfResourceSearchDirective(
             // =========================
             // Public functions
             // =========================
-
             $scope.showInput = () => {
-                $scope.showRdfSearchInput = true;
-                element.find('.view-res-input').focus();
-                window.addEventListener('mousedown', onWindowClick);
-                $scope.onOpen();
-                $rootScope.$broadcast('rdfResourceSearchExpanded');
+                loadNamespaces()
+                    .then((repositoryNamespaces) => {
+                        $scope.repositoryNamespaces = repositoryNamespaces;
+                        $scope.showRdfSearchInput = true;
+                        element.find('.view-res-input').focus();
+                        window.addEventListener('mousedown', onWindowClick);
+                        $scope.onOpen();
+                        $rootScope.$broadcast('rdfResourceSearchExpanded');
+                    })
+                    .catch((error) => {
+                        const msg = getError(error);
+                        toastr.error(msg, $translate.instant('error.getting.namespaces.for.repo'));
+                    });
             };
 
             $scope.onKeyDown = (event) => {
@@ -72,26 +79,17 @@ function rdfResourceSearchDirective(
                 }
             };
 
-
-            const onSelectedRepositoryIdUpdated = (repositoryId) => {
-                if (!repositoryId) {
-                    $scope.repositoryNamespaces = new NamespacesListModel();
-                    return;
+            const loadNamespaces = () => {
+                const activeRepository = $repositories.getActiveRepository();
+                if (!activeRepository) {
+                    return Promise.resolve(new NamespacesListModel());
                 }
-                RDF4JRepositoriesService.getNamespaces(repositoryId)
-                    .then((repositoryNamespaces) => {
-                        $scope.repositoryNamespaces = repositoryNamespaces;
-                    })
-                    .catch((error) => {
-                        const msg = getError(error);
-                        toastr.error(msg, $translate.instant('error.getting.namespaces.for.repo'));
-                    });
+                return RDF4JRepositoriesService.getNamespaces(activeRepository);
             };
 
             const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
                 $scope.isAutocompleteEnabled = autocompleteEnabled;
             };
-
 
             // =========================
             // Subscriptions
@@ -99,7 +97,6 @@ function rdfResourceSearchDirective(
             const subscriptions = [];
 
             subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
-            subscriptions.push(WorkbenchContextService.onSelectedRepositoryIdUpdated(onSelectedRepositoryIdUpdated));
 
             const removeAllSubscribers = () => {
                 window.addEventListener('mousedown', onWindowClick);
