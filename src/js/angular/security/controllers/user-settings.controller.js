@@ -73,7 +73,7 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
      */
     $scope.noPassword = false;
     /**
-     * If the cookie policy banner should be visible or not.
+     * If the button that opens the cookie policy modal should be visible or not.
      * @type {boolean}
      */
     $scope.showCookiePolicyLink = false;
@@ -99,18 +99,14 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
         });
     };
 
-    // Wrapped in a scope function for ease of testing
     $scope.getPrincipal = function () {
         return $jwtAuth.getPrincipal()
             .then((principal) => {
                 $scope.currentUserData = _.cloneDeep(principal);
+                $scope.redirectAdmin();
+                initUserData($scope);
             });
     };
-
-    $scope.getPrincipal().then(() => {
-        $scope.redirectAdmin();
-        initUserData($scope);
-    });
 
     $scope.updateCurrentUserData = function () {
         // Using $q.when to proper set values in view
@@ -264,6 +260,7 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
                 theme: 'light'
             };
         }
+        $scope.getPrincipal();
         $scope.setThemeMode();
         showCookiePolicyLink();
     };
