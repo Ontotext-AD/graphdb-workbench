@@ -6,18 +6,19 @@ import 'angular/rest/plugins.rest.service';
 import 'angular/rest/monitoring.rest.service';
 import 'angular/rest/license.rest.service';
 import 'angular/rest/repositories.rest.service';
-import 'angular/rest/rdf4j.repositories.rest.service';
 import 'ng-file-upload/dist/ng-file-upload.min';
 import 'ng-file-upload/dist/ng-file-upload-shim.min';
 import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/repositories.service';
 import 'angular/core/services/license.service';
 import 'angular/core/services/tracking/tracking.service';
+import 'angular/core/services/workbench-context.service';
+import 'angular/core/services/rdf4j-repositories.service';
 import {UserRole} from 'angular/utils/user-utils';
 import 'angular/utils/local-storage-adapter';
 import 'angular/utils/workbench-settings-storage-service';
 import 'angular/utils/uri-utils';
-import 'angular/core/services/autocomplete-status.service';
+import 'angular/core/services/autocomplete.service';
 import {decodeHTML} from "../../app";
 import './guides/guides.service';
 import './guides/directives';
@@ -26,6 +27,7 @@ import 'angular-pageslide-directive/dist/angular-pageslide-directive';
 import 'angularjs-slider/dist/rzslider.min';
 import {debounce} from "lodash";
 import {DocumentationUrlResolver} from "./utils/documentation-url-resolver";
+import {NamespacesListModel} from "./models/namespaces/namespaces-list";
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -45,14 +47,15 @@ angular
         'graphdb.framework.rest.sparql.service',
         'graphdb.framework.rest.plugins.service',
         'graphdb.framework.rest.monitoring.service',
-        'graphdb.framework.rest.rdf4j.repositories.service',
         'graphdb.framework.utils.localstorageadapter',
         'graphdb.framework.utils.workbenchsettingsstorageservice',
-        'graphdb.framework.core.services.autocompleteStatus',
+        'graphdb.framework.core.services.autocomplete',
         'graphdb.framework.utils.uriutils',
         'graphdb.framework.guides.directives',
         'graphdb.framework.guides.services',
         'pageslide-directive',
+        'graphdb.core.services.workbench-context',
+        'graphdb.framework.core.services.rdf4j.repositories',
         'rzSlider'
     ])
     .controller('mainCtrl', mainCtrl)
@@ -60,12 +63,43 @@ angular
     .controller('repositorySizeCtrl', repositorySizeCtrl)
     .controller('uxTestCtrl', uxTestCtrl);
 
-homeCtrl.$inject = ['$scope', '$rootScope', '$http', '$repositories', '$jwtAuth', '$licenseService', 'AutocompleteRestService', 'LicenseRestService', 'RepositoriesRestService', 'RDF4JRepositoriesRestService', 'toastr'];
+homeCtrl.$inject = ['$scope',
+    '$rootScope',
+    '$http',
+    '$repositories',
+    '$jwtAuth',
+    '$licenseService',
+    '$translate',
+    'AutocompleteRestService',
+    'LicenseRestService',
+    'RepositoriesRestService',
+    'WorkbenchContextService',
+    'RDF4JRepositoriesService',
+    'toastr'];
 
-function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseService, AutocompleteRestService, LicenseRestService, RepositoriesRestService, RDF4JRepositoriesRestService, toastr) {
+function homeCtrl($scope,
+                  $rootScope,
+                  $http,
+                  $repositories,
+                  $jwtAuth,
+                  $licenseService,
+                  $translate,
+                  AutocompleteRestService,
+                  LicenseRestService,
+                  RepositoriesRestService,
+                  WorkbenchContextService,
+                  RDF4JRepositoriesService,
+                  toastr) {
+
+    // =========================
+    // Public variables
+    // =========================
     $scope.doClear = false;
 
-    $scope.getActiveRepositorySize = function () {
+    // =========================
+    // Public functions
+    // =========================
+    $scope.getActiveRepositorySize = () => {
         const repo = $repositories.getActiveRepositoryObject();
         if (!repo) {
             return;
@@ -78,31 +112,41 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
         });
     };
 
-    function refreshRepositoryInfo() {
-        if ($scope.getActiveRepository()) {
-            $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
-                .success(function () {
-                    checkAutocompleteStatus();
-                });
-            // Getting the repository size should not be related to license
-            $scope.getActiveRepositorySize();
+    $scope.onKeyDown = function (event) {
+        if (event.keyCode === 27) {
+            $scope.doClear = true;
         }
-    }
+    };
 
-    function checkAutocompleteStatus() {
-        if ($licenseService.isLicenseValid()) {
-            $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+    // =================================
+    // Subscriptions and event handlers
+    // =================================
+    const subscriptions = [];
+
+    const onSelectedRepositoryIdUpdated = (repositoryId) => {
+        if (!repositoryId) {
+            $scope.repositoryNamespaces = new NamespacesListModel();
+            return;
         }
-    }
+        $scope.getActiveRepositorySize();
+        RDF4JRepositoriesService.getNamespaces(repositoryId)
+            .then((repositoryNamespaces) => {
+                $scope.repositoryNamespaces = repositoryNamespaces;
+            })
+            .catch((error) => {
+                const msg = getError(error);
+                toastr.error(msg, $translate.instant('error.getting.namespaces.for.repo'));
+            });
+    };
 
-    $scope.$on('autocompleteStatus', function () {
-        checkAutocompleteStatus();
-    });
+    const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
+        $scope.isAutocompleteEnabled = autocompleteEnabled;
+    };
 
-    // Rather then rely on securityInit we monitory repositoryIsSet which is guaranteed to be called
-    // after security was initialized. This way we avoid a race condition when the newly logged in
-    // user doesn't have read access to the active repository.
-    $scope.$on('repositoryIsSet', refreshRepositoryInfo);
+    subscriptions.push(WorkbenchContextService.onSelectedRepositoryIdUpdated(onSelectedRepositoryIdUpdated));
+    subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
+
+    $scope.$on('$destroy', () => subscriptions.forEach((subscription) => subscription()));
 
     $scope.$on('$routeChangeSuccess', function ($event, current, previous) {
         if (previous) {
@@ -110,7 +154,7 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
             // initialized and its safe to refresh the repository info.
             if ($jwtAuth.isAuthenticated() || $jwtAuth.isFreeAccessEnabled()) {
                 // Security is OFF or security is ON but we are authenticated
-                refreshRepositoryInfo();
+                $scope.getActiveRepositorySize();
             } else {
                 // Security is ON and we aren't authenticated, redirect to login page
                 $rootScope.redirectToLogin();
@@ -118,21 +162,17 @@ function homeCtrl($scope, $rootScope, $http, $repositories, $jwtAuth, $licenseSe
         }
     });
 
-    $scope.onKeyDown = function (event) {
-        if (event.keyCode === 27) {
-            $scope.doClear = true;
-        }
-    };
-
 }
 
 mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$licenseService', '$rootScope',
     'productInfo', '$timeout', 'ModalService', '$interval', '$filter', 'LicenseRestService', 'RepositoriesRestService',
-    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils', '$q', 'GuidesService', '$route', '$window', 'AuthTokenService', 'TrackingService'];
+    'MonitoringRestService', 'SparqlRestService', '$sce', 'LocalStorageAdapter', 'LSKeys', '$translate', 'UriUtils', '$q', 'GuidesService', '$route', '$window', 'AuthTokenService', 'TrackingService',
+    'WorkbenchContextService', 'AutocompleteService'];
 
 function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repositories, $licenseService, $rootScope,
                   productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService,
-                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q, GuidesService, $route, $window, AuthTokenService, TrackingService) {
+                  MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q, GuidesService, $route, $window, AuthTokenService, TrackingService,
+                  WorkbenchContextService, AutocompleteService) {
     $scope.descr = $translate.instant('main.gdb.description');
     $scope.documentation = '';
     $scope.menu = $menuItems;
@@ -951,6 +991,38 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
         return $filter('date')(time, ("'" + $translate.instant('timestamp.on') + "' yyyy-MM-dd '" + $translate.instant('timestamp.at') + "' HH:mm"));
     };
+
+    const updateAutocompleteStatus = () => {
+        if ($repositories.isActiveRepoFedXType() || !$licenseService.isLicenseValid()) {
+            WorkbenchContextService.setAutocompleteEnabled(false);
+            LocalStorageAdapter.set(LSKeys.AUTOCOMPLETE_ENABLED, false);
+            return;
+        }
+        AutocompleteService.checkAutocompleteStatus()
+            .then((autocompleteEnabled) => {
+                WorkbenchContextService.setAutocompleteEnabled(autocompleteEnabled);
+                LocalStorageAdapter.set(LSKeys.AUTOCOMPLETE_ENABLED, autocompleteEnabled);
+            })
+            .catch(() => {
+                toastr.error($translate.instant('explore.error.autocomplete'));
+            });
+    };
+
+    const onRepositoriesChanged = () => {
+        const activeRepository = $repositories.getActiveRepository();
+        if (activeRepository !== WorkbenchContextService.getSelectedRepositoryId()) {
+            WorkbenchContextService.setSelectedRepositoryId(activeRepository);
+            updateAutocompleteStatus();
+        }
+    };
+    $rootScope.$on("repositoryIsSet", onRepositoriesChanged);
+    window.addEventListener('storage', (event) => {
+        if ('ls.' + LSKeys.AUTOCOMPLETE_ENABLED === event.key) {
+            WorkbenchContextService.setAutocompleteEnabled(event.newValue === 'true');
+        } else if ('ls.' + LSKeys.REPOSITORY_ID === event.key) {
+            onRepositoriesChanged();
+        }
+    });
 }
 
 repositorySizeCtrl.$inject = ['$scope', '$http', 'RepositoriesRestService'];

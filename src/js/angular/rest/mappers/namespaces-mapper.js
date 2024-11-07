@@ -1,3 +1,6 @@
+import {NamespaceModel} from "../../models/namespaces/namespace";
+import {NamespacesListModel} from "../../models/namespaces/namespaces-list";
+
 /**
  * Maps the namespaces response to internal model.
  * @param {Object} response
@@ -13,4 +16,22 @@ export const mapNamespacesResponse = (response) => {
         });
     }
     return [];
+};
+
+/**
+ * Maps a binding of repository namespace response to internal model.
+ * @param {Object} binding
+ * @return {NamespaceModel}
+ */
+export const namespaceModelMapper = (binding) => new NamespaceModel(binding.prefix.value, binding.namespace.value);
+
+/**
+ * Maps a bindings of repository namespaces response to NamespacesListModel.
+ *
+ * @param {*[]} bindings
+ * @return {NamespacesListModel}
+ */
+export const namespaceListModelMapper = (bindings) => {
+    const namespaces = bindings ? bindings.map(namespaceModelMapper) : [];
+    return new NamespacesListModel(namespaces);
 };

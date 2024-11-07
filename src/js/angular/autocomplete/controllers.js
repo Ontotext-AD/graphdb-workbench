@@ -12,9 +12,35 @@ angular
     .controller('AutocompleteCtrl', AutocompleteCtrl)
     .controller('AddLabelCtrl', AddLabelCtrl);
 
-AutocompleteCtrl.$inject = ['$scope', '$interval', 'toastr', '$repositories', '$licenseService', '$uibModal', '$timeout', 'RDF4JRepositoriesRestService', 'UriUtils', 'AutocompleteRestService', '$autocompleteStatus', '$translate'];
+AutocompleteCtrl.$inject = [
+    '$scope',
+    '$interval',
+    'toastr',
+    '$repositories',
+    '$licenseService',
+    '$uibModal',
+    '$timeout',
+    'RDF4JRepositoriesRestService',
+    'UriUtils',
+    'AutocompleteRestService',
+    'AutocompleteService',
+    '$translate',
+    'WorkbenchContextService'];
 
-function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseService, $uibModal, $timeout, RDF4JRepositoriesRestService, UriUtils, AutocompleteRestService, $autocompleteStatus, $translate) {
+function AutocompleteCtrl(
+    $scope,
+    $interval,
+    toastr,
+    $repositories,
+    $licenseService,
+    $uibModal,
+    $timeout,
+    RDF4JRepositoriesRestService,
+    UriUtils,
+    AutocompleteRestService,
+    AutocompleteService,
+    $translate,
+    WorkbenchContextService) {
 
     let timer;
 
@@ -31,13 +57,14 @@ function AutocompleteCtrl($scope, $interval, toastr, $repositories, $licenseServ
     };
 
     const refreshEnabledStatus = function () {
-        AutocompleteRestService.checkAutocompleteStatus()
-            .success(function (data) {
-                $scope.autocompleteEnabled = data;
-                $autocompleteStatus.setAutocompleteStatus(data);
-            }).error(function (data) {
-            toastr.error(getError(data));
-        });
+        AutocompleteService.checkAutocompleteStatus()
+            .then((autocompleteEnabled) => {
+                $scope.autocompleteEnabled = autocompleteEnabled;
+                WorkbenchContextService.setAutocompleteEnabled(autocompleteEnabled);
+            })
+            .catch((error) => {
+                toastr.error(getError(error));
+            });
     };
 
     const refreshIndexIRIs = function () {
