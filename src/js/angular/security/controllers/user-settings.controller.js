@@ -3,6 +3,7 @@ import {READ_REPO, WRITE_REPO} from "../services/constants";
 import {UserType} from 'angular/utils/user-utils';
 import {parseAuthorities} from "../services/authorities-util";
 import {UpdateUserPayload} from "../../models/security/security";
+import {CookiePolicyModalController} from "../../core/directives/cookie-policy/cookie-policy-modal-controller";
 
 angular
     .module('graphdb.framework.security.controllers.user-settings', [
@@ -25,10 +26,11 @@ UserSettingsController.$inject = [
     'WorkbenchSettingsStorageService',
     '$q',
     '$uibModal',
-    '$licenseService'
+    '$licenseService',
+    'TrackingService'
 ];
 
-function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityService, ModalService, $translate, ThemeService, WorkbenchSettingsStorageService, $q, $uibModal, $licenseService) {
+function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityService, ModalService, $translate, ThemeService, WorkbenchSettingsStorageService, $q, $uibModal, $licenseService, TrackingService) {
     angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
 
     // =========================
@@ -70,6 +72,11 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
      * @type {boolean}
      */
     $scope.noPassword = false;
+    /**
+     * If the cookie policy banner should be visible or not.
+     * @type {boolean}
+     */
+    $scope.showCookiePolicyLink = false;
 
     // =========================
     // Public functions
@@ -178,17 +185,26 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
         ThemeService.applyTheme(theme.name);
     };
 
-    $scope.showCookiePolicy = () => {
+    $scope.showCookiePolicy = ($event) => {
+        // The button that triggers this handler is inside a form which has a submit property,
+        // and we need to prevent that because it leads to a redirect to the home page.
+        $event.preventDefault();
+
         $uibModal.open({
             templateUrl: 'js/angular/core/templates/cookie-policy/cookie-policy.html',
-            controller: ['$scope', function ($scope) {
-                $scope.close = () => {
-                    $scope.$close();
-                };
-            }],
+            controller: CookiePolicyModalController,
             backdrop: 'static',
-            windowClass: 'cookie-policy-modal',
-            keyboard: false
+            keyboard: false,
+            windowClass: 'cookie-policy-modal'
+        })
+            // If the modal returns `shouldReload` as true, we reload the page.
+            // Reloading is crucial here due to potential memory leaks that arise from dynamically
+            // adding and removing Google Tag Manager (GTM) scripts based on the user's consent choice.
+            // See the comments within `CookiePolicyModalController`.
+            .result.then((shouldReload) => {
+            if (shouldReload) {
+                $window.location.reload();
+            }
         });
     };
 
@@ -196,20 +212,17 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     // Private functions
     // =========================
 
+    const showCookiePolicyLink = () => {
+        $licenseService.checkLicenseStatus().then(() => {
+            $scope.showCookiePolicyLink = TrackingService.isTrackingAllowed();
+        });
+    };
+
     const goBackToPreviousView = () => {
         waitBeforeRedirectBack = $timeout(function () {
             $scope.loader = false;
             $window.history.back();
         }, 2000);
-    };
-
-    const checkLicenseStatus = () => {
-        $licenseService.checkLicenseStatus().then(() => {
-            $scope.showCookiePolicyLink = $licenseService.isTrackingAllowed();
-        }).catch((error) => {
-            const msg = getError(error.data, error.status);
-            toastr.error(msg, $translate.instant('common.error'));
-        });
     };
 
     const initUserData = function (scope) {
@@ -252,7 +265,7 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
             };
         }
         $scope.setThemeMode();
-        checkLicenseStatus();
+        showCookiePolicyLink();
     };
 
     initView();

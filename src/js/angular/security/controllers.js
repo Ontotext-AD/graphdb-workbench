@@ -4,7 +4,6 @@ import 'angular/core/services/openid-auth.service';
 import 'angular/rest/security.rest.service';
 import {UserRole, UserType} from 'angular/utils/user-utils';
 import 'angular/aclmanagement/directives/custom-role-prefix.directive';
-import {CookiePolicyModalController} from "../core/directives/cookie-policy/cookie-policy-modal-controller";
 import {READ_REPO, READ_REPO_PREFIX, SYSTEM_REPO, WRITE_REPO, WRITE_REPO_PREFIX} from "./services/constants";
 import {createUniqueKey, parseAuthorities} from "./services/authorities-util";
 
@@ -21,8 +20,8 @@ const modules = [
 
 const securityModule = angular.module('graphdb.framework.security.controllers', modules);
 
-securityModule.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$openIDAuth', '$location', '$rootScope', '$translate',
-    function ($scope, $http, toastr, $jwtAuth, $openIDAuth, $location, $rootScope, $translate) {
+securityModule.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$openIDAuth', '$location', '$rootScope', '$translate', 'TrackingService',
+    function ($scope, $http, toastr, $jwtAuth, $openIDAuth, $location, $rootScope, $translate, TrackingService) {
         $scope.username = '';
         $scope.password = '';
 
