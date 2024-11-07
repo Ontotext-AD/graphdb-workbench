@@ -81,11 +81,7 @@ describe('JDBC configuration', () => {
         JdbcSteps.clickOnEditButton();
         // change the query,
         YasqeSteps.clearEditor();
-
-        // The test fails intermittently, and the exact cause is unclear. One possible reason is that a popup appears over the cursor while typing, which may obstruct the input of the query.
-        // As a workaround, we will disable this feature by pasting the query directly and then typing a few spaces to mark the editor as modified.
         YasqeSteps.pasteQuery(EDIT_QUERY);
-        YasqeSteps.writeInEditor('  ');
         // and click on save button.
         JdbcCreateSteps.clickOnSave();
 
@@ -156,10 +152,7 @@ describe('JDBC configuration', () => {
         // When I edit the configuration
         JdbcSteps.clickOnEditButton();
         YasqeSteps.clearEditor();
-        // The test fails intermittently, and the exact cause is unclear. One possible reason is that a popup appears over the cursor while typing, which may obstruct the input of the query.
-        // As a workaround, we will disable this feature by pasting the query directly and then typing a few spaces to mark the editor as modified.
         YasqeSteps.pasteQuery(EDIT_QUERY);
-        YasqeSteps.writeInEditor('  ');
         // And click on save button.
         JdbcCreateSteps.clickOnSave();
         // Then I expect to see a notification with the error message.
