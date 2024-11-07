@@ -1,11 +1,10 @@
-import {SparqlEditorSteps} from "../../steps/sparql-editor-steps";
-import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
-import {YasrSteps} from "../../steps/yasgui/yasr-steps";
-import {SimilarityIndexCreateSteps} from "../../steps/explore/similarity-index-create-steps";
-import {SimilarityIndexesSteps} from "../../steps/explore/similarity-indexes-steps";
-import {ModalDialogSteps, VerifyConfirmationDialogOptions} from "../../steps/modal-dialog-steps";
-import {RepositorySelectorSteps} from "../../steps/repository-selector-steps";
-import {ErrorSteps} from "../../steps/error-steps";
+import {SparqlEditorSteps} from "../../../steps/sparql-editor-steps";
+import {YasqeSteps} from "../../../steps/yasgui/yasqe-steps";
+import {YasrSteps} from "../../../steps/yasgui/yasr-steps";
+import {SimilarityIndexCreateSteps} from "../../../steps/explore/similarity-index-create-steps";
+import {SimilarityIndexesSteps} from "../../../steps/explore/similarity-indexes-steps";
+import {ModalDialogSteps, VerifyConfirmationDialogOptions} from "../../../steps/modal-dialog-steps";
+import {ErrorSteps} from "../../../steps/error-steps";
 
 const INDEX_NAME = 'index-' + Date.now();
 const FILE_TO_IMPORT = 'people.zip';

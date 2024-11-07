@@ -1,6 +1,6 @@
-import {SimilarityIndexCreateSteps} from "../../steps/explore/similarity-index-create-steps";
-import {ErrorSteps} from "../../steps/error-steps";
-import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
+import {SimilarityIndexCreateSteps} from "../../../steps/explore/similarity-index-create-steps";
+import {ErrorSteps} from "../../../steps/error-steps";
+import {YasqeSteps} from "../../../steps/yasgui/yasqe-steps";
 
 const FILE_TO_IMPORT = 'people.zip';
 const INSERT_QUERY = 'PREFIX dc: <http://purl.org/dc/elements/1.1/>\n INSERT DATA\n{\nGRAPH <http://example> {\n<http://example/book1> dc:title "A new book" ;\ndc:creator "A.N.Other" .\n}\n}';

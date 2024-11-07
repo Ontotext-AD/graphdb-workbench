@@ -247,17 +247,25 @@
                            popover-trigger="mouseenter">
                             {{'common.cancel.btn' | translate}}
                         </a>
-                        <button ng-if="!isEditViewMode()" class="btn btn-lg btn-primary create-similarity-index-btn" ng-click="createSimilarityIndex()"
+                        <button ng-if="!isEditViewMode()" class="btn btn-lg btn-primary create-similarity-index-btn"
+                                ng-disabled="savingIndex"
+                                ng-click="createSimilarityIndex()"
                                 uib-popover="{{'create.index.label' | translate}}"
                                 popover-placement="top"
                                 popover-trigger="mouseenter">
-                            {{'common.create.btn' | translate}}
+                            <span>{{'common.create.btn' | translate}}</span>
+                            <span class="saving-index-loader" ng-if="savingIndex" onto-loader-fancy hide-message="true"
+                                  size="18"></span>
                         </button>
-                        <button ng-if="isEditViewMode()" class="btn btn-lg btn-primary save-query-btn" ng-click="saveSearchQuery()"
+                        <button ng-if="isEditViewMode()" class="btn btn-lg btn-primary save-query-btn"
+                                ng-disabled="savingIndex"
+                                ng-click="saveSearchQuery()"
                                 uib-popover="{{'core.edit.query' | translate}}"
                                 popover-placement="top"
                                 popover-trigger="mouseenter">
-                            {{'common.save.btn' | translate}}
+                            <span>{{'common.save.btn' | translate}}</span>
+                            <span class="saving-index-loader" ng-if="savingIndex" onto-loader-fancy hide-message="true"
+                                  size="18"></span>
                         </button>
                     </div>
                     <div class="pull-left">

@@ -14,3 +14,9 @@ yasgui-component .CodeMirror {
 .keyboard-shortcuts-dialog-wrapper {
     margin-top: -21px;
 }
+
+.create-similarity-index-btn .saving-index-loader,
+.create-similarity-index-btn .save-query-btn {
+    position: relative;
+    bottom: -3px
+}

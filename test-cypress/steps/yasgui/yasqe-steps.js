@@ -74,6 +74,9 @@ export class YasqeSteps {
         this.getCodeMirror().then((cm) => {
             cm.getDoc().setValue(query);
         });
+        // Type some spaces to trigger the change event and make angular aware
+        // that the value has been changed.
+        YasqeSteps.getEditor().find('textarea').type('  ', {force: true, parseSpecialCharSequences: false});
         YasqeSteps.verifyQueryTyped(query);
     }
 
