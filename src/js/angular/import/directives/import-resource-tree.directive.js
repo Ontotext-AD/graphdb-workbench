@@ -180,6 +180,24 @@ function importResourceTreeDirective($timeout, ImportContextService) {
                 $scope.onEditResource({resource});
             };
 
+            $scope.toggleSelectAll = () => {
+                const allSelected = $scope.displayResources.every((resource) => resource.selected);
+                const noneSelected = $scope.displayResources.every((resource) => !resource.selected);
+                const checkboxElement = document.getElementById('checkboxInput');
+
+                if (allSelected) {
+                    toggleCheckboxes(checkboxElement, false);
+                } else if (noneSelected) {
+                    toggleCheckboxes(checkboxElement, true);
+                } else {
+                    toggleCheckboxes(checkboxElement, false);
+                }
+
+                updateSelectByStateDropdownModel();
+                updateHasSelection();
+            };
+
+
             // =========================
             // Private functions
             // =========================
@@ -214,6 +232,25 @@ function importResourceTreeDirective($timeout, ImportContextService) {
                 const hasSelectedDisplayedImportResource = $scope.displayResources.some((resource) => resource.selected);
                 $scope.areAllDisplayedImportResourcesSelected = hasSelectedDisplayedImportResource && !hasUnselectedDisplayedImportResource;
                 $scope.areAllDisplayedImportResourcesPartialSelected = hasSelectedDisplayedImportResource && hasUnselectedDisplayedImportResource;
+
+                if ($scope.areAllDisplayedImportResourcesSelected) {
+                    $scope.selectedByStatus = STATUS_OPTIONS.ALL;
+                } else if (!$scope.areAllDisplayedImportResourcesSelected && !$scope.areAllDisplayedImportResourcesPartialSelected) {
+                    $scope.selectedByStatus = STATUS_OPTIONS.NONE;
+                }
+            };
+
+            const toggleCheckboxes = (checkboxElement, shouldSelect) => {
+                $scope.displayResources.forEach((resource) => resource.selected = shouldSelect);
+                $scope.selectedByStatus = shouldSelect ? STATUS_OPTIONS.ALL : STATUS_OPTIONS.NONE;
+                $scope.areAllDisplayedImportResourcesSelected = shouldSelect;
+                $scope.areAllDisplayedImportResourcesPartialSelected = false;
+
+                $timeout(() => {
+                    if (checkboxElement) {
+                        checkboxElement.checked = shouldSelect;
+                    }
+                });
             };
 
             const sortResources = () => {

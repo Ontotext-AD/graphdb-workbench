@@ -97,12 +97,14 @@
     margin-right: .5rem;
 }
 
-.import-resource-tree .import-resources-actions .import-resource-status-dropdown .import-resource-status-checkbox {
-    pointer-events: none;
+.import-resource-tree .import-resources-actions .import-resource-status-dropdown {
+    padding-left: 5px;
+    gap: 5px;
 }
 
 .import-resource-tree .import-resources-actions .import-resource-status-dropdown .dropdown-toggle {
     padding-left: 0.5rem;
+    margin-right: 0;
 }
 
 .import-resource-tree .import-resources-actions .import-resource-status-dropdown .dropdown-toggle:not(.selected) {
