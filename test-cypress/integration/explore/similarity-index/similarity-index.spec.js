@@ -1,8 +1,8 @@
-import {SimilarityIndexCreateSteps} from "../../steps/explore/similarity-index-create-steps";
-import {RepositorySelectorSteps} from "../../steps/repository-selector-steps";
-import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
-import {ModalDialogSteps, VerifyConfirmationDialogOptions} from "../../steps/modal-dialog-steps";
-import {SimilarityIndexesSteps} from "../../steps/explore/similarity-indexes-steps";
+import {SimilarityIndexCreateSteps} from "../../../steps/explore/similarity-index-create-steps";
+import {RepositorySelectorSteps} from "../../../steps/repository-selector-steps";
+import {YasqeSteps} from "../../../steps/yasgui/yasqe-steps";
+import {ModalDialogSteps, VerifyConfirmationDialogOptions} from "../../../steps/modal-dialog-steps";
+import {SimilarityIndexesSteps} from "../../../steps/explore/similarity-indexes-steps";
 
 const FILE_TO_IMPORT = 'people.zip';
 
