@@ -246,11 +246,9 @@ function importResourceTreeDirective($timeout, ImportContextService) {
                 $scope.areAllDisplayedImportResourcesSelected = shouldSelect;
                 $scope.areAllDisplayedImportResourcesPartialSelected = false;
 
-                $timeout(() => {
-                    if (checkboxElement) {
-                        checkboxElement.checked = shouldSelect;
-                    }
-                });
+                if (checkboxElement) {
+                    checkboxElement.checked = shouldSelect;
+                }
             };
 
             const sortResources = () => {
