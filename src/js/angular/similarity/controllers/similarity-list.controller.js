@@ -1,3 +1,5 @@
+import 'angular/core/services/workbench-context.service';
+import 'angular/core/services/rdf4j-repositories.service';
 import {decodeHTML} from "../../../../app";
 import {SimilaritySearchType} from "../../models/similarity/similarity-search-type";
 import {SimilarityResultType} from "../../models/similarity/similarity-result-type";
@@ -6,9 +8,11 @@ import {SimilarityIndexType} from "../../models/similarity/similarity-index-type
 import {mapIndexesResponseToSimilarityIndex} from "../../rest/mappers/similarity-index-mapper";
 import {SimilaritySearch} from "../../models/similarity/similarity-search";
 import {RenderingMode} from "../../models/ontotext-yasgui/rendering-mode";
+import {NamespacesListModel} from "../../models/namespaces/namespaces-list";
 
+const modules = ['graphdb.core.services.workbench-context', 'graphdb.framework.core.services.rdf4j.repositories'];
 angular
-    .module('graphdb.framework.similarity.controllers.list', [])
+    .module('graphdb.framework.similarity.controllers.list', modules)
     .controller('SimilarityCtrl', SimilarityCtrl);
 
 SimilarityCtrl.$inject = [
@@ -25,7 +29,9 @@ SimilarityCtrl.$inject = [
     'productInfo',
     'RDF4JRepositoriesRestService',
     '$translate',
-    'SparqlRestService'
+    'SparqlRestService',
+    'WorkbenchContextService',
+    'RDF4JRepositoriesService'
 ];
 
 function SimilarityCtrl(
@@ -42,7 +48,9 @@ function SimilarityCtrl(
     productInfo,
     RDF4JRepositoriesRestService,
     $translate,
-    SparqlRestService) {
+    SparqlRestService,
+    WorkbenchContextService,
+    RDF4JRepositoriesService) {
 
     const PREFIX = 'http://www.ontotext.com/graphdb/similarity/';
     const PREFIX_PREDICATION = 'http://www.ontotext.com/graphdb/similarity/psi/';
@@ -274,7 +282,6 @@ function SimilarityCtrl(
     };
 
     const init = () => {
-        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
         const activeRepository = $scope.getActiveRepository();
         if (activeRepository && $scope.activeRepository !== activeRepository) {
             $scope.canEditRepo = $scope.canWriteActiveRepo();
@@ -308,10 +315,24 @@ function SimilarityCtrl(
         return '<' + iri + '>';
     };
 
-    const checkAutocompleteStatus = () => {
-        if ($licenseService.isLicenseValid()) {
-            $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
+
+    const onSelectedRepositoryIdUpdated = (repositoryId) => {
+        if (!repositoryId) {
+            $scope.repositoryNamespaces = new NamespacesListModel();
+            return;
         }
+        RDF4JRepositoriesService.getNamespaces(repositoryId)
+            .then((repositoryNamespaces) => {
+                $scope.repositoryNamespaces = repositoryNamespaces;
+            })
+            .catch((error) => {
+                const msg = getError(error);
+                toastr.error(msg, $translate.instant('error.getting.namespaces.for.repo'));
+            });
+    };
+
+    const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
+        $scope.isAutocompleteEnabled = autocompleteEnabled;
     };
 
     const checkIsGraphDBRepository = () => {
@@ -342,7 +363,8 @@ function SimilarityCtrl(
         subscriptions.forEach((subscription) => subscription());
     };
 
-    subscriptions.push($scope.$on('autocompleteStatus', checkAutocompleteStatus));
+    subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
+    subscriptions.push(WorkbenchContextService.onSelectedRepositoryIdUpdated(onSelectedRepositoryIdUpdated));
 
     const searchTypeChangeHandler = () => {
         $scope.empty = true;
