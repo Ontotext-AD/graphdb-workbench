@@ -28,6 +28,7 @@ import 'angularjs-slider/dist/rzslider.min';
 import {debounce} from "lodash";
 import {DocumentationUrlResolver} from "./utils/documentation-url-resolver";
 import {NamespacesListModel} from "./models/namespaces/namespaces-list";
+import {FileUtils} from "./utils/file-utils";
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -1023,6 +1024,13 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             onRepositoriesChanged();
         }
     });
+
+    $rootScope.downloadGuidesFile = (resourcePath, resourceFile) => {
+        GuidesService.downloadGuideResource(`${resourcePath}/${resourceFile}`)
+            .then((response) => {
+                FileUtils.downloadAsFile(resourceFile, "application/text", response.data);
+            });
+    };
 }
 
 repositorySizeCtrl.$inject = ['$scope', '$http', 'RepositoriesRestService'];

@@ -189,12 +189,13 @@ function GuidesService(
         this._subscribeToGuideResumed();
         this._subscribeToGuideCancel();
         this._subscribeToGuidePause();
-        $rootScope.downloadGuidesFile = (resourcePath, resourceFile) => {
-            GuidesRestService.downloadGuideResource(`${resourcePath}/${resourceFile}`)
-                .then((response) => {
-                    FileUtils.downloadAsFile(resourceFile, "application/text", response.data);
-                });
-        };
+    };
+
+    this.downloadGuidesFile = (resourcePath, resourceFile) => {
+        GuidesRestService.downloadGuideResource(`${resourcePath}/${resourceFile}`)
+            .then((response) => {
+                FileUtils.downloadAsFile(resourceFile, "application/text", response.data);
+            });
     };
 
     /**
