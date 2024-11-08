@@ -8,8 +8,7 @@ PluginRegistry.add('guide.step', [
                     title: 'guide.step_plugin.download-guide-resource.title',
                     content: 'guide.step_plugin.download-guide-resource.content',
                     canBePaused: true,
-                    forceReload: true,
-                    resourceUrl: services.GuideUtils.toResourceDownloadUrl(options)
+                    forceReload: true
                 }, options)
             };
         }
