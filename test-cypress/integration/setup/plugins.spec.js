@@ -1,4 +1,5 @@
 import {PluginsSteps} from "../../steps/setup/plugins-steps";
+import {PluginsStubs} from "../../stubs/setup/plugins-stubs";
 
 describe('Plugins view', () => {
 
@@ -9,8 +10,6 @@ describe('Plugins view', () => {
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
         cy.initializeRepository(repositoryId);
-        PluginsSteps.visit();
-        PluginsSteps.waitUntilPluginsPageIsLoaded();
     });
 
     afterEach(() => {
@@ -18,6 +17,11 @@ describe('Plugins view', () => {
     });
 
     it('Should allow to enable and disable the plugins', () => {
+        PluginsStubs.spyPluginsGet(repositoryId);
+        PluginsSteps.visit();
+        cy.wait('@get-plugins');
+        PluginsSteps.waitUntilPluginsPageIsLoaded();
+
         // Verify initial status is ON
         PluginsSteps.getPluginByName('history').should('be.visible');
         PluginsSteps.getPluginStatus('history').contains('ON');
@@ -25,6 +29,7 @@ describe('Plugins view', () => {
         PluginsSteps.togglePlugin('history');
 
         PluginsSteps.visit();
+        cy.wait('@get-plugins');
 
         PluginsSteps.getPluginByName('history').should('be.visible');
         PluginsSteps.getPluginSwitchField('history').should('not.be.checked');
