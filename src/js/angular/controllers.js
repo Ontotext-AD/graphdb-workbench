@@ -1025,7 +1025,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     });
 
-    $rootScope.downloadGuidesFile = (resourcePath, resourceFile) => {
+    $scope.downloadGuidesFile = (resourcePath, resourceFile) => {
         GuidesService.downloadGuidesFile(resourcePath, resourceFile);
     };
 }
