@@ -68,12 +68,17 @@ function SecurityRestService($http) {
         });
     }
 
+    /**
+     * Updates the user data in the backend.
+     * @param {UpdateUserPayload} data - The user data to be updated.
+     * @return {Promise<*>}
+     */
     function updateUserData(data) {
         return $http({
             method: 'PATCH',
             url: `${SECURITY_USER_ENDPOINT}/${fixedEncodeURIComponent(data.username)}`,
             data: {
-                password: data.pass,
+                password: data.password,
                 appSettings: data.appSettings
             }
         });
