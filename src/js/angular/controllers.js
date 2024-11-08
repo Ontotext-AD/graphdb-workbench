@@ -1026,10 +1026,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     });
 
     $rootScope.downloadGuidesFile = (resourcePath, resourceFile) => {
-        GuidesService.downloadGuideResource(`${resourcePath}/${resourceFile}`)
-            .then((response) => {
-                FileUtils.downloadAsFile(resourceFile, "application/text", response.data);
-            });
+        GuidesService.downloadGuidesFile(resourcePath, resourceFile);
     };
 }
 
