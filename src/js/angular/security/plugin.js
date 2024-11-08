@@ -38,7 +38,7 @@ PluginRegistry.add('route', [
         'module': 'graphdb.framework.security',
         'path': 'security/app',
         'chunk': 'security',
-        'controller': 'ChangeUserPasswordSettingsCtrl',
+        'controller': 'UserSettingsController',
         'templateUrl': 'js/angular/security/templates/user.html',
         'title': 'view.settings.title',
         'documentationUrl': 'customizing-workbench-behavior.html#user-settings'
