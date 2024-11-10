@@ -2599,6 +2599,7 @@
     "guide.step_plugin.visual-graph-link-focus.content": "An arrow with a label represents one or more links between nodes. In this case, the arrow shows the relation <b>{{fromIriLabel}} &rarr; {{iriLabel}} &rarr; {{toIriLabel}}</b>.",
     "guide.step_plugin.download-guide-resource.title": "Download guide resources",
     "guide.step_plugin.download-guide-resource.content": "This guide requires a file to be downloaded.<br>Please <a href=\"#\" ng-click=\"downloadGuidesFile('{{resourcePath}}', '{{resourceFile}}')\">download {{resourceFile}}</a>.",
+    "guide.step_plugin.download-guide-resource.download.message.failure": "Failed to download the '{{resourceFile}}' file!",
     "guide.step_plugin.choose-repository.content": "Click on the repository selection dropdown.",
     "guide.step_plugin.select-repository.content": "Click on the <b>{{getRepositoryId()}}</b> repository button.",
     "guide.step_plugin.select-repository-plug.content": "Click on the plug icon of the <b>{{repositoryId}}</b> repository.",

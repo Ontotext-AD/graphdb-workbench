@@ -192,7 +192,7 @@ function GuidesService(
     };
 
     this.downloadGuidesFile = (resourcePath, resourceFile) => {
-        GuidesRestService.downloadGuideResource(`${resourcePath}/${resourceFile}`)
+        return GuidesRestService.downloadGuideResource(`${resourcePath}/${resourceFile}`)
             .then((response) => {
                 FileUtils.downloadAsFile(resourceFile, "application/text", response.data);
             });

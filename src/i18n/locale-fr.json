@@ -2599,6 +2599,7 @@
     "guide.step_plugin.visual-graph-link-focus.content": "Une flèche avec une étiquette représente un ou plusieurs liens entre les nœuds. Dans ce cas, la flèche montre la relation <b>{{fromIriLabel}} &rarr; {{iriLabel}} &rarr; {{toIriLabel}}</b>.",
     "guide.step_plugin.download-guide-resource.title": "Télécharger les ressources du guide",
     "guide.step_plugin.download-guide-resource.content": "Ce guide nécessite le téléchargement d'un fichier.<br>Veuillez <a href=\"#\" ng-click=\"downloadGuidesFile('{{resourcePath}}', '{{resourceFile}}')\">télécharger {{resourceFile}}</a>.",
+    "guide.step_plugin.download-guide-resource.download.message.failure": "Échec du téléchargement du fichier '{{resourceFile}}' !",
     "guide.step_plugin.choose-repository.content": "Cliquez sur la liste déroulante de sélection du dépôt.",
     "guide.step_plugin.select-repository.content": "Cliquez sur le bouton de dépôt <b>{{getRepositoryId()}}</b>.",
     "guide.step_plugin.select-repository-plug.content": "Cliquez sur l'icône de prise du dépôt <b>{{repositoryId}}</b>.",
