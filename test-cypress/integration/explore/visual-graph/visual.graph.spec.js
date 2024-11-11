@@ -1,5 +1,6 @@
 import {VisualGraphSteps} from "../../../steps/visual-graph-steps";
 import {ApplicationSteps} from "../../../steps/application-steps";
+import {LicenseStubs} from "../../../stubs/license-stubs";
 
 const FILE_TO_IMPORT = 'wine.rdf';
 const VALID_RESOURCE = 'USRegion';
@@ -14,6 +15,7 @@ describe('Visual graph screen validation', () => {
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
+        LicenseStubs.spyGetLicense();
     });
 
     afterEach(() => {
@@ -51,8 +53,9 @@ describe('Visual graph screen validation', () => {
             ApplicationSteps.getErrorNotifications().should('be.visible').and('contain', 'Invalid IRI');
         });
 
-        it('Test search for a valid resource', () => {
+        it.only('Test search for a valid resource', () => {
             VisualGraphSteps.visit();
+            cy.wait('@get-license');
             VisualGraphSteps.searchForResourceAndOpen(VALID_RESOURCE, VALID_RESOURCE);
             // Verify redirection to existing visual graph
             cy.url().should('match', /USRegion$/);
