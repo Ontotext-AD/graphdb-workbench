@@ -452,9 +452,9 @@ function TTYGViewCtrl(
                     updateChatAnswersFirstResponse(selectedChat, chatItem, chatAnswer);
                 }
             })
-            .catch(() => {
+            .catch((error) => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT_FAILURE);
-                toastr.error($translate.instant('ttyg.chat.messages.create_failure'));
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             });
     };
 

@@ -53,7 +53,7 @@ describe('Visual graph screen validation', () => {
             ApplicationSteps.getErrorNotifications().should('be.visible').and('contain', 'Invalid IRI');
         });
 
-        it.only('Test search for a valid resource', () => {
+        it('Test search for a valid resource', () => {
             VisualGraphSteps.visit();
             cy.wait('@get-license');
             VisualGraphSteps.searchForResourceAndOpen(VALID_RESOURCE, VALID_RESOURCE);
