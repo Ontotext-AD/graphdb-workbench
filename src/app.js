@@ -15,6 +15,7 @@ import 'angular/core/directives/operations-statuses-monitor/operations-statuses-
 import 'angular/core/directives/autocomplete/autocomplete.directive';
 import 'angular/core/directives/prop-indeterminate/prop-indeterminate.directive';
 import 'angular/core/directives/page-info-tooltip.directive';
+import 'angular/core/services/language.service'
 import {defineCustomElements} from 'ontotext-yasgui-web-component/loader';
 import {convertToHumanReadable} from "./js/angular/utils/size-util";
 import {DocumentationUrlResolver} from "./js/angular/utils/documentation-url-resolver";
@@ -46,7 +47,8 @@ const modules = [
     'graphdb.framework.guides.services',
     'graphdb.framework.core.directives.operationsstatusesmonitor',
     'graphdb.framework.core.directives.autocomplete',
-    'ngCustomElement'
+    'ngCustomElement',
+    'graphdb.framework.core.services.language-service'
 ];
 
 const providers = [
@@ -58,7 +60,8 @@ const providers = [
     '$uibTooltipProvider',
     '$httpProvider',
     '$templateRequestProvider',
-    '$translateProvider'
+    '$translateProvider',
+    '$languageServiceProvider'
 ];
 
 const moduleDefinition = function (productInfo, translations) {
@@ -74,7 +77,8 @@ const moduleDefinition = function (productInfo, translations) {
                   $uibTooltipProvider,
                   $httpProvider,
                   $templateRequestProvider,
-                  $translateProvider) {
+                  $translateProvider,
+                  $languageServiceProvider) {
 
             if (translations && Object.keys(translations).length > 0) {
                 // If translations data is provided, iterate over the object and register each language key
@@ -92,7 +96,7 @@ const moduleDefinition = function (productInfo, translations) {
                     suffix: '.json?v=[AIV]{version}[/AIV]'
                 });
                 // load 'en' table on startup
-                $translateProvider.preferredLanguage('en');
+                $translateProvider.preferredLanguage($languageServiceProvider.getDefaultLanguage());
             }
             $translateProvider.useSanitizeValueStrategy('escape');
 
@@ -245,7 +249,7 @@ const moduleDefinition = function (productInfo, translations) {
 
 // Manually load language files
 function loadTranslationsBeforeWorkbenchStart() {
-    const languages = ['en', 'fr']
+    const languages = __LANGUAGES__.availableLanguages.map(lang => lang.key)
     const promises = languages.map(loadTranslations);
     const translations = {};
     Promise.all(promises)

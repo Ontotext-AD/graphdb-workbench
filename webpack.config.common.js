@@ -3,6 +3,13 @@ const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const MergeIntoSingleFilePlugin = require('webpack-merge-and-include-globally');
 const WebpackAutoInject = require('webpack-auto-inject-version');
+const webpack = require('webpack');
+const fs = require('fs');
+
+// Load the languages JSON file as a string for injection
+const languagesConfig = JSON.stringify(
+    JSON.parse(fs.readFileSync(path.resolve(__dirname, 'src/i18n/languages.json'), 'utf8'))
+);
 
 // Pass this function as a transform argument to CopyPlugin elements to replace [AIV]{version}[/AIV]
 // with the current workbench version number. This is not related to the WebpackAutoInject plugin
@@ -32,6 +39,9 @@ module.exports = {
         extensions: ['.js', '.mjs']
     },
     plugins: [
+        new webpack.DefinePlugin({
+            __LANGUAGES__: languagesConfig
+        }),
         new WebpackAutoInject({
             SILENT: true,
             components: {
