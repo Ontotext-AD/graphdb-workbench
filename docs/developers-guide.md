@@ -383,3 +383,52 @@ folder. The `file-loader` is used for the purpose.
 `url-loader`.
 * The `/dist` directory is cleaned up before every build to prevent accumulating bundle files with
 different hashes in their names.
+
+# Extending Translation Capabilities with the Language Service
+
+## Overview
+
+The introduction of `$languageServiceProvider` allows for flexible, dynamic language support within the GraphDB Workbench. This enhancement enables administrators to add or configure new languages directly through the configuration file (`languages.json`), eliminating the need for code changes or redeployment.
+
+## Key Benefits
+
+1. **Development-Free Translation Management**:
+    - Administrators can now manage supported languages by simply updating `languages.json`.
+    - This configuration-based approach makes it easy to introduce or remove languages without modifying the application code.
+
+2. **Dynamic Language Settings**:
+    - The workbench adapts automatically to the languages defined in `languages.json`, allowing administrators to plug in translations as needed.
+    - Language fallbacks and defaults are handled seamlessly, improving the application’s accessibility and usability.
+
+## How It Works
+
+- **Configuration File**: The `languages.json` file, located in the `src/i18n` directory, defines the `defaultLanguage` and `availableLanguages`.
+    - Example of `languages.json`:
+      ```json
+      {
+          "defaultLanguage": "en",
+          "availableLanguages": [
+              { "key": "en", "name": "English" },
+              { "key": "fr", "name": "Français" }
+          ]
+      }
+      ```
+- **Provider Integration**: `$languageServiceProvider` reads this configuration during the application initialization and exposes methods for retrieving the default language and available languages.
+- **Application-Wide Language Access**: Components across the application can access language settings via `$languageService`, ensuring consistency in language display and fallback behavior.
+
+## How to Add a New Language
+
+1. **Edit `languages.json`**: Add a new language entry in the `availableLanguages` array with the desired language `key` and `name`.
+   ```json
+   {
+       "defaultLanguage": "en",
+       "availableLanguages": [
+           { "key": "en", "name": "English" },
+           { "key": "fr", "name": "Français" },
+           { "key": "es", "name": "Español" }
+       ]
+   }
+   
+2. **Ensure Translations Are Available** Make sure a translation file (e.g., `es.json`) exists for the new language, following the naming convention used for other languages.
+
+3. **Reload the Application** The workbench will recognize the new language without requiring additional code changes or redeployment.

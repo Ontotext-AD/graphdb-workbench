@@ -2,7 +2,6 @@ import 'angular/utils/local-storage-adapter';
 import 'angular/core/services/event-emitter-service';
 angular
     .module('graphdb.framework.core.directives.languageselector.languageselector', [
-        'graphdb.framework.core',
         'graphdb.framework.utils.localstorageadapter', 'graphdb.framework.utils.event-emitter-service'
     ])
     .directive('languageSelector', languageSelector);
