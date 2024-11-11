@@ -1,5 +1,6 @@
 import {PluginsSteps} from "../../steps/setup/plugins-steps";
 import {PluginsStubs} from "../../stubs/setup/plugins-stubs";
+import {LicenseStubs} from "../../stubs/license-stubs";
 
 describe('Plugins view', () => {
 
@@ -10,6 +11,7 @@ describe('Plugins view', () => {
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
         cy.initializeRepository(repositoryId);
+        LicenseStubs.spyGetLicense();
     });
 
     afterEach(() => {
@@ -19,6 +21,7 @@ describe('Plugins view', () => {
     it('Should allow to enable and disable the plugins', () => {
         PluginsStubs.spyPluginsGet(repositoryId);
         PluginsSteps.visit();
+        cy.wait('@get-license');
         cy.wait('@get-plugins');
         PluginsSteps.waitUntilPluginsPageIsLoaded();
 
