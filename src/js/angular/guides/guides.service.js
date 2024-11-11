@@ -1,10 +1,13 @@
 import 'angular/utils/local-storage-adapter';
 import 'angular/guides/tour-lib-services/shepherd.service';
+import 'angular/rest/guides.rest.service';
 import {GuideUtils} from "./guide-utils";
 import {YasguiComponentDirectiveUtil} from "../core/directives/yasgui-component/yasgui-component-directive.util";
+import {FileUtils} from "../utils/file-utils";
 
 const modules = [
-    'graphdb.framework.guides.shepherd.services'
+    'graphdb.framework.guides.shepherd.services',
+    'graphdb.framework.rest.guides.service'
 ];
 
 angular
@@ -12,7 +15,19 @@ angular
     .service('GuidesService', GuidesService);
 
 
-GuidesService.$inject = ['$http', '$rootScope', '$translate', '$interpolate', 'ShepherdService', '$repositories', 'toastr', '$location', '$route', '$timeout', 'EventEmitterService'];
+GuidesService.$inject = [
+    '$http',
+    '$rootScope',
+    '$translate',
+    '$interpolate',
+    'ShepherdService',
+    '$repositories',
+    'toastr',
+    '$location',
+    '$route',
+    '$timeout',
+    'EventEmitterService',
+    'GuidesRestService'];
 
 /**
  * Service for interaction with guide functionality. A guide is described as sequence of steps.
@@ -152,7 +167,19 @@ GuidesService.$inject = ['$http', '$rootScope', '$translate', '$interpolate', 'S
  * @package {EventEmitterService} EventEmitterService
  * @constructor
  */
-function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdService, $repositories, toastr, $location, $route, $timeout, EventEmitterService) {
+function GuidesService(
+    $http,
+    $rootScope,
+    $translate,
+    $interpolate,
+    ShepherdService,
+    $repositories,
+    toastr,
+    $location,
+    $route,
+    $timeout,
+    EventEmitterService,
+    GuidesRestService) {
 
     this.guideResumeSubscription = undefined;
     this.languageChangeSubscription = undefined;
@@ -162,6 +189,13 @@ function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdServ
         this._subscribeToGuideResumed();
         this._subscribeToGuideCancel();
         this._subscribeToGuidePause();
+    };
+
+    this.downloadGuidesFile = (resourcePath, resourceFile) => {
+        return GuidesRestService.downloadGuideResource(`${resourcePath}/${resourceFile}`)
+            .then((response) => {
+                FileUtils.downloadAsFile(resourceFile, "application/text", response.data);
+            });
     };
 
     /**
@@ -225,19 +259,18 @@ function GuidesService($http, $rootScope, $translate, $interpolate, ShepherdServ
      *  </ul>
      */
     this.getGuides = () => {
-        return new Promise((resolve) => {
-            $http.get(GuideUtils.GUIDES_LIST_URL)
-                .success(function (data) {
-                    angular.forEach(data, (guide, index) => {
-                        if (guide.guideId === undefined) {
-                            // Ideally we want our guides to have stable IDs but it's not a big deal
-                            // if they don't have one - so just generate it in that case
-                            guide.guideId = index;
-                        }
-                    });
-                    resolve(data);
+        return GuidesRestService.getGuides()
+            .then((response) => {
+                const guides = response.data || [];
+                guides.forEach((guide, index) => {
+                    if (guide.guideId === undefined) {
+                        // Ideally we want our guides to have stable IDs but it's not a big deal
+                        // if they don't have one - so just generate it in that case
+                        guide.guideId = Date.now() + index;
+                    }
                 });
-        });
+                return guides;
+            });
     };
 
     /**

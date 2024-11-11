@@ -1,6 +1,7 @@
 import 'angular/guides/guides.service';
 import 'angular/core/directives/paginations';
 import {GuideUtils} from "./guide-utils";
+import {GuideLevel} from "./model/guides";
 
 const modules = [
     'ui.bootstrap',
@@ -12,51 +13,28 @@ angular
     .module('graphdb.framework.guides.controllers', modules)
     .controller('GuidesCtrl', GuidesCtrl);
 
-GuidesCtrl.$inject = ['$scope', '$rootScope', 'GuidesService', '$filter', '$translate', '$interpolate'];
+GuidesCtrl.$inject = ['$scope', '$rootScope', 'GuidesService', '$filter', '$translate', '$interpolate', 'toastr'];
 
-function GuidesCtrl($scope, $rootScope, GuidesService, $filter, $translate, $interpolate) {
+function GuidesCtrl($scope, $rootScope, GuidesService, $filter, $translate, $interpolate, toastr) {
 
+    // =========================
+    // Public variables
+    // =========================
     $scope.guides = [];
     $scope.pageSizeOptions = [10, 20, 50, 100];
     $scope.page = 1;
     $scope.pageSize = $scope.pageSizeOptions[0];
     $scope.translationSubscription = undefined;
 
-    $scope.init = function () {
-        GuidesService.getGuides()
-            .then(guides => {
-                $scope.guides = $filter('orderBy')(guides, 'guideOrder');
-                $scope.guides.forEach(guide => {
-                    guide.translatedGuideName = GuideUtils.translateLocalMessage($translate, $interpolate, guide.guideName);
-                    guide.translatedGuideDescription = GuideUtils.translateLocalMessage($translate, $interpolate, guide.guideDescription);
-                    switch (guide.guideLevel) {
-                        case undefined:
-                        case 0:
-                            guide.guideLevelLabel = 'view.guides.level.beginner';
-                            break;
-                        case 1:
-                            guide.guideLevelLabel = 'view.guides.level.intermediate';
-                            break;
-                        default: // 2 and above
-                            guide.guideLevelLabel = 'view.guides.level.advanced';
-                    }
-                });
-                $scope.matchedElements = $scope.guides;
-                $scope.changePagination();
-            });
-    };
+    // =========================
+    // Public functions
+    // =========================
 
-    $scope.startGuide = function (guide) {
+    $scope.startGuide = (guide) => {
         GuidesService.startGuide(guide);
     };
 
-    if (!this.translationSubscription) {
-        this.translationSubscription = $rootScope.$on('$translateChangeSuccess', () => {
-            $scope.init();
-        });
-    }
-
-    $scope.changePagination = function () {
+    $scope.changePagination = () => {
         if (angular.isDefined($scope.guides)) {
             $scope.displayedGuides = $scope.guides.slice($scope.pageSize * ($scope.page - 1), $scope.pageSize * $scope.page);
         }
@@ -72,5 +50,59 @@ function GuidesCtrl($scope, $rootScope, GuidesService, $filter, $translate, $int
         $scope.changePagination();
     };
 
-    $scope.init();
+    // =========================
+    // Private functions
+    // =========================
+
+    const init = () => {
+        loadGuides()
+            .then(translateNameAndDescriptions);
+    };
+
+    const loadGuides = () => {
+        return GuidesService.getGuides()
+            .then((guides) => {
+                $scope.guides = $filter('orderBy')(guides, 'guideOrder');
+                updateGuide();
+                $scope.matchedElements = $scope.guides;
+                $scope.changePagination();
+            });
+    };
+
+    const updateGuide = () => {
+        $scope.guides.forEach((guide) => {
+            switch (guide.guideLevel) {
+                case undefined:
+                case GuideLevel.BEGINNER:
+                    guide.guideLevelLabel = 'view.guides.level.beginner';
+                    break;
+                case GuideLevel.INTERMEDIATE:
+                    guide.guideLevelLabel = 'view.guides.level.intermediate';
+                    break;
+                default: // GuideLevel.ADVANCED and above
+                    guide.guideLevelLabel = 'view.guides.level.advanced';
+            }
+        });
+    };
+
+    const translateNameAndDescriptions = () => {
+        $scope.guides.forEach((guide) => {
+            guide.translatedGuideName = GuideUtils.translateLocalMessage($translate, $interpolate, guide.guideName);
+            guide.translatedGuideDescription = GuideUtils.translateLocalMessage($translate, $interpolate, guide.guideDescription);
+        });
+    };
+
+    // =========================
+    // Subscriptions
+    // =========================
+    const subscriptions = [];
+
+    const removeAllSubscribers = () => {
+        subscriptions.forEach((subscription) => subscription());
+    };
+
+    subscriptions.push($rootScope.$on('$translateChangeSuccess', translateNameAndDescriptions));
+    subscriptions.push($scope.$on('$destroy', removeAllSubscribers));
+
+    init();
 }
