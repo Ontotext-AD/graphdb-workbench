@@ -28,7 +28,6 @@ import 'angularjs-slider/dist/rzslider.min';
 import {debounce} from "lodash";
 import {DocumentationUrlResolver} from "./utils/documentation-url-resolver";
 import {NamespacesListModel} from "./models/namespaces/namespaces-list";
-import {FileUtils} from "./utils/file-utils";
 
 angular
     .module('graphdb.workbench.se.controllers', [
