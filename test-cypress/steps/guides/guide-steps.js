@@ -2,7 +2,7 @@ import {GuideDialogSteps} from "./guide-dialog-steps";
 import {MainMenuSteps} from "../main-menu-steps";
 import {RepositorySteps} from "../repository-steps";
 import {RepositorySelectorSteps} from "../repository-selector-steps";
-import {AutocompleteSteps} from "../autocomplete-steps";
+import {AutocompleteSteps} from "../setup/autocomplete-steps";
 import ImportSteps from "../import/import-steps";
 
 export class GuideSteps {

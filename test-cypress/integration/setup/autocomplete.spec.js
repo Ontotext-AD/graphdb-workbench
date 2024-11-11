@@ -1,32 +1,16 @@
+import {AutocompleteSteps} from "../../steps/setup/autocomplete-steps";
+import {LicenseStubs} from "../../stubs/license-stubs";
+
 describe('Autocomplete ', () => {
 
     let repositoryId;
 
-    function createRepository() {
+    beforeEach(() => {
         repositoryId = 'autocomplete-' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
         cy.initializeRepository(repositoryId);
-    }
-
-    function waitUntilAutocompletePageIsLoaded() {
-        // Workbench loading screen should not be visible
-        cy.get('.ot-splash').should('not.be.visible');
-
-        // No active loader
-        cy.get('.ot-loader').should('not.exist');
-
-        // No warnings should be present
-        getAutocompletePage().find('.alert-warning').should('not.be.visible');
-
-        getAutocompleteIndex().should('be.visible');
-    }
-
-    beforeEach(() => {
-        createRepository();
-        cy.visit('/autocomplete');
-        cy.window();
-        waitUntilAutocompletePageIsLoaded();
+        LicenseStubs.spyGetLicense();
     });
 
     afterEach(() => {
@@ -34,85 +18,52 @@ describe('Autocomplete ', () => {
     });
 
     it('should allow to enable the autocomplete', () => {
+        AutocompleteSteps.visit();
+        cy.wait('@get-license');
+        AutocompleteSteps.waitUntilAutocompletePageIsLoaded();
+
         // Verify initial status is OFF
-        getAutocompleteHeader()
+        AutocompleteSteps.getAutocompleteHeader()
             .should('be.visible')
             .and('contain', repositoryId);
-        getAutocompleteHeader()
+        AutocompleteSteps.getAutocompleteHeader()
             .find('.tag-default')
             .should('be.visible')
             .and('contain', 'OFF');
-        getAutocompleteSwitch()
+        AutocompleteSteps.getAutocompleteSwitch()
             .find('input')
             .should('not.be.checked');
-        getAutocompleteStatus().should('not.be.visible');
-        getBuildButton().should('not.be.visible');
+        AutocompleteSteps.getAutocompleteStatus().should('not.be.visible');
+        AutocompleteSteps.getBuildButton().should('not.be.visible');
 
         // Should allow to add autocomplete labels
-        getToggleIRIButton()
+        AutocompleteSteps.getToggleIRIButton()
             .should('be.visible')
             .and('not.be.disabled');
-        getAddLabelButton()
+        AutocompleteSteps.getAddLabelButton()
             .should('be.visible')
             .and('not.be.disabled');
 
         // Should have default labels
-        getAutocompleteLabels()
+        AutocompleteSteps.getAutocompleteLabels()
             .should('be.visible')
             .find('.wb-autocomplete-labels-row')
             .should('have.length', 1)
             .and('contain', 'http://www.w3.org/2000/01/rdf-schema#label');
 
         // Enable autocomplete and verify status is OK (possible slow operation)
-        getAutocompleteSwitch().click();
-        getAutocompleteHeader()
+        AutocompleteSteps.getAutocompleteSwitch().click();
+        AutocompleteSteps.getAutocompleteHeader()
             .find('.tag-primary')
             .should('be.visible')
             .and('contain', 'ON');
-        getAutocompleteStatus()
+        AutocompleteSteps.getAutocompleteStatus()
             .should('be.visible')
             .find('.tag-success')
             .should('be.visible')
             .and('contain', 'Ready');
-        getBuildButton()
+        AutocompleteSteps.getBuildButton()
             .should('be.visible')
             .and('not.be.disabled');
     });
-
-    function getAutocompletePage() {
-        return cy.get('#autocomplete');
-    }
-
-    function getAutocompleteIndex() {
-        return getAutocompletePage().find('#toggleIndex');
-    }
-
-    function getAutocompleteHeader() {
-        return getAutocompleteIndex().find('.autocomplete-header');
-    }
-
-    function getAutocompleteSwitch() {
-        return getAutocompleteIndex().find('.autocomplete-switch');
-    }
-
-    function getAutocompleteStatus() {
-        return getAutocompleteIndex().find('.autocomplete-status');
-    }
-
-    function getBuildButton() {
-        return getAutocompleteIndex().find('.build-index-btn');
-    }
-
-    function getToggleIRIButton() {
-        return getAutocompletePage().find('#toggleIRIs');
-    }
-
-    function getAddLabelButton() {
-        return getAutocompletePage().find('#wb-autocomplete-addLabel');
-    }
-
-    function getAutocompleteLabels() {
-        return getAutocompletePage().find('#wb-autocomplete-labels');
-    }
-
 });
