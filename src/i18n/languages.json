@@ -1,0 +1,7 @@
+{
+    "defaultLanguage": "en",
+    "availableLanguages": [
+        { "key": "en", "name": "English" },
+        { "key": "fr", "name": "Français" }
+    ]
+}
