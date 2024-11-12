@@ -103,9 +103,9 @@
                     <strong>{{'no.node.selected' | translate}}</strong>
                 </p>
                 <search-resource-input
-                    namespacespromise="getNamespacesPromise"
+                    repository-namespaces="repositoryNamespaces"
                     placeholder="{{'search.start.rdf.node' | translate}}"
-                    autocompletepromisestatus="getAutocompletePromise"
+                    is-autocomplete-enabled="isAutocompleteEnabled"
                     text-button=""
                     visual-button=""
                     visual-callback="fixedVisualCallback(uri, label)"

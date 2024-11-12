@@ -291,8 +291,8 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
     return {
         restrict: 'EA',
         scope: {
-            namespacespromise: '=',
-            autocompletepromisestatus: '=',
+            repositoryNamespaces: '=',
+            isAutocompleteEnabled: '=',
             textButton: '@',
             visualButton: '@',
             textCallback: '&',
@@ -350,32 +350,14 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 LocalStorageAdapter.remove(LSKeys.RDF_RESOURCE_DESCRIPTION);
             };
 
-            $scope.$watch('namespacespromise', function () {
-                if (angular.isDefined($scope.namespacespromise)) {
-                    $scope.namespacespromise.success(function (data) {
-                        element.namespaces = data.results.bindings.map(function (e) {
-                            return {
-                                prefix: e.prefix.value,
-                                uri: e.namespace.value
-                            };
-                        });
-                    }).error(function (data) {
-                        const msg = getError(data);
-                        toastr.error(msg, $translate.instant('error.getting.namespaces.for.repo'));
-                    });
-                }
+            $scope.$watch('repositoryNamespaces', function () {
+                element.namespaces = $scope.repositoryNamespaces ? $scope.repositoryNamespaces.namespaces : [];
             });
 
-            $scope.$watch('autocompletepromisestatus', function () {
-                if (!$repositories.isActiveRepoFedXType() && angular.isDefined($scope.autocompletepromisestatus)) {
-                    $scope.autocompletepromisestatus.success(function (response) {
-                        element.autoCompleteStatus = !!response;
-                        if ($scope.searchInput !== '') {
-                            $scope.onChange();
-                        }
-                    }).error(function () {
-                        toastr.error($translate.instant('explore.error.autocomplete'));
-                    });
+            $scope.$watch('isAutocompleteEnabled', function () {
+                element.autoCompleteStatus = !!$scope.isAutocompleteEnabled;
+                if ($scope.searchInput !== '') {
+                    $scope.onChange();
                 }
             });
 

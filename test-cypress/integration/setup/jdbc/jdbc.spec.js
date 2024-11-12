@@ -12,7 +12,8 @@ const EDIT_QUERY = `
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     SELECT ?id ?label {
         ?id rdfs:label ?label
-        #!filter
+    #!filter
+}
 `;
 
 describe('JDBC configuration', () => {
@@ -80,7 +81,7 @@ describe('JDBC configuration', () => {
         JdbcSteps.clickOnEditButton();
         // change the query,
         YasqeSteps.clearEditor();
-        YasqeSteps.writeInEditor(EDIT_QUERY);
+        YasqeSteps.pasteQuery(EDIT_QUERY);
         // and click on save button.
         JdbcCreateSteps.clickOnSave();
 
@@ -151,7 +152,7 @@ describe('JDBC configuration', () => {
         // When I edit the configuration
         JdbcSteps.clickOnEditButton();
         YasqeSteps.clearEditor();
-        YasqeSteps.writeInEditor(EDIT_QUERY);
+        YasqeSteps.pasteQuery(EDIT_QUERY);
         // And click on save button.
         JdbcCreateSteps.clickOnSave();
         // Then I expect to see a notification with the error message.
