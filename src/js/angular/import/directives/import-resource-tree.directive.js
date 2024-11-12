@@ -6,6 +6,7 @@ import {ImportResourceTreeElement} from "../../models/import/import-resource-tre
 import {TABS} from "../services/import-context.service";
 import {ImportResourceTreeService} from "../services/import-resource-tree.service";
 import {convertToBytes} from "../../utils/size-util";
+import {CheckboxControlModel} from "../../models/import/checkbox-control-resource-wrapper";
 
 const TYPE_FILTER_OPTIONS = {
     'FILE': 'FILE',
@@ -64,11 +65,12 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             // =========================
             $scope.resources = new ImportResourceTreeElement();
             $scope.displayResources = [];
+            $scope.checkboxControlModel = undefined;
             $scope.TYPE_FILTER_OPTIONS = TYPE_FILTER_OPTIONS;
             $scope.filterByType = TYPE_FILTER_OPTIONS.ALL;
             $scope.filterByFileName = '';
             $scope.STATUS_OPTIONS = STATUS_OPTIONS;
-            $scope.selectedByStatus = undefined;
+            $scope.selectedByStatus = STATUS_OPTIONS.NONE;
             $scope.areAllDisplayedImportResourcesSelected = false;
             $scope.areAllDisplayedImportResourcesPartialSelected = false;
             $scope.ImportResourceStatus = ImportResourceStatus;
@@ -104,7 +106,13 @@ function importResourceTreeDirective($timeout, ImportContextService) {
                 } else if (STATUS_OPTIONS.IMPORTED === $scope.selectedByStatus) {
                     $scope.resources.selectAllWithStatus([ImportResourceStatus.DONE]);
                 } else if (STATUS_OPTIONS.NOT_IMPORTED === $scope.selectedByStatus) {
-                    $scope.resources.selectAllWithStatus([ImportResourceStatus.IMPORTING, ImportResourceStatus.NONE, ImportResourceStatus.ERROR, ImportResourceStatus.PENDING, ImportResourceStatus.INTERRUPTING]);
+                    $scope.resources.selectAllWithStatus([
+                        ImportResourceStatus.IMPORTING,
+                        ImportResourceStatus.NONE,
+                        ImportResourceStatus.ERROR,
+                        ImportResourceStatus.PENDING,
+                        ImportResourceStatus.INTERRUPTING
+                    ]);
                 }
 
                 updateListedImportResources();
@@ -181,22 +189,23 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             };
 
             $scope.toggleSelectAll = () => {
-                const allSelected = $scope.displayResources.every((resource) => resource.selected);
-                const noneSelected = $scope.displayResources.every((resource) => !resource.selected);
-                const checkboxElement = document.getElementById('checkboxInput');
+                const allSelected = $scope.checkboxControlModel.areAllSelected();
+                const noneSelected = $scope.checkboxControlModel.areNoneSelected();
+                const someSelected = $scope.checkboxControlModel.areMixedSelections();
 
-                if (allSelected) {
-                    toggleCheckboxes(checkboxElement, false);
+                if (someSelected || allSelected) {
+                    $scope.resources.setSelection(false);
+                    $scope.selectedByStatus = STATUS_OPTIONS.NONE;
+                    $scope.areAllDisplayedImportResourcesSelected = false;
                 } else if (noneSelected) {
-                    toggleCheckboxes(checkboxElement, true);
-                } else {
-                    toggleCheckboxes(checkboxElement, false);
+                    $scope.resources.setSelection(true);
+                    $scope.selectedByStatus = STATUS_OPTIONS.ALL;
+                    $scope.areAllDisplayedImportResourcesSelected = true;
                 }
+                $scope.areAllDisplayedImportResourcesPartialSelected = false;
 
-                updateSelectByStateDropdownModel();
-                updateHasSelection();
+                updateListedImportResources();
             };
-
 
             // =========================
             // Private functions
@@ -213,7 +222,8 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             const updateListedImportResources = () => {
                 $scope.resources.getRoot().updateSelectionState();
                 sortResources();
-                $scope.displayResources = $scope.resources.toList()
+                $scope.checkboxControlModel = new CheckboxControlModel($scope.resources.toList());
+                $scope.displayResources = $scope.checkboxControlModel.getResourcesList()
                     .filter(filterByType)
                     .filter(filterByName);
 
@@ -228,27 +238,8 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             };
 
             const updateSelectByStateDropdownModel = () => {
-                const hasUnselectedDisplayedImportResource = $scope.displayResources.some((resource) => !resource.selected);
-                const hasSelectedDisplayedImportResource = $scope.displayResources.some((resource) => resource.selected);
-                $scope.areAllDisplayedImportResourcesSelected = hasSelectedDisplayedImportResource && !hasUnselectedDisplayedImportResource;
-                $scope.areAllDisplayedImportResourcesPartialSelected = hasSelectedDisplayedImportResource && hasUnselectedDisplayedImportResource;
-
-                if ($scope.areAllDisplayedImportResourcesSelected) {
-                    $scope.selectedByStatus = STATUS_OPTIONS.ALL;
-                } else if (!$scope.areAllDisplayedImportResourcesSelected && !$scope.areAllDisplayedImportResourcesPartialSelected) {
-                    $scope.selectedByStatus = STATUS_OPTIONS.NONE;
-                }
-            };
-
-            const toggleCheckboxes = (checkboxElement, shouldSelect) => {
-                $scope.displayResources.forEach((resource) => resource.selected = shouldSelect);
-                $scope.selectedByStatus = shouldSelect ? STATUS_OPTIONS.ALL : STATUS_OPTIONS.NONE;
-                $scope.areAllDisplayedImportResourcesSelected = shouldSelect;
-                $scope.areAllDisplayedImportResourcesPartialSelected = false;
-
-                if (checkboxElement) {
-                    checkboxElement.checked = shouldSelect;
-                }
+                $scope.areAllDisplayedImportResourcesSelected = $scope.checkboxControlModel.areAllSelected();
+                $scope.areAllDisplayedImportResourcesPartialSelected = $scope.checkboxControlModel.areMixedSelections();
             };
 
             const sortResources = () => {
