@@ -1023,6 +1023,13 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             onRepositoriesChanged();
         }
     });
+
+    $scope.downloadGuidesFile = (resourcePath, resourceFile) => {
+        GuidesService.downloadGuidesFile(resourcePath, resourceFile)
+            .catch((error) => {
+                toastr.error($translate.instant('guide.step_plugin.download-guide-resource.download.message.failure', {resourceFile}));
+            });
+    };
 }
 
 repositorySizeCtrl.$inject = ['$scope', '$http', 'RepositoriesRestService'];

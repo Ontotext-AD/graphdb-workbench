@@ -3,7 +3,7 @@ import 'angular/sparql-editor/share-query-link.service';
 import {queryPayloadFromEvent, savedQueriesResponseMapper} from "../../../rest/mappers/saved-query-mapper";
 import {isFunction, merge} from "lodash";
 import {saveAs} from 'lib/FileSaver-patch';
-import {downloadAsFile, toYasguiOutputModel} from "../../../utils/yasgui-utils";
+import {toYasguiOutputModel} from "../../../utils/yasgui-utils";
 import {EventDataType} from "../../../models/ontotext-yasgui/event-data-type";
 import {QueryMode} from "../../../models/ontotext-yasgui/query-mode";
 import {YasrPluginName} from "../../../models/ontotext-yasgui/yasr-plugin-name";
@@ -14,6 +14,7 @@ import {YasguiComponentDirectiveUtil} from "./yasgui-component-directive.util";
 import {KeyboardShortcutName} from "../../../models/ontotext-yasgui/keyboard-shortcut-name";
 import {YasguiPersistenceMigrationService} from "./yasgui-persistence-migration.service";
 import {ExportSettingsCtrl} from "../../components/export-settings-modal/controller";
+import {FileUtils} from "../../../utils/file-utils";
 
 const modules = [
     'graphdb.framework.core.services.translation-service',
@@ -297,12 +298,12 @@ function yasguiComponentDirective(
                     $scope.getOntotextYasguiElement().getEmbeddedResultAsJson()
                         .then((response) => {
                             const content = JSON.stringify(response, null, '\t');
-                            downloadAsFile(`${getFileTimePrefix()}_queryResults.json`, downloadAsEvent.contentType, content);
+                            FileUtils.downloadAsFile(`${getFileTimePrefix()}_queryResults.json`, downloadAsEvent.contentType, content);
                         });
                 } else if ("text/csv" === downloadAsEvent.contentType) {
                     $scope.getOntotextYasguiElement().getEmbeddedResultAsCSV()
                         .then((response) => {
-                            downloadAsFile(`${getFileTimePrefix()}_queryResults.csv`, downloadAsEvent.contentType, response);
+                            FileUtils.downloadAsFile(`${getFileTimePrefix()}_queryResults.csv`, downloadAsEvent.contentType, response);
                         });
                 }
             };
