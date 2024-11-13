@@ -1,5 +1,9 @@
 export class LicenseStubs {
 
+    static spyGetLicense() {
+        cy.intercept('GET', '/rest/graphdb-settings/license').as('get-license');
+    }
+
     static stubFreeLicense() {
         cy.intercept('GET', '/rest/graphdb-settings/license', {
             statusCode: 200,
