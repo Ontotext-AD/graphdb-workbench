@@ -1,0 +1,188 @@
+{
+    "starwars": [
+        {
+            "values": {
+                "retrievalBearerToken": "<replace-this-with-actual-value>",
+                "types": [
+                    "http://www.ontotext.com/example/wine#Wine"
+                ],
+                "retrievalUrl": "http://localhost:8000",
+                "fields": [
+                    {
+                        "propertyChain": [
+                            "localName()"
+                        ],
+                        "fieldName": "subject"
+                    },
+                    {
+                        "propertyChain": [
+                            "$self"
+                        ],
+                        "fieldName": "metadata",
+                        "objectFields": [
+                            {
+                                "propertyChain": [
+                                    "http://www.ontotext.com/example/wine#hasWinery"
+                                ],
+                                "fieldName": "author"
+                            }
+                        ]
+                    },
+                    {
+                        "valueFilter": "isExplicit($this)",
+                        "propertyChain": [
+                            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                            "localName()"
+                        ],
+                        "fieldName": "type",
+                        "fieldTextPrefix": "is a"
+                    },
+                    {
+                        "propertyChain": [
+                            "http://www.ontotext.com/example/wine#madeFromGrape",
+                            "http://www.w3.org/2000/01/rdf-schema#label"
+                        ],
+                        "fieldName": "grape",
+                        "fieldTextPrefix": "made from {}"
+                    },
+                    {
+                        "propertyChain": [
+                            "http://www.ontotext.com/example/wine#hasSugar"
+                        ],
+                        "fieldName": "sugar"
+                    },
+                    {
+                        "propertyChain": [
+                            "http://www.ontotext.com/example/wine#hasYear"
+                        ],
+                        "fieldName": "year"
+                    }
+                ]
+            },
+            "name": "ChatGPT_starwars_one"
+        },
+        {
+            "values": {
+                "retrievalBearerToken": "<replace-this-with-actual-value>",
+                "types": [
+                    "http://www.ontotext.com/example/wine#Wine"
+                ],
+                "retrievalUrl": "http://localhost:8000",
+                "fields": [
+                    {
+                        "propertyChain": [
+                            "localName()"
+                        ],
+                        "fieldName": "subject"
+                    },
+                    {
+                        "propertyChain": [
+                            "$self"
+                        ],
+                        "fieldName": "metadata",
+                        "objectFields": [
+                            {
+                                "propertyChain": [
+                                    "http://www.ontotext.com/example/wine#hasWinery"
+                                ],
+                                "fieldName": "author"
+                            }
+                        ]
+                    },
+                    {
+                        "valueFilter": "isExplicit($this)",
+                        "propertyChain": [
+                            "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                            "localName()"
+                        ],
+                        "fieldName": "type",
+                        "fieldTextPrefix": "is a"
+                    },
+                    {
+                        "propertyChain": [
+                            "http://www.ontotext.com/example/wine#madeFromGrape",
+                            "http://www.w3.org/2000/01/rdf-schema#label"
+                        ],
+                        "fieldName": "grape",
+                        "fieldTextPrefix": "made from {}"
+                    },
+                    {
+                        "propertyChain": [
+                            "http://www.ontotext.com/example/wine#hasSugar"
+                        ],
+                        "fieldName": "sugar"
+                    },
+                    {
+                        "propertyChain": [
+                            "http://www.ontotext.com/example/wine#hasYear"
+                        ],
+                        "fieldName": "year"
+                    }
+                ]
+            },
+            "name": "ChatGPT_starwars_two"
+        }
+    ],
+    "biomarkers": [ {
+        "values": {
+            "retrievalBearerToken": "<replace-this-with-actual-value>",
+            "types": [
+                "http://www.ontotext.com/example/wine#Wine"
+            ],
+            "retrievalUrl": "http://localhost:8000",
+            "fields": [
+                {
+                    "propertyChain": [
+                        "localName()"
+                    ],
+                    "fieldName": "subject"
+                },
+                {
+                    "propertyChain": [
+                        "$self"
+                    ],
+                    "fieldName": "metadata",
+                    "objectFields": [
+                        {
+                            "propertyChain": [
+                                "http://www.ontotext.com/example/wine#hasWinery"
+                            ],
+                            "fieldName": "author"
+                        }
+                    ]
+                },
+                {
+                    "valueFilter": "isExplicit($this)",
+                    "propertyChain": [
+                        "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                        "localName()"
+                    ],
+                    "fieldName": "type",
+                    "fieldTextPrefix": "is a"
+                },
+                {
+                    "propertyChain": [
+                        "http://www.ontotext.com/example/wine#madeFromGrape",
+                        "http://www.w3.org/2000/01/rdf-schema#label"
+                    ],
+                    "fieldName": "grape",
+                    "fieldTextPrefix": "made from {}"
+                },
+                {
+                    "propertyChain": [
+                        "http://www.ontotext.com/example/wine#hasSugar"
+                    ],
+                    "fieldName": "sugar"
+                },
+                {
+                    "propertyChain": [
+                        "http://www.ontotext.com/example/wine#hasYear"
+                    ],
+                    "fieldName": "year"
+                }
+            ]
+        },
+        "name": "ChatGPT_biomarkers_one"
+    }],
+    "ttyg-repo-1725518186812": []
+}
