@@ -1,0 +1,17 @@
+[
+    {
+        "id": "thread_jdQBvbkaU6JPoO48oFbC54dA",
+        "name": "Very long chat name which does not fit in the sidebar",
+        "timestamp": 1725235200
+    },
+    {
+        "id": "thread_jdQBvbkaU6JPoO48oQaL76dB",
+        "name": "Test chat 2",
+        "timestamp": 1725238800
+    },
+    {
+        "id": "thread_jdQBvbkaU6JPoO48oQaL76dC",
+        "name": "Test chat 3",
+        "timestamp": 1725242400
+    }
+]
