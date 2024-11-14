@@ -1,0 +1,106 @@
+{
+    "": [
+        {
+            "id": "test",
+            "title": "",
+            "uri": "http://localhost:8080/graphdb/repositories/test",
+            "externalUrl": "http://boyantonchev:9000/repositories/test",
+            "local": true,
+            "type": "graphdb",
+            "sesameType": "graphdb:SailRepository",
+            "location": "",
+            "readable": true,
+            "writable": true,
+            "unsupported": false,
+            "state": "RUNNING"
+        }
+    ],
+    "http://ghh": [],
+    "http://localhost:7201": [],
+    "http://localhost:7202": [
+        {
+            "id": "movies",
+            "title": "",
+            "uri": "http://localhost:7202/repositories/movies",
+            "externalUrl": "http://localhost:7202/repositories/movies",
+            "local": false,
+            "type": "graphdb",
+            "sesameType": "graphdb:SailRepository",
+            "location": "http://localhost:7202",
+            "readable": true,
+            "writable": true,
+            "unsupported": false,
+            "state": "RUNNING"
+        },
+        {
+            "id": "configurations",
+            "title": "",
+            "uri": "http://localhost:7202/repositories/configurations",
+            "externalUrl": "http://localhost:7202/repositories/configurations",
+            "local": false,
+            "type": "graphdb",
+            "sesameType": "graphdb:SailRepository",
+            "location": "http://localhost:7202",
+            "readable": true,
+            "writable": true,
+            "unsupported": false,
+            "state": "RUNNING"
+        },
+        {
+            "id": "schedules",
+            "title": "",
+            "uri": "http://localhost:7202/repositories/schedules",
+            "externalUrl": "http://localhost:7202/repositories/schedules",
+            "local": false,
+            "type": "graphdb",
+            "sesameType": "graphdb:SailRepository",
+            "location": "http://localhost:7202",
+            "readable": true,
+            "writable": true,
+            "unsupported": false,
+            "state": "RUNNING"
+        },
+        {
+            "id": "statuses",
+            "title": "",
+            "uri": "http://localhost:7202/repositories/statuses",
+            "externalUrl": "http://localhost:7202/repositories/statuses",
+            "local": false,
+            "type": "graphdb",
+            "sesameType": "graphdb:SailRepository",
+            "location": "http://localhost:7202",
+            "readable": true,
+            "writable": true,
+            "unsupported": false,
+            "state": "RUNNING"
+        },
+        {
+            "id": "home-repository-1716184222365",
+            "title": "",
+            "uri": "http://localhost:7202/repositories/home-repository-1716184222365",
+            "externalUrl": "http://localhost:7202/repositories/home-repository-1716184222365",
+            "local": false,
+            "type": "graphdb",
+            "sesameType": "graphdb:SailRepository",
+            "location": "http://localhost:7202",
+            "readable": true,
+            "writable": true,
+            "unsupported": false,
+            "state": "RUNNING"
+        },
+        {
+            "id": "repository-1716184200859",
+            "title": "",
+            "uri": "http://localhost:7202/repositories/repository-1716184200859",
+            "externalUrl": "http://localhost:7202/repositories/repository-1716184200859",
+            "local": false,
+            "type": "graphdb",
+            "sesameType": "graphdb:SailRepository",
+            "location": "http://localhost:7202",
+            "readable": true,
+            "writable": true,
+            "unsupported": false,
+            "state": "RUNNING"
+        }
+    ]
+}

@@ -1,0 +1,46 @@
+{
+    "starwars": [
+        {
+            "name": "similarity_index_starwars_one",
+            "options": "-termweight idf",
+            "selectQuery": "SELECT ?documentID ?documentText {\n\t?documentID ?p ?documentText .\n\tfilter(isLiteral(?documentText))\n}",
+            "searchQuery": "PREFIX :<http://www.ontotext.com/graphdb/similarity/>\nPREFIX similarity-index:<http://www.ontotext.com/graphdb/similarity/instance/>\nPREFIX pubo: <http://ontology.ontotext.com/publishing#>\n\nSELECT ?documentID ?score {\n    ?search a ?index ;\n        ?searchType ?query;\n        :searchParameters ?parameters;\n        ?resultType ?result .\n    ?result :value ?documentID ;\n            :score ?score.\n}",
+            "analogicalQuery": "",
+            "stopList": null,
+            "analyzer": "org.apache.lucene.analysis.en.EnglishAnalyzer",
+            "status": "BUILT",
+            "infer": true,
+            "sameAs": true,
+            "type": "text"
+        },
+        {
+            "name": "similarity_index_starwars_two",
+            "options": "-termweight idf",
+            "selectQuery": "SELECT ?documentID ?documentText {\n\t?documentID ?p ?documentText .\n\tfilter(isLiteral(?documentText))\n}",
+            "searchQuery": "PREFIX :<http://www.ontotext.com/graphdb/similarity/>\nPREFIX similarity-index:<http://www.ontotext.com/graphdb/similarity/instance/>\nPREFIX pubo: <http://ontology.ontotext.com/publishing#>\n\nSELECT ?documentID ?score {\n    ?search a ?index ;\n        ?searchType ?query;\n        :searchParameters ?parameters;\n        ?resultType ?result .\n    ?result :value ?documentID ;\n            :score ?score.\n}",
+            "analogicalQuery": "",
+            "stopList": null,
+            "analyzer": "org.apache.lucene.analysis.en.EnglishAnalyzer",
+            "status": "BUILT",
+            "infer": true,
+            "sameAs": true,
+            "type": "text"
+        }
+    ],
+    "biomarkers": [
+        {
+            "name": "similarity_index_biomarkers_one",
+            "options": "-termweight idf",
+            "selectQuery": "SELECT ?documentID ?documentText {\n\t?documentID ?p ?documentText .\n\tfilter(isLiteral(?documentText))\n}",
+            "searchQuery": "PREFIX :<http://www.ontotext.com/graphdb/similarity/>\nPREFIX similarity-index:<http://www.ontotext.com/graphdb/similarity/instance/>\nPREFIX pubo: <http://ontology.ontotext.com/publishing#>\n\nSELECT ?documentID ?score {\n    ?search a ?index ;\n        ?searchType ?query;\n        :searchParameters ?parameters;\n        ?resultType ?result .\n    ?result :value ?documentID ;\n            :score ?score.\n}",
+            "analogicalQuery": "",
+            "stopList": null,
+            "analyzer": "org.apache.lucene.analysis.en.EnglishAnalyzer",
+            "status": "BUILT",
+            "infer": true,
+            "sameAs": true,
+            "type": "text"
+        }
+    ],
+    "ttyg-repo-1725518186812": []
+}
