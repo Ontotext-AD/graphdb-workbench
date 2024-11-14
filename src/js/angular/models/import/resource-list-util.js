@@ -1,11 +1,9 @@
 import {SortingType} from "./sorting-type";
 import {convertToBytes} from "../../utils/size-util";
 
-export class CheckboxControlModel {
-    constructor(resourceList, filterByTypeOption, filterByFileName) {
-        this.resources = resourceList.toList() || [];
-        this.filterByTypeOption = filterByTypeOption;
-        this.filterByFileName = filterByFileName;
+export class ResourceListUtil {
+    constructor(resourceList) {
+        this.resourceList = resourceList || [];
     }
 
     get areAllDisplayedImportResourcesSelected() {
@@ -18,6 +16,18 @@ export class CheckboxControlModel {
         const hasUnselected = filteredResources.some((resource) => !resource.selected);
         const hasSelected = filteredResources.some((resource) => resource.selected);
         return hasSelected && hasUnselected;
+    }
+
+    get getResourceList() {
+        return this.resourceList;
+    }
+
+    setTypeFilter(filterByType) {
+        this.filterByTypeOption = filterByType;
+    }
+
+    setNameFilter(filterByName) {
+        this.filterByFileName = filterByName;
     }
 
     filterByType(resource) {
@@ -50,7 +60,7 @@ export class CheckboxControlModel {
     }
 
     getFilteredResources() {
-        return this.resources.filter((resource) => this.filterByType(resource) && this.filterByName(resource));
+        return this.resourceList.filter((resource) => this.filterByType(resource) && this.filterByName(resource));
     }
 
     /**
@@ -60,19 +70,19 @@ export class CheckboxControlModel {
      */
     sortResources(sortedBy, sortAsc) {
         if (SortingType.NAME === sortedBy) {
-            this.resources.sort(this.compareByName(sortAsc));
+            this.resourceList.sort(this.nameComparator(sortAsc));
         } else if (SortingType.SIZE === sortedBy) {
-            this.resources.sort(this.compareBySize(sortAsc));
+            this.resourceList.sort(this.sizeComparator(sortAsc));
         } else if (SortingType.MODIFIED === sortedBy) {
-            this.resources.sort(this.compareByModified(sortAsc));
+            this.resourceList.sort(this.modifiedOnComparator(sortAsc));
         } else if (SortingType.IMPORTED === sortedBy) {
-            this.resources.sort(this.compareByImportedOn(sortAsc));
+            this.resourceList.sort(this.importedOnComparator(sortAsc));
         } else if (SortingType.CONTEXT === sortedBy) {
-            this.resources.sort(this.compareByContext(sortAsc));
+            this.resourceList.sort(this.contextComparator(sortAsc));
         }
     }
 
-    compareByName(asc) {
+    nameComparator(asc) {
         return (r1, r2) => {
             return asc
                 ? r1.importResource.name.localeCompare(r2.importResource.name)
@@ -80,7 +90,7 @@ export class CheckboxControlModel {
         };
     }
 
-    compareBySize(asc) {
+    sizeComparator(asc) {
         return (r1, r2) => {
             // The format of size returned by the backend has changed, but we need to keep the old format for backward compatibility.
             // Therefore, we convert the size to always be in bytes.
@@ -90,7 +100,7 @@ export class CheckboxControlModel {
         };
     }
 
-    compareByModified(asc) {
+    modifiedOnComparator(asc) {
         return (r1, r2) => {
             const r1ModifiedOn = r1.importResource.modifiedOn || Number.MAX_VALUE;
             const r2ModifiedOn = r2.importResource.modifiedOn || Number.MAX_VALUE;
@@ -98,7 +108,7 @@ export class CheckboxControlModel {
         };
     }
 
-    compareByImportedOn(asc) {
+    importedOnComparator(asc) {
         return (r1, r2) => {
             const r1ImportedOn = r1.importResource.importedOn || Number.MAX_VALUE;
             const r2ImportedOn = r2.importResource.importedOn || Number.MAX_VALUE;
@@ -106,14 +116,13 @@ export class CheckboxControlModel {
         };
     }
 
-    compareByContext(asc) {
+    contextComparator(asc) {
         return (r1, r2) => {
             return asc
                 ? r1.importResource.context.localeCompare(r2.importResource.context)
                 : r2.importResource.context.localeCompare(r1.importResource.context);
         };
     }
-
 }
 const TYPE_FILTER_OPTIONS = {
     'FILE': 'FILE',
