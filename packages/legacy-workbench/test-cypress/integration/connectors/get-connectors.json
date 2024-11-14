@@ -1,0 +1,8 @@
+{
+    "Elasticsearch": "http://www.ontotext.com/connectors/elasticsearch#",
+    "OpenSearch": "http://www.ontotext.com/connectors/opensearch#",
+    "Solr": "http://www.ontotext.com/connectors/solr#",
+    "Lucene": "http://www.ontotext.com/connectors/lucene#",
+    "Kafka": "http://www.ontotext.com/connectors/kafka#",
+    "ChatGPT Retrieval": "http://www.ontotext.com/connectors/retrieval#"
+}
