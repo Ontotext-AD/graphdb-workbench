@@ -1,0 +1,154 @@
+{
+    "suggestions": [
+        {
+            "type": "prefix",
+            "value": "rep",
+            "description": "PREFIX <b>re</b>p: &lt;http://www.openrdf.org/config/repository#&gt;"
+        },
+        {
+            "type": "uri",
+            "value": "http://www.w3.org/2006/vcard/ns#rev",
+            "description": "http://www.w3.org/2006/vcard/ns#<b>re</b>v"
+        },
+        {
+            "type": "uri",
+            "value": "https://swapi.co/resource/human/85",
+            "description": "<b>Re</b>y &lt;https://swapi.co/resource/human/85&gt;"
+        },
+        {
+            "type": "uri",
+            "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest",
+            "description": "http://www.w3.org/1999/02/22-rdf-syntax-ns#<b>re</b>st"
+        },
+        {
+            "type": "uri",
+            "value": "http://www.w3.org/ns/odrl/2/read",
+            "description": "http://www.w3.org/ns/odrl/2/<b>re</b>ad"
+        },
+        {
+            "type": "uri",
+            "value": "http://spinrdf.org/sp#regex",
+            "description": "http://spinrdf.org/sp#<b>re</b>gex"
+        },
+        {
+            "type": "uri",
+            "value": "http://www.w3.org/ns/shacl#result",
+            "description": "http://www.w3.org/ns/shacl#<b>re</b>sult"
+        },
+        {
+            "type": "uri",
+            "value": "http://www.w3.org/ns/earl#result",
+            "description": "http://www.w3.org/ns/earl#<b>re</b>sult"
+        },
+        {
+            "type": "uri",
+            "value": "http://www.w3.org/ns/odrl/2/remedy",
+            "description": "http://www.w3.org/ns/odrl/2/<b>re</b>medy"
+        },
+        {
+            "type": "uri",
+            "value": "http://www.opengis.net/def/function/geosparql/relate",
+            "description": "http://www.opengis.net/def/function/geosparql/<b>re</b>late"
+        },
+        {
+            "type": "uri",
+            "value": "http://www.w3.org/2006/vcard/ns#region",
+            "description": "http://www.w3.org/2006/vcard/ns#<b>re</b>gion"
+        },
+        {
+            "type": "uri",
+            "value": "http://www.w3.org/ns/dcat#record",
+            "description": "http://www.w3.org/ns/dcat#<b>re</b>cord"
+        },
+        {
+            "type": "uri",
+            "value": "http://www.w3.org/ns/hydra/core#returns",
+            "description": "http://www.w3.org/ns/hydra/core#<b>re</b>turns"
+        },
+        {
+            "type": "uri",
+            "value": "http://www.w3.org/2005/xpath-functions#replace",
+            "description": "http://www.w3.org/2005/xpath-functions#<b>re</b>place"
+        },
+        {
+            "type": "uri",
+            "value": "http://usefulinc.com/ns/doap#release",
+            "description": "http://usefulinc.com/ns/doap#<b>re</b>lease"
+        },
+        {
+            "type": "uri",
+            "value": "http://www.w3.org/2004/02/skos/core#related",
+            "description": "http://www.w3.org/2004/02/skos/core#<b>re</b>lated"
+        },
+        {
+            "type": "uri",
+            "value": "http://spinrdf.org/sp#reduced",
+            "description": "http://spinrdf.org/sp#<b>re</b>duced"
+        },
+        {
+            "type": "uri",
+            "value": "http://www.w3.org/ns/odrl/2/Request",
+            "description": "http://www.w3.org/ns/odrl/2/<b>Re</b>quest"
+        },
+        {
+            "type": "uri",
+            "value": "https://swapi.co/vocabulary/Reptile",
+            "description": "https://swapi.co/vocabulary/<b>Re</b>ptile"
+        },
+        {
+            "type": "uri",
+            "value": "http://www.w3.org/ns/prov#Replace",
+            "description": "http://www.w3.org/ns/prov#<b>Re</b>place"
+        },
+        {
+            "type": "uri",
+            "value": "http://www.w3.org/ns/prov#Removal",
+            "description": "http://www.w3.org/ns/prov#<b>Re</b>moval"
+        },
+        {
+            "type": "uri",
+            "value": "http://usefulinc.com/ns/doap#revision",
+            "description": "http://usefulinc.com/ns/doap#<b>re</b>vision"
+        },
+        {
+            "type": "uri",
+            "value": "https://swapi.co/vocabulary/resident",
+            "description": "https://swapi.co/vocabulary/<b>re</b>sident"
+        },
+        {
+            "type": "uri",
+            "value": "http://purl.org/dc/terms/requires",
+            "description": "http://purl.org/dc/terms/<b>re</b>quires"
+        },
+        {
+            "type": "uri",
+            "value": "http://www.w3.org/ns/hydra/core#required",
+            "description": "http://www.w3.org/ns/hydra/core#<b>re</b>quired"
+        },
+        {
+            "type": "uri",
+            "value": "http://purl.org/dc/terms/replaces",
+            "description": "http://purl.org/dc/terms/<b>re</b>places"
+        },
+        {
+            "type": "uri",
+            "value": "http://www.w3.org/ns/odrl/2/relation",
+            "description": "http://www.w3.org/ns/odrl/2/<b>re</b>lation"
+        },
+        {
+            "type": "uri",
+            "value": "http://purl.org/dc/terms/relation",
+            "description": "http://purl.org/dc/terms/<b>re</b>lation"
+        },
+        {
+            "type": "uri",
+            "value": "http://purl.org/dc/elements/1.1/relation",
+            "description": "http://purl.org/dc/elements/1.1/<b>re</b>lation"
+        },
+        {
+            "type": "uri",
+            "value": "http://www.w3.org/ns/hydra/core#readable",
+            "description": "http://www.w3.org/ns/hydra/core#<b>re</b>adable"
+        }
+    ]
+}
