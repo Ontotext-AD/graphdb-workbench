@@ -5,7 +5,6 @@ import {SortingType} from "../../models/import/sorting-type";
 import {ImportResourceTreeElement} from "../../models/import/import-resource-tree-element";
 import {TABS} from "../services/import-context.service";
 import {ImportResourceTreeService} from "../services/import-resource-tree.service";
-import {convertToBytes} from "../../utils/size-util";
 import {CheckboxControlModel} from "../../models/import/checkbox-control-resource-wrapper";
 
 const TYPE_FILTER_OPTIONS = {
@@ -71,8 +70,6 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             $scope.filterByFileName = '';
             $scope.STATUS_OPTIONS = STATUS_OPTIONS;
             $scope.selectedByStatus = STATUS_OPTIONS.NONE;
-            $scope.areAllDisplayedImportResourcesSelected = false;
-            $scope.areAllDisplayedImportResourcesPartialSelected = false;
             $scope.ImportResourceStatus = ImportResourceStatus;
             $scope.canRemoveResource = angular.isDefined(attrs.onRemove);
             $scope.canResetSelectedResources = false;
@@ -189,22 +186,11 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             };
 
             $scope.toggleSelectAll = () => {
-                const allSelected = $scope.checkboxControlModel.areAllSelected();
-                const noneSelected = $scope.checkboxControlModel.areNoneSelected();
-                const someSelected = $scope.checkboxControlModel.areMixedSelections();
-
-                if (someSelected || allSelected) {
-                    $scope.resources.setSelection(false);
-                    $scope.selectedByStatus = STATUS_OPTIONS.NONE;
-                    $scope.areAllDisplayedImportResourcesSelected = false;
-                } else if (noneSelected) {
-                    $scope.resources.setSelection(true);
-                    $scope.selectedByStatus = STATUS_OPTIONS.ALL;
-                    $scope.areAllDisplayedImportResourcesSelected = true;
-                }
-                $scope.areAllDisplayedImportResourcesPartialSelected = false;
+                $scope.resources.setSelection(!($scope.checkboxControlModel.areAllDisplayedImportResourcesPartialSelected ||
+                    $scope.checkboxControlModel.areAllDisplayedImportResourcesSelected));
 
                 updateListedImportResources();
+                setCanResetResourcesFlag();
             };
 
             // =========================
@@ -221,12 +207,8 @@ function importResourceTreeDirective($timeout, ImportContextService) {
 
             const updateListedImportResources = () => {
                 $scope.resources.getRoot().updateSelectionState();
-                sortResources();
-                $scope.checkboxControlModel = new CheckboxControlModel($scope.resources.toList());
-                $scope.displayResources = $scope.checkboxControlModel.getResourcesList()
-                    .filter(filterByType)
-                    .filter(filterByName);
-
+                $scope.checkboxControlModel.sortResources($scope.sortedBy, $scope.sortAsc);
+                $scope.displayResources = $scope.checkboxControlModel.getFilteredResources();
                 updateHasSelection();
                 updateSelectByStateDropdownModel();
             };
@@ -238,81 +220,11 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             };
 
             const updateSelectByStateDropdownModel = () => {
-                $scope.areAllDisplayedImportResourcesSelected = $scope.checkboxControlModel.areAllSelected();
-                $scope.areAllDisplayedImportResourcesPartialSelected = $scope.checkboxControlModel.areMixedSelections();
-            };
+                const mainCheckbox = element[0].querySelector('#importSelectCheckboxInput');
 
-            const sortResources = () => {
-                if (SortingType.NAME === $scope.sortedBy) {
-                    $scope.resources.sort(compareByName($scope.sortAsc));
-                } else if (SortingType.SIZE === $scope.sortedBy) {
-                    $scope.resources.sort(compareBySize($scope.sortAsc));
-                } else if (SortingType.MODIFIED === $scope.sortedBy) {
-                    $scope.resources.sort(compareByModified($scope.sortAsc));
-                } else if (SortingType.IMPORTED === $scope.sortedBy) {
-                    $scope.resources.sort(compareByImportedOn($scope.sortAsc));
-                } else if (SortingType.CONTEXT === $scope.sortedBy) {
-                    $scope.resources.sort(compareByContext($scope.sortAsc));
+                if (mainCheckbox) {
+                    mainCheckbox.checked = !!($scope.checkboxControlModel.areAllDisplayedImportResourcesSelected || $scope.checkboxControlModel.areAllDisplayedImportResourcesPartialSelected);
                 }
-            };
-
-            const compareByName = (acs) => (r1, r2) => {
-                return acs ? r1.importResource.name.localeCompare(r2.importResource.name) : r2.importResource.name.localeCompare(r1.importResource.name);
-            };
-
-            const compareBySize = (acs) => (r1, r2) => {
-                // The format of size returned by the backend has changed, but we need to keep the old format for backward compatibility.
-                // Therefore, we convert the size to always be in bytes.
-                const r1Size = convertToBytes(r1.importResource.size);
-                const r2Size = convertToBytes(r2.importResource.size);
-                return acs ? r1Size - r2Size : r2Size - r1Size;
-            };
-
-            const compareByModified = (acs) => (r1, r2) => {
-                const r1ModifiedOn = r1.importResource.modifiedOn || Number.MAX_VALUE;
-                const r2ModifiedOn = r2.importResource.modifiedOn || Number.MAX_VALUE;
-                return acs ? r1ModifiedOn - r2ModifiedOn : r2ModifiedOn - r1ModifiedOn;
-            };
-
-            const compareByImportedOn = (acs) => (r1, r2) => {
-                const r1ImportedOn = r1.importResource.importedOn || Number.MAX_VALUE;
-                const r2ImportedOn = r2.importResource.importedOn || Number.MAX_VALUE;
-                return acs ? r1ImportedOn - r2ImportedOn : r2ImportedOn - r1ImportedOn;
-            };
-
-            const compareByContext = (acs) => (r1, r2) => {
-                return acs ? r1.importResource.context.localeCompare(r2.importResource.context) : r2.importResource.context.localeCompare(r1.importResource.context);
-            };
-
-            const filterByType = (resource) => {
-                if (TYPE_FILTER_OPTIONS.ALL === $scope.filterByType) {
-                    return true;
-                }
-
-                if ($scope.filterByType === TYPE_FILTER_OPTIONS.FILE) {
-                    return resource.isFile();
-                }
-
-                if ($scope.filterByType === TYPE_FILTER_OPTIONS.DIRECTORY) {
-                    return resource.isDirectory();
-                }
-
-                return false;
-            };
-
-            const filterByName = (resource) => {
-                if (!$scope.filterByFileName) {
-                    return true;
-                }
-
-                if ($scope.filterByType === TYPE_FILTER_OPTIONS.DIRECTORY) {
-                    return resource.hasTextInDirectoriesName($scope.filterByFileName);
-                }
-
-                if ($scope.filterByType === TYPE_FILTER_OPTIONS.FILE) {
-                    return resource.hasTextInFilesName($scope.filterByFileName);
-                }
-                return resource.hasTextInResourcesName($scope.filterByFileName);
             };
 
             let debounceTimeout;
@@ -340,6 +252,7 @@ function importResourceTreeDirective($timeout, ImportContextService) {
                 } else {
                     ImportResourceTreeService.mergeResourceTree($scope.resources, newResources, isUserImport);
                 }
+                $scope.checkboxControlModel = new CheckboxControlModel($scope.resources, $scope.filterByType, $scope.filterByFileName);
                 ImportResourceTreeService.calculateElementIndent($scope.resources);
                 ImportResourceTreeService.setupAfterTreeInitProperties($scope.resources);
                 updateListedImportResources();
