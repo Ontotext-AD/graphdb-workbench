@@ -1,0 +1,29 @@
+[
+    {
+        "values": {
+            "types": [
+                "urn:test"
+            ],
+            "importGraph": false,
+            "languages": [],
+            "readonly": false,
+            "retrievalUrl": "http://localhost:8000",
+            "detectFields": false,
+            "fields": [
+                {
+                    "propertyChain": [
+                        "http://test"
+                    ],
+                    "fieldName": "test",
+                    "indexed": true,
+                    "objectFields": [],
+                    "fieldTextPrefix": "has {}",
+                    "multivalued": true
+                }
+            ],
+            "bulkUpdateBatchSize": 1000,
+            "skipInitialIndexing": false
+        },
+        "name": "retrieval-connector"
+    }
+]

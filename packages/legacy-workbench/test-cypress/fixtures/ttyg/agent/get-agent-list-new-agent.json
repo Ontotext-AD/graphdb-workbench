@@ -1,0 +1,22 @@
+[
+    {
+        "id": "asst_a6jM68The7NqJax7U2PKLAe8",
+        "name": "Test Agent",
+        "model": "gpt-4o",
+        "temperature": 0.2,
+        "topP": 0.2,
+        "seed": 2,
+        "repositoryId": "starwars",
+        "instructions": {
+            "systemInstruction": "",
+            "userInstruction": ""
+        },
+        "assistantExtractionMethods": [
+            {
+                "method": "sparql_search",
+                "sparqlQuery": "select ?s ?p ?o where {?s ?p ?o .}",
+                "addMissingNamespaces": true
+            }
+        ]
+    }
+]
