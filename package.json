@@ -52,7 +52,7 @@
         "css-minimizer-webpack-plugin": "^7.0.0",
         "expose-loader": "^5.0.0",
         "fs-extra": "^11.2.0",
-        "html-loader": "^0.5.5",
+        "html-loader": "^5.1.0",
         "ignore-loader": "^0.1.2",
         "less-loader": "^12.2.0",
         "license-checker": "^25.0.1",
