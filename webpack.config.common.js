@@ -292,8 +292,25 @@ module.exports = (webpackConfigEnv, argv) => {
                         {
                             loader: 'html-loader',
                             options: {
-                                attrs: ['img:src', 'object:data', 'use:href']
-                                // sources: true
+                                sources: {
+                                    list: [
+                                        {
+                                            tag: 'img',
+                                            attribute: 'src',
+                                            type: 'src'
+                                        },
+                                        {
+                                            tag: 'object',
+                                            attribute: 'data',
+                                            type: 'src'
+                                        },
+                                        {
+                                            tag: 'use',
+                                            attribute: 'href',
+                                            type: 'src'
+                                        }
+                                    ]
+                                }
                             }
                         }
                     ]
