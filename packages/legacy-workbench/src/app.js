@@ -88,6 +88,7 @@ const moduleDefinition = function (productInfo, translations) {
                 Object.keys(translations).forEach(langKey => {
                     $translateProvider.translations(langKey, translations[langKey]);
                 });
+                $translateProvider.preferredLanguage($languageServiceProvider.getDefaultLanguage());
             } else {
                 // If no translation data is preloaded, fallback to loading translation files dynamically
                 // using the static files' loader.
