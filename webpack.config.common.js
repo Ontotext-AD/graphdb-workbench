@@ -7,10 +7,16 @@ const singleSpaDefaults = require("webpack-config-single-spa");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const {MergeJsonPlugin} = require('./webpack/merge-json-plugin.js');
 const path = require("path");
+const fs = require('fs');
 
 // The "string-replace-loader" replaces the version in all HTML and JS files except those copied by CopyPlugin.
 // This function must be used as the transform parameter of the plugin to replace the version.
 const replaceVersion = (content) => content.toString().replace(/\[AIV]{version}\[\/AIV]/g, PACKAGE.version);
+
+// Load the languages JSON file as a string for injection
+const languagesConfig = JSON.stringify(
+    JSON.parse(fs.readFileSync(path.resolve(__dirname, 'packages/legacy-workbench/src/i18n/languages.json'), 'utf8'))
+);
 
 const host = 'localhost';
 const portHere = 9000;
@@ -58,6 +64,7 @@ module.exports = (webpackConfigEnv, argv) => {
                 templateParameters: (compilation, assets, assetTags, options) => {
                     return {
                         isDevelopmentMode: argv.env.BUILD_MODE === 'development',
+                        devMode: argv.env.BUILD_MODE === 'development',
                         orgName,
                         mainBundle: Object.keys(compilation.assets).find(asset => asset.includes('main') && asset.endsWith('.js')),
                         legacyWorkbenchBundle:  Object.keys(compilation.assets).find(asset => asset.includes('legacyWorkbench') && asset.endsWith('.js')),
@@ -70,7 +77,8 @@ module.exports = (webpackConfigEnv, argv) => {
                 filename: 'index.html'
             }),
             new webpack.DefinePlugin({
-                version: JSON.stringify(require("./package.json").version)
+                version: JSON.stringify(require("./package.json").version),
+                __LANGUAGES__: languagesConfig
             }),
             new MergeIntoSingleFilePlugin({
                 files: {
@@ -124,14 +132,6 @@ module.exports = (webpackConfigEnv, argv) => {
                         to: 'js/lib/bootstrap/bootstrap.min.css'
                     },
                     {
-                        from: 'packages/legacy-workbench/node_modules/font-awesome/css',
-                        to: 'font/font-awesome/4.3.0/css'
-                    },
-                    {
-                        from: 'packages/legacy-workbench/node_modules/font-awesome/fonts',
-                        to: 'font/font-awesome/4.3.0/fonts'
-                    },
-                    {
                         from: 'packages/legacy-workbench/src/css',
                         to: 'css'
                     },
@@ -158,8 +158,9 @@ module.exports = (webpackConfigEnv, argv) => {
                         to: 'js/angular/autocomplete/templates'
                     },
                     {
-                        from: 'packages/legacy-workbench/src/js/angular/chatgpt/templates',
-                        to: 'js/angular/chatgpt/templates'
+                        from: 'packages/legacy-workbench/src/js/angular/ttyg/templates',
+                        to: 'js/angular/ttyg/templates',
+                        transform: replaceVersion
                     },
                     {
                         from: 'packages/legacy-workbench/src/js/angular/clustermanagement/templates',
@@ -221,6 +222,11 @@ module.exports = (webpackConfigEnv, argv) => {
                     {
                         from: 'packages/legacy-workbench/src/js/angular/core/directives/yasgui-component/templates',
                         to: 'js/angular/core/directives/yasgui-component/templates',
+                        transform: replaceVersion
+                    },
+                    {
+                        from: 'packages/legacy-workbench/src/js/angular/core/directives/inline-editable-text/templates',
+                        to: 'js/angular/core/directives/inline-editable-text/templates',
                         transform: replaceVersion
                     },
                     {
