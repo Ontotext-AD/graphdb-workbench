@@ -1,10 +1,8 @@
-const PACKAGE = require('./package.json');
 const path = require('path');
 const {merge} = require('webpack-merge');
 const commonConfig = require('./webpack.config.common');
 const CopyPlugin = require("copy-webpack-plugin");
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const host = 'localhost';
 const portHere = 9000;
@@ -13,6 +11,18 @@ const portThere = 7200;
 module.exports = (env, argv) => merge(commonConfig(env, argv), {
     mode: 'development',
     devtool: 'source-map',
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader']
+            },
+            {
+                test: /\.less$/,
+                use: ['style-loader', 'css-loader', 'less-loader']
+            }
+        ]
+    },
     plugins: [
         new CopyPlugin({
             patterns: [
@@ -28,29 +38,6 @@ module.exports = (env, argv) => merge(commonConfig(env, argv), {
                     from: 'packages/root-config/node_modules/single-spa/lib/system/single-spa.dev.js',
                     to: 'resources'
                 }]
-        })
-    ],
-    module: {
-        rules: [
-            {
-                test: /\.css$/,
-                use: ['style-loader', 'css-loader']
-            },
-            {
-                test: /\.less$/,
-                use: ['style-loader', 'css-loader', 'less-loader']
-            }
-        ]
-    },
-    plugins: [
-        new HtmlWebpackPlugin({
-            template: './src/template.html',
-            favicon: 'src/img/icon.png',
-            showErrors: true,
-            templateParameters: {
-                version: PACKAGE.version,
-                devMode: true
-            }
         }),
         new CleanWebpackPlugin()
     ],
