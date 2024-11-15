@@ -30,6 +30,10 @@ module.exports = (webpackConfigEnv, argv) => {
         webpackConfigEnv,
         argv,
         disableHtmlGeneration: true,
+        // From webpack-config-single-spa v6.0.0 outputs to native ES modules by default.
+        // To upgrade without switching to native ES modules, add the outputSystemJS option to your webpack.config.js
+        // The new option that preserves backwards compatibility:
+        outputSystemJS: true,
     });
 
     defaultConfig.module.rules = [];
