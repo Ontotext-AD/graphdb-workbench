@@ -44,7 +44,7 @@ export class ImportResourceTreeService {
      */
     static mergeResourceTree(importResourceElement, newResources, isUserImport) {
         // Removes missing files.
-        importResourceElement.getRoot().getResourceListUtil().getResourceList.forEach((resource) => {
+        importResourceElement.getRoot().toList().forEach((resource) => {
             const newResource = newResources.find((newResource) => {
                 return newResource.name === resource.importResource.name
             });

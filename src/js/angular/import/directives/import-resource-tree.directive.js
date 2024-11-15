@@ -5,6 +5,7 @@ import {SortingType} from "../../models/import/sorting-type";
 import {ImportResourceTreeElement} from "../../models/import/import-resource-tree-element";
 import {TABS} from "../services/import-context.service";
 import {ImportResourceTreeService} from "../services/import-resource-tree.service";
+import {CheckboxControlModel} from "../../models/import/checkbox-control-resource-wrapper";
 
 const TYPE_FILTER_OPTIONS = {
     'FILE': 'FILE',
@@ -185,8 +186,8 @@ function importResourceTreeDirective($timeout, ImportContextService) {
             };
 
             $scope.toggleSelectAll = () => {
-                $scope.resources.setSelection(!($scope.resourceListUtil.areAllDisplayedImportResourcesPartialSelected ||
-                    $scope.resourceListUtil.areAllDisplayedImportResourcesSelected));
+                $scope.resources.setSelection(!($scope.checkboxControlModel.areAllDisplayedImportResourcesPartialSelected ||
+                    $scope.checkboxControlModel.areAllDisplayedImportResourcesSelected));
 
                 updateListedImportResources();
                 setCanResetResourcesFlag();
@@ -206,8 +207,8 @@ function importResourceTreeDirective($timeout, ImportContextService) {
 
             const updateListedImportResources = () => {
                 $scope.resources.getRoot().updateSelectionState();
-                $scope.resourceListUtil.sortResources($scope.sortedBy, $scope.sortAsc);
-                $scope.displayResources = $scope.resourceListUtil.getFilteredResources();
+                $scope.checkboxControlModel.sortResources($scope.sortedBy, $scope.sortAsc);
+                $scope.displayResources = $scope.checkboxControlModel.getFilteredResources();
                 updateHasSelection();
                 updateSelectByStateDropdownModel();
             };
@@ -222,7 +223,7 @@ function importResourceTreeDirective($timeout, ImportContextService) {
                 const mainCheckbox = element[0].querySelector('#importSelectCheckboxInput');
 
                 if (mainCheckbox) {
-                    mainCheckbox.checked = !!($scope.resourceListUtil.areAllDisplayedImportResourcesSelected || $scope.resourceListUtil.areAllDisplayedImportResourcesPartialSelected);
+                    mainCheckbox.checked = !!($scope.checkboxControlModel.areAllDisplayedImportResourcesSelected || $scope.checkboxControlModel.areAllDisplayedImportResourcesPartialSelected);
                 }
             };
 
@@ -251,9 +252,7 @@ function importResourceTreeDirective($timeout, ImportContextService) {
                 } else {
                     ImportResourceTreeService.mergeResourceTree($scope.resources, newResources, isUserImport);
                 }
-                $scope.resourceListUtil = $scope.resources.getResourceListUtil();
-                $scope.resourceListUtil.setNameFilter($scope.filterByFileName);
-                $scope.resourceListUtil.setTypeFilter($scope.filterByType);
+                $scope.checkboxControlModel = new CheckboxControlModel($scope.resources, $scope.filterByType, $scope.filterByFileName);
                 ImportResourceTreeService.calculateElementIndent($scope.resources);
                 ImportResourceTreeService.setupAfterTreeInitProperties($scope.resources);
                 updateListedImportResources();

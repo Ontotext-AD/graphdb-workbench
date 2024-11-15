@@ -1,6 +1,5 @@
 import {ImportResourceStatus} from "./import-resource-status";
 import {cloneDeep} from 'lodash';
-import {ResourceListUtil} from "./resource-list-util";
 
 /**
  * Resources have parent-child relations. This class represents one resource element from the parent-child relation tree.
@@ -179,21 +178,21 @@ export class ImportResourceTreeElement {
     }
 
     /**
-     * Returns a utility wrapper of the flattening view of resources parent-child relation tree.
+     * Returns flattening view of resources parent-child relation tree.
      *
-     * @return {ResourceListUtil} a utility wrapper of the flattening view of resources.
+     * @return {ImportResourceTreeElement[]} flattening view of resources.
      */
-    getResourceListUtil() {
+    toList() {
         const result = [];
         if (this.parent) {
             // skip the root element.
             result.push(this);
         }
         this.directories.forEach((directory) => {
-            result.push(...directory.getResourceListUtil().getResourceList);
+            result.push(...directory.toList());
         });
         result.push(...this.files);
-        return new ResourceListUtil(result);
+        return result;
     }
 
     /**
@@ -382,6 +381,6 @@ export class ImportResourceTreeElement {
     }
 
     getSize() {
-        return this.getResourceListUtil().getResourceList.length;
+        return this.toList().length;
     }
 }

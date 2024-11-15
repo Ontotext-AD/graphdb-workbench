@@ -3,8 +3,8 @@
     <div class="import-resource-tree-header">
         <div class="import-resources-actions">
             <div class="import-resource-status-dropdown btn-group btn-secondary" uib-dropdown>
-                <input type="checkbox" id="importSelectCheckboxInput"
-                       prop-indeterminate="resourceListUtil.areAllDisplayedImportResourcesPartialSelected"
+                <input type="checkbox" id="importSelectCheckboxInput" ng-class="{'selected': selectedByStatus}"
+                       prop-indeterminate="checkboxControlModel.areAllDisplayedImportResourcesPartialSelected"
                        ng-click="toggleSelectAll()">
                 <button type="button" uib-dropdown-toggle class="btn btn-secondary dropdown-toggle"
                         ng-class="{'selected': selectedByStatus}">
