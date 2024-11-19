@@ -68,7 +68,6 @@
 [class^="icon-"], [class*=" icon-"], .icon-any, .fa-d3 {
     speak: none;
     font-style: normal;
-    font-weight: normal;
     font-variant: normal;
     text-transform: none;
     line-height: 1;
@@ -79,14 +78,18 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-[class^="icon-"], [class*=" icon-"], .icon-any, .fa-d3 {
+[class^="icon-"], [class*=" icon-"], .icon-any, .fa-d3:not(.fa-solid) {
+    font-weight: normal;
+}
+
+[class^="icon-"], [class*=" icon-"], .icon-any {
     /* use !important to prevent issues with browser extensions that change fonts */
     font-family: 'icomoon', sans-serif !important;
 }
 
 .fa-d3 {
     /* use !important to prevent issues with browser extensions that change fonts */
-    font-family: 'FontAwesome', sans-serif !important;
+    font-family: 'Font Awesome 6 Pro', sans-serif !important;
 }
 
 .icon-arrow-up-off:before {
