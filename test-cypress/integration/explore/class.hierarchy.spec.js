@@ -2,8 +2,6 @@ import ClassViewsSteps, {ALL_GRAPHS, GRAPH_FILE, NEWS_GRAPH} from "../../steps/c
 
 const INITIAL_CLASS_COUNT = 50;
 const CLASS_COUNT_OF_NEWS_GRAPH = 35;
-const SEARCH_INPUT_DROPDOWN_ID = '#search_input_dropdown';
-const CLASS_LABEL_SELECTOR = '#main-group > text.label';
 const FILE_TO_IMPORT = 'wine.rdf';
 const CLASS_HIERARCHY = 'class hierarchy';
 
@@ -14,253 +12,202 @@ describe('Class hierarchy screen validation', () => {
         repositoryId = 'repo' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
-
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
-
-        cy.visit('/hierarchy');
-        cy.window();
-        // Wait for the chart and diagram to be visible, also check if a class is displayed.
-        cy.get('#classChart').scrollIntoView().should('be.visible').within(() => {
-            cy.get('#main-group').scrollIntoView().should('be.visible');
-            findClassByName('food:Grape');
-            cy.get('@classInHierarchy').scrollIntoView().should('be.visible');
-        });
+        ClassViewsSteps.visit();
+        ClassViewsSteps.waitForPageLoad();
     });
 
     afterEach(() => {
         cy.deleteRepository(repositoryId);
     });
 
-    it('Test initial state of the diagram has a class count 50', () => {
+    it('should have an initial state of the diagram with a class count of 50', () => {
         verifyCounterValue(INITIAL_CLASS_COUNT);
     });
 
-    it('Test show/hide prefixes', () => {
-        // Verify that switching on/off Show/hide prefixes is reflected on the diagram -
-        // prefixes are displayed/hidden
+    it('should show/hide prefixes', () => {
+        // Given I verify that switching on/off Show/hide prefixes is reflected on the diagram - prefixes are displayed/hidden
         verifyPrefixes(($element) => cy.wrap($element.text()).should('contain', ':'));
 
         // Because some of the labels are truncated and is not guaranteed,
         // that after calling cy.get labels will be in the same order,
         // get the initial value of 'Chardonnay' label's text
-        cy.get(CLASS_LABEL_SELECTOR).contains('Chardonnay').then($initialVal => {
-            // Switch show prefixes to off
-            cy.get('.toolbar-holder')
-                .find('.prefix-toggle-btn')
-                .scrollIntoView()
-                .should('be.visible')
-                .click()
-                .then(() => {
-                    // Because of the timeout of 50 milliseconds after which the redraw of the prefixes happens
-                    // and we would like to validate successful removal, wait until the value of the 'Chardonnay'
-                    // label has changed. If not the test will fail
-                    cy.waitUntil(() =>
-                        cy.get(CLASS_LABEL_SELECTOR).contains('Chardonnay')
-                            .then($newVal =>
-                                $newVal.text() !== $initialVal.text()));
-                    // Verify that prefixes are removed from diagram
-                    verifyPrefixes(($element) => cy.wrap($element.text()).should('not.contain', ':'));
+        // When I get the initial value of 'Chardonnay' label's text
+        ClassViewsSteps.getMainGroupTextLabel()
+            .contains('Chardonnay')
+            .invoke('text')
+            .then((initialVal) => {
+                // When I switch "show prefixes" to off
+                ClassViewsSteps.getToolbarPrefixToggleButton()
+                    .scrollIntoView()
+                    .should('be.visible');
+                // Then I toggle the prefixes
+                ClassViewsSteps.clickPrefixToggleButton();
+                // Then I wait until the value of the 'Chardonnay' label has changed
+                ClassViewsSteps.getMainGroupTextLabel()
+                    .contains('Chardonnay')
+                    .invoke('text')
+                    .should((newVal) => {
+                        expect(newVal).not.to.equal(initialVal);
+                    });
+                // Then I verify that prefixes are removed from diagram
+                verifyPrefixes(($element) => {
+                    cy.wrap($element.text()).should('not.contain', ':');
                 });
-        });
-    });
-
-    it('Test focus on diagram', () => {
-        // This must not be a top-level class and it must have no children,
-        // otherwise asserting the zooming becomes tricky
-        let className = ':SweetRiesling';
-        findClassByName(className);
-        cy.get('@classInHierarchy').then(verifyClassIsNotExpanded);
-
-        // Verify that the diagram zooms that class
-        searchForClass(className);
-
-        // Verify font-size is changed
-        findClassByName(className);
-        cy.get('@classInHierarchy').then(verifyClassIsExpanded);
-
-        // When a class is focused in diagram a side panel is opened on the right and covers the
-        // buttons toolbar.
-        cy.get('[ps-class=rdf-info-side-panel] .close').click()
-            .should('not.be.visible');
-        cy.get('.toolbar-holder .focus-diagram-btn').click();
-
-        // Verify that the diagram zooms out without resetting the class count.
-        findClassByName(className);
-        cy.get('@classInHierarchy').then(verifyClassIsNotExpanded);
-    });
-
-    it('Test reload diagram', () => {
-        // Initial class count is 50
-        // Change the class count to a custom value
-        cy.get('.class-cnt-slider > .ng-isolate-scope').trigger('click', 'center');
-
-        // Reload diagram
-        ClassViewsSteps.reloadDiagram();
-
-        // Verify that warning message appears
-        ClassViewsSteps.confirmReloadWarningAppear(CLASS_HIERARCHY);
-
-        // Confirm diagram reloading
-        ClassViewsSteps.confirmReload();
-
-        // Verify that the diagram zooms out and the class count is reset
-        verifyCounterValue(INITIAL_CLASS_COUNT);
-    });
-
-    it('Test export diagram', () => {
-        // TODO: Verify that there aren't issues with this approach as there is no guarantee that the click will happen after mouseover event!
-        // Eventually file an issue for refactoring.
-        cy.get('#download-svg')
-            .then(($element) => {
-                let href = $element.prop('href');
-                // Verify that a svg with the current diagram state is saved on your hdd.
-                expect(href).to.contain(Cypress.config("baseUrl"));
             });
-
-        // This is how I see it should be tested properly but for some reason when the whole spec is
-        // executed the test fails.
-        // Verify that the diagram converted to svg is present as base64 encoded string in
-        // the href attribute. This is done in the mouseover over the link
-        // (https://github.com/Ontotext-AD/graphdb-workbench/blob/master/src/js/angular/graphexplore/directives/rdf-class-hierarchy.directive.js#L127)
-        // cy.get('#download-svg')
-        //     .trigger('mouseover')
-        //     .should('have.attr', 'download', `class-hierarchy-${repositoryId}.svg`)
-        //     .should('have.attr', 'href')
-        //     .and('not.be.empty')
-        //     .and('include', 'data:image/svg+xml;charset=utf-8;base64,');
     });
 
-    it('Test search for a class', () => {
-        let className = 'wine';
-        cy.get(SEARCH_INPUT_DROPDOWN_ID)
-            .should('not.be.visible');
-
+    it('should focus on diagram', () => {
+        // This must not be a top-level class, and it must have no children, otherwise asserting the zooming becomes tricky
+        const className = ':SweetRiesling';
+        // Given the class is not expanded
+        verifyClassFocus(className, false);
+        // When I search for a class
         searchForClass(className);
+        // Then I expect the class to become expanded
+        verifyClassFocus(className, true);
+        // When a class is focused in diagram a side panel is opened on the right and covers the buttons toolbar
+        ClassViewsSteps.closeInfoSidePanel();
+        // Then I close the side panel
+        ClassViewsSteps.getInfoSidePanelCloseButton().should('not.be.visible');
+        // Then I focus the diagram
+        ClassViewsSteps.focusDiagram();
+        // Then I verify that the diagram zooms out, without resetting the class count
+        ClassViewsSteps.findClassByName(className);
+        ClassViewsSteps.getClassInHierarchy().then(verifyClassIsNotExpanded);
+    });
 
-        // Verify that a list of suggestions is displayed.
-        cy.get(SEARCH_INPUT_DROPDOWN_ID)
+    it('should reload diagram', () => {
+        // Given I change the initial class count (50) to a custom value
+        ClassViewsSteps.positionSlider('center');
+        // Then I confirm the diagram has reloaded
+        reloadDiagramAndVerify(INITIAL_CLASS_COUNT);
+    });
+
+    it('should export diagram', () => {
+        // Given I verify that the diagram converted to svg. It should be present as a base64 encoded string in the href attribute.
+        // Note: This is done in the 'mouseover' callback for the link
+        // (https://github.com/Ontotext-AD/graphdb-workbench/blob/master/src/js/angular/graphexplore/directives/rdf-class-hierarchy.directive.js#L123)
+        ClassViewsSteps.mouseOverSVGButton()
+            .should('have.attr', 'download', `class-hierarchy-${repositoryId}.svg`)
+            .should('have.attr', 'href')
+            .and('not.be.empty')
+            .and('include', 'data:image/svg+xml;charset=utf-8;base64,');
+    });
+
+    it('should search for a class', () => {
+        const className = 'wine';
+        ClassViewsSteps.getSearchInputDropdown()
+            .should('not.be.visible');
+        // When I search for a class
+        searchForClass(className);
+        // Then a list of suggestions is displayed
+        ClassViewsSteps.getSearchInputDropdown()
             .should('be.visible')
             .and('length.be.gt', 0);
-
-        // Click on a specific element that isn't a top-level one and has children,
+        // When I click on a specific element that isn't a top-level one and has children,
         // otherwise it gets tricky to assert whether it was zoomed
-        cy.get('#search_input_dropdown').contains('WineColor')
+        ClassViewsSteps.getSearchInputDropdown()
+            .contains('WineColor')
             .then(($el) => {
-                let selectedClassName = $el.text().trim();
+                const selectedClassName = $el.text().trim();
 
-                // Find selected class from drop-down menu and verify that isn't expanded
-                findClassByName(selectedClassName);
-                cy.get('@classInHierarchy').then(verifyClassIsNotExpanded);
+                // Then I find the selected class from the drop-down menu and verify that it isn't expanded
+                ClassViewsSteps.findClassByName(selectedClassName);
+                ClassViewsSteps.getClassInHierarchy().then(verifyClassIsNotExpanded);
+                // And I click the class name element
+                ClassViewsSteps.clickJQueryElement(cy.wrap($el));
 
-                cy.wrap($el).click();
-
-                // Find selected class from drop-down menu after clicking on it and verify that it is expanded
-                findClassByName(selectedClassName);
-                cy.get('@classInHierarchy').then(verifyClassIsExpanded);
+                // Then I find the selected class from the drop-down menu and verify that it is expanded
+                ClassViewsSteps.findClassByName(selectedClassName);
+                ClassViewsSteps.getClassInHierarchy().then(verifyClassIsExpanded);
             });
     });
 
-    it('Test domain range graph', () => {
-        let className = ':Region';
+    it('should load domain range graph', () => {
+        const className = ':Region';
+        // When I search for a class
         searchForClass(className);
-        getDomainRangeGraphButton().click();
-        getDomainRangeGraphHeader().should('contain', 'Domain-Range graph');
-        getLegendContainer().should('be.visible');
-        getLegendContainer().should('contain', 'main class node').and('contain', 'class node').and('contain', 'collapsed property');
-        getMainDomainRangeDiagram().should('be.visible');
-        getMainDomainRangeDiagram().should('contain', className).and('contain', 'locatedIn').and('contain', ':adjacentRegion').and('contain', 'owl:Thing');
-        getReturnButton().should('be.visible').click();
+        // And I open a domain range graph
+        ClassViewsSteps.openDomainRangeGraph();
+        // Then the graph should contain all necessary data
+        ClassViewsSteps.getDomainRangeGraphHeader()
+            .should('contain', 'Domain-Range graph');
+        ClassViewsSteps.getLegendContainer()
+            .should('be.visible');
+        ClassViewsSteps.getLegendContainer()
+            .should('contain', 'main class node')
+            .and('contain', 'class node')
+            .and('contain', 'collapsed property');
+        ClassViewsSteps.getMainDomainRangeDiagram()
+            .should('be.visible');
+        ClassViewsSteps.getMainDomainRangeDiagram()
+            .should('contain', className)
+            .and('contain', 'locatedIn')
+            .and('contain', ':adjacentRegion')
+            .and('contain', 'owl:Thing');
+        ClassViewsSteps.getReturnButton()
+            .should('be.visible');
+        ClassViewsSteps.goBack();
     });
 
-    it('Test class-hierarchy for given graph', () => {
+    it('should load class-hierarchy for given graph', () => {
         cy.importServerFile(repositoryId, GRAPH_FILE, {"context": NEWS_GRAPH});
-        // Should re-enter page to display Graph dropdown
-        cy.visit('/hierarchy');
+        // Given I re-enter the page to display Graph dropdown
+        ClassViewsSteps.visit();
         ClassViewsSteps.verifyDataChangedWarning();
         verifyCounterValue(INITIAL_CLASS_COUNT);
         ClassViewsSteps.verifyGraphIsDisplayed(ALL_GRAPHS);
-
-        // Reload diagram
-        ClassViewsSteps.reloadDiagram();
-        cy.intercept('/rest/class-hierarchy*').as('hierarchyReload');
-        ClassViewsSteps.confirmReloadWarningAppear(CLASS_HIERARCHY);
-        ClassViewsSteps.confirmReload();
-        cy.wait('@hierarchyReload');
-        verifyCounterValue(INITIAL_CLASS_COUNT + CLASS_COUNT_OF_NEWS_GRAPH);
+        // When I reload the diagram
+        reloadDiagramAndVerify(INITIAL_CLASS_COUNT + CLASS_COUNT_OF_NEWS_GRAPH);
         ClassViewsSteps.clickGraphBtn();
+        // Then I can see the correct graph is displayed
         ClassViewsSteps.selectGraphFromDropDown(NEWS_GRAPH);
         ClassViewsSteps.verifyGraphIsDisplayed(NEWS_GRAPH);
         verifyCounterValue(CLASS_COUNT_OF_NEWS_GRAPH);
     });
 
-    function getDomainRangeGraphButton() {
-        return cy.get('.domain-range-graph-btn');
-    }
-
-    function getDomainRangeGraphHeader() {
-        return cy.get('h1');
-    }
-
-    function getLegendContainer() {
-        return cy.get('.legend-container');
-    }
-
-    function getMainDomainRangeDiagram() {
-        return cy.get('g');
-    }
-
-    function getReturnButton() {
-        return cy.get('.icon-arrow-left');
-    }
-
-    function getCurrentSliderValue() {
-        // The count is taken from the rz-pointer's attribute and not from a visible in the UI value
-        // as the rz-slider library doesn't provide a reliable way to get this. It just has multiple
-        // '.rz-bubble' elements and no appropriate selector for the one which holds the visible
-        // value.
-        return cy.get('.rz-pointer[role="slider"]');
-    }
-
     function searchForClass(name) {
-        cy.get('.toolbar-holder .icon-search')
-            .click()
-            .then(() => {
-                cy.get('#search_input_value').type(name).type('{enter}');
-            });
+        ClassViewsSteps.searchForClass();
+        ClassViewsSteps.searchForClassName(name);
     }
 
     function verifyPrefixes(expectation) {
-        cy.get(CLASS_LABEL_SELECTOR)
-            .each(($element) => {
-                if ($element.prop('style').display !== 'none') {
-                    expectation($element);
-                }
-            });
-    }
-
-    function findClassByName(className) {
-        cy.get(CLASS_LABEL_SELECTOR)
-            .each(($element) => {
-                let data = $element.prop('__data__');
-                if (data.data.name === className) {
-                    cy.wrap($element).as('classInHierarchy');
-                }
-            });
+        ClassViewsSteps.getMainGroupTextLabel()
+            .filter(':visible')
+            .each(expectation);
     }
 
     function verifyClassIsNotExpanded($element) {
         // This works well only for classes that aren't top level and have no children
         return cy.wrap($element)
-            .should('have.css', 'display').and('eq', 'none');
+            .should('have.css', 'display')
+            .and('eq', 'none');
     }
 
     function verifyClassIsExpanded($element) {
         // This works well only for classes that aren't top level and have no children
         return cy.wrap($element)
-            .should('have.css', 'display').and('not.eq', 'none');
+            .should('have.css', 'display')
+            .and('not.eq', 'none');
     }
 
     function verifyCounterValue(classCount) {
-        getCurrentSliderValue().should('be.visible').and('have.attr', 'aria-valuenow', classCount);
+        ClassViewsSteps.getCurrentSliderValue()
+            .should('be.visible')
+            .and('have.attr', 'aria-valuenow', classCount);
+    }
+
+    function reloadDiagramAndVerify(expectedClassCount) {
+        ClassViewsSteps.reloadDiagram();
+        ClassViewsSteps.waitForPageLoad();
+        ClassViewsSteps.confirmReloadWarningAppear(CLASS_HIERARCHY);
+        ClassViewsSteps.confirmReload();
+        verifyCounterValue(expectedClassCount);
+    }
+
+    function verifyClassFocus(className, expanded) {
+        ClassViewsSteps.findClassByName(className);
+        ClassViewsSteps.getClassInHierarchy().then(expanded ? verifyClassIsExpanded : verifyClassIsNotExpanded);
     }
 });
