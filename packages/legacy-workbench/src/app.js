@@ -208,11 +208,13 @@ const moduleDefinition = function (productInfo, translations) {
             }
         }]);
 
+    console.log('DEF CONSTANT', productInfo);
     workbench.constant('productInfo', productInfo);
 
     // we need to inject $jwtAuth here in order to init the service before everything else
     workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', 'LSKeys', 'GuidesService',
         function ($rootScope, $route, toastr, $sce, $translate, ThemeService, WorkbenchSettingsStorageService, LSKeys, GuidesService) {
+            console.log('APP RUN')
             $rootScope.$on('$routeChangeSuccess', function () {
                 updateTitleAndHelpInfo();
 
@@ -275,8 +277,9 @@ const moduleDefinition = function (productInfo, translations) {
     workbench.filter('humanReadableSize', () => (size) => convertToHumanReadable(size));
     workbench.filter('trustAsHtml', ['$translate', '$sce', ($translate, $sce) => (message) => $sce.trustAsHtml(decodeHTML(message))]);
 
-    const workbenchElement = document.getElementById('workbench-app');
-    angular.bootstrap(workbenchElement, ['graphdb.workbench']);
+    // const workbenchElement = document.getElementById('workbench-app');
+    // window.appInstance = angular.bootstrap(workbenchElement, ['graphdb.workbench']);
+    console.log('bootstraped application');
 };
 
 // Manually load language files

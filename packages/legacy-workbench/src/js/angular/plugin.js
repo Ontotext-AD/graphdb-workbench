@@ -39,6 +39,16 @@ PluginRegistry.add('main.menu', {
                 icon: "fa fa-flask",
                 guideSelector: 'menu-lab',
                 children: []
+            },
+            {
+                label: 'GraphQL',
+                labelKey: 'graphql',
+                href: 'graphql',
+                order: 611,
+                role: 'IS_AUTHENTICATED_FULLY',
+                icon: "fa fa-flask",
+                guideSelector: 'menu-lab',
+                children: []
             }
         ]
     }

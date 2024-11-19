@@ -1,10 +1,8 @@
-import singleSpaAngularJS from "single-spa-angularjs";
-
+import angular from "angular";
+import singleSpaAngularJS from "./single-spa-angularjs";
 import './vendor';
 import './main';
 import './app';
-
-import angular from "angular";
 
 const domElementGetter = () => {
     const el = document.getElementById('single-spa-application:@ontotext/legacy-workbench');
@@ -36,17 +34,22 @@ const ngLifecycles = singleSpaAngularJS({
 export const bootstrap = (props) => {
     // The usage of the generated bootstrap is commented out because it triggers the initialization of angular
     // In the workbench case, we configure the workbench and bootstrap it in the app.js file.
-    // return ngLifecycles.bootstrap(props);
-    return Promise.resolve();
+    return ngLifecycles.bootstrap(props);
+    // return Promise.resolve();
 };
 
 export const mount = (props) => {
+    console.log('mount', props);
     return Promise.resolve()
         .then(() => {
             domElementGetter();
+            console.log('SET UP DOM');
+            const workbenchElement = document.getElementById('workbench-app');
+            angular.bootstrap(workbenchElement, ['graphdb.workbench']);
         });
 };
 
 export const unmount = (props) => {
+    console.log('unmount', props);
     return ngLifecycles.unmount(props);
 };
