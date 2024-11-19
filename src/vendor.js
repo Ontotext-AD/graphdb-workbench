@@ -4,6 +4,7 @@ import 'lib/awesome_me/css/fontawesome.min.css';
 import 'lib/awesome_me/css/regular.min.css';
 import 'lib/awesome_me/css/sharp-regular.min.css';
 import 'lib/awesome_me/css/custom-icons.min.css';
+import 'lib/awesome_me/css/solid.min.css';
 import './css/lib/animate/animate.css';
 import 'shepherd.js/dist/css/shepherd.css';
 import './css/shepherd-custom.css';
