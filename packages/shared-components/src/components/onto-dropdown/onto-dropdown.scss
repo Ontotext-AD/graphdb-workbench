@@ -1,0 +1,80 @@
+:root {
+  --onto-dropdown-button-background-color: var(--primary-color, #ac2925);
+  --onto-dropdown-item-hover: var(--primary-color-dark, #ac2925);
+  --onto-dropdown-color: #FFFFFF
+}
+
+:host {
+  display: block;
+}
+
+.onto-dropdown {
+
+  position: relative;
+
+  &.closed .onto-dropdown-menu {
+    display: none;
+  }
+
+  .onto-dropdown-button {
+    font-size: 16px;
+    font-weight: 400;
+    padding: 0.2em 0.6em;
+    line-height: 1.25;
+    border: none;
+    outline: none;
+    color: var(--onto-dropdown-color);
+    background-color: var(--onto-dropdown-button-background-color);
+  }
+
+  .onto-dropdown-menu {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    z-index: 1000;
+    overflow-y: auto;
+  }
+
+  .onto-dropdown-menu-item {
+    display: block;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 400;
+    padding: .5em 1.2em;
+    color: var(--onto-dropdown-color);
+    background-color: var(--onto-dropdown-button-background-color);
+    text-align: end;
+    white-space: nowrap;
+  }
+
+  .onto-dropdown-menu-item:hover {
+    text-decoration: none;
+    background-color: var(--onto-dropdown-item-hover);
+  }
+
+  .onto-dropdown-icon:before {
+    padding-right: 0.2em;
+  }
+
+  .onto-dropdown-button:hover {
+    cursor: pointer;
+  }
+
+  .onto-dropdown-option-icon {
+    margin-right: 0.2em;
+  }
+
+  .onto-dropdown-right-item-alignment {
+    right: 0;
+    left: auto;
+  }
+
+  @media (max-width: 768px) {
+    .onto-dropdown-button:after {
+      padding-left: 0 !important;
+    }
+    .button-name {
+      display: none;
+    }
+  }
+}
