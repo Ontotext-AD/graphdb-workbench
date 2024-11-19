@@ -5,13 +5,52 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { DropdownItem } from "./models/dropdown/dropdown-item";
+import { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 import { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
 import { NavbarToggledEvent } from "./components/onto-navbar/navbar-toggled-event";
 import { TranslationParameter } from "./models/translation/translation-parameter";
+export { DropdownItem } from "./models/dropdown/dropdown-item";
+export { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 export { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
 export { NavbarToggledEvent } from "./components/onto-navbar/navbar-toggled-event";
 export { TranslationParameter } from "./models/translation/translation-parameter";
 export namespace Components {
+    /**
+     * A reusable dropdown component built using StencilJS. This component supports configurable labels, tooltips, icons,
+     * and items, making it versatile for various use cases. It also integrates with a translation service to handle
+     * internationalization.
+     */
+    interface OntoDropdown {
+        /**
+          * Specifies the dropdown items' alignment. If not provided, the items and the dropdown button will be aligned to the left.
+         */
+        "dropdownAlignment": DropdownItemAlignment;
+        /**
+          * The dropdown button name. It will be used if present; otherwise, the {@link OntoDropdown#dropdownButtonNameLabelKey } will be used.
+         */
+        "dropdownButtonName": string;
+        /**
+          * The translation label key for the dropdown button name. It will be used if {@link OntoDropdown#dropdownButtonName } is not present.
+         */
+        "dropdownButtonNameLabelKey": string;
+        /**
+          * The dropdown button tooltip. It will be used if present; otherwise, the {@link OntoDropdown#dropdownButtonTooltipLabelKey } will be used.
+         */
+        "dropdownButtonTooltip": string;
+        /**
+          * The translation label key for the dropdown button tooltip. It will be used if {@link OntoDropdown#dropdownButtonTooltip } is not present.
+         */
+        "dropdownButtonTooltipLabelKey": string;
+        /**
+          * Icon class for the main dropdown button.
+         */
+        "iconClass": string;
+        /**
+          * Array of dropdown options.
+         */
+        "items": DropdownItem[];
+    }
     interface OntoFooter {
     }
     interface OntoHeader {
@@ -47,11 +86,37 @@ export namespace Components {
         "translationParameters": TranslationParameter[];
     }
 }
+export interface OntoDropdownCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLOntoDropdownElement;
+}
 export interface OntoNavbarCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLOntoNavbarElement;
 }
 declare global {
+    interface HTMLOntoDropdownElementEventMap {
+        "valueChanged": any;
+    }
+    /**
+     * A reusable dropdown component built using StencilJS. This component supports configurable labels, tooltips, icons,
+     * and items, making it versatile for various use cases. It also integrates with a translation service to handle
+     * internationalization.
+     */
+    interface HTMLOntoDropdownElement extends Components.OntoDropdown, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLOntoDropdownElementEventMap>(type: K, listener: (this: HTMLOntoDropdownElement, ev: OntoDropdownCustomEvent<HTMLOntoDropdownElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLOntoDropdownElementEventMap>(type: K, listener: (this: HTMLOntoDropdownElement, ev: OntoDropdownCustomEvent<HTMLOntoDropdownElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLOntoDropdownElement: {
+        prototype: HTMLOntoDropdownElement;
+        new (): HTMLOntoDropdownElement;
+    };
     interface HTMLOntoFooterElement extends Components.OntoFooter, HTMLStencilElement {
     }
     var HTMLOntoFooterElement: {
@@ -104,6 +169,7 @@ declare global {
         new (): HTMLTranslateLabelElement;
     };
     interface HTMLElementTagNameMap {
+        "onto-dropdown": HTMLOntoDropdownElement;
         "onto-footer": HTMLOntoFooterElement;
         "onto-header": HTMLOntoHeaderElement;
         "onto-layout": HTMLOntoLayoutElement;
@@ -112,6 +178,45 @@ declare global {
     }
 }
 declare namespace LocalJSX {
+    /**
+     * A reusable dropdown component built using StencilJS. This component supports configurable labels, tooltips, icons,
+     * and items, making it versatile for various use cases. It also integrates with a translation service to handle
+     * internationalization.
+     */
+    interface OntoDropdown {
+        /**
+          * Specifies the dropdown items' alignment. If not provided, the items and the dropdown button will be aligned to the left.
+         */
+        "dropdownAlignment"?: DropdownItemAlignment;
+        /**
+          * The dropdown button name. It will be used if present; otherwise, the {@link OntoDropdown#dropdownButtonNameLabelKey } will be used.
+         */
+        "dropdownButtonName"?: string;
+        /**
+          * The translation label key for the dropdown button name. It will be used if {@link OntoDropdown#dropdownButtonName } is not present.
+         */
+        "dropdownButtonNameLabelKey"?: string;
+        /**
+          * The dropdown button tooltip. It will be used if present; otherwise, the {@link OntoDropdown#dropdownButtonTooltipLabelKey } will be used.
+         */
+        "dropdownButtonTooltip"?: string;
+        /**
+          * The translation label key for the dropdown button tooltip. It will be used if {@link OntoDropdown#dropdownButtonTooltip } is not present.
+         */
+        "dropdownButtonTooltipLabelKey"?: string;
+        /**
+          * Icon class for the main dropdown button.
+         */
+        "iconClass"?: string;
+        /**
+          * Array of dropdown options.
+         */
+        "items"?: DropdownItem[];
+        /**
+          * Event emitted when a dropdown item is selected. The event payload contains the value of the selected item.
+         */
+        "onValueChanged"?: (event: OntoDropdownCustomEvent<any>) => void;
+    }
     interface OntoFooter {
     }
     interface OntoHeader {
@@ -151,6 +256,7 @@ declare namespace LocalJSX {
         "translationParameters"?: TranslationParameter[];
     }
     interface IntrinsicElements {
+        "onto-dropdown": OntoDropdown;
         "onto-footer": OntoFooter;
         "onto-header": OntoHeader;
         "onto-layout": OntoLayout;
@@ -162,6 +268,12 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            /**
+             * A reusable dropdown component built using StencilJS. This component supports configurable labels, tooltips, icons,
+             * and items, making it versatile for various use cases. It also integrates with a translation service to handle
+             * internationalization.
+             */
+            "onto-dropdown": LocalJSX.OntoDropdown & JSXBase.HTMLAttributes<HTMLOntoDropdownElement>;
             "onto-footer": LocalJSX.OntoFooter & JSXBase.HTMLAttributes<HTMLOntoFooterElement>;
             "onto-header": LocalJSX.OntoHeader & JSXBase.HTMLAttributes<HTMLOntoHeaderElement>;
             "onto-layout": LocalJSX.OntoLayout & JSXBase.HTMLAttributes<HTMLOntoLayoutElement>;
