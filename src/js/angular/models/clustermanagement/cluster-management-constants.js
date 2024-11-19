@@ -80,19 +80,19 @@ const CLUSTER_MANAGEMENT_CONSTANTS = (function () {
                 icon: '\uf017'
             }, {
                 labelKey: 'recovery_state.building_snapshot',
-                classes: 'fa-d3',
+                classes: 'fa-d3 fa-solid',
                 icon: '\uf187'
             }, {
                 labelKey: 'recovery_state.sending_snapshot',
-                classes: 'fa-d3',
+                classes: 'fa-d3 fa-solid',
                 icon: '\uf0ee'
             }, {
                 labelKey: 'recovery_state.receiving_snapshot',
-                classes: 'fa-d3',
+                classes: 'fa-d3 fa-solid',
                 icon: '\uf0ed'
             }, {
                 labelKey: 'recovery_state.applying_snapshot',
-                classes: 'fa-d3',
+                classes: 'fa-d3 fa-solid',
                 icon: '\uf050'
             }
         ];
