@@ -1,8 +1,10 @@
-import angular from "angular";
 import singleSpaAngularJS from "./single-spa-angularjs";
 import './vendor';
 import './main';
 import './app';
+
+import angular from "angular";
+
 
 const domElementGetter = () => {
     const el = document.getElementById('single-spa-application:@ontotext/legacy-workbench');
@@ -44,8 +46,8 @@ export const mount = (props) => {
         .then(() => {
             domElementGetter();
             console.log('SET UP DOM');
-            const workbenchElement = document.getElementById('workbench-app');
-            angular.bootstrap(workbenchElement, ['graphdb.workbench']);
+            // const workbenchElement = document.getElementById('workbench-app');
+            // angular.bootstrap(workbenchElement, ['graphdb.workbench']);
         });
 };
 

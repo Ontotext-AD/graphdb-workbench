@@ -1,3 +1,8 @@
+import singleSpaAngularJS from "./single-spa-angularjs";
+import './vendor';
+import './main';
+
+import angular from "angular";
 import 'angular/core/services';
 import 'angular/controllers';
 import 'angular/core/angularCancelOnNavigateModule';
@@ -208,7 +213,6 @@ const moduleDefinition = function (productInfo, translations) {
             }
         }]);
 
-    console.log('DEF CONSTANT', productInfo);
     workbench.constant('productInfo', productInfo);
 
     // we need to inject $jwtAuth here in order to init the service before everything else
@@ -278,8 +282,13 @@ const moduleDefinition = function (productInfo, translations) {
     workbench.filter('trustAsHtml', ['$translate', '$sce', ($translate, $sce) => (message) => $sce.trustAsHtml(decodeHTML(message))]);
 
     // const workbenchElement = document.getElementById('workbench-app');
-    // window.appInstance = angular.bootstrap(workbenchElement, ['graphdb.workbench']);
-    console.log('bootstraped application');
+    // angular.bootstrap(workbenchElement, ['graphdb.workbench']);
+    console.log(`wb module defined:`);
+};
+
+const wbInit = () => {
+    const workbenchElement = document.getElementById('workbench-app');
+    return angular.bootstrap(workbenchElement, ['graphdb.workbench']);
 };
 
 // Manually load language files
@@ -337,5 +346,71 @@ function startWorkbench(translations) {
     });
 }
 
-// First load the translation files and then start the workbench
-loadTranslationsBeforeWorkbenchStart();
+// // First load the translation files and then start the workbench
+// loadTranslationsBeforeWorkbenchStart();
+
+const domElementGetter = () => {
+    const el = document.getElementById('single-spa-application:@ontotext/legacy-workbench');
+    const rootEl = document.createElement('div');
+    rootEl.id = 'workbench-app';
+    el.appendChild(rootEl);
+
+    const main = document.createElement('div');
+    main.setAttribute("ng-controller", 'mainCtrl');
+    rootEl.appendChild(main);
+
+    const mainContainer = document.createElement("div");
+    mainContainer.classList.add('main-container');
+    main.appendChild(mainContainer);
+
+    const htmlDivElement = document.createElement('div');
+    htmlDivElement.setAttribute('ng-view', '');
+    mainContainer.appendChild(htmlDivElement);
+    return el;
+};
+
+const ngLifecycles = singleSpaAngularJS({
+    angular: angular,
+    domElementGetter: () => {
+        return document.getElementById('single-spa-application:@ontotext/legacy-workbench');
+    },
+    mainAngularModule: "graphdb.workbench",
+    ngRoute: true,
+    preserveGlobal: false,
+    elementId: 'workbench-app',
+    template: `
+        <div ng-controller="mainCtrl">
+            <div class="main-container">
+                <div ng-view></div>
+            </div>
+        </div>
+    `
+});
+
+export const bootstrap = (props) => {
+    console.log(`app:bootstrap`, );
+    // The usage of the generated bootstrap is commented out because it triggers the initialization of angular
+    // In the workbench case, we configure the workbench and bootstrap it in the app.js file.
+    return ngLifecycles.bootstrap(props);
+    // return Promise.resolve();
+};
+
+export const mount = (props) => {
+    console.log('app:mount', props);
+    return Promise.resolve()
+        .then(() => {
+            // domElementGetter();
+            // console.log('SET UP DOM');
+            // First load the translation files and then start the workbench
+            props.initApplication = () => {
+                loadTranslationsBeforeWorkbenchStart();
+                return wbInit();
+            }
+            return ngLifecycles.mount(props);
+        });
+};
+
+export const unmount = (props) => {
+    console.log('app:unmount', props);
+    return ngLifecycles.unmount(props);
+};

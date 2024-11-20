@@ -45,7 +45,7 @@ export default function singleSpaAngularJS(userOpts) {
 }
 
 function bootstrap(opts, mountedInstances, singleSpaProps) {
-    console.log('bootstrap', opts, mountedInstances, singleSpaProps);
+    console.log('single-spa:bootstrap', opts, mountedInstances, singleSpaProps);
     return Promise.resolve().then(() => {
         let module;
         try {
@@ -65,7 +65,7 @@ function bootstrap(opts, mountedInstances, singleSpaProps) {
 }
 
 function mount(opts, mountedInstances, props = {}) {
-    console.log('mount', opts, mountedInstances, props);
+    console.log('single-spa:mount', opts, mountedInstances, props);
     return Promise.resolve().then(() => {
         window.angular = opts.angular;
 
@@ -104,9 +104,12 @@ function mount(opts, mountedInstances, props = {}) {
                 { strictDi: opts.strictDi }
             );
         } else {
-            mountedInstances.instance = opts.angular.bootstrap(bootstrapEl, [
-                opts.mainAngularModule,
-            ]);
+            console.log(`BOOT IT`, );
+            mountedInstances.instance = props.initApplication();
+            console.log(`READY`, mountedInstances.instance);
+            // mountedInstances.instance = opts.angular.bootstrap(bootstrapEl, [
+            //     opts.mainAngularModule,
+            // ]);
         }
 
         mountedInstances.instance.get("$rootScope").singleSpaProps = props;

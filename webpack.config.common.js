@@ -41,7 +41,7 @@ module.exports = (webpackConfigEnv, argv) => {
     return merge(defaultConfig, {
         entry: {
             main: './packages/root-config/src/ontotext-root-config.js',
-            legacyWorkbench: './packages/legacy-workbench/src/index.js'
+            legacyWorkbench: './packages/legacy-workbench/src/app.js'
         },
         output: {
             filename: '[name].js',
