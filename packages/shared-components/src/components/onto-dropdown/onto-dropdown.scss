@@ -45,6 +45,9 @@
     background-color: var(--onto-dropdown-button-background-color);
     text-align: end;
     white-space: nowrap;
+    border: none;
+    outline: none;
+    width: 100%;
   }
 
   .onto-dropdown-menu-item:hover {

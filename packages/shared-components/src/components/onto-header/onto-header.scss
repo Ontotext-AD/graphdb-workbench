@@ -6,6 +6,11 @@
   height: 46px;
   justify-content: flex-end;
   align-items: center;
-  gap: 10px;
+  gap: 0.25em;
   padding: 0 2rem 0 0;
+  font-size: 1.1em;
+}
+
+.header-component > * {
+  height: 100%;
 }
