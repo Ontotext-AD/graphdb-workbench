@@ -23,8 +23,23 @@ export class UserAndAccessSteps {
         return cy.get('#toggle-security span.switch');
     }
 
+    static getToggleSecurityCheckbox() {
+        return cy.get('#toggle-security input[type="checkbox"]');
+    }
     static toggleSecurity() {
         this.getToggleSecuritySwitch().click();
+    }
+
+    static getFreeAccessSwitchInput() {
+        return cy.get('#toggle-freeaccess .switch input');
+    }
+
+    static getFreeAccessSwitch() {
+        return cy.get('#toggle-freeaccess span.switch');
+    }
+
+    static toggleFreeAccess() {
+        this.getFreeAccessSwitch().click();
     }
 
     static getSecuritySwitchLabel() {
