@@ -120,8 +120,11 @@
                                                     <em class="icon-download"></em>
                                             </a>
                                             <button class="btn btn-link p-0 restart-repository-btn" type="button"
-                                                    gdb-tooltip="{{'restart.repo.label' | translate}} {{repository.id}}"
+                                                    gdb-tooltip="{{isInCluster
+                                                    ? ('restart.repo.in.cluster.tooltip' | translate)
+                                                    : ('restart.repo.label' | translate) + ' ' + repository.id}}"
                                                     tooltip-placement="top"
+                                                    ng-disabled="isInCluster"
                                                     ng-click="restartRepository(repository)">
                                                     <span class="icon-reload"></span>
                                             </button>
