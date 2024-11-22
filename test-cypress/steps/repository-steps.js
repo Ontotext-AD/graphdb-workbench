@@ -85,6 +85,16 @@ export class RepositorySteps {
         RepositorySteps.clickRepositoryIcon(repositoryId, '.repository-actions .restart-repository-btn');
     }
 
+    static getEditViewRestartButton() {
+        return cy.get('#restartRepo');
+    }
+
+    static getRepositoryRestartButton(repositoryId) {
+        return RepositorySteps.getRepositoryFromList(repositoryId)
+            .should('be.visible')
+            .find('.repository-actions .restart-repository-btn');
+    }
+
     static createRepository() {
         RepositorySteps.getCreateRepositoryButton().click();
     }
@@ -263,6 +273,10 @@ export class RepositorySteps {
 
     static editSparqlInstance(row) {
         RepositorySteps.getEditSparqlInstanceBtn(row).click();
+    }
+
+    static getRestartRemoteRepoButton(row) {
+        return this.getRemoteGraphDBTable().eq(row).find('.repository-actions .restart-repository-btn');
     }
 
     static getRemoteGraphDBTable() {

@@ -1755,6 +1755,7 @@
     "delete.repo.warning.msg": "<p>Vous êtes sûr de vouloir supprimer le dépôt <strong>{{repositoryId}}</strong>?</p><p><span class=\"icon-2x icon-warning\" style=\"color: var(--primary-color-dark)\"></span>Toutes les données du dépôt seront perdues.</p>",
     "confirm.restart.repo": "Confirmer le redémarrage",
     "confirm.restart.repo.warning.msg": "<p>Vous êtes sûr de vouloir redémarrer le dépôt <strong>{{repositoryId}}</strong>?</p><p><span class=\"icon-2x icon-warning\" style=\"color: var(--primary-color-dark)\"></span>Le dépôt sera arrêté immédiatement et toutes les requêtes et mises à jour en cours seront annulées.</p>",
+    "restart.repo.in.cluster.tooltip": "Le redémarrage d'un dépôt n'est pas pris en charge dans un environnement de cluster. Pour appliquer les modifications de configuration, redémarrez tous les nœuds du cluster.",
     "location.cannot.be.empty.error": "L'emplacement ne peut pas être vide",
     "required.field": "Ce champ est requis",
     "created.repo.success.msg": "Le dépôt {{repoId}} a été créé.",
