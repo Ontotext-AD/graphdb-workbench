@@ -261,7 +261,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         enabled: enabled ? 'true' : 'false',
                         authorities: authorities,
                         appSettings: appSettings
-                    }).then(function () {
+                    }).then(() => {
                         this.freeAccess = enabled;
                         if (updateFreeAccess) {
                             toastr.success($translate.instant('jwt.auth.free.access.updated.msg'));

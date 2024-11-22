@@ -39,6 +39,10 @@ export class ModalDialogSteps {
         ModalDialogSteps.getConfirmButton().click();
     }
 
+    static clickOKButton() {
+        ModalDialogSteps.getDialogFooter().find('.btn-primary').click();
+    }
+
     static confirm() {
         ModalDialogSteps.getConfirmButton().click();
     }
