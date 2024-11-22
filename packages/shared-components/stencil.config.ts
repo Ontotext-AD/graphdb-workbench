@@ -32,4 +32,17 @@ export const config: Config = {
   plugins: [
     sass(),
   ],
+  rollupPlugins: {
+    before: [
+      {
+        name: 'external-single-spa',
+        resolveId(source) {
+          if (source === 'single-spa') {
+            return { id: source, external: true };
+          }
+          return null;
+        },
+      },
+    ],
+  },
 };
