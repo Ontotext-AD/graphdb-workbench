@@ -1755,6 +1755,7 @@
     "delete.repo.warning.msg": "<p>Are you sure you want to delete the repository <strong>{{repositoryId}}</strong>?</p><p><span class=\"icon-2x icon-warning\" style=\"color: var(--primary-color-dark)\"></span>All data in the repository will be lost.</p>",
     "confirm.restart.repo": "Confirm restart",
     "confirm.restart.repo.warning.msg": "<p>Are you sure you want to restart the repository <strong>{{repositoryId}}</strong>?</p><p><span class=\"icon-2x icon-warning\" style=\"color: var(--primary-color-dark)\"></span>The repository will be shut down immediately and all running queries and updates will be cancelled.</p>",
+    "restart.repo.in.cluster.tooltip": "Restarting a repository is not supported in a cluster environment. To apply configuration changes, restart all cluster nodes.",
     "location.cannot.be.empty.error": "Location cannot be empty",
     "required.field": "This field is required",
     "created.repo.success.msg": "The repository {{repoId}} has been created.",

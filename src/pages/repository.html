@@ -403,12 +403,14 @@
                     <div ng-if="repositoryInfo.type !== 'ontop'" class="pt-1"></div>
                     <div class="form-group row" ng-if="repositoryInfo.type !== 'ontop' && editRepoPage">
                         <div class="checkbox col-xs-12">
-                            <label gdb-tooltip="{{'restart.repo.check.tooltip' | translate}}">
+                            <label gdb-tooltip="{{isRepoInCluster && !repositoryInfo.location
+                            ? ('restart.repo.in.cluster.tooltip' | translate)
+                            : ('restart.repo.check.tooltip' | translate)}}">
                                 <input id="restartRepo" name="restartRepo"
                                        type="checkbox"
                                        ng-model="repositoryInfo.restartRequested"
                                        ng-checked="repositoryInfo.restartRequested || repositoryInfo.saveId !== repositoryInfo.id"
-                                       ng-disabled="repositoryInfo.saveId !== repositoryInfo.id"/>
+                                       ng-disabled="(repositoryInfo.saveId !== repositoryInfo.id) || (isRepoInCluster && !repositoryInfo.location)"/>
                                 {{'restart.repo.label' | translate}}
                             </label>
                         </div>
