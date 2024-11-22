@@ -3,13 +3,13 @@
     "version": "2.8.0-TR15",
     "description": "The web application for GraphDB APIs",
     "scripts": {
-        "clean": "sh scripts/clean.sh",
-        "install": "sh scripts/install.sh",
+        "clean": "bash scripts/clean.sh",
+        "install": "bash scripts/install.sh",
         "postinstall": "npm run build:api && npm run build:shared",
         "prebuild": "npm run license-report-api && npm run license-report-root-config && npm run license-report-legacy-workbench && npm run license-report-shared-components && npm run license-report-workbench",
-        "build": "sh scripts/build.sh",
+        "build": "bash scripts/build.sh",
         "postbuild": "webpack --env BUILD_MODE=production --config=webpack.config.prod.js",
-        "build-dev": "sh scripts/build.sh",
+        "build-dev": "bash scripts/build.sh",
         "postbuild-dev": "webpack --env BUILD_MODE=development --config=webpack.config.dev.js",
         "build:modules": "concurrently \"npm run build:api\" \"npm run build:shared\"",
         "build:api": "cd packages/api && npm run build",
@@ -23,10 +23,10 @@
         "license-report-legacy-workbench": "license-checker --production --json --customPath license-checker/license-checker-format.json --start packages/legacy-workbench --out packages/legacy-workbench/dist/license-checker.json",
         "license-report-shared-components": "license-checker --production --json --customPath license-checker/license-checker-format.json --start packages/shared-components --out packages/shared-components/dist/license-checker.json",
         "license-report-workbench": "license-checker --production --json --customPath license-checker/license-checker-format.json --start packages/workbench --out packages/workbench/dist/license-checker.json",
-        "lint": "sh scripts/lint.sh",
-        "validate": "sh scripts/validate.sh",
-        "test": "sh scripts/test.sh",
-        "cy:run": "sh scripts/cy.sh"
+        "lint": "bash scripts/lint.sh",
+        "validate": "bash scripts/validate.sh",
+        "test": "bash scripts/test.sh",
+        "cy:run": "bash scripts/cy.sh"
     },
     "files": [],
     "repository": {
