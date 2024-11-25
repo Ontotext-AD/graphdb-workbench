@@ -26,10 +26,23 @@ internationalization.
 
 ## Events
 
-| Event          | Description                                                                                                | Type               |
-| -------------- | ---------------------------------------------------------------------------------------------------------- | ------------------ |
-| `valueChanged` | Event emitted when a dropdown item is selected. The event payload contains the value of the selected item. | `CustomEvent<any>` |
+| Event          | Description                                                                                                | Type                  |
+| -------------- | ---------------------------------------------------------------------------------------------------------- | --------------------- |
+| `valueChanged` | Event emitted when a dropdown item is selected. The event payload contains the value of the selected item. | `CustomEvent<string>` |
 
+
+## Dependencies
+
+### Used by
+
+ - [onto-language-selector](../onto-language-selector)
+
+### Graph
+```mermaid
+graph TD;
+  onto-language-selector --> onto-dropdown
+  style onto-dropdown fill:#f9f,stroke:#333,stroke-width:4px
+```
 
 ----------------------------------------------
 
