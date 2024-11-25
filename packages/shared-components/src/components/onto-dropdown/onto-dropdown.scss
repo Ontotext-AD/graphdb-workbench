@@ -1,6 +1,9 @@
 :root {
+  --onto-dropdown-button-color: var(--secondary-color, #373a3c);
   --onto-dropdown-button-background-color: var(--primary-color, #ac2925);
   --onto-dropdown-item-hover: var(--primary-color-dark, #ac2925);
+  --onto-dropdown-button-icon-color: var(--primary-color, #ac2925);
+  --onto-dropdown-button-open-icon-color: var(--icon-on-primary-color, rgba(255, 255, 255, 0.8));
   --onto-dropdown-color: #FFFFFF
 }
 
@@ -12,19 +15,44 @@
 
   position: relative;
 
-  &.closed .onto-dropdown-menu {
-    display: none;
+  &.closed {
+
+    .onto-dropdown-menu {
+      display: none;
+    }
+
+    .button-icon {
+      color: var(--onto-dropdown-button-icon-color);
+    }
+
+    .button-name {
+      color: var(--onto-dropdown-button-color);
+    }
+  }
+
+  &.open {
+    background-color: var(--onto-dropdown-button-icon-color);
+    color: #FFFFFF;
+
+    .button-icon {
+      color: var(--onto-dropdown-button-open-icon-color);
+    }
   }
 
   .onto-dropdown-button {
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 400;
-    padding: 0.2em 0.6em;
+    padding: 0.5em 1rem;
     line-height: 1.25;
-    border: none;
+    border: 1px solid transparent;
     outline: none;
     color: var(--onto-dropdown-color);
     background-color: var(--onto-dropdown-button-background-color);
+
+    .button-icon {
+      font-size: 1.5rem;
+      padding-right: 0.2em;
+    }
   }
 
   .onto-dropdown-menu {
@@ -55,12 +83,12 @@
     background-color: var(--onto-dropdown-item-hover);
   }
 
-  .onto-dropdown-icon:before {
-    padding-right: 0.2em;
-  }
-
   .onto-dropdown-button:hover {
     cursor: pointer;
+
+    .button-icon {
+      transform: scale(1.2);
+    }
   }
 
   .onto-dropdown-option-icon {

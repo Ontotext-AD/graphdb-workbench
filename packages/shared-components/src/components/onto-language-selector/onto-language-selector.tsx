@@ -39,7 +39,7 @@ export class OntoLanguageSelector {
           dropdownButtonName={this.currentLanguage ? this.currentLanguage : undefined}
           dropdownButtonTooltipLabelKey={this.currentLanguage ? 'language_selector.toggle_menu.tooltip' : 'language_selector.toggle_menu.label'}
           dropdownAlignment={DropdownItemAlignment.RIGHT}
-          iconClass='icon-translation icon-1-5x'
+          iconClass='icon-translation'
           items={this.items}>
         </onto-dropdown>
       </Host>

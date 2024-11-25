@@ -1,16 +1,16 @@
 :host {
   display: block;
 }
-.header-component {
-  display: flex;
-  height: 46px;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 0.25em;
-  padding: 0 2rem 0 0;
-  font-size: 1.1em;
-}
 
 .header-component > * {
   height: 100%;
+}
+
+.header-component {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.25em;
+  padding: 0 2rem .5em 0;
+  font-size: 1.1em;
 }

@@ -1,7 +1,3 @@
-:root {
-  --onto-language-selector-icon-color: var(--primary-color, #ac2925);
-}
-
 :host {
   display: block;
 }
@@ -10,32 +6,20 @@
 
   .onto-dropdown {
     height: 100%;
+
     .onto-dropdown-button {
       height: 100%;
     }
 
     &.closed {
+
       .onto-dropdown-button {
         background-color: transparent;
-
-        .button-name {
-          color: #373a3c;
-        }
-
-        .button-icon {
-          color: var(--onto-language-selector-icon-color);
-        }
       }
 
       .onto-dropdown-button:hover {
         background-color: #d4d4d4;
       }
-
-    }
-
-    &.open {
-      background-color: var(--onto-language-selector-icon-color);
-      color: #FFFFFF;
     }
   }
 }
