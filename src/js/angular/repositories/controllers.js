@@ -175,8 +175,9 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
     }
 
     function getAndSetClusterStatus() {
-        ClusterRestService.getNodeStatus().then((response) => {
-            $scope.isInCluster = response.data.nodeState;
+        ClusterRestService.getNodeStatus().then(() => {
+            // If the endpoint returns a success response, that means we have a cluster
+            $scope.isInCluster = true;
         }).catch((error) => {
             if (error.status === 404) {
                 $scope.isInCluster = false;
@@ -421,7 +422,6 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
         // Update repositories state
         $repositories.initQuick();
         getLocations();
-        getAndSetClusterStatus();
     }, 5000);
 
     $scope.$on('$destroy', function () {
