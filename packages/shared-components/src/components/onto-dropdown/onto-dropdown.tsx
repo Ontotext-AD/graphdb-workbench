@@ -103,11 +103,11 @@ export class OntoDropdown {
 
                 <div class={'onto-dropdown-menu ' + (DropdownItemAlignment.RIGHT === this.dropdownAlignment ? 'onto-dropdown-right-item-alignment' : '')}>
                     {this.items && this.items.map(item =>
-                        <a href="#" class='onto-dropdown-menu-item' title={item.tooltip ? item.tooltip : TranslationService.translate(item.tooltipLabelKey)}
+                        <button class='onto-dropdown-menu-item' title={item.tooltip ? item.tooltip : TranslationService.translate(item.tooltipLabelKey)}
                            onClick={() => this.onSelect(item.value)}>
                             <span class={'onto-dropdown-option-icon ' + item.iconClass}></span>
                             <span innerHTML={item.name ? item.name : TranslationService.translate(item.nameLabelKey)}></span>
-                        </a>)}
+                        </button>)}
                 </div>
             </div>
         );
