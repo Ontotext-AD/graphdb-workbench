@@ -55,6 +55,8 @@ export namespace Components {
     }
     interface OntoHeader {
     }
+    interface OntoLanguageSelector {
+    }
     interface OntoLayout {
     }
     interface OntoNavbar {
@@ -96,7 +98,7 @@ export interface OntoNavbarCustomEvent<T> extends CustomEvent<T> {
 }
 declare global {
     interface HTMLOntoDropdownElementEventMap {
-        "valueChanged": any;
+        "valueChanged": string;
     }
     /**
      * A reusable dropdown component built using StencilJS. This component supports configurable labels, tooltips, icons,
@@ -128,6 +130,12 @@ declare global {
     var HTMLOntoHeaderElement: {
         prototype: HTMLOntoHeaderElement;
         new (): HTMLOntoHeaderElement;
+    };
+    interface HTMLOntoLanguageSelectorElement extends Components.OntoLanguageSelector, HTMLStencilElement {
+    }
+    var HTMLOntoLanguageSelectorElement: {
+        prototype: HTMLOntoLanguageSelectorElement;
+        new (): HTMLOntoLanguageSelectorElement;
     };
     interface HTMLOntoLayoutElement extends Components.OntoLayout, HTMLStencilElement {
     }
@@ -172,6 +180,7 @@ declare global {
         "onto-dropdown": HTMLOntoDropdownElement;
         "onto-footer": HTMLOntoFooterElement;
         "onto-header": HTMLOntoHeaderElement;
+        "onto-language-selector": HTMLOntoLanguageSelectorElement;
         "onto-layout": HTMLOntoLayoutElement;
         "onto-navbar": HTMLOntoNavbarElement;
         "translate-label": HTMLTranslateLabelElement;
@@ -215,11 +224,13 @@ declare namespace LocalJSX {
         /**
           * Event emitted when a dropdown item is selected. The event payload contains the value of the selected item.
          */
-        "onValueChanged"?: (event: OntoDropdownCustomEvent<any>) => void;
+        "onValueChanged"?: (event: OntoDropdownCustomEvent<string>) => void;
     }
     interface OntoFooter {
     }
     interface OntoHeader {
+    }
+    interface OntoLanguageSelector {
     }
     interface OntoLayout {
     }
@@ -259,6 +270,7 @@ declare namespace LocalJSX {
         "onto-dropdown": OntoDropdown;
         "onto-footer": OntoFooter;
         "onto-header": OntoHeader;
+        "onto-language-selector": OntoLanguageSelector;
         "onto-layout": OntoLayout;
         "onto-navbar": OntoNavbar;
         "translate-label": TranslateLabel;
@@ -276,6 +288,7 @@ declare module "@stencil/core" {
             "onto-dropdown": LocalJSX.OntoDropdown & JSXBase.HTMLAttributes<HTMLOntoDropdownElement>;
             "onto-footer": LocalJSX.OntoFooter & JSXBase.HTMLAttributes<HTMLOntoFooterElement>;
             "onto-header": LocalJSX.OntoHeader & JSXBase.HTMLAttributes<HTMLOntoHeaderElement>;
+            "onto-language-selector": LocalJSX.OntoLanguageSelector & JSXBase.HTMLAttributes<HTMLOntoLanguageSelectorElement>;
             "onto-layout": LocalJSX.OntoLayout & JSXBase.HTMLAttributes<HTMLOntoLayoutElement>;
             "onto-navbar": LocalJSX.OntoNavbar & JSXBase.HTMLAttributes<HTMLOntoNavbarElement>;
             /**
