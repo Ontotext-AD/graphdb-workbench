@@ -1,5 +1,6 @@
 import {HeaderSteps} from "../../steps/header/header-steps";
 import {BaseSteps} from "../../steps/base-steps";
+import {TooltipSteps} from "../../steps/tooltip-steps";
 
 describe('Language selector', () => {
   it('Should change language', () => {
@@ -10,7 +11,10 @@ describe('Language selector', () => {
     // and default English language be selected.
     HeaderSteps.getLanguageSelectorDropdownToggleButton().contains('en');
     HeaderSteps.openLanguageSelectorDropdown();
-    HeaderSteps.getLanguageSelectorDropdownItem(0).contains('en · English')
+    HeaderSteps.getLanguageSelectorDropdownItem(0).contains('en · English');
+    // and have a tooltip
+    TooltipSteps.showLanguageSelectorDropdownToggleButtonTooltip(HeaderSteps.getLanguageSelectorDropdownToggleButton());
+    TooltipSteps.verifyTooltip('Current language: English');
 
     // When I select other option
     HeaderSteps.selectLanguage(1)
@@ -18,6 +22,9 @@ describe('Language selector', () => {
     HeaderSteps.getLanguageSelectorDropdownToggleButton().contains('fr');
     HeaderSteps.openLanguageSelectorDropdown();
     HeaderSteps.getLanguageSelectorDropdownItem(0).contains('en · Anglais')
+    // and the tooltip have to be translated
+    TooltipSteps.showLanguageSelectorDropdownToggleButtonTooltip(HeaderSteps.getLanguageSelectorDropdownToggleButton());
+    TooltipSteps.verifyTooltip('Langue actuelle : Anglais');
 
     // When I click on select language button
     HeaderSteps.getLanguageSelectorDropdownToggleButton().click();

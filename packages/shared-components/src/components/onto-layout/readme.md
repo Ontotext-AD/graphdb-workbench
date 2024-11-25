@@ -21,6 +21,7 @@ graph TD;
   onto-layout --> onto-footer
   onto-header --> onto-language-selector
   onto-language-selector --> onto-dropdown
+  onto-dropdown --> onto-tooltip
   onto-navbar --> translate-label
   style onto-layout fill:#f9f,stroke:#333,stroke-width:4px
 ```

@@ -19,6 +19,7 @@
 ```mermaid
 graph TD;
   onto-language-selector --> onto-dropdown
+  onto-dropdown --> onto-tooltip
   onto-header --> onto-language-selector
   style onto-language-selector fill:#f9f,stroke:#333,stroke-width:4px
 ```

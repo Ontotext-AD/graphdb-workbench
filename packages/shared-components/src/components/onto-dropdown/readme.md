@@ -37,9 +37,14 @@ internationalization.
 
  - [onto-language-selector](../onto-language-selector)
 
+### Depends on
+
+- [onto-tooltip](../onto-tooltip)
+
 ### Graph
 ```mermaid
 graph TD;
+  onto-dropdown --> onto-tooltip
   onto-language-selector --> onto-dropdown
   style onto-dropdown fill:#f9f,stroke:#333,stroke-width:4px
 ```

@@ -73,6 +73,11 @@ export namespace Components {
          */
         "selectedMenu": string;
     }
+    interface OntoTooltip {
+        "dataTooltip": string;
+        "placement": string;
+        "showOnClick": false;
+    }
     /**
      * The purpose of this component is to display translated literals in the DOM. A Stencil component re-renders when a prop or state changes,
      * but it may not re-render when the language changes. In such cases, this component should be used. It handles language change events
@@ -160,6 +165,12 @@ declare global {
         prototype: HTMLOntoNavbarElement;
         new (): HTMLOntoNavbarElement;
     };
+    interface HTMLOntoTooltipElement extends Components.OntoTooltip, HTMLStencilElement {
+    }
+    var HTMLOntoTooltipElement: {
+        prototype: HTMLOntoTooltipElement;
+        new (): HTMLOntoTooltipElement;
+    };
     /**
      * The purpose of this component is to display translated literals in the DOM. A Stencil component re-renders when a prop or state changes,
      * but it may not re-render when the language changes. In such cases, this component should be used. It handles language change events
@@ -183,6 +194,7 @@ declare global {
         "onto-language-selector": HTMLOntoLanguageSelectorElement;
         "onto-layout": HTMLOntoLayoutElement;
         "onto-navbar": HTMLOntoNavbarElement;
+        "onto-tooltip": HTMLOntoTooltipElement;
         "translate-label": HTMLTranslateLabelElement;
     }
 }
@@ -252,6 +264,11 @@ declare namespace LocalJSX {
          */
         "selectedMenu"?: string;
     }
+    interface OntoTooltip {
+        "dataTooltip"?: string;
+        "placement"?: string;
+        "showOnClick"?: false;
+    }
     /**
      * The purpose of this component is to display translated literals in the DOM. A Stencil component re-renders when a prop or state changes,
      * but it may not re-render when the language changes. In such cases, this component should be used. It handles language change events
@@ -273,6 +290,7 @@ declare namespace LocalJSX {
         "onto-language-selector": OntoLanguageSelector;
         "onto-layout": OntoLayout;
         "onto-navbar": OntoNavbar;
+        "onto-tooltip": OntoTooltip;
         "translate-label": TranslateLabel;
     }
 }
@@ -291,6 +309,7 @@ declare module "@stencil/core" {
             "onto-language-selector": LocalJSX.OntoLanguageSelector & JSXBase.HTMLAttributes<HTMLOntoLanguageSelectorElement>;
             "onto-layout": LocalJSX.OntoLayout & JSXBase.HTMLAttributes<HTMLOntoLayoutElement>;
             "onto-navbar": LocalJSX.OntoNavbar & JSXBase.HTMLAttributes<HTMLOntoNavbarElement>;
+            "onto-tooltip": LocalJSX.OntoTooltip & JSXBase.HTMLAttributes<HTMLOntoTooltipElement>;
             /**
              * The purpose of this component is to display translated literals in the DOM. A Stencil component re-renders when a prop or state changes,
              * but it may not re-render when the language changes. In such cases, this component should be used. It handles language change events

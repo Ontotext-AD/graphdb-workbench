@@ -91,35 +91,42 @@ export class OntoDropdown {
 
     render() {
         return (
-            <div class={`onto-dropdown ${this.open ? 'open' : 'closed'}`}
-                 title={this.dropdownButtonTooltip ? this.dropdownButtonTooltip : TranslationService.translate(this.dropdownButtonTooltipLabelKey)}>
-                <button class="onto-dropdown-button"
-                        onClick={() => this.toggleComponent()}>
-                    <span class={'button-icon ' + this.iconClass}></span>
-                    <span class='button-name'>
+          <div class={`onto-dropdown ${this.open ? 'open' : 'closed'}`}>
+            <onto-tooltip
+              dataTooltip={this.dropdownButtonTooltip ? this.dropdownButtonTooltip : TranslationService.translate(this.dropdownButtonTooltipLabelKey)}
+              placement='left'>
+              <button class="onto-dropdown-button"
+                      onClick={() => this.toggleComponent()}>
+                <span class={'button-icon ' + this.iconClass}></span>
+                <span class='button-name'>
                       {this.dropdownButtonName ? this.dropdownButtonName : TranslationService.translate(this.dropdownButtonNameLabelKey)}
                     </span>
-                </button>
-
-                <div class={'onto-dropdown-menu ' + (DropdownItemAlignment.RIGHT === this.dropdownAlignment ? 'onto-dropdown-right-item-alignment' : '')}>
-                    {this.items && this.items.map(item =>
-                        <button class='onto-dropdown-menu-item' title={item.tooltip ? item.tooltip : TranslationService.translate(item.tooltipLabelKey)}
-                           onClick={() => this.onSelect(item.value)}>
-                            <span class={'onto-dropdown-option-icon ' + item.iconClass}></span>
-                            <span innerHTML={item.name ? item.name : TranslationService.translate(item.nameLabelKey)}></span>
-                        </button>)}
-                </div>
+              </button>
+            </onto-tooltip>
+            <div
+              class={'onto-dropdown-menu ' + (DropdownItemAlignment.RIGHT === this.dropdownAlignment ? 'onto-dropdown-right-item-alignment' : '')}>
+              {this.items && this.items.map(item =>
+                <onto-tooltip
+                  dataTooltip={item.tooltip ? item.tooltip : TranslationService.translate(item.tooltipLabelKey)}
+                  placement='left'>
+                  <button class='onto-dropdown-menu-item'
+                          onClick={() => this.onSelect(item.value)}>
+                    <span class={'onto-dropdown-option-icon ' + item.iconClass}></span>
+                    <span innerHTML={item.name ? item.name : TranslationService.translate(item.nameLabelKey)}></span>
+                  </button>
+                </onto-tooltip>)}
             </div>
-        );
+          </div>
+    );
     }
 
     private onSelect(value: string): void {
-        this.open = false;
-        this.valueChanged.emit(value);
+      this.open = false;
+      this.valueChanged.emit(value);
     }
 
     private toggleComponent(): void {
-        this.open = !this.open;
+      this.open = !this.open;
     }
 
     private closeMenu(): void {
