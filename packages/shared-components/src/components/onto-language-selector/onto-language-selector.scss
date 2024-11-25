@@ -1,0 +1,25 @@
+:host {
+  display: block;
+}
+
+.onto-language-selector {
+
+  .onto-dropdown {
+    height: 100%;
+
+    .onto-dropdown-button {
+      height: 100%;
+    }
+
+    &.closed {
+
+      .onto-dropdown-button {
+        background-color: transparent;
+      }
+
+      .onto-dropdown-button:hover {
+        background-color: #d4d4d4;
+      }
+    }
+  }
+}
