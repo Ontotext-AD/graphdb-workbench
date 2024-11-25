@@ -13,7 +13,7 @@ describe('Language selector', () => {
     HeaderSteps.getLanguageSelectorDropdownItem(0).contains('en · English')
 
     // When I select other option
-    HeaderSteps.select(1)
+    HeaderSteps.selectLanguage(1)
     // then I expect the French language be selected.
     HeaderSteps.getLanguageSelectorDropdownToggleButton().contains('fr');
     HeaderSteps.openLanguageSelectorDropdown();

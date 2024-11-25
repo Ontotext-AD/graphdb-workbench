@@ -14,13 +14,16 @@ export class OntoLanguageSelector {
   private items: DropdownItem[] = [];
   private readonly onLanguageChangeSubscription: Subscription;
 
+  /**
+   * Holds the currently selected language, such as 'en' or 'fr'.
+   */
   @State() currentLanguage: string;
 
   constructor() {
     this.languageService = ServiceProvider.get(LanguageService);
     this.onLanguageChangeSubscription = this.languageService.onLanguageChanged()
       .subscribe((newLanguage) => this.changeLanguage(newLanguage));
-    this.items = this.getLanguagesDropdownOptions();
+    this.items = this.getLanguageDropdownOptions();
   }
 
   disconnectedCallback(): void {
@@ -48,14 +51,14 @@ export class OntoLanguageSelector {
 
   private changeLanguage(newLanguage: string): void {
     this.currentLanguage = newLanguage;
-    this.items = this.getLanguagesDropdownOptions();
+    this.items = this.getLanguageDropdownOptions();
   }
 
   private onLanguageChanged(newLanguageEvent: CustomEvent): void {
     this.languageService.changeLanguage(newLanguageEvent.detail);
   }
 
-  private getLanguagesDropdownOptions(): DropdownItem[] {
+  private getLanguageDropdownOptions(): DropdownItem[] {
     return this.languageService.getSupportedLanguages().map((locale) => {
       const iconClass = this.currentLanguage === locale ? 'icon-tick' : '';
       return new DropdownItem()

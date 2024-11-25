@@ -25,7 +25,7 @@ export class HeaderSteps extends BaseSteps {
     HeaderSteps.getHeader().find('.onto-language-selector.open').click();
   }
 
-  static select(index) {
+  static selectLanguage(index) {
     HeaderSteps.getLanguageSelectorDropdownItem(index).click();
   }
 
