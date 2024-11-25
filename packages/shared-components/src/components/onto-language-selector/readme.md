@@ -1,4 +1,4 @@
-# onto-header
+# onto-language-selector
 
 
 
@@ -9,19 +9,18 @@
 
 ### Used by
 
- - [onto-layout](../onto-layout)
+ - [onto-header](../onto-header)
 
 ### Depends on
 
-- [onto-language-selector](../onto-language-selector)
+- [onto-dropdown](../onto-dropdown)
 
 ### Graph
 ```mermaid
 graph TD;
-  onto-header --> onto-language-selector
   onto-language-selector --> onto-dropdown
-  onto-layout --> onto-header
-  style onto-header fill:#f9f,stroke:#333,stroke-width:4px
+  onto-header --> onto-language-selector
+  style onto-language-selector fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------

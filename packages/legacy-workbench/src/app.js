@@ -233,6 +233,11 @@ const moduleDefinition = function (productInfo, translations) {
             });
 
             function updateTitleAndHelpInfo() {
+                // In the new implementation of the language service, the event is triggered too early,
+                // before the route is ready. Therefore, we need to check if the route is ready before translate the title.
+                if(!$route.current) {
+                    return;
+                }
                 if ($route.current.title) {
                     document.title = decodeHTML($translate.instant($route.current.title)) + ' | GraphDB Workbench';
                 } else {

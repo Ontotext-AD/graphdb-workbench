@@ -45,5 +45,27 @@
   "menu.guides.label": "Guides interactifs",
   "menu.plugins.label": "Plugins",
   "visual.graph.label": "Graphique visuel",
-  "view.rdf.rank.title": "Rang RDF"
+  "view.rdf.rank.title": "Rang RDF",
+  "language_selector": {
+    "toggle_menu": {
+      "label": "Sélectionner la langue",
+      "tooltip": "Langue actuelle : Anglais"
+    },
+    "language": {
+      "en": {
+        "label": "en &middot; Anglais",
+        "tooltip": {
+          "selected": "Langue actuelle",
+          "not_selected": "Changer la langue en Anglais"
+        }
+      },
+      "fr": {
+        "label": "fr &middot; Français",
+        "tooltip": {
+          "selected": "Langue actuelle",
+          "not_selected": "Changer la langue en Français"
+        }
+      }
+    }
+  }
 }

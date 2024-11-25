@@ -19,6 +19,8 @@ graph TD;
   onto-layout --> onto-header
   onto-layout --> onto-navbar
   onto-layout --> onto-footer
+  onto-header --> onto-language-selector
+  onto-language-selector --> onto-dropdown
   onto-navbar --> translate-label
   style onto-layout fill:#f9f,stroke:#333,stroke-width:4px
 ```
