@@ -15,7 +15,11 @@ export class NavbarService {
       menuPlugin.items
         .filter((item) => !item.parent)
         .forEach((item) => {
-          navbarModel.addItem(this.toMenuItemModel(item, item.children, undefined));
+          if (navbarModel.hasParent(item.label)) {
+            console.warn("Doubled parent definition: ", item);
+          } else {
+            navbarModel.addItem(this.toMenuItemModel(item, item.children, undefined));
+          }
         });
     });
   }
@@ -48,7 +52,7 @@ export class NavbarService {
       parent: item.parent,
       selected: false
     });
-    itemModel.children = children.map((childrenItem) => this.toMenuItemModel(childrenItem, childrenItem.children, itemModel));
+    itemModel.children = children ? children.map((childrenItem) => this.toMenuItemModel(childrenItem, childrenItem.children, itemModel)) : [];
     return itemModel;
   };
 }

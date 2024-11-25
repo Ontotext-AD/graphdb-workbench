@@ -1,5 +1,6 @@
 import { Config } from '@stencil/core';
 import {sass} from '@stencil/sass';
+import nodeResolve from '@rollup/plugin-node-resolve';
 
 export const config: Config = {
   namespace: 'shared-components',
@@ -23,6 +24,7 @@ export const config: Config = {
         {src: 'pages'},
         {src: '../node_modules/font-awesome/css/', dest: 'pages/css'},
         {src: '../node_modules/font-awesome/fonts/', dest: 'pages/fonts'},
+        {src: '../../api/dist/ontotext-workbench-api.js', dest: 'resources/ontotext-workbench-api.js'},
       ]
     },
   ],
@@ -31,5 +33,6 @@ export const config: Config = {
   },
   plugins: [
     sass(),
+    nodeResolve(),
   ],
 };
