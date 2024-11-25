@@ -42,5 +42,27 @@
   "menu.guides.label": "Interactive guides",
   "menu.plugins.label": "Plugins",
   "visual.graph.label": "Visual graph",
-  "view.rdf.rank.title": "RDF Rank"
+  "view.rdf.rank.title": "RDF Rank",
+  "language_selector": {
+    "toggle_menu": {
+      "label": "Select language",
+      "tooltip": "Current language: English"
+    },
+    "language": {
+      "en": {
+        "label": "en &middot; English",
+        "tooltip": {
+          "selected": "Current language",
+          "not_selected": "Change language to English"
+        }
+      },
+      "fr": {
+        "label": "fr &middot; French",
+        "tooltip": {
+          "selected": "Current language",
+          "not_selected":"Change language to French"
+        }
+      }
+    }
+  }
 }
