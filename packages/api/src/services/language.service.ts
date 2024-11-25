@@ -7,6 +7,8 @@ import {ReplaySubject, Subject} from '@reactivex/rxjs/dist/package';
 export class LanguageService implements Service {
 
     static readonly DEFAULT_LANGUAGE = 'en';
+    // TODO load this dynamically
+    private supportedLanguages = ['en', 'fr'];
     private readonly selectedLanguage = new ReplaySubject<string>(1);
 
     /**
@@ -16,6 +18,15 @@ export class LanguageService implements Service {
      */
     constructor() {
         // TODO read it from local store and pass it as first value
+        this.changeLanguage(LanguageService.DEFAULT_LANGUAGE);
+    }
+
+    /**
+     * Returns an array with supported languages.
+     * @returns {string[]} An array of supported language codes.
+     */
+    getSupportedLanguages(): string[] {
+        return this.supportedLanguages;
     }
 
     /**
