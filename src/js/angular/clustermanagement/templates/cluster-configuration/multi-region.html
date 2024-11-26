@@ -81,7 +81,8 @@
                         </td>
                         <td class="actions-cell">
                             <div class="actions">
-                                <button ng-click="deleteTag(tag[0])"
+                                <button ng-if="isAdmin"
+                                        ng-click="deleteTag(tag[0])"
                                         ng-disabled="addingTag"
                                         class="btn btn-link delete-tag-btn secondary"
                                         gdb-tooltip="{{ 'cluster_management.cluster_configuration_multi_region.delete_tag_tooltip' | translate }}"
