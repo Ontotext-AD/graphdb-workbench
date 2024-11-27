@@ -56,6 +56,7 @@ const USER_DATA_TYPE = {
 importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', '$repositories', '$uibModal', '$filter', '$jwtAuth', '$location', '$translate', 'LicenseRestService', 'GuidesService', 'ModalService', 'ImportRestService', 'ImportContextService',
     function ($scope, toastr, $interval, $repositories, $uibModal, $filter, $jwtAuth, $location, $translate, LicenseRestService, GuidesService, ModalService, ImportRestService, ImportContextService) {
 
+        console.log(`%cimportViewCtrl:`, 'background: red', );
         // =========================
         // Private variables
         // =========================

@@ -218,14 +218,15 @@ const moduleDefinition = function (productInfo, translations) {
     // we need to inject $jwtAuth here in order to init the service before everything else
     workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', 'LSKeys', 'GuidesService',
         function ($rootScope, $route, toastr, $sce, $translate, ThemeService, WorkbenchSettingsStorageService, LSKeys, GuidesService) {
-            console.log('APP RUN')
-            $rootScope.$on('$routeChangeSuccess', function () {
+            console.log('app:run')
+            const routeChangeUnsubscribe = $rootScope.$on('$routeChangeSuccess', function () {
+                console.log(`%c$routeChangeSuccess:`, 'background: yellow', $route);
                 updateTitleAndHelpInfo();
 
                 toastr.clear();
             });
 
-            $rootScope.$on('$translateChangeSuccess', function () {
+            const translateChangeUnsubscribe = $rootScope.$on('$translateChangeSuccess', function () {
                 updateTitleAndHelpInfo();
             });
 
@@ -263,10 +264,13 @@ const moduleDefinition = function (productInfo, translations) {
                     $translate.use(language);
                 });
 
-            $rootScope.$on('destroy', () => {
+            $rootScope.$on('$destroy', () => {
+                console.log(`%caoo.rootscope.destroy:`, 'background: orange', );
                 if (languageChangeSubscriptions) {
                     languageChangeSubscriptions.unsubscribe();
                 }
+                routeChangeUnsubscribe();
+                translateChangeUnsubscribe();
             })
         }]);
 
@@ -283,7 +287,7 @@ const moduleDefinition = function (productInfo, translations) {
 
     // const workbenchElement = document.getElementById('workbench-app');
     // angular.bootstrap(workbenchElement, ['graphdb.workbench']);
-    console.log(`wb module defined:`);
+    console.log(`app:module defined:`);
 };
 
 const wbInit = () => {
@@ -292,11 +296,11 @@ const wbInit = () => {
 };
 
 // Manually load language files
-function loadTranslationsBeforeWorkbenchStart() {
+function initTranslations() {
     const languages = __LANGUAGES__.availableLanguages.map(lang => lang.key)
     const promises = languages.map(loadTranslations);
     const translations = {};
-    Promise.all(promises)
+    return Promise.all(promises)
         .then((results) => {
             results.forEach(result => {
                 if (result) {
@@ -304,11 +308,11 @@ function loadTranslationsBeforeWorkbenchStart() {
                 }
             });
             // Start the app once all translations are loaded
-            startWorkbench(translations);
+            return translations;
         })
         .catch(() => {
             console.error('Failed to load one or more translation files.');
-            startWorkbench(translations);
+            return translations;
         });
 }
 
@@ -324,26 +328,65 @@ function loadTranslations(language) {
         });
 }
 
-function startWorkbench(translations) {
-    // Fetch the product version information before bootstrapping the app
-    $.get('/rest/info/version?local=1', function (data) {
-        // Extract major.minor version as short version
-        const versionArray = data.productVersion.match(/^(\d+\.\d+)/);
-        if (versionArray.length) {
-            data.productShortVersion = versionArray[1];
-        } else {
-            data.productShortVersion = data.productVersion;
-        }
+// Fetch the product version information before bootstrapping the app
+function loadAppInfo() {
+    return new Promise((resolve, reject) => {
+        $.get('/rest/info/version?local=1', function (data) {
+            // Extract major.minor version as short version
+            const versionArray = data.productVersion.match(/^(\d+\.\d+)/);
+            if (versionArray.length) {
+                data.productShortVersion = versionArray[1];
+            } else {
+                data.productShortVersion = data.productVersion;
+            }
 
-        // Add the first attribute to the short version, e.g. if the full version is 10.0.0-M3-RC1,
-        // the first attribute is M3 so the short version will be 10.0-M3.
-        const attributeArray = data.productVersion.match(/(-.*?)(-|$)/);
-        if (attributeArray && attributeArray.length) {
-            data.productShortVersion = data.productShortVersion + attributeArray[1];
-        }
-
-        moduleDefinition(data, translations);
+            // Add the first attribute to the short version, e.g. if the full version is 10.0.0-M3-RC1,
+            // the first attribute is M3 so the short version will be 10.0-M3.
+            const attributeArray = data.productVersion.match(/(-.*?)(-|$)/);
+            if (attributeArray && attributeArray.length) {
+                data.productShortVersion = data.productShortVersion + attributeArray[1];
+            }
+            return resolve(data);
+        });
     });
+}
+
+function startWorkbench() {
+    let translations;
+    return initTranslations()
+        .then((translationData) => {
+            console.log(`app:loaded translations`);
+            translations = translationData;
+            return loadAppInfo();
+        })
+        .then((appInfo) => {
+            console.log(`app:loaded info`, appInfo);
+            moduleDefinition(appInfo, translations);
+            return wbInit();
+        })
+        .catch((error) => {
+            console.error('Failed to start the workbench.', error);
+        });
+
+    // // Fetch the product version information before bootstrapping the app
+    // $.get('/rest/info/version?local=1', function (data) {
+    //     // Extract major.minor version as short version
+    //     const versionArray = data.productVersion.match(/^(\d+\.\d+)/);
+    //     if (versionArray.length) {
+    //         data.productShortVersion = versionArray[1];
+    //     } else {
+    //         data.productShortVersion = data.productVersion;
+    //     }
+    //
+    //     // Add the first attribute to the short version, e.g. if the full version is 10.0.0-M3-RC1,
+    //     // the first attribute is M3 so the short version will be 10.0-M3.
+    //     const attributeArray = data.productVersion.match(/(-.*?)(-|$)/);
+    //     if (attributeArray && attributeArray.length) {
+    //         data.productShortVersion = data.productShortVersion + attributeArray[1];
+    //     }
+    //
+    //     moduleDefinition(data, translations);
+    // });
 }
 
 // // First load the translation files and then start the workbench
@@ -398,13 +441,18 @@ export const bootstrap = (props) => {
 export const mount = (props) => {
     console.log('app:mount', props);
     return Promise.resolve()
+        // .then(() => {
+        //     // domElementGetter();
+        //     // console.log('SET UP DOM');
+        //     // First load the translation files and then start the workbench
+        //     // props.initApplication = () => {
+        //     //     initTranslations();
+        //     // }
+        //     return startWorkbench();
+        // })
         .then(() => {
-            // domElementGetter();
-            // console.log('SET UP DOM');
-            // First load the translation files and then start the workbench
             props.initApplication = () => {
-                loadTranslationsBeforeWorkbenchStart();
-                return wbInit();
+                return startWorkbench();
             }
             return ngLifecycles.mount(props);
         });

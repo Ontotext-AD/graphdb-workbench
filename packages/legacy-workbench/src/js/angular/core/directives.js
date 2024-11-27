@@ -323,6 +323,7 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
             // use a global var to keep old uri in order to change it when a new one appears
             let expandedUri;
             let canceler;
+            const subscriptions = [];
 
             $scope.showClearInputIcon = false;
             $scope.searchType = LocalStorageAdapter.get(LSKeys.RDF_SEARCH_TYPE) || SEARCH_DISPLAY_TYPE.table;
@@ -332,13 +333,14 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 $scope.searchType = type;
                 LocalStorageAdapter.set(LSKeys.RDF_SEARCH_TYPE, $scope.searchType);
             };
-            $scope.$on('addStartFixedNodeAutomatically', function (event, args) {
+            const addStartFixedNodeAutomaticallySubscription = $scope.$on('addStartFixedNodeAutomatically', function (event, args) {
                 if (!$scope.searchInput && args.startIRI) {
                     $scope.visualCallback({uri: args.startIRI, label: ''});
                     return;
                 }
                 $scope.checkIfValidAndSearchText();
             });
+            subscriptions.push(addStartFixedNodeAutomaticallySubscription);
 
             $scope.clearInput = function () {
                 $scope.searchInput = '';
@@ -375,13 +377,14 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 }
             });
 
-            $rootScope.$on('$translateChangeSuccess', function () {
+            const translateChangeSuccessSubscription = $rootScope.$on('$translateChangeSuccess', function () {
                 if (attrs.$attr.placeholder) {
                     $scope.placeholder = attrs.$attr.placeholder;
                 } else {
                     $scope.placeholder = `${$translate.instant('search.resources.msg')}...`;
                 }
             });
+            subscriptions.push(translateChangeSuccessSubscription);
 
             const defaultTextCallback = function (params) {
                 const param = params.type || 'uri';
@@ -656,7 +659,8 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                     });
             }
 
-            $scope.$on('rdfResourceSearchExpanded', loadAutocompleteData);
+            const rdfResourceSearchExpandedSubscription = $scope.$on('rdfResourceSearchExpanded', loadAutocompleteData);
+            subscriptions.push(rdfResourceSearchExpandedSubscription);
 
             $scope.setActiveClassOnMouseMove = function (index) {
                 if (!element.autoCompleteStatus) {
@@ -755,6 +759,11 @@ function searchResourceInput($location, toastr, ClassInstanceDetailsService, Aut
                 }
                 return Promise.resolve();
             }
+
+            $rootScope.$on('$destroy', () => {
+                console.log(`%cdirective:`, 'background: grey', subscriptions);
+                subscriptions.forEach((subscription) => subscription());
+            });
         }
     };
 }

@@ -270,9 +270,13 @@ securityModule.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$uibMod
 
 securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$translate', 'passwordPlaceholder',
     function ($rootScope, $scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $translate, passwordPlaceholder) {
-        $rootScope.$on('$translateChangeSuccess', function () {
+        const subscriptions = [];
+
+        const translateChangeSuccessUnsubscribe = $rootScope.$on('$translateChangeSuccess', function () {
             $scope.passwordPlaceholder = $translate.instant(passwordPlaceholder);
         });
+        subscriptions.push(translateChangeSuccessUnsubscribe);
+
         $scope.isAdmin = function () {
             return $jwtAuth.hasRole(UserRole.ROLE_ADMIN);
         };
@@ -483,6 +487,10 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
             // If the user cuts text from the field, the tag error message will be hidden
             $scope.isRoleValid = true;
         };
+
+        $scope.$on('$destroy', () => {
+            subscriptions.forEach((unsubscribe) => unsubscribe());
+        });
     }]);
 
 securityModule.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService', '$translate',

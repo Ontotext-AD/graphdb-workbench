@@ -4,10 +4,11 @@ import { Routes, RouterModule } from '@angular/router';
 import {APP_BASE_HREF} from '@angular/common';
 import {SparqlComponent} from "./sparql/sparql.component";
 import {GraphqlComponent} from "./graphql/graphql.component";
+import {GraphqlManagementComponent} from "./graphql-management/graphql-management.component";
 
 const routes: Routes = [
-  { path: 'sparql', component: SparqlComponent },
   { path: 'graphql', component: GraphqlComponent },
+  { path: 'graphql-management', component: GraphqlManagementComponent },
   // {path: "**", component: EmptyRouteComponent}
 ];
 

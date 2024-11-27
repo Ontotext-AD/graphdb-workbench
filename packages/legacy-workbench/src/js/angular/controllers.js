@@ -143,9 +143,7 @@ function homeCtrl($scope,
     subscriptions.push(WorkbenchContextService.onSelectedRepositoryIdUpdated(onSelectedRepositoryIdUpdated));
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
 
-    $scope.$on('$destroy', () => subscriptions.forEach((subscription) => subscription()));
-
-    $scope.$on('$routeChangeSuccess', function ($event, current, previous) {
+    const routeChangeSuccessUnsubscribe = $scope.$on('$routeChangeSuccess', function ($event, current, previous) {
         if (previous) {
             // If previous is defined we got here through navigation, hence security is already
             // initialized and its safe to refresh the repository info.
@@ -158,7 +156,9 @@ function homeCtrl($scope,
             }
         }
     });
+    subscriptions.push(routeChangeSuccessUnsubscribe);
 
+    $scope.$on('$destroy', () => subscriptions.forEach((subscription) => subscription()));
 }
 
 mainCtrl.$inject = ['$scope', '$menuItems', '$jwtAuth', '$http', 'toastr', '$location', '$repositories', '$licenseService', '$rootScope',
@@ -170,6 +170,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                   productInfo, $timeout, ModalService, $interval, $filter, LicenseRestService, RepositoriesRestService,
                   MonitoringRestService, SparqlRestService, $sce, LocalStorageAdapter, LSKeys, $translate, UriUtils, $q, GuidesService, $route, $window, AuthTokenService, TrackingService,
                   WorkbenchContextService, AutocompleteService) {
+    console.log(`%cmainCtrl:`, 'background: red', );
+    const subscriptions = [];
     $scope.descr = $translate.instant('main.gdb.description');
     $scope.documentation = '';
     $scope.menu = $menuItems;
@@ -239,7 +241,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     });
 
-    $scope.$on("$routeChangeSuccess", function ($event, current, previous) {
+    const routeChangeSuccessUnsubscribe = $scope.$on("$routeChangeSuccess", function ($event, current, previous) {
         $scope.clicked = false;
         $scope.hideRdfResourceSearch = false;
         if (previous) {
@@ -247,6 +249,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             $licenseService.checkLicenseStatus().then(() => TrackingService.init());
         }
     });
+    subscriptions.push(routeChangeSuccessUnsubscribe);
 
     $scope.resumeGuide = function () {
         $rootScope.$broadcast('guideResume');
@@ -267,7 +270,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         $rootScope.guidePaused = true;
     });
 
-    $rootScope.$on('$translateChangeSuccess', function () {
+    const translateChangeSuccessUnsubscribe = $rootScope.$on('$translateChangeSuccess', function () {
         $scope.menu.forEach(function (menu) {
             menu.label = $translate.instant(menu.labelKey);
             if (menu.children) {
@@ -281,6 +284,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         $rootScope.title = decodeHTML($translate.instant($rootScope.title));
         $scope.initTutorial();
     });
+    subscriptions.push(translateChangeSuccessUnsubscribe);
 
     //Copy to clipboard popover options
     $scope.copyToClipboard = function (uri) {
@@ -299,14 +303,16 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $repositories.getLocationFromUri(location);
     };
 
-    $scope.$on("$locationChangeSuccess", function () {
+    const locationChangeSuccess = $scope.$on("$locationChangeSuccess", function () {
         $scope.showFooter = true;
     });
+    subscriptions.push(locationChangeSuccess);
 
-    $scope.$on("repositoryIsSet", function () {
+    const repositoryIsSetUnregister = $scope.$on("repositoryIsSet", function () {
         $scope.setRestricted();
         LocalStorageAdapter.clearClassHieararchyState();
     });
+    subscriptions.push(repositoryIsSetUnregister);
 
     $scope.graphdbVersion =
         $scope.engineVersion = productInfo.productVersion;
@@ -591,14 +597,6 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
      */
     window.addEventListener('storage', localStoreChangeHandler);
 
-    $scope.$on('$destroy', () => {
-        window.removeEventListener('storage', localStoreChangeHandler);
-        deregisterMenuWatcher();
-        if ($scope.checkMenu) {
-            $timeout.cancel($scope.checkMenu);
-        }
-    });
-
     $scope.isAdmin = function () {
         return $scope.hasRole(UserRole.ROLE_ADMIN);
     };
@@ -608,7 +606,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     };
 
     $scope.hasRole = function (role) {
-        if (!angular.isUndefined(role)) {
+        if (role) {
             return $jwtAuth.hasRole(role);
         }
         return true;
@@ -848,7 +846,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     };
 
-    $scope.$on('onToggleNavWidth', function (e, isCollapsed) {
+    const onToggleNavWidthUnsubscribe = $scope.$on('onToggleNavWidth', function (e, isCollapsed) {
         $scope.menuState = isCollapsed;
         if (isCollapsed) {
             LocalStorageAdapter.set(LSKeys.MENU_STATE, 'collapsedMenu');
@@ -864,12 +862,13 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             }, 50);
         }
     });
+    subscriptions.push(onToggleNavWidthUnsubscribe);
 
     if ($jwtAuth.securityInitialized) {
         $scope.getSavedQueries();
     }
 
-    $scope.$on('securityInit', function (scope, securityEnabled, userLoggedIn, freeAccess) {
+    const securityInitUnsubscribe = $scope.$on('securityInit', function (scope, securityEnabled, userLoggedIn, freeAccess) {
         $scope.securityEnabled = securityEnabled;
         $scope.userLoggedIn = userLoggedIn;
 
@@ -889,6 +888,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             $licenseService.checkLicenseStatus().then(() => TrackingService.init());
         }
     });
+    subscriptions.push(securityInitUnsubscribe);
 
     $scope.isTrackingAllowed = function () {
         return TrackingService.isTrackingAllowed();
@@ -1022,6 +1022,15 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                 toastr.error($translate.instant('guide.step_plugin.download-guide-resource.download.message.failure', {resourceFile}));
             });
     };
+
+    $scope.$on('$destroy', () => {
+        window.removeEventListener('storage', localStoreChangeHandler);
+        deregisterMenuWatcher();
+        if ($scope.checkMenu) {
+            $timeout.cancel($scope.checkMenu);
+        }
+        subscriptions.forEach((subscription) => subscription());
+    });
 }
 
 repositorySizeCtrl.$inject = ['$scope', '$http', 'RepositoriesRestService'];

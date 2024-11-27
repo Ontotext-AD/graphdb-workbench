@@ -14,7 +14,7 @@ const defaultOpts = {
 };
 
 export default function singleSpaAngularJS(userOpts) {
-    console.log('single-spa-angularjs', userOpts);
+    console.log('spa:start', userOpts);
     if (typeof userOpts !== "object") {
         throw new Error(`single-spa-angularjs requires a configuration object`);
     }
@@ -45,7 +45,7 @@ export default function singleSpaAngularJS(userOpts) {
 }
 
 function bootstrap(opts, mountedInstances, singleSpaProps) {
-    console.log('single-spa:bootstrap', opts, mountedInstances, singleSpaProps);
+    console.log('spa:bootstrap', opts, mountedInstances, singleSpaProps);
     return Promise.resolve().then(() => {
         let module;
         try {
@@ -65,7 +65,7 @@ function bootstrap(opts, mountedInstances, singleSpaProps) {
 }
 
 function mount(opts, mountedInstances, props = {}) {
-    console.log('single-spa:mount', opts, mountedInstances, props);
+    console.log('spa:mount', opts, mountedInstances, props);
     return Promise.resolve().then(() => {
         window.angular = opts.angular;
 
@@ -104,22 +104,29 @@ function mount(opts, mountedInstances, props = {}) {
                 { strictDi: opts.strictDi }
             );
         } else {
-            console.log(`BOOT IT`, );
-            mountedInstances.instance = props.initApplication();
-            console.log(`READY`, mountedInstances.instance);
+            props.initApplication()
+                .then((instance) => {
+                    mountedInstances.instance = instance;
+                    console.log(`spa:cache instance`, mountedInstances.instance, opts);
+                    mountedInstances.instance.get("$rootScope").singleSpaProps = props;
+
+                    // https://github.com/single-spa/single-spa-angularjs/issues/51
+                    mountedInstances.instance.get("$rootScope").$apply();
+                });
             // mountedInstances.instance = opts.angular.bootstrap(bootstrapEl, [
             //     opts.mainAngularModule,
             // ]);
         }
 
-        mountedInstances.instance.get("$rootScope").singleSpaProps = props;
-
-        // https://github.com/single-spa/single-spa-angularjs/issues/51
-        mountedInstances.instance.get("$rootScope").$apply();
+        // mountedInstances.instance.get("$rootScope").singleSpaProps = props;
+        //
+        // // https://github.com/single-spa/single-spa-angularjs/issues/51
+        // mountedInstances.instance.get("$rootScope").$apply();
     });
 }
 
 function unmount(opts, mountedInstances, props = {}) {
+    console.log('spa:unmount', opts, mountedInstances, props);
     return new Promise((resolve, reject) => {
         if (mountedInstances.instance.has("$uiRouter")) {
             // https://github.com/single-spa/single-spa-angularjs/issues/53
@@ -133,14 +140,28 @@ function unmount(opts, mountedInstances, props = {}) {
             }
         }
 
-        mountedInstances.instance.get("$rootScope").$destroy();
         const domElementGetter = chooseDomElementGetter(opts, props);
         const domElement = getRootDomEl(domElementGetter, props);
 
+        // const translateModule = opts.angular.module('pascalprecht.translate');
+        // console.log(`%copts.angular:`, 'background: red', translateModule);
+        // translateModule.filter('translate', function() {
+        //     console.log(`%cremove filter:`, 'background: plum', );
+        //     return function(input) {
+        //         return input; // No-op: Just return the input unchanged
+        //     };
+        // });
+
+        mountedInstances.instance.get("$rootScope").$destroy();
+
         domElement.innerHTML = "";
 
-        if (opts.angular === window.angular && !opts.preserveGlobal)
-            delete window.angular;
+        if (opts.angular === window.angular && !opts.preserveGlobal) {
+            // TODO: Don't remove angular for now because it causes errors in angular-translate module when legacy-workbench is unmounted
+            // because it expects angular to be available.
+            // TODO: Find a way to destroy the angular-translate module properly.
+            // delete window.angular;
+        }
 
         setTimeout(resolve);
     });

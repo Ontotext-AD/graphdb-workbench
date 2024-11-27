@@ -13,14 +13,20 @@ angular
     $httpProvider.interceptors.push('HttpRequestTimeoutInterceptor');
   }])
   .run(['$rootScope', 'HttpPendingRequestsService', function ($rootScope, HttpPendingRequestsService) {
-    $rootScope.$on('$locationChangeSuccess', function (event, newUrl, oldUrl) {
-      const newUrlObj = new URL(newUrl);
+    const handler = $rootScope.$on('$locationChangeSuccess', function (event, newUrl, oldUrl) {
+        console.log(`%clocationChange:`, 'background: green', newUrl, oldUrl, event, angular);
+        const newUrlObj = new URL(newUrl);
       const oldUrlObj = new URL(oldUrl);
       // cancel only if the URLs have different origin (proto + host + port) or pathname but not different hash
       if (newUrlObj.origin !== oldUrlObj.origin || newUrlObj.pathname !== oldUrlObj.pathname) {
         HttpPendingRequestsService.cancelAll();
       }
     });
+
+      $rootScope.$on('$destroy', () => {
+          console.log(`%cdestroy it:`, 'background: orange', );
+          handler();
+      });
   }]);
 
 angular.module('angularCancelOnNavigateModule')
@@ -34,10 +40,13 @@ angular.module('angularCancelOnNavigateModule')
     }
 
     function cancelAll() {
-      angular.forEach(cancelPromises, function (cancelPromise) {
-        cancelPromise.promise.isGloballyCancelled = true;
-        cancelPromise.resolve();
-      });
+        console.log(`%cCANCEL ALL:`, 'background: green', angular);
+        if (angular) {
+            angular.forEach(cancelPromises, function (cancelPromise) {
+                cancelPromise.promise.isGloballyCancelled = true;
+                cancelPromise.resolve();
+            });
+        }
       cancelPromises.length = 0;
     }
 
