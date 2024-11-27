@@ -91,9 +91,10 @@ export class OntoDropdown {
 
     render() {
         return (
-            <div class={`onto-dropdown ${this.open ? 'open' : 'closed'}`}
-                 title={this.dropdownButtonTooltip ? this.dropdownButtonTooltip : TranslationService.translate(this.dropdownButtonTooltipLabelKey)}>
+            <div class={`onto-dropdown ${this.open ? 'open' : 'closed'}`}>
                 <button class="onto-dropdown-button"
+                        tooltip-content={this.dropdownButtonTooltip ? this.dropdownButtonTooltip : TranslationService.translate(this.dropdownButtonTooltipLabelKey)}
+                        tooltip-placement='left'
                         onClick={() => this.toggleComponent()}>
                     <span class={'button-icon ' + this.iconClass}></span>
                     <span class='button-name'>
@@ -103,8 +104,10 @@ export class OntoDropdown {
 
                 <div class={'onto-dropdown-menu ' + (DropdownItemAlignment.RIGHT === this.dropdownAlignment ? 'onto-dropdown-right-item-alignment' : '')}>
                     {this.items && this.items.map(item =>
-                        <button class='onto-dropdown-menu-item' title={item.tooltip ? item.tooltip : TranslationService.translate(item.tooltipLabelKey)}
-                           onClick={() => this.onSelect(item.value)}>
+                        <button class='onto-dropdown-menu-item'
+                                tooltip-content={item.tooltip ? item.tooltip : TranslationService.translate(item.tooltipLabelKey)}
+                                tooltip-placement='left'
+                                onClick={() => this.onSelect(item.value)}>
                             <span class={'onto-dropdown-option-icon ' + item.iconClass}></span>
                             <span innerHTML={item.name ? item.name : TranslationService.translate(item.nameLabelKey)}></span>
                         </button>)}
