@@ -1,0 +1,19 @@
+@import '../../../node_modules/tippy.js/dist/tippy.css';
+
+:root {
+  --onto-tooltip-background-color: var(--secondary-color, #003663);
+}
+
+:host {
+  display: block;
+}
+
+.tippy-box[data-theme="onto-tooltip"] {
+  background-color: var(--onto-tooltip-background-color);
+  color: #FFFFFF;
+  border-radius: 0;
+
+  .tippy-arrow {
+    color: var(--onto-tooltip-background-color);
+  }
+}
