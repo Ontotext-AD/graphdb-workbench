@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"/>
+  <title>Stencil Component Starter</title>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "@ontotext/workbench-api": "/resources/ontotext-workbench-api.js"
+      }
+    }
+  </script>
+
+  <script type="module" src="/build/shared-components.esm.js"></script>
+  <script nomodule src="/build/shared-components.js"></script>
+  <script src="./main.js" defer></script>
+  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/font-awesome.min.css">
+
+  <style>
+    .elements-container {
+      display: flex;
+      gap: 20px;
+    }
+
+    .tippy-box[data-theme="custom-theme"] {
+      background-color: #fcffcd;
+      color: #0d5aa7;
+      border-radius: 0;
+    }
+
+    .tippy-box[data-theme="custom-theme"] .tippy-arrow {
+      color: #fcffcd;
+    }
+  </style>
+</head>
+<body>
+<div class="elements-container">
+  <div class="plane-text-tooltip">
+    <button tooltip-content="Test plain text tooltip"
+            tooltip-placement="right">
+      <span class="button-icon">&#x1F50D;</span>
+      <span class="button-label">Button</span>
+    </button>
+  </div>
+
+  <div class="html-tooltip">
+    <button tooltip-content="<div><div class='header'>Header</div><div class='body'>Body</div></div>"
+            tooltip-placement="right">
+      <span class="button-icon">&#x1F50D;</span>
+      <span class="button-label">Button</span>
+    </button>
+  </div>
+
+  <div class="tooltip-bottom">
+    <button tooltip-content="<div><div class='header'>Header</div><div class='body'>Body</div></div>"
+            tooltip-placement="bottom">
+      <span class="button-icon">&#x1F50D;</span>
+      <span class="button-label">Button</span>
+    </button>
+  </div>
+
+  <div class="tooltip-right">
+    <button tooltip-content="<div><div class='header'>Header</div><div class='body'>Body</div></div>"
+            tooltip-placement="right">
+      <span class="button-icon">&#x1F50D;</span>
+      <span class="button-label">Button</span>
+    </button>
+  </div>
+
+  <div class="tooltip-custom-theme">
+    <button tooltip-content="<div><div class='header'>Header</div><div class='body'>Body</div></div>"
+            tooltip-placement="bottom"
+            tooltip-theme="custom-theme">
+      <span class="button-icon">&#x1F50D;</span>
+      <span class="button-label">Button</span>
+    </button>
+  </div>
+
+  <div class="tooltip-default-theme">
+    <button tooltip-content="<div><div class='header'>Header</div><div class='body'>Body</div></div>"
+            tooltip-placement="bottom">
+      <span class="button-icon">&#x1F50D;</span>
+      <span class="button-label">Button</span>
+    </button>
+  </div>
+</div>
+
+<onto-tooltip></onto-tooltip>
+</body>
+</html>
