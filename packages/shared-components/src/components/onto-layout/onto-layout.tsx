@@ -88,6 +88,7 @@ export class OntoLayout {
         <footer class="wb-footer">
           <onto-footer></onto-footer>
         </footer>
+        <onto-tooltip></onto-tooltip>
       </Host>
     );
   }
