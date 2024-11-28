@@ -269,7 +269,7 @@
             "loading_rules": "Erreur lors du chargement des règles ACL",
             "updating_rules": "Erreur lors de la mise à jour des règles ACL",
             "duplicated_rules": "Chaque règle ACL doit être unique.",
-            "role_length_too_short": "Trop court"
+            "role_length_too_short": "Trop court ou pas \"*\""
         },
         "defaults": {
             "asterisk": "* - Toute valeur RDF",

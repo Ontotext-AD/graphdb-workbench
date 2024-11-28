@@ -269,7 +269,7 @@
             "loading_rules": "Error during ACL rules",
             "updating_rules": "Error during ACL rules update",
             "duplicated_rules": "Every ACL rule should be unique.",
-            "role_length_too_short": "Too short"
+            "role_length_too_short": "Too short or not \"*\""
         },
         "defaults": {
             "asterisk": "* - Any RDF value",

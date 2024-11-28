@@ -4,7 +4,7 @@ import 'angular/core/controllers';
 import 'angular/repositories/controllers';
 import 'angular/aclmanagement/controllers';
 import 'angular/core/services/repositories.service';
-import 'angular/aclmanagement/directives/custom-role-prefix.directive';
+import 'angular/aclmanagement/directives/custom-role-handler.directive';
 
 const modules = [
     'ui.bootstrap',
