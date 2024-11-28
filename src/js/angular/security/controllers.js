@@ -3,7 +3,7 @@ import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/openid-auth.service';
 import 'angular/rest/security.rest.service';
 import {UserRole, UserType} from 'angular/utils/user-utils';
-import 'angular/aclmanagement/directives/custom-role-prefix.directive';
+import 'angular/security/directives/custom-prefix-tags-input.directive';
 import {READ_REPO, READ_REPO_PREFIX, SYSTEM_REPO, WRITE_REPO, WRITE_REPO_PREFIX} from "./services/constants";
 import {createUniqueKey, parseAuthorities} from "./services/authorities-util";
 
@@ -14,7 +14,6 @@ const modules = [
     'graphdb.framework.core.services.openIDService',
     'graphdb.framework.rest.security.service',
     'toastr',
-    'graphdb.framework.aclmanagement.directives',
     'ngTagsInput'
 ];
 
