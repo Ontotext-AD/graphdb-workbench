@@ -211,6 +211,10 @@ describe('ACL Management: create rule', () => {
         AclManagementSteps.addRuleInBeginning();
         AclManagementSteps.selectPolicy(0, 'allow');
         AclManagementSteps.fillRole(0, 'A');
+        // And I expect the prefix warning to NOT appear
+        AclManagementSteps.getPrefixWarning(0).should('not.exist');
+        // And I expect the prefix warning icon to NOT appear
+        AclManagementSteps.getWarningIcon(0).should('not.exist');
         AclManagementSteps.selectOperation(0, 'write');
         AclManagementSteps.fillSubject(0, '<urn:Mary>');
         AclManagementSteps.fillPredicate(0, '*');
@@ -218,14 +222,39 @@ describe('ACL Management: create rule', () => {
         AclManagementSteps.fillContext(0, '*');
 
         // Then I expect an error notification to be displayed that tells me this ROLE length is not allowed
-        AclManagementSteps.getFieldError().contains('Too short');
+        AclManagementSteps.getFieldError().contains('Too short or not "*"');
+    });
+
+    it('should allow creating a new rule if CUSTOM ROLE is a wildcard (*)', () => {
+        // Given I have a defined number of rules at the beginning
+        AclManagementSteps.getAclRules().should('have.length', 5);
+        // When I am on "ACL Management" page and create a new rule with a CUSTOM ROLE of 1 symbol (a wildcard)
+        AclManagementSteps.addRuleInBeginning();
+        AclManagementSteps.selectPolicy(0, 'allow');
+        AclManagementSteps.fillRole(0, '*');
+        AclManagementSteps.selectOperation(0, 'write');
+        AclManagementSteps.fillSubject(0, '<urn:Mary>');
+        AclManagementSteps.fillPredicate(0, '*');
+        AclManagementSteps.fillObject(0, '*');
+        AclManagementSteps.fillContext(0, '*');
+
+        // Then I expect to not see an error
+        AclManagementSteps.getFieldError().should('not.exist');
+        // When I save the rule
+        AclManagementSteps.saveRule(0);
+        // When I save the rules
+        AclManagementSteps.saveAcl();
+        // Then the table should contain the new rule
+        AclManagementSteps.getSavedRoleField(0).should('contain', '*');
+        AclManagementSteps.getAclRules().should('have.length', 6);
     });
 
     it('should show message if role prefix is CUSTOM_', () => {
         // When I am on "ACL Management" page and create a new rule with a CUSTOM_ prefix
         AclManagementSteps.addRuleInBeginning();
         AclManagementSteps.selectPolicy(0, 'allow');
-        AclManagementSteps.fillRole(0, 'CUSTOM_ROLE_FOO');
+        // When I enter the prefix in lowercase, the logic should still detect it
+        AclManagementSteps.fillRole(0, 'custom_ROLE_FOO');
 
         // Then I expect the prefix warning to appear
         AclManagementSteps.getPrefixWarning(0).should('be.visible');

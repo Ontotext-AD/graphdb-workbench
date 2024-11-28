@@ -234,7 +234,7 @@ export class ACRuleModel {
     }
 
     checkCustomOrNegatedPrefix() {
-        // The BE requires CUSTOM_ to be prefixed to user created roles. Our custom-role-prefix directive handles this.
+        // The BE requires CUSTOM_ to be prefixed to user created roles. Our custom-role-handler directive handles this.
         // However, if the user also types CUSTOM_ or !CUSTOM_ in the input before the role name, we need to detect the double prefix, and display the warnings before the rule is saved.
         const doublePrefix = "CUSTOM_CUSTOM_";
         const negatedDoublePrefix = "!CUSTOM_CUSTOM_";
