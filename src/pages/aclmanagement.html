@@ -153,13 +153,14 @@
                                     </td>
                                     <td class="data role-cell">
                                         <div class="input-container">
-                                            <textarea type="text" name="role" minlength="2" required
+                                            <textarea type="text" name="role" required
                                                       ng-model="rule.role"
                                                       ng-change="setDirty(activeTabScope)"
                                                       ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
                                                       ng-blur="showPrefixWarningIcon(true)"
                                                       uppercased uppercase-placeholder="false"
-                                                      custom-role-prefix auto-grow
+                                                      auto-grow
+                                                      custom-role-handler
                                                       autocomplete="off"
                                                       class="form-control form-control-sm textarea-edit"
                                                       placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}">
@@ -169,7 +170,7 @@
                                                 gdb-tooltip="{{'acl_management.rulestable.custom_prefix_warning.text' | translate}}"
                                                 tooltip-placement="right"></em>
                                         </div>
-                                        <div class="small" ng-if="ruleData.role.$touched && ruleData.role.$error.minlength">
+                                        <div class="small" ng-if="ruleData.role.$touched && ruleData.role.$error.customRoleValidator">
                                             <small>{{'acl_management.errors.role_length_too_short' | translate}}</small>
                                         </div>
                                         <div ng-if="ruleData.role.$warning && !hasCustomPrefix">
@@ -363,13 +364,13 @@
                                     </td>
                                     <td class="data role-cell">
                                         <div class="input-container">
-                                            <textarea type="text" name="role" minlength="2" required
+                                            <textarea type="text" name="role" required
                                                       ng-model="rule.role"
                                                       ng-change="setDirty(activeTabScope)"
                                                       ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
                                                       ng-blur="showPrefixWarningIcon(true)"
                                                       uppercased uppercase-placeholder="false"
-                                                      custom-role-prefix auto-grow
+                                                      custom-role-handler auto-grow
                                                       autocomplete="off" class="form-control form-control-sm textarea-edit"
                                                       rows="1"
                                                       placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}">
@@ -380,7 +381,7 @@
                                                 tooltip-placement="right">
                                             </em>
                                         </div>
-                                        <div class="small" ng-if="ruleData.role.$touched && ruleData.role.$error.minlength">
+                                        <div class="small" ng-if="ruleData.role.$touched && ruleData.role.$error.customRoleValidator">
                                             <small>{{'acl_management.errors.role_length_too_short' | translate}}</small>
                                         </div>
                                         <div ng-if="ruleData.role.$warning && !hasCustomPrefix">
@@ -530,13 +531,13 @@
                                     </td>
                                     <td class="data role-cell">
                                         <div class="input-container">
-                                            <textarea type="text" name="role" minlength="2" required
+                                            <textarea type="text" name="role" required
                                                       ng-model="rule.role"
                                                       ng-change="setDirty(activeTabScope)"
                                                       ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
                                                       ng-blur="showPrefixWarningIcon(true)"
                                                       uppercased uppercase-placeholder="false"
-                                                      custom-role-prefix auto-grow
+                                                      custom-role-handler auto-grow
                                                       autocomplete="off"
                                                       class="form-control form-control-sm textarea-edit"
                                                       placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}">
@@ -547,7 +548,7 @@
                                                 tooltip-placement="right">
                                             </em>
                                         </div>
-                                        <div class="small" ng-if="ruleData.role.$touched && ruleData.role.$error.minlength">
+                                        <div class="small" ng-if="ruleData.role.$touched && ruleData.role.$error.customRoleValidator">
                                             <small>{{'acl_management.errors.role_length_too_short' | translate}}</small>
                                         </div>
                                         <div ng-if="ruleData.role.$warning && !hasCustomPrefix">
@@ -695,13 +696,13 @@
                                     </td>
                                     <td class="data role-cell">
                                         <div class="input-container">
-                                            <textarea type="text" name="role" minlength="2" required
+                                            <textarea type="text" name="role" required
                                                       ng-model="rule.role"
                                                       ng-change="setDirty(activeTabScope)"
                                                       ng-keypress="performSearchActionOnEnter($event, activeTabScope, ruleData)"
                                                       ng-blur="showPrefixWarningIcon(true)"
                                                       uppercased uppercase-placeholder="false"
-                                                      custom-role-prefix auto-grow
+                                                      custom-role-handler auto-grow
                                                       autocomplete="off"
                                                       class="form-control form-control-sm textarea-edit"
                                                       placeholder="{{'acl_management.rulestable.field_placeholders.role' | translate}}">
@@ -712,7 +713,7 @@
                                                 tooltip-placement="right">
                                             </em>
                                         </div>
-                                        <div class="small" ng-if="ruleData.role.$touched && ruleData.role.$error.minlength">
+                                        <div class="small" ng-if="ruleData.role.$touched && ruleData.role.$error.customRoleValidator">
                                             <small>{{'acl_management.errors.role_length_too_short' | translate}}</small>
                                         </div>
                                         <div ng-if="ruleData.role.$warning && !hasCustomPrefix">

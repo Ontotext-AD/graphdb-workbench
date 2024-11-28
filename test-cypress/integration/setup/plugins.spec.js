@@ -12,6 +12,8 @@ describe('Plugins view', () => {
         cy.presetRepository(repositoryId);
         cy.initializeRepository(repositoryId);
         LicenseStubs.spyGetLicense();
+        PluginsStubs.spyPluginsGet(repositoryId);
+        PluginsSteps.visit();
     });
 
     afterEach(() => {
@@ -19,8 +21,6 @@ describe('Plugins view', () => {
     });
 
     it('Should allow to enable and disable the plugins', () => {
-        PluginsStubs.spyPluginsGet(repositoryId);
-        PluginsSteps.visit();
         cy.wait('@get-license');
         cy.wait('@get-plugins');
         PluginsSteps.waitUntilPluginsPageIsLoaded();
@@ -31,9 +31,10 @@ describe('Plugins view', () => {
         PluginsSteps.getPluginSwitchField('history').should('be.checked');
         PluginsSteps.togglePlugin('history');
 
-        PluginsSteps.visit();
+        cy.reload();
         cy.wait('@get-plugins');
-
+        PluginsSteps.waitUntilPluginsPageIsLoaded();
+        PluginsSteps.getPluginsView().should('be.visible');
         PluginsSteps.getPluginByName('history').should('be.visible');
         PluginsSteps.getPluginSwitchField('history').should('not.be.checked');
     });
