@@ -60,7 +60,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 // Countering race condition. When the unauthorized interceptor catches error 401 or 409, then we must make
                 // sure that a request is made to access the login page before proceeding with the rejection of the
                 // original request. Otherwise the login page is not accessible in the context of spring security.
-                return new Promise(resolve => {
+                return new Promise((resolve) => {
                     setTimeout(() => {
                         resolve(true);
                     }, 100);
@@ -236,20 +236,22 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.toggleSecurity = function (enabled) {
                 if (enabled !== this.securityEnabled) {
-                    SecurityRestService.toggleSecurity(enabled).then(function () {
-                        toastr.success($translate.instant('jwt.auth.security.status', {status: ($translate.instant(enabled ? 'enabled.status' : 'disabled.status'))}));
-                        AuthTokenService.clearAuthToken();
-                        that.initSecurity();
-                        that.securityEnabled = enabled;
-                    }, function (err) {
-                        toastr.error(err.data, $translate.instant('common.error'));
-                    });
+                    return SecurityRestService.toggleSecurity(enabled)
+                        .then(function () {
+                            toastr.success($translate.instant('jwt.auth.security.status', {status: ($translate.instant(enabled ? 'enabled.status' : 'disabled.status'))}));
+                            AuthTokenService.clearAuthToken();
+                            that.initSecurity();
+                            that.securityEnabled = enabled;
+                        })
+                        .catch(function (err) {
+                            toastr.error(err.data, $translate.instant('common.error'));
+                        });
                 }
+                return Promise.resolve();
             };
 
             this.toggleFreeAccess = function (enabled, authorities, appSettings, updateFreeAccess) {
                 if (enabled !== this.freeAccess || updateFreeAccess) {
-                    this.freeAccess = enabled;
                     if (enabled) {
                         this.freeAccessPrincipal = {authorities: authorities, appSettings: appSettings};
                     } else {
@@ -259,14 +261,15 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         enabled: enabled ? 'true' : 'false',
                         authorities: authorities,
                         appSettings: appSettings
-                    }).then(function () {
+                    }).then(() => {
+                        this.freeAccess = enabled;
                         if (updateFreeAccess) {
                             toastr.success($translate.instant('jwt.auth.free.access.updated.msg'));
                         } else {
                             toastr.success($translate.instant('jwt.auth.free.access.status', {status: ($translate.instant(enabled ? 'enabled.status' : 'disabled.status'))}));
                         }
-                    }, function (err) {
-                        toastr.error(err.data.error.message, $translate.instant('common.error'));
+                    }).catch((err) => {
+                        toastr.error(err.data, $translate.instant('common.error'));
                     });
                     $rootScope.$broadcast('securityInit', this.securityEnabled, this.hasExplicitAuthentication(), this.freeAccess);
                 }
@@ -445,4 +448,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 }
                 return false;
             };
+
+
+            this.updateUserData = (data) => SecurityRestService.updateUserData(data);
         }]);

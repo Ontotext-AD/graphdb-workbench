@@ -1,0 +1,147 @@
+<div onto-loader-new ng-if="loader" class="multi-region-loader" message="getLoaderMessage" size="100"></div>
+
+<div class="multi-region">
+    <div ng-if="topology.state === TopologyState.PRIMARY_NODE">
+        <h4 class="title">{{'cluster_management.cluster_configuration_multi_region.primary_cluster' | translate}}</h4>
+        <div class="mb-2" ng-if="isAdmin">
+            <button type="button" class="btn btn-primary create-tag-btn"
+                    ng-click="add()"
+                    gdb-tooltip="{{'cluster_management.cluster_configuration_multi_region.create_tag_tooltip' | translate}}"
+                    tooltip-placement="bottom">
+                <i class="fa fa-plus"></i> {{'cluster_management.cluster_configuration_multi_region.create_tag' | translate}}
+            </button>
+            <button type="button" class="btn btn-secondary enable-secondary-mode-btn mr-1"
+                    ng-click="enableSecondaryMode()"
+                    gdb-tooltip="{{'cluster_management.cluster_configuration_multi_region.enable_secondary_mode_tooltip' | translate}}"
+                    tooltip-placement="bottom">
+                <i class="fa fa-circle-arrow-down-right"></i>
+                {{'cluster_management.cluster_configuration_multi_region.enable_secondary_mode' | translate}}
+            </button>
+        </div>
+        <div class="table-responsive" ng-if="topology.primaryTags.length || addingTag">
+            <form name="tagForm">
+                <table class="tags-table table-striped table-hover table" aria-describedby="tags table">
+                    <thead>
+                    <tr class="labels-row">
+                        <th scope="col" class="index-column">
+                            {{'cluster_management.cluster_configuration_multi_region.column.index' | translate}}
+                        </th>
+                        <th scope="col" class="tag-column">
+                            {{'cluster_management.cluster_configuration_multi_region.column.tag' | translate}}
+                        </th>
+                        <th scope="col" class="tag-index-column">
+                            {{'cluster_management.cluster_configuration_multi_region.column.tag_index' | translate}}
+                        </th>
+                        <th scope="col" class="actions-column"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="add-tag-row" ng-if="addingTag">
+                        <td class="index-cell"></td>
+                        <td class="tag-name-cell">
+                            <input type="text"
+                                   id="asciiInput"
+                                   name="asciiInput"
+                                   ng-model="asciiInput"
+                                   ascii-validator
+                                   length-validator
+                                   min-length="{{TagLengthConstraints.minLen}}"
+                                   max-length="{{TagLengthConstraints.maxLen}}"
+                                   class="form-control tag-input"
+                                   required>
+                        </td>
+                        <td class="tag-index-cell">
+
+                        </td>
+                        <td class="actions-cell">
+                            <div class="actions">
+                                <button ng-click="cancel()"
+                                        class="btn btn-link cancel-tag-add-btn secondary"
+                                        gdb-tooltip="{{'cluster_management.cluster_configuration_multi_region.cancel_tooltip' | translate}}">
+                                    <i class="fa fa-xmark"></i>
+                                </button>
+                                <button ng-click="createTag(asciiInput)"
+                                        class="btn btn-link save-rule-btn"
+                                        ng-disabled="!tagForm.$valid"
+                                        gdb-tooltip="{{'cluster_management.cluster_configuration_multi_region.create_tag' | translate}}">
+                                    <i class="fa fa-check"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr ng-repeat-start="tag in topology.primaryTags track by $index" ng-if="0"></tr>
+                    <tr class="preview-tag-row">
+                        <td class="index-cell"><span>{{$index + 1}}</span></td>
+                        <td class="tag-name-cell">
+                            {{tag[0]}}
+                        </td>
+                        <td class="tag-index-cell">
+                            <span>{{tag[1]}}</span>
+                        </td>
+                        <td class="actions-cell">
+                            <div class="actions">
+                                <button ng-if="isAdmin"
+                                        ng-click="deleteTag(tag[0])"
+                                        ng-disabled="addingTag"
+                                        class="btn btn-link delete-tag-btn secondary"
+                                        gdb-tooltip="{{ 'cluster_management.cluster_configuration_multi_region.delete_tag_tooltip' | translate }}"
+                                        title-class="delete-tag-tooltip">
+                                    <i class="fa fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr ng-repeat-end ng-if="0"></tr>
+                    </tbody>
+                </table>
+                <div ng-show="tagForm.asciiInput.$error.asciiValidator && !tagForm.asciiInput.$pristine">
+                    <span class="error-message">{{ 'cluster_management.cluster_configuration_multi_region.error.ascii' | translate }}</span>
+                </div>
+                <div ng-show="tagForm.asciiInput.$error.lengthValidator && !tagForm.asciiInput.$pristine">
+                    <span class="error-message">{{ 'cluster_management.cluster_configuration_multi_region.error.length' | translate: {minLen: TagLengthConstraints.minLen, maxLen: TagLengthConstraints.maxLen} }}</span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div ng-if="topology.state === TopologyState.SECONDARY_NODE">
+        <h4>{{'cluster_management.cluster_configuration_multi_region.secondary_cluster' | translate}}</h4>
+        <div class="primary-leader mb-2">{{'cluster_management.cluster_configuration_multi_region.primary_leader' | translate: {primaryLeader:topology.primaryLeader} }}
+        </div>
+        <div class="mb-2" ng-if="isAdmin">
+            <button type="button" class="btn btn-primary create-tag-btn"
+                    ng-click="disableSecondaryMode()"
+                    gdb-tooltip="{{'cluster_management.cluster_configuration_multi_region.disable_secondary_mode_tooltip' | translate}}"
+                    tooltip-placement="bottom">
+                <i class="fa fa-arrow-up-left-from-circle"></i>
+                {{'cluster_management.cluster_configuration_multi_region.disable_secondary_mode' | translate}}
+            </button>
+        </div>
+        <div class="table-responsive">
+            <table class="secondary-tag-table table-striped table-hover table" aria-describedby="tag table">
+                <thead>
+                <tr class="labels-row">
+                    <th scope="col" class="tag-column">
+                        {{'cluster_management.cluster_configuration_multi_region.column.tag' | translate}}
+                    </th>
+                    <th scope="col" class="tag-index-column">
+                        {{'cluster_management.cluster_configuration_multi_region.column.tag_index' | translate}}
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr class="preview-tag-row">
+                    <td class="tag-name-cell">
+                        {{secondaryTag}}
+                    </td>
+                    <td class="tag-index-cell">
+                        <span>{{topology.primaryIndex}}</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,9 +1,12 @@
 import 'angular/core/services';
+import 'angular/core/services/workbench-context.service';
+import 'angular/core/services/rdf4j-repositories.service';
 import D3 from 'lib/common/d3-utils.js';
 import d3tip from 'lib/d3-tip/d3-tip-patch';
 import 'angular/utils/local-storage-adapter';
 import {NUMBER_PATTERN} from "../../repositories/repository.constants";
 import {removeSpecialChars} from "../../utils/string-utils";
+import {NamespacesListModel} from "../../models/namespaces/namespaces-list";
 
 const modules = [
     'ui.scroll.jqlite',
@@ -11,7 +14,9 @@ const modules = [
     'toastr',
     'ui.bootstrap',
     'ngTagsInput',
-    'graphdb.framework.utils.localstorageadapter'
+    'graphdb.framework.utils.localstorageadapter',
+    'graphdb.core.services.workbench-context',
+    'graphdb.framework.core.services.rdf4j.repositories'
 ];
 
 angular
@@ -30,7 +35,6 @@ GraphsVisualizationsCtrl.$inject = [
     "toastr",
     "$timeout",
     "ClassInstanceDetailsService",
-    "AutocompleteRestService",
     "$q",
     "$location",
     "$jwtAuth",
@@ -43,9 +47,10 @@ GraphsVisualizationsCtrl.$inject = [
     "SavedGraphsRestService",
     "GraphConfigRestService",
     "GraphDataRestService",
-    "RDF4JRepositoriesRestService",
     "$translate",
-    "GuidesService"
+    "GuidesService",
+    "WorkbenchContextService",
+    'RDF4JRepositoriesService'
 ];
 
 function GraphsVisualizationsCtrl(
@@ -56,7 +61,6 @@ function GraphsVisualizationsCtrl(
     toastr,
     $timeout,
     ClassInstanceDetailsService,
-    AutocompleteRestService,
     $q,
     $location,
     $jwtAuth,
@@ -69,9 +73,10 @@ function GraphsVisualizationsCtrl(
     SavedGraphsRestService,
     GraphConfigRestService,
     GraphDataRestService,
-    RDF4JRepositoriesRestService,
     $translate,
-    GuidesService
+    GuidesService,
+    WorkbenchContextService,
+    RDF4JRepositoriesService
 ) {
     // =========================
     // Public fields
@@ -313,23 +318,42 @@ function GraphsVisualizationsCtrl(
         return namespacePrefix ? (namespacePrefix.prefix + ":" + iri.substring(namespacePrefix.uri.length)) : iri;
     };
 
+    const onSelectedRepositoryIdUpdated = (repositoryId) => {
+        if (!repositoryId) {
+            $scope.repositoryNamespaces = new NamespacesListModel();
+            return;
+        }
+        RDF4JRepositoriesService.getNamespaces(repositoryId)
+            .then((repositoryNamespaces) => {
+                $scope.repositoryNamespaces = repositoryNamespaces;
+                $scope.namespaces = repositoryNamespaces.namespaces;
+            })
+            .catch((error) => {
+                const msg = getError(error);
+                toastr.error(msg, $translate.instant('error.getting.namespaces.for.repo'));
+            });
+    };
+
+    const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
+        $scope.isAutocompleteEnabled = autocompleteEnabled;
+    };
+
     // =========================
     // Event handlers
     // =========================
 
     const subscriptions = [];
 
-    $rootScope.$on('$translateChangeSuccess', function () {
+    subscriptions.push($rootScope.$on('$translateChangeSuccess', function () {
         $scope.INVALID_LINKS_MSG = $translate.instant('sidepanel.invalid.limit.links.msg');
         $scope.INVALID_LINKS_TOOLTIP = $translate.instant('sidepanel.invalid.limit.links.tooltip');
         $scope.propertiesSearchPlaceholder = $translate.instant("visual.search.instance.placeholder");
-    });
+    }));
 
-    $scope.$on('autocompleteStatus', function () {
-        checkAutocompleteStatus();
-    });
+    subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
+    subscriptions.push(WorkbenchContextService.onSelectedRepositoryIdUpdated(onSelectedRepositoryIdUpdated));
 
-    $scope.$on('repositoryIsSet', function (event, args) {
+    subscriptions.push($scope.$on('repositoryIsSet', function (event, args) {
         // New repo set from dropdown, clear init state
         if (args.newRepo) {
             $scope.hasInitedRepository = false;
@@ -351,7 +375,7 @@ function GraphsVisualizationsCtrl(
             }
 
         }
-    });
+    }));
 
     const rootScopeGenericWatcher = () => $rootScope.key;
     const rootScopeGenericChangeHandler = () => {
@@ -1207,27 +1231,6 @@ function GraphsVisualizationsCtrl(
         if (!newRepo) {
             // Process params only if this isn't a repo that was just selected from the dropdown menu
             $scope.getGraphConfigs(loadGraphFromQueryParam);
-        }
-
-        // Inits namespaces for repo
-        $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository())
-            .success(function (data) {
-                const nss = _.map(data.results.bindings, function (o) {
-                    return {"uri": o.namespace.value, "prefix": o.prefix.value};
-                });
-                $scope.namespaces = _.sortBy(nss, function (n) {
-                    return n.uri.length;
-                });
-
-                checkAutocompleteStatus();
-            }).error(function (data) {
-                toastr.error(getError(data), $translate.instant('graphexplore.error.view.will.not.work'));
-            });
-    }
-
-    function checkAutocompleteStatus() {
-        if ($licenseService.isLicenseValid()) {
-            $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
         }
     }
 

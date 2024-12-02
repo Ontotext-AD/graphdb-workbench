@@ -3,15 +3,11 @@
 <link href="css/lib/ng-tags-input/ng-tags-input.min.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 <link href="js/lib/d3-tip/d3-tip.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-<div class="container-fluid">
+<div class="container-fluid visual-graph-view">
 
     <h1>
         {{title}}
-        <span class="btn btn-link"
-              uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
-              popover-trigger="mouseenter"
-              popover-placement="bottom-right"
-              popover-append-to-body="true"><span class="icon-info text-tertiary"></span></span>
+        <page-info-tooltip></page-info-tooltip>
     </h1>
     <div core-errors license></div>
     <div system-repo-warning></div>
@@ -87,8 +83,8 @@
                             <p ng-if="configLoaded.hint">{{'hint' | translate}} {{configLoaded.hint}}
                         </p>
                         <search-resource-input class="incontext-search-rdf-resource"
-                                namespacespromise="getNamespacesPromise"
-                                autocompletepromisestatus="getAutocompletePromise"
+                                repository-namespaces="repositoryNamespaces"
+                                is-autocomplete-enabled="isAutocompleteEnabled"
                                 text-button=""
                                 visual-button="{{'rdfs.comment.show' | translate}}"
                                 visual-callback="openUri(uri)"
@@ -108,8 +104,8 @@
                         <h3>{{'visual.easy.graph' | translate}}</h3>
                         <p>{{'visual.easy.graph.info' | translate}}</p>
                         <search-resource-input class="search-rdf-resources"
-                                namespacespromise="getNamespacesPromise"
-                                autocompletepromisestatus="getAutocompletePromise"
+                                repository-namespaces="repositoryNamespaces"
+                                is-autocomplete-enabled="isAutocompleteEnabled"
                                 text-button=""
                                 visual-button="{{'rdfs.comment.show' | translate}}"
                                 visual-callback="easyGraphSearch(uri)"

@@ -36,6 +36,7 @@ const identicalTranslations = [
     "Type:",
     "type",
     "Google Analytics (GA4)",
+    "Index",
     "<div><span class=\"graph\">GRAPH</span><span class=\"wise\">WISE</span></div><div class=\"thrives\">AI THRIVES ON WHOLE DATA</div>",
 
     // File formats:
@@ -60,10 +61,16 @@ const identicalTranslations = [
     "{{progressMessage}}... {{timeHuman}}",
     "\n{{extraMessage}}",
     "{{n}}/{{nn}}",
+    "{{'ttyg.helpInfo'|translate|trustAsHtml}}",
+    "{{'ttyg.help.how.content2'|translate|trustAsHtml}}",
+    "{{'ttyg.helpInfo'|translate|trustAsHtml}}",
+    "",
 
     // Example values below - maybe they should never be translated?
     "http://example.com/context.jsonld",
-    "http://example.com/frame.jsonld"
+    "http://example.com/frame.jsonld",
+    "http://my-hostname:7200",
+    "node-name:7300"
 ];
 
 // Unverified identical or TO DO translations - printed as warnings

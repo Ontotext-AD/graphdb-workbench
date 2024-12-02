@@ -4,6 +4,7 @@ import {CHAT_MESSAGE_ROLE, ChatMessageModel} from "../../models/ttyg/chat-messag
 import {ChatItemModel} from "../../models/ttyg/chat-item";
 import {cloneDeep} from "lodash";
 import {decodeHTML} from "../../../../app";
+import {ChatModel} from "../../models/ttyg/chats";
 
 const modules = [
     'graphdb.framework.ttyg.directives.chat-item-detail'
@@ -60,10 +61,16 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             $scope.askingChatItem = undefined;
 
             /**
+             * True while a question is being handled. It may involve multiple requests until it turns back to false.
+             * @type {boolean}
+             */
+            $scope.waitingForLastMessage = false;
+
+            /**
              * Flag that indicates that the chat is about to be changed.
              * @type {boolean}
              */
-            $scope.loadingChat = false;
+            $scope.loadingChat = true;
 
             // =========================
             // Private variables
@@ -77,6 +84,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
              * Handles the ask question action.
              */
             $scope.ask = () => {
+                $scope.chatItem.question.timestamp = Date.now();
                 $scope.askingChatItem = cloneDeep($scope.chatItem);
                 if (!$scope.chatItem.chatId) {
                     createNewChat();
@@ -96,6 +104,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             $scope.regenerateQuestion = (chatItem) => {
                 const regenerateChatItem = getEmptyChatItem();
                 regenerateChatItem.setQuestionMessage(chatItem.getQuestionMessage());
+                regenerateChatItem.question.timestamp = Date.now();
                 $scope.askingChatItem = regenerateChatItem;
                 askQuestion(regenerateChatItem);
                 scrollToBottom();
@@ -116,6 +125,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             $scope.onAskHowDeliveredAnswer = () => {
                 const askHowDerivedAnswerChatItem = getEmptyChatItem();
                 askHowDerivedAnswerChatItem.setQuestionMessage($translate.instant('ttyg.chat_panel.btn.derive_answer.label'));
+                askHowDerivedAnswerChatItem.question.timestamp = Date.now();
                 $scope.askingChatItem = cloneDeep(askHowDerivedAnswerChatItem);
                 askQuestion(askHowDerivedAnswerChatItem);
                 scrollToBottom();
@@ -136,10 +146,12 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             // =========================
 
             const createNewChat = () => {
+                $scope.waitingForLastMessage = true;
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT, $scope.chatItem);
             };
 
             const askQuestion = (chatItem) => {
+                $scope.waitingForLastMessage = true;
                 TTYGContextService.emit(TTYGEventName.ASK_QUESTION, chatItem);
             };
 
@@ -149,7 +161,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
              */
             const onSelectedChatUpdated = (chat) => {
                 $scope.chat = chat;
-                if (!chat.id && $scope.askingChatItem) {
+                if (!chat || !chat.id && $scope.askingChatItem) {
                     // Do nothing if the chat is new (dummy) and a question is currently being asked.
                     return;
                 }
@@ -157,12 +169,18 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 $scope.chatItem = getEmptyChatItem();
                 $scope.askingChatItem = undefined;
                 if ($scope.chat) {
+                    // TODO: Why on earth this is here? The chat changed handler is in the ttyg.view. Why doesn't it handle this
+                    // but we need to go through 2 more events to achieve the same result?
                     const lastChatItem = $scope.chat.chatHistory.getLast();
                     if (lastChatItem && lastChatItem.agentId) {
                         TTYGContextService.selectAgent(TTYGContextService.getAgent(lastChatItem.agentId));
                     }
                 }
                 focusQuestionInput();
+            };
+
+            const onLastMessageReceived = () => {
+                $scope.waitingForLastMessage = false;
             };
 
             /**
@@ -176,15 +194,20 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             };
 
             const onSelectedChatChanged = (chat) => {
-                // Skip the loading indication if it is a new (dummy) chat that has not been created yet.
-                $scope.loadingChat = chat && chat.id;
-                $scope.chatItem = getEmptyChatItem();
-                focusQuestionInput();
+                if (chat) {
+                    // Skip the loading indication if it is a new (dummy) chat that has not been created yet.
+                    $scope.loadingChat = chat && chat.id;
+                    $scope.chatItem = getEmptyChatItem();
+                    focusQuestionInput();
+                } else {
+                    reset();
+                }
             };
 
             const onQuestionFailure = () => {
                 $scope.chatItem = cloneDeep($scope.askingChatItem);
                 $scope.askingChatItem = undefined;
+                $scope.waitingForLastMessage = false;
             };
 
             /**
@@ -220,26 +243,33 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             };
 
             const focusQuestionInput = () => {
-                element.find('.question-input')[0].focus();
+                const els = element.find('.question-input');
+                if (els.length) {
+                    els[0].focus();
+                }
             };
 
             const scrollToBottom = () => {
                 // Call it in a timeout to ensure that Angular's digest cycle is finished and all elements are displayed.
                 setTimeout(() => {
                     const chatDetailsElement = element.find(".chat-details")[0];
-                    chatDetailsElement.scrollTop = chatDetailsElement.scrollHeight;
+                    if (chatDetailsElement) {
+                        chatDetailsElement.scrollTop = chatDetailsElement.scrollHeight;
+                    }
                 });
             };
 
             const reset = () => {
-                $scope.chat = undefined;
+                $scope.chat = ChatModel.getEmptyChat();
                 $scope.loadingChat = false;
                 $scope.chatItem = getEmptyChatItem();
                 $scope.askingChatItem = undefined;
+                $scope.waitingForLastMessage = false;
                 focusQuestionInput();
             };
 
             const init = () => {
+                $scope.chat = ChatModel.getEmptyChat();
                 $scope.chatItem = getEmptyChatItem();
                 focusQuestionInput();
             };
@@ -255,6 +285,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
 
             subscriptions.push($scope.$watchCollection('chat.chatHistory.items', scrollToBottom));
             subscriptions.push(TTYGContextService.onSelectedChatUpdated(onSelectedChatUpdated));
+            subscriptions.push(TTYGContextService.onLastMessageReceived(onLastMessageReceived));
             subscriptions.push(TTYGContextService.onSelectedAgentChanged(onSelectedAgentChanged));
             subscriptions.push(TTYGContextService.onSelectedChatChanged(onSelectedChatChanged));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.LOAD_CHAT_FAILURE, onLoadChatFailure));

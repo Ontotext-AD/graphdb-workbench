@@ -76,6 +76,18 @@ function TTYGRestService($http) {
     };
 
     /**
+     * Calls the REST API to continue a chat run.
+     * @param {*} data
+     * @return {*}
+     */
+    const continueChatRun = (data) => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.continueChatRun(data);
+        }
+        return $http.post(`${CONVERSATIONS_ENDPOINT}/continue`, data);
+    };
+
+    /**
      * Deletes a conversation by its ID.
      * @param {string} id
      * @return {Promise<void>}
@@ -174,6 +186,10 @@ function TTYGRestService($http) {
         return $http.post(EXPLAIN_RESPONSE_ENDPOINT, data);
     };
 
+    /**
+     * Calls the backend server to fetch the default values for an agent.
+     * @return {Promise}
+     */
     const getAgentDefaultValues = () => {
         if (DEVELOPMENT) {
             return _fakeBackend.getAgentDefaultValues();
@@ -181,11 +197,24 @@ function TTYGRestService($http) {
         return $http.get(`${AGENTS_ENDPOINT}/default`);
     };
 
+    /**
+     * Calls the backend server to fetch an explanation of how the agent settings were generated.
+     * @param {*} data
+     * @return {Promise}
+     */
+    const explainAgentSettings = (data) => {
+        if (DEVELOPMENT) {
+            return _fakeBackend.explainAgentSettings();
+        }
+        return $http.post(`${AGENTS_ENDPOINT}/explain`, data);
+    };
+
     return {
         getConversation,
         renameConversation,
         exportConversation,
         askQuestion,
+        continueChatRun,
         getConversations,
         deleteConversation,
         createConversation,
@@ -195,6 +224,7 @@ function TTYGRestService($http) {
         editAgent,
         deleteAgent,
         explainResponse,
-        getAgentDefaultValues
+        getAgentDefaultValues,
+        explainAgentSettings
     };
 }

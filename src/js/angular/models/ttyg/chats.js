@@ -1,6 +1,15 @@
 import {ChatItemsListModel} from "./chat-item";
+import {md5HashGenerator} from "../../utils/hash-utils";
 
 export class ChatModel {
+    static getEmptyChat() {
+        const data = {
+            name: "\u00B7 \u00B7 \u00B7",
+            timestamp: Math.floor(Date.now() / 1000)
+        };
+        return new ChatModel(data, md5HashGenerator());
+    }
+
     constructor(data, hashGenerator) {
         this.hashGenerator = hashGenerator;
 
@@ -148,9 +157,21 @@ export class ChatsListModel {
         const chat = this._chats.find((c) => c.id === chatId);
         if (chat) {
             chat.timestamp = timestamp;
+            this.sortByTime();
+            this.updateChatsByDay();
         }
-        this.sortByTime();
-        this.updateChatsByDay();
+    }
+
+    /**
+     * Updates the name of a chat in the list.
+     * @param {string} chatId
+     * @param {string} name
+     */
+    updateChatName(chatId, name) {
+        const chat = this._chats.find((c) => c.id === chatId);
+        if (chat) {
+            chat.name = name;
+        }
     }
 
     /**

@@ -1,0 +1,37 @@
+<div class="cluster-configuration break-word-alt p-1 pt-2">
+    <button class="close mb-1 ml-1" ng-click="closeClusterConfigurationPanel()"></button>
+    <h3 class="hovered-parent">
+        {{'cluster_management.cluster_configuration.label' | translate}}
+    </h3>
+
+    <ul class="nav nav-tabs configuration-tabs">
+        <li class="properties-tab nav-item">
+            <a href="#" class="nav-link"
+               ng-click="switchTab($event, CONFIGURATION_TABS.PROPERTIES)"
+               ng-class="{'active': activeTab === CONFIGURATION_TABS.PROPERTIES}"><span>{{'cluster_management.cluster_configuration_properties.label' | translate}}</span><i class="text-primary icon-exclamation" ng-if="dirtyScope.has(ACL_SCOPE.STATEMENT)"></i></a>
+        </li>
+        <li class="clear-graph-tab nav-item">
+            <a href="#" class="nav-link"
+               ng-click="switchTab($event, CONFIGURATION_TABS.NODES)"
+               ng-class="{'active': activeTab === CONFIGURATION_TABS.NODES}"><span>{{'cluster_management.cluster_configuration_nodes.label' | translate}}</span><i class="text-primary icon-exclamation" ng-if="dirtyScope.has(ACL_SCOPE.CLEAR_GRAPH)"></i></a>
+        </li>
+        <li class="clear-graph-tab nav-item">
+            <a href="#" class="nav-link"
+               ng-click="switchTab($event, CONFIGURATION_TABS.MULTI_REGION)"
+               ng-class="{'active': activeTab === CONFIGURATION_TABS.MULTI_REGION}"><span>{{'cluster_management.cluster_configuration_multi_region.label' | translate}}</span><i class="text-primary icon-exclamation" ng-if="dirtyScope.has(ACL_SCOPE.CLEAR_GRAPH)"></i></a>
+        </li>
+    </ul>
+
+    <div class="tab-pane fade in mt-1" ng-if="activeTab === CONFIGURATION_TABS.PROPERTIES" id="properties">
+        <cluster-properties cluster-configuration="clusterConfiguration"></cluster-properties>
+    </div>
+
+    <div class="tab-pane fade in mt-1" ng-if="activeTab === CONFIGURATION_TABS.NODES" id="nodes">
+        <cluster-nodes current-node="currentNode"
+                       cluster-model="clusterModel"></cluster-nodes>
+    </div>
+
+    <div class="tab-pane fade in mt-1" ng-if="activeTab === CONFIGURATION_TABS.MULTI_REGION" id="multi-region">
+        <multi-region cluster-model="clusterModel"></multi-region>
+    </div>
+</div>

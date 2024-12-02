@@ -1,6 +1,5 @@
 import {cloneDeep} from "lodash";
 import {CHAT_MESSAGE_ROLE} from "../models/ttyg/chat-message";
-import {ExtractionMethod} from "../models/ttyg/agents";
 
 // Delay for askQuestion()
 const ASK_DELAY = 2000;
@@ -88,11 +87,15 @@ export class TtygRestServiceFakeBackend {
         };
 
         if (conversation) {
-            conversation.messages.push(...answer.messages);
             conversation.messages.push(question);
+            conversation.messages.push(...answer.messages);
         }
         return new Promise((resolve) => setTimeout(() => resolve({data: answer}), ASK_DELAY));
         // return new Promise((resolve, reject) => setTimeout(() => reject(''), ASK_DELAY));
+    }
+
+    continueChatRun(data) {
+        alert("continueChatRun() not implemented");
     }
 
     deleteConversation(id) {
@@ -148,6 +151,10 @@ export class TtygRestServiceFakeBackend {
 
     getAgentDefaultValues() {
         return Promise.resolve({data: defaultAgentValues});
+    }
+
+    explainAgentSettings() {
+        return Promise.resolve({data: {}});
     }
 
     // Simulate an HTTP error
@@ -215,6 +222,18 @@ export class TtygRestServiceFakeBackend {
                         query: "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\nPREFIX onto: <http://www.ontotext.com/>\nSELECT ?label ?iri {\n    ?label onto:fts ('''Luke~ Skywalker~''' '*') .\n    ?iri rdfs:label|skos:prefLabel ?label .\n}",
                         queryType: "sparql",
                         errorOutput: null
+                    }, {
+                        name: "sparql_query",
+                        rawQuery: "SELECT ?name ?height WHERE { ?character voc:name ?name ; voc:height ?height . FILTER (?name = 'Luke Skywalker' || ?name = 'Leia Organa') }",
+                        query: "SELECT ?name ?height WHERE { ?character voc:name ?name ; voc:height ?height . FILTER (?name = 'Luke Skywalker' || ?name = 'Leia Organa') }",
+                        queryType: "sparql",
+                        errorOutput: "Error: java.lang.IllegalArgumentException: The following IRIs are not used in the data stored in GraphDB: https://swapi.co/vocabulary/name"
+                    }, {
+                        name: "sparql_query",
+                        rawQuery: "SELECT ?character ?height WHERE { ?character voc:height ?height . FILTER (?character = <https://swapi.co/resource/human/1> || ?character = <https://swapi.co/resource/human/5>) }",
+                        query: "SELEdCT ?character ?height WHERE { ?character voc:height ?height . FILTER (?character = <https://swapi.co/resource/human/1> || ?character = <https://swapi.co/resource/human/5>) }",
+                        queryType: "sparql",
+                        errorOutput: null
                     }
                 ]
             }});
@@ -275,7 +294,7 @@ let agentsList = [
         "temperature": 0.0,
         "topP": 0.0,
         "seed": null,
-        "repositoryId": null,
+        "repositoryId": "Non existing repo",
         "instructions": {
             "systemInstruction": "string\n\nstring",
             "userInstruction": "string"
@@ -315,6 +334,82 @@ let agentsList = [
             "userInstruction": null
         },
         "assistantExtractionMethods": [],
+        "maxNumberOfTriplesPerCall": null
+    },
+    {
+        "id": "asst_qMyCpCBmqxV9I2B8UoMfFzc555",
+        "name": "agent with long name long long long long long long long long long long long long",
+        "model": "gpt-4o",
+        "temperature": 0.0,
+        "topP": 0.0,
+        "seed": null,
+        "repositoryId": "Non existing repo",
+        "instructions": {
+            "systemInstruction": "string\n\nstring",
+            "userInstruction": "string"
+        },
+        "assistantExtractionMethods": [
+            {
+                "ftsMethod": "fts_search"
+            }
+        ],
+        "maxNumberOfTriplesPerCall": null
+    },
+    {
+        "id": "asst_qMyCpCBmqxV9I2B8UoMfFzcр555",
+        "name": "Long_agent_with_long_name_long_long_long_long_long_long_long_long_long_long_long_long",
+        "model": "gpt-4o",
+        "temperature": 0.0,
+        "topP": 0.0,
+        "seed": null,
+        "repositoryId": "Non existing repo",
+        "instructions": {
+            "systemInstruction": "string\n\nstring",
+            "userInstruction": "string"
+        },
+        "assistantExtractionMethods": [
+            {
+                "ftsMethod": "fts_search"
+            }
+        ],
+        "maxNumberOfTriplesPerCall": null
+    },
+    {
+        "id": "asst_qMyCpCBmqxV9I2B8UoMfFzc55д5",
+        "name": "agent with long name long long long long long long long long long long long long",
+        "model": "gpt-4o",
+        "temperature": 0.0,
+        "topP": 0.0,
+        "seed": null,
+        "repositoryId": "starwars",
+        "instructions": {
+            "systemInstruction": "string\n\nstring",
+            "userInstruction": "string"
+        },
+        "assistantExtractionMethods": [
+            {
+                "ftsMethod": "fts_search"
+            }
+        ],
+        "maxNumberOfTriplesPerCall": null
+    },
+    {
+        "id": "asst_qMyCpCBmqxV9I2B8UoMfFzcя555",
+        "name": "Long_agent_with_long_name_long_long_long_long_long_long_long_long_long_long_long_long",
+        "model": "gpt-4o",
+        "temperature": 0.0,
+        "topP": 0.0,
+        "seed": null,
+        "repositoryId": "starwars",
+        "instructions": {
+            "systemInstruction": "string\n\nstring",
+            "userInstruction": "string"
+        },
+        "assistantExtractionMethods": [
+            {
+                "ftsMethod": "fts_search"
+            }
+        ],
         "maxNumberOfTriplesPerCall": null
     }
 ];

@@ -12,6 +12,35 @@ export class SecurityStubs {
         }).as('security-all');
     }
 
+    static stubUpdateUserData(userName) {
+        cy.intercept('PATCH', `/rest/security/users/${userName}`, {
+            statusCode: 200,
+            body: {}
+        }).as('updateUser');
+    }
+
+    static stubGetAdminUser() {
+        cy.intercept('GET', 'rest/security/users/admin', {
+            fixture: '/security/get-admin-user.json',
+            statusCode: 200
+        }).as('getAdminUser');
+    }
+
+    /**
+     * Disables the globally configured interceptor for the GET request to get the admin user.
+     * This is useful when you want to test the real response from the server.
+     *
+     * This should be called in each test where you want to test the real response.
+     */
+    static resetGetAdminUserStub() {
+        cy.intercept('GET', 'rest/security/users/admin', (req) => {
+                req.reply((res) => {
+                    res.send({});
+                });
+            }
+        ).as('getAdminUser');
+    }
+
     static getAdminResponse(infer, sameAs) {
         return {
             "username": "admin",

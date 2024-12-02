@@ -1,5 +1,6 @@
 import 'angular/utils/notifications';
 import 'angular/utils/local-storage-adapter';
+import 'angular/core/services/workbench-context.service';
 import {YasqeMode} from "../../models/ontotext-yasgui/yasqe-mode";
 import {RenderingMode} from "../../models/ontotext-yasgui/rendering-mode";
 import {
@@ -8,11 +9,15 @@ import {
 } from "../../core/directives/yasgui-component/yasgui-component-directive.util";
 import {GraphsConfig, StartMode} from "../../models/graphs/graphs-config";
 import {mapGraphConfigSamplesToGraphConfigs} from "../../rest/mappers/graphs-config-mapper";
+import {NamespacesListModel} from "../../models/namespaces/namespaces-list";
 
 angular
     .module('graphdb.framework.graphexplore.controllers.graphviz.config', [
         'graphdb.framework.utils.notifications',
-        'graphdb.framework.utils.localstorageadapter'
+        'graphdb.framework.utils.localstorageadapter',
+        'graphdb.core.services.workbench-context',
+        'graphdb.framework.core.services.rdf4j.repositories'
+
     ])
     .controller('GraphConfigCtrl', GraphConfigCtrl);
 
@@ -26,14 +31,14 @@ GraphConfigCtrl.$inject = [
     'SparqlRestService',
     '$filter',
     'GraphConfigRestService',
-    'AutocompleteRestService',
     '$routeParams',
     'Notifications',
-    'RDF4JRepositoriesRestService',
     'LocalStorageAdapter',
     'LSKeys',
     '$translate',
-    'ModalService'
+    'ModalService',
+    'WorkbenchContextService',
+    'RDF4JRepositoriesService'
 ];
 
 function GraphConfigCtrl(
@@ -46,14 +51,14 @@ function GraphConfigCtrl(
     SparqlRestService,
     $filter,
     GraphConfigRestService,
-    AutocompleteRestService,
     $routeParams,
     Notifications,
-    RDF4JRepositoriesRestService,
     LocalStorageAdapter,
     LSKeys,
     $translate,
-    ModalService
+    ModalService,
+    WorkbenchContextService,
+    RDF4JRepositoriesService
 ) {
 
     // =========================
@@ -85,13 +90,13 @@ function GraphConfigCtrl(
         sameAs: $scope.newConfig.startQuerySameAs
     };
     /**
-     * @type {Promise|undefined}
+     * @type {boolean|undefined}
      */
-    $scope.getAutocompletePromise = undefined;
+    $scope.isAutocompleteEnabled = undefined;
     /**
-     * @type {Promise|undefined}
+     * @type {NamespacesListModel|undefined}
      */
-    $scope.getNamespacesPromise = undefined;
+    $scope.repositoryNamespaces = undefined;
 
     $scope.tabsViewModel = [];
 
@@ -444,9 +449,24 @@ function GraphConfigCtrl(
         toastr.warning(message);
     };
 
-    const checkAutocompleteStatus = () => {
-        $scope.getAutocompletePromise = AutocompleteRestService.checkAutocompleteStatus();
-    }
+    const onAutocompleteEnabledUpdated = (autocompleteEnabled) => {
+        $scope.isAutocompleteEnabled = autocompleteEnabled;
+    };
+
+    const onSelectedRepositoryIdUpdated = (repositoryId) => {
+        if (!repositoryId) {
+            $scope.repositoryNamespaces = new NamespacesListModel();
+            return;
+        }
+        RDF4JRepositoriesService.getNamespaces(repositoryId)
+            .then((repositoryNamespaces) => {
+                $scope.repositoryNamespaces = repositoryNamespaces;
+            })
+            .catch((error) => {
+                const msg = getError(error);
+                toastr.error(msg, $translate.instant('error.getting.namespaces.for.repo'));
+            });
+    };
 
     const validateQueryWithCallback = (successCallback, query, queryType, params, all, oneOf) => {
         if (!query) {
@@ -473,8 +493,6 @@ function GraphConfigCtrl(
 
     const initForConfig = () => {
         getGraphConfigSamples();
-        checkAutocompleteStatus();
-        $scope.getNamespacesPromise = RDF4JRepositoriesRestService.getNamespaces($scope.getActiveRepository());
     }
 
     const getQueryEndpoint = () => {
@@ -616,7 +634,8 @@ function GraphConfigCtrl(
     // =========================
 
     const subscriptions = [];
-    subscriptions.push($scope.$on('autocompleteStatus', checkAutocompleteStatus));
+    subscriptions.push(WorkbenchContextService.onSelectedRepositoryIdUpdated(onSelectedRepositoryIdUpdated));
+    subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
     subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
     subscriptions.push($scope.$on('$destroy', unsubscribeListeners));
     subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, repositoryChangedHandler));

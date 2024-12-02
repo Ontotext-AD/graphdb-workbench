@@ -9,6 +9,7 @@ describe('Cluster legend', () => {
 
     beforeEach(() => {
         repositoryId = 'cluster-repo' + Date.now();
+        cy.setDefaultUserData();
         GlobalOperationsStatusesStub.stubNoOperationsResponse(repositoryId);
     });
 

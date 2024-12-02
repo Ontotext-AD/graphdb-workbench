@@ -4,6 +4,7 @@ import 'angular/core/services/similarity.service';
 import 'angular/core/services/connectors.service';
 import 'angular/core/services/ttyg.service';
 import 'angular/rest/repositories.rest.service';
+import 'angular/ttyg/controllers/agent-instructions-explain-modal.controller';
 import {REPOSITORY_PARAMS} from "../../models/repository/repository";
 import {TTYGEventName} from "../services/ttyg-context.service";
 import {AGENT_OPERATION, TTYG_ERROR_MSG_LENGTH} from "../services/constants";
@@ -12,7 +13,8 @@ angular
     .module('graphdb.framework.ttyg.controllers.agent-settings-modal', [
         'graphdb.framework.core.services.similarity',
         'graphdb.framework.core.services.connectors',
-        'graphdb.framework.rest.repositories.service'
+        'graphdb.framework.rest.repositories.service',
+        'graphdb.framework.ttyg.controllers.agent-instructions-explain-modal'
     ])
     .controller('AgentSettingsModalController', AgentSettingsModalController);
 
@@ -20,6 +22,7 @@ AgentSettingsModalController.$inject = [
     '$scope',
     '$uibModalInstance',
     'ModalService',
+    '$uibModal',
     'SimilarityService',
     'ConnectorsService',
     'RepositoriesRestService',
@@ -35,6 +38,7 @@ function AgentSettingsModalController(
     $scope,
     $uibModalInstance,
     ModalService,
+    $uibModal,
     SimilarityService,
     ConnectorsService,
     RepositoriesRestService,
@@ -59,7 +63,7 @@ function AgentSettingsModalController(
     $scope.AGENT_OPERATION = AGENT_OPERATION;
 
     /**
-     * The operation type for the modal. This can be one of <code>AGENT_OPEATION</code> constants.
+     * The operation type for the modal. This can be one of <code>AGENT_OPERATION</code> constants.
      */
     $scope.operation = dialogModel.operation;
 
@@ -237,6 +241,9 @@ function AgentSettingsModalController(
      */
     $scope.updateSimilaritySearchPanel = (clearIndexSelection = false) => {
         const similaritySearchExtractionMethod = $scope.agentFormModel.assistantExtractionMethods.getSimilarityExtractionMethod();
+        if (!similaritySearchExtractionMethod.selected) {
+            return;
+        }
         if (clearIndexSelection) {
             similaritySearchExtractionMethod.similarityIndex = null;
         }
@@ -250,6 +257,9 @@ function AgentSettingsModalController(
      */
     $scope.updateRetrievalConnectorPanel = (clearSelection = false) => {
         const retrievalExtractionExtractionMethod = $scope.agentFormModel.assistantExtractionMethods.getRetrievalExtractionMethod();
+        if (!retrievalExtractionExtractionMethod.selected) {
+            return;
+        }
         if (clearSelection) {
             retrievalExtractionExtractionMethod.retrievalConnectorInstance = null;
         }
@@ -258,8 +268,19 @@ function AgentSettingsModalController(
 
     $scope.checkIfFTSEnabled = () => {
         if (!$scope.agentFormModel.repositoryId) {
+            $scope.agentSettingsForm.$setValidity('FTSDisabled', false);
             return;
         }
+
+        const ftsSearchExtractionMethod = $scope.agentFormModel.assistantExtractionMethods.getFTSSearchExtractionMethod();
+        if (!ftsSearchExtractionMethod.selected) {
+            // clear the validation status if method is deselected.
+            $scope.agentSettingsForm.$setValidity('FTSDisabled', true);
+            return;
+        }
+
+        $scope.extractionMethodLoaderFlags[ExtractionMethod.FTS_SEARCH] = true;
+
         // pass a fake repository info object with only an id because we don't care for the location
         RepositoriesRestService.getRepositoryModel({id: $scope.agentFormModel.repositoryId}).then((repositoryModel) => {
             $scope.ftsEnabled = repositoryModel.getParamValue(REPOSITORY_PARAMS.enableFtsIndex);
@@ -269,6 +290,7 @@ function AgentSettingsModalController(
         })
         .finally(() => {
             $scope.extractionMethodLoaderFlags[ExtractionMethod.FTS_SEARCH] = false;
+            $scope.agentSettingsForm.$setValidity('FTSDisabled', $scope.ftsEnabled);
         });
     };
 
@@ -278,9 +300,7 @@ function AgentSettingsModalController(
      * able to validate if the FTS is enabled for that selected repository.
      */
     $scope.onRepositoryChange = () => {
-        $scope.checkIfFTSEnabled();
-        $scope.updateSimilaritySearchPanel(true);
-        $scope.updateRetrievalConnectorPanel(true);
+        refreshValidations(true, true);
     };
 
     /**
@@ -322,6 +342,36 @@ function AgentSettingsModalController(
         if ($scope.agentFormModel.instructions.systemInstruction === '') {
             $scope.showSystemInstructionWarning = false;
         }
+    };
+
+    /**
+     * Opens the agent instructions explain modal.
+     */
+    $scope.onExplainAgentSettings = () => {
+      const agentPayload = $scope.agentFormModel.toPayload();
+      TTYGService.explainAgentSettings(agentPayload)
+          .then((agentInstructionsExplain) => {
+            const options = {
+                templateUrl: 'js/angular/ttyg/templates/modal/agent-instructions-explain-modal.html',
+                controller: 'AgentInstructionsExplainModalController',
+                windowClass: 'agent-instructions-explain-modal',
+                backdrop: 'static',
+                resolve: {
+                    dialogModel: function () {
+                        return {
+                            agentInstructionsExplain
+                        };
+                    }
+                },
+                size: 'lg'
+            };
+            $uibModal.open(options).result
+                .then(() => {
+                    // Do nothing
+                });
+          }).catch((error) => {
+              toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
+          });
     };
 
     // =========================
@@ -370,8 +420,8 @@ function AgentSettingsModalController(
                 $uibModalInstance.close(updatedAgent);
                 toastr.success($translate.instant('ttyg.agent.messages.agent_save_successfully', {agentName: updatedAgent.name}));
             })
-            .catch(() => {
-                toastr.error($translate.instant('ttyg.agent.messages.agent_save_failure', {agentName: agentPayload.name}));
+            .catch((error) => {
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             })
             .finally(() => {
                 $scope.savingAgent = false;
@@ -390,8 +440,8 @@ function AgentSettingsModalController(
                 $uibModalInstance.close(updatedAgent);
                 toastr.success($translate.instant("ttyg.agent.messages.agent_save_successfully", {agentName: updatedAgent.name}));
             })
-            .catch(() => {
-                toastr.error($translate.instant("ttyg.agent.messages.agent_save_failure", {agentName: agentPayload.name}));
+            .catch((error) => {
+                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
             })
             .finally(() => {
                 $scope.savingAgent = false;
@@ -408,7 +458,6 @@ function AgentSettingsModalController(
     };
 
     const handleFTSExtractionMethodPanelToggle = (extractionMethod) => {
-        $scope.extractionMethodLoaderFlags[extractionMethod.method] = true;
         $scope.checkIfFTSEnabled();
     };
 
@@ -426,6 +475,11 @@ function AgentSettingsModalController(
     };
 
     const handleSimilaritySearchExtractionMethodPanelToggle = (extractionMethod) => {
+        if (!extractionMethod.selected) {
+            // clear the validation status if method is deselected.
+            $scope.agentSettingsForm.$setValidity('missingIndex', true);
+        }
+
         if (extractionMethod.expanded) {
             $scope.extractionMethodLoaderFlags[extractionMethod.method] = true;
             const selectedRepositoryInfo = getSelectedRepositoryInfo();
@@ -436,6 +490,7 @@ function AgentSettingsModalController(
                     updateSelectedSimilarityIndex($scope.similarityIndexes, extractionMethod);
                 })
                 .catch((error) => {
+                    $scope.agentSettingsForm.$setValidity('missingIndex', false);
                     logAndShowError(error, 'ttyg.agent.messages.error_similarity_indexes_loading');
                 })
                 .finally(() => {
@@ -463,6 +518,11 @@ function AgentSettingsModalController(
     };
 
     const handleRetrievalConnectorExtractionMethodPanelToggle = (extractionMethod) => {
+        if (!extractionMethod.selected) {
+            // clear the validation status if method is deselected.
+            $scope.agentSettingsForm.$setValidity('missingConnector', true);
+        }
+
         if (extractionMethod.expanded) {
             $scope.extractionMethodLoaderFlags[extractionMethod.method] = true;
             const selectedRepositoryInfo = getSelectedRepositoryInfo();
@@ -475,6 +535,7 @@ function AgentSettingsModalController(
 
                 })
                 .catch((error) => {
+                    $scope.agentSettingsForm.$setValidity('missingConnector', false);
                     logAndShowError(error, 'ttyg.agent.messages.error_retrieval_connectors_loading');
                 })
                 .finally(() => {
@@ -509,6 +570,32 @@ function AgentSettingsModalController(
         [ExtractionMethod.SIMILARITY]: (extractionMethod) => handleSimilaritySearchExtractionMethodPanelToggle(extractionMethod),
         [ExtractionMethod.RETRIEVAL]: (extractionMethod) => handleRetrievalConnectorExtractionMethodPanelToggle(extractionMethod)
     };
+
+    const refreshValidations = (clearIndexSelection = false, clearRetrievalConnectorSelection = false) => {
+        $scope.checkIfFTSEnabled();
+        $scope.updateSimilaritySearchPanel(clearIndexSelection);
+        $scope.updateRetrievalConnectorPanel(clearRetrievalConnectorSelection);
+    };
+
+    const onTabVisibilityChanged = () => {
+        if (!document.hidden) {
+            refreshValidations();
+        }
+    };
+
+    // =========================
+    // Subscriptions
+    // =========================
+
+    const removeAllSubscribers = () => {
+        document.removeEventListener("visibilitychange", onTabVisibilityChanged);
+    };
+
+    document.addEventListener("visibilitychange", onTabVisibilityChanged);
+
+    // Deregister the watcher when the scope/directive is destroyed
+    $scope.$on('$destroy', removeAllSubscribers);
+
 
     // =========================
     // Initialization

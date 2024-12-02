@@ -2,15 +2,16 @@ import {AdditionalExtractionMethodModel, AgentInstructionsModel, AgentListModel,
 import {AgentFormModel, AgentInstructionsFormModel, ExtractionMethodFormModel} from '../../models/ttyg/agent-form';
 import {NumericRangeModel, TextFieldModel} from '../../models/form-fields';
 import {md5HashGenerator} from '../../utils/hash-utils';
+import {AGENT_OPERATION} from "./constants";
 
 /**
  * Converts an agent model to an agent form model.
  * @param {AgentModel} agentModel
  * @param {AgentModel} defaultAgentModel
- * @param {boolean} isNew
+ * @param {string} operation
  * @return {AgentFormModel}
  */
-export const agentFormModelMapper = (agentModel, defaultAgentModel, isNew = false) => {
+export const agentFormModelMapper = (agentModel, defaultAgentModel, operation ) => {
     if (!agentModel) {
         return;
     }
@@ -22,8 +23,8 @@ export const agentFormModelMapper = (agentModel, defaultAgentModel, isNew = fals
     agentFormModel.temperature.value = agentModel.temperature !== undefined ? agentModel.temperature : defaultAgentModel.temperature;
     agentFormModel.topP.value = agentModel.topP !== undefined ? agentModel.topP : defaultAgentModel.topP;
     agentFormModel.seed = agentModel.seed || defaultAgentModel.seed;
-    agentFormModel.instructions = agentInstructionsFormMapper(agentModel.instructions || defaultAgentModel.instructions);
-    extractionMethodsFormMapper(agentFormModel, isNew, defaultAgentModel.assistantExtractionMethods, agentModel.assistantExtractionMethods);
+    agentFormModel.instructions = agentInstructionsFormMapper(agentModel.instructions, defaultAgentModel.instructions);
+    extractionMethodsFormMapper(agentFormModel, operation, defaultAgentModel.assistantExtractionMethods, agentModel.assistantExtractionMethods);
     // Select additional methods if they are present in the list returned from the backend (BE).
     agentFormModel.additionalExtractionMethods.additionalExtractionMethods.forEach((method) => {
         method.selected = agentModel.additionalExtractionMethods && agentModel.additionalExtractionMethods.some((agentMethod) => agentMethod.method === method.method);
@@ -32,39 +33,50 @@ export const agentFormModelMapper = (agentModel, defaultAgentModel, isNew = fals
 };
 
 /**
- * @param {AgentInstructionsModel} data
+ * @param {AgentInstructionsModel} currentAgentModelInstructions
+ * @param {AgentInstructionsModel} defaultInstructions
  * @return {AgentInstructionsFormModel}
  */
-const agentInstructionsFormMapper = (data) => {
-    if (!data) {
+const agentInstructionsFormMapper = (currentAgentModelInstructions, defaultInstructions) => {
+    if (!currentAgentModelInstructions && !defaultInstructions) {
         return;
     }
+    const systemInstruction = currentAgentModelInstructions && currentAgentModelInstructions.systemInstruction || defaultInstructions.systemInstruction;
+    const userInstruction = currentAgentModelInstructions && currentAgentModelInstructions.userInstruction || defaultInstructions.userInstruction;
     return new AgentInstructionsFormModel({
-        systemInstruction: data.systemInstruction,
-        userInstruction: data.userInstruction
+        systemInstruction: systemInstruction,
+        userInstruction: userInstruction,
+        defaultSystemInstruction: defaultInstructions.systemInstruction,
+        defaultUserInstruction: defaultInstructions.userInstruction
     });
 };
 
 /**
  * @param {AgentFormModel} agentFormModel
- * @param {boolean} isNew
+ * @param {string} operation
  * @param {ExtractionMethodModel[]} defaultData
  * @param {ExtractionMethodModel[]} data
  */
-const extractionMethodsFormMapper = (agentFormModel, isNew, defaultData, data = []) => {
+const extractionMethodsFormMapper = (agentFormModel, operation, defaultData, data = []) => {
     const defaultExtractionMethods = defaultData.filter((defaultExtractionMethod) => !data.some((agentMethod) => agentMethod.method === defaultExtractionMethod.method));
     const extractionMethods = [...data, ...defaultExtractionMethods];
     extractionMethods.forEach((extractionMethod) => {
+        const isMethodSelected = data.some((method) => method.method === extractionMethod.method);
+        // The sparqlOption is applicable only for the sparql_search method.
         let sparqlOption = '';
-        if (isNew) {
-            sparqlOption = '';
-        } else if (extractionMethod.sparqlQuery) {
-            sparqlOption = 'sparqlQuery';
-        } else if (extractionMethod.ontologyGraph) {
-            sparqlOption = 'ontologyGraph';
+        if (isMethodSelected && extractionMethod.method === 'sparql_search') {
+            if (AGENT_OPERATION.CREATE === operation) {
+                sparqlOption = '';
+            } else if (extractionMethod.sparqlQuery) {
+                sparqlOption = 'sparqlQuery';
+            } else if (extractionMethod.ontologyGraph) {
+                sparqlOption = 'ontologyGraph';
+            }
         }
+        // In edit and clone operations we have an existing agent instance, so we should show the selected methods from it.
+        const shouldShowSelectedMethods = operation === AGENT_OPERATION.EDIT || operation === AGENT_OPERATION.CLONE;
         const existingMethod = new ExtractionMethodFormModel({
-            selected: !isNew && data.some((method) => method.method === extractionMethod.method),
+            selected: shouldShowSelectedMethods && isMethodSelected,
             method: extractionMethod.method,
             sparqlOption: sparqlOption,
             ontologyGraph: extractionMethod.ontologyGraph,
@@ -106,19 +118,11 @@ export const agentListMapper = (data, localRepositoryIds) => {
         return new AgentListModel();
     }
     const agentModels = data
-        .map((agent) => agentModelMapper(agent))
-        .map((agent) => {
-            // If the agent is not in the list of local repositories, then set the repositoryId to null in order to show
-            // the agent is not assigned to any repository in this GDB instance.
-            if (!localRepositoryIds.includes(agent.repositoryId)) {
-                agent.repositoryId = null;
-            }
-            return agent;
-        });
+        .map((agent) => agentModelMapper(agent, localRepositoryIds));
     return new AgentListModel(agentModels);
 };
 
-export const agentModelMapper = (data) => {
+export const agentModelMapper = (data, localRepositoryIds) => {
     if (!data) {
         return;
     }
@@ -127,6 +131,8 @@ export const agentModelMapper = (data) => {
         id: data.id,
         name: data.name,
         repositoryId: data.repositoryId,
+        // Sets the isRepositoryDeleted flag based on whether the repository ID is not in the list of repositories.
+        isRepositoryDeleted: !localRepositoryIds.includes(data.repositoryId),
         model: data.model,
         temperature: data.temperature,
         topP: data.topP,

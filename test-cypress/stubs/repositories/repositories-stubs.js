@@ -4,11 +4,19 @@ import {RepositoriesStub} from "../repositories-stub";
 
 export class RepositoriesStubs extends Stubs {
     static stubRepositories(withDelay = 0, fixture = '/repositories/get-repositories.json') {
-        RepositoriesStubs.stubQueryResponse('/rest/repositories/all', fixture, 'get-all-repositories', withDelay);
+        RepositoriesStubs.stubGetQueryResponse('/rest/repositories/all', fixture, 'get-all-repositories', withDelay);
     }
 
     static stubLocations(withDelay = 0) {
-        RepositoriesStubs.stubQueryResponse('/rest/locations?filterClusterLocations=true', '/repositories/get-locations.json', 'backup-and-restore-response', withDelay);
+        RepositoriesStubs.stubQueryResponse('/rest/locations', '/repositories/get-locations.json', 'get-locations', withDelay);
+    }
+
+    static spyCreateLocation() {
+        cy.intercept('POST', '/rest/locations').as('createLocation');
+    }
+
+    static spyDeleteLocation() {
+        cy.intercept('DELETE', '/rest/locations?**').as('deleteLocation');
     }
 
     static stubEditOntopResponse(repositoryId) {

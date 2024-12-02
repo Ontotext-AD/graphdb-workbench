@@ -7,6 +7,7 @@ import {
 import {decodeHTML} from "../../../app";
 import './controllers/manage-remote-location-dialog.controller';
 import {RemoteLocationType} from "../models/repository/remote-location.model";
+import 'angular/rest/cluster.rest.service';
 
 export const getFileName = function (path) {
     let lastIdx = path.lastIndexOf('/');
@@ -130,7 +131,8 @@ const modules = [
     'graphdb.framework.utils.localstorageadapter',
     'toastr',
     'ngFileUpload',
-    'graphdb.framework.repositories.controllers.manage-remote-location-dialog'
+    'graphdb.framework.repositories.controllers.manage-remote-location-dialog',
+    'graphdb.framework.rest.cluster.service'
 ];
 
 angular.module('graphdb.framework.repositories.controllers', modules)
@@ -144,13 +146,14 @@ angular.module('graphdb.framework.repositories.controllers', modules)
     .controller('UploadRepositoryConfigCtrl', UploadRepositoryConfigCtrl);
 
 LocationsAndRepositoriesCtrl.$inject = ['$scope', '$rootScope', '$uibModal', 'toastr', '$repositories', 'ModalService', 'AuthTokenService', 'LocationsRestService',
-    'LocalStorageAdapter', '$interval', '$translate', '$q', 'GuidesService'];
+    'LocalStorageAdapter', '$interval', '$translate', '$q', 'GuidesService', 'ClusterRestService'];
 
 function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $repositories, ModalService, AuthTokenService, LocationsRestService,
-    LocalStorageAdapter, $interval, $translate, $q, GuidesService) {
+    LocalStorageAdapter, $interval, $translate, $q, GuidesService, ClusterRestService) {
 
     $scope.RemoteLocationType = RemoteLocationType;
     $scope.loader = true;
+    $scope.isInCluster = false;
     /**
      * @type {RemoteLocationModel[]}
      */
@@ -171,6 +174,19 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
             .finally(() => $scope.loader = false);
     }
 
+    function getAndSetClusterStatus() {
+        ClusterRestService.getNodeStatus().then(() => {
+            // If the endpoint returns a success response, that means we have a cluster
+            $scope.isInCluster = true;
+        }).catch((error) => {
+            if (error.status === 404) {
+                $scope.isInCluster = false;
+            } else {
+                console.error('An unexpected error occurred:', error);
+            }
+        });
+    }
+
     $scope.getLocalLocation = (local, locationType) => {
         const remoteLocationModel = $scope.locations.filter((location) => {
             let locationTypeCheck = true;
@@ -180,6 +196,10 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
             return locationTypeCheck && location.local === local;
         });
         return remoteLocationModel;
+    };
+
+    $scope.hasAnyRemoteLocation = (local, locationTypes) => {
+        return locationTypes.some((locationType) => $scope.getLocalLocation(local, locationType).length > 0);
     };
 
     $scope.hasActiveLocation = function () {
@@ -392,6 +412,7 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
     };
 
     getLocations();
+    getAndSetClusterStatus();
     const timer = $interval(function () {
         if (GuidesService.isActive() && !$rootScope.guidePaused) {
             // Don't refresh list while a guide is active

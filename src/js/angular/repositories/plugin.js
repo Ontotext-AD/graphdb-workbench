@@ -7,7 +7,8 @@ PluginRegistry.add('route', [
         'controller': 'LocationsAndRepositoriesCtrl',
         'templateUrl': 'pages/repositories.html',
         'title': 'menu.repositories.label',
-        'helpInfo': 'view.repositories.helpInfo'
+        'helpInfo': 'view.repositories.helpInfo',
+        'documentationUrl': 'creating-a-repository.html'
     }, {
         'url': '/repository/create',
         'module': 'graphdb.framework.repositories',

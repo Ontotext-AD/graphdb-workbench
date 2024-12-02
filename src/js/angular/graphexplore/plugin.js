@@ -8,7 +8,9 @@ PluginRegistry.add('route', [
         'templateUrl': 'pages/rdfClassHierarchyInfo.html',
         'title': 'view.class.hierarchy.title',
         'reloadOnSearch': false,
-        'helpInfo': 'view.class.hierarchy.helpInfo'
+        'helpInfo': 'view.class.hierarchy.helpInfo',
+        'documentationUrl': 'explore-data-and-class-relationships.html#class-hierarchy'
+
     }, {
         'url': '/domain-range-graph',
         'module': 'graphdb.framework.graphexplore',
@@ -26,7 +28,8 @@ PluginRegistry.add('route', [
         'controller': 'DependenciesChordCtrl',
         'templateUrl': 'pages/dependencies.html',
         'title': 'view.class.relationships.title',
-        'helpInfo': 'view.class.relationships.helpInfo'
+        'helpInfo': 'view.class.relationships.helpInfo',
+        'documentationUrl': 'explore-data-and-class-relationships.html#class-relationships'
     }, {
         'url': '/graphs-visualizations',
         'module': 'graphdb.framework.graphexplore',
@@ -36,7 +39,8 @@ PluginRegistry.add('route', [
         'templateUrl': 'pages/graphs-visualizations.html',
         'title': 'visual.graph.label',
         'reloadOnSearch': false,
-        'helpInfo': 'view.visual.graph.helpInfo'
+        'helpInfo': 'view.visual.graph.helpInfo',
+        'documentationUrl': 'visualize-and-explore.html#explore-resources-through-the-easy-graph'
     }, {
         'url': '/graphs-visualizations/config/save/:configName?',
         'module': 'graphdb.framework.graphexplore',

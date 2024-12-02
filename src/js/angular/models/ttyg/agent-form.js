@@ -260,6 +260,10 @@ export class ExtractionMethodsFormModel {
     getRetrievalExtractionMethod() {
         return this.getExtractionMethod(ExtractionMethod.RETRIEVAL);
     }
+
+    getFTSSearchExtractionMethod() {
+        return this.getExtractionMethod(ExtractionMethod.FTS_SEARCH);
+    }
 }
 
 export class ExtractionMethodFormModel {
@@ -528,7 +532,7 @@ export class AgentInstructionsFormModel {
          * @type {string}
          * @private
          */
-        this._systemInstructionCopy = data.systemInstruction;
+        this._systemInstructionCopy = data.defaultSystemInstruction;
         /**
          * @type {string}
          * @private
@@ -539,7 +543,7 @@ export class AgentInstructionsFormModel {
          * @type {string}
          * @private
          */
-        this._userInstructionCopy = data.userInstruction;
+        this._userInstructionCopy = data.defaultUserInstruction;
     }
 
     toPayload() {

@@ -1,29 +1,25 @@
 import {SparqlEditorSteps} from "../../steps/sparql-editor-steps";
 import {YasqeSteps} from "../../steps/yasgui/yasqe-steps";
+import {SecurityStubs} from "../../stubs/security-stubs";
+import {VisualGraphSteps} from "../../steps/visual-graph-steps";
 
 describe('My Settings', () => {
 
     let repositoryId;
-    let testResultCountQuery = "select * where { \n" +
+    const testResultCountQuery = "select * where { \n" +
         "\t?s ?p ?o .\n" +
         "} limit 1001";
     const FILE_TO_IMPORT = 'wine.rdf';
 
-    before(() => {
-        repositoryId = 'repo' + Date.now();
+    beforeEach(() => {
+        repositoryId = 'my-settings-' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
-    });
-
-    beforeEach(() => {
         cy.setDefaultUserData();
         visitSettingsView();
     });
 
-    after(() => {
-        // Verify that the default user settings are returned
-        cy.clearLocalStorage();
-        cy.setDefaultUserData();
+    afterEach(() => {
         cy.deleteRepository(repositoryId);
     });
 
@@ -82,6 +78,7 @@ describe('My Settings', () => {
     });
 
     it('should change settings for admin and verify changes are reflected in SPARQL editor', () => {
+        SecurityStubs.resetGetAdminUserStub();
         cy.get('.sparql-editor-settings').should('be.visible');
 
         //turn off inference, sameAs and count total results
@@ -146,13 +143,12 @@ describe('My Settings', () => {
         cy.get('#schema-on').find('.switch:checkbox').should('be.checked');
         cy.enableAutocomplete(repositoryId);
         //Verify that schema statements ON is reflected in Visual graph
-        visitVisualGraphView();
-        cy.searchEasyVisualGraph(DRY_GRAPH);
+        VisualGraphSteps.openDryWineUri();
         cy.get('.visual-graph-settings-btn').scrollIntoView().click();
         cy.get('.rdf-info-side-panel .filter-sidepanel').should('be.visible');
         cy.get('.include-schema-statements').should('be.visible').and('be.checked');
         saveGraphSettings()
-            .then(() => cy.get('.predicate').should('contain','type'));
+            .then(() => cy.get('.predicate').should('contain', 'type'));
 
         //Set schema statements OFF in my settings
         visitSettingsView();
@@ -170,9 +166,7 @@ describe('My Settings', () => {
             });
 
         //Verify that schema statements OFF is reflected in Visual graph
-        visitVisualGraphView();
-
-        cy.searchEasyVisualGraph(DRY_GRAPH);
+        VisualGraphSteps.openDryWineUri();
 
         cy.get('.visual-graph-settings-btn').click();
         cy.get('.rdf-info-side-panel .filter-sidepanel').should('be.visible');
@@ -200,8 +194,7 @@ describe('My Settings', () => {
     });
 
     it('Saving administrator credentials with checked unset password should show modal window to warn user about' +
-        ' unsetting the' +
-        ' password', () => {
+        ' unsetting the password', () => {
         // User role is administrator
         cy.get('#noPassword:checkbox').check()
             .then(() => {
@@ -212,9 +205,8 @@ describe('My Settings', () => {
             .then(() => {
                 cy.get('.modal-dialog').find('.lead').contains('If you unset the password and then enable security,' +
                     ' this administrator will not be able to log into GraphDB through the workbench.');
-    }
-    )
-});
+            });
+    });
 
     it('sameAs button should be disabled if inference is turned off', () => {
         clickLabelBtn('#inference-on')

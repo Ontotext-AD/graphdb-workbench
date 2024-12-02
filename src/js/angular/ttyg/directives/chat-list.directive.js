@@ -1,9 +1,7 @@
 import 'angular/core/directives/inline-editable-text/inline-editable-text.directive';
-import {decodeHTML} from "../../../../app";
 import {TTYGEventName} from "../services/ttyg-context.service";
-
-import {ChatModel} from "../../models/ttyg/chats";
-import {md5HashGenerator} from "../../utils/hash-utils";
+import {getHumanReadableTimestamp} from "../services/ttyg.utils";
+import {decodeHTML} from "../../../../app";
 
 const modules = [
     'graphdb.framework.core.directives.inline-editable-text'
@@ -19,7 +17,7 @@ function ChatListComponent(TTYGContextService, ModalService, $translate, $filter
     return {
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/chat-list.html',
-        link: ($scope, element, attrs) => {
+        link: ($scope) => {
 
             // =========================
             // Public variables
@@ -96,29 +94,13 @@ function ChatListComponent(TTYGContextService, ModalService, $translate, $filter
                 $scope.renamedChat = undefined;
             };
 
-            $scope.getHumanReadableTimestamp = (timestamp) => {
-                const date = new Date(timestamp);
-                const today = new Date();
-
-                // Get start of today
-                const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-
-                // Get start of yesterday
-                const yesterdayStart = new Date(todayStart);
-                yesterdayStart.setDate(todayStart.getDate() - 1);
-
-                // Get start of the timestamp's day
-                const dateStart = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-
-                if (dateStart.getTime() === todayStart.getTime()) {
-                    return $translate.instant('common.dates.today');
-                } else if (dateStart.getTime() === yesterdayStart.getTime()) {
-                    return $translate.instant('common.dates.yesterday');
-                } else {
-                    // ISO format is the least ambiguous
-                    return $filter('date')(date, 'yyyy-MM-dd');
-                }
+            $scope.getHumanReadableChatGroupTimestamp = (timestamp) => {
+                return getHumanReadableTimestamp($translate, $filter, timestamp);
             };
+
+            // =========================
+            // Private functions
+            // =========================
 
             /**
              * Handles the change of the selected chat.

@@ -1,3 +1,8 @@
+import {NamespaceSteps} from "../../steps/setup/namespace-steps";
+import {ApplicationSteps} from "../../steps/application-steps";
+import {NamespaceStubs} from "../../stubs/namespace-stubs";
+import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
+
 describe('Namespaces', () => {
 
     let repositoryId;
@@ -13,67 +18,55 @@ describe('Namespaces', () => {
                 response.body.results.bindings.forEach(function (e) {
                     DEFAULT_NAMESPACES[e.prefix.value] = e.namespace.value;
                 });
-            }).then(() => {
+            }).then(() => {});
 
-        });
-
-        cy.visit('/namespaces');
+        NamespaceSteps.visit();
         cy.window();
 
-        waitUntilPageIsLoaded();
+        NamespaceSteps.waitUntilPageIsLoaded();
     });
 
     afterEach(() => {
         cy.deleteRepository(repositoryId);
     });
 
-    function waitUntilPageIsLoaded() {
-        // Workbench loading screen should not be visible
-        cy.get('.ot-splash').should('not.be.visible');
-
-        // No active loader
-        cy.get('.ot-loader').should('not.be.visible');
-
-        getAddNamespaceForm().should('be.visible');
-    }
-
     it('verify initial state', () => {
-        getNoNamespacesAlert().should('not.be.visible');
+        NamespaceSteps.getNoNamespacesAlert().should('not.be.visible');
 
         // Should be able to insert new prefix
-        getNamespacePrefixField().should('be.visible').and('not.be.disabled');
-        getNamespaceValueField().should('be.visible').and('not.be.disabled');
-        getAddNamespaceButton().should('be.visible').and('not.be.disabled');
+        NamespaceSteps.getNamespacePrefixField().should('be.visible').and('not.be.disabled');
+        NamespaceSteps.getNamespaceValueField().should('be.visible').and('not.be.disabled');
+        NamespaceSteps.getAddNamespaceButton().should('be.visible').and('not.be.disabled');
 
         // Should render a table with some default namespaces
-        getNamespacesTable().should('be.visible');
-        getRefreshedTableNamespaces();
-        getNamespaces().should('have.length', getDefaultNamespacesLength());
+        NamespaceSteps.getNamespacesTable().should('be.visible');
+        NamespaceSteps.getRefreshedTableNamespaces();
+        NamespaceSteps.getNamespaces().should('have.length', NamespaceSteps.getDefaultNamespacesLength(DEFAULT_NAMESPACES));
 
         // Should provide pagination options
-        getNamespacesPerPageMenu().within(() => {
+        NamespaceSteps.getNamespacesPerPageMenu().within(() => {
             cy.get('.dropdown-toggle')
                 .should('contain', 'All')
                 .click();
             cy.get('.page-size-option')
-                .should('have.length', getPagingCount())
+                .should('have.length', NamespaceSteps.getPagingCount(DEFAULT_NAMESPACES))
                 .and('contain', 'All');
             // Close the menu to avoid overlapping other elements
             cy.get('.dropdown-toggle').click();
         });
 
         // Should show summary of results
-        getNamespacesHeaderPaginationInfo()
+        NamespaceSteps.getNamespacesHeaderPaginationInfo()
             .should('be.visible')
-            .and('contain', `Showing 1 - ${getDefaultNamespacesLength()} of ${getDefaultNamespacesLength()} results`);
+            .and('contain', `Showing 1 - ${NamespaceSteps.getDefaultNamespacesLength(DEFAULT_NAMESPACES)} of ${NamespaceSteps.getDefaultNamespacesLength(DEFAULT_NAMESPACES)} results`);
 
         // Both header & footer pagination must be the same
-        getNamespacesHeaderPagination()
+        NamespaceSteps.getNamespacesHeaderPagination()
             .should('be.visible')
             .find('li')
             // Single page + First & Last buttons
             .should('have.length', 3);
-        getNamespacesPagination()
+        NamespaceSteps.getNamespacesPagination()
             .should('be.visible')
             .find('li')
             // Single page + First & Last buttons
@@ -91,7 +84,7 @@ describe('Namespaces', () => {
             }
             return 0;
         });
-        getNamespaces().each(($row, $index) => {
+        NamespaceSteps.getNamespaces().each(($row, $index) => {
             const expectedPrefix = defaultPrefixes[$index];
             const expectedNamespace = DEFAULT_NAMESPACES[expectedPrefix];
 
@@ -120,293 +113,168 @@ describe('Namespaces', () => {
         });
     });
 
-    it('should filter existing namespaces', () => {
-        getNamespacesFilterField()
+    it('Should filter existing namespaces', () => {
+        NamespaceSteps.getNamespacesFilterField()
             .should('have.value', '')
             .type('owl')
             .should('have.value', 'owl');
-        getNamespaces()
+        NamespaceSteps.getNamespaces()
             .should('contain', DEFAULT_NAMESPACES['owl']);
         cy.visit('namespaces');
-        const updatedCount = getDefaultNamespacesLength();
-        getRefreshedTableNamespaces();
-        getNamespacesHeaderPaginationInfo()
+        const updatedCount = NamespaceSteps.getDefaultNamespacesLength(DEFAULT_NAMESPACES);
+        NamespaceSteps.getRefreshedTableNamespaces();
+        NamespaceSteps.getNamespacesHeaderPaginationInfo()
             .should('be.visible')
             .and('contain', `Showing 1 - ${updatedCount} of ${updatedCount} results`);
 
-        getNamespacesFilterField()
+        NamespaceSteps.getNamespacesFilterField()
             .clear()
             .type('missing_prefix');
-        getNamespacesTable().should('not.be.visible');
-        getNoNamespacesMatchAlert().should('be.visible');
+        NamespaceSteps.getNamespacesTable().should('not.be.visible');
+        NamespaceSteps.getNoNamespacesMatchAlert().should('be.visible');
     });
 
-    it('should allow to add new namespace', () => {
+    it('Should not be able to create a namespace without values', () => {
+        NamespaceSteps.addNamespace();
+        ApplicationSteps.getErrorNotifications().should('be.visible')
+            .and('contain', 'Please provide namespace.');
+        NamespaceSteps.getNamespaceValueField().should('have.class', 'ng-invalid');
+        const namespaceCount = NamespaceSteps.getDefaultNamespacesLength(DEFAULT_NAMESPACES);
+        NamespaceSteps.getNamespacesHeaderPaginationInfo()
+            .should('contain', `Showing 1 - 10 of ${namespaceCount} results`);
+    });
+
+    it('Should allow to add new namespace', () => {
         const namespacePrefix = 'wine';
         const namespaceUri = 'http://example.com/wine#';
 
-        // Try without providing values
-        getAddNamespaceButton().click();
-        getToast()
-            .find('.toast-error')
-            .should('be.visible')
-            .and('contain', 'Please provide namespace.');
-
         // Enter correct values
-        getNamespacePrefixField()
-            .type(namespacePrefix)
-            .should('have.value', namespacePrefix);
-        getNamespaceValueField()
-            .type(namespaceUri)
-            .should('have.value', namespaceUri);
-        getAddNamespaceButton().click();
+        NamespaceSteps.typeNamespacePrefix(namespacePrefix);
+        NamespaceSteps.typeNamespaceURI(namespaceUri);
+        NamespaceSteps.addNamespace();
 
-        let updatedCount = getDefaultNamespacesLength() + 1;
+        const updatedCount = NamespaceSteps.getDefaultNamespacesLength(DEFAULT_NAMESPACES) + 1;
         // Verify results table is refreshed
-        getRefreshedTableNamespaces();
-        getNamespaces().should('have.length', updatedCount);
-        getNamespacesHeaderPaginationInfo()
+        NamespaceSteps.getRefreshedTableNamespaces();
+        NamespaceSteps.getNamespaces().should('have.length', updatedCount);
+        NamespaceSteps.getNamespacesHeaderPaginationInfo()
             .should('contain', `Showing 1 - ${updatedCount} of ${updatedCount} results`);
-        getNamespace(namespacePrefix)
+        NamespaceSteps.getNamespace(namespacePrefix)
             .should('be.visible')
             .find('.namespaceURI')
             .should('contain', namespaceUri);
     });
 
-    it('should allow to overwrite existing namespace', () => {
+    it('Should not be able to create namespace when there is server error', () => {
         const namespacePrefix = 'wine';
         const namespaceUri = 'http://example.com/wine#';
         const namespaceUriModified = 'http://example.com/wine_example#';
 
-        typeNamespacePrefix(namespacePrefix);
-        typeNamespaceURI(namespaceUri);
-        addNamespace();
+        NamespaceSteps.typeNamespacePrefix(namespacePrefix);
+        NamespaceSteps.typeNamespaceURI(namespaceUri);
+        NamespaceSteps.addNamespace();
+
+        NamespaceStubs.stubErrorOnNamespaceUpdate(repositoryId);
+        // Modify the URI & confirm overwrite
+        NamespaceSteps.typeNamespacePrefix(namespacePrefix);
+        NamespaceSteps.typeNamespaceURI(namespaceUriModified);
+        NamespaceSteps.addNamespace();
+        ModalDialogSteps.getDialog().should('be.visible');
+        ModalDialogSteps.confirm();
+
+        // Then I expect the dialog to be closed
+        ModalDialogSteps.getDialog().should('not.exist');
+        // And I expect the error notification to be shown
+        ApplicationSteps.getErrorNotifications().should('be.visible')
+            .and('contain', 'Internal Server Error');
+        // And the prefix and namespace fields should not be cleared to allow user to correct the error
+        NamespaceSteps.getNamespacePrefixField().should('have.value', namespacePrefix);
+        NamespaceSteps.getNamespaceValueField().should('have.value', namespaceUriModified);
+    });
+
+    it('Should allow to overwrite existing namespace', () => {
+        const namespacePrefix = 'wine';
+        const namespaceUri = 'http://example.com/wine#';
+        const namespaceUriModified = 'http://example.com/wine_example#';
+
+        NamespaceSteps.typeNamespacePrefix(namespacePrefix);
+        NamespaceSteps.typeNamespaceURI(namespaceUri);
+        NamespaceSteps.addNamespace();
 
         // Modify the URI & confirm overwrite
-        typeNamespacePrefix(namespacePrefix);
-        typeNamespaceURI(namespaceUriModified);
-        addNamespace();
-        confirmModal();
+        NamespaceSteps.typeNamespacePrefix(namespacePrefix);
+        NamespaceSteps.typeNamespaceURI(namespaceUriModified);
+        NamespaceSteps.addNamespace();
+        ModalDialogSteps.getDialog().should('be.visible');
+        ModalDialogSteps.confirm();
 
         // Should have not created new record, should update the existing
-        getRefreshedTableNamespaces();
-        getNamespaces()
-            .should('have.length', getDefaultNamespacesLength() + 1)
+        NamespaceSteps.getRefreshedTableNamespaces();
+        NamespaceSteps.getNamespaces()
+            .should('have.length', NamespaceSteps.getDefaultNamespacesLength(DEFAULT_NAMESPACES) + 1)
             // This assert here ensures the table will contain the modified namespace before actually checking it because the table is
             // re-rendered and any following checks would hit detached DOM elements
             .and('contain', namespaceUriModified);
-        getNamespace(namespacePrefix)
+        NamespaceSteps.getNamespace(namespacePrefix)
             .should('be.visible')
             .find('.namespaceURI')
             .should('contain', namespaceUriModified);
     });
 
-    it('should allow to delete existing namespaces', () => {
-        // Delete single namespace from it's actions
-        getRefreshedTableNamespaces();
-        deleteNamespace('xsd');
-        confirmModal();
-        cy.hideToastContainer();
-
-        getRefreshedTableNamespaces();
-        let updatedCount = getDefaultNamespacesLength() - 1;
-        // Verify results table is refreshed
-        getNamespaces().should('have.length', updatedCount);
-        getNamespacesHeaderPaginationInfo()
-            .should('contain', `Showing 1 - ${updatedCount} of ${updatedCount} results`);
-
-        selectNamespace('rdf');
-        selectNamespace('rdfs');
-        getDeleteNamespacesButton().click();
-        confirmModal();
-        cy.hideToastContainer();
-
-        getRefreshedTableNamespaces();
-        updatedCount = updatedCount - 2;
-        // Verify results table is refreshed
-        getNamespaces().should('have.length', updatedCount);
-        getNamespacesHeaderPaginationInfo()
-            .should('contain', `Showing 1 - ${updatedCount} of ${updatedCount} results`);
-
-        getSelectAllNamespacesCheckbox().click();
-        getDeleteNamespacesButton().click();
-        confirmModal();
-        cy.hideToastContainer();
-
-        getNamespacesTable().should('not.be.visible');
-        getNoNamespacesAlert().should('be.visible');
+    it('Should not be able to edit namespace when there is server error', () => {
+        // Given I have opened the namespaces page
+        // When I try to edit a namespace but there is a server error
+        NamespaceStubs.stubErrorOnNamespaceUpdate(repositoryId);
+        // const prefix = NamespaceSteps.getNamespacePrefix(0);
+        // const namespace = NamespaceSteps.getNamespaceValue(0);
+        NamespaceSteps.editNamespaceByIndex(0);
+        NamespaceSteps.typeInlineNamespacePrefix(0, 'test1');
+        NamespaceSteps.typeInlineNamespaceValue(0, 'http://test.com');
+        NamespaceSteps.saveInlineNamespace(0);
+        // Then I expect the error notification to be shown
+        ApplicationSteps.getErrorNotifications().should('be.visible')
+            .and('contain', 'Internal Server Error');
+        // And the prefix and namespace fields should not be cleared to allow user to correct the error
+        NamespaceSteps.getInlineNamespacePrefix(0).should('have.value', 'test1');
+        NamespaceSteps.getInlineNamespaceValue(0).should('have.value', 'http://test.com');
     });
 
-    // ------ Generic ------
+    it('Should allow to delete existing namespaces', () => {
+        // Delete single namespace from it's actions
+        NamespaceSteps.getRefreshedTableNamespaces();
+        NamespaceSteps.deleteNamespace('xsd');
+        ModalDialogSteps.getDialog().should('be.visible');
+        ModalDialogSteps.confirm();
+        cy.hideToastContainer();
 
-    function getNamespacesPage() {
-        return cy.get('#wb-namespaces');
-    }
+        NamespaceSteps.getRefreshedTableNamespaces();
+        let updatedCount = NamespaceSteps.getDefaultNamespacesLength(DEFAULT_NAMESPACES) - 1;
+        // Verify results table is refreshed
+        NamespaceSteps.getNamespaces().should('have.length', updatedCount);
+        NamespaceSteps.getNamespacesHeaderPaginationInfo()
+            .should('contain', `Showing 1 - ${updatedCount} of ${updatedCount} results`);
 
-    function getNoNamespacesAlert() {
-        return getNamespacesPage().find('.no-namespaces-alert');
-    }
+        NamespaceSteps.selectNamespace('rdf');
+        NamespaceSteps.selectNamespace('rdfs');
+        NamespaceSteps.getDeleteNamespacesButton().click();
+        ModalDialogSteps.getDialog().should('be.visible');
+        ModalDialogSteps.confirm();
+        cy.hideToastContainer();
 
-    function getNoNamespacesMatchAlert() {
-        return getNamespacesPage().find('.no-namespaces-match-alert');
-    }
+        NamespaceSteps.getRefreshedTableNamespaces();
+        updatedCount = updatedCount - 2;
+        // Verify results table is refreshed
+        NamespaceSteps.getNamespaces().should('have.length', updatedCount);
+        NamespaceSteps.getNamespacesHeaderPaginationInfo()
+            .should('contain', `Showing 1 - ${updatedCount} of ${updatedCount} results`);
 
-    function getToast() {
-        return cy.get('#toast-container');
-    }
+        NamespaceSteps.getSelectAllNamespacesCheckbox().click();
+        NamespaceSteps.getDeleteNamespacesButton().click();
+        ModalDialogSteps.getDialog().should('be.visible');
+        ModalDialogSteps.confirm();
+        cy.hideToastContainer();
 
-    // TODO: create cy.confirmModal() command ?
-    function confirmModal() {
-        cy.get('.modal')
-            .should('be.visible')
-            .and('not.have.class', 'ng-animate')
-            .find('.modal-footer .btn-primary')
-            .click();
-    }
-
-    // ------ Add namespaces ------
-
-    function getAddNamespaceForm() {
-        return getNamespacesPage().find('.add-namespace-form');
-    }
-
-    function getNamespacePrefixField() {
-        return getAddNamespaceForm().find('#wb-namespaces-prefix');
-    }
-
-    function typeNamespacePrefix(prefix) {
-        getNamespacePrefixField().type(prefix);
-    }
-
-    function getNamespaceValueField() {
-        return getAddNamespaceForm().find('#wb-namespaces-namespace');
-    }
-
-    function typeNamespaceURI(uri) {
-        getNamespaceValueField().type(uri);
-    }
-
-    function getAddNamespaceButton() {
-        return getAddNamespaceForm().find('#wb-namespaces-addNamespace');
-    }
-
-    function addNamespace() {
-        getAddNamespaceButton().click();
-    }
-
-    // ------ Namespaces per page ------
-
-    function getNamespacesPerPageMenu() {
-        return cy.get('.namespaces-per-page-menu');
-    }
-
-    // ------ Namespaces results header ------
-
-    function getNamespacesResultHeader() {
-        return cy.get('.namespaces-result-header');
-    }
-
-    function getNamespacesFilterField() {
-        return getNamespacesResultHeader().find('.namespaces-filter');
-    }
-
-    function getNamespacesHeaderPagination() {
-        return getNamespacesResultHeader().find('.namespaces-header-pagination .pagination');
-    }
-
-    function getNamespacesHeaderPaginationInfo() {
-        return getNamespacesResultHeader().find('.showing-info-namespaces');
-    }
-
-    // ------ Namespaces results ------
-
-    function getNamespacesTable() {
-        return cy.get('#wb-namespaces-namespaceInNamespaces');
-    }
-
-    function getSelectAllNamespacesCheckbox() {
-        return getNamespacesTable().find('.select-all-namespaces');
-    }
-
-    function getDeleteNamespacesButton() {
-        return getNamespacesTable().get('[data-cy="delete-several-prefixes"]');
-    }
-
-    function getNamespaces() {
-        return getNamespacesTable().find('.namespace');
-    }
-
-    function getRefreshedTableNamespaces() {
-        cy.get('[data-cy="namespaces-per-page-menu"]').click()
-            .get('[data-cy="all-label"]').click();
-    }
-
-    function getNamespace(prefix) {
-        return getNamespacesTable().find('.namespace')
-            .should('be.visible')
-            .find('.namespace-prefix')
-            .should('be.visible')
-            .contains(prefix)
-            .should('be.visible')
-            .parentsUntil('tbody')
-            .last();
-    }
-
-    function getSelectNamespaceCheckbox(prefix) {
-        return getNamespace(prefix)
-            .should('be.visible')
-            .find('.select-namespace');
-    }
-
-    function selectNamespace(prefix) {
-        getSelectNamespaceCheckbox(prefix).click();
-    }
-
-    function getEditNamespaceButton(prefix) {
-        return getNamespace(prefix)
-            .should('be.visible')
-            .find('.edit-namespace-btn');
-    }
-
-    // TODO: Not used yet
-    function editNamespace(prefix) {
-        getEditNamespaceButton(prefix).click();
-    }
-
-    function getDeleteNamespaceButton(prefix) {
-        return getNamespace(prefix)
-            .should('be.visible')
-            .get(`[data-cy="delete-pref_${prefix}"]`)
-            .should('be.visible');
-    }
-
-    function deleteNamespace(prefix) {
-        getDeleteNamespaceButton(prefix).should('be.visible').click();
-    }
-
-    // ------ Namespaces pagination ------
-
-    function getNamespacesPagination() {
-        return getNamespacesPage().find('.namespaces-pagination .pagination');
-    }
-
-    function getDefaultNamespacesLength() {
-        return Object.keys(DEFAULT_NAMESPACES).length;
-    }
-
-    function getPagingCount() {
-        const count = getDefaultNamespacesLength();
-        if (count <= 10) {
-            return 1;
-        }
-        if (count <= 20) {
-            return 2;
-        }
-        if (count <= 50) {
-            return 3;
-        }
-        if (count <= 100) {
-            return 4;
-        } else return 5;
-    }
+        NamespaceSteps.getNamespacesTable().should('not.be.visible');
+        NamespaceSteps.getNoNamespacesAlert().should('be.visible');
+    });
 });

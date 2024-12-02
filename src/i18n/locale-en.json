@@ -3,15 +3,11 @@
         "buttons": {
             "delete_cluster": "Delete cluster",
             "delete_cluster_tooltip": "Delete existing cluster",
-            "add_nodes_btn": "Add nodes",
-            "add_nodes_btn_tooltip": "Add nodes to existing cluster",
-            "replace_nodes_btn": "Replace nodes",
-            "replace_nodes_btn_tooltip": "Replace nodes in cluster",
-            "remove_nodes_btn": "Remove nodes",
-            "remove_nodes_btn_tooltip": "Remove nodes from existing cluster",
-            "edit_cluster": "Edit configuration",
-            "edit_cluster_tooltip": "Edit cluster configuration",
-            "show_cluster_settings_tooltip": "Show cluster configuration"
+            "edit_cluster": "Edit properties",
+            "edit_cluster_tooltip": "Edit cluster properties",
+            "show_cluster_settings_tooltip": "Show cluster configuration",
+            "update_nodes_group_btn": "Edit cluster",
+            "update_nodes_group_btn_tooltip": "Edit cluster nodes"
         },
         "cluster_graphical_view": {
             "no_cluster_configured": "No cluster is configured",
@@ -62,6 +58,7 @@
             }
         },
         "cluster_configuration_properties": {
+            "label": "Properties",
             "election_min_timeout": "Election minimum timeout",
             "election_min_timeout_tooltip": "Election min timeout concerns the minimum wait time in milliseconds for a heartbeat from a leader. Should the time pass without receiving a heartbeat message from a leader. The follower will become a candidate and request votes from other nodes.",
             "election_range_timeout": "Election range timeout",
@@ -73,23 +70,69 @@
             "verification_timeout": "Verification timeout",
             "verification_timeout_tooltip": "Verification timeout concerns the amount of time a follower node would wait until attempting to verify last committed entry when the first verification is unsuccessful.",
             "transaction_log_maximum_size_gb": "Transaction log maximum size GB",
-            "transaction_log_maximum_size_gb_tooltip": "Maximum size of the transaction log in GBs that will trigger an automatic truncation of the transaction log if it becomes bigger. The minimum transaction log size is 1 GB. Negative numbers will disable the automatic transaction log truncation."
+            "transaction_log_maximum_size_gb_tooltip": "Maximum size of the transaction log in GBs that will trigger an automatic truncation of the transaction log if it becomes bigger. The minimum transaction log size is 1 GB. Negative numbers will disable the automatic transaction log truncation.",
+            "batch_update_interval": "Batch update interval",
+            "batch_update_interval_tooltip": "Specifies the time interval (in milliseconds) at which updates are batched and synchronized between the primary and secondary clusters."
+        },
+        "cluster_configuration_nodes": {
+            "label": "Nodes",
+            "local": "Local"
+        },
+        "cluster_configuration_multi_region": {
+            "label": "Multi-region",
+            "primary_cluster": "Primary cluster",
+            "secondary_cluster": "Secondary cluster",
+            "primary_leader": "Primary leader: {{primaryLeader}}",
+            "create_tag": "Add identifier tag",
+            "create_tag_tooltip": "Add identifier tag to use with this cluster",
+            "enable_secondary_mode": "Enable secondary mode",
+            "enable_secondary_mode_tooltip": "Enable this cluster in secondary mode",
+            "delete_tag_tooltip": "Delete tag",
+            "cancel_tooltip": "Cancel",
+            "disable_secondary_mode": "Disable secondary mode",
+            "disable_secondary_mode_tooltip": "Disable cluster's secondary mode",
+            "created_tag": "Successfully added to cluster primary identifier tag: {{tag}}",
+            "deleted_tag": "Removed primary identifier tag '{{tag}}' from cluster",
+            "secondary_enabled": "Successfully enabled secondary mode",
+            "disabled_secondary_mode": "Secondary mode is disabled",
+            "secondary_cluster_settings": "Secondary cluster settings",
+            "column": {
+                "index": "",
+                "tag": "Identifier tag",
+                "tag_index": "Index"
+            },
+            "confirm": {
+                "delete": "Delete identifier tag {{tag}}",
+                "warning": "Deleting identifier tag would stop any secondary cluster identified with it from pulling updates.",
+                "disable_secondary_mode": "Disable secondary mode",
+                "disable_secondary_mode_warning": "By disabling secondary mode this cluster would stop being a read-only replica.",
+                "enable_secondary": "Enable secondary mode",
+                "enable_secondary_warning": "By enabling secondary mode this cluster would become a read-only replica of the specified primary cluster."
+
+            },
+            "error": {
+                "ascii": "Invalid characters detected. Only printable ASCII characters are allowed.",
+                "length": "The input length must be between {{minLen}} and {{maxLen}} characters.",
+                "creating": "Error during Tag creation",
+                "deleting": "Error during Tag deletion",
+                "disabling": "Error during secondary mode disabling",
+                "secondary": "Error enabling secondary mode"
+            },
+            "secondary_mode_modal": {
+                "rpc_address": "Any primary cluster node RPC address *",
+                "rpc_address_placeholder": "node-name:7300",
+                "tag": "Identifier tag *",
+                "tag_placeholder": "Example: us-central"
+            }
         },
         "cluster_page": {
             "create_page_title": "Create cluster",
             "edit_page_title": "Edit cluster configuration",
             "creating_cluster_loader": "Creating cluster...",
-            "add_nodes_loader": "Adding nodes to cluster...",
-            "replace_nodes_loader": "Replacing nodes in cluster...",
-            "remove_nodes_loader": "Removing nodes from cluster...",
             "updating_cluster_loader": "Updating cluster...",
-            "cluster_nodes_list": "Cluster nodes list",
-            "remote_locations": "Remote locations",
-            "remove_node_btn_tooltip": "Remove node",
             "current_node": "Current node",
             "advanced_options": "Advanced options",
             "advanced_options_tooltip": "Advanced options for cluster configuration",
-            "select_from_locations_hint": "Select nodes from remote locations",
             "toggle_legend_btn": "Legend",
             "toggle_legend_btn_tooltip": "Toggle legend",
             "errors": {
@@ -107,20 +150,13 @@
                     "no_cluster_configured": "Nodes must not have cluster configuration"
                 }
             },
-            "create_btn": "Create",
             "save_btn": "Save",
             "notifications": {
                 "create_success": "Cluster created successfully",
                 "create_failed": "Cluster creation failed",
                 "update_success": "Cluster updated successfully",
                 "update_failed": "Cluster update failed",
-                "form_invalid": "The form data is invalid",
-                "add_nodes_success": "Nodes added successfully",
-                "add_nodes_fail": "Adding nodes failed",
-                "replace_nodes_success": "Nodes replaced successfully",
-                "replace_nodes_fail": "Replacing nodes failed",
-                "remove_nodes_success": "Nodes removed successfully",
-                "remove_nodes_fail": "Removing nodes failed"
+                "form_invalid": "The form data is invalid"
             }
         },
         "delete_cluster_dialog": {
@@ -135,18 +171,44 @@
                 "fail_delete": "Can not delete cluster"
             }
         },
-        "replace_nodes_dialog": {
-            "title": "Replace nodes in cluster",
-            "nodes_to_replace_label": "Nodes to add to cluster",
-            "cluster_nodes_list": "Select nodes to be removed from existing cluster"
-        },
-        "add_nodes_dialog": {
-            "title": "Add nodes to cluster",
-            "nodes_to_add_label": "Nodes to add to cluster"
-        },
-        "remove_nodes_dialog": {
-            "title": "Remove nodes from cluster",
-            "content": "Select nodes to be removed from existing cluster"
+        "update_cluster_group_dialog": {
+            "title": "Edit cluster",
+            "title_create": "Create cluster",
+            "current_node": "Current node",
+            "new_node": "Node will be added",
+            "deleted_node": "Node will be removed",
+            "leader": "Leader",
+            "follower": "Follower",
+            "candidate": "Candidate",
+            "no_cluster": "No cluster",
+            "out_of_sync": "Out of sync",
+            "no_connection": "No connection",
+            "read_only": "Read only",
+            "restricted": "Restricted",
+            "column": {
+                "index": "",
+                "location": "Location URL",
+                "info": "",
+                "status": "Status change"
+            },
+            "actions": {
+                "replace_node": "Replace node",
+                "delete_node": "Delete node",
+                "cannot_delete_node": "You cannot remove more than half of the healthy nodes at the same time",
+                "add_node": "Add node",
+                "add_node_tooltip": "Add node to current cluster",
+                "cancel": "Cancel",
+                "restore_node": "Undo"
+            },
+            "messages": {
+                "no_cluster": "No cluster is configured",
+                "invalid_form": "Invalid Location URL",
+                "connecting_node": "Connecting node",
+                "save_to_apply": "Save to apply changes"
+            },
+            "field_placeholders": {
+                "location": "http://my-hostname:7200"
+            }
         }
     },
     "acl_management": {
@@ -207,7 +269,7 @@
             "loading_rules": "Error during ACL rules",
             "updating_rules": "Error during ACL rules update",
             "duplicated_rules": "Every ACL rule should be unique.",
-            "role_length_too_short": "Too short"
+            "role_length_too_short": "Too short or not \"*\""
         },
         "defaults": {
             "asterisk": "* - Any RDF value",
@@ -217,7 +279,7 @@
         }
     },
     "ttyg": {
-        "helpInfo": "Talk to Your Graph is chat bot based on OpenAI's GPT-4 model that can answer questions about data stored in GraphDB, leveraging both your data and the general knowledge of the GPT-4 model. The bot works in connection with the ChatGPT Retrieval connector.",
+        "helpInfo": "The <b>Talk to Your Graph</b> view lets you interact with your database through a conversational interface. You can ask natural language questions about the data and receive answers generated through the combined power of GraphDB and OpenAI. It supports multiple agent configurations and persistent chats for ongoing, contextual conversations.",
         "loading": "Loading...",
         "help": {
             "btn": {
@@ -263,7 +325,6 @@
                 }
             },
             "messages": {
-                "create_failure": "Failed to create new conversation. Please try again.",
                 "rename_failure": "Failed to rename the conversation. Please try again.",
                 "delete_failure": "Failed to delete the conversation. Please try again.",
                 "export_failure": "Failed to export the conversation. Please try again."
@@ -278,7 +339,7 @@
         "chat_panel": {
             "hint1": "<div><span class=\"graph\">GRAPH</span><span class=\"wise\">WISE</span></div><div class=\"thrives\">AI THRIVES ON WHOLE DATA</div>",
             "hint2": "Simply ask a question!",
-            "deleted_agent": "<span class=\"text-warning\"><i class=\"fa-regular fa-triangle-exclamation fa-xs\"></i> deleted agent</span>",
+            "deleted_agent": "<span class=\"text-warning\"><i class=\"fa fa-triangle-exclamation fa-xs\"></i> deleted agent</span>",
             "btn": {
                 "ask": {
                     "label": "Ask"
@@ -322,25 +383,30 @@
                 "query_method": "Query method",
                 "raw_query": "Raw query",
                 "sparql_query": "SPARQL query",
-                "agent_name": "Agent: {{agentName}}",
+                "agent_name": "Agent: {{agentName}} <br/> {{date}} at {{time}}",
+                "question_asked": "{{date}} at {{time}}",
                 "json": "JSON",
                 "error_message": "Error message sent to model",
                 "explain_no_methods": "No query methods were called.",
-                "called": "Called {{('ttyg.chat_panel.query_name.' + name) | translate}}"
+                "called": "Called {{('ttyg.chat_panel.query_name.' + name) | translate}}",
+                "no_query": "There is no query."
             },
             "query_name": {
                 "sparql_query":"SPARQL",
                 "fts_search": "Full-text search",
                 "similarity_search": "Similarity search",
                 "retrieval_search": "ChatGPT Retrieval",
-                "iri_discovery": "FTS for IRI discovery"
+                "iri_discovery": "FTS for IRI discovery",
+                "now": "the Now function"
             },
+            "query_colon": ":",
             "query_desc": {
                 "sparql_query":"Direct query",
                 "fts_search": "Full-text search via SPARQL",
                 "similarity_search": "Similarity search via SPARQL",
                 "retrieval_search": "Direct JSON query",
-                "iri_discovery": "Full-text search via SPARQL"
+                "iri_discovery": "Full-text search via SPARQL",
+                "now": "returns the system time"
             },
             "dialog": {
                 "confirm_repository_change": {
@@ -369,7 +435,7 @@
                 "form": {
                     "agent_name": {
                         "label": "Agent name",
-                        "placeholder": "Enter user friendly name",
+                        "placeholder": "Enter а user friendly name",
                         "tooltip": "A descriptive name that helps you identify this agent."
                     },
                     "repository": {
@@ -537,6 +603,9 @@
                     },
                     "save": {
                         "label": "Save"
+                    },
+                    "explain_settings": {
+                        "label": "Explain settings"
                     }
                 },
                 "dialog": {
@@ -551,6 +620,36 @@
             "delete_agent_modal": {
                 "title": "Delete Agent",
                 "body": "Do you really want to delete the agent <b>{{agentName}}</b>?"
+            },
+            "instructions_explain_modal": {
+                "title": "Agent instructions",
+                "instructions": {
+                    "baseInstructions": {
+                        "label": "Base instructions",
+                        "description": "Establishes the main context and foundational guidelines for the agent's behavior."
+                    },
+                    "additionalInstructions": {
+                        "label": "Additional instructions",
+                        "description": "Provides extra guidelines to further customize the agent's behavior or specify important truths."
+                    },
+                    "sparqlInstructions": {
+                        "label": "SPARQL instructions",
+                        "description": "Details the instructions for constructing and executing SPARQL queries."
+                    },
+                    "ontologyIntroduction": {
+                        "label": "Ontology introduction",
+                        "description": "Introduces the section that contains the ontology data."
+                    },
+                    "ontology": {
+                        "label": "Ontology",
+                        "description": "Represents the extracted and serialized ontology."
+                    }
+                },
+                "btn": {
+                    "close": {
+                        "label": "Close"
+                    }
+                }
             },
             "agent_select_menu": {
                 "no_selection_label": "Select an agent",
@@ -605,8 +704,9 @@
             },
             "messages": {
                 "no_agents": "No agents found for the selected filter.",
-                "help_1": "Talk to your data in natural language. All you need to do is create and instruct your own AI Agent to assist you.",
-                "help_2": "The Agent is an AI-powered conversational agent designed to help with a wide range of tasks, from answering questions and providing information to assisting with creative and technical projects. It leverages advanced natural language processing to understand and respond to user inputs in a human-like manner, making interactions intuitive and efficient.",
+                "help_1": "{{'ttyg.helpInfo'|translate|trustAsHtml}}",
+                "help_2": "{{'ttyg.help.how.content2'|translate|trustAsHtml}}",
+                "help_config": "To use <b>Talk to Your Graph</b>, GraphDB must first be configured to work with OpenAI. Please ensure that the necessary API keys and settings are in place before starting. For detailed setup instructions, refer to the <a href=\"{{talkToGraphDocumentationLink}}\" target=\"_blank\" rel=\"noopener\">documentation<i class=\"icon-external\"></i></a> or contact your administrator.",
                 "token_prop_warn1": "To enable this feature, set the config property",
                 "token_prop_warn2": "to your GPT token in",
                 "token_prop_warn3": "file.",
@@ -619,23 +719,11 @@
             }
         },
         "help.what.title": "What is this?",
-        "help.what.content": "Talk to Your Graph is chat bot based on OpenAI's GPT-4 model that can answer questions about data stored in GraphDB, leveraging both your data and the general knowledge of the GPT-4 model.",
+        "help.what.content": "{{'ttyg.helpInfo'|translate|trustAsHtml}}",
         "help.how.title": "How does it work?",
         "help.how.content": "The bot uses the ChatGPT Retrieval connector to fetch information it does not know about. As such, you must first create a suitable connector. See also the settings for fine-tuning the integration with the Retrieval connector.",
-        "clear.hint": "Clear the chat history",
-        "clear.history.confirmation": "This will clear the history conversation.",
-        "settings.title": "Talk to Your Graph Settings",
-        "settings.info": "The settings are stored in the browser only and are per repository.",
-        "settings.connector.id": "Retrieval connector ID",
-        "settings.connector.id.tooltip": "The ID of the Retrieval connector to use. If empty, the first defined connector will be used.",
-        "settings.query.template": "Query template",
-        "settings.query.template.tooltip": "The query template used by the chat bot to request more information from the connector. It must contain at least the \"query\" key but may also contain a \"filter\" key if your connector has suitable metadata.",
-        "settings.ground.truths": "Ground truths",
-        "settings.ground.truths.tooltip": "An optional list of ground truths that help the chat bot to establish context.",
-        "settings.topk": "Number of top results",
-        "settings.topk.tooltip": "Number of results returned to the chat bot when it requests more information. More results will provide more information but they may also introduce noise.",
-        "settings.echo.vector.query": "Echo vector query",
-        "settings.echo.vector.query.tooltip": "If enabled the bot will use the generated queries as feedback to the GPT API."
+        "help.how.content1": "<b>Talk to Your Graph</b> is powered by OpenAI's Assistants API. You begin by selecting or configuring an agent, which defines the context and rules for querying. Once set, you can start a conversation by asking questions in natural language. The assistant interprets your query, runs the appropriate query methods to retrieve data, and responds with an answer. Persistent chat ensures conversations stay contextually aware, enabling deeper, more coherent interactions over time. You can use multiple agents concurrently to cover various domains or data sources.",
+        "help.how.content2": "An agent in <b>Talk to Your Graph</b> is an AI-driven assistant specifically configured to interact with your graph database. It uses advanced natural language processing to understand and respond to your questions by querying the database and delivering relevant information. Each agent is tailored to a specific context, making interactions seamless and efficient, whether you're retrieving data, exploring insights, or working on complex projects."
     },
     "config.name.label": "Config name",
     "graph.config.required": "My graph config (required)",
@@ -1004,6 +1092,7 @@
     "resource.memory.heap.label": "Heap memory usage",
     "resource.memory.heap.tooltip": "Shows the heap memory used by GraphDB. The heap memory is the main memory allocated for keeping the database running and it is also used for any memory-intensive operations when needed. Approaching the maximum heap size can slow down GraphDB",
     "resource.memory.heap.max": "Maximum heap size: ",
+    "resource.memory.non_heap.max": "Maximum off-heap size: ",
     "resource.memory.non_heap.label": "Off-heap memory usage",
     "resource.memory.non_heap.tooltip": "Shows the off-heap memory used by GraphDB. The off-heap memory is used only for certain structures and should not grow substantially with time",
     "resource.memory.committed": "Committed memory",
@@ -1666,6 +1755,7 @@
     "delete.repo.warning.msg": "<p>Are you sure you want to delete the repository <strong>{{repositoryId}}</strong>?</p><p><span class=\"icon-2x icon-warning\" style=\"color: var(--primary-color-dark)\"></span>All data in the repository will be lost.</p>",
     "confirm.restart.repo": "Confirm restart",
     "confirm.restart.repo.warning.msg": "<p>Are you sure you want to restart the repository <strong>{{repositoryId}}</strong>?</p><p><span class=\"icon-2x icon-warning\" style=\"color: var(--primary-color-dark)\"></span>The repository will be shut down immediately and all running queries and updates will be cancelled.</p>",
+    "restart.repo.in.cluster.tooltip": "Restarting a repository is not supported in a cluster environment. To apply configuration changes, restart all cluster nodes.",
     "location.cannot.be.empty.error": "Location cannot be empty",
     "required.field": "This field is required",
     "created.repo.success.msg": "The repository {{repoId}} has been created.",
@@ -1769,6 +1859,7 @@
     "repositories.location.remote.graph_db.instances": "Remote GraphDB instances",
     "repositories.location.local.graph_db.instance": "Local GraphDB instance",
     "repositories.location.ontopic.instances": "Remote Ontopic instances",
+    "repositories.location.sparql.instances": "Remote SPARQL endpoints",
     "no.repos.in.current.location": "There are no repositories in the current location",
     "connect.repo": "Connect repository",
     "connected.tooltip": "Connected",
@@ -1797,6 +1888,7 @@
     "common.cancel.btn": "Cancel",
     "common.yes.btn": "Yes",
     "common.ok.btn": "OK",
+    "common.close.btn": "Close",
     "common.error": "Error",
     "common.warning": "Warning",
     "common.loading": "Loading...",
@@ -1823,6 +1915,7 @@
     "common.attach": "Attach",
     "common.close": "Close",
     "common.preview": "Preview",
+    "common.learn_more_in_documentation": "Learn more in the GraphDB documentation",
     "paginator.first.page.label": "First",
     "paginator.last.page.label": "Last",
     "active.location.version.not.support.settings.warning": "The version of GraphDB at your active location does not support settings.",
@@ -1944,19 +2037,22 @@
     "remote.location.required": "Location URL is required.",
     "remote.location.ontopic.username.required": "ClientID*",
     "remote.location.ontopic.password.required": "Secret*",
-    "remote.ontopic.location.enter.url.msg": "Enter a URL to an Ontopic remote instance",
     "manage.remote.location.dialog.graph_db.basic.auth.type.description": "Basic authentication requires a Username and a Password.",
     "manage.remote.location.dialog.ontopic.basic.auth.type.description": "Basic authentication requires a ClientID and a Secret.",
+    "manage.remote.location.dialog.sparql.basic.auth.type.description": "Basic authentication requires a Username and a Password.",
     "manage.remote.location.dialog.update.instance": "Edit remote instance",
     "manage.remote.location.dialog.attach.instance": "Attach a remote instance",
     "manage.remote.location.dialog.graph_db.location.instance": "GraphDB instance",
-    "manage.remote.location.dialog.ontopic.location.instance": "Ontopic instance",
+    "manage.remote.location.dialog.ontopic.location.instance": "Ontopic SPARQL endpoint",
+    "manage.remote.location.dialog.sparql.endpoint.instance": "SPARQL endpoint",
     "manage.remote.location.dialog.required.url": "Location URL*",
     "manage.remote.location.dialog.graph_db.url.message": "Enter a URL to a remote GraphDB instance",
-    "manage.remote.location.dialog.ontopic.url.message": "Enter a URL to an Ontopic remote instance",
+    "manage.remote.location.dialog.ontopic.url.message": "Enter a URL to an Ontopic remote SPARQL endpoint",
+    "manage.remote.location.dialog.sparql.url.message": "Enter a URL to a SPARQL endpoint",
     "manage.remote.location.dialog.url.requred.message": "Location URL is required.",
     "manage.remote.location.dialog.graph_db.error.not_valid.url": "Note that the location should be a URL that points to a remote GraphDB installation, e.g.",
     "manage.remote.location.dialog.ontopic.error.not_valid.url": "Note that the location should be a URL that points to a remote Ontopic installation, e.g.",
+    "manage.remote.location.dialog.sparql.error.not_valid.url": "Note that the location should be a URL that points to a remote SPARQL endpoint, e.g.",
     "manage.remote.location.dialog.auth_type.header": "Authentication type",
     "manage.remote.location.dialog.auth_type.none": "None",
     "manage.remote.location.dialog.auth_type.basic": "Basic auth",
@@ -1964,15 +2060,20 @@
     "manage.remote.location.dialog.auth_type.signature": "Signature",
     "manage.remote.location.dialog.graph_db.username.required.message": "Username*",
     "manage.remote.location.dialog.ontopic.username.required.message": "ClientID*",
+    "manage.remote.location.dialog.sparql.username.required.message": "Username*",
     "manage.remote.location.dialog.graph_db.password.required.message": "Password*",
     "manage.remote.location.dialog.ontopic.password.required.message": "Secret*",
+    "manage.remote.location.dialog.sparql.password.required.message": "Password*",
     "manage.remote.location.dialog.auth_type.signature.description.prefix": "Signature authentication uses the token secret, which must be the same on all GraphDB instances. For more information on configuring the token secret, please refer to ",
     "manage.remote.location.dialog.auth_type.signature.description.suffix": " in the documentation.",
     "manage.remote.location.dialog.graph_db.username.placeholder": "my username",
     "manage.remote.location.dialog.ontopic.username.placeholder": "my client id",
+    "manage.remote.location.dialog.sparql.username.placeholder": "my username",
     "manage.remote.location.dialog.graph_db.password.placeholder": "my password",
     "manage.remote.location.dialog.ontopic.password.placeholder": "my secret",
+    "manage.remote.location.dialog.sparql.password.placeholder": "my password",
     "valid.remote.location.warning": "Note that the location should be a URL that points to a remote GraphDB installation, e.g.",
+    "duplicate.remote.location.warning": "The URL is already in the list",
     "auth.type.header": "Authentication type",
     "remote.location.no.auth.used.tooltip": "No authentication used with remote location",
     "auth.type.none": "None",
@@ -2451,6 +2552,7 @@
     "repo.page.location.label": "Location",
     "repo.page.location.input.field.tooltip": "The location where to create repository. The default is the local one.",
     "repo.page.repository.info.loading.error": "Currently selected repository cannot be edited due to an error during repository metadata loading.",
+    "guides.loading.message.failure": "Failed to load guides!",
     "guide.button.guide-paused": "Guide paused",
     "guide.button.guide-resume": "Continue the guide",
     "guide.validate.no-next": "Cannot continue to next",
@@ -2496,7 +2598,8 @@
     "guide.step_plugin.visual-graph-link-focus.title": "Visual graph links",
     "guide.step_plugin.visual-graph-link-focus.content": "An arrow with a label represents one or more links between nodes. In this case, the arrow shows the relation <b>{{fromIriLabel}} &rarr; {{iriLabel}} &rarr; {{toIriLabel}}</b>.",
     "guide.step_plugin.download-guide-resource.title": "Download guide resources",
-    "guide.step_plugin.download-guide-resource.content": "This guide requires a file to be downloaded.<br>Please <a href=\"{{resourceUrl}}\" target=\"_blank\">download {{resourceFile}}</a>.",
+    "guide.step_plugin.download-guide-resource.content": "This guide requires a file to be downloaded.<br>Please <a href=\"#\" ng-click=\"downloadGuidesFile('{{resourcePath}}', '{{resourceFile}}')\">download {{resourceFile}}</a>.",
+    "guide.step_plugin.download-guide-resource.download.message.failure": "Failed to download the '{{resourceFile}}' file!",
     "guide.step_plugin.choose-repository.content": "Click on the repository selection dropdown.",
     "guide.step_plugin.select-repository.content": "Click on the <b>{{getRepositoryId()}}</b> repository button.",
     "guide.step_plugin.select-repository-plug.content": "Click on the plug icon of the <b>{{repositoryId}}</b> repository.",
@@ -2578,5 +2681,30 @@
     "yasgui.tab_list.close_other_tabs.confirmation.queries_one_update.message": "<div class=\"run_query_confirmation alert alert-warning\">You have running {{queriesCount}} queries and 1 update. The queries will be aborted</div><div>Are you sure you want to close all other query tabs?</div>",
     "yasgui.tab_list.close_other_tabs.confirmation.queries_updates.message": "<div class=\"run_query_confirmation alert alert-warning\">You have running {{queriesCount}} queries and {{updatesCount}} updates. The queries will be aborted.</div><div>Are you sure you want to close all other query tabs?</div>",
     "yasgui.tab_list.close_tab.confirmation.not_query_update.message": "<div class=\"run_query_confirmation alert alert-warning\">You have running 1 update.</div><div>Are you sure you want to close this query tab?</div>",
-    "yasgui.tab_list.close_tab.confirmation.query_non_updates.message": "<div class=\"run_query_confirmation alert alert-warning\">You have running 1 query, that will be aborted.</div><div>Are you sure you want to close this query tab?</div>"
+    "yasgui.tab_list.close_tab.confirmation.query_non_updates.message": "<div class=\"run_query_confirmation alert alert-warning\">You have running 1 query, that will be aborted.</div><div>Are you sure you want to close this query tab?</div>",
+    "cookie" : {
+        "cookie_consent": "We may use cookies to help us improve GraphDB and develop better features. No personal or sensitive information is collected. By clicking “{{'common.ok.btn' | translate}},” you consent to our",
+        "cookie_policy_url_label": "Cookie Policy",
+        "policy": {
+            "title": "Cookies Policy",
+            "purpose_heading": "Purpose",
+            "purpose_text": "This Cookies Policy explains the data Ontotext collects and uses when you use our GraphDB product, specifically the Free Edition.",
+            "purpose_enterprise_text": "Note that if you upgrade to the commercial GraphDB Enterprise Edition, no cookies will be stored on your device, regardless of settings.",
+            "privacy_commitment_heading": "Ontotext privacy commitment",
+            "privacy_commitment_text": "We are committed to not collecting any personal data or information when you use GraphDB Free. Additionally:",
+            "privacy_commitment_1": "We will not sell or rent the technical information we collect to others.",
+            "privacy_commitment_2": "We strive to maximize the protection of all technical data collected.",
+            "cookies_heading": "Cookies",
+            "cookies_text": "When you use GraphDB Free Edition, Ontotext will store cookies on your device to collect anonymous information about how you interact with the product. This technical data helps us improve and refine our software. Importantly, we cannot link this information to you personally or to any identifiable data. These cookies are solely intended to help us understand user interactions and identify potential issues within GraphDB.",
+            "manage_cookies_heading": "Manage cookies",
+            "statistic_cookies": "GraphDB analytics cookies",
+            "statistic_tooltip": "Toggle GraphDB analytics cookies",
+            "statistic_text": "These cookies help us understand how users interact with different aspects of GraphDB by collecting and reporting information anonymously. This data allows us to improve the overall product experience and develop features based on how GraphDB is used, without collecting any personal information.",
+            "third_party_cookies": "Third-party cookies",
+            "third_party_tooltip": "Toggle Third-party cookies",
+            "third_party_cookies_text": "We use Google Analytics 4 (GA4) cookies to help us recognize unique users and sessions, track interactions, and collect data such as page views, session duration, and engagement. These cookies are managed by Google, meaning we do not control their operation. IP anonymization is enabled by default in GA4, so it cannot store IP addresses or track users personally. No data is shared between GA4 and other Google products, and processing occurs globally, primarily in the USA, without breaching GDPR, as no personal data is collected.",
+            "change_cookies": "You can change your cookie preferences at any time in",
+            "change_cookies_location4": "Cookie policy"
+        }
+    }
 }

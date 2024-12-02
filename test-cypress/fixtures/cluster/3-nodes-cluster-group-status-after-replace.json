@@ -1,0 +1,44 @@
+[
+    {
+        "address": "pc-desktop:7333",
+        "nodeState": "FOLLOWER",
+        "term": 2,
+        "syncStatus": {},
+        "lastLogTerm": 0,
+        "lastLogIndex": 0,
+        "endpoint": "http://pc-desktop:7233",
+        "recoveryStatus": {},
+        "topologyStatus": {
+            "state": "PRIMARY_NODE"
+        }
+    },
+    {
+        "address": "pc-desktop:7302",
+        "nodeState": "LEADER",
+        "term": 2,
+        "syncStatus": {
+            "pc-desktop:7333": "IN_SYNC",
+            "pc-desktop:7303": "IN_SYNC"
+        },
+        "lastLogTerm": 0,
+        "lastLogIndex": 0,
+        "endpoint": "http://pc-desktop:7202",
+        "recoveryStatus": {},
+        "topologyStatus": {
+            "state": "PRIMARY_NODE"
+        }
+    },
+    {
+        "address": "pc-desktop:7303",
+        "nodeState": "FOLLOWER",
+        "term": 2,
+        "syncStatus": {},
+        "lastLogTerm": 0,
+        "lastLogIndex": 0,
+        "endpoint": "http://pc-desktop:7203",
+        "recoveryStatus": {},
+        "topologyStatus": {
+            "state": "PRIMARY_NODE"
+        }
+    }
+]

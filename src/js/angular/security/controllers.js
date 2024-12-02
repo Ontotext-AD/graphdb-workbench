@@ -2,14 +2,10 @@ import 'angular/core/services';
 import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/openid-auth.service';
 import 'angular/rest/security.rest.service';
-import {UserUtils, UserRole, UserType} from 'angular/utils/user-utils';
-import 'angular/aclmanagement/directives/custom-role-prefix.directive';
-
-const SYSTEM_REPO = 'SYSTEM';
-const READ_REPO = 'READ_REPO';
-const READ_REPO_PREFIX = 'READ_REPO_';
-const WRITE_REPO = 'WRITE_REPO';
-const WRITE_REPO_PREFIX = 'WRITE_REPO_';
+import {UserRole, UserType} from 'angular/utils/user-utils';
+import 'angular/security/directives/custom-prefix-tags-input.directive';
+import {READ_REPO, READ_REPO_PREFIX, SYSTEM_REPO, WRITE_REPO, WRITE_REPO_PREFIX} from "./services/constants";
+import {createUniqueKey, parseAuthorities} from "./services/authorities-util";
 
 const modules = [
     'ngCookies',
@@ -18,110 +14,22 @@ const modules = [
     'graphdb.framework.core.services.openIDService',
     'graphdb.framework.rest.security.service',
     'toastr',
-    'graphdb.framework.aclmanagement.directives',
     'ngTagsInput'
 ];
 
-const createUniqueKey = function (repository) {
-    if (repository.location) {
-        return `${repository.id}@${repository.location}`;
-    }
-    return repository.id;
-};
+const securityModule = angular.module('graphdb.framework.security.controllers', modules);
 
-const securityCtrl = angular.module('graphdb.framework.security.controllers', modules);
-
-const setGrantedAuthorities = function ($scope) {
-    function pushAuthority() {
-        for (let i = 0; i < arguments.length; i++) {
-            const authority = arguments[i];
-            if (_.indexOf($scope.user.grantedAuthorities, authority) < 0) {
-                $scope.user.grantedAuthorities.push(authority);
-            }
-        }
-    }
-
-    $scope.user.grantedAuthorities = [];
-
-    $scope.repositoryCheckError = true;
-    if ($scope.userType === UserType.ADMIN) {
-        $scope.repositoryCheckError = false;
-        pushAuthority(UserRole.ROLE_ADMIN);
-    } else if ($scope.userType === UserType.REPO_MANAGER) {
-        $scope.repositoryCheckError = false;
-        pushAuthority(UserRole.ROLE_REPO_MANAGER);
-    } else {
-        pushAuthority(UserRole.ROLE_USER);
-        for (const index in $scope.grantedAuthorities.WRITE_REPO) {
-            if ($scope.grantedAuthorities.WRITE_REPO[index]) {
-                $scope.repositoryCheckError = false;
-                pushAuthority(WRITE_REPO_PREFIX + index, READ_REPO_PREFIX + index);
-            }
-        }
-        for (const index in $scope.grantedAuthorities.READ_REPO) {
-            if ($scope.grantedAuthorities.READ_REPO[index]) {
-                $scope.repositoryCheckError = false;
-                pushAuthority(READ_REPO_PREFIX + index);
-            }
-        }
-    }
-    if ($scope.customRoles) {
-        $scope.customRoles.forEach((role) => pushAuthority('CUSTOM_' + role));
-    }
-};
-
-const parseAuthorities = function (authorities) {
-    let userType = UserType.USER;
-    const grantedAuthorities = {
-        [READ_REPO]: {},
-        [WRITE_REPO]: {}
-    };
-    const repositories = {};
-    const customRoles = [];
-    for (let i = 0; i < authorities.length; i++) {
-        const role = authorities[i];
-        if (role === UserRole.ROLE_ADMIN) {
-            userType = UserType.ADMIN;
-        } else if (role === UserRole.ROLE_REPO_MANAGER) {
-            if (userType !== UserType.ADMIN) {
-                userType = UserType.REPO_MANAGER;
-            }
-        } else if (role === UserRole.ROLE_USER) {
-            userType = UserType.USER;
-        } else if (role.indexOf('READ_REPO_') === 0 || role.indexOf('WRITE_REPO_') === 0) {
-            const index = role.indexOf('_', role.indexOf('_') + 1);
-            const op = role.substr(0, index);
-            const repo = role.substr(index + 1);
-            grantedAuthorities[op][repo] = true;
-            repositories[repo] = repositories[repo] || {};
-            if (op === READ_REPO) {
-                repositories[repo].read = true;
-            } else if (op === WRITE_REPO) {
-                repositories[repo].write = true;
-            }
-        } else if (role.indexOf('CUSTOM_') === 0) {
-            customRoles.push(role.substr('CUSTOM_'.length));
-        }
-    }
-
-    return {
-        userType: userType,
-        userTypeDescription: UserUtils.getUserRoleName(userType),
-        grantedAuthorities: grantedAuthorities,
-        repositories: repositories,
-        customRoles: customRoles
-    };
-};
-
-securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$openIDAuth', '$location', '$rootScope', '$translate',
-    function ($scope, $http, toastr, $jwtAuth, $openIDAuth, $location, $rootScope, $translate) {
+securityModule.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$openIDAuth', '$location', '$rootScope', '$translate', 'TrackingService',
+    function ($scope, $http, toastr, $jwtAuth, $openIDAuth, $location, $rootScope, $translate, TrackingService) {
         $scope.username = '';
         $scope.password = '';
 
         // Reinitialize security settings, if failed for some reason
         $jwtAuth.reinitializeSecurity();
 
-        $scope.loginWithOpenID = function() {
+        TrackingService.init();
+
+        $scope.loginWithOpenID = function () {
             $jwtAuth.loginOpenID();
         };
 
@@ -131,11 +39,11 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
             toastr.error($translate.instant('security.auth.token.expired'), $translate.instant('security.login.error'));
         }
 
-        $scope.isGDBLoginEnabled = function() {
+        $scope.isGDBLoginEnabled = function () {
             return $jwtAuth.passwordLoginEnabled;
         };
 
-        $scope.isOpenIDEnabled = function() {
+        $scope.isOpenIDEnabled = function () {
             return $jwtAuth.openIDEnabled;
         };
 
@@ -172,7 +80,7 @@ securityCtrl.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '
         };
     }]);
 
-securityCtrl.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService', 'SecurityRestService', '$translate',
+securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService', 'SecurityRestService', '$translate',
     function ($scope, $uibModal, toastr, $window, $jwtAuth, $timeout, ModalService, SecurityRestService, $translate) {
 
         $scope.loader = true;
@@ -201,10 +109,10 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window'
                     }
                     $scope.loader = false;
                 }).error(function (data) {
-                    const msg = getError(data);
-                    toastr.error(msg, $translate.instant('common.error'));
-                    $scope.loader = false;
-                });
+                const msg = getError(data);
+                toastr.error(msg, $translate.instant('common.error'));
+                $scope.loader = false;
+            });
         };
         $scope.getUsers();
 
@@ -213,72 +121,76 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window'
         });
 
         $scope.toggleSecurity = function () {
-            $jwtAuth.toggleSecurity(!$jwtAuth.isSecurityEnabled());
-            if ($jwtAuth.isSecurityEnabled()) {
-                const timer = $timeout(function () {
-                    $window.location.reload();
-                }, 500);
-                $scope.$on('$destroy', function () {
-                    $timeout.cancel(timer);
+            const isSecurityEnabled = $jwtAuth.isSecurityEnabled();
+            $jwtAuth.toggleSecurity(!isSecurityEnabled)
+                .then(() => {
+                    // reload UI only if security status has changed
+                    // TODO: Not sure if we really need to reload the page here. The UI state is updated just fine. But maybe the reload is needed for something else?
+                    if (isSecurityEnabled !== $jwtAuth.isSecurityEnabled()) {
+                        $window.location.reload();
+                    }
                 });
-            }
         };
 
         $scope.toggleFreeAccess = function (updateFreeAccess) {
             if (!$jwtAuth.isFreeAccessEnabled() || ($jwtAuth.isFreeAccessEnabled() && updateFreeAccess)) {
                 SecurityRestService.getFreeAccess().then(function (res) {
-                    let authorities = res.data.authorities;
-                    let appSettings = res.data.appSettings || {
+                    const authorities = res.data.authorities;
+                    const appSettings = res.data.appSettings || {
                         'DEFAULT_SAMEAS': true,
                         'DEFAULT_INFERENCE': true,
                         'EXECUTE_COUNT': true,
                         'IGNORE_SHARED_QUERIES': false,
                         'DEFAULT_VIS_GRAPH_SCHEMA': true
                     };
-                    const modalInstance = $uibModal.open({
-                        templateUrl: 'js/angular/security/templates/modal/default-authorities.html',
-                        controller: 'DefaultAuthoritiesCtrl',
-                        resolve: {
-                            data: function () {
-                                return {
-                                    // converts the array rights to hash ones. why, oh, why do we have both formats?
-                                    defaultAuthorities: function () {
-                                        const defaultAuthorities = {
-                                            [READ_REPO]: {},
-                                            [WRITE_REPO]: {}
-                                        };
-                                        // We might have old (no longer existing) repositories so we have to check that
-                                        const repoIds = _.mapKeys($scope.getRepositories(), function (r) {
-                                            return createUniqueKey(r);
-                                        });
-                                        _.each(authorities, function (a) {
-                                            // indexOf works in IE 11, startsWith doesn't
-                                            if (a.indexOf(WRITE_REPO_PREFIX) === 0) {
-                                                if (repoIds.hasOwnProperty(a.substr(11))) {
-                                                    defaultAuthorities[WRITE_REPO][a.substr(11)] = true;
-                                                }
-                                            } else if (a.indexOf(READ_REPO_PREFIX) === 0) {
-                                                if (repoIds.hasOwnProperty(a.substr(10))) {
-                                                    defaultAuthorities[READ_REPO][a.substr(10)] = true;
-                                                }
-                                            }
-                                        });
-                                        return defaultAuthorities;
-                                    },
-                                    appSettings: appSettings
-                                };
-                            }
-                        }
-                    });
-                    modalInstance.result.then(function (data) {
-                        authorities = data.authorities;
-                        appSettings = data.appSettings;
-                        $jwtAuth.toggleFreeAccess(updateFreeAccess || !$jwtAuth.isFreeAccessEnabled(), authorities, appSettings, updateFreeAccess);
-                    });
+                    configureFreeAccess(appSettings, authorities, updateFreeAccess);
                 });
             } else {
                 $jwtAuth.toggleFreeAccess(!$jwtAuth.isFreeAccessEnabled(), []);
             }
+        };
+
+        const configureFreeAccess = (appSettings, authorities, updateFreeAccess) => {
+            const modalInstance = $uibModal.open({
+                templateUrl: 'js/angular/security/templates/modal/default-authorities.html',
+                controller: 'DefaultAuthoritiesCtrl',
+                resolve: {
+                    data: function () {
+                        return {
+                            // converts the array rights to hash ones. why, oh, why do we have both formats?
+                            defaultAuthorities: function () {
+                                const defaultAuthorities = {
+                                    [READ_REPO]: {},
+                                    [WRITE_REPO]: {}
+                                };
+                                // We might have old (no longer existing) repositories so we have to check that
+                                const repoIds = _.mapKeys($scope.getRepositories(), function (r) {
+                                    return createUniqueKey(r);
+                                });
+                                _.each(authorities, function (a) {
+                                    // indexOf works in IE 11, startsWith doesn't
+                                    if (a.indexOf(WRITE_REPO_PREFIX) === 0) {
+                                        if (repoIds.hasOwnProperty(a.substr(11))) {
+                                            defaultAuthorities[WRITE_REPO][a.substr(11)] = true;
+                                        }
+                                    } else if (a.indexOf(READ_REPO_PREFIX) === 0) {
+                                        if (repoIds.hasOwnProperty(a.substr(10))) {
+                                            defaultAuthorities[READ_REPO][a.substr(10)] = true;
+                                        }
+                                    }
+                                });
+                                return defaultAuthorities;
+                            },
+                            appSettings: appSettings
+                        };
+                    }
+                }
+            });
+            modalInstance.result.then(function (data) {
+                authorities = data.authorities;
+                appSettings = data.appSettings;
+                $jwtAuth.toggleFreeAccess(updateFreeAccess || !$jwtAuth.isFreeAccessEnabled(), authorities, appSettings, updateFreeAccess);
+            });
         };
 
         $scope.editFreeAccess = function () {
@@ -310,7 +222,7 @@ securityCtrl.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window'
         };
     }]);
 
-securityCtrl.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$uibModalInstance', 'data', '$rootScope',
+securityModule.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$uibModalInstance', 'data', '$rootScope',
     function ($scope, $http, $uibModalInstance, data, $rootScope) {
         $scope.grantedAuthorities = data.defaultAuthorities();
         $scope.appSettings = data.appSettings;
@@ -355,7 +267,7 @@ securityCtrl.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$uibModal
         };
     }]);
 
-securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$translate', 'passwordPlaceholder',
+securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$translate', 'passwordPlaceholder',
     function ($rootScope, $scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $translate, passwordPlaceholder) {
         $rootScope.$on('$translateChangeSuccess', function () {
             $scope.passwordPlaceholder = $translate.instant(passwordPlaceholder);
@@ -376,7 +288,42 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
         };
 
         $scope.setGrantedAuthorities = function () {
-            setGrantedAuthorities($scope);
+            function pushAuthority() {
+                for (let i = 0; i < arguments.length; i++) {
+                    const authority = arguments[i];
+                    if (_.indexOf($scope.user.grantedAuthorities, authority) < 0) {
+                        $scope.user.grantedAuthorities.push(authority);
+                    }
+                }
+            }
+
+            $scope.user.grantedAuthorities = [];
+
+            $scope.repositoryCheckError = true;
+            if ($scope.userType === UserType.ADMIN) {
+                $scope.repositoryCheckError = false;
+                pushAuthority(UserRole.ROLE_ADMIN);
+            } else if ($scope.userType === UserType.REPO_MANAGER) {
+                $scope.repositoryCheckError = false;
+                pushAuthority(UserRole.ROLE_REPO_MANAGER);
+            } else {
+                pushAuthority(UserRole.ROLE_USER);
+                for (const index in $scope.grantedAuthorities.WRITE_REPO) {
+                    if ($scope.grantedAuthorities.WRITE_REPO[index]) {
+                        $scope.repositoryCheckError = false;
+                        pushAuthority(WRITE_REPO_PREFIX + index, READ_REPO_PREFIX + index);
+                    }
+                }
+                for (const index in $scope.grantedAuthorities.READ_REPO) {
+                    if ($scope.grantedAuthorities.READ_REPO[index]) {
+                        $scope.repositoryCheckError = false;
+                        pushAuthority(READ_REPO_PREFIX + index);
+                    }
+                }
+            }
+            if ($scope.customRoles) {
+                $scope.customRoles.forEach((role) => pushAuthority('CUSTOM_' + role));
+            }
         };
 
         $scope.$watch('userType', function () {
@@ -427,7 +374,7 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
             [WRITE_REPO]: {}
         };
 
-        $scope.validatePassword = function() {
+        $scope.validatePassword = function () {
             if ($scope.noPassword) {
                 $scope.passwordError = '';
                 $scope.confirmPasswordError = '';
@@ -449,7 +396,7 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
             return true;
         };
 
-        $scope.isLocalAuthentication = function() {
+        $scope.isLocalAuthentication = function () {
             return $jwtAuth.getAuthImplementation() === 'Local';
         };
 
@@ -467,7 +414,7 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
             }
         };
 
-        $scope.setNoPassword = function() {
+        $scope.setNoPassword = function () {
             if ($scope.noPassword) {
                 $scope.user.password = '';
                 $scope.user.confirmpassword = '';
@@ -521,7 +468,7 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
          *
          * @param {Object} event
          */
-        $scope.checkUserInput = function(event) {
+        $scope.checkUserInput = function (event) {
             // If the key pressed is the backspace or delete key, the tag error message will be hidden
             if (event.keyCode === 8 || event.keyCode === 46) {
                 $scope.isRoleValid = true;
@@ -531,13 +478,13 @@ securityCtrl.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 'toa
         /**
          * Sets the role validity flag to true.
          */
-        $scope.removeErrorOnCut = function() {
+        $scope.removeErrorOnCut = function () {
             // If the user cuts text from the field, the tag error message will be hidden
             $scope.isRoleValid = true;
         };
     }]);
 
-securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService', '$translate',
+securityModule.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService', '$translate',
     function ($scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $controller, SecurityRestService, ModalService, $translate) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.password.placeholder'}));
@@ -570,18 +517,18 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
         };
 
         $scope.submit = function () {
-                if ($scope.noPassword && $scope.userType === UserType.ADMIN) {
-                    ModalService.openSimpleModal({
-                        title: $translate.instant('security.create.admin'),
-                        message: $translate.instant('security.admin.login.warning'),
-                        warning: true
-                    }).result.then(function () {
-                        $scope.createUser();
-                    });
-                } else {
+            if ($scope.noPassword && $scope.userType === UserType.ADMIN) {
+                ModalService.openSimpleModal({
+                    title: $translate.instant('security.create.admin'),
+                    message: $translate.instant('security.admin.login.warning'),
+                    warning: true
+                }).result.then(function () {
                     $scope.createUser();
-                }
-            };
+                });
+            } else {
+                $scope.createUser();
+            }
+        };
 
         $scope.createUserHttp = function () {
             $scope.loader = true;
@@ -646,7 +593,7 @@ securityCtrl.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', 
         };
     }]);
 
-securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window', '$routeParams', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService', '$translate',
+securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window', '$routeParams', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService', '$translate',
     function ($scope, $http, toastr, $window, $routeParams, $timeout, $location, $jwtAuth, $controller, SecurityRestService, ModalService, $translate) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
@@ -745,210 +692,46 @@ securityCtrl.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window',
         };
     }]);
 
-securityCtrl.controller('RolesMappingController', ['$scope', 'toastr', 'SecurityRestService', '$translate',
+securityModule.controller('RolesMappingController', ['$scope', 'toastr', 'SecurityRestService', '$translate',
     function ($scope, toastr, SecurityRestService, $translate) {
 
-    $scope.debugMapping = function (role, mapping) {
-        const method = mapping.split(':');
-        SecurityRestService.getRolesMapping({
-            role: role,
-            method: method[1],
-            mapping: method[0]
-        });
-    };
-
-    const loadRoles = function () {
-        SecurityRestService.getRoles()
-            .success(function (data) {
-                $scope.roleMappings = data;
-                $scope.roles = _.keys($scope.roleMappings);
-                $scope.mappings = _.keys($scope.roleMappings[$scope.roles[0]]);
-                const permissionsCount = _.map($scope.roles, function (role) {
-                    return [role, _.filter($scope.roleMappings[role]).length];
-                });
-                $scope.roles = _.reverse(_.map(_.orderBy(permissionsCount, function (p) {
-                    return p[1];
-                }), function (p) {
-                    return p[0];
-                }));
-            })
-            .error(function (data) {
-                const msg = getError(data);
-                $scope.loader = false;
-                toastr.error(msg, $translate.instant('common.error'));
-            });
-    };
-
-    $scope.$on('repositoryIsSet', function () {
-        loadRoles();
-    });
-}]);
-
-securityCtrl.controller('ChangeUserPasswordSettingsCtrl', ['$scope', 'toastr', '$window', '$timeout', '$jwtAuth', '$rootScope', '$controller', 'SecurityRestService', 'ModalService', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', '$q',
-    function ($scope, toastr, $window, $timeout, $jwtAuth, $rootScope, $controller, SecurityRestService, ModalService, $translate, ThemeService, WorkbenchSettingsStorageService, $q) {
-
-        angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
-
-        $scope.themes = ThemeService.getThemes();
-        $scope.mode = 'settings';
-        $scope.showWorkbenchSettings = true;
-        /** @type {WorkbenchSettingsModel} */
-        $scope.workbenchSettings = WorkbenchSettingsStorageService.getWorkbenchSettings();
-        $scope.selectedThemeMode = $scope.workbenchSettings.mode;
-        $scope.saveButtonText = $translate.instant('common.save.btn');
-        $scope.pageTitle = $translate.instant('view.settings.title');
-        $scope.passwordPlaceholder = $translate.instant('security.new.password');
-        $scope.grantedAuthorities = {
-            [READ_REPO]: {},
-            [WRITE_REPO]: {}
-        };
-        $scope.loader = false;
-        /** @type {ThemeModel} */
-        $scope.selectedTheme = ThemeService.getTheme();
-
-        $scope.hasEditRestrictions = function () {
-            return true;
-        };
-
-        $scope.isUser = function () {
-            return $scope.userType === UserType.USER;
-        };
-
-        $scope.goBack = function () {
-            const timer = $timeout(function () {
-                $window.history.back();
-            }, 100);
-            $scope.$on('$destroy', function () {
-                $timeout.cancel(timer);
+        $scope.debugMapping = function (role, mapping) {
+            const method = mapping.split(':');
+            SecurityRestService.getRolesMapping({
+                role: role,
+                method: method[1],
+                mapping: method[0]
             });
         };
 
-        // Wrapped in a scope function for ease of testing
-        $scope.getPrincipal = function () {
-            return $jwtAuth.getPrincipal()
-                .then((principal) => {
-                    $scope.currentUserData = _.cloneDeep(principal);
-                });
-        };
-
-        $scope.getPrincipal().then(() => {
-            $scope.redirectAdmin();
-            initUserData($scope);
-        });
-
-        $scope.updateCurrentUserData = function () {
-            // Using $q.when to proper set values in view
-            $q.when($jwtAuth.getPrincipal())
-                .then((principal) => _.assign(principal, $scope.userData));
-        };
-
-        //call it as a function so I can make test on it
-        $scope.redirectAdmin = function () {
-            if (!$scope.currentUserData) {
-                $rootScope.redirectToLogin();
-            }
-        };
-
-        const initUserData = function (scope) {
-            // Copy needed so that Cancel would work correctly, need to call updateCurrentUserData on OK
-            scope.userData = _.cloneDeep(scope.currentUserData);
-            scope.user = {username: scope.userData.username};
-            scope.user.password = '';
-            scope.user.confirmpassword = '';
-            scope.user.external = scope.userData.external;
-            scope.user.appSettings = scope.userData.appSettings;
-            // For backward compatibility
-            if (scope.user.appSettings['DEFAULT_VIS_GRAPH_SCHEMA'] === undefined) {
-                scope.user.appSettings['DEFAULT_VIS_GRAPH_SCHEMA'] = true;
-            }
-
-            const pa = parseAuthorities(scope.userData.authorities);
-            $scope.userType = pa.userType;
-            $scope.grantedAuthorities = pa.grantedAuthorities;
-            $scope.customRoles = pa.customRoles;
-        };
-
-        $scope.submit = function () {
-            if ($scope.noPassword && $scope.userType === UserType.ADMIN) {
-                ModalService.openSimpleModal({
-                    title: $translate.instant('security.save.admin.settings'),
-                    message: $translate.instant('security.admin.pass.unset'),
-                    warning: true
-                }).result.then(function () {
-                    $scope.updateUser();
-                });
-            } else {
-                $scope.updateUser();
-            }
-        };
-
-        $scope.updateUserHttp = function () {
-            $scope.loader = true;
-            SecurityRestService.updateUserData({
-                username: $scope.user.username,
-                pass: ($scope.noPassword) ? '' : $scope.user.password || undefined,
-                appSettings: $scope.user.appSettings
-            }).success(function () {
-                $scope.updateCurrentUserData();
-                toastr.success($translate.instant('security.user.updated', {name: $scope.user.username}));
-                const timer = $timeout(function () {
+        const loadRoles = function () {
+            SecurityRestService.getRoles()
+                .success(function (data) {
+                    $scope.roleMappings = data;
+                    $scope.roles = _.keys($scope.roleMappings);
+                    $scope.mappings = _.keys($scope.roleMappings[$scope.roles[0]]);
+                    const permissionsCount = _.map($scope.roles, function (role) {
+                        return [role, _.filter($scope.roleMappings[role]).length];
+                    });
+                    $scope.roles = _.reverse(_.map(_.orderBy(permissionsCount, function (p) {
+                        return p[1];
+                    }), function (p) {
+                        return p[0];
+                    }));
+                })
+                .error(function (data) {
+                    const msg = getError(data);
                     $scope.loader = false;
-                    $window.history.back();
-                }, 2000);
-                WorkbenchSettingsStorageService.saveWorkbenchSettings($scope.workbenchSettings);
-                $scope.$on('$destroy', function () {
-                    $timeout.cancel(timer);
+                    toastr.error(msg, $translate.instant('common.error'));
                 });
-            }).error(function (data) {
-                const msg = getError(data);
-                $scope.loader = false;
-                toastr.error(msg, $translate.instant('common.error'));
-            });
         };
 
-        $scope.updateUser = function () {
-            if (!$scope.validateForm()) {
-                return false;
-            }
-            ThemeService.toggleThemeMode($scope.selectedThemeMode);
-            $scope.updateUserHttp();
-        };
-
-        $scope.validateForm = function () {
-            return $scope.validatePassword();
-        };
-
-        $scope.setThemeMode = function () {
-            $scope.selectedThemeMode = $scope.workbenchSettings.mode;
-        };
-
-        /**
-         * @param {{name: string, label: string}} theme
-         */
-        $scope.setTheme = (theme) => {
-            $scope.selectedTheme = theme;
-            $scope.workbenchSettings.theme = theme.name;
-            ThemeService.applyTheme(theme.name);
-        };
-
-        $scope.$on('$destroy', function () {
-            const workbenchSettings = WorkbenchSettingsStorageService.getWorkbenchSettings();
-            ThemeService.toggleThemeMode(workbenchSettings.mode);
+        $scope.$on('repositoryIsSet', function () {
+            loadRoles();
         });
-
-        const initView = () => {
-            if (!$scope.workbenchSettings) {
-                $scope.workbenchSettings = {
-                    theme: 'light'
-                };
-            }
-            $scope.setThemeMode();
-        };
-
-        initView();
     }]);
 
-securityCtrl.controller('DeleteUserCtrl', ['$scope', '$uibModalInstance', 'username', function ($scope, $uibModalInstance, username) {
+securityModule.controller('DeleteUserCtrl', ['$scope', '$uibModalInstance', 'username', function ($scope, $uibModalInstance, username) {
     $scope.username = username;
 
     $scope.ok = function () {

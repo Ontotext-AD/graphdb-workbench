@@ -1,7 +1,4 @@
 const GuideUtils = (function () {
-    const GUIDES_LIST_URL = 'rest/guides';
-    const GUIDES_DOWNLOAD_URL = 'rest/guides/download/';
-
     const clickOnElement = function (elementSelector) {
         return () => waitFor(elementSelector)
             .then((element) => {
@@ -253,16 +250,6 @@ const GuideUtils = (function () {
         return value.replace(/\s+/g, '');
     };
 
-    /**
-     * Constructs a download URL for the downloadable resource described by the provided step's
-     * options.
-     * @param {*}options the options of the step
-     * @return {string} the download URL
-     */
-    const toResourceDownloadUrl = (options) => {
-        return GUIDES_DOWNLOAD_URL + options.resourcePath + '/' + options.resourceFile;
-    };
-
     const getSparqlResultsSelectorForIri = (iri) => {
         return `${GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_SELECTOR} a[title='${iri}']`;
     };
@@ -302,8 +289,6 @@ const GuideUtils = (function () {
     };
 
     return {
-        GUIDES_LIST_URL,
-        GUIDES_DOWNLOAD_URL,
         waitFor,
         getOrWaiteFor,
         clickOnElement,
@@ -323,7 +308,6 @@ const GuideUtils = (function () {
         deferredShow,
         scrollToTop,
         removeWhiteSpaces,
-        toResourceDownloadUrl,
         getSparqlResultsSelectorForIri,
         getSparqlResultsSelectorForRow,
         isChecked,

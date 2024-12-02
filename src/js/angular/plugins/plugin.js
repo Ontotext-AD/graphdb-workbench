@@ -6,7 +6,8 @@ PluginRegistry.add('route', {
     'controller': 'PluginsCtrl',
     'templateUrl': 'pages/plugins.html',
     'title': 'menu.plugins.label',
-    'helpInfo': 'view.plugins.helpInfo'
+    'helpInfo': 'view.plugins.helpInfo',
+    'documentationUrl': 'using-plugins.html'
 });
 
 PluginRegistry.add('main.menu', {

@@ -6,7 +6,7 @@ module.exports = defineConfig({
     screenshotsFolder: 'report/screenshots',
     videosFolder: 'report/videos',
     video: true,
-    defaultCommandTimeout: 15000,
+    defaultCommandTimeout: 25000,
     numTestsKeptInMemory: 10,
     e2e: {
         // We've imported your old cypress plugins here.
@@ -21,5 +21,8 @@ module.exports = defineConfig({
         reporterOptions: {
             configFile: 'cypress-reporter-config.json'
         }
+    },
+    env: {
+        set_default_user_data: true
     }
 });

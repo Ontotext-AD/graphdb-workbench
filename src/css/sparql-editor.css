@@ -1,6 +1,9 @@
-.sparql-editor-view #sparql-query-update-title-label {
+.sparql-editor-view #title-container {
     position: relative;
     margin-bottom: -35px;
+}
+
+.sparql-editor-view #sparql-query-update-title-label {
     z-index: 1;
 }
 

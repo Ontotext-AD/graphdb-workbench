@@ -33,7 +33,10 @@
 
 <link href="css/lib/ng-tags-input/ng-tags-input.min.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-<h1>{{pageTitle}}</h1>
+<h1>
+    {{pageTitle}}
+    <page-info-tooltip></page-info-tooltip>
+</h1>
 
 <div id="wb-user" ng-hide="loader">
 	<form name="form" class="form newUserForm userForm editUserContainer" ng-submit="submit()" novalidate>
@@ -138,7 +141,11 @@
 							{{'security.ignore.shared.queries' | translate}}
 						</label>
 
-					</div>
+                        <label class="d-block" ng-if="showCookiePolicyLink">
+                            <button class="btn btn-secondary show-cookie-policy-btn" ng-click="showCookiePolicy($event)">{{'cookie.cookie_policy_url_label' | translate}}</button>
+                        </label>
+
+                    </div>
 				</div>
 
 				<div class="card" id="workbench-settings" ng-if="showWorkbenchSettings">
@@ -222,7 +229,7 @@
                                         ng-keydown="checkUserInput($event)"
                                         ng-cut="removeErrorOnCut()"
                                         placeholder="{{'security.user.add.custom_role.msg' | translate}}"
-                                        custom-role-prefix></tags-input>
+                                        custom-prefix-tags-input></tags-input>
                             <div class="small" ng-hide="isRoleValid">
                                 <small>{{'security.user.role.too.short' | translate}}</small>
                             </div>

@@ -2,28 +2,21 @@
 
 <div class="no-agents-view-component">
     <div class="content">
-        <div class="alert alert-help mb-3">{{ 'ttyg.agent.messages.help_1' | translate }}</div>
-        <div class="alert alert-help mb-3">{{ 'ttyg.agent.messages.help_2' | translate }}</div>
-        <div class="alert alert-warning mb-3">
-            <div>
-                {{ 'ttyg.agent.messages.token_prop_warn1' | translate }}
-                <strong class="ttyg-token-prop copyable">graphdb.gpt.token</strong>
-                <copy-to-clipboard tooltip-text="ttyg.agent.btn.copy_gpt_token_prop.tooltip"></copy-to-clipboard>
-                {{ 'ttyg.agent.messages.token_prop_warn2' | translate }}
-                <strong>conf/graphdb.properties</strong>
-                {{ 'ttyg.agent.messages.token_prop_warn3' | translate }}
-            </div>
-            <a href="https://graphdb.ontotext.com/documentation/10.8/talk-to-graph.html">{{ 'ttyg.agent.messages.token_prop_warn4' | translate }}</a>
-        </div>
+        <div class="alert alert-help mb-3" ng-bind-html="'ttyg.agent.messages.help_1' | translate | trustAsHtml"></div>
+        <div class="alert alert-help mb-3" ng-bind-html="'ttyg.agent.messages.help_2' | translate | trustAsHtml"></div>
 
         <div class="actions">
             <button class="btn btn-outline-primary btn-lg text-xs-left create-agent-btn"
                     gdb-tooltip="{{!canModifyAgent ? ('ttyg.agent.fat_btn.create_agent.tooltip_disabled' | translate) : ''}}"
                     ng-disabled="!canModifyAgent"
                     ng-click="onCreateAgent()">
-                <i class="fa-regular fa-message-bot fa-xl"></i>
-                <span class="text ml-1">{{'ttyg.agent.fat_btn.create_agent.label' | translate}}</span>
+                <i class="fa fa-message-bot fa-xl"></i>
+                <span class="text">{{'ttyg.agent.fat_btn.create_agent.label' | translate}}</span>
             </button>
+        </div>
+
+        <div class="alert alert-warning mt-3">
+            <div ng-bind-html="'ttyg.agent.messages.help_config' | translate | trustAsHtml"></div>
         </div>
     </div>
 </div>

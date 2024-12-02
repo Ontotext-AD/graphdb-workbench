@@ -7,7 +7,8 @@ PluginRegistry.add('route', [
         'controller': 'UsersCtrl',
         'templateUrl': 'js/angular/security/templates/users.html',
         'title': 'menu.users.and.access.label',
-        'helpInfo': 'view.users.access.helpInfo'
+        'helpInfo': 'view.users.access.helpInfo',
+        'documentationUrl': 'working-with-workbench.html#wbmenu-users-and-access'
     }, {
         'url': '/user/create',
         'module': 'graphdb.framework.security',
@@ -37,9 +38,10 @@ PluginRegistry.add('route', [
         'module': 'graphdb.framework.security',
         'path': 'security/app',
         'chunk': 'security',
-        'controller': 'ChangeUserPasswordSettingsCtrl',
+        'controller': 'UserSettingsController',
         'templateUrl': 'js/angular/security/templates/user.html',
-        'title': 'view.settings.title'
+        'title': 'view.settings.title',
+        'documentationUrl': 'customizing-workbench-behavior.html#user-settings'
     }, {
         'url': '/accessdenied',
         'templateUrl': 'pages/accessdenied.html',

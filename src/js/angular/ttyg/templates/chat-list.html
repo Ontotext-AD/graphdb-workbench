@@ -3,7 +3,7 @@
 <div class="chat-list-component">
     <div class="chat-list">
         <div ng-repeat="chatGroup in chatList.chatsByDay" class="chat-group">
-            <label>{{getHumanReadableTimestamp(chatGroup.timestamp)}}</label>
+            <label>{{ getHumanReadableChatGroupTimestamp(chatGroup.timestamp) }}</label>
             <ul>
                 <li ng-repeat="chat in chatGroup.chats track by chat.hash" class="chat-item"
                     ng-class="{'selected': chat.id === selectedChat.id, 'edited': renamedChat && chat.id === renamedChat.id}">
@@ -12,11 +12,13 @@
                             <inline-editable-text
                                 field-name="name"
                                 source="chat"
-                                is-editing="renamedChat && chat.id === renamedChat.id"
+                                is-editing="chat.id && renamedChat && chat.id === renamedChat.id"
                                 on-save="onRenameChat(newText, source)"
                                 on-cancel="onCancelChatRenaming()"
                                 on-dblclick="onSelectChatForRenaming(chat)"
-                                on-click="onSelectChat(source)">
+                                on-click="onSelectChat(source)"
+                                title="{{chat.name}}"
+                                show-tooltip-on-overflow>
                             </inline-editable-text>
                         </div>
                         <div ng-if="chat.id && (!renamedChat || chat.id !== renamedChat.id)" class="btn-group">
@@ -25,20 +27,20 @@
                                     ng-if="true"
                                     ng-click="openChatActionMenu()"
                                     ng-disabled="false">
-                                <i class="fa-regular fa-ellipsis"></i>
+                                <i class="fa fa-ellipsis"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-right chat-actions-menu">
                                 <button class="dropdown-item export-chat-btn" type="button" ng-click="onExportChat(chat)">
-                                    <i class="fa-regular fa-arrow-down-to-line"></i>
+                                    <i class="fa fa-arrow-down-to-line"></i>
                                     <span>{{'ttyg.chat.btn.export_chat.label' | translate}}</span>
                                 </button>
                                 <button class="dropdown-item rename-chat-btn" type="button" ng-click="onSelectChatForRenaming(chat)">
-                                    <i class="fa-regular fa-pen"></i>
+                                    <i class="fa fa-pen"></i>
                                     <span>{{'ttyg.chat.btn.rename_chat.label' | translate}}</span>
                                 </button>
                                 <div class="dropdown-divider"></div>
                                 <button class="dropdown-item delete-chat-btn" type="button" ng-click="onDeleteChat(chat)">
-                                    <i class="fa-regular fa-trash-can"></i>
+                                    <i class="fa fa-trash-can"></i>
                                     <span>{{'ttyg.chat.btn.delete_chat.label' | translate}}</span>
                                 </button>
                             </div>

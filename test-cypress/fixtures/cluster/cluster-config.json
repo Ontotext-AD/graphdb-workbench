@@ -5,6 +5,7 @@
     "messageSizeKB": 64,
     "verificationTimeout": 1500,
     "transactionLogMaximumSizeGB": 50.0,
+    "batchUpdateInterval": 5000,
     "nodes": [
         "pc-desktop:7302",
         "pc-desktop:7300",

@@ -1,5 +1,9 @@
 export class LicenseStubs {
 
+    static spyGetLicense() {
+        cy.intercept('GET', '/rest/graphdb-settings/license').as('get-license');
+    }
+
     static stubFreeLicense() {
         cy.intercept('GET', '/rest/graphdb-settings/license', {
             statusCode: 200,
@@ -97,5 +101,12 @@ export class LicenseStubs {
         cy.intercept('POST', 'https://region1.google-analytics.com/**', {
             statusCode: 500
         });
+    }
+
+    static stubLicenseHardcoded(hardcoded = false) {
+        cy.intercept('GET', '/rest/graphdb-settings/license/hardcoded', {
+            statusCode: 200,
+            body: hardcoded + ''
+        }).as('license-hardcoded');
     }
 }

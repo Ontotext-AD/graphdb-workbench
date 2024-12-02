@@ -1,10 +1,14 @@
 <link href="css/rdf-resource-search.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-<div ng-if="getActiveRepository() && hasActiveLocation() && isNotLoading()" ng-cloak>
-    <div id="search-box" class="card search-rdf-input" ng-keydown="onKeyDown($event)" ng-if="!isHomePage()">
+<div ng-cloak>
+    <div id="search-box"
+         class="card search-rdf-input"
+         ng-class="{'show-rdf-search-box-visible': showRdfSearchInput, 'show-rdf-search-box-invisible': !showRdfSearchInput}"
+         ng-keydown="onKeyDown($event)">
         <div class="card-block">
-            <search-resource-input namespacespromise="getNamespacesPromise"
-                                   autocompletepromisestatus="getAutocompletePromise"
+            <search-resource-input
+                                   repository-namespaces="repositoryNamespaces"
+                                   is-autocomplete-enabled="isAutocompleteEnabled"
                                    empty="empty"
                                    open-in-new-tab="true"
                                    preserve-search="true"
@@ -19,6 +23,7 @@
         </div>
     </div>
     <button class="btn btn-link search-rdf-btn"
+            ng-if="!showRdfSearchInput"
             gdb-tooltip="{{'search.resources.msg' | translate}}"
             tooltip-placement="bottom"
             ng-click="showInput()">

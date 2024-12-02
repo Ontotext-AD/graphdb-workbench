@@ -5,6 +5,8 @@ import {GlobalOperationsStatusesStub} from "../../stubs/global-operations-status
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
 import {ImportSettingsDialogSteps} from "../../steps/import/import-settings-dialog-steps";
+import {ClusterStubs} from "../../stubs/cluster/cluster-stubs";
+import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 
 describe('Repositories', () => {
 
@@ -501,6 +503,43 @@ describe('Repositories', () => {
 
         // Then I expect to see a confirmation dialog.
         ModalDialogSteps.verifyDialogBody('Changing the repository ID is a dangerous operation since it renames the repository folder and enforces repository shutdown.');
+    });
+
+    it('should NOT allow restart of LOCAL repository from EDIT PAGE, if node is in cluster', () => {
+        // Given I create a repository
+        cy.createRepository({id: repositoryId});
+        // When I set the node in a cluster
+        GlobalOperationsStatusesStub.stubGlobalOperationsStatusesResponse(repositoryId);
+        // Then go to the local repository's edit page
+        RepositorySteps.visitEditPage(repositoryId);
+        // I expect the repository restart checkbox button to be disabled
+        RepositorySteps.getEditViewRestartButton().should('be.visible');
+        RepositorySteps.getEditViewRestartButton().should('be.disabled');
+    });
+
+    it('should NOT allow restart of LOCAL repositories from REPOSITORIES PAGE, if node is in cluster', () => {
+        // Given I create a repository
+        cy.createRepository({id: repositoryId});
+        // When I set the node in a cluster
+        GlobalOperationsStatusesStub.stubGlobalOperationsStatusesResponse(repositoryId);
+        ClusterStubs.stubClusterNodeStatus();
+        // Then go to the repositories page
+        RepositorySteps.visit();
+        // I expect the local repository's restart button to be disabled
+        RepositorySteps.getRepositoryRestartButton(repositoryId).should('be.visible');
+        RepositorySteps.getRepositoryRestartButton(repositoryId).should('be.disabled');
+    });
+
+    it('should ALLOW restart of REMOTE repositories from REPOSITORIES PAGE, if node is in cluster', () => {
+        // Given I have a remote location
+        RepositoriesStubs.stubRepositories(0, '/repositories/get-remote-and-local-repositories.json');
+        RepositoriesStubs.stubLocations();
+        // When I set the node in a cluster
+        ClusterStubs.stubClusterNodeStatus();
+        // Then go to the repositories page
+        RepositorySteps.visit();
+        // Then I expect the remote repository's restart button to be enabled
+        RepositorySteps.getRestartRemoteRepoButton(0).should('be.enabled');
     });
 
     function interceptRulesetFileUpload() {

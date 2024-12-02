@@ -6,7 +6,8 @@ PluginRegistry.add('route', {
     'controller': 'NamespacesCtrl',
     'templateUrl': 'pages/namespaces.html',
     'title': 'menu.namespaces.label',
-    'helpInfo': 'view.namespaces.helpInfo'
+    'helpInfo': 'view.namespaces.helpInfo',
+    'documentationUrl': 'configuring-a-repository.html#namespaces-defined-for-the-repository'
 });
 
 PluginRegistry.add('main.menu', {

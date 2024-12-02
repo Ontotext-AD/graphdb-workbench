@@ -3,15 +3,11 @@
         "buttons": {
             "delete_cluster": "Supprimer le cluster",
             "delete_cluster_tooltip": "Supprimer le cluster existant",
-            "add_nodes_btn": "Ajout de nœuds",
-            "add_nodes_btn_tooltip": "Ajouter des nœuds à un cluster existant",
-            "remove_nodes_btn": "Supprimer les nœuds",
-            "remove_nodes_btn_tooltip": "Supprimer des nœuds du cluster existant",
-            "replace_nodes_btn": "Remplacer les nœuds",
-            "replace_nodes_btn_tooltip": "Remplacer les nœuds dans le cluster",
-            "edit_cluster": "Modifier la configuration",
-            "edit_cluster_tooltip": "Modifier la configuration du cluster",
-            "show_cluster_settings_tooltip": "Afficher la configuration du cluster"
+            "edit_cluster": "Modifier les propriétés",
+            "edit_cluster_tooltip": "Modifier les propriétés du cluster",
+            "show_cluster_settings_tooltip": "Afficher la configuration du cluster",
+            "update_nodes_group_btn": "Modifier le cluster",
+            "update_nodes_group_btn_tooltip": "Modifier les nœuds du cluster"
         },
         "cluster_graphical_view": {
             "no_cluster_configured": "Aucun cluster n'est configuré",
@@ -62,6 +58,7 @@
             }
         },
         "cluster_configuration_properties": {
+            "label": "Propriétés",
             "election_min_timeout": "Délai minimum d'élection",
             "election_min_timeout_tooltip": "Election min timeout concerne le temps d'attente minimum en millisecondes pour un heartbeat d'un leader. Si le temps s'écoule sans qu'un leader ne reçoive de message Heartbeat. Le suiveur deviendra un candidat et demandera des votes aux autres nœuds.",
             "election_range_timeout": "Délai d'expiration de la plage d'élection",
@@ -73,23 +70,69 @@
             "verification_timeout": "Délai de vérification",
             "verification_timeout_tooltip": "Le délai de vérification concerne la durée pendant laquelle un nœud suiveur attendra avant de tenter de vérifier la dernière entrée engagée lorsque la première vérification n'a pas abouti.",
             "transaction_log_maximum_size_gb": "Taille maximale du journal des transactions GB",
-            "transaction_log_maximum_size_gb_tooltip": "Taille maximale du journal des transactions en GB qui déclenchera une troncature automatique du journal des transactions s'il devient plus grand. La taille minimale du journal des transactions est de 1 GB. Les nombres négatifs désactivent la troncature automatique du journal des transactions."
+            "transaction_log_maximum_size_gb_tooltip": "Taille maximale du journal des transactions en GB qui déclenchera une troncature automatique du journal des transactions s'il devient plus grand. La taille minimale du journal des transactions est de 1 GB. Les nombres négatifs désactivent la troncature automatique du journal des transactions.",
+            "batch_update_interval": "Intervalle de mise à jour par lots",
+            "batch_update_interval_tooltip": "Spécifie l'intervalle de temps (en millisecondes) auquel les mises à jour sont regroupées et synchronisées entre les clusters primaire et secondaire."
+        },
+        "cluster_configuration_nodes": {
+            "label": "Nœuds",
+            "local": "Local"
+        },
+        "cluster_configuration_multi_region": {
+            "label": "Multi-région",
+            "primary_cluster": "Cluster principal",
+            "secondary_cluster": "Cluster secondaire",
+            "primary_leader": "Leader principal : {{primaryLeader}}",
+            "create_tag": "Ajouter une balise d'identification",
+            "create_tag_tooltip": "Ajouter une balise d'identification à utiliser avec ce cluster",
+            "enable_secondary_mode": "Activer le mode secondaire",
+            "enable_secondary_mode_tooltip": "Activer ce cluster en mode secondaire",
+            "delete_tag_tooltip": "Supprimer la balise",
+            "cancel_tooltip": "Annuler",
+            "disable_secondary_mode": "Désactiver le mode secondaire",
+            "disable_secondary_mode_tooltip": "Désactiver le mode secondaire du cluster",
+            "created_tag": "Ajouté avec succès à la balise d'identification principale du cluster : {{tag}}",
+            "deleted_tag": "La balise d'identification principale '{{tag}}' a été supprimée du cluster",
+            "secondary_enabled": "Mode secondaire activé avec succès",
+            "disabled_secondary_mode": "Le mode secondaire est désactivé",
+            "secondary_cluster_settings": "Paramètres du cluster secondaire",
+            "column": {
+                "index": "",
+                "tag": "Balise d'identification",
+                "tag_index": "Index"
+            },
+            "confirm": {
+                "delete": "Supprimer la balise d'identification {{tag}}",
+                "warning": "La suppression de la balise d'identification empêcherait tout cluster secondaire identifié avec elle de récupérer des mises à jour.",
+                "disable_secondary_mode": "Désactiver le mode secondaire",
+                "disable_secondary_mode_warning": "En désactivant le mode secondaire, ce cluster cesserait d'être une réplique en lecture seule.",
+                "enable_secondary": "Activer le mode secondaire",
+                "enable_secondary_warning": "En activant le mode secondaire, ce cluster deviendrait une réplique en lecture seule du cluster principal spécifié."
+
+            },
+            "error": {
+                "ascii": "Caractères non valides détectés. Seuls les caractères ASCII imprimables sont autorisés.",
+                "length": "La longueur d'entrée doit être comprise entre {{minLen}} et {{maxLen}} caractères.",
+                "creating": "Erreur lors de la création de la balise",
+                "deleting": "Erreur lors de la suppression de la balise",
+                "disabling": "Erreur lors de la désactivation du mode secondaire",
+                "secondary": "Erreur lors de l'activation du mode secondaire"
+            },
+            "secondary_mode_modal": {
+                "rpc_address": "Toute adresse RPC de nœud de cluster principal *",
+                "rpc_address_placeholder": "node-name:7300",
+                "tag": "Balise d'identification *",
+                "tag_placeholder": "Exemple : us-central"
+            }
         },
         "cluster_page": {
             "create_page_title": "Créer un cluster",
             "edit_page_title": "Modifier le cluster",
             "creating_cluster_loader": "Création d'un cluster...",
-            "add_nodes_loader": "Ajout de nœuds au cluster...",
-            "replace_nodes_loader": "Remplacement des nœuds dans le cluster...",
-            "remove_nodes_loader": "Suppression des nœuds du cluster...",
             "updating_cluster_loader": "Mise à jour du cluster...",
-            "cluster_nodes_list": "Liste des nœuds du cluster",
-            "remote_locations": "Nœuds à distance",
-            "remove_node_btn_tooltip": "Retirer le nœud du cluster",
             "current_node": "Nœud actuel",
             "advanced_options": "Options avancées",
             "advanced_options_tooltip": "Options avancées pour la configuration des clusters",
-            "select_from_locations_hint": "Sélectionner des nœuds à distance",
             "toggle_legend_btn": "Légende",
             "toggle_legend_btn_tooltip": "Afficher/masquer la légende",
             "errors": {
@@ -107,20 +150,13 @@
                     "no_cluster_configured": "Les nœuds ne doivent pas avoir de configuration de cluster"
                 }
             },
-            "create_btn": "Créer",
             "save_btn": "Sauvez",
             "notifications": {
                 "create_success": "Cluster créé avec succès",
                 "create_failed": "La création du cluster a échoué",
                 "update_success": "Cluster mis à jour avec succès",
                 "update_failed": "La mise à jour du cluster a échoué",
-                "form_invalid": "Les données du formulaire ne sont pas valides",
-                "add_nodes_success": "Nœuds ajoutés avec succès",
-                "add_nodes_fail": "L'ajout de nœuds a échoué",
-                "replace_nodes_success": "Nœuds remplacés avec succès",
-                "replace_nodes_fail": "Le remplacement des nœuds a échoué",
-                "remove_nodes_success": "Nœuds supprimés avec succès",
-                "remove_nodes_fail": "La suppression des nœuds a échoué"
+                "form_invalid": "Les données du formulaire ne sont pas valides"
             }
         },
         "delete_cluster_dialog": {
@@ -135,18 +171,44 @@
                 "fail_delete": "Impossible de supprimer le cluster"
             }
         },
-        "replace_nodes_dialog": {
-            "title": "Remplacer les nœuds dans le cluster",
-            "nodes_to_replace_label": "Nœuds à ajouter au cluster",
-            "cluster_nodes_list": "Sélectionnez les nœuds à supprimer du cluster existant"
-        },
-        "add_nodes_dialog": {
-            "title": "Ajouter des nœuds au cluster",
-            "nodes_to_add_label": "Nœuds à ajouter au cluster"
-        },
-        "remove_nodes_dialog": {
-            "title": "Supprimer des nœuds du cluster",
-            "content": "Sélectionner les nœuds à retirer du cluster existant"
+        "update_cluster_group_dialog": {
+            "title": "Modifier le cluster",
+            "title_create": "Créer un cluster",
+            "current_node": "Nœud actuel",
+            "new_node": "Le nœud sera ajouté",
+            "deleted_node": "Le nœud sera supprimé",
+            "leader": "Leader",
+            "follower": "Suiveur",
+            "candidate": "Candidat",
+            "no_cluster": "Aucun cluster",
+            "out_of_sync": "Désynchronisé",
+            "no_connection": "Aucune connexion",
+            "read_only": "Lecture seule",
+            "restricted": "Restricté",
+            "column": {
+                "index": "",
+                "location": "URL d'emplacement",
+                "info": "",
+                "status": "Changement de statut"
+            },
+            "actions": {
+                "replace_node": "Remplacer le nœud",
+                "delete_node": "Supprimer le nœud",
+                "cannot_delete_node": "Vous ne pouvez pas supprimer plus de la moitié des nœuds sains en même temps",
+                "add_node": "Ajouter un nœud",
+                "add_node_tooltip": "Ajouter un nœud au cluster actuel",
+                "cancel": "Annuler",
+                "restore_node": "Annuler"
+            },
+            "messages": {
+                "no_cluster": "Aucun cluster n'est configuré",
+                "invalid_form": "URL d'emplacement non valide",
+                "connecting_node": "Connexion du nœud",
+                "save_to_apply": "Enregistrer pour appliquer les modifications"
+            },
+            "field_placeholders": {
+                "location": "http://my-hostname:7200"
+            }
         }
     },
     "acl_management": {
@@ -207,7 +269,7 @@
             "loading_rules": "Erreur lors du chargement des règles ACL",
             "updating_rules": "Erreur lors de la mise à jour des règles ACL",
             "duplicated_rules": "Chaque règle ACL doit être unique.",
-            "role_length_too_short": "Trop court"
+            "role_length_too_short": "Trop court ou pas \"*\""
         },
         "defaults": {
             "asterisk": "* - Toute valeur RDF",
@@ -217,7 +279,7 @@
         }
     },
     "ttyg": {
-        "helpInfo": "Parlez à votre graphe est un chatbot basé sur le modèle GPT-4 d'OpenAI qui peut répondre aux questions sur les données stockées dans GraphDB, en exploitant à la fois vos données et les connaissances générales du modèle GPT-4. Le bot fonctionne dans connexion avec le connecteur ChatGPT Retrieval.",
+        "helpInfo": "La vue <b>Parlez à votre graphe</b> vous permet d'interagir avec votre base de données via une interface conversationnelle. Vous pouvez poser des questions en langage naturel sur les données et recevoir des réponses générées grâce à la puissance combinée de GraphDB et OpenAI. Elle prend en charge plusieurs configurations d'agents et des conversations persistantes pour des échanges contextuels en continu.",
         "loading": "Chargement...",
         "help": {
             "btn": {
@@ -263,7 +325,6 @@
                 }
             },
             "messages": {
-                "create_failure": "Échec de la création de la conversation. Veuillez réessayer.",
                 "rename_failure": "Échec du renommage de la conversation. Veuillez réessayer.",
                 "delete_failure": "Échec de la suppression de la conversation. Veuillez réessayer.",
                 "export_failure": "Échec de l'exportation de la conversation. Veuillez réessayer."
@@ -278,7 +339,7 @@
         "chat_panel": {
             "hint1": "<div><span class=\"graph\">GRAPH</span><span class=\"wise\">WISE</span></div><div class=\"thrives\">AI THRIVES ON WHOLE DATA</div>",
             "hint2": "Posez simplement une question !",
-            "deleted_agent": "<span class=\"text-warning\"><i class=\"fa-regular fa-triangle-exclamation fa-xs\"></i> agent supprimé</span>",
+            "deleted_agent": "<span class=\"text-warning\"><i class=\"fa fa-triangle-exclamation fa-xs\"></i> agent supprimé</span>",
             "btn": {
                 "ask": {
                     "label": "Demander"
@@ -322,25 +383,30 @@
                 "query_method": "Méthode de requête",
                 "raw_query": "Requête brute",
                 "sparql_query": "Requête SPARQL",
-                "agent_name": "Agent: {{agentName}}",
+                "agent_name": "Agent : {{agentName}} <br/> {{date}} à {{time}}",
+                "question_asked": "{{date}} à {{time}}",
                 "json": "JSON",
                 "error_message": "Message d'erreur envoyée au modèle",
                 "explain_no_methods": "Aucune méthode de requête n'a été appelée.",
-                "called": "{{('ttyg.chat_panel.query_name.' + name) | translate}} a été appelé"
+                "called": "{{('ttyg.chat_panel.query_name.' + name) | translate}} a été appelé",
+                "no_query": "Il n'y a pas de requête."
             },
             "query_name": {
                 "sparql_query": "SPARQL",
                 "fts_search": "Recherche en texte intégral",
                 "similarity_search": "Recherche de similarité",
                 "retrieval_search": "ChatGPT Retrieval",
-                "iri_discovery": "FTS pour la découverte IRI"
+                "iri_discovery": "FTS pour la découverte IRI",
+                "now": "La fonction \"Maintenant\""
             },
+            "query_colon": " :",
             "query_desc": {
                 "sparql_query": "Requête directe",
                 "fts_search": "Recherche en texte intégral via SPARQL",
                 "similarity_search": "Recherche de similarité via SPARQL",
                 "retrieval_search": "Requête JSON directe",
-                "iri_discovery": "Recherche en texte intégral via SPARQL"
+                "iri_discovery": "Recherche en texte intégral via SPARQL",
+                "now": "Renvoie l'heure système"
             },
             "dialog": {
                 "confirm_repository_change": {
@@ -537,6 +603,9 @@
                     },
                     "save": {
                         "label": "Enregistrer"
+                    },
+                    "explain_settings": {
+                        "label": "Expliquer les paramètres"
                     }
                 },
                 "dialog": {
@@ -551,6 +620,36 @@
             "delete_agent_modal": {
                 "title": "Supprimer l'agent",
                 "body": "Voulez-vous vraiment supprimer l'agent <b>{{agentName}}</b>?"
+            },
+            "instructions_explain_modal": {
+                "title": "Instructions pour les agents",
+                "instructions": {
+                    "baseInstructions": {
+                        "label": "Instructions de base",
+                        "description": "Établit le contexte principal et les directives fondamentales pour le comportement de l'agent."
+                    },
+                    "additionalInstructions": {
+                        "label": "Instructions supplémentaires",
+                        "description": "Fournit des directives supplémentaires pour personnaliser davantage le comportement de l'agent ou spécifier des vérités importantes."
+                    },
+                    "sparqlInstructions": {
+                        "label": "Instructions SPARQL",
+                        "description": "Détaille les instructions pour la construction et l'exécution des requêtes SPARQL."
+                    },
+                    "ontologyIntroduction": {
+                        "label": "Introduction à l'ontologie",
+                        "description": "Introduit la section contenant les données de l'ontologie."
+                    },
+                    "ontology": {
+                        "label": "Ontologie",
+                        "description": "Représente l'ontologie extraite et sérialisée."
+                    }
+                },
+                "btn": {
+                    "close": {
+                        "label": "Fermer"
+                    }
+                }
             },
             "agent_select_menu": {
                 "no_selection_label": "Sélectionner un agent",
@@ -605,8 +704,9 @@
             },
             "messages": {
                 "no_agents": "Aucun agent n'est configuré pour le moment.",
-                "help_1": "Parlez à vos données en langage naturel. Il vous suffit de créer et d'instruire votre propre agent IA pour vous aider.",
-                "help_2": "The Agent est un agent conversationnel basé sur l'IA, conçu pour vous aider dans une large gamme de tâches, de la réponse aux questions et la fourniture d'informations à l'assistance dans le cadre de projets créatifs et techniques. Il exploite un traitement avancé du langage naturel pour comprendre et répondre aux entrées des utilisateurs de manière humaine, rendant les interactions intuitives et efficaces.",
+                "help_1": "{{'ttyg.helpInfo'|translate|trustAsHtml}}",
+                "help_2": "{{'ttyg.help.how.content2'|translate|trustAsHtml}}",
+                "help_config": "Pour utiliser <b>Parlez à votre graphe</b>, GraphDB doit d'abord être configuré pour fonctionner avec OpenAI. Veuillez vous assurer que les clés API et les paramètres nécessaires sont en place avant de commencer. Pour des instructions détaillées sur la configuration, consultez la <a href=\"{{talkToGraphDocumentationLink}}\" target=\"_blank\" rel=\"noopener\">documentation<i class=\"icon-external\"></i></a> ou contactez votre administrateur.",
                 "token_prop_warn1": "Pour activer cette fonctionnalité, définissez la propriété de configuration",
                 "token_prop_warn2": "à votre jeton GPT dans le fichier",
                 "token_prop_warn3": ".",
@@ -619,23 +719,11 @@
             }
         },
         "help.what.title": "Qu'est-ce que c'est ?",
-        "help.what.content": "Parlez à votre graphe est un chatbot basé sur le modèle GPT-4 d'OpenAI qui peut répondre aux questions sur les données stockées dans GraphDB, en exploitant à la fois vos données et les connaissances générales du modèle GPT-4.",
+        "help.what.content": "{{'ttyg.helpInfo'|translate|trustAsHtml}}",
         "help.how.title": "Comment ça marche ?",
         "help.how.content": "Le bot utilise le connecteur ChatGPT Retrieval pour récupérer des informations dont il ne connaît pas. A ce titre, vous devez d'abord créer un tel connecteur. Voir aussi les paramètres pour affiner l'intégration avec le Connecteur de récupération.",
-        "clear.hint": "Effacer l'historique de la conversation.",
-        "clear.history.confirmation": "Cela effacera l'historique de la conversation.",
-        "settings.title": "Paramètres pour parler à votre graphe",
-        "settings.info": "Les paramètres sont stockés uniquement dans le navigateur et sont par dépôt.",
-        "settings.connector.id": "ID du connecteur ChatGPT Retrieval",
-        "settings.connector.id.tooltip": "L'ID du connecteur ChatGPT Retrieval à utiliser. S'il est vide, le premier connecteur défini sera utilisé.",
-        "settings.query.template": "Modèle de requête",
-        "settings.query.template.tooltip": "Le modèle de requête utilisé par le chatbot pour demander plus d'informations au connecteur. Il doit contenir au moins la clé \"query\" mais peut également contenir un \"filter\" clé si votre connecteur possède des métadonnées appropriées.",
-        "settings.ground.truths": "Vérités fondamentales",
-        "settings.ground.truths.tooltip": "Une liste facultative de vérités fondamentales qui aident le chatbot à établir le contexte.",
-        "settings.topk": "Nombre des meilleurs résultats",
-        "settings.topk.tooltip": "Nombre de résultats renvoyés au chatbot lorsqu'il demande plus d'informations. Plus de résultats fourniront plus d'informations mais ils peuvent également introduire du bruit.",
-        "settings.echo.vector.query": "Écho à la requête vectorielle",
-        "settings.echo.vector.query.tooltip": "S'il est activé, le bot utilisera les requêtes générées comme retour à l'API GPT."
+        "help.how.content1": "<b>Parlez à votre graphe</b> est alimenté par l'API Assistants d'OpenAI. Vous commencez par sélectionner ou configurer un agent, qui définit le contexte et les règles de requête. Une fois en place, vous pouvez démarrer une conversation en posant des questions en langage naturel. L'assistant interprète votre requête, exécute les méthodes de requête appropriées pour récupérer les données, et vous répond. La fonction de conversation persistante garantit que les échanges restent contextuellement cohérents, permettant des interactions plus approfondies au fil du temps. Vous pouvez utiliser plusieurs agents simultanément pour couvrir différents domaines ou sources de données.",
+        "help.how.content2": "Un agent dans <b>Parlez à votre graphe</b> est un assistant piloté par l'IA, spécifiquement configuré pour interagir avec votre base de données graphe. Il utilise un traitement avancé du langage naturel pour comprendre et répondre à vos questions en interrogeant la base de données et en fournissant des informations pertinentes. Chaque agent est adapté à un contexte spécifique, rendant les interactions fluides et efficaces, que ce soit pour récupérer des données, explorer des insights ou travailler sur des projets complexes."
     },
     "config.name.label": "Nom de configuration",
     "graph.config.required": "Ma configuration de graphe (obligatoire)",
@@ -728,7 +816,7 @@
     "monitor.performance.no_repository": "Les graphiques ne sont pas disponibles parce que vous n'êtes connecté à aucun référentiel",
     "monitor.cluster.no_cluster": "Les graphiques ne sont pas disponibles car GraphDB ne fait pas partie de la configuration du cluster",
     "monitor.cluster": "Santé en cluster",
-    "monitor.retrying": "Réessais: {{retry}}",
+    "monitor.retrying": "Réessais : {{retry}}",
     "access.to.url.restricted": "L'accès à l'URL demandé est restreint !",
     "autocomplete.not.supported": "La complétion automatique n'est pas entièrement prise en charge",
     "autocomplete.config.not.supported": "La configuration de la complétion automatique n'est pas prise en charge.",
@@ -811,8 +899,8 @@
     "query.execution.on.search": "Cette requête est exécutée pendant la recherche. Ajoutez plus de liens en modifiant cette requête pour voir plus de données dans le tableau de résultats.",
     "query.fetch.analogical.search": "La requête détermine les données qui seront recherchées lors de la recherche analogique.",
     "analogical.search.info": "Cette requête est exécutée pendant la recherche analogique. Ajoutez des liens supplémentaires en modifiant cette requête pour voir plus de données dans le tableau de résultats.",
-    "sample.queries": "Exemples de requêtes:",
-    "user.queries": "Requêtes des utilisateurs:",
+    "sample.queries": "Exemples de requêtes :",
+    "user.queries": "Requêtes des utilisateurs :",
     "create.index.label": "Créer un index",
     "view.index.query": "Requête d'affichage de l'index",
     "test.query.btn": "Requête de test",
@@ -893,8 +981,8 @@
     "save.graph.enter.name": "Entrez le nom",
     "rdf.class.hierarchy.class.count.slider": "Curseur de comptage des classes",
     "rdf.class.hierarchy.description": "Permet de réduire le nombre de classes affichées sur le diagramme\n en triant celles qui ont le nombre maximum d'instances dans votre dépôt.\n Vous pouvez ajuster le nombre précisément en utilisant le mouvement cliquer + glisser ou la molette de la souris\n jusqu'au nombre qui vous satisfait.",
-    "rdf.class.hierarchy.min.value": "Valeur min:",
-    "rdf.class.hierarchy.max.value": "Valeur maximale:",
+    "rdf.class.hierarchy.min.value": "Valeur min :",
+    "rdf.class.hierarchy.max.value": "Valeur maximale :",
     "rdf.class.hierarchy.max.from.repo": "Calculé à partir de votre dépôt",
     "rdfs.comment.show": "Afficher",
     "rdfs.comment.hide": "Cacher",
@@ -915,11 +1003,11 @@
     "security.repository.title": "Dépôt",
     "security.tooltip.read": "Lire",
     "security.tooltip.write": "Ecriture",
-    "security.user.may": "L'utilisateur peut:",
+    "security.user.may": "L'utilisateur peut :",
     "security.use.gdb": "Utiliser GraphDB",
     "security.grant.read.access": "Avoir un accès en lecture à un dépôt",
     "security.grant.read.write.access": "Avoir accès en lecture/écriture à un dépôt",
-    "security.repo.manager.may": "Le gestionnaire de dépôt peut:",
+    "security.repo.manager.may": "Le gestionnaire de dépôt peut :",
     "security.read.write.all.repos": "Lire et écrire tous les dépôts",
     "security.create.edit.delete.repos": "Créer, modifier et supprimer des dépôts",
     "security.access.monitoring": "Surveillance des accès",
@@ -999,11 +1087,12 @@
     "resource.system.file_descriptors.label": "Descripteurs de fichiers",
     "resource.system.file_descriptors.tooltip": "Affiche les descripteurs de fichiers actuellement ouverts. Avoir plus de dépôts actifs ou d'opérations en cours augmente le nombre. Il devrait toujours y avoir des descripteurs libres pour traiter les nouvelles demandes. Si le nombre augmente mais ne diminue pas une fois que les opérations qui ont besoin des descripteurs sont terminées, cela peut indiquer un problème avec GraphDB",
     "resource.system.file_descriptors.open": "Descripteurs de fichiers ouverts",
-    "resource.system.file_descriptors.max": "Descripteurs de fichiers maximum: {{max}}",
+    "resource.system.file_descriptors.max": "Descripteurs de fichiers maximum : {{max}}",
     "resource.system.file_descriptors.only_unix": "Disponible uniquement pour les systèmes basés sur UNIX",
     "resource.memory.heap.label": "Utilisation de la mémoire du tas",
     "resource.memory.heap.tooltip": "Montre la mémoire du tas utilisée par GraphDB. La mémoire du tas est la mémoire principale allouée pour faire fonctionner la base de données et elle est également utilisée pour toutes les opérations gourmandes en mémoire lorsque cela est nécessaire. L'approche de la taille maximale du tas peut ralentir GraphDB",
     "resource.memory.heap.max": "Taille maximale du tas : ",
+    "resource.memory.non_heap.max": "Taille maximale hors-heap : ",
     "resource.memory.non_heap.label": "Utilisation de la mémoire hors-heap",
     "resource.memory.non_heap.tooltip": "Montre la mémoire hors-heap utilisée par GraphDB. La mémoire off-heap n'est utilisée que pour certaines structures et ne devrait pas augmenter de façon substantielle avec le temps",
     "resource.memory.committed": "La mémoire engagée",
@@ -1015,9 +1104,9 @@
     "resource.storage.work": "Travail",
     "resource.storage.data": "Données",
     "resource.storage.logs": "Bûches",
-    "resource.storage.subtitle.data": "Données: ",
-    "resource.storage.subtitle.work": "Travail: ",
-    "resource.storage.subtitle.logs": "Bûches: ",
+    "resource.storage.subtitle.data": "Données : ",
+    "resource.storage.subtitle.work": "Travail : ",
+    "resource.storage.subtitle.logs": "Bûches : ",
     "resource.epool.label": "Pool d'entités",
     "resource.epool.tooltip": "Montre le nombre de lectures et d'écritures du pool d'entités de GraphDB pour le référentiel actuel. Cette métrique peut être utilisée pour diagnostiquer un pool d'entités petit ou surdimensionné",
     "resource.epool.reads": "Lire",
@@ -1026,8 +1115,8 @@
     "resource.queries.label": "Requêtes",
     "resource.queries.tooltip": "Indique le nombre de requêtes ou de mises à jour actives dans le référentiel actuel. Le nombre augmente avec chaque requête ou mise à jour en cours et diminue lorsque la requête ou la mise à jour est terminée. En outre, le graphique indique le nombre total de requêtes lentes et sous-optimales depuis l'initialisation du référentiel. Un grand nombre de requêtes lentes peut indiquer une insuffisance de ressources système ou simplement des requêtes qui ont besoin de temps pour s'exécuter. Les requêtes sous-optimales sont les requêtes qui ont été évaluées en utilisant une stratégie de repli RDF4J et qui ne devraient normalement pas se produire",
     "resource.queries.running": "Requêtes en cours",
-    "resource.queries.slow": "Requêtes lentes: ",
-    "resource.queries.suboptimal": "Requêtes sous-optimales: ",
+    "resource.queries.slow": "Requêtes lentes : ",
+    "resource.queries.suboptimal": "Requêtes sous-optimales : ",
     "resource.connections.label": "Transactions et Connexions",
     "resource.connections.tooltip": "Indique le nombre de transactions actives et de connexions au référentiel ouvertes. Le nombre de transactions et de connexions varie en fonction de la charge. S'il n'y a pas d'utilisation perçue mais que les chiffres restent supérieurs à zéro, cela peut indiquer un problème avec un client qui ne se débarrasse pas correctement d'une transaction",
     "resource.connections.active": "Transactions actives",
@@ -1042,9 +1131,9 @@
     "resources.cluster_health.out_sync": "Désynchronisation",
     "resources.cluster_health.syncing": "Synchronisation",
     "resources.cluster_health.disconnected": "Déconnecté",
-    "resource.cluster_health.leader_elections": "Élections des dirigeants: ",
-    "resource.cluster_health.recoveries": "Recouvrements: ",
-    "resource.cluster_health.failed_transactions": "Transactions échouées: ",
+    "resource.cluster_health.leader_elections": "Élections des dirigeants : ",
+    "resource.cluster_health.recoveries": "Recouvrements : ",
+    "resource.cluster_health.failed_transactions": "Transactions échouées : ",
     "view.autocomplete.title": "Index Autocomplete",
     "view.autocomplete.helpInfo": "L'index Autocomplete est utilisé pour la complétion automatique des IRIs dans l'éditeur SPARQL et la page de ressources View. Utilisez cette vue pour activer ou désactiver l'index et vérifier son état.",
     "view.clusterManagement.title": "Gestion des clusters",
@@ -1199,7 +1288,7 @@
     "query.editor.abort.requested": "L'arrêt a été demandé",
     "query.editor.abort.update": "Annuler la mise à jour",
     "query.editor.abort.query": "Abandon de la requête",
-    "query.editor.autocomplete.hint": "Indice: \"abC\" correspond à \"abC*\", \"ab c*\" et \"ab-c*\".",
+    "query.editor.autocomplete.hint": "Indice : \"abC\" correspond à \"abC*\", \"ab c*\" et \"ab-c*\".",
     "query.editor.progress.msg": "{{progressMessage}}... {{timeHuman}}",
     "query.editor.extra.msg": "\n{{extraMessage}}",
     "query.editor.warning.msg": "Explain ne fonctionne qu'avec les requêtes SELECT, CONSTRUCT ou DESCRIBE.",
@@ -1225,8 +1314,8 @@
     "yasr.statements.no.change.msg": "Le nombre de déclarations n'a pas changé.",
     "yasr.stale.result.msg": "Résultat possiblement périmé (obtenu il y a {{secondsAgo}}).",
     "query.editor.query.syntax.error": "La requête contient une erreur de syntaxe. Consultez la ligne concernée pour plus d'informations.",
-    "query.editor.missing.saved.query.data.error": "Impossible de récupérer des données pour la requête sauvegardée: {{savedQueryName}}; {{error}}",
-    "query.editor.repo.size.error": "Impossible de récupérer la taille du dépôt pour: {{repo}}; {{error}}",
+    "query.editor.missing.saved.query.data.error": "Impossible de récupérer des données pour la requête sauvegardée : {{savedQueryName}}; {{error}}",
+    "query.editor.repo.size.error": "Impossible de récupérer la taille du dépôt pour : {{repo}}; {{error}}",
     "query.editor.inactive.plugin.warning.msg": "Aucun support pour {{connectorName}}, les connecteurs {{connectorName}} ne sont pas pris en charge car le plugin {{pluginName}} n'est pas actif.",
     "query.editor.repairing.connector": "Réparer le connecteur {{name}}",
     "query.editor.repaired.connector": "Réparé le connecteur {{name}}.",
@@ -1249,7 +1338,7 @@
     "disabled.status": "désactivé",
     "openid.auth.unknown.flow": "Flux d'authentification inconnu : {{authFlow}}",
     "openid.auth.invalid.pkce.state": "État pkce_invalide",
-    "openid.auth.not.jwt.token": "n'est pas un jeton JWT: {{token}}",
+    "openid.auth.not.jwt.token": "n'est pas un jeton JWT : {{token}}",
     "openid.auth.cannot.retrieve.token.msg": "Impossible de récupérer le jeton après la connexion; {{error}}",
     "openid.auth.cannot.refresh.token.msg": "Impossible de rafraîchir le jeton OpenID; {{error}}",
     "repositories.service.error.loading.location": "Erreur de chargement de l'emplacement",
@@ -1375,7 +1464,7 @@
         "remove.selected": "Supprimer les éléments sélectionnés de la liste",
         "remove.btn": "Supprimer",
         "import.btn": "Importer",
-        "remove.confirm.msg": "Êtes-vous sûr de vouloir supprimer les fichiers sélectionnés: {{name}}",
+        "remove.confirm.msg": "Êtes-vous sûr de vouloir supprimer les fichiers sélectionnés : {{name}}",
         "mode.not.supported.constraint": "Ce mode n'est pas pris en charge lors de l'importation de plusieurs éléments.",
         "enable.replace.option": "Activez cette option pour remplacer les données d'un ou plusieurs graphes par les données importées.",
         "context.link": "Contexte JSON-LD",
@@ -1399,7 +1488,7 @@
         "user_data": {
             "duplicates_confirmation": {
                 "title": "Confirmer l'écrasement des fichiers",
-                "message": "Les fichiers suivants sont déjà téléchargés: <br/>{{duplicatedFiles}}<br/>Voulez-vous les écraser",
+                "message": "Les fichiers suivants sont déjà téléchargés : <br/>{{duplicatedFiles}}<br/>Voulez-vous les écraser",
                 "buttons": {
                     "keep_both": "Garde les deux",
                     "overwrite": "Écraser"
@@ -1561,7 +1650,7 @@
     "namespace.warning.delete.selected": "Êtes-vous sûr de vouloir supprimer le ou les espaces de noms sélectionnés?",
     "namespace.prefix.deleted.successfully": "Espace de noms avec préfixe {{prefix}} a été supprimé avec succès.",
     "namespace.selected.namespaces.deleted.successfully": "Les espaces de noms sélectionnés ont été supprimés avec succès.",
-    "namespace.invalid.prefix": "Préfixe invalide: {{prefix}}",
+    "namespace.invalid.prefix": "Préfixe invalide : {{prefix}}",
     "namespace.warning.provide.namespace": "S'il vous plaît fournir un espace de noms.",
     "jdbc.not.get.sql.msg": "Impossible de récupérer les configurations des tables SQL",
     "jdbc.delete.sql.table.warning.msg": "Êtes-vous sûr de vouloir supprimer la configuration de la table SQL '{{name}}'?",
@@ -1573,8 +1662,8 @@
     "jdbc.not.saved.configuration": "Impossible d'enregistrer la configuration de table SQL",
     "jdbc.configuration.updated": "Configuration de table SQL mise à jour",
     "jdbc.suggest.sql.type": "Suggérer type SQL",
-    "jdbc.same.suggested.sql.type": "Le type SQL est le même après avoir suggéré: <b> {{type}} </b>",
-    "jdbc.suggested.sql.type": "Type SQL défini sur: <b> {{type}} </b>",
+    "jdbc.same.suggested.sql.type": "Le type SQL est le même après avoir suggéré : <b> {{type}} </b>",
+    "jdbc.suggested.sql.type": "Type SQL défini sur : <b> {{type}} </b>",
     "jdbc.not.suggest.column.type": "Impossible de suggérer le type de colonne",
     "jdbc.not.suggest.column.types": "Impossible de suggérer des types de colonne",
     "jdbc.warning.column.type.msg": "Êtes-vous sûr de vouloir obtenir des suggestions pour toutes les colonnes? Cette action remplacera tous les mappages de type de colonne!",
@@ -1666,6 +1755,7 @@
     "delete.repo.warning.msg": "<p>Vous êtes sûr de vouloir supprimer le dépôt <strong>{{repositoryId}}</strong>?</p><p><span class=\"icon-2x icon-warning\" style=\"color: var(--primary-color-dark)\"></span>Toutes les données du dépôt seront perdues.</p>",
     "confirm.restart.repo": "Confirmer le redémarrage",
     "confirm.restart.repo.warning.msg": "<p>Vous êtes sûr de vouloir redémarrer le dépôt <strong>{{repositoryId}}</strong>?</p><p><span class=\"icon-2x icon-warning\" style=\"color: var(--primary-color-dark)\"></span>Le dépôt sera arrêté immédiatement et toutes les requêtes et mises à jour en cours seront annulées.</p>",
+    "restart.repo.in.cluster.tooltip": "Le redémarrage d'un dépôt n'est pas pris en charge dans un environnement de cluster. Pour appliquer les modifications de configuration, redémarrez tous les nœuds du cluster.",
     "location.cannot.be.empty.error": "L'emplacement ne peut pas être vide",
     "required.field": "Ce champ est requis",
     "created.repo.success.msg": "Le dépôt {{repoId}} a été créé.",
@@ -1715,10 +1805,10 @@
     "repoTooltips.queryLimitResults": "Définit le nombre maximum de résultats renvoyés par une requête après lequel l'évaluation de celle-ci sera terminée; les valeurs inférieures ou égales à zéro signifient l'absence de limite.",
     "repoTooltips.nonInterpretablePredicates": "Liste délimitée par des points-virgules de prédicats (URI complets) que GraphDB n'essaiera pas de traiter avec les plugins GraphDB enregistrés.",
     "repoTooltips.enableFtsIndex": "Activer l'index de recherche en texte intégral (FTS).",
-    "repoTooltips.ftsIndexes": "Liste de langues délimitées par des virgules qui doivent avoir un index spécifique avec un analyseur approprié pour la recherche en texte intégral. Les valeurs possibles sont: default, iri, ar, bg, bn, br, ca, ja, ko, zh, ku, cz, da, de, el, en, es, et, eu, fa, fi, fr, ga, gl, hi, hu, hy, id, it, lt, lv, ne, nl, no, pt, ro, ru, sr, sv, ta, te, th, tr",
-    "repoTooltips.ftsStringLiteralsIndex": "Index dans lequel les littéraux de chaîne (xsd:string) sont indexés. Les valeurs possibles sont: aucun, par défaut ou code de langue à 2 lettres.",
-    "repoTooltips.ftsIrisIndex": "Index dans lequel les IRI sont indexés pour la recherche en texte intégral. Les valeurs possibles sont: aucun, par défaut ou code de langue à 2 lettres.",
-    "repoTooltips.ftsDefaultAnalyzer": "L'analyseur à utiliser pour l'index « par défaut ». Les valeurs possibles sont: standard, simple, keyword, whitespace, unicodewhitespace, url, email, ar, bg, bn, br, ca, cjk, ckb, cz, da, de, el, en, es, et, eu, fa, fi, fr, ga, gl, hi, hu, hy, id, it, lt, lv, ne, nl, no, pt, ro, ru, sr, sv, ta, te, th, tr",
+    "repoTooltips.ftsIndexes": "Liste de langues délimitées par des virgules qui doivent avoir un index spécifique avec un analyseur approprié pour la recherche en texte intégral. Les valeurs possibles sont : default, iri, ar, bg, bn, br, ca, ja, ko, zh, ku, cz, da, de, el, en, es, et, eu, fa, fi, fr, ga, gl, hi, hu, hy, id, it, lt, lv, ne, nl, no, pt, ro, ru, sr, sv, ta, te, th, tr",
+    "repoTooltips.ftsStringLiteralsIndex": "Index dans lequel les littéraux de chaîne (xsd:string) sont indexés. Les valeurs possibles sont : aucun, par défaut ou code de langue à 2 lettres.",
+    "repoTooltips.ftsIrisIndex": "Index dans lequel les IRI sont indexés pour la recherche en texte intégral. Les valeurs possibles sont : aucun, par défaut ou code de langue à 2 lettres.",
+    "repoTooltips.ftsDefaultAnalyzer": "L'analyseur à utiliser pour l'index « par défaut ». Les valeurs possibles sont : standard, simple, keyword, whitespace, unicodewhitespace, url, email, ar, bg, bn, br, ca, cjk, ckb, cz, da, de, el, en, es, et, eu, fa, fi, fr, ga, gl, hi, hu, hy, id, it, lt, lv, ne, nl, no, pt, ro, ru, sr, sv, ta, te, th, tr",
     "repoTooltips.ontop.driverType": "Détermine le type de base de données SQL à laquelle se connecter.",
     "repoTooltips.ontop.propertiesFile": "Décrit la configuration JDBC telle que le nom d'hôte et le nom de la base de données à laquelle se connecter.",
     "repoTooltips.ontop.hostName": "Le nom d'hôte JDBC auquel se connecter.",
@@ -1761,7 +1851,7 @@
     "invalid.repo.name.error": "Le nom du dépôt ne peut contenir que des lettres (a-z, A-Z), des chiffres (0-9), \"-\" et \"_\".",
     "upload.custom.ruleset.file": "Téléchargez un fichier de jeu de règles personnalisé.",
     "custom.ruleset": "Jeu de règles personnalisé...",
-    "repos.from": "Dépôts de:",
+    "repos.from": "Dépôts de :",
     "repos.degraded.reason.extra.msg": "Certaines opérations peuvent ne pas être effectuées.",
     "repos.edit.common.settings": "Modifier les paramètres communs de ces dépôts",
     "repos.view.update.licenses": "Afficher ou mettre à jour la licence pour ces dépôts",
@@ -1769,6 +1859,7 @@
     "repositories.location.remote.graph_db.instances": "Instances distantes de GraphDB",
     "repositories.location.local.graph_db.instance": "Instance locale de GraphDB",
     "repositories.location.ontopic.instances": "Instances distantes d'Ontopic",
+    "repositories.location.sparql.instances": "Points distantes d'accès SPARQL",
     "no.repos.in.current.location": "Il n'y a pas de dépôt dans l'emplacement actuel.",
     "connect.repo": "Connectez le dépôt",
     "connected.tooltip": "Connecté",
@@ -1796,7 +1887,8 @@
     "common.confirm.save": "Confirmer enregistrer",
     "common.cancel.btn": "Annuler",
     "common.yes.btn": "Oui",
-    "common.ok.btn": "d'accord",
+    "common.ok.btn": "D'accord",
+    "common.close.btn": "Fermer",
     "common.error": "Erreur",
     "common.warning": "Avertissement",
     "common.loading": "Chargement...",
@@ -1823,6 +1915,7 @@
     "common.attach": "Attacher",
     "common.close": "Fermer",
     "common.preview": "Aperçu",
+    "common.learn_more_in_documentation": "Pour en savoir plus, consultez la documentation GraphDB",
     "paginator.first.page.label": "Premier",
     "paginator.last.page.label": "Dernier",
     "active.location.version.not.support.settings.warning": "La version de GraphDB à votre emplacement actif ne prend pas en charge les paramètres.",
@@ -1842,7 +1935,7 @@
     "why.send.statistics": "Pourquoi devriez-vous nous envoyer vos statistiques?",
     "why.send.statistics.explanation": "Notre objectif est de fournir de meilleurs produits qui répondent aux besoins de nos utilisateurs et de nos clients. Les statistiques anonymes nous aident à mieux comprendre ces besoins et à concentrer nos efforts.",
     "what.statistics.include": "Que comprennent les statistiques?",
-    "for.each.repo.header": "Pour chaque dépôt, nous rassemblons:",
+    "for.each.repo.header": "Pour chaque dépôt, nous rassemblons :",
     "absolute.values": "Valeurs absolues",
     "gdb.edition.and.version": "GraphDB édition et version",
     "number.explicit.implicit.triples": "Nombre de triples explicites et implicites",
@@ -1884,13 +1977,13 @@
     "edit.local.repo": "Modifier le dépôt local",
     "gdb.rdf4j.server": "GraphDB / RDF4J serveur",
     "generic.sparql.endpoint": "Point de terminaison SPARQL générique",
-    "server.url": "URL du serveur *:",
-    "repo.id": "ID de dépôt *:",
+    "server.url": "URL du serveur * :",
+    "repo.id": "ID de dépôt * :",
     "endpoint.url": "URL du point de terminaison* :",
     "supports.ask.queries": "Supporte les requêtes ASK",
     "authentication.credentials": "Références d'authentification",
-    "username": "Nom d'utilisateur:",
-    "pass": "Mot de passe:",
+    "username": "Nom d'utilisateur :",
+    "pass": "Mot de passe :",
     "respect.repo.access.rights": "Respecter les droits d'accès du dépôt.",
     "no.access.to.repo.users.warning": "Les utilisateurs qui n'ont pas de droits sur ce dépôt verront une vue fédérée qui n'inclut pas les résultats du dépôt.",
     "ignore.repo.access.rights": "Ignorer les droits d'accès du dépôt",
@@ -1944,19 +2037,22 @@
     "remote.location.required": "L'URL de l'emplacement est requise.",
     "remote.location.ontopic.username.required": "ClientID*",
     "remote.location.ontopic.password.required": "Secret*",
-    "remote.ontopic.location.enter.url.msg": "Enter a Entrez une URL vers une instance distante d'Ontopic",
     "manage.remote.location.dialog.graph_db.basic.auth.type.description": "L'authentification de base nécessite un nom d'utilisateur et un mot de passe.",
     "manage.remote.location.dialog.ontopic.basic.auth.type.description": "L'authentification de base nécessite un ClientID et un Secret.",
+    "manage.remote.location.dialog.sparql.basic.auth.type.description": "L'authentification de base nécessite un nom d'utilisateur et un mot de passe.",
     "manage.remote.location.dialog.update.instance": "Modifier l'instance distante",
     "manage.remote.location.dialog.attach.instance": "Attacher une instance distante",
     "manage.remote.location.dialog.graph_db.location.instance": "Instance GraphDB",
-    "manage.remote.location.dialog.ontopic.location.instance": "Instance Ontopic",
+    "manage.remote.location.dialog.ontopic.location.instance": "Point d'accès Ontopic SPARQL",
+    "manage.remote.location.dialog.sparql.endpoint.instance": "Point d'accès SPARQL",
     "manage.remote.location.dialog.required.url": "URL de l'emplacement*",
     "manage.remote.location.dialog.graph_db.url.message": "Entrez une URL vers une instance distante de GraphDB",
-    "manage.remote.location.dialog.ontopic.url.message": "Entrez une URL vers une instance distante d'Ontopic",
+    "manage.remote.location.dialog.ontopic.url.message": "Entrez une URL vers un point d'accès SPARQL distant Ontopic",
+    "manage.remote.location.dialog.sparql.url.message": "Entrez une URL vers un point d'accès SPARQL",
     "manage.remote.location.dialog.url.requred.message": "L'URL de l'emplacement est requise.",
     "manage.remote.location.dialog.graph_db.error.not_valid.url": "Notez que l'emplacement doit être une URL pointant vers une installation distante de GraphDB, par exemple.",
     "manage.remote.location.dialog.ontopic.error.not_valid.url": "Notez que l'emplacement doit être une URL pointant vers une installation distante d'Ontopic, par exemple.",
+    "manage.remote.location.dialog.sparql.error.not_valid.url": "Notez que l'emplacement doit être une URL pointant vers un point d'accès SPARQL, par exemple.",
     "manage.remote.location.dialog.auth_type.header": "Type d'authentification",
     "manage.remote.location.dialog.auth_type.none": "Aucun",
     "manage.remote.location.dialog.auth_type.basic": "Authentification de base",
@@ -1964,15 +2060,20 @@
     "manage.remote.location.dialog.auth_type.signature": "Signature",
     "manage.remote.location.dialog.graph_db.username.required.message": "Nom d'utilisateur*",
     "manage.remote.location.dialog.ontopic.username.required.message": "ClientID*",
+    "manage.remote.location.dialog.sparql.username.required.message": "Nom d'utilisateur*",
     "manage.remote.location.dialog.graph_db.password.required.message": "Mot de passe*",
     "manage.remote.location.dialog.ontopic.password.required.message": "Secret*",
+    "manage.remote.location.dialog.sparql.password.required.message": "Mot de passe*",
     "manage.remote.location.dialog.auth_type.signature.description.prefix": "L'authentification par signature utilise le secret du jeton, qui doit être le même sur les deux instances de GraphDB. Pour plus d'informations sur la configuration du secret du jeton, veuillez vous référer à ",
     "manage.remote.location.dialog.auth_type.signature.description.suffix": " dans la documentation.",
     "manage.remote.location.dialog.graph_db.username.placeholder": "mon nom d'utilisateur",
     "manage.remote.location.dialog.ontopic.username.placeholder": "mon client id",
+    "manage.remote.location.dialog.sparql.username.placeholder": "mon nom d'utilisateur",
     "manage.remote.location.dialog.graph_db.password.placeholder": "mon mot de passe",
     "manage.remote.location.dialog.ontopic.password.placeholder": "mon secret",
+    "manage.remote.location.dialog.sparql.password.placeholder": "mon mot de passe",
     "valid.remote.location.warning": "Notez que l'emplacement doit être une URL qui pointe vers une installation GraphDB distante, par ex.",
+    "duplicate.remote.location.warning": "L'URL est déjà dans la liste",
     "auth.type.header": "Type d'authentification",
     "remote.location.no.auth.used.tooltip": "Aucune authentification utilisée avec l'emplacement distant",
     "auth.type.none": "Aucun",
@@ -1998,15 +2099,15 @@
     "select.repo.config.tooltip": "Cliquez pour sélectionner un fichier de configuration à partir duquel créer un nouveau dépôt.",
     "upload.ttl.file.btn": "Cliquez ici pour télécharger un fichier .ttl",
     "no.file.selected.error": "Aucun fichier sélectionné",
-    "selected.file.msg": "Sélectionné: {{name}}",
-    "type.label": "Type:",
-    "access.label": "Accéder:",
+    "selected.file.msg": "Sélectionné : {{name}}",
+    "type.label": "Type :",
+    "access.label": "Accéder :",
     "read.write.label": "Lecture/écriture",
     "read.only.label": "En lecture seule",
-    "total.statements.label": "Total des déclarations:",
-    "explicit.label": "Explicite:",
-    "inferred.label": "Déduit:",
-    "expansion.ratio.label": "Taux d'expansion (total/explicite):",
+    "total.statements.label": "Total des déclarations :",
+    "explicit.label": "Explicite :",
+    "inferred.label": "Déduit :",
+    "expansion.ratio.label": "Taux d'expansion (total/explicite) :",
     "size.info.not.available": "Info de taille non disponible.",
     "main.gdb.description": "Une application pour la recherche, l'exploration et la gestion des dépôts sémantiques GraphDB.",
     "main.info.title.welcome.page": "Bienvenue sur GraphDB",
@@ -2049,7 +2150,7 @@
     "delete.sparql.template.tooltip": "Supprimer le modèle SPARQL",
     "save.sparql.template.tooltip": "Sauvegarder le modèle SPARQL",
     "cancel.sparql.template.creation.tooltip": "Annuler la création de modèle SPARQL",
-    "not.usable.active.repo.error": "Le dépôt actuellement sélectionné ne peut pas être utilisé pour les requêtes en raison d'une erreur:",
+    "not.usable.active.repo.error": "Le dépôt actuellement sélectionné ne peut pas être utilisé pour les requêtes en raison d'une erreur :",
     "existing.indexes": "Indices existants",
     "select.existing.similarity.index": "Sélectionnez l'un de vos indices existants à la recherche de",
     "no.indexes": "Aucun index",
@@ -2074,8 +2175,8 @@
     "search.in.index": "Rechercher dans",
     "term": "Terme",
     "document": "Document",
-    "similarity.search.type": "Type de recherche:",
-    "similarity.result.type": "Type de résultat:",
+    "similarity.search.type": "Type de recherche :",
+    "similarity.result.type": "Type de résultat :",
     "similar.subject.label": "Sujet similaire",
     "object.label": "Objet",
     "analogical.label": "Analogique",
@@ -2147,7 +2248,7 @@
     "add.namespace.label": "Ajout d'espaces de noms",
     "namespace.label": "Espace de noms",
     "all.label": "Tous",
-    "namespaces.per.page.label": "Espaces de noms par page:",
+    "namespaces.per.page.label": "Espaces de noms par page :",
     "search.namespaces.label": "Rechercher des espaces de noms",
     "delete.selected": "Supprimer sélectionnée",
     "iri.label": "IRI",
@@ -2237,8 +2338,8 @@
     "error": "erreur",
     "import.rdf.data.label": "Importer des données RDF",
     "export.rdf.data": "Exporter des données RDF",
-    "export.settings.json-ld": "Paramètres d'exportation: JSON-LD",
-    "export.settings.ndjson-ld": "Paramètres d'exportation: NDJSON-LD",
+    "export.settings.json-ld": "Paramètres d'exportation : JSON-LD",
+    "export.settings.ndjson-ld": "Paramètres d'exportation : NDJSON-LD",
     "export": "Exportation",
     "json-ld.form": "Formulaire JSON-LD",
     "json-ld.form.info": "Spécifie la forme du document JSON-LD",
@@ -2264,7 +2365,7 @@
     "visual.graph.click.configure.view": "Cliquez pour configurer la vue",
     "visual.search.iri": "Recherche d'un IRI pour le voir.",
     "visual.graph.advanced.option": "Ceci est une configuration avancée définie par l'utilisateur.",
-    "hint": "Un conseil:",
+    "hint": "Un conseil :",
     "visual.easy.graph": "Graphique facile",
     "visual.easy.graph.info": "Rechercher un IRI pour le visualiser et configurer la visualisation via l'interface utilisateur sans utiliser SPARQL",
     "visual.create.graph.config": "Créer un graphique config",
@@ -2280,7 +2381,7 @@
     "visual.saved.graphs": "Graphiques sauvegardés",
     "visual.no.saved.graphs": "Aucun instantané de graphique visuel enregistré",
     "visual.get.graph.url": "Obtenez URL au graphique",
-    "visual.advanced": "Avancée:",
+    "visual.advanced": "Avancée :",
     "visual.rename.graph": "Renommer graphique",
     "visual.delete.graph": "Supprimer le graphique",
     "visual.collapse.sidepanel": "Réduire le panneau latéral",
@@ -2324,7 +2425,7 @@
     "or": "ou",
     "of": "de",
     "export.data.import.page": "la page d'importation de données",
-    "export.graphs.per.page": "Graphes par page:",
+    "export.graphs.per.page": "Graphes par page :",
     "search.graphs.label": "Rechercher des graphiques",
     "export.repository.label": "Dépôt d'exportation",
     "removes.data.from.repo.label": "Supprime toutes les données du dépôt actuel.",
@@ -2451,6 +2552,7 @@
     "repo.page.location.label": "Localisation",
     "repo.page.location.input.field.tooltip": "L'emplacement où créer le dépôt. Par défaut, il s'agit de l'emplacement local.",
     "repo.page.repository.info.loading.error": "Le référentiel actuellement sélectionné ne peut pas être modifié en raison d'une erreur lors du chargement des métadonnées du référentiel.",
+    "guides.loading.message.failure": "Échec du chargement des guides!",
     "guide.button.guide-paused": "Guide en pause",
     "guide.button.guide-resume": "Continuer le guide",
     "guide.validate.no-next": "Impossible de passer au suivant",
@@ -2496,7 +2598,8 @@
     "guide.step_plugin.visual-graph-link-focus.title": "Liens de graphique visuel",
     "guide.step_plugin.visual-graph-link-focus.content": "Une flèche avec une étiquette représente un ou plusieurs liens entre les nœuds. Dans ce cas, la flèche montre la relation <b>{{fromIriLabel}} &rarr; {{iriLabel}} &rarr; {{toIriLabel}}</b>.",
     "guide.step_plugin.download-guide-resource.title": "Télécharger les ressources du guide",
-    "guide.step_plugin.download-guide-resource.content": "Ce guide nécessite le téléchargement d'un fichier.<br>Veuillez <a href=\"{{resourceUrl}}\" target=\"_blank\">télécharger {{resourceFile}}</a>.",
+    "guide.step_plugin.download-guide-resource.content": "Ce guide nécessite le téléchargement d'un fichier.<br>Veuillez <a href=\"#\" ng-click=\"downloadGuidesFile('{{resourcePath}}', '{{resourceFile}}')\">télécharger {{resourceFile}}</a>.",
+    "guide.step_plugin.download-guide-resource.download.message.failure": "Échec du téléchargement du fichier '{{resourceFile}}' !",
     "guide.step_plugin.choose-repository.content": "Cliquez sur la liste déroulante de sélection du dépôt.",
     "guide.step_plugin.select-repository.content": "Cliquez sur le bouton de dépôt <b>{{getRepositoryId()}}</b>.",
     "guide.step_plugin.select-repository-plug.content": "Cliquez sur l'icône de prise du dépôt <b>{{repositoryId}}</b>.",
@@ -2578,5 +2681,30 @@
     "yasgui.tab_list.close_other_tabs.confirmation.queries_one_update.message": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez {{queriesCount}} requêtes et 1 mise à jour en cours. Les requêtes seront annulées.</div><div>Êtes-vous sûr de vouloir fermer tous les autres onglets de requête ?</div>",
     "yasgui.tab_list.close_other_tabs.confirmation.queries_updates.message": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez {{queriesCount}} requêtes et {{updatesCount}} mises à jour en cours. Les requêtes seront annulées.</div><div>Êtes-vous sûr de vouloir fermer tous les autres onglets de requête ?</div>",
     "yasgui.tab_list.close_tab.confirmation.not_query_update.message": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez 1 mise à jour en cours.</div><div>Êtes-vous sûr de vouloir fermer cet onglet de requête ?</div>",
-    "yasgui.tab_list.close_tab.confirmation.query_non_updates.message": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez 1 requête en cours, qui sera annulée.</div><div>Êtes-vous sûr de vouloir fermer cet onglet de requête ?</div>"
+    "yasgui.tab_list.close_tab.confirmation.query_non_updates.message": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez 1 requête en cours, qui sera annulée.</div><div>Êtes-vous sûr de vouloir fermer cet onglet de requête ?</div>",
+    "cookie" : {
+        "cookie_consent": "Nous pouvons utiliser des cookies pour nous aider à améliorer GraphDB et développer de meilleures fonctionnalités. Aucune information personnelle ou sensible n'est collectée. En cliquant sur « {{'common.ok.btn' | translate}} », vous consentez à notre",
+        "cookie_policy_url_label": "politique de cookies",
+        "policy": {
+            "title": "Politique de cookies",
+            "purpose_heading": "Objectif",
+            "purpose_text": "Cette politique de cookies explique les données qu'Ontotext collecte et utilise lorsque vous utilisez notre produit GraphDB, en particulier l'édition Free.",
+            "purpose_enterprise_text": "Veuillez noter que si vous passez à l'édition commerciale GraphDB Enterprise, aucun cookie ne sera stocké sur votre appareil, quel que soit le paramètre.",
+            "privacy_commitment_heading": "Engagement de confidentialité d'Ontotext",
+            "privacy_commitment_text": "Nous nous engageons à ne collecter aucune donnée personnelle ou information lorsque vous utilisez GraphDB Free. De plus :",
+            "privacy_commitment_1": "Nous ne vendrons ni ne louerons à d'autres les informations techniques que nous collectons.",
+            "privacy_commitment_2": "Nous nous efforçons de maximiser la protection de toutes les données techniques collectées.",
+            "cookies_heading": "Cookies",
+            "cookies_text": "Lorsque vous utilisez l'édition GraphDB Free, Ontotext stockera des cookies sur votre appareil pour collecter des informations anonymes sur la façon dont vous interagissez avec le produit. Ces données techniques nous aident à améliorer et affiner notre produit. Il est important de noter que nous ne pouvons pas relier ces informations à vous personnellement ni à aucune donnée identifiable. Ces cookies ont uniquement pour but de nous aider à comprendre les interactions des utilisateurs et à identifier les éventuels problèmes dans GraphDB.",
+            "manage_cookies_heading": "Gérer les cookies",
+            "statistic_cookies": "Cookies d'analyse GraphDB",
+            "statistic_tooltip": "Activer/désactiver les cookies d'analyse GraphDB",
+            "statistic_text": "Ces cookies nous aident à comprendre comment les utilisateurs interagissent avec différents aspects de GraphDB en collectant et en rapportant des informations de manière anonyme. Ces données nous permettent d'améliorer l'expérience globale du produit et de développer des fonctionnalités en fonction de l'utilisation de GraphDB, sans collecter d'informations personnelles.",
+            "third_party_cookies": "Cookies tiers",
+            "third_party_tooltip": "Activer/désactiver les cookies tiers",
+            "third_party_cookies_text": "Nous utilisons les cookies Google Analytics 4 (GA4) pour nous aider à reconnaître les utilisateurs et sessions uniques, à suivre les interactions et à collecter des données telles que les pages consultées, la durée des sessions et l'engagement. Ces cookies sont gérés par Google, ce qui signifie que nous n'avons pas de contrôle sur leur fonctionnement. L'anonymisation IP est activée par défaut dans GA4, de sorte qu'il ne peut ni stocker les adresses IP ni suivre les utilisateurs personnellement. Aucune donnée n'est partagée entre GA4 et d'autres produits Google, et le traitement s'effectue à l'échelle mondiale, principalement aux États-Unis, sans enfreindre le RGPD, car aucune donnée personnelle n'est collectée.",
+            "change_cookies": "Vous pouvez modifier vos préférences de cookies à tout moment dans",
+            "change_cookies_location4": "Politique de cookies"
+        }
+    }
 }

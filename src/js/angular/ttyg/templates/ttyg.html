@@ -1,13 +1,9 @@
 <link href="css/ttyg/ttyg.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-<div class="ttyg-view">
+<div class="ttyg-view" ng-class="{'help-visible': isHelpVisible}">
     <h1 id="ttyg-view-title">
         {{ title }}
-        <span class="btn btn-link"
-              uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
-              popover-trigger="mouseenter"
-              popover-placement="bottom-right"
-              popover-append-to-body="true"><span class="icon-info text-tertiary"></span></span>
+        <page-info-tooltip></page-info-tooltip>
     </h1>
 
     <div core-errors></div>
@@ -35,14 +31,14 @@
                         ng-click="toggleChatsListSidebar()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.chat.btn.' + (showChats ? 'close_sidebar' : 'open_sidebar') + '.tooltip' | translate}}">
-                    <i class="fa-regular fa-sidebar"></i>
+                    <i class="fa fa-sidebar"></i>
                 </button>
                 <button class="btn btn-link btn-sm create-chat-btn"
                         ng-if="chats && !chats.isEmpty()"
                         ng-click="startNewChat()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.chat.btn.create_chat.tooltip' | translate}}">
-                    <i class="fa-regular fa-pen-to-square"></i>
+                    <i class="fa fa-pen-to-square"></i>
                 </button>
             </div>
             <pageslide
@@ -56,8 +52,10 @@
                 ps-size="80vw">
                 <div class="sidebar-content">
                     <chat-list ng-if="chats"></chat-list>
-                    <div ng-if="!chats && loadingChats" onto-loader-fancy message="{{'ttyg.chat.loading_chats' | translate}}"
-                         size="25" style="height: 75vh; display: flex;"></div>
+                    <div class="chat-list-panel-loader" ng-if="!chats && loadingChats">
+                        <div onto-loader-fancy message="{{'ttyg.chat.loading_chats' | translate}}"
+                             size="25"></div>
+                    </div>
                 </div>
             </pageslide>
         </div>
@@ -90,7 +88,7 @@
             <div class="toolbar">
                 <button class="btn btn-link btn-sm help-btn"
                         ng-if="true"
-                        ng-click="onOpenHelp()"
+                        ng-click="onToggleHelp()"
                         ng-disabled="false"
                         gdb-tooltip="{{'ttyg.help.btn.show_help.tooltip' | translate}}">
                     <i class="icon-help"></i>
@@ -107,7 +105,7 @@
                         ng-click="toggleAgentsListSidebar()"
                         ng-disabled="!canModifyAgent"
                         gdb-tooltip="{{'ttyg.agent.btn.open_sidebar.' + (canModifyAgent ? 'tooltip' : 'tooltip_disabled') | translate}}">
-                    <i class="fa-regular fa-message-bot"></i>
+                    <i class="fa fa-message-bot"></i>
                 </button>
                 <button class="btn btn-link btn-sm toggle-agents-sidebar-btn"
                         ng-if="showAgents"

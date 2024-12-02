@@ -1,0 +1,48 @@
+<link href="css/cookie-policy.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+<div class="cookie-policy-modal">
+    <div class="title">{{'cookie.policy.title' | translate}}</div>
+
+    <div class="heading">{{'cookie.policy.purpose_heading' | translate}}</div>
+    <div class="text">{{'cookie.policy.purpose_text' | translate}}</div>
+    <div class="text mt-1">{{'cookie.policy.purpose_enterprise_text' | translate}}</div>
+
+    <div class="heading">{{'cookie.policy.privacy_commitment_heading' | translate}}</div>
+    <div class="text">{{'cookie.policy.privacy_commitment_text' | translate}}</div>
+    <ul>
+        <li>{{'cookie.policy.privacy_commitment_1' | translate}}</li>
+        <li>{{'cookie.policy.privacy_commitment_2' | translate}}</li>
+    </ul>
+
+    <div class="heading">{{'cookie.policy.cookies_heading' | translate}}</div>
+    <div class="text">{{'cookie.policy.cookies_text' | translate}}</div>
+
+    <div class="heading">{{'cookie.policy.manage_cookies_heading' | translate}}</div>
+    <div id="statistic-consent" class="toggle-group">
+        <label><strong>{{'cookie.policy.statistic_cookies' | translate}}</strong></label>
+        <span gdb-tooltip="{{'cookie.policy.statistic_tooltip' | translate}}" tooltip-placement="top"
+              ng-click="toggleConsent(ConsentTypes.STATISTIC)"
+              class="switch">
+        <input type="checkbox" class="switch" ng-checked="cookieConsent.getStatisticConsent()"/>
+        <label for="statistic-consent"></label>
+    </span>
+    </div>
+    <div class="text">{{'cookie.policy.statistic_text' | translate}}</div>
+
+    <div id="third-party-consent" class="toggle-group mt-1">
+        <label><strong>{{'cookie.policy.third_party_cookies' | translate}}</strong></label>
+        <span gdb-tooltip="{{'cookie.policy.third_party_tooltip' | translate}}" tooltip-placement="top"
+              ng-click="toggleConsent(ConsentTypes.THIRD_PARTY)"
+              class="switch">
+        <input type="checkbox" class="switch" ng-checked="cookieConsent.thirdParty"/>
+        <label for="third-party-consent"></label>
+    </span>
+    </div>
+    <div class="text">{{'cookie.policy.third_party_cookies_text' | translate}}</div>
+
+    <div class="text mt-1"><span>{{'cookie.policy.change_cookies' | translate}} <i>{{'menu.setup.label' | translate}} > {{'menu.my.settings.label' | translate}} > {{'security.user.settings' | translate}} > {{'cookie.policy.change_cookies_location4' | translate}}</i></span></div>
+
+    <div class="text-right">
+        <button class="btn btn-primary" ng-click="close()">{{'common.close.btn' | translate}}</button>
+    </div>
+</div>

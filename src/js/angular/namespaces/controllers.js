@@ -69,7 +69,7 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
                             return 0;
                         });
                         $scope.matchedElements = $scope.namespaces;
-                        $scope.changePagination();
+                        changePagination();
                     }
                     if ($scope.namespaces.length === 0) {
                         // Remove the loader ourselves
@@ -82,7 +82,7 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
                 });
         };
 
-        $scope.changePagination = function () {
+        const changePagination = function () {
             if (angular.isDefined($scope.namespaces)) {
                 $scope.displayedNamespaces = $scope.namespaces.slice($scope.pageSize * ($scope.page - 1), $scope.pageSize * $scope.page);
             }
@@ -116,11 +116,11 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
             $scope.haveSelected = false;
             $scope.selectedAll = false;
             $scope.matchedElements = [];
-            $scope.deselectAll();
-            $scope.filterResults();
+            deselectAll();
+            filterResults();
         };
 
-        $scope.filterResults = function() {
+        const filterResults = function() {
             angular.forEach($scope.namespaces, function (item) {
                 if (item.namespace.indexOf($scope.searchNamespaces) !== -1 || item.prefix.indexOf($scope.searchNamespaces) !== -1) {
                     $scope.matchedElements.push(item);
@@ -131,14 +131,18 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
         $scope.saveNamespace = function (prefix, namespace) {
             $scope.loader = true;
             return RDF4JRepositoriesRestService.updateNamespacePrefix($repositories.getActiveRepository(), namespace, prefix)
-                .success(function () {
+                .then(function () {
                     $scope.getNamespaces();
                     toastr.success($translate.instant('namespace.saved'));
                     $scope.loader = false;
-                }).error(function (data) {
+                }).catch(function (data) {
                     const msg = getError(data);
                     toastr.error(msg, $translate.instant('common.error'));
                     $scope.loader = false;
+                    // Reject the promise so that the caller can handle the error as well. Some callers don't care about
+                    // the error and just want to know if the operation was successful or not. But there are also callers
+                    // that want to know the error details.
+                    return Promise.reject(data);
                 });
         };
 
@@ -156,51 +160,88 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
                 });
         };
 
-        $scope.confirmReplace = function (okCallback, cancelCallback) {
-            ModalService.openSimpleModal({
+        const confirmReplace = function (okCallback, cancelCallback) {
+            return ModalService.openSimpleModal({
                 title: $translate.instant('namespace.confirm.replace'),
                 message: $translate.instant('namespace.already.exists.msg'),
                 warning: true
-            }).result.then(okCallback, cancelCallback);
+            }).result;
         };
 
-        $scope.editPrefixAndNamespace = function (prefix, namespace, namespaceObject) {
-            if (angular.isUndefined(prefix)) {
-                prefix = '';
-            }
-
-            if (!validatePrefixAndNamespace(prefix, namespace)) {
-                return '';
-            }
-
-            let prefixExist = false;
-            const oldPrefix = namespaceObject.prefix;
-            angular.forEach($scope.namespaces, function (elem) {
-                if (elem.prefix === prefix && oldPrefix !== prefix) {
-                    prefixExist = true;
+        /**
+         * Validates the prefix and namespace and checks if the prefix already exists. If the prefix already exists,
+         * a confirmation dialog is shown to the user. If the user confirms the dialog, the flow continues and the
+         * namespace is updated. If the user rejects the dialog, the flow continues in the catch block.
+         *
+         * <strong>Using async/await in order to be able to control the flow of the function and to be able to return a value
+         * which is expected by the xeditable component. Otherwise, it won't behave as expected.</strong>
+         *
+         * @param {string} prefixValue The new prefix value.
+         * @param {string} namespaceValue The new namespace value.
+         * @param {*} namespaceObject The namespace object holding the old values.
+         * @return {Promise<boolean|string>}
+         */
+        $scope.editPrefixAndNamespace = async (prefixValue, namespaceValue, namespaceObject) => {
+            try {
+                const namespace = namespaceValue;
+                let prefix = prefixValue;
+                if (!prefixValue) {
+                    prefix = '';
                 }
-            });
-            if (prefixExist) {
-                $scope.confirmReplace(function () {
-                    $scope.saveNamespace(oldPrefix, namespace).then(function () {
-                        if (oldPrefix !== prefix) {
-                            $scope.editPrefix(oldPrefix, prefix);
-                        }
-                    });
-                }, function () {
-                    $scope.getNamespaces();
-                });
-            } else if (angular.isDefined(prefixExist)) {
-                $scope.saveNamespace(oldPrefix, namespace).then(function () {
-                    if (oldPrefix !== prefix) {
-                        $scope.editPrefix(oldPrefix, prefix);
+
+                if (!validatePrefixAndNamespace(prefix, namespace)) {
+                    // The string returned here is only meaningful for the xeditable component which handles it as an
+                    // error which we don't show to the user. In this case the form remains open and the user can cancel
+                    // or correct the input.
+                    return 'Prefix or namespace is invalid';
+                }
+
+                const oldPrefix = namespaceObject.prefix;
+                if (isPrefixExist(prefix, oldPrefix)) {
+                    // If the user rejects the confirmation dialog, the flow continues in the catch block.
+                    await ModalService.openSimpleModal({
+                        title: $translate.instant('namespace.confirm.replace'),
+                        message: $translate.instant('namespace.already.exists.msg'),
+                        warning: true
+                    }).result;
+                }
+                return updateNamespace(prefix, oldPrefix, namespace);
+            } catch (err) {
+                // The string returned here is only meaningful for the xeditable component which handles it as an
+                // error which we don't show to the user. In this case the form remains open and the user can cancel
+                // or correct the input.
+                return 'Prefix overwrite cancelled';
+            }
+        };
+
+        /**
+         * Checks if the prefix already exists in the list of namespaces.
+         * @param {string} prefix The prefix to check.
+         * @param {string} oldPrefix The old prefix value.
+         * @return {boolean} True if the prefix already exists, false otherwise.
+         */
+        const isPrefixExist = (prefix, oldPrefix) => {
+            return !!$scope.namespaces.find((elem) => elem.prefix === prefix && oldPrefix !== prefix);
+        };
+
+        /**
+         * Updates the namespace and if the operation is successful, updates the prefix as well.
+         * @param {string} newPrefix The new prefix value.
+         * @param {string} oldPrefix The old prefix value.
+         * @param {*} namespace The namespace object holding the old values.
+         * @return {Promise<void>}
+         */
+        const updateNamespace = (newPrefix, oldPrefix, namespace) => {
+            return $scope.saveNamespace(oldPrefix, namespace)
+                .then(function () {
+                    if (oldPrefix !== newPrefix) {
+                        $scope.editPrefix(oldPrefix, newPrefix);
                     }
                 });
-            }
         };
 
         $scope.addNamespace = function () {
-            if (angular.isUndefined($scope.namespace.prefix)) {
+            if (!$scope.namespace.prefix) {
                 $scope.namespace.prefix = '';
             }
 
@@ -216,24 +257,30 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
                 }
             }
             if (prefixExist) {
-                $scope.confirmReplace(function () {
-                    $scope.saveNamespace($scope.namespace.prefix, $scope.namespace.namespace);
+                confirmReplace().then(saveNamespaceAndUpdateTheUI);
+            } else {
+                saveNamespaceAndUpdateTheUI();
+            }
+        };
+
+        /**
+         * Saves the namespace and if operation is successful, resets the form state.
+         */
+        const saveNamespaceAndUpdateTheUI = () => {
+            $scope.saveNamespace($scope.namespace.prefix, $scope.namespace.namespace)
+                .then(() => {
                     $scope.namespace.namespace = '';
                     $scope.namespace.prefix = '';
+                    // Not sure why the timeout is needed here. Probably resetting the values above needs to be
+                    // reflected first in the form state and then the form validation model needs to be reset.
                     setTimeout(() => {
                         $scope.form.$setUntouched();
                         $scope.form.$setPristine();
                     });
+                })
+                .catch(() => {
+                    // Do nothing, the error is already handled in the saveNamespace function
                 });
-            } else {
-                $scope.saveNamespace($scope.namespace.prefix, $scope.namespace.namespace);
-                $scope.namespace.namespace = '';
-                $scope.namespace.prefix = '';
-                setTimeout(() => {
-                    $scope.form.$setUntouched();
-                    $scope.form.$setPristine();
-                });
-            }
         };
 
         $scope.removeNamespace = function (namespace) {
@@ -286,7 +333,7 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
             });
         };
 
-        function deleteNamespace(namespace, namespaces) {
+        const deleteNamespace = (namespace, namespaces)=> {
             let prefix;
             if (typeof namespace === 'object') {
                 prefix = namespace.prefix;
@@ -313,11 +360,11 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
                         }
                     }
                 }).error(function (data) {
-                    const msg = getError(data);
-                    toastr.error(msg, $translate.instant('common.error'));
-                    $scope.loader = false;
-                });
-        }
+                const msg = getError(data);
+                toastr.error(msg, $translate.instant('common.error'));
+                $scope.loader = false;
+            });
+        };
 
         $scope.checkIfSelectedNamespace = function () {
             $scope.haveSelected = false;
@@ -328,13 +375,13 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
             });
         };
 
-        $scope.deselectAll = function () {
+        const deselectAll = function () {
             angular.forEach($scope.namespaces, function (item) {
                 item.selected = false;
             });
         };
 
-        function validatePrefixAndNamespace(prefix, namespace) {
+        const validatePrefixAndNamespace = (prefix, namespace) => {
             if (!validatePrefix(prefix)) {
                 toastr.error($translate.instant('namespace.invalid.prefix', {prefix: prefix}, $translate.instant('common.error')));
                 return false;
@@ -346,7 +393,7 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
             }
 
             return true;
-        }
+        };
     }]);
 
 namespaces.controller('StandartModalCtrl', ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {

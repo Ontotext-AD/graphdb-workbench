@@ -14,7 +14,7 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
         scope: {
             ngModel: '=',
             namespaces: '=',
-            autocompleteStatusLoader: '=',
+            isAutocompleteEnabled: '=',
             placeholder: '@',
             styleClass: '@',
             multiline: '@',
@@ -235,7 +235,7 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
         // Validators
         //
         ngModel.$validators.custom = function(modelValue) {
-            if (!$scope.validateUri && !$scope.validateLiteralValue && !$scope.validateDefaultValue) {
+            if (!$scope.validateUri && !$scope.validateLiteralValue && !$scope.validateDefaultValue || !modelValue) {
                 return true;
             }
 
@@ -423,17 +423,11 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
             }
         };
 
-        const autocompletePromiseHandler = () => {
-            if (!$repositories.isActiveRepoFedXType() && angular.isDefined($scope.autocompleteStatusLoader)) {
-                $scope.autocompleteStatusLoader.then((response) => {
-                    element.autoCompleteStatus = !!response.data;
-                    // trigger onChange only if the value was manually populated by the user
-                    if ($scope.searchInput !== '' && !$scope.ngModel) {
-                        $scope.onChange();
-                    }
-                }).catch(() => {
-                    toastr.error($translate.instant('explore.error.autocomplete'));
-                });
+        const onAutocompleteEnabledChanged = () => {
+            element.autoCompleteStatus = !!$scope.isAutocompleteEnabled;
+            // trigger onChange only if the value was manually populated by the user
+            if ($scope.searchInput !== '' && !$scope.ngModel) {
+                $scope.onChange();
             }
         };
 
@@ -453,7 +447,7 @@ function autocomplete($location, toastr, ClassInstanceDetailsService, Autocomple
         // Watchers
         //
         const subscriptions = [];
-        subscriptions.push($scope.$watch('autocompleteStatusLoader', autocompletePromiseHandler));
+        subscriptions.push($scope.$watch('isAutocompleteEnabled', onAutocompleteEnabledChanged));
         subscriptions.push($scope.$watch('searchInput', ngModelUpdater));
         subscriptions.push($scope.$on('$destroy', unsubscribeListeners));
 

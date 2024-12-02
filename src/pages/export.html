@@ -4,12 +4,8 @@
 
 	<h1>
 		{{title}}
-		<span class="btn btn-link"
-			uib-popover-template="'js/angular/templates/titlePopoverTemplate.html'"
-			popover-trigger="mouseenter"
-			popover-placement="bottom-right"
-			popover-append-to-body="true"><span class="icon-info text-tertiary"></span></span>
-	</h1>
+        <page-info-tooltip></page-info-tooltip>
+    </h1>
 
 
     <div class="ot-loader ot-main-loader" onto-loader size="50" ng-show="loader"></div>
@@ -110,7 +106,7 @@
 										ng-click="dropContext()"
 											gdb-tooltip="{{'remove.data.from.selected.graph.tooltip' | translate}}" tooltip-placement="top"
 										ng-disabled="!canWriteActiveRepo(true) || !hasMultipleSelected()">
-										<span class="fa fa-trash-o"></span>
+										<span class="fa fa-trash-can"></span>
 									</button>
 								</th>
 								<th id="graphColumn">{{'graphs.label' | translate}}</th>
@@ -161,7 +157,7 @@
 										ng-click="dropContext(graph)"
 										gdb-tooltip="{{'remove.data.from.this.graph.tooltip' | translate}}" tooltip-placement="top"
 										ng-disabled="!canWriteActiveRepo(true) || !graph.contextID.uri">
-									<span class="fa fa-trash-o fa-lg"></span>
+									<span class="fa fa-trash-can"></span>
 								</button>
 
 							</td>

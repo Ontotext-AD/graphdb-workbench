@@ -53,10 +53,10 @@ describe('TTYG clone an agent', () => {
                 "model": "gpt-4o",
                 "temperature": 0,
                 "topP": 0,
-                "seed": null,
+                "seed": 0,
                 "assistantsInstructions": {
                     "systemInstruction": "",
-                    "userInstruction": ""
+                    "userInstruction": "If you need to write a SPARQL query, use only the classes and properties provided in the schema and don't invent or guess any. Always try to return human-readable names or labels and not only the IRIs. If SPARQL fails to provide the necessary information you can try another tool too."
                 },
                 "assistantExtractionMethods": [
                     {

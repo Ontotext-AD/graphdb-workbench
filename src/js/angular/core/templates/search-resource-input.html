@@ -26,7 +26,7 @@
     </span>
 </div>
 <span class="autocomplete-hint text-muted">{{'query.editor.autocomplete.hint' | translate}}</span>
-<div id="auto-complete-results-wrapper">
+<div id="auto-complete-results-wrapper" ng-if="isAutocompleteEnabled">
     <div ng-repeat="autoCompleteUriResult in autoCompleteUriResults track by $index"
          id="{{'auto_' + $index}}"
          ng-click="searchRdfResourceByEvent(autoCompleteUriResult, $event)"

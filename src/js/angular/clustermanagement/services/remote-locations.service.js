@@ -8,8 +8,10 @@ RemoteLocationsService.$inject = ['$http', 'toastr', '$uibModal', 'LocationsRest
 
 function RemoteLocationsService($http, toastr, $uibModal, LocationsRestService, $translate) {
     return {
-        addLocation: addLocation,
-        getLocationsWithRpcAddresses: getLocationsWithRpcAddresses
+        addLocationHttp,
+        getLocationsWithRpcAddresses,
+        createNewLocation,
+        isInCluster
     };
 
     function getLocationsWithRpcAddresses() {
@@ -72,22 +74,6 @@ function RemoteLocationsService($http, toastr, $uibModal, LocationsRestService, 
      */
     function getLocationRpcAddress(location) {
         return LocationsRestService.getLocationRpcAddress(location.endpoint);
-
-    }
-
-    function addLocation() {
-        let newLocation;
-        return $uibModal.open({
-            templateUrl: 'js/angular/templates/modal/add-location.html',
-            windowClass: 'addLocationDialog',
-            controller: 'AddLocationFromClusterCtrl'
-        }).result
-            .then((dataAddLocation) => {
-                newLocation = dataAddLocation;
-                newLocation.isLocal = false;
-                newLocation.endpoint = newLocation.uri;
-                return addLocationHttp(newLocation);
-            });
     }
 
     function addLocationHttp(locationData) {
@@ -111,5 +97,21 @@ function RemoteLocationsService($http, toastr, $uibModal, LocationsRestService, 
                 newLocation = locations.find((location) => location.endpoint === locationData.uri);
                 return newLocation;
             });
+    }
+
+    function createNewLocation(endpoint) {
+        return {
+            uri: endpoint,
+            authType: 'signature',
+            username: '',
+            password: '',
+            active: false,
+            clusterMode: true,
+            isLocal: false
+        };
+    }
+
+    function isInCluster(clusterNodes, location) {
+        return clusterNodes.some((node) => location.rpcAddress === node.address);
     }
 }

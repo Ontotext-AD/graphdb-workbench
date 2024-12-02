@@ -1,0 +1,100 @@
+.add-node-wrapper {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: white;
+    width: 100%;
+    margin-top: 0;
+    text-align: right;
+    padding: 16px 12px 0 12px;
+}
+
+.cluster-nodes-configuration-modal {
+    padding: 0;
+}
+
+.modal-header {
+    padding: 15px 15px 0 15px;
+}
+
+.table-responsive {
+    padding: 0 12px 12px 12px;
+}
+
+.labels-row th {
+    border-top: none;
+}
+
+@media (min-width: 1440px) {
+    .modal-dialog.modal-lg {
+        width: 1400px;
+        max-width: 1400px;
+    }
+}
+
+.errors {
+    min-height: 36px;
+}
+
+.cluster-group-table td, .cluster-group-table th {
+     padding: .4rem;
+     border-bottom: 1px solid #eceeef;
+ }
+
+.index-cell {
+    width: 36px;
+    padding-left: 12px;
+    border-left: 1px solid #eceeef;
+}
+
+.location-cell {
+    width: 50%;
+    border-left: 1px solid #eceeef;
+}
+
+.location-cell .autocomplete-container>.textarea-edit {
+    font-size: 1rem;
+    min-height: 32px;
+}
+
+.location-cell.adding {
+    color: var(--color-success-dark);
+}
+
+.location-cell.deleting {
+    text-decoration: line-through;
+}
+
+.info-cell {
+    text-align: right;
+}
+
+.status-cell {
+    border-left: 1px solid #eceeef;
+}
+
+.status-cell .adding {
+    color: var(--color-success-dark);
+}
+
+.status-cell .deleting {
+    color: var(--color-warning-dark);
+}
+
+.status-cell .status-icon {
+    padding: 0 4px;
+}
+
+.actions-cell {
+    width: 80px;
+    border-left: 1px solid #eceeef;
+    border-right: 1px solid #eceeef;
+}
+
+.actions-cell .btn-link, .actions-cell .btn-link a {
+    padding: 0.4em .4em;
+}
+
+.delete-node-tooltip {
+    max-width: 250px;
+}

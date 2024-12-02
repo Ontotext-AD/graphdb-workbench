@@ -4,6 +4,15 @@
     --warning-color: #8a6d3b;
 }
 
+.agent-settings-modal .modal-footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.agent-settings-modal .modal-footer > div {
+    flex-grow: 1;
+}
+
 .agent-settings-modal .modal-footer .creating-agent-loader {
     display: inline-block;
     position: relative;

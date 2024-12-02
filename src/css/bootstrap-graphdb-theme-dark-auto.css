@@ -3,16 +3,6 @@
     filter: var(--body-filter);
 }
 
-/* Firefox workaround: Set the background colour for the html
-   element separately because, unlike other browsers, Firefox
-   doesn’t apply the filter to the root element’s background. */
-@supports (-moz-appearance:none) {
-    html {
-        /* This must be white (#fff) inverted as many % as in the body filter */
-        background-color: var(--html-background);
-    }
-}
-
 /* Do not invert media (revert the invert) - since the body invert is 95% we can't revert it perfectly
    (we could if the body invert was 100%) but it's close enough */
 img, video, .brand {

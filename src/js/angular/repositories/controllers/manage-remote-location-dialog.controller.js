@@ -48,7 +48,7 @@ function ManageRemoteLocationDialogController($scope, $uibModalInstance, product
     };
 
     $scope.onLocationTypeChanged = () => {
-        if (RemoteLocationType.ONTOPIC === $scope.remoteLocation.locationType) {
+        if ([RemoteLocationType.ONTOPIC, RemoteLocationType.SPARQL].includes($scope.remoteLocation.locationType)) {
             $scope.remoteLocation.authType = RemoteLocationAuthType.BASIC;
         } else {
             $scope.remoteLocation.authType = RemoteLocationAuthType.NONE;

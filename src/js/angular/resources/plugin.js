@@ -7,7 +7,8 @@ PluginRegistry.add('route', {
     'templateUrl': 'pages/monitor/resources.html',
     'title': 'view.resource.monitoring.title',
     'helpInfo': 'view.resource.monitoring.helpInfo',
-    'reloadOnSearch': false
+    'reloadOnSearch': false,
+    'documentationUrl': 'system-monitoring.html'
 });
 
 PluginRegistry.add('main.menu', {

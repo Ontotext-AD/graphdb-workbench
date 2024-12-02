@@ -17,3 +17,7 @@
     display: flex;
     justify-content: center;
 }
+
+.no-agents-view-component .create-agent-btn span {
+    margin-left: 0.5rem;
+}

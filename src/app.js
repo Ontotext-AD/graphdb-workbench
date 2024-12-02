@@ -14,8 +14,11 @@ import 'angular/core/directives/uppercased.directive';
 import 'angular/core/directives/operations-statuses-monitor/operations-statuses-monitor.directive';
 import 'angular/core/directives/autocomplete/autocomplete.directive';
 import 'angular/core/directives/prop-indeterminate/prop-indeterminate.directive';
+import 'angular/core/directives/page-info-tooltip.directive';
+import 'angular/core/services/language.service'
 import {defineCustomElements} from 'ontotext-yasgui-web-component/loader';
 import {convertToHumanReadable} from "./js/angular/utils/size-util";
+import {DocumentationUrlResolver} from "./js/angular/utils/documentation-url-resolver";
 
 // $translate.instant converts <b> from strings to &lt;b&gt
 // and $sce.trustAsHtml could not recognise that this is valid html
@@ -40,12 +43,12 @@ const modules = [
     'graphdb.framework.core.directives.angular-tooltips',
     'graphdb.framework.core.directives.uppercased',
     'graphdb.framework.core.directives.prop-indeterminate',
+    'graphdb.framework.core.directives.page-info-tooltip',
     'graphdb.framework.guides.services',
-    'graphdb.framework.core.services.licenseService',
-    'graphdb.framework.core.services.installationCookieService',
     'graphdb.framework.core.directives.operationsstatusesmonitor',
     'graphdb.framework.core.directives.autocomplete',
-    'ngCustomElement'
+    'ngCustomElement',
+    'graphdb.framework.core.services.language-service'
 ];
 
 const providers = [
@@ -57,7 +60,8 @@ const providers = [
     '$uibTooltipProvider',
     '$httpProvider',
     '$templateRequestProvider',
-    '$translateProvider'
+    '$translateProvider',
+    '$languageServiceProvider'
 ];
 
 const moduleDefinition = function (productInfo, translations) {
@@ -73,7 +77,8 @@ const moduleDefinition = function (productInfo, translations) {
                   $uibTooltipProvider,
                   $httpProvider,
                   $templateRequestProvider,
-                  $translateProvider) {
+                  $translateProvider,
+                  $languageServiceProvider) {
 
             if (translations && Object.keys(translations).length > 0) {
                 // If translations data is provided, iterate over the object and register each language key
@@ -91,7 +96,7 @@ const moduleDefinition = function (productInfo, translations) {
                     suffix: '.json?v=[AIV]{version}[/AIV]'
                 });
                 // load 'en' table on startup
-                $translateProvider.preferredLanguage('en');
+                $translateProvider.preferredLanguage($languageServiceProvider.getDefaultLanguage());
             }
             $translateProvider.useSanitizeValueStrategy('escape');
 
@@ -132,6 +137,7 @@ const moduleDefinition = function (productInfo, translations) {
                     templateUrl: route.templateUrl,
                     title: route.title,
                     helpInfo: route.helpInfo,
+                    documentationUrl: route.documentationUrl,
                     reloadOnSearch: route.reloadOnSearch !== undefined ? route.reloadOnSearch : true,
                     resolve: {
                         preload: ['$ocLazyLoad', '$q', function ($ocLazyLoad, $q) {
@@ -195,8 +201,8 @@ const moduleDefinition = function (productInfo, translations) {
     workbench.constant('productInfo', productInfo);
 
     // we need to inject $jwtAuth here in order to init the service before everything else
-    workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', 'LSKeys', 'GuidesService', '$licenseService', 'InstallationCookieService',
-        function ($rootScope, $route, toastr, $sce, $translate, ThemeService, WorkbenchSettingsStorageService, LSKeys, GuidesService, $licenseService, InstallationCookieService) {
+    workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', 'LSKeys', 'GuidesService',
+        function ($rootScope, $route, toastr, $sce, $translate, ThemeService, WorkbenchSettingsStorageService, LSKeys, GuidesService) {
             $rootScope.$on('$routeChangeSuccess', function () {
                 updateTitleAndHelpInfo();
 
@@ -214,8 +220,9 @@ const moduleDefinition = function (productInfo, translations) {
                     document.title = 'GraphDB Workbench';
                 }
 
-                $rootScope.helpInfo = $sce.trustAsHtml(decodeHTML($translate.instant($route.current.helpInfo)));
+                $rootScope.helpInfo = $route.current.helpInfo && $sce.trustAsHtml(decodeHTML($translate.instant($route.current.helpInfo)));
                 $rootScope.title = decodeHTML($translate.instant($route.current.title));
+                $rootScope.documentationUrl =  DocumentationUrlResolver.getDocumentationUrl(productInfo.productShortVersion, $route.current.documentationUrl);
             }
 
             // Check if theme is set in local storage workbench settings and apply
@@ -224,16 +231,6 @@ const moduleDefinition = function (productInfo, translations) {
             ThemeService.applyDarkThemeMode();
 
             GuidesService.init();
-
-            // Checks license status and adds tracking code and cookies when free/evaluation license
-            $licenseService.checkLicenseStatus().then(() => {
-                if ($licenseService.isTrackingAllowed()) {
-                    const installationId = $licenseService.license().installationId || '';
-                    InstallationCookieService.setIfAbsent(installationId);
-                } else {
-                    InstallationCookieService.remove();
-                }
-            });
         }]);
 
     workbench.filter('titlecase', function () {
@@ -245,14 +242,14 @@ const moduleDefinition = function (productInfo, translations) {
 
     workbench.filter('prettyJSON', () => (json) => angular.toJson(json, true));
     workbench.filter('humanReadableSize', () => (size) => convertToHumanReadable(size));
-    workbench.filter('htmlTranslate', ['$translate', '$sce', ($translate, $sce) => (key, params) => $sce.trustAsHtml(decodeHTML($translate.instant(key, params)))]);
+    workbench.filter('trustAsHtml', ['$translate', '$sce', ($translate, $sce) => (message) => $sce.trustAsHtml(decodeHTML(message))]);
 
     angular.bootstrap(document, ['graphdb.workbench']);
 };
 
 // Manually load language files
 function loadTranslationsBeforeWorkbenchStart() {
-    const languages = ['en', 'fr']
+    const languages = __LANGUAGES__.availableLanguages.map(lang => lang.key)
     const promises = languages.map(loadTranslations);
     const translations = {};
     Promise.all(promises)
