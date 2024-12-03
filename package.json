@@ -29,6 +29,9 @@
         "cy:run": "sh scripts/cy.sh",
         "sonar": "sh scripts/sonar.sh"
     },
+    "engines": {
+        "node": ">=18.0.0"
+    },
     "files": [],
     "repository": {
         "type": "git",
