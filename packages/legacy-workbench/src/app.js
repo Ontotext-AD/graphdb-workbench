@@ -76,16 +76,8 @@ const moduleDefinition = function (productInfo, translations) {
     defineCustomElements();
 
     workbench.config([...providers,
-        function ($routeProvider,
-                  $locationProvider,
-                  $menuItemsProvider,
-                  toastrConfig,
-                  localStorageServiceProvider,
-                  $uibTooltipProvider,
-                  $httpProvider,
-                  $templateRequestProvider,
-                  $translateProvider,
-                  $languageServiceProvider) {
+        function ($routeProvider, $locationProvider, $menuItemsProvider, toastrConfig, localStorageServiceProvider,
+                  $uibTooltipProvider, $httpProvider, $templateRequestProvider, $translateProvider, $languageServiceProvider) {
 
             if (translations && Object.keys(translations).length > 0) {
                 // If translations data is provided, iterate over the object and register each language key
@@ -138,7 +130,7 @@ const moduleDefinition = function (productInfo, translations) {
             $route.routes['_openid_implicit_'].regexp = /[&/](?:id_token=.*&access_token=|access_token=.*&id_token=)/;
 
             let routes = PluginRegistry.get('route');
-
+            console.log('loaded routes:', routes);
             angular.forEach(routes, function (route) {
                 $routeProvider.when(route.url, {
                     controller: route.controller,
@@ -154,6 +146,7 @@ const moduleDefinition = function (productInfo, translations) {
                                 return $q.defer().resolve();
                             }
                             return import(`angular/${route.path}`).then(module => {
+                                console.log(`%cimported module:`, 'background: yellow', route.path);
                                 $ocLazyLoad.inject(route.module)
                                     .catch(err => {
                                         console.log(err)
@@ -265,12 +258,17 @@ const moduleDefinition = function (productInfo, translations) {
                 });
 
             $rootScope.$on('$destroy', () => {
-                console.log(`%caoo.rootscope.destroy:`, 'background: orange', );
+                console.log(`%capp.rootscope.destroy:`, 'background: orange', );
                 if (languageChangeSubscriptions) {
                     languageChangeSubscriptions.unsubscribe();
                 }
                 routeChangeUnsubscribe();
                 translateChangeUnsubscribe();
+                // Remove all routes so that when navigating from legacy-workbench to the new workbench and back, the
+                // router will not try to load the route before the app is bootstrapped again.
+                Object.keys($route.routes).forEach(function(route) {
+                    delete $route.routes[route];
+                });
             })
         }]);
 
@@ -291,6 +289,7 @@ const moduleDefinition = function (productInfo, translations) {
 };
 
 const wbInit = () => {
+    console.log(`app:wbInit`);
     const workbenchElement = document.getElementById('workbench-app');
     return angular.bootstrap(workbenchElement, ['graphdb.workbench']);
 };
@@ -452,6 +451,7 @@ export const mount = (props) => {
         // })
         .then(() => {
             props.initApplication = () => {
+                console.log('workbench.config', workbench.config, window.angular.module('graphdb.workbench'));
                 return startWorkbench();
             }
             return ngLifecycles.mount(props);

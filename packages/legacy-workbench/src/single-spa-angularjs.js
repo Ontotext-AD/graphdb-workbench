@@ -152,7 +152,27 @@ function unmount(opts, mountedInstances, props = {}) {
         //     };
         // });
 
-        mountedInstances.instance.get("$rootScope").$destroy();
+        if (mountedInstances.instance) {
+            const rootScope = mountedInstances.instance.get("$rootScope");
+            if (rootScope) {
+                rootScope.$broadcast("$destroy");
+            }
+        }
+        // mountedInstances.instance.get("$rootScope").$destroy();
+
+        // Remove the AngularJS module from the registry
+        console.log(`%cremove module:`, 'background: plum', opts.mainAngularModule);
+        if (opts.mainAngularModule) {
+            window.angular.module(opts.mainAngularModule)._invokeQueue.length = 0;
+            window.angular.module(opts.mainAngularModule)._configBlocks.length = 0;
+            window.angular.module(opts.mainAngularModule)._runBlocks.length = 0;
+            delete window.angular.module(opts.mainAngularModule);
+        }
+        console.log(`%cremoved module:`, 'background: plum', window.angular.module(opts.mainAngularModule));
+
+        const appEl = document.getElementById('workbench-app')
+        angular.element(appEl).off();
+        angular.element(appEl).remove();
 
         domElement.innerHTML = "";
 
