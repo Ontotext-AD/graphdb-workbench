@@ -59,6 +59,7 @@ const agentInstructionsFormMapper = (currentAgentModelInstructions, defaultInstr
  */
 const extractionMethodsFormMapper = (agentFormModel, operation, defaultData, data = []) => {
     const defaultExtractionMethods = defaultData.filter((defaultExtractionMethod) => !data.some((agentMethod) => agentMethod.method === defaultExtractionMethod.method));
+    const defaultSparqlMethodValues = defaultData.find((defaultExtractionMethod) => defaultExtractionMethod.method === 'sparql_search');
     const extractionMethods = [...data, ...defaultExtractionMethods];
     extractionMethods.forEach((extractionMethod) => {
         const isMethodSelected = data.some((method) => method.method === extractionMethod.method);
@@ -79,10 +80,10 @@ const extractionMethodsFormMapper = (agentFormModel, operation, defaultData, dat
             selected: shouldShowSelectedMethods && isMethodSelected,
             method: extractionMethod.method,
             sparqlOption: sparqlOption,
-            ontologyGraph: extractionMethod.ontologyGraph,
+            ontologyGraph: extractionMethod.ontologyGraph || defaultSparqlMethodValues.ontologyGraph,
             addMissingNamespaces: extractionMethod.addMissingNamespaces,
-            sparqlQuery: extractionMethod.sparqlQuery && new TextFieldModel({
-                value: extractionMethod.sparqlQuery,
+            sparqlQuery: new TextFieldModel({
+                value: extractionMethod.sparqlQuery || defaultSparqlMethodValues.sparqlQuery,
                 minLength: 1,
                 maxLength: 2380
             }),
