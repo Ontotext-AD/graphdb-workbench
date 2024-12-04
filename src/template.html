@@ -43,8 +43,16 @@
     <div id="repositorySelectDropdown" class="btn-group" role="group" ng-show="!embedded">
         <button id="btnReposGroup" type="button" class="btn btn-secondary dropdown-toggle"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" guide-selector="repositoriesGroupButton">
-            <span ng-mouseover="setPopoverRepo(getActiveRepositoryObject())" popover-popup-delay="1000" popover-trigger="mouseenter" popover-placement="left-bottom"
-                  uib-popover-template="popoverTemplate" popover-title="{{'security.repository.title' | translate}} {{getActiveRepositoryObject().id}}" ng-if="getActiveRepository()"
+            <span ng-mouseover="setPopoverRepo(getActiveRepositoryObject())"
+                  popover-popup-delay="1000"
+                  ng-mouseenter="openPopover()"
+                  ng-mouseleave="closePopover()"
+                  popover-trigger="none"
+                  popover-placement="left-bottom"
+                  popover-is-open="isPopoverOpen"
+                  uib-popover-template="popoverTemplate"
+                  popover-title="{{'security.repository.title' | translate}} {{getActiveRepositoryObject().id}}"
+                  ng-if="getActiveRepository()"
                   guide-selector="repository-{{getActiveRepositoryObject().id}}-button"
                   class="active-repository">
                 <em ng-class="'icon-repo-' + getActiveRepositoryObject().type"></em>

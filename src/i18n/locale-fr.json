@@ -2100,6 +2100,7 @@
     "upload.ttl.file.btn": "Cliquez ici pour télécharger un fichier .ttl",
     "no.file.selected.error": "Aucun fichier sélectionné",
     "selected.file.msg": "Sélectionné : {{name}}",
+    "copy.repo.stats.tooltip": "Copier les informations du dépôt",
     "type.label": "Type :",
     "access.label": "Accéder :",
     "read.write.label": "Lecture/écriture",
