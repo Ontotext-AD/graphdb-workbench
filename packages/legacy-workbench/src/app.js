@@ -19,7 +19,7 @@ import 'angular/core/services/language.service'
 import {defineCustomElements} from 'ontotext-yasgui-web-component/loader';
 import {convertToHumanReadable} from "./js/angular/utils/size-util";
 import {DocumentationUrlResolver} from "./js/angular/utils/documentation-url-resolver";
-import {ServiceProvider, LanguageService} from "@ontotext/workbench-api";
+import {ServiceProvider, LanguageContextService} from "@ontotext/workbench-api";
 
 // $translate.instant converts <b> from strings to &lt;b&gt
 // and $sce.trustAsHtml could not recognise that this is valid html
@@ -250,16 +250,14 @@ const moduleDefinition = function (productInfo, translations) {
             // =========================
             // Functions and configurations for integration with the shared-components module.
             // =========================
-            const languageService = ServiceProvider.get(LanguageService);
+            const languageContextService = ServiceProvider.get(LanguageContextService);
 
-            const languageChangeSubscriptions = languageService.onLanguageChanged()
-                .subscribe((language) => {
-                    $translate.use(language);
-                });
+            const languageChangeSubscriptions = languageContextService
+                .onSelectedLanguageChanged((language) => {$translate.use(language)});
 
             $rootScope.$on('destroy', () => {
                 if (languageChangeSubscriptions) {
-                    languageChangeSubscriptions.unsubscribe();
+                    languageChangeSubscriptions();
                 }
             })
         }]);

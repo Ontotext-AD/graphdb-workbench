@@ -27,7 +27,7 @@ export namespace Components {
          */
         "dropdownAlignment": DropdownItemAlignment;
         /**
-          * The dropdown button name. It will be used if present; otherwise, the {@link OntoDropdown#dropdownButtonNameLabelKey } will be used.
+          * The name for the dropdown button. This can either be a string (used directly as the button label) or a Stencil component (used to render the button content). It will be used if present; otherwise, the {@link OntoDropdown#dropdownButtonNameLabelKey } will be used.
          */
         "dropdownButtonName": string;
         /**
@@ -49,7 +49,7 @@ export namespace Components {
         /**
           * Array of dropdown options.
          */
-        "items": DropdownItem[];
+        "items": DropdownItem<any>[];
     }
     interface OntoFooter {
     }
@@ -72,6 +72,8 @@ export namespace Components {
           * The selected menu item. If provided, the menu item will be highlighted.
          */
         "selectedMenu": string;
+    }
+    interface OntoRepositorySelector {
     }
     interface OntoTooltip {
     }
@@ -106,7 +108,7 @@ export interface OntoNavbarCustomEvent<T> extends CustomEvent<T> {
 }
 declare global {
     interface HTMLOntoDropdownElementEventMap {
-        "valueChanged": string;
+        "valueChanged": any;
     }
     /**
      * A reusable dropdown component built using StencilJS. This component supports configurable labels, tooltips, icons,
@@ -168,6 +170,12 @@ declare global {
         prototype: HTMLOntoNavbarElement;
         new (): HTMLOntoNavbarElement;
     };
+    interface HTMLOntoRepositorySelectorElement extends Components.OntoRepositorySelector, HTMLStencilElement {
+    }
+    var HTMLOntoRepositorySelectorElement: {
+        prototype: HTMLOntoRepositorySelectorElement;
+        new (): HTMLOntoRepositorySelectorElement;
+    };
     interface HTMLOntoTooltipElement extends Components.OntoTooltip, HTMLStencilElement {
     }
     var HTMLOntoTooltipElement: {
@@ -197,6 +205,7 @@ declare global {
         "onto-language-selector": HTMLOntoLanguageSelectorElement;
         "onto-layout": HTMLOntoLayoutElement;
         "onto-navbar": HTMLOntoNavbarElement;
+        "onto-repository-selector": HTMLOntoRepositorySelectorElement;
         "onto-tooltip": HTMLOntoTooltipElement;
         "translate-label": HTMLTranslateLabelElement;
     }
@@ -213,7 +222,7 @@ declare namespace LocalJSX {
          */
         "dropdownAlignment"?: DropdownItemAlignment;
         /**
-          * The dropdown button name. It will be used if present; otherwise, the {@link OntoDropdown#dropdownButtonNameLabelKey } will be used.
+          * The name for the dropdown button. This can either be a string (used directly as the button label) or a Stencil component (used to render the button content). It will be used if present; otherwise, the {@link OntoDropdown#dropdownButtonNameLabelKey } will be used.
          */
         "dropdownButtonName"?: string;
         /**
@@ -235,11 +244,11 @@ declare namespace LocalJSX {
         /**
           * Array of dropdown options.
          */
-        "items"?: DropdownItem[];
+        "items"?: DropdownItem<any>[];
         /**
           * Event emitted when a dropdown item is selected. The event payload contains the value of the selected item.
          */
-        "onValueChanged"?: (event: OntoDropdownCustomEvent<string>) => void;
+        "onValueChanged"?: (event: OntoDropdownCustomEvent<any>) => void;
     }
     interface OntoFooter {
     }
@@ -266,6 +275,8 @@ declare namespace LocalJSX {
           * The selected menu item. If provided, the menu item will be highlighted.
          */
         "selectedMenu"?: string;
+    }
+    interface OntoRepositorySelector {
     }
     interface OntoTooltip {
     }
@@ -296,6 +307,7 @@ declare namespace LocalJSX {
         "onto-language-selector": OntoLanguageSelector;
         "onto-layout": OntoLayout;
         "onto-navbar": OntoNavbar;
+        "onto-repository-selector": OntoRepositorySelector;
         "onto-tooltip": OntoTooltip;
         "translate-label": TranslateLabel;
     }
@@ -315,6 +327,7 @@ declare module "@stencil/core" {
             "onto-language-selector": LocalJSX.OntoLanguageSelector & JSXBase.HTMLAttributes<HTMLOntoLanguageSelectorElement>;
             "onto-layout": LocalJSX.OntoLayout & JSXBase.HTMLAttributes<HTMLOntoLayoutElement>;
             "onto-navbar": LocalJSX.OntoNavbar & JSXBase.HTMLAttributes<HTMLOntoNavbarElement>;
+            "onto-repository-selector": LocalJSX.OntoRepositorySelector & JSXBase.HTMLAttributes<HTMLOntoRepositorySelectorElement>;
             "onto-tooltip": LocalJSX.OntoTooltip & JSXBase.HTMLAttributes<HTMLOntoTooltipElement>;
             /**
              * The purpose of this component is to display translated literals in the DOM. A Stencil component re-renders when a prop or state changes,
