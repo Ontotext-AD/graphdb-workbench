@@ -42,9 +42,16 @@
     <!-- Current repository and repository selection dropdown -->
     <div id="repositorySelectDropdown" class="btn-group" role="group" ng-show="!embedded">
         <button id="btnReposGroup" type="button" class="btn btn-secondary dropdown-toggle"
+                ng-mouseover="setPopoverRepo(getActiveRepositoryObject())"
+                popover-trigger="none"
+                popover-is-open="isActiveRepoPopoverOpen"
+                popover-popup-delay="500"
+                ng-mouseenter="openActiveRepoPopover()"
+                popover-placement="left-bottom"
+                uib-popover-template="popoverTemplate"
+                popover-title="{{'security.repository.title' | translate}} {{getActiveRepositoryObject().id}}"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" guide-selector="repositoriesGroupButton">
-            <span ng-mouseover="setPopoverRepo(getActiveRepositoryObject())" popover-popup-delay="1000" popover-trigger="mouseenter" popover-placement="left-bottom"
-                  uib-popover-template="popoverTemplate" popover-title="{{'security.repository.title' | translate}} {{getActiveRepositoryObject().id}}" ng-if="getActiveRepository()"
+            <span ng-if="getActiveRepository()"
                   guide-selector="repository-{{getActiveRepositoryObject().id}}-button"
                   class="active-repository">
                 <em ng-class="'icon-repo-' + getActiveRepositoryObject().type"></em>
@@ -56,7 +63,7 @@
         <ul class="dropdown-menu dropdown-menu-right pre-scrollable" aria-labelledby="dropdownMenuButton">
             <li ng-repeat="repository in getReadableRepositories() | orderBy: ['location', 'id']"
                 ng-if="!isRepoActive(repository)"
-                ng-mouseover="setPopoverRepo(repository)" popover-popup-delay="500"
+                ng-mouseover="handlePopovers(repository)" popover-popup-delay="500"
                 popover-trigger="mouseenter" popover-placement="left"
                 uib-popover-template="popoverTemplate" popover-title="{{'security.repository.title' | translate}} {{repository.id}}">
                 <a class="dropdown-item" ng-click="setRepository(repository)" guide-selector="repository-{{repository.id}}-button">
