@@ -21,7 +21,9 @@ graph TD;
   onto-layout --> onto-navbar
   onto-layout --> onto-footer
   onto-layout --> onto-tooltip
+  onto-header --> onto-repository-selector
   onto-header --> onto-language-selector
+  onto-repository-selector --> onto-dropdown
   onto-language-selector --> onto-dropdown
   onto-navbar --> translate-label
   style onto-layout fill:#f9f,stroke:#333,stroke-width:4px
