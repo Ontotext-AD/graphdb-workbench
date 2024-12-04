@@ -1,8 +1,7 @@
 import {Component, Host, h, State} from '@stencil/core';
 import {DropdownItem} from '../../models/dropdown/dropdown-item';
-import {ServiceProvider, LanguageService} from "@ontotext/workbench-api";
+import {ServiceProvider, LanguageService, LanguageContextService} from "@ontotext/workbench-api";
 import {DropdownItemAlignment} from '../../models/dropdown/dropdown-item-alignment';
-import {Subscription} from '@reactivex/rxjs/dist/package';
 
 @Component({
   tag: 'onto-language-selector',
@@ -11,8 +10,9 @@ import {Subscription} from '@reactivex/rxjs/dist/package';
 })
 export class OntoLanguageSelector {
   private languageService: LanguageService;
-  private items: DropdownItem[] = [];
-  private readonly onLanguageChangeSubscription: Subscription;
+  private languageContextService: LanguageContextService;
+  private items: DropdownItem<string>[] = [];
+  private readonly onLanguageChangeSubscription: () => void;
 
   /**
    * Holds the currently selected language, such as 'en' or 'fr'.
@@ -21,14 +21,16 @@ export class OntoLanguageSelector {
 
   constructor() {
     this.languageService = ServiceProvider.get(LanguageService);
-    this.onLanguageChangeSubscription = this.languageService.onLanguageChanged()
-      .subscribe((newLanguage) => this.changeLanguage(newLanguage));
+    this.languageContextService = ServiceProvider.get(LanguageContextService);
+    // TODO read it from local store and pass it as first value
+    this.changeLanguage(LanguageService.DEFAULT_LANGUAGE);
+    this.onLanguageChangeSubscription = this.languageContextService.onSelectedLanguageChanged((newLanguage) => this.changeLanguage(newLanguage));
     this.items = this.getLanguageDropdownOptions();
   }
 
   disconnectedCallback(): void {
     if (this.onLanguageChangeSubscription) {
-      this.onLanguageChangeSubscription.unsubscribe();
+      this.onLanguageChangeSubscription();
     }
   }
 
@@ -37,9 +39,9 @@ export class OntoLanguageSelector {
       <Host>
         <onto-dropdown
           class='onto-language-selector'
-          onValueChanged={this.onLanguageChangedHandler()}
+          onValueChanged={this.valueChangeHandler()}
           dropdownButtonNameLabelKey={!this.currentLanguage ? 'language_selector.toggle_menu.label' : undefined}
-          dropdownButtonName={this.currentLanguage ? this.currentLanguage : undefined}
+          dropdownButtonName={this.currentLanguage ?? undefined}
           dropdownButtonTooltipLabelKey={this.currentLanguage ? 'language_selector.toggle_menu.tooltip' : 'language_selector.toggle_menu.label'}
           dropdownAlignment={DropdownItemAlignment.RIGHT}
           iconClass='icon-translation'
@@ -49,23 +51,23 @@ export class OntoLanguageSelector {
     );
   }
 
+  private valueChangeHandler() {
+    return (newLanguage: any) => this.onSelectedLanguageChanged(newLanguage);
+  }
+
   private changeLanguage(newLanguage: string): void {
     this.currentLanguage = newLanguage;
     this.items = this.getLanguageDropdownOptions();
   }
 
-  private onLanguageChangedHandler() {
-    return (newLanguage: any) => this.onLanguageChanged(newLanguage);
+  private onSelectedLanguageChanged(newLanguageEvent: CustomEvent): void {
+    this.languageContextService.updateSelectedLanguage(newLanguageEvent.detail);
   }
 
-  private onLanguageChanged(newLanguageEvent: CustomEvent): void {
-    this.languageService.changeLanguage(newLanguageEvent.detail);
-  }
-
-  private getLanguageDropdownOptions(): DropdownItem[] {
+  private getLanguageDropdownOptions(): DropdownItem<string>[] {
     return this.languageService.getSupportedLanguages().map((locale) => {
       const iconClass = this.currentLanguage === locale ? 'icon-tick' : '';
-      return new DropdownItem()
+      return new DropdownItem<string>()
         .setNameLabelKey(`language_selector.language.${locale}.label`)
         .setTooltipLabelKey(`language_selector.language.${locale}.tooltip.` + (this.currentLanguage === locale ? 'selected' : 'not_selected'))
         .setIconClass(iconClass)

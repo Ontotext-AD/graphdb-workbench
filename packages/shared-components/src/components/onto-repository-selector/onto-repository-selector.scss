@@ -1,0 +1,54 @@
+:root {
+  --onto-repository-selector-color: var(--secondary-color, #373a3c);
+}
+
+:host {
+  display: block;
+}
+
+.onto-repository-selector {
+
+  .onto-dropdown {
+
+    &.closed {
+      .onto-dropdown-button {
+        background-color: #ebebeb;
+        color: var(--onto-repository-selector-color);
+
+        &:hover {
+          background-color: #d4d4d4;
+        }
+      }
+    }
+  }
+
+  .repository-selector-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+
+    .item-icon {
+      font-size: 1.5em;
+    }
+
+    .item-label {
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+
+      .repository-id {
+        line-height: .75em;
+      }
+
+      .repository-location {
+        font-weight: 300;
+        font-size: .75em;
+        margin-top: .3em;
+        display: inline-block;
+        max-width: 120px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+    }
+  }
+}

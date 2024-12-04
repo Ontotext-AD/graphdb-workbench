@@ -1,7 +1,6 @@
 import en from '../assets/i18n/en.json'
 import fr from '../assets/i18n/fr.json'
-import {ServiceProvider, LanguageService} from "@ontotext/workbench-api";
-import {Subscription} from '@reactivex/rxjs/dist/package';
+import {ServiceProvider, LanguageService, LanguageContextService} from "@ontotext/workbench-api";
 import {TranslationParameter} from '../models/translation/translation-parameter';
 import {TranslationCallback, TranslationObserver} from '../models/translation/translation-observer';
 import {sanitizeHTML} from '../utils/html-utils';
@@ -16,13 +15,13 @@ type TranslationBundle = {
 class TranslationServiceClassDefinition {
 
   private bundle: {[key: string]: TranslationBundle} = {en, fr}
-  private readonly languageChangeSubscription: Subscription;
+  private readonly languageChangeSubscription: () => void;
   private currentLanguage = LanguageService.DEFAULT_LANGUAGE;
 
   private translationChangedObservers: Record<string, TranslationObserver[]> = {};
 
   constructor() {
-    this.languageChangeSubscription = ServiceProvider.get(LanguageService).onLanguageChanged().subscribe(((language) => {
+    this.languageChangeSubscription = ServiceProvider.get(LanguageContextService).onSelectedLanguageChanged(((language) => {
       this.currentLanguage = language;
       this.notifyTranslationsChanged();
     }));
@@ -182,7 +181,7 @@ class TranslationServiceClassDefinition {
 
   destroy(): void {
     if (this.languageChangeSubscription) {
-      this.languageChangeSubscription.unsubscribe();
+      this.languageChangeSubscription();
     }
   }
 }

@@ -67,5 +67,10 @@
         }
       }
     }
+  },
+  "repository-selector": {
+    "btn": {
+      "toggle": "Choisissez le dépôt"
+    }
   }
 }

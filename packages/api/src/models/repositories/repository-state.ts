@@ -1,0 +1,7 @@
+export enum RepositoryState {
+  INACTIVE = 'INACTIVE',
+  STARTING = 'STARTING',
+  RUNNING = 'RUNNING',
+  RESTARTING = 'RESTARTING',
+  STOPPING = 'STOPPING'
+}

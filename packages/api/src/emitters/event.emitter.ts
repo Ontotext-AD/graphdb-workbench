@@ -1,4 +1,4 @@
-import { Event } from '../models/events/event';
+import { Event } from '../models/events';
 import {Emitter} from './emitter';
 
 /**

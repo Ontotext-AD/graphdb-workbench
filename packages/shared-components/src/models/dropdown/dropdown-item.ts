@@ -1,7 +1,7 @@
 /**
  * Model that holds a dropdown item configuration.
  */
-export class DropdownItem {
+export class DropdownItem<T> {
   /**
    * The dropdown item name. It will be used if present; otherwise, the {@link DropdownItem._nameLabelKey} will be used.
    */
@@ -31,13 +31,13 @@ export class DropdownItem {
    * The value of dropdown item. It will be emitted when the item is selected.
    * @private
    */
-  private _value: string;
+  private _value: T;
 
   get name(): string {
     return this._name;
   }
 
-  setName(value: string): DropdownItem {
+  setName(value: string): DropdownItem<T> {
     this._name = value;
     return this;
   }
@@ -46,7 +46,7 @@ export class DropdownItem {
     return this._nameLabelKey;
   }
 
-  setNameLabelKey(value: string): DropdownItem {
+  setNameLabelKey(value: string): DropdownItem<T> {
     this._nameLabelKey = value;
     return this;
   }
@@ -55,7 +55,7 @@ export class DropdownItem {
     return this._tooltip;
   }
 
-  setTooltip(value: string): DropdownItem {
+  setTooltip(value: string): DropdownItem<T> {
     this._tooltip = value;
     return this;
   }
@@ -64,7 +64,7 @@ export class DropdownItem {
     return this._tooltipLabelKey;
   }
 
-  setTooltipLabelKey(value: string): DropdownItem {
+  setTooltipLabelKey(value: string): DropdownItem<T> {
     this._tooltipLabelKey = value;
     return this;
   }
@@ -73,16 +73,16 @@ export class DropdownItem {
     return this._iconClass;
   }
 
-  setIconClass(value: string): DropdownItem {
+  setIconClass(value: string): DropdownItem<T> {
     this._iconClass = value;
     return this;
   }
 
-  get value(): string {
+  get value(): T {
     return this._value;
   }
 
-  setValue(value: string): DropdownItem {
+  setValue(value: T): DropdownItem<T> {
     this._value = value;
     return this;
   }
