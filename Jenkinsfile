@@ -6,6 +6,7 @@ pipeline {
 
   tools {
     nodejs 'nodejs-20.11.1'
+    jdk 'adopt_openjdk21'
   }
 
   environment {
