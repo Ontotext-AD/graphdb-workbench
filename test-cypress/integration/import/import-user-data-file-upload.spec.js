@@ -238,4 +238,44 @@ describe('Import user data: File upload', () => {
         ImportUserDataSteps.getResources().should('have.length', 1);
         ImportUserDataSteps.checkImportedResource(0, 'invalid-format.json', 'RDF Parse Error: Invalid file format');
     });
+
+    it('should be able to select files via individual and main checkboxes', () => {
+        // Given I upload a file
+        ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[0], bnodes));
+        ImportSettingsDialogSteps.import();
+        ImportUserDataSteps.selectFile(ImportUserDataSteps.createFile(testFiles[1], jsonld));
+        ImportSettingsDialogSteps.import();
+        ImportUserDataSteps.getResources().should('have.length', 2);
+        // When I check the main checkbox
+        ImportUserDataSteps.checkMainCheckbox();
+        // Then I expect all the list items to be selected
+        ImportUserDataSteps.getSelectedResources().should('have.length', 2);
+        // When I uncheck the main checkbox
+        ImportUserDataSteps.checkMainCheckbox();
+        // Then I expect all the list items to be unchecked
+        ImportUserDataSteps.getSelectedResources().should('have.length', 0);
+        ImportUserDataSteps.getMainCheckbox().should('not.be.checked');
+        // When I check one item from the list
+        ImportUserDataSteps.selectFileByIndex(0);
+        // Then I expect the main checkbox to be indeterminate
+        ImportUserDataSteps.getMainCheckbox().should('have.prop', 'indeterminate', true);
+        // When I check the indeterminate checkbox
+        ImportUserDataSteps.checkMainCheckbox();
+        // Then I expect all checkboxes to be unchecked
+        ImportUserDataSteps.getMainCheckbox().should('not.be.checked');
+        ImportUserDataSteps.getResource(0).find('.select-checkbox').should('not.be.checked');
+        ImportUserDataSteps.getResource(1).find('.select-checkbox').should('not.be.checked');
+        // When I reset a file's status
+        ImportUserDataSteps.resetFileStatus(1);
+        // Then I select only imported files from the dropdown
+        ImportUserDataSteps.selectImportedResources();
+        // And I expect an indeterminate main checkbox
+        ImportUserDataSteps.getMainCheckbox().should('have.prop', 'indeterminate', true);
+        // When I check the indeterminate checkbox
+        ImportUserDataSteps.checkMainCheckbox();
+        // Then I expect all checkboxes to be unchecked
+        ImportUserDataSteps.getMainCheckbox().should('not.be.checked');
+        ImportUserDataSteps.getResource(0).find('.select-checkbox').should('not.be.checked');
+        ImportUserDataSteps.getResource(1).find('.select-checkbox').should('not.be.checked');
+    });
 });
