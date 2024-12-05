@@ -11,8 +11,16 @@ export class AutocompleteSteps {
         // No active loader
         cy.get('.ot-loader').should('not.exist');
 
+        // Repository is active
+        cy.get('.repository-errors').should('not.be.visible');
+
         // No warnings should be present
-        this.getAutocompletePage().find('.alert-warning').should('not.be.visible');
+        this.getAutocompletePage().should(($autocomplete) => {
+            // Ensure the container exists and is visible
+            expect($autocomplete).to.be.visible;
+            // Assert no warning exists inside the container
+            expect($autocomplete.find('.alert-warning')).to.not.be.visible;
+        });
 
         this.getAutocompleteIndex().should('be.visible');
     }

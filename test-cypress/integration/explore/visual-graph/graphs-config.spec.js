@@ -387,7 +387,7 @@ describe('Graphs config', () => {
         VisualGraphSteps.editConfig(graphConfigName);
         // And I open the expand query wizard tab
         VisualGraphSteps.openConfigWizardTab(2);
-        VisualGraphSteps.getConfigWizardTab(2).should('have.class', 'active');
+        VisualGraphSteps.getConfigWizardTab(2).should('be.visible').and('have.class', 'active');
         // When I click cancel without changing the query
         VisualGraphSteps.cancelSaveConfig();
         // Then I expect a confirmation for leaving the page
