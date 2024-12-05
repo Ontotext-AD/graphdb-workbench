@@ -13,6 +13,12 @@ export class PluginsSteps {
 
         // No active loader
         cy.get('.ot-loader').should('not.exist');
+
+        // Repository is active
+        cy.get('.repository-errors').should('not.be.visible');
+
+        // No plugins errors
+        cy.get('.no-plugins-match-alert').should('not.be.visible');
     }
 
     static getPluginByName(name) {

@@ -21,8 +21,12 @@ describe('Plugins view', () => {
     });
 
     it('Should allow to enable and disable the plugins', () => {
-        cy.wait('@get-license');
-        cy.wait('@get-plugins');
+        cy.wait('@get-license')
+            .its('response.statusCode')
+            .should('equal', 200);
+        cy.wait('@get-plugins')
+            .its('response.statusCode')
+            .should('equal', 200);
         PluginsSteps.waitUntilPluginsPageIsLoaded();
 
         // Verify initial status is ON

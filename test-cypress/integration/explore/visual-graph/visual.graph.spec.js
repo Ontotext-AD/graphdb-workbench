@@ -1,6 +1,7 @@
 import {VisualGraphSteps} from "../../../steps/visual-graph-steps";
 import {ApplicationSteps} from "../../../steps/application-steps";
 import {LicenseStubs} from "../../../stubs/license-stubs";
+import {AutocompleteStubs} from "../../../stubs/autocomplete/autocomplete-stubs";
 
 const FILE_TO_IMPORT = 'wine.rdf';
 const VALID_RESOURCE = 'USRegion';
@@ -30,7 +31,7 @@ describe('Visual graph screen validation', () => {
             VisualGraphSteps.getSearchField().should('be.visible').type('http://');
 
             // Verify that a message with a redirection to the autocomplete section is displayed.
-            cy.get('.autocomplete-toast a').should('contain', 'Autocomplete is OFF')
+            VisualGraphSteps.getAutocompleteToast().should('contain', 'Autocomplete is OFF')
                 .and('contain', 'Go to Setup -> Autocomplete').click();
             // The link in notification should redirect to the autocomplete page
             cy.url().should('include', '/autocomplete');
@@ -54,8 +55,16 @@ describe('Visual graph screen validation', () => {
         });
 
         it('Test search for a valid resource', () => {
+            AutocompleteStubs.spyAutocompleteStatus();
             VisualGraphSteps.visit();
-            cy.wait('@get-license');
+            // Verify autocomplete is ON, because sometimes in CI it is OFF and fails when searching for Resource
+            cy.wait('@autocompleteStatus')
+                .its('response.body')
+                .should('equal', true);
+            cy.wait('@get-license')
+                .its('response.statusCode')
+                .should('equal', 200);
+            VisualGraphSteps.verifyPageLoaded();
             VisualGraphSteps.searchForResourceAndOpen(VALID_RESOURCE, VALID_RESOURCE);
             // Verify redirection to existing visual graph
             cy.url().should('match', /USRegion$/);

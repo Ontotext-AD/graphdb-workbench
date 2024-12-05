@@ -7,6 +7,10 @@ export class VisualGraphSteps {
         cy.visit(VIEW_URL);
     }
 
+    static verifyPageLoaded() {
+        cy.get('.repository-errors').should('not.be.visible');
+    }
+
     static openUSRegionUri() {
         cy.visit('/graphs-visualizations?uri=http:%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23USRegion');
     }
@@ -63,7 +67,12 @@ export class VisualGraphSteps {
 
     static searchFor(resource, fullName) {
         this.getSearchField().type(resource);
+        this.getAutocompleteToast().should('not.exist');
         cy.get('.result-item.active').should('contain', fullName).click();
+    }
+
+    static getAutocompleteToast() {
+        return cy.get('.autocomplete-toast a');
     }
 
     static getGraphVisualizationNodes() {
