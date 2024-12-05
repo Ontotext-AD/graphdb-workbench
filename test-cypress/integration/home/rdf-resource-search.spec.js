@@ -3,25 +3,30 @@ import HomeSteps from '../../steps/home-steps';
 const FILE_TO_IMPORT = 'wine.rdf';
 
 describe('RDF resource search', () => {
-
+    let repositoryId;
     beforeEach(() => {
         cy.viewport(1280, 1000);
+        repositoryId = '23repo' + Date.now();
+        cy.createRepository({id: repositoryId});
+        cy.initializeRepository(repositoryId);
+        cy.enableAutocomplete(repositoryId);
+    });
+
+    afterEach(() => {
+        cy.deleteRepository(repositoryId);
     });
 
     it('Search button should not be present when no repo is selected', () => {
         HomeSteps.visitAndWaitLoader();
+        // Given the page has loaded the license label (otherwise locally test passes after the loader disappears and before other elements are rendered)
+        HomeSteps.getLicenseAsLabel().should('be.visible');
         cy.get('.search-rdf-btn').should('not.exist');
         cy.get('.search-rdf-input').should('not.exist');
     });
 
     it('Search should be made from home page search when repo is set and on home page', () => {
-        const repositoryId = '23repo' + Date.now();
-        cy.createRepository({id: repositoryId});
-        cy.initializeRepository(repositoryId);
-        cy.enableAutocomplete(repositoryId);
-        cy.presetRepository(repositoryId);
-
         // When I visit home page with selected repository
+        cy.presetRepository(repositoryId);
         HomeSteps.visitAndWaitLoader();
         // Search rdf button should be visible
         cy.get('.search-rdf-btn').should('be.visible');
@@ -35,18 +40,11 @@ describe('RDF resource search', () => {
         cy.get('#search-resource-input-home > #search-resource-box > .clear-icon').click();
         // // The input should be cleared
         cy.get('#search-resource-input-home > #search-resource-box > input').should('have.value', '');
-
-        cy.deleteRepository(repositoryId);
     });
 
     it('Search should be present when repo is set', () => {
-        const repositoryId = '23repo' + Date.now();
-        cy.createRepository({id: repositoryId});
-        cy.initializeRepository(repositoryId);
-        cy.enableAutocomplete(repositoryId);
-        cy.presetRepository(repositoryId);
-
         // When I visit not home page with selected repository
+        cy.presetRepository(repositoryId);
         cy.visit('/graphs');
         cy.get('.ot-splash').should('not.be.visible');
         cy.get('.ot-loader-new-content').should('not.exist');
@@ -78,17 +76,11 @@ describe('RDF resource search', () => {
         cy.get('.search-rdf-input search-resource-input .view-res-input').type('{esc}');
         // Search box should not be visible
         cy.get('.search-rdf-input').should('not.be.visible');
-
-        cy.deleteRepository(repositoryId);
     });
 
     it('Search should be persisted on page reload', () => {
-        const repositoryId = '23repo' + Date.now();
-        cy.createRepository({id: repositoryId});
-        cy.initializeRepository(repositoryId);
-        cy.enableAutocomplete(repositoryId);
+        // Given I've selected a repository and visit the page
         cy.presetRepository(repositoryId);
-
         cy.visit('/graphs', {
             onBeforeLoad(win) {
                 cy.stub(win, 'open').as('window.open');
@@ -128,18 +120,12 @@ describe('RDF resource search', () => {
                 // Search box should not be visible
                 cy.get('.search-rdf-input').should('not.be.visible');
             });
-
-        cy.deleteRepository(repositoryId);
     });
 
     it('Should test RDF resource search box', () => {
-        //Prepare repository, autocomplete and import data.
-        const repositoryId = 'repository-' + Date.now();
-        cy.createRepository({id: repositoryId});
-        cy.initializeRepository(repositoryId);
+        //Prepare repository and import data.
         cy.presetRepository(repositoryId);
         cy.importServerFile(repositoryId, FILE_TO_IMPORT);
-        cy.enableAutocomplete(repositoryId);
         HomeSteps.visitAndWaitLoader();
 
         //Verify that the main resource search box is focused
@@ -179,7 +165,6 @@ describe('RDF resource search', () => {
         getVisualButton().click();
         cy.get("#auto_0").should('be.visible').click();
         cy.get('@window.open').should('be.calledWith', 'graphs-visualizations?uri=http%3A%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23Dry');
-        cy.deleteRepository(repositoryId);
     });
 });
 
