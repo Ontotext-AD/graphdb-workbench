@@ -21,6 +21,8 @@ class TranslationServiceClassDefinition {
   private translationChangedObservers: Record<string, TranslationObserver[]> = {};
 
   constructor() {
+    // log with background color
+    console.log('%ctranslation service ', 'background:orange',);
     this.languageChangeSubscription = ServiceProvider.get(LanguageContextService).onSelectedLanguageChanged(((language) => {
       this.currentLanguage = language;
       this.notifyTranslationsChanged();
