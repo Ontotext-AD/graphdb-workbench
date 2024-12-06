@@ -92,27 +92,46 @@ export class ObjectUtil {
   }
 
   /**
-   * Creates a deep copy of the provided value.
+   * Creates a deep copy of the given object.
    *
-   * If the value implements a `copy` method, the method is invoked to create the copy.
-   * For primitive values or objects that do not implement a `copy` method, the value
-   * itself is returned since primitives are immutable by nature.
+   * This method recursively copies all properties and values of the object,
+   * handling different types such as primitives, arrays, and plain objects.
+   * It ensures that the copied object does not share references with the original object,
+   * meaning that all nested structures are also copied independently.
    *
-   * @template T - The type of the value to be copied.
-   * @param value - The value to be deep copied. It can be an object with a `copy` method or a primitive type.
-   * @returns A deep copy of the value if a `copy` method exists, or the original value for primitives.
+   * @param obj - The object to be deeply copied. Can be any type, including primitives,
+   *              arrays, or objects.
+   * @returns A deep copy of the object. If the input is a primitive, null, undefined,
+   *          or a function, the original value is returned as-is.
    */
-  static deepCopy<T>(value: T): T {
-    // Use a type guard to check if the value has a 'copy' method
-    if (value && ObjectUtil.hasCopyMethod<T>(value)) {
-      return value.copy();
+  static deepCopy(obj: unknown): unknown {
+    // Handle primitives, null, undefined, and functions
+    if (typeof obj !== 'object' || obj === null || obj === undefined || typeof obj === 'function') {
+      return obj;
     }
-    // Otherwise, return the value directly (it may be a primitive)
-    return value;
+
+    // Handle arrays separately to ensure deep copy of elements
+    if (Array.isArray(obj)) {
+      return obj.map(item => ObjectUtil.deepCopy(item));
+    }
+
+    // Handle plain objects or objects with a prototype
+    const result: Record<string, unknown> = Object.create(Object.getPrototypeOf(obj));
+
+    // Recursively copy each key-value pair
+    for (const key of Object.keys(obj)) {
+      result[key] = ObjectUtil.deepCopy((obj as Record<string, unknown>)[key]);
+    }
+
+    return result;
   }
 
-  // Define a type guard for objects with a 'copy' method
-  static hasCopyMethod<T>(value: unknown): value is { copy: () => T } {
-    return typeof value === 'object' && value !== null && 'copy' in value && typeof value.copy === 'function';
+  /**
+   * Type guard to check if the value has a 'copy' method.
+   * @param value - The value to check.
+   * @returns True if the value has a 'copy' method, false otherwise.
+   */
+  static hasCopyMethod(value: unknown): boolean {
+    return typeof value === 'object' && value !== null && Object.prototype.hasOwnProperty.call(value, 'copy') && typeof (value as { copy: unknown }).copy === 'function';
   }
 }
