@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
   <title>Stencil Component Starter</title>
 
+  <script type="importmap">
+    {
+      "imports": {
+        "@ontotext/workbench-api": "/resources/ontotext-workbench-api.js"
+      }
+    }
+  </script>
+
   <script type="module" src="/build/shared-components.esm.js"></script>
   <script nomodule src="/build/shared-components.js"></script>
   <script src="./main.js" defer></script>
@@ -13,5 +21,6 @@
 </head>
 <body>
 <onto-navbar></onto-navbar>
+<onto-tooltip></onto-tooltip>
 </body>
 </html>
