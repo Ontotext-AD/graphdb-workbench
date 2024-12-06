@@ -12,7 +12,6 @@ import {
   Watch
 } from '@stencil/core';
 import {ExternalMenuModel} from "./external-menu-model";
-import {navigateToUrl} from "single-spa";
 import {NavbarToggledEvent} from "./navbar-toggled-event";
 import {NavbarService} from "./navbar-service";
 import {NavbarItemModel, NavbarModel} from "./navbar-model";
@@ -100,8 +99,12 @@ export class OntoNavbar {
 
   private select(event: MouseEvent, menuItem: NavbarItemModel) {
     event.preventDefault();
-    // navigate to respective url without reloading if possible
-    navigateToUrl(menuItem.href);
+    // Navigate to respective url without reloading if possible.
+    // #navigateToUrl function is exposed by the root-config and comes from the single-spa.
+    // It's currently provided this way in order to prevent components to depend
+    // from single-spa. Although this is not the best approach, it'd work for now.
+    // @ts-ignore
+    window.singleSpa.navigateToUrl(menuItem.href);
 
     if (menuItem.children.length) {
       if (!menuItem.open) {
