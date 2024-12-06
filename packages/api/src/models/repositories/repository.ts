@@ -1,11 +1,11 @@
 import {RepositoryState} from './repository-state';
 import {RepositoryType} from './repository-type';
-import {Copyable} from '../common/copyable';
+import {Model} from '../common/model';
 
 /**
  * Holds repository information, such as name, type, state, and other related fields.
  */
-export class Repository implements Copyable<Repository> {
+export class Repository extends Model<Repository> {
   id: string;
   title: string;
   type: RepositoryType | undefined;
@@ -20,6 +20,7 @@ export class Repository implements Copyable<Repository> {
   unsupported: boolean | undefined;
 
   constructor(data?: Repository) {
+    super();
     this.id = data?.id || '';
     this.title = data?.title || '';
     this.type = data?.type;
@@ -32,9 +33,5 @@ export class Repository implements Copyable<Repository> {
     this.readable = data?.readable;
     this.writable = data?.writable;
     this.unsupported = data?.unsupported;
-  }
-
-  copy(): Repository {
-    return new Repository(this);
   }
 }

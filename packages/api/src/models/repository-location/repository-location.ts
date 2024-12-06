@@ -1,11 +1,11 @@
 import {AuthenticationType} from '../security';
 import {RepositoryLocationType} from './repository-location-type';
-import {Copyable} from '../common/copyable';
+import {Model} from '../common/model';
 
 /**
  * Holds location information about a repository ({@link RepositoryType}) instance.
  */
-export class RepositoryLocation implements Copyable<RepositoryLocation> {
+export class RepositoryLocation extends Model<RepositoryLocation> {
   /**
    * The GraphDB location URL.
    */
@@ -62,6 +62,7 @@ export class RepositoryLocation implements Copyable<RepositoryLocation> {
   defaultRepository: string;
 
   constructor(data?: RepositoryLocation) {
+    super();
     this.uri = data?.uri || '';
     this.label = data?.label || '';
     this.username = data?.username || '';
@@ -73,9 +74,5 @@ export class RepositoryLocation implements Copyable<RepositoryLocation> {
     this.system = data?.system;
     this.errorMsg = data?.errorMsg || '';
     this.defaultRepository = data?.defaultRepository || '';
-  }
-
-  copy(): RepositoryLocation {
-    return new RepositoryLocation(this);
   }
 }

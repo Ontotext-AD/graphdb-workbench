@@ -14,7 +14,7 @@ export class LanguageContextService extends ContextService {
    *
    * @param {string} locale - The new language code to set (e.g., 'en', 'fr', 'de').
    */
-  updateSelectedLanguage(locale: string): void {
+  updateSelectedLanguage(locale: string | undefined): void {
     // TODO save it to local store.
     this.updateContextProperty(LanguageContextService.SELECTED_LANGUAGE, locale);
   }
