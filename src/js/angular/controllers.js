@@ -652,6 +652,31 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     };
 
+    $scope.isPopoverOpen = false;
+
+    $scope.openPopover = function () {
+        if ($scope.getActiveRepository()) {
+            $scope.isPopoverOpen = true;
+        }
+    };
+
+    const closePopover = function(event) {
+        const popoverElement = document.querySelector('.popover');
+        if ($scope.isPopoverOpen && popoverElement && !popoverElement.contains(event.target)) {
+            $timeout(function () {
+                // Both lines are needed to close the popover
+                popoverElement.setAttribute('is-open', 'false');
+                $scope.isPopoverOpen = false;
+            }, 0);
+        }
+    };
+
+    document.addEventListener('click', closePopover);
+
+    $scope.$on('$destroy', function() {
+        document.removeEventListener('click', closePopover);
+    });
+
     $scope.getDegradedReason = function () {
         return $repositories.getDegradedReason();
     };
