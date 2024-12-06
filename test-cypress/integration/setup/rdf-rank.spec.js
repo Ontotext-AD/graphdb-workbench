@@ -8,6 +8,7 @@ describe('RDF Rank view', () => {
         repositoryId = 'rdfrank-' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
+        RdfRankSteps.visit();
     });
 
     afterEach(() => {
@@ -15,7 +16,6 @@ describe('RDF Rank view', () => {
     });
 
     it('Should allow to enable the RDF rank', () => {
-        RdfRankSteps.visit();
         RdfRankSteps.waitUntilRdfRankPageIsLoaded();
 
         RdfRankSteps.getRdfStatusHeader().should('be.visible').and('contain', repositoryId);
@@ -31,7 +31,6 @@ describe('RDF Rank view', () => {
     });
 
     it('Should allow to enable the RDF rank with graphs and predicates filters', () => {
-        RdfRankSteps.visit();
         RdfRankSteps.waitUntilRdfRankPageIsLoaded();
 
         RdfRankSteps.computeRdfRank();

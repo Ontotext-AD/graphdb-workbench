@@ -15,6 +15,9 @@ export class RdfRankSteps {
         // No active loader
         cy.get('.ot-loader').should('not.exist');
 
+        // Repository is active
+        cy.get('.repository-errors').should('not.be.visible');
+
         this.getRdfRankPage().find('.alert-warning').should('not.be.visible');
 
         this.getFilteringSwitch().scrollIntoView().should('be.visible');
