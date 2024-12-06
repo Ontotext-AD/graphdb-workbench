@@ -648,56 +648,34 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             $scope.repositorySize.loading = true;
             RepositoriesRestService.getSize($scope.popoverRepo).then(function (res) {
                 $scope.repositorySize = res.data;
-                $scope.repoStats = $scope.setRepoStats();
             });
         }
-    };
-
-    $scope.repoStats = {};
-
-    $scope.setRepoStats = function () {
-        return [
-            {
-                "label": $translate.instant('location.label'),
-                "value": $scope.popoverRepo.location ? $scope.popoverRepo.location : 'Local'
-            },
-            {
-                "label": $translate.instant('type.label'),
-                "value": $scope.toHumanReadableType($scope.popoverRepo.type)
-            },
-            {
-                "label": $translate.instant('access.label'),
-                "value": $translate.instant(($scope.popoverRepo.writable && $scope.canWriteRepoInLocation($scope.popoverRepo) && $scope.popoverRepo.type !== 'ontop') ? 'read.write.label' : 'read.only.label')
-            },
-            {
-                "label": $translate.instant('total.statements.label'),
-                "value": $filter('currency')($scope.repositorySize.total, '', 0)
-            },
-            {
-                "label": $translate.instant('explicit.label'),
-                "value": $scope.repositorySize.explicit !== 0 ? $filter('currency')($scope.repositorySize.explicit, '', 0) : 0
-            },
-            {
-                "label": $translate.instant('inferred.label'),
-                "value": $filter('currency')($scope.repositorySize.inferred, '', 0)
-            },
-            {
-                "label": $translate.instant('expansion.ratio.label'),
-                "value": $scope.repositorySize.explicit !== 0 ? $filter('currency')($scope.repositorySize.total/$scope.repositorySize.explicit, '', 0) : '-'
-            }
-        ];
     };
 
     $scope.isPopoverOpen = false;
 
     $scope.openPopover = function () {
-        $scope.isPopoverOpen = true;
+        if ($scope.getActiveRepository()) {
+            $scope.isPopoverOpen = true;
+        }
     };
 
-    $scope.closePopover = function () {
-        // TODO sets false, but doesn't close
-        $scope.isPopoverOpen = false;
+    const closePopover = function(event) {
+        const popoverElement = document.querySelector('.popover');
+        if ($scope.isPopoverOpen && popoverElement && !popoverElement.contains(event.target)) {
+            $timeout(function () {
+                // Both lines are needed to close the popover
+                popoverElement.setAttribute('is-open', 'false');
+                $scope.isPopoverOpen = false;
+            }, 0);
+        }
     };
+
+    document.addEventListener('click', closePopover);
+
+    $scope.$on('$destroy', function() {
+        document.removeEventListener('click', closePopover);
+    });
 
     $scope.getDegradedReason = function () {
         return $repositories.getDegradedReason();

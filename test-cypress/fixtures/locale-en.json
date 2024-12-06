@@ -2100,7 +2100,6 @@
     "upload.ttl.file.btn": "Click here to upload a .ttl file",
     "no.file.selected.error": "No file selected",
     "selected.file.msg": "Selected: {{name}}",
-    "copy.repo.stats.tooltip": "Copy repository info",
     "type.label": "Type:",
     "access.label": "Access:",
     "read.write.label": "Read/write",
