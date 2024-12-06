@@ -15,6 +15,10 @@ export class NavbarModel {
     this._items = items;
   }
 
+  hasParent(parentLabel: string): boolean {
+    return this._items.some((parentItem) => parentLabel === parentItem.label);
+  }
+
   /**
    * Clones the model. This method is useful when the model needs to be modified without affecting the original model.
    * @return The cloned model.

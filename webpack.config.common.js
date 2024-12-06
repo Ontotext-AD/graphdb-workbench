@@ -30,10 +30,6 @@ module.exports = (webpackConfigEnv, argv) => {
         webpackConfigEnv,
         argv,
         disableHtmlGeneration: true,
-        // From webpack-config-single-spa v6.0.0 outputs to native ES modules by default.
-        // To upgrade without switching to native ES modules, add the outputSystemJS option to your webpack.config.js
-        // The new option that preserves backwards compatibility:
-        outputSystemJS: true,
     });
 
     defaultConfig.module.rules = [];
@@ -41,13 +37,13 @@ module.exports = (webpackConfigEnv, argv) => {
     return merge(defaultConfig, {
         entry: {
             main: './packages/root-config/src/ontotext-root-config.js',
-            legacyWorkbench: './packages/legacy-workbench/src/index.js'
+            legacyWorkbench: './packages/legacy-workbench/src/app.js'
         },
         output: {
             filename: '[name].js',
             chunkFilename: '[name].bundle.js',
             path: path.resolve(__dirname, 'dist'),
-            libraryTarget: "system",
+            libraryTarget: "module",
             publicPath: '/'
         },
         resolve: {
@@ -252,7 +248,11 @@ module.exports = (webpackConfigEnv, argv) => {
                     }
                     ,
                     {
-                        from: 'packages/root-config/node_modules/import-map-overrides/dist/import-map-overrides.js',
+                        from: 'node_modules/import-map-overrides/dist/import-map-overrides.js',
+                        to: 'resources'
+                    },
+                    {
+                        from: 'node_modules/@single-spa/import-map-injector/lib/import-map-injector.js',
                         to: 'resources'
                     }
                 ]
