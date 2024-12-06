@@ -45,7 +45,7 @@ export class RepositoryMapper extends Mapper {
    * @param data - The raw server response containing repositories grouped by location.
    * @returns A flat list of {@link Repository} instances wrapped in a {@link RepositoryList} model.
    */
-  static toRepositoryList(data: Record<string, []>): RepositoryList {
+  static toRepositoryList(data: Record<string, unknown[]>): RepositoryList {
     if (!data) {
       return new RepositoryList();
     }
