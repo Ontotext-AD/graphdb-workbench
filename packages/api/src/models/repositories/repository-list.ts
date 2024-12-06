@@ -1,5 +1,5 @@
 import {Repository} from './repository';
-import {Copyable} from '../common/copyable';
+import {ModelList} from '../common/model-list';
 
 const REPOSITORY_LOCATION_ID_COMPARATOR = (r1: Repository, r2: Repository) => {
   // Compare locations.
@@ -16,11 +16,10 @@ const REPOSITORY_LOCATION_ID_COMPARATOR = (r1: Repository, r2: Repository) => {
 /**
  * Holds an array of repositories ({@link Repository}) and provides functions to manipulate them.
  */
-export class RepositoryList implements Copyable<RepositoryList> {
-  repositories: Repository[];
+export class RepositoryList extends ModelList<Repository> {
 
   constructor(repositories?: Repository[]) {
-    this.repositories = repositories ?? [];
+    super(repositories);
   }
 
   /**
@@ -31,18 +30,14 @@ export class RepositoryList implements Copyable<RepositoryList> {
    * @returns The matching {@link Repository} if found, otherwise `undefined`.
    */
   findRepository(repositoryId: string, location: string): Repository | undefined {
-    return this.repositories.find(
-      (repository) => repository.id === repositoryId && repository.location === location
-    );
+    return super.find((repository) => repository.id === repositoryId && repository.location === location);
   }
 
   /**
    * Sorts the repositories in place by their location and ID.
-   *
-   * Sorting is performed using the {@link REPOSITORY_LOCATION_ID_COMPARATOR}.
    */
   sortByLocationAndId(): void {
-    this.repositories.sort(REPOSITORY_LOCATION_ID_COMPARATOR);
+    super.sort(REPOSITORY_LOCATION_ID_COMPARATOR);
   }
 
   /**
@@ -52,19 +47,6 @@ export class RepositoryList implements Copyable<RepositoryList> {
    * @returns An array of {@link Repository} objects that do not have any of the specified IDs.
    */
   filterByIds(repositoryIds: string[]): Repository[] {
-    return this.repositories.filter(
-      (repository: Repository) => !repositoryIds.includes(repository.id)
-    );
-  }
-
-  /**
-   * Creates a deep copy of the current {@link RepositoryList}.
-   *
-   * Each {@link Repository} in the list is also copied to ensure immutability.
-   *
-   * @returns A new {@link RepositoryList} instance containing copies of the current repositories.
-   */
-  copy(): RepositoryList {
-    return new RepositoryList(this.repositories.map((repository) => repository.copy()));
+    return super.filter(this.createIdFilter(repositoryIds));
   }
 }
