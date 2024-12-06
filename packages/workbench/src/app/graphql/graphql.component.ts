@@ -13,7 +13,7 @@ export class GraphqlComponent {
   constructor() {
     console.log('GraphqlComponent login', ServiceProvider.get(AuthenticationService).login());
     ServiceProvider.get(RepositoryContextService).onRepositoriesChanged((repositoryList: RepositoryList | undefined) => {
-      console.log('GraphqlComponent repositories', repositoryList?.repositories);
+      console.log('GraphqlComponent repositories', repositoryList?.getItems());
     });
   }
 }

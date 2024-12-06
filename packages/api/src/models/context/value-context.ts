@@ -1,5 +1,6 @@
 import {ObjectUtil} from '../../services/utils';
 import {ValueChangeCallback} from './value-change-callback';
+import {Copyable} from '../common/copyable';
 
 /**
  * ValueContext is a generic class for managing a value of type T. It provides functionality to set and retrieve the value,
@@ -68,6 +69,11 @@ export class ValueContext<T> {
     if (value === undefined || value === null) {
       return undefined;
     }
-    return ObjectUtil.deepCopy(value);
+
+    if (ObjectUtil.hasCopyMethod(value)) {
+      // The as unknown as Copyable<T> casting is used to tell TypeScript that value is of type Copyable<T> (even if TypeScript can't deduce it automatically).
+      return (value as unknown as Copyable<T>).copy();
+    }
+    return ObjectUtil.deepCopy(value) as T;
   }
 }
