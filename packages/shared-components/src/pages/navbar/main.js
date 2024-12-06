@@ -1,5 +1,13 @@
 let navbarElement = document.querySelector("onto-navbar");
 
+// Mock the navigateUrl function which is exposed by the single-spa via the root-config module
+// in order to allow the menu to work without going anywhere when clicking the menu items
+window.singleSpa = {
+  navigateToUrl: function (url) {
+    console.log('%cnavigate', 'background: blue', url);
+  }
+};
+
 navbarElement.menuItems = [
   {
     "items": [

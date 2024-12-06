@@ -27,17 +27,10 @@ module.exports = (env, argv) => merge(commonConfig(env, argv), {
         new CopyPlugin({
             patterns: [
                 {
-                    from: 'packages/root-config/node_modules/systemjs/dist/system.js',
+                    from: 'packages/root-config/node_modules/single-spa/lib/es2015/esm/single-spa.dev.js',
                     to: 'resources'
-                },
-                {
-                    from: 'packages/root-config/node_modules/systemjs/dist/extras/amd.js',
-                    to: 'resources'
-                },
-                {
-                    from: 'packages/root-config/node_modules/single-spa/lib/system/single-spa.dev.js',
-                    to: 'resources'
-                }]
+                }
+            ]
         }),
         new CleanWebpackPlugin()
     ],
