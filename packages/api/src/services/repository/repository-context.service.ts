@@ -15,7 +15,7 @@ export class RepositoryContextService extends ContextService {
    *
    * @param repository - The new repository to set as selected.
    */
-  updateSelectedRepository(repository: Repository): void {
+  updateSelectedRepository(repository: Repository | undefined): void {
     this.updateContextProperty(RepositoryContextService.UPDATE_SELECTED_REPOSITORY, repository);
   }
 

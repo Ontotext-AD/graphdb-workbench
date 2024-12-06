@@ -121,7 +121,7 @@ export class OntoRepositorySelector {
     if (this.currentRepository) {
       repositories = this.repositoryList.filterByIds([this.currentRepository.id]);
     } else {
-      repositories = this.repositoryList.repositories;
+      repositories = this.repositoryList.getItems();
     }
     // TODO: GDB-10442 filter if not rights to read repo see jwt-atuh.service.js canReadRepo function
     return repositories

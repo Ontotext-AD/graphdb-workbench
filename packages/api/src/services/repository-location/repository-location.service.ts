@@ -22,7 +22,7 @@ export class RepositoryLocationService implements Service {
    */
   getActiveRepositoryLocation(): Promise<RepositoryLocation> {
     return this.locationRestService
-      .loadActiveLocation()
+      .getActiveRepositoryLocation()
       .then(RepositoryLocationMapper.toRepositoryLocation);
   }
 }
