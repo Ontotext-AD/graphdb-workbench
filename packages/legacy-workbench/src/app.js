@@ -1,3 +1,8 @@
+import singleSpaAngularJS from "./single-spa-angularjs";
+import './vendor';
+import './main';
+
+import angular from "angular";
 import 'angular/core/services';
 import 'angular/controllers';
 import 'angular/core/angularCancelOnNavigateModule';
@@ -79,16 +84,8 @@ const moduleDefinition = function (productInfo, translations) {
     defineGraphQlElements();
 
     workbench.config([...providers,
-        function ($routeProvider,
-                  $locationProvider,
-                  $menuItemsProvider,
-                  toastrConfig,
-                  localStorageServiceProvider,
-                  $uibTooltipProvider,
-                  $httpProvider,
-                  $templateRequestProvider,
-                  $translateProvider,
-                  $languageServiceProvider) {
+        function ($routeProvider, $locationProvider, $menuItemsProvider, toastrConfig, localStorageServiceProvider,
+                  $uibTooltipProvider, $httpProvider, $templateRequestProvider, $translateProvider, $languageServiceProvider) {
 
             if (translations && Object.keys(translations).length > 0) {
                 // If translations data is provided, iterate over the object and register each language key
@@ -141,7 +138,6 @@ const moduleDefinition = function (productInfo, translations) {
             $route.routes['_openid_implicit_'].regexp = /[&/](?:id_token=.*&access_token=|access_token=.*&id_token=)/;
 
             let routes = PluginRegistry.get('route');
-
             angular.forEach(routes, function (route) {
                 $routeProvider.when(route.url, {
                     controller: route.controller,
@@ -222,13 +218,13 @@ const moduleDefinition = function (productInfo, translations) {
     // we need to inject $jwtAuth here in order to init the service before everything else
     workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', 'LSKeys', 'GuidesService',
         function ($rootScope, $route, toastr, $sce, $translate, ThemeService, WorkbenchSettingsStorageService, LSKeys, GuidesService) {
-            $rootScope.$on('$routeChangeSuccess', function () {
+            const routeChangeUnsubscribe = $rootScope.$on('$routeChangeSuccess', function () {
                 updateTitleAndHelpInfo();
 
                 toastr.clear();
             });
 
-            $rootScope.$on('$translateChangeSuccess', function () {
+            const translateChangeUnsubscribe = $rootScope.$on('$translateChangeSuccess', function () {
                 updateTitleAndHelpInfo();
             });
 
@@ -264,10 +260,17 @@ const moduleDefinition = function (productInfo, translations) {
             const languageChangeSubscriptions = languageContextService
                 .onSelectedLanguageChanged((language) => {$translate.use(language)});
 
-            $rootScope.$on('destroy', () => {
+            $rootScope.$on('$destroy', () => {
                 if (languageChangeSubscriptions) {
                     languageChangeSubscriptions();
                 }
+                routeChangeUnsubscribe();
+                translateChangeUnsubscribe();
+                // Remove all routes so that when navigating from legacy-workbench to the new workbench and back, the
+                // router will not try to load the route before the app is bootstrapped again.
+                Object.keys($route.routes).forEach(function(route) {
+                    delete $route.routes[route];
+                });
             })
         }]);
 
@@ -283,17 +286,19 @@ const moduleDefinition = function (productInfo, translations) {
     workbench.filter('trustAsHtml', ['$translate', '$sce', ($translate, $sce) => (message) => $sce.trustAsHtml(decodeHTML(message))]);
     workbench.filter('formatNumberToLocaleString', ['$translate', ($translate) => (number) => NumberUtils.formatNumberToLocaleString(number, $translate.use())]);
     workbench.filter('htmlAsText', () => (html) => HtmlUtil.getText(html));
+};
 
+const wbInit = () => {
     const workbenchElement = document.getElementById('workbench-app');
-    angular.bootstrap(workbenchElement, ['graphdb.workbench']);
+    return angular.bootstrap(workbenchElement, ['graphdb.workbench']);
 };
 
 // Manually load language files
-function loadTranslationsBeforeWorkbenchStart() {
+function initTranslations() {
     const languages = __LANGUAGES__.availableLanguages.map(lang => lang.key)
     const promises = languages.map(loadTranslations);
     const translations = {};
-    Promise.all(promises)
+    return Promise.all(promises)
         .then((results) => {
             results.forEach(result => {
                 if (result) {
@@ -301,11 +306,11 @@ function loadTranslationsBeforeWorkbenchStart() {
                 }
             });
             // Start the app once all translations are loaded
-            startWorkbench(translations);
+            return translations;
         })
         .catch(() => {
             console.error('Failed to load one or more translation files.');
-            startWorkbench(translations);
+            return translations;
         });
 }
 
@@ -321,27 +326,79 @@ function loadTranslations(language) {
         });
 }
 
-function startWorkbench(translations) {
-    // Fetch the product version information before bootstrapping the app
-    $.get('/rest/info/version?local=1', function (data) {
-        // Extract major.minor version as short version
-        const versionArray = data.productVersion.match(/^(\d+\.\d+)/);
-        if (versionArray.length) {
-            data.productShortVersion = versionArray[1];
-        } else {
-            data.productShortVersion = data.productVersion;
-        }
+// Fetch the product version information before bootstrapping the app
+function loadAppInfo() {
+    return new Promise((resolve, reject) => {
+        $.get('/rest/info/version?local=1', function (data) {
+            // Extract major.minor version as short version
+            const versionArray = data.productVersion.match(/^(\d+\.\d+)/);
+            if (versionArray.length) {
+                data.productShortVersion = versionArray[1];
+            } else {
+                data.productShortVersion = data.productVersion;
+            }
 
-        // Add the first attribute to the short version, e.g. if the full version is 10.0.0-M3-RC1,
-        // the first attribute is M3 so the short version will be 10.0-M3.
-        const attributeArray = data.productVersion.match(/(-.*?)(-|$)/);
-        if (attributeArray && attributeArray.length) {
-            data.productShortVersion = data.productShortVersion + attributeArray[1];
-        }
-
-        moduleDefinition(data, translations);
+            // Add the first attribute to the short version, e.g. if the full version is 10.0.0-M3-RC1,
+            // the first attribute is M3 so the short version will be 10.0-M3.
+            const attributeArray = data.productVersion.match(/(-.*?)(-|$)/);
+            if (attributeArray && attributeArray.length) {
+                data.productShortVersion = data.productShortVersion + attributeArray[1];
+            }
+            return resolve(data);
+        });
     });
 }
 
-// First load the translation files and then start the workbench
-loadTranslationsBeforeWorkbenchStart();
+function startWorkbench() {
+    let translations;
+    return initTranslations()
+        .then((translationData) => {
+            translations = translationData;
+            return loadAppInfo();
+        })
+        .then((appInfo) => {
+            moduleDefinition(appInfo, translations);
+            return wbInit();
+        })
+        .catch((error) => {
+            console.error('Failed to start the workbench.', error);
+        });
+}
+
+const ngLifecycles = singleSpaAngularJS({
+    angular: angular,
+    domElementGetter: () => {
+        return document.getElementById('single-spa-application:@ontotext/legacy-workbench');
+    },
+    mainAngularModule: "graphdb.workbench",
+    ngRoute: true,
+    preserveGlobal: false,
+    elementId: 'workbench-app',
+    template: `
+        <div ng-controller="mainCtrl">
+            <div class="main-container">
+                <div ng-view></div>
+            </div>
+        </div>
+    `
+});
+
+export const bootstrap = (props) => {
+    // The usage of the generated bootstrap is commented out because it triggers the initialization of angular
+    // In the workbench case, we configure the workbench and bootstrap it in the app.js file.
+    return ngLifecycles.bootstrap(props);
+};
+
+export const mount = (props) => {
+    return Promise.resolve()
+        .then(() => {
+            props.initApplication = () => {
+                return startWorkbench();
+            }
+            return ngLifecycles.mount(props);
+        });
+};
+
+export const unmount = (props) => {
+    return ngLifecycles.unmount(props);
+};

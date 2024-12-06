@@ -190,7 +190,9 @@ function ThemeService(workbenchSettingsStorageService, $translate, toastr) {
     const buildStylesheet = (themeDefinition) => {
         const stylesheetContent = themeTag(themeDefinition);
         const stylesheet = new CSSStyleSheet();
-        stylesheet.title = themeDefinition.name;
+        // TODO: Below line is commented out due to the following error
+        //  theme-service.js:193 Uncaught TypeError: Cannot set property title of #<stylesheet> which has only a getter at buildStylesheet (theme-service.js:193:1) at Object.applyTheme (theme-service.js:205:1) at app.js:245:1 at Object.invoke (angular.js:4182:1) at angular.js:4004:54 at forEach (angular.js:323:1) at createInjector (angular.js:4004:1) at doBootstrap (angular.js:1446:1) at bootstrap (angular.js:1467:1)</stylesheet>
+        // stylesheet.title = themeDefinition.name;
         stylesheet.replaceSync(stylesheetContent);
         return stylesheet;
     };

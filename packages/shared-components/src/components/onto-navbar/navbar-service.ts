@@ -15,7 +15,11 @@ export class NavbarService {
       menuPlugin.items
         .filter((item) => !item.parent)
         .forEach((item) => {
-          navbarModel.addItem(this.toMenuItemModel(item, item.children, undefined));
+          if (navbarModel.hasParent(item.label)) {
+            console.warn("Doubled parent definition: ", item);
+          } else {
+            navbarModel.addItem(this.toMenuItemModel(item, item.children, undefined));
+          }
         });
     });
   }
@@ -33,7 +37,7 @@ export class NavbarService {
     });
   }
 
-  private static toMenuItemModel(item: ExternalMenuItemModel, children: ExternalMenuItemModel[], parent: NavbarItemModel): NavbarItemModel {
+  private static toMenuItemModel(item: ExternalMenuItemModel, children: ExternalMenuItemModel[] = [], parent: NavbarItemModel): NavbarItemModel {
     const itemModel = new NavbarItemModel({
       label: item.label,
       labelKey: item.labelKey,

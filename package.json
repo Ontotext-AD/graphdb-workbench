@@ -70,5 +70,9 @@
         "webpack-dev-server": "^5.0.4",
         "webpack-merge-and-include-globally": "^2.3.4"
     },
-    "resolutions": {}
+    "resolutions": {},
+    "dependencies": {
+        "@single-spa/import-map-injector": "^2.0.1",
+        "import-map-overrides": "^4.2.0"
+    }
 }

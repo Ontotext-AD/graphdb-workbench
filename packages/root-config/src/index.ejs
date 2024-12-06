@@ -20,22 +20,20 @@
     -->
     <meta http-equiv="Content-Security-Policy"
           content=" default-src 'self' <%= microFrontEndsUrls %>;
-                    script-src 'self' 'unsafe-inline' 'unsafe-eval' <%= microFrontEndsUrls %>;
-                    connect-src 'self' <%= microFrontEndsUrls %>;
+                    script-src 'self' 'unsafe-inline' 'unsafe-eval' <%= microFrontEndsUrls %> https://cdn.jsdelivr.net https://www.googletagmanager.com;
+                    connect-src 'self' <%= microFrontEndsUrls %> https://www.googletagmanager.com https://region1.google-analytics.com;
                     style-src 'self' 'unsafe-inline' <%= microFrontEndsUrls %>;
-                    img-src 'self' data: <%= microFrontEndsUrls %>;
+                    img-src 'self' data: <%= microFrontEndsUrls %> https://www.googletagmanager.com;
                     font-src 'self' <%= microFrontEndsUrls %>;
                     base-uri 'self';">
-    <meta name="importmap-type" content="systemjs-importmap"/>
+    <meta name="importmap-type" use-injector />
 
     <script src="plugin-registry.js?v=<%= buildVersion %>"></script>
     <script src="plugins.js?v=<%= buildVersion %>"></script>
-     <script src="/resources/import-map-overrides.js"></script>
+<!--      <script src="/resources/import-map-overrides.js"></script> -->
 
      <% if (isDevelopmentMode) { %>
-        <script src="/resources/system.js"></script>
-        <script src="/resources/amd.js"></script>
-        <script type="systemjs-importmap">
+        <script type="injector-importmap">
             {
                 "imports": {
                     "single-spa": "/resources/single-spa.dev.js"
@@ -43,15 +41,13 @@
             }
         </script>
     <% } else { %>
-        <script src="/resources/system.min.js"></script>
-        <script src="/resources/amd.min.js"></script>
-        <script type="systemjs-importmap">
+        <script type="injector-importmap">
             {
                 "imports": {
                     "single-spa": "/resources/single-spa.min.js"
                 }
             }
-                </script>
+        </script>
     <% } %>
 
     <!-- If you wish to turn off import-map-overrides for specific environments (prod), uncomment the line below -->
@@ -67,7 +63,7 @@
       More information about shared dependencies can be found at https://single-spa.js.org/docs/recommended-setup#sharing-with-import-maps.
     -->
 
-    <script type="systemjs-importmap">
+    <script type="injector-importmap">
         {
           "imports": {
             "@ontotext/workbench-api": "http://localhost:9003/ontotext-workbench-api.js",
@@ -77,14 +73,17 @@
           }
         }
     </script>
-
+     <script src="/resources/import-map-overrides.js"></script>
+     <script src="/resources/import-map-injector.js"></script>
 </head>
 <body>
 <noscript>
     You need to enable JavaScript to run this app.
 </noscript>
 <script>
-    System.import('@ontotext/root-config');
+    window.importMapInjector.initPromise.then(() => {
+      import('@ontotext/root-config');
+    });
 </script>
 <import-map-overrides-full show-when-local-storage="devtools" dev-libs></import-map-overrides-full>
 </body>

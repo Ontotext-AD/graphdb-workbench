@@ -21,10 +21,8 @@
   "dependencies": {
     "@types/systemjs": "^6.1.1",
     "font-awesome": "^4.7.0",
-    "import-map-overrides": "^3.1.1",
     "regenerator-runtime": "^0.14.1",
-    "single-spa": "^5.9.3",
-    "single-spa-layout": "^1.6.0",
-    "systemjs": "^6.15.1"
+    "single-spa": "^6.0.3",
+    "single-spa-layout": "^3.0.0"
   }
 }

@@ -53,17 +53,10 @@ module.exports = (env, argv) => merge(commonConfig(env, argv), {
         new CopyPlugin({
             patterns: [
                 {
-                    from: 'packages/root-config/node_modules/systemjs/dist/system.min.js',
+                    from: 'packages/root-config/node_modules/single-spa/lib/es2015/esm/single-spa.min.js',
                     to: 'resources'
-                },
-                {
-                    from: 'packages/root-config/node_modules/systemjs/dist/extras/amd.min.js',
-                    to: 'resources'
-                },
-                {
-                    from: 'packages/root-config/node_modules/single-spa/lib/system/single-spa.min.js',
-                    to: 'resources'
-                }]
+                }
+            ]
         }),
         new MiniCssExtractPlugin({filename: "[name].[contenthash].css"}),
         new CssMinimizerPlugin(),
