@@ -2,6 +2,8 @@ import { Config } from '@stencil/core';
 import {sass} from '@stencil/sass';
 import nodeResolve from '@rollup/plugin-node-resolve';
 
+const path = `${__dirname}/src/pages/fake-server.js`;
+
 export const config: Config = {
   namespace: 'shared-components',
   outputTargets: [
@@ -55,4 +57,7 @@ export const config: Config = {
       },
     ],
   },
+  devServer: {
+    requestListenerPath: path
+  }
 };
