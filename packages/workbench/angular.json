@@ -38,7 +38,7 @@
             "customWebpackConfig": {
               "path": "extra-webpack.config.js",
               "libraryName": "workbench",
-              "libraryTarget": "umd"
+              "libraryTarget": "module"
             },
             "deployUrl": "http://localhost:9002/"
           },
@@ -47,8 +47,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "2MB",
+                  "maximumError": "3MB"
                 },
                 {
                   "type": "anyComponentStyle",

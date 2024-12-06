@@ -3,6 +3,7 @@ import {
   start,
   addErrorHandler,
   getAppStatus,
+  navigateToUrl
 } from 'single-spa';
 import {
   constructApplications,
@@ -21,16 +22,38 @@ addErrorHandler((err) => {
   console.error(getAppStatus(err.appOrParcelName));
 });
 
+// This is a so-called context map which is needed by webpack in order to be able
+// to properly resolve the urls for the dynamic imports. Otherwise it wouldn't be
+// able to load the modules.
+const appModules = {
+  '@ontotext/legacy-workbench': () => import('@ontotext/legacy-workbench'),
+  '@ontotext/workbench-api': () => import('@ontotext/workbench-api'),
+  '@ontotext/root-config': () => import('@ontotext/root-config'),
+  '@ontotext/workbench': () => import('@ontotext/workbench')
+};
+
 const routes = constructRoutes(microfrontendLayout);
 const applications = constructApplications({
   routes,
   loadApp({name}) {
-    if (!name.includes('.')) {
-      return System.import(name);
-    } else {
-      // This allows us to load submodules exported in a namespace-like fashion. For example: "@ontotext/components.navbar".
-      const [module, exported] = name.split('.', 2);
-      return System.import(module).then((module) => module[exported]);
+    window.singleSpa = window.singleSpa || {};
+    // Expose navigateToUrl to the window object so that it can be used by the components in the shared-components
+    // package without importing single-spa which causes troubles.
+    window.singleSpa.navigateToUrl = navigateToUrl;
+
+    if (appModules[name]) {
+      if (!name.includes('.')) {
+        return appModules[name]()
+          .catch((e) => {
+            console.error(`Failed to load module: ${name}`, e);
+          });
+      } else {
+        // This allows us to load submodules exported in a namespace-like fashion. For example: "@ontotext/components.navbar".
+        const [module, exported] = name.split('.', 2);
+        return appModules[module]().then((module) => module[exported]).catch((e) => {
+          console.error(`Failed to load module: ${name}`, e);
+        });
+      }
     }
   },
 });
@@ -42,15 +65,38 @@ layoutEngine.activate();
 
 defineCustomElements();
 
-// This is one way to pass properties to the custom elements.
-window.addEventListener('single-spa:first-mount', () => {
-  const navbar = document.querySelector('onto-navbar');
-  if (navbar) {
+// This is a workaround to initialize the navbar when the root-config is loaded and the navbar is not yet initialized.
+const waitForNavbarElement = () => {
+  return new Promise((resolve, reject) => {
+    const navbar = document.querySelector('onto-navbar');
+    if (navbar) {
+      resolve(navbar);
+    } else {
+      setTimeout(() => {
+        waitForNavbarElement().then(resolve).catch(reject);
+      }, 100);
+    }
+  });
+};
+
+const initializeNavbar = () => {
+  waitForNavbarElement().then((navbar) => {
     navbar.menuItems = PluginRegistry.get('main.menu');
-  } else {
-    console.error('onto-navbar element not found');
+  }).catch((e) => {
+    console.error('onto-navbar element not found', e);
+  });
+};
+
+const registerSingleSpaFirstMountListener = () => {
+  // register listener only if it's not already registered
+  if (!window.singleSpaFirstMountListenerRegistered) {
+    window.singleSpaFirstMountListenerRegistered = true;
+    window.addEventListener('single-spa:first-mount', () => {
+      initializeNavbar();
+    });
   }
-});
+};
+registerSingleSpaFirstMountListener();
 
 // window.addEventListener("single-spa:routing-event", (evt) => {
 //     console.log("single-spa finished mounting/unmounting applications!");
