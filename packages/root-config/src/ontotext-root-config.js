@@ -21,16 +21,22 @@ addErrorHandler((err) => {
   console.error(getAppStatus(err.appOrParcelName));
 });
 
+console.log('%cINIT ROOT', 'background: red',);
 const routes = constructRoutes(microfrontendLayout);
 const applications = constructApplications({
   routes,
   loadApp({name}) {
+    console.log('%cload', 'background: red', name);
     if (!name.includes('.')) {
-      return System.import(name);
+      return import(name).catch((e) => {
+        console.error(`Failed to load module: ${name}`, e);
+      });
     } else {
       // This allows us to load submodules exported in a namespace-like fashion. For example: "@ontotext/components.navbar".
       const [module, exported] = name.split('.', 2);
-      return System.import(module).then((module) => module[exported]);
+      return import(module).then((module) => module[exported]).catch((e) => {
+        console.error(`Failed to load module: ${name}`, e);
+      });
     }
   },
 });
