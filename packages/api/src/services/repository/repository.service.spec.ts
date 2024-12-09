@@ -1,10 +1,10 @@
 import {RepositoryService} from './repository.service';
 import {RepositoryRestService} from './repository-rest.service';
-import {ServiceProvider} from '../../service.provider';
 import {Repository, RepositoryList} from '../../models/repositories';
+import {ServiceProvider} from '../../providers';
 
 jest.mock('./repository-rest.service');
-jest.mock('../../service.provider');
+jest.mock('../../providers/service/service.provider');
 
 describe('RepositoryService', () => {
   let repositoryService: RepositoryService;

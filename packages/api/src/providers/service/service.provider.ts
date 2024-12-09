@@ -1,4 +1,4 @@
-import {Service} from './services/service';
+import {Service} from './service';
 
 /**
  * Service provider for all {@link Service} instances.
