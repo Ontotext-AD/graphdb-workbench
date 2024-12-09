@@ -68,6 +68,7 @@ describe('Sparql editor', () => {
         cy.pasteIntoCodeMirror('.CodeMirror', query);
         // Then I expect the prefixes to be added automatically
         cy.get('.CodeMirror').then((codeMirrorElement) => {
+            expect(codeMirrorElement[0].CodeMirror).to.exist;
             const codeMirror = codeMirrorElement[0].CodeMirror;
             // Wait, so that Yasqe can have time to replace the existing query with the new one
             cy.waitUntil(() => {
