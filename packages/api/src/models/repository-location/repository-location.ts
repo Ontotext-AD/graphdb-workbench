@@ -61,7 +61,7 @@ export class RepositoryLocation extends Model<RepositoryLocation> {
    */
   defaultRepository: string;
 
-  constructor(data?: RepositoryLocation) {
+  constructor(data?: Partial<RepositoryLocation>) {
     super();
     this.uri = data?.uri || '';
     this.label = data?.label || '';

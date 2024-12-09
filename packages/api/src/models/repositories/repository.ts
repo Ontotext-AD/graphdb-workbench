@@ -19,7 +19,7 @@ export class Repository extends Model<Repository> {
   writable: boolean | undefined;
   unsupported: boolean | undefined;
 
-  constructor(data?: Repository) {
+  constructor(data?: Partial<Repository>) {
     super();
     this.id = data?.id || '';
     this.title = data?.title || '';
