@@ -5,8 +5,8 @@ The web application for GraphDB APIs
 ### Setup Environment
 
 * Clone the project or check it out from version control.
-* Open a terminal, navigate to the project's root directory, and run `npm install` to install all required dependencies. 
-The `api` project is built automatically in the postinstall script.
+* Open a terminal, navigate to the project's root directory, and run `npm install:ci` to install all required dependencies. 
+The `api` project is built automatically.
 
 ## Development
 
@@ -66,6 +66,26 @@ docker run -d \
 
 Note: Instead of mounting the workbench, this can be done in a custom Docker image using the
 GraphDB one as a base and then copy the custom workbench.
+
+## CI
+
+The CI pipeline is managed using a Jenkinsfile, which defines the stages for building, testing, and analyzing the project.
+
+The CI pipeline uses a Docker Compose utility setup to ensure independence from the Node.js version installed on the Jenkins agent.
+
+The **Jenkinsfile** defines the CI pipeline for building, testing, and analyzing the **GraphDB Workbench** project. Below is an overview of the workflow:
+
+| **Stage**        | **Purpose**                                          | **Tools/Commands**                     |
+|------------------|------------------------------------------------------|----------------------------------------|
+| **Build Info**   | Logs environment details for traceability            |                                        |
+| **Install**      | Installs dependencies and builds packages            | `npm run install:ci`, `docker-compose` |
+| **Build**        | Builds the project                                   | `npm run buid`, `docker-compose`       |
+| **Lint**         | Performs lint checks                                 | `npm run lint`, `docker-compose`       |
+| **Test**         | Runs unit tests                                      | `npm run test`, `docker-compose`       |
+| **Cypress Test** | Executes end-to-end tests                            | `npm run cy:run`,                      |
+| **Sonar**        | Performs static code analysis to ensure code quality | `npm run sonar`                        |
+
+Note: If any stage fails, the pipeline is marked as failed, but proceeds to the next stage.
 
 ## License
 
