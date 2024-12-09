@@ -20,7 +20,7 @@ pipeline {
 
         stage('Install') {
             steps {
-                sh 'docker-compose run --rm npm run install'
+                sh 'docker-compose run --rm npm run install:ci'
             }
         }
 
