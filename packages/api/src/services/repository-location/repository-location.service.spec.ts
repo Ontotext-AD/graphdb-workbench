@@ -1,10 +1,10 @@
-import {ServiceProvider} from '../../service.provider';
 import {RepositoryLocationService} from './repository-location.service';
+import {ServiceProvider} from '../../providers';
 import {RepositoryLocationRestService} from './repository-location-rest.service';
 import {RepositoryLocation} from '../../models/repository-location';
 
 jest.mock('./repository-location-rest.service');
-jest.mock('../../service.provider');
+jest.mock('../../providers/service/service.provider');
 
 describe('RepositoryLocationService', () => {
   let repositoryLocationService: RepositoryLocationService;
