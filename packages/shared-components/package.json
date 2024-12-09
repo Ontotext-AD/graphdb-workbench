@@ -42,7 +42,7 @@
     "test:e2e:watch": "stencil test --e2e --watchAll",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
-    "cy:run:ci": "concurrently --kill-others-on-fail \"npm run start\" \"npm run cy:run\"",
+    "cy:run:ci": "docker-compose up --exit-code-from cypress",
     "generate": "stencil generate",
     "lint": "eslint src/**/*{.ts,.tsx}",
     "lint:fix": "eslint --fix src/**/*{.ts,.tsx}",
@@ -60,7 +60,7 @@
     "eslint-plugin-react": "^7.37.2",
     "jest": "^29.7.0",
     "jest-cli": "^29.7.0",
-    "puppeteer": "^21.9.0",
+    "puppeteer": "^23.10.1",
     "sonarqube-scanner": "^3.3.0",
     "ts-jest": "^29.2.4"
   },
