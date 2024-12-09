@@ -600,6 +600,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     window.addEventListener('storage', localStoreChangeHandler);
 
     $scope.$on('$destroy', () => {
+        document.removeEventListener('click', closePopoverEventHandler);
         window.removeEventListener('storage', localStoreChangeHandler);
         deregisterMenuWatcher();
         if ($scope.checkMenu) {
@@ -638,6 +639,12 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         $scope.popoverRepo = repository;
     };
 
+    // When the dropdown list is open, the popover of the already selected repo should disappear on mouseover on any of the listed options
+    $scope.handlePopover = function (repository) {
+        $scope.setPopoverRepo(repository);
+        $scope.closePopover();
+    };
+
     $scope.isRepoActive = function (repository) {
         return $repositories.isRepoActive(repository);
     };
@@ -651,6 +658,29 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             });
         }
     };
+
+    $scope.isPopoverOpen = false;
+
+    $scope.openPopover = function () {
+        if ($scope.getActiveRepository()) {
+            $scope.isPopoverOpen = true;
+        }
+    };
+
+    $scope.closePopover = function () {
+       $scope.isPopoverOpen = false;
+    };
+
+    const closePopoverEventHandler = function(event) {
+        const popoverElement = document.querySelector('.popover');
+        if ($scope.isPopoverOpen && popoverElement && !popoverElement.contains(event.target)) {
+            $timeout(function () {
+                $scope.isPopoverOpen = false;
+            }, 0);
+        }
+    };
+
+    document.addEventListener('click', closePopoverEventHandler);
 
     $scope.getDegradedReason = function () {
         return $repositories.getDegradedReason();
