@@ -1,8 +1,9 @@
-import {Service} from '../service';
+import {Service} from '../../providers/service/service';
 import {RepositoryRestService} from './repository-rest.service';
-import {ServiceProvider} from '../../service.provider';
 import {RepositoryList} from '../../models/repositories';
-import {RepositoryMapper} from './repository.mapper';
+import {RepositoryListMapper} from './mappers/repository-list.mapper';
+import {MapperProvider, ServiceProvider} from '../../providers';
+import {Mapper} from '../../providers/mapper/mapper';
 
 /**
  * The RepositoryService class is responsible for fetching repository-related data from the backend
@@ -10,9 +11,11 @@ import {RepositoryMapper} from './repository.mapper';
  */
 export class RepositoryService implements Service {
   private repositoryRestService: RepositoryRestService;
+  private repositoryListMapper: Mapper<RepositoryList>;
 
   constructor() {
     this.repositoryRestService = ServiceProvider.get(RepositoryRestService);
+    this.repositoryListMapper = MapperProvider.get(RepositoryListMapper);
   }
 
   /**
@@ -21,7 +24,10 @@ export class RepositoryService implements Service {
    * @returns A promise that resolves to the list of repositories.
    */
   getRepositories(): Promise<RepositoryList> {
-    return this.repositoryRestService.getRepositories()
-      .then((response) => RepositoryMapper.toRepositoryList(response));
+    return this.repositoryRestService
+      .getRepositories()
+      .then((response) => {
+        return this.repositoryListMapper.mapToModel(response);
+      });
   }
 }
