@@ -1,4 +1,4 @@
-import {Service} from './service';
+import {Service} from '../providers/service/service';
 
 export class AuthenticationService implements Service {
   login(): string {
