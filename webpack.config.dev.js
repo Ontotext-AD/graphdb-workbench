@@ -35,7 +35,7 @@ module.exports = (env, argv) => merge(commonConfig(env, argv), {
                     to: 'resources'
                 },
                 {
-                    from: 'packages/root-config/node_modules/single-spa/lib/system/single-spa.dev.js',
+                    from: 'packages/root-config/node_modules/single-spa/lib/es2015/esm/single-spa.dev.js',
                     to: 'resources'
                 }]
         }),

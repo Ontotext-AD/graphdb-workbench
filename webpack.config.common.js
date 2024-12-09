@@ -33,7 +33,7 @@ module.exports = (webpackConfigEnv, argv) => {
         // From webpack-config-single-spa v6.0.0 outputs to native ES modules by default.
         // To upgrade without switching to native ES modules, add the outputSystemJS option to your webpack.config.js
         // The new option that preserves backwards compatibility:
-        outputSystemJS: true,
+        // outputSystemJS: false,
     });
 
     defaultConfig.module.rules = [];
@@ -47,7 +47,7 @@ module.exports = (webpackConfigEnv, argv) => {
             filename: '[name].js',
             chunkFilename: '[name].bundle.js',
             path: path.resolve(__dirname, 'dist'),
-            libraryTarget: "system",
+            libraryTarget: "module",
             publicPath: '/'
         },
         resolve: {
