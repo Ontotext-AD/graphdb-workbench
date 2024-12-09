@@ -8,7 +8,6 @@ pipeline {
     }
 
     stages {
-
         stage('Build Info') {
             steps {
                 script {
@@ -20,43 +19,63 @@ pipeline {
 
         stage('Install') {
             steps {
-                sh 'docker-compose run --rm npm run install'
-            }
-        }
-
-        stage('Lint') {
-            steps {
-                sh 'docker-compose run --rm npm run lint'
-            }
-        }
-
-        stage('Pre-build validations') {
-            steps {
-                sh 'docker-compose run --rm npm run validate'
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                    script {
+                        sh 'docker-compose run --rm npm run install:ci'
+                    }
+                }
             }
         }
 
         stage('Build') {
             steps {
-                sh 'docker-compose run --rm npm run build'
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                    script {
+                        sh 'docker-compose run --rm npm run build'
+                    }
+                }
+            }
+        }
+
+        stage('Lint') {
+            steps {
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                    script {
+                        sh 'docker-compose run --rm npm run lint'
+                    }
+                }
             }
         }
 
         stage('Test') {
             steps {
-                sh 'docker-compose run --rm npm run test'
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                    script {
+                        sh 'docker-compose run --rm npm run test'
+                    }
+                }
             }
         }
 
         stage('Cypress Test') {
             steps {
-                sh 'docker-compose run --rm npm run cy:run'
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                    script {
+                        // Fix user rights
+                        sh 'sudo chown -R $(id -u):$(id -g) .'
+                        sh 'npm run cy:run'
+                    }
+                }
             }
         }
 
         stage('Sonar') {
             steps {
-                sh 'docker-compose run --rm npm run sonar'
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                    script {
+                        sh 'npm run sonar'
+                    }
+                }
             }
         }
     }
