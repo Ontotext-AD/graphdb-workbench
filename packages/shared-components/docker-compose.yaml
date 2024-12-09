@@ -1,0 +1,22 @@
+version: '3.2'
+
+services:
+  shared_components:
+    image: node:18-alpine
+    working_dir: /app
+    ports:
+      - "3333:3333"
+    volumes:
+      - .:/app
+    command: npm run start
+
+  cypress:
+    image: cypress/included
+    depends_on:
+      - shared_components
+    environment:
+      - CYPRESS_baseUrl=http://shared_components:3333
+      - NO_COLOR=true
+    working_dir: /e2e
+    volumes:
+      - ./:/e2e
