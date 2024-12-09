@@ -12,7 +12,6 @@ export class OntoHeader {
       <Host>
         <div class="header-component">
           <div class="search-component">&#x1F50D;</div>
-          <div class="repository-selector-component">TestRepo &#8964;</div>
           <onto-repository-selector></onto-repository-selector>
           <onto-language-selector></onto-language-selector>
         </div>
