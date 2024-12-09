@@ -96,7 +96,7 @@ export interface OntoNavbarCustomEvent<T> extends CustomEvent<T> {
 }
 declare global {
     interface HTMLOntoDropdownElementEventMap {
-        "valueChanged": any;
+        "valueChanged": string;
     }
     /**
      * A reusable dropdown component built using StencilJS. This component supports configurable labels, tooltips, icons,
@@ -215,7 +215,7 @@ declare namespace LocalJSX {
         /**
           * Event emitted when a dropdown item is selected. The event payload contains the value of the selected item.
          */
-        "onValueChanged"?: (event: OntoDropdownCustomEvent<any>) => void;
+        "onValueChanged"?: (event: OntoDropdownCustomEvent<string>) => void;
     }
     interface OntoFooter {
     }

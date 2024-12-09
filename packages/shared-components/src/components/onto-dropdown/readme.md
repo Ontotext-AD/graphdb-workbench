@@ -26,9 +26,9 @@ internationalization.
 
 ## Events
 
-| Event          | Description                                                                                                | Type               |
-| -------------- | ---------------------------------------------------------------------------------------------------------- | ------------------ |
-| `valueChanged` | Event emitted when a dropdown item is selected. The event payload contains the value of the selected item. | `CustomEvent<any>` |
+| Event          | Description                                                                                                | Type                  |
+| -------------- | ---------------------------------------------------------------------------------------------------------- | --------------------- |
+| `valueChanged` | Event emitted when a dropdown item is selected. The event payload contains the value of the selected item. | `CustomEvent<string>` |
 
 
 ----------------------------------------------
