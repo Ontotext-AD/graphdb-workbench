@@ -18,12 +18,18 @@ install_package() {
 
     handle_error "Installing ${description}"
 }
-# Install
+
+# Install package dependencies
 install_package "legacy-workbench"
 install_package "root-config"
 install_package "workbench"
 install_package "api"
 install_package "shared-components"
+
+echo ''
+echo '########################   Installing main project dependencies   ###########################'
+echo ''
+npm ci
 
 echo ''
 echo '########################   All packages installed successfully!   ###########################'
