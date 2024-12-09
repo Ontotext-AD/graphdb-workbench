@@ -1,6 +1,6 @@
 import {ValueContext} from '../models/context/value-context';
 import {ValueChangeCallback} from '../models/context/value-change-callback';
-import {Service} from './service';
+import {Service} from '../providers/service/service';
 
 /**
  * Abstract service that manages the context for various properties and allows for value retrieval, updates

@@ -1,4 +1,4 @@
-import {Service} from '../service';
+import {Service} from '../../providers/service/service';
 
 /**
  * The LanguageService class is responsible for fetching language-related data from the backend

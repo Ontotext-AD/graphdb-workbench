@@ -6,8 +6,10 @@ export * from './models/repository-location';
 export * from './models/events';
 export * from './models/security';
 
+// Export providers for external usages.
+export * from './providers';
+
 // Export services for external usages.
-export {ServiceProvider} from './service.provider';
 export * from './services/language';
 export * from './services/repository';
 export * from './services/repository-location';
