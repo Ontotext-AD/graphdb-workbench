@@ -22,7 +22,7 @@ pipeline {
             steps {
                 sh 'docker-compose run --rm npm run install:ci'
                 // Fix user rights
-                sh 'sudo chown -R $(id -u):$(id -g) .
+                sh 'sudo chown -R $(id -u):$(id -g) .'
             }
         }
 
