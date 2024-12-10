@@ -20,43 +20,45 @@ pipeline {
 
         stage('Install') {
             steps {
-                sh 'docker-compose run --rm npm run install'
+                sh 'docker-compose run --rm npm run install:ci'
+                // Fix user rights
+                sh 'sudo chown -R $(id -u):$(id -g) .'
             }
         }
 
         stage('Lint') {
             steps {
-                sh 'docker-compose run --rm npm run lint'
+                sh 'npm run lint'
             }
         }
 
         stage('Pre-build validations') {
             steps {
-                sh 'docker-compose run --rm npm run validate'
+                sh 'npm run validate'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'docker-compose run --rm npm run build'
+                sh 'npm run build'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'docker-compose run --rm npm run test'
+                sh 'npm run test'
             }
         }
 
         stage('Cypress Test') {
             steps {
-                sh 'docker-compose run --rm npm run cy:run'
+                sh 'npm run cy:run'
             }
         }
 
         stage('Sonar') {
             steps {
-                sh 'docker-compose run --rm npm run sonar'
+                sh 'npm run sonar'
             }
         }
     }
