@@ -63,7 +63,7 @@ export class OntoTooltipConfiguration {
   }
 
   setPlacement(placement: Placement): OntoTooltipConfiguration {
-    this.placement = placement;
+    this.placement = placement  || 'right';
     return this;
   }
 
