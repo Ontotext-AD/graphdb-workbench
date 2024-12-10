@@ -18,3 +18,5 @@ export {EventEmitter} from './emitters/event.emitter';
 
 // Export utils for external usages.
 export * from './services/utils';
+
+export * from './decorators/index';

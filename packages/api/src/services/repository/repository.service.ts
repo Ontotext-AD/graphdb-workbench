@@ -2,21 +2,21 @@ import {Service} from '../../providers/service/service';
 import {RepositoryRestService} from './repository-rest.service';
 import {RepositoryList} from '../../models/repositories';
 import {RepositoryListMapper} from './mappers/repository-list.mapper';
-import {MapperProvider, ServiceProvider} from '../../providers';
 import {Mapper} from '../../providers/mapper/mapper';
+import {InjectMapper} from '../../decorators/inject-mapper.decorator';
+import {InjectService} from '../../decorators/inject-service.decorator';
+import {ServiceProvider} from "../../providers";
 
-/**
- * The RepositoryService class is responsible for fetching repository-related data from the backend
- * and mapping the responses to application models.
- */
 export class RepositoryService implements Service {
-  private repositoryRestService: RepositoryRestService;
-  private repositoryListMapper: Mapper<RepositoryList>;
+    @InjectMapper(RepositoryListMapper)
+    private repositoryListMapper: Mapper<RepositoryList> | undefined;
 
-  constructor() {
-    this.repositoryRestService = ServiceProvider.get(RepositoryRestService);
-    this.repositoryListMapper = MapperProvider.get(RepositoryListMapper);
-  }
+    @InjectService(RepositoryRestService)
+    public repositoryRestService: RepositoryRestService | undefined;
+
+  // constructor() {
+  //   this.repositoryRestService = ServiceProvider.get(RepositoryRestService);
+  // }
 
   /**
    * Retrieves the list of repositories.
@@ -24,10 +24,16 @@ export class RepositoryService implements Service {
    * @returns A promise that resolves to the list of repositories.
    */
   getRepositories(): Promise<RepositoryList> {
-    return this.repositoryRestService
+      console.log('getRepositories', this.repositoryRestService);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
+      return this.repositoryRestService
       .getRepositories()
       .then((response) => {
-        return this.repositoryListMapper.mapToModel(response);
+          if (!this.repositoryListMapper) {
+              throw new Error('repositoryListMapper is not initialized');
+          }
+          return this.repositoryListMapper.mapToModel(response);
       });
   }
 }

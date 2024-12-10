@@ -15,6 +15,7 @@ export class ServiceProvider {
   private static readonly SERVICE_INSTANCES = new Map<string, Service>;
 
   public static get<T extends Service>(type: new(service: Service) => T): T {
+      console.log(`Getting service ${type.name}`);
     if (!ServiceProvider.SERVICE_INSTANCES.has(type.name)) {
       ServiceProvider.SERVICE_INSTANCES.set(type.name, new type(this));
     }

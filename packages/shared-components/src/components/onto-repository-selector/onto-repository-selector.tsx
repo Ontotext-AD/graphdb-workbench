@@ -1,10 +1,9 @@
 import {Component, Host, h, State} from '@stencil/core';
 import {
-  ServiceProvider,
   RepositoryService,
   RepositoryList,
   RepositoryContextService,
-  UriUtil
+  UriUtil, InjectService
 } from "@ontotext/workbench-api";
 import {DropdownItem} from '../../models/dropdown/dropdown-item';
 import {DropdownItemAlignment} from '../../models/dropdown/dropdown-item-alignment';
@@ -12,6 +11,7 @@ import {Repository} from '@ontotext/workbench-api';
 import {SelectorItemButton} from './selector-item';
 import {SelectorButton} from './selector-button';
 import {TranslationService} from '../../services/translation.service';
+import {CustomLog} from "../../services/custom-log.decorator";
 
 @Component({
   tag: 'onto-repository-selector',
@@ -27,9 +27,12 @@ import {TranslationService} from '../../services/translation.service';
  * <onto-repository-selector></onto-repository-selector>
  */
 export class OntoRepositorySelector {
+  @InjectService(RepositoryService)
   private repositoryService: RepositoryService;
+  @InjectService(RepositoryContextService)
   private repositoryContextService: RepositoryContextService;
 
+  @CustomLog()
   private repositoryList: RepositoryList;
   @State() defaultToggleButtonName: string;
   private readonly subscriptions: (() => void)[] = [];
@@ -44,9 +47,12 @@ export class OntoRepositorySelector {
    */
   @State() currentRepository: Repository;
 
-  constructor() {
-    this.repositoryService = ServiceProvider.get(RepositoryService);
-    this.repositoryContextService = ServiceProvider.get(RepositoryContextService);
+  componentWillLoad() {
+    console.log('componentWillLoad', this.repositoryService);
+    if (!this.repositoryService) {
+      console.error('repositoryService is not initialized');
+      return;
+    }
     this.loadRepositories();
     this.subscriptions.push(this.subscribeToRepositoriesChanged());
     this.subscriptions.push(this.subscribeToSelectedRepositoryChanged());
