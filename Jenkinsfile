@@ -92,7 +92,7 @@ pipeline {
 // //           sh "sed -i.backup \"s@^SF:..@SF:\$(pwd)@\" cypress-coverage/lcov.info"
 //       }
 //     }
-//   }
+  }
 
   post {
     always {
