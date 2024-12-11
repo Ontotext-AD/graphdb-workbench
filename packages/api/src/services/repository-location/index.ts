@@ -1,2 +1,2 @@
-export {RepositoryLocationService} from './repository-location.service';
-export {RepositoryLocationContextService} from './repository-location-context.service';
+export * from './repository-location.service';
+export * from './repository-location-context.service';

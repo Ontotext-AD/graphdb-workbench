@@ -52,3 +52,42 @@
     }
   }
 }
+
+.tippy-box[data-theme="light-border"] {
+  border-radius: 0;
+
+  .tippy-content {
+    padding: 0;
+    color: #373a3c;
+
+    .repository-tooltip-title {
+      font-size: 1rem;
+      font-weight: 400;
+      padding: 8px 14px;
+      background-color: #f7f7f7;
+
+      .value {
+        word-wrap: break-word;
+      }
+    }
+
+    .repository-tooltip-content {
+      padding: 8px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8em;
+      font-weight: 400;
+      font-size: 0.875rem;
+    }
+
+    .repository-tooltip-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+
+      &.total {
+        margin-top: 1.2em;
+      }
+    }
+  }
+}

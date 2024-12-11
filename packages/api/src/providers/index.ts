@@ -1,2 +1,2 @@
-export {MapperProvider} from './mapper/mapper.provider';
-export {ServiceProvider} from './service/service.provider';
+export * from './mapper/mapper.provider';
+export * from './service/service.provider';

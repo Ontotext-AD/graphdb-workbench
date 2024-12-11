@@ -71,6 +71,31 @@
   "repository-selector": {
     "btn": {
       "toggle": "Choisissez le dépôt"
+    },
+    "tooltip": {
+      "repository": "Dépôt",
+      "location": "L'emplacement",
+      "local": "Local",
+      "type": "Type",
+      "types": {
+        "graphdb": "Graphdb",
+        "system": "Système",
+        "ontop": "Ontop",
+        "fedx": "FedX",
+        "unknown": "Inconnu"
+      },
+      "access": "Accéder",
+      "accesses": {
+        "read": "Lire",
+        "write": "Écrire",
+        "read_write": "Lire/Écrire"
+      },
+      "repository-size": {
+        "total": "Total des déclarations",
+        "explicit": "Explicite",
+        "inferred": "Déduit",
+        "expansion_ratio": "Taux d'expansion (total/explicite)"
+      }
     }
   }
 }

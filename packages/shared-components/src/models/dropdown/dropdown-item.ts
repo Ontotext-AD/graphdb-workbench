@@ -15,7 +15,7 @@ export class DropdownItem<T> {
   /**
    * The dropdown item tooltip. It will be used if present; otherwise, the {@link DropdownItem._tooltipLabelKey} will be used.
    */
-  private _tooltip: string = '';
+  private _tooltip: string | (() => Promise<string>);
 
   /**
    * The translation label key for the dropdown item tooltip. It will be used if {@link DropdownItem._tooltipLabelKey} is not present.
@@ -51,11 +51,11 @@ export class DropdownItem<T> {
     return this;
   }
 
-  get tooltip(): string {
+  get tooltip(): string | (() => Promise<string>) {
     return this._tooltip;
   }
 
-  setTooltip(value: string): DropdownItem<T> {
+  setTooltip(value: string | (() => Promise<string>)): DropdownItem<T> {
     this._tooltip = value;
     return this;
   }

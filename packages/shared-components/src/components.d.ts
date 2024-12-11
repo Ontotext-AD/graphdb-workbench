@@ -37,7 +37,7 @@ export namespace Components {
         /**
           * The dropdown button tooltip. It will be used if present; otherwise, the {@link OntoDropdown#dropdownButtonTooltipLabelKey } will be used.
          */
-        "dropdownButtonTooltip": string;
+        "dropdownButtonTooltip": string | (() => Promise<string>);
         /**
           * The translation label key for the dropdown button tooltip. It will be used if {@link OntoDropdown#dropdownButtonTooltip } is not present.
          */
@@ -50,6 +50,7 @@ export namespace Components {
           * Array of dropdown options.
          */
         "items": DropdownItem<any>[];
+        "tooltipTheme": string;
     }
     interface OntoFooter {
     }
@@ -232,7 +233,7 @@ declare namespace LocalJSX {
         /**
           * The dropdown button tooltip. It will be used if present; otherwise, the {@link OntoDropdown#dropdownButtonTooltipLabelKey } will be used.
          */
-        "dropdownButtonTooltip"?: string;
+        "dropdownButtonTooltip"?: string | (() => Promise<string>);
         /**
           * The translation label key for the dropdown button tooltip. It will be used if {@link OntoDropdown#dropdownButtonTooltip } is not present.
          */
@@ -249,6 +250,7 @@ declare namespace LocalJSX {
           * Event emitted when a dropdown item is selected. The event payload contains the value of the selected item.
          */
         "onValueChanged"?: (event: OntoDropdownCustomEvent<any>) => void;
+        "tooltipTheme"?: string;
     }
     interface OntoFooter {
     }

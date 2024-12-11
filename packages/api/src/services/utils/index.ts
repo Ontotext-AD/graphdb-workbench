@@ -1,2 +1,2 @@
-export {ObjectUtil} from './object-util';
-export {UriUtil} from './uri-util';
+export * from './object-util';
+export * from './uri-util';
