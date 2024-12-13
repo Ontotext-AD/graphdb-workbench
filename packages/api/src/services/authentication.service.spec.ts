@@ -8,7 +8,7 @@ describe('AuthenticationService', () => {
     authService = new AuthenticationService();
   });
 
-  test('should return the correct login message', () => {
+  test('login should return the correct login message', () => {
     const result = authService.login();
     expect(result).toBe('Authentication.login from the API');
   });

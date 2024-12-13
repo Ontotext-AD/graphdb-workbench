@@ -1,5 +1,6 @@
 import {RepositoryListMapper} from './repository-list.mapper';
-import {Repository, RepositoryList} from '../../../models/repositories';
+import {RepositoryList} from '../../../models/repositories';
+import {RepositoryMockProvider} from '../test/repository-mock-provider';
 
 describe('RepositoryListMapper', () => {
 
@@ -9,38 +10,23 @@ describe('RepositoryListMapper', () => {
     repositoryListMapper = new RepositoryListMapper();
   });
 
-  test('Should return an instance of RepositoryList with repositories', () => {
-    const repoOneId = 'repo-one-id';
-    const repoTwoId = 'repo-two-id';
-    const repoThreeId = 'repo-three-id';
-    const repoThreeLocation = 'http://localhost:7002';
+  test('mapToModel should return an instance of RepositoryList with repositories', () => {
+    const repoOne = RepositoryMockProvider.provideRawRepository('repo-one-id');
+    const repoTwo = RepositoryMockProvider.provideRawRepository('repo-two-id');
+    const repoThree = RepositoryMockProvider.provideRawRepository('repo-three-id', 'http://localhost:7002');
     const rawRepositoryObjects = {
-      '': [{
-        id: repoOneId,
-        location: ''
-      }, {
-        id: repoTwoId,
-        location: ''
-      }],
-      'http://localhost:7002': [
-        {
-          id: repoThreeId,
-          location: repoThreeLocation
-        }
-      ]
+      '': [repoOne, repoTwo],
+      'http://localhost:7002': [repoThree]
     };
+    const expectedResult = {items: [RepositoryMockProvider.provideRepository('repo-one-id'), RepositoryMockProvider.provideRepository('repo-two-id'), RepositoryMockProvider.provideRepository('repo-three-id', 'http://localhost:7002')]};
 
     const repositoryList = repositoryListMapper.mapToModel(rawRepositoryObjects);
 
     expect(repositoryList).toBeInstanceOf(RepositoryList);
-    const repositories = repositoryList.getItems();
-    expect(repositories).toHaveLength(3);
-    expect(repositories).toContainEqual(new Repository({id: repoOneId, location: ''} as Repository));
-    expect(repositories).toContainEqual(new Repository({id: repoTwoId, location: ''} as Repository));
-    expect(repositories).toContainEqual(new Repository({id: repoThreeId, location: repoThreeLocation} as Repository));
+    expect(repositoryList).toEqual(expectedResult);
   });
 
-  test('Should return an instance of RepositoryList without any repositories if none are passed.', () => {
+  test('mapToModel should return an instance of RepositoryList without any repositories if none are passed.', () => {
     const repositoryList = repositoryListMapper.mapToModel(undefined);
 
     expect(repositoryList).toBeInstanceOf(RepositoryList);
