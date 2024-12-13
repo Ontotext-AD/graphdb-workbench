@@ -3,7 +3,7 @@ import {RepositoryListMapper} from '../../services/repository/mappers/repository
 
 describe('MapperProvider', () => {
 
-  test('Should return singleton instance of mappers', () => {
+  test('get should return singleton instance of mappers', () => {
     // Given:
     // I have an instance of a mapper fetched by MapperProvider
     const firstRepositoryListMapperInstance = MapperProvider.get(RepositoryListMapper);
