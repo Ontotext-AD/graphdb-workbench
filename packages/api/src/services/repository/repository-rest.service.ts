@@ -1,9 +1,7 @@
-import {Service} from '../../providers/service/service';
+import {HttpService} from '../http/http.service';
 
-export class RepositoryRestService implements Service {
+export class RepositoryRestService extends HttpService {
   getRepositories(): Promise<Record<string, unknown[]>> {
-    // TODO: Implement a uniform method to add required headers and handle 401 errors by redirecting to the login page.
-    return fetch('/rest/repositories/all')
-      .then((response) => response.json());
+    return this.get('/rest/repositories/all');
   }
 }
