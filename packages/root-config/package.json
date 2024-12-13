@@ -1,8 +1,8 @@
 {
   "name": "@ontotext/root-config",
   "scripts": {
-    "lint": "eslint src --ext js",
-    "lint:fix": "eslint src --ext js --fix"
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix"
   },
   "devDependencies": {
     "@babel/core": "^7.23.3",
@@ -10,16 +10,14 @@
     "@babel/plugin-transform-runtime": "^7.23.3",
     "@babel/preset-env": "^7.23.3",
     "@babel/runtime": "^7.23.3",
-    "concurrently": "^6.2.1",
     "cross-env": "^7.0.3",
-    "eslint": "^7.32.0",
+    "eslint": "^9.17.0",
     "eslint-config-important-stuff": "^1.1.0",
     "html-webpack-plugin": "^5.3.2",
-    "serve": "^13.0.0",
+    "serve": "^14.2.4",
     "webpack-dev-server": "^4.0.0"
   },
   "dependencies": {
-    "@types/systemjs": "^6.1.1",
     "font-awesome": "^4.7.0",
     "regenerator-runtime": "^0.14.1",
     "single-spa": "^6.0.3",
