@@ -22,7 +22,7 @@ describe('ContextService', () => {
     contextService = new TestContextService();
   });
 
-  test('should be called immediately when the callback function is invoked with the last value of the property', () => {
+  test('the callback function should be called immediately when it is registered with the last value of the property', () => {
     const valueOfTestProperty = {a: 1, b: [1, 2]};
     const propertyName = 'testProperty';
 
@@ -37,7 +37,7 @@ describe('ContextService', () => {
     expect(callBackFunction).toHaveBeenLastCalledWith(valueOfTestProperty);
   });
 
-  test('should return the current value in the context', () => {
+  test('getProperty should return the current value in the context', () => {
     const valueOfTestProperty = {a: 1, b: [1, 2]};
     const propertyName = 'testProperty';
 
@@ -50,7 +50,7 @@ describe('ContextService', () => {
     expect(propertyValue).not.toBe(valueOfTestProperty);
   });
 
-  test('should continue calling other callback functions if one is unsubscribed', () => {
+  test('ContextService should continue calling other callback functions if one is unsubscribed', () => {
     const valueOfTestProperty = {a: 1, b: [1, 2]};
     const propertyName = 'testProperty';
 
@@ -75,7 +75,7 @@ describe('ContextService', () => {
     expect(secondCallBackFunction).toHaveBeenCalledTimes(1);
   });
 
-  test('should call all callback functions with the changed value', () => {
+  test('ContextService should call all callback functions with the changed value', () => {
     const valueOfTestProperty = {a: 1, b: [1, 2]};
     const propertyName = 'testProperty';
 
@@ -94,7 +94,7 @@ describe('ContextService', () => {
     expect(secondCallBackFunction).toHaveBeenLastCalledWith(valueOfTestProperty);
   });
 
-  test('should call each callback function with its own copy of the value', () => {
+  test('ContextService should call each callback function with its own copy of the value', () => {
     const valueOfTestProperty = {a: 1, b: [1, 2]};
     const propertyName = 'testProperty';
 
