@@ -1,16 +1,22 @@
 import {RepositoryMapper} from './repository.mapper';
 import {Repository} from '../../../models/repositories';
+import {RepositoryMockProvider} from '../test/repository-mock-provider';
 
 describe('RepositoryMapper', () => {
 
-  test('Should return an instance of Repository', () => {
-    const repositoryMapper = new RepositoryMapper();
-    const repoId = 'repo-id';
-    const repoLocation = 'repo-location';
+  let repositoryMapper = new RepositoryMapper();
 
-    const repository = repositoryMapper.mapToModel({id: repoId, location: repoLocation});
+  beforeEach(() => {
+    repositoryMapper = new RepositoryMapper();
+  });
+
+  test('mapToModel should return an instance of Repository', () => {
+    const rawRepositoryData = RepositoryMockProvider.provideRawRepository('repo-id');
+    const expectedResult = RepositoryMockProvider.provideRepository('repo-id');
+
+    const repository = repositoryMapper.mapToModel(rawRepositoryData);
 
     expect(repository).toBeInstanceOf(Repository);
-    expect(repository).toEqual(new Repository({id: repoId, location: repoLocation} as Repository));
+    expect(repository).toEqual(expectedResult);
   });
 });
