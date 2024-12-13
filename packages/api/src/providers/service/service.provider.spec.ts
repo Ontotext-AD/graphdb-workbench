@@ -3,7 +3,7 @@ import {RepositoryService} from '../../services/repository';
 
 describe('ServiceProvider', () => {
 
-  test('Should return singleton instance of service', () => {
+  test('get should return singleton instance of service', () => {
     // Given:
     // I have an instance of a service fetched by ServiceProvider
     const firstRepositoryServiceInstance = ServiceProvider.get(RepositoryService);
