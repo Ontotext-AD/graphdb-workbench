@@ -20,4 +20,13 @@ export class HeaderSteps extends BaseSteps {
   static getSearch() {
     return HeaderSteps.getHeader().find('.search-component');
   }
+
+  static getLicenseAlert() {
+    return HeaderSteps.getHeader().find('.onto-license-alert');
+  }
+
+  static setLicenseValid(valid) {
+    const license = valid ? '#valid-license' : '#invalid-license';
+    cy.get(license).click();
+  }
 }
