@@ -1,4 +1,4 @@
-import {ContextService} from './context.service';
+import {ContextService} from '../context.service';
 
 // Expose protected methods for testing
 class TestContextService extends ContextService {
