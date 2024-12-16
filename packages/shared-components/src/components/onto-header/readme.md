@@ -5,6 +5,12 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+OntoHeader component for rendering the header of the application.
+This component includes a search component, license alert (if applicable),
+repository selector, and language selector.
+
 ## Dependencies
 
 ### Used by
@@ -13,14 +19,17 @@
 
 ### Depends on
 
+- [onto-license-alert](../onto-license-alert)
 - [onto-repository-selector](../onto-repository-selector)
 - [onto-language-selector](../onto-language-selector)
 
 ### Graph
 ```mermaid
 graph TD;
+  onto-header --> onto-license-alert
   onto-header --> onto-repository-selector
   onto-header --> onto-language-selector
+  onto-license-alert --> translate-label
   onto-repository-selector --> onto-dropdown
   onto-language-selector --> onto-dropdown
   onto-layout --> onto-header

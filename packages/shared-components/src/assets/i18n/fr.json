@@ -97,5 +97,9 @@
         "expansion_ratio": "Taux d'expansion (total/explicite)"
       }
     }
+  },
+  "license_alert": {
+    "label": "Aucune licence valide",
+    "no_license_set": "Aucune licence n'a été définie."
   }
 }

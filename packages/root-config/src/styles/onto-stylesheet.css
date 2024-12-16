@@ -1,0 +1,41 @@
+/* Global stylesheet */
+
+/*-------------------------------------------------------------
+	Classes
+-------------------------------------------------------------*/
+.onto-button {
+    display: inline-block;
+    font-weight: 400;
+    line-height: 1.25;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: .5rem 1rem;
+    font-size: 1rem;
+}
+
+
+/*-------------------------------------------------------------
+	KeyFrames
+-------------------------------------------------------------*/
+
+@keyframes fade-button {
+    from {
+        background-color: #EBEBEB;
+        border-color: #EBEBEB;
+    }
+    50% {
+        background-color: var(--fade-color);
+        border-color: var(--fade-color);
+    }
+    to {
+        background-color: #EBEBEB;
+        border-color: #EBEBEB;
+    }
+}

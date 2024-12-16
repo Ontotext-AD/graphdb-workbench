@@ -1,0 +1,31 @@
+:host {
+  display: block;
+}
+
+.onto-license-alert {
+  animation: fade-button 2s infinite;
+  --fade-color: var(--color-danger-medium);
+  border: 1px solid transparent !important;
+
+  &:hover {
+    text-decoration: none;
+    background-color: var(--color-danger-medium) !important;
+    border-color: var(--color-danger-medium) !important;
+
+    & span {
+      transform: scale(1.2);
+    }
+  }
+
+  & span {
+    transition: transform 0.15s ease-out;
+  }
+
+  & .icon-warning {
+    margin-right: 0.2em;
+    line-height: 0.75;
+    font-size: 1.4em;
+    display: inline-block;
+    vertical-align: middle;
+  }
+}

@@ -26,6 +26,10 @@ export class TooltipSteps extends BaseSteps {
     return TooltipSteps.getTooltip().find('.body');
   }
 
+  static getTooltipContent() {
+    return TooltipSteps.getTooltip().find('.tippy-content');
+  }
+
   static getElementWithBottomTooltip() {
     return cy.get('.tooltip-bottom');
   }
