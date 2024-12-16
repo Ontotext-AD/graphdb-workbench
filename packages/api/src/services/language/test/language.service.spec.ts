@@ -1,4 +1,4 @@
-import {LanguageService} from './language.service';
+import {LanguageService} from '../language.service';
 
 describe('LanguageService', () => {
   let languageService: LanguageService;

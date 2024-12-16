@@ -1,4 +1,4 @@
-import {UriUtil} from './uri-util';
+import {UriUtil} from '../uri-util';
 
 describe('UriUtil', () => {
   test('shortenIri should shortens an IRI by extracting the hostname and port', () => {

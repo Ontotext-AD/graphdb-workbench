@@ -1,1 +1,1 @@
-export {AuthenticationType} from './authentication-type';
+export * from './authentication-type';
