@@ -5,11 +5,13 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { Awaitable } from "../../api/dist/ontotext-workbench-api.d";
 import { DropdownItem } from "./models/dropdown/dropdown-item";
 import { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 import { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
 import { NavbarToggledEvent } from "./components/onto-navbar/navbar-toggled-event";
 import { TranslationParameter } from "./models/translation/translation-parameter";
+export { Awaitable } from "../../api/dist/ontotext-workbench-api.d";
 export { DropdownItem } from "./models/dropdown/dropdown-item";
 export { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 export { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
@@ -37,11 +39,15 @@ export namespace Components {
         /**
           * The dropdown button tooltip. It will be used if present; otherwise, the {@link OntoDropdown#dropdownButtonTooltipLabelKey } will be used.
          */
-        "dropdownButtonTooltip": string;
+        "dropdownButtonTooltip": string | Awaitable<string>;
         /**
           * The translation label key for the dropdown button tooltip. It will be used if {@link OntoDropdown#dropdownButtonTooltip } is not present.
          */
         "dropdownButtonTooltipLabelKey": string;
+        /**
+          * Specifies the events that trigger the dropdown button tooltip to appear. Multiple event names should be separated by spaces.
+         */
+        "dropdownTooltipTrigger": string;
         /**
           * Icon class for the main dropdown button.
          */
@@ -50,6 +56,10 @@ export namespace Components {
           * Array of dropdown options.
          */
         "items": DropdownItem<any>[];
+        /**
+          * The tooltip theme to be used. For more information {@link OntoTooltipConfiguration#theme }.
+         */
+        "tooltipTheme": string;
     }
     interface OntoFooter {
     }
@@ -76,6 +86,8 @@ export namespace Components {
     interface OntoRepositorySelector {
     }
     interface OntoTooltip {
+    }
+    interface TestComponent {
     }
     /**
      * The purpose of this component is to display translated literals in the DOM. A Stencil component re-renders when a prop or state changes,
@@ -182,6 +194,12 @@ declare global {
         prototype: HTMLOntoTooltipElement;
         new (): HTMLOntoTooltipElement;
     };
+    interface HTMLTestComponentElement extends Components.TestComponent, HTMLStencilElement {
+    }
+    var HTMLTestComponentElement: {
+        prototype: HTMLTestComponentElement;
+        new (): HTMLTestComponentElement;
+    };
     /**
      * The purpose of this component is to display translated literals in the DOM. A Stencil component re-renders when a prop or state changes,
      * but it may not re-render when the language changes. In such cases, this component should be used. It handles language change events
@@ -207,6 +225,7 @@ declare global {
         "onto-navbar": HTMLOntoNavbarElement;
         "onto-repository-selector": HTMLOntoRepositorySelectorElement;
         "onto-tooltip": HTMLOntoTooltipElement;
+        "test-component": HTMLTestComponentElement;
         "translate-label": HTMLTranslateLabelElement;
     }
 }
@@ -232,11 +251,15 @@ declare namespace LocalJSX {
         /**
           * The dropdown button tooltip. It will be used if present; otherwise, the {@link OntoDropdown#dropdownButtonTooltipLabelKey } will be used.
          */
-        "dropdownButtonTooltip"?: string;
+        "dropdownButtonTooltip"?: string | Awaitable<string>;
         /**
           * The translation label key for the dropdown button tooltip. It will be used if {@link OntoDropdown#dropdownButtonTooltip } is not present.
          */
         "dropdownButtonTooltipLabelKey"?: string;
+        /**
+          * Specifies the events that trigger the dropdown button tooltip to appear. Multiple event names should be separated by spaces.
+         */
+        "dropdownTooltipTrigger"?: string;
         /**
           * Icon class for the main dropdown button.
          */
@@ -249,6 +272,10 @@ declare namespace LocalJSX {
           * Event emitted when a dropdown item is selected. The event payload contains the value of the selected item.
          */
         "onValueChanged"?: (event: OntoDropdownCustomEvent<any>) => void;
+        /**
+          * The tooltip theme to be used. For more information {@link OntoTooltipConfiguration#theme }.
+         */
+        "tooltipTheme"?: string;
     }
     interface OntoFooter {
     }
@@ -280,6 +307,8 @@ declare namespace LocalJSX {
     }
     interface OntoTooltip {
     }
+    interface TestComponent {
+    }
     /**
      * The purpose of this component is to display translated literals in the DOM. A Stencil component re-renders when a prop or state changes,
      * but it may not re-render when the language changes. In such cases, this component should be used. It handles language change events
@@ -309,6 +338,7 @@ declare namespace LocalJSX {
         "onto-navbar": OntoNavbar;
         "onto-repository-selector": OntoRepositorySelector;
         "onto-tooltip": OntoTooltip;
+        "test-component": TestComponent;
         "translate-label": TranslateLabel;
     }
 }
@@ -329,6 +359,7 @@ declare module "@stencil/core" {
             "onto-navbar": LocalJSX.OntoNavbar & JSXBase.HTMLAttributes<HTMLOntoNavbarElement>;
             "onto-repository-selector": LocalJSX.OntoRepositorySelector & JSXBase.HTMLAttributes<HTMLOntoRepositorySelectorElement>;
             "onto-tooltip": LocalJSX.OntoTooltip & JSXBase.HTMLAttributes<HTMLOntoTooltipElement>;
+            "test-component": LocalJSX.TestComponent & JSXBase.HTMLAttributes<HTMLTestComponentElement>;
             /**
              * The purpose of this component is to display translated literals in the DOM. A Stencil component re-renders when a prop or state changes,
              * but it may not re-render when the language changes. In such cases, this component should be used. It handles language change events
