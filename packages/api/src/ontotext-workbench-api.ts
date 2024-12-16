@@ -5,6 +5,7 @@ export * from './models/repositories';
 export * from './models/repository-location';
 export * from './models/events';
 export * from './models/security';
+export * from './models/common';
 
 // Export providers for external usages.
 export * from './providers';
@@ -13,7 +14,7 @@ export * from './providers';
 export * from './services/language';
 export * from './services/repository';
 export * from './services/repository-location';
-export {AuthenticationService} from './services/authentication.service';
+export {AuthenticationService} from './services/security/authentication.service';
 export {EventEmitter} from './emitters/event.emitter';
 
 // Export utils for external usages.
