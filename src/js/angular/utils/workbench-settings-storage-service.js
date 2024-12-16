@@ -20,7 +20,7 @@ function WorkbenchSettingsStorageService(localStorageAdapter, LSKeys) {
     const getWorkbenchSettings = () => {
         let settings = localStorageAdapter.get(LSKeys.WORKBENCH_SETTINGS);
         if (!settings) {
-            settings = defaultSettings;
+            settings = _.clone(defaultSettings);
         }
         return settings;
     };
