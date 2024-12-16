@@ -4,7 +4,7 @@ import {
   RepositoryService,
   RepositoryList,
   RepositoryContextService,
-  UriUtil
+  UriUtil, RepositorySizeInfo, LanguageService, LanguageContextService
 } from "@ontotext/workbench-api";
 import {DropdownItem} from '../../models/dropdown/dropdown-item';
 import {DropdownItemAlignment} from '../../models/dropdown/dropdown-item-alignment';
@@ -29,6 +29,7 @@ import {TranslationService} from '../../services/translation.service';
 export class OntoRepositorySelector {
   private repositoryService: RepositoryService;
   private repositoryContextService: RepositoryContextService;
+  private totalTripletsFormatter: Intl.NumberFormat;
 
   private repositoryList: RepositoryList;
   @State() defaultToggleButtonName: string;
@@ -47,10 +48,12 @@ export class OntoRepositorySelector {
   constructor() {
     this.repositoryService = ServiceProvider.get(RepositoryService);
     this.repositoryContextService = ServiceProvider.get(RepositoryContextService);
+    this.setupTotalRepository();
     this.loadRepositories();
     this.subscriptions.push(this.subscribeToRepositoriesChanged());
     this.subscriptions.push(this.subscribeToSelectedRepositoryChanged());
     this.subscriptions.push(this.subscribeToTranslationChanged());
+    this.subscriptions.push(this.subscribeToLanguageChanged());
   }
 
   /**
@@ -68,7 +71,10 @@ export class OntoRepositorySelector {
           class='onto-repository-selector'
           onValueChanged={this.valueChangeHandler()}
           dropdownButtonName={<SelectorButton repository={this.currentRepository} defaultToggleButtonName={this.defaultToggleButtonName}  location={this.getLocation()}/>}
+          dropdownButtonTooltip={this.getRepositoryTooltipFunction(this.currentRepository)}
+          dropdownTooltipTrigger='mouseenter focus'
           dropdownAlignment={DropdownItemAlignment.RIGHT}
+          tooltipTheme='light-border'
           items={this.items}>
         </onto-dropdown>
       </Host>
@@ -107,6 +113,11 @@ export class OntoRepositorySelector {
     })
   }
 
+  private subscribeToLanguageChanged(): () => void {
+    return ServiceProvider.get(LanguageContextService)
+      .onSelectedLanguageChanged((language) => this.setupTotalRepository(language));
+  }
+
   private changeRepository(newRepository: Repository): void {
     this.currentRepository = newRepository;
     this.items = this.getRepositoriesDropdownItems();
@@ -127,7 +138,9 @@ export class OntoRepositorySelector {
     return repositories
         .map((repository) => new DropdownItem<Repository>()
             .setName(<SelectorItemButton repository={repository}/>)
-            .setValue(repository));
+        .setTooltip(this.getRepositoryTooltipFunction(repository))
+        .setValue(repository)
+        .setDropdownTooltipTrigger('mouseenter focus'));
   }
 
   private onRepositoryChanged(newRepositoryEvent: CustomEvent): void {
@@ -139,5 +152,87 @@ export class OntoRepositorySelector {
       return `@${UriUtil.shortenIri(this.currentRepository.location)}`;
     }
     return ``;
+  }
+
+  private getRepositoryTooltipFunction(repository: Repository): () => Promise<string> {
+    return () => {
+      if (!repository) {
+        return Promise.resolve('');
+      }
+      return this.repositoryService.getRepositorySizeInfo(repository)
+        .then((repositorySizeInfo: RepositorySizeInfo) => this.buildRepositoryTooltipHtml(repository, repositorySizeInfo));
+    }
+  }
+
+  private buildRepositoryTooltipHtml(repository: Repository, repositorySizeInfo: RepositorySizeInfo): string {
+    let repositoryTooltipHtml = `
+            <div class="repository-tooltip-title">
+                    <span class="label">${TranslationService.translate('repository-selector.tooltip.repository')}</span> <span class="value">${repository.id}</span>
+            </div>
+            <div class="repository-tooltip-content">
+                <div class="repository-tooltip-row">
+                    <div class="label">${TranslationService.translate('repository-selector.tooltip.location')} :</div>
+                    <div class="value">${repository.location ? repository.location : TranslationService.translate('repository-selector.tooltip.local')}</div>
+                </div>
+                <div class="repository-tooltip-row">
+                    <div class="label">${TranslationService.translate('repository-selector.tooltip.type')} :</div>
+                    <div class="value">${TranslationService.translate('repository-selector.tooltip.types.' + (repository.type ? repository.type : 'unknown'))}</div>
+                </div>
+                 <div class="repository-tooltip-row">
+                    <div class="label">${TranslationService.translate('repository-selector.tooltip.access')} :</div>
+                    <div class="value">${TranslationService.translate(this.canWriteRepoInLocation(repository) ? 'repository-selector.tooltip.accesses.read_write' : 'repository-selector.tooltip.accesses.read')}</div>
+                </div>`;
+
+    repositoryTooltipHtml += this.buildRepositorySizeInfoHtml(repositorySizeInfo);
+
+    repositoryTooltipHtml += '</div>';
+    return repositoryTooltipHtml
+  }
+
+  private buildRepositorySizeInfoHtml(repositorySizeInfo: RepositorySizeInfo): string {
+    let repositorySizeInfoHtml = '';
+    if (!repositorySizeInfo || repositorySizeInfo.total < 0) {
+      return repositorySizeInfoHtml;
+    }
+    repositorySizeInfoHtml += `
+      <div class="repository-tooltip-row total">
+        <div class="label">${TranslationService.translate('repository-selector.tooltip.repository-size.total')} :</div>
+        <div class="value">${repositorySizeInfo.total > 0 ? this.totalTripletsFormatter.format(repositorySizeInfo.total) : 0}</div>
+      </div>`
+
+    if (repositorySizeInfo.explicit >= 0) {
+      repositorySizeInfoHtml += `<div class="repository-tooltip-row">
+        <div class="label">${TranslationService.translate('repository-selector.tooltip.repository-size.explicit')} :</div>
+        <div class="value">${repositorySizeInfo.explicit > 0 ? this.totalTripletsFormatter.format(repositorySizeInfo.explicit) : 0}</div>
+      </div>`
+    }
+
+    if (repositorySizeInfo.inferred >= 0) {
+      repositorySizeInfoHtml += `<div class="repository-tooltip-row">
+        <div class="label">${TranslationService.translate('repository-selector.tooltip.repository-size.inferred')} :</div>
+        <div class="value">${repositorySizeInfo.inferred > 0 ? this.totalTripletsFormatter.format(repositorySizeInfo.inferred) : 0}</div>
+      </div>`
+    }
+
+    if (repositorySizeInfo.total >= 0 && repositorySizeInfo.explicit >= 0) {
+      repositorySizeInfoHtml += `<div class="repository-tooltip-row">
+        <div class="label">${TranslationService.translate('repository-selector.tooltip.repository-size.expansion_ratio')} :</div>
+        <div class="value">${repositorySizeInfo.explicit > 0 ? this.totalTripletsFormatter.format(repositorySizeInfo.total / repositorySizeInfo.explicit) : '-'}</div>
+      </div>`
+    }
+    return repositorySizeInfoHtml;
+  }
+
+  private setupTotalRepository(language = LanguageService.DEFAULT_LANGUAGE): void {
+    this.totalTripletsFormatter = new Intl.NumberFormat(language, {
+      style: 'decimal',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    });
+  }
+
+  private canWriteRepoInLocation(_repository: Repository): boolean {
+    // TODO: implement the condition when GDB-10442 is ready
+    return true;
   }
 }
