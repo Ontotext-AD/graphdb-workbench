@@ -1,4 +1,4 @@
-import {LanguageContextService} from './language-context.service';
+import {LanguageContextService} from '../language-context.service';
 
 describe('LanguageContextService', () => {
   let languageContextService: LanguageContextService;

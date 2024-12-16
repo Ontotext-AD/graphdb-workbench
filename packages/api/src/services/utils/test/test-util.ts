@@ -1,21 +1,32 @@
+import {ResponseMock} from '../../http/test/response-mock';
+
 export class TestUtil {
 
-  /**
-   * Mocks the global fetch response.
-   *
-   * @param response The mock response data to return when fetch is called.
-   * @param status The HTTP status code to return.
-   * @param message An optional message returned by the `text()` method of the response
-   */
-  static mockResponse(response: unknown, status = 200, message = ''): void {
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        ok: status >= 200 && status < 300,
-        status,
-        json: async () => response,
-        text: async () => message
-      } as Response),
-    );
+  static mockResponse(responseMock: ResponseMock): void {
+    TestUtil.mockResponses([responseMock]);
+  }
+
+  static mockResponses(responseMocks: ResponseMock[]): void {
+    global.fetch = jest.fn((url: RequestInfo) => {
+      const matchingMock = responseMocks.find((mock) => mock.getUrl() === url);
+
+      if (matchingMock) {
+        return Promise.resolve({
+          ok: matchingMock.getStatus() >= 200 && matchingMock.getStatus() < 300,
+          status: matchingMock.getStatus(),
+          json: async () => matchingMock.getResponse(),
+          text: async () => matchingMock.getMessage(),
+        } as Response);
+      }
+
+      // Return a default 404 response if no matching mock found
+      return Promise.resolve({
+        ok: false,
+        status: 404,
+        json: async () => ({message: 'Not Found'}),
+        text: async () => 'Not Found',
+      } as Response);
+    }) as jest.Mock;
   }
 
   /**
