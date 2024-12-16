@@ -12,6 +12,7 @@ export class OntoTooltip {
     private static readonly ATTR_CONTENT = 'tooltip-content';
     private static readonly ATTR_THEME = 'tooltip-theme';
     private static readonly ATTR_PLACEMENT = 'tooltip-placement';
+    private static readonly ATTR_TRIGGER = 'tooltip-trigger';
 
     /**
      * Checks if the target of the 'mouseover' event has tooltip configuration.
@@ -51,9 +52,11 @@ export class OntoTooltip {
         if (!relatedTarget || !target.contains(relatedTarget)) {
             const tooltipInstance = this.getTooltipInstance(target);
             if (tooltipInstance) {
+                if (tooltipInstance.props.trigger === 'manual') {
                 tooltipInstance.destroy();
             }
         }
+    }
     }
 
     render() {
@@ -77,7 +80,8 @@ export class OntoTooltip {
         return new OntoTooltipConfiguration()
             .setContent(element.getAttribute(OntoTooltip.ATTR_CONTENT))
             .setTheme(element.getAttribute(OntoTooltip.ATTR_THEME))
-            .setPlacement(element.getAttribute(OntoTooltip.ATTR_PLACEMENT) as Placement);
+            .setPlacement(element.getAttribute(OntoTooltip.ATTR_PLACEMENT) as Placement)
+            .setTrigger(element.getAttribute(OntoTooltip.ATTR_TRIGGER));
     }
 
     /**

@@ -1,2 +1,2 @@
-export {LanguageService} from './language.service';
-export {LanguageContextService} from './language-context.service';
+export * from './language.service';
+export * from './language-context.service';

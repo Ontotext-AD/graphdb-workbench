@@ -3,6 +3,10 @@ module.exports = function (req, res, next) {
     // custom response overriding the dev server
     res.writeHead(200, {"Content-Type": "application/json"});
     res.end(JSON.stringify(getAllRepositories));
+  } else if (/^\/rest\/repositories\/[^/]+\/size\?location=/.test(req.url)) {
+    // custom response overriding the dev server
+    res.writeHead(200, {"Content-Type": "application/json"});
+    res.end(JSON.stringify(repositorySizeInfo));
   } else {
     // pass request on to the default dev server
     next();
@@ -100,3 +104,8 @@ const getAllRepositories = {
   ]
 }
 
+const repositorySizeInfo = {
+  "inferred":437,
+  "total":4412,
+  "explicit":3975
+};

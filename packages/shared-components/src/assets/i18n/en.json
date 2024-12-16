@@ -68,6 +68,31 @@
   "repository-selector": {
     "btn": {
       "toggle": "Choose repository"
+    },
+    "tooltip": {
+      "repository": "Repository",
+      "location": "Location",
+      "local": "Local",
+      "type": "Type",
+      "types": {
+        "graphdb": "Graphdb",
+        "system": "System",
+        "ontop": "Ontop",
+        "fedx": "FedX",
+        "unknown": "Unknown"
+      },
+      "access": "Access",
+      "accesses": {
+        "read": "Read",
+        "write": "Write",
+        "read_write": "Read/Write"
+      },
+      "repository-size": {
+        "total": "Total statements",
+        "explicit": "Explicit",
+        "inferred": "Inferred",
+        "expansion_ratio": "Expansion ratio (total/explicit)"
+      }
     }
   }
 }

@@ -1,5 +1,5 @@
-import {MapperProvider} from './mapper.provider';
-import {RepositoryListMapper} from '../../services/repository/mappers/repository-list.mapper';
+import {MapperProvider} from '../mapper.provider';
+import {RepositoryListMapper} from '../../../services/repository/mappers/repository-list.mapper';
 
 describe('MapperProvider', () => {
 

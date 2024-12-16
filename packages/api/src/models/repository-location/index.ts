@@ -1,2 +1,2 @@
-export {RepositoryLocation} from '../repository-location/repository-location';
-export {RepositoryLocationType} from '../repository-location/repository-location-type';
+export * from '../repository-location/repository-location';
+export * from '../repository-location/repository-location-type';

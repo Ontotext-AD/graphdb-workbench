@@ -1,5 +1,5 @@
 // src/__tests__/authenticationService.test.ts
-import {AuthenticationService} from './authentication.service';
+import {AuthenticationService} from '../authentication.service';
 
 describe('AuthenticationService', () => {
   let authService: AuthenticationService;

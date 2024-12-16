@@ -1,6 +1,6 @@
-import {ObjectUtil} from './object-util';
-import {Repository} from '../../models/repositories';
-import {RepositoryLocation} from '../../models/repository-location';
+import {ObjectUtil} from '../object-util';
+import {Repository} from '../../../models/repositories';
+import {RepositoryLocation} from '../../../models/repository-location';
 
 describe('ObjectUtil', () => {
 

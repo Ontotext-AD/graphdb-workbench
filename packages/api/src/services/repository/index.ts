@@ -1,2 +1,2 @@
-export {RepositoryService} from './repository.service';
-export {RepositoryContextService} from './repository-context.service';
+export * from './repository.service';
+export * from './repository-context.service';

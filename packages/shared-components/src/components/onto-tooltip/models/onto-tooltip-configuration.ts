@@ -11,6 +11,19 @@ export class OntoTooltipConfiguration {
   hideOnClick = false;
 
   /**
+   * Determines if the tooltip has interactive content inside of it, so that it can be hovered over and clicked inside without hiding.
+   */
+  interactive = true;
+
+  /**
+   * The element to append the tooltip to. It can be:
+   * - ```"appendTo: () => document.body"``` - this is the default;
+   * - ```"appendTo: 'parent'``` - append to reference's parentNode;
+   * - ```" and "appendTo: element"``` - append to an Element.
+   */
+  appendTo = () => document.body;
+
+  /**
    * The content of the tooltip.
    */
   content: string;
@@ -57,13 +70,13 @@ export class OntoTooltipConfiguration {
     return this;
   }
 
-  setTrigger(trigger: Placement): OntoTooltipConfiguration {
+  setTrigger(trigger: string): OntoTooltipConfiguration {
     this.trigger = trigger || 'manual';
     return this;
   }
 
   setPlacement(placement: Placement): OntoTooltipConfiguration {
-    this.placement = placement;
+    this.placement = placement  || 'right';
     return this;
   }
 
