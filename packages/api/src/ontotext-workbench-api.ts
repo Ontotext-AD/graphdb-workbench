@@ -13,7 +13,7 @@ export * from './providers';
 export * from './services/language';
 export * from './services/repository';
 export * from './services/repository-location';
-export {AuthenticationService} from './services/authentication.service';
+export {AuthenticationService} from './services/security/authentication.service';
 export {EventEmitter} from './emitters/event.emitter';
 
 // Export utils for external usages.

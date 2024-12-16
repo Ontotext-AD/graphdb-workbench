@@ -10,6 +10,9 @@ export class OntoTooltipConfiguration {
    */
   hideOnClick = false;
 
+  interactive = true;
+  appendTo = () => document.body;
+
   /**
    * The content of the tooltip.
    */
@@ -57,13 +60,13 @@ export class OntoTooltipConfiguration {
     return this;
   }
 
-  setTrigger(trigger: Placement): OntoTooltipConfiguration {
+  setTrigger(trigger: string): OntoTooltipConfiguration {
     this.trigger = trigger || 'manual';
     return this;
   }
 
   setPlacement(placement: Placement): OntoTooltipConfiguration {
-    this.placement = placement;
+    this.placement = placement  || 'right';
     return this;
   }
 

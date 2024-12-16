@@ -1,6 +1,6 @@
-import {RepositoryMapper} from './repository.mapper';
-import {Repository} from '../../../models/repositories';
-import {RepositoryMockProvider} from '../test/repository-mock-provider';
+import {RepositoryMapper} from '../repository.mapper';
+import {Repository} from '../../../../models/repositories';
+import {RepositoryMockProvider} from '../../test/repository-mock-provider';
 
 describe('RepositoryMapper', () => {
 

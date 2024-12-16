@@ -10,14 +10,14 @@ describe('Language selector', () => {
     // and default English language be selected.
     HeaderSteps.getLanguageSelectorDropdownToggleButton().contains('en');
     HeaderSteps.openLanguageSelectorDropdown();
-    HeaderSteps.getLanguageSelectorDropdownItem(0).contains('en · English')
+    HeaderSteps.getLanguageSelectorDropdownItem(0).contains('en · English');
 
     // When I select other option
     HeaderSteps.selectLanguage(1)
     // then I expect the French language be selected.
     HeaderSteps.getLanguageSelectorDropdownToggleButton().contains('fr');
     HeaderSteps.openLanguageSelectorDropdown();
-    HeaderSteps.getLanguageSelectorDropdownItem(0).contains('en · Anglais')
+    HeaderSteps.getLanguageSelectorDropdownItem(0).contains('en · Anglais');
 
     // When I click on select language button
     HeaderSteps.getLanguageSelectorDropdownToggleButton().click();
