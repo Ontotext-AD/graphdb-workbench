@@ -1,6 +1,6 @@
-import {RepositoryListMapper} from './repository-list.mapper';
-import {RepositoryList} from '../../../models/repositories';
-import {RepositoryMockProvider} from '../test/repository-mock-provider';
+import {RepositoryListMapper} from '../repository-list.mapper';
+import {RepositoryList} from '../../../../models/repositories';
+import {RepositoryMockProvider} from '../../test/repository-mock-provider';
 
 describe('RepositoryListMapper', () => {
 
@@ -11,14 +11,14 @@ describe('RepositoryListMapper', () => {
   });
 
   test('mapToModel should return an instance of RepositoryList with repositories', () => {
-    const repoOne = RepositoryMockProvider.provideRawRepository('repo-one-id');
-    const repoTwo = RepositoryMockProvider.provideRawRepository('repo-two-id');
-    const repoThree = RepositoryMockProvider.provideRawRepository('repo-three-id', 'http://localhost:7002');
+    const repoOneId = 'repo-one-id';
+    const repoTwoId = 'repo-two-id';
+    const repoThreeId = 'repo-three-id';
     const rawRepositoryObjects = {
-      '': [repoOne, repoTwo],
-      'http://localhost:7002': [repoThree]
+      '': [RepositoryMockProvider.provideRawRepository(repoOneId), RepositoryMockProvider.provideRawRepository(repoTwoId)],
+      'http://localhost:7002': [RepositoryMockProvider.provideRawRepository(repoThreeId, 'http://localhost:7002')]
     };
-    const expectedResult = {items: [RepositoryMockProvider.provideRepository('repo-one-id'), RepositoryMockProvider.provideRepository('repo-two-id'), RepositoryMockProvider.provideRepository('repo-three-id', 'http://localhost:7002')]};
+    const expectedResult = {items: [RepositoryMockProvider.provideRepository(repoOneId), RepositoryMockProvider.provideRepository(repoTwoId), RepositoryMockProvider.provideRepository(repoThreeId, 'http://localhost:7002')]};
 
     const repositoryList = repositoryListMapper.mapToModel(rawRepositoryObjects);
 
