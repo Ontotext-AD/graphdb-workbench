@@ -21,8 +21,10 @@ graph TD;
   onto-layout --> onto-navbar
   onto-layout --> onto-footer
   onto-layout --> onto-tooltip
+  onto-header --> onto-license-alert
   onto-header --> onto-repository-selector
   onto-header --> onto-language-selector
+  onto-license-alert --> translate-label
   onto-repository-selector --> onto-dropdown
   onto-language-selector --> onto-dropdown
   onto-navbar --> translate-label
