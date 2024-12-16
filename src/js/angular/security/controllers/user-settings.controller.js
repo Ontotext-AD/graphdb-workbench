@@ -138,7 +138,7 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
         $scope.loader = true;
         const payload = new UpdateUserPayload({
             username: $scope.user.username,
-            pass: ($scope.noPassword) ? '' : $scope.user.password || undefined,
+            password: ($scope.noPassword) ? '' : $scope.user.password || undefined,
             appSettings: $scope.user.appSettings
         });
         SecurityService.updateUserData(payload)
