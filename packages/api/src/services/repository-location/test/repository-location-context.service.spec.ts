@@ -1,5 +1,5 @@
-import {RepositoryLocationContextService} from './repository-location-context.service';
-import {RepositoryLocation} from '../../models/repository-location';
+import {RepositoryLocationContextService} from '../repository-location-context.service';
+import {RepositoryLocation} from '../../../models/repository-location';
 
 describe('RepositoryLocationContextService', () => {
   let repositoryLocationContextService: RepositoryLocationContextService;
