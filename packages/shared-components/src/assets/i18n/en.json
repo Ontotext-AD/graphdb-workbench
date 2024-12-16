@@ -94,5 +94,9 @@
         "expansion_ratio": "Expansion ratio (total/explicit)"
       }
     }
+  },
+  "license_alert": {
+    "label": "No valid license",
+    "no_license_set": "No license was set."
   }
 }

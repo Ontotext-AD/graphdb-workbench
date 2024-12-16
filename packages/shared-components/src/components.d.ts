@@ -5,13 +5,13 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { Awaitable } from "../../api/dist/ontotext-workbench-api.d";
+import { Awaitable, License } from "../../api/dist/ontotext-workbench-api.d";
 import { DropdownItem } from "./models/dropdown/dropdown-item";
 import { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 import { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
 import { NavbarToggledEvent } from "./components/onto-navbar/navbar-toggled-event";
 import { TranslationParameter } from "./models/translation/translation-parameter";
-export { Awaitable } from "../../api/dist/ontotext-workbench-api.d";
+export { Awaitable, License } from "../../api/dist/ontotext-workbench-api.d";
 export { DropdownItem } from "./models/dropdown/dropdown-item";
 export { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 export { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
@@ -63,6 +63,11 @@ export namespace Components {
     }
     interface OntoFooter {
     }
+    /**
+     * OntoHeader component for rendering the header of the application.
+     * This component includes a search component, license alert (if applicable),
+     * repository selector, and language selector.
+     */
     interface OntoHeader {
     }
     interface OntoLanguageSelector {
@@ -72,6 +77,12 @@ export namespace Components {
         "dropdownAlignment": DropdownItemAlignment;
     }
     interface OntoLayout {
+    }
+    interface OntoLicenseAlert {
+        /**
+          * The current license information
+         */
+        "license": License;
     }
     interface OntoNavbar {
         /**
@@ -88,6 +99,17 @@ export namespace Components {
         "selectedMenu": string;
     }
     interface OntoRepositorySelector {
+    }
+    /**
+     * A component for managing test context in the application. Used only for testing
+     */
+    interface OntoTestContext {
+        /**
+          * Updates the license information in the context.  This method uses the LicenseContextService to update the license and returns a resolved Promise once the operation is complete.
+          * @param license - The new License object to be set.
+          * @returns A Promise that resolves when the license update is complete.
+         */
+        "updateLicense": (license: License) => Promise<void>;
     }
     interface OntoTooltip {
     }
@@ -149,6 +171,11 @@ declare global {
         prototype: HTMLOntoFooterElement;
         new (): HTMLOntoFooterElement;
     };
+    /**
+     * OntoHeader component for rendering the header of the application.
+     * This component includes a search component, license alert (if applicable),
+     * repository selector, and language selector.
+     */
     interface HTMLOntoHeaderElement extends Components.OntoHeader, HTMLStencilElement {
     }
     var HTMLOntoHeaderElement: {
@@ -166,6 +193,12 @@ declare global {
     var HTMLOntoLayoutElement: {
         prototype: HTMLOntoLayoutElement;
         new (): HTMLOntoLayoutElement;
+    };
+    interface HTMLOntoLicenseAlertElement extends Components.OntoLicenseAlert, HTMLStencilElement {
+    }
+    var HTMLOntoLicenseAlertElement: {
+        prototype: HTMLOntoLicenseAlertElement;
+        new (): HTMLOntoLicenseAlertElement;
     };
     interface HTMLOntoNavbarElementEventMap {
         "navbarToggled": NavbarToggledEvent;
@@ -189,6 +222,15 @@ declare global {
     var HTMLOntoRepositorySelectorElement: {
         prototype: HTMLOntoRepositorySelectorElement;
         new (): HTMLOntoRepositorySelectorElement;
+    };
+    /**
+     * A component for managing test context in the application. Used only for testing
+     */
+    interface HTMLOntoTestContextElement extends Components.OntoTestContext, HTMLStencilElement {
+    }
+    var HTMLOntoTestContextElement: {
+        prototype: HTMLOntoTestContextElement;
+        new (): HTMLOntoTestContextElement;
     };
     interface HTMLOntoTooltipElement extends Components.OntoTooltip, HTMLStencilElement {
     }
@@ -218,8 +260,10 @@ declare global {
         "onto-header": HTMLOntoHeaderElement;
         "onto-language-selector": HTMLOntoLanguageSelectorElement;
         "onto-layout": HTMLOntoLayoutElement;
+        "onto-license-alert": HTMLOntoLicenseAlertElement;
         "onto-navbar": HTMLOntoNavbarElement;
         "onto-repository-selector": HTMLOntoRepositorySelectorElement;
+        "onto-test-context": HTMLOntoTestContextElement;
         "onto-tooltip": HTMLOntoTooltipElement;
         "translate-label": HTMLTranslateLabelElement;
     }
@@ -274,6 +318,11 @@ declare namespace LocalJSX {
     }
     interface OntoFooter {
     }
+    /**
+     * OntoHeader component for rendering the header of the application.
+     * This component includes a search component, license alert (if applicable),
+     * repository selector, and language selector.
+     */
     interface OntoHeader {
     }
     interface OntoLanguageSelector {
@@ -283,6 +332,12 @@ declare namespace LocalJSX {
         "dropdownAlignment"?: DropdownItemAlignment;
     }
     interface OntoLayout {
+    }
+    interface OntoLicenseAlert {
+        /**
+          * The current license information
+         */
+        "license"?: License;
     }
     interface OntoNavbar {
         /**
@@ -303,6 +358,11 @@ declare namespace LocalJSX {
         "selectedMenu"?: string;
     }
     interface OntoRepositorySelector {
+    }
+    /**
+     * A component for managing test context in the application. Used only for testing
+     */
+    interface OntoTestContext {
     }
     interface OntoTooltip {
     }
@@ -332,8 +392,10 @@ declare namespace LocalJSX {
         "onto-header": OntoHeader;
         "onto-language-selector": OntoLanguageSelector;
         "onto-layout": OntoLayout;
+        "onto-license-alert": OntoLicenseAlert;
         "onto-navbar": OntoNavbar;
         "onto-repository-selector": OntoRepositorySelector;
+        "onto-test-context": OntoTestContext;
         "onto-tooltip": OntoTooltip;
         "translate-label": TranslateLabel;
     }
@@ -349,11 +411,21 @@ declare module "@stencil/core" {
              */
             "onto-dropdown": LocalJSX.OntoDropdown & JSXBase.HTMLAttributes<HTMLOntoDropdownElement>;
             "onto-footer": LocalJSX.OntoFooter & JSXBase.HTMLAttributes<HTMLOntoFooterElement>;
+            /**
+             * OntoHeader component for rendering the header of the application.
+             * This component includes a search component, license alert (if applicable),
+             * repository selector, and language selector.
+             */
             "onto-header": LocalJSX.OntoHeader & JSXBase.HTMLAttributes<HTMLOntoHeaderElement>;
             "onto-language-selector": LocalJSX.OntoLanguageSelector & JSXBase.HTMLAttributes<HTMLOntoLanguageSelectorElement>;
             "onto-layout": LocalJSX.OntoLayout & JSXBase.HTMLAttributes<HTMLOntoLayoutElement>;
+            "onto-license-alert": LocalJSX.OntoLicenseAlert & JSXBase.HTMLAttributes<HTMLOntoLicenseAlertElement>;
             "onto-navbar": LocalJSX.OntoNavbar & JSXBase.HTMLAttributes<HTMLOntoNavbarElement>;
             "onto-repository-selector": LocalJSX.OntoRepositorySelector & JSXBase.HTMLAttributes<HTMLOntoRepositorySelectorElement>;
+            /**
+             * A component for managing test context in the application. Used only for testing
+             */
+            "onto-test-context": LocalJSX.OntoTestContext & JSXBase.HTMLAttributes<HTMLOntoTestContextElement>;
             "onto-tooltip": LocalJSX.OntoTooltip & JSXBase.HTMLAttributes<HTMLOntoTooltipElement>;
             /**
              * The purpose of this component is to display translated literals in the DOM. A Stencil component re-renders when a prop or state changes,
