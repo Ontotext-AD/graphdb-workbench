@@ -1,10 +1,8 @@
 import {RepositorySelectorSteps} from "../../steps/header/repository-selector-steps";
-import {RepositoriesStubs} from "../../stubs/repositories-stubs";
 
 describe("Repository Selector", () => {
 
   it('Should select repository', () => {
-    RepositoriesStubs.stubLoadAllRepositories();
     // When I visit a page with repository selector in it.
     RepositorySelectorSteps.visit();
     // Then I expect to see only toggle selector button with default label, because the repository is not selected,
@@ -25,5 +23,7 @@ describe("Repository Selector", () => {
     RepositorySelectorSteps.getRepositorySelectorItemMenu().should('not.be.visible');
     // and selector button to contains the id of selected repository
     RepositorySelectorSteps.getRepositorySelectorToggleButton().contains('starwars4');
+
+    // RepositorySelectorSteps.getRepositorySelectorToggleButton().trigger('mouseover');
   });
 });
