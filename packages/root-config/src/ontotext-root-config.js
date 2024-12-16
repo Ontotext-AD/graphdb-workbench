@@ -13,8 +13,10 @@ import {
 import microfrontendLayout from './microfrontend-layout.html';
 import './styles/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
+import './styles/onto-stylesheet.css';
 // import "./styles/bootstrap-graphdb-theme.css";
 import { defineCustomElements } from '../../shared-components/loader';
+import { ServiceProvider, LicenseService, LicenseContextService, TranslationService } from '@ontotext/workbench-api';
 
 addErrorHandler((err) => {
   console.error(err);
@@ -65,6 +67,18 @@ layoutEngine.activate();
 
 defineCustomElements();
 
+const loadLicense = () => {
+  const licenseContext = ServiceProvider.get(LicenseContextService);
+  ServiceProvider.get(LicenseService).getLicense().then(license => {
+    licenseContext.updateLicense(license);
+  }).catch(() => {
+    licenseContext.updateLicense({
+      message: TranslationService.translate('license_alert.no_license_set'),
+      valid: false
+    });
+  });
+};
+
 // This is a workaround to initialize the navbar when the root-config is loaded and the navbar is not yet initialized.
 const waitForNavbarElement = () => {
   return new Promise((resolve, reject) => {
@@ -93,6 +107,7 @@ const registerSingleSpaFirstMountListener = () => {
     window.singleSpaFirstMountListenerRegistered = true;
     window.addEventListener('single-spa:first-mount', () => {
       initializeNavbar();
+      loadLicense();
     });
   }
 };
