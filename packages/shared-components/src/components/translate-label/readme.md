@@ -28,11 +28,13 @@ Example of usage:
 
 ### Used by
 
+ - [onto-license-alert](../onto-license-alert)
  - [onto-navbar](../onto-navbar)
 
 ### Graph
 ```mermaid
 graph TD;
+  onto-license-alert --> translate-label
   onto-navbar --> translate-label
   style translate-label fill:#f9f,stroke:#333,stroke-width:4px
 ```
