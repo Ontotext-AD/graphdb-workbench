@@ -1,5 +1,4 @@
 import {BaseSteps} from "../base-steps";
-import {RepositoriesStubs} from "../../stubs/repositories-stubs";
 
 export class RepositorySelectorSteps extends BaseSteps {
 
