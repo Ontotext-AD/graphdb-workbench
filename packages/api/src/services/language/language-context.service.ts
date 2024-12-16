@@ -1,4 +1,4 @@
-import {ContextService} from '../context.service';
+import {ContextService} from '../context/context.service';
 import {ValueChangeCallback} from '../../models/context/value-change-callback';
 
 /**
