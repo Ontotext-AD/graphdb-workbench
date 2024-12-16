@@ -1,5 +1,5 @@
-import {ServiceProvider} from './service.provider';
-import {RepositoryService} from '../../services/repository';
+import {ServiceProvider} from '../service.provider';
+import {RepositoryService} from '../../../services/repository';
 
 describe('ServiceProvider', () => {
 

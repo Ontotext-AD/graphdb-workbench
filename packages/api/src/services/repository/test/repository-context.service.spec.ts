@@ -1,5 +1,5 @@
-import {RepositoryContextService} from './repository-context.service';
-import {Repository, RepositoryList} from '../../models/repositories';
+import {RepositoryContextService} from '../repository-context.service';
+import {Repository, RepositoryList} from '../../../models/repositories';
 
 describe('RepositoryContextService', () => {
   let repositoryContextService: RepositoryContextService;

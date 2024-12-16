@@ -1,4 +1,4 @@
-import {ContextService} from '../context.service';
+import {ContextService} from '../context/context.service';
 import {Repository, RepositoryList} from '../../models/repositories';
 import {ValueChangeCallback} from '../../models/context/value-change-callback';
 

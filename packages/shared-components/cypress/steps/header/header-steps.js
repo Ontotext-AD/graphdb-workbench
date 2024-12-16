@@ -18,7 +18,7 @@ export class HeaderSteps extends BaseSteps {
   }
 
   static openLanguageSelectorDropdown() {
-    HeaderSteps.getHeader().find('.onto-dropdown.closed').click();
+    HeaderSteps.getLanguageSelector().find('.onto-dropdown.closed').click();
   }
 
   static closeLanguageSelectorDropdown() {
