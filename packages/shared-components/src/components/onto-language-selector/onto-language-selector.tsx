@@ -1,4 +1,4 @@
-import {Component, Host, h, State} from '@stencil/core';
+import {Component, Host, h, State, Prop} from '@stencil/core';
 import {DropdownItem} from '../../models/dropdown/dropdown-item';
 import {ServiceProvider, LanguageService, LanguageContextService} from "@ontotext/workbench-api";
 import {DropdownItemAlignment} from '../../models/dropdown/dropdown-item-alignment';
@@ -13,6 +13,12 @@ export class OntoLanguageSelector {
   private languageContextService: LanguageContextService;
   private items: DropdownItem<string>[] = [];
   private readonly onLanguageChangeSubscription: () => void;
+
+  /**
+   * Specifies the dropdown items' alignment. If not provided, the items and the dropdown button will be aligned to the left.
+   *
+   */
+  @Prop() dropdownAlignment: DropdownItemAlignment = DropdownItemAlignment.LEFT;
 
   /**
    * Holds the currently selected language, such as 'en' or 'fr'.
@@ -43,7 +49,7 @@ export class OntoLanguageSelector {
           dropdownButtonNameLabelKey={!this.currentLanguage ? 'language_selector.toggle_menu.label' : undefined}
           dropdownButtonName={this.currentLanguage ?? undefined}
           dropdownButtonTooltipLabelKey={this.currentLanguage ? 'language_selector.toggle_menu.tooltip' : 'language_selector.toggle_menu.label'}
-          dropdownAlignment={DropdownItemAlignment.RIGHT}
+          dropdownAlignment={this.dropdownAlignment ?? DropdownItemAlignment.RIGHT}
           iconClass='icon-translation'
           items={this.items}>
         </onto-dropdown>
