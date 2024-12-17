@@ -1265,6 +1265,8 @@
     "menu.support.label": "Support",
     "menu.guides.label": "Guides interactifs",
     "menu.plugins.label": "Plugins",
+    "menu.graphql.label": "GraphQL",
+    "menu.graphql-playground.label": "GraphQL Playground",
     "core.popover.get.url.query": "Obtenir l'URL de la requête",
     "core.popover.shared.query.warning": "Requête partagée par un autre utilisateur. Vous ne pouvez pas la modifier ou la supprimer.",
     "core.edit.query": "Modifier la requête",
