@@ -13,7 +13,7 @@ export class OntoHeader {
         <div class="header-component">
           <div class="search-component">&#x1F50D;</div>
           <onto-repository-selector></onto-repository-selector>
-          <onto-language-selector></onto-language-selector>
+          <onto-language-selector dropdown-alignment="right"></onto-language-selector>
         </div>
       </Host>
     );
