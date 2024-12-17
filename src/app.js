@@ -16,7 +16,8 @@ import 'angular/core/directives/autocomplete/autocomplete.directive';
 import 'angular/core/directives/prop-indeterminate/prop-indeterminate.directive';
 import 'angular/core/directives/page-info-tooltip.directive';
 import 'angular/core/services/language.service'
-import {defineCustomElements} from 'ontotext-yasgui-web-component/loader';
+import {defineCustomElements as defineYasguiElements} from 'ontotext-yasgui-web-component/loader';
+import {defineCustomElements as defineGraphQlElements} from 'ontotext-graphql-playground-component/loader';
 import {convertToHumanReadable} from "./js/angular/utils/size-util";
 import {DocumentationUrlResolver} from "./js/angular/utils/documentation-url-resolver";
 
@@ -65,7 +66,8 @@ const providers = [
 ];
 
 const moduleDefinition = function (productInfo, translations) {
-    defineCustomElements();
+    defineYasguiElements();
+    defineGraphQlElements();
     const workbench = angular.module('graphdb.workbench', modules);
 
     workbench.config([...providers,
