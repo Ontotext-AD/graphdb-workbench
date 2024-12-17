@@ -24,6 +24,7 @@ describe("Repository Selector", () => {
     // and selector button to contains the id of selected repository
     RepositorySelectorSteps.getRepositorySelectorToggleButton().contains('starwars4');
 
+    // TODO: For some reason the tooltip can't be triggered by cypress here
     // RepositorySelectorSteps.getRepositorySelectorToggleButton().trigger('mouseover');
   });
 });

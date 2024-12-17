@@ -105,6 +105,8 @@ export class OntoDropdown {
   }
 
   render() {
+    const dropdownAlignmentClass = this.dropdownAlignment === DropdownItemAlignment.RIGHT
+      ? 'onto-dropdown-right-item-alignment' : 'onto-dropdown-left-item-alignment';
     return (
       <div class={`onto-dropdown ${this.open ? 'open' : 'closed'}`}>
         <button class="onto-dropdown-button"
@@ -121,7 +123,7 @@ export class OntoDropdown {
         </button>
 
         <div
-          class={'onto-dropdown-menu ' + (DropdownItemAlignment.RIGHT === this.dropdownAlignment ? 'onto-dropdown-right-item-alignment' : '')}>
+          class={'onto-dropdown-menu ' + dropdownAlignmentClass}>
           {this.items && this.items.map(item =>
             <button class='onto-dropdown-menu-item'
                     tooltip-placement='left'
