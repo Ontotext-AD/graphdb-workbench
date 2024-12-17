@@ -64,7 +64,7 @@
             <li ng-repeat="repository in getReadableRepositories() | orderBy: ['location', 'id']"
                 ng-if="!isRepoActive(repository)"
                 ng-mouseover="handlePopovers(repository)" popover-popup-delay="500"
-                popover-trigger="mouseenter" popover-placement="left"
+                popover-trigger="mouseenter" popover-placement="left-bottom"
                 uib-popover-template="popoverTemplate" popover-title="{{'security.repository.title' | translate}} {{repository.id}}">
                 <a class="dropdown-item" ng-click="setRepository(repository)" guide-selector="repository-{{repository.id}}-button">
                     <em ng-class="'icon-repo-' + repository.type" class="icon-1-5x"></em>
