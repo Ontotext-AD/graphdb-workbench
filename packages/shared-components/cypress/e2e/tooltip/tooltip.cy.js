@@ -1,4 +1,4 @@
-import { TooltipSteps } from "../steps/tooltip-steps";
+import { TooltipSteps } from "../../steps/tooltip-steps";
 
 describe('Tooltip', () => {
   it('Should handle various tooltip behaviors and styles correctly', () => {
