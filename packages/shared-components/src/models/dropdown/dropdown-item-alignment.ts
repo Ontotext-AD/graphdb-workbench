@@ -1,4 +1,4 @@
 export enum DropdownItemAlignment {
-  RIGHT,
-  LEFT
+  RIGHT = 'right',
+  LEFT = 'left'
 }
