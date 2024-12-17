@@ -20,6 +20,8 @@ const identicalTranslations = [
     "Document",
     "Documentation",
     "Format",
+    "GraphQL",
+    "GraphQL Playground",
     "IRI",
     "Id",
     "Local",
