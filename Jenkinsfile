@@ -7,6 +7,10 @@ pipeline {
         REPO_URL = 'https://github.com/Ontotext-AD/graphdb-workbench.git'
     }
 
+    tools {
+        nodejs 'nodejs-20.11.1'
+    }
+
     stages {
         stage('Build Info') {
             steps {
@@ -73,7 +77,11 @@ pipeline {
             steps {
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                     script {
-                        sh 'npm run sonar'
+                        withSonarQubeEnv('New-sonar') {
+                            withEnv(["BRANCH_NAME=${env.BRANCH_NAME}"]) {
+                                sh 'npm run sonar'
+                            }
+                        }
                     }
                 }
             }

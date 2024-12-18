@@ -14,6 +14,9 @@ const sonarOptions = {
   "sonar.language": "typescript",
   "sonar.scm.provider": "git",
   "sonar.sourceEncoding": "UTF-8",
+  "sonar.login": "sqa_6fe3566deafbf61cbfea6072ca16ddc356430745"
+
+
 };
 
 if (pullRequestId) {
