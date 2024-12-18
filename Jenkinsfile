@@ -73,7 +73,9 @@ pipeline {
             steps {
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                     script {
-                        sh 'npm run sonar'
+                        withEnv(["BRANCH_NAME=${env.BRANCH_NAME}"]) {
+                            sh 'npm run sonar'
+                        }
                     }
                 }
             }
