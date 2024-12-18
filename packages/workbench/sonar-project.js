@@ -7,13 +7,13 @@ const pullRequestId = argv['pull-request-id'];
 
 const sonarOptions = {
   "sonar.organization": "ontotext-ad",
-  "sonar.projectKey": "Ontotext-AD_workbench",
+  "sonar.projectKey": "Ontotext-AD_graphdb-workbench",
   "sonar.projectName": "Workbench",
   "sonar.sources": "./src",
   "sonar.exclusions": "src/assets/**/*",
   "sonar.language": "typescript",
   "sonar.scm.provider": "git",
-  "sonar.sourceEncoding": "UTF-8",
+  "sonar.sourceEncoding": "UTF-8"
 };
 
 if (pullRequestId) {
