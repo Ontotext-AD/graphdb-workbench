@@ -8,7 +8,10 @@ GraphqlPlaygroundViewCtrl.$inject = ['$scope', '$repositories'];
 
 function GraphqlPlaygroundViewCtrl($scope, $repositories) {
     // not implemented
-    $scope.graphqlEndpoint = '/rest/repositories/test/graphql/swapi';
+    $scope.configuration = {
+        endpoint: '/rest/repositories/test/graphql/swapi'
+    };
+
     $scope.getActiveRepositoryNoError = () => {
         return $repositories.getActiveRepository();
     };

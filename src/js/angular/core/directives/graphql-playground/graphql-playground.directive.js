@@ -16,14 +16,16 @@ graphqlPlaygroundDirective.$inject = [];
  *  ### HTML Usage:
  *  The directive can be used in the Workbench as follows:
  *  ```html
- *  <graphql-playground graphql-endpoint="myGraphQLEndpoint"></graphql-playground>
+ *  <graphql-playground configuration="myGraphQLConfiguration"></graphql-playground>
  *  ```
  *
  *  ### Controller Example:
  *  ```javascript
  *  angular.module('myApp', [])
  *    .controller('ExampleController', function($scope) {
- *        $scope.myGraphQLEndpoint = 'https://myapi.com/graphql';
+ *        $scope.myGraphQLConfiguration = {
+ *            endpoint: 'https://myapi.com/graphql'
+ *        }
  *    });
  *  ```
  *
@@ -34,30 +36,10 @@ function graphqlPlaygroundDirective() {
         restrict: 'E',
         templateUrl: 'js/angular/core/directives/graphql-playground/templates/graphql-playground.html',
         scope: {
-            graphqlEndpoint: '='
+            configuration: '='
         },
         link: ($scope, element, attrs) => {
-            $scope.endpoint = '';
-            // =========================
-            // Subscriptions
-            // =========================
-            const subscriptions = [];
-
-            const init = (newVal, oldValue) => {
-                if (!$scope.endpoint && newVal || newVal && !isEqual(newVal, oldValue)) {
-                    $scope.endpoint = newVal;
-                }
-            };
-
-            subscriptions.push($scope.$watch('graphqlEndpoint', init));
-
-            const removeAllSubscribers = () => {
-                subscriptions.forEach((subscription) => subscription());
-            };
-
-            // Deregister the watcher when the scope/directive is destroyed
-            $scope.$on('$destroy', removeAllSubscribers);
-
+            // not implemented
         }
     };
 }
