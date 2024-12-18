@@ -247,6 +247,7 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     $scope.$on('$destroy', function () {
         const workbenchSettings = WorkbenchSettingsStorageService.getWorkbenchSettings();
         ThemeService.toggleThemeMode(workbenchSettings.mode);
+        ThemeService.applyTheme(workbenchSettings.theme);
         $timeout.cancel(waitBeforeRedirectBack);
     });
 
