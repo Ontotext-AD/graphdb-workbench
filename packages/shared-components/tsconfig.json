@@ -10,6 +10,7 @@
       "dom",
       "es2017"
     ],
+    "baseUrl": "./",
     "paths": {
       "@ontotext/workbench-api": ["../api/dist/ontotext-workbench-api.d.ts"]
     },
