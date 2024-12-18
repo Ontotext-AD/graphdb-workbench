@@ -7,6 +7,10 @@ pipeline {
         REPO_URL = 'https://github.com/Ontotext-AD/graphdb-workbench.git'
     }
 
+    tools {
+        nodejs 'nodejs-20.11.1'
+    }
+
     stages {
         stage('Build Info') {
             steps {
