@@ -77,8 +77,10 @@ pipeline {
             steps {
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                     script {
-                        withEnv(["BRANCH_NAME=${env.BRANCH_NAME}"]) {
-                            sh 'npm run sonar'
+                        withSonarQubeEnv('SonarCloud') {
+                            withEnv(["BRANCH_NAME=${env.BRANCH_NAME}"]) {
+                                sh 'npm run sonar'
+                            }
                         }
                     }
                 }
