@@ -81,7 +81,7 @@ pipeline {
             steps {
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                     script {
-                        sh 'docker-compose -f test-docker-compose.yaml up'
+                        sh 'docker-compose -f test-docker-compose.yaml up --abort-on-container-exit'
                     }
                 }
             }
