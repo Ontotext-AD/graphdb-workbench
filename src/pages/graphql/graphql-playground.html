@@ -1,0 +1,14 @@
+<div class="graphql-playground-view">
+    <h1 id="title-container">
+        <span id="graphql-playground-title-label">{{title}}</span>
+        <page-info-tooltip></page-info-tooltip>
+    </h1>
+
+    <div core-errors></div>
+
+    <graphql-playground configuration="configuration"
+                        ng-if="configuration && getActiveRepositoryNoError()"></graphql-playground>
+</div>
+
+
+

@@ -194,8 +194,17 @@ module.exports = {
                 transform: replaceVersion
             },
             {
+                from: 'src/js/angular/core/directives/graphql-playground/templates',
+                to: 'js/angular/core/directives/graphql-playground/templates',
+                transform: replaceVersion
+            },
+            {
                 from: 'src/js/angular/templates',
                 to: 'js/angular/templates'
+            },
+            {
+                from: 'node_modules/ontotext-graphql-playground-component/dist/ontotext-graphql-playground-component/assets',
+                to: 'assets'
             }
         ])
     ],
