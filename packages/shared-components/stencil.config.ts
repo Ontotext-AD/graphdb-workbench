@@ -1,6 +1,5 @@
 import { Config } from '@stencil/core';
 import {sass} from '@stencil/sass';
-import nodeResolve from '@rollup/plugin-node-resolve';
 
 const path = `${__dirname}/src/pages/fake-server.js`;
 
@@ -36,27 +35,14 @@ export const config: Config = {
       '^@ontotext/workbench-api$': '<rootDir>/../api/dist/ontotext-workbench-api.d.ts',
     },
     moduleDirectories: ["node_modules"],
+    modulePathIgnorePatterns: ["<rootDir>/cypress/"],
     transform: {
       '^.+\\.(js|mjs|jsx|ts|tsx)$': 'ts-jest',
     },
   },
   plugins: [
     sass(),
-    nodeResolve(),
   ],
-  rollupPlugins: {
-    before: [
-      {
-        name: 'external-single-spa',
-        resolveId(source) {
-          if (source === 'single-spa') {
-            return { id: source, external: true };
-          }
-          return null;
-        },
-      },
-    ],
-  },
   devServer: {
     requestListenerPath: path
   }
