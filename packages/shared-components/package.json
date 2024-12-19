@@ -1,7 +1,7 @@
 {
   "name": "shared-components",
   "version": "0.0.1",
-  "description": "Stencil Component Starter",
+  "description": "Shared components for the GraphDB Workbench application",
   "license": "MIT",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
@@ -13,10 +13,6 @@
     ".": {
       "import": "./dist/shared-components/shared-components.esm.js",
       "require": "./dist/shared-components/shared-components.cjs.js"
-    },
-    "./my-component": {
-      "import": "./dist/components/my-component.js",
-      "types": "./dist/components/my-component.d.ts"
     },
     "./loader": {
       "import": "./loader/index.js",
