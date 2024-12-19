@@ -35,6 +35,7 @@ export const config: Config = {
       '^@ontotext/workbench-api$': '<rootDir>/../api/dist/ontotext-workbench-api.d.ts',
     },
     moduleDirectories: ["node_modules"],
+    modulePathIgnorePatterns: ["<rootDir>/cypress/"],
     transform: {
       '^.+\\.(js|mjs|jsx|ts|tsx)$': 'ts-jest',
     },
