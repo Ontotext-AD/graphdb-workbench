@@ -1,0 +1,28 @@
+services:
+  workbench:
+    image: node:18-alpine
+    working_dir: /app
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./:/app
+    command: npm run start
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9000"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 20s
+
+  cypress:
+    image: cypress/included
+    depends_on:
+      workbench:
+        condition: service_healthy
+    environment:
+      CYPRESS_baseUrl: http://workbench:9000
+      NO_COLOR: "true"
+    working_dir: /e2e
+    volumes:
+      - ./e2e-tests:/e2e
+    command: cypress run --browser chrome --config-file ./cypress-legacy.config.js
