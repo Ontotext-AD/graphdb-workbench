@@ -2,10 +2,12 @@
   <h1>Workbench - Angular18 - internal navigation</h1>
   <nav>
     <ul>
-      <li><a routerLink="/sparql">Sparql</a></li>
-      <li><a routerLink="/graphql">Graphql</a></li>
+      <li><a routerLink="/graphql/playground">Graphql Playground</a></li>
+      <li><a routerLink="/graphql/management">Graphql Management</a></li>
     </ul>
   </nav>
 
-  <router-outlet></router-outlet>
+  <div class="main-container" style="border: 1px solid #dedede">
+    <router-outlet></router-outlet>
+  </div>
 </div>

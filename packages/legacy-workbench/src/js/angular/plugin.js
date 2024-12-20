@@ -43,12 +43,31 @@ PluginRegistry.add('main.menu', {
             {
                 label: 'Graphql',
                 labelKey: 'menu.graphql',
-                href: 'graphql',
+                href: '',
                 order: 1001,
                 role: 'IS_AUTHENTICATED_FULLY',
                 icon: "fa fa-flask",
-                guideSelector: 'menu-lab',
-                children: []
+                guideSelector: 'menu-graphql',
+                children: [
+                    {
+                        label: 'Graphql Playground',
+                        labelKey: 'menu.graphql.playground',
+                        href: '/graphql/playground',
+                        order: 1010,
+                        role: 'IS_AUTHENTICATED_FULLY',
+                        guideSelector: 'menu-graphql-playground',
+                        children: []
+                    },
+                    {
+                        label: 'Graphql Managaement',
+                        labelKey: 'menu.graphql.management',
+                        href: '/graphql/management',
+                        order: 1020,
+                        role: 'IS_AUTHENTICATED_FULLY',
+                        guideSelector: 'menu-graphql-management',
+                        children: []
+                    }
+                ]
             }
         ]
     }

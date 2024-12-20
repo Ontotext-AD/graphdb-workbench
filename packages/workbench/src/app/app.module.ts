@@ -1,11 +1,11 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { RouterOutlet } from '@angular/router';
-import {SparqlComponent} from "./sparql/sparql.component";
-import {GraphqlComponent} from "./graphql/graphql.component";
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {RouterOutlet} from '@angular/router';
+import {GraphqlManagementComponent} from "./graphql-management/graphql-management.component";
+import {GraphqlPlaygroundComponent} from "./graphql-playground/graphql-playground.component";
 
 @NgModule({
   declarations: [
@@ -15,8 +15,8 @@ import {GraphqlComponent} from "./graphql/graphql.component";
     BrowserModule,
     AppRoutingModule,
     RouterOutlet,
-    SparqlComponent,
-    GraphqlComponent
+    GraphqlManagementComponent,
+    GraphqlPlaygroundComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

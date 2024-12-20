@@ -9,10 +9,7 @@
 
     <onto-layout>
         <main slot="main">
-            <route path="graphql">
-                <application name="@ontotext/workbench"></application>
-            </route>
-            <route path="import">
+            <route path="/import">
                 <application name="@ontotext/legacy-workbench"></application>
             </route>
             <route path="repository">
@@ -20,6 +17,12 @@
             </route>
             <route default>
                 <application name="@ontotext/legacy-workbench"></application>
+            </route>
+            <route path="graphql/playground">
+                <application name="@ontotext/workbench"></application>
+            </route>
+            <route path="graphql/management">
+                <application name="@ontotext/workbench"></application>
             </route>
         </main>
     </onto-layout>

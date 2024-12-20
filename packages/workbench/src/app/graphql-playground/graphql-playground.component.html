@@ -1,0 +1,9 @@
+<p>graphql-playground works!</p>
+<hr/>
+<h3>Different ways to navigate to other application</h3>
+<hr/>
+<button (click)="onButtonClick()">Open Import view</button> => navigate via method call using <code>singleSpa.navigateToUrl('/import')</code>
+<hr/>
+<a href="/import">Import view</a> => navigate via link decorated with click handler when the page is loaded using <code>singleSpa.navigateToUrl(href)</code>
+<hr/>
+<a href="/import" onclick="singleSpaNavigate(event)">Import view</a> => navigate via link using <code>singleSpaNavigate(event)</code> utility
