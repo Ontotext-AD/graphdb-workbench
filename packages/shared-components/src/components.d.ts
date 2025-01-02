@@ -5,13 +5,13 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { Awaitable, License } from "../../api/dist/ontotext-workbench-api.d";
+import { Awaitable, License, ProductInfo } from "../../api/dist/ontotext-workbench-api.d";
 import { DropdownItem } from "./models/dropdown/dropdown-item";
 import { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 import { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
 import { NavbarToggledEvent } from "./components/onto-navbar/navbar-toggled-event";
 import { TranslationParameter } from "./models/translation/translation-parameter";
-export { Awaitable, License } from "../../api/dist/ontotext-workbench-api.d";
+export { Awaitable, License, ProductInfo } from "../../api/dist/ontotext-workbench-api.d";
 export { DropdownItem } from "./models/dropdown/dropdown-item";
 export { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 export { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
@@ -61,6 +61,11 @@ export namespace Components {
          */
         "tooltipTheme": string;
     }
+    /**
+     * OntoFooter component for rendering the footer of the application.
+     * This component displays information about GraphDB, RDF4J, Connectors, and Workbench versions,
+     * as well as copyright information.
+     */
     interface OntoFooter {
     }
     /**
@@ -110,6 +115,12 @@ export namespace Components {
           * @returns A Promise that resolves when the license update is complete.
          */
         "updateLicense": (license: License) => Promise<void>;
+        /**
+          * Updates the product information in the context.  This method uses the ProductInfoContextService to update the product information and returns a resolved Promise once the operation is complete.
+          * @param productInfo - The new ProductInfo object to be set.
+          * @returns A Promise that resolves when the product information update is complete.
+         */
+        "updateProductInfo": (productInfo: ProductInfo) => Promise<void>;
     }
     interface OntoTooltip {
     }
@@ -165,6 +176,11 @@ declare global {
         prototype: HTMLOntoDropdownElement;
         new (): HTMLOntoDropdownElement;
     };
+    /**
+     * OntoFooter component for rendering the footer of the application.
+     * This component displays information about GraphDB, RDF4J, Connectors, and Workbench versions,
+     * as well as copyright information.
+     */
     interface HTMLOntoFooterElement extends Components.OntoFooter, HTMLStencilElement {
     }
     var HTMLOntoFooterElement: {
@@ -316,6 +332,11 @@ declare namespace LocalJSX {
          */
         "tooltipTheme"?: string;
     }
+    /**
+     * OntoFooter component for rendering the footer of the application.
+     * This component displays information about GraphDB, RDF4J, Connectors, and Workbench versions,
+     * as well as copyright information.
+     */
     interface OntoFooter {
     }
     /**
@@ -410,6 +431,11 @@ declare module "@stencil/core" {
              * internationalization.
              */
             "onto-dropdown": LocalJSX.OntoDropdown & JSXBase.HTMLAttributes<HTMLOntoDropdownElement>;
+            /**
+             * OntoFooter component for rendering the footer of the application.
+             * This component displays information about GraphDB, RDF4J, Connectors, and Workbench versions,
+             * as well as copyright information.
+             */
             "onto-footer": LocalJSX.OntoFooter & JSXBase.HTMLAttributes<HTMLOntoFooterElement>;
             /**
              * OntoHeader component for rendering the header of the application.

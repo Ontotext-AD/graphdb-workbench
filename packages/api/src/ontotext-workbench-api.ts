@@ -7,6 +7,7 @@ export * from './models/events';
 export * from './models/security';
 export * from './models/license';
 export * from './models/common';
+export * from './models/product-info';
 
 // Export providers for external usages.
 export * from './providers';
@@ -18,6 +19,7 @@ export * from './services/repository-location';
 export {AuthenticationService} from './services/security/authentication.service';
 export {EventEmitter} from './emitters/event.emitter';
 export * from './services/license';
+export * from './services/product-info';
 
 // Export utils for external usages.
 export * from './services/utils';

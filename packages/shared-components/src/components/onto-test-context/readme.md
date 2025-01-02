@@ -30,6 +30,25 @@ Type: `Promise<void>`
 
 A Promise that resolves when the license update is complete.
 
+### `updateProductInfo(productInfo: ProductInfo) => Promise<void>`
+
+Updates the product information in the context.
+
+This method uses the ProductInfoContextService to update the product information
+and returns a resolved Promise once the operation is complete.
+
+#### Parameters
+
+| Name          | Type          | Description                             |
+| ------------- | ------------- | --------------------------------------- |
+| `productInfo` | `ProductInfo` | - The new ProductInfo object to be set. |
+
+#### Returns
+
+Type: `Promise<void>`
+
+A Promise that resolves when the product information update is complete.
+
 
 ----------------------------------------------
 
