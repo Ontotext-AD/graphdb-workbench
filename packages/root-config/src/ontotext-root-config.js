@@ -16,7 +16,14 @@ import 'font-awesome/css/font-awesome.min.css';
 import './styles/onto-stylesheet.css';
 // import "./styles/bootstrap-graphdb-theme.css";
 import { defineCustomElements } from '../../shared-components/loader';
-import { ServiceProvider, LicenseService, LicenseContextService, TranslationService } from '@ontotext/workbench-api';
+import {
+  ServiceProvider,
+  LicenseService,
+  LicenseContextService,
+  TranslationService,
+  ProductInfoService,
+  ProductInfoContextService
+} from '@ontotext/workbench-api';
 
 addErrorHandler((err) => {
   console.error(err);
@@ -79,6 +86,13 @@ const loadLicense = () => {
   });
 };
 
+const loadProductInfoLocal = () => {
+  ServiceProvider.get(ProductInfoService).getProductInfoLocal()
+    .then(productInfo => {
+      ServiceProvider.get(ProductInfoContextService).updateProductInfo(productInfo);
+    }).catch(error => console.error('Could not load local product info', error));
+};
+
 // This is a workaround to initialize the navbar when the root-config is loaded and the navbar is not yet initialized.
 const waitForNavbarElement = () => {
   return new Promise((resolve, reject) => {
@@ -108,6 +122,7 @@ const registerSingleSpaFirstMountListener = () => {
     window.addEventListener('single-spa:first-mount', () => {
       initializeNavbar();
       loadLicense();
+      loadProductInfoLocal();
     });
   }
 };

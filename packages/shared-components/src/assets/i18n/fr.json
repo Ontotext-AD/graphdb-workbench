@@ -101,5 +101,10 @@
   "license_alert": {
     "label": "Aucune licence valide",
     "no_license_set": "Aucune licence n'a été définie."
+  },
+  "footer": {
+    "label": {
+      "all_rights_reserved": "Tous droits réservés."
+    }
   }
 }

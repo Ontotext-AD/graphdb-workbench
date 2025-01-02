@@ -98,5 +98,10 @@
   "license_alert": {
     "label": "No valid license",
     "no_license_set": "No license was set."
+  },
+  "footer": {
+    "label": {
+      "all_rights_reserved": "All rights reserved."
+    }
   }
 }

@@ -19,7 +19,7 @@ export class LicenseContextService extends ContextService {
 
   /**
    * Subscribes to changes in the license context
-   * .
+   *
    * @param callbackFn - A callback function that will be called when the license changes.
    * The callback receives the updated License object or undefined as its parameter.
    * @returns A function that, when called, will unsubscribe from the license changes.

@@ -1,6 +1,5 @@
 import { Component, Host, h, State } from '@stencil/core';
-import { ServiceProvider, LicenseContextService, License } from '@ontotext/workbench-api'
-import { SubscriptionList } from '../../../../api/src/models/common/subscription-list';
+import { ServiceProvider, LicenseContextService, License, SubscriptionList } from '@ontotext/workbench-api'
 
 /**
  * OntoHeader component for rendering the header of the application.
