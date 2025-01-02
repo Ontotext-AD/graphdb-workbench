@@ -15,3 +15,12 @@ window.singleSpa = {
 const updateLicense = (license) => {
   testContext.updateLicense(license);
 }
+
+const loadProductInfo = () => {
+  testContext.updateProductInfo({
+    workbench: '2.8.0',
+    sesame: '4.3.15',
+    connectors: '16.2.13-RC2',
+    productVersion: '11.0-SNAPSHOT'
+  });
+};
