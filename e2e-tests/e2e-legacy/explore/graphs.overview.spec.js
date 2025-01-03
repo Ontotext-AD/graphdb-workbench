@@ -112,7 +112,7 @@ describe('Graphs overview screen validation', () => {
     });
 
     it('Delete graph', () => {
-        let graphToDelete = 'urn:9';
+        const graphToDelete = 'urn:9';
         cy.get(`${EXPORT_GRAPHS_TABLE_ID} tbody a[title="${graphToDelete}"]`)
             .closest('tr').find('.delete-graph-btn').click();
         confirmDelete();

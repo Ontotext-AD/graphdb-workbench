@@ -12,7 +12,7 @@ const QUERY_EXPAND_NODE = `# Note that ?node is the node you clicked and must be
 describe('Graphs config', () => {
 
     let repositoryId = 'graphRepo' + Date.now();
-    let graphConfigName = 'graph-config';
+    const graphConfigName = 'graph-config';
 
     before(() => {
         cy.clearLocalStorage('ls.graphs-viz');
