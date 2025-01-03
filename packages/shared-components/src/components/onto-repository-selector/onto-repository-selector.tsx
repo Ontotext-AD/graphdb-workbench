@@ -88,7 +88,7 @@ export class OntoRepositorySelector {
   private loadRepositories(): void {
     this.repositoryService.getRepositories()
       .then((repositories) => {
-        this.repositoryContextService.updateRepositories(repositories);
+        this.repositoryContextService.updateRepositoryList(repositories);
         const repositoryId = undefined;
         const location = undefined;
         const repository = repositories.findRepository(repositoryId, location);

@@ -1,5 +1,5 @@
 import {Repository} from './repository';
-import {ModelList} from '../common/model-list';
+import {ModelList} from '../common';
 
 const REPOSITORY_LOCATION_ID_COMPARATOR = (r1: Repository, r2: Repository) => {
   // Compare locations.

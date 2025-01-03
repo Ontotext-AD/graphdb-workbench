@@ -47,7 +47,7 @@ describe('RepositoryContextService', () => {
     // When I register a callback function for repository changes,
     repositoryContextService.onRepositoriesChanged(onRepositoriesChangedCallbackFunction);
     // and the repositories are updated,
-    repositoryContextService.updateRepositories(newRepositories);
+    repositoryContextService.updateRepositoryList(newRepositories);
 
     // Then I expect the callback function to be called with the passed repositories,
     expect(onRepositoriesChangedCallbackFunction).toHaveBeenLastCalledWith(newRepositories);
