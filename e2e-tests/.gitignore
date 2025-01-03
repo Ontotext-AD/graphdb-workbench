@@ -1,0 +1,6 @@
+# Dev specific
+report/
+logs/
+cypress/
+test-cypress/logs/
+.downloads
