@@ -1,21 +1,30 @@
-import {ContextService} from '../context/context.service';
+import {ContextService} from '../context';
 import {ValueChangeCallback} from '../../models/context/value-change-callback';
 import {RepositoryLocation} from '../../models/repository-location';
+import {DeriveContextServiceContract} from '../../models/context/update-context-method';
+
+type RepositoryLocationContextFields = {
+  readonly ACTIVE_REPOSITORY_LOCATION: string;
+}
+
+type RepositoryLocationContextFieldParams = {
+  readonly ACTIVE_REPOSITORY_LOCATION: RepositoryLocation;
+};
 
 /**
  * The RepositoryLocationContextService class manages the application's repository location context.
  */
-export class RepositoryLocationContextService extends ContextService {
+export class RepositoryLocationContextService extends ContextService<RepositoryLocationContextFields> implements DeriveContextServiceContract<RepositoryLocationContextFields, RepositoryLocationContextFieldParams> {
 
-  private static readonly ACTIVE_REPOSITORY_LOCATION = 'activeRepositoryLocation';
+  readonly ACTIVE_REPOSITORY_LOCATION = 'activeRepositoryLocation';
 
   /**
    * Updates the active repository location and notifies subscribers about the change.
    *
    * @param repositoryLocation - The repository location to set as active.
    */
-  updateActiveLocation(repositoryLocation: RepositoryLocation): void {
-    this.updateContextProperty(RepositoryLocationContextService.ACTIVE_REPOSITORY_LOCATION, repositoryLocation);
+  updateActiveRepositoryLocation(repositoryLocation: RepositoryLocation): void {
+    this.updateContextProperty(this.ACTIVE_REPOSITORY_LOCATION, repositoryLocation);
   }
 
   /**
@@ -25,6 +34,6 @@ export class RepositoryLocationContextService extends ContextService {
    * @returns A function to unsubscribe from notifications.
    */
   onActiveLocationChanged(callbackFunction: ValueChangeCallback<RepositoryLocation | undefined>): () => void {
-    return this.subscribe(RepositoryLocationContextService.ACTIVE_REPOSITORY_LOCATION, callbackFunction);
+    return this.subscribe(this.ACTIVE_REPOSITORY_LOCATION, callbackFunction);
   }
 }

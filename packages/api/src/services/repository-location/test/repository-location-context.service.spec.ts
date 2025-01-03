@@ -15,7 +15,7 @@ describe('RepositoryLocationContextService', () => {
     // When I register a callback function for active location changes,
     repositoryLocationContextService.onActiveLocationChanged(onActiveLocationChangedCallbackFunction);
     // and the active repository location is updated,
-    repositoryLocationContextService.updateActiveLocation(newRepositoryLocation);
+    repositoryLocationContextService.updateActiveRepositoryLocation(newRepositoryLocation);
 
     // Then I expect the callback function to be called with the passed repository location.
     expect(onActiveLocationChangedCallbackFunction).toHaveBeenLastCalledWith(newRepositoryLocation);

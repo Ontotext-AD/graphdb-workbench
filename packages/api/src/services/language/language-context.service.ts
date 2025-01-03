@@ -1,12 +1,19 @@
-import {ContextService} from '../context/context.service';
+import {ContextService} from '../context';
 import {ValueChangeCallback} from '../../models/context/value-change-callback';
+import {ServiceProvider} from '../../providers';
+import {LanguageStorageService} from './language-storage.service';
+import {LanguageService} from './language.service';
+import {DeriveContextServiceContract} from '../../models/context/update-context-method';
+
+type LanguageContextFields = {
+  readonly SELECTED_LANGUAGE: string;
+}
 
 /**
  * The LanguageService class manages the application's language context.
  */
-export class LanguageContextService extends ContextService {
-
-  private static readonly SELECTED_LANGUAGE = 'selectedLanguage';
+export class LanguageContextService extends ContextService<LanguageContextFields> implements DeriveContextServiceContract<LanguageContextFields> {
+  readonly SELECTED_LANGUAGE = 'selectedLanguage';
 
   /**
    * Changes the selected language of the application. This method updates the selected language and notifies
@@ -15,8 +22,10 @@ export class LanguageContextService extends ContextService {
    * @param {string} locale - The new language code to set (e.g., 'en', 'fr', 'de').
    */
   updateSelectedLanguage(locale: string | undefined): void {
-    // TODO save it to local store.
-    this.updateContextProperty(LanguageContextService.SELECTED_LANGUAGE, locale);
+    const selectedLanguage = locale || LanguageService.DEFAULT_LANGUAGE;
+    const storageService = ServiceProvider.get(LanguageStorageService);
+    storageService.set(this.SELECTED_LANGUAGE, selectedLanguage);
+    this.updateContextProperty(this.SELECTED_LANGUAGE, locale);
   }
 
   /**
@@ -27,6 +36,6 @@ export class LanguageContextService extends ContextService {
    * @returns A function to unsubscribe from updates.
    */
   onSelectedLanguageChanged(callbackFunction: ValueChangeCallback<string | undefined>): () => void {
-    return this.subscribe(LanguageContextService.SELECTED_LANGUAGE, callbackFunction);
+    return this.subscribe(this.SELECTED_LANGUAGE, callbackFunction);
   }
 }

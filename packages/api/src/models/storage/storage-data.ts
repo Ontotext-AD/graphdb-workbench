@@ -15,12 +15,26 @@ export class StorageData {
     this.value = value;
   }
 
+  /**
+   * Returns the value as a string or null if the value is null.
+   * @returns The value as a string or null if the value is null.
+   */
   getValue(): string | null {
     return this.value;
   }
 
   /**
+   * Returns the value as a string or the default value if the value is null.
+   * @param defaultValue The default value to return if the value is null.
+   * @returns The value as a string or the default value if the value is null.
+   */
+  getValueOrDefault(defaultValue: string): string {
+    return this.value || defaultValue;
+  }
+
+  /**
    * Returns the value as a JSON object or null if the value is not a valid JSON. Conversion is done using JSON.parse.
+   * @returns The value as a JSON object or null if the value is not a valid JSON.
    */
   getAsJson(): unknown {
     if (this.value === null) {

@@ -2,6 +2,7 @@ import {Component, Host, h, Listen, Element, State} from '@stencil/core';
 import {NavbarToggledEvent} from "../onto-navbar/navbar-toggled-event";
 import {debounce} from "../../utils/function-utils";
 import {WINDOW_WIDTH_FOR_COLLAPSED_NAVBAR} from "../../models/constants";
+import {ServiceProvider, LocalStorageSubscriptionHandlerService} from "@ontotext/workbench-api";
 
 @Component({
   tag: 'onto-layout',
@@ -59,6 +60,11 @@ export class OntoLayout {
     }
   }
 
+  private handleStorageChange(event: StorageEvent) {
+    const service = ServiceProvider.get(LocalStorageSubscriptionHandlerService);
+    service.handleStorageChange(event);
+  }
+
   // ========================
   // Lifecycle methods
   // ========================
@@ -70,6 +76,11 @@ export class OntoLayout {
   componentWillLoad() {
     let route = window.location.pathname;
     this.currentRoute  = route.replace('/', '').split('/')[0];
+    window.addEventListener("storage", this.handleStorageChange);
+  }
+
+  disconnectedCallback() {
+    window.removeEventListener("storage", this.handleStorageChange);
   }
 
   render() {

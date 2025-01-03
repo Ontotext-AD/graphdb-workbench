@@ -5,15 +5,16 @@ import {Service} from '../../providers/service/service';
 /**
  * Abstract service that manages the context for various properties and allows for value retrieval, updates
  * and subscriptions to value changes.
+ * The service is generic and requires a type parameter that defines the fields that the service can handle.
+ * The fields are defined as properties of the service class and are used to access the context values.
  */
-export abstract class ContextService implements Service {
-
+export abstract class ContextService<TFields extends Record<string, unknown>> implements Service {
   /**
    * A map that stores the context for each property, keyed by property name.
    * The context holds the value and the list of subscribers (callback functions).
    */
   // eslint-disable-next-line @typescript-eslint/consistent-generic-constructors, @typescript-eslint/no-explicit-any
-  private context: Map<string, ValueContext<any>> = new Map();
+  protected context: Map<string, ValueContext<any>> = new Map();
 
   /**
    * Updates the value of a specific property.
@@ -23,7 +24,7 @@ export abstract class ContextService implements Service {
    *
    * @template T The type of the value to be set.
    */
-  protected updateContextProperty<T>(propertyName: string, value: T): void {
+  updateContextProperty<T>(propertyName: string, value: T): void {
     this.getOrCreateValueContext(propertyName).setValue(value);
   }
 
@@ -78,5 +79,22 @@ export abstract class ContextService implements Service {
       this.context.set(propertyName, valueContext);
     }
     return valueContext;
+  }
+
+  /**
+   * Finds out if particular implementation of the ContextService contains a field with the given name. This can be used
+   * to determine if the service can handle a specific field.
+   * This method uses the keys of the TFields type to check if the field exists because all fields that the service can
+   * handle are defined in the TFields type.
+   * @param fieldName The name of the field to check.
+   */
+  canHandle(fieldName: string): boolean {
+    // Iterate over all keys of TFields
+    for (const key in this as unknown as TFields) {
+      if ((this as never)[key] === fieldName) {
+        return true;
+      }
+    }
+    return false;
   }
 }
