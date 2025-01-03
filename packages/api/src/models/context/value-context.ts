@@ -1,6 +1,6 @@
 import {ObjectUtil} from '../../services/utils';
 import {ValueChangeCallback} from './value-change-callback';
-import {Copyable} from '../common/copyable';
+import {Copyable} from '../common';
 
 /**
  * ValueContext is a generic class for managing a value of type T. It provides functionality to set and retrieve the value,
@@ -53,7 +53,6 @@ export class ValueContext<T> {
    */
   subscribe(callbackFunction: ValueChangeCallback<T | undefined>): () => void {
     this.callbackFunctions.push(callbackFunction);
-
     return () => {
       this.callbackFunctions = this.callbackFunctions.filter(fn => fn !== callbackFunction);
     };
