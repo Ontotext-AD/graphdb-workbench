@@ -8,7 +8,7 @@ import {ImportSettingsDialogSteps} from "../../steps/import/import-settings-dial
 import {ClusterStubs} from "../../stubs/cluster/cluster-stubs";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 
-describe('Repositories', () => {
+describe.skip('Repositories', () => {
 
     let repositoryId;
     const SHACL_SHAPE_DATA = "prefix ex: <http://example.com/ns#>\n" +

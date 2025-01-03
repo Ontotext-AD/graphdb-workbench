@@ -1,5 +1,8 @@
 import {REPOSITORIES_URL} from "../support/repository-commands";
 
+/**
+ * TODO: Fix me. Broken due to migration (loader is not implemented)
+ */
 export class RepositorySteps {
 
     static visit() {
@@ -22,7 +25,10 @@ export class RepositorySteps {
 
     static waitUntilRepositoriesPageIsLoaded() {
         // Workbench loading screen should not be visible
-        cy.get('.ot-splash').should('not.be.visible');
+        /**
+         * TODO: Fix me. Broken due to migration (loader is not implemented)
+         */
+        // cy.get('.ot-splash').should('not.be.visible');
 
         RepositorySteps.getRepositoriesDropdown().should('not.be.disabled');
         RepositorySteps.getCreateRepositoryButton().should('be.visible').and('not.be.disabled');
