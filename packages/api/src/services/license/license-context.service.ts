@@ -1,20 +1,29 @@
-import { License } from '../../models/license';
-import { ValueChangeCallback } from '../../models/context/value-change-callback';
-import { ContextService } from '../context/context.service';
+import {License} from '../../models/license';
+import {ValueChangeCallback} from '../../models/context/value-change-callback';
+import {ContextService} from '../context';
+import {DeriveContextServiceContract} from '../../models/context/update-context-method';
+
+type LicenseContextFields = {
+  readonly GRAPHDB_LICENSE: string;
+}
+
+type LicenseContextFieldParams = {
+  readonly GRAPHDB_LICENSE: License;
+};
 
 /**
  * Service for managing license context in the application.
  * Extends the base ContextService to provide license-specific functionality.
  */
-export class LicenseContextService extends ContextService {
-  private static readonly GRAPHDB_LICENSE = 'graphDbLicense';
+export class LicenseContextService extends ContextService<LicenseContextFields> implements DeriveContextServiceContract<LicenseContextFields, LicenseContextFieldParams> {
+  readonly GRAPHDB_LICENSE = 'graphDbLicense';
 
   /**
    * Updates the license information in the context.
    * @param license - The new License object to be set in the context.
    */
-  updateLicense(license: License): void {
-    this.updateContextProperty(LicenseContextService.GRAPHDB_LICENSE, license);
+  updateGraphdbLicense(license: License | undefined): void {
+    this.updateContextProperty(this.GRAPHDB_LICENSE, license);
   }
 
   /**
@@ -25,6 +34,6 @@ export class LicenseContextService extends ContextService {
    * @returns A function that, when called, will unsubscribe from the license changes.
    */
   onLicenseChanged(callbackFn: ValueChangeCallback<License | undefined>): () => void {
-    return this.subscribe(LicenseContextService.GRAPHDB_LICENSE, callbackFn);
+    return this.subscribe(this.GRAPHDB_LICENSE, callbackFn);
   }
 }
