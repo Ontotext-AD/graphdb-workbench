@@ -15,7 +15,7 @@ describe('LicenseContextService', () => {
     licenseContextService.onLicenseChanged(mockCallback);
 
     // When updating the license
-    licenseContextService.updateLicense(newLicense);
+    licenseContextService.updateGraphdbLicense(newLicense);
 
     // Then the context should be updated and subscribers notified
     expect(mockCallback).toHaveBeenLastCalledWith(newLicense);
@@ -33,7 +33,7 @@ describe('LicenseContextService', () => {
     unsubscribe();
 
     // Then the context should not receive updates
-    licenseContextService.updateLicense(newLicense);
+    licenseContextService.updateGraphdbLicense(newLicense);
     expect(mockCallback).not.toHaveBeenCalled();
   });
 });
