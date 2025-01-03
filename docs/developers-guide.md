@@ -15,6 +15,8 @@
   - [Key Benefits](#key-benefits)
   - [How It Works](#how-it-works)
   - [How to Add a New Language](#how-to-add-a-new-language)
+- [CI](#ci) 
+- [Release](#release)
 
 ## Stateful Context services and Context API implementation in GraphDB Workbench
 
@@ -846,3 +848,175 @@ module.exports = {
    (currently `dist/onto-i18n`) folder to verify that all translations are included and correctly merged.
 5. Listen for bundle changes in the new module, using [language-context.service.ts#onLanguageBundleChanged](packages/api/src/services/language/language-context.service.ts)
 6. Use the new bundle for module translation (may be different, depending on the module).
+
+# CI
+
+## Jenkins Pipeline Documentation
+
+This pipeline automates the build, test, and deployment process for the `graphdb-workbench` project.
+
+### Overview
+
+The pipeline is configured to execute the following steps:
+- Install dependencies
+- Build the project
+- Run linting and tests
+- Perform SonarQube analysis
+- Execute Cypress tests for shared components and the Workbench
+
+---
+
+### Important
+
+If new static folders are created in the `dist` folder to be published (or old ones are renamed), they must be added to the BE Spring Security configuration. Failure to do so will prevent the server from serving these resources, causing the Workbench to malfunction.
+
+---
+
+### Pipeline Details
+
+#### Agent
+The pipeline uses the `env.AGENT` variable to specify the build node.
+
+#### Tools
+- Node.js version `20.11.1`
+
+#### Stages
+
+1. **Build Info**  
+   Logs the build agent and branch details.
+
+2. **Install**  
+   Installs project dependencies using:
+   ```bash
+   docker-compose run --rm npm run install:ci
+   ```
+
+3. **Build**  
+   Builds the project using:
+   ```bash
+   docker-compose run --rm npm run build
+   ```
+
+4. **Lint**  
+   Runs linting checks to ensure code quality:
+   ```bash
+   docker-compose run --rm npm run lint
+   ```
+
+5. **Test**  
+   Executes unit and integration tests:
+   ```bash
+   docker-compose run --rm npm run test
+   ```
+
+6. **Shared-components Cypress Test**  
+   Runs Cypress tests for shared components:
+   ```bash
+   sudo chown -R $(id -u):$(id -g) .
+   npm run cy:run
+   ```
+
+7. **Workbench Cypress Test**  
+   Executes Workbench-specific Cypress tests (excluding the `master` branch):
+   ```bash
+   docker-compose --no-ansi -f docker-compose-test.yaml build --force-rm --no-cache --parallel
+   docker-compose --no-ansi -f docker-compose-test.yaml up --abort-on-container-exit --exit-code-from cypress
+   ```
+
+8. **Sonar**  
+   Analyzes code quality with SonarQube:
+   ```bash
+   npm run sonar
+   ```
+
+---
+
+### Notifications
+Failure notifications are sent to the user who triggered the build.
+
+---
+
+# Release
+
+## Jenkins Release Pipeline Documentation
+
+This Jenkins pipeline facilitates the release process for the `graphdb-workbench` project. It automates versioning, building, and publishing to npm, ensuring a smooth release workflow.
+
+### Overview
+
+The pipeline includes the following steps:
+- Prepare the release: switch branches, update versions, install dependencies, and build the project.
+- Publish to npm: publish the project and Cypress tests to the npm registry.
+- Post-release: commit and tag the release in Git.
+
+---
+
+### Pipeline Details
+
+#### Agent
+The pipeline runs on the `graphdb-jenkins-node`.
+
+#### Tools
+- Node.js version `20.11.1`
+
+#### Parameters
+
+1. **Branch**: The branch to check out for the release process.
+- Default: `master`
+- Quick filtering is enabled.
+2. **ReleaseVersion**: The version to release (must be provided).
+
+---
+
+### Stages
+
+#### 1. **Prepare**
+- Checks out the specified branch.
+- Updates the version using `npm version`.
+- Installs dependencies and builds the project:
+  ```bash
+  npm run install:ci
+  npm run build
+  ```
+
+#### 2. **Publish**
+- Publishes the project and Cypress tests to the npm registry:
+  ```bash
+  echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc && npm publish
+  ```
+
+---
+
+### Post Actions
+
+#### Success
+- Commits the version changes to Git.
+- Tags the release and pushes both the changes and tags to the remote repository:
+  ```bash
+  git commit -a -m 'Release ${ReleaseVersion}'
+  git tag -a v${ReleaseVersion} -m 'Release v${ReleaseVersion}'
+  git push --set-upstream origin ${branch} && git push --tags
+  ```
+
+#### Failure
+- Sends an email notification to the user who triggered the build with details about the failure.
+
+#### Always
+- Resets `.npmrc` after publishing to ensure token security.
+---
+
+### Configuration
+
+1. **Jenkins Setup**:
+- Node.js tool configured (`nodejs-20.11.1`).
+- NPM token stored as a Jenkins credential (`npm-token`).
+
+2. **Environment Variables**:
+- `CI`: Used for CI mode.
+- `NODE_OPTIONS`: Set to `--openssl-legacy-provider` for compatibility.
+
+3. **Timeout and Concurrency**:
+- Builds are limited to a 15-minute timeout.
+- Concurrent builds are disabled.
+
+---

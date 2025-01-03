@@ -1,0 +1,65 @@
+version: '3.3'
+
+services:
+  graphdb:
+    image: docker-registry.ontotext.com/graphdb:${GDB_VERSION}
+    environment:
+      GDB_JAVA_OPTS: >-
+        -Dgraphdb.workbench.importDirectory=/opt/home/import-data/
+        -Dgraphdb.jsonld.whitelist=https://w3c.github.io/json-ld-api/tests/*
+        -Dgraphdb.stats.default=disabled
+        -Dgraphdb.foreground=
+        -Dgraphdb.logger.root.level=ERROR
+    ports:
+      - '7200:7200'
+    volumes:
+      - ./e2e-tests/fixtures/graphdb-import:/opt/home/import-data/
+    networks:
+      - single-spa-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f -H 'Accept: text/html' ${GRAPHDB_URL}/index.html"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  workbench:
+    build:
+      context: .
+      dockerfile: root-config.Dockerfile
+    environment:
+      GRAPHDB_URL: ${GRAPHDB_URL}
+      WORKBENCH_PORT: ${WORKBENCH_PORT}
+    depends_on:
+      - graphdb
+    ports:
+      - ${WORKBENCH_PORT}
+    networks:
+      - single-spa-network
+    healthcheck:
+      test: ["CMD-SHELL", "apk add --no-cache curl && curl -f -H 'Accept: */*' http://workbench:${WORKBENCH_PORT}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  cypress:
+    image: cypress/included:13.17.0
+    depends_on:
+      - workbench
+    environment:
+      # Uncomment these lines if needed for Cypress tests
+      # - DISPLAY
+      # - DBUS_SESSION_BUS_ADDRESS=/dev/null
+      - CYPRESS_baseUrl=http://workbench:${WORKBENCH_PORT}
+      - NO_COLOR=true
+    working_dir: /e2e
+    volumes:
+      - ./e2e-tests:/e2e
+      # Uncomment this if using a graphical interface for Cypress
+      # - /tmp/.X11-unix:/tmp/.X11-unix
+    entrypoint: ["cypress", "run", "--config-file", "cypress-legacy.config.js"]
+    networks:
+      - single-spa-network
+
+networks:
+  single-spa-network:
+    driver: bridge
