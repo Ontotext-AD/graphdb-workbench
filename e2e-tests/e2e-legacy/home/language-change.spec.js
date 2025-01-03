@@ -42,4 +42,4 @@ describe('Home screen language validation', () => {
             HomeSteps.getLicenseAsLabel().should('have.text', 'Licence');
         });
     });
-})
+});
