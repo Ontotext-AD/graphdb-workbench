@@ -1,14 +1,25 @@
-import {ContextService} from '../context/context.service';
+import {ContextService} from '../context';
 import {Repository, RepositoryList} from '../../models/repositories';
 import {ValueChangeCallback} from '../../models/context/value-change-callback';
+import {DeriveContextServiceContract} from '../../models/context/update-context-method';
+
+type RepositoryContextFields = {
+  readonly SELECTED_REPOSITORY: string;
+  readonly REPOSITORY_LIST: string;
+}
+
+type RepositoryContextFieldParams = {
+  readonly SELECTED_REPOSITORY: Repository;
+  readonly REPOSITORY_LIST: RepositoryList;
+};
 
 /**
  * The RepositoryContextService class manages the application's repository context.
  */
-export class RepositoryContextService extends ContextService {
+export class RepositoryContextService extends ContextService<RepositoryContextFields> implements DeriveContextServiceContract<RepositoryContextFields, RepositoryContextFieldParams> {
 
-  private static readonly UPDATE_SELECTED_REPOSITORY = 'selectedRepository';
-  private static readonly UPDATE_REPOSITORY_LIST = 'repositoryList';
+  readonly SELECTED_REPOSITORY = 'selectedRepository';
+  readonly REPOSITORY_LIST = 'repositoryList';
 
   /**
    * Updates the selected repository and notifies subscribers about the change.
@@ -16,7 +27,7 @@ export class RepositoryContextService extends ContextService {
    * @param repository - The new repository to set as selected.
    */
   updateSelectedRepository(repository: Repository | undefined): void {
-    this.updateContextProperty(RepositoryContextService.UPDATE_SELECTED_REPOSITORY, repository);
+    this.updateContextProperty(this.SELECTED_REPOSITORY, repository);
   }
 
   /**
@@ -26,16 +37,16 @@ export class RepositoryContextService extends ContextService {
    * @returns A function to unsubscribe from updates.
    */
   onSelectedRepositoryChanged(callbackFunction: ValueChangeCallback<Repository | undefined>): () => void {
-    return this.subscribe(RepositoryContextService.UPDATE_SELECTED_REPOSITORY, callbackFunction);
+    return this.subscribe(this.SELECTED_REPOSITORY, callbackFunction);
   }
 
   /**
-   * Updates the lsit with repositories and notifies subscribers about the change.
+   * Updates the list with repositories and notifies subscribers about the change.
    *
    * @param repositories - The new list with repositories.
    */
-  updateRepositories(repositories: RepositoryList): void {
-    return this.updateContextProperty(RepositoryContextService.UPDATE_REPOSITORY_LIST, repositories);
+  updateRepositoryList(repositories: RepositoryList): void {
+    return this.updateContextProperty(this.REPOSITORY_LIST, repositories);
   }
 
   /**
@@ -46,6 +57,6 @@ export class RepositoryContextService extends ContextService {
    * @returns A function to unsubscribe from updates.
    */
   onRepositoriesChanged(callbackFunction: ValueChangeCallback<RepositoryList | undefined>): () => void {
-    return this.subscribe(RepositoryContextService.UPDATE_REPOSITORY_LIST, callbackFunction);
+    return this.subscribe(this.REPOSITORY_LIST, callbackFunction);
   }
 }

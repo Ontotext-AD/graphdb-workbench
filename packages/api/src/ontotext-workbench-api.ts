@@ -14,6 +14,7 @@ export * from './models/storage';
 export * from './providers';
 
 // Export services for external usages.
+export * from './services/context';
 export * from './services/language';
 export * from './services/repository';
 export * from './services/repository-location';
