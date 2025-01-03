@@ -26,7 +26,7 @@ export class OntoTestContext {
    */
   @Method()
   updateLicense(license: License): Promise<void> {
-    ServiceProvider.get(LicenseContextService).updateLicense(license);
+    ServiceProvider.get(LicenseContextService).updateGraphdbLicense(license);
     return Promise.resolve();
   }
 
