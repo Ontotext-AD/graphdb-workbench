@@ -20,6 +20,26 @@ describe('LocalStorageService', () => {
     expect(storageService.getStorage().getItem(prefixedKey)).toBe(value);
   });
 
+  test('set should store a string value with a locally prefixed key', () => {
+    const storageService = new TestStorageService();
+    const key = 'domain.testKey';
+    const value = 'testValue';
+
+    storageService.set(key, value);
+
+    expect(storageService.getStorage().getItem(prefixedKey)).toBe(value);
+  });
+
+  test('set should store a string value with a globally and locally prefixed key', () => {
+    const storageService = new TestStorageService();
+    const key = 'ontotext.gdb.domain.testKey';
+    const value = 'testValue';
+
+    storageService.set(key, value);
+
+    expect(storageService.getStorage().getItem(prefixedKey)).toBe(value);
+  });
+
   test('get should retrieve a string value by an automatically prefixed key', () => {
     const storageService = new TestStorageService();
     const key = 'testKey';
@@ -70,12 +90,10 @@ describe('LocalStorageService', () => {
 });
 
 class TestStorageService extends LocalStorageService {
-  getLocalKey(key: string): string {
-    return 'domain.' + key;
-  }
+  readonly NAMESPACE = 'domain';
 
   set(key: string, value: string) {
-    this.storeValue(this.getLocalKey(key), value);
+    this.storeValue(key, value);
   }
 
   getStorage(): Storage {
