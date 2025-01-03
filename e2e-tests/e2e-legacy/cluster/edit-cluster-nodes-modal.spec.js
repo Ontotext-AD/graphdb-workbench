@@ -6,7 +6,6 @@ import {ClusterNodesConfigurationSteps} from "../../steps/cluster/custer-nodes-c
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 import {ApplicationSteps} from "../../steps/application-steps";
 
-
 describe('Cluster management', () => {
 
     let repositoryId;
