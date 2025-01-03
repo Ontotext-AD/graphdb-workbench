@@ -189,7 +189,7 @@ describe('My Settings', () => {
                     cy.get('#schema-on')
                         .find('input[type="checkbox"]')
                         .scrollIntoView()
-                        .then(input => input && input.attr('checked')));
+                        .then((input) => input && input.attr('checked')));
             });
     });
 
@@ -240,7 +240,7 @@ describe('My Settings', () => {
     function verifyUserSettingsUpdated() {
         cy.waitUntil(() =>
             cy.get('#toast-container')
-                .then(toast => toast && toast.text().includes('The user admin was updated')));
+                .then((toast) => toast && toast.text().includes('The user admin was updated')));
     }
 
     function saveGraphSettings() {
@@ -283,7 +283,7 @@ describe('My Settings', () => {
                     cy.get(btnId)
                         .find('input[type="checkbox"]')
                         .scrollIntoView()
-                        .then(input => input && input.attr('checked')));
+                        .then((input) => input && input.attr('checked')));
             });
     }
 });
