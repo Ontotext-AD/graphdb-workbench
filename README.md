@@ -5,8 +5,8 @@ The web application for GraphDB APIs
 ### Setup Environment
 
 * Clone the project or check it out from version control.
-* Open a terminal, navigate to the project's root directory, and run `npm install:ci` to install all required dependencies. 
-The `api` project is built automatically.
+* Open a terminal, navigate to the project's root directory, and run `npm install:ci` to install all required dependencies.
+  The `api` project is built automatically.
 
 ## Development
 
@@ -22,7 +22,6 @@ in watch mode and will proxy requests to a GraphDB instance running on `localhos
 ## Testing
 
 ### Acceptance/functional tests
-
 
 ## Release and publish
 
