@@ -14,17 +14,18 @@ install_package() {
     echo "########################   Installing -- ${description} --   ###########################"
     echo ''
 
-    npm ci --prefix "packages/${package}"
+    npm ci --prefix "${package}"
 
     handle_error "Installing ${description}"
 }
 
 # Install package dependencies
-install_package "legacy-workbench"
-install_package "root-config"
-install_package "workbench"
-install_package "api"
-install_package "shared-components"
+install_package "packages/legacy-workbench"
+install_package "packages/root-config"
+install_package "packages/workbench"
+install_package "packages/api"
+install_package "packages/shared-components"
+install_package "e2e-tests"
 
 echo ''
 echo '########################   Installing main project dependencies   ###########################'

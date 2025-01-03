@@ -25,6 +25,7 @@ clean_directory "packages/shared-components/www"
 
 clean_directory "packages/api/dist"
 clean_directory "packages/api/node_modules"
+clean_directory "packages/api/coverage"
 
 clean_directory "packages/workbench/dist"
 clean_directory "packages/workbench/node_modules"
@@ -35,6 +36,10 @@ clean_directory "packages/legacy-workbench/node_modules"
 
 clean_directory "packages/root-config/dist"
 clean_directory "packages/root-config/node_modules"
+
+clean_directory "e2e-tests/node_modules"
+clean_directory "e2e-tests/report"
+clean_directory "e2e-tests/cypress"
 
 clean_directory "node_modules"
 clean_directory "dist"
