@@ -14,5 +14,10 @@ module.exports = (config, options) => {
     delete singleSpaWebpackConfig.output.library;
   }
 
+  singleSpaWebpackConfig.output = {
+    ...singleSpaWebpackConfig.output,
+    filename: 'workbenchApp.js',
+  };
+
   return singleSpaWebpackConfig;
 };
