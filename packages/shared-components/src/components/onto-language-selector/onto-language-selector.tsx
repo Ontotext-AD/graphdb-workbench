@@ -1,6 +1,11 @@
 import {Component, Host, h, State, Prop} from '@stencil/core';
 import {DropdownItem} from '../../models/dropdown/dropdown-item';
-import {ServiceProvider, LanguageService, LanguageContextService} from "@ontotext/workbench-api";
+import {
+  ServiceProvider,
+  LanguageService,
+  LanguageContextService,
+  LanguageStorageService
+} from "@ontotext/workbench-api";
 import {DropdownItemAlignment} from '../../models/dropdown/dropdown-item-alignment';
 
 @Component({
@@ -12,7 +17,7 @@ export class OntoLanguageSelector {
   private languageService: LanguageService;
   private languageContextService: LanguageContextService;
   private items: DropdownItem<string>[] = [];
-  private readonly onLanguageChangeSubscription: () => void;
+  private onLanguageChangeSubscription: () => void;
 
   /**
    * Specifies the dropdown items' alignment. If not provided, the items and the dropdown button will be aligned to the left.
@@ -28,8 +33,8 @@ export class OntoLanguageSelector {
   constructor() {
     this.languageService = ServiceProvider.get(LanguageService);
     this.languageContextService = ServiceProvider.get(LanguageContextService);
-    // TODO read it from local store and pass it as first value
-    this.changeLanguage(LanguageService.DEFAULT_LANGUAGE);
+    const selectedLanguage = ServiceProvider.get(LanguageStorageService).get(this.languageContextService.SELECTED_LANGUAGE);
+    this.changeLanguage(selectedLanguage?.getValueOrDefault(LanguageService.DEFAULT_LANGUAGE));
     this.onLanguageChangeSubscription = this.languageContextService.onSelectedLanguageChanged((newLanguage) => this.changeLanguage(newLanguage));
     this.items = this.getLanguageDropdownOptions();
   }
