@@ -1,12 +1,21 @@
-import { ContextService } from '../context/context.service';
+import { ContextService } from '../context';
 import { ProductInfo } from '../../models/product-info';
 import { ValueChangeCallback } from '../../models/context/value-change-callback';
+import {DeriveContextServiceContract} from '../../models/context/update-context-method';
+
+type ProductInfoContextFields = {
+  readonly PRODUCT_INFO: string;
+};
+
+type ProductInfoContextFieldParams = {
+  readonly PRODUCT_INFO: ProductInfo;
+};
 
 /**
  * Service for managing product information context.
  */
-export class ProductInfoContextService extends ContextService {
-  private static readonly PRODUCT_INFO = 'productInfo';
+export class ProductInfoContextService extends ContextService<ProductInfoContextFields> implements DeriveContextServiceContract<ProductInfoContextFields, ProductInfoContextFieldParams> {
+  readonly PRODUCT_INFO = 'productInfo';
 
   /**
    * Updates the product information in the context.
@@ -14,7 +23,7 @@ export class ProductInfoContextService extends ContextService {
    * @param productInfo - The new ProductInfo object to be set in the context.
    */
   updateProductInfo(productInfo: ProductInfo): void {
-    this.updateContextProperty(ProductInfoContextService.PRODUCT_INFO, productInfo);
+    this.updateContextProperty(this.PRODUCT_INFO, productInfo);
   }
 
   /**
@@ -25,6 +34,6 @@ export class ProductInfoContextService extends ContextService {
    * @returns A function that, when called, will unsubscribe from the product information changes.
    */
   onProductInfoChanged(callbackFn: ValueChangeCallback<ProductInfo | undefined>): () => void {
-    return this.subscribe(ProductInfoContextService.PRODUCT_INFO, callbackFn);
+    return this.subscribe(this.PRODUCT_INFO, callbackFn);
   }
 }

@@ -1,19 +1,5 @@
 import {ContextService} from '../context.service';
-
-// Expose protected methods for testing
-class TestContextService extends ContextService {
-  public updateProperty<T>(propertyName: string, value: T): void {
-    this.updateContextProperty(propertyName, value);
-  }
-
-  public getProperty<T>(propertyName: string): T | undefined {
-    return this.getContextPropertyValue(propertyName);
-  }
-
-  public subscribeToProperty<T>(propertyName: string, callback: (value?: T) => void): () => void {
-    return this.subscribe(propertyName, callback);
-  }
-}
+import {DeriveContextServiceContract} from '../../../models/context/update-context-method';
 
 describe('ContextService', () => {
   let contextService: TestContextService;
@@ -113,4 +99,38 @@ describe('ContextService', () => {
     expect(secondCallBackFunction.mock.lastCall[0]).not.toBe(valueOfTestProperty);
     expect(firstCallBackFunction.mock.lastCall[0]).not.toBe(secondCallBackFunction.mock.lastCall[0]);
   });
+
+  it('canHandle should return false if the field name is not handled', () => {
+    const result = contextService.canHandle('nonExistentField');
+    expect(result).toBe(false);
+  });
 });
+
+type TestContextFields = {
+  readonly TEST_PROPERTY: 'testProperty';
+}
+
+type TestContextFieldParams = {
+  readonly TEST_PROPERTY: string;
+}
+
+// Expose protected methods for testing
+class TestContextService extends ContextService<TestContextFields> implements DeriveContextServiceContract<TestContextFields, TestContextFieldParams> {
+  readonly TEST_PROPERTY = 'testProperty';
+
+  updateTestProperty(value: string): void {
+    this.updateContextProperty(this.TEST_PROPERTY, value);
+  }
+
+  public updateProperty<T>(propertyName: string, value: T): void {
+    this.updateContextProperty(propertyName, value);
+  }
+
+  public getProperty<T>(propertyName: string): T | undefined {
+    return this.getContextPropertyValue(propertyName);
+  }
+
+  public subscribeToProperty<T>(propertyName: string, callback: (value?: T) => void): () => void {
+    return this.subscribe(propertyName, callback);
+  }
+}

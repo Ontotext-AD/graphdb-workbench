@@ -22,7 +22,8 @@ module.exports = tseslint.config(
             '@typescript-eslint/no-unused-vars': ['error'],
             'no-undef': 'off',
             '@typescript-eslint/no-empty-interface': 'off',
-            '@typescript-eslint/no-empty-object-type': 'off'
+            '@typescript-eslint/no-empty-object-type': 'off',
+            '@typescript-eslint/consistent-type-definitions': 'off',
         }
     }
 );
