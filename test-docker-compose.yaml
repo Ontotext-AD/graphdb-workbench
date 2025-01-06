@@ -1,0 +1,63 @@
+version: '3.2'
+
+services:
+    graphdb:
+        image: docker-registry.ontotext.com/graphdb:10.8.2-TR
+        environment:
+            GDB_JAVA_OPTS: >-
+                -Dgraphdb.workbench.importDirectory=/opt/home/import-data/
+                -Dgraphdb.jsonld.whitelist=https://w3c.github.io/json-ld-api/tests/*
+                -Dgraphdb.stats.default=disabled
+                -Dgraphdb.foreground=
+                -Dgraphdb.logger.root.level=ERROR
+        ports:
+            - "7200:7200"
+        volumes:
+            - ./e2e-tests/fixtures/graphdb-import:/opt/home/import-data/
+        networks:
+            - shared-network
+        healthcheck:
+            test: ["CMD-SHELL", "curl -f -H 'Accept: text/html' http://graphdb:7200/index.html"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+    workbench:
+        image: node:18-alpine
+        working_dir: /app
+        depends_on:
+            graphdb:
+                condition: service_healthy
+        ports:
+            - "9000:9000"
+            - "9002:9002"
+            - "9003:9003"
+        volumes:
+            - ./:/app
+        command: npm run start-test
+        networks:
+            - shared-network
+        healthcheck:
+            test: [ "CMD-SHELL", "apk add --no-cache curl && curl -f -H 'Accept: */*' http://workbench:9000/main.js" ]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+    cypress:
+        image: cypress/included
+        depends_on:
+            workbench:
+                condition: service_healthy
+        environment:
+            - CYPRESS_baseUrl=http://workbench:9000
+            - NO_COLOR=true
+        working_dir: /e2e
+        volumes:
+            - ./e2e-tests:/e2e
+        command: cypress run --config-file cypress-legacy.config.js
+        networks:
+            - shared-network
+
+networks:
+    shared-network:
+        driver: bridge
