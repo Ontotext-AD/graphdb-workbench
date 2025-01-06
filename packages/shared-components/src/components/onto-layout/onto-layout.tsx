@@ -26,6 +26,7 @@ export class OntoLayout {
   @Element() hostElement: HTMLOntoLayoutElement;
 
   @State() isLowResolution = false;
+  @State() hasPermission = true; // TODO get from local store
 
   /**
    * Event listener for the navbar toggled event. The layout needs to respond properly when the navbar is toggled in
@@ -86,6 +87,10 @@ export class OntoLayout {
   render() {
     return (
       <Host class="wb-layout">
+        {/* Default slot is explicitly defined to be able to hide the main content in the user permission check */}
+        <div class="default-slot-wrapper">
+          <slot name="default"></slot>
+        </div>
         <header class="wb-header">
           <onto-header></onto-header>
         </header>
@@ -94,8 +99,11 @@ export class OntoLayout {
           <onto-navbar navbar-collapsed={this.isLowResolution} selected-menu={this.currentRoute}></onto-navbar>
         </nav>
 
-        <slot name="main"></slot>
-
+        {
+          this.hasPermission ?
+            <slot name="main"></slot> :
+            <onto-permission-banner></onto-permission-banner>
+        }
         <footer class="wb-footer">
           <onto-footer></onto-footer>
         </footer>
