@@ -144,18 +144,17 @@
     </li>
 </ul>
 <div ng-cloak class="page-content">
-    <div class="container-fluid main-container" ng-if="!hasPermission()">
-        <p class="alert alert-danger">
-            {{'no.access.permission.to.functionality.error' | translate}}
-            <br>
-            {{'change.menu.or.user.warning' | translate}}
-        </p>
+  <div class="container-fluid main-container" ng-if="!hasPermission()">
+    <p class="alert alert-danger">
+      {{'no.access.permission.to.functionality.error' | translate}}
+      <br>
+      {{'change.menu.or.user.warning' | translate}}
+    </p>
+  </div>
+
+    <div class="container-fluid main-container" ng-show="hasPermission()" ng-view role="main"
+         ng-class="(menuCollapsed || checkMenu()) ? 'expanded':''">
     </div>
-
-        <div class="container-fluid main-container" ng-show="hasPermission()" ng-view role="main"
-             ng-class="(menuCollapsed || checkMenu()) ? 'expanded':''">
-
-        </div>
 
     <footer ng-show="showFooter" class="footer">
         <div class="container-fluid main-container">

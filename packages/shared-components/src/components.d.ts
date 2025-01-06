@@ -103,6 +103,8 @@ export namespace Components {
          */
         "selectedMenu": string;
     }
+    interface OntoPermissionBanner {
+    }
     interface OntoRepositorySelector {
     }
     /**
@@ -233,6 +235,12 @@ declare global {
         prototype: HTMLOntoNavbarElement;
         new (): HTMLOntoNavbarElement;
     };
+    interface HTMLOntoPermissionBannerElement extends Components.OntoPermissionBanner, HTMLStencilElement {
+    }
+    var HTMLOntoPermissionBannerElement: {
+        prototype: HTMLOntoPermissionBannerElement;
+        new (): HTMLOntoPermissionBannerElement;
+    };
     interface HTMLOntoRepositorySelectorElement extends Components.OntoRepositorySelector, HTMLStencilElement {
     }
     var HTMLOntoRepositorySelectorElement: {
@@ -278,6 +286,7 @@ declare global {
         "onto-layout": HTMLOntoLayoutElement;
         "onto-license-alert": HTMLOntoLicenseAlertElement;
         "onto-navbar": HTMLOntoNavbarElement;
+        "onto-permission-banner": HTMLOntoPermissionBannerElement;
         "onto-repository-selector": HTMLOntoRepositorySelectorElement;
         "onto-test-context": HTMLOntoTestContextElement;
         "onto-tooltip": HTMLOntoTooltipElement;
@@ -378,6 +387,8 @@ declare namespace LocalJSX {
          */
         "selectedMenu"?: string;
     }
+    interface OntoPermissionBanner {
+    }
     interface OntoRepositorySelector {
     }
     /**
@@ -415,6 +426,7 @@ declare namespace LocalJSX {
         "onto-layout": OntoLayout;
         "onto-license-alert": OntoLicenseAlert;
         "onto-navbar": OntoNavbar;
+        "onto-permission-banner": OntoPermissionBanner;
         "onto-repository-selector": OntoRepositorySelector;
         "onto-test-context": OntoTestContext;
         "onto-tooltip": OntoTooltip;
@@ -447,6 +459,7 @@ declare module "@stencil/core" {
             "onto-layout": LocalJSX.OntoLayout & JSXBase.HTMLAttributes<HTMLOntoLayoutElement>;
             "onto-license-alert": LocalJSX.OntoLicenseAlert & JSXBase.HTMLAttributes<HTMLOntoLicenseAlertElement>;
             "onto-navbar": LocalJSX.OntoNavbar & JSXBase.HTMLAttributes<HTMLOntoNavbarElement>;
+            "onto-permission-banner": LocalJSX.OntoPermissionBanner & JSXBase.HTMLAttributes<HTMLOntoPermissionBannerElement>;
             "onto-repository-selector": LocalJSX.OntoRepositorySelector & JSXBase.HTMLAttributes<HTMLOntoRepositorySelectorElement>;
             /**
              * A component for managing test context in the application. Used only for testing
