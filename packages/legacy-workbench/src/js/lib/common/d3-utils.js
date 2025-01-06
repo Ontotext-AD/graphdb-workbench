@@ -1,4 +1,10 @@
 import 'lib/d3.patch.js'
+import {dispatch, pointer} from 'd3';
+
+const d3 = {
+  dispatch,
+  pointer
+}
 
 var D3 = D3 || {};
 
