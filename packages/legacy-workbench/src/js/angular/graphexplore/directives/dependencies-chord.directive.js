@@ -1,5 +1,6 @@
 import SVG from 'lib/common/svg-export';
 import 'angular/rest/graph-data.rest.service';
+import * as d3 from 'd3';
 
 angular
     .module('graphdb.framework.graphexplore.directives.dependencies', [
