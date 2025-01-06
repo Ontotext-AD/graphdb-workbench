@@ -1,0 +1,28 @@
+:host {
+  display: block;
+}
+
+.permission-banner {
+  margin: 0 1rem;
+}
+
+.permission-banner-content {
+  display: flex;
+  align-items: center;
+  margin: 1rem;
+  padding: 0 2rem 3rem 2rem;
+}
+
+.label-container {
+  display: flex;
+  flex-direction: column;
+  margin-left: 1rem;
+}
+
+.icon-warning::before {
+  font-family: 'icomoon', sans-serif;
+  content: '\e920';
+  display: block;
+  font-size: 1.5em;
+  pointer-events: none;
+}
