@@ -30,12 +30,14 @@ Example of usage:
 
  - [onto-license-alert](../onto-license-alert)
  - [onto-navbar](../onto-navbar)
+ - [onto-permission-banner](../onto-permission-banner)
 
 ### Graph
 ```mermaid
 graph TD;
   onto-license-alert --> translate-label
   onto-navbar --> translate-label
+  onto-permission-banner --> translate-label
   style translate-label fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
