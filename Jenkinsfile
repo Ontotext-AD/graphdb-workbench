@@ -61,13 +61,31 @@ pipeline {
             }
         }
 
-        stage('Cypress Test') {
+        stage('Fix user rights') {
             steps {
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                     script {
-                        // Fix user rights
                         sh 'sudo chown -R $(id -u):$(id -g) .'
+                    }
+                }
+            }
+        }
+
+        stage('Shared-components Cypress Test') {
+            steps {
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                    script {
                         sh 'npm run cy:run'
+                    }
+                }
+            }
+        }
+
+         stage('Workbench Cypress Test') {
+            steps {
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                    script {
+                        sh 'docker-compose -f test-docker-compose.yaml up --abort-on-container-exit'
                     }
                 }
             }
