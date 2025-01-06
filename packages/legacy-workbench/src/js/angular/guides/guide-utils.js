@@ -1,3 +1,6 @@
+import {select} from 'd3';
+
+const d3 = {select};
 const GuideUtils = (function () {
     const clickOnElement = function (elementSelector) {
         return () => waitFor(elementSelector)
