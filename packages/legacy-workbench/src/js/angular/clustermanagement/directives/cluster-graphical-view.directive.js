@@ -4,7 +4,9 @@ import * as CDS from "../services/cluster-drawing.service";
 import {ARROW_CONFIG} from "../services/cluster-drawing.service";
 import {cloneDeep, isEmpty} from "lodash";
 import {CLICK_IN_VIEW, CREATE_CLUSTER, MODEL_UPDATED, NODE_SELECTED} from "../events";
+import {select} from 'd3';
 
+const d3 = {select};
 const navigationBarWidthFull = 240;
 const navigationBarWidthCollapsed = 70;
 let navigationBarWidth = navigationBarWidthFull;
