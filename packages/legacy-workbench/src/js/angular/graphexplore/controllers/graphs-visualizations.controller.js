@@ -3,6 +3,7 @@ import 'angular/core/services/workbench-context.service';
 import 'angular/core/services/rdf4j-repositories.service';
 import D3 from 'lib/common/d3-utils.js';
 import d3tip from 'lib/d3-tip/d3-tip-patch';
+import * as d3 from 'd3';
 import 'angular/utils/local-storage-adapter';
 import {NUMBER_PATTERN} from "../../repositories/repository.constants";
 import {removeSpecialChars} from "../../utils/string-utils";
@@ -419,6 +420,7 @@ function GraphsVisualizationsCtrl(
     const destroyHandler = () => {
         removeAllListeners();
         document.removeEventListener('keydown', handleKeyDown, true);
+        window.onpopstate = null;
     };
 
     // Deregister the watcher when the scope/directive is destroyed
@@ -436,6 +438,7 @@ function GraphsVisualizationsCtrl(
         if ($scope.embedded) {
             searchParams.embedded = true;
         }
+        state.skipOnPopState = true;
         $location.search(searchParams);
         $location.state(state);
     };
@@ -755,6 +758,12 @@ function GraphsVisualizationsCtrl(
 
     // Global
     $window.onpopstate = function (event) {
+        // Single spa triggers this event in some unwanted cases, for example, when displaying the Visual graph view.
+        // By adding skipOnPopState we can skip the execution, whenever we don't need it
+        if (event.state && event.state.skipOnPopState) {
+          return;
+        }
+
         resetState();
 
         if (event.state) {
