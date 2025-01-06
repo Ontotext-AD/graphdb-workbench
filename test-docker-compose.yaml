@@ -2,7 +2,7 @@ version: '3.2'
 
 services:
     graphdb:
-        image: docker-registry.ontotext.com/graphdb:10.8.2-TR
+        image: docker-registry.ontotext.com/graphdb:${GDB_VERSION}
         environment:
             GDB_JAVA_OPTS: >-
                 -Dgraphdb.workbench.importDirectory=/opt/home/import-data/
