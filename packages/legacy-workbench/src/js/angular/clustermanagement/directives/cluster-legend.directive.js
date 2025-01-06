@@ -2,7 +2,9 @@ import {CLUSTER_MANAGEMENT_CONSTANTS} from "../../models/clustermanagement/clust
 import * as CDS from "../services/cluster-drawing.service";
 import {LinkState} from "../../models/clustermanagement/states";
 import {ARROW_CONFIG} from "../services/cluster-drawing.service";
+import {select} from 'd3';
 
+const d3 = {select};
 const modules = [];
 angular.module('graphdb.framework.clustermanagement.directives.cluster-legend', modules)
     .directive('clusterLegend', clusterLegend);

@@ -1,5 +1,5 @@
 define(['d3'],
-    function() {
+    function(d3) {
         (function() {
 
         // Node/CommonJS - require D3

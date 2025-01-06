@@ -1,4 +1,9 @@
+import {select} from 'd3';
 import {NumberUtils} from "../../utils/number-utils";
+
+const d3 = {
+  select
+};
 
 const STATUS = {
     'WAIT': 'WAIT',
