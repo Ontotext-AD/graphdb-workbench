@@ -103,5 +103,9 @@
     "label": {
       "all_rights_reserved": "All rights reserved."
     }
+  },
+  "permission_banner": {
+    "no_access_error": "You have no permission to access this functionality with your current credentials.",
+    "change_menu_or_user_warning": "Please choose another menu item or login as a different user."
   }
 }

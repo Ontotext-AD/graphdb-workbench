@@ -11,6 +11,7 @@
 
 - [onto-header](../onto-header)
 - [onto-navbar](../onto-navbar)
+- [onto-permission-banner](../onto-permission-banner)
 - [onto-footer](../onto-footer)
 - [onto-tooltip](../onto-tooltip)
 
@@ -19,6 +20,7 @@
 graph TD;
   onto-layout --> onto-header
   onto-layout --> onto-navbar
+  onto-layout --> onto-permission-banner
   onto-layout --> onto-footer
   onto-layout --> onto-tooltip
   onto-header --> onto-license-alert
@@ -28,6 +30,7 @@ graph TD;
   onto-repository-selector --> onto-dropdown
   onto-language-selector --> onto-dropdown
   onto-navbar --> translate-label
+  onto-permission-banner --> translate-label
   style onto-layout fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

@@ -106,5 +106,9 @@
     "label": {
       "all_rights_reserved": "Tous droits réservés."
     }
+  },
+  "permission_banner": {
+    "no_access_error": "Vous n'avez pas la permission d'accéder à cette fonctionnalité avec vos informations d'identification actuelles.",
+    "change_menu_or_user_warning": "Veuillez choisir un autre élément du menu ou vous connecter comme un autre utilisateur."
   }
 }
