@@ -1,6 +1,7 @@
 import SVG from 'lib/common/svg-export';
 import D3 from 'lib/common/d3-utils';
 import 'angular/utils/local-storage-adapter';
+import * as d3 from 'd3';
 
 angular
     .module('graphdb.framework.graphexplore.directives.domainrange', [

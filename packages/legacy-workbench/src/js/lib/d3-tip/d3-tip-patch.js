@@ -1,3 +1,10 @@
+import {selection, select} from 'd3';
+
+const d3 = {
+  select,
+  selection
+}
+
 // d3.tip
 // Copyright (c) 2013 Justin Palmer
 //

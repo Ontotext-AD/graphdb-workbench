@@ -1,5 +1,11 @@
 import {LinkState, NodeState, RecoveryState} from "../../models/clustermanagement/states";
 import {isEmpty} from "lodash";
+import {select, line} from 'd3';
+
+const d3 = {
+  line,
+  select
+};
 
 const clusterColors = {
     ontoOrange: 'var(--primary-color)',
