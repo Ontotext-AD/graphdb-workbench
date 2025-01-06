@@ -1,3 +1,9 @@
+import {select} from 'd3';
+
+const d3 = {
+  select
+};
+
 const STATUS = {
     'WAIT': 'WAIT',
     'NO_REPO': 'NO_REPO',

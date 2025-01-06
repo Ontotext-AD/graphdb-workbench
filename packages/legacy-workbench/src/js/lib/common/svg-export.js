@@ -1,5 +1,7 @@
 import 'lib/d3.patch.js'
+import {selectAll} from 'd3';
 
+const d3 = {selectAll};
 var SVG = SVG || {};
 
 SVG.Export = function () {
