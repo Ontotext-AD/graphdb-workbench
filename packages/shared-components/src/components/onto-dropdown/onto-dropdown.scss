@@ -34,6 +34,7 @@
   &.open {
     background-color: var(--onto-dropdown-button-icon-color);
     color: #FFFFFF;
+    height: 2rem;
 
     .button-icon {
       color: var(--onto-dropdown-button-open-icon-color);
@@ -43,15 +44,17 @@
   .onto-dropdown-button {
     font-size: 1rem;
     font-weight: 400;
-    padding: 0.5em 1rem;
-    line-height: 1.25;
+    padding: 0.4em 1rem;
+    line-height: 1.5;
     border: 1px solid transparent;
     outline: none;
+    width: fit-content;
+    height: fit-content;
     color: var(--onto-dropdown-color);
     background-color: var(--onto-dropdown-button-background-color);
 
     .button-icon {
-      font-size: 1.5rem;
+      font-size: 1.4em;
       padding-right: 0.2em;
     }
   }
@@ -63,6 +66,7 @@
     z-index: 1000;
     overflow-y: auto;
     max-height: 340px;
+    min-width: 100%;
   }
 
   .onto-dropdown-menu-item {
@@ -102,12 +106,14 @@
     left: auto;
   }
 
-  @media (max-width: 768px) {
-    .onto-dropdown-button:after {
-      padding-left: 0 !important;
+  @media (max-width: 1440px) {
+    .onto-dropdown-button, .onto-dropdown.open {
+      font-size: 0.9rem;
+      min-height: 2rem;
     }
-    .button-name {
-      display: none;
+
+    .selector-button, .button-name {
+      font-size: 0.9rem;
     }
   }
 }
