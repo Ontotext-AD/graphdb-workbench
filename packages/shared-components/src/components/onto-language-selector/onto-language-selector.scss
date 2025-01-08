@@ -8,8 +8,10 @@ onto-language-selector {
   .onto-dropdown {
     height: 100%;
 
-    .onto-dropdown-button {
-      height: 100%;
+    &.open {
+      .onto-dropdown-button {
+        height: fit-content;
+      }
     }
 
     &.closed {
@@ -22,5 +24,15 @@ onto-language-selector {
         background-color: #d4d4d4;
       }
     }
+  }
+}
+
+@media (max-width: 1440px) {
+  .onto-dropdown-button {
+    font-size: 0.9rem;
+  }
+
+  .selector-button, .button-name, .onto-dropdown-menu-item > * {
+    font-size: 0.9rem;
   }
 }
