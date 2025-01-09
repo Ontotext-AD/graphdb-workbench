@@ -9,6 +9,7 @@ import {QueryMode} from "../../models/ontotext-yasgui/query-mode";
 import {md5HashGenerator} from "../../utils/hash-utils";
 import {RemoteLocationModel} from "../../models/repository/remote-location.model";
 import {SelectMenuOptionsModel} from "../../models/form-fields";
+import {RepositoryStorageService, RepositoryContextService, ServiceProvider} from "@ontotext/workbench-api";
 
 const modules = [
     'ngCookies',
@@ -320,11 +321,18 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         };
 
         this.getActiveRepositoryObjectFromStorage = function() {
-            return RepositoryStorage.getActiveRepositoryObject();
+            const repositoryStorageService = ServiceProvider.get(RepositoryStorageService);
+            const repositoryContextService = ServiceProvider.get(RepositoryContextService);
+            return {
+              id: repositoryStorageService.get(repositoryContextService.SELECTED_REPOSITORY_ID).getValueOrDefault(''),
+              location: repositoryStorageService.get(repositoryContextService.REPOSITORY_LOCATION).getValueOrDefault('')
+            };
         };
 
         this.getActiveRepository = function () {
-            return RepositoryStorage.getActiveRepository();
+            const repositoryStorageService = ServiceProvider.get(RepositoryStorageService);
+            const repositoryContextService = ServiceProvider.get(RepositoryContextService);
+            return repositoryStorageService.get(repositoryContextService.SELECTED_REPOSITORY_ID).getValueOrDefault(undefined);
         };
 
         this.getActiveRepositoryObject = function () {
@@ -392,10 +400,18 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             const eventData = {oldRepository: this.repository, newRepository: repo, cancel: false};
             eventEmitterService.emit('repositoryWillChangeEvent', eventData, (eventData) => {
                 if (!eventData.cancel) {
+                    const repositoryStorageService = ServiceProvider.get(RepositoryStorageService);
+                    const repositoryContextService = ServiceProvider.get(RepositoryContextService);
                     if (repo) {
-                        RepositoryStorage.setActiveRepository(repo.id, repo.location);
+                        // this will update the values in the local storage and trigger context change for other opened tabs
+                        repositoryStorageService.set(repositoryContextService.SELECTED_REPOSITORY_ID, repo.id);
+                        repositoryStorageService.set(repositoryContextService.REPOSITORY_LOCATION, repo.location);
+                        // trigger context change for the current tab
+                        repositoryContextService.updateSelectedRepositoryId(repo.id);
+                        repositoryContextService.updateRepositoryLocation(repo.location);
                     } else {
-                        RepositoryStorage.unsetActiveRepository();
+                        repositoryStorageService.remove(repositoryContextService.SELECTED_REPOSITORY_ID);
+                        repositoryStorageService.remove(repositoryContextService.REPOSITORY_LOCATION);
                     }
                     this.setRepositoryHeaders(repo);
                     $rootScope.$broadcast('repositoryIsSet', {newRepo: true});
