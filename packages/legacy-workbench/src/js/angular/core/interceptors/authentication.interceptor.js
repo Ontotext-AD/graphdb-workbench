@@ -1,4 +1,5 @@
 import 'angular/core/services';
+import {RepositoryStorageService, RepositoryContextService, ServiceProvider} from "@ontotext/workbench-api";
 
 angular.module('graphdb.framework.core.interceptors.authentication', [
     'ngCookies'
@@ -31,8 +32,10 @@ angular.module('graphdb.framework.core.interceptors.authentication', [
                     }
 
                     if (!headers['X-GraphDB-Repository']) {
-                        const repositoryId = LocalStorageAdapter.get(LSKeys.REPOSITORY_ID);
-                        const repositoryLocation = LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION);
+                        const repositoryStorageService = ServiceProvider.get(RepositoryStorageService);
+                        const repositoryContextService = ServiceProvider.get(RepositoryContextService);
+                        const repositoryId = repositoryStorageService.get(repositoryContextService.SELECTED_REPOSITORY_ID).getValue();
+                        const repositoryLocation = repositoryStorageService.get(repositoryContextService.REPOSITORY_LOCATION).getValue();
 
                         headers['X-GraphDB-Repository'] = repositoryId ? repositoryId : undefined;
                         headers['X-GraphDB-Repository-Location'] = repositoryLocation ? repositoryLocation : undefined;
