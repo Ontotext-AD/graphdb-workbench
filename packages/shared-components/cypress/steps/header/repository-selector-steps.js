@@ -6,6 +6,10 @@ export class RepositorySelectorSteps extends BaseSteps {
     super.visit('repository-selector');
   }
 
+  static triggerRepositoriesLoading() {
+    cy.get('#loadRepositories').click();
+  }
+
   static getRepositorySelector() {
     return cy.get('.onto-repository-selector');
   }

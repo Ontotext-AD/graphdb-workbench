@@ -8,6 +8,7 @@ import 'angular/utils/local-storage-adapter';
 import {NUMBER_PATTERN} from "../../repositories/repository.constants";
 import {removeSpecialChars} from "../../utils/string-utils";
 import {NamespacesListModel} from "../../models/namespaces/namespaces-list";
+import {RepositoryContextService, ServiceProvider} from "@ontotext/workbench-api";
 
 const modules = [
     'ui.scroll.jqlite',
@@ -352,7 +353,7 @@ function GraphsVisualizationsCtrl(
     }));
 
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
-    subscriptions.push(WorkbenchContextService.onSelectedRepositoryIdUpdated(onSelectedRepositoryIdUpdated));
+    subscriptions.push(ServiceProvider.get(RepositoryContextService).onSelectedRepositoryIdChanged(onSelectedRepositoryIdUpdated));
 
     subscriptions.push($scope.$on('repositoryIsSet', function (event, args) {
         // New repo set from dropdown, clear init state

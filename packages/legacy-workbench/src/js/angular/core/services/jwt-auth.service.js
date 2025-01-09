@@ -2,6 +2,7 @@ import 'angular/core/services';
 import 'angular/core/services/openid-auth.service.js';
 import 'angular/rest/security.rest.service';
 import {UserRole} from 'angular/utils/user-utils';
+import {RepositoryStorageService, RepositoryContextService, ServiceProvider} from "@ontotext/workbench-api";
 
 angular.module('graphdb.framework.core.services.jwtauth', [
     'toastr',
@@ -288,16 +289,19 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     $rootScope.deniedPermissions = {};
                     this.securityInitialized = true;
 
+                    const repositoryStorageService = ServiceProvider.get(RepositoryStorageService);
+                    const repositoryContextService = ServiceProvider.get(RepositoryContextService);
+
                     const selectedRepo = {
-                        id: LocalStorageAdapter.get(LSKeys.REPOSITORY_ID) || '',
-                        location: LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION) || ''
+                        id: repositoryStorageService.get(repositoryContextService.SELECTED_REPOSITORY_ID).getValueOrDefault(''),
+                        location: repositoryStorageService.get(repositoryContextService.REPOSITORY_LOCATION).getValueOrDefault('')
                     };
 
                     if (!jwtAuth.canReadRepo(selectedRepo)) {
                         // if the current repo is unreadable by the currently logged-in user (or free access user)
                         // we unset the repository
-                        LocalStorageAdapter.remove(LSKeys.REPOSITORY_ID);
-                        LocalStorageAdapter.remove(LSKeys.REPOSITORY_LOCATION);
+                        repositoryStorageService.remove(repositoryContextService.SELECTED_REPOSITORY_ID);
+                        repositoryStorageService.remove(repositoryContextService.REPOSITORY_LOCATION);
                         // reset denied permissions (different repo, different rights)
                         $rootScope.deniedPermissions = {};
                     }

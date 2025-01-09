@@ -112,6 +112,10 @@ export namespace Components {
      */
     interface OntoTestContext {
         /**
+          * Loads the repositories in the application.
+         */
+        "loadRepositories": () => Promise<void>;
+        /**
           * Updates the license information in the context.  This method uses the LicenseContextService to update the license and returns a resolved Promise once the operation is complete.
           * @param license - The new License object to be set.
           * @returns A Promise that resolves when the license update is complete.
