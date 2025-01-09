@@ -9,6 +9,7 @@ import {mapIndexesResponseToSimilarityIndex} from "../../rest/mappers/similarity
 import {SimilaritySearch} from "../../models/similarity/similarity-search";
 import {RenderingMode} from "../../models/ontotext-yasgui/rendering-mode";
 import {NamespacesListModel} from "../../models/namespaces/namespaces-list";
+import {RepositoryContextService, ServiceProvider} from "@ontotext/workbench-api";
 
 const modules = ['graphdb.core.services.workbench-context', 'graphdb.framework.core.services.rdf4j.repositories'];
 angular
@@ -364,7 +365,7 @@ function SimilarityCtrl(
     };
 
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
-    subscriptions.push(WorkbenchContextService.onSelectedRepositoryIdUpdated(onSelectedRepositoryIdUpdated));
+    subscriptions.push(ServiceProvider.get(RepositoryContextService).onSelectedRepositoryIdChanged(onSelectedRepositoryIdUpdated));
 
     const searchTypeChangeHandler = () => {
         $scope.empty = true;

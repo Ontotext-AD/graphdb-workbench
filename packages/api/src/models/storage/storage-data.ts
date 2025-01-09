@@ -28,7 +28,7 @@ export class StorageData {
    * @param defaultValue The default value to return if the value is null.
    * @returns The value as a string or the default value if the value is null.
    */
-  getValueOrDefault(defaultValue: string): string {
+  getValueOrDefault(defaultValue: string): string | undefined {
     return this.value || defaultValue;
   }
 
