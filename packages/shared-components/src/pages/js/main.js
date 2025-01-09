@@ -24,3 +24,7 @@ const loadProductInfo = () => {
     productVersion: '11.0-SNAPSHOT'
   });
 };
+
+const loadRepositories = () => {
+  testContext.loadRepositories();
+}
