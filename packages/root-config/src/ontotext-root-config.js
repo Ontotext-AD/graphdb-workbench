@@ -15,14 +15,16 @@ import './styles/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 import './styles/onto-stylesheet.css';
 // import "./styles/bootstrap-graphdb-theme.css";
-import { defineCustomElements } from '../../shared-components/loader';
+import {defineCustomElements} from '../../shared-components/loader';
 import {
   ServiceProvider,
   LicenseService,
   LicenseContextService,
   TranslationService,
   ProductInfoService,
-  ProductInfoContextService
+  ProductInfoContextService,
+  RepositoryService,
+  RepositoryContextService
 } from '@ontotext/workbench-api';
 
 addErrorHandler((err) => {
@@ -74,25 +76,6 @@ layoutEngine.activate();
 
 defineCustomElements();
 
-const loadLicense = () => {
-  const licenseContext = ServiceProvider.get(LicenseContextService);
-  ServiceProvider.get(LicenseService).getLicense().then(license => {
-    licenseContext.updateLicense(license);
-  }).catch(() => {
-    licenseContext.updateLicense({
-      message: TranslationService.translate('license_alert.no_license_set'),
-      valid: false
-    });
-  });
-};
-
-const loadProductInfoLocal = () => {
-  ServiceProvider.get(ProductInfoService).getProductInfoLocal()
-    .then(productInfo => {
-      ServiceProvider.get(ProductInfoContextService).updateProductInfo(productInfo);
-    }).catch(error => console.error('Could not load local product info', error));
-};
-
 // This is a workaround to initialize the navbar when the root-config is loaded and the navbar is not yet initialized.
 const waitForNavbarElement = () => {
   return new Promise((resolve, reject) => {
@@ -108,11 +91,47 @@ const waitForNavbarElement = () => {
 };
 
 const initializeNavbar = () => {
-  waitForNavbarElement().then((navbar) => {
-    navbar.menuItems = PluginRegistry.get('main.menu');
-  }).catch((e) => {
-    console.error('onto-navbar element not found', e);
-  });
+  waitForNavbarElement()
+    .then((navbar) => {
+      navbar.menuItems = PluginRegistry.get('main.menu');
+    })
+    .catch((e) => {
+      console.error('onto-navbar element not found', e);
+    });
+};
+
+const loadRepositories = () => {
+  return ServiceProvider.get(RepositoryService).getRepositories()
+    .then((repositories) => {
+      ServiceProvider.get(RepositoryContextService).updateRepositoryList(repositories);
+    })
+    .catch((error) => {
+      throw new Error('Could not load repositories', error);
+    });
+};
+
+const loadProductInfoLocal = () => {
+  return ServiceProvider.get(ProductInfoService).getProductInfoLocal()
+    .then(productInfo => {
+      ServiceProvider.get(ProductInfoContextService).updateProductInfo(productInfo);
+    })
+    .catch((error) => {
+      throw new Error('Could not load local product info', error);
+    });
+};
+
+const loadLicense = () => {
+  const licenseContext = ServiceProvider.get(LicenseContextService);
+  return ServiceProvider.get(LicenseService).getLicense()
+    .then((license) => {
+      licenseContext.updateGraphdbLicense(license);
+    })
+    .catch(() => {
+      licenseContext.updateGraphdbLicense({
+        message: TranslationService.translate('license_alert.no_license_set'),
+        valid: false
+      });
+    });
 };
 
 const registerSingleSpaFirstMountListener = () => {
@@ -121,8 +140,21 @@ const registerSingleSpaFirstMountListener = () => {
     window.singleSpaFirstMountListenerRegistered = true;
     window.addEventListener('single-spa:first-mount', () => {
       initializeNavbar();
-      loadLicense();
-      loadProductInfoLocal();
+      // TODO: these are mandatory to be loaded before the application starts
+      Promise.all(
+        [
+          loadLicense(),
+          loadProductInfoLocal(),
+          loadRepositories()
+        ]
+      )
+        .then(() => {
+          // eslint-disable-next-line no-console
+          console.log('Application data loaded. Ready to start the application.');
+        })
+        .catch((error) => {
+          console.error('Could not load application data', error);
+        });
     });
   }
 };
