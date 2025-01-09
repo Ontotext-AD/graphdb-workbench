@@ -28,6 +28,7 @@ import 'angularjs-slider/dist/rzslider.min';
 import {debounce} from "lodash";
 import {DocumentationUrlResolver} from "./utils/documentation-url-resolver";
 import {NamespacesListModel} from "./models/namespaces/namespaces-list";
+import {RepositoryContextService, ServiceProvider} from "@ontotext/workbench-api";
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -140,7 +141,7 @@ function homeCtrl($scope,
         $scope.isAutocompleteEnabled = autocompleteEnabled;
     };
 
-    subscriptions.push(WorkbenchContextService.onSelectedRepositoryIdUpdated(onSelectedRepositoryIdUpdated));
+    subscriptions.push(ServiceProvider.get(RepositoryContextService).onSelectedRepositoryIdChanged(onSelectedRepositoryIdUpdated));
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
 
     $scope.$on('$destroy', () => subscriptions.forEach((subscription) => subscription()));
@@ -591,6 +592,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
      * @type {undefined | boolean}
      */
     let isAuthenticated = undefined;
+
     const localStoreChangeHandler = (localStoreEvent) => {
         if (AuthTokenService.AUTH_STORAGE_NAME === localStoreEvent.key) {
             const newAuthenticationState = $jwtAuth.isAuthenticated();
@@ -606,24 +608,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                     reloadPageOutsideAngularScope();
                 }
             }
+        } else if ('ls.' + LSKeys.AUTOCOMPLETE_ENABLED === localStoreEvent.key) {
+          WorkbenchContextService.setAutocompleteEnabled(localStoreEvent.newValue === 'true');
         }
     };
-
-    /**
-     * Add a listener for the browser's local store change event. This event will be fired in all tabs of the current domain
-     * EXPECT FOR THE ONE where the local store changed.
-     */
-    window.addEventListener('storage', localStoreChangeHandler);
-
-    $scope.$on('$destroy', () => {
-        document.removeEventListener('click', closeActiveRepoPopoverEventHandler);
-        window.removeEventListener('storage', localStoreChangeHandler);
-        $scope.cancelPopoverOpen();
-        deregisterMenuWatcher();
-        if ($scope.checkMenu) {
-            $timeout.cancel($scope.checkMenu);
-        }
-    });
 
     $scope.isAdmin = function () {
         return $scope.hasRole(UserRole.ROLE_ADMIN);
@@ -1088,20 +1076,40 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }
     };
     $rootScope.$on("repositoryIsSet", onRepositoriesChanged);
-    window.addEventListener('storage', (event) => {
-        if ('ls.' + LSKeys.AUTOCOMPLETE_ENABLED === event.key) {
-            WorkbenchContextService.setAutocompleteEnabled(event.newValue === 'true');
-        } else if ('ls.' + LSKeys.REPOSITORY_ID === event.key) {
-            onRepositoriesChanged();
-        }
-    });
+
+    /**
+     * Add a listener for the browser's local store change event. This event will be fired in all tabs of the current domain
+     * EXPECT FOR THE ONE where the local store changed.
+     */
+    window.addEventListener('storage', localStoreChangeHandler);
+
+    // Selected repository ID change event is fired when the user changes the repository from the dropdown or by
+    // selecting a repository from the repository list page. This triggers the event in the current tab and also stores
+    // the new repository ID in the local storage. Local storage change event is handled by a central handler
+    // LocalStorageSubscriptionHandlerService in the api module which triggers the change for the respective context
+    // properties.
+    const onSelectedRepositoryIdChangedSubscription = ServiceProvider.get(RepositoryContextService)
+      .onSelectedRepositoryIdChanged((repositoryId) => {
+        onRepositoriesChanged();
+      });
 
     $scope.downloadGuidesFile = (resourcePath, resourceFile) => {
-        GuidesService.downloadGuidesFile(resourcePath, resourceFile)
-            .catch((error) => {
-                toastr.error($translate.instant('guide.step_plugin.download-guide-resource.download.message.failure', {resourceFile}));
-            });
+      GuidesService.downloadGuidesFile(resourcePath, resourceFile)
+        .catch((error) => {
+          toastr.error($translate.instant('guide.step_plugin.download-guide-resource.download.message.failure', {resourceFile}));
+        });
     };
+
+    $scope.$on('$destroy', () => {
+      onSelectedRepositoryIdChangedSubscription();
+      document.removeEventListener('click', closeActiveRepoPopoverEventHandler);
+      window.removeEventListener('storage', localStoreChangeHandler);
+      $scope.cancelPopoverOpen();
+      deregisterMenuWatcher();
+      if ($scope.checkMenu) {
+        $timeout.cancel($scope.checkMenu);
+      }
+    });
 }
 
 repositorySizeCtrl.$inject = ['$scope', '$http', 'RepositoriesRestService'];

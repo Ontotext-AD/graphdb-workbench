@@ -3,7 +3,7 @@ import {
   License,
   LicenseContextService,
   ProductInfo,
-  ProductInfoContextService,
+  ProductInfoContextService, RepositoryContextService, RepositoryService,
   ServiceProvider
 } from '@ontotext/workbench-api';
 
@@ -42,6 +42,17 @@ export class OntoTestContext {
   @Method()
   updateProductInfo(productInfo: ProductInfo): Promise<void> {
     ServiceProvider.get(ProductInfoContextService).updateProductInfo(productInfo);
+    return Promise.resolve();
+  }
+
+  /**
+   * Loads the repositories in the application.
+   */
+  @Method()
+  loadRepositories(): Promise<void> {
+    ServiceProvider.get(RepositoryService).getRepositories().then((repositories) => {
+      ServiceProvider.get(RepositoryContextService).updateRepositoryList(repositories);
+    });
     return Promise.resolve();
   }
 }
