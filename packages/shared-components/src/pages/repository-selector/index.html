@@ -16,6 +16,7 @@
   <script type="module" src="/build/shared-components.esm.js"></script>
   <script nomodule src="/build/shared-components.js"></script>
   <script src="./main.js" defer></script>
+  <script src="../js/main.js" defer></script>
   <link rel="stylesheet" href="../css/bootstrap.min.css">
   <link rel="stylesheet" href="../css/font-awesome.min.css">
 
@@ -28,6 +29,8 @@
 <body>
 
 <div class="page-content">
+  <button id="loadRepositories" onclick="loadRepositories()">Load repositories</button>
+  <hr/>
   <onto-repository-selector></onto-repository-selector>
   <onto-tooltip></onto-tooltip>
 </div>

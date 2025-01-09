@@ -1,5 +1,7 @@
 import {Component, Host, h, State} from '@stencil/core';
 import {
+  Repository,
+  RepositoryStorageService,
   ServiceProvider,
   RepositoryService,
   RepositoryList,
@@ -8,7 +10,6 @@ import {
 } from "@ontotext/workbench-api";
 import {DropdownItem} from '../../models/dropdown/dropdown-item';
 import {DropdownItemAlignment} from '../../models/dropdown/dropdown-item-alignment';
-import {Repository} from '@ontotext/workbench-api';
 import {SelectorItemButton} from './selector-item';
 import {SelectorButton} from './selector-button';
 import {TranslationService} from '../../services/translation.service';
@@ -27,30 +28,38 @@ import {TranslationService} from '../../services/translation.service';
  * <onto-repository-selector></onto-repository-selector>
  */
 export class OntoRepositorySelector {
-  private repositoryService: RepositoryService;
-  private repositoryContextService: RepositoryContextService;
+  private repositoryService = ServiceProvider.get(RepositoryService);
+  private repositoryContextService = ServiceProvider.get(RepositoryContextService);
+  private repositoryStorageService = ServiceProvider.get(RepositoryStorageService);
   private totalTripletsFormatter: Intl.NumberFormat;
-
-  private repositoryList: RepositoryList;
-  @State() defaultToggleButtonName: string;
+  private currentRepositoryId: string;
+  private items: DropdownItem<Repository>[] = [];
   private readonly subscriptions: (() => void)[] = [];
 
   /**
-   * A list of dropdown items representing repositories.
+   * The default name of the toggle button that will be displayed in the dropdown.
    */
-  @State() items: DropdownItem<Repository>[] = [];
+  @State() defaultToggleButtonName: string;
 
   /**
-   * The currently selected repository, which will be shown in the dropdown button.
+   * The list of repositories in the database.
+   */
+  @State() private repositoryList: RepositoryList;
+
+  /**
+   * The model of the currently selected repository, if any.
    */
   @State() currentRepository: Repository;
 
   constructor() {
-    this.repositoryService = ServiceProvider.get(RepositoryService);
-    this.repositoryContextService = ServiceProvider.get(RepositoryContextService);
     this.setupTotalRepository();
-    this.loadRepositories();
-    this.subscriptions.push(this.subscribeToRepositoriesChanged());
+    // get the current repository id from the storage
+    this.currentRepositoryId = this.repositoryStorageService.get(this.repositoryContextService.SELECTED_REPOSITORY_ID).getValueOrDefault(undefined);
+    this.items = this.getRepositoriesDropdownItems();
+
+    // These should stay after the initialization of the currentRepositoryId because the repository list change handler
+    // depends on it and would reset the current repository in the storage if it is not set.
+    this.subscriptions.push(this.subscribeToRepositoryListChanged());
     this.subscriptions.push(this.subscribeToSelectedRepositoryChanged());
     this.subscriptions.push(this.subscribeToTranslationChanged());
     this.subscriptions.push(this.subscribeToLanguageChanged());
@@ -69,7 +78,7 @@ export class OntoRepositorySelector {
       <Host>
         <onto-dropdown
           class='onto-repository-selector'
-          onValueChanged={this.valueChangeHandler()}
+          onValueChanged={this.onValueChanged()}
           dropdownButtonName={<SelectorButton repository={this.currentRepository} defaultToggleButtonName={this.defaultToggleButtonName}  location={this.getLocation()}/>}
           dropdownButtonTooltip={this.getRepositoryTooltipFunction(this.currentRepository)}
           dropdownTooltipTrigger='mouseenter focus'
@@ -81,30 +90,40 @@ export class OntoRepositorySelector {
     );
   }
 
-  private valueChangeHandler() {
-    return (newRepository: any) => this.onRepositoryChanged(newRepository);
+  private onValueChanged() {
+    return (valueChangeEvent: CustomEvent) => this.onRepositoryChanged(valueChangeEvent.detail);
   }
 
-  private loadRepositories(): void {
-    this.repositoryService.getRepositories()
-      .then((repositories) => {
-        this.repositoryContextService.updateRepositoryList(repositories);
-        const repositoryId = undefined;
-        const location = undefined;
-        const repository = repositories.findRepository(repositoryId, location);
-        this.repositoryContextService.updateSelectedRepository(repository);
-      });
-  }
-
-  private subscribeToRepositoriesChanged(): () => void {
-    return this.repositoryContextService.onRepositoriesChanged((repositories: RepositoryList) => {
-      this.repositoryList = repositories;
-      this.items = this.getRepositoriesDropdownItems();
+  private subscribeToRepositoryListChanged(): () => void {
+    return this.repositoryContextService.onRepositoryListChanged((repositories: RepositoryList) => {
+      if (!repositories) {
+        this.resetOnMissingRepositories();
+      } else {
+        this.initOnRepositoryListChanged(repositories);
+      }
     });
   }
 
+  private initOnRepositoryListChanged(repositories: RepositoryList): void {
+    this.repositoryList = repositories;
+    const location = '';
+    const repository = repositories.findRepository(this.currentRepositoryId, location);
+    // currently selected repository could be deleted and not in the list at this point
+    this.currentRepository = repository;
+    this.repositoryContextService.updateSelectedRepository(repository);
+    this.repositoryContextService.updateSelectedRepositoryId(this.currentRepositoryId);
+    this.items = this.getRepositoriesDropdownItems();
+  }
+
+  private resetOnMissingRepositories(): void {
+    this.items = [];
+    this.repositoryList = new RepositoryList();
+    this.currentRepositoryId = undefined;
+    this.currentRepository = undefined;
+  }
+
   private subscribeToSelectedRepositoryChanged(): () => void {
-    return this.repositoryContextService.onSelectedRepositoryChanged((selectedRepository) => this.changeRepository(selectedRepository));
+    return this.repositoryContextService.onSelectedRepositoryIdChanged((selectedRepositoryId) => this.changeRepository(selectedRepositoryId));
   }
 
   private subscribeToTranslationChanged(): () => void {
@@ -118,8 +137,8 @@ export class OntoRepositorySelector {
       .onSelectedLanguageChanged((language) => this.setupTotalRepository(language));
   }
 
-  private changeRepository(newRepository: Repository): void {
-    this.currentRepository = newRepository;
+  private changeRepository(newRepositoryId: string): void {
+    this.currentRepository = this.repositoryList.findRepository(newRepositoryId, '');
     this.items = this.getRepositoriesDropdownItems();
   }
 
@@ -134,17 +153,20 @@ export class OntoRepositorySelector {
     } else {
       repositories = this.repositoryList.getItems();
     }
+
     // TODO: GDB-10442 filter if not rights to read repo see jwt-atuh.service.js canReadRepo function
     return repositories
-        .map((repository) => new DropdownItem<Repository>()
+        .map((repository) => {
+          return new DropdownItem<Repository>()
             .setName(<SelectorItemButton repository={repository}/>)
-        .setTooltip(this.getRepositoryTooltipFunction(repository))
-        .setValue(repository)
-        .setDropdownTooltipTrigger('mouseenter focus'));
+            .setTooltip(this.getRepositoryTooltipFunction(repository))
+            .setValue(repository)
+            .setDropdownTooltipTrigger('mouseenter focus')
+        });
   }
 
-  private onRepositoryChanged(newRepositoryEvent: CustomEvent): void {
-    this.repositoryContextService.updateSelectedRepository(newRepositoryEvent.detail)
+  private onRepositoryChanged(selectedRepository: Repository): void {
+    this.repositoryContextService.updateSelectedRepository(selectedRepository);
   }
 
   private getLocation() {
