@@ -10,6 +10,7 @@ import {
 import {GraphsConfig, StartMode} from "../../models/graphs/graphs-config";
 import {mapGraphConfigSamplesToGraphConfigs} from "../../rest/mappers/graphs-config-mapper";
 import {NamespacesListModel} from "../../models/namespaces/namespaces-list";
+import {RepositoryContextService, ServiceProvider} from "@ontotext/workbench-api";
 
 angular
     .module('graphdb.framework.graphexplore.controllers.graphviz.config', [
@@ -634,7 +635,7 @@ function GraphConfigCtrl(
     // =========================
 
     const subscriptions = [];
-    subscriptions.push(WorkbenchContextService.onSelectedRepositoryIdUpdated(onSelectedRepositoryIdUpdated));
+    subscriptions.push(ServiceProvider.get(RepositoryContextService).onSelectedRepositoryIdChanged(onSelectedRepositoryIdUpdated));
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
     subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
     subscriptions.push($scope.$on('$destroy', unsubscribeListeners));

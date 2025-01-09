@@ -12,7 +12,7 @@ import {AuthenticationService, RepositoryContextService, ServiceProvider, Reposi
 export class GraphqlComponent {
   constructor() {
     console.log('GraphqlComponent login', ServiceProvider.get(AuthenticationService).login());
-    ServiceProvider.get(RepositoryContextService).onRepositoriesChanged((repositoryList: RepositoryList | undefined) => {
+    ServiceProvider.get(RepositoryContextService).onRepositoryListChanged((repositoryList: RepositoryList | undefined) => {
       console.log('GraphqlComponent repositories', repositoryList?.getItems());
     });
   }

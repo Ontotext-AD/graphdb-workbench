@@ -5,6 +5,7 @@ describe("Repository Selector", () => {
   it('Should select repository', () => {
     // When I visit a page with repository selector in it.
     RepositorySelectorSteps.visit();
+    RepositorySelectorSteps.triggerRepositoriesLoading();
     // Then I expect to see only toggle selector button with default label, because the repository is not selected,
     RepositorySelectorSteps.getRepositorySelectorToggleButton()
       .should('be.visible')
