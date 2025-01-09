@@ -11,6 +11,16 @@ A component for managing test context in the application. Used only for testing
 
 ## Methods
 
+### `loadRepositories() => Promise<void>`
+
+Loads the repositories in the application.
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `updateLicense(license: License) => Promise<void>`
 
 Updates the license information in the context.
