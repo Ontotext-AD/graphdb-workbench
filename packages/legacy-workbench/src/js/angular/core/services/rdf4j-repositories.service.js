@@ -16,6 +16,7 @@ function RDF4JRepositoriesService(RDF4JRepositoriesRestService) {
      * @return {NamespacesListModel} The list of namespaces associated with the specified repository.
      */
     const getNamespaces = (repositoryId) => {
+      console.log('%cRDF4JRepositoriesService.getNamespaces', 'background: yellow', repositoryId);
         return RDF4JRepositoriesRestService.getRepositoryNamespaces(repositoryId)
             .then((response) => namespaceListModelMapper(response.data.results.bindings));
     };

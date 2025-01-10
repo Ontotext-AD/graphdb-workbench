@@ -28,6 +28,7 @@ import 'angularjs-slider/dist/rzslider.min';
 import {debounce} from "lodash";
 import {DocumentationUrlResolver} from "./utils/documentation-url-resolver";
 import {NamespacesListModel} from "./models/namespaces/namespaces-list";
+import {RepositoryContextService, ServiceProvider} from "@ontotext/workbench-api";
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -121,6 +122,7 @@ function homeCtrl($scope,
     const subscriptions = [];
 
     const onSelectedRepositoryIdUpdated = (repositoryId) => {
+      console.log('%cmainCtrl onSelectedRepositoryIdUpdated', 'background: orange', repositoryId);
         if (!repositoryId) {
             $scope.repositoryNamespaces = new NamespacesListModel();
             return;
@@ -140,7 +142,10 @@ function homeCtrl($scope,
         $scope.isAutocompleteEnabled = autocompleteEnabled;
     };
 
-    subscriptions.push(WorkbenchContextService.onSelectedRepositoryIdUpdated(onSelectedRepositoryIdUpdated));
+    const repositoryContextService = ServiceProvider.get(RepositoryContextService);
+  console.log('%cmainCtrl subscribe for repo ID', 'background: orange',);
+    subscriptions.push(repositoryContextService.onSelectedRepositoryIdChanged(onSelectedRepositoryIdUpdated));
+    // subscriptions.push(WorkbenchContextService.onSelectedRepositoryIdUpdated(onSelectedRepositoryIdUpdated));
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
 
     $scope.$on('$destroy', () => subscriptions.forEach((subscription) => subscription()));
