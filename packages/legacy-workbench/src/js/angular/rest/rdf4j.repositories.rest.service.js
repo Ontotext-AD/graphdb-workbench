@@ -28,10 +28,12 @@ function RDF4JRepositoriesRestService($http, $translate) {
     };
 
     function getNamespaces(repositoryId) {
+      console.log('%cgetNamespaces', 'background: orange', repositoryId);
         return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/namespaces`);
     }
 
     function getRepositoryNamespaces(repositoryId) {
+      console.log('%cgetRepositoryNamespaces', 'background: orange', repositoryId);
         return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/namespaces`);
     }
 

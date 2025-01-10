@@ -139,6 +139,7 @@ export class OntoRepositorySelector {
 
   private changeRepository(newRepositoryId: string): void {
     this.currentRepository = this.repositoryList.findRepository(newRepositoryId, '');
+    console.log('%crepoSelector.changeRepoHandler', 'background: blue',newRepositoryId, this.currentRepository);
     // this.currentRepository = this.items.findRepository(newRepository.id, newRepository.location);
     const menuItems = this.getRepositoriesDropdownItems();
     this.items = [...menuItems];

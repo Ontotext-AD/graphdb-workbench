@@ -308,6 +308,7 @@ function LocationsAndRepositoriesCtrl($scope, $rootScope, $uibModal, toastr, $re
 
     //Change repository
     $scope.setRepository = function (repo) {
+      console.log('%clistView.setRepository', 'background: green', repo);
         $repositories.setRepository(repo);
     };
 

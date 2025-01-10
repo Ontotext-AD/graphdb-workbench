@@ -8,11 +8,13 @@ import {RepositoryStorageService} from './repository-storage.service';
 type RepositoryContextFields = {
   readonly SELECTED_REPOSITORY_ID: string;
   readonly REPOSITORY_LIST: string;
+  readonly REPOSITORY_LOCATION: string;
 }
 
 type RepositoryContextFieldParams = {
   readonly SELECTED_REPOSITORY_ID: string;
   readonly REPOSITORY_LIST: RepositoryList;
+  readonly REPOSITORY_LOCATION: string;
 };
 
 /**
@@ -22,6 +24,7 @@ export class RepositoryContextService extends ContextService<RepositoryContextFi
   readonly SELECTED_REPOSITORY = 'selectedRepository';
   readonly SELECTED_REPOSITORY_ID = 'selectedRepositoryId';
   readonly REPOSITORY_LIST = 'repositoryList';
+  readonly REPOSITORY_LOCATION = 'repositoryLocation';
 
   /**
    * Updates the selected repository ID in the context and persist it in the local storage using the storage service.
@@ -66,6 +69,25 @@ export class RepositoryContextService extends ContextService<RepositoryContextFi
    */
   onSelectedRepositoryChanged(callbackFunction: ValueChangeCallback<Repository | undefined>): () => void {
     return this.subscribe(this.SELECTED_REPOSITORY, callbackFunction);
+  }
+
+  /**
+   * Updates the repository location in the context.
+   *
+   * @param repositoryLocation - The new repository location.
+   */
+  updateRepositoryLocation(repositoryLocation: string): void {
+    return this.updateContextProperty(this.REPOSITORY_LOCATION, repositoryLocation);
+  }
+
+  /**
+   * Registers the <code>callbackFunction</code> to be called whenever the repository location changes.
+   *
+   * @param callbackFunction - The function to call when the repository location changes.
+   * @returns A function to unsubscribe from updates.
+   */
+  onRepositoryLocationChanged(callbackFunction: ValueChangeCallback<string | undefined>): () => void {
+    return this.subscribe(this.REPOSITORY_LOCATION, callbackFunction);
   }
 
   /**
