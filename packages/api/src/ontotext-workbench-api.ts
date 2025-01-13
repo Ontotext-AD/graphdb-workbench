@@ -24,6 +24,8 @@ export {EventEmitter} from './emitters/event.emitter';
 export * from './services/license';
 export * from './services/product-info';
 export * from './services/storage';
+export * from './services/security';
+export * from './services/event-service';
 
 // Export utils for external usages.
 export * from './services/utils';

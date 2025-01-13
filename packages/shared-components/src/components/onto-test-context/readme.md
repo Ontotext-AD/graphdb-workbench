@@ -31,6 +31,23 @@ Type: `Promise<void>`
 
 A Promise that resolves when the language update is complete.
 
+### `emitNavigateEndEvent(oldUrl: string, newUrl: string) => Promise<void>`
+
+Emits {@see NavigationEnd} event with <code>oldUrl</code> and <code>newUrl</code>.
+
+#### Parameters
+
+| Name     | Type     | Description                                               |
+| -------- | -------- | --------------------------------------------------------- |
+| `oldUrl` | `string` | - the value will be used as old url in the event payload. |
+| `newUrl` | `string` | - the value will be used as new url in the event payload. |
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `loadRepositories() => Promise<void>`
 
 Loads the repositories in the application.
@@ -78,6 +95,22 @@ and returns a resolved Promise once the operation is complete.
 Type: `Promise<void>`
 
 A Promise that resolves when the product information update is complete.
+
+### `updateRestrictedPage(restrictedPages: Record<string, boolean>) => Promise<void>`
+
+Updates the {@see SecurityContextService} map with <code>restrictedPages</code>.
+
+#### Parameters
+
+| Name              | Type                        | Description                                                                |
+| ----------------- | --------------------------- | -------------------------------------------------------------------------- |
+| `restrictedPages` | `{ [x: string]: boolean; }` | - the map with restricted pages to be set in context service as new value. |
+
+#### Returns
+
+Type: `Promise<void>`
+
+
 
 
 ----------------------------------------------

@@ -1,10 +1,11 @@
 import { Component, Method } from '@stencil/core';
 import {
+  EventService,
   LanguageContextService,
   License,
-  LicenseContextService,
+  LicenseContextService, NavigationEnd,
   ProductInfo,
-  ProductInfoContextService, RepositoryContextService, RepositoryService,
+  ProductInfoContextService, RepositoryContextService, RepositoryService, RestrictedPages, SecurityContextService,
   ServiceProvider
 } from '@ontotext/workbench-api';
 import en from '../../assets/i18n/en.json';
@@ -78,6 +79,36 @@ export class OntoTestContext {
   @Method()
   changeLanguage(language: string): Promise<void> {
     ServiceProvider.get(LanguageContextService).updateLanguageBundle(this.bundles[language]);
+    return Promise.resolve();
+  }
+
+  /**
+   * Emits {@see NavigationEnd} event with <code>oldUrl</code> and <code>newUrl</code>.
+   * @param oldUrl - the value will be used as old url in the event payload.
+   * @param newUrl - the value will be used as new url in the event payload.
+   */
+  @Method()
+  emitNavigateEndEvent(oldUrl: string, newUrl: string): Promise<void> {
+    ServiceProvider.get(EventService).emit(new NavigationEnd(oldUrl, newUrl));
+    return Promise.resolve();
+  }
+
+  /**
+   * Updates the {@see SecurityContextService} map with <code>restrictedPages</code>.
+   * @param restrictedPages - the map with restricted pages to be set in context service as new value.
+   */
+  @Method()
+  updateRestrictedPage(restrictedPages: Record<string, boolean>): Promise<void> {
+    const restriction = new RestrictedPages();
+    if (!restrictedPages) {
+      ServiceProvider.get(SecurityContextService).updateRestrictedPages(undefined);
+      return;
+    }
+
+    Object.entries(restrictedPages).forEach(([key, value]) => {
+      restriction.setPageRestriction(key, value);
+    });
+    ServiceProvider.get(SecurityContextService).updateRestrictedPages(restriction);
     return Promise.resolve();
   }
 

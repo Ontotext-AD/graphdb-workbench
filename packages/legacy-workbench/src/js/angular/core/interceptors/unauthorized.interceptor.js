@@ -1,4 +1,5 @@
 import 'angular/core/services';
+import {ServiceProvider, SecurityContextService} from '@ontotext/workbench-api';
 
 angular.module('graphdb.framework.core.interceptors.unauthorized', [
     'ngCookies'
@@ -7,9 +8,9 @@ angular.module('graphdb.framework.core.interceptors.unauthorized', [
         function($q, $location, $rootScope, $translate) {
             return {
                 'responseError': function(response) {
-                    let redirect = false;
+                  let redirect = false;
 
-                    if (response.status === 401) {
+                  if (response.status === 401) {
                         if (response.config.url.indexOf('rest/security/authenticated-user') < 0 && !$rootScope.hasExternalAuthUser()) {
                             // Redirect to login page only if this isn't the endpoint that checks
                             // the externally logged user and when no external authentication is available.
@@ -17,8 +18,13 @@ angular.module('graphdb.framework.core.interceptors.unauthorized', [
                             redirect = true;
                         }
                     } else if (response.status === 403) {
-                        if ($rootScope.setPermissionDenied($location.path())) {
+                      const pageUrl = $location.path();
+                      if ($rootScope.setPermissionDenied(pageUrl)) {
                             console.log($translate.instant('unauthorized.console.warning')); // eslint-disable-line no-console
+                            const securityContext = ServiceProvider.get(SecurityContextService);
+                            const restrictedPages = securityContext.getRestrictedPages();
+                            restrictedPages.setPageRestriction(pageUrl);
+                            securityContext.updateRestrictedPages(restrictedPages);
                         } else {
                             redirect = true;
                         }

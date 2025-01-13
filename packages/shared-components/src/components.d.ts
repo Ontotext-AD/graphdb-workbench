@@ -118,6 +118,12 @@ export namespace Components {
          */
         "changeLanguage": (language: string) => Promise<void>;
         /**
+          * Emits {@see NavigationEnd} event with <code>oldUrl</code> and <code>newUrl</code>.
+          * @param oldUrl - the value will be used as old url in the event payload.
+          * @param newUrl - the value will be used as new url in the event payload.
+         */
+        "emitNavigateEndEvent": (oldUrl: string, newUrl: string) => Promise<void>;
+        /**
           * Loads the repositories in the application.
          */
         "loadRepositories": () => Promise<void>;
@@ -133,6 +139,11 @@ export namespace Components {
           * @returns A Promise that resolves when the product information update is complete.
          */
         "updateProductInfo": (productInfo: ProductInfo) => Promise<void>;
+        /**
+          * Updates the {@see SecurityContextService} map with <code>restrictedPages</code>.
+          * @param restrictedPages - the map with restricted pages to be set in context service as new value.
+         */
+        "updateRestrictedPage": (restrictedPages: Record<string, boolean>) => Promise<void>;
     }
     interface OntoTooltip {
     }
