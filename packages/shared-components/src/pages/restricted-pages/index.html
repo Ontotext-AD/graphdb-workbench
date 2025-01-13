@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"/>
+    <title>Restricted pages</title>
+
+    <script type="importmap">
+        {
+          "imports": {
+            "@ontotext/workbench-api": "/resources/ontotext-workbench-api.js"
+          }
+        }
+    </script>
+
+    <script type="module" src="/build/shared-components.esm.js"></script>
+    <script nomodule src="/build/shared-components.js"></script>
+    <script src="./js/main.js" defer></script>
+    <script src="./restricted-pages/main.js" defer></script>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/font-awesome.min.css">
+    <style>
+        nav a {
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <a href="/pages/restricted-pages" class="nav-link" data-link>Home</a>
+    <a id="restricted-page-link" href="/pages/restricted-pages/restricted-page" class="nav-link" data-link>Restricted page</a>
+    <a id="unrestricted-page-link" href="/pages/restricted-pages/unrestricted-page" class="nav-link" data-link>Unrestricted page</a>
+</nav>
+<div>
+    <button id="make-current-page-restricted" onclick="makeCurrentPageRestricted()">Make current page restricted</button>
+    <button id="make-current-page-unrestricted" onclick="makeCurrentPageUnrestricted()">Make current page unrestricted</button>
+    <button id="make-restriction-pages-map-empty" onclick="makeRestrictedPagesMapEmpty()">Make restricted pages map empty</button>
+    <button id="make-restriction-pages-map-undefined" onclick="makeRestrictedPagesMapUndefined()">Make restricted pages map undefined</button>
+</div>
+<div style="margin: 100px">
+    <onto-layout id="onto-layout">
+        <main id="app" slot="main">
+
+        </main>
+    </onto-layout>
+</div>
+</body>
+</html>
