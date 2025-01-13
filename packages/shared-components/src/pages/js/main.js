@@ -1,4 +1,4 @@
-let testContext = document.createElement('onto-test-context');
+const testContext = document.createElement('onto-test-context');
 document.body.appendChild(testContext);
 testContext.changeLanguage('en');
 

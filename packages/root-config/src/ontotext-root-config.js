@@ -17,6 +17,11 @@ import './styles/onto-stylesheet.css';
 // import "./styles/bootstrap-graphdb-theme.css";
 import {defineCustomElements} from '../../shared-components/loader';
 import {bootstrapPromises} from './bootstrap/bootstrap';
+import {
+  ServiceProvider,
+  EventService,
+  NavigationEnd
+} from '@ontotext/workbench-api';
 
 addErrorHandler((err) => {
   console.error(err);
@@ -101,7 +106,14 @@ const registerSingleSpaFirstMountListener = () => {
   }
 };
 
-registerSingleSpaFirstMountListener();
+const registerSingleSpaRouterListener = () => {
+  if (!window.singleSingleSpaRouterListenerRegistered) {
+    window.singleSingleSpaRouterListenerRegistered = true;
+    window.addEventListener('single-spa:routing-event', (evt) => {
+      ServiceProvider.get(EventService).emit(new NavigationEnd(evt.detail.oldUrl, evt.detail.newUrl));
+    });
+  }
+};
 
 const bootstrapApplication = () => {
   Promise.all(bootstrapPromises.map((bootstrapFn) => bootstrapFn()))
@@ -115,6 +127,8 @@ const bootstrapApplication = () => {
     });
 };
 
+registerSingleSpaFirstMountListener();
+registerSingleSpaRouterListener();
 bootstrapApplication();
 
 // window.addEventListener("single-spa:routing-event", (evt) => {
