@@ -2,7 +2,7 @@ import {Component, Host, h, Listen, Element, State} from '@stencil/core';
 import {NavbarToggledEvent} from "../onto-navbar/navbar-toggled-event";
 import {debounce} from "../../utils/function-utils";
 import {WINDOW_WIDTH_FOR_COLLAPSED_NAVBAR} from "../../models/constants";
-import {ServiceProvider, LocalStorageSubscriptionHandlerService} from "@ontotext/workbench-api";
+import {ServiceProvider, LocalStorageSubscriptionHandlerService, SecurityContextService, DeniedPermissions} from "@ontotext/workbench-api";
 
 @Component({
   tag: 'onto-layout',
@@ -11,6 +11,8 @@ import {ServiceProvider, LocalStorageSubscriptionHandlerService} from "@ontotext
 })
 export class OntoLayout {
   private windowResizeObserver: (...args: any) => void;
+  private securityContextService = ServiceProvider.get(SecurityContextService);
+  private permissionChangeSubscription: () => void;
 
   private isNavbarCollapsed = false;
 
@@ -26,7 +28,7 @@ export class OntoLayout {
   @Element() hostElement: HTMLOntoLayoutElement;
 
   @State() isLowResolution = false;
-  @State() hasPermission = true; // TODO get from local store
+  @State() hasPermission: boolean = true;
 
   /**
    * Event listener for the navbar toggled event. The layout needs to respond properly when the navbar is toggled in
@@ -52,6 +54,12 @@ export class OntoLayout {
     this.windowResizeObserver();
   }
 
+  @Listen('single-spa:routing-event',  {target: 'window'})
+  onRoutingEvent() {
+    const contextPermission = this.securityContextService.getPermissions();
+    this.setPermission(contextPermission);
+  }
+
   private windowResizeHandler(): void {
     this.isLowResolution = window.innerWidth <= WINDOW_WIDTH_FOR_COLLAPSED_NAVBAR;
     if (!this.isLowResolution && !this.isNavbarCollapsed) {
@@ -64,6 +72,21 @@ export class OntoLayout {
   private handleStorageChange(event: StorageEvent) {
     const service = ServiceProvider.get(LocalStorageSubscriptionHandlerService);
     service.handleStorageChange(event);
+  }
+
+  private setPermission(permissions: DeniedPermissions) {
+    if (permissions) {
+      const path = location.pathname;
+      this.hasPermission = !permissions[path];
+    } else {
+      // If the permissions are undefined, the user can access the url
+      this.hasPermission = true;
+    }
+
+    const mainContent = document.querySelector('.wb-layout main') as HTMLElement;
+    if (mainContent) {
+      mainContent.style.display = this.hasPermission ? 'block' : 'none';
+    }
   }
 
   // ========================
@@ -80,8 +103,16 @@ export class OntoLayout {
     window.addEventListener("storage", this.handleStorageChange);
   }
 
+  connectedCallback() {
+    // Subscribing here, because after a disconnectedCallback the connectedCallback is called, instead of componentDidLoad or constructor
+    this.permissionChangeSubscription = this.securityContextService.onUserPagePermissionChange((permissions) => this.setPermission(permissions));
+  }
+
   disconnectedCallback() {
     window.removeEventListener("storage", this.handleStorageChange);
+    if (this.permissionChangeSubscription) {
+      this.permissionChangeSubscription();
+    }
   }
 
   render() {
@@ -99,11 +130,12 @@ export class OntoLayout {
           <onto-navbar navbar-collapsed={this.isLowResolution} selected-menu={this.currentRoute}></onto-navbar>
         </nav>
 
-        {
-          this.hasPermission ?
-            <slot name="main"></slot> :
+        {this.hasPermission ? (
+          <div class='main-slot-wrapper'>
+            <slot name="main"></slot></div>
+            ) : (
             <onto-permission-banner></onto-permission-banner>
-        }
+            )}
         <footer class="wb-footer">
           <onto-footer></onto-footer>
         </footer>
