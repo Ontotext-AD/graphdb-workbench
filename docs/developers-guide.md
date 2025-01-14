@@ -1,5 +1,316 @@
 # Developers Guide
 
+## Table of Contents
+- [Context API](#stateful-context-services-and-context-api-implementation-in-graphdb-workbench)
+- [Persistence API and Local Storage Implementation in GraphDB Workbench](#persistence-api-and-local-storage-implementation-in-graphdb-workbench)
+- [Font awesome icons](#font-awesome-icons)
+- [Extending the GraphDB Workbench](#extending-the-graphdb-workbench)
+  - [Plugin system](#plugin-system)
+    - [What is the plugin system and how a developer can use it?](#what-is-the-plugin-system-and-how-a-developer-can-use-it)
+    - [How does the plugin system work?](#how-does-the-plugin-system-work-)
+  - [Color themes](#color-themes)
+- [Bundling](#bundling)
+- [Extending Translation Capabilities with the Language Service](#extending-translation-capabilities-with-the-language-service)
+  - [Overview](#overview)
+  - [Key Benefits](#key-benefits)
+  - [How It Works](#how-it-works)
+  - [How to Add a New Language](#how-to-add-a-new-language)
+
+## Stateful Context services and Context API implementation in GraphDB Workbench
+
+This guide introduces the `ContextService` API, a versatile abstraction for managing application context in the GraphDB 
+Workbench application. Each view in the application is expected to implement a concrete version of the ContextService 
+API, tailored to its specific requirements.
+
+### Overview
+
+The `ContextService` API facilitates state management by:
+
+* Allowing context value updates.
+* Notifying subscribers about context changes.
+* Enforcing type safety with generic constraints.
+
+The API is implemented as an abstract class, requiring developers to define specific fields and methods for their 
+application's needs.
+
+### Core Concepts
+
+#### Abstract `ContextService`
+
+The `ContextService` class is generic and requires a type parameter `TFields` that defines the fields the service can 
+handle. Each field corresponds to a property of the service and is managed via the context map.
+
+Key methods include:
+
+`updateContextProperty`: Updates the value of a property.
+
+`getContextPropertyValue`: Retrieves the current value of a property.
+
+`subscribe`: Registers a callback to be notified of property value changes.
+
+#### Utility Types
+
+`SnakeToPascalCase`
+
+Converts `SNAKE_CASE` field names to `PascalCase` for method naming.
+
+`DeriveContextServiceContract`
+
+Generates update methods for each field. For example, a field `SELECTED_REPOSITORY` generates an 
+`updateSelectedRepository` method.
+
+---
+
+### Implementation Example: `RepositoryContextService`
+
+The `RepositoryContextService` class manages repository-related application context for views in the GraphDB Workbench. 
+It implements the abstract `ContextService` and provides methods for updating and subscribing to repository-related data.
+
+#### Fields
+```typescript
+readonly SELECTED_REPOSITORY = 'selectedRepository';
+readonly REPOSITORY_LIST = 'repositoryList';
+```
+These fields define the context properties managed by the service.
+
+#### Methods
+
+**Updating Context**
+
+`updateSelectedRepository(repository: Repository | undefined): void`
+Updates the selected repository.
+
+`updateRepositoryList(repositories: RepositoryList): void`
+Updates the list of repositories.
+
+**Subscribing to Changes**
+
+`onSelectedRepositoryChanged(callbackFunction: ValueChangeCallback<Repository | undefined>): () => void`
+Subscribes to changes in the selected repository.
+
+`onRepositoriesChanged(callbackFunction: ValueChangeCallback<RepositoryList | undefined>): () => void`
+Subscribes to changes in the repository list.
+
+---
+
+### Step-by-Step Guide to Using `ContextService`
+
+**1. Define Context Fields and Parameters**
+
+Define the fields and their corresponding parameter types:
+
+```typescript
+type RepositoryContextFields = {
+  readonly SELECTED_REPOSITORY: string;
+  readonly REPOSITORY_LIST: string;
+};
+
+type RepositoryContextFieldParams = {
+  readonly SELECTED_REPOSITORY: Repository;
+  readonly REPOSITORY_LIST: RepositoryList;
+};
+```
+
+**2. Extend ContextService**
+
+Implement a concrete class that extends `ContextService`:
+
+```typescript
+export class RepositoryContextService extends ContextService<RepositoryContextFields> implements DeriveContextServiceContract<RepositoryContextFields, RepositoryContextFieldParams> {
+  readonly SELECTED_REPOSITORY = 'selectedRepository';
+  readonly REPOSITORY_LIST = 'repositoryList';
+
+  updateSelectedRepository(repository: Repository | undefined): void {
+    this.updateContextProperty(this.SELECTED_REPOSITORY, repository);
+  }
+
+  onSelectedRepositoryChanged(callbackFunction: ValueChangeCallback<Repository | undefined>): () => void {
+    return this.subscribe(this.SELECTED_REPOSITORY, callbackFunction);
+  }
+
+  updateRepositoryList(repositories: RepositoryList): void {
+    this.updateContextProperty(this.REPOSITORY_LIST, repositories);
+  }
+
+  onRepositoriesChanged(callbackFunction: ValueChangeCallback<RepositoryList | undefined>): () => void {
+    return this.subscribe(this.REPOSITORY_LIST, callbackFunction);
+  }
+}
+```
+
+**3. Using the Service**
+
+Import the Service using the `ServiceProvider` API:
+
+> Warning: Everything in the api package must be imported using the alias `@ontotext/workbench-api` and not by relative 
+> or absolute paths. The reason for this is that the api module is a separate package managed as a microservice which is
+> loaded using import maps where the alias is defined.
+
+
+```typescript
+import { ServiceProvider, RepositoryContextService } from '@ontotext/workbench-api';
+// Get the service instance
+const repositoryContextService = ServiceProvider.get(RepositoryContextService);
+```
+
+Update Context Values:
+
+```typescript
+
+const repository: Repository = { id: 1, name: 'Repo1' };
+repositoryContextService.updateSelectedRepository(repository);
+
+const repositoryList: RepositoryList = [{ id: 1, name: 'Repo1' }, { id: 2, name: 'Repo2' }];
+repositoryContextService.updateRepositoryList(repositoryList);
+```
+
+**4. Subscribe to Changes**
+
+```typescript
+const unsubscribeSelectedRepository = repositoryContextService.onSelectedRepositoryChanged((newRepository) => {
+  console.log('Selected repository changed:', newRepository);
+});
+
+const unsubscribeRepositoryList = repositoryContextService.onRepositoriesChanged((newList) => {
+  console.log('Repository list changed:', newList);
+});
+
+// To unsubscribe:
+unsubscribeSelectedRepository();
+unsubscribeRepositoryList();
+```
+---
+
+### Summary
+
+The `ContextService` API provides a simple yet powerful mechanism for managing context in GraphDB Workbench views. By
+extending `ContextService`, developers can create view-specific services that streamline state management and improve 
+code maintainability.
+
+
+## Persistence API and Local Storage Implementation in GraphDB Workbench
+
+This guide explains the `Persistence` API and its local storage implementation in the GraphDB Workbench application. It 
+includes details about the key interfaces, abstract classes, and practical examples for implementing persistent storage
+using local storage.
+
+---
+
+### Overview of the `Persistence` API
+
+The `Persistence` API provides a generic interface for interacting with a storage system. It supports storing, 
+retrieving, and removing data via a `Storage` interface-compatible implementation (e.g., localStorage or sessionStorage).
+
+### Key Components
+
+**`Persistence` Interface**
+
+The `Persistence` interface defines the structure for storage-related services.
+
+**Methods:**
+
+`getStorage(): Storage` - Returns the underlying storage implementation.
+
+`get(key: string): StorageData` - Retrieves the value associated with the provided key.
+
+`set(key: string, value: string): void` - Stores the given value under the provided key.
+
+`remove(key: string): void` - Deletes the value associated with the provided key.
+
+---
+
+### Local Storage Implementation
+
+The `LocalStorageService` abstract class implements the `Persistence` interface using the localStorage API. This 
+implementation serves as a base class for specialized storage services.
+
+#### Key Features
+
+**1. Namespace Support:**
+
+* Each service defines a unique `NAMESPACE` to scope its keys.
+* Keys are prefixed with a global namespace (`StorageKey.GLOBAL_NAMESPACE`) and the service-specific namespace.
+
+**2. Storage Methods:**
+
+`get(key: string): StorageData` - Fetches a value from `localStorage`.
+
+`storeValue(key: string, value: string): void` - Saves a value to `localStorage`.
+
+`remove(key: string): void` - Removes a value from `localStorage`.
+
+**3. Key Management:**
+
+* The `getPrefixedKey(key: string): string` method ensures that all keys are prefixed correctly for consistency and 
+collision avoidance.
+
+#### Implementation Example
+
+```typescript
+export class LanguageStorageService extends LocalStorageService {
+  readonly NAMESPACE = 'i18n';
+
+  set(key: string, value: string) {
+    this.storeValue(key, value);
+  }
+}
+```
+In this example, `LanguageStorageService` manages language-related properties in the `localStorage`, scoped under the 
+i18n namespace.
+
+---
+
+### Handling Storage Change Events
+
+The `LocalStorageSubscriptionHandlerService` listens to storage change events and updates the application context 
+accordingly. It works in conjunction with `ContextService` implementations to resolve and update the context properties.
+
+#### Workflow
+
+1. On a `StorageEvent`, the service parses the key to extract the namespace and property name.
+2. It resolves the appropriate handler using the `resolveHandler(namespace, propertyName)` method.
+3. If a handler exists, it invokes the handler to update the corresponding context property.
+
+#### Key Method
+
+```typescript
+handleStorageChange(event: StorageEvent): void {
+  const withoutGlobalPrefix = event.key?.substring(StorageKey.GLOBAL_NAMESPACE.length + 1);
+  let namespace = '';
+  let contextPropertyKey = '';
+
+  if (withoutGlobalPrefix) {
+    namespace = withoutGlobalPrefix.substring(0, withoutGlobalPrefix.indexOf('.'));
+    contextPropertyKey = withoutGlobalPrefix.substring(namespace.length + 1);
+  }
+
+  const handler = this.resolveHandler(namespace, contextPropertyKey);
+  if (handler) {
+    handler.updateContextProperty(contextPropertyKey, event.newValue);
+  }
+}
+```
+
+---
+
+### Practical Considerations
+
+1. Prefixed Keys:
+Always use prefixed keys to ensure isolation and avoid conflicts.
+2. Service Specialization:
+Extend `LocalStorageService` to define domain-specific storage services, specifying the `NAMESPACE` and implementing 
+additional functionality if needed.
+3. Error Handling:
+Handle cases where a key or handler is missing with appropriate logging or fallback mechanisms.
+
+---
+
+### Summary
+
+The `Persistence` API and its local storage implementation provide a robust framework for managing persistent data in
+the GraphDB Workbench application. By adhering to the namespace conventions and leveraging the `LocalStorageService` as
+a base class, developers can efficiently implement and maintain storage-related functionality.
+
 ## Font awesome icons
 
 The font kit used in the project is our own and is a custom PRO set. Below are the steps for manually updating and managing the fontawesome iconset:
