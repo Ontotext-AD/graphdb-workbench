@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  graphdb:
+    image: docker-registry.ontotext.com/graphdb:10.8.2-TR
+    environment:
+      GDB_JAVA_OPTS: >-
+        -Dgraphdb.workbench.importDirectory=/opt/home/import-data/
+        -Dgraphdb.jsonld.whitelist=https://w3c.github.io/json-ld-api/tests/*
+        -Dgraphdb.stats.default=disabled
+        -Dgraphdb.foreground=
+        -Dgraphdb.logger.root.level=ERROR
+    expose:
+      - 7200
+    volumes:
+      - ./test-cypress/fixtures/graphdb-import:/opt/home/import-data/
+    networks:
+      - single-spa-network
+
+  root:
+    build:
+      context: .
+      dockerfile: Dockerfile.root-config
+    depends_on:
+      - graphdb
+    ports:
+      - "9000:9000"
+    networks:
+      - single-spa-network
+
+#  workbench:
+#    build:
+#      context: ./packages/workbench
+#      dockerfile: Dockerfile
+#    ports:
+#      - "9002:9002"
+#    networks:
+#      - single-spa-network
+#
+#  api:
+#    build:
+#      context: ./packages/api
+#      dockerfile: Dockerfile
+#    ports:
+#      - "9003:9003"
+#    networks:
+#      - single-spa-network
+
+  cypress:
+    image: cypress/included
+    depends_on:
+      - root
+    environment:
+      - DISPLAY
+      - DBUS_SESSION_BUS_ADDRESS=/dev/null
+      - CYPRESS_baseUrl=http://root:9000
+    #            - NO_COLOR=true
+    working_dir: /e2e
+    volumes:
+      - ./e2e-tests:/e2e
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    entrypoint: cypress open --config-file cypress-legacy.config.js
+    networks:
+      - single-spa-network
+
+networks:
+  single-spa-network:
+    driver: bridge

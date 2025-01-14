@@ -30,13 +30,16 @@
 
     <script src="plugin-registry.js?v=<%= buildVersion %>"></script>
     <script src="plugins.js?v=<%= buildVersion %>"></script>
-<!--      <script src="/resources/import-map-overrides.js"></script> -->
 
      <% if (isDevelopmentMode) { %>
         <script type="injector-importmap">
             {
                 "imports": {
-                    "single-spa": "/resources/single-spa.dev.js"
+                    "single-spa": "/resources/single-spa.dev.js",
+                    "@ontotext/workbench-api": "http://localhost:9003/ontotext-workbench-api.js",
+                    "@ontotext/root-config": "/<%= mainBundle %>",
+                    "@ontotext/legacy-workbench": "/<%= legacyWorkbenchBundle %>",
+                    "@ontotext/workbench": "http://localhost:9002/main.js"
                 }
             }
         </script>
@@ -44,7 +47,11 @@
         <script type="injector-importmap">
             {
                 "imports": {
-                    "single-spa": "/resources/single-spa.min.js"
+                    "single-spa": "/resources/single-spa.min.js",
+                    "@ontotext/workbench-api": "/<%= apiBundle %>",
+                    "@ontotext/root-config": "/<%= mainBundle %>",
+                    "@ontotext/legacy-workbench": "/<%= legacyWorkbenchBundle %>",
+                    "@ontotext/workbench": "/<%= workbenchAppBundle %>"
                 }
             }
         </script>
@@ -63,16 +70,6 @@
       More information about shared dependencies can be found at https://single-spa.js.org/docs/recommended-setup#sharing-with-import-maps.
     -->
 
-    <script type="injector-importmap">
-        {
-          "imports": {
-            "@ontotext/workbench-api": "http://localhost:9003/ontotext-workbench-api.js",
-            "@ontotext/root-config": "/<%= mainBundle %>",
-            "@ontotext/legacy-workbench": "/<%= legacyWorkbenchBundle %>",
-            "@ontotext/workbench": "http://localhost:9002/main.js"
-          }
-        }
-    </script>
      <script src="/resources/import-map-overrides.js"></script>
      <script src="/resources/import-map-injector.js"></script>
 </head>
