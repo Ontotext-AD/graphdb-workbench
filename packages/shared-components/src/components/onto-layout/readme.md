@@ -31,6 +31,7 @@ graph TD;
   onto-language-selector --> onto-dropdown
   onto-navbar --> translate-label
   onto-permission-banner --> translate-label
+  onto-footer --> translate-label
   style onto-layout fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
