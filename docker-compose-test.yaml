@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   graphdb:
-    image: docker-registry.ontotext.com/graphdb:10.8.2-TR
+    image: docker-registry.ontotext.com/graphdb:${GDB_VERSION}
     environment:
       GDB_JAVA_OPTS: >-
         -Dgraphdb.workbench.importDirectory=/opt/home/import-data/
@@ -11,55 +11,52 @@ services:
         -Dgraphdb.foreground=
         -Dgraphdb.logger.root.level=ERROR
     expose:
-      - 7200
+      - "7200:7200"
     volumes:
-      - ./test-cypress/fixtures/graphdb-import:/opt/home/import-data/
+      - ./e2e-tests/fixtures/graphdb-import:/opt/home/import-data/
     networks:
       - single-spa-network
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f -H 'Accept: text/html' ${GRAPHDB_URL}/index.html" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  root:
+  workbench:
     build:
       context: .
-      dockerfile: Dockerfile.root-config
+      dockerfile: root-config.Dockerfile
+    environment:
+      GRAPHDB_URL: ${GRAPHDB_URL}
+      WORKBENCH_PORT: ${WORKBENCH_PORT}
     depends_on:
-      - graphdb
+      graphdb:
+        condition: service_healthy
     ports:
-      - "9000:9000"
+      - ${WORKBENCH_PORT}
     networks:
       - single-spa-network
-
-#  workbench:
-#    build:
-#      context: ./packages/workbench
-#      dockerfile: Dockerfile
-#    ports:
-#      - "9002:9002"
-#    networks:
-#      - single-spa-network
-#
-#  api:
-#    build:
-#      context: ./packages/api
-#      dockerfile: Dockerfile
-#    ports:
-#      - "9003:9003"
-#    networks:
-#      - single-spa-network
+    healthcheck:
+      test: [ "CMD-SHELL", "apk add --no-cache curl && curl -f -H 'Accept: */*' http://workbench:${WORKBENCH_PORT}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   cypress:
     image: cypress/included
     depends_on:
-      - root
+      workbench:
+        condition: service_healthy
     environment:
-      - DISPLAY
-      - DBUS_SESSION_BUS_ADDRESS=/dev/null
-      - CYPRESS_baseUrl=http://root:9000
-    #            - NO_COLOR=true
+#      - DISPLAY
+#      - DBUS_SESSION_BUS_ADDRESS=/dev/null
+      - CYPRESS_baseUrl=http://workbench
+      - NO_COLOR=true
     working_dir: /e2e
     volumes:
       - ./e2e-tests:/e2e
-      - /tmp/.X11-unix:/tmp/.X11-unix
-    entrypoint: cypress open --config-file cypress-legacy.config.js
+#      - /tmp/.X11-unix:/tmp/.X11-unix
+    entrypoint: cypress run --config-file cypress-legacy.config.js
     networks:
       - single-spa-network
 
