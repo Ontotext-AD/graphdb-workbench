@@ -1,11 +1,14 @@
 import { Component, Method } from '@stencil/core';
 import {
+  LanguageContextService,
   License,
   LicenseContextService,
   ProductInfo,
   ProductInfoContextService, RepositoryContextService, RepositoryService,
   ServiceProvider
 } from '@ontotext/workbench-api';
+import en from '../../assets/i18n/en.json';
+import fr from '../../assets/i18n/fr.json';
 
 /**
  * A component for managing test context in the application. Used only for testing
@@ -14,6 +17,11 @@ import {
   tag: 'onto-test-context',
 })
 export class OntoTestContext {
+  private readonly bundles = { en, fr };
+
+  constructor() {
+    this.onLanguageChanged();
+  }
 
   /**
    * Updates the license information in the context.
@@ -54,5 +62,36 @@ export class OntoTestContext {
       ServiceProvider.get(RepositoryContextService).updateRepositoryList(repositories);
     });
     return Promise.resolve();
+  }
+
+    /**
+   * Changes the application's language by updating the language bundle.
+   *
+   * This method uses the LanguageContextService to update the language bundle
+   * based on the provided language code. It retrieves the corresponding bundle
+   * from the predefined bundles object and updates the context.
+   *
+   * @param language - The language code (e.g., 'en' for English, 'fr' for French)
+   *                   representing the desired language to switch to.
+   * @returns A Promise that resolves when the language update is complete.
+   */
+  @Method()
+  changeLanguage(language: string): Promise<void> {
+    ServiceProvider.get(LanguageContextService).updateLanguageBundle(this.bundles[language]);
+    return Promise.resolve();
+  }
+
+    /**
+   * Sets up a listener for language changes and updates the application language accordingly.
+   *
+   * This private method subscribes to language change events using the LanguageContextService.
+   * When a new language is selected, it calls the changeLanguage method to update the application's language.
+   */
+  private onLanguageChanged(): void {
+    ServiceProvider.get(LanguageContextService).onSelectedLanguageChanged((languageCode) => {
+      if (languageCode) {
+        this.changeLanguage(languageCode);
+      }
+    });
   }
 }

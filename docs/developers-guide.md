@@ -720,51 +720,129 @@ folder. The `file-loader` is used for the purpose.
 * The `/dist` directory is cleaned up before every build to prevent accumulating bundle files with
 different hashes in their names.
 
-# Extending Translation Capabilities with the Language Service
+## Internationalization (i18n) Guide for the Application
 
-## Overview
+### How It Works
 
-The introduction of `$languageServiceProvider` allows for flexible, dynamic language support within the GraphDB Workbench. This enhancement enables administrators to add or configure new languages directly through the configuration file (`languages.json`), eliminating the need for code changes or redeployment.
+The system ensures that translations from different modules are merged into a single bundle per language,
+using the [merge-i18n-plugin.js](./webpack/merge-i18n-plugin.js). After they are merged, all `.json`
+files from `src/assets/i18n` directories are transferred to the webpack output directory. That includes
+[language-config.json](packages/root-config/src/assets/i18n/language-config.json), which contains the default language
+and the available languages for the application. The configuration file is read, upon starting the application inside
+[ontotext-root-config.js#getLanguageConfig](packages/root-config/src/ontotext-root-config.js). The default language
+is loaded and the app starts listening for [ontotext-root-config.js#onLanguageChange](packages/root-config/src/ontotext-root-config.js)
+events. Once a language changes, the respective bundle is loaded and emitted via [language-context.service.ts#updateLanguageBundle](packages/api/src/services/language/language-context.service.ts).
+Modules listen for bundle changes from [language-context.service.ts#onLanguageBundleChanged](packages/api/src/services/language/language-context.service.ts)
+and apply translation logic independently from each other.
 
-## Key Benefits
+### Translation File Structure
 
-1. **Development-Free Translation Management**:
-    - Administrators can now manage supported languages by simply updating `languages.json`.
-    - This configuration-based approach makes it easy to introduce or remove languages without modifying the application code.
+Every module in the application must follow the convention of placing translation files under the `src/assets/i18n` directory.
+For example:
+```code
+packages/ 
+  module1/
+    src/assets/i18n/en.json 
+    src/assets/i18n/fr.json 
+  module2/ 
+    src/assets/i18n/en.json 
+    src/assets/i18n/fr.json
+```
 
-2. **Dynamic Language Settings**:
-    - The workbench adapts automatically to the languages defined in `languages.json`, allowing administrators to plug in translations as needed.
-    - Language fallbacks and defaults are handled seamlessly, improving the application’s accessibility and usability.
+Translation files should be JSON objects where the keys are the translation identifiers, and the values are the translated strings.
+For example:
 
-## How It Works
+`src/assets/i18n/en.json`:
+```json
+{
+  "greeting": "Hello",
+  "farewell": {
+    "label": "Goodbye"
+  }
+}
+```
+src/assets/i18n/fr.json:
 
-- **Configuration File**: The `languages.json` file, located in the `src/i18n` directory, defines the `defaultLanguage` and `availableLanguages`.
-    - Example of `languages.json`:
-      ```json
-      {
-          "defaultLanguage": "en",
-          "availableLanguages": [
-              { "key": "en", "name": "English" },
-              { "key": "fr", "name": "Français" }
-          ]
-      }
-      ```
-- **Provider Integration**: `$languageServiceProvider` reads this configuration during the application initialization and exposes methods for retrieving the default language and available languages.
-- **Application-Wide Language Access**: Components across the application can access language settings via `$languageService`, ensuring consistency in language display and fallback behavior.
+```json
+{
+  "greeting": "Bonjour",
+  "farewell": {
+    "label": "Au revoir"
+  }
+}
+```
 
-## How to Add a New Language
+### Bundling Translations
+The [merge-i18n-plugin.js](./webpack/merge-i18n-plugin.js) aggregates these translation files
+across all modules and merges them into a single bundle for each language. For example:
 
-1. **Edit `languages.json`**: Add a new language entry in the `availableLanguages` array with the desired language `key` and `name`.
-   ```json
-   {
-       "defaultLanguage": "en",
-       "availableLanguages": [
-           { "key": "en", "name": "English" },
-           { "key": "fr", "name": "Français" },
-           { "key": "es", "name": "Español" }
-       ]
-   }
-   
-2. **Ensure Translations Are Available** Make sure a translation file (e.g., `es.json`) exists for the new language, following the naming convention used for other languages.
+`packages/module1/src/assets/i18n/en.json` and `packages/module2/src/assets/i18n/en.json` will be combined into a single en.json.
+The output will look like this:
+```code
+dist/${outputDirectory}/en.json
+```  
 
-3. **Reload the Application** The workbench will recognize the new language without requiring additional code changes or redeployment.
+### Conflicts
+The plugin resolves conflicts by throwing an error if multiple files define the same key for the same language.
+For example:<br>
+`module1/src/assets/i18n/en.json`
+```json
+{
+  "some-prop": "Hello",
+  "menu.logo.link.title": {
+    "label": "Goodbye"
+  }
+}
+```
+`module2/src/assets/i18n/en.json`:
+
+```json
+{
+  "another-prop": "Bonjour",
+  "menu.logo.link.title": {
+    "another-label": "Different Goodbye"
+  }
+}
+```
+
+Will result in an error, similar to this one:
+```code
+Processing file: en.json
+Error: Conflict detected for key 'menu.logo.link.title' in language 'en' in file: packages/workbench/src/assets/i18n/en.json
+```
+
+### Key Features:
+`Automatic Directory Traversal`: Scans all modules for src/assets/i18n folders.<br>
+`Conflict Detection`: Throws an error if there are duplicate keys in the same language.<br>
+`JSON Merging`: Combines all translations into one file per language.<br>
+`Asset Emission`: Writes the merged bundles to the specified output directory in the Webpack dist folder.<br>
+
+### Plugin Options
+`startDirectory`: The base directory where the plugin begins searching for modules.<br>
+`outputDirectory`: The directory inside the Webpack output folder where the merged translation bundles will be written.<br>
+
+### Example Usage in Webpack Config
+```javascript
+const { MergeI18nPlugin } = require('./plugins/MergeI18nPlugin');
+
+module.exports = {
+  // Other Webpack configurations...
+  plugins: [
+    new MergeI18nPlugin({
+      startDirectory: 'packages',
+      outputDirectory: 'onto-i18n',
+    }),
+  ],
+};
+```
+
+### How to Add new Translations
+1. Add your language in the `availableLanguages` array in [language-config.json](packages/root-config/src/assets/i18n/language-config.json).
+2. Add translation files for the new language in every `src/assets/i18n` folder, where there are translations.
+   The `key` in `availableLanguages`, should be the name of the new file translation, e.g. `${key}.json`.
+   Avoid conflicting keys in your new bundle, as it will cause an error.
+3. Build the application
+4. Check merged output: After building the application, check the `${webpack.outputFolder}/${mergeI18nPlugin.outputDirectory}`
+   (currently `dist/onto-i18n`) folder to verify that all translations are included and correctly merged.
+5. Listen for bundle changes in the new module, using [language-context.service.ts#onLanguageBundleChanged](packages/api/src/services/language/language-context.service.ts)
+6. Use the new bundle for module translation (may be different, depending on the module).
