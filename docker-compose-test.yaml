@@ -10,8 +10,8 @@ services:
         -Dgraphdb.stats.default=disabled
         -Dgraphdb.foreground=
         -Dgraphdb.logger.root.level=ERROR
-    expose:
-      - "7200:7200"
+    ports:
+      - '7200:7200'
     volumes:
       - ./e2e-tests/fixtures/graphdb-import:/opt/home/import-data/
     networks:
