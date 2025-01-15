@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.3'
 
 services:
   graphdb:
@@ -17,7 +17,7 @@ services:
     networks:
       - single-spa-network
     healthcheck:
-      test: [ "CMD-SHELL", "curl -f -H 'Accept: text/html' ${GRAPHDB_URL}/index.html" ]
+      test: ["CMD-SHELL", "curl -f -H 'Accept: text/html' ${GRAPHDB_URL}/index.html"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -30,14 +30,13 @@ services:
       GRAPHDB_URL: ${GRAPHDB_URL}
       WORKBENCH_PORT: ${WORKBENCH_PORT}
     depends_on:
-      graphdb:
-        condition: service_healthy
+      - graphdb
     ports:
       - ${WORKBENCH_PORT}
     networks:
       - single-spa-network
     healthcheck:
-      test: [ "CMD-SHELL", "apk add --no-cache curl && curl -f -H 'Accept: */*' http://workbench:${WORKBENCH_PORT}" ]
+      test: ["CMD-SHELL", "apk add --no-cache curl && curl -f -H 'Accept: */*' http://workbench:${WORKBENCH_PORT}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -45,18 +44,19 @@ services:
   cypress:
     image: cypress/included
     depends_on:
-      workbench:
-        condition: service_healthy
+      - workbench
     environment:
-#      - DISPLAY
-#      - DBUS_SESSION_BUS_ADDRESS=/dev/null
+      # Uncomment these lines if needed for Cypress tests
+      # - DISPLAY
+      # - DBUS_SESSION_BUS_ADDRESS=/dev/null
       - CYPRESS_baseUrl=http://workbench
       - NO_COLOR=true
     working_dir: /e2e
     volumes:
       - ./e2e-tests:/e2e
-#      - /tmp/.X11-unix:/tmp/.X11-unix
-    entrypoint: cypress run --config-file cypress-legacy.config.js
+      # Uncomment this if using a graphical interface for Cypress
+      # - /tmp/.X11-unix:/tmp/.X11-unix
+    entrypoint: ["cypress", "run", "--config-file", "cypress-legacy.config.js"]
     networks:
       - single-spa-network
 
