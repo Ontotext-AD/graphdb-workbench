@@ -31,6 +31,7 @@ export class OntoRepositorySelector {
   private repositoryService = ServiceProvider.get(RepositoryService);
   private repositoryContextService = ServiceProvider.get(RepositoryContextService);
   private repositoryStorageService = ServiceProvider.get(RepositoryStorageService);
+  private readonly languageService: LanguageService = ServiceProvider.get(LanguageService);
   private totalTripletsFormatter: Intl.NumberFormat;
   private currentRepositoryId: string;
   private items: DropdownItem<Repository>[] = [];
@@ -245,7 +246,10 @@ export class OntoRepositorySelector {
     return repositorySizeInfoHtml;
   }
 
-  private setupTotalRepository(language = LanguageService.DEFAULT_LANGUAGE): void {
+  private setupTotalRepository(language?: string): void {
+    if (!language) {
+      language = this.languageService.getDefaultLanguage();
+    }
     this.totalTripletsFormatter = new Intl.NumberFormat(language, {
       style: 'decimal',
       minimumFractionDigits: 0,

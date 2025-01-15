@@ -6,9 +6,10 @@ describe('LanguageStorageService', () => {
 
   beforeEach(() => {
     service = new LanguageStorageService();
+    service.remove('languageConfig');
   });
 
-  it('set should store the value in local storage with the correct key', () => {
+  test('set should store the value in local storage with the correct key', () => {
     const key = 'testKey';
     const value = 'testValue';
     const storeValueSpy = jest.spyOn(LocalStorageService.prototype, 'storeValue');
