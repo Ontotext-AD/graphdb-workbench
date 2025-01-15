@@ -11,6 +11,26 @@ A component for managing test context in the application. Used only for testing
 
 ## Methods
 
+### `changeLanguage(language: string) => Promise<void>`
+
+Changes the application's language by updating the language bundle.
+
+This method uses the LanguageContextService to update the language bundle
+based on the provided language code. It retrieves the corresponding bundle
+from the predefined bundles object and updates the context.
+
+#### Parameters
+
+| Name       | Type     | Description                                                                                                     |
+| ---------- | -------- | --------------------------------------------------------------------------------------------------------------- |
+| `language` | `string` | - The language code (e.g., 'en' for English, 'fr' for French)   representing the desired language to switch to. |
+
+#### Returns
+
+Type: `Promise<void>`
+
+A Promise that resolves when the language update is complete.
+
 ### `loadRepositories() => Promise<void>`
 
 Loads the repositories in the application.
