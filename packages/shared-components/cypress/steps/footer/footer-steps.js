@@ -24,4 +24,8 @@ export class FooterSteps extends BaseSteps {
   static loadProductInfo() {
     return cy.get('#load-product-info').click();
   }
+
+  static getAllRightsReservedElement() {
+    return FooterSteps.getFooter().get('translate-label');
+  }
 }
