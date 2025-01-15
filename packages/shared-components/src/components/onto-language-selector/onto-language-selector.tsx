@@ -34,7 +34,7 @@ export class OntoLanguageSelector {
     this.languageService = ServiceProvider.get(LanguageService);
     this.languageContextService = ServiceProvider.get(LanguageContextService);
     const selectedLanguage = ServiceProvider.get(LanguageStorageService).get(this.languageContextService.SELECTED_LANGUAGE);
-    this.changeLanguage(selectedLanguage?.getValueOrDefault(LanguageService.DEFAULT_LANGUAGE));
+    this.changeLanguage(selectedLanguage?.getValueOrDefault(this.languageService.getDefaultLanguage()));
     this.onLanguageChangeSubscription = this.languageContextService.onSelectedLanguageChanged((newLanguage) => this.changeLanguage(newLanguage));
     this.items = this.getLanguageDropdownOptions();
   }
