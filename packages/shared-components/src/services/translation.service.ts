@@ -1,31 +1,24 @@
-import en from '../assets/i18n/en.json'
-import fr from '../assets/i18n/fr.json'
-import {ServiceProvider, LanguageService, LanguageContextService} from "@ontotext/workbench-api";
+import {ServiceProvider, LanguageContextService, TranslationBundle} from "@ontotext/workbench-api";
 import {TranslationParameter} from '../models/translation/translation-parameter';
 import {TranslationCallback, TranslationObserver} from '../models/translation/translation-observer';
 import {sanitizeHTML} from '../utils/html-utils';
-
-type TranslationBundle = {
-  [key: string]: string | TranslationBundle;
-};
 
 /**
  * Service responsible for translation operations in the component.
  */
 class TranslationServiceClassDefinition {
 
-  private bundle: {[key: string]: TranslationBundle} = {en, fr}
-  private readonly languageChangeSubscription: () => void;
-  private currentLanguage = LanguageService.DEFAULT_LANGUAGE;
+  private currentBundle: TranslationBundle;
+  private readonly defaultBundle?: TranslationBundle;
 
+  private readonly languageContextService: LanguageContextService = ServiceProvider.get(LanguageContextService);
+  private languageChangeSubscription: () => void;
   private translationChangedObservers: Record<string, TranslationObserver[]> = {};
 
   constructor() {
     // log with background color
-    this.languageChangeSubscription = ServiceProvider.get(LanguageContextService).onSelectedLanguageChanged(((language) => {
-      this.currentLanguage = language;
-      this.notifyTranslationsChanged();
-    }));
+    this.defaultBundle = this.languageContextService.getDefaultBundle();
+    this.subscribeToBundleChange();
   }
 
   /**
@@ -60,26 +53,24 @@ class TranslationServiceClassDefinition {
    * @param parameters Optional parameters which to be applied during the translation.
    */
   public translate(key: string, parameters?: TranslationParameter[]): string {
-    return this.translateInLocale(key, this.currentLanguage, parameters);
+    return this.translateInLocale(key, parameters);
   }
 
   /**
-   * Translates a given key into the specified locale. If the translation is not available
-   * in the specified locale, it falls back to the default language. If parameters are provided,
+   * Translates a given key into the specified locale. If parameters are provided,
    * they will be applied to the translation.
    *
    * @param key - The translation key, which can be dot-separated for nested translations.
-   * @param locale - The target locale for translation (e.g., 'en', 'fr').
    * @param parameters - Optional parameters to be substituted into the translation string.
    * @returns The translated string with parameters applied if available, or the key itself if not found.
    */
-  public translateInLocale(key: string, locale: string, parameters?: TranslationParameter[]): string {
+  public translateInLocale(key: string, parameters?: TranslationParameter[]): string {
     // Attempt to retrieve the translation from the specified locale's bundle.
-    let translation = this.translateFromBundle(this.bundle[locale], key);
+    let translation = this.translateFromBundle(this.currentBundle, key);
 
     // If not found, fall back to the default language bundle.
     if (!translation) {
-      translation = this.translateFromBundle(this.bundle[LanguageService.DEFAULT_LANGUAGE], key);
+      translation = this.translateFromBundle(this.defaultBundle, key);
     }
 
     // If translation was found, apply any parameters provided and return the result.
@@ -88,7 +79,7 @@ class TranslationServiceClassDefinition {
       return sanitizeHTML(translation);
     }
 
-    console.warn(`Missing translation for [${key}] key in [${this.currentLanguage}] locale`);
+    console.warn(`Missing translation for key: [${key}]`);
     return key;
   }
 
@@ -177,6 +168,15 @@ class TranslationServiceClassDefinition {
     Object.keys(this.translationChangedObservers).forEach((eventName) => {
       const observers = this.translationChangedObservers[eventName] || [];
       observers.forEach((observer) => observer.callback(this.translate(eventName, observer.parameters)));
+    });
+  }
+
+  private subscribeToBundleChange() {
+    this.languageChangeSubscription = this.languageContextService.onLanguageBundleChanged((bundle) => {
+      if (bundle) {
+        this.currentBundle = bundle;
+        this.notifyTranslationsChanged();
+      }
     });
   }
 

@@ -17,9 +17,14 @@ as well as copyright information.
 
  - [onto-layout](../onto-layout)
 
+### Depends on
+
+- [translate-label](../translate-label)
+
 ### Graph
 ```mermaid
 graph TD;
+  onto-footer --> translate-label
   onto-layout --> onto-footer
   style onto-footer fill:#f9f,stroke:#333,stroke-width:4px
 ```
