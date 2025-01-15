@@ -28,6 +28,7 @@ Example of usage:
 
 ### Used by
 
+ - [onto-footer](../onto-footer)
  - [onto-license-alert](../onto-license-alert)
  - [onto-navbar](../onto-navbar)
  - [onto-permission-banner](../onto-permission-banner)
@@ -35,6 +36,7 @@ Example of usage:
 ### Graph
 ```mermaid
 graph TD;
+  onto-footer --> translate-label
   onto-license-alert --> translate-label
   onto-navbar --> translate-label
   onto-permission-banner --> translate-label

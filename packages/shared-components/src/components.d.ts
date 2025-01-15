@@ -112,6 +112,12 @@ export namespace Components {
      */
     interface OntoTestContext {
         /**
+          * Changes the application's language by updating the language bundle.  This method uses the LanguageContextService to update the language bundle based on the provided language code. It retrieves the corresponding bundle from the predefined bundles object and updates the context.
+          * @param language - The language code (e.g., 'en' for English, 'fr' for French)   representing the desired language to switch to.
+          * @returns A Promise that resolves when the language update is complete.
+         */
+        "changeLanguage": (language: string) => Promise<void>;
+        /**
           * Loads the repositories in the application.
          */
         "loadRepositories": () => Promise<void>;
