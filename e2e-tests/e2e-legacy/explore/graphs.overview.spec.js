@@ -175,7 +175,7 @@ describe('Graphs overview screen validation', () => {
         JsonLdModalSteps.verifyFileExists('statements.jsonld');
     });
 
-    it.only('Should be able to export repository in JSONLD format using row download button', () => {
+    it('Should be able to export repository in JSONLD format using row download button', () => {
         // Given I select to export the repository as JSON-LD
         GraphsOverviewSteps.downloadAsFromRowButton(0);
         GraphsOverviewSteps.selectJSONLDFromRowDropdown();
