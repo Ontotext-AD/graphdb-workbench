@@ -1,0 +1,132 @@
+{
+    "id": "",
+    "params": {
+        "queryTimeout": {
+            "label": "Query time-out (seconds)",
+            "name": "queryTimeout",
+            "value": "0"
+        },
+        "imports": {
+            "label": "Imported RDF files(';' delimited)",
+            "name": "imports",
+            "value": ""
+        },
+        "inMemoryLiteralProperties": {
+            "label": "Cache literal language tags",
+            "name": "inMemoryLiteralProperties",
+            "value": "true"
+        },
+        "ruleset": {
+            "label": "Ruleset",
+            "name": "ruleset",
+            "value": "rdfsplus-optimized"
+        },
+        "readOnly": {
+            "label": "Read-only",
+            "name": "readOnly",
+            "value": "false"
+        },
+        "title": {
+            "label": "Repository title",
+            "name": "title",
+            "value": "GraphDB Free repository"
+        },
+        "checkForInconsistencies": {
+            "label": "Check for inconsistencies",
+            "name": "checkForInconsistencies",
+            "value": "false"
+        },
+        "disableSameAs": {
+            "label": "Disable owl:sameAs",
+            "name": "disableSameAs",
+            "value": "true"
+        },
+        "enableLiteralIndex": {
+            "label": "Enable literal index",
+            "name": "enableLiteralIndex",
+            "value": "true"
+        },
+        "entityIndexSize": {
+            "label": "Entity index size",
+            "name": "entityIndexSize",
+            "value": "10000000"
+        },
+        "defaultNS": {
+            "label": "Default namespaces for imports(';' delimited)",
+            "name": "defaultNS",
+            "value": ""
+        },
+        "enableContextIndex": {
+            "label": "Use context index",
+            "name": "enableContextIndex",
+            "value": "false"
+        },
+        "baseURL": {
+            "label": "Base URL",
+            "name": "baseURL",
+            "value": "http://example.org/owlim#"
+        },
+        "queryLimitResults": {
+            "label": "Limit query results",
+            "name": "queryLimitResults",
+            "value": "0"
+        },
+        "entityIdSize": {
+            "label": "Entity ID bit-size",
+            "name": "entityIdSize",
+            "value": "32"
+        },
+        "enableFtsIndex": {
+            "label": "Enable full-text search (FTS) index",
+            "name": "enableFtsIndex",
+            "value": "true"
+        },
+        "ftsIndexes": {
+            "label": "FTS indexes to build (comma delimited)",
+            "name": "ftsIndexes",
+            "value": "default, iri"
+        },
+        "ftsStringLiteralsIndex": {
+            "label": "FTS index for xsd:string literals",
+            "name": "ftsStringLiteralsIndex",
+            "value": "default"
+        },
+        "ftsIrisIndex": {
+            "label": "FTS index for full-text indexing of IRIs",
+            "name": "ftsIrisIndex",
+            "value": "none"
+        },
+        "ftsDefaultAnalyzer": {
+            "label": "Analyzer for the default index",
+            "name": "ftsDefaultAnalyzer",
+            "value": "standard"
+        },
+        "throwQueryEvaluationExceptionOnTimeout": {
+            "label": "Throw exception on query time-out",
+            "name": "throwQueryEvaluationExceptionOnTimeout",
+            "value": "false"
+        },
+        "repositoryType": {
+            "label": "Repository type",
+            "name": "repositoryType",
+            "value": "file-repository"
+        },
+        "id": {
+            "label": "Repository ID",
+            "name": "id",
+            "value": "repo-test"
+        },
+        "storageFolder": {
+            "label": "Storage folder",
+            "name": "storageFolder",
+            "value": "storage"
+        },
+        "enablePredicateList": {
+            "label": "Use predicate indices",
+            "name": "enablePredicateList",
+            "value": "true"
+        }
+    },
+    "title": "",
+    "type": "graphdb"
+}

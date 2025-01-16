@@ -1,0 +1,22 @@
+{
+  "name": "accessibilty-audit",
+  "version": "1.0.0",
+  "main": "generate-lighthouse-pdf.js",
+  "type": "module",
+  "engines": {
+    "node": ">=14"
+  },
+  "scripts": {
+    "generate": "node generate-lighthouse-report.js"
+  },
+  "author": "teodossi.dossev@ontotext.com",
+  "license": "Apache-2.0",
+  "description": "",
+  "dependencies": {
+    "lighthouse": "^12.3.0",
+    "node-fetch": "^3.3.2",
+    "pdf-merger-js": "^5.1.2",
+    "puppeteer": "^24.1.0",
+    "yargs": "^17.7.2"
+  }
+}
