@@ -6,7 +6,7 @@ angular
 
 RepositoriesRestService.$inject = ['$http'];
 
-const REPOSITORIES_ENDPOINT = 'rest/repositories';
+export const REPOSITORIES_ENDPOINT = 'rest/repositories';
 
 function RepositoriesRestService($http) {
     return {

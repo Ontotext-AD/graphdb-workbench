@@ -1,0 +1,15 @@
+.graphql-playground-view {}
+
+.graphql-playground-view .toolbar {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+}
+
+.graphql-playground-view .toolbar .graphql-endpoint-selector {
+    width: 300px;
+}
+
+.graphql-playground-view #graphiql .graphiql-sessions {
+    margin-right: 0 !important;
+}

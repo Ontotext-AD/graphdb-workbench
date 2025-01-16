@@ -1,0 +1,41 @@
+<link href="css/graphql/graphql-playground.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+<div class="graphql-playground-view">
+    <h1 id="title-container">
+        <span id="graphql-playground-title-label">{{title}}</span>
+        <page-info-tooltip></page-info-tooltip>
+    </h1>
+
+    <div core-errors></div>
+
+    <div onto-loader-new
+         ng-show="loadingEndpoints"
+         class="graphql-playground-page-loader"
+         size="100">
+    </div>
+
+    <div class="content" ng-if="initialized">
+        <div class="no-endpoints-view" ng-show="!loadingEndpoints && configuration === undefined && !graphqlEndpoints.length">
+            <div class="alert alert-warning">
+                <span>{{'graphql.playground.message.no_schemas_in_repository' | translate}}</span>
+            </div>
+        </div>
+
+        <div class="graphql-playground-container" ng-show="!loadingEndpoints && configuration && getActiveRepositoryNoError()">
+            <div class="toolbar">
+                <select ng-model="selectedGraphqlEndpoint"
+                        ng-options="endpoint as endpoint.label for endpoint in graphqlEndpoints"
+                        ng-change="onGraphqlEndpointChange(selectedGraphqlEndpoint)"
+                        class="form-control graphql-endpoint-selector"
+                        gdb-tooltip="{{'jdbc.sql.type.hint' | translate}}"
+                        tooltip-placement="top">
+                </select>
+            </div>
+            <graphql-playground configuration="configuration"
+                                ng-if="configuration && getActiveRepositoryNoError()"></graphql-playground>
+        </div>
+    </div>
+</div>
+
+
+

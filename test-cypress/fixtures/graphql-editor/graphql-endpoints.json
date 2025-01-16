@@ -1,0 +1,17 @@
+{
+    "repository": "test",
+    "endpoints": [
+        {
+            "id": "countries",
+            "graphQL": "/rest/repositories/test/graphql/countries",
+            "active": true,
+            "default": false
+        },
+        {
+            "id": "rickmorty",
+            "graphQL": "/rest/repositories/test/graphql/rickmorty",
+            "active": true,
+            "default": false
+        }
+    ]
+}

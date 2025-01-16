@@ -1,7 +1,7 @@
 PluginRegistry.add('route', [
     {
         'url': '/graphql-playground',
-        'templateUrl': 'pages/graphql/graphql-playground.html',
+        'templateUrl': 'js/angular/graphql/templates/graphql-playground.html',
         'module': 'graphdb.framework.graphql',
         'path': 'graphql/app',
         'controller': 'GraphqlPlaygroundViewCtrl',
