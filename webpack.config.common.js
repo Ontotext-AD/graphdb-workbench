@@ -194,6 +194,11 @@ module.exports = {
                 transform: replaceVersion
             },
             {
+                from: 'src/js/angular/graphql/templates',
+                to: 'js/angular/graphql/templates',
+                transform: replaceVersion
+            },
+            {
                 from: 'src/js/angular/core/directives/graphql-playground/templates',
                 to: 'js/angular/core/directives/graphql-playground/templates',
                 transform: replaceVersion

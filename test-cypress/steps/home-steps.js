@@ -204,7 +204,7 @@ class HomeSteps {
     }
 
     static getHelpMenu() {
-        return cy.get('.main-menu .menu-element-root').eq(7);
+        return cy.get('.main-menu .menu-element-root').eq(8);
     }
 
     static clickHelpMenu() {

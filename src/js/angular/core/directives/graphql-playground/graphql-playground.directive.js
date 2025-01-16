@@ -1,5 +1,3 @@
-import {isEqual} from "lodash/lang";
-
 const modules = [];
 angular
     .module('graphdb.framework.core.directives.graphql-playground', modules)

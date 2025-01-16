@@ -725,6 +725,13 @@
         "help.how.content1": "<b>Talk to Your Graph</b> is powered by OpenAI's Assistants API. You begin by selecting or configuring an agent, which defines the context and rules for querying. Once set, you can start a conversation by asking questions in natural language. The assistant interprets your query, runs the appropriate query methods to retrieve data, and responds with an answer. Persistent chat ensures conversations stay contextually aware, enabling deeper, more coherent interactions over time. You can use multiple agents concurrently to cover various domains or data sources.",
         "help.how.content2": "An agent in <b>Talk to Your Graph</b> is an AI-driven assistant specifically configured to interact with your graph database. It uses advanced natural language processing to understand and respond to your questions by querying the database and delivering relevant information. Each agent is tailored to a specific context, making interactions seamless and efficient, whether you're retrieving data, exploring insights, or working on complex projects."
     },
+    "graphql": {
+        "playground": {
+            "message": {
+                "no_schemas_in_repository": "Current repository doesn't contain GraphQL schemas. Select another repository or upload a schema to the current one."
+            }
+        }
+    },
     "config.name.label": "Config name",
     "graph.config.required": "My graph config (required)",
     "description.text": "Description",
