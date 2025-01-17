@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench",
-    "version": "2.8.0-TR15",
+    "version": "3.0.0-TR2",
     "description": "The web application for GraphDB APIs",
     "scripts": {
         "clean": "sh scripts/clean.sh",
@@ -28,10 +28,10 @@
         "cy:run": "sh scripts/cy.sh",
         "sonar": "sh scripts/sonar.sh"
     },
-  "files": [
-    "dist/"
-  ],
-  "repository": {
+    "files": [
+        "dist/"
+    ],
+    "repository": {
         "type": "git",
         "url": "git+https://github.com/Ontotext-AD/graphdb-workbench.git"
     },
