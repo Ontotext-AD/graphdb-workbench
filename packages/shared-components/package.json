@@ -3,16 +3,16 @@
   "version": "0.0.1",
   "description": "Shared components for the GraphDB Workbench application",
   "license": "MIT",
-  "main": "pre-dist/index.cjs.js",
-  "module": "pre-dist/index.js",
-  "types": "pre-dist/types/index.d.ts",
-  "collection": "pre-dist/collection/collection-manifest.json",
-  "collection:main": "pre-dist/collection/index.js",
-  "unpkg": "pre-dist/shared-components/shared-components.esm.js",
+  "main": "components-dist/index.cjs.js",
+  "module": "components-dist/index.js",
+  "types": "components-dist/types/index.d.ts",
+  "collection": "components-dist/collection/collection-manifest.json",
+  "collection:main": "components-dist/collection/index.js",
+  "unpkg": "components-dist/shared-components/shared-components.esm.js",
   "exports": {
     ".": {
-      "import": "./pre-dist/shared-components/shared-components.esm.js",
-      "require": "./pre-dist/shared-components/shared-components.cjs.js"
+      "import": "./components-dist/shared-components/shared-components.esm.js",
+      "require": "./components-dist/shared-components/shared-components.cjs.js"
     },
     "./loader": {
       "import": "./loader/index.js",
@@ -25,7 +25,7 @@
     "url": "https://github.com/ionic-team/stencil-component-starter.git"
   },
   "files": [
-    "pre-dist/",
+    "components-dist/",
     "loader/"
   ],
   "scripts": {

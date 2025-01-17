@@ -12,7 +12,7 @@ module.exports = (webpackConfigEnv, argv) => {
     const isProduction = argv && argv.mode === "production";
 
     return merge(defaultConfig, {
-        entry: './pre-dist/esm/loader.js',
+        entry: './components-dist/esm/loader.js',
         output: {
             filename: isProduction
                 ? 'ontotext-shared-components.[contenthash].js'

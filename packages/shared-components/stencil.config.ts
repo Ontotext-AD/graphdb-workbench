@@ -9,7 +9,7 @@ export const config: Config = {
     {
       type: 'dist',
       esmLoaderPath: '../loader',
-      dir: 'pre-dist',
+      dir: 'components-dist',
     },
     // {
     //   type: 'dist-custom-elements',

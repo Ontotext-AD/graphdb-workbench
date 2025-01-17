@@ -19,7 +19,7 @@ clean_directory() {
 # Clean
 clean_directory "packages/shared-components/.stencil"
 clean_directory "packages/shared-components/dist"
-clean_directory "packages/shared-components/pre-dist"
+clean_directory "packages/shared-components/components-dist"
 clean_directory "packages/shared-components/loader"
 clean_directory "packages/shared-components/node_modules"
 clean_directory "packages/shared-components/www"

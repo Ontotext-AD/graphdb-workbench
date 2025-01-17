@@ -9,7 +9,7 @@ services:
     volumes:
       - .:/app
       - ../api:/api
-    command: npm run start
+    command: npm run start:standalone
 
   cypress:
     image: cypress/included:13.17.0
