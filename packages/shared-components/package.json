@@ -3,16 +3,16 @@
   "version": "0.0.1",
   "description": "Shared components for the GraphDB Workbench application",
   "license": "MIT",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.js",
-  "types": "dist/types/index.d.ts",
-  "collection": "dist/collection/collection-manifest.json",
-  "collection:main": "dist/collection/index.js",
-  "unpkg": "dist/shared-components/shared-components.esm.js",
+  "main": "pre-dist/index.cjs.js",
+  "module": "pre-dist/index.js",
+  "types": "pre-dist/types/index.d.ts",
+  "collection": "pre-dist/collection/collection-manifest.json",
+  "collection:main": "pre-dist/collection/index.js",
+  "unpkg": "pre-dist/shared-components/shared-components.esm.js",
   "exports": {
     ".": {
-      "import": "./dist/shared-components/shared-components.esm.js",
-      "require": "./dist/shared-components/shared-components.cjs.js"
+      "import": "./pre-dist/shared-components/shared-components.esm.js",
+      "require": "./pre-dist/shared-components/shared-components.cjs.js"
     },
     "./loader": {
       "import": "./loader/index.js",
@@ -25,13 +25,15 @@
     "url": "https://github.com/ionic-team/stencil-component-starter.git"
   },
   "files": [
-    "dist/",
+    "pre-dist/",
     "loader/"
   ],
   "scripts": {
     "build:watch": "stencil build --watch",
-    "build": "stencil build",
-    "start": "stencil build --dev --watch --serve",
+    "prebuild": "stencil build",
+    "build": "webpack --mode production",
+    "start": "webpack serve --mode development --port 9005",
+    "start:standalone": "stencil build --dev --watch --serve",
     "test": "npm run test:unit",
     "test:unit": "stencil test --spec",
     "test:unit:watch": "stencil test --spec --watchAll",
@@ -59,7 +61,11 @@
     "jest-cli": "^29.7.0",
     "puppeteer": "^23.10.4",
     "sonarqube-scanner": "^3.3.0",
-    "ts-jest": "^29.2.4"
+    "ts-jest": "^29.2.4",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.1",
+    "webpack-config-single-spa": "^7.0.0",
+    "webpack-dev-server": "^5.2.0"
   },
   "dependencies": {
     "font-awesome": "^4.7.0",

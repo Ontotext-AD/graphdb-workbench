@@ -15,7 +15,7 @@ import './styles/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
 import './styles/onto-stylesheet.css';
 // import "./styles/bootstrap-graphdb-theme.css";
-import {defineCustomElements} from '../../shared-components/loader';
+import {defineCustomElements} from '@ontotext/shared-components';
 import {
   ServiceProvider,
   LicenseService,
