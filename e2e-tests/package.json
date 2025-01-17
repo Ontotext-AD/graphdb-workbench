@@ -14,7 +14,7 @@
     "test:core": "cypress run --spec e2e-broken/repository/**,integration/import/**,integration/sparql-editor/**,integration/monitor/**,integration/cluster/**,integration/ttyg/**"
   },
   "author": {
-    "name": "\"Sirma AI\" JSC, trading as Ontotext",
+    "name": "Ontotext AD",
     "url": "https://www.ontotext.com/"
   },
   "license": "Apache-2.0",
