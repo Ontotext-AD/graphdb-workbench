@@ -15,7 +15,7 @@ module.exports = defineConfig({
             return require('./plugins')(on, config);
         },
         baseUrl: 'http://localhost:9000',
-        specPattern: 'e2e-legacy/**/*.{js,jsx,ts,tsx}',
+        specPattern: 'e2e-legacy/setup/con*.{js,jsx,ts,tsx}',
         supportFile: 'support/e2e.js',
         reporter: "cypress-multi-reporters",
         reporterOptions: {

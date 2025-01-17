@@ -3,7 +3,7 @@ import repoTemplate from '../fixtures/repo-template.json';
 export const REPOSITORIES_URL = '/rest/repositories/';
 const AUTOCOMPLETE_URL = '/rest/autocomplete/';
 
-const PRESET_REPO = 'ls.repository-id';
+const PRESET_REPO = 'ontotext.gdb.repository.selectedRepositoryId';
 
 Cypress.Commands.add('createRepository', (options = {}) => {
     cy.request({
@@ -36,7 +36,7 @@ Cypress.Commands.add('deleteRepository', (id) => {
 });
 
 Cypress.Commands.add('presetRepository', (id) => {
-    cy.setLocalStorage('ls.repository-id', id);
+    cy.setLocalStorage(PRESET_REPO, id);
     cy.waitUntil(() =>
         cy.getLocalStorage(PRESET_REPO)
             .then((preset) => preset && preset === id));
