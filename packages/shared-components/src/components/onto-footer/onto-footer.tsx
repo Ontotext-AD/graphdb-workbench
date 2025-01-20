@@ -1,6 +1,5 @@
 import { Component, Host, h, State } from '@stencil/core';
 import { ProductInfo, ServiceProvider, SubscriptionList, ProductInfoContextService } from '@ontotext/workbench-api';
-import { TranslationService } from '../../services/translation.service';
 
 /**
  * OntoFooter component for rendering the footer of the application.
@@ -41,7 +40,7 @@ export class OntoFooter {
           href="http://rdf4j.org" target="_blank" rel="noopener noreferrer">RDF4J&nbsp;</a
           >{this.productInfo?.sesame} &bull; Connectors {this.productInfo?.connectors} &bull; Workbench {this.productInfo?.workbench} &bull; &copy;
           2002&ndash;{this.currentYear}&nbsp;<a href="http://ontotext.com" target="_blank" rel="noopener noreferrer">Ontotext
-          AD</a>. {TranslationService.translate('footer.label.all_rights_reserved')}
+          AD</a>.&nbsp;<translate-label labelKey={'footer.label.all_rights_reserved'}></translate-label>
         </div>
       </Host>
     );

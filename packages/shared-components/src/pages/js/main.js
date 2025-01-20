@@ -1,5 +1,6 @@
 let testContext = document.createElement('onto-test-context');
 document.body.appendChild(testContext);
+testContext.changeLanguage('en');
 
 // Mock the navigateUrl function which is exposed by the single-spa via the root-config module
 // in order to allow the menu to work without going anywhere when clicking the menu items

@@ -6,6 +6,7 @@ const {merge} = require("webpack-merge");
 const singleSpaDefaults = require("webpack-config-single-spa");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const {MergeJsonPlugin} = require('./webpack/merge-json-plugin.js');
+const {MergeI18nPlugin} = require('./webpack/merge-i18n-plugin.js');
 const path = require("path");
 const fs = require('fs');
 
@@ -86,6 +87,10 @@ module.exports = (webpackConfigEnv, argv) => {
                         'packages/legacy-workbench/src/**/plugin.js'
                     ]
                 }
+            }),
+            new MergeI18nPlugin({
+              startDirectory: './packages',
+              outputDirectory: 'onto-i18n'
             }),
             new MergeJsonPlugin({
                 files: [
