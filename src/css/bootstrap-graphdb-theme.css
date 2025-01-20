@@ -18,6 +18,8 @@
     /* Link decoration, see GDB-9013 before you touch these */
     --link-decoration-thickness: clamp(1px, 6%, 10px);
     --link-underline-offset: clamp(1px, 6%, 10px);
+    /* The base text color. This usually comes from the bootstrap, but in some cases it needs to be set explicitly. */
+    --base-text-color: #373a3c;
     /* The base background color that is used for panels and other similar elements */
     --base-background-color: #f7f7f7;
     /* The base background color that is used for selected panels or elements */
