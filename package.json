@@ -28,8 +28,10 @@
         "cy:run": "sh scripts/cy.sh",
         "sonar": "sh scripts/sonar.sh"
     },
-    "files": [],
-    "repository": {
+  "files": [
+    "dist/"
+  ],
+  "repository": {
         "type": "git",
         "url": "git+https://github.com/Ontotext-AD/graphdb-workbench.git"
     },
@@ -38,7 +40,7 @@
         "workbench"
     ],
     "author": {
-        "name": "\"Sirma AI\" JSC, trading as Ontotext",
+        "name": "Ontotext AD",
         "url": "https://www.ontotext.com/"
     },
     "license": "Apache-2.0",
