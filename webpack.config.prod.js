@@ -19,43 +19,40 @@ module.exports = (env, argv) => merge(commonConfig(env, argv), {
         filename: '[name].[contenthash].js',
         chunkFilename: '[name].[contenthash].bundle.js',
         path: path.resolve(__dirname, 'dist'),
-        libraryTarget: "system",
+        libraryTarget: "module",
         publicPath: '/'
     },
-    module: {
-        rules: [
-            {
-                test: /\.css$/,
-                use: [{
-                    loader: MiniCssExtractPlugin.loader,
-                    options: {
-                        publicPath: '',
-                    },
-                }, 'css-loader']
-            },
-            {
-                test: /\.less$/,
-                use: [{
-                    loader: MiniCssExtractPlugin.loader,
-                    options: {
-                        publicPath: '',
-                    },
-                }, 'css-loader', 'less-loader']
-            }
-        ]
-    },
-    optimization: {
-        minimizer: [
-            new CssMinimizerPlugin()
-        ]
-    },
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.less$/,
+        use: ['style-loader', 'css-loader', 'less-loader']
+      }
+    ]
+  },
     plugins: [
         new CopyPlugin({
             patterns: [
                 {
                     from: 'packages/root-config/node_modules/single-spa/lib/es2015/esm/single-spa.min.js',
                     to: 'resources'
-                }
+                },
+              {
+                from: 'packages/shared-components/dist',
+                to: 'shared-components'
+              },
+              {
+                from: 'packages/api/dist',
+                to: 'api'
+              },
+              {
+                from: 'packages/workbench/dist',
+                to: 'workbench'
+              }
             ]
         }),
         new MiniCssExtractPlugin({filename: "[name].[contenthash].css"}),

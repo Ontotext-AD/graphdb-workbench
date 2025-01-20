@@ -68,6 +68,8 @@ module.exports = (webpackConfigEnv, argv) => {
                         orgName,
                         mainBundle: Object.keys(compilation.assets).find(asset => asset.includes('main') && asset.endsWith('.js')),
                         legacyWorkbenchBundle:  Object.keys(compilation.assets).find(asset => asset.includes('legacyWorkbench') && asset.endsWith('.js')),
+                        apiBundle: Object.keys(compilation.assets).find(asset => asset.includes('ontotext-workbench-api') && asset.endsWith('.js')),
+                        workbenchAppBundle: Object.keys(compilation.assets).find(asset => asset.includes('workbenchApp') && asset.endsWith('.js')),
                         contentHash: assets.contentHash,
                         buildVersion: PACKAGE.version,
                         microFrontEndsUrls: 'http://localhost:9002 http://localhost:9003 ws://localhost:9003 ws://localhost:9002'
