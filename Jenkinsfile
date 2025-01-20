@@ -60,21 +60,11 @@ pipeline {
                 }
             }
         }
-
-        stage('Fix user rights') {
-            steps {
-                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                    script {
-                        sh 'sudo chown -R $(id -u):$(id -g) .'
-                    }
-                }
-            }
-        }
-
         stage('Shared-components Cypress Test') {
             steps {
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                     script {
+                        sh 'sudo chown -R $(id -u):$(id -g) .'
                         sh 'npm run cy:run'
                     }
                 }
@@ -94,14 +84,10 @@ pipeline {
                         sh 'cp graphdb.license ./e2e-tests/fixtures/'
                     }
                     sh "ls ./e2e-tests/fixtures/"
-                  // --no-ansi suppresses color output that shows as garbage in Jenkins
+                    // --no-ansi suppresses color output that shows as garbage in Jenkins
                     sh "docker-compose --no-ansi -f docker-compose-test.yaml build --force-rm --no-cache --parallel"
                     sh "docker-compose --no-ansi -f docker-compose-test.yaml up --abort-on-container-exit --exit-code-from cypress"
 
-                    // Fix coverage permissions
-//                     sh "sudo chown -R \$(id -u):\$(id -g) coverage/"
-//                     sh "sudo chown -R \$(id -u):\$(id -g) cypress/"
-//                     sh "sudo chown -R \$(id -u):\$(id -g) report/"
                 }
             }
         }
@@ -123,6 +109,10 @@ pipeline {
     }
 
     post {
+        always {
+            sh 'sudo chown -R $(id -u):$(id -g) .'
+        }
+
         failure {
             wrap([$class: 'BuildUser']) {
                 emailext(
