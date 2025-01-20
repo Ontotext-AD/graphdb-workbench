@@ -1,15 +1,184 @@
-.graphql-playground-view {}
+html, body {
+    height: 100vh;
+}
+
+.page-content,
+.page-content .container-fluid {
+    height: calc(100% - 70px);
+}
+
+.graphql-playground-view,
+.content,
+.graphql-playground-container,
+graphql-playground,
+.graphql-playground-component {
+    display: block;
+    height: 100%;
+}
+
+graphql-playground {
+    padding-bottom: 16px;
+}
+
+.graphql-playground-view #title-container {
+    margin-bottom: 16px;
+}
+
+.graphql-playground-view graphql-playground-component {
+    height: 100%;
+}
 
 .graphql-playground-view .toolbar {
     display: flex;
     flex-direction: column;
     align-items: end;
+    margin-bottom: 16px;
 }
 
 .graphql-playground-view .toolbar .graphql-endpoint-selector {
     width: 300px;
 }
 
+/* =============================================== */
+/*   overrides for graphql-playground component    */
+/* =============================================== */
+
+.graphql-playground-view #graphiql * {
+    border-radius: 0;
+    font-size: 1rem;
+    font-family: var(--main-font);
+}
+
+.graphql-playground-view #graphiql .graphiql-container .graphiql-sidebar {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.graphql-playground-view #graphiql .graphiql-sidebar button {
+    color: var(--primary-color);
+}
+
+/* Hide the settings button */
+.graphql-playground-view #graphiql .graphiql-sidebar button[data-value="settings"] {
+    display: none;
+}
+
 .graphql-playground-view #graphiql .graphiql-sessions {
+    margin-top: 0;
     margin-right: 0 !important;
+    margin-bottom: 0;
+    background-color: var(--base-background-color);
+}
+
+/* Hide the graphql logo */
+.graphql-playground-view #graphiql .graphiql-sessions .graphiql-logo {
+    display: none;
+}
+
+.graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header {
+    height: unset;
+    color: inherit;
+}
+
+.graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header button.graphiql-tab-add {
+    padding: 8px;
+}
+
+.graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header .graphiql-tabs {
+    margin-bottom: 0;
+    padding-left: 18px;
+    font-size: 1rem;
+}
+
+.graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header .graphiql-tabs .graphiql-tab-active {
+    background-color: var(--base-background-hover-color);
+}
+
+.graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header .graphiql-tabs .graphiql-tab-button {
+    padding: 4px 8px;
+    color: var(--base-text-color);
+}
+
+.graphql-playground-view #graphiql .graphiql-sessions .graphiql-session {
+    padding: 0 18px 18px;
+}
+
+/* When there is a single opened tab in the editor */
+.graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors.full-height {
+    margin-top: -13px;
+}
+
+.graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors .graphiql-toolbar button.graphiql-execute-button {
+    background-color: var(--primary-color);
+}
+
+.graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors .graphiql-toolbar .graphiql-toolbar-icon {
+  color: var(--primary-color);
+}
+
+/* =============================================== */
+/*   overrides for graphql-playground history      */
+/* =============================================== */
+
+.graphql-playground-view #graphiql .graphiql-history .graphiql-history-item-action {
+    color: var(--primary-color);
+}
+
+.graphql-playground-view #graphiql .graphiql-history .graphiql-history-header {
+    color: var(--base-text-color);
+}
+
+.graphql-playground-view #graphiql .graphiql-history .graphiql-history-item-label {
+    color: var(--text-muted-color);
+}
+
+.graphql-playground-view #graphiql .graphiql-history .graphiql-history-item.editable {
+    background-color: #fff;
+}
+
+.graphql-playground-view #graphiql .graphiql-history .graphiql-history-item.editable input {
+    border: 1px solid hsla(var(--secondary-color-hsl), 0.5);
+}
+
+.graphql-playground-view #graphiql .graphiql-history .graphiql-history-item.editable button {
+    color: var(--primary-color);
+}
+
+.graphql-playground-view #graphiql .graphiql-history .graphiql-history-item.editable button:nth-of-type(2) {
+    /* using the color for .btn-link.secondary */
+    color: rgba(0, 0, 0, .66);
+}
+
+/* =============================================== */
+/*   overrides for graphql documentation explorer  */
+/* =============================================== */
+
+.graphql-playground-view #graphiql .graphiql-doc-explorer .graphiql-doc-explorer-header {
+    color: var(--base-text-color);
+}
+
+/* =============================================== */
+/*   overrides for graphiql explorer               */
+/* =============================================== */
+
+.graphql-playground-view #graphiql .docExplorerWrap .doc-explorer-title {
+    color: var(--base-text-color);
+}
+
+/* =============================================== */
+/*   overrides for codemirror                      */
+/* =============================================== */
+
+.graphql-playground-view #graphiql li.CodeMirror-hint-active {
+    background: var(--autocomplete-background);
+    color: inherit;
+}
+
+/* ================================================ */
+/*   overrides for graphiql dialog (hotkeys dialog) */
+/* ================================================ */
+
+.graphiql-dialog {
+    border-radius: 0;
+    color: var(--base-text-color);
 }
