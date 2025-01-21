@@ -9,9 +9,9 @@ angular
     .module('graphdb.framework.graphql.controllers.graphql-playground-view', modules)
     .controller('GraphqlPlaygroundViewCtrl', GraphqlPlaygroundViewCtrl);
 
-GraphqlPlaygroundViewCtrl.$inject = ['$scope', '$repositories', 'toastr', 'GraphqlService'];
+GraphqlPlaygroundViewCtrl.$inject = ['$scope', '$repositories', 'toastr', 'GraphqlService', 'AuthTokenService'];
 
-function GraphqlPlaygroundViewCtrl($scope, $repositories, toastr, GraphqlService) {
+function GraphqlPlaygroundViewCtrl($scope, $repositories, toastr, GraphqlService, AuthTokenService) {
 
     // =========================
     // Private variables
@@ -74,15 +74,31 @@ function GraphqlPlaygroundViewCtrl($scope, $repositories, toastr, GraphqlService
     // =========================
 
     /**
+     * Builds the configuration object for the GraphQL Playground.
+     * @param {string} endpoint - The selected endpoint.
+     * @return {GraphqlPlaygroundConfig} - The configuration object.
+     */
+    const buildConfig = (endpoint) => {
+        const config = {
+            endpoint: endpoint
+        };
+        const authToken = AuthTokenService.getAuthToken();
+        if (authToken) {
+            config.headers = {
+                Authorization: authToken
+            };
+        }
+        return new GraphqlPlaygroundConfig(config);
+    };
+
+    /**
      * Initializes the view by setting all needed variables in the scope.
      * @param {SelectMenuOptionsModel[]} endpointsSelectMenuOptions
      */
     const initView = (endpointsSelectMenuOptions) => {
         $scope.graphqlEndpoints = endpointsSelectMenuOptions;
         $scope.selectedGraphqlEndpoint = $scope.graphqlEndpoints[0];
-        $scope.configuration = new GraphqlPlaygroundConfig({
-            endpoint: $scope.selectedGraphqlEndpoint.value
-        });
+        $scope.configuration = buildConfig($scope.selectedGraphqlEndpoint.value);
     };
 
     /**
@@ -115,9 +131,8 @@ function GraphqlPlaygroundViewCtrl($scope, $repositories, toastr, GraphqlService
      * @param {SelectMenuOptionsModel} endpoint
      */
     const updateConfiguration = (endpoint) => {
-        $scope.configuration = new GraphqlPlaygroundConfig({
-            endpoint: endpoint.value
-        });
+        const config = buildConfig(endpoint.value);
+        $scope.configuration = new GraphqlPlaygroundConfig(config);
     };
 
     /**
