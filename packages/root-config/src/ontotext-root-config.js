@@ -39,7 +39,27 @@ const appModules = {
   '@ontotext/workbench': () => import('@ontotext/workbench')
 };
 
-const routes = constructRoutes(microfrontendLayout);
+// TODO Branch includes three possible solutions and where I found them. Some of them don't seem to work with the current setup.
+// TODO All commented solutions for the Splash screen need to be tested with the correct path of the image.
+// TODO The timing of the Loader appearance and removal need to be verified, to see if appropriate.
+
+// Setup as per documentation page: https://single-spa.js.org/docs/layout-definition/#loading-uis
+const globalLoaderHTML = `
+  <div id="loading-div" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.8); display: flex; justify-content: center; align-items: center; z-index: 9999;">
+    <div>Loading Workbench. Splash screen to replace this.</div>
+    <img src="./img/graphdb-splash.svg" alt="Loading..." style="width: auto; height: auto;" />
+  </div>`;
+
+//Setup as per documentation page: https://single-spa.js.org/docs/layout-definition/#loading-uis
+const data = {
+  loaders: {
+    globalLoader: globalLoaderHTML,
+  },
+};
+//Setup as per documentation page: https://single-spa.js.org/docs/layout-definition/#loading-uis
+const routes = constructRoutes(microfrontendLayout, data);
+console.log(routes); // Loaders correctly recognized in the constructed routes
+
 const applications = constructApplications({
   routes,
   loadApp({name}) {
@@ -47,7 +67,8 @@ const applications = constructApplications({
     // Expose navigateToUrl to the window object so that it can be used by the components in the shared-components
     // package without importing single-spa which causes troubles.
     window.singleSpa.navigateToUrl = navigateToUrl;
-
+    // Alternative solution (Option 2) from https://stackoverflow.com/questions/61471938/is-there-any-way-to-show-a-loader-till-micro-apps-getting-loaded-in-single-spa-p
+    //showLoader().then(() => console.log('Resolved loader'));
     if (appModules[name]) {
       if (!name.includes('.')) {
         return appModules[name]()
@@ -67,10 +88,58 @@ const applications = constructApplications({
 
 const layoutEngine = constructLayoutEngine({routes, applications});
 
+/*// Alternative possible solution (registering Loader as an app), inspired by https://github.com/frehner/singlespa-transitions/blob/master/index.js
+const loadingFunction = () =>
+  import('./loader/loader.js').then((module) => ({
+    bootstrap: module.bootstrap,
+    mount: module.mount,
+    unmount: module.unmount,
+  }));
+
+const activityFunction = (location) => {
+  return !location.pathname.startsWith('/');
+};
+registerApplication('splashScreen', loadingFunction, activityFunction);*/
 applications.forEach(registerApplication);
 layoutEngine.activate();
 
 defineCustomElements();
+
+// Alternative solution (Option 2) from answer https://stackoverflow.com/questions/61471938/is-there-any-way-to-show-a-loader-till-micro-apps-getting-loaded-in-single-spa-p
+const showLoader = () => {
+  return new Promise((resolve) => {
+    const loadingDiv = document.createElement('div');
+    loadingDiv.id = 'loading-div';
+    loadingDiv.style.position = 'fixed';
+    loadingDiv.style.top = '0';
+    loadingDiv.style.left = '0';
+    loadingDiv.style.width = '100%';
+    loadingDiv.style.height = '100%';
+    loadingDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+    loadingDiv.style.display = 'flex';
+    loadingDiv.style.justifyContent = 'center';
+    loadingDiv.style.alignItems = 'center';
+    loadingDiv.style.zIndex = '9999';
+
+    const loaderImage = document.createElement('img');
+    loaderImage.src = './img/graphdb-splash.svg';
+    loaderImage.alt = 'Loading...';
+    loaderImage.style.width = 'auto';
+    loaderImage.style.height = 'auto';
+
+    loadingDiv.appendChild(loaderImage);
+    document.body.appendChild(loadingDiv);
+    resolve();
+  });
+};
+
+// Alternative solution (Option 2) from answer https://stackoverflow.com/questions/61471938/is-there-any-way-to-show-a-loader-till-micro-apps-getting-loaded-in-single-spa-p
+const hideLoader = () => {
+  const loadingDiv = document.getElementById('loading-div');
+  if (loadingDiv) {
+    loadingDiv.remove();
+  }
+};
 
 // This is a workaround to initialize the navbar when the root-config is loaded and the navbar is not yet initialized.
 const waitForNavbarElement = () => {
