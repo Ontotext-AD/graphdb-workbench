@@ -1,12 +1,22 @@
-import { TestBed } from '@angular/core/testing';
-import { AppModule } from './app.module';
-import { AppComponent } from './app.component';
-import {RouterModule} from "@angular/router";
+import {TestBed} from '@angular/core/testing';
+import {AppComponent} from './app.component';
+import {ActivatedRoute} from '@angular/router';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppModule,  RouterModule.forRoot([]) ],
+      imports: [AppComponent],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { params: {}, queryParams: {} },
+            paramMap: {
+              get: () => null,
+            },
+          },
+        },
+      ]
     }).compileComponents();
   });
 
