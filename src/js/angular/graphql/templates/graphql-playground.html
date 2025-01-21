@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        <div class="graphql-playground-container" ng-show="!loadingEndpoints && configuration && getActiveRepositoryNoError()">
+        <div class="graphql-playground-container" ng-if="!loadingEndpoints && configuration && getActiveRepositoryNoError()">
             <div class="toolbar">
                 <select ng-model="selectedGraphqlEndpoint"
                         ng-options="endpoint as endpoint.label for endpoint in graphqlEndpoints"
@@ -31,8 +31,7 @@
                         tooltip-placement="top">
                 </select>
             </div>
-            <graphql-playground configuration="configuration"
-                                ng-if="configuration && getActiveRepositoryNoError()"></graphql-playground>
+            <graphql-playground configuration="configuration"></graphql-playground>
         </div>
     </div>
 </div>

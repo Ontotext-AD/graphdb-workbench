@@ -8,6 +8,11 @@ export class GraphqlPlaygroundConfig {
          * @private
          */
         this._endpoint = data.endpoint;
+        /**
+         * @type {Object}
+         * @private
+         */
+        this._headers = data.headers;
     }
 
     get endpoint() {
@@ -16,5 +21,13 @@ export class GraphqlPlaygroundConfig {
 
     set endpoint(value) {
         this._endpoint = value;
+    }
+
+    get headers() {
+        return this._headers;
+    }
+
+    set headers(value) {
+        this._headers = value;
     }
 }
