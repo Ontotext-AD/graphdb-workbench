@@ -111,4 +111,15 @@ export class LanguageContextService extends ContextService<LanguageContextFields
   setLanguageConfig(languageConfig?: LanguageConfig) {
     this.updateContextProperty(this.LANGUAGE_CONFIG, languageConfig);
   }
+
+  /**
+   * Retrieves the currently selected language from the context.
+   *
+   * @returns {string | undefined} The code of the currently selected language.
+   *          Returns undefined if no language has been selected or set in the context.
+   *
+   */
+  getSelectedLanguage(): string | undefined {
+    return this.getContextPropertyValue(this.SELECTED_LANGUAGE);
+  }
 }
