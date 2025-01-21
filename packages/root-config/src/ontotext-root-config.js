@@ -16,19 +16,7 @@ import 'font-awesome/css/font-awesome.min.css';
 import './styles/onto-stylesheet.css';
 // import "./styles/bootstrap-graphdb-theme.css";
 import {defineCustomElements} from '../../shared-components/loader';
-import {
-  ServiceProvider,
-  LicenseService,
-  LicenseContextService,
-  TranslationService,
-  ProductInfoService,
-  ProductInfoContextService,
-  RepositoryService,
-  RepositoryContextService,
-  LanguageService,
-  LanguageContextService,
-  LanguageStorageService
-} from '@ontotext/workbench-api';
+import {bootstrapPromises} from './bootstrap/bootstrap';
 
 addErrorHandler((err) => {
   console.error(err);
@@ -103,120 +91,31 @@ const initializeNavbar = () => {
     });
 };
 
-const loadRepositories = () => {
-  return ServiceProvider.get(RepositoryService).getRepositories()
-    .then((repositories) => {
-      ServiceProvider.get(RepositoryContextService).updateRepositoryList(repositories);
-    })
-    .catch((error) => {
-      throw new Error('Could not load repositories', error);
-    });
-};
-
-const loadProductInfoLocal = () => {
-  return ServiceProvider.get(ProductInfoService).getProductInfoLocal()
-    .then((productInfo) => {
-      ServiceProvider.get(ProductInfoContextService).updateProductInfo(productInfo);
-    })
-    .catch((error) => {
-      throw new Error('Could not load local product info', error);
-    });
-};
-
-const loadLicense = () => {
-  const licenseContext = ServiceProvider.get(LicenseContextService);
-  return ServiceProvider.get(LicenseService).getLicense()
-    .then((license) => {
-      licenseContext.updateGraphdbLicense(license);
-    })
-    .catch(() => {
-      licenseContext.updateGraphdbLicense({
-        message: ServiceProvider.get(TranslationService).translate('license_alert.no_license_set'),
-        valid: false
-      });
-    });
-};
-
-/**
- * Loads the language configuration
- *
- * When loaded, sets the config in the context. Then it checks if the default language from the config
- * is the same as the one stored in the local store. If so, the default bundle is emitted. If they
- * are different, the one from the local store is loaded. This way we ensure only one request for language
- * bundle is made upon initialization.
- *
- * @returns {Promise<void | void>} The resolved promise, when the config is loaded
- */
-const loadLanguageConfig = () => {
-  const languageService = ServiceProvider.get(LanguageService);
-  const languageContextService = ServiceProvider.get(LanguageContextService);
-  const storedLanguage = ServiceProvider.get(LanguageStorageService).get(languageContextService.SELECTED_LANGUAGE);
-  let isStoredAndDefaultLangEqual = false;
-  return languageService.getLanguageConfiguration()
-    .then((config) => {
-      if (config) {
-        languageContextService.setLanguageConfig(config);
-        isStoredAndDefaultLangEqual = storedLanguage && storedLanguage.value === config.defaultLanguage;
-        if (!isStoredAndDefaultLangEqual) {
-          // Update the selected language to the local store one
-          languageContextService.updateSelectedLanguage(storedLanguage.value);
-        }
-        return languageService.getLanguage(config.defaultLanguage);
-      }
-    })
-    .then((defaultBundle) => {
-      if (defaultBundle) {
-        languageContextService.updateDefaultBundle(defaultBundle);
-        if (isStoredAndDefaultLangEqual) {
-          languageContextService.updateLanguageBundle(defaultBundle);
-        }
-      }
-    })
-    .catch((error) => console.error('Could not load language configuration', error));
-};
-
-const onLanguageChange = () => {
-  const languageContextService = ServiceProvider.get(LanguageContextService);
-  return languageContextService.onSelectedLanguageChanged((language) => {
-    if (language) {
-      ServiceProvider.get(LanguageService).getLanguage(language)
-        .then((bundle) => {
-          if (bundle) {
-            languageContextService.updateLanguageBundle(bundle);
-          }
-        })
-        .catch((error) => console.error('Could not load language', error));
-    }
-  });
-};
-
 const registerSingleSpaFirstMountListener = () => {
   // register listener only if it's not already registered
   if (!window.singleSpaFirstMountListenerRegistered) {
     window.singleSpaFirstMountListenerRegistered = true;
     window.addEventListener('single-spa:first-mount', () => {
       initializeNavbar();
-      // TODO: these are mandatory to be loaded before the application starts
-      Promise.all(
-        [
-          loadLicense(),
-          loadProductInfoLocal(),
-          loadRepositories(),
-          loadLanguageConfig(),
-          onLanguageChange()
-        ]
-      )
-        .then(() => {
-          // eslint-disable-next-line no-console
-          console.log('Application data loaded. Ready to start the application.');
-        })
-        .catch((error) => {
-          console.error('Could not load application data', error);
-        });
     });
   }
 };
+
 registerSingleSpaFirstMountListener();
+
+const bootstrapApplication = () => {
+  Promise.all(bootstrapPromises.map((bootstrapFn) => bootstrapFn()))
+    .then(() => {
+      // eslint-disable-next-line no-console
+      console.log('Application data loaded. Ready to start the application.');
+      start();
+    })
+    .catch((error) => {
+      console.error('Could not load application data', error);
+    });
+};
+
+bootstrapApplication();
 
 // window.addEventListener("single-spa:routing-event", (evt) => {
 //     console.log("single-spa finished mounting/unmounting applications!");
@@ -225,5 +124,3 @@ registerSingleSpaFirstMountListener();
 //     console.log(evt.detail.appsByNewStatus); // { MOUNTED: ['app1'], NOT_MOUNTED: ['app2'] }
 //     console.log(evt.detail.totalAppChanges); // 2
 // });
-
-start();
