@@ -12,6 +12,9 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "sourceMap": true,
+    "paths": {
+      "@ontotext/workbench-api": ["../api/dist/ontotext-workbench-api.d.ts"]
+    },
     "declaration": false,
     "experimentalDecorators": true,
     "moduleResolution": "bundler",
