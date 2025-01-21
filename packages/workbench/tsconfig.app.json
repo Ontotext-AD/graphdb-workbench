@@ -3,14 +3,9 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": [],
-    "paths": {
-      "tslib" : ["path/to/node_modules/tslib/tslib.d.ts"],
-      "@ontotext/workbench-api": ["../api/dist/ontotext-workbench-api.d.ts"],
-    }
+    "types": []
   },
   "files": [
-    "src/main.ts",
     "src/main.single-spa.ts"
   ],
   "include": [

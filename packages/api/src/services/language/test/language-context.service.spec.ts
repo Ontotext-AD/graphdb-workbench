@@ -128,4 +128,16 @@ describe('LanguageContextService', () => {
     // Then I expect the returned config to be the language configuration
     expect(returnedConfig).toEqual(new LanguageConfig(languageConfig));
   });
+
+  test('should get the selected language when getSelectedLanguage is called', () => {
+    // Given I have a selected language
+    const selectedLanguage = 'en';
+    languageContextService.updateSelectedLanguage(selectedLanguage);
+
+    // When I call getSelectedLanguage
+    const returnedLanguage = languageContextService.getSelectedLanguage();
+
+    // Then I expect the returned language to be the selected language
+    expect(returnedLanguage).toEqual('en');
+  });
 });
