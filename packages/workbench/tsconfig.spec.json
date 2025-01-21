@@ -5,10 +5,7 @@
     "outDir": "./out-tsc/spec",
     "types": [
       "jest"
-    ],
-    "paths": {
-      "@ontotext/workbench-api": ["../api/dist/ontotext-workbench-api.d.ts"]
-    },
+    ]
   },
   "include": [
     "src/**/*.spec.ts",
