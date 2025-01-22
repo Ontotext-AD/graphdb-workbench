@@ -4,7 +4,6 @@ import {
   Event,
   EventEmitter,
   Fragment,
-  getAssetPath,
   h,
   Host,
   Prop,
@@ -207,8 +206,8 @@ export class OntoNavbar {
     if (!this.menuModel) {
       return;
     }
-    const logoImg1 = getAssetPath(`./assets/graphdb-logo.svg#Layer_1`);
-    const logoImg2 = getAssetPath(`./assets/graphdb-logo-sq.svg#Layer_1`);
+    const logoImg1 = '/assets/graphdb-logo.svg#Layer_1';
+    const logoImg2 = '/assets/graphdb-logo-sq.svg#Layer_1';
     return (
       <Host>
         <ul class="navbar-component">
