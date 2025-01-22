@@ -111,6 +111,14 @@ module.exports = (webpackConfigEnv, argv) => {
                         to: 'plugin-registry.js'
                     },
                     {
+                        from: 'packages/shared-components/src/assets',
+                        to: 'assets',
+                        filter: (sourcePath) => {
+                          // Exclude i18n directory, as it is handled by the MergeI18nPlugin and doesn't need to be in assets
+                          return !sourcePath.includes('i18n');
+                        }
+                    },
+                    {
                         from: 'packages/legacy-workbench/node_modules/angularjs-slider/dist/rzslider.min.css',
                         to: 'js/lib/rzslider/rzslider.min.css'
                     },
