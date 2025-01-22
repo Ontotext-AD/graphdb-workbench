@@ -23,6 +23,7 @@ export const config: Config = {
       serviceWorker: null, // disable service workers
       copy: [
         {src: 'pages'},
+        {src: 'assets'},
         {src: '../node_modules/font-awesome/css/', dest: 'pages/css'},
         {src: '../node_modules/font-awesome/fonts/', dest: 'pages/fonts'},
         {src: '../../api/dist/ontotext-workbench-api.js', dest: 'resources/ontotext-workbench-api.js'},
