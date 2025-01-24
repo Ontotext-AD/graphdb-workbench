@@ -728,7 +728,10 @@
     "graphql": {
         "playground": {
             "message": {
-                "no_schemas_in_repository": "Le référentiel actuel ne contient pas de schémas GraphQL. Sélectionnez un autre référentiel ou téléchargez un schéma dans le référentiel actuel."
+                "no_schemas_in_repository": "Aucun point de terminaison actif n'a été trouvé dans le référentiel actuel. Gérez les schémas GraphQL <a href=\"#\">ici</a>"
+            },
+            "endpoint_selector": {
+                "tooltip": "Sélectionnez un point de terminaison GraphQL"
             }
         }
     },

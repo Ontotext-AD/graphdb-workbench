@@ -17,7 +17,7 @@
     <div class="content" ng-if="initialized">
         <div class="no-endpoints-view" ng-show="!loadingEndpoints && configuration === undefined && !graphqlEndpoints.length">
             <div class="alert alert-warning">
-                <span>{{'graphql.playground.message.no_schemas_in_repository' | translate}}</span>
+                <div ng-bind-html="'graphql.playground.message.no_schemas_in_repository' | translate | trustAsHtml"></div>
             </div>
         </div>
 
@@ -27,7 +27,7 @@
                         ng-options="endpoint as endpoint.label for endpoint in graphqlEndpoints"
                         ng-change="onGraphqlEndpointChange(selectedGraphqlEndpoint)"
                         class="form-control graphql-endpoint-selector"
-                        gdb-tooltip="{{'jdbc.sql.type.hint' | translate}}"
+                        gdb-tooltip="{{'graphql.playground.endpoint_selector.tooltip' | translate}}"
                         tooltip-placement="top">
                 </select>
             </div>

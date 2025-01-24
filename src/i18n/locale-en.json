@@ -728,7 +728,10 @@
     "graphql": {
         "playground": {
             "message": {
-                "no_schemas_in_repository": "Current repository doesn't contain GraphQL schemas. Select another repository or upload a schema to the current one."
+                "no_schemas_in_repository": "No active endpoints found in the current repository. Manage the GraphQL schemas <a href=\"#\">here</a>"
+            },
+            "endpoint_selector": {
+                "tooltip": "Select a GraphQL endpoint"
             }
         }
     },
