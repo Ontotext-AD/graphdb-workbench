@@ -1,4 +1,4 @@
-const VIEW_URL = '/graphql-playground';
+const VIEW_URL = '/graphql/playground';
 
 export class GraphqlPlaygroundSteps {
 
