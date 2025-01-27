@@ -435,7 +435,7 @@
                 "form": {
                     "agent_name": {
                         "label": "Agent name",
-                        "placeholder": "Enter a user friendly name",
+                        "placeholder": "Enter а user friendly name",
                         "tooltip": "A descriptive name that helps you identify this agent."
                     },
                     "repository": {
@@ -724,6 +724,67 @@
         "help.how.content": "The bot uses the ChatGPT Retrieval connector to fetch information it does not know about. As such, you must first create a suitable connector. See also the settings for fine-tuning the integration with the Retrieval connector.",
         "help.how.content1": "<b>Talk to Your Graph</b> is powered by OpenAI's Assistants API. You begin by selecting or configuring an agent, which defines the context and rules for querying. Once set, you can start a conversation by asking questions in natural language. The assistant interprets your query, runs the appropriate query methods to retrieve data, and responds with an answer. Persistent chat ensures conversations stay contextually aware, enabling deeper, more coherent interactions over time. You can use multiple agents concurrently to cover various domains or data sources.",
         "help.how.content2": "An agent in <b>Talk to Your Graph</b> is an AI-driven assistant specifically configured to interact with your graph database. It uses advanced natural language processing to understand and respond to your questions by querying the database and delivering relevant information. Each agent is tailored to a specific context, making interactions seamless and efficient, whether you're retrieving data, exploring insights, or working on complex projects."
+    },
+    "graphql": {
+        "playground": {
+            "message": {
+                "no_schemas_in_repository": "No active endpoints found in the current repository. Manage the GraphQL schemas <a href=\"#\">here</a>"
+            },
+            "endpoint_selector": {
+                "tooltip": "Select a GraphQL endpoint"
+            }
+        },
+        "endpoints_management": {
+            "toolbar": {
+                "endpoints_filter": {
+                    "placeholder": "Filter by ID or Label"
+                },
+                "create_endpoint": {
+                    "label": "New endpoint",
+                    "tooltip": "Create a new GraphQL endpoint"
+                },
+                "import_schema": {
+                    "label": "Import schema definition",
+                    "tooltip": "Import a GraphQL endpoint schema definition"
+                }
+            },
+            "table": {
+                "column": {
+                    "id": "ID",
+                    "label": "Label",
+                    "is_default": "Default",
+                    "is_active": "Active",
+                    "modified_on": "Modified",
+                    "types_count": "Types",
+                    "props_count": "Properties",
+                    "actions": "Actions"
+                },
+                "actions": {
+                    "create_endpoint": {
+                        "label": "Create endpoint",
+                        "tooltip": "Create a new GraphQL endpoint"
+                    },
+                    "import_schema": {
+                        "label": "Import schema definition",
+                        "tooltip": "Import a GraphQL endpoint schema definition"
+                    },
+                    "configure_endpoint": {
+                        "label": "Configure endpoint",
+                        "tooltip": "Configure the GraphQL endpoint"
+                    },
+                    "delete_endpoint": {
+                        "label": "Delete endpoint",
+                        "tooltip": "Delete the GraphQL endpoint"
+                    },
+                    "export_schema": {
+                        "label": "Export schema definition",
+                        "tooltip": "Export the GraphQL endpoint schema definition"
+                    }
+                },
+                "messages": {
+                }
+            }
+        }
     },
     "config.name.label": "Config name",
     "graph.config.required": "My graph config (required)",
@@ -1265,6 +1326,9 @@
     "menu.support.label": "Support",
     "menu.guides.label": "Interactive guides",
     "menu.plugins.label": "Plugins",
+    "menu.graphql.label": "GraphQL",
+    "menu.graphql-endpoint-management.label": "Endpoint Management",
+    "menu.graphql-playground.label": "GraphQL Playground",
     "core.popover.get.url.query": "Get URL to query",
     "core.popover.shared.query.warning": "Query shared by another user. You may not edit or delete it.",
     "core.edit.query": "Edit query",

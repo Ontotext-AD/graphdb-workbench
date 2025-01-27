@@ -733,6 +733,57 @@
             "endpoint_selector": {
                 "tooltip": "Sélectionnez un point de terminaison GraphQL"
             }
+        },
+        "endpoints_management": {
+            "toolbar": {
+                "endpoints_filter": {
+                    "placeholder": "Filtrer par ID ou par étiquette"
+                },
+                "create_endpoint": {
+                    "label": "Nouveau point de terminaison",
+                    "tooltip": "Créer un nouveau point de terminaison GraphQL"
+                },
+                "import_schema": {
+                    "label": "Définition du schéma d'importation",
+                    "tooltip": "Importer une définition de schéma de point de terminaison GraphQL"
+                }
+            },
+            "table": {
+                "column": {
+                    "id": "Id",
+                    "label": "Étiquette",
+                    "is_default": "Défaut",
+                    "is_active": "Active",
+                    "modified_on": "Modifié",
+                    "types_count": "Types",
+                    "props_count": "Propriétés",
+                    "actions": "Actes"
+                },
+                "actions": {
+                    "create_endpoint": {
+                        "label": "Nouveau point de terminaison",
+                        "tooltip": "Créer un nouveau point de terminaison GraphQL"
+                    },
+                    "import_schema": {
+                        "label": "Définition du schéma d'importation",
+                        "tooltip": "Importer une définition de schéma de point de terminaison GraphQL"
+                    },
+                    "configure_endpoint": {
+                        "label": "Configurer le point de terminaison",
+                        "tooltip": "Configurer le point de terminaison GraphQL"
+                    },
+                    "delete_endpoint": {
+                        "label": "Supprimer le point de terminaison",
+                        "tooltip": "Supprimer le point de terminaison GraphQL"
+                    },
+                    "export_schema": {
+                        "label": "Définition du schéma d'exportation",
+                        "tooltip": "Exporter la définition du schéma du point de terminaison GraphQL"
+                    }
+                },
+                "messages": {
+                }
+            }
         }
     },
     "config.name.label": "Nom de configuration",
@@ -1276,6 +1327,7 @@
     "menu.guides.label": "Guides interactifs",
     "menu.plugins.label": "Plugins",
     "menu.graphql.label": "GraphQL",
+    "menu.graphql-endpoint-management.label": "Gestion des points de terminaison",
     "menu.graphql-playground.label": "GraphQL Playground",
     "core.popover.get.url.query": "Obtenir l'URL de la requête",
     "core.popover.shared.query.warning": "Requête partagée par un autre utilisateur. Vous ne pouvez pas la modifier ou la supprimer.",

@@ -5,7 +5,7 @@
         <span id="graphql-playground-title-label">{{title}}</span>
         <page-info-tooltip></page-info-tooltip>
 
-        <div class="toolbar pull-right">
+        <div ng-if="!loadingEndpoints && graphqlEndpoints.length" class="toolbar pull-right">
             <select ng-model="selectedGraphqlEndpoint"
                     ng-options="endpoint as endpoint.label for endpoint in graphqlEndpoints"
                     ng-change="onGraphqlEndpointChange(selectedGraphqlEndpoint)"

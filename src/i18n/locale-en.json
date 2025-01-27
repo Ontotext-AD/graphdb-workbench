@@ -733,6 +733,57 @@
             "endpoint_selector": {
                 "tooltip": "Select a GraphQL endpoint"
             }
+        },
+        "endpoints_management": {
+            "toolbar": {
+                "endpoints_filter": {
+                    "placeholder": "Filter by ID or Label"
+                },
+                "create_endpoint": {
+                    "label": "New endpoint",
+                    "tooltip": "Create a new GraphQL endpoint"
+                },
+                "import_schema": {
+                    "label": "Import schema definition",
+                    "tooltip": "Import a GraphQL endpoint schema definition"
+                }
+            },
+            "table": {
+                "column": {
+                    "id": "Id",
+                    "label": "Label",
+                    "is_default": "Default",
+                    "is_active": "Active",
+                    "modified_on": "Modified",
+                    "types_count": "Types",
+                    "props_count": "Properties",
+                    "actions": "Actions"
+                },
+                "actions": {
+                    "create_endpoint": {
+                        "label": "Create endpoint",
+                        "tooltip": "Create a new GraphQL endpoint"
+                    },
+                    "import_schema": {
+                        "label": "Import schema definition",
+                        "tooltip": "Import a GraphQL endpoint schema definition"
+                    },
+                    "configure_endpoint": {
+                        "label": "Configure endpoint",
+                        "tooltip": "Configure the GraphQL endpoint"
+                    },
+                    "delete_endpoint": {
+                        "label": "Delete endpoint",
+                        "tooltip": "Delete the GraphQL endpoint"
+                    },
+                    "export_schema": {
+                        "label": "Export schema definition",
+                        "tooltip": "Export the GraphQL endpoint schema definition"
+                    }
+                },
+                "messages": {
+                }
+            }
         }
     },
     "config.name.label": "Config name",
@@ -1276,6 +1327,7 @@
     "menu.guides.label": "Interactive guides",
     "menu.plugins.label": "Plugins",
     "menu.graphql.label": "GraphQL",
+    "menu.graphql-endpoint-management.label": "Endpoint Management",
     "menu.graphql-playground.label": "GraphQL Playground",
     "core.popover.get.url.query": "Get URL to query",
     "core.popover.shared.query.warning": "Query shared by another user. You may not edit or delete it.",
