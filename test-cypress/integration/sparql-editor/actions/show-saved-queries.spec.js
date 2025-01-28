@@ -12,7 +12,7 @@ describe('Show saved queries', () => {
         QueryStubs.stubQueryCountResponse();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
-        cy.intercept(`/repositories/${repositoryId}`, {fixture: '/graphql-editor/default-query-response.json'}).as('getGuides');
+        cy.intercept(`/repositories/${repositoryId}`, {fixture: '/queries/default-query-response.json'}).as('getGuides');
 
         SparqlEditorSteps.visitSparqlEditorPage();
         YasguiSteps.getYasgui().should('be.visible');

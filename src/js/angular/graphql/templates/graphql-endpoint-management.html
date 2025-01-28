@@ -1,0 +1,117 @@
+<link href="css/graphql/graphql-endpoint-management-view.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+<div class="graphql-endpoint-management-view">
+    <h1 id="title-container">
+        <span id="graphql-endpoint-management-title-label">{{title}}</span>
+        <page-info-tooltip></page-info-tooltip>
+    </h1>
+
+    <div core-errors></div>
+
+    <div onto-loader-new
+         ng-show="loadingEndpointsInfo"
+         class="graphql-playground-page-loader"
+         size="100">
+    </div>
+
+    <div ng-if="!loadingEndpointsInfo && endpointsInfoList.endpoints.length" class="endpoint-management-container">
+
+        <div class="toolbar">
+            <div class="endpoints-filter">
+                <input type="text" class="form-control endpoints-filter-field"
+                       placeholder="{{'graphql.endpoints_management.toolbar.endpoints_filter.placeholder' | translate}}"
+                       ng-model="filteredEndpoints" ng-change="onEndpointsFilter()" aria-label="Filter endpoints">
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-primary create-endpoint-btn" ng-click="createEndpoint()"
+                        gdb-tooltip="{{'graphql.endpoints_management.toolbar.create_endpoint.tooltip' | translate}}">
+                    <span class="fa-kit fa-gdb-graphql"></span>&nbsp;
+                    <span>{{'graphql.endpoints_management.toolbar.create_endpoint.label' | translate}}</span>
+                </button>
+                <button class="btn btn-secondary import-schema-definition-btn ml-1" ng-click="importSchema()"
+                        gdb-tooltip="{{'graphql.endpoints_management.toolbar.create_endpoint.tooltip' | translate}}">
+                    <span class="fa fa-upload"></span>&nbsp;
+                    <span>{{'graphql.endpoints_management.toolbar.import_schema.label' | translate}}</span>
+                </button>
+            </div>
+        </div>
+
+        <table class="endpoints-info-table table table-hover mt-1" aria-describedby="GraphQL endpoints info table">
+            <thead>
+            <tr>
+                <th scope="col" class="endpoint-id">{{'graphql.endpoints_management.table.column.id' | translate}}</th>
+                <th scope="col" class="endpoint-label">
+                    {{'graphql.endpoints_management.table.column.label' | translate}}
+                </th>
+                <th scope="col" class="endpoint-is-default">
+                    {{'graphql.endpoints_management.table.column.is_default' | translate}}
+                </th>
+                <th scope="col" class="endpoint-is-active">
+                    {{'graphql.endpoints_management.table.column.is_active' | translate}}
+                </th>
+                <th scope="col" class="endpoint-modified-on">
+                    {{'graphql.endpoints_management.table.column.modified_on' | translate}}
+                </th>
+                <th scope="col" class="endpoint-types-count">
+                    {{'graphql.endpoints_management.table.column.types_count' | translate}}
+                </th>
+                <th scope="col" class="endpoint-props-count">
+                    {{'graphql.endpoints_management.table.column.props_count' | translate}}
+                </th>
+                <th scope="col" class="endpoint-actions">
+                    {{'graphql.endpoints_management.table.column.actions' | translate}}
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="endpoint in endpointsInfoList.endpoints">
+                <td>
+                    <a href="#" ng-click="exploreEndpoint(endpoint)">{{endpoint.endpointId}}</a>
+                </td>
+                <td>{{endpoint.label}}</td>
+                <td>
+                    <span ng-if="endpoint.default" class="is-default">yes</span>
+                    <span ng-if="!endpoint.default" class="is-not-default">no</span>
+                </td>
+                <td>
+                    <span ng-if="endpoint.active" class="is-active">yes</span>
+                    <span ng-if="!endpoint.active" class="is-not-active">no</span>
+                </td>
+                <td>{{endpoint.lastModified}}</td>
+                <td>{{endpoint.objectsCount}}</td>
+                <td>{{endpoint.propertiesCount}}</td>
+                <td>
+                    <div class="btn-group">
+                        <button class="btn btn-link secondary btn-sm open-agent-actions-btn"
+                                data-toggle="dropdown" aria-expanded="false"
+                                ng-if="true"
+                                ng-click="openAgentActionMenu()"
+                                ng-disabled="false">
+                            <i class="fa fa-ellipsis"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right agent-actions-menu">
+                            <button class="dropdown-item export-schema-btn" type="button" ng-click="onExportSchema(endpoint)">
+                                <i class="fa fa-arrow-down-to-line"></i>&nbsp;
+                                <span>{{'graphql.endpoints_management.table.actions.export_schema.label' | translate}}</span>
+                            </button>
+                            <button class="dropdown-item configure-endpoint-btn" type="button" ng-click="onConfigureEndpoint(endpoint)">
+                                <i class="fa fa-gear"></i>&nbsp;
+                                <span>{{'graphql.endpoints_management.table.actions.configure_endpoint.label' | translate}}</span>
+                            </button>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item delete-endpoint-btn" type="button" ng-click="onDeleteEndpoint(endpoint)">
+                                <i class="fa fa-trash-can"></i>&nbsp;
+                                <span>{{'graphql.endpoints_management.table.actions.delete_endpoint.label' | translate}}</span>
+                            </button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+

@@ -1,5 +1,6 @@
 import 'angular/rest/graphql.rest.service';
 import {endpointListMapper, endpointsToSelectMenuOptionsMapper} from "../../graphql/services/endpoints.mapper";
+import {endpointsInfoListMapper} from "../../graphql/services/endpoint-info-list.mapper";
 
 const modules = ['graphdb.framework.rest.graphql.service'];
 
@@ -31,8 +32,19 @@ function GraphqlService(GraphqlRestService) {
             .then((response) => endpointsToSelectMenuOptionsMapper(response.data));
     };
 
+    /**
+     * Get the GraphQL endpoints info for the given repository.
+     * @param {string} repositoryId - The repository id.
+     * @return {Promise<GraphqlEndpointsInfoList>}
+     */
+    const getEndpointsInfo = (repositoryId) => {
+        return GraphqlRestService.getEndpointsInfo(repositoryId)
+            .then((response) => endpointsInfoListMapper(response.data));
+    };
+
     return {
         getEndpoints,
-        getEndpointsAsSelectMenuOptions
+        getEndpointsAsSelectMenuOptions,
+        getEndpointsInfo
     };
 }
