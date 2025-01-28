@@ -37,9 +37,10 @@
             </div>
         </div>
 
-        <table class="endpoints-info-table table table-hover mt-1" aria-describedby="GraphQL endpoints info table">
+        <table class="endpoints-info-table table mt-1" aria-describedby="GraphQL endpoints info table">
             <thead>
             <tr>
+                <th scope="col" class="toggle"></th>
                 <th scope="col" class="endpoint-id">{{'graphql.endpoints_management.table.column.id' | translate}}</th>
                 <th scope="col" class="endpoint-label">
                     {{'graphql.endpoints_management.table.column.label' | translate}}
@@ -65,9 +66,16 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="endpoint in endpointsInfoList.endpoints">
+            <tr ng-repeat-start="endpoint in endpointsInfoList.endpoints track by endpoint.endpointId">
+                <td class="toggle-row">
+                    <a href="#" ng-click="toggleRow($event, $index)">
+                        <i class="fa fa-chevron-right" ng-if="expandedRow !== $index"></i>
+                        <i class="fa fa-chevron-down" ng-if="expandedRow === $index"></i>
+                    </a>
+                </td>
                 <td>
-                    <a href="#" ng-click="exploreEndpoint(endpoint)">{{endpoint.endpointId}}</a>
+                    <span ng-if="!endpoint.active" class="endpoint-link">{{endpoint.endpointId}}</span>
+                    <a ng-if="endpoint.active" href="#" ng-click="exploreEndpoint(endpoint)" class="endpoint-link">{{endpoint.endpointId}}</a>
                 </td>
                 <td>{{endpoint.label}}</td>
                 <td>
@@ -106,6 +114,13 @@
                             </button>
                         </div>
                     </div>
+                </td>
+            </tr>
+            <tr ng-repeat-end ng-if="expandedRow === $index" class="endpoint-description-row">
+                <td></td>
+                <td colspan="8">
+                    <strong>{{'graphql.endpoints_management.table.labels.description' | translate}}</strong>
+                    <div class="endpoint-description">{{endpoint.description}}</div>
                 </td>
             </tr>
             </tbody>

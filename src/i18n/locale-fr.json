@@ -782,6 +782,9 @@
                     }
                 },
                 "messages": {
+                },
+                "labels": {
+                    "description": "Description"
                 }
             }
         }

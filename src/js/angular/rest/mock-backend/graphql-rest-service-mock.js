@@ -32,6 +32,12 @@ const endpoints = {
             "graphQL": "/rest/repositories/swapi/graphql/film-restricted",
             "active": true,
             "default": false
+        },
+        {
+            "id": "swapi-charcters",
+            "graphQL": "/rest/repositories/swapi/graphql/swapi-charcters",
+            "active": false,
+            "default": false
         }
     ]
 };
@@ -40,7 +46,7 @@ const endpointsInfo = {
     "endpoints": [
         {
             "id": "gqlendpoint1",
-            "endpointId": "/swapi",
+            "endpointId": "swapi",
             "endpointURI": "/rest/repositories/swapi/graphql/swapi",
             "label": "SWAPI GraphQL endpoint",
             "description": "SWAPI GraphQL endpoint description",
@@ -55,12 +61,12 @@ const endpointsInfo = {
         },
         {
             "id": "gqlendpoint2",
-            "endpointId": "/film-restricted",
+            "endpointId": "film-restricted",
             "endpointURI": "/rest/repositories/swapi/graphql/film-restricted",
             "label": "SWAPI GraphQL endpoint with restricted film relations",
-            "description": "SWAPI GraphQL endpoint description",
+            "description": "SWAPI GraphQL endpoint with restricted film relations description",
             "default": true,
-            "active": false,
+            "active": true,
             "lastModified": "2025-01-28",
             "objects_count": 13,
             "properties_count": 133,
@@ -70,12 +76,12 @@ const endpointsInfo = {
         },
         {
             "id": "gqlendpoint3",
-            "endpointId": "/swapi-charcters",
-            "endpointURI": "/rest/repositories/swapi/graphql/swapi-charcters",
-            "label": "SWAPI GraphQL endpoint for swapi charcters",
-            "description": "SWAPI GraphQL endpoint description",
+            "endpointId": "swapi-characters",
+            "endpointURI": "/rest/repositories/swapi/graphql/swapi-characters",
+            "label": "SWAPI GraphQL endpoint for swapi characters",
+            "description": "SWAPI GraphQL endpoint for swapi characters description",
             "default": false,
-            "active": true,
+            "active": false,
             "lastModified": "2025-01-28",
             "objects_count": 3,
             "properties_count": 20,
