@@ -29,4 +29,16 @@ export class GraphqlEndpointManagementSteps {
     static getEndpointsInfo() {
         return this.getEndpointTable().find('tbody tr');
     }
+
+    static getEndpointLink(index) {
+        return this.getEndpointsInfo().eq(index).find('.endpoint-link');
+    }
+
+    static exploreEndpoint(index) {
+        this.getEndpointLink(index).click();
+    }
+
+    static toggleEndpointRow(index) {
+        return this.getEndpointsInfo().eq(index).find('.toggle-row a').click();
+    }
 }

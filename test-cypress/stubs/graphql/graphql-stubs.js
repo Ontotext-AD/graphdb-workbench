@@ -2,9 +2,10 @@ export const ENDPOINT_COUNTRIES = '/rest/repositories/test/graphql/countries';
 export const ENDPOINT_RICKMORTY = '/rest/repositories/test/graphql/rickmorty';
 
 export class GraphqlStubs {
-    static stubGetEndpoints(repositoryId, delay = 0) {
+    static stubGetEndpoints(repositoryId, fixture = 'graphql-endpoints.json', delay = 0) {
+        const fuxturePath = `/graphql/endpoints/${fixture}`;
         cy.intercept('GET', `/rest/repositories/${repositoryId}/graphql/endpoints`, {
-            fixture: '/graphql/endpoints/graphql-endpoints.json',
+            fixture: fuxturePath,
             statusCode: 200,
             delay: delay
         }).as('get-endpoints');

@@ -6,6 +6,11 @@
     justify-content: space-between;
 }
 
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table thead .toggle {
+    /* fixed width to prevent expanding and shrinking of the first column when a row is expanded/collapsed  */
+    width: 40px;
+}
+
 .graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table thead .endpoint_id {
     width: 10%;
 }
@@ -16,4 +21,8 @@
 
 .graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table thead .endpoint-actions {
     width: 5%;
+}
+
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table tbody .endpoint-description-row > td {
+    border-top: none;
 }
