@@ -40,7 +40,7 @@ const endpointsInfo = {
     "endpoints": [
         {
             "id": "gqlendpoint1",
-            "endpointId": "/swapi",
+            "endpointId": "swapi",
             "endpointURI": "/rest/repositories/swapi/graphql/swapi",
             "label": "SWAPI GraphQL endpoint",
             "description": "SWAPI GraphQL endpoint description",
@@ -55,7 +55,7 @@ const endpointsInfo = {
         },
         {
             "id": "gqlendpoint2",
-            "endpointId": "/film-restricted",
+            "endpointId": "film-restricted",
             "endpointURI": "/rest/repositories/swapi/graphql/film-restricted",
             "label": "SWAPI GraphQL endpoint with restricted film relations",
             "description": "SWAPI GraphQL endpoint description",
@@ -70,7 +70,7 @@ const endpointsInfo = {
         },
         {
             "id": "gqlendpoint3",
-            "endpointId": "/swapi-charcters",
+            "endpointId": "swapi-charcters",
             "endpointURI": "/rest/repositories/swapi/graphql/swapi-charcters",
             "label": "SWAPI GraphQL endpoint for swapi charcters",
             "description": "SWAPI GraphQL endpoint description",

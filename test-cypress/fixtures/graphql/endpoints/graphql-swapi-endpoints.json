@@ -1,0 +1,23 @@
+{
+    "repository": "test",
+    "endpoints": [
+        {
+            "id": "swapi",
+            "graphQL": "/rest/repositories/swapi/graphql/swapi",
+            "active": true,
+            "default": false
+        },
+        {
+            "id": "film-restricted",
+            "graphQL": "/rest/repositories/swapi/graphql/film-restricted",
+            "active": true,
+            "default": false
+        },
+        {
+            "id": "swapi-charcters",
+            "graphQL": "/rest/repositories/swapi/graphql/swapi-charcters",
+            "active": true,
+            "default": false
+        }
+    ]
+}

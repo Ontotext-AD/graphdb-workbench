@@ -1,16 +1,18 @@
 import '../../core/services/graphql.service';
+import '../services/graphql-context.service';
 
 const modules = [
-    'graphdb.framework.core.services.graphql-service'
+    'graphdb.framework.core.services.graphql-service',
+    'graphdb.framework.graphql.services.graphql-context'
 ];
 
 angular
     .module('graphdb.framework.graphql.controllers.graphql-endpoint-management-view', modules)
     .controller('GraphqlEndpointManagementViewCtrl', GraphqlEndpointManagementViewCtrl);
 
-GraphqlEndpointManagementViewCtrl.$inject = ['$scope', '$location', '$repositories', 'toastr', 'GraphqlService', 'AuthTokenService'];
+GraphqlEndpointManagementViewCtrl.$inject = ['$scope', '$location', '$repositories', 'toastr', 'GraphqlService', 'GraphqlContextService', 'AuthTokenService'];
 
-function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, toastr, GraphqlService, AuthTokenService) {
+function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, toastr, GraphqlService, GraphqlContextService, AuthTokenService) {
 
     // =========================
     // Private variables
@@ -38,8 +40,12 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, toa
     // Public methods
     // =========================
 
+    /**
+     * Opens the GraphQL endpoint for exploration in the playground.
+     * @param {GraphqlEndpointInfo} endpoint The endpoint to explore.
+     */
     $scope.exploreEndpoint = (endpoint) => {
-        // TODO: put the selected endpoint in the context
+        GraphqlContextService.setSelectedEndpoint(endpoint);
         $location.path('/graphql/playground');
     };
 
@@ -60,7 +66,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, toa
     };
 
     $scope.onConfigureEndpoint = (endpoint) => {
-      // TODO: implement endpoint configuration
+        // TODO: implement endpoint configuration
     };
 
     $scope.onDeleteEndpoint = (endpoint) => {

@@ -9,9 +9,9 @@ angular
     .module('graphdb.framework.graphql.controllers.graphql-playground-view', modules)
     .controller('GraphqlPlaygroundViewCtrl', GraphqlPlaygroundViewCtrl);
 
-GraphqlPlaygroundViewCtrl.$inject = ['$scope', '$repositories', 'toastr', 'GraphqlService', 'AuthTokenService'];
+GraphqlPlaygroundViewCtrl.$inject = ['$scope', '$repositories', 'toastr', 'GraphqlService', 'GraphqlContextService', 'AuthTokenService'];
 
-function GraphqlPlaygroundViewCtrl($scope, $repositories, toastr, GraphqlService, AuthTokenService) {
+function GraphqlPlaygroundViewCtrl($scope, $repositories, toastr, GraphqlService, GraphqlContextService, AuthTokenService) {
 
     // =========================
     // Private variables
@@ -92,12 +92,29 @@ function GraphqlPlaygroundViewCtrl($scope, $repositories, toastr, GraphqlService
     };
 
     /**
+     * Resolves the selected endpoint. If there is no selected endpoint, the first one from the list is returned
+     * @return {SelectMenuOptionsModel}
+     */
+    const resolveSelectedEndpoint = () => {
+        const selectedEndpoint = GraphqlContextService.getSelectedEndpoint();
+        if (selectedEndpoint) {
+            const endpointSelectOption = $scope.graphqlEndpoints.find(
+                (endpoint) => endpoint.label === selectedEndpoint.endpointId
+            );
+            if (endpointSelectOption) {
+                return endpointSelectOption;
+            }
+        }
+        return $scope.graphqlEndpoints[0];
+    };
+
+    /**
      * Initializes the view by setting all needed variables in the scope.
      * @param {SelectMenuOptionsModel[]} endpointsSelectMenuOptions
      */
     const initView = (endpointsSelectMenuOptions) => {
         $scope.graphqlEndpoints = endpointsSelectMenuOptions;
-        $scope.selectedGraphqlEndpoint = $scope.graphqlEndpoints[0];
+        $scope.selectedGraphqlEndpoint = resolveSelectedEndpoint();
         $scope.configuration = buildConfig($scope.selectedGraphqlEndpoint.value);
     };
 
