@@ -1,5 +1,6 @@
 import { Config } from '@stencil/core';
 import {sass} from '@stencil/sass';
+import istanbul from 'rollup-plugin-istanbul';
 
 const path = `${__dirname}/src/pages/fake-server.js`;
 
@@ -31,7 +32,7 @@ export const config: Config = {
     },
   ],
   testing: {
-    browserHeadless: "new",
+    browserHeadless: true,
     moduleNameMapper: {
       '^@ontotext/workbench-api$': '<rootDir>/../api/dist/ontotext-workbench-api.d.ts',
     },
@@ -40,10 +41,19 @@ export const config: Config = {
     transform: {
       '^.+\\.(js|mjs|jsx|ts|tsx)$': 'ts-jest',
     },
+    collectCoverage: true,
+    coverageDirectory: ".nyc_output",
+    coverageReporters: ["json"]
   },
   plugins: [
     sass(),
+    istanbul({
+      include: ['src/**/*.ts', 'src/**/*.tsx'],
+      exclude: ['**/*.spec.ts', '**/*.e2e.ts', 'node_modules/**'],
+      extension: ['.ts', '.tsx'],
+    }),
   ],
+  sourceMap: true,
   devServer: {
     requestListenerPath: path
   }

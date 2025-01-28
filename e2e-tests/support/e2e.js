@@ -19,6 +19,7 @@ import './commands';
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
+import '@cypress/code-coverage/support'
 import 'cypress-real-events';
 import 'cypress-file-upload';
 import {LicenseStubs} from "../stubs/license-stubs";

@@ -27,3 +27,6 @@ UserInterfaceState.xcuserstate
 api/
 /cypress/screenshots/
 /cypress/downloads/
+
+.nyc_output/
+coverage/

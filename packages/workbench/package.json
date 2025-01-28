@@ -6,7 +6,7 @@
     "start": "ng serve --host 0.0.0.0 --port 9002",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
+    "test": "ng test --coverage",
     "lint": "eslint src --config eslint.config.js",
     "lint:fix": "eslint src --fix --config eslint.config.js",
     "sonar": "./sonar-run.sh"

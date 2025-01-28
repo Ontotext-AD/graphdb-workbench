@@ -1,24 +1,45 @@
+#version: '3.2'
+#
+#services:
+#  shared_components:
+#    image: node:18-alpine
+#    working_dir: /app
+#    ports:
+#      - "3333:3333"
+#    volumes:
+#      - .:/app
+#      - ../api:/api
+#    command: npm run start:coverage
+#
+#  cypress:
+#    image: cypress/included:13.17.0
+#    depends_on:
+#      - shared_components
+#    environment:
+#      - CYPRESS_baseUrl=http://shared_components:3333
+#      - NO_COLOR=true
+#    working_dir: /e2e
+#    volumes:
+#      - ./:/e2e
+#    command: cypress run --browser chrome
 version: '3.2'
 
 services:
-  shared_components:
-    image: node:18-alpine
-    working_dir: /app
+  stencil_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "3333:3333"
-    volumes:
-      - .:/app
-      - ../api:/api
-    command: npm run start
+      - "80:80"
 
   cypress:
     image: cypress/included:13.17.0
     depends_on:
-      - shared_components
-    environment:
-      - CYPRESS_baseUrl=http://shared_components:3333
-      - NO_COLOR=true
+      - stencil_app
     working_dir: /e2e
+    environment:
+      - CYPRESS_baseUrl=http://stencil_app
+      - NO_COLOR=true
     volumes:
       - ./:/e2e
-    command: cypress run --browser chrome
+    command: cypress run

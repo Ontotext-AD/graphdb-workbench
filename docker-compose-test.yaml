@@ -32,7 +32,7 @@ services:
     depends_on:
       - graphdb
     ports:
-      - ${WORKBENCH_PORT}
+      - ${WORKBENCH_PORT}:${WORKBENCH_PORT}
     networks:
       - single-spa-network
     healthcheck:
@@ -42,20 +42,22 @@ services:
       retries: 5
 
   cypress:
-    image: cypress/included:13.17.0
+    build:
+      context: .
+      dockerfile: cypress.Dockerfile
     depends_on:
       - workbench
     environment:
       # Uncomment these lines if needed for Cypress tests
-      # - DISPLAY
-      # - DBUS_SESSION_BUS_ADDRESS=/dev/null
+#      - DISPLAY=:99.0
+#      - DBUS_SESSION_BUS_ADDRESS=/dev/null
       - CYPRESS_baseUrl=http://workbench:${WORKBENCH_PORT}
       - NO_COLOR=true
     working_dir: /e2e
     volumes:
       - ./e2e-tests:/e2e
       # Uncomment this if using a graphical interface for Cypress
-      # - /tmp/.X11-unix:/tmp/.X11-unix
+#      - /tmp/.X11-unix:/tmp/.X11-unix
     entrypoint: ["cypress", "run", "--config-file", "cypress-legacy.config.js"]
     networks:
       - single-spa-network
