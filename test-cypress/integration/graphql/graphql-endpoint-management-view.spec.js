@@ -1,5 +1,6 @@
 import {GraphqlEndpointManagementSteps} from "../../steps/graphql/graphql-endpoint-management-steps";
 import {GraphqlStubs} from "../../stubs/graphql/graphql-stubs";
+import {GraphqlPlaygroundSteps} from "../../steps/graphql/graphql-playground-steps";
 
 describe('GraphQL endpoints management', () => {
     let repositoryId;
@@ -12,6 +13,7 @@ describe('GraphQL endpoints management', () => {
         cy.uploadGraphqlSchema(repositoryId, 'graphql/schema/swapi-schema.yaml', 'swapi');
         // TODO: remove stubs when REST API is ready
         GraphqlStubs.stubGetEndpointsInfo(repositoryId);
+        GraphqlStubs.stubGetEndpoints(repositoryId, 'graphql-swapi-endpoints.json');
     });
 
     afterEach(() => {
@@ -57,7 +59,7 @@ describe('GraphQL endpoints management', () => {
         GraphqlEndpointManagementSteps.getEndpointsInfo().should('have.length', 3);
         verifyEndpointInfo([
             {
-                id: '/swapi',
+                id: 'swapi',
                 label: 'SWAPI GraphQL endpoint',
                 default: false,
                 active: true,
@@ -66,7 +68,7 @@ describe('GraphQL endpoints management', () => {
                 properties: 120
             },
             {
-                id: '/film-restricted',
+                id: 'film-restricted',
                 label: 'SWAPI GraphQL endpoint with restricted film relations',
                 default: true,
                 active: false,
@@ -75,7 +77,7 @@ describe('GraphQL endpoints management', () => {
                 properties: 133
             },
             {
-                id: '/swapi-charcters',
+                id: 'swapi-charcters',
                 label: 'SWAPI GraphQL endpoint for swapi charcters',
                 default: false,
                 active: true,
@@ -84,6 +86,18 @@ describe('GraphQL endpoints management', () => {
                 properties: 20
             }
         ]);
+    });
+
+    it('should be able to explore graphql endpoint', () => {
+        // Given I have a repository with active GraphQL endpoints
+        // When I visit the endpoint management view
+        GraphqlEndpointManagementSteps.visit();
+        // And I click on some endpoint
+        GraphqlEndpointManagementSteps.exploreEndpoint(1);
+        // Then I should be redirected to the GraphQL playground view
+        cy.url().should('include', '/graphql/playground');
+        // And the selected endpoint should be the one I clicked
+        GraphqlPlaygroundSteps.getSelectedEndpoint().should('contain', 'film-restricted');
     });
 });
 

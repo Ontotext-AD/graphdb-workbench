@@ -29,4 +29,8 @@ export class GraphqlEndpointManagementSteps {
     static getEndpointsInfo() {
         return this.getEndpointTable().find('tbody tr');
     }
+
+    static exploreEndpoint(index) {
+        this.getEndpointsInfo().eq(index).find('.endpoint-link').click();
+    }
 }
