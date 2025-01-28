@@ -11,11 +11,11 @@ export class QueryStubs {
         cy.intercept('GET', '/rest/monitor/query/count', {body: 0});
     }
     static stubDefaultQueryResponse(repositoryId, withDelay = 0) {
-        QueryStubs.stubQueryResponse(repositoryId, '/graphql-editor/default-query-response.json', withDelay);
+        QueryStubs.stubQueryResponse(repositoryId, '/queries/default-query-response.json', withDelay);
     }
 
     static stubLongRunningQuery(repositoryId, delay = 3000) {
-        QueryStubs.stubQueryResponse(repositoryId, '/graphql-editor/default-query-response.json', delay);
+        QueryStubs.stubQueryResponse(repositoryId, '/queries/default-query-response.json', delay);
     }
 
     static stubEmptyQueryResponse(repositoryId, withDelay = 0) {
