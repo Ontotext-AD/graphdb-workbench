@@ -39,7 +39,7 @@ describe('Import view', () => {
         // When I switch to the server files tab
         ImportUserDataSteps.openServerFilesTab();
         // Then I should see the server files only
-        ImportServerFilesSteps.getResources().should('have.length', 19);
+        ImportServerFilesSteps.getResources().should('have.length', 18);
         // When I switch back to the user data tab
         ImportServerFilesSteps.openUserDataTab();
         // Then I should see the uploaded file

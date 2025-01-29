@@ -8,9 +8,9 @@ describe('GraphQL endpoints management', () => {
         repositoryId = 'graphql-endpoint-management-' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
-        // TODO: remove stubs and enable next imports when REST API is ready
-        // cy.importServerFile(repositoryId, 'swapi-dataset.ttl');
-        // cy.uploadGraphqlSchema(repositoryId, 'graphql/schema/swapi-schema.yaml', 'swapi');
+        cy.importServerFile(repositoryId, 'swapi-dataset.ttl');
+        cy.uploadGraphqlSchema(repositoryId, 'graphql/schema/swapi-schema.yaml', 'swapi');
+        // TODO: remove stubs when REST API is ready
         GraphqlStubs.stubGetEndpointsInfo(repositoryId);
     });
 
