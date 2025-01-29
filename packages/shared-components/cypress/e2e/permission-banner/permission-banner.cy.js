@@ -15,9 +15,7 @@ describe('onto-permission-banner', () => {
     PermissionBannerSteps.getAlertText()
       .within(() => {
         PermissionBannerSteps.getTranslationLabelElement()
-          .should('contain.text', ':host{display:inline}Please choose another menu item or login as a different user.');
-        PermissionBannerSteps.getTranslationLabelElement()
-          .should('contain.text', 'Please choose another menu item or login as a different user.');
+          .should('have.text', 'Please choose another menu item or login as a different user.');
       });
   });
 });
