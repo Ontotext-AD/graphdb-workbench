@@ -3,7 +3,15 @@ import 'angular/core/services/repository-storage.service';
 import 'angular/core/services/openid-auth.service.js';
 import 'angular/core/services/security.service';
 import {UserRole} from 'angular/utils/user-utils';
-import {RepositoryStorageService, RepositoryContextService, ServiceProvider} from "@ontotext/workbench-api";
+import {
+  RepositoryStorageService,
+  RepositoryContextService,
+  ServiceProvider,
+  MapperProvider,
+  SecurityContextService,
+  SecurityConfigMapper,
+  AuthenticatedUserMapper
+} from "@ontotext/workbench-api";
 
 angular.module('graphdb.framework.core.services.jwtauth', [
     'toastr',
@@ -96,6 +104,9 @@ angular.module('graphdb.framework.core.services.jwtauth', [
              */
             this.getAuthenticatedUserFromBackend = function(noFreeAccessFallback, justLoggedIn) {
                 SecurityService.getAuthenticatedUser().then(function(data) {
+                    ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(
+                      MapperProvider.get(AuthenticatedUserMapper).mapToModel(data)
+                    );
                     const token = AuthTokenService.getAuthToken();
                     if (token && token.startsWith('GDB')) {
                         // There is a previous authentication via JWT, it's still valid
@@ -131,6 +142,9 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 this.securityInitialized = false;
 
                 SecurityService.getSecurityConfig().then(function (res) {
+                    ServiceProvider.get(SecurityContextService).updateSecurityConfig(
+                      MapperProvider.get(SecurityConfigMapper).mapToModel(res.data)
+                    );
                     that.securityEnabled = res.data.enabled;
                     that.externalAuth = res.data.hasExternalAuth;
                     that.authImplementation = res.data.authImplementation;
@@ -198,6 +212,9 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                                 $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.hasOverrideAuth);
                             });
                         }
+                        ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(
+                          MapperProvider.get(AuthenticatedUserMapper).mapToModel(that.principal)
+                        );
                     }
                 });
             };
@@ -351,6 +368,11 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 $openIDAuth.softLogout();
                 this.principal = this.freeAccessPrincipal;
                 AuthTokenService.clearAuthToken();
+                if (this.freeAccessPrincipal) {
+                  ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(
+                    MapperProvider.get(AuthenticatedUserMapper).mapToModel(this.freeAccessPrincipal)
+                  );
+                }
             };
 
             this.clearAuthentication = function () {

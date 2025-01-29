@@ -29,3 +29,11 @@ const loadProductInfo = () => {
 const loadRepositories = () => {
   testContext.loadRepositories();
 }
+
+const setAuthUser = (user) => {
+  testContext.setAuthenticatedUser(user);
+}
+
+const setSecurityConfig = (config) => {
+  testContext.setSecurityConfig(config);
+}

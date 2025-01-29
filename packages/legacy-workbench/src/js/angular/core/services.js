@@ -349,7 +349,7 @@ function ClassInstanceDetailsService($http) {
 }
 
 function AuthTokenService() {
-    const authStorageName = 'com.ontotext.graphdb.auth';
+    const authStorageName = 'ontotext.gdb.auth.jwt';
     const OPENID_CONFIG = {};
 
     return {

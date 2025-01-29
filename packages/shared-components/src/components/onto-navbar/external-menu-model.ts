@@ -10,6 +10,7 @@ export interface ExternalMenuItemModel {
   role?: string;
   parent?: string;
   hrefFun?: string;
+  shouldShow?: boolean;
 }
 
 export interface ExternalMenuItemsModel {
