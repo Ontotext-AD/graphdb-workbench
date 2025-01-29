@@ -1,6 +1,7 @@
 import {GraphqlEndpointManagementSteps} from "../../steps/graphql/graphql-endpoint-management-steps";
 import {GraphqlStubs} from "../../stubs/graphql/graphql-stubs";
 import {GraphqlPlaygroundSteps} from "../../steps/graphql/graphql-playground-steps";
+import {ApplicationSteps} from "../../steps/application-steps";
 
 describe('GraphQL endpoints management', () => {
     let repositoryId;
@@ -40,6 +41,27 @@ describe('GraphQL endpoints management', () => {
         GraphqlEndpointManagementSteps.getEndpointTable().should('be.visible');
     });
 
+    it('should render no results banner when no endpoints are found for the current repository', () => {
+        // Given I have a repository with no active GraphQL endpoints
+        GraphqlStubs.stubGetEndpointsInfo(repositoryId, 'no-graphql-endpoints-info.json');
+        // When I visit the endpoint management view
+        GraphqlEndpointManagementSteps.visit();
+        // Then I should see the no results banner
+        GraphqlEndpointManagementSteps.getNoResultsBanner().should('be.visible');
+    });
+
+    it('should render no results banner when endpoints are not loaded due to some error', () => {
+        // Given I have a repository with active GraphQL endpoints
+        // And the endpoints info cannot be loaded due to some error
+        GraphqlStubs.stubGetEndpointsInfoError(repositoryId);
+        // When I visit the endpoint management view
+        GraphqlEndpointManagementSteps.visit();
+        // Then I should see a toast with the error message
+        ApplicationSteps.getErrorNotifications().should('be.visible');
+        // Then I should see the no results banner
+        GraphqlEndpointManagementSteps.getNoResultsBanner().should('be.visible');
+    });
+
     it('should render endpoints info', () => {
         // Given I have a repository with active GraphQL endpoints
         // When I visit the endpoint management view
@@ -57,7 +79,7 @@ describe('GraphQL endpoints management', () => {
             cy.get('thead th').eq(8).should('contain', 'Actions');
         });
         GraphqlEndpointManagementSteps.getEndpointsInfo().should('have.length', 3);
-        verifyEndpointInfo([
+        GraphqlEndpointManagementSteps.verifyEndpointInfo([
             {
                 id: 'swapi',
                 label: 'SWAPI GraphQL endpoint',
@@ -107,23 +129,3 @@ describe('GraphQL endpoints management', () => {
         GraphqlPlaygroundSteps.getSelectedEndpoint().should('contain', 'film-restricted');
     });
 });
-
-function verifyEndpointInfo(endpointsInfo) {
-    GraphqlEndpointManagementSteps.getEndpointsInfo().each(($row, index) => {
-        const endpointInfo = endpointsInfo[index];
-        cy.wrap($row).within(() => {
-            cy.get('td').eq(1).should('contain', endpointInfo.id);
-            cy.get('td').eq(2).should('contain', endpointInfo.label);
-            cy.get('td').eq(3).should('contain', endpointInfo.default ? 'yes' : 'no');
-            cy.get('td').eq(4).should('contain', endpointInfo.active ? 'yes' : 'no');
-            cy.get('td').eq(5).should('contain', endpointInfo.modified);
-            cy.get('td').eq(6).should('contain', endpointInfo.types);
-            cy.get('td').eq(7).should('contain', endpointInfo.properties);
-            cy.get('td').eq(8).find('button').should('have.length', 4);
-        });
-        // expand the row and check the description outside the wrapper
-        GraphqlEndpointManagementSteps.toggleEndpointRow(index).closest('tr').next('tr')
-            .find('.endpoint-description').should('contain', endpointInfo.description);
-        GraphqlEndpointManagementSteps.toggleEndpointRow(index);
-    });
-}

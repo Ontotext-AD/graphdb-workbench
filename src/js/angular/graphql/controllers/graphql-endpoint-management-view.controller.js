@@ -42,6 +42,12 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, toa
      */
     $scope.endpointsInfoList = undefined;
 
+    /**
+     * The term to filter the endpoints by.
+     * @type {string}
+     */
+    $scope.filterTerm = '';
+
     // =========================
     // Public methods
     // =========================
@@ -69,8 +75,13 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, toa
         $location.path('/graphql/playground');
     };
 
-    $scope.onEndpointsFilter = (term) => {
-        // TODO: implement filtering
+    /**
+     * Filters the endpoints by the given term.
+     * @param {string} filterTerm The term to filter by.
+     */
+    $scope.onEndpointsFilter = (filterTerm) => {
+        $scope.filterTerm = filterTerm.toLowerCase();
+        $scope.endpointsInfoList.filter(filterTerm);
     };
 
     $scope.createEndpoint = () => {
@@ -117,7 +128,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, toa
                 $scope.endpointsInfoList = endpointsInfoList;
             })
             .catch((error) => {
-                toastr.error('Error loading GraphQL endpoints info', 'Error');
+                toastr.error(getError(error));
                 console.error('Error loading GraphQL endpoints info', error);
             })
             .finally(() => {

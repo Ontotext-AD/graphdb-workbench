@@ -40,22 +40,22 @@ function GraphqlContextService(EventEmitterService) {
     /**
      * Emits an event with a deep-cloned payload using the EventEmitterService.
      *
-     * @param {string} tTYGEventName - The name of the event to emit. It must be a value from {@link TTYGEventName}.
+     * @param {string} event - The name of the event to emit. It must be a value from {@link GraphqlEventName}.
      * @param {*} payload - The data to emit with the event. The payload is deep-cloned before emission.
      */
-    const emit = (tTYGEventName, payload) => {
-        EventEmitterService.emitSync(tTYGEventName, cloneDeep(payload));
+    const emit = (event, payload) => {
+        EventEmitterService.emitSync(event, cloneDeep(payload));
     };
 
     /**
      * Subscribes to an event with the specified callback using the EventEmitterService.
      *
-     * @param {string} tTYGEventName - The name of the event to subscribe to. It must be a value from {@link TTYGEventName}.
+     * @param {string} event - The name of the event to subscribe to. It must be a value from {@link GraphqlEventName}.
      * @param {function} callback - The function to call when the event is emitted.
      * @return {function} - Returns a function that can be called to unsubscribe from the event.
      */
-    const subscribe = (tTYGEventName, callback) => {
-        return EventEmitterService.subscribeSync(tTYGEventName, (payload) => callback(payload));
+    const subscribe = (event, callback) => {
+        return EventEmitterService.subscribeSync(event, (payload) => callback(payload));
     };
 
     return {

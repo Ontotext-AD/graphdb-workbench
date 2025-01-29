@@ -11,12 +11,21 @@ export class GraphqlStubs {
         }).as('get-endpoints');
     }
 
-    static stubGetEndpointsInfo(repositoryId, delay = 0) {
+    static stubGetEndpointsInfo(repositoryId, fixture = 'graphql-endpoints-info.json', delay = 0) {
         cy.intercept('GET', `/rest/repositories/${repositoryId}/graphql/endpoints-info`, {
-            fixture: '/graphql/endpoints/graphql-endpoints-info.json',
+            fixture: `/graphql/endpoints/${fixture}`,
             statusCode: 200,
             delay: delay
-        }).as('get-endpoints');
+        }).as('get-endpoints-info');
+    }
+
+    static stubGetEndpointsInfoError(repositoryId) {
+        cy.intercept('GET', `/rest/repositories/${repositoryId}/graphql/endpoints-info`, {
+            statusCode: 500,
+            response: {
+                error: "Required request parameter 'query' for method parameter type String is not present"
+            }
+        }).as('get-endpoints-info-error');
     }
 
     static stubCountriesSchema() {
