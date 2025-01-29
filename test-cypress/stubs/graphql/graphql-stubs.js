@@ -4,15 +4,7 @@ export const ENDPOINT_RICKMORTY = '/rest/repositories/test/graphql/rickmorty';
 export class GraphqlStubs {
     static stubGetEndpoints(repositoryId, delay = 0) {
         cy.intercept('GET', `/rest/repositories/${repositoryId}/graphql/endpoints`, {
-            fixture: '/graphql/endpoints/graphql-endpoints.json',
-            statusCode: 200,
-            delay: delay
-        }).as('get-endpoints');
-    }
-
-    static stubGetEndpointsInfo(repositoryId, delay = 0) {
-        cy.intercept('GET', `/rest/repositories/${repositoryId}/graphql/endpoints-info`, {
-            fixture: '/graphql/endpoints/graphql-endpoints-info.json',
+            fixture: '/graphql-editor/graphql-endpoints.json',
             statusCode: 200,
             delay: delay
         }).as('get-endpoints');
@@ -20,7 +12,7 @@ export class GraphqlStubs {
 
     static stubCountriesSchema() {
         cy.intercept('POST', ENDPOINT_COUNTRIES, (req) => {
-            stubQuery(req, 'IntrospectionQuery', 'graphql/editor/countries-schema.json');
+            stubQuery(req, 'IntrospectionQuery', 'graphql-editor/countries-schema.json');
             stubQuery(req, 'GetContinentById', {
                 data: {
                     name: 'Europe'
@@ -31,7 +23,7 @@ export class GraphqlStubs {
 
     static stubStubRickAndMortySchema() {
         cy.intercept('POST', ENDPOINT_RICKMORTY, (req) => {
-            stubQuery(req, 'IntrospectionQuery', 'graphql/editor/rick-and-morty-schema.json');
+            stubQuery(req, 'IntrospectionQuery', 'graphql-editor/rick-and-morty-schema.json');
             stubQuery(req, 'Character', {
                 data: {
                     name: 'Morty Smith'

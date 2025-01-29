@@ -5,34 +5,6 @@ const UPLOAD_URL = '/import/upload/';
 const SERVER_URL = '/import/server/';
 const POLL_INTERVAL = 200;
 
-// Imports a graphql schema to the repository
-Cypress.Commands.add('uploadGraphqlSchema', (repositoryId, schemaPath, schemaId ) => {
-    cy.fixture(schemaPath).then((schema) => {
-        cy.request({
-            method: 'POST',
-            url: `${REPOSITORIES_URL}${repositoryId}/soml`,
-            headers: {'Content-type': 'text/yaml'},
-            body: schema
-        }).should((response) => expect(response.status).to.equal(201));
-        waitForGraphqlSchema(repositoryId, schemaId);
-    });
-});
-
-// Waits for the schema import to finish
-function waitForGraphqlSchema(repositoryId, schemaId) {
-    cy.request({
-        method: 'GET',
-        url: `${REPOSITORIES_URL}${repositoryId}/soml/${schemaId}`
-    }).then((response) => {
-        // const importStatus = Cypress._.find(response.body, (importStatus) => importStatus.name === fileName);
-        if (response.status === 200 && response.body && response.body.id === `/soml/${schemaId}`) {
-            return;
-        }
-        cy.wait(POLL_INTERVAL);
-        waitForGraphqlSchema(repositoryId, schemaId);
-    });
-}
-
 Cypress.Commands.add('importRDFTextSnippet', (repositoryId, rdf, importSettings = {}) => {
     const importData = Cypress._.defaultsDeep(importSettings, snippetImportTemplate);
     importData.data = rdf;

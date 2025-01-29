@@ -1120,14 +1120,12 @@ main menu height*/
 }
 
 .btn:hover [class^="icon-"],
-.btn:hover .fa,
-.btn:hover .fa-kit {
+.btn:hover .fa {
     transform: scale(1.2);
 }
 
 .btn.disabled:hover [class^="icon-"],
-.btn.disabled:hover .fa,
-.btn.disabled:hover .fa-kit {
+.btn.disabled:hover .fa {
     transform: scale(1);
 }
 

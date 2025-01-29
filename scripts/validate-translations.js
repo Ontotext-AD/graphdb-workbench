@@ -8,7 +8,6 @@ const localeFr = fs.readFileSync('src/i18n/locale-fr.json', 'utf8');
 // Verified identical translations - no warnings or errors about them
 const identicalTranslations = [
     "#",
-    "Active",
     "Action",
     "Actions",
     "Agent: {{agentName}}",
@@ -38,7 +37,6 @@ const identicalTranslations = [
     "Top P",
     "Type:",
     "type",
-    "Types",
     "Google Analytics (GA4)",
     "Index",
     "<div><span class=\"graph\">GRAPH</span><span class=\"wise\">WISE</span></div><div class=\"thrives\">AI THRIVES ON WHOLE DATA</div>",
