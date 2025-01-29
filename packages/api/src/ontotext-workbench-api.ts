@@ -19,7 +19,6 @@ export * from './services/context';
 export * from './services/language';
 export * from './services/repository';
 export * from './services/repository-location';
-export {AuthenticationService} from './services/security/authentication.service';
 export {EventEmitter} from './emitters/event.emitter';
 export * from './services/license';
 export * from './services/product-info';
