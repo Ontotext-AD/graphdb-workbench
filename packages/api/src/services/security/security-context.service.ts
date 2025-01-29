@@ -1,14 +1,18 @@
 import {ContextService} from '../context';
 import {ValueChangeCallback} from '../../models/context/value-change-callback';
 import {DeriveContextServiceContract} from '../../models/context/update-context-method';
-import {RestrictedPages} from '../../models/security';
+import {AuthenticatedUser, RestrictedPages, SecurityConfig} from '../../models/security';
 
 type SecurityContextFields = {
   readonly RESTRICTED_PAGES: string
+  readonly SECURITY_CONFIG: string;
+  readonly AUTHENTICATED_USER: string;
 }
 
 type SecurityContextFieldParams = {
   readonly RESTRICTED_PAGES: RestrictedPages;
+  readonly SECURITY_CONFIG: SecurityConfig;
+  readonly AUTHENTICATED_USER: AuthenticatedUser;
 }
 
 /**
@@ -16,6 +20,8 @@ type SecurityContextFieldParams = {
  */
 export class SecurityContextService extends ContextService<SecurityContextFields> implements DeriveContextServiceContract<SecurityContextFields, SecurityContextFieldParams> {
   readonly RESTRICTED_PAGES = 'restrictedPages';
+  readonly SECURITY_CONFIG = 'securityConfig';
+  readonly AUTHENTICATED_USER = 'authenticatedUser';
 
   /**
    * Retrieves the restricted pages for the user.
@@ -43,5 +49,39 @@ export class SecurityContextService extends ContextService<SecurityContextFields
    */
   onRestrictedPagesChanged(callbackFunction: ValueChangeCallback<RestrictedPages | undefined>): () => void {
     return this.subscribe(this.RESTRICTED_PAGES, callbackFunction);
+  }
+
+  /**
+   * Updates the security configuration in the context.
+   * @param securityConfig - The new security configuration to be set.
+   */
+  updateSecurityConfig(securityConfig: SecurityConfig): void {
+    this.updateContextProperty(this.SECURITY_CONFIG, securityConfig);
+  }
+
+  /**
+   * Subscribes to changes in the security configuration.
+   * @param callbackFunction - A function to be called when the security configuration changes.
+   * @returns A function that, when called, unsubscribes from the security configuration changes.
+   */
+  onSecurityConfigChanged(callbackFunction: ValueChangeCallback<SecurityConfig | undefined>): () => void {
+    return this.subscribe(this.SECURITY_CONFIG, callbackFunction);
+  }
+
+  /**
+   * Updates the authenticated user information in the context.
+   * @param authenticatedUser - The new authenticated user information to be set.
+   */
+  updateAuthenticatedUser(authenticatedUser: AuthenticatedUser): void {
+    this.updateContextProperty(this.AUTHENTICATED_USER, authenticatedUser);
+  }
+
+  /**
+   * Subscribes to changes in the authenticated user information.
+   * @param callbackFunction - A function to be called when the authenticated user information changes.
+   * @returns A function that, when called, unsubscribes from the authenticated user information changes.
+   */
+  onAuthenticatedUserChanged(callbackFunction: ValueChangeCallback<AuthenticatedUser | undefined>): () => void {
+    return this.subscribe(this.AUTHENTICATED_USER, callbackFunction);
   }
 }

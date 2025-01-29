@@ -6,6 +6,7 @@ import {UserRole, UserType} from 'angular/utils/user-utils';
 import 'angular/security/directives/custom-prefix-tags-input.directive';
 import {READ_REPO, READ_REPO_PREFIX, SYSTEM_REPO, WRITE_REPO, WRITE_REPO_PREFIX} from "./services/constants";
 import {createUniqueKey, parseAuthorities} from "./services/authorities-util";
+import {SecurityContextService, ServiceProvider, AuthenticatedUserMapper, MapperProvider} from "@ontotext/workbench-api";
 
 const modules = [
     'ngCookies',
@@ -65,6 +66,9 @@ securityModule.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth',
                             // don't have a remembered url, go home
                             $location.path('/');
                         }
+                        ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(
+                          MapperProvider.get(AuthenticatedUserMapper).mapToModel(data)
+                        );
                     });
             }).error(function (data, status) {
                 if (status === 401) {

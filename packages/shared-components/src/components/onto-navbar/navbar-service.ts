@@ -13,7 +13,7 @@ export class NavbarService {
   private static setTopLevelMenuItems(navbarPlugins: ExternalMenuModel, navbarModel: NavbarModel) {
     navbarPlugins.forEach((menuPlugin) => {
       menuPlugin.items
-        .filter((item) => !item.parent)
+        .filter((item) => !item.parent && item.shouldShow)
         .forEach((item) => {
           if (navbarModel.hasParent(item.label)) {
             console.warn("Doubled parent definition: ", item);
@@ -27,12 +27,12 @@ export class NavbarService {
   private static setSubmenuItems(navbarPlugins: ExternalMenuModel, navbarModel: NavbarModel) {
     navbarPlugins.forEach((menuPlugin) => {
       menuPlugin.items
-        .filter((item) => item.parent)
+        .filter((item) => item.parent && item.shouldShow)
         .forEach((item) => {
           const topLevelItem = navbarModel.getTopLevelItem(item.parent)
           // Some submenu items in the external menu model have children which is unusual.
           // I'm not sure if and where these children are used. For now, I'm ignoring them.
-          topLevelItem.addChildren(this.toMenuItemModel(item, [], topLevelItem));
+          topLevelItem?.addChildren(this.toMenuItemModel(item, [], topLevelItem));
         });
     });
   }
