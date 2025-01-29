@@ -14,7 +14,7 @@ import {ExternalMenuModel} from "./external-menu-model";
 import {NavbarToggledEvent} from "./navbar-toggled-event";
 import {NavbarService} from "./navbar-service";
 import {NavbarItemModel, NavbarModel} from "./navbar-model";
-import {TranslationService} from "../../services/translation.service";
+import {TranslationService} from '../../services/translation.service';
 
 const labelKeys = {
   EXPAND: 'menu.buttons.expand',
@@ -229,7 +229,7 @@ export class OntoNavbar {
             </a>
           </li>
           {this.menuModel.items.map((item) => (
-            <li class={{'menu-element': true, 'open': item.open}}>
+            <li key={item.labelKey} class={{'menu-element': true, 'open': item.open}}>
               {item.children.length > 0 &&
                 <Fragment>
                   <div class={{'menu-element-root': true, 'active': item.selected}}
@@ -238,12 +238,12 @@ export class OntoNavbar {
                     <translate-label class="menu-item" labelKey={item.labelKey}></translate-label>
                   </div>
                   <ul class="sub-menu">
-                    <li class="submenu-title">
+                    <li key={item.labelKey} class="submenu-title">
                       <translate-label labelKey={item.labelKey}></translate-label>
                     </li>
                     {
                       item.children.map((submenu) => (
-                        <li class={{'sub-menu-item': true, 'active': submenu.selected}}>
+                        <li key={submenu.labelKey} class={{'sub-menu-item': true, 'active': submenu.selected}}>
                           <a class="sub-menu-link" href={submenu.href} onClick={this.handleSelectMenuItem(submenu)}>
                             <translate-label class="menu-item" labelKey={submenu.labelKey}></translate-label>
                             {submenu.icon &&
