@@ -18,6 +18,6 @@ export class PermissionBannerSteps extends BaseSteps{
   }
 
   static getTranslationLabelElement() {
-    return cy.root().find('translate-label').shadow().eq(1);
+    return cy.root().find('translate-label').eq(1);
   }
 }

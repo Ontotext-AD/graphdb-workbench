@@ -17,6 +17,7 @@ describe('NavbarService', () => {
             role: 'IS_AUTHENTICATED_FULLY',
             icon: 'icon-import',
             guideSelector: 'menu-import',
+            shouldShow: true,
             children: []
           }
         ]
@@ -31,6 +32,7 @@ describe('NavbarService', () => {
             role: 'IS_AUTHENTICATED_FULLY',
             icon: 'icon-data',
             guideSelector: 'menu-explore',
+            shouldShow: true,
             children: []
           }
         ]
@@ -43,7 +45,8 @@ describe('NavbarService', () => {
             href: 'relationships',
             order: 2,
             parent: 'Explore',
-            guideSelector: 'sub-menu-class-relationships'
+            guideSelector: 'sub-menu-class-relationships',
+            shouldShow: true
           },
           {
             label: 'Class hierarchy',
@@ -51,7 +54,8 @@ describe('NavbarService', () => {
             href: 'hierarchy',
             order: 1,
             parent: 'Explore',
-            guideSelector: 'menu-class-hierarchy'
+            guideSelector: 'menu-class-hierarchy',
+            shouldShow: true
           },
           {
             label: 'Visual graph',
@@ -60,7 +64,8 @@ describe('NavbarService', () => {
             order: 5,
             parent: 'Explore',
             children: [],
-            guideSelector: 'sub-menu-visual-graph'
+            guideSelector: 'sub-menu-visual-graph',
+            shouldShow: true
           }
         ]
       }
@@ -82,7 +87,8 @@ describe('NavbarService', () => {
         guideSelector: 'menu-import',
         children: [],
         hasParent: false,
-        selected: false
+        selected: false,
+        shouldShow: true
       }));
       actual.addItem(new NavbarItemModel({
         label: 'Explore',
@@ -94,6 +100,7 @@ describe('NavbarService', () => {
         guideSelector: 'menu-explore',
         hasParent: false,
         selected: false,
+        shouldShow: true,
         children: [
           new NavbarItemModel({
             label: 'Class hierarchy',
@@ -104,7 +111,8 @@ describe('NavbarService', () => {
             guideSelector: 'menu-class-hierarchy',
             children: [],
             hasParent: true,
-            selected: false
+            selected: false,
+            shouldShow: true
           }),
           new NavbarItemModel({
             label: 'Class relationships',
@@ -115,7 +123,8 @@ describe('NavbarService', () => {
             guideSelector: 'sub-menu-class-relationships',
             children: [],
             hasParent: true,
-            selected: false
+            selected: false,
+            shouldShow: true
           }),
           new NavbarItemModel({
             label: 'Visual graph',
@@ -126,7 +135,8 @@ describe('NavbarService', () => {
             children: [],
             guideSelector: 'sub-menu-visual-graph',
             hasParent: true,
-            selected: false
+            selected: false,
+            shouldShow: true
           })
         ]
       }));

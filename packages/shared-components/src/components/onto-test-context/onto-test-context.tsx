@@ -1,11 +1,19 @@
-import { Component, Method } from '@stencil/core';
+import {Component, Method} from '@stencil/core';
 import {
   EventService,
+  AuthenticatedUser,
+  AuthenticatedUserMapper,
   LanguageContextService,
   License,
   LicenseContextService, NavigationEnd,
+  MapperProvider,
   ProductInfo,
-  ProductInfoContextService, RepositoryContextService, RepositoryService, RestrictedPages, SecurityContextService,
+  ProductInfoContextService,
+  RepositoryContextService,
+  RepositoryService,
+  RestrictedPages,
+  SecurityContextService,
+  SecurityConfig,
   ServiceProvider
 } from '@ontotext/workbench-api';
 import en from '../../assets/i18n/en.json';
@@ -62,6 +70,34 @@ export class OntoTestContext {
     ServiceProvider.get(RepositoryService).getRepositories().then((repositories) => {
       ServiceProvider.get(RepositoryContextService).updateRepositoryList(repositories);
     });
+    return Promise.resolve();
+  }
+
+
+
+  /**
+   * Sets the authenticated user in the application context.
+   *
+   * @param user - The AuthenticatedUser object containing the user's authentication information.
+   * @returns A Promise that resolves when the authenticated user has been successfully updated
+   */
+  @Method()
+  setAuthenticatedUser(user: AuthenticatedUser): Promise<void> {
+    ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(
+      MapperProvider.get(AuthenticatedUserMapper).mapToModel(user)
+    );
+    return Promise.resolve();
+  }
+
+  /**
+   * Sets the security configuration in the application context.
+   *
+   * @param securityConfig - The SecurityConfig object containing the new security settings to be applied.
+   * @returns A Promise that resolves when the security configuration has been successfully updated.
+   */
+  @Method()
+  setSecurityConfig(securityConfig: SecurityConfig): Promise<void> {
+    ServiceProvider.get(SecurityContextService).updateSecurityConfig(securityConfig);
     return Promise.resolve();
   }
 

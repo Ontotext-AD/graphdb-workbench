@@ -11,7 +11,7 @@ window.onload = function() {
         docExpansion: 'none',
         defaultModelRendering: 'example',
         requestInterceptor: function (req) {
-            const authToken = window.localStorage.getItem('com.ontotext.graphdb.auth');
+            const authToken = window.localStorage.getItem('ontotext.gdb.auth.jwt');
             if (authToken !== null) {
                 req.headers['Authorization'] = authToken;
             }
@@ -38,7 +38,7 @@ window.onload = function() {
         docExpansion: 'none',
         defaultModelRendering: 'example',
         requestInterceptor: function (req) {
-            const authToken = window.localStorage.getItem('com.ontotext.graphdb.auth');
+            const authToken = window.localStorage.getItem('ontotext.gdb.auth.jwt');
             if (authToken !== null) {
                 req.headers['Authorization'] = authToken;
             }
