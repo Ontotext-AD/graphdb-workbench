@@ -760,6 +760,14 @@
                     "actions": "Actes"
                 },
                 "actions": {
+                    "explore_endpoint": {
+                        "active": {
+                            "tooltip": "Explorez le point final dans le GraphQL Playground"
+                        },
+                        "inactive": {
+                            "tooltip": "Le point de terminaison n'est pas actif et ne peut pas être exploré dans GraphQL Playground"
+                        }
+                    },
                     "create_endpoint": {
                         "label": "Nouveau point de terminaison",
                         "tooltip": "Créer un nouveau point de terminaison GraphQL"
@@ -782,6 +790,7 @@
                     }
                 },
                 "messages": {
+                    "no_results": "Aucun point de terminaison GraphQL trouvé"
                 },
                 "labels": {
                     "description": "Description"

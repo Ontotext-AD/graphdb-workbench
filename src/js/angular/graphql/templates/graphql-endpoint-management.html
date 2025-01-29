@@ -14,13 +14,14 @@
          size="100">
     </div>
 
-    <div ng-if="!loadingEndpointsInfo && endpointsInfoList.endpoints.length" class="endpoint-management-container">
+    <div ng-if="!loadingEndpointsInfo" class="endpoint-management-container">
 
         <div class="toolbar">
             <div class="endpoints-filter">
                 <input type="text" class="form-control endpoints-filter-field"
                        placeholder="{{'graphql.endpoints_management.toolbar.endpoints_filter.placeholder' | translate}}"
-                       ng-model="filteredEndpoints" ng-change="onEndpointsFilter()" aria-label="Filter endpoints">
+                       ng-model="filterTerm" ng-change="onEndpointsFilter(filterTerm)" aria-label="Filter endpoints"
+                       autocomplete="off">
             </div>
 
             <div class="actions">
@@ -74,8 +75,12 @@
                     </a>
                 </td>
                 <td>
-                    <span ng-if="!endpoint.active" class="endpoint-link">{{endpoint.endpointId}}</span>
-                    <a ng-if="endpoint.active" href="#" ng-click="exploreEndpoint(endpoint)" class="endpoint-link">{{endpoint.endpointId}}</a>
+                    <span ng-if="!endpoint.active"
+                          gdb-tooltip="{{'graphql.endpoints_management.table.actions.explore_endpoint.inactive.tooltip' | translate}}"
+                          class="endpoint-link">{{endpoint.endpointId}}</span>
+                    <a ng-if="endpoint.active" href="#" ng-click="exploreEndpoint(endpoint)"
+                       gdb-tooltip="{{'graphql.endpoints_management.table.actions.explore_endpoint.active.tooltip' | translate}}"
+                       class="endpoint-link">{{endpoint.endpointId}}</a>
                 </td>
                 <td>{{endpoint.label}}</td>
                 <td>
@@ -99,16 +104,19 @@
                             <i class="fa fa-ellipsis"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-right agent-actions-menu">
-                            <button class="dropdown-item export-schema-btn" type="button" ng-click="onExportSchema(endpoint)">
+                            <button class="dropdown-item export-schema-btn" type="button"
+                                    ng-click="onExportSchema(endpoint)">
                                 <i class="fa fa-arrow-down-to-line"></i>&nbsp;
                                 <span>{{'graphql.endpoints_management.table.actions.export_schema.label' | translate}}</span>
                             </button>
-                            <button class="dropdown-item configure-endpoint-btn" type="button" ng-click="onConfigureEndpoint(endpoint)">
+                            <button class="dropdown-item configure-endpoint-btn" type="button"
+                                    ng-click="onConfigureEndpoint(endpoint)">
                                 <i class="fa fa-gear"></i>&nbsp;
                                 <span>{{'graphql.endpoints_management.table.actions.configure_endpoint.label' | translate}}</span>
                             </button>
                             <div class="dropdown-divider"></div>
-                            <button class="dropdown-item delete-endpoint-btn" type="button" ng-click="onDeleteEndpoint(endpoint)">
+                            <button class="dropdown-item delete-endpoint-btn" type="button"
+                                    ng-click="onDeleteEndpoint(endpoint)">
                                 <i class="fa fa-trash-can"></i>&nbsp;
                                 <span>{{'graphql.endpoints_management.table.actions.delete_endpoint.label' | translate}}</span>
                             </button>
@@ -123,6 +131,12 @@
                     <div class="endpoint-description">{{endpoint.description}}</div>
                 </td>
             </tr>
+            <tr ng-if="!endpointsInfoList || endpointsInfoList.endpoints.length === 0" class="no-results">
+                <td colspan="9">
+                    <div class="alert alert-info">
+                        <span>{{'graphql.endpoints_management.table.messages.no_results' | translate}}</span>
+                    </div>
+                </tr>
             </tbody>
         </table>
     </div>

@@ -41,4 +41,36 @@ export class GraphqlEndpointManagementSteps {
     static toggleEndpointRow(index) {
         return this.getEndpointsInfo().eq(index).find('.toggle-row a').click();
     }
+
+    static filterEndpoints(term) {
+        this.getEndpointFilterField().type(term);
+    }
+
+    static clearFilter() {
+        this.getEndpointFilterField().clear();
+    }
+
+    static getNoResultsBanner() {
+        return this.getEndpointTable().find('.no-results');
+    }
+
+    static verifyEndpointInfo(data) {
+        this.getEndpointsInfo().each(($row, index) => {
+            const endpointInfo = data[index];
+            cy.wrap($row).within(() => {
+                cy.get('td').eq(1).should('contain', endpointInfo.id);
+                cy.get('td').eq(2).should('contain', endpointInfo.label);
+                cy.get('td').eq(3).should('contain', endpointInfo.default ? 'yes' : 'no');
+                cy.get('td').eq(4).should('contain', endpointInfo.active ? 'yes' : 'no');
+                cy.get('td').eq(5).should('contain', endpointInfo.modified);
+                cy.get('td').eq(6).should('contain', endpointInfo.types);
+                cy.get('td').eq(7).should('contain', endpointInfo.properties);
+                cy.get('td').eq(8).find('button').should('have.length', 4);
+            });
+            // expand the row and check the description outside the wrapper
+            this.toggleEndpointRow(index).closest('tr').next('tr')
+                .find('.endpoint-description').should('contain', endpointInfo.description);
+            this.toggleEndpointRow(index);
+        });
+    }
 }
