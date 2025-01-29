@@ -58,6 +58,38 @@ Type: `Promise<void>`
 
 
 
+### `setAuthenticatedUser(user: AuthenticatedUser) => Promise<void>`
+
+Sets the authenticated user in the application context.
+
+#### Parameters
+
+| Name   | Type                | Description                                                                      |
+| ------ | ------------------- | -------------------------------------------------------------------------------- |
+| `user` | `AuthenticatedUser` | - The AuthenticatedUser object containing the user's authentication information. |
+
+#### Returns
+
+Type: `Promise<void>`
+
+A Promise that resolves when the authenticated user has been successfully updated
+
+### `setSecurityConfig(securityConfig: SecurityConfig) => Promise<void>`
+
+Sets the security configuration in the application context.
+
+#### Parameters
+
+| Name             | Type             | Description                                                                     |
+| ---------------- | ---------------- | ------------------------------------------------------------------------------- |
+| `securityConfig` | `SecurityConfig` | - The SecurityConfig object containing the new security settings to be applied. |
+
+#### Returns
+
+Type: `Promise<void>`
+
+A Promise that resolves when the security configuration has been successfully updated.
+
 ### `updateLicense(license: License) => Promise<void>`
 
 Updates the license information in the context.

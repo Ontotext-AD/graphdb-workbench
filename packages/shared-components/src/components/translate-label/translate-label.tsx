@@ -15,7 +15,6 @@ import {TranslationService} from '../../services/translation.service';
 @Component({
   tag: 'translate-label',
   styleUrl: 'translate-label.scss',
-  shadow: true,
 })
 export class TranslateLabel {
 

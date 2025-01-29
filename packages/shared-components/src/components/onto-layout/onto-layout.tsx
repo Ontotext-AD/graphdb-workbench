@@ -8,8 +8,14 @@ import {
   SecurityContextService,
   RestrictedPages,
   EventService,
-  EventName, SubscriptionList
-} from "@ontotext/workbench-api";
+  EventName,
+  SubscriptionList,
+  AuthenticatedUser,
+  SecurityConfig,
+  Authority,
+  AuthenticationService
+} from '@ontotext/workbench-api';
+import {ExternalMenuItemModel} from '../onto-navbar/external-menu-model';
 
 @Component({
   tag: 'onto-layout',
@@ -26,9 +32,20 @@ export class OntoLayout {
   private isNavbarCollapsed = false;
 
   /**
+   * The current authenticated user
+   */
+  private authenticatedUser: AuthenticatedUser;
+
+  /**
+   * The security configuration.
+   */
+  private securityConfig: SecurityConfig;
+
+  /**
    * The current route. This is used to highlight the selected menu item in the navbar.
    */
   private currentRoute: string;
+  private navbarRef: HTMLOntoNavbarElement;
 
   constructor() {
     this.windowResizeObserver = debounce(() => this.windowResizeHandler(), 50);
@@ -38,6 +55,7 @@ export class OntoLayout {
 
   @State() isLowResolution = false;
   @State() hasPermission: boolean = true;
+  @State() showFooter = this.isAuthenticatedFully();
 
   /**
    * Event listener for the navbar toggled event. The layout needs to respond properly when the navbar is toggled in
@@ -92,6 +110,55 @@ export class OntoLayout {
     }
   }
 
+  private onSecurityChanged() {
+    const securityContextService = ServiceProvider.get(SecurityContextService);
+    this.subscriptions.add(
+      securityContextService.onAuthenticatedUserChanged((authenticatedUser) => {
+        this.authenticatedUser = authenticatedUser;
+        this.setNavbarItemVisibility();
+        this.showFooter = this.isAuthenticatedFully();
+      })
+    );
+
+    this.subscriptions.add(
+      securityContextService.onSecurityConfigChanged((securityConfig) => {
+        this.securityConfig = securityConfig;
+        this.setNavbarItemVisibility();
+        this.showFooter = this.isAuthenticatedFully();
+      })
+    );
+  }
+
+  private shouldShowMenu(role: Authority): boolean {
+    return this.isAuthenticatedFully()
+      && ServiceProvider.get(AuthenticationService).hasRole(role, this.securityConfig, this.authenticatedUser);
+  }
+
+  private isAuthenticatedFully() {
+    const authService = ServiceProvider.get(AuthenticationService);
+    return authService.isAuthenticated(this.securityConfig, this.authenticatedUser)
+      || authService.hasFreeAccess(this.securityConfig);
+  }
+
+  private setNavbarItemVisibility() {
+    if (!this.navbarRef?.menuItems) {
+      return;
+    }
+    // recursively check for children and set their shouldShow property
+    const processItem = (item: ExternalMenuItemModel) => {
+      item.shouldShow = this.shouldShowMenu(item.role as Authority);
+      if (item.children?.length) {
+        item.children.forEach(processItem);
+      }
+    };
+
+    this.navbarRef?.menuItems?.forEach(plugin => {
+      plugin.items.forEach(processItem);
+    });
+    // Update the reference to trigger a re-render
+    this.navbarRef.menuItems = [...this.navbarRef.menuItems];
+  }
+
   // ========================
   // Lifecycle methods
   // ========================
@@ -104,6 +171,7 @@ export class OntoLayout {
     let route = window.location.pathname;
     this.currentRoute  = route.replace('/', '').split('/')[0];
     window.addEventListener("storage", this.handleStorageChange);
+    this.onSecurityChanged();
   }
 
   connectedCallback() {
@@ -130,11 +198,13 @@ export class OntoLayout {
           <slot name="default"></slot>
         </div>
         <header class="wb-header">
-          <onto-header></onto-header>
+          {this.isAuthenticatedFully() && <onto-header></onto-header>}
         </header>
 
         <nav class="wb-navbar">
-          <onto-navbar navbar-collapsed={this.isLowResolution} selected-menu={this.currentRoute}></onto-navbar>
+          <onto-navbar ref={(navbar) => this.navbarRef = navbar}
+                       navbar-collapsed={this.isLowResolution}
+                       selected-menu={this.currentRoute}></onto-navbar>
         </nav>
 
         {this.hasPermission ? (

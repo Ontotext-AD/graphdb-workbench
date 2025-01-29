@@ -5,13 +5,13 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { Awaitable, License, ProductInfo } from "../../api/dist/ontotext-workbench-api.d";
+import { AuthenticatedUser, Awaitable, License, ProductInfo, SecurityConfig } from "../../api/dist/ontotext-workbench-api.d";
 import { DropdownItem } from "./models/dropdown/dropdown-item";
 import { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 import { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
 import { NavbarToggledEvent } from "./components/onto-navbar/navbar-toggled-event";
 import { TranslationParameter } from "./models/translation/translation-parameter";
-export { Awaitable, License, ProductInfo } from "../../api/dist/ontotext-workbench-api.d";
+export { AuthenticatedUser, Awaitable, License, ProductInfo, SecurityConfig } from "../../api/dist/ontotext-workbench-api.d";
 export { DropdownItem } from "./models/dropdown/dropdown-item";
 export { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 export { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
@@ -127,6 +127,18 @@ export namespace Components {
           * Loads the repositories in the application.
          */
         "loadRepositories": () => Promise<void>;
+        /**
+          * Sets the authenticated user in the application context.
+          * @param user - The AuthenticatedUser object containing the user's authentication information.
+          * @returns A Promise that resolves when the authenticated user has been successfully updated
+         */
+        "setAuthenticatedUser": (user: AuthenticatedUser) => Promise<void>;
+        /**
+          * Sets the security configuration in the application context.
+          * @param securityConfig - The SecurityConfig object containing the new security settings to be applied.
+          * @returns A Promise that resolves when the security configuration has been successfully updated.
+         */
+        "setSecurityConfig": (securityConfig: SecurityConfig) => Promise<void>;
         /**
           * Updates the license information in the context.  This method uses the LicenseContextService to update the license and returns a resolved Promise once the operation is complete.
           * @param license - The new License object to be set.
