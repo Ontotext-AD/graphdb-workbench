@@ -11,7 +11,7 @@ describe('Import server files - Batch operations', () => {
         repositoryId = 'server-import-' + Date.now();
         cy.createRepository({id: repositoryId});
         ImportServerFilesSteps.visitServerImport(repositoryId);
-        ImportServerFilesSteps.getResources().should('have.length', 18);
+        ImportServerFilesSteps.getResources().should('have.length', 19);
     });
 
     afterEach(() => {
@@ -48,7 +48,7 @@ describe('Import server files - Batch operations', () => {
         // When I select All files from the menu
         ImportServerFilesSteps.selectAllResources();
         // Then I should see all files selected
-        ImportServerFilesSteps.getSelectedResources().should('have.length', 18);
+        ImportServerFilesSteps.getSelectedResources().should('have.length', 19);
         // When I select None from the menu
         ImportServerFilesSteps.deselectAllResources();
         // Then I should see no files selected
@@ -65,7 +65,7 @@ describe('Import server files - Batch operations', () => {
         // When I select Not Imported from the menu
         ImportServerFilesSteps.selectNotImportedResources();
         // Then I should see only not imported files selected
-        ImportServerFilesSteps.getSelectedResources().should('have.length', 17);
+        ImportServerFilesSteps.getSelectedResources().should('have.length', 18);
         // Deselect all for the next step
         ImportServerFilesSteps.deselectAllResources();
         ImportServerFilesSteps.getSelectedResources().should('have.length', 0);

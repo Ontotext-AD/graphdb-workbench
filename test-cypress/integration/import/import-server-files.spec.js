@@ -14,7 +14,7 @@ describe('Import server files', () => {
         repositoryId = 'server-import-' + Date.now();
         cy.createRepository({id: repositoryId});
         ImportServerFilesSteps.visitServerImport(repositoryId);
-        ImportServerFilesSteps.getResources().should('have.length', 18);
+        ImportServerFilesSteps.getResources().should('have.length', 19);
     });
 
     afterEach(() => {
@@ -66,7 +66,7 @@ describe('Import server files', () => {
         // When the server files tab is loaded
         // Then I should see all the files and folders by default
         ImportServerFilesSteps.getShowAllResourceTypesButton().should('have.class', 'active');
-        ImportServerFilesSteps.getResources().should('have.length', 18);
+        ImportServerFilesSteps.getResources().should('have.length', 19);
         // When I select the folders only filter
         ImportServerFilesSteps.selectFoldersOnlyFilter();
         // Then I should see only the folders
@@ -75,7 +75,7 @@ describe('Import server files', () => {
         // When I select the files only filter
         ImportServerFilesSteps.selectFilesOnlyFilter();
         // Then I should see only the files
-        ImportServerFilesSteps.getResources().should('have.length', 16);
+        ImportServerFilesSteps.getResources().should('have.length', 17);
     });
 
     it('should be able to import the whole directory', () => {
