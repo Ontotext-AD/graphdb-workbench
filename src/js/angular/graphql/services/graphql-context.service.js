@@ -1,4 +1,5 @@
 import {cloneDeep} from 'lodash';
+import {GraphqlEndpointConfiguration} from "../../models/graphql/graphql-endpoint-configuration";
 
 angular
     .module('graphdb.framework.graphql.services.graphql-context', [])
@@ -16,6 +17,12 @@ function GraphqlContextService(EventEmitterService) {
      */
     let _selectedEndpoint = undefined;
 
+    /**
+     * The new GraphQL endpoint is present when a new endpoint is being created.
+     * @type {GraphqlEndpointConfiguration|undefined}
+     * @private
+     */
+    let _newEndpoint = undefined;
 
     const resetContext = () => {
         _selectedEndpoint = undefined;
@@ -35,6 +42,18 @@ function GraphqlContextService(EventEmitterService) {
      */
     const getSelectedEndpoint = () => {
         return cloneDeep(_selectedEndpoint);
+    };
+
+    const createEndpointInstance = () => {
+        _newEndpoint = new GraphqlEndpointConfiguration();
+        return _newEndpoint;
+    };
+
+    /**
+     * Emits a CREATE_ENDPOINT event with a new GraphQL endpoint instance.
+     */
+    const createEndpoint = () => {
+        emit(GraphqlEventName.CREATE_ENDPOINT, createEndpointInstance());
     };
 
     /**
@@ -61,10 +80,15 @@ function GraphqlContextService(EventEmitterService) {
     return {
         resetContext,
         setSelectedEndpoint,
-        getSelectedEndpoint
+        getSelectedEndpoint,
+        createEndpoint,
+        subscribe
     };
 }
 
 export const GraphqlEventName = {
-
+    /**
+     * The event emitted when a new GraphQL endpoint should be created.
+     */
+    CREATE_ENDPOINT: 'createEndpoint'
 };
