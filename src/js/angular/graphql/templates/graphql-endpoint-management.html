@@ -18,7 +18,7 @@
 
         <div class="toolbar">
             <div class="endpoints-filter">
-                <input type="text" class="form-control endpoints-filter-field"
+                <input type="text" ng-if="hasEndpoints" class="form-control endpoints-filter-field"
                        placeholder="{{'graphql.endpoints_management.toolbar.endpoints_filter.placeholder' | translate}}"
                        ng-model="filterTerm" ng-change="onEndpointsFilter(filterTerm)" aria-label="Filter endpoints"
                        autocomplete="off">
@@ -38,7 +38,12 @@
             </div>
         </div>
 
-        <table class="endpoints-info-table table mt-1" aria-describedby="GraphQL endpoints info table">
+        <div ng-if="!hasEndpoints" class="alert alert-info no-endpoints mt-2">
+            <span>{{'graphql.endpoints_management.table.messages.no_endpoints_in_repository' | translate}}</span>
+        </div>
+
+        <table ng-if="hasEndpoints" class="endpoints-info-table table mt-1"
+               aria-describedby="GraphQL endpoints info table">
             <thead>
             <tr>
                 <th scope="col" class="toggle"></th>
@@ -131,12 +136,12 @@
                     <div class="endpoint-description">{{endpoint.description}}</div>
                 </td>
             </tr>
-            <tr ng-if="!endpointsInfoList || endpointsInfoList.endpoints.length === 0" class="no-results">
+            <tr ng-if="endpointsInfoList.endpoints.length === 0" class="no-results">
                 <td colspan="9">
                     <div class="alert alert-info">
-                        <span>{{'graphql.endpoints_management.table.messages.no_results' | translate}}</span>
+                        <span>{{'graphql.endpoints_management.table.messages.endpoints_filter_no_result' | translate}}</span>
                     </div>
-                </tr>
+            </tr>
             </tbody>
         </table>
     </div>

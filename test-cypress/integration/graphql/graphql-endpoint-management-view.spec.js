@@ -47,7 +47,7 @@ describe('GraphQL endpoints management', () => {
         // When I visit the endpoint management view
         GraphqlEndpointManagementSteps.visit();
         // Then I should see the no results banner
-        GraphqlEndpointManagementSteps.getNoResultsBanner().should('be.visible');
+        GraphqlEndpointManagementSteps.getNoEndpointsInRepositoryBanner().should('be.visible');
     });
 
     it('should render no results banner when endpoints are not loaded due to some error', () => {
@@ -59,7 +59,7 @@ describe('GraphQL endpoints management', () => {
         // Then I should see a toast with the error message
         ApplicationSteps.getErrorNotifications().should('be.visible');
         // Then I should see the no results banner
-        GraphqlEndpointManagementSteps.getNoResultsBanner().should('be.visible');
+        GraphqlEndpointManagementSteps.getNoEndpointsInRepositoryBanner().should('be.visible');
     });
 
     it('should render endpoints info', () => {

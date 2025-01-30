@@ -25,6 +25,12 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, toa
     // =========================
 
     /**
+     * Flag indicating if there are any GraphQL endpoints.
+     * @type {boolean}
+     */
+    $scope.hasEndpoints = false;
+
+    /**
      * The currently expanded row index.
      * @type {number}
      */
@@ -123,7 +129,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, toa
      */
     const loadEndpointsInfo = () => {
         $scope.loadingEndpointsInfo = true;
-        GraphqlService.getEndpointsInfo($repositories.getActiveRepository())
+        return GraphqlService.getEndpointsInfo($repositories.getActiveRepository())
             .then((endpointsInfoList) => {
                 $scope.endpointsInfoList = endpointsInfoList;
             })
@@ -155,6 +161,11 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, toa
     // =========================
 
     const onInit = () => {
-        loadEndpointsInfo();
+        loadEndpointsInfo()
+            .then(() => {
+                if ($scope.endpointsInfoList && $scope.endpointsInfoList.endpoints.length > 0) {
+                    $scope.hasEndpoints = true;
+                }
+            });
     };
 }

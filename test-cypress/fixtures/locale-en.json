@@ -750,7 +750,7 @@
             },
             "table": {
                 "column": {
-                    "id": "ID",
+                    "id": "Id",
                     "label": "Label",
                     "is_default": "Default",
                     "is_active": "Active",
@@ -760,6 +760,14 @@
                     "actions": "Actions"
                 },
                 "actions": {
+                    "explore_endpoint": {
+                        "active": {
+                            "tooltip": "Explore the endpoint in the GraphQL Playground"
+                        },
+                        "inactive": {
+                            "tooltip": "The endpoint is not active and cannot be explored in the GraphQL Playground"
+                        }
+                    },
                     "create_endpoint": {
                         "label": "Create endpoint",
                         "tooltip": "Create a new GraphQL endpoint"
@@ -782,6 +790,11 @@
                     }
                 },
                 "messages": {
+                    "endpoints_filter_no_result": "No GraphQL endpoints found for current search criteria",
+                    "no_endpoints_in_repository": "No GraphQL endpoints found in the repository"
+                },
+                "labels": {
+                    "description": "Description"
                 }
             }
         }

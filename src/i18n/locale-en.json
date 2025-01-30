@@ -790,7 +790,8 @@
                     }
                 },
                 "messages": {
-                    "no_results": "No GraphQL endpoints found"
+                    "endpoints_filter_no_result": "No GraphQL endpoints found for current search criteria",
+                    "no_endpoints_in_repository": "No GraphQL endpoints found in the repository"
                 },
                 "labels": {
                     "description": "Description"

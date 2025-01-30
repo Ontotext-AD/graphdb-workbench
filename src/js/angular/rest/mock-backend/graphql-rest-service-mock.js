@@ -1,7 +1,7 @@
 import {cloneDeep} from "lodash";
 
-const GET_ENDPOINTS_DELAY = 100;
-const GET_ENDPOINTS_INFO_DELAY = 100;
+const GET_ENDPOINTS_DELAY = 200;
+const GET_ENDPOINTS_INFO_DELAY = 200;
 
 export class GraphqlRestServiceMock {
 
@@ -13,7 +13,8 @@ export class GraphqlRestServiceMock {
 
     getEndpointsInfoMock(repositoryId) {
         return new Promise((resolve) => {
-            setTimeout(() => resolve({data: cloneDeep(endpointsInfo)}), GET_ENDPOINTS_INFO_DELAY);
+            // setTimeout(() => resolve({data: cloneDeep(endpointsInfo)}), GET_ENDPOINTS_INFO_DELAY);
+            setTimeout(() => resolve({data: cloneDeep(emptyEndpointsInfo)}), GET_ENDPOINTS_INFO_DELAY);
         });
     }
 }
@@ -40,6 +41,10 @@ const endpoints = {
             "default": false
         }
     ]
+};
+
+const emptyEndpointsInfo = {
+    "endpoints": []
 };
 
 const endpointsInfo = {
