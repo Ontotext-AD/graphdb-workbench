@@ -1,0 +1,71 @@
+.create-graphql-endpoint-view {}
+
+/* ===============================================
+   Select Schema Source View
+   =============================================== */
+.create-graphql-endpoint-view .select-schema-source-view .schema-source-types {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.create-graphql-endpoint-view .select-schema-source-view .schema-source-container {
+    width: 100%;
+}
+
+.create-graphql-endpoint-view .select-schema-source-view .shapes-selector,
+.create-graphql-endpoint-view .select-schema-source-view .graphs-selector {
+    border: 1px solid #e0e0e0;
+    height: 300px;
+}
+
+.create-graphql-endpoint-view .select-schema-source-view .endpoint-configuration-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 40%;
+    border: 1px solid #e0e0e0;
+}
+
+.create-graphql-endpoint-view .select-schema-source-view .endpoint-configuration-form .form-inline {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1em;
+}
+
+.create-graphql-endpoint-view .select-schema-source-view .endpoint-configuration-form .form-inline label {
+    margin-bottom: 0;
+}
+
+.create-graphql-endpoint-view .select-schema-source-view .endpoint-configuration-form .form-inline input,
+.create-graphql-endpoint-view .select-schema-source-view .endpoint-configuration-form .form-inline select {
+    width: 75%;
+}
+
+/* ===============================================
+   Configure endpoint view
+   =============================================== */
+
+.create-graphql-endpoint-view .endpoint-configuration-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 2em;
+}
+
+.create-graphql-endpoint-view .endpoint-configuration-container .dynamic-parameters-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    flex: 1;
+    border: 1px solid #e0e0e0;
+}
+
+.create-graphql-endpoint-view .endpoint-configuration-container .generation-overview {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    flex: 1;
+    border: 1px solid #e0e0e0;
+}

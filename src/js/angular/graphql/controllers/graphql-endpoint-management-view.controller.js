@@ -1,6 +1,7 @@
 import '../../core/services/graphql.service';
 import '../services/graphql-context.service';
 import {GraphqlEventName} from "../services/graphql-context.service";
+import {endpointUrl} from "../models/endpoints";
 
 const modules = [
     'graphdb.framework.core.services.graphql-service',
@@ -18,15 +19,6 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, toa
     // =========================
     // Private variables
     // =========================
-
-    /**
-     * Constants for the view URLs.
-     * @type {{PLAYGROUND: string, CREATE_ENDPOINT: string}}
-     */
-    const endpointUrl = {
-        PLAYGROUND: '/graphql/playground',
-        CREATE_ENDPOINT: '/graphql/endpoint/create'
-    }
 
     const subscriptions = [];
 
@@ -103,8 +95,8 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, toa
     /**
      * Starts a new GraphQL endpoint creation process by emitting the create endpoint event.
      */
-    $scope.createEndpoint = () => {
-        GraphqlContextService.createEndpoint();
+    $scope.startCreateEndpointWizard = () => {
+        GraphqlContextService.startCreateEndpointWizard();
     };
 
     $scope.importSchema = () => {
@@ -156,9 +148,9 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, toa
     };
 
     /**
-     * Handles the create endpoint event.
+     * Handles the start create endpoint wizard event.
      */
-    const onCreateEndpoint = () => {
+    const onStartCreateEndpointWizard = () => {
         $location.path(endpointUrl.CREATE_ENDPOINT);
     };
 
@@ -173,7 +165,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, toa
     // Subscriptions
     // =========================
 
-    subscriptions.push(GraphqlContextService.subscribe(GraphqlEventName.CREATE_ENDPOINT, onCreateEndpoint));
+    subscriptions.push(GraphqlContextService.subscribe(GraphqlEventName.START_CREATE_ENDPOINT_WIZARD, onStartCreateEndpointWizard));
     subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler));
     $scope.$on('$destroy', unsubscribeAll);
 

@@ -33,6 +33,8 @@ const identicalTranslations = [
     "Plugins",
     "Port",
     "ROLE1",
+    "star-wars",
+    "Star Wars",
     "Secret*",
     "Signature",
     "Support",

@@ -1,0 +1,33 @@
+<div class="endpoint-configuration-view">
+
+    <h5 class="mt-2">
+        {{'graphql.create_endpoint.wizard_steps.configure_endpoint.endpoint_parameters.title' | translate}}</h5>
+
+    <div class="endpoint-configuration-container">
+        <form novalidate name="dynamicParametersForm" id="dynamicParametersForm" class="dynamic-parameters-form">
+            String mode: <br/>
+            Fetch: <br/>
+            Validate: <br/>
+            Implicit: <br/>
+        </form>
+
+        <div class="generation-overview">
+            generation overview
+        </div>
+    </div>
+
+    <div class="wizard-actions mt-2">
+        <button class="btn btn-secondary cancel-btn mr-1"
+                ng-click="cancel()">
+            {{'graphql.create_endpoint.wizard_steps.actions.cancel.label' | translate}}
+        </button>
+        <button class="btn btn-secondary back-btn mr-1"
+                ng-click="back()">
+            {{'graphql.create_endpoint.wizard_steps.actions.back.label' | translate}}
+        </button>
+        <button class="btn btn-primary generate-endpoint-btn"
+                ng-click="generateEndpoint()">
+            {{'graphql.create_endpoint.wizard_steps.actions.generate_endpoint.label' | translate}}
+        </button>
+    </div>
+</div>

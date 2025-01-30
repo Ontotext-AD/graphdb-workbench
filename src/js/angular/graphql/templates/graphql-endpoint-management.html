@@ -1,4 +1,4 @@
-<link href="css/graphql/graphql-endpoint-management-view.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+<link href="css/graphql/graphql-endpoint-management.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
 <div class="graphql-endpoint-management-view">
     <h1 id="title-container">
@@ -10,7 +10,7 @@
 
     <div onto-loader-new
          ng-show="loadingEndpointsInfo"
-         class="graphql-playground-page-loader"
+         class="graphql-endpoint-management-page-loader"
          size="100">
     </div>
 
@@ -25,7 +25,7 @@
             </div>
 
             <div class="actions">
-                <button class="btn btn-primary create-endpoint-btn" ng-click="createEndpoint()"
+                <button class="btn btn-primary create-endpoint-btn" ng-click="startCreateEndpointWizard()"
                         gdb-tooltip="{{'graphql.endpoints_management.toolbar.create_endpoint.tooltip' | translate}}">
                     <span class="fa-kit fa-gdb-graphql"></span>&nbsp;
                     <span>{{'graphql.endpoints_management.toolbar.create_endpoint.label' | translate}}</span>

@@ -12,15 +12,23 @@ export class GraphqlStubs {
     }
 
     static stubGetEndpointsInfo(repositoryId, fixture = 'graphql-endpoints-info.json', delay = 0) {
-        cy.intercept('GET', `/rest/repositories/${repositoryId}/graphql/endpoints-info`, {
+        cy.intercept('GET', `/rest/repositories/${repositoryId}/manage/graphql/endpoints`, {
             fixture: `/graphql/endpoints/${fixture}`,
             statusCode: 200,
             delay: delay
         }).as('get-endpoints-info');
     }
 
+    static stubGetNoEndpointsInfo(repositoryId, fixture = 'no-graphql-endpoints-info.json', delay = 0) {
+        cy.intercept('GET', `/rest/repositories/${repositoryId}/manage/graphql/endpoints`, {
+            fixture: `/graphql/endpoints/${fixture}`,
+            statusCode: 200,
+            delay: delay
+        }).as('get-no-endpoints-info');
+    }
+
     static stubGetEndpointsInfoError(repositoryId) {
-        cy.intercept('GET', `/rest/repositories/${repositoryId}/graphql/endpoints-info`, {
+        cy.intercept('GET', `/rest/repositories/${repositoryId}/manage/graphql/endpoints`, {
             statusCode: 500,
             response: {
                 error: "Required request parameter 'query' for method parameter type String is not present"

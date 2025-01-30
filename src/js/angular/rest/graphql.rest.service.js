@@ -35,7 +35,7 @@ function GraphqlRestService($http) {
         if (DEVELOPMENT) {
             return _mockBackend.getEndpointsInfoMock(repositoryId);
         }
-        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/graphql/endpoints-info`);
+        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/manage/graphql/endpoints`);
     };
 
     return {

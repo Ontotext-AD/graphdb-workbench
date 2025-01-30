@@ -797,6 +797,100 @@
                     "description": "Description"
                 }
             }
+        },
+        "create_endpoint": {
+            "toolbar": {
+                "source_repository_selector": {
+                    "label": "Référentiel source",
+                    "tooltip": "Sélectionnez le référentiel à utiliser comme source pour les schémas du nouveau point de terminaison GraphQL"
+                }
+            },
+            "wizard_steps": {
+                "select_schema_sources": {
+                    "title": "Sélectionner la source du schéma",
+                    "source_type": {
+                        "graphql_schema_shapes": {
+                            "label": "Formes de schéma GraphQL"
+                        },
+                        "shacl_shapes": {
+                            "label": "Ontologies OWL/formes SHACL"
+                        }
+                    },
+                    "graphql_schema_shapes": {
+                        "title": "Formes de schéma GraphQL",
+                        "messages": {
+                            "no_schemas": "Aucune forme de schéma GraphQL n'a été trouvée dans le référentiel sélectionné. Vous pouvez choisir ou parcourir d'autres référentiels ou choisir l'autre source.",
+                            "endpoint_per_shape": "Chaque forme de schéma GraphQL génère un point de terminaison"
+                        }
+                    },
+                    "shacl_shapes": {
+                        "title": "Définir le point final",
+                        "form": {
+                            "endpoint_id": {
+                                "label": "ID du point de terminaison",
+                                "tooltip": "L'identifiant unique du nouveau point de terminaison GraphQL. Il doit être unique dans le référentiel.",
+                                "placeholder": "star-wars"
+                            },
+                            "vocabulary_prefix": {
+                                "label": "Préfixe de vocabulaire",
+                                "tooltip": "Préfixe de vocabulaire",
+                                "placeholder": "Sélectionnez le préfixe"
+                            },
+                            "endpoint_label": {
+                                "label": "Étiquette du point de terminaison",
+                                "tooltip": "L'étiquette du nouveau point de terminaison GraphQL",
+                                "placeholder": "Star Wars"
+                            }
+                        },
+                        "source": {
+                            "use_all_graphs": {
+                                "label": "Utiliser tous les graphes",
+                                "messages": {
+                                    "all_graphs": "Les {{count}} graphes sont inclus pour la création de points de terminaison"
+                                }
+                            },
+                            "use_shacl_shape_graph": {
+                                "label": "Utiliser le graphe de forme SHACL",
+                                "messages": {
+                                    "all_shacl_shape_graphs": "Les {{count}} graphes de forme SHACL sont inclus pour la création de points de terminaison"
+                                }
+                            },
+                            "pick_graphs": {
+                                "label": "Sélectionnez un ou plusieurs graphes"
+                            }
+                        },
+                        "messages": {
+
+                        }
+                    }
+                },
+                "configure_endpoint": {
+                    "title": "Configurer le point de terminaison",
+                    "endpoint_parameters": {
+                        "title": "Paramètres",
+                        "form": {}
+                    }
+                },
+                "actions": {
+                    "next": {
+                        "label": "Suivant"
+                    },
+                    "back": {
+                        "label": "Retourner"
+                    },
+                    "cancel": {
+                        "label": "Annuler",
+                        "tooltip": "Annuler la création du nouveau point de terminaison GraphQL et revenir à la liste des points de terminaison",
+                        "confirmation": {
+                            "title": "Annuler la création du point de terminaison",
+                            "body": "Êtes-vous sûr de vouloir annuler la création du nouveau point de terminaison GraphQL?"
+                        }
+                    },
+                    "generate_endpoint": {
+                        "label": "Générer"
+                    }
+                }
+            }
         }
     },
     "config.name.label": "Nom de configuration",
@@ -1341,6 +1435,7 @@
     "menu.plugins.label": "Plugins",
     "menu.graphql.label": "GraphQL",
     "menu.graphql-endpoint-management.label": "Gestion des points de terminaison",
+    "menu.create-graphql-endpoint.label": "Nouveau point de terminaison",
     "menu.graphql-playground.label": "GraphQL Playground",
     "core.popover.get.url.query": "Obtenir l'URL de la requête",
     "core.popover.shared.query.warning": "Requête partagée par un autre utilisateur. Vous ne pouvez pas la modifier ou la supprimer.",
