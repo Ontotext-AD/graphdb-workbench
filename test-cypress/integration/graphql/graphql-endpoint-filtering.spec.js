@@ -54,16 +54,16 @@ describe('GraphQL endpoints filtering', () => {
         // Then I should see all endpoints
         GraphqlEndpointManagementSteps.getEndpointsInfo().should('have.length', 3);
         // And the no results banner should not be visible
-        GraphqlEndpointManagementSteps.getNoResultsBanner().should('not.exist');
+        GraphqlEndpointManagementSteps.getNoResultsInTableBanner().should('not.exist');
         // When I filter the endpoints by the term "starship"
         GraphqlEndpointManagementSteps.filterEndpoints('starship');
         // Then I should see the no results banner
-        GraphqlEndpointManagementSteps.getNoResultsBanner().should('be.visible');
+        GraphqlEndpointManagementSteps.getNoResultsInTableBanner().should('be.visible');
         // When I clear the filter
         GraphqlEndpointManagementSteps.clearFilter();
         // Then I should see all endpoints
         GraphqlEndpointManagementSteps.getEndpointsInfo().should('have.length', 3);
         // And the no results banner should not be visible
-        GraphqlEndpointManagementSteps.getNoResultsBanner().should('not.exist');
+        GraphqlEndpointManagementSteps.getNoResultsInTableBanner().should('not.exist');
     });
 });

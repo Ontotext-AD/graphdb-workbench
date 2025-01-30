@@ -50,8 +50,12 @@ export class GraphqlEndpointManagementSteps {
         this.getEndpointFilterField().clear();
     }
 
-    static getNoResultsBanner() {
+    static getNoResultsInTableBanner() {
         return this.getEndpointTable().find('.no-results');
+    }
+
+    static getNoEndpointsInRepositoryBanner() {
+        return this.getView().find('.no-endpoints');
     }
 
     static verifyEndpointInfo(data) {

@@ -790,7 +790,8 @@
                     }
                 },
                 "messages": {
-                    "no_results": "Aucun point de terminaison GraphQL trouvé"
+                    "endpoints_filter_no_result": "Aucun point de terminaison GraphQL trouvé pour les critères de recherche actuels",
+                    "no_endpoints_in_repository": "Aucun point de terminaison GraphQL trouvé dans le référentiel"
                 },
                 "labels": {
                     "description": "Description"
