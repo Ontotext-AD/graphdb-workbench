@@ -24,6 +24,9 @@ function GraphqlContextService(EventEmitterService) {
      */
     let _newEndpoint = undefined;
 
+    /**
+     * Resets the context by clearing all the stored values.
+     */
     const resetContext = () => {
         _selectedEndpoint = undefined;
     };
@@ -49,12 +52,29 @@ function GraphqlContextService(EventEmitterService) {
         return _newEndpoint;
     };
 
-    /**
-     * Emits a CREATE_ENDPOINT event with a new GraphQL endpoint instance.
-     */
-    const createEndpoint = () => {
-        emit(GraphqlEventName.CREATE_ENDPOINT, createEndpointInstance());
+    const getNewEndpoint = () => {
+        return cloneDeep(_newEndpoint);
+    }
+
+    const startCreateEndpointWizard = () => {
+        emit(GraphqlEventName.START_CREATE_ENDPOINT_WIZARD, createEndpointInstance());
     };
+
+    const cancelEndpointCreation = () => {
+        emit(GraphqlEventName.CANCEL_ENDPOINT_CREATION, getNewEndpoint());
+    }
+
+    const nextEndpointCreationStep = () => {
+        emit(GraphqlEventName.NEXT_ENDPOINT_CREATION_STEP, getNewEndpoint());
+    }
+
+    const previousEndpointCreationStep = () => {
+        emit(GraphqlEventName.PREVIOUS_ENDPOINT_CREATION_STEP, getNewEndpoint());
+    }
+
+    const generateEndpoint = () => {
+        emit(GraphqlEventName.GENERATE_ENDPOINT, getNewEndpoint());
+    }
 
     /**
      * Emits an event with a deep-cloned payload using the EventEmitterService.
@@ -81,14 +101,34 @@ function GraphqlContextService(EventEmitterService) {
         resetContext,
         setSelectedEndpoint,
         getSelectedEndpoint,
-        createEndpoint,
+        startCreateEndpointWizard,
+        generateEndpoint,
+        cancelEndpointCreation,
+        nextEndpointCreationStep,
+        previousEndpointCreationStep,
         subscribe
     };
 }
 
 export const GraphqlEventName = {
     /**
-     * The event emitted when a new GraphQL endpoint should be created.
+     * The event emitted when the user wants to start the create endpoint wizard.
      */
-    CREATE_ENDPOINT: 'createEndpoint'
+    START_CREATE_ENDPOINT_WIZARD: 'startCreateEndpointWizard',
+    /**
+     * The event emitted when a new GraphQL endpoint should be generated.
+     */
+    GENERATE_ENDPOINT: 'generateEndpoint',
+    /**
+     * The event emitted when the user wants to cancel the endpoint creation.
+     */
+    CANCEL_ENDPOINT_CREATION: 'cancelEndpointCreation',
+    /**
+     * The event emitted when the user wants to move to the next step in the create endpoint wizard.
+     */
+    NEXT_ENDPOINT_CREATION_STEP: 'nextEndpointCreationStep',
+    /**
+     * The event emitted when the user wants to move to the previous step in the create endpoint wizard.
+     */
+    PREVIOUS_ENDPOINT_CREATION_STEP: 'previousEndpointCreationStep'
 };

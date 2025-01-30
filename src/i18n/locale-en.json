@@ -797,6 +797,100 @@
                     "description": "Description"
                 }
             }
+        },
+        "create_endpoint": {
+            "toolbar": {
+                "source_repository_selector": {
+                    "label": "Source repository",
+                    "tooltip": "Select the repository to use as the source for the schemas of the new GraphQL endpoint"
+                }
+            },
+            "wizard_steps": {
+                "select_schema_sources": {
+                    "title": "Select schema source",
+                    "source_type": {
+                        "graphql_schema_shapes": {
+                            "label": "GraphQL schema shapes"
+                        },
+                        "shacl_shapes": {
+                            "label": "OWL ontologies/SHACL shapes"
+                        }
+                    },
+                    "graphql_schema_shapes": {
+                        "title": "GraphQL schema shapes",
+                        "messages": {
+                            "no_schemas": "No GraphQL schema shapes were found in the selected repository. You can choose or browse other repositories or choose the other source.",
+                            "endpoint_per_shape": "Each GraphQL schema shape results in one endpoint"
+                        }
+                    },
+                    "shacl_shapes": {
+                        "title": "Set endpoint",
+                        "form": {
+                            "endpoint_id": {
+                                "label": "Endpoint ID",
+                                "tooltip": "The unique identifier for the new GraphQL endpoint. It must be unique within the repository.",
+                                "placeholder": "star-wars"
+                            },
+                            "vocabulary_prefix": {
+                                "label": "Vocabulary prefix",
+                                "tooltip": "Vocabulary prefix",
+                                "placeholder": "Select prefix"
+                            },
+                            "endpoint_label": {
+                                "label": "Endpoint label",
+                                "tooltip": "The label for the new GraphQL endpoint",
+                                "placeholder": "Star Wars"
+                            }
+                        },
+                        "source": {
+                            "use_all_graphs": {
+                                "label": "Use all graphs",
+                                "messages": {
+                                    "all_graphs": "All {{count}} graphs are included for endpoint creation"
+                                }
+                            },
+                            "use_shacl_shape_graph": {
+                                "label": "Use SHACL shape graph",
+                                "messages": {
+                                    "all_shacl_shape_graphs": "All {{count}} SHACL shape graphs are included for endpoint creation"
+                                }
+                            },
+                            "pick_graphs": {
+                                "label": "Select one or more graphs"
+                            }
+                        },
+                        "messages": {
+
+                        }
+                    }
+                },
+                "configure_endpoint": {
+                    "title": "Configure endpoint",
+                    "endpoint_parameters": {
+                        "title": "Parameters",
+                        "form": {}
+                    }
+                },
+                "actions": {
+                    "next": {
+                        "label": "Next"
+                    },
+                    "back": {
+                        "label": "Back"
+                    },
+                    "cancel": {
+                        "label": "Cancel",
+                        "tooltip": "Cancel the creation of the new GraphQL endpoint and return to the list of endpoints",
+                        "confirmation": {
+                            "title": "Cancel endpoint creation",
+                            "body": "Are you sure you want to cancel the creation of the new GraphQL endpoint?"
+                        }
+                    },
+                    "generate_endpoint": {
+                        "label": "Generate"
+                    }
+                }
+            }
         }
     },
     "config.name.label": "Config name",
@@ -1341,6 +1435,7 @@
     "menu.plugins.label": "Plugins",
     "menu.graphql.label": "GraphQL",
     "menu.graphql-endpoint-management.label": "Endpoint Management",
+    "menu.create-graphql-endpoint.label": "New endpoint",
     "menu.graphql-playground.label": "GraphQL Playground",
     "core.popover.get.url.query": "Get URL to query",
     "core.popover.shared.query.warning": "Query shared by another user. You may not edit or delete it.",

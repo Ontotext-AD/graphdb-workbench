@@ -13,8 +13,8 @@ export class GraphqlRestServiceMock {
 
     getEndpointsInfoMock(repositoryId) {
         return new Promise((resolve) => {
-            // setTimeout(() => resolve({data: cloneDeep(endpointsInfo)}), GET_ENDPOINTS_INFO_DELAY);
-            setTimeout(() => resolve({data: cloneDeep(emptyEndpointsInfo)}), GET_ENDPOINTS_INFO_DELAY);
+            setTimeout(() => resolve({data: cloneDeep(endpointsInfo)}), GET_ENDPOINTS_INFO_DELAY);
+            // setTimeout(() => resolve({data: cloneDeep(emptyEndpointsInfo)}), GET_ENDPOINTS_INFO_DELAY);
         });
     }
 }

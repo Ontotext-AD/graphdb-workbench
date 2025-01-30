@@ -7,6 +7,10 @@ export class RepositoriesStubs extends Stubs {
         RepositoriesStubs.stubGetQueryResponse('/rest/repositories/all', fixture, 'get-all-repositories', withDelay);
     }
 
+    static spyGetRepositories() {
+        cy.intercept('GET', '/rest/repositories/all').as('getRepositories');
+    }
+
     static stubLocations(withDelay = 0) {
         RepositoriesStubs.stubQueryResponse('/rest/locations', '/repositories/get-locations.json', 'get-locations', withDelay);
     }

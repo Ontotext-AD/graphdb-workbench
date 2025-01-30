@@ -8,6 +8,7 @@ import 'angular/core/services/event-emitter-service';
 import {QueryMode} from "../../models/ontotext-yasgui/query-mode";
 import {md5HashGenerator} from "../../utils/hash-utils";
 import {RemoteLocationModel} from "../../models/repository/remote-location.model";
+import {SelectMenuOptionsModel} from "../../models/form-fields";
 
 const modules = [
     'ngCookies',
@@ -274,6 +275,23 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         this.getReadableGraphdbRepositories = function () {
             return this.getReadableRepositories()
                 .filter((repo) => repo.type === 'graphdb');
+        };
+
+        /**
+         * Returns all GraphDB repositories as SelectMenuOptionsModel.
+         * @param {Function} provider A function that returns the repositories to be used.
+         * @returns {SelectMenuOptionsModel}
+         */
+        this.getRepositoriesAsSelectMenuOptions = (provider) => {
+            return provider().map((repo) => (
+                    new SelectMenuOptionsModel({
+                        value: repo.id,
+                        label: repo.id,
+                        data: {
+                            repository: repo
+                        }
+                    }))
+                );
         };
 
         /**

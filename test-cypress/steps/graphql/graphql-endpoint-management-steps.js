@@ -58,6 +58,10 @@ export class GraphqlEndpointManagementSteps {
         return this.getView().find('.no-endpoints');
     }
 
+    static createEndpoint() {
+        this.getView().find('.create-endpoint-btn').click();
+    }
+
     static verifyEndpointInfo(data) {
         this.getEndpointsInfo().each(($row, index) => {
             const endpointInfo = data[index];

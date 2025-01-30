@@ -1,0 +1,33 @@
+.wizard {
+
+}
+
+.wizard .wizard-steps {
+    display: flex;
+    justify-content: flex-start;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.wizard .wizard-steps .wizard-step {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
+    border-bottom: 1px solid transparent;
+}
+
+.wizard .wizard-steps .wizard-step.active {
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--primary-color);
+}
+
+.wizard .wizard-steps .wizard-step .step-title {
+    text-decoration: none;
+    color: unset;
+    padding: 1em;
+}
+
+.wizard .wizard-steps .wizard-step .step-decoration {
+    display: inline-block;
+    padding-right: 1em;
+}

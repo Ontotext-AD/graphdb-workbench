@@ -10,6 +10,16 @@ PluginRegistry.add('route', [
         'documentationUrl': 'graphql-endpoint-management.html'
     },
     {
+        'url': '/graphql/endpoint/create',
+        'templateUrl': 'js/angular/graphql/templates/create-graphql-endpoint.html',
+        'module': 'graphdb.framework.graphql',
+        'path': 'graphql/app',
+        'controller': 'CreateGraphqlEndpointViewCtrl',
+        'title': 'menu.create-graphql-endpoint.label',
+        'helpInfo': 'graphql.helpInfo',
+        'documentationUrl': 'create-graphql-endpoint.html'
+    },
+    {
         'url': '/graphql/playground',
         'templateUrl': 'js/angular/graphql/templates/graphql-playground.html',
         'module': 'graphdb.framework.graphql',
@@ -37,7 +47,13 @@ PluginRegistry.add('main.menu', {
             href: 'graphql/endpoints',
             order: 10,
             role: 'ROLE_USER',
-            parent: 'GraphQL'
+            parent: 'GraphQL',
+            children: [
+                {
+                    href: 'graphql/endpoint/create',
+                    children: []
+                }
+            ]
         },
         {
             label: 'GraphQL Playground',
