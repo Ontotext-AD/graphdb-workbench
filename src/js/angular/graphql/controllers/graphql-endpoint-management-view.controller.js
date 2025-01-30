@@ -1,5 +1,6 @@
 import '../../core/services/graphql.service';
 import '../services/graphql-context.service';
+import {GraphqlEventName} from "../services/graphql-context.service";
 
 const modules = [
     'graphdb.framework.core.services.graphql-service',
@@ -17,6 +18,15 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, toa
     // =========================
     // Private variables
     // =========================
+
+    /**
+     * Constants for the view URLs.
+     * @type {{PLAYGROUND: string, CREATE_ENDPOINT: string}}
+     */
+    const endpointUrl = {
+        PLAYGROUND: '/graphql/playground',
+        CREATE_ENDPOINT: '/graphql/endpoint/create'
+    }
 
     const subscriptions = [];
 
@@ -78,7 +88,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, toa
      */
     $scope.exploreEndpoint = (endpoint) => {
         GraphqlContextService.setSelectedEndpoint(endpoint);
-        $location.path('/graphql/playground');
+        $location.path(endpointUrl.PLAYGROUND);
     };
 
     /**
@@ -90,8 +100,11 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, toa
         $scope.endpointsInfoList.filter(filterTerm);
     };
 
+    /**
+     * Starts a new GraphQL endpoint creation process by emitting the create endpoint event.
+     */
     $scope.createEndpoint = () => {
-        // TODO: implement endpoint creation
+        GraphqlContextService.createEndpoint();
     };
 
     $scope.importSchema = () => {
@@ -143,6 +156,13 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, toa
     };
 
     /**
+     * Handles the create endpoint event.
+     */
+    const onCreateEndpoint = () => {
+        $location.path(endpointUrl.CREATE_ENDPOINT);
+    };
+
+    /**
      * Unsubscribes all watchers.
      */
     const unsubscribeAll = () => {
@@ -153,6 +173,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, toa
     // Subscriptions
     // =========================
 
+    subscriptions.push(GraphqlContextService.subscribe(GraphqlEventName.CREATE_ENDPOINT, onCreateEndpoint));
     subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler));
     $scope.$on('$destroy', unsubscribeAll);
 
