@@ -204,6 +204,11 @@ module.exports = {
                 transform: replaceVersion
             },
             {
+                from: 'src/js/angular/core/directives/dynamic-form/templates',
+                to: 'js/angular/core/directives/dynamic-form/templates',
+                transform: replaceVersion
+            },
+            {
                 from: 'src/js/angular/core/directives/multiselect-dropdown/templates',
                 to: 'js/angular/core/directives/multiselect-dropdown/templates',
                 transform: replaceVersion
