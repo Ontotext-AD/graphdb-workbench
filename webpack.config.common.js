@@ -204,6 +204,11 @@ module.exports = {
                 transform: replaceVersion
             },
             {
+                from: 'src/js/angular/core/directives/multiselect-dropdown/templates',
+                to: 'js/angular/core/directives/multiselect-dropdown/templates',
+                transform: replaceVersion
+            },
+            {
                 from: 'src/js/angular/templates',
                 to: 'js/angular/templates'
             },

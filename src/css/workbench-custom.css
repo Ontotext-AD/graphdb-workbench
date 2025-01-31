@@ -409,3 +409,50 @@
 .help-info b {
     font-weight: 500;
 }
+
+.dynamic-form .dropdown-menu.multi-select {
+    background-color: #fff !important;
+    border: 1px solid rgba(0,0,0,.15) !important;
+    border-radius: 0.25rem !important;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    z-index: 1000;
+    display: none;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.dynamic-form .dropdown.multi-select > button {
+    font-weight: 400 !important;
+}
+
+.dynamic-form .dropdown-item.multi-select {
+    color: var(--gray-color) !important;
+    font-weight: initial !important;
+}
+
+.dynamic-form .open > .dropdown-menu.multi-select {
+    display: block;
+    opacity: 1;
+    margin-top: -1px;
+}
+
+.dynamic-form .dropdown-menu.multi-select .dropdown-item.multi-select {
+    color: var(--gray-color) !important;
+    font-weight: initial !important;
+}
+
+.dynamic-form button.form-control.dropdown-toggle.multi-select.text-left {
+    position: relative;
+}
+
+.dynamic-form button.form-control.dropdown-toggle.multi-select.text-left::after {
+    margin-left: 0 !important;
+    position: absolute;
+    right: 3px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: initial;
+    font-size: smaller !important;
+}

@@ -1,0 +1,15 @@
+<div class="dropdown multi-select" ng-class="{'open': isOpen}">
+    <button type="button"
+            class="form-control dropdown-toggle multi-select text-left"
+            ng-click="toggleDropdown()">
+        {{ dropdownLabel || getSelectedText() }}
+    </button>
+    <ul class="dropdown-menu multi-select" role="menu">
+        <li class="dropdown-item multi-select"
+            ng-repeat="option in options track by $index"
+            ng-click="toggleSelection(option)">
+            <input type="checkbox" ng-model="option.selected">
+            {{option.label}}
+        </li>
+    </ul>
+</div>
