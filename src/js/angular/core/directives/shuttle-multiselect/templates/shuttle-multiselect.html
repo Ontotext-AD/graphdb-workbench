@@ -1,0 +1,51 @@
+<link href="css/shuttle-multiselect.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+<div class="shuttle-multiselect">
+    <div class="shuttle-panel available-options">
+        <div class="shuttle-panel-header">
+            <h5>{{labels.availableOptionsTitle | translate}}</h5>
+        </div>
+        <div class="shuttle-panel-toolbar">
+            <input type="text" class="form-control filter-selected"
+                   placeholder="{{labels.availableOptionsFilter | translate}}"
+                   ng-model="searchLeft">
+            <a href="#" ng-click="selectAll()" class="btn-link secondary"
+               gdb-tooltip="{{labels.selectAllTooltip | translate}}"
+               tooltip-placement="top">{{labels.selectAllLabel | translate}}</a>
+        </div>
+        <div class="options-list">
+            <div class="option-item"
+                 ng-repeat="item in availableOptions | filter:searchLeft | orderBy:'label' track by $index">
+                <span>{{item.label}}</span>
+                <a href="#" ng-click="selectOption(item)" class="btn-link secondary item-action"
+                   gdb-tooltip="{{labels.selectTooltip | translate}}"
+                   tooltip-placement="top">
+                    <span class="fa fa-plus-circle"></span>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="shuttle-panel selected-options">
+        <div class="shuttle-panel-header">
+            <h5>{{labels.selectedOptionsTitle | translate}}</h5>
+        </div>
+        <div class="shuttle-panel-toolbar">
+            <div class="selected-items-message">
+                {{labels.selectedOptionsCount | translate:{count: selectedOptions.length} }}
+            </div>
+            <a href="#" ng-click="deselectAll()" class="btn-link secondary"
+               gdb-tooltip="{{labels.deselectAllTooltip | translate}}"
+               tooltip-placement="top">{{labels.deselectAllLabel | translate}}</a>
+        </div>
+        <div class="options-list">
+            <div class="option-item" ng-repeat="item in selectedOptions | orderBy:'label' track by $index">
+                <span>{{item.label}}</span>
+                <a href="#" ng-click="deselectOption(item)" class="btn-link secondary item-action"
+                   gdb-tooltip="{{labels.deselectTooltip | translate}}"
+                   tooltip-placement="top">
+                    <span class="fa fa-minus-circle"></span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

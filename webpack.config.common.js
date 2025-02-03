@@ -159,6 +159,11 @@ module.exports = {
                 to: 'js/angular/settings/modal'
             },
             {
+                from: 'src/js/angular/core/directives/shuttle-multiselect/templates',
+                to: 'js/angular/core/directives/shuttle-multiselect/templates',
+                transform: replaceVersion
+            },
+            {
                 from: 'src/js/angular/core/directives/rdfresourcesearch/templates',
                 to: 'js/angular/core/directives/rdfresourcesearch/templates',
                 transform: replaceVersion

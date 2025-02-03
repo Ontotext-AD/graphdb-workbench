@@ -1,0 +1,71 @@
+:root {
+    --color-success-light: #D4EDDA;
+    --gap: 0.8em;
+}
+
+.shuttle-multiselect {
+    display: flex;
+    justify-content: space-between;
+    column-gap: var(--gap);
+    width: 100%;
+}
+
+.shuttle-multiselect .shuttle-panel {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--gap);
+    flex: 1;
+    height: 300px;
+}
+
+.shuttle-multiselect .shuttle-panel-toolbar {
+    display: flex;
+    align-items: center;
+    height: 38px;
+}
+
+.shuttle-multiselect .shuttle-panel-toolbar .filter-selected {
+    flex: 1;
+}
+
+.shuttle-multiselect .shuttle-panel-toolbar .selected-items-message {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    height: inherit;
+    padding: 0 1em;
+    background-color: var(--color-success-light);
+    overflow: hidden;
+    color: #0000008F;
+}
+
+.shuttle-multiselect .shuttle-panel-toolbar .selected-items-message:before {
+    font-family: 'icomoon', sans-serif !important;
+    font-size: 1.5em;
+    line-height: 1;
+    margin-right: 0.5em;
+    /* the (i) icon */
+    content: "\e924";
+    color: #0000008F;
+}
+
+.shuttle-multiselect .shuttle-panel .options-list {
+    border: 1px solid #ccc;
+    height: inherit;
+    overflow-y: auto;
+}
+
+.shuttle-multiselect .shuttle-panel .options-list .option-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.1em 1em;
+}
+
+.shuttle-multiselect .shuttle-panel .options-list .option-item:hover {
+    background-color: var(--color-success-light);
+}
+
+.shuttle-multiselect .shuttle-panel .options-list .option-item .item-action {
+    font-size: large;
+}
