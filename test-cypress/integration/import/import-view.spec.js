@@ -3,6 +3,7 @@ import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
 import {ImportServerFilesSteps} from "../../steps/import/import-server-files-steps";
 import ImportSteps from "../../steps/import/import-steps";
 import HomeSteps from "../../steps/home-steps";
+import {SERVER_FILES_COUNT} from "../../steps/import/import-test-constants";
 
 const bnodes = `_:node0 <http://purl.org/dc/elements/1.1/title> "A new book" ;
                     \t<http://purl.org/dc/elements/1.1/creator> "A.N.Other" .`;
@@ -39,7 +40,7 @@ describe('Import view', () => {
         // When I switch to the server files tab
         ImportUserDataSteps.openServerFilesTab();
         // Then I should see the server files only
-        ImportServerFilesSteps.getResources().should('have.length', 19);
+        ImportServerFilesSteps.getResources().should('have.length', SERVER_FILES_COUNT);
         // When I switch back to the user data tab
         ImportServerFilesSteps.openUserDataTab();
         // Then I should see the uploaded file

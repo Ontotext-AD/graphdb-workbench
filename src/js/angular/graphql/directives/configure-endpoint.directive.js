@@ -17,6 +17,11 @@ function ConfigureEndpointComponent(ModalService, $translate, GraphqlContextServ
             // Public variables
             // =========================
 
+            /**
+             * The endpoint configuration model.
+             * @type {GraphqlEndpointConfiguration|undefined}
+             */
+            $scope.endpointConfiguration = undefined
 
             // =========================
             // Public functions
@@ -64,7 +69,7 @@ function ConfigureEndpointComponent(ModalService, $translate, GraphqlContextServ
             $scope.$on('$destroy', onDestroy);
 
             const onInit = () => {
-                // TODO: implement
+                $scope.endpointConfiguration = GraphqlContextService.getNewEndpoint();
             }
             onInit();
         }

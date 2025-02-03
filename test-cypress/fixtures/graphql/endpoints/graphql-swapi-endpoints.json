@@ -2,20 +2,20 @@
     "repository": "test",
     "endpoints": [
         {
-            "id": "swapi",
-            "graphQL": "/rest/repositories/swapi/graphql/swapi",
+            "endpointId": "swapi",
+            "endpointURI": "/rest/repositories/swapi/graphql/swapi",
             "active": true,
             "default": false
         },
         {
-            "id": "film-restricted",
-            "graphQL": "/rest/repositories/swapi/graphql/film-restricted",
+            "endpointId": "film-restricted",
+            "endpointURI": "/rest/repositories/swapi/graphql/film-restricted",
             "active": true,
             "default": true
         },
         {
-            "id": "swapi-characters",
-            "graphQL": "/rest/repositories/swapi/graphql/swapi-characters",
+            "endpointId": "swapi-characters",
+            "endpointURI": "/rest/repositories/swapi/graphql/swapi-characters",
             "active": false,
             "default": false
         }

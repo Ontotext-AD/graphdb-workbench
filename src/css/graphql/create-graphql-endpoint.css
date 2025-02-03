@@ -1,5 +1,9 @@
 .create-graphql-endpoint-view {}
 
+.create-graphql-endpoint-view .toolbar .source-repository-selector {
+    width: 20em;
+}
+
 /* ===============================================
    Select Schema Source View
    =============================================== */
@@ -8,25 +12,31 @@
     justify-content: flex-start;
 }
 
+.create-graphql-endpoint-view .select-schema-source-view .schema-source-types label {
+    cursor: pointer;
+}
+
 .create-graphql-endpoint-view .select-schema-source-view .schema-source-container {
     width: 100%;
 }
 
-.create-graphql-endpoint-view .select-schema-source-view .shapes-selector,
-.create-graphql-endpoint-view .select-schema-source-view .graphs-selector {
-    border: 1px solid #e0e0e0;
-    height: 300px;
+.create-graphql-endpoint-view .select-schema-source-view .graphql-shapes-selector {
+    min-height: 300px;
 }
 
-.create-graphql-endpoint-view .select-schema-source-view .endpoint-configuration-form {
+.create-graphql-endpoint-view .select-schema-source-view .graphs-selector {
+    min-height: 300px;
+}
+
+.create-graphql-endpoint-view .select-schema-source-view .endpoint-params-form {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    width: 40%;
-    border: 1px solid #e0e0e0;
+    width: 50%;
 }
 
-.create-graphql-endpoint-view .select-schema-source-view .endpoint-configuration-form .form-inline {
+.create-graphql-endpoint-view .select-schema-source-view .endpoint-params-form .form-inline {
+    position: relative;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -34,12 +44,12 @@
     margin-bottom: 1em;
 }
 
-.create-graphql-endpoint-view .select-schema-source-view .endpoint-configuration-form .form-inline label {
+.create-graphql-endpoint-view .select-schema-source-view .endpoint-params-form .form-inline label {
     margin-bottom: 0;
 }
 
-.create-graphql-endpoint-view .select-schema-source-view .endpoint-configuration-form .form-inline input,
-.create-graphql-endpoint-view .select-schema-source-view .endpoint-configuration-form .form-inline select {
+.create-graphql-endpoint-view .select-schema-source-view .endpoint-params-form .form-inline input,
+.create-graphql-endpoint-view .select-schema-source-view .endpoint-params-form .form-inline select {
     width: 75%;
 }
 

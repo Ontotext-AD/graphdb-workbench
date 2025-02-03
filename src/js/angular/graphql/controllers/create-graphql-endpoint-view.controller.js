@@ -6,6 +6,7 @@ import {Wizard} from "../../models/graphql/wizard";
 import 'angular/graphql/directives/select-schema-sources.directive';
 import 'angular/graphql/directives/configure-endpoint.directive';
 import {GraphqlEventName} from "../services/graphql-context.service";
+import {GraphqlEndpointConfiguration} from "../../models/graphql/graphql-endpoint-configuration";
 
 const modules = [
     'graphdb.framework.core.services.graphql-service',
@@ -40,9 +41,16 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
 
     /**
      * The selected source repository.
-     * @type {undefined}
+     * @type {SelectMenuOptionsModel|undefined}
      */
     $scope.selectedSourceRepository = undefined;
+
+    /**
+     * The previous selected source repository is same as the selected source repository when the view is initialized.
+     * It is used to restore the selected source repository when the user cancels the source repository change.
+     * @type {SelectMenuOptionsModel|undefined}
+     */
+    $scope.previousSelectedSourceRepository = undefined;
 
     /**
      * The create endpoint wizard model.
@@ -60,8 +68,23 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
     // Public methods
     // =========================
 
+    /**
+     * Handles the change of the selected source repository.
+     * @param {SelectMenuOptionsModel} selectedRepository The selected source repository.
+     */
     $scope.onSelectedSourceRepositoryChange = (selectedRepository) => {
-        // TODO: Implement if needed
+        ModalService.openConfirmationModal({
+                title: $translate.instant('graphql.create_endpoint.messages.source_repository_changed.title'),
+                message: $translate.instant('graphql.create_endpoint.messages.source_repository_changed.body'),
+                confirmButtonKey: 'common.confirm'
+            },
+            () => {
+                $scope.previousSelectedSourceRepository = $scope.selectedSourceRepository;
+                GraphqlContextService.updateSourceRepository(selectedRepository.value);
+            },
+            () => {
+                $scope.selectedSourceRepository = $scope.previousSelectedSourceRepository;
+            });
     };
 
     /**
@@ -92,6 +115,7 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
      * Handles the transition to the next step in the create endpoint wizard.
      */
     const onNextEndpointCreationStep = () => {
+        const config = GraphqlContextService.getNewEndpoint();
         setCurrentStep($scope.wizardModel.nextStep());
     };
 
@@ -130,6 +154,8 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
         const activeRepository = $repositories.getActiveRepository();
         $scope.selectedSourceRepository = $scope.sourceRepositories
             .find((repo) => repo.value === activeRepository);
+        GraphqlContextService.updateSourceRepository($scope.selectedSourceRepository.value);
+        $scope.previousSelectedSourceRepository = $scope.selectedSourceRepository;
     };
 
     /**
@@ -165,7 +191,12 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
     // =========================
 
     const onInit = () => {
-        setupSourceRepositories();
-        setupWizard();
+        // Reinitialize the wizard only if the source repository is not selected. From this point on, the wizard will
+        // be reinitialized only when the user changes the source repository.
+        if (!$scope.selectedSourceRepository) {
+            GraphqlContextService.createEndpointConfig(new GraphqlEndpointConfiguration());
+            setupWizard();
+            setupSourceRepositories();
+        }
     };
 }

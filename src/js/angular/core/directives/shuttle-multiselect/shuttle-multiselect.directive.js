@@ -10,7 +10,15 @@ function ShuttleMultiselect() {
     return {
         restrict: 'E',
         scope: {
+            /**
+             * The list of options to be displayed in the shuttle.
+             * @type {{label: string, id: string}[]}
+             */
             options: '=',
+            /**
+             * The list of selected options.
+             * @type {{label: string, id: string}[]}
+             */
             selected: '=',
             /**
              * availableOptionsTitle
@@ -76,7 +84,7 @@ function ShuttleMultiselect() {
             // =========================
 
             const updateSelected = () => {
-                $scope.selected = $scope.selectedOptions;
+                $scope.selected = [...$scope.selectedOptions];
             };
 
             // =========================
@@ -91,8 +99,16 @@ function ShuttleMultiselect() {
             $scope.$on('$destroy', removeAllSubscribers);
 
             const onInit = () => {
-                $scope.availableOptions = cloneDeep($scope.options);
                 $scope.selectedOptions = cloneDeep($scope.selected);
+                // If there are selected options, filter them out from the available options
+                if ($scope.selectedOptions.length) {
+                    $scope.availableOptions = $scope.options
+                        .filter(
+                            (option) => !$scope.selectedOptions
+                                .find((selectedOption) => selectedOption.id === option.id));
+                } else {
+                    $scope.availableOptions = cloneDeep($scope.options);
+                }
             }
             onInit();
         }

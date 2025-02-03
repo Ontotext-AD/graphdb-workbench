@@ -1,5 +1,6 @@
 import {cloneDeep} from 'lodash';
 import {GraphqlEndpointConfiguration} from "../../models/graphql/graphql-endpoint-configuration";
+import {TTYGEventName} from "../../ttyg/services/ttyg-context.service";
 
 angular
     .module('graphdb.framework.graphql.services.graphql-context', [])
@@ -8,6 +9,11 @@ angular
 GraphqlContextService.$inject = ['EventEmitterService', 'GraphqlService'];
 
 function GraphqlContextService(EventEmitterService) {
+    /**
+     * The source repository from which the sources for the GraphQL schema generation are retrieved.
+     * @type {string|undefined}`
+     */
+    let _sourceRepository = undefined;
 
     /**
      * The selected GraphQL endpoint info. The endpoint is selected when the user clicks on an endpoint in the endpoint
@@ -25,10 +31,36 @@ function GraphqlContextService(EventEmitterService) {
     let _newEndpoint = undefined;
 
     /**
+     * Returns the value of the source repository.
+     * @returns {string|undefined}
+     */
+    const getSourceRepository = () => {
+        return _sourceRepository;
+    };
+
+    /**
+     * Updates the source repository and emits an event with the new repository id.
+     * @param {string} repositoryId The new source repository id.
+     */
+    const updateSourceRepository = (repositoryId) => {
+        _sourceRepository = repositoryId;
+        emit(GraphqlEventName.SOURCE_REPOSITORY_UPDATED, getSourceRepository());
+    };
+
+    /**
+     * Returns the value of the new GraphQL endpoint.
+     * @returns {GraphqlEndpointConfiguration|undefined}
+     */
+    const getNewEndpoint = () => {
+        return _newEndpoint;
+    };
+
+    /**
      * Resets the context by clearing all the stored values.
      */
     const resetContext = () => {
         _selectedEndpoint = undefined;
+        _newEndpoint = undefined;
     };
 
     /**
@@ -47,29 +79,36 @@ function GraphqlContextService(EventEmitterService) {
         return cloneDeep(_selectedEndpoint);
     };
 
-    const createEndpointInstance = () => {
-        _newEndpoint = new GraphqlEndpointConfiguration();
-        return _newEndpoint;
-    };
-
-    const getNewEndpoint = () => {
-        return cloneDeep(_newEndpoint);
+    /**
+     * Initializes the new endpoint configuration and emits an event with the new endpoint configuration.
+     * @param endpointConfiguration
+     */
+    const createEndpointConfig = (endpointConfiguration) => {
+        _newEndpoint = endpointConfiguration;
+        EventEmitterService.emitSync(GraphqlEventName.ENDPOINT_CONFIG_CREATED, _newEndpoint);
     }
 
+    const onEndpointConfigCreated = (callback) => {
+        if (_newEndpoint && angular.isFunction(callback)) {
+            callback(_newEndpoint);
+        }
+        return subscribe(GraphqlEventName.ENDPOINT_CONFIG_CREATED, (endpoint) => callback(endpoint));
+    };
+
     const startCreateEndpointWizard = () => {
-        emit(GraphqlEventName.START_CREATE_ENDPOINT_WIZARD, createEndpointInstance());
+        emit(GraphqlEventName.START_CREATE_ENDPOINT_WIZARD, null);
     };
 
     const cancelEndpointCreation = () => {
-        emit(GraphqlEventName.CANCEL_ENDPOINT_CREATION, getNewEndpoint());
+        emit(GraphqlEventName.CANCEL_ENDPOINT_CREATION, {});
     }
 
     const nextEndpointCreationStep = () => {
-        emit(GraphqlEventName.NEXT_ENDPOINT_CREATION_STEP, getNewEndpoint());
+        emit(GraphqlEventName.NEXT_ENDPOINT_CREATION_STEP, {});
     }
 
     const previousEndpointCreationStep = () => {
-        emit(GraphqlEventName.PREVIOUS_ENDPOINT_CREATION_STEP, getNewEndpoint());
+        emit(GraphqlEventName.PREVIOUS_ENDPOINT_CREATION_STEP, {});
     }
 
     const generateEndpoint = () => {
@@ -99,8 +138,13 @@ function GraphqlContextService(EventEmitterService) {
 
     return {
         resetContext,
+        updateSourceRepository,
+        getSourceRepository,
         setSelectedEndpoint,
         getSelectedEndpoint,
+        getNewEndpoint,
+        createEndpointConfig,
+        onEndpointConfigCreated,
         startCreateEndpointWizard,
         generateEndpoint,
         cancelEndpointCreation,
@@ -112,9 +156,17 @@ function GraphqlContextService(EventEmitterService) {
 
 export const GraphqlEventName = {
     /**
+     * The event emitted when the source repository is updated.
+     */
+    SOURCE_REPOSITORY_UPDATED: 'sourceRepositoryUpdated',
+    /**
      * The event emitted when the user wants to start the create endpoint wizard.
      */
     START_CREATE_ENDPOINT_WIZARD: 'startCreateEndpointWizard',
+    /**
+     * The event emitted when an endpoint configuration is created.
+     */
+    ENDPOINT_CONFIG_CREATED: 'updateConfigCreated',
     /**
      * The event emitted when a new GraphQL endpoint should be generated.
      */

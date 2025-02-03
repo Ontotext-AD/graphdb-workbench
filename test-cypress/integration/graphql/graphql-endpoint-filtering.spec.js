@@ -10,7 +10,7 @@ describe('GraphQL endpoints filtering', () => {
         cy.presetRepository(repositoryId);
         // TODO: remove stubs and enable next imports when REST API is ready
         // cy.importServerFile(repositoryId, 'swapi-dataset.ttl');
-        // cy.uploadGraphqlSchema(repositoryId, 'graphql/schema/swapi-schema.yaml', 'swapi');
+        // cy.uploadGraphqlSchema(repositoryId, 'graphql/soml/swapi-schema.yaml', 'swapi');
         GraphqlStubs.stubGetEndpointsInfo(repositoryId);
         GraphqlStubs.stubGetEndpoints(repositoryId, 'graphql-swapi-endpoints.json');
     });

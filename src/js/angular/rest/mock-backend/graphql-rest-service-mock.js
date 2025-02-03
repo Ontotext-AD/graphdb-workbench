@@ -17,6 +17,12 @@ export class GraphqlRestServiceMock {
             // setTimeout(() => resolve({data: cloneDeep(emptyEndpointsInfo)}), GET_ENDPOINTS_INFO_DELAY);
         });
     }
+
+    getGraphqlSchemaShapesMock(repositoryId) {
+        return new Promise((resolve) => {
+            setTimeout(() => resolve({data: cloneDeep(graphqlSchemaShapes)}), GET_ENDPOINTS_INFO_DELAY);
+        });
+    }
 }
 
 const endpoints = {
@@ -96,3 +102,92 @@ const endpointsInfo = {
         }
     ]
 };
+
+const graphqlSchemaShapes = {
+    "shapes": [
+        {
+            "id": "https://schema.ubs.net/schema/AIModelSchema",
+            "name": "AI Model Schema",
+            "label": "AI Model Schema",
+            "description": null
+        },
+        {
+            "id": "https://schema.ubs.net/schema/AIProductSchema",
+            "name": "AI Product Schema",
+            "label": "AI Product Schema",
+            "description": null
+        },
+        {
+            "id": "https://schema.ubs.net/schema/DatabaseSchema",
+            "name": null,
+            "label": "Database Schema",
+            "description": null
+        },
+        {
+            "id": "https://schema.ubs.net/schema/BbsPermissionSchema",
+            "name": null,
+            "label": "BBS Permissions",
+            "description": null
+        },
+        {
+            "id": "https://schema.ubs.net/schema/DataProductBasicSchema",
+            "name": null,
+            "label": "Data Product Basic Schema No Policy and No Provenance",
+            "description": null
+        },
+        {
+            "id": "https://schema.ubs.net/schema/DataQualityMetricSchema",
+            "name": null,
+            "label": "Data Quality Metric Schema",
+            "description": "This is the basic schema for DQV initiated from Metric class"
+        },
+        {
+            "id": "https://schema.ubs.net/schema/DataQualityObservationSchema",
+            "name": null,
+            "label": "Data Quality Observation Schema",
+            "description": null
+        },
+        {
+            "id": "https://schema.ubs.net/schema/DatasetSchema",
+            "name": null,
+            "label": "Dataset Schema",
+            "description": null
+        },
+        {
+            "id": "https://schema.ubs.net/schema/ApplicationSchema",
+            "name": null,
+            "label": "Application Schema",
+            "description": null
+        },
+        {
+            "id": "https://schema.ubs.net/schema/PolicyBasicSchema",
+            "name": null,
+            "label": "Policy Basic Schema",
+            "description": null
+        },
+        {
+            "id": "https://schema.ubs.net/schema/DataQualityMeasurementSchema",
+            "name": null,
+            "label": "Data Quality Measurement Schema",
+            "description": null
+        },
+        {
+            "id": "https://schema.ubs.net/schema/DataProductFullSchema",
+            "name": null,
+            "label": "Data Product Schema where datasets can also be defined",
+            "description": null
+        },
+        {
+            "id": "https://schema.ubs.net/schema/ValidationSchema",
+            "name": null,
+            "label": "Validation Schema",
+            "description": null
+        },
+        {
+            "id": "https://schema.ubs.net/schema/WMAAccountSchema",
+            "name": null,
+            "label": "WMA Account Schema",
+            "description": null
+        }
+    ]
+}

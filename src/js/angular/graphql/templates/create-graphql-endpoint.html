@@ -9,50 +9,47 @@
 
     <div core-errors></div>
 
-    <div onto-loader-new
-         ng-show="false"
-         class="create-graphql-endpoint-view-loader"
-         size="100">
-    </div>
-
     <div class="create-graphql-endpoint-container">
 
-        <div class="toolbar">
-            <div class="form-inline">
-                <label
-                    for="sourceRepositorySelector">{{'graphql.create_endpoint.toolbar.source_repository_selector.label' | translate}}</label>
-                <select id="sourceRepositorySelector" ng-model="selectedSourceRepository"
-                        ng-options="repository as repository.label for repository in sourceRepositories"
-                        ng-change="onSelectedSourceRepositoryChange(selectedSourceRepository)"
-                        class="form-control source-repository-selector"
-                        gdb-tooltip="{{'graphql.create_endpoint.toolbar.source_repository_selector.tooltip' | translate}}"
-                        tooltip-placement="top">
-                </select>
-            </div>
-        </div>
-
-        <div class="wizard-container mt-2">
-            <div class="wizard">
-                <div class="wizard-steps">
-                    <div ng-repeat="step in wizardModel.steps" class="wizard-step" ng-class="{active: step.active}">
-                        <span class="step-title">{{'graphql.create_endpoint.wizard_steps.' + step.id + '.title' | translate}}</span>
-                        <span class="fa fa-chevron-right step-decoration"></span>
-                    </div>
+        <div class="content">
+            <div class="toolbar">
+                <div class="form-inline">
+                    <label
+                        for="sourceRepositorySelector">{{'graphql.create_endpoint.toolbar.source_repository_selector.label' | translate}}</label>
+                    <select id="sourceRepositorySelector" ng-model="selectedSourceRepository"
+                            ng-options="repository as repository.label for repository in sourceRepositories"
+                            ng-change="onSelectedSourceRepositoryChange(selectedSourceRepository)"
+                            class="form-control source-repository-selector"
+                            gdb-tooltip="{{'graphql.create_endpoint.toolbar.source_repository_selector.tooltip' | translate}}"
+                            tooltip-placement="top">
+                    </select>
                 </div>
+            </div>
 
-                <div class="wizard-content">
-                    <div ng-repeat="step in wizardModel.steps" ng-if="step.active" class="wizard-step-content">
-                        <div ng-switch="step.id">
-                            <div ng-switch-when="select_schema_sources">
-                                <select-schema-sources step-definition="step"></select-schema-sources>
+            <div class="wizard-container mt-2">
+                <div class="wizard">
+                    <div class="wizard-steps">
+                        <div ng-repeat="step in wizardModel.steps" class="wizard-step" ng-class="{active: step.active}">
+                            <span class="step-title">{{'graphql.create_endpoint.wizard_steps.' + step.id + '.title' | translate}}</span>
+                            <span class="fa fa-chevron-right step-decoration"></span>
+                        </div>
+                    </div>
+
+                    <div class="wizard-content">
+                        <div ng-repeat="step in wizardModel.steps" ng-if="step.active" class="wizard-step-content">
+                            <div ng-switch="step.id">
+                                <div ng-switch-when="select_schema_sources">
+                                    <select-schema-sources step-definition="step"></select-schema-sources>
+                                </div>
+                                <div ng-switch-when="configure_endpoint">
+                                    <configure-endpoint step-definition="step"></configure-endpoint>
+                                </div>
+                                <!-- Add more components as needed -->
                             </div>
-                            <div ng-switch-when="configure_endpoint">
-                                <configure-endpoint step-definition="step"></configure-endpoint>
-                            </div>
-                            <!-- Add more components as needed -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
