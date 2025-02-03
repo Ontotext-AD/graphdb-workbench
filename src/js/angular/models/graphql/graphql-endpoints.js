@@ -7,12 +7,12 @@ export class GraphqlEndpoint {
          * @type {string}
          * @private
          */
-        this._id = data.id;
+        this._endpointId = data.endpointId;
         /**
          * @type {string}
          * @private
          */
-        this._graphql = data.graphql;
+        this._endpointURI = data.endpointURI;
         /**
          * @type {boolean}
          * @private
@@ -23,6 +23,22 @@ export class GraphqlEndpoint {
          * @private
          */
         this._default = data.default;
+    }
+
+    get endpointId() {
+        return this._endpointId;
+    }
+
+    set endpointId(value) {
+        this._endpointId = value;
+    }
+
+    get endpointURI() {
+        return this._endpointURI;
+    }
+
+    set endpointURI(value) {
+        this._endpointURI = value;
     }
 
     get default() {
@@ -39,22 +55,6 @@ export class GraphqlEndpoint {
 
     set active(value) {
         this._active = value;
-    }
-
-    get id() {
-        return this._id;
-    }
-
-    set id(value) {
-        this._id = value;
-    }
-
-    get graphql() {
-        return this._graphql;
-    }
-
-    set graphql(value) {
-        this._graphql = value;
     }
 }
 

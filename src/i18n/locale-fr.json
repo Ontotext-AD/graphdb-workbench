@@ -819,7 +819,8 @@
                     "graphql_schema_shapes": {
                         "title": "Formes de schéma GraphQL",
                         "messages": {
-                            "no_schemas": "Aucune forme de schéma GraphQL n'a été trouvée dans le référentiel sélectionné. Vous pouvez choisir ou parcourir d'autres référentiels ou choisir l'autre source.",
+                            "loading_graphql_shapes": "Chargement des formes de schéma GraphQL...",
+                            "no_schemas": "Aucune forme de schéma GraphQL n'a été trouvée dans le référentiel sélectionné. Vous pouvez parcourir d'autres référentiels ou modifier la source.",
                             "endpoint_per_shape": "Chaque forme de schéma GraphQL génère un point de terminaison"
                         }
                     },
@@ -846,17 +847,22 @@
                             "use_all_graphs": {
                                 "label": "Utiliser tous les graphes",
                                 "messages": {
-                                    "all_graphs": "Les {{count}} graphes sont inclus pour la création de points de terminaison"
+                                    "all_graphs": "Les {{count}} graphes sont inclus pour la création de points de terminaison",
+                                    "no_graphs": "Aucun graphes n'a été trouvé dans le référentiel sélectionné."
                                 }
                             },
                             "use_shacl_shape_graph": {
                                 "label": "Utiliser le graphe de forme SHACL",
                                 "messages": {
-                                    "all_shacl_shape_graphs": "Les {{count}} graphes de forme SHACL sont inclus pour la création de points de terminaison"
+                                    "all_shacl_shape_graphs": "Les {{count}} graphes de forme SHACL sont inclus pour la création de points de terminaison",
+                                    "no_graphs": "Aucun graphes de forme SHACL n'a été trouvé dans le référentiel sélectionné."
                                 }
                             },
                             "pick_graphs": {
-                                "label": "Sélectionnez un ou plusieurs graphes"
+                                "label": "Sélectionnez un ou plusieurs graphes",
+                                "messages": {
+                                    "no_graphs": "Aucun graphes n'a été trouvé dans le référentiel sélectionné."
+                                }
                             }
                         },
                         "messages": {
@@ -869,6 +875,58 @@
                     "endpoint_parameters": {
                         "title": "Paramètres",
                         "form": {}
+                    }
+                },
+                "shapes_multiselect": {
+                    "available_options": {
+                        "title": "Disponible (non inclus)",
+                        "filter_placeholder": "Filtrer pour sélectionner des formes spécifiques"
+                    },
+                    "selected_options": {
+                        "title": "Inclus pour la génération",
+                        "count": "{{count}} formes de schéma GraphQL incluses"
+                    },
+                    "actions": {
+                        "add": {
+                            "tooltip": "Ajouter la forme à la liste des formes incluses"
+                        },
+                        "add_all": {
+                            "label": "Ajouter tout",
+                            "tooltip": "Ajouter toutes les formes à la liste des formes incluses"
+                        },
+                        "remove": {
+                            "tooltip": "Supprimer la forme de la liste des formes incluses"
+                        },
+                        "remove_all": {
+                            "label": "Supprimer tout",
+                            "tooltip": "Supprimer toutes les formes de la liste des formes incluses"
+                        }
+                    }
+                },
+                "graphs_multiselect": {
+                    "available_options": {
+                        "title": "Disponible (non inclus)",
+                        "filter_placeholder": "Filtrer pour sélectionner des graphiques spécifiques"
+                    },
+                    "selected_options": {
+                        "title": "Inclus pour la génération",
+                        "count": "{{count}} graphes de forme SHACL sont inclus"
+                    },
+                    "actions": {
+                        "add": {
+                            "tooltip": "Ajouter le graphe à la liste des graphes inclus"
+                        },
+                        "add_all": {
+                            "label": "Ajouter tout",
+                            "tooltip": "Ajouter tous les graphes à la liste des graphes inclus"
+                        },
+                        "remove": {
+                            "tooltip": "Supprimer le graphe de la liste des graphes inclus"
+                        },
+                        "remove_all": {
+                            "label": "Supprimer tout",
+                            "tooltip": "Supprimer tous les graphes de la liste des graphes inclus"
+                        }
                     }
                 },
                 "actions": {
@@ -889,6 +947,12 @@
                     "generate_endpoint": {
                         "label": "Générer"
                     }
+                }
+            },
+            "messages": {
+                "source_repository_changed": {
+                    "title": "Confirmer le changement de référentiel source",
+                    "body": "La modification du référentiel source peut affecter votre configuration et vos données actuelles. Êtes-vous sûr de vouloir continuer?"
                 }
             }
         }

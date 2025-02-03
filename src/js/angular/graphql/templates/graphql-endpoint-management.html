@@ -14,7 +14,7 @@
          size="100">
     </div>
 
-    <div ng-if="!loadingEndpointsInfo" class="endpoint-management-container">
+    <div ng-if="getActiveRepository() && !loadingEndpointsInfo" class="endpoint-management-container">
 
         <div class="toolbar">
             <div class="endpoints-filter">

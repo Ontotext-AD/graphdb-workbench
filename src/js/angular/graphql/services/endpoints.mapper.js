@@ -24,8 +24,8 @@ export const endpointModelMapper = (data) => {
         return;
     }
     return new GraphqlEndpoint({
-        id: data.id,
-        graphql: data.graphQL,
+        endpointId: data.endpointId,
+        endpointURI: data.endpointURI,
         active: data.active,
         default: data.default
     });
@@ -42,8 +42,8 @@ export const endpointsToSelectMenuOptionsMapper = (data) => {
     }
     return data.endpoints.map((endpoint) => {
         return new SelectMenuOptionsModel({
-            value: endpoint.graphQL,
-            label: endpoint.id,
+            value: endpoint.endpointURI,
+            label: endpoint.endpointId,
             selected: endpoint.default,
             data: {
                 active: endpoint.active

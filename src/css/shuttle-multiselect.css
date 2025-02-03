@@ -8,6 +8,7 @@
     justify-content: space-between;
     column-gap: var(--gap);
     width: 100%;
+    background-color: #ffffff;
 }
 
 .shuttle-multiselect .shuttle-panel {
@@ -22,6 +23,10 @@
     display: flex;
     align-items: center;
     height: 38px;
+}
+
+.shuttle-multiselect .shuttle-panel-toolbar.toolbar-right > *:only-child {
+    margin-left: auto;
 }
 
 .shuttle-multiselect .shuttle-panel-toolbar .filter-selected {

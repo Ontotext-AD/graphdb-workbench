@@ -1,5 +1,6 @@
 import {ImportServerFilesSteps} from "../../steps/import/import-server-files-steps";
 import {ImportSettingsDialogSteps} from "../../steps/import/import-settings-dialog-steps";
+import {SERVER_FILES_COUNT} from "../../steps/import/import-test-constants";
 
 describe('Import server files - Batch operations', () => {
 
@@ -11,7 +12,7 @@ describe('Import server files - Batch operations', () => {
         repositoryId = 'server-import-' + Date.now();
         cy.createRepository({id: repositoryId});
         ImportServerFilesSteps.visitServerImport(repositoryId);
-        ImportServerFilesSteps.getResources().should('have.length', 19);
+        ImportServerFilesSteps.getResources().should('have.length', SERVER_FILES_COUNT);
     });
 
     afterEach(() => {
@@ -48,7 +49,7 @@ describe('Import server files - Batch operations', () => {
         // When I select All files from the menu
         ImportServerFilesSteps.selectAllResources();
         // Then I should see all files selected
-        ImportServerFilesSteps.getSelectedResources().should('have.length', 19);
+        ImportServerFilesSteps.getSelectedResources().should('have.length', SERVER_FILES_COUNT);
         // When I select None from the menu
         ImportServerFilesSteps.deselectAllResources();
         // Then I should see no files selected
@@ -65,7 +66,7 @@ describe('Import server files - Batch operations', () => {
         // When I select Not Imported from the menu
         ImportServerFilesSteps.selectNotImportedResources();
         // Then I should see only not imported files selected
-        ImportServerFilesSteps.getSelectedResources().should('have.length', 18);
+        ImportServerFilesSteps.getSelectedResources().should('have.length', SERVER_FILES_COUNT - 1);
         // Deselect all for the next step
         ImportServerFilesSteps.deselectAllResources();
         ImportServerFilesSteps.getSelectedResources().should('have.length', 0);

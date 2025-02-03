@@ -2,7 +2,7 @@ import {ImportUserDataSteps} from "../../steps/import/import-user-data-steps";
 import {ImportServerFilesSteps} from "../../steps/import/import-server-files-steps";
 import {ImportSettingsDialogSteps} from "../../steps/import/import-settings-dialog-steps";
 import {ImportResourceMessageDialog} from "../../steps/import/import-resource-message-dialog";
-import {ApplicationSteps} from "../../steps/application-steps";
+import {SERVER_FILES_COUNT} from "../../steps/import/import-test-constants";
 
 describe('Import server files', () => {
 
@@ -14,7 +14,7 @@ describe('Import server files', () => {
         repositoryId = 'server-import-' + Date.now();
         cy.createRepository({id: repositoryId});
         ImportServerFilesSteps.visitServerImport(repositoryId);
-        ImportServerFilesSteps.getResources().should('have.length', 19);
+        ImportServerFilesSteps.getResources().should('have.length', SERVER_FILES_COUNT);
     });
 
     afterEach(() => {
@@ -66,7 +66,7 @@ describe('Import server files', () => {
         // When the server files tab is loaded
         // Then I should see all the files and folders by default
         ImportServerFilesSteps.getShowAllResourceTypesButton().should('have.class', 'active');
-        ImportServerFilesSteps.getResources().should('have.length', 19);
+        ImportServerFilesSteps.getResources().should('have.length', SERVER_FILES_COUNT);
         // When I select the folders only filter
         ImportServerFilesSteps.selectFoldersOnlyFilter();
         // Then I should see only the folders
@@ -75,7 +75,7 @@ describe('Import server files', () => {
         // When I select the files only filter
         ImportServerFilesSteps.selectFilesOnlyFilter();
         // Then I should see only the files
-        ImportServerFilesSteps.getResources().should('have.length', 17);
+        ImportServerFilesSteps.getResources().should('have.length', SERVER_FILES_COUNT - 2);
     });
 
     it('should be able to import the whole directory', () => {
@@ -180,8 +180,8 @@ describe('Import server files', () => {
         ImportServerFilesSteps.getResource(5).should('contain', "rdfxml.rdf");
         ImportServerFilesSteps.getResource(6).should('contain', "jsonld-file.jsonld");
         // checks files in root
-        ImportServerFilesSteps.getResource(15).should('contain', "0007-import-file.jsonld");
-        ImportServerFilesSteps.getResource(16).should('contain', "test_turtlestar.ttls");
-        ImportServerFilesSteps.getResource(17).should('contain', "bnodes.ttl");
+        ImportServerFilesSteps.getResource(17).should('contain', "0007-import-file.jsonld");
+        ImportServerFilesSteps.getResource(18).should('contain', "test_turtlestar.ttls");
+        ImportServerFilesSteps.getResource(19).should('contain', "bnodes.ttl");
     });
 });

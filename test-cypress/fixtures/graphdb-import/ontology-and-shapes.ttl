@@ -1,0 +1,562 @@
+@prefix :         <https://swapi.co/resource/> .
+@prefix affected: <http://www.ontotext.com/semantic-object/affected> .
+@prefix dash:     <http://datashapes.org/dash#> .
+@prefix dct:      <http://purl.org/dc/terms/> .
+@prefix droid:    <https://swapi.co/resource/droid/> .
+@prefix gn:       <http://www.geonames.org/ontology#> .
+@prefix graphql:  <http://datashapes.org/graphql#> .
+@prefix onto:     <http://www.ontotext.com/> .
+@prefix owl:      <http://www.w3.org/2002/07/owl#> .
+@prefix puml:     <http://plantuml.com/ontology#> .
+@prefix rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix res:      <http://www.ontotext.com/semantic-object/result/> .
+@prefix rsx:      <http://rdf4j.org/shacl-extensions#> .
+@prefix sh:       <http://www.w3.org/ns/shacl#> .
+@prefix skos:     <http://www.w3.org/2004/02/skos/core#> .
+@prefix so:       <http://www.ontotext.com/semantic-object/> .
+@prefix voc:      <https://swapi.co/vocabulary/> .
+@prefix vocsh:    <https://swapi.co/vocabulary/shacl> .
+@prefix void:     <http://rdfs.org/ns/void#> .
+@prefix wgs84:    <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+
+voc:CharacterSchema a graphql:Schema;
+                    rdfs:label "Character GraphQL Schema";
+                    graphql:privateShape vocsh:Starship;
+                    graphql:protectedClass voc:Film;
+                    graphql:publicClass voc:Character  .
+
+vocsh:CharacterShape
+    a              sh:NodeShape ;
+    sh:targetClass voc:Character ;
+    sh:property    [ sh:path      rdfs:label ;
+                     graphql:name "label" ;
+                     sh:minCount  1 ;
+                     so:lang "en,ANY";
+                     sh:or        ( [ sh:datatype xsd:string ; ]
+                                    [ sh:datatype rdf:langString ; ] ) ; ] ;
+    sh:property    [ sh:path     voc:gender ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1 ; ] ;
+    sh:property    [ sh:path     voc:birthYear ;
+                     sh:maxCount 1 ;
+                     sh:datatype xsd:string ; ] ;
+    sh:property    [ sh:path     voc:height ;
+                     sh:maxCount 1 ;
+                     sh:datatype xsd:decimal ; ] ;
+    sh:property    [ sh:path voc:film ;
+                     sh:class voc:Film ] .
+
+
+vocsh:Starship
+    a              sh:NodeShape ;
+    sh:targetClass voc:Starship ;
+    sh:property    [ sh:path      rdfs:label ;
+                     graphql:name "name" ;
+                     sh:minCount  1 ;
+                     so:lang "en,ANY";
+                     sh:or        ( [ sh:datatype xsd:string ; ]
+                                    [ sh:datatype rdf:langString ; ] ) ; ] .
+
+vocsh:Film
+    a              sh:NodeShape ;
+    sh:targetClass voc:Film ;
+    sh:property    [ sh:path      rdfs:label ;
+                     graphql:name "name" ;
+                     sh:minCount  1 ;
+                     so:lang "en,ANY";
+                     sh:or        ( [ sh:datatype xsd:string ; ]
+                                    [ sh:datatype rdf:langString ; ] ) ; ] ;
+    sh:property    [ sh:path  voc:starship ;
+                     sh:class voc:Starship ] .
+
+
+# ===================================================
+
+voc:SwapiSchema a graphql:Schema;
+                rdfs:label "Swapi GraphQL Schema";
+                graphql:publicShape vocsh:LocationShape ;
+                graphql:publicShape vocsh:CountryShape ;
+                graphql:publicShape vocsh:StarshipShape ;
+                graphql:publicShape vocsh:VehicleShape ;
+                graphql:publicShape vocsh:DroitShape;
+                graphql:publicShape vocsh:WookieeShape ;
+                graphql:publicShape vocsh:HumanShape ;
+                graphql:publicShape vocsh:PersonShape ;
+                graphql:publicShape voc:Character ;
+                graphql:publicShape vocsh:Species ;
+                graphql:publicShape vocsh:ResidentShape ;
+                graphql:publicShape vocsh:PlanetShape ;
+                graphql:publicShape vocsh:FilmShape ;
+                graphql:publicShape vocsh:FilmRoleShape .
+
+voc:Character a owl:Class .
+
+voc:Human a owl:Class ;
+          rdfs:subClassOf voc:Character .
+
+voc:Droid a owl:Class ;
+          rdfs:subClassOf voc:Character .
+
+voc:Wookiee a owl:Class ;
+          rdfs:subClassOf voc:Character .
+
+vocsh:LocationShape
+    a              sh:NodeShape ;
+    sh:targetClass voc:Location ;
+    sh:property    [ sh:path      rdfs:label ;
+                     graphql:name "name" ;
+                     sh:minCount  1 ;
+                     sh:or        ( [ sh:datatype xsd:string ; ]
+                                    [ sh:datatype rdf:langString ; ] ) ; ] ;
+    sh:property    [ sh:path    voc:country ;
+                     sh:class   voc:Country
+                   ] .
+
+vocsh:CountryShape
+    a              sh:NodeShape ;
+    sh:targetClass voc:Country ;
+    sh:property    [ sh:path      rdfs:label ;
+                     graphql:name "name" ;
+                     sh:minCount  1 ;
+                     sh:or        ( [ sh:datatype xsd:string ; ]
+                                    [ sh:datatype rdf:langString ; ] ) ; ] ;
+    sh:property    [ sh:path    voc:country ;
+                     sh:class   voc:Country
+                   ] .
+# why is necessary to have property of type Country of object Country?
+
+vocsh:StarshipShape
+    a              sh:NodeShape ;
+    sh:targetClass voc:Starship ;
+    sh:property    [ sh:path      rdfs:label ;
+                     graphql:name "name" ;
+                     sh:minCount  1 ;
+                     sh:or        ( [ sh:datatype xsd:string ; ]
+                                    [ sh:datatype rdf:langString ; ] ) ; ] ;
+    sh:property    [ sh:path    voc:model ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1
+                   ];
+    sh:property    [ sh:path    voc:mglt ;
+                     sh:datatype xsd:integer ;
+                     sh:maxCount 1
+                   ];
+    sh:property    [ sh:path    voc:crew ;
+                     sh:datatype xsd:integer ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path    voc:cargoCapacity ;
+                     sh:datatype xsd:integer ;
+                     sh:maxCount 1
+                   ];
+    sh:property    [ sh:path    voc:hyperdriveRating ;
+                     sh:datatype xsd:decimal ;
+                     sh:maxCount 1
+                   ];
+    sh:property    [ sh:path    voc:starshipClass  ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1
+                   ];
+    sh:property    [ sh:path    voc:consumables ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path    voc:costInCredits ;
+                     sh:datatype xsd:integer ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path    voc:length ;
+                     sh:datatype xsd:decimal ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path    voc:manufacturer ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path    voc:maxAtmospheringSpeed ;
+                     sh:datatype xsd:integer ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path    voc:passengers ;
+                     sh:datatype xsd:integer ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path    voc:film ;
+                     sh:class   voc:Film
+                   ] ;
+    sh:property    [ sh:path    voc:pilot ;
+                     sh:class   voc:Character
+                   ] .
+
+vocsh:VehicleShape
+    a              sh:NodeShape ;
+    sh:targetClass voc:Vehicle ;
+    sh:property    [ sh:path      rdfs:label ;
+                     graphql:name "name" ;
+                     sh:minCount  1 ;
+                     sh:or        ( [ sh:datatype xsd:string ; ]
+                                    [ sh:datatype rdf:langString ; ] ) ; ] ;
+    sh:property    [ sh:path voc:desc ;
+                     sh:or        ( [ sh:datatype xsd:string ; ]
+                                    [ sh:datatype rdf:langString ; ] ) ;
+                   ] ;
+    sh:property    [ sh:path    voc:cargoCapacity ;
+                     sh:datatype xsd:integer ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path    voc:crew ;
+                     sh:datatype xsd:integer ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path    voc:model ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path    voc:consumables ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path    voc:costInCredits ;
+                     sh:datatype xsd:integer ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path    voc:length ;
+                     sh:datatype xsd:decimal ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path    voc:manufacturer ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path    voc:maxAtmospheringSpeed ;
+                     sh:datatype xsd:integer ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path    voc:passengers ;
+                     sh:datatype xsd:integer ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path    voc:vehicleClass ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path    voc:film ;
+                     sh:class   voc:Film
+                   ] ;
+    sh:property    [ sh:path    voc:pilot ;
+                     sh:class   voc:Character
+                   ] .
+
+vocsh:Species
+    a              sh:NodeShape ;
+    sh:targetClass voc:Species ;
+    sh:property    [ sh:path      rdfs:label ;
+                     graphql:name "name" ;
+                     sh:minCount  1 ;
+                     sh:or        ( [ sh:datatype xsd:string ; ]
+                                    [ sh:datatype rdf:langString ; ] ) ] ;
+    sh:property    [ sh:path    voc:averageHeight ;
+                     sh:datatype xsd:decimal ;
+                     sh:maxCount 1
+                   ];
+    sh:property    [ sh:path    voc:averageLifespan ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1
+                   ];
+    sh:property    [ sh:path    voc:eyeColor ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1
+                   ];
+    sh:property    [ sh:path    voc:hairColor ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1
+                   ];
+    sh:property    [ sh:path    voc:language ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1
+                   ];
+    sh:property    [ sh:path    voc:skinColor ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1
+                   ];
+    sh:property    [ sh:path    voc:character ;
+                     sh:class   voc:Character
+                   ];
+    sh:property    [ sh:path    voc:homeworld ;
+                     sh:class   voc:Planet
+                   ];
+    sh:property    [ sh:path    voc:film ;
+                     sh:class   voc:Film
+                   ] .
+
+vocsh:PersonShape
+    a              sh:NodeShape ;
+    sh:targetClass voc:Person ;
+    sh:property    [ sh:path      rdfs:label ;
+                     graphql:name "name" ;
+                     sh:minCount  1 ;
+                     sh:or        ( [ sh:datatype xsd:string ; ]
+                                    [ sh:datatype rdf:langString ; ] ) ] ;
+    sh:property    [ sh:path     voc:birthDate ;
+                     sh:datatype xsd:date ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path voc:desc ;
+                     sh:or        ( [ sh:datatype xsd:string ; ]
+                                    [ sh:datatype rdf:langString ; ] ) ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path     voc:gender ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path     voc:birthPlace ;
+                     sh:datatype voc:Location ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path     voc:citizenOf ;
+                     sh:datatype voc:Location ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path     voc:residentOf ;
+                     sh:datatype voc:Location ;
+                     sh:maxCount 1
+                   ] .
+
+voc:Character
+    a              sh:NodeShape, owl:Class ;
+    graphql:isInterface true ;
+    sh:property    [ sh:path      rdfs:label ;
+                     graphql:name "name" ;
+                     sh:minCount  1 ;
+                     sh:or        ( [ sh:datatype xsd:string ; ]
+                                    [ sh:datatype rdf:langString ; ] ) ] ;
+    sh:property    [ sh:path voc:desc ;
+                     sh:or        ( [ sh:datatype xsd:string ; ]
+                                    [ sh:datatype rdf:langString ; ] ) ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path     voc:gender ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path     voc:eyeColor ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path     voc:skinColor ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path     voc:hairColor ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path     voc:birthYear ;
+                     sh:maxCount 1 ;
+                     sh:datatype xsd:string
+                   ] ;
+    sh:property    [ sh:path     voc:mass ;
+                     sh:maxCount 1 ;
+                     sh:datatype xsd:decimal ] ;
+    sh:property    [ sh:path     voc:height ;
+                     sh:maxCount 1 ;
+                     sh:datatype xsd:decimal ] ;
+    sh:property    [ sh:path     voc:vehicle ;
+                     sh:class voc:Vehicle
+                   ] ;
+    sh:property    [ sh:path     voc:starship ;
+                     sh:class voc:Starship
+                   ] ;
+    sh:property    [ sh:path     voc:homeworld ;
+                     sh:class voc:Planet
+                   ] ;
+    sh:property    [ sh:path     voc:film ;
+                     sh:class voc:Film
+                   ] ;
+    sh:property    [ sh:path    [ sh:inversePath voc:character ] ;
+                     sh:name     "species" ;
+                     sh:class    voc:Species ;
+                     sh:minCount 1
+                   ] .
+
+vocsh:HumanShape
+    a              sh:NodeShape ;
+    sh:targetClass voc:Human ;
+    sh:property    [ sh:path      rdfs:label ;
+                     graphql:name "name" ;
+                     sh:minCount  1 ;
+                     sh:or        ( [ sh:datatype xsd:string ; ]
+                                    [ sh:datatype rdf:langString ; ] ) ] ;
+    sh:property    [ sh:path    voc:averageLifespan ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1
+                   ] .
+
+vocsh:DroitShape
+    a              sh:NodeShape ;
+    sh:targetClass voc:Droid ;
+    sh:property    [ sh:path      rdfs:label ;
+                     graphql:name "name" ;
+                     sh:minCount  1 ;
+                     sh:or        ( [ sh:datatype xsd:string ; ]
+                                    [ sh:datatype rdf:langString ; ] ) ] ;
+    sh:property    [ sh:path    voc:averageLifespan ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1
+                   ] .
+
+
+vocsh:WookieeShape
+    a              sh:NodeShape ;
+    sh:targetClass voc:Wookiee ;
+    sh:property    [ sh:path      rdfs:label ;
+                     graphql:name "name" ;
+                     sh:minCount  1 ;
+                     sh:or        ( [ sh:datatype xsd:string ; ]
+                                    [ sh:datatype rdf:langString ; ] ) ] ;
+    sh:property    [ sh:path    voc:averageLifespan ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1
+                   ] ;
+    sh:property    [ sh:path    voc:language ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1
+                   ] .
+
+vocsh:PlanetShape
+    a              sh:NodeShape ;
+    sh:targetClass voc:Planet ;
+    sh:property    [ sh:path      rdfs:label ;
+                     graphql:name "name" ;
+                     sh:minCount  1 ;
+                     sh:or        ( [ sh:datatype xsd:string ; ]
+                                    [ sh:datatype rdf:langString ; ] ) ; ] ;
+    sh:property    [ sh:path voc:desc ;
+                     sh:or        ( [ sh:datatype xsd:string ; ]
+                                    [ sh:datatype rdf:langString ; ] ) ;
+                     sh:maxCount 1 ;
+                   ] ;
+    sh:property [
+                       sh:path voc:climate ;
+                       sh:datatype xsd:string ;
+                       sh:maxCount 1 ] ;
+    sh:property [
+                       sh:path voc:diameter ;
+                       sh:datatype xsd:integer ;
+                       sh:maxCount 1 ;
+                ] ;
+    sh:property [
+                       sh:path voc:gravity ;
+                       sh:datatype xsd:string ;
+                       sh:maxCount 1 ;
+                ];
+    sh:property [
+                       sh:path voc:orbitalPeriod ;
+                       sh:datatype xsd:integer ;
+                       sh:maxCount 1 ;
+                ];
+    sh:property [
+                       sh:path voc:population ;
+                       sh:datatype xsd:integer ;
+                       sh:maxCount 1 ;
+                ];
+    sh:property [
+                       sh:path voc:rotationPeriod ;
+                       sh:datatype xsd:integer ;
+                       sh:maxCount 1 ;
+                ];
+    sh:property [
+                       sh:path voc:surfaceWater ;
+                       sh:datatype xsd:integer ;
+                       sh:maxCount 1 ;
+                ];
+    sh:property [
+                       sh:path voc:terrain ;
+                       sh:datatype xsd:string ;
+                       sh:maxCount 1 ;
+                ] ;
+    sh:property [
+                       sh:path voc:resident ;
+                       sh:class voc:Character ] ;
+    sh:property [
+                       sh:path voc:film ;
+                       sh:class voc:Film ] .
+
+vocsh:FilmShape
+    a              sh:NodeShape ;
+    sh:targetClass voc:Film ;
+    sh:property    [ sh:path      rdfs:label ;
+                     graphql:name "name" ;
+                     sh:minCount  1 ;
+                     sh:or        ( [ sh:datatype xsd:string ; ]
+                                    [ sh:datatype rdf:langString ; ] ) ; ] ;
+    sh:property    [ sh:path voc:boxOffice ;
+                     sh:datatype xsd:integer ;
+                     sh:maxCount 1 ;
+                   ] ;
+    sh:property    [ sh:path voc:desc ;
+                     sh:or        ( [ sh:datatype xsd:string ; ]
+                                    [ sh:datatype rdf:langString ; ] ) ;
+                     sh:maxCount 1 ;
+                   ] ;
+    sh:property    [ sh:path voc:episodeId ;
+                     sh:datatype xsd:integer ;
+                     sh:maxCount 1 ;
+                   ] ;
+    sh:property    [ sh:path voc:openingCrawl ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1 ;
+                   ] ;
+    sh:property    [ sh:path voc:releaseDate ;
+                     sh:datatype xsd:date ;
+                     sh:maxCount 1 ;
+                   ] ;
+    sh:property    [ sh:path voc:planet ;
+                     sh:class voc:Planet ;
+                     sh:maxCount 1 ;
+                   ] ;
+    sh:property    [ sh:path voc:character ;
+                     sh:class voc:Character
+                   ] ;
+    sh:property    [ sh:path voc:vehicle ;
+                     sh:class voc:Vehicle
+                   ] ;
+    sh:property    [ sh:path  voc:starship ;
+                     sh:class voc:Starship
+                   ] ;
+    sh:property    [ sh:path    [ sh:inversePath voc:film ] ;
+                     sh:name     "role" ;
+                     sh:class    voc:FilmRole ;
+                     sh:minCount 1
+                   ] .
+
+vocsh:FilmRoleShape
+    a              sh:NodeShape ;
+    sh:targetClass voc:FilmRole ;
+    sh:property    [ sh:path      rdfs:label ;
+                     graphql:name "name" ;
+                     sh:minCount  1 ;
+                     sh:or        ( [ sh:datatype xsd:string ; ]
+                                    [ sh:datatype rdf:langString ; ] ) ; ] ;
+    sh:property    [ sh:path   voc:role ;
+                     sh:datatype xsd:string ;
+                     sh:maxCount 1 ;
+                   ] ;
+    sh:property    [ sh:path   voc:person  ;
+                     sh:class  voc:Person
+                   ] ;
+    sh:property    [ sh:path   voc:character ;
+                     sh:class  voc:Character
+                   ] ;
+    sh:property    [ sh:path   voc:film ;
+                     sh:class  voc:Film
+                   ] .
+
+vocsh:ResidentShape
+    a              sh:NodeShape ;
+    sh:targetClass voc:Character .
+
+# ======================================================
