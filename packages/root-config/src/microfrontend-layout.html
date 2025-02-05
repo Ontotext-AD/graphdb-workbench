@@ -10,20 +10,19 @@
     <onto-layout>
         <main slot="main">
             <route path="graphql">
-              <!-- Setup as per documentation page: https://single-spa.js.org/docs/layout-definition/#loading-uis -->
-                <application name="@ontotext/workbench" loader="globalLoader"></application>
+                <application name="@ontotext/workbench"></application>
             </route>
             <route path="sparql-new">
               <application name="@ontotext/workbench"></application>
             </route>
             <route path="import">
-                <application name="@ontotext/legacy-workbench" loader="globalLoader"></application>
+                <application name="@ontotext/legacy-workbench"></application>
             </route>
             <route path="repository">
-                <application name="@ontotext/legacy-workbench" loader="globalLoader"></application>
+                <application name="@ontotext/legacy-workbench"></application>
             </route>
             <route default>
-                <application name="@ontotext/legacy-workbench" loader="globalLoader"></application>
+                <application name="@ontotext/legacy-workbench"></application>
             </route>
         </main>
     </onto-layout>
