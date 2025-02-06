@@ -1,17 +1,18 @@
 <div class="dynamic-form">
     <form name="dynamicForm" novalidate>
-        <div ng-repeat="field in fields" class="row mb-1">
+        <div ng-repeat="field in fields" class="row mb-1 form-field">
             <!-- Label column -->
-            <label class="col-sm-2 col-form-label">
+            <label class="col-sm-3 col-form-label field-label">
                 {{field.label}}
                 <sup ng-if="field.required">*</sup>
             </label>
 
             <!-- Input column -->
-            <div class="col-sm-10">
+            <div class="col-sm-9">
                 <!-- STRING -->
-                <div class="string-field" ng-if="field.type === FIELD_TYPE.STRING">
+                <div class="string-field  input-field" ng-if="field.type === FIELD_TYPE.STRING">
                     <input type="text"
+                           placeholder="{{field.regex.toString()}}"
                            class="form-control"
                            name="{{field.key}}"
                            ng-model="field.value"
@@ -20,7 +21,7 @@
                 </div>
 
                 <!-- TEXT-->
-                <div class="string-field" ng-if="field.type === FIELD_TYPE.TEXT">
+                <div class="string-field  text-field" ng-if="field.type === FIELD_TYPE.TEXT">
                     <textarea type="text"
                               class="form-control"
                               name="{{field.key}}"

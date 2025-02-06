@@ -16,12 +16,28 @@ export class GraphqlEndpointConfiguration {
      * @private
      */
     _params;
+
     _graphqlShapes = [];
+
+    /**
+     * The endpoint configuration settings model.
+     * @type {GraphqlEndpointConfigurationSettings|undefined}
+     * @private
+     */
+    _settings ;
 
     constructor() {
         this._selectedGraphqlSchemaShapes = new GraphqlSchemaShapes();
         this._selectedGraphs = new GraphListOptions();
         this._params = new GraphqlEndpointParams({});
+    }
+
+    get settings() {
+        return this._settings;
+    }
+
+    set settings(value) {
+        this._settings = value;
     }
 
     get selectedGraphs() {

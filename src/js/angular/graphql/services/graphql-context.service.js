@@ -1,6 +1,5 @@
 import {cloneDeep} from 'lodash';
 import {GraphqlEndpointConfiguration} from "../../models/graphql/graphql-endpoint-configuration";
-import {TTYGEventName} from "../../ttyg/services/ttyg-context.service";
 
 angular
     .module('graphdb.framework.graphql.services.graphql-context', [])

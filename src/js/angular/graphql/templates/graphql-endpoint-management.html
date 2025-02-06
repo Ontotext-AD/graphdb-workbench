@@ -101,14 +101,13 @@
                 <td>{{endpoint.propertiesCount}}</td>
                 <td>
                     <div class="btn-group">
-                        <button class="btn btn-link secondary btn-sm open-agent-actions-btn"
+                        <button class="btn btn-link secondary btn-sm open-endpoint-actions-btn"
                                 data-toggle="dropdown" aria-expanded="false"
                                 ng-if="true"
-                                ng-click="openAgentActionMenu()"
                                 ng-disabled="false">
                             <i class="fa fa-ellipsis"></i>
                         </button>
-                        <div class="dropdown-menu dropdown-menu-right agent-actions-menu">
+                        <div class="dropdown-menu dropdown-menu-right endpoint-actions-menu">
                             <button class="dropdown-item export-schema-btn" type="button"
                                     ng-click="onExportSchema(endpoint)">
                                 <i class="fa fa-arrow-down-to-line"></i>&nbsp;

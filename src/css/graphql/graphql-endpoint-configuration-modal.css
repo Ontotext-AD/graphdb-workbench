@@ -1,0 +1,19 @@
+.graphql-endpoint-configuration-modal .graphql-endpoint-configuration-modal-body {
+    position: relative;
+    min-height: 300px;
+}
+
+.graphql-endpoint-configuration-modal .graphql-endpoint-configuration-loader {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+    pointer-events: all;
+}

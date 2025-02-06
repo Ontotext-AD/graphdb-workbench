@@ -38,6 +38,11 @@ function GraphqlRestService($http) {
         return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/manage/graphql/endpoints`);
     };
 
+    /**
+     * Get the GraphQL schema shapes for the given repository.
+     * @param {string} repositoryId The repository ID.
+     * @returns {*|Promise}
+     */
     const getGraphqlSchemaShapes = (repositoryId) => {
         if (DEVELOPMENT) {
             return _mockBackend.getGraphqlSchemaShapesMock(repositoryId);
@@ -79,11 +84,40 @@ function GraphqlRestService($http) {
         // });
     }
 
+    /**
+     * Get the GraphQL endpoint configuration settings from the backend.
+     * @param {string} repositoryId The repository ID.
+     * @param {string} endpointId The endpoint ID.
+     * @returns {*|Promise<unknown>}
+     */
+    const getGraphqlEndpointConfigurationSettings = (repositoryId, endpointId) => {
+        if (DEVELOPMENT) {
+            return _mockBackend.getEndpointConfigurationMock();
+        }
+        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/manage/graphql/${endpointId}/config`);
+    };
+
+    /**
+     * Save the GraphQL endpoint configuration settings.
+     * @param {string} repositoryId The repository ID.
+     * @param {string} endpointId The endpoint ID.
+     * @param {*} endpointSettings The endpoint settings.
+     * @returns {*|Promise<unknown>}
+     */
+    const saveEndpointConfigurationSettings = (repositoryId, endpointId, endpointSettings) => {
+        if (DEVELOPMENT) {
+            return _mockBackend.saveEndpointConfigurationMock();
+        }
+        return $http.put(`${REPOSITORIES_ENDPOINT}/${repositoryId}/manage/graphql/${endpointId}/config`, endpointSettings);
+    };
+
     return {
         getEndpoints,
         getEndpointsInfo,
         getGraphqlSchemaShapes,
         getPrefixes,
-        getShaclShapeGraphs
+        getShaclShapeGraphs,
+        getGraphqlEndpointConfigurationSettings,
+        saveEndpointConfigurationSettings
     };
 }
