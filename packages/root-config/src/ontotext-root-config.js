@@ -49,7 +49,7 @@ const showLoader = () => {
   loadingDiv.style.left = '0';
   loadingDiv.style.width = '100%';
   loadingDiv.style.height = '100%';
-  loadingDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+  loadingDiv.style.backgroundColor = 'rgba(255, 255, 255, 1)';
   loadingDiv.style.display = 'flex';
   loadingDiv.style.justifyContent = 'center';
   loadingDiv.style.alignItems = 'center';
@@ -59,7 +59,7 @@ const showLoader = () => {
   loaderImage.src = '/assets/graphdb-splash.svg';
   loaderImage.alt = 'Loading...';
   loaderImage.style.width = 'auto';
-  loaderImage.style.height = 'auto';
+  loaderImage.style.height = '108vh';
 
   loadingDiv.appendChild(loaderImage);
   document.body.appendChild(loadingDiv);
