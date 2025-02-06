@@ -81,4 +81,21 @@ export class GraphqlEndpointManagementSteps {
             this.toggleEndpointRow(index);
         });
     }
+
+    static getEndpointInfo(index) {
+        return this.getEndpointsInfo().eq(index);
+    }
+
+    static getEndpointActionsButton(index) {
+        return this.getEndpointInfo(index).realHover().find('.open-endpoint-actions-btn');
+    }
+
+    static openEndpointActionMenu(index) {
+        return this.getEndpointActionsButton(index).click();
+    }
+
+    static editEndpointConfiguration(index) {
+        this.openEndpointActionMenu(index);
+        return cy.get('.configure-endpoint-btn').eq(index).click();
+    }
 }

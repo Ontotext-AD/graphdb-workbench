@@ -1,20 +1,22 @@
 import '../../core/services/graphql.service';
 import '../services/graphql-context.service';
+import './graphql-endpoint-configuration-modal.controller';
 import {GraphqlEventName} from "../services/graphql-context.service";
 import {endpointUrl} from "../models/endpoints";
 
 const modules = [
     'graphdb.framework.core.services.graphql-service',
-    'graphdb.framework.graphql.services.graphql-context'
+    'graphdb.framework.graphql.services.graphql-context',
+    'graphdb.framework.graphql.controllers.graphql-endpoint-configuration-modal'
 ];
 
 angular
     .module('graphdb.framework.graphql.controllers.graphql-endpoint-management-view', modules)
     .controller('GraphqlEndpointManagementViewCtrl', GraphqlEndpointManagementViewCtrl);
 
-GraphqlEndpointManagementViewCtrl.$inject = ['$scope', '$location', '$repositories', 'toastr', 'GraphqlService', 'GraphqlContextService', 'AuthTokenService'];
+GraphqlEndpointManagementViewCtrl.$inject = ['$scope', '$location', '$repositories', '$uibModal', 'toastr', 'GraphqlService', 'GraphqlContextService', 'AuthTokenService'];
 
-function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, toastr, GraphqlService, GraphqlContextService, AuthTokenService) {
+function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, $uibModal, toastr, GraphqlService, GraphqlContextService, AuthTokenService) {
 
     // =========================
     // Private variables
@@ -108,7 +110,22 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, toa
     };
 
     $scope.onConfigureEndpoint = (endpoint) => {
-        // TODO: implement endpoint configuration
+        return $uibModal.open({
+            templateUrl: 'js/angular/graphql/templates/modal/endpoint-configuration-modal.html',
+            controller: 'GraphqlEndpointConfigurationModalController',
+            windowClass: 'graphql-endpoint-configuration-modal',
+            size: 'lg',
+            backdrop: 'static',
+            keyboard: false,
+            resolve: {
+                data: () => {
+                    return {
+                        repository: $repositories.getActiveRepository(),
+                        endpoint: endpoint.endpointId
+                    };
+                }
+            }
+        }).result;
     };
 
     $scope.onDeleteEndpoint = (endpoint) => {

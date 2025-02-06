@@ -796,6 +796,13 @@
                 "labels": {
                     "description": "Description"
                 }
+            },
+            "endpoint_configuration_modal": {
+                "title": "Configurer le point de terminaison GraphQL",
+                "messages": {
+                    "error_saving_configuration": "Erreur lors de l'enregistrement de la configuration du point de terminaison",
+                    "success_saving_configuration": "Configuration du point de terminaison enregistrée"
+                }
             }
         },
         "create_endpoint": {
@@ -2128,6 +2135,7 @@
     "common.error": "Erreur",
     "common.warning": "Avertissement",
     "common.loading": "Chargement...",
+    "common.select": "Sélectionner...",
     "common.on.btn": "AU",
     "common.off.btn": "DÉSACTIVÉ",
     "common.search.btn": "Rechercher",

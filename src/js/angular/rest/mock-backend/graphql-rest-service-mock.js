@@ -23,6 +23,18 @@ export class GraphqlRestServiceMock {
             setTimeout(() => resolve({data: cloneDeep(graphqlSchemaShapes)}), GET_ENDPOINTS_INFO_DELAY);
         });
     }
+
+    getEndpointConfigurationMock() {
+        return new Promise((resolve) => {
+            setTimeout(() => resolve({data: cloneDeep(endpointConfiguration)}), GET_ENDPOINTS_INFO_DELAY);
+        });
+    }
+
+    saveEndpointConfigurationMock() {
+        return new Promise((resolve) => {
+            setTimeout(() => resolve({data: {"message": "Data saved successfully."}}), GET_ENDPOINTS_INFO_DELAY);
+        });
+    }
 }
 
 const endpoints = {
@@ -191,3 +203,51 @@ const graphqlSchemaShapes = {
         }
     ]
 }
+
+const endpointConfiguration = {
+    configs: [
+        {
+            key: 'str',
+            label: 'String',
+            type: 'string',
+            collection: false,
+            value: 'strValue',
+            values: [],
+            regex: '^(?:ALL:?)?(?:(?:-?[\\w]{2}(?:-[\\w]*)?~?|-?NONE|ANY|BROWSER)?(?:,(?:-?[\\w]{2}(?:-[\\w]*)?~?|-?NONE|ANY|BROWSER))*)$'
+        },
+        {
+            key: 'bool',
+            label: 'Boolean value',
+            description: '',
+            type: 'boolean',
+            collection: false,
+            value: false,
+            values: []
+        },
+        {
+            key: 'select',
+            label: 'Select',
+            type: '',
+            collection: false,
+            value: 'Two',
+            values: ['One', 'Two', 'Three']
+        },
+        {
+            key: 'multiselect',
+            label: 'Multiselect',
+            type: '',
+            collection: true,
+            value: ['Angular', 'JavaScript'],
+            values: ['Angular', 'JavaScript', 'WebDevelopment']
+        },
+        {
+            key: 'json',
+            label: 'JSON',
+            type: 'json',
+            collection: false,
+            value: '{"foo": "bar"}',
+            values: [],
+            required: true
+        }
+    ]
+};

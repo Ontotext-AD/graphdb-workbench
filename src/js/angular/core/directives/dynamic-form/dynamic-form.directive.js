@@ -1,5 +1,5 @@
 /**
- * Enum for configuration types.
+ * Enum for field types.
  * @readonly
  * @enum {string}
  */
@@ -7,7 +7,6 @@ export const FIELD_TYPE = {
     STRING: 'string',
     TEXT: 'text',
     BOOLEAN: 'boolean',
-    CHECKBOX: 'checkbox',
     JSON: 'json',
     SELECT: 'select',
     MULTI_SELECT: 'multi_select'
@@ -79,7 +78,8 @@ function dynamicFormDirective() {
         restrict: 'E',
         scope: {
             fields: '=',
-            onValidityChange: '&?'
+            onValidityChange: '&?',
+            formCtrl: '=?'
         },
         templateUrl: 'js/angular/core/directives/dynamic-form/templates/dynamic-form.html',
         link: function($scope, element) {
@@ -87,6 +87,7 @@ function dynamicFormDirective() {
             // Public variables
             // =========================
             $scope.FIELD_TYPE = FIELD_TYPE;
+            $scope.formCtrl = undefined;
 
             // =========================
             // Private function
@@ -100,8 +101,9 @@ function dynamicFormDirective() {
                     return;
                 }
 
+                $scope.formCtrl = formCtrl;
                 const originalSetValidity = formCtrl.$setValidity;
-                formCtrl.$setValidity = function (validationToken, isValid, modelCtrl) {
+                $scope.formCtrl.$setValidity = function (validationToken, isValid, modelCtrl) {
                     originalSetValidity.call(formCtrl, validationToken, isValid, modelCtrl);
                     if ($scope.onValidityChange) {
                         $scope.onValidityChange({valid: formCtrl.$valid});
