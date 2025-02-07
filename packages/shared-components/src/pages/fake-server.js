@@ -7,6 +7,11 @@ module.exports = function (req, res, next) {
     // custom response overriding the dev server
     res.writeHead(200, {"Content-Type": "application/json"});
     res.end(JSON.stringify(repositorySizeInfo));
+  } else if (/^\/rest\/security\/users\/.*/.test(req.url)) {
+    // custom response overriding the dev server
+    // user update does not return a response body
+    res.writeHead(200);
+    res.end();
   } else {
     // pass request on to the default dev server
     next();
