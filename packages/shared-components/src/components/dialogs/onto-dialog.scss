@@ -1,0 +1,55 @@
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  // Because the tooltip we use position itself on z-index: 9999
+  z-index: 9998;
+  margin-left: -10px;
+  background-color: rgba(0, 0, 0, .5);
+  font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 300;
+  color: #373a3c;
+}
+
+.dialog {
+  z-index: 1001;
+  max-width: 60vw;
+  max-height: 90vh;
+  background-color: #FFF;
+  box-shadow: 0 5px 15px rgb(0 0 0 / 50%);
+  font-family: inherit;
+  font-weight: inherit;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  justify-content: space-between;
+  border: none;
+
+  .dialog-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    font-size: 20px;
+
+    .dialog-title {
+      margin: .5rem 0;
+      font-weight: 400;
+    }
+  }
+
+  .dialog-body {
+    padding: 0 15px 15px;
+    overflow: auto;
+  }
+
+  .dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 15px;
+  }
+}

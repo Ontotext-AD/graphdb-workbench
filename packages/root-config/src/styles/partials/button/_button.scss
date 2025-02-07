@@ -1,0 +1,28 @@
+.onto-btn {
+  display: inline-block;
+  font-weight: 400;
+  line-height: 1.25;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: .5rem 1rem;
+  font-size: 1rem;
+  transition: all .15s ease-in-out;
+}
+
+.onto-btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #FFF;
+
+  &:hover {
+    background-color: var(--primary-color-dark);
+    border-color: var(--primary-color);
+  }
+}

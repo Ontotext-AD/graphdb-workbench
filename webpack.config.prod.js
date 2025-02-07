@@ -22,18 +22,6 @@ module.exports = (env, argv) => merge(commonConfig(env, argv), {
         libraryTarget: "module",
         publicPath: '/'
     },
-  module: {
-    rules: [
-      {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader']
-      },
-      {
-        test: /\.less$/,
-        use: ['style-loader', 'css-loader', 'less-loader']
-      }
-    ]
-  },
     plugins: [
         new CopyPlugin({
             patterns: [

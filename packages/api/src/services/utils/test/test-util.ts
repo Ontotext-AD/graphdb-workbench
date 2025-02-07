@@ -14,6 +14,7 @@ export class TestUtil {
         return Promise.resolve({
           ok: matchingMock.getStatus() >= 200 && matchingMock.getStatus() < 300,
           status: matchingMock.getStatus(),
+          headers: { get: (name: string) => name === 'Content-Type'? 'application/json' : undefined },
           json: async () => matchingMock.getResponse(),
           text: async () => matchingMock.getMessage(),
         } as Response);

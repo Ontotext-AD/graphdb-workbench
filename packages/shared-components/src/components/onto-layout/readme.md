@@ -32,6 +32,14 @@ graph TD;
   onto-navbar --> translate-label
   onto-permission-banner --> translate-label
   onto-footer --> translate-label
+  onto-footer --> onto-cookie-consent
+  onto-cookie-consent --> translate-label
+  onto-cookie-consent --> onto-cookie-policy-dialog
+  onto-cookie-policy-dialog --> onto-dialog
+  onto-cookie-policy-dialog --> translate-label
+  onto-cookie-policy-dialog --> onto-toggle-switch
+  onto-dialog --> translate-label
+  onto-toggle-switch --> translate-label
   style onto-layout fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

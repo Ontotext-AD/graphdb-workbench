@@ -30,6 +30,9 @@
 
     <script src="plugin-registry.js?v=<%= buildVersion %>"></script>
     <script src="plugins.js?v=<%= buildVersion %>"></script>
+    <script type="application/javascript">
+        window.wbDevMode = <%= devMode %>;
+    </script>
 
      <% if (isDevelopmentMode) { %>
         <script type="injector-importmap">

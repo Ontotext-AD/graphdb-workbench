@@ -2,7 +2,13 @@
   "menu.logo.link.title": "GraphDB logo",
   "menu.buttons.expand": "Expand menu",
   "menu.buttons.collapse": "Collapse menu",
-  "common.import": "Import",
+  "common": {
+    "import": "Import",
+    "button": {
+      "ok": "OK",
+      "close": "Close"
+    }
+  },
   "menu.rdf.label": "RDF",
   "menu.explore.label": "Explore",
   "menu.graphs.overview.label": "Graphs overview",
@@ -107,5 +113,35 @@
   "permission_banner": {
     "no_access_error": "You have no permission to access this functionality with your current credentials.",
     "change_menu_or_user_warning": "Please choose another menu item or login as a different user."
+  },
+  "cookie": {
+    "cookie_consent": "We may use cookies to help us improve GraphDB and develop better features. No personal or sensitive information is collected. By clicking “OK” you consent to our ",
+    "cookie_policy_url_label": "Cookie Policy",
+    "policy": {
+      "title": "Cookies Policy",
+      "purpose_heading": "Purpose",
+      "purpose_text": "This Cookies Policy explains the data Ontotext collects and uses when you use our GraphDB product, specifically the Free Edition.",
+      "purpose_enterprise_text": "Note that if you upgrade to the commercial GraphDB Enterprise Edition, no cookies will be stored on your device, regardless of settings.",
+      "privacy_commitment_heading": "Ontotext privacy commitment",
+      "privacy_commitment_text": "We are committed to not collecting any personal data or information when you use GraphDB Free. Additionally:",
+      "privacy_commitment_1": "We will not sell or rent the technical information we collect to others.",
+      "privacy_commitment_2": "We strive to maximize the protection of all technical data collected.",
+      "cookies_heading": "Cookies",
+      "cookies_text": "When you use GraphDB Free Edition, Ontotext will store cookies on your device to collect anonymous information about how you interact with the product. This technical data helps us improve and refine our software. Importantly, we cannot link this information to you personally or to any identifiable data. These cookies are solely intended to help us understand user interactions and identify potential issues within GraphDB.",
+      "manage_cookies_heading": "Manage cookies",
+      "statistic_cookies": "GraphDB analytics cookies",
+      "statistic_tooltip": "Toggle GraphDB analytics cookies",
+      "statistic_text": "These cookies help us understand how users interact with different aspects of GraphDB by collecting and reporting information anonymously. This data allows us to improve the overall product experience and develop features based on how GraphDB is used, without collecting any personal information.",
+      "third_party_cookies": "Third-party cookies",
+      "third_party_tooltip": "Toggle Third-party cookies",
+      "third_party_cookies_text": "We use Google Analytics 4 (GA4) cookies to help us recognize unique users and sessions, track interactions, and collect data such as page views, session duration, and engagement. These cookies are managed by Google, meaning we do not control their operation. IP anonymization is enabled by default in GA4, so it cannot store IP addresses or track users personally. No data is shared between GA4 and other Google products, and processing occurs globally, primarily in the USA, without breaching GDPR, as no personal data is collected.",
+      "change_cookies": "You can change your cookie preferences at any time in",
+      "change_cookies_location4": "Cookie policy"
+    }
+  },
+  "security": {
+    "user": {
+      "settings": "User settings"
+    }
   }
 }
