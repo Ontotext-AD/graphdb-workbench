@@ -81,4 +81,19 @@ describe('HttpService', () => {
       body: null,
     });
   });
+
+  test('patch should return a response', async () => {
+    const response = { message: 'Patched' };
+    const url = 'http://localhost:8080';
+    TestUtil.mockResponse(new ResponseMock(url).setResponse(response));
+
+    const result = await httpService.patch(url, { name: 'Updated' });
+
+    expect(result).toEqual(response);
+    expect(fetch).toHaveBeenCalledWith(url, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: 'Updated' }),
+    });
+  });
 });

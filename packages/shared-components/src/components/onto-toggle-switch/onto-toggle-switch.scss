@@ -1,0 +1,54 @@
+.toggle-switch {
+  clear: both;
+  margin: 0 5px;
+  width: 36px;
+
+  input {
+    &:empty {
+      display: none;
+
+      & ~ label {
+        position: relative;
+        cursor: pointer;
+        user-select: none;
+        margin: 0.05em 0.6em -0.05em 0;
+
+        &:before {
+          display: block;
+          content: ' ';
+          width: 2.2em;
+          height: 0.8em;
+          background-color: rgba(181, 181, 181, 0.5);
+          border-radius: 10em;
+          transition: all 100ms ease-in;
+        }
+
+        &:after {
+          position: absolute;
+          display: block;
+          top: -0.2em;
+          left: -0.3em;
+          content: ' ';
+          width: 1.25em;
+          height: 1.25em;
+          background-color: #888888;
+          border-radius: 50%;
+          transition: all 100ms ease-in;
+        }
+      }
+    }
+
+    &:checked {
+      & ~ label {
+        &:before {
+          background-color: hsla(var(--secondary-color-hsl), .5);
+        }
+
+        &:after {
+          left: 1.3em;
+          background-color: var(--secondary-color);
+        }
+      }
+    }
+  }
+}

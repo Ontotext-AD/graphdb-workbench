@@ -5,19 +5,44 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { DialogHandler } from "./models/dialog/dialog-handler";
+import { DialogConfig } from "./components/dialogs/onto-dialog";
 import { AuthenticatedUser, Awaitable, License, ProductInfo, SecurityConfig } from "../../api/dist/ontotext-workbench-api.d";
 import { DropdownItem } from "./models/dropdown/dropdown-item";
 import { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 import { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
 import { NavbarToggledEvent } from "./components/onto-navbar/navbar-toggled-event";
+import { ToggleEventPayload } from "./models/toggle-switch/toggle-event-payload";
 import { TranslationParameter } from "./models/translation/translation-parameter";
+export { DialogHandler } from "./models/dialog/dialog-handler";
+export { DialogConfig } from "./components/dialogs/onto-dialog";
 export { AuthenticatedUser, Awaitable, License, ProductInfo, SecurityConfig } from "../../api/dist/ontotext-workbench-api.d";
 export { DropdownItem } from "./models/dropdown/dropdown-item";
 export { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 export { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
 export { NavbarToggledEvent } from "./components/onto-navbar/navbar-toggled-event";
+export { ToggleEventPayload } from "./models/toggle-switch/toggle-event-payload";
 export { TranslationParameter } from "./models/translation/translation-parameter";
 export namespace Components {
+    /**
+     * OntoCookieConsent component for handling cookie consent functionality.
+     * This component displays a cookie consent modal and manages the visibility of a cookie policy dialog.
+     * @implements DialogHandler
+     */
+    interface OntoCookieConsent {
+    }
+    interface OntoCookiePolicyDialog {
+        /**
+          * The dialog handler for managing the dialog's behavior.
+         */
+        "dialogHandler": DialogHandler;
+    }
+    interface OntoDialog {
+        /**
+          * Configuration object for the dialog.
+         */
+        "config": DialogConfig;
+    }
     /**
      * A reusable dropdown component built using StencilJS. This component supports configurable labels, tooltips, icons,
      * and items, making it versatile for various use cases. It also integrates with a translation service to handle
@@ -157,6 +182,24 @@ export namespace Components {
          */
         "updateRestrictedPage": (restrictedPages: Record<string, boolean>) => Promise<void>;
     }
+    interface OntoToggleSwitch {
+        /**
+          * Determines whether the toggle switch is checked or not.
+         */
+        "checked": boolean;
+        /**
+          * The context for the tooltip, if supplied. This is useful if you have multiple toggle switches, to know which one is being toggled.
+         */
+        "context"?: string;
+        /**
+          * The key used for translating the label text, if supplied.
+         */
+        "labelKey"?: string;
+        /**
+          * The translation label key for the tooltip message, if supplied.
+         */
+        "tooltipTranslationKey"?: string;
+    }
     interface OntoTooltip {
     }
     /**
@@ -180,6 +223,10 @@ export namespace Components {
         "translationParameters": TranslationParameter[];
     }
 }
+export interface OntoCookieConsentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLOntoCookieConsentElement;
+}
 export interface OntoDropdownCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLOntoDropdownElement;
@@ -188,7 +235,45 @@ export interface OntoNavbarCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLOntoNavbarElement;
 }
+export interface OntoToggleSwitchCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLOntoToggleSwitchElement;
+}
 declare global {
+    interface HTMLOntoCookieConsentElementEventMap {
+        "consentGiven": void;
+    }
+    /**
+     * OntoCookieConsent component for handling cookie consent functionality.
+     * This component displays a cookie consent modal and manages the visibility of a cookie policy dialog.
+     * @implements DialogHandler
+     */
+    interface HTMLOntoCookieConsentElement extends Components.OntoCookieConsent, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLOntoCookieConsentElementEventMap>(type: K, listener: (this: HTMLOntoCookieConsentElement, ev: OntoCookieConsentCustomEvent<HTMLOntoCookieConsentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLOntoCookieConsentElementEventMap>(type: K, listener: (this: HTMLOntoCookieConsentElement, ev: OntoCookieConsentCustomEvent<HTMLOntoCookieConsentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLOntoCookieConsentElement: {
+        prototype: HTMLOntoCookieConsentElement;
+        new (): HTMLOntoCookieConsentElement;
+    };
+    interface HTMLOntoCookiePolicyDialogElement extends Components.OntoCookiePolicyDialog, HTMLStencilElement {
+    }
+    var HTMLOntoCookiePolicyDialogElement: {
+        prototype: HTMLOntoCookiePolicyDialogElement;
+        new (): HTMLOntoCookiePolicyDialogElement;
+    };
+    interface HTMLOntoDialogElement extends Components.OntoDialog, HTMLStencilElement {
+    }
+    var HTMLOntoDialogElement: {
+        prototype: HTMLOntoDialogElement;
+        new (): HTMLOntoDialogElement;
+    };
     interface HTMLOntoDropdownElementEventMap {
         "valueChanged": any;
     }
@@ -289,6 +374,23 @@ declare global {
         prototype: HTMLOntoTestContextElement;
         new (): HTMLOntoTestContextElement;
     };
+    interface HTMLOntoToggleSwitchElementEventMap {
+        "toggleChanged": ToggleEventPayload;
+    }
+    interface HTMLOntoToggleSwitchElement extends Components.OntoToggleSwitch, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLOntoToggleSwitchElementEventMap>(type: K, listener: (this: HTMLOntoToggleSwitchElement, ev: OntoToggleSwitchCustomEvent<HTMLOntoToggleSwitchElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLOntoToggleSwitchElementEventMap>(type: K, listener: (this: HTMLOntoToggleSwitchElement, ev: OntoToggleSwitchCustomEvent<HTMLOntoToggleSwitchElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLOntoToggleSwitchElement: {
+        prototype: HTMLOntoToggleSwitchElement;
+        new (): HTMLOntoToggleSwitchElement;
+    };
     interface HTMLOntoTooltipElement extends Components.OntoTooltip, HTMLStencilElement {
     }
     var HTMLOntoTooltipElement: {
@@ -312,6 +414,9 @@ declare global {
         new (): HTMLTranslateLabelElement;
     };
     interface HTMLElementTagNameMap {
+        "onto-cookie-consent": HTMLOntoCookieConsentElement;
+        "onto-cookie-policy-dialog": HTMLOntoCookiePolicyDialogElement;
+        "onto-dialog": HTMLOntoDialogElement;
         "onto-dropdown": HTMLOntoDropdownElement;
         "onto-footer": HTMLOntoFooterElement;
         "onto-header": HTMLOntoHeaderElement;
@@ -322,11 +427,35 @@ declare global {
         "onto-permission-banner": HTMLOntoPermissionBannerElement;
         "onto-repository-selector": HTMLOntoRepositorySelectorElement;
         "onto-test-context": HTMLOntoTestContextElement;
+        "onto-toggle-switch": HTMLOntoToggleSwitchElement;
         "onto-tooltip": HTMLOntoTooltipElement;
         "translate-label": HTMLTranslateLabelElement;
     }
 }
 declare namespace LocalJSX {
+    /**
+     * OntoCookieConsent component for handling cookie consent functionality.
+     * This component displays a cookie consent modal and manages the visibility of a cookie policy dialog.
+     * @implements DialogHandler
+     */
+    interface OntoCookieConsent {
+        /**
+          * Event emitter for when consent is given
+         */
+        "onConsentGiven"?: (event: OntoCookieConsentCustomEvent<void>) => void;
+    }
+    interface OntoCookiePolicyDialog {
+        /**
+          * The dialog handler for managing the dialog's behavior.
+         */
+        "dialogHandler": DialogHandler;
+    }
+    interface OntoDialog {
+        /**
+          * Configuration object for the dialog.
+         */
+        "config"?: DialogConfig;
+    }
     /**
      * A reusable dropdown component built using StencilJS. This component supports configurable labels, tooltips, icons,
      * and items, making it versatile for various use cases. It also integrates with a translation service to handle
@@ -429,6 +558,28 @@ declare namespace LocalJSX {
      */
     interface OntoTestContext {
     }
+    interface OntoToggleSwitch {
+        /**
+          * Determines whether the toggle switch is checked or not.
+         */
+        "checked"?: boolean;
+        /**
+          * The context for the tooltip, if supplied. This is useful if you have multiple toggle switches, to know which one is being toggled.
+         */
+        "context"?: string;
+        /**
+          * The key used for translating the label text, if supplied.
+         */
+        "labelKey"?: string;
+        /**
+          * Event emitted when the toggle switch is clicked, carrying the new checked status.
+         */
+        "onToggleChanged"?: (event: OntoToggleSwitchCustomEvent<ToggleEventPayload>) => void;
+        /**
+          * The translation label key for the tooltip message, if supplied.
+         */
+        "tooltipTranslationKey"?: string;
+    }
     interface OntoTooltip {
     }
     /**
@@ -452,6 +603,9 @@ declare namespace LocalJSX {
         "translationParameters"?: TranslationParameter[];
     }
     interface IntrinsicElements {
+        "onto-cookie-consent": OntoCookieConsent;
+        "onto-cookie-policy-dialog": OntoCookiePolicyDialog;
+        "onto-dialog": OntoDialog;
         "onto-dropdown": OntoDropdown;
         "onto-footer": OntoFooter;
         "onto-header": OntoHeader;
@@ -462,6 +616,7 @@ declare namespace LocalJSX {
         "onto-permission-banner": OntoPermissionBanner;
         "onto-repository-selector": OntoRepositorySelector;
         "onto-test-context": OntoTestContext;
+        "onto-toggle-switch": OntoToggleSwitch;
         "onto-tooltip": OntoTooltip;
         "translate-label": TranslateLabel;
     }
@@ -470,6 +625,14 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            /**
+             * OntoCookieConsent component for handling cookie consent functionality.
+             * This component displays a cookie consent modal and manages the visibility of a cookie policy dialog.
+             * @implements DialogHandler
+             */
+            "onto-cookie-consent": LocalJSX.OntoCookieConsent & JSXBase.HTMLAttributes<HTMLOntoCookieConsentElement>;
+            "onto-cookie-policy-dialog": LocalJSX.OntoCookiePolicyDialog & JSXBase.HTMLAttributes<HTMLOntoCookiePolicyDialogElement>;
+            "onto-dialog": LocalJSX.OntoDialog & JSXBase.HTMLAttributes<HTMLOntoDialogElement>;
             /**
              * A reusable dropdown component built using StencilJS. This component supports configurable labels, tooltips, icons,
              * and items, making it versatile for various use cases. It also integrates with a translation service to handle
@@ -498,6 +661,7 @@ declare module "@stencil/core" {
              * A component for managing test context in the application. Used only for testing
              */
             "onto-test-context": LocalJSX.OntoTestContext & JSXBase.HTMLAttributes<HTMLOntoTestContextElement>;
+            "onto-toggle-switch": LocalJSX.OntoToggleSwitch & JSXBase.HTMLAttributes<HTMLOntoToggleSwitchElement>;
             "onto-tooltip": LocalJSX.OntoTooltip & JSXBase.HTMLAttributes<HTMLOntoTooltipElement>;
             /**
              * The purpose of this component is to display translated literals in the DOM. A Stencil component re-renders when a prop or state changes,
