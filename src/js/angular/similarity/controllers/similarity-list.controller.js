@@ -433,7 +433,9 @@ function SimilarityCtrl(
 
         if (SimilaritySearchType.isSearchEntityPredicateType(searchType)) {
             termOrSubject = psiSubject;
-        } else if (SimilaritySearchType.isSearchTermType(searchType)) {
+        }
+
+        if (SimilaritySearchType.isSearchTermType(searchType)) {
             termOrSubject = literalForQuery(termOrSubject);
         } else {
             termOrSubject = iriForQuery(termOrSubject);
