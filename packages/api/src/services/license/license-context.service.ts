@@ -36,4 +36,13 @@ export class LicenseContextService extends ContextService<LicenseContextFields> 
   onLicenseChanged(callbackFn: ValueChangeCallback<License | undefined>): () => void {
     return this.subscribe(this.GRAPHDB_LICENSE, callbackFn);
   }
+
+  /**
+   * Retrieves the license information from the context.
+   *
+   * @return the license information or undefined, if there is no license.
+   */
+  getLicense(): License | undefined {
+    return this.getContextPropertyValue(this.GRAPHDB_LICENSE);
+  }
 }

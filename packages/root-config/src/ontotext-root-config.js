@@ -13,7 +13,7 @@ import {
 import microfrontendLayout from './microfrontend-layout.html';
 import './styles/bootstrap.min.css';
 import 'font-awesome/css/font-awesome.min.css';
-import './styles/onto-stylesheet.css';
+import './styles/onto-stylesheet.scss';
 // import "./styles/bootstrap-graphdb-theme.css";
 import {defineCustomElements} from '../../shared-components/loader';
 import {bootstrapPromises} from './bootstrap/bootstrap';
