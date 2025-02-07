@@ -15,13 +15,20 @@
 
   <script type="module" src="/build/shared-components.esm.js"></script>
   <script nomodule src="/build/shared-components.js"></script>
-  <script src="./main.js" defer></script>
   <script src="../js/main.js" defer></script>
+  <script src="./main.js" defer></script>
   <link rel="stylesheet" href="../css/bootstrap.min.css">
   <link rel="stylesheet" href="../css/font-awesome.min.css">
 </head>
 <body>
 <button id="load-product-info" onclick="loadProductInfo()">Load product info</button>
+<button id="set-dev-mode" onclick="setDevMode(true)">Set dev mode</button>
+<button id="set-prod-mode" onclick="setDevMode(false)">Set prod mode</button>
+<button id="set-accepted-user" onclick="setAcceptedUser(true)">Set accepted user</button>
+<button id="set-not-accepted-user" onclick="setAcceptedUser(false)">Set not accepted user</button>
+<button id="set-free-license" onclick="setLicense('free')">Set free license</button>
+<button id="set-paid-license" onclick="setLicense('paid')">Set paid license</button>
 <onto-footer></onto-footer>
+<onto-tooltip></onto-tooltip>
 </body>
 </html>

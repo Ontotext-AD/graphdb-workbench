@@ -84,4 +84,12 @@ export class SecurityContextService extends ContextService<SecurityContextFields
   onAuthenticatedUserChanged(callbackFunction: ValueChangeCallback<AuthenticatedUser | undefined>): () => void {
     return this.subscribe(this.AUTHENTICATED_USER, callbackFunction);
   }
+
+  /**
+   * Retrieves the authenticated user information.
+   * @return the authenticated user information or undefined, if there is no user.
+   */
+  getAuthenticatedUser(): AuthenticatedUser | undefined {
+    return this.getContextPropertyValue(this.AUTHENTICATED_USER);
+  }
 }

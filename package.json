@@ -28,10 +28,10 @@
         "cy:run": "sh scripts/cy.sh",
         "sonar": "sh scripts/sonar.sh"
     },
-  "files": [
-    "dist/"
-  ],
-  "repository": {
+    "files": [
+        "dist/"
+    ],
+    "repository": {
         "type": "git",
         "url": "git+https://github.com/Ontotext-AD/graphdb-workbench.git"
     },
@@ -60,10 +60,13 @@
         "fs-extra": "^11.2.0",
         "html-loader": "^5.1.0",
         "ignore-loader": "^0.1.2",
+        "less": "^4.2.2",
         "less-loader": "^12.2.0",
         "license-checker": "^25.0.1",
         "merge-jsons-webpack-plugin": "^2.0.1",
         "mini-css-extract-plugin": "^2.9.0",
+        "sass": "^1.83.4",
+        "sass-loader": "^16.0.4",
         "string-replace-loader": "^3.1.0",
         "style-loader": "^4.0.0",
         "webpack": "^5.93.0",

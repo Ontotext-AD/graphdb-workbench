@@ -19,7 +19,7 @@ export class OntoLicenseAlert {
   render() {
     return (
       <Host tooltip-content={this.license?.message} tooltip-placement="bottom">
-        <a class="onto-license-alert onto-button" onClick={this.onLicenseAlertClick}>
+        <a class="onto-license-alert onto-btn" onClick={this.onLicenseAlertClick}>
           <span class="icon-warning"></span>
           <translate-label labelKey={'license_alert.label'}></translate-label>
         </a>

@@ -2,7 +2,13 @@
   "menu.logo.link.title": "Logo GraphDB",
   "menu.buttons.expand": "Développer le menu",
   "menu.buttons.collapse": "Réduire le menu",
-  "common.import": "Importer",
+  "common":  {
+    "import": "Importer",
+    "button": {
+      "ok": "D'accord",
+      "close": "Fermer"
+    }
+  },
   "menu.rdf.label": "RDF",
   "menu.explore.label": "Explorez",
   "menu.graphs.overview.label": "Aperçu des graphes",
@@ -110,5 +116,35 @@
   "permission_banner": {
     "no_access_error": "Vous n'avez pas la permission d'accéder à cette fonctionnalité avec vos informations d'identification actuelles.",
     "change_menu_or_user_warning": "Veuillez choisir un autre élément du menu ou vous connecter comme un autre utilisateur."
+  },
+  "cookie" : {
+    "cookie_consent": "Nous pouvons utiliser des cookies pour nous aider à améliorer GraphDB et développer de meilleures fonctionnalités. Aucune information personnelle ou sensible n'est collectée. En cliquant sur « D'accord », vous consentez à notre ",
+    "cookie_policy_url_label": "politique de cookies",
+    "policy": {
+      "title": "Politique de cookies",
+      "purpose_heading": "Objectif",
+      "purpose_text": "Cette politique de cookies explique les données qu'Ontotext collecte et utilise lorsque vous utilisez notre produit GraphDB, en particulier l'édition Free.",
+      "purpose_enterprise_text": "Veuillez noter que si vous passez à l'édition commerciale GraphDB Enterprise, aucun cookie ne sera stocké sur votre appareil, quel que soit le paramètre.",
+      "privacy_commitment_heading": "Engagement de confidentialité d'Ontotext",
+      "privacy_commitment_text": "Nous nous engageons à ne collecter aucune donnée personnelle ou information lorsque vous utilisez GraphDB Free. De plus :",
+      "privacy_commitment_1": "Nous ne vendrons ni ne louerons à d'autres les informations techniques que nous collectons.",
+      "privacy_commitment_2": "Nous nous efforçons de maximiser la protection de toutes les données techniques collectées.",
+      "cookies_heading": "Cookies",
+      "cookies_text": "Lorsque vous utilisez l'édition GraphDB Free, Ontotext stockera des cookies sur votre appareil pour collecter des informations anonymes sur la façon dont vous interagissez avec le produit. Ces données techniques nous aident à améliorer et affiner notre produit. Il est important de noter que nous ne pouvons pas relier ces informations à vous personnellement ni à aucune donnée identifiable. Ces cookies ont uniquement pour but de nous aider à comprendre les interactions des utilisateurs et à identifier les éventuels problèmes dans GraphDB.",
+      "manage_cookies_heading": "Gérer les cookies",
+      "statistic_cookies": "Cookies d'analyse GraphDB",
+      "statistic_tooltip": "Activer/désactiver les cookies d'analyse GraphDB",
+      "statistic_text": "Ces cookies nous aident à comprendre comment les utilisateurs interagissent avec différents aspects de GraphDB en collectant et en rapportant des informations de manière anonyme. Ces données nous permettent d'améliorer l'expérience globale du produit et de développer des fonctionnalités en fonction de l'utilisation de GraphDB, sans collecter d'informations personnelles.",
+      "third_party_cookies": "Cookies tiers",
+      "third_party_tooltip": "Activer/désactiver les cookies tiers",
+      "third_party_cookies_text": "Nous utilisons les cookies Google Analytics 4 (GA4) pour nous aider à reconnaître les utilisateurs et sessions uniques, à suivre les interactions et à collecter des données telles que les pages consultées, la durée des sessions et l'engagement. Ces cookies sont gérés par Google, ce qui signifie que nous n'avons pas de contrôle sur leur fonctionnement. L'anonymisation IP est activée par défaut dans GA4, de sorte qu'il ne peut ni stocker les adresses IP ni suivre les utilisateurs personnellement. Aucune donnée n'est partagée entre GA4 et d'autres produits Google, et le traitement s'effectue à l'échelle mondiale, principalement aux États-Unis, sans enfreindre le RGPD, car aucune donnée personnelle n'est collectée.",
+      "change_cookies": "Vous pouvez modifier vos préférences de cookies à tout moment dans",
+      "change_cookies_location4": "Politique de cookies"
+    }
+  },
+  "security": {
+    "user": {
+      "settings": "Paramètres de l'utilisateur"
+    }
   }
 }
