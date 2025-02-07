@@ -295,6 +295,18 @@ module.exports = (webpackConfigEnv, argv) => {
                     },
                 },
                 {
+                  test: /\.css$/,
+                  use: ['style-loader', 'css-loader']
+                },
+                {
+                  test: /\.less$/,
+                  use: ['style-loader', 'css-loader', 'less-loader']
+                },
+                {
+                  test: /\.scss$/,
+                  use: ['style-loader', 'css-loader', 'sass-loader']
+                },
+                {
                     test: /d3.js/,
                     loader: "expose-loader",
                     options: {
