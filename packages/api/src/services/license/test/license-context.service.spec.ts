@@ -36,4 +36,16 @@ describe('LicenseContextService', () => {
     licenseContextService.updateGraphdbLicense(newLicense);
     expect(mockCallback).not.toHaveBeenCalled();
   });
+
+  test('getLicense should return the license from the context', () => {
+    // Given a new license object
+    const newLicense: License = {licensee: 'Test Company', expiryDate: 1672531200000} as License;
+    licenseContextService.updateGraphdbLicense(newLicense);
+
+    // When getting the license
+    const license = licenseContextService.getLicense();
+
+    // Then the license should be the same as the one set in the context
+    expect(license).toEqual(newLicense);
+  });
 });

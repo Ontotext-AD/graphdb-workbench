@@ -28,18 +28,26 @@ Example of usage:
 
 ### Used by
 
+ - [onto-cookie-consent](../onto-cookie-consent)
+ - [onto-cookie-policy-dialog](../dialogs/onto-cookie-policy-dialog)
+ - [onto-dialog](../dialogs)
  - [onto-footer](../onto-footer)
  - [onto-license-alert](../onto-license-alert)
  - [onto-navbar](../onto-navbar)
  - [onto-permission-banner](../onto-permission-banner)
+ - [onto-toggle-switch](../onto-toggle-switch)
 
 ### Graph
 ```mermaid
 graph TD;
+  onto-cookie-consent --> translate-label
+  onto-cookie-policy-dialog --> translate-label
+  onto-dialog --> translate-label
   onto-footer --> translate-label
   onto-license-alert --> translate-label
   onto-navbar --> translate-label
   onto-permission-banner --> translate-label
+  onto-toggle-switch --> translate-label
   style translate-label fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

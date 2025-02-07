@@ -56,6 +56,30 @@ export class HttpService {
   }
 
   /**
+   * Performs an HTTP PATCH request.
+   *
+   * @param url     The URL to send the request to.
+   * @param body    (Optional) The body of the request.
+   * @param headers (Optional) An object containing request headers as key-value pairs.
+   * @returns A Promise that resolves to the response data of type `T`.
+   */
+  patch<T>(url: string, body?: unknown, headers?: Record<string, string>): Promise<T> {
+    return this.request<T>(url, 'PATCH', {body, headers});
+  }
+
+  /**
+   * Path string variable can contain characters which encodeURIComponent() can have problems encoding.
+   * These characters are replaced in this method.
+   * @param str - a component of URI
+   * @returns {string} The provided string encoded as a URI component.
+   */
+  protected encodeURIComponentStrict(str: string): string {
+    return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
+      return '%' + c.charCodeAt(0).toString(16);
+    });
+  }
+
+  /**
    * Performs an HTTP request with the specified method and options.
    *
    * @param url     The URL to send the request to.
@@ -66,7 +90,7 @@ export class HttpService {
    *                 - `body`: The request body.
    * @returns A Promise that resolves with the response data of type T, or is rejected with an error if the request fails.
    */
-  private request<T>(url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE', options: HttpOptions = {}): Promise<T> {
+  private request<T>(url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH', options: HttpOptions = {}): Promise<T> {
     const queryString = this.buildQueryParams(options.params);
     const fullUrl = `${url}${queryString ? `?${queryString}` : ''}`;
 
@@ -82,7 +106,8 @@ export class HttpService {
         if (!response.ok) {
           return Promise.reject(response);
         }
-        return response.json() as Promise<T>;
+        const hasBody = response.headers.get('Content-Type')?.includes('application/json');
+        return (hasBody ? response.json() : Promise.resolve()) as Promise<T>;
       });
   }
 
