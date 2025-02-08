@@ -111,6 +111,19 @@ function GraphqlRestService($http) {
         return $http.put(`${REPOSITORIES_ENDPOINT}/${repositoryId}/manage/graphql/${endpointId}/config`, endpointSettings);
     };
 
+    /**
+     * Delete the GraphQL endpoint.
+     * @param {string} repositoryId The repository ID.
+     * @param {string} endpointId The endpoint ID.
+     * @returns {*}
+     */
+    const deleteEndpoint = (repositoryId, endpointId) => {
+        if (DEVELOPMENT) {
+            return _mockBackend.deleteEndpointMock(repositoryId, endpointId);
+        }
+        return $http.delete(`${REPOSITORIES_ENDPOINT}/${repositoryId}/manage/graphql/endpoints/${endpointId}`);
+    }
+
     return {
         getEndpoints,
         getEndpointsInfo,
@@ -118,6 +131,7 @@ function GraphqlRestService($http) {
         getPrefixes,
         getShaclShapeGraphs,
         getGraphqlEndpointConfigurationSettings,
-        saveEndpointConfigurationSettings
+        saveEndpointConfigurationSettings,
+        deleteEndpoint
     };
 }

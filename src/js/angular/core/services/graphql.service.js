@@ -107,6 +107,16 @@ function GraphqlService(GraphqlRestService) {
         return GraphqlRestService.saveEndpointConfigurationSettings(repositoryId, endpointId, endpointSettings);
     };
 
+    /**
+     * Delete the GraphQL endpoint.
+     * @param {string} repositoryId The repository ID.
+     * @param {string} endpointId The endpoint ID.
+     * @returns {Promise<unknown>}
+     */
+    const deleteEndpoint = (repositoryId, endpointId) => {
+        return GraphqlRestService.deleteEndpoint(repositoryId, endpointId);
+    };
+
     return {
         getEndpoints,
         getEndpointsAsSelectMenuOptions,
@@ -115,6 +125,7 @@ function GraphqlService(GraphqlRestService) {
         getPrefixListAsSelectOptions,
         getShaclShapeGraphs,
         getGraphqlEndpointConfigurationSettings,
-        saveEndpointConfigurationSettings
+        saveEndpointConfigurationSettings,
+        deleteEndpoint
     };
 }

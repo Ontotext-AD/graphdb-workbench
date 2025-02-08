@@ -14,9 +14,9 @@ angular
     .module('graphdb.framework.graphql.controllers.graphql-endpoint-management-view', modules)
     .controller('GraphqlEndpointManagementViewCtrl', GraphqlEndpointManagementViewCtrl);
 
-GraphqlEndpointManagementViewCtrl.$inject = ['$scope', '$location', '$repositories', '$uibModal', 'toastr', 'GraphqlService', 'GraphqlContextService', 'AuthTokenService'];
+GraphqlEndpointManagementViewCtrl.$inject = ['$scope', '$location', '$repositories', '$uibModal', 'ModalService', 'toastr', '$translate', 'GraphqlService', 'GraphqlContextService', 'AuthTokenService'];
 
-function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, $uibModal, toastr, GraphqlService, GraphqlContextService, AuthTokenService) {
+function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, $uibModal, ModalService, toastr, $translate, GraphqlService, GraphqlContextService, AuthTokenService) {
 
     // =========================
     // Private variables
@@ -57,6 +57,12 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, $ui
      * @type {string}
      */
     $scope.filterTerm = '';
+
+    /**
+     * Flag indicating if an endpoint is being deleted.
+     * @type {boolean}
+     */
+    $scope.deletingEndpoint = false;
 
     // =========================
     // Public methods
@@ -128,8 +134,19 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, $ui
         }).result;
     };
 
+    /**
+     * Handles the delete endpoint event.
+     * @param {GraphqlEndpointInfo} endpoint The endpoint to delete.
+     */
     $scope.onDeleteEndpoint = (endpoint) => {
-        // TODO: implement endpoint deletion
+        ModalService.openConfirmationModal({
+                title: $translate.instant('graphql.endpoints_management.table.actions.delete_endpoint.confirmation.title'),
+                message: $translate.instant('graphql.endpoints_management.table.actions.delete_endpoint.confirmation.body', {name: endpoint.endpointId}),
+                confirmButtonKey: 'common.confirm'
+            },
+            () => {
+                deleteEndpoint(endpoint);
+            });
     };
 
     // =========================
@@ -145,6 +162,29 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, $ui
             onInit();
         }
     };
+
+    /**
+     * Deletes the given GraphQL endpoint.
+     * @param {GraphqlEndpointInfo} endpoint The endpoint to delete.
+     */
+    const deleteEndpoint = (endpoint) => {
+        $scope.deletingEndpoint = true;
+        GraphqlService.deleteEndpoint($repositories.getActiveRepository(), endpoint.endpointId)
+            .then(() => {
+                toastr.success(
+                    $translate.instant(
+                        'graphql.endpoints_management.table.actions.delete_endpoint.success',
+                        {name: endpoint.endpointId}));
+                loadEndpointsInfo();
+            })
+            .catch((error) => {
+                toastr.error(getError(error));
+                console.error('Error deleting GraphQL endpoint', error);
+            })
+            .finally(() => {
+                $scope.deletingEndpoint = false;
+            });
+    }
 
     /**
      * Loads the GraphQL endpoints info.

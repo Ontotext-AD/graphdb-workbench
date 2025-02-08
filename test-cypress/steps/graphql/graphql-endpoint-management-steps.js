@@ -26,6 +26,10 @@ export class GraphqlEndpointManagementSteps {
         return this.getView().find('.endpoints-info-table');
     }
 
+    static getNoResultsRow() {
+        return this.getEndpointTable().find('tbody tr.no-results');
+    }
+
     static getEndpointsInfo() {
         return this.getEndpointTable().find('tbody tr');
     }
@@ -40,6 +44,15 @@ export class GraphqlEndpointManagementSteps {
 
     static toggleEndpointRow(index) {
         return this.getEndpointsInfo().eq(index).find('.toggle-row a').click();
+    }
+
+    static openActionsMenu(index) {
+        this.getEndpointsInfo().eq(index).find('.open-endpoint-actions-btn').click();
+    }
+
+    static deleteEndpoint(index) {
+        this.openActionsMenu(index);
+        this.getEndpointsInfo().eq(index).find('.delete-endpoint-btn').click();
     }
 
     static filterEndpoints(term) {
