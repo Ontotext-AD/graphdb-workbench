@@ -782,7 +782,12 @@
                     },
                     "delete_endpoint": {
                         "label": "Supprimer le point de terminaison",
-                        "tooltip": "Supprimer le point de terminaison GraphQL"
+                        "tooltip": "Supprimer le point de terminaison GraphQL",
+                        "confirmation": {
+                            "title": "Supprimer le point de terminaison",
+                            "body": "Êtes-vous sûr de vouloir supprimer le point de terminaison GraphQL '{{name}}'?"
+                        },
+                        "success": "Le point de terminaison GraphQL '{{name}}' a été supprimé avec succès."
                     },
                     "export_schema": {
                         "label": "Définition du schéma d'exportation",

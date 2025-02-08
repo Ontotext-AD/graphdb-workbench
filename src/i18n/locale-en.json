@@ -782,7 +782,12 @@
                     },
                     "delete_endpoint": {
                         "label": "Delete endpoint",
-                        "tooltip": "Delete the GraphQL endpoint"
+                        "tooltip": "Delete the GraphQL endpoint",
+                        "confirmation": {
+                            "title": "Delete endpoint",
+                            "body": "Are you sure you want to delete the GraphQL endpoint '{{name}}'?"
+                        },
+                        "success": "The GraphQL endpoint '{{name}}' was deleted successfully."
                     },
                     "export_schema": {
                         "label": "Export schema definition",
