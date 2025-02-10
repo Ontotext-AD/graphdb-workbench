@@ -7,7 +7,8 @@ PluginRegistry.add('route', {
     'templateUrl': 'pages/plugins.html',
     'title': 'menu.plugins.label',
     'helpInfo': 'view.plugins.helpInfo',
-    'documentationUrl': 'using-plugins.html'
+    'documentationUrl': 'using-plugins.html',
+    'allowAuthorities': ['READ_REPO_{repoId}']
 });
 
 PluginRegistry.add('main.menu', {

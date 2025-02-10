@@ -7,7 +7,8 @@ PluginRegistry.add('route', {
     'templateUrl': 'pages/monitor/queries.html',
     'title': 'view.query.and.update.monitoring.title',
     'helpInfo': 'view.query.and.update.monitoring.helpInfo',
-    'documentationUrl': 'query-monitoring.html'
+    'documentationUrl': 'query-monitoring.html',
+    'allowAuthorities': ['READ_REPO_{repoId}']
 });
 
 PluginRegistry.add('main.menu', {

@@ -8,7 +8,8 @@ PluginRegistry.add('route', [
         'templateUrl': 'pages/info.html',
         'title': 'view.system.information.title',
         'helpInfo': 'view.system.information.helpInfo',
-        'documentationUrl': 'diagnosing-and-reporting-critical-errors.html#running-a-system-report'
+        'documentationUrl': 'diagnosing-and-reporting-critical-errors.html#running-a-system-report',
+        'allowAuthorities': ['READ_REPO_{repoId}']
     }, {
         'url': '/webapi',
         'templateUrl': 'pages/webapi.html',

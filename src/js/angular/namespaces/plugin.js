@@ -7,7 +7,8 @@ PluginRegistry.add('route', {
     'templateUrl': 'pages/namespaces.html',
     'title': 'menu.namespaces.label',
     'helpInfo': 'view.namespaces.helpInfo',
-    'documentationUrl': 'configuring-a-repository.html#namespaces-defined-for-the-repository'
+    'documentationUrl': 'configuring-a-repository.html#namespaces-defined-for-the-repository',
+    'allowAuthorities': ['READ_REPO_{repoId}']
 });
 
 PluginRegistry.add('main.menu', {

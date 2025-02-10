@@ -7,7 +7,8 @@ PluginRegistry.add('route', {
     'templateUrl': 'pages/monitor/backup-and-restore.html',
     'title': 'view.monitoring.backup_and_restore.title',
     'helpInfo': 'view.monitoring.backup_and_restore.helpInfo',
-    'documentationUrl': 'backup-and-restore.html#monitoring-your-recovery-operations'
+    'documentationUrl': 'backup-and-restore.html#monitoring-your-recovery-operations',
+    'allowAuthorities': ['READ_REPO_{repoId}']
 });
 
 PluginRegistry.add('main.menu', {

@@ -205,4 +205,133 @@ export class UserAndAccessSteps {
             // Force the click because Cypress sometimes determines that the item has 0x0 dimensions
             .click({force: true});
     }
+
+    static clickGraphqlAccessAny() {
+        cy.get('#user-repos')
+            .contains('Any data repository')
+            .parent('tr')
+            .find('.graphql')
+            .click({force: true});
+    }
+
+    static clickGraphqlAccessRepo(repoName) {
+        cy.get('#user-repos')
+            .contains(repoName)
+            .parent('tr')
+            .find('.graphql')
+            .click({force: true});
+    }
+
+    static clickReadAccessAny() {
+        cy.get('#user-repos')
+            .contains('Any data repository')
+            .parent('tr')
+            .find('.read')
+            .click({force: true});
+    }
+
+    static clickReadAccessRepo(repoName) {
+        cy.get('#user-repos')
+            .contains(repoName)
+            .parent('tr')
+            .find('.read')
+            .click({force: true});
+    }
+
+    static clickWriteAccessAny() {
+        cy.get('#user-repos')
+            .contains('Any data repository')
+            .parent('tr')
+            .find('.write')
+            .click({force: true});
+    }
+
+    static clickWriteAccessRepo(repoName) {
+        cy.get('#user-repos')
+            .contains(repoName)
+            .parent('tr')
+            .find('.write')
+            .click({force: true});
+    }
+
+    static findUserRowAlias(username, aliasName = 'userRow') {
+        this.findUserInTable(username);
+        cy.get('@user').as(aliasName);
+        return cy.get('@' + aliasName);
+    }
+
+    static findRepoLineAlias(userRowAlias, matchText, repoLineAlias = 'repoLine') {
+       return this.getRepoLine(userRowAlias, matchText).as(repoLineAlias);
+    }
+
+    static getRepoLine(userRowAlias, matchText) {
+        return cy.get(userRowAlias)
+            .find('.repository-rights > div')
+            .filter(`:contains("${matchText}")`)
+    }
+
+    static findReadIconAlias(repoLineAlias) {
+        return cy.get(repoLineAlias).find('.icon-eye');
+    }
+
+    static findWriteIconAlias(repoLineAlias) {
+        return cy.get(repoLineAlias).find('.icon-edit');
+    }
+
+    static findGraphqlIconAlias(repoLineAlias) {
+        return cy.get(repoLineAlias).find('.fa-gdb-graphql');
+    }
+
+    static openEditUserPage(username) {
+        this.findUserInTable(username); // sets @user
+        cy.get('@user').find('.edit-user-btn').click();
+    }
+
+    static confirmUserEdit() {
+        cy.get('#wb-user-submit').click();
+    }
+
+    static getReadAccessForRepo(repoName) {
+        const matchText = (repoName === '*') ? 'Any data repository' : repoName;
+        return cy.get('#user-repos')
+            .contains(matchText)
+            .parent('tr')
+            .find('.read')
+    }
+
+    static toggleReadAccessForRepo(repoName) {
+        return this.getReadAccessForRepo(repoName).click({force: true});
+    }
+
+    static getWriteAccessForRepo(repoName) {
+        const matchText = (repoName === '*') ? 'Any data repository' : repoName;
+        return cy.get('#user-repos')
+            .contains(matchText)
+            .parent('tr')
+            .find('.write')
+    }
+
+    static toggleWriteAccessForRepo(repoName) {
+        return this.getWriteAccessForRepo(repoName).click({force: true});
+    }
+
+    static getGraphqlAccessForRepo(repoName) {
+        const matchText = (repoName === '*') ? 'Any data repository' : repoName;
+        return cy.get('#user-repos')
+            .contains(matchText)
+            .parent('tr')
+            .find('.graphql')
+    }
+
+    static toggleGraphqlAccessForRepo(repoName) {
+        return this.getGraphqlAccessForRepo(repoName).click({force: true});
+    }
+
+    static clickMenuItem(label) {
+        return cy.get('.main-menu').contains(label).click({force: true});
+    }
+
+    static clickSubmenuItem(label) {
+        return cy.get('.sub-menu').contains(label).click({force: true});
+    }
 }

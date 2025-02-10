@@ -8,7 +8,8 @@ PluginRegistry.add('route', [
         'templateUrl': 'pages/sparql-templates.html',
         'title': 'view.sparql.template.title',
         'helpInfo': 'view.sparql.template.helpInfo',
-        'documentationUrl': 'updating-data.html#from-the-sparql-editor'
+        'documentationUrl': 'updating-data.html#from-the-sparql-editor',
+        'allowAuthorities': ['READ_REPO_{repoId}']
     },
     {
         'url': '/sparql-template/create',
@@ -18,7 +19,8 @@ PluginRegistry.add('route', [
         'controller': 'SparqlTemplateCreateCtrl',
         'templateUrl': 'pages/sparql-template-create.html',
         'title': 'view.create.sparql.template.title',
-        'helpInfo': 'view.create.sparql.template.helpInfo'
+        'helpInfo': 'view.create.sparql.template.helpInfo',
+        'allowAuthorities': ['READ_REPO_{repoId}']
     }
 ]);
 

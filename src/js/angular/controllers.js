@@ -441,6 +441,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $repositories.getReadableRepositories();
     };
 
+    $scope.getAllAccessibleRepositories = function () {
+        return $repositories.getAllAccessibleRepositories();
+    };
+
     $scope.getWritableRepositories = function () {
         return $repositories.getWritableRepositories();
     };
@@ -635,6 +639,14 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.checkForWrite = function (role, repo) {
         return $jwtAuth.checkForWrite(role, repo);
     };
+
+    $scope.hasAuthority = function () {
+        return $jwtAuth.hasAuthority();
+    }
+
+    $scope.hasGraphqlRightsOverCurrentRepo = function () {
+        return $jwtAuth.hasGraphqlRightsOverCurrentRepo();
+    }
 
     $scope.setPopoverRepo = function (repository) {
         $scope.popoverRepo = repository;
@@ -1038,7 +1050,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     };
 
     const updateAutocompleteStatus = () => {
-        if ($repositories.isActiveRepoFedXType() || !$licenseService.isLicenseValid()) {
+        if ($repositories.isActiveRepoFedXType() || !$licenseService.isLicenseValid() || !$jwtAuth.canReadRepo($repositories.getActiveRepository())) {
             WorkbenchContextService.setAutocompleteEnabled(false);
             LocalStorageAdapter.set(LSKeys.AUTOCOMPLETE_ENABLED, false);
             return;

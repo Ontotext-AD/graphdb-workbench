@@ -1,0 +1,43 @@
+.wb-user .auth-column-label {
+    margin-right: 4px;
+}
+
+.wb-user .repository-column {
+    width: 50%;
+}
+
+.wb-user .read-column {
+    width: 15%;
+}
+
+.wb-user .write-column {
+    width: 15%;
+}
+
+.wb-user .write-column,
+.wb-user .write-rights,
+.wb-user .write-any {
+    border-right: 1px solid #eceeef;
+}
+
+.wb-user .graphql-column {
+    width: 15%;
+}
+.wb-user .table-fixed {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.wb-user .bordered-table {
+    border: 1px solid #eceeef;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.wb-user .graphql-icon {
+    margin-left: 4px;
+}
+
+.wb-user .repository-name {
+    word-wrap: break-word;
+}

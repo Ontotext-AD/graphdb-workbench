@@ -31,7 +31,7 @@
                     </button>
                 </div>
                 <ul class="list-group limit-height clearfix two-columns repos" ng-mouseleave="hidePopoverForRepo($event)">
-                    <li ng-repeat="repository in getAccessibleRepositories() | orderBy: ['type === \'system\'', 'location', 'id']"
+                    <li ng-repeat="repository in getAllAccessibleRepositories() | orderBy: ['type === \'system\'', 'location', 'id']"
                         ng-if="repository.id !== getActiveRepository() || repository.location !== getActiveRepositoryObject().location"
                         class="list-group-item list-group-item-action repository"
                         ng-class="{'remote': !repository.local}"

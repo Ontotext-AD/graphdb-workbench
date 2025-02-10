@@ -7,7 +7,8 @@ PluginRegistry.add('route', [
         'controller': 'TTYGViewCtrl',
         'title': 'menu.ttyg.label',
         'helpInfo': 'ttyg.helpInfo',
-        'documentationUrl': 'talk-to-graph.html'
+        'documentationUrl': 'talk-to-graph.html',
+        'allowAuthorities': ['READ_REPO_{repoId}']
     }
 ]);
 

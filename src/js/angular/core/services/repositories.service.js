@@ -22,9 +22,9 @@ const modules = [
 const repositories = angular.module('graphdb.framework.core.services.repositories', modules);
 
 repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth',
-    'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService', '$translate', '$q', 'LocalStorageAdapter', 'LSKeys', 'EventEmitterService', 'RDF4JRepositoriesRestService',
+    'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService', '$translate', '$q', 'RepositoryStorage', 'EventEmitterService', 'RDF4JRepositoriesRestService',
     function (toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth,
-        RepositoriesRestService, LocationsRestService, LicenseRestService, $translate, $q, LocalStorageAdapter, LSKeys, eventEmitterService, RDF4JRepositoriesRestService) {
+        RepositoriesRestService, LocationsRestService, LicenseRestService, $translate, $q, RepositoryStorage, eventEmitterService, RDF4JRepositoriesRestService) {
 
         this.location = {uri: '', label: 'Local', local: true};
         this.locationError = '';
@@ -65,7 +65,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                 existsActiveRepo = repositoriesFromLocation.find((repo) => repo.id === repository.id);
             }
             if (existsActiveRepo) {
-                if (!$jwtAuth.canReadRepo(repository)) {
+                if (!$jwtAuth.canReadRepo(repository) && !$jwtAuth.hasGraphqlReadRights(repository)) {
                     this.setRepository('');
                 } else {
                     $rootScope.$broadcast('repositoryIsSet', {newRepo: false});
@@ -277,6 +277,12 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                 .filter((repo) => repo.type === 'graphdb');
         };
 
+        this.getAllAccessibleRepositories = function () {
+            return _.filter(this.getRepositories(), function (repo) {
+                return $jwtAuth.canReadRepo(repo) || $jwtAuth.hasGraphqlReadRights(repo);
+            });
+        };
+
         /**
          * Returns all GraphDB repositories as SelectMenuOptionsModel.
          * @param {Function} provider A function that returns the repositories to be used.
@@ -314,14 +320,11 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         };
 
         this.getActiveRepositoryObjectFromStorage = function() {
-            return {
-                id: LocalStorageAdapter.get(LSKeys.REPOSITORY_ID) || '',
-                location: LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION) || ''
-            };
+            return RepositoryStorage.getActiveRepositoryObject();
         };
 
         this.getActiveRepository = function () {
-            return LocalStorageAdapter.get(LSKeys.REPOSITORY_ID) || undefined;
+            return RepositoryStorage.getActiveRepository();
         };
 
         this.getActiveRepositoryObject = function () {
@@ -390,18 +393,16 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             eventEmitterService.emit('repositoryWillChangeEvent', eventData, (eventData) => {
                 if (!eventData.cancel) {
                     if (repo) {
-                        LocalStorageAdapter.set(LSKeys.REPOSITORY_ID, repo.id);
-                        LocalStorageAdapter.set(LSKeys.REPOSITORY_LOCATION, repo.location);
+                        RepositoryStorage.setActiveRepository(repo.id, repo.location);
                     } else {
-                        LocalStorageAdapter.remove(LSKeys.REPOSITORY_ID);
-                        LocalStorageAdapter.remove(LSKeys.REPOSITORY_LOCATION);
+                        RepositoryStorage.unsetActiveRepository();
                     }
                     this.setRepositoryHeaders(repo);
                     $rootScope.$broadcast('repositoryIsSet', {newRepo: true});
 
                     // if the current repo is unreadable by the currently logged in user (or free access user)
                     // we unset the repository
-                    if (repo && !$jwtAuth.canReadRepo(repo)) {
+                    if (repo && !$jwtAuth.canReadRepo(repo) && !$jwtAuth.hasGraphqlReadRights(repo)) {
                         this.setRepository('');
                     }
                     // reset denied permissions (different repo, different rights)
