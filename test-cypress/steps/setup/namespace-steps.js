@@ -77,6 +77,14 @@ export class NamespaceSteps {
         return this.getNamespacesResultHeader().find('.namespaces-header-pagination .pagination');
     }
 
+    static getNamespacesPageElements() {
+        return this.getNamespacesHeaderPagination().find('li ')
+    }
+
+    static getNamespacePageElement(index) {
+        return this.getNamespacesPageElements().eq(index);
+    }
+
     static getNamespacesHeaderPaginationInfo() {
         return this.getNamespacesResultHeader().find('.showing-info-namespaces');
     }
@@ -121,6 +129,15 @@ export class NamespaceSteps {
             .should('be.visible')
             .parentsUntil('tbody')
             .last();
+    }
+
+    static verifyNamespaceNotExist(prefix) {
+        return this.getNamespacesTable().find('.namespace')
+            .should('be.visible')
+            .find('.namespace-prefix')
+            .should('be.visible')
+            .contains(prefix)
+            .should('not.exist');
     }
 
     static getSelectNamespaceCheckbox(prefix) {
