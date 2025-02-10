@@ -277,4 +277,23 @@ describe('Namespaces', () => {
         NamespaceSteps.getNamespacesTable().should('not.be.visible');
         NamespaceSteps.getNoNamespacesAlert().should('be.visible');
     });
+
+    it('Should got to the second page when click on second page button', () => {
+        // Given: I visited the namespaces view, and there is more than one page.
+        NamespaceSteps.getNamespacesPageElements()
+            // First page + three-page buttons + Last page.
+            .should('have.length', 5);
+        // The table with namespaces should contain the "geoext" namespace because it is among the first 10 namespaces (the paginator is set to 10 namespaces per page).
+        NamespaceSteps.getNamespace('geoext').should('be.visible');
+        // The namespace with the prefix "omgeo" should not exist because it is the fourteenth namespace and is only visible on the second page.
+        NamespaceSteps.verifyNamespaceNotExist('omgeo');
+
+        // When I go to the second page.
+        NamespaceSteps.getNamespacePageElement(2).click()
+
+        // Then I expect the "geoext" namespace to no longer be visible, as it is part of the first 10 namespaces.
+        NamespaceSteps.verifyNamespaceNotExist('geoext');
+        // The namespace with the prefix "omgeo" should now be visible because it appears on the second page.
+        NamespaceSteps.getNamespace('omgeo').should('be.visible');
+    });
 });
