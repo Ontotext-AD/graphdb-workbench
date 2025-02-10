@@ -48,7 +48,7 @@ PluginRegistry.add('main.menu', {
             labelKey: 'menu.graphql-endpoint-management.label',
             href: 'graphql/endpoints',
             order: 10,
-            role: 'ROLE_USER',
+            role: 'IS_AUTHENTICATED_FULLY',
             parent: 'GraphQL',
             children: [
                 {
@@ -62,7 +62,7 @@ PluginRegistry.add('main.menu', {
             labelKey: 'menu.graphql-playground.label',
             href: 'graphql/playground',
             order: 15,
-            role: 'ROLE_USER',
+            role: 'IS_AUTHENTICATED_FULLY',
             parent: 'GraphQL'
         }]
 });

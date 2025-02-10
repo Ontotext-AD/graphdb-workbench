@@ -23,15 +23,17 @@
                 </p>
             </div>
             <div class="row" style="margin-top: 0">
-                <h5 class="boldless col-xs-10">{{'security.repository.title' | translate}}</h5>
+                <h5 class="boldless col-xs-9">{{'security.repository.title' | translate}}</h5>
                 <span class="fa fa-eye fa-1andAhalfx col-xs-1" gdb-tooltip="{{'security.tooltip.read' | translate}}"
                       tooltip-placement="top" style="margin-top: 10px"></span>
                 <span class="fa fa-pencil fa-1andAhalfx col-xs-1" gdb-tooltip="{{'security.tooltip.write' | translate}}"
                       tooltip-placement="top" style="margin-top: 10px"></span>
+                <span class="fa-kit fa-gdb-graphql fa-1andAhalfx col-xs-1" gdb-tooltip="{{'security.tooltip.graphql' | translate}}"
+                      tooltip-placement="top" style="margin-top: 10px"></span>
             </div>
             <div id="access-user-repos access-user-rights" class="row"
                  ng-repeat="repository in getRepositories() | orderBy: ['id', 'location']">
-                <p class="col-xs-10">{{repository.id}}<small> &middot; {{repository.location ? repository.location : 'Local'}}</small></p>
+                <p class="col-xs-9">{{repository.id}}<small> &middot; {{repository.location ? repository.location : 'Local'}}</small></p>
                 <label class="col-xs-1">
                     <input class="animated read" type="checkbox"
                            ng-model="grantedAuthorities.READ_REPO[createUniqueKey(repository)]"
@@ -44,6 +46,12 @@
                     <input class="animated write" type="checkbox"
                            ng-model="grantedAuthorities.WRITE_REPO[createUniqueKey(repository)]"
                            ng-checked="grantedAuthorities.WRITE_REPO[createUniqueKey(repository)]"
+                           ng-click="setGrantedAuthorities()">
+                </label>
+                <label class="col-xs-1">
+                    <input class="animated graphql" type="checkbox"
+                           ng-model="grantedAuthorities.GRAPHQL[createUniqueKey(repository)]"
+                           ng-checked="grantedAuthorities.GRAPHQL[createUniqueKey(repository)]"
                            ng-click="setGrantedAuthorities()">
                 </label>
             </div>

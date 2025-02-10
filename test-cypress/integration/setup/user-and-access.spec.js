@@ -1,6 +1,11 @@
 import {UserAndAccessSteps} from "../../steps/setup/user-and-access-steps";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 import {RepositorySelectorSteps} from "../../steps/repository-selector-steps";
+import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
+import {ToasterSteps} from "../../steps/toaster-steps";
+import HomeSteps from "../../steps/home-steps";
+import {LoginSteps} from "../../steps/login-steps";
+
 
 describe('User and Access', () => {
 
@@ -210,18 +215,18 @@ describe('User and Access', () => {
             //enable security
             UserAndAccessSteps.toggleSecurity();
             //login new user
-            UserAndAccessSteps.loginWithUser(name, PASSWORD);
+            LoginSteps.loginWithUser(name, PASSWORD);
             RepositorySelectorSteps.selectRepository(repositoryId1);
 
-            MENU_ITEMS.forEach(({path, expectedUrl,  checks, expectedTitle}) => {
+            MENU_ITEMS_WITHOUT_GRAPHQL.forEach(({path, expectedUrl,  checks, expectedTitle}) => {
                 navigateMenuPath(path, expectedUrl, expectedTitle);
                 if (checks) {
                     runChecks(checks);
                 }
             });
-            UserAndAccessSteps.logout();
+            LoginSteps.logout();
             //login with the admin
-            UserAndAccessSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+            LoginSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
             cy.wait('@getRepositories');
             UserAndAccessSteps.visit();
             //delete new-user
@@ -239,18 +244,18 @@ describe('User and Access', () => {
             //enable security
             UserAndAccessSteps.toggleSecurity();
             //login new user
-            UserAndAccessSteps.loginWithUser(name, PASSWORD);
+            LoginSteps.loginWithUser(name, PASSWORD);
             RepositorySelectorSteps.selectRepository(repositoryId1);
 
-            GRAPHQL_MENU_ITEMS.forEach(({path, expectedUrl,  checks, expectedTitle}) => {
+            GRAPHQL_READ_MENU_ITEMS.forEach(({path, expectedUrl,  checks, expectedTitle}) => {
                 navigateMenuPath(path, expectedUrl, expectedTitle);
                 if (checks) {
                     runChecks(checks);
                 }
             });
-            UserAndAccessSteps.logout();
+            LoginSteps.logout();
             //login with the admin
-            UserAndAccessSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+            LoginSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
             cy.wait('@getRepositories');
             UserAndAccessSteps.visit();
             //delete new-user
@@ -260,6 +265,63 @@ describe('User and Access', () => {
             UserAndAccessSteps.getSecuritySwitchLabel().should('be.visible').and('contain', 'Security is OFF');
         });
 
+        it('Can have Free Access and GraphQL to work together', () => {
+            cy.wait('@getRepositories');
+            //enable security
+            UserAndAccessSteps.toggleSecurity();
+            //login with the admin
+            LoginSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+            // The Free Access toggle should be OFF
+            UserAndAccessSteps.getFreeAccessSwitchInput().should('not.be.checked');
+            // When I toggle Free Access ON
+            UserAndAccessSteps.toggleFreeAccess();
+            // Then I set repo auths
+            UserAndAccessSteps.clickFreeReadAccessRepo(repositoryId1);
+            UserAndAccessSteps.clickFreeWriteAccessRepo(repositoryId2);
+            UserAndAccessSteps.clickFreeWriteAccessRepo(repositoryId3);
+            UserAndAccessSteps.clickFreeGraphqlAccessRepo(repositoryId3);
+            // Then I click OK in the modal
+            ModalDialogSteps.clickOKButton();
+            // Then the toggle button should be ON
+            UserAndAccessSteps.getFreeAccessSwitchInput().should('be.checked');
+            // And I should see a success message
+            ToasterSteps.verifySuccess('Free access has been enabled.');
+            UserAndAccessSteps.getUsersTable().should('be.visible');
+
+            // Then I logout
+            LoginSteps.logout();
+            HomeSteps.visit();
+            //  I change the repository to this with GraphQL only rights
+            RepositorySelectorSteps.selectRepository(repositoryId3);
+            // Then I should have GraphQL only rights
+            // TODO enable when BE is ready with https://ontotext.atlassian.net/browse/GDB-11794
+            // GRAPHQL_WRITE_MENU_ITEMS.forEach(({path, expectedUrl,  checks, expectedTitle}) => {
+            //     navigateMenuPath(path, expectedUrl, expectedTitle);
+            //     if (checks) {
+            //         runChecks(checks);
+            //     }
+            // });
+            FREE_ACCESS_MENU_ITEMS_WITHOUT_GRAPHQL.forEach(({path, expectedUrl,  checks, expectedTitle}) => {
+                navigateMenuPath(path, expectedUrl, expectedTitle);
+                if (checks) {
+                    runChecks(checks);
+                }
+            });
+
+            LoginSteps.visitLoginPage();
+            //login with the admin
+            LoginSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+            UserAndAccessSteps.visit();
+            // The Free Access toggle should be ON
+            UserAndAccessSteps.getFreeAccessSwitchInput().should('be.checked');
+            // When I toggle Free Access OFF
+            UserAndAccessSteps.toggleFreeAccess();
+            // Then I should see a success message
+            ToasterSteps.verifySuccess('Free access has been disabled.');
+            //disable security
+            UserAndAccessSteps.toggleSecurity();
+            UserAndAccessSteps.getSecuritySwitchLabel().should('be.visible').and('contain', 'Security is OFF');
+        });
     });
 
     function clickGraphqlAccessForRepo(repoName) {
@@ -287,7 +349,6 @@ describe('User and Access', () => {
     }
 
     function createUser(username, password, role, opts = {}) {
-        const {noPassword} = opts;
         UserAndAccessSteps.clickCreateNewUserButton();
         UserAndAccessSteps.typeUsername(username);
         UserAndAccessSteps.typePassword(password);
@@ -297,7 +358,7 @@ describe('User and Access', () => {
         if (role === "#roleUser") {
             setRoles(opts);
             UserAndAccessSteps.confirmUserCreate();
-        } else if (role === ROLE_CUSTOM_ADMIN && username === NO_PASS_ADMIN && noPassword) {
+        } else if (role === ROLE_CUSTOM_ADMIN && username === NO_PASS_ADMIN && opts.noPassword) {
             UserAndAccessSteps.getNoPasswordCheckbox().check()
                 .then(() => {
                     UserAndAccessSteps.getNoPasswordCheckbox()
@@ -333,7 +394,7 @@ describe('User and Access', () => {
         //enable security
         UserAndAccessSteps.toggleSecurity();
         //login new user
-        UserAndAccessSteps.loginWithUser(name, PASSWORD);
+        LoginSteps.loginWithUser(name, PASSWORD);
         //verify permissions
         UserAndAccessSteps.getUrl().should('include', '/users');
         if (isAdmin) {
@@ -342,9 +403,9 @@ describe('User and Access', () => {
             UserAndAccessSteps.getError().should('contain',
                 'You have no permission to access this functionality with your current credentials.');
         }
-        UserAndAccessSteps.logout();
+        LoginSteps.logout();
         //login with the admin
-        UserAndAccessSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+        LoginSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
         UserAndAccessSteps.getSplashLoader().should('not.be.visible');
         UserAndAccessSteps.getUsersTable().should('be.visible');
 
@@ -417,7 +478,6 @@ describe('User and Access', () => {
         if (expectedUrl) {
             cy.url().should('include', expectedUrl);
         }
-
     }
 
     function runChecks(checks = {}) {
@@ -468,7 +528,7 @@ describe('User and Access', () => {
         ]
     }
 
-    const MENU_ITEMS = [
+    const MENU_ITEMS_WITHOUT_GRAPHQL = [
         // 1) Import
         {
             path: ['Import'],
@@ -513,16 +573,6 @@ describe('User and Access', () => {
         },
 
         // 4) GraphQL
-        {
-            path: ['GraphQL', 'Endpoint Management'],
-            expectedUrl: '/graphql/endpoints',
-            checks: hasAuthChecks
-        },
-        {
-            path: ['GraphQL', 'GraphQL Playground'],
-            expectedUrl: '/graphql/playground',
-            checks: hasAuthChecks
-        },
 
         // 5) Monitor
         {
@@ -610,7 +660,7 @@ describe('User and Access', () => {
         }
     ];
 
-    const GRAPHQL_MENU_ITEMS = [
+    const GRAPHQL_READ_MENU_ITEMS = [
         {
             path: ['GraphQL', 'Endpoint Management'],
             expectedUrl: '/graphql/endpoints',
@@ -619,6 +669,112 @@ describe('User and Access', () => {
         {
             path: ['GraphQL', 'GraphQL Playground'],
             expectedUrl: '/graphql/playground',
+            checks: hasAuthChecks
+        }
+    ];
+    const GRAPHQL_WRITE_MENU_ITEMS = [
+        {
+            path: ['GraphQL', 'Endpoint Management'],
+            expectedUrl: '/graphql/endpoints',
+            checks: hasAuthChecks
+        },
+        {
+            path: ['GraphQL', 'GraphQL Playground'],
+            expectedUrl: '/graphql/playground',
+            checks: hasAuthChecks
+        }
+    ];
+
+    const FREE_ACCESS_MENU_ITEMS_WITHOUT_GRAPHQL = [
+        // 1) Import
+        {
+            path: ['Import'],
+            expectedUrl: '/import',
+            checks: noAuthChecks
+        },
+
+        // 2) Explore
+        {
+            path: ['Explore', 'Graphs overview'],
+            expectedUrl: '/graphs',
+            checks: noAuthChecks
+        },
+        {
+            path: ['Explore', 'Class hierarchy'],
+            expectedUrl: '/hierarchy',
+            checks: noAuthChecks
+        },
+        {
+            path: ['Explore', 'Class relationships'],
+            expectedUrl: '/relationships',
+            checks: noAuthChecks
+        },
+        {
+            path: ['Explore', 'Visual graph'],
+            expectedUrl: '/graphs-visualizations',
+            checks: noAuthChecks
+        },
+        {
+            path: ['Explore', 'Similarity'],
+            expectedTitle: 'Similarity indexes',
+            expectedUrl: '/similarity',
+            checks: noAuthChecks
+        },
+
+        // 3) SPARQL
+        {
+            path: ['SPARQL'],
+            expectedTitle: 'SPARQL Query & Update',
+            expectedUrl: '/sparql',
+            checks: noAuthChecks
+        },
+
+
+        // 6) Setup
+        {
+            path: ['Setup', 'Connectors'],
+            expectedUrl: '/connectors',
+            expectedTitle: 'Connector management',
+            checks: noAuthChecks
+        },
+        {
+            path: ['Setup', 'Plugins'],
+            expectedUrl: '/plugins',
+            checks: noAuthChecks
+        },
+        {
+            path: ['Setup', 'Namespaces'],
+            expectedUrl: '/namespaces',
+            checks: noAuthChecks
+        },
+        {
+            path: ['Setup', 'Autocomplete'],
+            expectedUrl: '/autocomplete',
+            expectedTitle: 'Autocomplete index',
+            checks: noAuthChecks
+        },
+        {
+            path: ['Setup', 'RDF Rank'],
+            expectedUrl: '/rdfrank',
+            checks: noAuthChecks
+        },
+        {
+            path: ['Setup', 'JDBC'],
+            expectedUrl: '/jdbc',
+            expectedTitle: 'JDBC configuration',
+            checks: noAuthChecks
+        },
+        {
+            path: ['Setup', 'SPARQL Templates'],
+            expectedUrl: '/sparql-templates',
+            checks: noAuthChecks
+        },
+
+        // 7) Help
+        {
+            path: ['Help', 'REST API'],
+            expectedUrl: '/webapi',
+            expectedTitle: 'REST API documentation',
             checks: hasAuthChecks
         }
     ];
