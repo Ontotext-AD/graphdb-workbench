@@ -4,6 +4,7 @@ import {QueryStubs} from "../../../stubs/yasgui/query-stubs";
 import {UserAndAccessSteps} from "../../../steps/setup/user-and-access-steps";
 import {SavedQuery} from "../../../steps/yasgui/saved-query";
 import {SavedQueriesDialog} from "../../../steps/yasgui/saved-queries-dialog";
+import {LoginSteps} from "../../../steps/login-steps";
 
 const USER_NAME = 'saved_query_user';
 const USER_ADMINISTRATOR = 'admin';
@@ -31,25 +32,25 @@ describe.skip('Readonly saved query', () => {
     });
 
     afterEach(() => {
-        UserAndAccessSteps.logout();
+        LoginSteps.logout();
         cy.deleteRepository(repositoryId);
         UserAndAccessSteps.visit();
-        UserAndAccessSteps.loginWithUser(USER_ADMINISTRATOR, PASSWORD);
+        LoginSteps.loginWithUser(USER_ADMINISTRATOR, PASSWORD);
         UserAndAccessSteps.toggleSecurity();
         cy.deleteUser(USER_NAME);
     });
 
     it('Should not allow modifying a saved query if it is readonly', () => {
         // Given: There is a public saved query created by a user.
-        UserAndAccessSteps.loginWithUser(USER_NAME, PASSWORD);
+        LoginSteps.loginWithUser(USER_NAME, PASSWORD);
         SparqlEditorSteps.visitSparqlEditorPage();
         YasguiSteps.getYasgui().should('be.visible');
         const savedQueryName = SavedQuery.generateQueryName();
         SavedQuery.create(savedQueryName);
-        UserAndAccessSteps.logout();
+        LoginSteps.logout();
 
         // When: I log in with another user
-        UserAndAccessSteps.loginWithUser(USER_ADMINISTRATOR, PASSWORD);
+        LoginSteps.loginWithUser(USER_ADMINISTRATOR, PASSWORD);
         // and open the popup with the saved query.
         SparqlEditorSteps.visitSparqlEditorPage();
         YasguiSteps.showSavedQueries();

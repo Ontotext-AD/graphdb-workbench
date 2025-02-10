@@ -125,7 +125,8 @@ function SecurityService(SecurityRestService) {
      * @return {Promise<Object>} A promise that resolves to the free access data.
      */
     const getFreeAccess = () => {
-        return SecurityRestService.getFreeAccess();
+        return SecurityRestService.getFreeAccess()
+            .then((response) => toUserModelMapper(response.data, 'authorities'));
     };
 
     /**
@@ -135,7 +136,7 @@ function SecurityService(SecurityRestService) {
      * @return {Promise<Object>} A promise that resolves when the free access data is set.
      */
     const setFreeAccess = (data) => {
-        return SecurityRestService.setFreeAccess(data);
+        return SecurityRestService.setFreeAccess(fromUserModelMapper(data, 'authorities'));
     };
 
     /**

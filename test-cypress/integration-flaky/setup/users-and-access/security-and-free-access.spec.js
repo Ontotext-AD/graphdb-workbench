@@ -2,6 +2,7 @@ import {UserAndAccessSteps} from "../../../steps/setup/user-and-access-steps";
 import {RepositoriesStubs} from "../../../stubs/repositories/repositories-stubs";
 import {ModalDialogSteps} from "../../../steps/modal-dialog-steps";
 import {ToasterSteps} from "../../../steps/toaster-steps";
+import {LoginSteps} from "../../../steps/login-steps";
 
 const DEFAULT_ADMIN_PASSWORD = "root";
 // Moved out of the standard test suite, because Cypress can't verify Free Access is ON in CI
@@ -30,7 +31,7 @@ describe('Security and Free Access', () => {
         // When I enable security
         UserAndAccessSteps.toggleSecurity();
         // When I log in as an Admin
-        UserAndAccessSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+        LoginSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
         // Then the page should load
         UserAndAccessSteps.getSplashLoader().should('not.be.visible');
         UserAndAccessSteps.getUsersTable().should('be.visible');
