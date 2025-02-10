@@ -69,7 +69,7 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
                             return 0;
                         });
                         $scope.matchedElements = $scope.namespaces;
-                        changePagination();
+                        $scope.changePagination();
                     }
                     if ($scope.namespaces.length === 0) {
                         // Remove the loader ourselves
@@ -82,7 +82,7 @@ namespaces.controller('NamespacesCtrl', ['$scope', '$http', '$repositories', 'to
                 });
         };
 
-        const changePagination = function () {
+        $scope.changePagination = function () {
             if (angular.isDefined($scope.namespaces)) {
                 $scope.displayedNamespaces = $scope.namespaces.slice($scope.pageSize * ($scope.page - 1), $scope.pageSize * $scope.page);
             }
