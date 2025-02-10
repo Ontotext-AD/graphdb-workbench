@@ -1,22 +1,28 @@
 import 'angular/core/services';
+import 'angular/core/services/repository-storage.service';
 import 'angular/core/services/openid-auth.service.js';
-import 'angular/rest/security.rest.service';
+import 'angular/core/services/security.service';
 import {UserRole} from 'angular/utils/user-utils';
 
 angular.module('graphdb.framework.core.services.jwtauth', [
     'toastr',
-    'graphdb.framework.rest.security.service',
+    'graphdb.framework.core.services.repository-storage',
+    'graphdb.framework.core.services.security-service',
     'graphdb.framework.core.services.openIDService'
 ])
-    .service('$jwtAuth', ['$http', 'toastr', '$location', '$rootScope', 'SecurityRestService', '$openIDAuth', '$translate', '$q', 'AuthTokenService', 'LSKeys', 'LocalStorageAdapter',
-        function ($http, toastr, $location, $rootScope, SecurityRestService, $openIDAuth, $translate, $q, AuthTokenService, LSKeys, LocalStorageAdapter) {
+    .service('$jwtAuth', ['$http', 'toastr', '$location', '$rootScope', 'SecurityService', '$openIDAuth', '$translate', '$q', '$route', 'RepositoryStorage', 'AuthTokenService',
+        function ($http, toastr, $location, $rootScope, SecurityService, $openIDAuth, $translate, $q, $route, RepositoryStorage, AuthTokenService) {
             const jwtAuth = this;
 
             $rootScope.deniedPermissions = {};
-            $rootScope.setPermissionDenied = function (path) {
+            $rootScope.setPermissionDenied = (path) => {
                 if (path === '/login' || !jwtAuth.isAuthenticated()) {
                     return false;
                 }
+                if(jwtAuth.isAuthenticated() && this.hasGraphqlRightsOverCurrentRepo()) {
+                    return true;
+                }
+
                 $rootScope.deniedPermissions[path] = true;
                 return true;
             };
@@ -88,8 +94,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
              * @param {boolean} justLoggedIn Indicates that the user just logged in.
              */
             this.getAuthenticatedUserFromBackend = function(noFreeAccessFallback, justLoggedIn) {
-                SecurityRestService.getAuthenticatedUser().
-                success(function(data, status, headers) {
+                SecurityService.getAuthenticatedUser().then(function(data) {
                     const token = AuthTokenService.getAuthToken();
                     if (token && token.startsWith('GDB')) {
                         // There is a previous authentication via JWT, it's still valid
@@ -108,7 +113,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         that.authenticate(data, ''); // this will emit securityInit
                         // console.log('external authentication ok');
                     }
-                }).error(function () {
+                }).catch(function () {
                     if (noFreeAccessFallback || !that.freeAccess) {
                         $rootScope.redirectToLogin(false, justLoggedIn);
                     } else {
@@ -124,7 +129,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             this.initSecurity = function () {
                 this.securityInitialized = false;
 
-                SecurityRestService.getSecurityConfig().then(function (res) {
+                SecurityService.getSecurityConfig().then(function (res) {
                     that.securityEnabled = res.data.enabled;
                     that.externalAuth = res.data.hasExternalAuth;
                     that.authImplementation = res.data.authImplementation;
@@ -187,8 +192,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                             $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.hasOverrideAuth);
 
                         } else {
-                            return SecurityRestService.getAdminUser().then(function (res) {
-                                that.principal = {username: 'admin', appSettings: res.data.appSettings, authorities: res.data.grantedAuthorities};
+                            return SecurityService.getAdminUser().then(function (res) {
+                                that.principal = {username: 'admin', appSettings: res.appSettings, authorities: res.grantedAuthorities, grantedAuthoritiesUiModel: res.grantedAuthoritiesUiModel};
                                 $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.hasOverrideAuth);
                             });
                         }
@@ -236,7 +241,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.toggleSecurity = function (enabled) {
                 if (enabled !== this.securityEnabled) {
-                    return SecurityRestService.toggleSecurity(enabled)
+                    return SecurityService.toggleSecurity(enabled)
                         .then(function () {
                             toastr.success($translate.instant('jwt.auth.security.status', {status: ($translate.instant(enabled ? 'enabled.status' : 'disabled.status'))}));
                             AuthTokenService.clearAuthToken();
@@ -257,7 +262,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     } else {
                         this.freeAccessPrincipal = undefined;
                     }
-                    SecurityRestService.setFreeAccess({
+                    SecurityService.setFreeAccess({
                         enabled: enabled ? 'true' : 'false',
                         authorities: authorities,
                         appSettings: appSettings
@@ -288,16 +293,10 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     $rootScope.deniedPermissions = {};
                     this.securityInitialized = true;
 
-                    const selectedRepo = {
-                        id: LocalStorageAdapter.get(LSKeys.REPOSITORY_ID) || '',
-                        location: LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION) || ''
-                    };
-
-                    if (!jwtAuth.canReadRepo(selectedRepo)) {
+                    if (!jwtAuth.canReadRepo(RepositoryStorage.getActiveRepositoryObject())) {
                         // if the current repo is unreadable by the currently logged-in user (or free access user)
                         // we unset the repository
-                        LocalStorageAdapter.remove(LSKeys.REPOSITORY_ID);
-                        LocalStorageAdapter.remove(LSKeys.REPOSITORY_LOCATION);
+                        RepositoryStorage.unsetActiveRepository();
                         // reset denied permissions (different repo, different rights)
                         $rootScope.deniedPermissions = {};
                     }
@@ -375,6 +374,70 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 }
             };
 
+            // Check if the user has the necessary authority to access the route
+            this.hasAuthority = function () {
+                // If there is no current active route, return false – access cannot be determined
+                if (!$route.current) {
+                    return false;
+                }
+
+                // If the user has an admin role, they always have access
+                if (this.hasAdminRole()) {
+                    return true;
+                }
+
+                // If the current route doesn't define "allowAuthorities", assume there are no restrictions
+                if (!$route.current.allowAuthorities) {
+                    return true;
+                }
+
+                // If there is no selected repository, there are no auth restrictions
+                if (!RepositoryStorage.getActiveRepository()) {
+                    return true;
+                }
+
+                // If there is no principal defined, assume is admin and return true
+                if (!this.principal) {
+                    return true;
+                }
+
+                // If there are allowed authorities defined for the current route
+                if ($route.current.allowAuthorities.length > 0) {
+                    const auth = resolveAuthorities($route.current.allowAuthorities);
+                    // Check if any of the allowed authorities match one of the principal's authorities
+                    return auth.some(allowAuth => this.principal.authorities.indexOf(allowAuth) > -1);
+                }
+
+                // If none of the above conditions apply, return true by default
+                return true;
+            }
+
+            // Function to resolve a list of authority strings by replacing the "{repoId}" placeholder
+            // with both the specific repository ID and a wildcard for all repositories.
+            const resolveAuthorities = (authoritiesList) => {
+                // If no authorities list is provided, return undefined.
+                if (!authoritiesList) {
+                    return;
+                }
+
+                // Get the selected repository's ID from the current context.
+                const repoId = RepositoryStorage.getActiveRepository();
+                // If there is no selected repository ID, return the original authorities list.
+                if (!repoId) {
+                    return authoritiesList;
+                }
+
+                // Replace the "{repoId}" placeholder with the actual repository ID for specific access.
+                const authListForCurrentRepo = authoritiesList.map(authority => authority.replace('{repoId}', repoId));
+                // Replace the "{repoId}" placeholder with a wildcard '*' to denote access to any repository.
+                const authListForAllRepos = authoritiesList.map(authority => authority.replace('{repoId}', '*'));
+
+                // Combine both lists into a single array and return.
+                return [...authListForCurrentRepo, ...authListForAllRepos];
+            }
+
+
+
             this.isAdmin = function () {
                 return this.hasRole(UserRole.ROLE_ADMIN);
             };
@@ -417,7 +480,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
             this.canReadRepo = function (repo) {
-                if (!repo) {
+                if (!repo || repo.id === '') {
                     return false;
                 }
                 // Adding remote secured location could be done only with admin credentials,
@@ -434,21 +497,62 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 }
             };
 
+
             this.checkRights = function (repo, action) {
-                if (repo) {
-                    for (let i = 0; i < this.principal.authorities.length; i++) {
-                        const authRole = this.principal.authorities[i];
-                        const parts = authRole.split('_', 2);
-                        const repoPart = authRole.slice(parts[0].length + parts[1].length + 2);
-                        const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
-                        if (parts[0] === action && (repoId === repoPart || repo.id !== 'SYSTEM' && repoPart === '*')) {
-                            return true;
-                        }
-                    }
+                if (!repo) {
+                    return false;
                 }
-                return false;
+
+                if (repo.id === 'SYSTEM') {
+                    return false;
+                }
+
+                return this.hasBaseRights(action, repo);
             };
 
+            this.hasBaseRights = function (action, repo) {
+                const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
+                const overCurrentRepo = `${action}_REPO_${repoId}`;
+                const overAllRepos = `${action}_REPO_*`;
 
-            this.updateUserData = (data) => SecurityRestService.updateUserData(data);
+                return (
+                    this.principal.authorities.indexOf(overCurrentRepo) > -1 ||
+                    this.principal.authorities.indexOf(overAllRepos) > -1
+                );
+            }
+
+            this.hasGraphqlRightsOverCurrentRepo = function () {
+                const activeRepo = RepositoryStorage.getActiveRepositoryObject();
+                return this.hasGraphqlReadRights(activeRepo) || this.hasGraphqlWriteRights(activeRepo);
+            }
+
+            this.hasGraphqlWriteRights = function (repo) {
+                if (!repo || repo.id === '') {
+                    return false;
+                }
+                return this.hasGraphqlAuthority('WRITE', repo)
+            }
+
+            this.hasGraphqlReadRights = function (repo) {
+                if (!repo || repo.id === '') {
+                    return false;
+                }
+                return this.hasGraphqlAuthority('READ', repo)
+            }
+
+            this.hasGraphqlAuthority = function (action, repo) {
+                if (!this.principal) {
+                    return false;
+                }
+                const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
+                const overCurrentRepoGraphql = `${action}_REPO_${repoId}:GRAPHQL`;
+                const overAllReposGraphql = `${action}_REPO_*:GRAPHQL`;
+
+                return (
+                    this.principal.authorities.indexOf(overCurrentRepoGraphql) > -1 ||
+                    this.principal.authorities.indexOf(overAllReposGraphql) > -1
+                );
+            }
+
+            this.updateUserData = (data) => SecurityService.updateUserData(data);
         }]);

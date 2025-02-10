@@ -7,7 +7,8 @@ PluginRegistry.add('route', {
     'templateUrl': 'pages/export.html',
     'title': 'menu.graphs.overview.label',
     'helpInfo': 'view.export.ctr.helpInfo ',
-    'documentationUrl': 'working-with-workbench.html#wbmenu-graphs-overview'
+    'documentationUrl': 'working-with-workbench.html#wbmenu-graphs-overview',
+    'allowAuthorities': ['READ_REPO_{repoId}']
 });
 
 PluginRegistry.add('main.menu', {

@@ -8,7 +8,8 @@ PluginRegistry.add('route', {
     'title': 'view.resource.monitoring.title',
     'helpInfo': 'view.resource.monitoring.helpInfo',
     'reloadOnSearch': false,
-    'documentationUrl': 'system-monitoring.html'
+    'documentationUrl': 'system-monitoring.html',
+    'allowAuthorities': ['READ_REPO_{repoId}']
 });
 
 PluginRegistry.add('main.menu', {

@@ -6,7 +6,8 @@ PluginRegistry.add('route', [
         'path': 'explore/app',
         'controller': 'ExploreCtrl',
         'templateUrl': 'pages/explore.html',
-        'title': 'view.resource.title'
+        'title': 'view.resource.title',
+        'allowAuthorities': ['READ_REPO_{repoId}']
     }, {
         'url': '/resource/edit',
         'module': 'graphdb.framework.explore',
@@ -14,7 +15,8 @@ PluginRegistry.add('route', [
         'path': 'explore/app',
         'controller': 'EditResourceCtrl',
         'templateUrl': 'pages/edit.html',
-        'title': 'view.resource.title'
+        'title': 'view.resource.title',
+        'allowAuthorities': ['READ_REPO_{repoId}']
     }, {
         'url': '/resource/:any*',
         'module': 'graphdb.framework.explore',
@@ -22,7 +24,8 @@ PluginRegistry.add('route', [
         'path': 'explore/app',
         'controller': 'ExploreCtrl',
         'templateUrl': 'pages/explore.html',
-        'title': 'view.resource.title'
+        'title': 'view.resource.title',
+        'allowAuthorities': ['READ_REPO_{repoId}']
     }
 ]);
 

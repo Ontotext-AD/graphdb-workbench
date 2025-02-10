@@ -144,6 +144,7 @@ const moduleDefinition = function (productInfo, translations) {
                     title: route.title,
                     helpInfo: route.helpInfo,
                     documentationUrl: route.documentationUrl,
+                    allowAuthorities: route.allowAuthorities,
                     reloadOnSearch: route.reloadOnSearch !== undefined ? route.reloadOnSearch : true,
                     resolve: {
                         preload: ['$ocLazyLoad', '$q', function ($ocLazyLoad, $q) {

@@ -7,7 +7,8 @@ PluginRegistry.add('route', {
     'templateUrl': 'pages/autocomplete.html',
     'title': 'view.autocomplete.title',
     'helpInfo': 'view.autocomplete.helpInfo',
-    'documentationUrl': 'autocomplete-index.html'
+    'documentationUrl': 'autocomplete-index.html',
+    'allowAuthorities': ['READ_REPO_{repoId}']
 });
 
 PluginRegistry.add('main.menu', {

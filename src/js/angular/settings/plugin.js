@@ -7,7 +7,8 @@ PluginRegistry.add('route', [
         'controller': 'RegisterLicenseCtrl',
         'templateUrl': 'pages/registerLicenseInfo.html',
         'title': 'view.register.license.title',
-        'helpInfo': 'view.register.license.helpInfo'
+        'helpInfo': 'view.register.license.helpInfo',
+        'allowAuthorities': ['READ_REPO_{repoId}']
     }, {
         'url': '/license',
         'module': 'graphdb.framework.settings',
@@ -17,7 +18,8 @@ PluginRegistry.add('route', [
         'templateUrl': 'pages/licenseInfo.html',
         'title': 'view.existing.license.title',
         'helpInfo': 'view.existing.license.helpInfo',
-        'documentationUrl': 'working-with-workbench.html#wbmenu-license'
+        'documentationUrl': 'working-with-workbench.html#wbmenu-license',
+        'allowAuthorities': ['READ_REPO_{repoId}']
     }
 ]);
 

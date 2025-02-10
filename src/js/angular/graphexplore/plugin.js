@@ -9,7 +9,8 @@ PluginRegistry.add('route', [
         'title': 'view.class.hierarchy.title',
         'reloadOnSearch': false,
         'helpInfo': 'view.class.hierarchy.helpInfo',
-        'documentationUrl': 'explore-data-and-class-relationships.html#class-hierarchy'
+        'documentationUrl': 'explore-data-and-class-relationships.html#class-hierarchy',
+        'allowAuthorities': ['READ_REPO_{repoId}']
 
     }, {
         'url': '/domain-range-graph',
@@ -19,7 +20,8 @@ PluginRegistry.add('route', [
         'controller': 'DomainRangeGraphCtlr',
         'templateUrl': 'pages/domainRangeInfo.html',
         'title': 'view.domain.range.graph.title',
-        'helpInfo': 'view.domain.range.graph.helpInfo'
+        'helpInfo': 'view.domain.range.graph.helpInfo',
+        'allowAuthorities': ['READ_REPO_{repoId}']
     }, {
         'url': '/relationships',
         'module': 'graphdb.framework.graphexplore',
@@ -29,7 +31,8 @@ PluginRegistry.add('route', [
         'templateUrl': 'pages/dependencies.html',
         'title': 'view.class.relationships.title',
         'helpInfo': 'view.class.relationships.helpInfo',
-        'documentationUrl': 'explore-data-and-class-relationships.html#class-relationships'
+        'documentationUrl': 'explore-data-and-class-relationships.html#class-relationships',
+        'allowAuthorities': ['READ_REPO_{repoId}']
     }, {
         'url': '/graphs-visualizations',
         'module': 'graphdb.framework.graphexplore',
@@ -40,7 +43,8 @@ PluginRegistry.add('route', [
         'title': 'visual.graph.label',
         'reloadOnSearch': false,
         'helpInfo': 'view.visual.graph.helpInfo',
-        'documentationUrl': 'visualize-and-explore.html#explore-resources-through-the-easy-graph'
+        'documentationUrl': 'visualize-and-explore.html#explore-resources-through-the-easy-graph',
+        'allowAuthorities': ['READ_REPO_{repoId}']
     }, {
         'url': '/graphs-visualizations/config/save/:configName?',
         'module': 'graphdb.framework.graphexplore',
@@ -49,7 +53,8 @@ PluginRegistry.add('route', [
         'controller': 'GraphConfigCtrl',
         'templateUrl': 'pages/graph-config/saveGraphConfig.html',
         'title': 'view.create.visual.graph.title',
-        'helpInfo': 'view.create.visual.graph.helpInfo'
+        'helpInfo': 'view.create.visual.graph.helpInfo',
+        'allowAuthorities': ['READ_REPO_{repoId}']
     }
 ]);
 

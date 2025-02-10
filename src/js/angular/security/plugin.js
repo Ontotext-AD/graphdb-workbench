@@ -8,7 +8,8 @@ PluginRegistry.add('route', [
         'templateUrl': 'js/angular/security/templates/users.html',
         'title': 'menu.users.and.access.label',
         'helpInfo': 'view.users.access.helpInfo',
-        'documentationUrl': 'working-with-workbench.html#wbmenu-users-and-access'
+        'documentationUrl': 'working-with-workbench.html#wbmenu-users-and-access',
+        'allowAuthorities': ['READ_REPO_{repoId}']
     }, {
         'url': '/user/create',
         'module': 'graphdb.framework.security',
@@ -16,7 +17,8 @@ PluginRegistry.add('route', [
         'chunk': 'security',
         'controller': 'AddUserCtrl',
         'templateUrl': 'js/angular/security/templates/user.html',
-        'title': 'Create new user'
+        'title': 'Create new user',
+        'allowAuthorities': ['READ_REPO_{repoId}']
     }, {
         'url': '/login',
         'module': 'graphdb.framework.security',
@@ -32,7 +34,8 @@ PluginRegistry.add('route', [
         'chunk': 'security',
         'controller': 'EditUserCtrl',
         'templateUrl': 'js/angular/security/templates/user.html',
-        'title': 'Edit user'
+        'title': 'Edit user',
+        'allowAuthorities': ['READ_REPO_{repoId}']
     }, {
         'url': '/settings',
         'module': 'graphdb.framework.security',
@@ -53,7 +56,8 @@ PluginRegistry.add('route', [
         'chunk': 'security',
         'controller': 'RolesMappingController',
         'templateUrl': 'js/angular/security/templates/roles.html',
-        'title': 'view.roles.mapping.title'
+        'title': 'view.roles.mapping.title',
+        'allowAuthorities': ['READ_REPO_{repoId}']
     }, {
         'url': '/ux-test1',
         'templateUrl': 'pages/ux-test1.html',

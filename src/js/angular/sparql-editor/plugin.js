@@ -8,7 +8,8 @@ PluginRegistry.add('route', {
     'title': 'view.sparql-editor.title',
     'helpInfo': 'view.sparql-editor.helpInfo',
     'reloadOnSearch': false,
-    'documentationUrl': 'sparql-queries.html'
+    'documentationUrl': 'sparql-queries.html',
+    'allowAuthorities': ['READ_REPO_{repoId}']
 });
 
 PluginRegistry.add('main.menu', {

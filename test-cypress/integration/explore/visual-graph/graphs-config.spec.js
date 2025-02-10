@@ -28,6 +28,7 @@ describe('Graphs config', () => {
     });
 
     beforeEach(() => {
+        cy.viewport(1280, 1000);
         cy.presetRepository(repositoryId);
     });
 
@@ -403,6 +404,11 @@ describe('Graphs config', () => {
         MainMenuSteps.clickOnMenuImport();
         // Then I expect a confirmation for leaving the page
         ModalDialogSteps.getDialog().should('be.visible');
+        // Confirm page exit.
+        // If not,the test fails randomly with the following error:
+        // "[Intervention] Blocked attempt to show a 'beforeunload' confirmation panel for a frame
+        // that never had a user gesture since its load. https://www.chromestatus.com/feature/5082396709879808 "
+        ModalDialogSteps.clickOnConfirmButton();
     });
 
     it('Should be able to delete existing graph config', () => {

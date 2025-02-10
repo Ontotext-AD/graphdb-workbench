@@ -7,7 +7,8 @@ PluginRegistry.add('route', {
     'templateUrl': 'pages/connectorsInfo.html',
     'title': 'view.connector.management.title',
     'helpInfo': 'view.connector.management.helpInfo',
-    'documentationUrl': 'connectors.html'
+    'documentationUrl': 'connectors.html',
+    'allowAuthorities': ['READ_REPO_{repoId}']
 });
 
 PluginRegistry.add('main.menu', {
