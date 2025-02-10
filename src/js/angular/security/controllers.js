@@ -1,7 +1,7 @@
 import 'angular/core/services';
 import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/openid-auth.service';
-import 'angular/rest/security.rest.service';
+import 'angular/core/services/security.service';
 import {UserRole, UserType} from 'angular/utils/user-utils';
 import 'angular/security/directives/custom-prefix-tags-input.directive';
 import {READ_REPO, READ_REPO_PREFIX, SYSTEM_REPO, WRITE_REPO, WRITE_REPO_PREFIX} from "./services/constants";
@@ -12,7 +12,7 @@ const modules = [
     'ui.bootstrap',
     'graphdb.framework.core.services.jwtauth',
     'graphdb.framework.core.services.openIDService',
-    'graphdb.framework.rest.security.service',
+    'graphdb.framework.core.services.security-service',
     'toastr',
     'ngTagsInput'
 ];
@@ -80,8 +80,8 @@ securityModule.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth',
         };
     }]);
 
-securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService', 'SecurityRestService', '$translate',
-    function ($scope, $uibModal, toastr, $window, $jwtAuth, $timeout, ModalService, SecurityRestService, $translate) {
+securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService', 'SecurityService', '$translate',
+    function ($scope, $uibModal, toastr, $window, $jwtAuth, $timeout, ModalService, SecurityService, $translate) {
 
         $scope.loader = true;
         $scope.securityEnabled = function () {
@@ -97,7 +97,7 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
             return $jwtAuth.isFreeAccessEnabled();
         };
         $scope.getUsers = function () {
-            SecurityRestService.getUsers()
+            SecurityService.getUsers()
                 .success(function (data) {
                     $scope.users = data;
                     for (let i = 0; i < $scope.users.length; i++) {
@@ -134,7 +134,7 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
 
         $scope.toggleFreeAccess = function (updateFreeAccess) {
             if (!$jwtAuth.isFreeAccessEnabled() || ($jwtAuth.isFreeAccessEnabled() && updateFreeAccess)) {
-                SecurityRestService.getFreeAccess().then(function (res) {
+                SecurityService.getFreeAccess().then(function (res) {
                     const authorities = res.data.authorities;
                     const appSettings = res.data.appSettings || {
                         'DEFAULT_SAMEAS': true,
@@ -204,7 +204,7 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
                 warning: true
             }).result.then(function () {
                 $scope.loader = true;
-                SecurityRestService.deleteUser(username).success(function () {
+                SecurityService.deleteUser(username).success(function () {
                     $scope.getUsers();
                 }).error(function (data) {
                     const msg = getError(data);
@@ -484,8 +484,8 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
         };
     }]);
 
-securityModule.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService', '$translate',
-    function ($scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $controller, SecurityRestService, ModalService, $translate) {
+securityModule.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityService', 'ModalService', '$translate',
+    function ($scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $controller, SecurityService, ModalService, $translate) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.password.placeholder'}));
 
@@ -532,7 +532,7 @@ securityModule.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window'
 
         $scope.createUserHttp = function () {
             $scope.loader = true;
-            SecurityRestService.createUser({
+            SecurityService.createUser({
                 username: $scope.user.username,
                 pass: $scope.user.password,
                 appSettings: $scope.user.appSettings,
@@ -593,8 +593,8 @@ securityModule.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window'
         };
     }]);
 
-securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window', '$routeParams', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService', '$translate',
-    function ($scope, $http, toastr, $window, $routeParams, $timeout, $location, $jwtAuth, $controller, SecurityRestService, ModalService, $translate) {
+securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window', '$routeParams', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityService', 'ModalService', '$translate',
+    function ($scope, $http, toastr, $window, $routeParams, $timeout, $location, $jwtAuth, $controller, SecurityService, ModalService, $translate) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
 
@@ -624,7 +624,7 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
             $location.url('settings');
         }
         $scope.getUserData = function () {
-            SecurityRestService.getUser($scope.params.userId).success(function (data) {
+            SecurityService.getUser($scope.params.userId).success(function (data) {
                 $scope.userData = data;
                 $scope.user = {username: $scope.userData.username};
                 $scope.user.password = '';
@@ -660,7 +660,7 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
 
         $scope.updateUserHttp = function () {
             $scope.loader = true;
-            SecurityRestService.updateUser({
+            SecurityService.updateUser({
                 username: $scope.user.username,
                 pass: ($scope.noPassword) ? '' : $scope.user.password || undefined,
                 appSettings: $scope.user.appSettings,
@@ -692,12 +692,12 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
         };
     }]);
 
-securityModule.controller('RolesMappingController', ['$scope', 'toastr', 'SecurityRestService', '$translate',
-    function ($scope, toastr, SecurityRestService, $translate) {
+securityModule.controller('RolesMappingController', ['$scope', 'toastr', 'SecurityService', '$translate',
+    function ($scope, toastr, SecurityService, $translate) {
 
         $scope.debugMapping = function (role, mapping) {
             const method = mapping.split(':');
-            SecurityRestService.getRolesMapping({
+            SecurityService.getRolesMapping({
                 role: role,
                 method: method[1],
                 mapping: method[0]
@@ -705,7 +705,7 @@ securityModule.controller('RolesMappingController', ['$scope', 'toastr', 'Securi
         };
 
         const loadRoles = function () {
-            SecurityRestService.getRoles()
+            SecurityService.getRoles()
                 .success(function (data) {
                     $scope.roleMappings = data;
                     $scope.roles = _.keys($scope.roleMappings);
