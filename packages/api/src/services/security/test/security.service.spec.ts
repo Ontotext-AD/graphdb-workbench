@@ -16,7 +16,7 @@ describe('SecurityService', () => {
     // Given the context service does not have an authenticated user
     expect(ServiceProvider.get(SecurityContextService).getAuthenticatedUser()).toBeUndefined();
     // And I create a mock authenticated user with updated app settings
-    const updatedUser: AuthenticatedUser = {
+    const updatedUser = new AuthenticatedUser({
       username: 'testuser',
       appSettings: {
         COOKIE_CONSENT: {
@@ -25,7 +25,7 @@ describe('SecurityService', () => {
           updatedAt: 1738753714185
         }
       }
-    } as unknown as AuthenticatedUser;
+    });
 
     TestUtil.mockResponse(new ResponseMock('/rest/security/users/testuser').setResponse({}));
 
