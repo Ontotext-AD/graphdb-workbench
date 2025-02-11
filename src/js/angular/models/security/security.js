@@ -29,3 +29,11 @@ export class UpdateUserPayload {
         this._appSettings = value;
     }
 }
+
+// The User UI model class that dynamically accepts properties
+export class UserModel {
+    constructor(data = {}) {
+        Object.assign(this, data);
+    }
+}
+

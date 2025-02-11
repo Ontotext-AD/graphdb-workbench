@@ -3,3 +3,7 @@ export const READ_REPO = 'READ_REPO';
 export const READ_REPO_PREFIX = 'READ_REPO_';
 export const WRITE_REPO = 'WRITE_REPO';
 export const WRITE_REPO_PREFIX = 'WRITE_REPO_';
+export const GRAPHQL_PREFIX = 'GRAPHQL_';
+export const GRAPHQL_SUFFIX = 'GRAPHQL';
+export const SUFFIX_DELIMITER = ':';
+export const GRAPHQL_SUFFIX_WITH_DELIMITER = SUFFIX_DELIMITER + GRAPHQL_SUFFIX;

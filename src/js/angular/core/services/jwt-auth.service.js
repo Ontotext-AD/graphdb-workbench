@@ -88,8 +88,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
              * @param {boolean} justLoggedIn Indicates that the user just logged in.
              */
             this.getAuthenticatedUserFromBackend = function(noFreeAccessFallback, justLoggedIn) {
-                SecurityService.getAuthenticatedUser().
-                success(function(data, status, headers) {
+                SecurityService.getAuthenticatedUser().then(function(data) {
                     const token = AuthTokenService.getAuthToken();
                     if (token && token.startsWith('GDB')) {
                         // There is a previous authentication via JWT, it's still valid
@@ -108,7 +107,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         that.authenticate(data, ''); // this will emit securityInit
                         // console.log('external authentication ok');
                     }
-                }).error(function () {
+                }).catch(function () {
                     if (noFreeAccessFallback || !that.freeAccess) {
                         $rootScope.redirectToLogin(false, justLoggedIn);
                     } else {
