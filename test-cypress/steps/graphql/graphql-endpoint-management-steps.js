@@ -83,7 +83,8 @@ export class GraphqlEndpointManagementSteps {
                 cy.get('td').eq(2).should('contain', endpointInfo.label);
                 const isDefaultCheck = endpointInfo.default ? 'be.checked' : 'not.be.checked'
                 cy.get('td').eq(3).find('.endpoint-default-state input[type="radio"]').should(isDefaultCheck);
-                cy.get('td').eq(4).should('contain', endpointInfo.active ? 'yes' : 'no');
+                const isActiveCheck = endpointInfo.active ? 'be.checked' : 'not.be.checked'
+                cy.get('td').eq(4).find('.toggle-active-state input[type="checkbox"]').should(isActiveCheck);
                 cy.get('td').eq(5).should('contain', endpointInfo.modified);
                 cy.get('td').eq(6).should('contain', endpointInfo.types);
                 cy.get('td').eq(7).should('contain', endpointInfo.properties);
@@ -119,5 +120,17 @@ export class GraphqlEndpointManagementSteps {
 
     static setEndpointAsDefault(index) {
         this.getEndpointDefaultStatusRadio(index).check();
+    }
+
+    static getEndpointActiveStateToggle(index) {
+        return this.getEndpointsInfo().eq(index).find('.toggle-active-state');
+    }
+
+    static getEndpointActiveStateToggleCheckbox(index) {
+        return this.getEndpointActiveStateToggle(index).find('input[type="checkbox"]');
+    }
+
+    static toggleEndpointActiveState(index) {
+        this.getEndpointActiveStateToggle(index).click();
     }
 }

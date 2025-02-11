@@ -89,6 +89,12 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
      */
     let endpointsInfoLoader = undefined;
 
+    /**
+     * A flag indicating if the endpoint active state is being changed.
+     * @type {boolean}
+     */
+    $scope.changingEndpointActiveState = false;
+
     // =========================
     // Public methods
     // =========================
@@ -105,15 +111,15 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
         $scope.operationInProgress = true;
         const updateEndpointRequest = endpointInfo.toUpdateEndpointRequest($scope.endpointConfigurationSettings);
         GraphqlService.editEndpointConfiguration($repositories.getActiveRepository(), endpointInfo.endpointId, updateEndpointRequest.getUpdateDefaultEndpointRequest())
-            .then(() => {
+            .then((endpointInfo) => {
                 toastr.success(
                     $translate.instant('graphql.endpoints_management.table.actions.set_as_default.success',
                         {endpointId: endpointInfo.endpointId})
                 );
-                return loadEndpointsInfo(false);
+                $scope.endpointsInfoList.updateEndpoint(endpointInfo);
             })
             .catch((error) => {
-                // something wen wrong while setting the default endpoint so we need to revert the changes
+                // something went wrong while setting the default endpoint so we need to revert the changes
                 endpointInfo.default = true;
                 $scope.selectedDefaultEndpoint.default = false;
                 $scope.selectedDefaultEndpoint = previousDefaultEndpoint;
@@ -164,6 +170,38 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
     $scope.startCreateEndpointWizard = () => {
         GraphqlContextService.startCreateEndpointWizard();
     };
+
+    /**
+     * Toggles the active state of the given endpoint.
+     * @param {GraphqlEndpointInfo} endpointInfo The endpoint to toggle the active state for.
+     */
+    $scope.toggleEndpointActiveState = (endpointInfo) => {
+        $scope.changingEndpointActiveState = true;
+        const newActiveState = !endpointInfo.active;
+        const updateEndpointRequest = endpointInfo.toUpdateEndpointRequest($scope.endpointConfigurationSettings);
+        GraphqlService.editEndpointConfiguration($repositories.getActiveRepository(), endpointInfo.endpointId, updateEndpointRequest.getUpdateEndpointActiveStateRequest())
+            .then((updatedEndpoint) => {
+                const operationKey = newActiveState ? 'activated' : 'deactivated';
+                toastr.success(
+                    $translate.instant(
+                        `graphql.endpoints_management.table.actions.toggle_active_state.${operationKey}.success`,
+                        {endpointId: updatedEndpoint.endpointId}
+                    )
+                );
+                // Update the endpoint in place in the list. This will trigger the UI update and the user can see the
+                // change immediately, e.g. the updatedAt field will be updated.
+                $scope.endpointsInfoList.updateEndpoint(updatedEndpoint);
+            })
+            .catch((error) => {
+                // something went wrong, revert the active state
+                endpointInfo.active = !newActiveState;
+                toastr.error(getError(error));
+                console.error('Error updating endpoint active state', error);
+            })
+            .finally(() => {
+                $scope.changingEndpointActiveState = false;
+            });
+    }
 
     $scope.importSchema = () => {
         // TODO: implement schema import
@@ -220,7 +258,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
     $scope.onShowEndpointReport = (endpointInfo) => {
         GraphqlService.getEndpointConfigurationReport($repositories.getActiveRepository(), endpointInfo.endpointId)
             .then((endpointConfiguration) => {
-                return showReportModal(endpointConfiguration.getReport(endpointInfo.endpointId));
+                showReportModal(endpointConfiguration.getReport(endpointInfo.endpointId));
             })
             .catch((error) => {
                 toastr.error(getError(error));

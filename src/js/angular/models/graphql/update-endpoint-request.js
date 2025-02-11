@@ -52,12 +52,30 @@ export class UpdateEndpointRequest {
         this._options = data.options;
     }
 
+    /**
+     * Builds a request object to update the endpoint default state.
+     * @returns {{default: boolean}}
+     */
     getUpdateDefaultEndpointRequest() {
         return {
             default: this.default
         };
     }
 
+    /**
+     * Builds a request object to update the endpoint active state.
+     * @returns {{active: boolean}}
+     */
+    getUpdateEndpointActiveStateRequest() {
+        return {
+            active: !this.active
+        };
+    }
+
+    /**
+     * Builds a request object to update the endpoint settings.
+     * @returns {{options: (Object<string, *>|null)}}
+     */
     getUpdateEndpointSettingsRequest() {
         return {
             options: this.options ? this.options.toFlatJSON() : null

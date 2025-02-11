@@ -17,7 +17,7 @@ export const endpointsInfoListMapper = (data, repositoryId) => {
 
 /**
  * Maps the response from the server to a GraphqlEndpointInfo model.
- * @param {object} data - The response from the server.
+ * @param {*} data - The response from the server.
  * @param {string} repositoryId - The repository id.
  * @return {GraphqlEndpointInfo|undefined}
  */

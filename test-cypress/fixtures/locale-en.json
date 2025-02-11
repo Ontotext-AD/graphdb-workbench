@@ -802,14 +802,31 @@
                     },
                     "delete_endpoint": {
                         "label": "Delete endpoint",
-                        "tooltip": "Delete the GraphQL endpoint"
+                        "tooltip": "Delete the GraphQL endpoint",
+                        "confirmation": {
+                            "title": "Delete endpoint",
+                            "body": "Are you sure you want to delete the GraphQL endpoint '{{name}}'?"
+                        },
+                        "success": "The GraphQL endpoint '{{name}}' was deleted successfully."
                     },
                     "export_schema": {
                         "label": "Export schema definition",
                         "tooltip": "Export the GraphQL endpoint schema definition"
                     },
+                    "view_report": {
+                        "label": "View report",
+                        "tooltip": "Opens the report in a modal dialog"
+                    },
                     "set_as_default": {
                         "success": "Successfully set \"{{endpointId}}\" endpoint as default"
+                    },
+                    "toggle_active_state": {
+                        "activated": {
+                            "success": "The endpoint \"{{endpointId}}\" was successfully activated"
+                        },
+                        "deactivated": {
+                            "success": "The endpoint \"{{endpointId}}\" was successfully deactivated"
+                        }
                     }
                 },
                 "messages": {
@@ -865,7 +882,7 @@
                             "vocabulary_prefix": {
                                 "label": "Vocabulary prefix",
                                 "tooltip": "Vocabulary prefix",
-                                "placeholder": "Select prefix"
+                                "placeholder": "Select prefix (from source repository)"
                             },
                             "endpoint_label": {
                                 "label": "Endpoint label",
@@ -877,21 +894,20 @@
                             "use_all_graphs": {
                                 "label": "Use all graphs",
                                 "messages": {
-                                    "all_graphs": "All {{count}} graphs are included for endpoint creation",
-                                    "no_graphs": "No graphs were found in the selected repository."
+                                    "use_all_data": "All data from the repository will be used for endpoint creation"
                                 }
                             },
                             "use_shacl_shape_graph": {
                                 "label": "Use SHACL shape graph",
                                 "messages": {
                                     "all_shacl_shape_graphs": "All {{count}} SHACL shape graphs are included for endpoint creation",
-                                    "no_graphs": "No SHACL shape graphs were found in the selected repository."
+                                    "no_graphs": "No SHACL shape graphs were found in the selected repository"
                                 }
                             },
                             "pick_graphs": {
                                 "label": "Select one or more graphs",
                                 "messages": {
-                                    "no_graphs": "No graphs were found in the selected repository."
+                                    "no_graphs": "No graphs were found in the selected repository"
                                 }
                             }
                         },
@@ -905,6 +921,34 @@
                     "endpoint_parameters": {
                         "title": "Parameters",
                         "form": {}
+                    }
+                },
+                "generate_endpoint": {
+                    "title": "Create",
+                    "overview": {
+                        "title": "Overview",
+                        "for_shapes": {
+                            "info": "{{endpointsCount}} GraphQL endpoints will be created in \"{{activeRepoId}}\" repository based on the GraphQL schema shapes listed below. To modify the selection, navigate back to Step 1 (Select schema source).",
+                            "included_endpoints": "Included GraphQL schema shapes",
+                            "generated_endpoints": "GraphQL endpoints",
+                            "manage_endpoints_info": "Navigate to <a href=\"{{managementUrl}}\">Endpoint Management</a> to manage the endpoints",
+                            "explore_in_playground_link_tooltip": "Explore in Playground (opens in a new tab)",
+                            "view_report_link": "View report"
+                        }
+                    },
+                    "generation_failure_report": {
+                        "title": "GraphQL endpoint creation failed",
+                        "reason_message": "GraphQL endpoint \"{{endpointId}}\" creation failed because of errors/warnings during schema definition generation.",
+                        "errors": "Validation error [{{errorCount}}]",
+                        "warnings": "Warning [{{warningCount}}]",
+                        "actions": {
+                            "download_report": {
+                                "label": "Download report"
+                            }
+                        }
+                    },
+                    "messages": {
+                        "generation_progress": "Endpoints creation in progress..."
                     }
                 },
                 "shapes_multiselect": {
@@ -975,7 +1019,7 @@
                         }
                     },
                     "generate_endpoint": {
-                        "label": "Generate"
+                        "label": "Create endpoint"
                     }
                 }
             },

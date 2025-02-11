@@ -814,11 +814,19 @@
                         "tooltip": "Exporter la définition du schéma du point de terminaison GraphQL"
                     },
                     "view_report": {
-                        "label": "[Voir le rapport]",
+                        "label": "Voir le rapport",
                         "tooltip": "Ouvre le rapport dans une boîte de dialogue modale"
                     },
                     "set_as_default": {
                         "success": "Le point de terminaison \"{{endpointId}}\" a été défini avec succès comme point de terminaison par défaut"
+                    },
+                    "toggle_active_state": {
+                        "activated": {
+                            "success": "Le point de terminaison \"{{endpointId}}\" a été activé avec succès"
+                        },
+                        "deactivated": {
+                            "success": "Le point de terminaison \"{{endpointId}}\" a été désactivé avec succès"
+                        }
                     }
                 },
                 "messages": {
@@ -925,7 +933,7 @@
                             "generated_endpoints": "Points de terminaison GraphQL",
                             "manage_endpoints_info": "Accédez à la <a href=\"{{managementUrl}}\">gestion des points de terminaison</a> pour gérer les points de terminaison",
                             "explore_in_playground_link_tooltip": "Explorer dans Playground (s'ouvre dans un nouvel onglet)",
-                            "view_report_link": "[Voir le rapport]"
+                            "view_report_link": "Voir le rapport"
                         }
                     },
                     "generation_failure_report": {
