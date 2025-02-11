@@ -1,0 +1,25 @@
+<link href="css/graphql/graphql-endpoint-configuration-modal.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+<div class="modal-header">
+    <h3 class="modal-title">{{'graphql.endpoints_management.endpoint_configuration_modal.title' | translate}}</h3>
+</div>
+<div class="modal-body graphql-endpoint-configuration-modal-body">
+    <div class="graphql-endpoint-configuration-loader" onto-loader-new hide-message="true"
+         size="100" ng-show="loadingEndpointConfigurationSettings"></div>
+
+    <dynamic-form ng-if="!loadingEndpointConfigurationSettings" fields="endpointConfigurationSettings.settings"
+                  on-validity-change="handleValidityChange(valid)"
+                  form-ctrl="formCtrl">
+    </dynamic-form>
+</div>
+<div class="modal-footer mt-0">
+    <button type="button" class="btn btn-secondary cancel-btn" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
+    <button id="graphql-endpoint-configuration-modal-submit"
+            class="btn btn-primary"
+            ng-disabled="!endpointConfigurationSettingsValid || savingEndpointSettings || formCtrl.$pristine"
+            ng-click="ok()" type="submit">
+        <span>{{'save.changes.label' | translate}}</span>
+        <span class="saving-endpoint-settings" ng-if="savingEndpointSettings" onto-loader-fancy hide-message="true"
+              size="15"></span>
+    </button>
+</div>

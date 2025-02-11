@@ -57,6 +57,23 @@ export class GraphqlStubs {
             });
         }).as('rickmorty');
     }
+
+    static stubGetEndpointConfiguration(repositoryId, endpoint, fixture = 'graphql-endpoint-configuration.json',  delay = 0) {
+        console.log(endpoint)
+        console.log(`/rest/repositories/${repositoryId}/manage/graphql/${endpoint}/config`)
+        cy.intercept('GET', `/rest/repositories/${repositoryId}/manage/graphql/${endpoint}/config`, {
+            fixture: `/graphql/endpoints/${fixture}`,
+            statusCode: 200,
+            delay: delay
+        }).as('get-endpoint-configuration');
+    }
+
+    static stubSaveEndpointConfiguration(repositoryId, endpoint,  delay = 0, shouldFail = false) {
+        cy.intercept('PUT', `/rest/repositories//${repositoryId}/manage/graphql/${endpoint}/config`, {
+            statusCode: shouldFail ? 400 : 200,
+            delay: delay
+        }).as('save-endpoint-configuration');
+    }
 }
 
 const defaultHeaders = {

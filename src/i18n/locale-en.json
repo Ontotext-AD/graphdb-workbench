@@ -796,6 +796,13 @@
                 "labels": {
                     "description": "Description"
                 }
+            },
+            "endpoint_configuration_modal": {
+                "title": "Configure GraphQL endpoint",
+                "messages": {
+                    "error_saving_configuration": "Error saving endpoint configuration",
+                    "success_saving_configuration": "Endpoint configuration saved"
+                }
             }
         },
         "create_endpoint": {
@@ -2128,6 +2135,7 @@
     "common.error": "Error",
     "common.warning": "Warning",
     "common.loading": "Loading...",
+    "common.select": "Select...",
     "common.on.btn": "ON",
     "common.off.btn": "OFF",
     "common.search.btn": "Search",

@@ -6,6 +6,9 @@ import {prefixModelToSelectMenuOptionsMapper} from "../../graphql/services/prefi
 import {
     shaclShapeGraphListOptionsMapper
 } from "../../graphql/services/shacl-shape-list.mapper";
+import {GraphqlEndpointConfiguration} from "../../models/graphql/graphql-endpoint-configuration";
+import {dynamicFormModelMapper} from "../../rest/mappers/dynamic-form-fied-mapper";
+import {GraphqlEndpointConfigurationSettings} from "../../models/graphql/graphql-endpoint-configuration-setting";
 
 const modules = ['graphdb.framework.rest.graphql.service'];
 
@@ -34,7 +37,9 @@ function GraphqlService(GraphqlRestService) {
      */
     const getEndpointsAsSelectMenuOptions = (repositoryId) => {
         return GraphqlRestService.getEndpoints(repositoryId)
-            .then((response) => endpointsToSelectMenuOptionsMapper(response.data));
+            .then((response) => {
+                return endpointsToSelectMenuOptionsMapper(response.data)
+            });
     };
 
     /**
@@ -77,12 +82,39 @@ function GraphqlService(GraphqlRestService) {
             .then((response) => shaclShapeGraphListOptionsMapper(response.data));
     }
 
+    /**
+     * Get the GraphQL endpoint configuration settings.
+     * @param {string} repositoryId - The repository id.
+     * @param {string} endpointId - The endpoint id.
+     * @returns {Promise<DynamicFormField[]>}
+     */
+    const getGraphqlEndpointConfigurationSettings = (repositoryId, endpointId) => {
+        return GraphqlRestService.getGraphqlEndpointConfigurationSettings(repositoryId, endpointId)
+            .then((response) => {
+                const fieldsModel = dynamicFormModelMapper(response.data);
+                return new GraphqlEndpointConfigurationSettings(fieldsModel);
+            });
+    };
+
+    /**
+     * Save the GraphQL endpoint configuration settings.
+     * @param {string} repositoryId - The repository id.
+     * @param {string} endpointId - The endpoint id.
+     * @param endpointSettings - The endpoint settings.
+     * @returns {Promise<unknown> | *}
+     */
+    const saveEndpointConfigurationSettings = (repositoryId, endpointId, endpointSettings) => {
+        return GraphqlRestService.saveEndpointConfigurationSettings(repositoryId, endpointId, endpointSettings);
+    };
+
     return {
         getEndpoints,
         getEndpointsAsSelectMenuOptions,
         getEndpointsInfo,
         getGraphqlSchemaShapes,
         getPrefixListAsSelectOptions,
-        getShaclShapeGraphs
+        getShaclShapeGraphs,
+        getGraphqlEndpointConfigurationSettings,
+        saveEndpointConfigurationSettings
     };
 }
