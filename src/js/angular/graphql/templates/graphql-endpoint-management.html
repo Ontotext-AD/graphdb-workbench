@@ -94,8 +94,10 @@
                     <span ng-if="!endpoint.default" class="is-not-default">no</span>
                 </td>
                 <td>
-                    <span ng-if="endpoint.active" class="is-active">yes</span>
-                    <span ng-if="!endpoint.active" class="is-not-active">no</span>
+                    <span ng-click="toggleEndpointActiveState(endpoint)">
+                        <input type="checkbox" class="switch toggle-active-state" ng-checked="endpoint.active"/>
+                        <label></label>
+                    </span>
                 </td>
                 <td>{{endpoint.lastModified}}</td>
                 <td>{{endpoint.objectsCount}}</td>
