@@ -1,5 +1,5 @@
 import {GraphqlEndpointInfo, GraphqlEndpointsInfoList} from "../../models/graphql/graphql-endpoints-info";
-import {resolveGraphqlEndpoint} from "../models/endpoints";
+import {resolveGraphqlEndpoint} from "./endpoint-utils";
 
 /**
  * Maps the response from the server to a GraphqlEndpointsInfoList model.

@@ -216,6 +216,14 @@ export class GraphqlEndpointsInfoList {
             });
     }
 
+    /**
+     * Finds the default endpoint.
+     * @returns {GraphqlEndpointInfo|undefined} - The default endpoint if any.
+     */
+    findDefaultEndpoint() {
+        return this._endpoints.find((endpoint) => endpoint.default);
+    }
+
     get endpoints() {
         return this._endpoints;
     }

@@ -1,3 +1,16 @@
+/**
+ * @typedef {Object} PartialUpdateEndpointRequest
+ * @property {string} [id]
+ * @property {string} [label]
+ * @property {string} [description]
+ * @property {boolean} [active]
+ * @property {boolean} [default]
+ * @property {GraphqlEndpointConfigurationSettings} [options]
+ */
+
+/**
+ * A class representing the update endpoint request.
+ */
 export class UpdateEndpointRequest {
     /**
      * @type {string}
@@ -31,22 +44,23 @@ export class UpdateEndpointRequest {
     _options
 
     constructor(data) {
-        this._id = data.id || '';
-        this._label = data.label || '';
-        this._description = data.description || '';
-        this._active = data.active || false;
-        this._default = data.default || false;
+        this._id = data.id;
+        this._label = data.label;
+        this._description = data.description;
+        this._active = data.active;
+        this._default = data.default;
         this._options = data.options;
     }
 
-    toJSON() {
+    getUpdateDefaultEndpointRequest() {
         return {
-            id: this.id,
-            label: this.label,
-            description: this.description,
-            active: this.active,
-            default: this.default,
-            options: this.options.toFlatJSON()
+            default: this.default
+        };
+    }
+
+    getUpdateEndpointSettingsRequest() {
+        return {
+            options: this.options ? this.options.toFlatJSON() : null
         };
     }
 

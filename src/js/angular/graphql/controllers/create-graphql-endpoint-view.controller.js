@@ -12,6 +12,7 @@ import 'angular/graphql/directives/configure-endpoint.directive';
 import 'angular/graphql/directives/generate-endpoint.directive';
 import {GraphqlEventName} from "../services/graphql-context.service";
 import {GraphqlEndpointConfiguration} from "../../models/graphql/graphql-endpoint-configuration";
+import {resolvePlaygroundUrlWithEndpoint} from "../services/endpoint-utils";
 
 const modules = [
     'graphdb.framework.core.services.graphql-service',
@@ -191,7 +192,7 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
      * @param {EndpointGenerationReport} endpointInfo The endpoint info.
      */
     const onExploreEndpointInPlayground = (endpointInfo) => {
-        const url = `${endpointUrl.PLAYGROUND}?endpointId=${endpointInfo.endpointId}`;
+        const url = resolvePlaygroundUrlWithEndpoint(endpointInfo.endpointId);
         GraphqlContextService.setSelectedEndpoint(endpointInfo);
         window.open(url, '_blank', 'noopener,noreferrer');
     }

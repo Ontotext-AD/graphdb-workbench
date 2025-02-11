@@ -1,6 +1,6 @@
 import {GraphqlEndpoint, GraphqlEndpointList} from "../../models/graphql/graphql-endpoints";
 import {SelectMenuOptionsModel} from "../../models/form-fields";
-import {resolveGraphqlEndpoint} from "../models/endpoints";
+import {resolveGraphqlEndpoint} from "./endpoint-utils";
 
 /**
  * Maps the response from the server to a GraphqlEndpointList model.
@@ -48,7 +48,8 @@ export const endpointsToSelectMenuOptionsMapper = (data, repositoryId) => {
             label: endpoint.id,
             selected: endpoint.default,
             data: {
-                active: endpoint.active
+                active: endpoint.active,
+                default: endpoint.default
             }
         });
     });

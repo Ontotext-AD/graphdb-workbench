@@ -108,7 +108,7 @@ function GraphqlEndpointConfigurationModalController($scope, $uibModalInstance, 
     const save = () => {
         $scope.savingEndpointSettings = true;
         const updateEndpointRequest = $scope.endpointConfiguration.toUpdateEndpointRequest($scope.endpointConfigurationSettings);
-        GraphqlService.editEndpointConfiguration($scope.repositoryId, $scope.endpointConfiguration.endpointId, updateEndpointRequest)
+        GraphqlService.editEndpointConfiguration($scope.repositoryId, $scope.endpointConfiguration.endpointId, updateEndpointRequest.getUpdateEndpointSettingsRequest())
             .then(() => {
                 $uibModalInstance.close();
                 toastr.success($translate.instant('graphql.endpoints_management.endpoint_configuration_modal.messages.success_saving_configuration'));

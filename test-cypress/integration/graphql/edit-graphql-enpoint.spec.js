@@ -68,11 +68,6 @@ describe('Graphql: edit endpoint settings', () => {
         EditGraphqlEndpointSteps.getSavingLoader().should('be.visible');
         cy.wait('@save-endpoint-configuration').then((interception) => {
             expect(interception.request.body).to.deep.equal({
-                "id": "swapi",
-                "label": "Ontotext Star Wars Ontology",
-                "description": "",
-                "active": true,
-                "default": true,
                 "options": {
                     "enableTypeCount": true,
                     "enableCollectionCount": false,
