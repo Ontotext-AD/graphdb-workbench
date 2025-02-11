@@ -1,6 +1,7 @@
-import {Component, h, Prop, Event, EventEmitter} from '@stencil/core';
+import {Component, h, Prop, Event, EventEmitter, State} from '@stencil/core';
 import {TranslationService} from '../../services/translation.service';
 import {ToggleEventPayload} from '../../models/toggle-switch/toggle-event-payload';
+import {SubscriptionList} from '../../../../api/src/models/common';
 
 @Component({
   tag: 'onto-toggle-switch',
@@ -14,13 +15,14 @@ import {ToggleEventPayload} from '../../models/toggle-switch/toggle-event-payloa
  * Handles the checked status change and emits the new status as an event.
  */
 export class OntoToggleSwitch {
-  private readonly id = window.crypto.randomUUID();
-  private tooltipLabel: string;
+  private readonly subscriptions = new SubscriptionList();
+
+  @State() private tooltipLabel: string;
 
   /**
    * Determines whether the toggle switch is checked or not.
    */
-  @Prop({ mutable: true }) checked = false;
+  @Prop({mutable: true}) checked = false;
 
   /**
    * The key used for translating the label text, if supplied.
@@ -48,31 +50,41 @@ export class OntoToggleSwitch {
     this.toggleChanged.emit({checked: this.checked, context: this.context});
   };
 
-  private onLanguageChange() {
-    if(this.tooltipTranslationKey) {
-      TranslationService.onTranslate(this.tooltipTranslationKey, [], (translation) => {
-        this.tooltipLabel = translation;
-      });
+  private subscribeToLanguageChange() {
+    if (this.tooltipTranslationKey) {
+      this.subscriptions.add(
+        TranslationService.onTranslate(this.tooltipTranslationKey, [], (translation) => {
+          this.tooltipLabel = translation;
+        }));
     }
   }
 
+  disconnectedCallback(): void {
+    this.subscriptions.unsubscribeAll();
+  }
+
   componentWillLoad() {
-    this.onLanguageChange();
+    this.subscribeToLanguageChange();
   }
 
   render() {
     return (
-      <section id={this.id} key={this.id}>
+      <section>
         {this.labelKey &&
           <label>
             <strong>
-              <translate-label labelKey={this.labelKey}></translate-label>&nbsp;
+              <translate-label labelKey={this.labelKey}></translate-label>
+              &nbsp;
             </strong>
           </label>
         }
-        <span class="toggle-switch" onClick={this.toggle} tooltip-content={this.tooltipLabel} tooltip-placement="top">
+        <span class="toggle-switch"
+              onClick={this.toggle}
+              tooltip-append-to="parent"
+              tooltip-content={this.tooltipLabel}
+              tooltip-placement="top">
           <input type="checkbox" checked={this.checked}/>
-          <label htmlFor={this.id}></label>
+          <label></label>
         </span>
       </section>
     );
