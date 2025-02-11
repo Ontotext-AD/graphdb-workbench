@@ -21,7 +21,7 @@ export class OntoTooltipConfiguration {
    * - ```"appendTo: 'parent'``` - append to reference's parentNode;
    * - ```" and "appendTo: element"``` - append to an Element.
    */
-  appendTo = () => document.body;
+  appendTo: Element | 'parent' | ((ref: Element) => Element) = () => document.body;
 
   /**
    * The content of the tooltip.
@@ -89,4 +89,14 @@ export class OntoTooltipConfiguration {
     this.theme = theme || 'onto-tooltip';
     return this;
   }
+
+  setAppendTo(appendTo?: string): OntoTooltipConfiguration {
+    this.appendTo = this.getAppendToTarget(appendTo);
+    return this;
+  }
+
+  private getAppendToTarget(appendToAttribute?: string): Element | 'parent' | ((ref: Element) => Element) {
+    return appendToAttribute === 'parent' ? appendToAttribute : () => document.body;
+  }
 }
+
