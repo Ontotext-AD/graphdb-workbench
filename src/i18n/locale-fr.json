@@ -792,6 +792,9 @@
                     "export_schema": {
                         "label": "Définition du schéma d'exportation",
                         "tooltip": "Exporter la définition du schéma du point de terminaison GraphQL"
+                    },
+                    "set_as_default": {
+                        "success": "Le point de terminaison \"{{endpointId}}\" a été défini avec succès comme point de terminaison par défaut"
                     }
                 },
                 "messages": {

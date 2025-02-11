@@ -59,14 +59,51 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, $ui
     $scope.filterTerm = '';
 
     /**
-     * Flag indicating if an endpoint is being deleted.
+     * The selected default endpoint. There can be only one default endpoint.
+     * @type {GraphqlEndpointInfo|undefined}
+     */
+    $scope.selectedDefaultEndpoint = undefined;
+
+    /**
+     * Flag showing if an operation is in progress.
      * @type {boolean}
      */
-    $scope.deletingEndpoint = false;
+    $scope.operationInProgress = false;
 
     // =========================
     // Public methods
     // =========================
+
+    /**
+     * Sets the given endpoint as the default one for the active repository.
+     * @param {GraphqlEndpointInfo} endpoint The endpoint to set as default.
+     */
+    $scope.setEndpointAsDefault = (endpoint) => {
+        const previousDefaultEndpoint = $scope.selectedDefaultEndpoint;
+        $scope.selectedDefaultEndpoint.default = false;
+        endpoint.default = true;
+        $scope.selectedDefaultEndpoint = endpoint;
+        $scope.operationInProgress = true;
+        GraphqlService.setDefaultEndpoint($repositories.getActiveRepository(), endpoint.endpointId)
+            .then(() => {
+                toastr.success(
+                    $translate.instant('graphql.endpoints_management.table.actions.set_as_default.success',
+                        {endpointId: endpoint.endpointId})
+                );
+                return loadEndpointsInfo(false);
+            })
+            .catch((error) => {
+                // something wen wrong while setting the default endpoint so we need to revert the changes
+                $scope.selectedDefaultEndpoint.default = false;
+                $scope.selectedDefaultEndpoint = previousDefaultEndpoint;
+                $scope.selectedDefaultEndpoint.default = true;
+                toastr.error(getError(error));
+                console.error('Error setting default endpoint', error);
+            })
+            .finally(() => {
+                $scope.operationInProgress = false;
+            });
+    };
 
     /**
      * Toggles the expanded state of the row.
@@ -115,6 +152,11 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, $ui
         // TODO: implement schema export
     };
 
+    /**
+     * Handles the configure endpoint event by opening the endpoint configuration modal.
+     * @param {GraphqlEndpointInfo} endpoint The endpoint to configure.
+     * @returns {*}
+     */
     $scope.onConfigureEndpoint = (endpoint) => {
         return $uibModal.open({
             templateUrl: 'js/angular/graphql/templates/modal/endpoint-configuration-modal.html',
@@ -168,29 +210,31 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, $ui
      * @param {GraphqlEndpointInfo} endpoint The endpoint to delete.
      */
     const deleteEndpoint = (endpoint) => {
-        $scope.deletingEndpoint = true;
+        $scope.operationInProgress = true;
         GraphqlService.deleteEndpoint($repositories.getActiveRepository(), endpoint.endpointId)
             .then(() => {
                 toastr.success(
-                    $translate.instant(
-                        'graphql.endpoints_management.table.actions.delete_endpoint.success',
+                    $translate.instant('graphql.endpoints_management.table.actions.delete_endpoint.success',
                         {name: endpoint.endpointId}));
-                loadEndpointsInfo();
+                $scope.operationInProgress = false;
+                return loadEndpointsInfo(false);
             })
             .catch((error) => {
                 toastr.error(getError(error));
                 console.error('Error deleting GraphQL endpoint', error);
             })
             .finally(() => {
-                $scope.deletingEndpoint = false;
+                $scope.operationInProgress = false;
             });
     }
 
     /**
      * Loads the GraphQL endpoints info.
+     * @param {boolean} showLoader If the global loader should be displayed.
+     * @returns {Promise<void>}
      */
-    const loadEndpointsInfo = () => {
-        $scope.loadingEndpointsInfo = true;
+    const loadEndpointsInfo = (showLoader) => {
+        $scope.loadingEndpointsInfo = showLoader === true;
         return GraphqlService.getEndpointsInfo($repositories.getActiveRepository())
             .then((endpointsInfoList) => {
                 $scope.endpointsInfoList = endpointsInfoList;
@@ -231,10 +275,11 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, $ui
     // =========================
 
     const onInit = () => {
-        loadEndpointsInfo()
+        loadEndpointsInfo(true)
             .then(() => {
                 if ($scope.endpointsInfoList && $scope.endpointsInfoList.endpoints.length > 0) {
                     $scope.hasEndpoints = true;
+                    $scope.selectedDefaultEndpoint = $scope.endpointsInfoList.findDefaultEndpoint();
                 }
             });
     };
