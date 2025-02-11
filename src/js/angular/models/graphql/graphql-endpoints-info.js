@@ -75,7 +75,7 @@ export class GraphqlEndpointInfo {
         this._propertiesCount = data.propertiesCount;
         this._warnings = data.warnings;
         this._errors = data.errors;
-        this._createdSuccessfully = this._active && this._errors === 0;
+        this._createdSuccessfully = this._errors === 0;
     }
 
     /**
@@ -202,6 +202,17 @@ export class GraphqlEndpointsInfoList {
     constructor(endpoints) {
         this._originalEndpointsList = endpoints || [];
         this._endpoints = endpoints || [];
+    }
+
+    /**
+     * Updates a specific endpoint in the list.
+     * @param {GraphqlEndpointInfo} endpointInfo - The endpoint info to update.
+     */
+    updateEndpoint(endpointInfo) {
+        const index = this._endpoints.findIndex((endpoint) => endpoint.endpointId === endpointInfo.endpointId);
+        if (index !== -1) {
+            this._endpoints[index] = endpointInfo;
+        }
     }
 
     /**

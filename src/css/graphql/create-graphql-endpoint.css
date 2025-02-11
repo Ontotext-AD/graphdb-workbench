@@ -104,10 +104,6 @@
     width: 100%;
 }
 
-.generate-endpoint-view .generate-endpoint-container .generation-report-list .endpoint-report-link {
-    color: var(--primary-color);
-}
-
 .generate-endpoint-view .generate-endpoint-container .generation-report-list .status-failed {
     color: var(--color-danger-dark);
 }

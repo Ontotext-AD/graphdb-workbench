@@ -82,7 +82,3 @@
 .graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .status-success {
     color: var(--color-success-dark);
 }
-
-.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint-report-link {
-    color: var(--primary-color);
-}

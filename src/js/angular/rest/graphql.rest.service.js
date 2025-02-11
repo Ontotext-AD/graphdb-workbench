@@ -42,7 +42,7 @@ function GraphqlRestService($http) {
     /**
      * Get the GraphQL schema shapes for the given repository.
      * @param {string} repositoryId The repository ID.
-     * @returns {*|Promise}
+     * @returns {*|Promise<unknown>}
      */
     const getGraphqlSchemaShapes = (repositoryId) => {
         if (DEVELOPMENT) {
@@ -54,7 +54,7 @@ function GraphqlRestService($http) {
     /**
      * Get the prefixes for the given repository.
      * @param {string} repositoryId The repository ID.
-     * @returns {*}
+     * @returns {*|Promise<unknown>}
      */
     const getPrefixes = (repositoryId) => {
         if (DEVELOPMENT) {
@@ -66,7 +66,7 @@ function GraphqlRestService($http) {
     /**
      * Get the SHACL shape graphs for the given repository.
      * @param {string} repositoryId The repository ID.
-     * @returns {*} The SHACL shape graphs response.
+     * @returns {*|Promise<unknown>} The SHACL shape graphs response.
      */
     const getShaclShapeGraphs = (repositoryId) => {
         if (DEVELOPMENT) {
@@ -177,19 +177,6 @@ function GraphqlRestService($http) {
         // });
     };
 
-    /**
-     * Makes the provided GraphQL endpoint the default one for the given repository.
-     * @param {string} repositoryId The ID of the repository.
-     * @param {string} endpointId The ID of the endpoint to be set as default.
-     * @returns {Promise<unknown>} The response from the backend.
-     */
-    const setDefaultEndpoint = (repositoryId, endpointId) => {
-        if (DEVELOPMENT) {
-            return _mockBackend.setDefaultEndpointMock();
-        }
-        return $http.post(`${REPOSITORIES_ENDPOINT}/${repositoryId}/manage/graphql/${endpointId}/default`);
-    }
-
     return {
         getEndpoints,
         getEndpointsInfo,
@@ -202,8 +189,7 @@ function GraphqlRestService($http) {
         editEndpointConfiguration,
         deleteEndpoint,
         generateEndpointFromGraphqlShapes,
-        generateEndpointFromOwl,
-        setDefaultEndpoint
+        generateEndpointFromOwl
     };
 }
 

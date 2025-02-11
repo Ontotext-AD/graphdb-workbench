@@ -87,7 +87,6 @@
                     </a>
                 </td>
                 <td>
-                    <i ng-if="endpoint.createdSuccessfully" class="fa-regular fa-circle-check status-success"></i>
                     <i ng-if="!endpoint.createdSuccessfully" class="fa-regular fa-circle-xmark status-failed"></i>
                     <span ng-if="!endpoint.active"
                           gdb-tooltip="{{'graphql.endpoints_management.table.actions.explore_endpoint.inactive.tooltip' | translate}}"
@@ -97,20 +96,25 @@
                        class="endpoint-link">{{endpoint.endpointId}}</a>
                     <a href="#" ng-if="!endpoint.createdSuccessfully" ng-click="onShowEndpointReport(endpoint)"
                        gdb-tooltip="{{'graphql.endpoints_management.table.actions.view_report.tooltip' | translate}}"
-                       class="endpoint-report-link">{{'graphql.endpoints_management.table.actions.view_report.label' | translate}}</a>
+                       class="endpoint-report-link btn btn-link">{{'graphql.endpoints_management.table.actions.view_report.label' | translate}}</a>
                 </td>
                 <td>{{endpoint.label}}</td>
                 <td>
                     <label class="endpoint-default-state">
                         <input type="radio" ng-model="selectedDefaultEndpoint.default" ng-value="endpoint.default"
+                               ng-disabled="!endpoint.createdSuccessfully"
                                ng-change="setEndpointAsDefault(endpoint)"/>
                     </label>
                 </td>
                 <td>
-                    <span ng-if="endpoint.active" class="is-active">yes</span>
-                    <span ng-if="!endpoint.active" class="is-not-active">no</span>
+                    <span ng-click="!endpoint.createdSuccessfully || toggleEndpointActiveState(endpoint)"
+                          class="toggle-active-state">
+                        <input type="checkbox" class="switch" ng-checked="endpoint.active"
+                               ng-disabled="!endpoint.createdSuccessfully"/>
+                        <label></label>
+                    </span>
                 </td>
-                <td>{{endpoint.lastModified | date: 'yyyy-MM-dd'}}</td>
+                <td title="{{endpoint.lastModified}}">{{endpoint.lastModified | date: 'yyyy-MM-dd'}}</td>
                 <td>{{endpoint.objectsCount}}</td>
                 <td>{{endpoint.propertiesCount}}</td>
                 <td>
