@@ -220,6 +220,17 @@ function GraphqlService(GraphqlRestService) {
             .then((response) => endpointGenerationReportListMapper([response.data], repositoryId));
     }
 
+    /**
+     * Update the active state of the given endpoint.
+     * @param {string} repositoryId The repository id.
+     * @param {string} endpointId The endpoint id.
+     * @param {boolean} newActiveState The new active state.
+     * @returns {*}
+     */
+    const updateEndpointActiveState = (repositoryId, endpointId, newActiveState) => {
+        return GraphqlRestService.updateEndpointActiveState(repositoryId, endpointId, newActiveState);
+    }
+
     return {
         getEndpointsCountToGenerate,
         getGenerateEndpointsOverview,
@@ -237,6 +248,7 @@ function GraphqlService(GraphqlRestService) {
         deleteEndpoint,
         generateEndpointFromGraphqlShapes,
         generateEndpointFromOwl,
-        setDefaultEndpoint
+        setDefaultEndpoint,
+        updateEndpointActiveState
     };
 }

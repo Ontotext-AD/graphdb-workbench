@@ -42,7 +42,7 @@ function GraphqlRestService($http) {
     /**
      * Get the GraphQL schema shapes for the given repository.
      * @param {string} repositoryId The repository ID.
-     * @returns {*|Promise}
+     * @returns {*|Promise<unknown>}
      */
     const getGraphqlSchemaShapes = (repositoryId) => {
         if (DEVELOPMENT) {
@@ -54,7 +54,7 @@ function GraphqlRestService($http) {
     /**
      * Get the prefixes for the given repository.
      * @param {string} repositoryId The repository ID.
-     * @returns {*}
+     * @returns {*|Promise<unknown>}
      */
     const getPrefixes = (repositoryId) => {
         if (DEVELOPMENT) {
@@ -66,7 +66,7 @@ function GraphqlRestService($http) {
     /**
      * Get the SHACL shape graphs for the given repository.
      * @param {string} repositoryId The repository ID.
-     * @returns {*} The SHACL shape graphs response.
+     * @returns {*|Promise<unknown>} The SHACL shape graphs response.
      */
     const getShaclShapeGraphs = (repositoryId) => {
         if (DEVELOPMENT) {
@@ -85,6 +85,20 @@ function GraphqlRestService($http) {
         }
         return $http.get(`${REPOSITORIES_ENDPOINT}/graphql/manage/generate/config`);
     };
+
+    /**
+     * Update the active state of the given endpoint in the backend.
+     * @param {string} repositoryId The repository ID.
+     * @param {string} endpointId The endpoint ID.
+     * @param {boolean} newActiveState The new active state.
+     * @returns {*|Promise<unknown>} The response from the backend.
+     */
+    const updateEndpointActiveState = (repositoryId, endpointId, newActiveState) => {
+        if (DEVELOPMENT) {
+            return _mockBackend.updateEndpointActiveStateMock(repositoryId, endpointId, newActiveState);
+        }
+        return $http.patch(`${REPOSITORIES_ENDPOINT}/${repositoryId}/manage/graphql/endpoints/${endpointId}?activate=${newActiveState}`);
+    }
 
     /**
      * Get the GraphQL endpoint configuration settings from the backend.
@@ -203,7 +217,8 @@ function GraphqlRestService($http) {
         deleteEndpoint,
         generateEndpointFromGraphqlShapes,
         generateEndpointFromOwl,
-        setDefaultEndpoint
+        setDefaultEndpoint,
+        updateEndpointActiveState
     };
 }
 
