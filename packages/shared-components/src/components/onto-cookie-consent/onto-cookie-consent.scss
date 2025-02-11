@@ -14,39 +14,39 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
 
-.cookie-consent-content button {
-  margin-left: 12px;
+  & button {
+    margin-left: 12px;
+  }
 }
 
 .cookie-policy-modal {
   padding: 24px 40px;
   overflow-y: auto;
-}
 
-.cookie-policy-modal .modal-dialog {
-  width: 60% !important;
-  max-width: 60% !important;
-}
+  & .modal-dialog {
+    width: 60% !important;
+    max-width: 60% !important;
+  }
 
-.cookie-policy-modal .title {
-  font-size: xx-large;
-  font-weight: bolder;
-}
+  & .title {
+    font-size: xx-large;
+    font-weight: bolder;
+  }
 
-.cookie-policy-modal .heading {
-  font-size: x-large;
-  font-weight: bolder;
-  margin-top: 12px;
-}
+  & .heading {
+    font-size: x-large;
+    font-weight: bolder;
+    margin-top: 12px;
+  }
 
-.cookie-policy-modal .subheading {
-  font-size: large;
-  font-weight: bolder;
-  margin-top: 8px;
-}
+  & .subheading {
+    font-size: large;
+    font-weight: bolder;
+    margin-top: 8px;
+  }
 
-.cookie-policy-modal .text {
-  font-size: math;
+  & .text {
+    font-size: math;
+  }
 }
