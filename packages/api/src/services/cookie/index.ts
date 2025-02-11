@@ -1,1 +1,1 @@
-export {CookieService} from './cookie-service';
+export {CookieService} from './cookie.service';
