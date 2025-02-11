@@ -1,6 +1,6 @@
 import {Service} from '../../providers/service/service';
 import {AuthenticatedUser} from '../../models/security';
-import {CookieConsent} from '../../models/cookies';
+import {CookieConsent} from '../../models/cookie';
 import {ServiceProvider} from '../../providers';
 import {SecurityContextService, SecurityService} from '../security';
 
@@ -21,7 +21,7 @@ export class CookieService implements Service {
 
   private setAcceptedCookiePolicy(): AuthenticatedUser {
     const user = ServiceProvider.get(SecurityContextService).getAuthenticatedUser() || new AuthenticatedUser({});
-    const cookieConsent = new CookieConsent(user?.appSettings?.COOKIE_CONSENT as CookieConsent);
+    const cookieConsent = new CookieConsent(user.appSettings?.COOKIE_CONSENT as CookieConsent);
 
     cookieConsent.policyAccepted = true;
     user.appSettings.COOKIE_CONSENT = cookieConsent;
