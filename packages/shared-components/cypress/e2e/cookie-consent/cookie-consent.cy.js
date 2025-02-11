@@ -3,7 +3,6 @@ import {FooterSteps} from "../../steps/footer/footer-steps";
 
 describe('CookieConsent', () => {
   it('should render cookie consent component', () => {
-    console.log('Running CookieConsent test');
     // Given I visit the cookie consent page
     CookieConsentSteps.visit();
 

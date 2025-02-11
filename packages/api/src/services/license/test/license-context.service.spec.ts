@@ -39,7 +39,7 @@ describe('LicenseContextService', () => {
 
   test('getLicense should return the license from the context', () => {
     // Given a new license object
-    const newLicense: License = {licensee: 'Test Company', expiryDate: 1672531200000} as License;
+    const newLicense = new License({licensee: 'Test Company', expiryDate: 1672531200000});
     licenseContextService.updateGraphdbLicense(newLicense);
 
     // When getting the license

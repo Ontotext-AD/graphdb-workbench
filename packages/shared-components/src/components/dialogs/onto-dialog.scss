@@ -11,9 +11,9 @@
   z-index: 9998;
   margin-left: -10px;
   background-color: rgba(0, 0, 0, .5);
-  font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-  font-weight: 300;
-  color: #373a3c;
+  font-family: var(--main-font), sans-serif;
+  font-weight: var(--main-font-weight);
+  color: var(--secondary-color, #373a3c);
 }
 
 .dialog {

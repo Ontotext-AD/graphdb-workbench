@@ -10,7 +10,7 @@ export * from './models/common';
 export * from './models/product-info';
 export * from './models/storage';
 export * from './models/language';
-export * from './models/cookies';
+export * from './models/cookie';
 
 // Export providers for external usages.
 export * from './providers';

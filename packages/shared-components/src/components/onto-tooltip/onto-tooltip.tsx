@@ -13,6 +13,7 @@ export class OntoTooltip {
     private static readonly ATTR_THEME = 'tooltip-theme';
     private static readonly ATTR_PLACEMENT = 'tooltip-placement';
     private static readonly ATTR_TRIGGER = 'tooltip-trigger';
+    private static readonly ATTR_APPEND_TO = 'tooltip-append-to';
 
     /**
      * Checks if the target of the 'mouseover' event has tooltip configuration.
@@ -81,7 +82,8 @@ export class OntoTooltip {
             .setContent(element.getAttribute(OntoTooltip.ATTR_CONTENT))
             .setTheme(element.getAttribute(OntoTooltip.ATTR_THEME))
             .setPlacement(element.getAttribute(OntoTooltip.ATTR_PLACEMENT) as Placement)
-            .setTrigger(element.getAttribute(OntoTooltip.ATTR_TRIGGER));
+            .setTrigger(element.getAttribute(OntoTooltip.ATTR_TRIGGER))
+            .setAppendTo(element.getAttribute(OntoTooltip.ATTR_APPEND_TO));
     }
 
     /**
