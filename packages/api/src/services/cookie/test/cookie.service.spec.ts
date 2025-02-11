@@ -1,10 +1,10 @@
 import {TestUtil} from '../../utils/test/test-util';
 import {ResponseMock} from '../../http/test/response-mock';
 import {AuthenticatedUser} from '../../../models/security';
-import {CookieService} from '../cookie-service';
+import {CookieService} from '../cookie.service';
 import {ServiceProvider} from '../../../providers';
 import {SecurityContextService} from '../../security';
-import {CookieConsent} from '../../../models/cookies';
+import {CookieConsent} from '../../../models/cookie';
 
 describe('CookiesService', () => {
   let cookiesService: CookieService;
@@ -15,7 +15,7 @@ describe('CookiesService', () => {
 
   test('should accept the cookie policy', async () => {
     // Given, I have a mocked authenticated user
-    const mockAuthenticatedUser = {
+    const mockAuthenticatedUser = new AuthenticatedUser({
       username: 'testuser',
       appSettings: {
         COOKIE_CONSENT: {
@@ -25,7 +25,7 @@ describe('CookiesService', () => {
           updatedAt: 1738753714185
         }
       }
-    } as unknown as AuthenticatedUser;
+    });
     ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(mockAuthenticatedUser);
     TestUtil.mockResponse(new ResponseMock(`/rest/security/users/${mockAuthenticatedUser.username}`).setResponse({}));
 
