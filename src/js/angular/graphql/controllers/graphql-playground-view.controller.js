@@ -99,30 +99,56 @@ function GraphqlPlaygroundViewCtrl($scope, $location, $repositories, $languageSe
     };
 
     /**
-     * Resolves the selected endpoint. If there is no selected endpoint, the first one from the list is returned.
+     * Finds the default endpoint from the list of endpoints.
+     * @param {SelectMenuOptionsModel[]} endpoints - The list of endpoints.
+     * @returns {SelectMenuOptionsModel|undefined}
+     */
+    const findDefaultEndpoint = (endpoints) => {
+        return endpoints.find((endpoint) => endpoint.data.default);
+    };
+
+    /**
+     * Finds an endpoint by label.
+     * @param {SelectMenuOptionsModel[]} endpoints - The list of endpoints.
+     * @param label - The label of the endpoint. The label is same as the endpointId.
+     * @returns {SelectMenuOptionsModel|undefined}
+     */
+    const findEndpointByLabel = (endpoints, label) => {
+        return endpoints.find((endpoint) => endpoint.label === label);
+    };
+
+    /**
+     * Resolves the selected endpoint. The priority of which endpoint should be selected is as follows:
+     * 1. If there is a query parameter with the endpoint id. This is used when the user opens the page with a direct url.
+     * 2. If there is a selected endpoint in the graphql context. This is used when the user navigates from some other
+     * view which stores the selected endpoint in the context in advance.
+     * 3. If there is an endpoint which is set as default.
+     * 4. In none of the above is true, then first one from the list is selected.
      * @return {SelectMenuOptionsModel}
      */
     const resolveSelectedEndpoint = () => {
-        let selectedEndpointId;
         const queryParams = $location.search();
         const endpointIdFromUrl = queryParams.endpointId;
-        // The endpointId can be passed as a query parameter or stored in the context. The query parameter has priority.
         if (endpointIdFromUrl) {
-            selectedEndpointId = endpointIdFromUrl;
-        } else {
-            const selectedEndpoint = GraphqlContextService.getSelectedEndpoint();
-            if (selectedEndpoint) {
-                selectedEndpointId = selectedEndpoint.endpointId;
-            }
-        }
-        if (selectedEndpointId) {
-            const endpointSelectOption = $scope.graphqlEndpoints.find(
-                (endpoint) => endpoint.label === selectedEndpointId
-            );
+            const endpointSelectOption = findEndpointByLabel($scope.graphqlEndpoints, endpointIdFromUrl);
             if (endpointSelectOption) {
                 return endpointSelectOption;
             }
         }
+
+        const selectedEndpoint = GraphqlContextService.getSelectedEndpoint();
+        if (selectedEndpoint) {
+            const endpointSelectOption = findEndpointByLabel($scope.graphqlEndpoints, selectedEndpoint.endpointId);
+            if (endpointSelectOption) {
+                return endpointSelectOption;
+            }
+        }
+
+        const defaultEndpoint = findDefaultEndpoint($scope.graphqlEndpoints);
+        if (defaultEndpoint) {
+            return defaultEndpoint;
+        }
+
         return $scope.graphqlEndpoints[0];
     };
 

@@ -71,9 +71,15 @@
                 </th>
             </tr>
             </thead>
+
+            <tr ng-if="operationInProgress" class="overlay-row">
+                <td colspan="9">
+                    <div class="endpoint-operation-progress" onto-loader-fancy size="100" hide-message="true"></div>
+                </td>
+            </tr>
+
             <tbody>
-            <tr ng-repeat-start="endpoint in endpointsInfoList.endpoints track by endpoint.endpointId"
-                ng-class="{'row-overlay': deletingEndpoint}">
+            <tr ng-repeat-start="endpoint in endpointsInfoList.endpoints track by endpoint.endpointId">
                 <td class="toggle-row">
                     <a href="#" ng-click="toggleRow($event, $index)">
                         <i class="fa fa-chevron-right" ng-if="expandedRow !== $index"></i>
@@ -95,8 +101,10 @@
                 </td>
                 <td>{{endpoint.label}}</td>
                 <td>
-                    <span ng-if="endpoint.default" class="is-default">yes</span>
-                    <span ng-if="!endpoint.default" class="is-not-default">no</span>
+                    <label class="endpoint-default-state">
+                        <input type="radio" ng-model="selectedDefaultEndpoint.default" ng-value="endpoint.default"
+                               ng-change="setEndpointAsDefault(endpoint)"/>
+                    </label>
                 </td>
                 <td>
                     <span ng-if="endpoint.active" class="is-active">yes</span>
@@ -106,7 +114,7 @@
                 <td>{{endpoint.objectsCount}}</td>
                 <td>{{endpoint.propertiesCount}}</td>
                 <td>
-                    <div ng-if="!deletingEndpoint" class="btn-group">
+                    <div class="btn-group">
                         <button class="btn btn-link secondary btn-sm open-endpoint-actions-btn"
                                 data-toggle="dropdown" aria-expanded="false"
                                 ng-if="true"
@@ -132,8 +140,6 @@
                             </button>
                         </div>
                     </div>
-                    <div class="endpoint-operation-progress" ng-if="deletingEndpoint" onto-loader-fancy size="25"
-                         hide-message="true"></div>
                 </td>
             </tr>
             <tr ng-repeat-end ng-if="expandedRow === $index" class="endpoint-description-row">

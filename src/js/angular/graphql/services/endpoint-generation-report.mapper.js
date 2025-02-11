@@ -1,5 +1,5 @@
 import {EndpointGenerationReport, EndpointGenerationReportList} from "../../models/graphql/endpoint-generation-report";
-import {resolveGraphqlEndpoint} from "../models/endpoints";
+import {resolveGraphqlEndpoint} from "./endpoint-utils";
 
 /**
  * Maps the response from the endpoint generation to a list of endpoint generation reports.

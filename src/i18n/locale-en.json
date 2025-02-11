@@ -796,6 +796,9 @@
                     "view_report": {
                         "label": "[View report]",
                         "tooltip": "Opens the report in a modal dialog"
+                    },
+                    "set_as_default": {
+                        "success": "Successfully set \"{{endpointId}}\" endpoint as default"
                     }
                 },
                 "messages": {

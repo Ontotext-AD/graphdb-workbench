@@ -796,6 +796,9 @@
                     "view_report": {
                         "label": "[Voir le rapport]",
                         "tooltip": "Ouvre le rapport dans une boîte de dialogue modale"
+                    },
+                    "set_as_default": {
+                        "success": "Le point de terminaison \"{{endpointId}}\" a été défini avec succès comme point de terminaison par défaut"
                     }
                 },
                 "messages": {

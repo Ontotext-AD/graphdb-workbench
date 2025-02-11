@@ -86,7 +86,7 @@ function GraphqlService(GraphqlRestService) {
      */
     const getEndpointsInfo = (repositoryId) => {
         return GraphqlRestService.getEndpointsInfo(repositoryId)
-            .then((response) => endpointsInfoListMapper(response.data));
+            .then((response) => endpointsInfoListMapper(response.data, repositoryId));
     };
 
     /**
@@ -167,14 +167,15 @@ function GraphqlService(GraphqlRestService) {
     };
 
     /**
-     * Save the GraphQL endpoint configuration settings.
+     * Save the GraphQL endpoint configuration. All of UpdateEndpointRequest properties are optional, so this method
+     * can be used to update any of them. The request object should contain only the properties that need to be updated.
      * @param {string} repositoryId - The repository id.
      * @param {string} endpointId - The endpoint id.
-     * @param {UpdateEndpointRequest} updateEndpointRequest - The endpoint update request.
+     * @param {PartialUpdateEndpointRequest} updateEndpointRequest - The endpoint update request.
      * @returns {Promise<unknown> | *}
      */
     const editEndpointConfiguration = (repositoryId, endpointId, updateEndpointRequest) => {
-        return GraphqlRestService.editEndpointConfiguration(repositoryId, endpointId, updateEndpointRequest.toJSON());
+        return GraphqlRestService.editEndpointConfiguration(repositoryId, endpointId, updateEndpointRequest);
     };
 
     /**
@@ -185,6 +186,16 @@ function GraphqlService(GraphqlRestService) {
      */
     const deleteEndpoint = (repositoryId, endpointId) => {
         return GraphqlRestService.deleteEndpoint(repositoryId, endpointId);
+    };
+
+    /**
+     * Makes the provided graphql endpoint the default one for the given repository.
+     * @param {string} repositoryId The id of the repository.
+     * @param {string} endpointId The id of the endpoint to be set as default.
+     * @returns {Promise<unknown>}
+     */
+    const setDefaultEndpoint = (repositoryId, endpointId) => {
+        return GraphqlRestService.setDefaultEndpoint(repositoryId, endpointId);
     };
 
     /**
@@ -225,6 +236,7 @@ function GraphqlService(GraphqlRestService) {
         editEndpointConfiguration,
         deleteEndpoint,
         generateEndpointFromGraphqlShapes,
-        generateEndpointFromOwl
+        generateEndpointFromOwl,
+        setDefaultEndpoint
     };
 }

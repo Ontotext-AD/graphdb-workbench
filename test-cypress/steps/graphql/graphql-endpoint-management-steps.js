@@ -81,7 +81,8 @@ export class GraphqlEndpointManagementSteps {
             cy.wrap($row).within(() => {
                 cy.get('td').eq(1).should('contain', endpointInfo.id);
                 cy.get('td').eq(2).should('contain', endpointInfo.label);
-                cy.get('td').eq(3).should('contain', endpointInfo.default ? 'yes' : 'no');
+                const isDefaultCheck = endpointInfo.default ? 'be.checked' : 'not.be.checked'
+                cy.get('td').eq(3).find('.endpoint-default-state input[type="radio"]').should(isDefaultCheck);
                 cy.get('td').eq(4).should('contain', endpointInfo.active ? 'yes' : 'no');
                 cy.get('td').eq(5).should('contain', endpointInfo.modified);
                 cy.get('td').eq(6).should('contain', endpointInfo.types);
@@ -110,5 +111,13 @@ export class GraphqlEndpointManagementSteps {
     static editEndpointConfiguration(index) {
         this.openEndpointActionMenu(index);
         return cy.get('.configure-endpoint-btn').eq(index).click();
+    }
+
+    static getEndpointDefaultStatusRadio(index) {
+        return this.getEndpointInfo(index).find('.endpoint-default-state input[type="radio"]');
+    }
+
+    static setEndpointAsDefault(index) {
+        this.getEndpointDefaultStatusRadio(index).check();
     }
 }
