@@ -792,6 +792,14 @@
                     "export_schema": {
                         "label": "Export schema definition",
                         "tooltip": "Export the GraphQL endpoint schema definition"
+                    },
+                    "toggle_active_state": {
+                        "activated": {
+                            "success": "The endpoint \"{{endpointId}}\" was successfully activated"
+                        },
+                        "deactivated": {
+                            "success": "The endpoint \"{{endpointId}}\" was successfully deactivated"
+                        }
                     }
                 },
                 "messages": {

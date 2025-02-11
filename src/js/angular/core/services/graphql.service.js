@@ -117,6 +117,17 @@ function GraphqlService(GraphqlRestService) {
         return GraphqlRestService.deleteEndpoint(repositoryId, endpointId);
     };
 
+    /**
+     * Update the active state of the given endpoint.
+     * @param {string} repositoryId The repository id.
+     * @param {string} endpointId The endpoint id.
+     * @param {boolean} newActiveState The new active state.
+     * @returns {*}
+     */
+    const updateEndpointActiveState = (repositoryId, endpointId, newActiveState) => {
+        return GraphqlRestService.updateEndpointActiveState(repositoryId, endpointId, newActiveState);
+    }
+
     return {
         getEndpoints,
         getEndpointsAsSelectMenuOptions,
@@ -126,6 +137,7 @@ function GraphqlService(GraphqlRestService) {
         getShaclShapeGraphs,
         getGraphqlEndpointConfigurationSettings,
         saveEndpointConfigurationSettings,
-        deleteEndpoint
+        deleteEndpoint,
+        updateEndpointActiveState
     };
 }

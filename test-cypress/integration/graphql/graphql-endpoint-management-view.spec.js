@@ -128,4 +128,25 @@ describe('GraphQL endpoints management', () => {
         // And the selected endpoint should be the one I clicked
         GraphqlPlaygroundSteps.getSelectedEndpoint().should('contain', 'film-restricted');
     });
+
+    it('should be able to activate or deactivate an endpoint', () => {
+        // Given I have a repository with active GraphQL endpoints
+        // When I visit the endpoint management view
+        GraphqlEndpointManagementSteps.visit();
+        // And I have an active endpoint
+        GraphqlEndpointManagementSteps.getEndpointActiveStateToggle(0).should('be.checked');
+        // When I deactivate the endpoint
+        GraphqlEndpointManagementSteps.toggleEndpointActiveState(0);
+        // Then I should see a toast with the success message
+        ApplicationSteps.getSuccessNotifications().should('be.visible');
+        // And the endpoint should be deactivated
+        GraphqlEndpointManagementSteps.getEndpointActiveStateToggle(0).should('not.be.checked');
+
+        // When I activate the endpoint
+        GraphqlEndpointManagementSteps.toggleEndpointActiveState(0);
+        // Then I should see a toast with the success message
+        ApplicationSteps.getSuccessNotifications().should('be.visible');
+        // And the endpoint should be activated
+        GraphqlEndpointManagementSteps.getEndpointActiveStateToggle(0).should('be.checked');
+    });
 });

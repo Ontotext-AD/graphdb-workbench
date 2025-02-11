@@ -111,4 +111,12 @@ export class GraphqlEndpointManagementSteps {
         this.openEndpointActionMenu(index);
         return cy.get('.configure-endpoint-btn').eq(index).click();
     }
+
+    static getEndpointActiveStateToggle(index) {
+        return this.getEndpointsInfo().eq(index).find('.toggle-active-state');
+    }
+
+    static toggleEndpointActiveState(index) {
+        this.getEndpointActiveStateToggle(index).click();
+    }
 }
