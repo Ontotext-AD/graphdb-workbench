@@ -96,9 +96,9 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
         $scope.freeAccessEnabled = function () {
             return $jwtAuth.isFreeAccessEnabled();
         };
-        $scope.getUsers = function () {
-            SecurityService.getUsers()
-                .success(function (data) {
+        $scope.getUsers = () => {
+            return SecurityService.getUsers()
+                .then(function (data) {
                     $scope.users = data;
                     for (let i = 0; i < $scope.users.length; i++) {
                         const pa = parseAuthorities($scope.users[i].grantedAuthorities);
@@ -108,7 +108,7 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
                         $scope.users[i].customRoles = pa.customRoles;
                     }
                     $scope.loader = false;
-                }).error(function (data) {
+                }).catch(function (data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
                 $scope.loader = false;
@@ -204,15 +204,13 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
                 warning: true
             }).result.then(function () {
                 $scope.loader = true;
-                SecurityService.deleteUser(username).success(function () {
-                    $scope.getUsers();
-                }).error(function (data) {
-                    const msg = getError(data);
-                    toastr.error(msg, $translate.instant('common.error'));
-
-                    $scope.loader = false;
-                });
-
+                SecurityService.deleteUser(username)
+                    .then(() => $scope.getUsers())
+                    .catch((data) => {
+                        const msg = getError(data);
+                        toastr.error(msg, $translate.instant('common.error'));
+                        $scope.loader = false;
+                    });
             });
         };
 
@@ -537,7 +535,7 @@ securityModule.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window'
                 pass: $scope.user.password,
                 appSettings: $scope.user.appSettings,
                 grantedAuthorities: $scope.user.grantedAuthorities
-            }).success(function () {
+            }).then(() => {
                 toastr.success($translate.instant('security.user.created', {name: $scope.user.username}));
                 const timer = $timeout(function () {
                     $scope.loader = false;
@@ -546,7 +544,7 @@ securityModule.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window'
                 $scope.$on('$destroy', function () {
                     $timeout.cancel(timer);
                 });
-            }).error(function (data) {
+            }).catch((data) => {
                 const msg = getError(data);
                 $scope.loader = false;
                 toastr.error(msg, $translate.instant('common.error'));
@@ -624,7 +622,7 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
             $location.url('settings');
         }
         $scope.getUserData = function () {
-            SecurityService.getUser($scope.params.userId).success(function (data) {
+            SecurityService.getUser($scope.params.userId).then(function (data) {
                 $scope.userData = data;
                 $scope.user = {username: $scope.userData.username};
                 $scope.user.password = '';
@@ -636,7 +634,7 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
                 $scope.userType = pa.userType;
                 $scope.grantedAuthorities = pa.grantedAuthorities;
                 $scope.customRoles = pa.customRoles;
-            }).error(function (data) {
+            }).catch(function (data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
             });
@@ -665,7 +663,7 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
                 pass: ($scope.noPassword) ? '' : $scope.user.password || undefined,
                 appSettings: $scope.user.appSettings,
                 grantedAuthorities: $scope.user.grantedAuthorities
-            }).success(function () {
+            }).then(() => {
                 toastr.success($translate.instant('security.user.updated', {name: $scope.user.username}));
                 const timer = $timeout(function () {
                     $scope.loader = false;
@@ -680,7 +678,7 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
                         principal.appSettings = $scope.user.appSettings;
                     }
                 });
-            }).error(function (data) {
+            }).catch((data) => {
                 const msg = getError(data);
                 $scope.loader = false;
                 toastr.error(msg, $translate.instant('common.error'));
