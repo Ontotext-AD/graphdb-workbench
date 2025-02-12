@@ -23,6 +23,13 @@ import {
   NavigationEnd
 } from '@ontotext/workbench-api';
 
+const showSplashScreen = (show) => {
+  const splashScreen = document.getElementById('splash-screen');
+  splashScreen.style.display = show ? 'block' : 'none';
+};
+
+showSplashScreen(true);
+
 addErrorHandler((err) => {
   console.error(err);
   console.error(err.appOrParcelName);
@@ -69,8 +76,6 @@ const layoutEngine = constructLayoutEngine({routes, applications});
 
 applications.forEach(registerApplication);
 layoutEngine.activate();
-
-defineCustomElements();
 
 // This is a workaround to initialize the navbar when the root-config is loaded and the navbar is not yet initialized.
 const waitForNavbarElement = () => {
@@ -120,8 +125,10 @@ const bootstrapApplication = () => {
     .then(() => {
       // eslint-disable-next-line no-console
       console.log('Application data loaded. Ready to start the application.');
-      start();
+      defineCustomElements();
+      return start();
     })
+    .then(() => showSplashScreen(false))
     .catch((error) => {
       console.error('Could not load application data', error);
     });
