@@ -847,7 +847,7 @@
                             "vocabulary_prefix": {
                                 "label": "Préfixe de vocabulaire",
                                 "tooltip": "Préfixe de vocabulaire",
-                                "placeholder": "Sélectionnez le préfixe"
+                                "placeholder": "Sélectionner le préfixe (à partir du référentiel source)"
                             },
                             "endpoint_label": {
                                 "label": "Étiquette du point de terminaison",
@@ -859,21 +859,20 @@
                             "use_all_graphs": {
                                 "label": "Utiliser tous les graphes",
                                 "messages": {
-                                    "all_graphs": "Les {{count}} graphes sont inclus pour la création de points de terminaison",
-                                    "no_graphs": "Aucun graphes n'a été trouvé dans le référentiel sélectionné."
+                                    "use_all_data": "Toutes les données du référentiel seront utilisées pour la création du point de terminaison"
                                 }
                             },
                             "use_shacl_shape_graph": {
                                 "label": "Utiliser le graphe de forme SHACL",
                                 "messages": {
                                     "all_shacl_shape_graphs": "Les {{count}} graphes de forme SHACL sont inclus pour la création de points de terminaison",
-                                    "no_graphs": "Aucun graphes de forme SHACL n'a été trouvé dans le référentiel sélectionné."
+                                    "no_graphs": "Aucun graphes de forme SHACL n'a été trouvé dans le référentiel sélectionné"
                                 }
                             },
                             "pick_graphs": {
                                 "label": "Sélectionnez un ou plusieurs graphes",
                                 "messages": {
-                                    "no_graphs": "Aucun graphes n'a été trouvé dans le référentiel sélectionné."
+                                    "no_graphs": "Aucun graphes n'a été trouvé dans le référentiel sélectionné"
                                 }
                             }
                         },
@@ -892,9 +891,15 @@
                 "generate_endpoint": {
                     "title": "Créer",
                     "overview": {
-                        "title": "Aperçu"
+                        "title": "Aperçu",
+                        "for_shapes": {
+                            "info": "{{endpointsCount}} points de terminaison GraphQL seront créés dans le référentiel \"{{activeRepoId}}\" en fonction des formes de schéma GraphQL répertoriées ci-dessous. Pour modifier la sélection, revenez à l'étape 1 (Sélectionner la source du schéma).",
+                            "included_endpoints": "Formes de schéma GraphQL incluses",
+                            "generated_endpoints": "Points de terminaison GraphQL"
+                        }
                     },
                     "messages": {
+                        "generation_progress": "Création des points de terminaison en cours..."
                     }
                 },
                 "shapes_multiselect": {

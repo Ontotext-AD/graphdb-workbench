@@ -9,6 +9,10 @@ import {
 import {GraphqlEndpointConfiguration} from "../../models/graphql/graphql-endpoint-configuration";
 import {dynamicFormModelMapper} from "../../rest/mappers/dynamic-form-fied-mapper";
 import {GraphqlEndpointConfigurationSettings} from "../../models/graphql/graphql-endpoint-configuration-setting";
+import {GraphqlEndpointOverviewList} from "../../models/graphql/graphql-endpoint-overview-list";
+import {
+    endpointGenerationReportListMapper
+} from "../../graphql/services/endpoint-generation-report.mapper";
 
 const modules = ['graphdb.framework.rest.graphql.service'];
 
@@ -19,6 +23,35 @@ angular
 GraphqlService.$inject = ['GraphqlRestService'];
 
 function GraphqlService(GraphqlRestService) {
+
+    /**
+     * Creates a list of GraphQL endpoint overview models from the given data.
+     * @param {GraphqlEndpointConfiguration} endpointConfiguration
+     * @returns {GraphqlEndpointOverviewList}
+     */
+    const getGenerateEndpointsOverview = (endpointConfiguration) => {
+        if (!endpointConfiguration) {
+            return new GraphqlEndpointOverviewList();
+        }
+        const shapesOverview = endpointConfiguration.getSelectedGraphqlSchemaShapesOverview();
+        return new GraphqlEndpointOverviewList(shapesOverview);
+    };
+
+    /**
+     *
+     * @param {GraphqlEndpointConfiguration} endpointConfiguration
+     */
+    const getEndpointsCountToGenerate = (endpointConfiguration) => {
+        if (!endpointConfiguration) {
+            return 0;
+        }
+        if (endpointConfiguration.hasSelectedGraphqlSchemaShapes()) {
+            return endpointConfiguration.getSelectedGraphqlSchemaShapesCount();
+        }
+        if (endpointConfiguration.hasSelectedGraphs()) {
+            return endpointConfiguration.getSelectedGraphsCount();
+        }
+    };
 
     /**
      * Get the GraphQL endpoints model for the given repository.
@@ -129,7 +162,31 @@ function GraphqlService(GraphqlRestService) {
         return GraphqlRestService.deleteEndpoint(repositoryId, endpointId);
     };
 
+    /**
+     * Generate the GraphQL endpoint from the GraphQL shapes.
+     * @param {string} repositoryId The current active repository ID.
+     * @param {CreateEndpointFromShapesRequest} request The endpoint create request.
+     * @returns {Promise<EndpointGenerationReport>}
+     */
+    const generateEndpointFromGraphqlShapes = (repositoryId, request) => {
+        return GraphqlRestService.generateEndpointFromGraphqlShapes(repositoryId, request.toJSON())
+            .then((response) => endpointGenerationReportListMapper(response.data));
+    }
+
+    /**
+     * Generate the GraphQL endpoint from the OWL ontology.
+     * @param {string} repositoryId The current active repository ID.
+     * @param {CreateEndpointFromOwlRequest} request The endpoint create request.
+     * @returns {Promise<EndpointGenerationReport>}
+     */
+    const generateEndpointFromOwl = (repositoryId, request) => {
+        return GraphqlRestService.generateEndpointFromOwl(repositoryId, request.toJSON())
+            .then((response) => endpointGenerationReportListMapper([response.data]));
+    }
+
     return {
+        getEndpointsCountToGenerate,
+        getGenerateEndpointsOverview,
         getEndpoints,
         getEndpointsAsSelectMenuOptions,
         getEndpointsInfo,
@@ -139,6 +196,8 @@ function GraphqlService(GraphqlRestService) {
         getGraphqlGenerationSettings,
         getGraphqlEndpointConfigurationSettings,
         saveEndpointConfigurationSettings,
-        deleteEndpoint
+        deleteEndpoint,
+        generateEndpointFromGraphqlShapes,
+        generateEndpointFromOwl
     };
 }
