@@ -1,3 +1,5 @@
+import {GraphQLPlaygroundComponent} from "../../../models/graphql/graphql-playground-component";
+
 const modules = [];
 angular
     .module('graphdb.framework.core.directives.graphql-playground', modules)
@@ -37,7 +39,23 @@ function graphqlPlaygroundDirective() {
             configuration: '='
         },
         link: ($scope, element, attrs) => {
-            // not implemented
+            // =========================
+            // Public function
+            // =========================
+            /**
+             * Getter for GraphQl playground component.
+             * @return {GraphQLPlaygroundComponent}
+             */
+            $scope.getGraphQLPlaygroundComponent = () => {
+                return new GraphQLPlaygroundComponent(getGraphQLPlaygroundElements()[0]);
+            };
+
+            // =========================
+            // Private function
+            // =========================
+            const getGraphQLPlaygroundElements = () => {
+                return element.find('graphql-playground-component');
+            };
         }
     };
 }
