@@ -6,6 +6,7 @@ import {MainMenuSteps} from "../../steps/main-menu-steps";
 import {RepositorySelectorSteps} from "../../steps/repository-selector-steps";
 import {SparqlTemplatesSteps} from "../../steps/setup/sparql-templates-steps";
 
+// TODO: Fix me. Broken due to migration (Error: beforeEach)
 describe('SPARQL create template', () => {
 
     let repositoryId;
