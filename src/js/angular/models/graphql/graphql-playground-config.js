@@ -13,6 +13,13 @@ export class GraphqlPlaygroundConfig {
          * @private
          */
         this._headers = data.headers;
+
+        /**
+         * A code of selected language. For example "en".
+         * @type {string}
+         * @private
+         */
+        this._selectedLanguage = data.selectedLanguage;
     }
 
     get endpoint() {
@@ -29,5 +36,13 @@ export class GraphqlPlaygroundConfig {
 
     set headers(value) {
         this._headers = value;
+    }
+
+    get selectedLanguage() {
+        return this._selectedLanguage;
+    }
+
+    set selectedLanguage(value) {
+        this._selectedLanguage = value;
     }
 }
