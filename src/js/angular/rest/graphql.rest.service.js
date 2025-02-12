@@ -72,17 +72,18 @@ function GraphqlRestService($http) {
             return _mockBackend.getShaclGraphsMock(repositoryId);
         }
         return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/manage/graphql/shacl_graphs`);
-        // FIXME: remove when the endpoint is present.
-        // return Promise.resolve({
-        //     data: {
-        //         shacl_graphs: [
-        //             // 'http://example.org/graph1',
-        //             // 'http://example.org/graph2',
-        //             // 'http://example.org/graph3'
-        //         ]
-        //     }
-        // });
     }
+
+    /**
+     * Get the GraphQL generation settings from the backend.
+     * @returns {*|Promise<unknown>}
+     */
+    const getGraphqlGenerationSettings = () => {
+        if (DEVELOPMENT) {
+            return _mockBackend.getGraphqlGenerationSettingsMock();
+        }
+        return $http.get(`${REPOSITORIES_ENDPOINT}/manage/graphql/generate/config`);
+    };
 
     /**
      * Get the GraphQL endpoint configuration settings from the backend.
@@ -130,6 +131,7 @@ function GraphqlRestService($http) {
         getGraphqlSchemaShapes,
         getPrefixes,
         getShaclShapeGraphs,
+        getGraphqlGenerationSettings,
         getGraphqlEndpointConfigurationSettings,
         saveEndpointConfigurationSettings,
         deleteEndpoint

@@ -1,8 +1,10 @@
 import {GraphqlPlaygroundConfig} from '../../models/graphql/graphql-playground-config';
 import '../../core/services/graphql.service';
+import 'angular/core/directives/graphql-playground/graphql-playground.directive';
 
 const modules = [
-    'graphdb.framework.core.services.graphql-service'
+    'graphdb.framework.core.services.graphql-service',
+    'graphdb.framework.core.directives.graphql-playground'
 ];
 
 angular

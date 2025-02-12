@@ -44,7 +44,9 @@
                                 <div ng-switch-when="configure_endpoint">
                                     <configure-endpoint step-definition="step"></configure-endpoint>
                                 </div>
-                                <!-- Add more components as needed -->
+                                <div ng-switch-when="generate_endpoint">
+                                    <generate-endpoint step-definition="step"></generate-endpoint>
+                                </div>
                             </div>
                         </div>
                     </div>

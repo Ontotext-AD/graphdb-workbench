@@ -889,6 +889,14 @@
                         "form": {}
                     }
                 },
+                "generate_endpoint": {
+                    "title": "Create",
+                    "overview": {
+                        "title": "Overview"
+                    },
+                    "messages": {
+                    }
+                },
                 "shapes_multiselect": {
                     "available_options": {
                         "title": "Available (not included)",
@@ -957,7 +965,7 @@
                         }
                     },
                     "generate_endpoint": {
-                        "label": "Generate"
+                        "label": "Create endpoint"
                     }
                 }
             },

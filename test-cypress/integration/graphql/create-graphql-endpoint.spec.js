@@ -228,6 +228,31 @@ describe('Graphql: create endpoint', () => {
         CreateGraphqlEndpointSteps.getVocabularyPrefixSelectSelectedOption().should('have.text', 'voc');
     });
 
+    it('should be able to configure generation settings (the second step)', () => {
+        // Given I have a repository with graphql shapes in it
+        cy.importServerFile(repositoryId, 'ontology-and-shapes.ttl');
+        // And I started the endpoint creation wizard
+        GraphqlEndpointManagementSteps.visit();
+        cy.wait('@getRepositories');
+        GraphqlEndpointManagementSteps.createEndpoint();
+        CreateGraphqlEndpointSteps.getView().should('be.visible');
+        CreateGraphqlEndpointSteps.getSelectSchemaSourceView().should('be.visible');
+        CreateGraphqlEndpointSteps.getAvailableGraphqlShapes().should('have.length', 2);
+        // When I select a graphql schema shape
+        CreateGraphqlEndpointSteps.selectGraphqlShape(1);
+        // Then I should be able to proceed to the next step
+        CreateGraphqlEndpointSteps.next();
+        CreateGraphqlEndpointSteps.getGenerationSettingsForm().should('be.visible');
+        // And the next button should be enabled because all settings fields are available and valid initially
+        CreateGraphqlEndpointSteps.getNextStepButton().should('be.enabled');
+        // When I click next
+        CreateGraphqlEndpointSteps.next();
+        // Then I should be on the generate endpoint step
+        CreateGraphqlEndpointSteps.getActiveStep().should('contain', 'Create');
+        CreateGraphqlEndpointSteps.getGenerateEndpointView().should('be.visible');
+
+    });
+
     it('should be able to cancel the endpoint creation wizard', () => {
         // Given I have a repository with no active GraphQL endpoints
         // When I visit the endpoint management view
