@@ -4,48 +4,54 @@ import {
     GRAPHQL_PREFIX,
     GRAPHQL_SUFFIX,
     GRAPHQL_SUFFIX_WITH_DELIMITER,
-    READ_REPO,
+    READ_REPO_PREFIX,
     SUFFIX_DELIMITER,
-    WRITE_REPO
+    WRITE_REPO_PREFIX
 } from "./constants";
+import {getRepoFromAuthority} from "./authorities-util";
 
-const REPO_AUTH_REGEX = /^(READ_REPO_|WRITE_REPO_)/;
-
-export const toUserModelMapper = (data) => {
+// TODO refactor mapper when BE models are unified and hold auth roles in `grantedAuthorities` property
+export const toUserModelMapper = (data, authorityField = 'grantedAuthorities') => {
     if (Array.isArray(data)) {
-        return data.map(user => toUserModelMapper(user));
+        return data.map((user) => toUserModelMapper(user));
     }
     const mappedData = mapObject(data, {
-        grantedAuthorities: mapAuthoritiesFromBackend
+        [authorityField]: mapAuthoritiesFromBackend
     });
     return new UserModel(mappedData);
-}
+};
 
-export const fromUserModelMapper = (uiModel) => {
+export const fromUserModelMapper = (uiModel, authorityField = 'grantedAuthorities') => {
     if (Array.isArray(uiModel)) {
-        return uiModel.map(model => fromUserModelMapper(model));
+        return uiModel.map((model) => fromUserModelMapper(model));
     }
     return mapObject(uiModel, {
-        grantedAuthorities: mapAuthoritiesToBackend
+        [authorityField]: mapAuthoritiesToBackend
     });
-}
+};
 
-// Transformation function for backend-to-UI conversion
+// Transformation function for BE-to-UI conversion.
 const mapAuthoritiesFromBackend = (authorities) => {
     const result = [];
-
     for (const auth of authorities) {
         if (auth.includes(SUFFIX_DELIMITER)) {
-            // For example: "READ_REPO_ABC:GRAPHQL" or "WRITE_REPO_*:GRAPHQL"
-            const [oldAuth, suffix] = auth.split(':');
-            if ((oldAuth === READ_REPO || oldAuth === WRITE_REPO) && suffix === GRAPHQL_SUFFIX) {
-                // Remove the prefix ("READ_REPO_" or "WRITE_REPO_") to extract the repository id
-                const repoId = oldAuth.replace(REPO_AUTH_REGEX, '');
-                // Create the UI-specific authority (e.g., "READ_REPO_GRAPHQL_ABC")
-                const uiAuth = oldAuth + GRAPHQL_PREFIX + repoId;
-                if (!result.includes(oldAuth)) result.push(oldAuth);
-                if (!result.includes(uiAuth)) result.push(uiAuth);
-                continue;
+            // For example: "READ_REPO_ABC:GRAPHQL" or "WRITE_REPO_ABC:GRAPHQL"
+            const [oldAuth, suffix] = auth.split(SUFFIX_DELIMITER);
+            const hasRepoRights = oldAuth.indexOf(READ_REPO_PREFIX) === 0 || oldAuth.indexOf(WRITE_REPO_PREFIX) === 0;
+            if (hasRepoRights && suffix === GRAPHQL_SUFFIX) {
+                // Use the helper to extract the repository id.
+                const repoData = getRepoFromAuthority(oldAuth);
+                if (repoData) {
+                    const { repo } = repoData;
+                    const uiAuth = GRAPHQL_PREFIX + repo;
+                    if (!result.includes(oldAuth)) {
+                        result.push(oldAuth);
+                    }
+                    if (!result.includes(uiAuth)) {
+                        result.push(uiAuth);
+                    }
+                    continue;
+                }
             }
         }
         if (!result.includes(auth)) {
@@ -53,37 +59,56 @@ const mapAuthoritiesFromBackend = (authorities) => {
         }
     }
     return result;
-}
+};
 
-// Transformation function for UI-to-backend conversion
+// Transformation function for UI-to-BE conversion.
 const mapAuthoritiesToBackend = (uiAuthorities) => {
-    const authSet = new Set(uiAuthorities);
-    const processed = new Set();
-    const backendAuthorities = [];
+    if (!Array.isArray(uiAuthorities)) return uiAuthorities;
 
-    for (const auth of authSet) {
-        if (REPO_AUTH_REGEX.test(auth)) {
-            // Extract repository id (e.g., "ABC" or "*")
-            const repoId = auth.replace(REPO_AUTH_REGEX, '');
-            const uiGraphQL = GRAPHQL_PREFIX + repoId;
-            if (authSet.has(uiGraphQL) && !processed.has(auth) && !processed.has(uiGraphQL)) {
-                // Merge into a single backend authority, e.g., "READ_REPO_ABC:GRAPHQL"
-                const combined = auth + GRAPHQL_SUFFIX_WITH_DELIMITER;
-                backendAuthorities.push(combined);
-                processed.add(auth);
-                processed.add(uiGraphQL);
-                continue;
-            }
-            if (!processed.has(auth)) {
-                backendAuthorities.push(auth);
-                processed.add(auth);
-            }
-        } else {
-            if (!processed.has(auth)) {
-                backendAuthorities.push(auth);
-                processed.add(auth);
-            }
+    const customAuthorities = [];
+    const repoMap = {};
+    // Helper to ensure a fresh entry for each repository.
+    const getOrCreateRepo = (repoId) => {
+        if (!repoMap[repoId]) {
+            repoMap[repoId] = { read: false, write: false, graphql: false };
         }
-    }
-    return backendAuthorities;
-}
+        return repoMap[repoId];
+    };
+
+    uiAuthorities.forEach((auth) => {
+        const repoData = getRepoFromAuthority(auth);
+        if (repoData) {
+            const { prefix, repo } = repoData;
+            const entry = getOrCreateRepo(repo);
+            if (prefix === READ_REPO_PREFIX) {
+                entry.read = true;
+            } else if (prefix === WRITE_REPO_PREFIX) {
+                entry.write = true;
+            }
+        } else if (auth.indexOf(GRAPHQL_PREFIX) === 0) {
+            const repo = auth.substring(GRAPHQL_PREFIX.length);
+            const entry = getOrCreateRepo(repo);
+            entry.graphql = true;
+        } else {
+            customAuthorities.push(auth);
+        }
+    });
+
+    const backendAuthorities = [];
+    Object.keys(repoMap).forEach((repoId) => {
+        const perms = repoMap[repoId];
+        if (perms.graphql) {
+            if (perms.write) {
+                backendAuthorities.push(`${WRITE_REPO_PREFIX}${repoId}${GRAPHQL_SUFFIX_WITH_DELIMITER}`);
+            }
+            backendAuthorities.push(`${READ_REPO_PREFIX}${repoId}${GRAPHQL_SUFFIX_WITH_DELIMITER}`);
+        } else {
+            if (perms.write) {
+                backendAuthorities.push(`${WRITE_REPO_PREFIX}${repoId}`);
+            }
+            backendAuthorities.push(`${READ_REPO_PREFIX}${repoId}`);
+        }
+    });
+
+    return [...customAuthorities, ...backendAuthorities];
+};

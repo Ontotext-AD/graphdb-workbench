@@ -43,7 +43,7 @@ function SecurityService(SecurityRestService) {
      */
     const getAuthenticatedUser = () => {
         return SecurityRestService.getAuthenticatedUser()
-            .then((response) => toUserModelMapper(response.data));
+            .then((response) => toUserModelMapper(response.data, 'authorities'));
     }
 
     /**
@@ -54,7 +54,7 @@ function SecurityService(SecurityRestService) {
      */
     const getAdminUser = () => {
         return SecurityRestService.getAdminUser()
-            .then((response) => _toFullUserResponseMapper(response));
+            .then((response) => toUserModelMapper(response));
     }
 
     /**
