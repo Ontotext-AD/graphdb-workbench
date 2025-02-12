@@ -1,6 +1,9 @@
 import {GraphqlPlaygroundConfig} from '../../models/graphql/graphql-playground-config';
 import '../../core/services/graphql.service';
 import 'angular/core/directives/graphql-playground/graphql-playground.directive';
+import {
+    GraphqlPlaygroundDirectiveUtil
+} from "../../core/directives/graphql-playground/graphql-playground-directive.util";
 
 const modules = [
     'graphdb.framework.core.services.graphql-service',
@@ -11,9 +14,9 @@ angular
     .module('graphdb.framework.graphql.controllers.graphql-playground-view', modules)
     .controller('GraphqlPlaygroundViewCtrl', GraphqlPlaygroundViewCtrl);
 
-GraphqlPlaygroundViewCtrl.$inject = ['$scope', '$repositories', 'toastr', 'GraphqlService', 'GraphqlContextService', 'AuthTokenService'];
+GraphqlPlaygroundViewCtrl.$inject = ['$scope', '$repositories', '$languageService', 'toastr', 'GraphqlService', 'GraphqlContextService', 'AuthTokenService'];
 
-function GraphqlPlaygroundViewCtrl($scope, $repositories, toastr, GraphqlService, GraphqlContextService, AuthTokenService) {
+function GraphqlPlaygroundViewCtrl($scope, $repositories, $languageService, toastr, GraphqlService, GraphqlContextService, AuthTokenService) {
 
     // =========================
     // Private variables
@@ -82,7 +85,8 @@ function GraphqlPlaygroundViewCtrl($scope, $repositories, toastr, GraphqlService
      */
     const buildConfig = (endpoint) => {
         const config = {
-            endpoint: endpoint
+            endpoint: endpoint,
+            selectedLanguage: $languageService.getLanguage()
         };
         const authToken = AuthTokenService.getAuthToken();
         if (authToken) {
@@ -165,6 +169,20 @@ function GraphqlPlaygroundViewCtrl($scope, $repositories, toastr, GraphqlService
     };
 
     /**
+     * Handles language change events and updates the GraphQL Playground component's language.
+     *
+     * @param {Event} event - The event triggered by the language change.
+     * @param {Object} args - The arguments containing language details.
+     * @param {string} args.locale - The new locale to be set for the GraphQL Playground.
+     */
+    const getLanguageChangeHandler = (event, args) => {
+        GraphqlPlaygroundDirectiveUtil.getGraphqlPlaygroundComponentAsync("#graphql-playground")
+            .then((graphqlPlayground) => {
+                graphqlPlayground.setLanguage(args.locale);
+            })
+    }
+
+    /**
      * Resets the scope variables. This is used to clear the view when there are no GraphQL endpoints for example
      */
     const resetScope = () => {
@@ -185,6 +203,7 @@ function GraphqlPlaygroundViewCtrl($scope, $repositories, toastr, GraphqlService
     // =========================
 
     subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler));
+    subscriptions.push($scope.$on('language-changed', getLanguageChangeHandler));
     $scope.$on('$destroy', unsubscribeAll);
 
     // =========================
