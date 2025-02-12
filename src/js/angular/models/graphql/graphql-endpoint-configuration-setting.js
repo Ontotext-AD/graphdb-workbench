@@ -24,20 +24,32 @@ export class GraphqlEndpointConfigurationSettings {
         this._settings = data || [];
     }
 
+    /**
+     * Returns a flat JSON representation of the settings where the keys are the setting keys and the values are the
+     * setting values.
+     * @returns {Object.<string, *>}
+     */
+    toFlatJSON() {
+        return this.settings.reduce((acc, setting) => {
+            if (setting.collection) {
+                // acc[setting.key] = setting.value.map((item) => item.value);
+                // return acc;
+                return;
+            }
+            if (setting.type === 'select') {
+                acc[setting.key] = setting.value.value;
+                return acc;
+            }
+            acc[setting.key] = setting.value;
+            return acc;
+        }, {});
+    }
+
     get settings() {
         return this._settings;
     }
 
     set settings(value) {
         this._settings = value;
-    }
-
-    toJSON() {
-        return this.settings.map((config) => {
-            return {
-                key: config.key,
-                value: config.value,
-            }
-        })
     }
 }
