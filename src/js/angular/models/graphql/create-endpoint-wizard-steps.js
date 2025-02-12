@@ -67,3 +67,9 @@ export class ConfigureEndpointStep extends WizardStep {
         super('configure_endpoint', 'js/angular/graphql/templates/endpoint-config.html', 'endpoint-config', false);
     }
 }
+
+export class GenerateEndpointStep extends WizardStep {
+    constructor() {
+        super('generate_endpoint', 'js/angular/graphql/templates/generate-endpoint.html', 'generate-endpoint', false);
+    }
+}

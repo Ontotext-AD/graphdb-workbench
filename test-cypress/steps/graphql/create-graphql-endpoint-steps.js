@@ -223,6 +223,18 @@ export class CreateGraphqlEndpointSteps {
         return this.getView().find('.endpoint-configuration-view');
     }
 
+    static getGenerationSettingsForm() {
+        return this.getConfigureEndpointView().find('.generation-settings-form');
+    }
+
+    // ===================================
+    // Generate endpoint view
+    // ===================================
+
+    static getGenerateEndpointView() {
+        return this.getView().find('.generate-endpoint-view');
+    }
+
     // ===================================
     // Wizard actions
     // ===================================

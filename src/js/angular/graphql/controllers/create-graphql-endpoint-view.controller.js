@@ -1,10 +1,15 @@
 import '../../core/services/graphql.service';
 import '../services/graphql-context.service';
-import {ConfigureEndpointStep, SelectSchemaSourceStep} from "../../models/graphql/create-endpoint-wizard-steps";
+import {
+    ConfigureEndpointStep,
+    GenerateEndpointStep,
+    SelectSchemaSourceStep
+} from "../../models/graphql/create-endpoint-wizard-steps";
 import {endpointUrl} from "../models/endpoints";
 import {Wizard} from "../../models/graphql/wizard";
 import 'angular/graphql/directives/select-schema-sources.directive';
 import 'angular/graphql/directives/configure-endpoint.directive';
+import 'angular/graphql/directives/generate-endpoint.directive';
 import {GraphqlEventName} from "../services/graphql-context.service";
 import {GraphqlEndpointConfiguration} from "../../models/graphql/graphql-endpoint-configuration";
 
@@ -12,7 +17,8 @@ const modules = [
     'graphdb.framework.core.services.graphql-service',
     'graphdb.framework.graphql.services.graphql-context',
     'graphdb.framework.graphql.directives.select-schema-sources',
-    'graphdb.framework.graphql.directives.configure-endpoint'
+    'graphdb.framework.graphql.directives.configure-endpoint',
+    'graphdb.framework.graphql.directives.generate-endpoint'
 ];
 
 angular
@@ -115,7 +121,6 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
      * Handles the transition to the next step in the create endpoint wizard.
      */
     const onNextEndpointCreationStep = () => {
-        const config = GraphqlContextService.getNewEndpoint();
         setCurrentStep($scope.wizardModel.nextStep());
     };
 
@@ -164,7 +169,8 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
     const setupWizard = () => {
         $scope.wizardModel = new Wizard()
             .addStep(new SelectSchemaSourceStep())
-            .addStep(new ConfigureEndpointStep());
+            .addStep(new ConfigureEndpointStep())
+            .addStep(new GenerateEndpointStep());
         setCurrentStep($scope.wizardModel.getActiveStep());
     };
 

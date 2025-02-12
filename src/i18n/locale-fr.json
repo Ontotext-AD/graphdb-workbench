@@ -889,6 +889,14 @@
                         "form": {}
                     }
                 },
+                "generate_endpoint": {
+                    "title": "Créer",
+                    "overview": {
+                        "title": "Aperçu"
+                    },
+                    "messages": {
+                    }
+                },
                 "shapes_multiselect": {
                     "available_options": {
                         "title": "Disponible (non inclus)",
@@ -957,7 +965,7 @@
                         }
                     },
                     "generate_endpoint": {
-                        "label": "Générer"
+                        "label": "Créer un point de terminaison"
                     }
                 }
             },

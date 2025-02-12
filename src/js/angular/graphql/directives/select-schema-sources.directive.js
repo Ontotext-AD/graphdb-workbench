@@ -16,7 +16,7 @@ SelectSchemaSourcesComponent.$inject = ['ModalService', '$translate', 'toastr', 
 function SelectSchemaSourcesComponent(ModalService, $translate, toastr, $repositories, GraphqlContextService, GraphqlService, RDF4JRepositoriesService) {
     return {
         restrict: 'E',
-        templateUrl: 'js/angular/graphql/templates/select-schema-sources.html',
+        templateUrl: 'js/angular/graphql/templates/step-select-schema-sources.html',
         scope: {
             stepDefinition: '='
         },
@@ -138,6 +138,10 @@ function SelectSchemaSourcesComponent(ModalService, $translate, toastr, $reposit
                 GraphqlContextService.nextEndpointCreationStep();
             };
 
+            /**
+             * Handles the switch between schema source types in the UI. Switching schema source types renders different
+             * UI components for selecting the schema source and uses different data models.
+             */
             $scope.onSchemaSourceTypeChange = () => {
                 if ($scope.stepDefinition.schemaSourceType === SchemaSourceType.SHACL_SHAPES) {
                     if ($scope.stepDefinition.ontotlogyShaclShapeSource === OntologyShaclShapeSource.USE_ALL_GRAPHS) {
@@ -150,6 +154,10 @@ function SelectSchemaSourcesComponent(ModalService, $translate, toastr, $reposit
                 }
             };
 
+            /**
+             * Handles the switch between ontology and SHACL shape sources in the UI. Switching between sources changes
+             * the list of graphs available for selection.
+             */
             $scope.onOntologyShaclShapeSourceChange = () => {
                 if ($scope.stepDefinition.ontotlogyShaclShapeSource === OntologyShaclShapeSource.USE_ALL_GRAPHS) {
                     $scope.endpointConfiguration.selectedGraphs = $scope.allGraphs;
@@ -198,7 +206,7 @@ function SelectSchemaSourcesComponent(ModalService, $translate, toastr, $reposit
                 return GraphqlService.getPrefixListAsSelectOptions(GraphqlContextService.getSourceRepository())
                     .catch((error) => {
                         console.error('Error loading prefixes', error);
-                        toastr.error(getError(error), 'Error loading prefixes');
+                        toastr.error(getError(error));
                     })
                     .finally(() => {
                         $scope.loadingPrefixes = false;
@@ -214,7 +222,7 @@ function SelectSchemaSourcesComponent(ModalService, $translate, toastr, $reposit
                 return RDF4JRepositoriesService.getGraphs(GraphqlContextService.getSourceRepository())
                     .catch((error) => {
                         console.error('Error loading graphs', error);
-                        toastr.error(getError(error), 'Error loading graphs');
+                        toastr.error(getError(error));
                     })
                     .finally(() => {
                         $scope.loadingGraphs = false;
@@ -229,7 +237,7 @@ function SelectSchemaSourcesComponent(ModalService, $translate, toastr, $reposit
                 return GraphqlService.getGraphqlSchemaShapes(GraphqlContextService.getSourceRepository())
                     .catch((error) => {
                         console.error('Error loading GraphQL schema shapes', error);
-                        toastr.error(getError(error), 'Error loading GraphQL schema shapes');
+                        toastr.error(getError(error));
                     });
             };
 
@@ -241,7 +249,7 @@ function SelectSchemaSourcesComponent(ModalService, $translate, toastr, $reposit
                 return GraphqlService.getShaclShapeGraphs(GraphqlContextService.getSourceRepository())
                     .catch((error) => {
                         console.error('Error loading SHACL shape graphs', error);
-                        toastr.error(getError(error), 'Error loading SHACL shape graphs');
+                        toastr.error(getError(error));
                     });
             }
 

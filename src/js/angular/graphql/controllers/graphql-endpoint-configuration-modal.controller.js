@@ -1,7 +1,11 @@
 import '../../core/services/graphql.service';
+import 'angular/core/directives/dynamic-form/dynamic-form.directive';
+import 'angular/core/directives/multiselect-dropdown/multiselect-dropdown.directive';
 
 const modules = [
-    'graphdb.framework.core.services.graphql-service'
+    'graphdb.framework.core.services.graphql-service',
+    'graphdb.framework.core.directives.dynamic-form',
+    'graphdb.framework.core.directives.multiselect-dropdown'
 ];
 
 angular

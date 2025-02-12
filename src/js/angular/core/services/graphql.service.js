@@ -83,6 +83,18 @@ function GraphqlService(GraphqlRestService) {
     }
 
     /**
+     * Get the GraphQL generation settings. These settings are used to configure the GraphQL endpoint generation.
+     * @returns {Promise<GraphqlEndpointConfigurationSettings>}
+     */
+    const getGraphqlGenerationSettings = () => {
+        return GraphqlRestService.getGraphqlGenerationSettings()
+            .then((response) => {
+                const fieldsModel = dynamicFormModelMapper(response.data);
+                return new GraphqlEndpointConfigurationSettings(fieldsModel);
+            });
+    };
+
+    /**
      * Get the GraphQL endpoint configuration settings.
      * @param {string} repositoryId - The repository id.
      * @param {string} endpointId - The endpoint id.
@@ -124,6 +136,7 @@ function GraphqlService(GraphqlRestService) {
         getGraphqlSchemaShapes,
         getPrefixListAsSelectOptions,
         getShaclShapeGraphs,
+        getGraphqlGenerationSettings,
         getGraphqlEndpointConfigurationSettings,
         saveEndpointConfigurationSettings,
         deleteEndpoint

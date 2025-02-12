@@ -59,23 +59,10 @@
 
 .create-graphql-endpoint-view .endpoint-configuration-container {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    gap: 2em;
+    align-items: stretch;
+    width: 50%;
 }
 
-.create-graphql-endpoint-view .endpoint-configuration-container .dynamic-parameters-form {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    flex: 1;
-    border: 1px solid #e0e0e0;
-}
-
-.create-graphql-endpoint-view .endpoint-configuration-container .generation-overview {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    flex: 1;
-    border: 1px solid #e0e0e0;
+.create-graphql-endpoint-view .endpoint-configuration-container dynamic-form {
+    width: 100%;
 }

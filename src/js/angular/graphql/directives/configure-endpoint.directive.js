@@ -2,12 +2,12 @@ angular
     .module('graphdb.framework.graphql.directives.configure-endpoint', [])
     .directive('configureEndpoint', ConfigureEndpointComponent);
 
-ConfigureEndpointComponent.$inject = ['ModalService', '$translate', 'GraphqlContextService'];
+ConfigureEndpointComponent.$inject = ['ModalService', '$translate', 'GraphqlService', 'GraphqlContextService'];
 
-function ConfigureEndpointComponent(ModalService, $translate, GraphqlContextService) {
+function ConfigureEndpointComponent(ModalService, $translate, GraphqlService, GraphqlContextService) {
     return {
         restrict: 'E',
-        templateUrl: 'js/angular/graphql/templates/configure-endpoint.html',
+        templateUrl: 'js/angular/graphql/templates/step-configure-endpoint.html',
         scope: {
             stepDefinition: '='
         },
@@ -23,9 +23,36 @@ function ConfigureEndpointComponent(ModalService, $translate, GraphqlContextServ
              */
             $scope.endpointConfiguration = undefined
 
+            /**
+             * The dynamic form model containing the generation settings.
+             * @type {GraphqlEndpointConfigurationSettings|undefined}
+             */
+            $scope.generationSettings = undefined;
+
+            /**
+             * Flag indicating if the generation settings in the form are valid.
+             * @type {boolean}
+             */
+            $scope.generationSettingsValid = false;
+
             // =========================
             // Public functions
             // =========================
+
+            /**
+             * Handles the validity change of the generation settings form.
+             * @param {boolean} isValid The new validity state of the form.
+             */
+            $scope.handleValidityChange = (isValid) => {
+                $scope.endpointConfigurationSettingsValid = isValid;
+            };
+
+            /**
+             * Handles the transition to the next step in the create endpoint wizard.
+             */
+            $scope.next = () => {
+                GraphqlContextService.nextEndpointCreationStep();
+            };
 
             /**
              * Handles the transition to the previous step in the create endpoint wizard.
@@ -45,17 +72,28 @@ function ConfigureEndpointComponent(ModalService, $translate, GraphqlContextServ
                 });
             };
 
-            /**
-             * Handles the creation of the GraphQL endpoint.
-             */
-            $scope.generateEndpoint = () => {
-                GraphqlContextService.generateEndpoint();
-            };
-
             // =========================
             // Private functions
             // =========================
 
+            const loadGenerationSettings = () => {
+                return GraphqlService.getGraphqlGenerationSettings()
+                    .catch((error) => {
+                        console.error('Error loading generation settings', error);
+                        toastr.error(getError(error));
+                    });
+            }
+
+            const loadData = () => {
+                $scope.loadingData = true;
+                Promise.all([loadGenerationSettings()])
+                    .then(([generationSettings]) => {
+                        $scope.generationSettings = generationSettings;
+                    })
+                    .finally(() => {
+                        $scope.loadingData = false;
+                    });
+            }
 
             // =========================
             // Subscriptions
@@ -70,6 +108,7 @@ function ConfigureEndpointComponent(ModalService, $translate, GraphqlContextServ
 
             const onInit = () => {
                 $scope.endpointConfiguration = GraphqlContextService.getNewEndpoint();
+                loadData($scope.endpointConfiguration);
             }
             onInit();
         }

@@ -1,0 +1,29 @@
+<div onto-loader-new ng-if="loadingData" class="schema-sources-loader" size="100"></div>
+
+<div ng-show="!loadingData" class="endpoint-configuration-view">
+
+    <h5 class="mt-2">
+        {{'graphql.create_endpoint.wizard_steps.configure_endpoint.endpoint_parameters.title' | translate}}</h5>
+
+    <div class="endpoint-configuration-container">
+        <dynamic-form ng-if="generationSettings" fields="generationSettings.settings"
+                      on-validity-change="handleValidityChange(valid)"
+                      form-ctrl="formCtrl" class="generation-settings-form">
+        </dynamic-form>
+    </div>
+
+    <div class="wizard-actions mt-2">
+        <button class="btn btn-secondary cancel-btn mr-1"
+                ng-click="cancel()">
+            {{'graphql.create_endpoint.wizard_steps.actions.cancel.label' | translate}}
+        </button>
+        <button class="btn btn-secondary back-btn mr-1"
+                ng-click="back()">
+            {{'graphql.create_endpoint.wizard_steps.actions.back.label' | translate}}
+        </button>
+        <button class="btn btn-primary next-btn" ng-disabled="!endpointConfigurationSettingsValid || formCtrl.$pristine"
+                ng-click="next()">
+            {{'graphql.create_endpoint.wizard_steps.actions.next.label' | translate}}
+        </button>
+    </div>
+</div>
