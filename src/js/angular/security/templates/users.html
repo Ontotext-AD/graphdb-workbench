@@ -53,9 +53,12 @@
 				<td ng-if="!hasExternalAuth()" class="user-type">{{user.userTypeDescription}}</td>
 				<td ng-if="!hasExternalAuth()" class="repository-rights">
 					<div ng-show="user.userType === 'user'" ng-repeat="(repo, rights) in user.repositories track by $index">
-						<em class="icon-eye" ng-class="rights.read ? 'text-tertiary' : 'text-muted'" gdb-tooltip="{{rights.read ? 'security.has.read.access' : 'security.no.read.access' | translate}}"></em>
-						<em class="icon-edit" ng-class="rights.write ? 'text-tertiary' : 'text-muted'" gdb-tooltip="{{rights.read ? 'security.has.write.access' : 'security.no.write.access' | translate}}"></em>
-						{{repo}}
+						<em class="icon-eye" ng-if="!rights.graphql" ng-class="rights.read ? 'text-tertiary' : 'text-muted'" gdb-tooltip="{{rights.read ? 'security.has.read.access' : 'security.no.read.access' | translate}}"></em>
+						<em class="icon-edit" ng-if="!rights.graphql" ng-class="rights.write ? 'text-tertiary' : 'text-muted'" gdb-tooltip="{{rights.write ? 'security.has.write.access' : 'security.no.write.access' | translate}}"></em>
+                        <em class="fa-kit fa-gdb-graphql text-tertiary" ng-if="rights.graphql" gdb-tooltip="{{rights.write ? 'security.has.mutation_rights' : 'security.no.mutation_rights' | translate}}"></em>
+						<sup><em class="icon-eye text-tertiary" ng-if="rights.graphql && rights.read" gdb-tooltip="{{'security.has.read.access' | translate}}"></em></sup>
+						<sup><em class="icon-edit text-tertiary" ng-if="rights.graphql && rights.write" gdb-tooltip="{{'security.has.write.access' | translate}}"></em></sup>
+                        {{repo}}
 					</div>
 					<div ng-show="user.userType !== 'user'">{{'security.unrestricted' | translate}}</div>
                     <div>

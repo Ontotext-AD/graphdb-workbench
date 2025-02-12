@@ -1,11 +1,20 @@
 import {UserRole, UserType, UserUtils} from "../../utils/user-utils";
-import {READ_REPO, WRITE_REPO} from "./constants";
+import {
+    CUSTOM_PREFIX,
+    GRAPHQL,
+    GRAPHQL_PREFIX,
+    READ_REPO,
+    READ_REPO_PREFIX,
+    WRITE_REPO,
+    WRITE_REPO_PREFIX
+} from "./constants";
 
 export const parseAuthorities = (authorities) => {
     let userType = UserType.USER;
     const grantedAuthorities = {
         [READ_REPO]: {},
-        [WRITE_REPO]: {}
+        [WRITE_REPO]: {},
+        [GRAPHQL]: {}
     };
     const repositories = {};
     const customRoles = [];
@@ -19,19 +28,27 @@ export const parseAuthorities = (authorities) => {
             }
         } else if (role === UserRole.ROLE_USER) {
             userType = UserType.USER;
-        } else if (role.indexOf('READ_REPO_') === 0 || role.indexOf('WRITE_REPO_') === 0) {
-            const index = role.indexOf('_', role.indexOf('_') + 1);
-            const op = role.substr(0, index);
-            const repo = role.substr(index + 1);
-            grantedAuthorities[op][repo] = true;
-            repositories[repo] = repositories[repo] || {};
-            if (op === READ_REPO) {
-                repositories[repo].read = true;
-            } else if (op === WRITE_REPO) {
-                repositories[repo].write = true;
+        } else if (role.indexOf(READ_REPO_PREFIX) === 0 || role.indexOf(WRITE_REPO_PREFIX) === 0) {
+            const repoData = getRepoFromAuthority(role);
+            if (repoData) {
+                const { prefix, repo } = repoData;
+                const opKey = prefix === READ_REPO_PREFIX ? READ_REPO : WRITE_REPO;
+                grantedAuthorities[opKey][repo] = true;
+                repositories[repo] = repositories[repo] || {};
+                if (prefix === READ_REPO_PREFIX) {
+                    repositories[repo].read = true;
+                } else if (prefix === WRITE_REPO_PREFIX) {
+                    repositories[repo].write = true;
+                }
             }
-        } else if (role.indexOf('CUSTOM_') === 0) {
-            customRoles.push(role.substr('CUSTOM_'.length));
+        } else if (role.indexOf(GRAPHQL_PREFIX) === 0) {
+            // For GRAPHQL the repository id is simply the part after the prefix.
+            const repo = role.substring(GRAPHQL_PREFIX.length);
+            grantedAuthorities[GRAPHQL][repo] = true;
+            repositories[repo] = repositories[repo] || {};
+            repositories[repo].graphql = true;
+        } else if (role.indexOf(CUSTOM_PREFIX) === 0) {
+            customRoles.push(role.substring(CUSTOM_PREFIX.length));
         }
     }
 
@@ -49,4 +66,19 @@ export const createUniqueKey = function (repository) {
         return `${repository.id}@${repository.location}`;
     }
     return repository.id;
+};
+
+
+/**
+ * Given an authority string, returns an object with the prefix used and the repository id.
+ * Returns null if the authority does not start with a known repo prefix.
+ */
+export const getRepoFromAuthority = (role) => {
+    if (role.startsWith(READ_REPO_PREFIX)) {
+        return { prefix: READ_REPO_PREFIX, repo: role.substring(READ_REPO_PREFIX.length) };
+    }
+    if (role.startsWith(WRITE_REPO_PREFIX)) {
+        return { prefix: WRITE_REPO_PREFIX, repo: role.substring(WRITE_REPO_PREFIX.length) };
+    }
+    return null;
 };
