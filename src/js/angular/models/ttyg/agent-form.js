@@ -88,7 +88,8 @@ export class AgentFormModel {
 
     getDefaultAdditionalExtractionMethod() {
         const additionalExtractionMethods = [];
-        additionalExtractionMethods.push(new AdditionalExtractionMethodFormModel({method: AdditionalExtractionMethod.IRI_DISCOVERY_SEARCH}));
+        additionalExtractionMethods.push(new AdditionalExtractionMethodFormModel({method: AdditionalExtractionMethod.IRI_DISCOVERY_SEARCH}),
+            new AdditionalExtractionMethodFormModel({ method: AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH }));
         return new AdditionalExtractionMethodsFormModel(additionalExtractionMethods);
     }
 
@@ -491,10 +492,11 @@ export class AdditionalExtractionMethodFormModel {
     constructor(data) {
         this._selected = data.selected || false;
         /**
-         * @type {'iri_discovery_search'}
+         * @type {'iri_discovery_search', 'autocomplete_iri_discovery_search'}
          * @private
          */
         this._method = data.method;
+        this._expanded = data.expanded || false;
     }
 
     toPayload() {
@@ -517,6 +519,18 @@ export class AdditionalExtractionMethodFormModel {
 
     set method(value) {
         this._method = value;
+    }
+
+    get expanded() {
+        return this._expanded;
+    }
+
+    set expanded(value) {
+        this._expanded = value;
+    }
+
+    toggleCollapse() {
+        this._expanded = !this._expanded;
     }
 }
 

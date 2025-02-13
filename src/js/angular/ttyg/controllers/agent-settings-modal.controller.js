@@ -1,5 +1,5 @@
 import {decodeHTML} from "../../../../app";
-import {ExtractionMethod} from "../../models/ttyg/agents";
+import {AdditionalExtractionMethod, ExtractionMethod} from "../../models/ttyg/agents";
 import 'angular/core/services/similarity.service';
 import 'angular/core/services/connectors.service';
 import 'angular/core/services/ttyg.service';
@@ -16,6 +16,10 @@ angular
         'graphdb.framework.rest.repositories.service',
         'graphdb.framework.ttyg.controllers.agent-instructions-explain-modal'
     ])
+    .constant('ExtractionMethodTemplates', {
+    'iri_discovery_search': 'iri-discovery-search',
+    'autocomplete_iri_discovery_search': 'autocomplete-iri-discovery-search'
+    })
     .controller('AgentSettingsModalController', AgentSettingsModalController);
 
 AgentSettingsModalController.$inject = [
@@ -32,7 +36,9 @@ AgentSettingsModalController.$inject = [
     '$translate',
     'dialogModel',
     'TTYGContextService',
-    'TTYGService'];
+    'TTYGService',
+    'ExtractionMethodTemplates',
+    'AutocompleteService'];
 
 function AgentSettingsModalController(
     $scope,
@@ -48,7 +54,9 @@ function AgentSettingsModalController(
     $translate,
     dialogModel,
     TTYGContextService,
-    TTYGService) {
+    TTYGService,
+    ExtractionMethodTemplates,
+    AutocompleteService) {
 
     // =========================
     // Private variables
@@ -107,6 +115,18 @@ function AgentSettingsModalController(
     $scope.extractionMethods = ExtractionMethod;
 
     /**
+     * The additional extraction method types constants.
+     * @type {{IRI_DISCOVERY_SEARCH: string, AUTOCOMPLETE_IRI_DISCOVERY_SEARCH: string}}
+     */
+    $scope.additionalExtractionMethods = AdditionalExtractionMethod;
+
+    /**
+     * The names of the template files, containing the Extraction Method Templates.
+     * @type {Object<string, string>}
+     */
+    $scope.ExtractionMethodTemplates = ExtractionMethodTemplates;
+
+    /**
      * Flag used to show/hide the advanced settings in the modal.
      * @type {boolean}
      */
@@ -142,6 +162,12 @@ function AgentSettingsModalController(
      */
     $scope.ftsEnabled = false;
 
+    /**
+     * The user input autocomplete field predicates.
+     * @type {*[]}
+     */
+    $scope.autocompletePredicates = [];
+
     // =========================
     // Public functions
     // =========================
@@ -170,6 +196,29 @@ function AgentSettingsModalController(
     };
 
     /**
+     * Sets the UI touched state and validation state for the additional extraction methods property so that the UI can show if
+     * the user has selected at least one extraction method.
+     *
+     * @param {AdditionalExtractionMethodFormModel} extractionMethod
+     */
+    $scope.toggleAdditionalExtractionMethod = (extractionMethod) => {
+        extractionMethod.expanded = extractionMethod.selected;
+        //$scope.agentSettingsForm.additionalExtractionMethods.$setTouched();
+        //setExtractionMethodValidityStatus();
+        additionalExtractionPanelToggleHandlers[extractionMethod.method](extractionMethod);
+    };
+
+     /**
+     * Handles the panel toggle event for the additional extraction method. This is used to do some initialization when the user
+     * opens the panel for a specific extraction method.
+     * @param {AdditionalExtractionMethodFormModel} extractionMethod
+     */
+    $scope.onAdditionalExtractionMethodPanelToggle = (extractionMethod) => {
+        extractionMethod.toggleCollapse();
+        additionalExtractionPanelToggleHandlers[extractionMethod.method](extractionMethod);
+    };
+
+    /**
      * Resolves the hint message for the agent model property. This is needed because the hint contains a html link that
      * should be properly rendered.
      * @return {*}
@@ -191,6 +240,22 @@ function AgentSettingsModalController(
             $translate.instant(
                 'ttyg.agent.create_agent_modal.form.fts_search.fts_disabled_message',
                 {repositoryEditPage: '#/repository/edit/' + $scope.agentFormModel.repositoryId}
+            )
+        );
+        return $sce.trustAsHtml(message);
+    };
+
+    /**
+     * Resolves the hint for the Autocomplete Index not enabled message. This is needed because the hint contains a html link that
+     * should be properly rendered.
+     * @return {*}
+     */
+    $scope.getAutocompleteDisabledHelpMessage = () => {
+        // The hint contains a html link which should be properly rendered.
+        const message = decodeHTML(
+            $translate.instant(
+                'ttyg.agent.create_agent_modal.form.additional_query_methods.autocomplete_disabled_message',
+                {autocompleteIndexPage: '#/autocomplete'}
             )
         );
         return $sce.trustAsHtml(message);
@@ -302,6 +367,16 @@ function AgentSettingsModalController(
     $scope.onRepositoryChange = () => {
         refreshValidations(true, true);
     };
+
+    $scope.checkAutocompleteIndexEnabled = () => {
+        AutocompleteService.checkAutocompleteStatus().then((autocompleteEnabled) => {
+            $scope.autocompleteEnabled = autocompleteEnabled;
+            console.log(autocompleteEnabled);
+        })
+            .catch((error) => {
+                toastr.error(getError(error));
+            });
+    }
 
     /**
      * Restores the default system instructions.
@@ -570,6 +645,14 @@ function AgentSettingsModalController(
         [ExtractionMethod.SIMILARITY]: (extractionMethod) => handleSimilaritySearchExtractionMethodPanelToggle(extractionMethod),
         [ExtractionMethod.RETRIEVAL]: (extractionMethod) => handleRetrievalConnectorExtractionMethodPanelToggle(extractionMethod)
     };
+
+    const additionalExtractionPanelToggleHandlers = {
+        [AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH]: (extractionMethod) => handleAutocompleteExtractionMethodPanelToggle(extractionMethod),
+    };
+
+    const handleAutocompleteExtractionMethodPanelToggle = (extractionMethod) => {
+        console.log('Toggling: ', extractionMethod);
+    }
 
     const refreshValidations = (clearIndexSelection = false, clearRetrievalConnectorSelection = false) => {
         $scope.checkIfFTSEnabled();

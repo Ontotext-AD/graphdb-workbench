@@ -336,7 +336,7 @@ export class AdditionalExtractionMethodsModel {
 export class AdditionalExtractionMethodModel {
     constructor(data) {
         /**
-         * @type {'iri_discovery_search'}
+         * @type {'iri_discovery_search', 'autocomplete_iri_discovery_search'}
          * @private
          */
         this._method = data.method;
@@ -434,7 +434,8 @@ export const ExtractionMethod = {
 };
 
 export const AdditionalExtractionMethod = {
-    IRI_DISCOVERY_SEARCH: 'iri_discovery_search'
+    IRI_DISCOVERY_SEARCH: 'iri_discovery_search',
+    AUTOCOMPLETE_IRI_DISCOVERY_SEARCH: 'autocomplete_iri_discovery_search'
 };
 
 /**

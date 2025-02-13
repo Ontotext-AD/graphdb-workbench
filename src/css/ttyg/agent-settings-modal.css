@@ -73,6 +73,17 @@
     padding: 0 10px;
 }
 
+.agent-settings-modal .agent-settings-form .extraction-method-heading .extraction-method-toggle {
+    display: flex;
+    align-items: center;
+}
+
+.agent-settings-modal .agent-settings-form .extraction-method-heading .extraction-method-toggle .panel-toggle-link {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
 .agent-settings-modal .agent-settings-form #sparqlQuery,
 .agent-settings-modal .agent-settings-form #queryTemplate {
     font-size: 1rem;

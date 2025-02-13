@@ -1,0 +1,71 @@
+<div id="{{extractionMethod.method + '_method_heading'}}" class="extraction-method-heading"
+     ng-class="{'selected': extractionMethod.selected}">
+    <div class="mr-0 extraction-method-toggle">
+        <input type="checkbox" id="{{extractionMethod.method + '_checkbox'}}"
+               name="{{extractionMethod}}" class="switch"
+               ng-click="toggleAdditionalExtractionMethod(extractionMethod, $event)"
+               ng-model="extractionMethod.selected"/>
+        <label for="{{extractionMethod.method + '_checkbox'}}"></label>
+        <a class="btn btn-link panel-toggle-link"
+           aria-expanded="false" aria-controls="{{extractionMethod.method + '_method_content'}}"
+           ng-click="onAdditionalExtractionMethodPanelToggle(extractionMethod)">
+                                <span class="mr-1"
+                                      uib-popover="{{'ttyg.agent.create_agent_modal.form.additional_query_methods.method.' + extractionMethod.method + '.tooltip' | translate}}"
+                                      popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.additional_query_methods.method.' + extractionMethod.method + '.label' | translate}}</span>
+            <i class="fa fa-chevron-down toggle-icon"
+               ng-class="{'expanded': extractionMethod.expanded}">
+            </i>
+        </a>
+    </div>
+
+    <div id="{{extractionMethod.method + '_method_content'}}"
+         class="show extraction-method-content"
+         aria-labelledby="{{extractionMethod.method + '_method_heading'}}"
+         data-parent="#extractionMethods">{{extractionMethod}}
+        <!--        <div
+            ng-if="extractionMethod.expanded && extractionMethod.method === additionalExtractionMethods.autocomplete_iri_discovery_search"-->
+           <div ng-if="true"
+            class="extraction-method-options">
+            <button class="btn btn-link btn-sm pull-right"
+                    ng-click="checkAutocompleteIndexEnabled()"
+                    gdb-tooltip="{{'btn.reload.tooltip' | translate}}">
+                <i class="fa fa-arrows-rotate"></i>
+            </button>
+            <div class="alert alert-danger missing-repositoryid-error mb-0"
+                 ng-if="!agentFormModel.repositoryId">
+                {{'ttyg.agent.create_agent_modal.form.missing_repository_id' | translate}}
+            </div>
+            <div ng-if="agentFormModel.repositoryId" class="autocomplete-disabled-message"
+                 ng-bind-html="getAutocompleteDisabledHelpMessage()">
+            </div>
+            <div class="form-group max-triples" ng-show="agentFormModel.repositoryId">
+                <label for="{{extractionMethod + '_maxNumberOfTriplesPerCall'}}"
+                       popover-trigger="mouseenter">
+                    {{'ttyg.agent.create_agent_modal.form.additional_query_methods.autocomplete_max_number_of_results_per_call.label' | translate}}
+                </label>
+                <input type="number" class="form-control"
+                       id="{{extractionMethod + '_maxNumberOfTriplesPerCall'}}"
+                       name="maxNumberOfTriplesPerCall" min="0"
+                       ng-model="extractionMethod.maxNumberOfTriplesPerCall"
+                       placeholder="{{'ttyg.agent.create_agent_modal.form.additional_query_methods.autocomplete_max_number_of_results_per_call.placeholder' | translate}}">
+            </div>
+               <div class="autocomplete-predicate-tags">
+                   <label>{{'ttyg.agent.create_agent_modal.form.additional_query_methods.autocomplete_search_predicates.label' | translate}}</label>
+                   <tags-input id="autocompletePredicateField" class="wb-tags-input" ng-model="autocompletePredicates" min-length="1"
+                               use-strings="true"
+                               add-on-space="true"
+                               add-on-comma="true"
+                               add-on-paste="true"
+                               replace-spaces-with-dashes="false"
+                               paste-split-pattern="[\s+]"
+                               on-tag-adding=""
+                               on-tag-added=""
+                               ng-keydown=""
+                               ng-cut=""
+                               placeholder="{{'ttyg.agent.create_agent_modal.form.additional_query_methods.autocomplete_search_predicates.tooltip' | translate}}">
+<!--                       <auto-complete source="loadSuggestions(input)"></auto-complete> TODO-->
+                   </tags-input>
+               </div>
+        </div>
+    </div>
+</div>
