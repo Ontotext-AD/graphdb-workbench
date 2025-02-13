@@ -10,11 +10,6 @@ function SimpleModalCtrl($scope, $uibModalInstance, $sce, config) {
     $scope.confirmButtonKey = config.confirmButtonKey;
     $scope.title = config.title;
     $scope.message = $sce.trustAsHtml(config.message);
-    $scope.onClick = ($event) => {
-        if (config.stopPropagation) {
-            $event.stopPropagation();
-        }
-    };
 
     $scope.ok = function () {
         $uibModalInstance.close();
