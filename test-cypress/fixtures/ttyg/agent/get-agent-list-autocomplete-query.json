@@ -1,0 +1,23 @@
+[
+    {
+        "id": "asst_G8EtHyT8kAGeDmCa3Nh6y74v",
+        "name": "Test autocomplete extraction agent",
+        "model": "gpt-4o",
+        "temperature": 0.7,
+        "topP": 1.0,
+        "repositoryId": "starwars",
+        "instructions": {
+            "systemInstruction": null,
+            "userInstruction": null
+        },
+        "assistantExtractionMethods": [
+            {
+                "method": "sparql_search",
+                "ontologyGraph": null,
+                "sparqlQuery": "CONSTRUCT {\n    ?s ?p ?o\n} WHERE {\n    GRAPH <http://example.com/sw-ont> {\n        ?s ?p ?o\n    }\n}",
+                "addMissingNamespaces": false
+            }
+        ],
+        "additionalExtractionMethods": []
+    }
+]

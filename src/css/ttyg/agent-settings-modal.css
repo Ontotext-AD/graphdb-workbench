@@ -73,6 +73,17 @@
     padding: 0 10px;
 }
 
+.agent-settings-modal .agent-settings-form .extraction-method-heading .extraction-method-toggle {
+    display: flex;
+    align-items: center;
+}
+
+.agent-settings-modal .agent-settings-form .extraction-method-heading .extraction-method-toggle .panel-toggle-link {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
 .agent-settings-modal .agent-settings-form #sparqlQuery,
 .agent-settings-modal .agent-settings-form #queryTemplate {
     font-size: 1rem;
@@ -100,6 +111,10 @@
     transition: transform 0.3s ease; /* Smooth transition */
 }
 
+.additional-extraction-method .panel-toggle-link .toggle-icon {
+    transition: transform 0.3s ease; /* Smooth transition */
+}
+
 .agent-settings-form .advanced-settings .toolbar,
 .user-instructions .toolbar {
     display: flex;
@@ -119,7 +134,33 @@
     transform: rotate(180deg);
 }
 
+.additional-extraction-method .panel-toggle-link .toggle-icon.expanded {
+    transform: rotate(180deg);
+}
+
+.additional-extraction-method .input-field-group .form-control {
+    width: auto;
+}
+
+.agent-settings-modal .agent-settings-form .additional-extraction-methods .additional-extraction-method .extraction-method-options {
+    padding: 1rem 1rem 1rem 3.6rem;
+}
+
 /* when the panel is expanded */
 .agent-settings-form .extraction-methods .extraction-method:has(.expanded) {
     background-color: var(--base-background-color);
+}
+
+/* when the panel is expanded */
+.agent-settings-form .additional-extraction-methods .additional-extraction-method:has(.expanded) {
+    background-color: var(--base-background-color);
+}
+
+.extraction-method-options .input-field-group .autocomplete-predicate-tags .wb-tags-input .tags {
+    display: flex;
+    flex-direction: column;
+}
+
+.extraction-method-options .input-field-group .autocomplete-predicate-tags tags-input .host {
+    margin-top: 0;
 }

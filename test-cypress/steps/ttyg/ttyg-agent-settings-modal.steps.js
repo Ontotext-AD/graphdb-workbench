@@ -412,6 +412,50 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
         this.getIriDiscoverySearchCheckbox().uncheck({force: true});
     }
 
+    static getAutocompleteSearchCheckbox() {
+        return cy.get('#autocomplete_iri_discovery_search_checkbox');
+    }
+
+    static checkAutocompleteSearchCheckbox() {
+        this.getAutocompleteSearchCheckbox().check({force: true});
+    }
+
+    static uncheckAutocompleteSearchCheckbox() {
+        this.getAutocompleteSearchCheckbox().uncheck({force: true});
+    }
+
+    static getAutocompleteMaxResults() {
+       return cy.get('#autocomplete_iri_discovery_search_maxNumberOfResultsPerCall');
+    }
+
+    static setAutocompleteMaxResults(number) {
+        this.getAutocompleteMaxResults().type(number);
+    }
+
+    static getSearchPredicateInput() {
+        return cy.get('#autocompletePredicateField');
+    }
+
+    static enterSearchPredicate(text) {
+        this.getSearchPredicateInput().type(text);
+    }
+
+    static getSearchPredicateTags() {
+        return this.getSearchPredicateInput().find('.tag-item');
+    }
+
+    static toggleAutocompleteSearchPanel() {
+        cy.get('.extraction-method-toggle .panel-toggle-link .toggle-icon').click();
+    }
+
+    static getSuggestionsList() {
+        return cy.get('ul.suggestion-list li.suggestion-item');
+    }
+
+    static selectAutocompleteOption(index) {
+        this.getSuggestionsList().eq(index).click();
+    }
+
     // System instructions
 
     static getSystemInstructionsFormGroup() {

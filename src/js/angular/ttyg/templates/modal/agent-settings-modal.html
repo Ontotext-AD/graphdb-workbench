@@ -1,4 +1,5 @@
 <link href="css/ttyg/agent-settings-modal.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+<link href="css/lib/ng-tags-input/ng-tags-input.min.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
 <div class="modal-header">
     <button type="button" class="close" ng-click="close()"></button>
@@ -318,24 +319,20 @@
             </div>
         </div>
 
-        <div class="form-group additional-extraction-methods">
+        <div id="additionalExtractionMethods" class="form-group additional-extraction-methods">
             <label uib-popover="{{'ttyg.agent.create_agent_modal.form.additional_query_methods.tooltip' | translate}}"
-                   popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.additional_query_methods.label' |
-                translate}}</label>
-            <div
-                ng-repeat="additionalExtractionMethod in agentFormModel.additionalExtractionMethods.additionalExtractionMethods"
-                class="additional-extraction-method">
-                <input type="checkbox" id="{{additionalExtractionMethod.method + '_checkbox'}}"
-                       name="{{additionalExtractionMethod.method}}" class="switch"
-                       ng-model="additionalExtractionMethod.selected"/>
-                <label for="{{additionalExtractionMethod.method + '_checkbox'}}"></label>
-                <a class="btn btn-link extraction-method-label" uib-popover="{{'ttyg.agent.create_agent_modal.form.additional_query_methods.method.' +
-                    additionalExtractionMethod.method + '.tooltip' | translate}}"
-                   popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.additional_query_methods.method.'
-                    +
-                    additionalExtractionMethod.method + '.label' | translate}}</a>
+                   popover-trigger="mouseenter">
+                {{'ttyg.agent.create_agent_modal.form.additional_query_methods.label' | translate}}
+            </label>
+
+            <div ng-repeat="extractionMethod in agentFormModel.additionalExtractionMethods.additionalExtractionMethods"
+                 class="additional-extraction-method">
+                <div ng-if="ExtractionMethodTemplates[extractionMethod.method]">
+                    <div ng-include="'js/angular/ttyg/templates/' + ExtractionMethodTemplates[extractionMethod.method] + '.html'"></div>
+                </div>
             </div>
         </div>
+
 
         <div class="form-row clearfix">
             <div class="form-group gpt-model col-md-4">
