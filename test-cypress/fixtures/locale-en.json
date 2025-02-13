@@ -589,8 +589,21 @@
                         "method": {
                             "iri_discovery_search": {
                                 "label": "Full-text search in labels for IRI discovery",
-                                "tooltip": "Helps the model discover the IRIs for a particular incomplete query, for example the name Michael in “What’s Michael’s phone number?”"
+                                "tooltip": "Helps the model discover the IRIs (using FTS) for a particular incomplete query, for example the name Michael in \"What's Michael's phone number?\""
+                            },
+                            "autocomplete_iri_discovery_search": {
+                                "label": "Autocomplete for IRI discovery",
+                                "tooltip": "Helps the model discover the IRIs (using autocomplete) for a particular incomplete query, for example the name Michael in \"What's Michael's phone number?\""
                             }
+                        },
+                        "autocomplete_disabled_message": "You must <a href=\"{{autocompleteIndexPage}}\" target=\"_blank\">enable the Autocomplete index</a> on chosen repository to use this method",
+                        "autocomplete_max_number_of_results_per_call": {
+                            "label": "Max number of results (IRIs) per call",
+                            "placeholder": "Automatic value"
+                        },
+                        "autocomplete_search_predicates": {
+                            "label": "Search predicates",
+                            "tooltip": "Enter one or more predicates to use for label search with autocomplete."
                         }
                     }
                 },
