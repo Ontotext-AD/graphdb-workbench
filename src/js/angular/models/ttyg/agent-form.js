@@ -88,7 +88,13 @@ export class AgentFormModel {
 
     getDefaultAdditionalExtractionMethod() {
         const additionalExtractionMethods = [];
-        additionalExtractionMethods.push(new AdditionalExtractionMethodFormModel({method: AdditionalExtractionMethod.IRI_DISCOVERY_SEARCH}));
+        additionalExtractionMethods.push(
+            new AdditionalExtractionMethodFormModel({
+                method: AdditionalExtractionMethod.IRI_DISCOVERY_SEARCH}),
+            new AdditionalExtractionMethodFormModel({
+                method: AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH,
+                maxNumberOfResultsPerCall: 0,
+                searchLabelPredicates: []}));
         return new AdditionalExtractionMethodsFormModel(additionalExtractionMethods);
     }
 
@@ -478,6 +484,33 @@ export class AdditionalExtractionMethodsFormModel {
             .map((method) => method.toPayload());
     }
 
+    /**
+     * Finds the additional extraction method in the additional extraction methods array.
+     * @param {string} method
+     * @return {AdditionalExtractionMethodFormModel}
+     */
+    findAdditionalExtractionMethod(method) {
+        return this._additionalExtractionMethods.find((additionalExtractionMethod) => additionalExtractionMethod.method === method);
+    }
+
+    /**
+     * Sets the extraction method in the extraction methods array.
+     * @param {AdditionalExtractionMethodsFormModel} additionalExtractionMethod
+     */
+    setAdditionalExtractionMethod(additionalExtractionMethod) {
+        if (Array.isArray(additionalExtractionMethod)) {
+            additionalExtractionMethod.forEach(additionalExtractionMethod => {
+                const existingMethod = this.findAdditionalExtractionMethod(additionalExtractionMethod._method);
+                if (existingMethod) {
+                    existingMethod._selected = additionalExtractionMethod._selected;
+                    existingMethod._maxNumberOfResultsPerCall = additionalExtractionMethod._maxNumberOfResultsPerCall;
+                    existingMethod._searchLabelPredicates = additionalExtractionMethod._searchLabelPredicates;
+                    existingMethod._expanded = additionalExtractionMethod._expanded;
+                }
+            });
+        }
+    }
+
     get additionalExtractionMethods() {
         return this._additionalExtractionMethods;
     }
@@ -491,16 +524,28 @@ export class AdditionalExtractionMethodFormModel {
     constructor(data) {
         this._selected = data.selected || false;
         /**
-         * @type {'iri_discovery_search'}
+         * @type {'iri_discovery_search' | 'autocomplete_iri_discovery_search'}
          * @private
          */
         this._method = data.method;
+        this._expanded = data.expanded || false;
+        this._maxNumberOfResultsPerCall = data.maxNumberOfResultsPerCall || null;
+        this._searchLabelPredicates = data._searchLabelPredicates || [];
     }
 
     toPayload() {
-        return {
-            method: this._method
-        };
+        const payload = {};
+        const isAutocompleteMethod = this._method === AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH;
+        payload.method = this._method;
+
+        if (isAutocompleteMethod && this._maxNumberOfResultsPerCall) {
+            payload.limit = this._maxNumberOfResultsPerCall;
+        }
+
+        if (isAutocompleteMethod && this._searchLabelPredicates) {
+            payload.searchLabelPredicates = this._searchLabelPredicates;
+        }
+        return payload;
     }
 
     get selected() {
@@ -517,6 +562,34 @@ export class AdditionalExtractionMethodFormModel {
 
     set method(value) {
         this._method = value;
+    }
+
+    get expanded() {
+        return this._expanded;
+    }
+
+    set expanded(value) {
+        this._expanded = value;
+    }
+
+    toggleCollapse() {
+        this._expanded = !this._expanded;
+    }
+
+    get maxNumberOfResultsPerCall() {
+        return this._maxNumberOfResultsPerCall;
+    }
+
+    set maxNumberOfResultsPerCall(value) {
+        this._maxNumberOfResultsPerCall = value;
+    }
+
+    get searchLabelPredicates() {
+        return this._searchLabelPredicates;
+    }
+
+    set searchLabelPredicates(value) {
+        this._searchLabelPredicates = value;
     }
 }
 

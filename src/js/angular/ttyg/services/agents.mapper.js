@@ -1,5 +1,17 @@
-import {AdditionalExtractionMethodModel, AgentInstructionsModel, AgentListModel, AgentModel, ExtractionMethodModel} from '../../models/ttyg/agents';
-import {AgentFormModel, AgentInstructionsFormModel, ExtractionMethodFormModel} from '../../models/ttyg/agent-form';
+import {
+    AdditionalExtractionMethod,
+    AdditionalExtractionMethodModel,
+    AgentInstructionsModel,
+    AgentListModel,
+    AgentModel,
+    ExtractionMethodModel
+} from '../../models/ttyg/agents';
+import {
+    AdditionalExtractionMethodFormModel,
+    AgentFormModel,
+    AgentInstructionsFormModel,
+    ExtractionMethodFormModel
+} from '../../models/ttyg/agent-form';
 import {NumericRangeModel, TextFieldModel} from '../../models/form-fields';
 import {md5HashGenerator} from '../../utils/hash-utils';
 import {AGENT_OPERATION} from "./constants";
@@ -26,9 +38,7 @@ export const agentFormModelMapper = (agentModel, defaultAgentModel, operation ) 
     agentFormModel.instructions = agentInstructionsFormMapper(agentModel.instructions, defaultAgentModel.instructions);
     extractionMethodsFormMapper(agentFormModel, operation, defaultAgentModel.assistantExtractionMethods, agentModel.assistantExtractionMethods);
     // Select additional methods if they are present in the list returned from the backend (BE).
-    agentFormModel.additionalExtractionMethods.additionalExtractionMethods.forEach((method) => {
-        method.selected = agentModel.additionalExtractionMethods && agentModel.additionalExtractionMethods.some((agentMethod) => agentMethod.method === method.method);
-    });
+    additionalExtractionMethodsFormMapper(agentModel.additionalExtractionMethods, defaultAgentModel.additionalExtractionMethods, agentFormModel);
     return agentFormModel;
 };
 
@@ -109,6 +119,34 @@ const extractionMethodsFormMapper = (agentFormModel, operation, defaultData, dat
 };
 
 /**
+ * @param {AdditionalExtractionMethodsModel} additionalExtractionMethodsResponse
+ * @param {AdditionalExtractionMethodsModel} defaultAdditionalExtractionMethodData
+ * @param {AgentFormModel} agentFormModel
+ */
+function additionalExtractionMethodsFormMapper(additionalExtractionMethodsResponse, defaultAdditionalExtractionMethodData, agentFormModel) {
+    // No Additional extraction methods on new agent creation
+    if (!additionalExtractionMethodsResponse) {
+        return;
+    }
+    const additionalExtractionMethods = additionalExtractionMethodsResponse.map(method => {
+        let data = {
+            method: method.method || defaultAdditionalExtractionMethodData.method,
+            expanded: method.expanded || defaultAdditionalExtractionMethodData.expanded,
+        };
+        if (method.method === AdditionalExtractionMethod.IRI_DISCOVERY_SEARCH || method.method === AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH) {
+            data.selected = additionalExtractionMethodsResponse.some((agentMethod) => agentMethod.method === method.method);
+        }
+
+        if (method.method === AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH) {
+            data.maxNumberOfResultsPerCall = method._maxNumberOfResultsPerCall || defaultAdditionalExtractionMethodData.maxNumberOfResultsPerCall;
+            data._searchLabelPredicates = method.searchLabelPredicates || defaultAdditionalExtractionMethodData._searchLabelPredicates;
+        }
+        return new AdditionalExtractionMethodFormModel(data);
+    });
+    agentFormModel.additionalExtractionMethods.setAdditionalExtractionMethod(additionalExtractionMethods);
+}
+
+/**
  * Converts the response from the server to a list of AgentModel.
  * @param {*[]} data
  * @param {string[]} localRepositoryIds
@@ -179,9 +217,17 @@ const additionalExtractionMethodMapper = (data) => {
     if (!data) {
         return;
     }
-    return new AdditionalExtractionMethodModel({
-        method: data.method
-    });
+    if (data.method === AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH) {
+        return new AdditionalExtractionMethodModel({
+            method: data.method,
+            maxNumberOfResultsPerCall: data.limit || 0,
+            searchLabelPredicates: data.searchLabelPredicates || []
+        });
+    } else if (data.method === AdditionalExtractionMethod.IRI_DISCOVERY_SEARCH) {
+        return new AdditionalExtractionMethodModel({
+            method: data.method
+        });
+    }
 };
 
 const agentInstructionsMapper = (data) => {

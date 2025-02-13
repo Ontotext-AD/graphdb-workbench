@@ -1,0 +1,11 @@
+<div class="simple-method">
+    <input type="checkbox" id="{{extractionMethod.method + '_checkbox'}}"
+           name="{{extractionMethod.method}}" class="switch"
+           ng-model="extractionMethod.selected"/>
+    <label for="{{extractionMethod.method + '_checkbox'}}"></label>
+    <a class="btn btn-link extraction-method-label"
+       uib-popover="{{'ttyg.agent.create_agent_modal.form.additional_query_methods.method.' + extractionMethod.method + '.tooltip' | translate}}"
+       popover-trigger="mouseenter">
+        {{'ttyg.agent.create_agent_modal.form.additional_query_methods.method.' + extractionMethod.method + '.label' | translate}}
+    </a>
+</div>
