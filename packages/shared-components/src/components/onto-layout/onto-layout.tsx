@@ -159,6 +159,14 @@ export class OntoLayout {
     this.navbarRef.menuItems = [...this.navbarRef.menuItems];
   }
 
+  private assignNavbarRef() {
+    return (navbar: HTMLOntoNavbarElement) => {
+      this.navbarRef = navbar;
+      this.navbarRef.menuItems = window.PluginRegistry.get('main.menu');
+      this.setNavbarItemVisibility();
+    }
+  }
+
   // ========================
   // Lifecycle methods
   // ========================
@@ -202,7 +210,7 @@ export class OntoLayout {
         </header>
 
         <nav class="wb-navbar">
-          <onto-navbar ref={(navbar) => this.navbarRef = navbar}
+          <onto-navbar ref={this.assignNavbarRef()}
                        navbar-collapsed={this.isLowResolution}
                        selected-menu={this.currentRoute}></onto-navbar>
         </nav>
