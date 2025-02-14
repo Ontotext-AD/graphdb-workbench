@@ -92,7 +92,7 @@ module.exports = (webpackConfigEnv, argv) => {
             }),
             new MergeI18nPlugin({
               startDirectory: './packages',
-              outputDirectory: 'onto-i18n'
+              outputDirectory: 'assets/i18n'
             }),
             new MergeJsonPlugin({
                 files: [
