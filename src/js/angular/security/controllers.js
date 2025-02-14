@@ -1,10 +1,18 @@
 import 'angular/core/services';
 import 'angular/core/services/jwt-auth.service';
 import 'angular/core/services/openid-auth.service';
-import 'angular/rest/security.rest.service';
+import 'angular/core/services/security.service';
 import {UserRole, UserType} from 'angular/utils/user-utils';
 import 'angular/security/directives/custom-prefix-tags-input.directive';
-import {READ_REPO, READ_REPO_PREFIX, SYSTEM_REPO, WRITE_REPO, WRITE_REPO_PREFIX} from "./services/constants";
+import {
+    GRAPHQL,
+    GRAPHQL_PREFIX,
+    READ_REPO,
+    READ_REPO_PREFIX,
+    SYSTEM_REPO,
+    WRITE_REPO,
+    WRITE_REPO_PREFIX
+} from "./services/constants";
 import {createUniqueKey, parseAuthorities} from "./services/authorities-util";
 
 const modules = [
@@ -12,7 +20,7 @@ const modules = [
     'ui.bootstrap',
     'graphdb.framework.core.services.jwtauth',
     'graphdb.framework.core.services.openIDService',
-    'graphdb.framework.rest.security.service',
+    'graphdb.framework.core.services.security-service',
     'toastr',
     'ngTagsInput'
 ];
@@ -80,8 +88,8 @@ securityModule.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth',
         };
     }]);
 
-securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService', 'SecurityRestService', '$translate',
-    function ($scope, $uibModal, toastr, $window, $jwtAuth, $timeout, ModalService, SecurityRestService, $translate) {
+securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$window', '$jwtAuth', '$timeout', 'ModalService', 'SecurityService', '$translate',
+    function ($scope, $uibModal, toastr, $window, $jwtAuth, $timeout, ModalService, SecurityService, $translate) {
 
         $scope.loader = true;
         $scope.securityEnabled = function () {
@@ -96,9 +104,9 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
         $scope.freeAccessEnabled = function () {
             return $jwtAuth.isFreeAccessEnabled();
         };
-        $scope.getUsers = function () {
-            SecurityRestService.getUsers()
-                .success(function (data) {
+        $scope.getUsers = () => {
+            return SecurityService.getUsers()
+                .then(function (data) {
                     $scope.users = data;
                     for (let i = 0; i < $scope.users.length; i++) {
                         const pa = parseAuthorities($scope.users[i].grantedAuthorities);
@@ -108,7 +116,7 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
                         $scope.users[i].customRoles = pa.customRoles;
                     }
                     $scope.loader = false;
-                }).error(function (data) {
+                }).catch(function (data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
                 $scope.loader = false;
@@ -134,7 +142,7 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
 
         $scope.toggleFreeAccess = function (updateFreeAccess) {
             if (!$jwtAuth.isFreeAccessEnabled() || ($jwtAuth.isFreeAccessEnabled() && updateFreeAccess)) {
-                SecurityRestService.getFreeAccess().then(function (res) {
+                SecurityService.getFreeAccess().then(function (res) {
                     const authorities = res.data.authorities;
                     const appSettings = res.data.appSettings || {
                         'DEFAULT_SAMEAS': true,
@@ -161,7 +169,8 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
                             defaultAuthorities: function () {
                                 const defaultAuthorities = {
                                     [READ_REPO]: {},
-                                    [WRITE_REPO]: {}
+                                    [WRITE_REPO]: {},
+                                    [GRAPHQL]: {}
                                 };
                                 // We might have old (no longer existing) repositories so we have to check that
                                 const repoIds = _.mapKeys($scope.getRepositories(), function (r) {
@@ -176,6 +185,10 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
                                     } else if (a.indexOf(READ_REPO_PREFIX) === 0) {
                                         if (repoIds.hasOwnProperty(a.substr(10))) {
                                             defaultAuthorities[READ_REPO][a.substr(10)] = true;
+                                        }
+                                    } else if (a.indexOf(GRAPHQL_PREFIX) === 0) {
+                                        if (repoIds.hasOwnProperty(a.substr(8))) {
+                                            defaultAuthorities[GRAPHQL][a.substr(8)] = true;
                                         }
                                     }
                                 });
@@ -204,15 +217,13 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
                 warning: true
             }).result.then(function () {
                 $scope.loader = true;
-                SecurityRestService.deleteUser(username).success(function () {
-                    $scope.getUsers();
-                }).error(function (data) {
-                    const msg = getError(data);
-                    toastr.error(msg, $translate.instant('common.error'));
-
-                    $scope.loader = false;
-                });
-
+                SecurityService.deleteUser(username)
+                    .then(() => $scope.getUsers())
+                    .catch((data) => {
+                        const msg = getError(data);
+                        toastr.error(msg, $translate.instant('common.error'));
+                        $scope.loader = false;
+                    });
             });
         };
 
@@ -250,6 +261,12 @@ securityModule.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$uibMod
             for (const index in $scope.grantedAuthorities.READ_REPO) {
                 if ($scope.grantedAuthorities.READ_REPO[index] && auth.indexOf(READ_REPO_PREFIX + index) === -1) {
                     auth.push(READ_REPO_PREFIX + index);
+                    $scope.repositoryCheckError = false;
+                }
+            }
+            for (const index in $scope.grantedAuthorities.GRAPHQL) {
+                if ($scope.grantedAuthorities.GRAPHQL[index] && auth.indexOf(GRAPHQL_PREFIX + index) === -1) {
+                    auth.push(GRAPHQL_PREFIX + index);
                     $scope.repositoryCheckError = false;
                 }
             }
@@ -320,6 +337,12 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
                         pushAuthority(READ_REPO_PREFIX + index);
                     }
                 }
+                for (const index in $scope.grantedAuthorities.GRAPHQL) {
+                    if ($scope.grantedAuthorities.GRAPHQL[index]) {
+                        $scope.repositoryCheckError = false;
+                        pushAuthority(GRAPHQL_PREFIX + index, READ_REPO_PREFIX + index);
+                    }
+                }
             }
             if ($scope.customRoles) {
                 $scope.customRoles.forEach((role) => pushAuthority('CUSTOM_' + role));
@@ -340,9 +363,10 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
             const uniqueKey = createUniqueKey(repository);
             return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
                 || repository.id !== SYSTEM_REPO
-                && ($scope.grantedAuthorities.READ_REPO['*'] || $scope.grantedAuthorities.WRITE_REPO['*'])
+                && ($scope.grantedAuthorities.READ_REPO['*'] || $scope.grantedAuthorities.WRITE_REPO['*'] || $scope.grantedAuthorities.GRAPHQL['*'])
                 || $scope.grantedAuthorities.READ_REPO[uniqueKey]
-                || $scope.grantedAuthorities.WRITE_REPO[uniqueKey];
+                || $scope.grantedAuthorities.WRITE_REPO[uniqueKey]
+                || $scope.grantedAuthorities.GRAPHQL[uniqueKey];
         };
 
         $scope.hasWritePermission = function (repoOrWildCard) {
@@ -352,13 +376,27 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
                 || $scope.grantedAuthorities.WRITE_REPO[uniqueKey];
         };
 
+        $scope.hasGraphqlPermission = function (repository) {
+            console.log($scope.grantedAuthorities)
+            const uniqueKey = createUniqueKey(repository);
+            return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
+                || repository.id !== SYSTEM_REPO
+                && ($scope.grantedAuthorities.GRAPHQL['*'] || $scope.grantedAuthorities.GRAPHQL[uniqueKey]);
+        };
+
         $scope.readCheckDisabled = function (repoOrWildCard) {
-            return $scope.hasWritePermission(repoOrWildCard)
+            return $scope.hasWritePermission(repoOrWildCard) || $scope.hasGraphqlPermission(repoOrWildCard)
                 || repoOrWildCard.id !== SYSTEM_REPO && repoOrWildCard !== '*' && $scope.grantedAuthorities.READ_REPO['*']
                 || $scope.hasEditRestrictions();
         };
 
         $scope.writeCheckDisabled = function (repoOrWildCard) {
+            return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
+                || repoOrWildCard.id !== SYSTEM_REPO && repoOrWildCard !== '*' && $scope.grantedAuthorities.WRITE_REPO['*']
+                || $scope.hasEditRestrictions();
+        };
+
+        $scope.graphqlCheckDisabled = function (repoOrWildCard) {
             return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
                 || repoOrWildCard.id !== SYSTEM_REPO && repoOrWildCard !== '*' && $scope.grantedAuthorities.WRITE_REPO['*']
                 || $scope.hasEditRestrictions();
@@ -371,7 +409,8 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
         $scope.userType = UserType.USER;
         $scope.grantedAuthorities = {
             [READ_REPO]: {},
-            [WRITE_REPO]: {}
+            [WRITE_REPO]: {},
+            [GRAPHQL]: {}
         };
 
         $scope.validatePassword = function () {
@@ -484,8 +523,8 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
         };
     }]);
 
-securityModule.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService', '$translate',
-    function ($scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $controller, SecurityRestService, ModalService, $translate) {
+securityModule.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityService', 'ModalService', '$translate',
+    function ($scope, $http, toastr, $window, $timeout, $location, $jwtAuth, $controller, SecurityService, ModalService, $translate) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.password.placeholder'}));
 
@@ -532,12 +571,12 @@ securityModule.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window'
 
         $scope.createUserHttp = function () {
             $scope.loader = true;
-            SecurityRestService.createUser({
+            SecurityService.createUser({
                 username: $scope.user.username,
                 pass: $scope.user.password,
                 appSettings: $scope.user.appSettings,
                 grantedAuthorities: $scope.user.grantedAuthorities
-            }).success(function () {
+            }).then(() => {
                 toastr.success($translate.instant('security.user.created', {name: $scope.user.username}));
                 const timer = $timeout(function () {
                     $scope.loader = false;
@@ -546,7 +585,7 @@ securityModule.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window'
                 $scope.$on('$destroy', function () {
                     $timeout.cancel(timer);
                 });
-            }).error(function (data) {
+            }).catch((data) => {
                 const msg = getError(data);
                 $scope.loader = false;
                 toastr.error(msg, $translate.instant('common.error'));
@@ -593,8 +632,8 @@ securityModule.controller('AddUserCtrl', ['$scope', '$http', 'toastr', '$window'
         };
     }]);
 
-securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window', '$routeParams', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityRestService', 'ModalService', '$translate',
-    function ($scope, $http, toastr, $window, $routeParams, $timeout, $location, $jwtAuth, $controller, SecurityRestService, ModalService, $translate) {
+securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window', '$routeParams', '$timeout', '$location', '$jwtAuth', '$controller', 'SecurityService', 'ModalService', '$translate',
+    function ($scope, $http, toastr, $window, $routeParams, $timeout, $location, $jwtAuth, $controller, SecurityService, ModalService, $translate) {
 
         angular.extend(this, $controller('CommonUserCtrl', {$scope: $scope, passwordPlaceholder: 'security.new.password'}));
 
@@ -624,7 +663,7 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
             $location.url('settings');
         }
         $scope.getUserData = function () {
-            SecurityRestService.getUser($scope.params.userId).success(function (data) {
+            SecurityService.getUser($scope.params.userId).then(function (data) {
                 $scope.userData = data;
                 $scope.user = {username: $scope.userData.username};
                 $scope.user.password = '';
@@ -636,7 +675,7 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
                 $scope.userType = pa.userType;
                 $scope.grantedAuthorities = pa.grantedAuthorities;
                 $scope.customRoles = pa.customRoles;
-            }).error(function (data) {
+            }).catch(function (data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
             });
@@ -660,12 +699,12 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
 
         $scope.updateUserHttp = function () {
             $scope.loader = true;
-            SecurityRestService.updateUser({
+            SecurityService.updateUser({
                 username: $scope.user.username,
                 pass: ($scope.noPassword) ? '' : $scope.user.password || undefined,
                 appSettings: $scope.user.appSettings,
                 grantedAuthorities: $scope.user.grantedAuthorities
-            }).success(function () {
+            }).then(() => {
                 toastr.success($translate.instant('security.user.updated', {name: $scope.user.username}));
                 const timer = $timeout(function () {
                     $scope.loader = false;
@@ -680,7 +719,7 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
                         principal.appSettings = $scope.user.appSettings;
                     }
                 });
-            }).error(function (data) {
+            }).catch((data) => {
                 const msg = getError(data);
                 $scope.loader = false;
                 toastr.error(msg, $translate.instant('common.error'));
@@ -692,12 +731,12 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
         };
     }]);
 
-securityModule.controller('RolesMappingController', ['$scope', 'toastr', 'SecurityRestService', '$translate',
-    function ($scope, toastr, SecurityRestService, $translate) {
+securityModule.controller('RolesMappingController', ['$scope', 'toastr', 'SecurityService', '$translate',
+    function ($scope, toastr, SecurityService, $translate) {
 
         $scope.debugMapping = function (role, mapping) {
             const method = mapping.split(':');
-            SecurityRestService.getRolesMapping({
+            SecurityService.getRolesMapping({
                 role: role,
                 method: method[1],
                 mapping: method[0]
@@ -705,7 +744,7 @@ securityModule.controller('RolesMappingController', ['$scope', 'toastr', 'Securi
         };
 
         const loadRoles = function () {
-            SecurityRestService.getRoles()
+            SecurityService.getRoles()
                 .success(function (data) {
                     $scope.roleMappings = data;
                     $scope.roles = _.keys($scope.roleMappings);

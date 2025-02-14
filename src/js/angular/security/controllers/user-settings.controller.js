@@ -1,5 +1,5 @@
 import 'angular/core/services/security.service';
-import {READ_REPO, WRITE_REPO} from "../services/constants";
+import {GRAPHQL, READ_REPO, WRITE_REPO} from "../services/constants";
 import {UserType} from 'angular/utils/user-utils';
 import {parseAuthorities} from "../services/authorities-util";
 import {UpdateUserPayload} from "../../models/security/security";
@@ -60,7 +60,8 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     $scope.passwordPlaceholder = $translate.instant('security.new.password');
     $scope.grantedAuthorities = {
         [READ_REPO]: {},
-        [WRITE_REPO]: {}
+        [WRITE_REPO]: {},
+        [GRAPHQL]: {}
     };
     $scope.loader = false;
     /**

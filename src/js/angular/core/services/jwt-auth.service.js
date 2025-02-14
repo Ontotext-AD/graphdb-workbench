@@ -1,15 +1,15 @@
 import 'angular/core/services';
 import 'angular/core/services/openid-auth.service.js';
-import 'angular/rest/security.rest.service';
+import 'angular/core/services/security.service';
 import {UserRole} from 'angular/utils/user-utils';
 
 angular.module('graphdb.framework.core.services.jwtauth', [
     'toastr',
-    'graphdb.framework.rest.security.service',
+    'graphdb.framework.core.services.security-service',
     'graphdb.framework.core.services.openIDService'
 ])
-    .service('$jwtAuth', ['$http', 'toastr', '$location', '$rootScope', 'SecurityRestService', '$openIDAuth', '$translate', '$q', 'AuthTokenService', 'LSKeys', 'LocalStorageAdapter',
-        function ($http, toastr, $location, $rootScope, SecurityRestService, $openIDAuth, $translate, $q, AuthTokenService, LSKeys, LocalStorageAdapter) {
+    .service('$jwtAuth', ['$http', 'toastr', '$location', '$rootScope', 'SecurityService', '$openIDAuth', '$translate', '$q', 'AuthTokenService', 'LSKeys', 'LocalStorageAdapter',
+        function ($http, toastr, $location, $rootScope, SecurityService, $openIDAuth, $translate, $q, AuthTokenService, LSKeys, LocalStorageAdapter) {
             const jwtAuth = this;
 
             $rootScope.deniedPermissions = {};
@@ -88,8 +88,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
              * @param {boolean} justLoggedIn Indicates that the user just logged in.
              */
             this.getAuthenticatedUserFromBackend = function(noFreeAccessFallback, justLoggedIn) {
-                SecurityRestService.getAuthenticatedUser().
-                success(function(data, status, headers) {
+                SecurityService.getAuthenticatedUser().then(function(data) {
                     const token = AuthTokenService.getAuthToken();
                     if (token && token.startsWith('GDB')) {
                         // There is a previous authentication via JWT, it's still valid
@@ -108,7 +107,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         that.authenticate(data, ''); // this will emit securityInit
                         // console.log('external authentication ok');
                     }
-                }).error(function () {
+                }).catch(function () {
                     if (noFreeAccessFallback || !that.freeAccess) {
                         $rootScope.redirectToLogin(false, justLoggedIn);
                     } else {
@@ -124,7 +123,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             this.initSecurity = function () {
                 this.securityInitialized = false;
 
-                SecurityRestService.getSecurityConfig().then(function (res) {
+                SecurityService.getSecurityConfig().then(function (res) {
                     that.securityEnabled = res.data.enabled;
                     that.externalAuth = res.data.hasExternalAuth;
                     that.authImplementation = res.data.authImplementation;
@@ -187,8 +186,8 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                             $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.hasOverrideAuth);
 
                         } else {
-                            return SecurityRestService.getAdminUser().then(function (res) {
-                                that.principal = {username: 'admin', appSettings: res.data.appSettings, authorities: res.data.grantedAuthorities};
+                            return SecurityService.getAdminUser().then(function (res) {
+                                that.principal = {username: 'admin', appSettings: res.appSettings, authorities: res.grantedAuthorities};
                                 $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.hasOverrideAuth);
                             });
                         }
@@ -236,7 +235,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
             this.toggleSecurity = function (enabled) {
                 if (enabled !== this.securityEnabled) {
-                    return SecurityRestService.toggleSecurity(enabled)
+                    return SecurityService.toggleSecurity(enabled)
                         .then(function () {
                             toastr.success($translate.instant('jwt.auth.security.status', {status: ($translate.instant(enabled ? 'enabled.status' : 'disabled.status'))}));
                             AuthTokenService.clearAuthToken();
@@ -257,7 +256,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     } else {
                         this.freeAccessPrincipal = undefined;
                     }
-                    SecurityRestService.setFreeAccess({
+                    SecurityService.setFreeAccess({
                         enabled: enabled ? 'true' : 'false',
                         authorities: authorities,
                         appSettings: appSettings
@@ -450,5 +449,5 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             };
 
 
-            this.updateUserData = (data) => SecurityRestService.updateUserData(data);
+            this.updateUserData = (data) => SecurityService.updateUserData(data);
         }]);
