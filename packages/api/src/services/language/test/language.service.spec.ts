@@ -60,7 +60,7 @@ describe('LanguageService', () => {
   test('Should retrieve the language, mapped to a TranslationBundle object', async () => {
     // Given, I have a mocked language
     const mockBundle = { hello: 'World' } as TranslationBundle;
-    TestUtil.mockResponse(new ResponseMock('/onto-i18n/en.json').setResponse(mockBundle));
+    TestUtil.mockResponse(new ResponseMock('/assets/i18n/en.json').setResponse(mockBundle));
 
     // When I call the getLanguage method
     const result = await languageService.getLanguage('en');
@@ -84,7 +84,7 @@ describe('LanguageService', () => {
         }
       ]
     } as unknown as LanguageConfig;
-    TestUtil.mockResponse(new ResponseMock('/onto-i18n/language-config.json').setResponse(mockLanguageConfig));
+    TestUtil.mockResponse(new ResponseMock('/assets/i18n/language-config.json').setResponse(mockLanguageConfig));
 
     // When I call the getLanguageConfiguration method
     const result = await languageService.getLanguageConfiguration();

@@ -5,6 +5,8 @@ import { LanguageConfig, TranslationBundle } from '../../models/language';
  * Service for handling language-related REST operations.
  */
 export class LanguageRestService extends HttpService {
+  private readonly I18N_ENDPOINT = '/assets/i18n';
+
   /**
    * Retrieves the translation bundle for a specific language.
    *
@@ -12,7 +14,7 @@ export class LanguageRestService extends HttpService {
    * @returns A Promise that resolves to a TranslationBundle containing the translations for the specified language.
    */
   getLanguage(languageCode: string): Promise<TranslationBundle> {
-    return this.get<TranslationBundle>(`/onto-i18n/${languageCode}.json`);
+    return this.get<TranslationBundle>(`${this.I18N_ENDPOINT}/${languageCode}.json`);
   }
 
   /**
@@ -21,6 +23,6 @@ export class LanguageRestService extends HttpService {
    * @returns A Promise that resolves to a {@link LanguageConfig} object containing the language configuration settings.
    */
   getLanguageConfiguration(): Promise<LanguageConfig> {
-    return this.get<LanguageConfig>('/onto-i18n/language-config.json');
+    return this.get<LanguageConfig>(`${this.I18N_ENDPOINT}/language-config.json`);
   }
 }
