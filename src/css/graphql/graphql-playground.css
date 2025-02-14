@@ -182,3 +182,8 @@ graphql-playground {
     border-radius: 0;
     color: var(--base-text-color);
 }
+
+.graphiql-dialog,
+.graphiql-dialog-overlay {
+    z-index: 1010;
+}

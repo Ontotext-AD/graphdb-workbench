@@ -1,5 +1,8 @@
 import {GraphqlPlaygroundSteps} from "../../steps/graphql/graphql-playground-steps";
 import {GraphqlStubs} from "../../stubs/graphql/graphql-stubs";
+import {GraphiqlPlaygroundSteps} from "../../steps/graphql/graphiql-playground-steps";
+import {GraphiQLEditorToolsSteps} from "../../steps/graphql/graphiql-editor-tools-steps";
+import {LanguageSelectorSteps} from "../../steps/language-selector-steps";
 
 describe('GraphQL Playground', () => {
     let repositoryId;
@@ -70,5 +73,20 @@ describe('GraphQL Playground', () => {
         GraphqlPlaygroundSteps.executeQuery();
         // Then I get expected result from the new endpoint
         GraphqlPlaygroundSteps.getResponse().should('contain', '"name": "Morty Smith"');
+    });
+
+    it('should be able to translate the labels', () => {
+        // Given: I have opened the workbench on the GraphQL Playground page.
+        GraphqlStubs.stubGetEndpoints(repositoryId);
+        GraphqlStubs.stubCountriesSchema();
+        GraphqlPlaygroundSteps.visit();
+        GraphiqlPlaygroundSteps.getPlayground().should('be.visible');
+        // the GraphQL is translated on english
+        GraphiQLEditorToolsSteps.getGraphiQLEditorTabButton(1).contains('Headers');
+
+        // When: I change the language.
+        LanguageSelectorSteps.changeLanguage('fr');
+        // Then: I expect to see GraphQL playground translated.
+        GraphiQLEditorToolsSteps.getGraphiQLEditorTabButton(1).contains('En-têtes');
     });
 });
