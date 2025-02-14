@@ -807,7 +807,7 @@ module.exports = {
   plugins: [
     new MergeI18nPlugin({
       startDirectory: 'packages',
-      outputDirectory: 'onto-i18n',
+      outputDirectory: 'assets/i18n',
     }),
   ],
 };
@@ -820,7 +820,7 @@ module.exports = {
    Avoid conflicting keys in your new bundle, as it will cause an error.
 3. Build the application
 4. Check merged output: After building the application, check the `${webpack.outputFolder}/${mergeI18nPlugin.outputDirectory}`
-   (currently `dist/onto-i18n`) folder to verify that all translations are included and correctly merged.
+   (currently `dist/assets/i18n`) folder to verify that all translations are included and correctly merged.
 5. Listen for bundle changes in the new module, using [language-context.service.ts#onLanguageBundleChanged](packages/api/src/services/language/language-context.service.ts)
 6. Use the new bundle for module translation (may be different, depending on the module).
 
