@@ -77,40 +77,6 @@ const layoutEngine = constructLayoutEngine({routes, applications});
 applications.forEach(registerApplication);
 layoutEngine.activate();
 
-// This is a workaround to initialize the navbar when the root-config is loaded and the navbar is not yet initialized.
-const waitForNavbarElement = () => {
-  return new Promise((resolve, reject) => {
-    const navbar = document.querySelector('onto-navbar');
-    if (navbar) {
-      resolve(navbar);
-    } else {
-      setTimeout(() => {
-        waitForNavbarElement().then(resolve).catch(reject);
-      }, 100);
-    }
-  });
-};
-
-const initializeNavbar = () => {
-  waitForNavbarElement()
-    .then((navbar) => {
-      navbar.menuItems = PluginRegistry.get('main.menu');
-    })
-    .catch((e) => {
-      console.error('onto-navbar element not found', e);
-    });
-};
-
-const registerSingleSpaFirstMountListener = () => {
-  // register listener only if it's not already registered
-  if (!window.singleSpaFirstMountListenerRegistered) {
-    window.singleSpaFirstMountListenerRegistered = true;
-    window.addEventListener('single-spa:first-mount', () => {
-      initializeNavbar();
-    });
-  }
-};
-
 const registerSingleSpaRouterListener = () => {
   if (!window.singleSingleSpaRouterListenerRegistered) {
     window.singleSingleSpaRouterListenerRegistered = true;
@@ -134,7 +100,6 @@ const bootstrapApplication = () => {
     });
 };
 
-registerSingleSpaFirstMountListener();
 registerSingleSpaRouterListener();
 bootstrapApplication();
 
