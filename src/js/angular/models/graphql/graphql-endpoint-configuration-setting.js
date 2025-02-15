@@ -20,8 +20,15 @@ export class GraphqlEndpointConfigurationSettings {
      */
     _settings;
 
+    /**
+     * Flag indicating if the settings are present.
+     * @private
+     */
+    _hasSettings;
+
     constructor(data) {
         this._settings = data || [];
+        this._hasSettings = this._settings.length > 0;
     }
 
     /**
@@ -45,11 +52,16 @@ export class GraphqlEndpointConfigurationSettings {
         }, {});
     }
 
+    get hasSettings() {
+        return this._hasSettings;
+    }
+
     get settings() {
         return this._settings;
     }
 
     set settings(value) {
         this._settings = value;
+        this._hasSettings = this._settings.length > 0;
     }
 }

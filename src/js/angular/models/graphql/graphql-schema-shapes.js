@@ -20,6 +20,19 @@ export class GraphqlSchemaShapes {
         this._isEmpty = this.shapes.length === 0;
     }
 
+    /**
+     * Process the shapes with the given predicate.
+     * @param {function} predicate The predicate to apply to each shape.
+     * @returns {GraphqlSchemaShape[]}
+     */
+    processShapes(predicate) {
+        return this.shapes.map(predicate);
+    }
+
+    /**
+     * Get the ids of the shapes.
+     * @returns {string[]} The ids of the shapes.
+     */
     getShapeIds() {
         return this.shapes.map(shape => shape.id);
     }

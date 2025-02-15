@@ -42,15 +42,19 @@ function GraphqlService(GraphqlRestService) {
      * @param {GraphqlEndpointConfiguration} endpointConfiguration
      */
     const getEndpointsCountToGenerate = (endpointConfiguration) => {
+        let count = 0;
         if (!endpointConfiguration) {
-            return 0;
+            count = 0;
         }
-        if (endpointConfiguration.hasSelectedGraphqlSchemaShapes()) {
-            return endpointConfiguration.getSelectedGraphqlSchemaShapesCount();
+        if (endpointConfiguration.generateFromGraphqlSchemaShapes()) {
+            count = endpointConfiguration.getSelectedGraphqlSchemaShapesCount();
         }
-        if (endpointConfiguration.hasSelectedGraphs()) {
-            return endpointConfiguration.getSelectedGraphsCount();
+        // A single endpoint is generated always when generating from ontologies or
+        // shacl shapes.
+        if (endpointConfiguration.generateFromShaclShapes()) {
+            count = 1;
         }
+        return count;
     };
 
     /**

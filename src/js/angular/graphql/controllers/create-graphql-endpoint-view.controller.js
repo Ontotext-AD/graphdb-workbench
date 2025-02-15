@@ -2,7 +2,7 @@ import '../../core/services/graphql.service';
 import '../services/graphql-context.service';
 import {
     ConfigureEndpointStep,
-    GenerateEndpointStep,
+    GenerateEndpointStep, SchemaSourceType,
     SelectSchemaSourceStep
 } from "../../models/graphql/create-endpoint-wizard-steps";
 import {endpointUrl} from "../models/endpoints";
@@ -154,16 +154,15 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
      * Handles the generation of the GraphQL endpoint. There are two options for generating the endpoint:
      * 1. Generate the endpoint from the GraphQL shacl shapes.
      * 2. Generate the endpoint from ontologies and/or shacl shapes.
-     * @param {GraphqlEndpointConfiguration} endpoint The endpoint configuration.
+     * @param {GraphqlEndpointConfiguration} endpointConfiguration The endpoint configuration.
      */
-    const onGenerateEndpoint = (endpoint) => {
-        const generateFromGraphqlShapes = endpoint.hasSelectedGraphqlSchemaShapes();
-        // FIXME: This is always true
-        const generateFromOntologies = endpoint.hasSelectedGraphs() || true;
+    const onGenerateEndpoint = (endpointConfiguration) => {
+        const generateFromGraphqlShapes = endpointConfiguration.schemaSourceType === SchemaSourceType.GRAPHQL_SCHEMA_SHAPES;
+        const generateFromOntologies = endpointConfiguration.schemaSourceType === SchemaSourceType.SHACL_SHAPES
         if (generateFromGraphqlShapes) {
-            return generateEndpointFromGraphqlShapes(endpoint);
+            return generateEndpointFromGraphqlShapes(endpointConfiguration);
         } else if (generateFromOntologies) {
-            return generateEndpointFromOntologies(endpoint);
+            return generateEndpointFromOntologies(endpointConfiguration);
         }
     };
 

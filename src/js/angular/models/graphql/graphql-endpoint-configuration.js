@@ -51,6 +51,22 @@ export class GraphqlEndpointConfiguration {
     }
 
     /**
+     * Returns if the endpoint will be generated from the GraphQL schema shapes.
+     * @returns {boolean}
+     */
+    generateFromGraphqlSchemaShapes() {
+        return this.schemaSourceType === SchemaSourceType.GRAPHQL_SCHEMA_SHAPES;
+    }
+
+    /**
+     * Returns if the endpoint will be generated from ontologies or SHACL shapes.
+     * @returns {boolean}
+     */
+    generateFromShaclShapes() {
+        return this.schemaSourceType === SchemaSourceType.SHACL_SHAPES;
+    }
+
+    /**
      * Builds an endpoint create request from the current configuration.
      * @param {string} sourceRepositoryId The source repository ID.
      * @returns {CreateEndpointFromShapesRequest}
@@ -85,18 +101,23 @@ export class GraphqlEndpointConfiguration {
      * @returns {GraphqlEndpointOverview[]}
      */
     getSelectedGraphqlSchemaShapesOverview() {
-        if (this.schemaSourceType === SchemaSourceType.GRAPHQL_SCHEMA_SHAPES) {
-            return this.selectedGraphqlSchemaShapes.shapes.map((shape) => {
+        if (this.generateFromGraphqlSchemaShapes()) {
+            return this.selectedGraphqlSchemaShapes.processShapes((shape) => {
                 return new GraphqlEndpointOverview({
                     label: shape.label && shape.id ? `${shape.label} | ${shape.id}` : shape.label || shape.id
-                })
+                });
             });
         }
-        if (this.schemaSourceType === SchemaSourceType.SHACL_SHAPES) {
-            return this.selectedGraphs.graphList.map((graph) => {
+        if (this.generateFromShaclShapes()) {
+            if (this.selectedGraphs.isEmpty) {
+                return [new GraphqlEndpointOverview({
+                    label: `[${this.params.endpointId}]`
+                })];
+            }
+            return this.selectedGraphs.processGraphList((graph) => {
                 return new GraphqlEndpointOverview({
                     label: graph.label && graph.uri ? `${graph.label} | ${graph.uri}` : graph.label || graph.uri
-                })
+                });
             });
         }
     }

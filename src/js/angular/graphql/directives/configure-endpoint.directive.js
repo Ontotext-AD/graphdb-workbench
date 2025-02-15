@@ -51,7 +51,6 @@ function ConfigureEndpointComponent(ModalService, $translate, GraphqlService, Gr
              * Handles the transition to the next step in the create endpoint wizard.
              */
             $scope.next = () => {
-                $scope.endpointConfiguration.settings = $scope.generationSettings;
                 GraphqlContextService.nextEndpointCreationStep();
             };
 
@@ -89,7 +88,7 @@ function ConfigureEndpointComponent(ModalService, $translate, GraphqlService, Gr
                 $scope.loadingData = true;
                 Promise.all([loadGenerationSettings()])
                     .then(([generationSettings]) => {
-                        $scope.generationSettings = generationSettings;
+                        $scope.endpointConfiguration.settings = generationSettings;
                     })
                     .finally(() => {
                         $scope.loadingData = false;
@@ -99,6 +98,7 @@ function ConfigureEndpointComponent(ModalService, $translate, GraphqlService, Gr
             // =========================
             // Subscriptions
             // =========================
+
             const subscriptions = [];
 
             const onDestroy = () => {
@@ -109,7 +109,11 @@ function ConfigureEndpointComponent(ModalService, $translate, GraphqlService, Gr
 
             const onInit = () => {
                 $scope.endpointConfiguration = GraphqlContextService.getNewEndpoint();
-                loadData($scope.endpointConfiguration);
+                // Reload generation settings only if they are not already loaded. We need them to stay in the
+                // endpoint configuration object during the whole endpoint creation process.
+                if (!$scope.endpointConfiguration.settings) {
+                    loadData($scope.endpointConfiguration);
+                }
             }
             onInit();
         }
