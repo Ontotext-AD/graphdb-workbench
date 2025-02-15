@@ -66,3 +66,52 @@
 .create-graphql-endpoint-view .endpoint-configuration-container dynamic-form {
     width: 100%;
 }
+
+/* ===============================================
+   Generate endpoint view / Generation overview
+   =============================================== */
+
+.create-graphql-endpoint-view .generate-endpoint-container {
+    display: flex;
+    align-items: stretch;
+    width: 50%;
+}
+
+.generate-endpoint-view .generate-endpoint-container .endpoints-overview {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.generate-endpoint-view .generate-endpoint-container .generation-progress {
+    display: flex;
+    align-items: start;
+}
+
+.generate-endpoint-view .generate-endpoint-container .generation-report,
+.generate-endpoint-view .generate-endpoint-container .generation-report-list {
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.generate-endpoint-view .generate-endpoint-container .generation-report-list .endpoint-report {
+    display: flex;
+    align-items: center;
+    column-gap: 0.5em;
+    width: 100%;
+}
+
+.generate-endpoint-view .generate-endpoint-container .generation-report-list .endpoint-report-link {
+    color: var(--primary-color);
+}
+
+.generate-endpoint-view .generate-endpoint-container .generation-report-list .status-failed {
+    color: var(--color-danger-dark);
+}
+
+.generate-endpoint-view .generate-endpoint-container .generation-report-list .status-success {
+    color: var(--color-success-dark);
+}

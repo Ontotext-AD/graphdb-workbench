@@ -3,9 +3,33 @@ export class GraphqlSchemaShapes {
      * @type {GraphqlSchemaShape[]}
      */
     _shapes;
+    /**
+     * @type {number}
+     * @private
+     */
+    _size;
+    /**
+     * @type {boolean}
+     * @private
+     */
+    _isEmpty;
 
     constructor(data) {
         this._shapes = data || [];
+        this._size = this.shapes.length;
+        this._isEmpty = this.shapes.length === 0;
+    }
+
+    getShapeIds() {
+        return this.shapes.map(shape => shape.id);
+    }
+
+    get isEmpty() {
+        return this._isEmpty;
+    }
+
+    get size() {
+        return this._size;
     }
 
     get shapes() {
@@ -14,6 +38,12 @@ export class GraphqlSchemaShapes {
 
     set shapes(value) {
         this._shapes = value;
+        this._size = this.shapes.length;
+        this._isEmpty = this.shapes.length === 0;
+    }
+
+    toJSON() {
+        return this.shapes.map(shape => shape.id);
     }
 }
 

@@ -45,20 +45,19 @@ pipeline {
       }
     }
 
-// Temporary disabled due to SonarCloud issues
-//     stage('Sonar') {
-//       steps {
-//         withSonarQubeEnv('SonarCloud') {
-//           script {
-//             if (env.BRANCH_NAME == 'master') {
-//               sh "node sonar-project.js --branch='${env.BRANCH_NAME}'"
-//             } else {
-//               sh "node sonar-project.js --branch='${env.ghprbSourceBranch}' --target-branch='${env.ghprbTargetBranch}' --pull-request-id='${env.ghprbPullId}'"
-//             }
-//           }
-//         }
-//       }
-//     }
+    stage('Sonar') {
+      steps {
+        withSonarQubeEnv('SonarCloud') {
+          script {
+            if (env.BRANCH_NAME == 'master') {
+              sh "node sonar-project.js --branch='${env.BRANCH_NAME}'"
+            } else {
+              sh "node sonar-project.js --branch='${env.ghprbSourceBranch}' --target-branch='${env.ghprbTargetBranch}' --pull-request-id='${env.ghprbPullId}'"
+            }
+          }
+        }
+      }
+    }
 
 
     stage('Acceptance') {

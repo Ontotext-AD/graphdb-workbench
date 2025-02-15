@@ -57,12 +57,13 @@ describe('Graphql: create endpoint', () => {
         // And endpoint params form should be empty
         CreateGraphqlEndpointSteps.getEndpointIdFieldInput().should('have.value', '');
         CreateGraphqlEndpointSteps.getEndpointLabelFieldInput().should('have.value', '');
-        CreateGraphqlEndpointSteps.getVocabularyPrefixSelectSelectedOption().should('be.empty');
+        // And the vocabulary prefix select should have the placeholder option selected (it has no value, just label)
+        CreateGraphqlEndpointSteps.getVocabularyPrefixSelectSelectedOption().should('contain', 'Select prefix');
 
         // And Use all graphs option should be selected by default
         CreateGraphqlEndpointSteps.getSelectedGraphSource().parent().should('contain', 'Use all graphs');
         // And No graphs should be found
-        CreateGraphqlEndpointSteps.getGraphsNotFound().should('be.visible');
+        CreateGraphqlEndpointSteps.getAllGraphsWillBeUsedMessage().should('be.visible');
 
         // When I switch to shacl shape graphs option
         CreateGraphqlEndpointSteps.selectUseShaclShapeGraphsOption();
@@ -175,12 +176,12 @@ describe('Graphql: create endpoint', () => {
 
         // When I fill in the endpoint params
         CreateGraphqlEndpointSteps.typeEndpointId('swapi-endpoint');
-        // The next button should still be disabled because there are more required fields
-        CreateGraphqlEndpointSteps.getNextStepButton().should('be.disabled');
+        // The next button should be enabled because  the other fields are optional
+        CreateGraphqlEndpointSteps.getNextStepButton().should('be.enabled');
         // When I fill in the endpoint label which is optional
         CreateGraphqlEndpointSteps.typeEndpointLabel('Swapi endpoint');
-        // The next button should still be disabled because there are more required fields
-        CreateGraphqlEndpointSteps.getNextStepButton().should('be.disabled');
+        // The next button should be enabled
+        CreateGraphqlEndpointSteps.getNextStepButton().should('be.enabled');
         // When I select the vocabulary prefix
         CreateGraphqlEndpointSteps.selectVocabularyPrefix('voc');
         // Then the next button should be enabled

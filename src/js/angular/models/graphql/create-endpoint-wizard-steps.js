@@ -26,7 +26,7 @@ export class SelectSchemaSourceStep extends WizardStep {
     _ontotlogyShaclShapeSource = this._ontologyShaclShapeSources[0].value;
 
     constructor() {
-        super('select_schema_sources', 'js/angular/graphql/templates/select-schema-sources.html', 'schema-sources',true);
+        super('select_schema_sources', undefined, 'schema-sources',true);
     }
 
     get ontotlogyShaclShapeSource() {
@@ -64,12 +64,12 @@ export class SelectSchemaSourceStep extends WizardStep {
 
 export class ConfigureEndpointStep extends WizardStep {
     constructor() {
-        super('configure_endpoint', 'js/angular/graphql/templates/endpoint-config.html', 'endpoint-config', false);
+        super('configure_endpoint', undefined, 'endpoint-config', false);
     }
 }
 
 export class GenerateEndpointStep extends WizardStep {
     constructor() {
-        super('generate_endpoint', 'js/angular/graphql/templates/generate-endpoint.html', 'generate-endpoint', false);
+        super('generate_endpoint', undefined, 'generate-endpoint', false);
     }
 }
