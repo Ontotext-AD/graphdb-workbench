@@ -898,6 +898,17 @@
                             "generated_endpoints": "GraphQL endpoints"
                         }
                     },
+                    "generation_failure_report": {
+                        "title": "GraphQL endpoint creation failed",
+                        "reason_message": "GraphQL endpoint \"{{endpointId}}\" creation failed because of errors/warnings during schema definition generation.",
+                        "errors": "Validation error [{{errorCount}}]",
+                        "warnings": "Warning [{{warningCount}}]",
+                        "actions": {
+                            "download_report": {
+                                "label": "Download report"
+                            }
+                        }
+                    },
                     "messages": {
                         "generation_progress": "Endpoints creation in progress..."
                     }

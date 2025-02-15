@@ -1,12 +1,15 @@
 import {GraphqlEventName} from "../services/graphql-context.service";
+import '../controllers/endpoint-generation-failure-result-modal.controller';
 
 angular
-    .module('graphdb.framework.graphql.directives.generate-endpoint', [])
+    .module('graphdb.framework.graphql.directives.generate-endpoint', [
+        'graphdb.framework.graphql.controllers.endpoint-generation-failure-result-modal'
+    ])
     .directive('generateEndpoint', GenerateEndpointComponent);
 
-GenerateEndpointComponent.$inject = ['ModalService', '$translate', '$repositories', 'GraphqlService', 'GraphqlContextService'];
+GenerateEndpointComponent.$inject = ['ModalService', '$uibModal', '$translate', '$repositories', 'GraphqlService', 'GraphqlContextService'];
 
-function GenerateEndpointComponent(ModalService, $translate, $repositories, GraphqlService, GraphqlContextService) {
+function GenerateEndpointComponent(ModalService, $uibModal, $translate, $repositories, GraphqlService, GraphqlContextService) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/graphql/templates/step-generate-endpoint.html',
@@ -90,8 +93,27 @@ function GenerateEndpointComponent(ModalService, $translate, $repositories, Grap
                 GraphqlContextService.generateEndpoint();
             };
 
+            /**
+             * Opens a modal with the endpoint generation report.
+             * @param {EndpointGenerationReport} endpointReport The endpoint generation report.
+             * @returns {Promise<any>}
+             */
             $scope.showEndpointReport = (endpointReport) => {
-                // TODO: Implement the endpoint report modal.
+                return $uibModal.open({
+                    templateUrl: 'js/angular/graphql/templates/modal/endpoint-generation-failure-result-modal.html',
+                    controller: 'EndpointGenerationResultFailureModalController',
+                    windowClass: 'endpoint-generation-failure-result-modal',
+                    size: 'lg',
+                    backdrop: 'static',
+                    keyboard: false,
+                    resolve: {
+                        data: () => {
+                            return {
+                                endpointReport
+                            };
+                        }
+                    }
+                }).result;
             }
 
             // =========================
@@ -105,6 +127,7 @@ function GenerateEndpointComponent(ModalService, $translate, $repositories, Grap
             const onEndpointGenerated = (generationReport) => {
                 $scope.generatingEndpoint = false;
                 $scope.generationReport = generationReport;
+                console.log('%conEndpointGenerated', 'background: yellow', generationReport);
             };
 
             // =========================
@@ -125,6 +148,7 @@ function GenerateEndpointComponent(ModalService, $translate, $repositories, Grap
                 $scope.generateFromGraphqlSchemaShapes = $scope.endpointConfiguration.hasSelectedGraphqlSchemaShapes();
                 $scope.endpointsCountToGenerate = GraphqlService.getEndpointsCountToGenerate($scope.endpointConfiguration);
                 $scope.endpointsOverview = GraphqlService.getGenerateEndpointsOverview($scope.endpointConfiguration);
+                console.log('%cgenerate endpoint directive', 'background: yellow', $scope.endpointConfiguration, $scope.endpointsOverview);
             }
             onInit();
         }
