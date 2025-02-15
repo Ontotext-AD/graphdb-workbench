@@ -24,17 +24,15 @@
             {{'graphql.create_endpoint.wizard_steps.select_schema_sources.graphql_schema_shapes.title' | translate}}</h5>
 
         <div ng-if="endpointConfiguration">
-            <div ng-if="!graphqlSchemaShapes.shapes.length"
-                 class="alert alert-warning no-shapes mt-2">
+            <div ng-if="graphqlSchemaShapes.isEmpty" class="alert alert-warning no-shapes mt-2">
                 <span>{{'graphql.create_endpoint.wizard_steps.select_schema_sources.graphql_schema_shapes.messages.no_schemas' | translate}}</span>
             </div>
 
-            <div ng-if="graphqlSchemaShapes.shapes.length"
-                 class="alert alert-info shapes-count mt-2 mb-2">
+            <div ng-if="!graphqlSchemaShapes.isEmpty" class="alert alert-info shapes-count mt-2 mb-2">
                 <span>{{'graphql.create_endpoint.wizard_steps.select_schema_sources.graphql_schema_shapes.messages.endpoint_per_shape' | translate}}</span>
             </div>
 
-            <div ng-if="graphqlSchemaShapes.shapes.length" class="graphql-shapes-selector">
+            <div ng-if="!graphqlSchemaShapes.isEmpty" class="graphql-shapes-selector">
                 <shuttle-multiselect options="graphqlSchemaShapes.shapes"
                                      selected="endpointConfiguration.selectedGraphqlSchemaShapes.shapes"
                                      labels="shapesMultiselectLabels"></shuttle-multiselect>
@@ -73,10 +71,11 @@
                 <div class="form-inline vocabulary-prefix">
                     <label for="vocabularyPrefix"
                            uib-popover="{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.vocabulary_prefix.tooltip' | translate}}"
-                           popover-trigger="mouseenter">{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.vocabulary_prefix.label' | translate}}*</label>
+                           popover-trigger="mouseenter">{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.vocabulary_prefix.label' | translate}}</label>
                     <select ng-if="!loadingPrefixes" class="form-control" id="vocabularyPrefix" name="vocabularyPrefix"
-                            required ng-model="endpointConfiguration.params.vocPrefix"
+                            ng-model="endpointConfiguration.params.vocPrefix"
                             ng-options="prefix.value as prefix.label for prefix in prefixList">
+                        <option value="">{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.vocabulary_prefix.placeholder' | translate}}</option>
                     </select>
                     <div class="loading-prefixes" ng-if="loadingPrefixes" onto-loader-new size="25"></div>
                 </div>
@@ -111,38 +110,36 @@
 
         <div class="schema-source-container use-all-graphs"
              ng-if="stepDefinition.ontotlogyShaclShapeSource === ontologyShaclShapeSource.USE_ALL_GRAPHS">
-            <div ng-if="!graphs.graphList.length"
-                 class="alert alert-warning no-graphs mt-2">
-                <span>{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.source.use_all_graphs.messages.no_graphs' | translate}}</span>
-            </div>
-
-            <div ng-if="graphs.graphList.length" class="alert alert-success all-graphs-selected mt-2">
-                <span>{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.source.use_all_graphs.messages.all_graphs' |
-                translate: {count: graphs.graphList.length} }}</span>
+            <div ng-if="true" class="alert alert-success all-graphs-selected mt-2">
+                <span>{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.source.use_all_graphs.messages.use_all_data' | translate}}</span>
             </div>
         </div>
 
         <div class="schema-source-container use-all-shacl-shape-graphs"
              ng-if="stepDefinition.ontotlogyShaclShapeSource === ontologyShaclShapeSource.USE_SHACL_SHAPE_GRAPH">
-            <div ng-if="!shaclShapeGraphs.graphList.length"
+            <div ng-if="shaclShapeGraphs.isEmpty"
                  class="alert alert-warning no-shacl-shapes mt-2">
                 <span>{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.source.use_shacl_shape_graph.messages.no_graphs' | translate}}</span>
             </div>
 
-            <div ng-if="shaclShapeGraphs.graphList.length" class="alert alert-success mt-2">
+            <div ng-if="!shaclShapeGraphs.isEmpty" class="alert alert-success mt-2">
                 <span>{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.source.use_shacl_shape_graph.messages.all_shacl_shape_graphs' |
-                translate: {count: shaclShapeGraphs.graphList.length} }}</span>
+                translate: {count: shaclShapeGraphs.size} }}</span>
             </div>
         </div>
 
         <div ng-if="stepDefinition.ontotlogyShaclShapeSource === ontologyShaclShapeSource.PICK_GRAPHS"
              class="schema-source-container select-graphs mt-2">
-            <div ng-if="!graphs.graphList.length"
-                 class="alert alert-warning no-graphs mt-2">
+            <div ng-if="graphs.isEmpty" class="alert alert-warning no-graphs mt-2">
                 <span>{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.source.pick_graphs.messages.no_graphs' | translate}}</span>
             </div>
 
-            <div ng-if="allGraphs.graphList.length" class="graphs-selector">
+            <!--
+                Explicitly guard this with check for loadingData flag to prevent errors if data is not yet loaded. This
+                is because the whole select-schema-source-view is just hidden and not removed from the DOM during
+                loading due to issues with the form controller binding.
+             -->
+            <div ng-if="!loadingData && !allGraphs.isEmpty" class="graphs-selector">
                 <shuttle-multiselect options="allGraphs.graphList"
                                      selected="endpointConfiguration.selectedGraphs.graphList"
                                      labels="graphsMultiselectLabels"></shuttle-multiselect>

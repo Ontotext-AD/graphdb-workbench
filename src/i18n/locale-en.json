@@ -847,7 +847,7 @@
                             "vocabulary_prefix": {
                                 "label": "Vocabulary prefix",
                                 "tooltip": "Vocabulary prefix",
-                                "placeholder": "Select prefix"
+                                "placeholder": "Select prefix (from source repository)"
                             },
                             "endpoint_label": {
                                 "label": "Endpoint label",
@@ -859,21 +859,20 @@
                             "use_all_graphs": {
                                 "label": "Use all graphs",
                                 "messages": {
-                                    "all_graphs": "All {{count}} graphs are included for endpoint creation",
-                                    "no_graphs": "No graphs were found in the selected repository."
+                                    "use_all_data": "All data from the repository will be used for endpoint creation"
                                 }
                             },
                             "use_shacl_shape_graph": {
                                 "label": "Use SHACL shape graph",
                                 "messages": {
                                     "all_shacl_shape_graphs": "All {{count}} SHACL shape graphs are included for endpoint creation",
-                                    "no_graphs": "No SHACL shape graphs were found in the selected repository."
+                                    "no_graphs": "No SHACL shape graphs were found in the selected repository"
                                 }
                             },
                             "pick_graphs": {
                                 "label": "Select one or more graphs",
                                 "messages": {
-                                    "no_graphs": "No graphs were found in the selected repository."
+                                    "no_graphs": "No graphs were found in the selected repository"
                                 }
                             }
                         },
@@ -892,9 +891,15 @@
                 "generate_endpoint": {
                     "title": "Create",
                     "overview": {
-                        "title": "Overview"
+                        "title": "Overview",
+                        "for_shapes": {
+                            "info": "{{endpointsCount}} GraphQL endpoints will be created in \"{{activeRepoId}}\" repository based on the GraphQL schema shapes listed below. To modify the selection, navigate back to Step 1 (Select schema source).",
+                            "included_endpoints": "Included GraphQL schema shapes",
+                            "generated_endpoints": "GraphQL endpoints"
+                        }
                     },
                     "messages": {
+                        "generation_progress": "Endpoints creation in progress..."
                     }
                 },
                 "shapes_multiselect": {

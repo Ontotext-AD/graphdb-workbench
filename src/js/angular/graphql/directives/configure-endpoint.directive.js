@@ -51,6 +51,7 @@ function ConfigureEndpointComponent(ModalService, $translate, GraphqlService, Gr
              * Handles the transition to the next step in the create endpoint wizard.
              */
             $scope.next = () => {
+                $scope.endpointConfiguration.settings = $scope.generationSettings;
                 GraphqlContextService.nextEndpointCreationStep();
             };
 

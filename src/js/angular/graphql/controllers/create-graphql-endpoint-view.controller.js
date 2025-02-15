@@ -12,6 +12,7 @@ import 'angular/graphql/directives/configure-endpoint.directive';
 import 'angular/graphql/directives/generate-endpoint.directive';
 import {GraphqlEventName} from "../services/graphql-context.service";
 import {GraphqlEndpointConfiguration} from "../../models/graphql/graphql-endpoint-configuration";
+import {EndpointGenerationReportList} from "../../models/graphql/endpoint-generation-report";
 
 const modules = [
     'graphdb.framework.core.services.graphql-service',
@@ -87,6 +88,9 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
             () => {
                 $scope.previousSelectedSourceRepository = $scope.selectedSourceRepository;
                 GraphqlContextService.updateSourceRepository(selectedRepository.value);
+                // Recreate the endpoint configuration and the wizard as the new source repository may have different data.
+                GraphqlContextService.createEndpointConfig();
+                setupWizard();
             },
             () => {
                 $scope.selectedSourceRepository = $scope.previousSelectedSourceRepository;
@@ -106,8 +110,61 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
     // Private methods
     // =========================
 
+    /**
+     * Executes the generation of the GraphQL endpoint from the GraphQL schema shapes.
+     * @param {GraphqlEndpointConfiguration} endpointConfiguration The endpoint configuration.
+     * @returns {Promise<void>}
+     */
+    const generateEndpointFromGraphqlShapes = (endpointConfiguration) => {
+        const endpointCreateRequest = endpointConfiguration.toCreateEndpointFromShapesRequest($scope.selectedSourceRepository.value);
+        let generationReport;
+        return GraphqlService.generateEndpointFromGraphqlShapes($repositories.getActiveRepository(), endpointCreateRequest)
+            .then((endpointGenerationReportList) => {
+                generationReport = endpointGenerationReportList;
+            })
+            .catch((error) => {
+                toastr.error(getError(error));
+            })
+            .finally(() => {
+                GraphqlContextService.endpointGenerated(generationReport);
+            });
+    }
+
+    /**
+     * Executes the generation of the GraphQL endpoint from the ontologies.
+     * @param {GraphqlEndpointConfiguration} endpointConfiguration The endpoint configuration.
+     * @returns {Promise<void>}
+     */
+    const generateEndpointFromOntologies = (endpointConfiguration) => {
+        const endpointCreateRequest = endpointConfiguration.toCreateEndpointFromOwlRequest($scope.selectedSourceRepository.value);
+        let generationReport;
+        return GraphqlService.generateEndpointFromOwl($repositories.getActiveRepository(), endpointCreateRequest)
+            .then((endpointGenerationReport) => {
+                generationReport = endpointGenerationReport;
+            })
+            .catch((error) => {
+                toastr.error(getError(error));
+            })
+            .finally(() => {
+                GraphqlContextService.endpointGenerated(generationReport);
+            });
+    }
+
+    /**
+     * Handles the generation of the GraphQL endpoint. There are two options for generating the endpoint:
+     * 1. Generate the endpoint from the GraphQL shacl shapes.
+     * 2. Generate the endpoint from ontologies and/or shacl shapes.
+     * @param {GraphqlEndpointConfiguration} endpoint The endpoint configuration.
+     */
     const onGenerateEndpoint = (endpoint) => {
-        // TODO: Implement endpoint generation
+        const generateFromGraphqlShapes = endpoint.hasSelectedGraphqlSchemaShapes();
+        // FIXME: This is always true
+        const generateFromOntologies = endpoint.hasSelectedGraphs() || true;
+        if (generateFromGraphqlShapes) {
+            return generateEndpointFromGraphqlShapes(endpoint);
+        } else if (generateFromOntologies) {
+            return generateEndpointFromOntologies(endpoint);
+        }
     };
 
     /**
@@ -200,7 +257,7 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
         // Reinitialize the wizard only if the source repository is not selected. From this point on, the wizard will
         // be reinitialized only when the user changes the source repository.
         if (!$scope.selectedSourceRepository) {
-            GraphqlContextService.createEndpointConfig(new GraphqlEndpointConfiguration());
+            GraphqlContextService.createEndpointConfig();
             setupWizard();
             setupSourceRepositories();
         }

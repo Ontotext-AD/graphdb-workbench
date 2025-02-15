@@ -143,6 +143,7 @@ function SelectSchemaSourcesComponent(ModalService, $translate, toastr, $reposit
              * UI components for selecting the schema source and uses different data models.
              */
             $scope.onSchemaSourceTypeChange = () => {
+                $scope.endpointConfiguration.schemaSourceType = $scope.stepDefinition.schemaSourceType;
                 if ($scope.stepDefinition.schemaSourceType === SchemaSourceType.SHACL_SHAPES) {
                     if ($scope.stepDefinition.ontotlogyShaclShapeSource === OntologyShaclShapeSource.USE_ALL_GRAPHS) {
                         $scope.endpointConfiguration.selectedGraphs = $scope.allGraphs;
@@ -159,6 +160,7 @@ function SelectSchemaSourcesComponent(ModalService, $translate, toastr, $reposit
              * the list of graphs available for selection.
              */
             $scope.onOntologyShaclShapeSourceChange = () => {
+                $scope.endpointConfiguration.owlOrShaclSourceType = $scope.stepDefinition.ontotlogyShaclShapeSource;
                 if ($scope.stepDefinition.ontotlogyShaclShapeSource === OntologyShaclShapeSource.USE_ALL_GRAPHS) {
                     $scope.endpointConfiguration.selectedGraphs = $scope.allGraphs;
                 } else if ($scope.stepDefinition.ontotlogyShaclShapeSource === OntologyShaclShapeSource.USE_SHACL_SHAPE_GRAPH) {
@@ -175,10 +177,8 @@ function SelectSchemaSourcesComponent(ModalService, $translate, toastr, $reposit
             $scope.canProceed = () => {
                 let canProceed = false;
                 if ($scope.endpointConfiguration) {
-                    const hasSelectedShapes = $scope.endpointConfiguration.selectedGraphqlSchemaShapes.shapes.length > 0;
-                    const hasSelectedGraphs = $scope.endpointConfiguration.selectedGraphs.graphList.length > 0;
+                    const hasSelectedShapes = $scope.endpointConfiguration.hasSelectedGraphqlSchemaShapes();
                     const hasValidEndpointParameters = $scope.endpointParamsForm.$valid;
-
                     // The first option (radiobutton) allows the user to select graphql shapes.
                     if ($scope.stepDefinition.schemaSourceType === SchemaSourceType.GRAPHQL_SCHEMA_SHAPES && hasSelectedShapes) {
                         canProceed = true;
@@ -186,8 +186,16 @@ function SelectSchemaSourcesComponent(ModalService, $translate, toastr, $reposit
                     // The second option (radiobutton) allows the user to select graphs: all graphs, shacl shape graph or
                     // manually pick graphs.
                     // Here the user must also fill in the endpoint parameters form.
-                    else if ($scope.stepDefinition.schemaSourceType === SchemaSourceType.SHACL_SHAPES && hasSelectedGraphs && hasValidEndpointParameters) {
-                        canProceed = true;
+                    else if ($scope.stepDefinition.schemaSourceType === SchemaSourceType.SHACL_SHAPES && hasValidEndpointParameters) {
+                        // In case the user selects all graphs, we don't care how many graphs are there. We use all
+                        // the data in the repository. Also, it's possible that there are no other graphs in the
+                        // repository than the default one.
+                        if ($scope.endpointConfiguration.owlOrShaclSourceType === OntologyShaclShapeSource.USE_ALL_GRAPHS) {
+                            canProceed = true;
+                        } else {
+                            // In all the other cases there must be at least one graph selected.
+                            canProceed = $scope.endpointConfiguration.hasSelectedGraphs();
+                        }
                     }
                 }
                 return canProceed;
@@ -215,7 +223,7 @@ function SelectSchemaSourcesComponent(ModalService, $translate, toastr, $reposit
 
             /**
              * Loads all graphs available in the source repository.
-             * @returns {Promise<void>}
+             * @returns {Promise<GraphListOptions>}
              */
             const loadAllGraphs = () => {
                 $scope.loadingGraphs = true;
@@ -231,7 +239,7 @@ function SelectSchemaSourcesComponent(ModalService, $translate, toastr, $reposit
 
             /**
              * Loads the GraphQL schema shapes from the source repository.
-             * @returns {Promise<void>}
+             * @returns {Promise<GraphqlSchemaShapes>}
              */
             const loadGraphqlSchemaShapes = () => {
                 return GraphqlService.getGraphqlSchemaShapes(GraphqlContextService.getSourceRepository())
@@ -243,7 +251,7 @@ function SelectSchemaSourcesComponent(ModalService, $translate, toastr, $reposit
 
             /**
              * Loads the SHACL shape graphs from the source repository.
-             * @returns {Promise<void>}
+             * @returns {Promise<GraphListOptions>}
              */
             const loadShaclShapeGraphs = () => {
                 return GraphqlService.getShaclShapeGraphs(GraphqlContextService.getSourceRepository())

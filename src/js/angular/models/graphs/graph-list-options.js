@@ -4,9 +4,29 @@ export class GraphListOptions {
      * @private
      */
     _graphList = undefined;
+    /**
+     * @type {boolean}
+     * @private
+     */
+    _isEmpty;
+    /**
+     * @type {number}
+     * @private
+     */
+    _size;
 
     constructor(data) {
         this._graphList = data || [];
+        this._isEmpty = this.graphList.length === 0;
+        this._size = this.graphList.length;
+    }
+
+    get size() {
+        return this._size;
+    }
+
+    get isEmpty() {
+        return this._isEmpty;
     }
 
     get graphList() {
@@ -15,6 +35,12 @@ export class GraphListOptions {
 
     set graphList(data) {
         this._graphList = data;
+        this._isEmpty = this.graphList.length === 0;
+        this._size = this.graphList.length;
+    }
+
+    toJSON() {
+        return this.graphList.map(graph => graph.uri);
     }
 }
 
