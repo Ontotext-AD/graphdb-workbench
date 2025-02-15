@@ -144,7 +144,7 @@ function SelectSchemaSourcesComponent(ModalService, $translate, toastr, $reposit
              */
             $scope.onSchemaSourceTypeChange = () => {
                 $scope.endpointConfiguration.schemaSourceType = $scope.stepDefinition.schemaSourceType;
-                if ($scope.stepDefinition.schemaSourceType === SchemaSourceType.SHACL_SHAPES) {
+                if ($scope.endpointConfiguration.generateFromShaclShapes()) {
                     if ($scope.stepDefinition.ontotlogyShaclShapeSource === OntologyShaclShapeSource.USE_ALL_GRAPHS) {
                         $scope.endpointConfiguration.selectedGraphs = $scope.allGraphs;
                     } else if ($scope.stepDefinition.ontotlogyShaclShapeSource === OntologyShaclShapeSource.USE_SHACL_SHAPE_GRAPH) {

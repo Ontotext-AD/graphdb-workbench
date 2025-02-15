@@ -898,6 +898,17 @@
                             "generated_endpoints": "Points de terminaison GraphQL"
                         }
                     },
+                    "generation_failure_report": {
+                        "title": "La création du point de terminaison GraphQL a échoué",
+                        "reason_message": "La création du point de terminaison GraphQL \"{{endpointId}}\" a échoué en raison d'erreurs/avertissements lors de la génération de la définition de schéma.",
+                        "errors": "Erreur de validation [{{errorCount}}]",
+                        "warnings": "Avertissement [{{warningCount}}",
+                        "actions": {
+                            "download_report": {
+                                "label": "Télécharger le rapport"
+                            }
+                        }
+                    },
                     "messages": {
                         "generation_progress": "Création des points de terminaison en cours..."
                     }

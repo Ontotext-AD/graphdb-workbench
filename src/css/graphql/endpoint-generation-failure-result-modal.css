@@ -1,0 +1,7 @@
+.endpoint-generation-failure-result-modal .report td {
+    padding: 0;
+}
+
+.endpoint-generation-failure-result-modal .report td .alert {
+    margin: 0;
+}

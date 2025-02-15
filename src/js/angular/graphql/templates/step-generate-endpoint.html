@@ -5,7 +5,7 @@
 
     <div class="generate-endpoint-container">
         <div ng-if="!generatingEndpoint && !generationReport" class="endpoints-generation-overview">
-            <div ng-if="endpointsCountToGenerate > 0" class="alert alert-info generation-summary-message mt-2">
+            <div ng-if="endpointsCountToGenerate > 0" class="alert alert-info generation-summary-message">
                 <span>{{'graphql.create_endpoint.wizard_steps.generate_endpoint.overview.for_shapes.info' |
                 translate: {
                     activeRepoId: activeRepository,
@@ -14,7 +14,7 @@
                 } }}</span>
             </div>
 
-            <h5 ng-if="generateFromGraphqlSchemaShapes" class="mt-2">
+            <h5 ng-if="generateFromGraphqlSchemaShapes" class="mt-1">
                 {{'graphql.create_endpoint.wizard_steps.generate_endpoint.overview.for_shapes.included_endpoints' | translate}}</h5>
 
             <div class="endpoints-overview">

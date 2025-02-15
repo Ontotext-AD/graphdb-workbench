@@ -1,0 +1,42 @@
+<link href="css/graphql/endpoint-generation-failure-result-modal.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+<div class="modal-header">
+    <button type="button" class="close" ng-click="close()"></button>
+    <h3 class="modal-title">{{'graphql.create_endpoint.wizard_steps.generate_endpoint.generation_failure_report.title' | translate}}</h3>
+</div>
+
+<div class="modal-body endpoint-generation-failure-result-modal-body">
+    <p>{{'graphql.create_endpoint.wizard_steps.generate_endpoint.generation_failure_report.reason_message' |
+    translate: {endpointId: endpointReport.endpointId} }}</p>
+    <table class="report table table-bordered" aria-describedby="Endpoint generation failure report table">
+        <thead>
+        <tr class="labels-row">
+            <th scope="col">
+                <strong class="mr-2">{{'graphql.create_endpoint.wizard_steps.generate_endpoint.generation_failure_report.errors' |
+                translate: {errorCount: endpointReport.errors} }}</strong>
+                <strong>{{'graphql.create_endpoint.wizard_steps.generate_endpoint.generation_failure_report.warnings' |
+                translate: {warningCount: endpointReport.warnings} }}</strong>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="error in endpointReport.messages.errors" class="error-row">
+            <td>
+                <div class="alert alert-danger">{{error}}</div>
+            </td>
+        </tr>
+        <tr ng-repeat="warning in endpointReport.messages.warnings" class="warning-row">
+            <td>
+                <div class="alert alert-warning">{{warning}}</div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="modal-footer mt-0">
+    <button id="download-failure-report" class="btn btn-primary" ng-click="downloadReport()">
+        <i class="fa fa-arrow-down-to-line"></i>
+        <span>{{'graphql.create_endpoint.wizard_steps.generate_endpoint.generation_failure_report.actions.download_report.label' | translate}}</span>
+    </button>
+</div>

@@ -21,6 +21,15 @@ export class GraphListOptions {
         this._size = this.graphList.length;
     }
 
+    /**
+     * Process the graph list with the given predicate.
+     * @param {function} predicate The predicate to apply to each graph.
+     * @returns {GraphOption[]}
+     */
+    processGraphList(predicate) {
+        return this.graphList.map(predicate);
+    }
+
     get size() {
         return this._size;
     }

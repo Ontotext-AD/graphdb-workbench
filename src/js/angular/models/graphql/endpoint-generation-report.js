@@ -93,7 +93,7 @@ export class EndpointGenerationReport {
     _errors;
     /**
      * A detailed breakdown of warnings and errors.
-     * @type {*[]}
+     * @type {string[]}
      * @private
      */
     _messages;
@@ -119,6 +119,24 @@ export class EndpointGenerationReport {
         this._errors = data.errors || 0;
         this._messages = data.messages || [];
         this._createdSuccessfully = this._active && this._errors === 0;
+    }
+
+    toJSON() {
+        return {
+            id: this._id,
+            endpointId: this._endpointId,
+            endpointURI: this._endpointURI,
+            active: this._active,
+            default: this._default,
+            label: this._label,
+            description: this._description,
+            lastModified: this._lastModified,
+            objectsCount: this._objectsCount,
+            propertiesCount: this._propertiesCount,
+            warnings: this._warnings,
+            errors: this._errors,
+            messages: this._messages
+        };
     }
 
     get id() {
