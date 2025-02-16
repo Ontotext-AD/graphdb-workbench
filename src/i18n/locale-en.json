@@ -792,6 +792,9 @@
                     "export_schema": {
                         "label": "Export schema definition",
                         "tooltip": "Export the GraphQL endpoint schema definition"
+                    },
+                    "set_as_default": {
+                        "success": "Successfully set \"{{endpointId}}\" endpoint as default"
                     }
                 },
                 "messages": {

@@ -125,6 +125,19 @@ function GraphqlRestService($http) {
         return $http.delete(`${REPOSITORIES_ENDPOINT}/${repositoryId}/manage/graphql/endpoints/${endpointId}`);
     }
 
+    /**
+     * Makes the provided GraphQL endpoint the default one for the given repository.
+     * @param {string} repositoryId The ID of the repository.
+     * @param {string} endpointId The ID of the endpoint to be set as default.
+     * @returns {Promise<unknown>} The response from the backend.
+     */
+    const setDefaultEndpoint = (repositoryId, endpointId) => {
+        if (DEVELOPMENT) {
+            return _mockBackend.setDefaultEndpointMock();
+        }
+        return $http.post(`${REPOSITORIES_ENDPOINT}/${repositoryId}/manage/graphql/${endpointId}/default`);
+    }
+
     return {
         getEndpoints,
         getEndpointsInfo,
@@ -134,6 +147,7 @@ function GraphqlRestService($http) {
         getGraphqlGenerationSettings,
         getGraphqlEndpointConfigurationSettings,
         saveEndpointConfigurationSettings,
-        deleteEndpoint
+        deleteEndpoint,
+        setDefaultEndpoint
     };
 }
