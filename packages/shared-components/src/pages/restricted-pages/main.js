@@ -1,9 +1,13 @@
-let bannerElement = document.querySelector("onto-permission-banner");
+const app = document.getElementById('onto-layout');
 
-const setDefaultRestrictedPages = () => testContext.updateRestrictedPage({
-    '/pages/restricted-pages/restricted-page': true});
+const setDefaultRestrictedPages = () => {
+    renderPage();
+    testContext.updateRestrictedPage({
+      '/pages/restricted-pages/restricted-page': true});
+}
 
 const makeCurrentPageRestricted = () => {
+    renderPage();
     testContext.updateRestrictedPage({
             '/pages/restricted-pages': true,
             '/pages/restricted-pages/restricted-page': true
@@ -12,23 +16,36 @@ const makeCurrentPageRestricted = () => {
 };
 
 const makeCurrentPageUnrestricted = () => {
+    renderPage();
     testContext.updateRestrictedPage({
         '/pages/restricted-pages': false,
         '/pages/restricted-pages/restricted-page': true});
 };
 
 const makeRestrictedPagesMapUndefined = () => {
+    renderPage();
     testContext.updateRestrictedPage(undefined);
 };
 
 const makeRestrictedPagesMapEmpty = () => {
+    renderPage();
     testContext.updateRestrictedPage({});
 };
 
+const createFragment = (content) => {
+    const fragment = document.createDocumentFragment();
+    const main = document.createElement('main');
+    main.id = 'app';
+    main.setAttribute('slot', 'main');
+    main.innerHTML = content;
+    fragment.appendChild(main);
+    return fragment;
+};
+
 const routes = {
-    '/pages/restricted-pages': '<h1>Welcome to the Home Page</h1>',
-    '/pages/restricted-pages/restricted-page': '<h1>Restricted page</h1><p>This is a restricted page and should not be visible.</p>',
-    '/pages/restricted-pages/unrestricted-page': '<h1>Unrestricted page</h1><p>This is a unrestricted page and should be visible.</p>',
+    '/pages/restricted-pages': () => createFragment('<h1>Welcome to the Home Page</h1>'),
+    '/pages/restricted-pages/restricted-page': () => createFragment('<h1>Restricted page</h1><p>This is a restricted page and should not be visible.</p>'),
+    '/pages/restricted-pages/unrestricted-page': () => createFragment('<h1>Unrestricted page</h1><p>This is a unrestricted page and should be visible.</p>')
 };
 
 // Function to handle navigation
@@ -43,23 +60,32 @@ function navigateTo(url) {
 }
 
 // Function to render the content based on the current route
+// Only the content of the `<main>` element is manipulated to save DOM manipulation and re-rendering
 function renderPage() {
-    const app = document.getElementById('onto-layout');
     const currentRoute = window.location.pathname;
-    if (app) {
-        app.innerHTML = ` <main id="app" slot="main">${routes[currentRoute]}</main>`;
+    if (app && routes[currentRoute]) {
+        let mainElement = app.querySelector('main[slot="main"]');
+        if (!mainElement) {
+            mainElement = document.createElement('main');
+            mainElement.setAttribute('slot', 'main');
+            app.appendChild(mainElement);
+        }
+
+        // Update the content of the existing main element
+        const newContent = routes[currentRoute]();
+        mainElement.innerHTML = '';
+        while (newContent.firstChild) {
+            mainElement.appendChild(newContent.firstChild);
+        }
     }
 }
 
-// Handle link clicks
-document.body.addEventListener('click', (event) => {
-    if (event.target.matches('[data-link]')) {
-        // Prevent full-page reload
-        event.preventDefault();
-        navigateTo(event.target.href);
-    }
-});
+// Menu items are not needed in these scenarios
+window.PluginRegistry = {
+    get: () => []
+};
 
 // Initial render
 setDefaultRestrictedPages();
+
 renderPage();
