@@ -31,6 +31,7 @@ yasguiComponentDirective.$inject = [
     '$languageService',
     '$uibModal',
     'AuthTokenService',
+    '$jwtAuth',
     '$interval',
     'toastr',
     'TranslationService',
@@ -67,6 +68,7 @@ function yasguiComponentDirective(
     $languageService,
     $uibModal,
     AuthTokenService,
+    $jwtAuth,
     $interval,
     toastr,
     TranslationService,
@@ -191,16 +193,19 @@ function yasguiComponentDirective(
              * The event is fired when saved queries should be loaded in order to be displayed to the user.
              */
             $scope.loadSavedQueries = () => {
-                SparqlRestService.getSavedQueries()
-                    .then((res) => {
-                        const savedQueries = savedQueriesResponseMapper(res);
+                $scope.savedQueryConfig = {
+                    savedQueries: []
+                };
+                Promise.all([$jwtAuth.getPrincipal(), SparqlRestService.getSavedQueries()])
+                    .then(([principal, savedQueries]) => {
                         $scope.savedQueryConfig = {
-                            savedQueries: savedQueries
+                            savedQueries: savedQueriesResponseMapper(savedQueries, principal.username)
                         };
-                    }).catch((err) => {
-                    const msg = getError(err);
-                    toastr.error(msg, $translate.instant('query.editor.get.saved.queries.error'));
-                });
+                    })
+                    .catch((err) => {
+                        const msg = getError(err);
+                        toastr.error(msg, $translate.instant('query.editor.get.saved.queries.error'));
+                    });
             };
 
             $scope.saveQueryOpened = (saveQueryOpenedEvent) => {

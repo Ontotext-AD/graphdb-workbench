@@ -14,16 +14,32 @@ export class SavedQueriesDialog {
     static selectSavedQueryByName(name) {
         this.getSavedQueries().contains(name).click();
     }
+    
+    static getQueryByName(name) {
+        return this.getSavedQueries().contains(name).realHover();
+    }
+    
+    static getEditQueryButtonByName(name) {
+        return this.getQueryByName(name).closest('.saved-query').find('.edit-saved-query');
+    }
 
     static editQueryByName(name) {
-        this.getSavedQueries().contains(name).realHover().closest('.saved-query').find('.edit-saved-query').click();
+        this.getEditQueryButtonByName(name).click();
+    }
+
+    static getDeleteQueryButtonByName(name) {
+        return this.getQueryByName(name).closest('.saved-query').find('.delete-saved-query');
     }
 
     static deleteQueryByName(name) {
-        this.getSavedQueries().contains(name).realHover().closest('.saved-query').find('.delete-saved-query').click();
+        this.getDeleteQueryButtonByName(name).click();
+    }
+
+    static getShareQueryButtonByName(name) {
+        return this.getQueryByName(name).closest('.saved-query').find('.share-saved-query');
     }
 
     static shareQueryByName(name) {
-        this.getSavedQueries().contains(name).realHover().closest('.saved-query').find('.share-saved-query').click();
+        this.getShareQueryButtonByName(name).click();
     }
 }
