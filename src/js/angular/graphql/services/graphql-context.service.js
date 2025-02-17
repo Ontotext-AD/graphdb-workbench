@@ -65,7 +65,7 @@ function GraphqlContextService(EventEmitterService) {
 
     /**
      * Sets the selected GraphQL endpoint.
-     * @param {GraphqlEndpointInfo} endpoint The selected endpoint.
+     * @param {GraphqlEndpointInfo|EndpointGenerationReport} endpoint The selected endpoint.
      */
     const setSelectedEndpoint = (endpoint) => {
         _selectedEndpoint = endpoint;
@@ -123,6 +123,22 @@ function GraphqlContextService(EventEmitterService) {
     }
 
     /**
+     * Emits an event to explore the generated endpoint in the GraphQL Playground.
+     * @param endpoint
+     */
+    const exploreEndpointInPlayground = (endpoint) => {
+        emit(GraphqlEventName.EXPLORE_ENDPOINT_IN_PLAYGROUND, endpoint);
+    }
+
+    /**
+     * Emits an event to open the endpoint generation report.
+     * @param {EndpointGenerationReport} endpointReport The endpoint generation report.
+     */
+    const openEndpointGenerationReport = (endpointReport) => {
+        emit(GraphqlEventName.OPEN_ENDPOINT_GENERATION_REPORT, endpointReport);
+    }
+
+    /**
      * Emits an event with a deep-cloned payload using the EventEmitterService.
      *
      * @param {string} event - The name of the event to emit. It must be a value from {@link GraphqlEventName}.
@@ -155,6 +171,8 @@ function GraphqlContextService(EventEmitterService) {
         startCreateEndpointWizard,
         generateEndpoint,
         endpointGenerated,
+        exploreEndpointInPlayground,
+        openEndpointGenerationReport,
         cancelEndpointCreation,
         nextEndpointCreationStep,
         previousEndpointCreationStep,
@@ -187,6 +205,14 @@ export const GraphqlEventName = {
      * The event emitted when the user wants to cancel the endpoint creation.
      */
     CANCEL_ENDPOINT_CREATION: 'cancelEndpointCreation',
+    /**
+     * The event emitted when the user wants to explore the generated endpoint in the GraphQL Playground.
+     */
+    EXPLORE_ENDPOINT_IN_PLAYGROUND: 'exploreEndpointInPlayground',
+    /**
+     * The event emitted when the user wants to open the endpoint generation report.
+     */
+    OPEN_ENDPOINT_GENERATION_REPORT: 'openEndpointGenerationReport',
     /**
      * The event emitted when the user wants to move to the next step in the create endpoint wizard.
      */

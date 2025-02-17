@@ -12,7 +12,6 @@ import 'angular/graphql/directives/configure-endpoint.directive';
 import 'angular/graphql/directives/generate-endpoint.directive';
 import {GraphqlEventName} from "../services/graphql-context.service";
 import {GraphqlEndpointConfiguration} from "../../models/graphql/graphql-endpoint-configuration";
-import {EndpointGenerationReportList} from "../../models/graphql/endpoint-generation-report";
 
 const modules = [
     'graphdb.framework.core.services.graphql-service',
@@ -26,9 +25,9 @@ angular
     .module('graphdb.framework.graphql.controllers.create-graphql-endpoint-view', modules)
     .controller('CreateGraphqlEndpointViewCtrl', CreateGraphqlEndpointViewCtrl);
 
-CreateGraphqlEndpointViewCtrl.$inject = ['$scope', '$location', '$repositories', '$translate', 'ModalService', 'toastr', 'GraphqlService', 'GraphqlContextService'];
+CreateGraphqlEndpointViewCtrl.$inject = ['$scope', '$location', '$repositories', '$translate', '$uibModal', 'ModalService', 'toastr', 'GraphqlService', 'GraphqlContextService'];
 
-function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $translate, ModalService, toastr, GraphqlService, GraphqlContextService) {
+function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $translate, $uibModal, ModalService, toastr, GraphqlService, GraphqlContextService) {
 
     // =========================
     // Private variables
@@ -188,6 +187,39 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
     };
 
     /**
+     * Opens the GraphQL Playground with the selected endpoint in a new browser tab.
+     * @param {EndpointGenerationReport} endpointInfo The endpoint info.
+     */
+    const onExploreEndpointInPlayground = (endpointInfo) => {
+        const url = `${endpointUrl.PLAYGROUND}?endpointId=${endpointInfo.endpointId}`;
+        GraphqlContextService.setSelectedEndpoint(endpointInfo);
+        window.open(url, '_blank', 'noopener,noreferrer');
+    }
+
+    /**
+     * Opens the endpoint generation report modal.
+     * @param {EndpointGenerationReport} endpointReport
+     * @returns {Promise<void>}
+     */
+    const onShowEndpointReport = (endpointReport) => {
+        return $uibModal.open({
+            templateUrl: 'js/angular/graphql/templates/modal/endpoint-generation-failure-result-modal.html',
+            controller: 'EndpointGenerationResultFailureModalController',
+            windowClass: 'endpoint-generation-failure-result-modal',
+            size: 'lg',
+            backdrop: 'static',
+            keyboard: false,
+            resolve: {
+                data: () => {
+                    return {
+                        endpointReport
+                    };
+                }
+            }
+        }).result;
+    }
+
+    /**
      * Sets the current step in the create endpoint wizard.
      * @param {WizardStep} step The current step.
      */
@@ -245,6 +277,8 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
     subscriptions.push(GraphqlContextService.subscribe(GraphqlEventName.PREVIOUS_ENDPOINT_CREATION_STEP, onPreviousEndpointCreationStep));
     subscriptions.push(GraphqlContextService.subscribe(GraphqlEventName.NEXT_ENDPOINT_CREATION_STEP, onNextEndpointCreationStep));
     subscriptions.push(GraphqlContextService.subscribe(GraphqlEventName.CANCEL_ENDPOINT_CREATION, onCancelEndpointCreation));
+    subscriptions.push(GraphqlContextService.subscribe(GraphqlEventName.EXPLORE_ENDPOINT_IN_PLAYGROUND, onExploreEndpointInPlayground));
+    subscriptions.push(GraphqlContextService.subscribe(GraphqlEventName.OPEN_ENDPOINT_GENERATION_REPORT, onShowEndpointReport));
     subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler));
     $scope.$on('$destroy', unsubscribeAll);
 

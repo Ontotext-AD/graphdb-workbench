@@ -14,9 +14,9 @@ angular
     .module('graphdb.framework.graphql.controllers.graphql-playground-view', modules)
     .controller('GraphqlPlaygroundViewCtrl', GraphqlPlaygroundViewCtrl);
 
-GraphqlPlaygroundViewCtrl.$inject = ['$scope', '$repositories', '$languageService', 'toastr', 'GraphqlService', 'GraphqlContextService', 'AuthTokenService'];
+GraphqlPlaygroundViewCtrl.$inject = ['$scope', '$location', '$repositories', '$languageService', 'toastr', 'GraphqlService', 'GraphqlContextService', 'AuthTokenService'];
 
-function GraphqlPlaygroundViewCtrl($scope, $repositories, $languageService, toastr, GraphqlService, GraphqlContextService, AuthTokenService) {
+function GraphqlPlaygroundViewCtrl($scope, $location, $repositories, $languageService, toastr, GraphqlService, GraphqlContextService, AuthTokenService) {
 
     // =========================
     // Private variables
@@ -84,8 +84,9 @@ function GraphqlPlaygroundViewCtrl($scope, $repositories, $languageService, toas
      * @return {GraphqlPlaygroundConfig} - The configuration object.
      */
     const buildConfig = (endpoint) => {
+        let endpointUrl = endpoint.replace(/^\//, '');
         const config = {
-            endpoint: endpoint,
+            endpoint: endpointUrl,
             selectedLanguage: $languageService.getLanguage()
         };
         const authToken = AuthTokenService.getAuthToken();
@@ -98,14 +99,25 @@ function GraphqlPlaygroundViewCtrl($scope, $repositories, $languageService, toas
     };
 
     /**
-     * Resolves the selected endpoint. If there is no selected endpoint, the first one from the list is returned
+     * Resolves the selected endpoint. If there is no selected endpoint, the first one from the list is returned.
      * @return {SelectMenuOptionsModel}
      */
     const resolveSelectedEndpoint = () => {
-        const selectedEndpoint = GraphqlContextService.getSelectedEndpoint();
-        if (selectedEndpoint) {
+        let selectedEndpointId;
+        const queryParams = $location.search();
+        const endpointIdFromUrl = queryParams.endpointId;
+        // The endpointId can be passed as a query parameter or stored in the context. The query parameter has priority.
+        if (endpointIdFromUrl) {
+            selectedEndpointId = endpointIdFromUrl;
+        } else {
+            const selectedEndpoint = GraphqlContextService.getSelectedEndpoint();
+            if (selectedEndpoint) {
+                selectedEndpointId = selectedEndpoint.endpointId;
+            }
+        }
+        if (selectedEndpointId) {
             const endpointSelectOption = $scope.graphqlEndpoints.find(
-                (endpoint) => endpoint.label === selectedEndpoint.endpointId
+                (endpoint) => endpoint.label === selectedEndpointId
             );
             if (endpointSelectOption) {
                 return endpointSelectOption;

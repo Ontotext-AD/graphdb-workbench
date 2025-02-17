@@ -35,11 +35,21 @@
                 <div ng-repeat="endpointReport in generationReport.reports" class="endpoint-report mt-1">
                     <i ng-if="endpointReport.createdSuccessfully" class="fa-regular fa-circle-check status-success"></i>
                     <i ng-if="!endpointReport.createdSuccessfully" class="fa-regular fa-circle-xmark status-failed"></i>
-                    <span class="endpoint-id">{{endpointReport.endpointId}}</span>
-                    <a href="#" ng-if="!endpointReport.createdSuccessfully" ng-click="showEndpointReport(endpointReport)"
-                       class="endpoint-report-link">View report</a>
+                    <a href="#" ng-if="endpointReport.createdSuccessfully"
+                       gdb-tooltip="{{'graphql.create_endpoint.wizard_steps.generate_endpoint.overview.for_shapes.explore_in_playground_link_tooltip' | translate}}"
+                       ng-click="exploreInPlayground(endpointReport)"
+                       class="endpoint-id">{{endpointReport.endpointId}}</a>
+                    <span ng-if="!endpointReport.createdSuccessfully"
+                          class="endpoint-id">{{endpointReport.endpointId}}</span>
+                    <a href="#" ng-if="!endpointReport.createdSuccessfully"
+                       ng-click="showEndpointReport(endpointReport)"
+                       class="endpoint-report-link">{{'graphql.create_endpoint.wizard_steps.generate_endpoint.overview.for_shapes.view_report_link' | translate}}</a>
                 </div>
             </div>
+
+            <div class="alert alert-info manage-endpoints-info mt-2"
+                 ng-bind-html="'graphql.create_endpoint.wizard_steps.generate_endpoint.overview.for_shapes.manage_endpoints_info' | translate :
+                 {managementUrl: endpointUrl.ENDPOINT_MANAGEMENT} | trustAsHtml"></div>
         </div>
     </div>
 

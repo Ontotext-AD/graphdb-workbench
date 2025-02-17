@@ -1,70 +1,95 @@
 export class GraphqlEndpointInfo {
+    /**
+     * @type {string} - The internal ID of the endpoint.
+     * @private
+     */
+    _id;
+    /**
+     * @type {string} - The ID of the endpoint, like "/graphql/swapi/".
+     * @private
+     */
+    _endpointId;
+    /**
+     * @type {string} - The URI of the endpoint, like "http://swapi.dev/graphql/".
+     * @private
+     */
+    _endpointURI;
+    /**
+     * @type {string} - The label of the endpoint.
+     * @private
+     */
+    _label;
+    /**
+     * @type {string} - The description of the endpoint.
+     * @private
+     */
+    _description;
+    /**
+     * @type {boolean} - Indicates if the endpoint is the default one.
+     * @private
+     */
+    _default;
+    /**
+     * @type {boolean} - Indicates if the endpoint is active.
+     * @private
+     */
+    _active;
+    /**
+     * @type {string} - The last modified date of the endpoint.
+     * @private
+     */
+    _lastModified;
+    /**
+     * @type {number} - The count of objects in the schema definition describing the endpoint.
+     * @private
+     */
+    _objectsCount;
+    /**
+     * @type {number} - The count of properties in the schema definition describing the endpoint.
+     * @private
+     */
+    _propertiesCount;
+    /**
+     * @type {string[]} - The list of warnings occurred during the endpoint creation.
+     * @private
+     */
+    _warnings;
+    /**
+     * @type {string[]} - The list of errors occurred during the endpoint creation.
+     * @private
+     */
+    _errors;
+    /**
+     * @type {string} - The status of the endpoint.
+     * @private
+     */
+    _status;
+
+    /**
+     * @type {boolean} - Indicates if the endpoint was created successfully
+     * @private
+     */
+    _createdSuccessfully;
+
     constructor(data) {
-        /**
-         * @type {string} - The internal ID of the endpoint.
-         * @private
-         */
         this._id = data.id;
-        /**
-         * @type {string} - The ID of the endpoint, like "/graphql/swapi/".
-         * @private
-         */
         this._endpointId = data.endpointId;
-        /**
-         * @type {string} - The URI of the endpoint, like "http://swapi.dev/graphql/".
-         * @private
-         */
         this._endpointURI = data.endpointURI;
-        /**
-         * @type {string} - The label of the endpoint.
-         * @private
-         */
         this._label = data.label;
-        /**
-         * @type {string} - The description of the endpoint.
-         * @private
-         */
         this._description = data.description;
-        /**
-         * @type {boolean} - Indicates if the endpoint is the default one.
-         * @private
-         */
         this._default = data.default;
-        /**
-         * @type {boolean} - Indicates if the endpoint is active.
-         * @private
-         */
         this._active = data.active;
-        /**
-         * @type {string} - The last modified date of the endpoint.
-         * @private
-         */
         this._lastModified = data.lastModified;
-        /**
-         * @type {number} - The count of objects in the schema definition describing the endpoint.
-         * @private
-         */
         this._objectsCount = data.objectsCount;
-        /**
-         * @type {number} - The count of properties in the schema definition describing the endpoint.
-         * @private
-         */
         this._propertiesCount = data.propertiesCount;
-        /**
-         * @type {string[]} - The list of warnings occurred during the endpoint creation.
-         * @private
-         */
         this._warnings = data.warnings;
-        /**
-         * @type {string[]} - The list of errors occurred during the endpoint creation.
-         * @private
-         */
         this._errors = data.errors;
-        /**
-         * @type {string} - The status of the endpoint.
-         * @private
-         */
         this._status = data.status;
+        this._createdSuccessfully = this._active && this._errors === 0;
+    }
+
+    get createdSuccessfully() {
+        return this._createdSuccessfully;
     }
 
     get id() {
@@ -173,16 +198,19 @@ export class GraphqlEndpointInfo {
 }
 
 export class GraphqlEndpointsInfoList {
+    /**
+     * @type {GraphqlEndpointInfo[]} - The original list of endpoints that should remain unchanged.
+     * @private
+     */
+    _originalEndpointsList;
+    /**
+     * @type {GraphqlEndpointInfo[]} - The filtered list of endpoints.
+     * @private
+     */
+    _endpoints;
+
     constructor(endpoints) {
-        /**
-         * @type {GraphqlEndpointInfo[]} - The original list of endpoints that should remain unchanged.
-         * @private
-         */
         this._originalEndpointsList = endpoints || [];
-        /**
-         * @type {GraphqlEndpointInfo[]} - The filtered list of endpoints.
-         * @private
-         */
         this._endpoints = endpoints || [];
     }
 

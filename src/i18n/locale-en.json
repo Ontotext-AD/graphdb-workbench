@@ -895,7 +895,10 @@
                         "for_shapes": {
                             "info": "{{endpointsCount}} GraphQL endpoints will be created in \"{{activeRepoId}}\" repository based on the GraphQL schema shapes listed below. To modify the selection, navigate back to Step 1 (Select schema source).",
                             "included_endpoints": "Included GraphQL schema shapes",
-                            "generated_endpoints": "GraphQL endpoints"
+                            "generated_endpoints": "GraphQL endpoints",
+                            "manage_endpoints_info": "Navigate to <a href=\"{{managementUrl}}\">Endpoint Management</a> to manage the endpoints",
+                            "explore_in_playground_link_tooltip": "Explore in Playground (opens in a new tab)",
+                            "view_report_link": "View report"
                         }
                     },
                     "generation_failure_report": {
