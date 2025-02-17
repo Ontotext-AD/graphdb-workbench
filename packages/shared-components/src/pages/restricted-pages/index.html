@@ -27,9 +27,9 @@
 </head>
 <body>
 <nav>
-    <a href="/pages/restricted-pages" class="nav-link" data-link>Home</a>
-    <a id="restricted-page-link" href="/pages/restricted-pages/restricted-page" class="nav-link" data-link>Restricted page</a>
-    <a id="unrestricted-page-link" href="/pages/restricted-pages/unrestricted-page" class="nav-link" data-link>Unrestricted page</a>
+    <a href="/pages/restricted-pages" class="nav-link" onclick="navigateTo(this.href); return false;">Home</a>
+    <a id="restricted-page-link" href="/pages/restricted-pages/restricted-page" class="nav-link" onclick="navigateTo(this.href); return false;">Restricted page</a>
+    <a id="unrestricted-page-link" href="/pages/restricted-pages/unrestricted-page" class="nav-link" onclick="navigateTo(this.href); return false;">Unrestricted page</a>
 </nav>
 <div>
     <button id="make-current-page-restricted" onclick="makeCurrentPageRestricted()">Make current page restricted</button>
