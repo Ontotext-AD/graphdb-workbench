@@ -204,6 +204,9 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                                 authorities: overrideAuthData.authorities,
                                 appSettings: overrideAuthData.appSettings
                             };
+                            ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(
+                              MapperProvider.get(AuthenticatedUserMapper).mapToModel(that.principal)
+                            );
                             $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.hasOverrideAuth);
 
                         } else {
