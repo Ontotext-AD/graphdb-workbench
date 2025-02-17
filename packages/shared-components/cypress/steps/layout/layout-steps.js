@@ -5,6 +5,10 @@ export class LayoutSteps extends BaseSteps {
     super.visit('layout');
   }
 
+  static getLayout() {
+    return cy.get('onto-layout');
+  }
+
   static loadDefaultMenuItems() {
     return cy.get('#add-menu-items').click();
   }
