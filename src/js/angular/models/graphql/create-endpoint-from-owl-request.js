@@ -53,15 +53,29 @@ export class CreateEndpointFromOwlRequest {
     }
 
     toJSON() {
-        return {
+        // return {
+        //     fromRepo: this.fromRepo,
+        //     namedGraphs: this.namedGraphs,
+        //     id: this.id,
+        //     label: this.label,
+        //     description: this.description,
+        //     vocab_prefix: this.vocPrefix,
+        //     config: this.config
+        // };
+        const json = {
             fromRepo: this.fromRepo,
             namedGraphs: this.namedGraphs,
-            id: this.id,
-            label: this.label,
-            description: this.description,
-            vocab_prefix: this.vocPrefix,
+            // id: this.id,
+            // label: this.label,
+            // description: this.description,
+            // vocab_prefix: this.vocPrefix,
             config: this.config
         };
+        json.config.id = this.id;
+        json.config.vocab_prefix = this.vocPrefix;
+        json.config.label = this.label;
+        json.config.description = this.description
+        return json;
     }
 
     get fromRepo() {

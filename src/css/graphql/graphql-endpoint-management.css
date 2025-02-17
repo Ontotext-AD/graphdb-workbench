@@ -41,3 +41,11 @@
     background-color: rgba(0, 0, 0, 0.2);
     z-index: 1;
 }
+
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table tbody .status-failed {
+    color: var(--color-danger-dark);
+}
+
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table tbody .status-success {
+    color: var(--color-success-dark);
+}

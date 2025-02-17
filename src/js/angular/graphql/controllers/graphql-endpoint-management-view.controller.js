@@ -14,15 +14,21 @@ angular
     .module('graphdb.framework.graphql.controllers.graphql-endpoint-management-view', modules)
     .controller('GraphqlEndpointManagementViewCtrl', GraphqlEndpointManagementViewCtrl);
 
-GraphqlEndpointManagementViewCtrl.$inject = ['$scope', '$location', '$repositories', '$uibModal', 'ModalService', 'toastr', '$translate', 'GraphqlService', 'GraphqlContextService', 'AuthTokenService'];
+GraphqlEndpointManagementViewCtrl.$inject = ['$scope', '$location', '$interval', '$repositories', '$uibModal', 'ModalService', 'toastr', '$translate', 'GraphqlService', 'GraphqlContextService', 'AuthTokenService'];
 
-function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, $uibModal, ModalService, toastr, $translate, GraphqlService, GraphqlContextService, AuthTokenService) {
+function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $repositories, $uibModal, ModalService, toastr, $translate, GraphqlService, GraphqlContextService, AuthTokenService) {
 
     // =========================
     // Private variables
     // =========================
 
     const subscriptions = [];
+
+    /**
+     * The interval for polling the endpoints info.
+     * @type {number}
+     */
+    const ENDPOINTS_INFO_POLLING_INTERVAL = 5000;
 
     // =========================
     // Public variables
@@ -63,6 +69,18 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, $ui
      * @type {boolean}
      */
     $scope.deletingEndpoint = false;
+
+    /**
+     * The timer for polling the endpoints info.
+     * @type {Promise|undefined}
+     */
+    let endpointsInfoPollingTimer = undefined;
+
+    /**
+     * The Promise for loading the endpoints info.
+     * @type {Promise|undefined}
+     */
+    let endpointsInfoLoader = undefined;
 
     // =========================
     // Public methods
@@ -149,6 +167,24 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, $ui
             });
     };
 
+    $scope.showEndpointReport = (endpointReport) => {
+        return $uibModal.open({
+            templateUrl: 'js/angular/graphql/templates/modal/endpoint-generation-failure-result-modal.html',
+            controller: 'EndpointGenerationResultFailureModalController',
+            windowClass: 'endpoint-generation-failure-result-modal',
+            size: 'lg',
+            backdrop: 'static',
+            keyboard: false,
+            resolve: {
+                data: () => {
+                    return {
+                        endpointReport
+                    };
+                }
+            }
+        }).result;
+    }
+
     // =========================
     // Private methods
     // =========================
@@ -187,14 +223,23 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, $ui
     }
 
     /**
+     * Handles the loaded GraphQL endpoints info.
+     * @param {GraphqlEndpointsInfoList} endpointsInfoList
+     */
+    const onEndpointsInfoLoaded = (endpointsInfoList) => {
+        $scope.endpointsInfoList = endpointsInfoList;
+        if ($scope.endpointsInfoList && $scope.endpointsInfoList.endpoints.length > 0) {
+            $scope.hasEndpoints = true;
+        }
+    }
+
+    /**
      * Loads the GraphQL endpoints info.
      */
     const loadEndpointsInfo = () => {
         $scope.loadingEndpointsInfo = true;
         return GraphqlService.getEndpointsInfo($repositories.getActiveRepository())
-            .then((endpointsInfoList) => {
-                $scope.endpointsInfoList = endpointsInfoList;
-            })
+            .then(onEndpointsInfoLoaded)
             .catch((error) => {
                 toastr.error(getError(error));
                 console.error('Error loading GraphQL endpoints info', error);
@@ -212,9 +257,40 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, $ui
     };
 
     /**
+     * Loads the GraphQL endpoints info periodically called by the polling timer.
+     * @returns {Promise<void>}
+     */
+    const reloadEndpointsInfo = () => {
+        return GraphqlService.getEndpointsInfo($repositories.getActiveRepository())
+            .then(onEndpointsInfoLoaded)
+            .catch((error) => {
+                toastr.error(getError(error));
+                console.error('Error loading GraphQL endpoints info', error);
+            })
+            .finally(() => {
+                if (endpointsInfoLoader) {
+                    endpointsInfoLoader = undefined;
+                }
+            });
+    }
+
+    /**
+     * Polls the GraphQL endpoints info.
+     */
+    const pollEndpointsInfo = () => {
+        endpointsInfoPollingTimer = $interval(() => {
+            if (!endpointsInfoLoader) {
+                endpointsInfoLoader = reloadEndpointsInfo();
+            }
+        }, ENDPOINTS_INFO_POLLING_INTERVAL);
+    }
+
+    /**
      * Unsubscribes all watchers.
      */
     const unsubscribeAll = () => {
+        endpointsInfoPollingTimer && $interval.cancel(endpointsInfoPollingTimer);
+        endpointsInfoPollingTimer = undefined;
         subscriptions.forEach((subscription) => subscription());
     };
 
@@ -233,9 +309,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $repositories, $ui
     const onInit = () => {
         loadEndpointsInfo()
             .then(() => {
-                if ($scope.endpointsInfoList && $scope.endpointsInfoList.endpoints.length > 0) {
-                    $scope.hasEndpoints = true;
-                }
+                pollEndpointsInfo();
             });
     };
 }

@@ -81,12 +81,16 @@
                     </a>
                 </td>
                 <td>
+                    <i ng-if="endpoint.createdSuccessfully" class="fa-regular fa-circle-check status-success"></i>
+                    <i ng-if="!endpoint.createdSuccessfully" class="fa-regular fa-circle-xmark status-failed"></i>
                     <span ng-if="!endpoint.active"
                           gdb-tooltip="{{'graphql.endpoints_management.table.actions.explore_endpoint.inactive.tooltip' | translate}}"
                           class="endpoint-link">{{endpoint.endpointId}}</span>
                     <a ng-if="endpoint.active" href="#" ng-click="exploreEndpoint(endpoint)"
                        gdb-tooltip="{{'graphql.endpoints_management.table.actions.explore_endpoint.active.tooltip' | translate}}"
                        class="endpoint-link">{{endpoint.endpointId}}</a>
+                    <a href="#" ng-if="!endpoint.createdSuccessfully" ng-click="showEndpointReport(endpoint)"
+                       class="endpoint-report-link">View report</a>
                 </td>
                 <td>{{endpoint.label}}</td>
                 <td>

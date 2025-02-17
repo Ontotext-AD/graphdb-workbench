@@ -87,7 +87,7 @@ export class GraphqlEndpointConfiguration {
     toCreateEndpointFromOwlRequest(sourceRepositoryId) {
         return new CreateEndpointFromOwlRequest({
             fromRepo: sourceRepositoryId,
-            namedGraphs: this.selectedGraphs.graphList,
+            namedGraphs: this.selectedGraphs.getGraphIds(),
             id: this.params.endpointId,
             label: this.params.endpointLabel,
             description: this.params.endpointDescription,

@@ -1,5 +1,6 @@
 import {GraphqlEventName} from "../services/graphql-context.service";
 import '../controllers/endpoint-generation-failure-result-modal.controller';
+import {endpointUrl} from "../models/endpoints";
 
 angular
     .module('graphdb.framework.graphql.directives.generate-endpoint', [
@@ -63,6 +64,12 @@ function GenerateEndpointComponent(ModalService, $uibModal, $translate, $reposit
              */
             $scope.generationReport = undefined;
 
+            /**
+             * Exposes the graphql module view URL constants for use in the template.
+             * @type {{string?: string}}
+             */
+            $scope.endpointUrl = endpointUrl;
+
             // =========================
             // Public functions
             // =========================
@@ -94,26 +101,19 @@ function GenerateEndpointComponent(ModalService, $uibModal, $translate, $reposit
             };
 
             /**
-             * Opens a modal with the endpoint generation report.
+             * Triggers an event to open the endpoint generation report modal.
              * @param {EndpointGenerationReport} endpointReport The endpoint generation report.
-             * @returns {Promise<any>}
              */
             $scope.showEndpointReport = (endpointReport) => {
-                return $uibModal.open({
-                    templateUrl: 'js/angular/graphql/templates/modal/endpoint-generation-failure-result-modal.html',
-                    controller: 'EndpointGenerationResultFailureModalController',
-                    windowClass: 'endpoint-generation-failure-result-modal',
-                    size: 'lg',
-                    backdrop: 'static',
-                    keyboard: false,
-                    resolve: {
-                        data: () => {
-                            return {
-                                endpointReport
-                            };
-                        }
-                    }
-                }).result;
+                GraphqlContextService.openEndpointGenerationReport(endpointReport);
+            }
+
+            /**
+             * Opens the endpoint in the playground in a new browser tab.
+             * @param {EndpointGenerationReport} endpointReport The endpoint generation report.
+             */
+            $scope.exploreInPlayground = (endpointReport) => {
+                GraphqlContextService.exploreEndpointInPlayground(endpointReport);
             }
 
             // =========================

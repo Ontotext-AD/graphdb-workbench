@@ -21,6 +21,10 @@ export class GraphListOptions {
         this._size = this.graphList.length;
     }
 
+    getGraphIds() {
+        return this.graphList.map(graph => graph.uri);
+    }
+
     /**
      * Process the graph list with the given predicate.
      * @param {function} predicate The predicate to apply to each graph.
