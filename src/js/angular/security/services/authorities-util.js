@@ -28,25 +28,22 @@ export const parseAuthorities = (authorities) => {
             }
         } else if (role === UserRole.ROLE_USER) {
             userType = UserType.USER;
-        } else if (role.indexOf(READ_REPO_PREFIX) === 0 || role.indexOf(WRITE_REPO_PREFIX) === 0) {
+        } else if (role.indexOf(READ_REPO_PREFIX) === 0 || role.indexOf(WRITE_REPO_PREFIX) === 0 || role.indexOf(GRAPHQL_PREFIX) === 0) {
             const repoData = getRepoFromAuthority(role);
             if (repoData) {
                 const { prefix, repo } = repoData;
-                const opKey = prefix === READ_REPO_PREFIX ? READ_REPO : WRITE_REPO;
-                grantedAuthorities[opKey][repo] = true;
                 repositories[repo] = repositories[repo] || {};
                 if (prefix === READ_REPO_PREFIX) {
+                    grantedAuthorities[READ_REPO][repo] = true;
                     repositories[repo].read = true;
                 } else if (prefix === WRITE_REPO_PREFIX) {
+                    grantedAuthorities[WRITE_REPO][repo] = true;
                     repositories[repo].write = true;
+                } else if (prefix === GRAPHQL_PREFIX) {
+                    grantedAuthorities[GRAPHQL][repo] = true;
+                    repositories[repo].graphql = true;
                 }
             }
-        } else if (role.indexOf(GRAPHQL_PREFIX) === 0) {
-            // For GRAPHQL the repository id is simply the part after the prefix.
-            const repo = role.substring(GRAPHQL_PREFIX.length);
-            grantedAuthorities[GRAPHQL][repo] = true;
-            repositories[repo] = repositories[repo] || {};
-            repositories[repo].graphql = true;
         } else if (role.indexOf(CUSTOM_PREFIX) === 0) {
             customRoles.push(role.substring(CUSTOM_PREFIX.length));
         }
@@ -79,6 +76,9 @@ export const getRepoFromAuthority = (role) => {
     }
     if (role.startsWith(WRITE_REPO_PREFIX)) {
         return { prefix: WRITE_REPO_PREFIX, repo: role.substring(WRITE_REPO_PREFIX.length) };
+    }
+    if (role.startsWith(GRAPHQL_PREFIX)) {
+        return { prefix: GRAPHQL_PREFIX, repo: role.substring(GRAPHQL_PREFIX.length) };
     }
     return null;
 };

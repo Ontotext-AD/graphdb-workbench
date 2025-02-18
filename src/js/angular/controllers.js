@@ -437,12 +437,13 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $repositories.getRepositories();
     };
 
-    $scope.getReadableRepositories = function () {
-        return $repositories.getReadableRepositories();
+    $scope.getReadableRepositories = function (qraphql = false) {
+        return $repositories.getReadableRepositories(qraphql);
     };
 
-    $scope.getWritableRepositories = function () {
-        return $repositories.getWritableRepositories();
+
+    $scope.getWritableRepositories = function (qraphql = false) {
+        return $repositories.getWritableRepositories(qraphql);
     };
 
     $scope.getActiveRepository = function () {

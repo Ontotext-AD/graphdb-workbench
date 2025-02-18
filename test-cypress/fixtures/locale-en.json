@@ -782,7 +782,12 @@
                     },
                     "delete_endpoint": {
                         "label": "Delete endpoint",
-                        "tooltip": "Delete the GraphQL endpoint"
+                        "tooltip": "Delete the GraphQL endpoint",
+                        "confirmation": {
+                            "title": "Delete endpoint",
+                            "body": "Are you sure you want to delete the GraphQL endpoint '{{name}}'?"
+                        },
+                        "success": "The GraphQL endpoint '{{name}}' was deleted successfully."
                     },
                     "export_schema": {
                         "label": "Export schema definition",
@@ -796,6 +801,13 @@
                 "labels": {
                     "description": "Description"
                 }
+            },
+            "endpoint_configuration_modal": {
+                "title": "Configure GraphQL endpoint",
+                "messages": {
+                    "error_saving_configuration": "Error saving endpoint configuration",
+                    "success_saving_configuration": "Endpoint configuration saved"
+                }
             }
         },
         "create_endpoint": {
@@ -806,7 +818,7 @@
                 }
             },
             "wizard_steps": {
-                "select_schema_source": {
+                "select_schema_sources": {
                     "title": "Select schema source",
                     "source_type": {
                         "graphql_schema_shapes": {
@@ -819,7 +831,8 @@
                     "graphql_schema_shapes": {
                         "title": "GraphQL schema shapes",
                         "messages": {
-                            "no_schemas": "No GraphQL schema shapes were found in the selected repository. You can choose or browse other repositories or choose the other source.",
+                            "loading_graphql_shapes": "Loading GraphQL schema shapes...",
+                            "no_schemas": "No GraphQL schema shapes were found in the selected repository. You can browse other repositories or change the source.",
                             "endpoint_per_shape": "Each GraphQL schema shape results in one endpoint"
                         }
                     },
@@ -846,17 +859,22 @@
                             "use_all_graphs": {
                                 "label": "Use all graphs",
                                 "messages": {
-                                    "all_graphs": "All {{count}} graphs are included for endpoint creation"
+                                    "all_graphs": "All {{count}} graphs are included for endpoint creation",
+                                    "no_graphs": "No graphs were found in the selected repository."
                                 }
                             },
                             "use_shacl_shape_graph": {
                                 "label": "Use SHACL shape graph",
                                 "messages": {
-                                    "all_shacl_shape_graphs": "All {{count}} SHACL shape graphs are included for endpoint creation"
+                                    "all_shacl_shape_graphs": "All {{count}} SHACL shape graphs are included for endpoint creation",
+                                    "no_graphs": "No SHACL shape graphs were found in the selected repository."
                                 }
                             },
                             "pick_graphs": {
-                                "label": "Select one or more graphs"
+                                "label": "Select one or more graphs",
+                                "messages": {
+                                    "no_graphs": "No graphs were found in the selected repository."
+                                }
                             }
                         },
                         "messages": {
@@ -869,6 +887,66 @@
                     "endpoint_parameters": {
                         "title": "Parameters",
                         "form": {}
+                    }
+                },
+                "generate_endpoint": {
+                    "title": "Create",
+                    "overview": {
+                        "title": "Overview"
+                    },
+                    "messages": {
+                    }
+                },
+                "shapes_multiselect": {
+                    "available_options": {
+                        "title": "Available (not included)",
+                        "filter_placeholder": "Filter to select specific shapes"
+                    },
+                    "selected_options": {
+                        "title": "Included for generation",
+                        "count": "{{count}} GraphQL schema shapes included"
+                    },
+                    "actions": {
+                        "add": {
+                            "tooltip": "Add the shape to the list of included shapes"
+                        },
+                        "add_all": {
+                            "label": "Add all",
+                            "tooltip": "Add all shapes to the list of included shapes"
+                        },
+                        "remove": {
+                            "tooltip": "Remove the shape from the list of included shapes"
+                        },
+                        "remove_all": {
+                            "label": "Remove all",
+                            "tooltip": "Remove all shapes from the list of included shapes"
+                        }
+                    }
+                },
+                "graphs_multiselect": {
+                    "available_options": {
+                        "title": "Available (not included)",
+                        "filter_placeholder": "Filter to select specific graphs"
+                    },
+                    "selected_options": {
+                        "title": "Included for generation",
+                        "count": "{{count}} SHACL shape graphs are included"
+                    },
+                    "actions": {
+                        "add": {
+                            "tooltip": "Add the graph to the list of included graphs"
+                        },
+                        "add_all": {
+                            "label": "Add all",
+                            "tooltip": "Add all graphs to the list of included graphs"
+                        },
+                        "remove": {
+                            "tooltip": "Remove the graph from the list of included graphs"
+                        },
+                        "remove_all": {
+                            "label": "Remove all",
+                            "tooltip": "Remove all graphs from the list of included graphs"
+                        }
                     }
                 },
                 "actions": {
@@ -887,8 +965,14 @@
                         }
                     },
                     "generate_endpoint": {
-                        "label": "Generate"
+                        "label": "Create endpoint"
                     }
+                }
+            },
+            "messages": {
+                "source_repository_changed": {
+                    "title": "Confirm source repository change",
+                    "body": "Changing the source repository may affect your current setup and data. Are you sure you want to proceed?"
                 }
             }
         }
@@ -1169,9 +1253,12 @@
     "security.user.role.too.short": "Must be at least 2 symbols long",
     "security.no.active.location": "There is no active location.",
     "security.repository.title": "Repository",
-    "security.tooltip.read": "Read",
-    "security.tooltip.write": "Write",
-    "security.tooltip.graphql": "GraphQL only",
+    "security.tooltip.read": "Read rights",
+    "security.tooltip.write": "Write rights",
+    "security.tooltip.graphql": "GraphQL only rights",
+    "security.label.read": "Read",
+    "security.label.write": "Write",
+    "security.label.graphql": "GraphQL only",
     "security.user.may": "User may:",
     "security.use.gdb": "Use GraphDB",
     "security.grant.read.access": "Be granted read access to a repository",
@@ -2021,6 +2108,7 @@
     "repo.choose.location.warning": "select a location first",
     "repo.properties": "Repository properties",
     "repo.id.label": "Repository ID*",
+    "repo.local": "Local",
     "edit.repo.id.tooltip": "Edit repository id",
     "edit.repo.id.cannot_edit_in_cluster.tooltip": "Cannot rename repository while in cluster.",
     "invalid.repo.name.error": "Repository name can contain only letters (a-z, A-Z), numbers (0-9), \"-\" and \"_\"",
@@ -2067,6 +2155,7 @@
     "common.error": "Error",
     "common.warning": "Warning",
     "common.loading": "Loading...",
+    "common.select": "Select...",
     "common.on.btn": "ON",
     "common.off.btn": "OFF",
     "common.search.btn": "Search",
