@@ -1,29 +1,31 @@
 import {EndpointGenerationReport, EndpointGenerationReportList} from "../../models/graphql/endpoint-generation-report";
+import {resolveGraphqlEndpoint} from "../models/endpoints";
 
 /**
- * Maps the response data to a list of endpoint generation reports.
+ * Maps the response from the endpoint generation to a list of endpoint generation reports.
  * @param {*[]} data The response data.
+ * @param {string} repositoryId The repository id.
  * @returns {EndpointGenerationReportList}
  */
-export const endpointGenerationReportListMapper = (data) => {
+export const endpointGenerationReportListMapper = (data, repositoryId) => {
     if (!data) {
         return new EndpointGenerationReportList();
     }
 
-    const reports = data.map((reportReponse) => endpointGenerationReportMapper(reportReponse));
+    const reports = data.map((reportReponse) => endpointGenerationReportMapper(reportReponse, repositoryId));
     return new EndpointGenerationReportList(reports);
 }
 
 /**
  * Maps the response data to an endpoint generation report.
  * @param {*} reportReponse The response data.
+ * @param {string} repositoryId The repository id.
  * @returns {EndpointGenerationReport} The endpoint generation report.
  */
-export const endpointGenerationReportMapper = (reportReponse) => {
+export const endpointGenerationReportMapper = (reportReponse, repositoryId) => {
     return new EndpointGenerationReport({
-        id: reportReponse.id,
-        endpointId: reportReponse.endpointId,
-        endpointURI: reportReponse.endpointURI,
+        endpointId: reportReponse.id,
+        endpointURI: resolveGraphqlEndpoint(repositoryId, reportReponse.id),
         active: reportReponse.active,
         default: reportReponse.default,
         label: reportReponse.label,

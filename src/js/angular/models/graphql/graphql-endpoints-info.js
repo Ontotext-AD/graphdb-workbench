@@ -1,11 +1,8 @@
+import {UpdateEndpointRequest} from "./update-endpoint-request";
+
 export class GraphqlEndpointInfo {
     /**
-     * @type {string} - The internal ID of the endpoint.
-     * @private
-     */
-    _id;
-    /**
-     * @type {string} - The ID of the endpoint, like "/graphql/swapi/".
+     * @type {string} - The ID of the endpoint, like "swapi".
      * @private
      */
     _endpointId;
@@ -59,11 +56,6 @@ export class GraphqlEndpointInfo {
      * @private
      */
     _errors;
-    /**
-     * @type {string} - The status of the endpoint.
-     * @private
-     */
-    _status;
 
     /**
      * @type {boolean} - Indicates if the endpoint was created successfully
@@ -72,7 +64,6 @@ export class GraphqlEndpointInfo {
     _createdSuccessfully;
 
     constructor(data) {
-        this._id = data.id;
         this._endpointId = data.endpointId;
         this._endpointURI = data.endpointURI;
         this._label = data.label;
@@ -84,20 +75,27 @@ export class GraphqlEndpointInfo {
         this._propertiesCount = data.propertiesCount;
         this._warnings = data.warnings;
         this._errors = data.errors;
-        this._status = data.status;
         this._createdSuccessfully = this._active && this._errors === 0;
+    }
+
+    /**
+     * Converts the endpoint info to an update endpoint request.
+     * @param {GraphqlEndpointConfigurationSettings} endpointSettings - The endpoint settings.
+     * @returns {UpdateEndpointRequest}
+     */
+    toUpdateEndpointRequest(endpointSettings) {
+        return new UpdateEndpointRequest({
+            id: this.endpointId,
+            label: this.label,
+            description: this.description,
+            active: this.active,
+            default: this.default,
+            options: endpointSettings
+        });
     }
 
     get createdSuccessfully() {
         return this._createdSuccessfully;
-    }
-
-    get id() {
-        return this._id;
-    }
-
-    set id(value) {
-        this._id = value;
     }
 
     get endpointId() {
@@ -186,14 +184,6 @@ export class GraphqlEndpointInfo {
 
     set errors(value) {
         this._errors = value;
-    }
-
-    get status() {
-        return this._status;
-    }
-
-    set status(value) {
-        this._status = value;
     }
 }
 

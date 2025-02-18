@@ -6,32 +6,32 @@
     justify-content: space-between;
 }
 
-.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table thead .toggle {
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .toggle {
     /* fixed width to prevent expanding and shrinking of the first column when a row is expanded/collapsed  */
     width: 40px;
 }
 
-.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table thead .endpoint_id {
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint_id {
     width: 10%;
 }
 
-.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table thead .endpoint_label {
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint_label {
     width: 20%;
 }
 
-.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table thead .endpoint-actions {
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint-actions {
     width: 5%;
 }
 
-.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table tbody .endpoint-description-row > td {
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint-description-row > td {
     border-top: none;
 }
 
-.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table tbody .row-overlay {
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .row-overlay {
     position: relative;
 }
 
-.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table tbody .row-overlay:after {
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .row-overlay:after {
     content: "";
     position: absolute;
     top: 0;
@@ -42,10 +42,14 @@
     z-index: 1;
 }
 
-.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table tbody .status-failed {
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .status-failed {
     color: var(--color-danger-dark);
 }
 
-.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table tbody .status-success {
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .status-success {
     color: var(--color-success-dark);
+}
+
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint-report-link {
+    color: var(--primary-color);
 }

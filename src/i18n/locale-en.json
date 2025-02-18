@@ -792,6 +792,10 @@
                     "export_schema": {
                         "label": "Export schema definition",
                         "tooltip": "Export the GraphQL endpoint schema definition"
+                    },
+                    "view_report": {
+                        "label": "[View report]",
+                        "tooltip": "Opens the report in a modal dialog"
                     }
                 },
                 "messages": {
@@ -898,7 +902,7 @@
                             "generated_endpoints": "GraphQL endpoints",
                             "manage_endpoints_info": "Navigate to <a href=\"{{managementUrl}}\">Endpoint Management</a> to manage the endpoints",
                             "explore_in_playground_link_tooltip": "Explore in Playground (opens in a new tab)",
-                            "view_report_link": "View report"
+                            "view_report_link": "[View report]"
                         }
                     },
                     "generation_failure_report": {

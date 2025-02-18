@@ -75,7 +75,7 @@ function GraphqlService(GraphqlRestService) {
     const getEndpointsAsSelectMenuOptions = (repositoryId) => {
         return GraphqlRestService.getEndpoints(repositoryId)
             .then((response) => {
-                return endpointsToSelectMenuOptionsMapper(response.data)
+                return endpointsToSelectMenuOptionsMapper(response.data, repositoryId)
             });
     };
 
@@ -146,14 +146,35 @@ function GraphqlService(GraphqlRestService) {
     };
 
     /**
+     * Gets the GraphQL endpoint configuration.
+     * @param {string} repositoryId The repository ID.
+     * @param {string} endpointId The endpoint ID.
+     * @returns {Promise<unknown>}
+     */
+    const getEndpointConfiguration = (repositoryId, endpointId) => {
+        return GraphqlRestService.getEndpointConfiguration(repositoryId, endpointId);
+    };
+
+    /**
+     * Gets the GraphQL endpoint configuration report.
+     * @param {string} repositoryId The repository ID.
+     * @param {string} endpointId The endpoint ID.
+     * @returns {Promise<EndpointGenerationReportList>}
+     */
+    const getEndpointConfigurationReport = (repositoryId, endpointId) => {
+        return GraphqlRestService.getEndpointConfiguration(repositoryId, endpointId)
+            .then((response) => endpointGenerationReportListMapper([response.data], repositoryId));
+    };
+
+    /**
      * Save the GraphQL endpoint configuration settings.
      * @param {string} repositoryId - The repository id.
      * @param {string} endpointId - The endpoint id.
-     * @param endpointSettings - The endpoint settings.
+     * @param {UpdateEndpointRequest} updateEndpointRequest - The endpoint update request.
      * @returns {Promise<unknown> | *}
      */
-    const saveEndpointConfigurationSettings = (repositoryId, endpointId, endpointSettings) => {
-        return GraphqlRestService.saveEndpointConfigurationSettings(repositoryId, endpointId, endpointSettings);
+    const editEndpointConfiguration = (repositoryId, endpointId, updateEndpointRequest) => {
+        return GraphqlRestService.editEndpointConfiguration(repositoryId, endpointId, updateEndpointRequest.toJSON());
     };
 
     /**
@@ -174,7 +195,7 @@ function GraphqlService(GraphqlRestService) {
      */
     const generateEndpointFromGraphqlShapes = (repositoryId, request) => {
         return GraphqlRestService.generateEndpointFromGraphqlShapes(repositoryId, request.toJSON())
-            .then((response) => endpointGenerationReportListMapper(response.data));
+            .then((response) => endpointGenerationReportListMapper(response.data, repositoryId));
     }
 
     /**
@@ -185,7 +206,7 @@ function GraphqlService(GraphqlRestService) {
      */
     const generateEndpointFromOwl = (repositoryId, request) => {
         return GraphqlRestService.generateEndpointFromOwl(repositoryId, request.toJSON())
-            .then((response) => endpointGenerationReportListMapper([response.data]));
+            .then((response) => endpointGenerationReportListMapper([response.data], repositoryId));
     }
 
     return {
@@ -199,7 +220,9 @@ function GraphqlService(GraphqlRestService) {
         getShaclShapeGraphs,
         getGraphqlGenerationSettings,
         getGraphqlEndpointConfigurationSettings,
-        saveEndpointConfigurationSettings,
+        getEndpointConfiguration,
+        getEndpointConfigurationReport,
+        editEndpointConfiguration,
         deleteEndpoint,
         generateEndpointFromGraphqlShapes,
         generateEndpointFromOwl

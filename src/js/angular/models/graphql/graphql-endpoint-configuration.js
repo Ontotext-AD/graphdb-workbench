@@ -86,12 +86,12 @@ export class GraphqlEndpointConfiguration {
      */
     toCreateEndpointFromOwlRequest(sourceRepositoryId) {
         return new CreateEndpointFromOwlRequest({
-            fromRepo: sourceRepositoryId,
-            namedGraphs: this.selectedGraphs.getGraphIds(),
             id: this.params.endpointId,
             label: this.params.endpointLabel,
             description: this.params.endpointDescription,
-            vocab_prefix: this.params.vocPrefix,
+            fromRepo: sourceRepositoryId,
+            namedGraphs: this.selectedGraphs.getGraphIds(),
+            vocabPrefix: this.params.vocPrefix,
             config: this.settings.toFlatJSON()
         });
     }

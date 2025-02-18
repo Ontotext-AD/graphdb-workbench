@@ -29,13 +29,14 @@ function GraphqlRestService($http) {
     /**
      * Get the GraphQL endpoints info for the given repository.
      * @param {string} repositoryId The repository ID.
+     * @param {string|undefined} lastModified The last modified date.
      * @return {*|Promise<unknown>}
      */
-    const getEndpointsInfo = (repositoryId) => {
+    const getEndpointsInfo = (repositoryId, lastModified) => {
         if (DEVELOPMENT) {
             return _mockBackend.getEndpointsInfoMock(repositoryId);
         }
-        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/manage/graphql/endpoints`);
+        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/graphql/manage/list`);
     };
 
     /**
@@ -47,7 +48,7 @@ function GraphqlRestService($http) {
         if (DEVELOPMENT) {
             return _mockBackend.getGraphqlSchemaShapesMock(repositoryId);
         }
-        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/manage/graphql/shapes`);
+        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/graphql/manage/graphql_shapes`);
     };
 
     /**
@@ -59,7 +60,7 @@ function GraphqlRestService($http) {
         if (DEVELOPMENT) {
             return _mockBackend.getPrefixesMock(repositoryId);
         }
-        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/manage/graphql/prefixes`);
+        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/graphql/manage/prefixes`);
     }
 
     /**
@@ -71,7 +72,7 @@ function GraphqlRestService($http) {
         if (DEVELOPMENT) {
             return _mockBackend.getShaclGraphsMock(repositoryId);
         }
-        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/manage/graphql/shacl_graphs`);
+        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/graphql/manage/shacl_graphs`);
     };
 
     /**
@@ -82,7 +83,7 @@ function GraphqlRestService($http) {
         if (DEVELOPMENT) {
             return _mockBackend.getGraphqlGenerationSettingsMock();
         }
-        return $http.get(`${REPOSITORIES_ENDPOINT}/manage/graphql/generate/config`);
+        return $http.get(`${REPOSITORIES_ENDPOINT}/graphql/manage/generate/config`);
     };
 
     /**
@@ -95,21 +96,34 @@ function GraphqlRestService($http) {
         if (DEVELOPMENT) {
             return _mockBackend.getEndpointConfigurationMock();
         }
-        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/manage/graphql/${endpointId}/config`);
+        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/graphql/manage/endpoints/${endpointId}/config`);
     };
 
     /**
-     * Save the GraphQL endpoint configuration settings.
+     * Get the GraphQL endpoint configuration from the backend.
      * @param {string} repositoryId The repository ID.
      * @param {string} endpointId The endpoint ID.
-     * @param {*} endpointSettings The endpoint settings.
      * @returns {*|Promise<unknown>}
      */
-    const saveEndpointConfigurationSettings = (repositoryId, endpointId, endpointSettings) => {
+    const getEndpointConfiguration = (repositoryId, endpointId) => {
+        if (DEVELOPMENT) {
+            return _mockBackend.getEndpointConfiguration();
+        }
+        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/graphql/manage/endpoints/${endpointId}`);
+    };
+
+    /**
+     * Edit the GraphQL endpoint configuration.
+     * @param {string} repositoryId The repository ID.
+     * @param {string} endpointId The endpoint ID.
+     * @param {*} data The request payload.
+     * @returns {*|Promise<unknown>}
+     */
+    const editEndpointConfiguration = (repositoryId, endpointId, data) => {
         if (DEVELOPMENT) {
             return _mockBackend.saveEndpointConfigurationMock();
         }
-        return $http.put(`${REPOSITORIES_ENDPOINT}/${repositoryId}/manage/graphql/${endpointId}/config`, endpointSettings);
+        return $http.post(`${REPOSITORIES_ENDPOINT}/${repositoryId}/graphql/manage/endpoints/${endpointId}`, data);
     };
 
     /**
@@ -122,7 +136,7 @@ function GraphqlRestService($http) {
         if (DEVELOPMENT) {
             return _mockBackend.deleteEndpointMock(repositoryId, endpointId);
         }
-        return $http.delete(`${REPOSITORIES_ENDPOINT}/${repositoryId}/manage/graphql/endpoints/${endpointId}`);
+        return $http.delete(`${REPOSITORIES_ENDPOINT}/${repositoryId}/graphql/manage/endpoints/${endpointId}`);
     };
 
     /**
@@ -135,7 +149,7 @@ function GraphqlRestService($http) {
         if (DEVELOPMENT) {
             return _mockBackend.generateEndpointFromGraphqlShapesMock(payload);
         }
-        return $http.post(`${REPOSITORIES_ENDPOINT}/${repositoryId}/manage/graphql/generate/shapes`, payload);
+        return $http.post(`${REPOSITORIES_ENDPOINT}/${repositoryId}/graphql/manage/generate/graphql_shapes`, payload);
         // TODO: remove later when integration with the backend is complete
         // return new Promise((resolve, reject) => {
         //    setTimeout(() => {
@@ -154,7 +168,7 @@ function GraphqlRestService($http) {
         if (DEVELOPMENT) {
             return _mockBackend.generateEndpointFromOwl(payload);
         }
-        return $http.post(`${REPOSITORIES_ENDPOINT}/${repositoryId}/manage/graphql/generate`, payload);
+        return $http.post(`${REPOSITORIES_ENDPOINT}/${repositoryId}/graphql/manage/generate/owl_shacl`, payload);
         // TODO: remove later when integration with the backend is complete
         // return new Promise((resolve, reject) => {
         //    setTimeout(() => {
@@ -171,7 +185,8 @@ function GraphqlRestService($http) {
         getShaclShapeGraphs,
         getGraphqlGenerationSettings,
         getGraphqlEndpointConfigurationSettings,
-        saveEndpointConfigurationSettings,
+        getEndpointConfiguration,
+        editEndpointConfiguration,
         deleteEndpoint,
         generateEndpointFromGraphqlShapes,
         generateEndpointFromOwl
