@@ -10,23 +10,31 @@ import {
 } from "./constants";
 import {getRepoFromAuthority} from "./authorities-util";
 
-// TODO refactor mapper when BE models are unified and hold auth roles in `grantedAuthorities` property
-export const toUserModelMapper = (data, authorityField = 'grantedAuthorities') => {
+export const toUserModelMapper = (data, key = 'grantedAuthorities') => {
     if (Array.isArray(data)) {
         return data.map((user) => toUserModelMapper(user));
     }
-    const mappedData = mapObject(data, {
-        [authorityField]: mapAuthoritiesFromBackend
-    });
+    const mappedData = mapObject(
+        data,
+        {
+            [key]: {
+                transform: mapAuthoritiesFromBackend,
+                newKey: 'grantedAuthoritiesUiModel'
+            }
+        },
+        {
+            removeOldKey: false
+        }
+    );
     return new UserModel(mappedData);
 };
 
-export const fromUserModelMapper = (uiModel, authorityField = 'grantedAuthorities') => {
+export const fromUserModelMapper = (uiModel) => {
     if (Array.isArray(uiModel)) {
         return uiModel.map((model) => fromUserModelMapper(model));
     }
-    return mapObject(uiModel, {
-        [authorityField]: mapAuthoritiesToBackend
+    return mapObject(uiModel,  {
+            grantedAuthorities: mapAuthoritiesToBackend
     });
 };
 
@@ -63,7 +71,9 @@ const mapAuthoritiesFromBackend = (authorities) => {
 
 // Transformation function for UI-to-BE conversion.
 const mapAuthoritiesToBackend = (uiAuthorities) => {
-    if (!Array.isArray(uiAuthorities)) return uiAuthorities;
+    if (!Array.isArray(uiAuthorities)) {
+        return uiAuthorities;
+    }
 
     const customAuthorities = [];
     const repoMap = {};
@@ -75,6 +85,9 @@ const mapAuthoritiesToBackend = (uiAuthorities) => {
         return repoMap[repoId];
     };
 
+    let isReadAll = false;
+    let isWriteAll = false;
+    let isGraphqlAll = false;
     uiAuthorities.forEach((auth) => {
         const repoData = getRepoFromAuthority(auth);
         if (repoData) {
@@ -82,13 +95,20 @@ const mapAuthoritiesToBackend = (uiAuthorities) => {
             const entry = getOrCreateRepo(repo);
             if (prefix === READ_REPO_PREFIX) {
                 entry.read = true;
+                if(repo === '*') {
+                    isReadAll = true;
+                }
             } else if (prefix === WRITE_REPO_PREFIX) {
                 entry.write = true;
+                if(repo === '*') {
+                    isWriteAll = true;
+                }
+            } else if (prefix === GRAPHQL_PREFIX) {
+                entry.graphql = true;
+                if(repo === '*') {
+                    isGraphqlAll = true;
+                }
             }
-        } else if (auth.indexOf(GRAPHQL_PREFIX) === 0) {
-            const repo = auth.substring(GRAPHQL_PREFIX.length);
-            const entry = getOrCreateRepo(repo);
-            entry.graphql = true;
         } else {
             customAuthorities.push(auth);
         }
@@ -97,16 +117,20 @@ const mapAuthoritiesToBackend = (uiAuthorities) => {
     const backendAuthorities = [];
     Object.keys(repoMap).forEach((repoId) => {
         const perms = repoMap[repoId];
-        if (perms.graphql) {
-            if (perms.write) {
+        if (perms.graphql || isGraphqlAll) {
+            if (perms.write || isWriteAll) {
                 backendAuthorities.push(`${WRITE_REPO_PREFIX}${repoId}${GRAPHQL_SUFFIX_WITH_DELIMITER}`);
+                backendAuthorities.push(`${READ_REPO_PREFIX}${repoId}${GRAPHQL_SUFFIX_WITH_DELIMITER}`);
+            } else if (perms.read || isReadAll) {
+                backendAuthorities.push(`${READ_REPO_PREFIX}${repoId}${GRAPHQL_SUFFIX_WITH_DELIMITER}`);
             }
-            backendAuthorities.push(`${READ_REPO_PREFIX}${repoId}${GRAPHQL_SUFFIX_WITH_DELIMITER}`);
         } else {
             if (perms.write) {
                 backendAuthorities.push(`${WRITE_REPO_PREFIX}${repoId}`);
+                backendAuthorities.push(`${READ_REPO_PREFIX}${repoId}`);
+            } else if (perms.read) {
+                backendAuthorities.push(`${READ_REPO_PREFIX}${repoId}`);
             }
-            backendAuthorities.push(`${READ_REPO_PREFIX}${repoId}`);
         }
     });
 

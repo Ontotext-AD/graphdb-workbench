@@ -266,9 +266,9 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             return this.getRepositories().find((repository) => repository.id === repositoryId);
         };
 
-        this.getReadableRepositories = function () {
+        this.getReadableRepositories = function (graphql = false) {
             return _.filter(this.getRepositories(), function (repo) {
-                return $jwtAuth.canReadRepo(repo);
+                return $jwtAuth.canReadRepo(repo, graphql);
             });
         };
 

@@ -27,8 +27,8 @@ const modules = [
 
 const securityModule = angular.module('graphdb.framework.security.controllers', modules);
 
-securityModule.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$openIDAuth', '$location', '$rootScope', '$translate', 'TrackingService',
-    function ($scope, $http, toastr, $jwtAuth, $openIDAuth, $location, $rootScope, $translate, TrackingService) {
+securityModule.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth', '$openIDAuth', '$location', '$rootScope', '$translate', 'TrackingService', 'SecurityService',
+    function ($scope, $http, toastr, $jwtAuth, $openIDAuth, $location, $rootScope, $translate, TrackingService, SecurityService) {
         $scope.username = '';
         $scope.password = '';
 
@@ -56,14 +56,8 @@ securityModule.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth',
         };
 
         $scope.login = function () {
-            return $http({
-                method: 'POST',
-                url: 'rest/login',
-                data: {
-                    'username': $scope.username,
-                    'password': $scope.password
-                }
-            }).success(function (data, status, headers) {
+            return SecurityService.login($scope.username, $scope.password)
+                .then(function ({data, status, headers}) {
                 $jwtAuth.authenticate(data, headers('Authorization'))
                     .then(() => {
                         if ($rootScope.returnToUrl) {
@@ -74,7 +68,7 @@ securityModule.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth',
                             $location.path('/');
                         }
                     });
-            }).error(function (data, status) {
+            }).catch(function ({data, status}) {
                 if (status === 401) {
                     toastr.error($translate.instant('security.wrong.credentials'), $translate.instant('common.error'));
                     $scope.wrongCredentials = true;
@@ -109,7 +103,7 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
                 .then(function (data) {
                     $scope.users = data;
                     for (let i = 0; i < $scope.users.length; i++) {
-                        const pa = parseAuthorities($scope.users[i].grantedAuthorities);
+                        const pa = parseAuthorities($scope.users[i].grantedAuthoritiesUiModel);
                         $scope.users[i].userType = pa.userType;
                         $scope.users[i].userTypeDescription = pa.userTypeDescription;
                         $scope.users[i].repositories = pa.repositories;
@@ -267,7 +261,6 @@ securityModule.controller('DefaultAuthoritiesCtrl', ['$scope', '$http', '$uibMod
             for (const index in $scope.grantedAuthorities.GRAPHQL) {
                 if ($scope.grantedAuthorities.GRAPHQL[index] && auth.indexOf(GRAPHQL_PREFIX + index) === -1) {
                     auth.push(GRAPHQL_PREFIX + index);
-                    $scope.repositoryCheckError = false;
                 }
             }
             if (!$scope.repositoryCheckError) {
@@ -339,8 +332,7 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
                 }
                 for (const index in $scope.grantedAuthorities.GRAPHQL) {
                     if ($scope.grantedAuthorities.GRAPHQL[index]) {
-                        $scope.repositoryCheckError = false;
-                        pushAuthority(GRAPHQL_PREFIX + index, READ_REPO_PREFIX + index);
+                        pushAuthority(GRAPHQL_PREFIX + index);
                     }
                 }
             }
@@ -361,46 +353,82 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
 
         $scope.hasReadPermission = function (repository) {
             const uniqueKey = createUniqueKey(repository);
-            return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
-                || repository.id !== SYSTEM_REPO
-                && ($scope.grantedAuthorities.READ_REPO['*'] || $scope.grantedAuthorities.WRITE_REPO['*'] || $scope.grantedAuthorities.GRAPHQL['*'])
+            return $scope.userType === UserType.ADMIN
+                || $scope.userType === UserType.REPO_MANAGER
+                || repository.id !== SYSTEM_REPO && ($scope.grantedAuthorities.READ_REPO['*']
+                || $scope.grantedAuthorities.WRITE_REPO['*'])
                 || $scope.grantedAuthorities.READ_REPO[uniqueKey]
-                || $scope.grantedAuthorities.WRITE_REPO[uniqueKey]
-                || $scope.grantedAuthorities.GRAPHQL[uniqueKey];
+                || $scope.grantedAuthorities.WRITE_REPO[uniqueKey];
         };
 
         $scope.hasWritePermission = function (repoOrWildCard) {
             const uniqueKey = createUniqueKey(repoOrWildCard);
-            return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
+            return $scope.userType === UserType.ADMIN
+                || $scope.userType === UserType.REPO_MANAGER
                 || repoOrWildCard.id !== SYSTEM_REPO && $scope.grantedAuthorities.WRITE_REPO['*']
                 || $scope.grantedAuthorities.WRITE_REPO[uniqueKey];
         };
 
         $scope.hasGraphqlPermission = function (repository) {
-            console.log($scope.grantedAuthorities)
             const uniqueKey = createUniqueKey(repository);
-            return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
-                || repository.id !== SYSTEM_REPO
-                && ($scope.grantedAuthorities.GRAPHQL['*'] || $scope.grantedAuthorities.GRAPHQL[uniqueKey]);
+            return $scope.userType === UserType.ADMIN
+                || $scope.userType === UserType.REPO_MANAGER
+                || repository.id !== SYSTEM_REPO && $scope.grantedAuthorities.GRAPHQL['*']
+                || $scope.grantedAuthorities.GRAPHQL[uniqueKey];
         };
 
         $scope.readCheckDisabled = function (repoOrWildCard) {
-            return $scope.hasWritePermission(repoOrWildCard) || $scope.hasGraphqlPermission(repoOrWildCard)
+            return $scope.hasWritePermission(repoOrWildCard)
                 || repoOrWildCard.id !== SYSTEM_REPO && repoOrWildCard !== '*' && $scope.grantedAuthorities.READ_REPO['*']
                 || $scope.hasEditRestrictions();
         };
 
         $scope.writeCheckDisabled = function (repoOrWildCard) {
-            return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
+            return $scope.userType === UserType.ADMIN
+                || $scope.userType === UserType.REPO_MANAGER
                 || repoOrWildCard.id !== SYSTEM_REPO && repoOrWildCard !== '*' && $scope.grantedAuthorities.WRITE_REPO['*']
                 || $scope.hasEditRestrictions();
         };
 
+        /**
+         * Determines whether the GraphQL checkbox for a given repository or wildcard
+         * should be disabled.
+         *
+         * @param {Object|string} repoOrWildCard - A repo object or the string wildcard '*'
+         * @returns {boolean} true if disabled, false if enabled
+         */
         $scope.graphqlCheckDisabled = function (repoOrWildCard) {
-            return $scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER
-                || repoOrWildCard.id !== SYSTEM_REPO && repoOrWildCard !== '*' && $scope.grantedAuthorities.WRITE_REPO['*']
-                || $scope.hasEditRestrictions();
+            if ($scope.userType === UserType.ADMIN || $scope.userType === UserType.REPO_MANAGER) {
+                return true;
+            }
+
+            if ($scope.hasEditRestrictions()) {
+                return true;
+            }
+
+            if (repoOrWildCard !== '*' && $scope.grantedAuthorities.GRAPHQL['*']) {
+                return true;
+            }
+
+            if (repoOrWildCard === '*' && $scope.grantedAuthorities.GRAPHQL['*']) {
+                return false;
+            }
+
+            let uniqueKey;
+            if (repoOrWildCard !== null && typeof repoOrWildCard === 'object') {
+                uniqueKey = $scope.createUniqueKey(repoOrWildCard);
+            } else {
+                uniqueKey = repoOrWildCard;
+            }
+
+            const hasReadWildcard = $scope.grantedAuthorities.READ_REPO['*'];
+            const hasWriteWildcard = $scope.grantedAuthorities.WRITE_REPO['*'];
+            const hasReadForRepo   = $scope.grantedAuthorities.READ_REPO[uniqueKey];
+            const hasWriteForRepo  = $scope.grantedAuthorities.WRITE_REPO[uniqueKey];
+
+            return !(hasReadWildcard || hasWriteWildcard || hasReadForRepo || hasWriteForRepo);
         };
+
 
         $scope.createUniqueKey = function (repository) {
             return createUniqueKey(repository);
@@ -671,7 +699,7 @@ securityModule.controller('EditUserCtrl', ['$scope', '$http', 'toastr', '$window
                 $scope.user.external = $scope.userData.external;
                 $scope.user.appSettings = data.appSettings || defaultUserSettings;
                 $scope.userType = UserType.USER;
-                const pa = parseAuthorities(data.grantedAuthorities);
+                const pa = parseAuthorities(data.grantedAuthoritiesUiModel);
                 $scope.userType = pa.userType;
                 $scope.grantedAuthorities = pa.grantedAuthorities;
                 $scope.customRoles = pa.customRoles;

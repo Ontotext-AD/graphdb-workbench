@@ -234,8 +234,7 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
         if (scope.user.appSettings['DEFAULT_VIS_GRAPH_SCHEMA'] === undefined) {
             scope.user.appSettings['DEFAULT_VIS_GRAPH_SCHEMA'] = true;
         }
-
-        const pa = parseAuthorities(scope.userData.authorities);
+        const pa = parseAuthorities(scope.userData.grantedAuthoritiesUiModel);
         $scope.userType = pa.userType;
         $scope.grantedAuthorities = pa.grantedAuthorities;
         $scope.customRoles = pa.customRoles;

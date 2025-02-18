@@ -23,6 +23,16 @@ SecurityService.$inject = ['SecurityRestService'];
  * @returns {Object} An object exposing security related operations.
  */
 function SecurityService(SecurityRestService) {
+    const login = (username, password) => {
+        return SecurityRestService.login(username, password)
+            .then(({data, status, headers}) => {
+                return {
+                    data :toUserModelMapper(data, 'authorities'),
+                    status,
+                    headers
+                }
+            });
+    }
     /**
      * Retrieves a user by username from the backend.
      * The full response is mapped to convert its data property to a UI model.
@@ -167,6 +177,7 @@ function SecurityService(SecurityRestService) {
     };
 
     return {
+        login,
         getUser,
         getAuthenticatedUser,
         getAdminUser,

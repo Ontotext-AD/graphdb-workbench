@@ -187,7 +187,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
                         } else {
                             return SecurityService.getAdminUser().then(function (res) {
-                                that.principal = {username: 'admin', appSettings: res.appSettings, authorities: res.grantedAuthorities};
+                                that.principal = {username: 'admin', appSettings: res.data.appSettings, authorities: res.data.grantedAuthorities};
                                 $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.hasOverrideAuth);
                             });
                         }
@@ -397,7 +397,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return this.isAdmin() || this.isRepoManager();
             };
 
-            this.canWriteRepo = function (repo) {
+            this.canWriteRepo = function (repo, graphql = false) {
                 if (!repo) {
                     return false;
                 }
@@ -409,13 +409,13 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     } else if (this.hasAdminRole()) {
                         return true;
                     }
-                    return this.checkRights(repo, 'WRITE');
+                    return this.checkRights(repo, 'WRITE', graphql);
                 } else {
                     return true;
                 }
             };
 
-            this.canReadRepo = function (repo) {
+            this.canReadRepo = function (repo, graphql = false) {
                 if (!repo) {
                     return false;
                 }
@@ -427,24 +427,46 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     } else if (this.hasAdminRole()) {
                         return true;
                     }
-                    return this.checkRights(repo, 'READ');
+                    return this.checkRights(repo, 'READ', graphql);
                 } else {
                     return true;
                 }
             };
 
-            this.checkRights = function (repo, action) {
-                if (repo) {
-                    for (let i = 0; i < this.principal.authorities.length; i++) {
-                        const authRole = this.principal.authorities[i];
-                        const parts = authRole.split('_', 2);
-                        const repoPart = authRole.slice(parts[0].length + parts[1].length + 2);
-                        const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
-                        if (parts[0] === action && (repoId === repoPart || repo.id !== 'SYSTEM' && repoPart === '*')) {
-                            return true;
-                        }
+
+            this.checkRights = function (repo, action, graphql = false) {
+                if (!repo) {
+                    return false;
+                }
+
+                for (let i = 0; i < this.principal.authorities.length; i++) {
+                    let authRole = this.principal.authorities[i];
+
+                    // If we're checking for a non-GraphQL role, skip any that *do* end with :GRAPHQL.
+                    const endsWithGraphQL = authRole.endsWith(':GRAPHQL');
+                    if (!graphql && endsWithGraphQL) {
+                        continue;
+                    }
+
+                    // Strip off :GRAPHQL if present, so the rest of the parsing remains the same.
+                    if (endsWithGraphQL) {
+                        authRole = authRole.slice(0, -':GRAPHQL'.length);
+                    }
+
+                    // Parse out the action (e.g. READ or WRITE), ignoring the second element 'REPO'
+                    const parts = authRole.split('_', 2); // e.g. ["READ", "REPO"]
+
+                    // Everything after "READ_REPO_" or "WRITE_REPO_" is the repository part
+                    const repoPart = authRole.slice(parts[0].length + parts[1].length + 2);
+
+                    // Construct the full repo ID with location (if any) for comparison
+                    const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
+
+                    if (parts[0] === action && (repoId === repoPart || repo.id !== 'SYSTEM' && repoPart === '*')) {
+                        return true;
                     }
                 }
+
                 return false;
             };
 
