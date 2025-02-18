@@ -60,7 +60,7 @@ describe('User and Access', () => {
 
         it('Create user with GraphQL-only access', () => {
             const name = 'graphqlUser';
-            createUser(name, PASSWORD, ROLE_USER, {graphql: true});
+            createUser(name, PASSWORD, ROLE_USER, {read: true, graphql: true});
             testForUser(name, false);
         });
 
@@ -207,11 +207,13 @@ describe('User and Access', () => {
     });
 
     function createUser(username, password, role, opts = {}) {
+        const {noPassword} = opts;
         UserAndAccessSteps.clickCreateNewUserButton();
         UserAndAccessSteps.typeUsername(username);
         UserAndAccessSteps.typePassword(password);
         UserAndAccessSteps.typeConfirmPasswordField(password);
         UserAndAccessSteps.selectRoleRadioButton(role);
+
         if (role === "#roleUser") {
             setRoles(opts);
             UserAndAccessSteps.confirmUserCreate();

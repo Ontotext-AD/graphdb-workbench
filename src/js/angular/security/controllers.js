@@ -371,9 +371,7 @@ securityModule.controller('CommonUserCtrl', ['$rootScope', '$scope', '$http', 't
 
         $scope.hasGraphqlPermission = function (repository) {
             const uniqueKey = createUniqueKey(repository);
-            return $scope.userType === UserType.ADMIN
-                || $scope.userType === UserType.REPO_MANAGER
-                || repository.id !== SYSTEM_REPO && $scope.grantedAuthorities.GRAPHQL['*']
+            return repository.id !== SYSTEM_REPO && $scope.grantedAuthorities.GRAPHQL['*']
                 || $scope.grantedAuthorities.GRAPHQL[uniqueKey];
         };
 
