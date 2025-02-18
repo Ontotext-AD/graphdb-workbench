@@ -86,11 +86,12 @@
                     <span ng-if="!endpoint.active"
                           gdb-tooltip="{{'graphql.endpoints_management.table.actions.explore_endpoint.inactive.tooltip' | translate}}"
                           class="endpoint-link">{{endpoint.endpointId}}</span>
-                    <a ng-if="endpoint.active" href="#" ng-click="exploreEndpoint(endpoint)"
+                    <a ng-if="endpoint.active" href="#" ng-click="onExploreEndpoint(endpoint)"
                        gdb-tooltip="{{'graphql.endpoints_management.table.actions.explore_endpoint.active.tooltip' | translate}}"
                        class="endpoint-link">{{endpoint.endpointId}}</a>
-                    <a href="#" ng-if="!endpoint.createdSuccessfully" ng-click="showEndpointReport(endpoint)"
-                       class="endpoint-report-link">View report</a>
+                    <a href="#" ng-if="!endpoint.createdSuccessfully" ng-click="onShowEndpointReport(endpoint)"
+                       gdb-tooltip="{{'graphql.endpoints_management.table.actions.view_report.tooltip' | translate}}"
+                       class="endpoint-report-link">{{'graphql.endpoints_management.table.actions.view_report.label' | translate}}</a>
                 </td>
                 <td>{{endpoint.label}}</td>
                 <td>
@@ -101,7 +102,7 @@
                     <span ng-if="endpoint.active" class="is-active">yes</span>
                     <span ng-if="!endpoint.active" class="is-not-active">no</span>
                 </td>
-                <td>{{endpoint.lastModified}}</td>
+                <td>{{endpoint.lastModified | date: 'yyyy-MM-dd'}}</td>
                 <td>{{endpoint.objectsCount}}</td>
                 <td>{{endpoint.propertiesCount}}</td>
                 <td>

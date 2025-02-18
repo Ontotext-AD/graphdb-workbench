@@ -29,12 +29,6 @@ export class GraphqlRestServiceMock {
             setTimeout(() => resolve({data: cloneDeep(endpointConfiguration)}), GET_ENDPOINTS_INFO_DELAY);
         });
     }
-
-    saveEndpointConfigurationMock() {
-        return new Promise((resolve) => {
-            setTimeout(() => resolve({data: {"message": "Data saved successfully."}}), GET_ENDPOINTS_INFO_DELAY);
-        });
-    }
 }
 
 const endpoints = {

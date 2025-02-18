@@ -39,9 +39,8 @@ export class GraphqlEndpointConfigurationSettings {
     toFlatJSON() {
         return this.settings.reduce((acc, setting) => {
             if (setting.collection) {
-                // acc[setting.key] = setting.value.map((item) => item.value);
-                // return acc;
-                return;
+                acc[setting.key] = setting.value;
+                return acc;
             }
             if (setting.type === 'select') {
                 acc[setting.key] = setting.value.value;

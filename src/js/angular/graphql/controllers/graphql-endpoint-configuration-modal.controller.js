@@ -24,6 +24,18 @@ function GraphqlEndpointConfigurationModalController($scope, $uibModalInstance, 
     // =========================
 
     /**
+     * The active repository id.
+     * @type {string}
+     */
+    $scope.repositoryId = data.repositoryId;
+
+    /**
+     * The selected endpoint configuration for which the settings should be updated.
+     * @type {GraphqlEndpointInfo|undefined|*}
+     */
+    $scope.endpointConfiguration = data.endpointConfiguration;
+
+    /**
      * The endpoint configuration settings model.
      * @type {GraphqlEndpointConfigurationSettings|undefined}
      */
@@ -72,9 +84,13 @@ function GraphqlEndpointConfigurationModalController($scope, $uibModalInstance, 
     // =========================
     // Private functions
     // =========================
-    const init = () => {
+
+    /**
+     * Loads the endpoint configuration settings from the server.
+     */
+    const loadEndpointConfigurationSettings = () => {
         $scope.loadingEndpointConfigurationSettings = true;
-        GraphqlService.getGraphqlEndpointConfigurationSettings(data.repository, data.endpoint)
+        GraphqlService.getGraphqlEndpointConfigurationSettings($scope.repositoryId, $scope.endpointConfiguration.endpointId)
             .then((endpointConfigurationSettings) => {
                 $scope.endpointConfigurationSettings = endpointConfigurationSettings;
             })
@@ -86,23 +102,32 @@ function GraphqlEndpointConfigurationModalController($scope, $uibModalInstance, 
             });
     }
 
+    /**
+     * Saves the endpoint configuration settings to the server.
+     */
     const save = () => {
         $scope.savingEndpointSettings = true;
-        GraphqlService.saveEndpointConfigurationSettings(data.repository, data.endpoint, $scope.endpointConfigurationSettings.toJSON())
+        const updateEndpointRequest = $scope.endpointConfiguration.toUpdateEndpointRequest($scope.endpointConfigurationSettings);
+        GraphqlService.editEndpointConfiguration($scope.repositoryId, $scope.endpointConfiguration.endpointId, updateEndpointRequest)
             .then(() => {
                 $uibModalInstance.close();
                 toastr.success($translate.instant('graphql.endpoints_management.endpoint_configuration_modal.messages.success_saving_configuration'));
             })
-            .catch((data) => {
-                toastr.error(getError(data), $translate.instant('graphql.endpoints_management.endpoint_configuration_modal.messages.error_saving_configuration'));
+            .catch((error) => {
+                toastr.error(getError(error), $translate.instant('graphql.endpoints_management.endpoint_configuration_modal.messages.error_saving_configuration'));
             })
             .finally(() => {
                 $scope.savingEndpointSettings = false;
             });
     }
 
+    const init = () => {
+        loadEndpointConfigurationSettings();
+    }
+
     // =========================
     // Initialization
     // =========================
+
     init();
 }

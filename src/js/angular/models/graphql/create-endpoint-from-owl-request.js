@@ -43,39 +43,25 @@ export class CreateEndpointFromOwlRequest {
     _config;
 
     constructor(data) {
-        this._fromRepo = data.fromRepo || '';
-        this._namedGraphs = data.namedGraphs || [];
         this._id = data.id || '';
         this._label = data.label || '';
         this._description = data.description || '';
-        this._vocPrefix = data.vocab_prefix || '';
+        this._fromRepo = data.fromRepo || '';
+        this._namedGraphs = data.namedGraphs || [];
+        this._vocPrefix = data.vocabPrefix || '';
         this._config = data.config || {};
     }
 
     toJSON() {
-        // return {
-        //     fromRepo: this.fromRepo,
-        //     namedGraphs: this.namedGraphs,
-        //     id: this.id,
-        //     label: this.label,
-        //     description: this.description,
-        //     vocab_prefix: this.vocPrefix,
-        //     config: this.config
-        // };
-        const json = {
+        return {
+            id: this.id,
+            label: this.label,
+            description: this.description,
             fromRepo: this.fromRepo,
             namedGraphs: this.namedGraphs,
-            // id: this.id,
-            // label: this.label,
-            // description: this.description,
-            // vocab_prefix: this.vocPrefix,
+            vocabPrefix: this.vocPrefix,
             config: this.config
         };
-        json.config.id = this.id;
-        json.config.vocab_prefix = this.vocPrefix;
-        json.config.label = this.label;
-        json.config.description = this.description
-        return json;
     }
 
     get fromRepo() {

@@ -1,40 +1,41 @@
 import {GraphqlEndpointInfo, GraphqlEndpointsInfoList} from "../../models/graphql/graphql-endpoints-info";
+import {resolveGraphqlEndpoint} from "../models/endpoints";
 
 /**
  * Maps the response from the server to a GraphqlEndpointsInfoList model.
  * @param {object} data - The response from the server.
+ * @param {string} repositoryId - The repository id.
  * @return {GraphqlEndpointsInfoList}
  */
-export const endpointsInfoListMapper = (data) => {
+export const endpointsInfoListMapper = (data, repositoryId) => {
     if (!data || !data.endpoints) {
         return new GraphqlEndpointsInfoList();
     }
-    const endpointModels = data.endpoints.map((endpoint) => endpointInfoModelMapper(endpoint));
+    const endpointModels = data.endpoints.map((endpoint) => endpointInfoModelMapper(endpoint, repositoryId));
     return new GraphqlEndpointsInfoList(endpointModels);
 };
 
 /**
  * Maps the response from the server to a GraphqlEndpointInfo model.
  * @param {object} data - The response from the server.
- * @return {GraphqlEndpointInfo}
+ * @param {string} repositoryId - The repository id.
+ * @return {GraphqlEndpointInfo|undefined}
  */
-export const endpointInfoModelMapper = (data) => {
+export const endpointInfoModelMapper = (data, repositoryId) => {
     if (!data) {
         return;
     }
     return new GraphqlEndpointInfo({
-        id: data.id,
-        endpointId: data.endpointId,
-        endpointURI: data.endpointURI,
+        endpointId: data.id,
+        endpointURI: resolveGraphqlEndpoint(repositoryId, data.id),
         label: data.label,
         description: data.description,
         default: data.default,
         active: data.active,
         lastModified: data.lastModified,
-        objectsCount: data.objects_count,
-        propertiesCount: data.properties_count,
+        objectsCount: data.objectsCount,
+        propertiesCount: data.propertiesCount,
         warnings: data.warnings,
-        errors: data.errors,
-        status: data.status
+        errors: data.errors
     });
 };

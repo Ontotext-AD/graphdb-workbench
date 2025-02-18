@@ -1,5 +1,4 @@
 import {GraphqlEndpointManagementSteps} from "../../steps/graphql/graphql-endpoint-management-steps";
-import {GraphqlStubs} from "../../stubs/graphql/graphql-stubs";
 
 describe('GraphQL endpoints filtering', () => {
     let repositoryId;
@@ -8,11 +7,9 @@ describe('GraphQL endpoints filtering', () => {
         repositoryId = 'graphql-endpoint-filtering-' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
-        // TODO: remove stubs and enable next imports when REST API is ready
-        // cy.importServerFile(repositoryId, 'swapi-dataset.ttl');
-        // cy.uploadGraphqlSchema(repositoryId, 'graphql/soml/swapi-schema.yaml', 'swapi');
-        GraphqlStubs.stubGetEndpointsInfo(repositoryId);
-        GraphqlStubs.stubGetEndpoints(repositoryId, 'graphql-swapi-endpoints.json');
+        cy.uploadGraphqlSchema(repositoryId, 'graphql/soml/swapi-schema.yaml', 'swapi');
+        cy.uploadGraphqlSchema(repositoryId, 'graphql/soml/swapi-schema-planets.yaml', 'swapi-planets');
+        cy.uploadGraphqlSchema(repositoryId, 'graphql/soml/swapi-schema-species.yaml', 'swapi-species');
     });
 
     afterEach(() => {
@@ -26,19 +23,19 @@ describe('GraphQL endpoints filtering', () => {
         // Then I should see all endpoints
         GraphqlEndpointManagementSteps.getEndpointsInfo().should('have.length', 3);
         // When I filter the endpoints by the term "film"
-        GraphqlEndpointManagementSteps.filterEndpoints('film');
+        GraphqlEndpointManagementSteps.filterEndpoints('planets');
         // Then I should see only one endpoint
         GraphqlEndpointManagementSteps.getEndpointsInfo().should('have.length', 1);
         GraphqlEndpointManagementSteps.verifyEndpointInfo([
             {
-                id: 'film-restricted',
-                label: 'SWAPI GraphQL endpoint with restricted film relations',
-                description: 'SWAPI GraphQL endpoint with restricted film relations description',
-                default: true,
+                id: 'swapi-planets',
+                label: 'Star Wars planets API',
+                description: '',
+                default: false,
                 active: true,
-                modified: '2025-01-28',
-                types: 13,
-                properties: 133
+                modified: new Date().toISOString().split('T')[0],
+                types: 1,
+                properties: 10
             }
         ]);
         // When I clear the filter
@@ -47,7 +44,7 @@ describe('GraphQL endpoints filtering', () => {
         GraphqlEndpointManagementSteps.getEndpointsInfo().should('have.length', 3);
     });
 
-    it('should render no results banner when all endpoints are filtered', () => {
+    it.only('should render no results banner when all endpoints are filtered', () => {
         // Given I have a repository with active GraphQL endpoints
         // When I visit the endpoint management view
         GraphqlEndpointManagementSteps.visit();

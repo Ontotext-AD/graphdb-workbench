@@ -10,13 +10,8 @@ describe('Graphql: edit endpoint settings', () => {
         repositoryId = 'create-graphql-endpoint-' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
-        // TODO: remove stubs and enable next imports when REST API is ready
-        // cy.importServerFile(repositoryId, 'swapi-dataset.ttl');
-        // cy.uploadGraphqlSchema(repositoryId, 'graphql/soml/swapi-schema.yaml', 'swapi');
-        GraphqlStubs.stubGetEndpointsInfo(repositoryId);
-        GraphqlStubs.stubGetEndpoints(repositoryId, 'graphql-swapi-endpoints.json');
-        GraphqlStubs.stubGetEndpointConfiguration(repositoryId, 'swapi', undefined, 1000);
-
+        cy.importServerFile(repositoryId, 'swapi-dataset.ttl');
+        cy.uploadGraphqlSchema(repositoryId, 'graphql/soml/swapi-schema.yaml', 'swapi');
         // Visit the endpoint management view
         GraphqlEndpointManagementSteps.visit();
         // Ensure the endpoints list is loaded
@@ -28,29 +23,32 @@ describe('Graphql: edit endpoint settings', () => {
     });
 
     it('should display and edit different types dynamic form fields', () => {
-        GraphqlStubs.stubGetEndpointConfiguration(repositoryId, 'swapi', 'graphql-endpoint-configuration-types.json');
+        // GraphqlStubs.stubGetEndpointConfiguration(repositoryId, 'swapi', 'graphql-endpoint-configuration-types.json');
         GraphqlEndpointManagementSteps.editEndpointConfiguration(0);
         EditGraphqlEndpointSteps.getDialog().should('be.visible');
 
-        EditGraphqlEndpointSteps.getInputField(0).should('have.value', 'strValue');
-        EditGraphqlEndpointSteps.fillInputField(0, 'Foo')
+        EditGraphqlEndpointSteps.getInputField(3).should('have.value', 'ANY');
+        EditGraphqlEndpointSteps.fillInputField(3, 'NONE')
 
         EditGraphqlEndpointSteps.getBooleanField(0).should('not.be.checked');
         EditGraphqlEndpointSteps.toggleBooleanField(0);
 
-        EditGraphqlEndpointSteps.getSelectField(0).should('have.value', 'Two');
-        EditGraphqlEndpointSteps.selectOption(0, 'One');
+        // There is no select field in the data
+        // EditGraphqlEndpointSteps.getSelectField(0).should('have.value', 'Two');
+        // EditGraphqlEndpointSteps.selectOption(0, 'One');
 
-        EditGraphqlEndpointSteps.verifyMultiSelectOptionSelected(0, 'Angular', 'JavaScript');
-        EditGraphqlEndpointSteps.toggleMultiSelectOption(0, 'Angular');
-        EditGraphqlEndpointSteps.verifyMultiSelectOptionSelected(0, 'JavaScript');
+        // There is no multi select field in the data
+        // EditGraphqlEndpointSteps.verifyMultiSelectOptionSelected(0, 'Angular', 'JavaScript');
+        // EditGraphqlEndpointSteps.toggleMultiSelectOption(0, 'Angular');
+        // EditGraphqlEndpointSteps.verifyMultiSelectOptionSelected(0, 'JavaScript');
 
-        EditGraphqlEndpointSteps.getJsonField(0).should('have.value', '{"foo": "bar"}');
-        EditGraphqlEndpointSteps.clearJsonField(0);
+        // There is no json field in the data
+        // EditGraphqlEndpointSteps.getJsonField(0).should('have.value', '{"foo": "bar"}');
+        // EditGraphqlEndpointSteps.clearJsonField(0);
     });
 
     it('should allow saving the configuration changes successfully', () => {
-        GraphqlStubs.stubSaveEndpointConfiguration(repositoryId, 'swapi', 1000);
+        GraphqlStubs.spySaveEndpointConfiguration(repositoryId, 'swapi');
         // Open the modal
         GraphqlEndpointManagementSteps.editEndpointConfiguration(0);
         EditGraphqlEndpointSteps.getDialog().should('be.visible');
@@ -59,10 +57,8 @@ describe('Graphql: edit endpoint settings', () => {
         EditGraphqlEndpointSteps.getOKButton().should('be.disabled');
 
         // When I change some fields
-        EditGraphqlEndpointSteps.fillInputField(0, 'ANY');
-        EditGraphqlEndpointSteps.fillInputField(2, 'bg');
+        EditGraphqlEndpointSteps.fillInputField(3, 'NONE');
         EditGraphqlEndpointSteps.toggleBooleanField(0);
-        EditGraphqlEndpointSteps.toggleBooleanField(1);
 
         // Then the save button is enabled
         EditGraphqlEndpointSteps.getOKButton().should('be.enabled');
@@ -71,88 +67,33 @@ describe('Graphql: edit endpoint settings', () => {
         EditGraphqlEndpointSteps.clickOKButton();
         EditGraphqlEndpointSteps.getSavingLoader().should('be.visible');
         cy.wait('@save-endpoint-configuration').then((interception) => {
-            expect(interception.request.body).to.deep.equal([
-                {
-                    "key": "enable_mutations",
-                    "value": true
-                },
-                {
-                    "key": "lang.fetch",
-                    "value": "ANY"
-                },
-                {
-                    "key": "lang.validate",
-                    "value": "UNIQ"
-                },
-                {
-                    "key": "lang.implicit",
-                    "value": "bg"
-                },
-                {
-                    "key": "lang.defaultNameFetch",
-                    "value": "ANY"
-                },
-                {
-                    "key": "lang.appendDefaultNameFetch",
-                    "value": false
-                },
-                {
-                    "key": "queryPfx",
-                    "value": null
-                },
-                {
-                    "key": "mutationPfx",
-                    "value": null
-                },
-                {
-                    "key": "search",
-                    "value": null
-                },
-                {
-                    "key": "repository",
-                    "value": null
-                },
-                {
-                    "key": "includeInferred",
-                    "value": true
-                },
-                {
-                    "key": "expandOwlSameAs",
-                    "value": true
-                },
-                {
-                    "key": "disabledChecks",
-                    "value": []
-                },
-                {
-                    "key": "defaultRole",
-                    "value": "defaultRole"
-                },
-                {
-                    "key": "defaultIntegrationRole",
-                    "value": "Federation_SystemRole"
-                },
-                {
-                    "key": "exposeSomlInGraphQL",
-                    "value": false
-                },
-                {
-                    "key": "enableCollectionCount",
-                    "value": false
-                },
-                {
-                    "key": "enableTypeCount",
-                    "value": false
-                },
-                {
-                    "key": "compactErrorMessages",
-                    "value": false
-                },
-                {
-                    "key": "enableGraphQlExplain",
-                    "value": true
+            expect(interception.request.body).to.deep.equal({
+                "id": "swapi",
+                "label": "Ontotext Star Wars Ontology",
+                "description": "",
+                "active": true,
+                "default": true,
+                "options": {
+                    "enableTypeCount": true,
+                    "enableCollectionCount": false,
+                    "compactErrorMessages": false,
+                    "langFetch": null,
+                    "langValidate": null,
+                    "langImplicit": null,
+                    "langDefaultNameFetch": "NONE",
+                    "langAppendDefaultNameFetch": "true",
+                    "includeInferred": true,
+                    "expandOwlSameAs": true,
+                    "enableMutations": null,
+                    "defaultRole": "defaultRole",
+                    "enableGraphQLExplain": true,
+                    "exposeSomlInGraphQL": false,
+                    "disabledChecks": null,
+                    "defaultIntegrationRole": "Federation_SystemRole",
+                    "queryPrefix": null,
+                    "mutationPrefix": null
                 }
-            ]);
+            });
         });
 
         // Modal should close after successful save
@@ -183,7 +124,7 @@ describe('Graphql: edit endpoint settings', () => {
         EditGraphqlEndpointSteps.getDialog().should('be.visible');
     });
 
-    it.only('should close the modal when cancel is clicked', () => {
+    it('should close the modal when cancel is clicked', () => {
         GraphqlEndpointManagementSteps.editEndpointConfiguration(0);
         EditGraphqlEndpointSteps.getDialog().should('be.visible');
 

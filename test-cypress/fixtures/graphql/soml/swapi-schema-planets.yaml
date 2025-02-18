@@ -1,0 +1,51 @@
+id:          /soml/swapi-planets
+label:       Star Wars planets API
+creator:     http://ontotext.com
+created:     2019-06-15
+updated:     2019-06-16
+versionInfo: 0.1
+
+prefixes:
+  # common prefixes
+  so: "http://www.ontotext.com/semantic-object/"
+  voc: "https://swapi.co/vocabulary/"
+  dct: "http://purl.org/dc/terms/"
+  gn: "http://www.geonames.org/ontology#"
+  owl: "http://www.w3.org/2002/07/owl#"
+  puml: "http://plantuml.com/ontology#"
+  rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  rdfs: "http://www.w3.org/2000/01/rdf-schema#"
+  skos: "http://www.w3.org/2004/02/skos/core#"
+  void: "http://rdfs.org/ns/void#"
+  wgs84: "http://www.w3.org/2003/01/geo/wgs84_pos#"
+  xsd: "http://www.w3.org/2001/XMLSchema#"
+
+specialPrefixes:
+  base_iri:          https://swapi.co/resource/
+  vocab_iri:         https://swapi.co/vocabulary/
+  vocab_prefix:      voc
+
+objects:
+  Planet:
+    descr: "The fictional universe of the Star Wars franchise features multiple planets and moons"
+    type: ["voc:Planet"]
+    typeProp: "rdf:type"
+    name: "rdfs:label"
+    props:
+      desc: {label: "Description"}
+      diameter: {label: "Diameter in Km", range: int}
+      gravity: {label: "Gravitational pressure m/s squared"}
+      orbitalPeriod: {label: "Orbital period in days", range: integer}
+      population: {range: integer}
+      rotationPeriod: {label: "Rotation period in hours", range: integer}
+      surfaceWater: {label: "Surface water in m cubed", range: integer}
+      terrain: {label: "Planets terrain"}
+      climate: {label: "Planets climate"}
+
+rbac:
+  roles:
+    Admin:
+       description: "Administrator role, can read, write and delete objects and schema"
+       actions: [
+        "*/*/*",
+       ]

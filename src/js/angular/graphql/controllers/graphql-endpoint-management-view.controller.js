@@ -104,7 +104,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
      * Opens the GraphQL endpoint for exploration in the playground.
      * @param {GraphqlEndpointInfo} endpoint The endpoint to explore.
      */
-    $scope.exploreEndpoint = (endpoint) => {
+    $scope.onExploreEndpoint = (endpoint) => {
         GraphqlContextService.setSelectedEndpoint(endpoint);
         $location.path(endpointUrl.PLAYGROUND);
     };
@@ -133,7 +133,12 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
         // TODO: implement schema export
     };
 
-    $scope.onConfigureEndpoint = (endpoint) => {
+    /**
+     * Handles the configure endpoint event triggered by the endpoint configuration action.
+     * @param {GraphqlEndpointInfo} endpointConfiguration The endpoint configuration model.
+     * @returns {*}
+     */
+    $scope.onConfigureEndpoint = (endpointConfiguration) => {
         return $uibModal.open({
             templateUrl: 'js/angular/graphql/templates/modal/endpoint-configuration-modal.html',
             controller: 'GraphqlEndpointConfigurationModalController',
@@ -144,8 +149,8 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
             resolve: {
                 data: () => {
                     return {
-                        repository: $repositories.getActiveRepository(),
-                        endpoint: endpoint.endpointId
+                        repositoryId: $repositories.getActiveRepository(),
+                        endpointConfiguration: endpointConfiguration
                     };
                 }
             }
@@ -167,22 +172,20 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
             });
     };
 
-    $scope.showEndpointReport = (endpointReport) => {
-        return $uibModal.open({
-            templateUrl: 'js/angular/graphql/templates/modal/endpoint-generation-failure-result-modal.html',
-            controller: 'EndpointGenerationResultFailureModalController',
-            windowClass: 'endpoint-generation-failure-result-modal',
-            size: 'lg',
-            backdrop: 'static',
-            keyboard: false,
-            resolve: {
-                data: () => {
-                    return {
-                        endpointReport
-                    };
-                }
-            }
-        }).result;
+    /**
+     * Handles the show endpoint report event triggered by the endpoint report action.
+     * @param {GraphqlEndpointInfo} endpointInfo The endpoint info model.
+     * @returns {*}
+     */
+    $scope.onShowEndpointReport = (endpointInfo) => {
+        GraphqlService.getEndpointConfigurationReport($repositories.getActiveRepository(), endpointInfo.endpointId)
+            .then((endpointConfiguration) => {
+                return showReportModal(endpointConfiguration.getReport(endpointInfo.endpointId));
+            })
+            .catch((error) => {
+                toastr.error(getError(error));
+                console.error('Error loading GraphQL endpoint configuration', error);
+            });
     }
 
     // =========================
@@ -198,6 +201,29 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
             onInit();
         }
     };
+
+    /**
+     * Shows the endpoint generation failure report.
+     * @param {EndpointGenerationReport} endpointGenerationReport The endpoint configuration model.
+     * @returns {*}
+     */
+    const showReportModal = (endpointGenerationReport) => {
+        return $uibModal.open({
+            templateUrl: 'js/angular/graphql/templates/modal/endpoint-generation-failure-result-modal.html',
+            controller: 'EndpointGenerationResultFailureModalController',
+            windowClass: 'endpoint-generation-failure-result-modal',
+            size: 'lg',
+            backdrop: 'static',
+            keyboard: false,
+            resolve: {
+                data: () => {
+                    return {
+                        endpointReport: endpointGenerationReport
+                    };
+                }
+            }
+        }).result;
+    }
 
     /**
      * Deletes the given GraphQL endpoint.

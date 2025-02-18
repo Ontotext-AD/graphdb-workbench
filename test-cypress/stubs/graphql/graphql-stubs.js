@@ -28,7 +28,7 @@ export class GraphqlStubs {
     }
 
     static stubGetEndpointsInfoError(repositoryId) {
-        cy.intercept('GET', `/rest/repositories/${repositoryId}/manage/graphql/endpoints`, {
+        cy.intercept('GET', `/rest/repositories/${repositoryId}/graphql/manage/list`, {
             statusCode: 500,
             response: {
                 error: "Required request parameter 'query' for method parameter type String is not present"
@@ -68,11 +68,15 @@ export class GraphqlStubs {
         }).as('get-endpoint-configuration');
     }
 
+    static spySaveEndpointConfiguration(repositoryId, endpoint) {
+        cy.intercept('POST', `/rest/repositories/${repositoryId}/graphql/manage/endpoints/${endpoint}`).as('save-endpoint-configuration');
+    }
+
     static stubSaveEndpointConfiguration(repositoryId, endpoint,  delay = 0, shouldFail = false) {
-        cy.intercept('PUT', `/rest/repositories//${repositoryId}/manage/graphql/${endpoint}/config`, {
+        cy.intercept('POST', `/rest/repositories/${repositoryId}/graphql/manage/endpoints/${endpoint}`, {
             statusCode: shouldFail ? 400 : 200,
             delay: delay
-        }).as('save-endpoint-configuration');
+        }).as('save-endpoint-configuration-failed');
     }
 }
 

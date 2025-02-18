@@ -9,6 +9,15 @@ export class EndpointGenerationReportList {
         this._reports = data || [];
     }
 
+    /**
+     * Gets a report by endpoint ID.
+     * @param {string} endpointId The endpoint ID.
+     * @returns {EndpointGenerationReport}
+     */
+    getReport(endpointId) {
+        return this._reports.find((report) => report.endpointId === endpointId);
+    }
+
     get reports() {
         return this._reports;
     }
@@ -19,12 +28,6 @@ export class EndpointGenerationReportList {
 }
 
 export class EndpointGenerationReport {
-    /**
-     * A unique identifier for the GraphQL endpoint, matching the SOML ID.
-     * @type {string}
-     * @private
-     */
-    _id;
     /**
      * A user-friendly identifier used for visualization.
      * @type {string}
@@ -105,7 +108,6 @@ export class EndpointGenerationReport {
     _createdSuccessfully;
 
     constructor(data) {
-        this._id = data.id || '';
         this._endpointId = data.endpointId || '';
         this._endpointURI = data.endpointURI || '';
         this._active = data.active || false;
@@ -123,9 +125,7 @@ export class EndpointGenerationReport {
 
     toJSON() {
         return {
-            id: this._id,
-            endpointId: this._endpointId,
-            endpointURI: this._endpointURI,
+            id: this._endpointId,
             active: this._active,
             default: this._default,
             label: this._label,
@@ -137,14 +137,6 @@ export class EndpointGenerationReport {
             errors: this._errors,
             messages: this._messages
         };
-    }
-
-    get id() {
-        return this._id;
-    }
-
-    set id(value) {
-        this._id = value;
     }
 
     get endpointId() {
