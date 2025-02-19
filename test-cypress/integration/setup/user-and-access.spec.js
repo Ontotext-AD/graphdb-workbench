@@ -133,6 +133,7 @@ describe('User and Access', () => {
         let repositoryId3;
 
         beforeEach(() => {
+            RepositoriesStubs.spyGetRepositories();
             repositoryId1 = 'user-access-repo1' + Date.now();
             repositoryId2 = 'user-access-repo2' + Date.now();
             repositoryId3 = 'user-access-repo3' + Date.now();
@@ -143,7 +144,6 @@ describe('User and Access', () => {
             UserAndAccessSteps.visit();
             // Users table should be visible
             UserAndAccessSteps.getUsersTable().should('be.visible');
-            RepositoriesStubs.spyGetRepositories();
         });
 
         afterEach(() => {
