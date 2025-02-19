@@ -23,7 +23,6 @@ describe('Graphql: edit endpoint settings', () => {
     });
 
     it('should display and edit different types dynamic form fields', () => {
-        // GraphqlStubs.stubGetEndpointConfiguration(repositoryId, 'swapi', 'graphql-endpoint-configuration-types.json');
         GraphqlEndpointManagementSteps.editEndpointConfiguration(0);
         EditGraphqlEndpointSteps.getDialog().should('be.visible');
 
