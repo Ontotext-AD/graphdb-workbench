@@ -1,4 +1,5 @@
 import {UserAndAccessSteps} from "../../steps/setup/user-and-access-steps";
+import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 
 describe('User and Access', () => {
 
@@ -55,12 +56,6 @@ describe('User and Access', () => {
             const name = "user";
             //create a normal read/write user
             createUser(name, PASSWORD, ROLE_USER, {readWrite: true});
-            testForUser(name, false);
-        });
-
-        it('Create user with GraphQL-only access', () => {
-            const name = 'graphqlUser';
-            createUser(name, PASSWORD, ROLE_USER, {read: true, graphql: true});
             testForUser(name, false);
         });
 
@@ -148,6 +143,7 @@ describe('User and Access', () => {
             UserAndAccessSteps.visit();
             // Users table should be visible
             UserAndAccessSteps.getUsersTable().should('be.visible');
+            RepositoriesStubs.spyGetRepositories();
         });
 
         afterEach(() => {
@@ -157,12 +153,14 @@ describe('User and Access', () => {
         });
 
         it('Create user with GraphQL-only access', () => {
+            cy.wait('@getRepositories');
             const name = 'graphqlUser';
             createUser(name, PASSWORD, ROLE_USER, { read: true, graphql: true , repoName: repositoryId2});
             deleteUser(name);
         });
 
         it('Can create user with different auth combinations', () => {
+            cy.wait('@getRepositories');
             const name = 'graphqlUser1';
             // WHEN I create a user with read + GraphQL for repository #2
             createUser(name, PASSWORD, ROLE_USER, { read: true, graphql: true, repoName: repositoryId2 });

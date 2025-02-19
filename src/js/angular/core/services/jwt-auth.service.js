@@ -439,35 +439,15 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     return false;
                 }
 
-                for (let i = 0; i < this.principal.authorities.length; i++) {
-                    let authRole = this.principal.authorities[i];
-
-                    // If we're checking for a non-GraphQL role, skip any that *do* end with :GRAPHQL.
-                    const endsWithGraphQL = authRole.endsWith(':GRAPHQL');
-                    if (!graphql && endsWithGraphQL) {
-                        continue;
-                    }
-
-                    // Strip off :GRAPHQL if present, so the rest of the parsing remains the same.
-                    if (endsWithGraphQL) {
-                        authRole = authRole.slice(0, -':GRAPHQL'.length);
-                    }
-
-                    // Parse out the action (e.g. READ or WRITE), ignoring the second element 'REPO'
-                    const parts = authRole.split('_', 2); // e.g. ["READ", "REPO"]
-
-                    // Everything after "READ_REPO_" or "WRITE_REPO_" is the repository part
-                    const repoPart = authRole.slice(parts[0].length + parts[1].length + 2);
-
-                    // Construct the full repo ID with location (if any) for comparison
-                    const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
-
-                    if (parts[0] === action && (repoId === repoPart || repo.id !== 'SYSTEM' && repoPart === '*')) {
-                        return true;
-                    }
+                const overAllRepos = graphql ? `${action}_REPO_*:GRAPHQL` : `${action}_REPO_*`;
+                if (repo.id !== 'SYSTEM' && this.principal.authorities.indexOf(overAllRepos) > -1) {
+                    return true;
                 }
 
-                return false;
+                const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
+                const overCurrentRepo = graphql ? `${action}_REPO_${repoId}:GRAPHQL` :`${action}_REPO_${repoId}`;
+
+                return this.principal.authorities.indexOf(overCurrentRepo) > -1;
             };
 
 

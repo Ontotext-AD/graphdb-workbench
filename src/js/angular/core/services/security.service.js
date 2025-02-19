@@ -20,14 +20,14 @@ SecurityService.$inject = ['SecurityRestService'];
  * @ngdoc function
  * @name SecurityService
  * @param {Object} SecurityRestService The REST service for security operations.
- * @returns {Object} An object exposing security related operations.
+ * @returns {Promise<{data: UserModel, status: number, headers: function}>} A promise resolving to an object with `data`, `status`, and `headers`.
  */
 function SecurityService(SecurityRestService) {
     const login = (username, password) => {
         return SecurityRestService.login(username, password)
             .then(({data, status, headers}) => {
                 return {
-                    data :toUserModelMapper(data, 'authorities'),
+                    data: toUserModelMapper(data, 'authorities'),
                     status,
                     headers
                 }
@@ -38,7 +38,7 @@ function SecurityService(SecurityRestService) {
      * The full response is mapped to convert its data property to a UI model.
      *
      * @param {string} username The username of the user.
-     * @return {Promise<Object>} A promise that resolves to the full response with a mapped user model.
+     * @return {Promise<UserModel>} A promise that resolves to the full response with a mapped user model.
      */
     const getUser = (username) => {
         return SecurityRestService.getUser(username)
@@ -49,7 +49,7 @@ function SecurityService(SecurityRestService) {
      * Retrieves the authenticated user from the backend.
      * The full response is mapped so that the `data` property contains a UserModel.
      *
-     * @return {Promise<Object>} A promise that resolves to the full response with the authenticated user.
+     * @return {Promise<UserModel>} A promise that resolves to the full response with the authenticated user.
      */
     const getAuthenticatedUser = () => {
         return SecurityRestService.getAuthenticatedUser()
@@ -71,7 +71,7 @@ function SecurityService(SecurityRestService) {
      * Retrieves all users from the backend.
      * The full response is mapped so that the `data` property contains an array of UserModel objects.
      *
-     * @return {Promise<Object>} A promise that resolves to the full response with the list of users.
+     * @return {Promise<UserModel[]>} A promise that resolves to the full response with the list of users.
      */
     const getUsers = () => {
         return SecurityRestService.getUsers()
