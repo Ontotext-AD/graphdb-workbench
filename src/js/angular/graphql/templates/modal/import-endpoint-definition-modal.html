@@ -1,0 +1,62 @@
+<link href="css/graphql/import-endpoint-definition-modal.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
+
+<div class="modal-header px-2">
+    <button type="button" class="close" ng-click="close()"></button>
+    <h3 class="modal-title">{{'graphql.endpoints_management.import_definition_modal.title' | translate}}</h3>
+</div>
+
+<div class="modal-body import-endpoint-definition-modal-body m-2">
+    <div class="toolbar">
+        <button ngf-select="onSelectFiles($files)" multiple accept=".yaml,.zip"
+                class="btn btn-primary file-selector-btn">
+            <i class="fa fa-check"></i>
+            <span>{{'graphql.endpoints_management.import_definition_modal.actions.select_files.label' | translate}}</span>
+        </button>
+        <button ng-click="onImport()" ng-disabled="!files || !files.length" class="btn btn-primary upload-btn">
+            <i class="fa fa-upload"></i>
+            <span>{{'graphql.endpoints_management.import_definition_modal.actions.import.label' | translate}}</span>
+        </button>
+        <button ng-click="onAbortUpload()" ng-disabled="!progress"
+                class="btn btn-default abort-upload-btn">
+            {{'graphql.endpoints_management.import_definition_modal.actions.abort.label' | translate}}
+        </button>
+    </div>
+
+    <em class="file-format-info text-info">
+        {{'graphql.endpoints_management.import_definition_modal.messages.allowed_file_types' | translate}}
+    </em>
+
+    <div class="upload-area">
+        <div ng-show="progress >= 0" class="progress">
+            <div role="progressbar" class="progress-bar" ng-class="{'progress-bar-danger': errors}"
+                 style="width:{{progress}}%">
+                {{progress}}%
+            </div>
+        </div>
+
+        <div class="file-list">
+            <div ng-repeat="file in files" class="file-item mt-1">
+                <div class="file-info">
+                    <div class="file-name">
+                        <i ng-if="!errors && uploadFinished && !aborted" class="fa-regular fa-circle-check text-success import-status success"></i>
+                        <i ng-if="(errors && uploadFinished) || aborted" class="fa-regular fa-circle-xmark text-danger import-status failed"></i>
+                        <span>{{file.name}}</span>
+                    </div>
+                    <div class="file-size">{{file.size | bytes}}</div>
+                </div>
+                <div ng-if="!progress || errors" class="file-actions">
+                    <button ng-click="onRemoveFile(file)" class="btn btn-link btn-sm secondary remove-file-btn">
+                        <i class="icon-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div ng-if="errors" class="alert alert-danger mt-1 mb-0 validation-errors">
+            <div ng-repeat="error in errors track by $index" class="error">
+                {{error}}
+            </div>
+        </div>
+    </div>
+</div>
+

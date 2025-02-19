@@ -843,6 +843,23 @@
                     "error_saving_configuration": "Error saving endpoint configuration",
                     "success_saving_configuration": "Endpoint configuration saved"
                 }
+            },
+            "import_definition_modal": {
+                "title": "Import GraphQL schema",
+                "actions": {
+                    "select_files": {
+                        "label": "Choose"
+                    },
+                    "import": {
+                        "label": "Upload and validate"
+                    },
+                    "abort": {
+                        "label": "Abort"
+                    }
+                },
+                "messages": {
+                    "allowed_file_types": "Allowed file formats: .yaml, .zip"
+                }
             }
         },
         "create_endpoint": {

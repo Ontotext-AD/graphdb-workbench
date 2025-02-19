@@ -232,6 +232,17 @@ function GraphqlService(GraphqlRestService) {
             });
     }
 
+    /**
+     * Import endpoint definitions given as payload.
+     * @param {string} repositoryId The repository ID.
+     * @param {*} payload The request payload.
+     * @param {*} canceler The canceler object.
+     * @returns {Promise<*>|*}
+     */
+    const importEndpointDefinition = (repositoryId, payload, canceler) => {
+        return GraphqlRestService.importEndpointDefinition(repositoryId, payload, canceler);
+    };
+
     return {
         getEndpointsCountToGenerate,
         getGenerateEndpointsOverview,
@@ -249,6 +260,7 @@ function GraphqlService(GraphqlRestService) {
         deleteEndpoint,
         generateEndpointFromGraphqlShapes,
         generateEndpointFromOwl,
-        exportEndpointDefinition
+        exportEndpointDefinition,
+        importEndpointDefinition
     };
 }

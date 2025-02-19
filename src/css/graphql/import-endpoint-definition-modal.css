@@ -1,0 +1,31 @@
+.import-endpoint-definition-modal .import-endpoint-definition-modal-body {
+    border: 1px solid #e5e5e5;
+}
+
+.import-endpoint-definition-modal .toolbar button i {
+    margin-right: .5em;
+}
+
+.import-endpoint-definition-modal .upload-area {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: stretch;
+}
+
+.import-endpoint-definition-modal .upload-area .file-list {
+
+}
+
+.import-endpoint-definition-modal .upload-area .file-list .file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.import-endpoint-definition-modal .progress-bar-danger {
+    background-color: var(--color-danger-light);
+}
+

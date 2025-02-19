@@ -16,6 +16,7 @@ import 'angular/core/directives/autocomplete/autocomplete.directive';
 import 'angular/core/directives/prop-indeterminate/prop-indeterminate.directive';
 import 'angular/core/directives/page-info-tooltip.directive';
 import 'angular/core/filters/search-filter';
+import 'angular/core/filters/bytes-filter';
 import 'angular/core/services/language.service'
 import {defineCustomElements as defineYasguiElements} from 'ontotext-yasgui-web-component/loader';
 import {defineCustomElements as defineGraphQlElements} from 'ontotext-graphql-playground-component/loader';
@@ -51,7 +52,8 @@ const modules = [
     'graphdb.framework.core.directives.autocomplete',
     'ngCustomElement',
     'graphdb.framework.core.services.language-service',
-    'graphdb.framework.core.filters.searchFilter'
+    'graphdb.framework.core.filters.searchFilter',
+    'graphdb.framework.core.filters.bytes'
 ];
 
 const providers = [
