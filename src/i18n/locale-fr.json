@@ -843,6 +843,23 @@
                     "error_saving_configuration": "Erreur lors de l'enregistrement de la configuration du point de terminaison",
                     "success_saving_configuration": "Configuration du point de terminaison enregistrée"
                 }
+            },
+            "import_definition_modal": {
+                "title": "Importer un schéma GraphQL",
+                "actions": {
+                    "select_files": {
+                        "label": "Choisir"
+                    },
+                    "import": {
+                        "label": "Télécharger et valider"
+                    },
+                    "abort": {
+                        "label": "Avorter"
+                    }
+                },
+                "messages": {
+                    "allowed_file_types": "Formats de fichiers autorisés: .yaml, .zip"
+                }
             }
         },
         "create_endpoint": {

@@ -1,6 +1,7 @@
 import '../../core/services/graphql.service';
 import '../services/graphql-context.service';
 import './graphql-endpoint-configuration-modal.controller';
+import './import-endpoint-definition-modal.controller';
 import {GraphqlEventName} from "../services/graphql-context.service";
 import {endpointUrl} from "../models/endpoints";
 import {resolvePlaygroundUrlWithEndpoint} from "../services/endpoint-utils";
@@ -9,7 +10,8 @@ import {saveAs} from 'lib/FileSaver-patch';
 const modules = [
     'graphdb.framework.core.services.graphql-service',
     'graphdb.framework.graphql.services.graphql-context',
-    'graphdb.framework.graphql.controllers.graphql-endpoint-configuration-modal'
+    'graphdb.framework.graphql.controllers.graphql-endpoint-configuration-modal',
+    'graphdb.framework.graphql.controllers.import-endpoint-definition-modal'
 ];
 
 angular
@@ -205,7 +207,21 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
     }
 
     $scope.importSchema = () => {
-        // TODO: implement schema import
+        return $uibModal.open({
+            templateUrl: 'js/angular/graphql/templates/modal/import-endpoint-definition-modal.html',
+            controller: 'ImportEndpointDefinitionModalController',
+            windowClass: 'import-endpoint-definition-modal',
+            size: 'lg',
+            backdrop: 'static',
+            keyboard: false,
+            resolve: {
+                data: () => {
+                    return {
+                        repositoryId: $repositories.getActiveRepository()
+                    };
+                }
+            }
+        }).result;
     };
 
     /**

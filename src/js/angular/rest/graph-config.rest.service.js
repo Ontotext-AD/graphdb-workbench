@@ -53,7 +53,6 @@ function GraphConfigRestService($http) {
      * @return {Promise} A Promise which resolves with the result of the updated graph config.
      */
     function updateGraphConfig(config) {
-        console.log('rest update', config);
         return $http.put(`${EXPLORE_GRAPH_CONFIG_ENDPOINT}/${encodeURIComponent(config.id)}`, config);
     }
 

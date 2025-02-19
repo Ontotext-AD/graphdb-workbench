@@ -5,12 +5,12 @@ angular
     .module('graphdb.framework.rest.graphql.service', [])
     .factory('GraphqlRestService', GraphqlRestService);
 
-GraphqlRestService.$inject = ['$http'];
+GraphqlRestService.$inject = ['$http', 'Upload'];
 
 // const DEVELOPMENT = true;
 const DEVELOPMENT = false;
 
-function GraphqlRestService($http) {
+function GraphqlRestService($http, Upload) {
 
     const _mockBackend = new GraphqlRestServiceMock();
 
@@ -175,6 +175,25 @@ function GraphqlRestService($http) {
         return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/graphql/manage/endpoints/${endpointId}/export`, {responseType: 'blob'});
     }
 
+    /**
+     * Import the endpoint definitions, either as a single file or as multiple files where the file type can be either
+     * yaml or zip.
+     * @param {string} repositoryId The repository ID.
+     * @param {FormData|File} payload The request payload.
+     * @param {*} canceler The canceler object.
+     * @returns {Promise<unknown>} The response from the backend.
+     */
+    const importEndpointDefinition = (repositoryId, payload, canceler) => {
+        return Upload.http({
+            url: `${REPOSITORIES_ENDPOINT}/${repositoryId}/graphql/manage/endpoints/import`,
+            data: payload,
+            headers: {
+                'Content-Type': undefined
+            },
+            timeout: canceler.promise
+        });
+    };
+
     return {
         getEndpoints,
         getEndpointsInfo,
@@ -188,6 +207,7 @@ function GraphqlRestService($http) {
         deleteEndpoint,
         generateEndpointFromGraphqlShapes,
         generateEndpointFromOwl,
-        exportEndpointDefinition
+        exportEndpointDefinition,
+        importEndpointDefinition
     };
 }

@@ -22,6 +22,10 @@ export class GraphqlEndpointManagementSteps {
         return this.getView().find('.import-schema-definition-btn');
     }
 
+    static openImportModal() {
+        this.getImportEndpointSchemaDefinitionButton().click();
+    }
+
     static getEndpointTable() {
         return this.getView().find('.endpoints-info-table');
     }

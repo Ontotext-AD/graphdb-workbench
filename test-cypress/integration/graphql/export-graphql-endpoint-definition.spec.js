@@ -16,8 +16,7 @@ describe('Graphql: export endpoint definition', () => {
         cy.deleteRepository(repositoryId);
     });
 
-    // TODO: skipped until backend is released
-    it.skip('should be able to export endpoint definition', () => {
+    it('should be able to export endpoint definition', () => {
         GraphqlStubs.spyExportEndpointDefinition(repositoryId, 'swapi-planets');
         // Given I have a repository with active GraphQL endpoint
         // And I have visited the endpoint management view
