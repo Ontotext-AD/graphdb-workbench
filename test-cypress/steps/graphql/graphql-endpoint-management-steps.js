@@ -55,6 +55,11 @@ export class GraphqlEndpointManagementSteps {
         this.getEndpointsInfo().eq(index).find('.delete-endpoint-btn').click();
     }
 
+    static exportEndpointDefinition(index) {
+        this.openActionsMenu(index);
+        this.getEndpointsInfo().eq(index).find('.export-schema-btn').click();
+    }
+
     static filterEndpoints(term) {
         this.getEndpointFilterField().type(term);
     }

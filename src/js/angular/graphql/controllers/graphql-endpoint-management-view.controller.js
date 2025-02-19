@@ -4,6 +4,7 @@ import './graphql-endpoint-configuration-modal.controller';
 import {GraphqlEventName} from "../services/graphql-context.service";
 import {endpointUrl} from "../models/endpoints";
 import {resolvePlaygroundUrlWithEndpoint} from "../services/endpoint-utils";
+import {saveAs} from 'lib/FileSaver-patch';
 
 const modules = [
     'graphdb.framework.core.services.graphql-service',
@@ -207,8 +208,19 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
         // TODO: implement schema import
     };
 
-    $scope.onExportSchema = (endpoint) => {
-        // TODO: implement schema export
+    /**
+     * Exports the GraphQL schema for the given endpoint.
+     * @param {GraphqlEndpointInfo} endpointInfo The endpoint to export the schema for.
+     */
+    $scope.onExportSchema = (endpointInfo) => {
+        GraphqlService.exportEndpointDefinition($repositories.getActiveRepository(), endpointInfo.endpointId)
+            .then(({data, filename}) => {
+                saveAs(data, filename);
+            })
+            .catch((error) => {
+                toastr.error(getError(error));
+                console.error('Error exporting GraphQL endpoint definition', error);
+            });
     };
 
     /**
