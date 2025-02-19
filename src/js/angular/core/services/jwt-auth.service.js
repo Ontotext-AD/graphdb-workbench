@@ -439,15 +439,19 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     return false;
                 }
 
-                const overAllRepos = graphql ? `${action}_REPO_*:GRAPHQL` : `${action}_REPO_*`;
-                if (repo.id !== 'SYSTEM' && this.principal.authorities.indexOf(overAllRepos) > -1) {
-                    return true;
+                const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
+                const overCurrentRepo = `${action}_REPO_${repoId}`;
+                const overAllRepos = `${action}_REPO_*`;
+
+                if (graphql) {
+                    const overCurrentRepoGraphql = `${overCurrentRepo}:GRAPHQL`;
+                    const overAllReposGraphql = `${overAllRepos}:GRAPHQL`;
+                    if (repo.id !== 'SYSTEM' && (this.principal.authorities.indexOf(overCurrentRepoGraphql) > -1 || this.principal.authorities.indexOf(overAllReposGraphql) > -1)) {
+                        return true;
+                    }
                 }
 
-                const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
-                const overCurrentRepo = graphql ? `${action}_REPO_${repoId}:GRAPHQL` :`${action}_REPO_${repoId}`;
-
-                return this.principal.authorities.indexOf(overCurrentRepo) > -1;
+                return repo.id !== 'SYSTEM' && (this.principal.authorities.indexOf(overCurrentRepo) > -1 || this.principal.authorities.indexOf(overAllRepos) > -1);
             };
 
 
