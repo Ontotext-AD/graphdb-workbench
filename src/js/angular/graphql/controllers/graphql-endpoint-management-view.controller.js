@@ -111,15 +111,15 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
         $scope.operationInProgress = true;
         const updateEndpointRequest = endpointInfo.toUpdateEndpointRequest($scope.endpointConfigurationSettings);
         GraphqlService.editEndpointConfiguration($repositories.getActiveRepository(), endpointInfo.endpointId, updateEndpointRequest.getUpdateDefaultEndpointRequest())
-            .then(() => {
+            .then((endpointInfo) => {
                 toastr.success(
                     $translate.instant('graphql.endpoints_management.table.actions.set_as_default.success',
                         {endpointId: endpointInfo.endpointId})
                 );
-                return loadEndpointsInfo(false);
+                $scope.endpointsInfoList.updateEndpoint(endpointInfo);
             })
             .catch((error) => {
-                // something wen wrong while setting the default endpoint so we need to revert the changes
+                // something went wrong while setting the default endpoint so we need to revert the changes
                 endpointInfo.default = true;
                 $scope.selectedDefaultEndpoint.default = false;
                 $scope.selectedDefaultEndpoint = previousDefaultEndpoint;
@@ -181,15 +181,16 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
         const updateEndpointRequest = endpointInfo.toUpdateEndpointRequest($scope.endpointConfigurationSettings);
         GraphqlService.editEndpointConfiguration($repositories.getActiveRepository(), endpointInfo.endpointId, updateEndpointRequest.getUpdateEndpointActiveStateRequest())
             .then((updatedEndpoint) => {
-                console.log('%cupdatedendpoint', 'background: yellow', updatedEndpoint);
                 const operationKey = newActiveState ? 'activated' : 'deactivated';
                 toastr.success(
-                    $translate(
+                    $translate.instant(
                         `graphql.endpoints_management.table.actions.toggle_active_state.${operationKey}.success`,
-                        {endpointId: endpointInfo.endpointId}
+                        {endpointId: updatedEndpoint.endpointId}
                     )
                 );
-                return loadEndpointsInfo(false);
+                // Update the endpoint in place in the list. This will trigger the UI update and the user can see the
+                // change immediately, e.g. the updatedAt field will be updated.
+                $scope.endpointsInfoList.updateEndpoint(updatedEndpoint);
             })
             .catch((error) => {
                 // something went wrong, revert the active state
