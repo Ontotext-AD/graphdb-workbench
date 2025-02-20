@@ -120,4 +120,12 @@ export class GraphqlEndpointManagementSteps {
     static setEndpointAsDefault(index) {
         this.getEndpointDefaultStatusRadio(index).check();
     }
+
+    static getEndpointActiveStateToggle(index) {
+        return this.getEndpointsInfo().eq(index).find('.toggle-active-state');
+    }
+
+    static toggleEndpointActiveState(index) {
+        this.getEndpointActiveStateToggle(index).click();
+    }
 }

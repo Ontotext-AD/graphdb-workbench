@@ -799,6 +799,14 @@
                     },
                     "set_as_default": {
                         "success": "Le point de terminaison \"{{endpointId}}\" a été défini avec succès comme point de terminaison par défaut"
+                    },
+                    "toggle_active_state": {
+                        "activated": {
+                            "success": "Le point de terminaison \"{{endpointId}}\" a été activé avec succès"
+                        },
+                        "deactivated": {
+                            "success": "Le point de terminaison \"{{endpointId}}\" a été désactivé avec succès"
+                        }
                     }
                 },
                 "messages": {

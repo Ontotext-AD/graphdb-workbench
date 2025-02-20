@@ -205,6 +205,17 @@ export class GraphqlEndpointsInfoList {
     }
 
     /**
+     * Updates a specific endpoint in the list.
+     * @param {GraphqlEndpointInfo} endpointInfo - The endpoint info to update.
+     */
+    updateEndpoint(endpointInfo) {
+        const index = this._endpoints.findIndex((endpoint) => endpoint.endpointId === endpointInfo.endpointId);
+        if (index !== -1) {
+            this._endpoints[index] = endpointInfo;
+        }
+    }
+
+    /**
      * Filters the endpoints by the given term.
      * @param {string} filterTerm - The term to filter by.
      */

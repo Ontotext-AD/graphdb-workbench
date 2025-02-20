@@ -1,6 +1,6 @@
 import 'angular/rest/graphql.rest.service';
 import {endpointListMapper, endpointsToSelectMenuOptionsMapper} from "../../graphql/services/endpoints.mapper";
-import {endpointsInfoListMapper} from "../../graphql/services/endpoint-info-list.mapper";
+import {endpointInfoModelMapper, endpointsInfoListMapper} from "../../graphql/services/endpoint-info-list.mapper";
 import {graphqlSchemaShapesMapper} from "../../graphql/services/graphql-schema-shapes.mapper";
 import {prefixModelToSelectMenuOptionsMapper} from "../../graphql/services/prefix-list.mapper";
 import {
@@ -172,10 +172,11 @@ function GraphqlService(GraphqlRestService) {
      * @param {string} repositoryId - The repository id.
      * @param {string} endpointId - The endpoint id.
      * @param {PartialUpdateEndpointRequest} updateEndpointRequest - The endpoint update request.
-     * @returns {Promise<unknown> | *}
+     * @returns {Promise<GraphqlEndpointInfo> | *}
      */
     const editEndpointConfiguration = (repositoryId, endpointId, updateEndpointRequest) => {
-        return GraphqlRestService.editEndpointConfiguration(repositoryId, endpointId, updateEndpointRequest);
+        return GraphqlRestService.editEndpointConfiguration(repositoryId, endpointId, updateEndpointRequest)
+            .then((response) => endpointInfoModelMapper(response.data, repositoryId));
     };
 
     /**
@@ -186,16 +187,6 @@ function GraphqlService(GraphqlRestService) {
      */
     const deleteEndpoint = (repositoryId, endpointId) => {
         return GraphqlRestService.deleteEndpoint(repositoryId, endpointId);
-    };
-
-    /**
-     * Makes the provided graphql endpoint the default one for the given repository.
-     * @param {string} repositoryId The id of the repository.
-     * @param {string} endpointId The id of the endpoint to be set as default.
-     * @returns {Promise<unknown>}
-     */
-    const setDefaultEndpoint = (repositoryId, endpointId) => {
-        return GraphqlRestService.setDefaultEndpoint(repositoryId, endpointId);
     };
 
     /**
@@ -236,7 +227,6 @@ function GraphqlService(GraphqlRestService) {
         editEndpointConfiguration,
         deleteEndpoint,
         generateEndpointFromGraphqlShapes,
-        generateEndpointFromOwl,
-        setDefaultEndpoint
+        generateEndpointFromOwl
     };
 }

@@ -799,6 +799,14 @@
                     },
                     "set_as_default": {
                         "success": "Successfully set \"{{endpointId}}\" endpoint as default"
+                    },
+                    "toggle_active_state": {
+                        "activated": {
+                            "success": "The endpoint \"{{endpointId}}\" was successfully activated"
+                        },
+                        "deactivated": {
+                            "success": "The endpoint \"{{endpointId}}\" was successfully deactivated"
+                        }
                     }
                 },
                 "messages": {
