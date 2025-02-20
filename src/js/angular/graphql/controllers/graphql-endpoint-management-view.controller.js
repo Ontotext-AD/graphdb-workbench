@@ -173,21 +173,27 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
 
     /**
      * Toggles the active state of the given endpoint.
-     * @param {GraphqlEndpointInfo} endpoint The endpoint to toggle the active state for.
+     * @param {GraphqlEndpointInfo} endpointInfo The endpoint to toggle the active state for.
      */
-    $scope.toggleEndpointActiveState = (endpoint) => {
+    $scope.toggleEndpointActiveState = (endpointInfo) => {
         $scope.changingEndpointActiveState = true;
-        const newActiveState = !endpoint.active;
-        GraphqlService.updateEndpointActiveState($repositories.getActiveRepository(), endpoint.endpointId, newActiveState)
-            .then(() => {
-                // TODO: this is temporary, the whole endpoint entity should be updated from the backend because it may contain additional info like modified date
-                endpoint.active = newActiveState;
+        const newActiveState = !endpointInfo.active;
+        const updateEndpointRequest = endpointInfo.toUpdateEndpointRequest($scope.endpointConfigurationSettings);
+        GraphqlService.editEndpointConfiguration($repositories.getActiveRepository(), endpointInfo.endpointId, updateEndpointRequest.getUpdateEndpointActiveStateRequest())
+            .then((updatedEndpoint) => {
+                console.log('%cupdatedendpoint', 'background: yellow', updatedEndpoint);
                 const operationKey = newActiveState ? 'activated' : 'deactivated';
-                toastr.success(translate(`graphql.endpoints_management.table.actions.toggle_active_state.${operationKey}.success`, {endpointId: endpoint.endpointId}));
+                toastr.success(
+                    $translate(
+                        `graphql.endpoints_management.table.actions.toggle_active_state.${operationKey}.success`,
+                        {endpointId: endpointInfo.endpointId}
+                    )
+                );
+                return loadEndpointsInfo(false);
             })
             .catch((error) => {
                 // something went wrong, revert the active state
-                endpoint.active = !newActiveState;
+                endpointInfo.active = !newActiveState;
                 toastr.error(getError(error));
                 console.error('Error updating endpoint active state', error);
             })

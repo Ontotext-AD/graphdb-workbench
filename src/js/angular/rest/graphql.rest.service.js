@@ -87,20 +87,6 @@ function GraphqlRestService($http) {
     };
 
     /**
-     * Update the active state of the given endpoint in the backend.
-     * @param {string} repositoryId The repository ID.
-     * @param {string} endpointId The endpoint ID.
-     * @param {boolean} newActiveState The new active state.
-     * @returns {*|Promise<unknown>} The response from the backend.
-     */
-    const updateEndpointActiveState = (repositoryId, endpointId, newActiveState) => {
-        if (DEVELOPMENT) {
-            return _mockBackend.updateEndpointActiveStateMock(repositoryId, endpointId, newActiveState);
-        }
-        return $http.patch(`${REPOSITORIES_ENDPOINT}/${repositoryId}/manage/graphql/endpoints/${endpointId}?activate=${newActiveState}`);
-    }
-
-    /**
      * Get the GraphQL endpoint configuration settings from the backend.
      * @param {string} repositoryId The repository ID.
      * @param {string} endpointId The endpoint ID.
@@ -191,19 +177,6 @@ function GraphqlRestService($http) {
         // });
     };
 
-    /**
-     * Makes the provided GraphQL endpoint the default one for the given repository.
-     * @param {string} repositoryId The ID of the repository.
-     * @param {string} endpointId The ID of the endpoint to be set as default.
-     * @returns {Promise<unknown>} The response from the backend.
-     */
-    const setDefaultEndpoint = (repositoryId, endpointId) => {
-        if (DEVELOPMENT) {
-            return _mockBackend.setDefaultEndpointMock();
-        }
-        return $http.post(`${REPOSITORIES_ENDPOINT}/${repositoryId}/manage/graphql/${endpointId}/default`);
-    }
-
     return {
         getEndpoints,
         getEndpointsInfo,
@@ -216,9 +189,7 @@ function GraphqlRestService($http) {
         editEndpointConfiguration,
         deleteEndpoint,
         generateEndpointFromGraphqlShapes,
-        generateEndpointFromOwl,
-        setDefaultEndpoint,
-        updateEndpointActiveState
+        generateEndpointFromOwl
     };
 }
 

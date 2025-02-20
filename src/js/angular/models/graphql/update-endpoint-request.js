@@ -58,6 +58,12 @@ export class UpdateEndpointRequest {
         };
     }
 
+    getUpdateEndpointActiveStateRequest() {
+        return {
+            active: !this.active
+        };
+    }
+
     getUpdateEndpointSettingsRequest() {
         return {
             options: this.options ? this.options.toFlatJSON() : null
