@@ -1,15 +1,8 @@
-export const ENDPOINT_COUNTRIES = '/rest/repositories/test/graphql/countries';
-export const ENDPOINT_RICKMORTY = '/rest/repositories/test/graphql/rickmorty';
-
 export class GraphqlStubs {
-    static stubGetEndpoints(repositoryId, fixture = 'graphql-endpoints.json', delay = 0) {
-        const fuxturePath = `/graphql/endpoints/${fixture}`;
-        cy.intercept('GET', `/rest/repositories/${repositoryId}/graphql/endpoints`, {
-            fixture: fuxturePath,
-            statusCode: 200,
-            delay: delay
-        }).as('get-endpoints');
-    }
+    static spyExportEndpointDefinition(repositoryId, endpointId) {
+        cy.intercept('GET', `/rest/repositories/${repositoryId}/graphql/manage/endpoints/${endpointId}/export`)
+            .as('export-endpoint-definition');
+    };
 
     static stubGetEndpointsInfo(repositoryId, fixture = 'graphql-endpoints-info.json', delay = 0) {
         cy.intercept('GET', `/rest/repositories/${repositoryId}/manage/graphql/endpoints`, {
@@ -19,14 +12,6 @@ export class GraphqlStubs {
         }).as('get-endpoints-info');
     }
 
-    static stubGetNoEndpointsInfo(repositoryId, fixture = 'no-graphql-endpoints-info.json', delay = 0) {
-        cy.intercept('GET', `/rest/repositories/${repositoryId}/manage/graphql/endpoints`, {
-            fixture: `/graphql/endpoints/${fixture}`,
-            statusCode: 200,
-            delay: delay
-        }).as('get-no-endpoints-info');
-    }
-
     static stubGetEndpointsInfoError(repositoryId) {
         cy.intercept('GET', `/rest/repositories/${repositoryId}/graphql/manage/list`, {
             statusCode: 500,
@@ -34,38 +19,6 @@ export class GraphqlStubs {
                 error: "Required request parameter 'query' for method parameter type String is not present"
             }
         }).as('get-endpoints-info-error');
-    }
-
-    static stubCountriesSchema() {
-        cy.intercept('POST', ENDPOINT_COUNTRIES, (req) => {
-            stubQuery(req, 'IntrospectionQuery', 'graphql/editor/countries-schema.json');
-            stubQuery(req, 'GetContinentById', {
-                data: {
-                    name: 'Europe'
-                }
-            });
-        }).as('countries');
-    }
-
-    static stubStubRickAndMortySchema() {
-        cy.intercept('POST', ENDPOINT_RICKMORTY, (req) => {
-            stubQuery(req, 'IntrospectionQuery', 'graphql/editor/rick-and-morty-schema.json');
-            stubQuery(req, 'Character', {
-                data: {
-                    name: 'Morty Smith'
-                }
-            });
-        }).as('rickmorty');
-    }
-
-    static stubGetEndpointConfiguration(repositoryId, endpoint, fixture = 'graphql-endpoint-configuration.json',  delay = 0) {
-        console.log(endpoint)
-        console.log(`/rest/repositories/${repositoryId}/manage/graphql/${endpoint}/config`)
-        cy.intercept('GET', `/rest/repositories/${repositoryId}/manage/graphql/${endpoint}/config`, {
-            fixture: `/graphql/endpoints/${fixture}`,
-            statusCode: 200,
-            delay: delay
-        }).as('get-endpoint-configuration');
     }
 
     static spySaveEndpointConfiguration(repositoryId, endpoint) {

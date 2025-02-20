@@ -220,6 +220,27 @@ function GraphqlService(GraphqlRestService) {
             .then((response) => endpointGenerationReportListMapper([response.data], repositoryId));
     }
 
+    /**
+     * Export the endpoint definition.
+     * @param {string} repositoryId The repository ID.
+     * @param {string} endpointId The endpoint ID.
+     * @returns {Promise<{data: any, filename: string}>}
+     */
+    const exportEndpointDefinition = (repositoryId, endpointId) => {
+        return GraphqlRestService.exportEndpointDefinition(repositoryId, endpointId)
+            .then((res) => {
+                const data = res.data;
+                const headers = res.headers();
+                const contentDispositionHeader = headers['content-disposition'];
+                let filename = `endpoint-${endpointId}-definition`;
+                if (contentDispositionHeader) {
+                    filename = contentDispositionHeader.split('filename=')[1];
+                    filename = filename.replace(/"/g, '');
+                }
+                return {data, filename};
+            });
+    }
+
     return {
         getEndpointsCountToGenerate,
         getGenerateEndpointsOverview,
@@ -237,6 +258,7 @@ function GraphqlService(GraphqlRestService) {
         deleteEndpoint,
         generateEndpointFromGraphqlShapes,
         generateEndpointFromOwl,
-        setDefaultEndpoint
+        setDefaultEndpoint,
+        exportEndpointDefinition
     };
 }
