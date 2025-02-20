@@ -296,11 +296,11 @@ export class UserAndAccessSteps {
         return cy.get('#user-repos')
             .contains(matchText)
             .parent('tr')
-            .find('.read[type="checkbox"]')
+            .find('.read')
     }
 
     static toggleReadAccessForRepo(repoName) {
-        return this.getReadAccessForRepo(repoName).click({ force: true });
+        return this.getReadAccessForRepo(repoName).click({force: true});
     }
 
     static getWriteAccessForRepo(repoName) {
@@ -308,11 +308,11 @@ export class UserAndAccessSteps {
         return cy.get('#user-repos')
             .contains(matchText)
             .parent('tr')
-            .find('.write[type="checkbox"]')
+            .find('.write')
     }
 
     static toggleWriteAccessForRepo(repoName) {
-        return this.getWriteAccessForRepo(repoName).click({ force: true });
+        return this.getWriteAccessForRepo(repoName).click({force: true});
     }
 
     static getGraphqlAccessForRepo(repoName) {
@@ -320,10 +320,10 @@ export class UserAndAccessSteps {
         return cy.get('#user-repos')
             .contains(matchText)
             .parent('tr')
-            .find('.graphql[type="checkbox"]')
+            .find('.graphql')
     }
 
     static toggleGraphqlAccessForRepo(repoName) {
-        return this.getGraphqlAccessForRepo(repoName).click({ force: true });
+        return this.getGraphqlAccessForRepo(repoName).click({force: true});
     }
 }
