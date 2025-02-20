@@ -133,6 +133,7 @@ describe('User and Access', () => {
         let repositoryId3;
 
         beforeEach(() => {
+            cy.viewport(1280, 1000);
             RepositoriesStubs.spyGetRepositories();
             repositoryId1 = 'user-access-repo1' + Date.now();
             repositoryId2 = 'user-access-repo2' + Date.now();
