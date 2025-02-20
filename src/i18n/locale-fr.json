@@ -589,8 +589,28 @@
                         "method": {
                             "iri_discovery_search": {
                                 "label": "Recherche de texte intégral dans les étiquettes pour la découverte d'IRI",
-                                "tooltip": "Aide le modèle à découvrir les IRI pour une requête incomplète particulière, par exemple le nom Michael dans \"Quel est le numéro de téléphone de Michael?\""
+                                "tooltip": "Aide le modèle à découvrir les IRI (à l'aide de FTS) pour une requête incomplète particulière, par exemple le nom Michael dans \"Quel est le numéro de téléphone de Michael?\""
+                            },
+                            "autocomplete_iri_discovery_search": {
+                                "label": "Saisie semi-automatique pour la découverte IRI",
+                                "tooltip": "Aide le modèle à découvrir les IRI (à l'aide de la saisie semi-automatique) pour une requête incomplète particulière, par exemple le nom Michael dans \"Quel est le numéro de téléphone de Michael?\"",
+                                "btn": {
+                                    "reload": {
+                                        "tooltip": "Actualiser l'index de saisie semi-automatique"
+                                    }
+                                }
                             }
+                        },
+                        "autocomplete_disabled_message": "Vous devez <a href=\"{{autocompleteIndexPage}}\" target=\"_blank\">activer complétion automatique</a> pour utiliser cette méthode",
+                        "autocomplete_max_number_of_results_per_call": {
+                            "label": "Nombre maximum de résultats (IRI) par appel",
+                            "placeholder": "Valeur automatique",
+                            "tooltip": "Limiter le nombre maximum d'IRI. La valeur par défaut est automatique et déterminée au moment de l'exécution. En cas de doute, laissez la valeur par défaut."
+                        },
+                        "autocomplete_search_predicates": {
+                            "label": "Rechercher des prédicats",
+                            "placeholder": "Rechercher des étiquettes",
+                            "tooltip": "Saisissez un ou plusieurs prédicats à utiliser pour la recherche d'étiquettes avec saisie semi-automatique."
                         }
                     }
                 },

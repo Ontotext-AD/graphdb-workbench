@@ -336,10 +336,21 @@ export class AdditionalExtractionMethodsModel {
 export class AdditionalExtractionMethodModel {
     constructor(data) {
         /**
-         * @type {'iri_discovery_search'}
+         * @type {'iri_discovery_search' | 'autocomplete_iri_discovery_search'}
          * @private
          */
         this._method = data.method;
+        /**
+         * The maximum number of results per call for the extraction method.
+         * @type {number}
+         */
+        this._maxNumberOfResultsPerCall = data.maxNumberOfResultsPerCall;
+        /**
+         * The search predicates for the extraction method.
+         * @type {[]}
+         * @private
+         */
+        this._searchLabelPredicates = data.searchLabelPredicates;
     }
 
     get method() {
@@ -348,6 +359,22 @@ export class AdditionalExtractionMethodModel {
 
     set method(value) {
         this._method = value;
+    }
+
+    get maxNumberOfResultsPerCall() {
+        return this._maxNumberOfResultsPerCall;
+    }
+
+    set maxNumberOfResultsPerCall(value) {
+        this._maxNumberOfResultsPerCall = value;
+    }
+
+    get searchLabelPredicates() {
+        return this._searchLabelPredicates;
+    }
+
+    set searchLabelPredicates(value) {
+        this._searchLabelPredicates = value;
     }
 }
 
@@ -434,7 +461,8 @@ export const ExtractionMethod = {
 };
 
 export const AdditionalExtractionMethod = {
-    IRI_DISCOVERY_SEARCH: 'iri_discovery_search'
+    IRI_DISCOVERY_SEARCH: 'iri_discovery_search',
+    AUTOCOMPLETE_IRI_DISCOVERY_SEARCH: 'autocomplete_iri_discovery_search'
 };
 
 /**

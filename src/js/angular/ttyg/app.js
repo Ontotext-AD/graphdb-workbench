@@ -1,4 +1,5 @@
 import 'angular/ttyg/controllers/ttyg-view.controller';
+import 'ng-tags-input/build/ng-tags-input.min';
 
 const modules = [
     'ngRoute',
