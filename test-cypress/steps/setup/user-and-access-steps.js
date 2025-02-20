@@ -212,13 +212,13 @@ export class UserAndAccessSteps {
                 .contains('Any data repository')
                 .parent('tr')
                 .find('.graphql')
-                .click();
+                .click({force: true});
         } else {
             cy.get('#user-repos')
                 .contains(repoName)
                 .parent('tr')
                 .find('.graphql')
-                .click();
+                .click({force: true});
         }
     }
 
@@ -228,13 +228,13 @@ export class UserAndAccessSteps {
                 .contains('Any data repository')
                 .parent('tr')
                 .find('.read')
-                .click();
+                .click({force: true});
         } else {
             cy.get('#user-repos')
                 .contains(repoName)
                 .parent('tr')
                 .find('.read')
-                .click();
+                .click({force: true});
         }
     }
 
@@ -244,13 +244,13 @@ export class UserAndAccessSteps {
                 .contains('Any data repository')
                 .parent('tr')
                 .find('.write')
-                .click();
+                .click({force: true});
         } else {
             cy.get('#user-repos')
                 .contains(repoName)
                 .parent('tr')
                 .find('.write')
-                .click();
+                .click({force: true});
         }
     }
 

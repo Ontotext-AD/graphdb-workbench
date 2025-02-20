@@ -187,7 +187,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
                         } else {
                             return SecurityService.getAdminUser().then(function (res) {
-                                that.principal = {username: 'admin', appSettings: res.data.appSettings, authorities: res.data.grantedAuthorities};
+                                that.principal = {username: 'admin', appSettings: res.appSettings, authorities: res.grantedAuthorities, grantedAuthoritiesUiModel: res.grantedAuthoritiesUiModel};
                                 $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.hasOverrideAuth);
                             });
                         }

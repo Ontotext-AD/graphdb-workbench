@@ -105,7 +105,7 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
             .then((principal) => {
                 $scope.currentUserData = _.cloneDeep(principal);
                 $scope.redirectAdmin();
-                initUserData($scope);
+                initUserData();
             });
     };
 
@@ -222,19 +222,19 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
         }, 2000);
     };
 
-    const initUserData = function (scope) {
+    const initUserData = function () {
         // Copy needed so that Cancel would work correctly, need to call updateCurrentUserData on OK
-        scope.userData = _.cloneDeep(scope.currentUserData);
-        scope.user = {username: scope.userData.username};
-        scope.user.password = '';
-        scope.user.confirmpassword = '';
-        scope.user.external = scope.userData.external;
-        scope.user.appSettings = scope.userData.appSettings;
+        $scope.userData = _.cloneDeep($scope.currentUserData);
+        $scope.user = {username: $scope.userData.username};
+        $scope.user.password = '';
+        $scope.user.confirmpassword = '';
+        $scope.user.external = $scope.userData.external;
+        $scope.user.appSettings = $scope.userData.appSettings;
         // For backward compatibility
-        if (scope.user.appSettings['DEFAULT_VIS_GRAPH_SCHEMA'] === undefined) {
-            scope.user.appSettings['DEFAULT_VIS_GRAPH_SCHEMA'] = true;
+        if ($scope.user.appSettings['DEFAULT_VIS_GRAPH_SCHEMA'] === undefined) {
+            $scope.user.appSettings['DEFAULT_VIS_GRAPH_SCHEMA'] = true;
         }
-        const pa = parseAuthorities(scope.userData.grantedAuthoritiesUiModel);
+        const pa = parseAuthorities($scope.userData.grantedAuthoritiesUiModel);
         $scope.userType = pa.userType;
         $scope.grantedAuthorities = pa.grantedAuthorities;
         $scope.customRoles = pa.customRoles;
