@@ -4,6 +4,7 @@ angular
 
 SecurityRestService.$inject = ['$http'];
 
+const LOGIN_ENDPOINT = 'rest/login';
 const SECURITY_ENDPOINT = 'rest/security';
 const SECURITY_USER_ENDPOINT = `${SECURITY_ENDPOINT}/users`;
 const SECURITY_AUTHENTICATED_ENDPOINT = `${SECURITY_ENDPOINT}/authenticated-user`;
@@ -12,6 +13,7 @@ const ROLES_ENDPOINT = 'rest/roles';
 
 function SecurityRestService($http) {
     return {
+        login,
         getUser,
         getAdminUser,
         getUsers,
@@ -27,6 +29,17 @@ function SecurityRestService($http) {
         getRolesMapping,
         getAuthenticatedUser
     };
+
+    function login(username, password) {
+        return $http({
+            method: 'POST',
+            url: LOGIN_ENDPOINT,
+            data: {
+                username,
+                password
+            }
+        });
+    }
 
     function getUser(username) {
         return $http.get(`${SECURITY_USER_ENDPOINT}/${fixedEncodeURIComponent(username)}`);
