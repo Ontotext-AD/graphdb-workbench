@@ -75,6 +75,17 @@ PluginRegistry.add('guide.step', [
                     helpInfo = 'view.class.hierarchy.helpInfo';
 
                     break;
+                case "ttyg":
+                    menuSelector = 'menu-lab';
+                    menuTitle = 'menu.lab.label';
+                    menuDialogClass = 'menu-lab-guide-dialog';
+                    submenuSelector = 'sub-menu-ttyg';
+                    submenuTitle = 'menu.ttyg.label';
+                    submenuDialogClass = 'sub-menu-ttyg-guide-dialog';
+                    viewName = 'menu.ttyg.label';
+                    helpInfo = 'ttyg.helpInfo';
+
+                    break;
             }
 
             const mainMenuClickElementPostSelector = submenuSelector ? ' div' : ' a';
