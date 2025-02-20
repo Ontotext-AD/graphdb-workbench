@@ -258,7 +258,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
     $scope.onShowEndpointReport = (endpointInfo) => {
         GraphqlService.getEndpointConfigurationReport($repositories.getActiveRepository(), endpointInfo.endpointId)
             .then((endpointConfiguration) => {
-                return showReportModal(endpointConfiguration.getReport(endpointInfo.endpointId));
+                showReportModal(endpointConfiguration.getReport(endpointInfo.endpointId));
             })
             .catch((error) => {
                 toastr.error(getError(error));

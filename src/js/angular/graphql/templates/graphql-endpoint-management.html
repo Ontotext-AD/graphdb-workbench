@@ -103,12 +103,14 @@
                 <td>
                     <label class="endpoint-default-state">
                         <input type="radio" ng-model="selectedDefaultEndpoint.default" ng-value="endpoint.default"
+                               ng-disabled="!endpoint.createdSuccessfully"
                                ng-change="setEndpointAsDefault(endpoint)"/>
                     </label>
                 </td>
                 <td>
-                    <span ng-click="toggleEndpointActiveState(endpoint)">
-                        <input type="checkbox" class="switch toggle-active-state" ng-checked="endpoint.active"/>
+                    <span ng-click="!endpoint.createdSuccessfully || toggleEndpointActiveState(endpoint)">
+                        <input type="checkbox" class="switch toggle-active-state" ng-checked="endpoint.active"
+                               ng-disabled="!endpoint.createdSuccessfully"/>
                         <label></label>
                     </span>
                 </td>
