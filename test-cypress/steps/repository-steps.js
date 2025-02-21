@@ -304,4 +304,8 @@ export class RepositorySteps {
         cy.get('@repo').should('be.visible');
         cy.get('@repo').find('.repository-status .text-secondary').contains(status);
     }
+
+    static getEntityIndexSize() {
+        return RepositorySteps.getRepositoryCreateForm().find('#entityIndexSize');
+    }
 }

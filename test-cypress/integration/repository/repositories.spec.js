@@ -87,6 +87,10 @@ describe('Repositories', () => {
             .type(repositoryId)
             .should('have.value', repositoryId);
 
+        RepositorySteps.getEntityIndexSize()
+            .should('be.visible')
+            .and('have.value', 10000000);
+
         RepositorySteps.saveRepository();
 
         // Verify we are back at the setup page after saving
