@@ -9,7 +9,13 @@ const USER_NAME = 'saved_query_user';
 const USER_ADMINISTRATOR = 'admin';
 const PASSWORD = 'root';
 
-describe('Readonly saved query', () => {
+/**
+ * Skipped because this type of implementation is not ideal. If the test fails and the `afterEach` hook
+ * fails to toggle security, all remaining tests will fail because security remains enabled.
+ *
+ * Tests like this should be refactored to use stubs or other alternative implementations.
+ */
+describe.skip('Readonly saved query', () => {
 
     let repositoryId;
 
