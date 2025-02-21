@@ -70,7 +70,6 @@
         "webpack-merge-and-include-globally": "^2.1.20"
     },
     "dependencies": {
-        "@awesome.me/kit-94ffd2fc4a": "^1.0.105",
         "angular-animate": "1.3.8",
         "angular-bowser": "0.0.4",
         "angular-cookies": "1.3.8",
