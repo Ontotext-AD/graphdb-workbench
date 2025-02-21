@@ -322,6 +322,23 @@
                         </div>
                         <div class="form-group row indented-div">
                             <label
+                                class="col-xs-12 col-md-3 col-lg-2 col-form-label">{{'menu.entityIndexSize.label' | translate}}</label>
+                            <div class="col-xs-3 col-md-2" gdb-tooltip="{{'repoTooltips.entityIndexSize' | translate}}">
+                                <input class="form-control"
+                                       id="entityIndexSize"
+                                       type="number"
+                                       min="entityIndexSizeMin"
+                                       step="1"
+                                       name="entityIndexSize"
+                                       ng-model="repositoryInfo.params.entityIndexSize.value"
+                                       ng-model-options="{allowInvalid: true}"/>
+                                <div style="margin-top: 5px" ng-show="repositoryInfo.params.entityIndexSize.value < entityIndexSizeMin" class="alert alert-danger">
+                                    {{'repo.error.entityIndex.min' | translate:{ min: entityIndexSizeMin } }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row indented-div">
+                            <label
                                     class="col-xs-12 col-md-3 col-lg-2 col-form-label">{{'menu.ftsIndexes.label' | translate}}</label>
                             <div class="col-xs-3 col-md-2" gdb-tooltip="{{'repoTooltips.ftsIndexes' | translate}}">
                                 <input class="form-control" id="ftsIndexes" type="text" name="ftsIndexes"
@@ -366,8 +383,7 @@
                                 class="col-xs-12 col-md-3 col-lg-2 col-form-label">{{repositoryInfo.params.queryTimeout.label}}</label>
                             <div class="col-xs-3 col-md-2" gdb-tooltip="{{'repoTooltips.queryTimeout' | translate}}">
                                 <input class="form-control" id="queryTimeout" type="number" step="1"
-                                       ng-model="repositoryInfo.params.queryTimeout.value"
-                                       ng-change="validateNumberInput()"/>
+                                       ng-model="repositoryInfo.params.queryTimeout.value"/>
                             </div>
                             <div class="checkbox offset-xs-3 offset-md-2">
                                 <label class="padding-label col-form-label" gdb-tooltip="{{'repoTooltips.throwQueryEvaluationExceptionOnTimeout' | translate}}">
@@ -383,8 +399,7 @@
                                 class="col-xs-12 col-md-3 col-lg-2 col-form-label">{{repositoryInfo.params.queryLimitResults.label}}</label>
                             <div class="col-xs-3 col-md-2" gdb-tooltip="{{'repoTooltips.queryLimitResults' | translate}}">
                                 <input class="form-control" id="queryLimitResults" type="number" step="1"
-                                       ng-model="repositoryInfo.params.queryLimitResults.value"
-                                       ng-change="validateNumberInput()"/>
+                                       ng-model="repositoryInfo.params.queryLimitResults.value"/>
                             </div>
                         </div>
                         <div class="form-group row indented-div" ng-if="repositoryInfo.type == 'worker'">
