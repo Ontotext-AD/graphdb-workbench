@@ -2,13 +2,38 @@
 
 ## Font awesome icons
 
-The font kit is our own and is installed using the following command:
-`npm install --save '@awesome.me/kit-94ffd2fc4a@latest'`
+The font kit used in the project is our own and is a custom PRO set. Below are the steps for manually updating and managing the fontawesome iconset:
 
-Because we use a PRO plan we have an authentication token which is used for install and update. The token is in the `.npmrc` file in the root of the project.
+---
 
-It can be updated by running the following command:
-`npm update '@awesome.me/kit-94ffd2fc4a'`
+### Updating the Font Kit
+If there is an update to the custom PRO font kit:
+
+1. Log in to [fontawesome.com](https://fontawesome.com) using our organization account.
+2. Navigate to the custom kit in our profile and download the latest version.
+3. Extract the downloaded files.
+4. Replace the relevant files in the following directory of the project:
+```angular2html
+src/js/lib/awesome_me/css
+```
+Make sure you copy all necessary CSS, fonts, and any other related files.
+
+5. Commit the updated files to the repository.
+
+---
+
+### Customizations
+If any icons or configurations within the PRO set are changed:
+
+1. Update the custom kit on [fontawesome.com](https://fontawesome.com).
+2. Download the updated kit.
+3. Follow the steps above to manually replace the files in:
+```angular2html
+src/js/lib/awesome_me/css
+```
+4. Test the changes locally to ensure the updated icons are working correctly.
+
+---
 
 ## Extending the GraphDB Workbench
 
