@@ -35,10 +35,17 @@ export class GraphqlEndpointOverview {
      * @type {string}
      * @private
      */
+    _uri;
+
+    /**
+     * @type {string}
+     * @private
+     */
     _status;
 
     constructor(data) {
         this._label = data.label || '';
+        this._uri = data.uri || '';
         this._status = data.status || ENDPOINT_GENERATION_STATUS.NONE;
     }
 
@@ -48,6 +55,14 @@ export class GraphqlEndpointOverview {
 
     set label(value) {
         this._label = value;
+    }
+
+    get uri() {
+        return this._uri;
+    }
+
+    set uri(value) {
+        this._uri = value;
     }
 
     get status() {

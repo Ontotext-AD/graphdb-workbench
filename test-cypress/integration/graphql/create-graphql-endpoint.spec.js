@@ -173,12 +173,10 @@ describe('Graphql: create endpoint', () => {
         CreateGraphqlEndpointSteps.typeEndpointId('swapi-endpoint');
         // The next button should be enabled because  the other fields are optional
         CreateGraphqlEndpointSteps.getNextStepButton().should('be.enabled');
-        // When I fill in the endpoint label which is optional
+        // And I fill in the rest of the fields which are optional
         CreateGraphqlEndpointSteps.typeEndpointLabel('Swapi endpoint');
-        // The next button should be enabled
-        CreateGraphqlEndpointSteps.getNextStepButton().should('be.enabled');
-        // When I select the vocabulary prefix
         CreateGraphqlEndpointSteps.selectVocabularyPrefix('voc');
+        CreateGraphqlEndpointSteps.typeEndpointDescription('This is a test endpoint');
         // Then the next button should be enabled
         CreateGraphqlEndpointSteps.getNextStepButton().should('be.enabled');
 
@@ -222,6 +220,7 @@ describe('Graphql: create endpoint', () => {
         CreateGraphqlEndpointSteps.getEndpointIdFieldInput().should('have.value', 'swapi-endpoint');
         CreateGraphqlEndpointSteps.getEndpointLabelFieldInput().should('have.value', 'Swapi endpoint');
         CreateGraphqlEndpointSteps.getVocabularyPrefixSelectSelectedOption().should('have.text', 'voc');
+        CreateGraphqlEndpointSteps.getEndpointDescriptionFieldInput().should('have.value', 'This is a test endpoint');
     });
 
     it('should be able to configure generation settings (the second step)', () => {

@@ -905,6 +905,11 @@
                                 "label": "Étiquette du point de terminaison",
                                 "tooltip": "L'étiquette du nouveau point de terminaison GraphQL",
                                 "placeholder": "Star Wars"
+                            },
+                            "endpoint_description": {
+                                "label": "Description du point final",
+                                "tooltip": "La description du nouveau point de terminaison GraphQL",
+                                "placeholder": "Description du point de terminaison Star Wars GraphQL"
                             }
                         },
                         "source": {
@@ -927,9 +932,6 @@
                                     "no_graphs": "Aucun graphes n'a été trouvé dans le référentiel sélectionné"
                                 }
                             }
-                        },
-                        "messages": {
-
                         }
                     }
                 },

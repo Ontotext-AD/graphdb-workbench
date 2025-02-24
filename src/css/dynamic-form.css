@@ -1,0 +1,38 @@
+.dynamic-form-container {
+    width: 100%;
+}
+
+.dynamic-form-container .dynamic-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.dynamic-form-container .dynamic-form .form-inline {
+    display: grid;
+    grid-template-columns: minmax(150px, 1fr) 2fr;
+    gap: 1em;
+    margin-bottom: 1em;
+    align-items: start;
+}
+
+.dynamic-form-container .dynamic-form .form-inline label {
+    margin: 0;
+    overflow-wrap: break-word;
+}
+
+.dynamic-form-container .dynamic-form .form-inline input,
+.dynamic-form-container .dynamic-form .form-inline textarea,
+.dynamic-form-container .dynamic-form .form-inline select {
+    width: 100%;
+}
+
+.dynamic-form-container .dynamic-form .form-inline.boolean-field label {
+    cursor: pointer;
+}
+
+.dynamic-form-container .dynamic-form .form-inline input[type="checkbox"] {
+    width: auto;
+    align-self: center;
+    justify-self: start;
+}

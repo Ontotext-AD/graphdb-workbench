@@ -1,7 +1,74 @@
-.create-graphql-endpoint-view {}
+:root {
+    --status-bar-height: 47px;
+}
+
+.page-content {
+    display: flex;
+    min-height: calc(100vh - var(--status-bar-height));
+}
+
+.main-container {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.footer {
+    flex-shrink: 0;
+}
+
+/* ===============================================
+   Grid layout for the create GraphQL endpoint view
+   =============================================== */
+.create-graphql-endpoint-view {
+    display: grid;
+    grid-template-areas:
+        "title-container"
+        "core-errors-container"
+        "create-graphql-endpoint-container";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr;
+    gap: .5em;
+    height: 100%;
+}
+
+.create-graphql-endpoint-view .title-container {
+    grid-area: title-container;
+}
+
+.create-graphql-endpoint-view .core-errors-container {
+    grid-area: core-errors-container;
+}
+
+.create-graphql-endpoint-view .create-graphql-endpoint-container {
+    grid-area: create-graphql-endpoint-container;
+}
+
+.create-graphql-endpoint-container .content {
+    display: grid;
+    grid-template-areas:
+        "toolbar"
+        "wizard-container";
+    grid-template-columns: 1fr;
+    gap: .5em;
+}
+
+.create-graphql-endpoint-container .toolbar {
+    grid-area: toolbar;
+}
+
+.create-graphql-endpoint-container .wizard-container {
+    grid-area: wizard-container;
+}
+
+/* =========== end of grid layout =========== */
 
 .create-graphql-endpoint-view .toolbar .source-repository-selector {
     width: 20em;
+}
+
+.create-graphql-endpoint-view .shuttle-multiselect .shuttle-panel .options-list .option-item .item-action {
+    padding-top: .2em;
+    padding-bottom: .2em;
 }
 
 /* ===============================================
@@ -28,29 +95,31 @@
     min-height: 300px;
 }
 
+/* The endpoint configs form */
+
 .create-graphql-endpoint-view .select-schema-source-view .endpoint-params-form {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     width: 50%;
+    min-width: 300px;
 }
 
 .create-graphql-endpoint-view .select-schema-source-view .endpoint-params-form .form-inline {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    gap: 1em;
     margin-bottom: 1em;
 }
 
 .create-graphql-endpoint-view .select-schema-source-view .endpoint-params-form .form-inline label {
-    margin-bottom: 0;
+    margin: 0;
 }
 
 .create-graphql-endpoint-view .select-schema-source-view .endpoint-params-form .form-inline input,
+.create-graphql-endpoint-view .select-schema-source-view .endpoint-params-form .form-inline textarea,
 .create-graphql-endpoint-view .select-schema-source-view .endpoint-params-form .form-inline select {
-    width: 75%;
+    width: 100%;
 }
 
 /* ===============================================
@@ -63,26 +132,41 @@
     width: 50%;
 }
 
-.create-graphql-endpoint-view .endpoint-configuration-container dynamic-form {
-    width: 100%;
-}
-
 /* ===============================================
    Generate endpoint view / Generation overview
    =============================================== */
 
-.create-graphql-endpoint-view .generate-endpoint-container {
+.create-graphql-endpoint-view .generate-endpoint-view {
+    height: 67vh;
     display: flex;
-    align-items: stretch;
+    flex-direction: column;
+}
+
+.create-graphql-endpoint-view .generate-endpoint-container {
+    position: relative;
+    flex: 1;
+    min-height: 0;
     width: 50%;
 }
 
-.generate-endpoint-view .generate-endpoint-container .endpoints-overview {
+.create-graphql-endpoint-view .generate-endpoint-container .endpoints-generation-overview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     display: flex;
     flex-direction: column;
-    align-items: stretch;
-    max-height: 300px;
+}
+
+.generate-endpoint-view .generate-endpoint-container .endpoints-overview {
+    flex: 1;
     overflow-y: auto;
+    min-height: 0;
+}
+
+.generate-endpoint-view .generate-endpoint-container .endpoints-overview .endpoint-overview {
+    margin-top: .3em;
 }
 
 .generate-endpoint-view .generate-endpoint-container .generation-progress {
@@ -90,11 +174,21 @@
     align-items: start;
 }
 
+.generate-endpoint-view .generate-endpoint-container .generation-report {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+}
+
 .generate-endpoint-view .generate-endpoint-container .generation-report,
 .generate-endpoint-view .generate-endpoint-container .generation-report-list {
-    width: 100%;
-    max-height: 300px;
+    flex: 1;
     overflow-y: auto;
+    min-height: 0;
 }
 
 .generate-endpoint-view .generate-endpoint-container .generation-report-list .endpoint-report {
@@ -102,7 +196,13 @@
     align-items: center;
     column-gap: 0.5em;
     width: 100%;
+    margin-top: .3em;
 }
+
+.generate-endpoint-view .generate-endpoint-container .generation-report-list .endpoint-report-link {
+    padding: 0;
+}
+
 
 .generate-endpoint-view .generate-endpoint-container .generation-report-list .status-failed {
     color: var(--color-danger-dark);

@@ -12,8 +12,6 @@ describe('Graphql: import endpoint definitions', () => {
         repositoryId = 'graphql-endpoint-management-' + Date.now();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
-        // cy.uploadGraphqlSchema(repositoryId, 'graphql/soml/swapi-schema.yaml', 'swapi');
-        // cy.uploadGraphqlSchema(repositoryId, 'graphql/soml/swapi-schema-planets.yaml', 'swapi-planets');
     });
 
     afterEach(() => {
