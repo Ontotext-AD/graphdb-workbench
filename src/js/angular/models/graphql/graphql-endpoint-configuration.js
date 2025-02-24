@@ -104,7 +104,8 @@ export class GraphqlEndpointConfiguration {
         if (this.generateFromGraphqlSchemaShapes()) {
             return this.selectedGraphqlSchemaShapes.processShapes((shape) => {
                 return new GraphqlEndpointOverview({
-                    label: shape.label && shape.id ? `${shape.label} | ${shape.id}` : shape.label || shape.id
+                    label: shape.label || shape.id,
+                    uri: shape.id
                 });
             });
         }
@@ -116,7 +117,8 @@ export class GraphqlEndpointConfiguration {
             }
             return this.selectedGraphs.processGraphList((graph) => {
                 return new GraphqlEndpointOverview({
-                    label: graph.label && graph.uri ? `${graph.label} | ${graph.uri}` : graph.label || graph.uri
+                    label: graph.label || graph.uri,
+                    uri: graph.uri
                 });
             });
         }

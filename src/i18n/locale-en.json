@@ -905,6 +905,11 @@
                                 "label": "Endpoint label",
                                 "tooltip": "The label for the new GraphQL endpoint",
                                 "placeholder": "Star Wars"
+                            },
+                            "endpoint_description": {
+                                "label": "Endpoint description",
+                                "tooltip": "The description for the new GraphQL endpoint",
+                                "placeholder": "The Star Wars GraphQL endpoint description"
                             }
                         },
                         "source": {
@@ -927,9 +932,6 @@
                                     "no_graphs": "No graphs were found in the selected repository"
                                 }
                             }
-                        },
-                        "messages": {
-
                         }
                     }
                 },

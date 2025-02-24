@@ -18,8 +18,9 @@
                 {{'graphql.create_endpoint.wizard_steps.generate_endpoint.overview.for_shapes.included_endpoints' | translate}}</h5>
 
             <div class="endpoints-overview">
-                <div ng-repeat="endpointOverview in endpointsOverview.endpointList" class="endpoint-overview mt-1">
-                    {{endpointOverview.label}}
+                <div ng-repeat="endpointOverview in endpointsOverview.endpointList" class="endpoint-overview">
+                    <strong class="label">{{endpointOverview.label}}</strong> | <span
+                    class="uri">{{endpointOverview.uri}}</span>
                 </div>
             </div>
         </div>
@@ -32,7 +33,7 @@
                 {{'graphql.create_endpoint.wizard_steps.generate_endpoint.overview.for_shapes.generated_endpoints' | translate}}</h5>
 
             <div class="generation-report-list">
-                <div ng-repeat="endpointReport in generationReport.reports" class="endpoint-report mt-1">
+                <div ng-repeat="endpointReport in generationReport.reports" class="endpoint-report">
                     <i ng-if="endpointReport.createdSuccessfully" class="fa-regular fa-circle-check status-success"></i>
                     <i ng-if="!endpointReport.createdSuccessfully" class="fa-regular fa-circle-xmark status-failed"></i>
                     <a href="#" ng-if="endpointReport.createdSuccessfully"
@@ -53,7 +54,7 @@
         </div>
     </div>
 
-    <div class="wizard-actions mt-3">
+    <div class="wizard-actions mt-2">
         <button class="btn btn-secondary cancel-btn mr-1"
                 ng-click="cancel()">
             {{'graphql.create_endpoint.wizard_steps.actions.cancel.label' | translate}}

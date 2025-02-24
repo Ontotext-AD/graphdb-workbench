@@ -173,6 +173,18 @@ export class CreateGraphqlEndpointSteps {
         this.getEndpointLabelFieldInput().clear().type(endpointLabel);
     }
 
+    static getEndpointDescriptionField() {
+        return this.getEndpointParamsForm().find('.endpoint-description');
+    }
+
+    static getEndpointDescriptionFieldInput() {
+        return this.getEndpointDescriptionField().find('textarea');
+    }
+
+    static typeEndpointDescription(endpointDescription) {
+        this.getEndpointDescriptionFieldInput().clear().type(endpointDescription);
+    }
+
     // Vocabulary prefix select
     static getVocabularyPrefixSelectField() {
         return this.getEndpointParamsForm().find('.vocabulary-prefix');

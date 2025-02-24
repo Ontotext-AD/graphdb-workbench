@@ -75,7 +75,9 @@
                     <select ng-if="!loadingPrefixes" class="form-control" id="vocabularyPrefix" name="vocabularyPrefix"
                             ng-model="endpointConfiguration.params.vocPrefix"
                             ng-options="prefix.value as prefix.label for prefix in prefixList">
-                        <option value="">{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.vocabulary_prefix.placeholder' | translate}}</option>
+                        <option value="">
+                            {{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.vocabulary_prefix.placeholder' | translate}}
+                        </option>
                     </select>
                     <div class="loading-prefixes" ng-if="loadingPrefixes" onto-loader-new size="25"></div>
                 </div>
@@ -93,6 +95,18 @@
                     <input type="text" class="form-control" id="endpointLabel" name="endpointLabel"
                            ng-model="endpointConfiguration.params.endpointLabel" autocomplete="off"
                            placeholder="{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.endpoint_label.placeholder' | translate}}">
+                </div>
+            </div>
+
+            <div class="endpoint-param-field">
+                <div class="form-inline endpoint-description">
+                    <label for="endpointDescription"
+                           uib-popover="{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.endpoint_description.tooltip' | translate}}"
+                           popover-trigger="mouseenter">{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.endpoint_description.label' | translate}}</label>
+                    <textarea class="form-control" id="endpointDescription" name="endpointDescription"
+                              ng-model="endpointConfiguration.params.endpointDescription"
+                              placeholder="{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.endpoint_description.placeholder' | translate}}">
+                    </textarea>
                 </div>
             </div>
         </form>

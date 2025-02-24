@@ -1,69 +1,92 @@
-<div class="dynamic-form">
-    <form name="dynamicForm" novalidate>
-        <div ng-repeat="field in fields" class="row mb-1 form-field">
-            <!-- Label column -->
-            <label class="col-sm-3 col-form-label field-label">
-                {{field.label}}
-                <sup ng-if="field.required">*</sup>
-            </label>
+<link href="css/dynamic-form.css?v=[AIV]{version}[/AIV]" rel="stylesheet"/>
 
-            <!-- Input column -->
-            <div class="col-sm-9">
-                <!-- STRING -->
-                <div class="string-field  input-field" ng-if="field.type === FIELD_TYPE.STRING">
-                    <input type="text"
-                           placeholder="{{field.regex.toString()}}"
-                           class="form-control"
-                           name="{{field.key}}"
-                           ng-model="field.value"
-                           ng-pattern="field.regex"
-                           ng-required="field.required"/>
-                </div>
+<div class="dynamic-form-container">
+    <form name="dynamicForm" novalidate class="dynamic-form">
+        <div ng-repeat="field in fields" class="form-field">
+            <!-- STRING -->
+            <div class="form-inline string-field  input-field" ng-if="field.type === FIELD_TYPE.STRING">
+                <label class="field-label" for="{{field.key}}">
+                    {{field.label}}
+                    <sup ng-if="field.required">*</sup>
+                </label>
+                <input type="text"
+                       id="{{field.key}}"
+                       name="{{field.key}}"
+                       placeholder="{{field.regex.toString()}}"
+                       class="form-control"
+                       ng-model="field.value"
+                       ng-pattern="field.regex"
+                       ng-required="field.required"/>
+            </div>
 
-                <!-- TEXT-->
-                <div class="string-field  text-field" ng-if="field.type === FIELD_TYPE.TEXT">
-                    <textarea type="text"
-                              class="form-control"
-                              name="{{field.key}}"
-                              ng-model="field.value"
-                              ng-required="field.required"></textarea>
-                </div>
+            <!-- TEXT-->
+            <div class="form-inline string-field text-field" ng-if="field.type === FIELD_TYPE.TEXT">
+                <label class="field-label" for="{{field.key}}">
+                    {{field.label}}
+                    <sup ng-if="field.required">*</sup>
+                </label>
+                <textarea type="text"
+                          id="{{field.key}}"
+                          name="{{field.key}}"
+                          class="form-control"
+                          ng-model="field.value"
+                          ng-required="field.required"></textarea>
+            </div>
 
-                <!-- BOOLEAN -->
-                <div class="boolean-field" ng-if="field.type === FIELD_TYPE.BOOLEAN">
-                    <input type="checkbox"
-                           name="{{field.key}}"
-                           ng-model="field.value"
-                           ng-required="field.required"/>
-                </div>
+            <!-- BOOLEAN -->
+            <div class="form-inline boolean-field" ng-if="field.type === FIELD_TYPE.BOOLEAN">
+                <label class="field-label" for="{{field.key}}">
+                    {{field.label}}
+                    <sup ng-if="field.required">*</sup>
+                </label>
+                <input type="checkbox"
+                       id="{{field.key}}"
+                       name="{{field.key}}"
+                       ng-model="field.value"
+                       ng-required="field.required"/>
+            </div>
 
-                <!-- SINGLE SELECT -->
-                <div class="select-field" ng-if="field.type === FIELD_TYPE.SELECT">
-                    <select class="form-control"
-                            name="{{field.key}}"
-                            ng-model="field.value"
-                            ng-options="option as option.label for option in field.values track by option.value"
-                            ng-required="field.required">
-                    </select>
-                </div>
-
-                <!-- MULTI-SELECT -->
-                <div class="multiselect-field" ng-if="field.type === FIELD_TYPE.MULTI_SELECT">
-                    <multiselect-dropdown
+            <!-- SINGLE SELECT -->
+            <div class="form-inline select-field" ng-if="field.type === FIELD_TYPE.SELECT">
+                <label class="field-label" for="{{field.key}}">
+                    {{field.label}}
+                    <sup ng-if="field.required">*</sup>
+                </label>
+                <select class="form-control"
+                        id="{{field.key}}"
                         name="{{field.key}}"
                         ng-model="field.value"
-                        options="field.values"
-                        ng-required="field.required"> </multiselect-dropdown>
-                </div>
+                        ng-options="option as option.label for option in field.values track by option.value"
+                        ng-required="field.required">
+                </select>
+            </div>
 
-                <!-- JSON -->
-                <div class="json-field" ng-if="field.type === FIELD_TYPE.JSON">
-                    <textarea
-                        class="form-control"
-                        name="{{field.key}}"
-                        ng-model="field.value"
-                        ng-required="field.required"></textarea>
-                </div>
+            <!-- MULTI-SELECT -->
+            <div class="form-inline multiselect-field" ng-if="field.type === FIELD_TYPE.MULTI_SELECT">
+                <label class="field-label" for="{{field.key}}">
+                    {{field.label}}
+                    <sup ng-if="field.required">*</sup>
+                </label>
+                <multiselect-dropdown
+                    id="{{field.key}}"
+                    name="{{field.key}}"
+                    ng-model="field.value"
+                    options="field.values"
+                    ng-required="field.required"></multiselect-dropdown>
+            </div>
+
+            <!-- JSON -->
+            <div class="form-inline json-field" ng-if="field.type === FIELD_TYPE.JSON">
+                <label class="field-label" for="{{field.key}}">
+                    {{field.label}}
+                    <sup ng-if="field.required">*</sup>
+                </label>
+                <textarea
+                    id="{{field.key}}"
+                    name="{{field.key}}"
+                    class="form-control"
+                    ng-model="field.value"
+                    ng-required="field.required"></textarea>
             </div>
         </div>
     </form>
