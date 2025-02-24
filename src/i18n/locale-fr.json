@@ -2353,7 +2353,6 @@
     "repo.id.label": "ID du dépôt*",
     "repo.local": "Local",
     "edit.repo.id.tooltip": "Modifier l'ID du dépôt",
-    "edit.repo.id.cannot_edit_in_cluster.tooltip": "Impossible de renommer le référentiel en mode cluster.",
     "invalid.repo.name.error": "Le nom du dépôt ne peut contenir que des lettres (a-z, A-Z), des chiffres (0-9), \"-\" et \"_\".",
     "upload.custom.ruleset.file": "Téléchargez un fichier de jeu de règles personnalisé.",
     "custom.ruleset": "Jeu de règles personnalisé...",

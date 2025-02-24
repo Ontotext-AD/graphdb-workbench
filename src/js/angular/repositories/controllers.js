@@ -936,9 +936,6 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
     };
 
     $scope.editRepositoryId = function () {
-        if ($scope.isRepoInCluster) {
-            return;
-        }
         let msg = decodeHTML($translate.instant('edit.repo.id.warning.msg'));
         if ($scope.isEnterprise()) {
             msg += decodeHTML($translate.instant('edit.repo.id.cluster.warning.msg'));

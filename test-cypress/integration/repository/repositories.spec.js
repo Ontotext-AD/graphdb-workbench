@@ -480,7 +480,7 @@ describe('Repositories', () => {
         ImportUserDataSteps.checkImportedResource(0, 'Text snippet', 'org.eclipse.rdf4j.sail.shacl.GraphDBShaclSailValidationException: Failed SHACL validation');
     });
 
-    it('should not allow editing of repository name if repository is in cluster', () => {
+    it('should allow editing of repository name if repository is in cluster', () => {
         // When I create a repository,
         cy.createRepository({id: repositoryId});
         // set the repository be in a cluster.
@@ -491,15 +491,12 @@ describe('Repositories', () => {
         // When I try to edit the repository id.
         RepositorySteps.editRepositoryId();
 
-        // Then I expect the repository name can't be edited.
-        ModalDialogSteps.getDialog().should('not.exist');
-        RepositorySteps.getRepositoryIdEditElement().should('have.css', 'cursor').and('match', /not-allowed/);
+        // Then I expect to be allowed to edit.
+        ModalDialogSteps.getDialog().should('be.visible');
+        RepositorySteps.getRepositoryIdEditElement().should('have.css', 'cursor').and('match', /pointer/);
     });
 
-    /**
-     * Skip it temporarily because it needs backend changes to be merged
-     */
-    it.skip('should allow editing of repository name if repository is not in cluster', () => {
+    it('should allow editing of repository name if repository is not in cluster', () => {
         // When I create a repository,
         cy.createRepository({id: repositoryId});
         // and go to edit the repository page.
