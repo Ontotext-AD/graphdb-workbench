@@ -2203,7 +2203,6 @@
     "repo.id.label": "Repository ID*",
     "repo.local": "Local",
     "edit.repo.id.tooltip": "Edit repository id",
-    "edit.repo.id.cannot_edit_in_cluster.tooltip": "Cannot rename repository while in cluster.",
     "invalid.repo.name.error": "Repository name can contain only letters (a-z, A-Z), numbers (0-9), \"-\" and \"_\"",
     "upload.custom.ruleset.file": "Upload a custom ruleset file.",
     "custom.ruleset": "Custom ruleset...",
