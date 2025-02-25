@@ -97,7 +97,8 @@
                         ng-disabled="!canModifyAgent"
                         ng-click="onOpenNewAgentSettings()"
                         ng-disabled="false"
-                        gdb-tooltip="{{ (canModifyAgent ? 'ttyg.agent.btn.create_agent.tooltip' : 'ttyg.agent.btn.create_agent.tooltip_disabled') | translate}}">
+                        gdb-tooltip="{{ (canModifyAgent ? 'ttyg.agent.btn.create_agent.tooltip' : 'ttyg.agent.btn.create_agent.tooltip_disabled') | translate}}"
+                        guide-selector="create-agent-btn">
                     <i class="icon-plus"></i>
                 </button>
                 <button class="btn btn-link btn-sm toggle-agents-sidebar-btn"

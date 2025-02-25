@@ -52,10 +52,10 @@ PluginRegistry.add('guide.step', [
 
                                     // Check for duplicated name, if import button for guide rdf data exist.
                                     if (GuideUtils.isVisible(GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile))) {
-                                        GuideUtils.getOrWaiteFor('.confirm-duplicate-files-dialog')
+                                        GuideUtils.getOrWaitFor('.confirm-duplicate-files-dialog')
                                             .then(() => guide.next());
                                     } else {
-                                        GuideUtils.getOrWaiteFor(importSettingsButtonSelector)
+                                        GuideUtils.getOrWaitFor(importSettingsButtonSelector)
                                             .then(() => guide.next());
                                     }
                                 } else {
@@ -70,7 +70,7 @@ PluginRegistry.add('guide.step', [
                             }
                         },
                         onNextValidate: () => {
-                            return Promise.allSettled([GuideUtils.getOrWaiteFor('.confirm-duplicate-files-dialog'), GuideUtils.getOrWaiteFor(GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile))])
+                            return Promise.allSettled([GuideUtils.getOrWaitFor('.confirm-duplicate-files-dialog'), GuideUtils.getOrWaiteFor(GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile))])
                                 .then(([confirmDialogPromise, importButtonPromise]) => {
                                     // There are two ways to exit this step: if the duplication dialog is opened or if the import button for the guide file is displayed.
                                     // The first scenario indicates that the user is trying to upload the same file,
@@ -83,7 +83,7 @@ PluginRegistry.add('guide.step', [
                                 });
                         },
                         onNextClick: (guide) => {
-                            GuideUtils.getOrWaiteFor(GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile))
+                            GuideUtils.getOrWaitFor(GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile))
                                 .then((element) => {
                                     // if we have file import button for the guide rdf file, this indicates that we go through this step for second time.
                                     // This can happen if user start guide for second time.
@@ -131,7 +131,7 @@ PluginRegistry.add('guide.step', [
                                 .then(() => resolve());
                         }),
                         beforeShowPromise: () => services.GuideUtils.deferredShow(300)()
-                            .then(() => GuideUtils.getOrWaiteFor(importSettingsButtonSelector, 3)
+                            .then(() => GuideUtils.getOrWaitFor(importSettingsButtonSelector, 3)
                                     .catch((error) => {
                                         services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
                                         return Promise.reject(error);
@@ -154,7 +154,7 @@ PluginRegistry.add('guide.step', [
                             }
                             return GuideUtils.waitFor('.import-resource-message', 10);
                         },
-                        onPreviousClick: () => GuideUtils.getOrWaiteFor(GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile), 10)
+                        onPreviousClick: () => GuideUtils.getOrWaitFor(GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile), 10)
                                 .then((element) => { element.click() })
                     }, options)
                 }
