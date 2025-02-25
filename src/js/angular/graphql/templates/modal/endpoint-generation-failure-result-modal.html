@@ -6,15 +6,14 @@
 </div>
 
 <div class="modal-body endpoint-generation-failure-result-modal-body">
-    <p>{{'graphql.create_endpoint.wizard_steps.generate_endpoint.generation_failure_report.reason_message' |
-    translate: {endpointId: endpointReport.endpointId} }}</p>
+    <p>{{'graphql.create_endpoint.wizard_steps.generate_endpoint.generation_failure_report.reason_message' | translate}}</p>
     <table class="report table table-bordered" aria-label="Endpoint generation failure report table">
         <thead>
         <tr class="labels-row">
             <th scope="col">
-                <strong class="mr-2">{{'graphql.create_endpoint.wizard_steps.generate_endpoint.generation_failure_report.errors' |
+                <strong class="errors-count mr-2">{{'graphql.create_endpoint.wizard_steps.generate_endpoint.generation_failure_report.errors' |
                 translate: {errorCount: endpointReport.errors} }}</strong>
-                <strong>{{'graphql.create_endpoint.wizard_steps.generate_endpoint.generation_failure_report.warnings' |
+                <strong class="warnings-count">{{'graphql.create_endpoint.wizard_steps.generate_endpoint.generation_failure_report.warnings' |
                 translate: {warningCount: endpointReport.warnings} }}</strong>
             </th>
         </tr>

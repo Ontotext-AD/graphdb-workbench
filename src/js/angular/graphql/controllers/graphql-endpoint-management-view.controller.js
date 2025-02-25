@@ -6,6 +6,7 @@ import {GraphqlEventName} from "../services/graphql-context.service";
 import {endpointUrl} from "../models/endpoints";
 import {resolvePlaygroundUrlWithEndpoint} from "../services/endpoint-utils";
 import {saveAs} from 'lib/FileSaver-patch';
+import {GraphqlEndpointInfo} from "../../models/graphql/graphql-endpoints-info";
 
 const modules = [
     'graphdb.framework.core.services.graphql-service',
@@ -107,10 +108,13 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
      * @param {GraphqlEndpointInfo} endpointInfo The endpoint to set as default.
      */
     $scope.setEndpointAsDefault = (endpointInfo) => {
-        const previousDefaultEndpoint = $scope.selectedDefaultEndpoint;
-        $scope.selectedDefaultEndpoint.default = false;
-        endpointInfo.default = true;
+        let previousDefaultEndpoint;
+        if ($scope.selectedDefaultEndpoint) {
+            previousDefaultEndpoint = $scope.selectedDefaultEndpoint;
+            $scope.selectedDefaultEndpoint.default = false;
+        }
         $scope.selectedDefaultEndpoint = endpointInfo;
+        endpointInfo.default = true;
         $scope.operationInProgress = true;
         const updateEndpointRequest = endpointInfo.toUpdateEndpointRequest($scope.endpointConfigurationSettings);
         GraphqlService.editEndpointConfiguration($repositories.getActiveRepository(), endpointInfo.endpointId, updateEndpointRequest.getUpdateDefaultEndpointRequest())
@@ -124,9 +128,13 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
             .catch((error) => {
                 // something went wrong while setting the default endpoint so we need to revert the changes
                 endpointInfo.default = true;
-                $scope.selectedDefaultEndpoint.default = false;
-                $scope.selectedDefaultEndpoint = previousDefaultEndpoint;
-                $scope.selectedDefaultEndpoint.default = true;
+                if (previousDefaultEndpoint) {
+                    $scope.selectedDefaultEndpoint.default = false;
+                    $scope.selectedDefaultEndpoint = previousDefaultEndpoint;
+                    $scope.selectedDefaultEndpoint.default = true;
+                } else {
+                    $scope.selectedDefaultEndpoint = undefined;
+                }
                 toastr.error(getError(error));
                 console.error('Error setting default endpoint', error);
             })
@@ -206,6 +214,10 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
             });
     }
 
+    /**
+     * Opens the import endpoint definition modal from where the user can import endpoint definitions.
+     * @returns {*} The modal instance.
+     */
     $scope.importSchema = () => {
         return $uibModal.open({
             templateUrl: 'js/angular/graphql/templates/modal/import-endpoint-definition-modal.html',
@@ -242,7 +254,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
     /**
      * Handles the configure endpoint event triggered by the endpoint configuration action.
      * @param {GraphqlEndpointInfo} endpointConfiguration The endpoint configuration model.
-     * @returns {*}
+     * @returns {*} The modal instance.
      */
     $scope.onConfigureEndpoint = (endpointConfiguration) => {
         return $uibModal.open({
@@ -362,7 +374,9 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
         $scope.endpointsInfoList = endpointsInfoList;
         if ($scope.endpointsInfoList && $scope.endpointsInfoList.endpoints.length > 0) {
             $scope.hasEndpoints = true;
-            $scope.selectedDefaultEndpoint = $scope.endpointsInfoList.findDefaultEndpoint();
+            // Find out the default endpoint. If there is no default endpoint in the list, then create a new one dummy
+            // one to be used for binding the UI.
+            $scope.selectedDefaultEndpoint = $scope.endpointsInfoList.findDefaultEndpoint() || new GraphqlEndpointInfo();
         }
     }
 

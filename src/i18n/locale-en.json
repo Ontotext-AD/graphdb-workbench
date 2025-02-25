@@ -846,20 +846,34 @@
                 }
             },
             "import_definition_modal": {
-                "title": "Import GraphQL schema",
+                "title": "Import GraphQL schema definition",
                 "actions": {
                     "select_files": {
-                        "label": "Choose"
+                        "label": "Browse"
                     },
                     "import": {
-                        "label": "Upload and validate"
+                        "label": "Upload and create"
                     },
-                    "abort": {
-                        "label": "Abort"
+                    "view_report": {
+                        "label": "View report",
+                        "tooltip": "View the import report"
+                    },
+                    "explore_endpoint": {
+                        "tooltip": "Explore the endpoint in the Playground"
+                    },
+                    "remove_file": {
+                        "tooltip": "Remove the file from selection"
                     }
                 },
                 "messages": {
-                    "allowed_file_types": "Allowed file formats: .yaml, .zip"
+                    "allowed_file_types": "Allowed file formats: .yaml, .yml, .zip",
+                    "no_files_selected": "Browse or drag and drop files to here to upload."
+                },
+                "status": {
+                    "pending": "Pending",
+                    "completed": "Created",
+                    "failed": "Failed",
+                    "not_allowed": "Not allowed"
                 }
             }
         },
@@ -958,7 +972,7 @@
                     },
                     "generation_failure_report": {
                         "title": "GraphQL endpoint creation failed",
-                        "reason_message": "GraphQL endpoint \"{{endpointId}}\" creation failed because of errors/warnings during schema definition generation.",
+                        "reason_message": "GraphQL endpoint creation failed because of errors/warnings during schema definition generation.",
                         "errors": "Validation error [{{errorCount}}]",
                         "warnings": "Warning [{{warningCount}}]",
                         "actions": {
