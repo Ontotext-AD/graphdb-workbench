@@ -87,16 +87,24 @@ function GraphqlPlaygroundViewCtrl($scope, $location, $repositories, $languageSe
         let endpointUrl = endpoint.replace(/^\//, '');
         const config = {
             endpoint: endpointUrl,
+            headers: getHeaders,
             selectedLanguage: $languageService.getLanguage()
         };
-        const authToken = AuthTokenService.getAuthToken();
-        if (authToken) {
-            config.headers = {
-                Authorization: authToken
-            };
-        }
         return new GraphqlPlaygroundConfig(config);
     };
+
+    const getHeaders = () => {
+        // Generates a new tracking alias for queries based on time
+        const trackAlias = `graphql-playground-query-${performance.now()}-${Date.now()}`;
+        const headers = {
+            'X-GraphDB-Track-Alias': trackAlias,
+        }
+        const authToken = AuthTokenService.getAuthToken();
+        if (authToken) {
+            headers['Authorization'] = authToken;
+        }
+        return headers;
+    }
 
     /**
      * Finds the default endpoint from the list of endpoints.

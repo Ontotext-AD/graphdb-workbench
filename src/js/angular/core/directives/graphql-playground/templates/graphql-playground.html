@@ -1,6 +1,7 @@
 <div ng-if="!!configuration" class="graphql-playground-component">
     <graphql-playground-component
         ng-custom-element
-        ngce-prop-configuration="configuration">
+        ngce-prop-configuration="configuration"
+        ngce-on-abort_query="abortQuery($event)">
     </graphql-playground-component>
 </div>
