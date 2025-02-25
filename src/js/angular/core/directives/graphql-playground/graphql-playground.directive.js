@@ -5,7 +5,7 @@ angular
     .module('graphdb.framework.core.directives.graphql-playground', modules)
     .directive('graphqlPlayground', graphqlPlaygroundDirective);
 
-graphqlPlaygroundDirective.$inject = [];
+graphqlPlaygroundDirective.$inject = ['$repositories', '$translate', 'MonitoringRestService', 'toastr'];
 
 /**
  * @function graphqlPlaygroundDirective
@@ -31,7 +31,7 @@ graphqlPlaygroundDirective.$inject = [];
  *
  * @return {Object} Directive definition object.
  */
-function graphqlPlaygroundDirective() {
+function graphqlPlaygroundDirective($repositories, $translate, MonitoringRestService, toastr) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/core/directives/graphql-playground/templates/graphql-playground.html',
@@ -48,6 +48,20 @@ function graphqlPlaygroundDirective() {
              */
             $scope.getGraphQLPlaygroundComponent = () => {
                 return new GraphQLPlaygroundComponent(getGraphQLPlaygroundElements()[0]);
+            };
+
+            /**
+             * Handles the event to abort a running query by sending a request to delete the associated SPARQL query.
+             * It retrieves the current repository and track alias from the event detail and notifies the user about
+             * the query abortion.
+             *
+             * @param {Object} event - The event object triggered by the abort query action.
+             */
+            $scope.abortQuery = (event) => {
+                const currentRepository = $repositories.getActiveRepository();
+                const currentTrackAlias = event.detail.headers['X-GraphDB-Track-Alias'];
+                toastr.info($translate.instant('graphql.playground.message.abort_query'));
+                MonitoringRestService.deleteQuery(currentTrackAlias, currentRepository);
             };
 
             // =========================

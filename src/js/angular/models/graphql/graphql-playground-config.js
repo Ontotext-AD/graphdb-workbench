@@ -9,7 +9,7 @@ export class GraphqlPlaygroundConfig {
          */
         this._endpoint = data.endpoint;
         /**
-         * @type {Object}
+         * @type {Object | () => Object}
          * @private
          */
         this._headers = data.headers;

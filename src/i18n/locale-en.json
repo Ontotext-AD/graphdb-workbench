@@ -748,7 +748,8 @@
     "graphql": {
         "playground": {
             "message": {
-                "no_schemas_in_repository": "No active endpoints found in the current repository. Manage the GraphQL schemas <a href=\"#\">here</a>"
+                "no_schemas_in_repository": "No active endpoints found in the current repository. Manage the GraphQL schemas <a href=\"#\">here</a>",
+                "abort_query": "Query canceled: The operation was stopped before completion."
             },
             "endpoint_selector": {
                 "tooltip": "Select a GraphQL endpoint"

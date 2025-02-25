@@ -748,7 +748,8 @@
     "graphql": {
         "playground": {
             "message": {
-                "no_schemas_in_repository": "Aucun point de terminaison actif n'a été trouvé dans le référentiel actuel. Gérez les schémas GraphQL <a href=\"#\">ici</a>"
+                "no_schemas_in_repository": "Aucun point de terminaison actif n'a été trouvé dans le référentiel actuel. Gérez les schémas GraphQL <a href=\"#\">ici</a>",
+                "abort_query": "Requête annulée : L'opération a été arrêtée avant son achèvement."
             },
             "endpoint_selector": {
                 "tooltip": "Sélectionnez un point de terminaison GraphQL"
