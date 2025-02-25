@@ -262,10 +262,10 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
      *     </li>
      *     <li>
      *         <b>canBePaused</b> - some element need user interaction with some other element on the page before appear. Step which uses such
-     *         element can be persist when guide is paused. For example if step is "Click on sub menu "Repositories" of menu "Setup""
+     *         element can be persisted when guide is paused. For example if step is "Click on sub menu "Repositories" of menu "Setup""
      *     </li>
      *     <li>
-     *         <b>onNextClick</b> - function which will be executed when nex button is clicked.
+     *         <b>onNextClick</b> - function which will be executed when next button is clicked.
      *     </li>
      *     <li>
      *         <b>onNextValidate</b> - function that determines whether pressing the next button advances the step
@@ -756,7 +756,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             showOn: stepDescription.showOn,
             scrollToHandler: stepDescription.scrollToHandler,
             classes: 'guide-dialog ' + stepDescription.class,
-            beforeShowPromise: stepDescription.beforeShowPromise,
+            beforeShowPromise: this._getBeforeShowPromise(guide, stepDescription),
             canClickTarget: clickable,
             keyboardNavigation: false,
             skipPoint: stepDescription.skipPoint,
@@ -775,10 +775,18 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         return step;
     };
 
+    this._getBeforeShowPromise = (guide, stepDescription) => {
+        if (angular.isFunction(stepDescription.beforeShowPromise)) {
+            return () => {
+                return stepDescription.beforeShowPromise(guide, stepDescription);
+            };
+        }
+    }
+
     this._getShowFunction = (guide, stepDescription, onShow) => {
         if (angular.isFunction(stepDescription.show)) {
             return () => {
-                stepDescription.show(guide)();
+                stepDescription.show(guide, stepDescription)();
                 onShow();
                 this._whenStepShow(stepDescription);
             };
