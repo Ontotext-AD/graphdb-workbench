@@ -602,6 +602,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.$on('$destroy', () => {
         document.removeEventListener('click', closeActiveRepoPopoverEventHandler);
         window.removeEventListener('storage', localStoreChangeHandler);
+        $scope.cancelPopoverOpen();
         deregisterMenuWatcher();
         if ($scope.checkMenu) {
             $timeout.cancel($scope.checkMenu);
@@ -660,12 +661,26 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     };
 
     $scope.isActiveRepoPopoverOpen = false;
+    /**
+     * When the timeout finishes, the popover will open.
+     */
+    let popoverTimer;
 
     $scope.openActiveRepoPopover = function () {
         if ($scope.getActiveRepository()) {
-            $scope.isActiveRepoPopoverOpen = true;
+            $scope.cancelPopoverOpen();
+            popoverTimer = $timeout(function () {
+                $scope.isActiveRepoPopoverOpen = true;
+            }, 1000);
         }
     };
+
+    /**
+     * Cancels the popover timer.
+     */
+    $scope.cancelPopoverOpen = function () {
+        $timeout.cancel(popoverTimer);
+    }
 
     $scope.closeActiveRepoPopover = function () {
        $scope.isActiveRepoPopoverOpen = false;
