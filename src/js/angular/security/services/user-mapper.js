@@ -29,12 +29,12 @@ export const toUserModelMapper = (data, key = 'grantedAuthorities') => {
     return new UserModel(mappedData);
 };
 
-export const fromUserModelMapper = (uiModel) => {
+export const fromUserModelMapper = (uiModel, key = 'grantedAuthorities') => {
     if (Array.isArray(uiModel)) {
         return uiModel.map((model) => fromUserModelMapper(model));
     }
     return mapObject(uiModel,  {
-            grantedAuthorities: mapAuthoritiesToBackend
+            [key]: mapAuthoritiesToBackend
     });
 };
 

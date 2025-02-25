@@ -8,15 +8,19 @@ angular.module('graphdb.framework.core.services.jwtauth', [
     'graphdb.framework.core.services.security-service',
     'graphdb.framework.core.services.openIDService'
 ])
-    .service('$jwtAuth', ['$http', 'toastr', '$location', '$rootScope', 'SecurityService', '$openIDAuth', '$translate', '$q', 'AuthTokenService', 'LSKeys', 'LocalStorageAdapter',
-        function ($http, toastr, $location, $rootScope, SecurityService, $openIDAuth, $translate, $q, AuthTokenService, LSKeys, LocalStorageAdapter) {
+    .service('$jwtAuth', ['$http', 'toastr', '$location', '$rootScope', 'SecurityService', '$openIDAuth', '$translate', '$q', '$route', 'AuthTokenService', 'LSKeys', 'LocalStorageAdapter',
+        function ($http, toastr, $location, $rootScope, SecurityService, $openIDAuth, $translate, $q, $route, AuthTokenService, LSKeys, LocalStorageAdapter) {
             const jwtAuth = this;
 
             $rootScope.deniedPermissions = {};
-            $rootScope.setPermissionDenied = function (path) {
+            $rootScope.setPermissionDenied = (path) => {
                 if (path === '/login' || !jwtAuth.isAuthenticated()) {
                     return false;
                 }
+                if(jwtAuth.isAuthenticated() && this.hasGraphqlRightsOverCurrentRepo()) {
+                    return true;
+                }
+
                 $rootScope.deniedPermissions[path] = true;
                 return true;
             };
@@ -287,12 +291,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     $rootScope.deniedPermissions = {};
                     this.securityInitialized = true;
 
-                    const selectedRepo = {
-                        id: LocalStorageAdapter.get(LSKeys.REPOSITORY_ID) || '',
-                        location: LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION) || ''
-                    };
-
-                    if (!jwtAuth.canReadRepo(selectedRepo)) {
+                    if (!jwtAuth.canReadRepo(this.getSelectedRepo())) {
                         // if the current repo is unreadable by the currently logged-in user (or free access user)
                         // we unset the repository
                         LocalStorageAdapter.remove(LSKeys.REPOSITORY_ID);
@@ -306,6 +305,13 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         resolve(true);
                     });
                 });
+            };
+
+            this.getSelectedRepo = function () {
+                return {
+                    id: LocalStorageAdapter.get(LSKeys.REPOSITORY_ID) || '',
+                    location: LocalStorageAdapter.get(LSKeys.REPOSITORY_LOCATION) || ''
+                }
             };
 
             this.authenticateOpenID = function(authHeader) {
@@ -374,6 +380,70 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 }
             };
 
+            // Check if the user has the necessary authority to access the route
+            this.hasAuthority = function () {
+                // If there is no current active route, return false – access cannot be determined
+                if (!$route.current) {
+                    return false;
+                }
+
+                // If the user has an admin role, they always have access
+                if (this.hasAdminRole()) {
+                    return true;
+                }
+
+                // If the current route doesn't define "allowAuthorities", assume there are no restrictions
+                if (!$route.current.allowAuthorities) {
+                    return true;
+                }
+
+                // If there is no selected repository, there are no auth restrictions
+                if (this.getSelectedRepo().id === '' && this.getSelectedRepo().location === '') {
+                    return true;
+                }
+
+                // If there is no principal defined, assume is admin and return true
+                if (!this.principal) {
+                    return true;
+                }
+
+                // If there are allowed authorities defined for the current route
+                if ($route.current.allowAuthorities.length > 0) {
+                    const auth = resolveAuthorities($route.current.allowAuthorities);
+                    // Check if any of the allowed authorities match one of the principal's authorities
+                    return auth.some(allowAuth => this.principal.authorities.indexOf(allowAuth) > -1);
+                }
+
+                // If none of the above conditions apply, return true by default
+                return true;
+            }
+
+            // Function to resolve a list of authority strings by replacing the "{repoId}" placeholder
+            // with both the specific repository ID and a wildcard for all repositories.
+            const resolveAuthorities = (authoritiesList) => {
+                // If no authorities list is provided, return undefined.
+                if (!authoritiesList) {
+                    return;
+                }
+
+                // Get the selected repository's ID from the current context.
+                const repoId = this.getSelectedRepo().id;
+                // If there is no selected repository ID, return the original authorities list.
+                if (!repoId) {
+                    return authoritiesList;
+                }
+
+                // Replace the "{repoId}" placeholder with the actual repository ID for specific access.
+                const authListForCurrentRepo = authoritiesList.map(authority => authority.replace('{repoId}', repoId));
+                // Replace the "{repoId}" placeholder with a wildcard '*' to denote access to any repository.
+                const authListForAllRepos = authoritiesList.map(authority => authority.replace('{repoId}', '*'));
+
+                // Combine both lists into a single array and return.
+                return [...authListForCurrentRepo, ...authListForAllRepos];
+            }
+
+
+
             this.isAdmin = function () {
                 return this.hasRole(UserRole.ROLE_ADMIN);
             };
@@ -397,7 +467,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 return this.isAdmin() || this.isRepoManager();
             };
 
-            this.canWriteRepo = function (repo, graphql = false) {
+            this.canWriteRepo = function (repo) {
                 if (!repo) {
                     return false;
                 }
@@ -409,13 +479,13 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     } else if (this.hasAdminRole()) {
                         return true;
                     }
-                    return this.checkRights(repo, 'WRITE', graphql);
+                    return this.checkRights(repo, 'WRITE');
                 } else {
                     return true;
                 }
             };
 
-            this.canReadRepo = function (repo, graphql = false) {
+            this.canReadRepo = function (repo) {
                 if (!repo) {
                     return false;
                 }
@@ -427,33 +497,64 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     } else if (this.hasAdminRole()) {
                         return true;
                     }
-                    return this.checkRights(repo, 'READ', graphql);
+                    return this.checkRights(repo, 'READ');
                 } else {
                     return true;
                 }
             };
 
 
-            this.checkRights = function (repo, action, graphql = false) {
+            this.checkRights = function (repo, action) {
                 if (!repo) {
                     return false;
                 }
 
+                if (repo.id === 'SYSTEM') {
+                    return false;
+                }
+
+                return this.hasBaseRights(action, repo);
+            };
+
+            this.hasBaseRights = function (action, repo) {
                 const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
                 const overCurrentRepo = `${action}_REPO_${repoId}`;
                 const overAllRepos = `${action}_REPO_*`;
 
-                if (graphql) {
-                    const overCurrentRepoGraphql = `${overCurrentRepo}:GRAPHQL`;
-                    const overAllReposGraphql = `${overAllRepos}:GRAPHQL`;
-                    if (repo.id !== 'SYSTEM' && (this.principal.authorities.indexOf(overCurrentRepoGraphql) > -1 || this.principal.authorities.indexOf(overAllReposGraphql) > -1)) {
-                        return true;
-                    }
+                return (
+                    this.principal.authorities.indexOf(overCurrentRepo) > -1 ||
+                    this.principal.authorities.indexOf(overAllRepos) > -1
+                );
+            }
+
+            this.hasGraphqlRightsOverCurrentRepo = function () {
+                return this.hasGraphqlReadRights(this.getSelectedRepo()) || this.hasGraphqlWriteRights(this.getSelectedRepo());
+            }
+
+            this.hasGraphqlWriteRights = function (repo) {
+                if (!repo) {
+                    return false;
                 }
+                return this.hasGraphqlAuthority('WRITE', repo)
+            }
 
-                return repo.id !== 'SYSTEM' && (this.principal.authorities.indexOf(overCurrentRepo) > -1 || this.principal.authorities.indexOf(overAllRepos) > -1);
-            };
+            this.hasGraphqlReadRights = function (repo) {
+                if (!repo) {
+                    return false;
+                }
+                return this.hasGraphqlAuthority('READ', repo)
+            }
 
+            this.hasGraphqlAuthority = function (action, repo) {
+                const repoId = repo.location ? `${repo.id}@${repo.location}` : repo.id;
+                const overCurrentRepoGraphql = `${action}_REPO_${repoId}:GRAPHQL`;
+                const overAllReposGraphql = `${action}_REPO_*:GRAPHQL`;
+
+                return (
+                    this.principal.authorities.indexOf(overCurrentRepoGraphql) > -1 ||
+                    this.principal.authorities.indexOf(overAllReposGraphql) > -1
+                );
+            }
 
             this.updateUserData = (data) => SecurityService.updateUserData(data);
         }]);

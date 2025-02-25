@@ -21,7 +21,7 @@
 
 <div class="status-bar bg-white" ng-hide="!showMainManuAndStatusBar()" ng-cloak>
     <!-- Looking glass search icon -->
-    <rdf-resource-search ng-if="showRdfResourceSearch()" on-open="onRdfResourceSearch()"></rdf-resource-search>
+    <rdf-resource-search ng-if="showRdfResourceSearch() && !hasGraphqlRightsOverCurrentRepo()" on-open="onRdfResourceSearch()"></rdf-resource-search>
 
     <!-- Invalid/expired license notification -->
     <div ng-if="!getLicense().valid && showLicense()">
@@ -57,11 +57,11 @@
                 <em ng-class="'icon-repo-' + getActiveRepositoryObject().type"></em>
                 {{getActiveRepository()}}{{ getActiveRepositoryShortLocation() }}
             </span>
-            <span class="no-selected-repository" ng-if="!getActiveRepository() && getReadableRepositories().length">{{'choose.repo' | translate}}</span>
-            <span class="no-repositories" ng-if="!getActiveRepository() && !getReadableRepositories().length">{{'no.accessible.repos.warning' | translate}}</span>
+            <span class="no-selected-repository" ng-if="!getActiveRepository() && getAllAccessibleRepositories().length">{{'choose.repo' | translate}}</span>
+            <span class="no-repositories" ng-if="!getActiveRepository() && !getAllAccessibleRepositories().length">{{'no.accessible.repos.warning' | translate}}</span>
         </button>
         <ul class="dropdown-menu dropdown-menu-right pre-scrollable" aria-labelledby="dropdownMenuButton">
-            <li ng-repeat="repository in getReadableRepositories() | orderBy: ['location', 'id']"
+            <li ng-repeat="repository in getAllAccessibleRepositories() | orderBy: ['location', 'id']"
                 ng-if="!isRepoActive(repository)"
                 ng-mouseover="handlePopovers(repository)" popover-popup-delay="500"
                 popover-trigger="mouseenter" popover-placement="left-bottom"
@@ -152,10 +152,33 @@
         </p>
     </div>
 
-        <div class="container-fluid main-container" ng-show="hasPermission()" ng-view role="main"
-             ng-class="(menuCollapsed || checkMenu()) ? 'expanded':''">
-
+    <div class="container-fluid main-container" ng-if="hasPermission() && !hasAuthority()"
+         ng-class="(menuCollapsed || checkMenu()) ? 'expanded':''">
+        <h1>
+            {{title}}
+            <page-info-tooltip></page-info-tooltip>
+        </h1>
+        <div class="mb-2 row">
+            <div role="alert">
+                <div class="mb-1 mt-1 ml-1 mr-1">
+                    <div class="card repository-errors">
+                        <div class="alert lead alert-warning">
+                            <div>{{'core.errors.restricted.warning.msg' | translate}}
+                                <span>{{'core.errors.no.auth.to.repository.warning.msg' | translate}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
+
+    <div class="container-fluid main-container"
+         ng-if="hasPermission() && hasAuthority()"
+         ng-view
+         role="main"
+         ng-class="(menuCollapsed || checkMenu()) ? 'expanded':''">
+    </div>
 
     <footer ng-show="showFooter" class="footer">
         <div class="container-fluid main-container">

@@ -7,7 +7,8 @@ PluginRegistry.add('route', [
         title: 'view.guides.title',
         controller: 'GuidesCtrl',
         helpInfo: 'view.guides.helpInfo',
-        documentationUrl: 'index.html'
+        documentationUrl: 'index.html',
+        'allowAuthorities': ['READ_REPO_{repoId}']
     }
 ]);
 

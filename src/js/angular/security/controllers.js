@@ -137,8 +137,8 @@ securityModule.controller('UsersCtrl', ['$scope', '$uibModal', 'toastr', '$windo
         $scope.toggleFreeAccess = function (updateFreeAccess) {
             if (!$jwtAuth.isFreeAccessEnabled() || ($jwtAuth.isFreeAccessEnabled() && updateFreeAccess)) {
                 SecurityService.getFreeAccess().then(function (res) {
-                    const authorities = res.data.authorities;
-                    const appSettings = res.data.appSettings || {
+                    const authorities = res.grantedAuthoritiesUiModel;
+                    const appSettings = res.appSettings || {
                         'DEFAULT_SAMEAS': true,
                         'DEFAULT_INFERENCE': true,
                         'EXECUTE_COUNT': true,

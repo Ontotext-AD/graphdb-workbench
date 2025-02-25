@@ -8,7 +8,8 @@ PluginRegistry.add('route', {
     'title': 'common.import',
     'reloadOnSearch': false,
     'helpInfo': 'view.import.helpInfo',
-    'documentationUrl': 'loading-data-using-the-workbench.html'
+    'documentationUrl': 'loading-data-using-the-workbench.html',
+    'allowAuthorities': ['READ_REPO_{repoId}']
 });
 
 PluginRegistry.add('main.menu', {

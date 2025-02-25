@@ -1917,6 +1917,7 @@
     "core.errors.not.valid.license.warning.msg": "Votre licence n'est pas valide.",
     "core.errors.set.new.license.warning.msg": "Définir une nouvelle licence",
     "core.errors.no.permission.to.repository.warning.msg": "vous n'avez pas de droit d'écriture sur le dépôt",
+    "core.errors.no.auth.to.repository.warning.msg": "vous n'avez aucune autorisation sur le référentiel",
     "core.errors.read.only.repository.warning.msg": "est en lecture seule Virtual Repository.",
     "core.errors.fedx.repository.warning.msg": "n'est pas supporté par FedX Repository.",
     "core.errors.select.repository.warning.msg": "Cliquez sur l'un des dépôts ci-dessous pour vous y connecter",

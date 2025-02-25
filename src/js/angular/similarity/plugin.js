@@ -8,7 +8,8 @@ PluginRegistry.add('route', [
         'templateUrl': 'pages/similarity-indexes.html',
         'title': 'view.similarity.indexes.title',
         'helpInfo': 'view.similarity.indexes.helpInfo',
-        'documentationUrl': 'semantic-similarity-searches.html#text-based-similarity-searches'
+        'documentationUrl': 'semantic-similarity-searches.html#text-based-similarity-searches',
+        'allowAuthorities': ['READ_REPO_{repoId}']
     }, {
         'url': '/similarity/index/create',
         'module': 'graphdb.framework.similarity',
@@ -17,7 +18,8 @@ PluginRegistry.add('route', [
         'controller': 'CreateSimilarityIdxCtrl',
         'templateUrl': 'pages/create-index.html',
         'title': 'view.create.similarity.index.title',
-        'helpInfo': 'view.create.similarity.index.helpInfo'
+        'helpInfo': 'view.create.similarity.index.helpInfo',
+        'allowAuthorities': ['READ_REPO_{repoId}']
     }
 ]);
 

@@ -277,7 +277,7 @@
                                 </thead>
                                 <tbody>
                                     <div>
-                                        <tr ng-repeat="repository in getReadableRepositories(true) | orderBy: ['location', 'id']">
+                                        <tr ng-repeat="repository in getAllAccessibleRepositories() | orderBy: ['location', 'id']">
                                             <td class="repository-name">{{repository.id}}<small><em ng-if="(hasGraphqlPermission(repository) || hasGraphqlPermission('*')) && (hasReadPermission(repository) || hasReadPermission('*') || hasWritePermission(repository) || hasWritePermission('*'))" class="fa-kit fa-gdb-graphql graphql-icon text-info" gdb-tooltip="{{'security.tooltip.graphql' | translate}}"></em> &middot; {{repository.location ? repository.location : 'repo.local' | translate}}</small></td>
                                             <td class="text-xs-center read-rights"><input class="read" type="checkbox" ng-model="grantedAuthorities.READ_REPO[createUniqueKey(repository)]"  ng-checked="hasReadPermission(repository)" ng-disabled="readCheckDisabled(repository)" ng-click="setGrantedAuthorities()"></td>
                                             <td class="text-xs-center write-rights"><input class="write" type="checkbox" ng-model="grantedAuthorities.WRITE_REPO[createUniqueKey(repository)]" ng-checked="hasWritePermission(repository)" ng-disabled="writeCheckDisabled(repository)" ng-click="setGrantedAuthorities()"></td>

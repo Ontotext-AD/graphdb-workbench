@@ -7,7 +7,8 @@ PluginRegistry.add('route', {
     'templateUrl': 'pages/rdfrank.html',
     'title': 'view.rdf.rank.title',
     'helpInfo': 'view.rdf.rank.helpInfo',
-    'documentationUrl': 'ranking-results.html'
+    'documentationUrl': 'ranking-results.html',
+    'allowAuthorities': ['READ_REPO_{repoId}']
 });
 
 PluginRegistry.add('main.menu', {

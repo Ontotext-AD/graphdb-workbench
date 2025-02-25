@@ -7,7 +7,8 @@ PluginRegistry.add('route', {
     'templateUrl': 'pages/aclmanagement.html',
     'title': 'view.aclmanagement.title',
     'helpInfo': 'view.aclmanagement.helpInfo',
-    'documentationUrl': 'managing-fgac-workbench.html'
+    'documentationUrl': 'managing-fgac-workbench.html',
+    'allowAuthorities': ['READ_REPO_{repoId}']
 });
 
 PluginRegistry.add('main.menu', {

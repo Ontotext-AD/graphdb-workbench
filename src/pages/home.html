@@ -57,7 +57,7 @@
         <div class="col-lg-6">
             <h3 id="active-repo-label-home"><span gdb-tooltip="{{'view.active.repo.info.label' | translate}}" tooltip-placement="top">{{'active.repo.label' | translate}}</span></h3>
             <div class="card active-repo-card"
-                 ng-show="canReadRepo(getActiveRepositoryObject())">
+                 ng-show="canReadRepo(getActiveRepositoryObject()) || hasGraphqlRightsOverCurrentRepo()">
                 <div class="card-block">
                     <h6>{{getActiveRepositoryObject().location ? getActiveRepositoryObject().location : 'Local'}}</h6>
                     <div class="actions-bar pull-right">
@@ -125,7 +125,10 @@
                                 <a ng-show="canWriteActiveRepo()" class="btn btn-link" href="import">{{'import.rdf.data.label' | translate}}</a>
                                 <button ng-hide="canWriteActiveRepo()" disabled class="btn btn-link" href="import">{{'import.rdf.data.label' | translate}}</button>
                             </div>
-                            <div><a class="btn btn-link" href="graphs">{{'export.rdf.data' | translate}}</a></div>
+                            <div>
+                                <a ng-show="canReadRepo(getActiveRepositoryObject())" class="btn btn-link" href="graphs">{{'export.rdf.data' | translate}}</a>
+                                <button ng-show="hasGraphqlRightsOverCurrentRepo()" disabled class="btn btn-link" href="export">{{'export.rdf.data' | translate}}</button>
+                            </div>
                         </div>
                     </div>
                 </div>

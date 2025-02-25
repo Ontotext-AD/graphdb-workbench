@@ -8,7 +8,8 @@ PluginRegistry.add('route', [
         'templateUrl': 'pages/repositories.html',
         'title': 'menu.repositories.label',
         'helpInfo': 'view.repositories.helpInfo',
-        'documentationUrl': 'creating-a-repository.html'
+        'documentationUrl': 'creating-a-repository.html',
+        'allowAuthorities': ['READ_REPO_{repoId}']
     }, {
         'url': '/repository/create',
         'module': 'graphdb.framework.repositories',
@@ -16,7 +17,8 @@ PluginRegistry.add('route', [
         'chunk': 'repositories',
         'controller': 'ChooseRepositoryCtrl',
         'templateUrl': 'pages/choose-repository-type.html',
-        'title': 'view.choose.repo.title'
+        'title': 'view.choose.repo.title',
+        'allowAuthorities': ['READ_REPO_{repoId}']
     }, {
         'url': '/repository/create/:repositoryType',
         'module': 'graphdb.framework.repositories',
@@ -24,7 +26,8 @@ PluginRegistry.add('route', [
         'chunk': 'repositories',
         'controller': 'AddRepositoryCtrl',
         'templateUrl': 'pages/repository.html',
-        'title': 'Create Repository'
+        'title': 'Create Repository',
+        'allowAuthorities': ['READ_REPO_{repoId}']
     }, {
         'url': '/repository/edit/:repositoryId',
         'module': 'graphdb.framework.repositories',
@@ -32,7 +35,8 @@ PluginRegistry.add('route', [
         'chunk': 'repositories',
         'controller': 'EditRepositoryCtrl',
         'templateUrl': 'pages/repository.html',
-        'title': 'Edit Repository'
+        'title': 'Edit Repository',
+        'allowAuthorities': ['READ_REPO_{repoId}']
     }
 ]);
 

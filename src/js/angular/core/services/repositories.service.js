@@ -65,7 +65,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                 existsActiveRepo = repositoriesFromLocation.find((repo) => repo.id === repository.id);
             }
             if (existsActiveRepo) {
-                if (!$jwtAuth.canReadRepo(repository)) {
+                if (!$jwtAuth.canReadRepo(repository) && !$jwtAuth.hasGraphqlReadRights(repository)) {
                     this.setRepository('');
                 } else {
                     $rootScope.$broadcast('repositoryIsSet', {newRepo: false});
@@ -266,15 +266,21 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             return this.getRepositories().find((repository) => repository.id === repositoryId);
         };
 
-        this.getReadableRepositories = function (graphql = false) {
+        this.getReadableRepositories = function () {
             return _.filter(this.getRepositories(), function (repo) {
-                return $jwtAuth.canReadRepo(repo, graphql);
+                return $jwtAuth.canReadRepo(repo);
             });
         };
 
         this.getReadableGraphdbRepositories = function () {
             return this.getReadableRepositories()
                 .filter((repo) => repo.type === 'graphdb');
+        };
+
+        this.getAllAccessibleRepositories = function () {
+            return _.filter(this.getRepositories(), function (repo) {
+                return $jwtAuth.canReadRepo(repo) || $jwtAuth.hasGraphqlReadRights(repo);
+            });
         };
 
         /**
@@ -401,7 +407,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
 
                     // if the current repo is unreadable by the currently logged in user (or free access user)
                     // we unset the repository
-                    if (repo && !$jwtAuth.canReadRepo(repo)) {
+                    if (repo && !$jwtAuth.canReadRepo(repo) && !$jwtAuth.hasGraphqlReadRights(repo)) {
                         this.setRepository('');
                     }
                     // reset denied permissions (different repo, different rights)

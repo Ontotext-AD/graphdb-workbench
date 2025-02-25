@@ -13,6 +13,7 @@ rdfResourceSearchDirective.$inject = [
     '$repositories',
     '$licenseService',
     '$translate',
+    '$jwtAuth',
     'toastr',
     'WorkbenchContextService',
     'RDF4JRepositoriesService'];
@@ -24,6 +25,7 @@ function rdfResourceSearchDirective(
     $repositories,
     $licenseService,
     $translate,
+    $jwtAuth,
     toastr,
     WorkbenchContextService,
     RDF4JRepositoriesService) {
@@ -81,7 +83,7 @@ function rdfResourceSearchDirective(
 
             const loadNamespaces = () => {
                 const activeRepository = $repositories.getActiveRepository();
-                if (!activeRepository) {
+                if (!activeRepository || !$jwtAuth.canReadRepo(activeRepository)) {
                     return Promise.resolve(new NamespacesListModel());
                 }
                 return RDF4JRepositoriesService.getNamespaces(activeRepository);
