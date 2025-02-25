@@ -17,6 +17,8 @@ function EndpointGenerationResultFailureModalController($scope, $uibModalInstanc
     // Private variables
     // =========================
 
+    const REPORT_FILE_NAME = 'generation-report.json';
+
     // =========================
     // Public variables
     // =========================
@@ -40,7 +42,7 @@ function EndpointGenerationResultFailureModalController($scope, $uibModalInstanc
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `${$scope.endpointReport.endpointId}-generation-report.json`;
+        a.download = $scope.endpointReport.endpointId ? `${$scope.endpointReport.endpointId}-${REPORT_FILE_NAME}` : REPORT_FILE_NAME;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);

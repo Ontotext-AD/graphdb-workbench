@@ -180,17 +180,15 @@ function GraphqlRestService($http, Upload) {
      * yaml or zip.
      * @param {string} repositoryId The repository ID.
      * @param {FormData|File} payload The request payload.
-     * @param {*} canceler The canceler object.
      * @returns {Promise<unknown>} The response from the backend.
      */
-    const importEndpointDefinition = (repositoryId, payload, canceler) => {
+    const importEndpointDefinition = (repositoryId, payload) => {
         return Upload.http({
             url: `${REPOSITORIES_ENDPOINT}/${repositoryId}/graphql/manage/endpoints/import`,
             data: payload,
             headers: {
                 'Content-Type': undefined
-            },
-            timeout: canceler.promise
+            }
         });
     };
 

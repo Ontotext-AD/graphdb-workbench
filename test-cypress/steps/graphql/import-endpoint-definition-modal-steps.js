@@ -38,8 +38,24 @@ export class ImportEndpointDefinitionModalSteps extends ModalDialogSteps {
         return this.getFileItem(index).find('.file-name');
     }
 
+    static getSelectedFileSize(index) {
+        return this.getFileItem(index).find('.file-size');
+    }
+
     static getImportStatus(index) {
-        return this.getFileItem(index).find('.import-status');
+        return this.getFileItem(index).find('.import-status .status');
+    }
+
+    static getGeneratedEndpointLink(index) {
+        return this.getFileItem(index).find('.endpoint-link');
+    }
+
+    static getReportLink(index) {
+        return this.getFileItem(index).find('.report-link');
+    }
+
+    static openReport(index) {
+        this.getReportLink(index).click();
     }
 
     static getRemoveSelectedFileButton(index) {

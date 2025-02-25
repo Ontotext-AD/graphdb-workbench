@@ -38,3 +38,22 @@ export const endpointGenerationReportMapper = (reportReponse, repositoryId) => {
         messages: reportReponse.messages
     });
 }
+
+/**
+ * Maps the endpoint definition import response to an endpoint generation report.
+ * @param {*} importResponse The import response.
+ * @param {string} endpointId The endpoint id.
+ * @param {string} repositoryId The repository id.
+ * @returns {EndpointGenerationReport}
+ */
+export const importEndpointDefinitionReportMapper = (importResponse, endpointId, repositoryId) => {
+    const errorsCount = importResponse.messages ? importResponse.messages.errors?.length : 0;
+    const warningsCount = importResponse.messages ? importResponse.messages.warnings?.length : 0;
+    return new EndpointGenerationReport({
+        endpointId: importResponse.id,
+        endpointURI: resolveGraphqlEndpoint(repositoryId, importResponse.id),
+        warnings: warningsCount,
+        errors: errorsCount,
+        messages: importResponse.messages
+    });
+}

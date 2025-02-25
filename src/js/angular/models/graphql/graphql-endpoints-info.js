@@ -63,7 +63,7 @@ export class GraphqlEndpointInfo {
      */
     _createdSuccessfully;
 
-    constructor(data) {
+    constructor(data = {}) {
         this._endpointId = data.endpointId;
         this._endpointURI = data.endpointURI;
         this._label = data.label;

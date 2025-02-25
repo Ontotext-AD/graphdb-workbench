@@ -846,20 +846,34 @@
                 }
             },
             "import_definition_modal": {
-                "title": "Importer un schéma GraphQL",
+                "title": "Importer la définition du schéma GraphQL",
                 "actions": {
                     "select_files": {
-                        "label": "Choisir"
+                        "label": "Parcourir"
                     },
                     "import": {
-                        "label": "Télécharger et valider"
+                        "label": "Télécharger et créer"
                     },
-                    "abort": {
-                        "label": "Avorter"
+                    "view_report": {
+                        "label": "Voir le rapport",
+                        "tooltip": "Afficher le rapport d'importation"
+                    },
+                    "explore_endpoint": {
+                        "tooltip": "Explorez le point de terminaison dans le Playground"
+                    },
+                    "remove_file": {
+                        "tooltip": "Supprimer le fichier de la sélection"
                     }
                 },
                 "messages": {
-                    "allowed_file_types": "Formats de fichiers autorisés: .yaml, .zip"
+                    "allowed_file_types": "Formats de fichiers autorisés: .yaml, .yml, .zip",
+                    "no_files_selected": "Parcourez ou faites glisser et déposez les fichiers ici pour les télécharger."
+                },
+                "status": {
+                    "pending": "En attente",
+                    "completed": "Finalisé",
+                    "failed": "Échoué",
+                    "not_allowed": "Non autorisé"
                 }
             }
         },
@@ -958,7 +972,7 @@
                     },
                     "generation_failure_report": {
                         "title": "La création du point de terminaison GraphQL a échoué",
-                        "reason_message": "La création du point de terminaison GraphQL \"{{endpointId}}\" a échoué en raison d'erreurs/avertissements lors de la génération de la définition de schéma.",
+                        "reason_message": "La création du point de terminaison GraphQL a échoué en raison d'erreurs/avertissements lors de la génération de la définition de schéma.",
                         "errors": "Erreur de validation [{{errorCount}}]",
                         "warnings": "Avertissement [{{warningCount}}",
                         "actions": {

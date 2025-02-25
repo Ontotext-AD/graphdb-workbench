@@ -235,12 +235,11 @@ function GraphqlService(GraphqlRestService) {
     /**
      * Import endpoint definitions given as payload.
      * @param {string} repositoryId The repository ID.
-     * @param {*} payload The request payload.
-     * @param {*} canceler The canceler object.
+     * @param {File|FormData} payload The request payload.
      * @returns {Promise<*>|*}
      */
-    const importEndpointDefinition = (repositoryId, payload, canceler) => {
-        return GraphqlRestService.importEndpointDefinition(repositoryId, payload, canceler);
+    const importEndpointDefinition = (repositoryId, payload) => {
+        return GraphqlRestService.importEndpointDefinition(repositoryId, payload);
     };
 
     return {

@@ -13,16 +13,58 @@
     flex-direction: column;
     align-items: stretch;
     justify-content: stretch;
+    padding: 20px;
+    text-align: center;
 }
 
-.import-endpoint-definition-modal .upload-area .file-list {
-
+.import-endpoint-definition-modal .upload-area.dragover {
+    outline: 3px dashed #ccc;
 }
 
-.import-endpoint-definition-modal .upload-area .file-list .file-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.import-endpoint-definition-modal .file-list {
+    margin-bottom: 0;
+}
+
+.import-endpoint-definition-modal .file-list td {
+    border: none;
+    text-align: left;
+}
+
+.import-endpoint-definition-modal .file-item td {
+    padding-top: .6rem;
+    padding-bottom: .6rem;
+}
+
+.import-endpoint-definition-modal .file-item.sub-file td {
+    padding-top: .3rem;
+    padding-bottom: .3rem;
+}
+
+.import-endpoint-definition-modal .file-list .file-info {
+    width: 60%;
+}
+
+.import-endpoint-definition-modal .file-list .import-status {
+    width: 8%;
+}
+
+.import-endpoint-definition-modal .file-list .file-actions {
+    width: 5%;
+}
+
+.import-endpoint-definition-modal .file-list .report-link {
+    /* reset the padding coming from btn-link */
+    padding: 0;
+}
+
+.import-endpoint-definition-modal .file-list .endpoint-link {
+    text-decoration: underline;
+}
+
+.import-endpoint-definition-modal .file-list .sub-file-indent {
+    margin-left: 20px;
+    color: #666;
+    font-family: monospace;
 }
 
 .import-endpoint-definition-modal .progress-bar-danger {
