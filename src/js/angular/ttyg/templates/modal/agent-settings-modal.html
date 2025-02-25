@@ -10,13 +10,13 @@
 </div>
 
 <div class="modal-body">
-    <form novalidate name="agentSettingsForm" id="agentSettingsForm" class="agent-settings-form">
+    <form novalidate name="agentSettingsForm" id="agentSettingsForm" class="agent-settings-form" guide-selector="agent-form">
         <div class="form-group agent-name-label">
             <label for="name" uib-popover="{{'ttyg.agent.create_agent_modal.form.agent_name.tooltip' | translate}}"
                    popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.agent_name.label'
                 | translate}}</label>
             <input type="text" class="form-control" id="name" name="name" ng-model="agentFormModel.name"
-                   required autocomplete="off"
+                   required autocomplete="off" guide-selector="agent-name"
                    placeholder="{{'ttyg.agent.create_agent_modal.form.agent_name.placeholder' | translate}}">
             <div class="alert alert-danger"
                  ng-if="agentSettingsForm.name.$touched && agentSettingsForm.name.$invalid">
@@ -29,7 +29,7 @@
                    popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.repository.label' |
                 translate}}</label>
             <select class="form-control" id="repositoryId" name="repositoryId" ng-model="agentFormModel.repositoryId"
-                    required ng-change="onRepositoryChange()"
+                    required ng-change="onRepositoryChange()" guide-selector="repository-id"
                     ng-options="repository.value as repository.label for repository in activeRepositoryList">
             </select>
             <div class="alert alert-danger"
@@ -49,10 +49,10 @@
                 <div ng-repeat="extractionMethod in agentFormModel.assistantExtractionMethods.extractionMethods"
                      class="extraction-method">
                     <div id="{{extractionMethod.method + '_method_heading'}}" class="extraction-method-heading"
-                         ng-class="{'selected': extractionMethod.selected}">
+                         ng-class="{'selected': extractionMethod.selected}" guide-selector="query-method-{{extractionMethod.method}}">
                         <div class="mr-0 extraction-method-toggle">
-                            <input type="checkbox" id="{{extractionMethod.method + '_checkbox'}}"
-                                   name="{{extractionMethod}}" class="switch"
+                            <input type="checkbox" id="{{extractionMethod.method + '_checkbox'}}" guide-selector="query-method-{{extractionMethod.method}}-input"
+                                   name="{{extractionMethod.method}}" class="switch"
                                    ng-click="toggleExtractionMethod(extractionMethod, $event)"
                                    ng-model="extractionMethod.selected"/>
                             <label for="{{extractionMethod.method + '_checkbox'}}"></label>
@@ -79,17 +79,17 @@
                         <div ng-if="extractionMethod.expanded && extractionMethod.method === extractionMethods.SPARQL"
                              class="extraction-method-options"
                              ng-class="{'has-error': extractionMethod.selected && !extractionMethod.sparqlOption}">
-                            <div class="sparql-option ontology-graph-option">
+                            <div class="sparql-option ontology-graph-option" guide-selector="sparql-ontology-graph-option">
                                 <label class="radio-inline"
                                        uib-popover="{{'ttyg.agent.create_agent_modal.form.ontology_graph.tooltip' | translate}}"
                                        popover-trigger="mouseenter">
-                                    <input type="radio" name="sparqlOption" ng-required="extractionMethod.selected"
+                                    <input type="radio" name="sparqlOption" ng-required="extractionMethod.selected" guide-selector="sparql-ontology-graph-option-input"
                                            ng-model="extractionMethod.sparqlOption" value="ontologyGraph">
                                     {{'ttyg.agent.create_agent_modal.form.ontology_graph.label' | translate}}
                                 </label>
                                 <div class="panel" ng-show="extractionMethod.sparqlOption === 'ontologyGraph'">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="ontologyGraph"
+                                        <input type="text" class="form-control" id="ontologyGraph" guide-selector="sparql-ontology-graph-input"
                                                name="ontologyGraph"
                                                ng-required="extractionMethod.selected && extractionMethod.sparqlOption === 'ontologyGraph'"
                                                ng-model="extractionMethod.ontologyGraph">
@@ -195,7 +195,7 @@
                                         | translate}}</label>
                                     <span ng-if="extractionMethodLoaderFlags.similarity_search" onto-loader-fancy
                                           size="16"></span>
-                                    <select class="form-control" id="similarityIndex" name="similarityIndex"
+                                    <select class="form-control" id="similarityIndex" name="similarityIndex" guide-selector="similarity-index-select"
                                             ng-required="extractionMethod.selected"
                                             ng-if="!extractionMethodLoaderFlags.similarity_search"
                                             ng-model="extractionMethod.similarityIndex"
@@ -460,7 +460,7 @@
         <button type="button" ng-click="cancel()" class="btn cancel-btn">
             {{'ttyg.agent.create_agent_modal.btn.cancel.label' | translate}}
         </button>
-        <button type="button" ng-click="ok()" ng-disabled="agentSettingsForm.$invalid || savingAgent"
+        <button type="button" ng-click="ok()" ng-disabled="agentSettingsForm.$invalid || savingAgent" guide-selector="save-agent-settings"
                 class="btn btn-primary save-agent-settings-btn">
             <span>{{(operation === AGENT_OPERATION.EDIT ? 'ttyg.agent.create_agent_modal.btn.save.label'
             : operation === AGENT_OPERATION.CLONE ? 'ttyg.agent.create_agent_modal.btn.save.label'

@@ -20,7 +20,7 @@ const GuideUtils = (function () {
     const waitFor = function (elementSelector, timeoutInSeconds = 1, checkVisibility = true) {
         const selector = getElementSelector(elementSelector);
         return new Promise(function (resolve, reject) {
-            let iteration = timeoutInSeconds * 1000 | 1000;
+            let iteration = timeoutInSeconds * 1000;
             const waitTime = 100;
             const elementExist = setInterval(() => {
                 try {
@@ -35,7 +35,7 @@ const GuideUtils = (function () {
                             iteration -= waitTime;
                             if (iteration < 0) {
                                 clearInterval(elementExist);
-                                console.log('Element is not visible: ' + selector);
+                                console.debug('Element is not visible: ' + selector);
                                 reject(new Error('Element is not visible: ' + selector));
                             }
                         }
@@ -43,21 +43,21 @@ const GuideUtils = (function () {
                         iteration -= waitTime;
                         if (iteration < 0) {
                             clearInterval(elementExist);
-                            console.log('Element is not found: ' + selector);
+                            console.debug('Element is not found: ' + selector);
                             reject(new Error('Element is not found: ' + selector));
                         }
                     }
                 } catch (error) {
                     clearInterval(elementExist);
-                    console.log('Error when processing selector: ' + selector);
-                    console.log(error);
+                    console.debug('Error when processing selector: ' + selector);
+                    console.debug(error);
                     reject(error);
                 }
             }, waitTime);
         });
     };
 
-    const getOrWaiteFor = (elementSelector, timeoutInSeconds = 1, checkVisibility = true) => {
+    const getOrWaitFor = (elementSelector, timeoutInSeconds = 1, checkVisibility = true) => {
         const selector = getElementSelector(elementSelector);
         const element = document.querySelector(selector);
         if (element != null && (!checkVisibility || angular.element(element).is(':visible'))) {
@@ -90,7 +90,7 @@ const GuideUtils = (function () {
      * @return {function(): Promise<unknown>}
      */
     const awaitAlphaDropD3 = function (elementSelector, scope, timeoutInSeconds = 2, alphaThreshold = 0.1) {
-        return () => new Promise(function(resolve) {
+        return () => new Promise(function (resolve) {
             if (isVisible(elementSelector)) {
                 resolve();
                 return;
@@ -123,7 +123,7 @@ const GuideUtils = (function () {
      */
     const graphVizExpandNode = function (elementSelector) {
         const element = d3.select(elementSelector);
-        const evt = new CustomEvent("gdb-expand-node", {detail: element.datum()});
+        const evt = new CustomEvent('gdb-expand-node', {detail: element.datum()});
         element.node().dispatchEvent(evt);
     };
 
@@ -133,7 +133,7 @@ const GuideUtils = (function () {
      */
     const graphVizShowNodeInfo = function (elementSelector) {
         const element = d3.select(elementSelector);
-        const evt = new CustomEvent("gdb-show-node-info", {detail: element.datum()});
+        const evt = new CustomEvent('gdb-show-node-info', {detail: element.datum()});
         element.node().dispatchEvent(evt);
     };
 
@@ -143,7 +143,7 @@ const GuideUtils = (function () {
      */
     const classHierarchyFocus = function (elementSelector) {
         const element = d3.select(elementSelector);
-        const evt = new CustomEvent("gdb-focus", {detail: element.datum()});
+        const evt = new CustomEvent('gdb-focus', {detail: element.datum()});
         element.node().dispatchEvent(evt);
     };
 
@@ -153,7 +153,7 @@ const GuideUtils = (function () {
      */
     const classHierarchyZoom = function (elementSelector) {
         const element = d3.select(elementSelector);
-        const evt = new CustomEvent("gdb-zoom", {detail: element.datum()});
+        const evt = new CustomEvent('gdb-zoom', {detail: element.datum()});
         element.node().dispatchEvent(evt);
     };
 
@@ -176,6 +176,17 @@ const GuideUtils = (function () {
             // TODO: show toast error when the input isn't the expected input
             return input === expectedInput;
         }
+    };
+
+    /**
+     * Validates that the provided selector (to an input element) value is not empty.
+     *
+     * @param {*}elementSelector a selector to an input element
+     * @return {boolean} true if the input element is not empty, false otherwise
+     */
+    const validateTextInputNotEmpty = function (elementSelector) {
+        const input = $(elementSelector).val();
+        return input !== ''
     };
 
     /**
@@ -290,7 +301,7 @@ const GuideUtils = (function () {
 
     return {
         waitFor,
-        getOrWaiteFor,
+        getOrWaitFor,
         clickOnElement,
         clickOnGuideElement,
         getGuideElementSelector,
@@ -302,6 +313,7 @@ const GuideUtils = (function () {
         classHierarchyFocus,
         classHierarchyZoom,
         validateTextInput,
+        validateTextInputNotEmpty,
         translateLocalMessage,
         unescapeHtml,
         noNextErrorToast,
