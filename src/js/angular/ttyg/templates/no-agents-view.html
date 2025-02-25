@@ -9,7 +9,7 @@
             <button class="btn btn-outline-primary btn-lg text-xs-left create-agent-btn"
                     gdb-tooltip="{{!canModifyAgent ? ('ttyg.agent.fat_btn.create_agent.tooltip_disabled' | translate) : ''}}"
                     ng-disabled="!canModifyAgent"
-                    ng-click="onCreateAgent()">
+                    ng-click="onCreateAgent()" guide-selector="create-agent-btn">
                 <i class="fa fa-message-bot fa-xl"></i>
                 <span class="text">{{'ttyg.agent.fat_btn.create_agent.label' | translate}}</span>
             </button>

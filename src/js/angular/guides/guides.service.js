@@ -442,6 +442,7 @@ function GuidesService(
             });
         } else {
             const predefinedStepDescription = PluginRegistry.get('guide.step').find(((predefinedStep) => predefinedStep.guideBlockName === complexStep.guideBlockName));
+
             if (predefinedStepDescription) {
                 const options = angular.extend({}, predefinedStepDescription.options, complexStep.options, parentOptions);
                 if (predefinedStepDescription.getSteps) {

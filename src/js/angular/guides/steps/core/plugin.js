@@ -43,7 +43,7 @@ PluginRegistry.add('guide.step', [
 
             const stepDescription = angular.extend({}, BASIC_STEP, {
                 advanceOn: {
-                    selector: options.elementSelector,
+                    selector: options.clickableElementSelector || options.elementSelector,
                     event: 'click'
                 },
                 initPreviousStep: services.GuideUtils.defaultInitPreviousStep
