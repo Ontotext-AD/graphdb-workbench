@@ -152,7 +152,7 @@
         </p>
     </div>
 
-    <div class="container-fluid main-container" ng-if="hasPermission() && !hasAuthority()"
+    <div class="container-fluid main-container no-authority-panel" ng-if="hasPermission() && !hasAuthority()"
          ng-class="(menuCollapsed || checkMenu()) ? 'expanded':''">
         <h1>
             {{title}}

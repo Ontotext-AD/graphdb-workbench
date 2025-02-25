@@ -1,5 +1,6 @@
 import {UserAndAccessSteps} from "../../steps/setup/user-and-access-steps";
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
+import {RepositorySelectorSteps} from "../../steps/repository-selector-steps";
 
 describe('User and Access', () => {
 
@@ -162,7 +163,7 @@ describe('User and Access', () => {
 
         it('Can create user with different auth combinations', () => {
             cy.wait('@getRepositories');
-            const name = 'graphqlUser1';
+            const name = 'graphqlUser';
             // WHEN I create a user with read + GraphQL for repository #2
             createUser(name, PASSWORD, ROLE_USER, { read: true, graphql: true, repoName: repositoryId2 });
             // THEN the user should have read + GraphQL on that repo
@@ -203,6 +204,65 @@ describe('User and Access', () => {
 
             deleteUser(name);
         });
+
+        it('Should have access to 5 pages when have graphql only rights', () => {
+            cy.wait('@getRepositories');
+            const name = 'graphqlUser';
+            // WHEN I create a user with read + GraphQL for repository #2
+            createUser(name, PASSWORD, ROLE_USER, {readWrite: true, graphql: true, repoName: repositoryId1});
+            //enable security
+            UserAndAccessSteps.toggleSecurity();
+            //login new user
+            UserAndAccessSteps.loginWithUser(name, PASSWORD);
+            RepositorySelectorSteps.selectRepository(repositoryId1);
+
+            MENU_ITEMS.forEach(({path, expectedUrl,  checks, expectedTitle}) => {
+                UserAndAccessSteps.navigateMenuPath(path, expectedUrl, expectedTitle);
+                if (checks) {
+                    UserAndAccessSteps.runChecks(checks);
+                }
+            });
+            UserAndAccessSteps.logout();
+            //login with the admin
+            UserAndAccessSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+            cy.wait('@getRepositories');
+            UserAndAccessSteps.visit();
+            //delete new-user
+            deleteUser(name)
+            //disable security
+            UserAndAccessSteps.toggleSecurity();
+            UserAndAccessSteps.getSecuritySwitchLabel().should('be.visible').and('contain', 'Security is OFF');
+        });
+
+        it('Should not have access endpoints management when have read graphql only rights', () => {
+            cy.wait('@getRepositories');
+            const name = 'graphqlUser';
+            // WHEN I create a user with read + GraphQL for repository #2
+            createUser(name, PASSWORD, ROLE_USER, {read: true, graphql: true, repoName: repositoryId1});
+            //enable security
+            UserAndAccessSteps.toggleSecurity();
+            //login new user
+            UserAndAccessSteps.loginWithUser(name, PASSWORD);
+            RepositorySelectorSteps.selectRepository(repositoryId1);
+
+            GRAPHQL_MENU_ITEMS.forEach(({path, expectedUrl,  checks, expectedTitle}) => {
+                UserAndAccessSteps.navigateMenuPath(path, expectedUrl, expectedTitle);
+                if (checks) {
+                    UserAndAccessSteps.runChecks(checks);
+                }
+            });
+            UserAndAccessSteps.logout();
+            //login with the admin
+            UserAndAccessSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+            cy.wait('@getRepositories');
+            UserAndAccessSteps.visit();
+            //delete new-user
+            deleteUser(name)
+            //disable security
+            UserAndAccessSteps.toggleSecurity();
+            UserAndAccessSteps.getSecuritySwitchLabel().should('be.visible').and('contain', 'Security is OFF');
+        });
+
     });
 
     function createUser(username, password, role, opts = {}) {
@@ -321,4 +381,182 @@ describe('User and Access', () => {
             UserAndAccessSteps.toggleGraphqlAccessForRepo(repo);
         }
     }
+
+    const noAuthChecks = {
+        'div[role="main]': [
+            'not.exist'
+        ],
+        '.no-authority-panel .alert-warning': [
+            'be.visible',
+            ['contains.text', 'Some functionalities are not available because'],
+            ['contains.text', 'you do not have the required repository permissions.']
+        ]
+    }
+
+    const hasAuthChecks = {
+        'div[role="main"]': [
+            'exist',
+            'be.visible'
+        ],
+        '.no-authority-panel .alert-warning': [
+            'not.exist'
+        ]
+    }
+
+    const MENU_ITEMS = [
+        // 1) Import
+        {
+            path: ['Import'],
+            expectedUrl: '/import',
+            checks: noAuthChecks
+        },
+
+        // 2) Explore
+        {
+            path: ['Explore', 'Graphs overview'],
+            expectedUrl: '/graphs',
+            checks: noAuthChecks
+        },
+        {
+            path: ['Explore', 'Class hierarchy'],
+            expectedUrl: '/hierarchy',
+            checks: noAuthChecks
+        },
+        {
+            path: ['Explore', 'Class relationships'],
+            expectedUrl: '/relationships',
+            checks: noAuthChecks
+        },
+        {
+            path: ['Explore', 'Visual graph'],
+            expectedUrl: '/graphs-visualizations',
+            checks: noAuthChecks
+        },
+        {
+            path: ['Explore', 'Similarity'],
+            expectedTitle: 'Similarity indexes',
+            expectedUrl: '/similarity',
+            checks: noAuthChecks
+        },
+
+        // 3) SPARQL
+        {
+            path: ['SPARQL'],
+            expectedTitle: 'SPARQL Query & Update',
+            expectedUrl: '/sparql',
+            checks: noAuthChecks
+        },
+
+        // 4) GraphQL
+        {
+            path: ['GraphQL', 'Endpoint Management'],
+            expectedUrl: '/graphql/endpoints',
+            checks: hasAuthChecks
+        },
+        {
+            path: ['GraphQL', 'GraphQL Playground'],
+            expectedUrl: '/graphql/playground',
+            checks: hasAuthChecks
+        },
+
+        // 5) Monitor
+        {
+            path: ['Monitor', 'Queries and Updates'],
+            expectedUrl: '/monitor/queries',
+            expectedTitle: 'Query and Update monitoring',
+            checks: noAuthChecks
+        },
+        {
+            path: ['Monitor', 'Backup and Restore'],
+            expectedUrl: '/monitor/backup-and-restore',
+            checks: noAuthChecks
+        },
+
+        // 6) Setup
+        {
+            path: ['Setup', 'My Settings'],
+            expectedUrl: '/settings',
+            expectedTitle: 'Settings',
+            checks: hasAuthChecks
+        },
+        {
+            path: ['Setup', 'Connectors'],
+            expectedUrl: '/connectors',
+            expectedTitle: 'Connector management',
+            checks: noAuthChecks
+        },
+        {
+            path: ['Setup', 'Cluster'],
+            expectedUrl: '/cluster',
+            expectedTitle: 'Cluster management',
+            checks: hasAuthChecks
+        },
+        {
+            path: ['Setup', 'Plugins'],
+            expectedUrl: '/plugins',
+            checks: noAuthChecks
+        },
+        {
+            path: ['Setup', 'Namespaces'],
+            expectedUrl: '/namespaces',
+            checks: noAuthChecks
+        },
+        {
+            path: ['Setup', 'Autocomplete'],
+            expectedUrl: '/autocomplete',
+            expectedTitle: 'Autocomplete index',
+            checks: noAuthChecks
+        },
+        {
+            path: ['Setup', 'RDF Rank'],
+            expectedUrl: '/rdfrank',
+            checks: noAuthChecks
+        },
+        {
+            path: ['Setup', 'JDBC'],
+            expectedUrl: '/jdbc',
+            expectedTitle: 'JDBC configuration',
+            checks: noAuthChecks
+        },
+        {
+            path: ['Setup', 'SPARQL Templates'],
+            expectedUrl: '/sparql-templates',
+            checks: noAuthChecks
+        },
+
+        // 7) Lab
+        {
+            path: ['Lab', 'Talk to Your Graph'],
+            expectedUrl: '/ttyg',
+            checks: noAuthChecks
+        },
+
+        // 8) Help
+        {
+            path: ['Help', 'Interactive guides'],
+            expectedUrl: '/guides',
+            checks: noAuthChecks
+        },
+        {
+            path: ['Help', 'REST API'],
+            expectedUrl: '/webapi',
+            expectedTitle: 'REST API documentation',
+            checks: hasAuthChecks
+        }
+    ];
+
+    const GRAPHQL_MENU_ITEMS = [
+        {
+            path: ['GraphQL', 'Endpoint Management'],
+            expectedUrl: '/graphql/endpoints',
+            checks: noAuthChecks
+        },
+        {
+            path: ['GraphQL', 'GraphQL Playground'],
+            expectedUrl: '/graphql/playground',
+            checks: hasAuthChecks
+        }
+    ];
+
+
 });

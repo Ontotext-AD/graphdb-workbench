@@ -326,4 +326,48 @@ export class UserAndAccessSteps {
     static toggleGraphqlAccessForRepo(repoName) {
         return this.getGraphqlAccessForRepo(repoName).click({force: true});
     }
+
+    static navigateMenuPath(pathArray, expectedUrl, expectedTitle) {
+        pathArray.forEach((label, index) => {
+            if (index === 0) {
+                cy.get('.main-menu').contains(label).click({force: true});
+            } else {
+                cy.get('.sub-menu').contains(label).click({force: true});
+                const title = expectedTitle ? expectedTitle : label;
+                cy.get('h1').should('contain', title);
+            }
+        });
+
+        if (expectedUrl) {
+            cy.url().should('include', expectedUrl);
+        }
+
+    }
+
+    static runChecks(checks = {}) {
+        Object.entries(checks).forEach(([selector, assertions]) => {
+            let chain = cy.get(selector);
+
+            // assertions is an array, e.g. ["exist", ["contain.text", "Hello"], "be.visible"]
+            assertions.forEach((assertion, index) => {
+                if (index === 0) {
+                    // First assertion = .should(...)
+                    if (Array.isArray(assertion)) {
+                        // e.g. ["contain.text", "Hello"]
+                        chain = chain.should(...assertion);
+                    } else {
+                        // e.g. "exist"
+                        chain = chain.should(assertion);
+                    }
+                } else {
+                    // Subsequent assertions = .and(...)
+                    if (Array.isArray(assertion)) {
+                        chain = chain.and(...assertion);
+                    } else {
+                        chain = chain.and(assertion);
+                    }
+                }
+            });
+        });
+    }
 }
