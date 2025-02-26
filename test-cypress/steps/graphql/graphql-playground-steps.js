@@ -71,4 +71,20 @@ export class GraphqlPlaygroundSteps {
     static getResponse() {
         return this.getView().find('.graphiql-response');
     }
+
+    static getAddTabButton() {
+        return cy.get('.graphiql-tab-add');
+    }
+
+    static addTab() {
+        this.getAddTabButton().click();
+    }
+
+    static getTabsContainer() {
+        return cy.get('.graphiql-tabs');
+    }
+
+    static getTabs() {
+        return this.getTabsContainer().find('.graphiql-tab');
+    }
 }
