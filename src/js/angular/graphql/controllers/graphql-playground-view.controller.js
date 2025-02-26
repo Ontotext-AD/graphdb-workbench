@@ -88,7 +88,8 @@ function GraphqlPlaygroundViewCtrl($scope, $location, $repositories, $languageSe
         const config = {
             endpoint: endpointUrl,
             headers: getHeaders,
-            selectedLanguage: $languageService.getLanguage()
+            selectedLanguage: $languageService.getLanguage(),
+            defaultQuery: 'query Object {\n  object(limit: 100) {\n    id\n  }\n}'
         };
         return new GraphqlPlaygroundConfig(config);
     };

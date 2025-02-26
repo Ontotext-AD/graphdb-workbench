@@ -20,6 +20,11 @@ export class GraphqlPlaygroundConfig {
          * @private
          */
         this._selectedLanguage = data.selectedLanguage;
+
+        /**
+         * The default query that will be used when a new tab is added.
+         */
+        this._defaultQuery = data.defaultQuery;
     }
 
     get endpoint() {
@@ -44,5 +49,13 @@ export class GraphqlPlaygroundConfig {
 
     set selectedLanguage(value) {
         this._selectedLanguage = value;
+    }
+
+    get defaultQuery() {
+        return this._defaultQuery;
+    }
+
+    set defaultQuery(value) {
+        this._defaultQuery = value;
     }
 }

@@ -90,5 +90,21 @@ describe('GraphQL Playground', () => {
             // Then: I expect to see GraphQL playground translated.
             GraphiQLEditorToolsSteps.getGraphiQLEditorTabButton(1).contains('En-têtes');
         });
+
+        it('should set default query', () => {
+            // Given: I have opened the workbench on the GraphQL Playground page.
+            GraphqlPlaygroundSteps.visit();
+            GraphiqlPlaygroundSteps.getPlayground().should('be.visible');
+
+            // Then: I expect the default query to be set in the GraphQL query editor.
+            GraphqlPlaygroundSteps.getEditorContent().should('equal', 'query Object {\n  object(limit: 100) {\n    id\n  }\n}');
+
+            // When: I open a new tab.
+            GraphqlPlaygroundSteps.addTab();
+            GraphqlPlaygroundSteps.getTabs().should('have.length', 2);
+
+            // Then: I expect the default query to be set in the GraphAL query editor for the newly opened tab.
+            GraphqlPlaygroundSteps.getEditorContent().should('equal', 'query Object {\n  object(limit: 100) {\n    id\n  }\n}');
+        });
     });
 });
