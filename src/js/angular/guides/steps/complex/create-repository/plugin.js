@@ -69,7 +69,7 @@ PluginRegistry.add('guide.step', [
                                    extraContent: 'guide.step_plugin.create_repository.enable-fts.extra-content',
                                    extraContentClass: 'alert alert-help text-left',
                                    elementSelector: GuideUtils.getGuideElementSelector('enable-fts-search'),
-                                   onNextValidate: () => Promise.resolve(GuideUtils.isChecked(GuideUtils.getGuideElementSelector('enable-fts-search')))
+                                   onNextValidate: () => Promise.resolve(GuideUtils.isChecked(GuideUtils.getGuideElementSelector('enable-fts-search', 'input')))
                                }, options)
                            });
             }
