@@ -102,8 +102,9 @@ PluginRegistry.add('guide.step', [
         getStep: (options, services) => {
             const notOverridable = {
                 type: 'readonly',
-                title: 'guide.step_plugin.guide-ended.title',
-                content: 'guide.step_plugin.guide-ended.content',
+                title: options.title || 'guide.step_plugin.guide-ended.title',
+                content: options.content || 'guide.step_plugin.guide-ended.content',
+                lastStep: true,
                 show: (guide) => () => {
                     guide.options.confirmCancel = false;
                 },
