@@ -28,6 +28,7 @@ describe('Graphs config', () => {
     });
 
     beforeEach(() => {
+        cy.viewport(1280, 1000);
         cy.presetRepository(repositoryId);
     });
 

@@ -206,52 +206,52 @@ export class UserAndAccessSteps {
             .click({force: true});
     }
 
-    static clickGraphqlAccessForRepo(repoName) {
-        if (repoName === '*') {
-            cy.get('#user-repos')
-                .contains('Any data repository')
-                .parent('tr')
-                .find('.graphql')
-                .click({force: true});
-        } else {
-            cy.get('#user-repos')
-                .contains(repoName)
-                .parent('tr')
-                .find('.graphql')
-                .click({force: true});
-        }
+    static clickGraphqlAccessAny() {
+        cy.get('#user-repos')
+            .contains('Any data repository')
+            .parent('tr')
+            .find('.graphql')
+            .click({force: true});
     }
 
-    static clickReadAccessForRepo(repoName) {
-        if (repoName === '*') {
-            cy.get('#user-repos')
-                .contains('Any data repository')
-                .parent('tr')
-                .find('.read')
-                .click({force: true});
-        } else {
-            cy.get('#user-repos')
-                .contains(repoName)
-                .parent('tr')
-                .find('.read')
-                .click({force: true});
-        }
+    static clickGraphqlAccessRepo(repoName) {
+        cy.get('#user-repos')
+            .contains(repoName)
+            .parent('tr')
+            .find('.graphql')
+            .click({force: true});
     }
 
-    static clickWriteAccessForRepo(repoName) {
-        if (repoName === '*') {
-            cy.get('#user-repos')
-                .contains('Any data repository')
-                .parent('tr')
-                .find('.write')
-                .click({force: true});
-        } else {
-            cy.get('#user-repos')
-                .contains(repoName)
-                .parent('tr')
-                .find('.write')
-                .click({force: true});
-        }
+    static clickReadAccessAny() {
+        cy.get('#user-repos')
+            .contains('Any data repository')
+            .parent('tr')
+            .find('.read')
+            .click({force: true});
+    }
+
+    static clickReadAccessRepo(repoName) {
+        cy.get('#user-repos')
+            .contains(repoName)
+            .parent('tr')
+            .find('.read')
+            .click({force: true});
+    }
+
+    static clickWriteAccessAny() {
+        cy.get('#user-repos')
+            .contains('Any data repository')
+            .parent('tr')
+            .find('.write')
+            .click({force: true});
+    }
+
+    static clickWriteAccessRepo(repoName) {
+        cy.get('#user-repos')
+            .contains(repoName)
+            .parent('tr')
+            .find('.write')
+            .click({force: true});
     }
 
     static findUserRowAlias(username, aliasName = 'userRow') {
@@ -327,47 +327,11 @@ export class UserAndAccessSteps {
         return this.getGraphqlAccessForRepo(repoName).click({force: true});
     }
 
-    static navigateMenuPath(pathArray, expectedUrl, expectedTitle) {
-        pathArray.forEach((label, index) => {
-            if (index === 0) {
-                cy.get('.main-menu').contains(label).click({force: true});
-            } else {
-                cy.get('.sub-menu').contains(label).click({force: true});
-                const title = expectedTitle ? expectedTitle : label;
-                cy.get('h1').should('contain', title);
-            }
-        });
-
-        if (expectedUrl) {
-            cy.url().should('include', expectedUrl);
-        }
-
+    static clickMenuItem(label) {
+        return cy.get('.main-menu').contains(label).click({force: true});
     }
 
-    static runChecks(checks = {}) {
-        Object.entries(checks).forEach(([selector, assertions]) => {
-            let chain = cy.get(selector);
-
-            // assertions is an array, e.g. ["exist", ["contain.text", "Hello"], "be.visible"]
-            assertions.forEach((assertion, index) => {
-                if (index === 0) {
-                    // First assertion = .should(...)
-                    if (Array.isArray(assertion)) {
-                        // e.g. ["contain.text", "Hello"]
-                        chain = chain.should(...assertion);
-                    } else {
-                        // e.g. "exist"
-                        chain = chain.should(assertion);
-                    }
-                } else {
-                    // Subsequent assertions = .and(...)
-                    if (Array.isArray(assertion)) {
-                        chain = chain.and(...assertion);
-                    } else {
-                        chain = chain.and(assertion);
-                    }
-                }
-            });
-        });
+    static clickSubmenuItem(label) {
+        return cy.get('.sub-menu').contains(label).click({force: true});
     }
 }

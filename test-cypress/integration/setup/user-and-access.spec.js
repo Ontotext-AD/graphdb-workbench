@@ -84,10 +84,7 @@ describe('User and Access', () => {
             UserAndAccessSteps.selectRoleRadioButton(ROLE_USER);
             // And add a custom role of 1 letter
             UserAndAccessSteps.addTextToCustomRoleField('A');
-            // UserAndAccessSteps.getRepositoryRightsList().contains('Any data repository').nextUntil('.write').eq(1).within(() => {
-            //     UserAndAccessSteps.clickWriteAccess();
-            // });
-            UserAndAccessSteps.clickWriteAccessForRepo('*');
+            clickWriteAccessForRepo('*');
 
             // Then the 'create' button should be disabled
             UserAndAccessSteps.getConfirmUserCreateButton().should('be.disabled');
@@ -217,9 +214,9 @@ describe('User and Access', () => {
             RepositorySelectorSteps.selectRepository(repositoryId1);
 
             MENU_ITEMS.forEach(({path, expectedUrl,  checks, expectedTitle}) => {
-                UserAndAccessSteps.navigateMenuPath(path, expectedUrl, expectedTitle);
+                navigateMenuPath(path, expectedUrl, expectedTitle);
                 if (checks) {
-                    UserAndAccessSteps.runChecks(checks);
+                    runChecks(checks);
                 }
             });
             UserAndAccessSteps.logout();
@@ -246,9 +243,9 @@ describe('User and Access', () => {
             RepositorySelectorSteps.selectRepository(repositoryId1);
 
             GRAPHQL_MENU_ITEMS.forEach(({path, expectedUrl,  checks, expectedTitle}) => {
-                UserAndAccessSteps.navigateMenuPath(path, expectedUrl, expectedTitle);
+                navigateMenuPath(path, expectedUrl, expectedTitle);
                 if (checks) {
-                    UserAndAccessSteps.runChecks(checks);
+                    runChecks(checks);
                 }
             });
             UserAndAccessSteps.logout();
@@ -264,6 +261,30 @@ describe('User and Access', () => {
         });
 
     });
+
+    function clickGraphqlAccessForRepo(repoName) {
+        if (repoName === '*') {
+            UserAndAccessSteps.clickGraphqlAccessAny();
+        } else {
+           UserAndAccessSteps.clickGraphqlAccessRepo(repoName);
+        }
+    }
+
+    function clickReadAccessForRepo(repoName) {
+        if (repoName === '*') {
+            UserAndAccessSteps.clickReadAccessAny();
+        } else {
+            UserAndAccessSteps.clickReadAccessRepo(repoName);
+        }
+    }
+
+    function clickWriteAccessForRepo(repoName) {
+        if (repoName === '*') {
+            UserAndAccessSteps.clickWriteAccessAny();
+        } else {
+            UserAndAccessSteps.clickWriteAccessRepo(repoName);
+        }
+    }
 
     function createUser(username, password, role, opts = {}) {
         const {noPassword} = opts;
@@ -298,13 +319,13 @@ describe('User and Access', () => {
     function setRoles(opts = {}) {
         const {read = false, readWrite = false, graphql = false, repoName = '*'} = opts;
         if (read) {
-            UserAndAccessSteps.clickReadAccessForRepo(repoName);
+            clickReadAccessForRepo(repoName);
         }
         if (readWrite) {
-            UserAndAccessSteps.clickWriteAccessForRepo(repoName);
+            clickWriteAccessForRepo(repoName);
         }
         if (graphql) {
-            UserAndAccessSteps.clickGraphqlAccessForRepo(repoName);
+            clickGraphqlAccessForRepo(repoName);
         }
     }
 
@@ -380,6 +401,50 @@ describe('User and Access', () => {
         if (graphql === true) {
             UserAndAccessSteps.toggleGraphqlAccessForRepo(repo);
         }
+    }
+
+    function navigateMenuPath(pathArray, expectedUrl, expectedTitle) {
+        pathArray.forEach((label, index) => {
+            if (index === 0) {
+                UserAndAccessSteps.clickMenuItem(label);
+            } else {
+                UserAndAccessSteps.clickSubmenuItem(label);
+                const title = expectedTitle ? expectedTitle : label;
+                cy.get('h1').should('contain', title);
+            }
+        });
+
+        if (expectedUrl) {
+            cy.url().should('include', expectedUrl);
+        }
+
+    }
+
+    function runChecks(checks = {}) {
+        Object.entries(checks).forEach(([selector, assertions]) => {
+            let chain = cy.get(selector);
+
+            // assertions is an array, e.g. ["exist", ["contain.text", "Hello"], "be.visible"]
+            assertions.forEach((assertion, index) => {
+                if (index === 0) {
+                    // First assertion = .should(...)
+                    if (Array.isArray(assertion)) {
+                        // e.g. ["contain.text", "Hello"]
+                        chain = chain.should(...assertion);
+                    } else {
+                        // e.g. "exist"
+                        chain = chain.should(assertion);
+                    }
+                } else {
+                    // Subsequent assertions = .and(...)
+                    if (Array.isArray(assertion)) {
+                        chain = chain.and(...assertion);
+                    } else {
+                        chain = chain.and(assertion);
+                    }
+                }
+            });
+        });
     }
 
     const noAuthChecks = {
@@ -557,6 +622,4 @@ describe('User and Access', () => {
             checks: hasAuthChecks
         }
     ];
-
-
 });
