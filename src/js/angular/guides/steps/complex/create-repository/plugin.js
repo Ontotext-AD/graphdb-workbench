@@ -55,10 +55,23 @@ PluginRegistry.add('guide.step', [
                         elementSelector: GuideUtils.getGuideElementSelector('graphDBRepositoryRulesetSelect'),
                         show: () => () => {
                             GuideUtils.validateTextInput(repositoryIdInputSelector, repositoryId);
-                        },
-                        rulesetName: options.rulesetName
+                        }
                     }, options)
                 });
+            }
+            if(options.fts) {
+                steps.push({
+                               guideBlockName: 'clickable-element',
+                               options: angular.extend({}, {
+                                   content: 'guide.step_plugin.create_repository.enable-fts.content',
+                                   url: '/repository/create/graphdb',
+                                   class: 'gdb-repository-enable-fts-guide-dialog',
+                                   extraContent: 'guide.step_plugin.create_repository.enable-fts.extra-content',
+                                   extraContentClass: 'alert alert-help text-left',
+                                   elementSelector: GuideUtils.getGuideElementSelector('enable-fts-search'),
+                                   onNextValidate: () => Promise.resolve(GuideUtils.isChecked(GuideUtils.getGuideElementSelector('enable-fts-search', 'input')))
+                               }, options)
+                           });
             }
             steps.push({
                 guideBlockName: 'clickable-element',
