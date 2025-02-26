@@ -295,7 +295,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
 
         // Check if stepsDescriptions more than 1 element, this mean that we have process last step. The last step has no next step.
         if (stepsDescriptions.length > 1) {
-            guide.addStep(this._getLastStep(guide, stepsDescriptions));
+            guide.addStep(this._getLastStep(guide, stepsDescriptions[stepsDescriptions.length - 1]));
         }
     };
 
@@ -370,18 +370,22 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
      * @private
      */
     this._getMiddleStep = (guide, stepsDescriptions, indexOfProcessedStep) => {
-        return this._toGuideStep(guide, stepsDescriptions[indexOfProcessedStep - 1], stepsDescriptions[indexOfProcessedStep], stepsDescriptions[indexOfProcessedStep + 1]);
+        let currentStep = stepsDescriptions[indexOfProcessedStep];
+        if (currentStep.lastStep) {
+            return this._getLastStep(guide, currentStep);
+        }
+        return this._toGuideStep(guide, stepsDescriptions[indexOfProcessedStep - 1], currentStep, stepsDescriptions[indexOfProcessedStep + 1]);
     };
 
     /**
      * Creates last step from <code>stepsDescriptions</code>.
      * @param {Shepherd.Tour} guide - the guide.
-     * @param {array} stepsDescriptions - array with descriptions of steps.
+     * @param {*} lastStepDescription - description of last step.
      * @return {Shepherd.Step} the last step.
      * @private
      */
-    this._getLastStep = (guide, stepsDescriptions) => {
-        const step = this._toGuideStep(guide, null, stepsDescriptions[stepsDescriptions.length - 1]);
+    this._getLastStep = (guide, lastStepDescription) => {
+        const step = this._toGuideStep(guide, null, lastStepDescription);
         step.buttons.push(this._getBackToGuidesButton(guide));
         step.buttons.push(this._getCancelButton(guide));
         return step;
