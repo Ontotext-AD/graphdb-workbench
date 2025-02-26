@@ -2892,6 +2892,8 @@
     "guide.step_plugin.create_repository.repository_id.content": "Entrez l'ID du dépôt : <b>{{repositoryId}}.</b>",
     "guide.step_plugin.create_repository.save_button.content": "Cliquez sur le bouton <b>{{'common.create.btn'|translate}}</b>.",
     "guide.step_plugin.create_repository.ruleset_dropdown.content": "Choisissez l'ensemble de règles : <b>{{rulesetName}}</b>.",
+    "guide.step_plugin.create_repository.enable-fts.content": "Activer l'index de recherche en texte intégral (FTS)",
+    "guide.step_plugin.create_repository.enable-fts.extra-content": "L'index de recherche plein texte est utilisé pour trouver des chaînes de caractères spécifiques dans les valeurs associées à une entité donnée. Par exemple, vous pouvez rechercher le mot « feature » dans un contexte plus large. Cette fonction est très utile dans les cas où de nombreuses données sont stockées sous forme de valeurs littérales.",
     "guide.step_plugin.enable-autocomplete.content": "Cliquez sur la case à cocher pour activer l'indexation.",
     "guide.step_plugin.visual_graph_input_IRI.content": "Entrez <b>{{easyGraphInputText}}</b> dans la saisie de texte <b>Graphique facile</b>.",
     "guide.step_plugin.visual_graph_show_autocomplete.content": "Cliquez sur l'IRI <b>{{iri}}</b> pour afficher le graphique visuel.",

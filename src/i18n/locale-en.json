@@ -2892,6 +2892,8 @@
     "guide.step_plugin.create_repository.repository_id.content": "Enter repository ID: <b>{{repositoryId}}.</b>",
     "guide.step_plugin.create_repository.save_button.content": "Click on the <b>{{'common.create.btn'|translate}}</b> button.",
     "guide.step_plugin.create_repository.ruleset_dropdown.content": "Choose ruleset: <b>{{rulesetName}}</b>.",
+    "guide.step_plugin.create_repository.enable-fts.content": "Enable full-text search (FTS) index",
+    "guide.step_plugin.create_repository.enable-fts.extra-content": "The full text search index is used for finding specific strings within the values associated with a given entity. For example, you can search for the word \"feature\" within a larger context. This is very helpful in cases where a lot of data is stored in literals.",
     "guide.step_plugin.enable-autocomplete.content": "Click on the checkbox to enable the index.",
     "guide.step_plugin.visual_graph_input_IRI.content": "Enter <b>{{easyGraphInputText}}</b> in the <b>Easy graph</b> text input.",
     "guide.step_plugin.visual_graph_show_autocomplete.content": "Click on the <b>{{iri}}</b> IRI to show the visual graph.",
