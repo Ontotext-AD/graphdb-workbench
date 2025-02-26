@@ -14,7 +14,7 @@ PluginRegistry.add('guide.step', [
                     }, options)
                 },
                 {
-                    guideBlockName: 'info-message',
+                    guideBlockName: 'guide-end',
                     options: angular.extend({}, {
                         title: 'guide.step_plugin.create-ttyg-agent.missing-key.title',
                         content: 'guide.step_plugin.create-ttyg-agent.missing-key.content',
