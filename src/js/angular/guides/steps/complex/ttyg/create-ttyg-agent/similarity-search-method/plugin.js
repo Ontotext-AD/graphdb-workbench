@@ -3,12 +3,13 @@ PluginRegistry.add('guide.step', [
         guideBlockName: 'enable-similarity_search-method',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
+            options.mainAction = 'enable-similarity_search-method';
+
             return [
                 {
                     guideBlockName: 'info-message',
                     options: angular.extend({}, {
-                        title: 'guide.step_plugin.create-ttyg-agent.similarity-search.title',
-                        content: 'guide.step_plugin.create-ttyg-agent.similarity-search.content',
+                        content: 'guide.step_plugin.enable-similarity_search-method.content',
                         url: '/ttyg',
                         class: 'info-similarity-search-guide-dialog',
                     }, options)
@@ -16,7 +17,7 @@ PluginRegistry.add('guide.step', [
                 {
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
-                        content: 'guide.step_plugin.create-ttyg-agent.similarity-search.enable-toggle',
+                        content: 'guide.step_plugin.enable-similarity_search-method.enable-toggle',
                         class: 'toggle-similarity-search-guide-dialog',
                         url: '/ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('query-method-similarity_search'),
@@ -27,7 +28,7 @@ PluginRegistry.add('guide.step', [
                 {
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
-                        content: 'guide.step_plugin.create-ttyg-agent.similarity-search.select-index',
+                        content: 'guide.step_plugin.enable-similarity_search-method.select-index',
                         elementSelector: GuideUtils.getGuideElementSelector('similarity-index-select'),
                         class: 'select-similarity-index-guide-dialog',
                     }, options)
