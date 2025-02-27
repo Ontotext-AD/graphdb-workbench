@@ -7,7 +7,7 @@
     <div class="schema-source-types mt-2">
         <div ng-repeat="type in stepDefinition.schemaSourceTypes"
              class="schema-source-type mr-3">
-            <label>
+            <label gdb-tooltip="{{'graphql.create_endpoint.wizard_steps.select_schema_sources.source_type.' + type.value + '.tooltip' | translate}}">
                 <input type="radio" ng-model="stepDefinition.schemaSourceType" ng-value="type.value"
                        ng-change="onSchemaSourceTypeChange()">
                 {{'graphql.create_endpoint.wizard_steps.select_schema_sources.source_type.' + type.value + '.label' | translate}}

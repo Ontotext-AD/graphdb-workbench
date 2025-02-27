@@ -747,15 +747,17 @@
     },
     "graphql": {
         "playground": {
+            "helpInfo": "Utilisez le GraphQL Playground pour créer et tester des requêtes en temps réel. Explorez votre schéma, envoyez des requêtes et inspectez les réponses en toute simplicité.",
             "message": {
-                "no_schemas_in_repository": "Aucun point de terminaison actif n'a été trouvé dans le référentiel actuel. Gérez les schémas GraphQL <a href=\"#\">ici</a>",
+                "no_schemas_in_repository": "Aucun point de terminaison actif n'a été trouvé dans le référentiel actuel. Gérez les schémas GraphQL <a href=\"/graphql/endpoints\">ici</a>",
                 "abort_query": "Requête annulée : L'opération a été arrêtée avant son achèvement."
             },
             "endpoint_selector": {
-                "tooltip": "Sélectionnez un point de terminaison GraphQL"
+                "tooltip": "Interfaces actives"
             }
         },
         "endpoints_management": {
+            "helpInfo": "La gestion des points de terminaison GraphQL vous permet de créer des points de terminaison GraphQL. Vous pouvez en créer un en le générant à partir de formes GraphQL ou en utilisant des ontologies OWL et des formes SHACL.",
             "toolbar": {
                 "endpoints_filter": {
                     "placeholder": "Filtrer par ID ou par étiquette"
@@ -771,14 +773,38 @@
             },
             "table": {
                 "column": {
-                    "id": "Id",
-                    "label": "Étiquette",
-                    "is_default": "Défaut",
-                    "is_active": "Active",
-                    "modified_on": "Modifié",
-                    "types_count": "Types",
-                    "props_count": "Propriétés",
-                    "actions": "Actes"
+                    "id": {
+                        "label": "Id",
+                        "tooltip": "Le nom lisible par l'humain du point de terminaison GraphQL"
+                    },
+                    "label": {
+                        "label": "Libellé",
+                        "tooltip": "Le libellé du point de terminaison GraphQL"
+                    },
+                    "is_default": {
+                        "label": "Par défaut",
+                        "tooltip": "Définir le point de terminaison qui sera actif par défaut pour GraphQL"
+                    },
+                    "is_active": {
+                        "label": "Actif",
+                        "tooltip": "Définir comme actif pour les requêtes et mutations."
+                    },
+                    "modified_on": {
+                        "label": "Modifié",
+                        "tooltip": "La date et l'heure de la dernière modification du point de terminaison"
+                    },
+                    "types_count": {
+                        "label": "Types",
+                        "tooltip": "Le nombre de types dans le schéma GraphQL"
+                    },
+                    "props_count": {
+                        "label": "Propriétés",
+                        "tooltip": "Le nombre de propriétés dans le schéma GraphQL"
+                    },
+                    "actions": {
+                        "label": "Actions",
+                        "tooltip": "Accéder à plus d'actions pour gérer le point de terminaison GraphQL"
+                    }
                 },
                 "actions": {
                     "explore_endpoint": {
@@ -843,6 +869,80 @@
                 "messages": {
                     "error_saving_configuration": "Erreur lors de l'enregistrement de la configuration du point de terminaison",
                     "success_saving_configuration": "Configuration du point de terminaison enregistrée"
+                },
+                "settings": {
+                    "enableTypeCount": {
+                        "label": "Activer les requêtes de comptage de types",
+                        "tooltip": "Active ou désactive l’inclusion des requêtes de comptage dans le schéma."
+                    },
+                    "enableCollectionCount": {
+                        "label": "Activer le comptage des collections",
+                        "tooltip": "Active ou désactive les propriétés de comptage automatique des collections."
+                    },
+                    "compactErrorMessages": {
+                        "label": "Messages d’erreur compacts",
+                        "tooltip": "Active un format de messages d’erreur plus compact."
+                    },
+                    "langFetch": {
+                        "label": "Langue de récupération par défaut",
+                        "tooltip": "Définit la configuration de langue par défaut à utiliser lors du chargement des valeurs langString ou stringOrLangString. Si non défini, toutes les valeurs seront retournées."
+                    },
+                    "langValidate": {
+                        "label": "Validation de langue par défaut",
+                        "tooltip": "Définit les règles de validation de langue par défaut lors de la modification des propriétés langString ou stringOrLangString, y compris l’unicité de la langue."
+                    },
+                    "langImplicit": {
+                        "label": "Langue implicite par défaut",
+                        "tooltip": "Définit la langue implicite utilisée lors de l’insertion de chaînes avec balises de langue, si aucune n’est spécifiée, dans une mutation."
+                    },
+                    "langDefaultNameFetch": {
+                        "label": "Langue de récupération du nom par défaut",
+                        "tooltip": "Définit la configuration de langue par défaut pour les propriétés de nom. La première valeur correspondant à l’ordre des langues sera utilisée."
+                    },
+                    "langAppendDefaultNameFetch": {
+                        "label": "Ajouter la récupération du nom par défaut",
+                        "tooltip": "Détermine si la spécification de langue par défaut doit être ajoutée."
+                    },
+                    "includeInferred": {
+                        "label": "Inclure les données inférées",
+                        "tooltip": "Active ou désactive l’inférence pour les requêtes et mutations."
+                    },
+                    "expandOwlSameAs": {
+                        "label": "Expansion de owl:sameAs",
+                        "tooltip": "Contrôle si l’expansion de owl:sameAs est activée."
+                    },
+                    "enableMutations": {
+                        "label": "Activer les mutations",
+                        "tooltip": "Active ou désactive les mutations GraphQL. Si désactivé, le point de terminaison GraphQL sera en lecture seule, quel que soit les permissions de l’utilisateur."
+                    },
+                    "defaultRole": {
+                        "label": "Rôle utilisateur par défaut",
+                        "tooltip": "Définit le rôle attribué lorsqu’aucun autre rôle n’est trouvé."
+                    },
+                    "enableGraphQLExplain": {
+                        "label": "Activer GraphQL Explain",
+                        "tooltip": "Active l’accès aux requêtes SPARQL et à leurs plans d’exécution."
+                    },
+                    "exposeSomlInGraphQL": {
+                        "label": "Exposer le modèle dans GraphQL",
+                        "tooltip": "Inclut les détails de configuration du modèle dans le schéma GraphQL."
+                    },
+                    "disabledChecks": {
+                        "label": "Vérifications désactivées du schéma",
+                        "tooltip": "Spécifie quelles vérifications de validation du schéma désactiver."
+                    },
+                    "defaultIntegrationRole": {
+                        "label": "Rôle d’intégration par défaut",
+                        "tooltip": "Le rôle RBAC par défaut qui aura un accès en lecture seule aux données et pourra être utilisé pour les intégrations système."
+                    },
+                    "queryPrefix": {
+                        "label": "Préfixe de requête",
+                        "tooltip": "Ajoute un préfixe à toutes les requêtes GraphQL."
+                    },
+                    "mutationPrefix": {
+                        "label": "Préfixe de mutation",
+                        "tooltip": "Ajoute un préfixe à toutes les mutations GraphQL."
+                    }
                 }
             },
             "import_definition_modal": {
@@ -878,10 +978,11 @@
             }
         },
         "create_endpoint": {
+            "helpInfo": "Créez un nouveau point de terminaison GraphQL en sélectionnant un référentiel source et en définissant les sources du schéma. Configurez les paramètres et générez votre point de terminaison pour commencer à interroger les données.",
             "toolbar": {
                 "source_repository_selector": {
                     "label": "Référentiel source",
-                    "tooltip": "Sélectionnez le référentiel à utiliser comme source pour les schémas du nouveau point de terminaison GraphQL"
+                    "tooltip": "Le référentiel utilisé pour créer le point de terminaison GraphQL"
                 }
             },
             "wizard_steps": {
@@ -889,10 +990,12 @@
                     "title": "Sélectionner la source du schéma",
                     "source_type": {
                         "graphql_schema_shapes": {
-                            "label": "Formes de schéma GraphQL"
+                            "label": "Formes de schéma GraphQL",
+                            "tooltip": "Une représentation structurée de vos données en GraphQL, définissant les types et les relations."
                         },
                         "shacl_shapes": {
-                            "label": "Ontologies OWL/formes SHACL"
+                            "label": "Ontologies OWL/formes SHACL",
+                            "tooltip": "Définitions de schéma basées sur des ontologies OWL et des formes SHACL."
                         }
                     },
                     "graphql_schema_shapes": {
@@ -908,7 +1011,7 @@
                         "form": {
                             "endpoint_id": {
                                 "label": "ID du point de terminaison",
-                                "tooltip": "L'identifiant unique du nouveau point de terminaison GraphQL. Il doit être unique dans le référentiel.",
+                                "tooltip": "Un identifiant unique pour ce point de terminaison, utilisé pour le référencer et le gérer.",
                                 "placeholder": "star-wars"
                             },
                             "vocabulary_prefix": {
@@ -918,12 +1021,12 @@
                             },
                             "endpoint_label": {
                                 "label": "Étiquette du point de terminaison",
-                                "tooltip": "L'étiquette du nouveau point de terminaison GraphQL",
+                                "tooltip": "Attribuez un libellé personnalisé pour identifier facilement le point de terminaison.",
                                 "placeholder": "Star Wars"
                             },
                             "endpoint_description": {
                                 "label": "Description du point final",
-                                "tooltip": "La description du nouveau point de terminaison GraphQL",
+                                "tooltip": "Attribuez une description au point de terminaison.",
                                 "placeholder": "Description du point de terminaison Star Wars GraphQL"
                             }
                         },
@@ -954,7 +1057,44 @@
                     "title": "Configurer le point de terminaison",
                     "endpoint_parameters": {
                         "title": "Paramètres",
-                        "form": {}
+                        "settings": {
+                            "stringMode": {
+                                "label": "Mode de Chaîne par Défaut",
+                                "tooltip": "Spécifie le mode de chaîne par défaut pour les propriétés de données sans définition de plage."
+                            },
+                            "useUnions": {
+                                "label": "Utiliser les Unions GraphQL",
+                                "tooltip": "Détermine si les unions GraphQL doivent être utilisées dans le modèle de résultat."
+                            },
+                            "forceInterfaceTypes": {
+                                "label": "Forcer les Types d'Interface",
+                                "tooltip": "Spécifie si les types parents doivent toujours être des interfaces ou être répartis entre interface et sous-classe."
+                            },
+                            "defaultMaxCardinality": {
+                                "label": "Cardinalité Maximale par Défaut",
+                                "tooltip": "Définit la cardinalité maximale par défaut pour toutes les valeurs, en définissant si les propriétés sans configuration explicite de cardinalité sont par défaut multi ou mono valeurs."
+                            },
+                            "readShaclPropertiesLabels": {
+                                "label": "Utiliser les Libellés des Propriétés SHACL",
+                                "tooltip": "Définit si les libellés et descriptions pour sh:PropertyShape doivent être utilisés à la place des libellés et descriptions de sh:path."
+                            },
+                            "removeUnknownRanges": {
+                                "label": "Supprimer les Plages Inconnues",
+                                "tooltip": "Spécifie si les plages invalides et non définies doivent être supprimées."
+                            },
+                            "cleanInvalidInverseOf": {
+                                "label": "Nettoyer les Relations owl:inverseOf Invalides",
+                                "tooltip": "Tente de corriger les relations owl:inverseOf invalides."
+                            },
+                            "includeDeactivatedShapes": {
+                                "label": "Inclure les Formes Désactivées",
+                                "tooltip": "Inclut les formes sh:deactivated dans le modèle."
+                            },
+                            "readRBACRules": {
+                                "label": "Lire les Règles RBAC",
+                                "tooltip": "Active la lecture des règles RBAC à partir des modèles."
+                            }
+                        }
                     }
                 },
                 "generate_endpoint": {
@@ -967,7 +1107,8 @@
                             "generated_endpoints": "Points de terminaison GraphQL",
                             "manage_endpoints_info": "Accédez à la <a href=\"{{managementUrl}}\">gestion des points de terminaison</a> pour gérer les points de terminaison",
                             "explore_in_playground_link_tooltip": "Explorer dans Playground (s'ouvre dans un nouvel onglet)",
-                            "view_report_link": "Voir le rapport"
+                            "view_report_link": "Voir le rapport",
+                            "view_report_link_tooltip": "Ouvre le rapport de création du point de terminaison dans une boîte de dialogue modale."
                         }
                     },
                     "generation_failure_report": {
@@ -2110,6 +2251,7 @@
     "restart.repo.in.cluster.tooltip": "Le redémarrage d'un dépôt n'est pas pris en charge dans un environnement de cluster. Pour appliquer les modifications de configuration, redémarrez tous les nœuds du cluster.",
     "location.cannot.be.empty.error": "L'emplacement ne peut pas être vide",
     "required.field": "Ce champ est requis",
+    "invalid.field.value": "Valeur de champ invalide. La valeur doit correspondre au modèle '{{pattern}}'.",
     "created.repo.success.msg": "Le dépôt {{repoId}} a été créé.",
     "empty.repoid.warning": "L'identifiant du dépôt ne peut pas être vide",
     "invalid.ruleset.file.error": "Fichier de jeu de règles invalide. Veuillez en télécharger un valide.",

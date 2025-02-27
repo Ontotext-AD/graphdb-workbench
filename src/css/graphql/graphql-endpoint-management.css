@@ -27,6 +27,11 @@
     width: 5%;
 }
 
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint-default-state,
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint-default-state input {
+    cursor: pointer;
+}
+
 .graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint-description-row > td {
     border-top: none;
 }

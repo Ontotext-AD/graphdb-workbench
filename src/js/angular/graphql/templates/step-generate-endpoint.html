@@ -44,6 +44,7 @@
                           class="endpoint-id">{{endpointReport.endpointId}}</span>
                     <a href="#" ng-if="!endpointReport.createdSuccessfully"
                        ng-click="showEndpointReport(endpointReport)"
+                       gdb-tooltip="{{'graphql.create_endpoint.wizard_steps.generate_endpoint.overview.for_shapes.view_report_link_tooltip' | translate}}"
                        class="btn btn-link endpoint-report-link">{{'graphql.create_endpoint.wizard_steps.generate_endpoint.overview.for_shapes.view_report_link' | translate}}</a>
                 </div>
             </div>

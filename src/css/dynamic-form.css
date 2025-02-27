@@ -36,3 +36,7 @@
     align-self: center;
     justify-self: start;
 }
+
+.dynamic-form-container .dynamic-form .form-inline:has(input[type="checkbox"]) {
+    height: 38px;
+}

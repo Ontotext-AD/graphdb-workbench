@@ -1,3 +1,7 @@
+/**
+ * The status of an import graphql endpoint definition operation.
+ * @type {{PENDING: string, SUCCESS: string, FAIL: string, SKIP: string}}
+ */
 export const ImportStatus = {
     PENDING: 'PENDING',
     SUCCESS: 'SUCCESS',
@@ -5,6 +9,10 @@ export const ImportStatus = {
     SKIP: 'SKIP'
 }
 
+/**
+ * The keys for the import status labels.
+ * @type {{[p: string]: string}}
+ */
 export const ImportStatusLabelKeys = {
     [ImportStatus.PENDING]: 'graphql.endpoints_management.import_definition_modal.status.pending',
     [ImportStatus.SUCCESS]: 'graphql.endpoints_management.import_definition_modal.status.completed',
@@ -12,6 +20,10 @@ export const ImportStatusLabelKeys = {
     [ImportStatus.SKIP]: 'graphql.endpoints_management.import_definition_modal.status.not_allowed'
 };
 
+/**
+ * The mapping of import status to view status. This is used to control the css class of the status tag.
+ * @type {{[p: string]: string}}
+ */
 export const ImportStatusToViewMapping = {
     [ImportStatus.PENDING]: 'tag-warning',
     [ImportStatus.SUCCESS]: 'tag-success',
@@ -19,6 +31,11 @@ export const ImportStatusToViewMapping = {
     [ImportStatus.SKIP]: 'tag-info'
 };
 
+/**
+ * A class that is a wrapper around a list of definition files. This class provides utility methods to work with the
+ * definition files list and exposes some precalculated properties for easier access and optimization of the template
+ * bindings.
+ */
 export class EndpointDefinitionFileList {
     /**
      * @type {Array<EndpointDefinitionFile>}
@@ -96,6 +113,11 @@ export class EndpointDefinitionFileList {
     }
 }
 
+/**
+ * A class that represents a single endpoint definition file. This class contains all the information about the file
+ * and the status of the import operation. It is needed to keep all related with the definition file import in one place
+ * and expose the necessary properties for the template bindings.
+ */
 export class EndpointDefinitionFile {
     /**
      * @type {EndpointDefinitionFileList}
