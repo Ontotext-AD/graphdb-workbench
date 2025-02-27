@@ -3,12 +3,13 @@ PluginRegistry.add('guide.step', [
         guideBlockName: 'enable-fts-search-method',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
+            options.mainAction = 'enable-fts-search-method';
+
             return [
                 {
                     guideBlockName: 'info-message',
                     options: angular.extend({}, {
-                        title: 'guide.step_plugin.create-ttyg-agent.fts-search.title',
-                        content: 'guide.step_plugin.create-ttyg-agent.fts-search.content',
+                        content: 'guide.step_plugin.enable-fts-search-method.content',
                         url: '/ttyg',
                         class: 'info-fts-search-guide-dialog',
                     }, options)
@@ -16,7 +17,7 @@ PluginRegistry.add('guide.step', [
                 {
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
-                        content: 'guide.step_plugin.create-ttyg-agent.fts-search.enable-toggle',
+                        content: 'guide.step_plugin.enable-fts-search-method.enable-toggle',
                         class: 'toggle-fts-search-guide-dialog',
                         url: '/ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('query-method-fts_search'),
