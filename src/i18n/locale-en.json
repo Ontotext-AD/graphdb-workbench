@@ -747,15 +747,17 @@
     },
     "graphql": {
         "playground": {
+            "helpInfo": "Use the GraphQL Playground to build and test queries in real time. Explore your schema, send requests, and inspect responses effortlessly.",
             "message": {
-                "no_schemas_in_repository": "No active endpoints found in the current repository. Manage the GraphQL schemas <a href=\"#\">here</a>",
+                "no_schemas_in_repository": "No active endpoints found in the current repository. Manage the GraphQL schemas <a href=\"/graphql/endpoints\">here</a>",
                 "abort_query": "Query canceled: The operation was stopped before completion."
             },
             "endpoint_selector": {
-                "tooltip": "Select a GraphQL endpoint"
+                "tooltip": "Active endpoints"
             }
         },
         "endpoints_management": {
+            "helpInfo": "GraphQL endpoint management allows you to create GraphQL endpoints. You can create a GraphQL endpoint by generating it from GraphQL shapes or using OWL ontologies and SHACL shapes.",
             "toolbar": {
                 "endpoints_filter": {
                     "placeholder": "Filter by ID or Label"
@@ -771,14 +773,38 @@
             },
             "table": {
                 "column": {
-                    "id": "Id",
-                    "label": "Label",
-                    "is_default": "Default",
-                    "is_active": "Active",
-                    "modified_on": "Modified",
-                    "types_count": "Types",
-                    "props_count": "Properties",
-                    "actions": "Actions"
+                    "id": {
+                        "label": "Id",
+                        "tooltip": "The human-readable name of the GraphQL endpoint"
+                    },
+                    "label": {
+                        "label": "Label",
+                        "tooltip": "The label of the GraphQL endpoint"
+                    },
+                    "is_default": {
+                        "label": "Default",
+                        "tooltip": "Set the endpoint definition which will be active on the default GraphQL endpoint"
+                    },
+                    "is_active": {
+                        "label": "Active",
+                        "tooltip": "Set as active for queries and mutations."
+                    },
+                    "modified_on": {
+                        "label": "Modified",
+                        "tooltip": "The date and time when the endpoint was last modified"
+                    },
+                    "types_count": {
+                        "label": "Types",
+                        "tooltip": "The number of types in the GraphQL schema"
+                    },
+                    "props_count": {
+                        "label": "Properties",
+                        "tooltip": "The number of properties in the GraphQL schema"
+                    },
+                    "actions": {
+                        "label": "Actions",
+                        "tooltip": "Access more actions for managing the GraphQL endpoint"
+                    }
                 },
                 "actions": {
                     "explore_endpoint": {
@@ -843,6 +869,80 @@
                 "messages": {
                     "error_saving_configuration": "Error saving endpoint configuration",
                     "success_saving_configuration": "Endpoint configuration saved"
+                },
+                "settings": {
+                    "enableTypeCount": {
+                        "label": "Enable Type Count Queries",
+                        "tooltip": "Toggle to include count queries in the schema."
+                    },
+                    "enableCollectionCount": {
+                        "label": "Enable Collection Count",
+                        "tooltip": "Enables or disables automatic collection size properties."
+                    },
+                    "compactErrorMessages": {
+                        "label": "Compact Error Messages",
+                        "tooltip": "Enables a more compact error message format."
+                    },
+                    "langFetch": {
+                        "label": "Default Fetch Language",
+                        "tooltip": "Defines the default language configuration to use when loading langString or stringOrLangString values. If not set, all values will be returned."
+                    },
+                    "langValidate": {
+                        "label": "Default Language Validation",
+                        "tooltip": "Set the default language validation rules when mutating langString or stringOrLangString properties, including language uniqueness."
+                    },
+                    "langImplicit": {
+                        "label": "Default Implicit Language",
+                        "tooltip": "Determines the implicit language when inserting language-tagged strings if none is specified in a mutation."
+                    },
+                    "langDefaultNameFetch": {
+                        "label": "Default Name Fetch Language",
+                        "tooltip": "Sets the default language configuration for name properties. The first value matching the specified languages in order will be used."
+                    },
+                    "langAppendDefaultNameFetch": {
+                        "label": "Append Default Name Fetch",
+                        "tooltip": "Determines whether the default language spec should be appended."
+                    },
+                    "includeInferred": {
+                        "label": "Include Inferred Data",
+                        "tooltip": "Enables or disables inference for queries and mutations."
+                    },
+                    "expandOwlSameAs": {
+                        "label": "Expand owl:sameAs",
+                        "tooltip": "Controls whether owl:sameAs expansion is enabled."
+                    },
+                    "enableMutations": {
+                        "label": "Enable Mutations",
+                        "tooltip": "Toggle to enable or disable GraphQL mutations. If disabled, the GraphQL endpoint will be read-only regardless of user permissions."
+                    },
+                    "defaultRole": {
+                        "label": "Default User Role",
+                        "tooltip": "Defines the role assigned when no other role is found."
+                    },
+                    "enableGraphQLExplain": {
+                        "label": "Enable GraphQL Explain",
+                        "tooltip": "Enables access to the SPARQL queries and their execution plans."
+                    },
+                    "exposeSomlInGraphQL": {
+                        "label": "Expose Model in GraphQL",
+                        "tooltip": "Includes model configuration details in the GraphQL schema."
+                    },
+                    "disabledChecks": {
+                        "label": "Disabled Schema Checks",
+                        "tooltip": "Specifies which schema validation checks to disable."
+                    },
+                    "defaultIntegrationRole": {
+                        "label": "Default Integration Role",
+                        "tooltip": "The default RBAC role that will have read-only access to the data and could be used for system integrations."
+                    },
+                    "queryPrefix": {
+                        "label": "Query Prefix",
+                        "tooltip": "Adds a prefix to all GraphQL queries."
+                    },
+                    "mutationPrefix": {
+                        "label": "Mutation Prefix",
+                        "tooltip": "Adds a prefix to all GraphQL mutations."
+                    }
                 }
             },
             "import_definition_modal": {
@@ -878,10 +978,11 @@
             }
         },
         "create_endpoint": {
+            "helpInfo": "Create a new GraphQL endpoint by selecting a source repository and defining schema sources. Configure settings and generate your endpoint to start querying data.",
             "toolbar": {
                 "source_repository_selector": {
                     "label": "Source repository",
-                    "tooltip": "Select the repository to use as the source for the schemas of the new GraphQL endpoint"
+                    "tooltip": "The repository used for creating the GraphQL endpoint"
                 }
             },
             "wizard_steps": {
@@ -889,10 +990,12 @@
                     "title": "Select schema source",
                     "source_type": {
                         "graphql_schema_shapes": {
-                            "label": "GraphQL schema shapes"
+                            "label": "GraphQL schema shapes",
+                            "tooltip": "A structured representation of your data in GraphQL, defining types and relationships."
                         },
                         "shacl_shapes": {
-                            "label": "OWL ontologies/SHACL shapes"
+                            "label": "OWL ontologies/SHACL shapes",
+                            "tooltip": "Ontologies and SHACL shapes define the structure and constraints of your data."
                         }
                     },
                     "graphql_schema_shapes": {
@@ -908,7 +1011,7 @@
                         "form": {
                             "endpoint_id": {
                                 "label": "Endpoint ID",
-                                "tooltip": "The unique identifier for the new GraphQL endpoint. It must be unique within the repository.",
+                                "tooltip": "A unique identifier for this endpoint, used to reference and manage it.",
                                 "placeholder": "star-wars"
                             },
                             "vocabulary_prefix": {
@@ -918,12 +1021,12 @@
                             },
                             "endpoint_label": {
                                 "label": "Endpoint label",
-                                "tooltip": "The label for the new GraphQL endpoint",
+                                "tooltip": "Assign a custom label to easily identify the endpoint.",
                                 "placeholder": "Star Wars"
                             },
                             "endpoint_description": {
                                 "label": "Endpoint description",
-                                "tooltip": "The description for the new GraphQL endpoint",
+                                "tooltip": "Assign a description to the endpoint.",
                                 "placeholder": "The Star Wars GraphQL endpoint description"
                             }
                         },
@@ -954,7 +1057,44 @@
                     "title": "Configure endpoint",
                     "endpoint_parameters": {
                         "title": "Parameters",
-                        "form": {}
+                        "settings": {
+                            "stringMode": {
+                                "label": "Default String Mode",
+                                "tooltip": "Specifies the default string mode for data properties without a range definition."
+                            },
+                            "useUnions": {
+                                "label": "Use GraphQL Unions",
+                                "tooltip": "Determines whether GraphQL unions should be used in the result model."
+                            },
+                            "forceInterfaceTypes": {
+                                "label": "Force Interface Types",
+                                "tooltip": "Specifies if parent types should always be interfaces or split between interface and subclass."
+                            },
+                            "defaultMaxCardinality": {
+                                "label": "Default Maximum Cardinality",
+                                "tooltip": "Sets the default maximum cardinality for all values, defining whether properties without explicit cardinality are multi or single valued by default."
+                            },
+                            "readShaclPropertiesLabels": {
+                                "label": "Use SHACL Property Labels",
+                                "tooltip": "Defines whether labels and descriptions for sh:PropertyShape should be used instead of sh:path labels and descriptions."
+                            },
+                            "removeUnknownRanges": {
+                                "label": "Remove Unknown Ranges",
+                                "tooltip": "Specifies whether invalid and undefined ranges should be removed."
+                            },
+                            "cleanInvalidInverseOf": {
+                                "label": "Clean Invalid InverseOf Relations",
+                                "tooltip": "Attempts to fix invalid owl:inverseOf relationships."
+                            },
+                            "includeDeactivatedShapes": {
+                                "label": "Include Deactivated Shapes",
+                                "tooltip": "Includes sh:deactivated shapes in the model."
+                            },
+                            "readRBACRules": {
+                                "label": "Read RBAC Rules",
+                                "tooltip": "Enables reading RBAC rules from the models."
+                            }
+                        }
                     }
                 },
                 "generate_endpoint": {
@@ -967,7 +1107,8 @@
                             "generated_endpoints": "GraphQL endpoints",
                             "manage_endpoints_info": "Navigate to <a href=\"{{managementUrl}}\">Endpoint Management</a> to manage the endpoints",
                             "explore_in_playground_link_tooltip": "Explore in Playground (opens in a new tab)",
-                            "view_report_link": "View report"
+                            "view_report_link": "View report",
+                            "view_report_link_tooltip": "Opens endpoint creation report in a modal dialog"
                         }
                     },
                     "generation_failure_report": {
@@ -2111,6 +2252,7 @@
     "restart.repo.in.cluster.tooltip": "Restarting a repository is not supported in a cluster environment. To apply configuration changes, restart all cluster nodes.",
     "location.cannot.be.empty.error": "Location cannot be empty",
     "required.field": "This field is required",
+    "invalid.field.value": "Invalid field value. The value should match the pattern '{{pattern}}'",
     "created.repo.success.msg": "The repository {{repoId}} has been created.",
     "empty.repoid.warning": "Repository ID cannot be empty",
     "invalid.ruleset.file.error": "Invalid rule-set file. Please upload a valid one.",

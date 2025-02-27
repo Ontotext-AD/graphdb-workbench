@@ -79,7 +79,8 @@ function dynamicFormDirective() {
         scope: {
             fields: '=',
             onValidityChange: '&?',
-            formCtrl: '=?'
+            formCtrl: '=?',
+            translationKeyPrefix: '@?'
         },
         templateUrl: 'js/angular/core/directives/dynamic-form/templates/dynamic-form.html',
         link: function($scope, element) {
