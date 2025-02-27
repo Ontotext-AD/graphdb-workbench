@@ -171,7 +171,7 @@ function ModalService($uibModal, $timeout, $sce) {
      * @param {Function} onCancel
      */
     function openConfirmation(title, message, onConfirm = () => {}, onCancel = () => {}) {
-        openConfirmationModal({title, message}, onConfirm, onCancel);
+        openConfirmationModal({title, message, dialogClass: 'confirm-dialog'}, onConfirm, onCancel);
     }
 
     /**

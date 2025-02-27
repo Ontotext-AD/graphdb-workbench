@@ -783,7 +783,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         };
 
         if (angular.isFunction(stepDescription.hide)) {
-            step.when.hide = stepDescription.hide(guide);
+            step.when.hide = stepDescription.hide(guide, stepDescription);
         }
 
         return step;
