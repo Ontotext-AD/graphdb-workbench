@@ -1528,7 +1528,7 @@
     "view.resource.monitoring.helpInfo": "The System monitoring view shows the usage of various system resources, such as memory, CPU, file descriptors, and storage space. It also shows some performance metrics that allow you to diagnose various issues, as well as an overview of the cluster health",
     "view.users.access.helpInfo": "The Users and Access view is used to manage the users and their access to the GraphDB repositories. You can also enable or disable the security of the entire GraphDB. When security is disabled, everyone has full access to the repositories and the admin functionality.",
     "view.aclmanagement.title": "ACL Management",
-    "view.aclmanagement.helpInfo": "The ACL management view is used to manage the Access Control List, a mechanism for fine-grained access level control on the quad level of the repository. Each ACL rule consists of the quad (subject, predicate, object, context, including wildcards) whose level needs to be controlled, the applicable role membership and the policy (allow or deny) of the rule.",
+    "view.aclmanagement.helpInfo": "The ACL management view is used to manage the Access Control List, a mechanism for the fine-grained access level control. Each ACL rule consists of a scope (Statement, Clear graph, Plugin, or System), the policy of the rule (Allow or Deny), and the role membership for which the rule should be applied.",
     "view.create.user.title": "Create new user",
     "view.edit.user.title": "Edit user: {{userId}}",
     "view.login.title": "Login",
