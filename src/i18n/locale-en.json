@@ -975,6 +975,22 @@
                     "failed": "Failed",
                     "not_allowed": "Not allowed"
                 }
+            },
+            "generation_failure_report_modal": {
+                "title": "GraphQL endpoint creation report",
+                "failing_reason_message": "GraphQL endpoint creation failed because of errors/warnings during schema definition generation.",
+                "warning_reason_message": "Your GraphQL endpoint is now ready. Below are the warnings encountered during schema generation.",
+                "errors": "Validation error [{{errorCount}}]",
+                "warnings": "Warning [{{warningCount}}]",
+                "actions": {
+                    "download_report": {
+                        "label": "Download report"
+                    },
+                    "delete_report": {
+                        "label": "Delete report",
+                        "success": "The endpoint generation report was deleted successfully."
+                    }
+                }
             }
         },
         "create_endpoint": {
@@ -1012,7 +1028,11 @@
                             "endpoint_id": {
                                 "label": "Endpoint ID",
                                 "tooltip": "A unique identifier for this endpoint, used to reference and manage it.",
-                                "placeholder": "star-wars"
+                                "placeholder": "star-wars",
+                                "validation": {
+                                    "required": "The endpoint ID is required",
+                                    "pattern": "The endpoint ID must contain only letters, numbers, underscores, and hyphens"
+                                }
                             },
                             "vocabulary_prefix": {
                                 "label": "Vocabulary prefix",
@@ -1109,17 +1129,6 @@
                             "explore_in_playground_link_tooltip": "Explore in Playground (opens in a new tab)",
                             "view_report_link": "View report",
                             "view_report_link_tooltip": "Opens endpoint creation report in a modal dialog"
-                        }
-                    },
-                    "generation_failure_report": {
-                        "title": "GraphQL endpoint creation failed",
-                        "reason_message": "GraphQL endpoint creation failed because of errors/warnings during schema definition generation.",
-                        "errors": "Validation error [{{errorCount}}]",
-                        "warnings": "Warning [{{warningCount}}]",
-                        "actions": {
-                            "download_report": {
-                                "label": "Download report"
-                            }
                         }
                     },
                     "messages": {

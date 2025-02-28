@@ -112,7 +112,7 @@ export class GraphqlEndpointConfiguration {
         if (this.generateFromShaclShapes()) {
             if (this.selectedGraphs.isEmpty) {
                 return [new GraphqlEndpointOverview({
-                    label: `[${this.params.endpointId}]`
+                    label: `${this.params.endpointId}`
                 })];
             }
             return this.selectedGraphs.processGraphList((graph) => {

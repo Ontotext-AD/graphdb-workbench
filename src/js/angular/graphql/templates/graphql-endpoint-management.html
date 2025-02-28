@@ -47,6 +47,7 @@
             <thead>
             <tr>
                 <th scope="col" class="toggle"></th>
+                <th scope="col" class="status"></th>
                 <th scope="col" class="endpoint-id">
                     <span gdb-tooltip="{{'graphql.endpoints_management.table.column.id.tooltip' | translate}}">
                         {{'graphql.endpoints_management.table.column.id.label' | translate}}
@@ -104,17 +105,22 @@
                         <i class="fa fa-chevron-down" ng-if="expandedRow === $index"></i>
                     </a>
                 </td>
+                <td class="status-cell">
+                    <a href="#" ng-if="endpoint.errors > 0 || endpoint.warnings > 0"
+                       ng-click="onShowEndpointReport(endpoint)"
+                       gdb-tooltip="{{'graphql.endpoints_management.table.actions.view_report.tooltip' | translate}}"
+                       class="endpoint-report-link btn btn-link">
+                        <i ng-if="!endpoint.createdSuccessfully" class="fa-regular fa-circle-xmark status-failed"></i>
+                        <i ng-if="endpoint.createdSuccessfully" class="fa-regular fa-circle-check status-success"></i>
+                    </a>
+                </td>
                 <td>
-                    <i ng-if="!endpoint.createdSuccessfully" class="fa-regular fa-circle-xmark status-failed"></i>
                     <span ng-if="!endpoint.active"
                           gdb-tooltip="{{'graphql.endpoints_management.table.actions.explore_endpoint.inactive.tooltip' | translate}}"
                           class="endpoint-link">{{endpoint.endpointId}}</span>
                     <a ng-if="endpoint.active" href="#" ng-click="onExploreEndpoint(endpoint)"
                        gdb-tooltip="{{'graphql.endpoints_management.table.actions.explore_endpoint.active.tooltip' | translate}}"
                        class="endpoint-link">{{endpoint.endpointId}}</a>
-                    <a href="#" ng-if="!endpoint.createdSuccessfully" ng-click="onShowEndpointReport(endpoint)"
-                       gdb-tooltip="{{'graphql.endpoints_management.table.actions.view_report.tooltip' | translate}}"
-                       class="endpoint-report-link btn btn-link">{{'graphql.endpoints_management.table.actions.view_report.label' | translate}}</a>
                 </td>
                 <td>{{endpoint.label}}</td>
                 <td>

@@ -367,6 +367,22 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
     }
 
     /**
+     * Handles the event for deleting endpoint generation report.
+     * @param {EndpointGenerationReport} endpointReport The endpoint generation report.
+     */
+    const onDeleteEndpointReport = (endpointReport) => {
+        GraphqlService.deleteEndpointGenerationReport($repositories.getActiveRepository(), endpointReport.endpointId)
+            .then(() => {
+                toastr.success($translate.instant('graphql.endpoints_management.generation_failure_report_modal.actions.delete_report.success'));
+                return loadEndpointsInfo(false);
+            })
+            .catch((error) => {
+                toastr.error(getError(error));
+                console.error('Error deleting endpoint generation report', error);
+            });
+    };
+
+    /**
      * Handles the loaded GraphQL endpoints info.
      * @param {GraphqlEndpointsInfoList} endpointsInfoList
      */
@@ -448,6 +464,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
     // =========================
 
     subscriptions.push(GraphqlContextService.subscribe(GraphqlEventName.START_CREATE_ENDPOINT_WIZARD, onStartCreateEndpointWizard));
+    subscriptions.push(GraphqlContextService.subscribe(GraphqlEventName.DELETE_ENDPOINT_REPORT, onDeleteEndpointReport));
     subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler));
     $scope.$on('$destroy', unsubscribeAll);
 

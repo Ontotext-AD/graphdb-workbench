@@ -19,6 +19,7 @@
                     <select id="sourceRepositorySelector" ng-model="selectedSourceRepository"
                             ng-options="repository as repository.label for repository in sourceRepositories"
                             ng-change="onSelectedSourceRepositoryChange(selectedSourceRepository)"
+                            ng-disabled="generatingEndpoint"
                             class="form-control source-repository-selector"
                             gdb-tooltip="{{'graphql.create_endpoint.toolbar.source_repository_selector.tooltip' | translate}}"
                             tooltip-placement="top">

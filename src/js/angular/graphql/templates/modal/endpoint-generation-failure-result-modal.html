@@ -2,18 +2,28 @@
 
 <div class="modal-header">
     <button type="button" class="close" ng-click="close()"></button>
-    <h3 class="modal-title">{{'graphql.create_endpoint.wizard_steps.generate_endpoint.generation_failure_report.title' | translate}}</h3>
+    <h3 class="modal-title">
+        {{'graphql.endpoints_management.generation_failure_report_modal.title' | translate}}</h3>
 </div>
 
 <div class="modal-body endpoint-generation-failure-result-modal-body">
-    <p>{{'graphql.create_endpoint.wizard_steps.generate_endpoint.generation_failure_report.reason_message' | translate}}</p>
+    <div ng-if="endpointReport.errors > 0" class="alert alert-danger">
+        {{'graphql.endpoints_management.generation_failure_report_modal.failing_reason_message' | translate}}
+    </div>
+
+    <div ng-if="endpointReport.warnings > 0 && endpointReport.errors === 0" class="alert alert-info">
+        {{'graphql.endpoints_management.generation_failure_report_modal.warning_reason_message' | translate}}
+    </div>
+
     <table class="report table table-bordered" aria-label="Endpoint generation failure report table">
         <thead>
         <tr class="labels-row">
             <th scope="col">
-                <strong class="errors-count mr-2">{{'graphql.create_endpoint.wizard_steps.generate_endpoint.generation_failure_report.errors' |
+                <strong
+                    class="errors-count mr-2">{{'graphql.endpoints_management.generation_failure_report_modal.errors' |
                 translate: {errorCount: endpointReport.errors} }}</strong>
-                <strong class="warnings-count">{{'graphql.create_endpoint.wizard_steps.generate_endpoint.generation_failure_report.warnings' |
+                <strong
+                    class="warnings-count">{{'graphql.endpoints_management.generation_failure_report_modal.warnings' |
                 translate: {warningCount: endpointReport.warnings} }}</strong>
             </th>
         </tr>
@@ -34,8 +44,12 @@
 </div>
 
 <div class="modal-footer mt-0">
-    <button id="download-failure-report" class="btn btn-primary" ng-click="downloadReport()">
+    <button id="download-failure-report" class="btn btn-secondary mr-1" ng-click="downloadReport()">
         <i class="fa fa-arrow-down-to-line"></i>
-        <span>{{'graphql.create_endpoint.wizard_steps.generate_endpoint.generation_failure_report.actions.download_report.label' | translate}}</span>
+        <span>{{'graphql.endpoints_management.generation_failure_report_modal.actions.download_report.label' | translate}}</span>
+    </button>
+    <button ng-if="endpointReport.errors === 0 && endpointReport.warnings > 0" id="delete-warnings"
+            class="btn btn-primary" ng-click="deleteReport()">
+        <span>{{'graphql.endpoints_management.generation_failure_report_modal.actions.delete_report.label' | translate}}</span>
     </button>
 </div>
