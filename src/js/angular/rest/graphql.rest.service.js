@@ -192,6 +192,16 @@ function GraphqlRestService($http, Upload) {
         });
     };
 
+    /**
+     * Deletes the endpoint generation report by calling the backend.
+     * @param {string} repositoryId The repository ID.
+     * @param {string} endpointId The endpoint ID.
+     * @returns {Promise<unknown>} The response from the backend.
+     */
+    const deleteEndpointGenerationReport = (repositoryId, endpointId) => {
+        return $http.patch(`${REPOSITORIES_ENDPOINT}/${repositoryId}/graphql/manage/endpoints/${endpointId}/messages`);
+    };
+
     return {
         getEndpoints,
         getEndpointsInfo,
@@ -206,6 +216,7 @@ function GraphqlRestService($http, Upload) {
         generateEndpointFromGraphqlShapes,
         generateEndpointFromOwl,
         exportEndpointDefinition,
-        importEndpointDefinition
+        importEndpointDefinition,
+        deleteEndpointGenerationReport
     };
 }

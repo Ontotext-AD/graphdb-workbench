@@ -19,8 +19,9 @@
 
             <div class="endpoints-overview">
                 <div ng-repeat="endpointOverview in endpointsOverview.endpointList" class="endpoint-overview">
-                    <strong class="label">{{endpointOverview.label}}</strong> | <span
-                    class="uri">{{endpointOverview.uri}}</span>
+                    <strong class="label">{{endpointOverview.label}}</strong>
+                    <span ng-if="endpointOverview.label && endpointOverview.uri">|</span>
+                    <span class="uri">{{endpointOverview.uri}}</span>
                 </div>
             </div>
         </div>
@@ -55,13 +56,11 @@
         </div>
     </div>
 
-    <div class="wizard-actions mt-2">
-        <button class="btn btn-secondary cancel-btn mr-1"
-                ng-click="cancel()">
+    <div class="wizard-actions mt-1">
+        <button class="btn btn-secondary cancel-btn mr-1" ng-disabled="generatingEndpoint" ng-click="cancel()">
             {{'graphql.create_endpoint.wizard_steps.actions.cancel.label' | translate}}
         </button>
-        <button class="btn btn-secondary back-btn mr-1"
-                ng-click="back()">
+        <button class="btn btn-secondary back-btn mr-1" ng-disabled="generatingEndpoint" ng-click="back()">
             {{'graphql.create_endpoint.wizard_steps.actions.back.label' | translate}}
         </button>
         <button class="btn btn-primary generate-endpoint-btn" ng-click="generateEndpoint()"

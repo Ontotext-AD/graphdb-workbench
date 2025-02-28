@@ -10,9 +10,9 @@ angular
     .module('graphdb.framework.graphql.controllers.endpoint-generation-failure-result-modal', modules)
     .controller('EndpointGenerationResultFailureModalController', EndpointGenerationResultFailureModalController);
 
-EndpointGenerationResultFailureModalController.$inject = ['$scope', '$uibModalInstance', 'data'];
+EndpointGenerationResultFailureModalController.$inject = ['$scope', '$uibModalInstance', 'data', 'GraphqlContextService'];
 
-function EndpointGenerationResultFailureModalController($scope, $uibModalInstance, data) {
+function EndpointGenerationResultFailureModalController($scope, $uibModalInstance, data, GraphqlContextService) {
     // =========================
     // Private variables
     // =========================
@@ -48,6 +48,14 @@ function EndpointGenerationResultFailureModalController($scope, $uibModalInstanc
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
     };
+
+    /**
+     * Deletes generation report and dismisses the modal.
+     */
+    $scope.deleteReport = () => {
+        GraphqlContextService.deleteEndpointGenerationReport($scope.endpointReport);
+        $scope.close();
+    }
 
     /**
      * Cancels the operation and dismisses the modal.

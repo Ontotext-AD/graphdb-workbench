@@ -242,6 +242,17 @@ function GraphqlService(GraphqlRestService) {
         return GraphqlRestService.importEndpointDefinition(repositoryId, payload);
     };
 
+    /**
+     * Deletes the endpoint generation report. This method should be called after the user has reviewed the warnings
+     * and accepted them.
+     * @param {string} repositoryId The repository ID.
+     * @param {string} endpointId The endpoint ID.
+     * @returns {Promise<unknown>}
+     */
+    const deleteEndpointGenerationReport = (repositoryId, endpointId) => {
+        return GraphqlRestService.deleteEndpointGenerationReport(repositoryId, endpointId);
+    };
+
     return {
         getEndpointsCountToGenerate,
         getGenerateEndpointsOverview,
@@ -260,6 +271,7 @@ function GraphqlService(GraphqlRestService) {
         generateEndpointFromGraphqlShapes,
         generateEndpointFromOwl,
         exportEndpointDefinition,
-        importEndpointDefinition
+        importEndpointDefinition,
+        deleteEndpointGenerationReport
     };
 }

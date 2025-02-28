@@ -57,13 +57,18 @@
                            uib-popover="{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.endpoint_id.tooltip' | translate}}"
                            popover-trigger="mouseenter">{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.endpoint_id.label' | translate}}*</label>
                     <input type="text" class="form-control" id="endpointId" name="endpointId"
-                           ng-model="endpointConfiguration.params.endpointId"
-                           required autocomplete="off"
+                           ng-model="endpointConfiguration.params.endpointId" autocomplete="off"
+                           required ng-pattern="/^[\w-]+$/"
                            placeholder="{{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.endpoint_id.placeholder' | translate}}">
                 </div>
                 <div class="alert alert-danger"
                      ng-if="endpointParamsForm.endpointId.$touched && endpointParamsForm.endpointId.$invalid">
-                    {{'required.field' | translate}}
+                    <span ng-if="endpointParamsForm.endpointId.$error.required">
+                        {{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.endpoint_id.validation.required' | translate}}
+                    </span>
+                    <span ng-if="endpointParamsForm.endpointId.$error.pattern">
+                        {{'graphql.create_endpoint.wizard_steps.select_schema_sources.shacl_shapes.form.endpoint_id.validation.pattern' | translate}}
+                    </span>
                 </div>
             </div>
 

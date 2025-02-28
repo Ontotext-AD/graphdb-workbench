@@ -76,7 +76,7 @@ function ImportEndpointDefinitionModalController($scope, $q, toastr, $uibModal, 
      * @param {Array} $invalidFiles The invalid files selected.
      */
     $scope.onFilesChange = ($files, $file, $newFiles, $duplicateFiles, $invalidFiles) => {
-        let selectedFiles = $newFiles;
+        let selectedFiles = $newFiles || [];
 
         // find out files with invalid extensions in the list
         const invalidFiles = selectedFiles.filter(file => {

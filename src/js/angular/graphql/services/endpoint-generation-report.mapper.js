@@ -12,30 +12,30 @@ export const endpointGenerationReportListMapper = (data, repositoryId) => {
         return new EndpointGenerationReportList();
     }
 
-    const reports = data.map((reportReponse) => endpointGenerationReportMapper(reportReponse, repositoryId));
+    const reports = data.map((reportResponse) => endpointGenerationReportMapper(reportResponse, repositoryId));
     return new EndpointGenerationReportList(reports);
 }
 
 /**
  * Maps the response data to an endpoint generation report.
- * @param {*} reportReponse The response data.
+ * @param {*} reportResponse The response data.
  * @param {string} repositoryId The repository id.
  * @returns {EndpointGenerationReport} The endpoint generation report.
  */
-export const endpointGenerationReportMapper = (reportReponse, repositoryId) => {
+export const endpointGenerationReportMapper = (reportResponse, repositoryId) => {
     return new EndpointGenerationReport({
-        endpointId: reportReponse.id,
-        endpointURI: resolveGraphqlEndpoint(repositoryId, reportReponse.id),
-        active: reportReponse.active,
-        default: reportReponse.default,
-        label: reportReponse.label,
-        description: reportReponse.description,
-        lastModified: reportReponse.lastModified,
-        objectsCount: reportReponse.objectsCount,
-        propertiesCount: reportReponse.propertiesCount,
-        warnings: reportReponse.warnings,
-        errors: reportReponse.errors,
-        messages: reportReponse.messages
+        endpointId: reportResponse.id,
+        endpointURI: resolveGraphqlEndpoint(repositoryId, reportResponse.id),
+        active: reportResponse.active,
+        default: reportResponse.default,
+        label: reportResponse.label,
+        description: reportResponse.description,
+        lastModified: reportResponse.lastModified,
+        objectsCount: reportResponse.objectsCount,
+        propertiesCount: reportResponse.propertiesCount,
+        warnings: reportResponse.warnings,
+        errors: reportResponse.errors,
+        messages: reportResponse.messages
     });
 }
 

@@ -975,6 +975,22 @@
                     "failed": "Échoué",
                     "not_allowed": "Non autorisé"
                 }
+            },
+            "generation_failure_report_modal": {
+                "title": "Rapport de création de point de terminaison GraphQL",
+                "failing_reason_message": "La création du point de terminaison GraphQL a échoué en raison d'erreurs/avertissements lors de la génération de la définition de schéma.",
+                "warning_reason_message": "Votre point de terminaison GraphQL est maintenant prêt. Vous trouverez ci-dessous les avertissements rencontrés lors de la génération du schéma.",
+                "errors": "Erreur de validation [{{errorCount}}]",
+                "warnings": "Avertissement [{{warningCount}}",
+                "actions": {
+                    "download_report": {
+                        "label": "Télécharger le rapport"
+                    },
+                    "delete_report": {
+                        "label": "Supprimer le rapport",
+                        "success": "Le rapport de génération du point de terminaison a été supprimé avec succès."
+                    }
+                }
             }
         },
         "create_endpoint": {
@@ -1012,7 +1028,11 @@
                             "endpoint_id": {
                                 "label": "ID du point de terminaison",
                                 "tooltip": "Un identifiant unique pour ce point de terminaison, utilisé pour le référencer et le gérer.",
-                                "placeholder": "star-wars"
+                                "placeholder": "star-wars",
+                                "validation": {
+                                    "required": "L'identifiant du point de terminaison est requis",
+                                    "pattern": "L'identifiant du point de terminaison ne peut contenir que des lettres, des chiffres, des underscores et des tirets"
+                                }
                             },
                             "vocabulary_prefix": {
                                 "label": "Préfixe de vocabulaire",
@@ -1109,17 +1129,6 @@
                             "explore_in_playground_link_tooltip": "Explorer dans Playground (s'ouvre dans un nouvel onglet)",
                             "view_report_link": "Voir le rapport",
                             "view_report_link_tooltip": "Ouvre le rapport de création du point de terminaison dans une boîte de dialogue modale."
-                        }
-                    },
-                    "generation_failure_report": {
-                        "title": "La création du point de terminaison GraphQL a échoué",
-                        "reason_message": "La création du point de terminaison GraphQL a échoué en raison d'erreurs/avertissements lors de la génération de la définition de schéma.",
-                        "errors": "Erreur de validation [{{errorCount}}]",
-                        "warnings": "Avertissement [{{warningCount}}",
-                        "actions": {
-                            "download_report": {
-                                "label": "Télécharger le rapport"
-                            }
                         }
                     },
                     "messages": {

@@ -71,19 +71,21 @@ describe('GraphQL endpoints management', () => {
             GraphqlEndpointManagementSteps.visit();
             // Then I should see the endpoints info
             GraphqlEndpointManagementSteps.getEndpointTable().within(() => {
-                cy.get('thead th').should('have.length', 9);
-                cy.get('thead th').eq(1).should('contain', 'Id');
-                cy.get('thead th').eq(2).should('contain', 'Label');
-                cy.get('thead th').eq(3).should('contain', 'Default');
-                cy.get('thead th').eq(4).should('contain', 'Active');
-                cy.get('thead th').eq(5).should('contain', 'Modified');
-                cy.get('thead th').eq(6).should('contain', 'Types');
-                cy.get('thead th').eq(7).should('contain', 'Properties');
-                cy.get('thead th').eq(8).should('contain', 'Actions');
+                cy.get('thead th').should('have.length', 10);
+                // the first column contains the status icon
+                cy.get('thead th').eq(2).should('contain', 'Id');
+                cy.get('thead th').eq(3).should('contain', 'Label');
+                cy.get('thead th').eq(4).should('contain', 'Default');
+                cy.get('thead th').eq(5).should('contain', 'Active');
+                cy.get('thead th').eq(6).should('contain', 'Modified');
+                cy.get('thead th').eq(7).should('contain', 'Types');
+                cy.get('thead th').eq(8).should('contain', 'Properties');
+                cy.get('thead th').eq(9).should('contain', 'Actions');
             });
             GraphqlEndpointManagementSteps.getEndpointsInfo().should('have.length', 3);
             GraphqlEndpointManagementSteps.verifyEndpointInfo([
                 {
+                    status: 'deleted',
                     id: 'swapi',
                     label: 'Ontotext Star Wars Ontology',
                     description: '',
@@ -94,6 +96,7 @@ describe('GraphQL endpoints management', () => {
                     properties: 68
                 },
                 {
+                    status: 'deleted',
                     id: 'swapi-planets',
                     label: 'Star Wars planets API',
                     description: '',
@@ -104,6 +107,7 @@ describe('GraphQL endpoints management', () => {
                     properties: 10
                 },
                 {
+                    status: 'deleted',
                     id: 'swapi-species',
                     label: 'Star Wars species API',
                     description: '',

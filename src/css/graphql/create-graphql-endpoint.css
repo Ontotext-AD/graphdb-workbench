@@ -144,25 +144,23 @@
 
 .create-graphql-endpoint-view .generate-endpoint-container {
     position: relative;
-    flex: 1;
-    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    height: auto;
     width: 50%;
+    overflow: hidden;
 }
 
 .create-graphql-endpoint-view .generate-endpoint-container .endpoints-generation-overview {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 
 .generate-endpoint-view .generate-endpoint-container .endpoints-overview {
     flex: 1;
-    overflow-y: auto;
     min-height: 0;
+    overflow-y: auto;
 }
 
 .generate-endpoint-view .generate-endpoint-container .endpoints-overview .endpoint-overview {
@@ -175,20 +173,18 @@
 }
 
 .generate-endpoint-view .generate-endpoint-container .generation-report {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    position: relative;
     display: flex;
     flex-direction: column;
+    height: 100%;
+    width: 100%;
 }
 
-.generate-endpoint-view .generate-endpoint-container .generation-report,
 .generate-endpoint-view .generate-endpoint-container .generation-report-list {
     flex: 1;
-    overflow-y: auto;
     min-height: 0;
+    overflow-y: auto;
+    padding: 10px;
 }
 
 .generate-endpoint-view .generate-endpoint-container .generation-report-list .endpoint-report {

@@ -139,6 +139,14 @@ function GraphqlContextService(EventEmitterService) {
     }
 
     /**
+     * Emits an event to delete the endpoint generation report.
+     * @param {EndpointGenerationReport} endpointReport The endpoint generation report.
+     */
+    const deleteEndpointGenerationReport = (endpointReport) => {
+        emit(GraphqlEventName.DELETE_ENDPOINT_REPORT, endpointReport);
+    }
+
+    /**
      * Emits an event with a deep-cloned payload using the EventEmitterService.
      *
      * @param {string} event - The name of the event to emit. It must be a value from {@link GraphqlEventName}.
@@ -173,6 +181,7 @@ function GraphqlContextService(EventEmitterService) {
         endpointGenerated,
         exploreEndpointInPlayground,
         openEndpointGenerationReport,
+        deleteEndpointGenerationReport,
         cancelEndpointCreation,
         nextEndpointCreationStep,
         previousEndpointCreationStep,
@@ -213,6 +222,10 @@ export const GraphqlEventName = {
      * The event emitted when the user wants to open the endpoint generation report.
      */
     OPEN_ENDPOINT_GENERATION_REPORT: 'openEndpointGenerationReport',
+    /**
+     * The event emitted when the user wants to delete the endpoint generation report.
+     */
+    DELETE_ENDPOINT_REPORT: 'deleteEndpointReport',
     /**
      * The event emitted when the user wants to move to the next step in the create endpoint wizard.
      */

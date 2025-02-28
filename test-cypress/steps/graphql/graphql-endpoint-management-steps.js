@@ -88,16 +88,18 @@ export class GraphqlEndpointManagementSteps {
         this.getEndpointsInfo().each(($row, index) => {
             const endpointInfo = data[index];
             cy.wrap($row).within(() => {
-                cy.get('td').eq(1).should('contain', endpointInfo.id);
-                cy.get('td').eq(2).should('contain', endpointInfo.label);
+                const statusCheck = endpointInfo.status === 'deleted' ? 'not.exist' : 'be.visible';
+                cy.get('td').eq(1).find('.endpoint-link').should(statusCheck);
+                cy.get('td').eq(2).should('contain', endpointInfo.id);
+                cy.get('td').eq(3).should('contain', endpointInfo.label);
                 const isDefaultCheck = endpointInfo.default ? 'be.checked' : 'not.be.checked'
-                cy.get('td').eq(3).find('.endpoint-default-state input[type="radio"]').should(isDefaultCheck);
+                cy.get('td').eq(4).find('.endpoint-default-state input[type="radio"]').should(isDefaultCheck);
                 const isActiveCheck = endpointInfo.active ? 'be.checked' : 'not.be.checked'
-                cy.get('td').eq(4).find('.toggle-active-state input[type="checkbox"]').should(isActiveCheck);
-                cy.get('td').eq(5).should('contain', endpointInfo.modified);
-                cy.get('td').eq(6).should('contain', endpointInfo.types);
-                cy.get('td').eq(7).should('contain', endpointInfo.properties);
-                cy.get('td').eq(8).find('button').should('have.length', 4);
+                cy.get('td').eq(5).find('.toggle-active-state input[type="checkbox"]').should(isActiveCheck);
+                cy.get('td').eq(6).should('contain', endpointInfo.modified);
+                cy.get('td').eq(7).should('contain', endpointInfo.types);
+                cy.get('td').eq(8).should('contain', endpointInfo.properties);
+                cy.get('td').eq(9).find('button').should('have.length', 4);
             });
             // expand the row and check the description outside the wrapper
             this.toggleEndpointRow(index).closest('tr').next('tr')

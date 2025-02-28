@@ -15,6 +15,10 @@
     width: 40px;
 }
 
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .status {
+    width: 40px;
+}
+
 .graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint_id {
     width: 10%;
 }
@@ -25,6 +29,11 @@
 
 .graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint-actions {
     width: 5%;
+}
+
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint-report-link {
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint-default-state,

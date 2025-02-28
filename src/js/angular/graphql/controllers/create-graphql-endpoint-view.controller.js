@@ -71,6 +71,13 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
      */
     $scope.currentStep = undefined;
 
+    /**
+     * A flag indicating if the endpoint generation is in progress. This allows to disable some UI elements during the
+     * generation process.
+     * @type {boolean}
+     */
+    $scope.generatingEndpoint = false;
+
     // =========================
     // Public methods
     // =========================
@@ -116,6 +123,7 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
      * @returns {Promise<void>}
      */
     const generateEndpointFromGraphqlShapes = (endpointConfiguration) => {
+        $scope.generatingEndpoint = true;
         const endpointCreateRequest = endpointConfiguration.toCreateEndpointFromShapesRequest($scope.selectedSourceRepository.value);
         let generationReport;
         return GraphqlService.generateEndpointFromGraphqlShapes($repositories.getActiveRepository(), endpointCreateRequest)
@@ -127,6 +135,7 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
             })
             .finally(() => {
                 GraphqlContextService.endpointGenerated(generationReport);
+                $scope.generatingEndpoint = false;
             });
     }
 
@@ -136,6 +145,7 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
      * @returns {Promise<void>}
      */
     const generateEndpointFromOntologies = (endpointConfiguration) => {
+        $scope.generatingEndpoint = true;
         const endpointCreateRequest = endpointConfiguration.toCreateEndpointFromOwlRequest($scope.selectedSourceRepository.value);
         let generationReport;
         return GraphqlService.generateEndpointFromOwl($repositories.getActiveRepository(), endpointCreateRequest)
@@ -146,6 +156,7 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
                 toastr.error(getError(error));
             })
             .finally(() => {
+                $scope.generatingEndpoint = false;
                 GraphqlContextService.endpointGenerated(generationReport);
             });
     }
