@@ -436,7 +436,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             buttons.push(this._getSkipButton(guide));
         }
 
-        if (previousStepDescription) {
+        if (!this._isDisablePreviousFlow(currentStepDescription) && previousStepDescription) {
             buttons.push(this._getPreviousButton(guide));
         }
         if (nextStepDescription) {
@@ -471,6 +471,16 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         // if there isn't next step with skipPoint set to true, then return last step id.
         return steps.at(steps.length - 1).id;
     };
+
+    /**
+     * Checks if the previous flow is disabled for the <code>stepDescription</code>.
+     * @param {*} stepDescription - The step to be checked.
+     * @return {boolean} - Returns true if the previous flow is disabled, otherwise false.
+     * @private
+     */
+    this._isDisablePreviousFlow = (stepDescription) => {
+        return angular.isDefined(stepDescription.disablePreviousFlow) ? stepDescription.disablePreviousFlow : false;
+    }
 
     /**
      * Pauses current ran guide.
