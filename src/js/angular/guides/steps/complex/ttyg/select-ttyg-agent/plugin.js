@@ -61,6 +61,24 @@ PluginRegistry.add('guide.step', [
                     }, options)
                 },
                 {
+                    // If missing repository modal is visible go to next step, otherwise skip it
+                    guideBlockName: 'info-message',
+                    options: angular.extend({}, {
+                        beforeShowPromise: (guide, currentStep) => {
+                            return GuideUtils.waitFor(GuideUtils.getElementSelector('.confirm-dialog .cancel-btn'), 1)
+                                .then(() => {
+                                    // Using a timeout because the library executes logic to show the step in a then clause which causes current and next steps to show
+                                    setTimeout(() => guide.next())
+                                })
+                                .catch(() => {
+                                    const stepId = currentStep.id;
+                                    // Using a timeout because the library executes logic to show the step in a then clause which causes current and next steps to show
+                                    setTimeout(() => guide.show(stepId + 2))
+                                })
+                        },
+                    }, options)
+                },
+                {
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.select-ttyg-agent.missing-repository',
@@ -70,9 +88,10 @@ PluginRegistry.add('guide.step', [
                             GuideUtils.clickOnElement('.confirm-dialog .cancel-btn');
                         },
                         hide: (guide, currentStepDescription) => () => {
-                            // Revert 2 steps to select agent open
+                            // Revert 3 steps to select agent open
                             const currentStepId = currentStepDescription.id;
-                            setTimeout(() => guide.show(currentStepId - 2));
+                            // Using a timeout because the library executes async logic
+                            setTimeout(() => guide.show(currentStepId - 3));
                         }
                     }, options)
                 },

@@ -35,6 +35,7 @@ const beforeShowPromise = (services, elementSelector, maxWaitTime) => {
 
 PluginRegistry.add('guide.step', [
     {
+        // An element which is expected to be clicked. If onNextClick is not defined, it will automatically click on the element on next button press
         guideBlockName: 'clickable-element',
         getStep: (options, services) => {
             const notOverridable = {
@@ -56,6 +57,21 @@ PluginRegistry.add('guide.step', [
         }
     },
     {
+        // An element which is expected to be focused. It allows user interaction.
+        guideBlockName: 'focus-element',
+        getStep: (options, services) => {
+            const stepDescription = angular.extend({}, BASIC_STEP, {
+                initPreviousStep: services.GuideUtils.defaultInitPreviousStep
+            }, options);
+
+            if (!stepDescription.beforeShowPromise) {
+                stepDescription.beforeShowPromise = beforeShowPromise(services, stepDescription.elementSelector, stepDescription.maxWaitTime);
+            }
+            return stepDescription;
+        }
+    },
+    {
+        // An element which is expected to be focused, but interactions are disabled.
         guideBlockName: 'read-only-element',
         getStep: (options, services) => {
             const notOverridable = {
