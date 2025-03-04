@@ -33,7 +33,7 @@
                         gdb-tooltip="{{'ttyg.chat.btn.' + (showChats ? 'close_sidebar' : 'open_sidebar') + '.tooltip' | translate}}">
                     <i class="fa fa-sidebar"></i>
                 </button>
-                <button class="btn btn-link btn-sm create-chat-btn"
+                <button class="btn btn-link btn-sm create-chat-btn" guide-selector="create-chat-btn"
                         ng-if="chats && !chats.isEmpty()"
                         ng-click="startNewChat()"
                         ng-disabled="false"
