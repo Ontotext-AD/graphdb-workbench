@@ -79,6 +79,10 @@ const GuideUtils = (function () {
         return `[guide-selector="${guideSelectorValue}"] ${postSelector ? postSelector : ''}`;
     };
 
+    const getLastGuideElementSelector = function (guideSelectorValue, postSelector) {
+        return `[guide-selector="${guideSelectorValue}"]:last-of-type ${postSelector ? postSelector : ''}`;
+    };
+
     /**
      * Returns a function that returns a promise that will resolve when the D3 library force layout
      * settles (reaches an alpha value below the given threshold) or when the maximum wait time
@@ -186,7 +190,7 @@ const GuideUtils = (function () {
      */
     const validateTextInputNotEmpty = function (elementSelector) {
         const input = $(elementSelector).val();
-        return input !== ''
+        return input !== '';
     };
 
     /**
@@ -235,8 +239,8 @@ const GuideUtils = (function () {
      */
     const noNextErrorToast = (toastr, $translate, $interpolate, message, parameters) => {
         toastr.error(unescapeHtml(translateLocalMessage($translate, $interpolate, message, parameters)),
-            unescapeHtml(translateLocalMessage($translate, $interpolate, 'guide.validate.no-next', parameters)),
-            {allowHtml: true});
+                     unescapeHtml(translateLocalMessage($translate, $interpolate, 'guide.validate.no-next', parameters)),
+                     {allowHtml: true});
     };
 
     /**
@@ -305,6 +309,7 @@ const GuideUtils = (function () {
         clickOnElement,
         clickOnGuideElement,
         getGuideElementSelector,
+        getLastGuideElementSelector,
         isVisible,
         isGuideElementVisible,
         awaitAlphaDropD3,
