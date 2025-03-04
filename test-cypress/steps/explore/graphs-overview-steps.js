@@ -61,4 +61,16 @@ export class GraphsOverviewSteps {
     static getPaginations() {
         return cy.get('[paginations]');
     }
+
+    static verifyFileExists(fileName) {
+        cy.readFile('cypress/downloads/' + fileName);
+    }
+
+    static getDownloadAllButtons() {
+        return cy.get('.download-all-graphs-btn');
+    }
+
+    static clickOnDownloadAllButton() {
+        this.getDownloadAllButtons().click();
+    }
 }

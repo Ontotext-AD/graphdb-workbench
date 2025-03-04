@@ -22,6 +22,7 @@ import {defineCustomElements as defineYasguiElements} from 'ontotext-yasgui-web-
 import {defineCustomElements as defineGraphQlElements} from 'ontotext-graphql-playground-component/loader';
 import {convertToHumanReadable} from "./js/angular/utils/size-util";
 import {DocumentationUrlResolver} from "./js/angular/utils/documentation-url-resolver";
+import {NumberUtils} from "./js/angular/utils/number-utils";
 
 // $translate.instant converts <b> from strings to &lt;b&gt
 // and $sce.trustAsHtml could not recognise that this is valid html
@@ -250,6 +251,7 @@ const moduleDefinition = function (productInfo, translations) {
     workbench.filter('prettyJSON', () => (json) => angular.toJson(json, true));
     workbench.filter('humanReadableSize', () => (size) => convertToHumanReadable(size));
     workbench.filter('trustAsHtml', ['$translate', '$sce', ($translate, $sce) => (message) => $sce.trustAsHtml(decodeHTML(message))]);
+    workbench.filter('formatNumberToLocaleString', ['$translate', ($translate) => (number) => NumberUtils.formatNumberToLocaleString(number, $translate.use())]);
 
     angular.bootstrap(document, ['graphdb.workbench']);
 };

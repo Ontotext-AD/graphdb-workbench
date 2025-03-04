@@ -1,4 +1,5 @@
 import 'angular/utils/local-storage-adapter';
+import {NumberUtils} from "../../utils/number-utils";
 
 const modules = [
     'pageslide-directive',
@@ -23,6 +24,15 @@ angular
 RdfClassHierarchyCtlr.$inject = ["$scope", "$rootScope", "$location", "$repositories", "$licenseService", "$window", "toastr", "GraphDataRestService", "UiScrollService", "RdfsLabelCommentService", "$timeout", "ModalService", "bowser", "LocalStorageAdapter", "LSKeys", "RDF4JRepositoriesRestService", "$translate"];
 
 function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $licenseService, $window, toastr, GraphDataRestService, UiScrollService, RdfsLabelCommentService, $timeout, ModalService, bowser, LocalStorageAdapter, LSKeys, RDF4JRepositoriesRestService, $translate) {
+
+    /**
+     * Defines the maximum number of graphs to be loaded in the view.
+     *
+     * The view becomes too heavy when displaying all graphs, which can impact performance.
+     * This constant limits the number of graphs that will be loaded to ensure smooth rendering.
+     */
+    const MAX_LOADED_GRAPHS = 1000;
+    $scope.hasMoreGraphs = false;
     $scope.classHierarchyData = {};
     $scope.instancesObj = {};
     $scope.instancesQueryObj = {};
@@ -40,6 +50,12 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
         $scope.currentBrowserLimit = FIREFOX_CLASS_LIMIT;
     } else if (bowser.safari || bowser.msie || bowser.msedge) {
         $scope.currentBrowserLimit = SAFARI_IE_EDGE_CLASS_LIMIT;
+    }
+
+    $scope.graphsDropdownToggled = (isOpen) => {
+        if ($scope.hasMoreGraphs && isOpen) {
+            toastr.warning($translate.instant('dependencies.graphs.too.many.warning', {graphsLimit: NumberUtils.formatNumberToLocaleString(MAX_LOADED_GRAPHS, $translate.use())}))
+        }
     }
 
     // creating datasource for class instances data
@@ -60,9 +76,16 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
         if (!$scope.getActiveRepository()) {
             return;
         }
-        return RDF4JRepositoriesRestService.resolveGraphs($repositories.getActiveRepository())
+        // Try to load one more file than the maximum limit.
+        // This allows us to check if there is at least one additional file beyond the set max limit.
+        return RDF4JRepositoriesRestService.resolveGraphs($repositories.getActiveRepository(),MAX_LOADED_GRAPHS + 1)
             .success(function (graphsInRepo) {
-                $scope.graphsInRepo = graphsInRepo.results.bindings.length > 1002 ? graphsInRepo.results.bindings.slice(0, 1002) : graphsInRepo.results.bindings;
+                $scope.graphsInRepo = graphsInRepo.results.bindings;
+                // Determines if there are more files than the specified limit.
+                // We increase the limit in the check because:
+                // - One extra file is added before the request is sent.
+                // - Another file (the default graph) is added by the service when the response is received.
+                $scope.hasMoreGraphs = $scope.graphsInRepo.length > MAX_LOADED_GRAPHS + 2;
                 setSelectedGraphFromCache();
             }).error(function (data) {
             $scope.repositoryError = getError(data);

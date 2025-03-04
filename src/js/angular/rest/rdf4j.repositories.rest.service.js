@@ -1,3 +1,5 @@
+import {HttpUtils} from "../utils/http-utils";
+
 angular
     .module('graphdb.framework.rest.rdf4j.repositories.service', [])
     .factory('RDF4JRepositoriesRestService', RDF4JRepositoriesRestService);
@@ -24,7 +26,8 @@ function RDF4JRepositoriesRestService($http, $translate) {
         getRepositorySize,
         getGraphs,
         resolveGraphs,
-        downloadResultsAsFile
+        downloadResultsAsFile,
+        downloadGraphsAsFile
     };
 
     function getNamespaces(repositoryId) {
@@ -86,15 +89,15 @@ function RDF4JRepositoriesRestService($http, $translate) {
         return $http.get(`${REPOSITORIES_ENDPOINT}/${repostoryId}/size`);
     }
 
-    function getGraphs(repositoryId) {
-        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/contexts`);
+    function getGraphs(repositoryId, limit) {
+        return $http.get(`${REPOSITORIES_ENDPOINT}/${repositoryId}/contexts`, {params: {limit}});
     }
 
 
-    function resolveGraphs(repositoryId) {
+    function resolveGraphs(repositoryId, limit) {
         let graphsInRepo = [];
         if (repositoryId) {
-            return getGraphs(repositoryId).success(function (graphs) {
+            return getGraphs(repositoryId, limit).success(function (graphs) {
                     graphs.results.bindings.unshift({
                         contextID: {
                             type: "default",
@@ -142,13 +145,22 @@ function RDF4JRepositoriesRestService($http, $translate) {
             },
             data: payloadString,
             responseType: "blob"
-        }).then(function (res) {
-            const data = res.data;
-            const headers = res.headers();
-            const contentDisposition = headers['content-disposition'];
-            let filename = contentDisposition.split('filename=')[1];
-            filename = filename.substring(0, filename.length);
-            return {data, filename};
-        });
+        }).then((response) => HttpUtils.extractFileFromResponse(response));
+    }
+
+    /**
+     * Downloads the graphs of a repository as a file.
+     *
+     * @param {string} repositoryId - The ID of the repository from which graphs should be downloaded.
+     * @param {number} [limit] - The maximum number of graphs to include in the response. If not provided, all graphs will be included.
+     * @return {Promise<{data: Blob, filename: string}>} A promise resolving to an object containing the file data (Blob) and its filename.
+     */
+    function downloadGraphsAsFile(repositoryId, limit) {
+        return $http({
+            method: 'GET',
+            url: `${REPOSITORIES_ENDPOINT}/${repositoryId}/contexts`,
+            params: { limit },
+            responseType: "blob"
+        }).then((response) => HttpUtils.extractFileFromResponse(response));
     }
 }

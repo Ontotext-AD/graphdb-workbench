@@ -18,7 +18,7 @@ function Notifications(toastr, $translate) {
     function showToastMessageWithDelay(message) {
         return new Promise((r) => {
             toastr.success($translate.instant(message));
-            setTimeout(r, 200);
+            setTimeout(r, 300);
         });
     }
 }
