@@ -2976,6 +2976,7 @@
     "guide.step_plugin.select-ttyg-agent.info.content": "To talk to your graph, you need to select an agent first",
     "guide.step_plugin.select-ttyg-agent.open-agent-dropdown": "Click on the agents dropdown to see available agents",
     "guide.step_plugin.select-ttyg-agent.select-agent": "Click on you agent from the dropdown to select it",
+    "guide.step_plugin.select-ttyg-agent.missing-repository": "The agent you selected has no repository. Please select an agent configured with current repository.",
     "guide.confirm.cancel.message": "Are you sure you want to stop the guide?",
     "guide.unexpected.error.message": "The guide was cancelled due to an unexpected error. Please run the guide again and if the problem persists contact the support.",
     "guide.start.unexpected.error.message": "The guide cannot be started due to an unexpected error. Please try running the guide again and if the problem persists contact the support.",

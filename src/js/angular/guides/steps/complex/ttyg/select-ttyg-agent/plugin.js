@@ -40,22 +40,42 @@ PluginRegistry.add('guide.step', [
                             function attributesChangeCallback(mutationList) {
                                 for (const mutation of mutationList) {
                                     if (mutation.type === 'attributes') {
-                                        const selectedAgent = GuideUtils.isGuideElementVisible('selected-agent')
                                         const isOpened = mutation.target.classList.contains('open');
 
-                                        if (!(isOpened || selectedAgent)) {
+                                        // The component we use for selecting the agent automatically closes
+                                        // after the user clicks on the view, which is why we have to open it.
+                                        if (!(isOpened)) {
                                             dropdownToggleElement.click();
                                         }
                                     }
                                 }
                             }
                         },
+                        onNextClick: () => {
+                            // Do not allow the user to go to the next step because we want the user to click the button themselves.
+                        },
                         onNextValidate: () => Promise.resolve(GuideUtils.isGuideElementVisible('selected-agent')),
                         hide: () => () => {
                             options.observer.disconnect();
                         }
                     }, options)
-                }
+                },
+                {
+                    guideBlockName: 'clickable-element',
+                    options: angular.extend({}, {
+                        content: 'guide.step_plugin.select-ttyg-agent.missing-repository',
+                        elementSelector: GuideUtils.getElementSelector('.confirm-dialog .cancel-btn'),
+                        onNextClick: () => {
+                            // Close the modal by canceling
+                            GuideUtils.clickOnElement('.confirm-dialog .cancel-btn');
+                        },
+                        hide: (guide, currentStepDescription) => () => {
+                            // Revert 2 steps to select agent open
+                            const currentStepId = currentStepDescription.id;
+                            setTimeout(() => guide.show(currentStepId - 2));
+                        }
+                    }, options)
+                },
             ];
         }
     }
