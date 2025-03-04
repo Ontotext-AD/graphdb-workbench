@@ -23,7 +23,8 @@ export class FileUtils {
 
     static downloadAsFile(filename, contentType, content) {
         const element = document.createElement('a');
-        element.setAttribute('href', `data:${contentType};charset=utf-8,${encodeURIComponent(content)}`);
+        const type = contentType.includes(';charset=') ? `data:${contentType}` : `data:${contentType};charset=utf-8`;
+        element.setAttribute('href', `${type},${encodeURIComponent(content)}`);
         element.setAttribute('download', filename);
         element.style.display = 'none';
         document.body.appendChild(element);

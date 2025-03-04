@@ -1,3 +1,5 @@
+import {NumberUtils} from "../../utils/number-utils";
+
 const STATUS = {
     'WAIT': 'WAIT',
     'NO_REPO': 'NO_REPO',
@@ -52,7 +54,22 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
 
     let timer = null;
 
+    /**
+     * Defines the maximum number of graphs to be loaded in the view.
+     *
+     * The view becomes too heavy when displaying all graphs, which can impact performance.
+     * This constant limits the number of graphs that will be loaded to ensure smooth rendering.
+     */
+    const MAX_LOADED_GRAPHS = 1000;
+    $scope.hasMoreGraphs = false;
+
     $scope.status = !$repositories.getActiveRepository() ? STATUS.NO_REPO : STATUS.WAIT;
+
+    $scope.graphsDropdownToggled = (isOpen) => {
+        if ($scope.hasMoreGraphs && isOpen) {
+            toastr.warning($translate.instant('dependencies.graphs.too.many.warning', {graphsLimit: NumberUtils.formatNumberToLocaleString(MAX_LOADED_GRAPHS, $translate.use())}))
+        }
+    }
 
     //allGraphs is used to include all graphs in the chosen repository and represent the Class Relationships diagram and table,
     // while graphsInRepo is sliced to 1000 if there are more than 1000 graphs in the repository, and they are present
@@ -60,9 +77,16 @@ function DependenciesChordCtrl($scope, $rootScope, $repositories, toastr, $timeo
     let selectedGraph = allGraphs;
 
     const initView = function () {
-        RDF4JRepositoriesRestService.resolveGraphs($repositories.getActiveRepository())
+        // Try to load one more file than the maximum limit.
+        // This allows us to check if there is at least one additional file beyond the set max limit.
+        RDF4JRepositoriesRestService.resolveGraphs($repositories.getActiveRepository(), MAX_LOADED_GRAPHS + 1)
             .success(function (graphsInRepo) {
-                $scope.graphsInRepo = graphsInRepo.results.bindings.length > 1002 ? graphsInRepo.results.bindings.slice(0, 1002) : graphsInRepo.results.bindings;
+                $scope.graphsInRepo = graphsInRepo.results.bindings;
+                // Determines if there are more files than the specified limit.
+                // We increase the limit in the check because:
+                // - One extra file is added before the request is sent.
+                // - Another file (the default graph) is added by the service when the response is received.
+                $scope.hasMoreGraphs = $scope.graphsInRepo.length > MAX_LOADED_GRAPHS + 2;
                 setSelectedGraphFromCache();
                 if (!$scope.isSystemRepository()) {
                     $scope.status = 'WAIT';

@@ -4,7 +4,7 @@ import {JsonLdModalSteps} from "../../steps/json-ld-modal-steps";
 
 const EXPORT_GRAPHS_TABLE_ID = '#export-graphs';
 const ROWS_PER_PAGE_20 = '1';
-const ROWS_PER_PAGE_ALL = '2';
+const ROWS_PER_PAGE_50 = '2';
 
 describe('Graphs overview screen validation', () => {
 
@@ -27,7 +27,7 @@ describe('Graphs overview screen validation', () => {
         cy.visit('/graphs');
         cy.window();
         // Assume that page is loaded once the table has rendered all expected elements.
-        verifyVisibleGraphsCount(10);
+        verifyVisibleGraphsCount(50);
     });
 
     afterEach(() => {
@@ -69,7 +69,7 @@ describe('Graphs overview screen validation', () => {
             GraphsOverviewSteps.getPaginations()
                 .should('be.visible')
                 .and('contain', '3');
-            GraphsOverviewSteps.getTopPaginationLinks().should('have.length', 5);
+            GraphsOverviewSteps.getTopPaginationLinks().should('have.length', 6);
             verifyGraphExistence('The default graph');
         });
 
@@ -81,11 +81,11 @@ describe('Graphs overview screen validation', () => {
             // Switch through pages and verify that the respective pager button is active.
             selectPage(2).should('contain', '2')
                 .closest('li').should('have.class', 'active');
-            verifyGraphExistence('urn:11');
+            verifyGraphExistence('urn:50');
 
             selectPage(3).should('contain', '3')
                 .closest('li').should('have.class', 'active');
-            verifyGraphExistence('urn:21');
+            verifyGraphExistence('urn:100');
         });
     });
 
@@ -95,18 +95,18 @@ describe('Graphs overview screen validation', () => {
         selectItemFromMenu(ROWS_PER_PAGE_20);
         verifyGraphExistence('urn:19');
 
-        selectItemFromMenu(ROWS_PER_PAGE_ALL);
+        selectItemFromMenu(ROWS_PER_PAGE_50);
         verifyGraphExistence('urn:1');
-        verifyGraphExistence('urn:21');
+        verifyGraphExistence('urn:49');
     });
 
     it('Test graphs overview search', () => {
-        // Default items/rows per page is 10.
-        verifyVisibleGraphsCount(10);
+        // Default items/rows per page is 50.
+        verifyVisibleGraphsCount(50);
         // Type graph name in the filter field and verify that proper graphs remain visible in the
         // table.
         cy.get('.search-graphs').type('urn:2');
-        verifyVisibleGraphsCount(3);
+        verifyVisibleGraphsCount(11);
         verifyGraphExistence('urn:2');
         verifyGraphExistence('urn:11', false);
     });
@@ -189,5 +189,13 @@ describe('Graphs overview screen validation', () => {
 
         // And the file should have downloaded
         JsonLdModalSteps.verifyFileExists('statements.jsonld');
+    });
+
+    it('Should be able to download all graphs using the "Download all graphs" button', () => {
+        // When I load the graphs overview page and click on "Download all graphs".
+        GraphsOverviewSteps.clickOnDownloadAllButton();
+
+        // Then I expect all graphs to be downloaded.
+        GraphsOverviewSteps.verifyFileExists('contexts.srj');
     });
 });

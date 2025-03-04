@@ -22,24 +22,33 @@ const exportCtrl = angular.module('graphdb.framework.impex.export.controllers', 
 
 exportCtrl.controller('ExportCtrl',
   ['$scope', '$http', '$location', '$timeout', 'ModalService', 'filterFilter', '$repositories', 'toastr', 'ExportRestService', 'RDF4JRepositoriesRestService',
-      'FileTypes', '$translate', 'AuthTokenService', '$uibModal',
+      'FileTypes', '$translate', 'AuthTokenService', '$uibModal', 'RDF4JRepositoriesService',
       function($scope, $http, $location, $timeout, ModalService, filterFilter, $repositories, toastr, ExportRestService, RDF4JRepositoriesRestService,
-        FileTypes, $translate, AuthTokenService, $uibModal) {
+        FileTypes, $translate, AuthTokenService, $uibModal, RDF4JRepositoriesService) {
 
             $scope.getActiveRepository = function () {
                 return $repositories.getActiveRepository();
             };
 
+            /**
+            * Defines the maximum number of graphs to be loaded in the view.
+            *
+            * The view becomes too heavy when displaying all graphs, which can impact performance.
+            * This constant limits the number of graphs that will be loaded to ensure smooth rendering.
+            */
+            $scope.MAX_LOADED_GRAPHS = 100000;
+
             $scope.exportFormats = FileTypes;
             $scope.deleting = {};
             $scope.showExportDDTooltip = true;
             $scope.page = 1;
-            $scope.pageSize = 10;
+            $scope.pageSize = 50;
             $scope.pageSizeOptions = [10, 20, 50, 100];
             $scope.displayGraphs = [];
             $scope.exportFilter = '';
             $scope.export = true;
             $scope.exportMultipleGraphs = false;
+            $scope.hasMoreGraphs = false;
             $scope.repoExportFormat = {
                 name: 'TriG',
                 type: 'application/x-trig',
@@ -56,7 +65,7 @@ exportCtrl.controller('ExportCtrl',
                 $scope.getGraphs();
                 $scope.selectedAll = false;
                 $timeout(function () {
-                    $scope.changePageSize(10);
+                    $scope.changePageSize($scope.pageSize);
                 }, 100);
             });
 
@@ -68,7 +77,16 @@ exportCtrl.controller('ExportCtrl',
             $scope.getGraphs = function () {
                 if ($scope.getActiveRepository()) {
                     $scope.loader = true;
-                    RDF4JRepositoriesRestService.getGraphs($scope.getActiveRepository()).success(function (data) {
+                    $scope.hasMoreGraphs = false;
+                    // Try to load one more file than the maximum limit.
+                    // This allows us to check if there is at least one additional file beyond the set max limit.
+                    RDF4JRepositoriesRestService.getGraphs($scope.getActiveRepository(), $scope.MAX_LOADED_GRAPHS + 1)
+                        .success((data) => {
+                        if (data.results.bindings.length > $scope.MAX_LOADED_GRAPHS) {
+                            $scope.hasMoreGraphs = true;
+                            data.results.bindings.pop();
+                        }
+
                         data.results.bindings.unshift({
                             contextID: {
                                 type: 'default',
@@ -206,6 +224,27 @@ exportCtrl.controller('ExportCtrl',
                     $scope.startDownload(format, contextID);
                 }
             };
+
+          /**
+           * Calls the GET graphs endpoint without params, in order to download all the graphs from the BE.
+           */
+          $scope.downloadAllGraphs = function () {
+              RDF4JRepositoriesService.downloadGraphsAsFile($scope.getActiveRepository())
+                  .then(function ({data, filename}) {
+                      saveAs(data, filename);
+                  })
+                  .catch(function (res) {
+                      // data is received as blob
+                      res.data.text()
+                          .then((message) => {
+                              if (res.status === 431) {
+                                  toastr.error(res.statusText, $translate.instant('common.error'));
+                              } else {
+                                  toastr.error(message, $translate.instant('common.error'));
+                              }
+                          });
+                  });
+          };
 
             /*
              * Open a dialog with additional export settings for JSONLD format.

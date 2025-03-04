@@ -31,8 +31,20 @@ function RDF4JRepositoriesService(RDF4JRepositoriesRestService) {
             .then((response) => graphListOptionsMapper(response.data));
     }
 
+    /**
+     * Fetches the graphs of a repository as a file.
+     *
+     * @param {string} repositoryId - The ID of the repository from which graphs should be downloaded.
+     * @param {number} [limit] - The maximum number of graphs to include in the response. If not provided, all graphs will be included.
+     * @return {Promise<{data: Blob, filename: string}>} A promise resolving to an object containing the file data (Blob) and its filename.
+     */
+    const downloadGraphsAsFile = (repositoryId, limit) => {
+        return RDF4JRepositoriesRestService.downloadGraphsAsFile(repositoryId, limit);
+    }
+
     return {
         getNamespaces,
-        getGraphs
+        getGraphs,
+        downloadGraphsAsFile
     };
 }

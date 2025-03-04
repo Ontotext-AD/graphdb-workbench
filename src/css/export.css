@@ -245,3 +245,7 @@
 .clear-repository-btn {
     margin-right: 5px;
 }
+
+.download-all-graphs-btn .icon-download {
+    margin-top: -0.1em;
+}

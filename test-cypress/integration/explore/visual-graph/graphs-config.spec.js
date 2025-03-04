@@ -12,7 +12,7 @@ const QUERY_EXPAND_NODE = `# Note that ?node is the node you clicked and must be
 describe('Graphs config', () => {
 
     let repositoryId = 'graphRepo' + Date.now();
-    let graphConfigName = 'graph-config';
+    let graphConfigName = 'graph-config' + Date.now();
 
     before(() => {
         cy.clearLocalStorage('ls.graphs-viz');
@@ -386,6 +386,16 @@ describe('Graphs config', () => {
         saveGraphConfig(graphConfigName);
         // And I open it for edit
         VisualGraphSteps.editConfig(graphConfigName);
+        // The next check ensures that the page is initialized and ready for interaction.
+        //
+        // Without this step, Cypress clicks on the second tab too quickly,
+        // before the model is fully populated.
+        //
+        // There is a validation when a tab is clicked. If it is clicked too soon, the validation fails with "Please provide start graph query."
+        // This prevents navigation to the second page, causing the test to fail when checking if the second tab is active.
+        //
+        // Without this check, the test fails randomly.
+        checkEditorWithQuery(QUERY_START);
         // And I open the expand query wizard tab
         VisualGraphSteps.openConfigWizardTab(2);
         VisualGraphSteps.getConfigWizardTab(2).should('be.visible').and('have.class', 'active');

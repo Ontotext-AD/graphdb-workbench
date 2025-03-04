@@ -20,20 +20,16 @@
 			<div>
 				<div class="clearfix mb-2">
 					<div class="pull-right col-form-label">
-						<span class="mr-1">{{'showing.label' | translate}} {{(pageSize * (page - 1)) + 1}} - {{pageSize * page >= filteredGraphs.length ? filteredGraphs.length : pageSize * page}} {{'of' | translate}} {{filteredGraphs.length}} {{'results.label' | translate}}</span>
+						<span class="mr-1">{{'showing.label' | translate}} {{(((pageSize * (page - 1)) + 1) | formatNumberToLocaleString)}}-{{pageSize * page >= filteredGraphs.length ? ((filteredGraphs.length) | formatNumberToLocaleString) : ((pageSize * page) | formatNumberToLocaleString)}} {{'of' | translate}} {{((filteredGraphs.length) | formatNumberToLocaleString)}} {{'results.label' | translate}}</span>
 						<span>{{'export.graphs.per.page' | translate}}</span>
 						<div class="btn-group" uib-dropdown>
 							<button type="button" class="btn btn-secondary btn-sm dropdown-toggle" uib-dropdown-toggle
 									ng-disabled="disabled">
-								<span ng-if="filteredGraphs.length > pageSize">{{pageSize}} </span>
-								<span ng-if="filteredGraphs.length <= pageSize">All </span>
+								<span>{{pageSize}} </span>
 							</button>
 							<ul class="dropdown-menu small">
 								<li ng-repeat="size in pageSizeOptions track by $index" ng-if="size <= filteredGraphs.length">
 									<span class="dropdown-item" ng-click="changePageSize(size)">{{size}}</span>
-								</li>
-								<li>
-									<span class="dropdown-item" ng-click="changePageSize(filteredGraphs.length)">{{'all.label' | translate}}</span>
 								</li>
 							</ul>
 						</div>
@@ -45,7 +41,7 @@
 					</label>
 				</div>
 
-				<div class="clearfix mb-2">
+				<div class="clearfix" ng-class="{'mb-2': !hasMoreGraphs }">
 					<button type="button" class="btn btn-secondary clear-repository-btn"
 							ng-click="dropRepository()"
 							gdb-tooltip="{{'removes.data.from.repo.label' | translate}}" tooltip-placement="top"
@@ -67,11 +63,19 @@
                             </li>
                         </ul>
                     </div>
+                    <button type="button" class="btn btn-primary download-all-graphs-btn" ng-click="downloadAllGraphs()">
+                        <span class="icon-download"></span>&nbsp;
+						{{'export.all.graphs.btn.label' | translate}}
+                    </button>
 					<div class="pull-right">
 						<div ng-show="pageSize >= filteredGraphs.length"></div>
                         <div paginations ng-hide="pageSize >= filteredGraphs.length"
                              class="ot-export-pagination top-pagination"></div>
                     </div>
+				</div>
+
+                <div ng-if="hasMoreGraphs" class="alert alert-warning">
+					<div>{{ 'export.graphs.too.many.warning' | translate:{ graphsLimit: (MAX_LOADED_GRAPHS | formatNumberToLocaleString) } }}</div>
 				</div>
 
                 <div class="mb-2">
