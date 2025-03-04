@@ -14,7 +14,7 @@ angular
     .module('graphdb.framework.ttyg.directives.chat-panel', modules)
     .directive('chatPanel', ChatPanelComponent);
 
-ChatPanelComponent.$inject = ['toastr', '$translate', 'TTYGContextService'];
+ChatPanelComponent.$inject = ['toastr', '$translate', 'TTYGContextService', '$timeout'];
 
 /**
  * @ngdoc directive
@@ -30,7 +30,7 @@ ChatPanelComponent.$inject = ['toastr', '$translate', 'TTYGContextService'];
  * @example
  * <chat-panel></chat-panel>
  */
-function ChatPanelComponent(toastr, $translate, TTYGContextService) {
+function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/chat-panel.html',
@@ -112,12 +112,12 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
 
             /**
              * Handles pressing the Enter key in the question input.
-             * Will not trigger if `Shift` or `Ctrl` keys are pressed.
+             * Will not trigger if `Shift` or `Ctrl` keys are pressed, or if Ask button is disabled.
              *
              * @param {KeyboardEvent} $event - The keyboard event triggered by the user interaction.
              */
             $scope.onKeypressOnInput = ($event) => {
-                if ($event.key === 'Enter' && !$event.shiftKey && !$event.ctrlKey) {
+                if (!$scope.askingChatItem && $event.key === 'Enter' && !$event.shiftKey && !$event.ctrlKey) {
                     $scope.ask();
                 }
             };
@@ -166,7 +166,9 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                     return;
                 }
                 $scope.loadingChat = false;
+                let message = $scope.chatItem.question.message;
                 $scope.chatItem = getEmptyChatItem();
+                $scope.chatItem.question.message = message;
                 $scope.askingChatItem = undefined;
                 if ($scope.chat) {
                     // TODO: Why on earth this is here? The chat changed handler is in the ttyg.view. Why doesn't it handle this
@@ -219,6 +221,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 if ($scope.selectedAgent && $scope.chatItem) {
                     $scope.chatItem.agentId = $scope.selectedAgent.id;
                 }
+                focusQuestionInput();
             };
 
             const onChatDeleted = (deletedChat) => {
@@ -243,11 +246,15 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             };
 
             const focusQuestionInput = () => {
-                const els = element.find('.question-input');
-                if (els.length) {
-                    els[0].focus();
-                }
-            };
+                // Moving focus to the end of the JS call stack with a timeout, because on first Agent select,
+                // the dropdown .agent-option steals the focus, or the browser assigns it to the document <body>.
+                setTimeout(() => {
+                    let inputElement = document.querySelector('.question-input');
+                    if (inputElement) {
+                        inputElement.focus();
+                    }
+                });
+            }
 
             const scrollToBottom = () => {
                 // Call it in a timeout to ensure that Angular's digest cycle is finished and all elements are displayed.
