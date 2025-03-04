@@ -24,7 +24,7 @@
                     </button>
                     <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy_answer.tooltip"
                                        text-to-copy="{{answer.message}}"></copy-to-clipboard>
-                    <button class="btn btn-link btn-link-only-icons btn-sm explain-response-btn"
+                    <button class="btn btn-link btn-link-only-icons btn-sm explain-response-btn" guide-selector="explain-response-btn"
                             ng-click="explainResponse(answer.id)"
                             ng-disabled="disabled && !explainResponseModel[answer.id]"
                             gdb-tooltip="{{'ttyg.chat_panel.btn.explain_response.tooltip' | translate}}">
@@ -36,7 +36,7 @@
                 <div class="derived-answer-hint"
                      ng-if="showActions && $last && explainResponseModel[answer.id].expanded">
                     <div ng-bind-html="'ttyg.chat_panel.btn.derive_answer.hint' | translate | trustAsHtml"></div>
-                    <button class="btn btn-secondary deliver-answer-btn" ng-click="onAskHowAnswerWasDerived()">
+                    <button class="btn btn-secondary deliver-answer-btn" ng-click="onAskHowAnswerWasDerived()" guide-selector="how-derive-answer-btn">
                         {{ 'ttyg.chat_panel.btn.derive_answer.label' | translate }}
                     </button>
                 </div>
@@ -92,6 +92,6 @@
             </div>
         </div>
     </div>
-    <div ng-if="asking" onto-loader-new size="40"></div>
+    <div ng-if="asking" onto-loader-new size="40" guide-selector="question-loader"></div>
 </div>
 

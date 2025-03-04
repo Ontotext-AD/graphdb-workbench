@@ -314,7 +314,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         }
         const step = guide.steps[stepIndex];
         const url = step.options.url;
-        if (url) {
+        if (url && url !== $location.path()) {
             $location.url(url);
             $route.reload();
         }
@@ -777,6 +777,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             skipFromHistory: stepDescription.skipFromHistory,
             onPreviousClick: stepDescription.onPreviousClick,
             initPreviousStep: stepDescription.initPreviousStep,
+            forceReload: stepDescription.forceReload,
             when: {
                 show: this._getShowFunction(guide, stepDescription, onShow)
             }
