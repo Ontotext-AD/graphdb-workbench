@@ -114,6 +114,19 @@ PluginRegistry.add('guide.step', [
         }
     },
     {
+        guideBlockName: 'wait-for-element-to-hide',
+        getStep: (options, services) => {
+            return angular.extend({}, BASIC_STEP, {
+                initPreviousStep: services.GuideUtils.defaultInitPreviousStep,
+                beforeShowPromise: () => services.GuideUtils.waitUntilHidden(options.elementSelectorToHide, options.timeToWait || 2),
+                show: (guide) => () => {
+                    // Using a timeout because the library executes async logic
+                    setTimeout(() => guide.next())
+                }
+            }, options);
+        }
+    },
+    {
         guideBlockName: 'guide-end',
         getStep: (options, services) => {
             const notOverridable = {
