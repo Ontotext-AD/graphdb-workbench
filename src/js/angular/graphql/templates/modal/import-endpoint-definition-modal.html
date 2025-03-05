@@ -13,7 +13,7 @@
             <i class="fa fa-check"></i>
             <span>{{'graphql.endpoints_management.import_definition_modal.actions.select_files.label' | translate}}</span>
         </button>
-        <button ng-click="onImport()" ng-disabled="!definitionFiles || definitionFiles.size === 0 || uploadFinished"
+        <button ng-click="onImport()" ng-disabled="!definitionFiles || definitionFiles.size === 0"
                 class="btn btn-primary upload-btn ml-1">
             <i class="fa fa-upload"></i>
             <span>{{'graphql.endpoints_management.import_definition_modal.actions.import.label' | translate}}</span>
@@ -26,73 +26,72 @@
         </div>
     </div>
 
-    <div ng-if="!definitionFiles || definitionFiles.size === 0" class="upload-area mt-1" ngf-drop ngf-select
-         ngf-multiple="true" ngf-accept="'{{allowedFileTypesString}}'" ngf-keep="false" ngf-drag-over-class="dragover"
+    <div class="upload-area mt-1" ngf-drop ngf-multiple="true" ngf-accept="'{{allowedFileTypesString}}'"
+         ngf-keep="false" ngf-drag-over-class="dragover"
          ngf-change="onFilesChange($files, $file, $newFiles, $duplicateFiles, $invalidFiles)">
-        <div class="no-files-placeholder">
+        <div ng-if="!definitionFiles || definitionFiles.size === 0" class="no-files-placeholder">
             {{'graphql.endpoints_management.import_definition_modal.messages.no_files_selected' | translate}}
         </div>
-    </div>
 
-    <table ng-if="definitionFiles && definitionFiles.size > 0" class="table table-hover file-list mt-1">
-        <tr ng-repeat-start="definitionFile in definitionFiles.list" class="file-item">
-            <td class="file-info">
-                <strong class="file-name">{{definitionFile.file.name}}</strong>,
-                <em class="file-size">{{definitionFile.file.size | bytes}}</em>
-            </td>
-            <td class="import-status">
+        <table ng-if="definitionFiles && definitionFiles.size > 0" class="table table-hover file-list mt-1">
+            <tr ng-repeat-start="definitionFile in definitionFiles.list" class="file-item">
+                <td class="file-info">
+                    <strong class="file-name">{{definitionFile.file.name}}</strong>,
+                    <em class="file-size">{{definitionFile.file.size | bytes}}</em>
+                </td>
+                <td class="import-status">
                 <span ng-if="!definitionFile.list" class="status tag"
                       ng-class="definitionFile.viewStatus">{{definitionFile.statusMessage | translate}}</span>
-            </td>
-            <td>
-                <a href="#" ng-if="definitionFile.endpointId"
-                   ng-click="onExploreEndpoint(definitionFile.endpointId)"
-                   gdb-tooltip="{{'graphql.endpoints_management.import_definition_modal.actions.explore_endpoint.tooltip' | translate}}"
-                   class="endpoint-link">{{definitionFile.endpointId}}</a>
-                <a href="#" ng-if="definitionFile.report && definitionFile.status === ImportStatus.FAIL"
-                   ng-click="onOpenReport(definitionFile.report)"
-                   gdb-tooltip="{{'graphql.endpoints_management.import_definition_modal.actions.view_report.tooltip' | translate}}"
-                   class="report-link btn-link">
-                    {{'graphql.endpoints_management.import_definition_modal.actions.view_report.label' | translate}}
-                </a>
-            </td>
-            <td class="file-actions">
-                <button ng-if="!progress && definitionFile.status === ImportStatus.PENDING"
-                        ng-click="onRemoveFile(definitionFile)"
-                        class="btn btn-link btn-sm secondary remove-file-btn"
-                        gdb-tooltip="{{'graphql.endpoints_management.import_definition_modal.actions.remove_file.tooltip' | translate}}">
-                    <i class="icon-close"></i>
-                </button>
-            </td>
-        </tr>
-        <!-- Nested definition files from zip archives -->
-        <tr ng-repeat-end ng-if="definitionFile.list && definitionFile.list.list.length > 0"
-            ng-repeat="subFile in definitionFile.list.list" class="file-item sub-file">
-            <td class="file-info">
-                <span class="sub-file-indent">└─</span>
-                <strong class="file-name">{{subFile.filename}}</strong>
-            </td>
-            <td class="import-status">
-                <span class="status tag" ng-class="subFile.viewStatus">{{subFile.statusMessage | translate}}</span>
-            </td>
-            <td>
-                <a href="#" ng-if="subFile.endpointId"
-                   ng-click="onExploreEndpoint(subFile.endpointId)"
-                   gdb-tooltip="{{'graphql.endpoints_management.import_definition_modal.actions.explore_endpoint.tooltip' | translate}}"
-                   class="endpoint-link">{{subFile.endpointId}}</a>
-                <a href="#" ng-if="subFile.report && subFile.status === ImportStatus.FAIL"
-                   ng-click="onOpenReport(subFile.report)"
-                   gdb-tooltip="{{'graphql.endpoints_management.import_definition_modal.actions.view_report.tooltip' | translate}}"
-                   class="report-link btn-link">
-                    {{'graphql.endpoints_management.import_definition_modal.actions.view_report.label' | translate}}
-                </a>
-            </td>
-            <td class="file-actions"></td>
-        </tr>
-    </table>
+                </td>
+                <td>
+                    <a href="#" ng-if="definitionFile.endpointId"
+                       ng-click="onExploreEndpoint(definitionFile.endpointId)"
+                       gdb-tooltip="{{'graphql.endpoints_management.import_definition_modal.actions.explore_endpoint.tooltip' | translate}}"
+                       class="endpoint-link">{{definitionFile.endpointId}}</a>
+                    <a href="#" ng-if="definitionFile.report && definitionFile.status === ImportStatus.FAIL"
+                       ng-click="onOpenReport(definitionFile.report)"
+                       gdb-tooltip="{{'graphql.endpoints_management.import_definition_modal.actions.view_report.tooltip' | translate}}"
+                       class="report-link btn-link">
+                        {{'graphql.endpoints_management.import_definition_modal.actions.view_report.label' | translate}}
+                    </a>
+                </td>
+                <td class="file-actions">
+                    <button ng-if="!progress" ng-click="onRemoveFile(definitionFile)"
+                            class="btn btn-link btn-sm secondary remove-file-btn"
+                            gdb-tooltip="{{'graphql.endpoints_management.import_definition_modal.actions.remove_file.tooltip' | translate}}">
+                        <i class="icon-close"></i>
+                    </button>
+                </td>
+            </tr>
+            <!-- Nested definition files from zip archives -->
+            <tr ng-repeat-end ng-if="definitionFile.list && definitionFile.list.list.length > 0"
+                ng-repeat="subFile in definitionFile.list.list" class="file-item sub-file">
+                <td class="file-info">
+                    <span class="sub-file-indent">└─</span>
+                    <strong class="file-name">{{subFile.filename}}</strong>
+                </td>
+                <td class="import-status">
+                    <span class="status tag" ng-class="subFile.viewStatus">{{subFile.statusMessage | translate}}</span>
+                </td>
+                <td>
+                    <a href="#" ng-if="subFile.endpointId"
+                       ng-click="onExploreEndpoint(subFile.endpointId)"
+                       gdb-tooltip="{{'graphql.endpoints_management.import_definition_modal.actions.explore_endpoint.tooltip' | translate}}"
+                       class="endpoint-link">{{subFile.endpointId}}</a>
+                    <a href="#" ng-if="subFile.report && subFile.status === ImportStatus.FAIL"
+                       ng-click="onOpenReport(subFile.report)"
+                       gdb-tooltip="{{'graphql.endpoints_management.import_definition_modal.actions.view_report.tooltip' | translate}}"
+                       class="report-link btn-link">
+                        {{'graphql.endpoints_management.import_definition_modal.actions.view_report.label' | translate}}
+                    </a>
+                </td>
+                <td class="file-actions"></td>
+            </tr>
+        </table>
 
-    <div class="file-format-info mt-1">
-        {{'graphql.endpoints_management.import_definition_modal.messages.allowed_file_types' | translate}}
+        <div class="file-format-info mt-1">
+            {{'graphql.endpoints_management.import_definition_modal.messages.allowed_file_types' | translate}}
+        </div>
     </div>
 </div>
 

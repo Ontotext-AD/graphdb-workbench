@@ -6,6 +6,7 @@ describe('Graphql: import endpoint definitions', () => {
     let repositoryId;
     const swapiDefinitionPath = 'graphql/soml/swapi-schema.yaml';
     const swapiPlanetsDefinitionPath = 'graphql/soml/swapi-schema-planets.yaml';
+    const swapiSpeciesDefinitionPath = 'graphql/soml/swapi-schema-species.yaml';
     const brokenSwapiDefinitionPath = 'graphql/soml/swapi-schema-broken.yaml';
     const swapiDefinitionZipPath = 'graphql/soml/swapi-schemas.zip';
 
@@ -143,12 +144,26 @@ describe('Graphql: import endpoint definitions', () => {
         // And I should see the import status for the imported definition files
         ImportEndpointDefinitionModalSteps.getImportStatus(0).should('contain', 'Created');
         ImportEndpointDefinitionModalSteps.getImportStatus(1).should('contain', 'Created');
+
+        // And I can remove a file from the list of selected files and already imported files
+        ImportEndpointDefinitionModalSteps.removeSelectedFile(0);
+        ImportEndpointDefinitionModalSteps.getSelectedFiles().should('have.length', 1);
+        // And I should be able to add a new file to the list of selected files
+        ImportEndpointDefinitionModalSteps.selectFile([swapiSpeciesDefinitionPath]);
+        ImportEndpointDefinitionModalSteps.getSelectedFiles().should('have.length', 2);
+        ImportEndpointDefinitionModalSteps.getSelectedFileName(0).should('contain', 'swapi-schema-planets.yaml');
+        ImportEndpointDefinitionModalSteps.getSelectedFileName(1).should('contain', 'swapi-schema-species.yaml');
+        // When I click the upload button
+        ImportEndpointDefinitionModalSteps.upload();
+        // Then All files in the list should be imported
+        ImportEndpointDefinitionModalSteps.getImportStatus(0).should('contain', 'Created');
+        ImportEndpointDefinitionModalSteps.getImportStatus(1).should('contain', 'Created');
+
         // When I close the modal
         ImportEndpointDefinitionModalSteps.close();
         // Then the modal should be closed and the endpoints should be visible
         ImportEndpointDefinitionModalSteps.getDialog().should('not.exist');
-        GraphqlEndpointManagementSteps.getEndpointsInfo().should('have.length', 2);
-
+        GraphqlEndpointManagementSteps.getEndpointsInfo().should('have.length', 3);
         GraphqlEndpointManagementSteps.verifyEndpointInfo([
             {
                 status: 'deleted',
@@ -171,6 +186,17 @@ describe('Graphql: import endpoint definitions', () => {
                 modified: new Date().toISOString().split('T')[0],
                 types: 1,
                 properties: 10
+            },
+            {
+                status: 'deleted',
+                id: 'swapi-species',
+                label: 'Star Wars species API',
+                description: '',
+                default: false,
+                active: true,
+                modified: new Date().toISOString().split('T')[0],
+                types: 2,
+                properties: 17
             }
         ]);
     });

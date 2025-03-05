@@ -58,7 +58,9 @@ function ImportEndpointDefinitionModalController($scope, $q, toastr, $uibModal, 
     $scope.progress = undefined;
 
     /**
-     * Flag indicating whether the upload has finished.
+     * Flag indicating if the upload has finished. Used to show/hide the progress bar which in some cases might remain
+     * because the progress event might come out of sync and a come after the success event. This clearly happens during
+     * UI tests, but it might happen in real life as well.
      * @type {boolean}
      */
     $scope.uploadFinished = false;
@@ -95,11 +97,6 @@ function ImportEndpointDefinitionModalController($scope, $q, toastr, $uibModal, 
         if (!selectedFiles || !selectedFiles.length) {
             return;
         }
-        // Reset the list of files if the upload has finished and the user is adding new files
-        if ($scope.uploadFinished) {
-            $scope.definitionFiles = new EndpointDefinitionFileList();
-            $scope.uploadFinished = false;
-        }
         // Reset error state when adding new files
         $scope.progress = undefined;
         // Filter out duplicates by comparing file names
@@ -114,11 +111,13 @@ function ImportEndpointDefinitionModalController($scope, $q, toastr, $uibModal, 
      * The server response contains reports for each definition file.
      */
     $scope.onImport = () => {
-        const payload = buildUploadPayloadObject();
         $scope.uploadFinished = false;
+        const payload = buildUploadPayloadObject();
         GraphqlService.importEndpointDefinition($scope.repositoryId, payload)
             .progress((evt) => {
-                $scope.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+                if (!$scope.uploadFinished) {
+                    $scope.progress = Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+                }
             })
             .success((response) => {
                 $scope.progress = undefined;

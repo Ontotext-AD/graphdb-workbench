@@ -13,12 +13,22 @@
     flex-direction: column;
     align-items: stretch;
     justify-content: stretch;
-    padding: 20px;
     text-align: center;
 }
 
 .import-endpoint-definition-modal .upload-area.dragover {
     outline: 3px dashed #ccc;
+}
+
+.import-endpoint-definition-modal .upload-area .no-files-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+}
+
+.import-endpoint-definition-modal .upload-area .file-format-info {
+    text-align: left;
 }
 
 .import-endpoint-definition-modal .file-list {
@@ -42,6 +52,7 @@
 
 .import-endpoint-definition-modal .file-list .file-info {
     width: 60%;
+    padding-left: 0;
 }
 
 .import-endpoint-definition-modal .file-list .import-status {
