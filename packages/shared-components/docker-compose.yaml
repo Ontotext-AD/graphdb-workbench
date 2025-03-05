@@ -9,6 +9,7 @@ services:
     volumes:
       - .:/app
       - ../api:/api
+      - ../root-config:/root-config
     command: npm run start
 
   cypress:
