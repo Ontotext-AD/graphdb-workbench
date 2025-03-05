@@ -285,7 +285,7 @@ export class UserAndAccessSteps {
     }
 
     static toggleReadAccessForRepo(repoName) {
-        return this.getReadAccessForRepo(repoName).click({force: true});
+        return this.getReadAccessForRepo(repoName).realClick();
     }
 
     static getWriteAccessForRepo(repoName) {
@@ -297,7 +297,7 @@ export class UserAndAccessSteps {
     }
 
     static toggleWriteAccessForRepo(repoName) {
-        return this.getWriteAccessForRepo(repoName).click({force: true});
+        return this.getWriteAccessForRepo(repoName).realClick();
     }
 
     static getGraphqlAccessForRepo(repoName) {
@@ -309,7 +309,7 @@ export class UserAndAccessSteps {
     }
 
     static toggleGraphqlAccessForRepo(repoName) {
-        return this.getGraphqlAccessForRepo(repoName).click({force: true});
+        return this.getGraphqlAccessForRepo(repoName).realClick();
     }
 
     static clickMenuItem(label) {
@@ -325,7 +325,7 @@ export class UserAndAccessSteps {
             .contains(repoName)
             .parent('.row')
             .find('.read')
-            .click({force: true});
+            .realClick();
     }
 
     static clickFreeWriteAccessRepo(repoName) {
@@ -333,7 +333,7 @@ export class UserAndAccessSteps {
             .contains(repoName)
             .parent('.row')
             .find('.write')
-            .click({force: true});
+            .realClick();
     }
 
     static clickFreeGraphqlAccessRepo(repoName) {
@@ -341,7 +341,7 @@ export class UserAndAccessSteps {
             .contains(repoName)
             .parent('.row')
             .find('.graphql')
-            .click({force: true});
+            .realClick();
     }
 
 }

@@ -265,6 +265,32 @@ describe('User and Access', () => {
             UserAndAccessSteps.getSecuritySwitchLabel().should('be.visible').and('contain', 'Security is OFF');
         });
 
+        it('Should have all access to endpoints management when have REPO_MANAGER role', () => {
+            cy.wait('@getRepositories');
+            const name = 'repoManager';
+            createUser(name, PASSWORD, ROLE_REPO_MANAGER);
+            //enable security
+            UserAndAccessSteps.toggleSecurity();
+            //login new user
+            LoginSteps.loginWithUser(name, PASSWORD);
+            GRAPHQL_REPO_MANAGER_MENU_ITEMS.forEach(({path, expectedUrl,  checks, expectedTitle}) => {
+                navigateMenuPath(path, expectedUrl, expectedTitle);
+                if (checks) {
+                    runChecks(checks);
+                }
+            });
+            LoginSteps.logout();
+            //login with the admin
+            LoginSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
+            cy.wait('@getRepositories');
+            UserAndAccessSteps.visit();
+            //delete new-user
+            deleteUser(name)
+            //disable security
+            UserAndAccessSteps.toggleSecurity();
+            UserAndAccessSteps.getSecuritySwitchLabel().should('be.visible').and('contain', 'Security is OFF');
+        });
+
         it('Can have Free Access and GraphQL to work together', () => {
             cy.wait('@getRepositories');
             //enable security
@@ -294,13 +320,6 @@ describe('User and Access', () => {
             //  I change the repository to this with GraphQL only rights
             RepositorySelectorSteps.selectRepository(repositoryId3);
             // Then I should have GraphQL only rights
-            // TODO enable when BE is ready with https://ontotext.atlassian.net/browse/GDB-11794
-            // GRAPHQL_WRITE_MENU_ITEMS.forEach(({path, expectedUrl,  checks, expectedTitle}) => {
-            //     navigateMenuPath(path, expectedUrl, expectedTitle);
-            //     if (checks) {
-            //         runChecks(checks);
-            //     }
-            // });
             FREE_ACCESS_MENU_ITEMS_WITHOUT_GRAPHQL.forEach(({path, expectedUrl,  checks, expectedTitle}) => {
                 navigateMenuPath(path, expectedUrl, expectedTitle);
                 if (checks) {
@@ -662,17 +681,12 @@ describe('User and Access', () => {
 
     const GRAPHQL_READ_MENU_ITEMS = [
         {
-            path: ['GraphQL', 'Endpoint Management'],
-            expectedUrl: '/graphql/endpoints',
-            checks: noAuthChecks
-        },
-        {
             path: ['GraphQL', 'GraphQL Playground'],
             expectedUrl: '/graphql/playground',
             checks: hasAuthChecks
         }
     ];
-    const GRAPHQL_WRITE_MENU_ITEMS = [
+    const GRAPHQL_REPO_MANAGER_MENU_ITEMS = [
         {
             path: ['GraphQL', 'Endpoint Management'],
             expectedUrl: '/graphql/endpoints',

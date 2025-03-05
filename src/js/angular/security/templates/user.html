@@ -263,14 +263,20 @@
                                             <em class="icon-info text-tertiary" gdb-tooltip="{{'security.data.repos' | translate}}"></em>
                                         </th>
                                         <th class="text-xs-center">
-                                            <input class="read" type="checkbox" ng-model="grantedAuthorities.READ_REPO['*']"  ng-checked="hasReadPermission('*')" ng-disabled="readCheckDisabled('*')" ng-click="setGrantedAuthorities()">
+                                            <span ng-click="setGrantedAuthorities()">
+                                                <input class="read" type="checkbox" ng-model="grantedAuthorities.READ_REPO['*']"  ng-checked="hasReadPermission('*')" ng-disabled="readCheckDisabled('*')">
+                                           </span>
                                         </th>
                                         <th class="text-xs-center write-any">
-                                            <input class="write" type="checkbox" ng-model="grantedAuthorities.WRITE_REPO['*']" ng-checked="hasWritePermission('*')" ng-disabled="writeCheckDisabled('*')" ng-click="setGrantedAuthorities()">
+                                            <span ng-click="setGrantedAuthorities()">
+                                                <input class="write" type="checkbox" ng-model="grantedAuthorities.WRITE_REPO['*']" ng-checked="hasWritePermission('*')" ng-disabled="writeCheckDisabled('*')">
+                                            </span>
                                         </th>
 
                                         <th class="text-xs-center">
-                                            <input class="graphql" type="checkbox" ng-model="grantedAuthorities.GRAPHQL['*']" ng-checked="hasGraphqlPermission('*')" ng-disabled="graphqlCheckDisabled('*')" ng-click="setGrantedAuthorities()">
+                                            <span ng-click="setGrantedAuthorities()">
+                                                <input class="graphql" type="checkbox" ng-model="grantedAuthorities.GRAPHQL['*']" ng-checked="hasGraphqlPermission('*')" ng-disabled="graphqlCheckDisabled('*')">
+                                            </span>
                                         </th>
 
                                     </tr>
@@ -279,9 +285,21 @@
                                     <div>
                                         <tr ng-repeat="repository in getAllAccessibleRepositories() | orderBy: ['location', 'id']">
                                             <td class="repository-name">{{repository.id}}<small><em ng-if="(hasGraphqlPermission(repository) || hasGraphqlPermission('*')) && (hasReadPermission(repository) || hasReadPermission('*') || hasWritePermission(repository) || hasWritePermission('*'))" class="fa-kit fa-gdb-graphql graphql-icon text-info" gdb-tooltip="{{'security.tooltip.graphql' | translate}}"></em> &middot; {{repository.location ? repository.location : 'repo.local' | translate}}</small></td>
-                                            <td class="text-xs-center read-rights"><input class="read" type="checkbox" ng-model="grantedAuthorities.READ_REPO[createUniqueKey(repository)]"  ng-checked="hasReadPermission(repository)" ng-disabled="readCheckDisabled(repository)" ng-click="setGrantedAuthorities()"></td>
-                                            <td class="text-xs-center write-rights"><input class="write" type="checkbox" ng-model="grantedAuthorities.WRITE_REPO[createUniqueKey(repository)]" ng-checked="hasWritePermission(repository)" ng-disabled="writeCheckDisabled(repository)" ng-click="setGrantedAuthorities()"></td>
-                                            <td class="text-xs-center graphql-rights"><input class="graphql" type="checkbox" ng-model="grantedAuthorities.GRAPHQL[createUniqueKey(repository)]" ng-checked="hasGraphqlPermission(repository)" ng-disabled="graphqlCheckDisabled(repository)" ng-click="setGrantedAuthorities()"></td>
+                                            <td class="text-xs-center read-rights">
+                                                <span ng-click="setGrantedAuthorities()">
+                                                    <input class="read" type="checkbox" ng-model="grantedAuthorities.READ_REPO[createUniqueKey(repository)]"  ng-checked="hasReadPermission(repository)" ng-disabled="readCheckDisabled(repository)">
+                                                </span>
+                                            </td>
+                                            <td class="text-xs-center write-rights">
+                                                <span ng-click="setGrantedAuthorities()">
+                                                    <input class="write" type="checkbox" ng-model="grantedAuthorities.WRITE_REPO[createUniqueKey(repository)]" ng-checked="hasWritePermission(repository)" ng-disabled="writeCheckDisabled(repository)">
+                                                </span>
+                                            </td>
+                                            <td class="text-xs-center graphql-rights">
+                                                <span ng-click="setGrantedAuthorities()">
+                                                    <input class="graphql" type="checkbox" ng-model="grantedAuthorities.GRAPHQL[createUniqueKey(repository)]" ng-checked="hasGraphqlPermission(repository)" ng-disabled="graphqlCheckDisabled(repository)">
+                                                </span>
+                                            </td>
                                         </tr>
                                     </div>
                                 </tbody>
