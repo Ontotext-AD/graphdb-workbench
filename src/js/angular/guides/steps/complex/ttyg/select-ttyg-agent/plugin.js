@@ -21,7 +21,10 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.select-ttyg-agent.open-agent-dropdown',
                         class: 'open-agent-dropdown-guide-dialog',
                         url: '/ttyg',
-                        elementSelector: GuideUtils.getGuideElementSelector('select-agent-dropdown')
+                        elementSelector: GuideUtils.getGuideElementSelector('select-agent-dropdown'),
+                        onNextClick: () => {
+                            // Do not allow the user to go to the next step because we want the user to click the button themselves.
+                        },
                     }, options)
                 },
                 {
@@ -65,7 +68,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'info-message',
                     options: angular.extend({}, {
                         beforeShowPromise: (guide, currentStep) => {
-                            return GuideUtils.waitFor(GuideUtils.getElementSelector('.confirm-dialog .cancel-btn'), 1)
+                            return GuideUtils.getOrWaitFor(GuideUtils.getElementSelector('.confirm-dialog .cancel-btn'), 1)
                                 .then(() => {
                                     // Using a timeout because the library executes logic to show the step in a then clause which causes current and next steps to show
                                     setTimeout(() => guide.next())
@@ -83,15 +86,21 @@ PluginRegistry.add('guide.step', [
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.select-ttyg-agent.missing-repository',
                         elementSelector: GuideUtils.getElementSelector('.confirm-dialog .cancel-btn'),
+                        showOn: () => GuideUtils.isVisible('.confirm-dialog .cancel-btn'),
                         onNextClick: () => {
-                            // Close the modal by canceling
-                            GuideUtils.clickOnElement('.confirm-dialog .cancel-btn');
+                            // Close the modal by clicking on cancel button
+                            GuideUtils.clickOnElement('.confirm-dialog .cancel-btn')();
                         },
-                        hide: (guide, currentStepDescription) => () => {
-                            // Revert 3 steps to select agent open
-                            const currentStepId = currentStepDescription.id;
-                            // Using a timeout because the library executes async logic
-                            setTimeout(() => guide.show(currentStepId - 3));
+                        show: (guide, currentStep) => () => {
+                            const currentStepId = currentStep.id;
+                            // Add "click" listener to the element. Upon clicking the element the guide is set back 3 steps to open dropdown step
+                            $(currentStep.elementSelector).on('click', () => {
+                                guide.show(currentStepId - 3)
+                            });
+                        },
+                        hide: (guide, currentStep) => () => {
+                            // Remove the "click" listener of element. It is important when step is hidden.
+                            $(currentStep.elementSelector).off('click');
                         }
                     }, options)
                 },
