@@ -48,7 +48,7 @@ PluginRegistry.add('main.menu', {
             labelKey: 'menu.graphql-endpoint-management.label',
             href: 'graphql/endpoints',
             order: 10,
-            role: 'IS_AUTHENTICATED_FULLY',
+            role: 'ROLE_REPO_MANAGER',
             parent: 'GraphQL',
             children: [
                 {
