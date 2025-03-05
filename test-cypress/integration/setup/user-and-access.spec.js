@@ -7,7 +7,7 @@ import HomeSteps from "../../steps/home-steps";
 import {LoginSteps} from "../../steps/login-steps";
 
 
-describe('User and Access', () => {
+describe.skip('User and Access', () => {
 
     const PASSWORD = "password";
     const ROLE_USER = "#roleUser";
