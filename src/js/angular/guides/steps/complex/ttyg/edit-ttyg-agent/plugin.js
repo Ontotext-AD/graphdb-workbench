@@ -1,9 +1,10 @@
 PluginRegistry.add('guide.step', [
     {
-        guideBlockName: 'create-ttyg-agent',
+        guideBlockName: 'edit-ttyg-agent',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
-            options.mainAction = 'create-ttyg-agent';
+            const $location = services.$location;
+            options.mainAction = 'edit-ttyg-agent';
 
             const configureExtractionMethods = (services, options) => {
                 const methods = options.methods || [];
@@ -21,12 +22,13 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'click-main-menu',
                     options: angular.extend({}, {
                         menu: 'ttyg',
-                        showIntro: true
+                        showOn: () => '/ttyg' !== $location.path()
                     }, options)
                 },
                 {
                     guideBlockName: 'guide-end',
                     options: angular.extend({}, {
+                        skipPoint: true,
                         title: 'guide.step_plugin.ttyg.missing-key.title',
                         content: 'guide.step_plugin.ttyg.missing-key.content',
                         url: '/ttyg',
@@ -52,43 +54,50 @@ PluginRegistry.add('guide.step', [
                 {
                     guideBlockName: 'info-message',
                     options: angular.extend({}, {
-                        content: 'guide.step_plugin.create-ttyg-agent.intro',
+                        content: 'guide.step_plugin.edit-ttyg-agent.intro',
                         skipPoint: true
                     }, options)
                 },
                 {
-                    guideBlockName: 'clickable-element',
+                    // Show next step (which is actually 5 core steps) if there is a selected agent
+                    guideBlockName: 'info-message',
                     options: angular.extend({}, {
-                        content: 'guide.step_plugin.create-ttyg-agent.create-agent',
-                        class: 'create-agent-btn-guide-dialog',
-                        url: '/ttyg',
-                        maxWaitTime: 10,
-                        elementSelector: GuideUtils.getGuideElementSelector('create-agent-btn'),
-                        onNextClick: () => {
-                            // Do not allow the user to go to the next step because we want the user to click the button themselves.
+                        beforeShowPromise: (guide, currentStep) => {
+                            if (GuideUtils.isGuideElementVisible('selected-agent')) {
+                                setTimeout(() => {
+                                    // Using a timeout because the library executes async logic
+                                    guide.show(currentStep.id + 6);
+                                })
+                            } else {
+                                setTimeout(() => {
+                                    // Using a timeout because the library executes async logic
+                                    guide.next()
+                                });
+                            }
                         }
                     }, options)
                 },
                 {
-                    guideBlockName: 'input-element',
+                    guideBlockName: 'select-ttyg-agent',
+                    options: angular.extend({}, options)
+                },
+                {
+                    guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
-                        content: 'guide.step_plugin.create-ttyg-agent.name-input',
-                        class: 'input-agent-name-guide-dialog',
+                        content: 'guide.step_plugin.edit-ttyg-agent.create-agent',
+                        class: 'create-agent-btn-guide-dialog',
                         url: '/ttyg',
-                        beforeShowPromise: () => GuideUtils.waitFor(GuideUtils.getGuideElementSelector('agent-form'), 5)
-                            .catch((error) => {
-                                services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
-                                throw error;
-                            }),
-                        elementSelector: GuideUtils.getGuideElementSelector('agent-name'),
-                        onNextValidate: () => Promise.resolve(GuideUtils.validateTextInputNotEmpty(GuideUtils.getGuideElementSelector('agent-name')))
+                        elementSelector: GuideUtils.getGuideElementSelector('edit-current-agent'),
+                        onNextClick: () => {
+                            // Do not allow the user to go to the next step because we want the user to click the button themselves.
+                        }
                     }, options)
                 },
                 ...configureExtractionMethods(services, options),
                 {
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
-                        content: 'guide.step_plugin.create-ttyg-agent.save-agent-settings',
+                        content: 'guide.step_plugin.edit-ttyg-agent.save-agent-settings',
                         class: 'save-agent-guide-dialog',
                         url: '/ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('save-agent-settings'),
@@ -108,3 +117,4 @@ PluginRegistry.add('guide.step', [
         }
     }
 ]);
+

@@ -57,6 +57,40 @@ const GuideUtils = (function () {
         });
     };
 
+    const waitUntilHidden = function (elementSelector, timeoutInSeconds = 1) {
+        const selector = getElementSelector(elementSelector);
+
+        return new Promise(function (resolve, reject) {
+            let iteration = timeoutInSeconds * 1000;
+            const waitTime = 100;
+            const elementExist = setInterval(() => {
+                try {
+                    const element = document.querySelector(selector);
+                    if (element && angular.element(element).is(':visible')) {
+                        // wait more
+                        iteration -= waitTime;
+                        if (iteration < 0) {
+                            clearInterval(elementExist);
+                            console.debug('Element is still visible: ' + selector);
+                            reject(new Error('Element is still visible: ' + selector));
+                        }
+                    } else {
+                        // Clear the interval and resolve
+                        clearInterval(elementExist);
+                        setTimeout(() => {
+                            resolve();
+                        }, 0);
+                    }
+                } catch (error) {
+                    clearInterval(elementExist);
+                    console.debug('Error when processing selector: ' + selector);
+                    console.debug(error);
+                    reject(error);
+                }
+            }, waitTime);
+        });
+    };
+
     const getOrWaitFor = (elementSelector, timeoutInSeconds = 1, checkVisibility = true) => {
         const selector = getElementSelector(elementSelector);
         const element = document.querySelector(selector);
@@ -305,6 +339,7 @@ const GuideUtils = (function () {
 
     return {
         waitFor,
+        waitUntilHidden,
         getOrWaitFor,
         clickOnElement,
         clickOnGuideElement,
