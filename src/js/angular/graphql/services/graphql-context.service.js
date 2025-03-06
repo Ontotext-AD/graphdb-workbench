@@ -102,6 +102,10 @@ function GraphqlContextService(EventEmitterService) {
         emit(GraphqlEventName.CANCEL_ENDPOINT_CREATION, {});
     }
 
+    const finishGenerationWorkflow = () => {
+        emit(GraphqlEventName.FINISH_GENERATION_WORKFLOW, {});
+    }
+
     const nextEndpointCreationStep = () => {
         emit(GraphqlEventName.NEXT_ENDPOINT_CREATION_STEP, {});
     }
@@ -183,6 +187,7 @@ function GraphqlContextService(EventEmitterService) {
         openEndpointGenerationReport,
         deleteEndpointGenerationReport,
         cancelEndpointCreation,
+        finishGenerationWorkflow,
         nextEndpointCreationStep,
         previousEndpointCreationStep,
         subscribe
@@ -214,6 +219,10 @@ export const GraphqlEventName = {
      * The event emitted when the user wants to cancel the endpoint creation.
      */
     CANCEL_ENDPOINT_CREATION: 'cancelEndpointCreation',
+    /**
+     * The event emitted when the user wants to finish the endpoint generation workflow.
+     */
+    FINISH_GENERATION_WORKFLOW: 'finishGenerationWorkflow',
     /**
      * The event emitted when the user wants to explore the generated endpoint in the GraphQL Playground.
      */

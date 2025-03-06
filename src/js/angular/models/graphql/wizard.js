@@ -32,6 +32,10 @@ export class Wizard {
         return this.#steps.find((step) => step.active);
     }
 
+    isAPreviousStep(step) {
+        return this.#steps.indexOf(step) < this.#currentStep;
+    }
+
     /**
      * Makes a step active.
      * @param {WizardStep} step
@@ -39,6 +43,15 @@ export class Wizard {
     setStepActive(step) {
         this.#steps.forEach((wizardStep) => wizardStep.active = false);
         step.active = true;
+
+        const stepIndex = this.#steps.indexOf(step);
+        this.#currentStep = stepIndex;
+
+        // Reset all visited statuses
+        this.#steps.forEach((current, currentStepIndex) => {
+            // Mark steps as visited only if they come before the current step
+            current.visited = currentStepIndex < stepIndex;
+        });
     }
 
     /**
@@ -96,6 +109,11 @@ export class WizardStep {
      */
     #active = false;
     /**
+     * The visited status of the step.
+     * @type {boolean}
+     */
+    #visited = false;
+    /**
      * The URL of the template of the step.
      * @type {string}
      */
@@ -111,6 +129,7 @@ export class WizardStep {
         this.#active = active;
         this.#templateUrl = templateUrl;
         this.#page = page;
+        this.#visited = false;
     }
 
     get page() {
@@ -143,5 +162,13 @@ export class WizardStep {
 
     set id(value) {
         this.#id = value;
+    }
+
+    get visited() {
+        return this.#visited;
+    }
+
+    set visited(value) {
+        this.#visited = value;
     }
 }
