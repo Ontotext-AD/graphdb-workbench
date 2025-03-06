@@ -85,12 +85,14 @@ export class GraphqlEndpointConfiguration {
      * @returns {CreateEndpointFromOwlRequest}
      */
     toCreateEndpointFromOwlRequest(sourceRepositoryId) {
+        // when using all graphs, we don't need to send them all to the server
+        const namedGraphs = this._owlOrShaclSourceType === OntologyShaclShapeSource.USE_ALL_GRAPHS ? [] : this.selectedGraphs.getGraphIds();
         return new CreateEndpointFromOwlRequest({
             id: this.params.endpointId,
             label: this.params.endpointLabel,
             description: this.params.endpointDescription,
             fromRepo: sourceRepositoryId,
-            namedGraphs: this.selectedGraphs.getGraphIds(),
+            namedGraphs: namedGraphs,
             vocabPrefix: this.params.vocPrefix,
             config: this.settings.toFlatJSON()
         });
