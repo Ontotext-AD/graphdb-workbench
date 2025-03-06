@@ -46,44 +46,44 @@
                aria-describedby="GraphQL endpoints info table">
             <thead>
             <tr>
-                <th scope="col" class="toggle"></th>
-                <th scope="col" class="status"></th>
-                <th scope="col" class="endpoint-id">
+                <th scope="col" class="toggle-col"></th>
+                <th scope="col" class="status-col"></th>
+                <th scope="col" class="endpoint-id-col">
                     <span gdb-tooltip="{{'graphql.endpoints_management.table.column.id.tooltip' | translate}}">
                         {{'graphql.endpoints_management.table.column.id.label' | translate}}
                     </span>
                 </th>
-                <th scope="col" class="endpoint-label">
+                <th scope="col" class="endpoint-label-col">
                     <span gdb-tooltip="{{'graphql.endpoints_management.table.column.label.tooltip' | translate}}">
                         {{'graphql.endpoints_management.table.column.label.label' | translate}}
                     </span>
                 </th>
-                <th scope="col" class="endpoint-is-default">
+                <th scope="col" class="endpoint-is-default-col text-center">
                     <span gdb-tooltip="{{'graphql.endpoints_management.table.column.is_default.tooltip' | translate}}">
                         {{'graphql.endpoints_management.table.column.is_default.label' | translate}}
                     </span>
                 </th>
-                <th scope="col" class="endpoint-is-active">
+                <th scope="col" class="endpoint-is-active-col text-center">
                     <span gdb-tooltip="{{'graphql.endpoints_management.table.column.is_active.tooltip' | translate}}">
                         {{'graphql.endpoints_management.table.column.is_active.label' | translate}}
                     </span>
                 </th>
-                <th scope="col" class="endpoint-modified-on">
+                <th scope="col" class="endpoint-modified-on-col">
                     <span gdb-tooltip="{{'graphql.endpoints_management.table.column.modified_on.tooltip' | translate}}">
                         {{'graphql.endpoints_management.table.column.modified_on.label' | translate}}
                     </span>
                 </th>
-                <th scope="col" class="endpoint-types-count">
+                <th scope="col" class="endpoint-types-count-col numeric">
                     <span gdb-tooltip="{{'graphql.endpoints_management.table.column.types_count.tooltip' | translate}}">
                         {{'graphql.endpoints_management.table.column.types_count.label' | translate}}
                     </span>
                 </th>
-                <th scope="col" class="endpoint-props-count">
+                <th scope="col" class="endpoint-props-count-col numeric">
                     <span gdb-tooltip="{{'graphql.endpoints_management.table.column.props_count.tooltip' | translate}}">
                         {{'graphql.endpoints_management.table.column.props_count.label' | translate}}
                     </span>
                 </th>
-                <th scope="col" class="endpoint-actions">
+                <th scope="col" class="endpoint-actions-col">
                     <span gdb-tooltip="{{'graphql.endpoints_management.table.column.actions.tooltip' | translate}}">
                         {{'graphql.endpoints_management.table.column.actions.label' | translate}}
                     </span>
@@ -123,14 +123,14 @@
                        class="endpoint-link">{{endpoint.endpointId}}</a>
                 </td>
                 <td>{{endpoint.label}}</td>
-                <td>
+                <td class="default-endpoint-selector">
                     <label class="endpoint-default-state">
                         <input type="radio" ng-model="selectedDefaultEndpoint.default" ng-value="endpoint.default"
                                ng-disabled="!endpoint.createdSuccessfully"
                                ng-change="setEndpointAsDefault(endpoint)"/>
                     </label>
                 </td>
-                <td>
+                <td class="active-endpoint-selector">
                     <span ng-click="!endpoint.createdSuccessfully || toggleEndpointActiveState(endpoint)"
                           class="toggle-active-state">
                         <input type="checkbox" class="switch" ng-checked="endpoint.active"
@@ -139,9 +139,9 @@
                     </span>
                 </td>
                 <td title="{{endpoint.lastModified}}">{{endpoint.lastModified | date: 'yyyy-MM-dd'}}</td>
-                <td>{{endpoint.objectsCount}}</td>
-                <td>{{endpoint.propertiesCount}}</td>
-                <td>
+                <td class="objects-count numeric">{{endpoint.objectsCount}}</td>
+                <td class="properties-count numeric">{{endpoint.propertiesCount}}</td>
+                <td class="endpoint-actions">
                     <div class="btn-group">
                         <button class="btn btn-link secondary btn-sm open-endpoint-actions-btn"
                                 data-toggle="dropdown" aria-expanded="false"

@@ -1122,10 +1122,9 @@
                     "overview": {
                         "title": "Aperçu",
                         "for_shapes": {
-                            "info": "{{endpointsCount}} points de terminaison GraphQL seront créés dans le référentiel \"{{activeRepoId}}\" en fonction des formes de schéma GraphQL répertoriées ci-dessous. Pour modifier la sélection, revenez à l'étape 1 (Sélectionner la source du schéma).",
+                            "info": "GraphDB tentera de créer {{endpointsCount}} points de terminaison GraphQL dans \"{{activeRepoId}}\" en fonction des ressources sélectionnées. Pour modifier la sélection, retournez à l'étape 1 (Sélectionner la source du schéma).",
                             "included_endpoints": "Formes de schéma GraphQL incluses",
                             "generated_endpoints": "Points de terminaison GraphQL",
-                            "manage_endpoints_info": "Accédez à la <a href=\"{{managementUrl}}\">gestion des points de terminaison</a> pour gérer les points de terminaison",
                             "explore_in_playground_link_tooltip": "Explorer dans Playground (s'ouvre dans un nouvel onglet)",
                             "view_report_link": "Voir le rapport",
                             "view_report_link_tooltip": "Ouvre le rapport de création du point de terminaison dans une boîte de dialogue modale."
@@ -1204,6 +1203,10 @@
                     },
                     "generate_endpoint": {
                         "label": "Créer un point de terminaison"
+                    },
+                    "finish_workflow": {
+                        "label": "Terminer",
+                        "tooltip": "Terminez le flux de travail et retournez à la gestion des points de terminaison"
                     }
                 }
             },
