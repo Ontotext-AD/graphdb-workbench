@@ -86,6 +86,16 @@ PluginRegistry.add('guide.step', [
                     helpInfo = 'ttyg.helpInfo';
 
                     break;
+                case "similarity":
+                    menuSelector = 'menu-explore';
+                    menuTitle = 'menu.explore.label';
+                    menuDialogClass = 'menu-explore-guide-dialog';
+                    submenuSelector = 'sub-menu-similarity';
+                    submenuTitle = 'menu.similarity.label';
+                    submenuDialogClass = 'sub-menu-similarity-guide-dialog';
+                    viewName = 'menu.similarity.label';
+                    helpInfo = 'guide.step-help-info.create-similarity-index';
+                    break;
             }
 
             const mainMenuClickElementPostSelector = submenuSelector ? ' div' : ' a';
