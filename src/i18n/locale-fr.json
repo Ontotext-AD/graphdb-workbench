@@ -108,7 +108,6 @@
                 "disable_secondary_mode_warning": "En désactivant le mode secondaire, ce cluster cesserait d'être une réplique en lecture seule.",
                 "enable_secondary": "Activer le mode secondaire",
                 "enable_secondary_warning": "En activant le mode secondaire, ce cluster deviendrait une réplique en lecture seule du cluster principal spécifié."
-
             },
             "error": {
                 "ascii": "Caractères non valides détectés. Seuls les caractères ASCII imprimables sont autorisés.",
@@ -413,7 +412,7 @@
                     "body": "Si vous continuez l'exécution de la requête SPARQL, GraphDB s'ouvrira dans un nouvel onglet et passera au dépôt <b>{{repositoryId}}</b>."
                 }
             },
-            "messages":{
+            "messages": {
                 "explain_response_failure": "Échec de la récupération de l'explication pour la réponse.",
                 "agent_changed_info": "L'agent a été changé en <b> {{agentName}} </b>"
             }
@@ -904,7 +903,6 @@
                             }
                         },
                         "messages": {
-
                         }
                     }
                 },
@@ -2874,6 +2872,8 @@
     "guide.step-intro.class-hierarchy": "Les étapes suivantes montrent comment utiliser la vue <b>{{viewName|translate}}</b> pour inspecter la hiérarchie des classes et avoir un aperçu du contenu de l'ensemble de données .",
     "guide.step-intro.table-graph": "Les étapes suivantes montrent comment explorer les données RDF sous forme de tableau sans écrire de requêtes SPARQL. Cliquez sur l'IRI <b>{{iriLabel}}</b> pour l'explorer.",
     "guide.step-intro.create-ttyg-agent": "Les étapes suivantes montrent comment utiliser la vue <b>{{viewName|translate}}</b> pour créer un agent.",
+    "guide.step-intro.create-similarity-index": "Les étapes suivantes montrent comment créer un index de similarité pour votre ensemble de données.",
+    "guide.step-help-info.create-similarity-index": "L'indice de similarité est utilisé pour trouver des mots qui ont été utilisés dans des contextes similaires à celui que vous recherchez. Par exemple, la recherche de \"ontology\" renverra à \"knowledge graph\", tandis qu'une simple similarité textuelle renverra à \"oncology\". Il s'agit d'une alternative à la recherche en texte intégral.",
     "guide.step-menu.click-menu": "Cliquez sur le menu <b>{{menuLabelKey|translate}}</b>.",
     "guide.step-action.create-repository": "Créer un dépôt",
     "guide.step-action.select-repository": "Se connecter au dépôt",
@@ -2891,6 +2891,7 @@
     "guide.step-action.ask-ttyg-agent": "Demander à l'agent",
     "guide.step-action.conversation-with-ttyg-agent": "Conversation avec l'agent",
     "guide.step-action.edit-ttyg-agent": "Modifier un agent",
+    "guide.step-action.create-similarity-index": "Créer un indice de similitude",
     "guide.step_plugin.execute-sparql-query.query-editor.content": "Entrez la requête SPARQL suivante : {{queryExplainMessageTranslated}}{{queryAsHtmlCodeElement}}",
     "guide.step_plugin.execute-sparql-query.result-explain.content": "Le tableau montre les résultats de l'exécution de la requête.",
     "guide.step_plugin.execute-sparql-query.run-sparql-query.content": "Cliquez sur le bouton <b>{{'query.editor.run.btn'|translate}}</b>.",
@@ -2990,6 +2991,9 @@
     "guide.step_plugin.edit-ttyg-agent.intro": "La configuration d'un agent, comme les méthodes d'extraction, peut être reconfigurée à tout moment.",
     "guide.step_plugin.edit-ttyg-agent.create-agent": "Cliquez sur le bouton « Modifier l'agent » pour modifier la configuration de l'agent sélectionné.",
     "guide.step_plugin.edit-ttyg-agent.save-agent-settings": "Cliquez sur pour enregistrer les paramètres de l'agent.",
+    "guide.step_plugin.create-similarity-index.create-similarity-index": "Cliquez sur le lien pour commencer à créer un nouvel indice de similitude.",
+    "guide.step_plugin.create-similarity-index.input-index-name": "Saisissez un nom pour l'index. Vous y ferez référence ultérieurement.",
+    "guide.step_plugin.create-similarity-index.create-index": "Cliquez sur le bouton pour créer l'index de similarité.",
     "guide.confirm.cancel.message": "Êtes-vous sûr de vouloir arrêter le guide?",
     "guide.unexpected.error.message": "Le guide a été annulé en raison d'une erreur inattendue. Veuillez exécuter à nouveau le guide et si le problème persiste, contactez le support.",
     "guide.start.unexpected.error.message": "Le guide ne peut pas être démarré en raison d'une erreur inattendue. Veuillez réessayer d'exécuter le guide et si le problème persiste, contactez le support.",
@@ -3026,7 +3030,7 @@
     "yasgui.tab_list.close_other_tabs.confirmation.queries_updates.message": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez {{queriesCount}} requêtes et {{updatesCount}} mises à jour en cours. Les requêtes seront annulées.</div><div>Êtes-vous sûr de vouloir fermer tous les autres onglets de requête ?</div>",
     "yasgui.tab_list.close_tab.confirmation.not_query_update.message": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez 1 mise à jour en cours.</div><div>Êtes-vous sûr de vouloir fermer cet onglet de requête ?</div>",
     "yasgui.tab_list.close_tab.confirmation.query_non_updates.message": "<div class=\"run_query_confirmation alert alert-warning\">Vous avez 1 requête en cours, qui sera annulée.</div><div>Êtes-vous sûr de vouloir fermer cet onglet de requête ?</div>",
-    "cookie" : {
+    "cookie": {
         "cookie_consent": "Nous pouvons utiliser des cookies pour nous aider à améliorer GraphDB et développer de meilleures fonctionnalités. Aucune information personnelle ou sensible n'est collectée. En cliquant sur « {{'common.ok.btn' | translate}} », vous consentez à notre",
         "cookie_policy_url_label": "politique de cookies",
         "policy": {
