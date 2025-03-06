@@ -42,7 +42,8 @@
                            placeholder="{{'my.index.name.required' | translate}}"
                            ng-model="similarityIndexInfo.similarityIndex.name"
                            ng-disabled="isEditViewMode()"
-                           ng-change="similarityIndexNameChanged()">
+                           ng-change="similarityIndexNameChanged()"
+                           guide-selector="similarity-index-name">
                 </div>
 
                 <div ng-if="saveOrUpdateExecuted">
@@ -248,7 +249,7 @@
                             {{'common.cancel.btn' | translate}}
                         </a>
                         <button ng-if="!isEditViewMode()" class="btn btn-lg btn-primary create-similarity-index-btn"
-                                ng-disabled="savingIndex"
+                                ng-disabled="savingIndex" guide-selector="create-similarity-index-btn"
                                 ng-click="createSimilarityIndex()"
                                 uib-popover="{{'create.index.label' | translate}}"
                                 popover-placement="top"
