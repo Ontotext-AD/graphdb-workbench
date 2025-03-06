@@ -26,7 +26,8 @@
             </div>
         </div>
 
-        <div class="generation-progress" ng-if="generatingEndpoint && !generationReport" onto-loader-fancy size="25"
+        <div class="generation-progress my-3" ng-if="generatingEndpoint && !generationReport" onto-loader-fancy
+             size="25"
              message="{{'graphql.create_endpoint.wizard_steps.generate_endpoint.messages.generation_progress' | translate}}"></div>
 
         <div ng-if="!generatingEndpoint && generationReport" class="generation-report">
@@ -57,15 +58,21 @@
     </div>
 
     <div class="wizard-actions mt-1">
-        <button class="btn btn-secondary cancel-btn mr-1" ng-disabled="generatingEndpoint" ng-click="cancel()">
+        <button ng-if="!generationReport" ng-disabled="generatingEndpoint" ng-click="cancel()"
+                class="btn btn-secondary cancel-btn mr-1">
             {{'graphql.create_endpoint.wizard_steps.actions.cancel.label' | translate}}
         </button>
-        <button class="btn btn-secondary back-btn mr-1" ng-disabled="generatingEndpoint" ng-click="back()">
+        <button ng-disabled="generatingEndpoint" ng-click="back()" class="btn btn-secondary back-btn mr-1">
             {{'graphql.create_endpoint.wizard_steps.actions.back.label' | translate}}
         </button>
-        <button class="btn btn-primary generate-endpoint-btn" ng-click="generateEndpoint()"
-                ng-disabled="generatingEndpoint">
+        <button ng-if="!generationReport" ng-disabled="generatingEndpoint" ng-click="generateEndpoint()"
+                class="btn btn-primary generate-endpoint-btn">
             {{'graphql.create_endpoint.wizard_steps.actions.generate_endpoint.label' | translate}}
+        </button>
+        <button ng-if="generationReport" ng-click="finishGenerationWorkflow()"
+                class="btn btn-primary finish-generation-workflow-btn"
+                gdb-tooltip="{{'graphql.create_endpoint.wizard_steps.actions.finish_workflow.tooltip' | translate}}">
+            {{'graphql.create_endpoint.wizard_steps.actions.finish_workflow.label' | translate}}
         </button>
     </div>
 </div>

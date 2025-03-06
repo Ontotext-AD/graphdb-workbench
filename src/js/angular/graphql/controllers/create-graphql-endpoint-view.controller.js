@@ -210,6 +210,13 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
     };
 
     /**
+     * Handles the finish of the endpoint generation workflow by redirecting to the endpoint management view.
+     */
+    const onFinishEndpointGeneration = () => {
+        $location.path(endpointUrl.ENDPOINT_MANAGEMENT);
+    };
+
+    /**
      * Opens the GraphQL Playground with the selected endpoint in a new browser tab.
      * @param {EndpointGenerationReport} endpointInfo The endpoint info.
      */
@@ -300,6 +307,7 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
     subscriptions.push(GraphqlContextService.subscribe(GraphqlEventName.PREVIOUS_ENDPOINT_CREATION_STEP, onPreviousEndpointCreationStep));
     subscriptions.push(GraphqlContextService.subscribe(GraphqlEventName.NEXT_ENDPOINT_CREATION_STEP, onNextEndpointCreationStep));
     subscriptions.push(GraphqlContextService.subscribe(GraphqlEventName.CANCEL_ENDPOINT_CREATION, onCancelEndpointCreation));
+    subscriptions.push(GraphqlContextService.subscribe(GraphqlEventName.FINISH_GENERATION_WORKFLOW, onFinishEndpointGeneration));
     subscriptions.push(GraphqlContextService.subscribe(GraphqlEventName.EXPLORE_ENDPOINT_IN_PLAYGROUND, onExploreEndpointInPlayground));
     subscriptions.push(GraphqlContextService.subscribe(GraphqlEventName.OPEN_ENDPOINT_GENERATION_REPORT, onShowEndpointReport));
     subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler));

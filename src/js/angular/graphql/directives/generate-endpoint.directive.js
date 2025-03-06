@@ -97,7 +97,15 @@ function GenerateEndpointComponent(ModalService, $uibModal, $translate, $reposit
              */
             $scope.generateEndpoint = () => {
                 $scope.generatingEndpoint = true;
+                $scope.generationReport = undefined;
                 GraphqlContextService.generateEndpoint();
+            };
+
+            /**
+             * Handles the completion of the endpoint generation workflow.
+             */
+            $scope.finishGenerationWorkflow = () => {
+                GraphqlContextService.finishGenerationWorkflow();
             };
 
             /**
