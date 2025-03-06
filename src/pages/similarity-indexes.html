@@ -24,7 +24,7 @@
 	<div class="card mb-2 existing-indexes" ng-if="isLicenseValid() && isGraphDBRepository && pluginIsActive">
 		<div class="card-block">
 			<div class="clearfix">
-				<a ng-href="similarity/index/create" ng-if="canEditRepo" class="btn btn-link pull-right">
+				<a ng-href="similarity/index/create" ng-if="canEditRepo" class="btn btn-link pull-right" guide-selector="create-similarity-index">
 					<span class="icon-plus create-similarity-index"></span> {{'view.create.similarity.index.title' | translate}}
 				</a>
 				<h3 class="mb-0"><span class="collapsible-heading" data-toggle="collapse" data-target="#indexes-table"><em class="icon-caret-down text-muted"></em> {{'existing.indexes' | translate}}</span></h3>
