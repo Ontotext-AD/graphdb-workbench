@@ -6,17 +6,6 @@ PluginRegistry.add('guide.step', [
             const $location = services.$location;
             options.mainAction = 'edit-ttyg-agent';
 
-            const configureExtractionMethods = (services, options) => {
-                const methods = options.methods || [];
-
-                return methods.map((method) => {
-                    return {
-                        guideBlockName: method.guideBlockName,
-                        options: method.options
-                    };
-                });
-            };
-
             return [
                 {
                     guideBlockName: 'click-main-menu',
@@ -26,30 +15,7 @@ PluginRegistry.add('guide.step', [
                     }, options)
                 },
                 {
-                    guideBlockName: 'guide-end',
-                    options: angular.extend({}, {
-                        skipPoint: true,
-                        title: 'guide.step_plugin.ttyg.missing-key.title',
-                        content: 'guide.step_plugin.ttyg.missing-key.content',
-                        url: '/ttyg',
-                        beforeShowPromise: (guide, currentStepDescription) => {
-                            // Check if error toast is visible waiting for 2 seconds
-                            return GuideUtils.waitFor('.toast-message', 2)
-                                .then(() => {
-                                    // Error toast is visible, show this step and complete on next click
-                                    currentStepDescription.onNextClick = (guide) => {
-                                        guide.complete();
-                                    };
-                                })
-                                .catch(() => {
-                                    // Error toast is not visible, skip this step and move to next one
-                                    // Using a timeout because the library executes logic to show the step in a then clause which causes current and next steps to show
-                                    setTimeout(() => {
-                                        guide.next();
-                                    });
-                                });
-                        }
-                    }, options)
+                    guideBlockName: 'end-on-api-key-error'
                 },
                 {
                     guideBlockName: 'info-message',
@@ -84,8 +50,8 @@ PluginRegistry.add('guide.step', [
                 {
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
-                        content: 'guide.step_plugin.edit-ttyg-agent.create-agent',
-                        class: 'create-agent-btn-guide-dialog',
+                        content: 'guide.step_plugin.edit-ttyg-agent.edit-agent',
+                        class: 'edit-agent-btn-guide-dialog',
                         url: '/ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('edit-current-agent'),
                         onNextClick: () => {
@@ -93,7 +59,10 @@ PluginRegistry.add('guide.step', [
                         }
                     }, options)
                 },
-                ...configureExtractionMethods(services, options),
+                {
+                    guideBlockName: 'configure-agent',
+                    options
+                },
                 {
                     guideBlockName: 'clickable-element',
                     options: angular.extend({}, {
