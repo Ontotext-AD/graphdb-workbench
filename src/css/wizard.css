@@ -21,6 +21,10 @@
     border-bottom: 1px solid var(--primary-color);
 }
 
+.wizard .wizard-steps .wizard-step.completed {
+    cursor: pointer;
+}
+
 .wizard .wizard-steps .wizard-step .step-title {
     text-decoration: none;
     color: unset;

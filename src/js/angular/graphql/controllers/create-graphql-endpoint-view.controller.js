@@ -113,6 +113,17 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
         setCurrentStep(step);
     };
 
+    /**
+     * Handles the click on the step in the wizard. We allow only to go back to previous steps.
+     * @param {WizardStep} step The step to go to.
+     */
+    $scope.onStepClick = (step) => {
+        if ($scope.wizardModel.isAPreviousStep(step)) {
+            $scope.wizardModel.setStepActive(step);
+            setCurrentStep(step);
+        }
+    }
+
     // =========================
     // Private methods
     // =========================
