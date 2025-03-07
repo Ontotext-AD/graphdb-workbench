@@ -196,7 +196,7 @@ export class UserAndAccessSteps {
             .contains('Any data repository')
             .parent('tr')
             .find('.graphql')
-            .click({force: true});
+            .realClick();
     }
 
     static clickGraphqlAccessRepo(repoName) {
@@ -204,7 +204,7 @@ export class UserAndAccessSteps {
             .contains(repoName)
             .parent('tr')
             .find('.graphql')
-            .click({force: true});
+            .realClick();
     }
 
     static clickReadAccessAny() {
@@ -212,7 +212,7 @@ export class UserAndAccessSteps {
             .contains('Any data repository')
             .parent('tr')
             .find('.read')
-            .click({force: true});
+            .realClick();
     }
 
     static clickReadAccessRepo(repoName) {
@@ -220,7 +220,7 @@ export class UserAndAccessSteps {
             .contains(repoName)
             .parent('tr')
             .find('.read')
-            .click({force: true});
+            .realClick();
     }
 
     static clickWriteAccessAny() {
@@ -228,7 +228,7 @@ export class UserAndAccessSteps {
             .contains('Any data repository')
             .parent('tr')
             .find('.write')
-            .click({force: true});
+            .realClick();
     }
 
     static clickWriteAccessRepo(repoName) {
@@ -236,7 +236,7 @@ export class UserAndAccessSteps {
             .contains(repoName)
             .parent('tr')
             .find('.write')
-            .click({force: true});
+            .realClick();
     }
 
     static findUserRowAlias(username, aliasName = 'userRow') {

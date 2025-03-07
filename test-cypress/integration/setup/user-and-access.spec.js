@@ -7,16 +7,17 @@ import HomeSteps from "../../steps/home-steps";
 import {LoginSteps} from "../../steps/login-steps";
 
 
-describe.skip('User and Access', () => {
+describe('User and Access', () => {
 
     const PASSWORD = "password";
     const ROLE_USER = "#roleUser";
     const ROLE_REPO_MANAGER = "#roleRepoAdmin";
     const ROLE_CUSTOM_ADMIN = "#roleAdmin";
     const DEFAULT_ADMIN_PASSWORD = "root";
-    const NO_PASS_ADMIN = 'adminWithNoPassword'
 
     context('', () => {
+        const user = "user";
+
         beforeEach(() => {
             UserAndAccessSteps.visit();
             cy.window();
@@ -24,17 +25,10 @@ describe.skip('User and Access', () => {
             UserAndAccessSteps.getUsersTable().should('be.visible');
         });
 
-        after(() => {
-            UserAndAccessSteps.visit();
-            UserAndAccessSteps.getUsersTable().should('be.visible');
-            UserAndAccessSteps.getUsersTableRow().then(() => {
-                UserAndAccessSteps.getTableRow().each(($el) => {
-                    UserAndAccessSteps.getUsersTable().should('be.visible');
-                    const username = $el.find('.username').text();
-                    if (username !== 'admin') {
-                        UserAndAccessSteps.deleteUser(username);
-                    }
-                });
+        afterEach(() => {
+            cy.loginAsAdmin().then(()=> {
+                cy.deleteUser(user, true);
+                cy.switchOffSecurity(true);
             });
         });
 
@@ -59,31 +53,27 @@ describe.skip('User and Access', () => {
         });
 
         it('Create user', () => {
-            const name = "user";
             //create a normal read/write user
-            createUser(name, PASSWORD, ROLE_USER, {readWrite: true});
-            testForUser(name, false);
+            createUser(user, PASSWORD, ROLE_USER, {readWrite: true});
+            testForUser(user, false);
         });
 
         it('Create repo-manager', () => {
-            const name = "repo-manager";
             //create a repo-manager
-            createUser(name, PASSWORD, ROLE_REPO_MANAGER);
-            testForUser(name, false);
+            createUser(user, PASSWORD, ROLE_REPO_MANAGER);
+            testForUser(user, false);
         });
 
         it('Create second admin', () => {
-            const name = "second-admin";
             //create a custom admin
-            createUser(name, PASSWORD, ROLE_CUSTOM_ADMIN);
-            testForUser(name, true);
+            createUser(user, PASSWORD, ROLE_CUSTOM_ADMIN);
+            testForUser(user, true);
         });
 
         it('Create user with custom role', () => {
-            const name = "user";
             // When I create a read/write user
             UserAndAccessSteps.clickCreateNewUserButton();
-            UserAndAccessSteps.typeUsername(name);
+            UserAndAccessSteps.typeUsername(user);
             UserAndAccessSteps.typePassword(PASSWORD);
             UserAndAccessSteps.typeConfirmPasswordField(PASSWORD);
             UserAndAccessSteps.selectRoleRadioButton(ROLE_USER);
@@ -123,10 +113,9 @@ describe.skip('User and Access', () => {
 
         it('Warn users when setting no password when creating new user admin', () => {
             UserAndAccessSteps.getUsersTable().should('be.visible');
-            createUser(NO_PASS_ADMIN, PASSWORD, ROLE_CUSTOM_ADMIN, {noPassword: true});
+            createUser(user, PASSWORD, ROLE_CUSTOM_ADMIN, {noPassword: true});
             UserAndAccessSteps.getUsersTable().should('be.visible');
             UserAndAccessSteps.getSplashLoader().should('not.be.visible');
-            UserAndAccessSteps.deleteUser(NO_PASS_ADMIN);
         });
     })
 
@@ -134,13 +123,14 @@ describe.skip('User and Access', () => {
         let repositoryId1;
         let repositoryId2;
         let repositoryId3;
+        const graphqlUser = 'graphqlUser';
 
         beforeEach(() => {
             cy.viewport(1280, 1000);
             RepositoriesStubs.spyGetRepositories();
-            repositoryId1 = 'user-access-repo1' + Date.now();
-            repositoryId2 = 'user-access-repo2' + Date.now();
-            repositoryId3 = 'user-access-repo3' + Date.now();
+            repositoryId1 = 'user-access-repo1-' + Date.now();
+            repositoryId2 = 'user-access-repo2-' + Date.now();
+            repositoryId3 = 'user-access-repo3-' + Date.now();
             cy.createRepository({id: repositoryId1});
             cy.createRepository({id: repositoryId2});
             cy.createRepository({id: repositoryId3});
@@ -151,48 +141,50 @@ describe.skip('User and Access', () => {
         });
 
         afterEach(() => {
-            cy.deleteRepository(repositoryId1);
-            cy.deleteRepository(repositoryId2);
-            cy.deleteRepository(repositoryId3);
+            cy.loginAsAdmin().then(() => {
+                cy.deleteRepository(repositoryId1, true);
+                cy.deleteRepository(repositoryId2, true);
+                cy.deleteRepository(repositoryId3, true);
+                cy.deleteUser(graphqlUser, true);
+                cy.switchOffSecurity(true);
+            });
+
         });
 
         it('Create user with GraphQL-only access', () => {
             cy.wait('@getRepositories');
-            const name = 'graphqlUser';
-            createUser(name, PASSWORD, ROLE_USER, { read: true, graphql: true , repoName: repositoryId2});
-            deleteUser(name);
+            createUser(graphqlUser, PASSWORD, ROLE_USER, {read: true, graphql: true, repoName: repositoryId2});
         });
 
         it('Can create user with different auth combinations', () => {
             cy.wait('@getRepositories');
-            const name = 'graphqlUser';
             // WHEN I create a user with read + GraphQL for repository #2
-            createUser(name, PASSWORD, ROLE_USER, { read: true, graphql: true, repoName: repositoryId2 });
+            createUser(graphqlUser, PASSWORD, ROLE_USER, {read: true, graphql: true, repoName: repositoryId2});
             // THEN the user should have read + GraphQL on that repo
-            assertUserAuths(name, { repo: repositoryId2, read: true, graphql: true });
+            assertUserAuths(graphqlUser, {repo: repositoryId2, read: true, graphql: true});
             // WHEN I open the edit page for that user
-            UserAndAccessSteps.openEditUserPage(name);
+            UserAndAccessSteps.openEditUserPage(graphqlUser);
             // THEN for repository #1, the GraphQL checkbox should be disabled initially
             UserAndAccessSteps.getGraphqlAccessForRepo(repositoryId1).should('be.disabled');
             // WHEN I enable "read" for repository #1
-            editUserAuths({ repo: repositoryId1, read: true });
+            editUserAuths({repo: repositoryId1, read: true});
             // THEN GraphQL for repository #1 should become enabled
             UserAndAccessSteps.getGraphqlAccessForRepo(repositoryId1).should('be.enabled');
             // WHEN I enable GraphQL and read
-            editUserAuths({ repo: repositoryId1, graphql: true });
-            editUserAuths({ repo: repositoryId1, read: true });
+            editUserAuths({repo: repositoryId1, graphql: true});
+            editUserAuths({repo: repositoryId1, read: true});
             // THEN GraphQL should be checked and disabled
             UserAndAccessSteps.getGraphqlAccessForRepo(repositoryId1).should('be.checked').and('be.disabled');
             // THEN for repository #3, GraphQL should be disabled initially
             UserAndAccessSteps.getGraphqlAccessForRepo(repositoryId3).should('be.disabled');
             // WHEN I enable "write" for repository #3
-            editUserAuths({ repo: repositoryId3, write: true });
+            editUserAuths({repo: repositoryId3, write: true});
             // THEN GraphQL for repository #3 should become enabled
             UserAndAccessSteps.getGraphqlAccessForRepo(repositoryId3).should('be.enabled');
             // And I expect "read" to be checked and disabled
             UserAndAccessSteps.getReadAccessForRepo(repositoryId3).should('be.checked').and('be.disabled');
             // I enable GraphQL for repository #3
-            editUserAuths({ repo: repositoryId3, graphql: true });
+            editUserAuths({repo: repositoryId3, graphql: true});
 
             // WHEN I confirm the user edit
             UserAndAccessSteps.confirmUserEdit();
@@ -200,98 +192,98 @@ describe.skip('User and Access', () => {
             //  - repo #1 has no read/write/graphql
             //  - repo #2 has read + graphql
             //  - repo #3 has write + graphql (and read was auto-checked but disabled)
-            assertUserAuths(name, { repo: repositoryId1, read: false, write: false, graphql: false });
-            assertUserAuths(name, { repo: repositoryId2, read: true,  write: false, graphql: true });
-            assertUserAuths(name, { repo: repositoryId3, read: false, write: true,  graphql: true });
-
-            deleteUser(name);
+            assertUserAuths(graphqlUser, {repo: repositoryId1, read: false, write: false, graphql: false});
+            assertUserAuths(graphqlUser, {repo: repositoryId2, read: true, write: false, graphql: true});
+            assertUserAuths(graphqlUser, {repo: repositoryId3, read: false, write: true, graphql: true});
         });
 
         it('Should have access to 5 pages when have graphql only rights', () => {
             cy.wait('@getRepositories');
-            const name = 'graphqlUser';
             // WHEN I create a user with read + GraphQL for repository #2
-            createUser(name, PASSWORD, ROLE_USER, {readWrite: true, graphql: true, repoName: repositoryId1});
+            createUser(graphqlUser, PASSWORD, ROLE_USER, {readWrite: true, graphql: true, repoName: repositoryId1});
             //enable security
             UserAndAccessSteps.toggleSecurity();
             //login new user
-            LoginSteps.loginWithUser(name, PASSWORD);
+            LoginSteps.loginWithUser(graphqlUser, PASSWORD);
             RepositorySelectorSteps.selectRepository(repositoryId1);
 
-            MENU_ITEMS_WITHOUT_GRAPHQL.forEach(({path, expectedUrl,  checks, expectedTitle}) => {
+            MENU_ITEMS_WITHOUT_GRAPHQL.forEach(({path, expectedUrl, checks, expectedTitle}) => {
                 navigateMenuPath(path, expectedUrl, expectedTitle);
                 if (checks) {
                     runChecks(checks);
                 }
             });
-            LoginSteps.logout();
-            //login with the admin
-            LoginSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
-            cy.wait('@getRepositories');
-            UserAndAccessSteps.visit();
-            //delete new-user
-            deleteUser(name)
-            //disable security
-            UserAndAccessSteps.toggleSecurity();
-            UserAndAccessSteps.getSecuritySwitchLabel().should('be.visible').and('contain', 'Security is OFF');
         });
 
         it('Should not have access endpoints management when have read graphql only rights', () => {
             cy.wait('@getRepositories');
-            const name = 'graphqlUser';
             // WHEN I create a user with read + GraphQL for repository #2
-            createUser(name, PASSWORD, ROLE_USER, {read: true, graphql: true, repoName: repositoryId1});
+            createUser(graphqlUser, PASSWORD, ROLE_USER, {read: true, graphql: true, repoName: repositoryId1});
             //enable security
             UserAndAccessSteps.toggleSecurity();
             //login new user
-            LoginSteps.loginWithUser(name, PASSWORD);
+            LoginSteps.loginWithUser(graphqlUser, PASSWORD);
             RepositorySelectorSteps.selectRepository(repositoryId1);
 
-            GRAPHQL_READ_MENU_ITEMS.forEach(({path, expectedUrl,  checks, expectedTitle}) => {
+            GRAPHQL_READ_MENU_ITEMS.forEach(({path, expectedUrl, checks, expectedTitle}) => {
                 navigateMenuPath(path, expectedUrl, expectedTitle);
                 if (checks) {
                     runChecks(checks);
                 }
             });
-            LoginSteps.logout();
-            //login with the admin
-            LoginSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
-            cy.wait('@getRepositories');
-            UserAndAccessSteps.visit();
-            //delete new-user
-            deleteUser(name)
-            //disable security
-            UserAndAccessSteps.toggleSecurity();
-            UserAndAccessSteps.getSecuritySwitchLabel().should('be.visible').and('contain', 'Security is OFF');
         });
 
         it('Should have all access to endpoints management when have REPO_MANAGER role', () => {
             cy.wait('@getRepositories');
-            const name = 'repoManager';
-            createUser(name, PASSWORD, ROLE_REPO_MANAGER);
+            createUser(graphqlUser, PASSWORD, ROLE_REPO_MANAGER);
             //enable security
             UserAndAccessSteps.toggleSecurity();
+            HomeSteps.visit();
             //login new user
-            LoginSteps.loginWithUser(name, PASSWORD);
-            GRAPHQL_REPO_MANAGER_MENU_ITEMS.forEach(({path, expectedUrl,  checks, expectedTitle}) => {
+            LoginSteps.loginWithUser(graphqlUser, PASSWORD);
+            GRAPHQL_REPO_MANAGER_MENU_ITEMS.forEach(({path, expectedUrl, checks, expectedTitle}) => {
                 navigateMenuPath(path, expectedUrl, expectedTitle);
                 if (checks) {
                     runChecks(checks);
                 }
             });
-            LoginSteps.logout();
-            //login with the admin
-            LoginSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
-            cy.wait('@getRepositories');
+        });
+    });
+
+    context('GraphQL only and Free Access', () => {
+        let repositoryId1;
+        let repositoryId2;
+        let repositoryId3;
+        const graphqlUser = 'graphqlUser';
+
+        beforeEach(() => {
+            cy.viewport(1280, 1000);
+            RepositoriesStubs.spyGetRepositories();
+            repositoryId1 = 'user-access-repo1-' + Date.now();
+            repositoryId2 = 'user-access-repo2-' + Date.now();
+            repositoryId3 = 'user-access-repo3-' + Date.now();
+            cy.createRepository({id: repositoryId1});
+            cy.createRepository({id: repositoryId2});
+            cy.createRepository({id: repositoryId3});
+            cy.presetRepository(repositoryId1);
             UserAndAccessSteps.visit();
-            //delete new-user
-            deleteUser(name)
-            //disable security
-            UserAndAccessSteps.toggleSecurity();
-            UserAndAccessSteps.getSecuritySwitchLabel().should('be.visible').and('contain', 'Security is OFF');
+            // Users table should be visible
+            UserAndAccessSteps.getUsersTable().should('be.visible');
         });
 
-        it('Can have Free Access and GraphQL to work together', () => {
+        afterEach(() => {
+            cy.loginAsAdmin().then(()=> {
+                cy.deleteRepository(repositoryId1, true);
+                cy.deleteRepository(repositoryId2, true);
+                cy.deleteRepository(repositoryId3, true);
+                cy.deleteUser(graphqlUser, true);
+                cy.switchOffFreeAccess(true);
+                cy.switchOffSecurity(true);
+            });
+
+        });
+
+        it('Can have Free Access and GraphQL working together', () => {
             cy.wait('@getRepositories');
             //enable security
             UserAndAccessSteps.toggleSecurity();
@@ -326,20 +318,6 @@ describe.skip('User and Access', () => {
                     runChecks(checks);
                 }
             });
-
-            LoginSteps.visitLoginPage();
-            //login with the admin
-            LoginSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
-            UserAndAccessSteps.visit();
-            // The Free Access toggle should be ON
-            UserAndAccessSteps.getFreeAccessSwitchInput().should('be.checked');
-            // When I toggle Free Access OFF
-            UserAndAccessSteps.toggleFreeAccess();
-            // Then I should see a success message
-            ToasterSteps.verifySuccess('Free access has been disabled.');
-            //disable security
-            UserAndAccessSteps.toggleSecurity();
-            UserAndAccessSteps.getSecuritySwitchLabel().should('be.visible').and('contain', 'Security is OFF');
         });
     });
 
@@ -373,11 +351,12 @@ describe.skip('User and Access', () => {
         UserAndAccessSteps.typePassword(password);
         UserAndAccessSteps.typeConfirmPasswordField(password);
         UserAndAccessSteps.selectRoleRadioButton(role);
+        UserAndAccessSteps.getRoleRadioButton(role).should('be.checked');
 
         if (role === "#roleUser") {
             setRoles(opts);
             UserAndAccessSteps.confirmUserCreate();
-        } else if (role === ROLE_CUSTOM_ADMIN && username === NO_PASS_ADMIN && opts.noPassword) {
+        } else if (role === ROLE_CUSTOM_ADMIN && opts.noPassword) {
             UserAndAccessSteps.getNoPasswordCheckbox().check()
                 .then(() => {
                     UserAndAccessSteps.getNoPasswordCheckbox()
@@ -422,22 +401,6 @@ describe.skip('User and Access', () => {
             UserAndAccessSteps.getError().should('contain',
                 'You have no permission to access this functionality with your current credentials.');
         }
-        LoginSteps.logout();
-        //login with the admin
-        LoginSteps.loginWithUser("admin", DEFAULT_ADMIN_PASSWORD);
-        UserAndAccessSteps.getSplashLoader().should('not.be.visible');
-        UserAndAccessSteps.getUsersTable().should('be.visible');
-
-        //delete new-user
-        deleteUser(name)
-        //disable security
-        UserAndAccessSteps.toggleSecurity();
-        UserAndAccessSteps.getSecuritySwitchLabel().should('be.visible').and('contain', 'Security is OFF');
-    }
-
-    function deleteUser(name) {
-        UserAndAccessSteps.deleteUser(name);
-        UserAndAccessSteps.getUsersTable().should('be.visible');
     }
 
     function assertUserAuths(username, {repo, read = false, write = false, graphql = false} = {}) {
