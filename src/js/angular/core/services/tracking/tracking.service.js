@@ -12,7 +12,8 @@ const modules = [
 
 ];
 angular.module('graphdb.framework.core.services.trackingService', modules)
-    .service('TrackingService', ['$window', '$jwtAuth', '$translate', '$licenseService', 'toastr', 'InstallationCookieService', 'GoogleAnalyticsCookieService', TrackingService]);
+    .service('TrackingService', ['$window', '$jwtAuth', '$translate', '$licenseService', 'toastr', 'InstallationCookieService', 'GoogleAnalyticsCookieService', 'LocalStorageAdapter', 'LSKeys',
+        TrackingService]);
 
 /**
  * Service for managing user tracking based on their cookie consent preferences.
@@ -25,9 +26,11 @@ angular.module('graphdb.framework.core.services.trackingService', modules)
  * @param {Object} toastr - Service for displaying toast notifications.
  * @param {Object} InstallationCookieService - Service for managing installation cookies.
  * @param {Object} GoogleAnalyticsCookieService - Service for managing Google Analytics cookies.
+ * @param {Object} LocalStorageAdapter - Service for interfacing with local storage.
+ * @param {Object} LSKeys - Constants for local storage keys.
  * @constructor
  */
-function TrackingService($window, $jwtAuth, $translate, $licenseService, toastr, InstallationCookieService, GoogleAnalyticsCookieService) {
+function TrackingService($window, $jwtAuth, $translate, $licenseService, toastr, InstallationCookieService, GoogleAnalyticsCookieService, LocalStorageAdapter, LSKeys) {
     /**
      * Determines if tracking is allowed based on license and product type.
      * @return {boolean} A boolean indicating if tracking is allowed.
@@ -39,41 +42,81 @@ function TrackingService($window, $jwtAuth, $translate, $licenseService, toastr,
     };
 
     /**
-     * Initializes tracking based on user consent settings and license status.
-     * If tracking is allowed, checks the user’s consent preferences and enables
-     * or disables tracking scripts and cookies accordingly.
-     * @function init
+     * Checks if tracking is allowed and, if so, fetches the current user consent,
+     * then sets or removes tracking cookies accordingly.
      */
     const init = () => {
         if (!isTrackingAllowed()) {
             cleanUpTracking();
         } else {
-            $jwtAuth.getPrincipal()
-                .then((principal) => {
-                    const cookieConsent = CookieConsent.fromJSON(principal.appSettings.COOKIE_CONSENT);
-                    if (!cookieConsent.getPolicyAccepted()) {
-                        cleanUpTracking();
-                        return;
-                    }
+            getCookieConsent().then((cookieConsent) => {
+                if (!cookieConsent.getPolicyAccepted()) {
+                    cleanUpTracking();
+                    return;
+                }
 
-                    if (cookieConsent.getStatisticConsent()) {
-                        const installationId = $licenseService.license().installationId || '';
-                        InstallationCookieService.setIfAbsent(installationId);
-                    } else {
-                        InstallationCookieService.remove();
-                    }
+                if (cookieConsent.getStatisticConsent()) {
+                    const installationId = $licenseService.license().installationId || '';
+                    InstallationCookieService.setIfAbsent(installationId);
+                } else {
+                    InstallationCookieService.remove();
+                }
 
-                    if (cookieConsent.getThirdPartyConsent()) {
-                        GoogleAnalyticsCookieService.setIfAbsent();
-                    } else {
-                        GoogleAnalyticsCookieService.remove();
-                    }
-                })
-                .catch((error) => {
-                    const msg = getError(error.data, error.status);
-                    toastr.error(msg, $translate.instant('common.error'));
-                });
+                if (cookieConsent.getThirdPartyConsent()) {
+                    GoogleAnalyticsCookieService.setIfAbsent();
+                } else {
+                    GoogleAnalyticsCookieService.remove();
+                }
+            }).catch((error) => {
+                const msg = getError(error.data, error.status);
+                toastr.error(msg, $translate.instant('common.error'));
+            });
         }
+    };
+
+    /**
+     * Retrieves the current cookie consent preferences for the user
+     *  - If principal has no username => read local storage.
+     *  - If none in local storage => return defaults.
+     *  - If principal has a username => read from principal.appSettings.
+     */
+    const getCookieConsent = () => {
+        return $jwtAuth.getPrincipal()
+            .then((principal) => {
+                const localConsent = LocalStorageAdapter.get(LSKeys.COOKIE_CONSENT);
+
+                // No username => use local storage
+                if (principal && !principal.username) {
+                    if (localConsent) {
+                        return CookieConsent.fromJSON(localConsent);
+                    }
+                    return new CookieConsent(undefined, true, true);
+                }
+
+                if (!principal.appSettings || !principal.appSettings.COOKIE_CONSENT) {
+                    return new CookieConsent(undefined, true, true);
+                }
+
+                return CookieConsent.fromJSON(principal.appSettings.COOKIE_CONSENT);
+            });
+    };
+
+    /**
+     * Updates cookie consent (local or server) and then re-init.
+     */
+    const updateCookieConsent = (consent) => {
+        return $jwtAuth.getPrincipal()
+            .then((data) => {
+                const username = data.username;
+                if (!username) {
+                    LocalStorageAdapter.set(LSKeys.COOKIE_CONSENT, consent.toJSON());
+                } else {
+                    const appSettings = data.appSettings;
+                    appSettings.COOKIE_CONSENT = consent.toJSON();
+                    return $jwtAuth.updateUserData({ appSettings, username });
+                }
+            })
+            .finally(() => init());
     };
 
     /**
@@ -87,40 +130,7 @@ function TrackingService($window, $jwtAuth, $translate, $licenseService, toastr,
         GoogleAnalyticsCookieService.remove();
     };
 
-    /**
-     * Retrieves the current cookie consent preferences for the logged-in user.
-     * If no consent data exists, defaults are returned.
-     *
-     * @function getCookieConsent
-     * @return {Promise<CookieConsent>} A promise resolving to the user's cookie consent preferences.
-     */
-    const getCookieConsent = () => {
-        return $jwtAuth.getPrincipal()
-            .then((principal) => {
-                if (!principal || !principal.appSettings || !principal.appSettings.COOKIE_CONSENT) {
-                    return new CookieConsent(undefined, true, true);
-                }
-                return CookieConsent.fromJSON(principal.appSettings.COOKIE_CONSENT);
-            });
-    };
 
-    /**
-     * Updates the user's cookie consent preferences.
-     * Saves the updated preferences and reinit tracking based on new consent settings.
-     *
-     * @function updateCookieConsent
-     * @param {CookieConsent} consent - An instance of CookieConsent with updated preferences.
-     */
-    const updateCookieConsent = (consent) => {
-        return $jwtAuth.getPrincipal()
-            .then((data) => {
-                const appSettings = data.appSettings;
-                const username = data.username;
-                appSettings.COOKIE_CONSENT = consent.toJSON();
-                return $jwtAuth.updateUserData({appSettings, username});
-            })
-            .finally(() => init());
-    };
 
     return {
         init,
