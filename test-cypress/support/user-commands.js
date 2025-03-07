@@ -21,10 +21,18 @@ Cypress.Commands.add('createUser', (options = {}) => {
     });
 });
 
-Cypress.Commands.add('deleteUser', (username = {}) => {
-    cy.request({
+Cypress.Commands.add('deleteUser', (username = {}, secured = false) => {
+    let headers = {'Content-Type': 'application/json'};
+    if (secured) {
+        const authHeader = Cypress.env('adminToken');
+        headers = {...headers,
+            'Authorization': authHeader
+        }
+    }
+    return cy.request({
         method: 'DELETE',
         url: `/rest/security/users/${username}`,
+        headers,
         // Prevent Cypress from failing the test on non-2xx status codes
         failOnStatusCode: false
     });

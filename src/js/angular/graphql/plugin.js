@@ -7,8 +7,7 @@ PluginRegistry.add('route', [
         'controller': 'GraphqlEndpointManagementViewCtrl',
         'title': 'menu.graphql-endpoint-management.label',
         'helpInfo': 'graphql.endpoints_management.helpInfo',
-        'documentationUrl': 'graphql-endpoint-management.html',
-        'allowAuthorities': ['WRITE_REPO_{repoId}', 'WRITE_REPO_{repoId}:GRAPHQL']
+        'documentationUrl': 'graphql-endpoint-management.html'
     },
     {
         'url': '/graphql/endpoint/create',
@@ -18,8 +17,7 @@ PluginRegistry.add('route', [
         'controller': 'CreateGraphqlEndpointViewCtrl',
         'title': 'menu.create-graphql-endpoint.label',
         'helpInfo': 'graphql.create_endpoint.helpInfo',
-        'documentationUrl': 'create-graphql-endpoint.html',
-        'allowAuthorities': ['WRITE_REPO_{repoId}:GRAPHQL', 'WRITE_REPO_{repoId}:GRAPHQL']
+        'documentationUrl': 'create-graphql-endpoint.html'
     },
     {
         'url': '/graphql/playground',
