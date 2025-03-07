@@ -78,7 +78,12 @@ function LicenseCtrl($scope, LicenseRestService, $licenseService, toastr, $rootS
             .then(function () {
                 LicenseRestService.unregisterLicense()
                     .success(function () {
-                        $licenseService.checkLicenseStatus().then(() => TrackingService.init());
+                        $licenseService.checkLicenseStatus()
+                            .then(() => TrackingService.applyTrackingConsent())
+                            .catch((error) => {
+                                const msg = getError(error.data, error.status);
+                                toastr.error(msg, $translate.instant('common.error'));
+                            });
                     });
             });
     };

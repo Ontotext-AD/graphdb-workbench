@@ -37,7 +37,14 @@ function cookieConsent($jwtAuth, $uibModal, $licenseService, $translate, toastr,
                     controller: CookiePolicyModalController,
                     backdrop: 'static',
                     keyboard: false,
-                    windowClass: 'cookie-policy-modal'
+                    windowClass: 'cookie-policy-modal',
+                    resolve: {
+                        data: () => {
+                            return {
+                                cookieConsent
+                            }
+                        }
+                    }
                 });
             };
 

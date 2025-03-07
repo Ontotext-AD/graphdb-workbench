@@ -192,8 +192,18 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
             controller: CookiePolicyModalController,
             backdrop: 'static',
             keyboard: false,
-            windowClass: 'cookie-policy-modal'
-        })
+            windowClass: 'cookie-policy-modal',
+            resolve: {
+                data: () => {
+                    return TrackingService.getCookieConsent()
+                        .then(consent => {
+                            return {
+                                cookieConsent: consent
+                            };
+                        });
+                    }
+                }
+            })
             // If the modal returns `shouldReload` as true, we reload the page.
             // Reloading is crucial here due to potential memory leaks that arise from dynamically
             // adding and removing Google Tag Manager (GTM) scripts based on the user's consent choice.
@@ -209,7 +219,7 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     // Private functions
     // =========================
 
-    const showCookiePolicyLink = () => {
+     const showCookiePolicyLink = () => {
         $licenseService.checkLicenseStatus().then(() => {
             $scope.showCookiePolicyLink = TrackingService.isTrackingAllowed();
         });
