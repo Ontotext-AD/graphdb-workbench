@@ -19,6 +19,11 @@
     width: 40px;
 }
 
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint-is-default-col,
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint-is-active-col {
+    text-align: center;
+}
+
 .graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint-actions-col {
     width: 5%;
 }
