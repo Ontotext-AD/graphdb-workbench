@@ -1,6 +1,6 @@
 import {ConsentTypes} from "../../../models/cookie-policy/cookie-consent";
 
-CookiePolicyModalController.$inject = ['$scope', '$translate', 'toastr', 'TrackingService'];
+CookiePolicyModalController.$inject = ['$scope', '$translate', 'toastr', 'TrackingService', 'data'];
 
 /**
  * Controller for managing cookie consent settings in a modal.
@@ -10,13 +10,14 @@ CookiePolicyModalController.$inject = ['$scope', '$translate', 'toastr', 'Tracki
  * @param {Object} $translate - Service for translating messages within the modal.
  * @param {Object} toastr - Service for displaying toast notifications.
  * @param {Object} TrackingService - Service responsible for tracking and managing consent data.
+ * @param {Object} data - Passes data from parent.
  */
-export function CookiePolicyModalController($scope, $translate, toastr, TrackingService) {
+export function CookiePolicyModalController($scope, $translate, toastr, TrackingService, data) {
     let callCount = 0;
     // =========================
     // Public variables
     // =========================
-    $scope.cookieConsent = undefined;
+    $scope.cookieConsent = data.cookieConsent;
     $scope.ConsentTypes = ConsentTypes;
 
     // =========================
@@ -53,21 +54,4 @@ export function CookiePolicyModalController($scope, $translate, toastr, Tracking
 
         $scope.$close(didAbusedThirdPartyToggle && hasThirdPartyConsent && hasPolicyAccepted);
     };
-
-    // =========================
-    // Private functions
-    // =========================
-    const init = () => {
-        TrackingService.getCookieConsent()
-            .then((cookieConsent) => $scope.cookieConsent = cookieConsent)
-            .catch((error) => {
-                const msg = getError(error.data, error.status);
-                toastr.error(msg, $translate.instant('common.error'));
-            });
-    };
-
-    // =========================
-    // Initialization
-    // =========================
-    init();
 }

@@ -252,7 +252,12 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         }, 400);
         if (previous) {
             // Recheck license status on navigation within the workbench (security is already inited)
-            $licenseService.checkLicenseStatus().then(() => TrackingService.init());
+            $licenseService.checkLicenseStatus()
+                .then(() => TrackingService.applyTrackingConsent())
+                .catch((error) => {
+                    const msg = getError(error.data, error.status);
+                    toastr.error(msg, $translate.instant('common.error'));
+                });
         }
     });
 
@@ -951,7 +956,12 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                     // There are many places where setTimeout is used, see $jwtAuth#authenticate and $jwtAuth#setAuthHeaders.
                     setTimeout(() => $scope.getSavedQueries(), 500);
                 });
-            $licenseService.checkLicenseStatus().then(() => TrackingService.init());
+            $licenseService.checkLicenseStatus()
+                .then(() => TrackingService.applyTrackingConsent())
+                .catch((error) => {
+                    const msg = getError(error.data, error.status);
+                    toastr.error(msg, $translate.instant('common.error'));
+                });
         }
     });
 

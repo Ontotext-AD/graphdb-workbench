@@ -35,7 +35,11 @@ securityModule.controller('LoginCtrl', ['$scope', '$http', 'toastr', '$jwtAuth',
         // Reinitialize security settings, if failed for some reason
         $jwtAuth.reinitializeSecurity();
 
-        TrackingService.init();
+        TrackingService.applyTrackingConsent()
+            .catch((error) => {
+                const msg = getError(error.data, error.status);
+                toastr.error(msg, $translate.instant('common.error'));
+            });
 
         $scope.loginWithOpenID = function () {
             $jwtAuth.loginOpenID();
