@@ -44,6 +44,14 @@ export class ImportUserDataSteps extends ImportSteps {
         cy.intercept('POST', `/rest/repositories/${repositoryId}/import/upload/url`).as('postJsonldUrl');
     }
 
+    static getErrors() {
+        return cy.get('.text-danger');
+    }
+
+    static getError(index = 0) {
+        return this.getErrors().eq(index);
+    }
+
     // ==========================================================================
     // utilities from text snippet tests
     // ==========================================================================

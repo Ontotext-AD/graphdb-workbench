@@ -312,14 +312,19 @@ class ImportSteps {
         cy.get('#import-user .import-from-url-btn').click();
         // Forces the popover to disappear as it covers the modal and Cypress refuses to continue
         this.closePopover();
-        this.getImportUrlInput().type(importURL).should('have.value', importURL);
-        this.closePopover();
+        if (importURL) {
+            this.getImportUrlInput().type(importURL).should('have.value', importURL);
+            this.closePopover();
+        }
         return this;
     }
 
-    static clickImportUrlButton() {
-        cy.get('#wb-import-importUrl').click();
+    static getImportUrlButton() {
+        return cy.get('#wb-import-importUrl');
+    }
 
+    static clickImportUrlButton() {
+        this.getImportUrlButton().click();
         return this;
     }
 

@@ -12,8 +12,11 @@
                    popover-placement="bottom"
                    popover-trigger="focus">
         </div>
-        <div class="text-danger" ng-show="urlForm.dataUrl.$error.validateUri">
+        <div class="text-danger" ng-if="urlForm.dataUrl.$dirty && urlForm.dataUrl.$error.validateUri">
             {{'import.invalid.url' | translate}}
+        </div>
+        <div class="text-danger" ng-if="urlForm.dataUrl.$touched && urlForm.dataUrl.$error.required">
+            {{'required.field' | translate}}
         </div>
     </form>
 </div>

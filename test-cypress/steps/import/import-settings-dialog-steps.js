@@ -68,6 +68,10 @@ export class ImportSettingsDialogSteps extends ModalDialogSteps {
         this.getSettingsForm().find('input[name="contextLink"]').type(contextLink).should('have.value', contextLink);
     }
 
+    static getJSONLDContextInput() {
+        return this.getSettingsForm().find('.contextLinkRow .form-control');
+    }
+
     static setContextLinkToBeVisible() {
         this.getSettingsForm().within(() => {
             cy.get('.contextLinkRow').invoke('attr', 'style', 'display: block !important');
@@ -76,5 +80,13 @@ export class ImportSettingsDialogSteps extends ModalDialogSteps {
 
     static getReplaceExistingDataCheckbox() {
         return this.getSettingsForm().find('input.existing-data-replacement');
+    }
+
+    static getErrors() {
+        return cy.get('.alert-danger');
+    }
+
+    static getError(index = 0) {
+        return this.getErrors().eq(index);
     }
 }
