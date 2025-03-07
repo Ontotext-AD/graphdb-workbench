@@ -1,65 +1,72 @@
 <div class="modal-header">
     <button ng-click="cancel();" class="close" aria-hidden="true"></button>
-    <h3 class="modal-title">{{'view.settings.title' | translate}}</h3>
+    <h3 class="modal-title">{{'repository.anon_stats.title' | translate}}</h3>
 </div>
 
 <div class="modal-body">
-	<form id="settingsForm" class="form-horizontal" novalidate name="settingsForm">
-		<div ng-hide="supportsStatistics" class="alert alert-info">
-			{{'active.location.version.not.support.settings.warning' | translate}}
-		</div>
-		<div ng-show="supportsStatistics" class="container" ng-init="moreInfo = false">
+    <form id="settingsForm" class="form-horizontal" novalidate name="settingsForm">
+        <div ng-hide="supportsStatistics" class="alert alert-info">
+            {{'repository.anon_stats.active.location.version.not.support.settings.warning' | translate}}
+        </div>
+        <div ng-show="supportsStatistics" class="container" ng-init="moreInfo = false">
 
-			<div class="form-check">
-				<label gdb-tooltip="{{'click.to' | translate}} {{settings.statistics ? 'disable' : 'enable' | translate}} {{'this.setting' | translate}}"
-					   tooltip-placement="top" class="form-check-label">
-					<input type="checkbox" ng-model="settings.statistics" class="form-check-input">
-					{{'send.anonymous.statistics' | translate}}
-				</label>
-			</div>
+            <div class="form-check">
+                <label
+                    gdb-tooltip="{{'repository.anon_stats.toggle_stats' | translate : {action: settings.statistics ? 'repository.anon_stats.disable' : 'repository.anon_stats.enable'} }}"
+                    tooltip-placement="top" class="form-check-label">
+                    <input type="checkbox" ng-model="settings.statistics" class="form-check-input">
+                    {{'repository.anon_stats.send.anonymous.statistics' | translate}}
+                </label>
+            </div>
 
-			<div class="clearfix">
-				<button ng-click="moreInfo = !moreInfo" class="btn btn-link btn-sm pull-right" ng-show="!moreInfo">{{'more.info' | translate}} <span class="icon-caret-down"></span></button>
-				<button ng-click="moreInfo = !moreInfo" class="btn btn-link btn-sm pull-right" ng-show="moreInfo">{{'less.info' | translate}} <span class="icon-caret-up"></span></button>
-			</div>
+            <div class="clearfix">
+                <button ng-click="moreInfo = !moreInfo" class="btn btn-link btn-sm pull-right" ng-show="!moreInfo">
+                    {{'repository.anon_stats.more.info' | translate}} <span class="icon-caret-down"></span></button>
+                <button ng-click="moreInfo = !moreInfo" class="btn btn-link btn-sm pull-right" ng-show="moreInfo">
+                    {{'repository.anon_stats.less.info' | translate}} <span class="icon-caret-up"></span></button>
+            </div>
 
-			<div id="statisticsInfo" ng-if="moreInfo">
-				<h4>{{'why.send.statistics' | translate}}</h4>
-				<p>{{'why.send.statistics.explanation' | translate}}</p>
-				<h4>{{'what.statistics.include' | translate}}</h4>
-				<p>{{'for.each.repo.header' | translate}}</p>
-				<ul>
-					<li>
-						{{'absolute.values' | translate}}
-						<ul>
-							<li>{{'gdb.edition.and.version' | translate}}</li>
-							<li>{{'number.explicit.implicit.triples' | translate}}</li>
-							<li>{{'entities.number' | translate}}</li>
-							<li>{{'predicates.number' | translate}}</li>
-							<li>{{'repo.size.on.disk' | translate}}</li>
-							<li>{{'is.given.plugin.used' | translate}}</li>
-							<li>{{'used.ruleset' | translate}}</li>
-							<li>{{'os.type' | translate}}</li>
-						</ul>
-					</li>
-					<li>
-						{{'aggregated.values.header' | translate}}
-						<ul>
-							<li>{{'queries.per.day' | translate}}</li>
-							<li>{{'average.time.per.query' | translate}}</li>
-							<li>{{'updates.per.day' | translate}}</li>
-							<li>{{'average.time.per.updates' | translate}}</li>
-						</ul>
-					</li>
-				</ul>
-				<p>{{'data.send.to.msg' | translate}}
-					http://statistics.graphdb.ontotext.com.</p>
-				<p>{{'data.encryption.msg' | translate}}</p>
-			</div>
-		</div>
-	</form>
+            <div id="statisticsInfo" ng-if="moreInfo">
+                <h4>{{'repository.anon_stats.why.send.statistics' | translate}}</h4>
+                <p>{{'repository.anon_stats.why.send.statistics.explanation' | translate}}</p>
+                <h4>{{'repository.anon_stats.what.statistics.include' | translate}}</h4>
+                <p>{{'repository.anon_stats.for.each.repo.header' | translate}}</p>
+                <ul>
+                    <li>
+                        {{'repository.anon_stats.absolute.values' | translate}}
+                        <ul>
+                            <li>{{'repository.anon_stats.gdb.edition.version.and.license.hash' | translate}}</li>
+                            <li>{{'repository.anon_stats.number.explicit.implicit.triples' | translate}}</li>
+                            <li>{{'repository.anon_stats.entities.number' | translate}}</li>
+                            <li>{{'repository.anon_stats.predicates.number' | translate}}</li>
+                            <li>{{'repository.anon_stats.repo.size.on.disk' | translate}}</li>
+                            <li>{{'repository.anon_stats.is.given.plugin.used' | translate}}</li>
+                            <li>{{'repository.anon_stats.used.ruleset' | translate}}</li>
+                            <li>{{'repository.anon_stats.os.type' | translate}}</li>
+                        </ul>
+                    </li>
+                    <li>
+                        {{'repository.anon_stats.aggregated.values.header' | translate}}
+                        <ul>
+                            <li>{{'repository.anon_stats.queries.per.day' | translate}}</li>
+                            <li>{{'repository.anon_stats.average.time.per.query' | translate}}</li>
+                            <li>{{'repository.anon_stats.updates.per.day' | translate}}</li>
+                            <li>{{'repository.anon_stats.average.time.per.updates' | translate}}</li>
+                        </ul>
+                    </li>
+                </ul>
+                <p>{{'repository.anon_stats.data.send.to.msg' | translate}}
+                    http://statistics.graphdb.ontotext.com.</p>
+                <p>{{'repository.anon_stats.data.encryption.msg' | translate}}</p>
+            </div>
+        </div>
+    </form>
 </div>
 <div class="modal-footer">
-	<button type="button" ng-click="cancel();" class="btn btn-secondary" data-dismiss="modal">{{'common.cancel.btn' | translate}}</button>
-	<button ng-click="submitForm();" form="settingsForm" class="btn btn-primary">{{'save.settings.btn' | translate}}</button>
+    <button type="button" ng-click="cancel();" class="btn btn-secondary" data-dismiss="modal">
+        {{'common.cancel.btn' | translate}}
+    </button>
+    <button ng-click="submitForm();" form="settingsForm" class="btn btn-primary">
+        {{'repository.anon_stats.save.settings.btn' | translate}}
+    </button>
 </div>
