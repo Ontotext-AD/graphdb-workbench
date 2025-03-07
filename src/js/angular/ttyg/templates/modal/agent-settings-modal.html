@@ -339,7 +339,7 @@
                 <label for="model" uib-popover="{{'ttyg.agent.create_agent_modal.form.model.tooltip' | translate}}"
                        popover-trigger="mouseenter">{{'ttyg.agent.create_agent_modal.form.model.label' |
                     translate}}</label>
-                <input type="text" class="form-control" id="model" name="model" ng-model="agentFormModel.model"
+                <input type="text" class="form-control" id="model" name="model" ng-model="agentFormModel.model" guide-selector="model"
                        required autocomplete="off">
                 <small id="modelHelp" class="form-text text-muted"
                        ng-bind-html="getModelHelpMessage()">
@@ -402,7 +402,7 @@
                     </button>
                 </div>
             </div>
-            <textarea type="text" class="form-control" id="userInstruction" name="userInstruction" rows="5"
+            <textarea type="text" class="form-control" id="userInstruction" name="userInstruction" rows="5" guide-selector="user-instructions"
                       ng-model="agentFormModel.instructions.userInstruction"
                       placeholder="{{'ttyg.agent.create_agent_modal.form.user_instruction.placeholder' | translate}}">
                 </textarea>
