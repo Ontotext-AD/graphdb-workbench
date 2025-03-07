@@ -21,6 +21,39 @@ describe('Import user data: URL import', () => {
         cy.deleteRepository(repositoryId);
     });
 
+    it('should not allow import if the URL is not valid or empty', () => {
+        // Given: I have opened the "Import" view.
+
+        // When: I open the import menu
+        ImportUserDataSteps.openImportURLDialog();
+        // Then: I expect the import button to be disabled because the URL is a mandatory field.
+        ImportUserDataSteps.getImportUrlButton().should('be.disabled');
+
+        // When: I type an invalid URL
+        ImportUserDataSteps.getImportUrlInput().type('invalid url');
+        // Then: I expect
+        // an error message to be displayed,
+        ImportUserDataSteps.getError().contains('Not valid url!');
+        // and the import button to remain disabled because the URL is not valid.
+        ImportUserDataSteps.getImportUrlButton().should('be.disabled');
+
+        // When: I clear the URL
+        ImportUserDataSteps.getImportUrlInput().clear().blur();
+        // Then: I expect an error message to be displayed
+        ImportUserDataSteps.getError().contains('This field is required');
+        // and the import button to remain disabled because the URL is a mandatory field.
+        ImportUserDataSteps.getImportUrlButton().should('be.disabled');
+
+        // When: I type a valid URL
+        ImportUserDataSteps.getImportUrlInput().type(IMPORT_URL);
+        // Then: I expect
+        // no errors to be displayed,
+        ImportUserDataSteps.getErrors().should('have.length', 0);
+        // and the import button to be enabled because the URL is valid.
+        ImportUserDataSteps.getImportUrlButton().should('be.enabled');
+    });
+
+
     it('Test import file via URL successfully with Auto format selected', () => {
         ImportUserDataSteps.openImportURLDialog(IMPORT_URL);
         ImportUserDataSteps.clickImportUrlButton();

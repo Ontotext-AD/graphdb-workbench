@@ -184,4 +184,26 @@ describe('Import server files', () => {
         ImportServerFilesSteps.getResource(18).should('contain', "test_turtlestar.ttls");
         ImportServerFilesSteps.getResource(19).should('contain', "bnodes.ttl");
     });
+
+    it('should allow importing jsonld with empty "JSON-LD Context"', () => {
+        // Given: The server files tab is loaded
+
+        // When: I open the import dialog for a file with JSON-LD content,
+        ImportServerFilesSteps.importResourceByName('import-resource-with-correct-data.jsonld');
+        // Then: I expect the import button be enabled, because the "JSON-LD Context" is not mandatory field.
+        ImportSettingsDialogSteps.getImportButton().should('be.enabled');
+
+        // When: I enter an invalid field.
+        ImportSettingsDialogSteps.getJSONLDContextInput().type('invalid context URL')
+        // Then I expect
+        // the import button be disabled because JSON-LD context URL is not valid
+        ImportSettingsDialogSteps.getImportButton().should('be.disabled');
+        // and an error message is displayed
+        ImportSettingsDialogSteps.getError().contains('Not a valid IRI!');
+
+        // When: I clear the URI
+        ImportSettingsDialogSteps.getJSONLDContextInput().clear().blur();
+        // Then: I expect the import button be enabled, because the "JSON-LD Context" is not mandatory field.
+        ImportSettingsDialogSteps.getImportButton().should('be.enabled');
+    });
 });

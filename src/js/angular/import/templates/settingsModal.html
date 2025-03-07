@@ -48,7 +48,7 @@
                              ng-if="settingsForm.context.$dirty && settingsForm.context.$error.validateUri">
                             {{'import.alert.not.valid.iri' | translate}}
                         </div>
-                        <div class="alert alert-danger" ng-if="settingsForm.context.$error.required">
+                        <div class="alert alert-danger" ng-if="settingsForm.context.$touched && settingsForm.context.$error.required">
                             {{'required.field' | translate}}
                         </div>
                     </div>
