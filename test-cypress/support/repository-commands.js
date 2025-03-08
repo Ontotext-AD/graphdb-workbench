@@ -18,7 +18,7 @@ Cypress.Commands.add('createRepository', (options = {}) => {
     });
 });
 
-Cypress.Commands.add('deleteRepository', (id) => {
+Cypress.Commands.add('deleteRepository', (id, secured = false) => {
     // Note: Going through /rest/repositories because it would not fail if the repo is missing
     const url = REPOSITORIES_URL + id;
 
@@ -26,10 +26,17 @@ Cypress.Commands.add('deleteRepository', (id) => {
     // if a test completes too fast and the tested view was about to load something
     // that needs the just deleted repo.
     cy.visit('/', {failOnStatusCode: false});
-
-    cy.request({
+    let headers = {'Content-Type': 'application/json'};
+    if (secured) {
+        const authHeader = Cypress.env('adminToken');
+        headers = {...headers,
+            'Authorization': authHeader
+        }
+    }
+    return cy.request({
             method: 'DELETE',
             url: url,
+            headers,
         // Prevent Cypress from failing the test on non-2xx status codes
             failOnStatusCode: false
         });
