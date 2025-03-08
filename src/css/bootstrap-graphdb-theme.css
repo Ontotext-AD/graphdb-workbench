@@ -2057,6 +2057,7 @@ code {
 	Tooltips
 -------------------------------------------------------------*/
 .angular-tooltip {
+    max-width: 300px;
     background-color: var(--secondary-color);
 }
 

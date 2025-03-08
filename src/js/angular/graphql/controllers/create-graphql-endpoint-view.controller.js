@@ -113,6 +113,17 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
         setCurrentStep(step);
     };
 
+    /**
+     * Handles the click on the step in the wizard. We allow only to go back to previous steps.
+     * @param {WizardStep} step The step to go to.
+     */
+    $scope.onStepClick = (step) => {
+        if ($scope.wizardModel.isAPreviousStep(step)) {
+            $scope.wizardModel.setStepActive(step);
+            setCurrentStep(step);
+        }
+    }
+
     // =========================
     // Private methods
     // =========================
@@ -195,6 +206,13 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
      * Handles the termination of the create endpoint wizard.
      */
     const onCancelEndpointCreation = () => {
+        $location.path(endpointUrl.ENDPOINT_MANAGEMENT);
+    };
+
+    /**
+     * Handles the finish of the endpoint generation workflow by redirecting to the endpoint management view.
+     */
+    const onFinishEndpointGeneration = () => {
         $location.path(endpointUrl.ENDPOINT_MANAGEMENT);
     };
 
@@ -289,6 +307,7 @@ function CreateGraphqlEndpointViewCtrl($scope, $location, $repositories, $transl
     subscriptions.push(GraphqlContextService.subscribe(GraphqlEventName.PREVIOUS_ENDPOINT_CREATION_STEP, onPreviousEndpointCreationStep));
     subscriptions.push(GraphqlContextService.subscribe(GraphqlEventName.NEXT_ENDPOINT_CREATION_STEP, onNextEndpointCreationStep));
     subscriptions.push(GraphqlContextService.subscribe(GraphqlEventName.CANCEL_ENDPOINT_CREATION, onCancelEndpointCreation));
+    subscriptions.push(GraphqlContextService.subscribe(GraphqlEventName.FINISH_GENERATION_WORKFLOW, onFinishEndpointGeneration));
     subscriptions.push(GraphqlContextService.subscribe(GraphqlEventName.EXPLORE_ENDPOINT_IN_PLAYGROUND, onExploreEndpointInPlayground));
     subscriptions.push(GraphqlContextService.subscribe(GraphqlEventName.OPEN_ENDPOINT_GENERATION_REPORT, onShowEndpointReport));
     subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, getActiveRepositoryObjectHandler));

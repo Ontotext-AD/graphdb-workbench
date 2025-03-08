@@ -10,24 +10,21 @@
     position: relative;
 }
 
-.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .toggle {
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .toggle-col {
     /* fixed width to prevent expanding and shrinking of the first column when a row is expanded/collapsed  */
     width: 40px;
 }
 
-.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .status {
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .status-col {
     width: 40px;
 }
 
-.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint_id {
-    width: 10%;
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint-is-default-col,
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint-is-active-col {
+    text-align: center;
 }
 
-.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint_label {
-    width: 20%;
-}
-
-.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint-actions {
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint-actions-col {
     width: 5%;
 }
 
@@ -39,6 +36,16 @@
 .graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint-default-state,
 .graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint-default-state input {
     cursor: pointer;
+}
+
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint-actions,
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .numeric {
+    text-align: right;
+}
+
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .default-endpoint-selector,
+.graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .active-endpoint-selector {
+    text-align: center;
 }
 
 .graphql-endpoint-management-view .endpoint-management-container .endpoints-info-table .endpoint-description-row > td {

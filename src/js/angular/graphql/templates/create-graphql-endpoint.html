@@ -30,7 +30,8 @@
             <div class="wizard-container mt-2">
                 <div class="wizard">
                     <div class="wizard-steps">
-                        <div ng-repeat="step in wizardModel.steps" class="wizard-step" ng-class="{active: step.active}">
+                        <div ng-repeat="step in wizardModel.steps" ng-click="onStepClick(step); $event.preventDefault()"
+                             class="wizard-step" ng-class="{active: step.active, completed: step.visited}">
                             <span class="step-title">{{'graphql.create_endpoint.wizard_steps.' + step.id + '.title' | translate}}</span>
                             <span class="fa fa-chevron-right step-decoration"></span>
                         </div>
