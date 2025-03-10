@@ -870,6 +870,18 @@
                     "success_saving_configuration": "Configuration du point de terminaison enregistrée"
                 },
                 "settings": {
+                    "graphql": {
+                        "label": "Paramètres GraphQL",
+                        "description": "Paramètres du point de terminaison GraphQL"
+                    },
+                    "security": {
+                        "label": "Paramètres de sécurité",
+                        "description": "Paramètres de sécurité du point de terminaison GraphQL"
+                    },
+                    "integration": {
+                        "label": "Paramètres d'intégration",
+                        "description": "Paramètres d'intégration du point de terminaison GraphQL"
+                    },
                     "enableTypeCount": {
                         "label": "Activer les requêtes de comptage de types",
                         "tooltip": "Active ou désactive l’inclusion des requêtes de comptage dans le schéma."
@@ -1077,6 +1089,18 @@
                     "endpoint_parameters": {
                         "title": "Paramètres",
                         "settings": {
+                            "generic": {
+                                "label": "Paramètres génériques",
+                                "tooltip": "Paramètres génériques du point de terminaison GraphQL"
+                            },
+                            "dataCleanup": {
+                                "label": "Nettoyage des données",
+                                "tooltip": "Paramètres de nettoyage des données"
+                            },
+                            "enterprise": {
+                                "label": "Paramètres entreprise",
+                                "tooltip": "Paramètres entreprise du point de terminaison GraphQL"
+                            },
                             "stringMode": {
                                 "label": "Mode de Chaîne par Défaut",
                                 "tooltip": "Spécifie le mode de chaîne par défaut pour les propriétés de données sans définition de plage."
@@ -2456,6 +2480,8 @@
     "common.attach": "Attacher",
     "common.close": "Fermer",
     "common.preview": "Aperçu",
+    "common.show_all": "Afficher tout",
+    "common.hide": "Masquer",
     "common.learn_more_in_documentation": "Pour en savoir plus, consultez la documentation GraphDB",
     "paginator.first.page.label": "Premier",
     "paginator.last.page.label": "Dernier",

@@ -2,32 +2,49 @@ import {FIELD_TYPE} from "../../core/directives/dynamic-form/dynamic-form.direct
 import {SelectMenuOptionsModel} from "../../models/form-fields";
 import {DynamicFormField} from "../../models/dynamic-form/dynamic-form-field";
 import {CONFIG_TYPE} from "../../models/graphql/graphql-endpoint-configuration-setting";
+import {DynamicFormGroup, DynamicFormModel} from "../../models/dynamic-form/dynamic-form-model";
 
 /**
  * Maps the dynamic form data to the dynamic form model.
  * @param {*} data - The dynamic form data.
- * @returns {DynamicFormField[]|*[]}
+ * @returns {DynamicFormModel}
  */
 export const dynamicFormModelMapper = (data) => {
     if (!data || !data.configs) {
-        return [];
+        return new DynamicFormModel();
     }
+    const fields = buildFieldModels(data.configs);
+    return buildFormModel(fields);
+};
 
-    return data.configs.map((config) => {
-        let type;
-        if(config.type === CONFIG_TYPE.TEXT) {
-            type = FIELD_TYPE.TEXT;
-        } else if (config.type === CONFIG_TYPE.BOOLEAN) {
-            type = FIELD_TYPE.BOOLEAN;
-        } else if (config.type === CONFIG_TYPE.JSON) {
-            type = FIELD_TYPE.JSON;
-        } else if (config.type === CONFIG_TYPE.STRING) {
-            if (config.values && config.values.length > 0) {
-                type = config.collection ? FIELD_TYPE.MULTI_SELECT : FIELD_TYPE.SELECT;
-            } else {
-                type = FIELD_TYPE.STRING;
-            }
+/**
+ * Builds the form model from the fields.
+ * @param {DynamicFormField[]} fields
+ * @returns {DynamicFormModel}
+ */
+const buildFormModel = (fields) => {
+    const models = [];
+    fields.forEach((field) => {
+        if (!field.group) {
+            models.push(field);
+            return;
         }
+
+        let group = models.find((model) => model.groupId === field.group);
+        if (!group) {
+            group = new DynamicFormGroup({groupId: field.group});
+            models.push(group);
+        }
+
+        const targetCollection = field.hidden ? group.hiddenFields : group.fields;
+        targetCollection.push(field);
+    });
+    return new DynamicFormModel(models);
+}
+
+const buildFieldModels = (configs) => {
+    return configs.map((config) => {
+        let type = resolveType(config);
         let mappedValues = config.values;
         let selectedValue = [];
 
@@ -57,7 +74,7 @@ export const dynamicFormModelMapper = (data) => {
         }
         return dynamicFormFieldMapper(config, type, mappedValues);
     });
-};
+}
 
 const dynamicFormFieldMapper = (config, type, mappedValues) => {
     return new DynamicFormField({
@@ -69,6 +86,26 @@ const dynamicFormFieldMapper = (config, type, mappedValues) => {
         value: config.value,
         values: mappedValues,
         regex: config.regex,
-        required: config.required || false
+        required: config.required || false,
+        group: config.group,
+        hidden: config.hidden
     });
-}
+};
+
+const resolveType = (config) => {
+    let type;
+    if(config.type === CONFIG_TYPE.TEXT) {
+        type = FIELD_TYPE.TEXT;
+    } else if (config.type === CONFIG_TYPE.BOOLEAN) {
+        type = FIELD_TYPE.BOOLEAN;
+    } else if (config.type === CONFIG_TYPE.JSON) {
+        type = FIELD_TYPE.JSON;
+    } else if (config.type === CONFIG_TYPE.STRING) {
+        if (config.values && config.values.length > 0) {
+            type = config.collection ? FIELD_TYPE.MULTI_SELECT : FIELD_TYPE.SELECT;
+        } else {
+            type = FIELD_TYPE.STRING;
+        }
+    }
+    return type;
+};

@@ -26,6 +26,30 @@ describe('Graphql: edit endpoint settings', () => {
         GraphqlEndpointManagementSteps.editEndpointConfiguration(0);
         EditGraphqlEndpointSteps.getDialog().should('be.visible');
 
+        // I should see 3 groups of fields
+        EditGraphqlEndpointSteps.getFormGroups().should('have.length', 3);
+        EditGraphqlEndpointSteps.validateFormGroups([
+            {label: 'GraphQL settings'},
+            {label: 'Security settings'},
+            {label: 'Integration settings'}
+        ]);
+
+        // I should see 8 fields in the first group
+        EditGraphqlEndpointSteps.getVisibleFormGroupFields(0).should('have.length', 8);
+        EditGraphqlEndpointSteps.validateFormGroupFields(0, [
+            {"label": "Enable Type Count Queries"},
+            {"label": "Enable Collection Count"},
+            {"label": "Compact Error Messages"},
+            {"label": "Default Fetch Language"},
+            {"label": "Default Language Validation"},
+            {"label": "Default Implicit Language"},
+            {"label": "Include Inferred Data"},
+            {"label": "Expand owl:sameAs"}
+        ]);
+        // When I expand the first group
+        EditGraphqlEndpointSteps.toggleFormGroupHiddenFields(0);
+        EditGraphqlEndpointSteps.getAllFormGroupFields(0).should('have.length', 10);
+
         EditGraphqlEndpointSteps.getInputField(3).should('have.value', 'ANY');
         EditGraphqlEndpointSteps.fillInputField(3, 'NONE')
 
@@ -54,6 +78,9 @@ describe('Graphql: edit endpoint settings', () => {
 
         // Then the save button is disabled
         EditGraphqlEndpointSteps.getOKButton().should('be.disabled');
+
+        // Show hidden fields
+        EditGraphqlEndpointSteps.toggleFormGroupHiddenFields(0);
 
         // When I change some fields
         EditGraphqlEndpointSteps.fillInputField(3, 'NONE');
@@ -101,6 +128,9 @@ describe('Graphql: edit endpoint settings', () => {
         // Open the modal
         GraphqlEndpointManagementSteps.editEndpointConfiguration(0);
         EditGraphqlEndpointSteps.getDialog().should('be.visible');
+
+        // Show hidden fields
+        EditGraphqlEndpointSteps.toggleFormGroupHiddenFields(0);
 
         // Fill in a field to allow form submission
         EditGraphqlEndpointSteps.fillInputField(0, 'ANY');

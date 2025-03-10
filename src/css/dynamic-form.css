@@ -1,3 +1,8 @@
+:root {
+    --form-element-height: 38px;
+    --vertical-margin: 1em;
+}
+
 .dynamic-form-container {
     width: 100%;
 }
@@ -12,8 +17,14 @@
     display: grid;
     grid-template-columns: minmax(150px, 1fr) 2fr;
     gap: 1em;
-    margin-bottom: 1em;
+    margin-bottom: var(--vertical-margin);
     align-items: start;
+}
+
+.dynamic-form-container .dynamic-form .form-group .group-title {
+    height: var(--form-element-height);
+    margin-bottom: var(--vertical-margin);
+    line-height: 1;
 }
 
 .dynamic-form-container .dynamic-form .form-inline label {
@@ -38,5 +49,5 @@
 }
 
 .dynamic-form-container .dynamic-form .form-inline:has(input[type="checkbox"]) {
-    height: 38px;
+    height: var(--form-element-height);
 }

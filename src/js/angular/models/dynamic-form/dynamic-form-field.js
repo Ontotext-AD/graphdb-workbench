@@ -47,6 +47,16 @@ export class DynamicFormField {
      * @private
      */
     _required = false;
+    /**
+     * The group of the setting. Used for grouping settings in the form.
+     * @private
+     */
+    _group;
+    /**
+     * Whether the setting is hidden.
+     * @type {boolean}
+     */
+    hidden = false;
 
     /**
      * Creates an instance of GraphqlEndpointConfigurationSetting.
@@ -61,6 +71,8 @@ export class DynamicFormField {
         this._values = options.values;
         this._regex = typeof options.regex === 'string' ? new RegExp(options.regex) : options.regex;
         this._required = options.required;
+        this._group = options.group;
+        this.hidden = options.hidden;
     }
 
     get key() {
@@ -125,5 +137,21 @@ export class DynamicFormField {
 
     set required(value) {
         this._required = value;
+    }
+
+    get group() {
+        return this._group;
+    }
+
+    set group(value) {
+        this._group = value;
+    }
+
+    get hidden() {
+        return this._hidden;
+    }
+
+    set hidden(value) {
+        this._hidden = value;
     }
 }

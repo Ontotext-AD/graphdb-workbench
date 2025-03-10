@@ -9,6 +9,26 @@ export class EditGraphqlEndpointSteps extends ModalDialogSteps {
         return this.getDialog().find('dynamic-form');
     }
 
+    static getFormGroup(index) {
+        return this.getDynamicForm().find('.form-group').eq(index).scrollIntoView();
+    }
+
+    static toggleFormGroupHiddenFields(index) {
+        this.getFormGroup(index).find('.toggle-hidden-fields').click();
+    }
+
+    static getFormGroups() {
+        return this.getDynamicForm().find('.form-group');
+    }
+
+    static getVisibleFormGroupFields(groupIndex) {
+        return this.getFormGroup(groupIndex).find('> dynamic-form-field .form-field');
+    }
+
+    static getAllFormGroupFields(groupIndex) {
+        return this.getFormGroup(groupIndex).find('.form-field');
+    }
+
     static getFormFields() {
         return this.getDynamicForm().find('.form-field');
     }
@@ -86,5 +106,19 @@ export class EditGraphqlEndpointSteps extends ModalDialogSteps {
 
     static getSavingLoader() {
         return this.getDialog().find('.saving-endpoint-settings')
+    }
+
+    static validateFormGroups(groups) {
+        groups.forEach((group, index) => {
+            this.getFormGroup(index).should('be.visible')
+                .and('contain', group.label);
+        });
+    }
+
+    static validateFormGroupFields(groupIndex, fields) {
+        fields.forEach((field, index) => {
+            this.getVisibleFormGroupFields(groupIndex).eq(index).should('be.visible')
+                .and('contain', field.label);
+        });
     }
 }

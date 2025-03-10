@@ -15,7 +15,7 @@ export const CONFIG_TYPE = {
 export class GraphqlEndpointConfigurationSettings {
     /**
      * Endpoint configuration settings model.
-     * @type {DynamicFormField[]}
+     * @type {DynamicFormModel}
      * @private
      */
     _settings;
@@ -27,8 +27,8 @@ export class GraphqlEndpointConfigurationSettings {
     _hasSettings;
 
     constructor(data) {
-        this._settings = data || [];
-        this._hasSettings = this._settings.length > 0;
+        this._settings = data;
+        this._hasSettings = this._settings ? this._settings.models.length > 0 : false;
     }
 
     /**
@@ -37,18 +37,28 @@ export class GraphqlEndpointConfigurationSettings {
      * @returns {Object.<string, *>}
      */
     toFlatJSON() {
-        return this.settings.reduce((acc, setting) => {
-            if (setting.collection) {
-                acc[setting.key] = setting.value;
-                return acc;
+        const settings = {};
+
+        const processField = (field) => {
+            if (field.collection) {
+                settings[field.key] = field.value;
+            } else if (field.type === 'select') {
+                settings[field.key] = field.value.value;
+            } else {
+                settings[field.key] = field.value;
             }
-            if (setting.type === 'select') {
-                acc[setting.key] = setting.value.value;
-                return acc;
+        };
+
+        this._settings.models.forEach((model) => {
+            if (model instanceof DynamicFormField) {
+                processField(model);
+            } else {
+                // Process both visible and hidden fields
+                [...model.fields, ...model.hiddenFields].forEach(processField);
             }
-            acc[setting.key] = setting.value;
-            return acc;
-        }, {});
+        });
+
+        return settings;
     }
 
     get hasSettings() {
@@ -61,6 +71,6 @@ export class GraphqlEndpointConfigurationSettings {
 
     set settings(value) {
         this._settings = value;
-        this._hasSettings = this._settings.length > 0;
+        this._hasSettings = this._settings.models.length > 0;
     }
 }

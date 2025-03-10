@@ -6,7 +6,8 @@
         {{'graphql.create_endpoint.wizard_steps.configure_endpoint.endpoint_parameters.title' | translate}}</h5>
 
     <div class="endpoint-configuration-container">
-        <dynamic-form ng-if="endpointConfiguration.settings.hasSettings" fields="endpointConfiguration.settings.settings"
+        <dynamic-form ng-if="endpointConfiguration.settings.hasSettings"
+                      form-model="endpointConfiguration.settings.settings"
                       on-validity-change="handleValidityChange(valid)"
                       translation-key-prefix="graphql.create_endpoint.wizard_steps.configure_endpoint.endpoint_parameters.settings."
                       form-ctrl="formCtrl" class="generation-settings-form">
