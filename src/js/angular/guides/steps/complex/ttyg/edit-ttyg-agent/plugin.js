@@ -25,7 +25,7 @@ PluginRegistry.add('guide.step', [
                     }, options)
                 },
                 {
-                    // Show next step (which is actually 5 core steps) if there is a selected agent
+                    // Skip next step (which is actually 5 core steps) if there is a selected agent
                     guideBlockName: 'info-message',
                     options: angular.extend({}, {
                         beforeShowPromise: (guide, currentStep) => {
@@ -54,9 +54,8 @@ PluginRegistry.add('guide.step', [
                         class: 'edit-agent-btn-guide-dialog',
                         url: '/ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('edit-current-agent'),
-                        onNextClick: () => {
-                            // Do not allow the user to go to the next step because we want the user to click the button themselves.
-                        }
+                        disablePreviousFlow: true,
+                        disableNextFlow: true
                     }, options)
                 },
                 {
@@ -70,9 +69,7 @@ PluginRegistry.add('guide.step', [
                         class: 'save-agent-guide-dialog',
                         url: '/ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('save-agent-settings'),
-                        onNextClick: () => {
-                            // Do not allow the user to go to the next step because we want the user to click the button themselves.
-                        }
+                        disableNextFlow: true
                     }, options)
                 },
                 {

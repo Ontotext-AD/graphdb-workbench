@@ -12,7 +12,8 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.select-ttyg-agent.info.content',
                         url: '/ttyg',
                         class: 'select-ttyg-agent-guide-dialog',
-                        skipPoint: true
+                        skipPoint: true,
+                        disablePreviousFlow: true,
                     }, options)
                 },
                 {
@@ -22,9 +23,7 @@ PluginRegistry.add('guide.step', [
                         class: 'open-agent-dropdown-guide-dialog',
                         url: '/ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('select-agent-dropdown'),
-                        onNextClick: () => {
-                            // Do not allow the user to go to the next step because we want the user to click the button themselves.
-                        },
+                        disableNextFlow: true
                     }, options)
                 },
                 {
@@ -54,10 +53,8 @@ PluginRegistry.add('guide.step', [
                                 }
                             }
                         },
-                        onNextClick: () => {
-                            // Do not allow the user to go to the next step because we want the user to click the button themselves.
-                        },
-                        onNextValidate: () => Promise.resolve(GuideUtils.isGuideElementVisible('selected-agent')),
+                        disablePreviousFlow: true,
+                        disableNextFlow: true,
                         hide: () => () => {
                             options.observer.disconnect();
                         }
@@ -79,6 +76,7 @@ PluginRegistry.add('guide.step', [
                                     setTimeout(() => guide.show(stepId + 2))
                                 })
                         },
+                        disablePreviousFlow: true
                     }, options)
                 },
                 {

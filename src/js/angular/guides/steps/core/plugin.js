@@ -114,6 +114,32 @@ PluginRegistry.add('guide.step', [
         }
     },
     {
+        guideBlockName: 'hold-and-wait-until-hidden',
+        getStep: (options, services) => {
+            const notOverridable = {
+                type: 'readonly'
+            };
+            return angular.extend({}, BASIC_STEP, {
+                initPreviousStep: services.GuideUtils.defaultInitPreviousStep,
+                disablePreviousFlow: true,
+                onNextValidate: () => Promise.resolve(!services.GuideUtils.isVisible(options.elementSelectorToWait))
+            }, options, notOverridable);
+        }
+    },
+    {
+        guideBlockName: 'hold-and-wait-until-shown',
+        getStep: (options, services) => {
+            const notOverridable = {
+                type: 'readonly'
+            };
+            return angular.extend({}, BASIC_STEP, {
+                initPreviousStep: services.GuideUtils.defaultInitPreviousStep,
+                disablePreviousFlow: true,
+                onNextValidate: () => Promise.resolve(services.GuideUtils.isVisible(options.elementSelectorToWait))
+            }, options, notOverridable);
+        }
+    },
+    {
         guideBlockName: 'wait-for-element-to-hide',
         getStep: (options, services) => {
             return angular.extend({}, BASIC_STEP, {

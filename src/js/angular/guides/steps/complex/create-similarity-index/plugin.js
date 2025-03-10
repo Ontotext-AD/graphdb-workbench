@@ -19,9 +19,10 @@ PluginRegistry.add('guide.step', [
                         class: 'similarity-index-guide-dialog',
                         url: '/similarity',
                         elementSelector: GuideUtils.getGuideElementSelector('create-similarity-index'),
-                        onNextClick: () => {}
+                        onNextClick: () => {
+                        }
                     }, options)
-                },{
+                }, {
                     guideBlockName: 'input-element',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.create-similarity-index.input-index-name',
@@ -37,9 +38,33 @@ PluginRegistry.add('guide.step', [
                         class: 'create-similarity-index-guide-dialog',
                         url: '/similarity/index/create',
                         elementSelector: GuideUtils.getGuideElementSelector('create-similarity-index-btn'),
-                        onNextClick: () => {}
+                        onNextClick: () => {
+                        }
+                    }, options)
+                }, {
+                    // check if error block is shown and go back 2 steps or proceed
+                    guideBlockName: 'info-message',
+                    options: angular.extend({}, {
+                        beforeShowPromise: (guide, currentStep) => GuideUtils.getOrWaitFor(GuideUtils.getGuideElementSelector('error'), 1)
+                            .then(() => {
+                                const stepId = currentStep.id;
+                                // Using a timeout because the library executes logic to show the step in a then clause which causes current and next steps to show
+                                setTimeout(() => guide.show(stepId - 2))
+                            })
+                            .catch(() => {
+                                // Using a timeout because the library executes logic to show the step in a then clause which causes current and next steps to show
+                                setTimeout(() => guide.next())
+                            }),
                     }, options)
                 },
+                {
+                    guideBlockName: 'hold-and-wait-until-shown',
+                    options: angular.extend({}, {
+                        content: 'guide.step_plugin.create-similarity-index.wait',
+                        class: 'wait-for-index-guide-dialog',
+                        elementSelectorToWait: GuideUtils.getGuideElementSelector('similarity-indexes-table'),
+                    }, options)
+                }
             ];
         }
     }
