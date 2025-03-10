@@ -2,6 +2,7 @@ import HomeSteps from '../../steps/home-steps';
 import {EnvironmentStubs} from "../../stubs/environment-stubs";
 import {SecurityStubs} from "../../stubs/security-stubs";
 import {SettingsSteps} from "../../steps/setup/settings-steps";
+import {LicenseStubs} from "../../stubs/license-stubs";
 
 Cypress.env('set_default_user_data', false);
 
@@ -9,6 +10,7 @@ describe('Cookie policy', () => {
     beforeEach(() => {
         cy.setDefaultUserData(false);
         cy.viewport(1280, 1000);
+        LicenseStubs.stubFreeLicense();
     });
 
     afterEach(() => cy.setDefaultUserData());
