@@ -333,6 +333,7 @@ describe('Repositories', () => {
         // Some fields should be disabled
         RepositorySteps.getRepositoryRulesetMenu().should('be.disabled');
         RepositorySteps.getRepositoryDisableSameAsCheckbox().should('be.disabled');
+        RepositorySteps.getEntityIndexSize().should('be.disabled');
 
         RepositorySteps.typeRepositoryTitle(newTitle);
         RepositorySteps.getRepositoryContextIndexCheckbox().check();
