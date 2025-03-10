@@ -17,7 +17,7 @@ export const FIELD_TYPE = {
  * @description
  * A directive for rendering a dynamic form based on an array of field objects.
  *
- * This directive creates a form where each object in the provided fields defines the type of input to render
+ * This directive creates a form where each object in the provided formModel defines the type of input to render
  * (for example, text input, checkbox, dropdown, multi-select, or textarea for JSON data). The directive uses the
  * {@link FIELD_TYPE} enum to determine which input type to display. For select and multi-select fields, the
  * {@link SelectMenuOptionsModel} should be used to model the options.
@@ -28,32 +28,7 @@ export const FIELD_TYPE = {
  * @example
  * ### HTML Usage:
  * ```html
- * <dynamic-form fields="myFields" on-validity-change="handleValidityChange(valid)"></dynamic-form>
- * ```
- *
- * ### Controller Example:
- * ```javascript
- * angular.module('myApp', [])
- *   .controller('ExampleController', function($scope) {
- *     $scope.myFields = [
- *       { label: 'Name', type: FIELD_TYPE.STRING, value: 'John Doe', required: true },
- *       { label: 'Favorite Color', type: FIELD_TYPE.SELECT, value: new SelectMenuOptionsModel({ label: 'Red', value: 'red' }), values: [
- *         new SelectMenuOptionsModel({ label: 'Red', value: 'red' }),
- *         new SelectMenuOptionsModel({ label: 'Blue', value: 'blue' })
- *       ], required: true },
- *       { label: 'Interests', type: FIELD_TYPE.MULTI_SELECT, value: [], values: [
- *         new SelectMenuOptionsModel({ label: 'Sports', value: 'sports' }),
- *         new SelectMenuOptionsModel({ label: 'Music', value: 'music' })
- *       ] },
- *       { label: 'Active', type: FIELD_TYPE.BOOLEAN, value: true },
- *       { label: 'Description', type: FIELD_TYPE.TEXT, value: 'A short description' },
- *       { label: 'Settings', type: FIELD_TYPE.JSON, value: '{ "key": "value" }' }
- *     ];
- *
- *     $scope.handleValidityChange = (isValid) => {
- *       console.log('Form valid:', isValid);
- *     };
- *   });
+ * <dynamic-form formModel="myFields" on-validity-change="handleValidityChange(valid)"></dynamic-form>
  * ```
  *
  * @param {Object[]} field - The array of field objects used to render the form fields.
@@ -77,7 +52,7 @@ function dynamicFormDirective() {
     return {
         restrict: 'E',
         scope: {
-            fields: '=',
+            formModel: '=',
             onValidityChange: '&?',
             formCtrl: '=?',
             translationKeyPrefix: '@?'
@@ -119,3 +94,19 @@ function dynamicFormDirective() {
         }
     };
 }
+
+angular.module('graphdb.framework.core.directives.dynamic-form')
+    .directive('dynamicFormField', function($compile) {
+    return {
+        restrict: 'E',
+        scope: {
+            field: '=',
+            form: '=',
+            translationKeyPrefix: '='
+        },
+        templateUrl: 'js/angular/core/directives/dynamic-form/templates/form-field-template.html',
+        controller: function($scope) {
+            $scope.FIELD_TYPE = FIELD_TYPE; // Make sure this constant is available
+        }
+    };
+});

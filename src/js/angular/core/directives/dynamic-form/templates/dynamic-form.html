@@ -2,106 +2,43 @@
 
 <div class="dynamic-form-container">
     <form name="dynamicForm" novalidate class="dynamic-form">
-        <div ng-repeat="field in fields" class="form-field">
-            <!-- STRING -->
-            <div class="form-inline string-field  input-field" ng-if="field.type === FIELD_TYPE.STRING">
-                <label class="field-label" for="{{field.key}}"
-                       gdb-tooltip="{{(translationKeyPrefix ? (translationKeyPrefix + field.key + '.tooltip') : null) | translate}}">
-                    {{(translationKeyPrefix ? (translationKeyPrefix + field.key + '.label') : field.label) | translate}}
-                    <sup ng-if="field.required">*</sup>
-                </label>
-                <input type="text"
-                       id="{{field.key}}"
-                       name="{{field.key}}"
-                       class="form-control"
-                       ng-model="field.value"
-                       ng-pattern="field.regex"
-                       ng-required="field.required"/>
+        <div ng-repeat="model in formModel.models">
+            <!-- Groups -->
+            <div ng-if="model.groupId" class="form-group">
+                <h5 class="group-title">
+                    <span
+                        gdb-tooltip="{{(translationKeyPrefix ? (translationKeyPrefix + model.groupId + '.tooltip') : null) | translate}}">
+                        {{(translationKeyPrefix ? (translationKeyPrefix + model.groupId + '.label') : model.groupId) | translate}}
+                    </span>
+                </h5>
+                <dynamic-form-field ng-repeat="field in model.fields" field="field" form="dynamicForm"
+                                    translation-key-prefix="translationKeyPrefix">
+                </dynamic-form-field>
+
+                <div class="hidden-fields">
+                    <div class="text-xs-center mb-1">
+                        <button type="button" ng-click="model.showAllFields = !model.showAllFields"
+                                class="btn btn-link btn-sm toggle-hidden-fields">
+                            <span ng-hide="model.showAllFields">
+                                {{'common.show_all' | translate}}
+                                <em class="icon-caret-down"></em>
+                            </span>
+                            <span ng-show="model.showAllFields">
+                                {{'common.hide' | translate}}
+                                <em class="icon-caret-up"></em>
+                            </span>
+                        </button>
+                    </div>
+                    <dynamic-form-field ng-if="model.showAllFields" ng-repeat="field in model.hiddenFields"
+                                        field="field" form="dynamicForm" translation-key-prefix="translationKeyPrefix">
+                    </dynamic-form-field>
+                </div>
             </div>
 
-            <!-- TEXT-->
-            <div class="form-inline string-field text-field" ng-if="field.type === FIELD_TYPE.TEXT">
-                <label class="field-label" for="{{field.key}}"
-                       gdb-tooltip="{{(translationKeyPrefix ? (translationKeyPrefix + field.key + '.tooltip') : null) | translate}}">
-                    {{(translationKeyPrefix ? (translationKeyPrefix + field.key + '.label') : field.label) | translate}}
-                    <sup ng-if="field.required">*</sup>
-                </label>
-                <textarea type="text"
-                          id="{{field.key}}"
-                          name="{{field.key}}"
-                          class="form-control"
-                          ng-model="field.value"
-                          ng-required="field.required"></textarea>
-            </div>
-
-            <!-- BOOLEAN -->
-            <div class="form-inline boolean-field" ng-if="field.type === FIELD_TYPE.BOOLEAN">
-                <label class="field-label" for="{{field.key}}"
-                       gdb-tooltip="{{(translationKeyPrefix ? (translationKeyPrefix + field.key + '.tooltip') : null) | translate}}">
-                    {{(translationKeyPrefix ? (translationKeyPrefix + field.key + '.label') : field.label) | translate}}
-                    <sup ng-if="field.required">*</sup>
-                </label>
-                <input type="checkbox"
-                       id="{{field.key}}"
-                       name="{{field.key}}"
-                       ng-model="field.value"
-                       ng-required="field.required"/>
-            </div>
-
-            <!-- SINGLE SELECT -->
-            <div class="form-inline select-field" ng-if="field.type === FIELD_TYPE.SELECT">
-                <label class="field-label" for="{{field.key}}"
-                       gdb-tooltip="{{(translationKeyPrefix ? (translationKeyPrefix + field.key + '.tooltip') : null) | translate}}">
-                    {{(translationKeyPrefix ? (translationKeyPrefix + field.key + '.label') : field.label) | translate}}
-                    <sup ng-if="field.required">*</sup>
-                </label>
-                <select class="form-control"
-                        id="{{field.key}}"
-                        name="{{field.key}}"
-                        ng-model="field.value"
-                        ng-options="option as option.label for option in field.values track by option.value"
-                        ng-required="field.required">
-                </select>
-            </div>
-
-            <!-- MULTI-SELECT -->
-            <div class="form-inline multiselect-field" ng-if="field.type === FIELD_TYPE.MULTI_SELECT">
-                <label class="field-label" for="{{field.key}}"
-                       gdb-tooltip="{{(translationKeyPrefix ? (translationKeyPrefix + field.key + '.tooltip') : null) | translate}}">
-                    {{(translationKeyPrefix ? (translationKeyPrefix + field.key + '.label') : field.label) | translate}}
-                    <sup ng-if="field.required">*</sup>
-                </label>
-                <multiselect-dropdown
-                    id="{{field.key}}"
-                    name="{{field.key}}"
-                    ng-model="field.value"
-                    options="field.values"
-                    ng-required="field.required"></multiselect-dropdown>
-            </div>
-
-            <!-- JSON -->
-            <div class="form-inline json-field" ng-if="field.type === FIELD_TYPE.JSON">
-                <label class="field-label" for="{{field.key}}"
-                       gdb-tooltip="{{(translationKeyPrefix ? (translationKeyPrefix + field.key + '.tooltip') : null) | translate}}">
-                    {{(translationKeyPrefix ? (translationKeyPrefix + field.key + '.label') : field.label) | translate}}
-                    <sup ng-if="field.required">*</sup>
-                </label>
-                <textarea
-                    id="{{field.key}}"
-                    name="{{field.key}}"
-                    class="form-control"
-                    ng-model="field.value"
-                    ng-required="field.required"></textarea>
-            </div>
-
-            <div class="alert alert-danger"
-                 ng-if="field.required && dynamicForm[field.key].$touched && dynamicForm[field.key].$invalid">
-                {{'required.field' | translate}}
-            </div>
-            <div class="alert alert-danger"
-                 ng-if="dynamicForm[field.key].$touched && dynamicForm[field.key].$invalid">
-                {{'invalid.field.value' | translate: {pattern: field.regex.toString()} }}
-            </div>
+            <!-- Individual fields -->
+            <dynamic-form-field ng-if="!model.groupId" field="model" form-name="dynamicForm"
+                                translation-key-prefix="translationKeyPrefix">
+            </dynamic-form-field>
         </div>
     </form>
 </div>

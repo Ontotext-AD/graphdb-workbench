@@ -871,6 +871,18 @@
                     "success_saving_configuration": "Endpoint configuration saved"
                 },
                 "settings": {
+                    "graphql": {
+                        "label": "GraphQL settings",
+                        "description": "Settings for the GraphQL endpoint"
+                    },
+                    "security": {
+                        "label": "Security settings",
+                        "description": "Settings for the GraphQL endpoint security"
+                    },
+                    "integration": {
+                        "label": "Integration settings",
+                        "description": "Settings for the GraphQL endpoint integration"
+                    },
                     "enableTypeCount": {
                         "label": "Enable Type Count Queries",
                         "tooltip": "Toggle to include count queries in the schema."
@@ -1078,6 +1090,18 @@
                     "endpoint_parameters": {
                         "title": "Parameters",
                         "settings": {
+                            "generic": {
+                                "label": "Generic settings",
+                                "tooltip": "Generic settings for the GraphQL endpoint"
+                            },
+                            "dataCleanup": {
+                                "label": "Data Cleanup",
+                                "tooltip": "Settings for data cleanup"
+                            },
+                            "enterprise": {
+                                "label": "Enterprise settings",
+                                "tooltip": "Enterprise settings for the GraphQL endpoint"
+                            },
                             "stringMode": {
                                 "label": "Default String Mode",
                                 "tooltip": "Specifies the default string mode for data properties without a range definition."
@@ -2458,6 +2482,8 @@
     "common.attach": "Attach",
     "common.close": "Close",
     "common.preview": "Preview",
+    "common.show_all": "Show all",
+    "common.hide": "Hide",
     "common.learn_more_in_documentation": "Learn more in the GraphDB documentation",
     "paginator.first.page.label": "First",
     "paginator.last.page.label": "Last",
