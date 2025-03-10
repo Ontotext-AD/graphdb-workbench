@@ -17,8 +17,7 @@ describe('GraphQL: activate and deactivate endpoint', () => {
         cy.deleteRepository(repositoryId);
     });
 
-    // TODO: until the backend is implemented
-    it.skip('should be able to activate or deactivate an endpoint', () => {
+    it('should be able to activate or deactivate an endpoint', () => {
         // Given I have a repository with active GraphQL endpoints
         // When I visit the endpoint management view
         GraphqlEndpointManagementSteps.visit();
