@@ -248,40 +248,6 @@ describe('User and Access', () => {
                 }
             });
         });
-    });
-
-    context('GraphQL only and Free Access', () => {
-        let repositoryId1;
-        let repositoryId2;
-        let repositoryId3;
-        const graphqlUser = 'graphqlUser';
-
-        beforeEach(() => {
-            cy.viewport(1280, 1000);
-            RepositoriesStubs.spyGetRepositories();
-            repositoryId1 = 'user-access-repo1-' + Date.now();
-            repositoryId2 = 'user-access-repo2-' + Date.now();
-            repositoryId3 = 'user-access-repo3-' + Date.now();
-            cy.createRepository({id: repositoryId1});
-            cy.createRepository({id: repositoryId2});
-            cy.createRepository({id: repositoryId3});
-            cy.presetRepository(repositoryId1);
-            UserAndAccessSteps.visit();
-            // Users table should be visible
-            UserAndAccessSteps.getUsersTable().should('be.visible');
-        });
-
-        afterEach(() => {
-            cy.loginAsAdmin().then(()=> {
-                cy.deleteRepository(repositoryId1, true);
-                cy.deleteRepository(repositoryId2, true);
-                cy.deleteRepository(repositoryId3, true);
-                cy.deleteUser(graphqlUser, true);
-                cy.switchOffFreeAccess(true);
-                cy.switchOffSecurity(true);
-            });
-
-        });
 
         it('Can have Free Access and GraphQL working together', () => {
             cy.wait('@getRepositories');
@@ -317,6 +283,10 @@ describe('User and Access', () => {
                 if (checks) {
                     runChecks(checks);
                 }
+            });
+            // Turn free access off
+            cy.loginAsAdmin().then(()=> {
+                cy.switchOffFreeAccess(true);
             });
         });
     });
