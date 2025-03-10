@@ -83,7 +83,6 @@ describe('Graphql: edit endpoint settings', () => {
                     "enableGraphQLExplain": true,
                     "exposeSomlInGraphQL": false,
                     "disabledChecks": null,
-                    "defaultIntegrationRole": "Federation_SystemRole",
                     "queryPrefix": null,
                     "mutationPrefix": null
                 }

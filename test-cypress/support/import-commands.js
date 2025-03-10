@@ -10,10 +10,10 @@ Cypress.Commands.add('uploadGraphqlSchema', (repositoryId, schemaPath, schemaId 
     cy.fixture(schemaPath).then((schema) => {
         cy.request({
             method: 'POST',
-            url: `${REPOSITORIES_URL}${repositoryId}/soml`,
+            url: `${REPOSITORIES_URL}${repositoryId}/graphql/manage/endpoints/import`,
             headers: {'Content-type': 'text/yaml'},
             body: schema
-        }).should((response) => expect(response.status).to.equal(201));
+        }).should((response) => expect(response.status).to.equal(200));
         waitForGraphqlSchema(repositoryId, schemaId);
     });
 });
@@ -22,10 +22,10 @@ Cypress.Commands.add('uploadGraphqlSchema', (repositoryId, schemaPath, schemaId 
 function waitForGraphqlSchema(repositoryId, schemaId) {
     cy.request({
         method: 'GET',
-        url: `${REPOSITORIES_URL}${repositoryId}/soml/${schemaId}`
+        url: `${REPOSITORIES_URL}${repositoryId}/graphql/manage/endpoints/${schemaId}`
     }).then((response) => {
         // const importStatus = Cypress._.find(response.body, (importStatus) => importStatus.name === fileName);
-        if (response.status === 200 && response.body && response.body.id === `/soml/${schemaId}`) {
+        if (response.status === 200 && response.body && response.body.id === schemaId) {
             return;
         }
         cy.wait(POLL_INTERVAL);
