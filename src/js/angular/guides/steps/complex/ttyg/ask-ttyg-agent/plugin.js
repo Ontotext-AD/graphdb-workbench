@@ -38,9 +38,8 @@ PluginRegistry.add('guide.step', [
                             // Remove the "keydown" listener of element. It is important when step is hidden.
                             $(elementSelector).off('keydown');
                         },
-                        onNextClick: () => {
-                            // Do not allow the user to go to the next step because we want the user to click the button themselves.
-                        }
+                        disablePreviousFlow: true,
+                        disableNextFlow: true
                     }, options)
                 },
                 getWaitForAnswerStep(GuideUtils, options)
@@ -56,7 +55,6 @@ PluginRegistry.add('guide.step', [
                         guideBlockName: 'info-message',
                         options: angular.extend({}, {
                             url: '/ttyg',
-                            skipPoint: true,
                             beforeShowPromise: (guide, currentStep) => GuideUtils.waitFor(elementSelector, 1)
                                 .then(() => {
                                     // Using a timeout because the library executes logic to show the step in a then clause which causes current and next steps to show
@@ -72,13 +70,12 @@ PluginRegistry.add('guide.step', [
                     {
                         guideBlockName: 'clickable-element',
                         options: angular.extend({}, {
-                            skipPoint: true,
                             content: 'guide.step_plugin.ask-ttyg-agent.explain-answer',
                             class: 'explain-answer-guide-dialog',
                             url: '/ttyg',
                             elementSelector,
-                            onNextClick: () => {
-                            }
+                            disablePreviousFlow: true,
+                            disableNextFlow: true
                         }, options)
                     },
                     getWaitForAnswerStep(GuideUtils, options)
@@ -95,7 +92,6 @@ PluginRegistry.add('guide.step', [
                         guideBlockName: 'info-message',
                         options: angular.extend({}, {
                             url: '/ttyg',
-                            skipPoint: true,
                             beforeShowPromise: (guide, currentStep) => GuideUtils.waitFor(elementSelector, 1)
                                 .then(() => {
                                     // Using a timeout because the library executes logic to show the step in a then clause which causes current and next steps to show
@@ -114,11 +110,9 @@ PluginRegistry.add('guide.step', [
                             content: 'guide.step_plugin.ask-ttyg-agent.explore-sparql',
                             class: 'explore-sparql-guide-dialog',
                             url: '/ttyg',
-                            skipPoint: true,
-                            elementSelector,
-                            onNextClick: () => {
-                                // Do not allow the user to go to the next step because we want the user to click the button themselves.
-                            }
+                            disablePreviousFlow: true,
+                            disableNextFlow: true,
+                            elementSelector
                         }, options)
                     }
                 )
@@ -134,7 +128,6 @@ PluginRegistry.add('guide.step', [
                         guideBlockName: 'info-message',
                         options: angular.extend({}, {
                             url: '/ttyg',
-                            skipPoint: true,
                             beforeShowPromise: (guide, currentStep) => {
                                 return GuideUtils.waitFor(elementSelector, 1)
                                     .then(() => {
@@ -147,6 +140,7 @@ PluginRegistry.add('guide.step', [
                                         setTimeout(() => guide.show(stepId + 3))
                                     })
                             },
+                            disablePreviousFlow: true
                         }, options)
                     },
                     {
@@ -155,7 +149,6 @@ PluginRegistry.add('guide.step', [
                             content: 'guide.step_plugin.ask-ttyg-agent.explain-answer-more',
                             class: 'input-agent-name-guide-dialog',
                             url: '/ttyg',
-                            skipPoint: true,
                             elementSelector,
                             show: (guide) => () => {
                                 // Add "click" listener to the element. Upon clicking the element is hidden and this breaks the default flow of the guide.
@@ -168,9 +161,7 @@ PluginRegistry.add('guide.step', [
                                 // Remove the "click" listener of element. It is important when step is hidden.
                                 $(elementSelector).off('click');
                             },
-                            onNextClick: () => {
-                                // Do not allow the user to go to the next step because we want the user to click the button themselves.
-                            }
+                            disableNextFlow: true
                         }, options)
                     },
                     getWaitForAnswerStep(GuideUtils, options)
@@ -184,14 +175,14 @@ PluginRegistry.add('guide.step', [
 
 const getWaitForAnswerStep = (GuideUtils, options) => {
     return {
-        guideBlockName: 'focus-element',
+        guideBlockName: 'hold-and-wait-until-hidden',
         options: angular.extend({}, {
             content: 'guide.step_plugin.ask-ttyg-agent.wait-for-answer',
             class: 'wait-for-answer-guide-dialog',
             url: '/ttyg',
             placement: 'left',
             elementSelector: GuideUtils.getGuideElementSelector('chat-details'),
-            onNextValidate: () => Promise.resolve(!GuideUtils.isGuideElementVisible('question-loader'))
+            elementSelectorToWait: GuideUtils.getGuideElementSelector('question-loader'),
         }, options)
     }
 }

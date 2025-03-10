@@ -320,7 +320,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         }
 
         if (step.options.attachTo) {
-            GuideUtils.waitFor(step.options.attachTo.element, step.options.maxWaitTime)
+            GuideUtils.getOrWaitFor(step.options.attachTo.element, step.options.maxWaitTime)
                 .then(() => guide.show(stepIndex))
                 .catch((error) => {
                     console.log(error);
@@ -439,7 +439,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         if (!this._isDisablePreviousFlow(currentStepDescription) && previousStepDescription) {
             buttons.push(this._getPreviousButton(guide));
         }
-        if (nextStepDescription) {
+
+        if (!this._isDisableNextFlow(currentStepDescription) && nextStepDescription) {
             buttons.push(this._getNextButton(guide, currentStepDescription, nextStepDescription));
         }
 
@@ -480,6 +481,16 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
      */
     this._isDisablePreviousFlow = (stepDescription) => {
         return angular.isDefined(stepDescription.disablePreviousFlow) ? stepDescription.disablePreviousFlow : false;
+    }
+
+    /**
+     * Checks if the next flow is disabled for the <code>stepDescription</code>.
+     * @param {*} stepDescription - The step to be checked.
+     * @return {boolean} - Returns true if the previous flow is disabled, otherwise false.
+     * @private
+     */
+    this._isDisableNextFlow = (stepDescription) => {
+        return angular.isDefined(stepDescription.disableNextFlow) ? stepDescription.disableNextFlow : false;
     }
 
     /**
