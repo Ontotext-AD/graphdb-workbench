@@ -565,6 +565,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     }
 
     $scope.logout = function () {
+        console.log('SSSSSSSSSSSSSSSSSSSSSS')
         $jwtAuth.clearAuthentication();
         toastr.success('Signed out');
         if ($jwtAuth.freeAccess) {
@@ -573,6 +574,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             $repositories.resetActiveRepository();
             $jwtAuth.updateReturnUrl();
         } else if ($jwtAuth.isSecurityEnabled()) {
+            console.log('1111111111111111111')
             // otherwise show login screen if security is on
             $rootScope.redirectToLogin();
         }

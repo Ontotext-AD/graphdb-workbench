@@ -1,0 +1,40 @@
+version: '3.3'
+
+services:
+
+  graphdb:
+    image: docker-registry.ontotext.com/graphdb:${GDB_VERSION}
+    environment:
+      GDB_JAVA_OPTS: >-
+        -Dgraphdb.workbench.importDirectory=/opt/home/import-data/
+        -Dgraphdb.jsonld.whitelist=https://w3c.github.io/json-ld-api/tests/*
+        -Dgraphdb.stats.default=disabled
+        -Dgraphdb.foreground=
+        -Dgraphdb.logger.root.level=ERROR
+    expose:
+      - 7200
+    volumes:
+      - ./test-cypress/fixtures/graphdb-import:/opt/home/import-data/
+
+  workbench:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      GRAPHDB_URL: 'http://graphdb:7200'
+    ports:
+      - 80
+    depends_on:
+      - graphdb
+
+  cypress-tests:
+    build:
+      context: test-cypress
+    depends_on:
+      - workbench
+    environment:
+      - CYPRESS_baseUrl=http://workbench
+    volumes:
+      - ./coverage:/workbench/tests-cypress/coverage
+      - ./cypress:/workbench/tests-cypress/cypress
+      - ./report:/workbench/tests-cypress/report
