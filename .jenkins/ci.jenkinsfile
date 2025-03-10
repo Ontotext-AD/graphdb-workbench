@@ -1,0 +1,49 @@
+def runStages() {
+    stage('Install') {
+        sh "npm install"
+    }
+
+    stage('Validate translations') {
+        sh 'node scripts/validate-translations.js || exit 1'
+    }
+
+    stage('Build') {
+        sh "npm run build"
+    }
+
+//     stage('Sonar') {
+//         withSonarQubeEnv(env.SONAR_ENVIRONMENT) {
+//             script {
+//                 if (scmUtil.isMaster()) {
+//                     sh "node sonar-project.js --branch='${scmUtil.getCurrentBranch()}'"
+//                 } else {
+//                     sh "node sonar-project.js --branch='${scmUtil.getSourceBranch()}' --target-branch='${scmUtil.getTargetBranch()}' --pull-request-id='${scmUtil.getMergeRequestId()}'"
+//                 }
+//             }
+//         }
+//     }
+
+    stage('Acceptance') {
+        if (!scmUtil.isMaster()) {
+            withKsm(application: [[
+                credentialsId: 'ksm-jenkins',
+                secrets: [
+                    [
+                        destination: 'file',
+                        filePath: 'graphdb.license',
+                        notation: 'keeper://zn9mpFS1tZ0dNcqmsNhsLg/file/graphdb-b64.license'
+                    ]
+                ]
+            ]]) {
+                sh 'cp graphdb.license ./test-cypress/fixtures/'
+            }
+            sh "ls ./test-cypress/fixtures/"
+            script {
+                dockerCompose.buildCmd(options: ["--force-rm", "--no-cache", "--parallel"])
+                dockerCompose.upCmd(options: ["--abort-on-container-exit", "--exit-code-from cypress-tests"])
+            }
+        }
+    }
+}
+
+return this
