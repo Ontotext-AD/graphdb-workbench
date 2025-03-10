@@ -120,8 +120,8 @@
                                  ng-if="extractionMethod.selected && !extractionMethod.sparqlOption">
                                 {{'ttyg.agent.create_agent_modal.form.sparql_search.required_option' | translate}}
                             </div>
-                            <div class="add-missing-namespaces-option mt-1">
-                                <input id="addMissingNamespaces" name="addMissingNamespaces" type="checkbox"
+                            <div class="add-missing-namespaces-option mt-1" guide-selector="add-missing-namespaces-option">
+                                <input id="addMissingNamespaces" name="addMissingNamespaces" type="checkbox" guide-selector="add-missing-namespaces"
                                        ng-model="extractionMethod.addMissingNamespaces">
                                 <label for="addMissingNamespaces"
                                        uib-popover="{{'ttyg.agent.create_agent_modal.form.add_missing_namespaces.tooltip' | translate}}"

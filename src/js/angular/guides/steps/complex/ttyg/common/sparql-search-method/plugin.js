@@ -30,6 +30,7 @@ PluginRegistry.add('guide.step', [
                         content: `guide.step_plugin.sparql-search-method.content`,
                         class: 'info-sparql-search-guide-dialog',
                         url: '/ttyg',
+                        disablePreviousFlow: true
                     }, options)
                 },
                 {

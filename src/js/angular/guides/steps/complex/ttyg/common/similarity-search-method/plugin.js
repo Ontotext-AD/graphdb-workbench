@@ -30,6 +30,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.similarity-search-method.content',
                         url: '/ttyg',
                         class: 'info-similarity-search-guide-dialog',
+                        disablePreviousFlow: true
                     }, options)
                 },
                 {

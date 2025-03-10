@@ -20,7 +20,6 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'info-message',
                     options: angular.extend({}, {
                         content: 'guide.step_plugin.create-ttyg-agent.intro',
-                        skipPoint: true
                     }, options)
                 },
                 {
@@ -31,9 +30,7 @@ PluginRegistry.add('guide.step', [
                         url: '/ttyg',
                         maxWaitTime: 10,
                         elementSelector: GuideUtils.getGuideElementSelector('create-agent-btn'),
-                        onNextClick: () => {
-                            // Do not allow the user to go to the next step because we want the user to click the button themselves.
-                        }
+                        disableNextFlow: true
                     }, options)
                 },
                 {
@@ -48,9 +45,7 @@ PluginRegistry.add('guide.step', [
                         class: 'save-agent-guide-dialog',
                         url: '/ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('save-agent-settings'),
-                        onNextClick: () => {
-                            // Do not allow the user to go to the next step because we want the user to click the button themselves.
-                        }
+                        disableNextFlow: true
                     }, options)
                 },
                 {

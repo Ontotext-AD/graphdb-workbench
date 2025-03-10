@@ -30,6 +30,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.fts-search-method.content',
                         url: '/ttyg',
                         class: 'info-fts-search-guide-dialog',
+                        disablePreviousFlow: true
                     }, options)
                 },
                 {

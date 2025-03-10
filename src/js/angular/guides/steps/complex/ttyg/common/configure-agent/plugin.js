@@ -10,14 +10,14 @@ PluginRegistry.add('guide.step', [
                 return methods.map((method) => {
                     return {
                         guideBlockName: method.guideBlockName,
-                        options: method.options
+                        options: angular.extend({}, method.options)
                     };
                 });
             };
 
             const shouldEditName = options.editName;
             const hasModelName = options.model;
-            const hasUserInstructions = options.userInstuctions;
+            const hasUserInstructions = options.userInstructions;
             const shouldConfigureExtractionMethods = !!options.methods?.length;
 
             const steps = [
@@ -37,6 +37,7 @@ PluginRegistry.add('guide.step', [
                         content: 'guide.step_plugin.configure-agent.name-input',
                         class: 'input-agent-name-guide-dialog',
                         url: '/ttyg',
+                        disablePreviousFlow: true,
                         beforeShowPromise: () => GuideUtils.waitFor(GuideUtils.getGuideElementSelector('agent-form'), 5)
                             .catch((error) => {
                                 services.toastr.error(services.$translate.instant('guide.unexpected.error.message'));
