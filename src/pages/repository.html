@@ -329,6 +329,7 @@
                                        min="entityIndexSizeMin"
                                        step="1"
                                        name="entityIndexSize"
+                                       ng-disabled="editRepoPage"
                                        ng-model="repositoryInfo.params.entityIndexSize.value"
                                        ng-model-options="{allowInvalid: true}"/>
                                 <div style="margin-top: 5px" ng-show="repositoryInfo.params.entityIndexSize.value < entityIndexSizeMin" class="alert alert-danger">
