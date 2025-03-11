@@ -7,8 +7,7 @@ PluginRegistry.add('route', {
     'templateUrl': 'pages/monitor/backup-and-restore.html',
     'title': 'view.monitoring.backup_and_restore.title',
     'helpInfo': 'view.monitoring.backup_and_restore.helpInfo',
-    'documentationUrl': 'backup-and-restore.html#monitoring-your-recovery-operations',
-    'allowAuthorities': ['READ_REPO_{repoId}']
+    'documentationUrl': 'backup-and-restore.html#monitoring-your-recovery-operations'
 });
 
 PluginRegistry.add('main.menu', {
@@ -19,7 +18,8 @@ PluginRegistry.add('main.menu', {
             href: 'monitor/backup-and-restore',
             order: 2,
             parent: 'Monitor',
-            guideSelector: 'sub-menu-backup-and-restore'
+            guideSelector: 'sub-menu-backup-and-restore',
+            role: 'ROLE_REPO_MANAGER'
         }
     ]
 });
