@@ -563,11 +563,6 @@ describe('User and Access', () => {
             expectedTitle: 'Query and Update monitoring',
             checks: noAuthChecks
         },
-        {
-            path: ['Monitor', 'Backup and Restore'],
-            expectedUrl: '/monitor/backup-and-restore',
-            checks: noAuthChecks
-        },
 
         // 6) Setup
         {
@@ -630,11 +625,6 @@ describe('User and Access', () => {
 
         // 8) Help
         {
-            path: ['Help', 'Interactive guides'],
-            expectedUrl: '/guides',
-            checks: noAuthChecks
-        },
-        {
             path: ['Help', 'REST API'],
             expectedUrl: '/webapi',
             expectedTitle: 'REST API documentation',
@@ -658,6 +648,16 @@ describe('User and Access', () => {
         {
             path: ['GraphQL', 'GraphQL Playground'],
             expectedUrl: '/graphql/playground',
+            checks: hasAuthChecks
+        },
+        {
+            path: ['Monitor', 'Backup and Restore'],
+            expectedUrl: '/monitor/backup-and-restore',
+            checks: hasAuthChecks
+        },
+        {
+            path: ['Help', 'Interactive guides'],
+            expectedUrl: '/guides',
             checks: hasAuthChecks
         }
     ];
