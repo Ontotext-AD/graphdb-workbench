@@ -1331,14 +1331,12 @@ function GraphsVisualizationsCtrl(
                 }
 
                 if (d.types.length > 0) {
-                    // mid-dot delimited types
-                    html += _.join(_.map(d.types, function (t) {
-                        return $scope.replaceIRIWithPrefix(t);
-                    }), ' \u00B7 ');
+                    html += d.types
+                        .map((type) => `<div> \u00B7 ${$scope.replaceIRIWithPrefix(type)}</div>`)
+                        .join('');
                 } else {
-                    html += '<i>No types</i>';
+                    html += `<i>${$translate.instant('visual.node.tooltip.no_types')}</i>`;
                 }
-
                 return html;
             });
 
