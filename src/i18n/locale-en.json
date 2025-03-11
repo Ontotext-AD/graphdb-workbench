@@ -2903,6 +2903,7 @@
     "sidepanel.limit.links.tooltip": "Limit the number of links when often they are too many",
     "sidepanel.maximum.links": "Maximum links to show",
     "visual.search.instance.placeholder": "Search instance properties",
+    "visual.node.tooltip.no_types": "No types",
     "sidepanel.invalid.limit.links.msg": "Invalid links limit",
     "sidepanel.invalid.limit.links.tooltip": "The valid limit range is 1-1000",
     "sidepanel.preferred.languages": "Preferred languages",

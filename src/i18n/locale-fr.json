@@ -2902,6 +2902,7 @@
     "sidepanel.limit.links.tooltip": "Limiter le nombre de liens quand souvent ils sont trop nombreux",
     "sidepanel.maximum.links": "Nombre maximal de liens à afficher",
     "visual.search.instance.placeholder": "Recherche des propriétés de l'instance",
+    "visual.node.tooltip.no_types": "Aucun type",
     "sidepanel.invalid.limit.links.msg": "Limite de liens non valide",
     "sidepanel.invalid.limit.links.tooltip": "La plage de limites valables est de 1 à 1000",
     "sidepanel.preferred.languages": "Langues préférées",
