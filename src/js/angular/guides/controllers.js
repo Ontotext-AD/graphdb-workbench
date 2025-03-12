@@ -13,9 +13,9 @@ angular
     .module('graphdb.framework.guides.controllers', modules)
     .controller('GuidesCtrl', GuidesCtrl);
 
-GuidesCtrl.$inject = ['$scope', '$rootScope', 'GuidesService', '$filter', '$translate', '$interpolate', 'toastr'];
+GuidesCtrl.$inject = ['$scope', '$rootScope', 'GuidesService', '$filter', '$translate', '$interpolate'];
 
-function GuidesCtrl($scope, $rootScope, GuidesService, $filter, $translate, $interpolate, toastr) {
+function GuidesCtrl($scope, $rootScope, GuidesService, $filter, $translate, $interpolate) {
 
     // =========================
     // Public variables

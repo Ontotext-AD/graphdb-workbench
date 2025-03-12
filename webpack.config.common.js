@@ -223,6 +223,10 @@ module.exports = {
                 to: 'js/angular/templates'
             },
             {
+                from: 'src/js/angular/guides/templates',
+                to: 'js/angular/guides/templates'
+            },
+            {
                 from: 'node_modules/ontotext-graphql-playground-component/dist/ontotext-graphql-playground-component/assets',
                 to: 'assets'
             }

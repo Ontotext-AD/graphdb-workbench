@@ -209,8 +209,8 @@ function GuidesService(
      * @param {*} guide - the guide to start as an object.
      * @param {*} startStepId
      */
-    this.startGuide = (guide, startStepId) => {
-        if (guide && guide.options && guide.options.repositoryIdBase) {
+    this.startGuide = (guide, startStepId, isAutoStarted = false) => {
+        if (guide?.options?.repositoryIdBase) {
             // repositoryIdBase in the options can be used as a template to find a free repository ID.
             // For example, setting repositoryIdBase to 'myrepo' will find the first free ID from:
             // - myrepo
@@ -236,11 +236,33 @@ function GuidesService(
         if (angular.isDefined(startStepId)) {
             ShepherdService.resumeGuide(guide.guideId, stepsDescriptions, startStepId);
         } else {
-            ShepherdService.startGuide(guide.guideId, stepsDescriptions, startStepId);
+            ShepherdService.startGuide(guide.guideId, stepsDescriptions, startStepId, isAutoStarted);
         }
 
         $rootScope.$broadcast('guideStarted');
     };
+
+    /**
+     * Starts a guide by give guide id and marks is as auto started
+     *
+     * @param {string | number} autoStartGuideId
+     */
+    this.autoStartGuide = (autoStartGuideId) => {
+        if (!angular.isString(autoStartGuideId) && !angular.isNumber(autoStartGuideId)) {
+            return;
+        }
+
+        if (angular.isNumber(autoStartGuideId)) {
+            autoStartGuideId = autoStartGuideId + '';
+        }
+
+        this.getGuides().then((guides) => {
+            const selectedGuide = guides.find((guide) => guide.guideId === autoStartGuideId);
+            if (selectedGuide) {
+                this.startGuide(selectedGuide, undefined, true);
+            }
+        });
+    }
 
     /**
      * Fetches list with all available guides.
@@ -266,7 +288,10 @@ function GuidesService(
                     if (guide.guideId === undefined) {
                         // Ideally we want our guides to have stable IDs but it's not a big deal
                         // if they don't have one - so just generate it in that case
-                        guide.guideId = Date.now() + index;
+                        const id = Date.now() + index;
+                        guide.guideId = id + '';
+                    } else if (angular.isNumber(guide.guideId)) {
+                        guide.guideId = guide.guideId + '';
                     }
                 });
                 return guides;
@@ -434,7 +459,20 @@ function GuidesService(
      * @private
      */
     this._getSteps = (complexStep, parentOptions) => {
-        const services = {$translate, $interpolate, GuideUtils, $rootScope, toastr, $location, $route, $timeout, ShepherdService, $repositories, YasguiComponentDirectiveUtil, EventEmitterService};
+        const services = {
+            $translate,
+            $interpolate,
+            GuideUtils,
+            $rootScope,
+            toastr,
+            $location,
+            $route,
+            $timeout,
+            ShepherdService,
+            $repositories,
+            YasguiComponentDirectiveUtil,
+            EventEmitterService
+        };
         let steps = [];
         if (angular.isArray(complexStep)) {
             complexStep.forEach((stepDescription) => {
