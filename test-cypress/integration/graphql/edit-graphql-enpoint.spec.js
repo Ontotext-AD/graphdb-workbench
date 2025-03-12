@@ -3,7 +3,7 @@ import {GraphqlEndpointManagementSteps} from "../../steps/graphql/graphql-endpoi
 import {EditGraphqlEndpointSteps} from "../../steps/graphql/edit-graphql-endpoint-steps";
 import {ApplicationSteps} from "../../steps/application-steps";
 
-describe.skip('Graphql: edit endpoint settings', () => {
+describe('Graphql: edit endpoint settings', () => {
     let repositoryId;
 
     beforeEach(() => {
