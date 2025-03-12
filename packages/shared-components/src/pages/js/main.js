@@ -7,7 +7,7 @@ testContext.changeLanguage('en');
 window.singleSpa = {
   navigateToUrl: function (url) {
     const redirect = document.createElement('div');
-    redirect.id = 'redirect-url';
+    redirect.className = 'redirect-url';
     redirect.innerHTML = `redirect to ${url}`;
     document.body.appendChild(redirect);
   }
