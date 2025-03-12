@@ -132,11 +132,12 @@
 }
 
 .node-label-body div {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     margin: auto;
     max-height: 3em;
     text-align: center;
-    word-wrap: break-word;
-    word-break: break-word;
 }
 
 .node-wrapper .pinned {

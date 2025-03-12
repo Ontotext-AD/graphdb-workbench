@@ -390,7 +390,7 @@
 
         <div ng-if="showNodeInfo" class="tab-content">
             <h3 class="hovered-parent">
-                <a class="uri" rel="noopener" target="_blank" href="resource?{{resourceType}}={{encodedIri}}" style="text-decoration: underline;">{{rdfsLabel}}</a>
+                <a class="uri" rel="noopener" target="_blank" href="resource?{{resourceType}}={{encodedIri}}" style="text-decoration: underline;">{{rdfsLabel | htmlAsText}}</a>
                 <button class="btn btn-link btn-sm px-0 hovered-item"
                         style="opacity: 1"
                         ng-click="copyToClipboard(nodeIri)"
@@ -414,7 +414,8 @@
                 </div>
                 <div class="media-body">
 					<span ng-repeat="l in nodeLabels">
-                        {{l.label}}<span class="language-tag" ng-if="l.lang">{{l.lang}}</span>
+                        {{l.label | htmlAsText}}
+                        <span class="language-tag" ng-if="l.lang">{{l.lang}}</span>
                         <span ng-if="!$last"> &middot; </span>
 					</span>
                 </div>

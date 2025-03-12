@@ -23,6 +23,7 @@ import {defineCustomElements as defineGraphQlElements} from 'ontotext-graphql-pl
 import {convertToHumanReadable} from "./js/angular/utils/size-util";
 import {DocumentationUrlResolver} from "./js/angular/utils/documentation-url-resolver";
 import {NumberUtils} from "./js/angular/utils/number-utils";
+import {HtmlUtil} from "./js/angular/utils/html-util";
 
 // $translate.instant converts <b> from strings to &lt;b&gt
 // and $sce.trustAsHtml could not recognise that this is valid html
@@ -252,6 +253,7 @@ const moduleDefinition = function (productInfo, translations) {
     workbench.filter('humanReadableSize', () => (size) => convertToHumanReadable(size));
     workbench.filter('trustAsHtml', ['$translate', '$sce', ($translate, $sce) => (message) => $sce.trustAsHtml(decodeHTML(message))]);
     workbench.filter('formatNumberToLocaleString', ['$translate', ($translate) => (number) => NumberUtils.formatNumberToLocaleString(number, $translate.use())]);
+    workbench.filter('htmlAsText', () => (html) => HtmlUtil.getText(html));
 
     angular.bootstrap(document, ['graphdb.workbench']);
 };
