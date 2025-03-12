@@ -23,9 +23,11 @@ graph TD;
   onto-layout --> onto-permission-banner
   onto-layout --> onto-footer
   onto-layout --> onto-tooltip
+  onto-header --> onto-operations-notification
   onto-header --> onto-license-alert
   onto-header --> onto-repository-selector
   onto-header --> onto-language-selector
+  onto-operations-notification --> translate-label
   onto-license-alert --> translate-label
   onto-repository-selector --> onto-dropdown
   onto-language-selector --> onto-dropdown
