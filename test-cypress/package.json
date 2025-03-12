@@ -1,6 +1,6 @@
 {
     "name": "graphdb-workbench-tests",
-    "version": "3.0.0-TR13",
+    "version": "3.0.0-TR14",
     "description": "Cypress tests for GraphDB workbench",
     "scripts": {
         "prepack": "npm shrinkwrap",
