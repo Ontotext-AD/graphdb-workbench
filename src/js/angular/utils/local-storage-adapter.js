@@ -30,7 +30,8 @@ angular
         'IMPORT_VIEW': 'import-view',
         'SPARQL_LAST_REPO': 'sparql-last-repo',
         'TTYG': 'ttyg',
-        'COOKIE_CONSENT': 'cookie-consent'
+        'COOKIE_CONSENT': 'cookie-consent',
+        'GUIDES_AUTOSTART': 'guides-autostart'
     });
 
 LocalStorageAdapter.$inject = ['localStorageService', 'LSKeys'];

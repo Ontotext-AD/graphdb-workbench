@@ -185,8 +185,19 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
 
     $scope.hideRdfResourceSearch = false;
     $scope.showRdfResourceSearch = () => {
-        return !$scope.hideRdfResourceSearch && !!$scope.getActiveRepository() && $scope.hasActiveLocation() &&(!$scope.isLoadingLocation() || $scope.isLoadingLocation() && $location.url() === '/repository');
+        return !$scope.hideRdfResourceSearch && !!$scope.getActiveRepository() && $scope.hasActiveLocation() && (!$scope.isLoadingLocation() || $scope.isLoadingLocation() && $location.url() === '/repository');
     };
+
+    const queryParams = $location.search();
+    if (queryParams.autostartGuide) {
+        // Check to see if $translate service is ready with the language before starting the guide as the steps are translated ahead on time. Will retry 20 times (1 second).
+        const timer = $interval(function () {
+            if ($translate.use()) {
+                GuidesService.autoStartGuide(queryParams.autostartGuide)
+                $interval.cancel(timer);
+            }
+        }, 50, 20);
+    }
 
     $scope.onRdfResourceSearch = () => {
         if (isHomePage()) {
@@ -700,10 +711,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     }
 
     $scope.closeActiveRepoPopover = function () {
-       $scope.isActiveRepoPopoverOpen = false;
+        $scope.isActiveRepoPopoverOpen = false;
     };
 
-    const closeActiveRepoPopoverEventHandler = function(event) {
+    const closeActiveRepoPopoverEventHandler = function (event) {
         const popoverElement = document.querySelector('.popover');
         if ($scope.isActiveRepoPopoverOpen && popoverElement && !popoverElement.contains(event.target)) {
             $timeout(function () {

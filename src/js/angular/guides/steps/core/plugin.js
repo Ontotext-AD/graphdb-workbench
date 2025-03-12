@@ -144,7 +144,10 @@ PluginRegistry.add('guide.step', [
         getStep: (options, services) => {
             return angular.extend({}, BASIC_STEP, {
                 initPreviousStep: services.GuideUtils.defaultInitPreviousStep,
-                beforeShowPromise: () => services.GuideUtils.waitUntilHidden(options.elementSelectorToHide, options.timeToWait || 2),
+                beforeShowPromise: (guide) => services.GuideUtils.waitUntilHidden(options.elementSelectorToHide, options.timeToWait || 2)
+                    .catch(() => {
+                        services.ShepherdService._abortGuide(guide)
+                    }),
                 show: (guide) => () => {
                     // Using a timeout because the library executes async logic
                     setTimeout(() => guide.next())
@@ -157,7 +160,10 @@ PluginRegistry.add('guide.step', [
         getStep: (options, services) => {
             return angular.extend({}, BASIC_STEP, {
                 initPreviousStep: services.GuideUtils.defaultInitPreviousStep,
-                beforeShowPromise: () => services.GuideUtils.getOrWaitFor(options.elementSelectorToShow, options.timeToWait || 2),
+                beforeShowPromise: (guide) => services.GuideUtils.getOrWaitFor(options.elementSelectorToShow, options.timeToWait || 2)
+                    .catch(() => {
+                        services.ShepherdService._abortGuide(guide)
+                    }),
                 show: (guide) => () => {
                     // Using a timeout because the library executes async logic
                     setTimeout(() => guide.next())
@@ -172,13 +178,7 @@ PluginRegistry.add('guide.step', [
                 type: 'readonly',
                 title: options.title || 'guide.step_plugin.guide-ended.title',
                 content: options.content || 'guide.step_plugin.guide-ended.content',
-                lastStep: true,
-                show: (guide) => () => {
-                    guide.options.confirmCancel = false;
-                },
-                hide: (guide) => () => {
-                    guide.options.confirmCancel = true;
-                }
+                lastStep: true
             };
             return angular.extend({}, BASIC_STEP, {
                 initPreviousStep: services.GuideUtils.defaultInitPreviousStep

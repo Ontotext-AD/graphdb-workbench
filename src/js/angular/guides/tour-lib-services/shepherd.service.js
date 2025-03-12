@@ -1,5 +1,6 @@
 import {GuideUtils} from "../guide-utils";
 import Shepherd from "shepherd.js";
+import {decodeHTML} from "../../../../app";
 
 export const GUIDE_ID = 'shepherd.guide_id';
 export const GUIDE_CURRENT_STEP_ID = 'shepherd.guide.current.step.id';
@@ -11,18 +12,27 @@ const modules = ['graphdb.framework.utils.localstorageadapter'];
 angular
     .module('graphdb.framework.guides.shepherd.services', modules)
     .service('ShepherdService', ShepherdService);
+
+ShepherdService.$inject = ['$location', '$translate', 'LocalStorageAdapter', 'LSKeys', '$route', '$interpolate', 'toastr', '$compile', 'ModalService'];
+
 /**
  * Service (wrapper) of library  <a href="https://shepherdjs.dev/docs/">shepherd</a>.
  * @param $location
  * @param $translate
  * @param LocalStorageAdapter
+ * @param LSKeys
  * @param $route
+ * @param $interpolate
+ * @param toastr
+ * @param $compile
+ * @param ModalService
  * @constructor
  */
-ShepherdService.$inject = ['$location', '$translate', 'LocalStorageAdapter', '$route', '$interpolate', 'toastr', '$compile'];
-
-function ShepherdService($location, $translate, LocalStorageAdapter, $route, $interpolate, toastr, $compile) {
+function ShepherdService($location, $translate, LocalStorageAdapter, LSKeys, $route, $interpolate, toastr, $compile, ModalService) {
     this.guideCancelSubscription = undefined;
+    this.guideCompleteSubscription = undefined;
+    this.guideAutostarted = null;
+
     this.onPause = () => {
     };
     this.onCancel = () => {
@@ -115,9 +125,16 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
      *
      * </ul>
      * @param {string} startStepId - start step id.
+     * @param isAutoStarted - whether the guide was automatically started
      * @param {boolean} clearHistory - if true will clear guide step history.
      */
-    this.startGuide = (guideId, stepsDescriptions, startStepId, clearHistory = true) => {
+    this.startGuide = (guideId, stepsDescriptions, startStepId, isAutoStarted = false, clearHistory = true) => {
+        if (isAutoStarted && this._isAutostartDisabledForGuide(guideId)) {
+            return;
+        } else {
+            this.guideAutostarted = isAutoStarted;
+        }
+
         if (clearHistory) {
             LocalStorageAdapter.remove(GUIDE_STEP_HISTORY);
         }
@@ -169,6 +186,17 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         }
     };
 
+    this._isAutostartDisabledForGuide = (guideId) => {
+        const guideAutostartState = LocalStorageAdapter.get(LSKeys.GUIDES_AUTOSTART) || {};
+        return guideAutostartState[guideId]?.disabled;
+    }
+
+    this._disableAutostartForGuide = (guideId) => {
+        const guideAutostartState = LocalStorageAdapter.get(LSKeys.GUIDES_AUTOSTART) || {};
+        guideAutostartState[guideId] = {disabled: true}
+        LocalStorageAdapter.set(LSKeys.GUIDES_AUTOSTART, JSON.stringify(guideAutostartState));
+    }
+
     /**
      * Creates a guide.
      * @param {string} guideId - a unique ID that identifies the guide.
@@ -179,14 +207,64 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
         return new Shepherd.Tour({
             name: guideId,
             useModalOverlay: true,
-            confirmCancel: true,
-            confirmCancelMessage: $translate.instant('guide.confirm.cancel.message'),
+            confirmCancel: this._confirmGuideCancel,
             defaultStepOptions: {
                 classes: 'shadow-md bg-purple-dark',
                 scrollTo: true
             }
         });
     };
+
+    this._confirmGuideCancel = () => {
+        const guide = Shepherd.activeTour;
+        const currentStep = guide.getCurrentStep()
+
+        if (currentStep.options.isLastStep) {
+            this._completeGuide(guide);
+            return;
+        }
+
+        guide.hide();
+
+        return ModalService.openCustomModal({
+            templateUrl: 'js/angular/guides/templates/modal-confirm-exit.html',
+            title: decodeHTML($translate.instant('guides.confirm-cancel-modal.title')),
+            message: decodeHTML($translate.instant('guides.confirm-cancel-modal.content')),
+            warning: true,
+            controller: ['$scope', '$uibModalInstance', '$sce', 'config', ConfirmExitModalCtrl],
+            hasDontShowAgain: this.guideAutostarted,
+        }).result
+            .then((disableAutoStart) => {
+                // Exit of guide is confirmed
+                if (disableAutoStart) {
+                    // User choose not to auto start the guide again
+                    this._disableAutostartForGuide(guide.options.name)
+                }
+                return true
+            })
+            .catch(() => {
+                guide.show(currentStep.id);
+            });
+
+        function ConfirmExitModalCtrl($scope, $uibModalInstance, $sce, config) {
+            $scope.cancelButtonKey = config.cancelButtonKey;
+            $scope.hasDontShowAgain = config.hasDontShowAgain;
+            $scope.title = config.title;
+            $scope.message = $sce.trustAsHtml(config.message);
+
+            $scope.exit = function () {
+                $uibModalInstance.close(false);
+            };
+
+            $scope.dontShowAgain = function () {
+                $uibModalInstance.close(true);
+            };
+
+            $scope.cancel = function () {
+                $uibModalInstance.dismiss();
+            };
+        }
+    }
 
     /**
      * Transforms <code>stepsDescriptions</code> to Shepherd Tour steps and add it to <code>guide<code>.
@@ -332,20 +410,25 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
     };
 
     this._subscribeToGuideCanceled = () => {
+        const guideEndHandler = ({tour}) => {
+            this._clearLocalStorage();
+            const currentStep = tour.getCurrentStep();
+            if (currentStep && angular.isFunction(currentStep.hide)) {
+                // Some steps have state and when shepherd library hides them the "hide()" function is called. This function cleaned the state
+                // of the steps. When we are on step which has state and click on cancel button the library don't call this function.
+                // So we call it manually. For example see "select-repository" plugin it has listener which must be removed when step is hided.
+                currentStep.hide();
+            }
+            this.guideAutostarted = null;
+            if (this.onCancel) {
+                this.onCancel();
+            }
+        }
         if (!this.guideCancelSubscription) {
-            this.guideCancelSubscription = Shepherd.on('cancel', () => {
-                this._clearLocaleStorage();
-                const currentStep = Shepherd.activeTour.getCurrentStep();
-                if (currentStep && angular.isFunction(currentStep.hide)) {
-                    // Some steps have state and when shepherd library hides them the "hide()" function is called. This function cleaned the state
-                    // of the steps. When we are on step which has state and click on cancel button the library don't call this function.
-                    // So we call it manually. For example see "select-repository" plugin it has listener which must be removed when step is hided.
-                    currentStep.hide();
-                }
-                if (this.onCancel) {
-                    this.onCancel();
-                }
-            });
+            this.guideCancelSubscription = Shepherd.on('cancel', guideEndHandler);
+        }
+        if (!this.guideCompleteSubscription) {
+            this.guideCompleteSubscription = Shepherd.on('complete', guideEndHandler);
         }
     };
 
@@ -397,27 +480,35 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
 
 
     this._getCancelButton = (guide) => {
-        return this._getButton($translate.instant('common.close'), () => this._cancelGuide(guide, false), true);
+        return this._getButton($translate.instant('common.close'), () => this._completeGuide(guide), true);
     };
 
     this._backToGuidesButton = (guide) => {
         $location.path("guides");
-        this._cancelGuide(guide, false);
+        this._completeGuide(guide);
     };
 
     /**
-     * Cancel the guide.
-     * @param {Shepherd.Tour} guide
-     * @param {boolean} confirmCancel
+     * Completes teh guide
+     * @param guide
      * @private
      */
-    this._cancelGuide = (guide, confirmCancel = true) => {
-        guide.options.confirmCancel = confirmCancel;
-        guide.cancel();
-
-        if (this.onCancel()) {
-            this.onCancel();
+    this._completeGuide = (guide) => {
+        if (this.guideAutostarted) {
+            this._disableAutostartForGuide(guide.options.name)
         }
+        guide.complete();
+    }
+
+    /**
+     * Abort the guide due to an error.
+     * @param {Shepherd.Tour} guide
+     * @private
+     */
+    this._abortGuide = (guide) => {
+        toastr.error($translate.instant('guide.unexpected.error.message'));
+        guide.options.confirmCancel = false;
+        guide.cancel();
     };
 
     /**
@@ -571,8 +662,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
                             })
                             .catch((error) => {
                                 console.log(error);
-                                toastr.error($translate.instant('guide.unexpected.error.message'));
-                                this._cancelGuide(guide, false);
+                                this._abortGuide(guide);
                             });
                         return;
                     } else if (nextStep.options.forceReload || nextStep.options.url && nextStep.options.url !== currentStep.options.url) {
@@ -583,8 +673,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
                 })
                 .catch((error) => {
                     console.log(error);
-                    toastr.error($translate.instant('guide.unexpected.error.message'));
-                    this._cancelGuide(guide, false);
+                    this._abortGuide(guide);
                 });
         };
     };
@@ -611,10 +700,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
                         if (angular.isFunction(currentStepDescription.onNextClick)) {
                             const onNextResult = currentStepDescription.onNextClick(guide, currentStepDescription);
                             if (onNextResult instanceof Promise) {
-                                onNextResult.catch((error) => {
-                                    toastr.error($translate.instant('guide.unexpected.error.message'));
-                                    this._cancelGuide(guide, false);
-                                });
+                                onNextResult.catch(() => this._abortGuide(guide));
                             }
                         } else {
                             if (nextStepDescription.forceReload || nextStepDescription.url && nextStepDescription.url !== currentStepDescription.url) {
@@ -709,7 +795,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
      * Remove all related data to a guid from local store.
      * @private
      */
-    this._clearLocaleStorage = () => {
+    this._clearLocalStorage = () => {
         LocalStorageAdapter.remove(GUIDE_ID);
         LocalStorageAdapter.remove(GUIDE_PAUSE);
         LocalStorageAdapter.remove(GUIDE_CURRENT_STEP_ID);
@@ -789,6 +875,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, $route, $in
             onPreviousClick: stepDescription.onPreviousClick,
             initPreviousStep: stepDescription.initPreviousStep,
             forceReload: stepDescription.forceReload,
+            isLastStep: !!stepDescription.lastStep,
             when: {
                 show: this._getShowFunction(guide, stepDescription, onShow)
             }
