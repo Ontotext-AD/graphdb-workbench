@@ -143,5 +143,20 @@
     "user": {
       "settings": "User settings"
     }
+  },
+  "operations_notification": {
+    "links": {
+      "queries": "Running queries",
+      "updates": "Running updates",
+      "imports": "Running imports",
+      "CREATE_BACKUP_IN_PROGRESS": "Creating backup",
+      "RESTORE_BACKUP_IN_PROGRESS": "Restoring backup",
+      "CREATE_CLOUD_BACKUP_IN_PROGRESS": "Creating cloud backup",
+      "RESTORE_CLOUD_BACKUP_IN_PROGRESS": "Restoring cloud backup",
+      "IN_SYNC": "In sync",
+      "RECOVERING": "Recovering",
+      "OUT_OF_SYNC": "Out of sync",
+      "UNAVAILABLE_NODES": "Unavailable nodes"
+    }
   }
 }

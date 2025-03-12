@@ -146,5 +146,20 @@
     "user": {
       "settings": "Paramètres de l'utilisateur"
     }
+  },
+  "operations_notification": {
+    "links": {
+      "queries": "Exécution de requêtes",
+      "updates": "Exécution de mises à jour",
+      "imports": "Exécution d'importations",
+      "CREATE_BACKUP_IN_PROGRESS": "Création de sauvegarde en cours",
+      "RESTORE_BACKUP_IN_PROGRESS": "Restauration de sauvegarde en cours",
+      "CREATE_CLOUD_BACKUP_IN_PROGRESS": "Création de sauvegarde cloud en cours",
+      "RESTORE_CLOUD_BACKUP_IN_PROGRESS": "Restauration de sauvegarde cloud en cours",
+      "IN_SYNC": "Synchronisé",
+      "RECOVERING": "Récupération en cours",
+      "OUT_OF_SYNC": "Désynchronisé",
+      "UNAVAILABLE_NODES": "Nœuds indisponibles"
+    }
   }
 }
