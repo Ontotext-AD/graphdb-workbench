@@ -144,6 +144,22 @@ Type: `Promise<void>`
 
 
 
+### `updateSelectedRepositoryId(repoId: string) => Promise<void>`
+
+Updates the selected repository ID in the application context to navigate to operations status summary.
+
+#### Parameters
+
+| Name     | Type     | Description                                                                 |
+| -------- | -------- | --------------------------------------------------------------------------- |
+| `repoId` | `string` | - The ID of the repository to select for viewing operations status summary. |
+
+#### Returns
+
+Type: `Promise<void>`
+
+A Promise that resolves when the repository ID has been successfully updated.
+
 
 ----------------------------------------------
 

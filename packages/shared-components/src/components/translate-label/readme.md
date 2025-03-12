@@ -34,6 +34,7 @@ Example of usage:
  - [onto-footer](../onto-footer)
  - [onto-license-alert](../onto-license-alert)
  - [onto-navbar](../onto-navbar)
+ - [onto-operations-notification](../onto-operations-notification)
  - [onto-permission-banner](../onto-permission-banner)
  - [onto-toggle-switch](../onto-toggle-switch)
 
@@ -46,6 +47,7 @@ graph TD;
   onto-footer --> translate-label
   onto-license-alert --> translate-label
   onto-navbar --> translate-label
+  onto-operations-notification --> translate-label
   onto-permission-banner --> translate-label
   onto-toggle-switch --> translate-label
   style translate-label fill:#f9f,stroke:#333,stroke-width:4px
