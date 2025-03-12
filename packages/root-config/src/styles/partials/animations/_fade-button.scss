@@ -1,0 +1,38 @@
+$initial-background-border-color: #EBEBEB;
+
+@keyframes fade-button {
+    from {
+        background-color: $initial-background-border-color;
+        border-color: $initial-background-border-color;
+    }
+    50% {
+        background-color: var(--fade-color);
+        border-color: var(--fade-color);
+    }
+    to {
+        background-color: $initial-background-border-color;
+        border-color: $initial-background-border-color;
+    }
+}
+
+@mixin fade-with-color($fade-color) {
+  animation: fade-button 2s infinite;
+  --fade-color: #{$fade-color};
+  border: 1px solid transparent !important;
+
+  &:hover {
+    text-decoration: none;
+    background-color: var(--fade-color) !important;
+    border-color: var(--fade-color) !important;
+  }
+
+  transition: transform 0.15s ease-out;
+}
+
+.onto-btn-fade-danger {
+  @include fade-with-color(var(--color-danger-medium));
+}
+
+.onto-btn-fade-warning {
+  @include fade-with-color(var(--color-warning-medium));
+}
