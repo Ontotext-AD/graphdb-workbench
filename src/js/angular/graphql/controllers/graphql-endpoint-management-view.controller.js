@@ -443,8 +443,15 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
      * Polls the GraphQL endpoints info.
      */
     const pollEndpointsInfo = () => {
+        // Cancel any existing timer first to prevent duplicates
+        if (endpointsInfoPollingTimer) {
+            $interval.cancel(endpointsInfoPollingTimer);
+            endpointsInfoPollingTimer = undefined;
+        }
+
         endpointsInfoPollingTimer = $interval(() => {
-            if (!endpointsInfoLoader) {
+            // Only start a new request if we're not already loading and if the controller is still active
+            if (!endpointsInfoLoader && !$scope.$$destroyed) {
                 endpointsInfoLoader = reloadEndpointsInfo();
             }
         }, ENDPOINTS_INFO_POLLING_INTERVAL);
@@ -456,6 +463,7 @@ function GraphqlEndpointManagementViewCtrl($scope, $location, $interval, $reposi
     const unsubscribeAll = () => {
         endpointsInfoPollingTimer && $interval.cancel(endpointsInfoPollingTimer);
         endpointsInfoPollingTimer = undefined;
+        endpointsInfoLoader = undefined;
         subscriptions.forEach((subscription) => subscription());
     };
 
