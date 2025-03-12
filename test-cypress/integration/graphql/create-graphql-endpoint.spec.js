@@ -4,7 +4,7 @@ import {CreateGraphqlEndpointSteps} from "../../steps/graphql/create-graphql-end
 import {RepositoriesStubs} from "../../stubs/repositories/repositories-stubs";
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 
-describe.skip('Graphql: create endpoint', () => {
+describe('Graphql: create endpoint', () => {
     let repositoryId;
 
     beforeEach(() => {

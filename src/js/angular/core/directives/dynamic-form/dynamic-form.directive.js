@@ -1,16 +1,5 @@
-/**
- * Enum for field types.
- * @readonly
- * @enum {string}
- */
-export const FIELD_TYPE = {
-    STRING: 'string',
-    TEXT: 'text',
-    BOOLEAN: 'boolean',
-    JSON: 'json',
-    SELECT: 'select',
-    MULTI_SELECT: 'multi_select'
-}
+import 'angular/core/directives/dynamic-form/dynamic-form-field.directive';
+import {FIELD_TYPE} from "./field-type";
 
 /**
  * @function dynamicFormDirective
@@ -41,7 +30,7 @@ export const FIELD_TYPE = {
  *
  * @returns {Object} The directive definition object.
  */
-const modules = [];
+const modules = ['graphdb.framework.core.directives.dynamic-form-field'];
 angular
     .module('graphdb.framework.core.directives.dynamic-form', modules)
     .directive('dynamicForm', dynamicFormDirective);
@@ -95,18 +84,4 @@ function dynamicFormDirective() {
     };
 }
 
-angular.module('graphdb.framework.core.directives.dynamic-form')
-    .directive('dynamicFormField', function($compile) {
-    return {
-        restrict: 'E',
-        scope: {
-            field: '=',
-            form: '=',
-            translationKeyPrefix: '='
-        },
-        templateUrl: 'js/angular/core/directives/dynamic-form/templates/form-field-template.html',
-        controller: function($scope) {
-            $scope.FIELD_TYPE = FIELD_TYPE; // Make sure this constant is available
-        }
-    };
-});
+

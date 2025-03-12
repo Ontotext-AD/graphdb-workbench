@@ -1,8 +1,8 @@
-import {FIELD_TYPE} from "../../core/directives/dynamic-form/dynamic-form.directive";
 import {SelectMenuOptionsModel} from "../../models/form-fields";
 import {DynamicFormField} from "../../models/dynamic-form/dynamic-form-field";
 import {CONFIG_TYPE} from "../../models/graphql/graphql-endpoint-configuration-setting";
 import {DynamicFormGroup, DynamicFormModel} from "../../models/dynamic-form/dynamic-form-model";
+import {FIELD_TYPE} from "../../core/directives/dynamic-form/field-type";
 
 /**
  * Maps the dynamic form data to the dynamic form model.
