@@ -19,6 +19,12 @@ export class VisualGraphSteps {
         cy.visit('/graphs-visualizations?uri=http:%2F%2Fwww.w3.org%2FTR%2F2003%2FPR-owl-guide-20031209%2Fwine%23Dry');
     }
 
+    static openNodeLabelGraph() {
+        cy.visit('/graphs-visualizations?uri=http:%2F%2Fexample.com%2Fnode1');
+        // Wait for at least one predicate to be displayed, to ensure that the visual graph is open and ready for testing.
+        VisualGraphSteps.getPredicates().should('contain', 'connectedTo');
+    }
+
     static verifyUrl() {
         cy.url().should('include', `${Cypress.config('baseUrl')}${VIEW_URL}`);
     }
@@ -114,6 +120,14 @@ export class VisualGraphSteps {
 
     static getNodes() {
         return cy.get('.node-wrapper').should('be.visible');
+    }
+
+    static getNode(nodeId) {
+        return cy.get(`.node-wrapper[id="${nodeId}"]`);
+    }
+
+    static getNodeLabel(nodeId) {
+        return this.getNode(nodeId).find('.node-label-body div');
     }
 
     static getPredicates() {

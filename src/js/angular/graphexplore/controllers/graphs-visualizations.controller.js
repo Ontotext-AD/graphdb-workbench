@@ -7,6 +7,7 @@ import 'angular/utils/local-storage-adapter';
 import {NUMBER_PATTERN} from "../../repositories/repository.constants";
 import {removeSpecialChars} from "../../utils/string-utils";
 import {NamespacesListModel} from "../../models/namespaces/namespaces-list";
+import {HtmlUtil} from "../../utils/html-util";
 
 const modules = [
     'ui.scroll.jqlite',
@@ -472,33 +473,9 @@ function GraphsVisualizationsCtrl(
                 return d.fontSize + 'px';
             })
             .append('xhtml:div')
-            .text(function (d) {
-                return d.labels[0].label;
+            .html(function (d) {
+                return HtmlUtil.getText(d.labels[0].label).replaceAll("\n", "<br>");
             });
-
-        // Our own implementation of what browsers should really do but they either can't or don't do properly.
-        // This code will look at each node's label element and check if the text fits. This is achieved by
-        // checking the DOM properties scrollHeight/-Width and clientHeight/-Width. Generally if the scroll ones
-        // are bigger than the client ones the content doesn't fit.
-        $timeout(function () {
-            $('.node-label-body div').each(function (i, e) {
-                // Initial text is minus one character as we'll be adding a one-character suffix if we need to truncate
-                let text = e.textContent.substring(0, e.textContent.length - 1);
-                const suffixToInsert = '…';
-                let endlessLoopGuard = 0;
-
-                // Loop until the text fits
-                while (endlessLoopGuard < 200 && (e.scrollHeight > e.clientHeight || e.scrollWidth > e.clientWidth)) {
-                    // Take previous text minus one character
-                    text = text.substring(0, text.length - 1);
-
-                    // Set the new text + suffix as textContent
-                    e.textContent = text + suffixToInsert;
-
-                    endlessLoopGuard++;
-                }
-            });
-        }, 50);
     };
 
     const initSettings = (principal) => {
