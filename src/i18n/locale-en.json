@@ -625,7 +625,7 @@
                         "label": "Save"
                     },
                     "explain_settings": {
-                        "label": "Explain settings"
+                        "label": "Review agent instructions"
                     }
                 },
                 "dialog": {
