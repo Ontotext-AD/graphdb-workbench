@@ -53,4 +53,31 @@ describe('Header', () => {
       HeaderSteps.getLicenseAlert().should('not.exist');
     });
   });
+
+  describe('OperationsNotification', () => {
+    beforeEach(() => {
+      cy.on('window:before:load', (win) => {
+        win.crypto.randomUUID = () => '123e4567-e89b-12d3-a456-426655440000';
+      });
+    });
+
+    it('Should be shown, when there are active operations', () => {
+      // Given, I visit the header page
+      HeaderSteps.visit();
+
+      // Then, I expect to not see the operations notification component
+      // since, I have not selected any repository
+      HeaderSteps.getOperationsNotification().should('not.exist');
+
+      // When, I load repositories
+      HeaderSteps.loadRepositories();
+
+      // And select the first repository, so I can trigger monitoring requests
+      HeaderSteps.getRepositorySelector().click();
+      HeaderSteps.selectRepository(0);
+
+      // Then, I expect to see the operations notification component
+      HeaderSteps.getOperationsNotification().should('be.visible');
+    });
+  })
 });

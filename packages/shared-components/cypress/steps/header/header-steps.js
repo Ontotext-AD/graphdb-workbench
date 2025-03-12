@@ -17,6 +17,10 @@ export class HeaderSteps extends BaseSteps {
     return HeaderSteps.getHeader().find('.onto-repository-selector');
   }
 
+  static selectRepository(index) {
+    HeaderSteps.getRepositorySelector().find('.onto-dropdown-menu-item').eq(index).click();
+  }
+
   static getSearch() {
     return HeaderSteps.getHeader().find('.search-component');
   }
@@ -28,5 +32,13 @@ export class HeaderSteps extends BaseSteps {
   static setLicenseValid(valid) {
     const license = valid ? '#valid-license' : '#invalid-license';
     cy.get(license).click();
+  }
+
+  static getOperationsNotification() {
+    return HeaderSteps.getHeader().find('onto-operations-notification');
+  }
+
+  static loadRepositories() {
+    cy.get('#load-repositories').click();
   }
 }

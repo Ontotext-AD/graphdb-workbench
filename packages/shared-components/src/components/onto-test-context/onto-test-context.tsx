@@ -148,6 +148,18 @@ export class OntoTestContext {
     return Promise.resolve();
   }
 
+  /**
+   * Updates the selected repository ID in the application context to navigate to operations status summary.
+   *
+   * @param repoId - The ID of the repository to select for viewing operations status summary.
+   * @returns A Promise that resolves when the repository ID has been successfully updated.
+   */
+  @Method()
+  updateSelectedRepositoryId(repoId: string): Promise<void> {
+    ServiceProvider.get(RepositoryContextService).updateSelectedRepositoryId(repoId);
+    return Promise.resolve();
+  }
+
     /**
    * Sets up a listener for language changes and updates the application language accordingly.
    *
