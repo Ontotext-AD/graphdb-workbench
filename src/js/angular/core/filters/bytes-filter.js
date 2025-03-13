@@ -24,6 +24,12 @@ angular.module('graphdb.framework.core.filters.bytes', [])
             }
             const units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'];
             let number = Math.floor(Math.log(bytes) / Math.log(1024));
-            return (bytes / Math.pow(1024, number)).toFixed(precision) + ' ' + units[number];
+
+            const unit = units[number];
+            // If the unit is bytes, we don't need to display the decimal places.'
+            if ('bytes' === unit) {
+                precision = 0;
+            }
+            return (bytes / Math.pow(1024, number)).toFixed(precision) + ' ' + unit;
         };
     });
