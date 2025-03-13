@@ -1,5 +1,6 @@
 import {decodeHTML} from "../../../../../app";
 import {mapUriAsNtripleAutocompleteResponse} from "../../../rest/mappers/autocomplete-mapper";
+import 'angular/core/filters/bytes-filter';
 
 angular
     .module('graphdb.framework.core.directives.autocomplete', [])

@@ -52,7 +52,7 @@
                                ngf-select
                                ngf-keep="false"
                                ngf-change="fileSelected($files, $file, $newFiles, $duplicateFiles, $invalidFiles)"
-                               ngf-max-size="maxUploadFileSizeMB + 'MB'">
+                               ngf-max-size="maxUploadFileSizeBytes">
                                 <div class="grid-container">
                                     <em class="icon-upload icon-lg"></em>
                                     <!-- Keep this a label, it points to the input element created by ngFileUpload
@@ -61,7 +61,7 @@
                                         <div>{{'upload.rdf.files.label' | translate}}</div>
                                         <small
                                             class="text-muted">{{'all.rdf.formats.label' | translate}}{{'up.to' | translate}}
-                                            {{maxUploadFileSizeMB | number}} MB
+                                            {{maxUploadFileSizeBytes | bytes}}
                                         </small>
                                     </label>
                                 </div>

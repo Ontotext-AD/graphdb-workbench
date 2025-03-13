@@ -1442,7 +1442,7 @@
         "error.could.not.clear": "Impossible d'effacer le statut; {{data}}",
         "error.default.settings": "Impossible de récupérer les paramètres par défaut; {{data}}",
         "could.not.send.file": "Impossible d'envoyer le fichier à importer; {{data}}",
-        "large.file": "Fichier {{name}} trop grand {{size}} MB. Utilisez l'importation de fichiers du serveur.",
+        "large.file": "Fichier {{name}} trop grand {{size}}. Utilisez l'importation de fichiers du serveur.",
         "could.not.upload": "Impossible de télécharger le fichier {{name}}. Les archives BZip2 ne sont pas prises en charge.",
         "no.such.file": "Aucun fichier de ce type; {{name}}",
         "could.not.send.data": "Impossible d'envoyer des données pour l'importation; {{data}}",
