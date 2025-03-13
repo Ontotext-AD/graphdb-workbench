@@ -748,7 +748,7 @@
         "playground": {
             "helpInfo": "Utilisez le GraphQL Playground pour créer et tester des requêtes en temps réel. Explorez votre schéma, envoyez des requêtes et inspectez les réponses en toute simplicité.",
             "message": {
-                "no_schemas_in_repository": "Aucun point de terminaison actif n'a été trouvé dans le référentiel actuel. Gérez les schémas GraphQL <a href=\"/graphql/endpoints\">ici</a>",
+                "no_schemas_in_repository": "Aucun point de terminaison actif n'a été trouvé dans le référentiel actuel. Gérez les schémas GraphQL <a href=\"graphql/endpoints\">ici</a>",
                 "abort_query": "Requête annulée : L'opération a été arrêtée avant son achèvement."
             },
             "endpoint_selector": {

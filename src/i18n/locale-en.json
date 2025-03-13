@@ -749,7 +749,7 @@
         "playground": {
             "helpInfo": "Use the GraphQL Playground to build and test queries in real time. Explore your schema, send requests, and inspect responses effortlessly.",
             "message": {
-                "no_schemas_in_repository": "No active endpoints found in the current repository. Manage the GraphQL schemas <a href=\"/graphql/endpoints\">here</a>",
+                "no_schemas_in_repository": "No active endpoints found in the current repository. Manage the GraphQL schemas <a href=\"graphql/endpoints\">here</a>",
                 "abort_query": "Query canceled: The operation was stopped before completion."
             },
             "endpoint_selector": {
