@@ -78,7 +78,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
         $scope.fileFormatsExtended = FileFormats.getFileFormatsExtended();
         $scope.fileFormatsHuman = FileFormats.getFileFormatsHuman() + $translate.instant('import.gz.zip');
         $scope.textFileFormatsHuman = FileFormats.getTextFileFormatsHuman();
-        $scope.maxUploadFileSizeMB = 0;
+        $scope.maxUploadFileSizeBytes = 0;
         $scope.SORTING_TYPES = SortingType;
         $scope.TAB_IDS = TABS;
 
@@ -472,7 +472,7 @@ importViewModule.controller('ImportViewCtrl', ['$scope', 'toastr', '$interval', 
                         value: data[i].value
                     };
                 }
-                $scope.maxUploadFileSizeMB = FileUtils.convertBytesToMegabytes($scope.appData.properties['graphdb.workbench.maxUploadSize'].value);
+                $scope.maxUploadFileSizeBytes = $scope.appData.properties['graphdb.workbench.maxUploadSize'].value;
             }).error(function (data) {
                 const msg = getError(data);
                 toastr.error(msg, $translate.instant('common.error'));
@@ -576,7 +576,7 @@ importViewModule.controller('ImportCtrl', ['$scope', 'toastr', '$controller', '$
     }
 }]);
 
-importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$uibModal', '$translate', '$repositories', 'ImportRestService', 'UploadRestService', 'ModalService', 'ImportContextService', 'EventEmitterService', function ($scope, toastr, $controller, $uibModal, $translate, $repositories, ImportRestService, UploadRestService, ModalService, ImportContextService, EventEmitterService) {
+importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$uibModal', '$translate', '$repositories', 'ImportRestService', 'UploadRestService', 'ModalService', 'ImportContextService', 'EventEmitterService', '$filter', function ($scope, toastr, $controller, $uibModal, $translate, $repositories, ImportRestService, UploadRestService, ModalService, ImportContextService, EventEmitterService, $filter) {
 
     // =========================
     // Private variables
@@ -754,7 +754,7 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
             invalidFiles.forEach(function (file) {
                 toastr.warning($translate.instant('import.large.file', {
                     name: file.name,
-                    size: FileUtils.convertBytesToMegabytes(file.size)
+                    size: $filter('bytes')(file.size)
                 }));
             });
         }
