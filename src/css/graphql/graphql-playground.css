@@ -121,21 +121,22 @@ graphql-playground {
     background-color: #fff !important;
 }
 
-.graphql-playground-view #graphiql .graphiql-tabs .graphiql-tab-add {
+.graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header .graphiql-tab-add {
+    padding: 8px;
     background-color: var(--base-background-hover-color);
 }
 
-.graphql-playground-view #graphiql .graphiql-tabs .graphiql-tab-add:hover svg,
-.graphql-playground-view #graphiql .graphiql-tabs .graphiql-tab-close:hover {
+.graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header .graphiql-tab-add:hover svg,
+.graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header .graphiql-tab-close:hover {
     background-color: transparent;
     color: var(--primary-color);
 }
 
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header .graphiql-tabs .graphiql-tab-active {
+.graphql-playground-view #graphiql .graphiql-tabs .graphiql-tab-active {
     background-color: var(--base-background-hover-color);
 }
 
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header .graphiql-tabs .graphiql-tab-button {
+.graphql-playground-view #graphiql .graphiql-tabs .graphiql-tab-button {
     padding: 4px 8px;
     color: var(--base-text-color);
 }
@@ -155,10 +156,7 @@ graphql-playground {
 .graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header {
     height: unset;
     color: inherit;
-}
-
-.graphql-playground-view #graphiql .graphiql-sessions .graphiql-session-header button.graphiql-tab-add {
-    padding: 8px;
+    justify-content: start;
 }
 
 .graphql-playground-view #graphiql .graphiql-sessions .graphiql-session {
@@ -190,9 +188,9 @@ graphql-playground {
     font-weight: 300;
 }
 
-/* When there is a single opened tab in the editor */
+/* When there is a single opened tab in the editor the create tab button moves in the most right */
 .graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors.full-height {
-    margin-top: -13px;
+    margin-top: 0;
 }
 
 .graphql-playground-view #graphiql .graphiql-sessions .graphiql-editors .graphiql-toolbar {
@@ -220,6 +218,10 @@ graphql-playground {
     color: var(--primary-color);
 }
 
+.graphql-playground-view #graphiql .graphiql-editor-tools {
+    padding: 0;
+}
+
 .graphql-playground-view #graphiql .graphiql-editor-tools button {
     background-color: #fff;
     color: var(--secondary-color);
@@ -233,6 +235,9 @@ graphql-playground {
     color: var(--default-btn-focus-color);
 }
 
+.graphql-playground-view #graphiql .graphiql-editor-tools .graphiql-toggle-editor-tools:hover svg {
+    color: var(--primary-color);
+}
 
 /* =============================================== */
 /*   overrides for graphql-playground history      */
