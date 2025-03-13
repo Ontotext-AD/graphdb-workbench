@@ -48,7 +48,8 @@ const modules = [
     'graphdb.framework.core.directives.operationsstatusesmonitor',
     'graphdb.framework.core.directives.autocomplete',
     'ngCustomElement',
-    'graphdb.framework.core.services.language-service'
+    'graphdb.framework.core.services.language-service',
+    'graphdb.framework.core.filters.bytes'
 ];
 
 const providers = [

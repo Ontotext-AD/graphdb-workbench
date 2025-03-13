@@ -1442,7 +1442,7 @@
         "error.could.not.clear": "Could not clear status; {{data}}",
         "error.default.settings": "Could not get default settings; {{data}}",
         "could.not.send.file": "Could not send file for import; {{data}}",
-        "large.file": "File {{name}} too big {{size}} MB. Use Server Files import.",
+        "large.file": "File {{name}} too big {{size}}. Use Server Files import.",
         "could.not.upload": "Could not upload file {{name}}. BZip2 archives are not supported.",
         "no.such.file": "No such file; {{name}}",
         "could.not.send.data": "Could not send data for import; {{data}}",
