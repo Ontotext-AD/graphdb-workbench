@@ -11,6 +11,7 @@ export * from './models/product-info';
 export * from './models/storage';
 export * from './models/language';
 export * from './models/cookie';
+export * from './models/monitoring';
 
 // Export providers for external usages.
 export * from './providers';
@@ -27,6 +28,7 @@ export * from './services/storage';
 export * from './services/security';
 export * from './services/event-service';
 export * from './services/cookie';
+export * from './services/monitoring';
 
 // Export utils for external usages.
 export * from './services/utils';

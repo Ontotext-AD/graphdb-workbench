@@ -8,6 +8,6 @@ export class BaseSteps {
   }
 
   static getRedirectUrl() {
-    return cy.get('#redirect-url');
+    return cy.get('.redirect-url');
   }
 }

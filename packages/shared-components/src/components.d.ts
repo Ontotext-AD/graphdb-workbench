@@ -7,7 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { DialogHandler } from "./models/dialog/dialog-handler";
 import { DialogConfig } from "./components/dialogs/onto-dialog";
-import { AuthenticatedUser, Awaitable, License, ProductInfo, SecurityConfig } from "../../api/dist/ontotext-workbench-api.d";
+import { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, SecurityConfig } from "../../api/dist/ontotext-workbench-api.d";
 import { DropdownItem } from "./models/dropdown/dropdown-item";
 import { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 import { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
@@ -16,7 +16,7 @@ import { ToggleEventPayload } from "./models/toggle-switch/toggle-event-payload"
 import { TranslationParameter } from "./models/translation/translation-parameter";
 export { DialogHandler } from "./models/dialog/dialog-handler";
 export { DialogConfig } from "./components/dialogs/onto-dialog";
-export { AuthenticatedUser, Awaitable, License, ProductInfo, SecurityConfig } from "../../api/dist/ontotext-workbench-api.d";
+export { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, SecurityConfig } from "../../api/dist/ontotext-workbench-api.d";
 export { DropdownItem } from "./models/dropdown/dropdown-item";
 export { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 export { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
@@ -128,6 +128,12 @@ export namespace Components {
          */
         "selectedMenu": string;
     }
+    interface OntoOperationsNotification {
+        /**
+          * The active operations summary. Holds general status and all current operations
+         */
+        "activeOperations": OperationStatusSummary;
+    }
     interface OntoPermissionBanner {
     }
     interface OntoRepositorySelector {
@@ -164,6 +170,12 @@ export namespace Components {
           * @returns A Promise that resolves when the security configuration has been successfully updated.
          */
         "setSecurityConfig": (securityConfig: SecurityConfig) => Promise<void>;
+        /**
+          * Converts a JSON representation of operation status summary to an OperationStatusSummary object.
+          * @param operationsStatusSummaryJSON - The JSON representation of operation status summary to be converted.
+          * @returns A new OperationStatusSummary object instance created from the provided JSON data.
+         */
+        "toOperationsStatusSummary": (operationsStatusSummaryJSON: OperationStatusSummary) => Promise<OperationStatusSummary>;
         /**
           * Updates the license information in the context.  This method uses the LicenseContextService to update the license and returns a resolved Promise once the operation is complete.
           * @param license - The new License object to be set.
@@ -353,6 +365,12 @@ declare global {
         prototype: HTMLOntoNavbarElement;
         new (): HTMLOntoNavbarElement;
     };
+    interface HTMLOntoOperationsNotificationElement extends Components.OntoOperationsNotification, HTMLStencilElement {
+    }
+    var HTMLOntoOperationsNotificationElement: {
+        prototype: HTMLOntoOperationsNotificationElement;
+        new (): HTMLOntoOperationsNotificationElement;
+    };
     interface HTMLOntoPermissionBannerElement extends Components.OntoPermissionBanner, HTMLStencilElement {
     }
     var HTMLOntoPermissionBannerElement: {
@@ -424,6 +442,7 @@ declare global {
         "onto-layout": HTMLOntoLayoutElement;
         "onto-license-alert": HTMLOntoLicenseAlertElement;
         "onto-navbar": HTMLOntoNavbarElement;
+        "onto-operations-notification": HTMLOntoOperationsNotificationElement;
         "onto-permission-banner": HTMLOntoPermissionBannerElement;
         "onto-repository-selector": HTMLOntoRepositorySelectorElement;
         "onto-test-context": HTMLOntoTestContextElement;
@@ -549,6 +568,12 @@ declare namespace LocalJSX {
          */
         "selectedMenu"?: string;
     }
+    interface OntoOperationsNotification {
+        /**
+          * The active operations summary. Holds general status and all current operations
+         */
+        "activeOperations"?: OperationStatusSummary;
+    }
     interface OntoPermissionBanner {
     }
     interface OntoRepositorySelector {
@@ -613,6 +638,7 @@ declare namespace LocalJSX {
         "onto-layout": OntoLayout;
         "onto-license-alert": OntoLicenseAlert;
         "onto-navbar": OntoNavbar;
+        "onto-operations-notification": OntoOperationsNotification;
         "onto-permission-banner": OntoPermissionBanner;
         "onto-repository-selector": OntoRepositorySelector;
         "onto-test-context": OntoTestContext;
@@ -655,6 +681,7 @@ declare module "@stencil/core" {
             "onto-layout": LocalJSX.OntoLayout & JSXBase.HTMLAttributes<HTMLOntoLayoutElement>;
             "onto-license-alert": LocalJSX.OntoLicenseAlert & JSXBase.HTMLAttributes<HTMLOntoLicenseAlertElement>;
             "onto-navbar": LocalJSX.OntoNavbar & JSXBase.HTMLAttributes<HTMLOntoNavbarElement>;
+            "onto-operations-notification": LocalJSX.OntoOperationsNotification & JSXBase.HTMLAttributes<HTMLOntoOperationsNotificationElement>;
             "onto-permission-banner": LocalJSX.OntoPermissionBanner & JSXBase.HTMLAttributes<HTMLOntoPermissionBannerElement>;
             "onto-repository-selector": LocalJSX.OntoRepositorySelector & JSXBase.HTMLAttributes<HTMLOntoRepositorySelectorElement>;
             /**

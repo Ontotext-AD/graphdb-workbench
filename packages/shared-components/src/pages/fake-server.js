@@ -12,6 +12,10 @@ module.exports = function (req, res, next) {
     // user update does not return a response body
     res.writeHead(200);
     res.end();
+  } else if (/\/rest\/monitor\/repository\/[^/]+\/operations/.test(req.url)) {
+    // custom response overriding the dev server
+    res.writeHead(200, {"Content-Type": "application/json"});
+    res.end(JSON.stringify(monitoringOperations));
   } else {
     // pass request on to the default dev server
     next();
@@ -114,3 +118,34 @@ const repositorySizeInfo = {
   "total":4412,
   "explicit":3975
 };
+
+const monitoringOperations = {
+  status: 'INFORMATION',
+  allRunningOperations: [
+    {
+      value: '25',
+      status: 'INFORMATION',
+      type: 'queries'
+    },
+    {
+      value: '1',
+      status: 'INFORMATION',
+      type: 'updates'
+    },
+    {
+      value: '1',
+      status: 'CRITICAL',
+      type: 'imports'
+    },
+    {
+      value: 'CREATE_BACKUP_IN_PROGRESS',
+      status: 'WARNING',
+      type: 'backupAndRestore'
+    },
+    {
+      value: 'UNAVAILABLE_NODES',
+      status: 'WARNING',
+      type: 'clusterHealth'
+    }
+  ]
+}
