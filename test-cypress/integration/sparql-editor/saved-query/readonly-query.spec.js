@@ -16,7 +16,7 @@ const PASSWORD = 'root';
  *
  * Tests like this should be refactored to use stubs or other alternative implementations.
  */
-describe.skip('Readonly saved query', () => {
+describe('Readonly saved query', () => {
 
     let repositoryId;
 
@@ -33,11 +33,11 @@ describe.skip('Readonly saved query', () => {
 
     afterEach(() => {
         LoginSteps.logout();
-        cy.deleteRepository(repositoryId);
-        UserAndAccessSteps.visit();
-        LoginSteps.loginWithUser(USER_ADMINISTRATOR, PASSWORD);
-        UserAndAccessSteps.toggleSecurity();
-        cy.deleteUser(USER_NAME);
+        cy.loginAsAdmin().then(() => {
+            cy.deleteRepository(repositoryId, true);
+            cy.switchOffSecurity(true);
+            cy.deleteUser(USER_NAME, true);
+        });
     });
 
     it('Should not allow modifying a saved query if it is readonly', () => {

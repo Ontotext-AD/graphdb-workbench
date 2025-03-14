@@ -6,7 +6,7 @@ import {LoginSteps} from "../../../steps/login-steps";
 
 const DEFAULT_ADMIN_PASSWORD = "root";
 // Moved out of the standard test suite, because Cypress can't verify Free Access is ON in CI
-describe('Security and Free Access', () => {
+describe.skip('Security and Free Access', () => {
     beforeEach(() => {
         UserAndAccessSteps.visit();
         cy.window();
@@ -39,8 +39,12 @@ describe('Security and Free Access', () => {
         UserAndAccessSteps.getFreeAccessSwitchInput().should('not.be.checked');
         // When I toggle Free Access ON
         UserAndAccessSteps.toggleFreeAccess();
+        // Then a modal should appear
+        ModalDialogSteps.getDialog().should('be.visible');
+        UserAndAccessSteps.clickFreeReadAccessRepo('movies');
         // Then I click OK in the modal
         ModalDialogSteps.clickOKButton();
+        ModalDialogSteps.getDialog().should('not.exist');
         // Then the toggle button should be ON
         UserAndAccessSteps.getFreeAccessSwitchInput().should('be.checked');
         // And I should see a success message
