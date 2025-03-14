@@ -1,6 +1,7 @@
 import {Model} from '../common';
 import {OperationGroup} from './operation-group';
 import {OperationStatus} from './operation-status';
+import {GeneratorUtils} from '../../services/utils/generator-utils';
 
 /**
  * Represents a summary of an operation group.
@@ -13,7 +14,7 @@ export class OperationGroupSummary extends Model<OperationGroupSummary> {
 
   constructor(data: OperationGroupSummary) {
     super();
-    this.id = window.crypto.randomUUID();
+    this.id = GeneratorUtils.uuid();
     this.group = data.group;
     this.totalOperations = data.totalOperations;
     this.status = data.status;

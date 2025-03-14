@@ -171,6 +171,12 @@ export namespace Components {
          */
         "setSecurityConfig": (securityConfig: SecurityConfig) => Promise<void>;
         /**
+          * Converts a JSON representation of operation status summary to an OperationStatusSummary object.
+          * @param operationsStatusSummaryJSON - The JSON representation of operation status summary to be converted.
+          * @returns A new OperationStatusSummary object instance created from the provided JSON data.
+         */
+        "toOperationsStatusSummary": (operationsStatusSummaryJSON: OperationStatusSummary) => Promise<OperationStatusSummary>;
+        /**
           * Updates the license information in the context.  This method uses the LicenseContextService to update the license and returns a resolved Promise once the operation is complete.
           * @param license - The new License object to be set.
           * @returns A Promise that resolves when the license update is complete.

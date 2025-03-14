@@ -32,7 +32,7 @@ export class OntoHeader {
   private readonly fibonacciGenerator = new FibonacciGenerator();
 
   private repositoryId?: string;
-  private pollingInterval: NodeJS.Timeout;
+  private pollingInterval: number;
 
   /** The active operations summary for all monitoring operations */
   @State() private activeOperations?: OperationStatusSummary;
@@ -78,7 +78,8 @@ export class OntoHeader {
   }
 
   private startOperationPolling() {
-    this.pollingInterval = setInterval(() => {
+    clearInterval(this.pollingInterval);
+    this.pollingInterval = window.setInterval(() => {
       if (!this.authenticationService.isAuthenticated(this.securityConfig, this.user)) {
         this.activeOperations = undefined;
       }
@@ -96,10 +97,7 @@ export class OntoHeader {
           this.fibonacciGenerator.reset();
           this.skipUpdateActiveOperationsTimes = 0;
         })
-        .catch((error) => {
-          console.error('Error fetching operations:', error);
-          this.skipUpdateActiveOperationsTimes = this.fibonacciGenerator.next();
-        });
+        .catch(() => this.skipUpdateActiveOperationsTimes = this.fibonacciGenerator.next());
     }, this.UPDATE_ACTIVE_OPERATION_TIME_INTERVAL);
   }
 

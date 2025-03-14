@@ -1,5 +1,12 @@
 import {OperationsNotificationSteps} from "../../steps/operations-notification/operations-notification.steps";
 
+const assertGroupCount = (index, textValue) => {
+  OperationsNotificationSteps.getHeaderGroups()
+    .eq(index)
+    .invoke('text')
+    .should('equal', textValue)
+};
+
 describe('onto-operations-notification', () => {
   beforeEach(() => {
     cy.on('window:before:load', (win) => {
@@ -36,13 +43,6 @@ describe('onto-operations-notification', () => {
       cy.wrap($group.text()).should('equal', operationNames[index]);
     })
   });
-
-  const assertGroupCount = (index, textValue) => {
-    OperationsNotificationSteps.getHeaderGroups()
-      .eq(index)
-      .invoke('text')
-      .should('equal', textValue)
-  };
 
   it('should redirect to operation specific href, when clicked', () => {
     // Given, I am on the operations notification page and I have added mock operations

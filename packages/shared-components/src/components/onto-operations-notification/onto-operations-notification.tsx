@@ -1,13 +1,9 @@
 import {Component, h, Prop, State, Listen, Element} from '@stencil/core';
 import {
   OperationGroup,
-  OperationGroupSummary,
   OperationStatus,
   OperationStatusSummary,
-  STATUS_ORDER,
-  OperationGroupSummaryListMapper,
   OperationGroupSummaryList,
-  MapperProvider
 } from '@ontotext/workbench-api';
 
 const operationGroupToIcon = {
@@ -54,7 +50,7 @@ export class OntoOperationsNotification {
 
 
   render() {
-    this.operationGroups = this.toOperationsGroupSummary();
+    this.operationGroups = this.activeOperations.toOperationsGroupSummary();
 
     return (
       <section class="operations-statuses">
@@ -107,31 +103,6 @@ export class OntoOperationsNotification {
     event.stopPropagation();
     this.isOpen = !this.isOpen;
   };
-
-
-  private toOperationsGroupSummary() {
-    const groupToOperationSummary = new Map<OperationGroup, OperationGroupSummary>();
-
-    this.activeOperations.allRunningOperations.getItems().forEach((operation) => {
-      if (!groupToOperationSummary.has(operation.group)) {
-        groupToOperationSummary.set(operation.group, new OperationGroupSummary({
-          group: operation.group,
-          totalOperations: 0,
-          status: OperationStatus.INFORMATION
-        } as OperationGroupSummary));
-      }
-
-      const summary = groupToOperationSummary.get(operation.group);
-      summary.totalOperations += operation.count;
-
-      if (STATUS_ORDER[operation.status] > STATUS_ORDER[summary.status]) {
-        summary.status = operation.status;
-      }
-    });
-
-    const operationGroupArray = Array.from(groupToOperationSummary.values());
-    return MapperProvider.get(OperationGroupSummaryListMapper).mapToModel(operationGroupArray);
-  }
 
   private onLinkClicked(event: Event, href: string) {
     event.preventDefault();

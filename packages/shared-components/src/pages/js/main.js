@@ -38,6 +38,10 @@ const setSecurityConfig = (config) => {
   testContext.setSecurityConfig(config);
 }
 
+const toOperationsStatusSummary = async (activeOperationsMock) => {
+  return testContext.toOperationsStatusSummary(activeOperationsMock);
+}
+
 window.PluginRegistry = {
   get: () => menuItems
 }

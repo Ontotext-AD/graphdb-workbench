@@ -14,7 +14,8 @@ import {
   RestrictedPages,
   SecurityContextService,
   SecurityConfig,
-  ServiceProvider
+  ServiceProvider,
+  OperationStatusSummary
 } from '@ontotext/workbench-api';
 import en from '../../assets/i18n/en.json';
 import fr from '../../assets/i18n/fr.json';
@@ -146,6 +147,17 @@ export class OntoTestContext {
     });
     ServiceProvider.get(SecurityContextService).updateRestrictedPages(restriction);
     return Promise.resolve();
+  }
+
+  /**
+   * Converts a JSON representation of operation status summary to an OperationStatusSummary object.
+   *
+   * @param operationsStatusSummaryJSON - The JSON representation of operation status summary to be converted.
+   * @returns A new OperationStatusSummary object instance created from the provided JSON data.
+   */
+  @Method()
+  toOperationsStatusSummary(operationsStatusSummaryJSON: OperationStatusSummary): Promise<OperationStatusSummary> {
+    return Promise.resolve(new OperationStatusSummary(operationsStatusSummaryJSON));
   }
 
     /**
