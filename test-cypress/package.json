@@ -9,7 +9,7 @@
         "start:flaky": "cypress open --config-file cypress-flaky.config.js",
         "test": "cypress run",
         "test:flaky": "cypress run --config-file cypress-flaky.config.js",
-        "test:partial": "cypress run --spec \"integration/repository/**\"",
+        "test:partial": "cypress run --spec \"integration/graphql/edit-graphql-enpoint**\"",
         "test:core": "cypress run --spec integration/repository/**,integration/import/**,integration/sparql-editor/**,integration/monitor/**,integration/cluster/**,integration/ttyg/**"
     },
     "author": {
@@ -36,7 +36,8 @@
         "cypress-wait-until": "^3.0.2",
         "del": "^6.1.1",
         "minimist": "^1.2.5",
-        "mocha-junit-reporter": "^2.2.0"
+        "mocha-junit-reporter": "^2.2.0",
+        "testcontainers": "^10.20.0"
     },
     "resolutions": {
         "minimist": "^1.2.5"

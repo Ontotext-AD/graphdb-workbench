@@ -11,9 +11,14 @@
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 
+const { GenericContainer } = require("testcontainers");
+
+let graphDBContainer;
+
 const del = require('del');
 
-module.exports = (on, config) => {
+module.exports = async (on, config) => {
+
     // `on` is used to hook into various events Cypress emits
     // `config` is the resolved Cypress config
     on('task', {
@@ -29,8 +34,24 @@ module.exports = (on, config) => {
         }
     });
 
+    on('before:spec', async (spec, results) => {
+        console.log('========================= Starting spec ==========================', spec);
+        graphDBContainer = await new GenericContainer("docker-registry.ontotext.com/graphdb:11.0.0-TR15")
+            .withExposedPorts(7200)
+            // .withEnv("GDB_JAVA_OPTS", "-Dgraphdb.workbench.importDirectory=/opt/home/import-data/ -Dgraphdb.jsonld.whitelist=https://w3c.github.io/json-ld-api/tests/* -Dgraphdb.stats.default=disabled -Dgraphdb.foreground= -Dgraphdb.logger.root.level=ERROR")
+            // .withBindMount("../fixtures/graphdb-import", "/opt/home/import-data/")
+            .start();
+    });
+
     // keep only the videos for the failed specs
-    on('after:spec', (spec, results) => {
+    on('after:spec', async (spec, results) => {
+        console.log('========================= Ending spec ==========================', spec);
+
+        if (graphDBContainer) {
+            console.log("Stopping GraphDB Testcontainer...");
+            await graphDBContainer.stop();
+        }
+
         if (results && results.video) {
             // Do we have failures for any retry attempts?
             const failures = results.tests.some((test) => {
@@ -43,3 +64,10 @@ module.exports = (on, config) => {
         }
     });
 };
+
+// process.on("exit", async () => {
+//     if (graphDBContainer) {
+//         console.log("Stopping GraphDB Testcontainer...");
+//         await graphDBContainer.stop();
+//     }
+// });
