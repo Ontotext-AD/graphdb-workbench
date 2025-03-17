@@ -1,22 +1,25 @@
 @Library('ontotext-platform@GDB-11897-Migrate-pipelines-new-Jenkins') _
 def performCleanup = {
-    node('aws-small') {
+    dir("${env.WORKSPACE}") {
         sh "git checkout .npmrc"
-        dir("test-cypress/") {
+        dir("test-cypress") {
             sh "rm -f .npmrc"
         }
     }
 }
 pipeline {
+     agent {
+        label 'aws-small'
+     }
+
     environment {
         // Needed for our version of webpack + newer nodejs
         NODE_OPTIONS = "--openssl-legacy-provider"
+        // node:18.20.7-bullseye
+        NODE_IMAGE = 'node@sha256:499f6196f83d1a9600b53560ba81b8861682976988f51b879c6604efc9a8cd33'
         SLACK_CHANNEL = "#graphdb-team"
     }
 
-    tools {
-        nodejs 'nodejs-18.9.0'
-    }
 
     parameters {
         gitParameter name: 'branch',
@@ -33,10 +36,6 @@ pipeline {
              defaultValue: ''
     }
 
-    agent {
-        label 'aws-small'
-    }
-
     options {
         disableConcurrentBuilds()
         timeout(time: 15, unit: 'MINUTES')
@@ -45,6 +44,13 @@ pipeline {
 
     stages {
         stage ('Prepare') {
+            agent {
+                docker {
+                    image env.NODE_IMAGE
+                    reuseNode true
+                    args '--entrypoint=""'
+                }
+            }
             steps {
                 script {
                     git_cmd.checkout(branch: branch)
@@ -55,6 +61,13 @@ pipeline {
         }
 
         stage ('Publish') {
+            agent {
+                docker {
+                    image env.NODE_IMAGE
+                    reuseNode true
+                    args '--entrypoint=""'
+                }
+            }
             steps {
                 withKsm(application: [
                     [
@@ -91,10 +104,11 @@ pipeline {
                     ]
                 ]) {
                     sh """
+                        // TODO: Remove the following block once the Jenkins VM image includes GitHub's SSH host key
+                        // This is a temporary workaround for "Host key verification failed" errors during git push via SSH
                         mkdir -p ~/.ssh
                         ssh-keyscan github.com >> ~/.ssh/known_hosts
-                        echo "[INFO] Testing SSH access..."
-                        ssh -T git@github.com || true
+
                         git config --global user.name "$GIT_USER"
                         git config --global user.email "$GIT_USER@users.noreply.github.com"
                         git remote set-url origin git@github.com:Ontotext-AD/graphdb-workbench.git
