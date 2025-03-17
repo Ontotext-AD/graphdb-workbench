@@ -25,7 +25,7 @@ def runStages() {
 
     stage('Analysis') {
         script {
-            docker.image('sonarsource/sonar-scanner-cli:4.6').inside {
+            docker.image('sonarsource/sonar-scanner-cli:4.6').inside.inside("-v /usr/bin/node:/usr/bin/node -v /usr/bin/npm:/usr/bin/npm") {
                 withSonarQubeEnv("New-sonar") {
                     sh """
                         sonar-scanner \

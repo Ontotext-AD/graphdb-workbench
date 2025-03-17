@@ -1,6 +1,5 @@
 @Library('ontotext-platform@GDB-11897-Migrate-pipelines-new-Jenkins') _
 pipeline {
-    agent any
     environment {
         CI = "true"
         // Needed for our version of webpack + newer nodejs
@@ -14,25 +13,71 @@ pipeline {
         NEW_AGENT = 'aws-large'
     }
 
+    // TODO fix when migration is complete
+    agent {
+        label env.NEW_AGENT
+    }
+
+    tools {
+        nodejs 'nodejs-18.9.0'
+    }
+
     stages {
-        stage('Trigger sub-pipelines') {
-
-            agent {
-               label env.JENKINS_URL.contains(env.LEGACY_JENKINS) ? env.LEGACY_AGENT : env.NEW_AGENT
-            }
-
-            tools {
-                nodejs env.JENKINS_URL.contains(env.LEGACY_JENKINS) ? 'nodejs-20.11.1' : 'nodejs-18.9.0'
-            }
-
+        // TODO remove when migration is complete
+        stage('Check Jenkins environment') {
             steps {
                 script {
-                    if (env.JENKINS_URL.contains(env.LEGACY_JENKINS)) {
-//                         def ciPipeline = load '.jenkins/legacy-ci.jenkinsfile'
-//                         ciPipeline.runStages()
-                    } else if (env.JENKINS_URL.contains(env.NEW_JENKINS)) {
-                        def ciPipeline = load '.jenkins/ci.jenkinsfile'
-                        ciPipeline.runStages()
+                    if (env.JENKINS_URL?.contains(env.LEGACY_JENKINS)) {
+                        echo "Legacy Jenkins detected. Skipping pipeline execution and finishing build with SUCCESS."
+                        currentBuild.result = 'SUCCESS'
+                        return
+                    }
+                }
+            }
+        }
+
+
+        stage('Install, Validate translations, Build') {
+            steps {
+                script {
+                    npm.install(scripts: ['validate-translations', 'build'])
+                }
+            }
+        }
+
+        stage('Sonar') {
+              steps {
+                withSonarQubeEnv(SONAR_ENVIRONMENT) {
+                  script {
+                    if (scmUtil.isMaster()) {
+                      sh "node sonar-project.js --branch='${scmUtil.getCurrentBranch()}'"
+                    } else {
+                      sh "node sonar-project.js --branch='${scmUtil.getSourceBranch}' --target-branch='${scmUtil.getTargetBranch()}' --pull-request-id='${scmUtil.getMergeRequestId()}'"
+                    }
+                  }
+                }
+              }
+            }
+
+        stage('Acceptance') {
+            steps {
+                script {
+                    if (!scmUtil.isMaster()) {
+                        withKsm(application: [[
+                            credentialsId: 'ksm-jenkins',
+                            secrets: [
+                                [
+                                    destination: 'file',
+                                    filePath: 'graphdb.license',
+                                    notation: 'keeper://zn9mpFS1tZ0dNcqmsNhsLg/file/graphdb-b64.license'
+                                ]
+                            ]
+                        ]]) {
+                            sh 'cp graphdb.license ./test-cypress/fixtures/'
+                        }
+                        sh "ls ./test-cypress/fixtures/"
+                        dockerCompose.buildCmd(options: ["--force-rm", "--no-cache", "--parallel"])
+                        dockerCompose.upCmd(options: ["--abort-on-container-exit", "--exit-code-from cypress-tests"])
                     }
                 }
             }
@@ -42,24 +87,16 @@ pipeline {
     post {
         always {
             script {
-                if (env.JENKINS_URL.contains(env.LEGACY_JENKINS)) {
-//                     cleanup()
-                } else if (env.JENKINS_URL.contains(env.NEW_JENKINS)) {
-                    node(env.NEW_AGENT) {
-                        cleanup()
-                    }
+                node(env.NEW_AGENT) {
+                    cleanup()
                 }
             }
         }
 
         failure {
             script {
-                if (env.JENKINS_URL.contains(env.LEGACY_JENKINS)) {
+                node(env.NEW_AGENT) {
                     archiveArtifacts()
-                } else if (env.JENKINS_URL.contains(env.NEW_JENKINS)) {
-                    node(env.NEW_AGENT) {
-                        archiveArtifacts()
-                    }
                 }
             }
         }
