@@ -28,8 +28,8 @@ pipeline {
             steps {
                 script {
                     if (env.JENKINS_URL.contains(env.LEGACY_JENKINS)) {
-                        def ciPipeline = load '.jenkins/legacy-ci.jenkinsfile'
-                        ciPipeline.runStages()
+//                         def ciPipeline = load '.jenkins/legacy-ci.jenkinsfile'
+//                         ciPipeline.runStages()
                     } else if (env.JENKINS_URL.contains(env.NEW_JENKINS)) {
                         def ciPipeline = load '.jenkins/ci.jenkinsfile'
                         ciPipeline.runStages()
@@ -43,7 +43,7 @@ pipeline {
         always {
             script {
                 if (env.JENKINS_URL.contains(env.LEGACY_JENKINS)) {
-                    cleanup()
+//                     cleanup()
                 } else if (env.JENKINS_URL.contains(env.NEW_JENKINS)) {
                     node(env.NEW_AGENT) {
                         cleanup()

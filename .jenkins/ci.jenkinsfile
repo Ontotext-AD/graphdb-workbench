@@ -23,6 +23,28 @@ def runStages() {
 //         }
 //     }
 
+    stage('Analysis') {
+        script {
+            docker.image('sonarsource/sonar-scanner-cli:4.6').inside {
+                withSonarQubeEnv("New-sonar") {
+                    sh """
+                        sonar-scanner \
+                        ${sonar.resolveBranchArguments()} \
+                        -Dsonar.projectKey="Ontotext-AD_graphdb-workbench" \
+                        -Dsonar.projectName="graphdb-workbench"
+                    """
+                }
+            }
+            onMergeRequest {
+                timeout(time: 5, unit: 'MINUTES') {
+                    onFailedSonarGate {
+                        unstable("Pipeline is unstable due to Sonar quality gate failure")
+                    }
+                }
+            }
+        }
+    }
+
     stage('Acceptance') {
         if (!scmUtil.isMaster()) {
             withKsm(application: [[
