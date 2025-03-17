@@ -873,15 +873,15 @@
                 "settings": {
                     "graphql": {
                         "label": "GraphQL settings",
-                        "description": "Settings for the GraphQL endpoint"
+                        "tooltip": "Settings for the GraphQL endpoint"
                     },
                     "security": {
                         "label": "Security settings",
-                        "description": "Settings for the GraphQL endpoint security"
+                        "tooltip": "Settings for the GraphQL endpoint security"
                     },
                     "integration": {
                         "label": "Integration settings",
-                        "description": "Settings for the GraphQL endpoint integration"
+                        "tooltip": "Settings for the GraphQL endpoint integration"
                     },
                     "enableTypeCount": {
                         "label": "Enable Type Count Queries",
@@ -942,6 +942,14 @@
                     "disabledChecks": {
                         "label": "Disabled Schema Checks",
                         "tooltip": "Specifies which schema validation checks to disable."
+                    },
+                    "sparqlFederatedServices": {
+                        "label": "SPARQL Federated Services",
+                        "tooltip": "Allows configuring SPARQL federated service endpoints for the GraphQL endpoint."
+                    },
+                    "sparqlFederatedServicesPriority": {
+                        "label": "SPARQL Federated Services Priority",
+                        "tooltip": "Defines the priority of SPARQL federated service endpoint configurations. Controls whether deployment-wide settings or individual endpoint configurations take precedence."
                     },
                     "defaultIntegrationRole": {
                         "label": "Default Integration Role",

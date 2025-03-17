@@ -873,15 +873,15 @@
                 "settings": {
                     "graphql": {
                         "label": "GraphQL settings",
-                        "description": "Settings for the GraphQL endpoint"
+                        "tooltip": "Settings for the GraphQL endpoint"
                     },
                     "security": {
                         "label": "Security settings",
-                        "description": "Settings for the GraphQL endpoint security"
+                        "tooltip": "Settings for the GraphQL endpoint security"
                     },
                     "integration": {
                         "label": "Integration settings",
-                        "description": "Settings for the GraphQL endpoint integration"
+                        "tooltip": "Settings for the GraphQL endpoint integration"
                     },
                     "enableTypeCount": {
                         "label": "Enable Type Count Queries",
@@ -942,6 +942,14 @@
                     "disabledChecks": {
                         "label": "Disabled Schema Checks",
                         "tooltip": "Specifies which schema validation checks to disable."
+                    },
+                    "sparqlFederatedServices": {
+                        "label": "SPARQL Federated Services",
+                        "tooltip": "Allows configuring SPARQL federated service endpoints for the GraphQL endpoint."
+                    },
+                    "sparqlFederatedServicesPriority": {
+                        "label": "SPARQL Federated Services Priority",
+                        "tooltip": "Defines the priority of SPARQL federated service endpoint configurations. Controls whether deployment-wide settings or individual endpoint configurations take precedence."
                     },
                     "defaultIntegrationRole": {
                         "label": "Default Integration Role",
@@ -1152,34 +1160,6 @@
                             "explore_in_playground_link_tooltip": "Explore in Playground (opens in a new tab)",
                             "view_report_link": "View report",
                             "view_report_link_tooltip": "Opens endpoint creation report in a modal dialog"
-                        }
-                    },
-                    "messages": {
-                        "generation_progress": "Endpoints creation in progress..."
-                    }
-                },
-                "generate_endpoint": {
-                    "title": "Create",
-                    "overview": {
-                        "title": "Overview",
-                        "for_shapes": {
-                            "info": "{{endpointsCount}} GraphQL endpoints will be created in \"{{activeRepoId}}\" repository based on the GraphQL schema shapes listed below. To modify the selection, navigate back to Step 1 (Select schema source).",
-                            "included_endpoints": "Included GraphQL schema shapes",
-                            "generated_endpoints": "GraphQL endpoints",
-                            "manage_endpoints_info": "Navigate to <a href=\"{{managementUrl}}\">Endpoint Management</a> to manage the endpoints",
-                            "explore_in_playground_link_tooltip": "Explore in Playground (opens in a new tab)",
-                            "view_report_link": "[View report]"
-                        }
-                    },
-                    "generation_failure_report": {
-                        "title": "GraphQL endpoint creation failed",
-                        "reason_message": "GraphQL endpoint \"{{endpointId}}\" creation failed because of errors/warnings during schema definition generation.",
-                        "errors": "Validation error [{{errorCount}}]",
-                        "warnings": "Warning [{{warningCount}}]",
-                        "actions": {
-                            "download_report": {
-                                "label": "Download report"
-                            }
                         }
                     },
                     "messages": {
@@ -2031,7 +2011,7 @@
         "error.could.not.clear": "Could not clear status; {{data}}",
         "error.default.settings": "Could not get default settings; {{data}}",
         "could.not.send.file": "Could not send file for import; {{data}}",
-        "large.file": "File {{name}} too big {{size}} MB. Use Server Files import.",
+        "large.file": "File {{name}} too big {{size}}. Use Server Files import.",
         "could.not.upload": "Could not upload file {{name}}. BZip2 archives are not supported.",
         "no.such.file": "No such file; {{name}}",
         "could.not.send.data": "Could not send data for import; {{data}}",
