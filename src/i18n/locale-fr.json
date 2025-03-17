@@ -872,15 +872,15 @@
                 "settings": {
                     "graphql": {
                         "label": "Paramètres GraphQL",
-                        "description": "Paramètres du point de terminaison GraphQL"
+                        "tooltip": "Paramètres du point de terminaison GraphQL"
                     },
                     "security": {
                         "label": "Paramètres de sécurité",
-                        "description": "Paramètres de sécurité du point de terminaison GraphQL"
+                        "tooltip": "Paramètres de sécurité du point de terminaison GraphQL"
                     },
                     "integration": {
                         "label": "Paramètres d'intégration",
-                        "description": "Paramètres d'intégration du point de terminaison GraphQL"
+                        "tooltip": "Paramètres d'intégration du point de terminaison GraphQL"
                     },
                     "enableTypeCount": {
                         "label": "Activer les requêtes de comptage de types",
@@ -941,6 +941,14 @@
                     "disabledChecks": {
                         "label": "Vérifications désactivées du schéma",
                         "tooltip": "Spécifie quelles vérifications de validation du schéma désactiver."
+                    },
+                    "sparqlFederatedServices": {
+                        "label": "Services Fédérés SPARQL",
+                        "tooltip": "Permet de configurer les points de terminaison des services fédérés SPARQL pour l'endpoint GraphQL."
+                    },
+                    "sparqlFederatedServicesPriority": {
+                        "label": "Priorité des Services Fédérés SPARQL",
+                        "tooltip": "Définit la priorité des configurations des services fédérés SPARQL. Contrôle si les paramètres globaux du déploiement ou les configurations spécifiques des points de terminaison ont la priorité."
                     },
                     "defaultIntegrationRole": {
                         "label": "Rôle d’intégration par défaut",
