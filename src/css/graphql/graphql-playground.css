@@ -8,6 +8,13 @@ html, body {
     height: 100vh;
 }
 
+.graphiql-dialog,
+.graphql-playground-view #graphiql .graphiql-container,
+.graphql-playground-view #graphiql .graphiql-container .graphiql-editors,
+.graphiql-container .CodeMirror {
+    background-color: #fff;
+}
+
 .page-content,
 .page-content .container-fluid {
     height: calc(100% - 50px);
