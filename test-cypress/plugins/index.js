@@ -12,6 +12,7 @@
 // the project's config changing)
 
 const { GenericContainer } = require("testcontainers");
+const path = require('path');
 
 let graphDBContainer;
 
@@ -35,17 +36,20 @@ module.exports = async (on, config) => {
     });
 
     on('before:spec', async (spec, results) => {
-        console.log('========================= Starting spec ==========================', spec);
+        console.log('========================= Starting spec ==========================');
         graphDBContainer = await new GenericContainer("docker-registry.ontotext.com/graphdb:11.0.0-TR15")
             .withExposedPorts(7200)
-            // .withEnv("GDB_JAVA_OPTS", "-Dgraphdb.workbench.importDirectory=/opt/home/import-data/ -Dgraphdb.jsonld.whitelist=https://w3c.github.io/json-ld-api/tests/* -Dgraphdb.stats.default=disabled -Dgraphdb.foreground= -Dgraphdb.logger.root.level=ERROR")
-            // .withBindMount("../fixtures/graphdb-import", "/opt/home/import-data/")
+            .withEnvironment("GDB_JAVA_OPTS", "-Dgraphdb.workbench.importDirectory=/opt/home/import-data/ -Dgraphdb.jsonld.whitelist=https://w3c.github.io/json-ld-api/tests/* -Dgraphdb.stats.default=disabled -Dgraphdb.foreground= -Dgraphdb.logger.root.level=ERROR")
+            .withBindMounts([{
+                source: path.join(__dirname,"../fixtures/graphdb-import"),
+                target: "/opt/home/import-data/"
+            }])
             .start();
     });
 
     // keep only the videos for the failed specs
     on('after:spec', async (spec, results) => {
-        console.log('========================= Ending spec ==========================', spec);
+        console.log('========================= Ending spec ==========================');
 
         if (graphDBContainer) {
             console.log("Stopping GraphDB Testcontainer...");
