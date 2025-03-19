@@ -57,7 +57,7 @@ export class ClusterNodesConfigurationSteps {
     }
 
     static enterNodeEndpoint(endpoint) {
-        cy.get('.edit-node-row .location-cell textarea[name="location"]')
+        cy.get('.edit-node-row .location-cell [name="location"]')
             .clear()
             .type(endpoint);
     }
