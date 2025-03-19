@@ -225,6 +225,7 @@ export class OntoLayout {
           <onto-footer></onto-footer>
         </footer>
         <onto-tooltip></onto-tooltip>
+        <onto-toastr></onto-toastr>
       </Host>
     );
   }
