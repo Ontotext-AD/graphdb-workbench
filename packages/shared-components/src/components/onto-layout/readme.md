@@ -14,6 +14,7 @@
 - [onto-permission-banner](../onto-permission-banner)
 - [onto-footer](../onto-footer)
 - [onto-tooltip](../onto-tooltip)
+- [onto-toastr](../onto-toastr)
 
 ### Graph
 ```mermaid
@@ -23,6 +24,7 @@ graph TD;
   onto-layout --> onto-permission-banner
   onto-layout --> onto-footer
   onto-layout --> onto-tooltip
+  onto-layout --> onto-toastr
   onto-header --> onto-operations-notification
   onto-header --> onto-license-alert
   onto-header --> onto-repository-selector
