@@ -12,6 +12,7 @@ export * from './models/storage';
 export * from './models/language';
 export * from './models/cookie';
 export * from './models/monitoring';
+export * from './models/toastr';
 
 // Export providers for external usages.
 export * from './providers';
@@ -29,6 +30,7 @@ export * from './services/security';
 export * from './services/event-service';
 export * from './services/cookie';
 export * from './services/monitoring';
+export * from './services/toastr';
 
 // Export utils for external usages.
 export * from './services/utils';
