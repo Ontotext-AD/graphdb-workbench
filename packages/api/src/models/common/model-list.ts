@@ -77,6 +77,30 @@ export abstract class ModelList<T> extends Model<T> {
   }
 
   /**
+   * Adds a new item to the list in the first position.
+   *
+   * @param item - The item to add.
+   */
+  addToStart(item: T): void {
+    this.items.unshift(item);
+  }
+
+  /**
+   * Removes a specific item from the list.
+   *
+   * This method finds the first occurrence of the specified item in the list and removes it.
+   * If the item is not found in the list, no changes are made.
+   *
+   * @param item - The item to be removed from the list.
+   */
+  remove(item: T): void {
+    const index = this.items.indexOf(item);
+    if (index!== -1) {
+      this.items.splice(index, 1);
+    }
+  }
+
+  /**
    * Creates a filter function to include only objects with matching IDs.
    *
    * @param ids - An array of IDs to filter by.
