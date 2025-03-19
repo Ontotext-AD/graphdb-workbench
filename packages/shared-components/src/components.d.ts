@@ -7,7 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { DialogHandler } from "./models/dialog/dialog-handler";
 import { DialogConfig } from "./components/dialogs/onto-dialog";
-import { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, SecurityConfig } from "../../api/dist/ontotext-workbench-api.d";
+import { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, SecurityConfig, ToastMessage } from "../../api/dist/ontotext-workbench-api.d";
 import { DropdownItem } from "./models/dropdown/dropdown-item";
 import { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 import { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
@@ -16,7 +16,7 @@ import { ToggleEventPayload } from "./models/toggle-switch/toggle-event-payload"
 import { TranslationParameter } from "./models/translation/translation-parameter";
 export { DialogHandler } from "./models/dialog/dialog-handler";
 export { DialogConfig } from "./components/dialogs/onto-dialog";
-export { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, SecurityConfig } from "../../api/dist/ontotext-workbench-api.d";
+export { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, SecurityConfig, ToastMessage } from "../../api/dist/ontotext-workbench-api.d";
 export { DropdownItem } from "./models/dropdown/dropdown-item";
 export { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 export { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
@@ -143,6 +143,11 @@ export namespace Components {
      */
     interface OntoTestContext {
         /**
+          * Adds a toast notification to the application.
+          * @param toast - The ToastMessage object containing the notification details   such as message content, type, and display options.
+         */
+        "addToastr": (toast: ToastMessage) => Promise<void>;
+        /**
           * Changes the application's language by updating the language bundle.  This method uses the LanguageContextService to update the language bundle based on the provided language code. It retrieves the corresponding bundle from the predefined bundles object and updates the context.
           * @param language - The language code (e.g., 'en' for English, 'fr' for French)   representing the desired language to switch to.
           * @returns A Promise that resolves when the language update is complete.
@@ -193,6 +198,13 @@ export namespace Components {
           * @returns A Promise that resolves when the repository ID has been successfully updated.
          */
         "updateSelectedRepositoryId": (repoId: string) => Promise<void>;
+    }
+    /**
+     * OntoToastr component for displaying toast notifications.
+     * This component manages a list of toast messages and handles their display,
+     * automatic removal after timeout, and user interactions like hover behavior.
+     */
+    interface OntoToastr {
     }
     interface OntoToggleSwitch {
         /**
@@ -392,6 +404,17 @@ declare global {
         prototype: HTMLOntoTestContextElement;
         new (): HTMLOntoTestContextElement;
     };
+    /**
+     * OntoToastr component for displaying toast notifications.
+     * This component manages a list of toast messages and handles their display,
+     * automatic removal after timeout, and user interactions like hover behavior.
+     */
+    interface HTMLOntoToastrElement extends Components.OntoToastr, HTMLStencilElement {
+    }
+    var HTMLOntoToastrElement: {
+        prototype: HTMLOntoToastrElement;
+        new (): HTMLOntoToastrElement;
+    };
     interface HTMLOntoToggleSwitchElementEventMap {
         "toggleChanged": ToggleEventPayload;
     }
@@ -446,6 +469,7 @@ declare global {
         "onto-permission-banner": HTMLOntoPermissionBannerElement;
         "onto-repository-selector": HTMLOntoRepositorySelectorElement;
         "onto-test-context": HTMLOntoTestContextElement;
+        "onto-toastr": HTMLOntoToastrElement;
         "onto-toggle-switch": HTMLOntoToggleSwitchElement;
         "onto-tooltip": HTMLOntoTooltipElement;
         "translate-label": HTMLTranslateLabelElement;
@@ -583,6 +607,13 @@ declare namespace LocalJSX {
      */
     interface OntoTestContext {
     }
+    /**
+     * OntoToastr component for displaying toast notifications.
+     * This component manages a list of toast messages and handles their display,
+     * automatic removal after timeout, and user interactions like hover behavior.
+     */
+    interface OntoToastr {
+    }
     interface OntoToggleSwitch {
         /**
           * Determines whether the toggle switch is checked or not.
@@ -642,6 +673,7 @@ declare namespace LocalJSX {
         "onto-permission-banner": OntoPermissionBanner;
         "onto-repository-selector": OntoRepositorySelector;
         "onto-test-context": OntoTestContext;
+        "onto-toastr": OntoToastr;
         "onto-toggle-switch": OntoToggleSwitch;
         "onto-tooltip": OntoTooltip;
         "translate-label": TranslateLabel;
@@ -688,6 +720,12 @@ declare module "@stencil/core" {
              * A component for managing test context in the application. Used only for testing
              */
             "onto-test-context": LocalJSX.OntoTestContext & JSXBase.HTMLAttributes<HTMLOntoTestContextElement>;
+            /**
+             * OntoToastr component for displaying toast notifications.
+             * This component manages a list of toast messages and handles their display,
+             * automatic removal after timeout, and user interactions like hover behavior.
+             */
+            "onto-toastr": LocalJSX.OntoToastr & JSXBase.HTMLAttributes<HTMLOntoToastrElement>;
             "onto-toggle-switch": LocalJSX.OntoToggleSwitch & JSXBase.HTMLAttributes<HTMLOntoToggleSwitchElement>;
             "onto-tooltip": LocalJSX.OntoTooltip & JSXBase.HTMLAttributes<HTMLOntoTooltipElement>;
             /**
