@@ -26,6 +26,10 @@ const loadProductInfo = () => {
   });
 };
 
+const addToastr = (toastr) => {
+  testContext.addToastr(toastr);
+}
+
 const loadRepositories = () => {
   testContext.loadRepositories();
 }
