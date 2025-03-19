@@ -91,7 +91,7 @@ describe('GraphQL endpoints management', () => {
                     description: '',
                     default: true,
                     active: true,
-                    modified: new Date().toISOString().split('T')[0],
+                    modified: ApplicationSteps.getCurrentDate(),
                     types: 56,
                     properties: 68
                 },
@@ -102,7 +102,7 @@ describe('GraphQL endpoints management', () => {
                     description: '',
                     default: false,
                     active: true,
-                    modified: new Date().toISOString().split('T')[0],
+                    modified: ApplicationSteps.getCurrentDate(),
                     types: 1,
                     properties: 10
                 },
@@ -113,7 +113,7 @@ describe('GraphQL endpoints management', () => {
                     description: '',
                     default: false,
                     active: true,
-                    modified: new Date().toISOString().split('T')[0],
+                    modified: ApplicationSteps.getCurrentDate(),
                     types: 2,
                     properties: 17
                 }

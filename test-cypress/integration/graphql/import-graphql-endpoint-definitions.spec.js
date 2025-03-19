@@ -1,6 +1,7 @@
 import {GraphqlEndpointManagementSteps} from "../../steps/graphql/graphql-endpoint-management-steps";
 import {ImportEndpointDefinitionModalSteps} from "../../steps/graphql/import-endpoint-definition-modal-steps";
 import {GenerationReportModalSteps} from "../../steps/graphql/generation-report-modal-steps";
+import {ApplicationSteps} from "../../steps/application-steps";
 
 describe('Graphql: import endpoint definitions', () => {
     let repositoryId;
@@ -78,7 +79,7 @@ describe('Graphql: import endpoint definitions', () => {
                 description: '',
                 default: true,
                 active: true,
-                modified: new Date().toISOString().split('T')[0],
+                modified: ApplicationSteps.getCurrentDate(),
                 types: 56,
                 properties: 68
             }
@@ -172,7 +173,7 @@ describe('Graphql: import endpoint definitions', () => {
                 description: '',
                 default: true,
                 active: true,
-                modified: new Date().toISOString().split('T')[0],
+                modified: ApplicationSteps.getCurrentDate(),
                 types: 56,
                 properties: 68
             },
@@ -183,7 +184,7 @@ describe('Graphql: import endpoint definitions', () => {
                 description: '',
                 default: false,
                 active: true,
-                modified: new Date().toISOString().split('T')[0],
+                modified: ApplicationSteps.getCurrentDate(),
                 types: 1,
                 properties: 10
             },
@@ -194,7 +195,7 @@ describe('Graphql: import endpoint definitions', () => {
                 description: '',
                 default: false,
                 active: true,
-                modified: new Date().toISOString().split('T')[0],
+                modified: ApplicationSteps.getCurrentDate(),
                 types: 2,
                 properties: 17
             }
@@ -238,7 +239,7 @@ describe('Graphql: import endpoint definitions', () => {
                 description: '',
                 default: true,
                 active: true,
-                modified: new Date().toISOString().split('T')[0],
+                modified: ApplicationSteps.getCurrentDate(),
                 types: 1,
                 properties: 10
             },
@@ -249,7 +250,7 @@ describe('Graphql: import endpoint definitions', () => {
                 description: '',
                 default: false,
                 active: true,
-                modified: new Date().toISOString().split('T')[0],
+                modified: ApplicationSteps.getCurrentDate(),
                 types: 2,
                 properties: 17
             }

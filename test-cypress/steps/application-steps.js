@@ -29,4 +29,11 @@ export class ApplicationSteps {
     static geLoader() {
         return cy.get('.ot-loader-new-content');
     }
+
+    static getCurrentDate() {
+        // Returns the date in ISO format (yyyy-MM-dd) in the local time zone.
+        // Using toISOString() returns in UTC, which may fail tests if run between specific times
+        // in the local time zone.
+        return new Date().toLocaleDateString("en-CA");
+    }
 }
