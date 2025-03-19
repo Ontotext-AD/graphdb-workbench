@@ -1,4 +1,5 @@
 import {GraphqlEndpointManagementSteps} from "../../steps/graphql/graphql-endpoint-management-steps";
+import {ApplicationSteps} from "../../steps/application-steps";
 
 describe('GraphQL endpoints filtering', () => {
     let repositoryId;
@@ -33,7 +34,7 @@ describe('GraphQL endpoints filtering', () => {
                 description: '',
                 default: false,
                 active: true,
-                modified: new Date().toISOString().split('T')[0],
+                modified: ApplicationSteps.getCurrentDate(),
                 types: 1,
                 properties: 10
             }
