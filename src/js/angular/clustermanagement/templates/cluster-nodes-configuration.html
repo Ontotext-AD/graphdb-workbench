@@ -96,7 +96,7 @@
                 <td class="index-cell"><span ng-if="!node.isDeleted">{{node.index + 1}}</span></td>
                 <td class="data location-cell">
                     <div class="autocomplete-container">
-                            <textarea type="text" name="location" required
+                            <input type="text" name="location" required
                                       ng-model="node.endpoint"
                                       ng-change="filterSuggestions(node)"
                                       ng-blur="hideSuggestions(node)"
@@ -105,12 +105,10 @@
                                       validate-url exclude="/repositories" exclude-protocol="ftp,ftps"
                                       validate-duplicate-url excluded-urls="clusterNodesEndpoints"
                                       allow-empty="false"
-                                      autocomplete="off"
                                       class="form-control form-control-sm textarea-edit"
                                       uib-tooltip="{{'remote.location.enter.url.msg' | translate}}"
                                       tooltip-placement="top"
                                       placeholder="{{'cluster_management.update_cluster_group_dialog.field_placeholders.location' | translate}}">
-                            </textarea>
                         <ul ng-show="suggestions.length > 0 && showDropdown" class="autocomplete-dropdown">
                             <li ng-repeat="suggestion in suggestions"
                                 ng-mouseup="selectSuggestion(node, suggestion)">
@@ -152,7 +150,7 @@
                 <td class="index-cell"></td>
                 <td class="data location-cell">
                     <div class="autocomplete-container">
-                            <textarea type="text" name="location" required
+                            <input type="text" name="location" required
                                       ng-model="newLocation.endpoint"
                                       ng-change="filterSuggestions(newLocation)"
                                       ng-blur="hideSuggestions(newLocation)"
@@ -161,12 +159,10 @@
                                       validate-url exclude="/repositories" exclude-protocol="ftp,ftps"
                                       validate-duplicate-url excluded-urls="clusterNodesEndpoints"
                                       allow-empty="false"
-                                      autocomplete="off"
                                       class="form-control form-control-sm textarea-edit"
                                       uib-tooltip="{{'remote.location.enter.url.msg' | translate}}"
                                       tooltip-placement="top"
                                       placeholder="{{'cluster_management.update_cluster_group_dialog.field_placeholders.location' | translate}}">
-                            </textarea>
                         <ul ng-show="suggestions.length > 0 && showDropdown" class="autocomplete-dropdown">
                             <li ng-repeat="suggestion in suggestions"
                                 ng-mouseup="selectSuggestion(newLocation, suggestion)">
