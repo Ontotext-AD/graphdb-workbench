@@ -2,7 +2,6 @@ import {OperationGroupSummary, OperationGroupSummaryList} from '../../../../mode
 import {OperationGroupSummaryListMapper} from '../operation-group-summary-list.mapper';
 
 describe('OperationGroupSummaryListMapper', () => {
-  window.crypto.randomUUID = jest.fn();
   let mapper: OperationGroupSummaryListMapper;
 
   beforeEach(() => {
