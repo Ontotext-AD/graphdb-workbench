@@ -2,7 +2,6 @@ import {OperationListMapper} from '../operation-list.mapper';
 import {Operation, OperationList, OperationStatus, OperationType} from '../../../../models/monitoring';
 
 describe('OperationListMapper', () => {
-  window.crypto.randomUUID = jest.fn();
   let mapper: OperationListMapper;
 
   beforeEach(() => {
