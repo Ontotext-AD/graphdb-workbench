@@ -47,3 +47,47 @@ beforeEach(() => {
         // SecurityStubs.stubUpdateUserData('admin');
     }
 });
+
+/*
+ * Before each test run, the "test:before:run" event hook is triggered.
+ * - It updates the Cypress configuration's baseUrl using the value stored in the Cypress environment.
+ *   This ensures that every test runs against the correct URL endpoint.
+ */
+Cypress.on('test:before:run', () => {
+    Cypress.config('baseUrl', Cypress.env('base'))
+});
+
+/*
+ * The "before" hook runs once before all tests in a spec start.
+ * It performs the following actions:
+ *
+ * - Calls the "startGraphDb" task to launch a GraphDB Docker container.
+ *   The task returns connection details (host, port, containerId) for the GraphDB instance.
+ *   A high timeout (300000 ms) is set to allow the container enough time to start.
+ *
+ * - Once GraphDB is up, the returned port ся used to call the "startWorkbench" task.
+ *   This task starts a Workbench testcontainer, passing the GraphDB port as a build argument.
+ *   Again, a high timeout is used to ensure that the container is fully started.
+ *
+ * The end result is that both testcontainers (GraphDB and Workbench) are up and running before any spec begins.
+ */
+before(() => {
+    return cy.task('startGraphDb', {}, { timeout: 300000 })
+        .then((details) => cy.task('startWorkbench', {graphdbPort: details.port}, {timeout: 300000}));
+});
+
+/*
+ * The "after" hook runs once after all tests in a spec have completed.
+ * It handles the cleanup process by stopping the testcontainers:
+ *
+ * - Calls the "stopWorkbench" task to stop the Workbench container.
+ * - Calls the "stopGraphDb" task to stop the GraphDB container.
+ *
+ * The container IDs are retrieved from the Cypress environment variables where they were stored
+ * when the containers were started. This cleanup ensures that no resources remain active,
+ * preventing resource leaks and maintaining a clean test environment for subsequent runs.
+ */
+after(() => {
+    cy.task('stopWorkbench');
+    cy.task('stopGraphDb');
+});

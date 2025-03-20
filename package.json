@@ -10,7 +10,8 @@
         "less:watch": "less-watch-compiler --config=./less-watch-compiler.config.json",
         "less:preprocess": "less-watch-compiler --config=./less-compiler.config.json",
         "license-report": "license-checker --production --json --customPath license-checker-format.json --out dist/license-checker.json",
-        "postbuild": "npm run license-report && copyfiles -V -f license-checker/license-checker-static.json dist/"
+        "postbuild": "npm run license-report && copyfiles -V -f license-checker/license-checker-static.json dist/",
+        "validate-translations": "node scripts/validate-translations.js"
     },
     "files": [
         "dist/"

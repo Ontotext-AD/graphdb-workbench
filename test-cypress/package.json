@@ -5,6 +5,8 @@
     "scripts": {
         "prepack": "npm shrinkwrap",
         "postpack": "mv npm-shrinkwrap.json package-lock.json",
+        "start:debug": "DEBUG=testcontainers cypress open",
+        "paralell": "cypress-parallel -s test -t 2 -d integration/",
         "start": "cypress open",
         "start:flaky": "cypress open --config-file cypress-flaky.config.js",
         "test": "cypress run",
@@ -30,13 +32,16 @@
         "cypress-failed-log": "^2.10.0",
         "cypress-file-upload": "^5.0.8",
         "cypress-localstorage-commands": "^2.2.6",
-        "cypress-multi-reporters": "^1.6.3",
+        "cypress-multi-reporters": "^2.0.5",
+        "cypress-parallel": "^0.15.0",
         "cypress-real-events": "^1.8.1",
         "cypress-terminal-report": "^7.0.3",
         "cypress-wait-until": "^3.0.2",
         "del": "^6.1.1",
+        "get-port": "^7.1.0",
         "minimist": "^1.2.5",
-        "mocha-junit-reporter": "^2.2.0"
+        "mocha-junit-reporter": "^2.2.0",
+        "testcontainers": "^10.20.0"
     },
     "resolutions": {
         "minimist": "^1.2.5"
