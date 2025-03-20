@@ -2,7 +2,6 @@ import {Model} from '../common';
 import {OperationStatus} from './operation-status';
 import {OperationType} from './operation-type';
 import {OperationGroup} from './operation-group';
-import {GeneratorUtils} from '../../services/utils/generator-utils';
 
 /** Not all operations have counts as values */
 const OPERATIONS_WITH_COUNT = [OperationType.QUERIES, OperationType.UPDATES, OperationType.IMPORTS];
@@ -40,7 +39,7 @@ export class Operation extends Model<Operation> {
 
   constructor(operation: Operation) {
     super();
-    this.id = GeneratorUtils.uuid();
+    this.id = `${operation.status}-${operation.type}-${operation.value}`;
     this.value = operation.value;
     this.status = operation.status;
     this.type = operation.type;
