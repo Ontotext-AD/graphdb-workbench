@@ -1,113 +1,158 @@
+@Library('ontotext-platform@GDB-11897-Migrate-pipelines-new-Jenkins') _
 pipeline {
-
-  agent {
-    label 'graphdb-jenkins-node'
-  }
-
-  tools {
-    nodejs 'nodejs-20.11.1'
-  }
-
-  environment {
-    CI = "true"
-    NEXUS_CREDENTIALS = credentials('nexus-kim-user')
-    // Needed for our version of webpack + newer nodejs
-    NODE_OPTIONS = "--openssl-legacy-provider"
-    // Tells NPM and co. not to use color output (looks like garbage in Jenkins)
-    NO_COLOR = "1"
-  }
-
-  stages {
-
-    stage('Install') {
-      steps {
-        sh "npm install"
-      }
+    environment {
+        CI = "true"
+        // Needed for our version of webpack + newer nodejs
+        NODE_OPTIONS = "--openssl-legacy-provider"
+        // Tells NPM and co. not to use color output (looks like garbage in Jenkins)
+        NO_COLOR = "1"
+        SONAR_ENVIRONMENT = "SonarCloud"
+        LEGACY_JENKINS = "https://jenkins.ontotext.com"
+        NEW_JENKINS = "https://new-jenkins.ontotext.com"
+        LEGACY_AGENT = 'graphdb-jenkins-node'
+        AGENT = 'aws-large'
     }
 
-    stage('Validate translations') {
-     steps {
-       sh 'node scripts/validate-translations.js || exit 1'
-     }
+    // TODO fix when migration is complete
+    agent {
+        label 'aws-large'
     }
 
-    stage('Print Branch Name') {
-      steps {
-        script {
-          echo "Building branch: ${env.BRANCH_NAME}"
-        }
-      }
+    tools {
+        nodejs 'nodejs-18.9.0'
     }
 
-    stage('Build') {
-      steps {
-        sh "npm run build"
-      }
-    }
-
-    stage('Sonar') {
-      steps {
-        withSonarQubeEnv('SonarCloud') {
-          script {
-            if (env.BRANCH_NAME == 'master') {
-              sh "node sonar-project.js --branch='${env.BRANCH_NAME}'"
-            } else {
-              sh "node sonar-project.js --branch='${env.ghprbSourceBranch}' --target-branch='${env.ghprbTargetBranch}' --pull-request-id='${env.ghprbPullId}'"
+    stages {
+        // TODO remove when migration is complete
+        stage('Check Jenkins environment') {
+            steps {
+                script {
+                    if (env.JENKINS_URL?.contains(env.LEGACY_JENKINS)) {
+                        echo "Legacy Jenkins detected. Skipping pipeline execution and finishing build with SUCCESS."
+                        currentBuild.result = 'SUCCESS'
+                        return
+                    }
+                }
             }
-          }
         }
-      }
-    }
 
 
-    stage('Acceptance') {
-      when {
-        expression {
-          return env.BRANCH_NAME != 'master'
+        stage('Install') {
+            steps {
+                sh "npm install"
+            }
         }
-      }
-      steps {
-        configFileProvider(
-                [configFile(fileId: 'ceb7e555-a3d9-47c7-9afe-d008fd9efb14', targetLocation: 'graphdb.license')]) {
-          sh 'cp graphdb.license ./test-cypress/fixtures/'
+
+        stage('Validate translations') {
+            steps {
+                sh 'node scripts/validate-translations.js || exit 1'
+            }
         }
-          sh "ls ./test-cypress/fixtures/"
-          // --no-ansi suppresses color output that shows as garbage in Jenkins
-          sh "docker-compose --no-ansi build --force-rm --no-cache --parallel"
-          sh "docker-compose --no-ansi up --abort-on-container-exit --exit-code-from cypress-tests"
 
-          // Fix coverage permissions
-          sh "sudo chown -R \$(id -u):\$(id -g) coverage/"
-          sh "sudo chown -R \$(id -u):\$(id -g) cypress/"
-          sh "sudo chown -R \$(id -u):\$(id -g) report/"
+        stage('Build') {
+            steps {
+                sh "npm run build"
+            }
+        }
 
-          // Move up to be picked by Sonar
-//           sh "mv test-cypress/coverage/ cypress-coverage/"
-//           sh "sync"
-//
-//           // Update relative paths to absolute path
-//           sh "sed -i.backup \"s@^SF:..@SF:\$(pwd)@\" cypress-coverage/lcov.info"
-      }
+//         stage('Analysis') {
+//             agent {
+//                 docker {
+//                   image 'sonarsource/sonar-scanner-cli:4.6'
+//                   label 'aws-large'
+//                   reuseNode true
+//                 }
+//             }
+//             steps {
+//                 script {
+//                     withSonarQubeEnv(SONAR_ENVIRONMENT) {
+//                         sh """
+//                             sonar-scanner \
+//                             ${sonar.resolveBranchArguments()} \
+//                             -Dsonar.organization=ontotext-ad \
+//                             -Dsonar.projectKey=Ontotext-AD_graphdb-workbench \
+//                             -Dsonar.projectName=graphdb-workbench \
+//                             -Dsonar.sources=./src \
+//                             -Dsonar.exclusions=src/res/**/*,src/font/**/*,src/js/lib/**/*,src/css/fonts/**/*,src/css/lib/**/* \
+//                             -Dsonar.language=js \
+//                             -Dsonar.scm.provider=git \
+//                             -Dsonar.sourceEncoding=UTF-8
+//                         """
+//                     }
+//                     onMergeRequest {
+//                         timeout(time: 5, unit: 'MINUTES') {
+//                             onFailedSonarGate {
+//                                 unstable("Pipeline is unstable due to Sonar quality gate failure")
+//                             }
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+
+        stage('Acceptance') {
+            steps {
+                script {
+                    if (!scmUtil.isMaster()) {
+                        withKsm(application: [[
+                            credentialsId: 'ksm-jenkins',
+                            secrets: [
+                                [
+                                    destination: 'file',
+                                    filePath: 'graphdb.license',
+                                    notation: 'keeper://zn9mpFS1tZ0dNcqmsNhsLg/file/graphdb-b64.license'
+                                ]
+                            ]
+                        ]]) {
+                            sh 'cp graphdb.license ./test-cypress/fixtures/'
+                        }
+                        sh "ls ./test-cypress/fixtures/"
+                        script {
+                            withEnv(["DOCKER_BUILDKIT=0", "COMPOSE_DOCKER_CLI_BUILD=0"]) {
+                                dockerCompose.buildCmd(options: ["--force-rm", "--no-cache", "--parallel"])
+                                dockerCompose.upCmd(options: ["--abort-on-container-exit", "--exit-code-from cypress-tests"])
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
-  }
 
-  post {
-    always {
-      // upload failed tests report and artifacts
-      junit allowEmptyResults: true, testResults: 'cypress/results/**/*.xml'
-      archiveArtifacts allowEmptyArchive: true, artifacts: 'report/screenshots/**/*.png, report/videos/**/*.mp4, cypress/logs/*.log'
+    post {
+        always {
+            script {
+                node(env.AGENT) {
+                    cleanup()
+                }
+            }
+        }
 
-      // --no-ansi suppresses color output that shows as garbage in Jenkins
-      sh "docker-compose --no-ansi down -v --remove-orphans --rmi=local || true"
-      // clean root owned resources from docker volumes, just in case
-      sh "sudo rm -rf ./coverage"
-      sh "sudo rm -rf ./cypress"
-      sh "sudo rm -rf ./report"
+        failure {
+            script {
+                node(env.AGENT) {
+                    archiveArtifacts()
+                }
+            }
+        }
     }
-
-    failure {
-      archiveArtifacts artifacts: 'translation-validation-result.json', onlyIfSuccessful: false
-    }
-  }
 }
 
+def cleanup() {
+    // upload failed tests report and artifacts
+    junit allowEmptyResults: true, testResults: 'cypress/results/**/*.xml'
+    archiveArtifacts allowEmptyArchive: true, artifacts: 'report/screenshots/**/*.png, report/videos/**/*.mp4, cypress/logs/*.log'
+
+    script {
+        dockerCompose.downCmd(removeVolumes: true, removeOrphans: true, removeImages: 'local', ignoreErrors: true)
+    }
+    // clean root owned resources from docker volumes, just in case
+    sh "sudo rm -rf ./coverage"
+    sh "sudo rm -rf ./cypress"
+    sh "sudo rm -rf ./report"
+}
+
+
+def archiveArtifacts() {
+    archiveArtifacts artifacts: 'translation-validation-result.json', onlyIfSuccessful: false
+}
