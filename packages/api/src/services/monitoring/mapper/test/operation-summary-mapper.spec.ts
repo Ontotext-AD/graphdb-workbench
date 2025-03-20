@@ -6,7 +6,6 @@ import {
 } from '../../../../models/monitoring';
 
 describe('OperationSummaryMapper', () => {
-  window.crypto.randomUUID = jest.fn();
   let mapper: OperationSummaryMapper;
 
   beforeEach(() => {
@@ -41,7 +40,7 @@ describe('OperationSummaryMapper', () => {
       count: 0,
       group: 'CLUSTER',
       href: 'cluster',
-      id: undefined,
+      id: 'WARNING-clusterHealth-UNAVAILABLE_NODES',
       value: 'UNAVAILABLE_NODES',
       labelKey: 'UNAVAILABLE_NODES',
       status: OperationStatus.WARNING,
@@ -51,7 +50,7 @@ describe('OperationSummaryMapper', () => {
       count: 0,
       group: 'BACKUP',
       href: 'monitor/backup-and-restore',
-      id: undefined,
+      id: 'INFORMATION-backupAndRestore-BACKUP_IN_PROGRESS',
       value: 'BACKUP_IN_PROGRESS',
       labelKey: 'BACKUP_IN_PROGRESS',
       status: OperationStatus.INFORMATION,
