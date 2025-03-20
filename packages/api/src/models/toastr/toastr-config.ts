@@ -1,22 +1,23 @@
 import {ToastrPosition} from './toastr-position';
+import {ToastConfig} from './toast-config';
 
 /**
- * Configuration class for Toast notifications.
- * Provides settings to control the behavior of toast notifications.
+ * Configuration class for the entire Toastr container.
+ * Provides settings to control the behavior of all toast notifications.
+ * Some of these may be overriden by individual toast messages, e.g. timeout.
+ *
+ * @extends ToastConfig
  */
-export class ToastrConfig {
+export class ToastrConfig extends ToastConfig{
   private static instance: ToastrConfig;
-  /**
-   * The duration in milliseconds for which the toast notification will be displayed.
-   */
-  timeout: number;
 
   /**
-   * The position of the toast notifications on the screen.
+   * The position of the toast container on the screen.
    */
   position: ToastrPosition;
 
   private constructor(config: ToastrConfig) {
+    super();
     this.timeout = config.timeout;
     this.position = config.position;
   }

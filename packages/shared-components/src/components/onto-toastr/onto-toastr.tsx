@@ -73,7 +73,9 @@ export class OntoToastr {
   }
 
   /**
-   * Sets a timeout for automatic removal of a toast message
+   * Sets a timeout for automatic removal of a toast message.
+   * The value of the timeout is determined by the toast's configuration, or the default timeout, if
+   * the toast hasn't provided a value
    *
    * @param toast - The toast message to set timeout for
    */
@@ -81,7 +83,7 @@ export class OntoToastr {
     const timeout = window.setTimeout(() => {
       this.toasts.remove(toast);
       this.clearToastTimeout(toast);
-    }, this.config.timeout);
+    }, toast.config?.timeout || this.config.timeout);
     this.toastToTimeout.set(toast, timeout);
   }
 
