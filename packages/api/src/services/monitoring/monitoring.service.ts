@@ -16,6 +16,6 @@ export class MonitoringService implements Service {
    */
   getOperations(repositoryId: string): Promise<OperationStatusSummary> {
     return ServiceProvider.get(MonitoringRestService).getOperations(repositoryId)
-      .then((operations => MapperProvider.get(OperationSummaryMapper).mapToModel(operations)));
+      .then((operations) => MapperProvider.get(OperationSummaryMapper).mapToModel(operations));
   }
 }
