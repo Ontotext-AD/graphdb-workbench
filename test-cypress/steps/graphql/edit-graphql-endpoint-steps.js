@@ -13,6 +13,10 @@ export class EditGraphqlEndpointSteps extends ModalDialogSteps {
         return this.getDynamicForm().find('.form-group').eq(index).scrollIntoView();
     }
 
+    static showAdvancedSettings() {
+        this.getDialogHeader().find('.toggle-advanced-settings').click();
+    }
+
     static toggleFormGroupHiddenFields(index) {
         this.getFormGroup(index).find('.toggle-hidden-fields').click();
     }

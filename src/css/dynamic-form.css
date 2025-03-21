@@ -24,12 +24,29 @@
 .dynamic-form-container .dynamic-form .form-group .group-title {
     height: var(--form-element-height);
     margin-bottom: var(--vertical-margin);
-    line-height: 1;
+    display: flex;
+    align-items: center;
 }
 
 .dynamic-form-container .dynamic-form .form-inline label {
+    height: 100%;
+    display: flex;
+    align-items: center;
     margin: 0;
     overflow-wrap: break-word;
+}
+
+.dynamic-form-container .dynamic-form .hidden-fields .form-inline label {
+    animation: highlight 0.5s 1 forwards;
+}
+
+@keyframes highlight {
+    0% {
+        background-color: rgba(255, 255, 255, 0);
+    }
+    100% {
+        background-color: var(--color-warning-light);
+    }
 }
 
 .dynamic-form-container .dynamic-form .form-inline input,
