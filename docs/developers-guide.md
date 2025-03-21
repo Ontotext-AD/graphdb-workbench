@@ -457,3 +457,103 @@ The introduction of `$languageServiceProvider` allows for flexible, dynamic lang
 2. **Ensure Translations Are Available** Make sure a translation file (e.g., `es.json`) exists for the new language, following the naming convention used for other languages.
 
 3. **Reload the Application** The workbench will recognize the new language without requiring additional code changes or redeployment.
+
+
+## E2E Testing with Cypress
+
+### Testcontainers Integration 
+
+### How it works
+
+- **Management of Docker Containers:**  
+  Uses the `testcontainers` library to dynamically start and stop Docker containers for GraphDB and Workbench during test execution.
+
+- **Dynamic Port Allocation:**  
+  Uses the `get-port` package to assign a free port to each Cypress instance, which is then used as the `baseUrl` for tests.
+
+- **Custom Cypress Tasks and Hooks:**  
+  Implements custom tasks (e.g., `startGraphDb`, `startWorkbench`, `stopGraphDb`, `stopWorkbench`) to orchestrate container lifecycle and uses hooks (`before`, `after`, `after:run`) to ensure proper setup and cleanup.
+
+- **Additional:**
+    - Uses parallel test execution (using `cypress-parallel`).
+---
+
+### Details:
+
+#### 1. File: `test-cypress/support/index.js`
+
+#### Hooks and Tasks:
+- **`Cypress.on('test:before:run')`:**
+    - **Purpose:** Before each test run, this hook updates the Cypress configuration’s `baseUrl` with the value stored in the environment variable `base`. If the value is same, it does nothing.
+    - **Outcome:** Ensures every test uses the correct URL endpoint (which is dynamically set).
+
+- **`before()` Hook:**
+    - **Purpose:** Runs once before all tests in a spec.
+    - **Actions:**
+        - Calls `cy.task('startGraphDb')` to launch a GraphDB container.
+            - A high timeout (300000 ms) is set to allow sufficient startup time.
+        - Uses the returned GraphDB port to call `cy.task('startWorkbench')`, thereby starting a Workbench container with the GraphDB URL passed as a build argument.
+    - **Outcome:** Both testcontainers (GraphDB and Workbench) are running before any tests in the spec begin.
+
+- **`after()` Hook:**
+    - **Purpose:** Runs once after all tests in a spec have completed.
+    - **Actions:**
+        - Calls `cy.task('stopWorkbench')` and `cy.task('stopGraphDb')` to stop the respective containers.
+        - Uses container IDs stored in Cypress environment variables.
+    - **Outcome:** Cleans up Docker resources to prevent resource leaks.
+
+---
+
+#### 2. File: `test-cypress/plugins/index.js`
+
+#### Docker Container Management with Testcontainers:
+- **Imports and Setup:**
+    - Imports `GenericContainer` and `Network` from the `testcontainers` library, and Node’s `path` module.
+    - Creates Maps (`graphDbContainers` and `workbenchContainers`) to keep track of running containers.
+    - Declares variables (`currentGraphDbContainer`, `currentWorkbenchContainer`, `network`) for holding container and network references.
+
+- **Custom Tasks:**
+    - **`startGraphDb`:**
+        - Checks if a GraphDB container is already running; if so, returns its connection details. This is done because when Cypress updates the `baseUrl` it reloads the browser. In this way we reuse existing containers.
+        - If not, starts a new Docker network (if needed) and launches a GraphDB container with:
+            - Specified environment variables (e.g., for import directory and logging configuration).
+            - An exposed port (7200) and a bind mount for importing data.
+            - A network alias ("graphdb").
+        - Stores container information and sets `graphdbContainerId` in Cypress’s environment.
+        - Returns the host, first mapped port, and container ID.
+
+    - **`stopGraphDb`:**
+        - Stops and removes the GraphDB container using its container ID from the Map.
+
+    - **`startWorkbench`:**
+        - Checks if a Workbench container is already running; if so, returns its connection details.
+        - Otherwise, builds a Workbench Docker image from a Dockerfile, passing the GraphDB URL (with the port) as a build argument.
+        - Starts the Workbench container with:
+            - Exposed ports (using a free port provided by the Cypress configuration).
+            - Network alias ("workbench").
+            - Attachment to the same Docker network.
+        - Stores container information and sets `workbenchContainerId` in Cypress’s environment.
+        - Returns the host, first mapped port, and container ID.
+
+    - **`stopWorkbench`:**
+        - Stops and removes the Workbench container using its container ID.
+
+- **Additional Hooks:**
+    - **`after:run` Hook:**
+        - Stops the Docker network if it was created, ensuring all resources are properly released after test execution.
+---
+
+### 3. File: `test-cypress/cypress.config.js`
+
+- **free port:**
+    - Uses the `get-port` package to obtain a free port at startup.
+
+- **Dynamic Base URL Setup:**
+    - The obtained free port is stored in a variable (`freePort`) and then:
+        - Set in Cypress’s environment (as `env.freePort` and `env.base`).
+        - Used to update the `baseUrl` in the `test:before:run` hook.
+    - Logs the assigned `baseUrl`.
+
+- **Outcome:**  
+  Each Cypress instance runs on its own unique port, reducing the risk of port conflicts during parallel execution.
+---

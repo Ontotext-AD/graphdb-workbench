@@ -407,7 +407,6 @@ describe('Cluster management', () => {
         ClusterStubs.stubCreateClusterByList(['http://pc-desktop:7200', 'http://pc-desktop:7203']);
         ClusterNodesConfigurationSteps.clickOkButton();
         cy.wait('@2-nodes-cluster-created').then((interception) => {
-            console.log(interception.request.body);
             expect(interception.request.body).to.deep.equal({
                 "electionMinTimeout": 8000,
                 "electionRangeTimeout": 6000,
