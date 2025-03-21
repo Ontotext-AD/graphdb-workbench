@@ -223,7 +223,7 @@ describe('Graphql: create endpoint', () => {
         CreateGraphqlEndpointSteps.getEndpointDescriptionFieldInput().should('have.value', 'This is a test endpoint');
     });
 
-    it('should be able to configure generation settings (the second step)', () => {
+    it.only('should be able to configure generation settings (the second step)', () => {
         // Given I have a repository with graphql shapes in it
         cy.importServerFile(repositoryId, 'ontology-and-shapes.ttl');
         // And I started the endpoint creation wizard

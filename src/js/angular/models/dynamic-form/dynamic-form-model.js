@@ -38,18 +38,11 @@ export class DynamicFormGroup {
      * @private
      */
     _hiddenFields = [];
-    /**
-     * Flag to show all fields.
-     * @type {boolean}
-     * @private
-     */
-    _showAllFields = false;
 
     constructor(data) {
         this._fields = data.fields || [];
         this._hiddenFields = data.hiddenFields || [];
         this._groupId = data.groupId || '';
-        this._showAllFields = false;
     }
 
     get fields() {
@@ -74,13 +67,5 @@ export class DynamicFormGroup {
 
     set groupId(value) {
         this._groupId = value;
-    }
-
-    get showAllFields() {
-        return this._showAllFields;
-    }
-
-    set showAllFields(value) {
-        this._showAllFields = value;
     }
 }

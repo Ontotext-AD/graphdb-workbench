@@ -4,7 +4,7 @@
     <form name="dynamicForm" novalidate class="dynamic-form">
         <div ng-repeat="model in formModel.models">
             <!-- Groups -->
-            <div ng-if="model.groupId" class="form-group">
+            <div ng-if="model.groupId && (model.fields.length > 0 || showAllFields)" class="form-group">
                 <h5 class="group-title">
                     <span
                         gdb-tooltip="{{(translationKeyPrefix ? (translationKeyPrefix + model.groupId + '.tooltip') : null) | translate}}">
@@ -16,20 +16,7 @@
                 </dynamic-form-field>
 
                 <div class="hidden-fields">
-                    <div class="text-xs-center mb-1">
-                        <button type="button" ng-click="model.showAllFields = !model.showAllFields"
-                                class="btn btn-link btn-sm toggle-hidden-fields">
-                            <span ng-hide="model.showAllFields">
-                                {{'common.show_all' | translate}}
-                                <em class="icon-caret-down"></em>
-                            </span>
-                            <span ng-show="model.showAllFields">
-                                {{'common.hide' | translate}}
-                                <em class="icon-caret-up"></em>
-                            </span>
-                        </button>
-                    </div>
-                    <dynamic-form-field ng-if="model.showAllFields" ng-repeat="field in model.hiddenFields"
+                    <dynamic-form-field ng-if="showAllFields" ng-repeat="field in model.hiddenFields"
                                         field="field" form="dynamicForm" translation-key-prefix="translationKeyPrefix">
                     </dynamic-form-field>
                 </div>

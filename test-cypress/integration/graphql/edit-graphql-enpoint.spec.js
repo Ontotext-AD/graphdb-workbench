@@ -47,7 +47,7 @@ describe('Graphql: edit endpoint settings', () => {
             {"label": "Expand owl:sameAs"}
         ]);
         // When I expand the first group
-        EditGraphqlEndpointSteps.toggleFormGroupHiddenFields(0);
+        EditGraphqlEndpointSteps.showAdvancedSettings();
         EditGraphqlEndpointSteps.getAllFormGroupFields(0).should('have.length', 10);
 
         EditGraphqlEndpointSteps.getInputField(3).should('have.value', 'ANY');
@@ -80,7 +80,7 @@ describe('Graphql: edit endpoint settings', () => {
         EditGraphqlEndpointSteps.getOKButton().should('be.disabled');
 
         // Show hidden fields
-        EditGraphqlEndpointSteps.toggleFormGroupHiddenFields(0);
+        EditGraphqlEndpointSteps.showAdvancedSettings();
 
         // When I change some fields
         EditGraphqlEndpointSteps.fillInputField(3, 'NONE');
@@ -132,7 +132,7 @@ describe('Graphql: edit endpoint settings', () => {
         EditGraphqlEndpointSteps.getDialog().should('be.visible');
 
         // Show hidden fields
-        EditGraphqlEndpointSteps.toggleFormGroupHiddenFields(0);
+        EditGraphqlEndpointSteps.showAdvancedSettings();
 
         // Fill in a field to allow form submission
         EditGraphqlEndpointSteps.fillInputField(0, 'ANY');
