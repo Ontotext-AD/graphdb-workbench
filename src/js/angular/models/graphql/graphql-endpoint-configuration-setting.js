@@ -47,6 +47,7 @@ export class GraphqlEndpointConfigurationSettings {
             } else {
                 settings[field.key] = field.value;
             }
+            // JSON type field value is string, and the backend doesn't expect it to be parsed, so we send it as is
         };
 
         this._settings.models.forEach((model) => {

@@ -869,6 +869,11 @@
                     "error_saving_configuration": "Erreur lors de l'enregistrement de la configuration du point de terminaison",
                     "success_saving_configuration": "Configuration du point de terminaison enregistrée"
                 },
+                "actions": {
+                    "show_advanced_settings": {
+                        "label": "Paramètres avancés"
+                    }
+                },
                 "settings": {
                     "graphql": {
                         "label": "Paramètres GraphQL",
@@ -1096,6 +1101,11 @@
                     "title": "Configurer le point de terminaison",
                     "endpoint_parameters": {
                         "title": "Paramètres",
+                        "actions": {
+                            "show_advanced_settings": {
+                                "label": "Paramètres avancés"
+                            }
+                        },
                         "settings": {
                             "generic": {
                                 "label": "Paramètres génériques",

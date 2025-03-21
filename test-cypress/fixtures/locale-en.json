@@ -870,6 +870,11 @@
                     "error_saving_configuration": "Error saving endpoint configuration",
                     "success_saving_configuration": "Endpoint configuration saved"
                 },
+                "actions": {
+                    "show_advanced_settings": {
+                        "label": "Advanced settings"
+                    }
+                },
                 "settings": {
                     "graphql": {
                         "label": "GraphQL settings",
@@ -1097,6 +1102,11 @@
                     "title": "Configure endpoint",
                     "endpoint_parameters": {
                         "title": "Parameters",
+                        "actions": {
+                            "show_advanced_settings": {
+                                "label": "Advanced settings"
+                            }
+                        },
                         "settings": {
                             "generic": {
                                 "label": "Generic settings",

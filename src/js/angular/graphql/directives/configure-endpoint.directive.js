@@ -35,6 +35,13 @@ function ConfigureEndpointComponent(ModalService, $translate, GraphqlService, Gr
              */
             $scope.generationSettingsValid = false;
 
+            /**
+             * Flag controlling the visibility of the advanced settings section. Advanced settings are hidden by default
+             * in the settings model.
+             * @type {boolean}
+             */
+            $scope.showAdvancedSettings = false;
+
             // =========================
             // Public functions
             // =========================
@@ -70,6 +77,13 @@ function ConfigureEndpointComponent(ModalService, $translate, GraphqlService, Gr
                 ModalService.openConfirmation(title, confirmDeleteMessage, () => {
                     GraphqlContextService.cancelEndpointCreation();
                 });
+            };
+
+            /**
+             * Toggles the visibility of the advanced settings. Advanced settings are hidden by default.
+             */
+            $scope.toggleAdvancedSettings = () => {
+                $scope.showAdvancedSettings = !$scope.showAdvancedSettings;
             };
 
             // =========================

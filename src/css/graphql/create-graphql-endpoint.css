@@ -126,10 +126,27 @@
    Configure endpoint view
    =============================================== */
 
+.create-graphql-endpoint-view .endpoint-configuration-view .title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 50%;
+}
+
+.create-graphql-endpoint-view .endpoint-configuration-view .toggle-advanced-settings {
+    margin-left: auto;
+    font-size: 1rem;
+}
+
 .create-graphql-endpoint-view .endpoint-configuration-container {
     display: flex;
     align-items: stretch;
     width: 50%;
+}
+
+.create-graphql-endpoint-view .endpoint-configuration-container dynamic-form {
+    display: block;
+    width: 100%;
 }
 
 /* ===============================================

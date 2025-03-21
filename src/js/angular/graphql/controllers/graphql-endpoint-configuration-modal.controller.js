@@ -60,6 +60,16 @@ function GraphqlEndpointConfigurationModalController($scope, $uibModalInstance, 
     $scope.savingEndpointSettings = false;
 
     /**
+     * Flag indicating if the advanced settings are visible.
+     * @type {boolean}
+     */
+    $scope.showAdvancedSettings = false;
+
+    // =========================
+    // Public functions
+    // =========================
+
+    /**
      * Handles the save button click event in the dialog.
      */
     $scope.ok = () => {
@@ -79,6 +89,13 @@ function GraphqlEndpointConfigurationModalController($scope, $uibModalInstance, 
      */
     $scope.handleValidityChange = (isValid) => {
         $scope.endpointConfigurationSettingsValid = isValid;
+    };
+
+    /**
+     * Toggles the visibility of the advanced settings. Advanced settings are hidden by default.
+     */
+    $scope.toggleAdvancedSettings = () => {
+      $scope.showAdvancedSettings = !$scope.showAdvancedSettings;
     };
 
     // =========================

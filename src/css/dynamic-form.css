@@ -1,6 +1,7 @@
 :root {
     --form-element-height: 38px;
     --vertical-margin: 1em;
+    --label-left-padding: 8px;
 }
 
 .dynamic-form-container {
@@ -16,7 +17,6 @@
 .dynamic-form-container .dynamic-form .form-inline {
     display: grid;
     grid-template-columns: minmax(150px, 1fr) 2fr;
-    gap: 1em;
     margin-bottom: var(--vertical-margin);
     align-items: start;
 }
@@ -24,12 +24,35 @@
 .dynamic-form-container .dynamic-form .form-group .group-title {
     height: var(--form-element-height);
     margin-bottom: var(--vertical-margin);
-    line-height: 1;
+    display: flex;
+    align-items: center;
+}
+
+.dynamic-form-container .dynamic-form .form-group .group-title span {
+    display: inline-block;
+    padding-left: var(--label-left-padding);
 }
 
 .dynamic-form-container .dynamic-form .form-inline label {
+    height: 100%;
+    display: flex;
+    align-items: center;
     margin: 0;
+    padding-left: var(--label-left-padding);
     overflow-wrap: break-word;
+}
+
+.dynamic-form-container .dynamic-form .hidden-fields .form-inline label {
+    animation: highlight 0.5s 1 forwards;
+}
+
+@keyframes highlight {
+    0% {
+        background-color: rgba(255, 255, 255, 0);
+    }
+    100% {
+        background-color: var(--color-warning-light);
+    }
 }
 
 .dynamic-form-container .dynamic-form .form-inline input,

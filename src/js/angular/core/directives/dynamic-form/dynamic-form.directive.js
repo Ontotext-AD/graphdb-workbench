@@ -41,7 +41,15 @@ function dynamicFormDirective() {
     return {
         restrict: 'E',
         scope: {
+            /**
+             * @type {DynamicFormModel}
+             */
             formModel: '=',
+            /**
+             * Controls whether to show all fields or only the ones that are not hidden in the model.
+             * @type {boolean}
+             */
+            showAllFields: '=?',
             onValidityChange: '&?',
             formCtrl: '=?',
             translationKeyPrefix: '@?'
@@ -53,6 +61,7 @@ function dynamicFormDirective() {
             // =========================
             $scope.FIELD_TYPE = FIELD_TYPE;
             $scope.formCtrl = undefined;
+            $scope.showAllFields = $scope.showAllFields || false;
 
             // =========================
             // Private function
