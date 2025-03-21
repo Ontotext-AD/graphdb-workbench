@@ -3,6 +3,16 @@
     min-height: 300px;
 }
 
+.graphql-endpoint-configuration-modal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.graphql-endpoint-configuration-modal .modal-header .toggle-advanced-settings {
+    margin-left: auto;
+}
+
 .graphql-endpoint-configuration-modal .graphql-endpoint-configuration-loader {
     position: absolute;
     top: 0;

@@ -2,19 +2,25 @@
 
 <div class="modal-header">
     <h3 class="modal-title">{{'graphql.endpoints_management.endpoint_configuration_modal.title' | translate}}</h3>
+    <span ng-click="toggleAdvancedSettings()" class="toggle-advanced-settings">
+        <input type="checkbox" class="switch" ng-checked="showAdvancedSettings"/>
+        <label></label>
+        <span>{{'graphql.endpoints_management.endpoint_configuration_modal.actions.show_advanced_settings.label' | translate}}</span>
+    </span>
 </div>
 <div class="modal-body graphql-endpoint-configuration-modal-body">
     <div class="graphql-endpoint-configuration-loader" onto-loader-new hide-message="true"
          size="100" ng-show="loadingEndpointConfigurationSettings"></div>
 
     <dynamic-form ng-if="!loadingEndpointConfigurationSettings" form-model="endpointConfigurationSettings.settings"
-                  on-validity-change="handleValidityChange(valid)"
+                  on-validity-change="handleValidityChange(valid)" show-all-fields="showAdvancedSettings"
                   translation-key-prefix="graphql.endpoints_management.endpoint_configuration_modal.settings."
                   form-ctrl="formCtrl">
     </dynamic-form>
 </div>
 <div class="modal-footer mt-0">
-    <button type="button" class="btn btn-secondary cancel-btn" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
+    <button type="button" class="btn btn-secondary cancel-btn" ng-click="cancel()">{{'common.cancel.btn' | translate}}
+    </button>
     <button id="graphql-endpoint-configuration-modal-submit"
             class="btn btn-primary"
             ng-disabled="!endpointConfigurationSettingsValid || savingEndpointSettings || formCtrl.$pristine"

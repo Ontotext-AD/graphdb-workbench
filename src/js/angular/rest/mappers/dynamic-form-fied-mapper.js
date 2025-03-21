@@ -72,6 +72,9 @@ const buildFieldModels = (configs) => {
                 config.value = selectedValue;
             }
         }
+
+        // JSON type filed value comes as string, so we don't need to process it because we render it in a text area
+
         return dynamicFormFieldMapper(config, type, mappedValues);
     });
 }
