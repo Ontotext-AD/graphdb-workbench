@@ -37,6 +37,7 @@ Example of usage:
  - [onto-operations-notification](../onto-operations-notification)
  - [onto-permission-banner](../onto-permission-banner)
  - [onto-toggle-switch](../onto-toggle-switch)
+ - [onto-user-menu](../onto-user-menu)
 
 ### Graph
 ```mermaid
@@ -50,6 +51,7 @@ graph TD;
   onto-operations-notification --> translate-label
   onto-permission-banner --> translate-label
   onto-toggle-switch --> translate-label
+  onto-user-menu --> translate-label
   style translate-label fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
