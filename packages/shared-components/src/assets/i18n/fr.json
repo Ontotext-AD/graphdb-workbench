@@ -161,5 +161,9 @@
       "OUT_OF_SYNC": "Désynchronisé",
       "UNAVAILABLE_NODES": "Nœuds indisponibles"
     }
+  },
+  "user_menu": {
+    "my_settings": "Mes paramètres",
+    "logout": "Déconnexion"
   }
 }

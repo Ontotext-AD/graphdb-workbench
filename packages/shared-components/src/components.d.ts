@@ -227,6 +227,16 @@ export namespace Components {
     interface OntoTooltip {
     }
     /**
+     * This component displays the current user's name and provides options
+     * for navigating to settings and logging out.
+     */
+    interface OntoUserMenu {
+        /**
+          * Currently authenticated user
+         */
+        "user": AuthenticatedUser;
+    }
+    /**
      * The purpose of this component is to display translated literals in the DOM. A Stencil component re-renders when a prop or state changes,
      * but it may not re-render when the language changes. In such cases, this component should be used. It handles language change events
      * and re-translates the passed language and translation parameters.
@@ -439,6 +449,16 @@ declare global {
         new (): HTMLOntoTooltipElement;
     };
     /**
+     * This component displays the current user's name and provides options
+     * for navigating to settings and logging out.
+     */
+    interface HTMLOntoUserMenuElement extends Components.OntoUserMenu, HTMLStencilElement {
+    }
+    var HTMLOntoUserMenuElement: {
+        prototype: HTMLOntoUserMenuElement;
+        new (): HTMLOntoUserMenuElement;
+    };
+    /**
      * The purpose of this component is to display translated literals in the DOM. A Stencil component re-renders when a prop or state changes,
      * but it may not re-render when the language changes. In such cases, this component should be used. It handles language change events
      * and re-translates the passed language and translation parameters.
@@ -472,6 +492,7 @@ declare global {
         "onto-toastr": HTMLOntoToastrElement;
         "onto-toggle-switch": HTMLOntoToggleSwitchElement;
         "onto-tooltip": HTMLOntoTooltipElement;
+        "onto-user-menu": HTMLOntoUserMenuElement;
         "translate-label": HTMLTranslateLabelElement;
     }
 }
@@ -639,6 +660,16 @@ declare namespace LocalJSX {
     interface OntoTooltip {
     }
     /**
+     * This component displays the current user's name and provides options
+     * for navigating to settings and logging out.
+     */
+    interface OntoUserMenu {
+        /**
+          * Currently authenticated user
+         */
+        "user"?: AuthenticatedUser;
+    }
+    /**
      * The purpose of this component is to display translated literals in the DOM. A Stencil component re-renders when a prop or state changes,
      * but it may not re-render when the language changes. In such cases, this component should be used. It handles language change events
      * and re-translates the passed language and translation parameters.
@@ -676,6 +707,7 @@ declare namespace LocalJSX {
         "onto-toastr": OntoToastr;
         "onto-toggle-switch": OntoToggleSwitch;
         "onto-tooltip": OntoTooltip;
+        "onto-user-menu": OntoUserMenu;
         "translate-label": TranslateLabel;
     }
 }
@@ -728,6 +760,11 @@ declare module "@stencil/core" {
             "onto-toastr": LocalJSX.OntoToastr & JSXBase.HTMLAttributes<HTMLOntoToastrElement>;
             "onto-toggle-switch": LocalJSX.OntoToggleSwitch & JSXBase.HTMLAttributes<HTMLOntoToggleSwitchElement>;
             "onto-tooltip": LocalJSX.OntoTooltip & JSXBase.HTMLAttributes<HTMLOntoTooltipElement>;
+            /**
+             * This component displays the current user's name and provides options
+             * for navigating to settings and logging out.
+             */
+            "onto-user-menu": LocalJSX.OntoUserMenu & JSXBase.HTMLAttributes<HTMLOntoUserMenuElement>;
             /**
              * The purpose of this component is to display translated literals in the DOM. A Stencil component re-renders when a prop or state changes,
              * but it may not re-render when the language changes. In such cases, this component should be used. It handles language change events
