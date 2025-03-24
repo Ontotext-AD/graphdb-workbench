@@ -21,7 +21,7 @@ import {
  */
 @Component({
   tag: 'onto-header',
-  styleUrl: 'onto-header.scss',
+  styleUrl: 'onto-header.scss'
 })
 export class OntoHeader {
   private readonly monitoringService = ServiceProvider.get(MonitoringService);
@@ -39,6 +39,9 @@ export class OntoHeader {
 
   /** The current license information */
   @State() private license: License;
+
+  /** Menu should appear, when security is enabled and user is authenticated */
+  @State() private showUserMenu: boolean;
 
   /** Array of subscription cleanup functions */
   private readonly subscriptions: SubscriptionList = new SubscriptionList();
@@ -64,13 +67,14 @@ export class OntoHeader {
           <div class="search-component">&#x1F50D;</div>
           {this.activeOperations?.allRunningOperations.getItems().length
             ? <onto-operations-notification activeOperations={this.activeOperations}>
-              </onto-operations-notification>
+            </onto-operations-notification>
             : ''
           }
           {Boolean(this.license) && !this.license?.valid ?
             <onto-license-alert license={this.license}></onto-license-alert> : ''
           }
           <onto-repository-selector></onto-repository-selector>
+          {this.showUserMenu ? <onto-user-menu user={this.user}></onto-user-menu> : ''}
           <onto-language-selector dropdown-alignment="right"></onto-language-selector>
         </div>
       </Host>
@@ -124,7 +128,20 @@ export class OntoHeader {
 
   private subscribeToSecurityContextChange() {
     // TODO: This should be done by the authentication service, when the config and auth user are available synchronously
-    this.subscriptions.add(this.securityContextService.onAuthenticatedUserChanged((user) => this.user = user));
-    this.subscriptions.add(this.securityContextService.onSecurityConfigChanged((config) => this.securityConfig = config));
+    this.subscriptions.add(this.securityContextService.onAuthenticatedUserChanged((user) => {
+      this.user = user;
+      this.showUserMenu = this.shouldShowUserMenu();
+    }));
+    this.subscriptions.add(this.securityContextService.onSecurityConfigChanged((config) => {
+      this.securityConfig = config;
+      this.showUserMenu = this.shouldShowUserMenu();
+    }));
+  }
+
+  private shouldShowUserMenu() {
+    if (!this.user || !this.securityConfig) {
+      return false;
+    }
+    return this.securityConfig.enabled && this.authenticationService.isAuthenticated(this.securityConfig, this.user);
   }
 }
