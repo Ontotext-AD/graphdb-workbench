@@ -507,6 +507,10 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $repositories.isActiveRepoFedXType();
     };
 
+    $scope.isLicensePresent = function () {
+        return $licenseService.isLicensePresent();
+    };
+
     $scope.isLicenseValid = function () {
         return $licenseService.isLicenseValid();
     };
@@ -1007,15 +1011,13 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         return $licenseService.license();
     };
 
+    $scope.getLicenseErrorMsg = function () {
+        return $licenseService.licenseErrorMsg();
+    }
+
     $scope.isLicenseHardcoded = function () {
         return $licenseService.isLicenseHardcoded();
     };
-
-
-    $scope.getProductTypeHuman = function () {
-        return $licenseService.productTypeHuman();
-    };
-
 
     $scope.getHumanReadableSeconds = function (s, preciseSeconds) {
         const days = Math.floor(s / 86400);

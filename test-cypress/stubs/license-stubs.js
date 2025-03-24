@@ -29,6 +29,7 @@ export class LicenseStubs {
     static freeLicense() {
         return {
             "message": "OK",
+            "present": true,
             "valid": true,
             "version": "10.7",
             "expiryDate": null,
@@ -41,13 +42,15 @@ export class LicenseStubs {
                 "Lucene connector"
             ],
             "productType": "free",
-            "installationId": "1234-abcd-5678"
+            "installationId": "1234-abcd-5678",
+            "usageRestriction": null
         };
     }
 
     static enterpriseLicense() {
         return {
             message: "OK",
+            present: true,
             valid: true,
             version: null,
             expiryDate: 8640000000000000,
@@ -65,14 +68,15 @@ export class LicenseStubs {
                 "Elasticsearch connector"
             ],
             productType: "enterprise",
-            installationId: "1234-abcd-5678"
-
+            installationId: "1234-abcd-5678",
+            usageRestriction: null
         };
     }
 
     static evaluationLicense() {
         return {
             message: "OK",
+            present: true,
             valid: true,
             version: null,
             expiryDate: 8640000000000000,
@@ -90,7 +94,8 @@ export class LicenseStubs {
                 "Elasticsearch connector"
             ],
             productType: "enterprise",
-            installationId: "1234-abcd-5678"
+            installationId: "1234-abcd-5678",
+            usageRestriction: null
         };
     }
 

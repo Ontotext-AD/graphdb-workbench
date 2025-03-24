@@ -34,9 +34,9 @@ function TrackingService($window, $jwtAuth, $licenseService, InstallationCookieS
      * @return {boolean} A boolean indicating if tracking is allowed.
      */
     const isTrackingAllowed = () => {
-        const isFreeLicense = $licenseService.isFreeLicense();
+        const isTrackableLicense = $licenseService.isTrackableLicense();
         const isProduction = !$window.wbDevMode;
-        return isFreeLicense && isProduction;
+        return isTrackableLicense && isProduction;
     };
 
     /**

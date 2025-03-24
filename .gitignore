@@ -14,3 +14,6 @@ cypress/
 test-cypress/logs/
 logs/
 .downloads
+
+# Test environment
+graphdb.license

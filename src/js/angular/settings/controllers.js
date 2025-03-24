@@ -69,10 +69,10 @@ function LicenseCtrl($scope, LicenseRestService, $licenseService, toastr, $rootS
     // TODO - Check if redundant call and remove
     $licenseService.checkLicenseStatus();
 
-    $scope.revertToFree = function () {
+    $scope.removeLicense = function () {
         ModalService.openSimpleModal({
             title: $translate.instant('confirm.operation'),
-            message: $translate.instant("revert.to.free.warning.msg"),
+            message: $translate.instant("remove.license.warning.msg"),
             warning: true
         }).result
             .then(function () {
@@ -123,7 +123,7 @@ function RegisterLicenseCtrl($scope, LicenseRestService, $location, $uibModal, t
     function sendLicenseToValidateAndActivate(licenseCode) {
         LicenseRestService.sendLicenseToValidate(licenseCode)
             .success(function (validatedLicense) {
-                if (validatedLicense.licensee !== 'Invalid') {
+                if (validatedLicense.present) {
                     // write code to textarea
                     textAreaSel.val(licenseCode);
                     // pop dialog for license details confirmation
@@ -173,8 +173,8 @@ function RegisterLicenseCtrl($scope, LicenseRestService, $location, $uibModal, t
             LicenseRestService.registerLicense(decodedLicense)
                 .success(function () {
                     $window.history.back();
-                }).error(function () {
-                    toastr.error($translate.instant('license.register.error'));
+                }).error(function (error) {
+                    toastr.error(error, $translate.instant('license.register.error'));
                 });
         } else {
             toastr.error($translate.instant('no.license.code.error'));

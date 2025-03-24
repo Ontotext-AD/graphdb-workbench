@@ -12,13 +12,15 @@ angular.module('graphdb.framework.core.services.licenseService', [])
  * @param {object} $translate - Angular translate service for internationalization.
  * @return {object} An object exposing methods for checking and managing license information:
  * - `checkLicenseStatus`: Fetches license status and updates local variables.
+ * - `isTrackableLicense`: Checks if the license should be tracked.
+ * - `isLicensePresent`: Checks if any license is present (valid or not).
  * - `isLicenseValid`: Checks if the current license is valid.
  * - `license`: Returns the current license object.
+ * - `licenseErrorMsg`: Returns the error messages describing the reason for license being invalid.
  * - `loadingLicense`: Returns whether the license is being loaded.
  * - `isLicenseHardcoded`: Checks if the license is hardcoded.
  * - `showLicense`: Determines if the license should be shown in the UI.
- * - `productType`: Returns the current product type associated with the license.
- * - `productTypeHuman`: Returns a human-readable version of the product type.
+ * - `productType`: Returns the current product type associated with the license (free, sandbox, standard, enterprise).
  */
 
 function licenseService($window, $document, LicenseRestService, $translate) {
@@ -26,8 +28,6 @@ function licenseService($window, $document, LicenseRestService, $translate) {
     let _loadingLicense = false;
     let _isLicenseHardcoded = false;
     let _showLicense = false;
-    let _productType = undefined;
-    let _productTypeHuman = undefined;
 
     /**
      * Fetches license status and updates local variables related to license and product type.
@@ -46,33 +46,25 @@ function licenseService($window, $document, LicenseRestService, $translate) {
             .catch(() => {
                 _isLicenseHardcoded = true;
                 _license = {
-                    message: $translate.instant('no.license.set.msg'),
+                    message: "No license was set",
+                    present: false,
                     valid: false
                 };
             })
             .finally(() => {
-                updateProductType(_license);
                 _showLicense = true;
                 _loadingLicense = false;
             });
     };
 
-    const updateProductType = (license) => {
-        _productType = license.productType;
-        if (_productType === "standard") {
-            _productTypeHuman = "Standard";
-        } else if (_productType === "enterprise") {
-            _productTypeHuman = "Enterprise";
-        } else if (_productType === "free") {
-            _productTypeHuman = "Free";
-        } else if (_productType === "graphdb") {
-            _productTypeHuman = "GraphDB";
-        }
+    const isTrackableLicense = () => {
+        const licenseTypeOfUse = _license && _license.typeOfUse.toLowerCase();
+        return !isLicensePresent() || productType() === "free" || productType() === "sandbox"
+            || licenseTypeOfUse === EVALUATION_TYPE_1 || licenseTypeOfUse === EVALUATION_TYPE_2;
     };
 
-    const isFreeLicense = () => {
-        const licenseTypeOfUse = _license && _license.typeOfUse.toLowerCase();
-        return _productType === "free" || licenseTypeOfUse === EVALUATION_TYPE_1 || licenseTypeOfUse === EVALUATION_TYPE_2;
+    const isLicensePresent = () => {
+        return _license && _license.present;
     };
 
     const isLicenseValid = () => {
@@ -82,6 +74,14 @@ function licenseService($window, $document, LicenseRestService, $translate) {
     const license = () => {
         return _license;
     };
+
+    const licenseErrorMsg = () => {
+        if (!_license?.present && _license?.message === "No license was set") {
+            return $translate.instant('no.license.set.msg');
+        } else {
+            return $translate.instant("error.license", {message: _license?.message});
+        }
+    }
 
     const loadingLicense = () => {
         return _loadingLicense;
@@ -96,22 +96,19 @@ function licenseService($window, $document, LicenseRestService, $translate) {
     };
 
     const productType = () => {
-        return _productType;
-    };
-
-    const productTypeHuman = () => {
-        return _productTypeHuman;
+        return _license?.productType;
     };
 
     return {
         checkLicenseStatus,
+        isLicensePresent,
         isLicenseValid,
         license,
+        licenseErrorMsg,
         loadingLicense,
         isLicenseHardcoded,
         showLicense,
         productType,
-        productTypeHuman,
-        isFreeLicense
+        isTrackableLicense
     };
 }
