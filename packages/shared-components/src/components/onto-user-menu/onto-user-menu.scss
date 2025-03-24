@@ -1,0 +1,96 @@
+:root {
+  --user-menu-primary-color: var(--primary-color, #9e2b0a);
+}
+
+.onto-user-menu {
+  position: relative;
+  width: fit-content;
+
+  button {
+    display: flex;
+    flex-direction: row;
+    line-height: 1.5;
+    font-weight: 400;
+    font-size: 1rem;
+    text-align: center;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: .4em 1rem;
+    cursor: pointer;
+    white-space: nowrap;
+    place-items: center;
+    transition: all 0.15s ease-out;
+
+    & .username {
+      padding: 0 5px;
+    }
+
+    &:hover {
+      background-color: #d4d4d4;
+      border-color: #d4d4d4;
+
+      & .fa-user {
+        transform: scale(1.2);
+      }
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &.open {
+      color: white;
+      background-color: var(--user-menu-primary-color);
+      border-color: var(--user-menu-primary-color);
+
+      & .fa-user {
+        color: var(--icon-on-primary-color, #ffffffcc);
+      }
+
+      &:hover {
+        .fa-user {
+          transform: scale(1.2);
+        }
+      }
+    }
+
+    i {
+      color: var(--user-menu-primary-color);
+      line-height: .75;
+      font-size: 1.2em;
+      transition: 0.15s ease-out;
+
+      &.fa-angle-down {
+        color: rgba(0, 0, 0, .35);
+        font-size: 1.1em;
+        transition: all 0.2s ease-in;
+      }
+    }
+  }
+
+  & .onto-user-menu-dropdown {
+    position: absolute;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    color: white;
+    text-decoration: none;
+    right: 0;
+    min-width: 7rem;
+    font-size: 1rem;
+    width: 100%;
+    background-color: var(--user-menu-primary-color);
+
+    & translate-label {
+      padding: .4rem 1rem;
+      user-select: none;
+      white-space: nowrap;
+      font-weight: 400;
+
+      &:hover, &:focus {
+        background-color: rgba(0, 0, 0, .1);
+      }
+    }
+  }
+}
