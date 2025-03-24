@@ -44,7 +44,8 @@ describe('GraphQL Playground', () => {
             GraphqlPlaygroundSteps.getPlayground().should('exist').and('be.visible');
         });
 
-        it('should be able to change the endpoint', () => {
+        // This test doesn't work with the GDB free license anymore.
+        it.skip('should be able to change the endpoint', () => {
             // When I visit the GraphQL Playground page
             GraphqlPlaygroundSteps.visit();
             GraphqlPlaygroundSteps.getPlayground().should('exist').and('be.visible');
