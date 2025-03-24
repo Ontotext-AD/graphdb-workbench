@@ -25,6 +25,9 @@
 <button id="valid-license" onclick="setValidLicense()">set valid license</button>
 <button id="invalid-license" onclick="setInvalidLicense()">set invalid license</button>
 <button id="load-repositories" onclick="loadRepositories()">load repositories</button>
+<button id="enable-security" onclick="setSecurityConfig({enabled: true})">enable security</button>
+<button id="disable-security" onclick="setSecurityConfig({enabled: false})">disable security</button>
+<button id="set-authenticated-user" onclick="setAuthUser({external: true, username: 'john.doe'})">set authenticated user</button>
 <onto-header></onto-header>
 <onto-tooltip></onto-tooltip>
 </body>

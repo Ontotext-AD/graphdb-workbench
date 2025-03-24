@@ -158,5 +158,9 @@
       "OUT_OF_SYNC": "Out of sync",
       "UNAVAILABLE_NODES": "Unavailable nodes"
     }
+  },
+  "user_menu": {
+    "my_settings": "My settings",
+    "logout": "Logout"
   }
 }

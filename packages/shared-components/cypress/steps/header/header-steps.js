@@ -41,4 +41,16 @@ export class HeaderSteps extends BaseSteps {
   static loadRepositories() {
     cy.get('#load-repositories').click();
   }
+
+  static enableSecurity() {
+    cy.get('#enable-security').click();
+  }
+
+  static setAuthenticatedUser() {
+    cy.get('#set-authenticated-user').click();
+  }
+
+  static disableSecurity() {
+    return cy.get('#disable-security').click();
+  }
 }

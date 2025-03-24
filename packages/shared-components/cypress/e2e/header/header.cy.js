@@ -1,5 +1,6 @@
 import {HeaderSteps} from "../../steps/header/header-steps";
 import {TooltipSteps} from "../../steps/tooltip-steps";
+import {UserMenuSteps} from "../../steps/user-menu/user-menu-steps";
 
 describe('Header', () => {
   it('Should render header and various tools inside', () => {
@@ -55,12 +56,6 @@ describe('Header', () => {
   });
 
   describe('OperationsNotification', () => {
-    beforeEach(() => {
-      cy.on('window:before:load', (win) => {
-        win.crypto.randomUUID = () => '123e4567-e89b-12d3-a456-426655440000';
-      });
-    });
-
     it('Should be shown, when there are active operations', () => {
       // Given, I visit the header page
       HeaderSteps.visit();
@@ -79,5 +74,34 @@ describe('Header', () => {
       // Then, I expect to see the operations notification component
       HeaderSteps.getOperationsNotification().should('be.visible');
     });
-  })
+  });
+
+  describe('OntoUserMenu', () => {
+    it('Should show/hide user menu', () => {
+      // Given, I visit the header page
+      HeaderSteps.visit();
+
+      // Then, I expect to not see the user menu
+      // Because I have not enabled security and haven't logged in
+      UserMenuSteps.getUserMenu().should('not.exist');
+
+      // When, I enable security
+      HeaderSteps.enableSecurity();
+
+      // Then, I expect to still not see the user menu, as I am not logged in
+      UserMenuSteps.getUserMenu().should('not.exist');
+
+      // When, I am logged in
+      HeaderSteps.setAuthenticatedUser();
+
+      // Then, I expect to see the user menu in the header, because I am both logged in and security is enabled
+      UserMenuSteps.getUserMenu().should('be.visible');
+
+      // When, I disable security
+      HeaderSteps.disableSecurity();
+
+      // Then, I expect to not see the user menu in the header
+      UserMenuSteps.getUserMenu().should('not.exist');
+    });
+  });
 });
