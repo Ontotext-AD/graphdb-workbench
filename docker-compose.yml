@@ -15,6 +15,7 @@ services:
       - 7200
     volumes:
       - ./test-cypress/fixtures/graphdb-import:/opt/home/import-data/
+      - ./graphdb.license:/opt/graphdb/home/conf/graphdb.license
 
   workbench:
     build:

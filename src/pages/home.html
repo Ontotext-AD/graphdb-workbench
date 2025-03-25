@@ -1,5 +1,15 @@
 <div class="ot-loader ot-loader-home" onto-loader-fancy size="100" ng-show="isLoadingLocation()"></div>
 <div class="content-wrapper" ng-hide="isLoadingLocation()" ng-cloak>
+    <div class="alert alert-danger" role="alert" ng-hide="isLicenseValid()">
+        <strong>{{getLicenseErrorMsg()}}</strong>
+        <div ng-bind-html="'supply.license.or.contact.us.warning' | translate | trustAsHtml"></div>
+        <div class="mt-1">{{'no.license.restrictions' | translate}}</div>
+        <div class="mt-1">
+            <a href="license" ng-hide="!hasRole('ROLE_ADMIN')" class="btn btn-primary">
+                {{'license.settings.label' | translate}}
+            </a>
+        </div>
+    </div>
     <div class="row mt-2" ng-if="!tutorialState">
         <a href="#" class="btn btn-link float-xs-right" ng-click="showTutorial()">{{'show.welcome.panel' | translate}}</a>
     </div>
@@ -157,42 +167,33 @@
         <div class="col-lg-12">
             <h3 id="license-label-home"><span gdb-tooltip="{{'menu.license.tooltip' | translate}}" tooltip-placement="right">{{'menu.license.label' | translate}}</span></h3>
             <div class="card">
-                <h4 class="card-header">GraphDB {{getProductTypeHuman()}} {{'edition' | translate}}</h4>
+                <h4 ng-if="isLicensePresent()" class="card-header">GraphDB {{getProductType() | titlecase}} {{'edition' | translate}}</h4>
+                <h4 ng-if="!isLicensePresent()" class="card-header">{{'no.license' | translate}}</h4>
                 <!-- appears only when there is a problem with the license -->
-                <div class="alert alert-danger" role="alert" ng-hide="getLicense().valid">
-                    <p>
-                        <strong>{{getLicense().message}}</strong><br>
-                        {{'supply.license.or.contact.us.warning' | translate}}
-                    </p>
+                <div class="alert alert-danger" role="alert" ng-hide="isLicenseValid()">
+                    <strong>{{getLicenseErrorMsg()}}</strong>
                 </div>
-                <div class="card-block" ng-hide="hasActiveLocation()">
-                    <div class="">
-                        <div class="d-inline-block mr-1 mb-1">
-                            <span class="data-value big">{{'no.license.info.available.warning' | translate}}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-block" ng-show="hasActiveLocation()">
-                    <div class="row" ng-show="getLicense().product">
+                <div class="card-block">
+                    <div class="row" ng-if="isLicensePresent()">
                         <div class="float-xs-left d-inline-block ml-1 mr-2 mb-1">
                             {{'licensed.to' | translate}}
-                            <span class="data-value big">{{getLicense().licensee}}</span>
+                            <span class="data-value d-block">{{getLicense().licensee}}</span>
                         </div>
                         <div class="float-xs-left d-inline-block ml-1 mr-2 mb-1">
                             {{'valid.until' | translate}}
-                            <span class="data-value big">{{getLicense().expiryDate ? (getLicense().expiryDate | date: 'yyyy-MM-dd') : 'perpetual' | translate}}</span>
+                            <span class="data-value d-block">{{getLicense().expiryDate ? (getLicense().expiryDate | date: 'yyyy-MM-dd') : 'perpetual' | translate}}</span>
                         </div>
                         <div class="float-xs-left d-inline-block ml-1 mr-2 mb-1">
                             {{'cores.number' | translate}}
-                            <span class="data-value big">{{getLicense().maxCpuCores ? getLicense().maxCpuCores : 'unlimited' | translate}}</span>
+                            <span class="data-value d-block">{{getLicense().maxCpuCores ? getLicense().maxCpuCores : 'unlimited' | translate}}</span>
                         </div>
                         <div class="float-xs-left d-inline-block ml-1 mr-2 mb-1">
                             {{'maintenance.date' | translate}}
-                            <span class="data-value big">{{getLicense().latestPublicationDate ? (getLicense().latestPublicationDate | date: 'yyyy-MM-dd') : 'perpetual' | translate}}</span>
+                            <span class="data-value d-block">{{getLicense().latestPublicationDate ? (getLicense().latestPublicationDate | date: 'yyyy-MM-dd') : 'perpetual' | translate}}</span>
                         </div>
                         <div class="float-xs-left d-inline-block ml-1 mb-1">
                             {{'capabilities' | translate}}
-                            <div class="data-value big">
+                            <div class="data-value d-block">
                                 <div ng-if="getLicense().licenseCapabilities.length !== 0">
                                     <div ng-repeat="capability in getLicense().licenseCapabilities">
                                         <div>{{capability}}</div>
@@ -205,19 +206,15 @@
                         </div>
                     </div>
 
-                    <p class="small text-muted">
+                    <p ng-if="isLicensePresent()" class="text-muted">
                         {{getLicense().typeOfUse}}
                     </p>
 
                     <div>
-                        <a href="license" ng-hide="isLicenseHardcoded() || !hasRole('ROLE_ADMIN')" class="btn btn-primary">
+                        <a href="license" ng-hide="!hasRole('ROLE_ADMIN')" class="btn btn-primary">
                             {{'license.settings.label' | translate}}
                         </a>
-                    </div>
-
-                    <div class="mt-2" ng-show="isFreeEdition() || !getLicense().valid">
-                        {{'free.license.restrictions' | translate}}
-                    </div>
+                    </div><!-- GET namespaces list -->
                 </div>
             </div>
         </div>

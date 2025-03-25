@@ -22,44 +22,56 @@ function cleanup() {
 }
 
 function show_help_and_exit() {
-    echo "Usage: .run-cypress-tests.sh [--loop] [<gdb-version>] [<spec>] [<cypress-option> ...]"
+    echo "Usage: .run-cypress-tests.sh [--loop] [<license-file>] [<gdb-version>] [<spec>] [<cypress-option> ...]"
     echo "    --loop           - runs tests in a loop until failure"
+    echo "    <license-file>   - GraphDB Free license file (you can also set GDB_LICENSE)"
     echo "    <gdb-version>    - GraphDB version to use (you can also set GDB_VERSION)"
     echo "    <spec>           - path to test in the integration directory, passed as --spec to cypress"
     echo "    <cypress-option> - any string starting with - with be passed to cypress, e.g., --headed"
     exit 1
 }
 
+function check_required_arguments() {
+    if [ -z "${GDB_VERSION:-}" ]; then
+        show_help_and_exit
+    fi
+    if [ -z "${GDB_LICENSE:-}" ]; then
+        show_help_and_exit
+    fi
+}
+
 if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
     show_help_and_exit
 fi
 
-if [ -z "${1:-}" ]; then
-    if [ -z "${GDB_VERSION:-}" ]; then
-        show_help_and_exit
-    fi
-else
-    if [[ "$1" == "--loop" ]]; then
-        # Has optional first "--loop" argument => run tests in loop until failure
-        LOOP=1
-        shift
-    fi
+if [[ "${1:-}" == "--loop" ]]; then
+    # Has optional first "--loop" argument => run tests in loop until failure
+    LOOP=1
+    shift
+fi
 
-    if [[ "$1:-" =~ ^[0-9] ]]; then
-        # Has next argument - GraphDB version
-        GDB_VERSION="$1"
-        shift
-    fi
+if [[ "${1:-}" == *.license ]]; then
+    # Has next argument - GraphDB license
+    GDB_LICENSE="$1"
+    shift
+fi
 
-    if [ -n "${1:-}" ]; then
-        # Has next argument - cypress option(s) or integration spec path
-        if [[ "${1:-}" != -* ]]; then
-            # Doesn't start with "-" => integration spec path inside integration directory
-            set -- "$@" --spec "integration/$1"
-            shift
-        fi
+if [[ "${1:-}" =~ ^[0-9] ]]; then
+    # Has next argument - GraphDB version
+    GDB_VERSION="$1"
+    shift
+fi
+
+if [ -n "${1:-}" ]; then
+    # Has next argument - cypress option(s) or integration spec path
+    if [[ "${1:-}" != -* ]]; then
+        # Doesn't start with "-" => integration spec path inside integration directory
+        set -- "$@" --spec "integration/$1"
+        shift
     fi
 fi
+
+check_required_arguments
 
 # Make sure we are in the project root
 cd "$(dirname $0)/.." || cleanup 1
@@ -109,6 +121,11 @@ if ! npm run build; then
     echo "Could not build Workbench"
     cleanup 1
 fi
+
+GDB_DIST="$GDB_TMPDIR/graphdb-${GDB_VERSION}"
+mkdir -p "$GDB_DIST/work"
+echo "Installing license file '$GDB_LICENSE'"
+cp "$GDB_LICENSE" "$GDB_DIST/work/graphdb.license"
 
 echo "Starting GraphDB daemon"
 # Starts GraphDB as a bash background process and records the PID in GRAPHDB_PID

@@ -9,7 +9,7 @@ describe('License', () => {
       LicenseSteps.getLicenseHeader().should('have.text', "GraphDB Enterprise Edition");
 
       LicenseSteps.getHardcodedAlertMessage().should('exist');
-      LicenseSteps.getRevertToFreeLicenseButton().should('not.exist');
+      LicenseSteps.getRemoveLicenseLicenseButton().should('not.exist');
       LicenseSteps.getSetNewLicenseElement().should('not.exist');
    });
 
@@ -20,7 +20,7 @@ describe('License', () => {
       LicenseSteps.getLicenseHeader().should('have.text', "GraphDB Enterprise Edition");
 
       LicenseSteps.getHardcodedAlertMessage().should('not.exist');
-      LicenseSteps.getRevertToFreeLicenseButton().should('exist');
+      LicenseSteps.getRemoveLicenseLicenseButton().should('exist');
       LicenseSteps.getSetNewLicenseElement().should('exist');
    });
 });

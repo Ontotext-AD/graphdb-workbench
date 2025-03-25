@@ -67,10 +67,11 @@ pipeline {
         }
       }
       steps {
-        configFileProvider(
-                [configFile(fileId: 'ceb7e555-a3d9-47c7-9afe-d008fd9efb14', targetLocation: 'graphdb.license')]) {
-          sh 'cp graphdb.license ./test-cypress/fixtures/'
-        }
+          // This must be a GraphDB Free license
+          configFileProvider(
+                [configFile(fileId: 'a1a4c1d1-7e93-4256-9632-ea10220def33', variable: 'GRAPHDB_LICENSE_BASE64')]) {
+            sh 'base64 -d < $GRAPHDB_LICENSE_BASE64 > graphdb.license'
+          }
           sh "ls ./test-cypress/fixtures/"
           // --no-ansi suppresses color output that shows as garbage in Jenkins
           sh "docker-compose --no-ansi build --force-rm --no-cache --parallel"

@@ -15,7 +15,7 @@ export class LicenseSteps {
         return cy.get('.license-hardcoded-alert-message');
     }
 
-    static getRevertToFreeLicenseButton() {
+    static getRemoveLicenseLicenseButton() {
         return LicenseSteps.getLicense().find('.revert-to-free-license-btn');
     }
 

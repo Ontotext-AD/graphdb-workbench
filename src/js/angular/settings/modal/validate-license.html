@@ -3,27 +3,31 @@
     <h3 class="modal-title">{{'are.license.details.correct' | translate}}</h3>
 </div>
 <div class="modal-body">
+    <div class="alert alert-danger" ng-if="!license.valid">
+        <strong>{{license.message}}</strong><br>
+    </div>
+
     <h4>GraphDB {{license.productType | titlecase}} {{'edition' | translate}}</h4>
     <div>
 		<div class="float-xs-left d-inline-block mr-2 mb-1">
 			{{'licensed.to' | translate}}
-			<span class="data-value big">{{license.licensee}}</span>
+			<span class="data-value d-block">{{license.licensee}}</span>
 		</div>
 		<div class="float-xs-left d-inline-block mr-2 mb-1">
 			{{'valid.until' | translate}}
-			<span class="data-value big">{{license.expiryDate ? (license.expiryDate | date : 'yyyy-MM-dd') : 'perpetual' | translate}}</span>
+			<span class="data-value d-block">{{license.expiryDate ? (license.expiryDate | date : 'yyyy-MM-dd') : 'perpetual' | translate}}</span>
 		</div>
 		<div class="float-xs-left d-inline-block mr-2 mb-1">
 			{{'cores.number' | translate}}
-			<span class="data-value big">{{license.maxCpuCores ? license.maxCpuCores : 'unlimited' | translate}}</span>
+			<span class="data-value d-block">{{license.maxCpuCores ? license.maxCpuCores : 'unlimited' | translate}}</span>
 		</div>
 		<div class="float-xs-left d-inline-block mr-2 mb-1">
 			{{'maintenance.date' | translate}}
-			<span class="data-value big">{{license.latestPublicationDate ? (license.latestPublicationDate | date : 'yyyy-MM-dd') : 'perpetual' | translate}}</span>
+			<span class="data-value d-block">{{license.latestPublicationDate ? (license.latestPublicationDate | date : 'yyyy-MM-dd') : 'perpetual' | translate}}</span>
 		</div>
         <div class="d-inline-block mb-1">
             {{'capabilities' | translate}}
-            <div class="data-value big">
+            <div class="data-value d-block">
                 <div ng-if="license.licenseCapabilities.length !== 0">
                     <div ng-repeat="capability in license.licenseCapabilities">
                         <div>{{capability}}</div>
@@ -39,5 +43,5 @@
 </div>
 <div class="modal-footer">
 	<button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
-	<button class="btn btn-primary" ng-click="ok()">{{'common.yes.btn' | translate}}</button>
+	<button class="btn btn-primary" ng-click="ok()" ng-disabled="!license.valid">{{'common.yes.btn' | translate}}</button>
 </div>
