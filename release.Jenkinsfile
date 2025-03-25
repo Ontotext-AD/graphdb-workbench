@@ -1,7 +1,7 @@
 @Library('ontotext-platform@GDB-11897-Migrate-pipelines-new-Jenkins') _
 def performCleanup = {
     dir("${env.WORKSPACE}") {
-        sh "git checkout .npmrc"
+        sh "git restore .npmrc || git checkout HEAD -- .npmrc"
         dir("test-cypress") {
             sh "rm -f .npmrc"
         }
