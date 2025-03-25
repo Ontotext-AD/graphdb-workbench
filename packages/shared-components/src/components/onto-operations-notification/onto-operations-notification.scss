@@ -16,6 +16,7 @@ $hover-color: #d4d4d4;
     padding: .4rem 1rem;
     font-size: 1rem;
     gap: 0.75em;
+    transition: all 0.15s ease-out;
 
     &:hover {
       background-color: $hover-color;

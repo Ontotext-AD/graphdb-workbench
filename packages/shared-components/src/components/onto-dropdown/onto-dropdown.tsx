@@ -115,7 +115,7 @@ export class OntoDropdown {
                 {...(this.tooltipTheme ? { 'tooltip-theme': this.tooltipTheme } : {})}
                 onMouseEnter={this.setDropdownButtonTooltip()}
                 onClick={this.toggleButtonClickHandler()}>
-          {this.iconClass ? <span class={'button-icon ' + this.iconClass}></span> : ''}
+          {this.iconClass ? <i class={'button-icon ' + this.iconClass}></i> : ''}
           <span class='button-name'>
                       {this.dropdownButtonName ?? this.translate(this.dropdownButtonNameLabelKey)}
                     </span>
