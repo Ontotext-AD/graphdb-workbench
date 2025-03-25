@@ -46,9 +46,10 @@ pipeline {
         stage ('Prepare & Publish') {
             agent {
                 docker {
-                    image env.NODE_IMAGE
+                    image "${env.NODE_IMAGE}"
+                    label 'aws-small'
                     reuseNode true
-                    args '--entrypoint=""'
+                    args '-v $WORKSPACE/.npmrc:/home/node/.npmrc --entrypoint=""'
                 }
             }
             steps {
@@ -64,15 +65,16 @@ pipeline {
                                 [destination: 'env', envVar: 'NPM_TOKEN', filePath: '', notation: 'keeper://FcbEgbi287PN2yx_3uCz4Q/field/note'],
                             ]
                         ]
-                    ]){
-                        // Publish on npm
-                        sh "echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc && npm publish"
-                        // Publish cypress tests on npm
+                    ]) {
+                        sh "echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc"
+                        sh "npm whoami || echo 'whoami failed'"
+                        sh "npm publish"
                         dir("test-cypress/") {
-                            sh "echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc && npm publish"
-                        }
-                    }
-               }
+                            sh "echo //registry.npmjs.org/:_authToken=\${NPM_TOKEN} > .npmrc"
+                            sh "npm publish"
+                       }
+                   }
+                }
             }
         }
     }
@@ -80,6 +82,7 @@ pipeline {
     post {
         success {
             script {
+                performCleanup()
                 // Commit & tag
                 sh "git commit -a -m 'Release ${ReleaseVersion}'"
                 sh "git tag -a v${ReleaseVersion} -m 'Release v${ReleaseVersion}'"
@@ -92,22 +95,22 @@ pipeline {
                         ]
                     ]
                 ]) {
-                    sh """
-                        // TODO: Remove the following block once the Jenkins VM image includes GitHub's SSH host key
-                        // This is a temporary workaround for "Host key verification failed" errors during git push via SSH
-                        mkdir -p ~/.ssh
-                        ssh-keyscan github.com >> ~/.ssh/known_hosts
+                    sh 'mkdir -p ~/.ssh'
+                    sh 'ssh-keyscan github.com >> ~/.ssh/known_hosts'
 
-                        git config --global user.name "$GIT_USER"
-                        git config --global user.email "$GIT_USER@users.noreply.github.com"
-                        git remote set-url origin git@github.com:Ontotext-AD/graphdb-workbench.git
-                        git push --set-upstream origin ${branch}
-                        git push --tags
-                    """
+                    sh 'git config --global user.name "$GIT_USER"'
+                    sh 'git config --global user.email "$GIT_USER@users.noreply.github.com"'
+
+                    sh 'git remote set-url origin git@github.com:Ontotext-AD/graphdb-workbench.git'
+                    sh "git push --set-upstream origin ${branch}"
+                    sh 'git push --tags'
                 }
 
-                slack.notifyResult(channel: env.SLACK_CHANNEL, color:'good', message:"Released v${ReleaseVersion}")
-                performCleanup()
+               try {
+                   slack.notifyResult(channel: env.SLACK_CHANNEL, color:'good', message:"Released v${ReleaseVersion}")
+               } catch (e) {
+                   echo "Slack notification failed: ${e.getMessage()}"
+               }
             }
         }
 
