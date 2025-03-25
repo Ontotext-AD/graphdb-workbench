@@ -43,7 +43,7 @@ pipeline {
     }
 
     stages {
-        stage ('Prepare') {
+        stage ('Prepare & Publish') {
             agent {
                 docker {
                     image env.NODE_IMAGE
@@ -56,32 +56,21 @@ pipeline {
                     git_cmd.checkout(branch: branch)
                     npm.prepareRelease(version: ReleaseVersion, scripts: ['build'])
                     npm.prepareRelease(version: ReleaseVersion, dir: "test-cypress/")
-                }
-            }
-        }
 
-        stage ('Publish') {
-            agent {
-                docker {
-                    image env.NODE_IMAGE
-                    reuseNode true
-                    args '--entrypoint=""'
-                }
-            }
-            steps {
-                withKsm(application: [
-                    [
-                        credentialsId: 'ksm-jenkins',
-                        secrets: [
-                            [destination: 'env', envVar: 'NPM_TOKEN', filePath: '', notation: 'keeper://FcbEgbi287PN2yx_3uCz4Q/field/note'],
+                    withKsm(application: [
+                        [
+                            credentialsId: 'ksm-jenkins',
+                            secrets: [
+                                [destination: 'env', envVar: 'NPM_TOKEN', filePath: '', notation: 'keeper://FcbEgbi287PN2yx_3uCz4Q/field/note'],
+                            ]
                         ]
-                    ]
-                ]){
-                    // Publish on npm
-                    sh "echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc && npm publish"
-                    // Publish cypress tests on npm
-                    dir("test-cypress/") {
+                    ]){
+                        // Publish on npm
                         sh "echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc && npm publish"
+                        // Publish cypress tests on npm
+                        dir("test-cypress/") {
+                            sh "echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc && npm publish"
+                        }
                     }
                }
             }
