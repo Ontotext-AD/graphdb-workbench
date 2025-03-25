@@ -1,5 +1,8 @@
 const EVALUATION_TYPE_1 = "this is an evaluation license";
 const EVALUATION_TYPE_2 = "evaluation";
+const PRODUCT_FREE = "free";
+const PRODUCT_SANDBOX = "sandbox";
+const NO_LICENSE_MSG = "No license was set";
 
 angular.module('graphdb.framework.core.services.licenseService', [])
     .service('$licenseService', ['$window', '$document', 'LicenseRestService', '$translate', licenseService]);
@@ -46,7 +49,7 @@ function licenseService($window, $document, LicenseRestService, $translate) {
             .catch(() => {
                 _isLicenseHardcoded = true;
                 _license = {
-                    message: "No license was set",
+                    message: NO_LICENSE_MSG,
                     present: false,
                     valid: false
                 };
@@ -59,7 +62,7 @@ function licenseService($window, $document, LicenseRestService, $translate) {
 
     const isTrackableLicense = () => {
         const licenseTypeOfUse = _license && _license.typeOfUse.toLowerCase();
-        return !isLicensePresent() || productType() === "free" || productType() === "sandbox"
+        return !isLicensePresent() || productType() === PRODUCT_FREE || productType() === PRODUCT_SANDBOX
             || licenseTypeOfUse === EVALUATION_TYPE_1 || licenseTypeOfUse === EVALUATION_TYPE_2;
     };
 
@@ -76,7 +79,7 @@ function licenseService($window, $document, LicenseRestService, $translate) {
     };
 
     const licenseErrorMsg = () => {
-        if (!_license?.present && _license?.message === "No license was set") {
+        if (!_license?.present && _license?.message === NO_LICENSE_MSG) {
             return $translate.instant('no.license.set.msg');
         } else {
             return $translate.instant("error.license", {message: _license?.message});
