@@ -16,15 +16,13 @@ export class EpoolChart extends ChartData {
                     name: this.translateService.instant('resource.epool.reads'),
                     nameLocation: 'middle',
                     type: 'value',
-                    nameGap: 40,
-
+                    nameGap: 50,
                 },
                 {
                     name: this.translateService.instant('resource.epool.writes'),
                     nameLocation: 'middle',
                     type: 'value',
-                    nameGap: 40,
-
+                    nameGap: 50,
                 }
             ],
         };
@@ -91,7 +89,7 @@ export class EpoolChart extends ChartData {
 
     updateRange(dataHolder) {
         dataHolder.forEach((data, i) => {
-            const [max, minInterval] = ChartData.getIntegerRangeForValues(data, this.selectedSeries)
+            const [max, minInterval] = ChartData.getIntegerRangeForValues(data, 0, this.selectedSeries)
             this.chartOptions.yAxis[i].max = max;
             this.chartOptions.yAxis[i].minInterval = minInterval;
         })
