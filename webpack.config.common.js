@@ -122,7 +122,8 @@ module.exports = {
             },
             {
                 from: 'src/js/angular/clustermanagement/templates',
-                to: 'js/angular/clustermanagement/templates'
+                to: 'js/angular/clustermanagement/templates',
+                transform: replaceVersion
             },
             {
                 from: 'src/js/angular/core/templates',
