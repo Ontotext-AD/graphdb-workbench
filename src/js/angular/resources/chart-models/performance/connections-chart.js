@@ -46,7 +46,7 @@ export class ConnectionsChart extends ChartData {
     }
 
     updateRange(dataHolder, multiplier) {
-        const [max, minInterval] = ChartData.getIntegerRangeForValues(dataHolder, this.selectedSeries)
+        const [max, minInterval] = ChartData.getIntegerRangeForValues(dataHolder, multiplier, this.selectedSeries)
         this.chartOptions.yAxis.max = max;
         this.chartOptions.yAxis.minInterval = minInterval;
     }
