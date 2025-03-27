@@ -15,6 +15,8 @@ export class OntoTooltip {
     private static readonly ATTR_TRIGGER = 'tooltip-trigger';
     private static readonly ATTR_APPEND_TO = 'tooltip-append-to';
 
+    private observer: MutationObserver;
+
     /**
      * Checks if the target of the 'mouseover' event has tooltip configuration.
      * If it does, creates a tooltip instance and displays it.
@@ -60,6 +62,14 @@ export class OntoTooltip {
     }
     }
 
+    componentWillLoad() {
+        this.handleRemovedNodes();
+    }
+
+    disconnectedCallback() {
+        this.observer?.disconnect();
+    }
+
     render() {
         return <Host></Host>;
     }
@@ -70,6 +80,37 @@ export class OntoTooltip {
     private getTooltipInstance(element: HTMLElement): Instance | undefined {
         // @ts-ignore
         return element._tippy;
+    }
+
+    /**
+     * Clears tooltips associated with elements that have been removed from the DOM.
+     *
+     * @param records - An array of MutationRecord objects, each representing a change to the DOM tree.
+     *                  The function iterates over these records to find and clear tooltips for removed nodes.
+     */
+    private clearTooltipsForRemovedElements = (records: MutationRecord[]) => {
+        records.forEach((record) => {
+            record.removedNodes.forEach((node) => {
+                if (node instanceof HTMLElement) {
+                    const target = this.getTooltipTarget(node);
+                    if (target) {
+                        const tooltipInstance = this.getTooltipInstance(target);
+                        if (tooltipInstance) {
+                            tooltipInstance.destroy();
+                        }
+                    }
+                }
+            });
+        });
+    };
+
+    /**
+     * Initializes a MutationObserver to monitor the document body for removed nodes.
+     * When nodes are removed, it triggers the clearing of tooltips associated with those nodes.
+     */
+    private handleRemovedNodes(): void {
+        this.observer = new MutationObserver(this.clearTooltipsForRemovedElements);
+        this.observer.observe(document.body, {childList: true, subtree: true});
     }
 
     /**
