@@ -1,4 +1,4 @@
-import { TooltipSteps } from "../../steps/tooltip-steps";
+import {TooltipSteps} from "../../steps/tooltip-steps";
 
 describe('Tooltip', () => {
   it('Should handle various tooltip behaviors and styles correctly', () => {
@@ -45,5 +45,24 @@ describe('Tooltip', () => {
     TooltipSteps.getElementWithCustomThemeTooltip().trigger('mouseover');
     // Then I expect the tooltip to be colored according to the custom theme.
     TooltipSteps.getTooltip('custom-theme').should('have.css', 'background-color', 'rgb(252, 255, 205)');
+  });
+
+  it('Should remove tooltip, when the element is removed from the DOM', () => {
+    // Given, I visit the page with an element that has a tooltip
+    TooltipSteps.visit();
+
+    // When, I hover over the removable element
+    TooltipSteps.hoverOnRemovableButton();
+
+    // Then, I expect the tooltip to be visible
+    TooltipSteps.getTooltipContent()
+      .should('be.visible')
+      .and('contain', 'Remove me');
+
+    // When, I remove the element from the DOM
+    TooltipSteps.clickOnRemovableButton();
+
+    // Then, I expect the tooltip to be removed along with the element
+    TooltipSteps.getTooltip().should('not.exist');
   });
 });
