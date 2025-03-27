@@ -53,4 +53,17 @@ export class TooltipSteps extends BaseSteps {
   static verifyBottomTooltipPlacement() {
     TooltipSteps.getTooltip().should('have.attr', 'data-placement', 'bottom')
   }
+
+  static getRemovableButton() {
+    return cy.get('#remove-me');
+  }
+
+  static hoverOnRemovableButton() {
+    return this.getRemovableButton().trigger('mouseover');
+  }
+
+  static clickOnRemovableButton() {
+    return this.getRemovableButton().click();
+  }
+
 }
