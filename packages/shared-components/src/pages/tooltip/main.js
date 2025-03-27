@@ -1,1 +1,6 @@
-let headerElement = document.querySelector("onto-header");
+const removeElement = () => {
+  const button = document.getElementById('remove-me');
+  if (button) {
+    button.remove();
+  }
+}
