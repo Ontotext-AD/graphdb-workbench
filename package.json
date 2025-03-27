@@ -26,6 +26,7 @@
         "validate": "sh scripts/validate.sh",
         "test": "sh scripts/test.sh",
         "cy:run": "sh scripts/cy.sh",
+        "cy:down": "sh scripts/cy.sh down",
         "sonar": "sh scripts/sonar.sh"
     },
     "files": [

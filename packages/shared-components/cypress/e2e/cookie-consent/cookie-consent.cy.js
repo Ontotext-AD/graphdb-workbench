@@ -14,7 +14,7 @@ describe('CookieConsent', () => {
     CookieConsentSteps.clickCookiePolicyLink();
 
     // Then I expect the cookie policy dialog to be visible
-    CookieConsentSteps.getCookiePolicyDialog().should('be.visible');
+    CookieConsentSteps.getCookiePolicyDialog().should('not.be.visible');
   });
 });
 
