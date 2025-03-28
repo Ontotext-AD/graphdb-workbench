@@ -1,41 +1,47 @@
+@Library('ontotext-platform@v0.1.49') _
 pipeline {
     agent {
-        label env.AGENT
-    }
-
-    environment {
-        REPO_URL = 'https://github.com/Ontotext-AD/graphdb-workbench.git'
+        label 'aws-large'
     }
 
     tools {
-        nodejs 'nodejs-20.11.1'
+        nodejs 'nodejs-18.9.0'
+    }
+
+    environment {
+        dockerComposeFile = "docker-compose-test.yaml"
     }
 
     stages {
-        stage('Build Info') {
-            steps {
-                script {
-                    echo "Agent: ${env.AGENT}"
-                    echo "Building branch: ${env.BRANCH_NAME}"
+        stage('Install') {
+            agent {
+                docker {
+                    image 'node:20-alpine'
+                    label 'aws-large'
+                    reuseNode true
                 }
             }
-        }
-
-        stage('Install') {
             steps {
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                     script {
-                        sh 'docker-compose run --rm npm run install:ci'
+                        sh 'npm run install:ci'
                     }
                 }
             }
         }
 
         stage('Build') {
+            agent {
+                docker {
+                    image 'node:20-alpine'
+                    label 'aws-large'
+                    reuseNode true
+                }
+            }
             steps {
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                     script {
-                        sh 'docker-compose run --rm npm run build'
+                        sh 'npm run build'
                     }
                 }
             }
@@ -45,7 +51,7 @@ pipeline {
             steps {
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                     script {
-                        sh 'docker-compose run --rm npm run lint'
+                        sh 'npm run lint'
                     }
                 }
             }
@@ -55,16 +61,16 @@ pipeline {
             steps {
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                     script {
-                        sh 'docker-compose run --rm npm run test'
+                        sh 'npm run test'
                     }
                 }
             }
         }
+
         stage('Shared-components Cypress Test') {
             steps {
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                     script {
-                        sh 'sudo chown -R $(id -u):$(id -g) .'
                         sh 'npm run cy:run'
                     }
                 }
@@ -72,22 +78,31 @@ pipeline {
         }
 
         stage('Workbench Cypress Test') {
-            when {
-                expression {
-                    return env.BRANCH_NAME != 'master'
-                }
-            }
             steps {
-                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                    configFileProvider(
-                        [configFile(fileId: 'ceb7e555-a3d9-47c7-9afe-d008fd9efb14', targetLocation: 'graphdb.license')]) {
-                        sh 'cp graphdb.license ./e2e-tests/fixtures/'
+                script {
+                    if (!scmUtil.isMaster()) {
+                        withKsm(application: [[
+                            credentialsId: 'ksm-jenkins',
+                            secrets: [
+                                [
+                                    destination: 'file',
+                                    filePath: 'graphdb.license',
+                                    notation: 'keeper://AByA4tIDmeN7RmqnQYGY0A/file/graphdb.license'
+                                ]
+                            ]
+                        ]]) {
+                            sh 'cp graphdb.license ./e2e-tests/fixtures/'
+                            sh "ls -lh ./e2e-tests/fixtures/"
+                            dockerCompose.buildCmd(composeFile: env.dockerComposeFile, options: ["--force-rm", "--parallel"])
+                            try {
+                                dockerCompose.upCmd(composeFile: env.dockerComposeFile, options: ["--abort-on-container-exit", "--exit-code-from cypress"])
+                            } finally {
+                                dockerCompose.downCmd(composeFile: env.dockerComposeFile,
+                                                      options: ['--volumes', '--remove-orphans', '--rmi', 'local'],
+                                                      ignoreErrors: true)
+                            }
+                        }
                     }
-                    sh "ls ./e2e-tests/fixtures/"
-                    // --no-ansi suppresses color output that shows as garbage in Jenkins
-                    sh "docker-compose --no-ansi -f docker-compose-test.yaml build --force-rm --no-cache --parallel"
-                    sh "docker-compose --no-ansi -f docker-compose-test.yaml up --abort-on-container-exit --exit-code-from cypress"
-
                 }
             }
         }
@@ -96,11 +111,14 @@ pipeline {
             steps {
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                     script {
-                        sh 'sudo chown -R $(id -u):$(id -g) .'
-                        withSonarQubeEnv('SonarCloud') {
-                            withEnv(["BRANCH_NAME=${env.BRANCH_NAME}"]) {
-                                sh 'npm run sonar'
+                        try {
+                            withSonarQubeEnv('SonarCloud') {
+                                withEnv(["BRANCH_NAME=${scmUtil.getCurrentBranch()}"]) {
+                                    sh 'npm run sonar'
+                                }
                             }
+                        } catch (e) {
+                            echo "Sonar analysis failed, but continuing the pipeline. Error: ${e.getMessage()}"
                         }
                     }
                 }
@@ -109,19 +127,9 @@ pipeline {
     }
 
     post {
-        always {
-            sh 'sudo chown -R $(id -u):$(id -g) .'
-        }
-
         failure {
             wrap([$class: 'BuildUser']) {
-                emailext(
-                    to: env.BUILD_USER_EMAIL,
-                    from: "Jenkins <hudson@ontotext.com>",
-                    subject: '''[Jenkins] $PROJECT_NAME - Build #$BUILD_NUMBER - $BUILD_STATUS!''',
-                    mimeType: 'text/html',
-                    body: '''${SCRIPT, template="groovy-html.template"}'''
-                )
+                sendMail(env.BUILD_USER_EMAIL)
             }
         }
     }
