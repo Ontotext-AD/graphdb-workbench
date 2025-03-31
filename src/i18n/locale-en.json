@@ -2353,7 +2353,6 @@
     "edit.repo.restart.requested.msg": "<span class=\"icon-2x icon-warning\" style=\"color: var(--primary-color-dark)\"></span>The repository will be restarted.",
     "edit.repo.restart.needed.msg": "<span class=\"icon-2x icon-warning\" style=\"color: var(--primary-color-dark)\"></span>Repository restart required for changes to take effect.",
     "edit.repo.id.warning.msg": "<p>Changing the repository ID is a dangerous operation since it renames the repository folder and enforces repository shutdown.</p>",
-    "edit.repo.id.cluster.warning.msg": "<p>If your repository is in a cluster, it is your responsibility to update the cluster after renaming.</p>",
     "confirm.enable.edit": "Confirm enable edit",
     "repo.description": "Repository description",
     "repo.indexing.section": "Indexing",
