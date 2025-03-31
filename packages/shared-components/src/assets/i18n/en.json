@@ -162,5 +162,22 @@
   "user_menu": {
     "my_settings": "My settings",
     "logout": "Logout"
+  },
+  "rdf_search": {
+    "labels": {
+      "search": "Search RDF resources",
+      "hint": "Hint: \"abC\" matches \"abC*\", \"ab c*\" and \"ab-c*\""
+    },
+    "buttons": {
+      "table": "Table",
+      "visual": "Visual"
+    },
+    "tooltips": {
+      "close_search_area": "Close search",
+      "clear": "Clear"
+    },
+    "toasts": {
+      "use_view_resource": "<b>Search RDF resources</b></br>Use <b>View resource</b> on this page"
+    }
   }
 }

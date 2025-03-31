@@ -22,7 +22,39 @@ export class HeaderSteps extends BaseSteps {
   }
 
   static getSearch() {
-    return HeaderSteps.getHeader().find('.search-component');
+    return HeaderSteps.getHeader().find('.onto-rdf-search');
+  }
+
+  static getSearchIcon() {
+    return this.getSearch().find('.fa-magnifying-glass');
+  }
+
+  static clickSearchIcon() {
+    return this.getSearchIcon().click();
+  }
+
+  static getSearchArea() {
+    return this.getSearch().find('.search-area');
+  }
+
+  static closeSearchArea() {
+    return HeaderSteps.getSearchArea().find('.close-btn').click();
+  }
+
+  static setRepoId() {
+    cy.get('#set-repo-id').click();
+  }
+
+  static setRepoLocation() {
+    cy.get('#set-repo-location').click();
+  }
+
+  static setActiveLocationLoading() {
+    cy.get('#set-is-loading').click();
+  }
+
+  static setActiveLocationNotLoading() {
+    cy.get('#set-is-not-loading').click();
   }
 
   static getLicenseAlert() {
