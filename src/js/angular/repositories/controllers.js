@@ -937,9 +937,7 @@ function EditRepositoryCtrl($rootScope, $scope, $routeParams, toastr, $repositor
 
     $scope.editRepositoryId = function () {
         let msg = decodeHTML($translate.instant('edit.repo.id.warning.msg'));
-        if ($scope.isEnterprise()) {
-            msg += decodeHTML($translate.instant('edit.repo.id.cluster.warning.msg'));
-        }
+
         ModalService.openSimpleModal({
             title: $translate.instant('confirm.enable.edit'),
             message: msg,
