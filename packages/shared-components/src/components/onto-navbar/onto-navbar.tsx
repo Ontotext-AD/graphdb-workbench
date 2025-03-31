@@ -15,6 +15,7 @@ import {NavbarToggledEvent} from "./navbar-toggled-event";
 import {NavbarService} from "./navbar-service";
 import {NavbarItemModel, NavbarModel} from "./navbar-model";
 import {TranslationService} from '../../services/translation.service';
+import {navigateTo} from '@ontotext/workbench-api';
 
 const labelKeys = {
   EXPAND: 'menu.buttons.expand',
@@ -217,7 +218,7 @@ export class OntoNavbar {
             } onClick={this.toggleNavbarHandler()}>
                 <em class={this.isCollapsed ? 'icon-caret-right' : 'icon-caret-left'}></em>
             </span>
-            <a class="menu-element-root home-page" href="./">
+            <a class="menu-element-root home-page" onClick={navigateTo('./')}>
               <svg class="big-logo">
                 <desc>{this.labels[labelKeys.LOGO_LINK]}</desc>
                 <use href={logoImg1}></use>

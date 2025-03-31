@@ -19,7 +19,7 @@
   <script src="../js/main.js" defer></script>
   <link rel="stylesheet" href="../css/bootstrap.min.css">
   <link rel="stylesheet" href="/pages/css/fontawesome.min.css">
-  <link rel="stylesheet" href="/pages/css/solid.min.css">
+  <link rel="stylesheet" href="/pages/css/light.min.css">
 </head>
 <body>
 <button id="valid-license" onclick="setValidLicense()">set valid license</button>
@@ -28,6 +28,10 @@
 <button id="enable-security" onclick="setSecurityConfig({enabled: true})">enable security</button>
 <button id="disable-security" onclick="setSecurityConfig({enabled: false})">disable security</button>
 <button id="set-authenticated-user" onclick="setAuthUser({external: true, username: 'john.doe'})">set authenticated user</button>
+<button id="set-repo-id" onclick="updateRepoId('starwars')">set repo id</button>
+<button id="set-repo-location" onclick="updateActiveRepoLocation({url: ''})">set repo location</button>
+<button id="set-is-loading" onclick="updateIsLoadingActiveRepositoryLocation(true)">set active location loading</button>
+<button id="set-is-not-loading" onclick="updateIsLoadingActiveRepositoryLocation(false)">set active location not loading</button>
 <onto-header></onto-header>
 <onto-tooltip></onto-tooltip>
 </body>

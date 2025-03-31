@@ -17,7 +17,8 @@ import {
   ServiceProvider,
   ToastMessage,
   EventEmitter,
-  CREATE_TOAST_EVENT
+  CREATE_TOAST_EVENT,
+  RepositoryLocation, RepositoryLocationContextService
 } from '@ontotext/workbench-api';
 import en from '../../assets/i18n/en.json';
 import fr from '../../assets/i18n/fr.json';
@@ -161,6 +162,31 @@ export class OntoTestContext {
   @Method()
   updateSelectedRepositoryId(repoId: string): Promise<void> {
     ServiceProvider.get(RepositoryContextService).updateSelectedRepositoryId(repoId);
+    return Promise.resolve();
+  }
+  /**
+   * Updates the active repository location in the application context.
+   *
+   * @param repositoryLocation - The RepositoryLocation object containing location information
+   *                             for the repository to be set as active.
+   * @returns A Promise that resolves when the repository location update is complete.
+   */
+  @Method()
+  updateRepositoryLocation(repositoryLocation: RepositoryLocation): Promise<void> {
+    ServiceProvider.get(RepositoryLocationContextService).updateActiveRepositoryLocation(repositoryLocation);
+    return Promise.resolve();
+  }
+
+  /**
+   * Updates whether the active repository request is in a loading state.
+   *
+   * @param isLoading - A boolean value indicating whether the repository location is in a loading state.
+   *                    True indicates request is in progress, false indicates loading is complete.
+   * @returns A Promise that resolves when the loading state update is complete.
+   */
+  @Method()
+  updateIsLoadingActiveRepositoryLocation(isLoading: boolean): Promise<void> {
+    ServiceProvider.get(RepositoryLocationContextService).updateIsLoading(isLoading);
     return Promise.resolve();
   }
 
