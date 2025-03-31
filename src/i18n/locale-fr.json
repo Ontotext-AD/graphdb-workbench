@@ -2351,7 +2351,6 @@
     "edit.repo.restart.requested.msg": "<span class=\"icon-2x icon-warning\" style=\"color: var(--primary-color-dark)\"></span>Le dépôt sera redémarré.",
     "edit.repo.restart.needed.msg": "<span class=\"icon-2x icon-warning\" style=\"color: var(--primary-color-dark)\"></span>Le redémarrage du dépôt est nécessaire pour que les changements prennent effet.",
     "edit.repo.id.warning.msg": "<p>Changer l'ID du dépôt est une opération dangereuse puisqu'elle renomme le dossier du dépôt et impose l'arrêt du dépôt.</p>",
-    "edit.repo.id.cluster.warning.msg": "<p>Si votre dépôt est dans un cluster, il est de votre responsabilité de mettre à jour le cluster après le renommage.</p>",
     "confirm.enable.edit": "Confirmation de l'activation de l'édition",
     "repo.description": "Description du dépôt",
     "repo.indexing.section": "Indexage",
