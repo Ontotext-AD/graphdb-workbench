@@ -1,0 +1,65 @@
+:root {
+  --search-primary-color: var(--primary-color, #9e2b0a);
+}
+
+.onto-rdf-search {
+  display: flex;
+  align-items: center;
+  line-height: .75;
+  font-size: 1.4em;
+  height: auto;
+
+  & .search-area {
+    white-space: nowrap;
+    text-align: start;
+    font-weight: 300;
+    max-width: 100vw;
+    position: fixed;
+    right: 3em;
+    z-index: 1;
+    display: block;
+    width: 60vw;
+
+    -webkit-transition: top 0.3s ease-in, opacity 0.5s ease;
+    transition: top 0.3s ease-in, opacity 0.5s ease;
+
+    box-shadow: 0 3px 6px rgba(0,0,0,.1);
+    border-radius: 0;
+    margin-bottom: 1em;
+    background-color: white;
+    padding: 1.6rem;
+    border: 1px solid rgba(0,0,0,.125);
+
+    &.visible {
+      top: 40px;
+      opacity: 1;
+    }
+
+    &.invisible {
+      top: -550px;
+      opacity: 0;
+    }
+
+    & .close-btn {
+      display: block;
+      position: absolute;
+      top: 0;
+      right: 0;
+      font-size: 1.5rem;
+    }
+  }
+
+  & i {
+    cursor: pointer;
+    color: var(--search-primary-color);
+    transition: all 0.15s ease-out;
+
+    &.fa-magnifying-glass, &.close-btn {
+      padding: .5rem .8rem;
+    }
+
+    &:hover {
+      transform: scale(1.2);
+    }
+  }
+}

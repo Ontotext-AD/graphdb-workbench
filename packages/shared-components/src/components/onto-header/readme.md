@@ -19,6 +19,8 @@ repository selector, and language selector.
 
 ### Depends on
 
+- [onto-search-icon](../onto-search-icon)
+- [onto-rdf-search](../onto-rdf-search)
 - [onto-operations-notification](../onto-operations-notification)
 - [onto-license-alert](../onto-license-alert)
 - [onto-repository-selector](../onto-repository-selector)
@@ -28,11 +30,15 @@ repository selector, and language selector.
 ### Graph
 ```mermaid
 graph TD;
+  onto-header --> onto-search-icon
+  onto-header --> onto-rdf-search
   onto-header --> onto-operations-notification
   onto-header --> onto-license-alert
   onto-header --> onto-repository-selector
   onto-header --> onto-user-menu
   onto-header --> onto-language-selector
+  onto-rdf-search --> onto-search-resource-input
+  onto-rdf-search --> onto-search-icon
   onto-operations-notification --> translate-label
   onto-license-alert --> translate-label
   onto-repository-selector --> onto-dropdown

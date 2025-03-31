@@ -1,4 +1,10 @@
-import {ServiceProvider, RepositoryService, RepositoryContextService} from '@ontotext/workbench-api';
+import {
+  ServiceProvider,
+  RepositoryService,
+  RepositoryContextService,
+  RepositoryLocationService,
+  RepositoryLocationContextService
+} from '@ontotext/workbench-api';
 
 const loadRepositories = () => {
   return ServiceProvider.get(RepositoryService).getRepositories()
@@ -10,4 +16,11 @@ const loadRepositories = () => {
     });
 };
 
-export const repositoryBootstrap = [loadRepositories];
+const loadActiveRepositoryLocation = () => {
+  return ServiceProvider.get(RepositoryLocationService).getActiveRepositoryLocation()
+    .then((repositoryLocation) => {
+      ServiceProvider.get(RepositoryLocationContextService).updateActiveRepositoryLocation(repositoryLocation);
+    });
+};
+
+export const repositoryBootstrap = [loadRepositories, loadActiveRepositoryLocation];

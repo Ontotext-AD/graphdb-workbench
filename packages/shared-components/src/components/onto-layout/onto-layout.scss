@@ -9,7 +9,7 @@
         "nav header"
         "nav main"
         "nav footer";
-  height: 100vh;
+  height: 100%;
   margin: 0;
 
   &.expanded {
@@ -40,4 +40,10 @@
   footer {
     grid-area: footer;
   }
+}
+
+.wb-header {
+  position: sticky;
+  top: 0;
+  z-index: 999;
 }
