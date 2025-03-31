@@ -69,4 +69,15 @@ export class HtmlUtil {
       }
     }
   }
+
+  /**
+   * Focuses an element in the document based on the provided CSS selector.
+   *
+   * @param selector - A CSS selector string used to identify the element to focus.
+   *                   This should be a valid CSS selector that uniquely identifies the target element.
+   */
+  static focusElement(selector: string): void {
+    const element = document.querySelector(selector) as HTMLElement;
+    element?.focus();
+  }
 }
