@@ -106,6 +106,22 @@ Type: `Promise<void>`
 
 A Promise that resolves when the security configuration has been successfully updated.
 
+### `updateIsLoadingActiveRepositoryLocation(isLoading: boolean) => Promise<void>`
+
+Updates whether the active repository request is in a loading state.
+
+#### Parameters
+
+| Name        | Type      | Description                                                                                                                                                       |
+| ----------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `isLoading` | `boolean` | - A boolean value indicating whether the repository location is in a loading state.   True indicates request is in progress, false indicates loading is complete. |
+
+#### Returns
+
+Type: `Promise<void>`
+
+A Promise that resolves when the loading state update is complete.
+
 ### `updateLicense(license: License) => Promise<void>`
 
 Updates the license information in the context.
@@ -143,6 +159,22 @@ and returns a resolved Promise once the operation is complete.
 Type: `Promise<void>`
 
 A Promise that resolves when the product information update is complete.
+
+### `updateRepositoryLocation(repositoryLocation: RepositoryLocation) => Promise<void>`
+
+Updates the active repository location in the application context.
+
+#### Parameters
+
+| Name                 | Type                 | Description                                                                                               |
+| -------------------- | -------------------- | --------------------------------------------------------------------------------------------------------- |
+| `repositoryLocation` | `RepositoryLocation` | - The RepositoryLocation object containing location information   for the repository to be set as active. |
+
+#### Returns
+
+Type: `Promise<void>`
+
+A Promise that resolves when the repository location update is complete.
 
 ### `updateRestrictedPage(restrictedPages: Record<string, boolean>) => Promise<void>`
 
