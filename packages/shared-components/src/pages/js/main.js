@@ -43,7 +43,15 @@ const setSecurityConfig = (config) => {
 }
 
 const updateRepoId = (repoId) => {
-  return testContext.updateSelectedRepositoryId(repoId);
+  testContext.updateSelectedRepositoryId(repoId);
+}
+
+const updateIsLoadingActiveRepositoryLocation = (isLoading) => {
+  testContext.updateIsLoadingActiveRepositoryLocation(isLoading);
+}
+
+const updateActiveRepoLocation = (repositoryLocation) => {
+  testContext.updateRepositoryLocation(repositoryLocation);
 }
 
 window.PluginRegistry = {
