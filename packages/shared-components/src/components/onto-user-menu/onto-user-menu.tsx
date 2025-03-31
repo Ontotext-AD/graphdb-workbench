@@ -1,6 +1,5 @@
 import {Component, h, Prop, State} from '@stencil/core';
-import {AuthenticatedUser} from '@ontotext/workbench-api';
-import {navigateTo} from '../../utils/routing-utils';
+import {AuthenticatedUser, navigateTo} from '@ontotext/workbench-api';
 
 /**
  * This component displays the current user's name and provides options
