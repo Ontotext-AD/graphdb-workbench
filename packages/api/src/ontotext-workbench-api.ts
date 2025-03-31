@@ -13,6 +13,8 @@ export * from './models/language';
 export * from './models/cookie';
 export * from './models/monitoring';
 export * from './models/toastr';
+export * from './models/rdf-search';
+export * from './models/single-spa';
 
 // Export providers for external usages.
 export * from './providers';

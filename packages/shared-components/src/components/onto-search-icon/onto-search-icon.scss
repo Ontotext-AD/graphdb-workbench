@@ -1,0 +1,14 @@
+i {
+  cursor: pointer;
+  color: var(--primary-color, #9e2b0a);
+  transition: all 0.15s ease-out;
+  font-size: 1.6rem;
+
+  &.fa-magnifying-glass {
+    padding: .5rem .8rem;
+  }
+
+  &:hover {
+    transform: scale(1.2);
+  }
+}

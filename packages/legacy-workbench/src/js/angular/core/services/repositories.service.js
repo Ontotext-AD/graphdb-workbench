@@ -9,7 +9,7 @@ import {QueryMode} from "../../models/ontotext-yasgui/query-mode";
 import {md5HashGenerator} from "../../utils/hash-utils";
 import {RemoteLocationModel} from "../../models/repository/remote-location.model";
 import {SelectMenuOptionsModel} from "../../models/form-fields";
-import {RepositoryStorageService, RepositoryContextService, ServiceProvider} from "@ontotext/workbench-api";
+import {RepositoryStorageService, RepositoryContextService, ServiceProvider, RepositoryLocationContextService} from "@ontotext/workbench-api";
 
 const modules = [
     'ngCookies',
@@ -42,6 +42,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
 
         const loadingDone = function (err, locationError) {
             that.loading = false;
+            ServiceProvider.get(RepositoryLocationContextService).updateIsLoading(false);
             if (err) {
                 // reset location data
                 that.location = {};
@@ -145,6 +146,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
 
         this.init = function (successCallback, errorCallback, quick) {
             this.loading = true;
+            ServiceProvider.get(RepositoryLocationContextService).updateIsLoading(true);
             if (!quick) {
                 this.locationsShouldReload = true;
             }
