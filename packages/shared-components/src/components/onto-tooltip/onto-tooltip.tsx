@@ -88,21 +88,38 @@ export class OntoTooltip {
      * @param records - An array of MutationRecord objects, each representing a change to the DOM tree.
      *                  The function iterates over these records to find and clear tooltips for removed nodes.
      */
-    private clearTooltipsForRemovedElements = (records: MutationRecord[]) => {
-        records.forEach((record) => {
-            record.removedNodes.forEach((node) => {
-                if (node instanceof HTMLElement) {
-                    const target = this.getTooltipTarget(node);
-                    if (target) {
-                        const tooltipInstance = this.getTooltipInstance(target);
-                        if (tooltipInstance) {
-                            tooltipInstance.destroy();
-                        }
-                    }
+    private clearTooltipsForRemovedElements = (records: MutationRecord[]): void => {
+        for (const record of records) {
+            for (const node of Array.from(record.removedNodes)) {
+                if (this.removeTooltipFromNode(node)) {
+                  // stop iterating if a tooltip is found and destroyed,
+                  // since we can't have more than one tooltip
+                  return;
                 }
-            });
-        });
+            }
+        }
     };
+
+  /**
+   * Recursively removes tooltips from a given node and its children.
+   *
+   * This function checks if the given node is an HTMLElement and has an associated tooltip.
+   * If a tooltip is found, it is destroyed. If not, the function then recursively checks all child nodes.
+   *
+   * @param node - The DOM node to check for tooltips.
+   * @returns A boolean indicating whether a tooltip was found and destroyed (true) or not (false).
+   */
+  private removeTooltipFromNode = (node: Node): boolean => {
+      if (node instanceof HTMLElement) {
+          const tooltipInstance = this.getTooltipInstance(node);
+          if (tooltipInstance) {
+              tooltipInstance.destroy();
+              return true;
+          }
+          node.childNodes.forEach(this.removeTooltipFromNode);
+      }
+      return false;
+  };
 
     /**
      * Initializes a MutationObserver to monitor the document body for removed nodes.

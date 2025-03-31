@@ -1,0 +1,82 @@
+.search-resources-input {
+  padding-right: 20px;
+
+  & .input-row {
+    gap: 3px;
+    display: flex;
+    flex-wrap: wrap;
+
+    & .input-wrapper {
+      position: relative;
+      display: flex;
+      flex: 1;
+      min-width: 20vw;
+
+      & input {
+        flex: 1;
+        padding: .5rem .75rem;
+        font-size: 1rem;
+        line-height: 1.25;
+        color: #55595c;
+        background-color: #fff;
+        background-image: none;
+        -webkit-background-clip: padding-box;
+        background-clip: padding-box;
+        border: 1px solid rgba(0,0,0,.15);
+        min-width: inherit;
+
+        &:focus {
+          color: #55595c;
+          border-color: #66afe9;
+          outline: 0;
+        }
+      }
+    }
+
+    & i.fa-xmark {
+      position: absolute;
+      right: 10px;
+      top: 7px;
+      z-index: 10;
+      font-size: 1.6rem;
+    }
+
+    & button {
+      display: inline-block;
+      font-weight: 400;
+      line-height: 1.25;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      transition: all .15s ease-out;
+      user-select: none;
+      border: 1px solid transparent;
+      padding: .5rem 1rem;
+      font-size: 1rem;
+      color: var(--secondary-color, #003663);
+
+      &.selected {
+        background-color: var(--primary-color, #9e2b0a);
+        color: white;
+      }
+
+      &:focus {
+        outline: none;
+      }
+
+      &:hover:not(.selected) {
+        background-color: #d4d4d4;
+        border-color: #d4d4d4;
+      }
+    }
+  }
+
+  & .hint {
+    font-size: 0.8rem;
+    color: #818a91;
+  }
+}
