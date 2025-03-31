@@ -165,5 +165,22 @@
   "user_menu": {
     "my_settings": "Mes paramètres",
     "logout": "Déconnexion"
+  },
+  "rdf_search": {
+    "labels": {
+      "search": "Rechercher des ressources RDF",
+      "hint": "Indice : \"abC\" correspond à \"abC*\", \"ab c*\" et \"ab-c*\"."
+    },
+    "buttons": {
+      "table": "Tableau",
+      "visual": "Visuel"
+    },
+    "tooltips": {
+      "close_search_area": "Fermer la recherche",
+      "clear": "Clair"
+    },
+    "toasts": {
+      "use_view_resource": "<b>Rechercher des ressources RDF</b></br>Utilisez <b>Voir la ressource</b> sur cette page"
+    }
   }
 }

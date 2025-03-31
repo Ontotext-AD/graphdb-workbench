@@ -25,11 +25,15 @@ graph TD;
   onto-layout --> onto-footer
   onto-layout --> onto-tooltip
   onto-layout --> onto-toastr
+  onto-header --> onto-search-icon
+  onto-header --> onto-rdf-search
   onto-header --> onto-operations-notification
   onto-header --> onto-license-alert
   onto-header --> onto-repository-selector
   onto-header --> onto-user-menu
   onto-header --> onto-language-selector
+  onto-rdf-search --> onto-search-resource-input
+  onto-rdf-search --> onto-search-icon
   onto-operations-notification --> translate-label
   onto-license-alert --> translate-label
   onto-repository-selector --> onto-dropdown

@@ -11,8 +11,12 @@ import {
   AuthenticatedUser,
   SecurityConfig,
   AuthenticationService,
-  FibonacciGenerator
+  FibonacciGenerator,
+  OntoToastrService, RepositoryLocation, RepositoryLocationContextService, EventService, EventName,
+  getPathName, isHomePage
 } from '@ontotext/workbench-api';
+import {TranslationService} from '../../services/translation.service';
+import {HtmlUtil} from '../../utils/html-util';
 
 /**
  * OntoHeader component for rendering the header of the application.
@@ -26,12 +30,16 @@ import {
 export class OntoHeader {
   private readonly monitoringService = ServiceProvider.get(MonitoringService);
   private readonly repositoryContextService = ServiceProvider.get(RepositoryContextService);
+  private readonly repositoryLocationContextService = ServiceProvider.get(RepositoryLocationContextService);
   private readonly securityContextService = ServiceProvider.get(SecurityContextService);
   private readonly authenticationService = ServiceProvider.get(AuthenticationService);
+  private readonly toastrService = ServiceProvider.get(OntoToastrService);
   private readonly UPDATE_ACTIVE_OPERATION_TIME_INTERVAL = 2000;
   private readonly fibonacciGenerator = new FibonacciGenerator();
 
   private repositoryId?: string;
+  private repositoryLocation?: RepositoryLocation;
+  private isActiveLocationLoading = false;
   private pollingInterval: number;
 
   /** The active operations summary for all monitoring operations */
@@ -42,6 +50,11 @@ export class OntoHeader {
 
   /** Menu should appear, when security is enabled and user is authenticated */
   @State() private showUserMenu: boolean;
+
+  /** Whether the search component should appear */
+  @State() private shouldShowSearch: boolean = true;
+
+  @State() private isHomePage = isHomePage();
 
   /** Array of subscription cleanup functions */
   private readonly subscriptions: SubscriptionList = new SubscriptionList();
@@ -58,13 +71,22 @@ export class OntoHeader {
     this.subscribeToLicenseChange();
     this.subscribeToRepositoryIdChange();
     this.subscribeToSecurityContextChange();
+    this.subscribeToActiveRepositoryLocationChange();
+    this.subscribeToActiveRepoLoadingChange();
+    this.subscribeToNavigationEnd();
   }
 
   render() {
     return (
       <Host>
         <div class="header-component">
-          <div class="search-component">&#x1F50D;</div>
+          <onto-search-icon
+            onClick={this.showViewResourceMessage()}
+            style={{display: this.shouldShowSearch  && this.isHomePage ? 'block' : 'none'}}>
+          </onto-search-icon>
+          <onto-rdf-search
+            style={{display: this.shouldShowSearch  && !this.isHomePage ? 'block' : 'none'}}>
+          </onto-rdf-search>
           {this.activeOperations?.allRunningOperations.getItems().length
             ? <onto-operations-notification activeOperations={this.activeOperations}>
             </onto-operations-notification>
@@ -115,6 +137,30 @@ export class OntoHeader {
       this.repositoryContextService.onSelectedRepositoryIdChanged((repositoryId) => {
         this.repositoryId = repositoryId;
         this.repositoryId ? this.startOperationPolling() : this.stopOperationPolling();
+        this.shouldShowSearch = this.shouldShowRdfSearch();
+      })
+    );
+  }
+
+  private shouldShowRdfSearch(): boolean {
+    return !!this.repositoryId && !!this.repositoryLocation &&
+      (!this.isActiveLocationLoading || this.isActiveLocationLoading && getPathName() === '/repository');
+  }
+
+  private subscribeToActiveRepositoryLocationChange() {
+    this.subscriptions.add(
+      this.repositoryLocationContextService.onActiveLocationChanged((repositoryLocation) => {
+        this.repositoryLocation = repositoryLocation;
+        this.shouldShowSearch = this.shouldShowRdfSearch();
+      })
+    );
+  }
+
+  private subscribeToActiveRepoLoadingChange() {
+    this.subscriptions.add(
+      this.repositoryLocationContextService.onIsLoadingChanged((isLoading) => {
+        this.isActiveLocationLoading = isLoading;
+        this.shouldShowSearch = this.shouldShowRdfSearch();
       })
     );
   }
@@ -143,5 +189,26 @@ export class OntoHeader {
       return false;
     }
     return this.securityConfig.enabled && this.authenticationService.isAuthenticated(this.securityConfig, this.user);
+  }
+
+  private showViewResourceMessage() {
+    return (event: MouseEvent) => {
+      event.stopPropagation();
+      this.toastrService.info(TranslationService.translate('rdf_search.toasts.use_view_resource'));
+      this.shouldShowSearch = false;
+      HtmlUtil.focusElement('#search-resource-input-home input');
+    };
+  }
+
+  private subscribeToNavigationEnd() {
+    this.subscriptions.add(
+      ServiceProvider.get(EventService).subscribe(
+        EventName.NAVIGATION_END, () => {
+          this.shouldShowSearch = this.shouldShowRdfSearch();
+          this.isHomePage = isHomePage();
+          console.log('Navigation end', this.isHomePage);
+        }
+      )
+    );
   }
 }

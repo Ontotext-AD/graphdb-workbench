@@ -7,7 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { DialogHandler } from "./models/dialog/dialog-handler";
 import { DialogConfig } from "./components/dialogs/onto-dialog";
-import { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, SecurityConfig, ToastMessage } from "../../api/dist/ontotext-workbench-api.d";
+import { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, RepositoryLocation, SearchButtonConfig, SecurityConfig, ToastMessage } from "../../api/dist/ontotext-workbench-api.d";
 import { DropdownItem } from "./models/dropdown/dropdown-item";
 import { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 import { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
@@ -16,7 +16,7 @@ import { ToggleEventPayload } from "./models/toggle-switch/toggle-event-payload"
 import { TranslationParameter } from "./models/translation/translation-parameter";
 export { DialogHandler } from "./models/dialog/dialog-handler";
 export { DialogConfig } from "./components/dialogs/onto-dialog";
-export { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, SecurityConfig, ToastMessage } from "../../api/dist/ontotext-workbench-api.d";
+export { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, RepositoryLocation, SearchButtonConfig, SecurityConfig, ToastMessage } from "../../api/dist/ontotext-workbench-api.d";
 export { DropdownItem } from "./models/dropdown/dropdown-item";
 export { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 export { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
@@ -136,7 +136,25 @@ export namespace Components {
     }
     interface OntoPermissionBanner {
     }
+    /**
+     * OntoRdfSearch component for RDF resource search.
+     * This component is responsible for showing/hiding the search menu in the header
+     */
+    interface OntoRdfSearch {
+    }
     interface OntoRepositorySelector {
+    }
+    interface OntoSearchIcon {
+    }
+    /**
+     * A component for rendering RDF search resource input with configurable buttons.
+     * This component provides a text input for search queries and a set of configurable buttons.
+     */
+    interface OntoSearchResourceInput {
+        /**
+          * Button configuration for the search resource input. Holds buttons to be displayed, as well as additional configuration, such as whether the buttons should be treated as radio buttons.
+         */
+        "buttonConfig": SearchButtonConfig;
     }
     /**
      * A component for managing test context in the application. Used only for testing
@@ -176,6 +194,12 @@ export namespace Components {
          */
         "setSecurityConfig": (securityConfig: SecurityConfig) => Promise<void>;
         /**
+          * Updates whether the active repository request is in a loading state.
+          * @param isLoading - A boolean value indicating whether the repository location is in a loading state.   True indicates request is in progress, false indicates loading is complete.
+          * @returns A Promise that resolves when the loading state update is complete.
+         */
+        "updateIsLoadingActiveRepositoryLocation": (isLoading: boolean) => Promise<void>;
+        /**
           * Updates the license information in the context.  This method uses the LicenseContextService to update the license and returns a resolved Promise once the operation is complete.
           * @param license - The new License object to be set.
           * @returns A Promise that resolves when the license update is complete.
@@ -187,6 +211,12 @@ export namespace Components {
           * @returns A Promise that resolves when the product information update is complete.
          */
         "updateProductInfo": (productInfo: ProductInfo) => Promise<void>;
+        /**
+          * Updates the active repository location in the application context.
+          * @param repositoryLocation - The RepositoryLocation object containing location information   for the repository to be set as active.
+          * @returns A Promise that resolves when the repository location update is complete.
+         */
+        "updateRepositoryLocation": (repositoryLocation: RepositoryLocation) => Promise<void>;
         /**
           * Updates the {@see SecurityContextService} map with <code>restrictedPages</code>.
           * @param restrictedPages - the map with restricted pages to be set in context service as new value.
@@ -399,11 +429,37 @@ declare global {
         prototype: HTMLOntoPermissionBannerElement;
         new (): HTMLOntoPermissionBannerElement;
     };
+    /**
+     * OntoRdfSearch component for RDF resource search.
+     * This component is responsible for showing/hiding the search menu in the header
+     */
+    interface HTMLOntoRdfSearchElement extends Components.OntoRdfSearch, HTMLStencilElement {
+    }
+    var HTMLOntoRdfSearchElement: {
+        prototype: HTMLOntoRdfSearchElement;
+        new (): HTMLOntoRdfSearchElement;
+    };
     interface HTMLOntoRepositorySelectorElement extends Components.OntoRepositorySelector, HTMLStencilElement {
     }
     var HTMLOntoRepositorySelectorElement: {
         prototype: HTMLOntoRepositorySelectorElement;
         new (): HTMLOntoRepositorySelectorElement;
+    };
+    interface HTMLOntoSearchIconElement extends Components.OntoSearchIcon, HTMLStencilElement {
+    }
+    var HTMLOntoSearchIconElement: {
+        prototype: HTMLOntoSearchIconElement;
+        new (): HTMLOntoSearchIconElement;
+    };
+    /**
+     * A component for rendering RDF search resource input with configurable buttons.
+     * This component provides a text input for search queries and a set of configurable buttons.
+     */
+    interface HTMLOntoSearchResourceInputElement extends Components.OntoSearchResourceInput, HTMLStencilElement {
+    }
+    var HTMLOntoSearchResourceInputElement: {
+        prototype: HTMLOntoSearchResourceInputElement;
+        new (): HTMLOntoSearchResourceInputElement;
     };
     /**
      * A component for managing test context in the application. Used only for testing
@@ -487,7 +543,10 @@ declare global {
         "onto-navbar": HTMLOntoNavbarElement;
         "onto-operations-notification": HTMLOntoOperationsNotificationElement;
         "onto-permission-banner": HTMLOntoPermissionBannerElement;
+        "onto-rdf-search": HTMLOntoRdfSearchElement;
         "onto-repository-selector": HTMLOntoRepositorySelectorElement;
+        "onto-search-icon": HTMLOntoSearchIconElement;
+        "onto-search-resource-input": HTMLOntoSearchResourceInputElement;
         "onto-test-context": HTMLOntoTestContextElement;
         "onto-toastr": HTMLOntoToastrElement;
         "onto-toggle-switch": HTMLOntoToggleSwitchElement;
@@ -621,7 +680,25 @@ declare namespace LocalJSX {
     }
     interface OntoPermissionBanner {
     }
+    /**
+     * OntoRdfSearch component for RDF resource search.
+     * This component is responsible for showing/hiding the search menu in the header
+     */
+    interface OntoRdfSearch {
+    }
     interface OntoRepositorySelector {
+    }
+    interface OntoSearchIcon {
+    }
+    /**
+     * A component for rendering RDF search resource input with configurable buttons.
+     * This component provides a text input for search queries and a set of configurable buttons.
+     */
+    interface OntoSearchResourceInput {
+        /**
+          * Button configuration for the search resource input. Holds buttons to be displayed, as well as additional configuration, such as whether the buttons should be treated as radio buttons.
+         */
+        "buttonConfig"?: SearchButtonConfig;
     }
     /**
      * A component for managing test context in the application. Used only for testing
@@ -702,7 +779,10 @@ declare namespace LocalJSX {
         "onto-navbar": OntoNavbar;
         "onto-operations-notification": OntoOperationsNotification;
         "onto-permission-banner": OntoPermissionBanner;
+        "onto-rdf-search": OntoRdfSearch;
         "onto-repository-selector": OntoRepositorySelector;
+        "onto-search-icon": OntoSearchIcon;
+        "onto-search-resource-input": OntoSearchResourceInput;
         "onto-test-context": OntoTestContext;
         "onto-toastr": OntoToastr;
         "onto-toggle-switch": OntoToggleSwitch;
@@ -747,7 +827,18 @@ declare module "@stencil/core" {
             "onto-navbar": LocalJSX.OntoNavbar & JSXBase.HTMLAttributes<HTMLOntoNavbarElement>;
             "onto-operations-notification": LocalJSX.OntoOperationsNotification & JSXBase.HTMLAttributes<HTMLOntoOperationsNotificationElement>;
             "onto-permission-banner": LocalJSX.OntoPermissionBanner & JSXBase.HTMLAttributes<HTMLOntoPermissionBannerElement>;
+            /**
+             * OntoRdfSearch component for RDF resource search.
+             * This component is responsible for showing/hiding the search menu in the header
+             */
+            "onto-rdf-search": LocalJSX.OntoRdfSearch & JSXBase.HTMLAttributes<HTMLOntoRdfSearchElement>;
             "onto-repository-selector": LocalJSX.OntoRepositorySelector & JSXBase.HTMLAttributes<HTMLOntoRepositorySelectorElement>;
+            "onto-search-icon": LocalJSX.OntoSearchIcon & JSXBase.HTMLAttributes<HTMLOntoSearchIconElement>;
+            /**
+             * A component for rendering RDF search resource input with configurable buttons.
+             * This component provides a text input for search queries and a set of configurable buttons.
+             */
+            "onto-search-resource-input": LocalJSX.OntoSearchResourceInput & JSXBase.HTMLAttributes<HTMLOntoSearchResourceInputElement>;
             /**
              * A component for managing test context in the application. Used only for testing
              */
