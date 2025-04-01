@@ -1,6 +1,6 @@
 import repoTemplate from '../fixtures/repo-template.json';
 
-export const REPOSITORIES_URL = '/rest/repositories/';
+export const REPOSITORIES_URL = '/rest/repositories';
 const AUTOCOMPLETE_URL = '/rest/autocomplete/';
 
 const PRESET_REPO = 'ls.repository-id';
