@@ -15,6 +15,7 @@ pipeline {
     NODE_OPTIONS = "--openssl-legacy-provider"
     // Tells NPM and co. not to use color output (looks like garbage in Jenkins)
     NO_COLOR = "1"
+    GDB_LICENSE = credentials('GDB_LICENSE')
   }
 
   stages {
@@ -72,6 +73,8 @@ pipeline {
                 [configFile(fileId: 'a1a4c1d1-7e93-4256-9632-ea10220def33', variable: 'GRAPHDB_LICENSE_BASE64')]) {
             sh 'base64 -d < $GRAPHDB_LICENSE_BASE64 > graphdb.license'
           }
+//           sh 'cp $GDB_LICENSE graphdb.license'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'graphdb.license'
           sh "ls ./test-cypress/fixtures/"
           // --no-ansi suppresses color output that shows as garbage in Jenkins
           sh "docker-compose --no-ansi build --force-rm --no-cache --parallel"
