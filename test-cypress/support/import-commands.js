@@ -1,8 +1,8 @@
 import snippetImportTemplate from '../fixtures/snippet-import-template.json';
 
 const REPOSITORIES_URL = '/rest/repositories/';
-const UPLOAD_URL = '/import/upload/';
-const SERVER_URL = '/import/server/';
+const UPLOAD_URL = '/import/upload';
+const SERVER_URL = '/import/server';
 const POLL_INTERVAL = 200;
 
 // Imports a graphql schema to the repository
