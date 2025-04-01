@@ -396,7 +396,8 @@
                 "similarity_search": "Recherche de similarité",
                 "retrieval_search": "ChatGPT Retrieval",
                 "iri_discovery": "FTS pour la découverte IRI",
-                "now": "La fonction \"Maintenant\""
+                "now": "La fonction \"Maintenant\"",
+                "autocomplete_iri_discovery_search": "Autocomplétion pour la découverte d'IRI"
             },
             "query_colon": " :",
             "query_desc": {
@@ -405,7 +406,8 @@
                 "similarity_search": "Recherche de similarité via SPARQL",
                 "retrieval_search": "Requête JSON directe",
                 "iri_discovery": "Recherche en texte intégral via SPARQL",
-                "now": "Renvoie l'heure système"
+                "now": "Renvoie l'heure système",
+                "autocomplete_iri_discovery_search": "Recherche en autocomplétion via SPARQL"
             },
             "dialog": {
                 "confirm_repository_change": {

@@ -44,23 +44,6 @@
                               ng-model="extractionMethod.maxNumberOfResultsPerCall"
                               placeholder="{{'ttyg.agent.create_agent_modal.form.additional_query_methods.autocomplete_max_number_of_results_per_call.placeholder' | translate}}">
                    </div>
-                   <div class="autocomplete-predicate-tags">
-                       <label uib-popover="{{'ttyg.agent.create_agent_modal.form.additional_query_methods.autocomplete_search_predicates.tooltip' | translate}}"
-                              popover-trigger="mouseenter">
-                           {{'ttyg.agent.create_agent_modal.form.additional_query_methods.autocomplete_search_predicates.label' | translate}}</label>
-                       <tags-input id="autocompletePredicateField" class="wb-tags-input" ng-model="extractionMethod.searchLabelPredicates" min-length="1"
-                                   ng-disabled="!extractionMethod.selected"
-                                   use-strings="true"
-                                   add-on-space="true"
-                                   add-on-comma="true"
-                                   add-on-paste="true"
-                                   replace-spaces-with-dashes="false"
-                                   paste-split-pattern="[\s+]"
-                                   ng-keydown="getSuggestions($event)"
-                                   placeholder="{{'ttyg.agent.create_agent_modal.form.additional_query_methods.autocomplete_search_predicates.placeholder' | translate}}">
-                           <auto-complete source="autocompleteSuggestions"></auto-complete>
-                       </tags-input>
-                   </div>
                </div>
         </div>
     </div>
