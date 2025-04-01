@@ -20,7 +20,8 @@ angular
     ])
     .constant('ExtractionMethodTemplates', {
     'iri_discovery_search': 'iri-discovery-search',
-    'autocomplete_iri_discovery_search': 'autocomplete-iri-discovery-search'
+        // Temporarily hidden template until the feature is fine-tuned
+    //'autocomplete_iri_discovery_search': 'autocomplete-iri-discovery-search'
     })
     .controller('AgentSettingsModalController', AgentSettingsModalController);
 
