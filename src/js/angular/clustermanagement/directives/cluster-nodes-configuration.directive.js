@@ -33,7 +33,46 @@ function ClusterNodesConfigurationComponent($translate, $timeout, productInfo, t
             $scope.addNode = () => {
                 $scope.addNewLocation = true;
                 $scope.newLocation = new Location();
+                // Timeout used because field is added dynamically on "Add Node" and needs to render before it can be focused
+                $timeout(function () {
+                    const input = document.querySelector("input[name='location']");
+                    if (input) {
+                        input.focus();
+                    }
+                }, 0);
             };
+
+            $scope.copyToClipboard = (textToCopy, event) => {
+                if (navigator.clipboard) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    let tooltip = document.createElement("span");
+                    tooltip.innerText = $translate.instant('common.copied');
+
+                    let targetElement = event.currentTarget;
+                    let iconElement = targetElement.querySelector('.link-icon');
+                    iconElement.appendChild(tooltip);
+
+                    tooltip.style.fontFamily = "Arial, sans-serif";
+                    tooltip.style.position = "absolute";
+                    tooltip.style.background = "#000000";
+                    tooltip.style.color = "#FFFFFF";
+                    tooltip.style.padding = "5px 8px";
+                    tooltip.style.margin = "0px 5px";
+                    tooltip.style.borderRadius = "4px";
+                    tooltip.style.fontSize = "12px";
+                    tooltip.style.zIndex = "9999";
+                    tooltip.style.opacity = "0";
+
+                    tooltip.style.transition = "opacity 0.2s ease-in-out";
+                    tooltip.style.opacity = "1";
+
+                    setTimeout(() => {
+                        tooltip.style.opacity = "0";
+                        setTimeout(() => tooltip.remove(), 200);
+                    }, 1500);
+                });
+                }
+            }
 
             /**
              * Filters suggestions based on user input for node's endpoint.
