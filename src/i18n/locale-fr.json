@@ -193,7 +193,8 @@
             "actions": {
                 "replace_node": "Remplacer le nœud",
                 "delete_node": "Supprimer le nœud",
-                "cannot_delete_node": "Vous ne pouvez pas supprimer plus de la moitié des nœuds sains en même temps",
+                "cannot_delete_node": "Le nœud actuel ne peut pas être supprimé",
+                "cannot_replace_node": "Vous ne pouvez pas remplacer ce nœud",
                 "add_node": "Ajouter un nœud",
                 "add_node_tooltip": "Ajouter un nœud au cluster actuel",
                 "cancel": "Annuler",
@@ -2503,6 +2504,7 @@
     "common.show_all": "Afficher tout",
     "common.hide": "Masquer",
     "common.learn_more_in_documentation": "Pour en savoir plus, consultez la documentation GraphDB",
+    "copy_to_clipboard.copied.tooltip": "IRI copié",
     "paginator.first.page.label": "Premier",
     "paginator.last.page.label": "Dernier",
     "deactivate": "désactiver",
