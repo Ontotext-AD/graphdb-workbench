@@ -29,9 +29,10 @@ function JdbcRestService($http, $translate) {
     }
 
     function createConfiguration(method, table, configuration) {
+        const url = table ? `${JDBC_ENDPOINT}/tables/${table}` : `${JDBC_ENDPOINT}/tables`;
         return $http({
                 method,
-                url: `${JDBC_ENDPOINT}/tables/${table}`,
+                url: url,
                 noCancelOnRouteChange: true,
                 data: {
                     name: configuration.name,

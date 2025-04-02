@@ -1,6 +1,6 @@
 export class JdbcStubs {
     static stubJdbcCreateError() {
-        cy.intercept('POST', '/rest/sql-views/tables/', {
+        cy.intercept('POST', '/rest/sql-views/tables', {
             statusCode: 500,
             response: {
                 error: 'Internal Server Error'

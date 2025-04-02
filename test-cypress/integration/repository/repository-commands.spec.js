@@ -22,7 +22,7 @@ describe('Repository commands test', () => {
 
         cy.request({
             method: 'GET',
-            url: REPOSITORIES_URL + repoId,
+            url: REPOSITORIES_URL + '/' + repoId,
             headers: {
                 'Accept': 'application/json'
             }
@@ -40,7 +40,7 @@ describe('Repository commands test', () => {
 
         cy.request({
             method: 'HEAD',
-            url: REPOSITORIES_URL + repoId,
+            url: REPOSITORIES_URL + '/' + repoId,
             failOnStatusCode: false
         }).should((response) => expect(response.status).to.equal(404));
     });
