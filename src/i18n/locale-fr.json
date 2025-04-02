@@ -193,7 +193,8 @@
             "actions": {
                 "replace_node": "Remplacer le nœud",
                 "delete_node": "Supprimer le nœud",
-                "cannot_delete_node": "Vous ne pouvez pas supprimer plus de la moitié des nœuds sains en même temps",
+                "cannot_delete_node": "Le nœud actuel ne peut pas être supprimé",
+                "cannot_replace_node": "Vous ne pouvez pas remplacer ce nœud",
                 "add_node": "Ajouter un nœud",
                 "add_node_tooltip": "Ajouter un nœud au cluster actuel",
                 "cancel": "Annuler",
@@ -207,6 +208,11 @@
             },
             "field_placeholders": {
                 "location": "http://my-hostname:7200"
+            },
+            "copy_to_clipboard": {
+                "copied": {
+                    "tooltip": "IRI copié"
+                }
             }
         }
     },
@@ -2465,6 +2471,9 @@
         "dates": {
             "today": "Aujourd'hui",
             "yesterday": "Hier"
+        },
+        "messages": {
+            "copied_to_clipboard": "Copié dans le presse-papier"
         }
     },
     "common.confirm.delete": "Confirmation de la suppression",

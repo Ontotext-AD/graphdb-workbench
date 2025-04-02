@@ -194,7 +194,8 @@
             "actions": {
                 "replace_node": "Replace node",
                 "delete_node": "Delete node",
-                "cannot_delete_node": "You cannot remove more than half of the healthy nodes at the same time",
+                "cannot_delete_node": "The current node cannot be removed",
+                "cannot_replace_node": "You cannot replace this node",
                 "add_node": "Add node",
                 "add_node_tooltip": "Add node to current cluster",
                 "cancel": "Cancel",
@@ -208,6 +209,11 @@
             },
             "field_placeholders": {
                 "location": "http://my-hostname:7200"
+            },
+            "copy_to_clipboard": {
+                "copied": {
+                    "tooltip": "IRI copied"
+                }
             }
         }
     },
@@ -2467,6 +2473,9 @@
         "dates": {
             "today": "Today",
             "yesterday": "Yesterday"
+        },
+        "messages": {
+            "copied_to_clipboard": "Copied to clipboard"
         }
     },
     "common.confirm.delete": "Confirm delete",

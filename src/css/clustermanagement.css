@@ -225,10 +225,18 @@ div.nodetooltip {
     -webkit-user-select: none;
     user-select: none;
     word-break: break-all;
-
     display: flex;
     align-items: center;
     justify-content: flex-start;
+}
+
+.location-item .text-only:hover {
+    text-decoration: 1px underline dashed var(--color-success-dark);
+    text-underline-offset: 4px;
+}
+
+.location-item:hover .custom-link-icon {
+    opacity: 1;
 }
 
 .location-item.hoverable:not(.list-group-item-danger):hover {
