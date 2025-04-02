@@ -77,7 +77,7 @@ export class RepositoriesStubs extends Stubs {
     }
 
     static interceptRepository(id, statusCode, extraParams = {}) {
-        cy.intercept(`${REPOSITORIES_URL}${id}?location=`, {
+        cy.intercept(`${REPOSITORIES_URL}/${id}?location=`, {
             statusCode,
             body: {
                 "id": id,
@@ -92,7 +92,7 @@ export class RepositoriesStubs extends Stubs {
     }
 
     static stubRepoCreationEndpoints(repositoryId) {
-        cy.intercept(REPOSITORIES_URL + 'all', {
+        cy.intercept(REPOSITORIES_URL + '/all', {
             statusCode: 200,
             body: {
                 "": [
@@ -114,7 +114,7 @@ export class RepositoriesStubs extends Stubs {
             }
         }).as('getMockRepositories');
 
-        cy.intercept(`${REPOSITORIES_URL}${repositoryId}/restart?location=*`, {
+        cy.intercept(`${REPOSITORIES_URL}/${repositoryId}/restart?location=*`, {
             statusCode: 200,
             body: {}
         }).as('restartRepository');
@@ -126,7 +126,7 @@ export class RepositoriesStubs extends Stubs {
     }
 
     static stubSaveOntopResponse(repositoryId) {
-        cy.intercept(`${REPOSITORIES_URL}ontop/jdbc-properties?driverType=*`, {
+        cy.intercept(`${REPOSITORIES_URL}/ontop/jdbc-properties?driverType=*`, {
             statusCode: 200,
             body: {
                 "id": repositoryId,
