@@ -190,6 +190,7 @@ describe('Ontop repositories', () => {
         RepositorySteps.clickRepositoryConnectionOffBtn(repositoryId);
         // When the repository is restarted
         RepositorySteps.restartRepository(repositoryId);
+        ModalDialogSteps.getDialogBody().should('contain', repositoryId);
         RepositorySteps.confirmModal();
         // Then the correct messages are shown
         ToasterSteps.verifySuccess('Restarting repository ' + repositoryId);
