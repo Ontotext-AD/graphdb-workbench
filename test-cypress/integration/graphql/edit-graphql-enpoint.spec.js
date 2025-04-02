@@ -112,7 +112,7 @@ describe('Graphql: edit endpoint settings', () => {
                     "disabledChecks": null,
                     "queryPrefix": null,
                     "mutationPrefix": null,
-                    "sparqlFederatedServices": {},
+                    "sparqlFederatedServices": "{}",
                     "sparqlFederatedServicesPriority": 'Deployment configurations',
                 }
             });

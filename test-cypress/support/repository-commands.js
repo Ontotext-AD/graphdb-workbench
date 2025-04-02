@@ -53,7 +53,7 @@ Cypress.Commands.add('presetRepository', (id) => {
  * Speeds up any following requests
  */
 Cypress.Commands.add('initializeRepository', (id) => {
-    const url = REPOSITORIES_URL + id + '/size';
+    const url = REPOSITORIES_URL + '/' + id + '/size';
     cy.request('GET', url)
         .then((response) => {
             cy.waitUntil(() => response && response.status === 200);

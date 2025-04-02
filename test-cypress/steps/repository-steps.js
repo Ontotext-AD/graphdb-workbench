@@ -4,7 +4,7 @@ export class RepositorySteps {
 
     static visit() {
         cy.intercept('/rest/locations').as('getLocations');
-        cy.intercept(REPOSITORIES_URL + 'all').as('getRepositories');
+        cy.intercept(REPOSITORIES_URL + '/all').as('getRepositories');
         cy.visit('/repository');
         RepositorySteps.waitLoader();
         cy.wait('@getLocations');
