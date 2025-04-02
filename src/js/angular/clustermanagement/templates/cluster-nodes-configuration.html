@@ -43,8 +43,13 @@
                 ng-class="{'selected': $index === selectedNode || $index === editedNodeIndex}">
                 <td class="index-cell"><span ng-if="!node.isDeleted">{{node.index + 1}}</span></td>
                 <td class="location-cell data"  ng-class="{'deleting': node.isDeleted, 'adding': !node.item.address}">
-                    <div class="location-item">
-                        {{node.item.endpoint}}
+                    <div class="location-item" id="endpoint-{{::node.index}}">
+                        <span class="text-only">{{node.item.endpoint}}</span>
+                        <copy-to-clipboard
+                        text-to-copy="{{node.item.endpoint}}"
+                        custom-tooltip-style="true"
+                        ng-attr-target-selector="#endpoint-{{::node.index}}"
+                        custom-tooltip-text="{{'cluster_management.update_cluster_group_dialog.copy_to_clipboard.copied.tooltip' | translate}}"></copy-to-clipboard>
                     </div>
                 </td>
                 <td class="info-cell data">
@@ -70,14 +75,18 @@
                 <td class="empty-cell"></td>
                 <td class="actions-cell">
                     <div ng-if="editedNodeIndex === undefined && !node.isDeleted" class="actions-group">
-                        <button ng-click="deleteNode($index, node)" ng-disabled="!canDeleteNode"
+                        <button ng-click="deleteNode($index, node)" ng-disabled="(hasCluster && !canDeleteNode) || (!hasCluster && node.isLocal)"
                                 class="btn btn-link delete-node-btn secondary"
-                                gdb-tooltip="{{ canDeleteNode ? ('cluster_management.update_cluster_group_dialog.actions.delete_node' | translate) : ('cluster_management.update_cluster_group_dialog.actions.cannot_delete_node' | translate) }}"
+                                gdb-tooltip="{{ (hasCluster && canDeleteNode) || (!hasCluster && !node.isLocal) ?
+                                ('cluster_management.update_cluster_group_dialog.actions.delete_node' | translate) :
+                                ('cluster_management.update_cluster_group_dialog.actions.cannot_delete_node' | translate) }}"
                                 title-class="delete-node-tooltip">
                             <i class="fa fa-xmark"></i>
                         </button>
-                        <button ng-click="replaceNode($index, node)" class="btn btn-link replace-node-btn"
-                                gdb-tooltip="{{'cluster_management.update_cluster_group_dialog.actions.replace_node' | translate}}">
+                        <button ng-click="replaceNode($index, node)" class="btn btn-link replace-node-btn" ng-disabled="!hasCluster && node.isLocal"
+                                gdb-tooltip="{{hasCluster || !node.isLocal ?
+                                ('cluster_management.update_cluster_group_dialog.actions.replace_node' | translate) :
+                                ('cluster_management.update_cluster_group_dialog.actions.cannot_replace_node' | translate) }}">
                             <i class="fa fa-arrow-right-arrow-left"></i>
                         </button>
                     </div>
