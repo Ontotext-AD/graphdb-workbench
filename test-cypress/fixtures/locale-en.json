@@ -1138,7 +1138,7 @@
                                 "label": "Default Maximum Cardinality",
                                 "tooltip": "Sets the default maximum cardinality for all values, defining whether properties without explicit cardinality are multi or single valued by default."
                             },
-                            "readShaclPropertiesLabels": {
+                            "readShaclPropertyLabels": {
                                 "label": "Use SHACL Property Labels",
                                 "tooltip": "Defines whether labels and descriptions for sh:PropertyShape should be used instead of sh:path labels and descriptions."
                             },

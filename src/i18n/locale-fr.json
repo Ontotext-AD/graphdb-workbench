@@ -1137,7 +1137,7 @@
                                 "label": "Cardinalité Maximale par Défaut",
                                 "tooltip": "Définit la cardinalité maximale par défaut pour toutes les valeurs, en définissant si les propriétés sans configuration explicite de cardinalité sont par défaut multi ou mono valeurs."
                             },
-                            "readShaclPropertiesLabels": {
+                            "readShaclPropertyLabels": {
                                 "label": "Utiliser les Libellés des Propriétés SHACL",
                                 "tooltip": "Définit si les libellés et descriptions pour sh:PropertyShape doivent être utilisés à la place des libellés et descriptions de sh:path."
                             },
