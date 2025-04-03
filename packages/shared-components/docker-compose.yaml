@@ -22,4 +22,4 @@ services:
     working_dir: /e2e
     volumes:
       - ./:/e2e
-    command: cypress run --browser chrome
+    command: cypress run --browser chrome --config-file cypress.config.js
