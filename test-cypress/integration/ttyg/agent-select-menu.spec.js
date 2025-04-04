@@ -133,9 +133,5 @@ describe('TTYG agent select menu', () => {
         // TODO: Then I expect that the agent is selected in the menu
         // TODO: And the sgent should have the repository id in the menu
     });
-
-    it.skip('Should load the agent which was last used', () => {
-
-    });
 });
 
