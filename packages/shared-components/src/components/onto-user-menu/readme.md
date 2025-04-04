@@ -14,7 +14,7 @@ for navigating to settings and logging out.
 
 | Property | Attribute | Description                  | Type                | Default     |
 | -------- | --------- | ---------------------------- | ------------------- | ----------- |
-| `user`   | --        | Currently authenticated user | `AuthenticatedUser` | `undefined` |
+| `user`   | `user`    | Currently authenticated user | `AuthenticatedUser` | `undefined` |
 
 
 ## Dependencies

@@ -42,7 +42,12 @@ module.exports = (env, argv) => merge(commonConfig(env, argv), {
             disableDotRule: true
         },
         // Enable hot module replacement
-        hot: true,
+        // hot: true,
+        // client: {
+        //   overlay: true,
+        //   logging: 'info',
+        //   reconnect: true
+        // },
         proxy: [{
             context: ['/rest', '/repositories', '/protocol', '/rdf-bridge'],
             target: 'http://' + host + ':' + portThere,
@@ -53,5 +58,10 @@ module.exports = (env, argv) => merge(commonConfig(env, argv), {
                 }
             }
         }]
+    },
+    resolve: {
+      fallback: {
+        "events": require.resolve("events/")
+      }
     }
 });
