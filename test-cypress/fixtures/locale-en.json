@@ -1046,7 +1046,7 @@
                         "messages": {
                             "loading_graphql_shapes": "Loading GraphQL schema shapes...",
                             "no_schemas": "No GraphQL schema shapes were found in the selected repository. You can browse other repositories or change the source.",
-                            "endpoint_per_shape": "Each GraphQL schema shape results in one endpoint"
+                            "endpoint_per_shape": "Each GraphQL schema shape results in one endpoint."
                         }
                     },
                     "shacl_shapes": {
@@ -1166,7 +1166,7 @@
                     "overview": {
                         "title": "Overview",
                         "for_shapes": {
-                            "info": "GraphDB will attempt to create {{endpointsCount}} GraphQL endpoints in the \"{{activeRepoId}}\" based on the selected resources. To modify the selection, go back to Step 1 (Select schema source).",
+                            "info": "GraphDB will attempt to create {{endpointsCount}} GraphQL endpoints in the \"{{activeRepoId}}\" repository based on the selected resources. To modify the selection, go back to Step 1 (Select schema source).",
                             "included_endpoints": "Included GraphQL schema shapes",
                             "generated_endpoints": "GraphQL endpoints",
                             "explore_in_playground_link_tooltip": "Explore in Playground (opens in a new tab)",
