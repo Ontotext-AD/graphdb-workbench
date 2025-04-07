@@ -1045,7 +1045,7 @@
                         "messages": {
                             "loading_graphql_shapes": "Chargement des formes de schéma GraphQL...",
                             "no_schemas": "Aucune forme de schéma GraphQL n'a été trouvée dans le référentiel sélectionné. Vous pouvez parcourir d'autres référentiels ou modifier la source.",
-                            "endpoint_per_shape": "Chaque forme de schéma GraphQL génère un point de terminaison"
+                            "endpoint_per_shape": "Chaque forme de schéma GraphQL génère un point de terminaison."
                         }
                     },
                     "shacl_shapes": {
