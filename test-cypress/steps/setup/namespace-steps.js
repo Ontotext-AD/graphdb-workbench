@@ -165,7 +165,7 @@ export class NamespaceSteps {
     }
 
     static typeInlineNamespacePrefix(index, prefix) {
-        this.getInlineNamespacePrefix(index).clear().type(prefix);
+        this.getInlineNamespacePrefix(index).click().clear().type(prefix);
     }
 
     static getInlineNamespaceValue(index) {
