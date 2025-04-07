@@ -54,7 +54,12 @@ describe('Visual graph screen validation', () => {
             ApplicationSteps.getErrorNotifications().should('be.visible').and('contain', 'Invalid IRI');
         });
 
-        it('Test search for a valid resource', () => {
+        it('Test search for a valid resource', {
+            retries: {
+                openMode: 0,
+                runMode: 1
+            }
+        }, () => {
             AutocompleteStubs.spyAutocompleteStatus();
             VisualGraphSteps.visit();
             // Verify autocomplete is ON, because sometimes in CI it is OFF and fails when searching for Resource
