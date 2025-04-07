@@ -58,7 +58,7 @@ graphql-playground {
 
 .graphql-playground-view #graphiql * {
     border-radius: 0;
-    font-size: 1rem;
+    font-size: 1rem !important;
     font-family: var(--main-font);
 }
 
@@ -337,6 +337,102 @@ div[data-radix-popper-content-wrapper] * {
 
 .graphql-playground-view #graphiql .docExplorerWrap .doc-explorer-title {
     color: var(--base-text-color);
+}
+
+/*
+    Removes the scroll from the GraphiQL Explorer plugin, since the parent container
+    with the class "graphiql-plugin" already provides vertical (y-axis) scrolling.
+    For horizontal (x-axis) scrolling, each GraphQL queries/mutations container will handle its own scroll.
+*/
+.graphql-playground-view #graphiql .docExplorerWrap .graphiql-explorer-root > div {
+    overflow: hidden !important;
+}
+
+/*
+  Adds horizontal (x-axis) scrolling to each GraphQL queries/mutations container.
+*/
+.graphql-playground-view #graphiql .docExplorerWrap .graphiql-explorer-root > div:first-child > div,
+.graphql-playground-view #graphiql .docExplorerWrap .graphiql-explorer-root > div:has(.variable-editor-title) {
+    overflow-x: auto !important;
+}
+
+/* Added a separation line between the container with queries/mutations and the container with the form for adding a new query/mutation. */
+.graphql-playground-view #graphiql .docExplorerWrap .graphiql-explorer-root > div:first-child {
+    border-bottom: 1px solid rgb(214, 214, 214);
+}
+
+/* Removes the top border from the form for adding a new query/mutation,
+   which was used as a visual horizontal separator between the queries/mutations and the form. */
+.graphql-playground-view #graphiql .docExplorerWrap .graphiql-explorer-root > div:last-child .variable-editor-title {
+    border: none !important;
+    padding: 0 !important;
+}
+
+.graphql-playground-view #graphiql .docExplorerWrap .graphiql-explorer-root > div:has(.variable-editor-title) {
+    margin-top: 16px;
+}
+
+/* =========================*/
+/*     Button overrides     */
+/* =========================*/
+.graphql-playground-view #graphiql .docExplorerWrap .toolbar-button {
+    background-color: var(--base-background-hover-color);
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.graphql-playground-view #graphiql .docExplorerWrap .variable-editor-title .toolbar-button,
+.graphql-playground-view #graphiql .docExplorerWrap .graphiql-operation-title-bar .toolbar-button {
+    height: 100% !important;
+    width: auto !important;
+    aspect-ratio: 1 / 1;
+}
+
+/**
+  Make the span resizable. This allows the icon/text inside the button to become larger on mouseover.
+ */
+.graphql-playground-view #graphiql .docExplorerWrap .toolbar-button span {
+    display: block;
+}
+
+.graphql-playground-view #graphiql .docExplorerWrap .toolbar-button:hover span {
+    transform: scale(1.2);
+    color: var(--primary-color) !important;
+}
+
+
+/* Make the button's size match the dropdown in the 'Add New Fragment' form */
+.graphql-playground-view #graphiql .docExplorerWrap .variable-editor-title .toolbar-button {
+    padding: var(--px-4) var(--px-10);
+}
+
+/* =========================*/
+/*     Dropdown overrides     */
+/* =========================*/
+.graphql-playground-view #graphiql .docExplorerWrap select {
+    font-size: 1rem !important;
+    height: calc(2rem - 2px);
+    line-height: 1.25;
+    color: #55595c !important;
+    background-color: #fff !important;
+    background-image: none !important;
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: 0;
+    font-weight: 400;
+    margin: 1px 8px;
+    outline: 0;
+}
+
+.graphql-playground-view #graphiql .docExplorerWrap select:focus {
+    color: #55595c;
+    background-color: #fff;
+    border-color: hsla(var(--secondary-color-hsl), 0.5);
+}
+
+.graphql-playground-view #graphiql .docExplorerWrap select option {
+    background-color: var(--html-background) !important;
+    color: var(--gray-color) !important;
 }
 
 /* =============================================== */
