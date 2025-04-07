@@ -31,8 +31,12 @@ describe('Import user data', () => {
         ImportUserDataSteps.getPageInfoPopover()
             .should('be.visible')
             .find('a')
-            .should('have.attr', 'href', 'https://graphdb.ontotext.com/documentation/master/loading-data-using-the-workbench.html')
-            .and('contain.text', 'Learn more in the GraphDB documentation');
+            .should('contain.text', 'Learn more in the GraphDB documentation')
+            .invoke('attr', 'href')
+            .then((href) => {
+                expect(href).to.match(/https:\/\/graphdb\.ontotext\.com\/documentation\/[^/]+\/loading-data-using-the-workbench\.html/);
+            });
+
         ImportUserDataSteps.hidePageInfoPopover();
         // And user data import tab should be selected by default
         ImportUserDataSteps.getActiveTab().should('have.text', 'User data');

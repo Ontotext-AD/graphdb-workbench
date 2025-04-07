@@ -235,9 +235,9 @@ describe('Namespaces', () => {
         ApplicationSteps.getErrorNotifications().should('be.visible')
             .and('contain', 'Internal Server Error');
         // And the prefix and namespace fields should not be cleared to allow user to correct the error
-        // writing in the field above should have cleared the field first, but it doesn't, so we just check the value
-        NamespaceSteps.getInlineNamespacePrefix(0).should('have.value', 'afntest1');
-        // NamespaceSteps.getInlineNamespaceValue(0).should('have.value', 'http://test.com');
+        // writing in the field above should clear the field first
+        NamespaceSteps.getInlineNamespacePrefix(0).should('have.value', 'test1');
+        NamespaceSteps.getInlineNamespaceValue(0).should('have.value', 'http://test.com');
     });
 
     it('Should allow to delete existing namespaces', () => {
