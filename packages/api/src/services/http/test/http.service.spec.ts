@@ -1,6 +1,32 @@
 import {HttpService} from '../http.service';
 import {TestUtil} from '../../utils/test/test-util';
 import {ResponseMock} from './response-mock';
+import {HttpInterceptor} from '../../../models/interceptor/http-interceptor';
+import {HttpRequest} from '../../../models/http/http-request';
+import {ServiceProvider} from '../../../providers';
+import {InterceptorService} from '../../interceptor/interceptor.service';
+import {ModelList} from '../../../models/common';
+
+class PreInterceptor extends HttpInterceptor<HttpRequest> {
+  shouldProcess(): boolean {
+    return true;
+  }
+
+  process(request: HttpRequest): Promise<HttpRequest> {
+    request.url += '/intercepted';
+    return Promise.resolve(request);
+  }
+}
+
+class PostInterceptor extends HttpInterceptor<Response> {
+  process(response: Response): Promise<Response> {
+    return Promise.resolve({...response, json: () => 'interceptedResponseBody' } as unknown as Response);
+  }
+
+  shouldProcess(): boolean {
+    return true;
+  }
+}
 
 describe('HttpService', () => {
 
@@ -92,8 +118,31 @@ describe('HttpService', () => {
     expect(result).toEqual(response);
     expect(fetch).toHaveBeenCalledWith(url, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: 'Updated' }),
+      headers: { 'Content-Type': 'application/json'},
+      body: JSON.stringify({name: 'Updated'})
     });
+  });
+
+  test('should pre-process requests and post-process responses', async () => {
+    // Given, I have registered pre- and post-interceptors
+    const interceptorService = new InterceptorService();
+    interceptorService.registerRequestInterceptors(new ModelList([new PreInterceptor()]));
+    interceptorService.registerResponseInterceptors(new ModelList([new PostInterceptor()]));
+
+    // And, I create a new HttpService with the registered interceptors
+    jest.spyOn(ServiceProvider, 'get').mockImplementation(() => interceptorService);
+    const httpServiceWithInterceptor = new HttpService();
+
+    const response = { message: 'intercepted' };
+    // When, I provide an endpoint URL
+    const url = '/original';
+
+    // Then, I expect the actual request to have '/intercepted' appended to the URL
+    TestUtil.mockResponse(new ResponseMock(`${url}/intercepted`).setResponse(response));
+
+    const result = await httpServiceWithInterceptor.get(url);
+
+    // And, I expect the post-processed response body to be 'interceptedResponseBody'
+    expect(result).toEqual('interceptedResponseBody');
   });
 });
