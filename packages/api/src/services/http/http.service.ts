@@ -1,9 +1,13 @@
 import {HttpOptions} from '../../models/http/http-options';
+import {InterceptorService} from '../interceptor/interceptor.service';
+import {HttpRequest} from '../../models/http/http-request';
+import {ServiceProvider} from '../../providers';
 
 /**
  * A service class for performing HTTP requests.
  */
 export class HttpService {
+  private readonly interceptorService = ServiceProvider.get(InterceptorService);
 
   /**
    * Performs an HTTP GET request.
@@ -93,15 +97,22 @@ export class HttpService {
   private request<T>(url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH', options: HttpOptions = {}): Promise<T> {
     const queryString = this.buildQueryParams(options.params);
     const fullUrl = `${url}${queryString ? `?${queryString}` : ''}`;
+    const headers = {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    };
 
-    return fetch(fullUrl, {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-      body: options.body ? JSON.stringify(options.body) : null,
-    })
+    return this.interceptorService.preProcess(new HttpRequest({url: fullUrl, method, headers, body: options.body}))
+      .then((request) => {
+        return fetch(request.url, {
+          method: request.method,
+          headers: request.headers as HeadersInit,
+          body: request.body ? JSON.stringify(request.body) : null,
+        });
+      })
+      .then((response) => {
+        return this.interceptorService.postProcess(response);
+      })
       .then((response) => {
         if (!response.ok) {
           return Promise.reject(response);
