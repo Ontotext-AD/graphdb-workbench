@@ -9,7 +9,7 @@ import { Model } from './model';
  *
  * @template T - The type of items in the list.
  */
-export abstract class ModelList<T> extends Model<T> {
+export class ModelList<T> extends Model<T> {
   /**
    * The list of items managed by this class.
    */
@@ -21,7 +21,7 @@ export abstract class ModelList<T> extends Model<T> {
    * @param items - An optional array of items to initialize the list. If no items are provided,
    *                an empty array is used by default.
    */
-  protected constructor(items: T[] = []) {
+  constructor(items: T[] = []) {
     super();
     this.items = items;
   }
@@ -83,6 +83,15 @@ export abstract class ModelList<T> extends Model<T> {
    */
   addToStart(item: T): void {
     this.items.unshift(item);
+  }
+
+  /**
+   * Adds an array of items to the end of the list.
+   *
+   * @param items the items to add
+   */
+  addItems(items: T[]): void {
+    this.items.push(...items);
   }
 
   /**
