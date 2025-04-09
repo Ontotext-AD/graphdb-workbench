@@ -19,6 +19,7 @@
     grid-template-columns: minmax(150px, 1fr) 2fr;
     margin-bottom: var(--vertical-margin);
     align-items: start;
+    column-gap: 2rem
 }
 
 .dynamic-form-container .dynamic-form .form-group .group-title {
