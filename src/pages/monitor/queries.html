@@ -59,7 +59,7 @@
                                 <td>{{query.username}}</td>
 								<td>{{query.type}}</td>
 								<td>
-									<button class="pull-left btn btn-primary btn-sm" ng-click="downloadQuery(query.trackId)">{{'download.btn' | translate}}</button>
+									<button class="pull-left btn btn-primary btn-sm" ng-click="downloadQuery(query)">{{'download.btn' | translate}}</button>
 									<div ng-if="query.sparqlString.length > stringLimit" class="pull-right">
 										<button class="btn btn-link small px-0" ng-click="toggleQueryExpanded(query.trackId)">
 											<span ng-show="!expanded[query.trackId]">{{'show.remaining' | translate}} {{query.sparqlString.length - stringLimit}} {{'characters.label' | translate}}</span>
