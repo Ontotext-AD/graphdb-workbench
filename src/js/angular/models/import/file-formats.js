@@ -11,7 +11,13 @@ export class FileFormats {
     }
 
     static getFileFormatsExtended() {
-        return [...this.getGZS(), ...this.getBasics(), '.zip'].join(', ');
+        return [
+            ...this.getGZS(),
+            ...this.getBasics(),
+            '.zip',
+            '.gz',
+            'application/gzip',
+            'application/x-gzip'].join(', ');
     }
 
     static getFileFormatsHuman() {
