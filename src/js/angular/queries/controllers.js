@@ -1,5 +1,7 @@
 import 'angular/core/services';
 import 'angular/rest/monitoring.rest.service';
+import {MonitoringTrackRecord} from "../models/monitoring/query-and-update/monitoring-track-record";
+import {MonitoringTrackRecordType} from "../models/monitoring/query-and-update/monitoring-track-record-type";
 
 const queriesCtrl = angular.module('graphdb.framework.jmx.queries.controllers', [
     'ui.bootstrap',
@@ -76,7 +78,7 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$uibModal', 'toastr', '$interv
                 $scope.queries = {};
                 for (let i = 0; i < newQueries.length; i++) {
                     newQueries[i].parsedNode = $scope.parseNode(newQueries[i].node);
-                    $scope.queries[newQueries[i].trackId] = newQueries[i];
+                    $scope.queries[newQueries[i].trackId] = new MonitoringTrackRecord(newQueries[i]);
                 }
 
                 $scope.noActiveRepository = false;
@@ -125,10 +127,15 @@ queriesCtrl.controller('QueriesCtrl', ['$scope', '$uibModal', 'toastr', '$interv
             });
         };
 
-        $scope.downloadQuery = function (queryId) {
-            const filename = 'query_' + queryId + '.rq';
+        /**
+         * Downloads the executed query.
+         * @param record {MonitoringTrackRecord} The monitoring track record whose query will be downloaded.
+         */
+        $scope.downloadQuery = function (record) {
+            const trackId = record.trackId;
+            const filename = 'query_' + trackId + (record.type === MonitoringTrackRecordType.GRAPHQL ? '.json' : '.rq');
             let link = 'rest/monitor/repository/' + $repositories.getActiveRepository()
-                + '/query/download?query=' + encodeURIComponent(queryId)
+                + '/query/download?query=' + encodeURIComponent(trackId)
                 + '&filename=' + encodeURIComponent(filename);
             if ($jwtAuth.isAuthenticated()) {
                 link = link + '&authToken=' + encodeURIComponent(AuthTokenService.getAuthToken());
