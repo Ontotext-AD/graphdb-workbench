@@ -1,6 +1,6 @@
 export class LanguageSelectorSteps {
     static getLanguageSelectorDropdown() {
-        return cy.get('#languageGroupDrop').should('be.visible');
+        return cy.get('.onto-language-selector').should('be.visible');
     }
 
     static openLanguageSelectorDropdown() {
@@ -9,7 +9,7 @@ export class LanguageSelectorSteps {
 
     static changeLanguage(language) {
         LanguageSelectorSteps.openLanguageSelectorDropdown();
-        cy.get('#lang-select-' + language).click();
+        this.getLanguageSelectorDropdown().find(`button.${language}`).click();
     }
 
     static switchToFr() {
