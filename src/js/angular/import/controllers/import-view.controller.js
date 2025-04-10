@@ -708,14 +708,20 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
                 }
                 importResource.data = data.text;
                 importResource.format = data.format;
-                updateTextImport(importResource);
+                updateTextImport(importResource)
+                    .then(() => $scope.updateListHttp(true))
+                    .then(() => {
+                        if (data.startImport) {
+                            $scope.setSettingsFor(importResource.name, false, importResource.format, Operation.IMPORT_SNIPPET);
+                        }
+                    })
             } else {
                 importResource = {type: 'text', name: 'Text snippet ' + DateUtils.formatCurrentDateTime(), format: data.format, data: data.text};
                 $scope.files.unshift(importResource);
                 $scope.updateImport(importResource.name, false, false);
-            }
-            if (data.startImport) {
-                $scope.setSettingsFor(importResource.name, false, importResource.format, Operation.IMPORT_SNIPPET);
+                if (data.startImport) {
+                    $scope.setSettingsFor(importResource.name, false, importResource.format, Operation.IMPORT_SNIPPET);
+                }
             }
         });
     };
@@ -780,8 +786,8 @@ importViewModule.controller('UploadCtrl', ['$scope', 'toastr', '$controller', '$
 
     const updateTextImport = (settings) => {
         $scope.updating = true;
-        ImportRestService.updateTextSnippet($repositories.getActiveRepository(), settings).success(function (data) {
-            // its updated
+        return ImportRestService.updateTextSnippet($repositories.getActiveRepository(), settings).success(function (data) {
+            // it's updated
         }).error(function (data) {
             toastr.error($translate.instant('import.could.not.update.text', {data: getError(data)}));
         }).finally(function () {
