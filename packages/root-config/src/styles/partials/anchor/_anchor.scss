@@ -1,0 +1,12 @@
+a {
+  &:hover,
+  &:active,
+  &[href^="http"],
+  &[href^="http"]:hover,
+  &[href^="http"]:active {
+    text-decoration-line: underline !important;
+    text-decoration-style: solid !important;
+    text-decoration-thickness: var(--link-decoration-thickness) !important;
+    text-underline-offset: var(--link-underline-offset) !important;
+  }
+}
