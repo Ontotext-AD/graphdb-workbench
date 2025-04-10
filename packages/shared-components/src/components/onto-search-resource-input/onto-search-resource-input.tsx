@@ -1,5 +1,15 @@
 import {Component, h, Prop, State} from '@stencil/core';
-import {SearchButton, SearchButtonConfig} from '@ontotext/workbench-api';
+import {
+  AutocompleteContextService,
+  AutocompleteService,
+  SearchButton,
+  SearchButtonConfig,
+  ServiceProvider, SubscriptionList,
+  Suggestion,
+  AutocompleteStorageService,
+  AutocompleteSearchResult, OntoToastrService,
+  navigateTo
+} from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 
 /**
@@ -11,6 +21,13 @@ import {TranslationService} from '../../services/translation.service';
   styleUrl: 'onto-search-resource-input.scss'
 })
 export class OntoSearchResourceInput {
+  private readonly autocompleteService = ServiceProvider.get(AutocompleteService);
+  private readonly autocompleteContextService = ServiceProvider.get(AutocompleteContextService);
+  private readonly autocompleteStorageService = ServiceProvider.get(AutocompleteStorageService);
+  private readonly toastrService = ServiceProvider.get(OntoToastrService);
+
+  private readonly subscriptions = new SubscriptionList();
+  private autocompleteWarningShown = false;
 
   /**
    * Button configuration for the search resource input.
@@ -28,6 +45,24 @@ export class OntoSearchResourceInput {
    * The current value of the search input field.
    */
   @State() private inputValue: string;
+
+  /**
+   * The current autocomplete search result
+   */
+  @State() private searchResult: AutocompleteSearchResult;
+
+  /**
+   * Whether the autocomplete setting is enabled.
+   */
+  @State() private isAutocompleteEnabled = true;
+
+  componentWillLoad() {
+    this.onAutocompleteEnabledChange();
+  }
+
+  disconnectedCallback() {
+    this.subscriptions.unsubscribeAll();
+  }
 
   render() {
     return (
@@ -53,6 +88,14 @@ export class OntoSearchResourceInput {
 
         </div>
         <span class="hint">{TranslationService.translate('rdf_search.labels.hint')}</span>
+        <section class="autocomplete-results-wrapper">
+          {this.searchResult?.getSuggestions().getItems().map((suggestion) => (
+            <p key={suggestion.getId()}
+               onMouseEnter={this.hoverSuggestion(suggestion)}
+               class={`${suggestion.isHovered() ? 'hovered' : ''}`}
+               innerHTML={suggestion.getDescription()}></p>
+          ))}
+        </section>
       </section>
     );
   }
@@ -92,7 +135,19 @@ export class OntoSearchResourceInput {
     return (event: Event) => {
       const target = event.target as HTMLInputElement;
       this.inputValue = target.value;
+      this.checkForAutocomplete();
+      this.loadAutocompleteResults();
     };
+  }
+
+  private loadAutocompleteResults() {
+    if (this.isAutocompleteEnabled) {
+      this.autocompleteService.search(this.inputValue)
+        .then((searchResult) => {
+          searchResult.hoverFirstSuggestion();
+          this.searchResult = searchResult;
+        });
+    }
   }
 
   /**
@@ -102,5 +157,35 @@ export class OntoSearchResourceInput {
     return () => {
       this.inputValue = '';
     };
+  }
+
+  private hoverSuggestion(hoveredSuggestion: Suggestion) {
+    return () => {
+      this.searchResult.hoverSuggestion(hoveredSuggestion);
+      this.updateView();
+    };
+  }
+
+  private onAutocompleteEnabledChange() {
+    this.isAutocompleteEnabled = this.autocompleteStorageService.isEnabled();
+    this.subscriptions.add(
+      this.autocompleteContextService.onAutocompleteEnabledChanged((enabled) => {
+        if (enabled != undefined) {
+          this.isAutocompleteEnabled = enabled;
+        }
+      })
+    );
+  }
+
+  private checkForAutocomplete() {
+    if (this.inputValue.length > 0 && !this.isAutocompleteEnabled && !this.autocompleteWarningShown) {
+      this.autocompleteWarningShown = true;
+      const message = TranslationService.translate('rdf_search.toasts.autocomplete_is_off');
+      this.toastrService.warning(`<a style="font-weight: 500">${message}</a>`,
+        {
+          onClick: navigateTo('/autocomplete'),
+          removeOnClick: true
+        });
+    }
   }
 }

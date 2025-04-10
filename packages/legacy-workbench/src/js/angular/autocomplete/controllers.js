@@ -1,6 +1,7 @@
 import 'angular/rest/autocomplete.rest.service';
 import {mapNamespacesResponse} from "../rest/mappers/namespaces-mapper";
 import {decodeHTML} from "../../../app";
+import {AutocompleteContextService, ServiceProvider} from "@ontotext/workbench-api";
 
 const modules = [
     'toastr',
@@ -204,6 +205,7 @@ function AutocompleteCtrl(
             .success(function () {
                 refreshEnabledStatus();
                 refreshIndexStatus();
+                ServiceProvider.get(AutocompleteContextService).updateAutocompleteEnabled(newValue);
             }).error(function (data) {
             toastr.error(getError(data));
         }).finally(function () {
