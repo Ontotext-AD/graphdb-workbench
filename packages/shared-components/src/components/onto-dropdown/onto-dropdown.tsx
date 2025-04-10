@@ -143,7 +143,7 @@ export class OntoDropdown {
     return async (event: MouseEvent) => {
       const target = event.currentTarget as HTMLElement;
       if (typeof this.dropdownButtonTooltip === 'function') {
-        const tooltipContent = await this.dropdownButtonTooltip();
+        const tooltipContent = await this.getTooltipContent(this.dropdownButtonTooltip);
         target.setAttribute('tooltip-content', tooltipContent);
       } else {
         target.setAttribute(
@@ -158,7 +158,7 @@ export class OntoDropdown {
     return async (event: MouseEvent) => {
       const target = event.currentTarget as HTMLElement;
       if (typeof item.tooltip === 'function') {
-        const tooltipContent = await item.tooltip();
+        let tooltipContent =  await this.getTooltipContent(item.tooltip);
         target.setAttribute('tooltip-content', tooltipContent);
       } else {
         target.setAttribute(
@@ -192,5 +192,15 @@ export class OntoDropdown {
 
   private closeMenu(): void {
     this.open = false;
+  }
+
+  private async getTooltipContent(tooltipFunction: () => Promise<string>): Promise<string> {
+    let tooltipContent = '';
+    try {
+      tooltipContent = await tooltipFunction();
+    } catch (error) {
+      console.error(error);
+    }
+    return tooltipContent;
   }
 }
