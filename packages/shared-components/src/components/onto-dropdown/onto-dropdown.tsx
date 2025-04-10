@@ -125,7 +125,7 @@ export class OntoDropdown {
         <div
           class={'onto-dropdown-menu ' + dropdownAlignmentClass}>
           {this.items && this.items.map(item =>
-            <button class='onto-dropdown-menu-item'
+            <button class={'onto-dropdown-menu-item ' + item.cssClass}
                     tooltip-placement='left'
                     tooltip-trigger={item.dropdownTooltipTrigger}
                     {...(this.tooltipTheme ? { 'tooltip-theme': this.tooltipTheme } : {})}

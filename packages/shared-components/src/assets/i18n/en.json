@@ -47,6 +47,9 @@
   "menu.support.label": "Support",
   "menu.guides.label": "Interactive guides",
   "menu.plugins.label": "Plugins",
+  "menu.graphql.label": "GraphQL",
+  "menu.graphql-endpoint-management.label": "Endpoint Management",
+  "menu.graphql-playground.label": "GraphQL Playground",
   "visual.graph.label": "Visual graph",
   "view.rdf.rank.title": "RDF Rank",
   "language_selector": {
