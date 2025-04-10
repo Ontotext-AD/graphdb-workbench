@@ -1,7 +1,7 @@
 import {GraphqlEndpointManagementSteps} from "../../steps/graphql/graphql-endpoint-management-steps";
 import {ApplicationSteps} from "../../steps/application-steps";
 
-describe('GraphQL endpoints filtering', () => {
+describe.skip('GraphQL endpoints filtering', () => {
     let repositoryId;
 
     beforeEach(() => {

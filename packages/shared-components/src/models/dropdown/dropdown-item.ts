@@ -40,6 +40,12 @@ export class DropdownItem<T> {
    */
   private _value: T;
 
+  /**
+   * Custom css classes for the dropdown item.
+   * @private
+   */
+  private _cssClass: string;
+
   get name(): string {
     return this._name;
   }
@@ -100,6 +106,15 @@ export class DropdownItem<T> {
 
   setDropdownTooltipTrigger(value: string) : DropdownItem<T> {
     this._dropdownTooltipTrigger = value;
+    return this;
+  }
+
+  get cssClass(): string {
+    return this._cssClass;
+  }
+
+  setCssClass(value: string): DropdownItem<T> {
+    this._cssClass = value;
     return this;
   }
 }

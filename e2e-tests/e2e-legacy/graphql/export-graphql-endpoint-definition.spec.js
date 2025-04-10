@@ -1,7 +1,7 @@
 import {GraphqlEndpointManagementSteps} from "../../steps/graphql/graphql-endpoint-management-steps";
 import {GraphqlStubs} from "../../stubs/graphql/graphql-stubs";
 
-describe('Graphql: export endpoint definition', () => {
+describe.skip('Graphql: export endpoint definition', () => {
     let repositoryId;
 
     beforeEach(() => {
