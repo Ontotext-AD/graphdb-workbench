@@ -33,6 +33,7 @@ export * from './services/event-service';
 export * from './services/cookie';
 export * from './services/monitoring';
 export * from './services/toastr';
+export * from './services/autocomplete';
 
 // Export utils for external usages.
 export * from './services/utils';
