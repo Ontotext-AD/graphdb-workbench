@@ -3,20 +3,20 @@ import {AuthenticationService, RepositoryContextService, ServiceProvider, Reposi
 import {TranslocoPipe} from '@jsverse/transloco';
 
 @Component({
-  selector: 'app-graphql',
+  selector: 'app-new-view',
   standalone: true,
   imports: [
     TranslocoPipe
   ],
-  templateUrl: './graphql.component.html',
-  styleUrl: './graphql.component.scss',
+  templateUrl: './new-view.component.html',
+  styleUrl: './new-view.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class GraphqlComponent {
+export class NewViewComponent {
   constructor() {
-    console.log('GraphqlComponent login', ServiceProvider.get(AuthenticationService).login());
+    console.log('NewViewComponent login', ServiceProvider.get(AuthenticationService).login());
     ServiceProvider.get(RepositoryContextService).onRepositoryListChanged((repositoryList: RepositoryList | undefined) => {
-      console.log('GraphqlComponent repositories', repositoryList?.getItems());
+      console.log('NewViewComponent repositories', repositoryList?.getItems());
     });
   }
 }
