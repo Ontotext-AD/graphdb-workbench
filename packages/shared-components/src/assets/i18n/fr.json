@@ -180,7 +180,8 @@
       "clear": "Clair"
     },
     "toasts": {
-      "use_view_resource": "<b>Rechercher des ressources RDF</b></br>Utilisez <b>Voir la ressource</b> sur cette page"
+      "use_view_resource": "<b>Rechercher des ressources RDF</b></br>Utilisez <b>Voir la ressource</b> sur cette page",
+      "autocomplete_is_off": "L'autocomplétion est désactivée<br>Aller à Configuration -> Autocomplétion"
     }
   }
 }
