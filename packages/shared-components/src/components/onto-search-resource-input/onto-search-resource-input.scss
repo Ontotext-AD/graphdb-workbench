@@ -79,4 +79,28 @@
     font-size: 0.8rem;
     color: #818a91;
   }
+
+  & .autocomplete-results-wrapper {
+    margin-top: 6px;
+    max-height: 204px;
+    overflow: auto;
+
+    & p {
+      font-size: 1.1rem;
+      line-height: 1.5;
+      color: #373a3c;
+      background-color: #fff;
+      margin-bottom: 0;
+      padding: 5px 25px;
+      cursor: pointer;
+
+      & b {
+        color: var(--secondary-color, #003663);
+      }
+
+      &.hovered {
+        background-color: var(--autocomplete-background, #02a98f4d);
+      }
+    }
+  }
 }
