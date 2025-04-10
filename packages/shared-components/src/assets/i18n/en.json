@@ -177,7 +177,8 @@
       "clear": "Clear"
     },
     "toasts": {
-      "use_view_resource": "<b>Search RDF resources</b></br>Use <b>View resource</b> on this page"
+      "use_view_resource": "<b>Search RDF resources</b></br>Use <b>View resource</b> on this page",
+      "autocomplete_is_off": "Autocomplete is OFF<br>Go to Setup -> Autocomplete"
     }
   }
 }
