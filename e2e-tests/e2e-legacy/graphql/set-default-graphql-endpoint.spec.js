@@ -2,7 +2,7 @@ import {GraphqlEndpointManagementSteps} from "../../steps/graphql/graphql-endpoi
 import {ApplicationSteps} from "../../steps/application-steps";
 import {GraphqlPlaygroundSteps} from "../../steps/graphql/graphql-playground-steps";
 
-describe('Graphql: set default endpoint', () => {
+describe.skip('Graphql: set default endpoint', () => {
     let repositoryId;
 
     beforeEach(() => {

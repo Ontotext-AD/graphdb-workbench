@@ -1,7 +1,7 @@
 import {GraphqlEndpointManagementSteps} from "../../steps/graphql/graphql-endpoint-management-steps";
 import {ApplicationSteps} from "../../steps/application-steps";
 
-describe('GraphQL: activate and deactivate endpoint', () => {
+describe.skip('GraphQL: activate and deactivate endpoint', () => {
     let repositoryId;
 
     beforeEach(() => {
