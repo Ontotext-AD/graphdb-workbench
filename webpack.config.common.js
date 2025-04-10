@@ -191,11 +191,13 @@ module.exports = (webpackConfigEnv, argv) => {
                     },
                     {
                         from: 'packages/legacy-workbench/src/js/angular/clustermanagement/templates',
-                        to: 'js/angular/clustermanagement/templates'
+                        to: 'js/angular/clustermanagement/templates',
+                        transform: replaceVersion
                     },
                     {
                         from: 'packages/legacy-workbench/src/js/angular/core/templates',
-                        to: 'js/angular/core/templates'
+                        to: 'js/angular/core/templates',
+                        transform: replaceVersion
                     },
                     {
                         from: 'packages/legacy-workbench/src/js/angular/explore/templates',
@@ -225,6 +227,11 @@ module.exports = (webpackConfigEnv, argv) => {
                     {
                         from: 'packages/legacy-workbench/src/js/angular/settings/modal',
                         to: 'js/angular/settings/modal'
+                    },
+                    {
+                      from: 'packages/legacy-workbench/src/js/angular/core/directives/shuttle-multiselect/templates',
+                      to: 'js/angular/core/directives/shuttle-multiselect/templates',
+                      transform: replaceVersion
                     },
                     {
                         from: 'packages/legacy-workbench/src/js/angular/core/directives/rdfresourcesearch/templates',
@@ -262,8 +269,36 @@ module.exports = (webpackConfigEnv, argv) => {
                         transform: replaceVersion
                     },
                     {
+                      from: 'packages/legacy-workbench/src/js/angular/graphql/templates',
+                      to: 'js/angular/graphql/templates',
+                      transform: replaceVersion
+                    },
+                    {
+                      from: 'packages/legacy-workbench/src/js/angular/core/directives/graphql-playground/templates',
+                      to: 'js/angular/core/directives/graphql-playground/templates',
+                      transform: replaceVersion
+                    },
+                    {
+                      from: 'packages/legacy-workbench/node_modules/ontotext-graphql-playground-component/dist/ontotext-graphql-playground-component/assets',
+                      to: 'assets'
+                    },
+                    {
+                      from: 'packages/legacy-workbench/src/js/angular/core/directives/dynamic-form/templates',
+                      to: 'js/angular/core/directives/dynamic-form/templates',
+                      transform: replaceVersion
+                    },
+                    {
+                      from: 'packages/legacy-workbench/src/js/angular/core/directives/multiselect-dropdown/templates',
+                      to: 'js/angular/core/directives/multiselect-dropdown/templates',
+                      transform: replaceVersion
+                    },
+                    {
                         from: 'packages/legacy-workbench/src/js/angular/templates',
                         to: 'js/angular/templates'
+                    },
+                    {
+                      from: 'packages/legacy-workbench/src/js/angular/guides/templates',
+                      to: 'js/angular/guides/templates'
                     },
                     {
                         from: 'license-checker/license-checker-static.json',
@@ -287,6 +322,18 @@ module.exports = (webpackConfigEnv, argv) => {
         ],
         module: {
             rules: [
+                {
+                  test: /\.js$/,
+                  exclude: /node_modules/,
+                  use: {
+                    loader: 'babel-loader'
+                  }
+                },
+                {
+                  test: /\.mjs$/,
+                  include: /node_modules/,
+                  type: 'javascript/auto'
+                },
                 {
                     test: /\.(js|html)$/,
                     loader: 'string-replace-loader',
