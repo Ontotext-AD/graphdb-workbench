@@ -82,6 +82,7 @@ export class OntoLanguageSelector {
         .setNameLabelKey(`language_selector.language.${locale}.label`)
         .setTooltipLabelKey(`language_selector.language.${locale}.tooltip.` + (this.currentLanguage === locale ? 'selected' : 'not_selected'))
         .setIconClass(iconClass)
+        .setCssClass(locale)
         .setValue(locale);
     });
   }

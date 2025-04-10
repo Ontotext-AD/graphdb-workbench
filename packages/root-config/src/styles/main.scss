@@ -1,0 +1,7 @@
+[id^="single-spa-application"],
+#workbench-app,
+[ng-controller="mainCtrl"],
+.main-container,
+[ng-view] {
+  height: 100%;
+}
