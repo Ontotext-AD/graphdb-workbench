@@ -52,7 +52,9 @@ export class OntoToastr {
                 onMouseEnter={() => this.clearToastTimeout(toast)}
                 onMouseLeave={() => this.setTimeoutForToast(toast)}>
               <i class={`fa-regular ${toastTypeToIconMap[toast.type]}`}></i>
-              <span class="toast-message" innerHTML={sanitizeHTML(toast.message)}></span>
+              <span onClick={this.handleToastClick(toast)}
+                    class="toast-message"
+                    innerHTML={sanitizeHTML(toast.message)}></span>
           </div>
         ))}
       </section>
@@ -106,5 +108,26 @@ export class OntoToastr {
     clearTimeout(timeoutId);
     this.toastToTimeout.delete(toast);
     this.updateToastrReference();
+  }
+
+  /**
+   * Handle click events on toast messages.
+   * Executes the configured onClick callback for the toast message, if provided.
+   * Removes the toast message, if the removeOnClick configuration is enabled.
+   *
+   * @param toast - The clicked toast message
+   * @returns An event handler function that processes click events on the toast
+   */
+  private handleToastClick(toast: ToastMessage) {
+    return (event: Event) => {
+      if (toast.config?.onClick) {
+        toast.config.onClick(event);
+      }
+
+      if (toast.config?.removeOnClick) {
+        this.toasts.remove(toast);
+        this.clearToastTimeout(toast);
+      }
+    }
   }
 }
