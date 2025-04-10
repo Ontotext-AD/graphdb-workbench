@@ -50,6 +50,9 @@
   "menu.support.label": "Support",
   "menu.guides.label": "Guides interactifs",
   "menu.plugins.label": "Plugins",
+  "menu.graphql.label": "GraphQL",
+  "menu.graphql-endpoint-management.label": "Gestion des points de terminaison",
+  "menu.graphql-playground.label": "GraphQL Playground",
   "visual.graph.label": "Graphique visuel",
   "view.rdf.rank.title": "Rang RDF",
   "language_selector": {
