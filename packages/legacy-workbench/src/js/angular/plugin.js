@@ -41,13 +41,12 @@ PluginRegistry.add('main.menu', {
                 children: []
             },
             {
-                label: 'Graphql',
-                labelKey: 'menu.graphql',
-                href: 'graphql',
+                label: 'NewView',
+                labelKey: 'menu.newview',
+                href: 'new-view',
                 order: 1001,
                 role: 'IS_AUTHENTICATED_FULLY',
-                icon: "fa fa-flask",
-                guideSelector: 'menu-lab',
+                icon: "fa fa-sparkles",
                 children: []
             }
         ]
