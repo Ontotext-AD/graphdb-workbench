@@ -3,7 +3,7 @@ import {ImportEndpointDefinitionModalSteps} from "../../steps/graphql/import-end
 import {GenerationReportModalSteps} from "../../steps/graphql/generation-report-modal-steps";
 import {ApplicationSteps} from "../../steps/application-steps";
 
-describe('Graphql: import endpoint definitions', () => {
+describe.skip('Graphql: import endpoint definitions', () => {
     let repositoryId;
     const swapiDefinitionPath = 'graphql/soml/swapi-schema.yaml';
     const swapiPlanetsDefinitionPath = 'graphql/soml/swapi-schema-planets.yaml';

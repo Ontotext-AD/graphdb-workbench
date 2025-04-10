@@ -75,11 +75,11 @@
                 </td>
                 <td>
                     <a href="#" ng-if="subFile.endpointId"
-                       ng-click="onExploreEndpoint(subFile.endpointId)"
+                       ng-click="onExploreEndpoint(subFile.endpointId); $event.preventDefault()"
                        gdb-tooltip="{{'graphql.endpoints_management.import_definition_modal.actions.explore_endpoint.tooltip' | translate}}"
                        class="endpoint-link">{{subFile.endpointId}}</a>
                     <a href="#" ng-if="subFile.report && subFile.status === ImportStatus.FAIL"
-                       ng-click="onOpenReport(subFile.report)"
+                       ng-click="onOpenReport(subFile.report); $event.preventDefault()"
                        gdb-tooltip="{{'graphql.endpoints_management.import_definition_modal.actions.view_report.tooltip' | translate}}"
                        class="report-link btn-link">
                         {{'graphql.endpoints_management.import_definition_modal.actions.view_report.label' | translate}}
