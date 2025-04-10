@@ -7,9 +7,9 @@
 
 ## Properties
 
-| Property           | Attribute | Description                                                                    | Type                     | Default     |
-| ------------------ | --------- | ------------------------------------------------------------------------------ | ------------------------ | ----------- |
-| `activeOperations` | --        | The active operations summary. Holds general status and all current operations | `OperationStatusSummary` | `undefined` |
+| Property           | Attribute           | Description                                                                    | Type                     | Default     |
+| ------------------ | ------------------- | ------------------------------------------------------------------------------ | ------------------------ | ----------- |
+| `activeOperations` | `active-operations` | The active operations summary. Holds general status and all current operations | `OperationStatusSummary` | `undefined` |
 
 
 ## Dependencies

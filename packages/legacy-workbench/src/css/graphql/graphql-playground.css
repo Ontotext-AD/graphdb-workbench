@@ -349,7 +349,7 @@ div[data-radix-popper-content-wrapper] * {
 }
 
 .graphql-playground-view #graphiql .CodeMirror-lint-tooltip {
-color(var(--primary-color));
+    color: var(--primary-color);
 }
 
 /* ================================================ */

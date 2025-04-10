@@ -7,9 +7,9 @@
 
 ## Properties
 
-| Property                     | Attribute | Description                                            | Type            | Default     |
-| ---------------------------- | --------- | ------------------------------------------------------ | --------------- | ----------- |
-| `dialogHandler` _(required)_ | --        | The dialog handler for managing the dialog's behavior. | `DialogHandler` | `undefined` |
+| Property                     | Attribute        | Description                                            | Type            | Default     |
+| ---------------------------- | ---------------- | ------------------------------------------------------ | --------------- | ----------- |
+| `dialogHandler` _(required)_ | `dialog-handler` | The dialog handler for managing the dialog's behavior. | `DialogHandler` | `undefined` |
 
 
 ## Dependencies
