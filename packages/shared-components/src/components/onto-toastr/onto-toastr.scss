@@ -49,8 +49,13 @@
     }
 
     & i {
-      font-size: 1.5rem;
+      font-size: 1.8rem;
       padding: 0 20px;
+      color: inherit;
+
+      &:hover {
+        transform: none;
+      }
     }
 
     & .toast-message {
