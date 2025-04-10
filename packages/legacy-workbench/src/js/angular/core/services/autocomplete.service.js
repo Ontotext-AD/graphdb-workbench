@@ -1,4 +1,5 @@
 import 'angular/rest/autocomplete.rest.service';
+import {AutocompleteContextService, ServiceProvider} from "@ontotext/workbench-api";
 
 angular
     .module('graphdb.framework.core.services.autocomplete', ['graphdb.framework.rest.autocomplete.service'])
@@ -17,6 +18,7 @@ function AutocompleteService(AutocompleteRestService, LSKeys, LocalStorageAdapte
         return AutocompleteRestService.checkAutocompleteStatus()
             .then((response) => {
                 LocalStorageAdapter.set(LSKeys.AUTOCOMPLETE_ENABLED, response.data);
+                ServiceProvider.get(AutocompleteContextService).updateAutocompleteEnabled(response.data);
                 return response.data;
             });
     };
