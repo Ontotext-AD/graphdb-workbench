@@ -14,7 +14,7 @@ install_package() {
     echo "########################   Installing -- ${description} --   ###########################"
     echo ''
 
-    npm ci --prefix "${package}"
+    npm install --prefix "${package}"
 
     handle_error "Installing ${description}"
 }
@@ -30,7 +30,7 @@ install_package "e2e-tests"
 echo ''
 echo '########################   Installing main project dependencies   ###########################'
 echo ''
-npm ci
+npm install
 
 echo ''
 echo '########################   All packages installed successfully!   ###########################'
