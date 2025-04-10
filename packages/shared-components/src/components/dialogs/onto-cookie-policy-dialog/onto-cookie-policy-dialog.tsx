@@ -26,6 +26,7 @@ export class OntoCookiePolicyDialog implements OntoDialog {
   toggleChanged(event: CustomEvent<ToggleEventPayload>) {
     this.setUserCookieConsent(this.updateCookieConsent(event.detail));
     this.securityService.updateUserData(this.user);
+    console.log(this.user)
   }
 
   render() {

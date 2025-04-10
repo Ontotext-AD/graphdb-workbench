@@ -10,40 +10,45 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       // implement node event listeners here
       on('task', {
-        // Debugging purposes.
-        //
-        // Example for retrieving browser console errors. Useful, when running tests inside a container,
-        // and you don't have access to the actual browser console:
-        //
-        // const consoleErrors = [];
-        //
-        // beforeEach(() => {
-        //   cy.on('window:before:load', (win) => {
-        //     win.console.error = (error, ...args) => {
-        //       consoleError.push({error, args });
-        //     }
-        //   })
-        // })
-        //
-        // afterEach(() => {
-        //   const errorContent = consoleErrors.map(({error, args}) => `${error}, ${args.join(', ')}`).join('\n');
-        //   cy.task('writeFile', {
-        //     filePath: './cypress-error.log',
-        //     content: errorContent,
-        //   }, { log: false });
-        // })`
-        //
-        // This will result in a cypress-error.log file being created with all browser console errors.
-        writeFile({ filePath, content, flag = 'w' }) {
+        /**
+         * Custom task to write browser console logs to a file.
+         *
+         * @param {Object} params - The parameters for the task.
+         * @param {string} params.testTitle - The full title of the failed test.
+         * @param {string} params.specName - The name of the spec file.
+         * @param {Array} params.logs - Array of log objects captured from the browser console.
+         * Each log object should have a "level" property (e.g., 'log', 'error') and an "args" array.
+         *
+         * @example
+         * // If a test fails with the title "Should display error", and the spec file is "example.cy.js",
+         * // and logs array is:
+         * // [ { level: 'error', args: ['Something went wrong'] }, { level: 'warn', args: ['This is a warning'] } ]
+         * // then the task will write a file:
+         * // report/console/example/Should_display_error.txt
+         * // with the following content:
+         * // [ERROR] Something went wrong
+         * // [WARN] This is a warning
+         */
+        writeConsoleLogs({ testTitle, specName, logs }) {
+          const safeTitle = testTitle.replace(/[^\w\d]/g, '_');
+          const filePath = path.join(
+              'report',
+              'console',
+              specName.replace(/\.cy\.(js|ts)$/, ''),
+              `${safeTitle}.txt`
+          );
           const dir = path.dirname(filePath);
           if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true });
           }
-
-          fs.writeFileSync(filePath, content, { flag });
+          const content = logs.map(({ level, args }) =>
+              `[${level.toUpperCase()}] ${args.join(' ')}`
+          ).join('\n');
+          fs.writeFileSync(filePath, content, { flag: 'w' });
+          console.log('📝 Wrote console log file:', filePath);
           return null;
         }
       });
-    },
-  },
+    }
+  }
 });
