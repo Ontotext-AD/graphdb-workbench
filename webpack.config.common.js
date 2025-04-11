@@ -19,6 +19,31 @@ const languagesConfig = JSON.stringify(
     JSON.parse(fs.readFileSync(path.resolve(__dirname, 'packages/legacy-workbench/src/i18n/languages.json'), 'utf8'))
 );
 
+const externalCSSs = [
+    // pivot table
+    'https://pivottable.js.org',
+    // Google Charts
+    'https://www.gstatic.com'
+];
+
+const externalJavaScripts = [
+    'https://www.googletagmanager.com',
+    'https://cdn.jsdelivr.net',
+    // pivot table
+    'https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js',
+    'https://pivottable.js.org',
+    // Google Charts
+    'https://www.gstatic.com',
+];
+
+const externalImages = [
+    // Google Charts
+    'https://ssl.gstatic.com',
+    'https://www.googletagmanager.com'
+];
+
 const host = 'localhost';
 const portHere = 9000;
 const portThere = 7200;
@@ -73,7 +98,10 @@ module.exports = (webpackConfigEnv, argv) => {
                         workbenchAppBundle: Object.keys(compilation.assets).find(asset => asset.includes('workbenchApp') && asset.endsWith('.js')),
                         contentHash: assets.contentHash,
                         buildVersion: PACKAGE.version,
-                        microFrontEndsUrls: 'http://localhost:9002 http://localhost:9003 ws://localhost:9003 ws://localhost:9002'
+                        microFrontEndsUrls: 'http://localhost:9002 http://localhost:9003 ws://localhost:9003 ws://localhost:9002',
+                        externalCSSs: externalCSSs.join(' '),
+                        externalJavaScripts: externalJavaScripts.join(' '),
+                        externalImages: externalImages.join(' ')
                     };
                 },
                 chunks: ['main'],

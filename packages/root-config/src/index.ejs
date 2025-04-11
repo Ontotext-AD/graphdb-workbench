@@ -21,10 +21,10 @@
     -->
     <meta http-equiv="Content-Security-Policy"
           content=" default-src 'self' <%= microFrontEndsUrls %>;
-                    script-src 'self' 'unsafe-inline' 'unsafe-eval' <%= microFrontEndsUrls %> https://cdn.jsdelivr.net https://www.googletagmanager.com;
+                    script-src 'self' 'unsafe-inline' 'unsafe-eval' <%= microFrontEndsUrls %> <%= externalJavaScripts %>;
                     connect-src 'self' <%= microFrontEndsUrls %> https://www.googletagmanager.com https://region1.google-analytics.com;
-                    style-src 'self' 'unsafe-inline' <%= microFrontEndsUrls %>;
-                    img-src 'self' data: <%= microFrontEndsUrls %> https://www.googletagmanager.com;
+                    style-src 'self' 'unsafe-inline' <%= microFrontEndsUrls %> <%= externalCSSs %>;
+                    img-src 'self' data: <%= microFrontEndsUrls %>  <%= externalImages %>;
                     font-src 'self' <%= microFrontEndsUrls %>;
                     base-uri 'self';">
     <meta name="importmap-type" use-injector />
