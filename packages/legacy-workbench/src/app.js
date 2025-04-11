@@ -216,8 +216,8 @@ const moduleDefinition = function (productInfo, translations) {
     workbench.constant('productInfo', productInfo);
 
     // we need to inject $jwtAuth here in order to init the service before everything else
-    workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', 'ThemeService', 'WorkbenchSettingsStorageService', 'LSKeys', 'GuidesService',
-        function ($rootScope, $route, toastr, $sce, $translate, ThemeService, WorkbenchSettingsStorageService, LSKeys, GuidesService) {
+    workbench.run(['$rootScope', '$route', 'toastr', '$sce', '$translate', '$languageService', 'ThemeService', 'WorkbenchSettingsStorageService', 'LSKeys', 'GuidesService',
+        function ($rootScope, $route, toastr, $sce, $translate, $languageService, ThemeService, WorkbenchSettingsStorageService, LSKeys, GuidesService) {
             const routeChangeUnsubscribe = $rootScope.$on('$routeChangeSuccess', function () {
                 updateTitleAndHelpInfo();
 
@@ -258,7 +258,11 @@ const moduleDefinition = function (productInfo, translations) {
             const languageContextService = ServiceProvider.get(LanguageContextService);
 
             const languageChangeSubscriptions = languageContextService
-                .onSelectedLanguageChanged((language) => {$translate.use(language)});
+                .onSelectedLanguageChanged((language) => {
+                    $translate.use(language);
+                    $languageService.setLanguage(language);
+                    $rootScope.$broadcast('language-changed', {locale: language});
+                });
 
             $rootScope.$on('$destroy', () => {
                 if (languageChangeSubscriptions) {
