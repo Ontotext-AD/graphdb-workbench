@@ -5,7 +5,9 @@
  */
 export function navigateTo(url: string): (event: Event) => void {
   return (event: Event): void => {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
     window.singleSpa.navigateToUrl(url);
   };
 }
