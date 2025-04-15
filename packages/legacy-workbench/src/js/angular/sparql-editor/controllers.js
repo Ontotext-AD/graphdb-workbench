@@ -15,6 +15,7 @@ import {VIEW_SPARQL_EDITOR} from "../models/sparql/constants";
 import {CancelAbortingQuery} from "../models/sparql/cancel-aborting-query";
 import {QueryMode} from "../models/ontotext-yasgui/query-mode";
 import 'angular/core/services/event-emitter-service';
+import {navigateTo} from '@ontotext/workbench-api';
 
 const modules = [
     'ui.bootstrap',
@@ -517,8 +518,7 @@ function SparqlEditorCtrl($rootScope,
             return;
         }
         event.preventDefault();
-        const newPath = $location.path();
-        const searches = $location.search();
+        const newUrl = $location.url();
         // First, we check if there are any ongoing requests initiated by the user.
         // If the user has ongoing requests, we request confirmation to abort them.
         // If the user confirms or there are no ongoing requests, we call the "abortAllRequests" method. This method will abort all requests.
@@ -528,11 +528,13 @@ function SparqlEditorCtrl($rootScope,
             .then(() => ontotextYasguiElement.abortAllRequests())
             .then(() => {
                 queriesAreCanceled = true;
-                $location.path(newPath).search(searches);
+                navigateTo(newUrl)();
             })
             .catch((error) => {
                 if (!(error instanceof CancelAbortingQuery)) {
-                    throw error;
+                    console.error(error)
+                    queriesAreCanceled = true;
+                    navigateTo(newUrl)();
                 }
             });
     };
