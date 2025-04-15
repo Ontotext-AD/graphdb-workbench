@@ -163,13 +163,4 @@ describe('Ttyg ChatPanel', () => {
         TTYGViewSteps.getQueryMethodDetailsElement(1, 2).should('contain', "via SPARQL");
         TTYGViewSteps.getExplainQueryQueryElement(1, 2).contains("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-sch");
     });
-
-    // Can't test this on CI
-    it.skip('Should copy an answer when click on copy button', () => {
-        // When I click on copy button
-        ChatPanelSteps.copyAnswer();
-
-        // Then I expect the answer to be copied.
-        ApplicationSteps.getSuccessNotifications().contains('The answer was successfully copied to the clipboard.');
-    });
 });

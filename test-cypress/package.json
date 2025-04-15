@@ -9,6 +9,7 @@
         "start:flaky": "cypress open --config-file cypress-flaky.config.js",
         "test": "cypress run",
         "test:flaky": "cypress run --config-file cypress-flaky.config.js",
+        "test:flaky:partial": "cypress run --config-file cypress-flaky.config.js --spec \"integration-flaky/sparql-editor/**\"",
         "test:partial": "cypress run --spec \"integration/repository/**\"",
         "test:core": "cypress run --spec integration/repository/**,integration/import/**,integration/sparql-editor/**,integration/monitor/**,integration/cluster/**,integration/ttyg/**"
     },

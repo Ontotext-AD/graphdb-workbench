@@ -175,7 +175,7 @@ function uploadFiles(data) {
         return ImportUserDataSteps.createFile(fileData.name, fileData.content);
     });
     ImportUserDataSteps.selectFile(createdFiles);
-    ImportSettingsDialogSteps.cancelImport();
+    ImportSettingsDialogSteps.uploadOnly();
     ImportSettingsDialogSteps.getDialog().should('not.exist');
     ImportUserDataSteps.getResources().should('have.length', data.length);
     // check them backwards because  latest uploaded/imported files are at the top
