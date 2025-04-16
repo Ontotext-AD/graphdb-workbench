@@ -182,18 +182,18 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.embedded = $location.search().embedded;
     $scope.productInfo = productInfo;
     $scope.guidePaused = 'true' === LocalStorageAdapter.get(GUIDE_PAUSE);
+    $scope.startGuideAfterSecurityInit = true;
 
     $scope.hideRdfResourceSearch = false;
     $scope.showRdfResourceSearch = () => {
         return !$scope.hideRdfResourceSearch && !!$scope.getActiveRepository() && $scope.hasActiveLocation() && (!$scope.isLoadingLocation() || $scope.isLoadingLocation() && $location.url() === '/repository');
     };
 
-    const queryParams = $location.search();
-    if (queryParams.autostartGuide) {
+    const startGuide = (guideId) => {
         // Check to see if $translate service is ready with the language before starting the guide as the steps are translated ahead on time. Will retry 20 times (1 second).
         const timer = $interval(function () {
             if ($translate.use()) {
-                GuidesService.autoStartGuide(queryParams.autostartGuide)
+                GuidesService.autoStartGuide(guideId)
                 $interval.cancel(timer);
             }
         }, 50, 20);
@@ -977,6 +977,12 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                     const msg = getError(error.data, error.status);
                     toastr.error(msg, $translate.instant('common.error'));
                 });
+
+            const queryParams = $location.search();
+            if ($jwtAuth.isRepoManager() && $scope.startGuideAfterSecurityInit && queryParams.autostartGuide) {
+                startGuide(queryParams.autostartGuide);
+                $scope.startGuideAfterSecurityInit = false;
+            }
         }
     });
 
