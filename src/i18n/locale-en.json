@@ -194,7 +194,8 @@
             "actions": {
                 "replace_node": "Replace node",
                 "delete_node": "Delete node",
-                "cannot_delete_node": "You cannot remove more than half of the healthy nodes at the same time",
+                "cannot_delete_node": "The current node cannot be removed",
+                "cannot_replace_node": "You cannot replace this node",
                 "add_node": "Add node",
                 "add_node_tooltip": "Add node to current cluster",
                 "cancel": "Cancel",
@@ -2505,6 +2506,7 @@
     "common.show_all": "Show all",
     "common.hide": "Hide",
     "common.learn_more_in_documentation": "Learn more in the GraphDB documentation",
+    "copy_to_clipboard.copied.tooltip": "IRI copied",
     "paginator.first.page.label": "First",
     "paginator.last.page.label": "Last",
     "deactivate": "deactivate",

@@ -33,6 +33,13 @@ function ClusterNodesConfigurationComponent($translate, $timeout, productInfo, t
             $scope.addNode = () => {
                 $scope.addNewLocation = true;
                 $scope.newLocation = new Location();
+                // Timeout used because field is added dynamically on "Add Node" and needs to render before it can be focused
+                $timeout(function () {
+                    const input = document.querySelector("input[name='location']");
+                    if (input) {
+                        input.focus();
+                    }
+                }, 0);
             };
 
             /**
