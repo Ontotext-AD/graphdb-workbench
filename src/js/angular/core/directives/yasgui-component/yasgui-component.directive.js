@@ -196,7 +196,7 @@ function yasguiComponentDirective(
                 $scope.savedQueryConfig = {
                     savedQueries: []
                 };
-                Promise.all([$jwtAuth.getPrincipal(), SparqlRestService.getSavedQueries()])
+                $q.all([$jwtAuth.getPrincipal(), SparqlRestService.getSavedQueries()])
                     .then(([principal, savedQueries]) => {
                         $scope.savedQueryConfig = {
                             savedQueries: savedQueriesResponseMapper(savedQueries, principal.username)
