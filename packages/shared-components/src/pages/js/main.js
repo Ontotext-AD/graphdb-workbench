@@ -54,6 +54,10 @@ const updateActiveRepoLocation = (repositoryLocation) => {
   testContext.updateRepositoryLocation(repositoryLocation);
 }
 
+const setAutocomplete = (enabled) => {
+  testContext.setAutocomplete(enabled);
+}
+
 window.PluginRegistry = {
   get: () => menuItems
 }

@@ -155,6 +155,10 @@ export namespace Components {
           * Button configuration for the search resource input. Holds buttons to be displayed, as well as additional configuration, such as whether the buttons should be treated as radio buttons.
          */
         "buttonConfig": SearchButtonConfig;
+        /**
+          * The search resource component can appear more than once per page. This context is used to differentiate them. When a suggestion is selected different parents may need to do different things. The context is emitted alongside the suggestion upon select.
+         */
+        "context": string;
     }
     /**
      * A component for managing test context in the application. Used only for testing
@@ -187,6 +191,11 @@ export namespace Components {
           * @returns A Promise that resolves when the authenticated user has been successfully updated
          */
         "setAuthenticatedUser": (user: AuthenticatedUser) => Promise<void>;
+        /**
+          * Sets the autocomplete status in the context.
+          * @param enabled whether autocomplete is enabled or disabled.
+         */
+        "setAutocomplete": (enabled: boolean) => Promise<void>;
         /**
           * Sets the security configuration in the application context.
           * @param securityConfig - The SecurityConfig object containing the new security settings to be applied.
@@ -699,6 +708,10 @@ declare namespace LocalJSX {
           * Button configuration for the search resource input. Holds buttons to be displayed, as well as additional configuration, such as whether the buttons should be treated as radio buttons.
          */
         "buttonConfig"?: SearchButtonConfig;
+        /**
+          * The search resource component can appear more than once per page. This context is used to differentiate them. When a suggestion is selected different parents may need to do different things. The context is emitted alongside the suggestion upon select.
+         */
+        "context"?: string;
     }
     /**
      * A component for managing test context in the application. Used only for testing

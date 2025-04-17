@@ -58,7 +58,10 @@ describe('HttpService', () => {
     expect(result).toEqual({...response});
     expect(fetch).toHaveBeenCalledWith(url, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       body: null,
     });
   });
@@ -73,7 +76,10 @@ describe('HttpService', () => {
     expect(result).toEqual(response);
     expect(fetch).toHaveBeenCalledWith(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       body: JSON.stringify({ name: 'Test' }),
     });
   });
@@ -88,7 +94,10 @@ describe('HttpService', () => {
     expect(result).toEqual(response);
     expect(fetch).toHaveBeenCalledWith(url, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       body: JSON.stringify({ name: 'Updated' }),
     });
   });
@@ -103,7 +112,10 @@ describe('HttpService', () => {
     expect(result).toEqual(response);
     expect(fetch).toHaveBeenCalledWith(url, {
       method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       body: null,
     });
   });
@@ -118,7 +130,10 @@ describe('HttpService', () => {
     expect(result).toEqual(response);
     expect(fetch).toHaveBeenCalledWith(url, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       body: JSON.stringify({name: 'Updated'})
     });
   });

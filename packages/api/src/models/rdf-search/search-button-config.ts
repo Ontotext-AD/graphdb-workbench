@@ -6,13 +6,33 @@ import {SearchButton} from './search-button';
  */
 export class SearchButtonConfig {
   /** Indicates whether the buttons should behave as radio buttons. */
-  isRadio: boolean;
+  private radio!: boolean;
 
   /** The list of search buttons. */
-  buttons: SearchButtonList;
+  private buttons!: SearchButtonList;
 
   constructor(data: { isRadio: boolean, buttons: SearchButton[] }) {
-    this.isRadio = data.isRadio;
-    this.buttons = new SearchButtonList(data.buttons);
+    this.setRadio(data.isRadio);
+    this.setButtons(new SearchButtonList(data.buttons));
+  }
+
+  deselectAll() {
+    this.buttons.getItems().forEach((btn) => btn.selected = false);
+  }
+
+  getButtons() {
+    return this.buttons;
+  }
+
+  setButtons(buttons: SearchButtonList) {
+    this.buttons = buttons;
+  }
+
+  isRadio() {
+    return this.radio;
+  }
+
+  setRadio(isRadio: boolean) {
+    this.radio = isRadio;
   }
 }
