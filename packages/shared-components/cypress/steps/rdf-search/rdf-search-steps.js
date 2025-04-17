@@ -36,4 +36,52 @@ export class RdfSearchSteps extends BaseSteps {
   static getSearchAreaButtons() {
     return this.getSearchArea().find('button');
   }
+
+  static getButton(text) {
+    return this.getSearchAreaButtons().contains(text);
+  }
+
+  static clickButton(text) {
+    return this.getButton(text).click();
+  }
+
+  static disableAutocomplete() {
+    return cy.get('#disable-autocomplete').click();
+  }
+
+  static enableAutocomplete() {
+    return cy.get('#enable-autocomplete').click();
+  }
+
+  static typeInSearchInput(text) {
+    return this.getInputField().type(text);
+  }
+
+  static getInputField() {
+    return this.getSearchArea().find('input');
+  }
+
+  static getToastNotification() {
+    return cy.get('.onto-toast');
+  }
+
+  static clickToastNotification() {
+    return this.getToastNotification().click();
+  }
+
+  static getAutocompleteResultsWrapper() {
+    return this.getSearchArea().find('.autocomplete-results-wrapper');
+  }
+
+  static getSuggestion(index) {
+    return this.getAutocompleteResultsWrapper().find('p').eq(index);
+  }
+
+  static clickSuggestion(index) {
+    return this.getSuggestion(index).click();
+  }
+
+  static loadNamespaces() {
+    return cy.get('#load-namespaces-id').click();
+  }
 }
