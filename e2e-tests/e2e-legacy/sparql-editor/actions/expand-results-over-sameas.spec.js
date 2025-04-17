@@ -3,10 +3,7 @@ import {YasguiSteps} from "../../../steps/yasgui/yasgui-steps";
 import {YasqeSteps} from "../../../steps/yasgui/yasqe-steps";
 import {QueryStubDescription, QueryStubs} from "../../../stubs/yasgui/query-stubs";
 
-/**
- * TODO: Fix me. Broken due to migration (Error: beforeEach)
- */
-describe.skip('Expand results over owl:sameAs', () => {
+describe('Expand results over owl:sameAs', () => {
 
     let repositoryId;
 

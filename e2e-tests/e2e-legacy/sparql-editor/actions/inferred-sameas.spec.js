@@ -2,16 +2,13 @@ import {SparqlEditorSteps} from "../../../steps/sparql-editor-steps";
 import {YasqeSteps} from "../../../steps/yasgui/yasqe-steps";
 import {RepositoriesStub} from "../../../stubs/repositories-stub";
 
-/**
- * TODO: Fix me. Broken due to migration (Error: beforeEach)
- */
-describe.skip('Expand results over owl:sameAs', () => {
+describe('Expand results over owl:sameAs', () => {
 
     let repositoryId;
 
     beforeEach(() => {
         repositoryId = 'sparql-editor-' + Date.now();
-        cy.setLocalStorage("ls.repository-id", repositoryId);
+        cy.setLocalStorage("ontotext.gdb.repository.selectedRepositoryId", repositoryId);
         RepositoriesStub.stubOntopRepository(repositoryId);
         RepositoriesStub.stubNameSpaces(repositoryId);
     });
