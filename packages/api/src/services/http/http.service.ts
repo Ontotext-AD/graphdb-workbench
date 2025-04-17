@@ -3,6 +3,8 @@ import {InterceptorService} from '../interceptor/interceptor.service';
 import {HttpRequest} from '../../models/http/http-request';
 import {ServiceProvider} from '../../providers';
 
+const JSON_CONTENT_TYPES = ['application/json', 'application/sparql-results+json'];
+
 /**
  * A service class for performing HTTP requests.
  */
@@ -99,6 +101,7 @@ export class HttpService {
     const fullUrl = `${url}${queryString ? `?${queryString}` : ''}`;
     const headers = {
       'Content-Type': 'application/json',
+      Accept: 'application/json, text/plain, */*',
       ...options.headers,
     };
 
@@ -117,9 +120,17 @@ export class HttpService {
         if (!response.ok) {
           return Promise.reject(response);
         }
-        const hasBody = response.headers.get('Content-Type')?.includes('application/json');
-        return (hasBody ? response.json() : Promise.resolve()) as Promise<T>;
+        const isJson = this.hasValidJson(response);
+        return (isJson ? response.json() : Promise.resolve()) as Promise<T>;
       });
+  }
+
+  private hasValidJson(response: Response) {
+    const responseContentType = response.headers.get('Content-Type');
+    if (!responseContentType) {
+      return false;
+    }
+    return JSON_CONTENT_TYPES.some((contentType) => responseContentType.includes(contentType));
   }
 
   /**

@@ -18,7 +18,7 @@ import {
   ToastMessage,
   EventEmitter,
   CREATE_TOAST_EVENT,
-  RepositoryLocation, RepositoryLocationContextService
+  RepositoryLocation, RepositoryLocationContextService, AutocompleteContextService
 } from '@ontotext/workbench-api';
 import en from '../../assets/i18n/en.json';
 import fr from '../../assets/i18n/fr.json';
@@ -199,6 +199,17 @@ export class OntoTestContext {
   @Method()
   addToastr(toast: ToastMessage): Promise<void> {
     this.eventEmitter.emit({NAME: CREATE_TOAST_EVENT, payload: new ToastMessage(toast.type, toast.message)});
+    return Promise.resolve();
+  }
+
+  /**
+   * Sets the autocomplete status in the context.
+   *
+   * @param enabled whether autocomplete is enabled or disabled.
+   */
+  @Method()
+  setAutocomplete(enabled: boolean): Promise<void> {
+    ServiceProvider.get(AutocompleteContextService).updateAutocompleteEnabled(enabled);
     return Promise.resolve();
   }
 

@@ -90,6 +90,22 @@ Type: `Promise<void>`
 
 A Promise that resolves when the authenticated user has been successfully updated
 
+### `setAutocomplete(enabled: boolean) => Promise<void>`
+
+Sets the autocomplete status in the context.
+
+#### Parameters
+
+| Name      | Type      | Description                                  |
+| --------- | --------- | -------------------------------------------- |
+| `enabled` | `boolean` | whether autocomplete is enabled or disabled. |
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `setSecurityConfig(securityConfig: SecurityConfig) => Promise<void>`
 
 Sets the security configuration in the application context.

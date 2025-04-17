@@ -206,7 +206,6 @@ export class OntoHeader {
         EventName.NAVIGATION_END, () => {
           this.shouldShowSearch = this.shouldShowRdfSearch();
           this.isHomePage = isHomePage();
-          console.log('Navigation end', this.isHomePage);
         }
       )
     );
