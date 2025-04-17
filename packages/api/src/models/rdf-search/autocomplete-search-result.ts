@@ -48,4 +48,23 @@ export class AutocompleteSearchResult extends Model<AutocompleteSearchResult> {
   clearHoveredState() {
     this.getSuggestions().getItems().forEach((suggestion) => suggestion.setHovered(false));
   }
+
+  /**
+   * Sets the selected state of the specified suggestion to true.
+   * Clears the selected state of all other suggestions before selecting the new one.
+   * If the suggestion is already selected or is null/undefined, no action is taken.
+   *
+   * @param suggestion - The suggestion to be selected.
+   */
+  selectSuggestion(suggestion: Suggestion) {
+    if (!suggestion || suggestion.isSelected()) {
+      return;
+    }
+    this.clearSelectedState();
+    suggestion.setSelected(true);
+  }
+
+  private clearSelectedState() {
+    this.getSuggestions().getItems().forEach((suggestion) => suggestion.setSelected(false));
+  }
 }
