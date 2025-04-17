@@ -13,6 +13,14 @@ export function navigateTo(url: string): (event: Event) => void {
 }
 
 /**
+ * Opens a new tab with the specified URL.
+ * @param url - The URL to open in a new tab.
+ */
+export function openInNewTab(url: string): void {
+  window.open(url, '_blank');
+}
+
+/**
  * Checks if the current page is the home page.
  *
  * @returns {boolean} Returns true if the current page is the home page, false otherwise.

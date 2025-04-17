@@ -5,7 +5,8 @@ import {
   AuthenticatedUserMapper,
   LanguageContextService,
   License,
-  LicenseContextService, NavigationEnd,
+  LicenseContextService,
+  NavigationEnd,
   MapperProvider,
   ProductInfo,
   ProductInfoContextService,
@@ -18,7 +19,11 @@ import {
   ToastMessage,
   EventEmitter,
   CREATE_TOAST_EVENT,
-  RepositoryLocation, RepositoryLocationContextService
+  RepositoryLocation,
+  RepositoryLocationContextService,
+  AutocompleteContextService,
+  NamespacesContextService,
+  NamespaceMap
 } from '@ontotext/workbench-api';
 import en from '../../assets/i18n/en.json';
 import fr from '../../assets/i18n/fr.json';
@@ -199,6 +204,29 @@ export class OntoTestContext {
   @Method()
   addToastr(toast: ToastMessage): Promise<void> {
     this.eventEmitter.emit({NAME: CREATE_TOAST_EVENT, payload: new ToastMessage(toast.type, toast.message)});
+    return Promise.resolve();
+  }
+
+  /**
+   * Sets the autocomplete status in the context.
+   *
+   * @param enabled whether autocomplete is enabled or disabled.
+   */
+  @Method()
+  setAutocomplete(enabled: boolean): Promise<void> {
+    ServiceProvider.get(AutocompleteContextService).updateAutocompleteEnabled(enabled);
+    return Promise.resolve();
+  }
+
+  /**
+   * Sets the namespace map in the application context.
+   *
+   * @param rawNamespaces - The namespace map containing prefix-to-URI mappings to be used throughout the application
+   * @returns A Promise that resolves when the namespace map has been successfully updated
+   */
+  @Method()
+  updateNamespaces(rawNamespaces: Record<string, string>): Promise<void> {
+    ServiceProvider.get(NamespacesContextService).updateNamespaces(new NamespaceMap(rawNamespaces));
     return Promise.resolve();
   }
 

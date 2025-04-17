@@ -155,6 +155,10 @@ export namespace Components {
           * Button configuration for the search resource input. Holds buttons to be displayed, as well as additional configuration, such as whether the buttons should be treated as radio buttons.
          */
         "buttonConfig": SearchButtonConfig;
+        /**
+          * The search resource component can appear more than once per page. This context is used to differentiate them. When a suggestion is selected different parents may need to do different things. The context is emitted alongside the suggestion upon select.
+         */
+        "context": string;
     }
     /**
      * A component for managing test context in the application. Used only for testing
@@ -188,6 +192,11 @@ export namespace Components {
          */
         "setAuthenticatedUser": (user: AuthenticatedUser) => Promise<void>;
         /**
+          * Sets the autocomplete status in the context.
+          * @param enabled whether autocomplete is enabled or disabled.
+         */
+        "setAutocomplete": (enabled: boolean) => Promise<void>;
+        /**
           * Sets the security configuration in the application context.
           * @param securityConfig - The SecurityConfig object containing the new security settings to be applied.
           * @returns A Promise that resolves when the security configuration has been successfully updated.
@@ -205,6 +214,12 @@ export namespace Components {
           * @returns A Promise that resolves when the license update is complete.
          */
         "updateLicense": (license: License) => Promise<void>;
+        /**
+          * Sets the namespace map in the application context.
+          * @param rawNamespaces - The namespace map containing prefix-to-URI mappings to be used throughout the application
+          * @returns A Promise that resolves when the namespace map has been successfully updated
+         */
+        "updateNamespaces": (rawNamespaces: Record<string, string>) => Promise<void>;
         /**
           * Updates the product information in the context.  This method uses the ProductInfoContextService to update the product information and returns a resolved Promise once the operation is complete.
           * @param productInfo - The new ProductInfo object to be set.
@@ -699,6 +714,10 @@ declare namespace LocalJSX {
           * Button configuration for the search resource input. Holds buttons to be displayed, as well as additional configuration, such as whether the buttons should be treated as radio buttons.
          */
         "buttonConfig"?: SearchButtonConfig;
+        /**
+          * The search resource component can appear more than once per page. This context is used to differentiate them. When a suggestion is selected different parents may need to do different things. The context is emitted alongside the suggestion upon select.
+         */
+        "context"?: string;
     }
     /**
      * A component for managing test context in the application. Used only for testing
