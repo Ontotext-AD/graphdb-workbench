@@ -3,10 +3,7 @@ import {YasqeSteps} from "../../../../steps/yasgui/yasqe-steps";
 import {YasrSteps} from "../../../../steps/yasgui/yasr-steps";
 import {QueryStubs} from "../../../../stubs/yasgui/query-stubs";
 
-/**
- * TODO: Fix me. Broken due to migration (Error: beforeEach)
- */
-describe.skip('Visual graph button when user execute a CONSTRUCT query', () => {
+describe('Visual graph button when user execute a CONSTRUCT query', () => {
     let repositoryId;
 
     beforeEach(() => {
