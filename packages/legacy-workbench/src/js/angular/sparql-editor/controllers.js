@@ -15,7 +15,7 @@ import {VIEW_SPARQL_EDITOR} from "../models/sparql/constants";
 import {CancelAbortingQuery} from "../models/sparql/cancel-aborting-query";
 import {QueryMode} from "../models/ontotext-yasgui/query-mode";
 import 'angular/core/services/event-emitter-service';
-import {navigateTo} from '@ontotext/workbench-api';
+import {navigateTo, ServiceProvider, EventService, EventName} from "@ontotext/workbench-api";
 
 const modules = [
     'ui.bootstrap',
@@ -517,8 +517,11 @@ function SparqlEditorCtrl($rootScope,
         if (!ontotextYasguiElement || queriesAreCanceled) {
             return;
         }
-        event.preventDefault();
-        const newUrl = $location.url();
+
+        const newUrl = event.newUrl;
+        const url = new URL(newUrl); // Use the URL constructor
+        const path = url.pathname + url.search + url.hash;
+        event.cancelNavigation();
         // First, we check if there are any ongoing requests initiated by the user.
         // If the user has ongoing requests, we request confirmation to abort them.
         // If the user confirms or there are no ongoing requests, we call the "abortAllRequests" method. This method will abort all requests.
@@ -528,18 +531,24 @@ function SparqlEditorCtrl($rootScope,
             .then(() => ontotextYasguiElement.abortAllRequests())
             .then(() => {
                 queriesAreCanceled = true;
-                navigateTo(newUrl)();
+                navigateTo(path)();
             })
             .catch((error) => {
                 if (!(error instanceof CancelAbortingQuery)) {
                     console.error(error)
                     queriesAreCanceled = true;
-                    navigateTo(newUrl)();
+                    navigateTo(path)();
                 }
             });
     };
 
-    subscriptions.push($rootScope.$on('$locationChangeStart', locationChangeHandler));
+    subscriptions.push(
+        ServiceProvider.get(EventService).subscribe(
+            EventName.NAVIGATION_START, (event) => {
+                locationChangeHandler(event);
+            }
+        )
+    );
 
     const removeAllListeners = () => {
         subscriptions.forEach((subscription) => subscription());
