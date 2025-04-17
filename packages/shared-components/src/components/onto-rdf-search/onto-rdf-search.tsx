@@ -1,4 +1,10 @@
-import {SearchButton, SearchButtonConfig, SearchViewType, SubscriptionList} from '@ontotext/workbench-api';
+import {
+  EventService, openInNewTab,
+  SearchButton,
+  SearchButtonConfig,
+  ServiceProvider,
+  SubscriptionList, SUGGESTION_SELECTED_EVENT, SuggestionSelectedPayload, UriUtil
+} from '@ontotext/workbench-api';
 import {Component, h, Listen, State} from '@stencil/core';
 import {TranslationService} from '../../services/translation.service';
 
@@ -12,12 +18,14 @@ import {TranslationService} from '../../services/translation.service';
 })
 export class OntoRdfSearch {
   private readonly subscriptions: SubscriptionList = new SubscriptionList();
+  private readonly eventService = ServiceProvider.get(EventService);
+
+  private readonly RDF_CONTEXT = 'rdfSearchContext';
 
   @State() private isOpen: boolean = false;
-
   @State() private buttonConfig: SearchButtonConfig;
 
-  private searchViewType: SearchViewType = SearchViewType.TABLE;
+  private redirectUrl: string = 'resource';
   private rdfSearchRef: HTMLElement;
 
   /**
@@ -36,8 +44,7 @@ export class OntoRdfSearch {
   }
 
   componentWillLoad() {
-    // Temporary not to break build, since it is unused
-    console.log(this.searchViewType);
+    this.onSuggestionSelected();
   }
 
   disconnectedCallback() {
@@ -52,7 +59,8 @@ export class OntoRdfSearch {
              tooltip-content={TranslationService.translate('rdf_search.tooltips.close_search_area')}
              tooltip-placement="bottom"
              class="fa-light fa-xmark-large close-btn"></i>
-          <onto-search-resource-input buttonConfig={this.buttonConfig}></onto-search-resource-input>
+          <onto-search-resource-input buttonConfig={this.buttonConfig}
+                                      context={this.RDF_CONTEXT}></onto-search-resource-input>
         </section>
         {!this.isOpen ? <onto-search-icon onClick={this.setIsOpen(true)}></onto-search-icon> : ''}
       </section>
@@ -83,14 +91,14 @@ export class OntoRdfSearch {
         this.createSearchButton(
           'rdf_search.buttons.table',
           () => {
-            this.searchViewType = SearchViewType.TABLE;
+            this.redirectUrl = UriUtil.RESOURCE_URL;
           },
           true
         ),
         this.createSearchButton(
           'rdf_search.buttons.visual',
           () => {
-            this.searchViewType = SearchViewType.VISUAL;
+            this.redirectUrl = UriUtil.GRAPHS_VISUALIZATIONS_URL;
           },
           false
         )
@@ -111,5 +119,15 @@ export class OntoRdfSearch {
       callback,
       selected
     } as SearchButton);
+  }
+
+  private onSuggestionSelected() {
+    this.subscriptions.add(
+      this.eventService.subscribe<SuggestionSelectedPayload>(SUGGESTION_SELECTED_EVENT, (payload) => {
+        if (payload.getContext() === this.RDF_CONTEXT) {
+          openInNewTab(UriUtil.createAutocompleteRedirect(this.redirectUrl, payload.getSuggestion().getValue()));
+        }
+      })
+    );
   }
 }

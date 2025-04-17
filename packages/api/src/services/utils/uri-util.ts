@@ -2,6 +2,8 @@
  * Utility class for handling and manipulating URIs.
  */
 export class UriUtil {
+  static GRAPHS_VISUALIZATIONS_URL = 'graphs-visualizations';
+  static RESOURCE_URL = 'resource';
 
   /**
    * Shortens an IRI (Internationalized Resource Identifier) by extracting the hostname and port.
@@ -60,5 +62,15 @@ export class UriUtil {
       }
     }
     return false;
+  }
+
+  /**
+   * Creates a redirect URL for autocomplete suggestions.
+   *
+   * @param redirectUrl - The base URL for the redirect.
+   * @param resourceUri - The URI of the autocomplete suggestion.
+   */
+  static createAutocompleteRedirect(redirectUrl: string, resourceUri: string): string {
+    return `${redirectUrl}?uri=${encodeURIComponent(resourceUri)}`;
   }
 }
