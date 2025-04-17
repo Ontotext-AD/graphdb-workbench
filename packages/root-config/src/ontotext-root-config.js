@@ -21,7 +21,8 @@ import {bootstrapPromises} from './bootstrap/bootstrap';
 import {
   ServiceProvider,
   EventService,
-  NavigationEnd
+  NavigationEnd,
+  NavigationStart
 } from '@ontotext/workbench-api';
 
 const showSplashScreen = (show) => {
@@ -78,9 +79,12 @@ const layoutEngine = constructLayoutEngine({routes, applications});
 applications.forEach(registerApplication);
 layoutEngine.activate();
 
-const registerSingleSpaRouterListener = () => {
-  if (!window.singleSingleSpaRouterListenerRegistered) {
-    window.singleSingleSpaRouterListenerRegistered = true;
+const registerSingleSpaRouterListeners = () => {
+  if (!window.singleSingleSpaRouterListenersRegistered) {
+    window.singleSingleSpaRouterListenersRegistered = true;
+    window.addEventListener('single-spa:before-routing-event', (evt) => {
+      ServiceProvider.get(EventService).emit(new NavigationStart(evt.detail.oldUrl, evt.detail.newUrl, evt.detail.cancelNavigation));
+    });
     window.addEventListener('single-spa:routing-event', (evt) => {
       ServiceProvider.get(EventService).emit(new NavigationEnd(evt.detail.oldUrl, evt.detail.newUrl));
     });
@@ -101,7 +105,7 @@ const bootstrapApplication = () => {
     });
 };
 
-registerSingleSpaRouterListener();
+registerSingleSpaRouterListeners();
 bootstrapApplication();
 
 // window.addEventListener("single-spa:routing-event", (evt) => {
