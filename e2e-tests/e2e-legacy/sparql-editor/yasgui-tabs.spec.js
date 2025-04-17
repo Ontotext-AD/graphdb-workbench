@@ -6,8 +6,7 @@ import {QueryStubs} from "../../stubs/yasgui/query-stubs";
 import {MainMenuSteps} from "../../steps/main-menu-steps";
 import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 
-// TODO: Fix me. Broken due to migration (Error: beforeEach)
-describe.skip('Yasgui tabs', () => {
+describe('Yasgui tabs', () => {
 
     let repositoryId;
     beforeEach(() => {
