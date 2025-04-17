@@ -1,14 +1,22 @@
 import {Component, h, Prop, State} from '@stencil/core';
 import {
   AutocompleteContextService,
+  AutocompleteSearchResult,
   AutocompleteService,
+  AutocompleteStorageService,
+  EventService,
+  NamespaceMap,
+  navigateTo,
+  OntoToastrService,
   SearchButton,
   SearchButtonConfig,
-  ServiceProvider, SubscriptionList,
+  ServiceProvider,
+  SubscriptionList,
   Suggestion,
-  AutocompleteStorageService,
-  AutocompleteSearchResult, OntoToastrService,
-  navigateTo
+  SUGGESTION_SELECTED_EVENT,
+  SuggestionSelectedPayload,
+  SuggestionType,
+  NamespacesContextService
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 
@@ -25,9 +33,21 @@ export class OntoSearchResourceInput {
   private readonly autocompleteContextService = ServiceProvider.get(AutocompleteContextService);
   private readonly autocompleteStorageService = ServiceProvider.get(AutocompleteStorageService);
   private readonly toastrService = ServiceProvider.get(OntoToastrService);
+  private readonly eventService = ServiceProvider.get(EventService);
+  private readonly namespaceContextService = ServiceProvider.get(NamespacesContextService);
 
   private readonly subscriptions = new SubscriptionList();
   private autocompleteWarningShown = false;
+  private inputRef: HTMLInputElement;
+  private namespaces: NamespaceMap;
+
+  /**
+   * The search resource component can appear more than once per page. This context
+   * is used to differentiate them. When a suggestion is selected different parents
+   * may need to do different things. The context is emitted alongside the suggestion
+   * upon select.
+   */
+  @Prop() context: string;
 
   /**
    * Button configuration for the search resource input.
@@ -58,6 +78,7 @@ export class OntoSearchResourceInput {
 
   componentWillLoad() {
     this.onAutocompleteEnabledChange();
+    this.onNamespaceChange();
   }
 
   disconnectedCallback() {
@@ -72,6 +93,7 @@ export class OntoSearchResourceInput {
             <input value={this.inputValue}
                    type="text"
                    placeholder={`${TranslationService.translate('rdf_search.labels.search')}...`}
+                   ref={(ref) => this.inputRef = ref}
                    onInput={this.handleInput()}/>
             {this.inputValue?.length ?
               <i onClick={this.clearInput()}
@@ -80,7 +102,7 @@ export class OntoSearchResourceInput {
                  class="fa-light fa-xmark"></i> : ''
             }
           </span>
-          {this.buttonConfig?.buttons.getItems().map((button) => (
+          {this.buttonConfig?.getButtons().getItems().map((button) => (
             <button key={button.label}
                     onClick={this.handleButtonClick(button)}
                     class={`${button.selected ? 'selected' : ''}`}>{button.label}</button>
@@ -91,8 +113,9 @@ export class OntoSearchResourceInput {
         <section class="autocomplete-results-wrapper">
           {this.searchResult?.getSuggestions().getItems().map((suggestion) => (
             <p key={suggestion.getId()}
+               onClick={this.selectSuggestion(suggestion)}
                onMouseEnter={this.hoverSuggestion(suggestion)}
-               class={`${suggestion.isHovered() ? 'hovered' : ''}`}
+               class={`${suggestion.isHovered() ? 'hovered' : ''} ${suggestion.isSelected() ? 'selected': ''}`}
                innerHTML={suggestion.getDescription()}></p>
           ))}
         </section>
@@ -109,16 +132,12 @@ export class OntoSearchResourceInput {
   private handleButtonClick(button: SearchButton) {
     return () => {
       if (this.buttonConfig.isRadio && !button.selected) {
-        this.deselectAllButtons();
+        this.buttonConfig.deselectAll();
         button.selected = true;
         this.updateView();
       }
       button.callback();
     };
-  }
-
-  private deselectAllButtons() {
-    this.buttonConfig.buttons.getItems().forEach((btn) => btn.selected = false);
   }
 
   /**
@@ -134,9 +153,8 @@ export class OntoSearchResourceInput {
   private handleInput() {
     return (event: Event) => {
       const target = event.target as HTMLInputElement;
-      this.inputValue = target.value;
+      this.setInputValue(target.value);
       this.checkForAutocomplete();
-      this.loadAutocompleteResults();
     };
   }
 
@@ -155,7 +173,7 @@ export class OntoSearchResourceInput {
    */
   private clearInput() {
     return () => {
-      this.inputValue = '';
+      this.setInputValue('');
     };
   }
 
@@ -187,5 +205,43 @@ export class OntoSearchResourceInput {
           removeOnClick: true
         });
     }
+  }
+
+  private selectSuggestion(suggestion: Suggestion) {
+    return () => {
+      if (suggestion.getType() === SuggestionType.PREFIX) {
+        this.expandPrefix(suggestion);
+      } else {
+        this.notifySuggestionSelected(suggestion);
+      }
+    };
+  }
+
+  private notifySuggestionSelected(suggestion: Suggestion) {
+    this.searchResult.selectSuggestion(suggestion);
+    this.eventService.emit({
+      NAME: SUGGESTION_SELECTED_EVENT,
+      payload: new SuggestionSelectedPayload(suggestion, this.context)
+    });
+    this.updateView();
+  }
+
+  private expandPrefix(suggestion: Suggestion) {
+    this.setInputValue(this.namespaces.getByPrefix(suggestion.getValue()));
+    this.inputRef.focus();
+  }
+
+  private setInputValue(value: string) {
+    this.inputValue = value;
+    this.loadAutocompleteResults();
+    this.updateView();
+  }
+
+  private onNamespaceChange() {
+    this.subscriptions.add(
+      this.namespaceContextService.onNamespacesChanged((namespaces) => {
+        this.namespaces = namespaces
+      })
+    )
   }
 }

@@ -90,6 +90,22 @@ Type: `Promise<void>`
 
 A Promise that resolves when the authenticated user has been successfully updated
 
+### `setAutocomplete(enabled: boolean) => Promise<void>`
+
+Sets the autocomplete status in the context.
+
+#### Parameters
+
+| Name      | Type      | Description                                  |
+| --------- | --------- | -------------------------------------------- |
+| `enabled` | `boolean` | whether autocomplete is enabled or disabled. |
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `setSecurityConfig(securityConfig: SecurityConfig) => Promise<void>`
 
 Sets the security configuration in the application context.
@@ -140,6 +156,22 @@ and returns a resolved Promise once the operation is complete.
 Type: `Promise<void>`
 
 A Promise that resolves when the license update is complete.
+
+### `updateNamespaces(rawNamespaces: Record<string, string>) => Promise<void>`
+
+Sets the namespace map in the application context.
+
+#### Parameters
+
+| Name            | Type                       | Description                                                                                 |
+| --------------- | -------------------------- | ------------------------------------------------------------------------------------------- |
+| `rawNamespaces` | `{ [x: string]: string; }` | - The namespace map containing prefix-to-URI mappings to be used throughout the application |
+
+#### Returns
+
+Type: `Promise<void>`
+
+A Promise that resolves when the namespace map has been successfully updated
 
 ### `updateProductInfo(productInfo: ProductInfo) => Promise<void>`
 

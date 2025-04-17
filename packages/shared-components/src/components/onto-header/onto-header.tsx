@@ -13,7 +13,7 @@ import {
   AuthenticationService,
   FibonacciGenerator,
   OntoToastrService, RepositoryLocation, RepositoryLocationContextService, EventService, EventName,
-  getPathName, isHomePage
+  getPathName, isHomePage, NamespacesService, NamespacesContextService
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 import {HtmlUtil} from '../../utils/html-util';
@@ -34,6 +34,8 @@ export class OntoHeader {
   private readonly securityContextService = ServiceProvider.get(SecurityContextService);
   private readonly authenticationService = ServiceProvider.get(AuthenticationService);
   private readonly toastrService = ServiceProvider.get(OntoToastrService);
+  private readonly namespacesService = ServiceProvider.get(NamespacesService);
+  private readonly namespaceContextService = ServiceProvider.get(NamespacesContextService);
   private readonly UPDATE_ACTIVE_OPERATION_TIME_INTERVAL = 2000;
   private readonly fibonacciGenerator = new FibonacciGenerator();
 
@@ -138,6 +140,7 @@ export class OntoHeader {
         this.repositoryId = repositoryId;
         this.repositoryId ? this.startOperationPolling() : this.stopOperationPolling();
         this.shouldShowSearch = this.shouldShowRdfSearch();
+        this.loadNamespaces();
       })
     );
   }
@@ -206,9 +209,15 @@ export class OntoHeader {
         EventName.NAVIGATION_END, () => {
           this.shouldShowSearch = this.shouldShowRdfSearch();
           this.isHomePage = isHomePage();
-          console.log('Navigation end', this.isHomePage);
         }
       )
     );
+  }
+
+  private loadNamespaces() {
+    if (this.repositoryId) {
+      this.namespacesService.getNamespaces(this.repositoryId)
+        .then((namespaces) => this.namespaceContextService.updateNamespaces(namespaces))
+    }
   }
 }
