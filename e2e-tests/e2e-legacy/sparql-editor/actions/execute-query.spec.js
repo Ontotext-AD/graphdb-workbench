@@ -3,10 +3,7 @@ import {YasguiSteps} from "../../../steps/yasgui/yasgui-steps";
 import {QueryStubs} from "../../../stubs/yasgui/query-stubs";
 import {YasqeSteps} from "../../../steps/yasgui/yasqe-steps";
 
-/**
- * TODO: Fix me. Broken due to migration (Error: beforeEach)
- */
-describe.skip('Execute query', () => {
+describe('Execute query', () => {
 
     let repositoryId;
 
