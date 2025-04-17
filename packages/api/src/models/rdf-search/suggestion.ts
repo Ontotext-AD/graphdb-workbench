@@ -21,6 +21,9 @@ export class Suggestion extends Model<Suggestion> {
   /** Whether the suggestion is hovered. The hovered suggestion is the subject of action on key press */
   private _hovered?: boolean;
 
+  /** Whether the suggestion has been selected. When clicked, the suggestion will be selected */
+  private _selected?: boolean;
+
   constructor(data: SuggestionResponse) {
     super();
     this.setId(data.id);
@@ -67,5 +70,13 @@ export class Suggestion extends Model<Suggestion> {
 
   setHovered(hovered: boolean): void {
     this._hovered = hovered;
+  }
+
+  isSelected(): boolean | undefined {
+    return this._selected;
+  }
+
+  setSelected(selected: boolean): void {
+    this._selected = selected;
   }
 }
