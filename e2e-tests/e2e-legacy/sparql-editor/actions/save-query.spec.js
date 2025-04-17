@@ -6,8 +6,7 @@ import {SaveQueryDialog} from "../../../steps/yasgui/save-query-dialog";
 import {SavedQuery} from "../../../steps/yasgui/saved-query";
 import {SavedQueriesDialog} from "../../../steps/yasgui/saved-queries-dialog";
 
-//TODO: Fix me. Broken due to migration (Error: beforeEach)
-describe.skip('Save query', () => {
+describe('Save query', () => {
 
     let repositoryId;
 

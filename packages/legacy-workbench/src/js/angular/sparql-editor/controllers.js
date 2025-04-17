@@ -15,7 +15,7 @@ import {VIEW_SPARQL_EDITOR} from "../models/sparql/constants";
 import {CancelAbortingQuery} from "../models/sparql/cancel-aborting-query";
 import {QueryMode} from "../models/ontotext-yasgui/query-mode";
 import 'angular/core/services/event-emitter-service';
-import {navigateTo} from '@ontotext/workbench-api';
+import {navigateTo, ServiceProvider, EventService, EventName} from "@ontotext/workbench-api";
 
 const modules = [
     'ui.bootstrap',
@@ -444,7 +444,7 @@ function SparqlEditorCtrl($rootScope,
                 return;
             }
         }
-        Promise.all([$jwtAuth.getPrincipal(), $repositories.getPrefixes(activeRepository)])
+        $q.all([$jwtAuth.getPrincipal(), $repositories.getPrefixes(activeRepository)])
             .then(([principal, usedPrefixes]) => {
                 $scope.prefixes = usedPrefixes;
                 setInferAndSameAs(principal);
@@ -508,7 +508,7 @@ function SparqlEditorCtrl($rootScope,
         });
     });
     let queriesAreCanceled = undefined;
-    const locationChangeHandler = (event) => {
+    const locationChangeHandler = (eventPayload) => {
         if (internallyReloaded) {
             internallyReloaded = false;
             return;
@@ -517,8 +517,10 @@ function SparqlEditorCtrl($rootScope,
         if (!ontotextYasguiElement || queriesAreCanceled) {
             return;
         }
-        event.preventDefault();
-        const newUrl = $location.url();
+
+        const url = new URL(eventPayload.newUrl);
+        const newUrl = url.pathname + url.search + url.hash;
+        eventPayload.cancelNavigation();
         // First, we check if there are any ongoing requests initiated by the user.
         // If the user has ongoing requests, we request confirmation to abort them.
         // If the user confirms or there are no ongoing requests, we call the "abortAllRequests" method. This method will abort all requests.
@@ -539,7 +541,9 @@ function SparqlEditorCtrl($rootScope,
             });
     };
 
-    subscriptions.push($rootScope.$on('$locationChangeStart', locationChangeHandler));
+    subscriptions.push(
+        ServiceProvider.get(EventService).subscribe(EventName.NAVIGATION_START, (eventPayload) => locationChangeHandler(eventPayload))
+    );
 
     const removeAllListeners = () => {
         subscriptions.forEach((subscription) => subscription());
