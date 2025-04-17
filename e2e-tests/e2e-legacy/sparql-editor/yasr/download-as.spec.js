@@ -5,10 +5,7 @@ import {YasqeSteps} from "../../../steps/yasgui/yasqe-steps";
 import {JsonLdModalSteps} from "../../../steps/json-ld-modal-steps";
 import {GraphsOverviewSteps} from "../../../steps/explore/graphs-overview-steps";
 
-/**
- * TODO: Fix me. Broken due to migration (Error: beforeEach)
- */
-describe.skip('Download results', () => {
+describe('Download results', () => {
     let repositoryId;
     beforeEach(() => {
         repositoryId = 'sparql-editor-' + Date.now();
