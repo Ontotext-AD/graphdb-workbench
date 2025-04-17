@@ -13,7 +13,7 @@ Cypress.Commands.add('uploadGraphqlSchema', (repositoryId, schemaPath, schemaId 
             url: `${REPOSITORIES_URL}${repositoryId}/graphql/manage/endpoints/import`,
             headers: {'Content-type': 'text/yaml'},
             body: schema
-        }).should((response) => expect(response.status).to.equal(200));
+        }).should((response) => expect(response.status).to.equal(201));
         waitForGraphqlSchema(repositoryId, schemaId);
     });
 });

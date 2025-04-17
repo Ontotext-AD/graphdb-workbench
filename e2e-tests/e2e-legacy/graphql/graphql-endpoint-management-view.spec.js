@@ -3,7 +3,7 @@ import {GraphqlStubs} from "../../stubs/graphql/graphql-stubs";
 import {GraphqlPlaygroundSteps} from "../../steps/graphql/graphql-playground-steps";
 import {ApplicationSteps} from "../../steps/application-steps";
 
-describe.skip('GraphQL endpoints management', () => {
+describe('GraphQL endpoints management', () => {
     let repositoryId;
 
     beforeEach(() => {
