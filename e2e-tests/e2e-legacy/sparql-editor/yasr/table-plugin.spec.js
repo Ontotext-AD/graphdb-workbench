@@ -3,9 +3,7 @@ import {SparqlEditorSteps} from "../../../steps/sparql-editor-steps";
 import {YasqeSteps} from "../../../steps/yasgui/yasqe-steps";
 import {YasrSteps} from "../../../steps/yasgui/yasr-steps";
 
-
-//TODO: Fix me. Broken due to migration (Error: beforeEach)
-describe.skip('Yasr Table plugin', () => {
+describe('Yasr Table plugin', () => {
     let repositoryId;
     beforeEach(() => {
         repositoryId = 'sparql-editor-' + Date.now();
