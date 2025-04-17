@@ -34,6 +34,7 @@ export * from './services/cookie';
 export * from './services/monitoring';
 export * from './services/toastr';
 export * from './services/autocomplete';
+export * from './services/namespace';
 
 // Export utils for external usages.
 export * from './services/utils';
