@@ -58,7 +58,10 @@ describe('HttpService', () => {
     expect(result).toEqual({...response});
     expect(fetch).toHaveBeenCalledWith(url, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       body: null,
     });
   });
@@ -73,7 +76,10 @@ describe('HttpService', () => {
     expect(result).toEqual(response);
     expect(fetch).toHaveBeenCalledWith(url, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       body: JSON.stringify({ name: 'Test' }),
     });
   });
@@ -88,7 +94,10 @@ describe('HttpService', () => {
     expect(result).toEqual(response);
     expect(fetch).toHaveBeenCalledWith(url, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       body: JSON.stringify({ name: 'Updated' }),
     });
   });
@@ -103,7 +112,10 @@ describe('HttpService', () => {
     expect(result).toEqual(response);
     expect(fetch).toHaveBeenCalledWith(url, {
       method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       body: null,
     });
   });
@@ -118,7 +130,10 @@ describe('HttpService', () => {
     expect(result).toEqual(response);
     expect(fetch).toHaveBeenCalledWith(url, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       body: JSON.stringify({name: 'Updated'})
     });
   });
@@ -144,5 +159,43 @@ describe('HttpService', () => {
 
     // And, I expect the post-processed response body to be 'interceptedResponseBody'
     expect(result).toEqual('interceptedResponseBody');
+  });
+
+  test('should resolve JSON responses', async () => {
+    const responseBody = {test: 'test'};
+    const url = 'http://localhost:8080';
+    TestUtil.mockResponse(
+      new ResponseMock(url)
+        .setResponse(responseBody)
+        .setHeaders(new Headers({ 'Content-Type': 'application/json' }))
+    );
+
+    const result = await httpService.get(url);
+
+    expect(result).toEqual(responseBody);
+
+    TestUtil.mockResponse(
+      new ResponseMock(url)
+        .setResponse(responseBody)
+        .setHeaders(new Headers({ 'Content-Type': 'application/sparql-results+json' }))
+    );
+
+    const result2 = await httpService.get(url);
+
+    expect(result2).toEqual(responseBody);
+  });
+
+  test('should not return json, when response is not json', async () => {
+    const responseBody = 'Not JSON';
+    const url = 'http://localhost:8080';
+    TestUtil.mockResponse(
+      new ResponseMock(url)
+        .setResponse(responseBody)
+        .setHeaders(new Headers({'Content-Type': 'text/plain'}))
+    );
+
+    const result = await httpService.get(url);
+
+    expect(result).toBeUndefined();
   });
 });
