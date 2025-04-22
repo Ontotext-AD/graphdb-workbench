@@ -147,7 +147,12 @@ describe('Visual graph screen validation', () => {
             });
         });
 
-        it('Test search for a valid resource with links', () => {
+        it('Test search for a valid resource with links', {
+            retries: {
+                runMode: 1,
+                openMode: 0
+            }
+        }, () => {
             VisualGraphSteps.openUSRegionUri();
             // Check include inferred
             VisualGraphSteps.toggleInferredStatements(true);

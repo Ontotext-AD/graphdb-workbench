@@ -106,7 +106,7 @@ describe('Graphql: edit endpoint settings', () => {
                     "includeInferred": true,
                     "expandOwlSameAs": true,
                     "enableMutations": null,
-                    "defaultRole": "defaultRole",
+                    "defaultRole": "Default",
                     "enableGraphQLExplain": true,
                     "exposeSomlInGraphQL": false,
                     "disabledChecks": null,

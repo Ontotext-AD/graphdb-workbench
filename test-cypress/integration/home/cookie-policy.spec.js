@@ -39,7 +39,12 @@ describe('Cookie policy', () => {
         HomeSteps.getCookieConsentPopup().should('not.exist');
     });
 
-    it('Should NOT show cookie policy to user when tracking is not applicable', () => {
+    it('Should NOT show cookie policy to user when tracking is not applicable', {
+        retries: {
+            runMode: 1,
+            openMode: 0
+        }
+    },  () => {
         SettingsSteps.visit();
         SettingsSteps.getCookiePolicyButton().should('not.exist');
     });

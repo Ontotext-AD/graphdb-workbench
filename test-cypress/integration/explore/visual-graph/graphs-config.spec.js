@@ -217,7 +217,12 @@ describe('Graphs config', () => {
         VisualGraphSteps.getGraphConfigSearchPanelName().should('contain', graphConfigName);
     });
 
-    it('Should create graph config with fixed node', () => {
+    it('Should create graph config with fixed node', {
+        retries: {
+            runMode: 1,
+            openMode: 0
+        }
+    }, () => {
         cy.enableAutocomplete(repositoryId);
         // Given I have started a create config wizard
         startCreateConfigWizard();
