@@ -124,7 +124,8 @@ function homeCtrl($scope,
     const subscriptions = [];
 
     const onSelectedRepositoryIdUpdated = (repositoryId) => {
-        if (!repositoryId) {
+        // Don't call API, if no repo ID or if GQL read only or write rights
+        if (!repositoryId || $jwtAuth.hasGraphqlRightsOverCurrentRepo()) {
             $scope.repositoryNamespaces = new NamespacesListModel();
             return;
         }
