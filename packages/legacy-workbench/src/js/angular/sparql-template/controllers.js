@@ -405,7 +405,7 @@ function SparqlTemplateCreateCtrl(
         updateTitle();
     };
 
-    const repositoryWillChangedHandler = (eventData) => {
+    const repositoryWillChangeHandler = (eventData) => {
         return new Promise(function (resolve) {
 
             if ($scope.sparqlTemplateInfo.isNewTemplate) {
@@ -488,7 +488,7 @@ function SparqlTemplateCreateCtrl(
     subscriptions.push($scope.$on('queryChanged', queryChangeHandler));
     subscriptions.push($rootScope.$on('$translateChangeSuccess', languageChangedHandler));
     subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
-    subscriptions.push(eventEmitterService.subscribe('repositoryWillChangeEvent', repositoryWillChangedHandler));
+    subscriptions.push(eventEmitterService.subscribe('repositoryWillChangeEvent', repositoryWillChangeHandler));
     subscriptions.push($scope.$on('$destroy', removeAllListeners));
     // Prevent go out of the current page? check
     window.addEventListener('beforeunload', beforeunloadHandler);
