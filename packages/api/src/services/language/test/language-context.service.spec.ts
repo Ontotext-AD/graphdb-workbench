@@ -34,34 +34,34 @@ describe('LanguageContextService', () => {
     jest.clearAllMocks();
   });
 
-  test('updateSelectedLanguage should update selected language and notify subscribers', () => {
+  test('updateSelectedLanguage should update selected language and notify subscribers', async () => {
     const locale = 'fr';
-    const updateContextPropertySpy = jest.spyOn(languageContextService, 'updateContextProperty');
+    const validateAndUpdateContextPropertySpy = jest.spyOn(languageContextService, 'validateAndUpdateContextProperty');
 
-    languageContextService.updateSelectedLanguage(locale);
+    await languageContextService.updateSelectedLanguage(locale);
 
     expect(languageStorageServiceMock.set).toHaveBeenCalledWith(languageContextService.SELECTED_LANGUAGE, locale);
-    expect(updateContextPropertySpy).toHaveBeenCalledWith(languageContextService.SELECTED_LANGUAGE, locale);
+    expect(validateAndUpdateContextPropertySpy).toHaveBeenCalledWith(languageContextService.SELECTED_LANGUAGE, locale);
   });
 
-  test('updateSelectedLanguage should use default language if locale is undefined', () => {
-    const updateContextPropertySpy = jest.spyOn(languageContextService, 'updateContextProperty');
+  test('updateSelectedLanguage should use default language if locale is undefined', async () => {
+    const validateAndUpdateContextPropertySpy = jest.spyOn(languageContextService, 'validateAndUpdateContextProperty');
 
-    languageContextService.updateSelectedLanguage(undefined);
+    await languageContextService.updateSelectedLanguage(undefined);
 
     const defaultLanguage = languageServiceMock.getDefaultLanguage();
     expect(languageStorageServiceMock.set).toHaveBeenCalledWith(languageContextService.SELECTED_LANGUAGE, defaultLanguage);
-    expect(updateContextPropertySpy).toHaveBeenCalledWith(languageContextService.SELECTED_LANGUAGE, undefined);
+    expect(validateAndUpdateContextPropertySpy).toHaveBeenCalledWith(languageContextService.SELECTED_LANGUAGE, undefined);
   });
 
-  test('should call the "onSelectLanguageCallbackFunction" when the language changes.', () => {
+  test('should call the "onSelectLanguageCallbackFunction" when the language changes.', async () => {
     const onSelectLanguageCallbackFunction = jest.fn();
     const newLanguage = 'en';
 
     // When I register a callback function for language changes,
     languageContextService.onSelectedLanguageChanged(onSelectLanguageCallbackFunction);
     // and the selected language is changed.
-    languageContextService.updateSelectedLanguage(newLanguage);
+    await languageContextService.updateSelectedLanguage(newLanguage);
 
     // Then I expect the callback function to be called with the passed language.
     expect(onSelectLanguageCallbackFunction).toHaveBeenLastCalledWith(newLanguage);
@@ -129,15 +129,37 @@ describe('LanguageContextService', () => {
     expect(returnedConfig).toEqual(new LanguageConfig(languageConfig));
   });
 
-  test('should get the selected language when getSelectedLanguage is called', () => {
+  test('should get the selected language when getSelectedLanguage is called', async () => {
     // Given I have a selected language
     const selectedLanguage = 'en';
-    languageContextService.updateSelectedLanguage(selectedLanguage);
+    await languageContextService.updateSelectedLanguage(selectedLanguage);
 
     // When I call getSelectedLanguage
     const returnedLanguage = languageContextService.getSelectedLanguage();
 
     // Then I expect the returned language to be the selected language
+    expect(returnedLanguage).toEqual('en');
+  });
+
+  test('should get the old language when getSelectedLanguage is called and validation does not pass', async () => {
+    // Given I have a set initial language 'en'
+    const selectedLanguage = 'en';
+    await languageContextService.updateSelectedLanguage(selectedLanguage);
+
+    const onSelectLanguageCallbackFunction = jest.fn();
+    const validation = jest.fn().mockImplementation(() => Promise.resolve(false));
+
+    // And I have passed a failing validation function
+    languageContextService.onSelectedLanguageChanged(onSelectLanguageCallbackFunction, validation);
+
+    const newLanguage = 'fr';
+    // When I update to the new language 'fr' with validation
+    await languageContextService.updateSelectedLanguage(newLanguage);
+
+    // When I call getSelectedLanguage
+    const returnedLanguage = languageContextService.getSelectedLanguage();
+
+    // Then I expect the returned language to be the old language 'en'
     expect(returnedLanguage).toEqual('en');
   });
 });
