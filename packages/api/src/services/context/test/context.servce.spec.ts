@@ -1,5 +1,6 @@
 import {ContextService} from '../context.service';
 import {DeriveContextServiceContract} from '../../../models/context/update-context-method';
+import {BeforeChangeValidationPromise} from '../../../models/context/before-change-validation-promise';
 
 describe('ContextService', () => {
   let contextService: TestContextService;
@@ -104,6 +105,60 @@ describe('ContextService', () => {
     const result = contextService.canHandle('nonExistentField');
     expect(result).toBe(false);
   });
+
+  it('canHandle should return true if the field name is handled', () => {
+    const result = contextService.canHandle('testProperty');
+    expect(result).toBe(true);
+  });
+
+  test('Should validate and update a property successfully when validation returns true', async () => {
+    const valueOfTestProperty = {a: 1, b: [1, 2]};
+    const propertyName = 'testProperty';
+
+    const callBackFunction = jest.fn();
+    const validation = jest.fn().mockImplementation(() => Promise.resolve(true));
+    contextService.subscribeToProperty(propertyName, callBackFunction, validation);
+
+    // When validating and updating a property
+    const result = await contextService.validateAndUpdateContextProperty(propertyName, valueOfTestProperty);
+
+    const newValue = contextService.getProperty(propertyName);
+
+    // Then the result should be true
+    expect(result).toBe(true);
+    // And canUpdate should have been called with the value
+    expect(validation).toHaveBeenCalledWith(valueOfTestProperty);
+    // And setValue should have been called to update the value
+    expect(callBackFunction).toHaveBeenCalledWith(valueOfTestProperty);
+    // And value should be set
+    expect(newValue).toEqual(valueOfTestProperty);
+  });
+
+  test('Should not update a property when canUpdate returns false', async () => {
+    const initialValue = {a: 1, b: [1, 2]};
+    const newValue = {a: 3, b: [3, 3]};
+    const propertyName = 'testProperty';
+
+    const callBackFunction = jest.fn();
+    const validation = jest.fn().mockImplementation(() => Promise.resolve(false));
+
+    contextService.updateProperty(propertyName, initialValue);
+    contextService.subscribeToProperty(propertyName, callBackFunction, validation);
+
+    // When validating and updating a property
+    const result = await contextService.validateAndUpdateContextProperty(propertyName, newValue);
+
+    const newProperty = contextService.getProperty(propertyName);
+
+    // Then the result should be false
+    expect(result).toBe(false);
+    // And canUpdate should have been called with the value
+    expect(validation).toHaveBeenCalledWith(newValue);
+    // And setValue should not have been called to update the value
+    expect(callBackFunction).toHaveBeenCalledTimes(1);
+    // And value should be set
+    expect(newProperty).toEqual(initialValue);
+  });
 });
 
 type TestContextFields = {
@@ -130,7 +185,7 @@ class TestContextService extends ContextService<TestContextFields> implements De
     return this.getContextPropertyValue(propertyName);
   }
 
-  public subscribeToProperty<T>(propertyName: string, callback: (value?: T) => void): () => void {
-    return this.subscribe(propertyName, callback);
+  public subscribeToProperty<T>(propertyName: string, callback: (value?: T) => void, beforeChangeValidationPromise?: BeforeChangeValidationPromise<T>): () => void {
+    return this.subscribe(propertyName, callback, beforeChangeValidationPromise);
   }
 }
