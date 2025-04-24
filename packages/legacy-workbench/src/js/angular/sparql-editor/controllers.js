@@ -15,7 +15,7 @@ import {VIEW_SPARQL_EDITOR} from "../models/sparql/constants";
 import {CancelAbortingQuery} from "../models/sparql/cancel-aborting-query";
 import {QueryMode} from "../models/ontotext-yasgui/query-mode";
 import 'angular/core/services/event-emitter-service';
-import {navigateTo, ServiceProvider, EventService, EventName} from "@ontotext/workbench-api";
+import {navigateTo, LanguageContextService, ServiceProvider, EventService, EventName} from "@ontotext/workbench-api";
 
 const modules = [
     'ui.bootstrap',
@@ -415,10 +415,10 @@ function SparqlEditorCtrl($rootScope,
         }
 
         exitPageConfirmMessage += ".message";
-        const params= {
-                queriesCount: ongoingRequestsInfo.queriesCount,
-                updatesCount: ongoingRequestsInfo.updatesCount
-            };
+        const params = {
+            queriesCount: ongoingRequestsInfo.queriesCount,
+            updatesCount: ongoingRequestsInfo.updatesCount
+        };
         return $translate.instant(exitPageConfirmMessage, params);
     };
 
@@ -464,7 +464,7 @@ function SparqlEditorCtrl($rootScope,
         if (!object) {
             return;
         }
-        activeRepository= $repositories.getActiveRepository();
+        activeRepository = $repositories.getActiveRepository();
         isOntopRepo = $repositories.isActiveRepoOntopType(object);
         if (LocalStorageAdapter.get(LSKeys.SPARQL_LAST_REPO) !== activeRepository) {
             init(true);
@@ -574,22 +574,30 @@ function SparqlEditorCtrl($rootScope,
             location.reload();
         })
     );
-    subscriptions.push(
-        EventEmitterService.subscribe('before-language-change', function (args) {
-                return new Promise((resolve) => {
-                    ModalService.openSimpleModal({
-                        title: $translate.instant('query.editor.language.change.warning.title'),
-                        message: $translate.instant('query.editor.reload.page.warning'),
-                        warning: true
-                    }).result.then(function () {
-                        resolve(args);
-                    }, function () {
-                        args.cancel = true;
-                        resolve(args);
-                    });
-                });
-            }
-        ));
+
+    const onLanguageChange = () => {
+        // Do nothing on language change
+    }
+
+    const showLanguageChangeConfirmation = () => {
+        return new Promise((resolve) => {
+            ModalService.openSimpleModal({
+                title: $translate.instant('query.editor.language.change.warning.title'),
+                message: $translate.instant('query.editor.reload.page.warning'),
+                warning: true
+            }).result.then(function () {
+                resolve(true);
+            }, function () {
+                resolve(false);
+            });
+        });
+    }
+
+    const languageContextService = ServiceProvider.get(LanguageContextService);
+    const onLanguageChangeSubscription = languageContextService.onSelectedLanguageChanged(onLanguageChange, showLanguageChangeConfirmation);
+
+    // Subscribe to language change and ask to reload the page
+    subscriptions.push(onLanguageChangeSubscription);
 
     // Deregister the watcher when the scope/directive is destroyed
     subscriptions.push($scope.$on('$destroy', finalizeAndDestroy));

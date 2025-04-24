@@ -1,6 +1,7 @@
 import {ObjectUtil} from '../../services/utils';
 import {ValueChangeCallback} from './value-change-callback';
 import {Copyable} from '../common';
+import {BeforeChangeValidationPromise} from './before-change-validation-promise';
 
 /**
  * ValueContext is a generic class for managing a value of type T. It provides functionality to set and retrieve the value,
@@ -14,6 +15,7 @@ import {Copyable} from '../common';
 export class ValueContext<T> {
   private value: T | undefined;
   private callbackFunctions: ValueChangeCallback<T>[] = [];
+  private beforeChangeValidationPromises: BeforeChangeValidationPromise<T>[] = [];
 
   /**
    * Sets the value of the context. If the new value is different from the current value
@@ -42,20 +44,54 @@ export class ValueContext<T> {
   }
 
   /**
-   * Register the <code>callbackFunction</code> to value changes. The callback function will be called
+   * Registers a <code>ValueChangeCallback</code> to be notified when the value changes. The callback function will be called
    * whenever the value is updated, and it will receive the updated value.
    *
-   * This method returns a function to unsubscribe the callback, which can be called to stop receiving updates.
+   * Optionally, a <code>BeforeChangeValidationPromise</code> function can be provided to validate value changes before they occur.
+   * This validation will be checked during the value update execution.
+   *
+   * This method returns a function to unsubscribe both the callback and validation promise,
+   * which can be called to stop receiving updates and remove the validation.
    *
    * @param callbackFunction - The callback function to subscribe, which will be invoked with the updated
    *                           value of type T whenever the value changes.
-   * @returns A function to unsubscribe the callback, removing it from the notification list.
+   * @param beforeChangeValidationPromise - Optional validation function that returns a promise resolving to
+   *                                        a boolean indicating whether a value change should be allowed.
+   * @returns A function to unsubscribe both the callback and validation promise, removing them from their respective lists.
    */
-  subscribe(callbackFunction: ValueChangeCallback<T | undefined>): () => void {
+  subscribe(callbackFunction: ValueChangeCallback<T | undefined>, beforeChangeValidationPromise?: BeforeChangeValidationPromise<T>): () => void {
     this.callbackFunctions.push(callbackFunction);
+    if (beforeChangeValidationPromise) {
+      this.beforeChangeValidationPromises.push(beforeChangeValidationPromise);
+    }
     return () => {
       this.callbackFunctions = this.callbackFunctions.filter(fn => fn !== callbackFunction);
+      this.beforeChangeValidationPromises = this.beforeChangeValidationPromises.filter(fn => fn !== beforeChangeValidationPromise);
     };
+  }
+
+  /**
+   * Checks if the provided value can be used to update the context by validating it against all registered
+   * validation promises.
+   *
+   * This method executes all registered validation functions asynchronously and returns true only if all
+   * validation functions approve the update. If any validation fails or throws an error, the update is
+   * considered invalid.
+   *
+   * @param value - The value to validate before updating the context.
+   * @returns A promise that resolves to true if all validation functions approve the update, false otherwise.
+   */
+  async canUpdate(value: T): Promise<boolean> {
+    if (this.beforeChangeValidationPromises.length === 0) {
+      return true; // No validation functions registered, so the update is allowed by default.
+    }
+    const beforeChangePromises = this.beforeChangeValidationPromises.map(validator => validator(value));
+    try {
+      const allResults = await Promise.all(beforeChangePromises);
+      return allResults.every(result => result);
+    } catch {
+      return false;
+    }
   }
 
   /**
