@@ -5,6 +5,7 @@ import {LanguageStorageService} from './language-storage.service';
 import {LanguageService} from './language.service';
 import {DeriveContextServiceContract} from '../../models/context/update-context-method';
 import {LanguageConfig, TranslationBundle} from '../../models/language';
+import {BeforeChangeValidationPromise} from '../../models/context/before-change-validation-promise';
 
 type LanguageContextFields = {
   readonly SELECTED_LANGUAGE: string;
@@ -25,22 +26,27 @@ export class LanguageContextService extends ContextService<LanguageContextFields
    *
    * @param {string} locale - The new language code to set (e.g., 'en', 'fr', 'de').
    */
-  updateSelectedLanguage(locale?: string): void {
+  updateSelectedLanguage(locale?: string): Promise<boolean> {
     const selectedLanguage = locale || ServiceProvider.get(LanguageService).getDefaultLanguage();
     const storageService = ServiceProvider.get(LanguageStorageService);
     storageService.set(this.SELECTED_LANGUAGE, selectedLanguage);
-    this.updateContextProperty(this.SELECTED_LANGUAGE, locale);
+    return this.validateAndUpdateContextProperty(this.SELECTED_LANGUAGE, locale);
   }
 
   /**
+   * Registers a <code>callbackFunction</code> to be called whenever the selected language changes.
    *
-   * Registers the <code>callbackFunction</code> to be called whenever the selected language changes.
+   * This method allows components to react to language changes in the application.
+   * The callback will be triggered with the new language value whenever it changes.
    *
    * @param callbackFunction - The function to call when the selected language changes.
+   * @param beforeChangeValidationPromise - Optional. A promise that will be resolved before
+   *        the language change is applied. This can be used to validate or prepare for the
+   *        language change. If the promise is resolved with false or rejects, the language change will be canceled.
    * @returns A function to unsubscribe from updates.
    */
-  onSelectedLanguageChanged(callbackFunction: ValueChangeCallback<string | undefined>): () => void {
-    return this.subscribe(this.SELECTED_LANGUAGE, callbackFunction);
+  onSelectedLanguageChanged(callbackFunction: ValueChangeCallback<string | undefined>, beforeChangeValidationPromise?: BeforeChangeValidationPromise<string | undefined>): () => void {
+    return this.subscribe(this.SELECTED_LANGUAGE, callbackFunction, beforeChangeValidationPromise);
   }
 
   /**
