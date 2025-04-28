@@ -4,6 +4,7 @@ angular
 
 const AUTOCOMPLETE_ENDPOINT = 'rest/autocomplete';
 const AUTOCOMPLETE_LABELS_ENDPOINT = `${AUTOCOMPLETE_ENDPOINT}/labels`;
+const AUTOCOMPLETE_EDIT_LABEL_ENDPOINT = `${AUTOCOMPLETE_ENDPOINT}/labels/edit`;
 const AUTOCOMPLETE_ENABLED_ENDPOINT = `${AUTOCOMPLETE_ENDPOINT}/enabled`;
 const AUTOCOMPLETE_IRIS_ENDPOINT = `${AUTOCOMPLETE_ENDPOINT}/iris`;
 
@@ -15,6 +16,7 @@ function AutocompleteRestService($http) {
         refreshIndexStatus,
         refreshLabelConfig,
         addLabelConfig,
+        editLabelConfig,
         removeLabelConfig,
         toggleAutocomplete,
         refreshIndexIRIs,
@@ -88,6 +90,14 @@ function AutocompleteRestService($http) {
 
     function addLabelConfig(label) {
         return $http.put(AUTOCOMPLETE_LABELS_ENDPOINT, label);
+    }
+
+    function editLabelConfig(params) {
+        return $http({
+            method: 'PUT',
+            url: AUTOCOMPLETE_EDIT_LABEL_ENDPOINT,
+            params: params
+        });
     }
 
     function removeLabelConfig(label) {
