@@ -102,7 +102,7 @@ describe('Graphql: edit endpoint settings', () => {
                     "langValidate": null,
                     "langImplicit": null,
                     "langDefaultNameFetch": "NONE",
-                    "langAppendDefaultNameFetch": "true",
+                    "langAppendDefaultNameFetch": true,
                     "includeInferred": true,
                     "expandOwlSameAs": true,
                     "enableMutations": null,
