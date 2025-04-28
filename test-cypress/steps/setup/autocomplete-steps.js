@@ -57,11 +57,42 @@ export class AutocompleteSteps {
         return this.getAutocompletePage().find('#wb-autocomplete-addLabel');
     }
 
+    static addLabelAndLanguage(label, language) {
+        this.getAddLabelButton().click();
+        this.typeLabelIri(label);
+        this.typeLabelLanguages(language);
+        this.saveLabel();
+    }
+
+    static typeLabelIri(iri) {
+        this.getAddLabelForm().find('#wb-autocomplete-iri').click().clear().type(iri);
+    }
+
+    static typeLabelLanguages(languages) {
+        this.getAddLabelForm().find('#wb-autocomplete-languages').click().type(languages);
+    }
+
     static getAutocompleteLabels() {
         return this.getAutocompletePage().find('#wb-autocomplete-labels');
     }
 
+    static getTableRows() {
+        return cy.get('.wb-autocomplete-labels-row');
+    }
+
     static getSuccessStatusElement() {
         return cy.get('.autocomplete-status').find('.tag.tag-success.ng-binding');
+    }
+
+    static getAddLabelForm() {
+        return cy.get('#addLabelForm');
+    }
+
+    static saveLabel() {
+        cy.get('#wb-autocomplete-savegraph-submit').click();
+    }
+
+    static editLabelOnRow(rowIndex) {
+        this.getTableRows().eq(rowIndex).find('.actions-bar .icon-edit').click();
     }
 }
