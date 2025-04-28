@@ -15,7 +15,7 @@ import './styles/bootstrap.min.css';
 import './styles/onto-stylesheet.scss';
 import './onto-vendor';
 import './styles/main.scss';
-// import "./styles/bootstrap-graphdb-theme.css";
+import './styles/bootstrap-graphdb-theme.css';
 import {defineCustomElements} from '../../shared-components/loader';
 import {bootstrapPromises} from './bootstrap/bootstrap';
 import {
