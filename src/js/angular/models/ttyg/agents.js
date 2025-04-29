@@ -345,12 +345,6 @@ export class AdditionalExtractionMethodModel {
          * @type {number}
          */
         this._maxNumberOfResultsPerCall = data.maxNumberOfResultsPerCall;
-        /**
-         * The search predicates for the extraction method.
-         * @type {[]}
-         * @private
-         */
-        this._searchLabelPredicates = data.searchLabelPredicates;
     }
 
     get method() {
@@ -367,14 +361,6 @@ export class AdditionalExtractionMethodModel {
 
     set maxNumberOfResultsPerCall(value) {
         this._maxNumberOfResultsPerCall = value;
-    }
-
-    get searchLabelPredicates() {
-        return this._searchLabelPredicates;
-    }
-
-    set searchLabelPredicates(value) {
-        this._searchLabelPredicates = value;
     }
 }
 

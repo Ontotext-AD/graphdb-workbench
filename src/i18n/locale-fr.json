@@ -602,7 +602,11 @@
                                 }
                             }
                         },
-                        "autocomplete_disabled_message": "Vous devez <a href=\"{{autocompleteIndexPage}}\" target=\"_blank\">activer complétion automatique</a> pour utiliser cette méthode",
+                        "autocomplete_disabled_message": {
+                            "message_1": "Vous devez",
+                            "message_2": "activer l’index d’autocomplétion",
+                            "message_3": "sur le référentiel choisi pour utiliser cette méthode"
+                        },
                         "autocomplete_max_number_of_results_per_call": {
                             "label": "Nombre maximum de résultats (IRI) par appel",
                             "placeholder": "Valeur automatique",
@@ -635,6 +639,9 @@
                     },
                     "confirm_repository_change_before_open_connectors": {
                         "body": "Si vous continuez à créer le connecteur de ChatGPT Retrieval, GraphDB s'ouvrira dans un nouvel onglet et passera au dépôt <b>{{repositoryId}}</b>."
+                    },
+                    "confirm_repository_change_before_open_autocomplete_index": {
+                        "body": "Si vous continuez à activer l’index d’autocomplétion, GraphDB s'ouvrira dans un nouvel onglet et passera au dépôt <b>{{repositoryId}}</b>."
                     }
                 }
             },

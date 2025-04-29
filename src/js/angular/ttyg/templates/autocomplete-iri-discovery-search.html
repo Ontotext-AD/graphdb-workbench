@@ -29,7 +29,12 @@
                        gdb-tooltip="{{'ttyg.agent.create_agent_modal.form.additional_query_methods.method.autocomplete_iri_discovery_search.btn.reload.tooltip' | translate}}">
                    <i class="fa fa-arrows-rotate"></i>
                </button>
-               <div ng-if="!autocompleteEnabled" class="autocomplete-disabled-message" ng-bind-html="getAutocompleteDisabledHelpMessage()">
+               <div ng-if="!autocompleteEnabled" class="autocomplete-disabled-message">
+                   {{'ttyg.agent.create_agent_modal.form.additional_query_methods.autocomplete_disabled_message.message_1' | translate}}
+                   <a href="#" ng-click="goToAutocompleteView()">
+                       {{'ttyg.agent.create_agent_modal.form.additional_query_methods.autocomplete_disabled_message.message_2' | translate}}
+                   </a>
+                   {{'ttyg.agent.create_agent_modal.form.additional_query_methods.autocomplete_disabled_message.message_3' | translate}}.
                </div>
                <div class="input-field-group" ng-if="autocompleteEnabled">
                    <div class="form-group max-results" ng-show="agentFormModel.repositoryId">

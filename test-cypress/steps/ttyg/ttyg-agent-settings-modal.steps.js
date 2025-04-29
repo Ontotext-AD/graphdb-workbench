@@ -432,18 +432,6 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
         this.getAutocompleteMaxResults().type(number);
     }
 
-    static getSearchPredicateInput() {
-        return cy.get('#autocompletePredicateField');
-    }
-
-    static enterSearchPredicate(text) {
-        this.getSearchPredicateInput().type(text);
-    }
-
-    static getSearchPredicateTags() {
-        return this.getSearchPredicateInput().find('.tag-item');
-    }
-
     static toggleAutocompleteSearchPanel() {
         cy.get('.extraction-method-toggle .panel-toggle-link .toggle-icon').click();
     }
@@ -454,6 +442,14 @@ export class TtygAgentSettingsModalSteps extends ModalDialogSteps {
 
     static selectAutocompleteOption(index) {
         this.getSuggestionsList().eq(index).click();
+    }
+
+    static getAutocompleteDisabledMessage() {
+        return cy.get('.autocomplete-disabled-message');
+    }
+
+    static clickOnEnableFTSSearch() {
+        this.getAutocompleteDisabledMessage().find('a').click();
     }
 
     // System instructions

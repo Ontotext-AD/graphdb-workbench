@@ -20,8 +20,7 @@ angular
     ])
     .constant('ExtractionMethodTemplates', {
     'iri_discovery_search': 'iri-discovery-search',
-        // Temporarily hidden template until the feature is fine-tuned
-    //'autocomplete_iri_discovery_search': 'autocomplete-iri-discovery-search'
+    'autocomplete_iri_discovery_search': 'autocomplete-iri-discovery-search'
     })
     .controller('AgentSettingsModalController', AgentSettingsModalController);
 
@@ -250,20 +249,11 @@ function AgentSettingsModalController(
     };
 
     /**
-     * Resolves the hint for the Autocomplete Index not enabled message. This is needed because the hint contains a html link that
-     * should be properly rendered.
-     * @return {*}
+     * Opens the 'Autocomplete index' view in a new tab.
      */
-    $scope.getAutocompleteDisabledHelpMessage = () => {
-        // The hint contains a html link which should be properly rendered.
-        const message = decodeHTML(
-            $translate.instant(
-                'ttyg.agent.create_agent_modal.form.additional_query_methods.autocomplete_disabled_message',
-                {autocompleteIndexPage: '#/autocomplete'}
-            )
-        );
-        return $sce.trustAsHtml(message);
-    };
+    $scope.goToAutocompleteView = () => {
+        TTYGContextService.emit(TTYGEventName.GO_TO_AUTOCOMPLETE_INDEX_VIEW, {repositoryId: $scope.agentFormModel.repositoryId});
+    }
 
     /**
      * Opens the 'Create Similarity' view in a new tab.
@@ -376,7 +366,8 @@ function AgentSettingsModalController(
      * Checks the status of the autocomplete index.
      */
     $scope.checkAutocompleteIndexEnabled = () => {
-        AutocompleteService.checkAutocompleteStatus().then((autocompleteEnabled) => {
+        const selectedRepositoryInfo = getSelectedRepositoryInfo();
+        AutocompleteService.checkAutocompleteStatus(selectedRepositoryInfo.repositoryId, selectedRepositoryInfo.repositoryLocation).then((autocompleteEnabled) => {
             $scope.autocompleteEnabled = autocompleteEnabled;
         }).catch((error) => {
             toastr.error(getError(error));

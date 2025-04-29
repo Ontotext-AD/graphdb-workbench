@@ -93,8 +93,7 @@ export class AgentFormModel {
                 method: AdditionalExtractionMethod.IRI_DISCOVERY_SEARCH}),
             new AdditionalExtractionMethodFormModel({
                 method: AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH,
-                maxNumberOfResultsPerCall: 0,
-                searchLabelPredicates: []}));
+                maxNumberOfResultsPerCall: 0}));
         return new AdditionalExtractionMethodsFormModel(additionalExtractionMethods);
     }
 
@@ -504,7 +503,6 @@ export class AdditionalExtractionMethodsFormModel {
                 if (existingMethod) {
                     existingMethod._selected = additionalExtractionMethod._selected;
                     existingMethod._maxNumberOfResultsPerCall = additionalExtractionMethod._maxNumberOfResultsPerCall;
-                    existingMethod._searchLabelPredicates = additionalExtractionMethod._searchLabelPredicates;
                     existingMethod._expanded = additionalExtractionMethod._expanded;
                 }
             });
@@ -530,7 +528,6 @@ export class AdditionalExtractionMethodFormModel {
         this._method = data.method;
         this._expanded = data.expanded || false;
         this._maxNumberOfResultsPerCall = data.maxNumberOfResultsPerCall || null;
-        this._searchLabelPredicates = data._searchLabelPredicates || [];
     }
 
     toPayload() {
@@ -540,10 +537,6 @@ export class AdditionalExtractionMethodFormModel {
 
         if (isAutocompleteMethod && this._maxNumberOfResultsPerCall) {
             payload.limit = this._maxNumberOfResultsPerCall;
-        }
-
-        if (isAutocompleteMethod && this._searchLabelPredicates) {
-            payload.searchLabelPredicates = this._searchLabelPredicates;
         }
         return payload;
     }
@@ -582,14 +575,6 @@ export class AdditionalExtractionMethodFormModel {
 
     set maxNumberOfResultsPerCall(value) {
         this._maxNumberOfResultsPerCall = value;
-    }
-
-    get searchLabelPredicates() {
-        return this._searchLabelPredicates;
-    }
-
-    set searchLabelPredicates(value) {
-        this._searchLabelPredicates = value;
     }
 }
 

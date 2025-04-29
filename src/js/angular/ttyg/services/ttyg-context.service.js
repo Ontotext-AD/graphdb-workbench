@@ -536,6 +536,11 @@ export const TTYGEventName = {
     GO_TO_CONNECTORS_VIEW: "goToConnectorsView",
 
     /**
+     * This event will trigger the opening of the "Autocomplete index" view.
+     */
+    GO_TO_AUTOCOMPLETE_INDEX_VIEW: "goToAutocompleteIndexView",
+
+    /**
      * This event will trigger fetching a new explanation of how the answer was generated.
      */
     EXPLAIN_RESPONSE: "explainResponse",

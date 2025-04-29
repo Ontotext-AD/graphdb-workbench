@@ -603,7 +603,11 @@
                                 }
                             }
                         },
-                        "autocomplete_disabled_message": "You must <a href=\"{{autocompleteIndexPage}}\" target=\"_blank\">enable the Autocomplete index</a> on chosen repository to use this method",
+                        "autocomplete_disabled_message": {
+                            "message_1": "You must",
+                            "message_2": "enable the Autocomplete index",
+                            "message_3": "on chosen repository to use this method"
+                        },
                         "autocomplete_max_number_of_results_per_call": {
                             "label": "Max number of results (IRIs) per call",
                             "placeholder": "Automatic value",
@@ -636,6 +640,9 @@
                     },
                     "confirm_repository_change_before_open_connectors": {
                         "body": "If you proceed with creating the ChatGPT Retrieval connector, GraphDB will open in a new tab and switch to the <b>{{repositoryId}}</b> repository."
+                    },
+                    "confirm_repository_change_before_open_autocomplete_index": {
+                        "body": "If you proceed with enabling the autocomplete index, GraphDB will open in a new tab and switch to the <b>{{repositoryId}}</b> repository."
                     }
                 }
             },
