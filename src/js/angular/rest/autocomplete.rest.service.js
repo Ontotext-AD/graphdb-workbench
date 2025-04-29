@@ -25,7 +25,23 @@ function AutocompleteRestService($http) {
         getAutocompleteSuggestions
     };
 
-    function checkAutocompleteStatus() {
+    /**
+     * Checks if the autocomplete index enabled for the repository with id <code>repositoryId</code> and location <code>repositoryLocation</code>.
+     * If the repository ID and repository location are not provided, the currently selected repository will be used.
+     *
+     * @param {string | undefined} repositoryId - The repository id.
+     * @param {string | undefined} repositoryLocation - The repository location.
+     * @return {Promise<boolean>} if autocomplete is enabled.
+     */
+    function checkAutocompleteStatus(repositoryId, repositoryLocation) {
+        if (repositoryId) {
+            return $http.get(AUTOCOMPLETE_ENABLED_ENDPOINT, {
+                headers: {
+                    'X-GraphDB-Repository': repositoryId,
+                    'X-GraphDB-Repository-Location': repositoryLocation
+                }
+            });
+        }
         return $http.get(AUTOCOMPLETE_ENABLED_ENDPOINT);
     }
 

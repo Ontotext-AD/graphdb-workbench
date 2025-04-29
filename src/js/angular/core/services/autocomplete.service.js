@@ -10,11 +10,15 @@ AutocompleteService.$inject = ['AutocompleteRestService', 'LSKeys', 'LocalStorag
 function AutocompleteService(AutocompleteRestService, LSKeys, LocalStorageAdapter) {
 
     /**
-     * Checks if autocomplete is enabled
-     * @return {Promise<boolean>}
+     * Checks if the autocomplete index enabled for the repository with id <code>repositoryId</code> and location <code>repositoryLocation</code>.
+     * If the repository ID and repository location are not provided, the currently selected repository will be used.
+     *
+     * @param {string | undefined} repositoryId - The repository id.
+     * @param {string | undefined} repositoryLocation - The repository location.
+     * @return {Promise<boolean>} if autocomplete is enabled.
      */
-    const checkAutocompleteStatus = () => {
-        return AutocompleteRestService.checkAutocompleteStatus()
+    const checkAutocompleteStatus = (repositoryId, repositoryLocation) => {
+        return AutocompleteRestService.checkAutocompleteStatus(repositoryId, repositoryLocation)
             .then((response) => {
                 LocalStorageAdapter.set(LSKeys.AUTOCOMPLETE_ENABLED, response.data);
                 return response.data;

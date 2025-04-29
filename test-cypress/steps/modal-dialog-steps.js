@@ -63,6 +63,26 @@ export class ModalDialogSteps {
         ModalDialogSteps.getCancelButton().click();
     }
 
+    /**
+     * Get the dialog with the given body. This method is useful when there are multiple dialogs on the page.
+     *
+     * @param body - the full or partial text of the dialog body.
+     *
+     * @return {Cypress.Chainable<JQuery<HTMLElement>>}
+     */
+    static getDialogWithBody(body) {
+        return ModalDialogSteps.getDialog().contains(body).parent().parent();
+    }
+
+    /**
+     * Click on the confirmation button of the dialog with the given body. This method is useful when there are multiple dialogs on the page.
+     *
+     * @param body - the full or partial text of the dialog body.
+     */
+    static cancelDialogWithBody(body) {
+        ModalDialogSteps.getDialogWithBody(body).find('.cancel-btn').click();
+    }
+
     static verifyUrlChangedConfirmation(verifyConfirmationDialogOptions = new VerifyConfirmationDialogOptions()) {
         // and try to change the page
         verifyConfirmationDialogOptions.changePageFunction();

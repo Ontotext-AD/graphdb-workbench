@@ -139,7 +139,6 @@ function additionalExtractionMethodsFormMapper(additionalExtractionMethodsRespon
 
         if (method.method === AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH) {
             data.maxNumberOfResultsPerCall = method._maxNumberOfResultsPerCall || defaultAdditionalExtractionMethodData.maxNumberOfResultsPerCall;
-            data._searchLabelPredicates = method.searchLabelPredicates || defaultAdditionalExtractionMethodData._searchLabelPredicates;
         }
         return new AdditionalExtractionMethodFormModel(data);
     });
@@ -220,8 +219,7 @@ const additionalExtractionMethodMapper = (data) => {
     if (data.method === AdditionalExtractionMethod.AUTOCOMPLETE_IRI_DISCOVERY_SEARCH) {
         return new AdditionalExtractionMethodModel({
             method: data.method,
-            maxNumberOfResultsPerCall: data.limit || 0,
-            searchLabelPredicates: data.searchLabelPredicates || []
+            maxNumberOfResultsPerCall: data.limit || 0
         });
     } else if (data.method === AdditionalExtractionMethod.IRI_DISCOVERY_SEARCH) {
         return new AdditionalExtractionMethodModel({

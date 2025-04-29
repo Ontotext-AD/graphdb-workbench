@@ -163,11 +163,4 @@ export class TTYGStubs extends Stubs {
             statusCode: 200
         }).as('explain-response');
     }
-
-    static stubAutocompleteResponse(fixture = '/ttyg/autocomplete-response.json') {
-        cy.intercept('GET', '/rest/autocomplete/query?*', {
-            fixture,
-            statusCode: 200,
-        }).as('autocomplete-suggestions');
-    }
 }

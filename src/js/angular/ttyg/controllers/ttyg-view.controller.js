@@ -706,27 +706,18 @@ function TTYGViewCtrl(
      * @param {{repositoryId: string}} payload - The payload containing the repository ID.
      */
     const onGoToCreateSimilarityView = (payload) => {
-        if (payload.repositoryId !== $repositories.getActiveRepository()) {
-            const repository = $repositories.getRepository(payload.repositoryId);
-            if (repository) {
-                ModalService.openConfirmationModal({
-                        title: $translate.instant('common.confirm'),
-                        message: decodeHTML($translate.instant('ttyg.agent.create_agent_modal.dialog.confirm_repository_change_before_open_similarity.body', {repositoryId: repository.id})),
-                        confirmButtonKey: 'ttyg.chat_panel.btn.proceed.label'
-                    },
-                    () => {
-                        $repositories.setRepository(repository);
-                        openCreateSimilarityView();
-                    });
-            }
-
-        } else {
-            openCreateSimilarityView();
-        }
+        goToView(payload.repositoryId, 'ttyg.agent.create_agent_modal.dialog.confirm_repository_change_before_open_similarity.body', '/similarity/index/create');
     };
 
-    const openCreateSimilarityView = () => {
-        $window.open('/similarity/index/create', '_blank');
+    /**
+     * Opens the "Autocomplete index" view. It checks if the passed repository ID matches the one selected by the workbench.
+     * If they do not match, a confirmation dialog is shown to inform the user that the selected repository
+     * will be automatically changed upon confirmation.
+     *
+     * @param {{repositoryId: string}} payload - The payload containing the repository ID.
+     */
+    const goToAutocompleteIndexView = (payload) => {
+        goToView(payload.repositoryId, 'ttyg.agent.create_agent_modal.dialog.confirm_repository_change_before_open_autocomplete_index.body', '/autocomplete');
     };
 
     /**
@@ -737,28 +728,45 @@ function TTYGViewCtrl(
      * @param {{repositoryId: string}} payload - The payload containing the repository ID.
      */
     const onGoToConnectorsView = (payload) => {
-        if (payload.repositoryId !== $repositories.getActiveRepository()) {
-            const repository = $repositories.getRepository(payload.repositoryId);
+        goToView(payload.repositoryId, 'ttyg.agent.create_agent_modal.dialog.confirm_repository_change_before_open_connectors.body', '/connectors');
+    };
+
+    /**
+     * Navigates to a specified view URL, potentially after switching the active repository.
+     * If the target repository is different from the currently active one, a confirmation modal is shown.
+     * Upon user confirmation, the repository is switched and the view is opened in a new browser tab.
+     *
+     * @param {string} repositoryId - The ID of the target repository to switch to.
+     * @param {string} confirmMessageLabelKey - The translation key for the confirmation message to be shown in the modal.
+     * @param {string} viewURL - The URL of the view to be opened in a new browser tab.
+     */
+    const goToView = (repositoryId, confirmMessageLabelKey, viewURL) => {
+        if (repositoryId !== $repositories.getActiveRepository()) {
+            const repository = $repositories.getRepository(repositoryId);
             if (repository) {
                 ModalService.openConfirmationModal({
                         title: $translate.instant('common.confirm'),
-                        message: decodeHTML($translate.instant('ttyg.agent.create_agent_modal.dialog.confirm_repository_change_before_open_connectors.body', {repositoryId: repository.id})),
+                        message: decodeHTML($translate.instant(confirmMessageLabelKey, {repositoryId: repository.id})),
                         confirmButtonKey: 'ttyg.chat_panel.btn.proceed.label'
                     },
                     () => {
                         $repositories.setRepository(repository);
-                        openConnectorsView();
+                        openView(viewURL);
                     });
             }
-
         } else {
-            openConnectorsView();
+            openView(viewURL);
         }
-    };
+    }
 
-    const openConnectorsView = () => {
-        $window.open('/connectors', '_blank');
-    };
+    /**
+     * Opens the specified URL in a new browser tab.
+     *
+     * @param {string} viewURL - The URL to open.
+     */
+    const openView = (viewURL) => {
+        $window.open(viewURL, '_blank');
+    }
 
     /**
      * Opens SPARQL editor view with passed query.
@@ -848,6 +856,7 @@ function TTYGViewCtrl(
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_AGENT, onDeleteAgent));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.AGENT_SELECTED, onAgentSelected));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.GO_TO_CREATE_SIMILARITY_VIEW, onGoToCreateSimilarityView));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.GO_TO_AUTOCOMPLETE_INDEX_VIEW, goToAutocompleteIndexView));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.GO_TO_CONNECTORS_VIEW, onGoToConnectorsView));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.GO_TO_SPARQL_EDITOR, onGoToSparqlEditorView));
     subscriptions.push($rootScope.$on('$translateChangeSuccess', updateLabels));
