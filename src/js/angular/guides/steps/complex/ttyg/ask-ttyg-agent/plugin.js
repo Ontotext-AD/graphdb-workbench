@@ -21,12 +21,12 @@ PluginRegistry.add('guide.step', [
                         url: '/ttyg',
                         elementSelector: GuideUtils.getGuideElementSelector('question-input'),
                         show: (guide) => () => {
-                            const elementSelector = GuideUtils.getGuideElementSelector('question-input');
+                            const elementSelector = GuideUtils.getGuideElementSelector('contenteditable');
 
                             // Add "keydown" listener to the element. The question-input directive listens for keypress of enter to trigger question asking.
                             // When enter is pressed, proceed with next step. Using 'keydown' to trigger before the directive 'keypress', which clears the value.
                             $(elementSelector).on('keydown', (event) => {
-                                const value = $(elementSelector).val();
+                                const value = $(elementSelector).text();
 
                                 if (value && event.key === 'Enter' && !event.shiftKey && !event.ctrlKey) {
                                     guide.next();
@@ -34,7 +34,7 @@ PluginRegistry.add('guide.step', [
                             });
                         },
                         hide: () => () => {
-                            const elementSelector = GuideUtils.getGuideElementSelector('question-input');
+                            const elementSelector = GuideUtils.getGuideElementSelector('contenteditable');
                             // Remove the "keydown" listener of element. It is important when step is hidden.
                             $(elementSelector).off('keydown');
                         },

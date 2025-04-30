@@ -1,0 +1,19 @@
+editable-content .contenteditable {
+    height: 100%;
+    width: 100%;
+    outline: none;
+    min-height: 2rem;
+    max-height: 7rem;
+    overflow-y: auto;
+}
+
+editable-content .contenteditable[disabled] {
+    cursor: not-allowed;
+}
+
+editable-content [placeholder]:empty:before {
+    content: attr(placeholder);
+    position: absolute;
+    color: gray;
+    background-color: transparent;
+}
