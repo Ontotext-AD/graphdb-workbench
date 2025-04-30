@@ -23,7 +23,7 @@ $RECYCLE.BIN/
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate
-.env
 api/
 /cypress/screenshots/
 /cypress/downloads/
+/cypress/videos/

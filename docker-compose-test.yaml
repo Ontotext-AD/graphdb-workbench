@@ -51,6 +51,7 @@ services:
       # - DBUS_SESSION_BUS_ADDRESS=/dev/null
       - CYPRESS_baseUrl=http://workbench:${WORKBENCH_PORT}
       - NO_COLOR=true
+    user: "${UID}:${GID}"
     working_dir: /e2e
     volumes:
       - ./e2e-tests:/e2e
