@@ -10,7 +10,6 @@ export class Event<T extends {} | undefined> {
    * The payload of the event.
    */
   readonly payload: T | undefined;
-
   /**
    * Creates a new instance of the event.
    *

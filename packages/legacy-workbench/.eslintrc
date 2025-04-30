@@ -1,51 +1,51 @@
 {
-    "extends": [
-        "eslint:recommended",
-        "google",
-        "plugin:cypress/recommended"
+  "extends": [
+    "eslint:recommended",
+    "google",
+    "plugin:cypress/recommended"
+  ],
+  "rules": {
+    "no-console": "error",
+    "no-debugger": "error",
+    "comma-dangle": [
+      "error",
+      {
+        "objects": "never"
+      }
     ],
-    "rules": {
-        "no-console": "error",
-        "no-debugger": "error",
-        "comma-dangle": [
-            "error",
-            {
-                "objects": "never"
-            }
-        ],
-        "max-len": "off",
-        "indent": "off",
-        "no-tabs": "off",
-        "no-mixed-spaces-and-tabs": "off",
-        "space-before-function-paren": "off",
-        "padded-blocks": "off",
-        "require-jsdoc": "off",
-        "quotes": "off",
-        "no-var": "off",
-        "spaced-comment": "off",
-        "key-spacing": "off"
-    },
-    "parserOptions": {
-        "ecmaVersion": 2022,
-        "sourceType": "module",
-        "ecmaFeatures": {
-            "impliedStrict": true
-        }
-    },
-    "env": {
-        "es6": true,
-        "browser": true,
-        "amd": true,
-        "cypress/globals": true
-    },
-    "plugins": [
-        "cypress"
-    ],
-    "globals": {
-        "angular": true,
-        "$": true,
-        "_": true,
-        "d3": true,
-        "getError": true
+    "max-len": "off",
+    "indent": "off",
+    "no-tabs": "off",
+    "no-mixed-spaces-and-tabs": "off",
+    "space-before-function-paren": "off",
+    "padded-blocks": "off",
+    "require-jsdoc": "off",
+    "quotes": "off",
+    "no-var": "off",
+    "spaced-comment": "off",
+    "key-spacing": "off"
+  },
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "impliedStrict": true
     }
+  },
+  "env": {
+    "es6": true,
+    "browser": true,
+    "amd": true,
+    "cypress/globals": true
+  },
+  "plugins": [
+    "cypress"
+  ],
+  "globals": {
+    "angular": true,
+    "$": true,
+    "_": true,
+    "d3": true,
+    "getError": true
+  }
 }
