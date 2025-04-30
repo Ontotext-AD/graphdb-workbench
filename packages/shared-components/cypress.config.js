@@ -6,7 +6,9 @@ module.exports = defineConfig({
   defaultCommandTimeout: 10000,
   e2e: {
     baseUrl: 'http://localhost:3333/',
-    video: false,
+    video: true,
+    screenshotOnRunFailure: true,
+    trashAssetsBeforeRuns: true,
     setupNodeEvents(on, config) {
       // implement node event listeners here
       on('task', {
