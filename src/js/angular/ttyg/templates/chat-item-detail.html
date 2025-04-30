@@ -4,7 +4,7 @@
     <div class="user-message" ng-if="chatItemDetail.question">
         <div class="question alert-help"
              gdb-tooltip="{{ 'ttyg.chat_panel.labels.question_asked' | translate : { date: getHumanReadableQuestionTimestamp(chatItemDetail.question.timestamp), time: (chatItemDetail.question.timestamp | date:'HH:mm') } }}">
-            {{ chatItemDetail.question.message }}
+            <div class="question-text">{{chatItemDetail.question.message}}</div>
         </div>
     </div>
     <div class="answers" ng-repeat="answer in chatItemDetail.answers">

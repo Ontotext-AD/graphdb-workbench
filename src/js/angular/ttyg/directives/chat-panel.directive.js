@@ -1,4 +1,5 @@
 import './chat-item-detail.directive';
+import 'angular/core/directives/editable-content/editable-content';
 import {TTYGEventName} from "../services/ttyg-context.service";
 import {CHAT_MESSAGE_ROLE, ChatMessageModel} from "../../models/ttyg/chat-message";
 import {ChatItemModel} from "../../models/ttyg/chat-item";
@@ -7,7 +8,8 @@ import {decodeHTML} from "../../../../app";
 import {ChatModel} from "../../models/ttyg/chats";
 
 const modules = [
-    'graphdb.framework.ttyg.directives.chat-item-detail'
+    'graphdb.framework.ttyg.directives.chat-item-detail',
+    'graphdb.framework.core.directives.editable-content'
 ];
 
 angular

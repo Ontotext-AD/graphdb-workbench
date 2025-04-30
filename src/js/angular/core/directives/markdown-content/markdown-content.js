@@ -30,7 +30,7 @@ markdownContentDirective.$inject = ['$compile', 'MarkdownService'];
 
 function markdownContentDirective($compile, MarkdownService) {
     return {
-        template: '<div class="markdown-content" ng-bind-html="markdownContent"></div>',
+        templateUrl: 'js/angular/core/templates/markdown-content/markdown-content.html',
         restrict: 'E',
         scope: {
             content: '@',
