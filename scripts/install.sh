@@ -14,7 +14,7 @@ install_package() {
     echo "########################   Installing -- ${description} --   ###########################"
     echo ''
 
-    npm install --prefix "${package}"
+    npm ci --prefix "${package}"
 
     handle_error "Installing ${description}"
 }
