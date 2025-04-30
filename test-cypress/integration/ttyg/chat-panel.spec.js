@@ -42,7 +42,7 @@ describe('Ttyg ChatPanel', () => {
         // When the new question input is empty.
         // The "Ask" button must be disabled.
         ChatPanelSteps.getAskButtonElement().should('be.disabled');
-        ChatPanelSteps.getQuestionInputElement().should('be.disabled');
+        ChatPanelSteps.getQuestionInputElement().should('have.attr', 'disabled');
 
         // Then I expect the "Ask" button be not active because agent is not selected
         ChatPanelSteps.getAskButtonElement().should('not.be.enabled');
@@ -54,7 +54,8 @@ describe('Ttyg ChatPanel', () => {
         // When I type a question
         ChatPanelSteps.getQuestionInputElement()
             .should('be.visible')
-            .and('not.be.disabled')
+            .and('not.have.attr', 'disabled');
+        ChatPanelSteps.getQuestionInputElement()
             .type('Who is Han Solo?');
 
         // Then I expect the "Ask" button be active.
@@ -68,7 +69,7 @@ describe('Ttyg ChatPanel', () => {
         ChatPanelSteps.getChatDetailsElements().should('have.length', 3);
         ChatPanelSteps.getChatDetailQuestionElement(2).contains('Who is Han Solo?');
         // and input field be empty,
-        ChatPanelSteps.getQuestionInputElement().should('be.enabled');
+        ChatPanelSteps.getQuestionInputElement().should('not.have.attr', 'disabled');
         ChatPanelSteps.getQuestionInputElement().should('have.value', '');
         // and "Ask" button be disabled.
         ChatPanelSteps.getAskButtonElement().should('be.disabled');

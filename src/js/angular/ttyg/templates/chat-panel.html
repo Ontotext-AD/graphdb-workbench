@@ -37,16 +37,26 @@
         <chat-item-detail ng-if="askingChatItem" chat-item-detail="askingChatItem"
                           asking="!!askingChatItem"></chat-item-detail>
     </div>
-    <div class="new-question mt-3 d-flex" ng-if="!loadingChat" guide-selector="question-box">
-        <input class="form-control question-input" ng-model="chatItem.question.message" type="text" guide-selector="question-input"
-               ng-disabled="loadingChat || !selectedAgent || selectedAgent.isDeleted"
-               ng-keypress="onKeypressOnInput($event)">
-        <button class="btn btn-primary ask-button" guide-selector="question-ask"
-                ng-disabled="!chatItem.question.message || !selectedAgent || selectedAgent.isDeleted || waitingForLastMessage || loadingChat"
-                ng-click="ask()">
-            <i class="fa fa-arrow-turn-left-up"></i>
-            {{ 'ttyg.chat_panel.btn.ask.label ' | translate }}
-        </button>
+    <div class="new-question mt-3" ng-if="!loadingChat" guide-selector="question-box">
+        <div class="form-control">
+            <editable-content
+                    placeholder="{{'ttyg.chat_panel.placeholder.ask-input' | translate}}"
+                    ng-model="chatItem.question.message"
+                    guide-selector="question-input"
+                    ng-disabled="loadingChat || !selectedAgent || selectedAgent.isDeleted"
+                    ng-keypress="onKeypressOnInput($event)"
+                    class="question-input"></editable-content>
+            <div class="new-question-actions">
+                <div class="left-side-actions"></div>
+                <div class="right-side-actions">
+                    <button class="btn btn-primary ask-button" guide-selector="question-ask"
+                            ng-disabled="!chatItem.question.message || !selectedAgent || selectedAgent.isDeleted || waitingForLastMessage || loadingChat"
+                            ng-click="ask()">
+                        <i class="fa fa-arrow-up"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="messages-hint text-muted" ng-if="!loadingChat && chat.chatHistory.isEmpty() && !waitingForLastMessage" ng-cloak>
