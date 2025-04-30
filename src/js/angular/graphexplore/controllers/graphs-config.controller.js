@@ -258,6 +258,11 @@ function GraphConfigCtrl(
         $scope.newConfig.startQueryIncludeInferred = $scope.tabConfig.inference;
         $scope.newConfig.startQuerySameAs = $scope.tabConfig.sameAs;
 
+        if ($scope.newConfig.name) {
+            // remove whitespace
+            $scope.newConfig.name = $scope.newConfig.name.replace(/\s+/g, ' ').trim();
+        }
+
         validateCurrentPage(() => {
             if (!$scope.newConfig.name) {
                 showInvalidMsg($translate.instant('graphexplore.provide.config.name'));
