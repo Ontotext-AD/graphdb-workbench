@@ -4,6 +4,7 @@ services:
   shared_components:
     image: node:18-alpine
     working_dir: /app
+    user: "${UID}:${GID}"
     ports:
       - "3333:3333"
     volumes:
@@ -19,7 +20,8 @@ services:
     environment:
       - CYPRESS_baseUrl=http://shared_components:3333
       - NO_COLOR=true
+    user: "${UID}:${GID}"
     working_dir: /e2e
     volumes:
       - ./:/e2e
-    command: cypress run --browser chrome
+    command: cypress run --browser chrome --config-file cypress.config.js
