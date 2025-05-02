@@ -9,7 +9,6 @@ import {TranslocoPipe} from '@jsverse/transloco';
     TranslocoPipe
   ],
   templateUrl: './new-view.component.html',
-  styleUrl: './new-view.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class NewViewComponent {
