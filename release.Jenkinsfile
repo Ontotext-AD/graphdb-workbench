@@ -17,7 +17,7 @@ pipeline {
     environment {
         // Required for our version of webpack + newer Node.js
         NODE_OPTIONS = "--openssl-legacy-provider"
-        NODE_IMAGE = 'node:18.20.2-bullseye'
+        NODE_IMAGE = 'node:20-bullseye'
     }
 
     parameters {
@@ -66,8 +66,8 @@ pipeline {
             steps {
                 script {
                     git_cmd.checkout(branch: params.GIT_BRANCH)
-                    npm.prepareRelease(version: params.RELEASE_VERSION, scripts: ['build'])
-                    npm.prepareRelease(version: params.RELEASE_VERSION, dir: "test-cypress/")
+                    npm.prepareRelease(version: params.RELEASE_VERSION, scripts: ['install:ci', 'build'])
+                    npm.prepareRelease(version: params.RELEASE_VERSION, dir: "e2e-tests/")
 
                     withKsm(application: [
                         [
@@ -80,7 +80,7 @@ pipeline {
                         sh "echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc"
                         sh "npm whoami || echo 'whoami failed'"
                         sh "npm publish"
-                        dir("test-cypress/") {
+                        dir("e2e-tests/") {
                             sh "echo //registry.npmjs.org/:_authToken=\${NPM_TOKEN} > .npmrc"
                             sh "npm publish"
                         }
