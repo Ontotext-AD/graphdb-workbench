@@ -50,10 +50,8 @@ pipeline {
 
         stage('Lint') {
             steps {
-                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                    script {
-                        sh 'npm run lint'
-                    }
+                script {
+                    sh 'npm run lint'
                 }
             }
         }
