@@ -4,8 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-sparql',
   standalone: true,
   imports: [],
-  templateUrl: './sparql.component.html',
-  styleUrl: './sparql.component.scss'
+  templateUrl: './sparql.component.html'
 })
 export class SparqlComponent {
 
