@@ -23,10 +23,8 @@ pipeline {
                 }
             }
             steps {
-                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                    script {
-                        sh 'npm run install:ci'
-                    }
+                script {
+                    sh 'npm run install:ci'
                 }
             }
         }
@@ -40,38 +38,32 @@ pipeline {
                 }
             }
             steps {
-                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                    script {
-                        sh 'npm run build'
-                    }
+                script {
+                    sh 'npm run build'
                 }
             }
         }
 
         stage('Lint') {
             steps {
-                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                    script {
-                        sh 'npm run lint'
-                    }
+                script {
+                    sh 'npm run lint'
                 }
             }
         }
 
         stage('Sonar') {
             steps {
-                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                    withSonarQubeEnv(SONAR_ENVIRONMENT) {
-                        script {
-                            try {
-                                if (scmUtil.isMaster()) {
-                                    sh "node sonar-project.js --branch='${scmUtil.getCurrentBranch()}'"
-                                } else {
-                                    sh "node sonar-project.js --branch='${scmUtil.getSourceBranch()}' --target-branch='${scmUtil.getTargetBranch()}' --pull-request-id='${scmUtil.getMergeRequestId()}'"
-                                }
-                            } catch (e) {
-                                echo "Sonar analysis failed, but continuing the pipeline. Error: ${e.getMessage()}"
+                withSonarQubeEnv(SONAR_ENVIRONMENT) {
+                    script {
+                        try {
+                            if (scmUtil.isMaster()) {
+                                sh "node sonar-project.js --branch='${scmUtil.getCurrentBranch()}'"
+                            } else {
+                                sh "node sonar-project.js --branch='${scmUtil.getSourceBranch()}' --target-branch='${scmUtil.getTargetBranch()}' --pull-request-id='${scmUtil.getMergeRequestId()}'"
                             }
+                        } catch (e) {
+                            echo "Sonar analysis failed, but continuing the pipeline. Error: ${e.getMessage()}"
                         }
                     }
                 }
@@ -80,35 +72,31 @@ pipeline {
 
         stage('Test') {
             steps {
-                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                    script {
-                        sh 'npm run test'
-                    }
+                script {
+                    sh 'npm run test'
                 }
             }
         }
 
         stage('Shared-components Cypress Test') {
             steps {
-                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                    dir('packages/shared-components') {
-                        script {
-                            dockerCompose.buildCmd(composeFile: 'docker-compose.yaml', options: ['--force-rm']);
+                dir('packages/shared-components') {
+                    script {
+                        dockerCompose.buildCmd(composeFile: 'docker-compose.yaml', options: ['--force-rm']);
+                        try {
+                            dockerCompose.upCmd(environment: getUserUidGidPair(), composeFile: 'docker-compose.yaml', options: ['--abort-on-container-exit', '--exit-code-from cypress']);
+                        } finally {
                             try {
-                                dockerCompose.upCmd(environment: getUserUidGidPair(), composeFile: 'docker-compose.yaml', options: ['--abort-on-container-exit', '--exit-code-from cypress']);
-                            } finally {
-                                try {
-                                    archiveArtifacts allowEmptyArchive: true, artifacts: 'cypress/screenshots/**/*.png, cypress/videos/**/*.mp4';
-                                } catch (e) {
-                                    echo "Artifacts not found: ${e.getMessage()}";
-                                }
-
-                                dockerCompose.downCmd(
-                                    composeFile: 'docker-compose.yaml',
-                                    options: ['--volumes', '--remove-orphans', '--rmi', 'local'],
-                                    ignoreErrors: true
-                                );
+                                archiveArtifacts allowEmptyArchive: true, artifacts: 'cypress/screenshots/**/*.png, cypress/videos/**/*.mp4';
+                            } catch (e) {
+                                echo "Artifacts not found: ${e.getMessage()}";
                             }
+
+                            dockerCompose.downCmd(
+                                composeFile: 'docker-compose.yaml',
+                                options: ['--volumes', '--remove-orphans', '--rmi', 'local'],
+                                ignoreErrors: true
+                            );
                         }
                     }
                 }
