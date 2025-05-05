@@ -96,6 +96,15 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
                 focusQuestionInput();
             };
 
+            $scope.cancelConversation = () => {
+                if (!$scope.chatItem.chatId) {
+                    // TODO will be discussed with TTYG team
+                    console.log('the case when the conversation has no id');
+                }
+
+                TTYGContextService.emit(TTYGEventName.CANCEL_CHAT, $scope.chatItem.chatId);
+            }
+
             /**
              * Regenerates the answer for the provided chat item.
              *
@@ -230,6 +239,10 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
                 }
             };
 
+            const onChatCancelled = () => {
+                $scope.waitingForLastMessage = false;
+            };
+
             const getEmptyChatItem = () => {
                 const chatItem = new ChatItemModel();
                 chatItem.question = new ChatMessageModel({role: CHAT_MESSAGE_ROLE.USER});
@@ -299,6 +312,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION_FAILURE, onQuestionFailure));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_CHAT_FAILURE, onQuestionFailure));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_CHAT_SUCCESSFUL, onChatDeleted));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CANCEL_CHAT_SUCCESSFUL, onChatCancelled));
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);

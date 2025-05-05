@@ -91,6 +91,17 @@ function TTYGService(TTYGRestService, $repositories) {
     };
 
     /**
+     * Cancels an active conversation by its unique identifier.
+     *
+     * @param {string|number} id - The unique identifier of the conversation to be canceled.
+     * @returns {Promise} A promise that resolves when the conversation has been successfully canceled,
+     * or rejects with an error.
+     */
+    const cancelConversation = (id) => {
+        return TTYGRestService.cancelConversation(id);
+    }
+
+    /**
      * Creates a new conversation. The creation of a chat and asking a question share the same endpoint. If the request payload
      * doesn't contain the chat ID, the backend will create a new chat and return the answer, which includes the ID of the created chat.
      *
@@ -206,6 +217,7 @@ function TTYGService(TTYGRestService, $repositories) {
         getConversations,
         deleteConversation,
         createConversation,
+        cancelConversation,
         getAgents,
         getAgent,
         createAgent,

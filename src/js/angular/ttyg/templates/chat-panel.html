@@ -38,10 +38,16 @@
                           asking="!!askingChatItem"></chat-item-detail>
     </div>
     <div class="new-question mt-3 d-flex" ng-if="!loadingChat" guide-selector="question-box">
-        <input class="form-control question-input" ng-model="chatItem.question.message" type="text" guide-selector="question-input"
-               ng-disabled="loadingChat || !selectedAgent || selectedAgent.isDeleted"
-               ng-keypress="onKeypressOnInput($event)">
-        <button class="btn btn-primary ask-button" guide-selector="question-ask"
+        <div class="input-field-container">
+            <input class="form-control question-input" ng-model="chatItem.question.message" type="text" guide-selector="question-input"
+                   ng-disabled="loadingChat || !selectedAgent || selectedAgent.isDeleted"
+                   ng-keypress="onKeypressOnInput($event)">
+            <button class="btn btn-secondary cancel-ask-button" ng-if="waitingForLastMessage" ng-click="cancelConversation()"
+                    gdb-tooltip="{{'ttyg.chat_panel.btn.stop_generation.tooltip' | translate}}">
+                <i class="fa-solid fa-square"></i>
+            </button>
+        </div>
+        <button class="btn btn-primary ask-button" guide-selector="question-ask" ng-if="!waitingForLastMessage"
                 ng-disabled="!chatItem.question.message || !selectedAgent || selectedAgent.isDeleted || waitingForLastMessage || loadingChat"
                 ng-click="ask()">
             <i class="fa fa-arrow-turn-left-up"></i>
