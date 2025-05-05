@@ -7,7 +7,7 @@ import {SuggestionResponse} from './api/suggestion-response';
  */
 export class Suggestion extends Model<Suggestion> {
   /** Unique identifier for the suggestion. */
-  private _id!: number;
+  private _id?: number;
 
   /** The type of the suggestion. */
   private _type!: SuggestionType;
@@ -16,10 +16,15 @@ export class Suggestion extends Model<Suggestion> {
   private _value!: string;
 
   /** A description of the suggestion. */
-  private _description!: string;
+  private _description?: string;
 
   /** Whether the suggestion is hovered. The hovered suggestion is the subject of action on key press */
   private _hovered?: boolean;
+
+  /** Under some conditions (holding ctrlKey/metaKey, when selecting) the suggestion needs to be opened in
+   * the Graph visualization view, regardless, of the selected mode
+   */
+  private overrideToVisual = false;
 
   /** Whether the suggestion has been selected. When clicked, the suggestion will be selected */
   private _selected?: boolean;
@@ -32,11 +37,11 @@ export class Suggestion extends Model<Suggestion> {
     this.setDescription(data.description);
   }
 
-  getId(): number {
+  getId(): number | undefined {
     return this._id;
   }
 
-  setId(id: number): void {
+  setId(id?: number): void {
     this._id = id;
   }
 
@@ -56,11 +61,11 @@ export class Suggestion extends Model<Suggestion> {
     this._value = value;
   }
 
-  getDescription(): string {
+  getDescription(): string | undefined {
     return this._description;
   }
 
-  setDescription(description: string): void {
+  setDescription(description?: string): void {
     this._description = description;
   }
 
@@ -78,5 +83,13 @@ export class Suggestion extends Model<Suggestion> {
 
   setSelected(selected: boolean): void {
     this._selected = selected;
+  }
+
+  getOverrideToVisual(): boolean {
+    return this.overrideToVisual;
+  }
+
+  setOverrideToVisual(override: boolean): void {
+    this.overrideToVisual = override;
   }
 }
