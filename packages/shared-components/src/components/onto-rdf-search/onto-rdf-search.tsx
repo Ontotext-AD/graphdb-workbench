@@ -7,6 +7,7 @@ import {
 } from '@ontotext/workbench-api';
 import {Component, h, Listen, State} from '@stencil/core';
 import {TranslationService} from '../../services/translation.service';
+import {HtmlUtil} from '../../utils/html-util';
 
 /**
  * OntoRdfSearch component for RDF resource search.
@@ -25,7 +26,7 @@ export class OntoRdfSearch {
   @State() private isOpen: boolean = false;
   @State() private buttonConfig: SearchButtonConfig;
 
-  private redirectUrl: string = 'resource';
+  private redirectUrl: string = UriUtil.RESOURCE_URL;
   private rdfSearchRef: HTMLElement;
 
   /**
@@ -51,9 +52,14 @@ export class OntoRdfSearch {
     this.subscriptions.unsubscribeAll();
   }
 
+  componentDidRender() {
+    this.focusSearchInput();
+  }
+
+
   render() {
     return (
-      <section ref={(ref) => this.rdfSearchRef = ref} class="onto-rdf-search">
+      <section ref={(ref) => this.rdfSearchRef = ref} class="onto-rdf-search" onKeyDown={this.onKeyDown()}>
         <section class={`search-area ${this.isOpen ? 'visible' : 'invisible'}`}>
           <i onClick={this.setIsOpen(false)}
              tooltip-content={TranslationService.translate('rdf_search.tooltips.close_search_area')}
@@ -125,9 +131,26 @@ export class OntoRdfSearch {
     this.subscriptions.add(
       this.eventService.subscribe<SuggestionSelectedPayload>(SUGGESTION_SELECTED_EVENT, (payload) => {
         if (payload.getContext() === this.RDF_CONTEXT) {
-          openInNewTab(UriUtil.createAutocompleteRedirect(this.redirectUrl, payload.getSuggestion().getValue()));
+          const redirectUrl = payload.getSuggestion().getOverrideToVisual()
+            ? UriUtil.GRAPHS_VISUALIZATIONS_URL
+            : this.redirectUrl;
+          openInNewTab(UriUtil.createAutocompleteRedirect(redirectUrl, payload.getSuggestion().getValue()));
         }
       })
     );
+  }
+
+  private onKeyDown() {
+    return (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        this.isOpen = false;
+      }
+    }
+  }
+
+  private focusSearchInput() {
+    if (this.isOpen) {
+      HtmlUtil.focusElement(`#${this.RDF_CONTEXT}`);
+    }
   }
 }
