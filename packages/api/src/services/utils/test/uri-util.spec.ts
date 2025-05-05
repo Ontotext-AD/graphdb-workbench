@@ -19,4 +19,27 @@ describe('UriUtil', () => {
 
     expect(result).toBe(expectedRedirectUrl);
   });
+
+  test('should remove angle brackets from a URI', () => {
+    const uriWithAngleBrackets = '<http://example.com>';
+    const expectedUriWithoutAngleBrackets = 'http://example.com';
+
+    const result = UriUtil.removeAngleBrackets(uriWithAngleBrackets);
+
+    expect(result).toBe(expectedUriWithoutAngleBrackets);
+  });
+
+  test('should handle uri with no angle brackets', () => {
+    const uriWithoutAngleBrackets = 'http://example.com';
+    expect(UriUtil.removeAngleBrackets(uriWithoutAngleBrackets)).toBe(uriWithoutAngleBrackets);
+  });
+
+  test('should validate URIs', () => {
+    expect(UriUtil.isValidUri('http://example.com')).toBe(true);
+    expect(UriUtil.isValidUri('<http://example.com>')).toBe(true);
+    expect(UriUtil.isValidUri('urn:alabala')).toBe(true);
+    expect(UriUtil.isValidUri('invalid_uri')).toBe(false);
+    expect(UriUtil.isValidUri('http://example.com>')).toBe(false);
+    expect(UriUtil.isValidUri('<http://example.com')).toBe(false);
+  });
 });
