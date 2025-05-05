@@ -45,14 +45,19 @@
                     guide-selector="question-input"
                     ng-disabled="loadingChat || !selectedAgent || selectedAgent.isDeleted"
                     ng-keypress="onKeypressOnInput($event)"
-                    class="question-input"></editable-content>
+                    class="question-input">
+            </editable-content>
             <div class="new-question-actions">
                 <div class="left-side-actions"></div>
                 <div class="right-side-actions">
-                    <button class="btn btn-primary ask-button" guide-selector="question-ask"
+                    <button class="btn btn-primary ask-button" guide-selector="question-ask" ng-if="!waitingForLastMessage"
                             ng-disabled="!chatItem.question.message || !selectedAgent || selectedAgent.isDeleted || waitingForLastMessage || loadingChat"
                             ng-click="ask()">
                         <i class="fa fa-arrow-up"></i>
+                    </button>
+                    <button class="btn btn-secondary cancel-ask-button" ng-if="waitingForLastMessage" ng-click="cancelConversation()"
+                            gdb-tooltip="{{'ttyg.chat_panel.btn.stop_generation.tooltip' | translate}}">
+                        <i class="fa-solid fa-square"></i>
                     </button>
                 </div>
             </div>
