@@ -16,9 +16,11 @@ import {
   SUGGESTION_SELECTED_EVENT,
   SuggestionSelectedPayload,
   SuggestionType,
-  NamespacesContextService
+  NamespacesContextService,
+  UriUtil
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
+import {HtmlUtil} from '../../utils/html-util';
 
 /**
  * A component for rendering RDF search resource input with configurable buttons.
@@ -49,17 +51,15 @@ export class OntoSearchResourceInput {
    */
   @Prop() context: string;
 
+  /** Whether the rdf resource pre-search validation should be skipped. */
+  @Prop() skipValidation = false;
+
   /**
    * Button configuration for the search resource input.
    * Holds buttons to be displayed, as well as additional configuration,
    * such as whether the buttons should be treated as radio buttons.
    */
   @Prop() buttonConfig: SearchButtonConfig;
-
-  /**
-   * A trigger used to force component re-render.
-   */
-  @State() private updateTrigger = 0;
 
   /**
    * The current value of the search input field.
@@ -91,15 +91,18 @@ export class OntoSearchResourceInput {
         <div class="input-row">
           <span class="input-wrapper">
             <input value={this.inputValue}
+                   id={this.context}
                    type="text"
+                   autocomplete="off"
                    placeholder={`${TranslationService.translate('rdf_search.labels.search')}...`}
                    ref={(ref) => this.inputRef = ref}
+                   onKeyDown={this.onKeyDown()}
                    onInput={this.handleInput()}/>
             {this.inputValue?.length ?
               <i onClick={this.clearInput()}
                  tooltip-content={TranslationService.translate('rdf_search.tooltips.clear')}
                  tooltip-placement="bottom"
-                 class="fa-light fa-xmark"></i> : ''
+                 class="fa-light fa-xmark clear-input"></i> : ''
             }
           </span>
           {this.buttonConfig?.getButtons().getItems().map((button) => (
@@ -107,15 +110,14 @@ export class OntoSearchResourceInput {
                     onClick={this.handleButtonClick(button)}
                     class={`${button.selected ? 'selected' : ''}`}>{button.label}</button>
           ))}
-
         </div>
         <span class="hint">{TranslationService.translate('rdf_search.labels.hint')}</span>
         <section class="autocomplete-results-wrapper">
           {this.searchResult?.getSuggestions().getItems().map((suggestion) => (
             <p key={suggestion.getId()}
-               onClick={this.selectSuggestion(suggestion)}
+               onClick={this.onSuggestionClick(suggestion)}
                onMouseEnter={this.hoverSuggestion(suggestion)}
-               class={`${suggestion.isHovered() ? 'hovered' : ''} ${suggestion.isSelected() ? 'selected': ''}`}
+               class={`${suggestion.isHovered() ? 'hovered' : ''} ${suggestion.isSelected() ? 'selected' : ''}`}
                innerHTML={suggestion.getDescription()}></p>
           ))}
         </section>
@@ -130,21 +132,7 @@ export class OntoSearchResourceInput {
    * @param {SearchButton} button - The button that was clicked.
    */
   private handleButtonClick(button: SearchButton) {
-    return () => {
-      if (this.buttonConfig.isRadio && !button.selected) {
-        this.buttonConfig.deselectAll();
-        button.selected = true;
-        this.updateView();
-      }
-      button.callback();
-    };
-  }
-
-  /**
-   * Triggers a re-render of the component by incrementing the update trigger.
-   */
-  private updateView() {
-    this.updateTrigger++;
+    return () => this.buttonConfig = this.buttonConfig.selectButton(button);
   }
 
   /**
@@ -162,8 +150,7 @@ export class OntoSearchResourceInput {
     if (this.isAutocompleteEnabled) {
       this.autocompleteService.search(this.inputValue)
         .then((searchResult) => {
-          searchResult.hoverFirstSuggestion();
-          this.searchResult = searchResult;
+          this.searchResult = searchResult.hoverFirstSuggestion();
         });
     }
   }
@@ -177,11 +164,8 @@ export class OntoSearchResourceInput {
     };
   }
 
-  private hoverSuggestion(hoveredSuggestion: Suggestion) {
-    return () => {
-      this.searchResult.hoverSuggestion(hoveredSuggestion);
-      this.updateView();
-    };
+  private hoverSuggestion(suggestion: Suggestion) {
+    return () =>  this.searchResult = this.searchResult.hoverSuggestion(suggestion);
   }
 
   private onAutocompleteEnabledChange() {
@@ -190,6 +174,9 @@ export class OntoSearchResourceInput {
       this.autocompleteContextService.onAutocompleteEnabledChanged((enabled) => {
         if (enabled != undefined) {
           this.isAutocompleteEnabled = enabled;
+        }
+        if (!this.isAutocompleteEnabled) {
+          this.searchResult = this.searchResult?.clearSuggestions();
         }
       })
     );
@@ -207,23 +194,27 @@ export class OntoSearchResourceInput {
     }
   }
 
-  private selectSuggestion(suggestion: Suggestion) {
-    return () => {
-      if (suggestion.getType() === SuggestionType.PREFIX) {
-        this.expandPrefix(suggestion);
-      } else {
-        this.notifySuggestionSelected(suggestion);
-      }
+  private onSuggestionClick(suggestion: Suggestion) {
+    return (event: MouseEvent) => {
+      suggestion.setOverrideToVisual(event.ctrlKey || event.metaKey);
+      this.searchRdfResource(suggestion);
     };
   }
 
-  private notifySuggestionSelected(suggestion: Suggestion) {
-    this.searchResult.selectSuggestion(suggestion);
+  private searchRdfResource(suggestion: Suggestion) {
+    if (suggestion.getType() === SuggestionType.PREFIX) {
+      this.expandPrefix(suggestion);
+    } else {
+      this.notifyRdfResourceSelected(suggestion);
+    }
+  }
+
+  private notifyRdfResourceSelected(suggestion: Suggestion) {
+    this.searchResult = this.searchResult?.selectSuggestion(suggestion);
     this.eventService.emit({
       NAME: SUGGESTION_SELECTED_EVENT,
       payload: new SuggestionSelectedPayload(suggestion, this.context)
     });
-    this.updateView();
   }
 
   private expandPrefix(suggestion: Suggestion) {
@@ -234,14 +225,90 @@ export class OntoSearchResourceInput {
   private setInputValue(value: string) {
     this.inputValue = value;
     this.loadAutocompleteResults();
-    this.updateView();
   }
 
   private onNamespaceChange() {
     this.subscriptions.add(
       this.namespaceContextService.onNamespacesChanged((namespaces) => {
-        this.namespaces = namespaces
+        this.namespaces = namespaces;
       })
-    )
+    );
+  }
+
+  private onKeyDown() {
+    return (event: KeyboardEvent) => {
+      switch (event.key) {
+        case 'Enter':
+          this.onEnter(event);
+          break;
+        case 'Escape':
+          this.onEscape();
+          break;
+        case 'ArrowUp':
+          this.onArrowUp(event);
+          break;
+        case 'ArrowDown':
+          this.onArrowDown(event);
+          break;
+        default:
+          break;
+      }
+    };
+  }
+
+  private onEnter(event: KeyboardEvent) {
+    let selectedSuggestion = this.searchResult?.getHoveredSuggestion();
+    if (!selectedSuggestion) {
+      selectedSuggestion = new Suggestion({
+        value: UriUtil.removeAngleBrackets(this.inputValue),
+        type: SuggestionType.URI
+      });
+    }
+    selectedSuggestion.setOverrideToVisual(event.ctrlKey || event.metaKey);
+    this.validateAndSearch(selectedSuggestion);
+  }
+
+  private onArrowUp(event: KeyboardEvent) {
+    this.searchResult = this.searchResult.hoverPreviousSuggestion();
+    this.displaySuggestion(event);
+  }
+
+  private onArrowDown(event: KeyboardEvent) {
+    this.searchResult = this.searchResult.hoverNextSuggestion();
+    this.displaySuggestion(event);
+  }
+
+  private displaySuggestion(event: KeyboardEvent) {
+    event.preventDefault();
+    // Update the input directly, because the value should only be displayed,
+    // without triggering a new search and altering the autocomplete results
+    this.inputRef.value = this.searchResult.getHoveredSuggestion().getValue();
+    // The view needs to be updated before scrolling to the hovered suggestion.
+    // Otherwise, the next/previous suggestion does not have the 'hovered' class applied yet
+    // and this leads to unexpected behavior.
+    setTimeout(() => {
+      HtmlUtil.scrollElementIntoView('.hovered');
+    })
+  }
+
+  private validateAndSearch(suggestion: Suggestion) {
+    if (!this.skipValidation) {
+      if (!suggestion.getValue()) {
+        this.toastrService.error(TranslationService.translate('rdf_search.toasts.empty_input'));
+        return;
+      }
+
+      if (!UriUtil.isValidUri(suggestion.getValue())) {
+        this.toastrService.error(TranslationService.translate('rdf_search.toasts.invalid_uri'));
+        return;
+      }
+    }
+
+    this.searchRdfResource(suggestion);
+  }
+
+  private onEscape() {
+    // TODO: Input shouldn't be cleared if preserveSearch is enabled
+    this.setInputValue('');
   }
 }

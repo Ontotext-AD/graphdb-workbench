@@ -28,6 +28,7 @@ export class AutocompleteSearchResult extends Model<AutocompleteSearchResult> {
    */
   hoverFirstSuggestion() {
     this.hoverSuggestion(this.getSuggestions().getItems()[0]);
+    return this.copy();
   }
 
   /**
@@ -35,18 +36,11 @@ export class AutocompleteSearchResult extends Model<AutocompleteSearchResult> {
    * @param suggestion - The suggestion to be highlighted.
    */
   hoverSuggestion(suggestion: Suggestion) {
-    if (!suggestion || suggestion.isHovered()) {
-      return;
+    if (suggestion) {
+      this.clearHoveredState();
+      suggestion.setHovered(true);
     }
-    this.clearHoveredState();
-    suggestion.setHovered(true);
-  }
-
-  /**
-   * Sets the hovered state of all suggestions to false.
-   */
-  clearHoveredState() {
-    this.getSuggestions().getItems().forEach((suggestion) => suggestion.setHovered(false));
+    return this.copy();
   }
 
   /**
@@ -57,14 +51,65 @@ export class AutocompleteSearchResult extends Model<AutocompleteSearchResult> {
    * @param suggestion - The suggestion to be selected.
    */
   selectSuggestion(suggestion: Suggestion) {
-    if (!suggestion || suggestion.isSelected()) {
-      return;
+    if (suggestion) {
+      this.clearSelectedState();
+      suggestion.setSelected(true);
     }
-    this.clearSelectedState();
-    suggestion.setSelected(true);
+    return this.copy();
+  }
+
+  /**
+   * Returns the selected suggestion from the list, if any.
+   * @return The selected suggestion, or undefined if no suggestion is selected.
+   */
+  getHoveredSuggestion(): Suggestion | undefined {
+    return this.getSuggestions().getItems().find((suggestion) => suggestion.isHovered());
+  }
+
+  /**
+   * Moves the hover state to the previous suggestion in the list.
+   * If the currently hovered suggestion is the first one or no suggestion is hovered,
+   * no action is taken.
+   */
+  hoverPreviousSuggestion() {
+    const currentIndex = this.getSuggestions().getItems().findIndex((suggestion) => suggestion.isHovered());
+    if (currentIndex > 0) {
+      this.clearHoveredState();
+      this.getSuggestions().getItems()[currentIndex - 1].setHovered(true);
+    }
+    return this.copy();
+  }
+
+  /**
+   * Moves the hover state to the next suggestion in the list.
+   * If the currently hovered suggestion is the last one or no suggestion is hovered,
+   * no action is taken.
+   */
+  hoverNextSuggestion() {
+    const currentIndex = this.getSuggestions().getItems().findIndex((suggestion) => suggestion.isHovered());
+    if (currentIndex < this.getSuggestions().getItems().length - 1) {
+      this.clearHoveredState();
+      this.getSuggestions().getItems()[currentIndex + 1].setHovered(true);
+    }
+    return this.copy();
+  }
+
+  /**
+   * Clears the selected state of all suggestions.
+   */
+  clearSuggestions() {
+    this.setSuggestions(new SuggestionList());
+    return this.copy();
   }
 
   private clearSelectedState() {
     this.getSuggestions().getItems().forEach((suggestion) => suggestion.setSelected(false));
+  }
+
+  /**
+   * Sets the hovered state of all suggestions to false.
+   */
+  private clearHoveredState() {
+    this.getSuggestions().getItems().forEach((suggestion) => suggestion.setHovered(false));
   }
 }

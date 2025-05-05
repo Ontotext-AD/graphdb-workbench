@@ -8,9 +8,9 @@ export interface SuggestionResponse {
   value: string;
 
   /** A description of the suggestion. */
-  description: string;
+  description?: string;
 
   // internal
   /** Unique identifier for the suggestion. */
-  id: number;
+  id?: number;
 }
