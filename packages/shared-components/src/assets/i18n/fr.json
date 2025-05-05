@@ -181,7 +181,9 @@
     },
     "toasts": {
       "use_view_resource": "<b>Rechercher des ressources RDF</b></br>Utilisez <b>Voir la ressource</b> sur cette page",
-      "autocomplete_is_off": "L'autocomplétion est désactivée<br>Aller à Configuration -> Autocomplétion"
+      "autocomplete_is_off": "L'autocomplétion est désactivée<br>Aller à Configuration -> Autocomplétion",
+      "empty_input": "S'il vous plaît remplir le champ de saisie!",
+      "invalid_uri": "IRI non valide"
     }
   }
 }
