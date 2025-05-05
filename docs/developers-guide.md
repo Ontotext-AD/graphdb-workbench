@@ -938,18 +938,53 @@ module.exports = {
 5. Listen for bundle changes in the new module, using [language-context.service.ts#onLanguageBundleChanged](packages/api/src/services/language/language-context.service.ts)
 6. Use the new bundle for module translation (may be different, depending on the module).
 
+### Translation Validation
+To validate translations locally:
+
+```bash
+npm run validate
+```
+
+If the project structure differs or the script is placed elsewhere, provide the project root manually:
+
+```bash
+SCRIPT_ROOT=/absolute/path/to/repo-root npm run validate
+```
+
+The script will generate a file:
+
+```
+translation-report.json
+```
+
+If issues are found, the script will exit with code `1`.
+
+---
+### Running in Translation Vaidation CI
+On Jenkins, the script runs automatically in the `Validate` stage.
+
+If issues are found:
+- The pipeline will fail
+- The full validation report will be saved as a build artifact
+
+Look for this file under **"Build Artifacts"**:
+```
+translation-report.json
+```
+
+
 # CI
 
 ## Jenkins Pipeline Documentation
 
-This pipeline automates the build, test, and deployment process for the `graphdb-workbench` project.
+The `graphdb-workbench` project uses a Jenkins pipeline to automate installation, testing, building, validation, and SonarQube analysis.
 
 ### Overview
 
 The pipeline is configured to execute the following steps:
 - Install dependencies
 - Build the project
-- Run linting and tests
+- Run linting, validating and tests
 - Perform SonarQube analysis
 - Execute Cypress tests for shared components and the Workbench
 
@@ -963,65 +998,60 @@ If new static folders are created in the `dist` folder to be published (or old o
 
 ### Pipeline Details
 
-#### Agent
-The pipeline uses the `env.AGENT` variable to specify the build node.
-
-#### Tools
-- Node.js version `20.11.1`
+#### Tools and Environment
+- **Node.js**: `18.9.0` (configured tool), uses `node:20-alpine` image in most stages
+- **SonarQube**: Configured via `SONAR_ENVIRONMENT=SonarCloud`
+- **Docker Compose**: Used to run Cypress tests
+- **Cloud agent**: All stages run on `aws-large` nodes
 
 #### Stages
 
-1. **Build Info**  
-   Logs the build agent and branch details.
+1. **Install**
+  - Uses Docker to run `npm run install:ci`
 
-2. **Install**  
-   Installs project dependencies using:
-   ```bash
-   docker-compose run --rm npm run install:ci
-   ```
+2. **Build**
+  - Runs `npm run build` in the same Dockerized environment
 
-3. **Build**  
-   Builds the project using:
-   ```bash
-   docker-compose run --rm npm run build
-   ```
+3. **Lint**
+  - Runs `npm run lint`
 
-4. **Lint**  
-   Runs linting checks to ensure code quality:
-   ```bash
-   docker-compose run --rm npm run lint
-   ```
+4. **Validate**
+  - Executes translation validation via `npm run validate`
+  - Archives `translation-report.json` regardless of outcome
 
-5. **Test**  
-   Executes unit and integration tests:
-   ```bash
-   docker-compose run --rm npm run test
-   ```
+5. **Sonar**
+  - Conditional analysis depending on branch:
+    - For `master`: regular scan
+    - For PRs: branch/target/ID passed as args
 
-6. **Shared-components Cypress Test**  
-   Runs Cypress tests for shared components:
-   ```bash
-   sudo chown -R $(id -u):$(id -g) .
-   npm run cy:run
-   ```
+6. **Test**
+  - Executes unit/integration tests via `npm run test`
 
-7. **Workbench Cypress Test**  
-   Executes Workbench-specific Cypress tests (excluding the `master` branch):
-   ```bash
-   docker-compose --no-ansi -f docker-compose-test.yaml build --force-rm --no-cache --parallel
-   docker-compose --no-ansi -f docker-compose-test.yaml up --abort-on-container-exit --exit-code-from cypress
-   ```
+7. **Shared-components Cypress Test**
+  - Runs in `packages/shared-components`
+  - Uses Docker Compose (`docker-compose.yaml`)
+  - Archives Cypress screenshots and videos
+  - Cleans up containers, volumes, and images post-run
 
-8. **Sonar**  
-   Analyzes code quality with SonarQube:
-   ```bash
-   npm run sonar
-   ```
+8. **Workbench Cypress Test**
+  - Skipped on `master` branch
+  - Pulls a license file using Keeper Secrets Manager (KSM)
+  - Copies license into `e2e-tests/fixtures`
+  - Runs Workbench E2E Cypress tests via `docker-compose-test.yaml`
+  - Cleans up Docker artifacts after run
 
 ---
 
-### Notifications
-Failure notifications are sent to the user who triggered the build.
+### Post Actions
+
+- **Always**: Executes a workspace cleanup script managed by `configFileProvider`
+- **On Failure**: Sends email notification to the triggering user
+
+
+### Notes
+
+- Test runners use the current user’s UID/GID for correct permissions
+- KSM is used securely for pulling sensitive files like licenses
 
 ---
 
@@ -1031,81 +1061,71 @@ Failure notifications are sent to the user who triggered the build.
 
 This Jenkins pipeline facilitates the release process for the `graphdb-workbench` project. It automates versioning, building, and publishing to npm, ensuring a smooth release workflow.
 
-### Overview
+---
 
-The pipeline includes the following steps:
-- Prepare the release: switch branches, update versions, install dependencies, and build the project.
-- Publish to npm: publish the project and Cypress tests to the npm registry.
-- Post-release: commit and tag the release in Git.
+### Key Features
+
+- Cloud-based execution using `aws-small` agents
+- Publishes both the main project and Cypress E2E tests to npm
+- Uses Keeper Secrets Manager (KSM) for secure credentials
+- Slack integration for release notifications (optional)
+- Git tagging and pushing included
+- Automatically cleans up after both success and failure
 
 ---
 
-### Pipeline Details
+### Tools and Environment
 
-#### Agent
-The pipeline runs on the `graphdb-jenkins-node`.
-
-#### Tools
-- Node.js version `20.11.1`
-
-#### Parameters
-
-1. **Branch**: The branch to check out for the release process.
-- Default: `master`
-- Quick filtering is enabled.
-2. **ReleaseVersion**: The version to release (must be provided).
+- **Node.js**: Runs using Docker image `node:20-bullseye`
+- **Keeper Secrets Manager (KSM)**: Used for npm and Git credentials
+- **Git**: Auto-tags the release and pushes changes to GitHub
 
 ---
 
-### Stages
+### Pipeline Parameters Details
 
-#### 1. **Prepare**
-- Checks out the specified branch.
-- Updates the version using `npm version`.
-- Installs dependencies and builds the project:
+- `GIT_BRANCH`: Git branch to release from (default: `master`)
+- `RELEASE_VERSION`: Required version to release
+- `NOTIFY_SLACK`: Whether to send a Slack notification
+- `SLACK_CHANNEL`: Slack channel to notify (if enabled)
+
+---
+
+### Pipeline Stages
+
+#### 1. **Prepare & Publish**
+- Checks out the selected Git branch
+- Runs:
   ```bash
   npm run install:ci
   npm run build
   ```
-
-#### 2. **Publish**
-- Publishes the project and Cypress tests to the npm registry:
-  ```bash
-  echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc && npm publish
-  ```
+- Runs the same preparation in `e2e-tests/`
+- Uses KSM to set up the `.npmrc` auth token
+- Publishes both main and E2E packages to npm
+- Logs current npm user with `npm whoami`
 
 ---
 
 ### Post Actions
 
-#### Success
-- Commits the version changes to Git.
-- Tags the release and pushes both the changes and tags to the remote repository:
+#### On Success:
+- Commits and tags the release:
   ```bash
-  git commit -a -m 'Release ${ReleaseVersion}'
-  git tag -a v${ReleaseVersion} -m 'Release v${ReleaseVersion}'
-  git push --set-upstream origin ${branch} && git push --tags
+  git commit -a -m 'Release ${RELEASE_VERSION}'
+  git tag -a v${RELEASE_VERSION} -m 'Release v${RELEASE_VERSION}'
   ```
+- Uses KSM for Git credentials and pushes changes + tags
+- Optionally sends Slack notification if enabled
 
-#### Failure
-- Sends an email notification to the user who triggered the build with details about the failure.
-
-#### Always
-- Resets `.npmrc` after publishing to ensure token security.
----
-
-### Configuration
-
-1. **Jenkins Setup**:
-- Node.js tool configured (`nodejs-20.11.1`).
-- NPM token stored as a Jenkins credential (`npm-token`).
-
-2. **Environment Variables**:
-- `CI`: Used for CI mode.
-- `NODE_OPTIONS`: Set to `--openssl-legacy-provider` for compatibility.
-
-3. **Timeout and Concurrency**:
-- Builds are limited to a 15-minute timeout.
-- Concurrent builds are disabled.
+#### On Failure:
+- Sends an email to the build user
+- Restores `.npmrc` and removes any local tokens
 
 ---
+
+### Notes
+
+- Builds have a timeout of 15 minutes and cannot run concurrently
+- `.npmrc` is mounted into the container and cleaned afterward
+- Slack integration is optional and safely wrapped with fallback

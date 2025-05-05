@@ -52,6 +52,19 @@ pipeline {
             }
         }
 
+        stage('Validate') {
+            steps {
+                script {
+                    sh 'npm run validate'
+                }
+            }
+             post {
+                failure {
+                    archiveArtifacts allowEmptyArchive: true, artifacts: 'translation-report.json'
+                }
+            }
+        }
+
         stage('Sonar') {
             steps {
                 withSonarQubeEnv(SONAR_ENVIRONMENT) {
@@ -63,7 +76,7 @@ pipeline {
                                 sh "node sonar-project.js --branch='${scmUtil.getSourceBranch()}' --target-branch='${scmUtil.getTargetBranch()}' --pull-request-id='${scmUtil.getMergeRequestId()}'"
                             }
                         } catch (e) {
-                            echo "Sonar analysis failed, but continuing the pipeline. Error: ${e.getMessage()}"
+                            echo "Sonar analysis failed. Error: ${e.getMessage()}"
                         }
                     }
                 }
@@ -87,9 +100,14 @@ pipeline {
                             dockerCompose.upCmd(environment: getUserUidGidPair(), composeFile: 'docker-compose.yaml', options: ['--abort-on-container-exit', '--exit-code-from cypress']);
                         } finally {
                             try {
-                                archiveArtifacts allowEmptyArchive: true, artifacts: 'cypress/screenshots/**/*.png, cypress/videos/**/*.mp4';
+                                if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
+                                    echo "Tests passed — skipping video artifacts.";
+                                } else {
+                                    echo "Tests failed — archiving Cypress video artifacts.";
+                                    archiveArtifacts allowEmptyArchive: true, artifacts: 'cypress/screenshots/**/*.png, cypress/videos/**/*.mp4';
+                                }
                             } catch (e) {
-                                echo "Artifacts not found: ${e.getMessage()}";
+                                echo "Artifacts not found or failed to archive: ${e.getMessage()}";
                             }
 
                             dockerCompose.downCmd(
