@@ -350,6 +350,9 @@
                 "ask": {
                     "label": "Ask"
                 },
+                "stop_generation": {
+                    "tooltip": "Stop generating"
+                },
                 "regenerate": {
                     "tooltip": "Regenerate"
                 },

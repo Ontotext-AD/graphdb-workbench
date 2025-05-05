@@ -593,6 +593,16 @@ function TTYGViewCtrl(
             .finally(() => TTYGContextService.emit(TTYGEventName.DELETING_CHAT, {chatId: chat.id, inProgress: false}));
     };
 
+    const onCancelChat = (chatId) => {
+        TTYGService.cancelConversation(chatId)
+            .then(() => {
+                TTYGContextService.emit(TTYGEventName.CANCEL_CHAT_SUCCESSFUL);
+            })
+            .catch(() => {
+                TTYGContextService.emit(TTYGEventName.CANCEL_CHAT_FAILURE);
+            });
+    }
+
     /**
      * Handles the export of a chat by calling the service and updating the chats list.
      * @param {ChatModel} chat - the chat to be exported.
@@ -846,6 +856,7 @@ function TTYGViewCtrl(
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_CHAT, onCreateNewChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.RENAME_CHAT, onRenameChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_CHAT, onDeleteChat));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CANCEL_CHAT, onCancelChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CHAT_EXPORT, onExportChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION, onAskQuestion));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CONTINUE_CHAT_RUN, onContinueChatRun));
