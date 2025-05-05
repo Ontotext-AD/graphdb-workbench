@@ -159,6 +159,10 @@ export namespace Components {
           * The search resource component can appear more than once per page. This context is used to differentiate them. When a suggestion is selected different parents may need to do different things. The context is emitted alongside the suggestion upon select.
          */
         "context": string;
+        /**
+          * Whether the rdf resource pre-search validation should be skipped.
+         */
+        "skipValidation": boolean;
     }
     /**
      * A component for managing test context in the application. Used only for testing
@@ -718,6 +722,10 @@ declare namespace LocalJSX {
           * The search resource component can appear more than once per page. This context is used to differentiate them. When a suggestion is selected different parents may need to do different things. The context is emitted alongside the suggestion upon select.
          */
         "context"?: string;
+        /**
+          * Whether the rdf resource pre-search validation should be skipped.
+         */
+        "skipValidation"?: boolean;
     }
     /**
      * A component for managing test context in the application. Used only for testing
