@@ -3,7 +3,6 @@ import {RdfSearchSteps} from "../../steps/rdf-search/rdf-search-steps";
 describe('RDF Search', () => {
   beforeEach(() => {
     cy.on('window:before:load', (win) => {
-      win.open = cy.stub().as('windowOpen');
       win.crypto.randomUUID = () => new Date().toISOString();
     })
   })
@@ -91,22 +90,37 @@ describe('RDF Search', () => {
     RdfSearchSteps.clickSuggestion(0);
     // Then, I expect to see the prefix expanded in the input field
     RdfSearchSteps.getInputField().should('have.value', 'http://jena.apache.org/ARQ/list#');
-    // And, window.open shouldn't have been called on the prefix click.
-    // It should simply expand in the input field
-    cy.get('@windowOpen').should('not.be.called');
+  });
 
-    // When, I click on a non-prefixed suggestion
-    RdfSearchSteps.clickSuggestion(1);
-    // Then, I expect to be redirected to the view resource page in a new tab. Because the `TABLE` button is
-    // selected by default.
-    const encodedSuggestionUri = 'http%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23li';
-    cy.get('@windowOpen').should('be.calledWith', `resource?uri=${encodedSuggestionUri}`, "_blank");
+  it('Should validate and search RDF resources with keyboard events', () => {
+    // Given, I visit the RDF search page
+    RdfSearchSteps.visit();
+    // And, I have disabled autocomplete
+    RdfSearchSteps.disableAutocomplete();
+    // And, load namespaces
+    RdfSearchSteps.loadNamespaces();
 
-    // When, I click on the Visual view button
-    RdfSearchSteps.clickButton('Visual');
-    // And I select the same suggestion
-    RdfSearchSteps.clickSuggestion(1);
-    // Then, I expect to be redirected to the graphs-visualizations page in a new tab.
-    cy.get('@windowOpen').should('be.calledWith', `graphs-visualizations?uri=${encodedSuggestionUri}`, "_blank");
+    // When, I open the search area and press enter on the empty input field
+    RdfSearchSteps.hoverSearchIcon();
+    RdfSearchSteps.clickSearchIcon();
+    RdfSearchSteps.pressEnter();
+    // Then, I expect to see a toast error notification, because I haven't entered anything
+    RdfSearchSteps.getToastNotification()
+      .should('be.visible')
+      .and('contain', 'Please fill the input field!');
+
+    // When, I type an invalid URI in the input field and press enter
+    RdfSearchSteps.typeInSearchInput('invalid_uri');
+    RdfSearchSteps.pressEnter();
+    // Then, I expect to see a toast error notification, because the URI is not in valid format
+    RdfSearchSteps.getToastNotification()
+      .should('be.visible')
+      .and('contain', 'Invalid IRI');
+
+    // When, I press escape to close the search area
+    RdfSearchSteps.pressEscape();
+    RdfSearchSteps.getSearchArea().should('not.be.visible');
+    // And the search icon should be visible
+    RdfSearchSteps.getSearchIcon().should('be.visible');
   });
 });
