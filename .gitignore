@@ -10,3 +10,4 @@ coverage/
 
 # Test environment
 graphdb.license
+/translation-report.json
