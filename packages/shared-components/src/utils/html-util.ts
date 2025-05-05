@@ -80,4 +80,19 @@ export class HtmlUtil {
     const element = document.querySelector(selector) as HTMLElement;
     element?.focus();
   }
+
+  /**
+   * Scrolls an element into the visible area of its scrollable container.
+   *
+   * @param elementSelector - A CSS selector string used to identify the element to scroll into view.
+   *                          This should be a valid CSS selector that uniquely identifies the target element.
+   */
+  static scrollElementIntoView(elementSelector: string): void {
+    const element = document.querySelector(elementSelector) as HTMLElement;
+    if (!element) {
+      return;
+    }
+
+    element.scrollIntoView({block: 'nearest'});
+  }
 }

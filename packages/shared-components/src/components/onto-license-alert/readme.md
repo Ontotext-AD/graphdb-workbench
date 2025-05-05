@@ -9,7 +9,7 @@
 
 | Property  | Attribute | Description                     | Type      | Default     |
 | --------- | --------- | ------------------------------- | --------- | ----------- |
-| `license` | `license` | The current license information | `License` | `undefined` |
+| `license` | --        | The current license information | `License` | `undefined` |
 
 
 ## Dependencies
