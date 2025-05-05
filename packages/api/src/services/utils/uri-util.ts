@@ -2,6 +2,7 @@
  * Utility class for handling and manipulating URIs.
  */
 export class UriUtil {
+  private static readonly ABS_URI_REGEX = /^<?(http|urn).*>?/;
   static GRAPHS_VISUALIZATIONS_URL = 'graphs-visualizations';
   static RESOURCE_URL = 'resource';
 
@@ -72,5 +73,60 @@ export class UriUtil {
    */
   static createAutocompleteRedirect(redirectUrl: string, resourceUri: string): string {
     return `${redirectUrl}?uri=${encodeURIComponent(resourceUri)}`;
+  }
+
+  /**
+   * Removes angle brackets from a URI if they are present.
+   *
+   * This function checks if a URI is enclosed in angle brackets (< and >)
+   * and removes them if they exist. This is useful for handling URIs in
+   * different formats, particularly when working with RDF data where URIs
+   * are often enclosed in angle brackets.
+   *
+   * @param uri - The URI string that may or may not be enclosed in angle brackets.
+   * @returns The URI with angle brackets removed if they were present, otherwise the original URI.
+   */
+  static removeAngleBrackets(uri: string): string {
+    if (uri?.startsWith('<') && uri?.endsWith('>')) {
+      return uri.substring(1, uri.length - 1);
+    }
+    return uri;
+  }
+
+  /**
+   * Validates if a string is a properly formatted URI.
+   *
+   * The function checks if the URI has a valid protocol (http(s) or urn)
+   * and proper structure. For HTTP URIs, it verifies the presence of
+   * schema slashes (//) and content after them. For URN URIs, it checks
+   * if there's content after the "urn:" prefix.
+   *
+   * @param uri - The string to validate as a URI.
+   * @returns `true` if the string is a valid URI, otherwise `false`.
+   */
+  static isValidUri(uri: string): boolean {
+    let valid = false;
+    if (this.hasValidProtocol(uri)) {
+      if (uri.indexOf('http') >= 0) {
+        const schemaSlashesIdx = uri.indexOf('//');
+        valid = schemaSlashesIdx > 4
+          && uri.substring(schemaSlashesIdx + 2).length > 0;
+      } else if (uri.indexOf('urn') >= 0) {
+        valid = uri.substring(4).length > 0;
+      }
+    }
+    return valid;
+  }
+
+  private static hasAngleBrackets(uri: string): boolean {
+    return uri.startsWith('<') && uri.endsWith('>');
+  }
+
+  private static hasNoAngleBrackets(uri: string): boolean {
+    return !uri.startsWith('<') && !uri.endsWith('>');
+  }
+
+  private static hasValidProtocol(uri: string): boolean {
+    return this.ABS_URI_REGEX.test(uri) && (this.hasNoAngleBrackets(uri) || this.hasAngleBrackets(uri));
   }
 }
