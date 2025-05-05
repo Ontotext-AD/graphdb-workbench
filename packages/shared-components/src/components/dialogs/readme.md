@@ -9,7 +9,7 @@
 
 | Property | Attribute | Description                          | Type                                                                            | Default     |
 | -------- | --------- | ------------------------------------ | ------------------------------------------------------------------------------- | ----------- |
-| `config` | `config`  | Configuration object for the dialog. | `{ dialogTitle: string; onClose: (evt: KeyboardEvent \| MouseEvent) => void; }` | `undefined` |
+| `config` | --        | Configuration object for the dialog. | `{ dialogTitle: string; onClose: (evt: KeyboardEvent \| MouseEvent) => void; }` | `undefined` |
 
 
 ## Dependencies

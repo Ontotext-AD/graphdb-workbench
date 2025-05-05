@@ -181,7 +181,9 @@
     },
     "toasts": {
       "use_view_resource": "<b>Search RDF resources</b></br>Use <b>View resource</b> on this page",
-      "autocomplete_is_off": "Autocomplete is OFF<br>Go to Setup -> Autocomplete"
+      "autocomplete_is_off": "Autocomplete is OFF<br>Go to Setup -> Autocomplete",
+      "empty_input": "Please fill the input field!",
+      "invalid_uri": "Invalid IRI"
     }
   }
 }

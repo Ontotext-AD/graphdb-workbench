@@ -77,8 +77,32 @@ export class RdfSearchSteps extends BaseSteps {
     return this.getAutocompleteResultsWrapper().find('p').eq(index);
   }
 
-  static clickSuggestion(index) {
-    return this.getSuggestion(index).click();
+  static clickSuggestion(index, options = {}) {
+    return this.getSuggestion(index).click(options);
+  }
+
+  static ctrlClickSuggestion(index) {
+    return this.clickSuggestion(index, {ctrlKey: true});
+  }
+
+  static pressEnter() {
+    return this.getInputField().type('{enter}');
+  }
+
+  static ctrlPressEnter() {
+    return this.getInputField().type('{ctrl}{enter}');
+  }
+
+  static getClearInputIcon() {
+    return this.getSearchArea().find('.clear-input');
+  }
+
+  static clearSearchInput() {
+    return this.getClearInputIcon().click();
+  }
+
+  static pressEscape() {
+    return this.getInputField().type('{esc}');
   }
 
   static loadNamespaces() {
