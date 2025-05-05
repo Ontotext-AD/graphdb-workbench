@@ -20,7 +20,8 @@ validate_package() {
     handle_error "Validating ${description}"
 }
 
-# Test packages
+# Validate packages
+validate_package "root-config"
 validate_package "legacy-workbench"
 
 echo ''
