@@ -399,12 +399,26 @@ function GraphsVisualizationsCtrl(
     };
     subscriptions.push($scope.$watch('propertiesObj.items', propertiesItemsChangeHandler));
 
+    // ========================= Save graph modal =========================
+    let modalIsOpen = false;
+    // When restarting the modal ("Save as new..." button press) opens a new modal and closes the old one
+    let openModalCount = 0;
+
+    function handleKeyDown(e) {
+        if (modalIsOpen) {
+            e.stopPropagation();
+        }
+    }
+
+    document.addEventListener('keydown', handleKeyDown, true);
+
     const removeAllListeners = () => {
         subscriptions.forEach((subscription) => subscription());
     };
 
     const destroyHandler = () => {
         removeAllListeners();
+        document.removeEventListener('keydown', handleKeyDown, true);
     };
 
     // Deregister the watcher when the scope/directive is destroyed
@@ -2887,6 +2901,8 @@ function GraphsVisualizationsCtrl(
                 }
             }
         });
+        openModalCount++;
+        modalIsOpen = true;
 
         modalInstance.result.then(function (data) {
             if (data.restart) {
@@ -2903,6 +2919,13 @@ function GraphsVisualizationsCtrl(
                 case 'rename':
                     editSavedGraphHttp(data.graph);
                     break;
+            }
+        }).finally(() => {
+            openModalCount--;
+            // Ensure that all modals are closed before resetting the flag
+            if (openModalCount <= 0) {
+                modalIsOpen = false;
+                openModalCount = 0;
             }
         });
     };
