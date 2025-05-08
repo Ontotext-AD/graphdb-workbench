@@ -105,8 +105,8 @@ function RepositoriesRestService($http) {
         return $http.get(`${REPOSITORIES_ENDPOINT}/cluster`);
     }
 
-    function getRepositoryFileContent(file) {
-        return $http.get(`${REPOSITORIES_ENDPOINT}/file`, {params: {fileLocation: file}});
+    function getRepositoryFileContent(file, location) {
+        return $http.get(`${REPOSITORIES_ENDPOINT}/file`, {params: {fileLocation: file, location: location}});
     }
 
     function updateRepositoryFileContent(fileLocation, content, location) {
