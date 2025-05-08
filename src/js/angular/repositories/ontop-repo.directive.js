@@ -175,6 +175,9 @@ function ontopRepoDirective($uibModal, RepositoriesRestService, toastr, Upload, 
                     },
                     dialogTitle: () => {
                         return title;
+                    },
+                    location: () => {
+                        return $scope.repositoryInfo.location
                     }
                 }
             });
