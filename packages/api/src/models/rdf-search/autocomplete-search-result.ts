@@ -102,6 +102,10 @@ export class AutocompleteSearchResult extends Model<AutocompleteSearchResult> {
     return this.copy();
   }
 
+  getByValue(value: string): Suggestion | undefined {
+    return this.getSuggestions().getItems().find((suggestion) => suggestion.getValue() === value);
+  }
+
   private clearSelectedState() {
     this.getSuggestions().getItems().forEach((suggestion) => suggestion.setSelected(false));
   }

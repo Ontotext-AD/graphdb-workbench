@@ -123,4 +123,42 @@ describe('RDF Search', () => {
     // And the search icon should be visible
     RdfSearchSteps.getSearchIcon().should('be.visible');
   });
+
+  it('Should load state from local storage, when search is preserved', () => {
+    // Given, I visit the RDF search page
+    RdfSearchSteps.visit();
+    // And, I have enabled autocomplete
+    RdfSearchSteps.enableAutocomplete();
+    // And, load namespaces
+    RdfSearchSteps.loadNamespaces();
+
+    // When, I open the search area
+    RdfSearchSteps.hoverSearchIcon();
+    RdfSearchSteps.clickSearchIcon();
+    // And type something in the input field
+    const text = 'test';
+    RdfSearchSteps.typeInSearchInput(text);
+    // And, I reload the page
+    RdfSearchSteps.reloadPage();
+    // And, I reopen the search area
+    RdfSearchSteps.hoverSearchIcon();
+    RdfSearchSteps.clickSearchIcon();
+    // Then, I expect to see the input field with the previously entered text
+    RdfSearchSteps.getInputField().should('have.value', text);
+
+    // When, I select an element in the autocomplete results
+    const suggestionIndex = 10;
+    const expectedSuggestion = 'http://www.w3.org/ns/shacl#Literal';
+    RdfSearchSteps.ctrlClickSuggestion(suggestionIndex);
+    RdfSearchSteps.getSuggestion(suggestionIndex).should('have.text', expectedSuggestion);
+    // And, I reload the page
+    RdfSearchSteps.reloadPage();
+    // And, I reopen the search area
+    RdfSearchSteps.hoverSearchIcon();
+    RdfSearchSteps.clickSearchIcon();
+    // Then, I expect to see the previously selected element in the autocomplete results
+    RdfSearchSteps.getSelectedSuggestion()
+      .should('have.text', expectedSuggestion)
+      .and('have.class', 'selected');
+  });
 });

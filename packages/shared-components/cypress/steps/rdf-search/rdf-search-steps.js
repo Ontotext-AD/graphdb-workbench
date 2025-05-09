@@ -69,6 +69,10 @@ export class RdfSearchSteps extends BaseSteps {
     return this.getToastNotification().click();
   }
 
+  static getSelectedSuggestion() {
+    return this.getAutocompleteResultsWrapper().find('p.selected');
+  }
+
   static getAutocompleteResultsWrapper() {
     return this.getSearchArea().find('.autocomplete-results-wrapper');
   }
