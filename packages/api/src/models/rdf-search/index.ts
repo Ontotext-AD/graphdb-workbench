@@ -6,4 +6,4 @@ export {SuggestionList} from './suggestion-list';
 export {Suggestion} from './suggestion';
 export {SuggestionType} from './suggestion-type';
 export {SuggestionSelectedPayload} from './suggestion-selected-payload';
-export {SUGGESTION_SELECTED_EVENT} from './rdf-search-constants';
+export * from './rdf-search-constants';

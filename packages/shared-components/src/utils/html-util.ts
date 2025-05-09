@@ -86,13 +86,43 @@ export class HtmlUtil {
    *
    * @param elementSelector - A CSS selector string used to identify the element to scroll into view.
    *                          This should be a valid CSS selector that uniquely identifies the target element.
+   * @param options the scroll into view options.
    */
-  static scrollElementIntoView(elementSelector: string): void {
+  static scrollElementIntoView(elementSelector: string, options: ScrollIntoViewOptions = {block: 'nearest'}): void {
     const element = document.querySelector(elementSelector) as HTMLElement;
     if (!element) {
       return;
     }
 
-    element.scrollIntoView({block: 'nearest'});
+    element.scrollIntoView(options);
+  }
+
+  /**
+   * Waits for an element to appear in the DOM by observing DOM mutations.
+   * This function creates a MutationObserver that watches for changes in the document body
+   * and resolves with the element once it becomes available.
+   *
+   * @param selector - A CSS selector string used to identify the element to wait for.
+   *                   This should be a valid CSS selector that uniquely identifies the target element.
+   *
+   * @returns A Promise that resolves with the found HTMLElement when it appears in the DOM,
+   *          or rejects if an error occurs during the observation process.
+   */
+  static waitForElement(selector: string): Promise<HTMLElement> {
+     return new Promise((resolve, reject) => {
+      const observer = new MutationObserver(() => {
+        try {
+          const element = document.querySelector(selector) as HTMLElement;
+          if (element) {
+            observer.disconnect();
+            resolve(element);
+          }
+        } catch (error) {
+          observer.disconnect();
+          reject(error);
+        }
+      });
+      observer.observe(document.body, { subtree: true, childList: true, attributes: true });
+    });
   }
 }
