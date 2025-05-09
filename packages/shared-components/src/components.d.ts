@@ -160,6 +160,14 @@ export namespace Components {
          */
         "context": string;
         /**
+          * Whether the search component is currently hidden. Can be shown/hidden in the RDF search
+         */
+        "isHidden": boolean;
+        /**
+          * Whether to preserve the input value and last selected suggestion If true, both will be stored in local storage and loaded, when the component is rendered
+         */
+        "preserveSearch": boolean;
+        /**
           * Whether the rdf resource pre-search validation should be skipped.
          */
         "skipValidation": boolean;
@@ -722,6 +730,14 @@ declare namespace LocalJSX {
           * The search resource component can appear more than once per page. This context is used to differentiate them. When a suggestion is selected different parents may need to do different things. The context is emitted alongside the suggestion upon select.
          */
         "context"?: string;
+        /**
+          * Whether the search component is currently hidden. Can be shown/hidden in the RDF search
+         */
+        "isHidden"?: boolean;
+        /**
+          * Whether to preserve the input value and last selected suggestion If true, both will be stored in local storage and loaded, when the component is rendered
+         */
+        "preserveSearch"?: boolean;
         /**
           * Whether the rdf resource pre-search validation should be skipped.
          */

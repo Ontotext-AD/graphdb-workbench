@@ -1,4 +1,6 @@
 import {AutocompleteStorageService} from '../autocomplete-storage.service';
+import {Suggestion, SuggestionType} from '../../../models/rdf-search';
+import {VISUAL_VIEW, TABLE_VIEW} from '../../../models/rdf-search/rdf-search-constants';
 
 describe('Autocomplete storage service', () => {
   let service: AutocompleteStorageService;
@@ -15,4 +17,37 @@ describe('Autocomplete storage service', () => {
     expect(service.isEnabled()).toEqual(false);
   });
 
+  test('Should store and retrieve the input value', () => {
+    service.setInputValue('example');
+    expect(service.getInputValue()).toEqual('example');
+  });
+
+  test('Should store and retrieve the last selected suggestion', () => {
+    const suggestion = new Suggestion({value: 'example', type: SuggestionType.URI});
+    service.setLastSelected(suggestion);
+    expect(service.getLastSelectedValue()).toEqual('example');
+  });
+
+  test('Should clear the search history', () => {
+    service.setInputValue('example');
+    expect(service.getInputValue()).toEqual('example');
+    service.clearStoredSearch();
+    expect(service.getInputValue()).toEqual('');
+    expect(service.getLastSelectedValue()).toEqual('');
+  });
+
+  test('Should return empty string for missing keys', () => {
+    expect(service.getLastSelectedValue()).toEqual('');
+    expect(service.getInputValue()).toEqual('');
+  });
+
+  test('Should store and retrieve selected view', () => {
+    expect(service.getSelectedView()).toEqual('');
+
+    service.setSelectedView(TABLE_VIEW);
+    expect(service.getSelectedView()).toEqual(TABLE_VIEW);
+
+    service.setSelectedView(VISUAL_VIEW);
+    expect(service.getSelectedView()).toEqual(VISUAL_VIEW);
+  });
 });

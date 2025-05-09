@@ -1,4 +1,5 @@
 import {
+  AutocompleteStorageService,
   EventService, openInNewTab,
   SearchButton,
   SearchButtonConfig,
@@ -8,6 +9,7 @@ import {
 import {Component, h, Listen, State} from '@stencil/core';
 import {TranslationService} from '../../services/translation.service';
 import {HtmlUtil} from '../../utils/html-util';
+import {VISUAL_VIEW, TABLE_VIEW} from '../../../../api/src/models/rdf-search/rdf-search-constants';
 
 /**
  * OntoRdfSearch component for RDF resource search.
@@ -20,6 +22,7 @@ import {HtmlUtil} from '../../utils/html-util';
 export class OntoRdfSearch {
   private readonly subscriptions: SubscriptionList = new SubscriptionList();
   private readonly eventService = ServiceProvider.get(EventService);
+  private readonly autocompleteStorageService = ServiceProvider.get(AutocompleteStorageService);
 
   private readonly RDF_CONTEXT = 'rdfSearchContext';
 
@@ -44,7 +47,7 @@ export class OntoRdfSearch {
     }
   }
 
-  componentWillLoad() {
+  connectedCallback() {
     this.onSuggestionSelected();
   }
 
@@ -54,6 +57,11 @@ export class OntoRdfSearch {
 
   componentDidRender() {
     this.focusSearchInput();
+  }
+
+  componentDidLoad() {
+    this.buttonConfig = this.createButtonConfig();
+    this.loadSelectedViewFromStorage();
   }
 
 
@@ -66,6 +74,8 @@ export class OntoRdfSearch {
              tooltip-placement="bottom"
              class="fa-light fa-xmark-large close-btn"></i>
           <onto-search-resource-input buttonConfig={this.buttonConfig}
+                                      preserveSearch={true}
+                                      isHidden={!this.isOpen}
                                       context={this.RDF_CONTEXT}></onto-search-resource-input>
         </section>
         {!this.isOpen ? <onto-search-icon onClick={this.setIsOpen(true)}></onto-search-icon> : ''}
@@ -80,9 +90,6 @@ export class OntoRdfSearch {
   private setIsOpen(isOpen: boolean) {
     return () => {
       this.isOpen = isOpen;
-      if (isOpen) {
-        this.buttonConfig = this.createButtonConfig();
-      }
     };
   }
 
@@ -95,16 +102,20 @@ export class OntoRdfSearch {
       isRadio: true,
       buttons: [
         this.createSearchButton(
+          TABLE_VIEW,
           'rdf_search.buttons.table',
           () => {
             this.redirectUrl = UriUtil.RESOURCE_URL;
+            this.autocompleteStorageService.setSelectedView(TABLE_VIEW);
           },
           true
         ),
         this.createSearchButton(
+          VISUAL_VIEW,
           'rdf_search.buttons.visual',
           () => {
             this.redirectUrl = UriUtil.GRAPHS_VISUALIZATIONS_URL;
+            this.autocompleteStorageService.setSelectedView(VISUAL_VIEW);
           },
           false
         )
@@ -114,14 +125,16 @@ export class OntoRdfSearch {
 
   /**
    * Creates a search button with the given parameters.
+   * @param id - The id for the button.
    * @param labelKey - The key for the button's label translation.
    * @param callback - The function to be called when the button is clicked.
    * @param selected - Boolean indicating whether the button should be initially selected.
    * @returns A SearchButton object.
    */
-  private createSearchButton(labelKey: string, callback: () => void, selected: boolean): SearchButton {
+  private createSearchButton(id: string, labelKey: string, callback: () => void, selected: boolean): SearchButton {
     return new SearchButton({
       label: TranslationService.translate(labelKey),
+      id,
       callback,
       selected
     } as SearchButton);
@@ -151,6 +164,16 @@ export class OntoRdfSearch {
   private focusSearchInput() {
     if (this.isOpen) {
       HtmlUtil.focusElement(`#${this.RDF_CONTEXT}`);
+    }
+  }
+
+  private loadSelectedViewFromStorage() {
+    const selectedView = this.autocompleteStorageService.getSelectedView();
+    if (selectedView) {
+      const selectedButton = this.buttonConfig.getButtons().find((button) => button.id === selectedView);
+      if (selectedButton) {
+        this.buttonConfig = this.buttonConfig.selectButton(selectedButton)
+      }
     }
   }
 }
