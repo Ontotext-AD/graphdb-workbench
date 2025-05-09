@@ -429,6 +429,7 @@
             "loading_agents": "Chargement des agents...",
             "deleting_agent": "Suppression de l'agent...",
             "deleted_repository": "Dépôt supprimé",
+            "incompatible_agent": "Incompatible avec la version actuelle de GraphDB",
             "create_agent_modal": {
                 "title": {
                     "create": "Créer un agent",

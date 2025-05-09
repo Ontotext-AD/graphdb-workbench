@@ -177,7 +177,8 @@ export const agentModelMapper = (data, localRepositoryIds) => {
         seed: data.seed,
         instructions: agentInstructionsMapper(data.instructions),
         assistantExtractionMethods: extractionMethodsMapper(data.assistantExtractionMethods),
-        additionalExtractionMethods: additionalExtractionMethodsMapper(data.additionalExtractionMethods)
+        additionalExtractionMethods: additionalExtractionMethodsMapper(data.additionalExtractionMethods),
+        compatibility: data.compatibility,
     }, hashGenerator);
 };
 

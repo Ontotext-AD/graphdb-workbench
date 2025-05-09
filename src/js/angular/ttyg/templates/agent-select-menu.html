@@ -21,11 +21,14 @@
     </button>
     <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button" guide-selector="select-agent-panel">
         <li ng-repeat="agentOption in agentOptionsList" role="menuitem" class="agent-menu-item"
-            ng-class="{'selected': agentOption.selected}"
-            ng-attr-title="{{agentOption.label}}  &middot; {{agentOption.data.agent.repositoryId}}">
+            ng-class="{'selected': agentOption.selected, 'incompatible-agent': !agentOption.data.agent.isCompatible}"
+            ng-attr-title="{{!agentOption.data.agent.isCompatible ? ('ttyg.agent.incompatible_agent' | translate) : agentOption.label + ' · ' + agentOption.data.agent.repositoryId}}">
             <a href="#"
                class="agent-option"
-               ng-click="onAgentSelected(agentOption.data.agent)">
+               ng-click="onAgentSelected($event, agentOption.data.agent)">
+               <i ng-if="!agentOption.data.agent.isCompatible"
+                   class="fa fa-triangle-exclamation text-warning">
+                </i>
                 <span class="agent-name">{{agentOption.label}}</span> &middot;
                 <i ng-if="!agentOption.data.agent.isRepositoryDeleted" class="fa-kit fa-gdb-repo-graphdb"></i>
                 <i ng-if="agentOption.data.agent.isRepositoryDeleted"
