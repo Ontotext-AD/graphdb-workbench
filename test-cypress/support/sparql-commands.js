@@ -1,3 +1,5 @@
+const DELETE_SAVED_QUERY_URL = '/rest/sparql/saved-queries';
+
 Cypress.Commands.add('pasteQuery', (query) => {
     // Setting the textarea and the calling setValue seems to work
     // more reliably then other strategies (see history)
@@ -10,6 +12,24 @@ Cypress.Commands.add('pasteQuery', (query) => {
 Cypress.Commands.add('executeQuery', () => {
     getRunQueryButton().click();
     getLoader().should('not.exist');
+});
+
+Cypress.Commands.add('deleteSavedQuery', (savedQueryName, secured = false) => {
+    const url = DELETE_SAVED_QUERY_URL + '?name=' + savedQueryName;
+    let headers = {'Content-Type': 'application/json'};
+    if (secured) {
+        const authHeader = Cypress.env('adminToken');
+        headers = {...headers,
+            'Authorization': authHeader
+        }
+    }
+    return cy.request({
+        method: 'DELETE',
+        url: url,
+        headers,
+        // Prevent Cypress from failing the test on non-2xx status codes
+        failOnStatusCode: false
+    });
 });
 
 Cypress.Commands.add('verifyResultsPageLength', (resultLength) => {

@@ -1,6 +1,9 @@
 import 'angular/core/services/translation.service';
 import 'angular/sparql-editor/share-query-link.service';
-import {queryPayloadFromEvent, savedQueriesResponseMapper} from "../../../rest/mappers/saved-query-mapper";
+import {
+    queryPayloadFromEvent,
+    savedQueriesResponseMapper
+} from "../../../rest/mappers/saved-query-mapper";
 import {isFunction, merge} from "lodash";
 import {saveAs} from 'lib/FileSaver-patch';
 import {toYasguiOutputModel} from "../../../utils/yasgui-utils";
@@ -136,7 +139,7 @@ function yasguiComponentDirective(
              */
             $scope.updateSavedQuery = (event) => {
                 const payload = queryPayloadFromEvent(event);
-                SparqlRestService.editSavedQuery(payload)
+                SparqlRestService.editSavedQuery(event.detail.originalQueryName, payload)
                     .then(() => queryUpdatedHandler(payload))
                     .catch(querySaveErrorHandler);
             };
