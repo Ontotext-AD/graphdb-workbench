@@ -73,4 +73,21 @@ describe('TTYG agent list', () => {
             {name: 'Databricks-biomarkers', repositoryId: 'biomarkers', isRepositoryDeleted: false}
         ]);
     });
+
+    it('should filter agent actions based on compatibility', () => {
+        TTYGStubs.stubAgentListWithIncompatibleGet();
+        // When: I visit the ttyg page with incompatible agents
+        TTYGViewSteps.visit();
+        // Then: Only the delete action should be available for incompatible agents
+        TTYGViewSteps.expandAgentsSidebar();
+        TTYGViewSteps.openAgentActionMenu(0);
+        TTYGViewSteps.getDeleteAgentButton(0).should('be.visible');
+        TTYGViewSteps.getCloneAgentButton(0).should('not.exist');
+        TTYGViewSteps.getEditAgentButton(0).should('not.exist');
+        // And: All actions should be available for compatible agents
+        TTYGViewSteps.openAgentActionMenu(1);
+        TTYGViewSteps.getDeleteAgentButton(1).should('be.visible');
+        TTYGViewSteps.getCloneAgentButton(1).should('be.visible');
+        TTYGViewSteps.getEditAgentButton(1).should('be.visible');
+    });
 });

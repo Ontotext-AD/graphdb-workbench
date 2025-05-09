@@ -25,16 +25,23 @@
 
 .agent-select-menu .dropdown-menu li {
     white-space: nowrap;
-    padding: 4px 10px;
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 
-.agent-select-menu .dropdown-menu li.selected {
-    background-color: #f0f0f0;
-}
-
+.agent-select-menu .dropdown-menu li.selected,
 .agent-select-menu .dropdown-menu li:hover {
     background-color: #f0f0f0;
-    cursor: pointer;
+}
+
+.agent-select-menu .incompatible-agent .agent-option,
+.agent-select-menu .incompatible-agent .agent-option .agent-name,
+.agent-select-menu .incompatible-agent .agent-option .repository-id {
+    color: var(--gray-color-dark);
+}
+
+.agent-select-menu .dropdown-menu li.incompatible-agent .agent-option {
+    cursor: not-allowed;
 }
 
 .agent-select-menu .dropdown-menu li a {
@@ -48,6 +55,11 @@
     align-items: center;
     gap: 0.2em;
     width: 100%;
+}
+
+.agent-select-menu .agent-option {
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .agent-select-menu .agent-option .agent-name,
