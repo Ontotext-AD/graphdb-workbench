@@ -14,5 +14,4 @@ describe('Autocomplete storage service', () => {
     service.setEnabled(false);
     expect(service.isEnabled()).toEqual(false);
   });
-
 });

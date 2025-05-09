@@ -5,6 +5,9 @@ import {Model} from '../common';
  * @extends Model<SearchButton>
  */
 export class SearchButton extends Model<SearchButton> {
+  /** the id of the button */
+  id: string;
+
   /** The label text displayed on the button */
   label: string;
 
@@ -16,6 +19,7 @@ export class SearchButton extends Model<SearchButton> {
 
   constructor(data: SearchButton) {
     super();
+    this.id = data.id;
     this.label = data.label;
     this.selected = data.selected;
     this.callback = data.callback;
