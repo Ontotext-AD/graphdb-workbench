@@ -88,18 +88,19 @@ function SparqlRestService($http) {
     /**
      * Updates an existing saved query.
      *
+     * @param oldQueryName The name of the query before user edit.
      * @param {object} payload A payload object in format
      * <pre>
-     *  {
-     *      body: string,
-     *      name: string,
-     *      shared: boolean
-     *  }
+     *     {
+     *     body: string,
+     *     name: string,
+     *     shared: boolean
+     *     }
      * </pre>
      * @return {Promise} a promise which resolves with the result from the save query request or an error message.
      */
-    function editSavedQuery(payload) {
-        return $http.put(SAVED_QUERIES_ENDPOINT, payload);
+    function editSavedQuery(oldQueryName, payload) {
+        return $http.put(`${SAVED_QUERIES_ENDPOINT}?oldQueryName=${encodeURIComponent(oldQueryName)}`, payload);
     }
 
     /**
