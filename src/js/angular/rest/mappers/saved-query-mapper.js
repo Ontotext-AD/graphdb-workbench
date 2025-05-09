@@ -34,6 +34,12 @@ export const savedQueryResponseMapper = (response) => {
     return null;
 };
 
+/**
+ * Extracts and constructs a payload object from the provided event.
+ *
+ * @param {Object} event - The event object containing query details.
+ * @returns {Object} Returns an object containing query details: `name`, `body`, and `shared`.
+ */
 export const queryPayloadFromEvent = (event) => {
     return {
         name: event.detail.queryName,
