@@ -102,7 +102,7 @@
         background-color: var(--autocomplete-background-selected, #02A99A);
       }
 
-      &.hovered:not(.selected) {
+      &.hovered:not(.selected), &:hover:not(.selected) {
         background-color: var(--autocomplete-background, #02a98f4d);
       }
     }

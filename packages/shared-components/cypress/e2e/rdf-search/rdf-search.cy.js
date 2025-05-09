@@ -1,4 +1,6 @@
 import {RdfSearchSteps} from "../../steps/rdf-search/rdf-search-steps";
+import {BaseSteps} from "../../steps/base-steps";
+import {NavbarSteps} from "../../steps/navbar/navbar-steps";
 
 describe('RDF Search', () => {
   beforeEach(() => {
@@ -122,5 +124,30 @@ describe('RDF Search', () => {
     RdfSearchSteps.getSearchArea().should('not.be.visible');
     // And the search icon should be visible
     RdfSearchSteps.getSearchIcon().should('be.visible');
+  });
+
+  it('Should load state from local storage, when search is preserved', () => {
+    // Given, I visit the RDF search page
+    RdfSearchSteps.visit();
+    // And, I have enabled autocomplete
+    RdfSearchSteps.enableAutocomplete();
+    // And, load namespaces
+    RdfSearchSteps.loadNamespaces();
+
+    // When, I open the search area
+    RdfSearchSteps.hoverSearchIcon();
+    RdfSearchSteps.clickSearchIcon();
+    // And type something in the input field
+    const text = 'test';
+    RdfSearchSteps.typeInSearchInput(text);
+    // And, I reload the page
+    RdfSearchSteps.reloadPage();
+    RdfSearchSteps.loadNamespaces();
+
+    // And, I reopen the search area
+    RdfSearchSteps.hoverSearchIcon();
+    RdfSearchSteps.clickSearchIcon();
+    // Then, I expect to see the input field with the previously entered text
+    RdfSearchSteps.getInputField().should('have.value', text);
   });
 });
