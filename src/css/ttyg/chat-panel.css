@@ -64,6 +64,11 @@
     line-height: var(--line-height);
 }
 
+.chat-panel .user-message .question .question-text {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
 .chat-panel .messages-hint {
     padding-top: 1rem;
     text-align: center;
@@ -132,9 +137,21 @@
     padding-left: 1rem;
 }
 
+.chat-panel .new-question .form-control {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.chat-panel .new-question .new-question-actions {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 .chat-panel .new-question .question-input {
-    background-color: #EFF3F8;
-    color: var(--text-color);
+    width: 100%;
 }
 
 .chat-panel .chat-loading {
@@ -144,3 +161,5 @@
 .chat-panel .text-warning {
     font-weight: 300;
 }
+
+

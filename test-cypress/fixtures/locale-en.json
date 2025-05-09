@@ -397,6 +397,9 @@
                 "called": "Called {{('ttyg.chat_panel.query_name.' + name) | translate}}",
                 "no_query": "There is no query."
             },
+            "placeholder": {
+                "ask-input": "Ask anything"
+            },
             "query_name": {
                 "sparql_query":"SPARQL",
                 "fts_search": "Full-text search",

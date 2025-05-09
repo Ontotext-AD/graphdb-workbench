@@ -17,7 +17,7 @@ export class ChatPanelSteps {
     }
 
     static getQuestionInputElement() {
-        return ChatPanelSteps.getChatPanel().find('.question-input');
+        return ChatPanelSteps.getChatPanel().find('.question-input .contenteditable');
     }
 
     static getAskButtonElement() {

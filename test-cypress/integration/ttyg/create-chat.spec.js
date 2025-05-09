@@ -38,8 +38,10 @@ describe('TTYG create chat', () => {
         // When I type a question
         ChatPanelSteps.getQuestionInputElement()
             .should('be.visible')
-            .and('not.be.disabled')
+            .and('not.have.attr', 'disabled');
+        ChatPanelSteps.getQuestionInputElement()
             .type('Who is Han Solo?');
+
 
         // Then I expect the "Ask" button be active.
         ChatPanelSteps.getAskButtonElement().should('be.enabled');
