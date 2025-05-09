@@ -37,14 +37,6 @@ export class RdfSearchSteps extends BaseSteps {
     return this.getSearchArea().find('button');
   }
 
-  static getButton(text) {
-    return this.getSearchAreaButtons().contains(text);
-  }
-
-  static clickButton(text) {
-    return this.getButton(text).click();
-  }
-
   static disableAutocomplete() {
     return cy.get('#disable-autocomplete').click();
   }
@@ -69,6 +61,10 @@ export class RdfSearchSteps extends BaseSteps {
     return this.getToastNotification().click();
   }
 
+  static hoverSuggestion(index) {
+    return this.getSuggestion(index).trigger('mousemove');
+  }
+
   static getAutocompleteResultsWrapper() {
     return this.getSearchArea().find('.autocomplete-results-wrapper');
   }
@@ -81,24 +77,8 @@ export class RdfSearchSteps extends BaseSteps {
     return this.getSuggestion(index).click(options);
   }
 
-  static ctrlClickSuggestion(index) {
-    return this.clickSuggestion(index, {ctrlKey: true});
-  }
-
   static pressEnter() {
     return this.getInputField().type('{enter}');
-  }
-
-  static ctrlPressEnter() {
-    return this.getInputField().type('{ctrl}{enter}');
-  }
-
-  static getClearInputIcon() {
-    return this.getSearchArea().find('.clear-input');
-  }
-
-  static clearSearchInput() {
-    return this.getClearInputIcon().click();
   }
 
   static pressEscape() {

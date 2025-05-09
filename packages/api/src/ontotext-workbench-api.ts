@@ -35,6 +35,7 @@ export * from './services/monitoring';
 export * from './services/toastr';
 export * from './services/autocomplete';
 export * from './services/namespace';
+export * from './services/rdf-search';
 
 // Export utils for external usages.
 export * from './services/utils';

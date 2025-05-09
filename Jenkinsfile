@@ -97,10 +97,10 @@ pipeline {
                     script {
                         dockerCompose.buildCmd(composeFile: 'docker-compose.yaml', options: ['--force-rm']);
                         try {
-                            dockerCompose.upCmd(environment: getUserUidGidPair(), composeFile: 'docker-compose.yaml', options: ['--abort-on-container-exit', '--exit-code-from cypress']);
+                            dockerCompose.upCmd(environment: getUserUidGidPair(), composeFile: 'docker-compose.yaml', , options: ['--abort-on-container-exit', '--exit-code-from cypress']);
                         } finally {
                             try {
-                                if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
+                                if (currentBuild.result == 'SUCCESS') {
                                     echo "Tests passed — skipping video artifacts.";
                                 } else {
                                     echo "Tests failed — archiving Cypress video artifacts.";
