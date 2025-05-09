@@ -90,12 +90,20 @@ function SparqlRestService($http) {
      *
      * @param {object} payload A payload object in format
      * <pre>
-     *  {
+     *  [
+     *    {
      *      body: string,
      *      name: string,
      *      shared: boolean
-     *  }
+     *    },
+     *    {
+     *      body: string,
+     *      name: string,
+     *      shared: boolean
+     *    }
+     *  ]
      * </pre>
+     * <b>The backend expects the old query first and then the new query.
      * @return {Promise} a promise which resolves with the result from the save query request or an error message.
      */
     function editSavedQuery(payload) {
