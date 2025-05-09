@@ -10,4 +10,8 @@ export class BaseSteps {
   static getRedirectUrl() {
     return cy.get('.redirect-url');
   }
+
+  static reloadPage(force = false) {
+    cy.reload(force);
+  }
 }

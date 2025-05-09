@@ -1,4 +1,4 @@
-import {Component, h, Prop, State} from '@stencil/core';
+import {Component, h, Prop, State, Watch} from '@stencil/core';
 import {
   AutocompleteContextService,
   AutocompleteSearchResult,
@@ -6,8 +6,9 @@ import {
   AutocompleteStorageService,
   EventService,
   NamespaceMap,
+  NamespacesContextService,
   navigateTo,
-  OntoToastrService,
+  OntoToastrService, ResourceSearchStorageService,
   SearchButton,
   SearchButtonConfig,
   ServiceProvider,
@@ -16,7 +17,6 @@ import {
   SUGGESTION_SELECTED_EVENT,
   SuggestionSelectedPayload,
   SuggestionType,
-  NamespacesContextService,
   UriUtil
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
@@ -34,6 +34,7 @@ export class OntoSearchResourceInput {
   private readonly autocompleteService = ServiceProvider.get(AutocompleteService);
   private readonly autocompleteContextService = ServiceProvider.get(AutocompleteContextService);
   private readonly autocompleteStorageService = ServiceProvider.get(AutocompleteStorageService);
+  private readonly resourceSearchStorageService = ServiceProvider.get(ResourceSearchStorageService);
   private readonly toastrService = ServiceProvider.get(OntoToastrService);
   private readonly eventService = ServiceProvider.get(EventService);
   private readonly namespaceContextService = ServiceProvider.get(NamespacesContextService);
@@ -53,6 +54,24 @@ export class OntoSearchResourceInput {
 
   /** Whether the rdf resource pre-search validation should be skipped. */
   @Prop() skipValidation = false;
+
+  /**
+   * Whether to preserve the input value and last selected suggestion
+   * If true, both will be stored in local storage and loaded, when the component is rendered
+   */
+  @Prop() preserveSearch: boolean;
+
+  /**
+   * Whether the search component is currently hidden. Can be shown/hidden in the RDF search
+   */
+  @Prop() isHidden = false;
+
+  @Watch('isHidden')
+  onVisibilityChange(isVisible: boolean) {
+    if (!isVisible) {
+      this.scrollToActiveSuggestion();
+    }
+  }
 
   /**
    * Button configuration for the search resource input.
@@ -76,9 +95,10 @@ export class OntoSearchResourceInput {
    */
   @State() private isAutocompleteEnabled = true;
 
-  componentWillLoad() {
+  connectedCallback() {
     this.onAutocompleteEnabledChange();
     this.onNamespaceChange();
+    this.loadInputFromStorage();
   }
 
   disconnectedCallback() {
@@ -96,10 +116,10 @@ export class OntoSearchResourceInput {
                    autocomplete="off"
                    placeholder={`${TranslationService.translate('rdf_search.labels.search')}...`}
                    ref={(ref) => this.inputRef = ref}
-                   onKeyDown={this.onKeyDown()}
-                   onInput={this.handleInput()}/>
+                   onKeyDown={this.onKeyDown}
+                   onInput={this.handleInput}/>
             {this.inputValue?.length ?
-              <i onClick={this.clearInput()}
+              <i onClick={this.clearInput}
                  tooltip-content={TranslationService.translate('rdf_search.tooltips.clear')}
                  tooltip-placement="bottom"
                  class="fa-light fa-xmark clear-input"></i> : ''
@@ -116,7 +136,7 @@ export class OntoSearchResourceInput {
           {this.searchResult?.getSuggestions().getItems().map((suggestion) => (
             <p key={suggestion.getId()}
                onClick={this.onSuggestionClick(suggestion)}
-               onMouseEnter={this.hoverSuggestion(suggestion)}
+               onMouseMove={this.hoverSuggestion(suggestion)}
                class={`${suggestion.isHovered() ? 'hovered' : ''} ${suggestion.isSelected() ? 'selected' : ''}`}
                innerHTML={suggestion.getDescription()}></p>
           ))}
@@ -138,19 +158,21 @@ export class OntoSearchResourceInput {
   /**
    * Updates the local inputValue with the html input element's value.'
    */
-  private handleInput() {
-    return (event: Event) => {
-      const target = event.target as HTMLInputElement;
-      this.setInputValue(target.value);
-      this.checkForAutocomplete();
-    };
-  }
+  private handleInput = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    if (!target.value) {
+      this.clearInput();
+      return;
+    }
+    this.setInputValue(target.value);
+    this.checkForAutocomplete();
+  };
 
   private loadAutocompleteResults() {
     if (this.isAutocompleteEnabled) {
       this.autocompleteService.search(this.inputValue)
         .then((searchResult) => {
-          this.searchResult = searchResult.hoverFirstSuggestion();
+          this.onResultsReceived(searchResult);
         });
     }
   }
@@ -158,11 +180,12 @@ export class OntoSearchResourceInput {
   /**
    * Clears the search input field.
    */
-  private clearInput() {
-    return () => {
-      this.setInputValue('');
-    };
-  }
+  private clearInput = () => {
+    this.setInputValue('');
+    if(this.preserveSearch) {
+      this.resourceSearchStorageService.clearStoredSearch();
+    }
+  };
 
   private hoverSuggestion(suggestion: Suggestion) {
     return () =>  this.searchResult = this.searchResult.hoverSuggestion(suggestion);
@@ -206,6 +229,9 @@ export class OntoSearchResourceInput {
       this.expandPrefix(suggestion);
     } else {
       this.notifyRdfResourceSelected(suggestion);
+      if (this.preserveSearch) {
+        this.resourceSearchStorageService.setLastSelected(suggestion);
+      }
     }
   }
 
@@ -224,6 +250,9 @@ export class OntoSearchResourceInput {
 
   private setInputValue(value: string) {
     this.inputValue = value;
+    if (this.preserveSearch) {
+      this.resourceSearchStorageService.setInputValue(this.inputValue);
+    }
     this.loadAutocompleteResults();
   }
 
@@ -235,26 +264,24 @@ export class OntoSearchResourceInput {
     );
   }
 
-  private onKeyDown() {
-    return (event: KeyboardEvent) => {
-      switch (event.key) {
-        case 'Enter':
-          this.onEnter(event);
-          break;
-        case 'Escape':
-          this.onEscape();
-          break;
-        case 'ArrowUp':
-          this.onArrowUp(event);
-          break;
-        case 'ArrowDown':
-          this.onArrowDown(event);
-          break;
-        default:
-          break;
-      }
-    };
-  }
+  private onKeyDown = (event: KeyboardEvent) => {
+    switch (event.key) {
+      case 'Enter':
+        this.onEnter(event);
+        break;
+      case 'Escape':
+        this.onEscape();
+        break;
+      case 'ArrowUp':
+        this.onArrowUp(event);
+        break;
+      case 'ArrowDown':
+        this.onArrowDown(event);
+        break;
+      default:
+        break;
+    }
+  };
 
   private onEnter(event: KeyboardEvent) {
     let selectedSuggestion = this.searchResult?.getHoveredSuggestion();
@@ -283,12 +310,20 @@ export class OntoSearchResourceInput {
     // Update the input directly, because the value should only be displayed,
     // without triggering a new search and altering the autocomplete results
     this.inputRef.value = this.searchResult.getHoveredSuggestion().getValue();
-    // The view needs to be updated before scrolling to the hovered suggestion.
-    // Otherwise, the next/previous suggestion does not have the 'hovered' class applied yet
-    // and this leads to unexpected behavior.
-    setTimeout(() => {
-      HtmlUtil.scrollElementIntoView('.hovered');
-    })
+    this.scrollToSuggestionBySelector('p.hovered');
+  }
+
+  private getSuggestionValue(suggestion: Suggestion): string {
+    return suggestion.getType() === SuggestionType.PREFIX
+      ? this.namespaces.getByPrefix(suggestion.getValue())
+      : suggestion.getValue();
+  }
+
+  private scrollToSuggestionBySelector(selector: string, options?: ScrollIntoViewOptions): void {
+    HtmlUtil.waitForElement(selector)
+      .then(() => {
+        HtmlUtil.scrollElementIntoView(selector, options);
+      });
   }
 
   private validateAndSearch(suggestion: Suggestion) {
@@ -298,7 +333,7 @@ export class OntoSearchResourceInput {
         return;
       }
 
-      if (!UriUtil.isValidUri(suggestion.getValue())) {
+      if (!UriUtil.isValidUri(this.getSuggestionValue(suggestion))) {
         this.toastrService.error(TranslationService.translate('rdf_search.toasts.invalid_uri'));
         return;
       }
@@ -308,7 +343,38 @@ export class OntoSearchResourceInput {
   }
 
   private onEscape() {
-    // TODO: Input shouldn't be cleared if preserveSearch is enabled
-    this.setInputValue('');
+    if (this.preserveSearch) {
+      return;
+    }
+    this.clearInput();
+  }
+
+  private loadInputFromStorage() {
+    if (!this.preserveSearch) {
+      return;
+    }
+    const savedInput = this.resourceSearchStorageService.getInputValue();
+    if (savedInput) {
+      this.setInputValue(savedInput);
+    }
+  }
+
+  private onResultsReceived(searchResult: AutocompleteSearchResult) {
+    const lastSelected = searchResult?.getByValue(this.resourceSearchStorageService.getLastSelectedValue());
+    if (lastSelected && this.preserveSearch) {
+      // No need to reassign twice in the same thread tick. One will trigger the re-render
+      searchResult.hoverSuggestion(lastSelected);
+      this.searchResult = searchResult.selectSuggestion(lastSelected);
+      this.scrollToSuggestionBySelector('p.hovered.selected', {block: 'start'});
+    } else {
+      this.searchResult = searchResult.hoverFirstSuggestion();
+      this.scrollToSuggestionBySelector('p.hovered', {block: 'start'});
+    }
+  }
+
+  private scrollToActiveSuggestion() {
+    const lastSelectedSuggestion = this.resourceSearchStorageService.getLastSelectedValue();
+    const scrollToInitially = lastSelectedSuggestion ? 'p.selected' : 'p.hovered';
+    this.scrollToSuggestionBySelector(scrollToInitially, {block: 'start'});
   }
 }
