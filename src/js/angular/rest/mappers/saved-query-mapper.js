@@ -41,6 +41,13 @@ export const savedQueryResponseMapper = (response, currentUsername) => {
     return null;
 };
 
+
+/**
+ * Extracts and constructs a payload object from the provided event.
+ *
+ * @param {Object} event - The event object containing query details.
+ * @returns {Object} Returns an object containing query details: `name`, `body`, and `shared`.
+ */
 export const queryPayloadFromEvent = (event) => {
     return {
         name: event.detail.queryName,
@@ -48,3 +55,24 @@ export const queryPayloadFromEvent = (event) => {
         shared: event.detail.isPublic
     };
 };
+
+/**
+ * Constructs the payload required for updating a query based on a provided event.
+ *
+ * @param {Object} event - The event object containing details for constructing the payload.
+ * @returns {Array<Object>} An array containing two objects, each representing query details for the update process.
+ */
+export const buildUpdateQueryPayload = (event) => {
+    return [
+        {
+            name: event.detail.originalQueryName,
+            body: event.detail.query,
+            shared: event.detail.isPublic
+        },
+        {
+            name: event.detail.queryName,
+            body: event.detail.query,
+            shared: event.detail.isPublic
+        }
+        ]
+    };
