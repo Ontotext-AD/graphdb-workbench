@@ -8,9 +8,11 @@ import {SaveQueryDialog} from "../../../steps/yasgui/save-query-dialog";
 describe('Edit saved queries', () => {
 
     let repositoryId;
+    let savedQueryName;
 
     beforeEach(() => {
         repositoryId = 'sparql-editor-' + Date.now();
+        savedQueryName = SavedQuery.generateQueryName();
         QueryStubs.stubQueryCountResponse();
         cy.createRepository({id: repositoryId});
         cy.presetRepository(repositoryId);
@@ -21,12 +23,12 @@ describe('Edit saved queries', () => {
     });
 
     afterEach(() => {
+        cy.deleteSavedQuery(savedQueryName);
         cy.deleteRepository(repositoryId);
     });
 
     it('Should prevent saving query with duplicated name', () => {
         // Given I have created a query
-        const savedQueryName = SavedQuery.generateQueryName();
         SavedQuery.create(savedQueryName);
         // When I open the saved queries popup
         YasguiSteps.showSavedQueries();
@@ -48,21 +50,35 @@ describe('Edit saved queries', () => {
         YasguiSteps.showSavedQueries();
         SavedQueriesDialog.editQueryByName(savedQueryName);
         SaveQueryDialog.getQueryField().should('have.value', 'select $s $p $o');
+        // Then I close the dialog
+        SaveQueryDialog.closeSaveQueryDialog();
+    });
+
+    // TODO skipped until .env can be updated with BE version, which includes the API changes
+    it.skip('should allow renaming saved query', () => {
+        // Given I have created a query
+        SavedQuery.create(savedQueryName);
+        // When I open the saved queries popup
+        YasguiSteps.showSavedQueries();
+        // And I edit the saved query
+        SavedQueriesDialog.editQueryByName(savedQueryName);
+        // Then the save query dialog should be opened
+        SaveQueryDialog.getQueryNameField().should('have.value', savedQueryName);
+        SaveQueryDialog.getQueryField().should('have.value', 'select *');
+        SaveQueryDialog.getIsPublicField().should('be.checked');
         // When I change the query name
-        // TODO: This currently won't work. The legacy implementation in the WB does the following:
-        // * First POST to create a new query with the new name
-        // * Then DELETE the query with the old name
-        // This is quite hackish and would require maintaining some state in the WB which is awkward.
-        // Better approach would be to think of a way to delegate this to the backend api for the edit.
-        // YasguiSteps.clearQueryNameField();
-        // savedQueryName = generateQueryName();
-        // YasguiSteps.writeQueryName(savedQueryName);
-        // YasguiSteps.saveQuery();
-        // // Then a new query should be created
-        // YasguiSteps.getSaveQueryDialog().should('not.exist');
-        // YasguiSteps.showSavedQueries();
-        // YasguiSteps.editQueryByName(savedQueryName);
-        // YasguiSteps.getQueryNameField().should('have.value', savedQueryName);
-        // YasguiSteps.getQueryField().should('have.value', 'select $s $p $o');
+        SaveQueryDialog.clearQueryNameField();
+        savedQueryName = SavedQuery.generateQueryName();
+        SaveQueryDialog.writeQueryName(savedQueryName);
+        // And try to save the query
+        SaveQueryDialog.saveQuery();
+        // Then the query should be updated
+        SaveQueryDialog.getSaveQueryDialog().should('not.exist');
+        YasguiSteps.showSavedQueries();
+        SavedQueriesDialog.editQueryByName(savedQueryName);
+        SaveQueryDialog.getQueryNameField().should('have.value', savedQueryName);
+        SaveQueryDialog.getQueryField().should('have.value', 'select *');
+        // Then I close the dialog
+        SaveQueryDialog.closeSaveQueryDialog();
     });
 });
