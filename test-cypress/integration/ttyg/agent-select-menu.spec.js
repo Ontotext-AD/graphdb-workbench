@@ -29,6 +29,30 @@ describe('TTYG agent select menu', () => {
         ]);
     });
 
+    it('should not allow selecting an incompatible agent from the menu', () => {
+        TTYGStubs.stubAgentListWithIncompatibleGet();
+        // Given: I have opened the ttyg page
+        TTYGViewSteps.visit();
+        // And: The agent dropdown menu is not visible
+        TTYGViewSteps.getAgentsDropdownMenu().should('not.be.visible');
+        // And: No agent is currently selected
+        TTYGViewSteps.getAgentsMenuToggleButton().should('contain', 'Select an agent');
+
+        // When: I open the agent selection menu
+        TTYGViewSteps.openAgentsMenu();
+        // Then: I should see that the first agent is marked as incompatible
+        TTYGViewSteps.getAgentFromMenu(0)
+            .trigger('mouseover')
+            .should('have.css', 'cursor', 'not-allowed');
+
+        // When: I attempt to select an incompatible agent from the menu
+        TTYGViewSteps.selectAgent(0);
+        // Then: The incompatible agent should not be selected
+        TTYGViewSteps.getAgentsMenuToggleButton().should('contain', 'Select an agent');
+        // And: The dropdown menu should remain open
+        TTYGViewSteps.getAgentsDropdownMenu().should('be.visible');
+    });
+
     it('Should be able to select agent from the menu', () => {
         TTYGStubs.stubAgentListGet();
         // Given I have opened the ttyg page

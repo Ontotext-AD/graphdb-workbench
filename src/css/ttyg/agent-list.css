@@ -116,3 +116,7 @@
     color: var(--secondary-color);
     font-weight: 400;
 }
+
+.agent-list-component .agent-name.incompatible-agent {
+    color: var(--gray-color-dark);
+}

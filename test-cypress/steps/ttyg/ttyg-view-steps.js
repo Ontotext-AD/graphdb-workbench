@@ -221,14 +221,31 @@ export class TTYGViewSteps {
         this.getOpenAgentActionsButton(index).click();
     }
 
+    static triggerEditAgentActionMenu(index) {
+        this.openAgentActionMenu(index);
+        this.getEditAgentButton(index).click();
+    }
+
+    static getEditAgentButton(index) {
+        return this.getAgent(index).find('.agent-actions-menu .edit-agent-btn');
+    }
+
     static triggerCloneAgentActionMenu(index) {
         this.openAgentActionMenu(index);
-        this.getAgent(index).find('.agent-actions-menu .clone-agent-btn').click();
+        this.getCloneAgentButton(index).click();
+    }
+
+    static getCloneAgentButton(index) {
+        return this.getAgent(index).find('.agent-actions-menu .clone-agent-btn');
     }
 
     static triggerDeleteAgentActionMenu(index) {
         this.openAgentActionMenu(index);
-        this.getAgent(index).find('.agent-actions-menu .delete-agent-btn').click();
+        this.getDeleteAgentButton(index).click();
+    }
+
+    static getDeleteAgentButton(index) {
+        return this.getAgent(index).find('.agent-actions-menu .delete-agent-btn');
     }
 
     static getAgentDeletingLoader() {
@@ -254,6 +271,10 @@ export class TTYGViewSteps {
         return this.getTtygView().find('.agent-select-menu');
     }
 
+    static getAgentsDropdownMenu() {
+        return this.getAgentsMenu().find('.dropdown-menu');
+    }
+
     static getAgentsMenuToggleButton() {
         return this.getAgentsMenu().find('.dropdown-toggle-btn');
     }
@@ -263,7 +284,7 @@ export class TTYGViewSteps {
     }
 
     static getAgentsFromMenu() {
-        return this.getAgentsMenu().find('.agent-menu-item');
+        return this.getAgentsMenu().find('.agent-menu-item a');
     }
 
     static getAgentFromMenu(index) {
