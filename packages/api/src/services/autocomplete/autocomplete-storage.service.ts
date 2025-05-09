@@ -4,7 +4,8 @@ import {LocalStorageService} from '../storage';
  * Service for managing autocomplete-related storage operations.
  */
 export class AutocompleteStorageService extends LocalStorageService {
-  private readonly autocompleteEnabledKey = 'enabled';
+  private readonly ENABLED_KEY = 'enabled';
+
   readonly NAMESPACE = 'autocomplete';
 
   set(key: string, value: string): void {
@@ -16,7 +17,7 @@ export class AutocompleteStorageService extends LocalStorageService {
    * @returns {boolean} True if autocomplete is enabled, false otherwise.
    */
   isEnabled(): boolean {
-    return this.get(this.autocompleteEnabledKey).value === 'true';
+    return this.get(this.ENABLED_KEY).value === 'true';
   }
 
   /**
@@ -24,6 +25,6 @@ export class AutocompleteStorageService extends LocalStorageService {
    * @param value - The value to set for 'autocomplete.enabled'.
    */
   setEnabled(value: boolean): void {
-    this.set(this.autocompleteEnabledKey, value.toString());
+    this.set(this.ENABLED_KEY, value.toString());
   }
 }
