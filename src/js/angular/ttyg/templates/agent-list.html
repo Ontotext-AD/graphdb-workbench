@@ -25,8 +25,14 @@
         <div ng-repeat="agent in agentList.filterableAgents">
             <div ng-if="!deletingAgent || deletingAgent.agentId !== agent.id" class="agent-item"
                  ng-class="{'selected': agent.id === selectedAgent.id}">
-                <div class="agent-info">
-                    <div class="agent-name">{{agent.name}}</div>
+                <div class="agent-info"
+                     ng-attr-gdb-tooltip="{{!agent.isCompatible ? ('ttyg.agent.incompatible_agent' | translate) : undefined}}">
+                    <div class="agent-name" ng-class="{'incompatible-agent': !agent.isCompatible}">
+                        <i ng-if="!agent.isCompatible"
+                           class="fa fa-triangle-exclamation text-warning">
+                        </i>
+                        {{agent.name}}
+                    </div>
                     <div class="related-repository">
                         <i ng-if="!agent.isRepositoryDeleted" class="fa-kit fa-gdb-repo-graphdb"></i>
                         <i ng-if="agent.isRepositoryDeleted"
@@ -45,15 +51,22 @@
                         <i class="fa fa-ellipsis"></i>
                     </button>
                     <div class="dropdown-menu dropdown-menu-right agent-actions-menu">
-                        <button class="dropdown-item edit-agent-btn" type="button" ng-click="onEditAgent(agent)">
+                        <button ng-if="agent.isCompatible"
+                                class="dropdown-item edit-agent-btn"
+                                type="button"
+                                ng-click="onEditAgent(agent)">
                             <i class="fa fa-gear"></i>
                             <span>{{'ttyg.agent.btn.edit_agent.label' | translate}}</span>
                         </button>
-                        <button class="dropdown-item clone-agent-btn" type="button" ng-click="onCloneAgent(agent)">
+                        <button ng-if="agent.isCompatible"
+                                class="dropdown-item clone-agent-btn"
+                                type="button"
+                                ng-click="onCloneAgent(agent)">
                             <i class="fa fa-clone"></i>
                             <span>{{'ttyg.agent.btn.clone_agent.label' | translate}}</span>
                         </button>
-                        <div class="dropdown-divider"></div>
+                        <div ng-if="agent.isCompatible"
+                             class="dropdown-divider"></div>
                         <button class="dropdown-item delete-agent-btn" type="button" ng-click="onDeleteAgent(agent)">
                             <i class="fa fa-trash-can"></i>
                             <span>{{'ttyg.agent.btn.delete_agent.label' | translate}}</span>

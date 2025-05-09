@@ -40,9 +40,17 @@ function AgentSelectMenuComponent(TTYGContextService, $translate, $sce, ModalSer
 
             /**
              * Handles the agent selection.
-             * @param {AgentModel} agent
+             * @param {Event} $event - The DOM event triggered by the selection.
+             * @param {AgentModel} agent - The selected agent instance.
              */
-            $scope.onAgentSelected = (agent) => {
+            $scope.onAgentSelected = ($event, agent) => {
+                if (!agent.isCompatible) {
+                    // Prevents the dropdown from closing if the selected agent is not compatible
+                    // by stopping event propagation and preventing the default action.
+                    $event.stopPropagation();
+                    $event.preventDefault();
+                    return;
+                }
                 markAsSelected(agent);
                 $scope.selectedAgent = agent;
                 TTYGContextService.selectAgent(agent);

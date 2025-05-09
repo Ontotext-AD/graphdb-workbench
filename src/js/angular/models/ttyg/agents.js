@@ -63,6 +63,20 @@ export class AgentModel {
          * @private
          */
         this._additionalExtractionMethods = data.additionalExtractionMethods;
+
+        /**
+         *
+         * @type {AgentCompatibility.COMPATIBLE | AgentCompatibility.INCOMPATIBLE}
+         * @private
+         */
+        this._compatibility = data.compatibility || AgentCompatibility.COMPATIBLE;
+
+        /**
+         * Indicates whether the agent is compatible with the currently running version of GraphDb.
+         * @type {boolean} true if compatible otherwise false.
+         * @private
+         */
+        this._isCompatible = this._compatibility === AgentCompatibility.COMPATIBLE;
     }
 
     get isDeleted() {
@@ -151,6 +165,13 @@ export class AgentModel {
 
     set additionalExtractionMethods(value) {
         this._additionalExtractionMethods = value;
+    }
+    get compatibility() {
+        return this._compatibility;
+    }
+
+    get isCompatible() {
+        return this._isCompatible;
     }
 }
 
@@ -498,3 +519,24 @@ export class AgentListFilterModel {
         this._selected = value;
     }
 }
+
+/**
+ * Represents the compatibility status of an agent with the current version of the GraphDB.
+ *
+ * Compatibility is determined based on the versions of the agent and the GraphDB application.
+ * For example, an agent created with a newer version of GraphDB may not be compatible
+ * with an older version of the GraphDB due to differences in features or protocol changes.
+ *
+ * @type {{COMPATIBLE: string, INCOMPATIBLE: string}}
+ */
+export const AgentCompatibility = {
+    /** The agent is compatible with the current version of the GraphDB. */
+    'COMPATIBLE': 'COMPATIBLE',
+
+    /**
+     * The agent is incompatible with the current version of the GraphDB.
+     * This may occur when the agent was created using a newer GraphDB version
+     * than the one currently running.
+     */
+    'INCOMPATIBLE': 'INCOMPATIBLE'
+};

@@ -86,6 +86,10 @@ export class TTYGStubs extends Stubs {
         }).as('get-agent-list');
     }
 
+    static stubAgentListWithIncompatibleGet(delay = 0) {
+        this.stubAgentListGet('/ttyg/agent/get-agent-list-with-incompatible-agents.json');
+    }
+
     static stubAgentGet(fixture = '/ttyg/agent/get-agent.json', delay = 0) {
         cy.intercept('GET', '/rest/chat/agents/*', {
             fixture: fixture,
