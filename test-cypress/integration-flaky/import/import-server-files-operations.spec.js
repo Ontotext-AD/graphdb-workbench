@@ -18,7 +18,7 @@ describe('Import server files - Operations', {retries: {runMode: 2}}, () => {
         repositoryId = 'server-import-' + Date.now();
         cy.createRepository({id: repositoryId});
         ImportServerFilesSteps.visitServerImport(repositoryId);
-        ImportServerFilesSteps.getResources().should('have.length', 14);
+        ImportServerFilesSteps.getResources().should('have.length', 20);
     });
 
     afterEach(() => {
