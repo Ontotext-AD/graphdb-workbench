@@ -7,7 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { DialogHandler } from "./models/dialog/dialog-handler";
 import { DialogConfig } from "./components/dialogs/onto-dialog";
-import { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, RepositoryLocation, SearchButtonConfig, SecurityConfig, ToastMessage } from "../../api/dist/ontotext-workbench-api.d";
+import { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, Repository, RepositoryLocation, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage } from "../../api/dist/ontotext-workbench-api.d";
 import { DropdownItem } from "./models/dropdown/dropdown-item";
 import { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 import { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
@@ -16,7 +16,7 @@ import { ToggleEventPayload } from "./models/toggle-switch/toggle-event-payload"
 import { TranslationParameter } from "./models/translation/translation-parameter";
 export { DialogHandler } from "./models/dialog/dialog-handler";
 export { DialogConfig } from "./components/dialogs/onto-dialog";
-export { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, RepositoryLocation, SearchButtonConfig, SecurityConfig, ToastMessage } from "../../api/dist/ontotext-workbench-api.d";
+export { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, Repository, RepositoryLocation, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage } from "../../api/dist/ontotext-workbench-api.d";
 export { DropdownItem } from "./models/dropdown/dropdown-item";
 export { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 export { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
@@ -143,6 +143,26 @@ export namespace Components {
     interface OntoRdfSearch {
     }
     interface OntoRepositorySelector {
+        /**
+          * Determines whether the current user has write access to the repository.
+         */
+        "canWriteRepo": (repo: Repository) => boolean;
+        /**
+          * The currently selected repository.
+         */
+        "currentRepository": Repository;
+        /**
+          * The list of repositories to show in the dropdown.
+         */
+        "items": DropdownItem<Repository>[];
+        /**
+          * Fetches repository size info used to build tooltips.
+         */
+        "repositorySizeInfoFetcher": (repo: Repository) => Promise<RepositorySizeInfo>;
+        /**
+          * Formatter for numeric values in tooltips.
+         */
+        "totalTripletsFormatter": Intl.NumberFormat;
     }
     interface OntoSearchIcon {
     }
@@ -714,6 +734,26 @@ declare namespace LocalJSX {
     interface OntoRdfSearch {
     }
     interface OntoRepositorySelector {
+        /**
+          * Determines whether the current user has write access to the repository.
+         */
+        "canWriteRepo"?: (repo: Repository) => boolean;
+        /**
+          * The currently selected repository.
+         */
+        "currentRepository"?: Repository;
+        /**
+          * The list of repositories to show in the dropdown.
+         */
+        "items"?: DropdownItem<Repository>[];
+        /**
+          * Fetches repository size info used to build tooltips.
+         */
+        "repositorySizeInfoFetcher"?: (repo: Repository) => Promise<RepositorySizeInfo>;
+        /**
+          * Formatter for numeric values in tooltips.
+         */
+        "totalTripletsFormatter"?: Intl.NumberFormat;
     }
     interface OntoSearchIcon {
     }
