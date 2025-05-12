@@ -3073,16 +3073,21 @@ function SaveGraphModalCtrl($scope, $uibModalInstance, data, $translate) {
 
     $scope.ok = function () {
         if ($scope.form.$valid) {
+            $scope.graph.name = normalizeString($scope.graph.name);
             $uibModalInstance.close({graph: $scope.graph, mode: $scope.mode});
         }
     };
 
     $scope.saveNew = function () {
-        $scope.graph.name = $scope.graph.name + ' (new)';
+        $scope.graph.name = normalizeString($scope.graph.name) + ' (new)';
         $uibModalInstance.close({graph: $scope.graph, mode: 'new', restart: true});
     };
 
     $scope.cancel = function () {
         $uibModalInstance.dismiss('cancel');
     };
+
+    const normalizeString = (text) => {
+        return text.replace(/\s+/g, ' ').trim();
+    }
 }
