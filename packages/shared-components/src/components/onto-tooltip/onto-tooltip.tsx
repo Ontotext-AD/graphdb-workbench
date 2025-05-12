@@ -55,7 +55,7 @@ export class OntoTooltip {
         if (!relatedTarget || !target.contains(relatedTarget)) {
             const tooltipInstance = this.getTooltipInstance(target);
             if (tooltipInstance) {
-                if (tooltipInstance.props.trigger === 'manual') {
+                if (tooltipInstance.props.trigger !== 'manual') {
                 tooltipInstance.destroy();
             }
         }
