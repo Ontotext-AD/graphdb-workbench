@@ -302,7 +302,7 @@ div.nodetooltip {
 }
 
 .error-message {
-    font-size: x-small;
+    font-size: small;
     color: var(--color-warning-dark);
 }
 
@@ -339,11 +339,6 @@ div.nodetooltip {
 
 .autocomplete-dropdown li:hover {
     background-color: #f0f0f0;
-}
-
-.error-message {
-    font-size: x-small;
-    color: var(--color-warning-dark);
 }
 
 .alert-save {
