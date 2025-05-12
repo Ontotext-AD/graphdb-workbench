@@ -77,7 +77,7 @@ export class OntoOperationsNotification {
                     <li key={operation.id}>
                       <a class={`operation-status-content onto-btn ${operationStatusToWarningClass[operation.status]}`}
                          target="_blank"
-                         onClick={(e) => this.onLinkClicked(e, operation.href)}>
+                         onClick={this.onLinkClicked(operation.href)}>
                         <i class={operationGroupToIcon[operation.group]}></i>
                         <span class="operation-status-label">
                           <translate-label
@@ -105,10 +105,12 @@ export class OntoOperationsNotification {
     this.isOpen = !this.isOpen;
   };
 
-  private onLinkClicked(event: Event, href: string) {
-    event.preventDefault();
-    // Navigate to the license page without reloading.
-    // @ts-ignore
-    window.singleSpa.navigateToUrl(href);
+  private onLinkClicked= (href: string): ((event: Event) => void) => {
+    return (event: Event) => {
+      event.preventDefault();
+      // Navigate to the license page without reloading.
+      // @ts-ignore
+      window.singleSpa.navigateToUrl(href);
+    }
   }
 }

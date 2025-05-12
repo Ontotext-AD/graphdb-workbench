@@ -49,8 +49,8 @@ export class OntoToastr {
                class={`onto-toastr-container ${this.config.position}`}>
         {this.toasts?.getItems().map((toast) => (
           <div class={`onto-toast ${toast.type}`} key={toast.id}
-                onMouseEnter={() => this.clearToastTimeout(toast)}
-                onMouseLeave={() => this.setTimeoutForToast(toast)}>
+               onMouseEnter={this.onToastMouseEnter(toast)}
+               onMouseLeave={this.onToastMouseLeave(toast)}>
               <i class={`fa-regular ${toastTypeToIconMap[toast.type]}`}></i>
               <span onClick={this.handleToastClick(toast)}
                     class="toast-message"
@@ -60,6 +60,14 @@ export class OntoToastr {
       </section>
     );
   }
+
+  private onToastMouseEnter = (toast: ToastMessage): EventListener => () => {
+    this.clearToastTimeout(toast);
+  };
+
+  private onToastMouseLeave = (toast: ToastMessage): EventListener => () => {
+    this.setTimeoutForToast(toast);
+  };
 
   /**
    * Adds a new toast message.
