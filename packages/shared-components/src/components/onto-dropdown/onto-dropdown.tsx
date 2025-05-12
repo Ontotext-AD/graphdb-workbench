@@ -3,6 +3,7 @@ import {DropdownItem} from '../../models/dropdown/dropdown-item';
 import {TranslationService} from '../../services/translation.service';
 import {DropdownItemAlignment} from '../../models/dropdown/dropdown-item-alignment';
 import {Awaitable} from '@ontotext/workbench-api';
+import {TooltipUtil} from "../../utils/tooltip-util";
 
 /**
  * A reusable dropdown component built using StencilJS. This component supports configurable labels, tooltips, icons,
@@ -22,6 +23,11 @@ export class OntoDropdown {
    * Indicates whether the dropdown menu is open.
    */
   @State() open = false;
+
+  /**
+   * Holds the content of the tooltip
+   */
+  @State() buttonTooltipContent: string = '';
 
   /**
    * The name for the dropdown button. This can either be a string (used directly as the button label)
@@ -112,6 +118,7 @@ export class OntoDropdown {
         <button class="onto-dropdown-button"
                 tooltip-placement='left'
                 tooltip-trigger={this.dropdownTooltipTrigger}
+                tooltip-content={this.buttonTooltipContent}
                 {...(this.tooltipTheme ? { 'tooltip-theme': this.tooltipTheme } : {})}
                 onMouseEnter={this.setDropdownButtonTooltip()}
                 onClick={this.toggleButtonClickHandler()}>
@@ -141,15 +148,28 @@ export class OntoDropdown {
 
   private setDropdownButtonTooltip() {
     return async (event: MouseEvent) => {
+      /**
+       * Cast the event target to HTMLElement in order to directly access its tooltip instance (_tippy).
+       * This is a temporary workaround: currently, setting new tooltip content does not trigger an immediate update
+       * in some cases – it only reflects after the parent component re-renders.
+       *
+       * To decouple this behavior properly, tooltip rendering and content updates should be managed explicitly,
+       * either via reactive bindings or by reinitializing the tooltip instance as needed.
+       */
       const target = event.currentTarget as HTMLElement;
+      let tooltipContent: string;
       if (typeof this.dropdownButtonTooltip === 'function') {
-        const tooltipContent = await this.getTooltipContent(this.dropdownButtonTooltip);
-        target.setAttribute('tooltip-content', tooltipContent);
+        tooltipContent = await this.getTooltipContent(this.dropdownButtonTooltip);
       } else {
-        target.setAttribute(
-          'tooltip-content',
-          this.dropdownButtonTooltip ?? this.translate(this.dropdownButtonTooltipLabelKey)
-        );
+        tooltipContent =  this.dropdownButtonTooltip ?? this.translate(this.dropdownButtonTooltipLabelKey);
+      }
+      this.buttonTooltipContent = tooltipContent;
+
+      // FIXME: Tooltip update is not reactive – this logic should be decoupled from DOM traversal
+      if (tooltipContent !== '') {
+        TooltipUtil.updateTooltipContent(target, tooltipContent);
+      } else {
+        TooltipUtil.destroyTooltip(target);
       }
     }
   }
