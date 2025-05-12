@@ -156,3 +156,30 @@
     -webkit-box-orient: vertical;
     max-height: 4.5rem; /* fallback if line-clamp doesn't work */
 }
+
+.chat-detail .token-usage-info-btn {
+    margin-top: 2px;
+}
+
+/*********************************************************
+* Styling the popover displaying token usage information.
+**********************************************************/
+
+.token-usage-info {
+    max-width: 500px;
+    color: var(--text-color);
+    font-size: 1rem;
+    line-height: 1.7em;
+    margin-top: -1.4em;
+    margin-left: 0.7em;
+}
+
+.token-usage-info .description {
+    font-weight: 300;
+    margin-bottom: 0.3em;
+    line-height: 1.2em;
+}
+
+.token-info-number {
+    color: var(--primary-color);
+}

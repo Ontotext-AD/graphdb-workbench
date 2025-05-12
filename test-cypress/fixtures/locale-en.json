@@ -422,6 +422,13 @@
             "dialog": {
                 "confirm_repository_change": {
                     "body": "If you proceed with executing of SPARQL query, GraphDB will open in a new tab and switch to the <b>{{repositoryId}}</b> repository."
+                },
+                "token_usage_info": {
+                    "title": "Tokens usage",
+                    "prompt_tokens_info": "{{promptTokens}} prompt tokens",
+                    "prompt_tokens_info_description": "Tokens used to process instructions, chat history and user input.",
+                    "completion_tokens_info": "{{completionTokens}} completion tokens",
+                    "completion_tokens_info_description": "Tokens used to generate the response"
                 }
             },
             "messages": {
