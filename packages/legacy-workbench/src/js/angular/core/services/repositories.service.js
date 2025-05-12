@@ -9,7 +9,7 @@ import {QueryMode} from "../../models/ontotext-yasgui/query-mode";
 import {md5HashGenerator} from "../../utils/hash-utils";
 import {RemoteLocationModel} from "../../models/repository/remote-location.model";
 import {SelectMenuOptionsModel} from "../../models/form-fields";
-import {RepositoryStorageService, RepositoryContextService, ServiceProvider, RepositoryLocationContextService} from "@ontotext/workbench-api";
+import {RepositoryStorageService, RepositoryContextService, ServiceProvider, RepositoryLocationContextService, MapperProvider, RepositoryListMapper} from "@ontotext/workbench-api";
 
 const modules = [
     'ngCookies',
@@ -550,5 +550,25 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             that.locationsShouldReload = true;
             that.getLocations()
                 .then(() => that.initQuick());
+        });
+
+        $rootScope.$watch(() => {
+            const currentRepos = that.getAllAccessibleRepositories();
+            return JSON.stringify(currentRepos);
+        }, (newVal, oldVal) => {
+            if (newVal !== oldVal) {
+                const rm = MapperProvider.get(RepositoryListMapper);
+                const groupedByLocation = JSON.parse(newVal).reduce((acc, repo) => {
+                    const loc = repo.location || '';
+                    if (!acc[loc]) {
+                        acc[loc] = [];
+                    }
+                    acc[loc].push(repo);
+                    return acc;
+                }, {});
+
+                const repos = rm.mapToModel(groupedByLocation)
+                ServiceProvider.get(RepositoryContextService).updateRepositoryList(repos)
+            }
         });
     }]);

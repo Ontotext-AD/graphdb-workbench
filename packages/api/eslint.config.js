@@ -10,7 +10,7 @@ module.exports = tseslint.config(
             ...tseslint.configs.stylistic,
         ],
         rules: {
-            'no-console': 'warn',
+            'no-console': ['warn', { allow: ['warn', 'error'] }],
             'eqeqeq': 'error',
             'curly': 'error',
             'quotes': ['error', 'single'],
