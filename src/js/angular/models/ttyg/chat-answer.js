@@ -24,6 +24,13 @@ export class ChatAnswerModel {
          * @type {string}
          */
         this._continueRunId = data.continueRunId;
+
+        /**
+         * Holds information about the number of tokens used for this answer, including prompt and completion tokens.
+         *
+         * @type {TokenUsageInfo}
+         */
+        this.tokenUsageInfo = data.tokenUsageInfo;
     }
 
     get chatId() {

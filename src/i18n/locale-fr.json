@@ -421,6 +421,13 @@
             "dialog": {
                 "confirm_repository_change": {
                     "body": "Si vous continuez l'exécution de la requête SPARQL, GraphDB s'ouvrira dans un nouvel onglet et passera au dépôt <b>{{repositoryId}}</b>."
+                },
+                "token_usage_info": {
+                    "title": "Utilisation des jetons",
+                    "prompt_tokens_info": "{{promptTokens}} jetons de requête",
+                    "prompt_tokens_info_description": "Jetons utilisés pour traiter les instructions, l'historique de la conversation et les saisies de l'utilisateur.",
+                    "completion_tokens_info": "{{completionTokens}} jetons de réponse",
+                    "completion_tokens_info_description": "Jetons utilisés pour générer la réponse"
                 }
             },
             "messages": {

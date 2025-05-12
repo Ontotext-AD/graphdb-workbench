@@ -76,6 +76,15 @@ describe('Ttyg ChatPanel', () => {
         // and only the actions for the last message are visible.
         ChatPanelSteps.getChatDetailActions(2, 0).should('not.be.visible');
         ChatPanelSteps.getChatDetailActions(2, 1).should('be.visible');
+        // When: I hover over the token usage info button
+        TTYGViewSteps.hoverTokenUsageInfoButton(0);
+        // Then: I expect the token usage info popover to be displayed.
+        TTYGViewSteps.getTokenUsageInfoPopover()
+            .should("exist")
+            .and('contain', '10,246')
+            .and('contain', 'prompt tokens')
+            .and('contain', '82')
+            .and('contain', 'completion tokens');
 
         // When I click on regenerate button on the last response => +2 messages
         TTYGStubs.stubAnswerQuestion();
@@ -163,6 +172,22 @@ describe('Ttyg ChatPanel', () => {
         TTYGViewSteps.getQueryMethodElement(1, 2).should('contain', "FTS for IRI discovery");
         TTYGViewSteps.getQueryMethodDetailsElement(1, 2).should('contain', "via SPARQL");
         TTYGViewSteps.getExplainQueryQueryElement(1, 2).contains("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-sch");
+    });
+
+    it('Should display info about used tokens for response', () => {
+        // Given: I visit the TTYG page, a chat with two questions and answers is loaded.
+        // Wait to chat be loaded
+        ChatPanelSteps.getChatDetailsElements().should('have.length', 2);
+
+        // When: I hover over the token usage info button
+        TTYGViewSteps.hoverTokenUsageInfoButton(0);
+        // Then: I expect the token usage info popover to be displayed.
+        TTYGViewSteps.getTokenUsageInfoPopover()
+            .should("exist")
+            .and('contain', '10,245')
+            .and('contain', 'prompt tokens')
+            .and('contain', '81')
+            .and('contain', 'completion tokens');
     });
 
     // Can't test this on CI

@@ -316,6 +316,18 @@ export class TTYGViewSteps {
         this.getExplainResponseButton(index).click();
     }
 
+    static getTokenUsageInfoButton(index) {
+        return this.getTtygView().find('.token-usage-info-btn').eq(index);
+    }
+
+    static hoverTokenUsageInfoButton(index) {
+        return this.getTokenUsageInfoButton(index).realHover();
+    }
+
+    static getTokenUsageInfoPopover() {
+        return cy.get('.token-usage-info');
+    }
+
     static getHowDeliverAnswerButton() {
         return this.getTtygView().find('.deliver-answer-btn');
     }

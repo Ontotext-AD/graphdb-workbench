@@ -105,6 +105,18 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, TTYGSer
             };
 
             /**
+             * Handles the click event on the token usage info button.
+             * No additional actions are needed at this time; the handler simply prevents
+             * the default button behavior and stops the event from bubbling up.
+             *
+             * @param {Event} event - The click event object.
+             */
+            $scope.onTokenUsageInfo = (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+            };
+
+            /**
              * Opens <code>query</code> in sparql editor.
              * @param {string} query
              */

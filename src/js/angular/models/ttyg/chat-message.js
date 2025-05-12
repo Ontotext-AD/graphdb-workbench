@@ -20,6 +20,14 @@ export class ChatMessageModel {
          * @type {number}
          */
         this._timestamp = data.timestamp * 1000;
+
+        /**
+         * Holds information about the number of tokens used for this answer, including prompt and completion tokens.
+         * It is applicable only to the assistant role ({@link CHAT_MESSAGE_ROLE#ASSISTANT}).
+         *
+         * @type {TokenUsageInfo}
+         */
+        this.tokenUsageInfo = data.tokenUsageInfo;
     }
 
     get id() {

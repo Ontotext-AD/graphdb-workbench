@@ -24,6 +24,15 @@
                     </button>
                     <copy-to-clipboard tooltip-text="ttyg.chat_panel.btn.copy_answer.tooltip"
                                        text-to-copy="{{answer.message}}"></copy-to-clipboard>
+                    <button ng-if="answer.tokenUsageInfo"
+                         class="btn btn-link btn-sm token-usage-info-btn"
+                         uib-popover-template="'token-usage-info.html'"
+                         ng-click="onTokenUsageInfo($event)"
+                         popover-class="token-usage-info"
+                         popover-placement="bottom-right"
+                         popover-trigger="mouseenter">
+                        <i class="fa fa-message-question"></i>
+                    </button>
                     <button class="btn btn-link btn-link-only-icons btn-sm explain-response-btn" guide-selector="explain-response-btn"
                             ng-click="explainResponse(answer.id)"
                             ng-disabled="disabled && !explainResponseModel[answer.id]"
@@ -95,3 +104,22 @@
     <div ng-if="asking" onto-loader-new size="40" guide-selector="question-loader"></div>
 </div>
 
+<script type="text/ng-template" id="token-usage-info.html">
+    <h4 class="title">{{'ttyg.chat_panel.dialog.token_usage_info.title' | translate}}</h4>
+
+    <span class="token-info-number">
+            {{answer.tokenUsageInfo.promptTokens | formatNumberToLocaleString}}
+    </span>
+    {{'ttyg.chat_panel.dialog.token_usage_info.prompt_tokens_info' | translate}}
+    <div class="description">
+        {{'ttyg.chat_panel.dialog.token_usage_info.prompt_tokens_info_description' | translate }}
+    </div>
+
+    <span class="token-info-number">
+            {{answer.tokenUsageInfo.completionTokens | formatNumberToLocaleString}}
+    </span>
+    {{'ttyg.chat_panel.dialog.token_usage_info.completion_tokens_info' | translate}}
+    <div class="description">
+        {{'ttyg.chat_panel.dialog.token_usage_info.completion_tokens_info_description' | translate }}
+    </div>
+</script>

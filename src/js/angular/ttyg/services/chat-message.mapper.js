@@ -87,6 +87,7 @@ export const chatMessageModelMapper = (data) => {
         role: data.role,
         message: data.message,
         timestamp: data.timestamp,
+        tokenUsageInfo: data.usage,
         data: data
     });
 };
@@ -105,6 +106,7 @@ export const chatAnswerModelMapper = (data) => {
         chatName: data.name,
         timestamp: data.timestamp,
         messages: chatMessageModelListMapper(data.messages),
-        continueRunId: data.continueRunId
+        continueRunId: data.continueRunId,
+        tokenUsageInfo: data.usage
     });
 };
