@@ -1,7 +1,7 @@
 {
   "name": "@ontotext/workbench-api",
   "scripts": {
-    "start": "webpack serve --port 9003",
+    "start": "webpack serve --port 9003 --no-hot",
     "start:standalone": "webpack serve --env standalone",
     "build": "concurrently npm:build:*",
     "build:webpack": "webpack --mode=production",
