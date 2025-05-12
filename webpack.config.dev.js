@@ -30,6 +30,8 @@ module.exports = (env, argv) => merge(commonConfig(env, argv), {
       directory: path.join(__dirname, 'dist/')
     },
     compress: true,
+    hot: false,
+    liveReload: true,
     port: portHere,
     host: host,
     headers: {
@@ -41,8 +43,6 @@ module.exports = (env, argv) => merge(commonConfig(env, argv), {
     historyApiFallback: {
       disableDotRule: true
     },
-    // Enable hot module replacement
-    hot: true,
     proxy: [{
       context: ['/rest', '/repositories', '/protocol', '/rdf-bridge'],
       target: 'http://' + host + ':' + portThere,
