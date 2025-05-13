@@ -36,7 +36,7 @@ describe('LanguageContextService', () => {
 
   test('updateSelectedLanguage should update selected language and notify subscribers', async () => {
     const locale = 'fr';
-    const validateAndUpdateContextPropertySpy = jest.spyOn(languageContextService, 'validateAndUpdateContextProperty');
+    const validateAndUpdateContextPropertySpy = jest.spyOn(languageContextService, 'validatePropertyChange');
 
     await languageContextService.updateSelectedLanguage(locale);
 
@@ -45,7 +45,7 @@ describe('LanguageContextService', () => {
   });
 
   test('updateSelectedLanguage should use default language if locale is undefined', async () => {
-    const validateAndUpdateContextPropertySpy = jest.spyOn(languageContextService, 'validateAndUpdateContextProperty');
+    const validateAndUpdateContextPropertySpy = jest.spyOn(languageContextService, 'validatePropertyChange');
 
     await languageContextService.updateSelectedLanguage(undefined);
 

@@ -409,8 +409,7 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                         repositoryStorageService.set(repositoryContextService.SELECTED_REPOSITORY_ID, repo.id);
                         repositoryStorageService.set(repositoryContextService.REPOSITORY_LOCATION, repo.location);
                         // trigger context change for the current tab
-                        repositoryContextService.updateSelectedRepositoryId(repo.id);
-                        repositoryContextService.updateRepositoryLocation(repo.location);
+                        repositoryContextService.updateRepositoryIdAndLocation(repo.id, repo.location);
                     } else {
                         repositoryStorageService.remove(repositoryContextService.SELECTED_REPOSITORY_ID);
                         repositoryStorageService.remove(repositoryContextService.REPOSITORY_LOCATION);

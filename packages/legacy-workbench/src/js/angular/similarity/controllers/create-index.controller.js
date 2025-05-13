@@ -13,6 +13,7 @@ import {SimilarityIndexType} from "../../models/similarity/similarity-index-type
 import {SimilarityIndexError} from "../../models/similarity/similarity-index-error";
 import {QueryType} from "../../models/ontotext-yasgui/query-type";
 import {SimilarityIndexInfo} from "../../models/similarity/similarity-index-info";
+import {RepositoryContextService, ServiceProvider} from "@ontotext/workbench-api";
 
 angular
     .module('graphdb.framework.similarity.controllers.create', [
@@ -89,6 +90,10 @@ function CreateSimilarityIdxCtrl(
     let viewMode = SimilarityViewMode.CREATE;
     const textDefaultOptions = '-termweight idf';
     const predDefaultOptions = '';
+
+    // This flag is used to prevent triggering the repository change event listener on initial subscription.
+    let initialRepoChangeTrigger = true;
+
 
     // =========================
     // Public functions
@@ -625,7 +630,9 @@ function CreateSimilarityIdxCtrl(
     }
 
     const goToSimilarityIndexesView = () => {
-        setTimeout(() => $location.url('similarity'), 100);
+        $timeout(() =>
+            $location.url('similarity')
+            , 100);
     }
 
     const getOntotextYasgui = () => {
@@ -866,24 +873,22 @@ function CreateSimilarityIdxCtrl(
     // =========================
     // Subscriptions handlers
     // =========================
-    const repositoryWillChangedHandler = (eventData) => {
+    const repositoryWillChangeHandler = () => {
         return new Promise(function (resolve) {
 
             if ($scope.isCreateViewMode() || $scope.isCloneViewMode()) {
-                resolve(eventData);
+                resolve(true);
                 return;
             }
 
             const onConfirm = () => {
                 isDirty = false;
-                goToSimilarityIndexesView();
-                resolve(eventData);
+                resolve(true);
             };
 
             if (isDirty) {
                 const onCancel = () => {
-                    eventData.cancel = true;
-                    resolve(eventData);
+                    resolve(false);
                 };
                 const title = $translate.instant('common.confirm');
                 const message = $translate.instant('similarity.warning.unsaved.changes');
@@ -895,6 +900,14 @@ function CreateSimilarityIdxCtrl(
     };
 
     const repositoryChangedHandler = () => {
+        if (initialRepoChangeTrigger) {
+            initialRepoChangeTrigger = false;
+        } else {
+            goToSimilarityIndexesView();
+        }
+    };
+
+    const activeRepositoryHandler = () => {
         // when repository is changed we have to switch yasgui back to editor mode
         if ($scope.isYasrShown() && $scope.similarityIndexInfo.isDataQueryTypeSelected()) {
             $scope.showEditor();
@@ -937,7 +950,10 @@ function CreateSimilarityIdxCtrl(
     // =========================
     const subscriptions = [];
 
-    subscriptions.push(EventEmitterService.subscribe('repositoryWillChangeEvent', repositoryWillChangedHandler));
+    const repositoryContextService = ServiceProvider.get(RepositoryContextService);
+    const repositoryChangeSubscription = repositoryContextService.onSelectedRepositoryIdChanged(repositoryChangedHandler, repositoryWillChangeHandler)
+
+    subscriptions.push(repositoryChangeSubscription);
     subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
     subscriptions.push($scope.$on('$destroy', removeAllListeners));
     // Prevent go out of the current page? check
@@ -963,7 +979,7 @@ function CreateSimilarityIdxCtrl(
                     console.log(error)
                     $scope.repositoryError = getError(error);
                 }).finally(() => {
-                    subscriptions.push($scope.$on('repositoryIsSet', repositoryChangedHandler));
+                    subscriptions.push($scope.$on('repositoryIsSet', activeRepositoryHandler));
                     repoIsInitialized();
                     $scope.loadingControllerResources = false;
                 });
