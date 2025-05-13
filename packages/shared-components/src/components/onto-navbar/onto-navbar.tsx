@@ -15,7 +15,13 @@ import {NavbarToggledEvent} from "./navbar-toggled-event";
 import {NavbarService} from "./navbar-service";
 import {NavbarItemModel, NavbarModel} from "./navbar-model";
 import {TranslationService} from '../../services/translation.service';
-import {navigateTo} from '@ontotext/workbench-api';
+import {
+  EventName,
+  EventService, getCurrentRoute, isHomePage,
+  navigateTo,
+  ServiceProvider,
+  SubscriptionList
+} from '@ontotext/workbench-api';
 
 const labelKeys = {
   EXPAND: 'menu.buttons.expand',
@@ -34,6 +40,8 @@ export class OntoNavbar {
     [labelKeys.COLLAPSE]:TranslationService.translate(labelKeys.COLLAPSE),
     [labelKeys.LOGO_LINK]: TranslationService.translate(labelKeys.LOGO_LINK)
   }
+
+  private readonly subscriptions = new SubscriptionList();
 
   /**
    * Flag indicating whether the navbar is collapsed in result of toggle action initiated by the user. This is needed
@@ -121,8 +129,6 @@ export class OntoNavbar {
       }
     } else {
       this.menuModel.closeOtherParents(menuItem);
-      this.menuModel.deselectAll();
-      this.menuModel.selectItem(menuItem);
     }
 
     // When the navbar is collapsed then find if the selected item has active children and mark the item as selected
@@ -131,7 +137,25 @@ export class OntoNavbar {
       this.menuModel.closeOpened();
     }
 
-    this.refreshNavbar()
+    this.refreshNavbar();
+  }
+
+  private subscribeToNavigationEnd() {
+    this.subscriptions.add(
+      ServiceProvider.get(EventService).subscribe(
+        EventName.NAVIGATION_END, () => {
+          this.selectItemByUrl();
+        }
+      )
+    );
+  }
+
+  private selectItemByUrl() {
+    this.menuModel.deselectAll();
+    isHomePage()
+      ? this.menuModel.closeAll()
+      : this.menuModel.initSelected(getCurrentRoute());
+    this.refreshNavbar();
   }
 
   private toggleNavbar(): void {
@@ -185,12 +209,17 @@ export class OntoNavbar {
   // Lifecycle methods
   // ========================
 
-  componentWillLoad() {
+  connectedCallback() {
     this.init(this.menuItems);
+    this.subscribeToNavigationEnd();
     // subscribe to language change events for each label
     this.onTranslate(labelKeys.EXPAND);
     this.onTranslate(labelKeys.COLLAPSE);
     this.onTranslate(labelKeys.LOGO_LINK);
+  }
+
+  disconnectedCallback() {
+    this.subscriptions.unsubscribeAll();
   }
 
   private handleSelectMenuItem(item: NavbarItemModel) {
