@@ -13,7 +13,7 @@ import {
   AuthenticatedUser,
   SecurityConfig,
   Authority,
-  AuthenticationService
+  AuthenticationService, getCurrentRoute
 } from '@ontotext/workbench-api';
 import {ExternalMenuItemModel} from '../onto-navbar/external-menu-model';
 
@@ -176,8 +176,7 @@ export class OntoLayout {
   }
 
   componentWillLoad() {
-    let route = window.location.pathname;
-    this.currentRoute  = route.replace('/', '').split('/')[0];
+    this.currentRoute = getCurrentRoute();
     window.addEventListener("storage", this.handleStorageChange);
     this.onSecurityChanged();
   }
