@@ -16,15 +16,15 @@ export class EpoolChart extends ChartData {
                     name: this.translateService.instant('resource.epool.reads'),
                     nameLocation: 'middle',
                     type: 'value',
-                    nameGap: 50,
+                    nameGap: 40
                 },
                 {
                     name: this.translateService.instant('resource.epool.writes'),
                     nameLocation: 'middle',
                     type: 'value',
-                    nameGap: 50,
+                    nameGap: 40
                 }
-            ],
+            ]
         };
         _.merge(chartOptions, epoolChartOptions);
     }
