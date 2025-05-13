@@ -37,3 +37,13 @@ export function isHomePage(): boolean {
 export function getPathName(): string {
   return window.location.pathname;
 }
+
+/**
+ * Retrieves the current route from the URL, removing the leading <code>/</code>.
+ * For example:<br>
+ * Calling <code>getCurrentRoute()</code> while on http://localhost:9000/sparql will return <code>"sparql"</code><br>
+ * Calling <code>getCurrentRoute()</code> while on http://localhost:9000/graphql/endpoints will return <code>"graphql/endpoints"<code>
+ */
+export function getCurrentRoute(): string {
+  return getPathName().substring(1);
+}
