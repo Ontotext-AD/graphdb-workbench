@@ -4,7 +4,9 @@
     "description": "The web application for GraphDB APIs",
     "scripts": {
         "clean": "sh scripts/clean.sh",
+        "clean-install": "sh scripts/clean.sh && npm run install:local",
         "install:ci": "sh scripts/install.sh && sh scripts/postinstall.sh",
+        "install:local": "sh scripts/install-local.sh && sh scripts/postinstall.sh",
         "prebuild": "npm run license-report-api && npm run license-report-root-config && npm run license-report-legacy-workbench && npm run license-report-shared-components && npm run license-report-workbench",
         "build": "npm run build-dev",
         "postbuild": "webpack --env BUILD_MODE=production --config=webpack.config.prod.js",

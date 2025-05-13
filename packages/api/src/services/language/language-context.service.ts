@@ -26,11 +26,16 @@ export class LanguageContextService extends ContextService<LanguageContextFields
    *
    * @param {string} locale - The new language code to set (e.g., 'en', 'fr', 'de').
    */
-  updateSelectedLanguage(locale?: string): Promise<boolean> {
-    const selectedLanguage = locale || ServiceProvider.get(LanguageService).getDefaultLanguage();
-    const storageService = ServiceProvider.get(LanguageStorageService);
-    storageService.set(this.SELECTED_LANGUAGE, selectedLanguage);
-    return this.validateAndUpdateContextProperty(this.SELECTED_LANGUAGE, locale);
+  updateSelectedLanguage(locale?: string): void {
+    this.validatePropertyChange(this.SELECTED_LANGUAGE, locale)
+      .then((shouldSet) => {
+        if (shouldSet) {
+          const selectedLanguage = locale || ServiceProvider.get(LanguageService).getDefaultLanguage();
+          const storageService = ServiceProvider.get(LanguageStorageService);
+          storageService.set(this.SELECTED_LANGUAGE, selectedLanguage);
+          this.updateContextProperty(this.SELECTED_LANGUAGE, locale);
+        }
+      });
   }
 
   /**
