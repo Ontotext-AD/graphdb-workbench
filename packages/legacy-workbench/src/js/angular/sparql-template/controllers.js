@@ -13,6 +13,7 @@ import {
     DISABLE_YASQE_BUTTONS_CONFIGURATION,
     YasguiComponentDirectiveUtil
 } from "../core/directives/yasgui-component/yasgui-component-directive.util";
+import {RepositoryContextService, ServiceProvider} from "@ontotext/workbench-api";
 
 const modules = [
     'ui.bootstrap',
@@ -128,6 +129,8 @@ function SparqlTemplateCreateCtrl(
     // the first.
     let initialRepoInitialization = true;
 
+    // This flag is used to prevent triggering the repository change event listener on initial subscription.
+    let initialRepoChangeTrigger = true;
 
     // =========================
     // Public functions
@@ -405,27 +408,24 @@ function SparqlTemplateCreateCtrl(
         updateTitle();
     };
 
-    const repositoryWillChangeHandler = (eventData) => {
+    const repositoryWillChangeHandler = () => {
         return new Promise(function (resolve) {
-
             if ($scope.sparqlTemplateInfo.isNewTemplate) {
-                resolve(eventData);
+                resolve(true);
                 return;
             }
 
             const onConfirm = () => {
                 $scope.isDirty = false;
-                goToSparqlTemplatesView();
-                resolve(eventData);
+                resolve(true);
             };
 
             if ($scope.isDirty) {
                 const onCancel = () => {
-                    eventData.cancel = true;
-                    resolve(eventData);
+                    resolve(false);
                 };
                 const title = $translate.instant('common.confirm');
-                const message = $translate.instant('jdbc.warning.unsaved.changes');
+                const message = $translate.instant('common.unsaved.changes');
                 openConfirmDialog(title, message, onConfirm, onCancel);
             } else {
                 onConfirm();
@@ -442,7 +442,7 @@ function SparqlTemplateCreateCtrl(
         if ($scope.isDirty) {
             event.preventDefault();
             const title = $translate.instant('common.confirm');
-            const message = $translate.instant('jdbc.warning.unsaved.changes');
+            const message = $translate.instant('common.unsaved.changes');
             const onConfirm = () => {
                 removeAllListeners();
                 const baseLen = $location.absUrl().length - $location.url().length;
@@ -461,14 +461,20 @@ function SparqlTemplateCreateCtrl(
         }
     };
 
-    const repositoryChangedHandler = (activeRepo) => {
+    const repositoryChangedHandler = () => {
+        if (initialRepoChangeTrigger) {
+            initialRepoChangeTrigger = false;
+        } else {
+            goToSparqlTemplatesView();
+        }
+    };
+
+    const activeRepositoryHandler = (activeRepo) => {
         if (activeRepo) {
             $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
             if (initialRepoInitialization) {
                 loadOntotextYasgui();
                 initialRepoInitialization = false;
-            } else {
-                goToSparqlTemplatesView();
             }
         }
     };
@@ -485,10 +491,14 @@ function SparqlTemplateCreateCtrl(
     // Subscriptions
     // =========================
     const subscriptions = [];
+
+    const repositoryContextService = ServiceProvider.get(RepositoryContextService);
+    const repositoryChangeSubscription = repositoryContextService.onSelectedRepositoryIdChanged(repositoryChangedHandler, repositoryWillChangeHandler)
+
+    subscriptions.push(repositoryChangeSubscription);
     subscriptions.push($scope.$on('queryChanged', queryChangeHandler));
     subscriptions.push($rootScope.$on('$translateChangeSuccess', languageChangedHandler));
     subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
-    subscriptions.push(eventEmitterService.subscribe('repositoryWillChangeEvent', repositoryWillChangeHandler));
     subscriptions.push($scope.$on('$destroy', removeAllListeners));
     // Prevent go out of the current page? check
     window.addEventListener('beforeunload', beforeunloadHandler);
@@ -515,5 +525,5 @@ function SparqlTemplateCreateCtrl(
 
     // Wait until the active repository object is set, otherwise "canWriteActiveRepo()" may return a wrong result and the "ontotext-yasgui"
     // readOnly configuration may be incorrect.
-    subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, repositoryChangedHandler));
+    subscriptions.push($scope.$watch($scope.getActiveRepositoryObject, activeRepositoryHandler));
 }
