@@ -30,24 +30,18 @@ export abstract class ContextService<TFields extends Record<string, unknown>> im
   }
 
   /**
-   * Validates and updates the value of a specific property if validation passes.
-   * This method first checks if the value can be updated and only updates the value if the validation succeeds.
+   * Checks if validation passes for a value of a specific property.
    *
    * @param propertyName The name of the property to be validated and updated.
    * @param value The new value to be validated and potentially assigned to the property.
    *
-   * @returns A promise that resolves to a boolean indicating whether the validation passed and the update was performed.
-   *          Returns true if the value was successfully updated, false otherwise.
+   * @returns A promise that resolves to a boolean indicating whether the validation passed.
    *
    * @template T The type of the value to be validated and set.
    */
-  async validateAndUpdateContextProperty<T>(propertyName: string, value: T): Promise<boolean> {
+  validatePropertyChange<T>(propertyName: string, value: T): Promise<boolean> {
     const valueContext = this.getOrCreateValueContext(propertyName);
-    const canUpdate = await valueContext.canUpdate(value);
-    if (canUpdate) {
-      valueContext.setValue(value);
-    }
-    return canUpdate;
+    return valueContext.canUpdate(value);
   }
 
   /**
@@ -65,18 +59,18 @@ export abstract class ContextService<TFields extends Record<string, unknown>> im
   }
 
   /**
- * Registers a <code>callbackFunction</code> function that will be called when the value of a property with <code>propertyName</code> changes.
- * It immediately calls the callback with the current value and then subscribes the callback for future changes to the property.
- *
- * @param propertyName The name of the property to subscribe to.
- * @param callbackFunction The callback function to be called when the property value changes.
- *                         It will receive the current value of the property as its argument.
- * @param beforeChangeValidationPromise Optional promise that can be used to validate the new value before it is set.
- *                                     If the promise resolves to false, the value change will be rejected.
- *
- * @returns A function that can be called to unsubscribe from the property updates.
- *
- * @template T The type of the value that the callback function will receive.
+   * Registers a <code>callbackFunction</code> function that will be called when the value of a property with <code>propertyName</code> changes.
+   * It immediately calls the callback with the current value and then subscribes the callback for future changes to the property.
+   *
+   * @param propertyName The name of the property to subscribe to.
+   * @param callbackFunction The callback function to be called when the property value changes.
+   *                         It will receive the current value of the property as its argument.
+   * @param beforeChangeValidationPromise Optional promise that can be used to validate the new value before it is set.
+   *                                     If the promise resolves to false, the value change will be rejected.
+   *
+   * @returns A function that can be called to unsubscribe from the property updates.
+   *
+   * @template T The type of the value that the callback function will receive.
    */
   protected subscribe<T>(propertyName: string, callbackFunction: ValueChangeCallback<T | undefined>, beforeChangeValidationPromise?: BeforeChangeValidationPromise<T>): () => void {
     if (callbackFunction) {
