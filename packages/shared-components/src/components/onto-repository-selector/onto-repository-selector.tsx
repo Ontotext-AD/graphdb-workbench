@@ -1,12 +1,15 @@
-import {Component, Host, h, State} from '@stencil/core';
+import {Component, h, Host, State} from '@stencil/core';
 import {
+  LanguageContextService,
+  LanguageService,
   Repository,
+  RepositoryContextService,
+  RepositoryList,
+  RepositoryService,
+  RepositorySizeInfo,
   RepositoryStorageService,
   ServiceProvider,
-  RepositoryService,
-  RepositoryList,
-  RepositoryContextService,
-  UriUtil, RepositorySizeInfo, LanguageService, LanguageContextService
+  UriUtil
 } from "@ontotext/workbench-api";
 import {DropdownItem} from '../../models/dropdown/dropdown-item';
 import {DropdownItemAlignment} from '../../models/dropdown/dropdown-item-alignment';
@@ -28,9 +31,9 @@ import {TranslationService} from '../../services/translation.service';
  * <onto-repository-selector></onto-repository-selector>
  */
 export class OntoRepositorySelector {
-  private repositoryService = ServiceProvider.get(RepositoryService);
-  private repositoryContextService = ServiceProvider.get(RepositoryContextService);
-  private repositoryStorageService = ServiceProvider.get(RepositoryStorageService);
+  private readonly repositoryService = ServiceProvider.get(RepositoryService);
+  private readonly repositoryContextService = ServiceProvider.get(RepositoryContextService);
+  private readonly repositoryStorageService = ServiceProvider.get(RepositoryStorageService);
   private readonly languageService: LanguageService = ServiceProvider.get(LanguageService);
   private totalTripletsFormatter: Intl.NumberFormat;
   private currentRepositoryId: string;
@@ -108,10 +111,8 @@ export class OntoRepositorySelector {
   private initOnRepositoryListChanged(repositories: RepositoryList): void {
     this.repositoryList = repositories;
     const location = '';
-    const repository = repositories.findRepository(this.currentRepositoryId, location);
     // currently selected repository could be deleted and not in the list at this point
-    this.currentRepository = repository;
-    this.repositoryContextService.updateSelectedRepository(repository);
+    this.currentRepository = repositories.findRepository(this.currentRepositoryId, location);
     this.repositoryContextService.updateSelectedRepositoryId(this.currentRepositoryId);
     this.items = this.getRepositoriesDropdownItems();
   }
@@ -167,11 +168,11 @@ export class OntoRepositorySelector {
   }
 
   private onRepositoryChanged(selectedRepository: Repository): void {
-    this.repositoryContextService.updateSelectedRepository(selectedRepository);
+    this.repositoryContextService.updateRepositoryIdAndLocation(selectedRepository.id, this.getLocation());
   }
 
   private getLocation() {
-    if (this.currentRepository && this.currentRepository.location) {
+    if (this.currentRepository?.location) {
       return `@${UriUtil.shortenIri(this.currentRepository.location)}`;
     }
     return ``;
