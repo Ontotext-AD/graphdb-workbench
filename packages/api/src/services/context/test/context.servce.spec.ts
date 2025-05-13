@@ -111,7 +111,7 @@ describe('ContextService', () => {
     expect(result).toBe(true);
   });
 
-  test('Should validate and update a property successfully when validation returns true', async () => {
+  test('Should validate a property successfully when validation returns true', async () => {
     const valueOfTestProperty = {a: 1, b: [1, 2]};
     const propertyName = 'testProperty';
 
@@ -119,19 +119,15 @@ describe('ContextService', () => {
     const validation = jest.fn().mockImplementation(() => Promise.resolve(true));
     contextService.subscribeToProperty(propertyName, callBackFunction, validation);
 
-    // When validating and updating a property
-    const result = await contextService.validateAndUpdateContextProperty(propertyName, valueOfTestProperty);
-
-    const newValue = contextService.getProperty(propertyName);
+    // When validating a property
+    const result = await contextService.validatePropertyChange(propertyName, valueOfTestProperty);
 
     // Then the result should be true
     expect(result).toBe(true);
     // And canUpdate should have been called with the value
     expect(validation).toHaveBeenCalledWith(valueOfTestProperty);
-    // And setValue should have been called to update the value
-    expect(callBackFunction).toHaveBeenCalledWith(valueOfTestProperty);
-    // And value should be set
-    expect(newValue).toEqual(valueOfTestProperty);
+    // And callback should have been called once on initial subscription
+    expect(callBackFunction).toHaveBeenCalledTimes(1);
   });
 
   test('Should not update a property when canUpdate returns false', async () => {
@@ -146,18 +142,14 @@ describe('ContextService', () => {
     contextService.subscribeToProperty(propertyName, callBackFunction, validation);
 
     // When validating and updating a property
-    const result = await contextService.validateAndUpdateContextProperty(propertyName, newValue);
-
-    const newProperty = contextService.getProperty(propertyName);
+    const result = await contextService.validatePropertyChange(propertyName, newValue);
 
     // Then the result should be false
     expect(result).toBe(false);
     // And canUpdate should have been called with the value
     expect(validation).toHaveBeenCalledWith(newValue);
-    // And setValue should not have been called to update the value
+    // And callback should have been called once on initial subscription
     expect(callBackFunction).toHaveBeenCalledTimes(1);
-    // And value should be set
-    expect(newProperty).toEqual(initialValue);
   });
 });
 
