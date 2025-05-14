@@ -37,7 +37,12 @@
                 "role": "assistant",
                 "message": "Han Solo is a fictional character in the Star ",
                 "timestamp": "1725875332",
-                "name": null
+                "name": null,
+                "usage": {
+                    "completionTokens": 81,
+                    "promptTokens": 10245,
+                    "totalTokens": 10326
+                }
             }
         ],
         "timestamp": "1725875483"
