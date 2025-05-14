@@ -75,6 +75,7 @@ homeCtrl.$inject = ['$scope',
     'RepositoriesRestService',
     'WorkbenchContextService',
     'RDF4JRepositoriesService',
+    'RepositoryStorage',
     'toastr'];
 
 function homeCtrl($scope,
@@ -89,6 +90,7 @@ function homeCtrl($scope,
                   RepositoriesRestService,
                   WorkbenchContextService,
                   RDF4JRepositoriesService,
+                  RepositoryStorage,
                   toastr) {
 
     // =========================
@@ -124,8 +126,8 @@ function homeCtrl($scope,
     const subscriptions = [];
 
     const onSelectedRepositoryIdUpdated = (repositoryId) => {
-        // Don't call API, if no repo ID or if GQL read only or write rights
-        if (!repositoryId || $jwtAuth.hasGraphqlRightsOverCurrentRepo()) {
+        // Don't call API, if no repo ID, or with GQL read-only or write rights
+        if (!repositoryId || !RepositoryStorage.getActiveRepositoryObject().id || $jwtAuth.hasGraphqlRightsOverCurrentRepo()) {
             $scope.repositoryNamespaces = new NamespacesListModel();
             return;
         }
