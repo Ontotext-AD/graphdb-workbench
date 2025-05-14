@@ -4,7 +4,6 @@ import {
   ServiceProvider,
   LanguageService,
   LanguageContextService,
-  LanguageStorageService
 } from "@ontotext/workbench-api";
 import {DropdownItemAlignment} from '../../models/dropdown/dropdown-item-alignment';
 
@@ -14,8 +13,8 @@ import {DropdownItemAlignment} from '../../models/dropdown/dropdown-item-alignme
   shadow: false,
 })
 export class OntoLanguageSelector {
-  private languageService: LanguageService;
-  private languageContextService: LanguageContextService;
+  private readonly languageService = ServiceProvider.get(LanguageService);
+  private readonly languageContextService = ServiceProvider.get(LanguageContextService);
   private items: DropdownItem<string>[] = [];
   private onLanguageChangeSubscription: () => void;
 
@@ -30,11 +29,7 @@ export class OntoLanguageSelector {
    */
   @State() currentLanguage: string;
 
-  constructor() {
-    this.languageService = ServiceProvider.get(LanguageService);
-    this.languageContextService = ServiceProvider.get(LanguageContextService);
-    const selectedLanguage = ServiceProvider.get(LanguageStorageService).get(this.languageContextService.SELECTED_LANGUAGE);
-    this.changeLanguage(selectedLanguage?.getValueOrDefault(this.languageService.getDefaultLanguage()));
+  connectedCallback() {
     this.onLanguageChangeSubscription = this.languageContextService.onSelectedLanguageChanged((newLanguage) => this.changeLanguage(newLanguage));
     this.items = this.getLanguageDropdownOptions();
   }
@@ -68,7 +63,12 @@ export class OntoLanguageSelector {
   }
 
   private changeLanguage(newLanguage: string): void {
-    this.currentLanguage = newLanguage;
+    let selectedLanguage = newLanguage;
+    if (!selectedLanguage) {
+      selectedLanguage = this.languageService.getDefaultLanguage();
+    }
+
+    this.currentLanguage = selectedLanguage;
     this.items = this.getLanguageDropdownOptions();
   }
 
