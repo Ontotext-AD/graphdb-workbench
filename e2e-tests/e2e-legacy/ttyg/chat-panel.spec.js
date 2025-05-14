@@ -5,8 +5,7 @@ import {ChatPanelSteps} from "../../steps/ttyg/chat-panel-steps";
 import {ApplicationSteps} from "../../steps/application-steps";
 import {RepositoriesStub} from "../../stubs/repositories-stub";
 
-// TODO: Fix me. Broken due to migration (Error: beforeEach)
-describe.skip('Ttyg ChatPanel', () => {
+describe('Ttyg ChatPanel', () => {
 
     beforeEach(() => {
         // Create an actual repository to prevent stubbing all background requests that are not related to the ttyg view
@@ -43,7 +42,7 @@ describe.skip('Ttyg ChatPanel', () => {
         // When the new question input is empty.
         // The "Ask" button must be disabled.
         ChatPanelSteps.getAskButtonElement().should('be.disabled');
-        ChatPanelSteps.getQuestionInputElement().should('be.disabled');
+        ChatPanelSteps.getQuestionInputElement().should('have.attr', 'disabled');
 
         // Then I expect the "Ask" button be not active because agent is not selected
         ChatPanelSteps.getAskButtonElement().should('not.be.enabled');
@@ -55,7 +54,8 @@ describe.skip('Ttyg ChatPanel', () => {
         // When I type a question
         ChatPanelSteps.getQuestionInputElement()
             .should('be.visible')
-            .and('not.be.disabled')
+            .and('not.have.attr', 'disabled');
+        ChatPanelSteps.getQuestionInputElement()
             .type('Who is Han Solo?');
 
         // Then I expect the "Ask" button be active.
@@ -69,13 +69,22 @@ describe.skip('Ttyg ChatPanel', () => {
         ChatPanelSteps.getChatDetailsElements().should('have.length', 3);
         ChatPanelSteps.getChatDetailQuestionElement(2).contains('Who is Han Solo?');
         // and input field be empty,
-        ChatPanelSteps.getQuestionInputElement().should('be.enabled');
+        ChatPanelSteps.getQuestionInputElement().should('not.have.attr', 'disabled');
         ChatPanelSteps.getQuestionInputElement().should('have.value', '');
         // and "Ask" button be disabled.
         ChatPanelSteps.getAskButtonElement().should('be.disabled');
         // and only the actions for the last message are visible.
         ChatPanelSteps.getChatDetailActions(2, 0).should('not.be.visible');
         ChatPanelSteps.getChatDetailActions(2, 1).should('be.visible');
+        // When: I hover over the token usage info button
+        TTYGViewSteps.hoverTokenUsageInfoButton(0);
+        // Then: I expect the token usage info popover to be displayed.
+        TTYGViewSteps.getTokenUsageInfoPopover()
+            .should("exist")
+            .and('contain', '10,246')
+            .and('contain', 'prompt tokens')
+            .and('contain', '82')
+            .and('contain', 'completion tokens');
 
         // When I click on regenerate button on the last response => +2 messages
         TTYGStubs.stubAnswerQuestion();
@@ -163,6 +172,22 @@ describe.skip('Ttyg ChatPanel', () => {
         TTYGViewSteps.getQueryMethodElement(1, 2).should('contain', "FTS for IRI discovery");
         TTYGViewSteps.getQueryMethodDetailsElement(1, 2).should('contain', "via SPARQL");
         TTYGViewSteps.getExplainQueryQueryElement(1, 2).contains("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-sch");
+    });
+
+    it('Should display info about used tokens for response', () => {
+        // Given: I visit the TTYG page, a chat with two questions and answers is loaded.
+        // Wait to chat be loaded
+        ChatPanelSteps.getChatDetailsElements().should('have.length', 2);
+
+        // When: I hover over the token usage info button
+        TTYGViewSteps.hoverTokenUsageInfoButton(0);
+        // Then: I expect the token usage info popover to be displayed.
+        TTYGViewSteps.getTokenUsageInfoPopover()
+            .should("exist")
+            .and('contain', '10,245')
+            .and('contain', 'prompt tokens')
+            .and('contain', '81')
+            .and('contain', 'completion tokens');
     });
 
     // Can't test this on CI
