@@ -65,6 +65,15 @@ export class OntoRepositorySelector {
   @State() defaultToggleButtonName: string;
 
   /**
+   * A processed copy of `items`, enhanced with tooltip functions.
+   *
+   * While `items` is a raw input provided externally, `dropdownItems` is used internally to store
+   * the transformed version with attached tooltips. This ensures that tooltip generation logic is
+   * centralized and only applied once, avoiding side effects or repeated mutation of the input prop.
+   */
+  private dropdownItems: DropdownItem<Repository>[];
+
+  /**
    * Re-applies tooltip functions to all dropdown items when the items prop changes.
    */
   @Watch('items')
@@ -73,14 +82,18 @@ export class OntoRepositorySelector {
       return;
     }
 
-    this.items = this.attachTooltipsToItems(this.items);
+    this.dropdownItems = this.attachTooltipsToItems(this.items);
   }
 
   connectedCallback() {
     this.subscriptions.push(this.subscribeToTranslationChanged());
 
     // Manually apply tooltip functions to each item on first mount.
-    this.items = this.attachTooltipsToItems(this.items);
+    if (this.items && this.items.length) {
+      this.dropdownItems = this.attachTooltipsToItems(this.items);
+    } else {
+      this.dropdownItems = [];
+    }
   }
 
   /**
@@ -103,7 +116,7 @@ export class OntoRepositorySelector {
           dropdownAlignment={DropdownItemAlignment.RIGHT}
           tooltipPlacement={this.tooltipAlignment}
           tooltipTheme='light-border'
-          items={this.items}>
+          items={this.dropdownItems}>
         </onto-dropdown>
       </Host>
     );
