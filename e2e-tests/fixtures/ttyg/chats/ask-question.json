@@ -10,7 +10,12 @@
             "agentId": "requestBody.agentId",
             "message": "Reply to '${requestBody.question}' Second`",
             "timestamp": 53425243523,
-            "name": null
+            "name": null,
+            "usage": {
+                "completionTokens": 82,
+                "promptTokens": 10246,
+                "totalTokens": 10328
+            }
         },
         {
             "id": "msg_Bn07kVDCYT1qmgu1G7Zw0KNe_",
@@ -19,7 +24,12 @@
             "agentId": "requestBody.agentId",
             "message": "Reply to '${requestBody.question}",
             "timestamp": 23432424242,
-            "name": null
+            "name": null,
+            "usage": {
+                "completionTokens": 80,
+                "promptTokens": 10244,
+                "totalTokens": 10324
+            }
         }
     ]
 }
