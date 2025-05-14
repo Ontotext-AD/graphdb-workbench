@@ -4,6 +4,8 @@ import {TTYGStubs} from "../../stubs/ttyg/ttyg-stubs";
 import {TtygAgentSettingsModalSteps} from "../../steps/ttyg/ttyg-agent-settings-modal.steps";
 import {ToasterSteps} from "../../steps/toaster-steps";
 import {RepositoriesStub} from "../../stubs/repositories-stub";
+import {AutocompleteStubs} from "../../stubs/autocomplete/autocomplete-stubs";
+import {ModalDialogSteps} from "../../steps/modal-dialog-steps";
 
 describe('TTYG edit an agent', () => {
     const repositoryId = 'starwars';
@@ -52,14 +54,13 @@ describe('TTYG edit an agent', () => {
     });
 
 
-    it.skip('should be able to edit Autocomplete extraction method option', {
+    it('should be able to edit Autocomplete extraction method option', {
         retries: {
             runMode: 1,
             openMode: 0
         }
     }, () => {
         TTYGStubs.stubAgentListGet('/ttyg/agent/get-agent-list-autocomplete-query.json');
-        TTYGStubs.stubAutocompleteResponse();
         // Given I have opened the ttyg page
         TTYGViewSteps.visit();
         cy.wait('@get-agent-list');
@@ -78,11 +79,6 @@ describe('TTYG edit an agent', () => {
         // Then I can set a value for the max results
         TtygAgentSettingsModalSteps.setAutocompleteMaxResults(2);
 
-        // Then I can select predicates with the autocomplete
-        TtygAgentSettingsModalSteps.enterSearchPredicate('rest');
-        cy.wait('@autocomplete-suggestions');
-        TtygAgentSettingsModalSteps.selectAutocompleteOption(3);
-
         // When I save the agent
         TTYGStubs.stubAgentEdit();
         TtygAgentSettingsModalSteps.saveAgent();
@@ -93,7 +89,21 @@ describe('TTYG edit an agent', () => {
         TtygAgentSettingsModalSteps.getAutocompleteSearchCheckbox().should('be.checked');
         TtygAgentSettingsModalSteps.toggleAutocompleteSearchPanel();
         TtygAgentSettingsModalSteps.getAutocompleteMaxResults().should('have.value', '2');
-        TtygAgentSettingsModalSteps.getSearchPredicateTags().should('have.length', '1');
-        TtygAgentSettingsModalSteps.getSearchPredicateTags().should('contain.text', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest');
+
+        // When: I select a repository with disabled autocomplete
+        AutocompleteStubs.stubAutocompleteEnabled(false);
+        TtygAgentSettingsModalSteps.selectRepository('biomarkers');
+        // Then: I expect to see a disabled message
+        TtygAgentSettingsModalSteps.getAutocompleteDisabledMessage().should('be.visible');
+
+        // When: I click on the link to enable autocomplete
+        TtygAgentSettingsModalSteps.clickOnEnableFTSSearch();
+        // Then: I expect a confirmation dialog displayed.
+        ModalDialogSteps.getDialogBody().contains('If you proceed with enabling the autocomplete index, GraphDB will open in a new tab and switch to the biomarkers repository.');
+
+        // When: I don't confirm the dialog
+        ModalDialogSteps.cancelDialogWithBody('If you proceed with enabling the autocomplete index, GraphDB will open in a new tab and switch to the biomarkers repository.');
+        // Then: I expect the dialog be disappeared and the disabled message still visible
+        TtygAgentSettingsModalSteps.getAutocompleteDisabledMessage().should('be.visible');
     });
 });
