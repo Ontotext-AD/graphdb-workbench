@@ -21,6 +21,7 @@ import {
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 import {HtmlUtil} from '../../utils/html-util';
+import {OntoTooltipPlacement} from "../onto-tooltip/models/onto-tooltip-placement";
 
 /**
  * A component for rendering RDF search resource input with configurable buttons.
@@ -121,7 +122,7 @@ export class OntoSearchResourceInput {
             {this.inputValue?.length ?
               <i onClick={this.clearInput}
                  tooltip-content={TranslationService.translate('rdf_search.tooltips.clear')}
-                 tooltip-placement="bottom"
+                 tooltip-placement={OntoTooltipPlacement.BOTTOM}
                  class="fa-light fa-xmark clear-input"></i> : ''
             }
           </span>

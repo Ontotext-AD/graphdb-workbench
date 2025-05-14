@@ -1,6 +1,7 @@
 import {Component, h, State} from '@stencil/core';
 import {SubscriptionList} from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
+import {OntoTooltipPlacement} from "../onto-tooltip/models/onto-tooltip-placement";
 
 @Component({
   tag: 'onto-search-icon',
@@ -24,7 +25,7 @@ export class OntoSearchIcon {
   render() {
     return (
       <i tooltip-content={this.tooltipLabel}
-         tooltip-placement="bottom"
+         tooltip-placement={OntoTooltipPlacement.BOTTOM}
          class="fa-light fa-magnifying-glass"></i>
     );
   }
