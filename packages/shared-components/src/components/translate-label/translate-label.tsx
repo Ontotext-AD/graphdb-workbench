@@ -18,7 +18,7 @@ import {TranslationService} from '../../services/translation.service';
 })
 export class TranslateLabel {
 
-  private readonly unsubscribeTranslationChanged: Function;
+  private unsubscribeTranslationChanged: Function;
 
   /**
    * Represents a label key.
@@ -32,7 +32,7 @@ export class TranslateLabel {
 
   @State() translatedLabel: string;
 
-  constructor() {
+  connectedCallback() {
     this.unsubscribeTranslationChanged = TranslationService.onTranslate(this.labelKey, this.translationParameters, (translatedLabel) => this.translatedLabel = translatedLabel);
   }
 
