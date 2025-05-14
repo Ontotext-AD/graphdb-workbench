@@ -23,7 +23,7 @@ import {
   NamespacesContextService,
   RepositoryStorageService,
   RepositoryList,
-  Repository, RepositoryService, LanguageService, LanguageContextService
+  Repository, RepositoryService, LanguageService, LanguageContextService, ObjectUtil
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 import {HtmlUtil} from '../../utils/html-util';
@@ -160,7 +160,9 @@ export class OntoHeader {
       this.monitoringService
         .getOperations(this.repositoryId)
         .then((operations) => {
-          this.activeOperations = operations;
+          if (!ObjectUtil.deepEqual(this.activeOperations, operations)) {
+            this.activeOperations = operations;
+          }
           this.fibonacciGenerator.reset();
           this.skipUpdateActiveOperationsTimes = 0;
         })
