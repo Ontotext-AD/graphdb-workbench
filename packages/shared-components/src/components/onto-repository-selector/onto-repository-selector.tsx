@@ -9,6 +9,7 @@ import {DropdownItem} from '../../models/dropdown/dropdown-item';
 import {DropdownItemAlignment} from '../../models/dropdown/dropdown-item-alignment';
 import {SelectorButton} from './selector-button';
 import {TranslationService} from '../../services/translation.service';
+import {OntoTooltipPlacement} from "../onto-tooltip/models/onto-tooltip-placement";
 
 @Component({
   tag: 'onto-repository-selector',
@@ -100,6 +101,7 @@ export class OntoRepositorySelector {
           dropdownButtonTooltip={this.createTooltipFunctionForRepository(this.currentRepository)}
           dropdownTooltipTrigger='mouseenter focus'
           dropdownAlignment={DropdownItemAlignment.RIGHT}
+          tooltipPlacement={this.tooltipAlignment}
           tooltipTheme='light-border'
           items={this.items}>
         </onto-dropdown>
@@ -109,6 +111,13 @@ export class OntoRepositorySelector {
 
   private attachTooltipsToItems(items: DropdownItem<Repository>[]): DropdownItem<Repository>[] {
     return items && items.map((item) => item.setTooltip(this.createTooltipFunctionForRepository(item.value)));
+  }
+
+  private tooltipAlignment(isOpen: boolean): OntoTooltipPlacement {
+    if (isOpen) {
+      return OntoTooltipPlacement.LEFT;
+    }
+    return OntoTooltipPlacement.BOTTOM;
   }
 
   private onValueChanged() {
