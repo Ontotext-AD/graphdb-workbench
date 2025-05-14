@@ -1,5 +1,6 @@
 import { License } from '@ontotext/workbench-api';
 import { Component, Host, h, Prop } from '@stencil/core';
+import {OntoTooltipPlacement} from "../onto-tooltip/models/onto-tooltip-placement";
 
 @Component({
   tag: 'onto-license-alert',
@@ -18,7 +19,7 @@ export class OntoLicenseAlert {
 
   render() {
     return (
-      <Host tooltip-content={this.license?.message} tooltip-placement="bottom" tooltip-trigger="mouseover">
+      <Host tooltip-content={this.license?.message} tooltip-placement={OntoTooltipPlacement.BOTTOM} tooltip-trigger="mouseover">
         <a class="onto-license-alert onto-btn" onClick={this.onLicenseAlertClick}>
           <span class="icon-warning"></span>
           <translate-label labelKey={'license_alert.label'}></translate-label>

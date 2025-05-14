@@ -1,6 +1,8 @@
 import {Component, h, Host, Listen} from '@stencil/core';
-import tippy, {Instance, Placement} from 'tippy.js';
+import tippy, {Instance} from 'tippy.js';
 import {OntoTooltipConfiguration} from './models/onto-tooltip-configuration';
+import {HTMLElementWithTooltip} from "./models/html-element-with-tooltip";
+import {OntoTooltipPlacement} from "./models/onto-tooltip-placement";
 
 @Component({
     tag: 'onto-tooltip',
@@ -36,6 +38,9 @@ export class OntoTooltip {
             tooltipInstance = tippy(target, this.getConfig(target));
         }
         tooltipInstance.show();
+        target.hideTooltip = () => {
+            tooltipInstance.hide()
+        };
     }
 
     /**
@@ -139,7 +144,7 @@ export class OntoTooltip {
         return new OntoTooltipConfiguration()
             .setContent(element.getAttribute(OntoTooltip.ATTR_CONTENT))
             .setTheme(element.getAttribute(OntoTooltip.ATTR_THEME))
-            .setPlacement(element.getAttribute(OntoTooltip.ATTR_PLACEMENT) as Placement)
+            .setPlacement(element.getAttribute(OntoTooltip.ATTR_PLACEMENT) as OntoTooltipPlacement)
             .setTrigger(element.getAttribute(OntoTooltip.ATTR_TRIGGER))
             .setAppendTo(element.getAttribute(OntoTooltip.ATTR_APPEND_TO));
     }
@@ -151,7 +156,7 @@ export class OntoTooltip {
      * @param element - The starting HTML element where the search begins.
      * @returns The closest HTML element with the `tooltip-content` attribute, or `null` if no such element is found.
      */
-    private getTooltipTarget(element: HTMLElement): HTMLElement | null {
+    private getTooltipTarget(element: HTMLElement): HTMLElementWithTooltip | null {
         while (element && !element.getAttribute(OntoTooltip.ATTR_CONTENT)) {
             element = element.parentElement;
         }
