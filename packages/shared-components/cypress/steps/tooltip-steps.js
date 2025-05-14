@@ -14,6 +14,10 @@ export class TooltipSteps extends BaseSteps {
     return cy.get('.plane-text-tooltip');
   }
 
+  static getButtonElementTooltip() {
+    return cy.get('.plane-text-tooltip button');
+  }
+
   static getElementWithHtmlTooltip() {
     return cy.get('.html-tooltip');
   }
