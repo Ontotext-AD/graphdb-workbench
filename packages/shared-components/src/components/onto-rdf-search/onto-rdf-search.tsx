@@ -8,6 +8,7 @@ import {
 import {Component, h, Listen, State} from '@stencil/core';
 import {TranslationService} from '../../services/translation.service';
 import {HtmlUtil} from '../../utils/html-util';
+import {OntoTooltipPlacement} from "../onto-tooltip/models/onto-tooltip-placement";
 
 /**
  * OntoRdfSearch component for RDF resource search.
@@ -69,7 +70,7 @@ export class OntoRdfSearch {
         <section class={`search-area ${this.isOpen ? 'visible' : 'invisible'}`}>
           <i onClick={this.setIsOpen(false)}
              tooltip-content={TranslationService.translate('rdf_search.tooltips.close_search_area')}
-             tooltip-placement="bottom"
+             tooltip-placement={OntoTooltipPlacement.BOTTOM}
              class="fa-light fa-xmark-large close-btn"></i>
           <onto-search-resource-input buttonConfig={this.buttonConfig}
                                       preserveSearch={true}

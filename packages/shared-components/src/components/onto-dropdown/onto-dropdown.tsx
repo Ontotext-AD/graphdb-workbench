@@ -1,9 +1,11 @@
-import {Component, Event, h, State, Prop, EventEmitter, Element, Listen} from '@stencil/core';
+import {Component, Element, Event, EventEmitter, h, Listen, Prop, State} from '@stencil/core';
 import {DropdownItem} from '../../models/dropdown/dropdown-item';
 import {TranslationService} from '../../services/translation.service';
 import {DropdownItemAlignment} from '../../models/dropdown/dropdown-item-alignment';
 import {Awaitable} from '@ontotext/workbench-api';
 import {TooltipUtil} from "../../utils/tooltip-util";
+import {HTMLElementWithTooltip} from '../onto-tooltip/models/html-element-with-tooltip';
+import {OntoTooltipPlacement} from "../onto-tooltip/models/onto-tooltip-placement";
 
 /**
  * A reusable dropdown component built using StencilJS. This component supports configurable labels, tooltips, icons,
@@ -72,6 +74,14 @@ export class OntoDropdown {
   @Prop() tooltipTheme: string;
 
   /**
+   * Specifies the items tooltip placement. Accepts a string of the placement or a function that returns the placement.
+   * The function takes the isOpen parameter as a boolean and returns the placement as a string.
+   * If not provided, the tooltip will be placed to the left.
+   *
+   */
+  @Prop() tooltipPlacement: OntoTooltipPlacement | ((isOpen: boolean) => OntoTooltipPlacement) = OntoTooltipPlacement.LEFT;
+
+  /**
    * Specifies the dropdown items' alignment. If not provided, the items and the dropdown button will be aligned to the left.
    *
    */
@@ -113,13 +123,15 @@ export class OntoDropdown {
   render() {
     const dropdownAlignmentClass = this.dropdownAlignment === DropdownItemAlignment.RIGHT
       ? 'onto-dropdown-right-item-alignment' : 'onto-dropdown-left-item-alignment';
+    const tooltipPlacement = typeof this.tooltipPlacement === 'function' ? this.tooltipPlacement(this.open) : this.tooltipPlacement;
+
     return (
       <div class={`onto-dropdown ${this.open ? 'open' : 'closed'}`}>
         <button class="onto-dropdown-button"
-                tooltip-placement='left'
+                tooltip-placement={tooltipPlacement}
                 tooltip-trigger={this.dropdownTooltipTrigger}
                 tooltip-content={this.buttonTooltipContent}
-                {...(this.tooltipTheme ? { 'tooltip-theme': this.tooltipTheme } : {})}
+                {...(this.tooltipTheme ? {'tooltip-theme': this.tooltipTheme} : {})}
                 onMouseEnter={this.setDropdownButtonTooltip()}
                 onClick={this.toggleButtonClickHandler()}>
           {this.iconClass ? <i class={'button-icon ' + this.iconClass}></i> : ''}
@@ -133,9 +145,9 @@ export class OntoDropdown {
           class={'onto-dropdown-menu ' + dropdownAlignmentClass}>
           {this.items && this.items.map(item =>
             <button class={'onto-dropdown-menu-item ' + item.cssClass}
-                    tooltip-placement='left'
+                    tooltip-placement={OntoTooltipPlacement.LEFT}
                     tooltip-trigger={item.dropdownTooltipTrigger}
-                    {...(this.tooltipTheme ? { 'tooltip-theme': this.tooltipTheme } : {})}
+                    {...(this.tooltipTheme ? {'tooltip-theme': this.tooltipTheme} : {})}
                     onMouseEnter={this.setDropdownItemTooltip(item)}
                     onClick={this.itemClickHandler(item.value)}>
               {item.iconClass ? <span class={'onto-dropdown-option-icon ' + item.iconClass}></span> : ''}
@@ -178,7 +190,7 @@ export class OntoDropdown {
     return async (event: MouseEvent) => {
       const target = event.currentTarget as HTMLElement;
       if (typeof item.tooltip === 'function') {
-        let tooltipContent =  await this.getTooltipContent(item.tooltip);
+        let tooltipContent = await this.getTooltipContent(item.tooltip);
         target.setAttribute('tooltip-content', tooltipContent);
       } else {
         target.setAttribute(
@@ -190,7 +202,13 @@ export class OntoDropdown {
   }
 
   private toggleButtonClickHandler() {
-    return () => this.toggleComponent();
+    return (event: MouseEvent) => {
+      const target = event.currentTarget as HTMLElementWithTooltip;
+      if (target?.hideTooltip) {
+        target.hideTooltip();
+      }
+      this.toggleComponent();
+    }
   }
 
   private itemClickHandler(value: any) {

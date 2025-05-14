@@ -9,6 +9,7 @@ import { DialogHandler } from "./models/dialog/dialog-handler";
 import { DialogConfig } from "./components/dialogs/onto-dialog";
 import { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, Repository, RepositoryLocation, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage } from "../../api/dist/ontotext-workbench-api.d";
 import { DropdownItem } from "./models/dropdown/dropdown-item";
+import { OntoTooltipPlacement } from "./components/onto-tooltip/models/onto-tooltip-placement";
 import { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 import { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
 import { NavbarToggledEvent } from "./components/onto-navbar/navbar-toggled-event";
@@ -18,6 +19,7 @@ export { DialogHandler } from "./models/dialog/dialog-handler";
 export { DialogConfig } from "./components/dialogs/onto-dialog";
 export { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, Repository, RepositoryLocation, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage } from "../../api/dist/ontotext-workbench-api.d";
 export { DropdownItem } from "./models/dropdown/dropdown-item";
+export { OntoTooltipPlacement } from "./components/onto-tooltip/models/onto-tooltip-placement";
 export { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
 export { ExternalMenuModel } from "./components/onto-navbar/external-menu-model";
 export { NavbarToggledEvent } from "./components/onto-navbar/navbar-toggled-event";
@@ -81,6 +83,10 @@ export namespace Components {
           * Array of dropdown options.
          */
         "items": DropdownItem<any>[];
+        /**
+          * Specifies the items tooltip placement. Accepts a string of the placement or a function that returns the placement. The function takes the isOpen parameter as a boolean and returns the placement as a string. If not provided, the tooltip will be placed to the left.
+         */
+        "tooltipPlacement": OntoTooltipPlacement | ((isOpen: boolean) => OntoTooltipPlacement);
         /**
           * The tooltip theme to be used. For more information {@link OntoTooltipConfiguration#theme }.
          */
@@ -668,6 +674,10 @@ declare namespace LocalJSX {
           * Event emitted when a dropdown item is selected. The event payload contains the value of the selected item.
          */
         "onValueChanged"?: (event: OntoDropdownCustomEvent<any>) => void;
+        /**
+          * Specifies the items tooltip placement. Accepts a string of the placement or a function that returns the placement. The function takes the isOpen parameter as a boolean and returns the placement as a string. If not provided, the tooltip will be placed to the left.
+         */
+        "tooltipPlacement"?: OntoTooltipPlacement | ((isOpen: boolean) => OntoTooltipPlacement);
         /**
           * The tooltip theme to be used. For more information {@link OntoTooltipConfiguration#theme }.
          */

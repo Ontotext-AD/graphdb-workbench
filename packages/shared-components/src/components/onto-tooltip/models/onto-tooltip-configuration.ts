@@ -1,4 +1,4 @@
-import {Placement} from 'tippy.js';
+import {OntoTooltipPlacement} from "./onto-tooltip-placement";
 
 /**
  * Holds all tooltip configurations related to tippy.js properties.
@@ -35,7 +35,7 @@ export class OntoTooltipConfiguration {
   /**
    * The preferred placement of the tooltip. Note that Popper's flip modifier can change this to the opposite placement if it has more space.
    */
-  placement: Placement;
+  placement: OntoTooltipPlacement;
 
   /**
    * Determines if content strings are parsed as HTML instead of text.
@@ -75,8 +75,8 @@ export class OntoTooltipConfiguration {
     return this;
   }
 
-  setPlacement(placement: Placement): OntoTooltipConfiguration {
-    this.placement = placement  || 'right';
+  setPlacement(placement: OntoTooltipPlacement): OntoTooltipConfiguration {
+    this.placement = placement  || OntoTooltipPlacement.RIGHT;
     return this;
   }
 

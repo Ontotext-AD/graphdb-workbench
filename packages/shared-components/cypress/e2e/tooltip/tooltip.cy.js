@@ -65,4 +65,26 @@ describe('Tooltip', () => {
     // Then, I expect the tooltip to be removed along with the element
     TooltipSteps.getTooltip().should('not.exist');
   });
+
+
+  it('Should remove tooltip from the DOM, when hideTooltip is called on element with tooltip', () => {
+    // Given, I visit the page with an element that has a tooltip
+    TooltipSteps.visit();
+
+    // When, I hover over an element with a tooltip
+    TooltipSteps.getButtonElementTooltip().trigger('mouseover');
+
+    // Then, I expect the tooltip to be visible
+    TooltipSteps.getTooltip().should('be.visible');
+
+    // When, I call hideTooltip on the element
+    TooltipSteps.getButtonElementTooltip()
+      .then(($el) => {
+        const element = $el.get(0);
+        element.hideTooltip();
+      })
+
+    // Then, I expect the tooltip to be removed
+    TooltipSteps.getTooltip().should('not.exist');
+  });
 });
