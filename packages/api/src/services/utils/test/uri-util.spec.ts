@@ -42,4 +42,20 @@ describe('UriUtil', () => {
     expect(UriUtil.isValidUri('http://example.com>')).toBe(false);
     expect(UriUtil.isValidUri('<http://example.com')).toBe(false);
   });
+
+  test('should resolve documentation URL', () => {
+    const productVersion = '7.0.0';
+    const endpointPath = 'endpoint/path';
+    const expectedDocumentationUrl = `https://graphdb.ontotext.com/documentation/${productVersion}/endpoint/path`;
+
+    const result = UriUtil.resolveDocumentationUrl(productVersion, endpointPath);
+
+    expect(result).toBe(expectedDocumentationUrl);
+  });
+
+  test('should throw an error if product version or endpoint path is not provided', () => {
+    const expectedError = 'Product version and endpoint path are required for documentation URL resolution.';
+    expect(() => UriUtil.resolveDocumentationUrl('', 'endpoint/path')).toThrow(expectedError);
+    expect(() => UriUtil.resolveDocumentationUrl('7.0.0', '')).toThrow(expectedError);
+  });
 });
