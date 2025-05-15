@@ -272,7 +272,7 @@ export class OntoNavbar {
                 <Fragment>
                   <div class={{'menu-element-root': true, 'active': item.selected}}
                        onClick={this.handleSelectMenuItem(item)}>
-                    <span class={`menu-item-icon ${item.icon}`}></span>
+                    <span class={`menu-item-icon ${item.icon}`}></span>&nbsp;
                     <translate-label class="menu-item" labelKey={item.labelKey}></translate-label>
                   </div>
                   <ul class="sub-menu">
@@ -297,7 +297,7 @@ export class OntoNavbar {
               {item.children.length === 0 &&
                 <a class={{'menu-element-root': true, 'active': item.selected}}
                    href={item.href} onClick={this.handleSelectMenuItem(item)}>
-                  <span class={`menu-item-icon ${item.icon}`}></span>
+                  <span class={`menu-item-icon ${item.icon}`}></span>&nbsp;
                   <translate-label class="menu-item" labelKey={item.labelKey}></translate-label>
                 </a>
               }
