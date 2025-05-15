@@ -1,5 +1,3 @@
-@import "../common.css";
-
 /** Fixes the issue with the color of the sequence of < or > characters.
 This resolves the problem described in more detail in the issue tracker: "https://ontotext.atlassian.net/browse/GDB-9233"
  */
