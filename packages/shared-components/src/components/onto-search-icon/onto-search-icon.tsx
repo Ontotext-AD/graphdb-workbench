@@ -5,7 +5,8 @@ import {OntoTooltipPlacement} from "../onto-tooltip/models/onto-tooltip-placemen
 
 @Component({
   tag: 'onto-search-icon',
-  styleUrl: 'onto-search-icon.scss'
+  styleUrl: 'onto-search-icon.scss',
+  scoped: true
 })
 export class OntoSearchIcon {
   @State() private tooltipLabel: string;
