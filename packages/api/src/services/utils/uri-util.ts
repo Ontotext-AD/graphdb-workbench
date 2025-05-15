@@ -1,3 +1,5 @@
+import {BuildUtil} from './build-util';
+
 /**
  * Utility class for handling and manipulating URIs.
  */
@@ -5,6 +7,8 @@ export class UriUtil {
   private static readonly ABS_URI_REGEX = /^<?(http|urn).*>?/;
   static GRAPHS_VISUALIZATIONS_URL = 'graphs-visualizations';
   static RESOURCE_URL = 'resource';
+  static BASE_DOCUMENTATION_URL = 'https://graphdb.ontotext.com/documentation/';
+  static LATEST_UNOFFICIAL_VERSION = 'master';
 
   /**
    * Shortens an IRI (Internationalized Resource Identifier) by extracting the hostname and port.
@@ -116,6 +120,33 @@ export class UriUtil {
       }
     }
     return valid;
+  }
+
+  /**
+   * Resolves a documentation URL based on the product version and endpoint path.
+   *
+   * This function constructs a complete documentation URL by combining the base documentation URL
+   * with the appropriate version and endpoint path. For unofficial versions (containing a hyphen)
+   * or when in development mode, it uses the latest unofficial version instead of the provided version.
+   *
+   * @param productVersion - The version of the product for which to retrieve documentation.
+   *                         If it contains a hyphen, it's considered an unofficial version.
+   * @param endpointPath - The specific documentation endpoint path to append to the URL.
+   * @returns A complete documentation URL string pointing to the specified resource.
+   * @throws {Error} If either productVersion or endpointPath is not provided.
+   *
+   * @example
+   * const docUrl = UriUtil.resolveDocumentationUrl('10.0.0', 'sparql-endpoint');
+   * // Returns: 'https://graphdb.ontotext.com/documentation/10.0.0/sparql-endpoint'
+   */
+  static resolveDocumentationUrl(productVersion: string, endpointPath: string): string {
+    if (!productVersion || !endpointPath) {
+      throw new Error('Product version and endpoint path are required for documentation URL resolution.');
+    }
+
+    const isUnofficialVersion = productVersion.includes('-');
+    const version = (BuildUtil.isDevMode() || isUnofficialVersion) ? this.LATEST_UNOFFICIAL_VERSION : productVersion;
+    return `${this.BASE_DOCUMENTATION_URL}${version}/${endpointPath}`;
   }
 
   private static hasAngleBrackets(uri: string): boolean {

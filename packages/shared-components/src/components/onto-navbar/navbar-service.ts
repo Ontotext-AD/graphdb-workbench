@@ -42,6 +42,7 @@ export class NavbarService {
       label: item.label,
       labelKey: item.labelKey,
       href: item.href,
+      documentationHref: item.documentationHref,
       hrefFun: item.hrefFun,
       order: item.order,
       role: item.role,
