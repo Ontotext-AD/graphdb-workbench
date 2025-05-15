@@ -75,7 +75,9 @@ main menu height*/
 
 .navbar-component .menu-item-icon {
   font-size: 2.5rem;
+  width: 2.5rem;
   vertical-align: middle;
+  text-align: center;
   color: var(--primary-color);
   transform: scale(0.9);
   display: inline-block;
@@ -84,12 +86,6 @@ main menu height*/
   -webkit-transition: all 0.18s ease-out; /* Saf3.2+, Chrome */
   transition: all 0.18s ease-out;
   pointer-events: none;
-}
-
-.navbar-component .menu-item-icon.fa-flask {
-  /* Temporary: until we get our own icon */
-  font-size: 2rem;
-  padding: 4px 5px;
 }
 
 .navbar-component .menu-element-root .menu-item {
@@ -104,6 +100,7 @@ main menu height*/
 
 .navbar-component .active .menu-item-icon {
   color: var(--icon-on-primary-color);
+  transform: scale(1.1);
 }
 
 .navbar-component :not(.brand) .menu-element-root {
