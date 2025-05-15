@@ -50,6 +50,7 @@ PluginRegistry.add('main.menu', {
             order: 2,
             parent: 'Help',
             icon: 'icon-external',
+            documentationHref: 'index.html',
             hrefFun: function (productInfo, urlResolver) {
                 return urlResolver(productInfo.productShortVersion, 'index.html');
             },
@@ -60,6 +61,7 @@ PluginRegistry.add('main.menu', {
             order: 3,
             parent: 'Help',
             icon: 'icon-external',
+            documentationHref: 'tutorials.html',
             hrefFun: function (productInfo, urlResolver) {
                 return urlResolver(productInfo.productShortVersion, 'tutorials.html');
             },
@@ -70,6 +72,7 @@ PluginRegistry.add('main.menu', {
             order: 4,
             parent: 'Help',
             icon: 'icon-external',
+            documentationHref: 'support.html',
             hrefFun: function (productInfo, urlResolver) {
                 return urlResolver(productInfo.productShortVersion, 'support.html');
             },
