@@ -1,0 +1,39 @@
+/*-------------------------------------------------------------
+	Variables
+-------------------------------------------------------------*/
+:root {
+    --main-font: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    --main-font-weight: 300;
+    --mono-font: 'JetBrains Mono', Menlo, Consolas, 'Ubuntu Mono', monospace;
+    --fa-style: 400;
+
+/*-------------------------------------------------------------
+	Colors used in multiple places
+-------------------------------------------------------------*/
+    --autocomplete-background: hsla(var(--tertiary-color-hsl), 0.3);
+    --autocomplete-background-selected: hsla(var(--tertiary-color-hsl), 0.5);
+    --autocomplete-match: var(--secondary-color);
+    /* width of menu 15 + margin left 1 + margin right 2 => 18rem */
+    --menu-width-expanded: 18rem;
+    /* width of menu 4.375 + margin left 1 + margin right 2 => 7.375 */
+    --menu-width-collapsed: 7.375rem;
+    /* menu width in general */
+    --menu-width: var(--menu-width-expanded);
+    /* max usable content width not considering the menu and margins */
+    --max-width-minus-menu: calc(100% - var(--menu-width));
+    /* Link decoration, see GDB-9013 before you touch these */
+    --link-decoration-thickness: clamp(1px, 6%, 10px);
+    --link-underline-offset: clamp(1px, 6%, 10px);
+    /* The base text color. This usually comes from the bootstrap, but in some cases it needs to be set explicitly. */
+    --base-text-color: #373a3c;
+    /* The base background color that is used for panels and other similar elements */
+    --base-background-color: #f7f7f7;
+    /* The base background color that is used for selected panels or elements */
+    --base-background-selected-color: #dcdcdc;
+    /* The base background color that is used for hover effects in panels and elements */
+    --base-background-hover-color: rgba(0, 0, 0, .1);
+
+    /* Graphwise colors */
+    --graphwise-blue-color: #001FFF;
+    --graphwise-pink-color: #DF367C;
+}
