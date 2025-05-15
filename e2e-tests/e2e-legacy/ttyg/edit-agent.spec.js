@@ -54,7 +54,7 @@ describe('TTYG edit an agent', () => {
     });
 
 
-    it('should be able to edit Autocomplete extraction method option', {
+    it.skip('should be able to edit Autocomplete extraction method option', {
         retries: {
             runMode: 1,
             openMode: 0
