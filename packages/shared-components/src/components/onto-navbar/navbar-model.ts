@@ -283,6 +283,7 @@ export class NavbarItemModel {
   private _parent: string;
   private _selected: boolean = false;
   private _open: boolean = false;
+  private _documentationHref: string;
   private _hrefFun?: string;
   private _editions?: string;
   private _icon?: string;
@@ -299,6 +300,7 @@ export class NavbarItemModel {
     this._parent = data.parent;
     this._selected = data.selected;
     this._open = data.open;
+    this._documentationHref = data.documentationHref;
     this._hrefFun = data.hrefFun;
     this._editions = data.editions;
     this._icon = data.icon;
@@ -340,6 +342,14 @@ export class NavbarItemModel {
 
   set labelKey(value: string) {
     this._labelKey = value;
+  }
+
+  get documentationHref(): string {
+    return this._documentationHref;
+  }
+
+  set documentationHref(value: string) {
+    this._documentationHref = value;
   }
 
   get href(): string {

@@ -18,9 +18,9 @@ import {TranslationService} from '../../services/translation.service';
 import {
   EventName,
   EventService, getCurrentRoute, isHomePage,
-  navigateTo,
+  navigateTo, openInNewTab, ProductInfo, ProductInfoContextService,
   ServiceProvider,
-  SubscriptionList
+  SubscriptionList, UriUtil
 } from '@ontotext/workbench-api';
 
 const labelKeys = {
@@ -35,14 +35,16 @@ const labelKeys = {
   shadow: false,
 })
 export class OntoNavbar {
+  private readonly productInfoContextService = ServiceProvider.get(ProductInfoContextService);
+  private readonly subscriptions = new SubscriptionList();
+
   private labels = {
     [labelKeys.EXPAND]: TranslationService.translate(labelKeys.EXPAND),
     [labelKeys.COLLAPSE]:TranslationService.translate(labelKeys.COLLAPSE),
     [labelKeys.LOGO_LINK]: TranslationService.translate(labelKeys.LOGO_LINK)
   }
 
-  private readonly subscriptions = new SubscriptionList();
-
+  private productInfo: ProductInfo;
   /**
    * Flag indicating whether the navbar is collapsed in result of toggle action initiated by the user. This is needed
    * in cases where the browser window is resized which is an operation that should not override the user's choice
@@ -107,6 +109,11 @@ export class OntoNavbar {
 
   private select(event: MouseEvent, menuItem: NavbarItemModel) {
     event.preventDefault();
+    if (menuItem.documentationHref) {
+      const externalLink = UriUtil.resolveDocumentationUrl(this.productInfo?.productVersion, menuItem.documentationHref);
+      openInNewTab(externalLink);
+      return;
+    }
     // Navigate to respective url without reloading if possible.
     // #navigateToUrl function is exposed by the root-config and comes from the single-spa.
     // It's currently provided this way in order to prevent components to depend
@@ -212,6 +219,7 @@ export class OntoNavbar {
   connectedCallback() {
     this.init(this.menuItems);
     this.subscribeToNavigationEnd();
+    this.subscribeToProductInfoChanges();
     // subscribe to language change events for each label
     this.onTranslate(labelKeys.EXPAND);
     this.onTranslate(labelKeys.COLLAPSE);
@@ -298,5 +306,11 @@ export class OntoNavbar {
         </ul>
       </Host>
     );
+  }
+
+  private subscribeToProductInfoChanges() {
+    this.subscriptions.add(
+      this.productInfoContextService.onProductInfoChanged((productInfo: ProductInfo) => this.productInfo = productInfo)
+    )
   }
 }
