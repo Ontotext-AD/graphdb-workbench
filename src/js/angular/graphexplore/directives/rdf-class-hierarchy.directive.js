@@ -37,6 +37,11 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
     }
 
     function renderCirclePacking(scope, element) {
+        /**
+         * A boolean flag that determines whether the opening of the side info panel
+         * should be suppressed when focusing on the chart while a class is selected.
+         */
+        let suppressPanelOpen = false;
 
         var width = 800,
             height = 800,
@@ -271,7 +276,9 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                     d3.selectAll(".selected").classed("selected", false);
                 } else {
                     getCurrentClassDataAndMarkSelected(obj);
-                    showClassInfoPanel();
+                    if (!suppressPanelOpen) {
+                        showClassInfoPanel();
+                    }
 
                     // FIXME: is it ok to bind this event handler every time and not just once?
                     scope.$on('sidePanelClosed', function (event) {
@@ -722,10 +729,13 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                         drawDiagram(currentRootData, prefixesConfig, focus, true);
                     }
 
-                    $timeout(function () {
+                    $timeout(() => {
                         LocalStorageAdapter.set(LSKeys.CLASS_HIERARCHY_SWITCH_PREFIXES, switchPrefixes);
                         autoZoomToPreviousState();
-                    }, 70);
+                        // Need to set this to false to enable the info panel to work when selecting a class.
+                        // The panel opening will be suppressed only when the prefixes are toggled.
+                        suppressPanelOpen = false;
+                        }, 70);
                 }
 
                 function redrawFilteredDiagram(currentSliderValue, sortedChildrenArray, useSlider) {
@@ -808,6 +818,7 @@ function classHierarchyDirective($rootScope, $location, GraphDataRestService, $w
                     }
                     // if digest overflows a possible fix might be wrapping this in $timeout
                     $timeout(function () {
+                        suppressPanelOpen = true;
                         savePrefixesState(hidePrefixes);
                         restoreDiagramState(rootData, true);
                     }, 50);
