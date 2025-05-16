@@ -12,16 +12,14 @@
 	ng-class="{ 'pushed-toolbar': showClassInfoPanel }"
 	ng-show="hasClassHierarchy() && !loader || !isAllGraphsSelected()">
     <div id="selectGraphDropdown" class="btn-group" role="group" ng-show="graphsInRepo.length > 2">
-        <button id="graphsBtnGroup" type="button" class="btn btn-lg btn-secondary"
+        <button id="graphsBtnGroup" type="button" class="btn btn-lg btn-secondary dropdown-toggle"
                 data-toggle="dropdown"
 				uib-dropdown
 				on-toggle="graphsDropdownToggled(open)"
                 aria-expanded="false">
-            <a uib-dropdown-toggle>
 				<span tooltip-placement="bottom" gdb-tooltip="{{'select.graph.label' | translate}}">
 					{{getSelGraphValue() | translate}}
 				</span>
-            </a>
         </button>
         <ul class="dropdown-menu dropdown-menu-right pre-scrollable" aria-labelledby="dropdownMenuButton">
             <li ng-repeat="graph in graphsInRepo" ng-if="graph.contextID.value !== getSelGraphValue()">
@@ -43,7 +41,7 @@
 	</search-icon-input>
 
 	<button class="btn btn-link p-0 prefix-toggle-btn" type="button"
-		ng-click="hidePrefixes = !hidePrefixes"
+		ng-click="toggleHidePrefixes()"
 		gdb-tooltip="{{hidePrefixes ? 'show.prefixes.btn' : 'hide.prefixes.btn' | translate}}"
 		tooltip-placement="bottom">
 		<em class="fa fa-2x"
