@@ -57,6 +57,20 @@
     gap: 0.625rem;
 }
 
+.chat-panel .input-field-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.chat-panel .cancel-ask-button {
+    height: 30px;
+    width: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .chat-panel .user-message .question {
     max-width: 70%;
     padding: 0.5rem 1rem;
