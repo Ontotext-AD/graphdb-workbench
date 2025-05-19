@@ -1081,8 +1081,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
         const activeRepository = $repositories.getActiveRepository();
         if (activeRepository !== WorkbenchContextService.getSelectedRepositoryId()) {
             WorkbenchContextService.setSelectedRepositoryId(activeRepository);
-            updateAutocompleteStatus();
         }
+        updateAutocompleteStatus();
     };
     $rootScope.$on("repositoryIsSet", onRepositoriesChanged);
 

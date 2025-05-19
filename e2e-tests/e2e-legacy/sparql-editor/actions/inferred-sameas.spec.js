@@ -1,6 +1,7 @@
 import {SparqlEditorSteps} from "../../../steps/sparql-editor-steps";
 import {YasqeSteps} from "../../../steps/yasgui/yasqe-steps";
 import {RepositoriesStub} from "../../../stubs/repositories-stub";
+import {AutocompleteStubs} from "../../../stubs/autocomplete/autocomplete-stubs";
 
 describe('Expand results over owl:sameAs', () => {
 
@@ -11,6 +12,7 @@ describe('Expand results over owl:sameAs', () => {
         cy.setLocalStorage("ontotext.gdb.repository.selectedRepositoryId", repositoryId);
         RepositoriesStub.stubOntopRepository(repositoryId);
         RepositoriesStub.stubNameSpaces(repositoryId);
+        AutocompleteStubs.stubAutocompleteEnabled(false);
     });
 
     it('should not be able to toggle the sameAs button state if repository is virtual', () => {
