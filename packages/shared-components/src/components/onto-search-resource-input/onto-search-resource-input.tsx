@@ -122,6 +122,7 @@ export class OntoSearchResourceInput {
             {this.inputValue?.length ?
               <i onClick={this.clearInput}
                  tooltip-content={TranslationService.translate('rdf_search.tooltips.clear')}
+                 tooltip-trigger={'mouseover'}
                  tooltip-placement={OntoTooltipPlacement.BOTTOM}
                  class="fa-light fa-xmark clear-input"></i> : ''
             }
