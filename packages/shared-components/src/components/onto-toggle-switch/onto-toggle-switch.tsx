@@ -83,6 +83,7 @@ export class OntoToggleSwitch {
               onClick={this.toggle}
               tooltip-append-to="parent"
               tooltip-content={this.tooltipLabel}
+              tooltip-trigger={'mouseover'}
               tooltip-placement={OntoTooltipPlacement.TOP}>
           <input type="checkbox" checked={this.checked}/>
           <label></label>
