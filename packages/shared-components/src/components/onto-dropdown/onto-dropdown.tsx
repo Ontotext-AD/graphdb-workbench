@@ -136,11 +136,11 @@ export class OntoDropdown {
                 onClick={this.toggleButtonClickHandler()}>
           {this.iconClass ? <i class={'button-icon ' + this.iconClass}></i> : ''}
           <span class='button-name'>
-                      {this.dropdownButtonName ?? this.translate(this.dropdownButtonNameLabelKey)}
-                    </span>
-          {/* TODO: Add dropdown toggle button. This depends on GDB-10490 */}
+            {this.dropdownButtonName ?? this.translate(this.dropdownButtonNameLabelKey)}
+          </span>
+          <i class={`fa-regular fa-angle-down ${this.open ? 'fa-rotate-180' : ''}`}></i>
         </button>
-
+        
         <div
           class={'onto-dropdown-menu ' + dropdownAlignmentClass}>
           {this.items && this.items.map(item =>

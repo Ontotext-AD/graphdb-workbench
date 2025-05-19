@@ -42,21 +42,28 @@
   }
 
   .onto-dropdown-button {
+    display: flex;
+    flex-direction: row;
+    gap: 0.3em;
+    align-items: center;
     font-size: 1rem;
     font-weight: 400;
     padding: 0.4em 1rem;
     line-height: 1.5;
     border: 1px solid transparent;
     outline: none;
-    width: fit-content;
-    height: fit-content;
     color: var(--onto-dropdown-color);
     background-color: var(--onto-dropdown-button-background-color);
     transition: all 0.15s ease-out;
 
     .button-icon {
       font-size: 1.4em;
-      padding-right: 0.2em;
+    }
+
+    .fa-angle-down {
+      color: rgba(0, 0, 0, 0.35);
+      font-size: 1.1em;
+      transition: all 0.2s ease-in;
     }
   }
 
