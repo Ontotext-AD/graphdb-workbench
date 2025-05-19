@@ -70,6 +70,7 @@ export class OntoRdfSearch {
         <section class={`search-area ${this.isOpen ? 'visible' : 'invisible'}`}>
           <i onClick={this.setIsOpen(false)}
              tooltip-content={TranslationService.translate('rdf_search.tooltips.close_search_area')}
+             tooltip-trigger={'mouseover'}
              tooltip-placement={OntoTooltipPlacement.BOTTOM}
              class="fa-light fa-xmark-large close-btn"></i>
           <onto-search-resource-input buttonConfig={this.buttonConfig}
