@@ -39,15 +39,6 @@ PluginRegistry.add('main.menu', {
                 icon: "fa fa-flask",
                 guideSelector: 'menu-lab',
                 children: []
-            },
-            {
-                label: 'NewView',
-                labelKey: 'menu.newview',
-                href: 'new-view',
-                order: 1001,
-                role: 'IS_AUTHENTICATED_FULLY',
-                icon: "fa fa-sparkles",
-                children: []
             }
         ]
     }
