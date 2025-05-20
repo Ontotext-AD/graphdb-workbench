@@ -552,7 +552,7 @@ function CreateSimilarityIdxCtrl(
             render: $scope.similarityIndexInfo.getSelectedYasguiRenderMode(),
             yasqeActionButtons: $scope.isEditViewMode() || !$scope.similarityIndexInfo.isDataQueryTypeSelected() ? DISABLE_YASQE_BUTTONS_CONFIGURATION : INFERRED_AND_SAME_AS_BUTTONS_CONFIGURATION,
             maxPersistentResponseSize: 0,
-            yasqeMode: $scope.canWriteActiveRepo() ? YasqeMode.WRITE : YasqeMode.PROTECTED,
+            yasqeMode: $scope.canWriteActiveRepo() ? YasqeMode.WRITE : YasqeMode.READ,
         }
 
         const yasguiConfig = {}
