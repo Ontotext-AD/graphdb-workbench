@@ -22,7 +22,6 @@ export class OntoSearchIcon {
     this.subscriptions.unsubscribeAll();
   }
 
-
   render() {
     return (
       <i tooltip-content={this.tooltipLabel}

@@ -9,6 +9,7 @@
     "cy:open-legacy": "cypress open  --config-file cypress-legacy.config.js",
     "cy:open-flaky": "cypress open --config-file cypress-flaky.config.js",
     "cy:run": "npm run cy:run-legacy && cypress run",
+    "cy:run:partial": "cypress run --config-file cypress-legacy.config.js --spec \"e2e-legacy/graphql/graphql-endpoint-management-view.spec.js\"",
     "cy:run-legacy": "cypress run --config-file cypress-legacy.config.js",
     "cy:run-flaky": "cypress run --config-file cypress-flaky.config.js",
     "test:core": "cypress run --spec e2e-broken/repository/**,integration/import/**,integration/sparql-editor/**,integration/monitor/**,integration/cluster/**,integration/ttyg/**"

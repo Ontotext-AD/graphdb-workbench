@@ -116,6 +116,7 @@ export class OntoHeader {
       <Host>
         <div class="header-component">
           <onto-search-icon
+            class="rdf-search-button"
             onClick={this.showViewResourceMessage}
             style={{display: this.shouldShowSearch && this.isHomePage ? 'block' : 'none'}}>
           </onto-search-icon>
