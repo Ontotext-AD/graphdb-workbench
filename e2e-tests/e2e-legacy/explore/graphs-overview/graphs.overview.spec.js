@@ -1,6 +1,6 @@
-import {YasrSteps} from "../../steps/yasgui/yasr-steps";
-import {GraphsOverviewSteps} from "../../steps/explore/graphs-overview-steps";
-import {JsonLdModalSteps} from "../../steps/json-ld-modal-steps";
+import {YasrSteps} from "../../../steps/yasgui/yasr-steps";
+import {GraphsOverviewSteps} from "../../../steps/explore/graphs-overview-steps";
+import {JsonLdModalSteps} from "../../../steps/json-ld-modal-steps";
 
 const EXPORT_GRAPHS_TABLE_ID = '#export-graphs';
 const ROWS_PER_PAGE_20 = '1';

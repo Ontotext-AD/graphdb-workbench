@@ -19,7 +19,7 @@
 
 			<div>
 				<div class="clearfix mb-2">
-					<div class="pull-right col-form-label">
+					<div class="pull-right col-form-label graphs-overview-paginator">
 						<span class="mr-1">{{'showing.label' | translate}} {{(((pageSize * (page - 1)) + 1) | formatNumberToLocaleString)}}-{{pageSize * page >= filteredGraphs.length ? ((filteredGraphs.length) | formatNumberToLocaleString) : ((pageSize * page) | formatNumberToLocaleString)}} {{'of' | translate}} {{((filteredGraphs.length) | formatNumberToLocaleString)}} {{'results.label' | translate}}</span>
 						<span>{{'export.graphs.per.page' | translate}}</span>
 						<div class="btn-group" uib-dropdown>
