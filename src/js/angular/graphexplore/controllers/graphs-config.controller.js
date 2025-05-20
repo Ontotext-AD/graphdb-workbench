@@ -517,7 +517,7 @@ function GraphConfigCtrl(
         render: RenderingMode.YASQE,
         maxPersistentResponseSize: 0,
         showYasqeResizer: false,
-        yasqeMode: YasqeMode.PROTECTED,
+        yasqeMode: YasqeMode.READ,
         infer: $scope.newConfig.startQueryIncludeInferred,
         sameAs: $scope.newConfig.startQuerySameAs
     };
@@ -532,7 +532,7 @@ function GraphConfigCtrl(
                 $scope.canEditActiveRepo = $scope.canWriteActiveRepo();
                 const config = angular.extend({}, defaultYasguiConfig, {
                     prefixes: prefixes,
-                    yasqeMode: $scope.canWriteActiveRepo() ? YasqeMode.WRITE : YasqeMode.PROTECTED
+                    yasqeMode: $scope.canWriteActiveRepo() ? YasqeMode.WRITE : YasqeMode.READ
                 });
                 $scope.yasguiConfig = config;
                 repoIsInitialized();
