@@ -11,7 +11,7 @@
         </div>
     </div>
     <div class="row mt-2" ng-if="!tutorialState">
-        <a href="#" class="btn btn-link float-xs-right" ng-click="showTutorial()">{{'show.welcome.panel' | translate}}</a>
+        <a href="#" class="btn btn-link float-xs-right show-tutorial" ng-click="showTutorial()">{{'show.welcome.panel' | translate}}</a>
     </div>
     <div class="row mb-3 tutorial-container" ng-init="initTutorial()" ng-if="tutorialState">
         <div class="col-lg-12">
@@ -64,7 +64,7 @@
     <div core-errors></div>
 
     <div class="mb-2 row" ng-show="!isLoadingLocation() && hasActiveLocation() && getActiveRepository()">
-        <div class="col-lg-6">
+        <div class="active-repo-widget col-lg-6">
             <h3 id="active-repo-label-home"><span gdb-tooltip="{{'view.active.repo.info.label' | translate}}" tooltip-placement="top">{{'active.repo.label' | translate}}</span></h3>
             <div class="card active-repo-card"
                  ng-show="canReadRepo(getActiveRepositoryObject()) || hasGraphqlRightsOverCurrentRepo()">
@@ -144,7 +144,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-6">
+        <div class="saved-sparql-queries-widget col-lg-6">
             <h3 id="saved-queries-label-home"><span gdb-tooltip="{{'saved.sparql.queries.tooltip' | translate}}" tooltip-placement="top">{{'saved.sparql.queries.label' | translate}}</span></h3>
             <div class="card"
                  ng-cloak>
@@ -164,7 +164,7 @@
 
 
     <div class="row mb-3">
-        <div class="col-lg-12">
+        <div class="license-widget col-lg-12">
             <h3 id="license-label-home"><span gdb-tooltip="{{'menu.license.tooltip' | translate}}" tooltip-placement="right">{{'menu.license.label' | translate}}</span></h3>
             <div class="card">
                 <h4 ng-if="isLicensePresent()" class="card-header">GraphDB {{getProductType() | titlecase}} {{'edition' | translate}}</h4>
