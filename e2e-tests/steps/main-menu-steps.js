@@ -1,7 +1,7 @@
 export class MainMenuSteps {
 
     static getMainMenu() {
-        return cy.get('.main-menu');
+        return cy.get('.navbar-component');
     }
 
     static openHomePage() {
@@ -45,16 +45,20 @@ export class MainMenuSteps {
         MainMenuSteps.getMenuButton(menuName).click({force: true});
     }
 
+    static clickOnSubmenuTriggerElement(menuName) {
+        MainMenuSteps.getMainMenu().find('.menu-element-root').contains(menuName).parent().click();
+    }
+
     static clickOnMenuImport() {
         MainMenuSteps.clickOnMenu('Import');
     }
 
     static clickOnExplore() {
-        MainMenuSteps.clickOnMenu('Explore');
+        MainMenuSteps.clickOnSubmenuTriggerElement('Explore');
     }
 
     static getSubMenus() {
-        return cy.get('.sub-menu-item');
+        return MainMenuSteps.getMainMenu().find('.sub-menu');
     }
 
     static getSubMenuButton(submenuName) {
@@ -66,6 +70,7 @@ export class MainMenuSteps {
     }
 
     static clickOnGraphsOverview() {
-        MainMenuSteps.clickOnSubMenu('Graphs overview');
+        this.clickOnExplore();
+        this.getSubMenuButton('Graphs overview').click();
     }
 }

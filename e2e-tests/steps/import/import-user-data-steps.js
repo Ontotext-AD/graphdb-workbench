@@ -10,6 +10,10 @@ export class ImportUserDataSteps extends ImportSteps {
         return this.getView().find('.user-data-import-help');
     }
 
+    static getFileSizeLimitationWarningMessage() {
+        return this.getView().find('.file-size-limit-warning');
+    }
+
     static openImportTextSnippetDialog() {
         cy.get('#import-user .import-rdf-snippet-btn').click()
             // Forces the popover to disappear as it covers the modal and Cypress refuses to continue
