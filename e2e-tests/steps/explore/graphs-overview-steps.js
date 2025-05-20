@@ -10,8 +10,12 @@ export class GraphsOverviewSteps {
         cy.url().should('eq', `${Cypress.config('baseUrl')}${VIEW_URL}`);
     }
 
+    static getResultsElement() {
+        return cy.get('#export-graphs');
+    }
+
     static getResults() {
-        return cy.get('#export-graphs').find('tbody tr');
+        return this.getResultsElement().find('tbody tr');
     }
 
     static getResult(row = 0) {
@@ -72,5 +76,17 @@ export class GraphsOverviewSteps {
 
     static clickOnDownloadAllButton() {
         this.getDownloadAllButtons().click();
+    }
+
+    static getGraphsSearchInput() {
+        return cy.get('.search-graphs');
+    }
+
+    static getGraphsPaginator() {
+        return cy.get('.graphs-overview-paginator');
+    }
+
+    static getClearRepositoryButton() {
+        return cy.get('.clear-repository-btn');
     }
 }
