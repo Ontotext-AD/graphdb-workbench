@@ -7,6 +7,7 @@ class HomeSteps {
 
     static visit() {
         cy.visit('/');
+        HomeSteps.getTutorialPanel().should('be.visible');
     }
 
     static visitAndWaitLoader(stubNewWindow) {
