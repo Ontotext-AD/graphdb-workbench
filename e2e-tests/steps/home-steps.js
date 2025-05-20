@@ -1,3 +1,8 @@
+import {LicenseWidgetSteps} from "./widgets/license-widget-steps";
+import {RepositoryErrorsWidgetSteps} from "./widgets/repository-errors-widget-steps";
+import {ActiveRepositoryWidgetSteps} from "./widgets/active-repository-widget-steps";
+import {SavedSparqlQueriesWidgetSteps} from "./widgets/saved-sparql-queries-widget-steps";
+
 class HomeSteps {
 
     static visit() {
@@ -22,20 +27,103 @@ class HomeSteps {
         // return cy.get('.ot-loader-new-content').should('not.exist');
     }
 
-    static verifyTutorialVisible(shouldBeVisible) {
-        if (shouldBeVisible) {
-            cy.get('.tutorial-container')
-                .should('be.visible');
-        } else {
-            cy.get('.tutorial-container')
-                .should('not.exist');
-        }
+    static getView() {
+      return cy.get('.wb-layout');
     }
 
-    static declineTutorial() {
-        // Click "No, thanks" button
-        cy.get('.tutorial-container .decline-tutorial').click();
+    static getTutorialPanel() {
+        return cy.get('.tutorial-container');
     }
+
+    static hideTutorial() {
+      this.getTutorialPanel().find('.decline-tutorial').click();
+    }
+
+    static showTutorialPanel() {
+      this.getView().find('.show-tutorial').click();
+    }
+
+    static getNavigationMenu() {
+      return this.getView().find('.wb-navbar');
+    }
+
+    static getPageHeader() {
+      return this.getView().find('.wb-header');
+    }
+
+    // ===========================
+    // RDF search box
+    // ===========================
+
+    static getRDFSearchButton() {
+      return this.getPageHeader().find('.rdf-search-button i');
+    }
+
+    // ===========================
+    // Repository selector
+    // ===========================
+
+    static getRepositorySelector() {
+      return this.getPageHeader().find('onto-repository-selector');
+    }
+
+    static getSelectedRepository() {
+      return this.getRepositorySelector().find('.onto-dropdown-button');
+    }
+
+    // ===========================
+    // Language selector
+    // ===========================
+
+    static getLanguageSelector() {
+      return this.getPageHeader().find('onto-language-selector');
+    }
+
+    static getSelectedLanguage() {
+      return this.getLanguageSelector().find('.onto-dropdown-button');
+    }
+
+    // ===========================
+    // Active repository widget
+    // ===========================
+
+    static getActiveRepositoryWidget() {
+      return ActiveRepositoryWidgetSteps.getWidget();
+    }
+
+    // ===========================
+    // License widget
+    // ===========================
+
+    static getLicenseWidget() {
+      return LicenseWidgetSteps.getWidget();
+    }
+
+    // ===========================
+    // Repository errors widget
+    // ===========================
+
+    static getRepositoryErrorsWidget() {
+      return RepositoryErrorsWidgetSteps.getWidget();
+    }
+
+    // ===========================
+    // Saved SPARQL queries widget
+    // ===========================
+
+    static getSavedSparqlQueriesWidget() {
+      return SavedSparqlQueriesWidgetSteps.getWidget();
+    }
+
+    // ===========================
+    // Page footer
+    // ===========================
+
+    static getPageFooter() {
+      return cy.get('.footer-component');
+    }
+
+    // ==========================
 
     static selectSPARQLQueryToExecute(query) {
         cy.contains('ul.saved-queries li', query)

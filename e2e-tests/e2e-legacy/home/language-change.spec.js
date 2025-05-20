@@ -26,7 +26,7 @@ describe.skip('Home screen language validation', () => {
             cy.enableAutocomplete(repositoryId);
             cy.presetRepository(repositoryId);
 
-            HomeSteps.declineTutorial();
+            HomeSteps.hideTutorial();
 
             // When I visit home page with selected repository
             HomeSteps.visitAndWaitLoader();
