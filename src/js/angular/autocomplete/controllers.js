@@ -1,10 +1,12 @@
 import 'angular/rest/autocomplete.rest.service';
 import {mapNamespacesResponse} from "../rest/mappers/namespaces-mapper";
 import {decodeHTML} from "../../../app";
+import 'angular/core/directives/validate-url.directive';
 
 const modules = [
     'toastr',
-    'graphdb.framework.rest.autocomplete.service'
+    'graphdb.framework.rest.autocomplete.service',
+    'graphdb.framework.core.directives.validate-url'
 ];
 
 angular
@@ -22,7 +24,6 @@ AutocompleteCtrl.$inject = [
     '$timeout',
     'RDF4JRepositoriesRestService',
     'UriUtils',
-    'AutocompleteRestService',
     'AutocompleteService',
     '$translate',
     'WorkbenchContextService'];
@@ -37,7 +38,6 @@ function AutocompleteCtrl(
     $timeout,
     RDF4JRepositoriesRestService,
     UriUtils,
-    AutocompleteRestService,
     AutocompleteService,
     $translate,
     WorkbenchContextService) {
@@ -68,7 +68,7 @@ function AutocompleteCtrl(
     };
 
     const refreshIndexIRIs = function () {
-        AutocompleteRestService.refreshIndexIRIs()
+        AutocompleteService.refreshIndexIRIs()
             .success(function (data) {
                 $scope.shouldIndexIRIs = data;
             }).error(function (data) {
@@ -77,7 +77,7 @@ function AutocompleteCtrl(
     };
 
     const refreshIndexStatus = function () {
-        AutocompleteRestService.refreshIndexStatus()
+        AutocompleteService.refreshIndexStatus()
             .success(function (data) {
                 $scope.indexStatus = data;
             })
@@ -87,7 +87,7 @@ function AutocompleteCtrl(
     };
 
     const refreshLabelConfig = function () {
-        AutocompleteRestService.refreshLabelConfig()
+        AutocompleteService.refreshLabelConfig()
             .success(function (data) {
                 $scope.labelConfig = data;
             }).error(function (data) {
@@ -95,24 +95,58 @@ function AutocompleteCtrl(
         });
     };
 
-    const addLabelConfig = function (label) {
-        $scope.setLoader(true, $translate.instant('autocomplete.update'));
-        let labelIriText = label.labelIri.toString();
-        labelIriText = UriUtils.expandPrefix(labelIriText, $scope.namespaces);
+    const validateAndNormalizeLabelIri = function (label, namespaces) {
+        const labelIriText = UriUtils.expandPrefix(label.labelIri.toString(), namespaces);
+
         if (UriUtils.isValidIri(label, labelIriText) && labelIriText !== "") {
             label.labelIri = labelIriText;
-            AutocompleteRestService.addLabelConfig(label)
-                .success(function () {
-                    refreshLabelConfig();
-                    refreshIndexStatus();
-                }).error(function (data) {
-                toastr.error(getError(data));
-            }).finally(function () {
+            return true;
+        }
+
+        return false;
+    }
+
+    function showInvalidIriError(labelIri) {
+        const errorMessage = decodeHTML(
+            $translate.instant('not.valid.iri', { value: labelIri.toString() })
+        );
+        toastr.error(errorMessage);
+    }
+
+    function handleLabelConfigResponse(promise) {
+        promise
+            .then(() => {
+                refreshLabelConfig();
+                refreshIndexStatus();
+            })
+            .catch((error) => {
+                toastr.error(getError(error));
+            })
+            .finally(() => {
                 $scope.setLoader(false);
             });
+    }
+
+    const addLabelConfig = function (updatedLabel) {
+        $scope.setLoader(true, $translate.instant('autocomplete.update'));
+
+        if (validateAndNormalizeLabelIri(updatedLabel, $scope.namespaces)) {
+            const response = AutocompleteService.addLabelConfig(updatedLabel);
+            handleLabelConfigResponse(response);
         } else {
-            const errorMessage = decodeHTML($translate.instant('not.valid.iri', {value: label.labelIri.toString()}));
-            toastr.error(errorMessage);
+            showInvalidIriError(updatedLabel.labelIri);
+            $scope.setLoader(false);
+        }
+    };
+
+    const editLabelConfig = function (updatedLabel, originalLabel) {
+        $scope.setLoader(true, $translate.instant('autocomplete.update'));
+
+        if (validateAndNormalizeLabelIri(updatedLabel, $scope.namespaces)) {
+            const response = AutocompleteService.editLabelConfig(updatedLabel, originalLabel);
+            handleLabelConfigResponse(response);
+        } else {
+            showInvalidIriError(updatedLabel.labelIri);
             $scope.setLoader(false);
         }
     };
@@ -120,7 +154,7 @@ function AutocompleteCtrl(
     const removeLabelConfig = function (label) {
         $scope.setLoader(true, $translate.instant('autocomplete.update'));
 
-        AutocompleteRestService.removeLabelConfig(label)
+        AutocompleteService.removeLabelConfig(label)
             .success(function () {
                 refreshLabelConfig();
                 refreshIndexStatus();
@@ -136,7 +170,7 @@ function AutocompleteCtrl(
 
         $scope.setLoader(true);
 
-        AutocompleteRestService.checkForPlugin()
+        AutocompleteService.checkForPlugin()
             .success(function (data) {
                 $scope.pluginFound = data === true;
                 if ($scope.pluginFound) {
@@ -200,7 +234,7 @@ function AutocompleteCtrl(
         const newValue = !$scope.autocompleteEnabled;
         $scope.setLoader(true, newValue ? $translate.instant('autocomplete.enabling') : $translate.instant('autocomplete.disabling'));
 
-        AutocompleteRestService.toggleAutocomplete(newValue)
+        AutocompleteService.toggleAutocomplete(newValue)
             .success(function () {
                 refreshEnabledStatus();
                 refreshIndexStatus();
@@ -214,7 +248,7 @@ function AutocompleteCtrl(
     $scope.toggleIndexIRIs = function () {
         $scope.setLoader(true, ($translate.instant('autocomplete.index.iri')));
 
-        AutocompleteRestService.toggleIndexIRIs(!$scope.shouldIndexIRIs)
+        AutocompleteService.toggleIndexIRIs(!$scope.shouldIndexIRIs)
             .success(function () {
                 refreshIndexIRIs();
                 refreshIndexStatus();
@@ -228,7 +262,7 @@ function AutocompleteCtrl(
     $scope.buildIndex = function () {
         $scope.setLoader(true, $translate.instant('autocomplete.index.build'));
 
-        AutocompleteRestService.buildIndex()
+        AutocompleteService.buildIndex()
             .success(function () {
                 $scope.indexStatus = 'BUILDING';
             }).error(function (data) {
@@ -241,7 +275,7 @@ function AutocompleteCtrl(
     $scope.interruptIndexing = function () {
         $scope.setLoader(true, $translate.instant('index.interrupt'));
 
-        AutocompleteRestService.interruptIndexing()
+        AutocompleteService.interruptIndexing()
             .success(function () {
                 refreshIndexStatus();
             }).error(function (data) {
@@ -260,7 +294,11 @@ function AutocompleteCtrl(
     };
 
     $scope.editLabel = function (label, isNew) {
-        const modalInstance = $uibModal.open({
+        const handleResult = isNew
+            ? (result) => addLabelConfig(result.updated)
+            : (result) => editLabelConfig(result.updated, result.original);
+
+        $uibModal.open({
             templateUrl: 'js/angular/autocomplete/templates/modal/add-label.html',
             controller: 'AddLabelCtrl',
             resolve: {
@@ -271,11 +309,7 @@ function AutocompleteCtrl(
                     };
                 }
             }
-        });
-
-        modalInstance.result.then(function (label) {
-            addLabelConfig(label);
-        });
+        }).result.then(handleResult);
     };
 
     $scope.removeLabel = function (label) {
@@ -313,11 +347,15 @@ AddLabelCtrl.$inject = ['$scope', '$uibModalInstance', '$timeout', 'data'];
 
 function AddLabelCtrl($scope, $uibModalInstance, $timeout, data) {
     $scope.label = _.cloneDeep(data.label);
+    $scope.originalLabel = _.cloneDeep(data.label);
     $scope.isNew = data.isNew;
 
     $scope.ok = function () {
         if ($scope.form.$valid) {
-            $uibModalInstance.close($scope.label);
+            $uibModalInstance.close({
+                original: $scope.originalLabel,
+                updated: $scope.label
+            });
         }
     };
 
