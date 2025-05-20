@@ -379,7 +379,7 @@ function JdbcCreateCtrl(
             getCellContent: getCellContent,
             sparqlResponse: $scope.emptySparqlResponse,
             yasqeActionButtons: DISABLE_YASQE_BUTTONS_CONFIGURATION,
-            yasqeMode: $scope.canEditActiveRepo ? YasqeMode.WRITE : YasqeMode.PROTECTED
+            yasqeMode: $scope.canEditActiveRepo ? YasqeMode.WRITE : YasqeMode.READ
         };
     };
 
