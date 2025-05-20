@@ -8,8 +8,11 @@
 <div class="modal-body">
     <form name="form" id="addLabelForm">
 
-        <input id="wb-autocomplete-iri" required type="text" ng-model="label.labelIri" class="form-control" ng-readonly="!isNew"
+        <input id="wb-autocomplete-iri" name="autocompleteIri" required type="text" ng-model="label.labelIri" class="form-control" validate-url
                placeholder= "{{'add.label.enter.iri' | translate}}" autofocus/>
+        <div ng-show="form.autocompleteIri.$error.validUrl" class="error-message">
+            {{'invalid.uri.msg' | translate}}
+        </div>
 
         <div class="mt-1 mb-2 templates">
             <span class="tag tag-default" ng-click="setTemplate('http://www.w3.org/2000/01/rdf-schema#label')">rdfs:label</span>
@@ -23,7 +26,7 @@
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-secondary" ng-click="cancel()">{{'common.cancel.btn' | translate}}</button>
-    <button id="wb-autocomplete-savegraph-submit" form="addLabelForm" class="btn btn-primary" ng-click="ok()" type="submit">{{'common.ok.btn' | translate}}</button>
+    <button id="wb-autocomplete-savegraph-submit" form="addLabelForm" ng-disabled="form.autocompleteIri.$invalid" class="btn btn-primary" ng-click="ok()" type="submit">{{'common.ok.btn' | translate}}</button>
 </div>
 
 <!-- End save graph modal -->

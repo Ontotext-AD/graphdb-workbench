@@ -66,4 +66,28 @@ describe('Autocomplete ', () => {
             .should('be.visible')
             .and('not.be.disabled');
     });
+
+    it('should allow add and edit of autocomplete label', () => {
+        // Given I'm on the Autocomplete page
+        AutocompleteSteps.visit();
+        cy.wait('@get-license');
+        AutocompleteSteps.waitUntilAutocompletePageIsLoaded();
+        // The table should not contain this label
+        AutocompleteSteps.getAutocompleteLabels().should('not.contain.text', 'http://xmlns.com/foaf/0.1/name');
+
+        // When I add a label
+        AutocompleteSteps.addLabelAndLanguage('http://xmlns.com/foaf/0.1/name', 'fr');
+        // Then the list should have my new label
+        AutocompleteSteps.getAutocompleteLabels().should('contain.text', 'http://xmlns.com/foaf/0.1/name');
+
+        // When I edit the new label
+        AutocompleteSteps.editLabelOnRow(0);
+        AutocompleteSteps.typeLabelIri('http://purl.org/dc/elements/1.1/title');
+        AutocompleteSteps.saveLabel();
+        // Then the list should no longer have the old label
+        AutocompleteSteps.getAutocompleteLabels().should('not.contain.text', 'http://xmlns.com/foaf/0.1/name');
+        // And instead have the edited label
+        AutocompleteSteps.getAutocompleteLabels().should('contain.text', 'http://purl.org/dc/elements/1.1/title');
+        AutocompleteSteps.getAutocompleteLabels().should('contain.text', 'fr');
+    });
 });

@@ -21,7 +21,72 @@ function AutocompleteService(AutocompleteRestService, LSKeys, LocalStorageAdapte
             });
     };
 
+    const addLabelConfig = (label) => {
+        return AutocompleteRestService.addLabelConfig(label);
+    }
+
+    const editLabelConfig = (updatedLabel, originalLabel) => {
+        const params = {};
+
+        if (originalLabel) {
+            params['oldLabel'] = originalLabel;
+        }
+
+        if (updatedLabel) {
+            params['newLabel'] = updatedLabel;
+        }
+
+        return AutocompleteRestService.editLabelConfig(params);
+    }
+
+    const removeLabelConfig = (label) => {
+        return AutocompleteRestService.removeLabelConfig(label);
+    }
+
+    const interruptIndexing = () => {
+        return AutocompleteRestService.interruptIndexing();
+    }
+
+    const buildIndex = () => {
+        return AutocompleteRestService.buildIndex();
+    }
+
+    const toggleIndexIRIs = (newValue) => {
+        return AutocompleteRestService.toggleIndexIRIs(newValue);
+    }
+
+    const checkForPlugin = () => {
+        return AutocompleteRestService.checkForPlugin();
+    }
+
+    const refreshLabelConfig = () => {
+        return AutocompleteRestService.refreshLabelConfig();
+    }
+
+    const refreshIndexStatus = () => {
+        return AutocompleteRestService.refreshIndexStatus();
+    }
+
+    const refreshIndexIRIs = () => {
+        return AutocompleteRestService.refreshIndexIRIs();
+    }
+
+    const toggleAutocomplete = (newValue) => {
+        return AutocompleteRestService.toggleAutocomplete(newValue);
+    }
+
     return {
-        checkAutocompleteStatus
+        checkAutocompleteStatus,
+        addLabelConfig,
+        editLabelConfig,
+        removeLabelConfig,
+        interruptIndexing,
+        buildIndex,
+        toggleIndexIRIs,
+        checkForPlugin,
+        refreshLabelConfig,
+        refreshIndexStatus,
+        refreshIndexIRIs,
+        toggleAutocomplete
     };
 }
