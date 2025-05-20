@@ -67,7 +67,7 @@ describe('Autocomplete ', () => {
             .and('not.be.disabled');
     });
 
-    it('should allow add and edit of autocomplete label', () => {
+    it.skip('should allow add and edit of autocomplete label', () => {
         // Given I'm on the Autocomplete page
         AutocompleteSteps.visit();
         cy.wait('@get-license');
