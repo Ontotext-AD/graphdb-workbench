@@ -1,8 +1,8 @@
-<div class="mb-2 row" ng-hide="getActiveRepository() && !isRestricted">
+<div class="repository-errors-container mb-2 row" ng-hide="getActiveRepository() && !isRestricted">
     <div role="alert">
         <div class="mb-1 mt-1 ml-1 mr-1">
             <div class="card repository-errors">
-                <div class="alert lead" ng-class="!getActiveRepository() ? 'alert-info' : 'alert-warning'">
+                <div class="alert lead info-message" ng-class="!getActiveRepository() ? 'alert-info' : 'alert-warning'">
                     <div ng-if="!getActiveRepository()" >{{'core.errors.no.connected.repository.warning.msg' | translate}}</div>
                     <div id="restrictedDiv" ng-if="getActiveRepository() && isRestricted">{{'core.errors.restricted.warning.msg' | translate}}
                         <span ng-if="!isLicenseValid()">{{'core.errors.not.valid.license.warning.msg' | translate}}
@@ -26,7 +26,7 @@
                         </small>
                 </div>
                 <div ng-if="!getActiveRepository()">
-                    <button class="btn btn-link" ng-click="toggleShowRemoteLocations()">
+                    <button class="btn btn-link show-remote-locations-btn" ng-click="toggleShowRemoteLocations()">
                         {{(showRemoteLocations ? "core.errors.hide.remote.locations.btn" : "core.errors.show.remote.locations.btn") | translate}}
                     </button>
                 </div>
