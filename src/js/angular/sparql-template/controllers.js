@@ -187,7 +187,7 @@ function SparqlTemplateCreateCtrl(
             prefixes: prefixes,
             render: RenderingMode.YASQE,
             maxPersistentResponseSize: 0,
-            yasqeMode: $scope.canEditActiveRepo ? YasqeMode.WRITE : YasqeMode.PROTECTED
+            yasqeMode: $scope.canEditActiveRepo ? YasqeMode.WRITE : YasqeMode.READ
         };
     };
 
