@@ -1,5 +1,4 @@
 import 'angular/core/services';
-import 'angular/core/services/repository-storage.service';
 import 'angular/core/services/openid-auth.service.js';
 import 'angular/core/services/security.service';
 import {UserRole} from 'angular/utils/user-utils';
@@ -15,12 +14,11 @@ import {
 
 angular.module('graphdb.framework.core.services.jwtauth', [
     'toastr',
-    'graphdb.framework.core.services.repository-storage',
     'graphdb.framework.core.services.security-service',
     'graphdb.framework.core.services.openIDService'
 ])
-    .service('$jwtAuth', ['$http', 'toastr', '$location', '$rootScope', 'SecurityService', '$openIDAuth', '$translate', '$q', '$route', 'RepositoryStorage', 'AuthTokenService',
-        function ($http, toastr, $location, $rootScope, SecurityService, $openIDAuth, $translate, $q, $route, RepositoryStorage, AuthTokenService) {
+    .service('$jwtAuth', ['$http', 'toastr', '$location', '$rootScope', 'SecurityService', '$openIDAuth', '$translate', '$q', '$route', 'AuthTokenService',
+        function ($http, toastr, $location, $rootScope, SecurityService, $openIDAuth, $translate, $q, $route, AuthTokenService) {
             const jwtAuth = this;
 
             $rootScope.deniedPermissions = {};
@@ -92,6 +90,15 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             this.securityInitialized = false;
 
             const that = this;
+
+            const getActiveRepositoryObjectFromStorage = function() {
+                const repositoryStorageService = ServiceProvider.get(RepositoryStorageService);
+                const repositoryContextService = ServiceProvider.get(RepositoryContextService);
+                return {
+                    id: repositoryStorageService.get(repositoryContextService.SELECTED_REPOSITORY_ID).getValueOrDefault(''),
+                    location: repositoryStorageService.get(repositoryContextService.REPOSITORY_LOCATION).getValueOrDefault('')
+                };
+            };
 
             /**
              * Determines the currently authenticated user from the backend's point-of-view
@@ -316,11 +323,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
 
                     const repositoryStorageService = ServiceProvider.get(RepositoryStorageService);
                     const repositoryContextService = ServiceProvider.get(RepositoryContextService);
-
-                    const selectedRepo = {
-                      id: repositoryStorageService.get(repositoryContextService.SELECTED_REPOSITORY_ID).getValueOrDefault(''),
-                      location: repositoryStorageService.get(repositoryContextService.REPOSITORY_LOCATION).getValueOrDefault('')
-                    };
+                    const selectedRepo = getActiveRepositoryObjectFromStorage();
 
                     if (!jwtAuth.canReadRepo(selectedRepo)) {
                         // if the current repo is unreadable by the currently logged-in user (or free access user)
@@ -427,7 +430,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 }
 
                 // If there is no selected repository, there are no auth restrictions
-                if (!RepositoryStorage.getActiveRepository()) {
+                if (!getActiveRepositoryObjectFromStorage()) {
                     return true;
                 }
 
@@ -456,14 +459,14 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 }
 
                 // Get the selected repository's ID from the current context.
-                const repoId = RepositoryStorage.getActiveRepository();
+                const repo = getActiveRepositoryObjectFromStorage();
                 // If there is no selected repository ID, return the original authorities list.
-                if (!repoId) {
+                if (!repo) {
                     return authoritiesList;
                 }
 
                 // Replace the "{repoId}" placeholder with the actual repository ID for specific access.
-                const authListForCurrentRepo = authoritiesList.map(authority => authority.replace('{repoId}', repoId));
+                const authListForCurrentRepo = authoritiesList.map(authority => authority.replace('{repoId}', repo.id));
                 // Replace the "{repoId}" placeholder with a wildcard '*' to denote access to any repository.
                 const authListForAllRepos = authoritiesList.map(authority => authority.replace('{repoId}', '*'));
 
@@ -557,7 +560,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             }
 
             this.hasGraphqlRightsOverCurrentRepo = function () {
-                const activeRepo = RepositoryStorage.getActiveRepositoryObject();
+                const activeRepo = getActiveRepositoryObjectFromStorage();
                 return this.hasGraphqlReadRights(activeRepo) || this.hasGraphqlWriteRights(activeRepo);
             }
 
