@@ -28,6 +28,10 @@ export class MainMenuSteps {
         return MainMenuSteps.getMenuButton('SPARQL');
     }
 
+    static clickOnSparqlMenu() {
+        MainMenuSteps.getMenuSparql().click();
+    }
+
     static getSubmenuAutocomplete() {
         return MainMenuSteps.getSubMenuButton("Autocomplete");
     }
