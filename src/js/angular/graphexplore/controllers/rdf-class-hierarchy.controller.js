@@ -122,6 +122,7 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     // functions
     $scope.goToDomainRangeGraphView = goToDomainRangeGraphView;
     $scope.toggleClassInfoSidePanel = toggleClassInfoSidePanel;
+    $scope.toggleHidePrefixes = toggleHidePrefixes;
     $scope.getActiveRepositoryNoError = getActiveRepositoryNoError;
     $scope.isSystemRepository = isSystemRepository;
     $scope.confirmReloadClassHierarchy = confirmReloadClassHierarchy;
@@ -354,6 +355,10 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
     function toggleClassInfoSidePanel() {
         $scope.showClassInfoPanel = !$scope.showClassInfoPanel;
         $rootScope.$broadcast('sidePanelClosed');
+    }
+
+    function toggleHidePrefixes() {
+        $scope.hidePrefixes = !$scope.hidePrefixes;
     }
 
     function getActiveRepositoryNoError() {
