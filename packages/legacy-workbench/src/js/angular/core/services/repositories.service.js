@@ -23,9 +23,9 @@ const modules = [
 const repositories = angular.module('graphdb.framework.core.services.repositories', modules);
 
 repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$location', 'productInfo', '$jwtAuth',
-    'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService', '$translate', '$q', 'RepositoryStorage', 'EventEmitterService', 'RDF4JRepositoriesRestService',
+    'RepositoriesRestService', 'LocationsRestService', 'LicenseRestService', '$translate', '$q', 'EventEmitterService', 'RDF4JRepositoriesRestService',
     function (toastr, $rootScope, $timeout, $location, productInfo, $jwtAuth,
-        RepositoriesRestService, LocationsRestService, LicenseRestService, $translate, $q, RepositoryStorage, eventEmitterService, RDF4JRepositoriesRestService) {
+        RepositoriesRestService, LocationsRestService, LicenseRestService, $translate, $q, eventEmitterService, RDF4JRepositoriesRestService) {
 
         this.location = {uri: '', label: 'Local', local: true};
         this.locationError = '';
