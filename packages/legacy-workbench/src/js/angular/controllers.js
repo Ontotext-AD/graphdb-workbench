@@ -28,7 +28,7 @@ import 'angularjs-slider/dist/rzslider.min';
 import {debounce} from "lodash";
 import {DocumentationUrlResolver} from "./utils/documentation-url-resolver";
 import {NamespacesListModel} from "./models/namespaces/namespaces-list";
-import {RepositoryContextService, ServiceProvider} from "@ontotext/workbench-api";
+import {RepositoryContextService, ServiceProvider, RepositoryStorageService} from "@ontotext/workbench-api";
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -76,7 +76,6 @@ homeCtrl.$inject = ['$scope',
     'RepositoriesRestService',
     'WorkbenchContextService',
     'RDF4JRepositoriesService',
-    'RepositoryStorage',
     'toastr'];
 
 function homeCtrl($scope,
@@ -91,7 +90,6 @@ function homeCtrl($scope,
                   RepositoriesRestService,
                   WorkbenchContextService,
                   RDF4JRepositoriesService,
-                  RepositoryStorage,
                   toastr) {
 
     $scope.doClear = false;
@@ -124,13 +122,19 @@ function homeCtrl($scope,
     const subscriptions = [];
 
     const onSelectedRepositoryIdUpdated = (repositoryId) => {
+        let selectedRepositoryId = repositoryId;
+        if (!selectedRepositoryId) {
+            const repositoryStorageService = ServiceProvider.get(RepositoryStorageService);
+            const repositoryContextService = ServiceProvider.get(RepositoryContextService);
+            selectedRepositoryId = repositoryStorageService.get(repositoryContextService.SELECTED_REPOSITORY_ID).getValue();
+        }
         // Don't call API, if no repo ID, or with GQL read-only or write rights
-        if (!repositoryId || !RepositoryStorage.getActiveRepositoryObject().id || $jwtAuth.hasGraphqlRightsOverCurrentRepo()) {
+        if (!selectedRepositoryId || $jwtAuth.hasGraphqlRightsOverCurrentRepo()) {
             $scope.repositoryNamespaces = new NamespacesListModel();
             return;
         }
         $scope.getActiveRepositorySize();
-        RDF4JRepositoriesService.getNamespaces(repositoryId)
+        RDF4JRepositoriesService.getNamespaces(selectedRepositoryId)
             .then((repositoryNamespaces) => {
                 $scope.repositoryNamespaces = repositoryNamespaces;
             })
