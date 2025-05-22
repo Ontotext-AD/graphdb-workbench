@@ -13,7 +13,6 @@ import {
   AuthenticationService,
   FibonacciGenerator,
   OntoToastrService,
-  RepositoryLocation,
   RepositoryLocationContextService,
   EventService,
   EventName,
@@ -21,7 +20,6 @@ import {
   isHomePage,
   NamespacesService,
   NamespacesContextService,
-  RepositoryStorageService,
   RepositoryList,
   Repository, RepositoryService, LanguageService, LanguageContextService, ObjectUtil, getCurrentRoute
 } from '@ontotext/workbench-api';
@@ -47,7 +45,6 @@ export class OntoHeader {
   private readonly repositoryContextService = ServiceProvider.get(RepositoryContextService);
   private readonly repositoryLocationContextService = ServiceProvider.get(RepositoryLocationContextService);
   private readonly repositoryService = ServiceProvider.get(RepositoryService);
-  private readonly repositoryStorageService = ServiceProvider.get(RepositoryStorageService);
   private readonly securityContextService = ServiceProvider.get(SecurityContextService);
   private readonly authenticationService = ServiceProvider.get(AuthenticationService);
   private readonly toastrService = ServiceProvider.get(OntoToastrService);
@@ -72,15 +69,13 @@ export class OntoHeader {
   @State() repositoryList: RepositoryList;
   @State() currentRoute: string;
   /** The model of the currently selected repository, if any. */
-  @State() currentRepository: Repository;
+  @State() currentRepository: Repository | undefined;
   @State() securityConfig: SecurityConfig;
 
 
   // ========================
   // Private
   // ========================
-  private repositoryId?: string;
-  private repositoryLocation?: RepositoryLocation;
   private isActiveLocationLoading = false;
   private pollingInterval: number;
   private repositoryItems: DropdownItem<Repository>[] = [];
@@ -99,9 +94,8 @@ export class OntoHeader {
   }
 
   connectedCallback() {
-    // get the current repository id from the storage
-    this.repositoryId = this.repositoryStorageService.get(this.repositoryContextService.SELECTED_REPOSITORY_ID).getValueOrDefault(undefined);
-    this.setupTotalRepository();
+    this.currentRepository = this.repositoryContextService.getSelectedRepository();
+    this.setupTotalRepositoryFormater();
     this.subscribeToEvents();
     this.currentRoute = getCurrentRoute();
   }
@@ -147,7 +141,7 @@ export class OntoHeader {
   private subscribeToEvents(): void {
     this.subscribeToRepositoryListChanged();
     this.subscribeToLicenseChange();
-    this.subscribeToRepositoryIdChange();
+    this.subscribeToRepositoryChange();
     this.subscribeToSecurityContextChange();
     this.subscribeToActiveRepositoryLocationChange();
     this.subscribeToActiveRepoLoadingChange();
@@ -172,14 +166,14 @@ export class OntoHeader {
       }));
   }
 
-  private subscribeToRepositoryIdChange() {
+  private subscribeToRepositoryChange() {
     this.subscriptions.add(
-      this.repositoryContextService.onSelectedRepositoryIdChanged((repositoryId) => {
-        this.repositoryId = repositoryId;
-        this.repositoryId ? this.startOperationPolling() : this.stopOperationPolling();
+      this.repositoryContextService.onSelectedRepositoryChanged((repository) => {
+        this.currentRepository = repository;
+        this.currentRepository ? this.startOperationPolling() : this.stopOperationPolling();
         this.shouldShowSearch = this.shouldShowRdfSearch();
         this.loadNamespaces();
-        this.changeCurrentRepository(this.repositoryId)
+        this.repositoryItems = this.getRepositoriesDropdownItems();
       })
     );
   }
@@ -196,8 +190,7 @@ export class OntoHeader {
 
   private subscribeToActiveRepositoryLocationChange() {
     this.subscriptions.add(
-      this.repositoryLocationContextService.onActiveLocationChanged((repositoryLocation) => {
-        this.repositoryLocation = repositoryLocation;
+      this.repositoryLocationContextService.onActiveLocationChanged(() => {
         this.shouldShowSearch = this.shouldShowRdfSearch();
       })
     );
@@ -227,8 +220,7 @@ export class OntoHeader {
   private subscribeToLanguageChanged(): void {
     this.subscriptions.add(
       ServiceProvider.get(LanguageContextService)
-        .onSelectedLanguageChanged((language) => this.setupTotalRepository(language))
-    )
+        .onSelectedLanguageChanged((language) => this.setupTotalRepositoryFormater(language)));
   }
 
   // ========================
@@ -237,18 +229,12 @@ export class OntoHeader {
   private resetOnMissingRepositories(): void {
     this.repositoryItems = [];
     this.repositoryList = new RepositoryList();
-    this.repositoryId = undefined;
     this.currentRepository = undefined;
   }
 
   private initOnRepositoryListChanged(repositories: RepositoryList): void {
     this.repositoryList = repositories;
-    const location = '';
-    const repository = repositories.findRepository(this.repositoryId, location);
-    // currently selected repository could be deleted and not in the list at this point
-    this.currentRepository = repository;
-    this.repositoryContextService.updateSelectedRepository(repository);
-    this.repositoryContextService.updateSelectedRepositoryId(this.repositoryId);
+    this.repositoryContextService.updateSelectedRepository(this.currentRepository);
     this.repositoryItems = this.getRepositoriesDropdownItems();
   }
 
@@ -259,7 +245,7 @@ export class OntoHeader {
     this.repositoryList.sortByLocationAndId();
     let repositories: Repository[];
     if (this.currentRepository) {
-      repositories = this.repositoryList.filterByIds([this.currentRepository.id]);
+      repositories = this.repositoryList.filterByRepository([this.currentRepository]);
     } else {
       repositories = this.repositoryList.getItems();
     }
@@ -287,15 +273,10 @@ export class OntoHeader {
     return this.repositoryService.getRepositorySizeInfo(repo);
   };
 
-  private changeCurrentRepository(newRepositoryId: string): void {
-    this.currentRepository = this.repositoryList.findRepository(newRepositoryId, '');
-    this.repositoryItems = this.getRepositoriesDropdownItems();
-  }
-
   private loadNamespaces() {
-    if (this.repositoryId) {
-      console.log(this.repositoryId)
-      this.namespacesService.getNamespaces(this.repositoryId)
+    if (this.currentRepository) {
+      // TODO: check why loaction not used maybe it is added in autorization interceptor
+      this.namespacesService.getNamespaces(this.currentRepository.id)
         .then((namespaces) => this.namespaceContextService.updateNamespaces(namespaces))
     }
   }
@@ -317,7 +298,7 @@ export class OntoHeader {
       }
 
       this.monitoringService
-        .getOperations(this.repositoryId)
+        .getOperations(this.currentRepository.id)
         .then((operations) => {
           if (!ObjectUtil.deepEqual(this.activeOperations, operations)) {
             this.activeOperations = operations;
@@ -338,7 +319,7 @@ export class OntoHeader {
   // Render logic
   // ========================
   private shouldShowRdfSearch(): boolean {
-    return !!this.repositoryId && !!this.repositoryLocation &&
+    return !!this.currentRepository &&
       (!this.isActiveLocationLoading || getPathName() === '/repository');
   }
 
@@ -352,7 +333,7 @@ export class OntoHeader {
   // ========================
   // Language, formatting
   // ========================
-  private setupTotalRepository(language?: string): void {
+  private setupTotalRepositoryFormater(language?: string): void {
     if (!language) {
       language = this.languageService.getDefaultLanguage();
     }

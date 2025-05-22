@@ -7,7 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { DialogHandler } from "./models/dialog/dialog-handler";
 import { DialogConfig } from "./components/dialogs/onto-dialog";
-import { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, Repository, RepositoryLocation, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage } from "../../api/dist/ontotext-workbench-api.d";
+import { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, Repository, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage } from "../../api/dist/ontotext-workbench-api.d";
 import { DropdownItem } from "./models/dropdown/dropdown-item";
 import { OntoTooltipPlacement } from "./components/onto-tooltip/models/onto-tooltip-placement";
 import { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
@@ -17,7 +17,7 @@ import { ToggleEventPayload } from "./models/toggle-switch/toggle-event-payload"
 import { TranslationParameter } from "./models/translation/translation-parameter";
 export { DialogHandler } from "./models/dialog/dialog-handler";
 export { DialogConfig } from "./components/dialogs/onto-dialog";
-export { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, Repository, RepositoryLocation, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage } from "../../api/dist/ontotext-workbench-api.d";
+export { AuthenticatedUser, Awaitable, License, OperationStatusSummary, ProductInfo, Repository, RepositoryReference, RepositorySizeInfo, SearchButtonConfig, SecurityConfig, ToastMessage } from "../../api/dist/ontotext-workbench-api.d";
 export { DropdownItem } from "./models/dropdown/dropdown-item";
 export { OntoTooltipPlacement } from "./components/onto-tooltip/models/onto-tooltip-placement";
 export { DropdownItemAlignment } from "./models/dropdown/dropdown-item-alignment";
@@ -265,22 +265,11 @@ export namespace Components {
          */
         "updateProductInfo": (productInfo: ProductInfo) => Promise<void>;
         /**
-          * Updates the active repository location in the application context.
-          * @param repositoryLocation - The RepositoryLocation object containing location information   for the repository to be set as active.
-          * @returns A Promise that resolves when the repository location update is complete.
-         */
-        "updateRepositoryLocation": (repositoryLocation: RepositoryLocation) => Promise<void>;
-        /**
           * Updates the {@see SecurityContextService} map with <code>restrictedPages</code>.
           * @param restrictedPages - the map with restricted pages to be set in context service as new value.
          */
         "updateRestrictedPage": (restrictedPages: Record<string, boolean>) => Promise<void>;
-        /**
-          * Updates the selected repository ID in the application context to navigate to operations status summary.
-          * @param repoId - The ID of the repository to select for viewing operations status summary.
-          * @returns A Promise that resolves when the repository ID has been successfully updated.
-         */
-        "updateSelectedRepositoryId": (repoId: string) => Promise<void>;
+        "updateSelectedRepository": (repositoryReference: RepositoryReference) => Promise<void>;
     }
     /**
      * OntoToastr component for displaying toast notifications.

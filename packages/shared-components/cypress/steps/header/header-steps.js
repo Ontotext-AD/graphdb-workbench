@@ -41,12 +41,8 @@ export class HeaderSteps extends BaseSteps {
     return HeaderSteps.getSearchArea().find('.close-btn').click();
   }
 
-  static setRepoId() {
-    cy.get('#set-repo-id').click();
-  }
-
-  static setRepoLocation() {
-    cy.get('#set-repo-location').click();
+  static setMarvelRepo() {
+    cy.get('#set-marvel-repo').click();
   }
 
   static setActiveLocationLoading() {
