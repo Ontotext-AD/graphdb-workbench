@@ -3,12 +3,12 @@ import {GlobalOperationsStatusesStub} from "./global-operations-statuses-stub";
 export class RepositoriesStub {
 
     static stubOntopRepository(repositoryId) {
-        const alRepositoryResponse = `{
+        const alRepositoryResponse = {
         "":[{
-                    "id": "${repositoryId}",
+                    "id": repositoryId,
                     "title": "",
-                    "uri": "http://b:9000/repositories/${repositoryId}",
-                    "externalUrl": "http://b:9000/repositories/${repositoryId}",
+                    "uri": `http://b:9000/repositories/${repositoryId}`,
+                    "externalUrl": `http://b:9000/repositories/${repositoryId}`,
                     "local": true,
                     "type": "ontop",
                     "sesameType": "graphdb:OntopRepository",
@@ -17,13 +17,13 @@ export class RepositoriesStub {
                     "writable": true,
                     "unsupported": false,
                     "state": "RUNNING"
-        }]}`;
+        }]};
 
 
         cy.intercept('GET', '/rest/repositories/all', {
             statusCode: 200,
             body: alRepositoryResponse
-        });
+        }).as('all-repositories');
     }
 
     /**

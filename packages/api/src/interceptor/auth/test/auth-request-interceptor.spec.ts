@@ -3,6 +3,7 @@ import {ServiceProvider} from '../../../providers/service/service.provider';
 import {AuthenticationStorageService} from '../../../services/security/authentication-storage.service';
 import {RepositoryStorageService} from '../../../services/repository/repository-storage.service';
 import {StorageData} from '../../../models/storage';
+import {Repository} from '../../../models/repositories';
 
 describe('AuthHttpInterceptor', () => {
   let authHttpInterceptor: AuthRequestInterceptor;
@@ -45,11 +46,12 @@ describe('AuthHttpInterceptor', () => {
       method: 'GET',
       body: {}
     };
-    // Given, I have a mock selected repository ID
-    const mockRepositoryId = '1';
+    // Given, I have a mock selected repository ID without location
+    const mockRepository = createRepositoryInstance('repo-one-id');
+
     // And I have mocked the repository storage service to return the mock selected repository ID
     jest.spyOn(repositoryStorage, 'get').mockImplementation((param) => {
-      const value = param === 'selectedRepositoryId' ? mockRepositoryId : null;
+      const value = param === 'selectedRepository' ? JSON.stringify(mockRepository) : null;
       return new StorageData(value);
     });
 
@@ -59,7 +61,7 @@ describe('AuthHttpInterceptor', () => {
     // Then, the X-GraphDB-Repository header should be added to the request
     expect(result.headers['X-Requested-With']).toEqual('XMLHttpRequest');
     expect(result.headers['Authorization']).toBeUndefined();
-    expect(result.headers['X-GraphDB-Repository']).toEqual(mockRepositoryId);
+    expect(result.headers['X-GraphDB-Repository']).toEqual(mockRepository.id);
     expect(result.headers['X-GraphDB-Repository-Location']).toBeUndefined();
   });
 
@@ -70,11 +72,12 @@ describe('AuthHttpInterceptor', () => {
       method: 'GET',
       body: {}
     };
-    // Given, I have a mock selected repository location
-    const mockRepositoryLocation = 'repo-location-uri';
+    // Given, I have a mock selected repository with location
+    const mockRepository = createRepositoryInstance('', 'repo-location-uri');
+
     // And I have mocked the repository storage service to return the mock selected repository location
     jest.spyOn(repositoryStorage, 'get').mockImplementation((param) => {
-      const value = param === 'repositoryLocation' ? mockRepositoryLocation : null;
+      const value = param === 'selectedRepository' ? JSON.stringify(mockRepository) : null;
       return new StorageData(value);
     });
 
@@ -85,6 +88,36 @@ describe('AuthHttpInterceptor', () => {
     expect(result.headers['X-Requested-With']).toEqual('XMLHttpRequest');
     expect(result.headers['Authorization']).toBeUndefined();
     expect(result.headers['X-GraphDB-Repository']).toBeUndefined();
-    expect(result.headers['X-GraphDB-Repository-Location']).toEqual(mockRepositoryLocation);
+    expect(result.headers['X-GraphDB-Repository-Location']).toEqual(mockRepository.location);
   });
+
+  test('Should add both X-GraphDB-Repository and X-GraphDB-Repository-Location header when repository context is available', async () => {
+    const mockRequest = {
+      headers: {},
+      url: 'http://example.com/api/endpoint',
+      method: 'GET',
+      body: {}
+    };
+    // Given, I have a mock selected repository with location
+    const mockRepository = createRepositoryInstance('repo-one-id', 'repo-location-uri');
+
+    // And I have mocked the repository storage service to return the mock selected repository location
+    jest.spyOn(repositoryStorage, 'get').mockImplementation((param) => {
+      const value = param === 'selectedRepository' ? JSON.stringify(mockRepository) : null;
+      return new StorageData(value);
+    });
+
+    // When I preprocess the request
+    const result = await authHttpInterceptor.process(mockRequest);
+
+    // Then, the X-GraphDB-Repository-Location header should be added to the request
+    expect(result.headers['X-Requested-With']).toEqual('XMLHttpRequest');
+    expect(result.headers['Authorization']).toBeUndefined();
+    expect(result.headers['X-GraphDB-Repository']).toEqual(mockRepository.id);
+    expect(result.headers['X-GraphDB-Repository-Location']).toEqual(mockRepository.location);
+  });
+
+  function createRepositoryInstance(id: string, location?: string) {
+    return new Repository({id, location} as Repository);
+  }
 });

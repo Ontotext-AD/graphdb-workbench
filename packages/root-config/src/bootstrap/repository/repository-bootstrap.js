@@ -2,6 +2,7 @@ import {
   ServiceProvider,
   RepositoryService,
   RepositoryContextService,
+  RepositoryStorageService,
   RepositoryLocationService,
   RepositoryLocationContextService
 } from '@ontotext/workbench-api';
@@ -9,7 +10,14 @@ import {
 const loadRepositories = () => {
   return ServiceProvider.get(RepositoryService).getRepositories()
     .then((repositories) => {
-      ServiceProvider.get(RepositoryContextService).updateRepositoryList(repositories);
+
+      const repositoryContextService = ServiceProvider.get(RepositoryContextService);
+      // Initializing the repository context service with all repositories.
+      repositoryContextService.updateRepositoryList(repositories);
+
+      // Initializing the repository context service with the selected repository.
+      const repositoryReference = ServiceProvider.get(RepositoryStorageService).getRepositoryReference();
+      repositoryContextService.updateSelectedRepository(repositoryReference);
     })
     .catch((error) => {
       throw new Error('Could not load repositories', error);

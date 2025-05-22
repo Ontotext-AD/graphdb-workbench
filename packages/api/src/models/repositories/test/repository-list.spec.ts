@@ -72,16 +72,35 @@ describe('RepositoryList', () => {
   test('should sort repositories by location and ID', () => {
     repositoryList.sortByLocationAndId();
     expect(repositoryList.getItems()).toEqual([
-      expect.objectContaining({ id: '1', location: 'A' }),
-      expect.objectContaining({ id: '3', location: 'A' }),
-      expect.objectContaining({ id: '2', location: 'B' }),
+      expect.objectContaining({id: '1', location: 'A'}),
+      expect.objectContaining({id: '3', location: 'A'}),
+      expect.objectContaining({id: '2', location: 'B'}),
     ]);
   });
 
   test('should filter repositories by excluding specified IDs', () => {
-    const filteredRepositories = repositoryList.filterByIds(['1', '3']);
+    const repositoryToFilter = {
+      id: '2', location: 'B',
+      title: '',
+      type: undefined,
+      sesameType: undefined,
+      uri: '',
+      externalUrl: '',
+      state: undefined,
+      local: undefined,
+      readable: undefined,
+      writable: undefined,
+      unsupported: undefined,
+      copy: function (): Repository {
+        throw new Error('Function not implemented.');
+      }
+    };
+    const filteredRepositories = repositoryList.filterByRepository([repositoryToFilter]);
+    expect(filteredRepositories).toHaveLength(2);
+    expect(filteredRepositories).not.toContain(repositoryToFilter);
     expect(filteredRepositories).toEqual([
-      expect.objectContaining({ id: '2', location: 'B' }),
+      expect.objectContaining({id: '1', location: 'A'}),
+      expect.objectContaining({id: '3', location: 'A'}),
     ]);
   });
 });
