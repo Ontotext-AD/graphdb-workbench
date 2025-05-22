@@ -104,7 +104,7 @@
                   ng-hide="isSystemRepository()"></rzslider>
     </div>
     <div class='explore_results'>
-		<div class="top-offset alert alert-danger" ng-show="hierarchyError">
+		<div class="top-offset alert alert-danger hierarchy-error" ng-show="hierarchyError">
 			<p>{{'cannot.load.classhierarchy.for.repo.warning' | translate}}
 				<button class="btn btn-link p-0 pull-right"
 						gdb-tooltip="{{'reload.diagram.tooltip' | translate}}"
@@ -116,7 +116,7 @@
 			<p>{{hierarchyError}}</p>
 
 		</div>
-        <div class="top-offset row" ng-show="getActiveRepositoryNoError() && !hierarchyError && !hasClassHierarchy() && !isSystemRepository() && isAllGraphsSelected()">
+        <div class="top-offset row no-hierarchy-error" ng-show="getActiveRepositoryNoError() && !hierarchyError && !hasClassHierarchy() && !isSystemRepository() && isAllGraphsSelected()">
             <p class="alert alert-warning">{{'no.classhierarchy.for.repo.warning' | translate}}</p>
         </div>
         <div class="top-offset row" ng-show="getActiveRepositoryNoError() && !hierarchyError && !hasClassHierarchy() && !isSystemRepository() && !isAllGraphsSelected()">
@@ -124,6 +124,7 @@
         </div>
 
         <rdf-class-hierarchy
+				class="rdf-class-hierarchy"
                 class-hierarchy-data="classHierarchyData"
                 flattened-class-names="flattenedClassNames"
                 selected-class="selectedClass"
