@@ -32,6 +32,20 @@ export class MainMenuSteps {
         MainMenuSteps.getMenuSparql().click();
     }
 
+    static openGraphQlMenu() {
+        return this.clickOnSubmenuTriggerElement('GraphQL');
+    }
+
+    static clickOnEndpointManagement() {
+        this.openGraphQlMenu();
+        this.clickOnSubMenu('Endpoint Management');
+    }
+
+    static clickOnGraphQLPlayground() {
+        this.openGraphQlMenu();
+        this.clickOnSubMenu('GraphQL Playground');
+    }
+
     static getSubmenuAutocomplete() {
         return MainMenuSteps.getSubMenuButton("Autocomplete");
     }
