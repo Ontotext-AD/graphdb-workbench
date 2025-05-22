@@ -77,4 +77,9 @@ export class MainMenuSteps {
         this.clickOnExplore();
         this.getSubMenuButton('Graphs overview').click();
     }
+
+    static clickOnClassHierarchy() {
+        this.clickOnExplore();
+        this.getSubMenuButton('Class hierarchy').click();
+    }
 }
