@@ -110,18 +110,15 @@ describe('Header', () => {
     it('Should show/hide rdf search', () => {
       // Given, I visit the header page, and I am presumably loading the active location
       HeaderSteps.visit();
+      HeaderSteps.loadRepositories();
       HeaderSteps.setActiveLocationLoading();
 
       // Then, I expect to not see the search component and the search icon
       // As, I have not selected a repo, I don't have a repo location and isLoading is true
       HeaderSteps.getSearch().should('not.be.visible');
       // When, I select a repository
-      HeaderSteps.setRepoId();
-      // Then, I should still not see the search
-      HeaderSteps.getSearch().should('not.be.visible');
-      // When, I load the active repo location
-      HeaderSteps.setRepoLocation();
-      // Then, I should still not see the search, because isLoading is true
+      HeaderSteps.setMarvelRepo();
+      // Then, I should not see the search, because isLoading is true
       HeaderSteps.getSearch().should('not.be.visible');
 
 

@@ -5,9 +5,9 @@ describe('ModelList', () => {
 
   beforeEach(() => {
     modelList = new TestModelList([
-      new TestModel(1, 'Item 1'),
-      new TestModel(2, 'Item 2'),
-      new TestModel(3, 'Item 3'),
+      new TestModel(1, 'uno', 'Item 1'),
+      new TestModel(2, 'dos', 'Item 2'),
+      new TestModel(3, 'tres', 'Item 3'),
     ]);
   });
 
@@ -50,25 +50,14 @@ describe('ModelList', () => {
   test('isEmpty should return false if there are items', () => {
     expect(modelList.isEmpty()).toBe(false);
   });
-
-  test('createIdFilter should filter out items with specified ids', () => {
-    const idFilter = modelList.getIdFilter([1, 3]);
-    const filteredItems = modelList.filter(idFilter);
-    expect(filteredItems).toHaveLength(1);
-    expect(filteredItems[0].id).toBe(2);
-  });
 });
 
 class TestModel {
-  constructor(public id: number, public name: string) {}
+  constructor(public id: number, public location: string, public name: string) {}
 }
 
 class TestModelList extends ModelList<TestModel> {
   constructor(items: TestModel[] = []) {
     super(items);
-  }
-
-  public getIdFilter(ids: number[]): (item: TestModel) => boolean {
-    return this.createIdFilter(ids);
   }
 }

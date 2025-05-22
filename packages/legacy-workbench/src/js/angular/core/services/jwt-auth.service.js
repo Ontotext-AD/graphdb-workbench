@@ -93,12 +93,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             const that = this;
 
             const getActiveRepositoryObjectFromStorage = function() {
-                const repositoryStorageService = ServiceProvider.get(RepositoryStorageService);
-                const repositoryContextService = ServiceProvider.get(RepositoryContextService);
-                return {
-                    id: repositoryStorageService.get(repositoryContextService.SELECTED_REPOSITORY_ID).getValueOrDefault(''),
-                    location: repositoryStorageService.get(repositoryContextService.REPOSITORY_LOCATION).getValueOrDefault('')
-                };
+                return ServiceProvider.get(RepositoryStorageService).getRepositoryReference();
             };
 
             /**
@@ -313,15 +308,13 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     $rootScope.deniedPermissions = {};
                     this.securityInitialized = true;
 
-                    const repositoryStorageService = ServiceProvider.get(RepositoryStorageService);
-                    const repositoryContextService = ServiceProvider.get(RepositoryContextService);
                     const selectedRepo = getActiveRepositoryObjectFromStorage();
 
                     if (!jwtAuth.canReadRepo(selectedRepo)) {
                         // if the current repo is unreadable by the currently logged-in user (or free access user)
                         // we unset the repository
-                        repositoryStorageService.remove(repositoryContextService.SELECTED_REPOSITORY_ID);
-                        repositoryStorageService.remove(repositoryContextService.REPOSITORY_LOCATION);
+                        const repositoryContextService = ServiceProvider.get(RepositoryContextService);
+                        repositoryContextService.updateSelectedRepository(undefined);
                         // reset denied permissions (different repo, different rights)
                         $rootScope.deniedPermissions = {};
                     }

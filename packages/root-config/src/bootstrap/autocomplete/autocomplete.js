@@ -2,8 +2,7 @@ import {
   ServiceProvider,
   AutocompleteService,
   AutocompleteContextService,
-  RepositoryStorageService,
-  RepositoryContextService
+  RepositoryStorageService
 } from '@ontotext/workbench-api';
 
 /**
@@ -11,10 +10,11 @@ import {
  * Gets the current autocomplete status from the backend and updates the context with the value.
  * If there is no selected repository, the request will not be made.
  */
+// TODO: Consider refactoring the code, adding a subscription to the selected repository change event, and updating the autocomplete status.
 const isAutocompleteEnabled = () => {
-  const repositoryIdSelector = ServiceProvider.get(RepositoryContextService).SELECTED_REPOSITORY_ID;
-  const currentRepository = ServiceProvider.get(RepositoryStorageService).get(repositoryIdSelector).getValue();
-  if (!currentRepository) {
+  const currentRepository = ServiceProvider.get(RepositoryStorageService).getRepositoryReference();
+
+  if (!currentRepository.id) {
     return Promise.resolve();
   }
   return ServiceProvider.get(AutocompleteService).isAutocompleteEnabled()
