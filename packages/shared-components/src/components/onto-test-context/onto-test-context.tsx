@@ -19,11 +19,10 @@ import {
   ToastMessage,
   EventEmitter,
   CREATE_TOAST_EVENT,
-  RepositoryLocation,
   RepositoryLocationContextService,
   AutocompleteContextService,
   NamespacesContextService,
-  NamespaceMap
+  NamespaceMap, RepositoryReference
 } from '@ontotext/workbench-api';
 import en from '../../assets/i18n/en.json';
 import fr from '../../assets/i18n/fr.json';
@@ -158,27 +157,9 @@ export class OntoTestContext {
     return Promise.resolve();
   }
 
-  /**
-   * Updates the selected repository ID in the application context to navigate to operations status summary.
-   *
-   * @param repoId - The ID of the repository to select for viewing operations status summary.
-   * @returns A Promise that resolves when the repository ID has been successfully updated.
-   */
   @Method()
-  updateSelectedRepositoryId(repoId: string): Promise<void> {
-    ServiceProvider.get(RepositoryContextService).updateSelectedRepositoryId(repoId);
-    return Promise.resolve();
-  }
-  /**
-   * Updates the active repository location in the application context.
-   *
-   * @param repositoryLocation - The RepositoryLocation object containing location information
-   *                             for the repository to be set as active.
-   * @returns A Promise that resolves when the repository location update is complete.
-   */
-  @Method()
-  updateRepositoryLocation(repositoryLocation: RepositoryLocation): Promise<void> {
-    ServiceProvider.get(RepositoryLocationContextService).updateActiveRepositoryLocation(repositoryLocation);
+  updateSelectedRepository(repositoryReference: RepositoryReference): Promise<void> {
+    ServiceProvider.get(RepositoryContextService).updateSelectedRepository(repositoryReference);
     return Promise.resolve();
   }
 

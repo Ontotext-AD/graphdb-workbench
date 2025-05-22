@@ -323,18 +323,11 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
         };
 
         this.getActiveRepositoryObjectFromStorage = function() {
-            const repositoryStorageService = ServiceProvider.get(RepositoryStorageService);
-            const repositoryContextService = ServiceProvider.get(RepositoryContextService);
-            return {
-              id: repositoryStorageService.get(repositoryContextService.SELECTED_REPOSITORY_ID).getValueOrDefault(''),
-              location: repositoryStorageService.get(repositoryContextService.REPOSITORY_LOCATION).getValueOrDefault('')
-            };
+            return ServiceProvider.get(RepositoryStorageService).getRepositoryReference();
         };
 
         this.getActiveRepository = function () {
-            const repositoryStorageService = ServiceProvider.get(RepositoryStorageService);
-            const repositoryContextService = ServiceProvider.get(RepositoryContextService);
-            return repositoryStorageService.get(repositoryContextService.SELECTED_REPOSITORY_ID).getValueOrDefault(undefined);
+            return ServiceProvider.get(RepositoryStorageService).getRepositoryReference().id;
         };
 
         this.getActiveRepositoryObject = function () {
@@ -402,18 +395,9 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
             const eventData = {oldRepository: this.repository, newRepository: repo, cancel: false};
             eventEmitterService.emit('repositoryWillChangeEvent', eventData, (eventData) => {
                 if (!eventData.cancel) {
-                    const repositoryStorageService = ServiceProvider.get(RepositoryStorageService);
                     const repositoryContextService = ServiceProvider.get(RepositoryContextService);
-                    if (repo) {
-                        // this will update the values in the local storage and trigger context change for other opened tabs
-                        repositoryStorageService.set(repositoryContextService.SELECTED_REPOSITORY_ID, repo.id);
-                        repositoryStorageService.set(repositoryContextService.REPOSITORY_LOCATION, repo.location);
-                        // trigger context change for the current tab
-                        repositoryContextService.updateRepositoryIdAndLocation(repo.id, repo.location);
-                    } else {
-                        repositoryStorageService.remove(repositoryContextService.SELECTED_REPOSITORY_ID);
-                        repositoryStorageService.remove(repositoryContextService.REPOSITORY_LOCATION);
-                    }
+                    // this will update the values in the local storage and trigger context change for other opened tabs
+                    repositoryContextService.updateSelectedRepository(repo);
                     this.setRepositoryHeaders(repo);
                     $rootScope.$broadcast('repositoryIsSet', {newRepo: true});
 

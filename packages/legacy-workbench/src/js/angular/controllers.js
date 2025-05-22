@@ -121,8 +121,8 @@ function homeCtrl($scope,
     // =================================
     const subscriptions = [];
 
-    const onSelectedRepositoryIdUpdated = (repositoryId) => {
-        const selectedRepositoryId = repositoryId || $repositories.getActiveRepository();
+    const onSelectedRepositoryUpdated = (repository) => {
+        const selectedRepositoryId = repository?.id || $repositories.getActiveRepository();
 
         // Don't call API, if no repo ID, or with GQL read-only or write rights
         if (!selectedRepositoryId || $jwtAuth.hasGraphqlRightsOverCurrentRepo()) {
@@ -144,7 +144,7 @@ function homeCtrl($scope,
         $scope.isAutocompleteEnabled = autocompleteEnabled;
     };
 
-    subscriptions.push(ServiceProvider.get(RepositoryContextService).onSelectedRepositoryIdChanged(onSelectedRepositoryIdUpdated));
+    subscriptions.push(ServiceProvider.get(RepositoryContextService).onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
 
     $scope.$on('$destroy', () => subscriptions.forEach((subscription) => subscription()));
@@ -1107,8 +1107,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     // the new repository ID in the local storage. Local storage change event is handled by a central handler
     // LocalStorageSubscriptionHandlerService in the api module which triggers the change for the respective context
     // properties.
-    const onSelectedRepositoryIdChangedSubscription = ServiceProvider.get(RepositoryContextService)
-      .onSelectedRepositoryIdChanged((repositoryId) => {
+    const onSelectedRepositoryChangedSubscription = ServiceProvider.get(RepositoryContextService)
+      .onSelectedRepositoryChanged((repositoryId) => {
         onRepositoriesChanged();
       });
 
@@ -1120,7 +1120,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     };
 
     $scope.$on('$destroy', () => {
-      onSelectedRepositoryIdChangedSubscription();
+      onSelectedRepositoryChangedSubscription();
       document.removeEventListener('click', closeActiveRepoPopoverEventHandler);
       window.removeEventListener('storage', localStoreChangeHandler);
       $scope.cancelPopoverOpen();
