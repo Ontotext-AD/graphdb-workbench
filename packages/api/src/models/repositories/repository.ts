@@ -1,11 +1,12 @@
 import {RepositoryState} from './repository-state';
 import {RepositoryType} from './repository-type';
-import {Model} from '../common/model';
+import {Model} from '../common';
+import {RepositoryReference} from './repository-reference';
 
 /**
  * Holds repository information, such as name, type, state, and other related fields.
  */
-export class Repository extends Model<Repository> {
+export class Repository extends Model<Repository> implements RepositoryReference {
   id: string;
   title: string;
   type: RepositoryType | undefined;

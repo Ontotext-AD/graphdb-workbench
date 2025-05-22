@@ -9,7 +9,7 @@ describe('Expand results over owl:sameAs', () => {
 
     beforeEach(() => {
         repositoryId = 'sparql-editor-' + Date.now();
-        cy.setLocalStorage("ontotext.gdb.repository.selectedRepositoryId", repositoryId);
+        cy.presetRepository(repositoryId);
         RepositoriesStub.stubOntopRepository(repositoryId);
         RepositoriesStub.stubNameSpaces(repositoryId);
         AutocompleteStubs.stubAutocompleteEnabled(false);

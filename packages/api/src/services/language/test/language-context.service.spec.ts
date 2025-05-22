@@ -7,7 +7,7 @@ import {LanguageConfig, TranslationBundle} from '../../../models/language';
 describe('LanguageContextService', () => {
   let languageContextService: LanguageContextService;
   let languageStorageServiceMock: jest.Mocked<LanguageStorageService>;
-  let languageServiceMock =
+  let languageServiceMock: jest.Mocked<LanguageService>;
 
   beforeEach(() => {
     languageContextService = new LanguageContextService();
@@ -20,6 +20,7 @@ describe('LanguageContextService', () => {
       set: jest.fn(),
     } as unknown as jest.Mocked<LanguageStorageService>;
 
+    // @ts-expect-error the implementation expects a return in every case, but for test purposes we do not need to
     jest.spyOn(ServiceProvider, 'get').mockImplementation((param) => {
       if (param === LanguageStorageService) {
         return languageStorageServiceMock;

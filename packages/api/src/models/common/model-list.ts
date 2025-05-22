@@ -108,14 +108,4 @@ export class ModelList<T> extends Model<T> {
       this.items.splice(index, 1);
     }
   }
-
-  /**
-   * Creates a filter function to include only objects with matching IDs.
-   *
-   * @param ids - An array of IDs to filter by.
-   * @returns A filter function that returns `true` for objects with an `id` property matching any of the provided IDs.
-   */
-  protected createIdFilter<T extends { id: string | number }>(ids: (string | number)[]): (item: T) => boolean {
-    return (item: T) => !ids.includes(item.id);
-  }
 }
