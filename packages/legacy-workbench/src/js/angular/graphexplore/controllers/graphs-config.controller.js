@@ -462,12 +462,12 @@ function GraphConfigCtrl(
         $scope.isAutocompleteEnabled = autocompleteEnabled;
     };
 
-    const onSelectedRepositoryIdUpdated = (repositoryId) => {
-        if (!repositoryId) {
+    const onSelectedRepositoryUpdated = (repository) => {
+        if (!repository) {
             $scope.repositoryNamespaces = new NamespacesListModel();
             return;
         }
-        RDF4JRepositoriesService.getNamespaces(repositoryId)
+        RDF4JRepositoriesService.getNamespaces(repository.id)
             .then((repositoryNamespaces) => {
                 $scope.repositoryNamespaces = repositoryNamespaces;
             })
@@ -643,7 +643,7 @@ function GraphConfigCtrl(
     // =========================
 
     const subscriptions = [];
-    subscriptions.push(ServiceProvider.get(RepositoryContextService).onSelectedRepositoryIdChanged(onSelectedRepositoryIdUpdated));
+    subscriptions.push(ServiceProvider.get(RepositoryContextService).onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
     subscriptions.push($scope.$on('$locationChangeStart', locationChangedHandler));
     subscriptions.push($scope.$on('$destroy', unsubscribeListeners));

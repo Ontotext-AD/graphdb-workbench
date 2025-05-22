@@ -317,12 +317,12 @@ function SimilarityCtrl(
     };
 
 
-    const onSelectedRepositoryIdUpdated = (repositoryId) => {
-        if (!repositoryId) {
+    const onSelectedRepositoryUpdated = (repository) => {
+        if (!repository) {
             $scope.repositoryNamespaces = new NamespacesListModel();
             return;
         }
-        RDF4JRepositoriesService.getNamespaces(repositoryId)
+        RDF4JRepositoriesService.getNamespaces(repository.id)
             .then((repositoryNamespaces) => {
                 $scope.repositoryNamespaces = repositoryNamespaces;
             })
@@ -365,7 +365,7 @@ function SimilarityCtrl(
     };
 
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
-    subscriptions.push(ServiceProvider.get(RepositoryContextService).onSelectedRepositoryIdChanged(onSelectedRepositoryIdUpdated));
+    subscriptions.push(ServiceProvider.get(RepositoryContextService).onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
 
     const searchTypeChangeHandler = () => {
         $scope.empty = true;

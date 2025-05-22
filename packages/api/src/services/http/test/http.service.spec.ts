@@ -61,6 +61,7 @@ describe('HttpService', () => {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json, text/plain, */*',
+        'X-Requested-With': 'XMLHttpRequest'
       },
       body: null,
     });
@@ -79,6 +80,7 @@ describe('HttpService', () => {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json, text/plain, */*',
+        'X-Requested-With': 'XMLHttpRequest'
       },
       body: JSON.stringify({ name: 'Test' }),
     });
@@ -97,6 +99,7 @@ describe('HttpService', () => {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json, text/plain, */*',
+        'X-Requested-With': 'XMLHttpRequest'
       },
       body: JSON.stringify({ name: 'Updated' }),
     });
@@ -115,6 +118,7 @@ describe('HttpService', () => {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json, text/plain, */*',
+        'X-Requested-With': 'XMLHttpRequest'
       },
       body: null,
     });
@@ -133,6 +137,7 @@ describe('HttpService', () => {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json, text/plain, */*',
+        'X-Requested-With': 'XMLHttpRequest'
       },
       body: JSON.stringify({name: 'Updated'})
     });

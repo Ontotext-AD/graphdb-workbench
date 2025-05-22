@@ -53,7 +53,9 @@ function RepositoriesRestService($http) {
         return $http.get(`${REPOSITORIES_ENDPOINT}/all`, {
             params: {
                 location: location
-            }
+            },
+            // Added so that location changes would not cancel the request
+            noCancelOnRouteChange: true
         });
     }
 

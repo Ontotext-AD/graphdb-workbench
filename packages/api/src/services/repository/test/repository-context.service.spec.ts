@@ -8,17 +8,19 @@ describe('RepositoryContextService', () => {
     repositoryContextService = new RepositoryContextService();
   });
 
-  test('Should call the "onSelectedRepositoryChangedCallBackFunction" when the selected repository changes.', () => {
+  test('Should call the "onSelectedRepositoryChangedCallBackFunction" when the selected repository changes.', async () => {
+    const newRepositories = new RepositoryList([createRepositoryInstance('repo-one-id', 'under the rainbow')]);
+    repositoryContextService.updateRepositoryList(newRepositories);
     const onSelectedRepositoryChangedCallBackFunction = jest.fn();
-    const newRepository = createRepositoryInstance('repo-one');
+    const newRepository = createRepositoryInstance('repo-one-id', 'under the rainbow');
 
     // When I register a callback function for selected repository changes,
     repositoryContextService.onSelectedRepositoryChanged(onSelectedRepositoryChangedCallBackFunction);
     // and the selected repository is changed,
-    repositoryContextService.updateSelectedRepository(newRepository);
+    await repositoryContextService.updateSelectedRepository(newRepository);
 
     // Then I expect the callback function to be called with the passed repository,
-    expect(onSelectedRepositoryChangedCallBackFunction).toHaveBeenLastCalledWith(newRepository);
+    expect(onSelectedRepositoryChangedCallBackFunction).toHaveBeenLastCalledWith(expect.objectContaining(newRepository));
     // but the repository should be a different instance.
     expect(onSelectedRepositoryChangedCallBackFunction.mock.lastCall[0]).not.toBe(newRepository);
   });
@@ -55,34 +57,37 @@ describe('RepositoryContextService', () => {
     expect(onRepositoriesChangedCallbackFunction.mock.lastCall[0]).not.toBe(newRepositories);
   });
 
-  test('Should call the callback function when the selected repository ID changes.', () => {
+  test('Should call the callback function when the selected repository.', async () => {
+    const newRepositories = new RepositoryList([createRepositoryInstance('repo-one-id', 'under the rainbow')]);
+    repositoryContextService.updateRepositoryList(newRepositories);
+
     const onSelectedRepositoryIdChangedCallbackFunction = jest.fn();
-    const newRepositoryId = 'repo-one-id';
+    const newRepository = createRepositoryInstance('repo-one-id', 'under the rainbow');
 
-    repositoryContextService.onSelectedRepositoryIdChanged(onSelectedRepositoryIdChangedCallbackFunction);
-    repositoryContextService.updateSelectedRepositoryId(newRepositoryId);
+    repositoryContextService.onSelectedRepositoryChanged(onSelectedRepositoryIdChangedCallbackFunction);
+    await repositoryContextService.updateSelectedRepository(newRepository);
 
-    expect(onSelectedRepositoryIdChangedCallbackFunction).toHaveBeenLastCalledWith(newRepositoryId);
+    // First time is on the subscription
+    expect(onSelectedRepositoryIdChangedCallbackFunction).toHaveBeenCalledTimes(2);
+    expect(onSelectedRepositoryIdChangedCallbackFunction).toHaveBeenLastCalledWith(expect.objectContaining(newRepository));
   });
 
-  test('Should update the selected repository and repository ID if provided.', () => {
+  test('Should update the selected repository if provided.', async () => {
     const updateContextPropertySpy = jest.spyOn(repositoryContextService, 'updateContextProperty');
-    const updatedRepository = new Repository({
-      id: 'repo-id'
-    });
+    const newRepositories = new RepositoryList([createRepositoryInstance('repo-one-id', 'under the rainbow')]);
+    repositoryContextService.updateRepositoryList(newRepositories);
+    const updatedRepository = createRepositoryInstance('repo-one-id', 'under the rainbow');
 
-    repositoryContextService.updateSelectedRepository(updatedRepository);
+    await repositoryContextService.updateSelectedRepository(updatedRepository);
 
-    expect(updateContextPropertySpy).toHaveBeenCalledWith(repositoryContextService.SELECTED_REPOSITORY_ID, 'repo-id');
-    expect(updateContextPropertySpy).toHaveBeenCalledWith(repositoryContextService.SELECTED_REPOSITORY, updatedRepository);
+    expect(updateContextPropertySpy).toHaveBeenCalledWith(repositoryContextService.SELECTED_REPOSITORY, expect.objectContaining(updatedRepository));
   });
 
-  test('Should not update the selected repository ID if repository instance is not provided.', () => {
+  test('Should update the selected repository, by clearing it from storage if undefined is provided.', async () => {
     const updateContextPropertySpy = jest.spyOn(repositoryContextService, 'updateContextProperty');
 
-    repositoryContextService.updateSelectedRepository(undefined);
+    await repositoryContextService.updateSelectedRepository(undefined);
 
-    expect(updateContextPropertySpy).not.toHaveBeenCalledWith(repositoryContextService.SELECTED_REPOSITORY_ID, undefined);
     expect(updateContextPropertySpy).toHaveBeenCalledWith(repositoryContextService.SELECTED_REPOSITORY, undefined);
   });
 

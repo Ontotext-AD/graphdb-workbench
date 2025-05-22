@@ -35,6 +35,9 @@ function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, 
 
     $scope.pluginName = 'sparql-template';
 
+    // =========================
+    // Public functions
+    // =========================
     $scope.setPluginIsActive = function (isPluginActive) {
         $scope.pluginIsActive = isPluginActive;
     };
@@ -57,12 +60,6 @@ function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, 
         }
     };
 
-    $scope.$watch(function () {
-        return $repositories.getActiveRepository();
-    }, function () {
-        $scope.getSparqlTemplates();
-    });
-
     $scope.deleteTemplate = function (templateID) {
         ModalService.openSimpleModal({
             title: $translate.instant('common.warning'),
@@ -79,6 +76,22 @@ function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, 
                 });
             });
     };
+
+    // =========================
+    // Subscriptions handlers
+    // =========================
+    const removeAllListeners = () => {
+        window.removeEventListener('beforeunload', beforeunloadHandler);
+        subscriptions.forEach((subscription) => subscription());
+    };
+
+    const subscriptions = [];
+
+    const repositoryContextService = ServiceProvider.get(RepositoryContextService);
+    const repositoryChangeSubscription = repositoryContextService.onSelectedRepositoryChanged(() => $scope.getSparqlTemplates());
+
+    subscriptions.push(repositoryChangeSubscription);
+    subscriptions.push($scope.$on('$destroy', removeAllListeners));
 }
 
 SparqlTemplateCreateCtrl.$inject = [
@@ -493,7 +506,7 @@ function SparqlTemplateCreateCtrl(
     const subscriptions = [];
 
     const repositoryContextService = ServiceProvider.get(RepositoryContextService);
-    const repositoryChangeSubscription = repositoryContextService.onSelectedRepositoryIdChanged(repositoryChangedHandler, repositoryWillChangeHandler)
+    const repositoryChangeSubscription = repositoryContextService.onSelectedRepositoryChanged(repositoryChangedHandler, repositoryWillChangeHandler)
 
     subscriptions.push(repositoryChangeSubscription);
     subscriptions.push($scope.$on('queryChanged', queryChangeHandler));

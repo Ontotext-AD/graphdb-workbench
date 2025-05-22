@@ -321,12 +321,12 @@ function GraphsVisualizationsCtrl(
         return namespacePrefix ? (namespacePrefix.prefix + ":" + iri.substring(namespacePrefix.uri.length)) : iri;
     };
 
-    const onSelectedRepositoryIdUpdated = (repositoryId) => {
-        if (!repositoryId) {
+    const onSelectedRepositoryUpdated = (repository) => {
+        if (!repository) {
             $scope.repositoryNamespaces = new NamespacesListModel();
             return;
         }
-        RDF4JRepositoriesService.getNamespaces(repositoryId)
+        RDF4JRepositoriesService.getNamespaces(repository.id)
             .then((repositoryNamespaces) => {
                 $scope.repositoryNamespaces = repositoryNamespaces;
                 $scope.namespaces = repositoryNamespaces.namespaces;
@@ -354,7 +354,7 @@ function GraphsVisualizationsCtrl(
     }));
 
     subscriptions.push(WorkbenchContextService.onAutocompleteEnabledUpdated(onAutocompleteEnabledUpdated));
-    subscriptions.push(ServiceProvider.get(RepositoryContextService).onSelectedRepositoryIdChanged(onSelectedRepositoryIdUpdated));
+    subscriptions.push(ServiceProvider.get(RepositoryContextService).onSelectedRepositoryChanged(onSelectedRepositoryUpdated));
 
     subscriptions.push($scope.$on('repositoryIsSet', function (event, args) {
         // New repo set from dropdown, clear init state

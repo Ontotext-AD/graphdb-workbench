@@ -1,8 +1,7 @@
 import {HttpRequest} from '../../models/http/http-request';
 import {HttpInterceptor} from '../../models/interceptor/http-interceptor';
 import {AuthenticationStorageService} from '../../services/security/authentication-storage.service';
-import {ServiceProvider} from '../../providers/service/service.provider';
-import {RepositoryContextService} from '../../services/repository/repository-context.service';
+import {ServiceProvider} from '../../providers';
 import {RepositoryStorageService} from '../../services/repository/repository-storage.service';
 import {SecurityContextService} from '../../services/security/security-context.service';
 import {OpenIdConfig} from '../../models/security/openid-config';
@@ -14,7 +13,6 @@ import {OpenIdConfig} from '../../models/security/openid-config';
 export class AuthRequestInterceptor extends HttpInterceptor<HttpRequest> {
   private readonly authStorage = ServiceProvider.get(AuthenticationStorageService);
   private readonly repositoryStorageService = ServiceProvider.get(RepositoryStorageService);
-  private readonly repositoryContextService = ServiceProvider.get(RepositoryContextService);
   private readonly securityContextService = ServiceProvider.get(SecurityContextService);
 
   /**
@@ -36,15 +34,19 @@ export class AuthRequestInterceptor extends HttpInterceptor<HttpRequest> {
       request.headers.Authorization = authToken;
     }
 
-    const repositoryId = this.repositoryStorageService.get(this.repositoryContextService.SELECTED_REPOSITORY_ID).getValue();
-    if (repositoryId) {
-      request.headers['X-GraphDB-Repository'] = repositoryId;
-    }
+    // There are requests that need to be sent to a repository different from the currently selected one.
+    // For example, in the TTYG functionality, when creating or editing an agent, there is a check to see
+    // if the autocomplete is enabled for the selected agent repository.
+    // So we first check if repository headers are provided before setting them in local storage.
+    if (!request.headers['X-GraphDB-Repository']) {
+      const repositoryReference = this.repositoryStorageService.getRepositoryReference();
+      if (repositoryReference?.id) {
+        request.headers['X-GraphDB-Repository'] = repositoryReference.id;
+      }
 
-    const repositoryLocation = this.repositoryStorageService.get(this.repositoryContextService.REPOSITORY_LOCATION).getValue();
-
-    if (repositoryLocation) {
-      request.headers['X-GraphDB-Repository-Location'] = repositoryLocation;
+      if (repositoryReference?.location) {
+        request.headers['X-GraphDB-Repository-Location'] = repositoryReference.location;
+      }
     }
     return Promise.resolve(request);
   }
