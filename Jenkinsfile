@@ -1,4 +1,4 @@
-@Library('ontotext-platform@v0.1.49') _
+@Library('ontotext-platform@v0.1.50') _
 pipeline {
     agent {
         label 'aws-large'
