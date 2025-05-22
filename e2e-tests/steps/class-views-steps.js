@@ -21,6 +21,14 @@ class ClassViewsSteps {
         });
     }
 
+    static getClassViewsComponent() {
+        return cy.get('.explore');
+    }
+
+    static getExploreResults() {
+        return this.getClassViewsComponent().find('.explore_results');
+    }
+
     static getClassChart() {
         return cy.get('#classChart');
     }
@@ -185,6 +193,14 @@ class ClassViewsSteps {
 
     static reloadDiagram() {
         cy.get('.reload-diagram-btn').click();
+    }
+
+    static getNoHierarchyErrorElement() {
+        return this.getExploreResults().find('.no-hierarchy-error');
+    }
+
+    static getRDFClassHierarchy() {
+        return this.getExploreResults().find('.rdf-class-hierarchy');
     }
 }
 

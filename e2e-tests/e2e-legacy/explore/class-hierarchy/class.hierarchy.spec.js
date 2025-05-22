@@ -1,4 +1,4 @@
-import ClassViewsSteps, {ALL_GRAPHS, GRAPH_FILE, NEWS_GRAPH} from "../../steps/class-views-steps";
+import ClassViewsSteps, {ALL_GRAPHS, GRAPH_FILE, NEWS_GRAPH} from "../../../steps/class-views-steps";
 
 const INITIAL_CLASS_COUNT = 50;
 const CLASS_COUNT_OF_NEWS_GRAPH = 35;
