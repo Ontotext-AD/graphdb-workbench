@@ -20,4 +20,16 @@ export class OperationsNotificationSteps extends BaseSteps {
   static getDropdownButton() {
     return this.getOperationsNotification().find('.operations-statuses-dropdown-toggle');
   }
+
+  static loadRepositories() {
+    cy.get('#load-repositories').click();
+  }
+
+  static setMarvelRepo() {
+    cy.get('#set-marvel-repo').click();
+  }
+
+  static getRepositoryItems() {
+    return cy.get('.onto-repository-selector .repository-selector-dropdown-item');
+  }
 }

@@ -192,22 +192,6 @@ Type: `Promise<void>`
 
 A Promise that resolves when the product information update is complete.
 
-### `updateRepositoryLocation(repositoryLocation: RepositoryLocation) => Promise<void>`
-
-Updates the active repository location in the application context.
-
-#### Parameters
-
-| Name                 | Type                 | Description                                                                                               |
-| -------------------- | -------------------- | --------------------------------------------------------------------------------------------------------- |
-| `repositoryLocation` | `RepositoryLocation` | - The RepositoryLocation object containing location information   for the repository to be set as active. |
-
-#### Returns
-
-Type: `Promise<void>`
-
-A Promise that resolves when the repository location update is complete.
-
 ### `updateRestrictedPage(restrictedPages: Record<string, boolean>) => Promise<void>`
 
 Updates the {@see SecurityContextService} map with <code>restrictedPages</code>.
@@ -224,21 +208,21 @@ Type: `Promise<void>`
 
 
 
-### `updateSelectedRepositoryId(repoId: string) => Promise<void>`
+### `updateSelectedRepository(repositoryReference: RepositoryReference) => Promise<void>`
 
-Updates the selected repository ID in the application context to navigate to operations status summary.
+
 
 #### Parameters
 
-| Name     | Type     | Description                                                                 |
-| -------- | -------- | --------------------------------------------------------------------------- |
-| `repoId` | `string` | - The ID of the repository to select for viewing operations status summary. |
+| Name                  | Type                  | Description |
+| --------------------- | --------------------- | ----------- |
+| `repositoryReference` | `RepositoryReference` |             |
 
 #### Returns
 
 Type: `Promise<void>`
 
-A Promise that resolves when the repository ID has been successfully updated.
+
 
 
 ----------------------------------------------
