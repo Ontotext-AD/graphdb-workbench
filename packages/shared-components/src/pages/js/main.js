@@ -42,16 +42,12 @@ const setSecurityConfig = (config) => {
   testContext.setSecurityConfig(config);
 }
 
-const updateRepoId = (repoId) => {
-  testContext.updateSelectedRepositoryId(repoId);
+const setMarvelRepo = () => {
+  testContext.updateSelectedRepository({id: 'marvel', location: ''});
 }
 
 const updateIsLoadingActiveRepositoryLocation = (isLoading) => {
   testContext.updateIsLoadingActiveRepositoryLocation(isLoading);
-}
-
-const updateActiveRepoLocation = (repositoryLocation) => {
-  testContext.updateRepositoryLocation(repositoryLocation);
 }
 
 const setAutocomplete = (enabled) => {

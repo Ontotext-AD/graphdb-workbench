@@ -41,12 +41,25 @@ export class RepositoryList extends ModelList<Repository> {
   }
 
   /**
-   * Filters the list of repositories by excluding those with the specified ID(s).
+   * Filters the list of repositories by excluding those with the specified ID(s) and LOCATION.
    *
-   * @param repositoryIds - An array of repository IDs to exclude from the filtered result.
+   * @param repositories - An array of repositories to exclude from the filtered result.
    * @returns An array of {@link Repository} objects that do not have any of the specified IDs.
    */
-  filterByIds(repositoryIds: string[]): Repository[] {
-    return super.filter(this.createIdFilter(repositoryIds));
+  filterByRepository(repositories: Repository[]): Repository[] {
+    return super.filter(this.createIdLocationFilter(repositories));
+  }
+
+  /**
+   * Creates a filter function to include only objects with matching `id` and `location`.
+   *
+   * @param itemsToMatch - An array of objects with `id` and `location` to filter by.
+   * @returns A filter function that returns `true` for objects with `id` and `location` matching any of the provided objects.
+   */
+  private createIdLocationFilter<T extends { id: string | number; location: string | number }>(
+    itemsToMatch: { id: string | number; location: string | number }[]
+  ): (item: T) => boolean {
+    return (item: T) =>
+      itemsToMatch.some(match => match.id !== item.id || match.location !== item.location);
   }
 }

@@ -1,3 +1,4 @@
+export * from './repository-reference';
 export * from './repository';
 export * from './repository-list';
 export * from './repository-size-info';

@@ -1,4 +1,5 @@
 import {OperationsNotificationSteps} from "../../steps/operations-notification/operations-notification.steps";
+import {HeaderSteps} from "../../steps/header/header-steps";
 
 const assertGroupCount = (index, textValue) => {
   OperationsNotificationSteps.getHeaderGroups()
@@ -25,9 +26,12 @@ describe('onto-operations-notification', () => {
   });
 
   it('should display operations notification', () => {
-
     // Given, I am on the operations notification page and I have added mock operations
     OperationsNotificationSteps.visit();
+    // simulate repository selection to trigger request for operations
+    OperationsNotificationSteps.loadRepositories();
+    OperationsNotificationSteps.getRepositoryItems().should('have.length', 6);
+    OperationsNotificationSteps.setMarvelRepo();
 
     // Then, I expect to see the operations notification component
     OperationsNotificationSteps.getOperationsNotification().should('exist');
@@ -57,6 +61,10 @@ describe('onto-operations-notification', () => {
   it('should redirect to operation specific href, when clicked', () => {
     // Given, I am on the operations notification page and I have added mock operations
     OperationsNotificationSteps.visit();
+    // simulate repository selection to trigger request for operations
+    OperationsNotificationSteps.loadRepositories();
+    OperationsNotificationSteps.getRepositoryItems().should('have.length', 6);
+    OperationsNotificationSteps.setMarvelRepo();
 
     const operationLinks = ['cluster', 'monitor/backup-and-restore', 'imports', 'monitor/queries', 'monitor/queries'];
 

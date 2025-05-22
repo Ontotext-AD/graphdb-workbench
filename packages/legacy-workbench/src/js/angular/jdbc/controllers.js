@@ -640,7 +640,7 @@ function JdbcCreateCtrl(
     const subscriptions = [];
 
     const repositoryContextService = ServiceProvider.get(RepositoryContextService);
-    const repositoryChangeSubscription = repositoryContextService.onSelectedRepositoryIdChanged(repositoryChangedHandler, repositoryWillChangeHandler)
+    const repositoryChangeSubscription = repositoryContextService.onSelectedRepositoryChanged(repositoryChangedHandler, repositoryWillChangeHandler)
 
     subscriptions.push(repositoryChangeSubscription);
     subscriptions.push($rootScope.$on('$translateChangeSuccess', languageChangedHandler));
