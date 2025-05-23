@@ -164,7 +164,8 @@
   },
   "user_menu": {
     "my_settings": "Mes paramètres",
-    "logout": "Déconnexion"
+    "logout": "Déconnexion",
+    "login": "Se connecter"
   },
   "rdf_search": {
     "labels": {

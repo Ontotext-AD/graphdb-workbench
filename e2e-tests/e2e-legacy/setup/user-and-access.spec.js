@@ -10,7 +10,7 @@ import {LoginSteps} from "../../steps/login-steps";
 /**
  * TODO: Fix me. Broken due to migration (Error: unknown)
  */
-describe.skip('User and Access', () => {
+describe('User and Access', () => {
 
     const PASSWORD = "password";
     const ROLE_USER = "#roleUser";
@@ -371,7 +371,7 @@ describe.skip('User and Access', () => {
         if (isAdmin) {
             UserAndAccessSteps.getUsersTable().should('be.visible');
         } else {
-            UserAndAccessSteps.getError().should('contain',
+            UserAndAccessSteps.getPermissionError().should('contain',
                 'You have no permission to access this functionality with your current credentials.');
         }
     }

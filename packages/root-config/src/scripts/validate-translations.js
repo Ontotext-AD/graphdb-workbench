@@ -1,4 +1,4 @@
-/* eslint-disable no-console, no-undef, quotes */
+/* eslint-disable no-undef, quotes */
 const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');

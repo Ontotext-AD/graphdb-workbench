@@ -1,13 +1,14 @@
 import {HttpInterceptor} from '../models/interceptor/http-interceptor';
 import {HttpRequest} from '../models/http/http-request';
 import {ModelList} from '../models/common';
+import {AuthRequestInterceptor} from './auth/auth-request-interceptor';
 
 /**
  * An array of HTTP request interceptors to be used in the application.
  */
 export const REQUEST_INTERCEPTORS = new ModelList<HttpInterceptor<HttpRequest>>([
   // Request interceptors go here
-  // new AuthRequestInterceptor()
+  new AuthRequestInterceptor()
 ]);
 
 /**

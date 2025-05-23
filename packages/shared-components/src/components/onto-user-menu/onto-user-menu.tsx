@@ -1,5 +1,5 @@
-import {Component, h, Prop, State} from '@stencil/core';
-import {AuthenticatedUser, navigateTo} from '@ontotext/workbench-api';
+import {Component, h, Prop, State, Element} from '@stencil/core';
+import {AuthenticatedUser, AuthenticationService, navigateTo, ServiceProvider} from '@ontotext/workbench-api';
 
 /**
  * This component displays the current user's name and provides options
@@ -16,9 +16,20 @@ export class OntoUserMenu {
   /** Currently authenticated user */
   @Prop() user: AuthenticatedUser;
 
+  /** Reference to host element for outside click detection */
+  @Element() hostElement: HTMLElement;
+
+  connectedCallback() {
+    document.addEventListener('click', this.handleOutsideClick);
+  }
+
+  disconnectedCallback() {
+    document.removeEventListener('click', this.handleOutsideClick);
+  }
+
   render() {
     return (
-      <section class={`onto-user-menu`} onClick={this.toggleDropdown()}>
+      <section class={`onto-user-menu`} onClick={this.toggleDropdown}>
         <button class={`${this.isOpen ? 'open' : ''}`}>
           <i class="fa-solid fa-user"></i>
           <span class="username">{this.user.username}</span>
@@ -29,7 +40,7 @@ export class OntoUserMenu {
               <translate-label onClick={navigateTo('/settings')}
                                labelKey={'user_menu.my_settings'}></translate-label>
             {!this.user.external ?
-                <translate-label onClick={this.logout()}
+                <translate-label onClick={this.logout}
                                  labelKey={'user_menu.logout'}></translate-label> : ''}
           </section> : ''}
       </section>
@@ -38,13 +49,9 @@ export class OntoUserMenu {
 
   /**
    * Log out the current user.
-   *
-   * @returns A function that executes the logout logic.
    */
-  private logout(): () => void {
-    return () => {
-      // TODO
-    }
+  private logout = (): void => {
+    ServiceProvider.get(AuthenticationService).logout();
   }
 
   /**
@@ -52,9 +59,16 @@ export class OntoUserMenu {
    *
    * @returns A function that toggles the `isOpen` state between true and false.
    */
-  private toggleDropdown(): () => void {
-    return () => {
-      this.isOpen = !this.isOpen;
-    };
+  private toggleDropdown = (): void => {
+    this.isOpen = !this.isOpen;
   }
+
+  /**
+   * Closes the dropdown if the user clicks outside the component.
+   */
+  private handleOutsideClick = (event: MouseEvent) => {
+    if (this.isOpen && !this.hostElement.contains(event.target as Node)) {
+      this.isOpen = false;
+    }
+  };
 }

@@ -1,5 +1,5 @@
 import {HttpService} from '../http/http.service';
-import {AuthenticatedUser} from '../../models/security';
+import {AuthenticatedUser, SecurityConfig} from '../../models/security';
 
 /**
  * Service class for handling security-related REST operations.
@@ -19,5 +19,17 @@ export class SecurityRestService extends HttpService {
         appSettings: user.appSettings,
       }
     );
+  }
+
+  /**
+   * Retrieves the full security configuration from the backend.
+   *
+   * Sends a GET request to fetch the application's security-related configuration, including roles, permissions,
+   * and OpenID settings.
+   *
+   * @returns A Promise that resolves with the SecurityConfig object.
+   */
+  getSecurityConfig(): Promise<SecurityConfig> {
+    return this.get(`${this.SECURITY_ENDPOINT}/all`);
   }
 }
