@@ -97,7 +97,9 @@ function TrackingService($window, $jwtAuth, $licenseService, InstallationCookieS
                     return new CookieConsent(undefined, true, true);
                 }
 
-                return CookieConsent.fromJSON(principal.appSettings.COOKIE_CONSENT);
+                return CookieConsent.fromJSON({
+                    policyAccepted: principal.appSettings.COOKIE_CONSENT
+                });
             });
     };
 
