@@ -96,4 +96,9 @@ export class MainMenuSteps {
         this.clickOnExplore();
         this.getSubMenuButton('Class hierarchy').click();
     }
+
+    static clickOnClassRelationships() {
+        this.clickOnExplore();
+        this.getSubMenuButton('Class relationships').click();
+    }
 }
