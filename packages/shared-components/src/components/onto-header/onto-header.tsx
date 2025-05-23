@@ -23,7 +23,7 @@ import {
   NamespacesContextService,
   RepositoryStorageService,
   RepositoryList,
-  Repository, RepositoryService, LanguageService, LanguageContextService, ObjectUtil
+  Repository, RepositoryService, LanguageService, LanguageContextService, ObjectUtil, getCurrentRoute
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 import {HtmlUtil} from '../../utils/html-util';
@@ -40,6 +40,9 @@ import {SelectorItemButton} from "../onto-repository-selector/selector-item";
   styleUrl: 'onto-header.scss'
 })
 export class OntoHeader {
+  // ========================
+  // Services
+  // ========================
   private readonly monitoringService = ServiceProvider.get(MonitoringService);
   private readonly repositoryContextService = ServiceProvider.get(RepositoryContextService);
   private readonly repositoryLocationContextService = ServiceProvider.get(RepositoryLocationContextService);
@@ -54,44 +57,42 @@ export class OntoHeader {
   private readonly UPDATE_ACTIVE_OPERATION_TIME_INTERVAL = 2000;
   private readonly fibonacciGenerator = new FibonacciGenerator();
 
+  // ========================
+  // State
+  // ========================
+  /** The active operations summary for all monitoring operations */
+  @State() activeOperations?: OperationStatusSummary;
+  /** The current license information */
+  @State() license: License;
+  @State() isFreeAccessEnabled: boolean
+  /** Whether the search component should appear */
+  @State() shouldShowSearch: boolean = true;
+  @State() isHomePage = isHomePage();
+  /** The list of repositories in the database. */
+  @State() repositoryList: RepositoryList;
+  @State() currentRoute: string;
+  /** The model of the currently selected repository, if any. */
+  @State() currentRepository: Repository;
+  @State() securityConfig: SecurityConfig;
+
+
+  // ========================
+  // Private
+  // ========================
   private repositoryId?: string;
   private repositoryLocation?: RepositoryLocation;
   private isActiveLocationLoading = false;
   private pollingInterval: number;
   private repositoryItems: DropdownItem<Repository>[] = [];
   private totalTripletsFormatter: Intl.NumberFormat;
-
-
-  /** The active operations summary for all monitoring operations */
-  @State() private activeOperations?: OperationStatusSummary;
-
-  /** The current license information */
-  @State() private license: License;
-
-  /** Menu should appear, when security is enabled and user is authenticated */
-  @State() private showUserMenu: boolean;
-
-  /** Whether the search component should appear */
-  @State() private shouldShowSearch: boolean = true;
-
-  @State() private isHomePage = isHomePage();
-
-  /**
-   * The list of repositories in the database.
-   */
-  @State() private repositoryList: RepositoryList;
-
-  /**
-   * The model of the currently selected repository, if any.
-   */
-  @State() currentRepository: Repository;
-
   /** Array of subscription cleanup functions */
   private readonly subscriptions: SubscriptionList = new SubscriptionList();
   private user: AuthenticatedUser;
-  private securityConfig: SecurityConfig;
   private skipUpdateActiveOperationsTimes = 0;
 
+  // ========================
+  // Lifecycle methods
+  // ========================
   disconnectedCallback(): void {
     this.subscriptions.unsubscribeAll();
     this.stopOperationPolling();
@@ -101,14 +102,8 @@ export class OntoHeader {
     // get the current repository id from the storage
     this.repositoryId = this.repositoryStorageService.get(this.repositoryContextService.SELECTED_REPOSITORY_ID).getValueOrDefault(undefined);
     this.setupTotalRepository();
-    this.subscribeToRepositoryListChanged();
-    this.subscribeToLicenseChange();
-    this.subscribeToRepositoryIdChange();
-    this.subscribeToSecurityContextChange();
-    this.subscribeToActiveRepositoryLocationChange();
-    this.subscribeToActiveRepoLoadingChange();
-    this.subscriptions.add(this.subscribeToLanguageChanged());
-    this.subscribeToNavigationEnd();
+    this.subscribeToEvents();
+    this.currentRoute = getCurrentRoute();
   }
 
   render() {
@@ -128,7 +123,7 @@ export class OntoHeader {
             </onto-operations-notification>
             : ''
           }
-          {Boolean(this.license) && !this.license?.valid ?
+          {this.license &&  !this.license?.valid ?
             <onto-license-alert license={this.license}></onto-license-alert> : ''
           }
           <onto-repository-selector
@@ -138,17 +133,180 @@ export class OntoHeader {
             totalTripletsFormatter={this.totalTripletsFormatter}
             canWriteRepo={this.canWriteRepo}>
           </onto-repository-selector>
-          {this.showUserMenu ? <onto-user-menu user={this.user}></onto-user-menu> : ''}
+          {this.securityConfig?.enabled && this.securityConfig?.userLoggedIn ? <onto-user-menu user={this.user}></onto-user-menu> : ''}
+          {this.securityConfig?.enabled && !this.securityConfig?.userLoggedIn && (this.currentRoute !== 'login') ? <onto-user-login></onto-user-login> : ''}
           <onto-language-selector dropdown-alignment="right"></onto-language-selector>
         </div>
       </Host>
     );
   }
 
+  // ========================
+  // Subscriptions
+  // ========================
+  private subscribeToEvents(): void {
+    this.subscribeToRepositoryListChanged();
+    this.subscribeToLicenseChange();
+    this.subscribeToRepositoryIdChange();
+    this.subscribeToSecurityContextChange();
+    this.subscribeToActiveRepositoryLocationChange();
+    this.subscribeToActiveRepoLoadingChange();
+    this.subscribeToNavigationEnd();
+    this.subscribeToLanguageChanged();
+  }
+
+  private subscribeToRepositoryListChanged(): () => void {
+    return this.repositoryContextService.onRepositoryListChanged((repositories: RepositoryList) => {
+      if (!repositories || !repositories.getItems().length) {
+        this.resetOnMissingRepositories();
+      } else {
+        this.initOnRepositoryListChanged(repositories);
+      }
+    });
+  }
+
+  private subscribeToLicenseChange() {
+    this.subscriptions.add(ServiceProvider.get(LicenseContextService)
+      .onLicenseChanged((license) => {
+        this.license = license;
+      }));
+  }
+
+  private subscribeToRepositoryIdChange() {
+    this.subscriptions.add(
+      this.repositoryContextService.onSelectedRepositoryIdChanged((repositoryId) => {
+        this.repositoryId = repositoryId;
+        this.repositoryId ? this.startOperationPolling() : this.stopOperationPolling();
+        this.shouldShowSearch = this.shouldShowRdfSearch();
+        this.loadNamespaces();
+        this.changeCurrentRepository(this.repositoryId)
+      })
+    );
+  }
+
+  private subscribeToSecurityContextChange() {
+    // TODO: This should be done by the authentication service, when the config and auth user are available synchronously
+    this.subscriptions.add(this.securityContextService.onAuthenticatedUserChanged((user) => {
+      this.user = user;
+    }));
+    this.subscriptions.add(this.securityContextService.onSecurityConfigChanged((config) => {
+      this.securityConfig = config;
+    }));
+  }
+
+  private subscribeToActiveRepositoryLocationChange() {
+    this.subscriptions.add(
+      this.repositoryLocationContextService.onActiveLocationChanged((repositoryLocation) => {
+        this.repositoryLocation = repositoryLocation;
+        this.shouldShowSearch = this.shouldShowRdfSearch();
+      })
+    );
+  }
+
+  private subscribeToActiveRepoLoadingChange() {
+    this.subscriptions.add(
+      this.repositoryLocationContextService.onIsLoadingChanged((isLoading) => {
+        this.isActiveLocationLoading = isLoading;
+        this.shouldShowSearch = this.shouldShowRdfSearch();
+      })
+    );
+  }
+
+  private subscribeToNavigationEnd() {
+    this.subscriptions.add(
+      ServiceProvider.get(EventService).subscribe(
+        EventName.NAVIGATION_END, () => {
+          this.shouldShowSearch = this.shouldShowRdfSearch();
+          this.isHomePage = isHomePage();
+          this.currentRoute = getCurrentRoute();
+        }
+      )
+    );
+  }
+
+  private subscribeToLanguageChanged(): void {
+    this.subscriptions.add(
+      ServiceProvider.get(LanguageContextService)
+        .onSelectedLanguageChanged((language) => this.setupTotalRepository(language))
+    )
+  }
+
+  // ========================
+  // Repository Logic
+  // ========================
+  private resetOnMissingRepositories(): void {
+    this.repositoryItems = [];
+    this.repositoryList = new RepositoryList();
+    this.repositoryId = undefined;
+    this.currentRepository = undefined;
+  }
+
+  private initOnRepositoryListChanged(repositories: RepositoryList): void {
+    this.repositoryList = repositories;
+    const location = '';
+    const repository = repositories.findRepository(this.repositoryId, location);
+    // currently selected repository could be deleted and not in the list at this point
+    this.currentRepository = repository;
+    this.repositoryContextService.updateSelectedRepository(repository);
+    this.repositoryContextService.updateSelectedRepositoryId(this.repositoryId);
+    this.repositoryItems = this.getRepositoriesDropdownItems();
+  }
+
+  private getRepositoriesDropdownItems(): DropdownItem<Repository>[] {
+    if (!this.repositoryList || !this.repositoryList.getItems().length) {
+      return [];
+    }
+    this.repositoryList.sortByLocationAndId();
+    let repositories: Repository[];
+    if (this.currentRepository) {
+      repositories = this.repositoryList.filterByIds([this.currentRepository.id]);
+    } else {
+      repositories = this.repositoryList.getItems();
+    }
+
+    // TODO: GDB-10442 filter if not rights to read repo see jwt-auth.service.js canReadRepo function
+    return repositories
+      .map((repository) => {
+        return new DropdownItem<Repository>()
+          .setName(<SelectorItemButton repository={repository}/>)
+          .setValue(repository)
+          .setDropdownTooltipTrigger('mouseenter focus')
+      });
+  }
+
+  private canWriteRepoInLocation(_repository: Repository): boolean {
+    // TODO: implement the condition when GDB-10442 is ready
+    return true;
+  }
+
+  private canWriteRepo = (repo: Repository) => {
+    return this.canWriteRepoInLocation(repo);
+  };
+
+  private repositorySizeInfoFetcher = (repo: Repository) => {
+    return this.repositoryService.getRepositorySizeInfo(repo);
+  };
+
+  private changeCurrentRepository(newRepositoryId: string): void {
+    this.currentRepository = this.repositoryList.findRepository(newRepositoryId, '');
+    this.repositoryItems = this.getRepositoriesDropdownItems();
+  }
+
+  private loadNamespaces() {
+    if (this.repositoryId) {
+      console.log(this.repositoryId)
+      this.namespacesService.getNamespaces(this.repositoryId)
+        .then((namespaces) => this.namespaceContextService.updateNamespaces(namespaces))
+    }
+  }
+
+  // ========================
+  // Monitoring and pooling
+  // ========================
   private startOperationPolling() {
     clearInterval(this.pollingInterval);
     this.pollingInterval = window.setInterval(() => {
-      if (!this.authenticationService.isAuthenticated(this.securityConfig, this.user)) {
+      if (!this.authenticationService.isAuthenticated()) {
         this.activeOperations = undefined;
       }
 
@@ -176,134 +334,12 @@ export class OntoHeader {
     this.activeOperations = undefined;
   }
 
-  private subscribeToRepositoryListChanged(): () => void {
-    return this.repositoryContextService.onRepositoryListChanged((repositories: RepositoryList) => {
-      if (!repositories || !repositories.getItems().length) {
-        this.resetOnMissingRepositories();
-      } else {
-        this.initOnRepositoryListChanged(repositories);
-      }
-    });
-  }
-
-  private initOnRepositoryListChanged(repositories: RepositoryList): void {
-    this.repositoryList = repositories;
-    const location = '';
-    const repository = repositories.findRepository(this.repositoryId, location);
-    // currently selected repository could be deleted and not in the list at this point
-    this.currentRepository = repository;
-    this.repositoryContextService.updateSelectedRepository(repository);
-    this.repositoryContextService.updateSelectedRepositoryId(this.repositoryId);
-    this.repositoryItems = this.getRepositoriesDropdownItems();
-  }
-
-  private resetOnMissingRepositories(): void {
-    this.repositoryItems = [];
-    this.repositoryList = new RepositoryList();
-    this.repositoryId = undefined;
-    this.currentRepository = undefined;
-  }
-
-  private getRepositoriesDropdownItems(): DropdownItem<Repository>[] {
-    if (!this.repositoryList || !this.repositoryList.getItems().length) {
-      return [];
-    }
-    this.repositoryList.sortByLocationAndId();
-    let repositories: Repository[];
-    if (this.currentRepository) {
-      repositories = this.repositoryList.filterByIds([this.currentRepository.id]);
-    } else {
-      repositories = this.repositoryList.getItems();
-    }
-
-    // TODO: GDB-10442 filter if not rights to read repo see jwt-auth.service.js canReadRepo function
-    return repositories
-      .map((repository) => {
-        return new DropdownItem<Repository>()
-          .setName(<SelectorItemButton repository={repository}/>)
-          .setValue(repository)
-          .setDropdownTooltipTrigger('mouseenter focus')
-      });
-  }
-
-
-  private canWriteRepoInLocation(_repository: Repository): boolean {
-    // TODO: implement the condition when GDB-10442 is ready
-    return true;
-  }
-
-  private canWriteRepo = (repo: Repository) => {
-    return this.canWriteRepoInLocation(repo);
-  };
-
-  private repositorySizeInfoFetcher = (repo: Repository) => {
-    return this.repositoryService.getRepositorySizeInfo(repo);
-  };
-
-  private subscribeToRepositoryIdChange() {
-    this.subscriptions.add(
-      this.repositoryContextService.onSelectedRepositoryIdChanged((repositoryId) => {
-        this.repositoryId = repositoryId;
-        this.repositoryId ? this.startOperationPolling() : this.stopOperationPolling();
-        this.shouldShowSearch = this.shouldShowRdfSearch();
-        this.loadNamespaces();
-        this.changeCurrentRepository(this.repositoryId)
-      })
-    );
-  }
-
+  // ========================
+  // Render logic
+  // ========================
   private shouldShowRdfSearch(): boolean {
     return !!this.repositoryId && !!this.repositoryLocation &&
-      (!this.isActiveLocationLoading || this.isActiveLocationLoading && getPathName() === '/repository');
-  }
-
-  private changeCurrentRepository(newRepositoryId: string): void {
-    this.currentRepository = this.repositoryList.findRepository(newRepositoryId, '');
-    this.repositoryItems = this.getRepositoriesDropdownItems();
-  }
-
-  private subscribeToActiveRepositoryLocationChange() {
-    this.subscriptions.add(
-      this.repositoryLocationContextService.onActiveLocationChanged((repositoryLocation) => {
-        this.repositoryLocation = repositoryLocation;
-        this.shouldShowSearch = this.shouldShowRdfSearch();
-      })
-    );
-  }
-
-  private subscribeToActiveRepoLoadingChange() {
-    this.subscriptions.add(
-      this.repositoryLocationContextService.onIsLoadingChanged((isLoading) => {
-        this.isActiveLocationLoading = isLoading;
-        this.shouldShowSearch = this.shouldShowRdfSearch();
-      })
-    );
-  }
-
-  private subscribeToLicenseChange() {
-    this.subscriptions.add(ServiceProvider.get(LicenseContextService)
-      .onLicenseChanged(license => {
-        this.license = license;
-      }));
-  }
-
-  private subscribeToSecurityContextChange() {
-    // TODO: This should be done by the authentication service, when the config and auth user are available synchronously
-    this.subscriptions.add(this.securityContextService.onAuthenticatedUserChanged((user) => {
-      this.user = user;
-      this.showUserMenu = this.shouldShowUserMenu();
-    }));
-    this.subscriptions.add(this.securityContextService.onSecurityConfigChanged((config) => {
-      this.securityConfig = config;
-      this.showUserMenu = this.shouldShowUserMenu();
-    }));
-  }
-
-  private shouldShowUserMenu() {
-    if (!this.user || !this.securityConfig) {
-      return false;
-    }
-    return this.securityConfig.enabled && this.authenticationService.isAuthenticated(this.securityConfig, this.user);
+      (!this.isActiveLocationLoading || getPathName() === '/repository');
   }
 
   private showViewResourceMessage= (event:MouseEvent) => {
@@ -313,29 +349,9 @@ export class OntoHeader {
     HtmlUtil.focusElement('#search-resource-input-home input');
   }
 
-  private subscribeToNavigationEnd() {
-    this.subscriptions.add(
-      ServiceProvider.get(EventService).subscribe(
-        EventName.NAVIGATION_END, () => {
-          this.shouldShowSearch = this.shouldShowRdfSearch();
-          this.isHomePage = isHomePage();
-        }
-      )
-    );
-  }
-
-  private loadNamespaces() {
-    if (this.repositoryId) {
-      this.namespacesService.getNamespaces(this.repositoryId)
-        .then((namespaces) => this.namespaceContextService.updateNamespaces(namespaces))
-    }
-  }
-
-  private subscribeToLanguageChanged(): () => void {
-    return ServiceProvider.get(LanguageContextService)
-      .onSelectedLanguageChanged((language) => this.setupTotalRepository(language));
-  }
-
+  // ========================
+  // Language, formatting
+  // ========================
   private setupTotalRepository(language?: string): void {
     if (!language) {
       language = this.languageService.getDefaultLanguage();

@@ -25,7 +25,7 @@ describe('Layout', () => {
     NavbarSteps.openSubmenus(setupMenuIndex);
     NavbarSteps.openSubmenus(helpMenuIndex);
     // And, I enable security
-    LayoutSteps.enableSecurity();
+    LayoutSteps.enableSecurityUserLoggedIn();
     // And I set the authenticated user role to admin
     LayoutSteps.setAdminRole();
 
