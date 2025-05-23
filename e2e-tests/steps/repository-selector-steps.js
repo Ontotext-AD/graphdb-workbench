@@ -1,18 +1,18 @@
 export class RepositorySelectorSteps {
 
     static getRepositorySelectorDropdown() {
-        return cy.get('#repositorySelectDropdown');
+        return cy.get('.onto-repository-selector');
     }
 
     static getRepositorySelectorsButton() {
-        return RepositorySelectorSteps.getRepositorySelectorDropdown().find('#btnReposGroup');
+        return RepositorySelectorSteps.getRepositorySelectorDropdown().find('.onto-dropdown-button .selector-button');
     }
     static openRepositorySelectors() {
         RepositorySelectorSteps.getRepositorySelectorsButton().click();
     }
 
     static getRepositorySelectorButton(repositoryId) {
-        return RepositorySelectorSteps.getRepositorySelectorDropdown().find('.dropdown-menu .multiline-text').contains(repositoryId);
+        return RepositorySelectorSteps.getRepositorySelectorDropdown().find('.repository-selector-dropdown-item .repository-id').contains(repositoryId);
     }
 
     static selectRepository(repositoryId) {
