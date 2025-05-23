@@ -157,6 +157,7 @@ pipeline {
     post {
         always {
             script {
+                notifySlack()
                 workspaceCleanup()
             }
         }
@@ -166,6 +167,13 @@ pipeline {
                 sendMail(env.BUILD_USER_EMAIL)
             }
         }
+    }
+}
+
+def notifySlack() {
+    configFileProvider([configFile(fileId: 'notify-slack-script', variable: 'NOTIFY_SLACK_SCRIPT')]) {
+      def scriptContent = readFile(env.NOTIFY_SLACK_SCRIPT)
+      evaluate(scriptContent)
     }
 }
 

@@ -1,18 +1,22 @@
 import {ContextService} from '../context';
 import {ValueChangeCallback} from '../../models/context/value-change-callback';
 import {DeriveContextServiceContract} from '../../models/context/update-context-method';
-import {AuthenticatedUser, RestrictedPages, SecurityConfig} from '../../models/security';
+import {AuthenticatedUser, RestrictedPages, SecurityConfig, OpenIdConfig} from '../../models/security';
 
 type SecurityContextFields = {
   readonly RESTRICTED_PAGES: string
   readonly SECURITY_CONFIG: string;
   readonly AUTHENTICATED_USER: string;
+  readonly AUTH_TOKEN: string;
+  readonly OPEN_ID_CONFIG: string;
 }
 
 type SecurityContextFieldParams = {
   readonly RESTRICTED_PAGES: RestrictedPages;
   readonly SECURITY_CONFIG: SecurityConfig;
   readonly AUTHENTICATED_USER: AuthenticatedUser;
+  readonly AUTH_TOKEN: string;
+  readonly OPEN_ID_CONFIG: OpenIdConfig;
 }
 
 /**
@@ -22,6 +26,8 @@ export class SecurityContextService extends ContextService<SecurityContextFields
   readonly RESTRICTED_PAGES = 'restrictedPages';
   readonly SECURITY_CONFIG = 'securityConfig';
   readonly AUTHENTICATED_USER = 'authenticatedUser';
+  readonly AUTH_TOKEN = 'jwt';
+  readonly OPEN_ID_CONFIG = 'openIdConfig';
 
   /**
    * Retrieves the restricted pages for the user.
@@ -52,6 +58,34 @@ export class SecurityContextService extends ContextService<SecurityContextFields
   }
 
   /**
+   * Subscribes to changes in the authentication token.
+   *
+   * @param callbackFunction - A function to be called when the auth token changes.
+   * @returns A function to unsubscribe from updates.
+   */
+  onAuthTokenChanged(callbackFunction: ValueChangeCallback<string | undefined>): () => void {
+    return this.subscribe(this.AUTH_TOKEN, callbackFunction);
+  }
+
+  /**
+   * Updates the authentication token in the context.
+   *
+   * @param value - The new auth token to store.
+   */
+  updateAuthToken(value: string): void {
+    this.updateContextProperty(this.AUTH_TOKEN, value);
+  }
+
+  /**
+   * Retrieves the authentication token from the context.
+   *
+   * @returns The auth token if available, otherwise undefined.
+   */
+  getAuthToken(): string | undefined {
+    return this.getContextPropertyValue(this.AUTH_TOKEN);
+  }
+
+  /**
    * Updates the security configuration in the context.
    * @param securityConfig - The new security configuration to be set.
    */
@@ -66,6 +100,10 @@ export class SecurityContextService extends ContextService<SecurityContextFields
    */
   onSecurityConfigChanged(callbackFunction: ValueChangeCallback<SecurityConfig | undefined>): () => void {
     return this.subscribe(this.SECURITY_CONFIG, callbackFunction);
+  }
+
+  getSecurityConfig(): SecurityConfig | undefined {
+    return this.getContextPropertyValue(this.SECURITY_CONFIG);
   }
 
   /**
@@ -91,5 +129,23 @@ export class SecurityContextService extends ContextService<SecurityContextFields
    */
   getAuthenticatedUser(): AuthenticatedUser | undefined {
     return this.getContextPropertyValue(this.AUTHENTICATED_USER);
+  }
+
+  /**
+   * Updates the OpenID configuration in the context.
+   *
+   * @param openIdConfig - The new OpenID configuration to set.
+   */
+  updateOpenIdConfig(openIdConfig: OpenIdConfig): void {
+    return this.updateContextProperty(this.OPEN_ID_CONFIG, openIdConfig);
+  }
+
+  /**
+   * Retrieves the OpenID configuration from the context.
+   *
+   * @returns The current OpenID configuration or undefined.
+   */
+  getOpenIdConfig(): OpenIdConfig | undefined {
+    return this.getContextPropertyValue(this.OPEN_ID_CONFIG);
   }
 }

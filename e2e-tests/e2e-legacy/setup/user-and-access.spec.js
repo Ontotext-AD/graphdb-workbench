@@ -10,7 +10,7 @@ import {LoginSteps} from "../../steps/login-steps";
 /**
  * TODO: Fix me. Broken due to migration (Error: unknown)
  */
-describe.skip('User and Access', () => {
+describe('User and Access', () => {
 
     const PASSWORD = "password";
     const ROLE_USER = "#roleUser";
@@ -200,7 +200,8 @@ describe.skip('User and Access', () => {
             assertUserAuths(graphqlUser, {repo: repositoryId3, read: false, write: true, graphql: true});
         });
 
-        it('Should have access to 5 pages when have graphql only rights', () => {
+        // TODO remove skipped flag from all tests after merge of https://github.com/Ontotext-AD/graphdb-workbench/pull/2042
+        it.skip('Should have access to 5 pages when have graphql only rights', () => {
             cy.wait('@getRepositories');
             // WHEN I create a user with read + GraphQL for repository #2
             createUser(graphqlUser, PASSWORD, ROLE_USER, {readWrite: true, graphql: true, repoName: repositoryId1});
@@ -218,7 +219,7 @@ describe.skip('User and Access', () => {
             });
         });
 
-        it('Should not have access endpoints management when have read graphql only rights', () => {
+        it.skip('Should not have access endpoints management when have read graphql only rights', () => {
             cy.wait('@getRepositories');
             // WHEN I create a user with read + GraphQL for repository #2
             createUser(graphqlUser, PASSWORD, ROLE_USER, {read: true, graphql: true, repoName: repositoryId1});
@@ -236,7 +237,7 @@ describe.skip('User and Access', () => {
             });
         });
 
-        it('Should have all access to endpoints management when have REPO_MANAGER role', () => {
+        it.skip('Should have all access to endpoints management when have REPO_MANAGER role', () => {
             cy.wait('@getRepositories');
             createUser(graphqlUser, PASSWORD, ROLE_REPO_MANAGER);
             //enable security
@@ -252,7 +253,7 @@ describe.skip('User and Access', () => {
             });
         });
 
-        it('Can have Free Access and GraphQL working together', () => {
+        it.skip('Can have Free Access and GraphQL working together', () => {
             cy.wait('@getRepositories');
             //enable security
             UserAndAccessSteps.toggleSecurity();
@@ -371,7 +372,7 @@ describe.skip('User and Access', () => {
         if (isAdmin) {
             UserAndAccessSteps.getUsersTable().should('be.visible');
         } else {
-            UserAndAccessSteps.getError().should('contain',
+            UserAndAccessSteps.getPermissionError().should('contain',
                 'You have no permission to access this functionality with your current credentials.');
         }
     }

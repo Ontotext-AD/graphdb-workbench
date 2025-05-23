@@ -10,7 +10,6 @@ export class RepositoryRestService extends HttpService {
   }
 
   getRepositorySizeInfo(repository: Repository): Promise<RepositorySizeInfo> {
-    return fetch(`${RepositoryRestService.REPOSITORIES_ENDPOINT}/${repository.id}/size?location=${encodeURIComponent(repository.location)}`)
-      .then((response) => response.json());
+    return this.get(`${RepositoryRestService.REPOSITORIES_ENDPOINT}/${repository.id}/size?location=${encodeURIComponent(repository.location)}`);
   }
 }

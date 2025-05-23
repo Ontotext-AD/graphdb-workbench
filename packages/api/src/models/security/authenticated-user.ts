@@ -14,12 +14,12 @@ export class AuthenticatedUser extends Model<AuthenticatedUser> {
   authorities: AuthorityList;
   appSettings: AppSettings;
 
-  constructor(data: Partial<AuthenticatedUser>) {
+  constructor(data?: Partial<AuthenticatedUser>) {
     super();
-    this.external = data.external || false;
-    this.username = data.username || '';
-    this.password = data.password || '';
-    this.authorities = MapperProvider.get(AuthorityListMapper).mapToModel(data.authorities);
-    this.appSettings = data.appSettings || {};
+    this.external = data?.external ?? false;
+    this.username = data?.username ?? '';
+    this.password = data?.password ?? '';
+    this.authorities = MapperProvider.get(AuthorityListMapper).mapToModel(data?.authorities);
+    this.appSettings = data?.appSettings ?? {};
   }
 }

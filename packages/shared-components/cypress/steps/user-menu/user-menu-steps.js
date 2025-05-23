@@ -6,7 +6,7 @@ export class UserMenuSteps extends BaseSteps {
   }
 
   static getUserMenu() {
-    return cy.get('.onto-user-menu');
+    return cy.get('.dropdown-toggle-wrapper');
   }
 
   static getDropdown() {

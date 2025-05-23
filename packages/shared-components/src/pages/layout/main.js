@@ -7,9 +7,10 @@ const setUserRole = (role) => {
   });
 };
 
-const setSecurity = (enabled) => {
+const setSecurity = (enabled, userLoggedIn) => {
   setSecurityConfig({
-    enabled: enabled
+    enabled: enabled,
+    userLoggedIn: userLoggedIn
   });
 }
 

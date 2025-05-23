@@ -1,7 +1,9 @@
 import {Service} from '../../providers/service/service';
 import {AuthenticatedUser, Authority, SecurityConfig} from '../../models/security';
 import {ServiceProvider} from '../../providers';
-import {AuthenticationStorageService} from './authentication-storage.service';
+import {EventService} from '../event-service';
+import {Logout} from '../../models/events';
+import {SecurityContextService} from './security-context.service';
 
 /**
  * Service responsible for handling authentication-related operations.
@@ -11,27 +13,30 @@ export class AuthenticationService implements Service {
     return 'Authentication.login from the API';
   }
 
+  /**
+   * Updates security context for logout request.
+   */
+  logout(): void {
+    ServiceProvider.get(EventService).emit(new Logout());
+  }
+
   // TODO: get security config and authenticated user synchronously from context
   /**
    * Checks if the user is authenticated based on the provided configuration and user details.
-   * @param {SecurityConfig} [config] - The security configuration object.
-   * @param {AuthenticatedUser} [user] - The authenticated user object.
    * @returns {boolean} True if the user is authenticated, false otherwise.
    */
-  isAuthenticated(config?: SecurityConfig, user?: AuthenticatedUser): boolean {
-    return !config?.enabled
-      || user?.external
-      // eslint-disable-next-line eqeqeq
-      || ServiceProvider.get(AuthenticationStorageService).getAuthToken().getValue() != null;
+  isAuthenticated(): boolean {
+    const config = this.getSecurityConfig();
+    return !!(config?.enabled && config?.userLoggedIn);
   }
 
   /**
    * Determines if free access is allowed based on the security configuration.
-   * @param {SecurityConfig} [config] - The security configuration object.
    * @returns {boolean | undefined} True if free access is enabled, false or undefined otherwise.
    */
-  hasFreeAccess(config?: SecurityConfig): boolean | undefined {
-    return config?.enabled && config?.freeAccess?.enabled;
+  hasFreeAccess(): boolean | undefined {
+    const config = this.getSecurityConfig();
+    return config?.enabled && config?.freeAccessActive;
   }
 
   /**
@@ -50,5 +55,17 @@ export class AuthenticationService implements Service {
       return false;
     }
     return Authority.IS_AUTHENTICATED_FULLY === role || user?.authorities.hasAuthority(role);
+  }
+
+  /**
+   * Checks if security is enabled.
+   * @returns {boolean} True if security is enabled, false otherwise.
+   */
+  isSecurityEnabled(): boolean {
+    return !!this.getSecurityConfig()?.enabled;
+  }
+
+  private getSecurityConfig(): SecurityConfig | undefined {
+    return ServiceProvider.get(SecurityContextService).getSecurityConfig();
   }
 }
