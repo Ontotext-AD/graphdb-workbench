@@ -186,6 +186,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.productInfo = productInfo;
     $scope.guidePaused = 'true' === LocalStorageAdapter.get(GUIDE_PAUSE);
     $scope.startGuideAfterSecurityInit = true;
+    let licenseIsSet = false;
 
     $scope.hideRdfResourceSearch = false;
     $scope.showRdfResourceSearch = () => {
@@ -975,8 +976,12 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                     setTimeout(() => $scope.getSavedQueries(), 500);
                 });
             $licenseService.checkLicenseStatus()
-                .then(() => TrackingService.applyTrackingConsent())
+                .then(() => {
+                    licenseIsSet = true;
+                    TrackingService.applyTrackingConsent()
+                })
                 .catch((error) => {
+                    licenseIsSet = false;
                     const msg = getError(error.data, error.status);
                     toastr.error(msg, $translate.instant('common.error'));
                 });
@@ -990,6 +995,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     });
 
     $scope.isTrackingAllowed = function () {
+        if (licenseIsSet) {
+            return;
+        }
         return TrackingService.isTrackingAllowed();
     };
 
