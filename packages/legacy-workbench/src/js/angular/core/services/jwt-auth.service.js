@@ -9,7 +9,8 @@ import {
   MapperProvider,
   SecurityContextService,
   SecurityConfigMapper,
-  AuthenticatedUserMapper
+  AuthenticatedUserMapper,
+  OpenidConfigMapper
 } from "@ontotext/workbench-api";
 
 angular.module('graphdb.framework.core.services.jwtauth', [
@@ -120,7 +121,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         // so refresh the principal
                         that.externalAuthUser = false;
                         that.principal = data;
-                        $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.freeAccess);
+                        that.broadcastSecurityInit(that.securityEnabled, true, that.freeAccess)
                         // console.log('previous JWT authentication ok');
                     } else if (that.openIDEnabled && token && token.startsWith('Bearer')) {
                         // The auth was obtained from OpenID, we need to authenticate with the returned user
@@ -149,9 +150,6 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 this.securityInitialized = false;
 
                 SecurityService.getSecurityConfig().then(function (res) {
-                    ServiceProvider.get(SecurityContextService).updateSecurityConfig(
-                      MapperProvider.get(SecurityConfigMapper).mapToModel(res.data)
-                    );
                     that.securityEnabled = res.data.enabled;
                     that.externalAuth = res.data.hasExternalAuth;
                     that.authImplementation = res.data.authImplementation;
@@ -211,18 +209,12 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                                 authorities: overrideAuthData.authorities,
                                 appSettings: overrideAuthData.appSettings
                             };
-                            ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(
-                              MapperProvider.get(AuthenticatedUserMapper).mapToModel(that.principal)
-                            );
-                            $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.hasOverrideAuth);
+                        that.broadcastSecurityInit(that.securityEnabled, true, that.hasOverrideAuth)
 
-                        } else {
+                         } else {
                             return SecurityService.getAdminUser().then(function (res) {
                                 that.principal = {username: 'admin', appSettings: res.appSettings, authorities: res.grantedAuthorities, grantedAuthoritiesUiModel: res.grantedAuthoritiesUiModel};
-                                ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(
-                                  MapperProvider.get(AuthenticatedUserMapper).mapToModel(that.principal)
-                                );
-                                $rootScope.$broadcast('securityInit', that.securityEnabled, true, that.hasOverrideAuth);
+                                that.broadcastSecurityInit(that.securityEnabled, true, that.hasOverrideAuth)
                             });
                         }
                     }
@@ -304,7 +296,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                     }).catch((err) => {
                         toastr.error(err.data, $translate.instant('common.error'));
                     });
-                    $rootScope.$broadcast('securityInit', this.securityEnabled, this.hasExplicitAuthentication(), this.freeAccess);
+                    this.broadcastSecurityInit(this.securityEnabled, this.hasExplicitAuthentication(), this.freeAccess)
                 }
             };
 
@@ -334,7 +326,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                         $rootScope.deniedPermissions = {};
                     }
 
-                    $rootScope.$broadcast('securityInit', this.securityEnabled, that.hasExplicitAuthentication(), this.freeAccess);
+                    this.broadcastSecurityInit(this.securityEnabled, this.hasExplicitAuthentication(), this.freeAccess)
                     setTimeout(() => {
                         resolve(true);
                     });
@@ -374,16 +366,11 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 $openIDAuth.softLogout();
                 this.principal = this.freeAccessPrincipal;
                 AuthTokenService.clearAuthToken();
-                if (this.freeAccessPrincipal) {
-                  ServiceProvider.get(SecurityContextService).updateAuthenticatedUser(
-                    MapperProvider.get(AuthenticatedUserMapper).mapToModel(this.freeAccessPrincipal)
-                  );
-                }
             };
 
             this.clearAuthentication = function () {
                 this.clearAuthenticationInternal();
-                $rootScope.$broadcast('securityInit', this.securityEnabled, false, this.freeAccess);
+                this.broadcastSecurityInit(this.securityEnabled, false, this.freeAccess)
             };
 
             this.isAuthenticated = function () {
@@ -593,4 +580,43 @@ angular.module('graphdb.framework.core.services.jwtauth', [
             }
 
             this.updateUserData = (data) => SecurityService.updateUserData(data);
+
+            this.broadcastSecurityInit = (securityEnabled, userLoggedIn, freeAccess) => {
+                $rootScope.$broadcast('securityInit', securityEnabled, userLoggedIn, freeAccess);
+
+                const securityContextService = ServiceProvider.get(SecurityContextService);
+                const openIdConfigMapper = MapperProvider.get(OpenidConfigMapper);
+                const openIdConfigModel = openIdConfigMapper.mapToModel(AuthTokenService.OPENID_CONFIG);
+                securityContextService.updateOpenIdConfig(openIdConfigModel);
+
+                this.getPrincipal().then((data) => {
+                    const userMapper = MapperProvider.get(AuthenticatedUserMapper);
+                    const authenticatedUser = userMapper.mapToModel(data);
+                    securityContextService.updateAuthenticatedUser(authenticatedUser);
+                });
+
+                let config = {
+                    enabled: this.securityEnabled,
+                    hasExternalAuth: this.externalAuth,
+                    openIdEnabled: this.openIDEnabled,
+                    passwordLoginEnabled: this.passwordLoginEnabled,
+                    overrideAuth: {
+                        enabled: this.hasOverrideAuth,
+                        authorities: this.principal?.authorities || [],
+                        appSettings: this.principal?.appSettings || {}
+                    },
+                    methodSettings: {
+                        openid: this.openIDConfig || {}
+                    },
+                    freeAccess: {
+                        enabled: this.freeAccess,
+                        authorities: this.freeAccessPrincipal?.authorities || [],
+                        appSettings: this.freeAccessPrincipal?.appSettings || {}
+                    },
+                    authImplementation: this.authImplementation,
+                    userLoggedIn,
+                    freeAccessActive: freeAccess
+                }
+                ServiceProvider.get(SecurityContextService).updateSecurityConfig(MapperProvider.get(SecurityConfigMapper).mapToModel(config));
+            }
         }]);

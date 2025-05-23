@@ -7,5 +7,6 @@
  */
 export const EventName = {
   NAVIGATION_END: 'navigationEnd',
-  NAVIGATION_START: 'navigationStart'
+  NAVIGATION_START: 'navigationStart',
+  LOGOUT: 'logout'
 };

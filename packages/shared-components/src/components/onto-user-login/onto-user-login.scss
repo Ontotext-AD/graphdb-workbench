@@ -1,0 +1,56 @@
+:root {
+  --onto-user-login-color: var(--secondary-color, #373a3c);
+}
+
+.onto-user-login {
+  position: relative;
+  width: fit-content;
+
+  button {
+    display: flex;
+    color: var(--onto-user-login-color);
+    flex-direction: row;
+    line-height: 1.5;
+    font-weight: 400;
+    font-size: 1rem;
+    text-align: center;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: .4em 1rem;
+    cursor: pointer;
+    white-space: nowrap;
+    place-items: center;
+    transition: all 0.15s ease-out;
+
+    & .user-login-label {
+      padding: 0 .4rem;
+    }
+
+    &:hover {
+      background-color: #d4d4d4;
+      border-color: #d4d4d4;
+
+      & .fa-user {
+        transform: scale(1.2);
+      }
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+
+    i {
+      color: var(--user-menu-primary-color);
+      line-height: .75;
+      font-size: 1.2em;
+      transition: 0.15s ease-out;
+
+      &.fa-angle-down {
+        color: rgba(0, 0, 0, .35);
+        font-size: 1.1em;
+        transition: all 0.2s ease-in;
+      }
+    }
+  }
+}

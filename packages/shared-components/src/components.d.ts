@@ -309,6 +309,8 @@ export namespace Components {
     }
     interface OntoTooltip {
     }
+    interface OntoUserLogin {
+    }
     /**
      * This component displays the current user's name and provides options
      * for navigating to settings and logging out.
@@ -557,6 +559,12 @@ declare global {
         prototype: HTMLOntoTooltipElement;
         new (): HTMLOntoTooltipElement;
     };
+    interface HTMLOntoUserLoginElement extends Components.OntoUserLogin, HTMLStencilElement {
+    }
+    var HTMLOntoUserLoginElement: {
+        prototype: HTMLOntoUserLoginElement;
+        new (): HTMLOntoUserLoginElement;
+    };
     /**
      * This component displays the current user's name and provides options
      * for navigating to settings and logging out.
@@ -604,6 +612,7 @@ declare global {
         "onto-toastr": HTMLOntoToastrElement;
         "onto-toggle-switch": HTMLOntoToggleSwitchElement;
         "onto-tooltip": HTMLOntoTooltipElement;
+        "onto-user-login": HTMLOntoUserLoginElement;
         "onto-user-menu": HTMLOntoUserMenuElement;
         "translate-label": HTMLTranslateLabelElement;
     }
@@ -829,6 +838,8 @@ declare namespace LocalJSX {
     }
     interface OntoTooltip {
     }
+    interface OntoUserLogin {
+    }
     /**
      * This component displays the current user's name and provides options
      * for navigating to settings and logging out.
@@ -880,6 +891,7 @@ declare namespace LocalJSX {
         "onto-toastr": OntoToastr;
         "onto-toggle-switch": OntoToggleSwitch;
         "onto-tooltip": OntoTooltip;
+        "onto-user-login": OntoUserLogin;
         "onto-user-menu": OntoUserMenu;
         "translate-label": TranslateLabel;
     }
@@ -944,6 +956,7 @@ declare module "@stencil/core" {
             "onto-toastr": LocalJSX.OntoToastr & JSXBase.HTMLAttributes<HTMLOntoToastrElement>;
             "onto-toggle-switch": LocalJSX.OntoToggleSwitch & JSXBase.HTMLAttributes<HTMLOntoToggleSwitchElement>;
             "onto-tooltip": LocalJSX.OntoTooltip & JSXBase.HTMLAttributes<HTMLOntoTooltipElement>;
+            "onto-user-login": LocalJSX.OntoUserLogin & JSXBase.HTMLAttributes<HTMLOntoUserLoginElement>;
             /**
              * This component displays the current user's name and provides options
              * for navigating to settings and logging out.

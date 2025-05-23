@@ -28,7 +28,7 @@ import 'angularjs-slider/dist/rzslider.min';
 import {debounce} from "lodash";
 import {DocumentationUrlResolver} from "./utils/documentation-url-resolver";
 import {NamespacesListModel} from "./models/namespaces/namespaces-list";
-import {RepositoryContextService, ServiceProvider} from "@ontotext/workbench-api";
+import {RepositoryContextService, EventService, EventName, ServiceProvider} from "@ontotext/workbench-api";
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -565,7 +565,9 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             });
     }
 
-    $scope.logout = function () {
+    ServiceProvider.get(EventService).subscribe(EventName.LOGOUT, () => logout());
+
+    function logout() {
         $jwtAuth.clearAuthentication();
         toastr.success('Signed out');
         if ($jwtAuth.freeAccess) {
@@ -577,7 +579,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             // otherwise show login screen if security is on
             $rootScope.redirectToLogin();
         }
-    };
+    }
 
     $scope.showMainManuAndStatusBar = () => {
         return $jwtAuth.isAuthenticated() || $scope.isSecurityEnabled() && $scope.isFreeAccessEnabled();
