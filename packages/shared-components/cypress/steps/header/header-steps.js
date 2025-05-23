@@ -85,4 +85,25 @@ export class HeaderSteps extends BaseSteps {
   static disableSecurity() {
     return cy.get('#disable-security').click();
   }
+
+  static activateFreeAccess() {
+    cy.get('#activate-free-access').click();
+  }
+
+  static deactivateFreeAccess() {
+    cy.get('#deactivate-free-access').click();
+  }
+
+  static activateFreeAccessAndBeLoggedIn() {
+    cy.get('#activate-free-access-and-be-logged-in').click()
+  }
+
+  static getLoginButton() {
+    return HeaderSteps.getHeader().find('.onto-user-login');
+  }
+
+  static clickLoginButton() {
+    return HeaderSteps.getLoginButton().click();
+  }
+
 }

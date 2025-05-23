@@ -7,6 +7,7 @@ userMenu.user = {
 const setExternalUser = () => {
   userMenu.user = {
     ...userMenu.user,
-    external: true
+    external: true,
+    userLoggedIn: true
   }
 }

@@ -1,6 +1,7 @@
 import {HeaderSteps} from "../../steps/header/header-steps";
 import {TooltipSteps} from "../../steps/tooltip-steps";
 import {UserMenuSteps} from "../../steps/user-menu/user-menu-steps";
+import {BaseSteps} from "../../steps/base-steps";
 
 describe('Header', () => {
   it('Should render header and various tools inside', () => {
@@ -132,6 +133,36 @@ describe('Header', () => {
       HeaderSteps.getSearchIcon().should('be.visible');
       // And I expect the search area to not be visible yet
       HeaderSteps.getSearchArea().should('not.be.visible');
+    });
+  });
+
+  describe('Free Access', () => {
+    it('Should show/hide login button', () => {
+      // Given, I visit the header page, and I am activating free access
+      HeaderSteps.visit();
+      HeaderSteps.activateFreeAccess();
+
+      // Then, I expect to see the login button
+      HeaderSteps.getLoginButton().should('be.visible');
+      // When, I click it
+      HeaderSteps.clickLoginButton();
+      // Then, I should still not see the search
+      BaseSteps.getRedirectUrl().should('have.text', 'redirect to /login')
+
+      // When I deactivate free access
+      HeaderSteps.deactivateFreeAccess();
+      // Then, I expect not to see the login button
+      HeaderSteps.getLoginButton().should('not.exist');
+
+      // When I activate free access and I'm logged in
+      HeaderSteps.activateFreeAccessAndBeLoggedIn();
+      // I expect to see the user menu
+      // And the user menu is visible
+      UserMenuSteps.getUserMenu()
+        .should('be.visible')
+        .and('have.text', 'john.smith');
+      // And not to see the login button
+      HeaderSteps.getLoginButton().should('not.exist');
     });
   });
 });
