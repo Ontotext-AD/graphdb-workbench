@@ -4,16 +4,18 @@ import {AuthenticationStorageService} from '../../services/security/authenticati
 import {ServiceProvider} from '../../providers/service/service.provider';
 import {RepositoryContextService} from '../../services/repository/repository-context.service';
 import {RepositoryStorageService} from '../../services/repository/repository-storage.service';
+import {SecurityContextService} from '../../services/security/security-context.service';
+import {OpenIdConfig} from '../../models/security/openid-config';
 
 /**
  * AuthRequestInterceptor is responsible for intercepting HTTP requests and adding authentication
  * and repository information to the request headers.
  */
 export class AuthRequestInterceptor extends HttpInterceptor<HttpRequest> {
-
   private readonly authStorage = ServiceProvider.get(AuthenticationStorageService);
   private readonly repositoryStorageService = ServiceProvider.get(RepositoryStorageService);
   private readonly repositoryContextService = ServiceProvider.get(RepositoryContextService);
+  private readonly securityContextService = ServiceProvider.get(SecurityContextService);
 
   /**
    * Preprocesses the HTTP request by adding authentication and repository information to the headers.
@@ -26,6 +28,7 @@ export class AuthRequestInterceptor extends HttpInterceptor<HttpRequest> {
    * @returns A Promise that resolves to the modified HTTP request.
    */
   process(request: HttpRequest): Promise<HttpRequest> {
+    request.headers = request.headers || {};
     request.headers['X-Requested-With'] = 'XMLHttpRequest';
 
     const authToken = this.authStorage.getAuthToken().getValue();
@@ -43,12 +46,19 @@ export class AuthRequestInterceptor extends HttpInterceptor<HttpRequest> {
     if (repositoryLocation) {
       request.headers['X-GraphDB-Repository-Location'] = repositoryLocation;
     }
-
     return Promise.resolve(request);
   }
 
-  shouldProcess(): boolean {
-    //TODO: when using OpenId this should be skipped
-    return true;
+  shouldProcess(request: HttpRequest): boolean {
+    // Skip header injection if the request is part of the OpenID authentication flow
+    // (e.g., token retrieval or OpenID key discovery).
+    // see https://github.com/Ontotext-AD/graphdb-workbench/blob/2.8/src/js/angular/core/interceptors/authentication.interceptor.js#L12
+    const openIdConfig: OpenIdConfig | undefined = this.securityContextService.getOpenIdConfig();
+    if (!openIdConfig) {
+      return true;
+    }
+    const openIDUrls = [openIdConfig?.openIdKeysUri, openIdConfig?.openIdTokenUrl];
+    const isOpenIdUrl = openIDUrls.some((url) => url && request.url.indexOf(url) > -1);
+    return !isOpenIdUrl;
   }
 }

@@ -23,6 +23,9 @@ describe('User Menu', () => {
     // When, I am logged in as external user
     UserMenuSteps.setExternalUser();
 
+    // When, I click on the menu
+    UserMenuSteps.openUserMenu();
+
     // Then I expect to not see a logout option in the dropdown
     UserMenuSteps.getDropdownItems()
       .should('have.length', 1)
