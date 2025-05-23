@@ -23,36 +23,111 @@ import {ExternalMenuItemModel} from '../onto-navbar/external-menu-model';
   shadow: false,
 })
 export class OntoLayout {
-  private windowResizeObserver: (...args: any) => void;
-  private securityContextService = ServiceProvider.get(SecurityContextService);
+  // ========================
+  // Services
+  // ========================
+  private readonly securityContextService = ServiceProvider.get(SecurityContextService);
   private readonly authenticationService = ServiceProvider.get(AuthenticationService);
+
+  // ========================
+  // DOM Refs
+  // ========================
+  @Element() hostElement: HTMLOntoLayoutElement;
+  private navbarRef: HTMLOntoNavbarElement;
+
+  // ========================
+  // State
+  // ========================
+  @State() authenticatedUser: AuthenticatedUser;
+  @State() authToken: string | null;
+  @State() securityConfig: SecurityConfig;
+  @State() isLowResolution = false;
+  @State() hasPermission: boolean = true;
+  @State() showFooter = this.isAuthenticatedFully();
+  @State() isVisible: boolean;
+
+  // ========================
+  // Private
+  // ========================
   /**
    * List of subscriptions to manage component lifecycle
    * */
   private readonly subscriptions: SubscriptionList = new SubscriptionList();
+  private readonly windowResizeObserver: (...args: any) => void;
   private isNavbarCollapsed = false;
-
-  @State() authenticatedUser: AuthenticatedUser;
-  @State() authToken: string | null;
-  @State() securityConfig: SecurityConfig;
-  @State() isVisible: boolean;
-
   /**
    * The current route. This is used to highlight the selected menu item in the navbar.
    */
   private currentRoute: string;
-  private navbarRef: HTMLOntoNavbarElement;
 
+  // ========================
+  // Lifecycle methods
+  // ========================
   constructor() {
     this.windowResizeObserver = debounce(() => this.windowResizeHandler(), 50);
+    window.addEventListener("storage", this.handleStorageChange);
   }
 
-  @Element() hostElement: HTMLOntoLayoutElement;
+  componentDidLoad() {
+    this.windowResizeHandler();
+  }
 
-  @State() isLowResolution = false;
-  @State() hasPermission: boolean = true;
-  @State() showFooter = this.isAuthenticatedFully();
+  componentWillLoad() {
+    this.currentRoute = getCurrentRoute();
+  }
 
+  connectedCallback() {
+    this.subscribeToSecurityChanges();
+    this.updateVisibility();
+    // Subscribing here, because after a disconnectedCallback the connectedCallback is called, instead of componentDidLoad or constructor
+    this.subscriptions.add(this.securityContextService.onRestrictedPagesChanged((restrictedPages) => this.setPermission(restrictedPages)));
+    this.subscriptions.add(ServiceProvider.get(EventService).subscribe(EventName.NAVIGATION_END, () => this.setPermission(this.securityContextService.getRestrictedPages())));
+    this.setPermission(this.securityContextService.getRestrictedPages());
+  }
+
+  /**
+   * Lifecycle method called when the component is about to be removed from the DOM.
+   * Unsubscribes from all subscriptions to prevent memory leaks.
+   */
+  disconnectedCallback() {
+    this.subscriptions.unsubscribeAll();
+  }
+
+  render() {
+    return (
+      <Host class="wb-layout">
+        {/* Default slot is explicitly defined to be able to hide the main content in the user permission check */}
+        <div class="default-slot-wrapper">
+          <slot name="default"></slot>
+        </div>
+        <header class="wb-header">
+          {this.isVisible && <onto-header></onto-header>}
+        </header>
+
+        <nav class="wb-navbar">
+          <onto-navbar ref={this.assignNavbarRef()}
+                       navbar-collapsed={this.isLowResolution}
+                       selected-menu={this.currentRoute}></onto-navbar>
+        </nav>
+
+        {this.hasPermission ? (
+          <div class='main-slot-wrapper'>
+            <slot name="main"></slot></div>
+        ) : (
+          <onto-permission-banner></onto-permission-banner>
+        )}
+        <footer class="wb-footer">
+          {this.isVisible && <onto-footer></onto-footer>}
+        </footer>
+        <onto-tooltip></onto-tooltip>
+        <onto-toastr></onto-toastr>
+      </Host>
+    );
+  }
+
+  // ========================
+  // Event Listeners
+  // ========================
   /**
    * Event listener for the navbar toggled event. The layout needs to respond properly when the navbar is toggled in
    * order to fit the content.
@@ -77,6 +152,9 @@ export class OntoLayout {
     this.windowResizeObserver();
   }
 
+  // ========================
+  // Handlers
+  // ========================
   private windowResizeHandler(): void {
     this.isLowResolution = window.innerWidth <= WINDOW_WIDTH_FOR_COLLAPSED_NAVBAR;
     if (!this.isLowResolution && !this.isNavbarCollapsed) {
@@ -91,21 +169,9 @@ export class OntoLayout {
     service.handleStorageChange(event);
   }
 
-  private setPermission(permissions: RestrictedPages) {
-    if (permissions) {
-      const path = location.pathname;
-      this.hasPermission = !permissions.isRestricted(path);
-    } else {
-      // If the permissions are undefined, the user can access the url
-      this.hasPermission = true;
-    }
-
-    const mainContent = document.querySelector('.wb-layout main') as HTMLElement;
-    if (mainContent) {
-      mainContent.style.display = this.hasPermission ? 'block' : 'none';
-    }
-  }
-
+  // ========================
+  // Security & Permissions
+  // ========================
   private subscribeToSecurityChanges() {
     const securityContextService = ServiceProvider.get(SecurityContextService);
     this.subscriptions.add(
@@ -124,21 +190,31 @@ export class OntoLayout {
 
     this.subscriptions.add(
       ServiceProvider.get(EventService).subscribe(EventName.LOGOUT, () => {
-         this.setNavbarItemVisibility();
-         this.updateVisibility();
-        })
-      );
+        this.setNavbarItemVisibility();
+        this.updateVisibility();
+      })
+    );
     this.subscriptions.add(
-      securityContextService.onAuthTokenChanged(() => {
-          this.setNavbarItemVisibility();
-          this.updateVisibility();
-        })
-      );
+      securityContextService.onAuthTokenChanged(()=>{
+        this.setNavbarItemVisibility();
+        this.updateVisibility();
+      })
+    );
   }
 
-  private shouldShowMenu(role: Authority): boolean {
-    return this.isAuthenticatedFully()
-      && ServiceProvider.get(AuthenticationService).hasRole(role, this.securityConfig, this.authenticatedUser);
+  private setPermission(permissions: RestrictedPages) {
+    if (permissions) {
+      const path = location.pathname;
+      this.hasPermission = !permissions.isRestricted(path);
+    } else {
+      // If the permissions are undefined, the user can access the url
+      this.hasPermission = true;
+    }
+
+    const mainContent = document.querySelector('.wb-layout main') as HTMLElement;
+    if (mainContent) {
+      mainContent.style.display = this.hasPermission ? 'block' : 'none';
+    }
   }
 
   private updateVisibility() {
@@ -152,12 +228,28 @@ export class OntoLayout {
       this.isVisible = hasAuth && isAuthenticated;
       this.showFooter = isAuthenticated;
     }
-   }
+  }
 
-   private isAuthenticatedFully() {
+  private isAuthenticatedFully() {
     const authService = ServiceProvider.get(AuthenticationService);
     return !authService.isSecurityEnabled() || authService.isAuthenticated() || authService.hasFreeAccess();
-   }
+  }
+
+  private shouldShowMenu(role: Authority): boolean {
+    return this.isAuthenticatedFully()
+      && ServiceProvider.get(AuthenticationService).hasRole(role, this.securityConfig, this.authenticatedUser);
+  }
+
+  // ========================
+  // Navbar logic
+  // ========================
+  private assignNavbarRef() {
+    return (navbar: HTMLOntoNavbarElement) => {
+      this.navbarRef = navbar;
+      this.navbarRef.menuItems = window.PluginRegistry.get('main.menu');
+      this.setNavbarItemVisibility();
+    }
+  }
 
   private setNavbarItemVisibility() {
     if (!this.navbarRef?.menuItems) {
@@ -176,72 +268,5 @@ export class OntoLayout {
     });
     // Update the reference to trigger a re-render
     this.navbarRef.menuItems = [...this.navbarRef.menuItems];
-  }
-
-  private assignNavbarRef() {
-    return (navbar: HTMLOntoNavbarElement) => {
-      this.navbarRef = navbar;
-      this.navbarRef.menuItems = window.PluginRegistry.get('main.menu');
-      this.setNavbarItemVisibility();
-    }
-  }
-
-  // ========================
-  // Lifecycle methods
-  // ========================
-
-  componentDidLoad() {
-    this.windowResizeHandler();
-  }
-
-  connectedCallback() {
-    // Subscribing here, because after a disconnectedCallback the connectedCallback is called, instead of componentDidLoad or constructor
-    this.subscribeToSecurityChanges();
-    this.updateVisibility();
-    this.subscriptions.add(this.securityContextService.onRestrictedPagesChanged((restrictedPages) => this.setPermission(restrictedPages)));
-    this.subscriptions.add(ServiceProvider.get(EventService).subscribe(EventName.NAVIGATION_END, () => this.setPermission(this.securityContextService.getRestrictedPages())));
-    this.setPermission(this.securityContextService.getRestrictedPages());
-    this.currentRoute = getCurrentRoute();
-  }
-
-  /**
-   * Lifecycle method called when the component is about to be removed from the DOM.
-   * Unsubscribes from all subscriptions to prevent memory leaks.
-   */
-  disconnectedCallback() {
-    window.removeEventListener("storage", this.handleStorageChange);
-    this.subscriptions.unsubscribeAll();
-  }
-
-  render() {
-    return (
-      <Host class="wb-layout">
-        {/* Default slot is explicitly defined to be able to hide the main content in the user permission check */}
-        <div class="default-slot-wrapper">
-          <slot name="default"></slot>
-        </div>
-        <header class="wb-header">
-          {this.isVisible && <onto-header></onto-header>}
-        </header>
-
-        <nav class="wb-navbar">
-          <onto-navbar ref={this.assignNavbarRef()}
-                       navbar-collapsed={this.isLowResolution}
-                       selected-menu={this.currentRoute}></onto-navbar>
-        </nav>
-
-        {this.hasPermission ? (
-          <div class='main-slot-wrapper'>
-            <slot name="main"></slot></div>
-            ) : (
-            <onto-permission-banner></onto-permission-banner>
-            )}
-        <footer class="wb-footer">
-          {this.isVisible && <onto-footer></onto-footer>}
-        </footer>
-        <onto-tooltip></onto-tooltip>
-        <onto-toastr></onto-toastr>
-      </Host>
-    );
   }
 }
