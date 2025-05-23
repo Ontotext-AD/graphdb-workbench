@@ -101,4 +101,9 @@ export class MainMenuSteps {
         this.clickOnExplore();
         this.getSubMenuButton('sub-menu-visual-graph').click();
     }
+
+    static clickOnClassRelationships() {
+        this.clickOnExplore();
+        this.getSubMenuButton('sub-menu-class-relationships').click();
+    }
 }
