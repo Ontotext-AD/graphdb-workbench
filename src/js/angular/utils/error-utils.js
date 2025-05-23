@@ -32,6 +32,9 @@
                 if ('responseText' in data) {
                     msg = data.responseText;
                 }
+                if ('errorMessage' in data) {
+                    msg = data.errorMessage;
+                }
             }
 
             if (limit > 0 && msg.length > limit) {
