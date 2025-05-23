@@ -25,21 +25,17 @@ import {ExternalMenuItemModel} from '../onto-navbar/external-menu-model';
 export class OntoLayout {
   private windowResizeObserver: (...args: any) => void;
   private securityContextService = ServiceProvider.get(SecurityContextService);
+  private readonly authenticationService = ServiceProvider.get(AuthenticationService);
   /**
    * List of subscriptions to manage component lifecycle
    * */
   private readonly subscriptions: SubscriptionList = new SubscriptionList();
   private isNavbarCollapsed = false;
 
-  /**
-   * The current authenticated user
-   */
-  private authenticatedUser: AuthenticatedUser;
-
-  /**
-   * The security configuration.
-   */
-  private securityConfig: SecurityConfig;
+  @State() authenticatedUser: AuthenticatedUser;
+  @State() authToken: string | null;
+  @State() securityConfig: SecurityConfig;
+  @State() isVisible: boolean;
 
   /**
    * The current route. This is used to highlight the selected menu item in the navbar.
@@ -110,23 +106,34 @@ export class OntoLayout {
     }
   }
 
-  private onSecurityChanged() {
+  private subscribeToSecurityChanges() {
     const securityContextService = ServiceProvider.get(SecurityContextService);
     this.subscriptions.add(
       securityContextService.onAuthenticatedUserChanged((authenticatedUser) => {
         this.authenticatedUser = authenticatedUser;
-        this.setNavbarItemVisibility();
-        this.showFooter = this.isAuthenticatedFully();
+        this.updateVisibility();
       })
     );
 
     this.subscriptions.add(
       securityContextService.onSecurityConfigChanged((securityConfig) => {
         this.securityConfig = securityConfig;
-        this.setNavbarItemVisibility();
-        this.showFooter = this.isAuthenticatedFully();
+        this.updateVisibility();
       })
     );
+
+    this.subscriptions.add(
+      ServiceProvider.get(EventService).subscribe(EventName.LOGOUT, () => {
+         this.setNavbarItemVisibility();
+         this.updateVisibility();
+        })
+      );
+    this.subscriptions.add(
+      securityContextService.onAuthTokenChanged(() => {
+          this.setNavbarItemVisibility();
+          this.updateVisibility();
+        })
+      );
   }
 
   private shouldShowMenu(role: Authority): boolean {
@@ -134,11 +141,23 @@ export class OntoLayout {
       && ServiceProvider.get(AuthenticationService).hasRole(role, this.securityConfig, this.authenticatedUser);
   }
 
-  private isAuthenticatedFully() {
+  private updateVisibility() {
+    if (!this.authenticationService.isSecurityEnabled()) {
+      this.isVisible = true;
+      this.showFooter = true;
+    } else {
+      const hasAuth = !!this.authenticatedUser && !!this.securityConfig;
+      const isAuthenticated = this.authenticationService.isAuthenticated() || this.authenticationService.hasFreeAccess();
+
+      this.isVisible = hasAuth && isAuthenticated;
+      this.showFooter = isAuthenticated;
+    }
+   }
+
+   private isAuthenticatedFully() {
     const authService = ServiceProvider.get(AuthenticationService);
-    return authService.isAuthenticated(this.securityConfig, this.authenticatedUser)
-      || authService.hasFreeAccess(this.securityConfig);
-  }
+    return !authService.isSecurityEnabled() || authService.isAuthenticated() || authService.hasFreeAccess();
+   }
 
   private setNavbarItemVisibility() {
     if (!this.navbarRef?.menuItems) {
@@ -175,17 +194,14 @@ export class OntoLayout {
     this.windowResizeHandler();
   }
 
-  componentWillLoad() {
-    this.currentRoute = getCurrentRoute();
-    window.addEventListener("storage", this.handleStorageChange);
-    this.onSecurityChanged();
-  }
-
   connectedCallback() {
     // Subscribing here, because after a disconnectedCallback the connectedCallback is called, instead of componentDidLoad or constructor
+    this.subscribeToSecurityChanges();
+    this.updateVisibility();
     this.subscriptions.add(this.securityContextService.onRestrictedPagesChanged((restrictedPages) => this.setPermission(restrictedPages)));
     this.subscriptions.add(ServiceProvider.get(EventService).subscribe(EventName.NAVIGATION_END, () => this.setPermission(this.securityContextService.getRestrictedPages())));
     this.setPermission(this.securityContextService.getRestrictedPages());
+    this.currentRoute = getCurrentRoute();
   }
 
   /**
@@ -205,7 +221,7 @@ export class OntoLayout {
           <slot name="default"></slot>
         </div>
         <header class="wb-header">
-          {this.isAuthenticatedFully() && <onto-header></onto-header>}
+          {this.isVisible && <onto-header></onto-header>}
         </header>
 
         <nav class="wb-navbar">
@@ -221,7 +237,7 @@ export class OntoLayout {
             <onto-permission-banner></onto-permission-banner>
             )}
         <footer class="wb-footer">
-          <onto-footer></onto-footer>
+          {this.isVisible && <onto-footer></onto-footer>}
         </footer>
         <onto-tooltip></onto-tooltip>
         <onto-toastr></onto-toastr>

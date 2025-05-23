@@ -23,7 +23,7 @@ import {
   NamespacesContextService,
   RepositoryStorageService,
   RepositoryList,
-  Repository, RepositoryService, LanguageService, LanguageContextService, ObjectUtil
+  Repository, RepositoryService, LanguageService, LanguageContextService, ObjectUtil, getCurrentRoute
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 import {HtmlUtil} from '../../utils/html-util';
@@ -85,6 +85,7 @@ export class OntoHeader {
    * The model of the currently selected repository, if any.
    */
   @State() currentRepository: Repository;
+  @State() currentRoute: string;
 
   /** Array of subscription cleanup functions */
   private readonly subscriptions: SubscriptionList = new SubscriptionList();
@@ -109,6 +110,7 @@ export class OntoHeader {
     this.subscribeToActiveRepoLoadingChange();
     this.subscriptions.add(this.subscribeToLanguageChanged());
     this.subscribeToNavigationEnd();
+    this.currentRoute = getCurrentRoute();
   }
 
   render() {
@@ -139,6 +141,7 @@ export class OntoHeader {
             canWriteRepo={this.canWriteRepo}>
           </onto-repository-selector>
           {this.showUserMenu ? <onto-user-menu user={this.user}></onto-user-menu> : ''}
+          {this.securityConfig.enabled && !this.securityConfig.userLoggedIn && (this.currentRoute !== 'login') ? <onto-user-login></onto-user-login> : ''}
           <onto-language-selector dropdown-alignment="right"></onto-language-selector>
         </div>
       </Host>
@@ -148,7 +151,7 @@ export class OntoHeader {
   private startOperationPolling() {
     clearInterval(this.pollingInterval);
     this.pollingInterval = window.setInterval(() => {
-      if (!this.authenticationService.isAuthenticated(this.securityConfig, this.user)) {
+      if (!this.authenticationService.isAuthenticated()) {
         this.activeOperations = undefined;
       }
 
@@ -254,7 +257,7 @@ export class OntoHeader {
 
   private shouldShowRdfSearch(): boolean {
     return !!this.repositoryId && !!this.repositoryLocation &&
-      (!this.isActiveLocationLoading || this.isActiveLocationLoading && getPathName() === '/repository');
+      (!this.isActiveLocationLoading || getPathName() === '/repository');
   }
 
   private changeCurrentRepository(newRepositoryId: string): void {
@@ -303,10 +306,10 @@ export class OntoHeader {
     if (!this.user || !this.securityConfig) {
       return false;
     }
-    return this.securityConfig.enabled && this.authenticationService.isAuthenticated(this.securityConfig, this.user);
+    return this.authenticationService.isAuthenticated();
   }
 
-  private showViewResourceMessage= (event:MouseEvent) => {
+  private showViewResourceMessage = (event:MouseEvent) => {
     event.stopPropagation();
     this.toastrService.info(TranslationService.translate('rdf_search.toasts.use_view_resource'));
     this.shouldShowSearch = false;

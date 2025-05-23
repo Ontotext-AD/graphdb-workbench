@@ -90,10 +90,16 @@ const registerSingleSpaRouterListeners = () => {
 };
 
 const bootstrapApplication = () => {
-  Promise.all(bootstrapPromises.map((bootstrapFn) => bootstrapFn()))
-    .then(() => {
-      // eslint-disable-next-line no-console
-      console.log('Application data loaded. Ready to start the application.');
+  Promise.allSettled(bootstrapPromises.map((bootstrapFn) => bootstrapFn()))
+    .then((results) => {
+      const rejected = results.filter(r => r.status === 'rejected');
+
+      if (rejected.length > 0) {
+        console.warn('Some bootstrap steps failed:', rejected.map(r => r.reason));
+      } else {
+        console.info('All bootstrap steps succeeded.');
+      }
+
       defineCustomElements();
       return start();
     })

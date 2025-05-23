@@ -31,7 +31,8 @@
         "test": "sh scripts/test.sh",
         "cy:run": "sh scripts/cy.sh",
         "sonar": "sh scripts/sonar.sh",
-        "hotdeploy": "node scripts/hotdeploy.js"
+        "hotdeploy": "node scripts/hotdeploy.js",
+        "qa": "npm run clean-install && npm run start"
     },
     "files": [
         "dist/"

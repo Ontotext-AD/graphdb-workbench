@@ -8,7 +8,7 @@ export class UserAndAccessSteps {
     }
 
     static getSplashLoader() {
-        return cy.get('.ot-splash');
+        return cy.get('.ot-loader');
     }
 
     static getCreateNewUserButton() {
@@ -157,6 +157,10 @@ export class UserAndAccessSteps {
 
     static getError() {
         return cy.get('.alert-danger');
+    }
+
+    static getPermissionError() {
+        return cy.get('.permission-banner');
     }
 
     static getModal() {

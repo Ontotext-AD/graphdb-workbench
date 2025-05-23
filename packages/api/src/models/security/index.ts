@@ -3,5 +3,5 @@ export * from './authenticated-user';
 export * from './security-config';
 export * from './authority';
 export * from './authority-list';
-
 export * from './restricted-pages';
+export * from './openid-config';
