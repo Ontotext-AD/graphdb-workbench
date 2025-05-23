@@ -32,6 +32,9 @@ export class LayoutSteps extends BaseSteps {
   static enableSecurity() {
     return cy.get('#enable-security').click();
   }
+  static enableSecurityUserLoggedIn() {
+    return cy.get('#enable-security-user-logged-in').click();
+  }
 
   static disableSecurity() {
     return cy.get('#disable-security').click();
