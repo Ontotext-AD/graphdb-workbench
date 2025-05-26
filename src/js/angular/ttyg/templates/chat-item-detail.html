@@ -4,7 +4,8 @@
     <div class="user-message" ng-if="chatItemDetail.question">
         <div class="question alert-help"
              gdb-tooltip="{{ 'ttyg.chat_panel.labels.question_asked' | translate : { date: getHumanReadableQuestionTimestamp(chatItemDetail.question.timestamp), time: (chatItemDetail.question.timestamp | date:'HH:mm') } }}">
-            <div class="question-text">{{chatItemDetail.question.message}}</div>
+            <markdown-content class="question-text"
+                              content="{{chatItemDetail.question.message}}"></markdown-content>
         </div>
     </div>
     <div class="answers" ng-repeat="answer in chatItemDetail.answers">
@@ -31,7 +32,7 @@
                          popover-class="token-usage-info"
                          popover-placement="bottom-right"
                          popover-trigger="mouseenter">
-                        <i class="fa fa-message-question"></i>
+                        <i class="fa fa-coin-blank"></i>
                     </button>
                     <button class="btn btn-link btn-link-only-icons btn-sm explain-response-btn" guide-selector="explain-response-btn"
                             ng-click="explainResponse(answer.id)"
