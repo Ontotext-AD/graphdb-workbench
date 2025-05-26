@@ -59,14 +59,10 @@
 
 .chat-panel .user-message .question {
     max-width: 70%;
-    padding: 0.5rem 1rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-top: 1rem;
     color: var(--text-color);
-    line-height: var(--line-height);
-}
-
-.chat-panel .user-message .question .question-text {
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
 }
 
 .chat-panel .messages-hint {

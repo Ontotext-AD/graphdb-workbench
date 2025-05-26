@@ -17,6 +17,12 @@
     width: calc(100% - var(--assistan-icon-weight) - var(--assistant-container-gap));
 }
 
+.chat-panel .user-message .question-text .markdown-content * {
+    /* Render newline characters (\n) as line breaks */
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
 .chat-detail .assistant-message .answer {
     line-height: var(--line-height);
 }
