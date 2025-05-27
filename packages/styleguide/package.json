@@ -1,0 +1,40 @@
+{
+  "name": "@ontotext/styleguide",
+  "scripts": {
+    "purge-css": "node src/css-purger/purge-css-vars.js",
+    "prebuild:webpack": "npm run purge-css",
+    "build": "rm -rf dist && npm run build:webpack",
+    "build:webpack": "webpack --mode=production",
+    "lint": "eslint --ext js,mjs,cjs",
+    "lint:fix": "eslint --fix --ext js,mjs,cjs",
+    "stylelint": "stylelint \"src/**/*.{css,scss}\"",
+    "stylelint:fix": "stylelint \"src/**/*.{css,scss}\" --fix",
+    "test": "cross-env BABEL_ENV=test jest --passWithNoTests",
+    "watch-tests": "cross-env BABEL_ENV=test jest --watch",
+    "coverage": "cross-env BABEL_ENV=test jest --coverage"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.3",
+    "@babel/eslint-parser": "^7.28.0",
+    "@babel/plugin-transform-runtime": "^7.28.3",
+    "@babel/preset-env": "^7.28.3",
+    "@types/jest": "^30.0.0",
+    "babel-jest": "^30.1.0",
+    "cross-env": "^10.0.0",
+    "eslint": "^9.34.0",
+    "eslint-config-important-stuff": "^1.1.0",
+    "glob": "^11.0.3",
+    "jest": "^30.1.0",
+    "jest-cli": "^30.1.0",
+    "jest-environment-jsdom": "^30.1.0",
+    "stylelint": "^16.23.1",
+    "stylelint-config-standard-scss": "^15.0.1",
+    "stylelint-scss": "^6.12.1",
+    "webpack": "^5.101.3",
+    "webpack-config-single-spa": "^8.0.0",
+    "webpack-merge": "^6.0.1"
+  },
+  "dependencies": {
+    "graphwise-styleguide": "0.0.1-init1"
+  }
+}
