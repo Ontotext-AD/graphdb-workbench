@@ -706,7 +706,7 @@ function TTYGViewCtrl(
      * @param {{repositoryId: string}} payload - The payload containing the repository ID.
      */
     const onGoToCreateSimilarityView = (payload) => {
-        goToView(payload.repositoryId, 'ttyg.agent.create_agent_modal.dialog.confirm_repository_change_before_open_similarity.body', '/similarity/index/create');
+        goToView(payload.repositoryId, 'ttyg.agent.create_agent_modal.dialog.confirm_repository_change_before_open_similarity.body', 'similarity/index/create');
     };
 
     /**
@@ -717,7 +717,7 @@ function TTYGViewCtrl(
      * @param {{repositoryId: string}} payload - The payload containing the repository ID.
      */
     const goToAutocompleteIndexView = (payload) => {
-        goToView(payload.repositoryId, 'ttyg.agent.create_agent_modal.dialog.confirm_repository_change_before_open_autocomplete_index.body', '/autocomplete');
+        goToView(payload.repositoryId, 'ttyg.agent.create_agent_modal.dialog.confirm_repository_change_before_open_autocomplete_index.body', 'autocomplete');
     };
 
     /**
@@ -728,7 +728,7 @@ function TTYGViewCtrl(
      * @param {{repositoryId: string}} payload - The payload containing the repository ID.
      */
     const onGoToConnectorsView = (payload) => {
-        goToView(payload.repositoryId, 'ttyg.agent.create_agent_modal.dialog.confirm_repository_change_before_open_connectors.body', '/connectors');
+        goToView(payload.repositoryId, 'ttyg.agent.create_agent_modal.dialog.confirm_repository_change_before_open_connectors.body', 'connectors');
     };
 
     /**
