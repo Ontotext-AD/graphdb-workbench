@@ -726,7 +726,7 @@ function TTYGViewCtrl(
     };
 
     const openCreateSimilarityView = () => {
-        $window.open('/similarity/index/create', '_blank');
+        $window.open('similarity/index/create', '_blank');
     };
 
     /**
@@ -750,14 +750,13 @@ function TTYGViewCtrl(
                         openConnectorsView();
                     });
             }
-
         } else {
             openConnectorsView();
-        }
+    }
     };
 
     const openConnectorsView = () => {
-        $window.open('/connectors', '_blank');
+        $window.open('connectors', '_blank');
     };
 
     /**
