@@ -64,7 +64,8 @@
                     "@ontotext/workbench-api": "http://localhost:9003/ontotext-workbench-api.js?v=<%= buildVersion %>",
                     "@ontotext/root-config": "/<%= mainBundle %>?v=<%= buildVersion %>",
                     "@ontotext/legacy-workbench": "/<%= legacyWorkbenchBundle %>?v=<%= buildVersion %>",
-                    "@ontotext/workbench": "http://localhost:9002/workbenchApp.js?v=<%= buildVersion %>"
+                    "@ontotext/workbench": "http://localhost:9002/workbenchApp.js?v=<%= buildVersion %>",
+                    "@ontotext/styleguide": "/<%= styleguideBundle %>?v=<%= buildVersion %>"
                 }
             }
         </script>
@@ -76,7 +77,8 @@
                     "@ontotext/workbench-api": "./<%= apiBundle %>?v=<%= buildVersion %>",
                     "@ontotext/root-config": "./<%= mainBundle %>",
                     "@ontotext/legacy-workbench": "./<%= legacyWorkbenchBundle %>",
-                    "@ontotext/workbench": "./<%= workbenchAppBundle %>?v=<%= buildVersion %>"
+                    "@ontotext/workbench": "./<%= workbenchAppBundle %>?v=<%= buildVersion %>",
+                    "@ontotext/styleguide": "/<%= styleguideBundle %>?v=<%= buildVersion %>"
                 }
             }
         </script>
@@ -105,6 +107,7 @@
 <script>
     window.importMapInjector.initPromise.then(() => {
       import('@ontotext/root-config');
+      import('@ontotext/styleguide');
     });
 </script>
 <import-map-overrides-full show-when-local-storage="devtools" dev-libs></import-map-overrides-full>
