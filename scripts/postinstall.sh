@@ -20,6 +20,7 @@ build_package() {
 }
 
 # Build packages
+build_package "styleguide"
 build_package "api"
 build_package "shared-components"
 
