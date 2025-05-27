@@ -63,7 +63,8 @@ module.exports = (webpackConfigEnv, argv) => {
     return merge(defaultConfig, {
         entry: {
             main: './packages/root-config/src/ontotext-root-config.js',
-            legacyWorkbench: './packages/legacy-workbench/src/app.js'
+            legacyWorkbench: './packages/legacy-workbench/src/app.js',
+            styleguide: './packages/styleguide/dist/ontotext-styleguide.js'
         },
         output: {
             filename: '[name].js',
@@ -94,6 +95,7 @@ module.exports = (webpackConfigEnv, argv) => {
                         orgName,
                         mainBundle: Object.keys(compilation.assets).find(asset => asset.includes('main') && asset.endsWith('.js')),
                         legacyWorkbenchBundle:  Object.keys(compilation.assets).find(asset => asset.includes('legacyWorkbench') && asset.endsWith('.js')),
+                        styleguideBundle:  Object.keys(compilation.assets).find(asset => asset.includes('styleguide') && asset.endsWith('.js')),
                         apiBundle: Object.keys(compilation.assets).find(asset => asset.includes('ontotext-workbench-api') && asset.endsWith('.js')),
                         workbenchAppBundle: Object.keys(compilation.assets).find(asset => asset.includes('workbenchApp') && asset.endsWith('.js')),
                         contentHash: assets.contentHash,

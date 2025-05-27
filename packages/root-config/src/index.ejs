@@ -43,7 +43,8 @@
                     "@ontotext/workbench-api": "http://localhost:9003/ontotext-workbench-api.js",
                     "@ontotext/root-config": "/<%= mainBundle %>",
                     "@ontotext/legacy-workbench": "/<%= legacyWorkbenchBundle %>",
-                    "@ontotext/workbench": "http://localhost:9002/workbenchApp.js"
+                    "@ontotext/workbench": "http://localhost:9002/workbenchApp.js",
+                    "@ontotext/styleguide": "/<%= styleguideBundle %>"
                 }
             }
         </script>
@@ -55,7 +56,8 @@
                     "@ontotext/workbench-api": "/<%= apiBundle %>",
                     "@ontotext/root-config": "/<%= mainBundle %>",
                     "@ontotext/legacy-workbench": "/<%= legacyWorkbenchBundle %>",
-                    "@ontotext/workbench": "/<%= workbenchAppBundle %>"
+                    "@ontotext/workbench": "/<%= workbenchAppBundle %>",
+                    "@ontotext/styleguide": "/<%= styleguideBundle %>"
                 }
             }
         </script>
@@ -84,7 +86,9 @@
 <script>
     window.importMapInjector.initPromise.then(() => {
       import('@ontotext/root-config');
+      import('@ontotext/styleguide');
     });
+        System.import('@ontotext/styleguide');
 </script>
 <import-map-overrides-full show-when-local-storage="devtools" dev-libs></import-map-overrides-full>
 <figure id="splash-screen">

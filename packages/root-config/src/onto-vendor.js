@@ -7,4 +7,3 @@ import './styles/css/common.css';
 import './styles/css/variables.css';
 import './styles/css/fonts.css';
 import './styles/css/icons.css';
-import './styles/css/variables.css';

@@ -1,0 +1,41 @@
+/**
+ * Do not edit directly
+ * Generated on Tue, 27 May 2025 07:28:08 GMT
+ */
+
+:root {
+  --gdb-semantic-fontsize-body-sm: 0.75rem;
+  --gdb-semantic-fontsize-body-lg: 1.25rem;
+  --gdb-primitive-font-main-size: 1rem;
+  --gdb-primitive-color-yellow-700: #f8efcf;
+  --gdb-primitive-color-yellow-600: #fae9a8;
+  --gdb-primitive-color-yellow-500: #fce382;
+  --gdb-primitive-color-yellow-400: #ffde5c;
+  --gdb-primitive-color-yellow-300: #bfa645;
+  --gdb-primitive-color-yellow-200: #806f2e;
+  --gdb-primitive-color-yellow-100: #403717;
+  --gdb-primitive-color-blue-700: #b8d1f8;
+  --gdb-primitive-color-blue-600: #7aadfa;
+  --gdb-primitive-color-blue-500: #3d89fc;
+  --gdb-primitive-color-blue-400: #33F55f;
+  --gdb-primitive-color-blue-300: #004cbf;
+  --gdb-primitive-color-blue-200: #003380;
+  --gdb-primitive-color-blue-100: #001940;
+  --gdb-semantic-fontsize-body-md: var(--gdb-primitive-font-main-size);
+  --gdb-semantic-secondary-600-2: var(--gdb-primitive-color-yellow-700);
+  --gdb-semantic-secondary-600: var(--gdb-primitive-color-yellow-600);
+  --gdb-semantic-secondary-500: var(--gdb-primitive-color-yellow-500);
+  --gdb-semantic-secondary-400: var(--gdb-primitive-color-yellow-400);
+  --gdb-semantic-secondary-300: var(--gdb-primitive-color-yellow-300);
+  --gdb-semantic-secondary-200: var(--gdb-primitive-color-yellow-200);
+  --gdb-semantic-secondary-100: var(--gdb-primitive-color-yellow-100);
+  --gdb-semantic-primary-700: var(--gdb-primitive-color-blue-700);
+  --gdb-semantic-primary-600: var(--gdb-primitive-color-blue-600);
+  --gdb-semantic-primary-500: var(--gdb-primitive-color-blue-500);
+  --gdb-semantic-primary-400: var(--gdb-primitive-color-blue-400);
+  --gdb-semantic-primary-300: var(--gdb-primitive-color-blue-300);
+  --gdb-semantic-primary-200: var(--gdb-primitive-color-blue-200);
+  --gdb-semantic-primary-100: var(--gdb-primitive-color-blue-100);
+  --gdb-component-text-headings: var(--gdb-semantic-secondary-400);
+  --gdb-component-text-body: var(--gdb-semantic-secondary-600);
+}
