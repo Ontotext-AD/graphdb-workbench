@@ -96,4 +96,9 @@ export class MainMenuSteps {
         this.clickOnExplore();
         this.getSubMenuButton('Class hierarchy').click();
     }
+
+    static clickOnVisualGraph() {
+        this.clickOnExplore();
+        this.getSubMenuButton('Visual graph').click();
+    }
 }
