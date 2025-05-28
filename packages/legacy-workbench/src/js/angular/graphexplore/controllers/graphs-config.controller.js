@@ -229,6 +229,9 @@ function GraphConfigCtrl(
         validateCurrentPage(() => {
             $scope.showEditor();
             $scope.page = nextPage;
+            // For some reason in single spa, this doesn't trigger a digest, which causes issues
+            // https://graphwise.atlassian.net/browse/GDB-12391
+            $scope.$apply();
         });
     };
 
