@@ -5,7 +5,7 @@ const {
   hasPlaceholderDifference,
   isUntranslated,
   validate
-} = require('../src/scripts/validate-translations');
+} = require('../scripts/validate-translations');
 
 describe('Utility functions', () => {
   describe('getAllKeys()', () => {
