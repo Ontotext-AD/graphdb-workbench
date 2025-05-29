@@ -20,7 +20,7 @@ export class VisualGraphSteps {
     }
 
     static getSavedGraphsArea() {
-        return this.getGraphConfigSearchPanel().find('h3').contains('Saved graphs');
+        return this.getGraphConfigSearchPanel().getByTestId('saved-graphs-area');
     }
 
     static openNodeLabelGraph() {

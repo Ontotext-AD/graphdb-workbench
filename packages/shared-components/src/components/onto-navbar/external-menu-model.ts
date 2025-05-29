@@ -12,6 +12,7 @@ export interface ExternalMenuItemModel {
   parent?: string;
   hrefFun?: string;
   shouldShow?: boolean;
+  testSelector?: string;
 }
 
 export interface ExternalMenuItemsModel {

@@ -66,14 +66,16 @@ PluginRegistry.add('main.menu', {
             href: 'relationships',
             order: 2,
             parent: 'Explore',
-            guideSelector: 'sub-menu-class-relationships'
+            guideSelector: 'sub-menu-class-relationships',
+            testSelector: 'sub-menu-class-relationships'
         }, {
             label: 'Class hierarchy',
             labelKey: 'menu.class.hierarchy.label',
             href: 'hierarchy',
             order: 1,
             parent: 'Explore',
-            guideSelector: 'menu-class-hierarchy'
+            guideSelector: 'menu-class-hierarchy',
+            testSelector:'menu-class-hierarchy'
         }, {
             label: 'Visual graph',
             labelKey: 'visual.graph.label',
@@ -84,7 +86,8 @@ PluginRegistry.add('main.menu', {
                 href: 'graphs-visualizations/config/save',
                 children: []
             }],
-            guideSelector: 'sub-menu-visual-graph'
+            guideSelector: 'sub-menu-visual-graph',
+            testSelector: 'sub-menu-visual-graph'
         }
     ]
 });
