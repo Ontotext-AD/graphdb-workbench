@@ -413,6 +413,11 @@ span.label {
     padding: 0 13px;
 }
 
+.btns-all .btn-group #wb-repositories-addRepositoryLink:hover {
+    /* Override _anchor.scss style */
+    text-decoration-line: none !important;
+}
+
 .remote-location-type-title {
     padding: 0;
 }
