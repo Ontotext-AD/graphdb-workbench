@@ -79,8 +79,8 @@ export class MainMenuSteps {
         return MainMenuSteps.getMainMenu().find('.sub-menu');
     }
 
-    static getSubMenuButton(submenuName) {
-        return MainMenuSteps.getSubMenus().contains(submenuName);
+    static getSubMenuButton(testId) {
+        return this.getSubMenus().getByTestId(testId);
     }
 
     static clickOnSubMenu(submenuName) {
@@ -89,16 +89,16 @@ export class MainMenuSteps {
 
     static clickOnGraphsOverview() {
         this.clickOnExplore();
-        this.getSubMenuButton('Graphs overview').click();
+        this.getSubMenuButton('sub-menu-graph-overview').click();
     }
 
     static clickOnClassHierarchy() {
         this.clickOnExplore();
-        this.getSubMenuButton('Class hierarchy').click();
+        this.getSubMenuButton('menu-class-hierarchy').click();
     }
 
     static clickOnVisualGraph() {
         this.clickOnExplore();
-        this.getSubMenuButton('Visual graph').click();
+        this.getSubMenuButton('sub-menu-visual-graph').click();
     }
 }

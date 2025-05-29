@@ -289,6 +289,7 @@ export class NavbarItemModel {
   private _icon?: string;
   private _role?: string;
   private _guideSelector?: string;
+  private _testSelector?: string;
 
   constructor(data: any) {
     this._order = data.order;
@@ -305,7 +306,8 @@ export class NavbarItemModel {
     this._editions = data.editions;
     this._icon = data.icon;
     this._role = data.role;
-    this._guideSelector = data.guideSelector
+    this._guideSelector = data.guideSelector;
+    this._testSelector = data.testSelector;
   }
 
   addChildren(children: NavbarItemModel): void {
@@ -430,5 +432,13 @@ export class NavbarItemModel {
 
   set guideSelector(value: string) {
     this._guideSelector = value;
+  }
+
+  get testSelector(): string {
+    return this._testSelector;
+  }
+
+  set testSelector(value: string) {
+    this._testSelector = value;
   }
 }

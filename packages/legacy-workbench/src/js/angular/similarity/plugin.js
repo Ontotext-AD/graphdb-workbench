@@ -36,7 +36,8 @@ PluginRegistry.add('main.menu', {
                 href: 'similarity/index/create',
                 children: []
             }],
-            guideSelector: 'sub-menu-similarity'
+            guideSelector: 'sub-menu-similarity',
+            testSelector: 'sub-menu-similarity'
         }
     ]
 });
