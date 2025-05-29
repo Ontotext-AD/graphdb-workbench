@@ -66,10 +66,10 @@
         }
       },
       "fr": {
-        "label": "fr &middot; French",
+        "label": "fr &middot; Français",
         "tooltip": {
           "selected": "Current language",
-          "not_selected":"Change language to French"
+          "not_selected":"Changer la langue en Français"
         }
       }
     }

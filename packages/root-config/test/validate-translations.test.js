@@ -5,7 +5,7 @@ const os = require('os');
 const { spawnSync } = require('child_process');
 
 describe('translation-report script', () => {
-  const scriptPath = path.resolve(__dirname, '../src/scripts/validate-translations.js');
+  const scriptPath = path.resolve(__dirname, '../scripts/validate-translations.js');
   const fixturesDir = path.resolve(__dirname, 'fixtures', 'packages');
   let tmpDir = null;
 

@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
 // Either use SCRIPT_ROOT env param, or go up 4 levels to project root where packages/ lives
-const baseDir = process.env.SCRIPT_ROOT || path.resolve(__dirname, '..', '..', '..', '..');
+const baseDir = process.env.SCRIPT_ROOT || path.resolve(__dirname, '..', '..', '..');
 const packagesDir = path.join(baseDir, 'packages');
 
 // Verified identical translations - no warnings or errors about them
@@ -47,6 +47,8 @@ const identicalTranslations = [
   "Google Analytics (GA4)",
   "Index",
   "<div><span class=\"graph\">GRAPH</span><span class=\"wise\">WISE</span></div><div class=\"thrives\">AI THRIVES ON WHOLE DATA</div>",
+  "fr &middot; Français",
+  "Changer la langue en Français",
 
   // File formats:
   "JSON",
