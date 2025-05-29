@@ -41,6 +41,10 @@ main menu height*/
   text-decoration: none !important;
 }
 
+.navbar-component .sub-menu-item a.sub-menu-link:not([href]) translate-label.menu-item {
+  padding-right: 3.5px;
+}
+
 .navbar-component a:not([href]):not([tabindex]),
 .navbar-component a:not([href]):not([tabindex]):focus,
 .navbar-component a:not([href]):not([tabindex]):hover {
