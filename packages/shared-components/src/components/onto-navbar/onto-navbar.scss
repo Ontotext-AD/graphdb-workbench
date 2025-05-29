@@ -36,6 +36,12 @@ main menu height*/
   text-decoration: none;
 }
 
+.navbar-component a:not([href]):not([tabindex]),
+.navbar-component a:not([href]):not([tabindex]):focus,
+.navbar-component a:not([href]):not([tabindex]):hover {
+  color: var(--secondary-color);
+}
+
 .navbar-component li .menu-element-root:hover,
 .navbar-component .sub-menu li:hover {
   background-color: rgba(0, 0, 0, .1);
