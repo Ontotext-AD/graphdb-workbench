@@ -1,5 +1,6 @@
 :host {
   display: block;
+  height: 100%;
 }
 .wb-layout {
   display: grid;
@@ -9,7 +10,6 @@
         "nav header"
         "nav main"
         "nav footer";
-  height: 100vh;
   margin: 0;
 
   &.expanded {
