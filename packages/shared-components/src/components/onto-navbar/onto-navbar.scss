@@ -36,15 +36,28 @@ main menu height*/
   text-decoration: none;
 }
 
+.navbar-component li a.sub-menu-link:not([href=""]):not([tabindex]):hover {
+  // Overriding !important in _anchor.scss
+  text-decoration: none !important;
+}
+
 .navbar-component a:not([href]):not([tabindex]),
 .navbar-component a:not([href]):not([tabindex]):focus,
 .navbar-component a:not([href]):not([tabindex]):hover {
   color: var(--secondary-color);
 }
 
+.navbar-component a.sub-menu-link:not([href]):hover .menu-item,
+.navbar-component a.sub-menu-link[href=""]:hover .menu-item {
+  // Overriding !important in _anchor.scss
+  text-decoration-line: underline !important;
+}
+
 .navbar-component li .menu-element-root:hover,
 .navbar-component .sub-menu li:hover {
   background-color: rgba(0, 0, 0, .1);
+  // Overriding !important in _anchor.scss
+  text-decoration-line: none !important;
 }
 
 .navbar-component li .menu-element-root:hover .menu-item-icon,
