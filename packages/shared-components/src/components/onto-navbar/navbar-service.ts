@@ -51,7 +51,8 @@ export class NavbarService {
       guideSelector: item.guideSelector,
       hasParent: !!parent,
       parent: item.parent,
-      selected: false
+      selected: false,
+      testSelector: item.testSelector,
     });
     itemModel.children = children.map((childrenItem) => this.toMenuItemModel(childrenItem, childrenItem.children, itemModel));
     return itemModel;
