@@ -3,7 +3,7 @@
   "scripts": {
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
-    "validate": "node ./src/scripts/validate-translations.js",
+    "validate": "node ./scripts/validate-translations.js",
     "test": "jest",
     "test:watch": "jest --watch"
   },
