@@ -14,4 +14,8 @@ export class BaseSteps {
   static reloadPage(force = false) {
     cy.reload(force);
   }
+
+  static getByTestId(testId) {
+    return cy.getByTestId(testId);
+  }
 }
