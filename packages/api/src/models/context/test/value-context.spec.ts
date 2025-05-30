@@ -139,4 +139,23 @@ describe('ValueContext', () => {
     // Verify the value was not updated and callback was not called
     expect(result).toBe(false);
   });
+
+  it('should call afterChangeCallback after the main callback', () => {
+    const value = 123;
+    const callOrder: string[] = [];
+
+    const mainCallback = jest.fn(() => callOrder.push('main'));
+    const afterCallback = jest.fn(() => callOrder.push('after'));
+
+    valueContext.subscribe(mainCallback, undefined, afterCallback);
+
+    jest.spyOn(ObjectUtil, 'deepEqual').mockReturnValue(false);
+
+    valueContext.setValue(value);
+
+    expect(mainCallback).toHaveBeenCalledWith(value);
+    expect(afterCallback).toHaveBeenCalledWith(value);
+    expect(callOrder).toEqual(['main', 'after']);
+  });
+
 });

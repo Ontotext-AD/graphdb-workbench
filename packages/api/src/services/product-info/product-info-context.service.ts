@@ -2,6 +2,7 @@ import { ContextService } from '../context';
 import { ProductInfo } from '../../models/product-info';
 import { ValueChangeCallback } from '../../models/context/value-change-callback';
 import {DeriveContextServiceContract} from '../../models/context/update-context-method';
+import {LifecycleHooks} from '../../providers/service/lifecycle-hooks';
 
 type ProductInfoContextFields = {
   readonly PRODUCT_INFO: string;
@@ -14,7 +15,7 @@ type ProductInfoContextFieldParams = {
 /**
  * Service for managing product information context.
  */
-export class ProductInfoContextService extends ContextService<ProductInfoContextFields> implements DeriveContextServiceContract<ProductInfoContextFields, ProductInfoContextFieldParams> {
+export class ProductInfoContextService extends ContextService<ProductInfoContextFields> implements DeriveContextServiceContract<ProductInfoContextFields, ProductInfoContextFieldParams>, LifecycleHooks {
   readonly PRODUCT_INFO = 'productInfo';
 
   /**
