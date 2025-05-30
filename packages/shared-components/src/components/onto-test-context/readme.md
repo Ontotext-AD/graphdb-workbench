@@ -210,19 +210,19 @@ Type: `Promise<void>`
 
 ### `updateSelectedRepository(repositoryReference: RepositoryReference) => Promise<void>`
 
-
+Updates the selected repository in the application context.
 
 #### Parameters
 
-| Name                  | Type                  | Description |
-| --------------------- | --------------------- | ----------- |
-| `repositoryReference` | `RepositoryReference` |             |
+| Name                  | Type                  | Description                                                             |
+| --------------------- | --------------------- | ----------------------------------------------------------------------- |
+| `repositoryReference` | `RepositoryReference` | - The RepositoryReference object representing the repository to select. |
 
 #### Returns
 
 Type: `Promise<void>`
 
-
+A Promise that resolves when the selected repository has been updated.
 
 
 ----------------------------------------------

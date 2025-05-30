@@ -3,6 +3,7 @@ import {DeriveContextServiceContract} from '../../models/context/update-context-
 import {ValueChangeCallback} from '../../models/context/value-change-callback';
 import {ServiceProvider} from '../../providers';
 import {AutocompleteStorageService} from './autocomplete-storage.service';
+import {LifecycleHooks} from '../../providers/service/lifecycle-hooks';
 
 type AutocompleteContextFields = {
   readonly AUTOCOMPLETE_ENABLED: string;
@@ -15,7 +16,7 @@ type AutocompleteContextFieldParams = {
 /**
  * Service for managing autocomplete context state across the application.
  */
-export class AutocompleteContextService extends ContextService<AutocompleteContextFields> implements DeriveContextServiceContract<AutocompleteContextFields, AutocompleteContextFieldParams> {
+export class AutocompleteContextService extends ContextService<AutocompleteContextFields> implements DeriveContextServiceContract<AutocompleteContextFields, AutocompleteContextFieldParams>, LifecycleHooks {
   /**
    * Context property key for the autocomplete enabled state.
    */

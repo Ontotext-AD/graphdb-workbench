@@ -1,3 +1,4 @@
+import {ServiceProvider, ContextSubscriptionManager} from "@ontotext/workbench-api";
 const defaultOpts = {
     // required opts
     angular: null,
@@ -11,6 +12,7 @@ const defaultOpts = {
     elementId: "__single_spa_angular_1",
     strictDi: false,
     template: undefined,
+    subscriptions: undefined
 };
 
 export default function singleSpaAngularJS(userOpts) {
@@ -82,7 +84,7 @@ function mount(opts, mountedInstances, props = {}) {
             bootstrapEl.appendChild(uiViewEl);
         }
 
-        if(opts.ngRoute){
+        if (opts.ngRoute){
             const ngViewEl = document.createElement("div");
             ngViewEl.setAttribute(
                 "ng-view",""
@@ -113,6 +115,19 @@ function mount(opts, mountedInstances, props = {}) {
             //     opts.mainAngularModule,
             // ]);
         }
+
+        opts.subscriptions = ServiceProvider.get(ContextSubscriptionManager)
+            .subscribeToAllRegisteredContexts(() => {}, undefined, () => {
+                const $timeout = mountedInstances.instance?.get('$timeout');
+                const $rootScope = mountedInstances.instance?.get('$rootScope');
+
+                if ($timeout && $rootScope) {
+                    $timeout(() => {
+                        $rootScope.$apply();
+                    });
+                }
+            }
+        )
 
         // mountedInstances.instance.get("$rootScope").singleSpaProps = props;
         //
@@ -176,6 +191,10 @@ function unmount(opts, mountedInstances, props = {}) {
             // TODO: Find a way to destroy the angular-translate module properly.
             // delete window.angular;
         }
+
+        // unsubscribe
+        opts.subscriptions?.();
+        opts.subscriptions = undefined;
 
         setTimeout(resolve);
     });

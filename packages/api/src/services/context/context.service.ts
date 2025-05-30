@@ -2,6 +2,10 @@ import {ValueContext} from '../../models/context/value-context';
 import {ValueChangeCallback} from '../../models/context/value-change-callback';
 import {Service} from '../../providers/service/service';
 import {BeforeChangeValidationPromise} from '../../models/context/before-change-validation-promise';
+import {ContextSubscriptionManager} from './context-subscription-manager';
+import {ServiceProvider} from '../../providers';
+import {Subscription} from '../../models/common/subscription';
+import {SubscriptionList} from '../../models/common';
 
 /**
  * Abstract service that manages the context for various properties and allows for value retrieval, updates
@@ -16,6 +20,15 @@ export abstract class ContextService<TFields extends Record<string, unknown>> im
    */
   // eslint-disable-next-line @typescript-eslint/consistent-generic-constructors, @typescript-eslint/no-explicit-any
   protected context: Map<string, ValueContext<any>> = new Map();
+  private _canSubscribeAll = false;
+
+  /**
+   * After construction, register this service with the global registry.
+   */
+  onCreated(): void {
+    this._canSubscribeAll = true;
+    ServiceProvider.get(ContextSubscriptionManager).subscribeToService(this);
+  }
 
   /**
    * Updates the value of a specific property.
@@ -67,18 +80,49 @@ export abstract class ContextService<TFields extends Record<string, unknown>> im
    *                         It will receive the current value of the property as its argument.
    * @param beforeChangeValidationPromise Optional promise that can be used to validate the new value before it is set.
    *                                     If the promise resolves to false, the value change will be rejected.
+   * @param afterChangeCallback - Optional function called **after** the main callback with the updated value.
    *
    * @returns A function that can be called to unsubscribe from the property updates.
    *
    * @template T The type of the value that the callback function will receive.
    */
-  protected subscribe<T>(propertyName: string, callbackFunction: ValueChangeCallback<T | undefined>, beforeChangeValidationPromise?: BeforeChangeValidationPromise<T>): () => void {
+  protected subscribe<T>(propertyName: string,
+    callbackFunction: ValueChangeCallback<T | undefined>,
+    beforeChangeValidationPromise?: BeforeChangeValidationPromise<T>,
+    afterChangeCallback?: ValueChangeCallback<T | undefined>): () => void {
+
     if (callbackFunction) {
       // Call the callback immediately with the current value
       callbackFunction(this.getContextPropertyValue(propertyName));
     }
+    if (afterChangeCallback) {
+      afterChangeCallback(this.getContextPropertyValue(propertyName));
+    }
     // Return the unsubscribe function from the context
-    return this.getOrCreateValueContext<T>(propertyName).subscribe(callbackFunction, beforeChangeValidationPromise);
+    return this.getOrCreateValueContext<T>(propertyName).subscribe(callbackFunction, beforeChangeValidationPromise, afterChangeCallback);
+  }
+
+  /**
+   * Subscribes globally to all fields defined in TFields.
+   */
+  public subscribeAll<T>(
+    callbackFunction: ValueChangeCallback<T | undefined>,
+    beforeChangeValidationPromise?: BeforeChangeValidationPromise<T>,
+    afterChangeCallback?: ValueChangeCallback<T | undefined>
+  ): Subscription {
+    const unsubscribeFns: SubscriptionList = new SubscriptionList();
+    // iterate through service-defined fields
+    for (const key of this.context.keys()) {
+      unsubscribeFns.add(
+        this.subscribe<T>(
+          key,
+          callbackFunction,
+          beforeChangeValidationPromise,
+          afterChangeCallback
+        )
+      );
+    }
+    return (): void => unsubscribeFns.unsubscribeAll();
   }
 
   /**
@@ -114,5 +158,9 @@ export abstract class ContextService<TFields extends Record<string, unknown>> im
       }
     }
     return false;
+  }
+
+  get canSubscribeAll(): boolean {
+    return this._canSubscribeAll;
   }
 }
