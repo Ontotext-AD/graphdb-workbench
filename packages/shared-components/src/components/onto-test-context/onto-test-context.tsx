@@ -157,6 +157,13 @@ export class OntoTestContext {
     return Promise.resolve();
   }
 
+  /**
+   * Updates the selected repository in the application context.
+   *
+   * @method updateSelectedRepository
+   * @param repositoryReference - The RepositoryReference object representing the repository to select.
+   * @returns A Promise that resolves when the selected repository has been updated.
+   */
   @Method()
   updateSelectedRepository(repositoryReference: RepositoryReference): Promise<void> {
     ServiceProvider.get(RepositoryContextService).updateSelectedRepository(repositoryReference);
