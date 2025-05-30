@@ -76,7 +76,8 @@
   },
   "repository-selector": {
     "btn": {
-      "toggle": "Choose repository"
+      "toggle": "Choose repository",
+      "no_repositories": "No accessible repositories"
     },
     "tooltip": {
       "repository": "Repository",
