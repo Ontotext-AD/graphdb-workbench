@@ -76,7 +76,8 @@
   },
   "repository-selector": {
     "btn": {
-      "toggle": "Choisissez le dépôt"
+      "toggle": "Choisissez le dépôt",
+      "no_repositories": "Aucun dépôt accessible"
     },
     "tooltip": {
       "repository": "Dépôt",

@@ -23,7 +23,7 @@ describe('Home page: without repositories', () => {
     HomeSteps.getRDFSearchButton().should('not.be.visible');
     // Repository selector menu should be visible and empty
     HomeSteps.getRepositorySelector().should('be.visible');
-    HomeSteps.getSelectedRepository().should('contain', 'Choose repository');
+    HomeSteps.getSelectedRepository().should('contain', 'No accessible repositories');
     // Language selector menu should be visible and default to English
     HomeSteps.getLanguageSelector().should('be.visible');
     HomeSteps.getSelectedLanguage().should('contain', 'en');

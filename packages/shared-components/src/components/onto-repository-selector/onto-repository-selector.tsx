@@ -65,6 +65,11 @@ export class OntoRepositorySelector {
   @State() defaultToggleButtonName: string;
 
   /**
+   * The message to display when there are no repositories available.
+   */
+  @State() noRepositoriesButtonMessage: string;
+
+  /**
    * A list derived from the `items` input prop, with tooltip functions attached.
    *
    * Tooltip generation is centralized here to ensure consistency and avoid redundant operations.
@@ -85,7 +90,7 @@ export class OntoRepositorySelector {
   }
 
   connectedCallback() {
-    this.subscriptions.push(this.subscribeToTranslationChanged());
+    this.subscriptions.push(...this.subscribeToTranslationChanged());
 
     // Manually apply tooltip functions to each item on first mount.
     if (this.items && this.items.length) {
@@ -104,12 +109,13 @@ export class OntoRepositorySelector {
   }
 
   render() {
+    const buttonLabel = this.getButtonLabel();
     return (
       <Host>
         <onto-dropdown
           class='onto-repository-selector'
           onValueChanged={this.onValueChanged()}
-          dropdownButtonName={<SelectorButton repository={this.currentRepository} defaultToggleButtonName={this.defaultToggleButtonName}  location={this.getLocation()}/>}
+          dropdownButtonName={<SelectorButton repository={this.currentRepository} defaultToggleButtonName={buttonLabel}  location={this.getLocation()}/>}
           dropdownButtonTooltip={this.createTooltipFunctionForRepository(this.currentRepository)}
           dropdownTooltipTrigger='mouseenter focus'
           dropdownAlignment={DropdownItemAlignment.RIGHT}
@@ -219,10 +225,15 @@ export class OntoRepositorySelector {
     return html;
   }
 
-  private subscribeToTranslationChanged(): () => void {
-    return TranslationService.onTranslate('repository-selector.btn.toggle', [], (toggleButtonName) => {
-      this.defaultToggleButtonName = toggleButtonName;
-    })
+  private subscribeToTranslationChanged(): Array<() => void> {
+    return [
+      TranslationService.onTranslate('repository-selector.btn.toggle', [], (toggleButtonName) => {
+        this.defaultToggleButtonName = toggleButtonName;
+      }),
+      TranslationService.onTranslate('repository-selector.btn.no_repositories', [], (noRepositoriesButtonMessage) => {
+        this.noRepositoriesButtonMessage = noRepositoriesButtonMessage;
+      })
+    ];
   }
 
   private onRepositoryChanged(selectedRepository: Repository): void {
@@ -234,5 +245,11 @@ export class OntoRepositorySelector {
       return `@${UriUtil.shortenIri(this.currentRepository.location)}`;
     }
     return ``;
+  }
+
+  private getButtonLabel() {
+    return this.items?.length
+      ? this.defaultToggleButtonName
+      : this.noRepositoriesButtonMessage;
   }
 }
