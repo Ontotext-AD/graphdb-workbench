@@ -1,4 +1,5 @@
 import {Service} from './service';
+import {LifecycleHooks} from './lifecycle-hooks';
 
 /**
  * Service provider for all {@link Service} instances. Services in the API are singletons, meaning that there is only
@@ -13,8 +14,11 @@ export class ServiceProvider {
   private static readonly SERVICE_INSTANCES = new Map<string, Service>;
 
   /**
-   * Returns the instance of the given service type. If the service has not been created yet, it will be created and
-   * cached.
+   * Returns the instance of the given service type. If the service has not been created yet, this method:
+   *   1. Instantiates the service via `new type()`.
+   *   2. Calls its `onCreated()` hook if implemented.
+   *   3. Caches and returns the instance.
+   *
    * @param type The service type to retrieve.
    * @returns The instance of the service.
    * @template T The type of the service to retrieve.
@@ -23,9 +27,16 @@ export class ServiceProvider {
   public static get<T extends Service>(type: { new (): T }): T {
     if (!ServiceProvider.SERVICE_INSTANCES.has(type.name)) {
       const instance = new type();
+      if (ServiceProvider.implementsLifecycleHooks(instance)) {
+        instance.onCreated?.();
+      }
       ServiceProvider.SERVICE_INSTANCES.set(type.name, instance);
     }
     return this.SERVICE_INSTANCES.get(type.name) as T;
+  }
+
+  private static implementsLifecycleHooks(instance: Service): instance is LifecycleHooks {
+    return typeof instance === 'object' && typeof (instance as LifecycleHooks).onCreated === 'function';
   }
 
   /**
