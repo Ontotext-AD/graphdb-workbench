@@ -5,6 +5,7 @@ import {DeriveContextServiceContract} from '../../models/context/update-context-
 import {ServiceProvider} from '../../providers';
 import {RepositoryStorageService} from './repository-storage.service';
 import {BeforeChangeValidationPromise} from '../../models/context/before-change-validation-promise';
+import {LifecycleHooks} from '../../providers/service/lifecycle-hooks';
 
 type RepositoryContextFields = {
   readonly REPOSITORY_LIST: string;
@@ -19,7 +20,7 @@ type RepositoryContextFieldParams = {
 /**
  * The RepositoryContextService class manages the application's repository context.
  */
-export class RepositoryContextService extends ContextService<RepositoryContextFields> implements DeriveContextServiceContract<RepositoryContextFields, RepositoryContextFieldParams> {
+export class RepositoryContextService extends ContextService<RepositoryContextFields> implements DeriveContextServiceContract<RepositoryContextFields, RepositoryContextFieldParams>, LifecycleHooks {
   readonly SELECTED_REPOSITORY = 'selectedRepository';
   readonly REPOSITORY_LIST = 'repositoryList';
 

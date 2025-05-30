@@ -2,6 +2,7 @@ import {ContextService} from '../context';
 import {ValueChangeCallback} from '../../models/context/value-change-callback';
 import {DeriveContextServiceContract} from '../../models/context/update-context-method';
 import {AuthenticatedUser, RestrictedPages, SecurityConfig, OpenIdConfig} from '../../models/security';
+import {LifecycleHooks} from '../../providers/service/lifecycle-hooks';
 
 type SecurityContextFields = {
   readonly RESTRICTED_PAGES: string
@@ -22,7 +23,7 @@ type SecurityContextFieldParams = {
 /**
  * The SecurityContextService class manages the various fields in the security context.
  */
-export class SecurityContextService extends ContextService<SecurityContextFields> implements DeriveContextServiceContract<SecurityContextFields, SecurityContextFieldParams> {
+export class SecurityContextService extends ContextService<SecurityContextFields> implements DeriveContextServiceContract<SecurityContextFields, SecurityContextFieldParams>, LifecycleHooks {
   readonly RESTRICTED_PAGES = 'restrictedPages';
   readonly SECURITY_CONFIG = 'securityConfig';
   readonly AUTHENTICATED_USER = 'authenticatedUser';

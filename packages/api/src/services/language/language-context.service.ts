@@ -6,6 +6,7 @@ import {LanguageService} from './language.service';
 import {DeriveContextServiceContract} from '../../models/context/update-context-method';
 import {LanguageConfig, TranslationBundle} from '../../models/language';
 import {BeforeChangeValidationPromise} from '../../models/context/before-change-validation-promise';
+import {LifecycleHooks} from '../../providers/service/lifecycle-hooks';
 
 type LanguageContextFields = {
   readonly SELECTED_LANGUAGE: string;
@@ -14,7 +15,7 @@ type LanguageContextFields = {
 /**
  * The LanguageService class manages the application's language context.
  */
-export class LanguageContextService extends ContextService<LanguageContextFields> implements DeriveContextServiceContract<LanguageContextFields> {
+export class LanguageContextService extends ContextService<LanguageContextFields> implements DeriveContextServiceContract<LanguageContextFields>, LifecycleHooks {
   private readonly LANGUAGE_CONFIG = 'languageConfig';
   readonly SELECTED_LANGUAGE = 'selectedLanguage';
   readonly LANGUAGE_BUNDLE = 'languageBundle';
