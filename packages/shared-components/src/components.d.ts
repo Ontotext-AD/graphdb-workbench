@@ -269,6 +269,12 @@ export namespace Components {
           * @param restrictedPages - the map with restricted pages to be set in context service as new value.
          */
         "updateRestrictedPage": (restrictedPages: Record<string, boolean>) => Promise<void>;
+        /**
+          * Updates the selected repository in the application context.
+          * @method updateSelectedRepository
+          * @param repositoryReference - The RepositoryReference object representing the repository to select.
+          * @returns A Promise that resolves when the selected repository has been updated.
+         */
         "updateSelectedRepository": (repositoryReference: RepositoryReference) => Promise<void>;
     }
     /**
