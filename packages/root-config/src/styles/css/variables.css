@@ -36,4 +36,7 @@
     /* Graphwise colors */
     --graphwise-blue-color: #001FFF;
     --graphwise-pink-color: #DF367C;
+
+    /* Sizing */
+    --main-content-rl-padding: 2rem;
 }
