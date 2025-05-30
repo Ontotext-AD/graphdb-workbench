@@ -1,5 +1,5 @@
 a {
-  &:hover,
+  &:hover:not(.btn),
   &:active,
   &[href^="http"],
   &[href^="http"]:hover,
