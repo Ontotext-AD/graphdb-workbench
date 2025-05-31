@@ -2,6 +2,7 @@ import {ContextService} from '../context';
 import {NamespaceMap} from '../../models/repositories';
 import {DeriveContextServiceContract} from '../../models/context/update-context-method';
 import {ValueChangeCallback} from '../../models/context/value-change-callback';
+import {LifecycleHooks} from '../../providers/service/lifecycle-hooks';
 
 type NamespacesContextFields = {
   readonly NAMESPACES: string;
@@ -14,7 +15,7 @@ type NamespacesContextFieldParams = {
 /**
  * Service for managing namespaces context in the application.
  */
-export class NamespacesContextService extends ContextService<NamespacesContextFields> implements DeriveContextServiceContract<NamespacesContextFields, NamespacesContextFieldParams> {
+export class NamespacesContextService extends ContextService<NamespacesContextFields> implements DeriveContextServiceContract<NamespacesContextFields, NamespacesContextFieldParams>, LifecycleHooks {
   readonly NAMESPACES = 'namespaces';
 
   /**

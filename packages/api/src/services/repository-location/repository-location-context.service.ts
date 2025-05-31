@@ -2,6 +2,7 @@ import {ContextService} from '../context';
 import {ValueChangeCallback} from '../../models/context/value-change-callback';
 import {RepositoryLocation} from '../../models/repository-location';
 import {DeriveContextServiceContract} from '../../models/context/update-context-method';
+import {LifecycleHooks} from '../../providers/service/lifecycle-hooks';
 
 type RepositoryLocationContextFields = {
   readonly ACTIVE_REPOSITORY_LOCATION: string;
@@ -16,7 +17,7 @@ type RepositoryLocationContextFieldParams = {
 /**
  * The RepositoryLocationContextService class manages the application's repository location context.
  */
-export class RepositoryLocationContextService extends ContextService<RepositoryLocationContextFields> implements DeriveContextServiceContract<RepositoryLocationContextFields, RepositoryLocationContextFieldParams> {
+export class RepositoryLocationContextService extends ContextService<RepositoryLocationContextFields> implements DeriveContextServiceContract<RepositoryLocationContextFields, RepositoryLocationContextFieldParams>, LifecycleHooks {
 
   readonly ACTIVE_REPOSITORY_LOCATION = 'activeRepositoryLocation';
   readonly IS_LOADING = 'isLoading';

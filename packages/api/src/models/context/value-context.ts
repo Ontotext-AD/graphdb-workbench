@@ -16,6 +16,7 @@ export class ValueContext<T> {
   private value: T | undefined;
   private callbackFunctions: ValueChangeCallback<T>[] = [];
   private beforeChangeValidationPromises: BeforeChangeValidationPromise<T>[] = [];
+  private afterValueChangeCallbackFunctions: ValueChangeCallback<T>[] = [];
 
   /**
    * Sets the value of the context. If the new value is different from the current value
@@ -29,6 +30,7 @@ export class ValueContext<T> {
     if (!ObjectUtil.deepEqual(this.value, value)) {
       this.value = this.getCopy(value);
       this.callbackFunctions.forEach(callbackFunction => callbackFunction(this.getValue()));
+      this.afterValueChangeCallbackFunctions.forEach(callbackFunction => callbackFunction(this.getValue()));
     }
   }
 
@@ -57,16 +59,28 @@ export class ValueContext<T> {
    *                           value of type T whenever the value changes.
    * @param beforeChangeValidationPromise - Optional validation function that returns a promise resolving to
    *                                        a boolean indicating whether a value change should be allowed.
+   * @param afterChangeCallback - Optional function called after value is updated.
    * @returns A function to unsubscribe both the callback and validation promise, removing them from their respective lists.
    */
-  subscribe(callbackFunction: ValueChangeCallback<T | undefined>, beforeChangeValidationPromise?: BeforeChangeValidationPromise<T>): () => void {
+  subscribe(
+    callbackFunction: ValueChangeCallback<T | undefined>,
+    beforeChangeValidationPromise?: BeforeChangeValidationPromise<T>,
+    afterChangeCallback?: ValueChangeCallback<T | undefined>
+  ): () => void {
     this.callbackFunctions.push(callbackFunction);
+
     if (beforeChangeValidationPromise) {
       this.beforeChangeValidationPromises.push(beforeChangeValidationPromise);
     }
+
+    if (afterChangeCallback) {
+      this.afterValueChangeCallbackFunctions.push(afterChangeCallback);
+    }
+
     return () => {
       this.callbackFunctions = this.callbackFunctions.filter(fn => fn !== callbackFunction);
       this.beforeChangeValidationPromises = this.beforeChangeValidationPromises.filter(fn => fn !== beforeChangeValidationPromise);
+      this.afterValueChangeCallbackFunctions = this.afterValueChangeCallbackFunctions.filter(fn => fn !== afterChangeCallback);
     };
   }
 

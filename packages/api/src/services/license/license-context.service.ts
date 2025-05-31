@@ -2,6 +2,7 @@ import {License} from '../../models/license';
 import {ValueChangeCallback} from '../../models/context/value-change-callback';
 import {ContextService} from '../context';
 import {DeriveContextServiceContract} from '../../models/context/update-context-method';
+import {LifecycleHooks} from '../../providers/service/lifecycle-hooks';
 
 type LicenseContextFields = {
   readonly GRAPHDB_LICENSE: string;
@@ -15,7 +16,7 @@ type LicenseContextFieldParams = {
  * Service for managing license context in the application.
  * Extends the base ContextService to provide license-specific functionality.
  */
-export class LicenseContextService extends ContextService<LicenseContextFields> implements DeriveContextServiceContract<LicenseContextFields, LicenseContextFieldParams> {
+export class LicenseContextService extends ContextService<LicenseContextFields> implements DeriveContextServiceContract<LicenseContextFields, LicenseContextFieldParams>, LifecycleHooks {
   readonly GRAPHDB_LICENSE = 'graphDbLicense';
 
   /**

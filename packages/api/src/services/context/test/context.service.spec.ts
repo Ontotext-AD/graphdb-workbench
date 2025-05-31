@@ -151,6 +151,26 @@ describe('ContextService', () => {
     // And callback should have been called once on initial subscription
     expect(callBackFunction).toHaveBeenCalledTimes(1);
   });
+
+  test('ContextService should call afterChangeCallback after the main callback with the same value', () => {
+    const valueOfTestProperty = {a: 1, b: [1, 2]};
+    const propertyName = 'testProperty';
+
+    const callSequence: string[] = [];
+
+    const mainCallback = jest.fn(() => callSequence.push('main'));
+    const afterCallback = jest.fn(() => callSequence.push('after'));
+
+    contextService.subscribeToProperty(propertyName, mainCallback, undefined, afterCallback);
+
+    callSequence.length = 0;
+    contextService.updateProperty(propertyName, valueOfTestProperty);
+
+    expect(mainCallback).toHaveBeenLastCalledWith(valueOfTestProperty);
+    expect(afterCallback).toHaveBeenLastCalledWith(valueOfTestProperty);
+    expect(callSequence).toEqual(['main', 'after']);
+  });
+
 });
 
 type TestContextFields = {
@@ -177,7 +197,12 @@ class TestContextService extends ContextService<TestContextFields> implements De
     return this.getContextPropertyValue(propertyName);
   }
 
-  public subscribeToProperty<T>(propertyName: string, callback: (value?: T) => void, beforeChangeValidationPromise?: BeforeChangeValidationPromise<T>): () => void {
-    return this.subscribe(propertyName, callback, beforeChangeValidationPromise);
+  public subscribeToProperty<T>(
+    propertyName: string,
+    callback: (value?: T) => void,
+    beforeChangeValidationPromise?: BeforeChangeValidationPromise<T>,
+    afterChangeCallback?: (value?: T) => void
+  ): () => void {
+    return this.subscribe(propertyName, callback, beforeChangeValidationPromise, afterChangeCallback);
   }
 }
