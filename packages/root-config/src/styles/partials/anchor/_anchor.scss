@@ -1,6 +1,6 @@
 a {
   &:hover:not(.btn),
-  &:active,
+  &:active:not(.btn),
   &[href^="http"],
   &[href^="http"]:hover,
   &[href^="http"]:active {
