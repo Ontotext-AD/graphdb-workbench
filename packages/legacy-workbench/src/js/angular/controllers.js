@@ -1087,14 +1087,14 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
             });
     };
 
-    const onRepositoriesChanged = () => {
+    const onRepositoryChanged = () => {
         const activeRepository = $repositories.getActiveRepository();
         if (activeRepository !== WorkbenchContextService.getSelectedRepositoryId()) {
             WorkbenchContextService.setSelectedRepositoryId(activeRepository);
         }
         updateAutocompleteStatus();
     };
-    $rootScope.$on("repositoryIsSet", onRepositoriesChanged);
+    $rootScope.$on("repositoryIsSet", onRepositoryChanged);
 
     /**
      * Add a listener for the browser's local store change event. This event will be fired in all tabs of the current domain
@@ -1108,8 +1108,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     // LocalStorageSubscriptionHandlerService in the api module which triggers the change for the respective context
     // properties.
     const onSelectedRepositoryChangedSubscription = ServiceProvider.get(RepositoryContextService)
-      .onSelectedRepositoryChanged((repositoryId) => {
-        onRepositoriesChanged();
+      .onSelectedRepositoryChanged(() => {
+          $rootScope.$broadcast('repositoryIsSet', {newRepo: false});
       });
 
     $scope.downloadGuidesFile = (resourcePath, resourceFile) => {

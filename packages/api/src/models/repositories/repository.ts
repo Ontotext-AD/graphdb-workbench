@@ -35,4 +35,11 @@ export class Repository extends Model<Repository> implements RepositoryReference
     this.writable = data?.writable;
     this.unsupported = data?.unsupported;
   }
+  
+  toRepositoryReference(): RepositoryReference {
+    return {
+      id: this.id,
+      location: this.location
+    };
+  }
 }
