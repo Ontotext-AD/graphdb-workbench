@@ -2,9 +2,9 @@ angular
     .module('graphdb.framework.graphql.directives.configure-endpoint', [])
     .directive('configureEndpoint', ConfigureEndpointComponent);
 
-ConfigureEndpointComponent.$inject = ['ModalService', '$translate', 'GraphqlService', 'GraphqlContextService'];
+ConfigureEndpointComponent.$inject = ['$q', 'ModalService', '$translate', 'GraphqlService', 'GraphqlContextService'];
 
-function ConfigureEndpointComponent(ModalService, $translate, GraphqlService, GraphqlContextService) {
+function ConfigureEndpointComponent($q, ModalService, $translate, GraphqlService, GraphqlContextService) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/graphql/templates/step-configure-endpoint.html',
@@ -100,7 +100,7 @@ function ConfigureEndpointComponent(ModalService, $translate, GraphqlService, Gr
 
             const loadData = () => {
                 $scope.loadingData = true;
-                Promise.all([loadGenerationSettings()])
+                $q.all([loadGenerationSettings()])
                     .then(([generationSettings]) => {
                         $scope.endpointConfiguration.settings = generationSettings;
                     })
