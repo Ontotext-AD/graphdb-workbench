@@ -15,13 +15,14 @@ import './styles/onto-stylesheet.scss';
 import './onto-vendor';
 import './styles/main.scss';
 import {defineCustomElements} from '../../shared-components/loader';
-import {bootstrapPromises} from './bootstrap/bootstrap';
+import {bootstrapPromises, settleAllPromises} from './bootstrap/bootstrap';
 import {
   ServiceProvider,
   EventService,
   NavigationEnd,
   NavigationStart
 } from '@ontotext/workbench-api';
+import {repositoryBootstrap} from './bootstrap/repository/repository-bootstrap';
 
 const showSplashScreen = (show) => {
   const splashScreen = document.getElementById('splash-screen');
@@ -90,7 +91,8 @@ const registerSingleSpaRouterListeners = () => {
 };
 
 const bootstrapApplication = () => {
-  Promise.allSettled(bootstrapPromises.map((bootstrapFn) => bootstrapFn()))
+  settleAllPromises(repositoryBootstrap)
+    .then(() => settleAllPromises(bootstrapPromises))
     .then((results) => {
       const rejected = results.filter(r => r.status === 'rejected');
 

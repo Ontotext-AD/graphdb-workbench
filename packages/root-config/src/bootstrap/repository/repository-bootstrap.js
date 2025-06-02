@@ -20,7 +20,7 @@ const loadRepositories = () => {
       repositoryContextService.updateSelectedRepository(repositoryReference);
     })
     .catch((error) => {
-      throw new Error('Could not load repositories', error);
+      console.error('Could not load repositories', error);
     });
 };
 
