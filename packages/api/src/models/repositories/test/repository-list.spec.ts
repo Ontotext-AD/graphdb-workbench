@@ -7,7 +7,7 @@ describe('RepositoryList', () => {
 
   beforeEach(() => {
     repositories = [
-      {
+      new Repository({
         id: '1', location: 'A',
         title: '',
         type: undefined,
@@ -22,8 +22,8 @@ describe('RepositoryList', () => {
         copy: function (): Repository {
           throw new Error('Function not implemented.');
         }
-      },
-      {
+      }),
+      new Repository({
         id: '2', location: 'B',
         title: '',
         type: undefined,
@@ -38,8 +38,8 @@ describe('RepositoryList', () => {
         copy: function (): Repository {
           throw new Error('Function not implemented.');
         }
-      },
-      {
+      }),
+      new Repository({
         id: '3', location: 'A',
         title: '',
         type: undefined,
@@ -54,7 +54,7 @@ describe('RepositoryList', () => {
         copy: function (): Repository {
           throw new Error('Function not implemented.');
         }
-      },
+      }),
     ];
     repositoryList = new RepositoryList(repositories);
   });
@@ -79,7 +79,7 @@ describe('RepositoryList', () => {
   });
 
   test('should filter repositories by excluding specified IDs', () => {
-    const repositoryToFilter = {
+    const repositoryToFilter = new Repository({
       id: '2', location: 'B',
       title: '',
       type: undefined,
@@ -94,7 +94,7 @@ describe('RepositoryList', () => {
       copy: function (): Repository {
         throw new Error('Function not implemented.');
       }
-    };
+    });
     const filteredRepositories = repositoryList.filterByRepository([repositoryToFilter]);
     expect(filteredRepositories).toHaveLength(2);
     expect(filteredRepositories).not.toContain(repositoryToFilter);
