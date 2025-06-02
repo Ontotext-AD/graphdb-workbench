@@ -37,7 +37,7 @@ export class RepositoryContextService extends ContextService<RepositoryContextFi
       .then((canChange) => {
         if (canChange) {
           if (selectedRepository) {
-            storageService.setRepositoryReference(selectedRepository);
+            storageService.setRepositoryReference(selectedRepository.toRepositoryReference());
           } else if (!repositoryReference) {
             storageService.removeRepositoryReference();
           }
