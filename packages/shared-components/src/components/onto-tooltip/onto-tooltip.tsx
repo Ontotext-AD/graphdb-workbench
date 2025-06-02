@@ -67,7 +67,7 @@ export class OntoTooltip {
     }
     }
 
-    componentWillLoad() {
+    connectedCallback() {
         this.handleRemovedNodes();
     }
 
