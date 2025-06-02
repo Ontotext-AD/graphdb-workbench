@@ -16,7 +16,7 @@ export class RepositoryStorageService extends LocalStorageService {
    * @param {string} key - The key under which to store the value.
    * @param {string} value - The value to store. If falsy, the key will be removed.
    */
-  set(key: string, value: string): void {
+  set(key: string, value: string | null): void {
     if (!value) {
       this.remove(key);
       return;
