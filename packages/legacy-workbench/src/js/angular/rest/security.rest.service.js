@@ -46,7 +46,9 @@ function SecurityRestService($http) {
     }
 
     function getAuthenticatedUser() {
-        return $http.get(`${SECURITY_AUTHENTICATED_ENDPOINT}`);
+        return $http.get(`${SECURITY_AUTHENTICATED_ENDPOINT}`, {
+            noCancelOnRouteChange: true
+        });
     }
 
     function getAdminUser() {
