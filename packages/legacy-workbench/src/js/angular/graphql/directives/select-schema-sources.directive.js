@@ -11,9 +11,9 @@ angular
     .module('graphdb.framework.graphql.directives.select-schema-sources', modules)
     .directive('selectSchemaSources', SelectSchemaSourcesComponent);
 
-SelectSchemaSourcesComponent.$inject = ['ModalService', '$translate', 'toastr', '$repositories', 'GraphqlContextService', 'GraphqlService', 'RDF4JRepositoriesService'];
+SelectSchemaSourcesComponent.$inject = ['$q', 'ModalService', '$translate', 'toastr', '$repositories', 'GraphqlContextService', 'GraphqlService', 'RDF4JRepositoriesService'];
 
-function SelectSchemaSourcesComponent(ModalService, $translate, toastr, $repositories, GraphqlContextService, GraphqlService, RDF4JRepositoriesService) {
+function SelectSchemaSourcesComponent($q, ModalService, $translate, toastr, $repositories, GraphqlContextService, GraphqlService, RDF4JRepositoriesService) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/graphql/templates/step-select-schema-sources.html',
@@ -267,7 +267,7 @@ function SelectSchemaSourcesComponent(ModalService, $translate, toastr, $reposit
              */
             const loadData = (endpointConfiguration) => {
                 $scope.loadingData = true;
-                Promise.all([loadPrefixes(), loadAllGraphs(), loadGraphqlSchemaShapes(), loadShaclShapeGraphs()])
+                $q.all([loadPrefixes(), loadAllGraphs(), loadGraphqlSchemaShapes(), loadShaclShapeGraphs()])
                     .then(([prefixes, graphs, graphqlShapes, shaclShapeGraphs]) => {
                         $scope.graphqlSchemaShapes = graphqlShapes;
                         $scope.graphs = graphs;
