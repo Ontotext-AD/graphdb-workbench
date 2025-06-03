@@ -11,7 +11,10 @@ function GuidesRestService($http) {
     const GUIDES_DOWNLOAD_URL = `${GUIDES_LIST_URL}/download`;
 
     const getGuides = () => {
-        return $http.get(GUIDES_LIST_URL);
+        return $http.get(GUIDES_LIST_URL, {
+            // Added so that location changes would not cancel the request
+            noCancelOnRouteChange: true
+        });
     };
 
     const downloadGuideResource = (guideResourceName) => {
