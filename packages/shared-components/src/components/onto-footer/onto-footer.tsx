@@ -42,14 +42,6 @@ export class OntoFooter {
       .then(() => this.shouldShowCookieConsent = false);
   }
 
-  /**
-   * Sets up a subscription to product info changes.
-   */
-  componentWillLoad(): void {
-    this.subscribeToProductInfoChange();
-    this.subscribeToUserChange();
-  }
-
   render() {
     return (
       <Host>
@@ -66,10 +58,14 @@ export class OntoFooter {
     );
   }
 
-  /**
-   * Lifecycle method called when the component is about to be removed from the DOM.
-   * Unsubscribes from all subscriptions to prevent memory leaks.
-   */
+  // ========================
+  // Lifecycle methods
+  // ========================
+  connectedCallback(): void {
+    this.subscribeToProductInfoChange();
+    this.subscribeToUserChange();
+  }
+
   disconnectedCallback(): void {
     this.subscriptions.unsubscribeAll();
   }
