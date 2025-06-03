@@ -1,3 +1,5 @@
+import {License, ServiceProvider, LicenseContextService} from "@ontotext/workbench-api";
+
 const EVALUATION_TYPE_1 = "this is an evaluation license";
 const EVALUATION_TYPE_2 = "evaluation";
 const PRODUCT_FREE = "free";
@@ -45,6 +47,7 @@ function licenseService($window, $document, LicenseRestService, $translate) {
             })
             .then((res) => {
                 _license = res.data;
+                ServiceProvider.get(LicenseContextService).updateGraphdbLicense(new License(_license));
             })
             .catch(() => {
                 _isLicenseHardcoded = true;
