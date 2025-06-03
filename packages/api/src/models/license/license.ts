@@ -23,6 +23,8 @@ export class License extends Model<License> {
   valid?: boolean;
   typeOfUse?: string;
   message?: string;
+  present?: boolean;
+  usageRestriction?: string;
 
   /**
    * Creates a new License instance.
@@ -44,5 +46,7 @@ export class License extends Model<License> {
     this.valid = data.valid;
     this.typeOfUse = data.typeOfUse || '';
     this.message = data.message || '';
+    this.present = data.present || false;
+    this.usageRestriction = data.usageRestriction || '';
   }
 }
