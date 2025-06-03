@@ -64,7 +64,7 @@ export class OntoToggleSwitch {
     this.subscriptions.unsubscribeAll();
   }
 
-  componentWillLoad() {
+  connectedCallback() {
     this.subscribeToLanguageChange();
   }
 
