@@ -14,7 +14,11 @@ export class OntoSearchIcon {
   private tooltipKey: string = 'rdf_search.labels.search';
   private readonly subscriptions = new SubscriptionList();
 
-  componentWillLoad() {
+
+  // ========================
+  // Lifecycle methods
+  // ========================
+  connectedCallback() {
     this.onTooltipChange();
   }
 
