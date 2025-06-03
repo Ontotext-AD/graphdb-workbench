@@ -12,6 +12,7 @@
     "cy:run:partial": "cypress run --config-file cypress-legacy.config.js --spec \"e2e-legacy/graphql/graphql-endpoint-management-view.spec.js\" --browser chrome",
     "cy:run-legacy": "cypress run --config-file cypress-legacy.config.js --browser chrome",
     "cy:run-flaky": "cypress run --config-file cypress-flaky.config.js --browser chrome",
+    "test": "npm run cy:run-legacy",
     "test:core": "cypress run --spec e2e-broken/repository/**,integration/import/**,integration/sparql-editor/**,integration/monitor/**,integration/cluster/**,integration/ttyg/**"
   },
   "author": {
