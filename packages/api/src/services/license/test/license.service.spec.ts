@@ -32,6 +32,8 @@ describe('LicenseService', () => {
       message: '',
       latestPublicationDate: undefined,
       maxCpuCores: undefined,
+      present: false,
+      usageRestriction: '',
       licenseCapabilities: {
         items: []
       },
