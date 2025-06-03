@@ -58,7 +58,7 @@ pipeline {
                     sh 'npm run validate'
                 }
             }
-             post {
+            post {
                 failure {
                     archiveArtifacts allowEmptyArchive: true, artifacts: 'translation-report.json'
                 }
@@ -95,27 +95,33 @@ pipeline {
             steps {
                 dir('packages/shared-components') {
                     script {
-                        dockerCompose.buildCmd(composeFile: 'docker-compose.yaml', options: ['--force-rm']);
-                        try {
-                            dockerCompose.upCmd(environment: getUserUidGidPair(), composeFile: 'docker-compose.yaml', , options: ['--abort-on-container-exit', '--exit-code-from cypress']);
-                        } finally {
-                            try {
-                                if (currentBuild.result == 'SUCCESS') {
-                                    echo "Tests passed — skipping video artifacts.";
-                                } else {
-                                    echo "Tests failed — archiving Cypress video artifacts.";
-                                    archiveArtifacts allowEmptyArchive: true, artifacts: 'cypress/screenshots/**/*.png, cypress/videos/**/*.mp4';
-                                }
-                            } catch (e) {
-                                echo "Artifacts not found or failed to archive: ${e.getMessage()}";
-                            }
+                        dockerCompose.buildCmd(composeFile: 'docker-compose.yaml', options: ['--force-rm'])
 
-                            dockerCompose.downCmd(
-                                composeFile: 'docker-compose.yaml',
-                                options: ['--volumes', '--remove-orphans', '--rmi', 'local'],
-                                ignoreErrors: true
-                            );
+                        def caughtError = false
+                        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                            try {
+                                dockerCompose.upCmd(
+                                    environment: getUserUidGidPair(),
+                                    composeFile: 'docker-compose.yaml',
+                                    options: ['--abort-on-container-exit', '--exit-code-from cypress']
+                                )
+                            } catch (e) {
+                                caughtError = true
+                            }
                         }
+
+                        if (caughtError) {
+                            echo "Tests failed — archiving Cypress video artifacts."
+                            archiveArtifacts allowEmptyArchive: true, artifacts: 'cypress/screenshots/**/*.png, cypress/videos/**/*.mp4'
+                            error("Cypress tests failed, job failed.")
+                        }
+
+                        echo "Tests passed — skipping video artifacts."
+                        dockerCompose.downCmd(
+                            composeFile: 'docker-compose.yaml',
+                            options: ['--volumes', '--remove-orphans', '--rmi', 'local'],
+                            ignoreErrors: true
+                        )
                     }
                 }
             }
@@ -136,17 +142,39 @@ pipeline {
                             ]
                         ]]) {
                             sh 'cp graphdb.license ./e2e-tests/fixtures/'
-                             archiveArtifacts allowEmptyArchive: true, artifacts: 'graphdb.license'
+                            archiveArtifacts allowEmptyArchive: true, artifacts: 'graphdb.license'
 
                             sh "ls -lh ./e2e-tests/fixtures/"
-                            dockerCompose.buildCmd(composeFile: env.DOCKER_COMPOSE_FILE, options: ["--force-rm"])
-                            try {
-                                dockerCompose.upCmd(environment: getUserUidGidPair(), composeFile: env.DOCKER_COMPOSE_FILE, options: ["--abort-on-container-exit", "--exit-code-from cypress"])
-                            } finally {
-                                dockerCompose.downCmd(composeFile: env.DOCKER_COMPOSE_FILE,
-                                                      options: ['--volumes', '--remove-orphans', '--rmi', 'local'],
-                                                      ignoreErrors: true)
+                            dockerCompose.buildCmd(
+                                composeFile: env.DOCKER_COMPOSE_FILE,
+                                options: ["--force-rm"]
+                            )
+
+                            def caughtError = false
+                            catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                                try {
+                                    dockerCompose.upCmd(
+                                        environment: getUserUidGidPair(),
+                                        composeFile: env.DOCKER_COMPOSE_FILE,
+                                        options: ["--abort-on-container-exit", "--exit-code-from cypress"]
+                                    )
+                                } catch (e) {
+                                    caughtError = true
+                                }
                             }
+
+                            if (caughtError) {
+                                echo "Tests failed — archiving Cypress video artifacts."
+                                archiveArtifacts allowEmptyArchive: true, artifacts: 'cypress/screenshots/**/*.png, cypress/videos/**/*.mp4'
+                                error("Cypress tests failed, job failed.")
+                            }
+
+                            echo "Tests passed — skipping video artifacts."
+                            dockerCompose.downCmd(
+                                composeFile: env.DOCKER_COMPOSE_FILE,
+                                options: ['--volumes', '--remove-orphans', '--rmi', 'local'],
+                                ignoreErrors: true
+                            )
                         }
                     }
                 }
@@ -172,8 +200,8 @@ pipeline {
 
 def notifySlack() {
     configFileProvider([configFile(fileId: 'notify-slack-script', variable: 'NOTIFY_SLACK_SCRIPT')]) {
-      def scriptContent = readFile(env.NOTIFY_SLACK_SCRIPT)
-      evaluate(scriptContent)
+        def scriptContent = readFile(env.NOTIFY_SLACK_SCRIPT)
+        evaluate(scriptContent)
     }
 }
 
