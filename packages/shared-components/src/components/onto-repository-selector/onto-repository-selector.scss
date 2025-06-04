@@ -64,7 +64,7 @@
     box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.2);
 
     .repository-tooltip-title {
-      font-size: 0.875rem;
+      font-size: 1rem;
       font-weight: 400;
       padding: 8px 14px;
       background-color: #f7f7f7;
@@ -91,6 +91,10 @@
 
       &.total {
         margin-top: 1.2em;
+      }
+
+      .value {
+        margin-left: .6em;
       }
     }
   }
