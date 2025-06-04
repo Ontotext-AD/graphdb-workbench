@@ -93,6 +93,7 @@ export class OntoNavbar {
 
   @Watch('menuItems')
   menuItemsChanged(menuItems: ExternalMenuModel) {
+    console.log('%cmenuItems', 'background: orange', menuItems);
     this.init(menuItems);
   }
 
@@ -103,6 +104,7 @@ export class OntoNavbar {
 
   private init(menuItems: ExternalMenuModel): void {
     const internalModel = NavbarService.map(menuItems || []);
+    console.log('%cinit', 'background: yellow', this.selectedMenu, menuItems, internalModel);
     internalModel.initSelected(this.selectedMenu);
     this.menuModel = internalModel;
   }
@@ -158,6 +160,7 @@ export class OntoNavbar {
   }
 
   private selectItemByUrl() {
+    console.log('%cselect by url', 'background: yellow', getCurrentRoute());
     this.menuModel.deselectAll();
     isHomePage()
       ? this.menuModel.closeAll()
@@ -217,6 +220,7 @@ export class OntoNavbar {
   // ========================
 
   connectedCallback() {
+    console.log('%cconnected', 'background: yellow', );
     this.init(this.menuItems);
     this.subscribeToNavigationEnd();
     this.subscribeToProductInfoChanges();

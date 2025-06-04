@@ -25,6 +25,7 @@ export class NavbarService {
   }
 
   private static setSubmenuItems(navbarPlugins: ExternalMenuModel, navbarModel: NavbarModel) {
+    console.log('%citems', 'background: red', navbarPlugins);
     navbarPlugins.forEach((menuPlugin) => {
       menuPlugin.items
         .filter((item) => item.parent && item.shouldShow)
@@ -32,7 +33,7 @@ export class NavbarService {
           const topLevelItem = navbarModel.getTopLevelItem(item.parent)
           // Some submenu items in the external menu model have children which is unusual.
           // I'm not sure if and where these children are used. For now, I'm ignoring them.
-          topLevelItem?.addChildren(this.toMenuItemModel(item, [], topLevelItem));
+          topLevelItem?.addChildren(this.toMenuItemModel(item, item.children || [], topLevelItem));
         });
     });
   }

@@ -49,10 +49,28 @@ PluginRegistry.add('main.menu', {
             order: 1,
             role: 'ROLE_REPO_MANAGER',
             parent: 'Setup',
-            children: [{
-                href: 'repository/create',
-                children: []
-            }],
+            children: [
+                {
+                    href: 'repository/create',
+                    parent: 'Repositories',
+                    children: []
+                },
+                {
+                    href: 'repository/create/graphdb',
+                    parent: 'Repositories',
+                    children: []
+                },
+                {
+                    href: 'repository/create/ontop',
+                    parent: 'Repositories',
+                    children: []
+                },
+                {
+                    href: 'repository/create/fedx',
+                    parent: 'Repositories',
+                    children: []
+                }
+            ],
             guideSelector: 'sub-menu-repositories'
         }
     ]

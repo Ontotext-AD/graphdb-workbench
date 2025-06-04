@@ -51,6 +51,7 @@ PluginRegistry.add('main.menu', {
             children: [
                 {
                     href: 'graphql/endpoint/create',
+                    parent: 'Endpoint Management',
                     children: []
                 }
             ]

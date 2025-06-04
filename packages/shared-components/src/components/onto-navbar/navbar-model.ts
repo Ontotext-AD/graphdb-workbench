@@ -76,6 +76,17 @@ export class NavbarModel {
     return this._items.find((i) => i.label === item.parent);
   }
 
+  getParentWithLabel(item: NavbarItemModel): NavbarItemModel {
+    if (!item.hasParent) {
+      return null;
+    }
+    let parent = this.getParentItem(item);
+    while (parent && !parent.label) {
+      parent = this.getParentItem(parent);
+    }
+    return parent;
+  }
+
   /**
    * Deselects all menu items.
    */
@@ -223,13 +234,32 @@ export class NavbarModel {
    */
   initSelected(selectedMenu: string): void {
     this.walk((item) => {
+      console.log('%csearch', 'background: lightgreen', item.href);
       if (item.href === selectedMenu) {
         if (item.hasParent) {
-          this.open(this.getParentItem(item));
+          const parent = this.findParentByLabel(item.parent);
+          const rootParent = this.getTopLevelItem(parent.parent);
+          console.log('%cfound', 'background: red', item, selectedMenu, parent, rootParent);
+          rootParent && this.open(rootParent);
+          this.selectItem(parent);
+          // this.selectItem(item);
+        } else {
+          this.selectItem(item);
         }
-        this.selectItem(item);
       }
     });
+  }
+
+  findParentByLabel(label: string): NavbarItemModel | undefined {
+    let foundItem: NavbarItemModel | undefined;
+
+    this.walk((item) => {
+      if (item.label === label) {
+        foundItem = item;
+      }
+    });
+
+    return foundItem;
   }
 
   /**
@@ -254,13 +284,14 @@ export class NavbarModel {
    * Walks recursively through the model and executes the provided callback for each item.
    * @param callback The callback to be executed for each item.
    */
-  private walk(callback: (item: NavbarItemModel) => void): void {
-    this._items.forEach((item) => {
+  private walk(callback: (item: NavbarItemModel) => void, items = this._items): void {
+    items.forEach((item) => {
       callback(item);
       if (item.children) {
-        item.children.forEach((child) => {
-          callback(child);
-        });
+        this.walk(callback, item.children);
+        // item.children.forEach((child) => {
+        //   callback(child);
+        // });
       }
     });
   }
