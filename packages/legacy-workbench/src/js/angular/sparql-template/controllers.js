@@ -81,7 +81,6 @@ function SparqlTemplatesCtrl($scope, $repositories, SparqlTemplatesRestService, 
     // Subscriptions handlers
     // =========================
     const removeAllListeners = () => {
-        window.removeEventListener('beforeunload', beforeunloadHandler);
         subscriptions.forEach((subscription) => subscription());
     };
 
