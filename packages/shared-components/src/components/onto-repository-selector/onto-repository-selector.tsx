@@ -81,7 +81,7 @@ export class OntoRepositorySelector {
    */
   @Watch('items')
   onItemsChanged(newItems: DropdownItem<Repository>[]) {
-    if (!newItems || !newItems.length) {
+    if (!(newItems?.length)) {
       this.dropdownItems = [];
       return;
     }
@@ -93,7 +93,7 @@ export class OntoRepositorySelector {
     this.subscriptions.push(...this.subscribeToTranslationChanged());
 
     // Manually apply tooltip functions to each item on first mount.
-    if (this.items && this.items.length) {
+    if (this.items?.length) {
       this.dropdownItems = this.attachTooltipsToItems(this.items);
     } else {
       this.dropdownItems = [];
@@ -128,7 +128,10 @@ export class OntoRepositorySelector {
   }
 
   private attachTooltipsToItems(items: DropdownItem<Repository>[]): DropdownItem<Repository>[] {
-    return items && items.map((item) => item.setTooltip(this.createTooltipFunctionForRepository(item.value)));
+    if (!items) {
+      return [];
+    }
+    return items.map((item) => item.setTooltip(this.createTooltipFunctionForRepository(item.value)));
   }
 
   private tooltipAlignment(isOpen: boolean): OntoTooltipPlacement {
@@ -167,15 +170,15 @@ export class OntoRepositorySelector {
     </div>
     <div class="repository-tooltip-content">
       <div class="repository-tooltip-row">
-        <div class="label">${TranslationService.translate('repository-selector.tooltip.location')} :</div>
+        <div class="label">${TranslationService.translate('repository-selector.tooltip.location')}:</div>
         <div class="value">${repository.location ? repository.location : TranslationService.translate('repository-selector.tooltip.local')}</div>
       </div>
       <div class="repository-tooltip-row">
-        <div class="label">${TranslationService.translate('repository-selector.tooltip.type')} :</div>
+        <div class="label">${TranslationService.translate('repository-selector.tooltip.type')}:</div>
         <div class="value">${TranslationService.translate('repository-selector.tooltip.types.' + (repository.type || 'unknown'))}</div>
       </div>
       <div class="repository-tooltip-row">
-        <div class="label">${TranslationService.translate('repository-selector.tooltip.access')} :</div>
+        <div class="label">${TranslationService.translate('repository-selector.tooltip.access')}:</div>
         <div class="value">${TranslationService.translate(this.canWriteRepo(repository) ? 'repository-selector.tooltip.accesses.read_write' : 'repository-selector.tooltip.accesses.read')}</div>
       </div>`;
 
@@ -194,14 +197,14 @@ export class OntoRepositorySelector {
 
     let html = `
     <div class="repository-tooltip-row total">
-      <div class="label">${TranslationService.translate('repository-selector.tooltip.repository-size.total')} :</div>
+      <div class="label">${TranslationService.translate('repository-selector.tooltip.repository-size.total')}:</div>
       <div class="value">${this.totalTripletsFormatter.format(repositorySizeInfo.total)}</div>
     </div>`;
 
     if (repositorySizeInfo.explicit >= 0) {
       html += `
       <div class="repository-tooltip-row">
-        <div class="label">${TranslationService.translate('repository-selector.tooltip.repository-size.explicit')} :</div>
+        <div class="label">${TranslationService.translate('repository-selector.tooltip.repository-size.explicit')}:</div>
         <div class="value">${this.totalTripletsFormatter.format(repositorySizeInfo.explicit)}</div>
       </div>`;
     }
@@ -209,16 +212,20 @@ export class OntoRepositorySelector {
     if (repositorySizeInfo.inferred >= 0) {
       html += `
       <div class="repository-tooltip-row">
-        <div class="label">${TranslationService.translate('repository-selector.tooltip.repository-size.inferred')} :</div>
+        <div class="label">${TranslationService.translate('repository-selector.tooltip.repository-size.inferred')}:</div>
         <div class="value">${this.totalTripletsFormatter.format(repositorySizeInfo.inferred)}</div>
       </div>`;
     }
 
-    if (repositorySizeInfo.total >= 0 && repositorySizeInfo.explicit > 0) {
+    if (repositorySizeInfo.total >= 0) {
       html += `
       <div class="repository-tooltip-row">
-        <div class="label">${TranslationService.translate('repository-selector.tooltip.repository-size.expansion_ratio')} :</div>
-        <div class="value">${this.totalTripletsFormatter.format(repositorySizeInfo.total / repositorySizeInfo.explicit)}</div>
+        <div class="label">${TranslationService.translate('repository-selector.tooltip.repository-size.expansion_ratio')}:</div>
+        <div class="value">${
+          repositorySizeInfo.explicit > 0
+            ? this.totalTripletsFormatter.format(repositorySizeInfo.total / repositorySizeInfo.explicit)
+            : '-'
+        }</div>
       </div>`;
     }
 
@@ -241,10 +248,10 @@ export class OntoRepositorySelector {
   }
 
   private getLocation() {
-    if (this.currentRepository && this.currentRepository.location) {
-      return `@${UriUtil.shortenIri(this.currentRepository.location)}`;
+    if (!this.currentRepository?.location) {
+      return ``;
     }
-    return ``;
+    return `@${UriUtil.shortenIri(this.currentRepository.location)}`;
   }
 
   private getButtonLabel() {
