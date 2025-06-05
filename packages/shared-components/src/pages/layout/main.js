@@ -1,5 +1,5 @@
 const layoutElement = document.querySelector("onto-layout");
-
+window.wbDevMode = true;
 const setUserRole = (role) => {
   setAuthUser({
     ...user,

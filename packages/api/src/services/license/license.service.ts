@@ -11,6 +11,8 @@ import {LicenseContextService} from './license-context.service';
 export class LicenseService implements Service {
   private readonly licenseRestService: LicenseRestService = ServiceProvider.get(LicenseRestService);
   private readonly licenseMapper: LicenseMapper = ServiceProvider.get(LicenseMapper);
+  private readonly trackableProductTypes = ['free', 'sandbox'];
+  private readonly trackableTypesOfUse = ['evaluation', 'this is an evaluation license'];
 
   /**
    * Retrieves the current license information.
@@ -26,21 +28,24 @@ export class LicenseService implements Service {
   }
 
   /**
-   * Determines if the current license is a free license.
+   * Determines if the current license can be tracked.
    *
    * This function checks the product type and type of use of the current license
-   * to determine if it's a free license. A license is considered free if:
+   * to determine if it's a trackable license. A license is considered trackable if:
+   * - A license is not present, or
    * - The product type is 'free', or
+   * - The product type is `sandbox`, or
    * - The type of use is `evaluation` (case-insensitive), or
    * - The type of use is `this is an evaluation license` (case-insensitive)
    *
    * @returns {boolean} True if the license is a free license, false otherwise.
    */
-  isFreeLicense(): boolean {
+  isTrackableLicense(): boolean {
     const license = ServiceProvider.get(LicenseContextService).getLicense();
     const licenseTypeOfUse = license?.typeOfUse?.toLowerCase() || '';
-    return license?.productType === 'free'
-      || licenseTypeOfUse === 'evaluation'
-      || licenseTypeOfUse === 'this is an evaluation license';
+    const productType = license?.productType?.toLowerCase() || '';
+    return !license?.present
+      || this.trackableProductTypes.includes(productType)
+      || this.trackableTypesOfUse.includes(licenseTypeOfUse);
   }
 }
