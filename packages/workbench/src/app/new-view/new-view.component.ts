@@ -3,13 +3,12 @@ import {AuthenticationService, RepositoryContextService, ServiceProvider, Reposi
 import {TranslocoPipe} from '@jsverse/transloco';
 
 @Component({
-  selector: 'app-new-view',
-  standalone: true,
-  imports: [
-    TranslocoPipe
-  ],
-  templateUrl: './new-view.component.html',
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    selector: 'app-new-view',
+    imports: [
+        TranslocoPipe
+    ],
+    templateUrl: './new-view.component.html',
+    schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class NewViewComponent {
   constructor() {

@@ -1,4 +1,4 @@
-import {APP_INITIALIZER} from '@angular/core';
+import {inject, provideAppInitializer} from '@angular/core';
 import {provideTransloco, TranslocoService} from '@jsverse/transloco';
 import {ServiceProvider, LanguageService, LanguageContextService, TranslationBundle} from '@ontotext/workbench-api';
 import {environment} from '../../../environments/environment';
@@ -11,9 +11,8 @@ import {environment} from '../../../environments/environment';
  * @param translocoService - The transloco service.
  * @returns A Promise that resolves when the transloco configuration is complete.
  */
-const translocoInitializeProvider = {
-  provide: APP_INITIALIZER,
-  useFactory: (translocoService: TranslocoService) => {
+const translocoInitializeProvider = provideAppInitializer(() => {
+  const initializerFn = ((translocoService: TranslocoService) => {
     return () => {
       const languageContextService = ServiceProvider.get(LanguageContextService);
       const languageService = ServiceProvider.get(LanguageService);
@@ -29,10 +28,9 @@ const translocoInitializeProvider = {
         });
       });
     };
-  },
-  deps: [TranslocoService],
-  multi: true,
-};
+  })(inject(TranslocoService));
+  return initializerFn();
+});
 
 const translocoConfigProvider = provideTransloco({
   config: {
