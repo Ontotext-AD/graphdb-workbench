@@ -5,6 +5,7 @@ import {routes} from './app.routes';
 import {bootstrapProviders} from './bootstrap/bootstrap';
 import {APP_BASE_HREF} from '@angular/common';
 import {getSingleSpaExtraProviders} from 'single-spa-angular';
+import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -12,6 +13,7 @@ export const appConfig: ApplicationConfig = {
     ...bootstrapProviders,
     provideZoneChangeDetection({eventCoalescing: true}),
     provideRouter(routes),
-    {provide: APP_BASE_HREF, useValue: '/'}
+    {provide: APP_BASE_HREF, useValue: '/'},
+    provideAnimationsAsync()
   ]
 };

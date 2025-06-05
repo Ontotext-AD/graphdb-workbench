@@ -1,0 +1,32 @@
+.ds-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.new-style {
+  width: 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inputs {
+  .inputs-container {
+    justify-content: space-between;
+    display: flex;
+    gap: 10px;
+    flex-direction: column
+  }
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .buttons-container {
+    display: flex;
+    gap: 10px;
+  }
+}
