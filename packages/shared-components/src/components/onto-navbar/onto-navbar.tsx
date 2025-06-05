@@ -70,11 +70,6 @@ export class OntoNavbar {
    */
   @Prop() navbarCollapsed: boolean;
 
-  /**
-   * The selected menu item. If provided, the menu item will be highlighted.
-   */
-  @Prop() selectedMenu: string;
-
   @Watch('navbarCollapsed')
   navbarCollapsedChange(collapsed: boolean) {
     this.isCollapsed = !collapsed;
@@ -103,7 +98,7 @@ export class OntoNavbar {
 
   private init(menuItems: ExternalMenuModel): void {
     const internalModel = NavbarService.map(menuItems || []);
-    internalModel.initSelected(this.selectedMenu);
+    internalModel.initSelected(getCurrentRoute());
     this.menuModel = internalModel;
   }
 
@@ -159,9 +154,10 @@ export class OntoNavbar {
 
   private selectItemByUrl() {
     this.menuModel.deselectAll();
-    isHomePage()
-      ? this.menuModel.closeAll()
-      : this.menuModel.initSelected(getCurrentRoute());
+    this.menuModel.closeAll();
+    if (!isHomePage()){
+      this.menuModel.initSelected(getCurrentRoute());
+    }
     this.refreshNavbar();
   }
 
@@ -194,6 +190,9 @@ export class OntoNavbar {
   }
 
   private refreshNavbar(): void {
+    if (!this.menuModel?.items) {
+      return;
+    }
     this.menuModel = new NavbarModel(this.menuModel.items);
   }
 
@@ -202,22 +201,25 @@ export class OntoNavbar {
   }
 
   private onTranslate(key: string): void {
-    TranslationService.onTranslate(
-      key,
-      [],
-      (translation) => {
-        this.labels[key] = translation;
-        this.onLanguageChanged();
-      }
-    );
+    this.subscriptions.add(
+      TranslationService.onTranslate(
+        key,
+        [],
+        (translation) => {
+          this.labels[key] = translation;
+          this.onLanguageChanged();
+        }));
   }
 
   // ========================
   // Lifecycle methods
   // ========================
 
-  connectedCallback() {
+  componentWillLoad() {
     this.init(this.menuItems);
+  }
+
+  connectedCallback() {
     this.subscribeToNavigationEnd();
     this.subscribeToProductInfoChanges();
     // subscribe to language change events for each label

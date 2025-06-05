@@ -13,7 +13,7 @@ import {
   AuthenticatedUser,
   SecurityConfig,
   Authority,
-  AuthenticationService, getCurrentRoute
+  AuthenticationService, NavigationEndPayload, NavigationContextService
 } from '@ontotext/workbench-api';
 import {ExternalMenuItemModel} from '../onto-navbar/external-menu-model';
 
@@ -28,6 +28,7 @@ export class OntoLayout {
   // ========================
   private readonly securityContextService = ServiceProvider.get(SecurityContextService);
   private readonly authenticationService = ServiceProvider.get(AuthenticationService);
+  private readonly navigationContextService = ServiceProvider.get(NavigationContextService);
 
   // ========================
   // DOM Refs
@@ -55,10 +56,6 @@ export class OntoLayout {
   private readonly subscriptions: SubscriptionList = new SubscriptionList();
   private readonly windowResizeObserver: (...args: any) => void;
   private isNavbarCollapsed = false;
-  /**
-   * The current route. This is used to highlight the selected menu item in the navbar.
-   */
-  private currentRoute: string;
 
   // ========================
   // Lifecycle methods
@@ -72,16 +69,16 @@ export class OntoLayout {
     this.windowResizeHandler();
   }
 
-  componentWillLoad() {
-    this.currentRoute = getCurrentRoute();
-  }
-
   connectedCallback() {
     this.subscribeToSecurityChanges();
     this.updateVisibility();
     // Subscribing here, because after a disconnectedCallback the connectedCallback is called, instead of componentDidLoad or constructor
     this.subscriptions.add(this.securityContextService.onRestrictedPagesChanged((restrictedPages) => this.setPermission(restrictedPages)));
-    this.subscriptions.add(ServiceProvider.get(EventService).subscribe(EventName.NAVIGATION_END, () => this.setPermission(this.securityContextService.getRestrictedPages())));
+    this.subscriptions.add(
+      ServiceProvider.get(EventService).subscribe(EventName.NAVIGATION_END, (navigationEndPayload: NavigationEndPayload) => {
+        this.navigationContextService.updatePreviousRoute(navigationEndPayload.oldUrl);
+        this.setPermission(this.securityContextService.getRestrictedPages());
+      }));
     this.setPermission(this.securityContextService.getRestrictedPages());
   }
 
@@ -106,8 +103,7 @@ export class OntoLayout {
 
         <nav class="wb-navbar">
           <onto-navbar ref={this.assignNavbarRef()}
-                       navbar-collapsed={this.isLowResolution}
-                       selected-menu={this.currentRoute}></onto-navbar>
+                       navbar-collapsed={this.isLowResolution}></onto-navbar>
         </nav>
 
         {this.hasPermission ? (
