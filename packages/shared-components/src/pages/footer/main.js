@@ -12,6 +12,7 @@ function getLicense(productType) {
   return {
     productType,
     valid: true,
+    present: true
   };
 }
 
