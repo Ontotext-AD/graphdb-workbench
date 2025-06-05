@@ -129,10 +129,6 @@ export namespace Components {
           * Configuration whether the navbar should be collapsed.
          */
         "navbarCollapsed": boolean;
-        /**
-          * The selected menu item. If provided, the menu item will be highlighted.
-         */
-        "selectedMenu": string;
     }
     interface OntoOperationsNotification {
         /**
@@ -728,10 +724,6 @@ declare namespace LocalJSX {
           * Event fired when the navbar is toggled.
          */
         "onNavbarToggled"?: (event: OntoNavbarCustomEvent<NavbarToggledEvent>) => void;
-        /**
-          * The selected menu item. If provided, the menu item will be highlighted.
-         */
-        "selectedMenu"?: string;
     }
     interface OntoOperationsNotification {
         /**
