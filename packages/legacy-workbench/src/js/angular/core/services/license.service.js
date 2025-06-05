@@ -47,7 +47,6 @@ function licenseService($window, $document, LicenseRestService, $translate) {
             })
             .then((res) => {
                 _license = res.data;
-                ServiceProvider.get(LicenseContextService).updateGraphdbLicense(new License(_license));
             })
             .catch(() => {
                 _isLicenseHardcoded = true;
@@ -60,6 +59,7 @@ function licenseService($window, $document, LicenseRestService, $translate) {
             .finally(() => {
                 _showLicense = true;
                 _loadingLicense = false;
+                ServiceProvider.get(LicenseContextService).updateGraphdbLicense(new License(_license));
             });
     };
 

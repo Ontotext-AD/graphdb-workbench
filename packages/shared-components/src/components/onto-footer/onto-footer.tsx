@@ -7,7 +7,7 @@ import {
   LicenseService,
   SecurityContextService,
   CookieConsent,
-  CookieService
+  CookieService, LicenseContextService, AuthenticatedUser
 } from '@ontotext/workbench-api';
 
 /**
@@ -34,6 +34,7 @@ export class OntoFooter {
   private readonly currentYear = new Date().getFullYear();
 
   private readonly securityContextService: SecurityContextService = ServiceProvider.get(SecurityContextService);
+  private readonly licenseContextService: LicenseContextService = ServiceProvider.get(LicenseContextService);
   private readonly cookieService = ServiceProvider.get(CookieService);
 
   @Listen('consentGiven')
@@ -64,6 +65,7 @@ export class OntoFooter {
   connectedCallback(): void {
     this.subscribeToProductInfoChange();
     this.subscribeToUserChange();
+    this.subscribeToLicenseChange();
   }
 
   disconnectedCallback(): void {
@@ -78,14 +80,26 @@ export class OntoFooter {
   }
 
   private isTrackingAllowed(): boolean {
-    return ServiceProvider.get(LicenseService).isFreeLicense() && !window.wbDevMode;
+    return ServiceProvider.get(LicenseService).isTrackableLicense() && !window.wbDevMode;
   }
 
   private subscribeToUserChange(): void {
     // TODO: move to cookieService, when the authenticatedUser is available synchronously
     this.subscriptions.add(
       this.securityContextService.onAuthenticatedUserChanged((user) => {
-        this.shouldShowCookieConsent = this.isTrackingAllowed() && !new CookieConsent(user?.appSettings?.COOKIE_CONSENT).policyAccepted;
+        this.setCookieConsentVisibility(user);
       }));
+  }
+
+  private setCookieConsentVisibility(user?: AuthenticatedUser) {
+    this.shouldShowCookieConsent = this.isTrackingAllowed() && !new CookieConsent(user?.appSettings?.COOKIE_CONSENT).policyAccepted;
+  }
+
+  private subscribeToLicenseChange() {
+    this.subscriptions.add(
+      this.licenseContextService.onLicenseChanged(() => {
+        this.setCookieConsentVisibility();
+      })
+    )
   }
 }
