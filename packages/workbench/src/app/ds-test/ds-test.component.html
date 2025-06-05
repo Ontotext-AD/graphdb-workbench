@@ -1,1 +1,83 @@
-<p>ds-test works!</p>
+<div class="ds-container">
+  <div class="new-style">
+    <div class="buttons">
+      <h2>Buttons and toggles</h2>
+      <div class="buttons-container">
+        <button pButton pRipple class="button button-primary">Primary Button</button>
+        <button pButton pRipple class="button button-primary" disabled>Primary Button Disabled</button>
+        <button pButton pRipple class="button button-secondary">Secondary Button</button>
+        <button pButton pRipple class="button button-secondary" disabled>Secondary Button Disabled</button>
+      </div>
+      <p-button [outlined]="true">
+        <div class="button button-lg button-outlined button-outlined-primary text-xs-left d-block">
+          <div class="grid-container">
+            <em class="icon-link icon-lg"></em>
+            <div class="text">
+              <span>Button label</span>
+              <small class="text-muted">Small text</small>
+            </div>
+          </div>
+        </div>
+      </p-button>
+    </div>
+
+    <div class="inputs">
+      <h2>Inputs and forms</h2>
+      <!--Inputs and forms-->
+      <div class="inputs-container">
+        <label for="input11">Input</label>
+        <input pInputText type="text" name="title" id="input11">
+
+        <label for="input22">Disabled</label>
+        <input pInputText type="text" name="title" id="input22" [disabled]="true">
+
+        <label for="readonly">Readonly</label>
+        <input pInputText type="text" [readOnly]="true" value="Lorem ipsum" id="readonly"/>
+
+        <label for="invalidInput1">Invalid</label>
+        <input required name="invalidInput" pInputText class="ng-invalid ng-dirty" id="invalidInput1" type="text" placeholder="Lorem ipsum">
+
+        <label for="numberField1">Number field</label>
+        <p-inputnumber inputId="numberField1" [ngModel]="numberValue" placeholder="Number field"></p-inputnumber>
+
+        <label for="password1">Password</label>
+        <p-password inputId="password1" [(ngModel)]="passwordValue" [feedback]="false" [fluid]="true"/>
+
+        <label for="textarea"> Text area (expandable)</label>
+        <textarea pTextarea [(ngModel)]="textAreaValue" [autoResize]="true"></textarea>
+
+      </div>
+    </div>
+
+    <!--Cards-->
+    <div class="cards">
+      <h2>Card</h2>
+      <div role="tablist" aria-multiselectable="true">
+
+        <p-card>
+          <ng-template #title>
+            <div class="pull-right">
+              <button class="btn btn-link p-0" type="button">
+                <em class="icon-copy"></em>
+              </button>
+              <button class="btn btn-link p-0" type="button">
+                <em class="icon-reload"></em>
+              </button>
+              <button class="btn btn-link secondary p-0" type="button">
+                <em class="icon-trash"></em>
+              </button>
+            </div>
+            <h5 class="mb-0">
+              <a class="collapsed" data-toggle="collapse" aria-expanded="false">
+                Card title
+              </a>
+            </h5>
+          </ng-template>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+          enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+        </p-card>
+
+      </div>
+    </div>
+  </div>
+</div>
