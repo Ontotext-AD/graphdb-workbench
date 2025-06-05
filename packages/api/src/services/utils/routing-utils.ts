@@ -1,5 +1,6 @@
 /**
  * Redirects the current page to a specified URL using the single-spa framework.
+ * Made to be used from views. If you are not navigating from a view, use <code>navigate</code> instead
  *
  * @param url - The target URL to which the page should be redirected.
  */
@@ -8,8 +9,17 @@ export function navigateTo(url: string): (event: Event) => void {
     if (event) {
       event.preventDefault();
     }
-    window.singleSpa.navigateToUrl(url);
+    navigate(url);
   };
+}
+
+/**
+ * Navigates to the specified URL using the single-spa framework.
+ * Suitable for in-code navigation. If you need to navigate from a view, use <code>navigateTo</code> instead.
+ * @param url - The target URL to which the page should be redirected.
+ */
+export function navigate(url: string) {
+  window.singleSpa.navigateToUrl(url);
 }
 
 /**
