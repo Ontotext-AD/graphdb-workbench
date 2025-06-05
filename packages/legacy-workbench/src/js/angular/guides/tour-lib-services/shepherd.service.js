@@ -1,6 +1,10 @@
 import {GuideUtils} from "../guide-utils";
 import Shepherd from "shepherd.js";
 import {decodeHTML} from "../../../../app";
+import {
+    navigateTo,
+    getPathName
+} from '@ontotext/workbench-api';
 
 export const GUIDE_ID = 'shepherd.guide_id';
 export const GUIDE_CURRENT_STEP_ID = 'shepherd.guide.current.step.id';
@@ -13,22 +17,20 @@ angular
     .module('graphdb.framework.guides.shepherd.services', modules)
     .service('ShepherdService', ShepherdService);
 
-ShepherdService.$inject = ['$location', '$translate', 'LocalStorageAdapter', 'LSKeys', '$route', '$interpolate', 'toastr', '$compile', 'ModalService'];
+ShepherdService.$inject = ['$translate', 'LocalStorageAdapter', 'LSKeys', '$interpolate', 'toastr', '$compile', 'ModalService'];
 
 /**
  * Service (wrapper) of library  <a href="https://shepherdjs.dev/docs/">shepherd</a>.
- * @param $location
  * @param $translate
  * @param LocalStorageAdapter
  * @param LSKeys
- * @param $route
  * @param $interpolate
  * @param toastr
  * @param $compile
  * @param ModalService
  * @constructor
  */
-function ShepherdService($location, $translate, LocalStorageAdapter, LSKeys, $route, $interpolate, toastr, $compile, ModalService) {
+function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, toastr, $compile, ModalService) {
     this.guideCancelSubscription = undefined;
     this.guideCompleteSubscription = undefined;
     this.guideAutostarted = null;
@@ -175,13 +177,13 @@ function ShepherdService($location, $translate, LocalStorageAdapter, LSKeys, $ro
     };
 
     this.subscribeToGuideCancel = (oncancel) => {
-        if (angular.isFunction(oncancel)) {
+        if (this._isFunction(oncancel)) {
             this.onCancel = oncancel;
         }
     };
 
     this.subscribeToGuidePause = (onPause) => {
-        if (angular.isFunction(onPause)) {
+        if (this._isFunction(onPause)) {
             this.onPause = onPause;
         }
     };
@@ -392,9 +394,8 @@ function ShepherdService($location, $translate, LocalStorageAdapter, LSKeys, $ro
         }
         const step = guide.steps[stepIndex];
         const url = step.options.url;
-        if (url && url !== $location.path()) {
-            $location.url(url);
-            $route.reload();
+        if (url && url !== getPathName()) {
+            navigateTo(url)();
         }
 
         if (step.options.attachTo) {
@@ -413,7 +414,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, LSKeys, $ro
         const guideEndHandler = ({tour}) => {
             this._clearLocalStorage();
             const currentStep = tour.getCurrentStep();
-            if (currentStep && angular.isFunction(currentStep.hide)) {
+            if (currentStep && this._isFunction(currentStep.hide)) {
                 // Some steps have state and when shepherd library hides them the "hide()" function is called. This function cleaned the state
                 // of the steps. When we are on step which has state and click on cancel button the library don't call this function.
                 // So we call it manually. For example see "select-repository" plugin it has listener which must be removed when step is hided.
@@ -484,7 +485,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, LSKeys, $ro
     };
 
     this._backToGuidesButton = (guide) => {
-        $location.path("guides");
+        navigateTo('guides')();
         this._completeGuide(guide);
     };
 
@@ -571,7 +572,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, LSKeys, $ro
      * @private
      */
     this._isDisablePreviousFlow = (stepDescription) => {
-        return angular.isDefined(stepDescription.disablePreviousFlow) ? stepDescription.disablePreviousFlow : false;
+        return this._isDefined(stepDescription.disablePreviousFlow) ? stepDescription.disablePreviousFlow : false;
     }
 
     /**
@@ -581,7 +582,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, LSKeys, $ro
      * @private
      */
     this._isDisableNextFlow = (stepDescription) => {
-        return angular.isDefined(stepDescription.disableNextFlow) ? stepDescription.disableNextFlow : false;
+        return this._isDefined(stepDescription.disableNextFlow) ? stepDescription.disableNextFlow : false;
     }
 
     /**
@@ -652,10 +653,10 @@ function ShepherdService($location, $translate, LocalStorageAdapter, LSKeys, $ro
 
             currentStep.options.initPreviousStep({GuideUtils, ShepherdService: this}, currentStep.options.id)
                 .then(() => {
-                    if (angular.isFunction(currentStep.options.onPreviousClick)) {
+                    if (this._isFunction(currentStep.options.onPreviousClick)) {
                         currentStep.options.onPreviousClick(guide)
                             .then((stopStepNavigation) => {
-                                if (angular.isUndefined(stopStepNavigation) || stopStepNavigation === null || !stopStepNavigation) {
+                                if (!this._isDefined(stopStepNavigation) || stopStepNavigation === null || !stopStepNavigation) {
                                     currentStep.hide();
                                     guide.show(nextStep.id);
                                 }
@@ -666,7 +667,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, LSKeys, $ro
                             });
                         return;
                     } else if (nextStep.options.forceReload || nextStep.options.url && nextStep.options.url !== currentStep.options.url) {
-                        $location.path(nextStep.options.url);
+                        navigateTo(nextStep.options.url)();
                     }
                     currentStep.hide();
                     guide.show(nextStep.id);
@@ -697,14 +698,14 @@ function ShepherdService($location, $translate, LocalStorageAdapter, LSKeys, $ro
             currentStepDescription.onNextValidate(currentStepDescription)
                 .then((valid) => {
                     if (valid) {
-                        if (angular.isFunction(currentStepDescription.onNextClick)) {
+                        if (this._isFunction(currentStepDescription.onNextClick)) {
                             const onNextResult = currentStepDescription.onNextClick(guide, currentStepDescription);
                             if (onNextResult instanceof Promise) {
                                 onNextResult.catch(() => this._abortGuide(guide));
                             }
                         } else {
                             if (nextStepDescription.forceReload || nextStepDescription.url && nextStepDescription.url !== currentStepDescription.url) {
-                                $location.path(nextStepDescription.url);
+                                navigateTo(nextStepDescription.url)();
                             }
                             guide.next();
                         }
@@ -881,7 +882,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, LSKeys, $ro
             }
         };
 
-        if (angular.isFunction(stepDescription.hide)) {
+        if (this._isFunction(stepDescription.hide)) {
             step.when.hide = stepDescription.hide(guide, stepDescription);
         }
 
@@ -889,7 +890,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, LSKeys, $ro
     };
 
     this._getBeforeShowPromise = (guide, stepDescription) => {
-        if (angular.isFunction(stepDescription.beforeShowPromise)) {
+        if (this._isFunction(stepDescription.beforeShowPromise)) {
             return () => {
                 return stepDescription.beforeShowPromise(guide, stepDescription);
             };
@@ -897,7 +898,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, LSKeys, $ro
     }
 
     this._getShowFunction = (guide, stepDescription, onShow) => {
-        if (angular.isFunction(stepDescription.show)) {
+        if (this._isFunction(stepDescription.show)) {
             return () => {
                 stepDescription.show(guide, stepDescription)();
                 onShow();
@@ -926,7 +927,7 @@ function ShepherdService($location, $translate, LocalStorageAdapter, LSKeys, $ro
         // Note: The scope is used only in the execute-sparql-query plugin.
         // TODO: To restore this functionality, it needs to be reimplemented in a way that does not depend on AngularJS.
         if (scope) {
-            if (angular.isFunction(stepDescription.onScope)) {
+            if (this._isFunction(stepDescription.onScope)) {
                 // Step definitions may want to add functions to the scope
                 stepDescription.onScope(scope);
             }
@@ -986,7 +987,10 @@ function ShepherdService($location, $translate, LocalStorageAdapter, LSKeys, $ro
         typeIcon.setAttribute('gdb-tooltip', $translate.instant('guide.step-type.' + iconTooltip));
         typeIcon.setAttribute('tooltip-placement', 'bottom-right');
 
-        angular.element(currentStepElement.querySelector('.shepherd-header')).prepend(typeIcon);
+        const header = currentStepElement.querySelector('.shepherd-header');
+        if (header && typeIcon) {
+            header.insertBefore(typeIcon, header.firstChild);
+        }
     };
 
     /**
@@ -1009,4 +1013,24 @@ function ShepherdService($location, $translate, LocalStorageAdapter, LSKeys, $ro
 
         return button;
     };
+
+    /**
+     * Checks whether the given value is a function.
+     *
+     * @param {*} value - The value to check.
+     * @returns {boolean} `true` if the value is a function; otherwise, `false`.
+     */
+    this._isFunction = (value) => {
+        return typeof value === 'function';
+    }
+
+    /**
+     * Checks whether the given value is defined (not `undefined`).
+     *
+     * @param {*} value - The value to check.
+     * @returns {boolean} `true` if the value is defined; otherwise, `false`.
+     */
+    this._isDefined = (value) => {
+        return typeof value !== 'undefined';
+    }
 }
