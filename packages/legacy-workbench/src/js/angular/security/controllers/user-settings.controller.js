@@ -3,6 +3,7 @@ import {GRAPHQL, READ_REPO, WRITE_REPO} from "../services/constants";
 import {UserType} from 'angular/utils/user-utils';
 import {parseAuthorities} from "../services/authorities-util";
 import {UpdateUserPayload} from "../../models/security/security";
+import {navigate, ServiceProvider, NavigationContextService} from "@ontotext/workbench-api";
 import {CookiePolicyModalController} from "../../core/directives/cookie-policy/cookie-policy-modal-controller";
 
 angular
@@ -92,12 +93,8 @@ function UserSettingsController($scope, toastr, $window, $timeout, $jwtAuth, $ro
     };
 
     $scope.goBack = function () {
-        const timer = $timeout(function () {
-            $window.history.back();
-        }, 100);
-        $scope.$on('$destroy', function () {
-            $timeout.cancel(timer);
-        });
+        const previousRoute = ServiceProvider.get(NavigationContextService).getPreviousRoute();
+        navigate(previousRoute || '/');
     };
 
     $scope.getPrincipal = function () {
