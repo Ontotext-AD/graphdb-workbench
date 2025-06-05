@@ -13,7 +13,7 @@
     "cy:run-legacy": "cypress run --config-file cypress-legacy.config.js --browser chrome",
     "cy:run-flaky": "cypress run --config-file cypress-flaky.config.js --browser chrome",
     "test": "npm run cy:run-legacy",
-    "test:core": "cypress run --spec e2e-broken/repository/**,integration/import/**,integration/sparql-editor/**,integration/monitor/**,integration/cluster/**,integration/ttyg/**"
+    "test:core": "cypress run --spec e2e-legacy/repository/**,e2e-legacy/import/**,e2e-legacy/sparql-editor/**,e2e-legacy/monitor/**,e2e-legacy/cluster/**,e2e-legacy/ttyg/**"
   },
   "author": {
     "name": "Ontotext AD",
