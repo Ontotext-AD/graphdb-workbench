@@ -68,6 +68,11 @@ PluginRegistry.add('route', [
         'templateUrl': 'pages/ux-test2.html',
         'controller': 'uxTestCtrl',
         'title': 'UX Test'
+    }, {
+        'url': '/ds-test',
+        'templateUrl': 'pages/ds-test.html',
+        'controller': 'dsTestCtrl',
+        'title': 'DS Test'
     }
 ]);
 

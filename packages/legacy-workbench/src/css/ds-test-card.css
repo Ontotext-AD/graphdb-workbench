@@ -1,0 +1,22 @@
+.p-card {
+    background: var(--p-card-background);
+    color: var(--p-card-color);
+    box-shadow: var(--p-card-shadow-1-offset-x) var(--p-card-shadow-1-offset-y) var(--p-card-shadow-1-blur) var(--p-card-shadow-1-spread) var(--p-card-shadow-1-color),
+    var(--p-card-shadow-2-offset-x) var(--p-card-shadow-2-offset-y) var(--p-card-shadow-2-blur) var(--p-card-shadow-2-spread) var(--p-card-shadow-2-color);
+    border-radius: var(--p-card-border-radius);
+    display: flex;
+    flex-direction: column;
+}
+
+.p-card-header {
+    font-size: var(--p-card-title-font-size);
+    font-weight: var(--p-card-title-font-weight);
+}
+
+.p-card-block {
+    padding: var(--p-card-body-padding);
+    display: flex;
+    flex-direction: column;
+    gap: var(--p-card-body-gap);
+}
+

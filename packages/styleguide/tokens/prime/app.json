@@ -1,0 +1,44 @@
+{
+  "app": {
+    "font": {
+      "size": {
+        "$type": "fontSizes",
+        "$value": "14"
+      }
+    },
+    "card": {
+      "background": {
+        "$type": "color",
+        "$value": "{content.background}"
+      }
+    },
+    "sm": {
+      "font": {
+        "size": {
+          "$type": "fontSizes",
+          "$value": "0.875rem"
+        }
+      },
+      "line": {
+        "height": {
+          "$type": "lineHeights",
+          "$value": "1.25rem"
+        }
+      }
+    },
+    "lg": {
+      "font": {
+        "size": {
+          "$type": "fontSizes",
+          "$value": "1.125rem"
+        }
+      },
+      "line": {
+        "height": {
+          "$type": "lineHeights",
+          "$value": "1.75rem"
+        }
+      }
+    }
+  }
+}

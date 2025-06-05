@@ -1,0 +1,95 @@
+.inputtext {
+    font-family: inherit;
+    font-feature-settings: inherit;
+    font-size: 1rem;
+    color: var(--p-inputtext-color);
+    background: var(--p-inputtext-background);
+    padding-block: var(--p-inputtext-padding-y);
+    padding-inline: var(--p-inputtext-padding-x);
+    border: 1px solid var(--p-inputtext-border-color);
+    /*transition: background ${dt('inputtext.transition.duration')}, color ${dt('inputtext.transition.duration')}, border-color ${dt('inputtext.transition.duration')}, outline-color ${dt('inputtext.transition.duration')}, box-shadow ${dt(*/
+    /*    'inputtext.transition.duration'*/
+    /*)};*/
+    appearance: none;
+    border-radius: var(--p-inputtext-border-radius);
+    outline-color: transparent;
+    box-shadow: var(--p-inputtext-shadow);
+}
+
+form.ng-submitted .inputtext.ng-invalid {
+    border-color: var(--p-inputtext-invalid-border-color);
+}
+
+form.ng-submitted .inputtext.ng-invalid::placeholder {
+    color: var(--p-inputtext-invalid-placeholder-color);
+}
+
+.inputtext:enabled:hover {
+    border-color: var(--p-inputtext-hover-border-color);
+}
+
+.inputtext:enabled:focus {
+    border-color: var(--p-inputtext-focus-border-color);
+    box-shadow: var(--p-inputtext-focus-ring-shadow);;
+    outline: var(--p-inputtext-focus-ring-width) var(--p-inputtext-focus-ring-style) var(--p-inputtext-focus-ring-color);
+    outline-offset: var(--p-inputtext-focus-ring-offset);
+}
+
+.inputtext:disabled {
+    opacity: 1;
+    background: var(--p-inputtext-disabled-background);
+    color: var(--p-inputtext-disabled-color);
+}
+
+.inputtext::placeholder {
+    color: var(--p-inputtext-placeholder-color);
+}
+
+.textarea {
+    font-family: inherit;
+    font-feature-settings: inherit;
+    font-size: 1rem;
+    color: var(--p-textarea-color);
+    background: var(--p-textarea-background);
+    padding: var(--p-textarea-padding-y) var(--p-textarea-padding-x);
+    border: 1px solid var(--p-textarea-border-color);
+    transition: background var(--p-textarea-transition-duration), color var(--p-textarea-transition-duration), border-color var(--p-textarea-transition-duration), outline-color var(--p-textarea-transition-duration), box-shadow var(--p-textarea-transition-duration);
+    appearance: none;
+    border-radius: var(--p-textarea-border-radius);
+    outline-color: transparent;
+    box-shadow: var(--p-textarea-shadow);
+}
+
+.textarea.ng-invalid {
+    border-color: var(--p-textarea-invalid-border-color);
+}
+
+.textarea:enabled:hover {
+    border-color: var(--p-textarea-hover-border-color);
+}
+
+.textarea:enabled:focus {
+    border-color: var(--p-textarea-focus-border-color);
+    box-shadow: var(--p-textarea-focus-ring-shadow);
+    outline: var(--p-textarea-focus-ring-width) var(--p-textarea-focus-ring-style) var(--p-textarea-focus-ring-color);
+    outline-offset: var(--p-textarea-focus-ring-offset);
+}
+
+.textarea:disabled {
+    opacity: 1;
+    background: var(--p-textarea-disabled-background);
+    color: var(--p-textarea-disabled-color);
+}
+
+.textarea::placeholder {
+    color: var(--p-textarea-placeholder-color);
+}
+
+.textarea.ng-invalid::placeholder {
+    color: var(--p-textarea-invalid-placeholder-color);
+}
+
+.textarea-resizable {
+    overflow: auto;
+    resize: vertical;
+}
