@@ -62,7 +62,8 @@ angular
     .controller('mainCtrl', mainCtrl)
     .controller('homeCtrl', homeCtrl)
     .controller('repositorySizeCtrl', repositorySizeCtrl)
-    .controller('uxTestCtrl', uxTestCtrl);
+    .controller('uxTestCtrl', uxTestCtrl)
+    .controller('dsTestCtrl', dsTestCtrl);
 
 homeCtrl.$inject = ['$scope',
     '$rootScope',
@@ -1211,4 +1212,9 @@ function uxTestCtrl($scope, $repositories, toastr, ModalService) {
     $scope.clearRepo = function () {
         $repositories.setRepository('');
     };
+}
+
+dsTestCtrl.$inject = ['$scope'];
+
+function dsTestCtrl($scope) {
 }

@@ -1,0 +1,207 @@
+<link rel="stylesheet" type="text/css" href="css/ds-test.css">
+<link rel="stylesheet" type="text/css" href="css/ds-test-buttons.css">
+<link rel="stylesheet" type="text/css" href="css/ds-test-inputs.css">
+<link rel="stylesheet" type="text/css" href="css/ds-test-card.css">
+
+<div class="ds-container">
+    <div class="new-style">
+        <div class="buttons">
+            <h2>Buttons and toggles</h2>
+            <div class="buttons-container">
+                <button class="button button-primary">Primary Button</button>
+                <button class="button button-primary" disabled>Primary Button Disabled</button>
+                <button class="button button-secondary">Secondary Button</button>
+                <button class="button button-secondary" disabled>Secondary Button Disabled</button>
+            </div>
+            <div class="button button-lg button-outlined button-outlined-primary text-xs-left d-block" role="button">
+                <div class="grid-container">
+                    <em class="icon-link icon-lg"></em>
+                    <div class="text">
+                        <span>Button label</span>
+                        <small class="text-muted">Small text</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="inputs">
+            <h2>Inputs and forms</h2>
+            <!--Inputs and forms-->
+            <div class="inputs-container">
+                <label for="input11">Input</label>
+                <input class="inputtext" type="text" name="title" id="input11">
+
+                <label for="input22">Disabled</label>
+                <input class="inputtext" type="text" name="title" id="input22" ng-disabled="true">
+
+                <label for="readonly">Readonly</label>
+                <input class="inputtext" type="text" readonly value="Lorem ipsum" id="readonly"/>
+
+                <div style="display: flex; align-items: baseline; gap: 5px;">
+                    <form name="testForm1" id="testForm1" novalidate>
+                        <label for="invalidInput1"> Invalid
+                        <input required name="invalidInput" class="inputtext ng-invalid" id="invalidInput1" type="text"
+                               placeholder="Lorem ipsum">
+                        </label>
+                    </form>
+                    <button type="submit" form="testForm1" class="button button-primary">Invalidate field</button>
+                </div>
+
+                <label for="numberField1">Number field</label>
+                <input class="inputtext" placeholder="Number field" type="number" value="123456" id="numberField1" pattern="-?[1-9][0-9]*(\.[0-9]+)?">
+
+                <label for="password1">Password</label>
+                <input id="password1" type="password" placeholder="Password" class="inputtext inputtext-lg" value="qwerty">
+
+                <label> Text area (expandable)</label>
+                <textarea type="text" class="inputtext textarea textarea-resizable" placeholder="Hover for popover"></textarea>
+            </div>
+        </div>
+
+        <!--Cards-->
+        <div class="cards">
+            <h2>Card</h2>
+            <div role="tablist" aria-multiselectable="true">
+                <div class="p-card">
+                    <div class="p-card-header" role="tab">
+                        <div class="pull-right">
+                            <button class="btn btn-link p-0" type="button">
+                                <em class="icon-copy"></em>
+                            </button>
+                            <button class="btn btn-link p-0" type="button">
+                                <em class="icon-reload"></em>
+                            </button>
+                            <button class="btn btn-link secondary p-0" type="button">
+                                <em class="icon-trash"></em>
+                            </button>
+                        </div>
+                        <h5 class="mb-0">
+                            <a class="collapsed" data-toggle="collapse"aria-expanded="false">
+                                Card title
+                            </a>
+                        </h5>
+                    </div>
+                    <div class="p-card-block">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="bootstrap-style">
+        <div class="buttons-container" style="justify-content: space-between; display: flex;gap: 10px; flex-direction: column;">
+            <h2>Buttons and toggles</h2>
+            <div class="row">
+                <button class="btn btn-primary">Button</button>
+                <button class="btn btn-primary" disabled>Button</button>
+                <button class="btn btn-secondary">Button</button>
+                <button class="btn btn-secondary" disabled>Button</button>
+            </div>
+            <div class="col-xs-12 col-md-6 col-lg-4 mb-1">
+                <div class="btn btn-outline-primary btn-lg text-xs-left d-block"
+                     role="button"
+                     uib-popover="Tooltip"
+                     popover-trigger="mouseenter"
+                     popover-placement="bottom">
+                    <div class="grid-container">
+                        <em class="icon-link icon-lg"></em>
+                        <div class="text">
+                            <span>Button label</span>
+                            <small class="text-muted">Small text</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="width: 60%;">
+            <!--Inputs and forms-->
+            <div class="inputs-container"
+                 style="justify-content: space-between; display: flex;gap: 10px; flex-direction: column;">
+                <h2>Inputs and forms</h2>
+                <label for="input1">Input</label>
+                <input gdb-tooltip="Input tooltip"
+                       tooltip-placement="top"
+                       class="form-control" type="text" name="title"
+                       id="input1">
+                <label for="input2">Disabled</label>
+                <input gdb-tooltip="Input tooltip"
+                       tooltip-placement="top"
+                       class="form-control" type="text" name="title"
+                       id="input2"
+                       ng-disabled="true">
+                <label for="readonly">Readonly</label>
+                <input class="form-control" type="text" readonly value="Lorem ipsum" id="readonly"/>
+                <div style="display: flex; align-items: baseline; gap: 5px;">
+                    <form name="testForm" id="testForm" novalidate>
+                        <label for="invalidInput"> Invalid
+                            <input required name="invalidInput"
+                                   class="form-control ng-invalid"
+                                   id="invalidInput"
+                                   type="text"
+                                   placeholder="Lorem ipsum">
+                        </label>
+                    </form>
+                    <button type="submit" form="testForm" class="btn btn-primary create-connector-btn">Invalidate field
+                    </button>
+                </div>
+                <label for="numberField">Number field</label>
+                <input class="form-control" placeholder="Number field" type="number" value="1234567890"
+                       required id="numberField" pattern="-?[1-9][0-9]*(\.[0-9]+)?">
+                <label for="password">Password</label>
+                <input id="password" type="password" placeholder="Password" class="form-control form-control-lg"
+                       required value="qwerty">
+                <label> Text area (expandable) and <strong>popover</strong>
+                    <textarea type="text" class="form-control" placeholder="Hover for popover"
+                              uib-popover="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque volutpat
+                                            facilisis erat a ornare.
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque volutpat
+                                            facilisis erat a ornare.
+                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque volutpat
+                                            facilisis erat a ornare."
+                              popover-trigger="mouseenter"
+                              popover-placement="bottom"></textarea>
+                </label>
+            </div>
+            <br/>
+        </div>
+
+        <!--Tabs and cards-->
+        <div>
+            <h2>Tabs and cards</h2>
+            <div role="tablist" aria-multiselectable="true">
+                <div class="card">
+                    <div class="card-header" role="tab">
+                        <div class="pull-right">
+                            <button class="btn btn-link p-0" type="button"
+                                    gdb-tooltip="Tooltip">
+                                <em class="icon-copy"></em>
+                            </button>
+                            <button class="btn btn-link p-0" type="button"
+                                    gdb-tooltip="Tooltip">
+                                <em class="icon-reload"></em>
+                            </button>
+                            <button class="btn btn-link secondary p-0" type="button"
+                                    gdb-tooltip="Tooltip">
+                                <em class="icon-trash"></em>
+                            </button>
+                        </div>
+                        <h5 class="mb-0">
+                            <a class="collapsed" data-toggle="collapse"
+                               aria-expanded="false">
+                                Card title
+                            </a>
+                        </h5>
+                    </div>
+                    <div class="card-block">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
