@@ -9,22 +9,20 @@ import { MapperProvider } from '../../providers';
  * Inherits copy functionality from {@link Model} and contains various properties of a GraphDB license.
  */
 export class License extends Model<License> {
-  // Epoch
-  expiryDate?: number;
-  // Epoch
-  latestPublicationDate?: number;
-  licensee?: string;
-  maxCpuCores?: number;
-  product?: string;
-  productType?: string;
-  licenseCapabilities?: CapabilityList;
-  version?: string;
-  installationId?: string;
-  valid?: boolean;
-  typeOfUse?: string;
-  message?: string;
-  present?: boolean;
-  usageRestriction?: string;
+  private _expiryDate?: number;
+  private _latestPublicationDate?: number;
+  private _licensee?: string;
+  private _maxCpuCores?: number;
+  private _product?: string;
+  private _productType?: string;
+  private _licenseCapabilities?: CapabilityList;
+  private _version?: string;
+  private _installationId?: string;
+  private _valid?: boolean;
+  private _typeOfUse?: string;
+  private _message?: string;
+  private _present?: boolean;
+  private _usageRestriction?: string;
 
   /**
    * Creates a new License instance.
@@ -48,5 +46,117 @@ export class License extends Model<License> {
     this.message = data.message || '';
     this.present = data.present || false;
     this.usageRestriction = data.usageRestriction || '';
+  }
+
+  get expiryDate(): number | undefined {
+    return this._expiryDate;
+  }
+
+  set expiryDate(value: number | undefined) {
+    this._expiryDate = value;
+  }
+
+  get latestPublicationDate(): number | undefined {
+    return this._latestPublicationDate;
+  }
+
+  set latestPublicationDate(value: number | undefined) {
+    this._latestPublicationDate = value;
+  }
+
+  get licensee(): string | undefined {
+    return this._licensee;
+  }
+
+  set licensee(value: string | undefined) {
+    this._licensee = value;
+  }
+
+  get maxCpuCores(): number | undefined {
+    return this._maxCpuCores;
+  }
+
+  set maxCpuCores(value: number | undefined) {
+    this._maxCpuCores = value;
+  }
+
+  get product(): string | undefined {
+    return this._product;
+  }
+
+  set product(value: string | undefined) {
+    this._product = value;
+  }
+
+  get productType(): string | undefined {
+    return this._productType;
+  }
+
+  set productType(value: string | undefined) {
+    this._productType = value;
+  }
+
+  get licenseCapabilities(): CapabilityList | undefined {
+    return this._licenseCapabilities;
+  }
+
+  set licenseCapabilities(value: CapabilityList | undefined) {
+    this._licenseCapabilities = value;
+  }
+
+  get version(): string | undefined {
+    return this._version;
+  }
+
+  set version(value: string | undefined) {
+    this._version = value;
+  }
+
+  get installationId(): string | undefined {
+    return this._installationId;
+  }
+
+  set installationId(value: string | undefined) {
+    this._installationId = value;
+  }
+
+  get valid(): boolean | undefined {
+    return this._valid;
+  }
+
+  set valid(value: boolean | undefined) {
+    this._valid = value;
+  }
+
+  get typeOfUse(): string | undefined {
+    return this._typeOfUse;
+  }
+
+  set typeOfUse(value: string | undefined) {
+    this._typeOfUse = value;
+  }
+
+  get message(): string | undefined {
+    return this._message;
+  }
+
+  set message(value: string | undefined) {
+    this._message = value;
+  }
+
+  get present(): boolean | undefined {
+    return this._present;
+  }
+
+  set present(value: boolean | undefined) {
+    this._present = value;
+  }
+
+  get usageRestriction(): string | undefined {
+    return this._usageRestriction;
+  }
+
+  set usageRestriction(value: string | undefined) {
+    this._usageRestriction = value;
   }
 }
