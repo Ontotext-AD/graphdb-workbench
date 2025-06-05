@@ -57,6 +57,13 @@
     gap: 0.625rem;
 }
 
+.chat-panel .cancel-ask-button {
+    width: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .chat-panel .user-message .question {
     max-width: 70%;
     padding-left: 0.5rem;
