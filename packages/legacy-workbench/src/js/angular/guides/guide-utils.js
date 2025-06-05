@@ -2,6 +2,20 @@ import {select} from 'd3';
 
 const d3 = {select};
 const GuideUtils = (function () {
+
+    /**
+     * Checks whether a given DOM element is visible in the document.
+     *
+     * @param {HTMLElement|null} element - The DOM element to check.
+     * @returns {boolean} `true` if the element is visible; otherwise, `false`.
+     */
+    const isElementVisible = (element) => {
+        if (!element) return false;
+
+        const style = window.getComputedStyle(element);
+        return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
+    }
+
     const clickOnElement = function (elementSelector) {
         return () => waitFor(elementSelector)
             .then((element) => {
@@ -29,10 +43,10 @@ const GuideUtils = (function () {
                 try {
                     const element = document.querySelector(selector);
                     if (element != null) {
-                        if (!checkVisibility || angular.element(element).is(':visible')) {
+                        if (!checkVisibility || isElementVisible(element)) {
                             clearInterval(elementExist);
                             setTimeout(() => {
-                                resolve(angular.element(element));
+                                resolve(element);
                             }, 0);
                         } else {
                             iteration -= waitTime;
@@ -69,7 +83,7 @@ const GuideUtils = (function () {
             const elementExist = setInterval(() => {
                 try {
                     const element = document.querySelector(selector);
-                    if (element && angular.element(element).is(':visible')) {
+                    if (element && isElementVisible(element)) {
                         // wait more
                         iteration -= waitTime;
                         if (iteration < 0) {
@@ -97,7 +111,7 @@ const GuideUtils = (function () {
     const getOrWaitFor = (elementSelector, timeoutInSeconds = 1, checkVisibility = true) => {
         const selector = getElementSelector(elementSelector);
         const element = document.querySelector(selector);
-        if (element != null && (!checkVisibility || angular.element(element).is(':visible'))) {
+        if (element != null && (!checkVisibility || isElementVisible(element))) {
             return Promise.resolve(element);
         }
         return waitFor(elementSelector, timeoutInSeconds, checkVisibility);
@@ -105,7 +119,7 @@ const GuideUtils = (function () {
 
     const isVisible = function (selector) {
         const element = document.querySelector(selector);
-        return element && angular.element(element).is(':visible');
+        return isElementVisible(element);
     };
 
     const isGuideElementVisible = function (guideSelectorValue) {
@@ -208,10 +222,19 @@ const GuideUtils = (function () {
      * false otherwise
      */
     const validateTextInput = function (elementSelector, expectedInput, applyInput = true) {
-        const input = $(elementSelector).val();
+        const element = document.querySelector(elementSelector);
+        if (!element) return false;
+
+        const input = element.value;
         if (input === '' && applyInput) {
-            $(elementSelector).val(expectedInput);
-            $(elementSelector).trigger('change');
+            element.value = expectedInput;
+
+            const inputEvent = new Event('input', { bubbles: true });
+            const changeEvent = new Event('change', { bubbles: true });
+
+            element.dispatchEvent(inputEvent);
+            element.dispatchEvent(changeEvent);
+
             return true;
         } else {
             // TODO: show toast error when the input isn't the expected input
@@ -226,7 +249,10 @@ const GuideUtils = (function () {
      * @return {boolean} true if the input element is not empty, false otherwise
      */
     const validateTextInputNotEmpty = function (elementSelector) {
-        const input = $(elementSelector).val();
+        const element = document.querySelector(elementSelector);
+        if (!element) return false;
+
+        const input = element.value;
         return input !== '';
     };
 
@@ -242,7 +268,7 @@ const GuideUtils = (function () {
     const translateLocalMessage = ($translate, $interpolate, message, parameters) => {
         const lang = $translate.use();
         let translated;
-        if (angular.isObject(message)) {
+        if (message !== null && typeof message === 'object') {
             translated = message[lang];
             if (!translated) {
                 translated = message['en'];
@@ -311,7 +337,7 @@ const GuideUtils = (function () {
     };
 
     const isChecked = (selector) => {
-        return angular.element(selector).is(':checked');
+        return document.querySelector(selector)?.checked === true;
     };
 
     const isGuideElementChecked = (selector, postSelect) => {
@@ -330,7 +356,7 @@ const GuideUtils = (function () {
     });
 
     const getElementSelector = (elementSelector) => {
-        return angular.isFunction(elementSelector) ? elementSelector() : elementSelector;
+        return typeof elementSelector === 'function' ? elementSelector() : elementSelector;
     };
 
     const CSS_SELECTORS = {
