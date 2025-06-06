@@ -1,5 +1,11 @@
 import {Component, h, Prop, State, Element} from '@stencil/core';
-import {AuthenticatedUser, AuthenticationService, navigateTo, ServiceProvider} from '@ontotext/workbench-api';
+import {
+  AuthenticatedUser,
+  AuthenticationService,
+  navigateTo,
+  SecurityConfig,
+  ServiceProvider
+} from '@ontotext/workbench-api';
 
 /**
  * This component displays the current user's name and provides options
@@ -15,6 +21,8 @@ export class OntoUserMenu {
 
   /** Currently authenticated user */
   @Prop() user: AuthenticatedUser;
+  /** Current security config */
+  @Prop() securityConfig: SecurityConfig;
 
   /** Reference to host element for outside click detection */
   @Element() hostElement: HTMLElement;
@@ -40,7 +48,7 @@ export class OntoUserMenu {
             <section class='onto-user-menu-dropdown'>
               <translate-label onClick={navigateTo('/settings')}
                                labelKey={'user_menu.my_settings'}></translate-label>
-              {!this.user.external ?
+              {!this.securityConfig?.hasExternalAuthUser ?
                 <translate-label onClick={this.logout}
                                  labelKey={'user_menu.logout'}></translate-label> : ''}
             </section> : ''}
@@ -52,7 +60,7 @@ export class OntoUserMenu {
   /**
   * Log out the current user.
   */
-  private logout = (): void => {
+  private readonly logout = (): void => {
     ServiceProvider.get(AuthenticationService).logout();
   }
 
@@ -61,14 +69,14 @@ export class OntoUserMenu {
    *
    * @returns A function that toggles the `isOpen` state between true and false.
    */
-  private toggleDropdown = (): void => {
+  private readonly toggleDropdown = (): void => {
     this.isOpen = !this.isOpen;
   }
 
   /**
    * Closes the dropdown if the user clicks outside the component.
    */
-  private handleOutsideClick = (event: MouseEvent) => {
+  private readonly handleOutsideClick = (event: MouseEvent) => {
     if (this.isOpen && !this.hostElement.contains(event.target as Node)) {
       this.isOpen = false;
     }
