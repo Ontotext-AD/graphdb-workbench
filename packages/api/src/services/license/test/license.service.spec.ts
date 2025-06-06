@@ -1,5 +1,5 @@
 import { LicenseService } from '../license.service';
-import { License } from '../../../models/license';
+import {CapabilityList, License} from '../../../models/license';
 import { TestUtil } from '../../utils/test/test-util';
 import { ResponseMock } from '../../http/test/response-mock';
 import {ServiceProvider} from '../../../providers';
@@ -20,8 +20,25 @@ describe('LicenseService', () => {
     // When I call the getLicense method
     const result = await licenseService.getLicense();
 
+    const expectedLicense = {
+      licensee: 'Test Company',
+      expiryDate: 1672531200000,
+      product: '',
+      productType: '',
+      version: '',
+      installationId: '',
+      valid: undefined,
+      typeOfUse: '',
+      message: '',
+      latestPublicationDate: undefined,
+      maxCpuCores: undefined,
+      present: false,
+      usageRestriction: '',
+      licenseCapabilities: [] as unknown as CapabilityList,
+    };
+
     // Then, I should get a License object, with default property values
-    expect(result).toEqual(new License(mockLicense));
+    expect(result).toEqual(new License(expectedLicense));
   });
 
   test('should return a true for a trackable license', () => {
