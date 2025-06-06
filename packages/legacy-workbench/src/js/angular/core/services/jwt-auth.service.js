@@ -591,6 +591,7 @@ angular.module('graphdb.framework.core.services.jwtauth', [
                 let config = {
                     enabled: this.securityEnabled,
                     hasExternalAuth: this.externalAuth,
+                    hasExternalAuthUser: this.hasExternalAuthUser(),
                     openIdEnabled: this.openIDEnabled,
                     passwordLoginEnabled: this.passwordLoginEnabled,
                     overrideAuth: {

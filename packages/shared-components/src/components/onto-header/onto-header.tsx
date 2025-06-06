@@ -127,7 +127,7 @@ export class OntoHeader {
             totalTripletsFormatter={this.totalTripletsFormatter}
             canWriteRepo={this.canWriteRepo}>
           </onto-repository-selector>
-          {this.securityConfig?.enabled && this.securityConfig?.userLoggedIn ? <onto-user-menu user={this.user}></onto-user-menu> : ''}
+          {this.securityConfig?.enabled && this.securityConfig?.userLoggedIn ? <onto-user-menu user={this.user} securityConfig={this.securityConfig}></onto-user-menu> : ''}
           {this.securityConfig?.enabled && !this.securityConfig?.userLoggedIn && (this.currentRoute !== 'login') ? <onto-user-login></onto-user-login> : ''}
           <onto-language-selector dropdown-alignment="right"></onto-language-selector>
         </div>
@@ -151,7 +151,7 @@ export class OntoHeader {
 
   private subscribeToRepositoryListChanged(): () => void {
     return this.repositoryContextService.onRepositoryListChanged((repositories: RepositoryList) => {
-      if (!repositories || !repositories.getItems().length) {
+      if (!repositories?.getItems().length) {
         this.resetOnMissingRepositories();
       } else {
         this.initOnRepositoryListChanged(repositories);
@@ -239,7 +239,7 @@ export class OntoHeader {
   }
 
   private getRepositoriesDropdownItems(): DropdownItem<Repository>[] {
-    if (!this.repositoryList || !this.repositoryList.getItems().length) {
+    if (!this.repositoryList?.getItems().length) {
       return [];
     }
     this.repositoryList.sortByLocationAndId();
@@ -265,11 +265,11 @@ export class OntoHeader {
     return true;
   }
 
-  private canWriteRepo = (repo: Repository) => {
+  private readonly canWriteRepo = (repo: Repository) => {
     return this.canWriteRepoInLocation(repo);
   };
 
-  private repositorySizeInfoFetcher = (repo: Repository) => {
+  private readonly repositorySizeInfoFetcher = (repo: Repository) => {
     return this.repositoryService.getRepositorySizeInfo(repo);
   };
 
@@ -323,7 +323,7 @@ export class OntoHeader {
       (!this.isActiveLocationLoading || getPathName() === '/repository');
   }
 
-  private showViewResourceMessage= (event:MouseEvent) => {
+  private readonly showViewResourceMessage= (event:MouseEvent) => {
     event.stopPropagation();
     this.toastrService.info(TranslationService.translate('rdf_search.toasts.use_view_resource'));
     this.shouldShowSearch = false;
