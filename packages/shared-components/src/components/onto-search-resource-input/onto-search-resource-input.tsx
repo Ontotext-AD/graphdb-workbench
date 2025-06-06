@@ -122,7 +122,6 @@ export class OntoSearchResourceInput {
             {this.inputValue?.length ?
               <i onClick={this.clearInput}
                  tooltip-content={TranslationService.translate('rdf_search.tooltips.clear')}
-                 tooltip-trigger={'mouseover'}
                  tooltip-placement={OntoTooltipPlacement.BOTTOM}
                  class="fa-light fa-xmark clear-input"></i> : ''
             }
@@ -160,7 +159,7 @@ export class OntoSearchResourceInput {
   /**
    * Updates the local inputValue with the html input element's value.'
    */
-  private handleInput = (event: Event) => {
+  private readonly handleInput = (event: Event) => {
     const target = event.target as HTMLInputElement;
     if (!target.value) {
       this.clearInput();
@@ -182,7 +181,7 @@ export class OntoSearchResourceInput {
   /**
    * Clears the search input field.
    */
-  private clearInput = () => {
+  private readonly clearInput = () => {
     this.setInputValue('');
     if(this.preserveSearch) {
       this.resourceSearchStorageService.clearStoredSearch();
@@ -266,7 +265,7 @@ export class OntoSearchResourceInput {
     );
   }
 
-  private onKeyDown = (event: KeyboardEvent) => {
+  private readonly onKeyDown = (event: KeyboardEvent) => {
     switch (event.key) {
       case 'Enter':
         this.onEnter(event);
