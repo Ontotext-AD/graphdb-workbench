@@ -140,10 +140,10 @@ export class OntoDropdown {
           </span>
           <i class={`fa-regular fa-angle-down ${this.open ? 'fa-rotate-180' : ''}`}></i>
         </button>
-        
+
         <div
           class={'onto-dropdown-menu ' + dropdownAlignmentClass}>
-          {this.items && this.items.map(item =>
+          {this.items?.map((item) =>
             <button class={'onto-dropdown-menu-item ' + item.cssClass}
                     tooltip-placement={OntoTooltipPlacement.LEFT}
                     tooltip-trigger={item.dropdownTooltipTrigger}
@@ -177,7 +177,7 @@ export class OntoDropdown {
       }
       this.buttonTooltipContent = tooltipContent;
 
-      // FIXME: Tooltip update is not reactive – this logic should be decoupled from DOM traversal
+      // FIXME: Tooltip update is not reactive – this logic should be decoupled from DOM traversal see GDB-12506
       if (tooltipContent !== '') {
         TooltipUtil.updateTooltipContent(target, tooltipContent);
       } else {

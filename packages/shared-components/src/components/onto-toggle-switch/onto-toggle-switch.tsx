@@ -46,7 +46,7 @@ export class OntoToggleSwitch {
    */
   @Event() toggleChanged: EventEmitter<ToggleEventPayload>;
 
-  private toggle = () => {
+  private readonly toggle = () => {
     this.checked = !this.checked;
     this.toggleChanged.emit({checked: this.checked, context: this.context});
   };
@@ -79,15 +79,14 @@ export class OntoToggleSwitch {
             </strong>
           </label>
         }
-        <span class="toggle-switch"
+        <button class="toggle-switch"
               onClick={this.toggle}
               tooltip-append-to="parent"
               tooltip-content={this.tooltipLabel}
-              tooltip-trigger={'mouseover'}
               tooltip-placement={OntoTooltipPlacement.TOP}>
           <input type="checkbox" checked={this.checked}/>
           <label></label>
-        </span>
+        </button>
       </section>
     );
   }
