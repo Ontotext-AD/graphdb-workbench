@@ -28,12 +28,14 @@ export class RepositoryContextService extends ContextService<RepositoryContextFi
    * Updates the selected repository and notifies subscribers about the change.
    *
    * @param [repositoryReference] - The new repository to set as selected. Optional.
+   *
+   * @returns {Promise<void>} A promise that resolves when the selected repository has been updated.
    */
-  updateSelectedRepository(repositoryReference?: RepositoryReference): void {
+  updateSelectedRepository(repositoryReference?: RepositoryReference): Promise<void> {
     const storageService = ServiceProvider.get(RepositoryStorageService);
     const selectedRepository = this.findRepository(repositoryReference);
 
-    this.validatePropertyChange(this.SELECTED_REPOSITORY, selectedRepository)
+    return this.validatePropertyChange(this.SELECTED_REPOSITORY, selectedRepository)
       .then((canChange) => {
         if (canChange) {
           if (selectedRepository) {

@@ -397,17 +397,19 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                 if (!eventData.cancel) {
                     const repositoryContextService = ServiceProvider.get(RepositoryContextService);
                     // this will update the values in the local storage and trigger context change for other opened tabs
-                    repositoryContextService.updateSelectedRepository(repo);
-                    this.setRepositoryHeaders(repo);
-                    $rootScope.$broadcast('repositoryIsSet', {newRepo: true});
+                    repositoryContextService.updateSelectedRepository(repo)
+                        .then(() => {
+                            this.setRepositoryHeaders(repo);
+                            $rootScope.$broadcast('repositoryIsSet', {newRepo: true});
 
-                    // if the current repo is unreadable by the currently logged in user (or free access user)
-                    // we unset the repository
-                    if (repo && !$jwtAuth.canReadRepo(repo) && !$jwtAuth.hasGraphqlReadRights(repo)) {
-                        this.setRepository('');
-                    }
-                    // reset denied permissions (different repo, different rights)
-                    $rootScope.deniedPermissions = {};
+                            // if the current repo is unreadable by the currently logged in user (or free access user)
+                            // we unset the repository
+                            if (repo && !$jwtAuth.canReadRepo(repo) && !$jwtAuth.hasGraphqlReadRights(repo)) {
+                                this.setRepository('');
+                            }
+                            // reset denied permissions (different repo, different rights)
+                            $rootScope.deniedPermissions = {};
+                        });
                 }
             });
         };
