@@ -129,13 +129,7 @@ PluginRegistry.add('guide.step', [
                         }
                         return true;
                     },
-                    onNextClick: (guide) =>
-                        GuideUtils.clickOnGuideElement(menuSelector, mainMenuClickElementPostSelector)()
-                            .then(() => {
-                                if (!submenuSelector) {
-                                    guide.next();
-                                }
-                            }),
+                    onNextClick: GuideUtils.clickOnGuideElement(menuSelector, mainMenuClickElementPostSelector),
                     initPreviousStep: (services, stepId) => {
                         const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
                         if (previousStep) {
@@ -157,14 +151,7 @@ PluginRegistry.add('guide.step', [
                         elementSelector: GuideUtils.getGuideElementSelector(submenuSelector),
                         placement: 'right',
                         canBePaused: false,
-                        showOn: () => {
-                            // If submenu is visible this mean that we have to close menu.
-                            if (!GuideUtils.isGuideElementVisible(submenuSelector)) {
-                                GuideUtils.clickOnGuideElement(menuSelector, ' div')();
-                            }
-                            return true;
-                        },
-                        onNextClick: (guide) => GuideUtils.clickOnGuideElement(submenuSelector, ' a')().then(() => guide.next()),
+                        onNextClick: GuideUtils.clickOnGuideElement(submenuSelector, ' a'),
                         initPreviousStep: (services, stepId) => {
                             const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
                             if (previousStep) {
