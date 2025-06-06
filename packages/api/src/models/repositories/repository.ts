@@ -19,6 +19,7 @@ export class Repository extends Model<Repository> implements RepositoryReference
   readable: boolean | undefined;
   writable: boolean | undefined;
   unsupported: boolean | undefined;
+  isNew?: boolean;
 
   constructor(data?: Partial<Repository>) {
     super();
@@ -34,8 +35,9 @@ export class Repository extends Model<Repository> implements RepositoryReference
     this.readable = data?.readable;
     this.writable = data?.writable;
     this.unsupported = data?.unsupported;
+    this.isNew = data?.isNew;
   }
-  
+
   toRepositoryReference(): RepositoryReference {
     return {
       id: this.id,
