@@ -15,6 +15,7 @@ export class SecurityConfig extends Model<SecurityConfig> {
   openIdEnabled?: boolean;
   userLoggedIn?: boolean;
   freeAccessActive?: boolean;
+  hasExternalAuthUser?: boolean;
 
   constructor(config: Partial<SecurityConfig>) {
     super();
@@ -26,5 +27,6 @@ export class SecurityConfig extends Model<SecurityConfig> {
     this.openIdEnabled = config.openIdEnabled;
     this.userLoggedIn = config.userLoggedIn;
     this.freeAccessActive = config.freeAccessActive;
+    this.hasExternalAuthUser = config.hasExternalAuthUser;
   }
 }
