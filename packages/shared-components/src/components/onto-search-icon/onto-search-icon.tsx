@@ -11,7 +11,7 @@ import {OntoTooltipPlacement} from "../onto-tooltip/models/onto-tooltip-placemen
 export class OntoSearchIcon {
   @State() private tooltipLabel: string;
 
-  private tooltipKey: string = 'rdf_search.labels.search';
+  private readonly tooltipKey: string = 'rdf_search.labels.search';
   private readonly subscriptions = new SubscriptionList();
 
 
@@ -30,7 +30,6 @@ export class OntoSearchIcon {
     return (
       <i tooltip-content={this.tooltipLabel}
          tooltip-placement={OntoTooltipPlacement.BOTTOM}
-         tooltip-trigger={'mouseover'}
          class="fa-light fa-magnifying-glass"></i>
     );
   }
