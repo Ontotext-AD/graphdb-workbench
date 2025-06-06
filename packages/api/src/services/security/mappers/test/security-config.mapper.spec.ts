@@ -11,6 +11,7 @@ describe('SecurityConfigMapper', () => {
       methodSettings: {},
       passwordLoginEnabled: true,
       hasExternalAuth: false,
+      hasExternalAuthUser: false,
       authImplementation: 'Local',
       openIdEnabled: false,
     } as unknown as SecurityConfig;
