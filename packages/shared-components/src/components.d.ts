@@ -308,6 +308,10 @@ export namespace Components {
      */
     interface OntoUserMenu {
         /**
+          * Current security config
+         */
+        "securityConfig": SecurityConfig;
+        /**
           * Currently authenticated user
          */
         "user": AuthenticatedUser;
@@ -832,6 +836,10 @@ declare namespace LocalJSX {
      * for navigating to settings and logging out.
      */
     interface OntoUserMenu {
+        /**
+          * Current security config
+         */
+        "securityConfig"?: SecurityConfig;
         /**
           * Currently authenticated user
          */
