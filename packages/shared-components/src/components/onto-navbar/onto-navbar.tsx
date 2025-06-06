@@ -270,7 +270,7 @@ export class OntoNavbar {
           </li>
           {this.menuModel.items.map((item) => (
             <li key={item.labelKey} class={{'menu-element': true, 'open': item.open}}
-                data-test-id={item.testSelector}>
+                data-test-id={item.testSelector} guide-selector={item.guideSelector}>
               {item.children.length > 0 &&
                 <Fragment>
                   <div class={{'menu-element-root': true, 'active': item.selected}}
@@ -285,7 +285,7 @@ export class OntoNavbar {
                     {
                       item.children.map((submenu) => (
                         <li key={submenu.labelKey} class={{'sub-menu-item': true, 'active': submenu.selected}}
-                            data-test-id={submenu.testSelector}>
+                            data-test-id={submenu.testSelector}  guide-selector={submenu.guideSelector}>
                           <a class="sub-menu-link" href={submenu.href} onClick={this.handleSelectMenuItem(submenu)}>
                             <translate-label class="menu-item" labelKey={submenu.labelKey}></translate-label>
                             {submenu.icon &&
