@@ -3,9 +3,20 @@ $default-checked-color-hsl: 210, 3%, 22%;
 $default-checked-color: #373a3c;
 
 .toggle-switch {
+  all: unset;
   clear: both;
   margin: 0 5px;
   width: 36px;
+
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
 
   input {
     &:empty {
