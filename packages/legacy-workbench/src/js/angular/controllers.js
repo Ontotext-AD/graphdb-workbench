@@ -1100,8 +1100,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     // LocalStorageSubscriptionHandlerService in the api module which triggers the change for the respective context
     // properties.
     const onSelectedRepositoryChangedSubscription = ServiceProvider.get(RepositoryContextService)
-      .onSelectedRepositoryChanged(() => {
-          $rootScope.$broadcast('repositoryIsSet', {newRepo: false});
+      .onSelectedRepositoryChanged((repository) => {
+          $repositories.onRepositorySet(repository);
       });
 
     $scope.downloadGuidesFile = (resourcePath, resourceFile) => {

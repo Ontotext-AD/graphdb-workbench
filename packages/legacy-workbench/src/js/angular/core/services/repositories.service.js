@@ -398,19 +398,25 @@ repositories.service('$repositories', ['toastr', '$rootScope', '$timeout', '$loc
                     const repositoryContextService = ServiceProvider.get(RepositoryContextService);
                     // this will update the values in the local storage and trigger context change for other opened tabs
                     repositoryContextService.updateSelectedRepository(repo);
-                    this.setRepositoryHeaders(repo);
-                    $rootScope.$broadcast('repositoryIsSet', {newRepo: true});
-
-                    // if the current repo is unreadable by the currently logged in user (or free access user)
-                    // we unset the repository
-                    if (repo && !$jwtAuth.canReadRepo(repo) && !$jwtAuth.hasGraphqlReadRights(repo)) {
-                        this.setRepository('');
-                    }
-                    // reset denied permissions (different repo, different rights)
-                    $rootScope.deniedPermissions = {};
                 }
             });
         };
+
+        this.onRepositorySet = function (newRepository) {
+            // The new context service will pass undefined, when there is no repository,
+            // but the legacy code expects an empty string
+            const repo = newRepository || '';
+            this.setRepositoryHeaders(repo);
+            $rootScope.$broadcast('repositoryIsSet', {newRepo: true});
+
+            // if the current repo is unreadable by the currently logged in user (or free access user)
+            // we unset the repository
+            if (repo && !$jwtAuth.canReadRepo(repo) && !$jwtAuth.hasGraphqlReadRights(repo)) {
+                this.setRepository('');
+            }
+            // reset denied permissions (different repo, different rights)
+            $rootScope.deniedPermissions = {};
+        }
 
         this.getDefaultRepository = function () {
             return this.hasActiveLocation() ? this.location.defaultRepository : '';
