@@ -21,7 +21,7 @@ PluginRegistry.add('guide.step', [
                         class: 'create-repository-guide-dialog',
                         url: '/repository',
                         elementSelector: GuideUtils.getGuideElementSelector('createRepository'),
-                        onNextClick: (guide) => GuideUtils.clickOnGuideElement('createRepository')().then(() => guide.next())
+                        onNextClick: GuideUtils.clickOnGuideElement('createRepository')
                     }, options)
                 }, {
                     guideBlockName: 'clickable-element',
