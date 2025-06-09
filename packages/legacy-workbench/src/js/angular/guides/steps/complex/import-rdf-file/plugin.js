@@ -70,7 +70,7 @@ PluginRegistry.add('guide.step', [
                             }
                         },
                         onNextValidate: () => {
-                            return Promise.allSettled([GuideUtils.getOrWaitFor('.confirm-duplicate-files-dialog'), GuideUtils.getOrWaiteFor(GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile))])
+                            return Promise.allSettled([GuideUtils.getOrWaitFor('.confirm-duplicate-files-dialog'), GuideUtils.getOrWaitFor(GuideUtils.getGuideElementSelector('import-file-' + options.resourceFile))])
                                 .then(([confirmDialogPromise, importButtonPromise]) => {
                                     // There are two ways to exit this step: if the duplication dialog is opened or if the import button for the guide file is displayed.
                                     // The first scenario indicates that the user is trying to upload the same file,
