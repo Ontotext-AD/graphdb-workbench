@@ -17,6 +17,8 @@ dropdown2.items = [
 
 let dropdown3 = document.querySelector("#dropdown3");
 
+dropdown3.autoClose = false;
+
 dropdown3.items = [
   {
     name: "Some very long option name",

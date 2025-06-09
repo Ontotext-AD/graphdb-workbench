@@ -60,4 +60,25 @@ describe('Dropdown', () => {
     // And the options to be right aligned.
     DropdownSteps.getDropdownMenu(DROPDOWN3).should('have.class', 'onto-dropdown-left-item-alignment');
   })
+
+  it('Should toggle dropdown options on click', () => {
+    // Given: I visit a page with a dropdowns.
+    DropdownSteps.visit();
+
+    // When: I open a dropdown configured to auto-close when clicking outside.
+    DropdownSteps.openDropdown(DROPDOWN2);
+    DropdownSteps.getDropdownMenu(DROPDOWN2).should('be.visible');
+    // And: I click somewhere on the page.
+    cy.clickOutside();
+    // Then: I expect the options to be hidden.
+    DropdownSteps.getDropdownMenu(DROPDOWN2).should('be.hidden');
+
+    // When: I open a dropdown configured not to auto-close when clicking outside.
+    DropdownSteps.openDropdown(DROPDOWN3);
+    DropdownSteps.getDropdownMenu(DROPDOWN3).should('be.visible');
+    // And: I click somewhere on the page.
+    cy.clickOutside();
+    // Then: I expect the options to be visible.
+    DropdownSteps.getDropdownMenu(DROPDOWN3).should('be.visible');
+  });
 });

@@ -18,6 +18,8 @@ import {OntoTooltipPlacement} from "../onto-tooltip/models/onto-tooltip-placemen
   shadow: false,
 })
 export class OntoDropdown {
+  
+  private readonly GUIDE_SELECTOR_ATTR = 'guide-selector';
 
   @Element() hostElement: HTMLOntoDropdownElement;
 
@@ -42,6 +44,11 @@ export class OntoDropdown {
    * The translation label key for the dropdown button name. It will be used if {@link OntoDropdown#dropdownButtonName} is not present.
    */
   @Prop() dropdownButtonNameLabelKey: string;
+
+  /**
+   * Defines the value of the `guide-selector` attribute for the dropdown trigger button.
+   */
+  @Prop() dropdownButtonGuideSelector: string;
 
   /**
    * The dropdown button tooltip. It will be used if present; otherwise, the {@link OntoDropdown#dropdownButtonTooltipLabelKey} will be used.
@@ -86,7 +93,12 @@ export class OntoDropdown {
    *
    */
   @Prop() dropdownAlignment: DropdownItemAlignment = DropdownItemAlignment.LEFT;
-
+  
+  /**
+   * Flag to determine if the dropdown should close automatically when a click occurs outside the dropdown.
+   */
+  @Prop() autoClose: boolean = true;
+  
   /**
    * Event emitted when a dropdown item is selected.
    * The event payload contains the value of the selected item.
@@ -115,7 +127,7 @@ export class OntoDropdown {
   @Listen('click', {target: 'window'})
   mouseClickListener(ev: PointerEvent): void {
     const target: HTMLElement = ev.target as HTMLElement;
-    if (!this.hostElement.contains(target)) {
+    if (this.autoClose && !this.hostElement.contains(target)) {
       this.closeMenu();
     }
   }
@@ -128,6 +140,7 @@ export class OntoDropdown {
     return (
       <div class={`onto-dropdown ${this.open ? 'open' : 'closed'}`}>
         <button class="onto-dropdown-button"
+                {...(this.dropdownButtonGuideSelector ? { [this.GUIDE_SELECTOR_ATTR]: this.dropdownButtonGuideSelector } : {})}
                 tooltip-placement={tooltipPlacement}
                 tooltip-trigger={this.dropdownTooltipTrigger}
                 tooltip-content={this.buttonTooltipContent}
@@ -145,6 +158,7 @@ export class OntoDropdown {
           class={'onto-dropdown-menu ' + dropdownAlignmentClass}>
           {this.items?.map((item) =>
             <button class={'onto-dropdown-menu-item ' + item.cssClass}
+                    {...(item.guideSelector ? { [this.GUIDE_SELECTOR_ATTR]: item.guideSelector } : {})}
                     tooltip-placement={OntoTooltipPlacement.LEFT}
                     tooltip-trigger={item.dropdownTooltipTrigger}
                     {...(this.tooltipTheme ? {'tooltip-theme': this.tooltipTheme} : {})}
