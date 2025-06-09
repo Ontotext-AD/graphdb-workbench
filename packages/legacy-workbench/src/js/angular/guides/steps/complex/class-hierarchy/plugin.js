@@ -166,11 +166,7 @@ PluginRegistry.add('guide.step', [
                         canBePaused: false,
                         elementSelector: instanceCountSelector,
                         class: 'class-hierarchy-side-panel-instances-count-guide-dialog',
-                        onNextClick: (guide, step) => {
-                            GuideUtils.waitFor(step.elementSelector, 3)
-                                .then(() => $(step.elementSelector).trigger('click'));
-                            guide.next();
-                        }
+                        onNextClick: GuideUtils.clickOnGuideElement('instances-count')
                     }, options)
                 });
 

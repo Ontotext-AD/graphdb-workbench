@@ -3,8 +3,17 @@ const getRepositoryName = (services, options) => {
 };
 
 const getRepositoryElementSelector = (services, options) => {
-    return services.GuideUtils.getGuideElementSelector(`repository-${getRepositoryName(services, options)}-button`);
+    return services.GuideUtils.getGuideElementSelector(`repository-id-${getRepositoryName(services, options)}`);
 };
+
+const setRepositorySelectorAutoClose = (autoClose) => {
+    const component = document.querySelector('.onto-repository-selector');
+    if (component) {
+        // Enable auto-close when the guide step is closed.
+        component.autoClose = autoClose;
+    }
+}
+
 
 PluginRegistry.add('guide.step', [
     {
@@ -19,9 +28,9 @@ PluginRegistry.add('guide.step', [
                 options: angular.extend({}, {
                     skipPoint: true,
                     content: 'guide.step_plugin.choose-repository.content',
-                    elementSelector: GuideUtils.getGuideElementSelector('repositoriesGroupButton'),
+                    elementSelector: '.onto-repository-selector',
                     class: 'repositories-group-button-guide-dialog',
-                    onNextClick: (guide) => GuideUtils.clickOnGuideElement('repositoriesGroupButton')().then(() => guide.next())
+                    onNextClick: GuideUtils.clickOnElement('.onto-repository-selector .onto-dropdown-button')
                 }, options)
             }, {
                 guideBlockName: 'clickable-element',
@@ -38,7 +47,7 @@ PluginRegistry.add('guide.step', [
                             throw (error);
                         }),
                     show: (guide) => () => {
-                        $('#repositorySelectDropdown').addClass('autoCloseOff');
+                        setRepositorySelectorAutoClose(false);
                         // Added listener to the element.
                         $(getRepositoryElementSelector(services, options))
                             .on('mouseup.selectRepositoryButtonClick', function () {
@@ -47,11 +56,10 @@ PluginRegistry.add('guide.step', [
                     },
                     onNextClick: (guide) => {
                         $(getRepositoryElementSelector(services, options)).off('mouseup.selectRepositoryButtonClick');
-                        $('#repositorySelectDropdown').removeClass('autoCloseOff');
                         GuideUtils.clickOnElement(getRepositoryElementSelector(services, options))().then(() => guide.next());
                     },
                     hide: () => () => {
-                        $('#repositorySelectDropdown').removeClass('autoCloseOff');
+                        setRepositorySelectorAutoClose(true);
                         // Remove ths listener from element. It is important when step is hided.
                         $(getRepositoryElementSelector(services, options)).off('mouseup.selectRepositoryButtonClick');
                     },

@@ -3,11 +3,7 @@ import {StarWarsGuideSteps} from "../../steps/guides/star-wars-guide-steps";
 
 const STAR_WARS_FILE_FOR_IMPORT = 'starwars.ttl';
 
-
-/**
- * TODO: Fix me. Broken due to migration (Changes in main menu)
- */
-describe.skip('Describes "Starwars" interactive guide', () => {
+describe('Describes "Starwars" interactive guide', () => {
 
     let repositoryId;
 
