@@ -7,7 +7,7 @@ import {
 } from "@ontotext/workbench-api";
 import {DropdownItem} from '../../models/dropdown/dropdown-item';
 import {DropdownItemAlignment} from '../../models/dropdown/dropdown-item-alignment';
-import {SelectorButton} from './selector-button';
+import {RepositorySelection} from './repository-selection';
 import {TranslationService} from '../../services/translation.service';
 import {OntoTooltipPlacement} from "../onto-tooltip/models/onto-tooltip-placement";
 
@@ -109,13 +109,15 @@ export class OntoRepositorySelector {
   }
 
   render() {
-    const buttonLabel = this.getButtonLabel();
+    const repositorySelection = <RepositorySelection repository={this.currentRepository}
+                                                     defaultToggleButtonName={this.getButtonLabel()}
+                                                     location={this.getLocation()}/>;
     return (
       <Host>
         <onto-dropdown
           class='onto-repository-selector'
           onValueChanged={this.onValueChanged()}
-          dropdownButtonName={<SelectorButton repository={this.currentRepository} defaultToggleButtonName={buttonLabel}  location={this.getLocation()}/>}
+          dropdownButtonName={repositorySelection}
           dropdownButtonTooltip={this.createTooltipFunctionForRepository(this.currentRepository)}
           dropdownTooltipTrigger='mouseenter focus'
           dropdownAlignment={DropdownItemAlignment.RIGHT}
@@ -218,14 +220,15 @@ export class OntoRepositorySelector {
     }
 
     if (repositorySizeInfo.total >= 0) {
+      let value = '-';
+      if (repositorySizeInfo.explicit > 0) {
+        value = this.totalTripletsFormatter.format(repositorySizeInfo.total / repositorySizeInfo.explicit);
+      }
+
       html += `
       <div class="repository-tooltip-row">
         <div class="label">${TranslationService.translate('repository-selector.tooltip.repository-size.expansion_ratio')}:</div>
-        <div class="value">${
-          repositorySizeInfo.explicit > 0
-            ? this.totalTripletsFormatter.format(repositorySizeInfo.total / repositorySizeInfo.explicit)
-            : '-'
-        }</div>
+        <div class="value">${value}</div>
       </div>`;
     }
 
