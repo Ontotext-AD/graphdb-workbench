@@ -13,6 +13,15 @@ PluginRegistry.add('route', {
 
 PluginRegistry.add('main.menu', {
     'items': [
-        {label: 'Autocomplete', labelKey: 'menu.autocomplete.label', href: 'autocomplete', order: 40, parent: 'Setup', role: "IS_AUTHENTICATED_FULLY", guideSelector: 'sub-menu-autocomplete'}
+        {
+            label: 'Autocomplete',
+            labelKey: 'menu.autocomplete.label',
+            href: 'autocomplete',
+            order: 40,
+            parent: 'Setup',
+            role: "IS_AUTHENTICATED_FULLY",
+            guideSelector: 'sub-menu-autocomplete',
+            testSelector: 'sub-menu-autocomplete'
+        }
     ]
 });
