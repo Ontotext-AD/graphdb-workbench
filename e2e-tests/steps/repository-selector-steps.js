@@ -5,7 +5,7 @@ export class RepositorySelectorSteps {
     }
 
     static getRepositorySelectorsButton() {
-        return RepositorySelectorSteps.getRepositorySelectorDropdown().find('.onto-dropdown-button .selector-button');
+        return RepositorySelectorSteps.getRepositorySelectorDropdown().find('.onto-dropdown-button .repository-selection');
     }
     static openRepositorySelectors() {
         RepositorySelectorSteps.getRepositorySelectorsButton().click();

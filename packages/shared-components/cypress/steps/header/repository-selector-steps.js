@@ -15,7 +15,7 @@ export class RepositorySelectorSteps extends BaseSteps {
   }
 
   static getRepositorySelectorToggleButton() {
-    return RepositorySelectorSteps.getRepositorySelector().find('.selector-button');
+    return RepositorySelectorSteps.getRepositorySelector().find('.repository-selection');
   }
 
   static toggleRepositorySelector() {
