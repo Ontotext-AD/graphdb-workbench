@@ -47,15 +47,15 @@ export class MainMenuSteps {
     }
 
     static getSubmenuAutocomplete() {
-        return MainMenuSteps.getSubMenuButton("Autocomplete");
+        return MainMenuSteps.getSubMenuButton("sub-menu-autocomplete");
     }
 
     static getSubmenuClassHierarchy() {
-        return MainMenuSteps.getSubMenuButton("Class hierarchy");
+        return MainMenuSteps.getSubMenuButton("menu-class-hierarchy");
     }
 
     static getSubmenuVisualGraph() {
-        return MainMenuSteps.getSubMenuButton("Visual graph");
+        return MainMenuSteps.getSubMenuButton("sub-menu-visual-graph");
     }
 
     static clickOnMenu(menuName) {

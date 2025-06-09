@@ -3,10 +3,7 @@ import {MoviesGuideSteps} from "../../steps/guides/movies-guide-steps";
 
 const MOVIES_FILE_FOR_IMPORT = 'movies.ttl';
 
-/**
- * TODO: Fix me. Broken due to migration (Error: Changes in main menu)
- */
-describe.skip('Interactive guides', () => {
+describe('Interactive guides', () => {
 
     let repositoryId;
 
@@ -25,7 +22,6 @@ describe.skip('Interactive guides', () => {
 
     context('Describes "Movies" interactive guide', () => {
         it('Tests movies interactive guide using "Next" button to the end', () => {
-
             const stepAssertions = [
                 {assert: MoviesGuideSteps.assertExploreClassHierarchyStep1},
                 {assert: MoviesGuideSteps.assertExploreClassHierarchyStep2},
