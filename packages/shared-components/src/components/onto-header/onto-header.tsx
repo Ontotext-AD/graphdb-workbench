@@ -257,6 +257,7 @@ export class OntoHeader {
           .setName(<SelectorItemButton repository={repository}/>)
           .setValue(repository)
           .setDropdownTooltipTrigger('mouseenter focus')
+          .setGuideSelector(`repository-id-${repository.id}`)
       });
   }
 

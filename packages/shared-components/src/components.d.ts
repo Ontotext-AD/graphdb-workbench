@@ -52,9 +52,17 @@ export namespace Components {
      */
     interface OntoDropdown {
         /**
+          * Flag to determine if the dropdown should close automatically when a click occurs outside the dropdown.
+         */
+        "autoClose": boolean;
+        /**
           * Specifies the dropdown items' alignment. If not provided, the items and the dropdown button will be aligned to the left.
          */
         "dropdownAlignment": DropdownItemAlignment;
+        /**
+          * Defines the value of the `guide-selector` attribute for the dropdown trigger button.
+         */
+        "dropdownButtonGuideSelector": string;
         /**
           * The name for the dropdown button. This can either be a string (used directly as the button label) or a Stencil component (used to render the button content). It will be used if present; otherwise, the {@link OntoDropdown#dropdownButtonNameLabelKey } will be used.
          */
@@ -643,9 +651,17 @@ declare namespace LocalJSX {
      */
     interface OntoDropdown {
         /**
+          * Flag to determine if the dropdown should close automatically when a click occurs outside the dropdown.
+         */
+        "autoClose"?: boolean;
+        /**
           * Specifies the dropdown items' alignment. If not provided, the items and the dropdown button will be aligned to the left.
          */
         "dropdownAlignment"?: DropdownItemAlignment;
+        /**
+          * Defines the value of the `guide-selector` attribute for the dropdown trigger button.
+         */
+        "dropdownButtonGuideSelector"?: string;
         /**
           * The name for the dropdown button. This can either be a string (used directly as the button label) or a Stencil component (used to render the button content). It will be used if present; otherwise, the {@link OntoDropdown#dropdownButtonNameLabelKey } will be used.
          */

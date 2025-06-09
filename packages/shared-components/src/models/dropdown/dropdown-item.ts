@@ -46,6 +46,12 @@ export class DropdownItem<T> {
    */
   private _cssClass: string;
 
+  /**
+   * The value of the `guide-selector` attribute for a dropdown item.
+   * @private
+   */
+  private _guideSelector: string;
+  
   get name(): string {
     return this._name;
   }
@@ -115,6 +121,15 @@ export class DropdownItem<T> {
 
   setCssClass(value: string): DropdownItem<T> {
     this._cssClass = value;
+    return this;
+  }
+  
+  get guideSelector(): string {
+    return this._guideSelector;
+  }
+  
+  setGuideSelector(value: string) {
+    this._guideSelector = value;
     return this;
   }
 }
