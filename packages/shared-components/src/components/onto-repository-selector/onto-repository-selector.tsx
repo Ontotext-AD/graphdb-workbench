@@ -119,6 +119,7 @@ export class OntoRepositorySelector {
           onValueChanged={this.onValueChanged()}
           dropdownButtonName={repositorySelection}
           dropdownButtonTooltip={this.createTooltipFunctionForRepository(this.currentRepository)}
+          {...(this.currentRepository ? { 'dropdownButtonGuideSelector': `repository-id-${this.currentRepository.id}` } : {})}
           dropdownTooltipTrigger='mouseenter focus'
           dropdownAlignment={DropdownItemAlignment.RIGHT}
           tooltipPlacement={this.tooltipAlignment}
