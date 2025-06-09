@@ -173,6 +173,10 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
         }
     });
 
+    $scope.goToResourceView = () => {
+        $location.path("sparql").search($scope.resourceViewInstancesUriParameters);
+    }
+
     function instancesFilterFunc(inst) {
         return inst.resolvedUri
             .toLowerCase()
@@ -332,10 +336,14 @@ function RdfClassHierarchyCtlr($scope, $rootScope, $location, $repositories, $li
 
         const query = "prefix onto:<http://www.ontotext.com/>\nselect ?s {\n    ?s a <" + uri + "> .\n}";
 
-        const encodedQuery = encodeURIComponent(query);
-
-        // generate url for redirecting to sparql view, opening a new tab, writing the generated query and executing it
-        $scope.viewInstancesUri = 'sparql?name=' + name + '&infer=true&sameAs=false&query=' + encodedQuery + '&execute=true';
+        // Prepare parameters for redirecting to sparql view, opening a new tab, writing the generated query and executing it
+        $scope.resourceViewInstancesUriParameters = {
+            name,
+            infer: true,
+            sameAs: false,
+            query,
+            execute: true
+        }
 
         GraphDataRestService.getRdfsLabelAndComment(uri)
             .success(function (response) {
