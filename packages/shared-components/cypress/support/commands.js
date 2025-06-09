@@ -23,3 +23,8 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+// Simulates a click outside any element (on the body)
+Cypress.Commands.add('clickOutside', () => {
+    cy.get('body').click(0, 0);
+});
