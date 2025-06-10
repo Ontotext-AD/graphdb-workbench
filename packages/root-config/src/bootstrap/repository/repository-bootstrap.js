@@ -10,7 +10,6 @@ import {
 const loadRepositories = () => {
   return ServiceProvider.get(RepositoryService).getRepositories()
     .then((repositories) => {
-
       const repositoryContextService = ServiceProvider.get(RepositoryContextService);
       // Initializing the repository context service with all repositories.
       repositoryContextService.updateRepositoryList(repositories);

@@ -32,4 +32,17 @@ export class SecurityRestService extends HttpService {
   getSecurityConfig(): Promise<SecurityConfig> {
     return this.get(`${this.SECURITY_ENDPOINT}/all`);
   }
+
+  /**
+   * Retrieves information about the currently authenticated user.
+   *
+   * Sends a GET request to the security endpoint to fetch details about the user
+   * who is currently authenticated in the system.
+   *
+   * @returns A Promise that resolves with the AuthenticatedUser object containing
+   *          the user's details such as username, roles, and application settings.
+   */
+  getAuthenticatedUser(): Promise<AuthenticatedUser> {
+    return this.get(`${this.SECURITY_ENDPOINT}/authenticated-user`);
+  }
 }
