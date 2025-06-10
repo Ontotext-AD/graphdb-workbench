@@ -1,6 +1,5 @@
 import {
   registerApplication,
-  start,
   addErrorHandler,
   getAppStatus,
   navigateToUrl
@@ -14,15 +13,13 @@ import microfrontendLayout from './microfrontend-layout.html';
 import './styles/onto-stylesheet.scss';
 import './onto-vendor';
 import './styles/main.scss';
-import {defineCustomElements} from '../../shared-components/loader';
-import {bootstrapPromises, settleAllPromises} from './bootstrap/bootstrap';
+import {bootstrapWorkbench} from './bootstrap/bootstrap';
 import {
   ServiceProvider,
   EventService,
   NavigationEnd,
   NavigationStart
 } from '@ontotext/workbench-api';
-import {repositoryBootstrap} from './bootstrap/repository/repository-bootstrap';
 
 const showSplashScreen = (show) => {
   const splashScreen = document.getElementById('splash-screen');
@@ -90,29 +87,8 @@ const registerSingleSpaRouterListeners = () => {
   }
 };
 
-const bootstrapApplication = () => {
-  settleAllPromises(repositoryBootstrap)
-    .then(() => settleAllPromises(bootstrapPromises))
-    .then((results) => {
-      const rejected = results.filter(r => r.status === 'rejected');
-
-      if (rejected.length > 0) {
-        console.warn('Some bootstrap steps failed:', rejected.map(r => r.reason));
-      } else {
-        console.info('All bootstrap steps succeeded.');
-      }
-
-      defineCustomElements();
-      return start();
-    })
-    .then(() => showSplashScreen(false))
-    .catch((error) => {
-      console.error('Could not load application data', error);
-    });
-};
-
 registerSingleSpaRouterListeners();
-bootstrapApplication();
+bootstrapWorkbench().then(() => showSplashScreen(false));
 
 // window.addEventListener("single-spa:routing-event", (evt) => {
 //     console.log("single-spa finished mounting/unmounting applications!");

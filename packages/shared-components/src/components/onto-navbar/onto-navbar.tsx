@@ -153,6 +153,9 @@ export class OntoNavbar {
   }
 
   private selectItemByUrl() {
+    if (!this.menuModel) {
+      return;
+    }
     this.menuModel.deselectAll();
     this.menuModel.closeAll();
     if (!isHomePage()){
