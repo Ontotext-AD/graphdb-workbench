@@ -1,4 +1,4 @@
-.label {
+.rdf-class-hierarchy .label {
   	font: 20px var(--main-font);
   	text-anchor: middle;
   	alignment-baseline: middle;
@@ -7,7 +7,7 @@
   	fill: white;
 }
 
-.child-label {
+.rdf-class-hierarchy .child-label {
     text-shadow: 0 0 0.5em white;
     fill: #606060;
 }
