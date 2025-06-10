@@ -8,5 +8,6 @@
 export const EventName = {
   NAVIGATION_END: 'navigationEnd',
   NAVIGATION_START: 'navigationStart',
-  LOGOUT: 'logout'
+  LOGOUT: 'logout',
+  APP_DATA_LOADED: 'applicationDataLoaded',
 };

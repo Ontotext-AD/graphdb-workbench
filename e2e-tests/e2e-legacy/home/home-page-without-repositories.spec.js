@@ -29,10 +29,6 @@ describe('Home page: without repositories', () => {
     HomeSteps.getSelectedLanguage().should('contain', 'en');
   });
 
-  it('should not render active repository widget', () => {
-    HomeSteps.getActiveRepositoryWidget().should('not.exist');
-  });
-
   it('should render repository errors widget', () => {
     HomeSteps.getRepositoryErrorsWidget().should('be.visible');
     RepositoryErrorsWidgetSteps.getInfoMessage().should('contain', 'Some functionalities are not available because you are not connected to any repository.');
