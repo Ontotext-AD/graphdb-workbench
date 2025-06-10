@@ -4,6 +4,7 @@ import {MapperProvider, ServiceProvider} from '../../providers';
 import {AuthenticatedUser, SecurityConfig} from '../../models/security';
 import {SecurityContextService} from './security-context.service';
 import {SecurityConfigMapper} from './mappers/security-config.mapper';
+import {AuthenticatedUserMapper} from './mappers/authenticated-user.mapper';
 
 /**
  * Service class for handling security-related operations.
@@ -35,5 +36,18 @@ export class SecurityService implements Service {
    */
   getSecurityConfig(): Promise<SecurityConfig> {
     return this.securityRestService.getSecurityConfig().then((response) => MapperProvider.get(SecurityConfigMapper).mapToModel(response));
+  }
+
+  /**
+   * Retrieves the currently authenticated user from the backend.
+   *
+   * Fetches the authenticated user's information and maps it to an `AuthenticatedUser` model
+   * using the appropriate mapper.
+   *
+   * @returns A Promise that resolves with the mapped `AuthenticatedUser` instance
+   */
+  getAuthenticatedUser(): Promise<AuthenticatedUser> {
+    return this.securityRestService.getAuthenticatedUser()
+      .then((response) => MapperProvider.get(AuthenticatedUserMapper).mapToModel(response));
   }
 }
