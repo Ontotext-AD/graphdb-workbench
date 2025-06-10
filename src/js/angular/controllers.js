@@ -182,7 +182,7 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     $scope.embedded = $location.search().embedded;
     $scope.productInfo = productInfo;
     $scope.guidePaused = 'true' === LocalStorageAdapter.get(GUIDE_PAUSE);
-
+    $scope.licenseIsSet = false;
     $scope.hideRdfResourceSearch = false;
     $scope.showRdfResourceSearch = () => {
         return !$scope.hideRdfResourceSearch && !!$scope.getActiveRepository() && $scope.hasActiveLocation() &&(!$scope.isLoadingLocation() || $scope.isLoadingLocation() && $location.url() === '/repository');
@@ -924,11 +924,19 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
                     // There are many places where setTimeout is used, see $jwtAuth#authenticate and $jwtAuth#setAuthHeaders.
                     setTimeout(() => $scope.getSavedQueries(), 500);
                 });
-            $licenseService.checkLicenseStatus().then(() => TrackingService.init());
+            $licenseService.checkLicenseStatus().then(() => {
+                $scope.licenseIsSet = true;
+                TrackingService.init();
+            }).catch(() => {
+                $scope.licenseIsSet = false;
+            });
         }
     });
 
     $scope.isTrackingAllowed = function () {
+        if (!$scope.licenseIsSet) {
+            return;
+        }
         return TrackingService.isTrackingAllowed();
     };
 
