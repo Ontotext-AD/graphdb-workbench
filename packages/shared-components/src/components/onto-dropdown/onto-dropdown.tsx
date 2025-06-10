@@ -18,7 +18,7 @@ import {OntoTooltipPlacement} from "../onto-tooltip/models/onto-tooltip-placemen
   shadow: false,
 })
 export class OntoDropdown {
-  
+
   private readonly GUIDE_SELECTOR_ATTR = 'guide-selector';
 
   @Element() hostElement: HTMLOntoDropdownElement;
@@ -93,12 +93,12 @@ export class OntoDropdown {
    *
    */
   @Prop() dropdownAlignment: DropdownItemAlignment = DropdownItemAlignment.LEFT;
-  
+
   /**
    * Flag to determine if the dropdown should close automatically when a click occurs outside the dropdown.
    */
   @Prop() autoClose: boolean = true;
-  
+
   /**
    * Event emitted when a dropdown item is selected.
    * The event payload contains the value of the selected item.
@@ -151,7 +151,7 @@ export class OntoDropdown {
           <span class='button-name'>
             {this.dropdownButtonName ?? this.translate(this.dropdownButtonNameLabelKey)}
           </span>
-          <i class={`fa-regular fa-angle-down ${this.open ? 'fa-rotate-180' : ''}`}></i>
+          <i class={`fa-light fa-angle-down ${this.open ? 'fa-rotate-180' : ''}`}></i>
         </button>
 
         <div
