@@ -20,7 +20,12 @@ import {
   NamespacesService,
   NamespacesContextService,
   RepositoryList,
-  Repository, RepositoryService, LanguageService, LanguageContextService, ObjectUtil, getCurrentRoute
+  Repository,
+  RepositoryService,
+  LanguageService,
+  LanguageContextService,
+  ObjectUtil,
+  getCurrentRoute,
 } from '@ontotext/workbench-api';
 import {TranslationService} from '../../services/translation.service';
 import {HtmlUtil} from '../../utils/html-util';
@@ -232,7 +237,6 @@ export class OntoHeader {
 
   private initOnRepositoryListChanged(repositories: RepositoryList): void {
     this.repositoryList = repositories;
-    this.repositoryContextService.updateSelectedRepository(this.currentRepository);
     this.repositoryItems = this.getRepositoriesDropdownItems();
   }
 
