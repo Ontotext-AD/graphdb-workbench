@@ -50,12 +50,12 @@
             <div class="new-question-actions">
                 <div class="left-side-actions"></div>
                 <div class="right-side-actions">
-                    <button class="btn btn-primary ask-button" guide-selector="question-ask" ng-if="!waitingForLastMessage"
-                            ng-disabled="!chatItem.question.message || !selectedAgent || selectedAgent.isDeleted || waitingForLastMessage || loadingChat"
+                    <button class="btn btn-primary ask-button" guide-selector="question-ask" ng-if="!showCancelButton"
+                            ng-disabled="!chatItem.question.message || !selectedAgent || selectedAgent.isDeleted || waitingForLastMessage || loadingChat || cancelling"
                             ng-click="ask()">
                         <i class="fa fa-arrow-up"></i>
                     </button>
-                    <button class="btn btn-secondary cancel-ask-button" ng-if="waitingForLastMessage" ng-click="cancelConversation()"
+                    <button class="btn btn-secondary cancel-ask-button" ng-if="showCancelButton" ng-click="cancelConversation()"
                             gdb-tooltip="{{'ttyg.chat_panel.btn.stop_generation.tooltip' | translate}}">
                         <i class="fa-solid fa-square"></i>
                     </button>

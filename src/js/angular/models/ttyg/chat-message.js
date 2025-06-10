@@ -28,6 +28,12 @@ export class ChatMessageModel {
          * @type {TokenUsageInfo}
          */
         this.tokenUsageInfo = data.tokenUsageInfo;
+
+        /**
+         * If the message was terminated via the Abort button
+         * @type {boolean}
+         */
+        this._isTerminalState = data.isTerminalState;
     }
 
     get id() {
@@ -60,6 +66,14 @@ export class ChatMessageModel {
 
     set timestamp(value) {
         this._timestamp = value;
+    }
+
+    get isTerminalState() {
+        return this._isTerminalState;
+    }
+
+    set isTerminalState(value) {
+        this._isTerminalState = value;
     }
 }
 

@@ -20,6 +20,7 @@ import {AgentSettingsModal} from "../model/agent-settings-modal";
 import {decodeHTML} from "../../../../app";
 import {status as httpStatus} from "../../models/http-status";
 import {ContinueChatRun} from "../../models/ttyg/chat-answer";
+import {ChatMessageModel} from "../../models/ttyg/chat-message";
 
 const modules = [
     'toastr',
@@ -171,6 +172,10 @@ function TTYGViewCtrl(
      * @type {string[]}
      */
     $scope.activeRepositoryList = [];
+
+    $scope.cancelling = false;
+
+    const cancelPromiseMap = new Map();
 
     // =========================
     // Public functions
@@ -468,6 +473,7 @@ function TTYGViewCtrl(
                 // If still the same chat selected
                 if (selectedChat && selectedChat.id === chatItem.chatId) {
                     // just process the messages
+                    console.log('Ask question completed successfully. Cancelling? ', $scope.cancelling);
                     updateChatAnswersFirstResponse(selectedChat, chatItem, chatAnswer);
                 }
             })
@@ -522,8 +528,34 @@ function TTYGViewCtrl(
     };
 
     const updateChatAnswersFirstResponse = (selectedChat, chatItem, chatAnswer) => {
-        selectedChat.chatHistory.appendItem(chatItem);
-        updateChatAnswers(selectedChat, chatItem, chatAnswer);
+        // If cancelling, wait before appending
+        console.log('About to update chat answers first response. Cancellation? ', $scope.cancelling);
+        if ($scope.cancelling) {
+            const cancellationPromise = cancelPromiseMap.get(chatItem.chatId);
+            if (cancellationPromise) {
+                cancellationPromise.then((answer) => {
+                    return { success: true, data: answer.data };
+                    })
+                    .catch((err) => {
+                        return { success: false, data: err.data };
+                    })
+                    .then((result) => {
+                        const data = {
+                            message: result.data,
+                            isTerminalState: true,
+                            tokenUsageInfo: chatAnswer.tokenUsageInfo
+                        };
+                        chatItem.answers.push(new ChatMessageModel(data));
+                        selectedChat.chatHistory.appendItem(chatItem);
+                        updateChatAnswers(selectedChat, chatItem, chatAnswer);
+                        cancelPromiseMap.delete(chatItem.chatId);
+                    });
+            }
+        } else {
+            console.log('Not cancelling, according to flag');
+            selectedChat.chatHistory.appendItem(chatItem);
+            updateChatAnswers(selectedChat, chatItem, chatAnswer);
+        }
     };
 
     /**
@@ -593,14 +625,21 @@ function TTYGViewCtrl(
             .finally(() => TTYGContextService.emit(TTYGEventName.DELETING_CHAT, {chatId: chat.id, inProgress: false}));
     };
 
-    const onCancelChat = (chatId) => {
-        TTYGService.cancelConversation(chatId)
-            .then(() => {
+    const onCancelChat = (chatItem) => {
+        $scope.cancelling = true;
+        console.log('Cancel call has started. Flag set to ', $scope.cancelling);
+        const cancelPromise = TTYGService.cancelConversation(chatItem.chatId)
+            .then((res) => {
                 TTYGContextService.emit(TTYGEventName.CANCEL_CHAT_SUCCESSFUL);
-            })
-            .catch(() => {
+                return res;
+            }).catch(() => {
                 TTYGContextService.emit(TTYGEventName.CANCEL_CHAT_FAILURE);
+            }).finally(() => {
+                $scope.cancelling = false;
+                console.log('Cancel call has ended. Finally block. Flag reset to ', $scope.cancelling);
             });
+
+        cancelPromiseMap.set(chatItem.chatId, cancelPromise);
     }
 
     /**

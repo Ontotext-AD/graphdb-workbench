@@ -74,6 +74,14 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
              */
             $scope.loadingChat = true;
 
+            /**
+             * Flag that indicates if answer cancellation is in progress.
+             * @type {boolean}
+             */
+            $scope.cancelInProgress = false;
+
+            $scope.showCancelButton = false;
+
             // =========================
             // Private variables
             // =========================
@@ -88,6 +96,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             $scope.ask = () => {
                 $scope.chatItem.question.timestamp = Date.now();
                 $scope.askingChatItem = cloneDeep($scope.chatItem);
+                $scope.showCancelButton = true;
                 if (!$scope.chatItem.chatId) {
                     createNewChat();
                 } else {
@@ -99,7 +108,9 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             };
 
             $scope.cancelConversation = () => {
-               TTYGContextService.emit(TTYGEventName.CANCEL_CHAT, $scope.chatItem.chatId);
+                $scope.cancelInProgress = true;
+                $scope.showCancelButton = false;
+                TTYGContextService.emit(TTYGEventName.CANCEL_CHAT, $scope.chatItem);
             }
 
             /**
@@ -238,6 +249,8 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
 
             const onChatCancelled = () => {
                 $scope.waitingForLastMessage = false;
+                $scope.cancelInProgress = false;
+                $scope.showCancelButton = false;
             };
 
             const getEmptyChatItem = () => {
@@ -282,6 +295,8 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 $scope.chatItem = getEmptyChatItem();
                 $scope.askingChatItem = undefined;
                 $scope.waitingForLastMessage = false;
+                $scope.showCancelButton = false;
+                $scope.cancelInProgress = false;
                 focusQuestionInput();
             };
 

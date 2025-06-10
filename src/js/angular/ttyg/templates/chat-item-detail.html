@@ -10,12 +10,12 @@
     </div>
     <div class="answers" ng-repeat="answer in chatItemDetail.answers">
         <div class="assistant">
-            <div class="assistant-icon alert-help"
+            <div ng-if="!answer.isTerminalState" class="assistant-icon alert-help"
                  gdb-tooltip="{{'ttyg.chat_panel.labels.agent_name' | translate : { agentName: agentNameByIdMap[chatItemDetail.agentId], date: getHumanReadableQuestionTimestamp(chatItemDetail.question.timestamp), time: (chatItemDetail.question.timestamp | date:'HH:mm') } }}">
                 <i class="fa fa-lg fa-message-bot"></i>
             </div>
             <div class="assistant-message">
-                <markdown-content class="answer" content="{{answer.message}}" options="markdownContentOptions"></markdown-content>
+                <markdown-content class="answer" ng-class="{'italic': answer.isTerminalState}" content="{{answer.message}}" options="markdownContentOptions"></markdown-content>
                 <div class="actions" ng-class="{'hidden-actions': !explainResponseModel[answer.id].expanded && (!showActions || !$last)}">
                     <button class="btn btn-link btn-sm regenerate-question-btn"
                             ng-click="regenerateQuestion()"
@@ -102,7 +102,7 @@
             </div>
         </div>
     </div>
-    <div ng-if="asking" onto-loader-new size="40" guide-selector="question-loader"></div>
+    <div ng-if="asking || cancelInProgress" onto-loader-new size="40" guide-selector="question-loader"></div>
 </div>
 
 <script type="text/ng-template" id="token-usage-info.html">
