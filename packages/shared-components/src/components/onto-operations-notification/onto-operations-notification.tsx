@@ -68,7 +68,7 @@ export class OntoOperationsNotification {
               }
             </section>
           ))}
-          <i class={`fa-regular fa-angle-down ${this.isOpen ? 'fa-rotate-180' : ''}`}></i>
+          <i class={`fa-light fa-angle-down ${this.isOpen ? 'fa-rotate-180' : ''}`}></i>
         </button>
         {this.isOpen &&
             <ul class="operations-dropdown">
