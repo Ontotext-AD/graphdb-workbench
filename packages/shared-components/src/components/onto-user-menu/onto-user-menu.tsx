@@ -42,7 +42,7 @@ export class OntoUserMenu {
           <button class={`${this.isOpen ? 'open' : ''}`}>
             <i class='fa-solid fa-user'></i>
             <span class='username'>{this.user.username}</span>
-            <i class={`fa-regular fa-angle-down ${this.isOpen ? 'fa-rotate-180' : ''}`}></i>
+            <i class={`fa-light fa-angle-down ${this.isOpen ? 'fa-rotate-180' : ''}`}></i>
           </button>
           {this.isOpen ?
             <section class='onto-user-menu-dropdown'>
