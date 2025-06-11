@@ -11,8 +11,7 @@ PluginRegistry.add('guide.step', [
         guideBlockName: 'visual-graph',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
-            const $location = services.$location;
-            const $route = services.$route;
+            const RoutingUtil = services.RoutingUtil;
             options.mainAction = 'visual-graph';
 
             return [
@@ -51,9 +50,7 @@ PluginRegistry.add('guide.step', [
                         elementSelector: '.graph-visualization',
                         placement: 'left',
                         onPreviousClick: () => {
-                            $location.url('/graphs-visualizations');
-                            // the page have to be reloaded because the "Search RDF resource..." input have to be visible, due to implementation
-                            $route.reload();
+                            RoutingUtil.navigate('/graphs-visualizations');
                             const searchInputSelector = GuideUtils.getGuideElementSelector('graphVisualisationSearchInputNotConfigured', ' input');
                             return GuideUtils.waitFor(searchInputSelector, 3)
                                 .then(() => {
@@ -62,8 +59,9 @@ PluginRegistry.add('guide.step', [
                         },
                         initPreviousStep: () => {
                             const url = '/graphs-visualizations?uri=' + options.iri;
-                            if (url !== decodeURIComponent($location.url())) {
-                                $location.path('/graphs-visualizations').search({uri: options.iri});
+                            if (url !== decodeURIComponent(RoutingUtil.getCurrentRoute())) {
+                                const URL = '/graphs-visualizations?uri=' + options.iri;
+                                RoutingUtil.navigate(URL);
                                 return GuideUtils.waitFor(`.node-wrapper[id^="${options.iri}"] circle`, 3);
                             }
                             return Promise.resolve();
@@ -126,7 +124,7 @@ PluginRegistry.add('guide.step', [
                             $route.reload();
                             return GuideUtils.deferredShow(50)()
                                 .then(() => {
-                                    GuideUtils.awaitAlphaDropD3(elementSelector, $rootScope)();
+                                    return GuideUtils.awaitAlphaDropD3(elementSelector, $rootScope)();
                                 });
                         },
                         initPreviousStep: (services, stepId) => {

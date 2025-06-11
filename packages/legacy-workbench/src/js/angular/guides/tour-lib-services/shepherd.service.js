@@ -2,7 +2,7 @@ import {GuideUtils} from "../guide-utils";
 import Shepherd from "shepherd.js";
 import {decodeHTML} from "../../../../app";
 import {
-    navigateTo,
+    navigate,
     getPathName
 } from '@ontotext/workbench-api';
 
@@ -395,7 +395,7 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
         const step = guide.steps[stepIndex];
         const url = step.options.url;
         if (url && url !== getPathName()) {
-            navigateTo(url)();
+            navigate(url);
         }
 
         if (step.options.attachTo) {
@@ -485,7 +485,7 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
     };
 
     this._backToGuidesButton = (guide) => {
-        navigateTo('guides')();
+        navigate('guides');
         this._completeGuide(guide);
     };
 
@@ -667,7 +667,9 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
                             });
                         return;
                     } else if (nextStep.options.forceReload || nextStep.options.url && nextStep.options.url !== currentStep.options.url) {
-                        navigateTo(nextStep.options.url)();
+                        if (getPathName() !== nextStep.options.url) {
+                            navigate(nextStep.options.url);
+                        }
                     }
                     currentStep.hide();
                     guide.show(nextStep.id);
@@ -705,7 +707,7 @@ function ShepherdService($translate, LocalStorageAdapter, LSKeys, $interpolate, 
                             }
                         } else {
                             if (nextStepDescription.forceReload || nextStepDescription.url && nextStepDescription.url !== currentStepDescription.url) {
-                                navigateTo(nextStepDescription.url)();
+                                navigate(nextStepDescription.url);
                             }
                             guide.next();
                         }
