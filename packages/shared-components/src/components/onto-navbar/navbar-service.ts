@@ -18,7 +18,7 @@ export class NavbarService {
           if (navbarModel.hasParent(item.label)) {
             console.warn("Doubled parent definition: ", item);
           } else {
-            navbarModel.addItem(this.toMenuItemModel(item, item.children, undefined));
+            navbarModel.addItem(this.toMenuItemModel(item, undefined, item.children));
           }
         });
     });
@@ -32,12 +32,12 @@ export class NavbarService {
           const topLevelItem = navbarModel.getTopLevelItem(item.parent)
           // Some submenu items in the external menu model have children which is unusual.
           // I'm not sure if and where these children are used. For now, I'm ignoring them.
-          topLevelItem?.addChildren(this.toMenuItemModel(item, [], topLevelItem));
+          topLevelItem?.addChildren(this.toMenuItemModel(item, topLevelItem, item.children));
         });
     });
   }
 
-  private static toMenuItemModel(item: ExternalMenuItemModel, children: ExternalMenuItemModel[] = [], parent: NavbarItemModel): NavbarItemModel {
+  private static toMenuItemModel(item: ExternalMenuItemModel, parent: NavbarItemModel, children: ExternalMenuItemModel[] = []): NavbarItemModel {
     const itemModel = new NavbarItemModel({
       label: item.label,
       labelKey: item.labelKey,
@@ -50,11 +50,13 @@ export class NavbarService {
       icon: item.icon,
       guideSelector: item.guideSelector,
       hasParent: !!parent,
+      parentModel: parent,
       parent: item.parent,
       selected: false,
       testSelector: item.testSelector,
     });
-    itemModel.children = children.map((childrenItem) => this.toMenuItemModel(childrenItem, childrenItem.children, itemModel));
+    const childrenModels = children.map((childrenItem) => this.toMenuItemModel(childrenItem, itemModel, childrenItem.children));
+    itemModel.addChildren(...childrenModels);
     return itemModel;
   };
 }

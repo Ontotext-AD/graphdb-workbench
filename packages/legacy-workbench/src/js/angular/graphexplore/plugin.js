@@ -84,7 +84,11 @@ PluginRegistry.add('main.menu', {
             parent: 'Explore',
             children: [{
                 href: 'graphs-visualizations/config/save',
-                children: []
+                children: [
+                    {
+                        href: 'graphs-visualizations/config/save/*',
+                    }
+                ]
             }],
             guideSelector: 'sub-menu-visual-graph',
             testSelector: 'sub-menu-visual-graph'

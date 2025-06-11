@@ -26,6 +26,19 @@ PluginRegistry.add('route', [
 
 PluginRegistry.add('main.menu', {
     'items': [
-        {label: 'JDBC', labelKey: 'menu.jdbc.label', href: 'jdbc', order: 50, parent: 'Setup', role: "IS_AUTHENTICATED_FULLY", guideSelector: 'sub-menu-jdbs'}
+        {
+            label: 'JDBC',
+            labelKey: 'menu.jdbc.label',
+            href: 'jdbc',
+            order: 50,
+            parent: 'Setup',
+            role: "IS_AUTHENTICATED_FULLY",
+            guideSelector: 'sub-menu-jdbs',
+            children: [
+                {
+                    href: 'jdbc/configuration/create'
+                }
+            ]
+        }
     ]
 });
