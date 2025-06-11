@@ -3,7 +3,7 @@ PluginRegistry.add('guide.step', [
         guideBlockName: 'edit-ttyg-agent',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
-            const $location = services.$location;
+            const RoutingUtil = services.RoutingUtil;
             options.mainAction = 'edit-ttyg-agent';
 
             return [
@@ -11,7 +11,7 @@ PluginRegistry.add('guide.step', [
                     guideBlockName: 'click-main-menu',
                     options: angular.extend({}, {
                         menu: 'ttyg',
-                        showOn: () => '/ttyg' !== $location.path()
+                        showOn: () => 'ttyg' !== RoutingUtil.getCurrentRoute()
                     }, options)
                 },
                 {
