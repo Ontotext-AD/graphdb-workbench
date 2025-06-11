@@ -107,7 +107,11 @@ export class NavbarModel {
    * @param item The top level menu item to be selected.
    */
   selectItem(item: NavbarItemModel): void {
-    item.selected = true;
+    if (item.label) {
+      item.selected = true;
+    } else {
+      this.selectItem(item.parentModel)
+    }
   }
 
   /**
@@ -116,7 +120,25 @@ export class NavbarModel {
    * @return True if the top level menu item has a selected submenu, false otherwise.
    */
   hasSelectedSubmenu(item: NavbarItemModel): boolean {
-    return item.children && item.children.some((child) => child.selected);
+    if (!item.children) {
+      return false;
+    }
+    return item.children.some(child => this.hasSelection(child));
+  }
+  
+  /**
+   * Recursively checks if any submenu (child or nested) is selected.
+   * @param {NavbarItemModel} item - The submenu item to check.
+   * @return {boolean} True if selected, or if any descendant is selected.
+   */
+  private hasSelection(item: NavbarItemModel): boolean {
+    if (item.selected) {
+      return true;
+    }
+    if (item.children) {
+      return item.children.some(child => this.hasSelection(child));
+    }
+    return false;
   }
 
   /**
@@ -141,6 +163,13 @@ export class NavbarModel {
     this.walk((item) => {
       item.open = false;
     });
+    this.openItemAndParent(item);
+  }
+
+  private openItemAndParent(item: NavbarItemModel) {
+    if (item.parentModel) {
+      this.openItemAndParent(item.parentModel);
+    }
     item.open = true;
   }
 
@@ -223,9 +252,13 @@ export class NavbarModel {
    */
   initSelected(selectedMenu: string): void {
     this.walk((item) => {
-      if (item.href === selectedMenu) {
+      let path = selectedMenu;
+      if (item.href?.includes('*')) {
+        path = this.getWildcardPath(selectedMenu, item.href);
+      }
+      if (item.href === path) {
         if (item.hasParent) {
-          this.open(this.getParentItem(item));
+          this.open(item);
         }
         this.selectItem(item);
       }
@@ -233,10 +266,43 @@ export class NavbarModel {
   }
 
   /**
-   * Sorts the menu items by their order property.
-   * @return The sorted model.
+   * Compares a given path against a href pattern that may contain wildcards.
+   * This function is used to match menu item hrefs that include wildcard segments.
+   *
+   * @param path - The actual path to compare against the href pattern.
+   * @param href - The href pattern that may contain wildcards ('*').
+   * @returns A string representing the matched path. If the path matches the href pattern,
+   *          it returns a version of the href where wildcards are preserved. If there's no match,
+   *          it returns the original path unchanged.
    */
-  sorted(): NavbarModel {
+  private getWildcardPath(path: string, href: string): string {
+    const pathParts = path.split('/');
+    const hrefParts = href.split('/');
+
+    if (pathParts.length !== hrefParts.length) {
+      return path; // Path and href have different number of segments, no match
+    }
+
+    const resultParts = [];
+
+    for (let i = 0; i < hrefParts.length; i++) {
+      if (hrefParts[i] === '*') {
+        resultParts.push('*');
+      } else if (hrefParts[i] !== pathParts[i]) {
+        return path; // Mismatch in non-wildcard segment
+      } else {
+        resultParts.push(hrefParts[i]);
+      }
+    }
+
+    return resultParts.join('/');
+  }
+
+  /**
+   * Sorts the menu items by their order property.
+   * @return {this} The sorted model.
+   */
+  sorted(): this {
     this._items
       .filter((item) => item.children)
       .forEach((item) => {
@@ -255,12 +321,19 @@ export class NavbarModel {
    * @param callback The callback to be executed for each item.
    */
   private walk(callback: (item: NavbarItemModel) => void): void {
-    this._items.forEach((item) => {
+    this.walkRecursively(this.items, callback);
+  }
+  
+  /**
+   * Recursively walks through a list of navbar items and applies the callback.
+   * @param items The items to walk through.
+   * @param callback The callback to execute on each item.
+   */
+  private walkRecursively(items: NavbarItemModel[], callback: (item: NavbarItemModel) => void): void {
+    items.forEach((item) => {
       callback(item);
-      if (item.children) {
-        item.children.forEach((child) => {
-          callback(child);
-        });
+      if (item.children?.length) {
+        this.walkRecursively(item.children, callback);
       }
     });
   }
@@ -290,13 +363,14 @@ export class NavbarItemModel {
   private _role?: string;
   private _guideSelector?: string;
   private _testSelector?: string;
+  private _parentModel?: NavbarItemModel;
 
   constructor(data: any) {
     this._order = data.order;
     this._label = data.label;
     this._labelKey = data.labelKey;
     this._href = data.href;
-    this._children = data.children;
+    this._children = [...data.children ?? []];
     this._hasParent = data.hasParent;
     this._parent = data.parent;
     this._selected = data.selected;
@@ -308,10 +382,18 @@ export class NavbarItemModel {
     this._role = data.role;
     this._guideSelector = data.guideSelector;
     this._testSelector = data.testSelector;
+    this._parentModel = data.parentModel;
   }
 
-  addChildren(children: NavbarItemModel): void {
-    this.children.push(children);
+  addChild(child: NavbarItemModel): void {
+    this.children.push(child);
+    child.setParent(this);
+  }
+
+  addChildren(...children: NavbarItemModel[]): void {
+    children.forEach((child) => {
+      this.addChild(child);
+    });
   }
 
   get parent(): string {
@@ -440,5 +522,18 @@ export class NavbarItemModel {
 
   set testSelector(value: string) {
     this._testSelector = value;
+  }
+
+  get parentModel(): NavbarItemModel {
+    return this._parentModel;
+  }
+
+  set parentModel(value: NavbarItemModel) {
+    this._parentModel = value;
+  }
+
+  private setParent(parent: NavbarItemModel) {
+    this.parentModel = parent;
+    this.hasParent = !!parent;
   }
 }
