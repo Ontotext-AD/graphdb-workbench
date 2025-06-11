@@ -68,7 +68,7 @@ export class TooltipUtil {
    */
   static destroyTooltip(target: HTMLElement): void {
     const tip = TooltipUtil.getTooltipInstance(target);
-    if (tip) {
+    if (tip && !tip.state?.isDestroyed) {
       tip.destroy();
     }
   }

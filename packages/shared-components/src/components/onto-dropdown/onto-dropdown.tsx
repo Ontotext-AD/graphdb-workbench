@@ -20,6 +20,7 @@ import {OntoTooltipPlacement} from "../onto-tooltip/models/onto-tooltip-placemen
 export class OntoDropdown {
 
   private readonly GUIDE_SELECTOR_ATTR = 'guide-selector';
+  private dropdownButtonElement: HTMLElementWithTooltip;
 
   @Element() hostElement: HTMLOntoDropdownElement;
 
@@ -132,6 +133,16 @@ export class OntoDropdown {
     }
   }
 
+  componentDidUpdate() {
+    if (this.dropdownButtonElement) {
+      if (this.buttonTooltipContent && this.buttonTooltipContent !== '') {
+        TooltipUtil.updateTooltipContent(this.dropdownButtonElement, this.buttonTooltipContent);
+      } else {
+        TooltipUtil.destroyTooltip(this.dropdownButtonElement);
+      }
+    }
+  }
+
   render() {
     const dropdownAlignmentClass = this.dropdownAlignment === DropdownItemAlignment.RIGHT
       ? 'onto-dropdown-right-item-alignment' : 'onto-dropdown-left-item-alignment';
@@ -140,13 +151,14 @@ export class OntoDropdown {
     return (
       <div class={`onto-dropdown ${this.open ? 'open' : 'closed'}`}>
         <button class="onto-dropdown-button"
+                ref={(el) => this.dropdownButtonElement = el as HTMLElementWithTooltip}
                 {...(this.dropdownButtonGuideSelector ? { [this.GUIDE_SELECTOR_ATTR]: this.dropdownButtonGuideSelector } : {})}
                 tooltip-placement={tooltipPlacement}
                 tooltip-trigger={this.dropdownTooltipTrigger}
                 tooltip-content={this.buttonTooltipContent}
                 {...(this.tooltipTheme ? {'tooltip-theme': this.tooltipTheme} : {})}
                 onMouseEnter={this.setDropdownButtonTooltip()}
-                onClick={this.toggleButtonClickHandler()}>
+                onClick={this.toggleButtonClickHandler}>
           {this.iconClass ? <i class={'button-icon ' + this.iconClass}></i> : ''}
           <span class='button-name'>
             {this.dropdownButtonName ?? this.translate(this.dropdownButtonNameLabelKey)}
@@ -173,16 +185,7 @@ export class OntoDropdown {
   }
 
   private setDropdownButtonTooltip() {
-    return async (event: MouseEvent) => {
-      /**
-       * Cast the event target to HTMLElement in order to directly access its tooltip instance (_tippy).
-       * This is a temporary workaround: currently, setting new tooltip content does not trigger an immediate update
-       * in some cases – it only reflects after the parent component re-renders.
-       *
-       * To decouple this behavior properly, tooltip rendering and content updates should be managed explicitly,
-       * either via reactive bindings or by reinitializing the tooltip instance as needed.
-       */
-      const target = event.currentTarget as HTMLElement;
+    return async () => {
       let tooltipContent: string;
       if (typeof this.dropdownButtonTooltip === 'function') {
         tooltipContent = await this.getTooltipContent(this.dropdownButtonTooltip);
@@ -190,13 +193,6 @@ export class OntoDropdown {
         tooltipContent =  this.dropdownButtonTooltip ?? this.translate(this.dropdownButtonTooltipLabelKey);
       }
       this.buttonTooltipContent = tooltipContent;
-
-      // FIXME: Tooltip update is not reactive – this logic should be decoupled from DOM traversal see GDB-12506
-      if (tooltipContent !== '') {
-        TooltipUtil.updateTooltipContent(target, tooltipContent);
-      } else {
-        TooltipUtil.destroyTooltip(target);
-      }
     }
   }
 
@@ -215,15 +211,10 @@ export class OntoDropdown {
     }
   }
 
-  private toggleButtonClickHandler() {
-    return (event: MouseEvent) => {
-      const target = event.currentTarget as HTMLElementWithTooltip;
-      this.toggleComponent();
-      if (target?.hideTooltip) {
-        // in a timeout so that the state is updated before the tooltip is hidden
-        setTimeout(() => target.hideTooltip(), 50)
-      }
-    }
+  private readonly toggleButtonClickHandler = () => {
+    TooltipUtil.destroyTooltip(this.dropdownButtonElement);
+    this.buttonTooltipContent = '';
+    this.toggleComponent();
   }
 
   private itemClickHandler(value: any) {
