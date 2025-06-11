@@ -4,6 +4,10 @@ import 'angular/rest/guides.rest.service';
 import {GuideUtils} from "./guide-utils";
 import {YasguiComponentDirectiveUtil} from "../core/directives/yasgui-component/yasgui-component-directive.util";
 import {FileUtils} from "../utils/file-utils";
+import {
+    navigate,
+    getCurrentRoute
+} from '@ontotext/workbench-api';
 
 const modules = [
     'graphdb.framework.guides.shepherd.services',
@@ -23,7 +27,6 @@ GuidesService.$inject = [
     'ShepherdService',
     '$repositories',
     'toastr',
-    '$location',
     '$route',
     '$timeout',
     'EventEmitterService',
@@ -161,7 +164,6 @@ GuidesService.$inject = [
  * @param {*} ShepherdService - service (wrapper) of library  <a href="https://shepherdjs.dev/docs/">shepherd</a>.
  * @param {*} $repositories - the repositories service.
  * @param {*} toastr
- * @param {*} $location
  * @param {*} $route
  * @param {*} $timeout
  * @package {EventEmitterService} EventEmitterService
@@ -175,7 +177,6 @@ function GuidesService(
     ShepherdService,
     $repositories,
     toastr,
-    $location,
     $route,
     $timeout,
     EventEmitterService,
@@ -465,13 +466,16 @@ function GuidesService(
             GuideUtils,
             $rootScope,
             toastr,
-            $location,
             $route,
             $timeout,
             ShepherdService,
             $repositories,
             YasguiComponentDirectiveUtil,
-            EventEmitterService
+            EventEmitterService,
+            RoutingUtil: {
+                navigate,
+                getCurrentRoute
+            }
         };
         let steps = [];
         if (angular.isArray(complexStep)) {
