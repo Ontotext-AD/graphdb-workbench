@@ -74,9 +74,14 @@ PluginRegistry.add('route', [
 PluginRegistry.add('main.menu', {
     'items': [
         {
-            label: 'Users and Access', labelKey: 'menu.users.and.access.label', href: 'users', order: 2, parent: 'Setup', role: 'ROLE_ADMIN',
+            label: 'Users and Access',
+            labelKey: 'menu.users.and.access.label',
+            href: 'users',
+            order: 2,
+            parent: 'Setup',
+            role: 'ROLE_ADMIN',
             children: [{
-                href: 'user/create',
+                href: 'user/*',
                 children: []
             }],
             guideSelector: 'sub-menu-user-and-access'

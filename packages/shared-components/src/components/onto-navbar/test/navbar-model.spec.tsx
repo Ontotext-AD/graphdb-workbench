@@ -104,7 +104,7 @@ describe('NavbarModel', () => {
       itemWithChildren.open = true;
       const child1 = new NavbarItemModel(item3);
       const child2 = new NavbarItemModel(item4);
-      itemWithChildren.children = [child1, child2];
+      itemWithChildren.addChildren(child1, child2);
       const model = buildModelFromInstances([new NavbarItemModel(item1), itemWithChildren]);
 
       expect(model.isParentOpened(child2)).toBeTruthy();
@@ -115,7 +115,7 @@ describe('NavbarModel', () => {
       itemWithChildren.open = false;
       const child1 = new NavbarItemModel(item3);
       const child2 = new NavbarItemModel(item4);
-      itemWithChildren.children = [child1, child2];
+      itemWithChildren.addChildren(child1, child2);
       const model = buildModelFromInstances([new NavbarItemModel(item1), itemWithChildren]);
 
       expect(model.isParentOpened(child2)).toBeFalsy();
@@ -127,7 +127,7 @@ describe('NavbarModel', () => {
       const itemWithChildren = new NavbarItemModel(item2);
       const child1 = new NavbarItemModel(item3);
       const child2 = new NavbarItemModel(item4);
-      itemWithChildren.children = [child1, child2];
+      itemWithChildren.addChildren(child1, child2);
       const model = buildModelFromInstances([new NavbarItemModel(item1), itemWithChildren]);
 
       expect(model.getTopLevelItem('Explore')).toEqual(itemWithChildren);
@@ -137,7 +137,7 @@ describe('NavbarModel', () => {
       const itemWithChildren = new NavbarItemModel(item2);
       const child1 = new NavbarItemModel(item3);
       const child2 = new NavbarItemModel(item4);
-      itemWithChildren.children = [child1, child2];
+      itemWithChildren.addChildren(child1, child2);
       const model = buildModelFromInstances([new NavbarItemModel(item1), itemWithChildren]);
 
       expect(model.getTopLevelItem('Settings')).toBeUndefined();
@@ -150,7 +150,7 @@ describe('NavbarModel', () => {
       const itemWithChildren = new NavbarItemModel(item2);
       const child1 = new NavbarItemModel(item3);
       const child2 = new NavbarItemModel(item4);
-      itemWithChildren.children = [child1, child2];
+      itemWithChildren.addChildren(child1, child2);
       const model = buildModelFromInstances([topItem1, itemWithChildren]);
 
       expect(model.getParentItem(child2)).toEqual(itemWithChildren);
@@ -160,7 +160,7 @@ describe('NavbarModel', () => {
       const itemWithChildren = new NavbarItemModel(item2);
       const child1 = new NavbarItemModel(item3);
       const child2 = new NavbarItemModel(item4);
-      itemWithChildren.children = [child1, child2];
+      itemWithChildren.addChildren(child1, child2);
       const model = buildModelFromInstances([new NavbarItemModel(item1), itemWithChildren]);
 
       expect(model.getParentItem(new NavbarItemModel(item6))).toBeUndefined();
@@ -173,7 +173,7 @@ describe('NavbarModel', () => {
       const child1 = new NavbarItemModel(item3);
       const child2 = new NavbarItemModel(item4);
       child2.selected = true;
-      itemWithChildren.children = [child1, child2];
+      itemWithChildren.addChildren(child1, child2);
       const model = buildModelFromInstances([new NavbarItemModel(item1), itemWithChildren]);
 
       model.deselectAll();
@@ -187,7 +187,7 @@ describe('NavbarModel', () => {
       const child1 = new NavbarItemModel(item3);
       const child2 = new NavbarItemModel(item4);
       child2.open = true;
-      itemWithChildren.children = [child1, child2];
+      itemWithChildren.addChildren(child1, child2);
       const model = buildModelFromInstances([new NavbarItemModel(item1), itemWithChildren]);
 
       model.closeAll();
@@ -224,7 +224,7 @@ describe('NavbarModel', () => {
       const child1 = new NavbarItemModel(item3);
       const child2 = new NavbarItemModel(item4);
       child2.selected = true;
-      itemWithChildren.children = [child1, child2];
+      itemWithChildren.addChildren(child1, child2);
       const model = buildModelFromInstances([new NavbarItemModel(item1), itemWithChildren]);
 
       expect(model.hasSelectedSubmenu(itemWithChildren)).toBeTruthy();
@@ -234,9 +234,8 @@ describe('NavbarModel', () => {
       const itemWithChildren = new NavbarItemModel(item2);
       const child1 = new NavbarItemModel(item3);
       const child2 = new NavbarItemModel(item4);
-      itemWithChildren.children = [child1, child2];
+      itemWithChildren.addChildren(child1, child2);
       const model = buildModelFromInstances([new NavbarItemModel(item1), itemWithChildren]);
-
       expect(model.hasSelectedSubmenu(itemWithChildren)).toBeFalsy();
     });
 
@@ -245,7 +244,7 @@ describe('NavbarModel', () => {
       const itemWithChildren = new NavbarItemModel(item2);
       const child1 = new NavbarItemModel(item3);
       const child2 = new NavbarItemModel(item4);
-      itemWithChildren.children = [child1, child2];
+      itemWithChildren.addChildren(child1, child2);
       const model = buildModelFromInstances([itemWithoutChildren, itemWithChildren]);
 
       expect(model.hasSelectedSubmenu(itemWithoutChildren)).toBeFalsy();
@@ -260,7 +259,7 @@ describe('NavbarModel', () => {
       const child1 = new NavbarItemModel(item3);
       const child2 = new NavbarItemModel(item4);
       child2.selected = true;
-      itemWithChildren.children = [child1, child2];
+      itemWithChildren.addChildren(child1, child2);
       const model = buildModelFromInstances([itemWithoutChildren, itemWithChildren]);
 
       model.closeOpened();
@@ -274,7 +273,7 @@ describe('NavbarModel', () => {
       itemWithChildren.open = true;
       const child1 = new NavbarItemModel(item3);
       const child2 = new NavbarItemModel(item4);
-      itemWithChildren.children = [child1, child2];
+      itemWithChildren.addChildren(child1, child2);
       const model = buildModelFromInstances([itemWithoutChildren, itemWithChildren]);
 
       model.closeOpened();
@@ -287,7 +286,7 @@ describe('NavbarModel', () => {
       const itemWithChildren = new NavbarItemModel(item2);
       const child1 = new NavbarItemModel(item3);
       const child2 = new NavbarItemModel(item4);
-      itemWithChildren.children = [child1, child2];
+      itemWithChildren.addChildren(child1, child2);
       const model = buildModelFromInstances([itemWithoutChildren, itemWithChildren]);
 
       model.closeOpened();
@@ -303,9 +302,9 @@ describe('NavbarModel', () => {
       itemWithChildren1.open = true;
       const child1 = new NavbarItemModel(item3);
       const child2 = new NavbarItemModel(item4);
-      itemWithChildren1.children = [child1, child2];
+      itemWithChildren1.addChildren(child1, child2);
       const itemWithChildren2 = new NavbarItemModel(item6);
-      itemWithChildren2.children = [new NavbarItemModel(item5), new NavbarItemModel(item6)];
+      itemWithChildren2.addChildren(new NavbarItemModel(item5),new NavbarItemModel(item6));
       const model = buildModelFromInstances([itemWithoutChildren, itemWithChildren1, itemWithChildren2]);
 
       model.open(itemWithChildren2);
@@ -321,10 +320,10 @@ describe('NavbarModel', () => {
       itemWithChildren1.open = true;
       const child1 = new NavbarItemModel(item3);
       const child2 = new NavbarItemModel(item4);
-      itemWithChildren1.children = [child1, child2];
+      itemWithChildren1.addChildren(child1, child2);
       const itemWithChildren2 = new NavbarItemModel(item6);
       itemWithChildren2.open = true;
-      itemWithChildren2.children = [new NavbarItemModel(item5), new NavbarItemModel(item6)];
+      itemWithChildren2.addChildren(new NavbarItemModel(item5), new NavbarItemModel(item6));
       const model = buildModelFromInstances([itemWithoutChildren, itemWithChildren1, itemWithChildren2]);
 
       model.closeOtherParents(child1);
@@ -340,7 +339,7 @@ describe('NavbarModel', () => {
       const child1 = new NavbarItemModel(item3);
       const child2 = new NavbarItemModel(item4);
       child2.selected = true;
-      itemWithChildren.children = [child1, child2];
+      itemWithChildren.addChildren(child1, child2);
       const model = buildModelFromInstances([itemWithoutChildren, itemWithChildren]);
 
       model.highlightSelected();
@@ -352,7 +351,7 @@ describe('NavbarModel', () => {
       const itemWithChildren = new NavbarItemModel(item2);
       const child1 = new NavbarItemModel(item3);
       const child2 = new NavbarItemModel(item4);
-      itemWithChildren.children = [child1, child2];
+      itemWithChildren.addChildren(child1, child2);
       const model = buildModelFromInstances([itemWithoutChildren, itemWithChildren]);
 
       model.highlightSelected();
@@ -368,7 +367,7 @@ describe('NavbarModel', () => {
       itemWithChildren.open = true;
       const child1 = new NavbarItemModel(item3);
       const child2 = new NavbarItemModel(item4);
-      itemWithChildren.children = [child1, child2];
+      itemWithChildren.addChildren(child1, child2);
       const model = buildModelFromInstances([itemWithoutChildren, itemWithChildren]);
 
       model.unhighlightSelected();
@@ -381,7 +380,7 @@ describe('NavbarModel', () => {
       itemWithChildren.selected = true;
       const child1 = new NavbarItemModel(item3);
       const child2 = new NavbarItemModel(item4);
-      itemWithChildren.children = [child1, child2];
+      itemWithChildren.addChildren(child1, child2);
       const model = buildModelFromInstances([itemWithoutChildren, itemWithChildren]);
 
       model.unhighlightSelected();
@@ -407,7 +406,7 @@ describe('NavbarModel', () => {
       itemWithChildren.selected = true;
       const child1 = new NavbarItemModel(item3);
       const child2 = new NavbarItemModel(item4);
-      itemWithChildren.children = [child1, child2];
+      itemWithChildren.addChildren(child1, child2);
       const model = buildModelFromInstances([itemWithoutChildren, itemWithChildren]);
 
       expect(model.getSelectedItem()).toEqual(itemWithChildren);
@@ -419,7 +418,7 @@ describe('NavbarModel', () => {
       const child1 = new NavbarItemModel(item3);
       const child2 = new NavbarItemModel(item4);
       child2.selected = true;
-      itemWithChildren.children = [child1, child2];
+      itemWithChildren.addChildren(child1, child2);
       const model = buildModelFromInstances([itemWithoutChildren, itemWithChildren]);
 
       expect(model.getSelectedItem()).toEqual(child2);
@@ -432,7 +431,7 @@ describe('NavbarModel', () => {
       const itemWithChildren = new NavbarItemModel(item2);
       const child1 = new NavbarItemModel(item3);
       const child2 = new NavbarItemModel(item4);
-      itemWithChildren.children = [child1, child2];
+      itemWithChildren.addChildren(child1, child2);
       const model = buildModelFromInstances([itemWithoutChildren, itemWithChildren]);
 
       model.initSelected('import');
@@ -444,7 +443,7 @@ describe('NavbarModel', () => {
       const itemWithChildren = new NavbarItemModel(item2);
       const child1 = new NavbarItemModel(item3);
       const child2 = new NavbarItemModel(item4);
-      itemWithChildren.children = [child1, child2];
+      itemWithChildren.addChildren(child1, child2);
       const model = buildModelFromInstances([itemWithoutChildren, itemWithChildren]);
 
       model.initSelected('relationships');
