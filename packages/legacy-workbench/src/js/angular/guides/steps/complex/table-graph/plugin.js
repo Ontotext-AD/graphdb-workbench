@@ -3,8 +3,7 @@ PluginRegistry.add('guide.step', [
         guideBlockName: 'table-graph-explore',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
-            const $location = services.$location;
-            const $route = services.$route;
+            const RoutingUtil = services.RoutingUtil;
             options.mainAction = 'table-graph';
 
             const steps = [
@@ -45,9 +44,9 @@ PluginRegistry.add('guide.step', [
                             if (currentStepId === stepId) {
                                 return GuideUtils.defaultInitPreviousStep(services, stepId);
                             }
-                            const url = `/resource?uri=${options.iri}&role=subject`;
-                            if (url !== decodeURIComponent($location.url())) {
-                                $location.path('/resource').search({uri: options.iri, role: 'subject'});
+                            const url = `resource?uri=${options.iri}&role=subject`;
+                            if (url !== decodeURIComponent(RoutingUtil.getCurrentRoute())) {
+                                RoutingUtil.navigate(`resource?uri=${options.iri}&role=subject`);
                                 return GuideUtils.waitFor(`.resource-info a.source-link[href="${options.iri}"]`, 3);
                             }
                             return Promise.resolve();
@@ -75,7 +74,7 @@ PluginRegistry.add('guide.step', [
                                     initPreviousStep: (services, stepId) => {
                                         const linkUrl = `/resource?uri=${subStep.iri}&role=subject`;
                                         const tableGraphLinkUrl = `/resource?uri=${options.iri}&role=subject`;
-                                        const url = decodeURIComponent($location.url());
+                                        const url = decodeURIComponent(RoutingUtil.getCurrentRoute());
 
                                         const currentStepId = services.ShepherdService.getCurrentStepId();
                                         if (currentStepId === stepId && tableGraphLinkUrl === url) {
@@ -88,9 +87,7 @@ PluginRegistry.add('guide.step', [
                                             return GuideUtils.defaultInitPreviousStep(services, stepId);
                                         }
 
-                                        // this case is from second link we have to reload
-                                        $location.url(linkUrl);
-                                        $route.reload();
+                                        RoutingUtil.navigate(linkUrl);
                                         return GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_ROWS_SELECTOR);
                                     }
                                 }, angular.extend({}, options, subStep))
@@ -117,11 +114,10 @@ PluginRegistry.add('guide.step', [
                                         const previousStep = services.ShepherdService.getPreviousStepFromHistory(stepId);
                                         return previousStep.options.initPreviousStep(services, previousStep.options.id)
                                             .then(() => {
-                                                let url = $location.url();
+                                                let url = RoutingUtil.getCurrentRoute();
                                                 url = url.substring(0, url.indexOf('role=') + 5);
                                                 url += subStep.role;
-                                                $location.url(url);
-                                                $route.reload();
+                                                RoutingUtil.navigate(url);
                                                 return GuideUtils.waitFor(GuideUtils.CSS_SELECTORS.SPARQL_RESULTS_ROWS_SELECTOR);
                                             });
                                     }
