@@ -26,6 +26,19 @@ PluginRegistry.add('route', [
 
 PluginRegistry.add('main.menu', {
     'items': [
-        {label: 'SPARQL Templates', labelKey: 'menu.sparql.template.label', href: 'sparql-templates', order: 51, parent: 'Setup', role: "IS_AUTHENTICATED_FULLY", guideSelector: 'sub-menu-sparql-templates'}
+        {
+            label: 'SPARQL Templates',
+            labelKey: 'menu.sparql.template.label',
+            href: 'sparql-templates',
+            order: 51,
+            parent: 'Setup',
+            role: "IS_AUTHENTICATED_FULLY",
+            guideSelector: 'sub-menu-sparql-templates',
+            children: [
+                {
+                    href: 'sparql-template/create'
+                }
+            ]
+        }
     ]
 });
