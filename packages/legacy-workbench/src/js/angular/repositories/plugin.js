@@ -49,11 +49,19 @@ PluginRegistry.add('main.menu', {
             order: 1,
             role: 'ROLE_REPO_MANAGER',
             parent: 'Setup',
-            children: [{
-                href: 'repository/create',
-                children: []
-            }],
-            guideSelector: 'sub-menu-repositories'
-        }
-    ]
+            children: [
+                {
+                    href: 'repository/create',
+                    children: [
+                        {
+                            href: 'repository/create/*',
+                        }
+                    ]
+                },
+                {
+                    href: 'repository/edit/*'
+                }
+            ]
+            , guideSelector: 'sub-menu-repositories'
+        }]
 });
