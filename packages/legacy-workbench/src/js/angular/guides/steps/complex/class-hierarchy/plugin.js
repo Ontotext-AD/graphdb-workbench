@@ -1,5 +1,5 @@
 const reloadAndOpenInfoPanel = (services, clasInstanceSelector) => {
-    services.$location.path('/hierarchy').search({});
+    services.RoutingUtil.navigate('/hierarchy');
     return services.GuideUtils.waitFor(clasInstanceSelector, 3)
         .then(() => {
             services.GuideUtils.classHierarchyFocus(clasInstanceSelector);
@@ -88,8 +88,7 @@ PluginRegistry.add('guide.step', [
         guideBlockName: 'class-hierarchy-instances',
         getSteps: (options, services) => {
             const GuideUtils = services.GuideUtils;
-            const $location = services.$location;
-            const $route = services.$route;
+            const RoutingUtil = services.RoutingUtil;
             options.title = 'guide.step_plugin.class-hierarchy-instances.title';
             const closeButtonSelector = GuideUtils.getGuideElementSelector('close-info-panel');
             const clasInstanceSelector = GuideUtils.getGuideElementSelector('class-' + options.iri);
@@ -108,7 +107,7 @@ PluginRegistry.add('guide.step', [
                         },
                         initPreviousStep: () => {
                             if (!GuideUtils.isVisible(closeButtonSelector)) {
-                                return reloadAndOpenInfoPanel({$location, $route, GuideUtils}, clasInstanceSelector);
+                                return reloadAndOpenInfoPanel({RoutingUtil, GuideUtils}, clasInstanceSelector);
                             }
 
                             return Promise.resolve();
@@ -234,7 +233,7 @@ PluginRegistry.add('guide.step', [
                                 });
                         }
                         // If is called from other step we have to reload and open the info panel.
-                        return reloadAndOpenInfoPanel({$location, $route, GuideUtils}, clasInstanceSelector);
+                        return reloadAndOpenInfoPanel({RoutingUtil, GuideUtils}, clasInstanceSelector);
                     }
                 }, options)
             });
