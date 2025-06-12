@@ -10,7 +10,6 @@ import {
   SecurityContextService,
   AuthenticatedUser,
   SecurityConfig,
-  AuthenticationService,
   FibonacciGenerator,
   OntoToastrService,
   RepositoryLocationContextService,
@@ -46,7 +45,6 @@ export class OntoHeader {
   private readonly repositoryLocationContextService = ServiceProvider.get(RepositoryLocationContextService);
   private readonly repositoryService = ServiceProvider.get(RepositoryService);
   private readonly securityContextService = ServiceProvider.get(SecurityContextService);
-  private readonly authenticationService = ServiceProvider.get(AuthenticationService);
   private readonly toastrService = ServiceProvider.get(OntoToastrService);
   private readonly namespacesService = ServiceProvider.get(NamespacesService);
   private readonly namespaceContextService = ServiceProvider.get(NamespacesContextService);
@@ -288,9 +286,6 @@ export class OntoHeader {
   private startOperationPolling() {
     clearInterval(this.pollingInterval);
     this.pollingInterval = window.setInterval(() => {
-      if (!this.authenticationService.isAuthenticated()) {
-        this.activeOperations = undefined;
-      }
 
       if (this.skipUpdateActiveOperationsTimes > 0) {
         // Requested to skip this run, the number of skips is a Fibonacci sequence when errors are consecutive.
@@ -307,7 +302,10 @@ export class OntoHeader {
           this.fibonacciGenerator.reset();
           this.skipUpdateActiveOperationsTimes = 0;
         })
-        .catch(() => this.skipUpdateActiveOperationsTimes = this.fibonacciGenerator.next());
+        .catch(() => {
+          this.activeOperations = undefined;
+          this.skipUpdateActiveOperationsTimes = this.fibonacciGenerator.next();
+        });
     }, this.UPDATE_ACTIVE_OPERATION_TIME_INTERVAL);
   }
 
