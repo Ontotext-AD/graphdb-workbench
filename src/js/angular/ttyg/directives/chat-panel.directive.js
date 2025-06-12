@@ -74,12 +74,6 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
              */
             $scope.loadingChat = true;
 
-            /**
-             * Flag that indicates if answer cancellation is in progress.
-             * @type {boolean}
-             */
-            $scope.cancelInProgress = false;
-
             $scope.showCancelButton = false;
 
             // =========================
@@ -96,7 +90,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             $scope.ask = () => {
                 $scope.chatItem.question.timestamp = Date.now();
                 $scope.askingChatItem = cloneDeep($scope.chatItem);
-                $scope.showCancelButton = true;
+
                 if (!$scope.chatItem.chatId) {
                     createNewChat();
                 } else {
@@ -108,7 +102,6 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             };
 
             $scope.cancelConversation = () => {
-                $scope.cancelInProgress = true;
                 $scope.showCancelButton = false;
                 TTYGContextService.emit(TTYGEventName.CANCEL_CHAT, $scope.chatItem);
             }
@@ -200,6 +193,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
 
             const onLastMessageReceived = () => {
                 $scope.waitingForLastMessage = false;
+                $scope.showCancelButton = false;
             };
 
             /**
@@ -227,6 +221,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 $scope.chatItem = cloneDeep($scope.askingChatItem);
                 $scope.askingChatItem = undefined;
                 $scope.waitingForLastMessage = false;
+                $scope.showCancelButton = false;
             };
 
             /**
@@ -249,8 +244,12 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
 
             const onChatCancelled = () => {
                 $scope.waitingForLastMessage = false;
-                $scope.cancelInProgress = false;
                 $scope.showCancelButton = false;
+                $scope.askingChatItem = undefined;
+            };
+
+            const onShowAbortButton = () => {
+                $scope.showCancelButton = true;
             };
 
             const getEmptyChatItem = () => {
@@ -296,7 +295,6 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
                 $scope.askingChatItem = undefined;
                 $scope.waitingForLastMessage = false;
                 $scope.showCancelButton = false;
-                $scope.cancelInProgress = false;
                 focusQuestionInput();
             };
 
@@ -326,6 +324,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService) {
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_CHAT_SUCCESSFUL, onChatDeleted));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CANCEL_CHAT_SUCCESSFUL, onChatCancelled));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CANCEL_CHAT_FAILURE, onChatCancelled));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.SHOW_ABORT_BUTTON, onShowAbortButton));
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);

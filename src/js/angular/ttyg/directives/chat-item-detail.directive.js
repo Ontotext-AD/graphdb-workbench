@@ -47,6 +47,11 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, TTYGSer
             $scope.ExplainQueryType = ExplainQueryType;
             $scope.repositoryId = undefined;
             $scope.markdownContentOptions = undefined;
+            /**
+             * Flag that indicates if answer cancellation is in progress.
+             * @type {boolean}
+             */
+            $scope.cancelInProgress = false;
 
             /**
              * Mapping of agent id to agent name which is used to display the agent name in the UI.
@@ -168,6 +173,14 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, TTYGSer
                 $scope.agentNameByIdMap = TTYGContextService.getAgents().agentNameByIdMap;
             };
 
+            const onChatCancelled = () => {
+                $scope.cancelInProgress = false;
+            };
+
+            const onCancelChat = () => {
+                $scope.cancelInProgress = true;
+            }
+
             // =========================
             // Subscriptions
             // =========================
@@ -179,6 +192,9 @@ function ChatItemDetailComponent(toastr, $translate, TTYGContextService, TTYGSer
 
             subscriptions.push(TTYGContextService.onExplainResponseCacheUpdated(onExplainResponseCacheUpdated));
             subscriptions.push(TTYGContextService.onAgentsListChanged(onAgentsListChanged));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CANCEL_CHAT_SUCCESSFUL, onChatCancelled));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CANCEL_CHAT_FAILURE, onChatCancelled));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CANCEL_CHAT, onCancelChat));
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);

@@ -10,12 +10,21 @@ const CONVERSATIONS_ENDPOINT = 'rest/chat/conversations';
 const AGENTS_ENDPOINT = 'rest/chat/agents';
 const EXPLAIN_RESPONSE_ENDPOINT = `${CONVERSATIONS_ENDPOINT}/explain`;
 const CANCEL_ENDPOINT = 'rest/chat/chats/cancel';
+const CREATE_ENDPOINT = 'rest/chat/chats/create';
 
 const DEVELOPMENT = false;
 
 function TTYGRestService($http) {
 
     const _fakeBackend = new TtygRestServiceFakeBackend();
+
+    const createChat = () => {
+        if (DEVELOPMENT) {
+            // TODO add backend mock
+            //return _fakeBackend.createChat();
+        }
+        return $http.post(CREATE_ENDPOINT);
+    };
 
     const getConversations = () => {
         if (DEVELOPMENT) {
@@ -229,6 +238,7 @@ function TTYGRestService($http) {
     };
 
     return {
+        createChat,
         getConversation,
         renameConversation,
         exportConversation,
