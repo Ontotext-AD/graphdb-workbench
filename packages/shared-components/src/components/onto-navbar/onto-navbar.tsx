@@ -19,6 +19,7 @@ import {
   EventName,
   EventService, getCurrentRoute, isHomePage,
   navigateTo, openInNewTab, ProductInfo, ProductInfoContextService,
+  navigate,
   ServiceProvider,
   SubscriptionList, UriUtil
 } from '@ontotext/workbench-api';
@@ -109,12 +110,11 @@ export class OntoNavbar {
       openInNewTab(externalLink);
       return;
     }
-    // Navigate to respective url without reloading if possible.
-    // #navigateToUrl function is exposed by the root-config and comes from the single-spa.
-    // It's currently provided this way in order to prevent components to depend
-    // from single-spa. Although this is not the best approach, it'd work for now.
-    // @ts-ignore
-    window.singleSpa.navigateToUrl(menuItem.href);
+    
+    // Skip navigation when the selected item is a parent menu because it has no associated navigation.
+    if (!menuItem.hasSubmenus()) {
+      navigate(menuItem.href);
+    }
 
     if (menuItem.children.length) {
       if (!menuItem.open) {
