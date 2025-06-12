@@ -16,7 +16,7 @@ angular
     .module('graphdb.framework.ttyg.directives.chat-panel', modules)
     .directive('chatPanel', ChatPanelComponent);
 
-ChatPanelComponent.$inject = ['toastr', '$translate', 'TTYGContextService', '$timeout'];
+ChatPanelComponent.$inject = ['toastr', '$translate', 'TTYGContextService'];
 
 /**
  * @ngdoc directive
@@ -32,7 +32,7 @@ ChatPanelComponent.$inject = ['toastr', '$translate', 'TTYGContextService', '$ti
  * @example
  * <chat-panel></chat-panel>
  */
-function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
+function ChatPanelComponent(toastr, $translate, TTYGContextService) {
     return {
         restrict: 'E',
         templateUrl: 'js/angular/ttyg/templates/chat-panel.html',
@@ -74,6 +74,8 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
              */
             $scope.loadingChat = true;
 
+            $scope.showCancelButton = false;
+
             // =========================
             // Private variables
             // =========================
@@ -88,6 +90,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
             $scope.ask = () => {
                 $scope.chatItem.question.timestamp = Date.now();
                 $scope.askingChatItem = cloneDeep($scope.chatItem);
+
                 if (!$scope.chatItem.chatId) {
                     createNewChat();
                 } else {
@@ -97,6 +100,11 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
                 scrollToBottom();
                 focusQuestionInput();
             };
+
+            $scope.cancelConversation = () => {
+                $scope.showCancelButton = false;
+                TTYGContextService.emit(TTYGEventName.CANCEL_CHAT, $scope.chatItem);
+            }
 
             /**
              * Regenerates the answer for the provided chat item.
@@ -185,6 +193,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
 
             const onLastMessageReceived = () => {
                 $scope.waitingForLastMessage = false;
+                $scope.showCancelButton = false;
             };
 
             /**
@@ -212,6 +221,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
                 $scope.chatItem = cloneDeep($scope.askingChatItem);
                 $scope.askingChatItem = undefined;
                 $scope.waitingForLastMessage = false;
+                $scope.showCancelButton = false;
             };
 
             /**
@@ -230,6 +240,16 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
                 if ($scope.chat && deletedChat.id === $scope.chat.id) {
                     reset();
                 }
+            };
+
+            const onChatCancelled = () => {
+                $scope.waitingForLastMessage = false;
+                $scope.showCancelButton = false;
+                $scope.askingChatItem = undefined;
+            };
+
+            const onShowAbortButton = () => {
+                $scope.showCancelButton = true;
             };
 
             const getEmptyChatItem = () => {
@@ -274,6 +294,7 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
                 $scope.chatItem = getEmptyChatItem();
                 $scope.askingChatItem = undefined;
                 $scope.waitingForLastMessage = false;
+                $scope.showCancelButton = false;
                 focusQuestionInput();
             };
 
@@ -301,6 +322,9 @@ function ChatPanelComponent(toastr, $translate, TTYGContextService, $timeout) {
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION_FAILURE, onQuestionFailure));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_CHAT_FAILURE, onQuestionFailure));
             subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_CHAT_SUCCESSFUL, onChatDeleted));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CANCEL_CHAT_SUCCESSFUL, onChatCancelled));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CANCEL_CHAT_FAILURE, onChatCancelled));
+            subscriptions.push(TTYGContextService.subscribe(TTYGEventName.SHOW_ABORT_BUTTON, onShowAbortButton));
 
             // Deregister the watcher when the scope/directive is destroyed
             $scope.$on('$destroy', removeAllSubscribers);

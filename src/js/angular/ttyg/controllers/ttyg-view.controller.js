@@ -20,6 +20,7 @@ import {AgentSettingsModal} from "../model/agent-settings-modal";
 import {decodeHTML} from "../../../../app";
 import {status as httpStatus} from "../../models/http-status";
 import {ContinueChatRun} from "../../models/ttyg/chat-answer";
+import {ChatMessageModel} from "../../models/ttyg/chat-message";
 
 const modules = [
     'toastr',
@@ -171,6 +172,10 @@ function TTYGViewCtrl(
      * @type {string[]}
      */
     $scope.activeRepositoryList = [];
+
+    $scope.cancelling = false;
+
+    const cancelPromiseMap = new Map();
 
     // =========================
     // Public functions
@@ -426,14 +431,28 @@ function TTYGViewCtrl(
      * @param {ChatItemModel} chatItem
      */
     const onCreateNewChat = (chatItem) => {
-        let nonPersistedChat = TTYGContextService.getChats().getNonPersistedChat();
-        if (!nonPersistedChat) {
-            nonPersistedChat = ChatModel.getEmptyChat();
+        TTYGService.createChat().then((result) => {
+            chatItem.chatId = result;
+            const nonPersistedChat = ChatModel.getEmptyChat();
+            nonPersistedChat.name = "New chat";
+            nonPersistedChat.conversationId = result;
             TTYGContextService.addChat(nonPersistedChat);
-        }
-        TTYGContextService.selectChat(nonPersistedChat);
+            TTYGContextService.selectChat(nonPersistedChat);
+            onAskQuestion(chatItem);
+        }).catch((error) => {
+            TTYGContextService.emit(TTYGEventName.CREATE_CHAT_FAILURE);
+            toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
+        });
+    };
 
-        TTYGService.createConversation(chatItem)
+    /**
+     * @param {ChatItemModel} chatItem
+     */
+    const onAskQuestion = (chatItem) => {
+        // Delay showing cancel button, so that a new chat can be created in the BE and an ID for it can be returned.
+        // If clicked too soon after asking, the chatId is undefined and the response hangs
+        TTYGContextService.emit(TTYGEventName.SHOW_ABORT_BUTTON);
+        TTYGService.askQuestion(chatItem)
             .then((chatAnswer) => {
                 TTYGContextService.emit(TTYGEventName.CREATE_CHAT_SUCCESSFUL);
                 const selectedChat = TTYGContextService.getSelectedChat();
@@ -447,24 +466,8 @@ function TTYGViewCtrl(
                     const nonPersistedChat = TTYGContextService.getChats().getNonPersistedChat();
                     TTYGContextService.replaceChat(selectedChat, nonPersistedChat);
                     TTYGStorageService.saveChat(selectedChat);
-
-                    // Process the messages
-                    updateChatAnswersFirstResponse(selectedChat, chatItem, chatAnswer);
                 }
-            })
-            .catch((error) => {
-                TTYGContextService.emit(TTYGEventName.CREATE_CHAT_FAILURE);
-                toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
-            });
-    };
 
-    /**
-     * @param {ChatItemModel} chatItem
-     */
-    const onAskQuestion = (chatItem) => {
-        TTYGService.askQuestion(chatItem)
-            .then((chatAnswer) => {
-                const selectedChat = TTYGContextService.getSelectedChat();
                 // If still the same chat selected
                 if (selectedChat && selectedChat.id === chatItem.chatId) {
                     // just process the messages
@@ -472,9 +475,10 @@ function TTYGViewCtrl(
                 }
             })
             .catch((error) => {
+                $scope.cancelling = false;
                 TTYGContextService.emit(TTYGEventName.ASK_QUESTION_FAILURE);
                 toastr.error(getError(error, 0, TTYG_ERROR_MSG_LENGTH));
-            });
+            }).finally(() => $scope.cancelling = false);
     };
 
     const onContinueChatRun = (continueData) => {
@@ -522,8 +526,35 @@ function TTYGViewCtrl(
     };
 
     const updateChatAnswersFirstResponse = (selectedChat, chatItem, chatAnswer) => {
-        selectedChat.chatHistory.appendItem(chatItem);
-        updateChatAnswers(selectedChat, chatItem, chatAnswer);
+        // If cancelling, wait before appending
+        if ($scope.cancelling) {
+            const cancellationPromise = cancelPromiseMap.get(chatItem.chatId);
+            if (cancellationPromise) {
+                cancellationPromise.then((answer) => {
+                    TTYGContextService.emit(TTYGEventName.CANCEL_CHAT_SUCCESSFUL);
+                    return { success: true, data: answer.data };
+                    })
+                    .catch((err) => {
+                        TTYGContextService.emit(TTYGEventName.CANCEL_CHAT_FAILURE);
+                        return { success: false, data: err.data };
+                    })
+                    .then((result) => {
+                        const data = {
+                            message: result.data,
+                            isTerminalState: true,
+                            tokenUsageInfo: chatAnswer.tokenUsageInfo
+                        };
+                        chatItem.answers.push(new ChatMessageModel(data));
+                        selectedChat.chatHistory.appendItem(chatItem);
+                        updateChatAnswers(selectedChat, chatItem, chatAnswer);
+                        cancelPromiseMap.delete(chatItem.chatId);
+                        $scope.cancelling = false;
+                    });
+            }
+        } else {
+            selectedChat.chatHistory.appendItem(chatItem);
+            updateChatAnswers(selectedChat, chatItem, chatAnswer);
+        }
     };
 
     /**
@@ -592,6 +623,18 @@ function TTYGViewCtrl(
             })
             .finally(() => TTYGContextService.emit(TTYGEventName.DELETING_CHAT, {chatId: chat.id, inProgress: false}));
     };
+
+    const onCancelChat = (chatItem) => {
+        $scope.cancelling = true;
+        const selectedChatId = chatItem.chatId || TTYGContextService.getSelectedChat().conversationId;
+        const cancelPromise = TTYGService.cancelConversation(selectedChatId)
+            .then((res) => {
+                return res;
+            }).catch((error) => {
+                return error;
+            });
+        cancelPromiseMap.set(selectedChatId, cancelPromise);
+    }
 
     /**
      * Handles the export of a chat by calling the service and updating the chats list.
@@ -846,6 +889,7 @@ function TTYGViewCtrl(
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CREATE_CHAT, onCreateNewChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.RENAME_CHAT, onRenameChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.DELETE_CHAT, onDeleteChat));
+    subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CANCEL_CHAT, onCancelChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CHAT_EXPORT, onExportChat));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.ASK_QUESTION, onAskQuestion));
     subscriptions.push(TTYGContextService.subscribe(TTYGEventName.CONTINUE_CHAT_RUN, onContinueChatRun));

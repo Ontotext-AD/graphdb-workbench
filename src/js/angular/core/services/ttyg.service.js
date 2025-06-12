@@ -15,6 +15,11 @@ TTYGService.$inject = ['TTYGRestService', '$repositories'];
 
 function TTYGService(TTYGRestService, $repositories) {
 
+    const createChat = () => {
+        return TTYGRestService.createChat()
+            .then((response) => response.data.conversationId);
+    };
+
     const getConversations = (savedQueryName, owner) => {
         return TTYGRestService.getConversations()
             .then((response) => chatsListMapper(response.data));
@@ -89,6 +94,17 @@ function TTYGService(TTYGRestService, $repositories) {
     const deleteConversation = (id) => {
         return TTYGRestService.deleteConversation(id);
     };
+
+    /**
+     * Cancels an active conversation by its unique identifier.
+     *
+     * @param {string|number} id - The unique identifier of the conversation to be canceled.
+     * @returns {Promise} A promise that resolves when the conversation has been successfully canceled,
+     * or rejects with an error.
+     */
+    const cancelConversation = (id) => {
+        return TTYGRestService.cancelConversation(id);
+    }
 
     /**
      * Creates a new conversation. The creation of a chat and asking a question share the same endpoint. If the request payload
@@ -198,6 +214,7 @@ function TTYGService(TTYGRestService, $repositories) {
     };
 
     return {
+        createChat,
         getConversation,
         renameConversation,
         exportConversation,
@@ -206,6 +223,7 @@ function TTYGService(TTYGRestService, $repositories) {
         getConversations,
         deleteConversation,
         createConversation,
+        cancelConversation,
         getAgents,
         getAgent,
         createAgent,

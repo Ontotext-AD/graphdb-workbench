@@ -480,6 +480,20 @@ export const TTYGEventName = {
     CONTINUE_CHAT_RUN: 'continueChatRun',
 
     /**
+     * Represents the action type for canceling a chat.
+     * Typically used in scenarios where an ongoing chat session is terminated or aborted by the user.
+     */
+    CANCEL_CHAT: "cancelChat",
+
+    /**
+     * Constant representing a successful cancellation of a chat.
+     * Typically used to indicate the status of a chat operation that has been canceled successfully.
+     */
+    CANCEL_CHAT_SUCCESSFUL: "cancelChatSuccess",
+
+    CANCEL_CHAT_FAILURE: "cancelChatFailed",
+
+    /**
      * Emitting the "loadChats" event will trigger an action to loads all chats from backend server.
      */
     LOAD_CHATS: 'loadChats',
@@ -555,5 +569,7 @@ export const TTYGEventName = {
      */
     GO_TO_SPARQL_EDITOR: "openQueryInSparqlEditor",
 
-    CAN_MODIFY_AGENT_UPDATED: "canModifyAgentUpdated"
+    CAN_MODIFY_AGENT_UPDATED: "canModifyAgentUpdated",
+
+    SHOW_ABORT_BUTTON: "showAbortQuestionButton"
 };
