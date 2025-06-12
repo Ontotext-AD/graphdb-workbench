@@ -395,7 +395,19 @@ export class NavbarItemModel {
       this.addChild(child);
     });
   }
-
+  
+  /**
+   * Determines whether the current menu item has submenus.
+   * In this context, items with a href value of '#' are treated as parent items
+   * and are expected to have submenus. This behavior is due to the fact that
+   * all top-level items are registered with href set to '#' when added to the PluginRegistry.
+   *
+   * @returns {boolean} True if the item is a parent (has submenus), otherwise false.
+   */
+  hasSubmenus(): boolean {
+    return this._href === '#';
+  }
+  
   get parent(): string {
     return this._parent;
   }
