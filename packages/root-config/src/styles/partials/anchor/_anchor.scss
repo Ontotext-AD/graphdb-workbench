@@ -1,6 +1,6 @@
 a {
   &:hover:not(.btn, .nav-link, .menu-element-root, .nodes-list .data-value),
-  &:active:not(.btn, .nav-link, .menu-element-root .nodes-list .data-value),
+  &:active:not(.btn, .nav-link, .menu-element-root, .nodes-list .data-value),
   &[href^="http"]:not(.nodes-list .data-value),
   &[href^="http"]:hover,
   &[href^="http"]:active {
