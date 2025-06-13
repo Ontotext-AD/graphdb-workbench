@@ -28,7 +28,7 @@ import 'angularjs-slider/dist/rzslider.min';
 import {debounce} from "lodash";
 import {DocumentationUrlResolver} from "./utils/documentation-url-resolver";
 import {NamespacesListModel} from "./models/namespaces/namespaces-list";
-import {RepositoryContextService, EventService, EventName, ServiceProvider} from "@ontotext/workbench-api";
+import {RepositoryContextService, EventService, EventName, ServiceProvider, ApplicationLifecycleContextService} from "@ontotext/workbench-api";
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -1107,10 +1107,18 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     // the new repository ID in the local storage. Local storage change event is handled by a central handler
     // LocalStorageSubscriptionHandlerService in the api module which triggers the change for the respective context
     // properties.
-    const onSelectedRepositoryChangedSubscription = ServiceProvider.get(RepositoryContextService)
-      .onSelectedRepositoryChanged(() => {
-          $rootScope.$broadcast('repositoryIsSet', {newRepo: false});
-      });
+    let onSelectedRepositoryChangedSubscription;
+    // subscribe to repository changes, once we are certain they are loaded
+    const onAppDataLoaded = ServiceProvider.get(ApplicationLifecycleContextService).onApplicationDataStateChanged((dataLoaded) => {
+        if (dataLoaded) {
+            // unsubscribe of any previous subscription
+            onSelectedRepositoryChangedSubscription?.();
+            onSelectedRepositoryChangedSubscription = ServiceProvider.get(RepositoryContextService)
+                .onSelectedRepositoryChanged((repository) => {
+                    $repositories.onRepositorySet(repository);
+                });
+        }
+    });
 
     $scope.downloadGuidesFile = (resourcePath, resourceFile) => {
       GuidesService.downloadGuidesFile(resourcePath, resourceFile)
@@ -1120,7 +1128,8 @@ function mainCtrl($scope, $menuItems, $jwtAuth, $http, toastr, $location, $repos
     };
 
     $scope.$on('$destroy', () => {
-      onSelectedRepositoryChangedSubscription();
+      onSelectedRepositoryChangedSubscription?.();
+      onAppDataLoaded();
       document.removeEventListener('click', closeActiveRepoPopoverEventHandler);
       window.removeEventListener('storage', localStoreChangeHandler);
       $scope.cancelPopoverOpen();
