@@ -28,7 +28,7 @@ import 'angularjs-slider/dist/rzslider.min';
 import {debounce} from "lodash";
 import {DocumentationUrlResolver} from "./utils/documentation-url-resolver";
 import {NamespacesListModel} from "./models/namespaces/namespaces-list";
-import {RepositoryContextService, EventService, EventName, ServiceProvider} from "@ontotext/workbench-api";
+import {RepositoryContextService, RepositoryService, EventService, EventName, ServiceProvider} from "@ontotext/workbench-api";
 
 angular
     .module('graphdb.workbench.se.controllers', [
@@ -98,16 +98,23 @@ function homeCtrl($scope,
     // Public functions
     // =========================
     $scope.getActiveRepositorySize = () => {
-        const repo = $repositories.getActiveRepositoryObject();
+        const repo = ServiceProvider.get(RepositoryContextService).getSelectedRepository();
+
         if (!repo) {
             return;
         }
         $scope.activeRepositorySizeError = undefined;
-        RepositoriesRestService.getSize(repo).then(function (res) {
-            $scope.activeRepositorySize = res.data;
-        }).catch(function (e) {
-            $scope.activeRepositorySizeError = e.data.message;
-        });
+
+        ServiceProvider.get(RepositoryService).getRepositorySizeInfo(repo)
+            .then(function (repositorySizeInfo) {
+                $scope.activeRepositorySize = repositorySizeInfo;
+            })
+            .catch(function (e) {
+                $scope.activeRepositorySizeError = e.data.message;
+            })
+            .finally(function () {
+                $scope.$apply();
+            });
     };
 
     $scope.onKeyDown = function (event) {
