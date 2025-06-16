@@ -143,22 +143,52 @@ export class TTYGStubs extends Stubs {
     }
 
     static stubAnswerQuestion(fixture = '/ttyg/chats/ask-question.json') {
-        cy.intercept('POST', '/rest/chat/conversations', {
+        cy.intercept('POST', '/rest/chat/chats/**/question', {
             fixture,
             statusCode: 200
         }).as('get-agent-defaults');
     }
 
-    static stubCrateNewChat(fixture = 'ttyg/chats/create/create-chat-response.json') {
-        cy.fixture(fixture).then((fixtureData) => {
+    static stubAnswerQuestionWithDelay(fixture = '/ttyg/chats/ask-question-cancel.json', delay = 1000) {
+        cy.intercept({
+            method: 'POST',
+            url: '/rest/chat/chats/**/question',
+        }, (req) => {
+            req.reply({
+                fixture,
+                statusCode: 200,
+                delay
+            });
+        }).as('get-cancelled-answer');
+    }
+
+    static stubCancelQuestion(fixture = '/ttyg/chats/cancel-question-response.json', delay = 1000) {
+        cy.intercept({
+            method: 'POST',
+            url: 'rest/chat/chats/**/cancel'
+        }, (req) => {
+            req.reply({
+                fixture,
+                statusCode: 200,
+                delay
+            });
+        }).as('get-cancel-response');
+    }
+
+    static stubCreateNewChat() {
+            cy.intercept('POST', '/rest/chat/chats', {
+                fixture: 'ttyg/chats/create/create-chat-response.json',
+                statusCode: 200
+            }).as('ask-first-chat-question');
+
+            cy.fixture('ttyg/chats/create/question-response-after-chat-creation.json').then((fixtureData) => {
             const today = Math.floor(Date.now() / 1000) + '';
             const body = JSON.stringify(fixtureData).replace(/"creationDate"/g, today);
-            cy.intercept('POST', '/rest/chat/conversations', {
+            cy.intercept('POST', '/rest/chat/chats/**/question', {
                 statusCode: 200,
                 body: JSON.parse(body)
             }).as('create-chat');
         });
-
     }
 
     static stubExplainResponse(fixture = '/ttyg/chats/explain-response-1.json') {
