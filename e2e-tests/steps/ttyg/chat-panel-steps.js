@@ -16,12 +16,20 @@ export class ChatPanelSteps {
         return ChatPanelSteps.getChatDetailElement(chatDetailIndex).find('.actions').eq(answerIndex);
     }
 
+    static getAssistantAnswer(index) {
+        return ChatPanelSteps.getChatPanel().find('.assistant-message markdown-content').eq(index);
+    }
+
     static getQuestionInputElement() {
         return ChatPanelSteps.getChatPanel().find('.question-input .contenteditable');
     }
 
     static getAskButtonElement() {
         return ChatPanelSteps.getChatPanel().find('.ask-button');
+    }
+
+    static askQuestion() {
+        ChatPanelSteps.getAskButtonElement().scrollIntoView().click();
     }
 
     static getChatDetailQuestionElement(index = 0) {
@@ -58,5 +66,17 @@ export class ChatPanelSteps {
 
     static getCopyToClipboardElement(index = 0) {
         return ChatPanelSteps.getCopyToClipboardElements().eq(index);
+    }
+
+    static getCancelButton() {
+        return ChatPanelSteps.getChatPanel().find('.cancel-ask-button');
+    }
+
+    static cancelQuestion() {
+        ChatPanelSteps.getCancelButton().click();
+    }
+
+    static getAssistantIcon(index) {
+        return ChatPanelSteps.getChatDetailElement(index).find('.assistant-icon');
     }
 }

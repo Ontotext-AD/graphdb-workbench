@@ -121,6 +121,12 @@ function TTYGContextService(EventEmitterService) {
         updateChats(_chats);
     };
 
+    const createChat = (newChat) => {
+        addChat(newChat);
+        selectChat(newChat);
+        emit(TTYGEventName.CREATE_CHAT_SUCCESSFUL, newChat);
+    }
+
     /** Subscribes to the 'chatListUpdated' event.
      * @param {function} callback - The callback to be called when the event is fired.
      *
@@ -368,6 +374,7 @@ function TTYGContextService(EventEmitterService) {
         updateChats,
         addChat,
         replaceChat,
+        createChat,
         onChatsListChanged,
         getSelectedChat,
         selectChat,
@@ -478,6 +485,26 @@ export const TTYGEventName = {
      * Emitting the "continueChatRun" event triggers a request to the backend to retrieve more remaining answers from the same chat run.
      */
     CONTINUE_CHAT_RUN: 'continueChatRun',
+
+    /**
+     * Emitting the "cancelPendingQuestion" event triggers the cancellation of a pending question in a chat.
+     */
+    CANCEL_PENDING_QUESTION: "cancelPendingQuestion",
+
+    /**
+     * This event is emitted when the cancellation of the pending question succeeds.
+     */
+    PENDING_QUESTION_CANCELED_SUCCESSFUL: "pendingQuestionCanceledSuccessful",
+
+    /**
+     * This event is emitted when the cancellation of the pending question fails.
+     */
+    CANCEL_PENDING_QUESTION_FAILURE: "cancelPendingQuestionFailed",
+
+    /**
+     * This event will be fired before a question is sent to BE for processing.
+     */
+    ASK_QUESTION_STARTING: "askQuestionStarting",
 
     /**
      * Emitting the "loadChats" event will trigger an action to loads all chats from backend server.
