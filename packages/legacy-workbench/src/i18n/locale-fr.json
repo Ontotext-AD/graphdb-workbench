@@ -2848,7 +2848,7 @@
     "sign.in": "Se connecter",
     "sign.in.openid": "Se connecter avec OpenID",
     "gdb.license.info.header": "Informations sur la licence GraphDB",
-    "supply.license.or.contact.us.warning": "Veuillez fournir une licence valide. Vous pouvez obtenir une licence gratuite pour GraphDB Free ou une licence d’évaluation pour GraphDB Enterprise sur <a href='https://www.ontotext.com/products/graphdb/#try-graphdb'>le site web d'Ontotext</a>.",
+    "supply.license.or.contact.us.warning": "Veuillez fournir une licence valide. Vous pouvez obtenir une licence gratuite pour GraphDB Free ou une licence d’évaluation pour GraphDB Enterprise sur <a rel=\"noopener\" target=\"_blank\" href='https://www.ontotext.com/products/graphdb/#try-graphdb'>le site web d'Ontotext</a>.",
     "remove.license": "Supprimer la licence",
     "no.license.restrictions": "Sans une licence valide, GraphDB fonctionne en mode restreint et la seule opération autorisée est l'exportation des dépôts.",
     "no.license": "Aucune licence",
