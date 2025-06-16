@@ -9,7 +9,8 @@ PluginRegistry.add('route', [
         'title': 'view.similarity.indexes.title',
         'helpInfo': 'view.similarity.indexes.helpInfo',
         'documentationUrl': 'semantic-similarity-searches.html#text-based-similarity-searches',
-        'allowAuthorities': ['READ_REPO_{repoId}']
+        'allowAuthorities': ['READ_REPO_{repoId}'],
+        testSelector: 'sub-menu-similarity'
     }, {
         'url': '/similarity/index/create',
         'module': 'graphdb.framework.similarity',

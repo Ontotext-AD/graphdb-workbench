@@ -1,4 +1,6 @@
-export class SimilarityIndexesSteps {
+import {BaseSteps} from "../base-steps";
+
+export class SimilarityIndexesSteps extends BaseSteps{
 
     static visit() {
         cy.visit('/similarity');
@@ -8,8 +10,12 @@ export class SimilarityIndexesSteps {
         cy.url().should('eq', `${Cypress.config('baseUrl')}/similarity`);
     }
 
+    static getExistingSimilarityIndexes() {
+        return this.getByTestId('existing-indexes');
+    }
+
     static getSimilarityIndexRow(similarityIndexName) {
-        return cy.get('.index-row').contains(similarityIndexName).parent().parent();
+        return this.getExistingSimilarityIndexes().find('.index-row').contains(similarityIndexName).parent().parent();
     }
 
     static getEditButton(similarityIndexName) {
@@ -40,5 +46,9 @@ export class SimilarityIndexesSteps {
     static selectResultTypeOption(type) {
         this.clickResultTypeDropdown();
         cy.get('.dropdown-result-type .dropdown-item').contains(type).click();
+    }
+
+    static getCreateButton() {
+        return this.getExistingSimilarityIndexes().getByTestId('create-similarity-index-btn');
     }
 }

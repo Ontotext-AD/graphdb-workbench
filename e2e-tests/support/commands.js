@@ -103,5 +103,5 @@ Cypress.Commands.add('getByTestId', {prevSubject: 'optional'}, (subject, testId)
 });
 
 function buildTestIdAttr(testId) {
-    return `[data-test-id="${testId}"]`;
+    return `[data-test="${testId}"]`;
 }
