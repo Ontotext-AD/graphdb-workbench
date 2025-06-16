@@ -8,6 +8,6 @@ export class NumberUtils {
      * @return {string} The formatted number as a string.
      */
     static formatNumberToLocaleString(value, lang) {
-        return value ? value.toLocaleString(lang) : '';
+        return (value !== null && value !== undefined) ? value.toLocaleString(lang) : '';
     }
 }
